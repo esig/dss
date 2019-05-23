@@ -29,14 +29,11 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.security.NoSuchProviderException;
-import java.security.Security;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509CRLEntry;
 import java.security.cert.X509Certificate;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSException;
@@ -45,18 +42,13 @@ import eu.europa.esig.dss.x509.CertificateToken;
 
 public abstract class AbstractTestCRLUtils {
 
-	private static final BouncyCastleProvider securityProvider = new BouncyCastleProvider();
-
 	private static final CertificateFactory certificateFactory;
 
 	static {
 		try {
-			Security.addProvider(securityProvider);
-			certificateFactory = CertificateFactory.getInstance("X.509", BouncyCastleProvider.PROVIDER_NAME);
+			certificateFactory = CertificateFactory.getInstance("X.509");
 		} catch (CertificateException e) {
 			throw new DSSException("Platform does not support X509 certificate", e);
-		} catch (NoSuchProviderException e) {
-			throw new DSSException("Platform does not support BouncyCastle", e);
 		}
 	}
 
@@ -89,12 +81,12 @@ public abstract class AbstractTestCRLUtils {
 			CertificateToken certificateToken = loadCert(isCer);
 			CRLValidity validCRL = CRLUtils.isValidCRL(is, certificateToken);
 			assertNotNull(validCRL);
-			assertNotNull(validCRL.getIssuerToken());
 			assertNotNull(validCRL.getSignatureAlgorithm());
 			assertNotNull(validCRL.getThisUpdate());
 			assertNotNull(validCRL.getNextUpdate());
 			assertTrue(validCRL.isIssuerX509PrincipalMatches());
 			assertTrue(validCRL.isSignatureIntact());
+			assertNotNull(validCRL.getIssuerToken());
 			assertTrue(validCRL.isValid());
 			assertTrue(validCRL.isCrlSignKeyUsage());
 			assertFalse(validCRL.isUnknownCriticalExtension());
@@ -249,10 +241,10 @@ public abstract class AbstractTestCRLUtils {
 			CRLValidity validity = CRLUtils.isValidCRL(is, certificateToken);
 
 			assertEquals(SignatureAlgorithm.RSA_SHA256, validity.getSignatureAlgorithm());
-			assertNotNull(validity.getIssuerToken());
 			assertNotNull(validity.getThisUpdate());
 			assertNotNull(validity.getNextUpdate());
 			assertNull(validity.getExpiredCertsOnCRL());
+			assertNotNull(validity.getIssuerToken());
 			assertTrue(validity.isValid());
 
 			BigInteger serialNumber = new BigInteger("1111111111111111111");
@@ -275,6 +267,62 @@ public abstract class AbstractTestCRLUtils {
 			assertNotNull(wrongIssuerCRL.getSignatureInvalidityReason());
 			assertFalse(wrongIssuerCRL.isValid());
 			assertEquals(SignatureAlgorithm.RSA_SHA256, wrongIssuerCRL.getSignatureAlgorithm());
+		}
+	}
+
+	@Test
+	public void testECDSA() throws Exception {
+		try (InputStream is = AbstractTestCRLUtils.class.getResourceAsStream("/EE-GovCA2018.crl");
+				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/EE-GovCA2018.pem.crt")) {
+
+			CertificateToken certificateToken = loadCert(isCer);
+
+			CRLValidity validity = CRLUtils.isValidCRL(is, certificateToken);
+
+			assertEquals(SignatureAlgorithm.ECDSA_SHA512, validity.getSignatureAlgorithm());
+			assertNotNull(validity.getThisUpdate());
+			assertNotNull(validity.getNextUpdate());
+			assertNull(validity.getExpiredCertsOnCRL());
+			assertNotNull(validity.getIssuerToken());
+			assertTrue(validity.isValid());
+		}
+	}
+
+	@Test
+	public void testECDSAwithRSACert() throws Exception {
+		try (InputStream is = AbstractTestCRLUtils.class.getResourceAsStream("/EE-GovCA2018.crl");
+				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/citizen_ca.cer")) {
+
+			CertificateToken certificateToken = loadCert(isCer);
+
+			CRLValidity validity = CRLUtils.isValidCRL(is, certificateToken);
+
+			assertEquals(SignatureAlgorithm.ECDSA_SHA512, validity.getSignatureAlgorithm());
+			assertNotNull(validity.getThisUpdate());
+			assertNotNull(validity.getNextUpdate());
+			assertNull(validity.getExpiredCertsOnCRL());
+			assertNull(validity.getIssuerToken());
+			assertFalse(validity.isValid());
+		}
+	}
+
+	@Test(expected = DSSException.class)
+	public void testPSSwithoutBouncyCastle() throws Exception {
+		try (InputStream is = AbstractTestCRLUtils.class.getResourceAsStream("/d-trust_root_ca_1_2017.crl");
+				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/D-TRUST_Root_CA_1_2017.crt")) {
+
+			CertificateToken certificateToken = loadCert(isCer);
+
+			CRLUtils.isValidCRL(is, certificateToken);
+		}
+	}
+
+	@Test(expected = DSSException.class)
+	public void incompleteCRL() throws Exception {
+		try (InputStream is = new ByteArrayInputStream(new byte[] { 1, 2, 3 });
+				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/belgiumrs2.crt")) {
+			CertificateToken certificateToken = loadCert(isCer);
+			CRLUtils.isValidCRL(is, certificateToken);
 		}
 	}
 

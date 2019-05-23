@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.URL;
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -34,6 +35,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DSSSecurityProvider;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.utils.Utils;
@@ -47,8 +49,8 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.crl.ListCRLSource;
-import eu.europa.esig.dss.x509.ocsp.ListOCSPSource;
+import eu.europa.esig.dss.x509.revocation.crl.ListCRLSource;
+import eu.europa.esig.dss.x509.revocation.ocsp.ListOCSPSource;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 
 /**
@@ -62,6 +64,10 @@ import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SignedDocumentValidator.class);
+
+	static {
+		Security.addProvider(DSSSecurityProvider.getSecurityProvider());
+	}
 
 	/**
 	 * This variable can hold a specific {@code ProcessExecutor}
@@ -122,9 +128,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			@SuppressWarnings("unchecked")
 			Class<SignedDocumentValidator> documentValidator = (Class<SignedDocumentValidator>) Class.forName(clazzToFind);
 			registredDocumentValidators.add(documentValidator);
-			LOG.info("Validator '" + documentValidator.getName() + "' is registred");
+			LOG.info("Validator '{}' is registred", documentValidator.getName());
 		} catch (ClassNotFoundException e) {
-			LOG.warn("Validator not found for signature type " + type);
+			LOG.warn("Validator not found for signature type : {}", type);
 		}
 	}
 

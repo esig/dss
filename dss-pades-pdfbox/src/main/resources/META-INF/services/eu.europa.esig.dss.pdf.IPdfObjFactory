@@ -1,1 +1,2 @@
-eu.europa.esig.dss.pdf.pdfbox.PdfBoxObjectFactory
+eu.europa.esig.dss.pdf.pdfbox.PdfBoxDefaultObjectFactory
+eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory

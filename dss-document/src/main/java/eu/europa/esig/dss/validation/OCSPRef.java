@@ -85,7 +85,7 @@ public class OCSPRef {
 		}
 		try {
 
-			MessageDigest digest = DSSUtils.getMessageDigest(digestAlgorithm);
+			MessageDigest digest = digestAlgorithm.getMessageDigest();
 			if (matchOnlyBasicOCSPResponse) {
 				digest.update(ocspResp.getEncoded());
 			} else {

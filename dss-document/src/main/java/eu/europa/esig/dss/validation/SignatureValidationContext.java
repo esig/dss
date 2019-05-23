@@ -49,15 +49,15 @@ import eu.europa.esig.dss.x509.CertificateSource;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
-import eu.europa.esig.dss.x509.RevocationSource;
-import eu.europa.esig.dss.x509.RevocationSourceAlternateUrlsSupport;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.Token;
 import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
-import eu.europa.esig.dss.x509.crl.CRLSource;
-import eu.europa.esig.dss.x509.crl.CRLToken;
-import eu.europa.esig.dss.x509.ocsp.OCSPSource;
-import eu.europa.esig.dss.x509.ocsp.OCSPToken;
+import eu.europa.esig.dss.x509.revocation.RevocationSource;
+import eu.europa.esig.dss.x509.revocation.RevocationSourceAlternateUrlsSupport;
+import eu.europa.esig.dss.x509.revocation.crl.CRLSource;
+import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPSource;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
 
 /**
  * During the validation of a signature, the software retrieves different X509 artifacts like Certificate, CRL and OCSP
@@ -202,9 +202,6 @@ public class SignatureValidationContext implements ValidationContext {
 		Token issuerCertificateToken = token;
 		do {
 			chain.add(issuerCertificateToken);
-			if (isTrusted(issuerCertificateToken)) {
-				break;
-			}
 
 			issuerCertificateToken = validationCertificatePool.getIssuer(issuerCertificateToken);
 
@@ -492,7 +489,7 @@ public class SignatureValidationContext implements ValidationContext {
 
 		if (revocations.isEmpty() || isRevocationDataRefreshNeeded(certToken, revocations)) {
 
-			if (checkRevocationForUntrustedChains || isTrustedChain(certChain)) {
+			if (checkRevocationForUntrustedChains || isInTrustedChain(certChain)) {
 
 				// Online resources (OCSP and CRL if OCSP doesn't reply)
 				OCSPAndCRLCertificateVerifier onlineVerifier = null;
@@ -520,9 +517,13 @@ public class SignatureValidationContext implements ValidationContext {
 		return revocations;
 	}
 
-	private boolean isTrustedChain(List<Token> certChain) {
-		Token lastToken = certChain.get(certChain.size() - 1);
-		return isTrusted(lastToken);
+	private boolean isInTrustedChain(List<Token> certChain) {
+		for (Token token : certChain) {
+			if (isTrusted(token)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -556,8 +557,14 @@ public class SignatureValidationContext implements ValidationContext {
 
 	@Override
 	public boolean isAllRequiredRevocationDataPresent() {
-		for (CertificateToken certificateToken : processedCertificates) {
-			if (!isRevocationDataNotRequired(certificateToken)) {
+		CertificateReorderer order = new CertificateReorderer(processedCertificates);
+		Map<CertificateToken, List<CertificateToken>> orderedCertificateChains = order.getOrderedCertificateChains();
+
+		for (List<CertificateToken> orderedCertChain : orderedCertificateChains.values()) {
+			for (CertificateToken certificateToken : orderedCertChain) {
+				if (isRevocationDataNotRequired(certificateToken)) {
+					break;
+				}
 				boolean found = false;
 				for (RevocationToken revocationToken : processedRevocations) {
 					if (Utils.areStringsEqual(certificateToken.getDSSIdAsString(), revocationToken.getRelatedCertificateID())) {

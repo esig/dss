@@ -27,13 +27,17 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.CertificateID;
 import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.cert.ocsp.SingleResp;
+import org.bouncycastle.operator.DigestCalculator;
 import org.junit.Test;
 
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 public class DSSRevocationUtilsTest {
@@ -73,6 +77,46 @@ public class DSSRevocationUtilsTest {
 	@Test(expected = IOException.class)
 	public void testWrongOCSP() throws IOException {
 		DSSRevocationUtils.loadOCSPBase64Encoded("MIIHOgoBAK");
+	}
+	
+	@Test
+	public void getCrlRevocationTokenKeys() {
+		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
+		List<String> revocationKeys = DSSRevocationUtils.getCRLRevocationTokenKeys(certificate);
+		assertNotNull(revocationKeys);
+		assertFalse(CollectionUtils.isEmpty(revocationKeys));
+		assertEquals(1, Utils.collectionSize(revocationKeys));
+	}
+	
+	@Test
+	public void getOcspRevocationTokenKeys() {
+		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
+		List<String> revocationKeys = DSSRevocationUtils.getOcspRevocationTokenKeys(certificate);
+		assertNotNull(revocationKeys);
+		assertFalse(CollectionUtils.isEmpty(revocationKeys));
+		assertEquals(1, Utils.collectionSize(revocationKeys));
+	}
+	
+	@Test
+	public void getEmptyCrlRevocationTokenKeys() {
+		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/good-user.crt"));
+		List<String> revocationKeys = DSSRevocationUtils.getCRLRevocationTokenKeys(certificate);
+		assertNotNull(revocationKeys);
+		assertTrue(CollectionUtils.isEmpty(revocationKeys));
+	}
+	
+	@Test
+	public void getEmptyOcspRevocationTokenKeys() {
+		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/sk_ca.cer"));
+		List<String> revocationKeys = DSSRevocationUtils.getOcspRevocationTokenKeys(certificate);
+		assertNotNull(revocationKeys);
+		assertTrue(CollectionUtils.isEmpty(revocationKeys));
+	}
+
+	@Test
+	public void getSHA1DigestCalculator() {
+		DigestCalculator digestCalculator = DSSRevocationUtils.getSHA1DigestCalculator();
+		assertNotNull(digestCalculator);
 	}
 
 }

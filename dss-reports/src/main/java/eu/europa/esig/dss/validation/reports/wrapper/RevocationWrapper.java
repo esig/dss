@@ -117,5 +117,9 @@ public class RevocationWrapper extends AbstractTokenProxy {
 	public byte[] getBinaries() {
 		return revocation.getBase64Encoded();
 	}
+	
+	public boolean isRevoked() {
+		return !isStatus() && getRevocationDate() != null;
+	}
 
 }

@@ -22,7 +22,9 @@ package eu.europa.esig.dss;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.DEROctetString;
@@ -36,7 +38,6 @@ import org.bouncycastle.cert.ocsp.CertificateID;
 import org.bouncycastle.cert.ocsp.OCSPException;
 import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.cert.ocsp.SingleResp;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.DigestCalculator;
 import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.OperatorCreationException;
@@ -44,6 +45,8 @@ import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
 
 /**
  * Utility class used to manipulate revocation data (OCSP, CRL)
@@ -55,7 +58,6 @@ public final class DSSRevocationUtils {
 
 	static {
 		jcaDigestCalculatorProviderBuilder = new JcaDigestCalculatorProviderBuilder();
-		jcaDigestCalculatorProviderBuilder.setProvider(BouncyCastleProvider.PROVIDER_NAME);
 	}
 
 	private DSSRevocationUtils() {
@@ -191,6 +193,57 @@ public final class DSSRevocationUtils {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
+	}
+	
+	/**
+	 * Creates the identifier for a certain entry within jdbc.
+	 *
+	 * @param certificateToken
+	 *            {@link CertificateToken}
+	 * @param issuerCertificateToken
+	 *            {@link CertificateToken} of the issuer of the certificateToken
+	 * @return the identifier for jdbc
+	 */
+	public static String getJdbcKey(final CertificateToken certificateToken, final CertificateToken issuerCertificateToken) {
+		final StringBuilder buf = new StringBuilder(certificateToken.getEntityKey());
+		buf.append(":").append(issuerCertificateToken.getEntityKey());
+		return buf.toString();
+	}
+	
+	/**
+	 * Initialize a list revocation token keys {@link String} for {@link CRLToken} from the given {@link CertificateToken}
+	 * @param certificateToken {@link CertificateToken}
+	 * @return list of {@link String} revocation keys
+	 */
+	public static List<String> getCRLRevocationTokenKeys(final CertificateToken certificateToken) {
+		final List<String> crlUrls = DSSASN1Utils.getCrlUrls(certificateToken);
+		List<String> revocationKeys = new ArrayList<String>();
+		for (String crlUrl : crlUrls) {
+			revocationKeys.add(getCRLRevocationTokenKey(crlUrl));
+		}
+		return revocationKeys;
+	}
+	
+	public static String getCRLRevocationTokenKey(final String crlUrl) {
+		return DSSUtils.getSHA1Digest(crlUrl);
+	}
+
+	/**
+	 * Initialize a list revocation token keys {@link String} for {@link OCSPToken} from the given {@link CertificateToken}
+	 * @param certificateToken {@link CertificateToken}
+	 * @return list of {@link String} revocation keys
+	 */
+	public static List<String> getOcspRevocationTokenKeys(final CertificateToken certificateToken) {
+		final List<String> ocspUrls = DSSASN1Utils.getOCSPAccessLocations(certificateToken);
+		List<String> revocationKeys = new ArrayList<String>();
+		for (String ocspUrl : ocspUrls) {
+			revocationKeys.add(getOcspRevocationKey(certificateToken, ocspUrl));
+		}
+		return revocationKeys;
+	}
+	
+	public static String getOcspRevocationKey(final CertificateToken certificateToken, final String ocspUrl) {
+		return DSSUtils.getSHA1Digest(certificateToken.getEntityKey() + ":" + ocspUrl);
 	}
 
 }

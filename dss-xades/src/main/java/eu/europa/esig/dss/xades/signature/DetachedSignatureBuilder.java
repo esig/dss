@@ -79,19 +79,19 @@ class DetachedSignatureBuilder extends XAdESSignatureBuilder {
 	@Override
 	protected DSSReference createReference(DSSDocument document, int referenceIndex) {
 		final DSSReference reference = new DSSReference();
-		reference.setId("r-id-" + referenceIndex);
+		reference.setId(REFERENCE_ID_SUFFIX + deterministicId + "-" + referenceIndex);
 		if (Utils.isStringNotEmpty(document.getName())) {
 			final String fileURI = document.getName();
 			try {
 				// MUST comply RFC 3896 (see DSS-1475 for details)
 				reference.setUri(URLEncoder.encode(fileURI, "UTF-8").replace("+", "%20"));
 			} catch (Exception e) {
-				LOG.warn("Unable to encode uri '" + fileURI + "' : " + e.getMessage());
+				LOG.warn("Unable to encode uri '{}' : {}", fileURI, e.getMessage());
 				reference.setUri(fileURI);
 			}
 		}
 		reference.setContents(document);
-		DigestAlgorithm digestAlgorithm = params.getReferenceDigestAlgorithm() != null ? params.getReferenceDigestAlgorithm() : params.getDigestAlgorithm();
+		DigestAlgorithm digestAlgorithm = getReferenceDigestAlgorithmOrDefault(params);
 		reference.setDigestMethodAlgorithm(digestAlgorithm);
 		return reference;
 	}

@@ -31,6 +31,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.RemoteKeyEntry;
@@ -62,5 +63,15 @@ public interface RestSignatureTokenConnection extends RemoteSignatureTokenConnec
 	@Path("sign/{alias}/{digest-algo}/{mask}")
 	SignatureValue sign(ToBeSigned toBeSigned, @PathParam("digest-algo") DigestAlgorithm digestAlgorithm, @PathParam("mask") MaskGenerationFunction mgf,
 			@PathParam("alias") String alias) throws DSSException;
+
+	@Override
+	@POST
+	@Path("sign-digest/{alias}")
+	SignatureValue signDigest(Digest digest, @PathParam("alias") String alias) throws DSSException;
+
+	@Override
+	@POST
+	@Path("sign-digest/{alias}/{mask}")
+	SignatureValue signDigest(Digest digest, @PathParam("mask") MaskGenerationFunction mgf, @PathParam("alias") String alias) throws DSSException;
 
 }

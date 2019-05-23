@@ -44,6 +44,7 @@
                     <CountryCode>FR</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>083B05E17DDB9E83B08F3E1D0EDD4CD01915A8213AE76689205FC36C473E417B</ServiceDigitalIdentifier>
                             <ServiceName>TS-4.2.2 Name</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -53,6 +54,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
+                            <ServiceDigitalIdentifier>083B05E17DDB9E83B08F3E1D0EDD4CD01915A8213AE76689205FC36C473E417B</ServiceDigitalIdentifier>
                             <ServiceName>TS-4.2.3 Name</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -126,6 +128,7 @@
                     <CountryCode>FR</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>083B05E17DDB9E83B08F3E1D0EDD4CD01915A8213AE76689205FC36C473E417B</ServiceDigitalIdentifier>
                             <ServiceName>TS-4.2.2 Name</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -138,6 +141,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
+                            <ServiceDigitalIdentifier>083B05E17DDB9E83B08F3E1D0EDD4CD01915A8213AE76689205FC36C473E417B</ServiceDigitalIdentifier>
                             <ServiceName>TS-4.2.3 Name</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>

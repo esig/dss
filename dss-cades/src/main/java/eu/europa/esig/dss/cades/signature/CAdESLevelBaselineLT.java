@@ -46,8 +46,8 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.crl.CRLToken;
-import eu.europa.esig.dss.x509.ocsp.OCSPToken;
+import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 /**
@@ -72,7 +72,7 @@ public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
 			throws DSSException {
 
 		// add a LT level or replace an existing LT level
-		CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
+		CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation, certificateVerifier.createValidationPool());
 		cadesSignature.setDetachedContents(parameters.getDetachedContents());
 		if (!cadesSignature.isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_T)) {
 			signerInformation = cadesProfileT.extendCMSSignature(cmsSignedData, signerInformation, parameters);
@@ -83,7 +83,7 @@ public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
 
 	@Override
 	protected CMSSignedData postExtendCMSSignedData(CMSSignedData cmsSignedData, SignerInformation signerInformation, CAdESSignatureParameters parameters) {
-		CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
+		CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation, certificateVerifier.createValidationPool());
 		cadesSignature.setDetachedContents(parameters.getDetachedContents());
 		final ValidationContext validationContext = cadesSignature.getSignatureValidationContext(certificateVerifier);
 

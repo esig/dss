@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.tsl.KeyUsageBit;
 
 public class CertificateTokenTest {
 

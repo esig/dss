@@ -41,6 +41,7 @@ import eu.europa.esig.dss.validation.process.vpfswatsp.checks.pcv.checks.Validat
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.ValidationTimeSliding;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TokenProxy;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
@@ -133,10 +134,13 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 				intervalNotAfter = certificate.getNotAfter();
 			}
 
-			if (SubContext.CA_CERTIFICATE.equals(subContext) && certificate.isRevoked()) {
-				Date caRevocationDate = certificate.getLatestRevocationData().getRevocationDate();
-				if (caRevocationDate != null && intervalNotAfter.after(caRevocationDate)) {
-					intervalNotAfter = caRevocationDate;
+			if (SubContext.CA_CERTIFICATE.equals(subContext)) {
+				RevocationWrapper latestRevocation = certificate.getLatestRevocationData();
+				if (latestRevocation != null && latestRevocation.isRevoked()) {
+					Date caRevocationDate = latestRevocation.getRevocationDate();
+					if (caRevocationDate != null && intervalNotAfter.after(caRevocationDate)) {
+						intervalNotAfter = caRevocationDate;
+					}
 				}
 
 				// TODO REVOKED_CA_NO_POE

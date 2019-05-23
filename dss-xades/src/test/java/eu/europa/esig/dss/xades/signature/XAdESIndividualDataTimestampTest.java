@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.transforms.Transforms;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.Test;
 
@@ -50,6 +51,7 @@ import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 import eu.europa.esig.dss.x509.TimestampType;
+import eu.europa.esig.dss.xades.DSSTransform;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
@@ -63,10 +65,15 @@ public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 
+		DSSTransform canonicalization = new DSSTransform();
+		canonicalization.setAlgorithm(Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS);
+
 		List<DSSDocument> docs = new ArrayList<DSSDocument>();
-		FileDocument fileToBeTimestamped = new FileDocument(FILE1);
+		DSSDocument fileToBeTimestamped = new FileDocument(FILE1);
 		docs.add(fileToBeTimestamped);
-		docs.add(new FileDocument(FILE2));
+
+		DSSDocument notTimestampedFile = new FileDocument(FILE2);
+		docs.add(notTimestampedFile);
 
 		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
@@ -82,7 +89,7 @@ public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 		TimeStampToken bcTst = getAlternateGoodTsa().getTimeStampResponse(DigestAlgorithm.SHA256, digest);
 
 		TimestampToken tst = new TimestampToken(bcTst, TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
-		tst.setTimestampIncludes(Arrays.asList(new TimestampInclude("r-id-1", true))); // TODO
+		tst.setTimestampIncludes(Arrays.asList(new TimestampInclude("r-" + signatureParameters.getDeterministicId() + "-1", true))); // TODO
 		tst.setCanonicalizationMethod(usedCanonicalizationAlgo);
 
 		TimestampToken contentTimestamp = service.getContentTimestamp(docs, signatureParameters);

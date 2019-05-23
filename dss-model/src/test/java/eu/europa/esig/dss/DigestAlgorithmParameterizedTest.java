@@ -23,7 +23,6 @@ package eu.europa.esig.dss;
 import static org.junit.Assert.assertNotNull;
 
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -50,9 +49,9 @@ public class DigestAlgorithmParameterizedTest {
 	}
 
 	@Test
-	public void testGetJavaName() throws NoSuchAlgorithmException {
-		// DONT change digestAlgo.getJavaName() !
-		MessageDigest md = MessageDigest.getInstance(digestAlgo.getJavaName());
+	public void getMessageDigest() {
+		MessageDigest md = digestAlgo.getMessageDigest();
+		assertNotNull(md);
 		assertNotNull(md.digest(new byte[] { 1, 2, 3 }));
 	}
 

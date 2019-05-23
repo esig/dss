@@ -249,6 +249,19 @@ public class DiagnosticData {
 		return signature.getPolicyId();
 	}
 
+
+	/**
+	 * The description of the policy.
+	 *
+	 * @param signatureId
+	 *            The identifier of the signature.
+	 * @return the policy description
+	 */
+	public String getPolicyDescription(final String signatureId) {
+		SignatureWrapper signature = getSignatureByIdNullSafe(signatureId);
+		return signature.getPolicyDescription();
+	}
+
 	/**
 	 * This method returns the list of identifier of the timestamps related to the given signature.
 	 *

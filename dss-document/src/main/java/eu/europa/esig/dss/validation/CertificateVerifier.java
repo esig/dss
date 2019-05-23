@@ -23,10 +23,10 @@ package eu.europa.esig.dss.validation;
 import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSource;
-import eu.europa.esig.dss.x509.crl.CRLSource;
-import eu.europa.esig.dss.x509.crl.ListCRLSource;
-import eu.europa.esig.dss.x509.ocsp.ListOCSPSource;
-import eu.europa.esig.dss.x509.ocsp.OCSPSource;
+import eu.europa.esig.dss.x509.revocation.crl.CRLSource;
+import eu.europa.esig.dss.x509.revocation.crl.ListCRLSource;
+import eu.europa.esig.dss.x509.revocation.ocsp.ListOCSPSource;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPSource;
 
 /**
  * Provides information on the sources to be used in the validation process in

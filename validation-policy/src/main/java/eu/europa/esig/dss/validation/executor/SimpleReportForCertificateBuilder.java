@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlOID;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedService;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProvider;
@@ -102,7 +103,7 @@ public class SimpleReportForCertificateBuilder {
 		item.setRevocation(revocation);
 
 		if (certificate.isTrusted()) {
-			List<XmlTrustedServiceProvider> trustServiceProviders = certificate.getTrustServiceProviders();
+			List<XmlTrustedServiceProvider> trustServiceProviders = filterByCertificateId(certificate.getTrustServiceProviders(), certificate.getId());
 			List<XmlTrustAnchor> trustAnchors = new ArrayList<XmlTrustAnchor>();
 			for (XmlTrustedServiceProvider xmlTrustedServiceProvider : trustServiceProviders) {
 				List<XmlTrustedService> trustedServices = xmlTrustedServiceProvider.getTrustedServices();
@@ -121,9 +122,29 @@ public class SimpleReportForCertificateBuilder {
 			item.setTrustAnchors(null);
 		}
 
-		item.setIndication(detailedReport.getCertificateXCVIndication(certificate.getId()));
+		XmlConclusion conclusion = detailedReport.getCertificateXCVConclusion(certificate.getId());
+		item.setIndication(conclusion.getIndication());
+		item.setSubIndication(conclusion.getSubIndication());
 
 		return item;
+	}
+
+	private List<XmlTrustedServiceProvider> filterByCertificateId(List<XmlTrustedServiceProvider> trustServiceProviders, String certificateId) {
+		List<XmlTrustedServiceProvider> result = new ArrayList<XmlTrustedServiceProvider>();
+		for (XmlTrustedServiceProvider xmlTrustedServiceProvider : trustServiceProviders) {
+			List<XmlTrustedService> trustedServices = xmlTrustedServiceProvider.getTrustedServices();
+			boolean foundCertId = false;
+			for (XmlTrustedService xmlTrustedService : trustedServices) {
+				if (Utils.areStringsEqual(certificateId, xmlTrustedService.getServiceDigitalIdentifier())) {
+					foundCertId = true;
+					break;
+				}
+			}
+			if (foundCertId) {
+				result.add(xmlTrustedServiceProvider);
+			}
+		}
+		return result;
 	}
 
 	private List<String> getReadable(List<XmlOID> oids) {

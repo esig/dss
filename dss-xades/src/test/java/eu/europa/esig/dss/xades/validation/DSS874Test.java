@@ -64,6 +64,10 @@ public class DSS874Test {
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 		assertEquals(1, signatures.size());
+		
+		String signatureId = diagnosticData.getFirstSignatureId();
+		List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(signatureId);
+		assertEquals(1, retrievedOriginalDocuments.size());
 
 		SignatureWrapper signatureWrapper = signatures.get(0);
 		assertTrue(signatureWrapper.isPolicyStatus());

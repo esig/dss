@@ -21,19 +21,18 @@
 package eu.europa.esig.dss.pades.signature.visible;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.junit.Assert;
 import org.junit.Before;
@@ -47,10 +46,14 @@ import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.pades.DSSFileFont;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PdfScreenshotUtils;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
+import eu.europa.esig.dss.pdf.PdfObjFactory;
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDefaultObjectFactory;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 
@@ -62,7 +65,7 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 	/**
 	 * The degree of similarity between generated and original image
 	 */
-	private static final float SIMILARITY_LIMIT = 0.99f;
+	private static final float SIMILARITY_LIMIT = 0.989f;
 	/**
 	 * Comparison resolution: step in pixels in horizontal and vertical directions.
 	 */
@@ -81,6 +84,7 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 	@Before
 	public void init() throws Exception {
 
+		PdfObjFactory.setInstance(new PdfBoxDefaultObjectFactory());
 		signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
@@ -156,8 +160,8 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 		 * So we need the similarity of the sun.pdf and sun90.pdf.
 		 * After the signing the visual signature does not have to change the similarity.
 		 */
-		float sunSimilarity = checkImageSimilarity(pdfToBufferedImage(signablePdfs.get("minoltaScan").openStream()),
-				pdfToBufferedImage(signablePdfs.get("minoltaScan90").openStream()), CHECK_RESOLUTION);
+		float sunSimilarity = PdfScreenshotUtils.checkImageSimilarity(pdfToBufferedImage(signablePdfs.get("minoltaScan").openStream()),
+				pdfToBufferedImage(signablePdfs.get("minoltaScan90").openStream()), CHECK_RESOLUTION) - 0.015f;
 		checkImageSimilarityPdf("minoltaScan90", "check_sun.pdf", sunSimilarity);
 	}
 
@@ -191,7 +195,9 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 						File checkPdfFile = new File(
 								"target/pdf/check_" + rotation.name() + "_" + pdf + "_" + horizontal.name() + "_" + vertical.name() + ".pdf");
 						checkPdfFile.getParentFile().mkdirs();
-						IOUtils.copy(document.openStream(), new FileOutputStream(checkPdfFile));
+						try (InputStream is = document.openStream(); OutputStream os = new FileOutputStream(checkPdfFile)) {
+							IOUtils.copy(is, os);
+						}
 					}
 				}
 			}
@@ -275,6 +281,7 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 		checkPdfFile = new File("target/pdf/check_normal_automatic.pdf");
 		checkPdfFile.getParentFile().mkdirs();
 		IOUtils.copy(document.openStream(), new FileOutputStream(checkPdfFile));
+		inputPDF.close();
 	}
 
 	private DSSDocument sign(DSSDocument document) {
@@ -284,32 +291,17 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 	}
 
 	private void checkRotation(InputStream inputStream, int rotate) throws IOException {
-		PDDocument document = PDDocument.load(inputStream);
-
-		Assert.assertEquals(rotate, document.getPages().get(0).getRotation());
+		try (PDDocument document = PDDocument.load(inputStream)) {
+			Assert.assertEquals(rotate, document.getPages().get(0).getRotation());
+		}
 	}
 
 	private void checkImageSimilarityPdf(String samplePdf, String checkPdf, float similarity) throws IOException {
 		DSSDocument document = sign(signablePdfs.get(samplePdf));
-		PDDocument sampleDocument = PDDocument.load(document.openStream());
-		PDDocument checkDocument = PDDocument.load(getClass().getResourceAsStream("/visualSignature/check/" + checkPdf));
-
-		PDPageTree samplePageTree = sampleDocument.getPages();
-		PDPageTree checkPageTree = checkDocument.getPages();
-
-		Assert.assertEquals(checkPageTree.getCount(), samplePageTree.getCount());
-
-		PDFRenderer sampleRenderer = new PDFRenderer(sampleDocument);
-		PDFRenderer checkRenderer = new PDFRenderer(checkDocument);
-
-		for (int pageNumber = 0; pageNumber < checkPageTree.getCount(); pageNumber++) {
-			BufferedImage sampleImage = sampleRenderer.renderImageWithDPI(pageNumber, DPI);
-			BufferedImage checkImage = checkRenderer.renderImageWithDPI(pageNumber, DPI);
-
-			float checkSimilarity = checkImageSimilarity(sampleImage, checkImage, CHECK_RESOLUTION);
-			float calculatedSimilarity = ((int) (similarity * 100f)) / 100f; // calulate rotated position has about 1
-																				// pixel position difference
-			Assert.assertTrue(checkSimilarity >= calculatedSimilarity);
+		try (InputStream sampleDocIS = document.openStream(); 
+				InputStream docToCheckIS = getClass().getResourceAsStream("/visualSignature/check/" + checkPdf); 
+				PDDocument sampleDocument = PDDocument.load(sampleDocIS); PDDocument checkDocument = PDDocument.load(docToCheckIS);) {
+			PdfScreenshotUtils.checkPdfSimilarity(sampleDocument, checkDocument, similarity);
 		}
 	}
 
@@ -317,53 +309,17 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 		checkImageSimilarityPdf(samplePdf, checkPdf, SIMILARITY_LIMIT);
 	}
 
-	private float checkImageSimilarity(BufferedImage sampleImage, BufferedImage checkImage, int resolution) {
-		try {
-			int width = sampleImage.getWidth();
-			int height = sampleImage.getHeight();
-			int checkWidth = checkImage.getWidth();
-			int checkHeight = checkImage.getHeight();
-			if (width == 0 || height == 0 || checkWidth == 0 || checkHeight == 0) {
-				Assert.fail(String.format("invalid image size: sample(%dx%d) vs check(%dx%d)", width, height, checkWidth, checkHeight));
-			}
-			if (width != checkWidth || height != checkHeight) {
-				Assert.fail(String.format("images size not equal: sample(%dx%d) vs check(%dx%d)", width, height, checkWidth, checkHeight));
-			}
-
-			int matchingPixels = 0;
-			int checkedPixels = 0;
-			for (int y = 0; y < height; y += resolution) {
-				for (int x = 0; x < width; x += resolution) {
-					int sampleRGB = sampleImage.getRGB(x, y);
-					int checkRGB = checkImage.getRGB(x, y);
-
-					if (sampleRGB == checkRGB) {
-						matchingPixels++;
-					} else {
-						checkImage.setRGB(x, y, Color.RED.getRGB());
-					}
-
-					checkedPixels++;
-				}
-			}
-
-			return (float) matchingPixels / checkedPixels;
-		} catch (Exception e) {
-			throw new IllegalStateException(e);
-		}
-	}
-
 	private SignatureImageParameters createSignatureImageParameters() throws Exception {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(signitureImage);
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature\nsecond line\nlong line is very long line with long text example this");
-		textParameters.setSignerNamePosition(SignatureImageTextParameters.SignerPosition.LEFT);
+		textParameters.setSignerNamePosition(SignatureImageTextParameters.SignerPosition.RIGHT);
 		textParameters.setBackgroundColor(TRANSPARENT);
 		textParameters.setTextColor(Color.MAGENTA);
-		textParameters.setFont(new Font("Arial", Font.BOLD, 8));
+		textParameters.setFont(new DSSFileFont(getClass().getResourceAsStream("/fonts/OpenSansExtraBold.ttf")));
+		textParameters.setSize(8);
 		imageParameters.setTextParameters(textParameters);
-
 		imageParameters.setBackgroundColor(TRANSPARENT);
 		imageParameters.setxAxis(10);
 		imageParameters.setyAxis(20);
@@ -376,9 +332,10 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 	}
 
 	private BufferedImage pdfToBufferedImage(InputStream inputStream) throws IOException {
-		PDDocument document = PDDocument.load(inputStream);
-		PDFRenderer renderer = new PDFRenderer(document);
-		return renderer.renderImageWithDPI(0, DPI);
+		try (PDDocument document = PDDocument.load(inputStream)) {
+			PDFRenderer renderer = new PDFRenderer(document);
+			return renderer.renderImageWithDPI(0, DPI);
+		}
 	}
 
 	@Override

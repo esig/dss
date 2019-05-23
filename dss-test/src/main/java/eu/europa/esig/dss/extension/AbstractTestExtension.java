@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.extension;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -31,6 +32,7 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
@@ -45,13 +47,15 @@ import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 public abstract class AbstractTestExtension<SP extends AbstractSignatureParameters> extends PKIFactoryAccess {
 
-	protected abstract DSSDocument getSignedDocument() throws Exception;
+	protected abstract DSSDocument getOriginalDocument();
+
+	protected abstract DSSDocument getSignedDocument(DSSDocument originalDoc);
 
 	protected abstract SignatureLevel getOriginalSignatureLevel();
 
 	protected abstract SignatureLevel getFinalSignatureLevel();
 
-	protected abstract DocumentSignatureService<SP> getSignatureServiceToExtend() throws Exception;
+	protected abstract DocumentSignatureService<SP> getSignatureServiceToExtend();
 
 	protected abstract TSPSource getUsedTSPSourceAtSignatureTime();
 
@@ -59,7 +63,9 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 
 	@Test
 	public void test() throws Exception {
-		DSSDocument signedDocument = getSignedDocument();
+		DSSDocument originalDocument = getOriginalDocument();
+
+		DSSDocument signedDocument = getSignedDocument(originalDocument);
 
 		String signedFilePath = "target/" + signedDocument.getName();
 		signedDocument.save(signedFilePath);
@@ -86,7 +92,7 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 
 		assertNotNull(extendedDocument);
 		assertNotNull(extendedDocument.getMimeType());
-		assertNotNull(Utils.toByteArray(extendedDocument.openStream()));
+		assertNotNull(DSSUtils.toByteArray(extendedDocument));
 		assertNotNull(extendedDocument.getName());
 
 		validator = SignedDocumentValidator.fromDocument(extendedDocument);
@@ -103,11 +109,20 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 		checkBLevelValid(diagnosticData);
 		checkTLevelAndValid(diagnosticData);
 
-		File fileToBeDeleted = new File(signedFilePath);
+		File fileToBeDeleted = new File(originalDocument.getAbsolutePath());
+		assertTrue(fileToBeDeleted.exists());
+		assertTrue("Cannot delete original document (IO error)", fileToBeDeleted.delete());
+		assertFalse(fileToBeDeleted.exists());
+
+		fileToBeDeleted = new File(signedFilePath);
+		assertTrue(fileToBeDeleted.exists());
 		assertTrue("Cannot delete signed document (IO error)", fileToBeDeleted.delete());
+		assertFalse(fileToBeDeleted.exists());
 
 		fileToBeDeleted = new File(extendedFilePath);
+		assertTrue(fileToBeDeleted.exists());
 		assertTrue("Cannot delete extended document (IO error)", fileToBeDeleted.delete());
+		assertFalse(fileToBeDeleted.exists());
 	}
 
 	protected void compare(DSSDocument signedDocument, DSSDocument extendedDocument) {

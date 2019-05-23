@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox.visible;
 
+import java.io.IOException;
+
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
 
@@ -28,6 +30,6 @@ import eu.europa.esig.dss.pdf.visible.SignatureDrawer;
 
 public interface PdfBoxSignatureDrawer extends SignatureDrawer {
 
-	void init(SignatureImageParameters parameters, PDDocument document, SignatureOptions signatureOptions);
+	void init(SignatureImageParameters parameters, PDDocument document, SignatureOptions signatureOptions) throws IOException;
 
 }

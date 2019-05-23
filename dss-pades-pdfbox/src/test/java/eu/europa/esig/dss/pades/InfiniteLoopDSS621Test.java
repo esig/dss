@@ -29,7 +29,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,7 +55,6 @@ import org.bouncycastle.asn1.pkcs.Attribute;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.x509.DigestInfo;
 import org.bouncycastle.cert.X509CertificateHolder;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -83,10 +81,6 @@ public class InfiniteLoopDSS621Test {
 	private static final Logger logger = LoggerFactory.getLogger(InfiniteLoopDSS621Test.class);
 
 	private static final String FILE_PATH = "/validation/pades-5-signatures-and-1-document-timestamp.pdf";
-
-	static {
-		Security.addProvider(new BouncyCastleProvider());
-	}
 
 	@Test(timeout = 5000)
 	public void testReadTimestamp1() throws Exception {

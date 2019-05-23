@@ -47,6 +47,11 @@ public class DSS817Test {
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		List<String> commitmentTypeIdentifiers = signatureWrapper.getCommitmentTypeIdentifiers();
+		
+		String signatureId = diagnosticData.getFirstSignatureId();
+		List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(signatureId);
+		assertEquals(1, retrievedOriginalDocuments.size());
+		
 		assertEquals(1, commitmentTypeIdentifiers.size());
 		assertEquals(CommitmentType.ProofOfApproval.getUri(), commitmentTypeIdentifiers.get(0));
 	}

@@ -313,6 +313,18 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		}
 		return false;
 	}
+	
+	/**
+	 * Returns XMLPolicy description if it is not empty
+	 * @return {@link String}
+	 */
+	public String getPolicyDescription() {
+		XmlPolicy policy = signature.getPolicy();
+		if (policy != null && Utils.isStringNotEmpty(policy.getDescription())) {
+			return policy.getDescription();
+		}
+		return Utils.EMPTY_STRING;
+	}
 
 	public String getPolicyNotice() {
 		XmlPolicy policy = signature.getPolicy();

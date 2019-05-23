@@ -30,17 +30,18 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.client.http.Protocol;
 import eu.europa.esig.dss.client.http.commons.CommonsDataLoader;
-import eu.europa.esig.dss.client.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.crl.CRLValidity;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.RevocationSourceAlternateUrlsSupport;
-import eu.europa.esig.dss.x509.crl.CRLSource;
-import eu.europa.esig.dss.x509.crl.CRLToken;
+import eu.europa.esig.dss.x509.revocation.OnlineRevocationSource;
+import eu.europa.esig.dss.x509.revocation.RevocationSourceAlternateUrlsSupport;
+import eu.europa.esig.dss.x509.revocation.crl.CRLSource;
+import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
 
 /**
  * Online CRL repository. This CRL repository implementation will download the
@@ -51,7 +52,7 @@ import eu.europa.esig.dss.x509.crl.CRLToken;
  * apache-ldap-api is provided.
  *
  */
-public class OnlineCRLSource implements CRLSource, RevocationSourceAlternateUrlsSupport<CRLToken> {
+public class OnlineCRLSource implements CRLSource, RevocationSourceAlternateUrlsSupport<CRLToken>, OnlineRevocationSource<CRLToken> {
 	private static final long serialVersionUID = 6912729291417315212L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(OnlineCRLSource.class);
@@ -101,26 +102,19 @@ public class OnlineCRLSource implements CRLSource, RevocationSourceAlternateUrls
 		this.preferredProtocol = preferredProtocol;
 	}
 
-	/**
-	 * Set the DataLoader to use for querying the CRL server
-	 *
-	 * @param dataLoader
-	 *            the component that allows to retrieve the data using any
-	 *            protocol: HTTP, HTTPS, FTP, LDAP.
-	 */
+	@Override
 	public void setDataLoader(final DataLoader dataLoader) {
 		this.dataLoader = dataLoader;
 	}
 
 	@Override
-	public CRLToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken)
-			throws DSSException {
+	public CRLToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
 		return getRevocationToken(certificateToken, issuerCertificateToken, Collections.<String>emptyList());
 	}
 
 	@Override
 	public CRLToken getRevocationToken(final CertificateToken certificateToken, final CertificateToken issuerToken,
-			List<String> alternativeUrls) throws DSSException {
+			List<String> alternativeUrls) {
 		if (certificateToken == null) {
 			return null;
 		}
@@ -145,19 +139,12 @@ public class OnlineCRLSource implements CRLSource, RevocationSourceAlternateUrls
 		if (dataAndUrl == null) {
 			return null;
 		}
-
 		try (ByteArrayInputStream bais = new ByteArrayInputStream(dataAndUrl.data)) {
 			final CRLValidity crlValidity = CRLUtils.isValidCRL(bais, issuerToken);
 			final CRLToken crlToken = new CRLToken(certificateToken, crlValidity);
 			crlToken.setSourceURL(dataAndUrl.urlString);
 			crlToken.setAvailable(true);
-
-			if (dataLoader instanceof FileCacheDataLoader) {
-				final String fileName = ((FileCacheDataLoader) dataLoader).getCachFileName(crlToken.getSourceURL(),
-						null);
-				((FileCacheDataLoader) dataLoader).nextUpdate(fileName, crlToken.getNextUpdate());
-			}
-
+			crlToken.setRevocationTokenKey(DSSRevocationUtils.getCRLRevocationTokenKey(dataAndUrl.urlString));
 			return crlToken;
 		} catch (Exception e) {
 			LOG.warn("Unable to parse/validate the CRL (url:" + dataAndUrl.urlString + ") : " + e.getMessage(), e);

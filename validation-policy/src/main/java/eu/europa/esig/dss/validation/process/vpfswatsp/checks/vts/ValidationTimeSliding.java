@@ -178,7 +178,7 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 				 * value of control-time.
 				 */
 				if (latestCompliantRevocation != null) {
-					if (certificate.isRevoked()) {
+					if (latestCompliantRevocation.isRevoked()) {
 						controlTime = latestCompliantRevocation.getRevocationDate();
 					} else if (!isFresh(latestCompliantRevocation, controlTime)) {
 						controlTime = latestCompliantRevocation.getProductionDate();

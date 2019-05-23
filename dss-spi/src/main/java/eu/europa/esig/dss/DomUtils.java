@@ -270,7 +270,7 @@ public final class DomUtils {
 	 *                    XPath query string
 	 * @return an instance of {@code XPathExpression} for the given xpathString @ if
 	 */
-	private static XPathExpression createXPathExpression(final String xpathString) {
+	public static XPathExpression createXPathExpression(final String xpathString) {
 		final XPath xpath = factory.newXPath();
 		xpath.setNamespaceContext(namespacePrefixMapper);
 		try {

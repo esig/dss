@@ -37,7 +37,6 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.Provider;
 import java.security.Security;
@@ -56,7 +55,11 @@ import java.util.TimeZone;
 
 import javax.security.auth.x500.X500Principal;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.asn1.ASN1Encoding;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.DERNull;
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.asn1.x509.DigestInfo;
 import org.bouncycastle.openssl.jcajce.JcaMiscPEMGenerator;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
@@ -72,7 +75,9 @@ public final class DSSUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DSSUtils.class);
 
-	private static final BouncyCastleProvider securityProvider = new BouncyCastleProvider();
+	static {
+		Security.addProvider(DSSSecurityProvider.getSecurityProvider());
+	}
 
 	public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
@@ -82,10 +87,6 @@ public final class DSSUtils {
 	 * The default date pattern: "yyyy-MM-dd"
 	 */
 	public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
-
-	static {
-		Security.addProvider(securityProvider);
-	}
 
 	/**
 	 * This class is an utility class and cannot be instantiated.
@@ -227,7 +228,7 @@ public final class DSSUtils {
 		try {
 			@SuppressWarnings("unchecked")
 			final Collection<X509Certificate> certificatesCollection = (Collection<X509Certificate>) CertificateFactory
-					.getInstance("X.509", BouncyCastleProvider.PROVIDER_NAME).generateCertificates(is);
+					.getInstance("X.509", DSSSecurityProvider.getSecurityProviderName()).generateCertificates(is);
 			if (certificatesCollection != null) {
 				for (X509Certificate cert : certificatesCollection) {
 					certificates.add(new CertificateToken(cert));
@@ -240,7 +241,7 @@ public final class DSSUtils {
 		} catch (DSSException e) {
 		  	throw e;
 		} catch (Exception e) {
-			throw new DSSException("Unable to load certificates. Cause: " + e.getLocalizedMessage(), e);
+			throw new DSSException("Unable to load certificates.", e);
 		}
 	}
 
@@ -348,23 +349,28 @@ public final class DSSUtils {
 	 * @return digested array of bytes
 	 */
 	public static byte[] digest(final DigestAlgorithm digestAlgorithm, final byte[] data) {
-		final MessageDigest messageDigest = getMessageDigest(digestAlgorithm);
+		final MessageDigest messageDigest = digestAlgorithm.getMessageDigest();
 		return messageDigest.digest(data);
 	}
 
 	/**
-	 * Returns a new instance of MessageDigest for a given digest algorithm
+	 * This method wraps the digest value in a DigestInfo (combination of digest
+	 * algorithm and value). This encapsulation is required to operate NONEwithRSA
+	 * signatures.
 	 * 
 	 * @param digestAlgorithm
-	 *            the digest algoritm
-	 * @return a new instance of MessageDigest
+	 *                        the used digest algorithm
+	 * @param digest
+	 *                        the digest value
+	 * @return DER encoded binaries of the related digest info
 	 */
-	public static MessageDigest getMessageDigest(final DigestAlgorithm digestAlgorithm) {
+	public static byte[] encodeRSADigest(final DigestAlgorithm digestAlgorithm, final byte[] digest) {
 		try {
-			final String digestAlgorithmOid = digestAlgorithm.getOid();
-			return MessageDigest.getInstance(digestAlgorithmOid, BouncyCastleProvider.PROVIDER_NAME);
-		} catch (GeneralSecurityException e) {
-			throw new DSSException("Digest algorithm '" + digestAlgorithm.getName() + "' error: " + e.getMessage(), e);
+			AlgorithmIdentifier algId = new AlgorithmIdentifier(new ASN1ObjectIdentifier(digestAlgorithm.getOid()), DERNull.INSTANCE);
+			DigestInfo digestInfo = new DigestInfo(algId, digest);
+			return digestInfo.getEncoded(ASN1Encoding.DER);
+		} catch (IOException e) {
+			throw new DSSException("Unable to encode digest", e);
 		}
 	}
 
@@ -380,7 +386,7 @@ public final class DSSUtils {
 	public static byte[] digest(final DigestAlgorithm digestAlgo, final InputStream inputStream) {
 		try {
 
-			final MessageDigest messageDigest = getMessageDigest(digestAlgo);
+			final MessageDigest messageDigest = digestAlgo.getMessageDigest();
 			final byte[] buffer = new byte[4096];
 			int count = 0;
 			while ((count = inputStream.read(buffer)) > 0) {
@@ -401,7 +407,7 @@ public final class DSSUtils {
 	}
 
 	public static byte[] digest(DigestAlgorithm digestAlgorithm, byte[]... data) {
-		final MessageDigest messageDigest = getMessageDigest(digestAlgorithm);
+		final MessageDigest messageDigest = digestAlgorithm.getMessageDigest();
 		for (final byte[] bytes : data) {
 			messageDigest.update(bytes);
 		}

@@ -34,7 +34,7 @@ import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.x509.ocsp.OfflineOCSPSource;
+import eu.europa.esig.dss.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 /**

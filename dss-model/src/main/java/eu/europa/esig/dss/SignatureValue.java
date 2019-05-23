@@ -22,6 +22,7 @@ package eu.europa.esig.dss;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Base64;
 
 @SuppressWarnings("serial")
 public final class SignatureValue implements Serializable {
@@ -82,6 +83,11 @@ public final class SignatureValue implements Serializable {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "SignatureValue [algorithm=" + algorithm + ", value=" + ((value != null) ? Base64.getEncoder().encodeToString(value) : null) + "]";
 	}
 
 }

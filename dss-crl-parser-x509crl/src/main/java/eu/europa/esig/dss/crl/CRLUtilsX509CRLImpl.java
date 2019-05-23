@@ -25,7 +25,6 @@ import java.math.BigInteger;
 import java.security.KeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.Security;
 import java.security.SignatureException;
 import java.security.cert.CRLException;
 import java.security.cert.CertificateException;
@@ -42,29 +41,12 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.SignatureAlgorithm;
-import eu.europa.esig.dss.tsl.KeyUsageBit;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.KeyUsageBit;
 
 public class CRLUtilsX509CRLImpl extends AbstractCRLUtils implements ICRLUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CRLUtilsX509CRLImpl.class);
-
-	private static final BouncyCastleProvider BC_PROVIDER = new BouncyCastleProvider();
-
-	private static final CertificateFactory CERT_FACTORY;
-
-	static {
-		try {
-			Security.addProvider(BC_PROVIDER);
-			CERT_FACTORY = CertificateFactory.getInstance("X.509", BouncyCastleProvider.PROVIDER_NAME);
-		} catch (CertificateException e) {
-			LOG.error(e.getMessage(), e);
-			throw new DSSException("Platform does not support X509 certificate", e);
-		} catch (NoSuchProviderException e) {
-			LOG.error(e.getMessage(), e);
-			throw new DSSException("Platform does not support BouncyCastle", e);
-		}
-	}
 
 	/**
 	 * This method verifies: the signature of the CRL, the key usage of its signing certificate and the coherence
@@ -94,7 +76,8 @@ public class CRLUtilsX509CRLImpl extends AbstractCRLUtils implements ICRLUtils {
 		}
 
 		final String sigAlgOID = x509CRL.getSigAlgOID();
-		crlValidity.setSignatureAlgorithm(SignatureAlgorithm.forOID(sigAlgOID));
+		final byte[] sigAlgParams = x509CRL.getSigAlgParams();
+		crlValidity.setSignatureAlgorithm(SignatureAlgorithm.forOidAndParams(sigAlgOID, sigAlgParams));
 		crlValidity.setThisUpdate(x509CRL.getThisUpdate());
 		crlValidity.setNextUpdate(x509CRL.getNextUpdate());
 
@@ -153,13 +136,29 @@ public class CRLUtilsX509CRLImpl extends AbstractCRLUtils implements ICRLUtils {
 	 */
 	private X509CRL loadCRL(final InputStream inputStream) {
 		try {
-			X509CRL crl = (X509CRL) CERT_FACTORY.generateCRL(inputStream);
+			X509CRL crl = (X509CRL) getCertificateFactory().generateCRL(inputStream);
 			if (crl == null) {
 				throw new DSSException("Unable to parse the CRL");
 			}
 			return crl;
 		} catch (CRLException e) {
 			throw new DSSException(e);
+		}
+	}
+
+	private CertificateFactory getCertificateFactory() {
+		try {
+			// TODO extract BC
+			CertificateFactory cf = CertificateFactory.getInstance("X.509", BouncyCastleProvider.PROVIDER_NAME);
+			LOG.debug("CertificateFactory instantiated with BouncyCastle");
+			return cf;
+		} catch (CertificateException | NoSuchProviderException e) {
+			LOG.debug("Unable to instantiate with BouncyCastle (not registered ?), trying with default CertificateFactory");
+			try {
+				return CertificateFactory.getInstance("X.509");
+			} catch (CertificateException e1) {
+				throw new DSSException("Unable to create CertificateFactory", e1);
+			}
 		}
 	}
 

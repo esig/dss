@@ -47,12 +47,11 @@ import eu.europa.esig.dss.jaxb.simplecertificatereport.SimpleCertificateReport;
 import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlChainItem;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateQualification;
-import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
+import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
-import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 
-public class CertificateProcessExecutorTest {
+public class CertificateProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void deRevoked() throws Exception {
@@ -65,7 +64,7 @@ public class CertificateProcessExecutorTest {
 		CertificateProcessExecutor executor = new CertificateProcessExecutor();
 		executor.setCertificateId(certificateId);
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
@@ -90,6 +89,7 @@ public class CertificateProcessExecutorTest {
 		assertNotNull(simpleReport.getValidationTime());
 		assertNotNull(simpleReport.getJaxbModel());
 		assertEquals(Indication.INDETERMINATE, simpleReport.getCertificateIndication(certificateId));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NO_POE, simpleReport.getCertificateSubIndication(certificateId));
 		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getCertificateCrlUrls(certificateId)));
 		assertNotNull(simpleReport.getCertificateRevocationDate(certificateId));
 		assertEquals("unspecified", simpleReport.getCertificateRevocationReason(certificateId));
@@ -125,7 +125,7 @@ public class CertificateProcessExecutorTest {
 		CertificateProcessExecutor executor = new CertificateProcessExecutor();
 		executor.setCertificateId(certificateId);
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
@@ -166,7 +166,7 @@ public class CertificateProcessExecutorTest {
 		CertificateProcessExecutor executor = new CertificateProcessExecutor();
 		executor.setCertificateId(certificateId);
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
@@ -203,7 +203,7 @@ public class CertificateProcessExecutorTest {
 		CertificateProcessExecutor executor = new CertificateProcessExecutor();
 		executor.setCertificateId(certificateId);
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
@@ -225,7 +225,7 @@ public class CertificateProcessExecutorTest {
 		CertificateProcessExecutor executor = new CertificateProcessExecutor();
 		executor.setCertificateId(certificateId);
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
@@ -247,7 +247,7 @@ public class CertificateProcessExecutorTest {
 		CertificateProcessExecutor executor = new CertificateProcessExecutor();
 		executor.setCertificateId(certificateId);
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
@@ -270,7 +270,7 @@ public class CertificateProcessExecutorTest {
 		CertificateProcessExecutor executor = new CertificateProcessExecutor();
 		executor.setCertificateId(certificateId);
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
@@ -292,7 +292,7 @@ public class CertificateProcessExecutorTest {
 		CertificateProcessExecutor executor = new CertificateProcessExecutor();
 		executor.setCertificateId(certificateId);
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
@@ -314,7 +314,7 @@ public class CertificateProcessExecutorTest {
 		CertificateProcessExecutor executor = new CertificateProcessExecutor();
 		executor.setCertificateId(certificateId);
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
@@ -335,7 +335,7 @@ public class CertificateProcessExecutorTest {
 		CertificateProcessExecutor executor = new CertificateProcessExecutor();
 		executor.setCertificateId(certificateId);
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
@@ -357,7 +357,7 @@ public class CertificateProcessExecutorTest {
 		CertificateProcessExecutor executor = new CertificateProcessExecutor();
 		executor.setCertificateId(certificateId);
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
@@ -379,7 +379,7 @@ public class CertificateProcessExecutorTest {
 		CertificateProcessExecutor executor = new CertificateProcessExecutor();
 		executor.setCertificateId(certificateId);
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
@@ -400,7 +400,7 @@ public class CertificateProcessExecutorTest {
 		CertificateProcessExecutor executor = new CertificateProcessExecutor();
 		executor.setCertificateId(certificateId);
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
@@ -420,7 +420,7 @@ public class CertificateProcessExecutorTest {
 		CertificateProcessExecutor executor = new CertificateProcessExecutor();
 		executor.setCertificateId(certificateId);
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
@@ -444,7 +444,7 @@ public class CertificateProcessExecutorTest {
 		CertificateProcessExecutor executor = new CertificateProcessExecutor();
 		executor.setCertificateId(certificateId);
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
@@ -452,14 +452,7 @@ public class CertificateProcessExecutorTest {
 		assertEquals(CertificateQualification.NA, simpleReport.getQualificationAtCertificateIssuance());
 		assertEquals(CertificateQualification.NA, simpleReport.getQualificationAtValidationTime());
 	}
-
-	private EtsiValidationPolicy loadPolicy() throws Exception {
-		FileInputStream policyFis = new FileInputStream("src/main/resources/policy/constraint.xml");
-		ConstraintsParameters policyJaxB = getJAXBObjectFromString(policyFis, ConstraintsParameters.class, "/xsd/policy.xsd");
-		assertNotNull(policyJaxB);
-		return new EtsiValidationPolicy(policyJaxB);
-	}
-
+	
 	@SuppressWarnings("unchecked")
 	private <T extends Object> T getJAXBObjectFromString(InputStream is, Class<T> clazz, String xsd) throws Exception {
 		JAXBContext context = JAXBContext.newInstance(clazz.getPackage().getName());

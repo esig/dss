@@ -36,6 +36,8 @@ import eu.europa.esig.jaxb.policy.ContainerConstraints;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.EIDAS;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
+import eu.europa.esig.jaxb.policy.Model;
+import eu.europa.esig.jaxb.policy.ModelConstraint;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 import eu.europa.esig.jaxb.policy.RevocationConstraints;
 import eu.europa.esig.jaxb.policy.SignatureConstraints;
@@ -53,6 +55,8 @@ import eu.europa.esig.jaxb.policy.ValueConstraint;
 public class EtsiValidationPolicy implements ValidationPolicy {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EtsiValidationPolicy.class);
+
+	private static final Model DEFAULT_VALIDATION_MODEL = Model.SHELL;
 
 	private ConstraintsParameters policy;
 
@@ -262,11 +266,8 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		BasicSignatureConstraints basicSignature = getBasicSignatureConstraintsByContext(context);
 		if (basicSignature != null) {
 			CryptographicConstraint sigCryptographic = basicSignature.getCryptographic();
-			if (sigCryptographic == null) {
-				return getDefaultCryptographicConstraint();
-			} else {
-				return sigCryptographic;
-			}
+			initializeCryptographicConstraint(sigCryptographic);
+			return sigCryptographic;
 		}
 		return null;
 	}
@@ -276,16 +277,33 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
 			CryptographicConstraint certCryptographic = certificateConstraints.getCryptographic();
-			if (certCryptographic == null) {
-				return getDefaultCryptographicConstraint();
-			} else {
-				return certCryptographic;
-			}
+			initializeCryptographicConstraint(certCryptographic);
+			return certCryptographic;
 		}
 		return null;
 	}
+	
+	/**
+	 * Overrides all empty fields for the given {@value cryptographicConstraint} by the default {@link CryptographicConstraint}
+	 * @param cryptographicConstraint {@link CryptographicConstraint}
+	 */
+	private void initializeCryptographicConstraint(CryptographicConstraint cryptographicConstraint) {
+		CryptographicConstraint defaultConstraint = getDefaultCryptographicConstraint();
+		if (defaultConstraint != null) {
+			if (cryptographicConstraint.getAcceptableDigestAlgo() == null)
+				cryptographicConstraint.setAcceptableDigestAlgo(defaultConstraint.getAcceptableDigestAlgo());
+			if (cryptographicConstraint.getAcceptableEncryptionAlgo() == null)
+				cryptographicConstraint.setAcceptableEncryptionAlgo(defaultConstraint.getAcceptableEncryptionAlgo());
+			if (cryptographicConstraint.getAlgoExpirationDate() == null)
+				cryptographicConstraint.setAlgoExpirationDate(defaultConstraint.getAlgoExpirationDate());
+			if (cryptographicConstraint.getLevel() == null)
+				cryptographicConstraint.setLevel(defaultConstraint.getLevel());
+			if (cryptographicConstraint.getMiniPublicKeySize() == null)
+				cryptographicConstraint.setMiniPublicKeySize(defaultConstraint.getMiniPublicKeySize());
+		}
+	}
 
-	private CryptographicConstraint getDefaultCryptographicConstraint() {
+	public CryptographicConstraint getDefaultCryptographicConstraint() {
 		return policy.getCryptographic();
 	}
 
@@ -895,4 +913,13 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		return null;
 	}
 
+	@Override
+	public Model getValidationModel() {
+		Model currentModel = DEFAULT_VALIDATION_MODEL;
+		ModelConstraint modelConstraint = policy.getModel();
+		if (modelConstraint != null && modelConstraint.getValue() != null) {
+			currentModel = modelConstraint.getValue();
+		}
+		return currentModel;
+	}
 }

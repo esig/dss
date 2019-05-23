@@ -205,15 +205,15 @@ public class BasicBuildingBlocks {
 	private XmlXCV executeX509CertificateValidation() {
 		if (Context.CERTIFICATE.equals(context)) {
 			CertificateWrapper certificate = (CertificateWrapper) token;
-			X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime, certificate.getNotBefore(), context,
-					policy);
+			X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime,
+					certificate.getNotBefore(), context, policy);
 			return xcv.execute();
 		} else {
 			CertificateWrapper certificate = diagnosticData.getUsedCertificateById(token.getSigningCertificateId());
 			if (certificate != null) {
 				if (Context.SIGNATURE.equals(context) || Context.COUNTER_SIGNATURE.equals(context)) {
-					X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime, certificate.getNotBefore(), context,
-							policy);
+					X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime,
+							certificate.getNotBefore(), context, policy);
 					return xcv.execute();
 				} else if (Context.TIMESTAMP.equals(context)) {
 					X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime,
@@ -234,11 +234,10 @@ public class BasicBuildingBlocks {
 		if (Context.SIGNATURE.equals(context) || Context.COUNTER_SIGNATURE.equals(context)) {
 			aav = new SignatureAcceptanceValidation(diagnosticData, currentTime, (SignatureWrapper) token, context, policy);
 		} else if (Context.TIMESTAMP.equals(context)) {
-			aav = new TimestampAcceptanceValidation(diagnosticData, currentTime, (TimestampWrapper) token, policy);
+			aav = new TimestampAcceptanceValidation(currentTime, (TimestampWrapper) token, policy);
 		} else if (Context.REVOCATION.equals(context)) {
-			aav = new RevocationAcceptanceValidation(diagnosticData, currentTime, (RevocationWrapper) token, policy);
+			aav = new RevocationAcceptanceValidation(currentTime, (RevocationWrapper) token, policy);
 		}
 		return aav != null ? aav.execute() : null;
 	}
-
 }

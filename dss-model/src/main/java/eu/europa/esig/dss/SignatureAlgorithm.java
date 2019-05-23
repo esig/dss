@@ -20,6 +20,10 @@
  */
 package eu.europa.esig.dss;
 
+import java.io.IOException;
+import java.security.AlgorithmParameters;
+import java.security.GeneralSecurityException;
+import java.security.spec.PSSParameterSpec;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +35,8 @@ import java.util.Map.Entry;
  */
 public enum SignatureAlgorithm {
 
+	RSA_RAW(EncryptionAlgorithm.RSA, null),
+	
 	RSA_SHA1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA1),
 
 	RSA_SHA224(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA224),
@@ -48,6 +54,8 @@ public enum SignatureAlgorithm {
 	RSA_SHA3_384(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_384),
 
 	RSA_SHA3_512(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_512),
+	
+	RSA_SSA_PSS_RAW_MGF1(EncryptionAlgorithm.RSA, null, MaskGenerationFunction.MGF1),
 
 	RSA_SSA_PSS_SHA1_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA1, MaskGenerationFunction.MGF1),
 
@@ -73,6 +81,8 @@ public enum SignatureAlgorithm {
 
 	RSA_MD2(EncryptionAlgorithm.RSA, DigestAlgorithm.MD2),
 
+	ECDSA_RAW(EncryptionAlgorithm.ECDSA, null),
+	
 	ECDSA_SHA1(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA1),
 
 	ECDSA_SHA224(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA224),
@@ -105,6 +115,8 @@ public enum SignatureAlgorithm {
 
 	PLAIN_ECDSA_RIPEMD160(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.RIPEMD160),
 
+	DSA_RAW(EncryptionAlgorithm.DSA, null),
+	
 	DSA_SHA1(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA1),
 
 	DSA_SHA224(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA224),
@@ -182,7 +194,7 @@ public enum SignatureAlgorithm {
 
 		// Following algorithms are not in ETSI TS 102 176-1 V2.0.0:
 		xmlAlgorithms.put("http://www.w3.org/2001/04/xmldsig-more#rsa-md5", RSA_MD5);
-		xmlAlgorithms.put("http://www.w3.org/2001/04/xmldsig-more#rsa-md2", RSA_MD2);
+//		xmlAlgorithms.put("http://www.w3.org/2001/04/xmldsig-more#rsa-md2", RSA_MD2);
 		// Following end.
 		xmlAlgorithms.put("http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1", ECDSA_SHA1);
 		xmlAlgorithms.put("http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha224", ECDSA_SHA224);
@@ -306,6 +318,8 @@ public enum SignatureAlgorithm {
 
 		Map<String, SignatureAlgorithm> javaAlgorithms = new HashMap<String, SignatureAlgorithm>();
 
+		javaAlgorithms.put("NONEwithRSA", RSA_RAW);
+		
 		javaAlgorithms.put("SHA1withRSA", RSA_SHA1);
 		javaAlgorithms.put("SHA224withRSA", RSA_SHA224);
 		javaAlgorithms.put("SHA256withRSA", RSA_SHA256);
@@ -317,6 +331,8 @@ public enum SignatureAlgorithm {
 		javaAlgorithms.put("SHA3-384withRSA", RSA_SHA3_384);
 		javaAlgorithms.put("SHA3-512withRSA", RSA_SHA3_512);
 
+		javaAlgorithms.put("NONEwithRSAandMGF1", RSA_SSA_PSS_RAW_MGF1);
+		
 		javaAlgorithms.put("SHA1withRSAandMGF1", RSA_SSA_PSS_SHA1_MGF1);
 		javaAlgorithms.put("SHA224withRSAandMGF1", RSA_SSA_PSS_SHA224_MGF1);
 		javaAlgorithms.put("SHA256withRSAandMGF1", RSA_SSA_PSS_SHA256_MGF1);
@@ -333,6 +349,8 @@ public enum SignatureAlgorithm {
 		javaAlgorithms.put("MD5withRSA", RSA_MD5);
 		javaAlgorithms.put("MD2withRSA", RSA_MD2);
 
+		javaAlgorithms.put("NONEwithECDSA", ECDSA_RAW);
+		
 		javaAlgorithms.put("SHA1withECDSA", ECDSA_SHA1);
 		javaAlgorithms.put("SHA224withECDSA", ECDSA_SHA224);
 		javaAlgorithms.put("SHA256withECDSA", ECDSA_SHA256);
@@ -352,6 +370,8 @@ public enum SignatureAlgorithm {
 		javaAlgorithms.put("SHA3-384withECDSA", ECDSA_SHA3_384);
 		javaAlgorithms.put("SHA3-512withECDSA", ECDSA_SHA3_512);
 
+		javaAlgorithms.put("NONEwithDSA", DSA_RAW);
+		
 		javaAlgorithms.put("SHA1withDSA", DSA_SHA1);
 		javaAlgorithms.put("SHA224withDSA", DSA_SHA224);
 		javaAlgorithms.put("SHA256withDSA", DSA_SHA256);
@@ -412,10 +432,27 @@ public enum SignatureAlgorithm {
 	}
 
 	public static SignatureAlgorithm forOID(final String oid) {
-		final SignatureAlgorithm algorithm = OID_ALGORITHMS.get(oid);
+		return forOidAndParams(oid, null);
+	}
+
+	public static SignatureAlgorithm forOidAndParams(String oid, byte[] sigAlgParams) {
+		SignatureAlgorithm algorithm = OID_ALGORITHMS.get(oid);
 		if (algorithm == null) {
 			throw new DSSException("Unsupported algorithm: " + oid);
 		}
+
+		if (sigAlgParams != null && algorithm.getMaskGenerationFunction() != null) {
+			try {
+				AlgorithmParameters algoParams = AlgorithmParameters.getInstance("PSS");
+				algoParams.init(sigAlgParams);
+				PSSParameterSpec pssParam = algoParams.getParameterSpec(PSSParameterSpec.class);
+				DigestAlgorithm digestAlgorithm = DigestAlgorithm.forJavaName(pssParam.getDigestAlgorithm());
+				algorithm = getAlgorithm(algorithm.getEncryptionAlgorithm(), digestAlgorithm, algorithm.getMaskGenerationFunction());
+			} catch (GeneralSecurityException | IOException e) {
+				throw new DSSException("Unable to initialize PSS", e);
+			}
+		}
+
 		return algorithm;
 	}
 
@@ -499,7 +536,11 @@ public enum SignatureAlgorithm {
 			final MaskGenerationFunction mgf) {
 
 		StringBuilder sb = new StringBuilder();
-		sb.append(digestAlgorithm.getName());
+		if (digestAlgorithm != null) {
+			sb.append(digestAlgorithm.getName());
+		} else {
+			sb.append("NONE");
+		}
 		sb.append("with");
 		sb.append(encryptionAlgorithm.getName());
 		if (mgf != null) {

@@ -44,6 +44,7 @@
                     <CountryCode>LU</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376</ServiceDigitalIdentifier>
                             <ServiceName>TS-3.1.4 Name</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
@@ -56,7 +57,6 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations/>
-            <Base64Encoded>MIIDZTCCAk2gAwIBAgIBCDANBgkqhkiG9w0BAQsFADBQMRIwEAYDVQQDDAlTREktMy4xLjQxFTATBgNVBAoMDFRTUC0zLjEgTmFtZTEWMBQGA1UECwwNQ0VSVCBGT1IgVEVTVDELMAkGA1UEBhMCTFUwHhcNMTcwNjI3MDgzMjMxWhcNMTkwNjI3MDgzMjMxWjBQMRIwEAYDVQQDDAlTREktMy4xLjQxFTATBgNVBAoMDFRTUC0zLjEgTmFtZTEWMBQGA1UECwwNQ0VSVCBGT1IgVEVTVDELMAkGA1UEBhMCTFUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQD5JVd2IyOOQK+e28hxvkckJ7ZS81clCWit2JSV7tIWN7aQKWrPTU4H+24b7qNXxNwqEMMhp2bEARu93/2Zc55qE2rhTUY4GeHJv31cmyvfUuHy3eRaX9PmEk881HVkjDQtsgpN9k0yo8OnPbINNBW+JRWAScaWOZ+avJYT9BR2sFc2LoyUW3raJOgbaB1i8XtqZNgVBHFj+pc7B3gUdSXqAtBWvFJTotyF9kpywrKUOIKXdReQAGOubk5lBjZgEae2KTpU6b5KiI13SSKQhVzw77xGzgJWXs6g/NHF9EtBbDU5wgBNRy0txs0ZbbiClCGR0f1WQ4BRsgpGi5g7lManAgMBAAGjSjBIMBYGA1UdJQEB/wQMMAoGCCsGAQUFBwMJMB0GA1UdDgQWBBRu5QIkh6fe8Ya6ulpfHVoG2N/f1zAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQCjqg3Mvtlr0butNfuVno74ZTTyXbZ7gFNO6vva+2RAgdseEDUMnOzd8gfmQVe0PG6dF7K9fxphMg3EO/nxpSDOJk+kOLD3Vo0cl0NCexLXWm8oMq9FpguAV4ndeC+Ol9Xh047QudQA2wce9VC400A+R+2e5c4TnqC78sUtQmPYKJLigIWJgVYiSGPWmdimGvMpBnfOiGmN6UYMLIsFB093cBrb//vCCQqI3VoCKYouo1WX3NEKbSaUIU7uGSHhm3S/yY121x9dRztWIr8YG6pIJw5ytZMb7+t+eIAks0TKm9pBHEJdDQDhqwF0cewqQx+Osqb2Rhp8bCia0RfIjaoH</Base64Encoded>
         </Certificate>
         <Certificate Id="18D60FFCE5904ED1E2B3DE04A7BA48BF7F904A34D6988962B964843649A33456">
             <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=cert for test,o=tl3 organization,cn=cert-test-3.1.4</SubjectDistinguishedName>
@@ -117,6 +117,7 @@
                     <CountryCode>LU</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376</ServiceDigitalIdentifier>
                             <ServiceName>TS-3.1.4 Name</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>

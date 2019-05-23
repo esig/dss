@@ -56,8 +56,9 @@ public class AcceptableBasicSignatureValidationCheck extends ChainItem<XmlValida
 			bbbErrors = basicSignatureConclusion.getErrors();
 
 			boolean allowed = Indication.PASSED.equals(bbbIndication)
-					|| (Indication.INDETERMINATE.equals(bbbIndication) && (SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(bbbSubIndication)
-							|| SubIndication.REVOKED_NO_POE.equals(bbbSubIndication) || SubIndication.OUT_OF_BOUNDS_NO_POE.equals(bbbSubIndication)));
+					|| (Indication.INDETERMINATE.equals(bbbIndication) && (SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(bbbSubIndication) || 
+							SubIndication.REVOKED_NO_POE.equals(bbbSubIndication) || SubIndication.REVOKED_CA_NO_POE.equals(bbbSubIndication) || 
+							SubIndication.TRY_LATER.equals(bbbSubIndication) ||SubIndication.OUT_OF_BOUNDS_NO_POE.equals(bbbSubIndication)));
 
 			return allowed;
 		}

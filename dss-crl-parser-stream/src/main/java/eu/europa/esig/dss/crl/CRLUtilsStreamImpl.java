@@ -26,32 +26,21 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.security.DigestInputStream;
 import java.security.GeneralSecurityException;
-import java.security.MessageDigest;
-import java.security.PublicKey;
+import java.security.Signature;
 import java.security.cert.X509CRLEntry;
-import java.text.MessageFormat;
-import java.util.Arrays;
 
-import javax.crypto.Cipher;
 import javax.security.auth.x500.X500Principal;
 
-import org.bouncycastle.asn1.ASN1InputStream;
-import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.BERTags;
-import org.bouncycastle.asn1.x509.DigestInfo;
 import org.bouncycastle.asn1.x509.Extension;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.util.encoders.Hex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureAlgorithm;
-import eu.europa.esig.dss.tsl.KeyUsageBit;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.KeyUsageBit;
 
 public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
 
@@ -65,9 +54,8 @@ public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
 
 			CRLInfo crlInfos = getCrlInfos(baos);
 
-			SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forOID(crlInfos.getCertificateListSignatureAlgorithmOid());
-
-			byte[] digest = recomputeDigest(baos, getMessageDigest(signatureAlgorithm.getDigestAlgorithm()));
+			SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forOidAndParams(crlInfos.getCertificateListSignatureAlgorithmOid(),
+					crlInfos.getCertificateListSignatureAlgorithmParams());
 
 			crlValidity.setCrlEncoded(baos.toByteArray());
 			crlValidity.setSignatureAlgorithm(signatureAlgorithm);
@@ -85,16 +73,18 @@ public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
 				crlValidity.setIssuerX509PrincipalMatches(true);
 			}
 
-			checkSignatureValue(crlValidity, crlInfos.getSignatureValue(), digest, issuerToken);
+			checkSignatureValue(crlValidity, crlInfos.getSignatureValue(), signatureAlgorithm, getSignedData(baos), issuerToken);
 		}
 		return crlValidity;
 	}
 
-	private MessageDigest getMessageDigest(DigestAlgorithm digestAlgorithm) {
-		try {
-			return MessageDigest.getInstance(digestAlgorithm.getOid(), BouncyCastleProvider.PROVIDER_NAME);
-		} catch (GeneralSecurityException e) {
-			throw new DSSException("Cannot generate a MessageDigest", e);
+	private ByteArrayOutputStream getSignedData(ByteArrayOutputStream originalBaos) throws IOException {
+		try (InputStream is = new ByteArrayInputStream(originalBaos.toByteArray())) {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			BinaryFilteringInputStream bfis = new BinaryFilteringInputStream(is, baos);
+			CRLParser parser = new CRLParser();
+			parser.getSignedData(bfis);
+			return baos;
 		}
 	}
 
@@ -110,54 +100,30 @@ public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
 		return crlEntry;
 	}
 
-	private void checkSignatureValue(CRLValidity crlValidity, byte[] signatureValue, byte[] expectedDigest, CertificateToken signer) {
-		byte[] extractedDigest = null;
+	private void checkSignatureValue(CRLValidity crlValidity, byte[] signatureValue, SignatureAlgorithm signatureAlgorithm, ByteArrayOutputStream baos,
+			CertificateToken signer) {
 		try {
-			extractedDigest = getSignedDigest(signatureValue, signer);
-		} catch (GeneralSecurityException | IOException e) {
-			crlValidity.setSignatureInvalidityReason(e.getClass().getSimpleName() + " - " + e.getMessage());
-			return;
-		}
-
-		if (Arrays.equals(expectedDigest, extractedDigest)) {
-			crlValidity.setSignatureIntact(true);
-			crlValidity.setIssuerToken(signer);
-			crlValidity.setCrlSignKeyUsage(signer.checkKeyUsage(KeyUsageBit.crlSign));
-		} else {
-			String extractedDigestString = extractedDigest == null ? "" : Hex.toHexString(extractedDigest);
-			String expectedDigestString = expectedDigest == null ? "" : Hex.toHexString(expectedDigest);
-			String message = MessageFormat.format("Signed digest ''{0}'' and computed digest ''{1}'' don''t match",
-					new Object[] { extractedDigestString, expectedDigestString });
-			crlValidity.setSignatureInvalidityReason(message);
-			LOG.warn(message);
+			Signature signature = Signature.getInstance(signatureAlgorithm.getJCEId());
+			signature.initVerify(signer.getPublicKey());
+			signature.update(baos.toByteArray());
+			if (signature.verify(signatureValue)) {
+				crlValidity.setSignatureIntact(true);
+				crlValidity.setIssuerToken(signer);
+				crlValidity.setCrlSignKeyUsage(signer.checkKeyUsage(KeyUsageBit.crlSign));
+			} else {
+				crlValidity.setSignatureInvalidityReason("Signature value not correct");
+			}
+		} catch (GeneralSecurityException e) {
+			LOG.warn("Unable to validate the CRL signature", e);
+			crlValidity.setSignatureInvalidityReason("CRL Signature cannot be validated : " + e.getMessage());
 		}
 	}
 
-	private byte[] recomputeDigest(ByteArrayOutputStream baos, MessageDigest messageDigest) throws IOException {
-		try (InputStream is = new ByteArrayInputStream(baos.toByteArray()); DigestInputStream dis = new DigestInputStream(is, messageDigest)) {
-			CRLParser parser = new CRLParser();
-			parser.processDigest(dis);
-			return dis.getMessageDigest().digest();
-		}
-	}
 
 	private CRLInfo getCrlInfos(ByteArrayOutputStream baos) throws IOException {
 		try (InputStream is = new ByteArrayInputStream(baos.toByteArray()); BufferedInputStream bis = new BufferedInputStream(is)) {
 			CRLParser parser = new CRLParser();
 			return parser.retrieveInfo(bis);
-		}
-	}
-
-	private byte[] getSignedDigest(byte[] signatureValue, CertificateToken signer) throws GeneralSecurityException, IOException {
-		PublicKey publicKey = signer.getPublicKey();
-		Cipher cipher = Cipher.getInstance(publicKey.getAlgorithm());
-		cipher.init(Cipher.DECRYPT_MODE, publicKey);
-		byte[] decrypted = cipher.doFinal(signatureValue);
-
-		try (ASN1InputStream inputDecrypted = new ASN1InputStream(decrypted)) {
-			ASN1Sequence seqDecrypt = (ASN1Sequence) inputDecrypted.readObject();
-			DigestInfo digestInfo = new DigestInfo(seqDecrypt);
-			return digestInfo.getDigest();
 		}
 	}
 

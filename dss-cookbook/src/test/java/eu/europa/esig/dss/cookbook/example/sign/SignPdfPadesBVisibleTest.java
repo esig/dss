@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.cookbook.example.sign;
 
 import java.awt.Color;
-import java.awt.Font;
 
 import org.junit.Test;
 
@@ -31,10 +30,13 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
+import eu.europa.esig.dss.pades.DSSFileFont;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
+import eu.europa.esig.dss.pdf.PdfObjFactory;
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
@@ -46,6 +48,10 @@ public class SignPdfPadesBVisibleTest extends CookbookTools {
 
 	@Test
 	public void signPAdESBaselineBWithVisibleSignature() throws Exception {
+		
+		// tag::custom-factory[]
+		PdfObjFactory.setInstance(new PdfBoxNativeObjectFactory());
+		// end::custom-factory[]
 
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument
@@ -80,11 +86,15 @@ public class SignPdfPadesBVisibleTest extends CookbookTools {
 			imageParameters.setxAxis(200);
 			imageParameters.setyAxis(500);
 
+			// tag::font[]
 			// Initialize text to generate for visual signature
 			SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
-			textParameters.setFont(new Font("serif", Font.PLAIN, 14));
+			DSSFileFont font = new DSSFileFont(getClass().getResourceAsStream("/fonts/OpenSansRegular.ttf"));
+			textParameters.setFont(font);
+			textParameters.setSize(14);
 			textParameters.setTextColor(Color.BLUE);
 			textParameters.setText("My visual signature");
+			// end::font[]
 			imageParameters.setTextParameters(textParameters);
 
 			parameters.setSignatureImageParameters(imageParameters);

@@ -23,6 +23,7 @@ package eu.europa.esig.dss.token;
 import java.util.List;
 
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.RemoteKeyEntry;
@@ -55,6 +56,16 @@ public class RestSignatureTokenConnectionImpl implements RestSignatureTokenConne
 	@Override
 	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, MaskGenerationFunction mgf, String alias) throws DSSException {
 		return token.sign(toBeSigned, digestAlgorithm, mgf, alias);
+	}
+
+	@Override
+	public SignatureValue signDigest(Digest digest, String alias) throws DSSException {
+		return token.signDigest(digest, alias);
+	}
+
+	@Override
+	public SignatureValue signDigest(Digest digest, MaskGenerationFunction mgf, String alias) throws DSSException {
+		return token.signDigest(digest, mgf, alias);
 	}
 
 }
