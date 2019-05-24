@@ -93,7 +93,9 @@ public class CommonCertificateSource implements CertificateSource {
 	 */
 	@Override
 	public List<CertificateToken> getCertificates() {
-		return Collections.unmodifiableList(certificateTokens);
+		final List<CertificateToken> list = new ArrayList<>();
+		list.addAll(certificateTokens);
+		return Collections.unmodifiableList(list);
 	}
 
 	/**
