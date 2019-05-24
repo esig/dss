@@ -156,14 +156,11 @@ public class ETSIValidationReportBuilder {
 		XmlProofOfExistence proofOfExistence = detailedReport.getBestProofOfExistence(sigWrapper.getId());
 		POEType poeType = new POEType();
 		poeType.setPOETime(proofOfExistence.getTime());
+		poeType.setTypeOfProof(TypeOfProof.VALIDATION);
 
 		String timestampId = proofOfExistence.getTimestampId();
 		if (Utils.isStringNotEmpty(timestampId)) {
-			poeType.setTypeOfProof(TypeOfProof.PROVIDED);
 			poeType.setPOEObject(getVOReference(timestampId));
-		} else {
-			// Current/validation time
-			poeType.setTypeOfProof(TypeOfProof.VALIDATION);
 		}
 		validationTimeInfoType.setBestSignatureTime(poeType);
 		return validationTimeInfoType;
@@ -287,12 +284,10 @@ public class ETSIValidationReportBuilder {
 			XmlProofOfExistence lowestPOE = poeExtraction.getLowestPOE(tokenId, currentTime);
 			poeType.setPOETime(lowestPOE.getTime());
 			poeType.setPOEObject(getVOReference(lowestPOE.getTimestampId()));
-			poeType.setTypeOfProof(TypeOfProof.PROVIDED);
 		} else {
 			poeType.setPOETime(currentTime);
-			poeType.setTypeOfProof(TypeOfProof.VALIDATION);
-			// TODO: check TypeOfProof correctness (when to use VALIDATION, when PROVIDED)
 		}
+		poeType.setTypeOfProof(TypeOfProof.VALIDATION);
 		return poeType;
 	}
 
