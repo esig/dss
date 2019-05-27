@@ -39,7 +39,7 @@ import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSReference;
 import eu.europa.esig.dss.xades.ProfileParameters;
 import eu.europa.esig.dss.xades.SantuarioInitializer;

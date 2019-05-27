@@ -54,7 +54,7 @@ import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 @SuppressWarnings("serial")
 public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithCAdESSignatureParameters> {

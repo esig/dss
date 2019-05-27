@@ -38,13 +38,16 @@ import eu.europa.esig.dss.CertificateReorderer;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestDocument;
 import eu.europa.esig.dss.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.SignatureIdentifier;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.TokenIdentifier;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
+import eu.europa.esig.dss.validation.timestamp.TimestampByGenerationTimeComparator;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -134,6 +137,9 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	// Cached {@code SignatureOCSPSource}
 	protected SignatureOCSPSource offlineOCSPSource;
+
+	// Cached {@code SignatureTimestampSource}
+	protected SignatureTimestampSource signatureTimestampSource;
 
 	private AdvancedSignature masterSignature;
 

@@ -38,9 +38,9 @@ import eu.europa.esig.dss.SignerLocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.signature.AbstractPkiFactoryTestMultipleDocumentsSignatureService;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
-import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 public class XAdESLevelBInternallyDetachedMultiFilesTest extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<XAdESSignatureParameters> {

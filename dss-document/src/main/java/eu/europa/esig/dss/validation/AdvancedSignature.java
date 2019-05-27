@@ -35,6 +35,8 @@ import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureIdentifier;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.SignatureCertificateSource;

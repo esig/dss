@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
-import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.TimestampLocation;
 import eu.europa.esig.dss.x509.TimestampType;

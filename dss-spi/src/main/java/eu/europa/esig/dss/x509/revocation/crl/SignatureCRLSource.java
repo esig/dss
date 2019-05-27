@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.SignatureRevocationSource;
 
@@ -147,6 +148,20 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 			}
 		}
 		return relatedRefs;
+	}
+	
+	/**
+	 * Returns a contained {@link CRLRef} with the given {@code digest}
+	 * @param digest {@link Digest} to find a {@link CRLRef} with
+	 * @return {@link CRLRef}
+	 */
+	public CRLRef getCRLRefByDigest(Digest digest) {
+		for (CRLRef crlRef : getAllCRLReferences()) {
+			if (digest.getAlgorithm().equals(crlRef.getDigestAlgorithm()) && Arrays.equals(digest.getValue(), crlRef.getDigestValue())) {
+				return crlRef;
+			}
+		}
+		return null;
 	}
 
 }

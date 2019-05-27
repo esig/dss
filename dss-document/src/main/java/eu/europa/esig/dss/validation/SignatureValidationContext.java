@@ -43,6 +43,7 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.x509.AlternateUrlsSourceAdapter;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSource;

@@ -40,9 +40,9 @@ import eu.europa.esig.dss.SignerLocation;
 import eu.europa.esig.dss.TimestampParameters;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 public class XAdESLevelLTAInternallyDetachedTest extends AbstractXAdESTestSignature {

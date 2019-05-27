@@ -30,7 +30,6 @@ import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.Digest;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.RevocationOrigin;
@@ -38,6 +37,7 @@ import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseIdentifier;
 import eu.europa.esig.dss.x509.revocation.ocsp.ResponderId;
 import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
+import eu.europa.esig.dss.xades.XAdESUtils;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 /**
@@ -130,7 +130,7 @@ public class XAdESOCSPSource extends SignatureOCSPSource {
 					continue;
 				}
 				
-				final Digest digest = getRevocationDigest(certId, xPathQueryHolder);
+				final Digest digest = XAdESUtils.getRevocationDigest(certId, xPathQueryHolder);
 				
 				if (digest != null) {
 					OCSPRef ocspRef = new OCSPRef(digest.getAlgorithm(), digest.getValue(), producedAtDate, responderId, false, revocationOrigin);
@@ -139,27 +139,6 @@ public class XAdESOCSPSource extends SignatureOCSPSource {
 				
 			}
 		}
-	}
-	
-	/**
-	 * Returns {@link Digest} found in the given {@code revocationRefNode}
-	 * @param revocationRefNode {@link Element} to get digest from
-	 * @param xPathQueryHolder {@link XPathQueryHolder}
-	 * @return {@link Digest}
-	 */
-	public Digest getRevocationDigest(Element revocationRefNode, final XPathQueryHolder xPathQueryHolder) {
-		final Element digestAlgorithmEl = DomUtils.getElement(revocationRefNode, xPathQueryHolder.XPATH__DAAV_DIGEST_METHOD);
-		final Element digestValueEl = DomUtils.getElement(revocationRefNode, xPathQueryHolder.XPATH__DAAV_DIGEST_VALUE);
-		
-		DigestAlgorithm digestAlgo = null;
-		byte[] digestValue = null;
-		if (digestAlgorithmEl != null && digestValueEl != null) {
-			final String xmlName = digestAlgorithmEl.getAttribute(XPathQueryHolder.XMLE_ALGORITHM);
-			digestAlgo = DigestAlgorithm.forXML(xmlName);
-			digestValue = Utils.fromBase64(digestValueEl.getTextContent());
-			return new Digest(digestAlgo, digestValue);
-		}
-		return null;
 	}
 
 	private void convertAndAppend(String ocspValue, RevocationOrigin origin) {

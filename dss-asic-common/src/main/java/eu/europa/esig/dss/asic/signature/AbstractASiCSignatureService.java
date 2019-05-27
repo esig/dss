@@ -44,7 +44,7 @@ import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureParameters> extends AbstractSignatureService<SP>
 		implements MultipleDocumentsSignatureService<SP> {

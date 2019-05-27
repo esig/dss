@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.SignatureRevocationSource;
 
@@ -140,6 +141,20 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 			}
 		}
 		return relatedRefs;
+	}
+	
+	/**
+	 * Returns a contained {@link OCSPRef} with the given {@code digest}
+	 * @param digest {@link Digest} to find a {@link OCSPRef} with
+	 * @return {@link OCSPRef}
+	 */
+	public OCSPRef getOCSPRefByDigest(Digest digest) {
+		for (OCSPRef ocspRef : getAllOCSPReferences()) {
+			if (digest.getAlgorithm().equals(ocspRef.getDigestAlgorithm()) && Arrays.equals(digest.getValue(), ocspRef.getDigestValue())) {
+				return ocspRef;
+			}
+		}
+		return null;
 	}
 
 }

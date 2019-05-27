@@ -18,33 +18,39 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation;
+package eu.europa.esig.dss.validation.timestamp;
 
-import eu.europa.esig.dss.DSSDocument;
+/**
+ * This class represents XAdES Include tag in case of IndividualDataObjectsTimeStamp
+ */
+public class TimestampInclude {
 
-public interface TimestampValidator {
+	private String uri;
+	/* The referencedData attribute shall be present in each and every Include element, and set to "true". */
+	private boolean referencedData;
 
-	/**
-	 * Retrieves the time-stamp token
-	 * 
-	 * @return
-	 */
-	TimestampToken getTimestamp();
+	public TimestampInclude() {
+	}
 
-	/**
-	 * Provides a {@code CertificateVerifier} to be used during the validation process.
-	 *
-	 * @param certVerifier
-	 *            {@code CertificateVerifier}
-	 */
-	void setCertificateVerifier(final CertificateVerifier certVerifier);
+	public TimestampInclude(String uri, boolean referencedData) {
+		this.uri = uri;
+		this.referencedData = referencedData;
+	}
 
-	/**
-	 * Sets the {@code DSSDocument} containing the time-stamped content.
-	 *
-	 * @param timestampedData
-	 *            the {@code DSSDocument} to set
-	 */
-	void setTimestampedData(DSSDocument timestampedData);
+	public String getURI() {
+		return uri;
+	}
+
+	public void setURI(String uri) {
+		this.uri = uri;
+	}
+
+	public boolean isReferencedData() {
+		return referencedData;
+	}
+
+	public void setReferencedData(boolean referencedData) {
+		this.referencedData = referencedData;
+	}
 
 }

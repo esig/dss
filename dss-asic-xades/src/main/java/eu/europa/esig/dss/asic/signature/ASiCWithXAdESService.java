@@ -47,7 +47,7 @@ import eu.europa.esig.dss.asic.ManifestNamespace;
 import eu.europa.esig.dss.asic.OpenDocumentSupportUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 

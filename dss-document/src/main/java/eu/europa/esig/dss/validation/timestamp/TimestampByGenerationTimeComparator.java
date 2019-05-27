@@ -18,39 +18,18 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation;
+package eu.europa.esig.dss.validation.timestamp;
 
-/**
- * This class represents XAdES Include tag in case of IndividualDataObjectsTimeStamp
- */
-public class TimestampInclude {
+import java.io.Serializable;
+import java.util.Comparator;
 
-	private String uri;
-	/* The referencedData attribute shall be present in each and every Include element, and set to "true". */
-	private boolean referencedData;
+public class TimestampByGenerationTimeComparator implements Comparator<TimestampToken>, Serializable {
 
-	public TimestampInclude() {
-	}
+	private static final long serialVersionUID = -9130280943645913494L;
 
-	public TimestampInclude(String uri, boolean referencedData) {
-		this.uri = uri;
-		this.referencedData = referencedData;
-	}
-
-	public String getURI() {
-		return uri;
-	}
-
-	public void setURI(String uri) {
-		this.uri = uri;
-	}
-
-	public boolean isReferencedData() {
-		return referencedData;
-	}
-
-	public void setReferencedData(boolean referencedData) {
-		this.referencedData = referencedData;
+	@Override
+	public int compare(TimestampToken t1, TimestampToken t2) {
+		return t1.getGenerationTime().compareTo(t2.getGenerationTime());
 	}
 
 }

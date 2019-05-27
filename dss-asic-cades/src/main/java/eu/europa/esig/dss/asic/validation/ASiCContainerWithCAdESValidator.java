@@ -38,7 +38,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.ManifestFile;
-import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.TimestampType;
 

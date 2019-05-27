@@ -18,18 +18,34 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation;
+package eu.europa.esig.dss.validation.timestamp;
 
-import java.io.Serializable;
-import java.util.Comparator;
+import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 
-public class TimestampByGenerationTimeComparator implements Comparator<TimestampToken>, Serializable {
+public interface TimestampValidator {
 
-	private static final long serialVersionUID = -9130280943645913494L;
+	/**
+	 * Retrieves the time-stamp token
+	 * 
+	 * @return
+	 */
+	TimestampToken getTimestamp();
 
-	@Override
-	public int compare(TimestampToken t1, TimestampToken t2) {
-		return t1.getGenerationTime().compareTo(t2.getGenerationTime());
-	}
+	/**
+	 * Provides a {@code CertificateVerifier} to be used during the validation process.
+	 *
+	 * @param certVerifier
+	 *            {@code CertificateVerifier}
+	 */
+	void setCertificateVerifier(final CertificateVerifier certVerifier);
+
+	/**
+	 * Sets the {@code DSSDocument} containing the time-stamped content.
+	 *
+	 * @param timestampedData
+	 *            the {@code DSSDocument} to set
+	 */
+	void setTimestampedData(DSSDocument timestampedData);
 
 }

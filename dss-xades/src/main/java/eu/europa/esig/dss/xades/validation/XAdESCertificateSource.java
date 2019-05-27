@@ -36,13 +36,13 @@ import eu.europa.esig.dss.CertificateRefLocation;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Digest;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.IssuerSerialInfo;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.SignatureCertificateSource;
+import eu.europa.esig.dss.xades.XAdESUtils;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 /**
@@ -181,7 +181,7 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 		for (int i = 0; i < list.getLength(); i++) {
 			final Element element = (Element) list.item(i);
 			if (element != null) {
-				Digest certDigest = getCertDigest(element);
+				Digest certDigest = XAdESUtils.getCertDigest(element, xPathQueryHolder);
 				if (certDigest != null) {
 					CertificateRef certRef = new CertificateRef();
 					certRef.setCertDigest(certDigest);
@@ -199,7 +199,7 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 		for (int i = 0; i < list.getLength(); i++) {
 			final Element element = (Element) list.item(i);
 			if (element != null) {
-				Digest certDigest = getCertDigest(element);
+				Digest certDigest = XAdESUtils.getCertDigest(element, xPathQueryHolder);
 				if (certDigest != null) {
 					CertificateRef certRef = new CertificateRef();
 					certRef.setCertDigest(certDigest);
@@ -210,31 +210,6 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 			}
 		}
 		return result;
-	}
-
-	/**
-	 * Returns {@link Digest} found in the given {@code element}
-	 * @param element {@link Element} to get digest from
-	 * @return {@link Digest}
-	 */
-	public Digest getCertDigest(Element element) {
-		final Element certDigestElement = DomUtils.getElement(element, xPathQueryHolder.XPATH__CERT_DIGEST);
-		if (certDigestElement == null) {
-			return null;
-		}
-		
-		final Element digestMethodElement = DomUtils.getElement(certDigestElement, xPathQueryHolder.XPATH__DIGEST_METHOD);
-		final Element digestValueElement = DomUtils.getElement(element, xPathQueryHolder.XPATH__CERT_DIGEST_DIGEST_VALUE);
-		if (digestMethodElement == null || digestValueElement == null) {
-			return null;
-		}
-		
-		final String xmlAlgorithmName = digestMethodElement.getAttribute(XPathQueryHolder.XMLE_ALGORITHM);
-		final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forXML(xmlAlgorithmName);
-
-		final byte[] digestValue = Utils.fromBase64(digestValueElement.getTextContent());
-		
-		return new Digest(digestAlgorithm, digestValue);
 	}
 
 	private IssuerSerialInfo getIssuerV1(Element element) {

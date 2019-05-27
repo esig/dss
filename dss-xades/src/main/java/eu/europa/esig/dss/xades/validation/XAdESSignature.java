@@ -55,13 +55,10 @@ import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.CertificateRef;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.EncapsulatedCertificateTokenIdentifier;
-import eu.europa.esig.dss.EncapsulatedTokenIdentifier;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.IssuerSerialInfo;
 import eu.europa.esig.dss.MaskGenerationFunction;
@@ -70,7 +67,6 @@ import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureIdentifier;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.TokenIdentifier;
-import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CandidatesForSigningCertificate;
@@ -80,26 +76,21 @@ import eu.europa.esig.dss.validation.CommitmentType;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
 import eu.europa.esig.dss.validation.DigestMatcherType;
 import eu.europa.esig.dss.validation.ReferenceValidation;
-import eu.europa.esig.dss.validation.RevocationType;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
-import eu.europa.esig.dss.validation.SignatureScope;
-import eu.europa.esig.dss.validation.TimestampInclude;
-import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.validation.TimestampedObjectType;
-import eu.europa.esig.dss.validation.TimestampedReference;
+import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
+import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.x509.ArchiveTimestampType;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.SignaturePolicy;
-import eu.europa.esig.dss.x509.TimestampLocation;
 import eu.europa.esig.dss.x509.TimestampType;
-import eu.europa.esig.dss.x509.revocation.crl.CRLBinaryIdentifier;
 import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseIdentifier;
 import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.SantuarioInitializer;
@@ -149,11 +140,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * {@code checkSignatureIntegrity} is called.
 	 */
 	private transient List<Reference> references;
-
-	/**
-	 * Cached list of the Signing Certificate Timestamp References.
-	 */
-	private List<TimestampedReference> signingCertificateTimestampReferences;
 	
 	/**
 	 * Cached list of {@link ReferenceValidation} contained in the signature manifest file (if applicable)
@@ -228,7 +214,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * This method is called when creating a new instance of the {@code XAdESSignature} with unknown schema.
 	 */
 	private void initialiseSettings() {
-
 		recursiveNamespaceBrowser(signatureElement);
 		if (xPathQueryHolder == null) {
 
@@ -373,12 +358,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		offlineOCSPSource = null;
 	}
 
-	public void resetTimestamps() {
-		signatureTimestamps = null;
-		contentTimestamps = null;
-		archiveTimestamps = null;
-		sigAndRefsTimestamps = null;
-		refsOnlyTimestamps = null;
+	/**
+	 * This method resets the timestamp source. It must be called when -LT level is created.
+	 */
+	public void resetTimestampSource() {
+		signatureTimestampSource = null;
 	}
 
 	@Override
@@ -653,47 +637,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		return null;
 	}
 
-	/**
-	 * This method creates {@code TimestampToken} based on provided parameters.
-	 *
-	 * @param timestampElement
-	 *            contains the encapsulated timestamp
-	 * @param timestampType
-	 *            {@code TimestampType}
-	 * @return {@code TimestampToken} of the given type
-	 * @throws DSSException
-	 */
-	private TimestampToken makeTimestampToken(final Element timestampElement, final TimestampType timestampType) throws DSSException {
-
-		final Element timestampTokenNode = DomUtils.getElement(timestampElement, xPathQueryHolder.XPATH__ENCAPSULATED_TIMESTAMP);
-		if (timestampTokenNode == null) {
-			LOG.warn("The timestamp {} cannot be extracted from the signature!", timestampType.name());
-			return null;
-		}
-		TimestampToken timestampToken = null;
-		try {
-			timestampToken = new TimestampToken(Utils.fromBase64(timestampTokenNode.getTextContent()), timestampType, certPool, TimestampLocation.XAdES);
-		} catch (Exception e) {
-			LOG.warn("Unable to build timestamp object '" + timestampTokenNode.getTextContent() + "' : ", e);
-			return null;
-		}
-		timestampToken.setHashCode(timestampElement.hashCode());
-		timestampToken.setCanonicalizationMethod(getTimestampCanonicalizationMethod(timestampElement));
-
-		final NodeList timestampIncludes = DomUtils.getNodeList(timestampElement, xPathQueryHolder.XPATH__INCLUDE);
-		if (timestampIncludes != null && timestampIncludes.getLength() > 0) {
-			List<TimestampInclude> includes = new ArrayList<TimestampInclude>();
-			for (int jj = 0; jj < timestampIncludes.getLength(); jj++) {
-				final Element include = (Element) timestampIncludes.item(jj);
-				final String uri = cleanURI(include.getAttribute("URI"));
-				final String referencedData = include.getAttribute("referencedData");
-				includes.add(new TimestampInclude(uri, Boolean.parseBoolean(referencedData)));
-			}
-			timestampToken.setTimestampIncludes(includes);
-		}
-		return timestampToken;
-	}
-
 	@Override
 	public byte[] getSignatureValue() {
 		Element signatureValueElement = DomUtils.getElement(signatureElement, xPathQueryHolder.XPATH_SIGNATURE_VALUE);
@@ -765,191 +708,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	public boolean hasXProfile() {
 		return DomUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_SIG_AND_REFS_TIMESTAMP);
 	}
-	
-	/**
-	 * Returns a list of {@link TimestampedReference}s from the given {@code element}
-	 * @param element {@link Element} to get timestamped references from
-	 * @return list of {@link TimestampedReference}s
-	 */
-	protected List<TimestampedReference> getTimestampedReferencesFromCertificateReferences(Element element) {
-		List<TimestampedReference> timestampedReferences = new ArrayList<TimestampedReference>();
-		NodeList nodeList = DomUtils.getNodeList(element, xPathQueryHolder.XPATH__CERTIFICATE_REFS);
-		for (int ii = 0; ii < nodeList.getLength(); ii++) {
-			Element certElement = (Element) nodeList.item(ii);
-			Digest certDigest = getCertificateSource().getCertDigest(certElement);
-			if (certDigest != null) {
-				CertificateToken certificate = getCertificateSource().getCertificateTokenByDigest(certDigest);
-				if (certificate != null) {
-					timestampedReferences.add(new TimestampedReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
-				} else {
-					// if CertificateToken is not found, add reference value to the orphan refs list
-					orphanCertificateRefs.add(getCertificateSource().getCertificateRefByDigest(certDigest));
-				}
-			}
-		}
-		return timestampedReferences;
-	}
-
-	/**
-	 * Returns a list of {@link TimestampedReference}s from the given {@code element}
-	 * @param element {@link Element} to get timestamped references from
-	 * @return list of {@link TimestampedReference}s
-	 */
-	protected List<TimestampedReference> getTimestampedReferencesFromRevocationReferences(Element element) {
-		List<TimestampedReference> timestampedReferences = new ArrayList<TimestampedReference>();
-		NodeList crlRefs = DomUtils.getNodeList(element, xPathQueryHolder.XPATH__CRLREFS);
-		XAdESCRLSource crlSource = (XAdESCRLSource) getCRLSource();
-		for (int ii = 0; ii < crlRefs.getLength(); ii++) {
-			Element crlRef = (Element) crlRefs.item(ii);
-			Digest digest = crlSource.getRevocationDigest(crlRef, xPathQueryHolder);
-			CRLBinaryIdentifier identifier = crlSource.getIdentifier(digest);
-			if (identifier != null) {
-				timestampedReferences.add(new TimestampedReference(identifier.asXmlId(), TimestampedObjectType.REVOCATION));
-			}
-		}
-		
-		NodeList ocspRefs = DomUtils.getNodeList(element, xPathQueryHolder.XPATH__OCSPREFS);
-		XAdESOCSPSource ocspSource = (XAdESOCSPSource) getOCSPSource();
-		for (int ii = 0; ii < ocspRefs.getLength(); ii++) {
-			Element ocspRef = (Element) ocspRefs.item(ii);
-			Digest digest = ocspSource.getRevocationDigest(ocspRef, xPathQueryHolder);
-			if (digest != null) {
-				OCSPResponseIdentifier identifier = ocspSource.getIdentifier(digest);
-				if (identifier != null) {
-					timestampedReferences.add(new TimestampedReference(identifier.asXmlId(), TimestampedObjectType.REVOCATION));
-				}
-			}
-		}
-		
-		return timestampedReferences;
-	}
-
-	/**
-	 * Creates a list of {@link TimestampedReference}s found into {@code timeStampValidationDataElement}
-	 * @param timeStampValidationDataElement {@link Element} 'TimeStampValidationData'
-	 * @return list of {@link TimestampedReference}s
-	 */
-	protected List<TimestampedReference> getTimestampValidationDataReferences(Element timeStampValidationDataElement) {
-		List<TimestampedReference> timeStampValidationDataReferences = new ArrayList<TimestampedReference>();
-		timeStampValidationDataReferences.addAll(createEncapsulatedObjectReferences(timeStampValidationDataElement, 
-				xPathQueryHolder.XPATH__ENCAPSULATED_X509_CERT, TimestampedObjectType.CERTIFICATE, null, null));
-		
-		timeStampValidationDataReferences.addAll(createEncapsulatedObjectReferences(timeStampValidationDataElement, 
-				xPathQueryHolder.XPATH__ENCAPSULATED_CRL_VALUES, TimestampedObjectType.REVOCATION, 
-				RevocationType.CRL, RevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES));
-		
-		timeStampValidationDataReferences.addAll(createEncapsulatedObjectReferences(timeStampValidationDataElement, 
-				xPathQueryHolder.XPATH__ENCAPSULATED_OCSP_VALUES, TimestampedObjectType.REVOCATION, 
-				RevocationType.OCSP, RevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES));
-		
-		return timeStampValidationDataReferences;
-	}
-	
-	/**
-	 * Returns a list of {@link TimestampedReference}s generated from the encapsulated element found by the provided {@code xPathExpression}
-	 * @param unsignedPropertiesElement {@link Element} to find the encapsulated objects in
-	 * @param xPathExpression {@link String} xPath expression
-	 * @param objectType {@link TimestampedObjectType}
-	 * @param revocationType {@link RevocationType} optional, used for revocation creation
-	 * @param origin {@link RevocationOrigin} optional, used for revocation creation
-	 * @return list of {@link TimestampedReference}s generated from the encapsulated object
-	 */
-	private List<TimestampedReference> createEncapsulatedObjectReferences(Element unsignedPropertiesElement, String xPathExpression, 
-			TimestampedObjectType objectType, RevocationType revocationType, RevocationOrigin origin) {
-		List<TimestampedReference> encapsulatedReferences = new ArrayList<TimestampedReference>();
-		NodeList encapsulatedNodes = DomUtils.getNodeList(unsignedPropertiesElement, xPathExpression);
-		for (int ii = 0; ii < encapsulatedNodes.getLength(); ii++) {
-			Element element = (Element) encapsulatedNodes.item(ii);
-			TimestampedReference encapsulatedTimestampedReference = createEncapsulatedTimestampedReference(element, objectType, revocationType, origin);
-			if (encapsulatedTimestampedReference != null) {
-				encapsulatedReferences.add(encapsulatedTimestampedReference);
-			}
-		}
-		return encapsulatedReferences;
-	}
-	
-	/**
-	 * Creates a {@link TimestampedReference} from the given {@code encapsulatedElement}
-	 * @param encapsulatedElement {@link Element} to create timestamped reference from
-	 * @param objectType {@link TimestampedObjectType} type of the target object
-	 * @param revocationType {@link RevocationType} optional, used for revocation creation
-	 * @param origin {@link RevocationOrigin} optional, used for revocation creation
-	 * @return {@link TimestampedReference}
-	 */
-	private TimestampedReference createEncapsulatedTimestampedReference(Element encapsulatedElement, TimestampedObjectType objectType, 
-			RevocationType revocationType, RevocationOrigin origin) {
-		if (encapsulatedElement.hasChildNodes()) {
-			Node firstChild = encapsulatedElement.getFirstChild();
-			if (Node.TEXT_NODE == firstChild.getNodeType()) {
-				String base64String = firstChild.getTextContent();
-				if (Utils.isBase64Encoded(base64String)) {
-					byte[] binaries = Utils.fromBase64(base64String);
-					EncapsulatedTokenIdentifier tokenIdentifier;
-					switch (objectType) {
-						case CERTIFICATE:
-							tokenIdentifier = new EncapsulatedCertificateTokenIdentifier(binaries);
-							break;
-						case REVOCATION:
-							if (RevocationType.CRL.equals(revocationType)) {
-								tokenIdentifier = CRLBinaryIdentifier.build(binaries, origin);
-							} else {
-								try {
-									tokenIdentifier = OCSPResponseIdentifier.build(DSSRevocationUtils.loadOCSPFromBinaries(binaries), origin);
-								} catch (IOException e) {
-									LOG.error("Cannot read encapsulated OCSP response", e);
-									return null;
-								}
-							}
-							break;
-						default:
-							throw new DSSException(String.format("Cannot create a reference. "
-									+ "The encapsulated object of type [%s] is not supported!", objectType.name()));
-					}
-					return new TimestampedReference(tokenIdentifier.asXmlId(), objectType);
-				}
-			}
-		}
-		throw new DSSException(String.format("Cannot create the token reference. "
-				+ "The element with local name [%s] must contain an encapsulated base64 token value!", encapsulatedElement.getLocalName()));
-	}
-
-	/**
-	 * Utility method to add content timestamps.
-	 *
-	 * @param timestampTokens
-	 *            List of timestamp tokens
-	 * @param nodes
-	 * @param timestampType
-	 *            {@code TimestampType}
-	 */
-	public void addContentTimestamps(final List<TimestampToken> timestampTokens, final NodeList nodes, TimestampType timestampType) {
-		for (int ii = 0; ii < nodes.getLength(); ii++) {
-			final Node node = nodes.item(ii);
-			if (node.getNodeType() != Node.ELEMENT_NODE) {
-				continue;
-			}
-			final Element element = (Element) node;
-			final TimestampToken timestampToken = makeTimestampToken(element, timestampType);
-			if (timestampToken != null) {
-				List<TimestampedReference> timestampReferences = new ArrayList<TimestampedReference>();
-				if (TimestampType.ALL_DATA_OBJECTS_TIMESTAMP.equals(timestampToken.getTimeStampType())) {
-					timestampReferences = getContentTimestampReferences();
-				} else {
-					for (Reference reference : getReferences()) {
-						if (isContentTimestampedReference(reference, timestampToken.getTimeStampType(), timestampToken.getTimestampIncludes())) {
-							for (SignatureScope signatureScope : getSignatureScopes()) {
-								if (Utils.endsWithIgnoreCase(reference.getURI(), signatureScope.getName())) {
-									timestampReferences.add(new TimestampedReference(signatureScope.getDSSIdAsString(), TimestampedObjectType.SIGNED_DATA));
-								}
-							}
-						}
-					}
-				}
-				timestampToken.setTimestampedReferences(timestampReferences);
-				timestampTokens.add(timestampToken);
-			}
-		}
-	}
 
 	@Override
 	public byte[] getContentTimestampData(final TimestampToken timestampToken) {
@@ -1009,21 +767,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		}
 	}
 
-	@Override
-	protected List<TimestampedReference> getSigningCertificateTimestampReferences() {
-		if (signingCertificateTimestampReferences == null) {
-			signingCertificateTimestampReferences = super.getSigningCertificateTimestampReferences();
-
-			if (isKeyInfoCovered()) {
-				List<CertificateToken> keyInfoCerts = getCertificateSource().getKeyInfoCertificates();
-				for (CertificateToken certificate : keyInfoCerts) {
-					signingCertificateTimestampReferences.add(new TimestampedReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
-				}
-			}
-		}
-		return signingCertificateTimestampReferences;
-	}
-
 	/**
 	 * This method ensures that all Include elements referring to the Reference elements have a referencedData
 	 * attribute, which is set to "true". In case one of
@@ -1046,200 +789,57 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public List<TimestampToken> getContentTimestamps() {
-		if (contentTimestamps == null) {
-			makeTimestampTokens();
+		if (signatureTimestampSource == null) {
+			initializeSignatureTimestampSource();
 		}
-		return contentTimestamps;
+		return signatureTimestampSource.getContentTimestamps();
 	}
 
 	@Override
 	public List<TimestampToken> getSignatureTimestamps() {
-		if (signatureTimestamps == null) {
-			makeTimestampTokens();
+		if (signatureTimestampSource == null) {
+			initializeSignatureTimestampSource();
 		}
-		return signatureTimestamps;
+		return signatureTimestampSource.getSignatureTimestamps();
 	}
 
 	@Override
 	public List<TimestampToken> getTimestampsX1() {
-		if (sigAndRefsTimestamps == null) {
-			makeTimestampTokens();
+		if (signatureTimestampSource == null) {
+			initializeSignatureTimestampSource();
 		}
-		return sigAndRefsTimestamps;
+		return signatureTimestampSource.getTimestampsX1();
 	}
 
 	@Override
 	public List<TimestampToken> getTimestampsX2() {
-		if (refsOnlyTimestamps == null) {
-			makeTimestampTokens();
+		if (signatureTimestampSource == null) {
+			initializeSignatureTimestampSource();
 		}
-		return refsOnlyTimestamps;
+		return signatureTimestampSource.getTimestampsX2();
 	}
 
 	@Override
 	public List<TimestampToken> getArchiveTimestamps() {
-		if (archiveTimestamps == null) {
-			makeTimestampTokens();
+		if (signatureTimestampSource == null) {
+			initializeSignatureTimestampSource();
 		}
-		return archiveTimestamps;
+		return signatureTimestampSource.getArchiveTimestamps();
 	}
 
 	/**
-	 * This method must not be called more than once.
+	 * This method initializes the {@link SignatureTimestampSource}
 	 */
-	private void makeTimestampTokens() {
-
-		contentTimestamps = new ArrayList<TimestampToken>();
-		signatureTimestamps = new ArrayList<TimestampToken>();
-		refsOnlyTimestamps = new ArrayList<TimestampToken>();
-		sigAndRefsTimestamps = new ArrayList<TimestampToken>();
-		archiveTimestamps = new ArrayList<TimestampToken>();
-		// TODO (20/12/2014): Browse in the physical order
-		final NodeList allDataObjectsTimestamps = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_ALL_DATA_OBJECTS_TIMESTAMP);
-		addContentTimestamps(contentTimestamps, allDataObjectsTimestamps, TimestampType.ALL_DATA_OBJECTS_TIMESTAMP);
-		final NodeList individualDataObjectsTimestampsNodes = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
-		addContentTimestamps(contentTimestamps, individualDataObjectsTimestampsNodes, TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
-
-		final Element unsignedSignaturePropertiesDom = getUnsignedSignaturePropertiesDom();
-		if (unsignedSignaturePropertiesDom == null) {
-			return;
-		}
-		
-		final List<TimestampToken> previousTimestampedTimestamp = new ArrayList<TimestampToken>();
-		final List<TimestampedReference> encapsulatedReferences = new ArrayList<TimestampedReference>();
-		
-		final NodeList unsignedProperties = unsignedSignaturePropertiesDom.getChildNodes();
-		for (int ii = 0; ii < unsignedProperties.getLength(); ii++) {
-
-			final Node node = unsignedProperties.item(ii);
-			if (node.getNodeType() != Node.ELEMENT_NODE) {
-				// This can happened when there is a blank line between tags.
-				continue;
-			}
-			final Element nodeElement = (Element) node;
-			final String localName = nodeElement.getLocalName();
-			
-			TimestampToken timestampToken;
-			
-			if (XPathQueryHolder.XMLE_SIGNATURE_TIME_STAMP.equals(localName)) {
-				timestampToken = makeTimestampToken(nodeElement, TimestampType.SIGNATURE_TIMESTAMP);
-				if (timestampToken == null) {
-					continue;
-				}
-				timestampToken.setTimestampedReferences(getSignatureTimestampReferences());
-				signatureTimestamps.add(timestampToken);
-				
-			} else if (XPathQueryHolder.XMLE_COMPLETE_CERTIFICATE_REFS.equals(localName) || XPathQueryHolder.XMLE_COMPLETE_CERTIFICATE_REFS_V2.equals(localName) ||
-					XPathQueryHolder.XMLE_ATTRIBUTE_CERTIFICATE_REFS.equals(localName) || XPathQueryHolder.XMLE_ATTRIBUTE_CERTIFICATE_REFS_V2.equals(localName)) {
-				encapsulatedReferences.addAll(getTimestampedReferencesFromCertificateReferences(nodeElement));
-				continue;
-				
-			} else if (XPathQueryHolder.XMLE_COMPLETE_REVOCATION_REFS.equals(localName) || XPathQueryHolder.XMLE_ATTRIBUTE_REVOCATION_REFS.equals(localName)) {
-				encapsulatedReferences.addAll(getTimestampedReferencesFromRevocationReferences(nodeElement));
-				continue;
-				
-			} else if (XPathQueryHolder.XMLE_REFS_ONLY_TIME_STAMP.equals(localName) || XPathQueryHolder.XMLE_REFS_ONLY_TIME_STAMP_V2.equals(localName)) {
-				timestampToken = makeTimestampToken(nodeElement, TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP);
-				if (timestampToken == null) {
-					continue;
-				}
-				final List<TimestampedReference> references = new ArrayList<TimestampedReference>();
-				addReferences(references, encapsulatedReferences);
-				timestampToken.setTimestampedReferences(references);
-				refsOnlyTimestamps.add(timestampToken);
-				
-			} else if (XPathQueryHolder.XMLE_SIG_AND_REFS_TIME_STAMP.equals(localName) || XPathQueryHolder.XMLE_SIG_AND_REFS_TIME_STAMP_V2.equals(localName)) {
-				timestampToken = makeTimestampToken(nodeElement, TimestampType.VALIDATION_DATA_TIMESTAMP);
-				if (timestampToken == null) {
-					continue;
-				}
-				final List<TimestampedReference> references = new ArrayList<TimestampedReference>();
-				addReferencesForPreviousTimestamps(references, filterSignatureTimestamps(previousTimestampedTimestamp));
-				addReferences(references, encapsulatedReferences);
-				timestampToken.setTimestampedReferences(references);
-				sigAndRefsTimestamps.add(timestampToken);
-				
-			} else if (XPathQueryHolder.XMLE_CERTIFICATE_VALUES.equals(localName)) {
-				encapsulatedReferences.addAll(createEncapsulatedObjectReferences(nodeElement, xPathQueryHolder.XPATH___ENCAPSULATED_X509_CERT, 
-						TimestampedObjectType.CERTIFICATE, null, null));
-				continue;
-				
-			} else if (XPathQueryHolder.XMLE_REVOCATION_VALUES.equals(localName)) {
-				encapsulatedReferences.addAll(createEncapsulatedObjectReferences(nodeElement, xPathQueryHolder.XPATH___ENCAPSULATED_CRL_VALUES, 
-						TimestampedObjectType.REVOCATION, RevocationType.CRL, RevocationOrigin.INTERNAL_REVOCATION_VALUES));
-				encapsulatedReferences.addAll(createEncapsulatedObjectReferences(nodeElement, xPathQueryHolder.XPATH___ENCAPSULATED_OCSP_VALUES, 
-						TimestampedObjectType.REVOCATION, RevocationType.OCSP, RevocationOrigin.INTERNAL_REVOCATION_VALUES));
-				continue;
-				
-			} else if (XPathQueryHolder.XMLE_ARCHIVE_TIME_STAMP.equals(localName)) {
-				timestampToken = makeTimestampToken(nodeElement, TimestampType.ARCHIVE_TIMESTAMP);
-				if (timestampToken == null) {
-					continue;
-				}
-				final ArchiveTimestampType archiveTimestampType = getArchiveTimestampType(nodeElement, localName);
-				timestampToken.setArchiveTimestampType(archiveTimestampType);
-
-				final List<TimestampedReference> references = getSignatureTimestampReferences();
-				addReferencesForPreviousTimestamps(references, previousTimestampedTimestamp);
-
-				addReferences(references, encapsulatedReferences);
-
-				timestampToken.setTimestampedReferences(references);
-				archiveTimestamps.add(timestampToken);
-				
-			} else if (XPathQueryHolder.XMLE_TIME_STAMP_VALIDATION_DATA.equals(localName)) {
-				encapsulatedReferences.addAll(getTimestampValidationDataReferences(nodeElement));
-				continue;
-				
-			} else {
-				continue;
-				
-			}
-			
-			previousTimestampedTimestamp.add(timestampToken);
-		}
-	}
-
-	private List<TimestampToken> filterSignatureTimestamps(List<TimestampToken> previousTimestampedTimestamp) {
-		List<TimestampToken> result = new ArrayList<TimestampToken>();
-		for (TimestampToken timestampToken : previousTimestampedTimestamp) {
-			if (TimestampType.SIGNATURE_TIMESTAMP.equals(timestampToken.getTimeStampType())) {
-				result.add(timestampToken);
-			}
-		}
-		return result;
-	}
-
-	private ArchiveTimestampType getArchiveTimestampType(final Element node, final String localName) {
-		if (XPathQueryHolder.XMLE_ARCHIVE_TIME_STAMP.equals(localName)) {
-			final String namespaceURI = node.getNamespaceURI();
-			if (XAdESNamespaces.XAdES141.equals(namespaceURI)) {
-				return ArchiveTimestampType.XAdES_141;
-			}
-		}
-		return ArchiveTimestampType.XAdES;
-	}
-
-	private String getTimestampCanonicalizationMethod(final Element timestampElement) {
-		final Element canonicalizationMethodElement = DomUtils.getElement(timestampElement, xPathQueryHolder.XPATH__CANONICALIZATION_METHOD);
-		if (canonicalizationMethodElement != null) {
-			return canonicalizationMethodElement.getAttribute(XPathQueryHolder.XMLE_ALGORITHM);
-		}
-		return null;
-	}
-
-	/*
-	 * Returns the list of certificates encapsulated in the KeyInfo segment
-	 */
-	public List<CertificateToken> getKeyInfoCertificates() {
-		return getCertificateSource().getKeyInfoCertificates();
-	}
-
-	/*
-	 * Returns the list of certificates encapsulated in the TimeStampValidationData segment
-	 */
-	public List<CertificateToken> getTimestampCertificates() {
-		return getCertificateSource().getTimeStampValidationDataCertValues();
+	private void initializeSignatureTimestampSource() {
+		XAdESTimestampSource xadesTimestampSource = new XAdESTimestampSource(signatureElement, xPathQueryHolder, certPool);
+		xadesTimestampSource.setCertificateSource(getCertificateSource());
+		xadesTimestampSource.setCRLSource(getCRLSource());
+		xadesTimestampSource.setOCSPSource(getOCSPSource());
+		xadesTimestampSource.setSignatureDSSId(getId());
+		xadesTimestampSource.setSignatureScopes(getSignatureScopes());
+		xadesTimestampSource.setReferences(getReferences());
+		xadesTimestampSource.setReferenceValidations(getReferenceValidations());
+		signatureTimestampSource = xadesTimestampSource;
 	}
 
 	@Override
@@ -1314,16 +914,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			}
 			signatureCryptographicVerification.setErrorMessage(e.getMessage() + "/ XAdESSignature/Line number/" + lineNumber);
 		}
-	}
-
-	public boolean isKeyInfoCovered() {
-		List<ReferenceValidation> refValidations = getReferenceValidations();
-		for (ReferenceValidation referenceValidation : refValidations) {
-			if (DigestMatcherType.KEY_INFO.equals(referenceValidation.getType()) && referenceValidation.isFound() && referenceValidation.isIntact()) {
-				return true;
-			}
-		}
-		return false;
 	}
 	
 	private void extractReferences() {
@@ -1751,7 +1341,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			 */
 			final Set<String> referenceURIs = new HashSet<String>();
 			for (final Reference reference : getReferences()) {
-				referenceURIs.add(cleanURI(reference.getURI()));
+				referenceURIs.add(DomUtils.getId(reference.getURI()));
 				try {
 					final byte[] referencedBytes = reference.getReferencedBytes();
 					if (referencedBytes != null) {
@@ -1930,19 +1520,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		return Collections.emptyList();
 	}
 
-	/**
-	 * This methods removes the char '#' if present
-	 * 
-	 * @param uri
-	 * @return cleaned uri
-	 */
-	private String cleanURI(final String uri) {
-		if (uri.startsWith("#")) {
-			return uri.substring(1);
-		}
-		return uri;
-	}
-
 	private void writeCanonicalizedValue(final String xPathString, final String canonicalizationMethod, final ByteArrayOutputStream buffer) throws IOException {
 		final Element element = DomUtils.getElement(signatureElement, xPathString);
 		if (element != null) {
@@ -1965,6 +1542,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		return daIdentifier;
 	}
 
+	// TODO: can be removed ???
 	@Override
 	public List<TimestampedReference> getTimestampedReferences() {
 		final List<TimestampedReference> references = new ArrayList<TimestampedReference>();

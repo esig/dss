@@ -59,7 +59,7 @@ public class XAdESLevelXL extends XAdESLevelX {
 		if (!xadesSignature.hasLTProfile() || SignatureLevel.XAdES_XL.equals(params.getSignatureLevel())) {
 
 			// Timestamps can already be loaded in memory (force reload)
-			xadesSignature.resetTimestamps();
+			xadesSignature.resetTimestampSource();
 
 			final ValidationContext valContext = xadesSignature.getSignatureValidationContext(certificateVerifier);
 

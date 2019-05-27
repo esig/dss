@@ -50,6 +50,7 @@ public class XPathQueryHolder implements Serializable {
 	public static final String XMLE_UNSIGNED_SIGNATURE_PROPERTIES = "UnsignedSignatureProperties";
 	
 
+	public static final String XMLE_ALL_DATA_OBJECTS_TIME_STAMP = "AllDataObjectsTimeStamp";
 	public static final String XMLE_ARCHIVE_TIME_STAMP = "ArchiveTimeStamp";
 	public static final String XMLE_ARCHIVE_TIME_STAMP_V2 = "ArchiveTimeStampV2";
 	public static final String XMLE_ATTRIBUTE_CERTIFICATE_REFS = "AttributeCertificateRefs";
@@ -59,6 +60,7 @@ public class XPathQueryHolder implements Serializable {
 	public static final String XMLE_COMPLETE_CERTIFICATE_REFS = "CompleteCertificateRefs";
 	public static final String XMLE_COMPLETE_CERTIFICATE_REFS_V2 = "CompleteCertificateRefsV2";
 	public static final String XMLE_COMPLETE_REVOCATION_REFS = "CompleteRevocationRefs";
+	public static final String XMLE_INDIVIDUAL_DATA_OBJECTS_TIME_STAMP = "IndividualDataObjectsTimeStamp";
 	public static final String XMLE_REFS_ONLY_TIME_STAMP = "RefsOnlyTimeStamp";
 	public static final String XMLE_REFS_ONLY_TIME_STAMP_V2 = "RefsOnlyTimeStampV2";
 	public static final String XMLE_REVOCATION_VALUES = "RevocationValues";

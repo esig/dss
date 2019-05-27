@@ -110,6 +110,8 @@ import eu.europa.esig.dss.tsl.ServiceInfoStatus;
 import eu.europa.esig.dss.tsl.TLInfo;
 import eu.europa.esig.dss.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.x509.CertificateSource;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -1088,8 +1090,8 @@ public class DiagnosticDataBuilder {
 	
 	private List<XmlOrphanRevocation> getXmlOrphanRevocations(Collection<EncapsulatedRevocationTokenIdentifier> orphanRevocations, AdvancedSignature signature) {
 		List<XmlOrphanRevocation> xmlOrphanRevocations = new ArrayList<XmlOrphanRevocation>();
-		for (EncapsulatedRevocationTokenIdentifier revocationToken : orphanRevocations) {
-			xmlOrphanRevocations.add(getXmlOrphanRevocation(revocationToken, signature));
+		for (EncapsulatedRevocationTokenIdentifier revocationIdentifier : orphanRevocations) {
+			xmlOrphanRevocations.add(getXmlOrphanRevocation(revocationIdentifier, signature));
 		}
 		return xmlOrphanRevocations;
 	}

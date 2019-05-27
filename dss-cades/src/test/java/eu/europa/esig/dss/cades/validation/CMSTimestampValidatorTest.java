@@ -31,7 +31,7 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 public class CMSTimestampValidatorTest extends PKIFactoryAccess {

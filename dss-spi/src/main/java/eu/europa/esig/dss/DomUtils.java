@@ -568,11 +568,10 @@ public final class DomUtils {
 	}
 
 	public static String getId(String uri) {
-		String id = uri;
 		if (uri.startsWith("#")) {
-			id = id.substring(1);
+			return uri.substring(1);
 		}
-		return id;
+		return uri;
 	}
 
 	public static XMLStreamReader getSecureXMLStreamReader(InputStream is) throws XMLStreamException {
