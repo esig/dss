@@ -13,5 +13,13 @@ public interface SignatureTimestampSource {
 	List<TimestampToken> getTimestampsX2();
 	
 	List<TimestampToken> getArchiveTimestamps();
+	
+	/**
+	 * This method allows to add an external timestamp. The given timestamp must be processed before.
+	 * 
+	 * @param timestamp
+	 *            the timestamp token
+	 */
+	void addExternalTimestamp(TimestampToken timestamp);
 
 }

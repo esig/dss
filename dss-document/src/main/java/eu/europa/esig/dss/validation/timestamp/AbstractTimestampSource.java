@@ -130,6 +130,37 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 		return archiveTimestamps;
 	}
 	
+	@Override
+	public void addExternalTimestamp(TimestampToken timestamp) {
+		// if timestamp tokens not created yet
+		if (archiveTimestamps == null) {
+			makeTimestampTokens();
+		}
+		switch (timestamp.getTimeStampType()) {
+			case CONTENT_TIMESTAMP:
+			case ALL_DATA_OBJECTS_TIMESTAMP:
+			case INDIVIDUAL_DATA_OBJECTS_TIMESTAMP:
+				contentTimestamps.add(timestamp);
+				break;
+			case SIGNATURE_TIMESTAMP:
+				signatureTimestamps.add(timestamp);
+				break;
+			case VALIDATION_DATA_REFSONLY_TIMESTAMP:
+				refsOnlyTimestamps.add(timestamp);
+				break;
+			case VALIDATION_DATA_TIMESTAMP:
+				sigAndRefsTimestamps.add(timestamp);
+				break;
+			case ARCHIVE_TIMESTAMP:
+				archiveTimestamps.add(timestamp);
+				break;
+			default:
+				LOG.warn("The signature timestamp source does not support timestamp tokens with type [{}]. "
+						+ "The TimestampToken was not added.", timestamp.getTimeStampType().name());
+				break;
+		}
+	}
+	
 	/**
 	 * Populates all the lists by data found into the signature
 	 */

@@ -777,6 +777,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public List<SignatureScope> getSignatureScopes() {
 		return signatureScopes;
 	}
+	
+	/**
+	 * This method initializes the {@link SignatureTimestampSource}
+	 */
+	protected abstract void initializeSignatureTimestampSource();
 
 	@Override
 	public void addExternalTimestamp(TimestampToken timestamp) {
@@ -788,10 +793,10 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 			throw new DSSException("Only archival timestamp is allowed !");
 		}
 
-		if (archiveTimestamps == null) {
-			archiveTimestamps = new ArrayList<TimestampToken>();
+		if (signatureTimestampSource == null) {
+			initializeSignatureTimestampSource();
 		}
-		archiveTimestamps.add(timestamp);
+		signatureTimestampSource.addExternalTimestamp(timestamp);
 	}
 
 	/* Defines the level T */

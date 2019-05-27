@@ -830,7 +830,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	/**
 	 * This method initializes the {@link SignatureTimestampSource}
 	 */
-	private void initializeSignatureTimestampSource() {
+	@Override
+	protected void initializeSignatureTimestampSource() {
 		XAdESTimestampSource xadesTimestampSource = new XAdESTimestampSource(signatureElement, xPathQueryHolder, certPool);
 		xadesTimestampSource.setCertificateSource(getCertificateSource());
 		xadesTimestampSource.setCRLSource(getCRLSource());

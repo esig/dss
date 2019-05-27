@@ -692,7 +692,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	/**
 	 * This method initializes the {@link SignatureTimestampSource}
 	 */
-	private void initializeSignatureTimestampSource() {
+	@Override
+	protected void initializeSignatureTimestampSource() {
 		CAdESTimestampSource cadesTimestampSource = new CAdESTimestampSource(signerInformation, certPool);
 		cadesTimestampSource.setCertificateSource(getCertificateSource());
 		cadesTimestampSource.setCRLSource(getCRLSource());
