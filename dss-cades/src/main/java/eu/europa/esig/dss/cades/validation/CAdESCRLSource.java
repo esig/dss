@@ -20,6 +20,10 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
+import static eu.europa.esig.dss.OID.attributeRevocationRefsOid;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationRefs;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationValues;
+
 import java.io.IOException;
 import java.util.Collection;
 
@@ -33,7 +37,6 @@ import org.bouncycastle.asn1.esf.CrlListID;
 import org.bouncycastle.asn1.esf.CrlOcspRef;
 import org.bouncycastle.asn1.esf.CrlValidatedID;
 import org.bouncycastle.asn1.esf.RevocationValues;
-import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.x509.CertificateList;
 import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cms.CMSSignedData;
@@ -102,7 +105,7 @@ public class CAdESCRLSource extends SignatureCRLSource {
 				 * ocspVals [1] SEQUENCE OF BasicOCSPResponse OPTIONAL,
 				 * otherRevVals [2] OtherRevVals OPTIONAL}
 				 */
-				collectRevocationValues(unsignedAttributes, PKCSObjectIdentifiers.id_aa_ets_revocationValues, RevocationOrigin.INTERNAL_REVOCATION_VALUES);
+				collectRevocationValues(unsignedAttributes, id_aa_ets_revocationValues, RevocationOrigin.INTERNAL_REVOCATION_VALUES);
 				
 				/*
 				 * ETSI TS 101 733 V2.2.1 (2013-04) pages 39,41
@@ -124,12 +127,12 @@ public class CAdESCRLSource extends SignatureCRLSource {
 				 * } 
 				 * AttributeRevocationRefs ::= SEQUENCE OF CrlOcspRef (the same as for CompleteRevocationRefs)
 				 */
-				collectRevocationRefs(unsignedAttributes, PKCSObjectIdentifiers.id_aa_ets_revocationRefs, RevocationOrigin.COMPLETE_REVOCATION_REFS);
+				collectRevocationRefs(unsignedAttributes, id_aa_ets_revocationRefs, RevocationOrigin.COMPLETE_REVOCATION_REFS);
 				/*
 				 * id-aa-ets-attrRevocationRefs OBJECT IDENTIFIER ::= { iso(1) member-body(2)
 				 * us(840) rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) id-aa(2) 45} 
 				 */
-				collectRevocationRefs(unsignedAttributes, PKCSObjectIdentifiers.id_aa.branch("45"), RevocationOrigin.ATTRIBUTE_REVOCATION_REFS);
+				collectRevocationRefs(unsignedAttributes, attributeRevocationRefsOid, RevocationOrigin.ATTRIBUTE_REVOCATION_REFS);
 			}
 
 			/*
@@ -193,13 +196,12 @@ public class CAdESCRLSource extends SignatureCRLSource {
 			}
 			
 			final ASN1Encodable attrValue = attrValues.getObjectAt(0);
-			final ASN1Sequence completeCertificateRefs = (ASN1Sequence) attrValue;
-			for (int ii = 0; ii < completeCertificateRefs.size(); ii++) {
-				final ASN1Encodable completeCertificateRef = completeCertificateRefs.getObjectAt(ii);
-				final CrlOcspRef otherCertId = CrlOcspRef.getInstance(completeCertificateRef);
-				final CrlListID otherCertIds = otherCertId.getCrlids();
-				if (otherCertIds != null) {
-					for (final CrlValidatedID id : otherCertIds.getCrls()) {
+			final ASN1Sequence revocationRefs = (ASN1Sequence) attrValue;
+			for (int ii = 0; ii < revocationRefs.size(); ii++) {
+				final CrlOcspRef crlOcspRef = CrlOcspRef.getInstance(revocationRefs.getObjectAt(ii));
+				final CrlListID crlIds = crlOcspRef.getCrlids();
+				if (crlIds != null) {
+					for (final CrlValidatedID id : crlIds.getCrls()) {
 						final CRLRef crlRef = new CRLRef(id, origin);
 						addReference(crlRef, origin);
 					}

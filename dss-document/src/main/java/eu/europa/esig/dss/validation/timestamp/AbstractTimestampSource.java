@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import eu.europa.esig.dss.CertificateRef;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.EncapsulatedCertificateTokenIdentifier;
@@ -13,6 +16,7 @@ import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureScope;
 import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.x509.ArchiveTimestampType;
+import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.SignatureCertificateSource;
 import eu.europa.esig.dss.x509.TimestampType;
@@ -26,6 +30,8 @@ import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
  * Contains a set of {@link TimestampToken}s found in a {@link DefaultAdvancedSignature} object
  */
 public abstract class AbstractTimestampSource<SignatureAttribute extends ISignatureAttribute> implements SignatureTimestampSource {
+
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractTimestampSource.class);
 	
 	protected SignatureCertificateSource certificateSource;
 	protected SignatureCRLSource crlSource;
@@ -33,6 +39,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	
 	protected String signatureId;
 	protected List<SignatureScope> signatureScopes;
+	protected final CertificatePool certificatePool;
 
 	// Enclosed content timestamps.
 	protected List<TimestampToken> contentTimestamps;
@@ -58,6 +65,10 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	 * List of found revocation refs which values were not found in the CRL/OCSP source
 	 */
 	protected List<RevocationRef> orphanRevocationRefs = new ArrayList<RevocationRef>();
+	
+	protected AbstractTimestampSource(CertificatePool certificatePool) {
+		this.certificatePool = certificatePool;
+	}
 	
 	public void setCertificateSource(SignatureCertificateSource certificateSource) {
 		this.certificateSource = certificateSource;
@@ -130,14 +141,21 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 		refsOnlyTimestamps = new ArrayList<TimestampToken>();
 		archiveTimestamps = new ArrayList<TimestampToken>();
 		
-		final SignatureProperties<SignatureAttribute> signedSignatureProperties = getSignedDataObjectProperties();
+		final SignatureProperties<SignatureAttribute> signedSignatureProperties = getSignedSignatureProperties();
 		
 		final List<SignatureAttribute> signedAttributes = signedSignatureProperties.getAttributes();
 		for (SignatureAttribute signedAttribute : signedAttributes) {
 			
 			TimestampToken timestampToken;
 			
-			if (isAllDataObjectsTimestamp(signedAttribute)) {
+			if (isContentTimestamp(signedAttribute)) {
+				timestampToken = makeTimestampToken(signedAttribute, TimestampType.CONTENT_TIMESTAMP);
+				if (timestampToken == null) {
+					continue;
+				}
+				timestampToken.setTimestampedReferences(getAllContentTimestampReferences());
+				
+			} else if (isAllDataObjectsTimestamp(signedAttribute)) {
 				timestampToken = makeTimestampToken(signedAttribute, TimestampType.ALL_DATA_OBJECTS_TIMESTAMP);
 				if (timestampToken == null) {
 					continue;
@@ -151,8 +169,10 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 				}
 				List<TimestampInclude> timestampIncludes = timestampToken.getTimestampIncludes();
 				timestampToken.setTimestampedReferences(getIndividualContentTimestampedReferences(timestampIncludes));
+				
 			} else {
 				continue;
+				
 			}
 			contentTimestamps.add(timestampToken);
 		}
@@ -240,7 +260,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 				continue;
 				
 			} else {
-				// TODO: log name warn
+				LOG.warn("The unsigned attribute with name [{}] is not supported", unsignedAttribute.toString());
 				continue;
 			}
 			
@@ -254,27 +274,37 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	 * Returns the 'signed-signature-properties' element of the signature
 	 * @return {@link SignatureProperties}
 	 */
-	protected abstract SignatureProperties<SignatureAttribute> getSignedDataObjectProperties();
+	protected abstract SignatureProperties<SignatureAttribute> getSignedSignatureProperties();
 	
 	/**
 	 * Returns the 'unsigned-signature-properties' element of the signature
 	 * @return {@link SignatureProperties}
 	 */
 	protected abstract SignatureProperties<SignatureAttribute> getUnsignedSignatureProperties();
-	
+
 	/**
-	 * Determines if the given {@code unsignedAttribute} is an instance of "data-objects-timestamp" element
-	 * @param unsignedAttribute {@link ISignatureAttribute} to process
+	 * Determines if the given {@code signedAttribute} is an instance of "content-timestamp" element
+	 * NOTE: Applicable only for CAdES
+	 * @param signedAttribute {@link ISignatureAttribute} to process
 	 * @return TRUE if the {@code unsignedAttribute} is a Data Objects Timestamp, FALSE otherwise
 	 */
-	protected abstract boolean isAllDataObjectsTimestamp(SignatureAttribute unsignedAttribute);
+	protected abstract boolean isContentTimestamp(SignatureAttribute signedAttribute);
 	
 	/**
-	 * Determines if the given {@code unsignedAttribute} is an instance of "individual-data-objects-timestamp" element
-	 * @param unsignedAttribute {@link ISignatureAttribute} to process
+	 * Determines if the given {@code signedAttribute} is an instance of "data-objects-timestamp" element
+	 * NOTE: Applicable only for XAdES
+	 * @param signedAttribute {@link ISignatureAttribute} to process
 	 * @return TRUE if the {@code unsignedAttribute} is a Data Objects Timestamp, FALSE otherwise
 	 */
-	protected abstract boolean isIndividualDataObjectsTimestamp(SignatureAttribute unsignedAttribute);
+	protected abstract boolean isAllDataObjectsTimestamp(SignatureAttribute signedAttribute);
+	
+	/**
+	 * Determines if the given {@code signedAttribute} is an instance of "individual-data-objects-timestamp" element
+	 * NOTE: Applicable only for XAdES
+	 * @param signedAttribute {@link ISignatureAttribute} to process
+	 * @return TRUE if the {@code unsignedAttribute} is a Data Objects Timestamp, FALSE otherwise
+	 */
+	protected abstract boolean isIndividualDataObjectsTimestamp(SignatureAttribute signedAttribute);
 	
 	/**
 	 * Determines if the given {@code unsignedAttribute} is an instance of "signature-timestamp" element
@@ -354,12 +384,12 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	protected abstract boolean isTimeStampValidationData(SignatureAttribute unsignedAttribute);
 	
 	/**
-	 * Creates a timestamp token from the provided {@code unsignedAttribute}
-	 * @param unsignedAttribute {@link ISignatureAttribute} to create timestamp from
+	 * Creates a timestamp token from the provided {@code signatureAttribute}
+	 * @param signatureAttribute {@link ISignatureAttribute} to create timestamp from
 	 * @param timestampType a target {@link TimestampType}
 	 * @return {@link TimestampToken}
 	 */
-	protected abstract TimestampToken makeTimestampToken(SignatureAttribute unsignedAttribute, TimestampType timestampType);
+	protected abstract TimestampToken makeTimestampToken(SignatureAttribute signatureAttribute, TimestampType timestampType);
 	
 	/**
 	 * Returns a list of {@link TimestampedReference}s obtained from the {@code signatureScopes}

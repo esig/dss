@@ -62,7 +62,6 @@ import eu.europa.esig.jaxb.validationreport.ValidationObjectType;
 import eu.europa.esig.jaxb.validationreport.ValidationReportType;
 import eu.europa.esig.jaxb.validationreport.enums.ObjectType;
 import eu.europa.esig.jaxb.xades132.DigestAlgAndValueType;
-import eu.europa.esig.jaxb.xmldsig.DigestMethodType;
 
 public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 
@@ -127,6 +126,9 @@ public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 			assertTrue(timestamp.isMessageImprintDataIntact());
 			assertTrue(timestamp.isSignatureValid());
 		}
+		
+		assertEquals(1, timestampList.get(0).getTimestampedObjects().size());
+		assertEquals(2, timestampList.get(1).getTimestampedObjects().size());
 
 		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChain(diagnosticData.getFirstSignatureId());
 		assertEquals(getCertificateChain().length, signatureCertificateChain.size());

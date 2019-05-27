@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.validation;
 
+import static eu.europa.esig.dss.OID.attributeCertificateRefsOid;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certificateRefs;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificate;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificateV2;
 
@@ -66,12 +68,6 @@ import eu.europa.esig.dss.x509.SignatureCertificateSource;
 public class CAdESCertificateSource extends SignatureCertificateSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESCertificateSource.class);
-
-	/*
-	 * id-aa-ets-attrCertificateRefs OBJECT IDENTIFIER ::= { iso(1) member-body(2)
-	 * us(840) rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) id-aa(2) 44 }
-	 */
-	private static final ASN1ObjectIdentifier attributeCertificateRefsOid = PKCSObjectIdentifiers.id_aa.branch("44");
 
 	private final CMSSignedData cmsSignedData;
 	private final SignerInformation signerInformation;
@@ -159,7 +155,7 @@ public class CAdESCertificateSource extends SignatureCertificateSource {
 
 	@Override
 	public List<CertificateRef> getCompleteCertificateRefs() {
-		return getCertificateRefsFromUnsignedAttribute(PKCSObjectIdentifiers.id_aa_ets_certificateRefs, CertificateRefLocation.COMPLETE_CERTIFICATE_REFS);
+		return getCertificateRefsFromUnsignedAttribute(id_aa_ets_certificateRefs, CertificateRefLocation.COMPLETE_CERTIFICATE_REFS);
 	}
 
 	@Override

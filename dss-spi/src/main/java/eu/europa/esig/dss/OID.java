@@ -61,6 +61,18 @@ public class OID {
 	public static final ASN1ObjectIdentifier id_aa_ets_signerAttrV2 = new ASN1ObjectIdentifier("0.4.0.19122.1.1");
 
 	/**
+	 * id-aa-ets-attrCertificateRefs OBJECT IDENTIFIER ::= { iso(1) member-body(2)
+	 * us(840) rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) id-aa(2) 44 }
+	 */
+	public static final ASN1ObjectIdentifier attributeCertificateRefsOid = PKCSObjectIdentifiers.id_aa.branch("44");
+
+	/**
+	 * id-aa-ets-attrRevocationRefs OBJECT IDENTIFIER ::= { iso(1) member-body(2)
+	 * us(840) rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) id-aa(2) 45} 
+	 */
+	public static final ASN1ObjectIdentifier attributeRevocationRefsOid = PKCSObjectIdentifiers.id_aa.branch("45");
+
+	/**
 	 * id-at OBJECT IDENTIFIER ::= { joint-iso-ccitt(2) ds(5) 4 }
 	 * id-at-role OBJECT IDENTIFIER ::= { id-at 72}
 	 */

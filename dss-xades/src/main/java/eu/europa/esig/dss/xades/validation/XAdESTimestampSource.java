@@ -44,7 +44,6 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	
 	private final Element signatureElement;
 	private final XPathQueryHolder xPathQueryHolder;
-	private final CertificatePool certificatePool;
 	
 	private List<Reference> references;
 	private List<ReferenceValidation> referenceValidations;
@@ -55,9 +54,9 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	private List<TimestampedReference> signingCertificateTimestampReferences;
 	
 	public XAdESTimestampSource(final Element signatureElement, final XPathQueryHolder xPathQueryHolder, final CertificatePool certificatePool) {
+		super(certificatePool);
 		this.signatureElement = signatureElement;
 		this.xPathQueryHolder = xPathQueryHolder;
-		this.certificatePool = certificatePool;
 	}
 	
 	public void setReferences(List<Reference> references) {
@@ -69,7 +68,7 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	}
 
 	@Override
-	protected SignatureProperties<XAdESAttribute> getSignedDataObjectProperties() {
+	protected SignatureProperties<XAdESAttribute> getSignedSignatureProperties() {
 		return XAdESSignedDataObjectProperties.build(signatureElement, xPathQueryHolder);
 	}
 
@@ -79,13 +78,19 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	}
 
 	@Override
-	protected boolean isAllDataObjectsTimestamp(XAdESAttribute unsignedAttribute) {
-		return XPathQueryHolder.XMLE_ALL_DATA_OBJECTS_TIME_STAMP.equals(unsignedAttribute.getName());
+	protected boolean isContentTimestamp(XAdESAttribute signedAttribute) {
+		// Not applicable for XAdES
+		return false;
 	}
 
 	@Override
-	protected boolean isIndividualDataObjectsTimestamp(XAdESAttribute unsignedAttribute) {
-		return XPathQueryHolder.XMLE_INDIVIDUAL_DATA_OBJECTS_TIME_STAMP.equals(unsignedAttribute.getName());
+	protected boolean isAllDataObjectsTimestamp(XAdESAttribute signedAttribute) {
+		return XPathQueryHolder.XMLE_ALL_DATA_OBJECTS_TIME_STAMP.equals(signedAttribute.getName());
+	}
+
+	@Override
+	protected boolean isIndividualDataObjectsTimestamp(XAdESAttribute signedAttribute) {
+		return XPathQueryHolder.XMLE_INDIVIDUAL_DATA_OBJECTS_TIME_STAMP.equals(signedAttribute.getName());
 	}
 
 	@Override

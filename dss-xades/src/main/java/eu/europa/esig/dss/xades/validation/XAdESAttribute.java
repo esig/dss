@@ -27,7 +27,6 @@ public class XAdESAttribute implements ISignatureAttribute {
 	 * Returns the local name of the element
 	 * @return {@link String} attribute's name
 	 */
-	@Override
 	public String getName() {
 		if (localName == null) {
 			localName = element.getLocalName();
@@ -94,6 +93,11 @@ public class XAdESAttribute implements ISignatureAttribute {
 	@Override 
 	public int hashCode() {
 		return element.hashCode();
+	}
+	
+	@Override
+	public String toString() {
+		return getName();
 	}
 
 }

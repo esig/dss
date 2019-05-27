@@ -22,16 +22,8 @@ package eu.europa.esig.dss.cades.validation;
 
 import static eu.europa.esig.dss.OID.id_aa_ets_archiveTimestampV2;
 import static eu.europa.esig.dss.OID.id_aa_ets_archiveTimestampV3;
-import static eu.europa.esig.dss.x509.ArchiveTimestampType.CAdES_V2;
-import static eu.europa.esig.dss.x509.ArchiveTimestampType.CAdES_v3;
-import static eu.europa.esig.dss.x509.TimestampType.ARCHIVE_TIMESTAMP;
-import static eu.europa.esig.dss.x509.TimestampType.CONTENT_TIMESTAMP;
-import static eu.europa.esig.dss.x509.TimestampType.SIGNATURE_TIMESTAMP;
-import static eu.europa.esig.dss.x509.TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP;
-import static eu.europa.esig.dss.x509.TimestampType.VALIDATION_DATA_TIMESTAMP;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certificateRefs;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_contentTimestamp;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_escTimeStamp;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signatureTimeStampToken;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificate;
@@ -142,14 +134,13 @@ import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.TimestampedObjectType;
+import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.x509.ArchiveTimestampType;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.SignaturePolicy;
-import eu.europa.esig.dss.x509.TimestampLocation;
-import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 
@@ -176,17 +167,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	 * an input provided by the DA then getSigningCer MUST be called.
 	 */
 	private CertificateValidity signingCertificateValidity;
-
-	/**
-	 * This id identifies the signature, it is calculated on the signing time if
-	 * present and on the certificate.
-	 */
-	private String signatureId;
-
-	/**
-	 * Cached list of the Signing Certificate Timestamp References.
-	 */
-	private List<TimestampedReference> signingCertificateTimestampReferences;
 
 	/**
 	 * @param data
@@ -671,47 +651,55 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public List<TimestampToken> getContentTimestamps() {
-
-		if (contentTimestamps == null) {
-			makeTimestampTokens();
+		if (signatureTimestampSource == null) {
+			initializeSignatureTimestampSource();
 		}
-		return contentTimestamps;
+		return signatureTimestampSource.getContentTimestamps();
 	}
 
 	@Override
 	public List<TimestampToken> getSignatureTimestamps() {
-
-		if (signatureTimestamps == null) {
-			makeTimestampTokens();
+		if (signatureTimestampSource == null) {
+			initializeSignatureTimestampSource();
 		}
-		return signatureTimestamps;
+		return signatureTimestampSource.getSignatureTimestamps();
 	}
 
 	@Override
 	public List<TimestampToken> getTimestampsX1() {
-
-		if (sigAndRefsTimestamps == null) {
-			makeTimestampTokens();
+		if (signatureTimestampSource == null) {
+			initializeSignatureTimestampSource();
 		}
-		return sigAndRefsTimestamps;
+		return signatureTimestampSource.getTimestampsX1();
 	}
 
 	@Override
 	public List<TimestampToken> getTimestampsX2() {
-
-		if (refsOnlyTimestamps == null) {
-			makeTimestampTokens();
+		if (signatureTimestampSource == null) {
+			initializeSignatureTimestampSource();
 		}
-		return refsOnlyTimestamps;
+		return signatureTimestampSource.getTimestampsX2();
 	}
 
 	@Override
 	public List<TimestampToken> getArchiveTimestamps() {
-
-		if (archiveTimestamps == null) {
-			makeTimestampTokens();
+		if (signatureTimestampSource == null) {
+			initializeSignatureTimestampSource();
 		}
-		return archiveTimestamps;
+		return signatureTimestampSource.getArchiveTimestamps();
+	}
+
+	/**
+	 * This method initializes the {@link SignatureTimestampSource}
+	 */
+	private void initializeSignatureTimestampSource() {
+		CAdESTimestampSource cadesTimestampSource = new CAdESTimestampSource(signerInformation, certPool);
+		cadesTimestampSource.setCertificateSource(getCertificateSource());
+		cadesTimestampSource.setCRLSource(getCRLSource());
+		cadesTimestampSource.setOCSPSource(getOCSPSource());
+		cadesTimestampSource.setSignatureDSSId(getId());
+		cadesTimestampSource.setSignatureScopes(getSignatureScopes());
+		signatureTimestampSource = cadesTimestampSource;
 	}
 
 	@Override
@@ -720,97 +708,11 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return Collections.emptyList();
 	}
 
-	private void makeTimestampTokens() {
-
-		contentTimestamps = createTimestamps(id_aa_ets_contentTimestamp, CONTENT_TIMESTAMP, null);
-		signatureTimestamps = createTimestamps(id_aa_signatureTimeStampToken, SIGNATURE_TIMESTAMP, null);
-		refsOnlyTimestamps = createTimestamps(id_aa_ets_certCRLTimestamp, VALIDATION_DATA_REFSONLY_TIMESTAMP, null);
-		sigAndRefsTimestamps = createTimestamps(id_aa_ets_escTimeStamp, VALIDATION_DATA_TIMESTAMP, null);
-		archiveTimestamps = createTimestamps(id_aa_ets_archiveTimestampV2, ARCHIVE_TIMESTAMP, CAdES_V2);
-		archiveTimestamps.addAll(createTimestamps(id_aa_ets_archiveTimestampV3, ARCHIVE_TIMESTAMP, CAdES_v3));
-		final List<TimestampToken> timestampTokenList = getTimestampTokenList();
-
-		final List<TimestampToken> timestampedTimestamps = new ArrayList<TimestampToken>();
-		for (final TimestampToken timestampToken : timestampTokenList) {
-
-			final TimestampType timestampType = timestampToken.getTimeStampType();
-			switch (timestampType) {
-			case CONTENT_TIMESTAMP:
-				// Will call getContentTimestampData
-				timestampToken.setTimestampedReferences(getContentTimestampReferences());
-				break;
-			case SIGNATURE_TIMESTAMP:
-				timestampToken.setTimestampedReferences(getSignatureTimestampReferences());
-				break;
-			case VALIDATION_DATA_REFSONLY_TIMESTAMP:
-				timestampToken.setTimestampedReferences(getTimestampedReferences());
-				break;
-			case VALIDATION_DATA_TIMESTAMP:
-				final List<TimestampedReference> validationDataReferences = getSignatureTimestampReferences();
-				addReferences(validationDataReferences, getTimestampedReferences());
-				timestampToken.setTimestampedReferences(validationDataReferences);
-				break;
-			case ARCHIVE_TIMESTAMP:
-				final List<TimestampedReference> references = getSignatureTimestampReferences();
-				addReferencesFromRevocationData(references);
-				addReferencesForCertificates(references);
-				addReferencesForPreviousTimestamps(references, timestampedTimestamps);
-				timestampToken.setTimestampedReferences(references);
-				break;
-			default:
-				throw new DSSException("TimeStampType not supported : " + timestampType);
-			}
-			timestampedTimestamps.add(timestampToken);
-		}
-	}
-
 	public List<TimestampedReference> getTimestampReferencesForArchiveTimestamp(final List<TimestampToken> timestampedTimestamps) {
 		final List<TimestampedReference> archiveReferences = getSignatureTimestampReferences();
 		addReferencesForPreviousTimestamps(archiveReferences, timestampedTimestamps);
 		addReferences(archiveReferences, getTimestampedReferences());
 		return archiveReferences;
-	}
-
-	private List<TimestampToken> getTimestampTokenList() {
-
-		final List<TimestampToken> timestampTokenList = new ArrayList<TimestampToken>();
-		timestampTokenList.addAll(contentTimestamps);
-		timestampTokenList.addAll(signatureTimestamps);
-		timestampTokenList.addAll(refsOnlyTimestamps);
-		timestampTokenList.addAll(sigAndRefsTimestamps);
-		timestampTokenList.addAll(archiveTimestamps);
-		return timestampTokenList;
-	}
-
-	private List<TimestampToken> createTimestamps(final ASN1ObjectIdentifier attrType, final TimestampType timestampType,
-			final ArchiveTimestampType archiveTimestampType) {
-
-		final List<TimestampToken> timestampTokenList = new ArrayList<TimestampToken>();
-		final AttributeTable attributes = attrType.equals(id_aa_ets_contentTimestamp) ? signerInformation.getSignedAttributes()
-				: signerInformation.getUnsignedAttributes();
-		if (attributes != null) {
-			final ASN1EncodableVector allAttributes = attributes.getAll(attrType);
-			for (int ii = 0; ii < allAttributes.size(); ii++) {
-				final Attribute attribute = (Attribute) allAttributes.get(ii);
-				final ASN1Set attrValues = attribute.getAttrValues();
-				for (final ASN1Encodable value : attrValues.toArray()) {
-					if (value instanceof DEROctetString) {
-						LOG.warn("Illegal content for timestamp (OID : {}) : OCTET STRING is not allowed !", attrType);
-					} else {
-						try {
-							byte[] encoded = value.toASN1Primitive().getEncoded();
-							final TimestampToken timestampToken = new TimestampToken(encoded, timestampType, certPool, TimestampLocation.CAdES);
-
-							timestampToken.setArchiveTimestampType(archiveTimestampType);
-							timestampTokenList.add(timestampToken);
-						} catch (Exception e) {
-							throw new DSSException(e);
-						}
-					}
-				}
-			}
-		}
-		return timestampTokenList;
 	}
 
 	@Override
@@ -1258,7 +1160,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				archiveTimestampData = getArchiveTimestampDataV2(timestampToken, false);
 			}
 			break;
-		case CAdES_v3:
+		case CAdES_V3:
 			archiveTimestampData = getArchiveTimestampDataV3(timestampToken);
 			break;
 		default:

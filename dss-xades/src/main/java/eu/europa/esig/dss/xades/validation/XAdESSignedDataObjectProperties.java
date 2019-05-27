@@ -12,11 +12,11 @@ public class XAdESSignedDataObjectProperties extends XAdESSigProperties {
 	}
 	
 	public static XAdESSignedDataObjectProperties build(Element signatureElement, XPathQueryHolder xPathQueryHolder) {
-		Element unsignedSignatureProperties = getUnsignedSignaturePropertiesDom(signatureElement, xPathQueryHolder);
-		return new XAdESSignedDataObjectProperties(unsignedSignatureProperties, xPathQueryHolder);
+		Element signedSignatureProperties = getSignedSignaturePropertiesDom(signatureElement, xPathQueryHolder);
+		return new XAdESSignedDataObjectProperties(signedSignatureProperties, xPathQueryHolder);
 	}
 
-	protected static Element getUnsignedSignaturePropertiesDom(Element signatureElement, XPathQueryHolder xPathQueryHolder) {
+	protected static Element getSignedSignaturePropertiesDom(Element signatureElement, XPathQueryHolder xPathQueryHolder) {
 		return DomUtils.getElement(signatureElement, xPathQueryHolder.XPATH_SIGNED_DATA_OBJECT_PROPERTIES);
 	}
 
