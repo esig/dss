@@ -47,9 +47,14 @@ class CertificatePoolEntity implements Serializable {
 	private static final Logger LOG = LoggerFactory.getLogger(CertificatePoolEntity.class);
 
 	/**
-	 * Unique Id for all certificates (Hash of the common public key
+	 * Unique Id for all certificates (SHA-256 of the common public key) 
 	 */
 	private final String id;
+	
+	/**
+	 * Subject Key Identifier (SHA-1 of the common public key) 
+	 */
+	private final byte[] ski;
 
 	/**
 	 * Equivalent certificates (which have the same public key)
@@ -63,6 +68,7 @@ class CertificatePoolEntity implements Serializable {
 
 	CertificatePoolEntity(CertificateToken initialCert, CertificateSourceType source) {
 		id = initialCert.getEntityKey();
+		ski = DSSASN1Utils.computeSkiFromCert(initialCert);
 		equivalentCertificates.add(initialCert);
 		sources.add(source);
 	}
@@ -73,22 +79,17 @@ class CertificatePoolEntity implements Serializable {
 			// we manually recompute the SKI (we had cases with wrongly encoded value in the
 			// certificate)
 			final byte[] newSKI = DSSASN1Utils.computeSkiFromCert(token);
-			CertificateToken equivalent = equivalentCertificates.iterator().next();
-			final byte[] skiEquivalent = DSSASN1Utils.computeSkiFromCert(equivalent);
 			// This should never happen
-			if (!Arrays.equals(newSKI, skiEquivalent) && LOG.isWarnEnabled()) {
-
-				LOG.warn("{} \nCERT : {} \nSKI : {} \nPubKey : {}", token, Utils.toBase64(token.getEncoded()), Utils.toBase64(newSKI),
-						Utils.toBase64(token.getPublicKey().getEncoded()));
-
-				LOG.warn("is not equivalent to");
-
-				LOG.warn("{} \nCERT : {} \nSKI : {} \nPubKey : {}", equivalent, Utils.toBase64(equivalent.getEncoded()), Utils.toBase64(skiEquivalent),
-						Utils.toBase64(token.getPublicKey().getEncoded()));
+			if (!Arrays.equals(newSKI, ski)) {
+				LOG.warn("Token {} is skipped", token);
 			} else {
 				equivalentCertificates.add(token);
 			}
 		}
+	}
+	
+	byte[] getSki() {
+		return ski;
 	}
 
 	void addSource(CertificateSourceType source) {

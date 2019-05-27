@@ -110,7 +110,7 @@ public class CertificatePool implements Serializable {
 		}
 		
 		synchronized (tokensBySubject) {
-			String canonicalizedSubject = getCanonicalizedSubject(certificateToAdd);
+			String canonicalizedSubject = certificateToAdd.getCanonicalizedSubject();
 			Set<CertificateToken> tokensSet = tokensBySubject.get(canonicalizedSubject);
 			if (tokensSet == null) {
 				tokensSet = new HashSet<CertificateToken>();
@@ -248,11 +248,8 @@ public class CertificatePool implements Serializable {
 	public List<CertificateToken> getBySki(final byte[] expectedSki) {
 		Collection<CertificatePoolEntity> values = entriesByPublicKeyHash.values();
 		for (CertificatePoolEntity entity : values) {
-			List<CertificateToken> certificates = entity.getEquivalentCertificates();
-			CertificateToken first = certificates.iterator().next();
-			final byte[] computedSki = DSSASN1Utils.computeSkiFromCert(first);
-			if (Arrays.equals(expectedSki, computedSki)) {
-				return certificates;
+			if (Arrays.equals(expectedSki, entity.getSki())) {
+				return entity.getEquivalentCertificates();
 			}
 		}
 		return Collections.emptyList();
@@ -292,10 +289,6 @@ public class CertificatePool implements Serializable {
 	private String getPublicKeyHash(PublicKey pk) {
 		EntityIdentifier id = new EntityIdentifier(pk);
 		return id.asXmlId();
-	}
-
-	private String getCanonicalizedSubject(CertificateToken cert) {
-		return canonicalize(cert.getSubjectX500Principal());
 	}
 
 	private String canonicalize(final X500Principal x500Principal) {
