@@ -32,7 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSASN1Utils;
-import eu.europa.esig.dss.utils.Utils;
 
 /**
  * This class re-groups equivalent certificates.
@@ -59,12 +58,12 @@ class CertificatePoolEntity implements Serializable {
 	/**
 	 * Equivalent certificates (which have the same public key)
 	 */
-	private final List<CertificateToken> equivalentCertificates = Collections.synchronizedList(new ArrayList<CertificateToken>());
+	private final List<CertificateToken> equivalentCertificates = new ArrayList<CertificateToken>();
 
 	/**
 	 * This Set contains the different sources for this certificate.
 	 */
-	private final Set<CertificateSourceType> sources = Collections.synchronizedSet(new HashSet<CertificateSourceType>());
+	private final Set<CertificateSourceType> sources = new HashSet<CertificateSourceType>();
 
 	CertificatePoolEntity(CertificateToken initialCert, CertificateSourceType source) {
 		id = initialCert.getEntityKey();
