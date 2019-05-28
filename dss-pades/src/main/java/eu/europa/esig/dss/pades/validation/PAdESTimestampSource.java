@@ -34,9 +34,12 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 	
 	@Override
 	public List<TimestampToken> getDocumentTimestamps() {
-		if (documentTimestamps == null) {
+		if (signatureTimestamps == null || archiveTimestamps == null) {
 			makeTimestampTokens();
 		}
+		List<TimestampToken> documentTimestamps = new ArrayList<TimestampToken>();
+		documentTimestamps.addAll(signatureTimestamps);
+		documentTimestamps.addAll(archiveTimestamps);
 		return documentTimestamps;
 	}
 
@@ -44,8 +47,6 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 	protected void makeTimestampTokens() {
 		// Creates signature timestamp tokens only (from CAdESTimestampSource)
 		super.makeTimestampTokens();
-		
-		documentTimestamps = new ArrayList<TimestampToken>();
 		
 		final List<TimestampToken> timestampedTimestamps = new ArrayList<TimestampToken>(signatureTimestamps);
 		
@@ -61,7 +62,8 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 					timestampToken.setTimestampedReferences(getSignatureTimestampReferences());
 					signatureTimestamps.add(timestampToken);
 					
-				} else if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampToken.getTimeStampType())) {
+				} else {
+					// Archive TimeStamps
 					List<TimestampedReference> references = new ArrayList<TimestampedReference>();
 					if (Utils.isCollectionEmpty(signatureTimestamps)) {
 						references = getSignatureTimestampReferences();
@@ -71,9 +73,6 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 					addReferencesFromRevocationData(references);
 					timestampToken.setTimestampedReferences(references);
 					archiveTimestamps.add(timestampToken);
-					
-				} else {
-					documentTimestamps.add(timestampToken);
 					
 				}
 				

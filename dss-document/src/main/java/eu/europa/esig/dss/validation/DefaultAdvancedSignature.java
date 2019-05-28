@@ -823,7 +823,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		if (signatureTimestampSource == null) {
 			initializeSignatureTimestampSource();
 		}
-		return signatureTimestampSource.getArchiveTimestamps();
+		return signatureTimestampSource.getDocumentTimestamps();
 	}
 	
 	/**

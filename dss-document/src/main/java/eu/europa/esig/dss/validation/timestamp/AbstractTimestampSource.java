@@ -56,9 +56,6 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 
 	// This variable contains the list of enclosed archive signature timestamps.
 	protected List<TimestampToken> archiveTimestamps;
-
-	// Enclosed Document timestamps. Used only in PAdES.
-	protected List<TimestampToken> documentTimestamps;
 	
 	/**
 	 * List of found certificate refs which values were not found in the certificate source
