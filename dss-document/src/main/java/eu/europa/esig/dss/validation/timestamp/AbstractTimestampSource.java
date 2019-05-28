@@ -2,6 +2,7 @@ package eu.europa.esig.dss.validation.timestamp;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -39,7 +40,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	
 	protected String signatureId;
 	protected List<SignatureScope> signatureScopes;
-	protected final CertificatePool certificatePool;
+	protected CertificatePool certificatePool;
 
 	// Enclosed content timestamps.
 	protected List<TimestampToken> contentTimestamps;
@@ -55,6 +56,9 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 
 	// This variable contains the list of enclosed archive signature timestamps.
 	protected List<TimestampToken> archiveTimestamps;
+
+	// Enclosed Document timestamps. Used only in PAdES.
+	protected List<TimestampToken> documentTimestamps;
 	
 	/**
 	 * List of found certificate refs which values were not found in the certificate source
@@ -65,10 +69,6 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	 * List of found revocation refs which values were not found in the CRL/OCSP source
 	 */
 	protected List<RevocationRef> orphanRevocationRefs = new ArrayList<RevocationRef>();
-	
-	protected AbstractTimestampSource(CertificatePool certificatePool) {
-		this.certificatePool = certificatePool;
-	}
 	
 	public void setCertificateSource(SignatureCertificateSource certificateSource) {
 		this.certificateSource = certificateSource;
@@ -88,6 +88,10 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	
 	public void setSignatureScopes(List<SignatureScope> signatureScopes) {
 		this.signatureScopes = signatureScopes;
+	}
+	
+	protected void setCertificatePool(CertificatePool certificatePool) {
+		this.certificatePool = certificatePool;
 	}
 	
 	@Override
@@ -128,6 +132,12 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 			makeTimestampTokens();
 		}
 		return archiveTimestamps;
+	}
+	
+	@Override
+	public List<TimestampToken> getDocumentTimestamps() {
+		/** Applicable only for PAdES */
+		return Collections.emptyList();
 	}
 	
 	@Override
@@ -623,7 +633,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 		return result;
 	}
 
-	private void addReferencesForPreviousTimestamps(List<TimestampedReference> references, List<TimestampToken> timestampedTimestamps) {
+	protected void addReferencesForPreviousTimestamps(List<TimestampedReference> references, List<TimestampToken> timestampedTimestamps) {
 		for (final TimestampToken timestampToken : timestampedTimestamps) {
 			addReference(references, new TimestampedReference(timestampToken.getDSSIdAsString(), TimestampedObjectType.TIMESTAMP));
 			addEncapsulatedCertificatesFromTimestamp(references, timestampToken);

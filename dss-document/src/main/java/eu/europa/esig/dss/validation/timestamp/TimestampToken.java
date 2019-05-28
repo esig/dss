@@ -135,9 +135,24 @@ public class TimestampToken extends Token {
 	 *            {@code CertificatePool} which is used to identify the signing certificate of the timestamp
 	 */
 	public TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final CertificatePool certPool) {
+		this(timeStamp, type, new TimestampCertificateSource(timeStamp, certPool), null);
+	}
+	
+	TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final TimestampCertificateSource certificateSource, 
+			final TimestampLocation timeStampLocation) {
 		this.timeStamp = timeStamp;
 		this.timeStampType = type;
-		this.certificateSource = new TimestampCertificateSource(timeStamp, certPool);
+		this.certificateSource = certificateSource;
+		if (timeStampLocation != null) {
+			this.timeStampLocation = timeStampLocation;
+		}
+	}
+	
+	/**
+	 * Creates a new instance of {@link TimestampToken}
+	 */
+	public TimestampToken clone() {
+		return new TimestampToken(timeStamp, timeStampType, certificateSource, timeStampLocation);
 	}
 
 	@Override

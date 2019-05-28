@@ -4,6 +4,10 @@ import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.cms.SignerInformation;
 
 public class CAdESSignedAttributes extends CAdESSigProperties {
+	
+	public CAdESSignedAttributes() {
+		super(null);
+	}
 
 	CAdESSignedAttributes(AttributeTable attributeTable) {
 		super(attributeTable);

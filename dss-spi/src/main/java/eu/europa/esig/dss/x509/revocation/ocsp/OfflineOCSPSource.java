@@ -137,6 +137,17 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 	}
 	
 	/**
+	 * Returns all found in DSS and VRI dictionaries {@link OCSPResponseIdentifier}s
+	 * @return collection of {@link OCSPResponseIdentifier}s
+	 */
+	public Collection<OCSPResponseIdentifier> getAllOCSPIdentifiers() {
+		if (!isEmpty()) {
+			return ocspResponses.values();
+		}
+		return Collections.emptyList();
+	}
+	
+	/**
 	 * Returns the identifier related to the provided {@node base64value} of reference
 	 * @param digest {@link Digest} of the reference
 	 * @return {@link OCSPResponseIdentifier} for the reference

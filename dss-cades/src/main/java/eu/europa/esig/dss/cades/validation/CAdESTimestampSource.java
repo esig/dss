@@ -60,8 +60,8 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 	private final SignerInformation signerInformation;
 	
 	public CAdESTimestampSource(final SignerInformation signerInformation, final CertificatePool certificatePool) {
-		super(certificatePool);
 		this.signerInformation = signerInformation;
+		this.certificatePool = certificatePool;
 	}
 
 	@Override
@@ -138,7 +138,7 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 
 	@Override
 	protected boolean isArchiveTimestamp(CAdESAttribute unsignedAttribute) {
-		return id_aa_ets_archiveTimestampV2.equals(unsignedAttribute.getASN1Oid()) || id_aa_ets_archiveTimestampV3.equals(unsignedAttribute.getASN1Oid()) ;
+		return id_aa_ets_archiveTimestampV2.equals(unsignedAttribute.getASN1Oid()) || id_aa_ets_archiveTimestampV3.equals(unsignedAttribute.getASN1Oid());
 	}
 
 	@Override

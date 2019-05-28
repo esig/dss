@@ -210,6 +210,14 @@ public abstract class OfflineCRLSource implements CRLSource {
 	}
 	
 	/**
+	 * Returns all found in DSS and VRI dictionaries {@link CRLBinaryIdentifier}s
+	 * @return collection of {@link CRLBinaryIdentifier}s
+	 */
+	public Collection<CRLBinaryIdentifier> getAllCRLIdentifiers() {
+		return crlsBinaryMap.values();
+	}
+	
+	/**
 	 * Returns the identifier related to the provided {@node base64value} of reference
 	 * @param digest {@link Digest} of the reference
 	 * @return {@link CRLBinaryIdentifier} for the reference

@@ -36,7 +36,6 @@ import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -158,7 +157,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	private final CMSSignedData cmsSignedData;
 
-	private final SignerInformation signerInformation;
+	protected final SignerInformation signerInformation;
 
 	private CAdESCertificateSource certSource;
 
@@ -649,46 +648,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return DSSUtils.toByteArray(getOriginalDocument());
 	}
 
-	@Override
-	public List<TimestampToken> getContentTimestamps() {
-		if (signatureTimestampSource == null) {
-			initializeSignatureTimestampSource();
-		}
-		return signatureTimestampSource.getContentTimestamps();
-	}
-
-	@Override
-	public List<TimestampToken> getSignatureTimestamps() {
-		if (signatureTimestampSource == null) {
-			initializeSignatureTimestampSource();
-		}
-		return signatureTimestampSource.getSignatureTimestamps();
-	}
-
-	@Override
-	public List<TimestampToken> getTimestampsX1() {
-		if (signatureTimestampSource == null) {
-			initializeSignatureTimestampSource();
-		}
-		return signatureTimestampSource.getTimestampsX1();
-	}
-
-	@Override
-	public List<TimestampToken> getTimestampsX2() {
-		if (signatureTimestampSource == null) {
-			initializeSignatureTimestampSource();
-		}
-		return signatureTimestampSource.getTimestampsX2();
-	}
-
-	@Override
-	public List<TimestampToken> getArchiveTimestamps() {
-		if (signatureTimestampSource == null) {
-			initializeSignatureTimestampSource();
-		}
-		return signatureTimestampSource.getArchiveTimestamps();
-	}
-
 	/**
 	 * This method initializes the {@link SignatureTimestampSource}
 	 */
@@ -701,12 +660,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		cadesTimestampSource.setSignatureDSSId(getId());
 		cadesTimestampSource.setSignatureScopes(getSignatureScopes());
 		signatureTimestampSource = cadesTimestampSource;
-	}
-
-	@Override
-	public List<TimestampToken> getDocumentTimestamps() {
-		/* Not applicable for CAdES */
-		return Collections.emptyList();
 	}
 
 	public List<TimestampedReference> getTimestampReferencesForArchiveTimestamp(final List<TimestampToken> timestampedTimestamps) {

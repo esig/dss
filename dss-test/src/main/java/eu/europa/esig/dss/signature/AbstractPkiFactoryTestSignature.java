@@ -514,20 +514,20 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 			for (String timestampId : timestampIdList) {
 				TimestampType timestampType = diagnosticData.getTimestampType(timestampId);
 				switch (timestampType) {
-				case CONTENT_TIMESTAMP:
-				case ALL_DATA_OBJECTS_TIMESTAMP:
-				case INDIVIDUAL_DATA_OBJECTS_TIMESTAMP:
-					nbContentTimestamps++;
-					break;
-				case SIGNATURE_TIMESTAMP:
-					foundSignatureTimeStamp = true;
-					break;
-				case ARCHIVE_TIMESTAMP:
-					foundArchiveTimeStamp = true;
-					break;
-				default:
-					break;
-				}
+					case CONTENT_TIMESTAMP:
+					case ALL_DATA_OBJECTS_TIMESTAMP:
+					case INDIVIDUAL_DATA_OBJECTS_TIMESTAMP:
+						nbContentTimestamps++;
+						break;
+					case SIGNATURE_TIMESTAMP:
+						foundSignatureTimeStamp = true;
+						break;
+					case ARCHIVE_TIMESTAMP:
+						foundArchiveTimeStamp = true;
+						break;
+					default:
+						break;
+					}
 			}
 		}
 

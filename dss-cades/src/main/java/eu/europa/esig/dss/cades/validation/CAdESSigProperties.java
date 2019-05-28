@@ -24,11 +24,13 @@ public abstract class CAdESSigProperties implements SignatureProperties<CAdESAtt
 
 	@Override
 	public List<CAdESAttribute> getAttributes() {
-		ASN1EncodableVector asn1EncodableVector = attributeTable.toASN1EncodableVector();
 		List<CAdESAttribute> attributes = new ArrayList<CAdESAttribute>();
-		for (int ii = 0; ii < asn1EncodableVector.size(); ii++) {
-			Attribute attribute = (Attribute) asn1EncodableVector.get(ii);
-			attributes.add(new CAdESAttribute(attribute));
+		if (isExist()) {
+			ASN1EncodableVector asn1EncodableVector = attributeTable.toASN1EncodableVector();
+			for (int ii = 0; ii < asn1EncodableVector.size(); ii++) {
+				Attribute attribute = (Attribute) asn1EncodableVector.get(ii);
+				attributes.add(new CAdESAttribute(attribute));
+			}
 		}
 		return attributes;
 	}

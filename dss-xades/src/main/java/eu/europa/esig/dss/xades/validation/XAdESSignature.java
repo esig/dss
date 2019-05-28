@@ -787,46 +787,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		return true;
 	}
 
-	@Override
-	public List<TimestampToken> getContentTimestamps() {
-		if (signatureTimestampSource == null) {
-			initializeSignatureTimestampSource();
-		}
-		return signatureTimestampSource.getContentTimestamps();
-	}
-
-	@Override
-	public List<TimestampToken> getSignatureTimestamps() {
-		if (signatureTimestampSource == null) {
-			initializeSignatureTimestampSource();
-		}
-		return signatureTimestampSource.getSignatureTimestamps();
-	}
-
-	@Override
-	public List<TimestampToken> getTimestampsX1() {
-		if (signatureTimestampSource == null) {
-			initializeSignatureTimestampSource();
-		}
-		return signatureTimestampSource.getTimestampsX1();
-	}
-
-	@Override
-	public List<TimestampToken> getTimestampsX2() {
-		if (signatureTimestampSource == null) {
-			initializeSignatureTimestampSource();
-		}
-		return signatureTimestampSource.getTimestampsX2();
-	}
-
-	@Override
-	public List<TimestampToken> getArchiveTimestamps() {
-		if (signatureTimestampSource == null) {
-			initializeSignatureTimestampSource();
-		}
-		return signatureTimestampSource.getArchiveTimestamps();
-	}
-
 	/**
 	 * This method initializes the {@link SignatureTimestampSource}
 	 */

@@ -778,6 +778,54 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return signatureScopes;
 	}
 	
+	@Override
+	public List<TimestampToken> getContentTimestamps() {
+		if (signatureTimestampSource == null) {
+			initializeSignatureTimestampSource();
+		}
+		return signatureTimestampSource.getContentTimestamps();
+	}
+
+	@Override
+	public List<TimestampToken> getSignatureTimestamps() {
+		if (signatureTimestampSource == null) {
+			initializeSignatureTimestampSource();
+		}
+		return signatureTimestampSource.getSignatureTimestamps();
+	}
+
+	@Override
+	public List<TimestampToken> getTimestampsX1() {
+		if (signatureTimestampSource == null) {
+			initializeSignatureTimestampSource();
+		}
+		return signatureTimestampSource.getTimestampsX1();
+	}
+
+	@Override
+	public List<TimestampToken> getTimestampsX2() {
+		if (signatureTimestampSource == null) {
+			initializeSignatureTimestampSource();
+		}
+		return signatureTimestampSource.getTimestampsX2();
+	}
+
+	@Override
+	public List<TimestampToken> getArchiveTimestamps() {
+		if (signatureTimestampSource == null) {
+			initializeSignatureTimestampSource();
+		}
+		return signatureTimestampSource.getArchiveTimestamps();
+	}
+
+	@Override
+	public List<TimestampToken> getDocumentTimestamps() {
+		if (signatureTimestampSource == null) {
+			initializeSignatureTimestampSource();
+		}
+		return signatureTimestampSource.getArchiveTimestamps();
+	}
+	
 	/**
 	 * This method initializes the {@link SignatureTimestampSource}
 	 */

@@ -54,9 +54,9 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	private List<TimestampedReference> signingCertificateTimestampReferences;
 	
 	public XAdESTimestampSource(final Element signatureElement, final XPathQueryHolder xPathQueryHolder, final CertificatePool certificatePool) {
-		super(certificatePool);
 		this.signatureElement = signatureElement;
 		this.xPathQueryHolder = xPathQueryHolder;
+		this.certificatePool = certificatePool;
 	}
 	
 	public void setReferences(List<Reference> references) {
