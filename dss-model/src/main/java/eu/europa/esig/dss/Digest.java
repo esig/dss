@@ -21,8 +21,9 @@
 package eu.europa.esig.dss;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.Formatter;
+import java.util.Locale;
 
 /**
  * Container for a Digest and his algorithm
@@ -34,8 +35,6 @@ public final class Digest implements Serializable {
 
 	private byte[] value;
 
-	private String hex;
-
 	public Digest() {
 	}
 
@@ -45,50 +44,11 @@ public final class Digest implements Serializable {
 	}
 
 	public String getHexValue() {
-		if (hex == null) {
-			try (Formatter formatter = new Formatter()) {
-				for (byte b : value) {
-					formatter.format("%02X", b);
-				}
-				hex = formatter.toString();
-			}
+		String hex = new BigInteger(1, value).toString(16);
+		if (hex.length() % 2 == 1) {
+			hex = "0" + hex;
 		}
-		return hex;
-	}
-
-	@Override
-	public String toString() {
-		return algorithm.getName() + ":" + getHexValue();
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = (prime * result) + ((algorithm == null) ? 0 : algorithm.hashCode());
-		result = (prime * result) + Arrays.hashCode(value);
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		Digest other = (Digest) obj;
-		if (algorithm != other.algorithm) {
-			return false;
-		}
-		if (!Arrays.equals(value, other.value)) {
-			return false;
-		}
-		return true;
+		return hex.toUpperCase(Locale.ENGLISH);
 	}
 
 	/**
@@ -121,4 +81,39 @@ public final class Digest implements Serializable {
 		this.value = value;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = (prime * result) + ((algorithm == null) ? 0 : algorithm.hashCode());
+		result = (prime * result) + Arrays.hashCode(value);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		Digest other = (Digest) obj;
+		if (algorithm != other.algorithm) {
+			return false;
+		}
+		if (!Arrays.equals(value, other.value)) {
+			return false;
+		}
+		return true;
+	}
+	
+	@Override
+	public String toString() {
+		return algorithm.getName() + ":" + getHexValue();
+	}
+	
 }
