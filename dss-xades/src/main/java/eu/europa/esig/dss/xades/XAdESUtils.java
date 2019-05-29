@@ -238,4 +238,22 @@ public final class XAdESUtils {
 		return null;
 	}
 
+	/**
+	 * Determines if the given {@code reference} refers to SignedProperties element
+	 * @param reference {@link Reference} to check
+	 * @return TRUE if the reference refers to the SignedProperties, FALSE otherwise
+	 */
+	public static boolean isSignedProperties(final Reference reference, final XPathQueryHolder xPathQueryHolder) {
+		return xPathQueryHolder.XADES_SIGNED_PROPERTIES.equals(reference.getType());
+	}
+
+	/**
+	 * Determines if the given {@code reference} refers to CounterSignature element
+	 * @param reference {@link Reference} to check
+	 * @return TRUE if the reference refers to the CounterSignature, FALSE otherwise
+	 */
+	public static boolean isCounerSignature(final Reference reference, final XPathQueryHolder xPathQueryHolder) {
+		return xPathQueryHolder.XADES_COUNTERSIGNED_SIGNATURE.equals(reference.getType());
+	}
+
 }

@@ -95,7 +95,7 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 		boolean isEverythingCovered = isEverythingCovered(xadesSignature);
 
 		for (final Reference signatureReference : references) {
-			if (isSignedProperties(xadesSignature, signatureReference.getType())) {
+			if (XAdESUtils.isSignedProperties(signatureReference, xadesSignature.getXPathQueryHolder())) {
 				continue;
 			}
 			final String uri = signatureReference.getURI();
@@ -283,10 +283,6 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 		return true;
 	}
 
-	private boolean isSignedProperties(XAdESSignature signature, String type) {
-		return signature.getXPathQueryHolder().XADES_SIGNED_PROPERTIES.equals(type);
-	}
-
 	public boolean isEverythingCovered(XAdESSignature signature) {
 		Element parent = signature.getSignatureElement().getOwnerDocument().getDocumentElement();
 		if (parent != null) {
@@ -301,7 +297,7 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 		List<Reference> references = signature.getReferences();
 		Set<String> result = new HashSet<String>();
 		for (Reference reference : references) {
-			if (!reference.typeIsReferenceToManifest() && !reference.typeIsReferenceToObject() && !isSignedProperties(signature, reference.getType())
+			if (!reference.typeIsReferenceToManifest() && !reference.typeIsReferenceToObject() && !XAdESUtils.isSignedProperties(reference, signature.getXPathQueryHolder())
 					&& !isXPointerQuery(reference.getURI())) {
 				result.add(DomUtils.getId(reference.getURI()));
 			}

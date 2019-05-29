@@ -94,6 +94,7 @@ import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.SantuarioInitializer;
+import eu.europa.esig.dss.xades.XAdESUtils;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 /**
@@ -755,7 +756,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	private boolean isContentTimestampedReference(Reference reference, TimestampType timeStampType, List<TimestampInclude> includes) {
 		if (TimestampType.ALL_DATA_OBJECTS_TIMESTAMP.equals(timeStampType)) {
 			// All references are covered except the one referencing the SignedProperties
-			return !isSignedProperties(reference);
+			return !XAdESUtils.isSignedProperties(reference, xPathQueryHolder);
 		} else {
 			for (TimestampInclude timestampInclude : includes) {
 				String id = timestampInclude.getURI();
@@ -775,7 +776,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * @param timestampToken
 	 * @return
 	 */
-	public boolean checkTimestampTokenIncludes(final TimestampToken timestampToken) {
+	private boolean checkTimestampTokenIncludes(final TimestampToken timestampToken) {
 		final List<TimestampInclude> timestampIncludes = timestampToken.getTimestampIncludes();
 		if (Utils.isCollectionNotEmpty(timestampIncludes)) {
 			for (final TimestampInclude timestampInclude : timestampIncludes) {
@@ -916,7 +917,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 					found = reference.getContentsBeforeTransformation() != null;
 					boolean noDuplicateIdFound = XMLUtils.protectAgainstWrappingAttack(santuarioSignature.getDocument(), DomUtils.getId(uri));
-					if (isSignedProperties(reference)) {
+					if (XAdESUtils.isSignedProperties(reference, xPathQueryHolder)) {
 						validation.setType(DigestMatcherType.SIGNED_PROPERTIES);
 						found = found && (noDuplicateIdFound && findSignedPropertiesById(uri));
 						signedPropertiesFound = signedPropertiesFound || found;
@@ -981,10 +982,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			manifestReferences = mv.validate();
 		}
 		return manifestReferences;
-	}
-
-	private boolean isSignedProperties(final Reference reference) {
-		return xPathQueryHolder.XADES_SIGNED_PROPERTIES.equals(reference.getType());
 	}
 
 	private boolean findSignedPropertiesById(String uri) {
@@ -1178,14 +1175,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * @return
 	 */
 	private boolean isCounterSignature(final XAdESSignature xadesCounterSignature) {
-
-		final List<Element> signatureReferences = xadesCounterSignature.getSignatureReferences();
-		// gets Element with
-		// Type="http://uri.etsi.org/01903#CountersignedSignature"
-		for (final Element reference : signatureReferences) {
-
-			final String type = reference.getAttribute("Type");
-			if (xPathQueryHolder.XADES_COUNTERSIGNED_SIGNATURE.equals(type)) {
+		final List<Reference> references = xadesCounterSignature.getReferences();
+		for (final Reference reference : references) {
+			if (XAdESUtils.isCounerSignature(reference, xPathQueryHolder)) {
 				return true;
 			}
 		}
@@ -1380,6 +1372,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				// } else
 				if (XPathQueryHolder.XMLE_ARCHIVE_TIME_STAMP.equals(localName)) {
 
+					// TODO: compare encoded base64
 					if ((timestampToken != null) && (timestampToken.getHashCode() == node.hashCode())) {
 						break;
 					}
@@ -1627,35 +1620,12 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * @return
 	 */
 	public Element getLastTimestampValidationData() {
-		final List<TimestampToken> archiveTimestamps = getArchiveTimestamps();
-		TimestampToken mostRecentTimestamp = null;
-		for (final TimestampToken archiveTimestamp : archiveTimestamps) {
-			if (mostRecentTimestamp == null) {
-				mostRecentTimestamp = archiveTimestamp;
-				continue;
-			}
-			final Date generationTime = archiveTimestamp.getGenerationTime();
-			final Date mostRecentGenerationTime = mostRecentTimestamp.getGenerationTime();
-			if (generationTime.after(mostRecentGenerationTime)) {
-				mostRecentTimestamp = archiveTimestamp;
-			}
-		}
-
-		if (mostRecentTimestamp != null) {
-			final int timestampHashCode = mostRecentTimestamp.getHashCode();
-			final NodeList nodeList = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/*");
-			boolean found = false;
-			for (int ii = 0; ii < nodeList.getLength(); ii++) {
-				final Element unsignedSignatureElement = (Element) nodeList.item(ii);
-				final int nodeHashCode = unsignedSignatureElement.hashCode();
-				if (nodeHashCode == timestampHashCode) {
-					found = true;
-				} else if (found) {
-					final String nodeName = unsignedSignatureElement.getLocalName();
-					if ("TimeStampValidationData".equals(nodeName)) {
-						return unsignedSignatureElement;
-					}
-				}
+		final NodeList nodeList = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/*");
+		if (nodeList.getLength() > 0) {
+			final Element unsignedSignatureElement = (Element) nodeList.item(nodeList.getLength() - 1);
+			final String nodeName = unsignedSignatureElement.getLocalName();
+			if ("TimeStampValidationData".equals(nodeName)) {
+				return unsignedSignatureElement;
 			}
 		}
 		return null;
@@ -1673,24 +1643,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			}
 		}
 		return result;
-	}
-
-	/**
-	 * // TODO (11/09/2014): to be deleted, eu.europa.esig.dss.xades.validation.XAdESSignature#getReferences() to be
-	 * used
-	 *
-	 * @return
-	 */
-	public List<Element> getSignatureReferences() {
-
-		final NodeList list = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_REFERENCE);
-		List<Element> references = new ArrayList<Element>(list.getLength());
-		for (int ii = 0; ii < list.getLength(); ii++) {
-
-			final Node node = list.item(ii);
-			references.add((Element) node);
-		}
-		return references;
 	}
 
 	public List<Reference> getReferences() {
