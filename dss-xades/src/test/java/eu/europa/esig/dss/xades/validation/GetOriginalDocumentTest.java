@@ -29,7 +29,6 @@ import java.util.List;
 
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.signature.Reference;
-import org.apache.xml.security.transforms.Transforms;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -43,9 +42,10 @@ import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.xades.DSSReference;
-import eu.europa.esig.dss.xades.DSSTransform;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.reference.Base64Transform;
+import eu.europa.esig.dss.xades.reference.DSSReference;
+import eu.europa.esig.dss.xades.reference.DSSTransform;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
 public class GetOriginalDocumentTest extends PKIFactoryAccess {
@@ -206,8 +206,7 @@ public class GetOriginalDocumentTest extends PKIFactoryAccess {
 		DSSDocument doc2 = new FileDocument("src/test/resources/sampleISO.xml");
 
 		List<DSSTransform> transforms = new ArrayList<DSSTransform>();
-		DSSTransform dssTransform = new DSSTransform();
-		dssTransform.setAlgorithm(Transforms.TRANSFORM_BASE64_DECODE);
+		Base64Transform dssTransform = new Base64Transform();
 		transforms.add(dssTransform);
 
 		DSSReference ref1 = new DSSReference();
