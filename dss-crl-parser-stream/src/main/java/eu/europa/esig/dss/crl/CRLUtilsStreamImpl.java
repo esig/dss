@@ -62,9 +62,8 @@ public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
 			crlValidity.setThisUpdate(crlInfos.getThisUpdate());
 			crlValidity.setNextUpdate(crlInfos.getNextUpdate());
 
-			checkCriticalExtensions(crlValidity, crlInfos.getCriticalExtensions().keySet(),
-					crlInfos.getCriticalExtension(Extension.issuingDistributionPoint.getId()));
-
+			crlValidity.setCriticalExtensionsOid(crlInfos.getCriticalExtensions().keySet());
+			extractIssuingDistributionPointBinary(crlValidity, crlInfos.getCriticalExtension(Extension.issuingDistributionPoint.getId()));
 			extractExpiredCertsOnCRL(crlValidity, crlInfos.getNonCriticalExtension(Extension.expiredCertsOnCRL.getId()));
 
 			final X500Principal x509CRLIssuerX500Principal = crlInfos.getIssuer();

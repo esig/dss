@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.crl;
 
-import java.util.Collection;
-
 import org.bouncycastle.asn1.ASN1GeneralizedTime;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Primitive;
@@ -54,23 +52,20 @@ public abstract class AbstractCRLUtils {
 			}
 		}
 	}
-
-	protected void checkCriticalExtensions(CRLValidity validity, Collection<String> criticalExtensionsOid, byte[] issuingDistributionPointBinary) {
-		validity.setCriticalExtensionsOid(criticalExtensionsOid);
-		if (validity.areCriticalExtensionsOidNotEmpty()) {
-			extractIssuingDistributionPointBinary(validity, issuingDistributionPointBinary);
-		}
-	}
 	
-	private void extractIssuingDistributionPointBinary(CRLValidity validity, byte[] issuingDistributionPointBinary) {
-		IssuingDistributionPoint issuingDistributionPoint = IssuingDistributionPoint
-				.getInstance(ASN1OctetString.getInstance(issuingDistributionPointBinary).getOctets());
-		validity.setOnlyAttributeCerts(issuingDistributionPoint.onlyContainsAttributeCerts());
-		validity.setOnlyCaCerts(issuingDistributionPoint.onlyContainsCACerts());
-		validity.setOnlyUserCerts(issuingDistributionPoint.onlyContainsUserCerts());
-		validity.setIndirectCrl(issuingDistributionPoint.isIndirectCRL());
-		validity.setReasonFlags(issuingDistributionPoint.getOnlySomeReasons());
-		validity.setUrl(getUrl(issuingDistributionPoint.getDistributionPoint()));
+	protected void extractIssuingDistributionPointBinary(CRLValidity validity, byte[] issuingDistributionPointBinary) {
+		if (issuingDistributionPointBinary != null) {
+			IssuingDistributionPoint issuingDistributionPoint = IssuingDistributionPoint
+					.getInstance(ASN1OctetString.getInstance(issuingDistributionPointBinary).getOctets());
+			validity.setOnlyAttributeCerts(issuingDistributionPoint.onlyContainsAttributeCerts());
+			validity.setOnlyCaCerts(issuingDistributionPoint.onlyContainsCACerts());
+			validity.setOnlyUserCerts(issuingDistributionPoint.onlyContainsUserCerts());
+			validity.setIndirectCrl(issuingDistributionPoint.isIndirectCRL());
+			validity.setReasonFlags(issuingDistributionPoint.getOnlySomeReasons());
+			validity.setUrl(getUrl(issuingDistributionPoint.getDistributionPoint()));
+		} else {
+			LOG.warn("issuingDistributionPointBinary is null. Issuing Distribution Point fields in CRLValidity cannot be filled.");
+		}
 	}
 
 	private String getUrl(DistributionPointName distributionPoint) {
