@@ -23,7 +23,7 @@ import eu.europa.esig.jaxb.policy.ListAlgo;
 
 public class CryptographicCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
-	private static final Logger logger = LoggerFactory.getLogger(CryptographicCheck.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CryptographicCheck.class);
 
 	private static final String DATE_FORMAT = "yyyy-MM-dd";
 
@@ -114,7 +114,7 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Chai
 				try {
 					result = dateFormat.parse(algo.getDate());
 				} catch (Exception e) {
-					logger.warn("Unable to parse date with pattern '" + dateFormat.toPattern() + "' : " + e.getMessage());
+					LOG.warn("Unable to parse date with pattern '" + dateFormat.toPattern() + "' : " + e.getMessage());
 				}
 			}
 		}

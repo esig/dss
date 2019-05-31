@@ -2,25 +2,24 @@ package eu.europa.esig.dss.validation.process.qmatrix.qualification.checks;
 
 import java.util.List;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSignatureAnalysis;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationSignatureQualification;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
-import eu.europa.esig.dss.validation.process.qmatrix.AdditionalServiceInformation;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class CertificateAndServiceConsistencyCheck extends ChainItem<XmlSignatureAnalysis> {
+public class CertificateAndServiceConsistencyCheck extends ChainItem<XmlValidationSignatureQualification> {
 
 	private final CertificateWrapper signingCertificate;
 	private final List<TrustedServiceWrapper> trustedServices;
 
 	private MessageTag errorMessage;
 
-	public CertificateAndServiceConsistencyCheck(XmlSignatureAnalysis result, CertificateWrapper signingCertificate,
+	public CertificateAndServiceConsistencyCheck(XmlValidationSignatureQualification result, CertificateWrapper signingCertificate,
 			List<TrustedServiceWrapper> trustedServices, LevelConstraint constraint) {
 		super(result, constraint);
 

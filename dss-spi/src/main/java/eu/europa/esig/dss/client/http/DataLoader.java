@@ -52,18 +52,22 @@ public interface DataLoader extends Serializable {
 			this.urlString = urlString;
 		}
 	}
+
 	/**
 	 * Execute a HTTP GET operation.
 	 *
-	 * @param url to access
+	 * @param url
+	 *            to access
 	 * @return {@code byte} array of obtained data or null
 	 */
 	byte[] get(final String url);
 
 	/**
-	 * Execute a HTTP GET operation. This method is used when many URls are available to access the same resource. The operation stops after the first successful download.
+	 * Execute a HTTP GET operation. This method is used when many URls are available to access the same resource. The
+	 * operation stops after the first successful download.
 	 *
-	 * @param urlStrings {@code List} of {@code String}s representing the URLs to be used in sequential way to obtain the data.
+	 * @param urlStrings
+	 *            {@code List} of {@code String}s representing the URLs to be used in sequential way to obtain the data.
 	 * @return {@code DataAndUrl} representing the array of obtained data and used url, or null
 	 */
 	DataAndUrl get(final List<String> urlStrings);
@@ -71,8 +75,10 @@ public interface DataLoader extends Serializable {
 	/**
 	 * Execute a HTTP GET operation with indication concerning the mandatory nature of the operation.
 	 *
-	 * @param url     to access
-	 * @param refresh if true indicates that the cached data should be refreshed
+	 * @param url
+	 *            to access
+	 * @param refresh
+	 *            if true indicates that the cached data should be refreshed
 	 * @return {@code byte} array of obtained data or null
 	 */
 	byte[] get(String url, boolean refresh);
@@ -80,7 +86,8 @@ public interface DataLoader extends Serializable {
 	/**
 	 * Executes a HTTP POST operation
 	 *
-	 * @param url     to access
+	 * @param url
+	 *            to access
 	 * @param content
 	 * @return {@code byte} array of obtained data
 	 */
@@ -89,7 +96,9 @@ public interface DataLoader extends Serializable {
 	/**
 	 * This allows to set the content type. Example: Content-Type "application/ocsp-request"
 	 *
-	 * @param contentType to set
+	 * @param contentType
+	 *            to set
 	 */
-	public void setContentType(final String contentType);
+	void setContentType(final String contentType);
+
 }

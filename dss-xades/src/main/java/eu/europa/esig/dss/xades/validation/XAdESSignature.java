@@ -43,21 +43,20 @@ import javax.security.auth.x500.X500Principal;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.xml.security.Init;
 import org.apache.xml.security.algorithms.JCEMapper;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.keys.keyresolver.KeyResolverException;
 import org.apache.xml.security.signature.Reference;
-import org.apache.xml.security.signature.ReferenceNotInitializedException;
 import org.apache.xml.security.signature.SignedInfo;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.signature.XMLSignatureException;
+import org.apache.xml.security.utils.XMLUtils;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.x509.GeneralName;
-import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.tsp.TimeStampToken;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -69,9 +68,11 @@ import org.w3c.dom.NodeList;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSNotETSICompliantException;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.EncryptionAlgorithm;
+import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
@@ -86,14 +87,16 @@ import eu.europa.esig.dss.validation.CertificateValidity;
 import eu.europa.esig.dss.validation.CertifiedRole;
 import eu.europa.esig.dss.validation.CommitmentType;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
+import eu.europa.esig.dss.validation.DigestMatcherType;
 import eu.europa.esig.dss.validation.OCSPRef;
+import eu.europa.esig.dss.validation.ReferenceValidation;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.TimestampInclude;
 import eu.europa.esig.dss.validation.TimestampReference;
-import eu.europa.esig.dss.validation.TimestampReferenceCategory;
 import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.x509.ArchiveTimestampType;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -102,6 +105,7 @@ import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.crl.OfflineCRLSource;
 import eu.europa.esig.dss.x509.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.SantuarioInitializer;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 /**
@@ -152,9 +156,12 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 */
 	private List<TimestampReference> signingCertificateTimestampReferences;
 
+	private List<ReferenceValidation> referenceValidations;
+
 	static {
 
-		Init.init();
+		SantuarioInitializer.init();
+		JCEMapper.setProviderId(BouncyCastleProvider.PROVIDER_NAME);
 
 		/**
 		 * Adds the support of ECDSA_RIPEMD160 for XML signature. Used by AT. The BC provider must be previously added.
@@ -194,11 +201,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 *            can be null
 	 */
 	public XAdESSignature(final Element signatureElement, final CertificatePool certPool) {
-		this(signatureElement, new ArrayList<XPathQueryHolder>() {
-			{
-				add(new XPathQueryHolder());
-			}
-		}, certPool);
+		this(signatureElement, Arrays.asList(new XPathQueryHolder()), certPool);
 	}
 
 	/**
@@ -310,9 +313,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public EncryptionAlgorithm getEncryptionAlgorithm() {
-
-		final String xmlName = DomUtils.getElement(signatureElement, xPathQueryHolder.XPATH_SIGNATURE_METHOD).getAttribute(XMLE_ALGORITHM);
-		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forXML(xmlName, null);
+		final SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm();
 		if (signatureAlgorithm == null) {
 			return null;
 		}
@@ -321,12 +322,26 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public DigestAlgorithm getDigestAlgorithm() {
-		final String xmlName = DomUtils.getElement(signatureElement, xPathQueryHolder.XPATH_SIGNATURE_METHOD).getAttribute(XMLE_ALGORITHM);
-		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forXML(xmlName, null);
+		final SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm();
 		if (signatureAlgorithm == null) {
 			return null;
 		}
 		return signatureAlgorithm.getDigestAlgorithm();
+	}
+
+	@Override
+	public MaskGenerationFunction getMaskGenerationFunction() {
+		final SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm();
+		if (signatureAlgorithm == null) {
+			return null;
+		}
+		return signatureAlgorithm.getMaskGenerationFunction();
+	}
+
+	@Override
+	public SignatureAlgorithm getSignatureAlgorithm() {
+		final String xmlName = DomUtils.getElement(signatureElement, xPathQueryHolder.XPATH_SIGNATURE_METHOD).getAttribute(XMLE_ALGORITHM);
+		return SignatureAlgorithm.forXML(xmlName, null);
 	}
 
 	@Override
@@ -367,6 +382,14 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	public void resetRevocationSources() {
 		offlineCRLSource = null;
 		offlineOCSPSource = null;
+	}
+
+	public void resetTimestamps() {
+		signatureTimestamps = null;
+		contentTimestamps = null;
+		archiveTimestamps = null;
+		sigAndRefsTimestamps = null;
+		refsOnlyTimestamps = null;
 	}
 
 	@Override
@@ -628,6 +651,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			if (policyId != null) {
 				// Explicit policy
 				String policyIdString = policyId.getTextContent();
+				if (policyIdString != null && !policyIdString.isEmpty()) {
+					policyIdString = policyIdString.replaceAll("\n", "");
+					policyIdString = policyIdString.trim();
+				}
 				String policyUrlString = null;
 				if (DSSXMLUtils.isOid(policyIdString)) {
 					// urn:oid:1.2.3 --> 1.2.3
@@ -788,11 +815,14 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			return null;
 
 		}
-		final String base64EncodedTimestamp = timestampTokenNode.getTextContent();
-		final TimeStampToken timeStampToken = createTimeStampToken(base64EncodedTimestamp);
-		final TimestampToken timestampToken = new TimestampToken(timeStampToken, timestampType, certPool);
+		TimestampToken timestampToken = null;
+		try {
+			timestampToken = new TimestampToken(Utils.fromBase64(timestampTokenNode.getTextContent()), timestampType, certPool);
+		} catch (Exception e) {
+			throw new DSSException("Unable to extract timestamp", e);
+		}
 		timestampToken.setHashCode(timestampElement.hashCode());
-		setTimestampCanonicalizationMethod(timestampElement, timestampToken);
+		timestampToken.setCanonicalizationMethod(getTimestampCanonicalizationMethod(timestampElement));
 
 		// TODO: timestampToken.setIncludes(element.getIncludes)...
 		// final NodeList includes =
@@ -803,23 +833,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		// includes.item(i).getAttributes()));
 		// }
 		return timestampToken;
-	}
-
-	/**
-	 * This method generates a bouncycastle {@code TimeStampToken} based on base 64 encoded {@code String}.
-	 *
-	 * @param base64EncodedTimestamp
-	 * @return bouncycastle {@code TimeStampToken}
-	 * @throws DSSException
-	 */
-	private TimeStampToken createTimeStampToken(final String base64EncodedTimestamp) throws DSSException {
-		try {
-			final byte[] tokenBytes = Utils.fromBase64(base64EncodedTimestamp);
-			final CMSSignedData signedData = new CMSSignedData(tokenBytes);
-			return new TimeStampToken(signedData);
-		} catch (Exception e) {
-			throw new DSSException(e);
-		}
 	}
 
 	public Element getSignatureValue() {
@@ -873,15 +886,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	/**
-	 * Checks the presence of SignatureTimeStamp segment in the signature, what is the proof -T profile existence
-	 *
-	 * @return
-	 */
-	public boolean hasTProfile() {
-		return DomUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_SIGNATURE_TIMESTAMP);
-	}
-
-	/**
 	 * Checks the presence of CompleteCertificateRefs & CompleteRevocationRefs segments in the signature, what is the
 	 * proof -C profile existence
 	 *
@@ -900,41 +904,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 */
 	public boolean hasXProfile() {
 		return DomUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_SIG_AND_REFS_TIMESTAMP);
-	}
-
-	/**
-	 * Checks the presence of CertificateValues and RevocationValues segments in the signature, what is the proof -LT
-	 * (or -XL) profile existence
-	 *
-	 * @return true if -LT (or -XL) extension is present
-	 */
-	public boolean hasLTProfile() {
-		final boolean certValues = DomUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_CERTIFICATE_VALUES);
-
-		final boolean revocationValues = DomUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_REVOCATION_VALUES);
-		boolean notEmptyCRL = DomUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_ENCAPSULATED_CRL_VALUES);
-		boolean notEmptyOCSP = DomUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_OCSP_VALUES_ENCAPSULATED_OCSP);
-
-		boolean isLTProfile = revocationValues && (notEmptyCRL || notEmptyOCSP);
-		if (!isLTProfile && certValues) {
-			isLTProfile = hasTProfile();
-		}
-
-		return isLTProfile;
-		// return certValues || (revocationValues && (notEmptyCRL || notEmptyOCSP));
-	}
-
-	/**
-	 * Checks the presence of CertificateValues and RevocationValues segments in the signature, what is the proof -LTA
-	 * (or -A) profile existence
-	 *
-	 * @return true if -LTA (or -A) extension is present
-	 */
-	public boolean hasLTAProfile() {
-		final boolean archiveTimestamp = DomUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_ARCHIVE_TIMESTAMP);
-		final boolean archiveTimestamp141 = DomUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_ARCHIVE_TIMESTAMP_141);
-		final boolean archiveTimestampV2 = DomUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_ARCHIVE_TIMESTAMP_V2);
-		return archiveTimestamp || archiveTimestamp141 || archiveTimestampV2;
 	}
 
 	/**
@@ -1022,31 +991,26 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		// get include elements from signature
 		List<TimestampInclude> includes = timestampToken.getTimestampIncludes();
 
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-		for (TimestampInclude include : includes) {
-			// retrieve reference element
-			// -> go through references and check for one whose URI matches the
-			// URI of include
-			for (final Reference reference : references) {
-				String id = include.getURI();
-
-				if (reference.getId().equals(id)) {
-					try {
-						final byte[] referencedBytes = reference.getReferencedBytes();
-						outputStream.write(referencedBytes);
-					} catch (IOException e) {
-						throw new DSSException(e);
-					} catch (ReferenceNotInitializedException e) {
-						throw new DSSException(e);
-					} catch (XMLSignatureException e) {
-						throw new DSSException(e);
+		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+			for (TimestampInclude include : includes) {
+				// retrieve reference element
+				// -> go through references and check for one whose URI matches the
+				// URI of include
+				for (final Reference reference : references) {
+					String id = include.getURI();
+					if (reference.getId().equals(id)) {
+						outputStream.write(reference.getReferencedBytes());
 					}
 				}
 			}
+			byte[] byteArray = outputStream.toByteArray();
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("IndividualDataObjectsTimestampData bytes: {}", new String(byteArray));
+			}
+			return byteArray;
+		} catch (IOException | XMLSignatureException e) {
+			throw new DSSException("Unable to extract IndividualDataObjectsTimestampData", e);
 		}
-		byte[] octetStream = outputStream.toByteArray();
-		return octetStream;
 	}
 
 	/**
@@ -1067,36 +1031,28 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		if (references.isEmpty()) {
 			throw new DSSException("The method 'checkSignatureIntegrity' must be invoked first!");
 		}
-		final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		for (final Reference reference : references) {
 
-			// Take, the first ds:Reference element within ds:SignedInfo if and
-			// only if the Type attribute does not
-			// have the value "http://uri.etsi.org/01903#SignedProperties".
-			if (!xPathQueryHolder.XADES_SIGNED_PROPERTIES.equals(reference.getType())) {
-
-				try {
-
-					final byte[] referencedBytes = reference.getReferencedBytes();
-					outputStream.write(referencedBytes);
-				} catch (IOException e) {
-					throw new DSSException(e);
-				} catch (ReferenceNotInitializedException e) {
-					throw new DSSException(e);
-				} catch (XMLSignatureException e) {
-					throw new DSSException(e);
+		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+			for (final Reference reference : references) {
+				// Take, the first ds:Reference element within ds:SignedInfo if and
+				// only if the Type attribute does not
+				// have the value "http://uri.etsi.org/01903#SignedProperties".
+				if (!xPathQueryHolder.XADES_SIGNED_PROPERTIES.equals(reference.getType())) {
+					outputStream.write(reference.getReferencedBytes());
 				}
 			}
+			// compute digest of resulting octet stream using algorithm indicated in
+			// the time-stamp token
+			// -> digest is computed in TimestampToken verification/match
+			// return the computed digest
+			byte[] toTimestampBytes = outputStream.toByteArray();
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("AllDataObjectsTimestampData bytes: " + new String(toTimestampBytes));
+			}
+			return toTimestampBytes;
+		} catch (IOException | XMLSignatureException e) {
+			throw new DSSException("Unable to extract AllDataObjectsTimestampData", e);
 		}
-		// compute digest of resulting octet stream using algorithm indicated in
-		// the time-stamp token
-		// -> digest is computed in TimestampToken verification/match
-		// return the computed digest
-		byte[] toTimestampBytes = outputStream.toByteArray();
-		if (LOG.isTraceEnabled()) {
-			LOG.trace("AllDataObjectsTimestampData bytes: " + new String(toTimestampBytes));
-		}
-		return toTimestampBytes;
 	}
 
 	private List<TimestampReference> getSignatureTimestampedReferences() {
@@ -1248,7 +1204,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				references.addAll(getTimestampedReferences());
 				timestampToken.setTimestampedReferences(references);
 				sigAndRefsTimestamps.add(timestampToken);
-			} else if (isArchiveTimestamp(localName)) {
+			} else if (XPathQueryHolder.XMLE_ARCHIVE_TIME_STAMP.equals(localName)) {
 
 				timestampToken = makeTimestampToken((Element) node, TimestampType.ARCHIVE_TIMESTAMP);
 				if (timestampToken == null) {
@@ -1259,7 +1215,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 				final List<TimestampReference> references = getSignatureTimestampedReferences();
 				for (final String timestampId : timestampedTimestamps) {
-					references.add(new TimestampReference(timestampId, TimestampReferenceCategory.TIMESTAMP));
+					references.add(new TimestampReference(timestampId, TimestampedObjectType.TIMESTAMP));
 				}
 				references.addAll(getTimestampedReferences());
 				final List<CertificateToken> encapsulatedCertificates = getCertificateSource().getEncapsulatedCertificates();
@@ -1284,11 +1240,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private ArchiveTimestampType getArchiveTimestampType(final Node node, final String localName) {
-
-		if (XPathQueryHolder.XMLE_ARCHIVE_TIME_STAMP_V2.equals(localName)) {
-			return ArchiveTimestampType.XAdES_141_V2;
-		} else if (XPathQueryHolder.XMLE_ARCHIVE_TIME_STAMP.equals(localName)) {
-
+		if (XPathQueryHolder.XMLE_ARCHIVE_TIME_STAMP.equals(localName)) {
 			final String namespaceURI = node.getNamespaceURI();
 			if (XAdESNamespaces.XAdES141.equals(namespaceURI)) {
 				return ArchiveTimestampType.XAdES_141;
@@ -1298,30 +1250,17 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private TimestampReference getSignatureTimestampReference() {
-
 		final TimestampReference signatureReference = new TimestampReference(getId());
 		return signatureReference;
 	}
 
-	private void setTimestampCanonicalizationMethod(final Element timestampElement, final TimestampToken timestampToken) {
-
+	private String getTimestampCanonicalizationMethod(final Element timestampElement) {
 		final Element canonicalizationMethodElement = DomUtils.getElement(timestampElement, xPathQueryHolder.XPATH__CANONICALIZATION_METHOD);
 		String canonicalizationMethod = DEFAULT_TIMESTAMP_VALIDATION_CANONICALIZATION_METHOD;
 		if (canonicalizationMethodElement != null) {
 			canonicalizationMethod = canonicalizationMethodElement.getAttribute(XMLE_ALGORITHM);
 		}
-		timestampToken.setCanonicalizationMethod(canonicalizationMethod);
-	}
-
-	/*
-	 * Returns an unmodifiable list of all certificate tokens encapsulated in the signature
-	 * 
-	 * @see eu.europa.esig.dss.validation.AdvancedSignature#getCertificates()
-	 */
-	@Override
-	public List<CertificateToken> getCertificates() {
-
-		return getCertificateSource().getCertificates();
+		return canonicalizationMethod;
 	}
 
 	/*
@@ -1346,16 +1285,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			return;
 		}
 		signatureCryptographicVerification = new SignatureCryptographicVerification();
-		final Document document = signatureElement.getOwnerDocument();
-		final Element rootElement = document.getDocumentElement();
-
-		DSSXMLUtils.setIDIdentifier(rootElement);
-		DSSXMLUtils.recursiveIdBrowse(rootElement);
 		try {
-
-			final XMLSignature santuarioSignature = new XMLSignature(signatureElement, "");
-			santuarioSignature.addResourceResolver(new XPointerResourceResolver(signatureElement));
-			santuarioSignature.addResourceResolver(new OfflineResolver(detachedContents, getDigestAlgorithm()));
+			final XMLSignature santuarioSignature = getSantuarioSignature();
 
 			boolean coreValidity = false;
 			final List<CertificateValidity> certificateValidityList = getSigningCertificateValidityList(santuarioSignature, signatureCryptographicVerification,
@@ -1390,29 +1321,17 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					signatureCryptographicVerification.setErrorMessage(preliminaryErrorMessage);
 				}
 			}
-			final SignedInfo signedInfo = santuarioSignature.getSignedInfo();
-			final int length = signedInfo.getLength();
 
-			boolean referenceDataFound = length > 0;
-			boolean referenceDataHashValid = length > 0;
-
-			boolean foundSignedProperties = false;
-			for (int ii = 0; ii < length; ii++) {
-				final Reference reference = signedInfo.item(ii);
-				if (xPathQueryHolder.XADES_SIGNED_PROPERTIES.equals(reference.getType())) {
-					foundSignedProperties = true;
-				}
-				if (!coreValidity) {
-					referenceDataHashValid = referenceDataHashValid && reference.verify();
-				}
-				references.add(reference);
+			boolean allReferenceDataFound = true;
+			boolean allReferenceDataIntact = true;
+			List<ReferenceValidation> refValidations = getReferenceValidations();
+			for (ReferenceValidation referenceValidation : refValidations) {
+				allReferenceDataFound = allReferenceDataFound && referenceValidation.isFound();
+				allReferenceDataIntact = allReferenceDataIntact && referenceValidation.isIntact();
 			}
 
-			// 1 reference for SignedProperties + 1 reference / signed object
-			referenceDataFound = referenceDataFound && foundSignedProperties;
-
-			signatureCryptographicVerification.setReferenceDataFound(referenceDataFound);
-			signatureCryptographicVerification.setReferenceDataIntact(referenceDataHashValid);
+			signatureCryptographicVerification.setReferenceDataFound(allReferenceDataFound);
+			signatureCryptographicVerification.setReferenceDataIntact(allReferenceDataIntact);
 			signatureCryptographicVerification.setSignatureIntact(coreValidity);
 		} catch (Exception e) {
 
@@ -1434,6 +1353,137 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		}
 	}
 
+	public List<ReferenceValidation> getReferenceValidations() {
+		if (referenceValidations == null) {
+			referenceValidations = new ArrayList<ReferenceValidation>();
+
+			final XMLSignature santuarioSignature = getSantuarioSignature();
+			final SignedInfo signedInfo = santuarioSignature.getSignedInfo();
+			final int numberOfReferences = signedInfo.getLength();
+
+			boolean signedPropertiesFound = false;
+			boolean referenceFound = false;
+			for (int ii = 0; ii < numberOfReferences; ii++) {
+				ReferenceValidation validation = new ReferenceValidation();
+				boolean found = false;
+				boolean intact = false;
+				try {
+					final Reference reference = signedInfo.item(ii);
+					references.add(reference);
+
+					final String id = reference.getId();
+					final String uri = reference.getURI();
+					if (Utils.isStringNotBlank(id)) {
+						validation.setName(id);
+					} else if (Utils.isStringNotBlank(uri)) {
+						validation.setName(uri);
+					}
+
+					found = reference.getContentsBeforeTransformation() != null;
+					boolean noDuplicateIdFound = XMLUtils.protectAgainstWrappingAttack(santuarioSignature.getDocument(), DomUtils.getId(uri));
+					if (isSignedProperties(reference)) {
+						validation.setType(DigestMatcherType.SIGNED_PROPERTIES);
+						found = found && (noDuplicateIdFound && findSignedPropertiesById(uri));
+						signedPropertiesFound = signedPropertiesFound || found;
+					} else if (reference.typeIsReferenceToObject()) {
+						validation.setType(DigestMatcherType.OBJECT);
+						found = found &&  (noDuplicateIdFound && findObjectById(uri));
+						referenceFound = referenceFound || found;
+					} else if (reference.typeIsReferenceToManifest()) {
+						validation.setType(DigestMatcherType.MANIFEST);
+						found = found && (noDuplicateIdFound && findManifestById(uri));
+						referenceFound = referenceFound || found;
+					} else {
+						validation.setType(DigestMatcherType.REFERENCE);
+						found = found && noDuplicateIdFound;
+						referenceFound = referenceFound || found;
+					}
+
+					final Digest digest = new Digest();
+					digest.setValue(reference.getDigestValue());
+					digest.setAlgorithm(
+							DigestAlgorithm.forXML(reference.getMessageDigestAlgorithm().getAlgorithmURI()));
+					validation.setDigest(digest);
+
+					intact = reference.verify();
+				} catch (XMLSecurityException e) {
+					LOG.warn("Unable to verify reference {} : {}", ii, e.getMessage());
+				}
+				validation.setFound(found);
+				validation.setIntact(intact);
+				referenceValidations.add(validation);
+			}
+
+			// If at least one signedProperties is not found, we add an empty
+			// referenceValidation
+			if (!signedPropertiesFound) {
+				referenceValidations.add(notFound(DigestMatcherType.SIGNED_PROPERTIES));
+			}
+			// If at least one reference is not found, we add an empty
+			// referenceValidation
+			if (!referenceFound) {
+				referenceValidations.add(notFound(DigestMatcherType.REFERENCE));
+			}
+		}
+		return referenceValidations;
+	}
+
+	private boolean isSignedProperties(final Reference reference) {
+		return xPathQueryHolder.XADES_SIGNED_PROPERTIES.equals(reference.getType());
+	}
+
+	private boolean findSignedPropertiesById(String uri) {
+		return getSignedPropertiesById(uri) != null;
+	}
+
+	private Node getSignedPropertiesById(String uri) {
+		String signedPropertiesById = xPathQueryHolder.XPATH_SIGNED_PROPERTIES + DomUtils.getXPathByIdAttribute(uri);
+		return DomUtils.getNode(signatureElement, signedPropertiesById);
+	}
+
+	private boolean findObjectById(String uri) {
+		return getObjectById(uri) != null;
+	}
+
+	public Node getObjectById(String uri) {
+		String objectById = XPathQueryHolder.XPATH_OBJECT + DomUtils.getXPathByIdAttribute(uri);
+		return DomUtils.getNode(signatureElement, objectById);
+	}
+
+	private boolean findManifestById(String uri) {
+		return getManifestById(uri) != null;
+	}
+
+	public Node getManifestById(String uri) {
+		String manifestById = XPathQueryHolder.XPATH_MANIFEST + DomUtils.getXPathByIdAttribute(uri);
+		return DomUtils.getNode(signatureElement, manifestById);
+	}
+
+	private ReferenceValidation notFound(DigestMatcherType type) {
+		ReferenceValidation validation = new ReferenceValidation();
+		validation.setType(type);
+		validation.setFound(false);
+		return validation;
+	}
+
+	private XMLSignature getSantuarioSignature() {
+		try {
+			final Document document = signatureElement.getOwnerDocument();
+			final Element rootElement = document.getDocumentElement();
+
+			DSSXMLUtils.setIDIdentifier(rootElement);
+			DSSXMLUtils.recursiveIdBrowse(rootElement);
+
+			final XMLSignature santuarioSignature = new XMLSignature(signatureElement, "");
+			if (Utils.isCollectionNotEmpty(detachedContents)) {
+				santuarioSignature.addResourceResolver(new DetachedSignatureResolver(detachedContents, getSignatureAlgorithm().getDigestAlgorithm()));
+			}
+			return santuarioSignature;
+		} catch (XMLSecurityException e) {
+			throw new DSSException("Unable to initialize santuario XMLSignature", e);
+		}
+	}
+	
 	/**
 	 * This method returns a {@code List} of {@code SigningCertificateValidity} base on the certificates extracted from
 	 * the signature or on the
@@ -1662,27 +1712,24 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public byte[] getSignatureTimestampData(final TimestampToken timestampToken, String canonicalizationMethod) {
 		canonicalizationMethod = timestampToken != null ? timestampToken.getCanonicalizationMethod() : canonicalizationMethod;
-		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		try {
 
+		try (ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
 			writeCanonicalizedValue(xPathQueryHolder.XPATH_SIGNATURE_VALUE, canonicalizationMethod, buffer);
 			if (LOG.isTraceEnabled()) {
 				LOG.trace("Signature timestamp: canonicalization method  --> {}", canonicalizationMethod);
 				LOG.trace("                   : canonicalized string     --> {}", buffer.toString());
 			}
+			return buffer.toByteArray();
 		} catch (IOException e) {
 			throw new DSSException("Error when computing the SignatureTimestamp", e);
 		}
-		return buffer.toByteArray();
 	}
 
 	@Override
 	public byte[] getTimestampX1Data(final TimestampToken timestampToken, String canonicalizationMethod) {
-
 		canonicalizationMethod = timestampToken != null ? timestampToken.getCanonicalizationMethod() : canonicalizationMethod;
-		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		try {
 
+		try (ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
 			writeCanonicalizedValue(xPathQueryHolder.XPATH_SIGNATURE_VALUE, canonicalizationMethod, buffer);
 
 			final NodeList signatureTimeStampNode = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_SIGNATURE_TIMESTAMP);
@@ -1707,11 +1754,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public byte[] getTimestampX2Data(final TimestampToken timestampToken, String canonicalizationMethod) {
-
 		canonicalizationMethod = timestampToken != null ? timestampToken.getCanonicalizationMethod() : canonicalizationMethod;
-		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		try {
 
+		try (ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
 			writeCanonicalizedValue(xPathQueryHolder.XPATH_COMPLETE_CERTIFICATE_REFS, canonicalizationMethod, buffer);
 			writeCanonicalizedValue(xPathQueryHolder.XPATH_COMPLETE_REVOCATION_REFS, canonicalizationMethod, buffer);
 			if (LOG.isTraceEnabled()) {
@@ -1719,7 +1764,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			}
 			return buffer.toByteArray();
 		} catch (IOException e) {
-
 			throw new DSSException("Error when computing the RefsOnlyTimeStamp (TimestampX2D)", e);
 		}
 	}
@@ -1746,13 +1790,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		 * have the same parent, this property uses
 		 * the Implicit mechanism for all the time-stamped data objects. The input to the computation of the digest
 		 * value MUST be built as follows:
+		 * 
+		 * 1) Initialize the final octet stream as an empty octet stream.
 		 */
-		try {
-
-			/**
-			 * 1) Initialize the final octet stream as an empty octet stream.
-			 */
-			final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		try (ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
 
 			/**
 			 * 2) Take all the ds:Reference elements in their order of appearance within ds:SignedInfo referencing
@@ -1770,19 +1811,12 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			 */
 			final Set<String> referenceURIs = new HashSet<String>();
 			for (final Reference reference : references) {
-
-				try {
-
-					String uri = reference.getURI();
-					if (uri.startsWith("#")) {
-						uri = uri.substring(1);
-					}
-					referenceURIs.add(uri);
-					final byte[] bytes = reference.getReferencedBytes();
-					Utils.write(bytes, buffer);
-				} catch (XMLSignatureException e) {
-					throw new DSSException(e);
+				String uri = reference.getURI();
+				if (uri.startsWith("#")) {
+					uri = uri.substring(1);
 				}
+				referenceURIs.add(uri);
+				buffer.write(reference.getReferencedBytes());
 			}
 			/**
 			 * 3) Take the following XMLDSIG elements in the order they are listed below, canonicalize each one and
@@ -1850,7 +1884,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				 * satisfy with the rules specified in clause 7.6.4.
 				 */
 				// } else
-				if (isArchiveTimestamp(localName)) {
+				if (XPathQueryHolder.XMLE_ARCHIVE_TIME_STAMP.equals(localName)) {
 
 					if ((timestampToken != null) && (timestampToken.getHashCode() == node.hashCode())) {
 						break;
@@ -1935,9 +1969,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				byte[] canonicalizedValue = DSSXMLUtils.canonicalizeSubtree(canonicalizationMethod, node);
 				buffer.write(canonicalizedValue);
 			}
-			final byte[] bytes = buffer.toByteArray();
-			return bytes;
-		} catch (IOException e) {
+			return buffer.toByteArray();
+		} catch (IOException | XMLSignatureException e) {
 			throw new DSSException("Error when computing the archive data", e);
 		}
 	}
@@ -1950,10 +1983,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			final byte[] canonicalizedValue = DSSXMLUtils.canonicalizeSubtree(canonicalizationMethod, element);
 			buffer.write(canonicalizedValue);
 		}
-	}
-
-	private boolean isArchiveTimestamp(final String localName) {
-		return XPathQueryHolder.XMLE_ARCHIVE_TIME_STAMP.equals(localName) || XPathQueryHolder.XMLE_ARCHIVE_TIME_STAMP_V2.equals(localName);
 	}
 
 	@Override
@@ -2083,21 +2112,26 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			break;
 		case XAdES_BASELINE_LTA:
 			dataForLevelPresent = hasLTAProfile();
+			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.XAdES_BASELINE_LT);
 			break;
 		case XAdES_BASELINE_LT:
-			dataForLevelPresent &= hasLTProfile();
+			dataForLevelPresent = hasLTProfile();
+			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.XAdES_BASELINE_T);
 			break;
 		case XAdES_BASELINE_T:
-			dataForLevelPresent &= hasTProfile();
+			dataForLevelPresent = hasTProfile();
+			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.XAdES_BASELINE_B);
 			break;
 		case XAdES_BASELINE_B:
-			dataForLevelPresent &= hasBProfile();
+			dataForLevelPresent = hasBProfile();
 			break;
 		case XAdES_X:
-			dataForLevelPresent &= hasXProfile();
+			dataForLevelPresent = hasXProfile();
+			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.XAdES_C);
 			break;
 		case XAdES_C:
-			dataForLevelPresent &= hasCProfile();
+			dataForLevelPresent = hasCProfile();
+			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.XAdES_BASELINE_T);
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown level " + signatureLevel);
@@ -2231,4 +2265,5 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	public Element getQualifyingPropertiesDom() {
 		return DomUtils.getElement(signatureElement, xPathQueryHolder.XPATH_QUALIFYING_PROPERTIES);
 	}
+
 }

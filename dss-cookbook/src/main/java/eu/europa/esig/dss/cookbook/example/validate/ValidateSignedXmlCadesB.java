@@ -20,20 +20,21 @@
  */
 package eu.europa.esig.dss.cookbook.example.validate;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.cookbook.example.Cookbook;
+import eu.europa.esig.dss.cookbook.mock.MockServiceInfo;
 import eu.europa.esig.dss.cookbook.mock.MockTSLCertificateSource;
 import eu.europa.esig.dss.cookbook.sources.AlwaysValidOCSPSource;
-import eu.europa.esig.dss.test.mock.MockServiceInfo;
 import eu.europa.esig.dss.tsl.ServiceInfo;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.reports.DetailedReport;
+import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.reports.SimpleReport;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
@@ -41,6 +42,7 @@ import eu.europa.esig.dss.x509.CertificateToken;
  */
 public class ValidateSignedXmlCadesB extends Cookbook {
 
+	@SuppressWarnings("unused")
 	public static void main(String[] args) throws IOException {
 
 		preparePKCS12TokenAndKey();
@@ -66,12 +68,11 @@ public class ValidateSignedXmlCadesB extends Cookbook {
 
 		validator.setCertificateVerifier(verifier);
 
-		eu.europa.esig.dss.validation.reports.Reports reports = validator.validateDocument();
+		Reports reports = validator.validateDocument();
 
-		InputStream is = new ByteArrayInputStream(reports.getXmlSimpleReport().getBytes("UTF-8"));
-		DSSUtils.saveToFile(is, "target/validationXmlCadesB_simpleReport.xml");
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		DetailedReport detailedReport = reports.getDetailedReport();
+		SimpleReport simpleReport = reports.getSimpleReport();
 
-		is = new ByteArrayInputStream(reports.getXmlDetailedReport().getBytes("UTF-8"));
-		DSSUtils.saveToFile(is, "target/validationXmlCadesB_detailReport.xml");
 	}
 }

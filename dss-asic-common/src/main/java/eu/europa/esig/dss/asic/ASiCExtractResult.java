@@ -11,6 +11,8 @@ public class ASiCExtractResult {
 	private DSSDocument mimeTypeDocument;
 	private List<DSSDocument> signatureDocuments = new ArrayList<DSSDocument>();
 	private List<DSSDocument> manifestDocuments = new ArrayList<DSSDocument>();
+	private List<DSSDocument> archiveManifestDocuments = new ArrayList<DSSDocument>(); // ASiC with CAdES
+	private List<DSSDocument> timestampDocuments = new ArrayList<DSSDocument>(); // ASiC with CAdES
 	private List<DSSDocument> signedDocuments = new ArrayList<DSSDocument>();
 	private List<DSSDocument> unsupportedDocuments = new ArrayList<DSSDocument>();
 
@@ -44,6 +46,22 @@ public class ASiCExtractResult {
 
 	public void setManifestDocuments(List<DSSDocument> manifestDocuments) {
 		this.manifestDocuments = manifestDocuments;
+	}
+
+	public List<DSSDocument> getArchiveManifestDocuments() {
+		return archiveManifestDocuments;
+	}
+
+	public void setArchiveManifestDocuments(List<DSSDocument> archiveManifestDocuments) {
+		this.archiveManifestDocuments = archiveManifestDocuments;
+	}
+
+	public List<DSSDocument> getTimestampDocuments() {
+		return timestampDocuments;
+	}
+
+	public void setTimestampDocuments(List<DSSDocument> timestampDocuments) {
+		this.timestampDocuments = timestampDocuments;
 	}
 
 	public List<DSSDocument> getSignedDocuments() {

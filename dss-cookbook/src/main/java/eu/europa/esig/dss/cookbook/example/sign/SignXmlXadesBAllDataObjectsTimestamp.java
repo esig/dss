@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.cookbook.example.sign;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +28,6 @@ import javax.xml.crypto.dsig.CanonicalizationMethod;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
@@ -37,8 +35,8 @@ import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.TimestampParameters;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cookbook.example.Cookbook;
+import eu.europa.esig.dss.cookbook.mock.MockTSPSource;
 import eu.europa.esig.dss.cookbook.timestamp.TimestampService;
-import eu.europa.esig.dss.test.mock.MockTSPSource;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.x509.CertificatePool;
@@ -107,8 +105,6 @@ public class SignXmlXadesBAllDataObjectsTimestamp extends Cookbook {
 		SignatureValue signatureValue = signingToken.sign(dataToSign, signatureParameters.getDigestAlgorithm(), privateKey);
 		DSSDocument signedDocument = service.signDocument(toSignDocument, signatureParameters, signatureValue);
 
-		InputStream is = signedDocument.openStream();
-
-		DSSUtils.saveToFile(is, "target/signedXmlXadesBAllDataObjectsTimestamp.xml");
+		signedDocument.save("target/signedXmlXadesBAllDataObjectsTimestamp.xml");
 	}
 }

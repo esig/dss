@@ -25,7 +25,6 @@ import java.util.List;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
@@ -89,6 +88,6 @@ public class SignXmlXadesBWithMSCAPI extends Cookbook {
 		DSSDocument signedDocument = xadesService.signDocument(toSignDocument, parameters, signatureValue);
 
 		// DSSUtils.copy(signedDocument.openStream(), System.out);
-		DSSUtils.saveToFile(signedDocument.openStream(), "target/signedXmlXadesMSCapi.xml");
+		signedDocument.save("target/signedXmlXadesMSCapi.xml");
 	}
 }

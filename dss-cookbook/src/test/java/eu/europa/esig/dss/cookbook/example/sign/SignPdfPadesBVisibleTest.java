@@ -87,7 +87,7 @@ public class SignPdfPadesBVisibleTest extends CookbookTools {
 		textParameters.setText("My visual signature");
 		imageParameters.setTextParameters(textParameters);
 
-		parameters.setImageParameters(imageParameters);
+		parameters.setSignatureImageParameters(imageParameters);
 
 		// Create common certificate verifier
 		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();

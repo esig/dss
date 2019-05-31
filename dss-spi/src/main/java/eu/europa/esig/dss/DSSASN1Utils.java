@@ -22,16 +22,19 @@ package eu.europa.esig.dss;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.security.Security;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 
 import javax.naming.InvalidNameException;
@@ -48,7 +51,7 @@ import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1String;
-import org.bouncycastle.asn1.ASN1UTCTime;
+import org.bouncycastle.asn1.BERTags;
 import org.bouncycastle.asn1.DERBitString;
 import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.DEROctetString;
@@ -72,19 +75,25 @@ import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.IssuerSerial;
+import org.bouncycastle.asn1.x509.KeyPurposeId;
 import org.bouncycastle.asn1.x509.PolicyInformation;
 import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
+import org.bouncycastle.asn1.x509.Time;
 import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
 import org.bouncycastle.asn1.x509.qualified.QCStatement;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.bouncycastle.x509.extension.X509ExtensionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.tsl.ServiceInfo;
+import eu.europa.esig.dss.tsl.ServiceInfoStatus;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
@@ -97,6 +106,12 @@ public final class DSSASN1Utils {
 	private static final Logger LOG = LoggerFactory.getLogger(DSSASN1Utils.class);
 
 	private static final String QC_TYPE_STATEMENT_OID = "0.4.0.1862.1.6";
+
+	private static final BouncyCastleProvider securityProvider = new BouncyCastleProvider();
+
+	static {
+		Security.addProvider(securityProvider);
+	}
 
 	/**
 	 * This class is an utility class and cannot be instantiated.
@@ -154,14 +169,6 @@ public final class DSSASN1Utils {
 			BasicOCSPResponse basicOCSPResponse = BasicOCSPResponse.getInstance(basicOCSPResp.getEncoded());
 			return getDEREncoded(basicOCSPResponse);
 		} catch (IOException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	public static Date toDate(final ASN1UTCTime asn1Date) throws DSSException {
-		try {
-			return asn1Date.getDate();
-		} catch (ParseException e) {
 			throw new DSSException(e);
 		}
 	}
@@ -271,18 +278,6 @@ public final class DSSASN1Utils {
 		final String canonicalizedName = stringBuilder.toString();
 		LOG.debug("canonicalizedName: {} ", canonicalizedName);
 		return canonicalizedName;
-	}
-
-	/**
-	 * Gets the ASN.1 algorithm identifier structure corresponding to a signature algorithm
-	 *
-	 * @return the AlgorithmIdentifier
-	 */
-	public static AlgorithmIdentifier getAlgorithmIdentifier(SignatureAlgorithm signatureAlgorithm) {
-		final String jceId = signatureAlgorithm.getJCEId();
-		final ASN1ObjectIdentifier asn1ObjectIdentifier = new ASN1ObjectIdentifier(jceId);
-		final AlgorithmIdentifier algorithmIdentifier = new AlgorithmIdentifier(asn1ObjectIdentifier, DERNull.INSTANCE);
-		return algorithmIdentifier;
 	}
 
 	/**
@@ -455,15 +450,25 @@ public final class DSSASN1Utils {
 		return getAccessLocations(certificate, X509ObjectIdentifiers.id_ad_caIssuers);
 	}
 
+	public static List<String> getOCSPAccessLocations(final CertificateToken certificate) {
+		return getOCSPAccessLocations(certificate, true);
+	}
+
 	/**
 	 * Gives back the OCSP URIs meta-data found within the given X509 cert.
 	 *
 	 * @param certificate
 	 *            the cert token.
+	 * @param checkInTrustAnchors
+	 *            if true, the method will search in the ServiceSupplyPoint urls
 	 * @return a list of OCSP URIs, or empty list if the extension is not present.
 	 */
-	public static List<String> getOCSPAccessLocations(final CertificateToken certificate) {
-		return getAccessLocations(certificate, X509ObjectIdentifiers.id_ad_ocsp);
+	public static List<String> getOCSPAccessLocations(final CertificateToken certificate, boolean checkInTrustAnchors) {
+		List<String> ocspUrls = getAccessLocations(certificate, X509ObjectIdentifiers.id_ad_ocsp);
+		if (Utils.isCollectionEmpty(ocspUrls) && checkInTrustAnchors) {
+			return getServiceSupplyPoints(certificate, "ocsp");
+		}
+		return ocspUrls;
 	}
 
 	private static List<String> getAccessLocations(final CertificateToken certificate, ASN1ObjectIdentifier aiaType) {
@@ -492,41 +497,77 @@ public final class DSSASN1Utils {
 		return locationsUrls;
 	}
 
+	public static List<String> getCrlUrls(final CertificateToken certificateToken) {
+		return getCrlUrls(certificateToken, true);
+	}
+
 	/**
 	 * Gives back the {@code List} of CRL URI meta-data found within the given X509 certificate.
 	 *
 	 * @param certificateToken
 	 *            the cert token certificate
+	 * @param checkInTrustAnchors
+	 *            if true, the method will search in the ServiceSupplyPoint urls
 	 * @return the {@code List} of CRL URI, or empty list if the extension is not present
 	 */
-	public static List<String> getCrlUrls(final CertificateToken certificateToken) {
+	public static List<String> getCrlUrls(final CertificateToken certificateToken, boolean checkInTrustAnchors) {
 		final List<String> urls = new ArrayList<String>();
 
 		final byte[] crlDistributionPointsBytes = certificateToken.getCertificate().getExtensionValue(Extension.cRLDistributionPoints.getId());
-		if (null == crlDistributionPointsBytes) {
-			return urls;
-		}
-		try {
-			final ASN1Sequence asn1Sequence = DSSASN1Utils.getAsn1SequenceFromDerOctetString(crlDistributionPointsBytes);
-			final CRLDistPoint distPoint = CRLDistPoint.getInstance(asn1Sequence);
-			final DistributionPoint[] distributionPoints = distPoint.getDistributionPoints();
-			for (final DistributionPoint distributionPoint : distributionPoints) {
+		if (crlDistributionPointsBytes != null) {
+			try {
+				final ASN1Sequence asn1Sequence = DSSASN1Utils.getAsn1SequenceFromDerOctetString(crlDistributionPointsBytes);
+				final CRLDistPoint distPoint = CRLDistPoint.getInstance(asn1Sequence);
+				final DistributionPoint[] distributionPoints = distPoint.getDistributionPoints();
+				for (final DistributionPoint distributionPoint : distributionPoints) {
 
-				final DistributionPointName distributionPointName = distributionPoint.getDistributionPoint();
-				if (DistributionPointName.FULL_NAME != distributionPointName.getType()) {
-					continue;
+					final DistributionPointName distributionPointName = distributionPoint.getDistributionPoint();
+					if (DistributionPointName.FULL_NAME != distributionPointName.getType()) {
+						continue;
+					}
+					final GeneralNames generalNames = (GeneralNames) distributionPointName.getName();
+					final GeneralName[] names = generalNames.getNames();
+					for (final GeneralName name : names) {
+						String location = parseGn(name);
+						if (location != null) {
+							urls.add(location);
+						}
+					}
 				}
-				final GeneralNames generalNames = (GeneralNames) distributionPointName.getName();
-				final GeneralName[] names = generalNames.getNames();
-				for (final GeneralName name : names) {
-					String location = parseGn(name);
-					if (location != null) {
-						urls.add(location);
+			} catch (Exception e) {
+				LOG.error("Unable to parse cRLDistributionPoints", e);
+			}
+		}
+
+		if (Utils.isCollectionEmpty(urls) && checkInTrustAnchors) {
+			return getServiceSupplyPoints(certificateToken, "crl", "certificateRevocationList");
+		}
+		return urls;
+	}
+
+	private static List<String> getServiceSupplyPoints(CertificateToken certificateToken, String... keywords) {
+		List<String> urls = new ArrayList<String>();
+		CertificateToken issuerToken = certificateToken.getIssuerToken();
+		while (issuerToken != null) {
+			if (issuerToken.isTrusted() && Utils.isCollectionNotEmpty(issuerToken.getAssociatedTSPS())) {
+				Set<ServiceInfo> services = issuerToken.getAssociatedTSPS();
+				for (ServiceInfo serviceInfo : services) {
+					for (ServiceInfoStatus serviceInfoStatus : serviceInfo.getStatus()) {
+						List<String> serviceSupplyPoints = serviceInfoStatus.getServiceSupplyPoints();
+						if (Utils.isCollectionNotEmpty(serviceSupplyPoints)) {
+							for (String serviceSupplyPoint : serviceSupplyPoints) {
+								for (String keyword : keywords) {
+									if (serviceSupplyPoint.contains(keyword)) {
+										LOG.debug("ServiceSupplyPoints (TL) found for keyword '{}'", keyword);
+										urls.add(serviceSupplyPoint);
+									}
+								}
+							}
+						}
 					}
 				}
 			}
-		} catch (Exception e) {
-			LOG.error("Unable to parse cRLDistributionPoints", e);
+			issuerToken = issuerToken.getIssuerToken();
 		}
 		return urls;
 	}
@@ -554,15 +595,18 @@ public final class DSSASN1Utils {
 	 * @return
 	 */
 	public static boolean isOCSPSigning(CertificateToken certToken) {
+		return isExtendedKeyUsagePresent(certToken, KeyPurposeId.id_kp_OCSPSigning.toOID());
+	}
+
+	public static boolean isExtendedKeyUsagePresent(CertificateToken certToken, ASN1ObjectIdentifier oid) {
 		try {
 			List<String> keyPurposes = certToken.getCertificate().getExtendedKeyUsage();
-			if ((keyPurposes != null) && keyPurposes.contains(OID.id_kp_OCSPSigning.getId())) {
+			if ((keyPurposes != null) && keyPurposes.contains(oid.getId())) {
 				return true;
 			}
 		} catch (CertificateParsingException e) {
-			LOG.warn(e.getMessage());
+			LOG.error(e.getMessage(), e);
 		}
-		// Responder's certificate not valid for signing OCSP responses.
 		return false;
 	}
 
@@ -680,25 +724,14 @@ public final class DSSASN1Utils {
 				 * U+003C, U+003D, U+003E, U+005C, respectively)
 				 *
 				 * it can be prefixed by a backslash ('\' U+005C).
-				 * ...
 				 */
-				string = string.replace("\"", "\\\"");
-				string = string.replace("#", "\\#");
-				string = string.replace("+", "\\+");
-				string = string.replace(",", "\\,");
-				string = string.replace(";", "\\;");
-				string = string.replace("<", "\\<");
-				string = string.replace("=", "\\=");
-				string = string.replace(">", "\\>");
-				// System.out.println(">>> " + attributeType.toString() + "=" +
-				// attributeValue.getClass().getSimpleName() + "[" + string + "]");
+				string = Rdn.escapeValue(string);
 				if (stringBuilder.length() != 0) {
 					stringBuilder.append(',');
 				}
 				stringBuilder.append(attributeType).append('=').append(string);
 			}
 		}
-		// final X500Name x500Name = X500Name.getInstance(encoded);
 		return stringBuilder.toString();
 	}
 
@@ -742,7 +775,7 @@ public final class DSSASN1Utils {
 	}
 
 	public static String getHumanReadableName(CertificateToken cert) {
-		return firstNotNull(cert, BCStyle.CN, BCStyle.GIVENNAME, BCStyle.SURNAME, BCStyle.NAME, BCStyle.PSEUDONYM);
+		return firstNotNull(cert, BCStyle.CN, BCStyle.GIVENNAME, BCStyle.SURNAME, BCStyle.NAME, BCStyle.PSEUDONYM, BCStyle.O, BCStyle.OU);
 	}
 
 	private static String firstNotNull(CertificateToken cert, ASN1ObjectIdentifier... oids) {
@@ -753,6 +786,35 @@ public final class DSSASN1Utils {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Returns the first {@code SignerInformation} extracted from {@code CMSSignedData}.
+	 *
+	 * @param cms
+	 *            CMSSignedData
+	 * @return returns {@code SignerInformation}
+	 */
+	public static SignerInformation getFirstSignerInformation(final CMSSignedData cms) {
+		final Collection<SignerInformation> signers = cms.getSignerInfos().getSigners();
+		if (signers.size() > 1) {
+			LOG.warn("!!! The framework handles only one signer (SignerInformation) !!!");
+		}
+		return signers.iterator().next();
+	}
+
+	public static boolean isASN1SequenceTag(byte tagByte) {
+		// BERTags.SEQUENCE | BERTags.CONSTRUCTED = 0x30
+		return (BERTags.SEQUENCE | BERTags.CONSTRUCTED) == tagByte;
+	}
+
+	public static Date getDate(ASN1Encodable encodable) {
+		try {
+			return Time.getInstance(encodable).getDate();
+		} catch (Exception e) {
+			LOG.warn("Unable to retrieve the date : " + encodable, e);
+			return null;
+		}
 	}
 
 }

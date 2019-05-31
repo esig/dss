@@ -150,6 +150,17 @@ Please note that the DSS framework is still under maintenance and new features w
 
 DSS framework is a multi-modules project which can be builded with Maven.
 
+You can easily download them with the following Maven repository : 
+
+[source,xml]
+----
+<repository>
+  <id>cefdigital</id>
+  <name>cefdigital</name>
+  <url>https://ec.europa.eu/cefdigital/artifact/content/repositories/esignaturedss/</url>
+</repository>
+----
+
 [horizontal]
 dss-model:: Data model used in almost every modules.
 dss-token:: Token definitions and implementations for MS CAPI, PKCS#11, PKCS#12.
@@ -162,11 +173,10 @@ dss-pades:: Implementation of the PAdES signature, extension and validation.
 dss-xades:: Implementation of the XAdES signature, extension and validation.
 dss-spi:: Interfaces, util classes to manipulate ASN1, compute digests,... 
 dss-service:: Implementations to communicate with online resources (TSP, CRL, OCSP). 
+dss-crl-parser:: API to validate CRLs and retrieve revocation data
+dss-crl-parser-stream:: Implementation of dss-crl-parser which streams the CRL (experimental).
+dss-crl-parser-x509crl:: Implementation of dss-crl-parser which uses the java object X509CRL.
 dss-tsl-validation:: Module which allows to load / parse / validate LOTL and TSLs.
-dss-standalone-app:: Standalone application which allows to sign a document with different formats and tokens (JavaFX).
-dss-standalone-app-package:: Packaging module for dss-standalone-app.
-dss-demo-webapp:: Demonstration web application which presents a part of the DSS possibilities.
-dss-demo-bundle:: Packaging module for dss-demo-webapp.
 validation-policy:: Business of the signature's validation (ETSI EN 319 102).
 dss-rest:: REST webservices to sign (getDataToSign, signDocument methods) and extend a signature.
 dss-rest-client:: Client for the REST webservices.
@@ -177,6 +187,11 @@ dss-validation-rest-client:: Client for the REST webservices.
 dss-validation-soap:: SOAP webservices to validate a signature.
 dss-validation-soap-client:: Client for the SOAP webservices.
 dss-remote-services:: Common code between dss-rest and dss-soap.
+dss-server-signing-common:: Common code for server signing
+dss-server-signing-rest:: REST webservice for server signing
+dss-server-signing-rest-client:: REST client for server signing 
+dss-server-signing-soap:: SOAP webservice for server signing
+dss-server-signing-soap-client:: SOAP client for server signing
 sscd-mocca-adapter:: Implementation for MOCCA token.
 dss-policy-jaxb:: JAXB model of the validation policy.
 dss-diagnostic-jaxb:: JAXB model of the diagnostic data.
@@ -184,8 +199,39 @@ dss-simple-report-jaxb:: JAXB model of the simple report.
 dss-detailed-report-jaxb:: JAXB model of the detailed report.
 dss-reports:: Wrappers to easily manipulate the reports JAXB models (diagnostic-data, simple-report, detailed-report).
 dss-tsl-jaxb:: JAXB model of the TSL.
+dss-utils:: API with utility methods for String, Collection, I/O,...
+dss-utils-apache-commons:: Implementation of dss-utils with Apache Commons libraries
+dss-utils-google-guava:: Implementation of dss-utils with Google Guava
 dss-test:: Mocks and util classes for unit tests.
 dss-cookbook:: Samples and documentation of DSS used to generate this documentation.
+
+=== DSS Utils
+
+The module dss-utils offers an interface with utility methods to operate on String, Collection, I/O,... DSS framework provides two different implementations with the same behavior : 
+
+ * dss-utils-apache-commons : this module uses Apache Commons libraries (commons-lang3, commons-collection4, commons-io and commons-codec);
+ * dss-utils-google-guava : this module only requires Google Guava (recommended on Android).
+
+If your integration include dss-utils, you will need to select an implementation.
+
+=== DSS CRL Parser
+
+DSS contains two ways to parse/validate a CRL and to retrieve revocation data. An alternative to the X509CRL java object was developed to face memory issues in case of large CRLs. The X509CRL object fully loads the CRL in memory and can cause OutOfMemoryError.
+
+ * dss-crl-parser-x509crl : this module uses the X509CRL java object.
+ * dss-crl-parser-streams : this module offers an alternative with a CRL streaming (experimental).
+ 
+If your integration require dss-crl-parser, you will need to choose your implementation.
+
+== Available demonstrations
+
+With the framework, some demonstrations are provided.
+
+[horizontal]
+dss-standalone-app:: Standalone application which allows to sign a document with different formats and tokens (JavaFX).
+dss-standalone-app-package:: Packaging module for dss-standalone-app.
+dss-demo-webapp:: Demonstration web application which presents a part of the DSS possibilities.
+dss-demo-bundle:: Packaging module for dss-demo-webapp.
 
 == Signature's profile simplification
 
@@ -368,10 +414,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBP
 
 This code adds the following elements into the signature :
 
-[source,xml]
-----
-include::samples/xades-b-properties.xml[]
-----
+include::samples/xades-b-properties.adoc[]
 
 ===== Handling signature policy
 
@@ -400,10 +443,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBI
 
 An XML segment will be added to the signature's qualified and signed properties:
 
-[source,xml]
-----
-include::samples/xades-implicit-policy.xml[]
-----
+include::samples/xades-implicit-policy.adoc[]
 
 The next example demonstrates an explicit policy identifier. This is obtained by setting -B profile signature policy and assigning values to the policy parameters. The Signature Policy Identifier is a URI or OID  that uniquely identifies the version of the policy document. The signature will contain the identifier of the hash algorithm and the hash value of the policy document. The DSS framework does not automatically calculate the hash value; it is to the developer to proceed with the calculation using for example java.security.MessageDigest class (rt.jar). It is important to keep the policy file intact in order to keep the hash constant. It would be wise to make the policy file read-only. See also chapter 7 for further information.
 
@@ -416,10 +456,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBE
 
 The following XML segment will be added to the signature qualified & signed properties (<QualifyingProperties><SignedProperties>):
 
-[source,xml]
-----
-include::samples/xades-explicit-policy.xml[]
-----
+include::samples/xades-explicit-policy.adoc[]
 
 ==== XAdES-BASELINE-T
 
@@ -436,10 +473,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesTT
 
 The SignatureTimeStamp mandated by the XAdES-T form appears as an unsigned property within the QualifyingProperties:
 
-[source,xml]
-----
-include::samples/xades-signature-timestamp.xml[]
-----
+include::samples/xades-signature-timestamp.adoc[]
 
 ===== Use of online TSP source
 
@@ -467,10 +501,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesLT
 
 The following XML segment will be added to the signature qualified and unsigned properties:
 
-[source,xml]
-----
-include::samples/xades-revocation-data.xml[]
-----
+include::samples/xades-revocation-data.adoc[]
 
 NOTE: The use of online sources can significantly increase the execution time of the signing process. For testing purpose you can create your own source of data.
 
@@ -491,10 +522,7 @@ parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
 
 The following XML segment will be added to the signature qualified and unsigned properties:
 
-[source,xml]
-----
-include::samples/xades-archive-timestamp.xml[]
-----
+include::samples/xades-archive-timestamp.adoc[]
 
 === Various settings
 
@@ -531,10 +559,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/ExtendSignXmlX
 
 Here is the result of adding a new extension of type-T to an already existing -T level signature:
 
-[source,xml]
-----
-include::samples/xades-extend-t-to-t.xml[]
-----
+include::samples/xades-extend-t-to-t.adoc[]
 
 === XAdES-BASELINE-LT and -LTA
 
@@ -646,11 +671,8 @@ All these reports are encoded using XML, which allows the implementer to easily 
 
 This is a sample of the simple validation report.
 
-[source,xml]
 .Simple Report 
-----
-include::samples/simple-report-example.xml[]
-----
+include::samples/simple-report-example.adoc[]
 
 The result of the validation process is based on very complex rules. The purpose of this report is to make as simple as possible the information while keeping the most important elements. Thus the end user can, at a glance, have a synthetic view of the validation. To build this report the framework uses some simple rules and the detailed report as input.
 
@@ -658,11 +680,8 @@ The result of the validation process is based on very complex rules. The purpose
 
 This is a sample of the detailed validation report. Its structure is based on the ETSI standard <<R08>> and is built around Basic Building Blocks, Basic Validation Data, Timestamp Validation Data, AdES-T Validation Data and Long Term Validation Data. Some segments were deleted to make reading easier. They are marked by three dots:
 
-[source,xml]
 .Detailed Report 
-----
-include::samples/detailed-report-example.xml[]
-----
+include::samples/detailed-report-example.adoc[]
 
 For example the Basic Building Blocks are divided into seven elements:
 
@@ -689,21 +708,15 @@ This is a data set constructed from the information contained in the signature i
 
 This is an example of the diagnostic data for a XAdES signature. Certain fields and certain values were trimmed or deleted to make reading easier:
 
-[source,xml]
 .Diagnostic Data
-----
-include::samples/diagnostic-data-example.xml[]
-----
+include::samples/diagnostic-data-example.adoc[]
 
 === Customised Validation Policy
 
 The validation process may be driven by a set of constraints that are contained in the XML file constraint.xml.
 
-[source,xml]
-.constraint.xml
-----
-include::../../../../validation-policy/src/main/resources/policy/constraint.xml[]
-----
+.constraint.xml (default policy is provided in validation-policy module)
+include::samples/constraint.adoc[]
 
 == CAdES signature and validation
 
@@ -982,3 +995,106 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/OnlineTSPSo
 === Time-stamp policy:
 
 A time-stamp policy is a "named set of rules that indicates the applicability of a time-stamp token to a particular community and/or class of application with common security requirements". A TSA may define its own policy which enhances the policy defined in RFC 3628. Such a policy shall incorporate or further constrain the requirements identified in RFC 3628. A time-stamp policy may be defined by the user of times-stamp services.
+
+
+== REST Services
+
+DSS offers some REST and SOAP web services. The documentation will covers the REST calls. Additionally, we also provide a SOAP-UI project and Postman samples in the cookbook module.
+
+The different webservices are : 
+
+ * Signature webservices (dss-soap / dss-rest and their clients) : they expose methods to allow to sign or extend a signature from a client.
+ * Server-signing webservice (dss-server-signing-soap / dss-server-signing-rest and their clients) : they expose method to retrieve keys from a server (PKCS#11, PKCS#12, HSM,...) and to sign the digest on the server side.
+ * Validation webservices (dss-validation-soap / dss-validation-rest and their client) : they expose methods to allow validate a signature, with an optional detached file and an optional validation policy.
+ 
+The data structure in webservices is similar in REST and SOAP.
+
+=== REST signature service
+
+This service exposes 3 methods for one or more document(s) : 
+
+ * getDataToSign : computes the digest to be signed
+ * signDocument : adds the signature value in the document
+ * extendDocument : extends an existing signature
+ 
+==== Get data to sign
+
+The method allows to retrieve the data to be signed. The user sends the document to be signed, the parameters (signature level,...) and the certificate chain. 
+
+WARNING: The parameters in getDataToSign and signDocument MUST be the same (especially the signing date).
+
+.Request
+include::restdocs/get-data-to-sign-one-document/http-request.adoc[]
+
+.Response
+include::restdocs/get-data-to-sign-one-document/http-response.adoc[]
+
+==== Sign document
+
+The method allows to generate the signed document with the received signature value.
+
+WARNING: The parameters in getDataToSign and signDocument MUST be the same (especially the signing date).
+
+.Request
+include::restdocs/sign-document-one-document/http-request.adoc[]
+
+.Response
+include::restdocs/sign-document-one-document/http-response.adoc[]
+
+==== Extend document
+
+The method allows to extend an existing signature to a stronger level.
+
+.Request
+include::restdocs/extend-one-document/http-request.adoc[]
+
+.Response
+include::restdocs/extend-one-document/http-response.adoc[]
+
+=== REST server signature service
+
+This service also exposed 3 methods : 
+
+ * getKeys : retrieves available keys on server side
+ * getKey : retrieves a key on the server side by its alias
+ * sign : signs the digest value with the given key
+
+==== Get keys
+
+This method allows to retrieve all available keys on the server side (PKCS#11, PKCS#12, HSM,...). All keys will have an alias, a signing certificate and its chain. The alias will be used in following steps.
+
+.Request
+include::restdocs/get-keys/http-request.adoc[]
+
+.Response
+include::restdocs/get-keys/http-response.adoc[]
+
+==== Get key
+
+This method allows to retrieve key informations for a given alias.
+
+.Request
+include::restdocs/get-key/http-request.adoc[]
+
+.Response
+include::restdocs/get-key/http-response.adoc[]
+
+==== Sign
+
+This method allows to sign the given digest with a server side certificate.
+
+.Request
+include::restdocs/sign/http-request.adoc[]
+
+.Response
+include::restdocs/sign/http-response.adoc[]
+
+=== REST validation service
+
+This service allows to validate signature (all formats/types) against a validation policy.
+
+.Request
+include::restdocs/validate-doc/http-request.adoc[]
+
+.Response
+include::restdocs/validate-doc/http-response.adoc[]

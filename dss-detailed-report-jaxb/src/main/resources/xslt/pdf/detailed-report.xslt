@@ -96,7 +96,7 @@
 				    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='TIMESTAMP']"/>
 				    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='REVOCATION']"/>
 				    
-   					<xsl:apply-templates select="dss:QMatrixBlock"/>
+   					<xsl:apply-templates select="dss:TLAnalysis"/>
 					
 					<fo:block>
 						<xsl:attribute name="id">theEnd</xsl:attribute>
@@ -104,11 +104,6 @@
 				</fo:flow>
 			</fo:page-sequence>
 		</fo:root>
-	</xsl:template>
-	
-	<xsl:template match="dss:QMatrixBlock">
-		<xsl:apply-templates select="dss:TLAnalysis" />
-		<xsl:apply-templates select="dss:SignatureAnalysis" />
 	</xsl:template>
 	
 	<xsl:template match="dss:BasicBuildingBlocks">
@@ -165,7 +160,7 @@
 				</xsl:choose>
 	        </xsl:variable>
 		
-    		<xsl:attribute name="id">basicValidationData</xsl:attribute>
+    		<xsl:attribute name="id"><xsl:value-of select="@Id" /></xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
        		<xsl:attribute name="background-color"><xsl:value-of select="$indicationColor" /></xsl:attribute>
@@ -324,7 +319,7 @@
    		</xsl:if>
     </xsl:template>
     
-    <xsl:template match="dss:SignatureAnalysis">
+    <xsl:template match="dss:ValidationSignatureQualification">
 		<fo:block>
 			<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication/text()"/>
 	        <xsl:variable name="idSig" select="@Id" />

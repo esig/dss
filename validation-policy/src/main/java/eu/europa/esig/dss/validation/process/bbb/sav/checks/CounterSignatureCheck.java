@@ -3,7 +3,6 @@ package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 import java.util.List;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
-import eu.europa.esig.dss.validation.AttributeValue;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
@@ -30,7 +29,7 @@ public class CounterSignatureCheck extends ChainItem<XmlSAV> {
 
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 		for (SignatureWrapper signatureWrapper : signatures) {
-			if (AttributeValue.COUNTERSIGNATURE.equals(signatureWrapper.getType()) && currentSignatureId.equals(signatureWrapper.getParentId())) {
+			if (signatureWrapper.isCounterSignature() && currentSignatureId.equals(signatureWrapper.getParentId())) {
 				foundCountersignature = true;
 				break;
 			}

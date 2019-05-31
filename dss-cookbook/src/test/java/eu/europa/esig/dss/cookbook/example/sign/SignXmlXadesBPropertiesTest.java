@@ -22,6 +22,7 @@ package eu.europa.esig.dss.cookbook.example.sign;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
@@ -62,7 +63,7 @@ public class SignXmlXadesBPropertiesTest extends CookbookTools {
 		parameters.setCertificateChain(privateKey.getCertificateChain());
 
 		BLevelParameters bLevelParameters = parameters.bLevel();
-		bLevelParameters.addClaimedSignerRole("My Claimed Role");
+		bLevelParameters.setClaimedSignerRoles(Arrays.asList("My Claimed Role"));
 
 		SignerLocation signerLocation = new SignerLocation();
 		signerLocation.setCountry("BE");

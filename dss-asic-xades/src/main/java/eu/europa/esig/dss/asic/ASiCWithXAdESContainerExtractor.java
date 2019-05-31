@@ -14,6 +14,18 @@ public class ASiCWithXAdESContainerExtractor extends AbstractASiCContainerExtrac
 	}
 
 	@Override
+	boolean isAllowedArchiveManifest(String entryName) {
+		// No archive manifest in ASiC with XAdES
+		return false;
+	}
+
+	@Override
+	boolean isAllowedTimestamp(String entryName) {
+		// No timestamp file in ASiC with XAdES
+		return false;
+	}
+
+	@Override
 	boolean isAllowedSignature(String entryName) {
 		return ASiCUtils.isXAdES(entryName);
 	}

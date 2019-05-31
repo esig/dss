@@ -14,12 +14,12 @@ public final class EIDASUtils {
 	 * 
 	 * Regulation was signed in Brussels : 1st of July 00:00 Brussels = 30th of June 22:00 UTC
 	 */
-	private final static Date EIDAS_DATE = DatatypeConverter.parseDateTime("2016-06-30T22:00:00.000Z").getTime();
+	private static final Date EIDAS_DATE = DatatypeConverter.parseDateTime("2016-06-30T22:00:00.000Z").getTime();
 
 	/**
 	 * End of the grace period for eIDAS regulation
 	 */
-	private final static Date EIDAS_GRACE_DATE = DatatypeConverter.parseDateTime("2017-06-30T22:00:00.000Z").getTime();
+	private static final Date EIDAS_GRACE_DATE = DatatypeConverter.parseDateTime("2017-06-30T22:00:00.000Z").getTime();
 
 	public static boolean isPostEIDAS(Date date) {
 		return date != null && date.compareTo(EIDAS_DATE) >= 0;

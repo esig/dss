@@ -62,6 +62,7 @@ public class XPathQueryHolder implements Serializable {
 
 	public String XPATH_CV = "/xades:CertificateValues";
 	public String XPATH_EX509C = "/xades:EncapsulatedX509Certificate";
+	public String XPATH_REV_VALUES = "/xades:RevocationValues";
 	public String XPATH_CRLV = "/xades:CRLValues";
 	public String XPATH_OCSPV = "/xades:OCSPValues";
 	public String XPATH_ECRLV = "/xades:EncapsulatedCRLValue";
@@ -82,7 +83,9 @@ public class XPathQueryHolder implements Serializable {
 
 	public final String XPATH_KEY_INFO_X509_CERTIFICATE = XPATH_X509_DATA + "/ds:X509Certificate";
 
-	public final static String XPATH_OBJECT = "./ds:Object";
+	public static final String XPATH_OBJECT = "./ds:Object";
+	public static final String XPATH_MANIFEST = XPATH_OBJECT + "/ds:Manifest";
+
 	public String XPATH_QUALIFYING_PROPERTIES = XPATH_OBJECT + "/xades:QualifyingProperties";
 	public String XPATH__QUALIFYING_PROPERTIES = "./xades:QualifyingProperties";
 	/**
@@ -136,12 +139,11 @@ public class XPathQueryHolder implements Serializable {
 	public String XPATH_SIG_AND_REFS_TIMESTAMP = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades:" + XMLE_SIG_AND_REFS_TIME_STAMP;
 	public String XPATH_SIG_AND_REFS_TIMESTAMP_V2 = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades:" + XMLE_SIG_AND_REFS_TIME_STAMP_V2;
 	public String XPATH_CERTIFICATE_VALUES = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + XPATH_CV;
-	public String XPATH_REVOCATION_VALUES = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades:RevocationValues";
+	public String XPATH_REVOCATION_VALUES = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + XPATH_REV_VALUES;
 	public String XPATH_TIME_STAMP_VALIDATION_DATA = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades141:TimeStampValidationData";
 	public String XPATH_COUNTER_SIGNATURE = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades:CounterSignature";
 	public String XPATH_ARCHIVE_TIMESTAMP = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades:" + XMLE_ARCHIVE_TIME_STAMP;
 	public String XPATH_ARCHIVE_TIMESTAMP_141 = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades141:" + XMLE_ARCHIVE_TIME_STAMP;
-	public String XPATH_ARCHIVE_TIMESTAMP_V2 = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades141:" + XMLE_ARCHIVE_TIME_STAMP_V2;
 	public String XPATH_REVOCATION_CRL_REFS = XPATH_COMPLETE_REVOCATION_REFS + "/xades:CRLRefs";
 
 	public final String XPATH__DIGEST_METHOD_ALGORITHM = "./ds:DigestMethod/@Algorithm";
@@ -156,8 +158,8 @@ public class XPathQueryHolder implements Serializable {
 	public String XPATH_ENCAPSULATED_X509_CERTIFICATE = XPATH_CERTIFICATE_VALUES + XPATH_EX509C;
 	public String XPATH_TSVD_ENCAPSULATED_X509_CERTIFICATE = XPATH_TIME_STAMP_VALIDATION_DATA + XPATH_CV + XPATH_EX509C;
 
-	public String XPATH_TSVD_ENCAPSULATED_CRL_VALUES = XPATH_TIME_STAMP_VALIDATION_DATA + XPATH_CRLV + XPATH_ECRLV;
-	public String XPATH_TSVD_ENCAPSULATED_OCSP_VALUE = XPATH_TIME_STAMP_VALIDATION_DATA + XPATH_EOCSPV;
+	public String XPATH_TSVD_ENCAPSULATED_CRL_VALUES = XPATH_TIME_STAMP_VALIDATION_DATA + XPATH_REV_VALUES + XPATH_CRLV + XPATH_ECRLV;
+	public String XPATH_TSVD_ENCAPSULATED_OCSP_VALUE = XPATH_TIME_STAMP_VALIDATION_DATA + XPATH_REV_VALUES + XPATH_OCSPV + XPATH_EOCSPV;
 
 	public String XPATH_CERT_REFS = XPATH_COMPLETE_CERTIFICATE_REFS + "/xades:CertRefs";
 
@@ -167,24 +169,6 @@ public class XPathQueryHolder implements Serializable {
 	public String XPATH_CRL_VALUES_ENCAPSULATED_CRL = XPATH_ENCAPSULATED_CRL_VALUES + XPATH_ECRLV;
 	public String XPATH_OCSP_VALUES_ENCAPSULATED_OCSP = XPATH_ENCAPSULATED_OCSP_VALUES + XPATH_EOCSPV;
 
-	// Level -B
-	public String XPATH_COUNT_SIGNED_SIGNATURE_PROPERTIES = "count(" + XPATH_SIGNED_SIGNATURE_PROPERTIES + ")";
-	// Level -T
-	public final String XPATH_COUNT_SIGNATURE_TIMESTAMP = "count(" + XPATH_SIGNATURE_TIMESTAMP + ")";
-	// Level -C
-	public final String XPATH_COUNT_COMPLETE_CERTIFICATE_REFS = "count(" + XPATH_COMPLETE_CERTIFICATE_REFS + ")";
-	public final String XPATH_COUNT_COMPLETE_REVOCATION_REFS = "count(" + XPATH_COMPLETE_REVOCATION_REFS + ")";
-	// Level -X
-	public final String XPATH_COUNT_SIG_AND_REFS_TIMESTAMP = "count(" + XPATH_SIG_AND_REFS_TIMESTAMP + ")";
-	public final String XPATH_COUNT_SIG_AND_REFS_TIMESTAMP_V2 = "count(" + XPATH_SIG_AND_REFS_TIMESTAMP_V2 + ")";
-	// Level -XL -LT
-	public final String XPATH_COUNT_CERTIFICATE_VALUES = "count(" + XPATH_CERTIFICATE_VALUES + ")";
-	public final String XPATH_COUNT_REVOCATION_VALUES = "count(" + XPATH_REVOCATION_VALUES + ")";
-	// Level -A -LTA
-	public final String XPATH_COUNT_ARCHIVE_TIMESTAMP = "count(" + XPATH_ARCHIVE_TIMESTAMP + ")";
-	public final String XPATH_COUNT_ARCHIVE_TIMESTAMP_141 = "count(" + XPATH_ARCHIVE_TIMESTAMP_141 + ")";
-	public final String XPATH_COUNT_ARCHIVE_TIMESTAMP_V2 = "count(" + XPATH_ARCHIVE_TIMESTAMP_V2 + ")";
-
 	/**
 	 * This method returns true if this implementation is able to deal with a specific namespace.
 	 *
@@ -192,8 +176,6 @@ public class XPathQueryHolder implements Serializable {
 	 * @return
 	 */
 	public boolean canUseThisXPathQueryHolder(final String namespace) {
-
-		boolean canUse = XAdESNamespaces.XAdES.equals(namespace);
-		return canUse;
+		return XAdESNamespaces.XAdES.equals(namespace);
 	}
 }

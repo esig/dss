@@ -24,7 +24,6 @@ import static eu.europa.esig.dss.OID.id_aa_ATSHashIndex;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certValues;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationValues;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -314,7 +313,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		}
 	}
 
-	private boolean handleCrlEncoded(ArrayList<DEROctetString> crlHashesList, byte[] crlHolderEncoded) {
+	private boolean handleCrlEncoded(List<DEROctetString> crlHashesList, byte[] crlHolderEncoded) {
 		final byte[] digest = DSSUtils.digest(hashIndexDigestAlgorithm, crlHolderEncoded);
 		final DEROctetString derOctetStringDigest = new DEROctetString(digest);
 
@@ -330,7 +329,6 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 * @param signerInformation
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	private ASN1Sequence getUnsignedAttributesHashIndex(SignerInformation signerInformation) throws DSSException {
 
 		final ASN1EncodableVector unsignedAttributesHashIndex = new ASN1EncodableVector();
@@ -516,12 +514,12 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		}
 	}
 
-	public byte[] getArchiveTimestampDataV3(SignerInformation signerInformation, Attribute atsHashIndexAttribute, InputStream originalDocument,
-			DigestAlgorithm digestAlgorithm) throws DSSException {
+	public byte[] getArchiveTimestampDataV3(SignerInformation signerInformation, Attribute atsHashIndexAttribute, byte[] originalDocumentDigest)
+			throws DSSException {
 
 		final CMSSignedData cmsSignedData = cadesSignature.getCmsSignedData();
 		final byte[] encodedContentType = getEncodedContentType(cmsSignedData); // OID
-		final byte[] signedDataDigest = DSSUtils.digest(digestAlgorithm, originalDocument);
+		final byte[] signedDataDigest = originalDocumentDigest;
 		final byte[] encodedFields = getSignedFields(signerInformation);
 		final byte[] encodedAtsHashIndex = DSSASN1Utils.getDEREncoded(atsHashIndexAttribute.getAttrValues().getObjectAt(0));
 		/**

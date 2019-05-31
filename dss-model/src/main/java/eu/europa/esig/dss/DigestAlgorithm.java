@@ -62,9 +62,9 @@ public enum DigestAlgorithm {
 
 	private static class Registry {
 
-		private final static Map<String, DigestAlgorithm> OID_ALGORITHMS = registerOIDAlgorithms();
-		private final static Map<String, DigestAlgorithm> XML_ALGORITHMS = registerXMLAlgorithms();
-		private final static Map<String, DigestAlgorithm> ALGORITHMS = registerAlgorithms();
+		private static final Map<String, DigestAlgorithm> OID_ALGORITHMS = registerOIDAlgorithms();
+		private static final Map<String, DigestAlgorithm> XML_ALGORITHMS = registerXMLAlgorithms();
+		private static final Map<String, DigestAlgorithm> ALGORITHMS = registerAlgorithms();
 
 		private static Map<String, DigestAlgorithm> registerOIDAlgorithms() {
 			final Map<String, DigestAlgorithm> map = new HashMap<String, DigestAlgorithm>();
@@ -95,9 +95,12 @@ public enum DigestAlgorithm {
 	 * Returns the digest algorithm associated to the given JCE name.
 	 *
 	 * @param name
-	 * @return
+	 *            the algorithm name
+	 * @return the digest algorithm linked to the given name
+	 * @throws DSSException
+	 *             if the given name doesn't match any algorithm
 	 */
-	public static DigestAlgorithm forName(final String name) {
+	public static DigestAlgorithm forName(final String name) throws DSSException {
 		final String c14nName = name.replaceAll("-", "");
 		final DigestAlgorithm algorithm = Registry.ALGORITHMS.get(c14nName);
 		if (algorithm == null) {
@@ -110,8 +113,10 @@ public enum DigestAlgorithm {
 	 * Returns the digest algorithm associated to the given JCE name.
 	 *
 	 * @param name
+	 *            the algorithm name
 	 * @param defaultValue
-	 * @return
+	 *            The default value for the {@code DigestAlgorithm}
+	 * @return the corresponding {@code DigestAlgorithm} or the default value
 	 */
 	public static DigestAlgorithm forName(final String name, final DigestAlgorithm defaultValue) {
 		final String c14nName = name.replaceAll("-", "");
@@ -126,9 +131,12 @@ public enum DigestAlgorithm {
 	 * Returns the digest algorithm associated to the given OID.
 	 *
 	 * @param oid
-	 * @return
+	 *            the algorithm oid
+	 * @return the digest algorithm linked to the oid
+	 * @throws DSSException
+	 *             if the oid doesn't match any digest algorithm
 	 */
-	public static DigestAlgorithm forOID(final String oid) {
+	public static DigestAlgorithm forOID(final String oid) throws DSSException {
 		final DigestAlgorithm algorithm = Registry.OID_ALGORITHMS.get(oid);
 		if (algorithm == null) {
 			throw new DSSException("Unsupported algorithm: " + oid);
@@ -140,9 +148,12 @@ public enum DigestAlgorithm {
 	 * Returns the digest algorithm associated to the given XML url.
 	 *
 	 * @param xmlName
-	 * @return
+	 *            the algorithm uri
+	 * @return the digest algorithm linked to the given uri
+	 * @throws DSSException
+	 *             if the uri doesn't match any digest algorithm
 	 */
-	public static DigestAlgorithm forXML(final String xmlName) {
+	public static DigestAlgorithm forXML(final String xmlName) throws DSSException {
 		final DigestAlgorithm algorithm = Registry.XML_ALGORITHMS.get(xmlName);
 		if (algorithm == null) {
 			throw new DSSException("Unsupported algorithm: " + xmlName);
@@ -175,13 +186,16 @@ public enum DigestAlgorithm {
 	}
 
 	/**
-	 * @return the name
+	 * Get the algorithm name
+	 * 
+	 * @return the algorithm name
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
+	 * Get the JCE algorithm name
 	 * 
 	 * @return the java algorithm name
 	 */
@@ -190,14 +204,18 @@ public enum DigestAlgorithm {
 	}
 
 	/**
-	 * @return the OID
+	 * Get the algorithm OID
+	 * 
+	 * @return the ASN1 algorithm OID
 	 */
 	public String getOid() {
 		return oid;
 	}
 
 	/**
-	 * @return the xmlId
+	 * Get the algorithm uri
+	 * 
+	 * @return the algorithm uri
 	 */
 	public String getXmlId() {
 		return xmlId;

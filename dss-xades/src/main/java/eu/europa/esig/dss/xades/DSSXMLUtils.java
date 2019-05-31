@@ -36,7 +36,6 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.apache.xml.security.Init;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.transforms.Transforms;
 import org.slf4j.Logger;
@@ -69,7 +68,7 @@ public final class DSSXMLUtils {
 
 	static {
 
-		Init.init();
+		SantuarioInitializer.init();
 
 		transforms = new HashSet<String>();
 		registerDefaultTransforms();
@@ -147,7 +146,7 @@ public final class DSSXMLUtils {
 	 * @return
 	 */
 	public static byte[] serializeNode(final Node xmlNode) {
-		try {
+		try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
 			Transformer transformer = DomUtils.getSecureTransformer();
 			Document document = null;
 			if (Node.DOCUMENT_NODE == xmlNode.getNodeType()) {
@@ -163,7 +162,6 @@ public final class DSSXMLUtils {
 				}
 			}
 
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			StreamResult result = new StreamResult(bos);
 			Source source = new DOMSource(xmlNode);
 			transformer.transform(source, result);
@@ -251,24 +249,22 @@ public final class DSSXMLUtils {
 	}
 
 	/**
-	 * If this method finds an attribute with names ID (case-insensitive) then it is returned. If there is more than one
-	 * ID attributes then the first one is returned.
+	 * If this method finds an attribute with names ID (case-insensitive) then it is
+	 * returned. If there is more than one ID attributes then the first one is
+	 * returned.
 	 *
-	 * @param element
-	 *            to be checked
+	 * @param node
+	 *             the node to be checked
 	 * @return the ID attribute value or null
 	 */
-	public static String getIDIdentifier(final Element element) {
-
-		final NamedNodeMap attributes = element.getAttributes();
+	public static String getIDIdentifier(final Node node) {
+		final NamedNodeMap attributes = node.getAttributes();
 		for (int jj = 0; jj < attributes.getLength(); jj++) {
-
 			final Node item = attributes.item(jj);
-			final String localName = item.getNodeName();
+			final String localName = item.getLocalName();
 			if (localName != null) {
 				final String id = localName.toLowerCase();
 				if (ID_ATTRIBUTE_NAME.equals(id)) {
-
 					return item.getTextContent();
 				}
 			}
@@ -288,12 +284,13 @@ public final class DSSXMLUtils {
 		for (int jj = 0; jj < attributes.getLength(); jj++) {
 
 			final Node item = attributes.item(jj);
-			final String localName = item.getNodeName();
+			final String localName = item.getLocalName();
+			final String nodeName = item.getNodeName();
 			if (localName != null) {
 				final String id = localName.toLowerCase();
 				if (ID_ATTRIBUTE_NAME.equals(id)) {
 
-					childElement.setIdAttribute(localName, true);
+					childElement.setIdAttribute(nodeName, true);
 					break;
 				}
 			}

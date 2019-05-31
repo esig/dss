@@ -15,7 +15,6 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AttributeValue;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
@@ -33,7 +32,7 @@ import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
  */
 public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlValidationProcessArchivalData> {
 
-	private static final Logger logger = LoggerFactory.getLogger(ValidationProcessForSignaturesWithArchivalData.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ValidationProcessForSignaturesWithArchivalData.class);
 
 	private final XmlConstraintsConclusion validationProcessLongTermData;
 	private final List<XmlValidationProcessTimestamps> validationProcessTimestamps;
@@ -62,7 +61,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	protected void initChain() {
 
 		Context currentContext = Context.SIGNATURE;
-		if (AttributeValue.COUNTERSIGNATURE.equals(signature.getType())) {
+		if (signature.isCounterSignature()) {
 			currentContext = Context.COUNTER_SIGNATURE;
 		}
 
@@ -161,7 +160,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 					 */
 
 				} else { // timestampValidation is null
-					logger.error("No timestamp validation found for timestamp " + newestTimestamp.getId());
+					LOG.error("No timestamp validation found for timestamp " + newestTimestamp.getId());
 				}
 			}
 		}

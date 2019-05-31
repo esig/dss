@@ -20,8 +20,7 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import java.security.cert.X509CRL;
-import java.util.ArrayList;
+import java.util.Set;
 
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.x509.crl.OfflineCRLSource;
@@ -44,10 +43,11 @@ public class PAdESCRLSource extends OfflineCRLSource {
 	}
 
 	private void extract() {
-		x509CRLList = new ArrayList<X509CRL>();
-
 		if (dssDictionary != null) {
-			x509CRLList.addAll(dssDictionary.getCrlList());
+			Set<byte[]> crlSet = dssDictionary.getCrlList();
+			for (byte[] crl : crlSet) {
+				super.addCRLBinary(crl);
+			}
 		}
 
 	}

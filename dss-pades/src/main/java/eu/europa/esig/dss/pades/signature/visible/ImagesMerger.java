@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature.visible;
 
-import eu.europa.esig.dss.pades.SignatureImageParameters;
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -30,12 +28,15 @@ import java.awt.image.BufferedImage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.pades.SignatureImageParameters;
+
 /**
  * This class allows to merge two pictures together
  *
  */
 public final class ImagesMerger {
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(ImagesMerger.class);
 
 	private ImagesMerger() {
@@ -65,7 +66,7 @@ public final class ImagesMerger {
 	}
 
 	public static BufferedImage mergeOnRight(final BufferedImage left, final BufferedImage right, final Color bgColor,
-											 final SignatureImageParameters.SignerTextImageVerticalAlignment imageVerticalAlignment) {
+			final SignatureImageParameters.SignerTextImageVerticalAlignment imageVerticalAlignment) {
 		if (left == null) {
 			return right;
 		} else if (right == null) {
@@ -83,23 +84,25 @@ public final class ImagesMerger {
 		fillBackground(g, newImageWidth, newImageHeigth, bgColor);
 
 		switch (imageVerticalAlignment) {
-			case TOP:
+		case TOP:
+			g.drawImage(left, 0, 0, left.getWidth(), left.getHeight(), null);
+			g.drawImage(right, left.getWidth(), 0, right.getWidth(), right.getHeight(), null);
+			break;
+		case MIDDLE:
+			g.drawImage(left, 0, (newImageHeigth - left.getHeight()) / 2, left.getWidth(), left.getHeight(), null);
+			g.drawImage(right, left.getWidth(), (newImageHeigth - right.getHeight()) / 2, right.getWidth(), right.getHeight(), null);
+			break;
+		case BOTTOM:
+			if (left.getHeight() > right.getHeight()) {
 				g.drawImage(left, 0, 0, left.getWidth(), left.getHeight(), null);
+				g.drawImage(right, left.getWidth(), newImageHeigth - right.getHeight(), right.getWidth(), right.getHeight(), null);
+			} else {
+				g.drawImage(left, 0, newImageHeigth - left.getHeight(), left.getWidth(), left.getHeight(), null);
 				g.drawImage(right, left.getWidth(), 0, right.getWidth(), right.getHeight(), null);
-				break;
-			case MIDDLE:
-				g.drawImage(left, 0, (newImageHeigth - left.getHeight()) / 2, left.getWidth(), left.getHeight(), null);
-				g.drawImage(right, left.getWidth(), (newImageHeigth - right.getHeight()) / 2, right.getWidth(), right.getHeight(), null);
-				break;
-			case BOTTOM:
-				if(left.getHeight() > right.getHeight()) {
-					g.drawImage(left, 0, 0, left.getWidth(), left.getHeight(), null);
-					g.drawImage(right, left.getWidth(), newImageHeigth - right.getHeight(), right.getWidth(), right.getHeight(), null);
-				} else {
-					g.drawImage(left, 0, newImageHeigth - left.getHeight(), left.getWidth(), left.getHeight(), null);
-					g.drawImage(right, left.getWidth(), 0, right.getWidth(), right.getHeight(), null);
-				}
-				break;
+			}
+			break;
+		default:
+			throw new DSSException("Unsupported SignerTextImageVerticalAlignment : " + imageVerticalAlignment);
 		}
 
 		return combined;
@@ -113,7 +116,7 @@ public final class ImagesMerger {
 	private static int getImageType(final BufferedImage image1, final BufferedImage image2) {
 		int imageType = BufferedImage.TYPE_INT_RGB;
 
-		if(ImageUtils.isTransparent(image1) || ImageUtils.isTransparent(image2)) {
+		if (ImageUtils.isTransparent(image1) || ImageUtils.isTransparent(image2)) {
 			LOG.warn("Transparency detected and enabled (be careful not valid with PDF/A !)");
 			imageType = BufferedImage.TYPE_INT_ARGB;
 		}

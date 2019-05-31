@@ -41,7 +41,7 @@ import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
  */
 public class Reports {
 
-	private static final Logger logger = LoggerFactory.getLogger(Reports.class);
+	private static final Logger LOG = LoggerFactory.getLogger(Reports.class);
 
 	private boolean validateXml = false;
 
@@ -182,7 +182,7 @@ public class Reports {
 			if (validateXml) {
 				throw new RuntimeException(e);
 			} else {
-				logger.error("Unable to generate string value for context " + contextPath + " : " + e.getMessage(), e);
+				LOG.error("Unable to generate string value for context " + contextPath + " : " + e.getMessage(), e);
 				return null;
 			}
 		}

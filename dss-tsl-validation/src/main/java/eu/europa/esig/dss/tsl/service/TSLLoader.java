@@ -34,7 +34,7 @@ import eu.europa.esig.dss.tsl.TSLLoaderResult;
  */
 public class TSLLoader implements Callable<TSLLoaderResult> {
 
-	private static final Logger logger = LoggerFactory.getLogger(TSLLoader.class);
+	private static final Logger LOG = LoggerFactory.getLogger(TSLLoader.class);
 
 	private DataLoader dataLoader;
 	private String countryCode;
@@ -55,7 +55,7 @@ public class TSLLoader implements Callable<TSLLoaderResult> {
 			byte[] byteArray = dataLoader.get(urlToLoad);
 			result.setContent(byteArray);
 		} catch (Exception e) {
-			logger.warn("Unable to load '" + urlToLoad + "' : " + e.getMessage());
+			LOG.warn("Unable to load '" + urlToLoad + "' : " + e.getMessage());
 		}
 
 		return result;

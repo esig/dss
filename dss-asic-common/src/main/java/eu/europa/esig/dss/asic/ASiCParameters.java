@@ -28,6 +28,7 @@ import eu.europa.esig.dss.ASiCContainerType;
  * This class regroups the signature parameters related to ASiC form.
  *
  */
+@SuppressWarnings("serial")
 public class ASiCParameters implements Serializable {
 
 	/**

@@ -6,7 +6,7 @@
  	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.1.M2</version>
+		<version>5.2.1.M</version>
 	</parent>
 
 	<name>DSS Test</name>
@@ -16,11 +16,15 @@
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-spi</artifactId>
+			<artifactId>dss-document</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-token</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-service</artifactId>
 		</dependency>
 		
 		<dependency>
@@ -46,6 +50,15 @@
 			<artifactId>dss-utils-google-guava</artifactId>
 		</dependency>
 		
+		<!-- Choose your implementation -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>eu.europa.ec.joinup.sd-dss</groupId> -->
+<!-- 			<artifactId>dss-crl-parser-x509crl</artifactId> -->
+<!-- 		</dependency> -->
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-crl-parser-stream</artifactId>
+		</dependency>
 	</dependencies>
 	
 </project>

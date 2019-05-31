@@ -1,0 +1,26 @@
+[source,xml]
+----
+	<xades:SignerRole>
+		<xades:ClaimedRoles>
+			<xades:ClaimedRole>My Claimed Role</xades:ClaimedRole>
+		</xades:ClaimedRoles>
+	</xades:SignerRole>
+	<xades:SignatureProductionPlace>
+		<xades:City>SimCity</xades:City>
+		<xades:PostalCode>1234</xades:PostalCode>
+		<xades:StateOrProvince>Luxembourg</xades:StateOrProvince>
+		<xades:CountryName>BE</xades:CountryName>
+	</xades:SignatureProductionPlace>
+</xades:SignedSignatureProperties>
+<xades:SignedDataObjectProperties>
+	<xades:DataObjectFormat ObjectReference="#xml_ref_id">
+		<xades:MimeType>text/xml</xades:MimeType>
+	</xades:DataObjectFormat>
+	<xades:CommitmentTypeIndication>
+		<xades:CommitmentTypeId>
+			<xades:Identifier>http://uri.etsi.org/01903/v1.2.2#ProofOfOrigin</xades:Identifier>
+			<xades:Identifier>http://uri.etsi.org/01903/v1.2.2#ProofOfApproval</xades:Identifier>
+		</xades:CommitmentTypeId>
+		<xades:AllSignedDataObjects/>
+	</xades:CommitmentTypeIndication>
+----

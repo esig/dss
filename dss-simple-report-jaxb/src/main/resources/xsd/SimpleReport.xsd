@@ -46,7 +46,7 @@
 							</xs:element>
 						</xs:sequence>
 						<xs:attribute type="xs:string" name="Id" use="required" />
-						<xs:attribute type="xs:string" name="Type" use="optional" />
+						<xs:attribute type="xs:boolean" name="CounterSignature" use="optional" />
 						<xs:attribute type="xs:string" name="ParentId" use="optional" />
 						<xs:attribute type="xs:string" name="SignatureFormat" use="required" />
 					</xs:complexType>

@@ -53,7 +53,7 @@ import eu.europa.esig.dss.x509.ocsp.OfflineOCSPSource;
  */
 public class CAdESOCSPSource extends OfflineOCSPSource {
 
-	private static final Logger logger = LoggerFactory.getLogger(CAdESOCSPSource.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CAdESOCSPSource.class);
 
 	private CMSSignedData cmsSignedData;
 	private SignerInformation signerInformation;
@@ -154,7 +154,7 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
 				}
 				addBasicOcspResp(basicOCSPResps, basicOCSPResp);
 			} else {
-				logger.warn("Unsupported object type for id_ri_ocsp_response (SHALL be DER encoding) : " + object.getClass().getSimpleName());
+				LOG.warn("Unsupported object type for id_ri_ocsp_response (SHALL be DER encoding) : " + object.getClass().getSimpleName());
 			}
 		}
 	}
@@ -168,7 +168,7 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
 				final BasicOCSPResp basicOCSPResp = CMSUtils.getBasicOcspResp(otherRevocationInfoMatch);
 				addBasicOcspResp(basicOCSPResps, basicOCSPResp);
 			} else {
-				logger.warn("Unsupported object type for id_pkix_ocsp_basic (SHALL be DER encoding) : " + object.getClass().getSimpleName());
+				LOG.warn("Unsupported object type for id_pkix_ocsp_basic (SHALL be DER encoding) : " + object.getClass().getSimpleName());
 			}
 		}
 	}

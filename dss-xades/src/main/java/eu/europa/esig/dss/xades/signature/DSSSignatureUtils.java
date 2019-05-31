@@ -25,7 +25,6 @@ import java.io.IOException;
 
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Integer;
-import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.util.BigIntegers;
 
@@ -75,10 +74,8 @@ public final class DSSSignatureUtils {
 	 * @see <A HREF="ftp://ftp.rfc-editor.org/in-notes/rfc4050.txt">3.3. ECDSA Signatures</A>
 	 */
 	private static byte[] convertASN1toXMLDSIG(byte[] binaries) {
-		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		ASN1InputStream is = null;
-		try {
-			is = new ASN1InputStream(binaries);
+
+		try (ByteArrayOutputStream buffer = new ByteArrayOutputStream(); ASN1InputStream is = new ASN1InputStream(binaries);) {
 
 			ASN1Sequence seq = (ASN1Sequence) is.readObject();
 			if (seq.size() != 2) {
@@ -99,15 +96,13 @@ public final class DSSSignatureUtils {
 			leftPad(buffer, max, sBytes);
 			buffer.write(sBytes);
 
+			return buffer.toByteArray();
 		} catch (Exception e) {
 			throw new DSSException("Unable to convert to xmlDsig : " + e.getMessage(), e);
-		} finally {
-			Utils.closeQuietly(is);
 		}
-		return buffer.toByteArray();
 	}
 
-	private static void leftPad(final ByteArrayOutputStream stream, final int size, final byte[] array){
+	private static void leftPad(final ByteArrayOutputStream stream, final int size, final byte[] array) {
 		final int diff = size - array.length;
 		if (diff > 0) {
 			for (int i = 0; i < diff; i++) {
@@ -127,9 +122,9 @@ public final class DSSSignatureUtils {
 		ASN1InputStream is = null;
 		try {
 			is = new ASN1InputStream(signatureValue);
-			ASN1Primitive obj = is.readObject();
-			return obj != null;
-		} catch (IOException e) {
+			ASN1Sequence seq = (ASN1Sequence) is.readObject();
+			return seq != null && seq.size() == 2;
+		} catch (Exception e) {
 			return false;
 		} finally {
 			Utils.closeQuietly(is);

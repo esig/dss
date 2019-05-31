@@ -22,16 +22,12 @@ package eu.europa.esig.dss;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Digest representation of a {@code DSSDocument}. It can be used to handle a large file to be signed. The computation
  * of the digest associated to the file can be done externally.
  */
 public class DigestDocument extends CommonDocument {
-
-	private Map<DigestAlgorithm, String> base64EncodeDigestMap = new HashMap<DigestAlgorithm, String>();
 
 	/**
 	 * Creates DigestDocument.

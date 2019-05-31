@@ -8,11 +8,9 @@ import java.util.Map;
 import java.util.Set;
 
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignedObjects;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignedSignature;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedTimestamp;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedObject;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.TimestampReferenceCategory;
+import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
@@ -70,34 +68,26 @@ public class POEExtraction {
 
 		Date productionTime = timestamp.getProductionTime();
 
-		XmlSignedObjects signedObjects = timestamp.getSignedObjects();
-		if (signedObjects != null) {
-			if (Utils.isCollectionNotEmpty(signedObjects.getSignedSignature())) {
-				// SIGNATURES and TIMESTAMPS
-				for (XmlSignedSignature signedSignature : signedObjects.getSignedSignature()) {
-					addPOE(signedSignature.getId(), productionTime);
-				}
-				for (XmlTimestampedTimestamp timstampedTimastamp : signedObjects.getTimestampedTimestamp()) {
-					addPOE(timstampedTimastamp.getId(), productionTime);
-				}
-			}
+		List<XmlTimestampedObject> timestampedObjects = timestamp.getTimestampedObjects();
+		if (Utils.isCollectionNotEmpty(timestampedObjects)) {
 
-			List<XmlDigestAlgoAndValue> digestAlgoAndValues = signedObjects.getDigestAlgoAndValues();
-			if (Utils.isCollectionNotEmpty(digestAlgoAndValues)) {
-				for (XmlDigestAlgoAndValue digestAlgoAndValue : digestAlgoAndValues) {
-					if (Utils.areStringsEqual(TimestampReferenceCategory.CERTIFICATE.name(), digestAlgoAndValue.getCategory())) {
-						String certificateId = getCertificateIdByDigest(digestAlgoAndValue, diagnosticData);
-						if (certificateId != null) {
-							addPOE(certificateId, productionTime);
-						}
-					} else if (Utils.areStringsEqual(TimestampReferenceCategory.REVOCATION.name(), digestAlgoAndValue.getCategory())) {
-						String revocationId = getRevocationIdByDigest(digestAlgoAndValue, diagnosticData);
-						if (revocationId != null) {
-							addPOE(revocationId, productionTime);
-						}
+			for (XmlTimestampedObject xmlTimestampedObject : timestampedObjects) {
+				if (Utils.isStringNotEmpty(xmlTimestampedObject.getId())) {
+					// SIGNATURES and TIMESTAMPS
+					addPOE(xmlTimestampedObject.getId(), productionTime);
+				} else if (TimestampedObjectType.CERTIFICATE == xmlTimestampedObject.getCategory()) {
+					String certificateId = getCertificateIdByDigest(xmlTimestampedObject.getDigestAlgoAndValue(), diagnosticData);
+					if (certificateId != null) {
+						addPOE(certificateId, productionTime);
+					}
+				} else if (TimestampedObjectType.REVOCATION == xmlTimestampedObject.getCategory()) {
+					String revocationId = getRevocationIdByDigest(xmlTimestampedObject.getDigestAlgoAndValue(), diagnosticData);
+					if (revocationId != null) {
+						addPOE(revocationId, productionTime);
 					}
 				}
 			}
+
 		}
 	}
 

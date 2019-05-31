@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pades;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -30,7 +31,6 @@ import org.junit.Test;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
@@ -62,6 +62,18 @@ public class PAdESServiceTest {
 
 		List<String> availableSignatureFields = padesService.getAvailableSignatureFields(newDocument);
 		assertTrue(availableSignatureFields.contains("signature-test"));
+
+		parameters = new SignatureFieldParameters();
+		parameters.setPage(0);
+		parameters.setName("signature-test2");
+		parameters.setOriginX(100);
+		parameters.setOriginY(100);
+		parameters.setWidth(50);
+		parameters.setHeight(50);
+
+		DSSDocument newDocument2 = padesService.addNewSignatureField(newDocument, parameters);
+		availableSignatureFields = padesService.getAvailableSignatureFields(newDocument2);
+		assertEquals(2, availableSignatureFields.size());
 	}
 
 	@Test(expected = DSSException.class)

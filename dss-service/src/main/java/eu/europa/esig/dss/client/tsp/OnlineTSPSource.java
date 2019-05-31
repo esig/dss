@@ -23,6 +23,7 @@ package eu.europa.esig.dss.client.tsp;
 import java.io.IOException;
 
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.cmp.PKIFailureInfo;
 import org.bouncycastle.tsp.TSPException;
 import org.bouncycastle.tsp.TimeStampRequest;
 import org.bouncycastle.tsp.TimeStampRequestGenerator;
@@ -45,7 +46,7 @@ import eu.europa.esig.dss.x509.tsp.TSPSource;
  */
 public class OnlineTSPSource implements TSPSource {
 
-	private static final Logger logger = LoggerFactory.getLogger(OnlineTSPSource.class);
+	private static final Logger LOG = LoggerFactory.getLogger(OnlineTSPSource.class);
 
 	/**
 	 * The URL of the TSP server
@@ -124,9 +125,9 @@ public class OnlineTSPSource implements TSPSource {
 	@Override
 	public TimeStampToken getTimeStampResponse(final DigestAlgorithm digestAlgorithm, final byte[] digest) throws DSSException {
 		try {
-			if (logger.isTraceEnabled()) {
-				logger.trace("Timestamp digest algorithm: " + digestAlgorithm.getName());
-				logger.trace("Timestamp digest value    : " + Utils.toHex(digest));
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("Timestamp digest algorithm: " + digestAlgorithm.getName());
+				LOG.trace("Timestamp digest value    : " + Utils.toHex(digest));
 			}
 
 			// Setup the time stamp request
@@ -155,18 +156,23 @@ public class OnlineTSPSource implements TSPSource {
 			// Handle the TSA response
 			final TimeStampResponse timeStampResponse = new TimeStampResponse(respBytes);
 
-			// Validates nonce, policy id, ... if present
+			// Validates token, nonce, policy id, message digest ...
 			timeStampResponse.validate(timeStampRequest);
 
 			String statusString = timeStampResponse.getStatusString();
 			if (statusString != null) {
-				logger.info("Status: " + statusString);
+				LOG.info("Status: " + statusString);
+			}
+
+			PKIFailureInfo failInfo = timeStampResponse.getFailInfo();
+			if (failInfo != null) {
+				LOG.warn("TSP Failure info: " + failInfo.toString());
 			}
 
 			final TimeStampToken timeStampToken = timeStampResponse.getTimeStampToken();
 
 			if (timeStampToken != null) {
-				logger.info("TSP SID : SN " + timeStampToken.getSID().getSerialNumber() + ", Issuer " + timeStampToken.getSID().getIssuer());
+				LOG.info("TSP SID : SN " + timeStampToken.getSID().getSerialNumber() + ", Issuer " + timeStampToken.getSID().getIssuer());
 			}
 
 			return timeStampToken;

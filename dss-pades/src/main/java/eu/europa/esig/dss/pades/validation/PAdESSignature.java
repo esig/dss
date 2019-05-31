@@ -34,7 +34,6 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
@@ -46,18 +45,15 @@ import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CRLRef;
-import eu.europa.esig.dss.validation.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.validation.CertificateRef;
 import eu.europa.esig.dss.validation.CertifiedRole;
-import eu.europa.esig.dss.validation.CommitmentType;
 import eu.europa.esig.dss.validation.OCSPRef;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.TimestampReference;
-import eu.europa.esig.dss.validation.TimestampReferenceCategory;
 import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.crl.OfflineCRLSource;
 import eu.europa.esig.dss.x509.ocsp.OfflineOCSPSource;
@@ -67,7 +63,7 @@ import eu.europa.esig.dss.x509.ocsp.OfflineOCSPSource;
  */
 public class PAdESSignature extends CAdESSignature {
 
-	private static final Logger logger = LoggerFactory.getLogger(PAdESSignature.class);
+	private static final Logger LOG = LoggerFactory.getLogger(PAdESSignature.class);
 
 	private final DSSDocument document;
 	private final PdfDssDict dssDictionary;
@@ -97,19 +93,9 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	@Override
-	public EncryptionAlgorithm getEncryptionAlgorithm() {
-		return super.getEncryptionAlgorithm();
-	}
-
-	@Override
-	public DigestAlgorithm getDigestAlgorithm() {
-		return super.getDigestAlgorithm();
-	}
-
-	@Override
 	public PAdESCertificateSource getCertificateSource() {
 		if (padesCertSources == null) {
-			padesCertSources = new PAdESCertificateSource(dssDictionary, super.getCmsSignedData(), super.getSignerInformation(), certPool);
+			padesCertSources = new PAdESCertificateSource(dssDictionary, super.getCmsSignedData(), certPool);
 		}
 		return padesCertSources;
 	}
@@ -131,18 +117,8 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	@Override
-	public CandidatesForSigningCertificate getCandidatesForSigningCertificate() {
-		return super.getCandidatesForSigningCertificate();
-	}
-
-	@Override
 	public Date getSigningTime() {
 		return pdfSignatureInfo.getSigningDate();
-	}
-
-	@Override
-	public SignaturePolicy getPolicyId() {
-		return super.getPolicyId();
 	}
 
 	@Override
@@ -173,23 +149,8 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	@Override
-	public String[] getClaimedSignerRoles() {
-		return super.getClaimedSignerRoles();
-	}
-
-	@Override
 	public List<CertifiedRole> getCertifiedSignerRoles() {
 		return null;
-	}
-
-	@Override
-	public List<TimestampToken> getContentTimestamps() {
-		return super.getContentTimestamps();
-	}
-
-	@Override
-	public byte[] getContentTimestampData(final TimestampToken timestampToken) {
-		return super.getContentTimestampData(timestampToken);
 	}
 
 	@Override
@@ -217,14 +178,12 @@ public class PAdESSignature extends CAdESSignature {
 
 	@Override
 	public List<TimestampToken> getTimestampsX1() {
-
 		/* Not applicable for PAdES */
 		return Collections.emptyList();
 	}
 
 	@Override
 	public List<TimestampToken> getTimestampsX2() {
-
 		/* Not applicable for PAdES */
 		return Collections.emptyList();
 	}
@@ -250,7 +209,7 @@ public class PAdESSignature extends CAdESSignature {
 				if (timestampToken.getTimeStampType() == TimestampType.ARCHIVE_TIMESTAMP) {
 					final List<TimestampReference> references = getSignatureTimestampedReferences();
 					for (final String timestampId : timestampedTimestamps) {
-						references.add(new TimestampReference(timestampId, TimestampReferenceCategory.TIMESTAMP));
+						references.add(new TimestampReference(timestampId, TimestampedObjectType.TIMESTAMP));
 					}
 					final List<CertificateRef> certRefs = getCertificateRefs();
 					for (final CertificateRef certRef : certRefs) {
@@ -286,28 +245,11 @@ public class PAdESSignature extends CAdESSignature {
 
 	private TimestampReference createCertificateTimestampReference(CertificateRef ref) {
 		usedCertificatesDigestAlgorithms.add(ref.getDigestAlgorithm());
-		return new TimestampReference(ref.getDigestAlgorithm(), Utils.toBase64(ref.getDigestValue()), TimestampReferenceCategory.CERTIFICATE);
-	}
-
-	@Override
-	public List<CertificateToken> getCertificates() {
-		return getCertificateSource().getCertificates();
-	}
-
-	@Override
-	public void checkSignatureIntegrity() {
-		super.checkSignatureIntegrity();
-	}
-
-	@Override
-	public void checkSigningCertificate() {
-
-		// TODO-Bob (13/07/2014):
+		return new TimestampReference(ref.getDigestAlgorithm(), Utils.toBase64(ref.getDigestValue()), TimestampedObjectType.CERTIFICATE);
 	}
 
 	@Override
 	public List<AdvancedSignature> getCounterSignatures() {
-
 		/* Not applicable for PAdES */
 		return Collections.emptyList();
 	}
@@ -357,14 +299,12 @@ public class PAdESSignature extends CAdESSignature {
 
 	@Override
 	public byte[] getTimestampX1Data(final TimestampToken timestampToken, String canonicalizationMethod) {
-
 		/* Not applicable for PAdES */
 		return null;
 	}
 
 	@Override
 	public byte[] getTimestampX2Data(final TimestampToken timestampToken, String canonicalizationMethod) {
-
 		/* Not applicable for PAdES */
 		return null;
 	}
@@ -373,7 +313,6 @@ public class PAdESSignature extends CAdESSignature {
 	 * @return the CAdES signature underlying this PAdES signature
 	 */
 	public CAdESSignature getCAdESSignature() {
-
 		return pdfSignatureInfo.getCades();
 	}
 
@@ -419,28 +358,28 @@ public class PAdESSignature extends CAdESSignature {
 		case PDF_NOT_ETSI:
 			break;
 		case PAdES_BASELINE_LTA:
-			dataForLevelPresent = Utils.isCollectionNotEmpty(getArchiveTimestamps());
+			dataForLevelPresent = hasLTAProfile();
 			// c &= fct() will process fct() all time ; c = c && fct() will process fct() only if c is true
 			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PAdES_BASELINE_LT);
 			break;
 		case PKCS7_LTA:
-			dataForLevelPresent = Utils.isCollectionNotEmpty(getArchiveTimestamps());
+			dataForLevelPresent = hasLTAProfile();
 			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PKCS7_LT);
 			break;
 		case PAdES_BASELINE_LT:
-			dataForLevelPresent = hasDSSDictionary();
+			dataForLevelPresent = hasLTProfile();
 			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PAdES_BASELINE_T);
 			break;
 		case PKCS7_LT:
-			dataForLevelPresent = hasDSSDictionary();
+			dataForLevelPresent = hasLTProfile();
 			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PKCS7_T);
 			break;
 		case PAdES_BASELINE_T:
-			dataForLevelPresent = Utils.isCollectionNotEmpty(getSignatureTimestamps());
+			dataForLevelPresent = hasTProfile();
 			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PAdES_BASELINE_B);
 			break;
 		case PKCS7_T:
-			dataForLevelPresent = Utils.isCollectionNotEmpty(getSignatureTimestamps());
+			dataForLevelPresent = hasTProfile();
 			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PKCS7_B);
 			break;
 		case PAdES_BASELINE_B:
@@ -452,7 +391,7 @@ public class PAdESSignature extends CAdESSignature {
 		default:
 			throw new IllegalArgumentException("Unknown level " + signatureLevel);
 		}
-		logger.debug("Level {} found on document {} = {}", new Object[] { signatureLevel, document.getName(), dataForLevelPresent });
+		LOG.debug("Level {} found on document {} = {}", new Object[] { signatureLevel, document.getName(), dataForLevelPresent });
 		return dataForLevelPresent;
 	}
 
@@ -461,15 +400,6 @@ public class PAdESSignature extends CAdESSignature {
 		return new SignatureLevel[] { SignatureLevel.PDF_NOT_ETSI, SignatureLevel.PAdES_BASELINE_B, SignatureLevel.PKCS7_B, SignatureLevel.PAdES_BASELINE_T,
 				SignatureLevel.PKCS7_T, SignatureLevel.PAdES_BASELINE_LT, SignatureLevel.PKCS7_LT, SignatureLevel.PAdES_BASELINE_LTA,
 				SignatureLevel.PKCS7_LTA };
-	}
-
-	private boolean hasDSSDictionary() {
-		return pdfSignatureInfo.getDssDictionary() != null;
-	}
-
-	@Override
-	public CommitmentType getCommitmentTypeIndication() {
-		return super.getCommitmentTypeIndication();
 	}
 
 	public boolean hasOuterSignatures() {

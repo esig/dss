@@ -27,7 +27,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -35,28 +34,18 @@ import org.junit.runners.Parameterized.Parameters;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.test.TestUtils;
-import eu.europa.esig.dss.test.gen.CertificateService;
-import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 @RunWith(Parameterized.class)
-public class XAdESDoubleSignatureTest {
-
-	private static SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.RSA_SHA256;
-
-	private static DSSDocument toBeSigned;
-
-	private static MockPrivateKeyEntry privateKeyEntry;
+public class XAdESDoubleSignatureTest extends PKIFactoryAccess {
 
 	// Run 10 times this test
 	@Parameters
@@ -67,39 +56,33 @@ public class XAdESDoubleSignatureTest {
 	public XAdESDoubleSignatureTest() {
 	}
 
-	@BeforeClass
-	public static void setUp() throws Exception {
-		toBeSigned = new FileDocument(new File("src/test/resources/sample.xml"));
-		CertificateService certificateService = new CertificateService();
-		privateKeyEntry = certificateService.generateCertificateChain(signatureAlgorithm);
-	}
-
 	@Test
 	public void testDoubleSignature() {
 
-		CommonCertificateVerifier verifier = new CommonCertificateVerifier();
-		XAdESService service = new XAdESService(verifier);
+		DSSDocument toBeSigned = new FileDocument(new File("src/test/resources/sample.xml"));
+
+		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
 
 		XAdESSignatureParameters params = new XAdESSignatureParameters();
 		params.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		params.setSignaturePackaging(SignaturePackaging.ENVELOPED);
-		params.setSigningCertificate(privateKeyEntry.getCertificate());
+		params.setSigningCertificate(getSigningCert());
 
 		ToBeSigned dataToSign = service.getDataToSign(toBeSigned, params);
-		SignatureValue signatureValue = TestUtils.sign(signatureAlgorithm, privateKeyEntry, dataToSign);
+		SignatureValue signatureValue = getToken().sign(dataToSign, params.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(toBeSigned, params, signatureValue);
 
 		params = new XAdESSignatureParameters();
 		params.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		params.setSignaturePackaging(SignaturePackaging.ENVELOPED);
-		params.setSigningCertificate(privateKeyEntry.getCertificate());
+		params.setSigningCertificate(getSigningCert());
 
 		dataToSign = service.getDataToSign(signedDocument, params);
-		signatureValue = TestUtils.sign(signatureAlgorithm, privateKeyEntry, dataToSign);
+		signatureValue = getToken().sign(dataToSign, params.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument doubleSignedDocument = service.signDocument(signedDocument, params, signatureValue);
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doubleSignedDocument);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 
 		Reports reports = validator.validateDocument();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
@@ -109,6 +92,11 @@ public class XAdESDoubleSignatureTest {
 		for (String signatureId : signatureIdList) {
 			assertTrue(diagnosticData.isBLevelTechnicallyValid(signatureId));
 		}
+	}
+
+	@Override
+	protected String getSigningAlias() {
+		return GOOD_USER;
 	}
 
 }

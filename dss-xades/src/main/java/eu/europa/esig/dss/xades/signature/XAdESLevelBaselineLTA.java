@@ -20,9 +20,7 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.w3c.dom.Element;
 
@@ -35,7 +33,6 @@ import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.validation.ValidationContext;
-import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.TimestampType;
 
 /**
@@ -78,7 +75,7 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 	}
 
 	/**
-	 * This method removes the timestamp validation data of the las archive timestamp.
+	 * This method removes the timestamp validation data of the last archive timestamp.
 	 */
 	private void removeLastTimestampValidationData() {
 
@@ -99,12 +96,9 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 		final Element timeStampValidationDataDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES141,
 				"xades141:TimeStampValidationData");
 
-		final Set<CertificateToken> toIncludeSetOfCertificates = xadesSignature.getCertificatesForInclusion(validationContext);
-		final List<CertificateToken> toIncludeCertificates = new ArrayList<CertificateToken>();
-		toIncludeCertificates.addAll(toIncludeSetOfCertificates);
-		incorporateCertificateValues(timeStampValidationDataDom, toIncludeCertificates);
-
+		incorporateCertificateValues(timeStampValidationDataDom, validationContext);
 		incorporateRevocationValues(timeStampValidationDataDom, validationContext);
+
 		String id = "1";
 		final List<TimestampToken> archiveTimestamps = xadesSignature.getArchiveTimestamps();
 		if (archiveTimestamps.size() > 0) {

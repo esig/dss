@@ -33,6 +33,14 @@
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.SignatureQualificationParser.parse" 
 				printMethod="eu.europa.esig.dss.jaxb.parsers.SignatureQualificationParser.print" />
 		</jaxb:bindings>
+		
+		<jaxb:bindings node="//xs:simpleType[@name='Context']">
+			<jaxb:javaType name="eu.europa.esig.dss.validation.policy.Context" 
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.ContextParser.parse" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.ContextParser.print" />
+		</jaxb:bindings>
+		
+		
 	</jaxb:bindings>
 
 </jaxb:bindings>

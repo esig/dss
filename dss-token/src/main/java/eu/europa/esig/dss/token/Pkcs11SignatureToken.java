@@ -218,7 +218,7 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 			try {
 				Security.removeProvider(_pkcs11Provider.getName());
 			} catch (Exception ex) {
-				logger.error(ex.getMessage(), ex);
+				LOG.error(ex.getMessage(), ex);
 			}
 		}
 		this._pkcs11Provider = null;

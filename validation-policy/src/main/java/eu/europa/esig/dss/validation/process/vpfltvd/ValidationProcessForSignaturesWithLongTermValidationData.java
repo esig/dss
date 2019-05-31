@@ -43,7 +43,7 @@ import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
  */
 public class ValidationProcessForSignaturesWithLongTermValidationData extends Chain<XmlValidationProcessLongTermData> {
 
-	private static final Logger logger = LoggerFactory.getLogger(ValidationProcessForSignaturesWithLongTermValidationData.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ValidationProcessForSignaturesWithLongTermValidationData.class);
 
 	private final XmlConstraintsConclusion basicSignatureValidation;
 	private final List<XmlValidationProcessTimestamps> timestampValidations;
@@ -101,7 +101,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 				if (revocationBBB != null) {
 					item = item.setNextItem(revocationBasicBuildingBlocksValid(revocationBBB));
 				} else {
-					logger.warn("No BBB found for revocation " + revocation.getId());
+					LOG.warn("No BBB found for revocation " + revocation.getId());
 				}
 			}
 		}
@@ -233,7 +233,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 				}
 			}
 			if (!foundValidationTSP) {
-				logger.warn("Cannot find tsp validation info for tsp " + timestampWrapper.getId());
+				LOG.warn("Cannot find tsp validation info for tsp " + timestampWrapper.getId());
 			}
 		}
 		return result;

@@ -90,7 +90,7 @@ public class SignPdfPadesBVisibleExisting extends CookbookTools {
 		textParameters.setTextColor(Color.BLUE);
 		textParameters.setText("My visual signature");
 		imageParameters.setTextParameters(textParameters);
-		parameters.setImageParameters(imageParameters);
+		parameters.setSignatureImageParameters(imageParameters);
 		
 		parameters.setSignatureFieldId("ExistingSignatureField");
 				

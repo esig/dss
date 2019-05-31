@@ -22,24 +22,22 @@ package eu.europa.esig.dss;
 
 import static org.junit.Assert.assertNotEquals;
 
+import java.io.FileInputStream;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import eu.europa.esig.dss.test.gen.CertificateService;
-import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.x509.CertificateToken;
 
 @RunWith(Parameterized.class)
 public class DeterministicIdGenerationTest {
 
-	private static SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.RSA_SHA256;
-
-	private static DSSPrivateKeyEntry privateKeyEntry;
+	private CertificateToken signingCert;
 
 	@Parameters
 	public static List<Object[]> data() {
@@ -49,23 +47,22 @@ public class DeterministicIdGenerationTest {
 	public DeterministicIdGenerationTest() {
 	}
 
-	@BeforeClass
-	public static void setUp() throws Exception {
-		CertificateService certificateService = new CertificateService();
-		privateKeyEntry = certificateService.generateCertificateChain(signatureAlgorithm);
+	@Before
+	public void setUp() throws Exception {
+		signingCert = DSSUtils.loadCertificate(new FileInputStream("src/test/resources/ec.europa.eu.crt"));
 	}
 
 	@Test
 	public void testDifferentDeterministicId() throws InterruptedException {
 
 		SignatureParameters params = new SignatureParameters();
-		params.setSigningCertificate(privateKeyEntry.getCertificate());
+		params.setSigningCertificate(signingCert);
 		String deterministicId1 = params.getDeterministicId();
 
 		Thread.sleep(1); // 1 millisecond
 
 		params = new SignatureParameters();
-		params.setSigningCertificate(privateKeyEntry.getCertificate());
+		params.setSigningCertificate(signingCert);
 		String deterministicId2 = params.getDeterministicId();
 
 		assertNotEquals(deterministicId1, deterministicId2);
@@ -75,4 +72,5 @@ public class DeterministicIdGenerationTest {
 	private class SignatureParameters extends AbstractSignatureParameters {
 
 	}
+
 }

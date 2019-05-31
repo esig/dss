@@ -6,7 +6,7 @@
     <parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.1.M2</version>
+		<version>5.2.1.M</version>
     </parent>
 
     <artifactId>dss-service</artifactId>
@@ -34,10 +34,21 @@
 			<artifactId>jcl-over-slf4j</artifactId> <!-- replaces commons-logging -->
 		</dependency>
 		
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-test</artifactId>
-            <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<scope>test</scope>
+		</dependency>
+ 		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-utils-google-guava</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
     </dependencies>
 </project>

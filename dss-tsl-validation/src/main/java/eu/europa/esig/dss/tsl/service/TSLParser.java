@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -44,9 +45,10 @@ import org.w3c.dom.Element;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.tsl.CertSubjectDNAttributeCondition;
 import eu.europa.esig.dss.tsl.CompositeCondition;
 import eu.europa.esig.dss.tsl.Condition;
-import eu.europa.esig.dss.tsl.CriteriaListCondition;
+import eu.europa.esig.dss.tsl.ExtendedKeyUsageCondition;
 import eu.europa.esig.dss.tsl.KeyUsageCondition;
 import eu.europa.esig.dss.tsl.MatchingCriteriaIndicator;
 import eu.europa.esig.dss.tsl.PolicyIdCondition;
@@ -84,6 +86,7 @@ import eu.europa.esig.jaxb.tsl.ObjectFactory;
 import eu.europa.esig.jaxb.tsl.OtherTSLPointerType;
 import eu.europa.esig.jaxb.tsl.PostalAddressType;
 import eu.europa.esig.jaxb.tsl.ServiceHistoryInstanceType;
+import eu.europa.esig.jaxb.tsl.ServiceSupplyPointsType;
 import eu.europa.esig.jaxb.tsl.TSPInformationType;
 import eu.europa.esig.jaxb.tsl.TSPServiceInformationType;
 import eu.europa.esig.jaxb.tsl.TSPServiceType;
@@ -91,6 +94,8 @@ import eu.europa.esig.jaxb.tsl.TSPServicesListType;
 import eu.europa.esig.jaxb.tsl.TSPType;
 import eu.europa.esig.jaxb.tsl.TrustServiceProviderListType;
 import eu.europa.esig.jaxb.tsl.TrustStatusListType;
+import eu.europa.esig.jaxb.tslx.CertSubjectDNAttributeType;
+import eu.europa.esig.jaxb.tslx.ExtendedKeyUsageType;
 import eu.europa.esig.jaxb.xades.IdentifierType;
 import eu.europa.esig.jaxb.xades.ObjectIdentifierType;
 
@@ -99,7 +104,7 @@ import eu.europa.esig.jaxb.xades.ObjectIdentifierType;
  */
 public class TSLParser implements Callable<TSLParserResult> {
 
-	private static final Logger logger = LoggerFactory.getLogger(TSLParser.class);
+	private static final Logger LOG = LoggerFactory.getLogger(TSLParser.class);
 
 	private static final String ENGLISH_LANGUAGE = "en";
 
@@ -111,7 +116,8 @@ public class TSLParser implements Callable<TSLParserResult> {
 
 	static {
 		try {
-			jaxbContext = JAXBContext.newInstance(ObjectFactory.class, eu.europa.esig.jaxb.ecc.ObjectFactory.class);
+			jaxbContext = JAXBContext.newInstance(ObjectFactory.class, eu.europa.esig.jaxb.ecc.ObjectFactory.class,
+					eu.europa.esig.jaxb.tslx.ObjectFactory.class);
 		} catch (JAXBException e) {
 			throw new DSSException("Unable to initialize JaxB : " + e.getMessage(), e);
 		}
@@ -282,7 +288,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 					CertificateToken certificate = DSSUtils.loadCertificate(digitalId.getX509Certificate());
 					certificates.add(certificate);
 				} catch (Exception e) {
-					logger.warn("Unable to load certificate : " + e.getMessage(), e);
+					LOG.warn("Unable to load certificate : " + e.getMessage(), e);
 				}
 			}
 		}
@@ -334,6 +340,13 @@ public class TSLParser implements Callable<TSLParserResult> {
 		return service;
 	}
 
+	private List<String> getServiceSupplyPoints(ServiceSupplyPointsType serviceSupplyPoints) {
+		if (serviceSupplyPoints == null) {
+			return new ArrayList<String>();
+		}
+		return serviceSupplyPoints.getServiceSupplyPoint();
+	}
+
 	private TimeDependentValues<TSLServiceStatusAndInformationExtensions> getStatusHistory(TSPServiceType tslService) {
 		MutableTimeDependentValues<TSLServiceStatusAndInformationExtensions> statusHistoryList = new MutableTimeDependentValues<TSLServiceStatusAndInformationExtensions>();
 
@@ -342,6 +355,8 @@ public class TSLParser implements Callable<TSLParserResult> {
 		TSLServiceStatusAndInformationExtensions status = new TSLServiceStatusAndInformationExtensions();
 		status.setType(serviceInfo.getServiceTypeIdentifier());
 		status.setStatus(serviceInfo.getServiceStatus());
+		status.setServiceSupplyPoints(getServiceSupplyPoints(serviceInfo.getServiceSupplyPoints()));
+
 		ExtensionsListType serviceInformationExtensions = serviceInfo.getServiceInformationExtensions();
 		if (serviceInformationExtensions != null) {
 			status.setConditionsForQualifiers(extractConditionsForQualifiers(serviceInformationExtensions.getExtension()));
@@ -461,13 +476,50 @@ public class TSLParser implements Callable<TSLParserResult> {
 
 	protected Condition getCondition(CriteriaListType criteriaList) {
 		MatchingCriteriaIndicator matchingCriteriaIndicator = MatchingCriteriaIndicator.valueOf(criteriaList.getAssert());
-		CompositeCondition condition = new CriteriaListCondition(matchingCriteriaIndicator);
+		CompositeCondition condition = new CompositeCondition(matchingCriteriaIndicator);
 
 		addKeyUsageConditionsIfPresent(criteriaList.getKeyUsage(), condition);
 		addPolicyIdConditionsIfPresent(criteriaList.getPolicySet(), condition);
+		addOtherCriteriaListConditionsIfPresent(criteriaList.getOtherCriteriaList(), condition);
 		addCriteriaListConditionsIfPresent(criteriaList.getCriteriaList(), condition);
 
 		return condition;
+	}
+
+	/**
+	 * ETSI TS 119 612 V1.1.1 / 5.5.9.2.2.3
+	 * 
+	 * @param otherCriteriaList
+	 * @param condition
+	 */
+	private void addOtherCriteriaListConditionsIfPresent(eu.europa.esig.jaxb.xades.AnyType otherCriteriaList, CompositeCondition condition) {
+		if (otherCriteriaList != null && Utils.isCollectionNotEmpty(otherCriteriaList.getContent())) {
+			for (Object content : otherCriteriaList.getContent()) {
+				if (content instanceof JAXBElement) {
+					JAXBElement jaxbElement = (JAXBElement) content;
+					Object objectValue = jaxbElement.getValue();
+					if (objectValue instanceof CertSubjectDNAttributeType) {
+						CertSubjectDNAttributeType certSubDNAttr = (CertSubjectDNAttributeType) objectValue;
+						condition.addChild(new CertSubjectDNAttributeCondition(extractOids(certSubDNAttr.getAttributeOID())));
+					} else if (objectValue instanceof ExtendedKeyUsageType) {
+						ExtendedKeyUsageType extendedKeyUsage = (ExtendedKeyUsageType) objectValue;
+						condition.addChild(new ExtendedKeyUsageCondition(extractOids(extendedKeyUsage.getKeyPurposeId())));
+					} else {
+						throw new DSSException("Unsupported OtherCriteriaList");
+					}
+				}
+			}
+		}
+	}
+
+	private List<String> extractOids(List<ObjectIdentifierType> oits) {
+		List<String> oids = new ArrayList<String>();
+		if (Utils.isCollectionNotEmpty(oits)) {
+			for (ObjectIdentifierType objectIdentifierType : oits) {
+				oids.add(objectIdentifierType.getIdentifier().getValue());
+			}
+		}
+		return oids;
 	}
 
 	private void addPolicyIdConditionsIfPresent(List<PoliciesListType> policySet, CompositeCondition criteriaCondition) {
@@ -568,7 +620,8 @@ public class TSLParser implements Callable<TSLParserResult> {
 	}
 
 	private List<String> getEnglishSchemeInformationURIs(TrustStatusListType tsl) {
-		List<String> result = new ArrayList<String>();
+		// Maintains original order for PIVOTs LOTL
+		List<String> result = new LinkedList<String>();
 		NonEmptyMultiLangURIListType schemeInformationURI = tsl.getSchemeInformation().getSchemeInformationURI();
 		if (schemeInformationURI != null && Utils.isCollectionNotEmpty(schemeInformationURI.getURI())) {
 			for (NonEmptyMultiLangURIType uri : schemeInformationURI.getURI()) {

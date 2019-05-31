@@ -33,11 +33,11 @@ public interface DSSDocument extends Serializable {
 
 	/**
 	 * Opens a {@code InputStream} on the {@code DSSDocument} contents. The type of the {@code InputStream} depends on
-	 * the type of the {@code DSSDocument}. The stream must be
-	 * closed in case of the {@code FileDocument}.
+	 * the type of the {@code DSSDocument}.
 	 *
 	 * @return an {@code InputStream}
 	 * @throws DSSException
+	 *             if any error happens
 	 */
 	InputStream openStream() throws DSSException;
 
@@ -45,7 +45,9 @@ public interface DSSDocument extends Serializable {
 	 * Writes the content of the document to the provided OutputStream
 	 * 
 	 * @param stream
+	 *            the output stream where to write
 	 * @throws IOException
+	 *             if any IO error happens
 	 */
 	void writeTo(OutputStream stream) throws IOException;
 
@@ -61,7 +63,7 @@ public interface DSSDocument extends Serializable {
 	 * This method sets the name of the {@code DSSDocument}.
 	 *
 	 * @param name
-	 *            {@code String}
+	 *            the document name
 	 */
 	void setName(String name);
 
@@ -92,6 +94,8 @@ public interface DSSDocument extends Serializable {
 	 *
 	 * @param filePath
 	 *            the path to the file to be created
+	 * @throws IOException
+	 *             if any IO error happens
 	 */
 	void save(final String filePath) throws IOException;
 

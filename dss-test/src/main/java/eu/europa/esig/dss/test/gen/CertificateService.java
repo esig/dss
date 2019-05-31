@@ -44,7 +44,6 @@ import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.KeyPurposeId;
 import org.bouncycastle.asn1.x509.KeyUsage;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
-import org.bouncycastle.cert.CertIOException;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
@@ -72,9 +71,7 @@ public class CertificateService {
 		Security.addProvider(SECURITY_PROVIDER);
 	}
 
-	// Annotation for error_probe
-	@SuppressWarnings("InsecureCryptoUsage")
-	public KeyPair generateKeyPair(final EncryptionAlgorithm algorithm) throws GeneralSecurityException {
+	private KeyPair generateKeyPair(final EncryptionAlgorithm algorithm) throws GeneralSecurityException {
 		if (algorithm == EncryptionAlgorithm.ECDSA) {
 			return generateECDSAKeyPair();
 		} else if (algorithm == EncryptionAlgorithm.RSA) {
@@ -96,7 +93,7 @@ public class CertificateService {
 		return generator.generateKeyPair();
 	}
 
-	public MockPrivateKeyEntry generateCertificateChain(final SignatureAlgorithm algorithm, final MockPrivateKeyEntry rootEntry, Date notBefore, Date notAfter)
+	private MockPrivateKeyEntry generateCertificateChain(final SignatureAlgorithm algorithm, final MockPrivateKeyEntry rootEntry, Date notBefore, Date notAfter)
 			throws Exception {
 		X500Name rootName = new JcaX509CertificateHolder(rootEntry.getCertificate().getCertificate()).getSubject();
 		KeyPair childKeyPair = generateKeyPair(algorithm.getEncryptionAlgorithm());
@@ -109,7 +106,7 @@ public class CertificateService {
 		return new MockPrivateKeyEntry(algorithm.getEncryptionAlgorithm(), child, chain, childKeyPair.getPrivate());
 	}
 
-	public MockPrivateKeyEntry generateCertificateChain(final SignatureAlgorithm algorithm, boolean rootCrl) throws Exception {
+	private MockPrivateKeyEntry generateCertificateChain(final SignatureAlgorithm algorithm, boolean rootCrl) throws Exception {
 		MockPrivateKeyEntry rootEntry = generateSelfSignedCertificate(algorithm, rootCrl);
 
 		Date notBefore = new Date(System.currentTimeMillis() - (24 * 60 * 60 * 1000)); // yesterday
@@ -122,23 +119,7 @@ public class CertificateService {
 		return generateCertificateChain(algorithm, true);
 	}
 
-	public MockPrivateKeyEntry generateCertificateChain(final SignatureAlgorithm algorithm, MockPrivateKeyEntry rootEntry) throws Exception {
-		Date notBefore = new Date(System.currentTimeMillis() - (24 * 60 * 60 * 1000)); // yesterday
-		Date notAfter = new Date(System.currentTimeMillis() + MAX); // 1000d
-
-		return generateCertificateChain(algorithm, rootEntry, notBefore, notAfter);
-	}
-
-	public MockPrivateKeyEntry generateExpiredCertificateChain(final SignatureAlgorithm algorithm, boolean rootCrl) throws Exception {
-		MockPrivateKeyEntry rootEntry = generateSelfSignedCertificate(algorithm, rootCrl);
-
-		Date notBefore = new Date(System.currentTimeMillis() - (10 * 24 * 60 * 60 * 1000)); // -10d
-		Date notAfter = new Date(System.currentTimeMillis() - (24 * 60 * 60 * 1000)); // yesterday
-
-		return generateCertificateChain(algorithm, rootEntry, notBefore, notAfter);
-	}
-
-	public MockPrivateKeyEntry generateSelfSignedCertificate(final SignatureAlgorithm algorithm, boolean rootCrl) throws Exception {
+	private MockPrivateKeyEntry generateSelfSignedCertificate(final SignatureAlgorithm algorithm, boolean rootCrl) throws Exception {
 		KeyPair keyPair = generateKeyPair(algorithm.getEncryptionAlgorithm());
 		X500Name issuer = new X500Name("CN=RootSelfSignedFake,O=DSS-test");
 
@@ -178,13 +159,12 @@ public class CertificateService {
 	 * @param notBefore
 	 * @param notAfter
 	 * @return
-	 * @throws CertIOException
 	 * @throws OperatorCreationException
 	 * @throws CertificateException
 	 * @throws IOException
 	 */
-	public CertificateToken generateTspCertificate(final SignatureAlgorithm algorithm, KeyPair keyPair, X500Name issuer, X500Name subject, final Date notBefore,
-			final Date notAfter) throws CertIOException, OperatorCreationException, CertificateException, IOException {
+	private CertificateToken generateTspCertificate(final SignatureAlgorithm algorithm, KeyPair keyPair, X500Name issuer, X500Name subject,
+			final Date notBefore, final Date notAfter) throws OperatorCreationException, CertificateException, IOException {
 		final SubjectPublicKeyInfo keyInfo = SubjectPublicKeyInfo.getInstance(keyPair.getPublic().getEncoded());
 
 		final X509v3CertificateBuilder certBuilder = new X509v3CertificateBuilder(issuer,
@@ -202,7 +182,7 @@ public class CertificateService {
 		return new CertificateToken(cert);
 	}
 
-	public CertificateToken generateRootCertificateWithCrl(SignatureAlgorithm algorithm, X500Name subject, X500Name issuer, PrivateKey issuerPrivateKey,
+	private CertificateToken generateRootCertificateWithCrl(SignatureAlgorithm algorithm, X500Name subject, X500Name issuer, PrivateKey issuerPrivateKey,
 			PublicKey publicKey, Date notBefore, Date notAfter) throws Exception {
 
 		// generate certificate
@@ -223,7 +203,7 @@ public class CertificateService {
 		return new CertificateToken(cert);
 	}
 
-	public CertificateToken generateRootCertificateWithoutCrl(SignatureAlgorithm algorithm, X500Name subject, X500Name issuer, PrivateKey issuerPrivateKey,
+	private CertificateToken generateRootCertificateWithoutCrl(SignatureAlgorithm algorithm, X500Name subject, X500Name issuer, PrivateKey issuerPrivateKey,
 			PublicKey publicKey, Date notBefore, Date notAfter) throws Exception {
 
 		// generate certificate

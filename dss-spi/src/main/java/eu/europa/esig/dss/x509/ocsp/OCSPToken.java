@@ -58,7 +58,7 @@ import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
 @SuppressWarnings("serial")
 public class OCSPToken extends RevocationToken {
 
-	private static final Logger logger = LoggerFactory.getLogger(OCSPToken.class);
+	private static final Logger LOG = LoggerFactory.getLogger(OCSPToken.class);
 
 	private CertificateID certId;
 
@@ -122,7 +122,7 @@ public class OCSPToken extends RevocationToken {
 		try {
 			responses = basicOCSPResp.getResponses();
 		} catch (Exception e) {
-			logger.error("Unable to parse the responses object from OCSP", e);
+			LOG.error("Unable to parse the responses object from OCSP", e);
 			extraInfo.infoOCSPException("Unable to parse the responses object from OCSP : " + e.getMessage());
 		}
 		return responses;
@@ -131,13 +131,13 @@ public class OCSPToken extends RevocationToken {
 	private void extractStatusInfo(SingleResp bestSingleResp) {
 		CertificateStatus certStatus = bestSingleResp.getCertStatus();
 		if (CertificateStatus.GOOD == certStatus) {
-			if (logger.isInfoEnabled()) {
-				logger.info("OCSP status is good");
+			if (LOG.isInfoEnabled()) {
+				LOG.info("OCSP status is good");
 			}
 			status = true;
 		} else if (certStatus instanceof RevokedStatus) {
-			if (logger.isInfoEnabled()) {
-				logger.info("OCSP status revoked");
+			if (LOG.isInfoEnabled()) {
+				LOG.info("OCSP status revoked");
 			}
 			final RevokedStatus revokedStatus = (RevokedStatus) certStatus;
 			status = false;
@@ -148,12 +148,12 @@ public class OCSPToken extends RevocationToken {
 			}
 			reason = CRLReasonEnum.fromInt(reasonId).name();
 		} else if (certStatus instanceof UnknownStatus) {
-			if (logger.isInfoEnabled()) {
-				logger.info("OCSP status unknown");
+			if (LOG.isInfoEnabled()) {
+				LOG.info("OCSP status unknown");
 			}
 			reason = CRLReasonEnum.unknow.name();
 		} else {
-			logger.info("OCSP certificate status: " + certStatus);
+			LOG.info("OCSP certificate status: " + certStatus);
 		}
 	}
 
@@ -164,7 +164,7 @@ public class OCSPToken extends RevocationToken {
 			try {
 				archiveCutOff = archiveCutOffAsn1.getDate();
 			} catch (ParseException e) {
-				logger.warn("Unable to extract id_pkix_ocsp_archive_cutoff : " + e.getMessage());
+				LOG.warn("Unable to extract id_pkix_ocsp_archive_cutoff : " + e.getMessage());
 			}
 		}
 	}

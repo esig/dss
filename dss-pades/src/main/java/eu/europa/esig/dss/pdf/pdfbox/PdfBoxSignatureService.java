@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -86,7 +87,7 @@ import eu.europa.esig.dss.x509.ocsp.OCSPToken;
 
 class PdfBoxSignatureService implements PDFSignatureService {
 
-	private static final Logger logger = LoggerFactory.getLogger(PdfBoxSignatureService.class);
+	private static final Logger LOG = LoggerFactory.getLogger(PdfBoxSignatureService.class);
 
 	@Override
 	public byte[] digest(final InputStream toSignDocument, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm)
@@ -152,8 +153,8 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 			saveDocumentIncrementally(parameters, fileOutputStream, pdDocument);
 			final byte[] digestValue = digest.digest();
-			if (logger.isDebugEnabled()) {
-				logger.debug("Digest to be signed: " + Utils.toHex(digestValue));
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("Digest to be signed: " + Utils.toHex(digestValue));
 			}
 			return digestValue;
 		} catch (IOException e) {
@@ -167,29 +168,35 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		SignatureImageParameters signatureImageParameters = signatureParameters.getSignatureImageParameters();
 		fillImageParameters(doc, signatureImageParameters, options);
 	}
-	
-	protected void fillImageParameters(final PDDocument doc, final SignatureImageParameters signatureImageParameters, SignatureOptions options) throws IOException {
-		if(signatureImageParameters != null) {
+
+	protected void fillImageParameters(final PDDocument doc, final SignatureImageParameters signatureImageParameters, SignatureOptions options)
+			throws IOException {
+		if (signatureImageParameters != null) {
 			// DSS-747. Using the DPI resolution to convert java size to dot
 			ImageAndResolution ires = ImageUtils.create(signatureImageParameters);
-	
-			InputStream is = ires.getInputStream();
-			try {
-				PDVisibleSignDesigner visibleSig = new PDVisibleSignDesigner(doc, is, signatureImageParameters.getPage());
-				visibleSig.xAxis(signatureImageParameters.getxAxis());
-				visibleSig.yAxis(signatureImageParameters.getyAxis());
+
+			SignatureImageAndPosition signatureImageAndPosition = SignatureImageAndPositionProcessor.process(signatureImageParameters, doc, ires);
+
+			PDVisibleSignDesigner visibleSig = new PDVisibleSignDesigner(doc, new ByteArrayInputStream(signatureImageAndPosition.getSignatureImage()),
+					signatureImageParameters.getPage());
+
+			visibleSig.xAxis(signatureImageAndPosition.getX());
+			visibleSig.yAxis(signatureImageAndPosition.getY());
+
+			if ((signatureImageParameters.getWidth() != 0) && (signatureImageParameters.getHeight() != 0)) {
+				visibleSig.width(signatureImageParameters.getWidth());
+				visibleSig.height(signatureImageParameters.getHeight());
+			} else {
 				visibleSig.width(ires.toXPoint(visibleSig.getWidth()));
 				visibleSig.height(ires.toYPoint(visibleSig.getHeight()));
-				visibleSig.zoom(signatureImageParameters.getZoom() - 100); // pdfbox is 0 based
-	
-				PDVisibleSigProperties signatureProperties = new PDVisibleSigProperties();
-				signatureProperties.visualSignEnabled(true).setPdVisibleSignature(visibleSig).buildSignature();
-	
-				options.setVisualSignature(signatureProperties);
-				options.setPage(signatureImageParameters.getPage() - 1); // DSS-1138
-			} finally {
-				Utils.closeQuietly(is);
 			}
+			visibleSig.zoom(signatureImageParameters.getZoom() - 100); // pdfbox is 0 based
+
+			PDVisibleSigProperties signatureProperties = new PDVisibleSigProperties();
+			signatureProperties.visualSignEnabled(true).setPdVisibleSignature(visibleSig).buildSignature();
+
+			options.setVisualSignature(signatureProperties);
+			options.setPage(signatureImageParameters.getPage() - 1); // DSS-1138
 		}
 	}
 
@@ -214,9 +221,9 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			signature.setName(shortName);
 		}
 
-		signature.setFilter(PDSignature.FILTER_ADOBE_PPKLITE); // default filter
+		signature.setFilter(getFilter(parameters));
 		// sub-filter for basic and PAdES Part 2 signatures
-		signature.setSubFilter(getSubFilter());
+		signature.setSubFilter(getSubFilter(parameters));
 
 		if (COSName.SIG.equals(getType())) {
 			if (Utils.isStringNotEmpty(parameters.getContactInfo())) {
@@ -238,10 +245,6 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		cal.setTime(signingDate);
 		signature.setSignDate(cal);
 		return signature;
-	}
-
-	protected COSName getType() {
-		return COSName.SIG;
 	}
 
 	private PDSignature findExistingSignature(PDDocument doc, String sigFieldName) {
@@ -277,7 +280,21 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		}
 	}
 
-	protected COSName getSubFilter() {
+	protected COSName getType() {
+		return COSName.SIG;
+	}
+
+	protected COSName getFilter(PAdESSignatureParameters parameters) {
+		if (Utils.isStringNotEmpty(parameters.getSignatureFilter())) {
+			return COSName.getPDFName(parameters.getSignatureFilter());
+		}
+		return PDSignature.FILTER_ADOBE_PPKLITE;
+	}
+
+	protected COSName getSubFilter(PAdESSignatureParameters parameters) {
+		if (Utils.isStringNotEmpty(parameters.getSignatureSubFilter())) {
+			return COSName.getPDFName(parameters.getSignatureSubFilter());
+		}
 		return PDSignature.SUBFILTER_ETSI_CADES_DETACHED;
 	}
 
@@ -291,7 +308,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 				callback.validate(pdfSignatureOrDocTimestampInfo);
 			}
 		} catch (IOException e) {
-			logger.error("Cannot validate signatures : " + e.getMessage(), e);
+			LOG.error("Cannot validate signatures : " + e.getMessage(), e);
 		}
 
 		Utils.closeQuietly(inputStream);
@@ -305,13 +322,17 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 			List<PDSignature> pdSignatures = doc.getSignatureDictionaries();
 			if (Utils.isCollectionNotEmpty(pdSignatures)) {
-				logger.debug("{} signature(s) found", pdSignatures.size());
+				LOG.debug("{} signature(s) found", pdSignatures.size());
 
 				PdfDict catalog = new PdfBoxDict(doc.getDocumentCatalog().getCOSObject(), doc);
 				PdfDssDict dssDictionary = PdfDssDict.extract(catalog);
 
 				for (PDSignature signature : pdSignatures) {
 					String subFilter = signature.getSubFilter();
+					
+					int[] byteRange = signature.getByteRange();
+
+					validateByteRange(byteRange);
 
 					COSDictionary dict = signature.getCOSObject();
 					COSString item = (COSString) dict.getDictionaryObject(COSName.CONTENTS);
@@ -320,17 +341,17 @@ class PdfBoxSignatureService implements PDFSignatureService {
 					byte[] cmsWithByteRange = signature.getContents(originalBytes);
 
 					if (!Arrays.equals(cmsWithByteRange, cms)) {
-						logger.warn("The byte range doesn't match found /Content value!");
+						LOG.warn("The byte range doesn't match found /Content value!");
 					}
 
 					if (Utils.isStringEmpty(subFilter) || Utils.isArrayEmpty(cms)) {
-						logger.warn("Wrong signature with empty subfilter or cms.");
+						LOG.warn("Wrong signature with empty subfilter or cms.");
 						continue;
 					}
 
 					byte[] signedContent = signature.getSignedContent(originalBytes);
-					int[] byteRange = signature.getByteRange();
 
+					PdfDict signatureDictionary = new PdfBoxDict(signature.getCOSObject(), doc);
 					PdfSignatureOrDocTimestampInfo signatureInfo = null;
 					if (PdfBoxDocTimeStampService.SUB_FILTER_ETSI_RFC3161.getName().equals(subFilter)) {
 						boolean isArchiveTimestamp = false;
@@ -343,9 +364,10 @@ class PdfBoxSignatureService implements PDFSignatureService {
 							}
 						}
 
-						signatureInfo = new PdfBoxDocTimestampInfo(validationCertPool, signature, dssDictionary, cms, signedContent, isArchiveTimestamp);
+						signatureInfo = new PdfBoxDocTimestampInfo(validationCertPool, signature, signatureDictionary, dssDictionary, cms, signedContent,
+								isArchiveTimestamp);
 					} else {
-						signatureInfo = new PdfBoxSignatureInfo(validationCertPool, signature, dssDictionary, cms, signedContent);
+						signatureInfo = new PdfBoxSignatureInfo(validationCertPool, signature, signatureDictionary, dssDictionary, cms, signedContent);
 					}
 
 					if (signatureInfo != null) {
@@ -356,18 +378,43 @@ class PdfBoxSignatureService implements PDFSignatureService {
 				linkSignatures(signatures);
 
 				for (PdfSignatureOrDocTimestampInfo sig : signatures) {
-					logger.debug("Signature " + sig.uniqueId() + " found with byteRange " + Arrays.toString(sig.getSignatureByteRange()) + " ("
+					LOG.debug("Signature " + sig.uniqueId() + " found with byteRange " + Arrays.toString(sig.getSignatureByteRange()) + " ("
 							+ sig.getSubFilter() + ")");
 				}
 			}
 
 		} catch (Exception e) {
-			logger.warn("Cannot analyze signatures : " + e.getMessage(), e);
+			LOG.warn("Cannot analyze signatures : " + e.getMessage(), e);
 		} finally {
 			Utils.closeQuietly(doc);
 		}
 
 		return signatures;
+	}
+
+	private void validateByteRange(int[] byteRange) {
+
+		if (byteRange == null || byteRange.length != 4) {
+			throw new DSSException("Incorrect BytRange size");
+		}
+
+		final int a = byteRange[0];
+		final int b = byteRange[1];
+		final int c = byteRange[2];
+		final int d = byteRange[3];
+
+		if (a != 0) {
+			throw new DSSException("The BytRange must cover start of file");
+		}
+		if (b <= 0) {
+			throw new DSSException("The first hash part doesn't cover anything");
+		}
+		if (c <= b) {
+			throw new DSSException("The second hash part must start after the first hash part");
+		}
+		if (d <= 0) {
+			throw new DSSException("The second hash part doesn't cover anything");
+		}
 	}
 
 	/**
@@ -397,7 +444,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 				dssDictionary = PdfDssDict.extract(catalog);
 			}
 		} catch (Exception e) {
-			logger.warn("Cannot check in previous revisions if DSS dictionary already exist : " + e.getMessage(), e);
+			LOG.warn("Cannot check in previous revisions if DSS dictionary already exist : " + e.getMessage(), e);
 		} finally {
 			Utils.closeQuietly(doc);
 		}
@@ -511,11 +558,11 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 	private COSStream getStream(Map<String, COSStream> streams, Token token) throws IOException {
 		COSStream stream = streams.get(token.getDSSIdAsString());
-		
+
 		if (stream == null) {
 			stream = new COSStream();
-			
-			try(OutputStream unfilteredStream = stream.createOutputStream()){
+
+			try (OutputStream unfilteredStream = stream.createOutputStream()) {
 				unfilteredStream.write(token.getEncoded());
 				unfilteredStream.flush();
 			}
@@ -549,14 +596,17 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			PDDocument pdfDoc = PDDocument.load(is);
 			PDPage page = pdfDoc.getPage(parameters.getPage());
 
-			PDAcroForm acroForm = new PDAcroForm(pdfDoc);
-			pdfDoc.getDocumentCatalog().setAcroForm(acroForm);
+			PDAcroForm acroForm = pdfDoc.getDocumentCatalog().getAcroForm();
+			if (acroForm == null) {
+				acroForm = new PDAcroForm(pdfDoc);
+				pdfDoc.getDocumentCatalog().setAcroForm(acroForm);
 
-			// Set default appearance
-			PDResources resources = new PDResources();
-			resources.put(COSName.getPDFName("Helv"), PDType1Font.HELVETICA);
-			acroForm.setDefaultResources(resources);
-			acroForm.setDefaultAppearance("/Helv 0 Tf 0 g");
+				// Set default appearance
+				PDResources resources = new PDResources();
+				resources.put(COSName.getPDFName("Helv"), PDType1Font.HELVETICA);
+				acroForm.setDefaultResources(resources);
+				acroForm.setDefaultAppearance("/Helv 0 Tf 0 g");
+			}
 
 			PDSignatureField signatureField = new PDSignatureField(acroForm);
 			if (Utils.isStringNotBlank(parameters.getName())) {

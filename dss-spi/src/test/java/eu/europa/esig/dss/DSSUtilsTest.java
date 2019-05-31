@@ -1,19 +1,24 @@
 package eu.europa.esig.dss;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
+import java.util.Date;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -38,7 +43,7 @@ public class DSSUtilsTest {
 
 	@Test
 	public void testLoadIssuer() {
-		Collection<CertificateToken> issuers = DSSUtils.loadIssuerCertificates(certificateWithAIA, new NativeHTTPDataLoader());
+		Collection<CertificateToken> issuers = DSSUtils.loadPotentialIssuerCertificates(certificateWithAIA, new NativeHTTPDataLoader());
 		assertNotNull(issuers);
 		assertFalse(issuers.isEmpty());
 		boolean foundIssuer = false;
@@ -51,9 +56,20 @@ public class DSSUtilsTest {
 	}
 
 	@Test
+	public void testDontSkipCertificatesWhenMultipleAreFoundInP7c() throws IOException {
+		try {
+			DSSUtils.loadCertificate(new FileInputStream("src/test/resources/certchain.p7c"));
+			fail("Should not load single certificate (first?)");
+		} catch (DSSException dssEx) {
+			assertEquals(dssEx.getMessage(), "Could not parse certificate");
+		}
+	}
+
+	@Test
 	public void testLoadP7cPEM() throws DSSException, IOException {
 		Collection<CertificateToken> certs = DSSUtils.loadCertificateFromP7c(new FileInputStream("src/test/resources/certchain.p7c"));
 		assertTrue(Utils.isCollectionNotEmpty(certs));
+		assertTrue(certs.size() > 1);
 	}
 
 	@Test
@@ -64,13 +80,13 @@ public class DSSUtilsTest {
 
 	@Test
 	public void testLoadIssuerEmptyDataLoader() {
-		assertNull(DSSUtils.loadIssuerCertificates(certificateWithAIA, null));
+		assertTrue(DSSUtils.loadPotentialIssuerCertificates(certificateWithAIA, null).isEmpty());
 	}
 
 	@Test
 	public void testLoadIssuerNoAIA() {
 		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/citizen_ca.cer"));
-		assertNull(DSSUtils.loadIssuerCertificates(certificate, new NativeHTTPDataLoader()));
+		assertTrue(DSSUtils.loadPotentialIssuerCertificates(certificate, new NativeHTTPDataLoader()).isEmpty());
 	}
 
 	@Test
@@ -112,16 +128,14 @@ public class DSSUtilsTest {
 	@Test
 	public void convertToPEM() {
 		String convertToPEM = DSSUtils.convertToPEM(certificateWithAIA);
-		assertTrue(convertToPEM.contains(DSSUtils.CERT_BEGIN));
-		assertTrue(convertToPEM.contains(DSSUtils.CERT_END));
 
-		assertTrue(DSSUtils.isPEM(new ByteArrayInputStream(convertToPEM.getBytes())));
+		assertFalse(DSSUtils.isDER(new ByteArrayInputStream(convertToPEM.getBytes())));
 
 		CertificateToken certificate = DSSUtils.loadCertificate(convertToPEM.getBytes());
 		assertEquals(certificate, certificateWithAIA);
 
 		byte[] certDER = DSSUtils.convertToDER(convertToPEM);
-		assertFalse(DSSUtils.isPEM(new ByteArrayInputStream(certDER)));
+		assertTrue(DSSUtils.isDER(new ByteArrayInputStream(certDER)));
 
 		CertificateToken certificate2 = DSSUtils.loadCertificate(certDER);
 		assertEquals(certificate2, certificateWithAIA);
@@ -131,25 +145,31 @@ public class DSSUtilsTest {
 	public void loadCrl() throws Exception {
 		X509CRL crl = DSSUtils.loadCRL(new FileInputStream("src/test/resources/crl/belgium2.crl"));
 		assertNotNull(crl);
-		assertFalse(DSSUtils.isPEM(new FileInputStream("src/test/resources/crl/belgium2.crl")));
+		assertTrue(DSSUtils.isDER(new FileInputStream("src/test/resources/crl/belgium2.crl")));
 
 		String convertCRLToPEM = DSSUtils.convertCrlToPEM(crl);
-		assertTrue(DSSUtils.isPEM(new ByteArrayInputStream(convertCRLToPEM.getBytes())));
-		assertTrue(DSSUtils.isPEM(convertCRLToPEM.getBytes()));
+		assertFalse(DSSUtils.isDER(new ByteArrayInputStream(convertCRLToPEM.getBytes())));
+		assertFalse(DSSUtils.isDER(new ByteArrayInputStream(convertCRLToPEM.getBytes())));
 
-		X509CRL crl2 = DSSUtils.loadCRL(convertCRLToPEM.getBytes());
-		assertEquals(crl, crl2);
+		try (InputStream is = new ByteArrayInputStream(convertCRLToPEM.getBytes())) {
+			X509CRL crl2 = DSSUtils.loadCRL(is);
+			assertEquals(crl, crl2);
+		}
 
-		byte[] convertCRLToDER = DSSUtils.convertCRLToDER(convertCRLToPEM);
-		X509CRL crl3 = DSSUtils.loadCRL(convertCRLToDER);
-		assertEquals(crl, crl3);
+		byte[] convertCRLToDER = DSSUtils.convertToDER(convertCRLToPEM);
+		try (InputStream is = new ByteArrayInputStream(convertCRLToDER)) {
+			X509CRL crl3 = DSSUtils.loadCRL(is);
+			assertEquals(crl, crl3);
+		}
 	}
 
 	@Test
 	public void loadPEMCrl() throws Exception {
 		X509CRL crl = DSSUtils.loadCRL(new FileInputStream("src/test/resources/crl/LTRCA.crl"));
 		assertNotNull(crl);
-		assertTrue(DSSUtils.isPEM(new FileInputStream("src/test/resources/crl/LTRCA.crl")));
+		try (InputStream is = new FileInputStream("src/test/resources/crl/LTRCA.crl")) {
+			assertFalse(DSSUtils.isDER(is));
+		}
 	}
 
 	@Test
@@ -209,5 +229,20 @@ public class DSSUtilsTest {
 	@Test
 	public void getMD5Digest() throws UnsupportedEncodingException {
 		assertEquals("3e25960a79dbc69b674cd4ec67a72c62", DSSUtils.getMD5Digest("Hello world".getBytes("UTF-8")));
+	}
+
+	@Test
+	public void getDeterministicId() throws InterruptedException {
+		Date d1 = new Date();
+		String deterministicId = DSSUtils.getDeterministicId(d1, certificateWithAIA.getDSSId());
+		assertNotNull(deterministicId);
+		String deterministicId2 = DSSUtils.getDeterministicId(d1, certificateWithAIA.getDSSId());
+		assertEquals(deterministicId, deterministicId2);
+		assertNotNull(DSSUtils.getDeterministicId(null, certificateWithAIA.getDSSId()));
+
+		Thread.sleep(1);
+		String deterministicId3 = DSSUtils.getDeterministicId(new Date(), certificateWithAIA.getDSSId());
+
+		assertThat(deterministicId2, not(equalTo(deterministicId3)));
 	}
 }

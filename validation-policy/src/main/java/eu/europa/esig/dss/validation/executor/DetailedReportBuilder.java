@@ -14,13 +14,17 @@ import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlTLAnalysis;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessBasicSignatures;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessLongTermData;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.bbb.BasicBuildingBlocks;
-import eu.europa.esig.dss.validation.process.qmatrix.QMatrixBlock;
+import eu.europa.esig.dss.validation.process.qmatrix.qualification.SignatureQualificationBlock;
+import eu.europa.esig.dss.validation.process.qmatrix.tl.TLValidationBlock;
 import eu.europa.esig.dss.validation.process.vpfbs.ValidationProcessForBasicSignatures;
 import eu.europa.esig.dss.validation.process.vpfltvd.ValidationProcessForSignaturesWithLongTermValidationData;
 import eu.europa.esig.dss.validation.process.vpfswatsp.ValidationProcessForSignaturesWithArchivalData;
@@ -32,7 +36,7 @@ import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 
 public class DetailedReportBuilder {
 
-	private static final Logger logger = LoggerFactory.getLogger(DetailedReportBuilder.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DetailedReportBuilder.class);
 
 	private final Date currentTime;
 	private final ValidationPolicy policy;
@@ -50,15 +54,22 @@ public class DetailedReportBuilder {
 		DetailedReport detailedReport = new DetailedReport();
 
 		Map<String, XmlBasicBuildingBlocks> bbbs = executeAllBasicBuildingBlocks();
-
 		detailedReport.getBasicBuildingBlocks().addAll(bbbs.values());
+
+		Map<String, XmlTLAnalysis> tlAnalysisResults = new HashMap<String, XmlTLAnalysis>();
+		if (policy.isEIDASConstraintPresent()) {
+			tlAnalysisResults = executeAllTlAnalysis();
+			detailedReport.getTLAnalysis().addAll(tlAnalysisResults.values());
+		}
 
 		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
 
 			XmlSignature signatureAnalysis = new XmlSignature();
 
 			signatureAnalysis.setId(signature.getId());
-			signatureAnalysis.setType(signature.getType());
+			if (signature.isCounterSignature()) {
+				signatureAnalysis.setCounterSignature(true);
+			}
 
 			XmlConclusion conlusion = executeBasicValidation(signatureAnalysis, signature, bbbs);
 
@@ -73,19 +84,39 @@ public class DetailedReportBuilder {
 				conlusion = executeArchiveValidation(signatureAnalysis, signature, bbbs);
 			}
 
-			detailedReport.getSignatures().add(signatureAnalysis);
-
 			if (policy.isEIDASConstraintPresent()) {
 				try {
-					QMatrixBlock qmatrix = new QMatrixBlock(conlusion, diagnosticData, policy, currentTime);
-					detailedReport.setQMatrixBlock(qmatrix.execute());
+					SignatureQualificationBlock qualificationBlock = new SignatureQualificationBlock(conlusion, tlAnalysisResults, signature, diagnosticData,
+							policy);
+					signatureAnalysis.setValidationSignatureQualification(qualificationBlock.execute());
 				} catch (Exception e) {
-					logger.error("Unable to determine the signature qualification", e);
+					LOG.error("Unable to determine the signature qualification", e);
 				}
 			}
+
+			detailedReport.getSignatures().add(signatureAnalysis);
 		}
 
 		return detailedReport;
+	}
+
+	private Map<String, XmlTLAnalysis> executeAllTlAnalysis() {
+		Map<String, XmlTLAnalysis> result = new HashMap<String, XmlTLAnalysis>();
+		XmlTrustedList listOfTrustedLists = diagnosticData.getListOfTrustedLists();
+		if (listOfTrustedLists != null) {
+			TLValidationBlock tlValidation = new TLValidationBlock(listOfTrustedLists, currentTime, policy);
+			result.put(listOfTrustedLists.getCountryCode(), tlValidation.execute());
+		}
+
+		// Validate used trusted lists
+		List<XmlTrustedList> trustedLists = diagnosticData.getTrustedLists();
+		if (Utils.isCollectionNotEmpty(trustedLists)) {
+			for (XmlTrustedList xmlTrustedList : trustedLists) {
+				TLValidationBlock tlValidation = new TLValidationBlock(xmlTrustedList, currentTime, policy);
+				result.put(xmlTrustedList.getCountryCode(), tlValidation.execute());
+			}
+		}
+		return result;
 	}
 
 	private XmlConclusion executeBasicValidation(XmlSignature signatureAnalysis, SignatureWrapper signature, Map<String, XmlBasicBuildingBlocks> bbbs) {

@@ -1,0 +1,11 @@
+[source,xml]
+----
+<ns4:ArchiveTimeStamp
+	Id="time-stamp-22b92602-2670-410e-888f-937c5777c685">
+	<ds:CanonicalizationMethod
+		Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
+	<EncapsulatedTimeStamp
+		Id="time-stamp-token-0bd5aaf3-3850-4911-a22d-c98dcaca5cea">MIAGCSqGSDHAqCAM…
+	</EncapsulatedTimeStamp>
+</ns4:ArchiveTimeStamp>
+----

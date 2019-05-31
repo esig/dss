@@ -1,7 +1,7 @@
 package eu.europa.esig.dss.validation.process.qmatrix.qualification.checks;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSignatureAnalysis;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationSignatureQualification;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
@@ -9,13 +9,13 @@ import eu.europa.esig.dss.validation.process.Condition;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class AdESAcceptableCheck extends ChainItem<XmlSignatureAnalysis> implements Condition {
+public class AdESAcceptableCheck extends ChainItem<XmlValidationSignatureQualification> implements Condition {
 
 	private final XmlConclusion etsi319102Conclusion;
 
 	private MessageTag error;
 
-	public AdESAcceptableCheck(XmlSignatureAnalysis result, XmlConclusion etsi319102Conclusion, LevelConstraint constraint) {
+	public AdESAcceptableCheck(XmlValidationSignatureQualification result, XmlConclusion etsi319102Conclusion, LevelConstraint constraint) {
 		super(result, constraint);
 
 		this.etsi319102Conclusion = etsi319102Conclusion;

@@ -20,14 +20,11 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import java.security.cert.X509CRL;
-import java.util.ArrayList;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.crl.OfflineCRLSource;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
@@ -45,32 +42,23 @@ public class XAdESCRLSource extends OfflineCRLSource {
 	 *            adapted {@code XPathQueryHolder}
 	 */
 	public XAdESCRLSource(final Element signatureElement, final XPathQueryHolder xPathQueryHolder) {
-
 		if (signatureElement == null) {
-
 			throw new NullPointerException("signatureElement");
 		}
 		if (xPathQueryHolder == null) {
-
 			throw new NullPointerException("xPathQueryHolder");
 		}
-		x509CRLList = new ArrayList<X509CRL>();
 		addCRLs(signatureElement, xPathQueryHolder.XPATH_CRL_VALUES_ENCAPSULATED_CRL);
 		addCRLs(signatureElement, xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_CRL_VALUES);
 	}
 
 	private void addCRLs(Element signatureElement, final String xPathQuery) {
-
 		final NodeList nodeList = DomUtils.getNodeList(signatureElement, xPathQuery);
 		for (int ii = 0; ii < nodeList.getLength(); ii++) {
-
 			final Element certEl = (Element) nodeList.item(ii);
 			final String textContent = certEl.getTextContent();
-			final X509CRL x509CRL = DSSUtils.loadCRLBase64Encoded(textContent);
-			if (!x509CRLList.contains(x509CRL)) {
-
-				x509CRLList.add(x509CRL);
-			}
+			addCRLBinary(Utils.fromBase64(textContent));
 		}
 	}
+
 }

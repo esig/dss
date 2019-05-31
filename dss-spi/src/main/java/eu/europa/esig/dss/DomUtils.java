@@ -1,6 +1,8 @@
 package eu.europa.esig.dss;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
@@ -33,7 +35,6 @@ import javax.xml.xpath.XPathFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -59,6 +60,23 @@ public final class DomUtils {
 		namespacePrefixMapper = new NamespaceContextMap();
 		namespaces = new HashMap<String, String>();
 		registerDefaultNamespaces();
+
+		dbFactory = DocumentBuilderFactory.newInstance();
+		dbFactory.setNamespaceAware(true);
+		try {
+			// disable external entities details :
+			// https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet#Java
+
+			dbFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+			dbFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+			dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+			dbFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+
+			dbFactory.setXIncludeAware(false);
+			dbFactory.setExpandEntityReferences(false);
+		} catch (ParserConfigurationException e) {
+			throw new DSSException("Unable to initialize the DocumentBuilderFactory", e);
+		}
 	}
 
 	/**
@@ -90,31 +108,16 @@ public final class DomUtils {
 	}
 
 	/**
-	 * Guarantees that the xmlString builder has been created.
-	 *
-	 * @throws DSSException
+	 * This method returns a new instance of TransformerFactory with secured features enabled
+	 * 
+	 * @return an instance of TransformerFactory with enabled secure features
 	 */
-	private static void ensureDocumentBuilder() throws DSSException {
-		if (dbFactory != null) {
-			return;
-		}
-		dbFactory = DocumentBuilderFactory.newInstance();
-		dbFactory.setNamespaceAware(true);
-		try {
-			// disable external entities
-			dbFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-			dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-			dbFactory.setXIncludeAware(false);
-			dbFactory.setExpandEntityReferences(false);
-		} catch (ParserConfigurationException e) {
-			throw new DSSException(e);
-		}
-	}
-
 	public static TransformerFactory getSecureTransformerFactory() {
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		try {
 			transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+			transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+			transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
 		} catch (TransformerConfigurationException e) {
 			throw new DSSException(e);
 		}
@@ -141,7 +144,6 @@ public final class DomUtils {
 	 * @throws DSSException
 	 */
 	public static Document buildDOM() {
-		ensureDocumentBuilder();
 		try {
 			return dbFactory.newDocumentBuilder().newDocument();
 		} catch (ParserConfigurationException e) {
@@ -194,37 +196,13 @@ public final class DomUtils {
 	 * @throws DSSException
 	 */
 	public static Document buildDOM(final InputStream inputStream) throws DSSException {
-		try {
-			ensureDocumentBuilder();
-			final Document rootElement = dbFactory.newDocumentBuilder().parse(inputStream);
-			return rootElement;
+		try (InputStream is = inputStream) {
+			return dbFactory.newDocumentBuilder().parse(is);
 		} catch (Exception e) {
 			throw new DSSException(e);
 		} finally {
 			Utils.closeQuietly(inputStream);
 		}
-	}
-
-	/**
-	 * Creates a DOM document without document element.
-	 *
-	 * @param namespaceURI
-	 *            the namespace URI of the document element to create or null
-	 * @param qualifiedName
-	 *            the qualified name of the document element to be created or null
-	 * @return {@code Document}
-	 */
-	public static Document createDocument(final String namespaceURI, final String qualifiedName) {
-		ensureDocumentBuilder();
-
-		DOMImplementation domImpl;
-		try {
-			domImpl = dbFactory.newDocumentBuilder().getDOMImplementation();
-		} catch (ParserConfigurationException e) {
-			throw new DSSException(e);
-		}
-
-		return domImpl.createDocument(namespaceURI, qualifiedName, null);
 	}
 
 	/**
@@ -464,6 +442,17 @@ public final class DomUtils {
 		}
 	}
 
+	public static DSSDocument createDssDocumentFromDomDocument(Document document, String name) {
+		DSSDocument dssDoc = null;
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			DomUtils.writeDocumentTo(document, baos);
+			dssDoc = new InMemoryDocument(baos.toByteArray(), name, MimeType.XML);
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
+		return dssDoc;
+	}
+
 	/**
 	 * This method allows to convert an XML {@code Node} to a {@code String}.
 	 *
@@ -482,6 +471,27 @@ public final class DomUtils {
 		} catch (Exception e) {
 			throw new DSSException(e);
 		}
+	}
+	
+	/**
+	 * This method returns stored namespace definitions
+	 * 
+	 * @return a map with the prefix and the related URI
+	 */
+	public static Map<String, String> getCurrentNamespaces() {
+		return new HashMap<String, String>(namespaces);
+	}
+
+	public static String getXPathByIdAttribute(String uri) {
+		return "[@Id='" + getId(uri) + "']";
+	}
+
+	public static String getId(String uri) {
+		String id = uri;
+		if (uri.startsWith("#")) {
+			id = id.substring(1);
+		}
+		return id;
 	}
 
 }

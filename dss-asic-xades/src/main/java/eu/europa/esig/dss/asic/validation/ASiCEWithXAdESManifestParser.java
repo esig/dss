@@ -13,7 +13,6 @@ import org.w3c.dom.NodeList;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.ManifestNamespace;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ManifestFile;
 
 public class ASiCEWithXAdESManifestParser {
@@ -42,9 +41,7 @@ public class ASiCEWithXAdESManifestParser {
 
 	private List<String> getEntries() {
 		List<String> result = new ArrayList<String>();
-		InputStream is = null;
-		try {
-			is = manifestDocument.openStream();
+		try (InputStream is = manifestDocument.openStream()) {
 			Document manifestDom = DomUtils.buildDOM(is);
 			NodeList nodeList = DomUtils.getNodeList(manifestDom, "/manifest:manifest/manifest:file-entry");
 			if (nodeList != null && nodeList.getLength() > 0) {
@@ -58,8 +55,6 @@ public class ASiCEWithXAdESManifestParser {
 			}
 		} catch (Exception e) {
 			LOG.error("Unable to parse manifest file " + manifestDocument.getName(), e);
-		} finally {
-			Utils.closeQuietly(is);
 		}
 		return result;
 	}

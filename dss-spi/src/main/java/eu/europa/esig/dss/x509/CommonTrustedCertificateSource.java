@@ -36,7 +36,7 @@ import eu.europa.esig.dss.tsl.ServiceInfo;
  */
 public class CommonTrustedCertificateSource extends CommonCertificateSource {
 
-	private static final Logger logger = LoggerFactory.getLogger(CommonTrustedCertificateSource.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CommonTrustedCertificateSource.class);
 
 	public CommonTrustedCertificateSource() {
 	}
@@ -85,7 +85,7 @@ public class CommonTrustedCertificateSource extends CommonCertificateSource {
 		if (certificateTokens.size() > 0) {
 			certificateToken = certificateTokens.get(0);
 		} else {
-			logger.debug("WARNING: There is currently no certificate with the given X500Principal: '{}' within the certificate pool!", x500Principal);
+			LOG.debug("WARNING: There is currently no certificate with the given X500Principal: '{}' within the certificate pool!", x500Principal);
 		}
 		if (certificateToken != null) {
 			addCertificate(certificateToken, serviceInfo);
