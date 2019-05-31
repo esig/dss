@@ -67,7 +67,7 @@ public class CAdESCertificateWrapperTest extends PKIFactoryAccess {
 		assertNotNull(foundCertificates);
 		assertEquals(1, signinigCertificates.size());
 		XmlFoundCertificate signCertificate = signinigCertificates.get(0);
-		List<XmlCertificateRef> certificateRefs = signCertificate.getCertificateRef();
+		List<XmlCertificateRef> certificateRefs = signCertificate.getCertificateRefs();
 		assertNotNull(certificateRefs);
 		XmlCertificateRef certRef = certificateRefs.get(0);
 		assertNotNull(certRef.getDigestAlgoAndValue());

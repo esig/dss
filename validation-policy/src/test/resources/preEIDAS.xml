@@ -35,6 +35,9 @@
             <ContentType>application/pdf</ContentType>
             <CommitmentTypeIndication/>
             <ClaimedRoles/>
+            <FoundCertificates/>
+            <FoundRevocations/>
+            <FoundTimestamps/>
             <SignatureScopes>
                 <SignatureScope SignerData="D-0f6e410da8fbd80a0d043b20b6300408339a9f33a5193eac9c2d2b70610b6d47">
                     <Scope>FULL</Scope>

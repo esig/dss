@@ -39,6 +39,8 @@
 	            <ChainItem Certificate="C-B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5"/>
 	        </CertificateChain>
 	        <ContentType>text/xml</ContentType>
+            <FoundCertificates/>
+            <FoundRevocations/>
 			<FoundTimestamps>
 				<FoundTimestamp Timestamp="T-6A9149BB7AEABB204AD2C245E034E224453A5FB9BD377DB3BAE505C9BF4D310E"/>
 			</FoundTimestamps>

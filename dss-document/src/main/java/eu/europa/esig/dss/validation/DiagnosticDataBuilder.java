@@ -857,8 +857,8 @@ public class DiagnosticDataBuilder {
 				relatedCertificatesMap.put(certificateToken.getDSSIdAsString(), xmlFoundCertificate);
 			} else {
 				XmlRelatedCertificate storedFoundCertificate = relatedCertificatesMap.get(certificateToken.getDSSIdAsString());
-				if (!storedFoundCertificate.getOrigin().contains(origin)) {
-					storedFoundCertificate.getOrigin().add(origin);
+				if (!storedFoundCertificate.getOrigins().contains(origin)) {
+					storedFoundCertificate.getOrigins().add(origin);
 				}
 			}
 		}
@@ -866,11 +866,11 @@ public class DiagnosticDataBuilder {
 	
 	private XmlRelatedCertificate getXmlRelatedCertificate(CertificateOriginType origin, CertificateToken cert, SignatureCertificateSource certificateSource) {
 		XmlRelatedCertificate xrc = new XmlRelatedCertificate();
-		xrc.getOrigin().add(origin);
+		xrc.getOrigins().add(origin);
 		xrc.setCertificate(xmlCerts.get(cert.getDSSIdAsString()));
 		List<CertificateRef> referencesForCertificateToken = certificateSource.getReferencesForCertificateToken(cert);
 		for (CertificateRef certificateRef : referencesForCertificateToken) {
-			xrc.getCertificateRef().add(getXmlCertificateRef(certificateRef));
+			xrc.getCertificateRefs().add(getXmlCertificateRef(certificateRef));
 		}
 		certificateRefsMap.put(cert.getDSSIdAsString(), referencesForCertificateToken);
 		return xrc;
@@ -907,7 +907,7 @@ public class DiagnosticDataBuilder {
 	private XmlRelatedCertificate getXmlRelatedCertificate(CertificateToken cert, CertificateRef certificateRef) {
 		XmlRelatedCertificate xrc = new XmlRelatedCertificate();
 		xrc.setCertificate(xmlCerts.get(cert.getDSSIdAsString()));
-		xrc.getCertificateRef().add(getXmlCertificateRef(certificateRef));
+		xrc.getCertificateRefs().add(getXmlCertificateRef(certificateRef));
 		certificateRefsMap.put(cert.getDSSIdAsString(), Arrays.asList(certificateRef));
 		return xrc;
 	}
@@ -934,7 +934,7 @@ public class DiagnosticDataBuilder {
 	private XmlOrphanCertificate createXmlOrphanCertificate(CertificateRef orphanCertificateRef) {
 		XmlOrphanCertificate orphanCertificate = new XmlOrphanCertificate();
 		orphanCertificate.setToken(createXmlOrphanCertificateToken(orphanCertificateRef));
-		orphanCertificate.getCertificateRef().add(getXmlCertificateRef(orphanCertificateRef));
+		orphanCertificate.getCertificateRefs().add(getXmlCertificateRef(orphanCertificateRef));
 		return orphanCertificate;
 	}
 	
@@ -986,7 +986,7 @@ public class DiagnosticDataBuilder {
 
 		List<EncapsulatedRevocationTokenIdentifier> orphanRevocations = getOrphanRevocations(signature);
 		if (Utils.isCollectionNotEmpty(orphanRevocations)) {
-			foundRevocations.setOrphanRevocations(getXmlOrphanRevocations(orphanRevocations, signature));
+			foundRevocations.getOrphanRevocations().addAll(getXmlOrphanRevocations(orphanRevocations, signature));
 		}
 		List<RevocationRef> allFoundRevocationRefs = signature.getAllFoundRevocationRefs();
 		// substract from all revocations refs a list of already assigned refs
@@ -1035,7 +1035,7 @@ public class DiagnosticDataBuilder {
 					}
 					List<RevocationRef> revocationRefs = signature.findRefsForRevocationToken(revocationToken);
 					if (Utils.isCollectionNotEmpty(revocationRefs)) {
-						xmlRelatedRevocation.getRevocationReferences().addAll(getXmlRevocationRefs(revocationRefs));
+						xmlRelatedRevocation.getRevocationRefs().addAll(getXmlRevocationRefs(revocationRefs));
 					}
 
 					xmlRelatedRevocations.add(xmlRelatedRevocation);
@@ -1109,7 +1109,7 @@ public class DiagnosticDataBuilder {
 		}
 		List<RevocationRef> refsForRevocationToken = signature.findRefsForRevocationIdentifier(revocationIdentifier);
 		for (RevocationRef revocationRef : refsForRevocationToken) {
-			xmlOrphanRevocation.getRevocationReferences().add(revocationRefToXml(revocationRef));
+			xmlOrphanRevocation.getRevocationRefs().add(revocationRefToXml(revocationRef));
 		}
 		revocationRefsMap.put(revocationIdentifier.asXmlId(), refsForRevocationToken);
 		return xmlOrphanRevocation;
@@ -1157,7 +1157,7 @@ public class DiagnosticDataBuilder {
 		} else {
 			xmlOrphanRevocation.setType(RevocationType.OCSP);
 		}
-		xmlOrphanRevocation.getRevocationReferences().add(revocationRefToXml(ref));
+		xmlOrphanRevocation.getRevocationRefs().add(revocationRefToXml(ref));
 		return xmlOrphanRevocation;
 	}
 

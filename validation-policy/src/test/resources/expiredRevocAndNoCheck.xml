@@ -39,6 +39,8 @@
             <ContentType>application/pdf</ContentType>
             <CommitmentTypeIndication/>
             <ClaimedRoles/>
+            <FoundCertificates/>
+            <FoundRevocations/>
             <FoundTimestamps>
 				<FoundTimestamp Timestamp="T-F8B72B7574450E84664DE88950BC781CA2528CF5B39ABB3E1F93947B752BE79F"/>
 				<FoundTimestamp Timestamp="T-7F9B88A8161CC87905298FF8E0CD080516452FBA1480DD6AFAE38B7DD18E2A1B"/>

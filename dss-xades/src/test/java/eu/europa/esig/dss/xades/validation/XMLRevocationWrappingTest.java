@@ -195,7 +195,7 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 		assertEquals(0, signature.getOrphanRevocations().size());
 		assertEquals(1, signature.getFoundRevocationRefsByLocation(XmlRevocationRefLocation.COMPLETE_REVOCATION_REFS).size());
 		assertEquals(0, signature.getFoundRevocationRefsByLocation(XmlRevocationRefLocation.ATTRIBUTE_REVOCATION_REFS).size());
-		XmlRevocationRef revocationRef = foundRevocations.getRelatedRevocations().get(0).getRevocationReferences().get(0);
+		XmlRevocationRef revocationRef = foundRevocations.getRelatedRevocations().get(0).getRevocationRefs().get(0);
 		assertNotNull(revocationRef.getLocation());
 		assertNotNull(revocationRef.getDigestAlgoAndValue());
 		assertNotNull(revocationRef.getProducedAt());

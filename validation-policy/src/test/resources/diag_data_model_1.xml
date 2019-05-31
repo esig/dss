@@ -42,6 +42,9 @@
             </SignatureProductionPlace>
             <CommitmentTypeIndication/>
             <ClaimedRoles/>
+            <FoundCertificates/>
+            <FoundRevocations/>
+            <FoundTimestamps/>
             <SignatureScopes>
                 <SignatureScope SignerData="D-c02a55a1f8dca88a305fda0d36eaf57bc81a76a9766d2030ec0201ae1e8f4a0d">
                     <Scope>FULL</Scope>

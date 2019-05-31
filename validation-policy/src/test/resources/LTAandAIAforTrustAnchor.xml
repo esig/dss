@@ -53,6 +53,8 @@
                 <ProcessingError></ProcessingError>
                 <DigestAlgorithmsEqual>false</DigestAlgorithmsEqual>
             </Policy>
+            <FoundCertificates/>
+            <FoundRevocations/>
             <FoundTimestamps>
 				<FoundTimestamp Timestamp="T-A802C6241FF872844EA40A322C78F24A0464C454B297D09C34E9AFD441F4818F"/>
 				<FoundTimestamp Timestamp="T-8FD6CE8E573D200D7E1C2888B1FB012341901257C38D0828023B4621CF22DF3F"/>

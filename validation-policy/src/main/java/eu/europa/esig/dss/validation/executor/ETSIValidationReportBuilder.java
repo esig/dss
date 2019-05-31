@@ -735,7 +735,7 @@ public class ETSIValidationReportBuilder {
 				id = ((XmlOrphanCertificate)cert).getToken().getId();
 			}
 			certIdList.getAttributeObject().add(getVOReference(id));
-			List<XmlCertificateRef> certificateRefs = cert.getCertificateRef();
+			List<XmlCertificateRef> certificateRefs = cert.getCertificateRefs();
 			for (XmlCertificateRef certificateRef : certificateRefs) {
 				if (certificateRef != null && certificateRef.getDigestAlgoAndValue() != null) {
 					SACertIDType certIDType = objectFactory.createSACertIDType();

@@ -39,6 +39,8 @@
             <ContentType>1.2.840.113549.1.7.1</ContentType>
             <CommitmentTypeIndication/>
             <ClaimedRoles/>
+            <FoundCertificates/>
+            <FoundRevocations/>
             <FoundTimestamps>
 				<FoundTimestamp Timestamp="T-E951D2E9EBCFB55D0B564A11814858BF7A8FA07503C714099D0FCB7F60353798"/>
 				<FoundTimestamp Timestamp="T-AB100CD4FBA024FA787E1AB3D3A5D5098E13DF017E113F4751341CBEE91E45CD"/>

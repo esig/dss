@@ -60,6 +60,8 @@
                 <Reason></Reason>
                 <SignatureByteRange>0 234543 300079 5547</SignatureByteRange>
             </PDFSignatureDictionary>
+            <FoundCertificates/>
+            <FoundRevocations/>
 			<FoundTimestamps>
 				<FoundTimestamp Timestamp="T-30662A206DBD6A4EB55C545C0EFD3101E9B0BBD31010B4A8CF0CD7C9FC58BD02"/>
 			</FoundTimestamps>
@@ -112,6 +114,9 @@
                 <Reason>Digitally verifiable PDF exported from www.docusign.com</Reason>
                 <SignatureByteRange>0 305954 371490 5010</SignatureByteRange>
             </PDFSignatureDictionary>
+            <FoundCertificates/>
+            <FoundRevocations/>
+            <FoundTimestamps/>
             <SignatureScopes>
                 <SignatureScope SignerData="D-aa923ca08e1f99b618a4d9c42942d790592b48ee1f615b60a3d21eb365d6a125">
                     <Scope>FULL</Scope>

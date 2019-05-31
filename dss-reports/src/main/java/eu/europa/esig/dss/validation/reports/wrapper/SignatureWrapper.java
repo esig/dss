@@ -544,7 +544,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		List<XmlRevocationRef> revocationRefs = new ArrayList<XmlRevocationRef>();
 		if (foundRevocations != null) {
 			for (T revocation : foundRevocations) {
-				revocationRefs.addAll(revocation.getRevocationReferences());
+				revocationRefs.addAll(revocation.getRevocationRefs());
 			}
 		}
 		return revocationRefs;
@@ -672,12 +672,12 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		XmlFoundCertificates foundCertificates = signature.getFoundCertificates();
 		if (foundCertificates != null) {
 			for (XmlRelatedCertificate xmlRelatedCertificate : foundCertificates.getRelatedCertificates()) {
-				if (xmlRelatedCertificate.getOrigin().contains(origin)) {
+				if (xmlRelatedCertificate.getOrigins().contains(origin)) {
 					result.add(xmlRelatedCertificate.getCertificate().getId());
 				}
 			}
 			for (XmlOrphanCertificate xmlOrphanCertificate : foundCertificates.getOrphanCertificates()) {
-				if (xmlOrphanCertificate.getOrigin().contains(origin)) {
+				if (xmlOrphanCertificate.getOrigins().contains(origin)) {
 					result.add(xmlOrphanCertificate.getToken().getId());
 				}
 			}
@@ -695,7 +695,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		XmlFoundCertificates foundCertificates = signature.getFoundCertificates();
 		if (foundCertificates != null) {
 			for (XmlRelatedCertificate foundCertificate : foundCertificates.getRelatedCertificates()) {
-				if (foundCertificate.getOrigin().contains(origin)) {
+				if (foundCertificate.getOrigins().contains(origin)) {
 					certificatesByOrigin.add(foundCertificate);
 				}
 			}
@@ -711,7 +711,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	public List<XmlFoundCertificate> getFoundCertificatesByRefLocation(CertificateRefLocationType location) {
 		List<XmlFoundCertificate> certificatesByLocation = new ArrayList<XmlFoundCertificate>();
 		for (XmlFoundCertificate foundCertificate : getAllFoundCertificates()) {
-			for (XmlCertificateRef certificateRef : foundCertificate.getCertificateRef()) {
+			for (XmlCertificateRef certificateRef : foundCertificate.getCertificateRefs()) {
 				if (location.equals(certificateRef.getLocation())) {
 					certificatesByLocation.add(foundCertificate);
 				}

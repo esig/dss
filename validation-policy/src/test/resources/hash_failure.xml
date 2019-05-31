@@ -39,6 +39,9 @@
 	            <ChainItem Certificate="C-C02F95F78AF80B249A3481CA41924AE60D7663867C5F22FF8437A0E8CC344137"/>
 	        </CertificateChain>
 	        <ContentType>text/xml</ContentType>
+            <FoundCertificates/>
+            <FoundRevocations/>
+            <FoundTimestamps/>
 	        <SignatureScopes>
                 <SignatureScope SignerData="D-de11a94d7ee5345d5a821ed7530bfd6b24f637f0ce8df32a5dfe9ea357d6e409">
                     <Scope>FULL</Scope>
@@ -83,6 +86,9 @@
 	            <ChainItem Certificate="C-C02F95F78AF80B249A3481CA41924AE60D7663867C5F22FF8437A0E8CC344137"/>
 	        </CertificateChain>
 	        <ContentType>text/xml</ContentType>
+            <FoundCertificates/>
+            <FoundRevocations/>
+            <FoundTimestamps/>
 	        <SignatureScopes>
                 <SignatureScope SignerData="D-de11a94d7ee5345d5a821ed7530bfd6b24f637f0ce8df32a5dfe9ea357d6e409">
                     <Scope>FULL</Scope>

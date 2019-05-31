@@ -163,49 +163,25 @@
 						</xs:complexType>
 					</xs:element>
 					
-					<xs:element name="FoundCertificates" minOccurs="0">
+					<xs:element name="FoundCertificates">
 						<xs:complexType>
 							<xs:sequence>
-								<xs:element name="RelatedCertificates" minOccurs="0">
-									<xs:complexType>
-										<xs:sequence>
-											<xs:element name="RelatedCertificate" type="RelatedCertificate" minOccurs="0" maxOccurs="unbounded" />
-										</xs:sequence>
-									</xs:complexType>
-								</xs:element>
-								<xs:element name="OrphanCertificates" minOccurs="0">
-									<xs:complexType>
-										<xs:sequence>
-											<xs:element name="OrphanCertificate" type="OrphanCertificate" minOccurs="0" maxOccurs="unbounded" />
-										</xs:sequence>
-									</xs:complexType>
-								</xs:element>
+								<xs:element name="RelatedCertificate" type="RelatedCertificate" minOccurs="0" maxOccurs="unbounded" />
+								<xs:element name="OrphanCertificate" type="OrphanCertificate" minOccurs="0" maxOccurs="unbounded" />
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
 					
-					<xs:element name="FoundRevocations" minOccurs="0">
+					<xs:element name="FoundRevocations">
 						<xs:complexType>
 							<xs:sequence>
-								<xs:element name="RelatedRevocations" minOccurs="0">
-									<xs:complexType>
-										<xs:sequence>
-											<xs:element name="RelatedRevocation" type="RelatedRevocation" minOccurs="0" maxOccurs="unbounded" />
-										</xs:sequence>
-									</xs:complexType>
-								</xs:element>
-								<xs:element name="OrphanRevocations" minOccurs="0">
-									<xs:complexType>
-										<xs:sequence>
-											<xs:element name="OrphanRevocation" type="OrphanRevocation" minOccurs="0" maxOccurs="unbounded" />
-										</xs:sequence>
-									</xs:complexType>
-								</xs:element>
+								<xs:element name="RelatedRevocation" type="RelatedRevocation" minOccurs="0" maxOccurs="unbounded" />
+								<xs:element name="OrphanRevocation" type="OrphanRevocation" minOccurs="0" maxOccurs="unbounded" />
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
 								
-					<xs:element name="FoundTimestamps" minOccurs="0">
+					<xs:element name="FoundTimestamps">
 						<xs:complexType>
 							<xs:sequence>
 								<xs:element name="FoundTimestamp" type="FoundTimestamp" minOccurs="0" maxOccurs="unbounded" />
@@ -213,7 +189,7 @@
 						</xs:complexType>
 					</xs:element>
 					
-					<xs:element name="SignatureScopes" minOccurs="0">
+					<xs:element name="SignatureScopes">
 						<xs:complexType>
 							<xs:sequence>
 								<xs:element name="SignatureScope" type="SignatureScope" minOccurs="0" maxOccurs="unbounded" />
@@ -758,20 +734,8 @@
 	<xs:complexType name="FoundRevocation" abstract="true">
 		<xs:sequence>
 			<xs:element name="Type" type="RevocationType" />
-			<xs:element name="Origins">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="Origin" type="RevocationOriginType" minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			<xs:element name="RevocationReferences" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="RevocationRef" type="RevocationRef" minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
+			<xs:element name="Origin" type="RevocationOriginType" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="RevocationRef" type="RevocationRef" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 	
