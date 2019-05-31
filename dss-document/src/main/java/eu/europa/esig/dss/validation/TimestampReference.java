@@ -42,7 +42,6 @@ public class TimestampReference implements Serializable {
 	private TimestampedObjectType category;
 
 	public TimestampReference(final String signatureId) {
-
 		if (signatureId == null) {
 			throw new NullPointerException();
 		}
@@ -58,7 +57,6 @@ public class TimestampReference implements Serializable {
 	}
 
 	public TimestampReference(final DigestAlgorithm digestAlgorithm, final String digestValue) {
-
 		if (digestAlgorithm == null) {
 			throw new NullPointerException("digestAlgorithm");
 		}
@@ -71,7 +69,6 @@ public class TimestampReference implements Serializable {
 	}
 
 	public TimestampReference(final DigestAlgorithm digestAlgorithm, final String digestValue, final TimestampedObjectType category) {
-
 		this(digestAlgorithm, digestValue);
 		this.category = category;
 	}
