@@ -53,6 +53,8 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	 */
 	private List<TimestampedReference> signingCertificateTimestampReferences;
 	
+	private XAdESTimestampDataBuilder timestampDataBuilder;
+	
 	public XAdESTimestampSource(final Element signatureElement, final XPathQueryHolder xPathQueryHolder, final CertificatePool certificatePool) {
 		this.signatureElement = signatureElement;
 		this.xPathQueryHolder = xPathQueryHolder;
@@ -75,6 +77,50 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	@Override
 	protected SignatureProperties<XAdESAttribute> getUnsignedSignatureProperties() {
 		return XAdESUnsignedSigProperties.build(signatureElement, xPathQueryHolder);
+	}
+
+	@Override
+	protected XAdESTimestampDataBuilder getTimestampDataBuilder() {
+		if (timestampDataBuilder == null) {
+			timestampDataBuilder = new XAdESTimestampDataBuilder(signatureElement, references, xPathQueryHolder);
+		}
+		return timestampDataBuilder;
+	}
+	
+	/**
+	 * Returns concatenated data for a SignatureTimestamp
+	 * @param canonicalizationMethod {@link String} canonicalization method to use
+	 * @return byte array
+	 */
+	public byte[] getSignatureTimestampData(String canonicalizationMethod) {
+		return timestampDataBuilder.getSignatureTimestampData(canonicalizationMethod);
+	}
+	
+	/**
+	 * Returns concatenated data for a SigAndRefsTimestamp
+	 * @param canonicalizationMethod {@link String} canonicalization method to use
+	 * @return byte array
+	 */
+	public byte[] getTimestampX1Data(String canonicalizationMethod) {
+		return timestampDataBuilder.getTimestampX1Data(canonicalizationMethod);
+	}
+	
+	/**
+	 * Returns concatenated data for a RefsOnlyTimestamp
+	 * @param canonicalizationMethod {@link String} canonicalization method to use
+	 * @return byte array
+	 */
+	public byte[] getTimestampX2Data(String canonicalizationMethod) {
+		return timestampDataBuilder.getTimestampX2Data(canonicalizationMethod);
+	}
+	
+	/**
+	 * Returns concatenated data for an ArchiveTimestamp
+	 * @param canonicalizationMethod {@link String} canonicalization method to use
+	 * @return byte array
+	 */
+	public byte[] getArchiveTimestampData(String canonicalizationMethod) {
+		return timestampDataBuilder.getArchiveTimestampData(canonicalizationMethod);
 	}
 
 	@Override

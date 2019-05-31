@@ -32,14 +32,17 @@ import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
 import org.bouncycastle.asn1.x509.Certificate;
 import org.bouncycastle.asn1.x509.CertificateList;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncapsulatedCertificateTokenIdentifier;
+import eu.europa.esig.dss.cades.signature.CadesLevelBaselineLTATimestampExtractor;
 import eu.europa.esig.dss.validation.timestamp.AbstractTimestampSource;
 import eu.europa.esig.dss.validation.timestamp.SignatureProperties;
 import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
@@ -57,11 +60,29 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESTimestampSource.class);
 	
-	private final SignerInformation signerInformation;
+	protected final SignerInformation signerInformation;
+	
+	private CMSSignedData cmsSignedData;
+	protected List<DSSDocument> detachedDocuments;
 	
 	public CAdESTimestampSource(final SignerInformation signerInformation, final CertificatePool certificatePool) {
 		this.signerInformation = signerInformation;
 		this.certificatePool = certificatePool;
+	}
+	
+	public void setCMSSignedData(CMSSignedData cmsSignedData) {
+		this.cmsSignedData = cmsSignedData;
+	}
+	
+	public void setDetachedDocuments(List<DSSDocument> detachedDocuments) {
+		this.detachedDocuments = detachedDocuments;
+	}
+
+	@Override
+	protected CAdESTimestampDataBuilder getTimestampDataBuilder() {
+		CadesLevelBaselineLTATimestampExtractor timestampExtractor = new CadesLevelBaselineLTATimestampExtractor(
+				cmsSignedData, certificatePool.getCertificateTokens(), getCertificates());
+		return new CAdESTimestampDataBuilder(cmsSignedData, signerInformation, detachedDocuments, timestampExtractor);
 	}
 
 	@Override

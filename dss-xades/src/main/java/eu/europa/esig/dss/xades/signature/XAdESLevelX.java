@@ -79,7 +79,7 @@ public class XAdESLevelX extends XAdESLevelC {
 
 			final TimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
 			final String canonicalizationMethod = signatureTimestampParameters.getCanonicalizationMethod();
-			final byte[] timestampX1Data = xadesSignature.getTimestampX1Data(null, canonicalizationMethod);
+			final byte[] timestampX1Data = xadesSignature.getTimestampSource().getTimestampX1Data(canonicalizationMethod);
 			final DigestAlgorithm timestampDigestAlgorithm = signatureTimestampParameters.getDigestAlgorithm();
 			final byte[] digestValue = DSSUtils.digest(timestampDigestAlgorithm, timestampX1Data);
 			createXAdESTimeStampType(TimestampType.VALIDATION_DATA_TIMESTAMP, canonicalizationMethod, digestValue);

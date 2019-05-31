@@ -45,7 +45,6 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.TokenIdentifier;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
-import eu.europa.esig.dss.validation.timestamp.TimestampByGenerationTimeComparator;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.x509.CertificatePool;
@@ -301,8 +300,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		prepareTimestamps(validationContext);
 		validationContext.validate();
 
-		validateTimestamps();
-
 		checkTimestamp(certificateVerifier, validationContext);
 		checkAllRevocationDataPresent(certificateVerifier, validationContext);
 		checkAllTimestampCoveredByRevocationData(certificateVerifier, validationContext);
@@ -365,6 +362,14 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public List<CertificateToken> getCertificates() {
 		return getCertificateSource().getCertificates();
 	}
+	
+	/**
+	 * Returns a set of {@link CertificateToken}s found in the {@link SignatureTimestampSource}
+	 * @return set of {@link CertificateToken}s
+	 */
+	public Set<CertificateToken> getTimestampSourceCertificates() {
+		return getTimestampSource().getCertificates();
+	}
 
 	/**
 	 * This method returns all certificates used during the validation process. If a certificate is already present
@@ -398,12 +403,10 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	public List<CertificateToken> getCertificatesWithinSignatureAndTimestamps() {
 		List<CertificateToken> certs = new ArrayList<CertificateToken>();
-		Map<String, List<CertificateToken>> certificatesWithinSignatureAndTimestamps = getCertificatesWithinSignatureAndTimestamps(false);
-		for (List<CertificateToken> certificateTokens : certificatesWithinSignatureAndTimestamps.values()) {
-			for (CertificateToken token : certificateTokens) {
-				if (!certs.contains(token)) {
-					certs.add(token);
-				}
+		Set<CertificateToken> certificatesWithiTimestamps = getTimestampSourceCertificates();
+		for (CertificateToken token : certificatesWithiTimestamps) {
+			if (!certs.contains(token)) {
+				certs.add(token);
 			}
 		}
 		return certs;
@@ -412,46 +415,16 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public Map<String, List<CertificateToken>> getCertificatesWithinSignatureAndTimestamps(boolean skipLastArchiveTimestamp) {
 		// We can have more than one chain in the signature : signing certificate, ocsp
 		// responder, ...
-		Map<String, List<CertificateToken>> certificates = new HashMap<String, List<CertificateToken>>();
+		Map<String, List<CertificateToken>> certificateMap = new HashMap<String, List<CertificateToken>>();
 		
 		List<CertificateToken> certificatesSig = getCertificateSource().getCertificates();
 		
 		if (Utils.isCollectionNotEmpty(certificatesSig)) {
-			certificates.put(CertificateSourceType.SIGNATURE.name(), certificatesSig);
+			certificateMap.put(CertificateSourceType.SIGNATURE.name(), certificatesSig);
 		}
-		int timestampCounter = 0;
-		for (final TimestampToken timestampToken : getContentTimestamps()) {
-			certificates.put(timestampToken.getTimeStampType().name() + timestampCounter++, timestampToken.getCertificates());
-		}
-		for (final TimestampToken timestampToken : getTimestampsX1()) {
-			certificates.put(timestampToken.getTimeStampType().name() + timestampCounter++, timestampToken.getCertificates());
-		}
-		for (final TimestampToken timestampToken : getTimestampsX2()) {
-			certificates.put(timestampToken.getTimeStampType().name() + timestampCounter++, timestampToken.getCertificates());
-		}
-		for (final TimestampToken timestampToken : getSignatureTimestamps()) {
-			certificates.put(timestampToken.getTimeStampType().name() + timestampCounter++, timestampToken.getCertificates());
-		}
+		certificateMap.putAll(getTimestampSource().getCertificateMapWithinTimestamps(skipLastArchiveTimestamp));
 
-		List<TimestampToken> archiveTsps = getArchiveTimestamps();
-		if (skipLastArchiveTimestamp) {
-			archiveTsps = removeLastTimestamp(archiveTsps);
-		}
-		for (final TimestampToken timestampToken : archiveTsps) {
-			certificates.put(timestampToken.getTimeStampType().name() + timestampCounter++, timestampToken.getCertificates());
-		}
-
-		return certificates;
-	}
-
-	private List<TimestampToken> removeLastTimestamp(List<TimestampToken> timestamps) {
-		List<TimestampToken> tsps = new ArrayList<TimestampToken>();
-		Collections.copy(timestamps, tsps);
-		if (Utils.collectionSize(tsps) > 1) {
-			Collections.sort(tsps, new TimestampByGenerationTimeComparator());
-			tsps.remove(tsps.size() - 1);
-		}
-		return tsps;
+		return certificateMap;
 	}
 
 	/**
@@ -593,55 +566,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		}
 	}
 
-	/**
-	 * This method adds all timestamps to be validated.
-	 */
-	@Override
-	public void validateTimestamps() {
-
-		/*
-		 * This validates the content-timestamp tokensToProcess present in the signature.
-		 */
-		for (final TimestampToken timestampToken : getContentTimestamps()) {
-			final byte[] timestampBytes = getContentTimestampData(timestampToken);
-			timestampToken.matchData(timestampBytes);
-		}
-
-		/*
-		 * This validates the signature timestamp tokensToProcess present in the signature.
-		 */
-		for (final TimestampToken timestampToken : getSignatureTimestamps()) {
-			final byte[] timestampBytes = getSignatureTimestampData(timestampToken, null);
-			timestampToken.matchData(timestampBytes);
-		}
-
-		/*
-		 * This validates the SigAndRefs timestamp tokensToProcess present in the signature.
-		 */
-		for (final TimestampToken timestampToken : getTimestampsX1()) {
-			final byte[] timestampBytes = getTimestampX1Data(timestampToken, null);
-			timestampToken.matchData(timestampBytes);
-		}
-
-		/*
-		 * This validates the RefsOnly timestamp tokensToProcess present in the signature.
-		 */
-		for (final TimestampToken timestampToken : getTimestampsX2()) {
-			final byte[] timestampBytes = getTimestampX2Data(timestampToken, null);
-			timestampToken.matchData(timestampBytes);
-		}
-
-		/*
-		 * This validates the archive timestamp tokensToProcess present in the signature.
-		 */
-		for (final TimestampToken timestampToken : getArchiveTimestamps()) {
-			if (!timestampToken.isProcessed()) {
-				final byte[] timestampData = getArchiveTimestampData(timestampToken, null);
-				timestampToken.matchData(timestampData);
-			}
-		}
-	}
-
 	@Override
 	public void validateStructure() {
 	}
@@ -779,51 +703,41 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 	
 	@Override
-	public List<TimestampToken> getContentTimestamps() {
+	public SignatureTimestampSource getTimestampSource() {
 		if (signatureTimestampSource == null) {
 			initializeSignatureTimestampSource();
 		}
-		return signatureTimestampSource.getContentTimestamps();
+		return signatureTimestampSource;
+	}
+	
+	@Override
+	public List<TimestampToken> getContentTimestamps() {
+		return getTimestampSource().getContentTimestamps();
 	}
 
 	@Override
 	public List<TimestampToken> getSignatureTimestamps() {
-		if (signatureTimestampSource == null) {
-			initializeSignatureTimestampSource();
-		}
-		return signatureTimestampSource.getSignatureTimestamps();
+		return getTimestampSource().getSignatureTimestamps();
 	}
 
 	@Override
 	public List<TimestampToken> getTimestampsX1() {
-		if (signatureTimestampSource == null) {
-			initializeSignatureTimestampSource();
-		}
-		return signatureTimestampSource.getTimestampsX1();
+		return getTimestampSource().getTimestampsX1();
 	}
 
 	@Override
 	public List<TimestampToken> getTimestampsX2() {
-		if (signatureTimestampSource == null) {
-			initializeSignatureTimestampSource();
-		}
-		return signatureTimestampSource.getTimestampsX2();
+		return getTimestampSource().getTimestampsX2();
 	}
 
 	@Override
 	public List<TimestampToken> getArchiveTimestamps() {
-		if (signatureTimestampSource == null) {
-			initializeSignatureTimestampSource();
-		}
-		return signatureTimestampSource.getArchiveTimestamps();
+		return getTimestampSource().getArchiveTimestamps();
 	}
 
 	@Override
 	public List<TimestampToken> getDocumentTimestamps() {
-		if (signatureTimestampSource == null) {
-			initializeSignatureTimestampSource();
-		}
-		return signatureTimestampSource.getDocumentTimestamps();
+		return getTimestampSource().getDocumentTimestamps();
 	}
 	
 	/**
@@ -841,10 +755,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 			throw new DSSException("Only archival timestamp is allowed !");
 		}
 
-		if (signatureTimestampSource == null) {
-			initializeSignatureTimestampSource();
-		}
-		signatureTimestampSource.addExternalTimestamp(timestamp);
+		getTimestampSource().addExternalTimestamp(timestamp);
 	}
 
 	/* Defines the level T */
@@ -859,7 +770,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		boolean emptyOCSPs = getOCSPSource().isEmpty();
 		boolean emptyCRLs = getCRLSource().isEmpty();
 
-		if (certificateChains.isEmpty() && (emptyOCSPs || emptyCRLs)) {
+		if (Utils.isMapEmpty(certificateChains) && (emptyOCSPs || emptyCRLs)) {
 			return false;
 		}
 

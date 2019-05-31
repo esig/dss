@@ -21,15 +21,12 @@
 package eu.europa.esig.dss.cades.validation;
 
 import static eu.europa.esig.dss.OID.id_aa_ets_archiveTimestampV2;
-import static eu.europa.esig.dss.OID.id_aa_ets_archiveTimestampV3;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certificateRefs;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_escTimeStamp;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signatureTimeStampToken;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificate;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificateV2;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.PublicKey;
@@ -42,27 +39,18 @@ import java.util.List;
 import java.util.Set;
 
 import org.bouncycastle.asn1.ASN1Encodable;
-import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.ASN1String;
 import org.bouncycastle.asn1.ASN1UTCTime;
-import org.bouncycastle.asn1.BEROctetString;
-import org.bouncycastle.asn1.BERSequence;
-import org.bouncycastle.asn1.BERSet;
-import org.bouncycastle.asn1.BERTaggedObject;
 import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERSequence;
-import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.DERUTF8String;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
-import org.bouncycastle.asn1.cms.ContentInfo;
-import org.bouncycastle.asn1.cms.SignedData;
-import org.bouncycastle.asn1.cms.SignerInfo;
 import org.bouncycastle.asn1.esf.CommitmentTypeIndication;
 import org.bouncycastle.asn1.esf.OtherHashAlgAndValue;
 import org.bouncycastle.asn1.esf.SigPolicyQualifierInfo;
@@ -86,14 +74,12 @@ import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataParser;
-import org.bouncycastle.cms.CMSTypedData;
 import org.bouncycastle.cms.CMSTypedStream;
 import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationVerifier;
 import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
 import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
-import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,7 +93,6 @@ import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DigestDocument;
 import eu.europa.esig.dss.EncryptionAlgorithm;
-import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.IssuerSerialInfo;
 import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.OID;
@@ -118,7 +103,6 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.TokenIdentifier;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.SignerAttributeV2;
-import eu.europa.esig.dss.cades.signature.CadesLevelBaselineLTATimestampExtractor;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CAdESCertificateSource;
@@ -136,7 +120,6 @@ import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
-import eu.europa.esig.dss.x509.ArchiveTimestampType;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.SignaturePolicy;
@@ -643,11 +626,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return null;
 	}
 
-	@Override
-	public byte[] getContentTimestampData(final TimestampToken timestampToken) {
-		return DSSUtils.toByteArray(getOriginalDocument());
-	}
-
 	/**
 	 * This method initializes the {@link SignatureTimestampSource}
 	 */
@@ -659,6 +637,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		cadesTimestampSource.setOCSPSource(getOCSPSource());
 		cadesTimestampSource.setSignatureDSSId(getId());
 		cadesTimestampSource.setSignatureScopes(getSignatureScopes());
+		cadesTimestampSource.setCMSSignedData(cmsSignedData);
+		cadesTimestampSource.setDetachedDocuments(detachedContents);
 		signatureTimestampSource = cadesTimestampSource;
 	}
 
@@ -771,7 +751,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				signatureCryptographicVerification.setErrorMessage("There is no signing certificate within the signature.");
 				return;
 			}
-			boolean detachedSignature = isDetachedSignature();
+			boolean detachedSignature = CMSUtils.isDetachedSignature(cmsSignedData);
 			final SignerInformation signerInformationToCheck;
 			if (detachedSignature) {
 				if (Utils.isCollectionEmpty(detachedContents)) {
@@ -891,11 +871,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		final SignerInformation signerInformationToCheck = cmsSignedDataParser.getSignerInfos().get(signerId);
 		return signerInformationToCheck;
 	}
-
-	private boolean isDetachedSignature() {
-		return cmsSignedData.isDetachedSignature();
-	}
-
 	private CertificateValidity getTheBestCandidate() {
 		if (providedSigningCertificateToken == null) {
 			// To determine the signing certificate it is necessary to browse
@@ -1020,7 +995,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 		final List<CertificateRef> list = new ArrayList<CertificateRef>();
 
-		final Attribute attribute = getUnsignedAttribute(id_aa_ets_certificateRefs);
+		final Attribute attribute = CMSUtils.getUnsignedAttribute(signerInformation, id_aa_ets_certificateRefs);
 		if (attribute == null) {
 			return list;
 		}
@@ -1051,323 +1026,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return list;
 	}
 
-	@Override
-	public byte[] getSignatureTimestampData(final TimestampToken timestampToken, String canonicalizationMethod) {
-		return signerInformation.getSignature();
-	}
-
-	@Override
-	public byte[] getTimestampX1Data(final TimestampToken timestampToken, String canonicalizationMethod) {
-		try (ByteArrayOutputStream data = new ByteArrayOutputStream()) {
-			data.write(signerInformation.getSignature());
-			// We don't include the outer SEQUENCE, only the attrType and
-			// attrValues as stated by the TS Â§6.3.5, NOTE 2
-
-			final Attribute attribute = getUnsignedAttribute(id_aa_signatureTimeStampToken);
-			if (attribute != null) {
-				data.write(DSSASN1Utils.getDEREncoded(attribute.getAttrType()));
-				data.write(DSSASN1Utils.getDEREncoded(attribute.getAttrValues()));
-			}
-			// Those are common to Type 1 and Type 2
-			data.write(getTimestampX2Data(timestampToken, null));
-			return data.toByteArray();
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	@Override
-	public byte[] getTimestampX2Data(final TimestampToken timestampToken, String canonicalizationMethod) {
-		try (ByteArrayOutputStream data = new ByteArrayOutputStream()) {
-			// Those are common to Type 1 and Type 2
-			final Attribute certAttribute = getUnsignedAttribute(id_aa_ets_certificateRefs);
-			final Attribute revAttribute = getUnsignedAttribute(PKCSObjectIdentifiers.id_aa_ets_revocationRefs);
-			if (certAttribute != null) {
-				data.write(DSSASN1Utils.getDEREncoded(certAttribute.getAttrType()));
-				data.write(DSSASN1Utils.getDEREncoded(certAttribute.getAttrValues()));
-			}
-			if (revAttribute != null) {
-				data.write(DSSASN1Utils.getDEREncoded(revAttribute.getAttrType()));
-				data.write(DSSASN1Utils.getDEREncoded(revAttribute.getAttrValues()));
-			}
-
-			return data.toByteArray();
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	@Override
-	public byte[] getArchiveTimestampData(final TimestampToken timestampToken, String canonicalizationMethod) throws DSSException {
-
-		final ArchiveTimestampType archiveTimestampType = timestampToken.getArchiveTimestampType();
-		byte[] archiveTimestampData;
-		switch (archiveTimestampType) {
-		case CAdES_V2:
-			/**
-			 * There is a difference between message imprint calculation in ETSI TS 101 733 version 1.8.3 and version 2.2.1.
-			 * So we first check the message imprint according to 2.2.1 version and then if it fails get the message imprint
-			 * data for the 1.8.3 version message imprint calculation. 
-			 */
-			archiveTimestampData = getArchiveTimestampDataV2(timestampToken);
-			if (!timestampToken.matchData(archiveTimestampData, true)) {
-				archiveTimestampData = getArchiveTimestampDataV2(timestampToken, false);
-			}
-			break;
-		case CAdES_V3:
-			archiveTimestampData = getArchiveTimestampDataV3(timestampToken);
-			break;
-		default:
-			throw new DSSException("Unsupported ArchiveTimestampType " + archiveTimestampType);
-		}
-		return archiveTimestampData;
-	}
-
-	private byte[] getArchiveTimestampDataV3(final TimestampToken timestampToken) throws DSSException {
-
-		final CadesLevelBaselineLTATimestampExtractor timestampExtractor = new CadesLevelBaselineLTATimestampExtractor(this);
-		final Attribute atsHashIndexAttribute = timestampExtractor.getVerifiedAtsHashIndex(signerInformation, timestampToken);
-
-		final DigestAlgorithm signedDataDigestAlgorithm = timestampToken.getSignedDataDigestAlgo();
-		byte[] originalDocumentDigest = DSSUtils.digest(signedDataDigestAlgorithm, getOriginalDocument());
-		byte[] archiveTimestampData = timestampExtractor.getArchiveTimestampDataV3(signerInformation, atsHashIndexAttribute, originalDocumentDigest);
-		return archiveTimestampData;
-	}
-
 	public DSSDocument getOriginalDocument() throws DSSException {
-		final CMSTypedData signedContent = cmsSignedData.getSignedContent();
-		if (signedContent != null) {
-			return new InMemoryDocument(CMSUtils.getSignedContent(signedContent));
-		} else if (Utils.collectionSize(detachedContents) == 1) {
-			return detachedContents.get(0);
-		} else {
-			throw new DSSException("Only enveloping and detached signatures are supported");
-		}
-	}
-
-	/**
-	 * This method handles the archive-timestamp-v2
-	 * The value of the messageImprint field within TimeStampToken shall be a
-	 * hash of the concatenation of: • the encapContentInfo element of the
-	 * SignedData sequence; • any external content being protected by the
-	 * signature, if the eContent element of the encapContentInfo is omitted; •
-	 * the Certificates and crls elements of the SignedData sequence, when
-	 * present; and • all data elements in the SignerInfo sequence including all
-	 * signed and unsigned attributes.
-	 * NOTE 1: An alternative archiveTimestamp attribute, identified by an
-	 * object identifier { iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1)
-	 * pkcs-9(9) smime(16) id-aa(2) 27, is defined in prior versions of TS 101
-	 * 733. The archiveTimestamp attribute, defined in versions of TS 101 733
-	 * prior to 1.5.1, is not compatible with the attribute defined in the
-	 * present document. The archiveTimestamp attribute, defined in versions
-	 * 1.5.1 to 1.6.3 of TS 101 733, is compatible with the present document if
-	 * the content is internal to encapContentInfo. Unless the version of TS 101
-	 * 733 employed by the signing party is known by all recipients, use of the
-	 * archiveTimestamp attribute defined in prior versions of TS 101 733 is
-	 * deprecated. NOTE 2: Counter signatures held as countersignature
-	 * attributes do not require independent archive time-stamps as they are
-	 * protected by the archive time-stamp against the containing SignedData
-	 * structure. NOTE 3: Unless DER is used throughout, it is recommended that
-	 * the binary encoding of the ASN.1 structures being time-stamped be
-	 * preserved when being archived to ensure that the recalculation of the
-	 * data hash is consistent. NOTE 4: The hash is calculated over the
-	 * concatenated data elements as received /stored including the Type and
-	 * Length encoding. NOTE 5: Whilst it is recommended that unsigned
-	 * attributes be DER encoded, it cannot generally be so guaranteed except by
-	 * prior arrangement.
-	 *
-	 * @param timestampToken
-	 * @return
-	 * @throws DSSException
-	 */
-	private byte[] getArchiveTimestampDataV2(TimestampToken timestampToken) throws DSSException {
-		return getArchiveTimestampDataV2(timestampToken, true);
-	}
-	
-	/**
-	 * There is a difference in ETSI TS 101 733 version 1.8.3 and version 2.2.1 in archive-timestamp-v2 hash calculation.
-	 * In the 1.8.3 version the calculation did not include the tag and the length octets of the unsigned attributes set.
-	 * The hash calculation is described in Annex K in both versions of ETSI TS 101 733.
-	 * The differences are in TableK.3: Signed Data in rows 22 and 23.
-	 * However, there is a note in 2.2.1 version (Annex K, Table K.3: SignedData, Note 3) that says:
-	 * "A previous version of CAdES did not include the tag and length octets of this SET OF type
-	 * of unsignedAttrs element in this annex, which contradicted the normative section. To maximize
-	 * interoperability, it is recommended to simultaneously compute the two hash values
-	 * (including and not including the tag and length octets of SET OF type) and to test
-	 * the value of the timestamp against both."
-	 * The includeUnsignedAttrsTagAndLength parameter decides whether the tag and length octets are included.
-	 * 
-	 * According to RFC 5652 it is possible to use DER or BER encoding for SignedData structure.
-	 * The exception is the signed attributes attribute and authenticated attributes attributes which
-	 * have to be DER encoded. 
-	 * 
-	 * @param timestampToken
-	 * @param includeUnsignedAttrsTagAndLength
-	 * @return
-	 * @throws DSSException
-	 */
-	private byte[] getArchiveTimestampDataV2(TimestampToken timestampToken, boolean includeUnsignedAttrsTagAndLength) throws DSSException {
-
-		try (ByteArrayOutputStream data = new ByteArrayOutputStream(); ByteArrayOutputStream signerByteArrayOutputStream = new ByteArrayOutputStream()) {
-
-			final ContentInfo contentInfo = cmsSignedData.toASN1Structure();
-			final SignedData signedData = SignedData.getInstance(contentInfo.getContent());
-			final ContentInfo content = signedData.getEncapContentInfo();
-			byte[] contentInfoBytes;
-			if (content.getContent() instanceof BEROctetString) {
-				contentInfoBytes = DSSASN1Utils.getBEREncoded(content);
-			} else {
-				contentInfoBytes = DSSASN1Utils.getDEREncoded(content);
-			}
-			if (LOG.isTraceEnabled()) {
-				LOG.trace("Content Info: {}", DSSUtils.toHex(contentInfoBytes));
-			}
-			data.write(contentInfoBytes);
-			if (isDetachedSignature()) {
-				/*
-				 * Detached signatures have either no encapContentInfo in signedData, or it
-				 * exists but has no eContent
-				 */
-				byte[] originalDocumentBinaries = DSSUtils.toByteArray(getOriginalDocument());
-				if (Utils.isArrayNotEmpty(originalDocumentBinaries)) {
-					data.write(originalDocumentBinaries);
-				} else {
-					throw new DSSException("Signature is detached and no original data provided.");
-				}
-			}
-			
-			final ASN1Set certificates = signedData.getCertificates();
-			if (certificates != null) {
-
-				byte[] certificatesBytes = null;
-				/*
-				 * In order to calculate correct message imprint it is important
-				 * to use the correct encoding.
-				 */
-				if (certificates instanceof BERSet) {
-					certificatesBytes = new BERTaggedObject(false, 0, new BERSequence(certificates.toArray())).getEncoded();
-				} else {
-					certificatesBytes = new DERTaggedObject(false, 0, new DERSequence(certificates.toArray())).getEncoded();
-				}
-				
-				if (LOG.isTraceEnabled()) {
-					LOG.trace("Certificates: {}", DSSUtils.toHex(certificatesBytes));
-				}
-				data.write(certificatesBytes);
-			}
-			if (signedData.getCRLs() != null) {
-
-				final byte[] crlBytes = signedData.getCRLs().getEncoded();
-				if (LOG.isTraceEnabled()) {
-					LOG.trace("CRLs: {}", DSSUtils.toHex(crlBytes));
-				}
-				data.write(crlBytes);
-			}
-
-			final SignerInfo signerInfo = signerInformation.toASN1Structure();
-			final ASN1Set unauthenticatedAttributes = signerInfo.getUnauthenticatedAttributes();
-			final ASN1Sequence filteredUnauthenticatedAttributes = filterUnauthenticatedAttributes(unauthenticatedAttributes, timestampToken);
-			final ASN1Sequence asn1Object = getSignerInfoEncoded(signerInfo, filteredUnauthenticatedAttributes, includeUnsignedAttrsTagAndLength);
-			for (int ii = 0; ii < asn1Object.size(); ii++) {
-				final byte[] signerInfoBytes = DSSASN1Utils.getDEREncoded(asn1Object.getObjectAt(ii).toASN1Primitive());
-				signerByteArrayOutputStream.write(signerInfoBytes);
-			}
-			final byte[] signerInfoBytes = signerByteArrayOutputStream.toByteArray();
-			if (LOG.isTraceEnabled()) {
-				LOG.trace("SignerInfoBytes: {}", DSSUtils.toHex(signerInfoBytes));
-			}
-			data.write(signerInfoBytes);
-
-			final byte[] result = data.toByteArray();
-			return result;
-
-		} catch (IOException e) {
-			throw new DSSException(e);
-		} catch (Exception e) {
-			// When error in computing or in format the algorithm just
-			// continues.
-			LOG.warn("When error in computing or in format the algorithm just continue...", e);
-			return DSSUtils.EMPTY_BYTE_ARRAY;
-		}
-	}
-
-	/**
-	 * Copied from org.bouncycastle.asn1.cms.SignerInfo#toASN1Object() and
-	 * adapted to be able to use the custom unauthenticatedAttributes
-	 * 
-	 * There is a difference in ETSI TS 101 733 version 1.8.3 and version 2.2.1 in archive-timestamp-v2 hash calculation.
-	 * In the 1.8.3 version the calculation did not include the tag and the length octets of the unsigned attributes set.
-	 * The hash calculation is described in Annex K in both versions of ETSI TS 101 733.
-	 * The differences are in TableK.3: Signed Data in rows 22 and 23.
-	 * However, there is a note in 2.2.1 version (Annex K, Table K.3: SignedData, Note 3) that says:
-	 * "A previous version of CAdES did not include the tag and length octets of this SET OF type
-	 * of unsignedAttrs element in this annex, which contradicted the normative section. To maximize
-	 * interoperability, it is recommended to imultaneously compute the two hash values
-	 * (including and not including the tag and length octets of SET OF type) and to test
-	 * the value of the timestamp against both."
-	 * The includeUnsignedAttrsTagAndLength parameter decides whether the tag and length octets are included.
-	 *
-	 * @param signerInfo
-	 * @param signerInfo
-	 * @param unauthenticatedAttributes
-	 * @param includeUnsignedAttrsTagAndLength
-	 * @return
-	 */
-	private ASN1Sequence getSignerInfoEncoded(final SignerInfo signerInfo, final ASN1Sequence unauthenticatedAttributes, final boolean includeUnsignedAttrsTagAndLength) {
-
-		ASN1EncodableVector v = new ASN1EncodableVector();
-
-		v.add(signerInfo.getVersion());
-		v.add(signerInfo.getSID());
-		v.add(signerInfo.getDigestAlgorithm());
-
-		final DERTaggedObject signedAttributes = CMSUtils.getDERSignedAttributes(signerInformation);
-		if (signedAttributes != null) {
-			v.add(signedAttributes);
-		}
-
-		v.add(signerInfo.getDigestEncryptionAlgorithm());
-		v.add(signerInfo.getEncryptedDigest());
-
-		if (unauthenticatedAttributes != null) {
-			if (includeUnsignedAttrsTagAndLength) {
-				v.add(new DERTaggedObject(false, 1, unauthenticatedAttributes));
-			} else {
-				for (int i = 0; i < unauthenticatedAttributes.size(); i++) {
-					v.add(unauthenticatedAttributes.getObjectAt(i));
-				}
-			}
-		}
-		
-
-		return new DERSequence(v);
-	}
-
-	/**
-	 * Remove any archive-timestamp-v2/3 attribute added after the
-	 * timestampToken
-	 */
-	private ASN1Sequence filterUnauthenticatedAttributes(ASN1Set unauthenticatedAttributes, TimestampToken timestampToken) {
-		ASN1EncodableVector result = new ASN1EncodableVector();
-		for (int ii = 0; ii < unauthenticatedAttributes.size(); ii++) {
-
-			final Attribute attribute = Attribute.getInstance(unauthenticatedAttributes.getObjectAt(ii));
-			final ASN1ObjectIdentifier attrType = attribute.getAttrType();
-			if (id_aa_ets_archiveTimestampV2.equals(attrType) || id_aa_ets_archiveTimestampV3.equals(attrType)) {
-				try {
-
-					TimeStampToken token = new TimeStampToken(
-							new CMSSignedData(DSSASN1Utils.getDEREncoded(attribute.getAttrValues().getObjectAt(0).toASN1Primitive())));
-					if (!token.getTimeStampInfo().getGenTime().before(timestampToken.getGenerationTime())) {
-						continue;
-					}
-				} catch (Exception e) {
-					throw new DSSException(e);
-				}
-			}
-			result.add(unauthenticatedAttributes.getObjectAt(ii));
-		}
-		return new DERSequence(result);
+		return CMSUtils.getOriginalDocument(cmsSignedData, detachedContents);
 	}
 	
 	@Override
@@ -1402,14 +1062,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			return null;
 		}
 		return signedAttributes.get(oid);
-	}
-
-	private Attribute getUnsignedAttribute(ASN1ObjectIdentifier oid) {
-		final AttributeTable unsignedAttributes = signerInformation.getUnsignedAttributes();
-		if (unsignedAttributes == null) {
-			return null;
-		}
-		return unsignedAttributes.get(oid);
 	}
 
 	@Override

@@ -25,6 +25,7 @@ import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certVal
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationValues;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -87,7 +88,10 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	private DigestAlgorithm hashIndexDigestAlgorithm;
 
 	private final Set<ASN1ObjectIdentifier> excludedAttributesFromAtsHashIndex = new HashSet<ASN1ObjectIdentifier>();
-	private CAdESSignature cadesSignature;
+	
+	private final CMSSignedData cmsSignedData;
+	private final Collection<CertificateToken> signatureCertificates;
+	private final Collection<CertificateToken> timestampCertificates;
 
 	/**
 	 * This is the default constructor for the {@code CadesLevelBaselineLTATimestampExtractor}.
@@ -96,11 +100,17 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 *            {@code CAdESSignature} related to the archive timestamp
 	 */
 	public CadesLevelBaselineLTATimestampExtractor(final CAdESSignature cadesSignature) {
-
-		this.cadesSignature = cadesSignature;
+		this(cadesSignature.getCmsSignedData(), cadesSignature.getCertificates(), cadesSignature.getTimestampSourceCertificates());
 		/* these attribute are validated elsewhere */
 		excludedAttributesFromAtsHashIndex.add(id_aa_ets_certValues);
 		excludedAttributesFromAtsHashIndex.add(id_aa_ets_revocationValues);
+	}
+	
+	public CadesLevelBaselineLTATimestampExtractor(final CMSSignedData cmsSignedData, final Collection<CertificateToken> signatureCertificates, 
+			final Collection<CertificateToken> timestampCertificates) {
+		this.cmsSignedData = cmsSignedData;
+		this.signatureCertificates = signatureCertificates;
+		this.timestampCertificates = timestampCertificates;
 	}
 
 	/**
@@ -170,7 +180,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 
 		final ASN1EncodableVector certificatesHashIndexVector = new ASN1EncodableVector();
 
-		final List<CertificateToken> certificateTokens = cadesSignature.getCertificates();
+		final Collection<CertificateToken> certificateTokens = signatureCertificates;
 		for (final CertificateToken certificateToken : certificateTokens) {
 			final byte[] digest = certificateToken.getDigest(hashIndexDigestAlgorithm);
 			if (LOG.isDebugEnabled()) {
@@ -200,7 +210,8 @@ public class CadesLevelBaselineLTATimestampExtractor {
 			certHashesList.addAll(Collections.list(certHashes.getObjects()));
 		}
 
-		final List<CertificateToken> certificates = cadesSignature.getCertificatesWithinSignatureAndTimestamps();
+		final List<CertificateToken> certificates = new ArrayList<CertificateToken>(signatureCertificates);
+		certificates.addAll(timestampCertificates);
 		for (final CertificateToken certificateToken : certificates) {
 			final byte[] digest = certificateToken.getDigest(hashIndexDigestAlgorithm);
 			final DEROctetString derOctetStringDigest = new DEROctetString(digest);
@@ -233,7 +244,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 
 		final ASN1EncodableVector crlsHashIndex = new ASN1EncodableVector();
 
-		final SignedData signedData = SignedData.getInstance(cadesSignature.getCmsSignedData().toASN1Structure().getContent());
+		final SignedData signedData = SignedData.getInstance(cmsSignedData.toASN1Structure().getContent());
 		final ASN1Set signedDataCRLs = signedData.getCRLs();
 		if (signedDataCRLs != null) {
 			final Enumeration<ASN1Encodable> crLs = signedDataCRLs.getObjects();
@@ -275,7 +286,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 			crlHashesList.addAll(Collections.list(crlHashes.getObjects()));
 		}
 
-		final SignedData signedData = SignedData.getInstance(cadesSignature.getCmsSignedData().toASN1Structure().getContent());
+		final SignedData signedData = SignedData.getInstance(cmsSignedData.toASN1Structure().getContent());
 		final ASN1Set signedDataCRLs = signedData.getCRLs();
 		if (signedDataCRLs != null) {
 			final Enumeration<ASN1Encodable> crLs = signedDataCRLs.getObjects();
@@ -310,13 +321,6 @@ public class CadesLevelBaselineLTATimestampExtractor {
 				LOG.debug("CRL/OCSP not present in timestamp {}", DSSUtils.toHex(derOctetStringDigest.getOctets()));
 			}
 		}
-	}
-
-	private boolean handleCrlEncoded(List<DEROctetString> crlHashesList, byte[] crlHolderEncoded) {
-		final byte[] digest = DSSUtils.digest(hashIndexDigestAlgorithm, crlHolderEncoded);
-		final DEROctetString derOctetStringDigest = new DEROctetString(digest);
-
-		return crlHashesList.remove(derOctetStringDigest);
 	}
 
 	/**
@@ -513,10 +517,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		}
 	}
 
-	public byte[] getArchiveTimestampDataV3(SignerInformation signerInformation, Attribute atsHashIndexAttribute, byte[] originalDocumentDigest)
-	{
-
-		final CMSSignedData cmsSignedData = cadesSignature.getCmsSignedData();
+	public byte[] getArchiveTimestampDataV3(SignerInformation signerInformation, Attribute atsHashIndexAttribute, byte[] originalDocumentDigest) {
 		final byte[] encodedContentType = getEncodedContentType(cmsSignedData); // OID
 		final byte[] signedDataDigest = originalDocumentDigest;
 		final byte[] encodedFields = getSignedFields(signerInformation);

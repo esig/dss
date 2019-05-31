@@ -35,6 +35,7 @@ import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureIdentifier;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -181,6 +182,13 @@ public interface AdvancedSignature extends Serializable {
 	 * @return {@code SignatureOCSPSource}
 	 */
 	SignatureOCSPSource getOCSPSource();
+	
+	/**
+	 * Gets a Signature Timestamp source which contains ALL timestamps embedded in the signature.
+	 *
+	 * @return {@code SignatureTimestampSource}
+	 */
+	SignatureTimestampSource getTimestampSource();
 
 	/**
 	 * Gets an object containing the signing certificate or information indicating why it is impossible to extract it
@@ -306,28 +314,11 @@ public interface AdvancedSignature extends Serializable {
 	List<TimestampToken> getContentTimestamps();
 
 	/**
-	 * Returns the content timestamp data (timestamped or to be).
-	 *
-	 * @param timestampToken
-	 * @return {@code byte} array representing the canonicalized data to be timestamped
-	 */
-	byte[] getContentTimestampData(final TimestampToken timestampToken);
-
-	/**
 	 * Returns the signature timestamps
 	 *
 	 * @return {@code List} of {@code TimestampToken}
 	 */
 	List<TimestampToken> getSignatureTimestamps();
-
-	/**
-	 * Returns the data (signature value) that was timestamped by the SignatureTimeStamp for the given timestamp.
-	 *
-	 * @param timestampToken
-	 * @param canonicalizationMethod
-	 * @return {@code byte} array representing the canonicalized data to be timestamped
-	 */
-	byte[] getSignatureTimestampData(final TimestampToken timestampToken, String canonicalizationMethod);
 
 	/**
 	 * Returns the time-stamp which is placed on the digital signature (XAdES example: ds:SignatureValue element), the
@@ -339,33 +330,12 @@ public interface AdvancedSignature extends Serializable {
 	List<TimestampToken> getTimestampsX1();
 
 	/**
-	 * Returns the data to be time-stamped. The data contains the digital signature (XAdES example: ds:SignatureValue
-	 * element), the signature time-stamp(s) present in the AdES-T form, the certification path references and the
-	 * revocation status references.
-	 *
-	 * @param timestampToken
-	 *            {@code TimestampToken} or null during the creation process
-	 * @param canonicalizationMethod
-	 *            canonicalization method
-	 * @return {@code byte} array representing the canonicalized data to be timestamped
-	 */
-	byte[] getTimestampX1Data(final TimestampToken timestampToken, String canonicalizationMethod);
-
-	/**
 	 * Returns the time-stamp which is computed over the concatenation of CompleteCertificateRefs and
 	 * CompleteRevocationRefs elements (XAdES example).
 	 *
 	 * @return {@code List} of {@code TimestampToken}
 	 */
 	List<TimestampToken> getTimestampsX2();
-
-	/**
-	 * Returns the data to be time-stamped which contains the concatenation of CompleteCertificateRefs and
-	 * CompleteRevocationRefs elements (XAdES example).
-	 *
-	 * @return {@code byte} array representing the canonicalized data to be timestamped
-	 */
-	byte[] getTimestampX2Data(final TimestampToken timestampToken, String canonicalizationMethod);
 
 	/**
 	 * Returns the archive Timestamps
@@ -380,17 +350,6 @@ public interface AdvancedSignature extends Serializable {
 	 * @return {@code List} of {@code TimestampToken}s
 	 */
 	List<TimestampToken> getDocumentTimestamps();
-	
-	/**
-	 * Archive timestamp seals the data of the signature in a specific order. We need to retrieve the data for each
-	 * timestamp.
-	 *
-	 * @param timestampToken
-	 *            null when adding a new archive timestamp
-	 * @param canonicalizationMethod
-	 * @return {@code byte} array representing the canonicalized data to be timestamped
-	 */
-	byte[] getArchiveTimestampData(final TimestampToken timestampToken, String canonicalizationMethod);
 
 	/**
 	 * This method allows to add an external timestamp. The given timestamp must be processed before.
@@ -468,8 +427,6 @@ public interface AdvancedSignature extends Serializable {
 	SignatureLevel[] getSignatureLevels();
 
 	void prepareTimestamps(ValidationContext validationContext);
-
-	void validateTimestamps();
 
 	/**
 	 * This method allows the structure validation of the signature.

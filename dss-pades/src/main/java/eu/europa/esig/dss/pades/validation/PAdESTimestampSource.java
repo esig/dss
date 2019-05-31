@@ -26,8 +26,7 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 	
 	private final PdfSignatureInfo pdfSignatureInfo;
 	
-	public PAdESTimestampSource(final SignerInformation signerInformation, final CertificatePool certificatePool, 
-			final PdfSignatureInfo pdfSignatureInfo) {
+	public PAdESTimestampSource(final PdfSignatureInfo pdfSignatureInfo, final SignerInformation signerInformation, final CertificatePool certificatePool) {
 		super(signerInformation, certificatePool);
 		this.pdfSignatureInfo = pdfSignatureInfo;
 	}
@@ -35,12 +34,19 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 	@Override
 	public List<TimestampToken> getDocumentTimestamps() {
 		if (signatureTimestamps == null || archiveTimestamps == null) {
-			makeTimestampTokens();
+			createAndValidate();
 		}
 		List<TimestampToken> documentTimestamps = new ArrayList<TimestampToken>();
 		documentTimestamps.addAll(signatureTimestamps);
 		documentTimestamps.addAll(archiveTimestamps);
 		return documentTimestamps;
+	}
+
+	@Override
+	protected PAdESTimestampDataBuilder getTimestampDataBuilder() {
+		PAdESTimestampDataBuilder padesTimestampDataBuilder = new PAdESTimestampDataBuilder(pdfSignatureInfo, signerInformation, detachedDocuments);
+		padesTimestampDataBuilder.setSignatureTimestamps(getSignatureTimestamps());
+		return padesTimestampDataBuilder;
 	}
 
 	@Override

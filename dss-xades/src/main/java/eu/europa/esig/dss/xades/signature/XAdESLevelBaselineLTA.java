@@ -122,7 +122,7 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 	private void incorporateArchiveTimestamp() {
 		final TimestampParameters archiveTimestampParameters = params.getArchiveTimestampParameters();
 		final String canonicalizationMethod = archiveTimestampParameters.getCanonicalizationMethod();
-		final byte[] archiveTimestampData = xadesSignature.getArchiveTimestampData(null, canonicalizationMethod);
+		final byte[] archiveTimestampData = xadesSignature.getTimestampSource().getArchiveTimestampData(canonicalizationMethod);
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Data to be signed by the ArchiveTimestamp:");
 			LOG.trace(new String(archiveTimestampData));

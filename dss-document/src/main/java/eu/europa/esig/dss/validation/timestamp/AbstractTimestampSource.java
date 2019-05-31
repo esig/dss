@@ -3,7 +3,11 @@ package eu.europa.esig.dss.validation.timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,7 +98,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	@Override
 	public List<TimestampToken> getContentTimestamps() {
 		if (contentTimestamps == null) {
-			makeTimestampTokens();
+			createAndValidate();
 		}
 		return contentTimestamps;
 	}
@@ -102,7 +106,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	@Override
 	public List<TimestampToken> getSignatureTimestamps() {
 		if (signatureTimestamps == null) {
-			makeTimestampTokens();
+			createAndValidate();
 		}
 		return signatureTimestamps;
 	}
@@ -110,7 +114,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	@Override
 	public List<TimestampToken> getTimestampsX1() {
 		if (sigAndRefsTimestamps == null) {
-			makeTimestampTokens();
+			createAndValidate();
 		}
 		return sigAndRefsTimestamps;
 	}
@@ -118,7 +122,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	@Override
 	public List<TimestampToken> getTimestampsX2() {
 		if (refsOnlyTimestamps == null) {
-			makeTimestampTokens();
+			createAndValidate();
 		}
 		return refsOnlyTimestamps;
 	}
@@ -126,7 +130,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	@Override
 	public List<TimestampToken> getArchiveTimestamps() {
 		if (archiveTimestamps == null) {
-			makeTimestampTokens();
+			createAndValidate();
 		}
 		return archiveTimestamps;
 	}
@@ -137,11 +141,20 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 		return Collections.emptyList();
 	}
 	
+	/**
+	 * Creates and validates all timestamps
+	 * Must be called only once
+	 */
+	protected void createAndValidate() {
+		makeTimestampTokens();
+		validateTimestamps();
+	}
+	
 	@Override
 	public void addExternalTimestamp(TimestampToken timestamp) {
 		// if timestamp tokens not created yet
 		if (archiveTimestamps == null) {
-			makeTimestampTokens();
+			createAndValidate();;
 		}
 		switch (timestamp.getTimeStampType()) {
 			case CONTENT_TIMESTAMP:
@@ -656,5 +669,104 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	 * @param unsignedAttribute {@link SignatureAttribute} to get archive timestamp type for
 	 */
 	protected abstract ArchiveTimestampType getArchiveTimestampType(SignatureAttribute unsignedAttribute);
+	
+	/**
+	 * Validates list of all timestamps present in the source
+	 */
+	protected void validateTimestamps() {
+		
+		TimestampDataBuilder timestampDataBuilder = getTimestampDataBuilder();
+
+		/*
+		 * This validates the content-timestamp tokensToProcess present in the signature.
+		 */
+		for (final TimestampToken timestampToken : getContentTimestamps()) {
+			final byte[] timestampBytes = timestampDataBuilder.getContentTimestampData(timestampToken);
+			timestampToken.matchData(timestampBytes);
+		}
+
+		/*
+		 * This validates the signature timestamp tokensToProcess present in the signature.
+		 */
+		for (final TimestampToken timestampToken : getSignatureTimestamps()) {
+			final byte[] timestampBytes = timestampDataBuilder.getSignatureTimestampData(timestampToken);
+			timestampToken.matchData(timestampBytes);
+		}
+
+		/*
+		 * This validates the SigAndRefs timestamp tokensToProcess present in the signature.
+		 */
+		for (final TimestampToken timestampToken : getTimestampsX1()) {
+			final byte[] timestampBytes = timestampDataBuilder.getTimestampX1Data(timestampToken);
+			timestampToken.matchData(timestampBytes);
+		}
+
+		/*
+		 * This validates the RefsOnly timestamp tokensToProcess present in the signature.
+		 */
+		for (final TimestampToken timestampToken : getTimestampsX2()) {
+			final byte[] timestampBytes = timestampDataBuilder.getTimestampX2Data(timestampToken);
+			timestampToken.matchData(timestampBytes);
+		}
+
+		/*
+		 * This validates the archive timestamp tokensToProcess present in the signature.
+		 */
+		for (final TimestampToken timestampToken : getArchiveTimestamps()) {
+			if (!timestampToken.isProcessed()) {
+				final byte[] timestampData = timestampDataBuilder.getArchiveTimestampData(timestampToken);
+				timestampToken.matchData(timestampData);
+			}
+		}
+		
+	}
+	
+	/**
+	 * Returns a related {@link TimestampDataBuilder}
+	 * @return {@link TimestampDataBuilder}
+	 */
+	protected abstract TimestampDataBuilder getTimestampDataBuilder();
+
+	@Override
+	public Map<String, List<CertificateToken>> getCertificateMapWithinTimestamps(boolean skipLastArchiveTimestamp) {
+		// We can have more than one chain in the signature : signing certificate, ocsp
+		// responder, ...
+		Map<String, List<CertificateToken>> certificates = new HashMap<String, List<CertificateToken>>();
+		
+		int timestampCounter = 0;
+		for (final TimestampToken timestampToken : getContentTimestamps()) {
+			certificates.put(timestampToken.getTimeStampType().name() + timestampCounter++, timestampToken.getCertificates());
+		}
+		for (final TimestampToken timestampToken : getTimestampsX1()) {
+			certificates.put(timestampToken.getTimeStampType().name() + timestampCounter++, timestampToken.getCertificates());
+		}
+		for (final TimestampToken timestampToken : getTimestampsX2()) {
+			certificates.put(timestampToken.getTimeStampType().name() + timestampCounter++, timestampToken.getCertificates());
+		}
+		for (final TimestampToken timestampToken : getSignatureTimestamps()) {
+			certificates.put(timestampToken.getTimeStampType().name() + timestampCounter++, timestampToken.getCertificates());
+		}
+
+		List<TimestampToken> archiveTsps = getArchiveTimestamps();
+		int archiveTimestampsSize = archiveTsps.size();
+		if (skipLastArchiveTimestamp && archiveTimestampsSize > 0) {
+			archiveTimestampsSize--;
+		}
+		for (int ii = 0; ii < archiveTimestampsSize; ii++) {
+			TimestampToken timestampToken = archiveTsps.get(ii);
+			certificates.put(timestampToken.getTimeStampType().name() + timestampCounter++, timestampToken.getCertificates());
+		}
+
+		return certificates;
+	}
+	
+	@Override
+	public Set<CertificateToken> getCertificates() {
+		Set<CertificateToken> certificates = new HashSet<CertificateToken>();
+		for (List<CertificateToken> certificateTokens : getCertificateMapWithinTimestamps(false).values()) {
+			certificates.addAll(certificateTokens);
+		}
+		return certificates;
+	}
 
 }

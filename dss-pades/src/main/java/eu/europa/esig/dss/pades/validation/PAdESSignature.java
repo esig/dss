@@ -42,17 +42,14 @@ import eu.europa.esig.dss.SignatureIdentifier;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.TokenIdentifier;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
-import eu.europa.esig.dss.pdf.PdfDocTimestampInfo;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureInfo;
-import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertifiedRole;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -160,12 +157,13 @@ public class PAdESSignature extends CAdESSignature {
 	 */
 	@Override
 	protected void initializeSignatureTimestampSource() {
-		PAdESTimestampSource padesTimestampSource = new PAdESTimestampSource(signerInformation, certPool, pdfSignatureInfo);
+		PAdESTimestampSource padesTimestampSource = new PAdESTimestampSource(pdfSignatureInfo, signerInformation, certPool);
 		padesTimestampSource.setCertificateSource(getCertificateSource());
 		padesTimestampSource.setCRLSource(getCRLSource());
 		padesTimestampSource.setOCSPSource(getOCSPSource());
 		padesTimestampSource.setSignatureDSSId(getId());
 		padesTimestampSource.setSignatureScopes(getSignatureScopes());
+		padesTimestampSource.setDetachedDocuments(detachedContents);
 		signatureTimestampSource = padesTimestampSource;
 	}
 
@@ -226,54 +224,11 @@ public class PAdESSignature extends CAdESSignature {
 		}
 	}
 
-	@Override
-	public byte[] getSignatureTimestampData(final TimestampToken timestampToken, String canonicalizationMethod) {
-		for (final PdfSignatureOrDocTimestampInfo signatureInfo : pdfSignatureInfo.getOuterSignatures()) {
-			if (signatureInfo instanceof PdfDocTimestampInfo) {
-				PdfDocTimestampInfo pdfTimestampInfo = (PdfDocTimestampInfo) signatureInfo;
-				if (pdfTimestampInfo.getTimestampToken().equals(timestampToken)) {
-					final byte[] signedDocumentBytes = pdfTimestampInfo.getSignedDocumentBytes();
-					return signedDocumentBytes;
-				}
-			}
-		}
-		if (super.getSignatureTimestamps().contains(timestampToken)) {
-			return super.getSignatureTimestampData(timestampToken, null);
-		}
-		throw new DSSException("Timestamp Data not found");
-	}
-
-	@Override
-	public byte[] getTimestampX1Data(final TimestampToken timestampToken, String canonicalizationMethod) {
-		/* Not applicable for PAdES */
-		return null;
-	}
-
-	@Override
-	public byte[] getTimestampX2Data(final TimestampToken timestampToken, String canonicalizationMethod) {
-		/* Not applicable for PAdES */
-		return null;
-	}
-
 	/**
 	 * @return the CAdES signature underlying this PAdES signature
 	 */
 	public CAdESSignature getCAdESSignature() {
 		return pdfSignatureInfo.getCades();
-	}
-
-	@Override
-	public byte[] getArchiveTimestampData(TimestampToken timestampToken, String canonicalizationMethod) {
-		for (final PdfSignatureOrDocTimestampInfo signatureInfo : pdfSignatureInfo.getOuterSignatures()) {
-			if (signatureInfo instanceof PdfDocTimestampInfo) {
-				PdfDocTimestampInfo pdfTimestampInfo = (PdfDocTimestampInfo) signatureInfo;
-				if (pdfTimestampInfo.getTimestampToken().equals(timestampToken)) {
-					final byte[] signedDocumentBytes = pdfTimestampInfo.getSignedDocumentBytes();
-					return signedDocumentBytes;
-				}
-			}
-		}
-		throw new DSSException("Timestamp Data not found");
 	}
 	
 	@Override

@@ -1,6 +1,10 @@
 package eu.europa.esig.dss.validation.timestamp;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import eu.europa.esig.dss.x509.CertificateToken;
 
 public interface SignatureTimestampSource {
 	
@@ -23,5 +27,19 @@ public interface SignatureTimestampSource {
 	 *            the timestamp token
 	 */
 	void addExternalTimestamp(TimestampToken timestamp);
+	
+	/**
+	 * Returns a map between all found timestamps and their certificates
+	 * @param skipLastArchiveTimestamp
+	 *            in case if the last Archive Timestamp is not needed to be returned
+	 * @return a map between timestamp-id and list of related {@link CertificateToken}s
+	 */
+	Map<String, List<CertificateToken>> getCertificateMapWithinTimestamps(boolean skipLastArchiveTimestamp);
+	
+	/**
+	 * Returns a set of all found certificates in the timestamps
+	 * @return a set of {@link CertificateToken}s
+	 */
+	Set<CertificateToken> getCertificates();
 
 }

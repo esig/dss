@@ -26,9 +26,11 @@ import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCert
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1InputStream;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.DEROutputStream;
 import org.bouncycastle.asn1.DERSequence;
@@ -57,8 +59,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSASN1Utils;
+import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
@@ -285,6 +289,48 @@ public final class CMSUtils {
 			attribute = new Attribute(id_aa_signingCertificateV2, new DERSet(signingCertificateV2));
 		}
 		signedAttributes.add(attribute);
+	}
+
+	/**
+	 * Returns an unsigned attribute by its given {@code oid}
+	 * @param signerInformation {@link SignerInformation} to get attribute from
+	 * @param oid {@link ASN1ObjectIdentifier} of the target attribute
+	 * @return {@link Attribute}
+	 */
+	public static Attribute getUnsignedAttribute(SignerInformation signerInformation, ASN1ObjectIdentifier oid) {
+		final AttributeTable unsignedAttributes = signerInformation.getUnsignedAttributes();
+		if (unsignedAttributes == null) {
+			return null;
+		}
+		return unsignedAttributes.get(oid);
+	}
+
+	/**
+	 * Checks if the signature is detached
+	 * @param cmsSignedData {@link CMSSignedData}
+	 * @return TRUE if the signature is detached, FALSE otherwise
+	 */
+	public static boolean isDetachedSignature(CMSSignedData cmsSignedData) {
+		return cmsSignedData.isDetachedSignature();
+	}
+	
+	/**
+	 * Returns the original document from the provided {@code cmsSignedData}
+	 * @param cmsSignedData {@link CMSSignedData} to get original document from
+	 * @return original {@link DSSDocument}
+	 */
+	public static DSSDocument getOriginalDocument(CMSSignedData cmsSignedData, List<DSSDocument> detachedDocuments) {
+		CMSTypedData signedContent = null;
+		if (cmsSignedData != null) {
+			signedContent = cmsSignedData.getSignedContent();
+		}
+		if (signedContent != null) {
+			return new InMemoryDocument(CMSUtils.getSignedContent(signedContent));
+		} else if (Utils.collectionSize(detachedDocuments) == 1) {
+			return detachedDocuments.get(0);
+		} else {
+			throw new DSSException("Only enveloping and detached signatures are supported");
+		}
 	}
 
 }

@@ -367,7 +367,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		for (final AdvancedSignature signature : allSignatureList) {
 			signature.checkSigningCertificate();
 			signature.checkSignatureIntegrity();
-			signature.validateTimestamps();
 			if (structuralValidation) {
 				signature.validateStructure();
 			}
