@@ -651,7 +651,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 		}
 	}
 	
-	private void addTimestampedReferences(List<TimestampedReference> references, TimestampToken timestampedTimestamp) {
+	protected void addTimestampedReferences(List<TimestampedReference> references, TimestampToken timestampedTimestamp) {
 		for (TimestampedReference timestampedReference : timestampedTimestamp.getTimestampedReferences()) {
 			addReference(references, timestampedReference);
 		}

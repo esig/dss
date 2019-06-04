@@ -24,6 +24,7 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	
 	private List<CRLRef> completeRevocationRefsCRLs = new ArrayList<CRLRef>();
 	private List<CRLRef> attributeRevocationRefsCRLs = new ArrayList<CRLRef>();
+	private List<CRLRef> timestampRevocationRefsCRLs = new ArrayList<CRLRef>();
 
 	@Override
 	public List<CRLToken> getRevocationValuesTokens() {
@@ -57,11 +58,16 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	public List<CRLRef> getAttributeRevocationRefs() {
 		return attributeRevocationRefsCRLs;
 	}
+
+	public List<CRLRef> getTimestampRevocationRefs() {
+		return timestampRevocationRefsCRLs;
+	}
 	
 	public List<CRLRef> getAllCRLReferences() {
 		List<CRLRef> crlRefs = new ArrayList<CRLRef>();
 		crlRefs.addAll(getCompleteRevocationRefs());
 		crlRefs.addAll(getAttributeRevocationRefs());
+		crlRefs.addAll(getTimestampRevocationRefs());
 		return crlRefs;
 	}
 	
@@ -70,15 +76,31 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	}
 	
 	/**
-	 * Allows to fill all CRL missing revocation tokens from the given {@link SignatureCRLSource}
+	 * Allows to fill all CRL missing revocation values from the given {@code signatureCRLSource}
 	 * @param signatureCRLSource {@link SignatureCRLSource} to populate values from
 	 */
-	public void populateCRLRevocationTokenLists(SignatureCRLSource signatureCRLSource) {
-		Map<CRLBinaryIdentifier, List<CRLToken>> mapToPopulateValuesFrom = signatureCRLSource.getCRLTokenMap();
-		for (Entry<CRLBinaryIdentifier, List<CRLToken>> entry : mapToPopulateValuesFrom.entrySet()) {
+	public void populateCRLRevocationValues(SignatureCRLSource signatureCRLSource) {
+		for (Entry<CRLBinaryIdentifier, List<CRLToken>> entry : signatureCRLSource.getCRLTokenMap().entrySet()) {
 			for (CRLToken crlToken : entry.getValue()) {
 				storeCRLToken(entry.getKey(), crlToken);
 			}
+		}
+	}
+	
+	/**
+	 * Allows to add all CRL values from the given {@code signatureCRLSource}
+	 * @param signatureCRLSource {@link SignatureCRLSource}
+	 */
+	protected void addValuesFromInnerSource(SignatureCRLSource signatureCRLSource) {
+		populateCRLRevocationValues(signatureCRLSource);
+
+		for (CRLBinaryIdentifier crlBinary : signatureCRLSource.getAllCRLIdentifiers()) {
+			for (RevocationOrigin origin : crlBinary.getOrigins()) {
+				addCRLBinary(crlBinary, origin);
+			}
+		}
+		for (CRLRef crlRef : signatureCRLSource.getAllCRLReferences()) {
+			addReference(crlRef, crlRef.getLocation());
 		}
 	}
 	
@@ -128,6 +150,10 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 		case ATTRIBUTE_REVOCATION_REFS:
 			if (!attributeRevocationRefsCRLs.contains(crlRef)) {
 				attributeRevocationRefsCRLs.add(crlRef);
+			}
+		case TIMESTAMP_REVOCATION_REFS:
+			if (!timestampRevocationRefsCRLs.contains(crlRef)) {
+				timestampRevocationRefsCRLs.add(crlRef);
 			}
 		default:
 			break;

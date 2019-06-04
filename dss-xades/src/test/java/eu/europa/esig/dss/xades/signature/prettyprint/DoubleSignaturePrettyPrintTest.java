@@ -17,7 +17,6 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundRevocations;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRelatedCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
@@ -228,9 +227,8 @@ public class DoubleSignaturePrettyPrintTest extends PKIFactoryAccess {
 		assertNotNull(allFoundRevocationRefs);
 		assertEquals(0, allFoundRevocationRefs.size());
 		
-		XmlFoundRevocations foundRevocations = signatureWrapper.getFoundRevocations();
-		assertEquals(1, foundRevocations.getRelatedRevocations().size());
-		assertEquals(1, foundRevocations.getOrphanRevocations().size());
+		assertEquals(1, signatureWrapper.getRelatedRevocations().size());
+		assertEquals(1, signatureWrapper.getOrphanRevocations().size());
 		
 		List<XmlRelatedCertificate> foundCertificatesByLocation = signatureWrapper.getRelatedCertificatesByOrigin(CertificateOriginType.CERTIFICATE_VALUES);
 		assertNotNull(foundCertificatesByLocation);
@@ -240,10 +238,8 @@ public class DoubleSignaturePrettyPrintTest extends PKIFactoryAccess {
 		allFoundRevocationRefs = signature2Wrapper.getAllFoundRevocationRefs();
 		assertNotNull(allFoundRevocationRefs);
 		assertEquals(2, allFoundRevocationRefs.size());
-		foundRevocations = signature2Wrapper.getFoundRevocations();
-		assertNotNull(foundRevocations);
-		assertEquals(2, foundRevocations.getRelatedRevocations().size());
-		assertEquals(0, foundRevocations.getOrphanRevocations().size());
+		assertEquals(2, signature2Wrapper.getRelatedRevocations().size());
+		assertEquals(0, signature2Wrapper.getOrphanRevocations().size());
 		
 	}
 	

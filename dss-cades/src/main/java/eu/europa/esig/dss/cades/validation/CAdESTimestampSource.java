@@ -43,6 +43,7 @@ import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncapsulatedCertificateTokenIdentifier;
 import eu.europa.esig.dss.cades.signature.CadesLevelBaselineLTATimestampExtractor;
+import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.validation.timestamp.AbstractTimestampSource;
 import eu.europa.esig.dss.validation.timestamp.SignatureProperties;
 import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
@@ -54,6 +55,8 @@ import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.TimestampLocation;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.revocation.crl.CRLBinaryIdentifier;
+import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseIdentifier;
 
 public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute> {
@@ -289,6 +292,50 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 			return ArchiveTimestampType.CAdES_V3;
 		}
 		return ArchiveTimestampType.CAdES;
+	}
+	
+	@Override
+	protected void addTimestampedReferences(List<TimestampedReference> references, TimestampToken timestampedTimestamp) {
+		super.addTimestampedReferences(references, timestampedTimestamp);
+		
+		if (crlSource instanceof CAdESCRLSource) {
+			CAdESCRLSource cadesCRLSource = (CAdESCRLSource) crlSource;
+			CAdESTimeStampCRLSource timeStampCRLSource = cadesCRLSource.getTimeStampCRLSourceById(timestampedTimestamp.getDSSIdAsString());
+			for (CRLBinaryIdentifier crlBinary : timeStampCRLSource.getAllCRLIdentifiers()) {
+				TimestampedReference crlReference = new TimestampedReference(crlBinary.asXmlId(), TimestampedObjectType.REVOCATION);
+				addReference(references, crlReference);
+			}
+			for (CRLRef crlRef : timeStampCRLSource.getAllCRLReferences()) {
+				Digest digest = new Digest(crlRef.getDigestAlgorithm(), crlRef.getDigestValue());
+				CRLBinaryIdentifier crlBinaryIdentifier = crlSource.getIdentifier(digest);
+				if (crlBinaryIdentifier != null) {
+					TimestampedReference crlReference = new TimestampedReference(crlBinaryIdentifier.asXmlId(), TimestampedObjectType.REVOCATION);
+					addReference(references, crlReference);
+				} else {
+					orphanRevocationRefs.add(crlRef);
+				}
+			}
+		}
+		
+		if (ocspSource instanceof CAdESOCSPSource) {
+			CAdESOCSPSource cadesOCSPSource = (CAdESOCSPSource) ocspSource;
+			CAdESTimeStampOCSPSource timeStampOCSPSource = cadesOCSPSource.getTimeStampOCSPSourceById(timestampedTimestamp.getDSSIdAsString());
+			for (OCSPResponseIdentifier ocspResponse : timeStampOCSPSource.getAllOCSPIdentifiers()) {
+				TimestampedReference ocspReference = new TimestampedReference(ocspResponse.asXmlId(), TimestampedObjectType.REVOCATION);
+				addReference(references, ocspReference);
+			}
+			for (OCSPRef ocspRef : timeStampOCSPSource.getAllOCSPReferences()) {
+				Digest digest = new Digest(ocspRef.getDigestAlgorithm(), ocspRef.getDigestValue());
+				OCSPResponseIdentifier ocspResponseIdentifier = ocspSource.getIdentifier(digest);
+				if (ocspResponseIdentifier != null) {
+					TimestampedReference ocspReference = new TimestampedReference(ocspResponseIdentifier.asXmlId(), TimestampedObjectType.REVOCATION);
+					addReference(references, ocspReference);
+				} else {
+					orphanRevocationRefs.add(ocspRef);
+				}
+			}
+		}
+		
 	}
 
 }

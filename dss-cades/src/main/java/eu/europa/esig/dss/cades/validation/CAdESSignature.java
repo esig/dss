@@ -129,7 +129,6 @@ import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 /**
  * CAdES Signature class helper
  */
-
 public class CAdESSignature extends DefaultAdvancedSignature {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESSignature.class);
@@ -230,7 +229,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	public SignatureCRLSource getCRLSource() {
 		if (offlineCRLSource == null) {
 			try {
-				offlineCRLSource = new CAdESCRLSource(cmsSignedData, signerInformation);
+				offlineCRLSource = new CAdESCRLSource(cmsSignedData, CMSUtils.getUnsignedAttributes(signerInformation));
 			} catch (Exception e) {
 				// When error in computing or in format of the algorithm: just
 				// continues (will try to get online information)
@@ -243,7 +242,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public SignatureOCSPSource getOCSPSource() {
 		if (offlineOCSPSource == null) {
-			offlineOCSPSource = new CAdESOCSPSource(cmsSignedData, signerInformation);
+			offlineOCSPSource = new CAdESOCSPSource(cmsSignedData, CMSUtils.getUnsignedAttributes(signerInformation));
 		}
 		return offlineOCSPSource;
 	}

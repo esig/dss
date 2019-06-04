@@ -684,7 +684,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	
 	@Override
 	public void populateCRLTokenLists(SignatureCRLSource signatureCRLSource) {
-		offlineCRLSource.populateCRLRevocationTokenLists(signatureCRLSource);
+		offlineCRLSource.populateCRLRevocationValues(signatureCRLSource);
 	}
 	
 	@Override
@@ -912,6 +912,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 	
 	@Override
+	public List<CRLRef> getTimestampRevocationCRLReferences() {
+		return getCRLSource().getTimestampRevocationRefs();
+	}
+	
+	@Override
 	public List<OCSPRef> getCompleteRevocationOCSPReferences() {
 		return getOCSPSource().getCompleteRevocationRefs();
 	}
@@ -920,14 +925,21 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public List<OCSPRef> getAttributeRevocationOCSPReferences() {
 		return getOCSPSource().getAttributeRevocationRefs();
 	}
+
+	@Override
+	public List<OCSPRef> getTimestampRevocationOCSPReferences() {
+		return getOCSPSource().getTimestampRevocationRefs();
+	}
 	
 	@Override
 	public List<RevocationRef> getAllFoundRevocationRefs() {
 		List<RevocationRef> revocationRefs = new ArrayList<RevocationRef>();
 		revocationRefs.addAll(getCompleteRevocationCRLReferences());
 		revocationRefs.addAll(getAttributeRevocationCRLReferences());
+		revocationRefs.addAll(getTimestampRevocationCRLReferences());
 		revocationRefs.addAll(getCompleteRevocationOCSPReferences());
 		revocationRefs.addAll(getAttributeRevocationOCSPReferences());
+		revocationRefs.addAll(getTimestampRevocationOCSPReferences());
 		return revocationRefs;
 	}
 

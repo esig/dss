@@ -45,6 +45,7 @@ import javax.naming.ldap.Rdn;
 import javax.security.auth.x500.X500Principal;
 
 import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1GeneralizedTime;
 import org.bouncycastle.asn1.ASN1InputStream;
@@ -53,6 +54,7 @@ import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.ASN1String;
 import org.bouncycastle.asn1.BERTags;
 import org.bouncycastle.asn1.DERBitString;
@@ -64,6 +66,7 @@ import org.bouncycastle.asn1.DLSequence;
 import org.bouncycastle.asn1.DLSet;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
+import org.bouncycastle.asn1.cms.Attributes;
 import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.x500.AttributeTypeAndValue;
@@ -93,8 +96,10 @@ import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
+import org.bouncycastle.tsp.TSPException;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -962,6 +967,76 @@ public final class DSSASN1Utils {
 			LOG.error("Unable to read the IssuerSerial object", e);
 			return null;
 		}
+	}
+	
+	/**
+	 * Returns {@link ASN1Encodable} for a given {@code oid} found in the {@code unsignedAttributes}
+	 * @param unsignedAttributes {@link AttributeTable} of a signature
+	 * @param oid target {@link ASN1ObjectIdentifier}
+	 * @return {@link ASN1Encodable}
+	 */
+	public static ASN1Encodable getAsn1Encodable(AttributeTable unsignedAttributes, ASN1ObjectIdentifier oid) {
+		final ASN1Set attrValues = getAsn1Atrribute(unsignedAttributes, oid);
+		if (attrValues == null || attrValues.size() <= 0) {
+			return null;
+		}
+		return attrValues.getObjectAt(0);
+	}
+	
+	/**
+	 * Returns an Attribute values for a given {@code oid} found in the {@code unsignedAttributes}
+	 * @param unsignedAttributes {@link AttributeTable} of a signature
+	 * @param oid target {@link ASN1ObjectIdentifier}
+	 * @return {@link ASN1Set}
+	 */
+	public static ASN1Set getAsn1Atrribute(AttributeTable unsignedAttributes, ASN1ObjectIdentifier oid) {
+		final Attribute attribute = unsignedAttributes.get(oid);
+		if (attribute == null) {
+			return null;
+		}
+		return attribute.getAttrValues();
+	}
+	
+	/**
+	 * Returns an array of {@link Attribute}s for a given {@code oid} found in the {@code unsignedAttributes}
+	 * @param unsignedAttributes {@link AttributeTable} of a signature
+	 * @param oid target {@link ASN1ObjectIdentifier}
+	 * @return {@link Attribute}s array
+	 */
+	public static Attribute[] getAsn1Atrributes(AttributeTable unsignedAttributes, ASN1ObjectIdentifier oid) {
+		ASN1EncodableVector encodableVector = unsignedAttributes.getAll(oid);
+		if (encodableVector == null) {
+			return null;
+		}
+		Attributes attributes = new Attributes(encodableVector);
+		return attributes.getAttributes();
+	}
+	
+	/**
+	 * Finds {@link TimeStampToken}s with a given {@code oid}
+	 * @param unsignedAttributes {@link AttributeTable} to obtain timestamps from
+	 * @param oid {@link ASN1ObjectIdentifier} to collect
+	 */
+	public static List<TimeStampToken> findTimeStampTokens(AttributeTable unsignedAttributes, ASN1ObjectIdentifier oid) {
+		List<TimeStampToken> timeStamps = new ArrayList<TimeStampToken>();
+		Attribute[] signatureTimeStamps = getAsn1Atrributes(unsignedAttributes, oid);
+		if (signatureTimeStamps != null) {
+			for (final Attribute attribute : signatureTimeStamps) {
+				try {
+					ASN1Encodable value = attribute.getAttrValues().getObjectAt(0);
+					if (value instanceof DEROctetString) {
+						LOG.warn("Illegal content for timestamp (OID : {}) : OCTET STRING is not allowed !", oid.toString());
+					} else {
+						ASN1Primitive asn1Primitive = value.toASN1Primitive();
+						CMSSignedData timeStampCMSSignedData = new CMSSignedData(asn1Primitive.getEncoded());
+						timeStamps.add(new TimeStampToken(timeStampCMSSignedData));
+					}
+				} catch (IOException | CMSException | TSPException e) {
+					LOG.warn("The given TimeStampToken cannot be created! Reason: [{}]", e.getMessage());
+				}
+			}
+		}
+		return timeStamps;
 	}
 
 }

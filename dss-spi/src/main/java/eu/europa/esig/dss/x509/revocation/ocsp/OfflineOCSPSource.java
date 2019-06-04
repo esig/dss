@@ -161,5 +161,19 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 		}
 		return null;
 	}
+	
+	/**
+	 * Adds the provided {@code ocspResponse} to the list
+	 * @param ocspResponse {@link OCSPResponseIdentifier} to add
+	 * @param origin {@link RevocationOrigin} of the {@code ocspResponse}
+	 */
+	protected void addOCSPResponse(OCSPResponseIdentifier ocspResponse, RevocationOrigin origin) {
+		if (ocspResponses.containsKey(ocspResponse.asXmlId())) {
+			OCSPResponseIdentifier storedOCSPResponse = ocspResponses.get(ocspResponse.asXmlId());
+			storedOCSPResponse.addOrigin(origin);
+		} else {
+			ocspResponses.put(ocspResponse.asXmlId(), ocspResponse);
+		}
+	}
 
 }

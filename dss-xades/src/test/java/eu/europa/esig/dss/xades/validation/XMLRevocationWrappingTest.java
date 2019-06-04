@@ -14,7 +14,6 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundRevocations;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRelatedRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
@@ -138,9 +137,7 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 		// reports.print();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		XmlFoundRevocations foundRevocations = signature.getFoundRevocations();
-		assertNotNull(foundRevocations);
-		assertEquals(4, foundRevocations.getRelatedRevocations().size());
+		assertEquals(4, signature.getRelatedRevocations().size());
 		assertEquals(4, signature.getFoundRevocationRefsByLocation(XmlRevocationRefLocation.COMPLETE_REVOCATION_REFS).size());
 		assertEquals(0, signature.getFoundRevocationRefsByLocation(XmlRevocationRefLocation.ATTRIBUTE_REVOCATION_REFS).size());
 		int ocspResponses = 0;
@@ -189,13 +186,11 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 		// reports.print();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		XmlFoundRevocations foundRevocations = signature.getFoundRevocations();
-		assertNotNull(foundRevocations);
-		assertEquals(1, foundRevocations.getRelatedRevocations().size());
+		assertEquals(1, signature.getRelatedRevocations().size());
 		assertEquals(0, signature.getOrphanRevocations().size());
 		assertEquals(1, signature.getFoundRevocationRefsByLocation(XmlRevocationRefLocation.COMPLETE_REVOCATION_REFS).size());
 		assertEquals(0, signature.getFoundRevocationRefsByLocation(XmlRevocationRefLocation.ATTRIBUTE_REVOCATION_REFS).size());
-		XmlRevocationRef revocationRef = foundRevocations.getRelatedRevocations().get(0).getRevocationRefs().get(0);
+		XmlRevocationRef revocationRef = signature.getRelatedRevocations().get(0).getRevocationRefs().get(0);
 		assertNotNull(revocationRef.getLocation());
 		assertNotNull(revocationRef.getDigestAlgoAndValue());
 		assertNotNull(revocationRef.getProducedAt());

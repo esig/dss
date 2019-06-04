@@ -42,6 +42,7 @@ import org.bouncycastle.tsp.TimeStampTokenInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.CertificateRef;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
@@ -49,6 +50,7 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.TimestampCertificateSource;
 import eu.europa.esig.dss.x509.ArchiveTimestampType;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -407,6 +409,15 @@ public class TimestampToken extends Token {
 	 */
 	public List<CertificateToken> getCertificates() {
 		return certificateSource.getCertificates();
+	}
+	
+	/**
+	 * Returns the list of contained certificate references.
+	 *
+	 * @return {@code List} of {@code CertificateRef}
+	 */
+	public List<CertificateRef> getCertificateRefs() {
+		return certificateSource.getAllCertificateRefs();
 	}
 
 	public AttributeTable getUnsignedAttributes() {

@@ -18,12 +18,10 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.timestamp;
+package eu.europa.esig.dss.validation;
 
 import org.bouncycastle.tsp.TimeStampToken;
 
-import eu.europa.esig.dss.DSSASN1Utils;
-import eu.europa.esig.dss.validation.CAdESCertificateSource;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 
@@ -31,7 +29,7 @@ import eu.europa.esig.dss.x509.CertificateSourceType;
 public class TimestampCertificateSource extends CAdESCertificateSource {
 
 	public TimestampCertificateSource(TimeStampToken timestampToken, CertificatePool certPool) {
-		super(timestampToken.toCMSSignedData(), DSSASN1Utils.getFirstSignerInformation(timestampToken.toCMSSignedData()), certPool);
+		super(timestampToken.toCMSSignedData(), certPool);
 	}
 
 	@Override

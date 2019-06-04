@@ -35,6 +35,7 @@ import eu.europa.esig.dss.Digest;
  * This source of certificates handles any non trusted certificates. (ex: intermediate certificates used in building
  * certification chain)
  */
+@SuppressWarnings("serial")
 public class CommonCertificateSource implements CertificateSource {
 
 	/**
@@ -69,6 +70,10 @@ public class CommonCertificateSource implements CertificateSource {
 	@Override
 	public CertificateSourceType getCertificateSourceType() {
 		return CertificateSourceType.OTHER;
+	}
+	
+	protected CertificatePool getCertificatePool() {
+		return certPool;
 	}
 
 	/**

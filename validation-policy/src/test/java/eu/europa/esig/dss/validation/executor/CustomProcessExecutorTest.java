@@ -35,8 +35,6 @@ import java.util.List;
 import javax.xml.bind.JAXB;
 
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPDFSignatureDictionary;
@@ -54,8 +52,6 @@ import eu.europa.esig.dss.validation.reports.SimpleReport;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 
 public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
-
-	private static final Logger LOG = LoggerFactory.getLogger(CustomProcessExecutorTest.class);
 
 	@Test
 	public void skipRevocationDataValidation() throws Exception {
@@ -1067,13 +1063,28 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		validateBestSigningTimes(reports);
 	}
 
+	@Test
+	public void testDSS1469() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/dss-1469-diag-data.xml");
+		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		assertNotNull(diagnosticData);
+
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+	}
+
 	@Test(expected = NullPointerException.class)
 	public void diagDataNotNull() throws Exception {
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(null);
 		executor.setValidationPolicy(loadPolicyNoRevoc());
 		executor.setCurrentTime(new Date());
-
 		executor.execute();
 	}
 

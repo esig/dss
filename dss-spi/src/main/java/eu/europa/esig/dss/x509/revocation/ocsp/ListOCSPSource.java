@@ -69,5 +69,11 @@ public class ListOCSPSource extends SignatureOCSPSource {
 				}
 			}
 		}
+		if (offlineOCSPSource instanceof SignatureOCSPSource) {
+			SignatureOCSPSource signatureOCSPSource = (SignatureOCSPSource) offlineOCSPSource;
+			for (OCSPRef ocspRef : signatureOCSPSource.getAllOCSPReferences()) {
+				addReference(ocspRef, ocspRef.getLocation());
+			}
+		}
 	}
 }

@@ -24,6 +24,7 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	
 	private List<OCSPRef> completeRevocationRefsOCSPs = new ArrayList<OCSPRef>();
 	private List<OCSPRef> attributeRevocationRefsOCSPs = new ArrayList<OCSPRef>();
+	private List<OCSPRef> timestampRevocationRefsOCSPs = new ArrayList<OCSPRef>();
 
 	@Override
 	public List<OCSPToken> getRevocationValuesTokens() {
@@ -57,6 +58,10 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	public List<OCSPRef> getAttributeRevocationRefs() {
 		return attributeRevocationRefsOCSPs;
 	}
+
+	public List<OCSPRef> getTimestampRevocationRefs() {
+		return timestampRevocationRefsOCSPs;
+	}
 	
 	public List<OCSPRef> getAllOCSPReferences() {
 		List<OCSPRef> ocspRefs = new ArrayList<OCSPRef>();
@@ -74,9 +79,25 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	 * @param signatureOCSPSource {@link SignatureOCSPSource} to populate values from
 	 */
 	public void populateOCSPRevocationTokenLists(SignatureOCSPSource signatureOCSPSource) {
-		Map<OCSPResponseIdentifier, OCSPToken> mapToPopulateFrom = signatureOCSPSource.getOCSPTokenMap();
-		for (Entry<OCSPResponseIdentifier, OCSPToken> entry : mapToPopulateFrom.entrySet()) {
+		for (Entry<OCSPResponseIdentifier, OCSPToken> entry : signatureOCSPSource.getOCSPTokenMap().entrySet()) {
 			storeOCSPToken(entry);
+		}
+	}
+	
+	/**
+	 * Allows to add all OCSP values from the given {@code signatureOCSPSource}
+	 * @param signatureOCSPSource {@link SignatureOCSPSource}
+	 */
+	protected void addValuesFromInnerSource(SignatureOCSPSource signatureOCSPSource) {
+		populateOCSPRevocationTokenLists(signatureOCSPSource);
+
+		for (OCSPResponseIdentifier ocspResponse : signatureOCSPSource.getAllOCSPIdentifiers()) {
+			for (RevocationOrigin origin : ocspResponse.getOrigins()) {
+				addOCSPResponse(ocspResponse, origin);
+			}
+		}
+		for (OCSPRef ocspRef : signatureOCSPSource.getAllOCSPReferences()) {
+			addReference(ocspRef, ocspRef.getLocation());
 		}
 	}
 	
@@ -121,6 +142,10 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 			case ATTRIBUTE_REVOCATION_REFS:
 				if (!attributeRevocationRefsOCSPs.contains(ocspRef)) {
 					attributeRevocationRefsOCSPs.add(ocspRef);
+				}
+			case TIMESTAMP_REVOCATION_REFS:
+				if (!timestampRevocationRefsOCSPs.contains(ocspRef)) {
+					timestampRevocationRefsOCSPs.add(ocspRef);
 				}
 			default:
 				break;

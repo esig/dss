@@ -58,6 +58,11 @@ public enum RevocationOrigin {
 	ATTRIBUTE_REVOCATION_REFS,
 
 	/**
+	 * The revocation ref was embedded in the timestamp attribute (used in CAdES)
+	 */
+	TIMESTAMP_REVOCATION_REFS,
+
+	/**
 	 * The revocation data was provided by the user or online OCSP/CRL
 	 */
 	EXTERNAL,

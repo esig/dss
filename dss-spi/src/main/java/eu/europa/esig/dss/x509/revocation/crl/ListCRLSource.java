@@ -56,7 +56,13 @@ public class ListCRLSource extends SignatureCRLSource {
 	public void addAll(final OfflineCRLSource offlineCRLSource) {
 		for (CRLBinaryIdentifier crlBinary : offlineCRLSource.getContainedX509CRLs()) {
 			for (RevocationOrigin origin : crlBinary.getOrigins()) {
-				super.addCRLBinary(crlBinary, origin);
+				addCRLBinary(crlBinary, origin);
+			}
+		}
+		if (offlineCRLSource instanceof SignatureCRLSource) {
+			SignatureCRLSource signatureCRLSource = (SignatureCRLSource) offlineCRLSource;
+			for (CRLRef crlRef : signatureCRLSource.getAllCRLReferences()) {
+				addReference(crlRef, crlRef.getLocation());
 			}
 		}
 	}

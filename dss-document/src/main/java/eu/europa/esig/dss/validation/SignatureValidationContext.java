@@ -487,9 +487,7 @@ public class SignatureValidationContext implements ValidationContext {
 			}
 		}
 		
-
 		if (revocations.isEmpty() || isRevocationDataRefreshNeeded(certToken, revocations)) {
-
 			if (checkRevocationForUntrustedChains || containsTrustAnchor(certChain)) {
 				CertificateToken trustAnchor = (CertificateToken) getFirstTrustAnchor(certChain);
 
@@ -511,7 +509,6 @@ public class SignatureValidationContext implements ValidationContext {
 				LOG.warn("External revocation check is skipped for untrusted certificate : {}", certToken.getDSSIdAsString());
 			}
 		}
-
 		if (revocations.isEmpty()) {
 			LOG.warn("No revocation found for certificate {}", certToken.getDSSIdAsString());
 		}
@@ -614,7 +611,7 @@ public class SignatureValidationContext implements ValidationContext {
 	public boolean isAllTimestampValid() {
 		for (TimestampToken timestampToken : processedTimestamps) {
 			if (!timestampToken.isSignatureValid() || !timestampToken.isMessageImprintDataFound() || !timestampToken.isMessageImprintDataIntact()) {
-				LOG.debug("Invalid timestamp detected : {}", timestampToken.getDSSIdAsString());
+				LOG.warn("Invalid timestamp detected : {}", timestampToken.getDSSIdAsString());
 				return false;
 			}
 		}

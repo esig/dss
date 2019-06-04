@@ -252,8 +252,7 @@ public class CAdESTimestampDataBuilder implements TimestampDataBuilder {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		} catch (Exception e) {
-			// When error in computing or in format the algorithm just
-			// continues.
+			// When error in computing or in format the algorithm just continues.
 			LOG.warn("When error in computing or in format the algorithm just continue...", e);
 			return DSSUtils.EMPTY_BYTE_ARRAY;
 		}

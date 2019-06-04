@@ -40,6 +40,7 @@ import eu.europa.esig.dss.x509.CertificateToken;
  * CertificateSource that will retrieve the certificate from a PAdES Signature
  *
  */
+@SuppressWarnings("serial")
 public class PAdESCertificateSource extends CAdESCertificateSource {
 
 	private final PdfDssDict dssDictionary;

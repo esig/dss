@@ -668,7 +668,7 @@ public class DiagnosticData {
 		} else if (originType != null) {
 			revocationSet = signature.getRelatedRevocationsByOrigin(originType);
 		} else {
-			revocationSet = new HashSet<XmlRelatedRevocation>(signature.getFoundRevocations().getRelatedRevocations());
+			revocationSet = new HashSet<XmlRelatedRevocation>(signature.getRelatedRevocations());
 		}
 
 		List<RevocationWrapper> revocations = new ArrayList<RevocationWrapper>();

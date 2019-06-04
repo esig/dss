@@ -28,9 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.CertificateRef;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Digest;
@@ -43,9 +40,8 @@ import eu.europa.esig.dss.utils.Utils;
  * wrapped certificates.
  *
  */
+@SuppressWarnings("serial")
 public abstract class SignatureCertificateSource extends CommonCertificateSource {
-
-	private static final Logger LOG = LoggerFactory.getLogger(SignatureCertificateSource.class);
 	
 	/**
 	 * Contains a list of all found {@link CertificateRef}s

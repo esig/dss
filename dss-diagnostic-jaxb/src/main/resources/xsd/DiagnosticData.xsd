@@ -791,6 +791,7 @@
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="COMPLETE_REVOCATION_REFS" />
 			<xs:enumeration value="ATTRIBUTE_REVOCATION_REFS" />
+			<xs:enumeration value="TIMESTAMP_REVOCATION_REFS" />
 		</xs:restriction>
 	</xs:simpleType>
 	

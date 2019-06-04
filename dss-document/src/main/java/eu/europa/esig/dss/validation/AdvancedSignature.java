@@ -558,6 +558,13 @@ public interface AdvancedSignature extends Serializable {
 	List<CRLRef> getAttributeRevocationCRLReferences();
 	
 	/**
+	 * Retrieves a list of all {@link CRLRef}s present in a timestamp element
+	 * NOTE: Applicable only for CAdES revocation source
+	 * @return list of {@link CRLRef}s
+	 */
+	List<CRLRef> getTimestampRevocationCRLReferences();
+	
+	/**
 	 * Retrieves a list of all {@link OCSPRef}s present in 'CompleteRevocationRefs' element
 	 * NOTE: Applicable only for XAdES and CAdES revocation sources
 	 * @return list of {@link OCSPRef}s
@@ -570,6 +577,13 @@ public interface AdvancedSignature extends Serializable {
 	 * @return list of {@link OCSPRef}s
 	 */
 	List<OCSPRef> getAttributeRevocationOCSPReferences();
+	
+	/**
+	 * Retrieves a list of all {@link OCSPRef}s present in a timestamp element
+	 * NOTE: Applicable only for CAdES revocation source
+	 * @return list of {@link OCSPRef}s
+	 */
+	List<OCSPRef> getTimestampRevocationOCSPReferences();
 	
 	/**
 	 * Returns a list of all {@link EncapsulatedRevocationTokenIdentifier}s found in CRL and OCSP sources

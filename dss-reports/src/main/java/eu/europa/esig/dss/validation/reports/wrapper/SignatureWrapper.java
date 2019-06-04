@@ -37,7 +37,6 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundCertificates;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundRevocation;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundRevocations;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundTimestamp;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlOrphanCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlOrphanRevocation;
@@ -518,12 +517,19 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return signature.getFoundCertificates().getOrphanCertificates();
 	}
 	
-	public XmlFoundRevocations getFoundRevocations() {
-		return signature.getFoundRevocations();
+	public List<XmlFoundRevocation> getFoundRevocations() {
+		List<XmlFoundRevocation> foundRevocations = new ArrayList<XmlFoundRevocation>();
+		foundRevocations.addAll(getRelatedRevocations());
+		foundRevocations.addAll(getOrphanRevocations());
+		return foundRevocations;
+	}
+	
+	public List<XmlRelatedRevocation> getRelatedRevocations() {
+		return signature.getFoundRevocations().getRelatedRevocations();
 	}
 	
 	public List<XmlOrphanRevocation> getOrphanRevocations() {
-		return getFoundRevocations().getOrphanRevocations();
+		return signature.getFoundRevocations().getOrphanRevocations();
 	}
 	
 	public List<XmlRevocationRef> getAllFoundRevocationRefs() {
@@ -533,11 +539,11 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 	
 	public List<XmlRevocationRef> getAllRelatedRevocationRefs() {
-		return getRevocationRefsFromListOfRevocations(getFoundRevocations().getRelatedRevocations());
+		return getRevocationRefsFromListOfRevocations(getRelatedRevocations());
 	}
 	
 	public List<XmlRevocationRef> getAllOrphanRevocationRefs() {
-		return getRevocationRefsFromListOfRevocations(getFoundRevocations().getOrphanRevocations());
+		return getRevocationRefsFromListOfRevocations(getOrphanRevocations());
 	}
 	
 	private <T extends XmlFoundRevocation> List<XmlRevocationRef> getRevocationRefsFromListOfRevocations(Collection<T> foundRevocations) {
@@ -561,11 +567,11 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 	
 	public Set<XmlRelatedRevocation> getRelatedRevocationsByOrigin(XmlRevocationOrigin originType) {
-		return filterRevocationsByOrigin(getFoundRevocations().getRelatedRevocations(), originType);
+		return filterRevocationsByOrigin(getRelatedRevocations(), originType);
 	}
 	
 	public Set<XmlOrphanRevocation> getOrphanRevocationsByOrigin(XmlRevocationOrigin originType) {
-		return filterRevocationsByOrigin(getFoundRevocations().getOrphanRevocations(), originType);
+		return filterRevocationsByOrigin(getOrphanRevocations(), originType);
 	}
 	
 	private <T extends XmlFoundRevocation> Set<T> filterRevocationsByOrigin(List<T> revocations, XmlRevocationOrigin originType) {
@@ -581,11 +587,11 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 	
 	public Set<XmlRelatedRevocation> getRelatedRevocationsByType(RevocationType type) {
-		return filterRevocationsByType(getFoundRevocations().getRelatedRevocations(), type);
+		return filterRevocationsByType(getRelatedRevocations(), type);
 	}
 	
 	public Set<XmlOrphanRevocation> getOrphanRevocationsByType(RevocationType type) {
-		return filterRevocationsByType(getFoundRevocations().getOrphanRevocations(), type);
+		return filterRevocationsByType(getOrphanRevocations(), type);
 	}
 	
 	public <T extends XmlFoundRevocation> Set<T> filterRevocationsByType(List<T> revocations, RevocationType type) {
@@ -606,13 +612,12 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	 */
 	public List<String> getRevocationIds() {
 		List<String> revocationIds = new ArrayList<String>();
-		XmlFoundRevocations foundRevocations = getFoundRevocations();
-		if (foundRevocations != null) {
-			for (XmlRelatedRevocation revocationRef : foundRevocations.getRelatedRevocations()) {
-				revocationIds.add(revocationRef.getRevocation().getId());
-			}
-			for (XmlOrphanRevocation revocationRef : foundRevocations.getOrphanRevocations()) {
-				revocationIds.add(revocationRef.getToken().getId());
+		List<XmlFoundRevocation> foundRevocations = getFoundRevocations();
+		for (XmlFoundRevocation foundRevocation : foundRevocations) {
+			if (foundRevocation instanceof XmlRelatedRevocation) {
+				revocationIds.add(((XmlRelatedRevocation)foundRevocation).getRevocation().getId());
+			} else {
+				revocationIds.add(((XmlOrphanRevocation)foundRevocation).getToken().getId());
 			}
 		}
 		return revocationIds;
