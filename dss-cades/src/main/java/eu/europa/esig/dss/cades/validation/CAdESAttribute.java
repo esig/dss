@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.cades.validation;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.bouncycastle.asn1.ASN1Encodable;
@@ -10,9 +11,11 @@ import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.cms.Attribute;
+import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.ISignatureAttribute;
 
@@ -72,6 +75,26 @@ public class CAdESAttribute implements ISignatureAttribute {
 	 */
 	public ASN1Encodable getASN1Object() {
 		return attribute.getAttrValues().getObjectAt(0);
+	}
+	
+	/**
+	 * Returns a TimeStampToken if possible
+	 * @return {@link TimeStampToken}
+	 */
+	public TimeStampToken toTimeStampToken() {
+		return DSSASN1Utils.getTimeStampToken(attribute);
+	}
+	
+	/**
+	 * Returns generation time in case of a timestamp
+	 * @return generation {@link Date}
+	 */
+	public Date getTimeStampGenerationTime() {
+		TimeStampToken timeStampToken = toTimeStampToken();
+		if (timeStampToken != null) {
+			return timeStampToken.getTimeStampInfo().getGenTime();
+		}
+		return null;
 	}
 	
 	@Override

@@ -11,8 +11,10 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlAbstractToken;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedObject;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
@@ -25,10 +27,10 @@ import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 import eu.europa.esig.dss.x509.TimestampType;
 
-public class DSS1469Test {
+public class CAdESLTALevelExtendedTest {
 	
 	@Test
-	public void test() {
+	public void dss1469test() {
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-1469/cadesLTAwithATv2andATv3.sig");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
@@ -66,7 +68,7 @@ public class DSS1469Test {
 	}
 
 	@Test
-	public void testExpired() {
+	public void dss1469testExpired() {
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-1469/cadesLTAwithATv2expired.p7s");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
@@ -102,6 +104,45 @@ public class DSS1469Test {
 			assertTrue(timestamp.isMessageImprintDataIntact());
 		}
 		assertEquals(1, archiveTimestampCounter);
+	}
+	
+	@Test
+	public void dss1670test() {
+		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-1670/signatureExtendedTwoLTA.p7s");
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
+		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		DSSDocument detachedContent = new FileDocument("src/test/resources/validation/dss-1670/screenshot.png");
+		validator.setDetachedContents(Arrays.asList(detachedContent));
+		Reports reports = validator.validateDocument();
+		assertNotNull(reports);
+		
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		
+		List<TimestampWrapper> timestampList = signature.getTimestampList();
+		assertNotNull(timestampList);
+		assertEquals(3, timestampList.size());
+		
+		int timestamedTimestampsCounter = 0;
+		for (TimestampWrapper timestamp : timestampList) {
+			assertTrue(timestamp.isMessageImprintDataFound());
+			assertTrue(timestamp.isMessageImprintDataIntact());
+			
+			List<XmlTimestampedObject> timestampedObjects = timestamp.getTimestampedObjects();
+			assertNotNull(timestampedObjects);
+			assertTrue(timestampedObjects.size() > 0);
+			
+			for (XmlTimestampedObject timestampedObject : timestampedObjects) {
+				XmlAbstractToken token = timestampedObject.getToken();
+				if (token instanceof XmlTimestamp) {
+					XmlTimestamp timestampedTimestamp = (XmlTimestamp) token;
+					assertNotNull(timestampedTimestamp);
+					assertTrue(timestampedTimestamp.getProductionTime().before(timestamp.getProductionTime()));
+					timestamedTimestampsCounter++;
+				}
+			}
+		}
+		assertEquals(3, timestamedTimestampsCounter);
 	}
 
 }

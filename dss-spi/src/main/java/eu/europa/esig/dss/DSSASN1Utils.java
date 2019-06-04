@@ -1022,21 +1022,34 @@ public final class DSSASN1Utils {
 		Attribute[] signatureTimeStamps = getAsn1Atrributes(unsignedAttributes, oid);
 		if (signatureTimeStamps != null) {
 			for (final Attribute attribute : signatureTimeStamps) {
-				try {
-					ASN1Encodable value = attribute.getAttrValues().getObjectAt(0);
-					if (value instanceof DEROctetString) {
-						LOG.warn("Illegal content for timestamp (OID : {}) : OCTET STRING is not allowed !", oid.toString());
-					} else {
-						ASN1Primitive asn1Primitive = value.toASN1Primitive();
-						CMSSignedData timeStampCMSSignedData = new CMSSignedData(asn1Primitive.getEncoded());
-						timeStamps.add(new TimeStampToken(timeStampCMSSignedData));
-					}
-				} catch (IOException | CMSException | TSPException e) {
-					LOG.warn("The given TimeStampToken cannot be created! Reason: [{}]", e.getMessage());
+				TimeStampToken timeStampToken = getTimeStampToken(attribute);
+				if (timeStampToken != null) {
+					timeStamps.add(timeStampToken);
 				}
 			}
 		}
 		return timeStamps;
+	}
+	
+	/**
+	 * Creates a TimeStampToken from the provided {@code attribute}
+	 * @param attribute {@link Attribute} to generate {@link TimeStampToken} from
+	 * @return {@link TimeStampToken}
+	 */
+	public static TimeStampToken getTimeStampToken(Attribute attribute) {
+		try {
+			ASN1Encodable value = attribute.getAttrValues().getObjectAt(0);
+			if (value instanceof DEROctetString) {
+				LOG.warn("Illegal content for timestamp (OID : {}) : OCTET STRING is not allowed !", attribute.getAttrType().toString());
+			} else {
+				ASN1Primitive asn1Primitive = value.toASN1Primitive();
+				CMSSignedData timeStampCMSSignedData = new CMSSignedData(asn1Primitive.getEncoded());
+				return new TimeStampToken(timeStampCMSSignedData);
+			}
+		} catch (IOException | CMSException | TSPException e) {
+			LOG.warn("The given TimeStampToken cannot be created! Reason: [{}]", e.getMessage());
+		}
+		return null;
 	}
 
 }
