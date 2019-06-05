@@ -22,7 +22,6 @@ package eu.europa.esig.dss.validation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -54,6 +53,7 @@ import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.revocation.RevocationRef;
+import eu.europa.esig.dss.x509.revocation.RevocationSourceType;
 import eu.europa.esig.dss.x509.revocation.crl.CRLBinaryIdentifier;
 import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
@@ -152,11 +152,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 * Unique signature identifier
 	 */
 	protected SignatureIdentifier signatureIdentifier;
-	
-	/**
-	 * Contains a list of found {@link RevocationRef}s for each {@link RevocationToken}
-	 */
-	private Map<RevocationToken, List<RevocationRef>> revocationRefsMap;
 	
 	/**
 	 * Build and defines {@code signatureIdentifier} value
@@ -848,11 +843,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	@Override
 	public Set<RevocationToken> getAllRevocationTokens() {
 		Set<RevocationToken> allRevocations = new HashSet<RevocationToken>();
-		allRevocations.addAll(getRevocationValuesTokens());
-		allRevocations.addAll(getAttributeRevocationValuesTokens());
-		allRevocations.addAll(getTimestampRevocationValuesTokens());
-		allRevocations.addAll(getDSSDictionaryRevocationTokens());
-		allRevocations.addAll(getVRIDictionaryRevocationTokens());
+		allRevocations.addAll(getCRLSource().getAllCRLTokens());
+		allRevocations.addAll(getOCSPSource().getAllOCSPTokens());
 		return allRevocations;
 	}
 
@@ -948,47 +940,29 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	@Override
 	public List<RevocationToken> getCompleteRevocationTokens() {
-		List<RevocationRef> revocationRefs = new ArrayList<RevocationRef>();
-		revocationRefs.addAll(getCompleteRevocationCRLReferences());
-		revocationRefs.addAll(getCompleteRevocationOCSPReferences());
-		return findTokensFromRefs(revocationRefs);
+		List<RevocationToken> revocations = new ArrayList<RevocationToken>();
+		revocations.addAll(getCRLSource().findTokensFromRefs(getCRLSource().getCompleteRevocationRefs()));
+		revocations.addAll(getOCSPSource().findTokensFromRefs(getOCSPSource().getCompleteRevocationRefs()));
+		return revocations;
 	}
 
 	@Override
 	public List<RevocationToken> getAttributeRevocationTokens() {
-		List<RevocationRef> revocationRefs = new ArrayList<RevocationRef>();
-		revocationRefs.addAll(getAttributeRevocationCRLReferences());
-		revocationRefs.addAll(getAttributeRevocationOCSPReferences());
-		return findTokensFromRefs(revocationRefs);
-	}
-	
-	private List<RevocationToken> findTokensFromRefs(List<RevocationRef> revocationRefs) {
-		if (Utils.isMapEmpty(revocationRefsMap)) {
-			collectRevocationRefsMap();
-		}
-		List<RevocationToken> tokensFromRefs = new ArrayList<RevocationToken>();
-		for (Entry<RevocationToken, List<RevocationRef>> revocationMapEntry : revocationRefsMap.entrySet()) {
-			for (RevocationRef tokenRevocationRef : revocationMapEntry.getValue()) {
-				if (revocationRefs.contains(tokenRevocationRef)) {
-					tokensFromRefs.add(revocationMapEntry.getKey());
-					break;
-				}
-			}
-		}
-		return tokensFromRefs;
+		List<RevocationToken> revocations = new ArrayList<RevocationToken>();
+		revocations.addAll(getCRLSource().findTokensFromRefs(getCRLSource().getAttributeRevocationRefs()));
+		revocations.addAll(getOCSPSource().findTokensFromRefs(getOCSPSource().getAttributeRevocationRefs()));
+		return revocations;
 	}
 	
 	@Override
 	public List<RevocationRef> findRefsForRevocationToken(RevocationToken revocationToken) {
-		if (Utils.isMapEmpty(revocationRefsMap)) {
-			collectRevocationRefsMap();
-		}
-		List<RevocationRef> revocationRefs = revocationRefsMap.get(revocationToken);
-		if (revocationRefs != null) {
-			return revocationRefs;
+		List<RevocationRef> revocationRefs = new ArrayList<RevocationRef>();
+		if (RevocationSourceType.CRL.equals(revocationToken.getRevocationSourceType())) {
+			revocationRefs.addAll(getCRLSource().findRefsForRevocationToken((CRLToken)revocationToken));
 		} else {
-			return Collections.emptyList();
+			revocationRefs.addAll(getOCSPSource().findRefsForRevocationToken((OCSPToken)revocationToken));
 		}
+		return revocationRefs;
 	}
 	
 	@Override
@@ -1000,41 +974,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 			revocationRefs.addAll(getOCSPSource().getReferencesForOCSPIdentifier((OCSPResponseIdentifier) revocationIdentifier));
 		}
 		return revocationRefs;
-	}
-	
-	private void collectRevocationRefsMap() {
-		revocationRefsMap = new HashMap<RevocationToken, List<RevocationRef>>();
-		for (RevocationToken revocationToken : getAllRevocationTokens()) {
-			for (RevocationRef reference : getAllFoundRevocationRefs()) {
-				if (reference.getDigestAlgorithm() != null && reference.getDigestValue() != null) { 
-					if (Arrays.equals(reference.getDigestValue(), revocationToken.getDigest(reference.getDigestAlgorithm()))) {
-						addReferenceToMap(revocationToken, reference);
-					}
-					continue;
-				} else if (reference instanceof OCSPRef) {
-					OCSPRef ocspRef = (OCSPRef) reference;
-					if (!ocspRef.getProducedAt().equals(revocationToken.getProductionDate())) {
-						continue;
-					}
-					if (ocspRef.getResponderId().getName() != null &&
-							ocspRef.getResponderId().getName().equals(revocationToken.getIssuerX500Principal().getName())) {
-						addReferenceToMap(revocationToken, reference);
-					} else if (ocspRef.getResponderId().getKey() != null && 
-							Arrays.equals(ocspRef.getResponderId().getKey(), 
-									DSSASN1Utils.computeSkiFromCertPublicKey(revocationToken.getPublicKeyOfTheSigner()))) {
-						addReferenceToMap(revocationToken, reference);
-					}
-				}
-			}
-		}
-	}
-	
-	private void addReferenceToMap(RevocationToken revocationToken, RevocationRef reference) {
-		if (revocationRefsMap.containsKey(revocationToken)) {
-			revocationRefsMap.get(revocationToken).add(reference);
-		} else {
-			revocationRefsMap.put(revocationToken, new ArrayList<RevocationRef>(Arrays.asList(reference)));
-		}
 	}
 	
 	@Override

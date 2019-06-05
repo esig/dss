@@ -2,12 +2,17 @@ package eu.europa.esig.dss.x509.revocation.ocsp;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
+import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.Digest;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.SignatureRevocationSource;
 import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
@@ -28,6 +33,11 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	private List<OCSPRef> timestampRevocationRefsOCSPs = new ArrayList<OCSPRef>();
 	
 	private List<OCSPRef> orphanRevocationRefsOCSPs;
+	
+	/**
+	 * Map that links {@link OCSPToken}s with related {@link OCSPRef}s
+	 */
+	private Map<OCSPToken, Set<OCSPRef>> revocationRefsMap;
 
 	@Override
 	public List<OCSPToken> getRevocationValuesTokens() {
@@ -66,10 +76,29 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 		return timestampRevocationRefsOCSPs;
 	}
 	
+	/**
+	 * Retrieves all found OCSP Tokens
+	 * @return list of {@link OCSPToken}s
+	 */
+	public List<OCSPToken> getAllOCSPTokens() {
+		List<OCSPToken> ocspTokens = new ArrayList<OCSPToken>();
+		ocspTokens.addAll(getRevocationValuesTokens());
+		ocspTokens.addAll(getAttributeRevocationValuesTokens());
+		ocspTokens.addAll(getTimestampRevocationValuesTokens());
+		ocspTokens.addAll(getDSSDictionaryTokens());
+		ocspTokens.addAll(getVRIDictionaryTokens());
+		return ocspTokens;
+	}
+
+	/**
+	 * Retrieves all found OCSP Refs
+	 * @return list of {@link OCSPRef}s
+	 */
 	public List<OCSPRef> getAllOCSPReferences() {
 		List<OCSPRef> ocspRefs = new ArrayList<OCSPRef>();
 		ocspRefs.addAll(getCompleteRevocationRefs());
 		ocspRefs.addAll(getAttributeRevocationRefs());
+		ocspRefs.addAll(getTimestampRevocationRefs());
 		return ocspRefs;
 	}
 	
@@ -199,6 +228,76 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 			}
 		}
 		return orphanRevocationRefsOCSPs;
+	}
+
+	/**
+	 * Retrieves a list of found OCSP Tokens for the given {@code revocationRefs}
+	 * @param revocationRefs list of {@link OCSPRef} to get tokens for
+	 * @return list of {@link OCSPToken}s
+	 */
+	public List<OCSPToken> findTokensFromRefs(List<OCSPRef> revocationRefs) {
+		if (Utils.isMapEmpty(revocationRefsMap)) {
+			collectRevocationRefsMap();
+		}
+		List<OCSPToken> tokensFromRefs = new ArrayList<OCSPToken>();
+		for (Entry<OCSPToken, Set<OCSPRef>> revocationMapEntry : revocationRefsMap.entrySet()) {
+			for (OCSPRef tokenRevocationRef : revocationMapEntry.getValue()) {
+				if (revocationRefs.contains(tokenRevocationRef)) {
+					tokensFromRefs.add(revocationMapEntry.getKey());
+					break;
+				}
+			}
+		}
+		return tokensFromRefs;
+	}
+	
+	/**
+	 * Retrieves a set of found OCSP Refs for the given {@code revocationToken}
+	 * @param revocationToken {@link OCSPToken} to get references for
+	 * @return list of {@link OCSPRef}s
+	 */
+	public Set<OCSPRef> findRefsForRevocationToken(OCSPToken revocationToken) {
+		if (Utils.isMapEmpty(revocationRefsMap)) {
+			collectRevocationRefsMap();
+		}
+		Set<OCSPRef> revocationRefs = revocationRefsMap.get(revocationToken);
+		if (revocationRefs != null) {
+			return revocationRefs;
+		} else {
+			return Collections.emptySet();
+		}
+	}
+	
+	private void collectRevocationRefsMap() {
+		revocationRefsMap = new HashMap<OCSPToken, Set<OCSPRef>>();
+		for (OCSPToken revocationToken : getAllOCSPTokens()) {
+			for (OCSPRef ocspRef : getAllOCSPReferences()) {
+				if (ocspRef.getDigestAlgorithm() != null && ocspRef.getDigestValue() != null) {
+					if (Arrays.equals(ocspRef.getDigestValue(), revocationToken.getDigest(ocspRef.getDigestAlgorithm()))) {
+						addReferenceToMap(revocationToken, ocspRef);
+					}
+					
+				} else if (!ocspRef.getProducedAt().equals(revocationToken.getProductionDate())) {
+					// continue
+				} else if (ocspRef.getResponderId().getName() != null &&
+						ocspRef.getResponderId().getName().equals(revocationToken.getIssuerX500Principal().getName())) {
+					addReferenceToMap(revocationToken, ocspRef);
+					
+				} else if (ocspRef.getResponderId().getKey() != null && Arrays.equals(ocspRef.getResponderId().getKey(), 
+						DSSASN1Utils.computeSkiFromCertPublicKey(revocationToken.getPublicKeyOfTheSigner()))) {
+					addReferenceToMap(revocationToken, ocspRef);
+					
+				}
+			}
+		}
+	}
+	
+	private void addReferenceToMap(OCSPToken revocationToken, OCSPRef reference) {
+		if (revocationRefsMap.containsKey(revocationToken)) {
+			revocationRefsMap.get(revocationToken).add(reference);
+		} else {
+			revocationRefsMap.put(revocationToken, new HashSet<OCSPRef>(Arrays.asList(reference)));
+		}
 	}
 
 }
