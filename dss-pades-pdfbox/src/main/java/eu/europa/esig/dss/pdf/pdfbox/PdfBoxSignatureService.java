@@ -43,6 +43,7 @@ import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSObject;
 import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
@@ -552,14 +553,19 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	@Override
 	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters) {
 		DSSDocument newPdfDoc = null;
-		try (InputStream is = document.openStream(); PDDocument pdfDoc = PDDocument.load(is)) {
+		try (InputStream is = document.openStream(); PDDocument pdfDoc = PDDocument.load(is);
+				ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			
 			PDPage page = pdfDoc.getPage(parameters.getPage());
+			
+			PDDocumentCatalog catalog = pdfDoc.getDocumentCatalog();
+	        catalog.getCOSObject().setNeedToBeUpdated(true);
 
-			PDAcroForm acroForm = pdfDoc.getDocumentCatalog().getAcroForm();
+			PDAcroForm acroForm = catalog.getAcroForm();
 			if (acroForm == null) {
 				acroForm = new PDAcroForm(pdfDoc);
-				pdfDoc.getDocumentCatalog().setAcroForm(acroForm);
-
+				catalog.setAcroForm(acroForm);
+				
 				// Set default appearance
 				PDResources resources = new PDResources();
 				resources.put(COSName.getPDFName("Helv"), PDType1Font.HELVETICA);
@@ -571,16 +577,23 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			if (Utils.isStringNotBlank(parameters.getName())) {
 				signatureField.setPartialName(parameters.getName());
 			}
+			
 			PDAnnotationWidget widget = signatureField.getWidgets().get(0);
 			PDRectangle rect = new PDRectangle(parameters.getOriginX(), parameters.getOriginY(), parameters.getWidth(), parameters.getHeight());
 			widget.setRectangle(rect);
 			widget.setPage(page);
 			page.getAnnotations().add(widget);
+			
 			acroForm.getFields().add(signatureField);
 
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			pdfDoc.save(baos);
+			acroForm.getCOSObject().setNeedToBeUpdated(true);
+			signatureField.getCOSObject().setNeedToBeUpdated(true);
+			page.getCOSObject().setNeedToBeUpdated(true);
+			
+			pdfDoc.saveIncremental(baos);
+			
 			newPdfDoc = new InMemoryDocument(baos.toByteArray(), "new-document.pdf", MimeType.PDF);
+			
 		} catch (Exception e) {
 			throw new DSSException("Unable to add a new signature fields", e);
 		}

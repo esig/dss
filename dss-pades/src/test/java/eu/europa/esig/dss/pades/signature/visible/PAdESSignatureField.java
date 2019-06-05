@@ -36,15 +36,18 @@ import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 
 public class PAdESSignatureField extends PKIFactoryAccess {
 
@@ -106,6 +109,98 @@ public class PAdESSignatureField extends PKIFactoryAccess {
 		DSSDocument doc3 = signAndValidate(doc2);
 		assertNotNull(doc3);
 	}
+	
+	@Test
+	public void testSignTwoFields() throws IOException {
+
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
+		
+		// add first field
+		SignatureFieldParameters parameters = new SignatureFieldParameters();
+		parameters.setName("signature1");
+		parameters.setOriginX(10);
+		parameters.setOriginY(10);
+		parameters.setHeight(50);
+		parameters.setWidth(50);
+		DSSDocument withFirstField = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(withFirstField);
+
+		// add second field
+		parameters = new SignatureFieldParameters();
+		parameters.setName("signature2");
+		parameters.setOriginX(100);
+		parameters.setOriginY(10);
+		parameters.setHeight(50);
+		parameters.setWidth(50);
+		DSSDocument secondField = service.addNewSignatureField(withFirstField, parameters);
+		assertNotNull(secondField);
+		
+		// sign first field
+		signatureParameters.setSignatureFieldId("signature1");
+		DSSDocument firstSigned = signAndValidate(secondField);
+		assertNotNull(firstSigned);
+
+		// sign second field
+		signatureParameters.setSignatureFieldId("signature2");
+		DSSDocument secondSigned = signAndValidate(firstSigned);
+		assertNotNull(secondSigned);
+		
+	}
+	
+	@Test
+	public void createAndSignConsequently() throws IOException {
+		
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
+		
+		// add field and sign
+		SignatureFieldParameters parameters = new SignatureFieldParameters();
+		parameters.setName("signature1");
+		parameters.setOriginX(10);
+		parameters.setOriginY(10);
+		parameters.setHeight(50);
+		parameters.setWidth(50);
+		DSSDocument withFirstField = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(withFirstField);
+
+		signatureParameters.setSignatureFieldId("signature1");
+		DSSDocument firstSigned = signAndValidate(withFirstField);
+		assertNotNull(firstSigned);
+		
+		// add a new field and second sign
+		parameters = new SignatureFieldParameters();
+		parameters.setName("signature2");
+		parameters.setOriginX(100);
+		parameters.setOriginY(10);
+		parameters.setHeight(50);
+		parameters.setWidth(50);
+		DSSDocument secondField = service.addNewSignatureField(firstSigned, parameters);
+		assertNotNull(secondField);
+
+		signatureParameters.setSignatureFieldId("signature2");
+		DSSDocument secondSigned = signAndValidate(secondField);
+		assertNotNull(secondSigned);
+
+	}
+	
+	@Test
+	public void createFieldInEmptyDocument() throws IOException {
+		
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/EmptyPage.pdf"));
+		
+		SignatureFieldParameters parameters = new SignatureFieldParameters();
+		parameters.setName("signature1");
+		parameters.setOriginX(10);
+		parameters.setOriginY(10);
+		parameters.setHeight(50);
+		parameters.setWidth(50);
+		DSSDocument withFirstField = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(withFirstField);
+
+		signatureParameters.setSignatureFieldId("signature1");
+		DSSDocument firstSigned = signAndValidate(withFirstField);
+		assertNotNull(firstSigned);
+		
+	}
 
 	@Test(expected = DSSException.class)
 	public void testSignTwiceSameField() throws IOException {
@@ -133,13 +228,26 @@ public class PAdESSignatureField extends PKIFactoryAccess {
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 
-		signedDocument.save("target/test.pdf");
+		// signedDocument.save("target/test.pdf");
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		Reports reports = validator.validateDocument();
+		// reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
+
+		assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getSignatures()));
+		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
+			assertTrue(signature.isSignatureIntact());
+			assertTrue(signature.isSignatureValid());
+			assertTrue(Utils.isCollectionNotEmpty(signature.getDigestMatchers()));
+			for (XmlDigestMatcher digestMatcher : signature.getDigestMatchers()) {
+				assertTrue(digestMatcher.isDataFound());
+				assertTrue(digestMatcher.isDataIntact());
+			}
+		}
+		
 		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 
 		return signedDocument;
