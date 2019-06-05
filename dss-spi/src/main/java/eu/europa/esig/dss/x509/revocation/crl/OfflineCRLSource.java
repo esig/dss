@@ -216,9 +216,18 @@ public abstract class OfflineCRLSource implements CRLSource {
 	public Collection<CRLBinaryIdentifier> getAllCRLIdentifiers() {
 		return crlsBinaryMap.values();
 	}
+
+	/**
+	 * Returns the identifier related to the {@code crlRef}
+	 * @param {@link CRLRef} to find identifier for
+	 * @return {@link CRLBinaryIdentifier} for the reference
+	 */
+	public CRLBinaryIdentifier getIdentifier(CRLRef crlRef) {
+		return getIdentifier(new Digest(crlRef.getDigestAlgorithm(), crlRef.getDigestValue()));
+	}
 	
 	/**
-	 * Returns the identifier related to the provided {@node base64value} of reference
+	 * Returns the identifier related for the provided digest of the reference
 	 * @param digest {@link Digest} of the reference
 	 * @return {@link CRLBinaryIdentifier} for the reference
 	 */

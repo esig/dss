@@ -907,6 +907,9 @@ public class DiagnosticDataBuilder {
 	private XmlRelatedCertificate getXmlRelatedCertificate(CertificateToken cert, CertificateRef certificateRef) {
 		XmlRelatedCertificate xrc = new XmlRelatedCertificate();
 		xrc.setCertificate(xmlCerts.get(cert.getDSSIdAsString()));
+		if (Utils.isCollectionEmpty(xrc.getOrigins()) && getXmlCertificateSources(cert).contains(XmlCertificateSourceType.TIMESTAMP)) {
+			xrc.getOrigins().add(CertificateOriginType.INTERNAL_TIMESTAMP_CERTIFICATE_VALUES);
+		}
 		xrc.getCertificateRefs().add(getXmlCertificateRef(certificateRef));
 		certificateRefsMap.put(cert.getDSSIdAsString(), Arrays.asList(certificateRef));
 		return xrc;
@@ -915,16 +918,12 @@ public class DiagnosticDataBuilder {
 	private List<XmlOrphanCertificate> getOrphanCertificates(AdvancedSignature signature) {
 		List<XmlOrphanCertificate> orphanCertificates = new ArrayList<XmlOrphanCertificate>();
 		
-		SignatureCertificateSource certificateSource = signature.getCertificateSource();
-		List<CertificateRef> allFoundCertificateRefs = certificateSource.getAllCertificateRefs();
+		List<CertificateRef> orphanCertificateRefs = signature.getOrphanCertificateRefs();
+		for (List<CertificateRef> assignedCertificateRefs : certificateRefsMap.values()) {
+			orphanCertificateRefs.removeAll(assignedCertificateRefs);
+		} 
 		
-		List<CertificateRef> assignedCertificateRefs = new ArrayList<CertificateRef>();
-		for (List<CertificateRef> certificateRefs : certificateRefsMap.values()) {
-			assignedCertificateRefs.addAll(certificateRefs);
-		}
-		allFoundCertificateRefs.removeAll(assignedCertificateRefs);
-		
-		for (CertificateRef orphanCertificateRef : allFoundCertificateRefs) {
+		for (CertificateRef orphanCertificateRef : orphanCertificateRefs) {
 			orphanCertificates.add(createXmlOrphanCertificate(orphanCertificateRef));
 		}
 		
@@ -988,15 +987,8 @@ public class DiagnosticDataBuilder {
 		if (Utils.isCollectionNotEmpty(orphanRevocations)) {
 			foundRevocations.getOrphanRevocations().addAll(getXmlOrphanRevocations(orphanRevocations, signature));
 		}
-		List<RevocationRef> allFoundRevocationRefs = signature.getAllFoundRevocationRefs();
-		// substract from all revocations refs a list of already assigned refs
-		// this produces a list of revocation refs, that are not assigned to any RevocationToken
-		List<RevocationRef> assignedRevocationRefs = new ArrayList<RevocationRef>();
-		for (List<RevocationRef> revocationRefs : revocationRefsMap.values()) {
-			assignedRevocationRefs.addAll(revocationRefs);
-		}
-		allFoundRevocationRefs.removeAll(assignedRevocationRefs);
-		for (RevocationRef leftRevocationRef : allFoundRevocationRefs) {
+
+		for (RevocationRef leftRevocationRef : signature.getOrphanRevocationRefs()) {
 			XmlOrphanRevocation revocationFromRef = createOrphanRevocationFromRef(leftRevocationRef);
 			foundRevocations.getOrphanRevocations().add(revocationFromRef);
 		}

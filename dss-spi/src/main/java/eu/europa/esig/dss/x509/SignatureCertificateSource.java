@@ -52,6 +52,11 @@ public abstract class SignatureCertificateSource extends CommonCertificateSource
 	 * Contains a list of found {@link CertificateRef}s for each {@link CertificateToken}
 	 */
 	private Map<CertificateToken, List<CertificateRef>> certificateRefsMap;
+	
+	/**
+	 * List of orphan {@link CertificateRef}s
+	 */
+	private List<CertificateRef> orphanCertificateRefs;
 
 	/**
 	 * The default constructor with mandatory certificates pool.
@@ -262,6 +267,32 @@ public abstract class SignatureCertificateSource extends CommonCertificateSource
 		} else {
 			certificateRefsMap.put(certificateToken, new ArrayList<CertificateRef>(Arrays.asList(certificateRef)));
 		}
+	}
+	
+	/**
+	 * Returns a list of orphan certificate refs
+	 * @return list of {@link CertificateRef}s
+	 */
+	public List<CertificateRef> getOrphanCertificateRefs() {
+		if (orphanCertificateRefs == null) {
+			orphanCertificateRefs = new ArrayList<CertificateRef>();
+			if (Utils.isMapEmpty(certificateRefsMap)) {
+				collectCertificateRefsMap();
+			}
+			for (CertificateRef certificateRef : getAllCertificateRefs()) {
+				boolean found = false;
+				for (List<CertificateRef> assignedCertificateRefs : certificateRefsMap.values()) {
+					if (assignedCertificateRefs.contains(certificateRef)) {
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					orphanCertificateRefs.add(certificateRef);
+				}
+			}
+		}
+		return orphanCertificateRefs;
 	}
 
 }

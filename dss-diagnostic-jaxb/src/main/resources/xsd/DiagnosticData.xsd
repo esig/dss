@@ -621,6 +621,7 @@
 			<xs:enumeration value="TIMESTAMP_DATA_VALIDATION" />
 			<xs:enumeration value="DSS" />
 			<xs:enumeration value="VRI" />
+			<xs:enumeration value="INTERNAL_TIMESTAMP_CERTIFICATE_VALUES" />
 		</xs:restriction>
 	</xs:simpleType>
 	

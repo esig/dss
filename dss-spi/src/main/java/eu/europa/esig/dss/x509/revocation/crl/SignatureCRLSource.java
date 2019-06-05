@@ -25,6 +25,8 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	private List<CRLRef> completeRevocationRefsCRLs = new ArrayList<CRLRef>();
 	private List<CRLRef> attributeRevocationRefsCRLs = new ArrayList<CRLRef>();
 	private List<CRLRef> timestampRevocationRefsCRLs = new ArrayList<CRLRef>();
+	
+	private List<CRLRef> orphanRevocationRefsCRLs;
 
 	@Override
 	public List<CRLToken> getRevocationValuesTokens() {
@@ -188,6 +190,22 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Returns a list of orphan CRL Refs
+	 * @return list of {@link CRLRef}s
+	 */
+	public List<CRLRef> getOrphanCrlRefs() {
+		if (orphanRevocationRefsCRLs == null) {
+			orphanRevocationRefsCRLs = new ArrayList<CRLRef>();
+			for (CRLRef crlRef : getAllCRLReferences()) {
+				if (getIdentifier(crlRef) == null) {
+					orphanRevocationRefsCRLs.add(crlRef);
+				}
+			}
+		}
+		return orphanRevocationRefsCRLs;
 	}
 
 }

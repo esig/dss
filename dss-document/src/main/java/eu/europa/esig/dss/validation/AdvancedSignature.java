@@ -598,6 +598,12 @@ public interface AdvancedSignature extends Serializable {
 	List<RevocationRef> getAllFoundRevocationRefs();
 	
 	/**
+	 * Returns a list of all orphan {@link RevocationRef}s found into the signature
+	 * @return list of {@link RevocationRef}s
+	 */
+	List<RevocationRef> getOrphanRevocationRefs();
+	
+	/**
 	 * Retrieves a list of found {@link RevocationRef}s for the given {@code revocationToken}
 	 * @param revocationToken {@link RevocationToken} to get references for
 	 * @return list of {@link RevocationRef}s

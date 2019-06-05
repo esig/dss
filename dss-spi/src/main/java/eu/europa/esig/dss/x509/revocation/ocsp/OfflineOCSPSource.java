@@ -148,11 +148,23 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 	}
 	
 	/**
-	 * Returns the identifier related to the provided {@node base64value} of reference
+	  Returns the identifier related for the provided {@node ocspRef}
+	 * @param ocspRef {@link OCSPRef} to find identifier for
+	 * @return {@link OCSPResponseIdentifier} for the reference
+	 */
+	public OCSPResponseIdentifier getIdentifier(OCSPRef ocspRef) {
+		return getIdentifier(new Digest(ocspRef.getDigestAlgorithm(), ocspRef.getDigestValue()));
+	}
+	
+	/**
+	 * Returns the identifier related for the provided {@node digest} of reference
 	 * @param digest {@link Digest} of the reference
 	 * @return {@link OCSPResponseIdentifier} for the reference
 	 */
 	public OCSPResponseIdentifier getIdentifier(Digest digest) {
+		if (digest.getAlgorithm() == null || digest.getValue() == null) {
+			return null;
+		}
 		for (OCSPResponseIdentifier ocspResponse : ocspResponses.values()) {
 			byte[] digestValue = ocspResponse.getDigestValue(digest.getAlgorithm());
 			if (Arrays.equals(digest.getValue(), digestValue)) {

@@ -159,11 +159,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	private Map<RevocationToken, List<RevocationRef>> revocationRefsMap;
 	
 	/**
-	 * List of found certificate refs which values were not found in the certificate source
-	 */
-	protected List<CertificateRef> orphanCertificateRefs = new ArrayList<CertificateRef>();
-	
-	/**
 	 * Build and defines {@code signatureIdentifier} value
 	 */
 	protected abstract SignatureIdentifier buildSignatureIdentifier();
@@ -213,7 +208,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	
 	@Override
 	public List<CertificateRef> getOrphanCertificateRefs() {
-		return orphanCertificateRefs;
+		return getCertificateSource().getOrphanCertificateRefs();
 	}
 	
 	@Override
@@ -941,6 +936,14 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		revocationRefs.addAll(getAttributeRevocationOCSPReferences());
 		revocationRefs.addAll(getTimestampRevocationOCSPReferences());
 		return revocationRefs;
+	}
+	
+	@Override
+	public List<RevocationRef> getOrphanRevocationRefs() {
+		List<RevocationRef> orphanRevocationRefs = new ArrayList<RevocationRef>();
+		orphanRevocationRefs.addAll(getCRLSource().getOrphanCrlRefs());
+		orphanRevocationRefs.addAll(getOCSPSource().getOrphanOCSPRefs());
+		return orphanRevocationRefs;
 	}
 
 	@Override

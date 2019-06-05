@@ -39,11 +39,13 @@ import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlRelatedCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerData;
 import eu.europa.esig.dss.tsl.ServiceInfo;
 import eu.europa.esig.dss.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateRefLocationType;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.DigestMatcherType;
@@ -473,6 +475,18 @@ public class XMLSignatureWrappingTest {
 		
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertNotNull(signatureWrapper);
+		
+		List<XmlFoundCertificate> allFoundCertificates = signatureWrapper.getAllFoundCertificates();
+		assertNotNull(allFoundCertificates);
+		assertEquals(4, allFoundCertificates.size());
+		
+		List<XmlRelatedCertificate> relatedCertificates = signatureWrapper.getRelatedCertificates();
+		assertNotNull(relatedCertificates);
+		assertEquals(3, relatedCertificates.size());
+		for (XmlRelatedCertificate relatedCertificate : relatedCertificates) {
+			assertNotNull(relatedCertificate.getCertificate());
+			assertTrue(Utils.isCollectionNotEmpty(relatedCertificate.getOrigins()));
+		}
 		
 		List<XmlFoundCertificate> completeCertificateRefs = signatureWrapper.getFoundCertificatesByRefLocation(CertificateRefLocationType.COMPLETE_CERTIFICATE_REFS);
 		assertNotNull(completeCertificateRefs);

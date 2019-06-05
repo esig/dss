@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.SignatureRevocationSource;
+import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
 
 @SuppressWarnings("serial")
 public abstract class SignatureOCSPSource extends OfflineOCSPSource implements SignatureRevocationSource<OCSPToken> {
@@ -25,6 +26,8 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	private List<OCSPRef> completeRevocationRefsOCSPs = new ArrayList<OCSPRef>();
 	private List<OCSPRef> attributeRevocationRefsOCSPs = new ArrayList<OCSPRef>();
 	private List<OCSPRef> timestampRevocationRefsOCSPs = new ArrayList<OCSPRef>();
+	
+	private List<OCSPRef> orphanRevocationRefsOCSPs;
 
 	@Override
 	public List<OCSPToken> getRevocationValuesTokens() {
@@ -180,6 +183,22 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Returns a list of orphan CRL Refs
+	 * @return list of {@link CRLRef}s
+	 */
+	public List<OCSPRef> getOrphanOCSPRefs() {
+		if (orphanRevocationRefsOCSPs == null) {
+			orphanRevocationRefsOCSPs = new ArrayList<OCSPRef>();
+			for (OCSPRef ocspRef : getAllOCSPReferences()) {
+				if (getIdentifier(ocspRef) == null) {
+					orphanRevocationRefsOCSPs.add(ocspRef);
+				}
+			}
+		}
+		return orphanRevocationRefsOCSPs;
 	}
 
 }

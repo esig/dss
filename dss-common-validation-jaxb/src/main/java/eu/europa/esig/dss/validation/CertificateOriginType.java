@@ -13,5 +13,7 @@ public enum CertificateOriginType {
 	DSS,
 	
 	VRI,
+	
+	INTERNAL_TIMESTAMP_CERTIFICATE_VALUES,
 
 }

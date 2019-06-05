@@ -311,8 +311,6 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 				if (crlBinaryIdentifier != null) {
 					TimestampedReference crlReference = new TimestampedReference(crlBinaryIdentifier.asXmlId(), TimestampedObjectType.REVOCATION);
 					addReference(references, crlReference);
-				} else {
-					orphanRevocationRefs.add(crlRef);
 				}
 			}
 		}
@@ -330,8 +328,6 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 				if (ocspResponseIdentifier != null) {
 					TimestampedReference ocspReference = new TimestampedReference(ocspResponseIdentifier.asXmlId(), TimestampedObjectType.REVOCATION);
 					addReference(references, ocspReference);
-				} else {
-					orphanRevocationRefs.add(ocspRef);
 				}
 			}
 		}
