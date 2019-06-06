@@ -115,10 +115,19 @@ public final class ASiCUtils {
 	public static boolean isArchiveContainsCorrectSignatureFileWithExtension(DSSDocument toSignDocument, String extension) {
 		try (InputStream is = toSignDocument.openStream(); ZipInputStream zis = new ZipInputStream(is)) {
 			ZipEntry entry;
-			while ((entry = zis.getNextEntry()) != null) {
-				String entryName = entry.getName();
-				if (isSignature(entryName) && entryName.endsWith(extension)) {
-					return true;
+			while (true) {
+				try {
+					entry = zis.getNextEntry();
+					if (entry == null) {
+						break;
+					}
+					String entryName = entry.getName();
+					if (isSignature(entryName) && entryName.endsWith(extension)) {
+						return true;
+					}
+				} catch (IllegalArgumentException e) {
+					LOG.warn("ZIP container contains a file with an unsupported name! Reason: [{}]", e.getMessage());
+					// it is not a signature, continue
 				}
 			}
 		} catch (IOException e) {
