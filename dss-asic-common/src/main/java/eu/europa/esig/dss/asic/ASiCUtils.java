@@ -270,11 +270,9 @@ public final class ASiCUtils {
 	 * @return list of file name {@link String}s
 	 */
 	public static ZipEntry getNextValidEntry(ZipInputStream zis) {
-		ZipEntry entry;
 		while (true) {
 			try {
-				entry = zis.getNextEntry();
-				return entry;
+				return zis.getNextEntry();
 			} catch (Exception e) {
 				LOG.warn("ZIP container contains a malformed, corrupted or not accessible entry! The entry is skipped. Reason: [{}]", e.getMessage());
 				// skip the entry and continue until find the next valid entry or end of the stream
