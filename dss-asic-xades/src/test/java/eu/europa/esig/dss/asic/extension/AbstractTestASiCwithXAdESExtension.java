@@ -38,6 +38,7 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.asic.ASiCUtils;
 import eu.europa.esig.dss.asic.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.extension.AbstractTestExtension;
@@ -122,7 +123,7 @@ public abstract class AbstractTestASiCwithXAdESExtension extends AbstractTestExt
 		List<String> filenames = new ArrayList<String>();
 		try (InputStream is = doc.openStream(); ZipInputStream zis = new ZipInputStream(is)) {
 			ZipEntry entry;
-			while ((entry = zis.getNextEntry()) != null) {
+			while ((entry = ASiCUtils.getNextValidEntry(zis)) != null) {
 				filenames.add(entry.getName());
 			}
 		} catch (Exception e) {

@@ -126,7 +126,7 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 		long containerSize = DSSUtils.getFileByteSize(archiveDocument);
 		try (InputStream is = archiveDocument.openStream(); ZipInputStream zis = new ZipInputStream(is)) {
 			ZipEntry entry;
-			while ((entry = zis.getNextEntry()) != null) {
+			while ((entry = ASiCUtils.getNextValidEntry(zis)) != null) {
 				final String name = entry.getName();
 				final ZipEntry newEntry = new ZipEntry(name);
 				if (!isSignatureFilename(name)) {

@@ -26,7 +26,7 @@ public class ASiCECAdESMalformedZipSignTest extends AbstractASiCECAdESTestSignat
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
-		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
+		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 
 		service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
