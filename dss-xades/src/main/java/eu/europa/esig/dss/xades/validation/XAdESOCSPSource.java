@@ -133,7 +133,7 @@ public class XAdESOCSPSource extends SignatureOCSPSource {
 				final Digest digest = XAdESUtils.getRevocationDigest(certId, xPathQueryHolder);
 				
 				if (digest != null) {
-					OCSPRef ocspRef = new OCSPRef(digest.getAlgorithm(), digest.getValue(), producedAtDate, responderId, false, revocationOrigin);
+					OCSPRef ocspRef = new OCSPRef(digest, producedAtDate, responderId, revocationOrigin);
 					addReference(ocspRef, revocationOrigin);
 				}
 				

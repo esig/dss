@@ -50,6 +50,7 @@ import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSPKUtils;
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncapsulatedRevocationTokenIdentifier;
@@ -1056,8 +1057,8 @@ public class DiagnosticDataBuilder {
 	private XmlRevocationRef getXmlCRLRevocationRef(CRLRef crlRef) {
 		XmlRevocationRef xmlRevocationRef = new XmlRevocationRef();
 		xmlRevocationRef.setLocation(XmlRevocationRefLocation.valueOf(crlRef.getLocation().toString()));
-		if (crlRef.getDigestAlgorithm() != null && crlRef.getDigestValue() != null) {
-			xmlRevocationRef.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(crlRef.getDigestAlgorithm(), crlRef.getDigestValue()));
+		if (crlRef.getDigest() != null) {
+			xmlRevocationRef.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(crlRef.getDigest()));
 		}
 		return xmlRevocationRef;
 	}
@@ -1065,8 +1066,8 @@ public class DiagnosticDataBuilder {
 	private XmlRevocationRef getXmlOCSPRevocationRef(OCSPRef ocspRef) {
 		XmlRevocationRef xmlRevocationRef = new XmlRevocationRef();
 		xmlRevocationRef.setLocation(XmlRevocationRefLocation.valueOf(ocspRef.getLocation().toString()));
-		if (ocspRef.getDigestAlgorithm() != null && ocspRef.getDigestValue() != null) {
-			xmlRevocationRef.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(ocspRef.getDigestAlgorithm(), ocspRef.getDigestValue()));
+		if (ocspRef.getDigest() != null) {
+			xmlRevocationRef.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(ocspRef.getDigest()));
 		}
 		xmlRevocationRef.setProducedAt(ocspRef.getProducedAt());
 		String name = ocspRef.getResponderId().getName();
@@ -1140,7 +1141,7 @@ public class DiagnosticDataBuilder {
 		XmlOrphanToken orphanToken = new XmlOrphanToken();
 		orphanToken.setId(ref.getDSSIdAsString());
 		orphanToken.setType(OrphanTokenType.REVOCATION);
-		orphanToken.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(ref.getDigestAlgorithm(), ref.getDigestValue()));
+		orphanToken.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(ref.getDigest()));
 		xmlOrphanTokens.put(ref.getDSSIdAsString(), orphanToken);
 		
 		xmlOrphanRevocation.setToken(orphanToken);
@@ -1681,13 +1682,17 @@ public class DiagnosticDataBuilder {
 	}
 	
 	private XmlDigestAlgoAndValue getXmlDigestAlgoAndValue(Digest digest) {
-		return getXmlDigestAlgoAndValue(digest.getAlgorithm(), digest.getValue());
+		if (digest == null) {
+			return getXmlDigestAlgoAndValue(null, null);
+		} else {
+			return getXmlDigestAlgoAndValue(digest.getAlgorithm(), digest.getValue());
+		}
 	}
 
 	private XmlDigestAlgoAndValue getXmlDigestAlgoAndValue(DigestAlgorithm digestAlgo, byte[] digestValue) {
 		XmlDigestAlgoAndValue xmlDigestAlgAndValue = new XmlDigestAlgoAndValue();
 		xmlDigestAlgAndValue.setDigestMethod(digestAlgo == null ? "" : digestAlgo.getName());
-		xmlDigestAlgAndValue.setDigestValue(digestValue);
+		xmlDigestAlgAndValue.setDigestValue(digestValue == null ? DSSUtils.EMPTY_BYTE_ARRAY : digestValue);
 		return xmlDigestAlgAndValue;
 	}
 

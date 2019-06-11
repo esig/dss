@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.bouncycastle.asn1.ocsp.ResponderID;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.CertificateID;
 import org.bouncycastle.cert.ocsp.OCSPException;
@@ -153,7 +154,22 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 	 * @return {@link OCSPResponseIdentifier} for the reference
 	 */
 	public OCSPResponseIdentifier getIdentifier(OCSPRef ocspRef) {
-		return getIdentifier(new Digest(ocspRef.getDigestAlgorithm(), ocspRef.getDigestValue()));
+		if (ocspRef.getDigest() != null) {
+			return getIdentifier(ocspRef.getDigest());
+		} else {
+			for (OCSPResponseIdentifier ocspResponse : ocspResponses.values()) {
+				if (ocspRef.getProducedAt().equals(ocspResponse.getBasicOCSPResp().getProducedAt())) {
+					ResponderID responderID = ocspResponse.getBasicOCSPResp().getResponderId().toASN1Primitive();
+					if (ocspRef.getResponderId().getKey() != null &&
+							Arrays.equals(ocspRef.getResponderId().getKey(), responderID.getKeyHash()) ||
+						ocspRef.getResponderId().getName() != null && responderID.getName() != null &&
+						ocspRef.getResponderId().getName().equals(responderID.getName().toString())) {
+						return ocspResponse;
+					}
+				}
+			}
+		}
+		return null;
 	}
 	
 	/**
@@ -162,7 +178,7 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 	 * @return {@link OCSPResponseIdentifier} for the reference
 	 */
 	public OCSPResponseIdentifier getIdentifier(Digest digest) {
-		if (digest.getAlgorithm() == null || digest.getValue() == null) {
+		if (digest == null) {
 			return null;
 		}
 		for (OCSPResponseIdentifier ocspResponse : ocspResponses.values()) {

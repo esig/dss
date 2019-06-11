@@ -223,7 +223,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 	 * @return {@link CRLBinaryIdentifier} for the reference
 	 */
 	public CRLBinaryIdentifier getIdentifier(CRLRef crlRef) {
-		return getIdentifier(new Digest(crlRef.getDigestAlgorithm(), crlRef.getDigestValue()));
+		return getIdentifier(crlRef.getDigest());
 	}
 	
 	/**

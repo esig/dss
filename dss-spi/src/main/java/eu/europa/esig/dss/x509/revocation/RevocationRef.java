@@ -1,28 +1,21 @@
 package eu.europa.esig.dss.x509.revocation;
 
-import java.util.Arrays;
 import java.util.Objects;
 
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 
 public abstract class RevocationRef {
 
-	protected DigestAlgorithm digestAlgorithm = null;
-	protected byte[] digestValue = DSSUtils.EMPTY_BYTE_ARRAY;
+	protected Digest digest = null;
 	
 	protected RevocationOrigin location;
 	
 	private String dssId;
 
-	public DigestAlgorithm getDigestAlgorithm() {
-		return digestAlgorithm;
-	}
-
-	public byte[] getDigestValue() {
-		return digestValue;
+	public Digest getDigest() {
+		return digest;
 	}
 	
 	public RevocationOrigin getLocation() {
@@ -35,14 +28,14 @@ public abstract class RevocationRef {
 	 */
 	public String getDSSIdAsString() {
 		if (dssId == null) {
-			dssId = "R-" + Utils.toHex(digestValue).toUpperCase();
+			dssId = "R-" + digest.getHexValue().toUpperCase();
 		}
 		return dssId;
 	}
 	
 	@Override
 	public String toString() {
-		return Utils.toBase64(digestValue);
+		return Utils.toBase64(digest.getValue());
 	}
 	
 	@Override
@@ -54,13 +47,12 @@ public abstract class RevocationRef {
 			return false;
 		}
 		RevocationRef o = (RevocationRef) obj;
-		return digestAlgorithm.equals(o.getDigestAlgorithm()) && Arrays.equals(digestValue, o.getDigestValue()) &&
-				location.equals(o.location);
+		return digest.equals(o.getDigest()) && location.equals(o.location);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(digestAlgorithm, digestValue, location);
+		return Objects.hash(digest, location);
 	}
 
 }

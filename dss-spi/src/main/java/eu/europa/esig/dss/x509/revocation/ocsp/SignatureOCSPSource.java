@@ -192,8 +192,8 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	public List<OCSPRef> getReferencesForOCSPIdentifier(OCSPResponseIdentifier ocspResponse) {
 		List<OCSPRef> relatedRefs = new ArrayList<OCSPRef>();
 		for (OCSPRef ocspRef : getAllOCSPReferences()) {
-			byte[] digestValue = ocspResponse.getDigestValue(ocspRef.getDigestAlgorithm());
-			if (Arrays.equals(ocspRef.getDigestValue(), digestValue)) {
+			byte[] digestValue = ocspResponse.getDigestValue(ocspRef.getDigest().getAlgorithm());
+			if (Arrays.equals(ocspRef.getDigest().getValue(), digestValue)) {
 				relatedRefs.add(ocspRef);
 			}
 		}
@@ -207,7 +207,7 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	 */
 	public OCSPRef getOCSPRefByDigest(Digest digest) {
 		for (OCSPRef ocspRef : getAllOCSPReferences()) {
-			if (digest.getAlgorithm().equals(ocspRef.getDigestAlgorithm()) && Arrays.equals(digest.getValue(), ocspRef.getDigestValue())) {
+			if (digest.equals(ocspRef.getDigest())) {
 				return ocspRef;
 			}
 		}
@@ -272,8 +272,8 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 		revocationRefsMap = new HashMap<OCSPToken, Set<OCSPRef>>();
 		for (OCSPToken revocationToken : getAllOCSPTokens()) {
 			for (OCSPRef ocspRef : getAllOCSPReferences()) {
-				if (ocspRef.getDigestAlgorithm() != null && ocspRef.getDigestValue() != null) {
-					if (Arrays.equals(ocspRef.getDigestValue(), revocationToken.getDigest(ocspRef.getDigestAlgorithm()))) {
+				if (ocspRef.getDigest() != null) {
+					if (Arrays.equals(ocspRef.getDigest().getValue(), revocationToken.getDigest(ocspRef.getDigest().getAlgorithm()))) {
 						addReferenceToMap(revocationToken, ocspRef);
 					}
 					

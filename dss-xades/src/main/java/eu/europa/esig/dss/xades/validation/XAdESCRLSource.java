@@ -80,7 +80,7 @@ public class XAdESCRLSource extends SignatureCRLSource {
 			for (int i = 0; i < crlRefNodes.getLength(); i++) {
 				final Element crlRefNode = (Element) crlRefNodes.item(i);
 				final Digest digest = XAdESUtils.getRevocationDigest(crlRefNode, xPathQueryHolder);
-				CRLRef crlRef = new CRLRef(digest.getAlgorithm(), digest.getValue(), revocationOrigin);
+				CRLRef crlRef = new CRLRef(digest, revocationOrigin);
 				addReference(crlRef, revocationOrigin);
 			}
 		}

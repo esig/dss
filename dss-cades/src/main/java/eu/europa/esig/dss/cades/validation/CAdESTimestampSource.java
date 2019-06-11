@@ -306,8 +306,7 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 				addReference(references, crlReference);
 			}
 			for (CRLRef crlRef : timeStampCRLSource.getAllCRLReferences()) {
-				Digest digest = new Digest(crlRef.getDigestAlgorithm(), crlRef.getDigestValue());
-				CRLBinaryIdentifier crlBinaryIdentifier = crlSource.getIdentifier(digest);
+				CRLBinaryIdentifier crlBinaryIdentifier = crlSource.getIdentifier(crlRef);
 				if (crlBinaryIdentifier != null) {
 					TimestampedReference crlReference = new TimestampedReference(crlBinaryIdentifier.asXmlId(), TimestampedObjectType.REVOCATION);
 					addReference(references, crlReference);
@@ -323,8 +322,7 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 				addReference(references, ocspReference);
 			}
 			for (OCSPRef ocspRef : timeStampOCSPSource.getAllOCSPReferences()) {
-				Digest digest = new Digest(ocspRef.getDigestAlgorithm(), ocspRef.getDigestValue());
-				OCSPResponseIdentifier ocspResponseIdentifier = ocspSource.getIdentifier(digest);
+				OCSPResponseIdentifier ocspResponseIdentifier = ocspSource.getIdentifier(ocspRef);
 				if (ocspResponseIdentifier != null) {
 					TimestampedReference ocspReference = new TimestampedReference(ocspResponseIdentifier.asXmlId(), TimestampedObjectType.REVOCATION);
 					addReference(references, ocspReference);
