@@ -516,7 +516,6 @@ public class ETSIValidationReportBuilder {
 		SignatureValueType sigValue = new SignatureValueType();
 		sigValue.setValue(sigWrapper.getSignatureValue());
 		sigId.setSignatureValue(sigValue);
-		// TODO: add DAIdentifier
 		return sigId;
 	}
 	
@@ -664,8 +663,11 @@ public class ETSIValidationReportBuilder {
 	private void addSigningCertificate(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
 		List<XmlFoundCertificate> certs = sigWrapper.getFoundCertificatesByLocation(XmlCertificateLocationType.SIGNING_CERTIFICATE);
 		if (Utils.isCollectionNotEmpty(certs)) {
-			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
-					.add(objectFactory.createSignatureAttributesTypeSigningCertificate(buildCertIDListType(certs)));
+			JAXBElement<SACertIDListType> signingCertAttribute = objectFactory.createSignatureAttributesTypeSigningCertificate(buildCertIDListType(certs));
+			if (sigWrapper.isBLevelTechnicallyValid()) {
+				signingCertAttribute.getValue().setSigned(true);
+			}
+			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(signingCertAttribute);
 		}
 	}
 
@@ -765,6 +767,7 @@ public class ETSIValidationReportBuilder {
 		if (messageDigest != null) {
 			SAMessageDigestType messageDigestType = objectFactory.createSAMessageDigestType();
 			messageDigestType.setDigest(messageDigest.getDigestValue());
+			setSignedIfValid(sigWrapper, messageDigestType);
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
 					.add(objectFactory.createSignatureAttributesTypeMessageDigest(messageDigestType));
 		}
@@ -775,10 +778,22 @@ public class ETSIValidationReportBuilder {
 		// remove document timestamps (they will be present in DocTimeStamp element)
 		List<TimestampWrapper> docTimestamps = sigWrapper.getTimestampListByLocation(TimestampLocation.DOC_TIMESTAMP);
 		timestampListByType.removeAll(docTimestamps);
+
+		boolean isSigned = sigWrapper.isBLevelTechnicallyValid() && isSignedAttribute(timestampType);
+
 		for (TimestampWrapper timestampWrapper : timestampListByType) {
 			SATimestampType timestamp = getSATimestampType(timestampWrapper);
-			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(wrap(timestampType, timestamp));
+			JAXBElement<SATimestampType> wrap = wrap(timestampType, timestamp);
+			if (isSigned) {
+				wrap.getValue().setSigned(isSigned);
+			}
+			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(wrap);
 		}
+	}
+
+	private boolean isSignedAttribute(TimestampType timestampType) {
+		return TimestampType.CONTENT_TIMESTAMP.equals(timestampType) || TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP.equals(timestampType)
+				|| TimestampType.ALL_DATA_OBJECTS_TIMESTAMP.equals(timestampType);
 	}
 
 	private void addTimestampsByLocation(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper, TimestampLocation timestampLocation) {
@@ -831,6 +846,7 @@ public class ETSIValidationReportBuilder {
 				!SignaturePolicy.IMPLICIT_POLICY.equals(policyId)) {
 			SASigPolicyIdentifierType saSigPolicyIdentifierType = objectFactory.createSASigPolicyIdentifierType();
 			saSigPolicyIdentifierType.setSigPolicyId(policyId);
+			setSignedIfValid(sigWrapper, saSigPolicyIdentifierType);
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
 				.add(objectFactory.createSignatureAttributesTypeSigPolicyIdentifier(saSigPolicyIdentifierType));
 		}
@@ -847,6 +863,7 @@ public class ETSIValidationReportBuilder {
 			if (Utils.isStringNotEmpty(mimeType)) {
 				dataObjectFormatType.setMimeType(mimeType);
 			}
+			setSignedIfValid(sigWrapper, dataObjectFormatType);
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
 					.add(objectFactory.createSignatureAttributesTypeDataObjectFormat(dataObjectFormatType));
 		}
@@ -858,6 +875,7 @@ public class ETSIValidationReportBuilder {
 			for (String commitmentTypeIdentifier : commitmentTypeIdentifiers) {
 				SACommitmentTypeIndicationType commitmentType = objectFactory.createSACommitmentTypeIndicationType();
 				commitmentType.setCommitmentTypeIdentifier(commitmentTypeIdentifier);
+				setSignedIfValid(sigWrapper, commitmentType);
 				sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
 						.add(objectFactory.createSignatureAttributesTypeCommitmentTypeIndication(commitmentType));
 			}
@@ -871,6 +889,7 @@ public class ETSIValidationReportBuilder {
 			SASignerRoleType signerRoleType = objectFactory.createSASignerRoleType();
 			addSignerRoles(signerRoleType, claimedRoles, EndorsementType.CLAIMED);
 			addSignerRoles(signerRoleType, certifiedRoles, EndorsementType.CERTIFIED);
+			setSignedIfValid(sigWrapper, signerRoleType);
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(objectFactory.createSignatureAttributesTypeSignerRole(signerRoleType));
 		}
 	}
@@ -921,6 +940,7 @@ public class ETSIValidationReportBuilder {
 				if (Utils.isStringNotEmpty(countryName)) {
 					sigProductionPlace.getAddressString().add(countryName);
 				}
+				setSignedIfValid(sigWrapper, sigProductionPlace);
 				sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
 						.add(objectFactory.createSignatureAttributesTypeSignatureProductionPlace(sigProductionPlace));
 			}
@@ -1023,7 +1043,14 @@ public class ETSIValidationReportBuilder {
 		if (dateTime != null) {
 			SASigningTimeType saSigningTimeType = objectFactory.createSASigningTimeType();
 			saSigningTimeType.setTime(dateTime);
+			setSignedIfValid(sigWrapper, saSigningTimeType);
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(objectFactory.createSignatureAttributesTypeSigningTime(saSigningTimeType));
+		}
+	}
+
+	private void setSignedIfValid(SignatureWrapper sigWrapper, AttributeBaseType attribute) {
+		if (sigWrapper.isBLevelTechnicallyValid()) {
+			attribute.setSigned(true);
 		}
 	}
 
