@@ -106,6 +106,9 @@ public class SignedPropertiesNotCheckedTest {
 		List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
 		XmlDigestMatcher signedPropertiesDigest = null;
 		XmlDigestMatcher refDigest = null;
+		
+		assertNotNull(digestMatchers);
+		assertEquals(2, digestMatchers.size());
 
 		for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
 			if (DigestMatcherType.SIGNED_PROPERTIES == xmlDigestMatcher.getType()) {

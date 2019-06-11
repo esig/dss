@@ -42,6 +42,7 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.keys.keyresolver.KeyResolverException;
 import org.apache.xml.security.signature.Reference;
+import org.apache.xml.security.signature.ReferenceNotInitializedException;
 import org.apache.xml.security.signature.SignedInfo;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.signature.XMLSignatureException;
@@ -1225,9 +1226,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			final int numberOfReferences = signedInfo.getLength();
 
 			boolean signedPropertiesFound = false;
-			boolean referenceFound = false;
+			boolean atLeastOneReferenceElementFound = false;
 			for (int ii = 0; ii < numberOfReferences; ii++) {
 				ReferenceValidation validation = new ReferenceValidation();
+				validation.setType(DigestMatcherType.REFERENCE);
 				boolean found = false;
 				boolean intact = false;
 				try {
@@ -1242,32 +1244,38 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						validation.setName(uri);
 					}
 
-					found = reference.getContentsBeforeTransformation() != null;
+					try {
+						found = reference.getContentsBeforeTransformation() != null;
+					} catch (ReferenceNotInitializedException e) {
+						// continue, exception will be catched later
+					}
+					
 					boolean noDuplicateIdFound = XMLUtils.protectAgainstWrappingAttack(santuarioSignature.getDocument(), DomUtils.getId(uri));
-					if (isSignedProperties(reference)) {
+					boolean isElementReference = DomUtils.isElementReference(uri);
+							
+					if (isElementReference && isSignedProperties(reference)) {
 						validation.setType(DigestMatcherType.SIGNED_PROPERTIES);
 						found = found && (noDuplicateIdFound && findSignedPropertiesById(uri));
-						signedPropertiesFound = signedPropertiesFound || found;
-					} else if (isKeyInfoReference(reference, santuarioSignature.getElement())) {
+						signedPropertiesFound = true;
+					} else if (isElementReference && isKeyInfoReference(reference, santuarioSignature.getElement())) {
 						validation.setType(DigestMatcherType.KEY_INFO);
 						found = true; // we check it in prior inside "isKeyInfoReference" method
-					} else if (reference.typeIsReferenceToObject()) {
+					} else if (isElementReference && reference.typeIsReferenceToObject()) {
 						validation.setType(DigestMatcherType.OBJECT);
-						found = found &&  (noDuplicateIdFound && findObjectById(uri));
-						referenceFound = referenceFound || found;
-					} else if (reference.typeIsReferenceToManifest()) {
+						found = found && (noDuplicateIdFound && findObjectById(uri));
+						atLeastOneReferenceElementFound = true;
+					} else if (isElementReference && reference.typeIsReferenceToManifest()) {
 						validation.setType(DigestMatcherType.MANIFEST);
 						Node manifestNode = getManifestById(uri);
 						found = found && (noDuplicateIdFound && (manifestNode != null));
-						referenceFound = referenceFound || found;
+						atLeastOneReferenceElementFound = true;
 						if (manifestNode != null && Utils.isCollectionNotEmpty(detachedContents)) {
 							ManifestValidator mv = new ManifestValidator(manifestNode, detachedContents, xPathQueryHolder);
 							referenceValidations.addAll(mv.validate());
 						}
 					} else {
-						validation.setType(DigestMatcherType.REFERENCE);
 						found = found && noDuplicateIdFound;
-						referenceFound = referenceFound || found;
+						atLeastOneReferenceElementFound = true;
 					}
 
 					final Digest digest = new Digest();
@@ -1292,7 +1300,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			}
 			// If at least one reference is not found, we add an empty
 			// referenceValidation
-			if (!referenceFound) {
+			if (!atLeastOneReferenceElementFound) {
 				referenceValidations.add(notFound(DigestMatcherType.REFERENCE));
 			}
 		}
