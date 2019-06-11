@@ -1251,18 +1251,20 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					}
 					
 					boolean noDuplicateIdFound = XMLUtils.protectAgainstWrappingAttack(santuarioSignature.getDocument(), DomUtils.getId(uri));
-					if (isSignedProperties(reference)) {
+					boolean isElementReference = DomUtils.isElementReference(uri);
+							
+					if (isElementReference && isSignedProperties(reference)) {
 						validation.setType(DigestMatcherType.SIGNED_PROPERTIES);
 						found = found && (noDuplicateIdFound && findSignedPropertiesById(uri));
 						signedPropertiesFound = true;
-					} else if (isKeyInfoReference(reference, santuarioSignature.getElement())) {
+					} else if (isElementReference && isKeyInfoReference(reference, santuarioSignature.getElement())) {
 						validation.setType(DigestMatcherType.KEY_INFO);
 						found = true; // we check it in prior inside "isKeyInfoReference" method
-					} else if (reference.typeIsReferenceToObject()) {
+					} else if (isElementReference && reference.typeIsReferenceToObject()) {
 						validation.setType(DigestMatcherType.OBJECT);
 						found = found && (noDuplicateIdFound && findObjectById(uri));
 						atLeastOneReferenceElementFound = true;
-					} else if (reference.typeIsReferenceToManifest()) {
+					} else if (isElementReference && reference.typeIsReferenceToManifest()) {
 						validation.setType(DigestMatcherType.MANIFEST);
 						Node manifestNode = getManifestById(uri);
 						found = found && (noDuplicateIdFound && (manifestNode != null));

@@ -570,10 +570,19 @@ public final class DomUtils {
 
 	public static String getId(String uri) {
 		String id = uri;
-		if (uri.startsWith("#")) {
+		if (isElementReference(uri)) {
 			id = id.substring(1);
 		}
 		return id;
+	}
+	
+	/**
+	 * Returns TRUE if the provided {@code uri} refers to an element in the signature
+	 * @param uri {@link String} to be checked
+	 * @return TRUE if {@code uri} is reffered to an element, FALSE otherwise
+	 */
+	public static boolean isElementReference(String uri) {
+		return uri.startsWith("#");
 	}
 
 	public static XMLStreamReader getSecureXMLStreamReader(InputStream is) throws XMLStreamException {
