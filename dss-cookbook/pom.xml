@@ -76,7 +76,7 @@
 		                    <dependency>
 		                        <groupId>org.asciidoctor</groupId>
 		                        <artifactId>asciidoctorj-pdf</artifactId>
-		                        <version>1.5.0-alpha.17</version>
+		                        <version>1.5.0-alpha.18</version>
 		                    </dependency>
 						</dependencies>
 						<executions>
