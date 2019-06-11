@@ -129,7 +129,7 @@ public class DiagnosticDataComplete extends PKIFactoryAccess {
 		List<String> checkedIds = new ArrayList<String>();
 		
 		assertEquals(1, archiveTimestamp.getTimestampedSignatures().size());
-		checkedIds.add(archiveTimestamp.getTimestampedSignatures().get(0).getToken().getId());
+		checkedIds.add(archiveTimestamp.getTimestampedSignatures().get(0).getId());
 		
 		List<String> timestampedSignedDataIds = archiveTimestamp.getTimestampedSignedDataIds();
 		assertEquals(1, timestampedSignedDataIds.size());

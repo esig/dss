@@ -40,7 +40,6 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedRevocationData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedSignerData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedTimestamp;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.TimestampType;
 
 public class TimestampWrapper extends AbstractTokenProxy {
@@ -108,28 +107,21 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		return timestampedObjects;
 	}
 	
-	public SignatureWrapper getLastTimestampedSignature() {
-		List<XmlTimestampedSignature> signatures = getTimestampedSignatures();
-		if (Utils.isCollectionNotEmpty(signatures)) {
-			XmlSignature xmlSignature = (XmlSignature) signatures.get(signatures.size() - 1).getToken();
-			return new SignatureWrapper(xmlSignature);
-		}
-		return null;
-	}
-	
 	/**
-	 * Returns a list of {@link XmlTimestampedSignature}s covered be the current timestamp
-	 * @return list of {@link XmlTimestampedSignature}s
+	 * Returns a list of {@link SignatureWrapper}s covered be the current timestamp
+	 * 
+	 * @return list of {@link SignatureWrapper}s
 	 */
-	public List<XmlTimestampedSignature> getTimestampedSignatures() {
-		List<XmlTimestampedSignature> timestampedObjectIds = new ArrayList<XmlTimestampedSignature>();
+	public List<SignatureWrapper> getTimestampedSignatures() {
+		List<SignatureWrapper> timestampedSignatures = new ArrayList<SignatureWrapper>();
 		for (XmlTimestampedObject timestampedObject : getTimestampedObjects()) {
 			if (timestampedObject instanceof XmlTimestampedSignature) {
 				XmlTimestampedSignature timestampedSignature = (XmlTimestampedSignature) timestampedObject;
-				timestampedObjectIds.add(timestampedSignature);
+				XmlSignature xmlSignature = (XmlSignature) timestampedSignature.getToken();
+				timestampedSignatures.add(new SignatureWrapper(xmlSignature));
 			}
 		}
-		return timestampedObjectIds;
+		return timestampedSignatures;
 	}
 	
 	/**

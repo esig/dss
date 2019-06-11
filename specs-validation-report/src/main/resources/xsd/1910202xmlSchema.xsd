@@ -315,7 +315,7 @@
 		<xs:sequence>
 			<xs:element name="POETime" type="xs:dateTime"/>
 			<xs:element name="ValidationObject" type="vr:VOReferenceType" minOccurs="0" maxOccurs="unbounded"/>
-			<xs:element name="SignatureReference" type="vr:SignatureReferenceType" minOccurs="0"/>
+			<xs:element name="SignatureReference" type="vr:SignatureReferenceType" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
 	<!-- 
