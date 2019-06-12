@@ -36,6 +36,9 @@ import javax.xml.bind.JAXB;
 
 import org.junit.Test;
 
+import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlCryptographicInformation;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignature;
@@ -622,13 +625,27 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(loadDefaultPolicy());
-		executor.setCurrentTime(diagnosticData.getValidationDate());
+		Date validationDate = diagnosticData.getValidationDate();
+		executor.setCurrentTime(validationDate);
 
 		Reports reports = executor.execute();
+		DetailedReport detailedReport = reports.getDetailedReport();
+
+		boolean foundWeakAlgo = false;
+		List<String> revocationIds = detailedReport.getRevocationIds();
+		for (String revocationId : revocationIds) {
+			XmlBasicBuildingBlocks bbb = detailedReport.getBasicBuildingBlockById(revocationId);
+			XmlSAV sav = bbb.getSAV();
+			XmlCryptographicInformation cryptographicInfo = sav.getCryptographicInfo();
+			if (!cryptographicInfo.isSecure()) {
+				foundWeakAlgo = true;
+				assertTrue(validationDate.after(cryptographicInfo.getNotAfter()));
+			}
+		}
+		assertTrue(foundWeakAlgo);
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 
-		DetailedReport detailedReport = reports.getDetailedReport();
 		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicBuildingBlocksIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, detailedReport.getBasicBuildingBlocksSubIndication(simpleReport.getFirstSignatureId()));
 

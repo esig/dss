@@ -100,7 +100,7 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 
 			notAfter = expirationDates.get(digestAlgoUsedToSignThisToken);
 			Date expirationEncryption = expirationDates.get(encryptionAlgoUsedToSignThisToken + keyLengthUsedToSignThisToken);
-			if (notAfter == null || (expirationEncryption != null && notAfter.before(expirationEncryption))) {
+			if (notAfter == null || (expirationEncryption != null && notAfter.after(expirationEncryption))) {
 				notAfter = expirationEncryption;
 			}
 		}
