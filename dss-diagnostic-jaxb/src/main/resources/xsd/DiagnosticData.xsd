@@ -594,7 +594,7 @@
 	
 	<xs:complexType name="CertificateRef">
 		<xs:sequence>
-			<xs:element name="Location" type="CertificateRefLocationType" />
+			<xs:element name="Origin" type="CertificateRefOriginType" />
 			<xs:element name="IssuerSerial" type="xs:base64Binary" />
 			<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" />
 		</xs:sequence>
@@ -625,7 +625,7 @@
 		</xs:restriction>
 	</xs:simpleType>
 	
-	<xs:simpleType name="CertificateRefLocationType" final="restriction">
+	<xs:simpleType name="CertificateRefOriginType" final="restriction">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="SIGNING_CERTIFICATE" />
 			<xs:enumeration value="COMPLETE_CERTIFICATE_REFS" />
@@ -758,7 +758,7 @@
 	
 	<xs:complexType name="RevocationRef">
 		<xs:sequence>
-			<xs:element name="Location" type="RevocationRefLocationType" />
+			<xs:element name="Origin" type="RevocationRefOriginType" />
 			<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" minOccurs="0" />
 			<xs:element name="ProducedAt" type="xs:dateTime" minOccurs="0" /> <!-- OCSP -->
 			<xs:choice minOccurs="0"> <!-- OCSP -->
@@ -788,7 +788,7 @@
 		</xs:restriction>
 	</xs:simpleType>
 	
-	<xs:simpleType name="RevocationRefLocationType" final="restriction">
+	<xs:simpleType name="RevocationRefOriginType" final="restriction">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="COMPLETE_REVOCATION_REFS" />
 			<xs:enumeration value="ATTRIBUTE_REVOCATION_REFS" />

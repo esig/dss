@@ -129,7 +129,7 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 			}
 		}
 		for (CRLRef crlRef : signatureCRLSource.getAllCRLReferences()) {
-			addReference(crlRef, crlRef.getLocation());
+			addReference(crlRef, crlRef.getOrigin());
 		}
 	}
 	

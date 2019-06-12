@@ -20,7 +20,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.XmlRevocationOrigin;
-import eu.europa.esig.dss.validation.XmlRevocationRefLocation;
+import eu.europa.esig.dss.validation.XmlRevocationRefOrigin;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
@@ -48,7 +48,7 @@ public class CAdESLTALevelExtendedTest {
 		List<String> timestampRevocationValues = signature.getRevocationIdsByOrigin(XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES);
 		assertNotNull(timestampRevocationValues);
 		assertEquals(1, timestampRevocationValues.size());
-		List<XmlRevocationRef> timestampRevocationRefs = signature.getFoundRevocationRefsByLocation(XmlRevocationRefLocation.TIMESTAMP_REVOCATION_REFS);
+		List<XmlRevocationRef> timestampRevocationRefs = signature.getFoundRevocationRefsByOrigin(XmlRevocationRefOrigin.TIMESTAMP_REVOCATION_REFS);
 		assertNotNull(timestampRevocationRefs);
 		assertEquals(1, timestampRevocationRefs.size());
 		

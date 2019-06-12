@@ -888,7 +888,7 @@ public class DiagnosticDataBuilder {
 		if (refDigest != null) {
 			certificateRef.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(refDigest.getAlgorithm(), refDigest.getValue()));
 		}
-		certificateRef.setLocation(CertificateRefLocationType.valueOf(ref.getLocation().toString()));
+		certificateRef.setOrigin(CertificateRefOriginType.valueOf(ref.getLocation().toString()));
 		return certificateRef;
 	}
 	
@@ -1056,7 +1056,7 @@ public class DiagnosticDataBuilder {
 	
 	private XmlRevocationRef getXmlCRLRevocationRef(CRLRef crlRef) {
 		XmlRevocationRef xmlRevocationRef = new XmlRevocationRef();
-		xmlRevocationRef.setLocation(XmlRevocationRefLocation.valueOf(crlRef.getLocation().toString()));
+		xmlRevocationRef.setOrigin(XmlRevocationRefOrigin.valueOf(crlRef.getOrigin().toString()));
 		if (crlRef.getDigest() != null) {
 			xmlRevocationRef.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(crlRef.getDigest()));
 		}
@@ -1065,7 +1065,7 @@ public class DiagnosticDataBuilder {
 	
 	private XmlRevocationRef getXmlOCSPRevocationRef(OCSPRef ocspRef) {
 		XmlRevocationRef xmlRevocationRef = new XmlRevocationRef();
-		xmlRevocationRef.setLocation(XmlRevocationRefLocation.valueOf(ocspRef.getLocation().toString()));
+		xmlRevocationRef.setOrigin(XmlRevocationRefOrigin.valueOf(ocspRef.getOrigin().toString()));
 		if (ocspRef.getDigest() != null) {
 			xmlRevocationRef.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(ocspRef.getDigest()));
 		}

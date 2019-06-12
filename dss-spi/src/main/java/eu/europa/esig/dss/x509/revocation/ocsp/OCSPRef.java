@@ -55,24 +55,24 @@ public class OCSPRef extends RevocationRef {
 	/**
 	 * The default constructor for OCSPRef.
 	 */
-	public OCSPRef(Digest digest, Date producedAt, ResponderId responderId, RevocationOrigin location) {
+	public OCSPRef(Digest digest, Date producedAt, ResponderId responderId, RevocationOrigin origin) {
 		this.digest = digest;
 		this.producedAt = producedAt;
 		this.responderId = responderId;
-		this.location = location;
+		this.origin = origin;
 	}
 
 	/**
 	 * The default constructor for OCSPRef.
 	 */
-	public OCSPRef(final OcspResponsesID ocspResponsesID, RevocationOrigin location) {
+	public OCSPRef(final OcspResponsesID ocspResponsesID, RevocationOrigin origin) {
 		final OtherHash otherHash = ocspResponsesID.getOcspRepHash();
 		if (otherHash != null) {
 			DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(otherHash.getHashAlgorithm().getAlgorithm().getId());
 			byte[] digestValue = otherHash.getHashValue();
 			this.digest = new Digest(digestAlgorithm, digestValue);
 		} else {
-			LOG.warn("Digest is not present for an OCSPRef with location [{}]!", location.name());
+			LOG.warn("Digest is not present for an OCSPRef with location [{}]!", origin.name());
 		}
 		
 		this.producedAt = DSSASN1Utils.getDate(ocspResponsesID.getOcspIdentifier().getProducedAt());
@@ -87,7 +87,7 @@ public class OCSPRef extends RevocationRef {
 			this.responderId.setKey(key);
 		}
 		
-		this.location = location;
+		this.origin = origin;
 	}
 	
 	public Date getProducedAt() {
@@ -142,7 +142,7 @@ public class OCSPRef extends RevocationRef {
 			return false;
 		}
 		OCSPRef o = (OCSPRef) obj;
-		if (!producedAt.equals(o.producedAt) || !location.equals(o.getLocation()) ||
+		if (!producedAt.equals(o.producedAt) || !origin.equals(o.getOrigin()) ||
 				responderId.getName() != null && !responderId.getName().equals(o.getResponderId().getName()) ||
 				responderId.getKey() != null && !Arrays.equals(responderId.getKey(), o.getResponderId().getKey()) ||
 				digest != null && !digest.equals(o.getDigest())) {
@@ -153,7 +153,7 @@ public class OCSPRef extends RevocationRef {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(producedAt, responderId.getName(), responderId.getKey(), digest, location);
+		return Objects.hash(producedAt, responderId.getName(), responderId.getKey(), digest, origin);
 	}
 	
 }

@@ -46,13 +46,13 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerData;
 import eu.europa.esig.dss.tsl.ServiceInfo;
 import eu.europa.esig.dss.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateRefLocationType;
+import eu.europa.esig.dss.validation.CertificateRefOriginType;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.DigestMatcherType;
 import eu.europa.esig.dss.validation.RevocationType;
 import eu.europa.esig.dss.validation.SignatureScopeType;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.XmlRevocationRefLocation;
+import eu.europa.esig.dss.validation.XmlRevocationRefOrigin;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -488,11 +488,11 @@ public class XMLSignatureWrappingTest {
 			assertTrue(Utils.isCollectionNotEmpty(relatedCertificate.getOrigins()));
 		}
 		
-		List<XmlFoundCertificate> completeCertificateRefs = signatureWrapper.getFoundCertificatesByRefLocation(CertificateRefLocationType.COMPLETE_CERTIFICATE_REFS);
+		List<XmlFoundCertificate> completeCertificateRefs = signatureWrapper.getFoundCertificatesByRefOrigin(CertificateRefOriginType.COMPLETE_CERTIFICATE_REFS);
 		assertNotNull(completeCertificateRefs);
 		assertEquals(3, completeCertificateRefs.size());
 		
-		List<XmlRevocationRef> completeRevocationRefs = signatureWrapper.getFoundRevocationRefsByLocation(XmlRevocationRefLocation.COMPLETE_REVOCATION_REFS);
+		List<XmlRevocationRef> completeRevocationRefs = signatureWrapper.getFoundRevocationRefsByOrigin(XmlRevocationRefOrigin.COMPLETE_REVOCATION_REFS);
 		assertNotNull(completeRevocationRefs);
 		assertEquals(2, completeRevocationRefs.size());
 		

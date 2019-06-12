@@ -10,7 +10,7 @@ public abstract class RevocationRef {
 
 	protected Digest digest = null;
 	
-	protected RevocationOrigin location;
+	protected RevocationOrigin origin;
 	
 	private String dssId;
 
@@ -18,8 +18,8 @@ public abstract class RevocationRef {
 		return digest;
 	}
 	
-	public RevocationOrigin getLocation() {
-		return location;
+	public RevocationOrigin getOrigin() {
+		return origin;
 	}
 	
 	/**
@@ -47,12 +47,12 @@ public abstract class RevocationRef {
 			return false;
 		}
 		RevocationRef o = (RevocationRef) obj;
-		return digest.equals(o.getDigest()) && location.equals(o.location);
+		return digest.equals(o.getDigest()) && origin.equals(o.origin);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(digest, location);
+		return Objects.hash(digest, origin);
 	}
 
 }

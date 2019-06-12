@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.validation;
 
-public enum XmlRevocationRefLocation {
+public enum XmlRevocationRefOrigin {
 	
 	/**
 	 * The revocation reference was found in the signature 'complete-revocation-references' attribute (used in CAdES and XAdES)

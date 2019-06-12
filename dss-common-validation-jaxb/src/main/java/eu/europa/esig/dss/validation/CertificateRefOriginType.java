@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.validation;
 
-public enum CertificateRefLocationType {
+public enum CertificateRefOriginType {
 	
 	SIGNING_CERTIFICATE,
 	

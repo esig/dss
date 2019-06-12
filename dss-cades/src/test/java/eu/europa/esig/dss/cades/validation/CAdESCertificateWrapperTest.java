@@ -16,7 +16,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRelatedCertificate;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.CertificateRefLocationType;
+import eu.europa.esig.dss.validation.CertificateRefOriginType;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.XmlCertificateSourceType;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -63,7 +63,7 @@ public class CAdESCertificateWrapperTest extends PKIFactoryAccess {
 		List<XmlRelatedCertificate> foundCertificates = signatureWrapper.getRelatedCertificates();
 		assertNotNull(foundCertificates);
 		assertEquals(5, foundCertificates.size());
-		List<XmlFoundCertificate> signinigCertificates = signatureWrapper.getFoundCertificatesByRefLocation(CertificateRefLocationType.SIGNING_CERTIFICATE);
+		List<XmlFoundCertificate> signinigCertificates = signatureWrapper.getFoundCertificatesByRefOrigin(CertificateRefOriginType.SIGNING_CERTIFICATE);
 		assertNotNull(foundCertificates);
 		assertEquals(1, signinigCertificates.size());
 		XmlFoundCertificate signCertificate = signinigCertificates.get(0);

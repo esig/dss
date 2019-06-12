@@ -48,9 +48,9 @@ public final class CRLRef extends RevocationRef {
 	/**
 	 * The default constructor for CRLRef.
 	 */
-	public CRLRef(Digest digest, RevocationOrigin location) {
+	public CRLRef(Digest digest, RevocationOrigin origin) {
 		this.digest = digest;
-		this.location = location;
+		this.origin = origin;
 	}
 
 	/**
@@ -58,7 +58,7 @@ public final class CRLRef extends RevocationRef {
 	 *
 	 * @param cmsRef
 	 */
-	public CRLRef(CrlValidatedID cmsRef, RevocationOrigin location) {
+	public CRLRef(CrlValidatedID cmsRef, RevocationOrigin origin) {
 		try {
 			final CrlIdentifier crlIdentifier = cmsRef.getCrlIdentifier();
 			if (crlIdentifier != null) {
@@ -72,7 +72,7 @@ public final class CRLRef extends RevocationRef {
 			byte[] digestValue = crlHash.getHashValue();
 			this.digest = new Digest(digestAlgorithm, digestValue);
 			
-			this.location = location;
+			this.origin = origin;
 		} catch (ParseException ex) {
 			throw new DSSException(ex);
 		}

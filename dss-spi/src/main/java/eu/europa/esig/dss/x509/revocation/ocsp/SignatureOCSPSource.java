@@ -129,7 +129,7 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 			}
 		}
 		for (OCSPRef ocspRef : signatureOCSPSource.getAllOCSPReferences()) {
-			addReference(ocspRef, ocspRef.getLocation());
+			addReference(ocspRef, ocspRef.getOrigin());
 		}
 	}
 	
