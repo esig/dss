@@ -50,13 +50,14 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.TimestampCertificateSource;
 import eu.europa.esig.dss.x509.ArchiveTimestampType;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.TimestampLocation;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.Token;
+import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
+import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 
 /**
  * SignedToken containing a TimeStamp.
@@ -72,6 +73,10 @@ public class TimestampToken extends Token {
 	private final TimestampType timeStampType;
 
 	private final TimestampCertificateSource certificateSource;
+	
+	private final SignatureCRLSource crlSource;
+	
+	private final SignatureOCSPSource ocspSource;
 
 	private boolean processed = false;
 
@@ -126,6 +131,10 @@ public class TimestampToken extends Token {
 		this(timeStamp, type, new CertificatePool());
 	}
 
+	public TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final CertificatePool certPool) {
+		this(timeStamp, type, certPool, null, null, null);
+	}
+
 	/**
 	 * Constructor with an indication of the timestamp type. The default constructor for {@code TimestampToken}.
 	 *
@@ -135,16 +144,25 @@ public class TimestampToken extends Token {
 	 *            {@code TimestampType}
 	 * @param certPool
 	 *            {@code CertificatePool} which is used to identify the signing certificate of the timestamp
+	 * @param crlSource
+	 *            {@code OfflineCRLSource} CRLSource of the timestamp (used in CAdES)
+	 * @param ocspSource
+	 *            {@code OfflineOCSPSource} OCSPSource of the timestamp (used in CAdES)
+	 * @param timeStampLocation
+	 *            {@code TimestampLocation} defines where the timestamp comes from
 	 */
-	public TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final CertificatePool certPool) {
-		this(timeStamp, type, new TimestampCertificateSource(timeStamp, certPool), null);
+	public TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final CertificatePool certPool,
+			final SignatureCRLSource crlSource, final SignatureOCSPSource ocspSource, final TimestampLocation timeStampLocation) {
+		this(timeStamp, type, new TimestampCertificateSource(timeStamp, certPool), crlSource, ocspSource, timeStampLocation);
 	}
 	
 	TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final TimestampCertificateSource certificateSource, 
-			final TimestampLocation timeStampLocation) {
+			 final SignatureCRLSource crlSource, final SignatureOCSPSource ocspSource, final TimestampLocation timeStampLocation) {
 		this.timeStamp = timeStamp;
 		this.timeStampType = type;
 		this.certificateSource = certificateSource;
+		this.crlSource = crlSource;
+		this.ocspSource = ocspSource;
 		if (timeStampLocation != null) {
 			this.timeStampLocation = timeStampLocation;
 		}
@@ -154,7 +172,7 @@ public class TimestampToken extends Token {
 	 * Creates a new instance of {@link TimestampToken}
 	 */
 	public TimestampToken clone() {
-		return new TimestampToken(timeStamp, timeStampType, certificateSource, timeStampLocation);
+		return new TimestampToken(timeStamp, timeStampType, certificateSource, crlSource, ocspSource, timeStampLocation);
 	}
 
 	@Override
@@ -166,7 +184,23 @@ public class TimestampToken extends Token {
 	public String getAbbreviation() {
 		return timeStampType.name() + ": " + getDSSIdAsString() + ": " + DSSUtils.formatInternal(timeStamp.getTimeStampInfo().getGenTime());
 	}
+	
+	/**
+	 * Returns {@code SignatureCRLSource} for the timestamp
+	 * @return {@link SignatureCRLSource}
+	 */
+	public SignatureCRLSource getCRLSource() {
+		return crlSource;
+	}
 
+	/**
+	 * Returns {@code SignatureOCSPSource} for the timestamp
+	 * @return {@link SignatureOCSPSource}
+	 */
+	public SignatureOCSPSource getOCSPSource() {
+		return ocspSource;
+	}
+	
 	@Override
 	protected boolean checkIsSignedBy(final CertificateToken candidate) {
 

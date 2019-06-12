@@ -20,6 +20,8 @@ public interface SignatureTimestampSource {
 	
 	List<TimestampToken> getDocumentTimestamps();
 	
+	List<TimestampToken> getAllTimestamps();
+	
 	/**
 	 * This method allows to add an external timestamp. The given timestamp must be processed before.
 	 * 

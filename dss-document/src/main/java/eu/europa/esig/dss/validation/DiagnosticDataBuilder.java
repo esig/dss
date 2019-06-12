@@ -949,21 +949,13 @@ public class DiagnosticDataBuilder {
 
 	private List<XmlTimestamp> getXmlTimestamps(AdvancedSignature signature) {
 		List<XmlTimestamp> xmlTimestamps = new ArrayList<XmlTimestamp>();
-		xmlTimestamps.addAll(getXmlTimestamps(signature.getContentTimestamps()));
-		xmlTimestamps.addAll(getXmlTimestamps(signature.getSignatureTimestamps()));
-		xmlTimestamps.addAll(getXmlTimestamps(signature.getTimestampsX1()));
-		xmlTimestamps.addAll(getXmlTimestamps(signature.getTimestampsX2()));
-		xmlTimestamps.addAll(getXmlTimestamps(signature.getArchiveTimestamps()));
+		xmlTimestamps.addAll(getXmlTimestamps(signature.getAllTimestamps()));
 		return xmlTimestamps;
 	}
 	
 	private List<XmlFoundTimestamp> getXmlFoundTimestamps(AdvancedSignature signature) {
 		List<XmlFoundTimestamp> foundTimestamps = new ArrayList<XmlFoundTimestamp>();
-		foundTimestamps.addAll(getFoundTimestamps(signature.getContentTimestamps()));
-		foundTimestamps.addAll(getFoundTimestamps(signature.getSignatureTimestamps()));
-		foundTimestamps.addAll(getFoundTimestamps(signature.getTimestampsX1()));
-		foundTimestamps.addAll(getFoundTimestamps(signature.getTimestampsX2()));
-		foundTimestamps.addAll(getFoundTimestamps(signature.getArchiveTimestamps()));
+		foundTimestamps.addAll(getFoundTimestamps(signature.getAllTimestamps()));
 		return foundTimestamps;
 	}
 
@@ -1008,9 +1000,10 @@ public class DiagnosticDataBuilder {
 	}
 
 	private List<XmlRelatedRevocation> getXmlRelatedRevocations(AdvancedSignature signature) {
-		List<XmlRelatedRevocation> xmlRevocationRefs = new ArrayList<XmlRelatedRevocation>();
-		xmlRevocationRefs.addAll(getXmlRevocationsByType(signature, signature.getAllRevocationTokens()));
-		return xmlRevocationRefs;
+		List<XmlRelatedRevocation> xmlRelatedRevocations = new ArrayList<XmlRelatedRevocation>();
+		xmlRelatedRevocations.addAll(getXmlRevocationsByType(signature, signature.getAllRevocationTokens()));
+		xmlRelatedRevocations.addAll(getXmlRevocationsByType(signature, signature.getRevocationsFromTimestampTokenSources()));
+		return xmlRelatedRevocations;
 	}
 
 	private List<XmlRelatedRevocation> getXmlRevocationsByType(AdvancedSignature signature, Collection<RevocationToken> revocationTokens) {

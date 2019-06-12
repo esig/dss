@@ -1,20 +1,18 @@
 package eu.europa.esig.dss.cades.validation;
 
-import org.bouncycastle.asn1.cms.AttributeTable;
-import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.tsp.TimeStampToken;
 
 import eu.europa.esig.dss.x509.RevocationOrigin;
 
 /**
- * CRLSource that retrieves information embedded to a {@link TimeStampToken}
+ * OCSPSource that retrieves information embedded to a {@link TimeStampToken}
  *
  */
 @SuppressWarnings("serial")
-public class CAdESTimeStampCRLSource extends CMSCRLSource {
+public class TimestampOCSPSource extends CAdESOCSPSource {
 
-	CAdESTimeStampCRLSource(CMSSignedData cmsSignedData, AttributeTable unsignedAttributes) {
-		super(cmsSignedData, unsignedAttributes);
+	TimestampOCSPSource(TimeStampToken timeStampToken) {
+		super(timeStampToken.toCMSSignedData(), timeStampToken.getUnsignedAttributes());
 	}
 	
 	@Override

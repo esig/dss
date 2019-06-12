@@ -1,7 +1,6 @@
 package eu.europa.esig.dss.cades.validation;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.bouncycastle.asn1.ASN1Encodable;
@@ -83,18 +82,6 @@ public class CAdESAttribute implements ISignatureAttribute {
 	 */
 	public TimeStampToken toTimeStampToken() {
 		return DSSASN1Utils.getTimeStampToken(attribute);
-	}
-	
-	/**
-	 * Returns generation time in case of a timestamp
-	 * @return generation {@link Date}
-	 */
-	public Date getTimeStampGenerationTime() {
-		TimeStampToken timeStampToken = toTimeStampToken();
-		if (timeStampToken != null) {
-			return timeStampToken.getTimeStampInfo().getGenTime();
-		}
-		return null;
 	}
 	
 	@Override

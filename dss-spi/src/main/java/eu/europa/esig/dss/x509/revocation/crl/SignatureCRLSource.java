@@ -116,23 +116,6 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 		}
 	}
 	
-	/**
-	 * Allows to add all CRL values from the given {@code signatureCRLSource}
-	 * @param signatureCRLSource {@link SignatureCRLSource}
-	 */
-	protected void addValuesFromInnerSource(SignatureCRLSource signatureCRLSource) {
-		populateCRLRevocationValues(signatureCRLSource);
-
-		for (CRLBinaryIdentifier crlBinary : signatureCRLSource.getAllCRLIdentifiers()) {
-			for (RevocationOrigin origin : crlBinary.getOrigins()) {
-				addCRLBinary(crlBinary, origin);
-			}
-		}
-		for (CRLRef crlRef : signatureCRLSource.getAllCRLReferences()) {
-			addReference(crlRef, crlRef.getOrigin());
-		}
-	}
-	
 	@Override
 	protected void storeCRLToken(CRLBinaryIdentifier crlBinary, CRLToken crlToken) {
 		if (crlsBinaryList.contains(crlBinary)) {

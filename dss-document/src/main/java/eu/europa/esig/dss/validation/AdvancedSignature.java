@@ -45,7 +45,9 @@ import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.dss.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.x509.revocation.crl.ListCRLSource;
 import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
+import eu.europa.esig.dss.x509.revocation.ocsp.ListOCSPSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
@@ -182,6 +184,22 @@ public interface AdvancedSignature extends Serializable {
 	 * @return {@code SignatureOCSPSource}
 	 */
 	SignatureOCSPSource getOCSPSource();
+	
+	/**
+	 * Gets a ListCRLSource representing a merged source from all included to the signature timestamp objects
+	 * NOTE: used in CAdES only
+	 * 
+	 * @return {@link ListCRLSource}
+	 */
+	ListCRLSource getTimestampCRLSource();
+	
+	/**
+	 * Gets a ListOCSPSource representing a merged source from all included to the signature timestamp objects
+	 * NOTE: used in CAdES only
+	 * 
+	 * @return {@link ListOCSPSource}
+	 */
+	ListOCSPSource getTimestampOCSPSource();
 	
 	/**
 	 * Gets a Signature Timestamp source which contains ALL timestamps embedded in the signature.
@@ -352,6 +370,13 @@ public interface AdvancedSignature extends Serializable {
 	List<TimestampToken> getDocumentTimestamps();
 
 	/**
+	 * Returns a list of all timestamps found in the signature
+	 * 
+	 * @return {@code List} of {@code TimestampToken}s
+	 */
+	List<TimestampToken> getAllTimestamps();
+
+	/**
 	 * This method allows to add an external timestamp. The given timestamp must be processed before.
 	 * 
 	 * @param timestamp
@@ -489,129 +514,136 @@ public interface AdvancedSignature extends Serializable {
 	// ------------------------ TS 119 102-2 Specifics
 
 	/**
-	 * Retrieves the set of all {@link RevocationToken}s in the signature
+	 * Retrieves the set of all {@code RevocationToken}s in the signature
 	 * @return list of {@link RevocationToken}s
 	 */
 	Set<RevocationToken> getAllRevocationTokens();
 	
 	/**
-	 * Retrieves the list of all {@link RevocationToken}s present in 'RevocationValues' element
+	 * Retrieves the list of all {@code RevocationToken}s present in 'RevocationValues' element
 	 * NOTE: Applicable only for CAdES and XAdES revocation sources
 	 * @return list of {@link RevocationToken}s
 	 */
 	List<RevocationToken> getRevocationValuesTokens();
 
 	/**
-	 * Retrieves the list of all {@link RevocationToken}s present in 'AttributeRevocationValues' element
+	 * Retrieves the list of all {@code RevocationToken}s present in 'AttributeRevocationValues' element
 	 * NOTE: Applicable only for XAdES revocation source
 	 * @return list of {@link RevocationToken}s
 	 */
 	List<RevocationToken> getAttributeRevocationValuesTokens();
 
 	/**
-	 * Retrieves the list of all {@link RevocationToken}s present in 'TimestampValidationData/RevocationValues' element
+	 * Retrieves the list of all {@code RevocationToken}s present in 'TimestampValidationData/RevocationValues' element
 	 * NOTE: Applicable only for XAdES revocation source
 	 * @return list of {@link RevocationToken}s
 	 */
 	List<RevocationToken> getTimestampRevocationValuesTokens();
 
 	/**
-	 * Retrieves the list of all {@link RevocationToken}s present in 'DSS' dictionary
+	 * Retrieves the list of all {@code RevocationToken}s present in 'DSS' dictionary
 	 * NOTE: Applicable only for PAdES revocation source
 	 * @return list of {@link RevocationToken}s
 	 */
 	List<RevocationToken> getDSSDictionaryRevocationTokens();
 
 	/**
-	 * Retrieves the list of all {@link RevocationToken}s present in 'VRI' dictionary
+	 * Retrieves the list of all {@code RevocationToken}s present in 'VRI' dictionary
 	 * NOTE: Applicable only for PAdES revocation source
 	 * @return list of {@link RevocationToken}s
 	 */
 	List<RevocationToken> getVRIDictionaryRevocationTokens();
 
 	/**
-	 * Retrieves the list of all {@link RevocationToken}s present in 'CompleteRevocationRefs' element
+	 * Retrieves the list of all {@code RevocationToken}s present in 'CompleteRevocationRefs' element
 	 * NOTE: Applicable only for XAdES and CAdES revocation sources
 	 * @return list of {@link RevocationToken}s
 	 */
 	List<RevocationToken> getCompleteRevocationTokens();
 
 	/**
-	 * Retrieves the list of all {@link RevocationToken}s present in 'AttributeRevocationRefs' element
+	 * Retrieves the list of all {@code RevocationToken}s present in 'AttributeRevocationRefs' element
 	 * NOTE: Applicable only for XAdES and CAdES revocation sources
 	 * @return list of {@link RevocationToken}s
 	 */
 	List<RevocationToken> getAttributeRevocationTokens();
 	
 	/**
-	 * Retrieves a list of all {@link CRLRef}s present in 'CompleteRevocationRefs' element
+	 * Retrieves a list of all {@code RevocationToken}s found in the embedded timestamp sources
+	 * NOTE: Applicable only for CAdES
+	 * @return list of {@link RevocationToken}s
+	 */
+	List<RevocationToken> getRevocationsFromTimestampTokenSources();
+	
+	/**
+	 * Retrieves a list of all {@code CRLRef}s present in 'CompleteRevocationRefs' element
 	 * NOTE: Applicable only for XAdES and CAdES revocation sources
 	 * @return list of {@link CRLRef}s
 	 */
 	List<CRLRef> getCompleteRevocationCRLReferences();
 	
 	/**
-	 * Retrieves a list of all {@link CRLRef}s present in 'AttributeRevocationRefs' element
+	 * Retrieves a list of all {@code CRLRef}s present in 'AttributeRevocationRefs' element
 	 * NOTE: Applicable only for XAdES and CAdES revocation sources
 	 * @return list of {@link CRLRef}s
 	 */
 	List<CRLRef> getAttributeRevocationCRLReferences();
 	
 	/**
-	 * Retrieves a list of all {@link CRLRef}s present in a timestamp element
+	 * Retrieves a list of all {@code CRLRef}s present in a timestamp element
 	 * NOTE: Applicable only for CAdES revocation source
 	 * @return list of {@link CRLRef}s
 	 */
 	List<CRLRef> getTimestampRevocationCRLReferences();
 	
 	/**
-	 * Retrieves a list of all {@link OCSPRef}s present in 'CompleteRevocationRefs' element
+	 * Retrieves a list of all {@code OCSPRef}s present in 'CompleteRevocationRefs' element
 	 * NOTE: Applicable only for XAdES and CAdES revocation sources
 	 * @return list of {@link OCSPRef}s
 	 */
 	List<OCSPRef> getCompleteRevocationOCSPReferences();
 	
 	/**
-	 * Retrieves a list of all {@link OCSPRef}s present in 'AttributeRevocationRefs' element
+	 * Retrieves a list of all {@code OCSPRef}s present in 'AttributeRevocationRefs' element
 	 * NOTE: Applicable only for XAdES and CAdES revocation sources
 	 * @return list of {@link OCSPRef}s
 	 */
 	List<OCSPRef> getAttributeRevocationOCSPReferences();
 	
 	/**
-	 * Retrieves a list of all {@link OCSPRef}s present in a timestamp element
+	 * Retrieves a list of all {@code OCSPRef}s present in a timestamp element
 	 * NOTE: Applicable only for CAdES revocation source
 	 * @return list of {@link OCSPRef}s
 	 */
 	List<OCSPRef> getTimestampRevocationOCSPReferences();
 	
 	/**
-	 * Returns a list of all {@link EncapsulatedRevocationTokenIdentifier}s found in CRL and OCSP sources
+	 * Returns a list of all {@code EncapsulatedRevocationTokenIdentifier}s found in CRL and OCSP sources
 	 * @return list of all {@link EncapsulatedRevocationTokenIdentifier}s
 	 */
 	List<EncapsulatedRevocationTokenIdentifier> getAllFoundRevocationIdentifiers();
 	
 	/**
-	 * Retrieves a list of all found {@link RevocationRef}s present in the signature
+	 * Retrieves a list of all found {@code RevocationRef}s present in the signature
 	 * @return list of {@link RevocationRef}s
 	 */
 	List<RevocationRef> getAllFoundRevocationRefs();
 	
 	/**
-	 * Returns a list of all orphan {@link RevocationRef}s found into the signature
+	 * Returns a list of all orphan {@code RevocationRef}s found into the signature
 	 * @return list of {@link RevocationRef}s
 	 */
 	List<RevocationRef> getOrphanRevocationRefs();
 	
 	/**
-	 * Retrieves a list of found {@link RevocationRef}s for the given {@code revocationToken}
+	 * Retrieves a list of found {@code RevocationRef}s for the given {@code revocationToken}
 	 * @param revocationToken {@link RevocationToken} to get references for
 	 * @return list of {@link RevocationRef}s
 	 */
 	List<RevocationRef> findRefsForRevocationToken(RevocationToken revocationToken);
 	
 	/**
-	 * Retrieves a list of found {@link RevocationRef}s for the given {@code revocationIdentifier}
+	 * Retrieves a list of found {@code RevocationRef}s for the given {@code revocationIdentifier}
 	 * @param revocationIdentifier {@link EncapsulatedRevocationTokenIdentifier} to get references for
 	 * @return list of {@link RevocationRef}s
 	 */

@@ -25,9 +25,11 @@ import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.SignatureCertificateSource;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.revocation.crl.CRLBinaryIdentifier;
-import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
+import eu.europa.esig.dss.x509.revocation.crl.ListCRLSource;
+import eu.europa.esig.dss.x509.revocation.crl.OfflineCRLSource;
+import eu.europa.esig.dss.x509.revocation.ocsp.ListOCSPSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseIdentifier;
-import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
+import eu.europa.esig.dss.x509.revocation.ocsp.OfflineOCSPSource;
 
 /**
  * Contains a set of {@link TimestampToken}s found in a {@link DefaultAdvancedSignature} object
@@ -37,8 +39,8 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractTimestampSource.class);
 	
 	protected SignatureCertificateSource certificateSource;
-	protected SignatureCRLSource crlSource;
-	protected SignatureOCSPSource ocspSource;
+	protected ListCRLSource crlSource;
+	protected ListOCSPSource ocspSource;
 	
 	protected String signatureId;
 	protected List<SignatureScope> signatureScopes;
@@ -63,12 +65,12 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 		this.certificateSource = certificateSource;
 	}
 	
-	public void setCRLSource(SignatureCRLSource crlSource) {
-		this.crlSource = crlSource;
+	public void setCRLSource(OfflineCRLSource crlSource) {
+		this.crlSource = new ListCRLSource(crlSource);
 	}
 	
-	public void setOCSPSource(SignatureOCSPSource ocspSource) {
-		this.ocspSource = ocspSource;
+	public void setOCSPSource(OfflineOCSPSource ocspSource) {
+		this.ocspSource = new ListOCSPSource(ocspSource);
 	}
 	
 	public void setSignatureDSSId(String signatureDSSId) {
@@ -127,6 +129,17 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	public List<TimestampToken> getDocumentTimestamps() {
 		/** Applicable only for PAdES */
 		return Collections.emptyList();
+	}
+	
+	@Override
+	public List<TimestampToken> getAllTimestamps() {
+		List<TimestampToken> timestampTokens = new ArrayList<TimestampToken>();
+		timestampTokens.addAll(getContentTimestamps());
+		timestampTokens.addAll(getSignatureTimestamps());
+		timestampTokens.addAll(getTimestampsX1());
+		timestampTokens.addAll(getTimestampsX2());
+		timestampTokens.addAll(getArchiveTimestamps());
+		return timestampTokens;
 	}
 	
 	/**
@@ -219,7 +232,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 		
 		final SignatureProperties<SignatureAttribute> unsignedSignatureProperties = getUnsignedSignatureProperties();
 		if (!unsignedSignatureProperties.isExist()) {
-			// we cannot create timestamp tokens if signature does not contain "unsigned-signature-properties" element
+			// timestamp tokens cannot be created if signature does not contain "unsigned-signature-properties" element
 			return;
 		}
 		

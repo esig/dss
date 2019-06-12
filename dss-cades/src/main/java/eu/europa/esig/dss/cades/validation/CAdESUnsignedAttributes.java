@@ -8,11 +8,13 @@ import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signatureTi
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.cms.SignerInformation;
+import org.bouncycastle.tsp.TimeStampToken;
 
 public class CAdESUnsignedAttributes extends CAdESSigProperties {
 	
@@ -42,6 +44,7 @@ public class CAdESUnsignedAttributes extends CAdESSigProperties {
 	}
 	
 	private List<CAdESAttribute> sortTimestamps(List<CAdESAttribute> attributes) {
+		// TODO: improve ?
 		for (int ii = 0; ii < attributes.size() - 1; ii++) {
 			for (int jj = 0; jj < attributes.size() - ii - 1; jj++) {
 				CAdESAttribute cadesAttribute = attributes.get(jj);
@@ -53,13 +56,25 @@ public class CAdESUnsignedAttributes extends CAdESSigProperties {
 						Collections.swap(attributes, jj, jj+1);
 					} 
 					// swap if the current element was generated after the following timestamp attribute
-					else if (cadesAttribute.getTimeStampGenerationTime().after(nextCAdESAttribute.getTimeStampGenerationTime())) {
+					else if (getTimeStampGenerationTime(cadesAttribute).after(getTimeStampGenerationTime(nextCAdESAttribute))) {
 						Collections.swap(attributes, jj, jj+1);
 					}
 				}
 			}
 		}
 		return attributes;
+	}
+	
+	/**
+	 * Returns generation time in case of a timestamp
+	 * @return generation {@link Date}
+	 */
+	private Date getTimeStampGenerationTime(CAdESAttribute attribute) {
+		TimeStampToken timeStampToken = attribute.toTimeStampToken();
+		if (timeStampToken != null) {
+			return timeStampToken.getTimeStampInfo().getGenTime();
+		}
+		return null;
 	}
 
 }

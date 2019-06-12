@@ -116,23 +116,6 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 		}
 	}
 	
-	/**
-	 * Allows to add all OCSP values from the given {@code signatureOCSPSource}
-	 * @param signatureOCSPSource {@link SignatureOCSPSource}
-	 */
-	protected void addValuesFromInnerSource(SignatureOCSPSource signatureOCSPSource) {
-		populateOCSPRevocationTokenLists(signatureOCSPSource);
-
-		for (OCSPResponseIdentifier ocspResponse : signatureOCSPSource.getAllOCSPIdentifiers()) {
-			for (RevocationOrigin origin : ocspResponse.getOrigins()) {
-				addOCSPResponse(ocspResponse, origin);
-			}
-		}
-		for (OCSPRef ocspRef : signatureOCSPSource.getAllOCSPReferences()) {
-			addReference(ocspRef, ocspRef.getOrigin());
-		}
-	}
-	
 	private void storeOCSPToken(Entry<OCSPResponseIdentifier, OCSPToken> responseTokenEntry) {
 		storeOCSPToken(responseTokenEntry.getKey(), responseTokenEntry.getValue());
 	}
