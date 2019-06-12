@@ -41,8 +41,10 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 	/**
 	 * The default constructor for CMSCRLSource.
 	 *
-	 * @param cmsSignedData {@link CMSSignedData}
-	 * @param unsignedAttributes {@link AttributeTable}
+	 * @param cmsSignedData 
+	 * 			{@link CMSSignedData}
+	 * @param unsignedAttributes 
+	 * 			{@link AttributeTable} unsignedAttributes
 	 */
 	public CMSCRLSource(final CMSSignedData cmsSignedData, final AttributeTable unsignedAttributes) {
 		this.cmsSignedData = cmsSignedData;

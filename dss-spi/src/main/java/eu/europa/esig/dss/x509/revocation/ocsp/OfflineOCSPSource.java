@@ -150,7 +150,7 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 	}
 	
 	/**
-	  Returns the identifier related for the provided {@node ocspRef}
+	 * Returns the identifier related for the provided {@code ocspRef}
 	 * @param ocspRef {@link OCSPRef} to find identifier for
 	 * @return {@link OCSPResponseIdentifier} for the reference
 	 */
@@ -174,7 +174,7 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 	}
 	
 	/**
-	 * Returns the identifier related for the provided {@node digest} of reference
+	 * Returns the identifier related for the provided {@code digest} of reference
 	 * @param digest {@link Digest} of the reference
 	 * @return {@link OCSPResponseIdentifier} for the reference
 	 */

@@ -219,7 +219,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 
 	/**
 	 * Returns the identifier related to the {@code crlRef}
-	 * @param {@link CRLRef} to find identifier for
+	 * @param crlRef {@link CRLRef} to find identifier for
 	 * @return {@link CRLBinaryIdentifier} for the reference
 	 */
 	public CRLBinaryIdentifier getIdentifier(CRLRef crlRef) {

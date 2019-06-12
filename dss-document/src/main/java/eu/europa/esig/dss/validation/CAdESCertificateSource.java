@@ -77,7 +77,7 @@ public class CAdESCertificateSource extends CMSCertificateSource {
 	private final AttributeTable signedAttributes;
 	
 	/**
-	 * Map between timestamp ids and related {@link CAdESTimestampCertificateSource}s
+	 * Map between timestamp ids and related {@code CAdESTimestampCertificateSource}s
 	 */
 	private Map<String, TimestampCertificateSource> timestampCertificateSources;
 
@@ -85,8 +85,8 @@ public class CAdESCertificateSource extends CMSCertificateSource {
 	 * The constructor with additional signer id parameter. All certificates are
 	 * extracted during instantiation.
 	 *
-	 * @param cmsSignedData
-	 * @param certPool
+	 * @param cmsSignedData {@link CMSSignedData} of the signature
+	 * @param certPool {@link CertificatePool} is being used
 	 */
 	public CAdESCertificateSource(final CMSSignedData cmsSignedData, final CertificatePool certPool) {
 		this(cmsSignedData, DSSASN1Utils.getFirstSignerInformation(cmsSignedData), certPool);
@@ -96,9 +96,9 @@ public class CAdESCertificateSource extends CMSCertificateSource {
 	 * The constructor with additional signer id parameter. All certificates are
 	 * extracted during instantiation.
 	 *
-	 * @param cmsSignedData
-	 * @param signerInformation
-	 * @param certPool
+	 * @param cmsSignedData {@link CMSSignedData} of the signature
+	 * @param signerInformation {@link SignerInformation}
+	 * @param certPool {@link CertificatePool} is being used
 	 */
 	public CAdESCertificateSource(final CMSSignedData cmsSignedData, SignerInformation signerInformation, final CertificatePool certPool) {
 		super(signerInformation.getUnsignedAttributes(), certPool);
@@ -185,9 +185,9 @@ public class CAdESCertificateSource extends CMSCertificateSource {
 	}
 	
 	/**
-	 * Returns a {@link CAdESTimestampCertificateSource} by its given {@code id}
+	 * Returns a {@code TimestampCertificateSource} by its given {@code id}
 	 * @param id {@link String}
-	 * @return {@link CAdESTimestampCertificateSource}
+	 * @return {@link TimestampCertificateSource}
 	 */
 	public TimestampCertificateSource getTimeStampCRLSourceById(String id) {
 		return timestampCertificateSources.get(id);

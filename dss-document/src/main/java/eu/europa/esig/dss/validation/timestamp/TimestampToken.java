@@ -56,8 +56,6 @@ import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.TimestampLocation;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.Token;
-import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
-import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 
 /**
  * SignedToken containing a TimeStamp.

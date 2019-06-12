@@ -37,9 +37,9 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 	 * The default constructor for CAdESOCSPSource.
 	 *
 	 * @param cms
-	 *            the CMSSignedData
-	 * @param signerInformation
-	 *            the SignerInformation
+	 *            {@link CMSSignedData}
+	 * @param unsignedAttributes
+	 *            {@link AttributeTable} unsignedAttributes
 	 */
 	protected CMSOCSPSource(final CMSSignedData cms, final AttributeTable unsignedAttributes) {
 		this.cmsSignedData = cms;
