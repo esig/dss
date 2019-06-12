@@ -45,7 +45,7 @@
                 <RelatedCertificate Certificate="C-A53125188D2110AA964B02C7B7C6DA3203170894E5FB71FFFB6667D5E6810A36">
                     <Origin>KEY_INFO</Origin>
                     <CertificateRef>
-                        <Location>SIGNING_CERTIFICATE</Location>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
                         <IssuerSerial>MH8weaR3MHUxCzAJBgNVBAYTAlVTMRgwFgYDVQQKEw9HVEUgQ29ycG9yYXRpb24xJzAlBgNVBAsTHkdURSBDeWJlclRydXN0IFNvbHV0aW9ucywgSW5jLjEjMCEGA1UEAxMaR1RFIEN5YmVyVHJ1c3QgR2xvYmFsIFJvb3QCAgGl</IssuerSerial>
                         <DigestAlgoAndValue>
                             <DigestMethod>SHA256</DigestMethod>
@@ -56,7 +56,7 @@
                 <RelatedCertificate Certificate="C-3D62E6557C1DB8C28114420B85F9632206A12586E9EEC4F91280E4D5B6171E1A">
                     <Origin>KEY_INFO</Origin>
                     <CertificateRef>
-                        <Location>SIGNING_CERTIFICATE</Location>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
                         <IssuerSerial>MIGBMHmkdzB1MQswCQYDVQQGEwJVUzEYMBYGA1UEChMPR1RFIENvcnBvcmF0aW9uMScwJQYDVQQLEx5HVEUgQ3liZXJUcnVzdCBTb2x1dGlvbnMsIEluYy4xIzAhBgNVBAMTGkdURSBDeWJlclRydXN0IEdsb2JhbCBSb290AgQHJxQz</IssuerSerial>
                         <DigestAlgoAndValue>
                             <DigestMethod>SHA256</DigestMethod>
@@ -68,7 +68,7 @@
                     <Origin>KEY_INFO</Origin>
                     <Origin>CERTIFICATE_VALUES</Origin>
                     <CertificateRef>
-                        <Location>COMPLETE_CERTIFICATE_REFS</Location>
+                        <Origin>COMPLETE_CERTIFICATE_REFS</Origin>
                         <IssuerSerial>MG8wYKReMFwxCzAJBgNVBAYTAkJFMRwwGgYDVQQKExNDZXJ0aXBvc3Qgcy5hLi9uLnYuMS8wLQYDVQQDEyZDZXJ0aXBvc3QgRS1UcnVzdCBQcmltYXJ5IFF1YWxpZmllZCBDQQILBAAAAAABKV+S8pw=</IssuerSerial>
                         <DigestAlgoAndValue>
                             <DigestMethod>SHA512</DigestMethod>
@@ -76,7 +76,7 @@
                         </DigestAlgoAndValue>
                     </CertificateRef>
                     <CertificateRef>
-                        <Location>SIGNING_CERTIFICATE</Location>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
                         <IssuerSerial>MG8wYKReMFwxCzAJBgNVBAYTAkJFMRwwGgYDVQQKExNDZXJ0aXBvc3Qgcy5hLi9uLnYuMS8wLQYDVQQDEyZDZXJ0aXBvc3QgRS1UcnVzdCBQcmltYXJ5IFF1YWxpZmllZCBDQQILBAAAAAABKV+S8pw=</IssuerSerial>
                         <DigestAlgoAndValue>
                             <DigestMethod>SHA256</DigestMethod>
@@ -88,7 +88,7 @@
                     <Origin>KEY_INFO</Origin>
                     <Origin>CERTIFICATE_VALUES</Origin>
                     <CertificateRef>
-                        <Location>COMPLETE_CERTIFICATE_REFS</Location>
+                        <Origin>COMPLETE_CERTIFICATE_REFS</Origin>
                         <IssuerSerial>MIGGMHekdTBzMQswCQYDVQQGEwJCRTEcMBoGA1UEChMTQ2VydGlwb3N0IHMuYS4vbi52LjFGMEQGA1UEAxM9Q2VydGlwb3N0IEUtVHJ1c3QgU2Vjb25kYXJ5IFF1YWxpZmllZCBDQSBmb3IgUGh5c2ljYWwgUGVyc29ucwILAQAAAAABKdamdKM=</IssuerSerial>
                         <DigestAlgoAndValue>
                             <DigestMethod>SHA512</DigestMethod>
@@ -96,7 +96,7 @@
                         </DigestAlgoAndValue>
                     </CertificateRef>
                     <CertificateRef>
-                        <Location>SIGNING_CERTIFICATE</Location>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
                         <IssuerSerial>MIGGMHekdTBzMQswCQYDVQQGEwJCRTEcMBoGA1UEChMTQ2VydGlwb3N0IHMuYS4vbi52LjFGMEQGA1UEAxM9Q2VydGlwb3N0IEUtVHJ1c3QgU2Vjb25kYXJ5IFF1YWxpZmllZCBDQSBmb3IgUGh5c2ljYWwgUGVyc29ucwILAQAAAAABKdamdKM=</IssuerSerial>
                         <DigestAlgoAndValue>
                             <DigestMethod>SHA256</DigestMethod>
@@ -114,7 +114,7 @@
                     <Type>CRL</Type>
                     <Origin>INTERNAL_REVOCATION_VALUES</Origin>
                     <RevocationRef>
-                        <Location>COMPLETE_REVOCATION_REFS</Location>
+                        <Origin>COMPLETE_REVOCATION_REFS</Origin>
                         <DigestAlgoAndValue>
                             <DigestMethod>SHA512</DigestMethod>
                             <DigestValue>YTjSOn7Dtmc5YoB3xeewpN5zevBnbr3xRnEok9lpXPZzi5bmFXz9LjzPFw9jcJshJ/icLM17ChoIaJYzslj6Gw==</DigestValue>
@@ -129,7 +129,7 @@
                     <Type>CRL</Type>
                     <Origin>INTERNAL_REVOCATION_VALUES</Origin>
                     <RevocationRef>
-                        <Location>COMPLETE_REVOCATION_REFS</Location>
+                        <Origin>COMPLETE_REVOCATION_REFS</Origin>
                         <DigestAlgoAndValue>
                             <DigestMethod>SHA512</DigestMethod>
                             <DigestValue>dgMMZuvb6G2MClB//7Kr2t7EAZ8NU2QK7hOHba4KIsg3zoWPgcqND5nfGY5Z7Gca5hkJNHGi8GhGaNn+MPapVQ==</DigestValue>
@@ -140,7 +140,7 @@
                     <Type>CRL</Type>
                     <Origin>INTERNAL_TIMESTAMP_REVOCATION_VALUES</Origin>
                     <RevocationRef>
-                        <Location>TIMESTAMP_REVOCATION_REFS</Location>
+                        <Origin>TIMESTAMP_REVOCATION_REFS</Origin>
                         <DigestAlgoAndValue>
                             <DigestMethod>SHA512</DigestMethod>
                             <DigestValue>S8f2IHGu/5E8TlLRmQ0UPoXI0Kxh+PP01FUIGfh9Dfrd7LfbyqBS4bJWdEFAmG2PROK71XIp8M9EGbynYfdAfA==</DigestValue>

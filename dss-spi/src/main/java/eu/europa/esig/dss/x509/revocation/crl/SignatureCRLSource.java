@@ -135,7 +135,7 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	
 	@Override
 	protected void storeCRLToken(CRLBinaryIdentifier crlBinary, CRLToken crlToken) {
-		if (crlsBinaryMap.containsKey(crlBinary.asXmlId())) {
+		if (crlsBinaryList.contains(crlBinary)) {
 			List<CRLToken> tokensList = crlTokenMap.get(crlBinary);
 			if (tokensList == null) {
 				tokensList = new ArrayList<CRLToken>();
@@ -285,11 +285,12 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	}
 	
 	private void addReferenceToMap(CRLToken revocationToken, CRLRef reference) {
-		if (revocationRefsMap.containsKey(revocationToken)) {
-			revocationRefsMap.get(revocationToken).add(reference);
-		} else {
-			revocationRefsMap.put(revocationToken, new HashSet<CRLRef>(Arrays.asList(reference)));
+		Set<CRLRef> crlRefs = revocationRefsMap.get(revocationToken);
+		if (crlRefs == null) {
+			crlRefs = new HashSet<CRLRef>();
+			revocationRefsMap.put(revocationToken, crlRefs);
 		}
+		crlRefs.add(reference);
 	}
 
 }

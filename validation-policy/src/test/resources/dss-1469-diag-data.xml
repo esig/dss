@@ -46,7 +46,7 @@
                     <Origin>KEY_INFO</Origin>
                     <Origin>CERTIFICATE_VALUES</Origin>
                     <CertificateRef>
-                        <Location>COMPLETE_CERTIFICATE_REFS</Location>
+                        <Origin>COMPLETE_CERTIFICATE_REFS</Origin>
                         <IssuerSerial>MHAwWKRWMFQxCzAJBgNVBAYTAkJNMRkwFwYDVQQKDBBRdW9WYWRpcyBMaW1pdGVkMSowKAYDVQQDDCFRdW9WYWRpcyBFbnRlcnByaXNlIFRydXN0IENBIDEgRzMCFED2BlNDwEy2cenIJQ6Q69WN2G5V</IssuerSerial>
                         <DigestAlgoAndValue>
                             <DigestMethod>SHA512</DigestMethod>
@@ -58,7 +58,7 @@
                     <Origin>KEY_INFO</Origin>
                     <Origin>CERTIFICATE_VALUES</Origin>
                     <CertificateRef>
-                        <Location>SIGNING_CERTIFICATE</Location>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
                         <IssuerSerial>MIGPMHekdTBzMQswCQYDVQQGEwJCRTEZMBcGA1UEYQwQTlRSQkUtMDUzNzY5ODMxODEgMB4GA1UECgwXUXVvVmFkaXMgVHJ1c3RsaW5rIEJWQkExJzAlBgNVBAMMHlF1b1ZhZGlzIEJlbGdpdW0gSXNzdWluZyBDQSBHMgIUEQcf4B1qBG/LnLVqTopHw3pjfVE=</IssuerSerial>
                         <DigestAlgoAndValue>
                             <DigestMethod>SHA512</DigestMethod>
@@ -78,7 +78,7 @@
                     <Type>CRL</Type>
                     <Origin>INTERNAL_REVOCATION_VALUES</Origin>
                     <RevocationRef>
-                        <Location>COMPLETE_REVOCATION_REFS</Location>
+                        <Origin>COMPLETE_REVOCATION_REFS</Origin>
                         <DigestAlgoAndValue>
                             <DigestMethod>SHA512</DigestMethod>
                             <DigestValue>RMWenCkH4eWNm7vfUjBFlNaZcVqO2H+WXBd6m2wPxaFbT09bDZuaqwSocewe4v16YSCGRoSH/u9aALmOIcnYew==</DigestValue>
@@ -89,7 +89,7 @@
                     <Type>CRL</Type>
                     <Origin>INTERNAL_TIMESTAMP_REVOCATION_VALUES</Origin>
                     <RevocationRef>
-                        <Location>TIMESTAMP_REVOCATION_REFS</Location>
+                        <Origin>TIMESTAMP_REVOCATION_REFS</Origin>
                         <DigestAlgoAndValue>
                             <DigestMethod>SHA512</DigestMethod>
                             <DigestValue>eI6RqmFxdj2LsmLxdw8us5ioy8BwMxBM+dx/Pl5hyO4Qjr3ShwWDRhfqJoFaJhK27Js3EkQWSKeN8Dfib9px8w==</DigestValue>

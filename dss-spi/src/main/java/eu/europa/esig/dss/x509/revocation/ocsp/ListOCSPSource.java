@@ -41,7 +41,7 @@ public class ListOCSPSource extends SignatureOCSPSource {
 	 */
 	public ListOCSPSource(final OfflineOCSPSource ocspSource) {
 		for (OCSPResponseIdentifier ocspResponse : ocspSource.getOCSPResponsesList()) {
-			ocspResponses.put(ocspResponse.asXmlId(), ocspResponse);
+			ocspResponses.add(ocspResponse);
 		}
 	}
 
@@ -60,13 +60,14 @@ public class ListOCSPSource extends SignatureOCSPSource {
 	 */
 	public void addAll(final OfflineOCSPSource offlineOCSPSource) {
 		for (OCSPResponseIdentifier ocspResponse : offlineOCSPSource.getOCSPResponsesList()) {
-			if (!ocspResponses.containsKey(ocspResponse.asXmlId())) {
-				ocspResponses.put(ocspResponse.asXmlId(), ocspResponse);
-			} else {
-				OCSPResponseIdentifier storedOcspResponse = ocspResponses.get(ocspResponse.asXmlId());
+			int ii = ocspResponses.indexOf(ocspResponse);
+			if (ii > -1) {
+				OCSPResponseIdentifier storedOcspResponse = ocspResponses.get(ii);
 				for (RevocationOrigin origin : ocspResponse.getOrigins()) {
 					storedOcspResponse.addOrigin(origin);
 				}
+			} else {
+				ocspResponses.add(ocspResponse);
 			}
 		}
 		if (offlineOCSPSource instanceof SignatureOCSPSource) {

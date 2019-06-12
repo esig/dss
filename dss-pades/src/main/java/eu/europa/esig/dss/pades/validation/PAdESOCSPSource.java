@@ -100,7 +100,7 @@ public class PAdESOCSPSource extends SignatureOCSPSource {
 	private void extractDSSOCSPs() {
 		for (BasicOCSPResp basicOCSPResp : getDssOcspMap().values()) {
 			OCSPResponseIdentifier ocspResponse = OCSPResponseIdentifier.build(basicOCSPResp, RevocationOrigin.INTERNAL_DSS);
-			ocspResponses.put(ocspResponse.asXmlId(), ocspResponse);
+			ocspResponses.add(ocspResponse);
 		}
 	}
 	
@@ -128,11 +128,12 @@ public class PAdESOCSPSource extends SignatureOCSPSource {
 					ocspMap.put(ocspEntry.getKey(), ocspEntry.getValue());
 				}
 				OCSPResponseIdentifier ocspResponse = OCSPResponseIdentifier.build(ocspEntry.getValue(), RevocationOrigin.INTERNAL_VRI);
-				if (ocspResponses.containsKey(ocspResponse.asXmlId())) {
-					OCSPResponseIdentifier storedOCSPResponse = ocspResponses.get(ocspResponse.asXmlId());
+				int ii = ocspResponses.indexOf(ocspResponse);
+				if (ii > -1) {
+					OCSPResponseIdentifier storedOCSPResponse = ocspResponses.get(ii);
 					storedOCSPResponse.addOrigin(RevocationOrigin.INTERNAL_VRI);
 				} else {
-					ocspResponses.put(ocspResponse.asXmlId(), ocspResponse);
+					ocspResponses.add(ocspResponse);
 				}
 			}
 		}

@@ -62,7 +62,7 @@ public class ExternalResourcesOCSPSource extends OfflineOCSPSource {
 			final OCSPResp ocspResp = new OCSPResp(is);
 			final BasicOCSPResp basicOCSPResp = (BasicOCSPResp) ocspResp.getResponseObject();
 			OCSPResponseIdentifier ocspResponse = OCSPResponseIdentifier.build(basicOCSPResp, RevocationOrigin.EXTERNAL);
-			ocspResponses.put(ocspResponse.asXmlId(), ocspResponse);
+			ocspResponses.add(ocspResponse);
 		} catch (Exception e) {
 			throw new DSSException(e);
 		}

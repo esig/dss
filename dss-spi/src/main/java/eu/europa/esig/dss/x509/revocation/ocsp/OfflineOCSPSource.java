@@ -26,9 +26,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bouncycastle.asn1.ocsp.ResponderID;
@@ -54,7 +52,10 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OfflineOCSPSource.class);
 
-	protected final Map<String, OCSPResponseIdentifier> ocspResponses = new HashMap<String, OCSPResponseIdentifier>();
+	/**
+	 * This {@code List} contains all collected OCSP responses.
+	 */
+	protected final List<OCSPResponseIdentifier> ocspResponses = new ArrayList<OCSPResponseIdentifier>();
 
 	@Override
 	public final OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
@@ -90,7 +91,7 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 		Entry<BasicOCSPResp, List<RevocationOrigin>> bestOCSPResponse = null;
 		Date bestUpdate = null;
 		final CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(certificateToken, issuerCertificateToken);
-		for (final OCSPResponseIdentifier response : ocspResponses.values()) {
+		for (final OCSPResponseIdentifier response : ocspResponses) {
 			for (final SingleResp singleResp : response.getBasicOCSPResp().getResponses()) {
 				if (DSSRevocationUtils.matches(certId, singleResp)) {
 					final Date thisUpdate = singleResp.getThisUpdate();
@@ -119,7 +120,7 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 	public Collection<OCSPResponseIdentifier> getOCSPResponsesList() {
 		Collection<OCSPResponseIdentifier> ocspResponsesList = new ArrayList<OCSPResponseIdentifier>();
 		if (!isEmpty()) {
-			for (OCSPResponseIdentifier ocspResponse : ocspResponses.values()) {
+			for (OCSPResponseIdentifier ocspResponse : ocspResponses) {
 				ocspResponsesList.add(ocspResponse);
 			}
 		}
@@ -127,10 +128,10 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 	}
 	
 	public boolean isEmpty() {
-		if (Utils.isMapEmpty(ocspResponses)) {
+		if (Utils.isCollectionEmpty(ocspResponses)) {
 			appendContainedOCSPResponses();
 		}
-		return Utils.isMapEmpty(ocspResponses);
+		return Utils.isCollectionEmpty(ocspResponses);
 	}
 	
 	protected void storeOCSPToken(OCSPResponseIdentifier ocspResponse, OCSPToken ocspToken) {
@@ -143,7 +144,7 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 	 */
 	public Collection<OCSPResponseIdentifier> getAllOCSPIdentifiers() {
 		if (!isEmpty()) {
-			return ocspResponses.values();
+			return ocspResponses;
 		}
 		return Collections.emptyList();
 	}
@@ -157,7 +158,7 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 		if (ocspRef.getDigest() != null) {
 			return getIdentifier(ocspRef.getDigest());
 		} else {
-			for (OCSPResponseIdentifier ocspResponse : ocspResponses.values()) {
+			for (OCSPResponseIdentifier ocspResponse : ocspResponses) {
 				if (ocspRef.getProducedAt().equals(ocspResponse.getBasicOCSPResp().getProducedAt())) {
 					ResponderID responderID = ocspResponse.getBasicOCSPResp().getResponderId().toASN1Primitive();
 					if (ocspRef.getResponderId().getKey() != null &&
@@ -181,7 +182,7 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 		if (digest == null) {
 			return null;
 		}
-		for (OCSPResponseIdentifier ocspResponse : ocspResponses.values()) {
+		for (OCSPResponseIdentifier ocspResponse : ocspResponses) {
 			byte[] digestValue = ocspResponse.getDigestValue(digest.getAlgorithm());
 			if (Arrays.equals(digest.getValue(), digestValue)) {
 				return ocspResponse;
@@ -196,11 +197,12 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 	 * @param origin {@link RevocationOrigin} of the {@code ocspResponse}
 	 */
 	protected void addOCSPResponse(OCSPResponseIdentifier ocspResponse, RevocationOrigin origin) {
-		if (ocspResponses.containsKey(ocspResponse.asXmlId())) {
-			OCSPResponseIdentifier storedOCSPResponse = ocspResponses.get(ocspResponse.asXmlId());
+		int ii = ocspResponses.indexOf(ocspResponse);
+		if (ii > -1) {
+			OCSPResponseIdentifier storedOCSPResponse = ocspResponses.get(ii);
 			storedOCSPResponse.addOrigin(origin);
 		} else {
-			ocspResponses.put(ocspResponse.asXmlId(), ocspResponse);
+			ocspResponses.add(ocspResponse);
 		}
 	}
 

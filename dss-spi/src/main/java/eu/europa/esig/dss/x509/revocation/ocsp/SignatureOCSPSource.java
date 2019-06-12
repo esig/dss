@@ -139,7 +139,7 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 
 	@Override
 	protected void storeOCSPToken(OCSPResponseIdentifier ocspResponse, OCSPToken ocspToken) {
-		if (ocspResponses.containsKey(ocspResponse.asXmlId()) && !ocspTokenMap.containsKey(ocspResponse)) {
+		if (ocspResponses.contains(ocspResponse) && !ocspTokenMap.containsKey(ocspResponse)) {
 			ocspTokenMap.put(ocspResponse, ocspToken);
 			for (RevocationOrigin origin : ocspResponse.getOrigins()) {
 				switch (origin) {
@@ -293,11 +293,12 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	}
 	
 	private void addReferenceToMap(OCSPToken revocationToken, OCSPRef reference) {
-		if (revocationRefsMap.containsKey(revocationToken)) {
-			revocationRefsMap.get(revocationToken).add(reference);
-		} else {
-			revocationRefsMap.put(revocationToken, new HashSet<OCSPRef>(Arrays.asList(reference)));
+		Set<OCSPRef> ocspRefs = revocationRefsMap.get(revocationToken);
+		if (ocspRefs == null) {
+			ocspRefs = new HashSet<OCSPRef>();
+			revocationRefsMap.put(revocationToken, ocspRefs);
 		}
+		ocspRefs.add(reference);
 	}
 
 }

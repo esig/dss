@@ -52,10 +52,9 @@ public abstract class OfflineCRLSource implements CRLSource {
 	private static final Logger LOG = LoggerFactory.getLogger(OfflineCRLSource.class);
 
 	/**
-	 * This {@code HashMap} contains not validated CRL binaries. When the validation passes, the entry will be removed.
-	 * The key is the SHA256 digest of the CRL binaries.
+	 * This {@code List} contains all collected CRL binaries.
 	 */
-	protected Map<String, CRLBinaryIdentifier> crlsBinaryMap = new HashMap<String, CRLBinaryIdentifier>();
+	protected final List<CRLBinaryIdentifier> crlsBinaryList = new ArrayList<CRLBinaryIdentifier>();
 
 	/**
 	 * This {@code HashMap} contains the {@code CRLValidity} object for each
@@ -111,7 +110,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 		CRLValidity bestCRLValidity = null;
 		Date bestX509UpdateDate = null;
 
-		for (CRLBinaryIdentifier crlEntry : crlsBinaryMap.values()) {
+		for (CRLBinaryIdentifier crlEntry : crlsBinaryList) {
 			final CRLValidity crlValidity = getCrlValidity(crlEntry, issuerToken);
 			if (crlValidity == null || !crlValidity.isValid()) {
 				continue;
@@ -179,11 +178,12 @@ public abstract class OfflineCRLSource implements CRLSource {
 
 	protected void addCRLBinary(CRLBinaryIdentifier crlBinary, RevocationOrigin origin) {
 		if (!crlValidityMap.containsKey(crlBinary)) {
-			if (crlsBinaryMap.containsKey(crlBinary.asXmlId())) {
-				CRLBinaryIdentifier storedCrlBinary = crlsBinaryMap.get(crlBinary.asXmlId());
+			int ii = crlsBinaryList.indexOf(crlBinary);
+			if (ii > -1) {
+				CRLBinaryIdentifier storedCrlBinary = crlsBinaryList.get(ii);
 				storedCrlBinary.addOrigin(origin);
 			} else {
-				crlsBinaryMap.put(crlBinary.asXmlId(), crlBinary);
+				crlsBinaryList.add(crlBinary);
 			}
 		}
 	}
@@ -194,7 +194,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 	public Collection<CRLBinaryIdentifier> getContainedX509CRLs() {
 		Collection<CRLBinaryIdentifier> crlBinaries = new ArrayList<CRLBinaryIdentifier>();
 		if (!isEmpty()) {
-			for (CRLBinaryIdentifier crlBinary : crlsBinaryMap.values()) {
+			for (CRLBinaryIdentifier crlBinary : crlsBinaryList) {
 				crlBinaries.add(crlBinary);
 			}
 		}
@@ -202,7 +202,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 	}
 	
 	public boolean isEmpty() {
-		return Utils.isMapEmpty(crlsBinaryMap);
+		return Utils.isCollectionEmpty(crlsBinaryList);
 	}
 	
 	protected void storeCRLToken(final CRLBinaryIdentifier crlBinary, final CRLToken crlToken) {
@@ -214,7 +214,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 	 * @return collection of {@link CRLBinaryIdentifier}s
 	 */
 	public Collection<CRLBinaryIdentifier> getAllCRLIdentifiers() {
-		return crlsBinaryMap.values();
+		return crlsBinaryList;
 	}
 
 	/**
@@ -232,7 +232,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 	 * @return {@link CRLBinaryIdentifier} for the reference
 	 */
 	public CRLBinaryIdentifier getIdentifier(Digest digest) {
-		for (CRLBinaryIdentifier crlBinary : crlsBinaryMap.values()) {
+		for (CRLBinaryIdentifier crlBinary : crlsBinaryList) {
 			byte[] digestValue = crlBinary.getDigestValue(digest.getAlgorithm());
 			if (Arrays.equals(digest.getValue(), digestValue)) {
 				return crlBinary;
