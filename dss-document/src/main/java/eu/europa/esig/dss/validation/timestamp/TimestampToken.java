@@ -74,9 +74,9 @@ public class TimestampToken extends Token {
 
 	private final TimestampCertificateSource certificateSource;
 	
-	private final SignatureCRLSource crlSource;
+	private final TimestampCRLSource crlSource;
 	
-	private final SignatureOCSPSource ocspSource;
+	private final TimestampOCSPSource ocspSource;
 
 	private boolean processed = false;
 
@@ -132,7 +132,7 @@ public class TimestampToken extends Token {
 	}
 
 	public TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final CertificatePool certPool) {
-		this(timeStamp, type, certPool, null, null, null);
+		this(timeStamp, type, certPool, null);
 	}
 
 	/**
@@ -144,20 +144,16 @@ public class TimestampToken extends Token {
 	 *            {@code TimestampType}
 	 * @param certPool
 	 *            {@code CertificatePool} which is used to identify the signing certificate of the timestamp
-	 * @param crlSource
-	 *            {@code OfflineCRLSource} CRLSource of the timestamp (used in CAdES)
-	 * @param ocspSource
-	 *            {@code OfflineOCSPSource} OCSPSource of the timestamp (used in CAdES)
 	 * @param timeStampLocation
 	 *            {@code TimestampLocation} defines where the timestamp comes from
 	 */
-	public TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final CertificatePool certPool,
-			final SignatureCRLSource crlSource, final SignatureOCSPSource ocspSource, final TimestampLocation timeStampLocation) {
-		this(timeStamp, type, new TimestampCertificateSource(timeStamp, certPool), crlSource, ocspSource, timeStampLocation);
+	public TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final CertificatePool certPool, final TimestampLocation timeStampLocation) {
+		this(timeStamp, type, new TimestampCertificateSource(timeStamp, certPool), 
+				new TimestampCRLSource(timeStamp), new TimestampOCSPSource(timeStamp), timeStampLocation);
 	}
 	
 	TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final TimestampCertificateSource certificateSource, 
-			 final SignatureCRLSource crlSource, final SignatureOCSPSource ocspSource, final TimestampLocation timeStampLocation) {
+			 final TimestampCRLSource crlSource, final TimestampOCSPSource ocspSource, final TimestampLocation timeStampLocation) {
 		this.timeStamp = timeStamp;
 		this.timeStampType = type;
 		this.certificateSource = certificateSource;
@@ -186,18 +182,18 @@ public class TimestampToken extends Token {
 	}
 	
 	/**
-	 * Returns {@code SignatureCRLSource} for the timestamp
-	 * @return {@link SignatureCRLSource}
+	 * Returns {@code TimestampCRLSource} for the timestamp
+	 * @return {@link TimestampCRLSource}
 	 */
-	public SignatureCRLSource getCRLSource() {
+	public TimestampCRLSource getCRLSource() {
 		return crlSource;
 	}
 
 	/**
-	 * Returns {@code SignatureOCSPSource} for the timestamp
-	 * @return {@link SignatureOCSPSource}
+	 * Returns {@code TimestampOCSPSource} for the timestamp
+	 * @return {@link TimestampOCSPSource}
 	 */
-	public SignatureOCSPSource getOCSPSource() {
+	public TimestampOCSPSource getOCSPSource() {
 		return ocspSource;
 	}
 	

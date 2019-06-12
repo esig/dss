@@ -44,6 +44,8 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.TokenIdentifier;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
+import eu.europa.esig.dss.validation.timestamp.TimestampCRLSource;
+import eu.europa.esig.dss.validation.timestamp.TimestampOCSPSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.x509.CertificatePool;
@@ -58,13 +60,11 @@ import eu.europa.esig.dss.x509.revocation.crl.CRLBinaryIdentifier;
 import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.x509.revocation.crl.ListCRLSource;
-import eu.europa.esig.dss.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.ListOCSPSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseIdentifier;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
-import eu.europa.esig.dss.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 
 public abstract class DefaultAdvancedSignature implements AdvancedSignature {
@@ -257,7 +257,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public ListCRLSource getTimestampCRLSource() {
 		ListCRLSource crlSource = new ListCRLSource();
 		for (TimestampToken timestamp : getAllTimestamps()) {
-			OfflineCRLSource timestampCRLSource = timestamp.getCRLSource();
+			TimestampCRLSource timestampCRLSource = timestamp.getCRLSource();
 			if (timestampCRLSource != null) {
 				crlSource.addAll(timestampCRLSource);
 			}
@@ -269,7 +269,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public ListOCSPSource getTimestampOCSPSource() {
 		ListOCSPSource ocspSource = new ListOCSPSource();
 		for (TimestampToken timestamp : getAllTimestamps()) {
-			OfflineOCSPSource timestampOCSPSource = timestamp.getOCSPSource();
+			TimestampOCSPSource timestampOCSPSource = timestamp.getOCSPSource();
 			if (timestampOCSPSource != null) {
 				ocspSource.addAll(timestampOCSPSource);
 			}
@@ -705,7 +705,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public void populateCRLTokenLists(SignatureCRLSource signatureCRLSource) {
 		offlineCRLSource.populateCRLRevocationValues(signatureCRLSource);
 		for (TimestampToken timestamp : getAllTimestamps()) {
-			SignatureCRLSource timestampCRLSource = timestamp.getCRLSource();
+			TimestampCRLSource timestampCRLSource = timestamp.getCRLSource();
 			if (timestampCRLSource != null) {
 				// populate timestamp source by related revocation data
 				timestampCRLSource.populateCRLRevocationValues(signatureCRLSource);
@@ -717,7 +717,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public void populateOCSPTokenLists(SignatureOCSPSource signatureOCSPSource) {
 		offlineOCSPSource.populateOCSPRevocationTokenLists(signatureOCSPSource);
 		for (TimestampToken timestamp : getAllTimestamps()) {
-			SignatureOCSPSource timestampOCSPSource = timestamp.getOCSPSource();
+			TimestampOCSPSource timestampOCSPSource = timestamp.getOCSPSource();
 			if (timestampOCSPSource != null) {
 				// populate timestamp source by related revocation data
 				timestampOCSPSource.populateOCSPRevocationTokenLists(signatureOCSPSource);
@@ -940,11 +940,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public List<RevocationToken> getRevocationsFromTimestampTokenSources() {
 		List<RevocationToken> revocationTokens = new ArrayList<RevocationToken>();
 		for (TimestampToken timestampToken : getAllTimestamps()) {
-			SignatureCRLSource crlSource = timestampToken.getCRLSource();
+			TimestampCRLSource crlSource = timestampToken.getCRLSource();
 			if (crlSource != null) {
 				revocationTokens.addAll(crlSource.getAllCRLTokens());
 			}
-			SignatureOCSPSource ocspSource = timestampToken.getOCSPSource();
+			TimestampOCSPSource ocspSource = timestampToken.getOCSPSource();
 			if (ocspSource != null) {
 				revocationTokens.addAll(ocspSource.getAllOCSPTokens());
 			}
@@ -1020,7 +1020,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		if (RevocationSourceType.CRL.equals(revocationToken.getRevocationSourceType())) {
 			revocationRefs.addAll(getCRLSource().findRefsForRevocationToken((CRLToken)revocationToken));
 			for (TimestampToken timestamp : getAllTimestamps()) {
-				SignatureCRLSource timestampCRLSource = timestamp.getCRLSource();
+				TimestampCRLSource timestampCRLSource = timestamp.getCRLSource();
 				if (timestampCRLSource != null) {
 					revocationRefs.addAll(timestampCRLSource.findRefsForRevocationToken((CRLToken)revocationToken));
 				}
@@ -1028,7 +1028,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		} else {
 			revocationRefs.addAll(getOCSPSource().findRefsForRevocationToken((OCSPToken)revocationToken));
 			for (TimestampToken timestamp : getAllTimestamps()) {
-				SignatureOCSPSource timestampOCSPSource = timestamp.getOCSPSource();
+				TimestampOCSPSource timestampOCSPSource = timestamp.getOCSPSource();
 				if (timestampOCSPSource != null) {
 					revocationRefs.addAll(timestampOCSPSource.findRefsForRevocationToken((OCSPToken)revocationToken));
 				}
@@ -1054,11 +1054,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		allFoundRevocationTokens.addAll(getCRLSource().getContainedX509CRLs());
 		allFoundRevocationTokens.addAll(getOCSPSource().getOCSPResponsesList());
 		for (TimestampToken timestamp : getAllTimestamps()) {
-			SignatureCRLSource timestampCRLSource = timestamp.getCRLSource();
+			TimestampCRLSource timestampCRLSource = timestamp.getCRLSource();
 			if (timestampCRLSource != null) {
 				allFoundRevocationTokens.addAll(timestampCRLSource.getContainedX509CRLs());
 			}
-			SignatureOCSPSource timestampOCSPSource = timestamp.getOCSPSource();
+			TimestampOCSPSource timestampOCSPSource = timestamp.getOCSPSource();
 			if (timestampOCSPSource != null) {
 				allFoundRevocationTokens.addAll(timestampOCSPSource.getOCSPResponsesList());
 			}

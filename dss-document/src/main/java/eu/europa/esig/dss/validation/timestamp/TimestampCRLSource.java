@@ -1,17 +1,18 @@
-package eu.europa.esig.dss.cades.validation;
+package eu.europa.esig.dss.validation.timestamp;
 
 import org.bouncycastle.tsp.TimeStampToken;
 
+import eu.europa.esig.dss.validation.CMSCRLSource;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 
 /**
- * OCSPSource that retrieves information embedded to a {@link TimeStampToken}
+ * CRLSource that retrieves information embedded to a {@link TimeStampToken}
  *
  */
 @SuppressWarnings("serial")
-public class TimestampOCSPSource extends CAdESOCSPSource {
+public class TimestampCRLSource extends CMSCRLSource {
 
-	TimestampOCSPSource(TimeStampToken timeStampToken) {
+	TimestampCRLSource(TimeStampToken timeStampToken) {
 		super(timeStampToken.toCMSSignedData(), timeStampToken.getUnsignedAttributes());
 	}
 	
@@ -28,6 +29,11 @@ public class TimestampOCSPSource extends CAdESOCSPSource {
 	@Override
 	protected RevocationOrigin getAttributeRevocationRefsOrigin() {
 		return RevocationOrigin.TIMESTAMP_REVOCATION_REFS;
+	}
+
+	@Override
+	protected void collectFromSignedData() {
+		// do nothing, because timestamp does not contain signed attributes
 	}
 
 }

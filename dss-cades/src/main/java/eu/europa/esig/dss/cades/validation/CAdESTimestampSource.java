@@ -34,7 +34,6 @@ import org.bouncycastle.asn1.x509.CertificateList;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
-import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +46,9 @@ import eu.europa.esig.dss.cades.signature.CadesLevelBaselineLTATimestampExtracto
 import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.validation.timestamp.AbstractTimestampSource;
 import eu.europa.esig.dss.validation.timestamp.SignatureProperties;
+import eu.europa.esig.dss.validation.timestamp.TimestampCRLSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
+import eu.europa.esig.dss.validation.timestamp.TimestampOCSPSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.x509.ArchiveTimestampType;
@@ -57,10 +58,8 @@ import eu.europa.esig.dss.x509.TimestampLocation;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.revocation.crl.CRLBinaryIdentifier;
 import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
-import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseIdentifier;
-import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 
 public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute> {
 
@@ -181,10 +180,7 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 			return null;
 		}
 		try {
-			TimeStampToken encodedTimeStampToken = new TimeStampToken(new CMSSignedData(asn1Primitive.getEncoded()));
-			return new TimestampToken(encodedTimeStampToken, timestampType, certificatePool, 
-					new TimestampCRLSource(encodedTimeStampToken), new TimestampOCSPSource(encodedTimeStampToken), 
-					TimestampLocation.CAdES);
+			return new TimestampToken(asn1Primitive.getEncoded(), timestampType, certificatePool, TimestampLocation.CAdES);
 		} catch (Exception e) {
 			throw new DSSException("Cannot create a timestamp token", e);
 		}
@@ -304,35 +300,31 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 	protected void addTimestampedReferences(List<TimestampedReference> references, TimestampToken timestampedTimestamp) {
 		super.addTimestampedReferences(references, timestampedTimestamp);
 		
-		SignatureCRLSource timeStampCRLSource = timestampedTimestamp.getCRLSource();
-		if (timeStampCRLSource != null) {
-			crlSource.addAll(timeStampCRLSource);
-			for (CRLBinaryIdentifier crlBinary : timeStampCRLSource.getAllCRLIdentifiers()) {
-				TimestampedReference crlReference = new TimestampedReference(crlBinary.asXmlId(), TimestampedObjectType.REVOCATION);
+		TimestampCRLSource timeStampCRLSource = timestampedTimestamp.getCRLSource();
+		crlSource.addAll(timeStampCRLSource);
+		for (CRLBinaryIdentifier crlBinary : timeStampCRLSource.getAllCRLIdentifiers()) {
+			TimestampedReference crlReference = new TimestampedReference(crlBinary.asXmlId(), TimestampedObjectType.REVOCATION);
+			addReference(references, crlReference);
+		}
+		for (CRLRef crlRef : timeStampCRLSource.getAllCRLReferences()) {
+			CRLBinaryIdentifier crlBinaryIdentifier = crlSource.getIdentifier(crlRef);
+			if (crlBinaryIdentifier != null) {
+				TimestampedReference crlReference = new TimestampedReference(crlBinaryIdentifier.asXmlId(), TimestampedObjectType.REVOCATION);
 				addReference(references, crlReference);
-			}
-			for (CRLRef crlRef : timeStampCRLSource.getAllCRLReferences()) {
-				CRLBinaryIdentifier crlBinaryIdentifier = crlSource.getIdentifier(crlRef);
-				if (crlBinaryIdentifier != null) {
-					TimestampedReference crlReference = new TimestampedReference(crlBinaryIdentifier.asXmlId(), TimestampedObjectType.REVOCATION);
-					addReference(references, crlReference);
-				}
 			}
 		}
 		
-		SignatureOCSPSource timeStampOCSPSource = timestampedTimestamp.getOCSPSource();
-		if (timeStampOCSPSource != null) {
-			ocspSource.addAll(timeStampOCSPSource);
-			for (OCSPResponseIdentifier ocspResponse : timeStampOCSPSource.getAllOCSPIdentifiers()) {
-				TimestampedReference ocspReference = new TimestampedReference(ocspResponse.asXmlId(), TimestampedObjectType.REVOCATION);
+		TimestampOCSPSource timeStampOCSPSource = timestampedTimestamp.getOCSPSource();
+		ocspSource.addAll(timeStampOCSPSource);
+		for (OCSPResponseIdentifier ocspResponse : timeStampOCSPSource.getAllOCSPIdentifiers()) {
+			TimestampedReference ocspReference = new TimestampedReference(ocspResponse.asXmlId(), TimestampedObjectType.REVOCATION);
+			addReference(references, ocspReference);
+		}
+		for (OCSPRef ocspRef : timeStampOCSPSource.getAllOCSPReferences()) {
+			OCSPResponseIdentifier ocspResponseIdentifier = ocspSource.getIdentifier(ocspRef);
+			if (ocspResponseIdentifier != null) {
+				TimestampedReference ocspReference = new TimestampedReference(ocspResponseIdentifier.asXmlId(), TimestampedObjectType.REVOCATION);
 				addReference(references, ocspReference);
-			}
-			for (OCSPRef ocspRef : timeStampOCSPSource.getAllOCSPReferences()) {
-				OCSPResponseIdentifier ocspResponseIdentifier = ocspSource.getIdentifier(ocspRef);
-				if (ocspResponseIdentifier != null) {
-					TimestampedReference ocspReference = new TimestampedReference(ocspResponseIdentifier.asXmlId(), TimestampedObjectType.REVOCATION);
-					addReference(references, ocspReference);
-				}
 			}
 		}
 		
