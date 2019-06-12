@@ -54,6 +54,7 @@ import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
+import eu.europa.esig.dss.x509.SignatureCertificateSource;
 import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 
@@ -70,8 +71,6 @@ public class PAdESSignature extends CAdESSignature {
 	private final PdfDssDict dssDictionary;
 
 	private final PdfSignatureInfo pdfSignatureInfo;
-
-	private PAdESCertificateSource padesCertSources;
 
 	/**
 	 * The default constructor for PAdESSignature.
@@ -97,11 +96,11 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	@Override
-	public PAdESCertificateSource getCertificateSource() {
-		if (padesCertSources == null) {
-			padesCertSources = new PAdESCertificateSource(dssDictionary, super.getCmsSignedData(), certPool);
+	public SignatureCertificateSource getCertificateSource() {
+		if (offlineCertificateSource == null) {
+			offlineCertificateSource = new PAdESCertificateSource(dssDictionary, super.getCmsSignedData(), certPool);
 		}
-		return padesCertSources;
+		return offlineCertificateSource;
 	}
 
 	@Override

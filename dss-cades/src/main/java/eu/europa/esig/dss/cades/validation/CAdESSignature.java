@@ -122,6 +122,7 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.SignatureCertificateSource;
 import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
@@ -140,8 +141,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	private final CMSSignedData cmsSignedData;
 
 	protected final SignerInformation signerInformation;
-
-	private CAdESCertificateSource certSource;
 
 	/**
 	 * The reference to the signing certificate. If the signing certificate is
@@ -218,11 +217,11 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public CAdESCertificateSource getCertificateSource() {
-		if (certSource == null) {
-			certSource = new CAdESCertificateSource(cmsSignedData, signerInformation, certPool);
+	public SignatureCertificateSource getCertificateSource() {
+		if (offlineCertificateSource == null) {
+			offlineCertificateSource = new CAdESCertificateSource(cmsSignedData, signerInformation, certPool);
 		}
-		return certSource;
+		return offlineCertificateSource;
 	}
 
 	@Override

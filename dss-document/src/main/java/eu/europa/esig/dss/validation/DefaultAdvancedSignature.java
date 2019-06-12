@@ -52,6 +52,7 @@ import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
+import eu.europa.esig.dss.x509.SignatureCertificateSource;
 import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.revocation.RevocationRef;
@@ -118,20 +119,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 */
 	protected CandidatesForSigningCertificate candidatesForSigningCertificate;
 
-	// Enclosed content timestamps.
-	protected List<TimestampToken> contentTimestamps;
-
-	// Enclosed signature timestamps.
-	protected transient List<TimestampToken> signatureTimestamps;
-
-	// Enclosed SignAndRefs timestamps.
-	protected List<TimestampToken> sigAndRefsTimestamps;
-
-	// Enclosed RefsOnly timestamps.
-	protected List<TimestampToken> refsOnlyTimestamps;
-
-	// This variable contains the list of enclosed archive signature timestamps.
-	protected List<TimestampToken> archiveTimestamps;
+	// Cached {@code SignatureCertificateSource}
+	protected SignatureCertificateSource offlineCertificateSource;
 
 	// Cached {@code SignatureCRLSource}
 	protected SignatureCRLSource offlineCRLSource;
