@@ -78,6 +78,7 @@ import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
+import eu.europa.esig.dss.x509.SignatureCertificateSource;
 import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
@@ -122,8 +123,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * A signature identifier provided by a Driving Application.
 	 */
 	private String daIdentifier;
-
-	private XAdESCertificateSource certificatesSource;
 
 	/**
 	 * This variable contains all references found within the signature. They are extracted when the method
@@ -309,11 +308,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public XAdESCertificateSource getCertificateSource() {
-		if (certificatesSource == null) {
-			certificatesSource = new XAdESCertificateSource(signatureElement, xPathQueryHolder, certPool);
+	public SignatureCertificateSource getCertificateSource() {
+		if (offlineCertificateSource == null) {
+			offlineCertificateSource = new XAdESCertificateSource(signatureElement, xPathQueryHolder, certPool);
 		}
-		return certificatesSource;
+		return offlineCertificateSource;
 	}
 
 	/**
@@ -321,7 +320,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * CertificateValues.
 	 */
 	public void resetCertificateSource() {
-		certificatesSource = null;
+		offlineCertificateSource = null;
 	}
 
 	@Override
@@ -376,7 +375,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		 * ds:SigningCertificate property, if present, since one of these references shall be a reference to the signing
 		 * certificate.
 		 */
-		final XAdESCertificateSource certSource = getCertificateSource();
+		final SignatureCertificateSource certSource = getCertificateSource();
 		for (final CertificateToken certificateToken : certSource.getKeyInfoCertificates()) {
 			final CertificateValidity certificateValidity = new CertificateValidity(certificateToken);
 			candidatesForSigningCertificate.add(certificateValidity);
@@ -1112,7 +1111,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	public List<TimestampedReference> getTimestampedReferences() {
 		final List<TimestampedReference> references = new ArrayList<TimestampedReference>();
 
-		XAdESCertificateSource certificateSource = getCertificateSource();
+		SignatureCertificateSource certificateSource = getCertificateSource();
 
 		// CompleteCertificateRefsV2
 		List<CertificateToken> completeCertificates = certificateSource.getCompleteCertificates();

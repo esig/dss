@@ -60,7 +60,7 @@ public class DSSDictionaryCallback {
 	}
 
 	public Map<Long, CertificateToken> getStoredCertificates() {
-		PAdESCertificateSource certSource = signature.getCertificateSource();
+		PAdESCertificateSource certSource = (PAdESCertificateSource) signature.getCertificateSource();
 		return certSource.getCertificateMap();
 	}
 

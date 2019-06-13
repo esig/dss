@@ -21,6 +21,7 @@
 package eu.europa.esig.dss;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * This class is used to obtain a unique id for an object
@@ -34,6 +35,7 @@ public abstract class Identifier implements Serializable {
 	private final Digest id;
 
 	Identifier(byte[] data) {
+		Objects.requireNonNull(data);
 		this.id = new Digest(DIGEST_ALGO, DIGEST_ALGO.getMessageDigest().digest(data));
 	}
 
