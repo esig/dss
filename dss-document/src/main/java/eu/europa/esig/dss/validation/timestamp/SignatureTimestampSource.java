@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Set;
 
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.revocation.crl.ListCRLSource;
+import eu.europa.esig.dss.x509.revocation.ocsp.ListOCSPSource;
 
 public interface SignatureTimestampSource {
 	
@@ -43,5 +45,19 @@ public interface SignatureTimestampSource {
 	 * @return a set of {@link CertificateToken}s
 	 */
 	Set<CertificateToken> getCertificates();
+	
+	/**
+	 * Returns a merged {@code ListCRLSource} between signatureCRLSource and all embedded timestamp CRL sources
+	 * 
+	 * @return {@link ListCRLSource}
+	 */
+	ListCRLSource getCommonCRLSource();
+	
+	/**
+	 * Returns a merged {@code ListOCSPSource} between signatureOCSPSource and all embedded timestamp OCSP sources
+	 * 
+	 * @return {@link ListOCSPSource}
+	 */
+	ListOCSPSource getCommonOCSPSource();
 
 }

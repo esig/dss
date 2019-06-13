@@ -1002,7 +1002,6 @@ public class DiagnosticDataBuilder {
 	private List<XmlRelatedRevocation> getXmlRelatedRevocations(AdvancedSignature signature) {
 		List<XmlRelatedRevocation> xmlRelatedRevocations = new ArrayList<XmlRelatedRevocation>();
 		xmlRelatedRevocations.addAll(getXmlRevocationsByType(signature, signature.getAllRevocationTokens()));
-		xmlRelatedRevocations.addAll(getXmlRevocationsByType(signature, signature.getRevocationsFromTimestampTokenSources()));
 		return xmlRelatedRevocations;
 	}
 

@@ -325,26 +325,26 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public SignatureCRLSource getCRLSource() {
-		if (offlineCRLSource == null) {
-			offlineCRLSource = new XAdESCRLSource(signatureElement, xPathQueryHolder);
+		if (signatureCRLSource == null) {
+			signatureCRLSource = new XAdESCRLSource(signatureElement, xPathQueryHolder);
 		}
-		return offlineCRLSource;
+		return signatureCRLSource;
 	}
 
 	@Override
 	public SignatureOCSPSource getOCSPSource() {
-		if (offlineOCSPSource == null) {
-			offlineOCSPSource = new XAdESOCSPSource(signatureElement, xPathQueryHolder);
+		if (signatureOCSPSource == null) {
+			signatureOCSPSource = new XAdESOCSPSource(signatureElement, xPathQueryHolder);
 		}
-		return offlineOCSPSource;
+		return signatureOCSPSource;
 	}
 
 	/**
 	 * This method resets the sources of the revocation data. It must be called when -LT level is created.
 	 */
 	public void resetRevocationSources() {
-		offlineCRLSource = null;
-		offlineOCSPSource = null;
+		signatureCRLSource = null;
+		signatureOCSPSource = null;
 	}
 	
 	@Override

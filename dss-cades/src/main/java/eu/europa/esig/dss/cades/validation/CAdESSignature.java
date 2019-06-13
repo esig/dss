@@ -225,24 +225,24 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public SignatureCRLSource getCRLSource() {
-		if (offlineCRLSource == null) {
+		if (signatureCRLSource == null) {
 			try {
-				offlineCRLSource = new CAdESCRLSource(cmsSignedData, CMSUtils.getUnsignedAttributes(signerInformation));
+				signatureCRLSource = new CAdESCRLSource(cmsSignedData, CMSUtils.getUnsignedAttributes(signerInformation));
 			} catch (Exception e) {
 				// When error in computing or in format of the algorithm: just
 				// continues (will try to get online information)
 				LOG.warn("Error in computing or in format of the algorithm: just continue...", e);
 			}
 		}
-		return offlineCRLSource;
+		return signatureCRLSource;
 	}
 
 	@Override
 	public SignatureOCSPSource getOCSPSource() {
-		if (offlineOCSPSource == null) {
-			offlineOCSPSource = new CAdESOCSPSource(cmsSignedData, CMSUtils.getUnsignedAttributes(signerInformation));
+		if (signatureOCSPSource == null) {
+			signatureOCSPSource = new CAdESOCSPSource(cmsSignedData, CMSUtils.getUnsignedAttributes(signerInformation));
 		}
-		return offlineOCSPSource;
+		return signatureOCSPSource;
 	}
 	
 	@Override

@@ -40,9 +40,7 @@ public class ListOCSPSource extends SignatureOCSPSource {
 	 *            an offline ocsp source
 	 */
 	public ListOCSPSource(final OfflineOCSPSource ocspSource) {
-		for (OCSPResponseIdentifier ocspResponse : ocspSource.getOCSPResponsesList()) {
-			ocspResponses.add(ocspResponse);
-		}
+		addAll(ocspSource);
 	}
 
 	@Override

@@ -27,8 +27,10 @@ import eu.europa.esig.dss.x509.SignatureCertificateSource;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.revocation.crl.CRLBinaryIdentifier;
 import eu.europa.esig.dss.x509.revocation.crl.ListCRLSource;
+import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.ListOCSPSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseIdentifier;
+import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 
 /**
  * Contains a set of {@link TimestampToken}s found in a {@link DefaultAdvancedSignature} object
@@ -37,14 +39,23 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractTimestampSource.class);
 	
+	/**
+	 * Sources obtained from a signature object
+	 */
 	protected final SignatureCertificateSource certificateSource;
-	protected final ListCRLSource crlSource;
-	protected final ListOCSPSource ocspSource;
+	protected final SignatureCRLSource signatureCRLSource;
+	protected final SignatureOCSPSource signatureOCSPSource;
 	
 	protected final String signatureId;
 	protected final List<SignatureScope> signatureScopes;
 	
 	protected CertificatePool certificatePool;
+	
+	/**
+	 * Revocation sources containing merged data from signature source and timestamps
+	 */
+	protected ListCRLSource crlSource;
+	protected ListOCSPSource ocspSource;
 
 	// Enclosed content timestamps.
 	protected List<TimestampToken> contentTimestamps;
@@ -68,8 +79,8 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	 */
 	protected AbstractTimestampSource(final AdvancedSignature signature) {
 		this.certificateSource = signature.getCertificateSource();
-		this.crlSource = new ListCRLSource(signature.getCRLSource());
-		this.ocspSource = new ListOCSPSource(signature.getOCSPSource());
+		this.signatureCRLSource = signature.getCRLSource();
+		this.signatureOCSPSource = signature.getOCSPSource();
 		this.signatureId = signature.getId();
 		this.signatureScopes = signature.getSignatureScopes();
 	}
@@ -131,6 +142,22 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 		return timestampTokens;
 	}
 	
+	@Override
+	public ListCRLSource getCommonCRLSource() {
+		if (crlSource == null) {
+			createAndValidate();
+		}
+		return crlSource;
+	}
+	
+	@Override
+	public ListOCSPSource getCommonOCSPSource() {
+		if (ocspSource == null) {
+			createAndValidate();
+		}
+		return ocspSource;
+	}
+	
 	/**
 	 * Creates and validates all timestamps
 	 * Must be called only once
@@ -176,11 +203,16 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	 */
 	protected void makeTimestampTokens() {
 		
+		// initialize timestamp lists
 		contentTimestamps = new ArrayList<TimestampToken>();
 		signatureTimestamps = new ArrayList<TimestampToken>();
 		sigAndRefsTimestamps = new ArrayList<TimestampToken>();
 		refsOnlyTimestamps = new ArrayList<TimestampToken>();
 		archiveTimestamps = new ArrayList<TimestampToken>();
+		
+		// initialize combined revocation sources
+		crlSource = new ListCRLSource(signatureCRLSource);
+		ocspSource = new ListOCSPSource(signatureOCSPSource);
 		
 		final SignatureProperties<SignatureAttribute> signedSignatureProperties = getSignedSignatureProperties();
 		

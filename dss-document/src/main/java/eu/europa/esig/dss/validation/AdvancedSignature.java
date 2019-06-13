@@ -186,20 +186,20 @@ public interface AdvancedSignature extends Serializable {
 	SignatureOCSPSource getOCSPSource();
 	
 	/**
-	 * Gets a ListCRLSource representing a merged source from all included to the signature timestamp objects
-	 * NOTE: used in CAdES only
+	 * Gets a ListCRLSource representing a merged source from {@code signatureCRLSourse} and 
+	 * all included to the signature timestamp objects
 	 * 
 	 * @return {@link ListCRLSource}
 	 */
-	ListCRLSource getTimestampCRLSource();
+	ListCRLSource getCompleteCRLSource();
 	
 	/**
-	 * Gets a ListOCSPSource representing a merged source from all included to the signature timestamp objects
-	 * NOTE: used in CAdES only
+	 * Gets a ListOCSPSource representing a merged source from {@code signatureOCSPSourse} and 
+	 * all included to the signature timestamp objects
 	 * 
 	 * @return {@link ListOCSPSource}
 	 */
-	ListOCSPSource getTimestampOCSPSource();
+	ListOCSPSource getCompleteOCSPSource();
 	
 	/**
 	 * Gets a Signature Timestamp source which contains ALL timestamps embedded in the signature.
@@ -567,13 +567,6 @@ public interface AdvancedSignature extends Serializable {
 	 * @return list of {@link RevocationToken}s
 	 */
 	List<RevocationToken> getAttributeRevocationTokens();
-	
-	/**
-	 * Retrieves a list of all {@code RevocationToken}s found in the embedded timestamp sources
-	 * NOTE: Applicable only for CAdES
-	 * @return list of {@link RevocationToken}s
-	 */
-	List<RevocationToken> getRevocationsFromTimestampTokenSources();
 	
 	/**
 	 * Retrieves a list of all {@code CRLRef}s present in 'CompleteRevocationRefs' element

@@ -104,18 +104,18 @@ public class PAdESSignature extends CAdESSignature {
 
 	@Override
 	public SignatureCRLSource getCRLSource() {
-		if (offlineCRLSource == null) {
-			offlineCRLSource = new PAdESCRLSource(dssDictionary, getVRIKey());
+		if (signatureCRLSource == null) {
+			signatureCRLSource = new PAdESCRLSource(dssDictionary, getVRIKey());
 		}
-		return offlineCRLSource;
+		return signatureCRLSource;
 	}
 
 	@Override
 	public SignatureOCSPSource getOCSPSource() {
-		if (offlineOCSPSource == null) {
-			offlineOCSPSource = new PAdESOCSPSource(dssDictionary, getVRIKey());
+		if (signatureOCSPSource == null) {
+			signatureOCSPSource = new PAdESOCSPSource(dssDictionary, getVRIKey());
 		}
-		return offlineOCSPSource;
+		return signatureOCSPSource;
 	}
 	
 	@Override
