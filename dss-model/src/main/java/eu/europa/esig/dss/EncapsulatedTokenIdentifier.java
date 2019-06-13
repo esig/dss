@@ -10,7 +10,7 @@ public abstract class EncapsulatedTokenIdentifier extends Identifier {
 
 	protected EnumMap<DigestAlgorithm, byte[]> digestMap = new EnumMap<DigestAlgorithm, byte[]>(DigestAlgorithm.class);
 	
-	EncapsulatedTokenIdentifier(byte[] binaries) {
+	protected EncapsulatedTokenIdentifier(byte[] binaries) {
 		super(binaries);
 		this.binaries = binaries;
 	}

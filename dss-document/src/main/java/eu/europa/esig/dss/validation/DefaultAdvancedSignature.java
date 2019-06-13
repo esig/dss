@@ -38,7 +38,6 @@ import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestDocument;
-import eu.europa.esig.dss.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.SignatureIdentifier;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.TokenIdentifier;
@@ -54,6 +53,7 @@ import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.dss.x509.TimestampType;
+import eu.europa.esig.dss.x509.revocation.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.x509.revocation.RevocationSourceType;
 import eu.europa.esig.dss.x509.revocation.crl.CRLBinaryIdentifier;
@@ -736,14 +736,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 	
 	@Override
-	public SignatureTimestampSource getTimestampSource() {
-		if (signatureTimestampSource == null) {
-			initializeSignatureTimestampSource();
-		}
-		return signatureTimestampSource;
-	}
-	
-	@Override
 	public List<TimestampToken> getContentTimestamps() {
 		return getTimestampSource().getContentTimestamps();
 	}
@@ -777,11 +769,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public List<TimestampToken> getAllTimestamps() {
 		return getTimestampSource().getAllTimestamps();
 	}
-	
-	/**
-	 * This method initializes the {@link SignatureTimestampSource}
-	 */
-	protected abstract void initializeSignatureTimestampSource();
 
 	@Override
 	public void addExternalTimestamp(TimestampToken timestamp) {

@@ -5,10 +5,8 @@ import java.util.List;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
 import eu.europa.esig.dss.DSSRevocationUtils;
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.x509.RevocationOrigin;
+import eu.europa.esig.dss.x509.revocation.EncapsulatedRevocationTokenIdentifier;
 
 public class OCSPResponseIdentifier extends EncapsulatedRevocationTokenIdentifier {
 
@@ -37,15 +35,6 @@ public class OCSPResponseIdentifier extends EncapsulatedRevocationTokenIdentifie
 	
 	public BasicOCSPResp getBasicOCSPResp() {
 		return basicOCSPResp;
-	}
-	
-	public byte[] getDigestValue(DigestAlgorithm digestAlgorithm) {
-		byte[] digestValue = super.getDigestValue(digestAlgorithm);
-		if (digestValue == null) {
-			digestValue = DSSUtils.digest(digestAlgorithm, getBinaries());
-			digestMap.put(digestAlgorithm, digestValue);
-		}
-		return digestValue;
 	}
 
 }

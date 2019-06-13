@@ -49,7 +49,6 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertifiedRole;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.TimestampedObjectType;
-import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -119,6 +118,14 @@ public class PAdESSignature extends CAdESSignature {
 		}
 		return offlineOCSPSource;
 	}
+	
+	@Override
+	public PAdESTimestampSource getTimestampSource() {
+		if (signatureTimestampSource == null) {
+			signatureTimestampSource = new PAdESTimestampSource(this, certPool);
+		}
+		return (PAdESTimestampSource) signatureTimestampSource;
+	}
 
 	@Override
 	public Date getSigningTime() {
@@ -150,21 +157,6 @@ public class PAdESSignature extends CAdESSignature {
 	@Override
 	public List<CertifiedRole> getCertifiedSignerRoles() {
 		return null;
-	}
-
-	/**
-	 * This method initializes the {@link SignatureTimestampSource}
-	 */
-	@Override
-	protected void initializeSignatureTimestampSource() {
-		PAdESTimestampSource padesTimestampSource = new PAdESTimestampSource(pdfSignatureInfo, signerInformation, certPool);
-		padesTimestampSource.setCertificateSource(getCertificateSource());
-		padesTimestampSource.setCRLSource(getCRLSource());
-		padesTimestampSource.setOCSPSource(getOCSPSource());
-		padesTimestampSource.setSignatureDSSId(getId());
-		padesTimestampSource.setSignatureScopes(getSignatureScopes());
-		padesTimestampSource.setDetachedDocuments(detachedContents);
-		signatureTimestampSource = padesTimestampSource;
 	}
 
 	@Override

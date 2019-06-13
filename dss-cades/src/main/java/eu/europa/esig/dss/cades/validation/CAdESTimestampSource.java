@@ -41,18 +41,17 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.EncapsulatedCertificateTokenIdentifier;
 import eu.europa.esig.dss.cades.signature.CadesLevelBaselineLTATimestampExtractor;
 import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.validation.timestamp.AbstractTimestampSource;
 import eu.europa.esig.dss.validation.timestamp.SignatureProperties;
 import eu.europa.esig.dss.validation.timestamp.TimestampCRLSource;
-import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
 import eu.europa.esig.dss.validation.timestamp.TimestampOCSPSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.x509.ArchiveTimestampType;
 import eu.europa.esig.dss.x509.CertificatePool;
+import eu.europa.esig.dss.x509.EncapsulatedCertificateTokenIdentifier;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.TimestampLocation;
 import eu.europa.esig.dss.x509.TimestampType;
@@ -67,20 +66,15 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 	
 	protected final SignerInformation signerInformation;
 	
-	private CMSSignedData cmsSignedData;
-	protected List<DSSDocument> detachedDocuments;
+	private final CMSSignedData cmsSignedData;
+	protected final List<DSSDocument> detachedDocuments;
 	
-	public CAdESTimestampSource(final SignerInformation signerInformation, final CertificatePool certificatePool) {
-		this.signerInformation = signerInformation;
+	public CAdESTimestampSource(final CAdESSignature signature, final CertificatePool certificatePool) {
+		super(signature);
+		this.cmsSignedData = signature.getCmsSignedData();
+		this.detachedDocuments = signature.getDetachedContents();
+		this.signerInformation = signature.getSignerInformation();
 		this.certificatePool = certificatePool;
-	}
-	
-	public void setCMSSignedData(CMSSignedData cmsSignedData) {
-		this.cmsSignedData = cmsSignedData;
-	}
-	
-	public void setDetachedDocuments(List<DSSDocument> detachedDocuments) {
-		this.detachedDocuments = detachedDocuments;
 	}
 
 	@Override
@@ -174,20 +168,21 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 	}
 	
 	@Override
-	protected TimestampToken makeTimestampToken(CAdESAttribute signatureAttribute, TimestampType timestampType) {
+	protected TimestampToken makeTimestampToken(CAdESAttribute signatureAttribute, TimestampType timestampType,
+			List<TimestampedReference> references) {
 		ASN1Primitive asn1Primitive = signatureAttribute.getASN1Primitive();
 		if (asn1Primitive == null) {
 			return null;
 		}
 		try {
-			return new TimestampToken(asn1Primitive.getEncoded(), timestampType, certificatePool, TimestampLocation.CAdES);
+			return new TimestampToken(asn1Primitive.getEncoded(), timestampType, certificatePool, references, TimestampLocation.CAdES);
 		} catch (Exception e) {
 			throw new DSSException("Cannot create a timestamp token", e);
 		}
 	}
 
 	@Override
-	protected List<TimestampedReference> getIndividualContentTimestampedReferences(List<TimestampInclude> includes) {
+	protected List<TimestampedReference> getIndividualContentTimestampedReferences(CAdESAttribute signedAttribute) {
 		// not applicable for CAdES, must be not executed
 		throw new DSSException("Not applicable for CAdES!");
 	}

@@ -74,7 +74,6 @@ import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.TimestampedObjectType;
-import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -348,20 +347,20 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		offlineCRLSource = null;
 		offlineOCSPSource = null;
 	}
+	
+	@Override
+	public XAdESTimestampSource getTimestampSource() {
+		if (signatureTimestampSource == null) {
+			signatureTimestampSource = new XAdESTimestampSource(this, signatureElement, xPathQueryHolder, certPool);
+		}
+		return (XAdESTimestampSource) signatureTimestampSource;
+	}
 
 	/**
 	 * This method resets the timestamp source. It must be called when -LT level is created.
 	 */
 	public void resetTimestampSource() {
 		signatureTimestampSource = null;
-	}
-	
-	/**
-	 * Returns the initialized {@link XAdESTimestampSource}
-	 * @return {@link XAdESTimestampSource}
-	 */
-	public XAdESTimestampSource getTimestampSource() {
-		return (XAdESTimestampSource) super.getTimestampSource();
 	}
 
 	@Override
@@ -706,22 +705,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 */
 	public boolean hasXProfile() {
 		return DomUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_SIG_AND_REFS_TIMESTAMP);
-	}
-
-	/**
-	 * This method initializes the {@link SignatureTimestampSource}
-	 */
-	@Override
-	protected void initializeSignatureTimestampSource() {
-		XAdESTimestampSource xadesTimestampSource = new XAdESTimestampSource(signatureElement, xPathQueryHolder, certPool);
-		xadesTimestampSource.setCertificateSource(getCertificateSource());
-		xadesTimestampSource.setCRLSource(getCRLSource());
-		xadesTimestampSource.setOCSPSource(getOCSPSource());
-		xadesTimestampSource.setSignatureDSSId(getId());
-		xadesTimestampSource.setSignatureScopes(getSignatureScopes());
-		xadesTimestampSource.setReferences(getReferences());
-		xadesTimestampSource.setReferenceValidations(getReferenceValidations());
-		signatureTimestampSource = xadesTimestampSource;
 	}
 
 	@Override

@@ -15,7 +15,6 @@ import org.w3c.dom.NodeList;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.Digest;
-import eu.europa.esig.dss.EncapsulatedCertificateTokenIdentifier;
 import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.DigestMatcherType;
@@ -30,6 +29,7 @@ import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.x509.ArchiveTimestampType;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.EncapsulatedCertificateTokenIdentifier;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.TimestampLocation;
 import eu.europa.esig.dss.x509.TimestampType;
@@ -55,18 +55,14 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	
 	private XAdESTimestampDataBuilder timestampDataBuilder;
 	
-	public XAdESTimestampSource(final Element signatureElement, final XPathQueryHolder xPathQueryHolder, final CertificatePool certificatePool) {
+	public XAdESTimestampSource(final XAdESSignature signature, final Element signatureElement, 
+			final XPathQueryHolder xPathQueryHolder, final CertificatePool certificatePool) {
+		super(signature);
+		this.references = signature.getReferences();
+		this.referenceValidations = signature.getReferenceValidations();
 		this.signatureElement = signatureElement;
 		this.xPathQueryHolder = xPathQueryHolder;
 		this.certificatePool = certificatePool;
-	}
-	
-	public void setReferences(List<Reference> references) {
-		this.references = references;
-	}
-	
-	public void setReferenceValidations(List<ReferenceValidation> referenceValidations) {
-		this.referenceValidations = referenceValidations;
 	}
 
 	@Override
@@ -199,16 +195,19 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	}
 
 	@Override
-	protected TimestampToken makeTimestampToken(XAdESAttribute unsignedAttribute, TimestampType timestampType) {
+	protected TimestampToken makeTimestampToken(XAdESAttribute unsignedAttribute, TimestampType timestampType, 
+			List<TimestampedReference> references) {
 
 		final Element timestampTokenNode = unsignedAttribute.findElement(xPathQueryHolder.XPATH__ENCAPSULATED_TIMESTAMP);
 		if (timestampTokenNode == null) {
 			LOG.warn("The timestamp {} cannot be extracted from the signature!", timestampType.name());
 			return null;
 		}
+		
 		TimestampToken timestampToken = null;
 		try {
-			timestampToken = new TimestampToken(Utils.fromBase64(timestampTokenNode.getTextContent()), timestampType, certificatePool, TimestampLocation.XAdES);
+			timestampToken = new TimestampToken(Utils.fromBase64(timestampTokenNode.getTextContent()), timestampType, 
+					certificatePool, references, TimestampLocation.XAdES);
 		} catch (Exception e) {
 			LOG.warn("Unable to build timestamp object '" + timestampTokenNode.getTextContent() + "' : ", e);
 			return null;
@@ -223,7 +222,8 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	}
 
 	@Override
-	protected List<TimestampedReference> getIndividualContentTimestampedReferences(List<TimestampInclude> includes) {
+	protected List<TimestampedReference> getIndividualContentTimestampedReferences(XAdESAttribute signedAttribute) {
+		List<TimestampInclude> includes = signedAttribute.getTimestampIncludedReferences();
 		List<TimestampedReference> timestampReferences = new ArrayList<TimestampedReference>();
 		for (Reference reference : references) {
 			if (isContentTimestampedReference(reference, includes)) {

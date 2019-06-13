@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.bouncycastle.cms.SignerInformation;
-
 import eu.europa.esig.dss.cades.validation.CAdESAttribute;
 import eu.europa.esig.dss.cades.validation.CAdESTimestampSource;
 import eu.europa.esig.dss.pdf.PdfDocTimestampInfo;
@@ -26,9 +24,9 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 	
 	private final PdfSignatureInfo pdfSignatureInfo;
 	
-	public PAdESTimestampSource(final PdfSignatureInfo pdfSignatureInfo, final SignerInformation signerInformation, final CertificatePool certificatePool) {
-		super(signerInformation, certificatePool);
-		this.pdfSignatureInfo = pdfSignatureInfo;
+	public PAdESTimestampSource(final PAdESSignature signature, final CertificatePool certificatePool) {
+		super(signature, certificatePool);
+		this.pdfSignatureInfo = signature.getPdfSignatureInfo();
 	}
 	
 	@Override
@@ -64,8 +62,10 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 				// do not return this timestamp if it's an archive timestamp
 				// Timestamp needs to be cloned in order to avoid shared instances among sources
 				final TimestampToken timestampToken = timestampInfo.getTimestampToken().clone();
+				// clear timestamped references list in order to avoid data mixing between different signatures
+				timestampToken.getTimestampedReferences().clear();
 				if (TimestampType.SIGNATURE_TIMESTAMP.equals(timestampToken.getTimeStampType())) {
-					timestampToken.setTimestampedReferences(getSignatureTimestampReferences());
+					timestampToken.getTimestampedReferences().addAll(getSignatureTimestampReferences());
 					signatureTimestamps.add(timestampToken);
 					
 				} else {
@@ -77,7 +77,7 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 					addReferencesForPreviousTimestamps(references, timestampedTimestamps);
 					addReferencesForCertificates(references);
 					addReferencesFromRevocationData(references);
-					timestampToken.setTimestampedReferences(references);
+					timestampToken.getTimestampedReferences().addAll(references);
 					archiveTimestamps.add(timestampToken);
 					
 				}

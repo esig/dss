@@ -117,7 +117,6 @@ import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.TimestampedObjectType;
-import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.x509.CertificatePool;
@@ -245,6 +244,14 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			offlineOCSPSource = new CAdESOCSPSource(cmsSignedData, CMSUtils.getUnsignedAttributes(signerInformation));
 		}
 		return offlineOCSPSource;
+	}
+	
+	@Override
+	public CAdESTimestampSource getTimestampSource() {
+		if (signatureTimestampSource == null) {
+			signatureTimestampSource = new CAdESTimestampSource(this, certPool);
+		}
+		return (CAdESTimestampSource) signatureTimestampSource;
 	}
 
 	/**
@@ -623,22 +630,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			}
 		}
 		return null;
-	}
-
-	/**
-	 * This method initializes the {@link SignatureTimestampSource}
-	 */
-	@Override
-	protected void initializeSignatureTimestampSource() {
-		CAdESTimestampSource cadesTimestampSource = new CAdESTimestampSource(signerInformation, certPool);
-		cadesTimestampSource.setCertificateSource(getCertificateSource());
-		cadesTimestampSource.setCRLSource(getCRLSource());
-		cadesTimestampSource.setOCSPSource(getOCSPSource());
-		cadesTimestampSource.setSignatureDSSId(getId());
-		cadesTimestampSource.setSignatureScopes(getSignatureScopes());
-		cadesTimestampSource.setCMSSignedData(cmsSignedData);
-		cadesTimestampSource.setDetachedDocuments(detachedContents);
-		signatureTimestampSource = cadesTimestampSource;
 	}
 
 	public List<TimestampedReference> getTimestampReferencesForArchiveTimestamp(final List<TimestampToken> timestampedTimestamps) {

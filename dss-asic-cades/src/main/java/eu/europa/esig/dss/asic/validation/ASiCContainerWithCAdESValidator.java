@@ -130,7 +130,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 							cadesTimestamps.addAll(cadesSig.getTimestampsX2());
 							// Archive timestamp from CAdES is skipped
 
-							timestamp.setTimestampedReferences(cadesSig.getTimestampReferencesForArchiveTimestamp(cadesTimestamps));
+							timestamp.getTimestampedReferences().addAll(cadesSig.getTimestampReferencesForArchiveTimestamp(cadesTimestamps));
 
 							advancedSignature.addExternalTimestamp(timestamp);
 						}

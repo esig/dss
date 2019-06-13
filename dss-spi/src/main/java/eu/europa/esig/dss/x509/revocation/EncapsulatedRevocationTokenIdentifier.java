@@ -1,8 +1,11 @@
-package eu.europa.esig.dss;
+package eu.europa.esig.dss.x509.revocation;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.EncapsulatedTokenIdentifier;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 
 public class EncapsulatedRevocationTokenIdentifier extends EncapsulatedTokenIdentifier {
@@ -28,6 +31,15 @@ public class EncapsulatedRevocationTokenIdentifier extends EncapsulatedTokenIden
 	
 	public List<RevocationOrigin> getOrigins() {
 		return origins;
+	}
+	
+	public byte[] getDigestValue(DigestAlgorithm digestAlgorithm) {
+		byte[] digestValue = super.getDigestValue(digestAlgorithm);
+		if (digestValue == null) {
+			digestValue = DSSUtils.digest(digestAlgorithm, getBinaries());
+			digestMap.put(digestAlgorithm, digestValue);
+		}
+		return digestValue;
 	}
 	
 	@Override
