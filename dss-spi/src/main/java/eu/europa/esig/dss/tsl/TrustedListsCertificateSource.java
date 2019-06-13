@@ -40,6 +40,7 @@ import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
 /**
  * This class allows to inject trusted certificates from Trusted Lists
  */
+@SuppressWarnings("serial")
 public class TrustedListsCertificateSource extends CommonTrustedCertificateSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TrustedListsCertificateSource.class);

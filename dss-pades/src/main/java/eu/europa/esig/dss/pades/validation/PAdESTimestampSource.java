@@ -20,6 +20,7 @@ import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.revocation.crl.CRLBinaryIdentifier;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseIdentifier;
 
+@SuppressWarnings("serial")
 public class PAdESTimestampSource extends CAdESTimestampSource {
 	
 	private final PdfSignatureInfo pdfSignatureInfo;
@@ -88,11 +89,11 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 	}
 
 	protected void addReferencesForCertificates(List<TimestampedReference> references) {
-		List<CertificateToken> dssDictionaryCertValues = certificateSource.getDSSDictionaryCertValues();
+		List<CertificateToken> dssDictionaryCertValues = signatureCertificateSource.getDSSDictionaryCertValues();
 		for (CertificateToken certificate : dssDictionaryCertValues) {
 			addReference(references, new TimestampedReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 		}
-		List<CertificateToken> vriDictionaryCertValues = certificateSource.getVRIDictionaryCertValues();
+		List<CertificateToken> vriDictionaryCertValues = signatureCertificateSource.getVRIDictionaryCertValues();
 		for (CertificateToken certificate : vriDictionaryCertValues) {
 			addReference(references, new TimestampedReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 		}

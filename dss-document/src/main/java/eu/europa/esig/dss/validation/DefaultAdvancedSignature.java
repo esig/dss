@@ -355,10 +355,10 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 	
 	/**
-	 * Returns a set of {@link CertificateToken}s found in the {@link SignatureTimestampSource}
-	 * @return set of {@link CertificateToken}s
+	 * Returns a list of {@link CertificateToken}s found in the {@link SignatureTimestampSource}
+	 * @return list of {@link CertificateToken}s
 	 */
-	public Set<CertificateToken> getTimestampSourceCertificates() {
+	public List<CertificateToken> getTimestampSourceCertificates() {
 		return getTimestampSource().getCertificates();
 	}
 
@@ -374,7 +374,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public Set<CertificateToken> getCertificatesForInclusion(final ValidationContext validationContext) {
 
 		final Set<CertificateToken> certificates = new HashSet<CertificateToken>();
-		final List<CertificateToken> certWithinSignatures = getCertificatesWithinSignatureAndTimestamps();
+		final List<CertificateToken> certWithinSignatures = getCertificateListWithinSignatureAndTimestamps();
 		for (final CertificateToken certificateToken : validationContext.getProcessedCertificates()) {
 			if (certWithinSignatures.contains(certificateToken)) {
 				continue;
@@ -384,18 +384,13 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return certificates;
 	}
 	
-	public List<String> getCertificatesWithinSignatureAndTimestampIds() {
-		List<String> certificateIds = new ArrayList<String>();
-		for (CertificateToken certificateToken : getCertificatesWithinSignatureAndTimestamps()) {
-			certificateIds.add(certificateToken.getDSSIdAsString());
-		}
-		return certificateIds;
-	}
-
-	public List<CertificateToken> getCertificatesWithinSignatureAndTimestamps() {
-		List<CertificateToken> certs = new ArrayList<CertificateToken>();
-		Set<CertificateToken> certificatesWithiTimestamps = getTimestampSourceCertificates();
-		for (CertificateToken token : certificatesWithiTimestamps) {
+	/**
+	 * Returns a list of all certificates found into signature and timestamps
+	 * @return list of {@link CertificateToken}s
+	 */
+	public List<CertificateToken> getCertificateListWithinSignatureAndTimestamps() {
+		List<CertificateToken> certs = new ArrayList<CertificateToken>(getCertificates());
+		for (CertificateToken token : getTimestampSourceCertificates()) {
 			if (!certs.contains(token)) {
 				certs.add(token);
 			}
@@ -403,16 +398,23 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return certs;
 	}
 
-	public Map<String, List<CertificateToken>> getCertificatesWithinSignatureAndTimestamps(boolean skipLastArchiveTimestamp) {
+	/**
+	 * Returns a map between found certificate chains in signature and timestamps
+	 * @param skipLastArchiveTimestamp - if chain for the last archive timestamp must not be included to the final map
+	 * @return map between signature/timestamp instances and their certificate chains
+	 */
+	public Map<String, List<CertificateToken>> getCertificateMapWithinSignatureAndTimestamps(boolean skipLastArchiveTimestamp) {
 		// We can have more than one chain in the signature : signing certificate, ocsp
 		// responder, ...
 		Map<String, List<CertificateToken>> certificateMap = new HashMap<String, List<CertificateToken>>();
 		
+		// add signature certificates
 		List<CertificateToken> certificatesSig = getCertificateSource().getCertificates();
-		
 		if (Utils.isCollectionNotEmpty(certificatesSig)) {
 			certificateMap.put(CertificateSourceType.SIGNATURE.name(), certificatesSig);
 		}
+		
+		// add timestamp certificates
 		certificateMap.putAll(getTimestampSource().getCertificateMapWithinTimestamps(skipLastArchiveTimestamp));
 
 		return certificateMap;
@@ -746,7 +748,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	/* Defines the level LT */
 	public boolean hasLTProfile() {
-		Map<String, List<CertificateToken>> certificateChains = getCertificatesWithinSignatureAndTimestamps(true);
+		Map<String, List<CertificateToken>> certificateChains = getCertificateMapWithinSignatureAndTimestamps(true);
 
 		boolean emptyCRLs = getCompleteCRLSource().isEmpty();
 		boolean emptyOCSPs = getCompleteOCSPSource().isEmpty();

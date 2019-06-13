@@ -20,25 +20,16 @@
  */
 package eu.europa.esig.dss.validation;
 
-import static eu.europa.esig.dss.OID.id_aa_ets_archiveTimestampV2;
-import static eu.europa.esig.dss.OID.id_aa_ets_archiveTimestampV3;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_escTimeStamp;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signatureTimeStampToken;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificate;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificateV2;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import org.bouncycastle.asn1.ASN1Encodable;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
@@ -50,7 +41,6 @@ import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
-import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,9 +49,7 @@ import eu.europa.esig.dss.CertificateRefLocation;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.EncapsulatedTimestampTokenIdentifier;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.timestamp.TimestampCertificateSource;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 
@@ -75,11 +63,6 @@ public class CAdESCertificateSource extends CMSCertificateSource {
 
 	private final CMSSignedData cmsSignedData;
 	private final AttributeTable signedAttributes;
-	
-	/**
-	 * Map between timestamp ids and related {@code CAdESTimestampCertificateSource}s
-	 */
-	private Map<String, TimestampCertificateSource> timestampCertificateSources;
 
 	/**
 	 * The constructor with additional signer id parameter. All certificates are
@@ -110,22 +93,6 @@ public class CAdESCertificateSource extends CMSCertificateSource {
 		// Init CertPool
 		getKeyInfoCertificates();
 		getCertificateValues();
-		getTimestampCertificateSources();
-	}
-	
-	@Override
-	public CertificateToken getCertificateTokenByDigest(Digest digest) {
-		CertificateToken certificateToken = super.getCertificateTokenByDigest(digest);
-		if (certificateToken != null) {
-			return certificateToken;
-		}
-		for (TimestampCertificateSource timestampCertificateSource : timestampCertificateSources.values()) {
-			CertificateToken timestampCertificateToken = timestampCertificateSource.getCertificateTokenByDigest(digest);
-			if (timestampCertificateToken != null) {
-				return timestampCertificateToken;
-			}
-		}
-		return null;
 	}
 
 	@Override
@@ -143,54 +110,6 @@ public class CAdESCertificateSource extends CMSCertificateSource {
 			LOG.warn("Cannot extract certificates from CMS Signed Data : {}", e.getMessage());
 		}
 		return certs;
-	}
-	
-	protected void getTimestampCertificateSources() {
-		timestampCertificateSources = new HashMap<String, TimestampCertificateSource>();
-		if (unsignedAttributes != null) {
-			findTimeStampCertificateSources(id_aa_signatureTimeStampToken);
-			findTimeStampCertificateSources(id_aa_ets_certCRLTimestamp);
-			findTimeStampCertificateSources(id_aa_ets_escTimeStamp);
-			findTimeStampCertificateSources(id_aa_ets_archiveTimestampV2);
-			findTimeStampCertificateSources(id_aa_ets_archiveTimestampV3);
-		}
-	}
-	
-	/**
-	 * Finds certificate sources for timestamps with a given {@code oid}
-	 * @param unsignedAttributes {@link AttributeTable} to obtain timestamps from
-	 * @param oid {@link ASN1ObjectIdentifier} to collect
-	 */
-	private void findTimeStampCertificateSources(ASN1ObjectIdentifier oid) {
-		List<TimeStampToken> timeStampTokens = DSSASN1Utils.findTimeStampTokens(unsignedAttributes, oid);
-		for (TimeStampToken timeStampToken : timeStampTokens) {
-			try {
-				TimestampCertificateSource timestampCertificateSource = new TimestampCertificateSource(timeStampToken, getCertificatePool());
-				populateCertificateValues(timestampCertificateSource);
-				timestampCertificateSources.put(getTimestampId(timeStampToken), timestampCertificateSource);
-			} catch (IOException e) {
-				LOG.warn("A found timestamp with oid [{}] is not correcly encoded! The source is not saved.", oid.toString());
-			}
-		}
-	}
-	
-	private void populateCertificateValues(final TimestampCertificateSource timestampCertificateSource) {
-		for (CertificateToken certificateToken : timestampCertificateSource.getCertificates()) {
-			addCertificate(certificateToken);
-		}		
-	}
-	
-	private String getTimestampId(TimeStampToken timeStampToken) throws IOException {
-		return new EncapsulatedTimestampTokenIdentifier(timeStampToken.getEncoded()).asXmlId();
-	}
-	
-	/**
-	 * Returns a {@code TimestampCertificateSource} by its given {@code id}
-	 * @param id {@link String}
-	 * @return {@link TimestampCertificateSource}
-	 */
-	public TimestampCertificateSource getTimeStampCRLSourceById(String id) {
-		return timestampCertificateSources.get(id);
 	}
 
 	@Override

@@ -48,6 +48,7 @@ import eu.europa.esig.dss.utils.Utils;
  * Note: PKCS12 + JDK7 don't allow trust store
  *
  */
+@SuppressWarnings("serial")
 public class KeyStoreCertificateSource extends CommonCertificateSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(KeyStoreCertificateSource.class);

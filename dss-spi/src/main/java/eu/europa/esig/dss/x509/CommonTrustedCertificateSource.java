@@ -30,6 +30,7 @@ import eu.europa.esig.dss.tsl.ServiceInfo;
  * This class represents the simple list of trusted certificates.
  *
  */
+@SuppressWarnings("serial")
 public class CommonTrustedCertificateSource extends CommonCertificateSource {
 
 	public CommonTrustedCertificateSource() {

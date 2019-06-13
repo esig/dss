@@ -38,6 +38,7 @@ import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseIdentifier;
 import eu.europa.esig.dss.xades.XAdESUtils;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
+@SuppressWarnings("serial")
 public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESTimestampSource.class);
@@ -252,7 +253,7 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 			signingCertificateTimestampReferences = super.getSigningCertificateTimestampReferences();
 
 			if (isKeyInfoCovered()) {
-				List<CertificateToken> keyInfoCerts = certificateSource.getKeyInfoCertificates();
+				List<CertificateToken> keyInfoCerts = signatureCertificateSource.getKeyInfoCertificates();
 				for (CertificateToken certificate : keyInfoCerts) {
 					signingCertificateTimestampReferences.add(new TimestampedReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 				}

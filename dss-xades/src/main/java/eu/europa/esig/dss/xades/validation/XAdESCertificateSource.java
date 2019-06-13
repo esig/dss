@@ -49,6 +49,7 @@ import eu.europa.esig.dss.xades.XPathQueryHolder;
  * This class provides the mechanism to retrieve certificates contained in a XAdES signature.
  *
  */
+@SuppressWarnings("serial")
 public class XAdESCertificateSource extends SignatureCertificateSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESCertificateSource.class);

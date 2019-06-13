@@ -1,14 +1,14 @@
 package eu.europa.esig.dss.validation.timestamp;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.revocation.crl.ListCRLSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.ListOCSPSource;
 
-public interface SignatureTimestampSource {
+public interface SignatureTimestampSource extends Serializable {
 	
 	List<TimestampToken> getContentTimestamps();
 	
@@ -41,10 +41,10 @@ public interface SignatureTimestampSource {
 	Map<String, List<CertificateToken>> getCertificateMapWithinTimestamps(boolean skipLastArchiveTimestamp);
 	
 	/**
-	 * Returns a set of all found certificates in the timestamps
-	 * @return a set of {@link CertificateToken}s
+	 * Returns a list of all found certificates in the timestamps
+	 * @return a list of {@link CertificateToken}s
 	 */
-	Set<CertificateToken> getCertificates();
+	List<CertificateToken> getCertificates();
 	
 	/**
 	 * Returns a merged {@code ListCRLSource} between signatureCRLSource and all embedded timestamp CRL sources
