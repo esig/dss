@@ -65,6 +65,12 @@ public class CAdESCertificateSource extends CMSCertificateSource {
 	private final AttributeTable signedAttributes;
 
 	/**
+	 * Cached values
+	 */
+	private List<CertificateToken> keyInfoCertificates;
+	private List<CertificateRef> signingCertificateValues;
+
+	/**
 	 * The constructor with additional signer id parameter. All certificates are
 	 * extracted during instantiation.
 	 *
@@ -97,19 +103,21 @@ public class CAdESCertificateSource extends CMSCertificateSource {
 
 	@Override
 	public List<CertificateToken> getKeyInfoCertificates() {
-		final List<CertificateToken> certs = new ArrayList<CertificateToken>();
-		try {
-			final Collection<X509CertificateHolder> x509CertificateHolders = cmsSignedData.getCertificates().getMatches(null);
-			for (final X509CertificateHolder x509CertificateHolder : x509CertificateHolders) {
-				final CertificateToken certificateToken = addCertificate(DSSASN1Utils.getCertificate(x509CertificateHolder));
-				if (!certs.contains(certificateToken)) {
-					certs.add(certificateToken);
+		if (keyInfoCertificates == null) {
+			keyInfoCertificates = new ArrayList<CertificateToken>();
+			try {
+				final Collection<X509CertificateHolder> x509CertificateHolders = cmsSignedData.getCertificates().getMatches(null);
+				for (final X509CertificateHolder x509CertificateHolder : x509CertificateHolders) {
+					final CertificateToken certificateToken = addCertificate(DSSASN1Utils.getCertificate(x509CertificateHolder));
+					if (!keyInfoCertificates.contains(certificateToken)) {
+						keyInfoCertificates.add(certificateToken);
+					}
 				}
+			} catch (Exception e) {
+				LOG.warn("Cannot extract certificates from CMS Signed Data : {}", e.getMessage());
 			}
-		} catch (Exception e) {
-			LOG.warn("Cannot extract certificates from CMS Signed Data : {}", e.getMessage());
 		}
-		return certs;
+		return keyInfoCertificates;
 	}
 
 	@Override
@@ -126,17 +134,20 @@ public class CAdESCertificateSource extends CMSCertificateSource {
 
 	@Override
 	public List<CertificateRef> getSigningCertificateValues() {
-		if (signedAttributes != null && signedAttributes.size() > 0) {
-			final Attribute signingCertificateAttributeV1 = signedAttributes.get(id_aa_signingCertificate);
-			if (signingCertificateAttributeV1 != null) {
-				return extractSigningCertificateV1(signingCertificateAttributeV1);
-			}
-			final Attribute signingCertificateAttributeV2 = signedAttributes.get(id_aa_signingCertificateV2);
-			if (signingCertificateAttributeV2 != null) {
-				return extractSigningCertificateV2(signingCertificateAttributeV2);
+		if (signingCertificateValues == null) {
+			signingCertificateValues = new ArrayList<CertificateRef>();
+			if (signedAttributes != null && signedAttributes.size() > 0) {
+				final Attribute signingCertificateAttributeV1 = signedAttributes.get(id_aa_signingCertificate);
+				if (signingCertificateAttributeV1 != null) {
+					signingCertificateValues.addAll(extractSigningCertificateV1(signingCertificateAttributeV1));
+				}
+				final Attribute signingCertificateAttributeV2 = signedAttributes.get(id_aa_signingCertificateV2);
+				if (signingCertificateAttributeV2 != null) {
+					signingCertificateValues.addAll(extractSigningCertificateV2(signingCertificateAttributeV2));
+				}
 			}
 		}
-		return Collections.emptyList();
+		return signingCertificateValues;
 	}
 
 	private List<CertificateRef> extractSigningCertificateV1(Attribute attribute) {

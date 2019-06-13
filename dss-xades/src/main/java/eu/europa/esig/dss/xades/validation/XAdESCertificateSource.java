@@ -22,7 +22,6 @@ package eu.europa.esig.dss.xades.validation;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -56,6 +55,17 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 
 	private final Element signatureElement;
 	private final XPathQueryHolder xPathQueryHolder;
+	
+	/**
+	 * Cached values
+	 */
+	private List<CertificateToken> keyInfoCertificates;
+	private List<CertificateToken> certificateValues;
+	private List<CertificateToken> attrAuthoritiesCertValues;
+	private List<CertificateToken> timeStampValidationDataCertValues;
+	private List<CertificateRef> signingCertificateValues;
+	private List<CertificateRef> completeCertificateRefs;
+	private List<CertificateRef> attributeCertificateRefs;
 
 	/**
 	 * The default constructor for XAdESCertificateSource. All certificates are extracted during instantiation.
@@ -93,22 +103,34 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 	 */
 	@Override
 	public List<CertificateToken> getKeyInfoCertificates() {
-		return getCertificates(xPathQueryHolder.XPATH_KEY_INFO_X509_CERTIFICATE);
+		if (keyInfoCertificates == null) {
+			keyInfoCertificates = getCertificates(xPathQueryHolder.XPATH_KEY_INFO_X509_CERTIFICATE);
+		}
+		return keyInfoCertificates;
 	}
 
 	@Override
 	public List<CertificateToken> getCertificateValues() {
-		return getCertificates(xPathQueryHolder.XPATH_ENCAPSULATED_X509_CERTIFICATE);
+		if (certificateValues == null) {
+			certificateValues = getCertificates(xPathQueryHolder.XPATH_ENCAPSULATED_X509_CERTIFICATE);
+		}
+		return certificateValues;
 	}
 
 	@Override
 	public List<CertificateToken> getAttrAuthoritiesCertValues() {
-		return getCertificates(xPathQueryHolder.XPATH_AUTH_ENCAPSULATED_X509_CERTIFICATE);
+		if (attrAuthoritiesCertValues == null) {
+			attrAuthoritiesCertValues = getCertificates(xPathQueryHolder.XPATH_AUTH_ENCAPSULATED_X509_CERTIFICATE);
+		}
+		return attrAuthoritiesCertValues;
 	}
 
 	@Override
 	public List<CertificateToken> getTimeStampValidationDataCertValues() {
-		return getCertificates(xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_X509_CERTIFICATE);
+		if (timeStampValidationDataCertValues == null) {
+			timeStampValidationDataCertValues = getCertificates(xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_X509_CERTIFICATE);
+		}
+		return timeStampValidationDataCertValues;
 	}
 
 	/**
@@ -139,42 +161,53 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 
 	@Override
 	public List<CertificateRef> getSigningCertificateValues() {
-		NodeList list = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_SIGNING_CERTIFICATE_CERT);
-		if (list != null && list.getLength() != 0) {
-			return extractXAdESCertsV1(list, CertificateRefLocation.SIGNING_CERTIFICATE);
+		if (signingCertificateValues == null) {
+			signingCertificateValues = new ArrayList<CertificateRef>();
+			NodeList list = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_SIGNING_CERTIFICATE_CERT);
+			if (list != null && list.getLength() != 0) {
+				signingCertificateValues.addAll(extractXAdESCertsV1(list, CertificateRefLocation.SIGNING_CERTIFICATE));
+			}
+			list = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_SIGNING_CERTIFICATE_CERT_V2);
+			if (list != null && list.getLength() != 0) {
+				signingCertificateValues.addAll(extractXAdESCertsV2(list, CertificateRefLocation.SIGNING_CERTIFICATE));
+			}
+			if (Utils.isCollectionEmpty(signingCertificateValues)) {
+				LOG.warn("No signing certificate tag found");
+			}
 		}
-		list = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_SIGNING_CERTIFICATE_CERT_V2);
-		if (list != null && list.getLength() != 0) {
-			return extractXAdESCertsV2(list, CertificateRefLocation.SIGNING_CERTIFICATE);
-		}
-		LOG.warn("No signing certificate tag found");
-		return Collections.emptyList();
+		return signingCertificateValues;
 	}
 
 	@Override
 	public List<CertificateRef> getCompleteCertificateRefs() {
-		NodeList list = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_CCR_CERT_REFS_CERT);
-		if (list != null && list.getLength() != 0) {
-			return extractXAdESCertsV1(list, CertificateRefLocation.COMPLETE_CERTIFICATE_REFS);
+		if (completeCertificateRefs == null) {
+			completeCertificateRefs = new ArrayList<CertificateRef>();
+			NodeList list = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_CCR_CERT_REFS_CERT);
+			if (list != null && list.getLength() != 0) {
+				completeCertificateRefs.addAll(extractXAdESCertsV1(list, CertificateRefLocation.COMPLETE_CERTIFICATE_REFS));
+			}
+			list = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_CCRV2_CERT_REFS_CERT);
+			if (list != null && list.getLength() != 0) {
+				completeCertificateRefs.addAll(extractXAdESCertsV2(list, CertificateRefLocation.COMPLETE_CERTIFICATE_REFS));
+			}
 		}
-		list = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_CCRV2_CERT_REFS_CERT);
-		if (list != null && list.getLength() != 0) {
-			return extractXAdESCertsV2(list, CertificateRefLocation.COMPLETE_CERTIFICATE_REFS);
-		}
-		return Collections.emptyList();
+		return completeCertificateRefs;
 	}
 
 	@Override
 	public List<CertificateRef> getAttributeCertificateRefs() {
-		NodeList list = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_ACR_CERT_REFS_CERT);
-		if (list != null && list.getLength() != 0) {
-			return extractXAdESCertsV1(list, CertificateRefLocation.ATTRIBUTE_CERTIFICATE_REFS);
+		if (attributeCertificateRefs == null) {
+			attributeCertificateRefs = new ArrayList<CertificateRef>();
+			NodeList list = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_ACR_CERT_REFS_CERT);
+			if (list != null && list.getLength() != 0) {
+				attributeCertificateRefs.addAll(extractXAdESCertsV1(list, CertificateRefLocation.ATTRIBUTE_CERTIFICATE_REFS));
+			}
+			list = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_ACRV2_CERT_REFS_CERT);
+			if (list != null && list.getLength() != 0) {
+				attributeCertificateRefs.addAll(extractXAdESCertsV2(list, CertificateRefLocation.ATTRIBUTE_CERTIFICATE_REFS));
+			}
 		}
-		list = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_ACRV2_CERT_REFS_CERT);
-		if (list != null && list.getLength() != 0) {
-			return extractXAdESCertsV2(list, CertificateRefLocation.ATTRIBUTE_CERTIFICATE_REFS);
-		}
-		return Collections.emptyList();
+		return attributeCertificateRefs;
 	}
 
 	private List<CertificateRef> extractXAdESCertsV1(NodeList list, CertificateRefLocation location) {

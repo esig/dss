@@ -131,6 +131,8 @@ import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
  */
 public class CAdESSignature extends DefaultAdvancedSignature {
 
+	private static final long serialVersionUID = 8449504364217200965L;
+
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESSignature.class);
 
 	private static final Date JANUARY_1950 = DSSUtils.getUtcDate(1950, 1, 1);
