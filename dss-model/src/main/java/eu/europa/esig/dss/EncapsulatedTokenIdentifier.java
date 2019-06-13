@@ -8,7 +8,7 @@ public abstract class EncapsulatedTokenIdentifier extends Identifier {
 
 	private final byte[] binaries;
 
-	protected EnumMap<DigestAlgorithm, byte[]> digestMap = new EnumMap<DigestAlgorithm, byte[]>(DigestAlgorithm.class);
+	private final EnumMap<DigestAlgorithm, byte[]> digestMap = new EnumMap<DigestAlgorithm, byte[]>(DigestAlgorithm.class);
 	
 	EncapsulatedTokenIdentifier(byte[] binaries) {
 		super(binaries);
@@ -20,7 +20,12 @@ public abstract class EncapsulatedTokenIdentifier extends Identifier {
 	}
 	
 	public byte[] getDigestValue(DigestAlgorithm digestAlgorithm) {
-		return digestMap.get(digestAlgorithm);
+		byte[] digestValue = digestMap.get(digestAlgorithm);
+		if (digestValue == null) {
+			digestValue = digestAlgorithm.getMessageDigest().digest(getBinaries());
+			digestMap.put(digestAlgorithm, digestValue);
+		}
+		return digestValue;
 	}
 
 }
