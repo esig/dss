@@ -62,7 +62,6 @@ import eu.europa.esig.dss.pades.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
-import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
 import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
 import eu.europa.esig.dss.pdf.PAdESConstants;
@@ -269,7 +268,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			AcroFields af = reader.getAcroFields();
 			List<String> names = af.getSignatureNames();
 
-			PdfDssDict dssDictionary = getDSSDictionary(reader);
+			final PdfDssDict dssDictionary = getDSSDictionary(reader);
 
 			LOG.info("{} signature(s)", names.size());
 			for (String name : names) {
@@ -289,20 +288,18 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 				final String subFilter = signatureDictionary.getSubFilter();
 				if (PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER.equals(subFilter)) {
 
-					boolean isArchiveTimestamp = false;
-
+					PdfDssDict timestampRevisionDssDict = null;
+					
 					// LT or LTA
 					if (dssDictionary != null) {
-						// check is DSS dictionary already exist
-						if (isDSSDictionaryPresentInPreviousRevision(getOriginalBytes(byteRange, signedContent))) {
-							isArchiveTimestamp = true;
-						}
+						// obtain covered DSS dictionary if already exist
+						timestampRevisionDssDict = getDSSDictionaryPresentInRevision(getOriginalBytes(byteRange, signedContent));
 					}
-
-					result.add(new PdfDocTimestampInfo(validationCertPool, signatureDictionary, dssDictionary, cms, signedContent, signatureCoversWholeDocument,
-							isArchiveTimestamp));
+					result.add(new PdfDocTimestampInfo(validationCertPool, signatureDictionary, timestampRevisionDssDict, cms, signedContent, signatureCoversWholeDocument));
+					
 				} else {
 					result.add(new PdfSignatureInfo(validationCertPool, signatureDictionary, dssDictionary, cms, signedContent, signatureCoversWholeDocument));
+					
 				}
 
 			}
@@ -321,12 +318,12 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		return PdfDssDict.extract(currentCatalog);
 	}
 
-	private boolean isDSSDictionaryPresentInPreviousRevision(byte[] originalBytes) {
+	private PdfDssDict getDSSDictionaryPresentInRevision(byte[] originalBytes) {
 		try (PdfReader reader = new PdfReader(originalBytes)) {
-			return getDSSDictionary(reader) != null;
+			return getDSSDictionary(reader);
 		} catch (Exception e) {
 			LOG.warn("Cannot check in previous revisions if DSS dictionary already exist : " + e.getMessage(), e);
-			return false;
+			return null;
 		}
 	}
 

@@ -28,7 +28,6 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.x509.ArchiveTimestampType;
 import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.EncapsulatedCertificateTokenIdentifier;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.TimestampLocation;
@@ -243,13 +242,10 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	}
 	
 	@Override
-	protected List<TimestampedReference> getSigningCertificateTimestampReferences() {
-		List<TimestampedReference> timestampedReferences = super.getSigningCertificateTimestampReferences();
+	protected List<TimestampedReference> getSignatureTimestampReferences() {
+		List<TimestampedReference> timestampedReferences = super.getSignatureTimestampReferences();
 		if (isKeyInfoCovered()) {
-			List<CertificateToken> keyInfoCerts = signatureCertificateSource.getKeyInfoCertificates();
-			for (CertificateToken certificate : keyInfoCerts) {
-				timestampedReferences.add(new TimestampedReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
-			}
+			addReferences(timestampedReferences, createReferencesForCertificates(signatureCertificateSource.getKeyInfoCertificates()));
 		}
 		return timestampedReferences;
 	}

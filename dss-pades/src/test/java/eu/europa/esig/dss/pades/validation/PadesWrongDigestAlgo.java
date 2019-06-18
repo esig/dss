@@ -44,7 +44,7 @@ public class PadesWrongDigestAlgo {
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertEquals(1, diagnosticData.getAllSignatures().size());
-		assertEquals(4, diagnosticData.getAllTimestamps().size());
+		assertEquals(4, diagnosticData.getTimestampSet().size());
 	}
 
 }

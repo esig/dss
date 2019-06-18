@@ -27,7 +27,7 @@ public class CAdESDoubleLTATest extends PKIFactoryAccess {
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		Set<TimestampWrapper> allTimestamps = diagnosticData.getAllTimestamps();
+		Set<TimestampWrapper> allTimestamps = diagnosticData.getTimestampSet();
 		assertNotNull(allTimestamps);
 		assertEquals(3, allTimestamps.size());
 		int counter = 0;

@@ -254,7 +254,7 @@ public class ETSIValidationReportBuilder {
 			addOrphanRevocation(validationObjectListType, orphanRevocation, poeExtraction);
 		}
 
-		for (TimestampWrapper timestamp : diagnosticData.getAllTimestamps()) {
+		for (TimestampWrapper timestamp : diagnosticData.getTimestampSet()) {
 			addTimestamp(validationObjectListType, timestamp);
 		}
 		

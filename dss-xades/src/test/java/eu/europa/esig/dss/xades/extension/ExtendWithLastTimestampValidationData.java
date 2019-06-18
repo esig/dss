@@ -50,7 +50,7 @@ public class ExtendWithLastTimestampValidationData extends PKIFactoryAccess {
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertNotNull(diagnosticData);
 		
-		List<TimestampWrapper> timestamps = diagnosticData.getTimestamps();
+		List<TimestampWrapper> timestamps = diagnosticData.getTimestampList();
 		assertEquals(4, timestamps.size());
 		
 		int archiveTimestampCounter = 0;

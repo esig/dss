@@ -65,7 +65,7 @@ public class POEExtraction {
 		for (SignatureWrapper signature : signatures) {
 			addPOE(signature.getId(), proofOfExistence);
 		}
-		Set<TimestampWrapper> timestamps = diagnosticData.getAllTimestamps();
+		Set<TimestampWrapper> timestamps = diagnosticData.getTimestampSet();
 		for (TimestampWrapper timestamp : timestamps) {
 			addPOE(timestamp.getId(), proofOfExistence);
 		}
@@ -84,7 +84,7 @@ public class POEExtraction {
 	}
 	
 	public void collectAllPOE(DiagnosticData diagnosticData) {
-		for (TimestampWrapper timestamp : diagnosticData.getAllTimestamps()) {
+		for (TimestampWrapper timestamp : diagnosticData.getTimestampSet()) {
 			extractPOE(timestamp);
 		}
 	}

@@ -146,12 +146,12 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 		case ARCHIVAL_DATA:
 		case LONG_TERM_DATA:
 			process(diagnosticData.getAllRevocationData(), Context.REVOCATION, bbbs);
-			process(diagnosticData.getAllTimestamps(), Context.TIMESTAMP, bbbs);
+			process(diagnosticData.getTimestampSet(), Context.TIMESTAMP, bbbs);
 			process(diagnosticData.getAllSignatures(), Context.SIGNATURE, bbbs);
 			process(diagnosticData.getAllCounterSignatures(), Context.COUNTER_SIGNATURE, bbbs);
 			break;
 		case TIMESTAMPS:
-			process(diagnosticData.getAllTimestamps(), Context.TIMESTAMP, bbbs);
+			process(diagnosticData.getTimestampSet(), Context.TIMESTAMP, bbbs);
 			process(diagnosticData.getAllSignatures(), Context.SIGNATURE, bbbs);
 			process(diagnosticData.getAllCounterSignatures(), Context.COUNTER_SIGNATURE, bbbs);
 			break;

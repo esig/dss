@@ -29,7 +29,7 @@ public class DSS1647Test {
 		reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		List<TimestampWrapper> timestamps = diagnosticData.getTimestamps();
+		List<TimestampWrapper> timestamps = diagnosticData.getTimestampList();
 		assertNotNull(timestamps);
 
 	}

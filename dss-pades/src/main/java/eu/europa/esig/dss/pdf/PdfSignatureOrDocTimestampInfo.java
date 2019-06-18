@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.pdf;
 
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 /**
  * The usage of this interface permit the user to choose the underlying PDF library use to created PDF signatures.
@@ -64,7 +64,7 @@ public interface PdfSignatureOrDocTimestampInfo {
 	/**
 	 * @return signatures that covers a document that contains this signature
 	 */
-	Set<PdfSignatureOrDocTimestampInfo> getOuterSignatures();
+	List<PdfSignatureOrDocTimestampInfo> getOuterSignatures();
 
 	boolean isTimestamp();
 

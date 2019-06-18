@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.pdf;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +50,7 @@ public abstract class PdfCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	private boolean verified;
 	private String uniqueId;
 
-	private Set<PdfSignatureOrDocTimestampInfo> outerSignatures = new HashSet<PdfSignatureOrDocTimestampInfo>();
+	private List<PdfSignatureOrDocTimestampInfo> outerSignatures = new ArrayList<PdfSignatureOrDocTimestampInfo>();
 
 	/**
 	 *
@@ -112,8 +112,8 @@ public abstract class PdfCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	}
 
 	@Override
-	public Set<PdfSignatureOrDocTimestampInfo> getOuterSignatures() {
-		return Collections.unmodifiableSet(outerSignatures);
+	public List<PdfSignatureOrDocTimestampInfo> getOuterSignatures() {
+		return Collections.unmodifiableList(outerSignatures);
 	}
 	
 	@Override

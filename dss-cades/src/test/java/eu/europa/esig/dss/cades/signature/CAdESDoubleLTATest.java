@@ -130,7 +130,7 @@ public class CAdESDoubleLTATest extends PKIFactoryAccess {
 			assertEquals("Nb revoc for cert " + certificateWrapper.getCommonName() + " = " + nbRevoc, 1, nbRevoc);
 		}
 		
-		Set<TimestampWrapper> allTimestamps = diagnosticData.getAllTimestamps();
+		Set<TimestampWrapper> allTimestamps = diagnosticData.getTimestampSet();
 		assertTrue(Utils.isCollectionNotEmpty(allTimestamps));
 		
 		for (TimestampWrapper timestamp : allTimestamps) {

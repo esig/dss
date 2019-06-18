@@ -71,7 +71,7 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 	
 	protected final SignerInformation signerInformation;
 	
-	private final CMSSignedData cmsSignedData;
+	protected final CMSSignedData cmsSignedData;
 	protected final List<DSSDocument> detachedDocuments;
 	
 	public CAdESTimestampSource(final CAdESSignature signature, final CertificatePool certificatePool) {

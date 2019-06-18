@@ -1,22 +1,19 @@
-package eu.europa.esig.dss.cades.signature;
+package eu.europa.esig.dss.pades.signature;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -26,27 +23,23 @@ import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
-public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
+public class PAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 	
 	@Test
 	public void test() throws Exception {
 
-		DSSDocument doc = new InMemoryDocument("Hello".getBytes(StandardCharsets.UTF_8));
+		DSSDocument doc = new InMemoryDocument(PAdESDoubleSignature.class.getResourceAsStream("/sample.pdf"));
 		
 		// Sign with LT level and GoodTSA
-		CAdESService service = new CAdESService(getCompleteCertificateVerifier());
+		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 
-		CAdESSignatureParameters params = new CAdESSignatureParameters();
-		params.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+		PAdESSignatureParameters params = new PAdESSignatureParameters();
 		params.setSigningCertificate(getSigningCert());
-		params.setCertificateChain(getCertificateChain());
-		params.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
+		params.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LT);
 
 		ToBeSigned dataToSign = service.getDataToSign(doc, params);
-
 		SignatureValue signatureValue = getToken().sign(dataToSign, params.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument ltLevelDoc = service.signDocument(doc, params, signatureValue);
 
@@ -58,27 +51,25 @@ public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 		assertEquals(1, advancedSignature.getCRLSource().getAllCRLIdentifiers().size());
 		assertEquals(1, advancedSignature.getOCSPSource().getAllOCSPIdentifiers().size());
 		
-		TimestampToken timestampToken = advancedSignature.getSignatureTimestamps().get(0);
-		assertEquals(0, timestampToken.getCRLSource().getAllCRLIdentifiers().size());
-		assertEquals(0, timestampToken.getOCSPSource().getAllOCSPIdentifiers().size());
-		
 		Reports reports = validator.validateDocument();
+		
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		List<String> revocationIds = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId()).getRevocationIds();
 		assertEquals(2, revocationIds.size());
 		
-		// ltLevelDoc.save("target/ltLevelDoc.pkcs7");
+		List<TimestampWrapper> timestamps = diagnosticData.getTimestampList();
+		assertEquals(1, timestamps.size());
+		assertEquals(3, timestamps.get(0).getTimestampedObjects().size());
+		assertEquals(0, timestamps.get(0).getTimestampedRevocationIds().size());
 		
 
 		// Extend to LTA level with GoodTSACrossCertification
 		service.setTspSource(getGoodTsaCrossCertification());
-
-		CAdESSignatureParameters extendParams = new CAdESSignatureParameters();
-		extendParams.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
+		
+		PAdESSignatureParameters extendParams = new PAdESSignatureParameters();
+		extendParams.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 		extendParams.setSigningCertificate(getSigningCert());
 		DSSDocument ltaDoc = service.extendDocument(ltLevelDoc, extendParams);
-		
-		// ltaDoc.save("target/ltaDoc.pkcs7");
 
 		validator = SignedDocumentValidator.fromDocument(ltaDoc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
@@ -90,12 +81,6 @@ public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 		assertEquals(1, advancedSignature.getCRLSource().getAllCRLIdentifiers().size());
 		assertEquals(1, advancedSignature.getOCSPSource().getAllOCSPIdentifiers().size());
 		
-		TimestampToken archiveTimestamp = advancedSignature.getArchiveTimestamps().get(0);
-		assertEquals(0, archiveTimestamp.getCRLSource().getAllCRLIdentifiers().size());
-		assertEquals(0, archiveTimestamp.getOCSPSource().getAllOCSPIdentifiers().size());
-		
-		extendParams.setCertificateChain(getCertificateChain());
-		
 		diagnosticData = reports.getDiagnosticData();
 		List<String> revocationIdsLtaLevel = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId()).getRevocationIds();
 		assertEquals(2, revocationIdsLtaLevel.size());
@@ -103,12 +88,20 @@ public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 			assertTrue(revocationIdsLtaLevel.contains(id));
 		}
 		
+		timestamps = diagnosticData.getTimestampList();
+		assertEquals(2, timestamps.size());
+		assertEquals(3, timestamps.get(0).getTimestampedObjects().size());
+		assertEquals(0, timestamps.get(0).getTimestampedRevocationIds().size());
+		
+		assertEquals(11, timestamps.get(1).getTimestampedObjects().size());
+		assertEquals(2, timestamps.get(1).getTimestampedRevocationIds().size());
+		
 		
 		// Extend to second LTA level with GoodTSACrossCertification
 		// This must force addition of missing revocation data to the previously created timestamp
 		DSSDocument doubleLtaDoc = service.extendDocument(ltaDoc, extendParams);
 		
-		// doubleLtaDoc.save("target/doubleLtaDoc.pkcs7");
+		// doubleLtaDoc.save("target/doubleLtaDoc.pdf");
 
 		validator = SignedDocumentValidator.fromDocument(doubleLtaDoc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
@@ -119,29 +112,35 @@ public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 		signatures = validator.getSignatures();
 		advancedSignature = signatures.get(0);
 		
-		assertEquals(1, advancedSignature.getCRLSource().getAllCRLIdentifiers().size());
+		assertEquals(2, advancedSignature.getCRLSource().getAllCRLIdentifiers().size());
 		assertEquals(1, advancedSignature.getOCSPSource().getAllOCSPIdentifiers().size());
-		
-		assertEquals(2, advancedSignature.getCompleteCRLSource().getAllCRLIdentifiers().size());
-		assertEquals(1, advancedSignature.getCompleteOCSPSource().getAllOCSPIdentifiers().size());
-		
-		archiveTimestamp = advancedSignature.getArchiveTimestamps().get(0);
-		assertEquals(1, archiveTimestamp.getCRLSource().getAllCRLIdentifiers().size());
-		assertEquals(0, archiveTimestamp.getOCSPSource().getAllOCSPIdentifiers().size());
 		
 		diagnosticData = reports.getDiagnosticData();
 		
-		Set<TimestampWrapper> allTimestamps = diagnosticData.getTimestampSet();
-		assertNotNull(allTimestamps);
-		assertEquals(3, allTimestamps.size());
+		timestamps = diagnosticData.getTimestampList();
+		assertNotNull(timestamps);
+		assertEquals(3, timestamps.size());
 		
-		for (TimestampWrapper timestamp : allTimestamps) {
+		for (TimestampWrapper timestamp : timestamps) {
 			CertificateWrapper signingCertificate = timestamp.getSigningCertificate();
 			assertNotNull(signingCertificate);
 			assertTrue(signingCertificate.isRevocationDataAvailable());
 			assertTrue(timestamp.getDigestMatchers().get(0).isDataFound());
 			assertTrue(timestamp.getDigestMatchers().get(0).isDataIntact());
 		}
+		
+		TimestampWrapper timestampWrapper = timestamps.get(0);
+		assertEquals(3, timestampWrapper.getTimestampedObjects().size());
+		assertEquals(0, timestampWrapper.getTimestampedRevocationIds().size());
+		
+		timestampWrapper = timestamps.get(1);
+		assertEquals(11, timestampWrapper.getTimestampedObjects().size());
+		assertEquals(2, timestampWrapper.getTimestampedRevocationIds().size());
+		
+		timestampWrapper = timestamps.get(2);
+		assertEquals(18, timestampWrapper.getTimestampedObjects().size());
+		assertEquals(3, timestampWrapper.getTimestampedRevocationIds().size());
+		
 		
 		diagnosticData = reports.getDiagnosticData();
 		List<String> revocationIdsDoubleLtaLevel = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId()).getRevocationIds();
@@ -152,7 +151,8 @@ public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 		
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertNotNull(signature);
-		assertEquals(1, signature.getRevocationIdsByOrigin(XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
+		assertEquals(3, signature.getRevocationIdsByOrigin(XmlRevocationOrigin.INTERNAL_DSS).size());
+		assertEquals(3, signature.getRevocationIdsByOrigin(XmlRevocationOrigin.INTERNAL_VRI).size());
 		
 	}
 
@@ -160,5 +160,6 @@ public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 	protected String getSigningAlias() {
 		return RSA_SHA3_USER;
 	}
+
 
 }

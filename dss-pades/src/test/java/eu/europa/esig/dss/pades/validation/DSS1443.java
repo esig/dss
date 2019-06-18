@@ -69,7 +69,7 @@ public class DSS1443 extends PKIFactoryAccess {
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertEquals(1, diagnosticData.getAllSignatures().size());
-		Set<TimestampWrapper> allTimestamps = diagnosticData.getAllTimestamps();
+		Set<TimestampWrapper> allTimestamps = diagnosticData.getTimestampSet();
 		assertEquals(2, allTimestamps.size());
 
 		for (TimestampWrapper timestampWrapper : allTimestamps) {

@@ -52,7 +52,7 @@ public class CAdESLTALevelExtendedTest {
 		assertNotNull(timestampRevocationRefs);
 		assertEquals(1, timestampRevocationRefs.size());
 		
-		List<TimestampWrapper> timestamps = diagnosticData.getTimestamps();
+		List<TimestampWrapper> timestamps = diagnosticData.getTimestampList();
 		assertTrue(Utils.isCollectionNotEmpty(timestamps));
 		int archiveTimestampCounter = 0;
 		for (TimestampWrapper timestamp : timestamps) {
@@ -85,7 +85,7 @@ public class CAdESLTALevelExtendedTest {
 		List<String> revocationIds = signature.getRevocationIds();
 		assertEquals(3, revocationIds.size());
 		
-		List<TimestampWrapper> timestamps = diagnosticData.getTimestamps();
+		List<TimestampWrapper> timestamps = diagnosticData.getTimestampList();
 		assertTrue(Utils.isCollectionNotEmpty(timestamps));
 		int archiveTimestampCounter = 0;
 		for (TimestampWrapper timestamp : timestamps) {

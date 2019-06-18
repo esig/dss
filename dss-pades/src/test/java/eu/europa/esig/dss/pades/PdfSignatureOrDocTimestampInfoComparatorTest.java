@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -202,7 +201,7 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 		}
 
 		@Override
-		public Set<PdfSignatureOrDocTimestampInfo> getOuterSignatures() {
+		public List<PdfSignatureOrDocTimestampInfo> getOuterSignatures() {
 			return null;
 		}
 

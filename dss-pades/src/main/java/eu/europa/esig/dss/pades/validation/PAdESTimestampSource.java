@@ -2,11 +2,11 @@ package eu.europa.esig.dss.pades.validation;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import eu.europa.esig.dss.cades.validation.CAdESAttribute;
 import eu.europa.esig.dss.cades.validation.CAdESTimestampSource;
 import eu.europa.esig.dss.pdf.PdfDocTimestampInfo;
+import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
 import eu.europa.esig.dss.utils.Utils;
@@ -55,7 +55,7 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 		
 		final List<TimestampToken> timestampedTimestamps = new ArrayList<TimestampToken>(signatureTimestamps);
 		
-		final Set<PdfSignatureOrDocTimestampInfo> outerSignatures = pdfSignatureInfo.getOuterSignatures();
+		final List<PdfSignatureOrDocTimestampInfo> outerSignatures = pdfSignatureInfo.getOuterSignatures();
 		for (final PdfSignatureOrDocTimestampInfo outerSignature : outerSignatures) {
 			
 			if (outerSignature.isTimestamp() && (outerSignature instanceof PdfDocTimestampInfo)) {
@@ -76,27 +76,43 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 						references = getSignatureTimestampReferences();
 					}
 					addReferencesForPreviousTimestamps(references, timestampedTimestamps);
-					addReferencesForCertificates(references);
-					addReferencesFromRevocationData(references);
+					
+					// extract timestamped references from the timestamped DSS Dictionary
+					final PdfDssDict coveredDSSDictionary = timestampInfo.getDssDictionary();
+					addReferencesForCertificates(references, coveredDSSDictionary);
+					addReferencesFromRevocationData(references, coveredDSSDictionary);
+					
 					timestampToken.getTimestampedReferences().addAll(references);
 					archiveTimestamps.add(timestampToken);
 					
 				}
-				
+				populateTimestampCertificateSource(timestampToken.getCertificates());
 				timestampedTimestamps.add(timestampToken);
+				
 			}
 		}
 	}
+	
+	@Override
+	protected List<TimestampedReference> getSignatureTimestampReferences() {
+		List<TimestampedReference> signatureTimestampReferences = super.getSignatureTimestampReferences();
+		// TODO: include KeyInfo certs from covered CMS
+		return signatureTimestampReferences;
+	}
 
-	protected void addReferencesForCertificates(List<TimestampedReference> references) {
-		List<CertificateToken> dssDictionaryCertValues = signatureCertificateSource.getDSSDictionaryCertValues();
+	protected void addReferencesForCertificates(List<TimestampedReference> references, final PdfDssDict dssDictionary) {
+		PAdESCertificateSource padesCertificateSource = new PAdESCertificateSource(dssDictionary, cmsSignedData, certificatePool);
+		List<CertificateToken> dssDictionaryCertValues = padesCertificateSource.getDSSDictionaryCertValues();
 		for (CertificateToken certificate : dssDictionaryCertValues) {
 			addReference(references, new TimestampedReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 		}
-		List<CertificateToken> vriDictionaryCertValues = signatureCertificateSource.getVRIDictionaryCertValues();
+		populateTimestampCertificateSource(dssDictionaryCertValues);
+		
+		List<CertificateToken> vriDictionaryCertValues = padesCertificateSource.getVRIDictionaryCertValues();
 		for (CertificateToken certificate : vriDictionaryCertValues) {
 			addReference(references, new TimestampedReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 		}
+		populateTimestampCertificateSource(vriDictionaryCertValues);
 	}
 
 	/**
@@ -104,17 +120,22 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 	 * 
 	 * @param references
 	 */
-	protected void addReferencesFromRevocationData(List<TimestampedReference> references) {
-		for (CRLBinaryIdentifier crlIdentifier : crlSource.getAllCRLIdentifiers()) {
+	protected void addReferencesFromRevocationData(List<TimestampedReference> references, final PdfDssDict dssDictionary) {
+		PAdESCRLSource padesCRLSource = new PAdESCRLSource(dssDictionary);
+		for (CRLBinaryIdentifier crlIdentifier : padesCRLSource.getAllCRLIdentifiers()) {
 			if (crlIdentifier.getOrigins().contains(RevocationOrigin.INTERNAL_DSS) || crlIdentifier.getOrigins().contains(RevocationOrigin.INTERNAL_VRI)) {
 				addReference(references, new TimestampedReference(crlIdentifier.asXmlId(), TimestampedObjectType.REVOCATION));
 			}
 		}
-		for (OCSPResponseIdentifier ocspIdentifier : ocspSource.getAllOCSPIdentifiers()) {
+		crlSource.addAll(padesCRLSource);
+		
+		PAdESOCSPSource padesOCSPSource = new PAdESOCSPSource(dssDictionary);
+		for (OCSPResponseIdentifier ocspIdentifier : padesOCSPSource.getAllOCSPIdentifiers()) {
 			if (ocspIdentifier.getOrigins().contains(RevocationOrigin.INTERNAL_DSS) || ocspIdentifier.getOrigins().contains(RevocationOrigin.INTERNAL_VRI)) {
 				addReference(references, new TimestampedReference(ocspIdentifier.asXmlId(), TimestampedObjectType.REVOCATION));
 			}
 		}
+		ocspSource.addAll(padesOCSPSource);
 	}
 
 	@Override

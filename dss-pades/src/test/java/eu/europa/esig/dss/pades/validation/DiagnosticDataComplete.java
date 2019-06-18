@@ -115,7 +115,7 @@ public class DiagnosticDataComplete extends PKIFactoryAccess {
 		assertEquals(0, signatureTwo.getAllFoundRevocationRefs().size());
 		assertEquals("Signature3", signatureTwo.getSignatureFieldName());
 		
-		List<TimestampWrapper> timestamps= diagnosticData.getTimestamps();
+		List<TimestampWrapper> timestamps= diagnosticData.getTimestampList();
 		assertNotNull(timestamps);
 		assertEquals(3, timestamps.size());
 		assertEquals(3, timestamps.get(0).getTimestampedObjects().size());
@@ -204,7 +204,7 @@ public class DiagnosticDataComplete extends PKIFactoryAccess {
 		// System.out.println(report.getXmlDiagnosticData().replaceAll("[\\p{Cntrl}&&[^\r\n\t]]", ""));
 		DiagnosticData diagnosticData = report.getDiagnosticData();
 		assertNotNull(diagnosticData);
-		List<TimestampWrapper> timestamps = diagnosticData.getTimestamps();
+		List<TimestampWrapper> timestamps = diagnosticData.getTimestampList();
 		assertNotNull(timestamps);
 		assertEquals(3, timestamps.size());
 		List<String> usedTimestampIds = new ArrayList<String>();

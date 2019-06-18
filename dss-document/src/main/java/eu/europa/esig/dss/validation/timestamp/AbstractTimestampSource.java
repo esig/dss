@@ -2,6 +2,7 @@ package eu.europa.esig.dss.validation.timestamp;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -60,7 +61,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	/**
 	 * Local timestamp source to store certificate values found in timestamps
 	 */
-	private CommonCertificateSource timestampCertificateSource = new CommonCertificateSource();
+	protected CommonCertificateSource timestampCertificateSource = new CommonCertificateSource();
 	
 	// Map between timestamps and found certificates
 	private Map<String, List<CertificateToken>> certificateMap;
@@ -505,10 +506,22 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 		return references;
 	}
 
+	/**
+	 * Returns a list of {@code TimestampedReference}s created from signing certificates of the signature
+	 * @return list of {@link TimestampedReference}s
+	 */
 	protected List<TimestampedReference> getSigningCertificateTimestampReferences() {
+		return createReferencesForCertificates(signatureCertificateSource.getSigningCertificates());
+	}
+	
+	/**
+	 * Creates a list of {@code TimestampedReference}s for the provided list of {@code certificates}
+	 * @param certificates collection of {@link CertificateToken}s
+	 * @return list of {@link TimestampedReference}s
+	 */
+	protected List<TimestampedReference> createReferencesForCertificates(Collection<CertificateToken> certificates) {
 		final List<TimestampedReference> references = new ArrayList<TimestampedReference>();
-		List<CertificateToken> signingCertificates = signatureCertificateSource.getSigningCertificates();
-		for (CertificateToken certificateToken : signingCertificates) {
+		for (CertificateToken certificateToken : certificates) {
 			addReference(references, new TimestampedReference(certificateToken.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 		}
 		return references;
@@ -808,10 +821,18 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	
 	/**
 	 * Adds certificates found in the timestamp to the {@code timestampCertificateSource}
-	 * @param timestamp
+	 * @param timestamp {@link TimestampToken}
 	 */
-	private void populateTimestampCertificateSource(TimestampToken timestamp) {
-		for (CertificateToken certificate : timestamp.getCertificates()) {
+	protected void populateTimestampCertificateSource(TimestampToken timestamp) {
+		populateTimestampCertificateSource(timestamp.getCertificates());
+	}
+
+	/**
+	 * Adds {@code certificates} to the {@code timestampCertificateSource}
+	 * @param certificates list of {@link CertificateToken}s
+	 */
+	protected void populateTimestampCertificateSource(List<CertificateToken> certificates) {
+		for (CertificateToken certificate : certificates) {
 			timestampCertificateSource.addCertificate(certificate);
 		}
 	}

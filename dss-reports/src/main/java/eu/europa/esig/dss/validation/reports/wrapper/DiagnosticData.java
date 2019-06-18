@@ -577,7 +577,7 @@ public class DiagnosticData {
 	 * @return timestamp wrapper or null
 	 */
 	public TimestampWrapper getTimestampById(String id) {
-		Set<TimestampWrapper> allTimestamps = getAllTimestamps();
+		Set<TimestampWrapper> allTimestamps = getTimestampSet();
 		for (TimestampWrapper timestampWrapper : allTimestamps) {
 			if (Utils.areStringsEqual(id, timestampWrapper.getId())) {
 				return timestampWrapper;
@@ -734,7 +734,7 @@ public class DiagnosticData {
 	 * 
 	 * @return a List of timestamp wrappers
 	 */
-	public List<TimestampWrapper> getTimestamps() {
+	public List<TimestampWrapper> getTimestampList() {
 		if (usedTimestamps == null) {
 			usedTimestamps = new ArrayList<TimestampWrapper>();
 			List<XmlTimestamp> xmlTimestamps = wrapped.getUsedTimestamps();
@@ -818,8 +818,8 @@ public class DiagnosticData {
 	 * 
 	 * @return a set of TimestampWrapper
 	 */
-	public Set<TimestampWrapper> getAllTimestamps() {
-		return new HashSet<TimestampWrapper>(getTimestamps());
+	public Set<TimestampWrapper> getTimestampSet() {
+		return new HashSet<TimestampWrapper>(getTimestampList());
 	}
 
 	/**
