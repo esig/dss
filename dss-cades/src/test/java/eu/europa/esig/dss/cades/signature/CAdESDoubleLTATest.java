@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.cades.signature;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.nio.charset.StandardCharsets;
@@ -45,6 +46,8 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
+import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
+import eu.europa.esig.dss.x509.TimestampType;
 
 public class CAdESDoubleLTATest extends PKIFactoryAccess {
 
@@ -125,6 +128,21 @@ public class CAdESDoubleLTATest extends PKIFactoryAccess {
 			}
 			int nbRevoc = certificateWrapper.getCertificateRevocationData().size();
 			assertEquals("Nb revoc for cert " + certificateWrapper.getCommonName() + " = " + nbRevoc, 1, nbRevoc);
+		}
+		
+		Set<TimestampWrapper> allTimestamps = diagnosticData.getAllTimestamps();
+		assertTrue(Utils.isCollectionNotEmpty(allTimestamps));
+		
+		for (TimestampWrapper timestamp : allTimestamps) {
+			if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestamp.getType())) {
+				List<String> timestampedRevocationIds = timestamp.getTimestampedRevocationIds();
+				assertNotNull(timestampedRevocationIds);
+				assertEquals(2, timestampedRevocationIds.size());
+				for (String id : timestampedRevocationIds) {
+					RevocationWrapper revocation = diagnosticData.getRevocationById(id);
+					assertNotNull(revocation);
+				}
+			}
 		}
 	}
 

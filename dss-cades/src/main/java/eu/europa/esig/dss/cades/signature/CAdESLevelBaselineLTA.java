@@ -20,12 +20,23 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bouncycastle.asn1.ASN1Object;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
+import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
+import org.bouncycastle.tsp.TSPException;
+import org.bouncycastle.tsp.TimeStampToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
@@ -33,6 +44,7 @@ import eu.europa.esig.dss.OID;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
+import eu.europa.esig.dss.util.TimeStampTokenProductionComparator;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
@@ -47,7 +59,17 @@ import eu.europa.esig.dss.x509.tsp.TSPSource;
  */
 public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 
+	private static final Logger LOG = LoggerFactory.getLogger(CAdESLevelBaselineLTA.class);
+
 	private final CAdESLevelBaselineLT cadesProfileLT;
+	
+	private static final List<ASN1ObjectIdentifier> archiveTimestampOIDs;
+	
+	static {
+		archiveTimestampOIDs = new ArrayList<ASN1ObjectIdentifier>();
+		archiveTimestampOIDs.add(OID.id_aa_ets_archiveTimestampV2);
+		archiveTimestampOIDs.add(OID.id_aa_ets_archiveTimestampV3);
+	}
 
 	public CAdESLevelBaselineLTA(TSPSource tspSource, CertificateVerifier certificateVerifier, boolean onlyLastSigner) {
 		super(tspSource, onlyLastSigner);
@@ -63,11 +85,50 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 	protected SignerInformation extendCMSSignature(final CMSSignedData cmsSignedData, SignerInformation signerInformation,
 			final CAdESSignatureParameters parameters) throws DSSException {
 
+		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
+		try {
+			// add missing validation data to the previous ArchiveTimestamp
+			unsignedAttributes = addValidationData(unsignedAttributes, parameters);
+			signerInformation = SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
+		} catch (IOException | CMSException | TSPException e) {
+			LOG.warn("Validation data to a timestamp was not added due the error : {}", e.getMessage());
+		}
+
 		CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
 		cadesSignature.setDetachedContents(parameters.getDetachedContents());
-		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
+		
 		unsignedAttributes = addArchiveTimestampV3Attribute(cadesSignature, signerInformation, parameters, unsignedAttributes);
 		return SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
+	}
+	
+	private AttributeTable addValidationData(AttributeTable unsignedAttributes, final CAdESSignatureParameters parameters) throws IOException, CMSException, TSPException {
+		TimeStampToken timestampTokenToExtend = getTimestampTokenToExtend(unsignedAttributes);
+		if (timestampTokenToExtend != null) {
+			CMSSignedData timestampCMSSignedData = timestampTokenToExtend.toCMSSignedData();
+			CMSSignedData extendedTimestampCMSSignedData = cadesProfileLT.postExtendCMSSignedData(
+					timestampCMSSignedData, timestampCMSSignedData.getSignerInfos().iterator().next(), parameters);
+					
+			unsignedAttributes = CMSUtils.replaceAttribute(unsignedAttributes, timestampCMSSignedData, extendedTimestampCMSSignedData);
+		}
+		return unsignedAttributes;
+	}
+	
+	private TimeStampToken getTimestampTokenToExtend(AttributeTable unsignedAttributes) {
+		TimeStampToken lastTimeStampToken = null;
+		for (ASN1ObjectIdentifier identifier : archiveTimestampOIDs) {
+			lastTimeStampToken = getLastTimeStampTokenWithOid(lastTimeStampToken, unsignedAttributes, identifier);
+		}
+		return lastTimeStampToken;
+	}
+	
+	private TimeStampToken getLastTimeStampTokenWithOid(TimeStampToken lastTimeStampToken, AttributeTable unsignedAttributes, ASN1ObjectIdentifier asn1ObjectIdentifier) {
+		TimeStampTokenProductionComparator comparator = new TimeStampTokenProductionComparator();
+		for (TimeStampToken timeStampToken : DSSASN1Utils.findTimeStampTokens(unsignedAttributes, asn1ObjectIdentifier)) {
+			if (lastTimeStampToken == null || comparator.after(timeStampToken, lastTimeStampToken)) {
+				lastTimeStampToken = timeStampToken; 
+			}
+		}
+		return lastTimeStampToken;
 	}
 
 	/**

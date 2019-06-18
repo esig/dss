@@ -376,18 +376,14 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		final Set<CertificateToken> certificates = new HashSet<CertificateToken>();
 		final List<CertificateToken> certWithinSignatures = getCertificateListWithinSignatureAndTimestamps();
 		for (final CertificateToken certificateToken : validationContext.getProcessedCertificates()) {
-			if (certWithinSignatures.contains(certificateToken)) {
-				continue;
+			if (!certWithinSignatures.contains(certificateToken)) {
+				certificates.add(certificateToken);
 			}
-			certificates.add(certificateToken);
 		}
 		return certificates;
 	}
 	
-	/**
-	 * Returns a list of all certificates found into signature and timestamps
-	 * @return list of {@link CertificateToken}s
-	 */
+	@Override
 	public List<CertificateToken> getCertificateListWithinSignatureAndTimestamps() {
 		List<CertificateToken> certs = new ArrayList<CertificateToken>(getCertificates());
 		for (CertificateToken token : getTimestampSourceCertificates()) {

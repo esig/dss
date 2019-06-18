@@ -30,7 +30,9 @@ import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.DEROctetString;
+import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.DERTaggedObject;
+import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.ocsp.OCSPResponse;
 import org.bouncycastle.asn1.ocsp.OCSPResponseStatus;
@@ -48,6 +50,8 @@ import org.bouncycastle.operator.DigestCalculator;
 import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -61,6 +65,8 @@ import eu.europa.esig.dss.x509.revocation.ocsp.ResponderId;
  */
 public final class DSSRevocationUtils {
 
+	private static final Logger LOG = LoggerFactory.getLogger(DSSRevocationUtils.class);
+
 	private static JcaDigestCalculatorProviderBuilder jcaDigestCalculatorProviderBuilder;
 
 	static {
@@ -71,18 +77,62 @@ public final class DSSRevocationUtils {
 	}
 
 	/**
-	 * Convert a OCSPResp in a BasicOCSPResp
+	 * This method allows to create a {@code BasicOCSPResp} from a {@code DERSequence}.
+	 * The value for response SHALL be the DER encoding of BasicOCSPResponse (RFC 2560).
+	 *
+	 * @param derSequence
+	 *            {@code DERSequence} to convert to {@code BasicOCSPResp}
+	 * @return {@code BasicOCSPResp}
+	 */
+	public static BasicOCSPResp getBasicOcspResp(final DERSequence derSequence) {
+		BasicOCSPResp basicOCSPResp = null;
+		try {
+			final BasicOCSPResponse basicOcspResponse = BasicOCSPResponse.getInstance(derSequence);
+			basicOCSPResp = new BasicOCSPResp(basicOcspResponse);
+		} catch (Exception e) {
+			LOG.error("Impossible to create BasicOCSPResp from DERSequence!", e);
+		}
+		return basicOCSPResp;
+	}
+
+	/**
+	 * This method allows to create a {@code OCSPResp} from a {@code DERSequence}.
+	 *
+	 * @param derSequence
+	 *            {@code DERSequence} to convert to {@code OCSPResp}
+	 * @return {@code OCSPResp}
+	 */
+	public static OCSPResp getOcspResp(final DERSequence derSequence) {
+		OCSPResp ocspResp = null;
+		try {
+			final OCSPResponse ocspResponse = OCSPResponse.getInstance(derSequence);
+			ocspResp = new OCSPResp(ocspResponse);
+		} catch (Exception e) {
+			LOG.error("Impossible to create OCSPResp from DERSequence!", e);
+		}
+		return ocspResp;
+	}
+
+	/**
+	 * This method returns the {@code BasicOCSPResp} from a {@code OCSPResp}.
 	 *
 	 * @param ocspResp
-	 *            the {@code OCSPResp} to be converted to {@code BasicOCSPResp}
-	 * @return the conversion result
+	 *            {@code OCSPResp} to analysed
+	 * @return
 	 */
-	public static BasicOCSPResp fromRespToBasic(OCSPResp ocspResp) {
+	public static BasicOCSPResp fromRespToBasic(final OCSPResp ocspResp) {
+		BasicOCSPResp basicOCSPResp = null;
 		try {
-			return (BasicOCSPResp) ocspResp.getResponseObject();
+			final Object responseObject = ocspResp.getResponseObject();
+			if (responseObject instanceof BasicOCSPResp) {
+				basicOCSPResp = (BasicOCSPResp) responseObject;
+			} else {
+				LOG.warn("Unknown OCSP response type: {}", responseObject.getClass());
+			}
 		} catch (OCSPException e) {
-			throw new DSSException(e);
+			LOG.error("Impossible to process OCSPResp!", e);
 		}
+		return basicOCSPResp;
 	}
 
 	/**

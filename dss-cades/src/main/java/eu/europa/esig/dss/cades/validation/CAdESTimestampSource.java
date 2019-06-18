@@ -42,6 +42,8 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.cades.signature.CadesLevelBaselineLTATimestampExtractor;
+import eu.europa.esig.dss.validation.CMSCRLSource;
+import eu.europa.esig.dss.validation.CMSOCSPSource;
 import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.validation.timestamp.AbstractTimestampSource;
 import eu.europa.esig.dss.validation.timestamp.SignatureProperties;
@@ -57,8 +59,10 @@ import eu.europa.esig.dss.x509.TimestampLocation;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.revocation.crl.CRLBinaryIdentifier;
 import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
+import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseIdentifier;
+import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 
 @SuppressWarnings("serial")
 public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute> {
@@ -186,6 +190,36 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 	protected List<TimestampedReference> getIndividualContentTimestampedReferences(CAdESAttribute signedAttribute) {
 		// not applicable for CAdES, must be not executed
 		throw new DSSException("Not applicable for CAdES!");
+	}
+	
+	@Override
+	protected List<TimestampedReference> getSignedDataRevocations() {
+		List<TimestampedReference> references = new ArrayList<TimestampedReference>();
+		references.addAll(extractReferencesFromCRLSource(signatureCRLSource));
+		references.addAll(extractReferencesFromOCSPSource(signatureOCSPSource));
+		return references;
+	}
+	
+	private List<TimestampedReference> extractReferencesFromCRLSource(SignatureCRLSource crlSource) {
+		List<TimestampedReference> references = new ArrayList<TimestampedReference>();
+		if (crlSource instanceof CMSCRLSource) {
+			List<CRLBinaryIdentifier> signedDataCRLIdentifiers = ((CMSCRLSource) crlSource).getSignedDataCRLIdentifiers();
+			for (CRLBinaryIdentifier crlBinary : signedDataCRLIdentifiers) {
+				references.add(new TimestampedReference(crlBinary.asXmlId(), TimestampedObjectType.REVOCATION));
+			}
+		}
+		return references;
+	}
+	
+	private List<TimestampedReference> extractReferencesFromOCSPSource(SignatureOCSPSource ocspSource) {
+		List<TimestampedReference> references = new ArrayList<TimestampedReference>();
+		if (ocspSource instanceof CMSOCSPSource) {
+			List<OCSPResponseIdentifier> signedDataOCSPIdentifiers = ((CMSOCSPSource) ocspSource).getSignedDataOCSPIdentifiers();
+			for (OCSPResponseIdentifier ocspResponse : signedDataOCSPIdentifiers) {
+				references.add(new TimestampedReference(ocspResponse.asXmlId(), TimestampedObjectType.REVOCATION));
+			}
+		}
+		return references;
 	}
 
 	@Override

@@ -34,6 +34,7 @@ public enum RevocationOrigin {
 
 	/**
 	 * The revocation data was embedded in the signature 'TimeStampValidationData' attribute (used in XAdES)
+	 * NOTE: in case of CAdES, the value is used when data were embedded to a TimestampToken
 	 */
 	INTERNAL_TIMESTAMP_REVOCATION_VALUES,
 

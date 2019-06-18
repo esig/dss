@@ -48,11 +48,6 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	
 	private List<Reference> references;
 	private List<ReferenceValidation> referenceValidations;
-
-	/**
-	 * Cached list of the Signing Certificate Timestamp References.
-	 */
-	private List<TimestampedReference> signingCertificateTimestampReferences;
 	
 	private XAdESTimestampDataBuilder timestampDataBuilder;
 	
@@ -249,17 +244,14 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	
 	@Override
 	protected List<TimestampedReference> getSigningCertificateTimestampReferences() {
-		if (signingCertificateTimestampReferences == null) {
-			signingCertificateTimestampReferences = super.getSigningCertificateTimestampReferences();
-
-			if (isKeyInfoCovered()) {
-				List<CertificateToken> keyInfoCerts = signatureCertificateSource.getKeyInfoCertificates();
-				for (CertificateToken certificate : keyInfoCerts) {
-					signingCertificateTimestampReferences.add(new TimestampedReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
-				}
+		List<TimestampedReference> timestampedReferences = super.getSigningCertificateTimestampReferences();
+		if (isKeyInfoCovered()) {
+			List<CertificateToken> keyInfoCerts = signatureCertificateSource.getKeyInfoCertificates();
+			for (CertificateToken certificate : keyInfoCerts) {
+				timestampedReferences.add(new TimestampedReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 			}
 		}
-		return signingCertificateTimestampReferences;
+		return timestampedReferences;
 	}
 
 	private boolean isKeyInfoCovered() {

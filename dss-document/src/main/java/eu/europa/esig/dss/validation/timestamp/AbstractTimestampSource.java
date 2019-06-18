@@ -321,7 +321,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 				continue;
 				
 			} else if (isArchiveTimestamp(unsignedAttribute)) {
-				final List<TimestampedReference> references = new ArrayList<TimestampedReference>();
+				final List<TimestampedReference> references = getSignedDataRevocations();
 				addReferencesForPreviousTimestamps(references, timestamps);
 				addReferences(references, encapsulatedReferences);
 				
@@ -620,6 +620,16 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	protected abstract List<OCSPResponseIdentifier> getEncapsulatedOCSPIdentifiers(SignatureAttribute unsignedAttribute);
 	
 	/**
+	 * Returns a list of {@code TimestampedReference}s found in signed properties of the signature
+	 * NODE: used only in CAdES
+	 * @return list of {@link TimestampedReference}s
+	 */
+	protected List<TimestampedReference> getSignedDataRevocations() {
+		// empty by default
+		return new ArrayList<TimestampedReference>();
+	}
+	
+	/**
 	 * Returns a list of {@link TimestampedReference}s encapsulated to the "timestamp-validation-data" {@code unsignedAttribute}
 	 * @param unsignedAttribute {@link SignatureAttribute} to get timestamped references from
 	 * @return list of {@link TimestampedReference}s
@@ -673,8 +683,8 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	protected void addReferencesForPreviousTimestamps(List<TimestampedReference> references, List<TimestampToken> timestampedTimestamps) {
 		for (final TimestampToken timestampToken : timestampedTimestamps) {
 			addReference(references, new TimestampedReference(timestampToken.getDSSIdAsString(), TimestampedObjectType.TIMESTAMP));
-			addEncapsulatedCertificatesFromTimestamp(references, timestampToken);
 			addTimestampedReferences(references, timestampToken);
+			addEncapsulatedCertificatesFromTimestamp(references, timestampToken);
 		}
 	}
 	

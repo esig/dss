@@ -271,8 +271,7 @@ public class CAdESTimestampDataBuilder implements TimestampDataBuilder {
 			if (id_aa_ets_archiveTimestampV2.equals(attrType) || id_aa_ets_archiveTimestampV3.equals(attrType)) {
 				try {
 
-					TimeStampToken token = new TimeStampToken(
-							new CMSSignedData(DSSASN1Utils.getDEREncoded(attribute.getAttrValues().getObjectAt(0).toASN1Primitive())));
+					TimeStampToken token = DSSASN1Utils.getTimeStampToken(attribute);
 					if (!token.getTimeStampInfo().getGenTime().before(timestampToken.getGenerationTime())) {
 						continue;
 					}

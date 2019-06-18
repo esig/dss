@@ -122,21 +122,23 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 
 		Collection<SignerInformation> signerInformationCollection = cmsSignedData.getSignerInfos().getSigners();
 		final List<SignerInformation> newSignerInformationList = new ArrayList<SignerInformation>();
+		
 		for (SignerInformation signerInformation : signerInformationCollection) {
-
 			final CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
 			cadesSignature.setDetachedContents(parameters.getDetachedContents());
 			assertSignatureValid(cadesSignature, parameters);
 			final SignerInformation newSignerInformation = extendCMSSignature(cmsSignedData, signerInformation, parameters);
 			newSignerInformationList.add(newSignerInformation);
 		}
-
 		final SignerInformationStore newSignerStore = new SignerInformationStore(newSignerInformationList);
+		
 		cmsSignedData = CMSSignedData.replaceSigners(cmsSignedData, newSignerStore);
 		signerInformationCollection = cmsSignedData.getSignerInfos().getSigners();
+		
 		for (SignerInformation signerInformation : signerInformationCollection) {
 			cmsSignedData = postExtendCMSSignedData(cmsSignedData, signerInformation, parameters);
 		}
+		
 		return cmsSignedData;
 	}
 

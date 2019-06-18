@@ -4,20 +4,32 @@ import static eu.europa.esig.dss.OID.attributeRevocationRefsOid;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationRefs;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationValues;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
+import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
+import org.bouncycastle.asn1.cms.CMSObjectIdentifiers;
 import org.bouncycastle.asn1.esf.CrlOcspRef;
 import org.bouncycastle.asn1.esf.OcspListID;
 import org.bouncycastle.asn1.esf.OcspResponsesID;
 import org.bouncycastle.asn1.esf.RevocationValues;
 import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
+import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.util.Store;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseIdentifier;
@@ -30,8 +42,15 @@ import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 @SuppressWarnings("serial")
 public abstract class CMSOCSPSource extends SignatureOCSPSource {
 
+	private static final Logger LOG = LoggerFactory.getLogger(CMSOCSPSource.class);
+
 	protected final CMSSignedData cmsSignedData;
 	protected final AttributeTable unsignedAttributes;
+	
+	/**
+	 * Cached list of {@code OCSPResponseIdentifier}s found in SignedData attribute
+	 */
+	private List<OCSPResponseIdentifier> signedDataOCSPIdentifiers = new ArrayList<OCSPResponseIdentifier>();
 
 	/**
 	 * The default constructor for CAdESOCSPSource.
@@ -46,11 +65,6 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 		this.unsignedAttributes = unsignedAttributes;
 		appendContainedOCSPResponses();
 	}
-	
-	/**
-	 * Collects OCSP Responses from signedAttributes
-	 */
-	protected abstract void collectFromSignedData();
 	
 	/**
 	 * Returns revocation-values {@link RevocationOrigin}
@@ -74,6 +88,14 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 	 */
 	protected RevocationOrigin getAttributeRevocationRefsOrigin() {
 		return RevocationOrigin.ATTRIBUTE_REVOCATION_REFS;
+	}
+	
+	/**
+	 * Returns a list of {@code OCSPResponseIdentifier} found in the SignedData container
+	 * @return list of {@link OCSPResponseIdentifier}
+	 */
+	public List<OCSPResponseIdentifier> getSignedDataOCSPIdentifiers() {
+		return signedDataOCSPIdentifiers;
 	}
 
 	@Override
@@ -99,7 +121,7 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
             ocspVals [1] SEQUENCE OF BasicOCSPResponse OPTIONAL,
             otherRevVals [2] OtherRevVals OPTIONAL}
 			 */
-			collectRevocationValues(unsignedAttributes, id_aa_ets_revocationValues, RevocationOrigin.INTERNAL_REVOCATION_VALUES);
+			collectRevocationValues(unsignedAttributes, id_aa_ets_revocationValues, getInternalRevocationValuesOrigin());
 			
 			/*
 			 * ETSI TS 101 733 V2.2.1 (2013-04) pages 39,41
@@ -121,12 +143,12 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 			 * } 
 			 * AttributeRevocationRefs ::= SEQUENCE OF CrlOcspRef (the same as for CompleteRevocationRefs)
 			 */
-			collectRevocationRefs(unsignedAttributes, id_aa_ets_revocationRefs, RevocationOrigin.COMPLETE_REVOCATION_REFS);
+			collectRevocationRefs(unsignedAttributes, id_aa_ets_revocationRefs, getCompleteRevocationRefsOrigin());
 			/*
 			 * id-aa-ets-attrRevocationRefs OBJECT IDENTIFIER ::= { iso(1) member-body(2)
 			 * us(840) rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) id-aa(2) 45} 
 			 */
-			collectRevocationRefs(unsignedAttributes, attributeRevocationRefsOid, RevocationOrigin.ATTRIBUTE_REVOCATION_REFS);
+			collectRevocationRefs(unsignedAttributes, attributeRevocationRefsOid, getAttributeRevocationRefsOrigin());
 
 		}
 
@@ -148,6 +170,53 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
             Value OCTET STRING
           }
 		 */
+	}
+
+	private void collectFromSignedData() {
+		addBasicOcspRespFrom_id_ri_ocsp_response();
+		addBasicOcspRespFrom_id_pkix_ocsp_basic();
+	}
+
+	private void addBasicOcspRespFrom_id_ri_ocsp_response() {
+		final Store otherRevocationInfo = cmsSignedData.getOtherRevocationInfo(CMSObjectIdentifiers.id_ri_ocsp_response);
+		final Collection otherRevocationInfoMatches = otherRevocationInfo.getMatches(null);
+		for (final Object object : otherRevocationInfoMatches) {
+			if (object instanceof DERSequence) {
+				final DERSequence otherRevocationInfoMatch = (DERSequence) object;
+				final BasicOCSPResp basicOCSPResp;
+				if (otherRevocationInfoMatch.size() == 4) {
+					basicOCSPResp = DSSRevocationUtils.getBasicOcspResp(otherRevocationInfoMatch);
+				} else {
+					final OCSPResp ocspResp = DSSRevocationUtils.getOcspResp(otherRevocationInfoMatch);
+					basicOCSPResp = DSSRevocationUtils.fromRespToBasic(ocspResp);
+				}
+				OCSPResponseIdentifier ocspResponseIdentifier = addBasicOcspResp(basicOCSPResp, getInternalRevocationValuesOrigin());
+				if (ocspResponseIdentifier != null) {
+					signedDataOCSPIdentifiers.add(ocspResponseIdentifier);
+				}
+			} else {
+				LOG.warn("Unsupported object type for id_ri_ocsp_response (SHALL be DER encoding) : {}",
+						object.getClass().getSimpleName());
+			}
+		}
+	}
+
+	private void addBasicOcspRespFrom_id_pkix_ocsp_basic() {
+		final Store otherRevocationInfo = cmsSignedData.getOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
+		final Collection otherRevocationInfoMatches = otherRevocationInfo.getMatches(null);
+		for (final Object object : otherRevocationInfoMatches) {
+			if (object instanceof DERSequence) {
+				final DERSequence otherRevocationInfoMatch = (DERSequence) object;
+				final BasicOCSPResp basicOCSPResp = DSSRevocationUtils.getBasicOcspResp(otherRevocationInfoMatch);
+				OCSPResponseIdentifier ocspResponseIdentifier = addBasicOcspResp(basicOCSPResp, getInternalRevocationValuesOrigin());
+				if (ocspResponseIdentifier != null) {
+					signedDataOCSPIdentifiers.add(ocspResponseIdentifier);
+				}
+			} else {
+				LOG.warn("Unsupported object type for id_pkix_ocsp_basic (SHALL be DER encoding) : {}",
+						object.getClass().getSimpleName());
+			}
+		}
 	}
 	
 	private void collectRevocationValues(AttributeTable unsignedAttributes, ASN1ObjectIdentifier revocacationValuesAttribute, RevocationOrigin origin) {
@@ -195,11 +264,19 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 		}
 	}
 
-	protected void addBasicOcspResp(final BasicOCSPResp basicOCSPResp, RevocationOrigin origin) {
+	/**
+	 * Builds and returns {@code OCSPResponseIdentifier} from the provided {@code basicOCSPResp}
+	 * @param basicOCSPResp {@link BasicOCSPResp} to build identifier from
+	 * @param origin {@link RevocationOrigin} specifing the list to store the value
+	 * @return {@link OCSPResponseIdentifier}
+	 */
+	protected OCSPResponseIdentifier addBasicOcspResp(final BasicOCSPResp basicOCSPResp, RevocationOrigin origin) {
 		if (basicOCSPResp != null) {
 			OCSPResponseIdentifier ocspResponse = OCSPResponseIdentifier.build(basicOCSPResp, origin);
 			addOCSPResponse(ocspResponse, origin);
+			return ocspResponse;
 		}
+		return null;
 	}
 
 

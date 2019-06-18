@@ -31,9 +31,4 @@ public class TimestampCRLSource extends CMSCRLSource {
 		return RevocationOrigin.TIMESTAMP_REVOCATION_REFS;
 	}
 
-	@Override
-	protected void collectFromSignedData() {
-		// do nothing, because timestamp does not contain signed attributes
-	}
-
 }

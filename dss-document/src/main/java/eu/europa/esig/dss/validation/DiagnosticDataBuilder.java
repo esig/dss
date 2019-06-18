@@ -908,7 +908,7 @@ public class DiagnosticDataBuilder {
 	private XmlRelatedCertificate getXmlRelatedCertificate(CertificateToken cert, CertificateRef certificateRef) {
 		XmlRelatedCertificate xrc = new XmlRelatedCertificate();
 		xrc.setCertificate(xmlCerts.get(cert.getDSSIdAsString()));
-		if (Utils.isCollectionEmpty(xrc.getOrigins()) && getXmlCertificateSources(cert).contains(XmlCertificateSourceType.TIMESTAMP)) {
+		if (getXmlCertificateSources(cert).contains(XmlCertificateSourceType.TIMESTAMP)) {
 			xrc.getOrigins().add(CertificateOriginType.INTERNAL_TIMESTAMP_CERTIFICATE_VALUES);
 		}
 		xrc.getCertificateRefs().add(getXmlCertificateRef(certificateRef));
@@ -918,6 +918,17 @@ public class DiagnosticDataBuilder {
 	
 	private List<XmlOrphanCertificate> getOrphanCertificates(AdvancedSignature signature) {
 		List<XmlOrphanCertificate> orphanCertificates = new ArrayList<XmlOrphanCertificate>();
+		
+		for (CertificateToken certificateToken : signature.getCertificates()) {
+			if (!usedCertificates.contains(certificateToken)) {
+				orphanCertificates.add(createXmlOrphanCertificate(certificateToken, false));
+			}
+		}
+		for (CertificateToken certificateToken : signature.getTimestampSource().getCertificates()) {
+			if (!usedCertificates.contains(certificateToken)) {
+				orphanCertificates.add(createXmlOrphanCertificate(certificateToken, true));
+			}
+		}
 		
 		List<CertificateRef> orphanCertificateRefs = signature.getOrphanCertificateRefs();
 		for (List<CertificateRef> assignedCertificateRefs : certificateRefsMap.values()) {
@@ -931,11 +942,29 @@ public class DiagnosticDataBuilder {
 		return orphanCertificates;
 	}
 	
+	private XmlOrphanCertificate createXmlOrphanCertificate(CertificateToken certificateToken, boolean foundInTimestamp) {
+		XmlOrphanCertificate orphanCertificate = new XmlOrphanCertificate();
+		if (foundInTimestamp || getXmlCertificateSources(certificateToken).contains(XmlCertificateSourceType.TIMESTAMP)) {
+			orphanCertificate.getOrigins().add(CertificateOriginType.INTERNAL_TIMESTAMP_CERTIFICATE_VALUES);
+		}
+		orphanCertificate.setToken(createXmlOrphanCertificateToken(certificateToken));
+		return orphanCertificate;
+	}
+	
 	private XmlOrphanCertificate createXmlOrphanCertificate(CertificateRef orphanCertificateRef) {
 		XmlOrphanCertificate orphanCertificate = new XmlOrphanCertificate();
 		orphanCertificate.setToken(createXmlOrphanCertificateToken(orphanCertificateRef));
 		orphanCertificate.getCertificateRefs().add(getXmlCertificateRef(orphanCertificateRef));
 		return orphanCertificate;
+	}
+	
+	private XmlOrphanToken createXmlOrphanCertificateToken(CertificateToken certificateToken) {
+		XmlOrphanToken orphanToken = new XmlOrphanToken();
+		orphanToken.setId(certificateToken.getDSSIdAsString());
+		orphanToken.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(defaultDigestAlgorithm, certificateToken.getDigest(defaultDigestAlgorithm)));
+		orphanToken.setType(OrphanTokenType.CERTIFICATE);
+		xmlOrphanTokens.put(certificateToken.getDSSIdAsString(), orphanToken);
+		return orphanToken;
 	}
 	
 	private XmlOrphanToken createXmlOrphanCertificateToken(CertificateRef orphanCertificateRef) {
@@ -1494,8 +1523,10 @@ public class DiagnosticDataBuilder {
 		List<XmlCertificateSourceType> certificateSources = new ArrayList<XmlCertificateSourceType>();
 		if (certificateSourceTypes != null) {
 			Set<CertificateSourceType> sourceTypes = certificateSourceTypes.get(token);
-			for (CertificateSourceType source : sourceTypes) {
-				certificateSources.add(XmlCertificateSourceType.valueOf(source.name()));
+			if (sourceTypes != null) {
+				for (CertificateSourceType source : sourceTypes) {
+					certificateSources.add(XmlCertificateSourceType.valueOf(source.name()));
+				}
 			}
 		}
 		if (Utils.isCollectionEmpty(certificateSources)) {

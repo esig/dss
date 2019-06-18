@@ -14,7 +14,9 @@ import java.util.List;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.cms.SignerInformation;
-import org.bouncycastle.tsp.TimeStampToken;
+
+import eu.europa.esig.dss.DSSASN1Utils;
+import eu.europa.esig.dss.util.TimeStampTokenProductionComparator;
 
 public class CAdESUnsignedAttributes extends CAdESSigProperties {
 	
@@ -45,6 +47,8 @@ public class CAdESUnsignedAttributes extends CAdESSigProperties {
 	
 	private List<CAdESAttribute> sortTimestamps(List<CAdESAttribute> attributes) {
 		// TODO: improve ?
+		TimeStampTokenProductionComparator comparator = new TimeStampTokenProductionComparator();
+		
 		for (int ii = 0; ii < attributes.size() - 1; ii++) {
 			for (int jj = 0; jj < attributes.size() - ii - 1; jj++) {
 				CAdESAttribute cadesAttribute = attributes.get(jj);
@@ -56,25 +60,13 @@ public class CAdESUnsignedAttributes extends CAdESSigProperties {
 						Collections.swap(attributes, jj, jj+1);
 					} 
 					// swap if the current element was generated after the following timestamp attribute
-					else if (getTimeStampGenerationTime(cadesAttribute).after(getTimeStampGenerationTime(nextCAdESAttribute))) {
+					else if (comparator.compare(cadesAttribute.toTimeStampToken(), nextCAdESAttribute.toTimeStampToken()) > 0) {
 						Collections.swap(attributes, jj, jj+1);
 					}
 				}
 			}
 		}
 		return attributes;
-	}
-	
-	/**
-	 * Returns generation time in case of a timestamp
-	 * @return generation {@link Date}
-	 */
-	private Date getTimeStampGenerationTime(CAdESAttribute attribute) {
-		TimeStampToken timeStampToken = attribute.toTimeStampToken();
-		if (timeStampToken != null) {
-			return timeStampToken.getTimeStampInfo().getGenTime();
-		}
-		return null;
 	}
 
 }

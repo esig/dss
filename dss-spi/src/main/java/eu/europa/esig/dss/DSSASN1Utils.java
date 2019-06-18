@@ -976,7 +976,7 @@ public final class DSSASN1Utils {
 	 * @return {@link ASN1Encodable}
 	 */
 	public static ASN1Encodable getAsn1Encodable(AttributeTable unsignedAttributes, ASN1ObjectIdentifier oid) {
-		final ASN1Set attrValues = getAsn1Atrribute(unsignedAttributes, oid);
+		final ASN1Set attrValues = getAsn1AttributeSet(unsignedAttributes, oid);
 		if (attrValues == null || attrValues.size() <= 0) {
 			return null;
 		}
@@ -989,7 +989,7 @@ public final class DSSASN1Utils {
 	 * @param oid target {@link ASN1ObjectIdentifier}
 	 * @return {@link ASN1Set}
 	 */
-	public static ASN1Set getAsn1Atrribute(AttributeTable unsignedAttributes, ASN1ObjectIdentifier oid) {
+	public static ASN1Set getAsn1AttributeSet(AttributeTable unsignedAttributes, ASN1ObjectIdentifier oid) {
 		final Attribute attribute = unsignedAttributes.get(oid);
 		if (attribute == null) {
 			return null;
@@ -1003,7 +1003,7 @@ public final class DSSASN1Utils {
 	 * @param oid target {@link ASN1ObjectIdentifier}
 	 * @return {@link Attribute}s array
 	 */
-	public static Attribute[] getAsn1Atrributes(AttributeTable unsignedAttributes, ASN1ObjectIdentifier oid) {
+	public static Attribute[] getAsn1Attributes(AttributeTable unsignedAttributes, ASN1ObjectIdentifier oid) {
 		ASN1EncodableVector encodableVector = unsignedAttributes.getAll(oid);
 		if (encodableVector == null) {
 			return null;
@@ -1019,7 +1019,7 @@ public final class DSSASN1Utils {
 	 */
 	public static List<TimeStampToken> findTimeStampTokens(AttributeTable unsignedAttributes, ASN1ObjectIdentifier oid) {
 		List<TimeStampToken> timeStamps = new ArrayList<TimeStampToken>();
-		Attribute[] signatureTimeStamps = getAsn1Atrributes(unsignedAttributes, oid);
+		Attribute[] signatureTimeStamps = getAsn1Attributes(unsignedAttributes, oid);
 		if (signatureTimeStamps != null) {
 			for (final Attribute attribute : signatureTimeStamps) {
 				TimeStampToken timeStampToken = getTimeStampToken(attribute);
@@ -1038,16 +1038,50 @@ public final class DSSASN1Utils {
 	 */
 	public static TimeStampToken getTimeStampToken(Attribute attribute) {
 		try {
-			ASN1Encodable value = attribute.getAttrValues().getObjectAt(0);
-			if (value instanceof DEROctetString) {
-				LOG.warn("Illegal content for timestamp (OID : {}) : OCTET STRING is not allowed !", attribute.getAttrType().toString());
-			} else {
-				ASN1Primitive asn1Primitive = value.toASN1Primitive();
-				CMSSignedData timeStampCMSSignedData = new CMSSignedData(asn1Primitive.getEncoded());
-				return new TimeStampToken(timeStampCMSSignedData);
+			CMSSignedData signedData = getCMSSignedData(attribute);
+			if (signedData != null) {
+				return new TimeStampToken(signedData);
 			}
 		} catch (IOException | CMSException | TSPException e) {
 			LOG.warn("The given TimeStampToken cannot be created! Reason: [{}]", e.getMessage());
+		}
+		return null;
+	}
+
+	/**
+	 * Creates a CMSSignedData from the provided {@code attribute}
+	 * @param attribute {@link Attribute} to generate {@link CMSSignedData} from
+	 * @return {@link CMSSignedData}
+	 * @throws IOException in case of encoding exception
+	 * @throws CMSException in case if the provided {@code attribute} cannot be converted to {@link CMSSignedData}
+	 */
+	public static CMSSignedData getCMSSignedData(Attribute attribute) throws CMSException, IOException {
+		ASN1Encodable value = getAsn1Encodable(attribute);
+		if (value instanceof DEROctetString) {
+			LOG.warn("Illegal content for CMSSignedData (OID : {}) : OCTET STRING is not allowed !", attribute.getAttrType().toString());
+		} else {
+			ASN1Primitive asn1Primitive = value.toASN1Primitive();
+			return new CMSSignedData(asn1Primitive.getEncoded());
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns {@code ASN1Encodable} of the {@code attribute}
+	 * @param attribute {@link Attribute}
+	 */
+	public static ASN1Encodable getAsn1Encodable(Attribute attribute) {
+		return attribute.getAttrValues().getObjectAt(0);
+	}
+	
+	/**
+	 * Returns generation time for the provided {@code timeStampToken}
+	 * @param timeStampToken {@link TimeStampToken} to get generation time for
+	 * @return {@link Date} timestamp generation time
+	 */
+	public static Date getTimeStampTokenGenerationTime(TimeStampToken timeStampToken) {
+		if (timeStampToken != null) {
+			return timeStampToken.getTimeStampInfo().getGenTime();
 		}
 		return null;
 	}

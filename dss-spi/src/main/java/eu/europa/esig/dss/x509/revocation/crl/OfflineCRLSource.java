@@ -171,9 +171,16 @@ public abstract class OfflineCRLSource implements CRLSource {
 		return crlValidity;
 	}
 
-	protected void addCRLBinary(byte[] binaries, RevocationOrigin origin) {
+	/**
+	 * Builds {@code CRLBinaryIdentifier} from the given binaries and returns the identifier object
+	 * @param binaries byte array to compute identifier from
+	 * @param origin {@link RevocationOrigin} indicating the correct list to store the value
+	 * @return computed {@link CRLBinaryIdentifier}
+	 */
+	protected CRLBinaryIdentifier addCRLBinary(byte[] binaries, RevocationOrigin origin) {
 		CRLBinaryIdentifier crlBinary = CRLBinaryIdentifier.build(binaries, origin);
 		addCRLBinary(crlBinary, origin);
+		return crlBinary;
 	}
 
 	protected void addCRLBinary(CRLBinaryIdentifier crlBinary, RevocationOrigin origin) {

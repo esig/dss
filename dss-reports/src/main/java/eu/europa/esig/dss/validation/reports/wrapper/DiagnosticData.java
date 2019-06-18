@@ -853,6 +853,20 @@ public class DiagnosticData {
 	}
 	
 	/**
+	 * Returns {@link RevocationWrapper} with the given {@code id}
+	 * @param id {@link String} identifier to get {@link RevocationWrapper} with
+	 * @return {@link RevocationWrapper}
+	 */
+	public RevocationWrapper getRevocationById(String id) {
+		for (RevocationWrapper revocationWrapper : getAllRevocationData()) {
+			if (id.equals(revocationWrapper.getId())) {
+				return revocationWrapper;
+			}
+		}
+		return null;
+	}
+	
+	/**
 	 * Returns a complete list of original signer documents signed by all signatures
 	 * @return list of {@link XmlSignerData}s
 	 */

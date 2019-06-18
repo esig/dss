@@ -5,6 +5,9 @@ import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocat
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationValues;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -17,12 +20,14 @@ import org.bouncycastle.asn1.esf.RevocationValues;
 import org.bouncycastle.asn1.x509.CertificateList;
 import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.util.Store;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.x509.RevocationOrigin;
+import eu.europa.esig.dss.x509.revocation.crl.CRLBinaryIdentifier;
 import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
 
@@ -37,6 +42,11 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 
 	protected final CMSSignedData cmsSignedData;
 	protected final AttributeTable unsignedAttributes;
+	
+	/**
+	 * Cached list of {@code CRLBinaryIdentifier}s found in SignedData attribute
+	 */
+	private List<CRLBinaryIdentifier> signedDataCRLIdentifiers = new ArrayList<CRLBinaryIdentifier>();
 
 	/**
 	 * The default constructor for CMSCRLSource.
@@ -51,11 +61,6 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 		this.unsignedAttributes = unsignedAttributes;
 		extract();
 	}
-	
-	/**
-	 * Collects CRL Data from signedAttributes
-	 */
-	protected abstract void collectFromSignedData();
 	
 	/**
 	 * Returns revocation-values {@link RevocationOrigin}
@@ -79,6 +84,14 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 	 */
 	protected RevocationOrigin getAttributeRevocationRefsOrigin() {
 		return RevocationOrigin.ATTRIBUTE_REVOCATION_REFS;
+	}
+	
+	/**
+	 * Returns a list of {@code CRLBinaryIdentifier} found in the SignedData container
+	 * @return list of {@link CRLBinaryIdentifier}
+	 */
+	public List<CRLBinaryIdentifier> getSignedDataCRLIdentifiers() {
+		return signedDataCRLIdentifiers;
 	}
 
 	private void extract() {
@@ -139,7 +152,7 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 		}
 
 		/*
-		 * TODO (pades): Read revocation data from from unsigned attribute 1.2.840.113583.1.1.8
+		 * TODO (pades): Read revocation data from unsigned attribute 1.2.840.113583.1.1.8
 		 * In the PKCS #7 object of a digital signature in a PDF file, identifies a signed attribute
 		 * that "can include all the revocation information that is necessary to carry out revocation
 		 * checks for the signer's certificate and its issuer certificates."
@@ -161,6 +174,18 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 		
 	}
 
+	private void collectFromSignedData() {
+		final Store<X509CRLHolder> crLs = cmsSignedData.getCRLs();
+		final Collection<X509CRLHolder> collection = crLs.getMatches(null);
+		if (collection.size() > 1) {
+			int x = 0;
+			x++;
+		}
+		for (final X509CRLHolder x509CRLHolder : collection) {
+			signedDataCRLIdentifiers.add(addX509CRLHolder(x509CRLHolder, getInternalRevocationValuesOrigin()));
+		}
+	}
+
 	private void collectRevocationValues(ASN1ObjectIdentifier revocationValuesAttribute, RevocationOrigin origin) {
 		final ASN1Encodable attValue = DSSASN1Utils.getAsn1Encodable(unsignedAttributes, revocationValuesAttribute);
 		if (attValue != null) {
@@ -171,9 +196,15 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 		}
 	}
 
-	protected void addX509CRLHolder(X509CRLHolder crlHolder, RevocationOrigin origin) {
+	/**
+	 * Computes and store {@code CRLBinaryIdentifier} from {@code crlHolder}
+	 * @param crlHolder {@link X509CRLHolder} to compute values from
+	 * @param origin {@link RevocationOrigin} indicating the list where to save the object
+	 * @return {@link CRLBinaryIdentifier}
+	 */
+	protected CRLBinaryIdentifier addX509CRLHolder(X509CRLHolder crlHolder, RevocationOrigin origin) {
 		try {
-			addCRLBinary(crlHolder.getEncoded(), origin);
+			return addCRLBinary(crlHolder.getEncoded(), origin);
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
