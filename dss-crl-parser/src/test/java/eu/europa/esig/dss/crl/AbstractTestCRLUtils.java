@@ -74,6 +74,28 @@ public abstract class AbstractTestCRLUtils {
 			assertNull(validCRL.getUrl());
 		}
 	}
+	
+	@Test
+	public void testUA() throws Exception {
+		try (InputStream is = AbstractTestCRLUtils.class.getResourceAsStream("/CA-5358AA45-Full.crl");
+				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/CA-Justice-ECDSA-261217.cer")) {
+			CertificateToken certificateToken = loadCert(isCer);
+			CRLValidity validCRL = CRLUtils.isValidCRL(is, certificateToken);
+			assertNotNull(validCRL);
+			assertNotNull(validCRL.getIssuerToken());
+			assertEquals(SignatureAlgorithm.ECDSA_SHA256,validCRL.getSignatureAlgorithm());
+			assertNotNull(validCRL.getThisUpdate());
+			assertNotNull(validCRL.getNextUpdate());
+			assertTrue(validCRL.isIssuerX509PrincipalMatches());
+			assertTrue(validCRL.isSignatureIntact());
+			assertTrue(validCRL.isValid());
+			assertTrue(validCRL.isCrlSignKeyUsage());
+			assertFalse(validCRL.isUnknownCriticalExtension());
+			assertEquals(certificateToken, validCRL.getIssuerToken());
+			assertNull(validCRL.getSignatureInvalidityReason());
+			assertNull(validCRL.getUrl());
+		}
+	}
 
 	@Test
 	public void isValidPEMCRL() throws Exception {

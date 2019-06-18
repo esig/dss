@@ -50,12 +50,13 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.Token;
-import eu.europa.esig.dss.xades.DSSReference;
-import eu.europa.esig.dss.xades.DSSTransform;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.ProfileParameters.Operation;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
+import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
+import eu.europa.esig.dss.xades.reference.DSSReference;
+import eu.europa.esig.dss.xades.reference.DSSTransform;
 
 public abstract class XAdESBuilder {
 
@@ -171,11 +172,6 @@ public abstract class XAdESBuilder {
 	public static final String HTTP_WWW_W3_ORG_2000_09_XMLDSIG_MANIFEST = "http://www.w3.org/2000/09/xmldsig#Manifest";
 
 	/**
-	 * This XPath filter allows to remove all ds:Signature elements from the XML
-	 */
-	public static final String NOT_ANCESTOR_OR_SELF_DS_SIGNATURE = "not(ancestor-or-self::ds:Signature)";
-
-	/**
 	 * This variable holds the {@code XPathQueryHolder} which contains all constants and queries needed to cope with the
 	 * default signature schema.
 	 */
@@ -253,13 +249,13 @@ public abstract class XAdESBuilder {
 
 		String base64EncodedDigestBytes = null;
 		if (params.isManifestSignature()) {
-			DSSTransform dssTransform = getUniqueTransformation(dssReference);
+			DSSTransform dssTransform = getUniqueCanonicalizationTransform(dssReference);
 			Document doc = DomUtils.buildDOM(originalDocument);
 			
-			byte[] bytes = DSSXMLUtils.canonicalizeSubtree(dssTransform.getAlgorithm(), doc);
+			byte[] bytes = dssTransform.getBytesAfterTranformation(doc);
 			base64EncodedDigestBytes = Utils.toBase64(DSSUtils.digest(digestAlgorithm, bytes));
 		} else if (params.isEmbedXML()) {
-			DSSTransform dssTransform = getUniqueTransformation(dssReference);
+			DSSTransform dssTransform = getUniqueCanonicalizationTransform(dssReference);
 
 			Document doc = DomUtils.buildDOM(originalDocument);
 			Element root = doc.getDocumentElement();
@@ -274,7 +270,7 @@ public abstract class XAdESBuilder {
 			Node adopted = doc2.adoptNode(root);
 			dom.appendChild(adopted);
 
-			byte[] bytes = DSSXMLUtils.canonicalizeSubtree(dssTransform.getAlgorithm(), dom);
+			byte[] bytes = dssTransform.getBytesAfterTranformation(dom);
 			base64EncodedDigestBytes = Utils.toBase64(DSSUtils.digest(digestAlgorithm, bytes));
 		} else {
 			base64EncodedDigestBytes = originalDocument.getDigest(digestAlgorithm);
@@ -286,12 +282,16 @@ public abstract class XAdESBuilder {
 		parentDom.appendChild(digestValueDom);
 	}
 
-	private DSSTransform getUniqueTransformation(DSSReference dssReference) {
+	private DSSTransform getUniqueCanonicalizationTransform(DSSReference dssReference) {
 		List<DSSTransform> transforms = dssReference.getTransforms();
 		if (Utils.collectionSize(transforms) != 1) {
 			throw new DSSException("Only one transformation is supported");
 		}
-		return transforms.get(0);
+		DSSTransform dssTransform = transforms.get(0);
+		if (!(dssTransform instanceof CanonicalizationTransform)) {
+			throw new DSSException("Only canonicalization transform is allowed in the given use case");
+		}
+		return dssTransform;
 	}
 
 	/**

@@ -20,16 +20,29 @@
  */
 package eu.europa.esig.dss;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.security.SecureRandom;
+import java.util.Formatter;
+import java.util.Locale;
 
-import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DigestTest {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(DigestTest.class);
 
 	@Test
 	public void testEquals() throws Exception {
@@ -40,9 +53,13 @@ public class DigestTest {
 		Digest d1 = new Digest(DigestAlgorithm.SHA256, value);
 		Digest d2 = new Digest(DigestAlgorithm.SHA256, value);
 
-		Assert.assertEquals(d1,d2);
-		Assert.assertEquals(d1.hashCode(), d2.hashCode());
+		assertEquals(d1, d2);
+		assertEquals(d1.hashCode(), d2.hashCode());
+		assertArrayEquals(value, d1.getValue());
+		assertArrayEquals(value, d2.getValue());
 
+		assertEquals("07F2BDEF34ED16E3A1BA0DBB7E47B8FD981CE0CCB3E1BFE564D82C423CBA7E47", d1.getHexValue());
+		assertEquals("07F2BDEF34ED16E3A1BA0DBB7E47B8FD981CE0CCB3E1BFE564D82C423CBA7E47", d2.getHexValue());
 	}
 
 	@Test
@@ -61,9 +78,72 @@ public class DigestTest {
 		ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(buffer.toByteArray()));
 		Digest d2 = (Digest) in.readObject();
 
-		Assert.assertEquals(d1,d2);
-		Assert.assertEquals(d1.hashCode(),d2.hashCode());
+		assertEquals(d1,d2);
+		assertEquals(d1.hashCode(),d2.hashCode());
 
 	}
 
+	@Test
+	public void stateless() {
+		Digest d1 = new Digest(DigestAlgorithm.SHA256, new byte[] { 1, 2, 3 });
+		String hexValue = d1.getHexValue();
+		d1.setValue(new byte[] { 5, 6, 7 });
+		assertFalse(hexValue.equals(d1.getHexValue()));
+	}
+
+	@Ignore
+	public void perfs() {
+
+		int bigIntCounter = 0;
+		int formatterCounter = 0;
+
+		for (int x = 0; x < 100; x++) {
+
+			byte[] value = new byte[500];
+
+			SecureRandom random = new SecureRandom();
+			random.nextBytes(value);
+
+			String hex1 = null;
+			String hex2 = null;
+
+			long start = System.currentTimeMillis();
+			for (int i = 0; i < 1_000; i++) {
+				hex1 = new BigInteger(1, value).toString(16);
+				if (hex1.length() % 2 == 1) {
+					hex1 = "0" + hex1;
+				}
+				hex1 = hex1.toUpperCase(Locale.ENGLISH);
+			}
+			long end = System.currentTimeMillis();
+			long durationBigInt = end - start;
+			LOG.info("BigInt : {}", durationBigInt);
+
+			long start2 = System.currentTimeMillis();
+			for (int i = 0; i < 1_000; i++) {
+				try (Formatter formatter = new Formatter()) {
+					for (byte b : value) {
+						formatter.format("%02X", b);
+					}
+					hex2 = formatter.toString();
+				}
+			}
+
+			long end2 = System.currentTimeMillis();
+			long durationFormatter = end2 - start2;
+			LOG.info("formatter : {}", durationFormatter);
+
+			if (durationBigInt < durationFormatter) {
+				bigIntCounter++;
+			} else {
+				formatterCounter++;
+			}
+
+			assertTrue(hex1.equals(hex2));
+		}
+		
+		LOG.info("bigInt total : {}", bigIntCounter);
+		LOG.info("formatter total : {}", formatterCounter);
+	}
+	
 }

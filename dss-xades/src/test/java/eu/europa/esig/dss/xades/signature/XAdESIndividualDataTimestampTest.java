@@ -29,7 +29,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.xml.security.c14n.Canonicalizer;
-import org.apache.xml.security.transforms.Transforms;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.Test;
 
@@ -51,7 +50,6 @@ import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 import eu.europa.esig.dss.x509.TimestampType;
-import eu.europa.esig.dss.xades.DSSTransform;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
@@ -64,9 +62,6 @@ public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 	public void multiDocsEnveloping() throws Exception {
 		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
-
-		DSSTransform canonicalization = new DSSTransform();
-		canonicalization.setAlgorithm(Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS);
 
 		List<DSSDocument> docs = new ArrayList<DSSDocument>();
 		DSSDocument fileToBeTimestamped = new FileDocument(FILE1);

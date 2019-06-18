@@ -28,7 +28,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.xml.security.signature.Reference;
-import org.apache.xml.security.transforms.Transforms;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -44,9 +43,10 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
-import eu.europa.esig.dss.xades.DSSReference;
-import eu.europa.esig.dss.xades.DSSTransform;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.reference.Base64Transform;
+import eu.europa.esig.dss.xades.reference.DSSReference;
+import eu.europa.esig.dss.xades.reference.DSSTransform;
 
 public class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 
@@ -60,8 +60,7 @@ public class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 		DSSDocument doc2 = new FileDocument(FILE2);
 
 		List<DSSTransform> transforms = new ArrayList<DSSTransform>();
-		DSSTransform dssTransform = new DSSTransform();
-		dssTransform.setAlgorithm(Transforms.TRANSFORM_BASE64_DECODE);
+		Base64Transform dssTransform = new Base64Transform();
 		transforms.add(dssTransform);
 
 		DSSReference ref1 = new DSSReference();
@@ -96,7 +95,7 @@ public class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 		ToBeSigned toSign1 = service.getDataToSign(new FileDocument("src/test/resources/empty.xml"), signatureParameters);
 		SignatureValue value = getToken().sign(toSign1, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument result = service.signDocument(doc1, signatureParameters, value);
-//		result.save("target/test.xml");
+		result.save("target/test.xml");
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(result);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());

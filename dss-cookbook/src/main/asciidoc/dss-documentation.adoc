@@ -332,7 +332,7 @@ To start, let's take a simple XML document:
 ----
 
 Since this is an XML document, we will use the XAdES signature and more particularly XAdES-BASELINE-B level, which is the lowest level of protection: just satisfying Directive (cf. <<R06>>) legal requirements for advanced signature. The normal process of signing wants to sign first with the level -B or level-T, and then later when it becomes necessary to complete the signature with superior levels. However, the framework allows signing directly with any level.
-When signing data, the resulting signature needs to be linked with the data to which it applies. This can be done either by creating a data set which combines the signature and the data (e.g. by enveloping the data with the signature or including a signature element in the data set) or placing the signature in a separate resource and having some external means for associating the signature with the data. So, we need to define the packaging of the signature, namely ENVELOPED, ENVELOPING, DETACHED or INTERNALLY-DETACHED.
+When signing data, the resulting signature needs to be linked with the data to which it applies. This can be done either by creating a data set which combines the signature and the data (e.g. by enveloping the data with the signature or including a signature element in the data set) or placing the signature in a separate resource and having some external means for associating the signature with the data. So, we need to define the packaging of the signature, namely ENVELOPED, ENVELOPING, DETACHED or INTERNALLY-DETACHED. More information about supported reference transformations for each signature packaging (except 'Detached'), can be found in the section <<Reference Transformations>>
  
  * *ENVELOPED :* when the signature applies to data that surround the rest of the document;
  * *ENVELOPING :* when the signed data form a sub-element of the signature itself;
@@ -552,6 +552,59 @@ The following XML segment will be added to the signature qualified and unsigned 
 include::samples/xades-archive-timestamp.adoc[]
 
 === Various settings
+
+==== Reference Transformations
+
+In case of 'Enveloping', 'Enveloped' and 'Internally Detached' signatures, it is possible to apply custom transformations for signing references in order to compute proper digest result. Example of a definition reference transformations, you can find below:
+
+[[SignXmlXadesBWithTransformsTest.java]]
+[source,java,indent=0]
+.Custom transformations definition
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBWithTransformsTest.java[tags=demo]
+----
+
+Current version of DSS supports the following transformations:
+
+ * Canonicalization - any canonicalization algorithm that can be used for 'CanonicalizationMethod' can be used as a transform:
+
+[[SignXmlXadesBWithTransformsTest.java]]
+[source,java,indent=0]
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBWithTransformsTest.java[tags=canonicalizationTransform]
+----
+
+ * Base64 - the transform is used if application needs to sign a RAW data (binaries, images, audio or other formats). The 'Base64 Transform' is not compatible with following signature parameters:
+
+ ** Reference contains more than one transform (must be a sole element of the reference transforms);
+ ** setEmbedXML(true) - embedded setting cannot be used;
+ ** setManifestSignature(true) - As is apparent from the previous point, Manifest cannot be used with the Base64 Transform as well since it also must be embedded to the signature.
+
+[[SignXmlXadesBWithTransformsTest.java]]
+[source,java,indent=0]
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBWithTransformsTest.java[tags=base64Transform]
+----
+
+ * XPath - allows to sign a custom nodes in a signature or embedded document. DSS contains an additional class 'XPathEnvelopedSignatureTransform' allowing to exclude the signature itself from the digested content (used for Enveloped signatures by default). Additional information about the 'XPath Transform' can be found https://www.w3.org/TR/xpath20/[by the link].
+
+[[SignXmlXadesBWithTransformsTest.java]]
+[source,java,indent=0]
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBWithTransformsTest.java[tags=envelopedXPathTransform]
+----
+
+ * XPath-2-Filter - an alternative to 'XPath Transform'. Additional information about the 'XPath2Filter Transform' can be found https://www.w3.org/TR/xmldsig-filter2/[by the link].
+
+[[SignXmlXadesBWithTransformsTest.java]]
+[source,java,indent=0]
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBWithTransformsTest.java[tags=envelopedXPath2FilterTransform]
+----
+
+ * XSLT Transform - This transform requires a 'org.w3.dom.Document' as an input, compatible with the normative https://www.w3.org/TR/xslt-30/[XSLT Specification]. Must be a sole transform.
+
+NOTE: All transformations, except Base64, can be applied only to XML objects.
 
 ==== Trust anchor inclusion policy
 

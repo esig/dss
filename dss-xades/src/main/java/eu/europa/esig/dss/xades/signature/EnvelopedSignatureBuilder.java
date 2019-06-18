@@ -26,7 +26,6 @@ import java.util.List;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.crypto.dsig.XMLSignature;
 
-import org.apache.xml.security.transforms.Transforms;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -38,11 +37,13 @@ import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.xades.DSSReference;
-import eu.europa.esig.dss.xades.DSSTransform;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
+import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
+import eu.europa.esig.dss.xades.reference.DSSReference;
+import eu.europa.esig.dss.xades.reference.DSSTransform;
+import eu.europa.esig.dss.xades.reference.XPathEnvelopedSignatureTransform;
 
 /**
  * This class handles the specifics of the enveloped XML signature
@@ -101,17 +102,12 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 		final List<DSSTransform> dssTransformList = new ArrayList<DSSTransform>();
 
 		// For parallel signatures
-		DSSTransform dssTransform = new DSSTransform();
-		dssTransform.setAlgorithm(Transforms.TRANSFORM_XPATH);
-		dssTransform.setElementName(DS_XPATH);
-		dssTransform.setNamespace(XMLSignature.XMLNS);
-		dssTransform.setTextContent(NOT_ANCESTOR_OR_SELF_DS_SIGNATURE);
-		dssTransformList.add(dssTransform);
+		XPathEnvelopedSignatureTransform xPathTransform = new XPathEnvelopedSignatureTransform();
+		dssTransformList.add(xPathTransform);
 
 		// Canonicalization is the last operation, its better to operate the canonicalization on the smaller document
-		dssTransform = new DSSTransform();
-		dssTransform.setAlgorithm(CanonicalizationMethod.EXCLUSIVE);
-		dssTransformList.add(dssTransform);
+		CanonicalizationTransform canonicalizationTransform = new CanonicalizationTransform(CanonicalizationMethod.EXCLUSIVE);
+		dssTransformList.add(canonicalizationTransform);
 
 		dssReference.setTransforms(dssTransformList);
 

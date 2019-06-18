@@ -40,8 +40,6 @@ import eu.europa.esig.dss.TokenIdentifier;
 @SuppressWarnings("serial")
 public abstract class Token implements Serializable {
 
-	private String dssId;
-
 	/**
 	 * The token identifier to avoid to compute more than one time the digest value
 	 */
@@ -116,10 +114,7 @@ public abstract class Token implements Serializable {
 	 * @return the unique string for the token
 	 */
 	public String getDSSIdAsString() {
-		if (dssId == null) {
-			dssId = getDSSId().asXmlId();
-		}
-		return dssId;
+		return getDSSId().asXmlId();
 	}
 
 	/**
