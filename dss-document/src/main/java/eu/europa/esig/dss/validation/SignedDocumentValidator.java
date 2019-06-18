@@ -105,6 +105,13 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	protected final SignatureScopeFinder signatureScopeFinder;
 
 	protected SignaturePolicyProvider signaturePolicyProvider;
+    
+	/**
+     * This variable sets the behavior to skip certificate validation; to be used
+     * when such validation would be done externally to the DSS framework.
+     * (default: false)
+     */
+	protected boolean skipCertificateValidation = false;
 
 	// Default configuration with the highest level
 	private ValidationLevel validationLevel = ValidationLevel.ARCHIVAL_DATA;
@@ -213,6 +220,14 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		this.validationLevel = validationLevel;
 	}
 
+	public boolean isSkipCertificateValidation() {
+	    return this.skipCertificateValidation;
+	}
+
+	public void setSkipCertificateValidation(boolean skipCertificateValidation) {
+	    this.skipCertificateValidation = skipCertificateValidation;
+	}
+
 	@Override
 	public Reports validateDocument() {
 		return validateDocument((InputStream) null);
@@ -318,15 +333,17 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		// validation.
 		prepareCertificatesAndTimestamps(allSignatureList, validationContext);
 
-		final ListCRLSource signatureCRLSource = getSignatureCrlSource(allSignatureList);
-		certificateVerifier.setSignatureCRLSource(signatureCRLSource);
-
-		final ListOCSPSource signatureOCSPSource = getSignatureOcspSource(allSignatureList);
-		certificateVerifier.setSignatureOCSPSource(signatureOCSPSource);
-
 		validationContext.setCurrentTime(provideProcessExecutorInstance().getCurrentTime());
-		validationContext.initialize(certificateVerifier);
-		validationContext.validate();
+		if (!this.skipCertificateValidation) {
+		    final ListCRLSource signatureCRLSource = getSignatureCrlSource(allSignatureList);
+		    this.certificateVerifier.setSignatureCRLSource(signatureCRLSource);
+
+		    final ListOCSPSource signatureOCSPSource = getSignatureOcspSource(allSignatureList);
+		    this.certificateVerifier.setSignatureOCSPSource(signatureOCSPSource);
+
+		    validationContext.initialize(this.certificateVerifier);
+		    validationContext.validate();
+		}
 
 		for (final AdvancedSignature signature : allSignatureList) {
 			signature.checkSigningCertificate();
