@@ -78,7 +78,22 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 
 	@Override
 	protected CMSSignedData preExtendCMSSignedData(CMSSignedData cmsSignedData, CAdESSignatureParameters parameters) {
-		return cadesProfileLT.extendCMSSignatures(cmsSignedData, parameters);
+		/*
+		 * As defined in ETSI EN 319 122-1 V1.1.1 (2016-04), chapter "5.5.3 The archive-time-stamp-v3 attribute":
+		 *     If an ATSv2, or other earlier form of archive time-stamp or a long-term-validation attribute, is
+		 *     present in any SignerInfo of the root SignedData then the root SignedData.certificates and
+         *     SignedData.crls contents shall not be modified. 
+		 */
+		if (!includesArchiveTimestamps(cmsSignedData)) {
+			cmsSignedData = cadesProfileLT.extendCMSSignatures(cmsSignedData, parameters);
+		}
+		return cmsSignedData;
+	}
+	
+	private boolean includesArchiveTimestamps(CMSSignedData cmsSignedData) {
+		SignerInformation signerInformation = cmsSignedData.getSignerInfos().iterator().next();
+		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
+		return getLastArchiveTimestamp(unsignedAttributes) != null;
 	}
 
 	@Override
@@ -102,7 +117,7 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 	}
 	
 	private AttributeTable addValidationData(AttributeTable unsignedAttributes, final CAdESSignatureParameters parameters) throws IOException, CMSException, TSPException {
-		TimeStampToken timestampTokenToExtend = getTimestampTokenToExtend(unsignedAttributes);
+		TimeStampToken timestampTokenToExtend = getLastArchiveTimestamp(unsignedAttributes);
 		if (timestampTokenToExtend != null) {
 			CMSSignedData timestampCMSSignedData = timestampTokenToExtend.toCMSSignedData();
 			CMSSignedData extendedTimestampCMSSignedData = cadesProfileLT.postExtendCMSSignedData(
@@ -113,7 +128,7 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 		return unsignedAttributes;
 	}
 	
-	private TimeStampToken getTimestampTokenToExtend(AttributeTable unsignedAttributes) {
+	private TimeStampToken getLastArchiveTimestamp(AttributeTable unsignedAttributes) {
 		TimeStampToken lastTimeStampToken = null;
 		for (ASN1ObjectIdentifier identifier : archiveTimestampOIDs) {
 			lastTimeStampToken = getLastTimeStampTokenWithOid(lastTimeStampToken, unsignedAttributes, identifier);

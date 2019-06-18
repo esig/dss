@@ -177,10 +177,6 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 	private void collectFromSignedData() {
 		final Store<X509CRLHolder> crLs = cmsSignedData.getCRLs();
 		final Collection<X509CRLHolder> collection = crLs.getMatches(null);
-		if (collection.size() > 1) {
-			int x = 0;
-			x++;
-		}
 		for (final X509CRLHolder x509CRLHolder : collection) {
 			signedDataCRLIdentifiers.add(addX509CRLHolder(x509CRLHolder, getInternalRevocationValuesOrigin()));
 		}

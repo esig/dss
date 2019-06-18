@@ -119,7 +119,7 @@ public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 		signatures = validator.getSignatures();
 		advancedSignature = signatures.get(0);
 		
-		assertEquals(2, advancedSignature.getCRLSource().getAllCRLIdentifiers().size());
+		assertEquals(1, advancedSignature.getCRLSource().getAllCRLIdentifiers().size());
 		assertEquals(1, advancedSignature.getOCSPSource().getAllOCSPIdentifiers().size());
 		
 		assertEquals(2, advancedSignature.getCompleteCRLSource().getAllCRLIdentifiers().size());
