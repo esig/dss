@@ -40,8 +40,6 @@ public class PdfDocTimestampInfo extends PdfCMSInfo implements PdfSignatureOrDoc
 
 	private final TimestampToken timestampToken;
 
-	private final byte[] content;
-
 	/**
 	 * @param validationCertPool
 	 * @param dssDictionary
@@ -62,7 +60,6 @@ public class PdfDocTimestampInfo extends PdfCMSInfo implements PdfSignatureOrDoc
 				timestampType = TimestampType.ARCHIVE_TIMESTAMP;
 			}
 			timestampToken = new TimestampToken(cms, timestampType, validationCertPool, TimestampLocation.DOC_TIMESTAMP);
-			content = cms;
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Created PdfDocTimestampInfo {} : {}", timestampType, uniqueId());
 			}
@@ -91,11 +88,6 @@ public class PdfDocTimestampInfo extends PdfCMSInfo implements PdfSignatureOrDoc
 
 	public TimestampToken getTimestampToken() {
 		return timestampToken;
-	}
-
-	@Override
-	public byte[] getContent() {
-		return content;
 	}
 
 }

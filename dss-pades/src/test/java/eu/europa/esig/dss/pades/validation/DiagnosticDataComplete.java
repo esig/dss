@@ -118,9 +118,9 @@ public class DiagnosticDataComplete extends PKIFactoryAccess {
 		List<TimestampWrapper> timestamps= diagnosticData.getTimestampList();
 		assertNotNull(timestamps);
 		assertEquals(3, timestamps.size());
-		assertEquals(3, timestamps.get(0).getTimestampedObjects().size());
+		assertEquals(5, timestamps.get(0).getTimestampedObjects().size());
 		assertEquals(TimestampType.SIGNATURE_TIMESTAMP, timestamps.get(0).getType());
-		assertEquals(3, timestamps.get(2).getTimestampedObjects().size());
+		assertEquals(5, timestamps.get(2).getTimestampedObjects().size());
 		assertEquals(TimestampType.SIGNATURE_TIMESTAMP, timestamps.get(2).getType());
 		
 		TimestampWrapper archiveTimestamp = timestamps.get(1);

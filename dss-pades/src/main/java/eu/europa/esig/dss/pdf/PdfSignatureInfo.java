@@ -34,8 +34,6 @@ public class PdfSignatureInfo extends PdfCMSInfo implements PdfSignatureOrDocTim
 
 	private final CAdESSignature cades;
 
-	private final byte[] content;
-
 	/**
 	 * @param validationCertPool
 	 * @param dssDictionary
@@ -51,7 +49,6 @@ public class PdfSignatureInfo extends PdfCMSInfo implements PdfSignatureOrDocTim
 		super(signatureDictionary, dssDictionary, cms, originalBytes, coverCompleteRevision);
 		try {
 			cades = new CAdESSignature(cms, validationCertPool);
-			content = cms;
 			final DSSDocument detachedContent = new InMemoryDocument(getSignedDocumentBytes());
 			cades.setDetachedContents(Arrays.asList(detachedContent));
 		} catch (CMSException e) {
@@ -71,11 +68,6 @@ public class PdfSignatureInfo extends PdfCMSInfo implements PdfSignatureOrDocTim
 
 	public CAdESSignature getCades() {
 		return cades;
-	}
-
-	@Override
-	public byte[] getContent() {
-		return content;
 	}
 
 }

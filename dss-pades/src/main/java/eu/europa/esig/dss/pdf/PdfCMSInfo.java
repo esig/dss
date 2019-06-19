@@ -25,6 +25,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.cms.CMSSignedData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -159,6 +161,16 @@ public abstract class PdfCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	@Override
 	public int[] getSignatureByteRange() {
 		return signatureDictionary.getByteRange();
+	}
+	
+	public CMSSignedData getCMSSignedData() {
+		CMSSignedData cmsSignedData = null;
+		try {
+			cmsSignedData = new CMSSignedData(cms);
+		} catch (CMSException e) {
+			LOG.warn("Cannot create CMSSignedData object from byte array for signature with name [{}]", getSigFieldName());
+		}
+		return cmsSignedData;
 	}
 
 	@Override

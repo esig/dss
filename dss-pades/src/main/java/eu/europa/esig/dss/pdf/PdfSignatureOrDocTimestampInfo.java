@@ -23,6 +23,8 @@ package eu.europa.esig.dss.pdf;
 import java.util.Date;
 import java.util.List;
 
+import org.bouncycastle.cms.CMSSignedData;
+
 /**
  * The usage of this interface permit the user to choose the underlying PDF library use to created PDF signatures.
  */
@@ -48,7 +50,7 @@ public interface PdfSignatureOrDocTimestampInfo {
 
 	Date getSigningDate();
 
-	byte[] getContent();
+	CMSSignedData getCMSSignedData();
 
 	/**
 	 * @return the byte of what is signed (without signature, but with the placeholder)

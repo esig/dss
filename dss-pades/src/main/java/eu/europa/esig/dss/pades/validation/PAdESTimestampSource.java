@@ -55,6 +55,9 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 		
 		final List<TimestampToken> timestampedTimestamps = new ArrayList<TimestampToken>(signatureTimestamps);
 		
+		// contains KeyInfo certificates embedded to the timestamp's content
+		final List<CertificateToken> cmsContentCertificates = new ArrayList<CertificateToken>();
+		
 		final List<PdfSignatureOrDocTimestampInfo> outerSignatures = pdfSignatureInfo.getOuterSignatures();
 		for (final PdfSignatureOrDocTimestampInfo outerSignature : outerSignatures) {
 			
@@ -79,8 +82,15 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 					
 					// extract timestamped references from the timestamped DSS Dictionary
 					final PdfDssDict coveredDSSDictionary = timestampInfo.getDssDictionary();
-					addReferencesForCertificates(references, coveredDSSDictionary);
+					final PAdESCertificateSource padesCertificateSource = new PAdESCertificateSource(
+							coveredDSSDictionary, timestampInfo.getCMSSignedData(), certificatePool);
+
+					addReferences(references, createReferencesForCertificates(cmsContentCertificates));
+					addReferencesForCertificates(references, padesCertificateSource);
 					addReferencesFromRevocationData(references, coveredDSSDictionary);
+					
+					// references embedded to timestamp's content are covered by outer timestamps
+					cmsContentCertificates.addAll(getCMSContentReferences(padesCertificateSource));
 					
 					timestampToken.getTimestampedReferences().addAll(references);
 					archiveTimestamps.add(timestampToken);
@@ -96,22 +106,26 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 	@Override
 	protected List<TimestampedReference> getSignatureTimestampReferences() {
 		List<TimestampedReference> signatureTimestampReferences = super.getSignatureTimestampReferences();
-		// TODO: include KeyInfo certs from covered CMS
+		// timestamp covers inner signature, therefore it covers certificates included into the signature's KeyInfo
+		addReferences(signatureTimestampReferences, createReferencesForCertificates(signatureCertificateSource.getKeyInfoCertificates()));
 		return signatureTimestampReferences;
 	}
+	
+	private List<CertificateToken> getCMSContentReferences(final PAdESCertificateSource padesCertificateSource) {
+		// timestamp covers its own cms content
+		List<CertificateToken> keyInfoCertificates = padesCertificateSource.getKeyInfoCertificates();
+		populateTimestampCertificateSource(keyInfoCertificates);
+		return keyInfoCertificates;
+	}
 
-	protected void addReferencesForCertificates(List<TimestampedReference> references, final PdfDssDict dssDictionary) {
-		PAdESCertificateSource padesCertificateSource = new PAdESCertificateSource(dssDictionary, cmsSignedData, certificatePool);
+	private void addReferencesForCertificates(List<TimestampedReference> references, final PAdESCertificateSource padesCertificateSource) {
+		
 		List<CertificateToken> dssDictionaryCertValues = padesCertificateSource.getDSSDictionaryCertValues();
-		for (CertificateToken certificate : dssDictionaryCertValues) {
-			addReference(references, new TimestampedReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
-		}
+		addReferences(references, createReferencesForCertificates(dssDictionaryCertValues));
 		populateTimestampCertificateSource(dssDictionaryCertValues);
 		
 		List<CertificateToken> vriDictionaryCertValues = padesCertificateSource.getVRIDictionaryCertValues();
-		for (CertificateToken certificate : vriDictionaryCertValues) {
-			addReference(references, new TimestampedReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
-		}
+		addReferences(references, createReferencesForCertificates(vriDictionaryCertValues));
 		populateTimestampCertificateSource(vriDictionaryCertValues);
 	}
 
@@ -120,7 +134,7 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 	 * 
 	 * @param references
 	 */
-	protected void addReferencesFromRevocationData(List<TimestampedReference> references, final PdfDssDict dssDictionary) {
+	private void addReferencesFromRevocationData(List<TimestampedReference> references, final PdfDssDict dssDictionary) {
 		PAdESCRLSource padesCRLSource = new PAdESCRLSource(dssDictionary);
 		for (CRLBinaryIdentifier crlIdentifier : padesCRLSource.getAllCRLIdentifiers()) {
 			if (crlIdentifier.getOrigins().contains(RevocationOrigin.INTERNAL_DSS) || crlIdentifier.getOrigins().contains(RevocationOrigin.INTERNAL_VRI)) {
