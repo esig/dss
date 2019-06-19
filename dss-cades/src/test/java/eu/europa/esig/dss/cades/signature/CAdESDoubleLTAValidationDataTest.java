@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.Test;
 
@@ -131,7 +130,7 @@ public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 		
 		diagnosticData = reports.getDiagnosticData();
 		
-		Set<TimestampWrapper> allTimestamps = diagnosticData.getTimestampSet();
+		List<TimestampWrapper> allTimestamps = diagnosticData.getTimestampList();
 		assertNotNull(allTimestamps);
 		assertEquals(3, allTimestamps.size());
 		
@@ -143,7 +142,10 @@ public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 			assertTrue(timestamp.getDigestMatchers().get(0).isDataIntact());
 		}
 		
-		diagnosticData = reports.getDiagnosticData();
+		assertEquals(0, allTimestamps.get(0).getTimestampedRevocationIds().size());
+		assertEquals(2, allTimestamps.get(1).getTimestampedRevocationIds().size());
+		assertEquals(3, allTimestamps.get(2).getTimestampedRevocationIds().size());
+		
 		List<String> revocationIdsDoubleLtaLevel = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId()).getRevocationIds();
 		assertEquals(3, revocationIdsDoubleLtaLevel.size());
 		for (String id : revocationIdsLtaLevel) {

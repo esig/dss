@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss;
 
+import static eu.europa.esig.dss.OID.id_aa_ATSHashIndex;
+
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.PublicKey;
@@ -327,6 +329,32 @@ public final class DSSASN1Utils {
 	}
 
 	/**
+	 * Gets the ASN.1 algorithm identifier structure corresponding to the algorithm 
+	 * found in the provided Timestamp Hash Index Table, if such algorithm is present
+	 *
+	 * @param atsHashIndexValue
+	 *            ats-hash-index table from a timestamp
+	 * @return the ASN.1 algorithm identifier structure
+	 */
+	public static AlgorithmIdentifier getAlgorithmIdentifier(final ASN1Sequence atsHashIndexValue) {
+		if (atsHashIndexValue != null && atsHashIndexValue.size() > 3) {
+			final int algorithmIndex = 0;
+			final ASN1Encodable asn1Encodable = atsHashIndexValue.getObjectAt(algorithmIndex);
+			
+			if (asn1Encodable instanceof ASN1Sequence) {
+				final ASN1Sequence asn1Sequence = (ASN1Sequence) asn1Encodable;
+				return AlgorithmIdentifier.getInstance(asn1Sequence);
+			} else if (asn1Encodable instanceof ASN1ObjectIdentifier) {
+				// TODO (16/11/2014): The relevance and usefulness of the test case must be checked (do the signatures
+				// like this exist?)
+				ASN1ObjectIdentifier derObjectIdentifier = ASN1ObjectIdentifier.getInstance(asn1Encodable);
+				return new AlgorithmIdentifier(derObjectIdentifier);
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Gets the ASN.1 algorithm identifier structure corresponding to a digest algorithm
 	 *
 	 * @param digestAlgorithm
@@ -344,6 +372,73 @@ public final class DSSASN1Utils {
 		 */
 		final ASN1ObjectIdentifier asn1ObjectIdentifier = new ASN1ObjectIdentifier(digestAlgorithm.getOid());
 		return new AlgorithmIdentifier(asn1ObjectIdentifier, DERNull.INSTANCE);
+	}
+
+	/**
+	 * Extract the Unsigned Attribute Archive Timestamp Cert Hash Index from a timestampToken
+	 *
+	 * @param atsHashIndexValue
+	 * @return
+	 */
+	public static ASN1Sequence getCertificatesHashIndex(final ASN1Sequence atsHashIndexValue) {
+		if (atsHashIndexValue != null) {
+			int certificateIndex = 0;
+			if (atsHashIndexValue.size() > 3) {
+				certificateIndex++;
+			}
+			return (ASN1Sequence) atsHashIndexValue.getObjectAt(certificateIndex).toASN1Primitive();
+		}
+		return null;
+	}
+
+	/**
+	 * Extract the Unsigned Attribute Archive Timestamp Crl Hash Index from a timestampToken
+	 *
+	 * @param atsHashIndexValue
+	 * @return
+	 */
+	public static ASN1Sequence getCRLHashIndex(final ASN1Sequence atsHashIndexValue) {
+		if (atsHashIndexValue != null) {
+			int crlIndex = 1;
+			if (atsHashIndexValue.size() > 3) {
+				crlIndex++;
+			}
+			return (ASN1Sequence) atsHashIndexValue.getObjectAt(crlIndex).toASN1Primitive();
+		}
+		return null;
+	}
+
+	/**
+	 * Extract the Unsigned Attribute Archive Timestamp Attribute Hash Index from a timestampToken
+	 *
+	 * @param atsHashIndexValue
+	 * @return
+	 */
+	public static ASN1Sequence getUnsignedAttributesHashIndex(final ASN1Sequence atsHashIndexValue) {
+		if (atsHashIndexValue != null) {
+			int unsignedAttributesIndex = 2;
+			if (atsHashIndexValue.size() > 3) {
+				unsignedAttributesIndex++;
+			}
+			return (ASN1Sequence) atsHashIndexValue.getObjectAt(unsignedAttributesIndex).toASN1Primitive();
+		}
+		return null;
+	}
+
+	/**
+	 * Returns list of {@code DEROctetString} from an {@code ASN1Sequence}
+	 * Useful when needed to get a list of hash values
+	 * 
+	 * @param asn1Sequence {@link ASN1Sequence} to get list from
+	 * @return list of {@link DEROctetString}s
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<DEROctetString> getDEROctetStrings(final ASN1Sequence asn1Sequence) {
+		final List<DEROctetString> derOctetStrings = new ArrayList<DEROctetString>();
+		if (asn1Sequence != null) {
+			derOctetStrings.addAll(Collections.list(asn1Sequence.getObjects()));
+		}
+		return derOctetStrings;
 	}
 
 	/**
@@ -967,6 +1062,24 @@ public final class DSSASN1Utils {
 			LOG.error("Unable to read the IssuerSerial object", e);
 			return null;
 		}
+	}
+
+	/**
+	 * @param timestampToken
+	 * @return the content of SignedAttribute: ATS-hash-index unsigned attribute {itu-t(0) identified-organization(4)
+	 *         etsi(0) electronic-signature-standard(1733) attributes(2) 5}
+	 */
+	public static ASN1Sequence getAtsHashIndex(AttributeTable timestampUnsignedAttributes) {
+		if (timestampUnsignedAttributes != null) {
+			final Attribute atsHashIndexAttribute = timestampUnsignedAttributes.get(id_aa_ATSHashIndex);
+			if (atsHashIndexAttribute != null) {
+				final ASN1Set attrValues = atsHashIndexAttribute.getAttrValues();
+				if (attrValues != null && attrValues.size() > 0) {
+					return (ASN1Sequence) attrValues.getObjectAt(0).toASN1Primitive();
+				}
+			}
+		}
+		return null;
 	}
 	
 	/**

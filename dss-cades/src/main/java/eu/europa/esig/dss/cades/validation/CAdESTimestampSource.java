@@ -20,6 +20,9 @@ import java.util.List;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.DEROctetString;
+import org.bouncycastle.asn1.DERTaggedObject;
+import org.bouncycastle.asn1.cms.OtherRevocationInfoFormat;
 import org.bouncycastle.asn1.esf.CrlListID;
 import org.bouncycastle.asn1.esf.CrlOcspRef;
 import org.bouncycastle.asn1.esf.CrlValidatedID;
@@ -29,6 +32,7 @@ import org.bouncycastle.asn1.esf.OtherHash;
 import org.bouncycastle.asn1.esf.RevocationValues;
 import org.bouncycastle.asn1.ess.OtherCertID;
 import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.Certificate;
 import org.bouncycastle.asn1.x509.CertificateList;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
@@ -37,12 +41,16 @@ import org.bouncycastle.cms.SignerInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.signature.CadesLevelBaselineLTATimestampExtractor;
 import eu.europa.esig.dss.validation.CMSCRLSource;
+import eu.europa.esig.dss.validation.CMSCertificateSource;
 import eu.europa.esig.dss.validation.CMSOCSPSource;
 import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.validation.timestamp.AbstractTimestampSource;
@@ -53,16 +61,15 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.x509.ArchiveTimestampType;
 import eu.europa.esig.dss.x509.CertificatePool;
+import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.EncapsulatedCertificateTokenIdentifier;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.TimestampLocation;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.revocation.crl.CRLBinaryIdentifier;
 import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
-import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseIdentifier;
-import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 
 @SuppressWarnings("serial")
 public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute> {
@@ -193,33 +200,66 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 	}
 	
 	@Override
-	protected List<TimestampedReference> getSignedDataRevocations() {
+	protected List<TimestampedReference> getSignedDataReferences(TimestampToken timestampToken) {
 		List<TimestampedReference> references = new ArrayList<TimestampedReference>();
-		references.addAll(extractReferencesFromCRLSource(signatureCRLSource));
-		references.addAll(extractReferencesFromOCSPSource(signatureOCSPSource));
+		
+		// Compare values present in the timestamp's Hash Index Table with signature's SignedData item digests
+		final ASN1Sequence atsHashIndex = DSSASN1Utils.getAtsHashIndex(timestampToken.getUnsignedAttributes());
+		final DigestAlgorithm digestAlgorithm = getHashIndexDigestAlgorithm(atsHashIndex);
+		
+		if (signatureCertificateSource instanceof CMSCertificateSource) {
+			ASN1Sequence certsHashIndex = DSSASN1Utils.getCertificatesHashIndex(atsHashIndex);
+			List<DEROctetString> certsHashList = DSSASN1Utils.getDEROctetStrings(certsHashIndex);
+			for (CertificateToken certificate : signatureCertificateSource.getKeyInfoCertificates()) {
+				if (isDigestValuePresent(certificate.getDigest(digestAlgorithm), certsHashList)) {
+					addReference(references, new TimestampedReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
+				} else {
+					LOG.warn("The certificate with id [{}] was not included to the message imprint of timestamp with id [{}] "
+							+ "or was added to the CMS SignedData after this ArchiveTimestamp!", 
+							certificate.getDSSIdAsString(), timestampToken.getDSSIdAsString());
+				}
+			}
+		}
+
+		ASN1Sequence crlsHashIndex = DSSASN1Utils.getCRLHashIndex(atsHashIndex);
+		List<DEROctetString> crlsHashList = DSSASN1Utils.getDEROctetStrings(crlsHashIndex);
+		if (signatureCRLSource instanceof CMSCRLSource) {
+			for (CRLBinaryIdentifier crlBinary : ((CMSCRLSource) signatureCRLSource).getSignedDataCRLIdentifiers()) {
+				if (isDigestValuePresent(crlBinary.getDigestValue(digestAlgorithm), crlsHashList)) {
+					addReference(references, new TimestampedReference(crlBinary.asXmlId(), TimestampedObjectType.REVOCATION));
+				} else {
+					LOG.warn("The CRL Token with id [{}] was not included to the message imprint of timestamp with id [{}] "
+							+ "or was added to the CMS SignedData after this ArchiveTimestamp!", 
+							crlBinary.asXmlId(), timestampToken.getDSSIdAsString());
+				}
+			}
+		}
+		if (signatureOCSPSource instanceof CMSOCSPSource) {
+			for (OCSPResponseIdentifier ocspResponse : ((CMSOCSPSource) signatureOCSPSource).getSignedDataOCSPIdentifiers()) {
+				OtherRevocationInfoFormat otherRevocationInfoFormat = new OtherRevocationInfoFormat(ocspResponse.getAsn1ObjectIdentifier(), 
+						DSSASN1Utils.toASN1Primitive(ocspResponse.getBasicOCSPRespContent()));
+				DERTaggedObject derTaggedObject = new DERTaggedObject(false, 1, otherRevocationInfoFormat);
+				if (isDigestValuePresent(DSSUtils.digest(digestAlgorithm, DSSASN1Utils.getDEREncoded(derTaggedObject)), crlsHashList)) {
+					addReference(references, new TimestampedReference(ocspResponse.asXmlId(), TimestampedObjectType.REVOCATION));
+				} else {
+					LOG.warn("The OCSP Token with id [{}] was not included to the message imprint of timestamp with id [{}] "
+							+ "or was added to the CMS SignedData after this ArchiveTimestamp!", 
+							ocspResponse.asXmlId(), timestampToken.getDSSIdAsString());
+				}
+			}
+		}
+		
 		return references;
 	}
 	
-	private List<TimestampedReference> extractReferencesFromCRLSource(SignatureCRLSource crlSource) {
-		List<TimestampedReference> references = new ArrayList<TimestampedReference>();
-		if (crlSource instanceof CMSCRLSource) {
-			List<CRLBinaryIdentifier> signedDataCRLIdentifiers = ((CMSCRLSource) crlSource).getSignedDataCRLIdentifiers();
-			for (CRLBinaryIdentifier crlBinary : signedDataCRLIdentifiers) {
-				references.add(new TimestampedReference(crlBinary.asXmlId(), TimestampedObjectType.REVOCATION));
-			}
-		}
-		return references;
+	private DigestAlgorithm getHashIndexDigestAlgorithm(ASN1Sequence atsHashIndex) {
+		AlgorithmIdentifier algorithmIdentifier = DSSASN1Utils.getAlgorithmIdentifier(atsHashIndex);
+		return algorithmIdentifier != null ? 
+				DigestAlgorithm.forOID(algorithmIdentifier.getAlgorithm().getId()) : CMSUtils.DEFAULT_ARCHIVE_TIMESTAMP_HASH_ALGO;
 	}
 	
-	private List<TimestampedReference> extractReferencesFromOCSPSource(SignatureOCSPSource ocspSource) {
-		List<TimestampedReference> references = new ArrayList<TimestampedReference>();
-		if (ocspSource instanceof CMSOCSPSource) {
-			List<OCSPResponseIdentifier> signedDataOCSPIdentifiers = ((CMSOCSPSource) ocspSource).getSignedDataOCSPIdentifiers();
-			for (OCSPResponseIdentifier ocspResponse : signedDataOCSPIdentifiers) {
-				references.add(new TimestampedReference(ocspResponse.asXmlId(), TimestampedObjectType.REVOCATION));
-			}
-		}
-		return references;
+	private boolean isDigestValuePresent(final byte[] digestValue, final List<DEROctetString> hashList) {
+		return hashList.contains(new DEROctetString(digestValue));
 	}
 
 	@Override

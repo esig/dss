@@ -322,7 +322,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 				continue;
 				
 			} else if (isArchiveTimestamp(unsignedAttribute)) {
-				final List<TimestampedReference> references = getSignedDataRevocations();
+				final List<TimestampedReference> references = new ArrayList<TimestampedReference>();;
 				addReferencesForPreviousTimestamps(references, timestamps);
 				addReferences(references, encapsulatedReferences);
 				
@@ -330,6 +330,8 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 				if (timestampToken == null) {
 					continue;
 				}
+				addReferences(timestampToken.getTimestampedReferences(), getSignedDataReferences(timestampToken));
+				
 				timestampToken.setArchiveTimestampType(getArchiveTimestampType(unsignedAttribute));
 				archiveTimestamps.add(timestampToken);
 				
@@ -634,10 +636,11 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	
 	/**
 	 * Returns a list of {@code TimestampedReference}s found in signed properties of the signature
-	 * NODE: used only in CAdES
+	 * NODE: used only in CAdES. Needs {@code timestampToken} to be initialized before
+	 * @param timestampToken {@link TimestampToken} to get SignedData references from
 	 * @return list of {@link TimestampedReference}s
 	 */
-	protected List<TimestampedReference> getSignedDataRevocations() {
+	protected List<TimestampedReference> getSignedDataReferences(TimestampToken timestampToken) {
 		// empty by default
 		return new ArrayList<TimestampedReference>();
 	}

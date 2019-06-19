@@ -1,12 +1,8 @@
 package eu.europa.esig.dss.util;
 
-import static eu.europa.esig.dss.OID.id_aa_ATSHashIndex;
-
 import java.util.Comparator;
 
 import org.bouncycastle.asn1.ASN1Sequence;
-import org.bouncycastle.asn1.ASN1Set;
-import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.tsp.TimeStampToken;
 
 import eu.europa.esig.dss.DSSASN1Utils;
@@ -25,28 +21,22 @@ public class TimeStampTokenProductionComparator implements Comparator<TimeStampT
 
 	@Override
 	public int compare(TimeStampToken timeStampTokenOne, TimeStampToken timeStampTokenTwo) {
-		int result = DSSASN1Utils.getTimeStampTokenGenerationTime(timeStampTokenOne).compareTo(DSSASN1Utils.getTimeStampTokenGenerationTime(timeStampTokenTwo));
 		
-		if (result == 0) {
-			AttributeTable unsignedAttributesOne = timeStampTokenOne.getUnsignedAttributes();
-			AttributeTable unsignedAttributesTwo = timeStampTokenTwo.getUnsignedAttributes();
+		int result = DSSASN1Utils.getTimeStampTokenGenerationTime(timeStampTokenOne).compareTo(DSSASN1Utils.getTimeStampTokenGenerationTime(timeStampTokenTwo));
+		if (result == 0) {			
 			
-			if (unsignedAttributesOne != null && unsignedAttributesTwo != null) {
-				ASN1Set asn1SetOne = DSSASN1Utils.getAsn1AttributeSet(unsignedAttributesOne, id_aa_ATSHashIndex);
-				ASN1Set asn1SetTwo = DSSASN1Utils.getAsn1AttributeSet(unsignedAttributesTwo, id_aa_ATSHashIndex);
+			ASN1Sequence atsHashIndexOne = DSSASN1Utils.getAtsHashIndex(timeStampTokenOne.getUnsignedAttributes());
+			ASN1Sequence atsHashIndexTwo = DSSASN1Utils.getAtsHashIndex(timeStampTokenTwo.getUnsignedAttributes());
+
+			if (atsHashIndexOne != null && atsHashIndexTwo != null) {
 				
-				if (asn1SetOne != null && asn1SetTwo != null) {
-					ASN1Sequence sequenceOne = (ASN1Sequence) DSSASN1Utils.getAsn1AttributeSet(unsignedAttributesOne, id_aa_ATSHashIndex).getObjectAt(0);
-					int hashTableSizeOne = getHashTableSize(sequenceOne);
-					
-					ASN1Sequence sequenceTwo = (ASN1Sequence) DSSASN1Utils.getAsn1AttributeSet(unsignedAttributesTwo, id_aa_ATSHashIndex).getObjectAt(0);
-					int hashTableSizeTwo = getHashTableSize(sequenceTwo);
-					
-					if (hashTableSizeOne < hashTableSizeTwo) {
-						result = -1;
-					} else if (hashTableSizeOne > hashTableSizeTwo) {
-						result = 1;
-					}
+				int hashTableSizeOne = getHashTableSize(atsHashIndexOne);
+				int hashTableSizeTwo = getHashTableSize(atsHashIndexTwo);
+				
+				if (hashTableSizeOne < hashTableSizeTwo) {
+					result = -1;
+				} else if (hashTableSizeOne > hashTableSizeTwo) {
+					result = 1;
 				}
 			}
 		}

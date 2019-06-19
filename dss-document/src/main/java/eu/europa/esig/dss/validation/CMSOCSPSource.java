@@ -192,6 +192,7 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 				}
 				OCSPResponseIdentifier ocspResponseIdentifier = addBasicOcspResp(basicOCSPResp, getInternalRevocationValuesOrigin());
 				if (ocspResponseIdentifier != null) {
+					ocspResponseIdentifier.setAsn1ObjectIdentifier(CMSObjectIdentifiers.id_ri_ocsp_response);
 					signedDataOCSPIdentifiers.add(ocspResponseIdentifier);
 				}
 			} else {
@@ -210,6 +211,7 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 				final BasicOCSPResp basicOCSPResp = DSSRevocationUtils.getBasicOcspResp(otherRevocationInfoMatch);
 				OCSPResponseIdentifier ocspResponseIdentifier = addBasicOcspResp(basicOCSPResp, getInternalRevocationValuesOrigin());
 				if (ocspResponseIdentifier != null) {
+					ocspResponseIdentifier.setAsn1ObjectIdentifier(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
 					signedDataOCSPIdentifiers.add(ocspResponseIdentifier);
 				}
 			} else {

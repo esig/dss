@@ -65,6 +65,8 @@ import eu.europa.esig.dss.x509.CertificateToken;
 public final class CMSUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CMSUtils.class);
+	
+	public static final DigestAlgorithm DEFAULT_ARCHIVE_TIMESTAMP_HASH_ALGO = DigestAlgorithm.SHA256;
 
 	private CMSUtils() {
 	}
