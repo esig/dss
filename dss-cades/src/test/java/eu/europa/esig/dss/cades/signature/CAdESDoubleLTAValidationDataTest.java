@@ -1,10 +1,12 @@
 package eu.europa.esig.dss.cades.signature;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
@@ -17,6 +19,7 @@ import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.XmlRevocationOrigin;
@@ -26,6 +29,10 @@ import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.jaxb.validationreport.POEProvisioningType;
+import eu.europa.esig.jaxb.validationreport.VOReferenceType;
+import eu.europa.esig.jaxb.validationreport.ValidationObjectType;
+import eu.europa.esig.jaxb.validationreport.ValidationReportType;
 
 public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 	
@@ -155,6 +162,39 @@ public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertNotNull(signature);
 		assertEquals(1, signature.getRevocationIdsByOrigin(XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
+		
+		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
+		List<ValidationObjectType> validationObjects = etsiValidationReportJaxb.getSignatureValidationObjects().getValidationObject();
+		int validationReportTimestampCounter = 0;
+		for (ValidationObjectType validationObject : validationObjects) {
+			
+			POEProvisioningType poeProvisioning = validationObject.getPOEProvisioning();
+			if (poeProvisioning != null) {
+				
+				List<String> timestampedObjectIds = new ArrayList<String>();
+				
+				assertNotNull(poeProvisioning.getPOETime());
+				assertNotNull(poeProvisioning.getSignatureReference());
+				
+				validationReportTimestampCounter++;
+				List<VOReferenceType> references = poeProvisioning.getValidationObject();
+				assertTrue(Utils.isCollectionNotEmpty(references));
+				
+				for (VOReferenceType reference : references) {
+					Object voReference = reference.getVOReference().get(0);
+					assertNotNull(voReference);
+					assertTrue(voReference instanceof ValidationObjectType);
+					ValidationObjectType validationObjectReference = (ValidationObjectType) voReference;
+					String id = validationObjectReference.getId();
+					assertNotNull(id);
+					assertFalse(timestampedObjectIds.contains(id));
+					timestampedObjectIds.add(id);
+				}
+				
+				assertTrue(Utils.isCollectionNotEmpty(timestampedObjectIds));
+			}
+		}
+		assertEquals(3, validationReportTimestampCounter);
 		
 	}
 

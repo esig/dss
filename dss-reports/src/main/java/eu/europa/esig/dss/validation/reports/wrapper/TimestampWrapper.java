@@ -145,8 +145,8 @@ public class TimestampWrapper extends AbstractTokenProxy {
 			if (timestampedObject instanceof XmlTimestampedCertificate) {
 				timestampedObjectIds.add(timestampedObject.getToken().getId());
 			}
-			timestampedObjectIds.addAll(getTimestampedOrphanTokenIdsByType(OrphanTokenType.CERTIFICATE));
 		}
+		timestampedObjectIds.addAll(getTimestampedOrphanTokenIdsByType(OrphanTokenType.CERTIFICATE));
 		return timestampedObjectIds;
 	}
 	
