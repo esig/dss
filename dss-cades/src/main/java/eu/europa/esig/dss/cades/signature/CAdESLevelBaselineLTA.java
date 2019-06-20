@@ -121,7 +121,7 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 		if (timestampTokenToExtend != null) {
 			CMSSignedData timestampCMSSignedData = timestampTokenToExtend.toCMSSignedData();
 			CMSSignedData extendedTimestampCMSSignedData = cadesProfileLT.postExtendCMSSignedData(
-					timestampCMSSignedData, timestampCMSSignedData.getSignerInfos().iterator().next(), parameters);
+					timestampCMSSignedData, getFirstSigner(timestampCMSSignedData), parameters.getDetachedContents());
 					
 			unsignedAttributes = CMSUtils.replaceAttribute(unsignedAttributes, timestampCMSSignedData, extendedTimestampCMSSignedData);
 		}

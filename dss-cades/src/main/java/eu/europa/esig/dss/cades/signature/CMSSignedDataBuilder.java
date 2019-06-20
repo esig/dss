@@ -23,16 +23,25 @@ package eu.europa.esig.dss.cades.signature;
 import static org.bouncycastle.asn1.cms.CMSObjectIdentifiers.id_ri_ocsp_response;
 import static org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers.id_pkix_ocsp_basic;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
+import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.cms.AttributeTable;
+import org.bouncycastle.asn1.cms.CMSObjectIdentifiers;
+import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
+import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaCertStore;
+import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSProcessableByteArray;
 import org.bouncycastle.cms.CMSSignedData;
@@ -41,10 +50,12 @@ import org.bouncycastle.cms.DefaultSignedAttributeTableGenerator;
 import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInfoGenerator;
 import org.bouncycastle.cms.SignerInfoGeneratorBuilder;
+import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SimpleAttributeTableGenerator;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.OperatorCreationException;
+import org.bouncycastle.util.CollectionStore;
 import org.bouncycastle.util.Store;
 
 import eu.europa.esig.dss.DSSASN1Utils;
@@ -52,9 +63,14 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.signature.BaselineBCertificateSelector;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
+import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
 
 /**
  *
@@ -244,7 +260,8 @@ public class CMSSignedDataBuilder {
 		}
 	}
 
-	protected CMSSignedData regenerateCMSSignedData(CMSSignedData cmsSignedData, CAdESSignatureParameters parameters, Store certificatesStore,
+	@SuppressWarnings("rawtypes")
+	protected CMSSignedData regenerateCMSSignedData(CMSSignedData cmsSignedData, List<DSSDocument> detachedContents, Store certificatesStore,
 			Store attributeCertificatesStore, Store crlsStore, Store otherRevocationInfoFormatStoreBasic, Store otherRevocationInfoFormatStoreOcsp) {
 		try {
 
@@ -257,7 +274,6 @@ public class CMSSignedDataBuilder {
 			cmsSignedDataGenerator.addOtherRevocationInfo(id_ri_ocsp_response, otherRevocationInfoFormatStoreOcsp);
 			final boolean encapsulate = cmsSignedData.getSignedContent() != null;
 			if (!encapsulate) {
-				List<DSSDocument> detachedContents = parameters.getDetachedContents();
 				// CAdES can only sign one document
 				final DSSDocument doc = detachedContents.get(0);
 				final CMSProcessableByteArray content = new CMSProcessableByteArray(DSSUtils.toByteArray(doc));
@@ -268,6 +284,67 @@ public class CMSSignedDataBuilder {
 			return cmsSignedData;
 		} catch (CMSException e) {
 			throw new DSSException(e);
+		}
+	}
+	
+	/**
+	 * Extends the provided {@code cmsSignedData} with the required validation data
+	 * @param cmsSignedData {@link CMSSignedData} to be extended
+	 * @param signerInformation the related {@link SignerInformation} to use
+	 * @param detachedContents list of detached {@link DSSDocument}s
+	 * @return extended {@link CMSSignedData}
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public CMSSignedData extendCMSSignedData(CMSSignedData cmsSignedData, SignerInformation signerInformation, List<DSSDocument> detachedContents) {
+		CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation, certificateVerifier.createValidationPool());
+		cadesSignature.setDetachedContents(detachedContents);
+		final ValidationContext validationContext = cadesSignature.getSignatureValidationContext(certificateVerifier);
+
+		Store<X509CertificateHolder> certificatesStore = cmsSignedData.getCertificates();
+		final Set<CertificateToken> certificates = cadesSignature.getCertificatesForInclusion(validationContext);
+		final Collection<X509CertificateHolder> newCertificateStore = new HashSet<X509CertificateHolder>(certificatesStore.getMatches(null));
+		for (final CertificateToken certificateToken : certificates) {
+			final X509CertificateHolder x509CertificateHolder = DSSASN1Utils.getX509CertificateHolder(certificateToken);
+			newCertificateStore.add(x509CertificateHolder);
+		}
+		certificatesStore = new CollectionStore<X509CertificateHolder>(newCertificateStore);
+
+		Store<X509CRLHolder> crlsStore = cmsSignedData.getCRLs();
+		final Collection<X509CRLHolder> newCrlsStore = new HashSet<X509CRLHolder>(crlsStore.getMatches(null));
+		final DefaultAdvancedSignature.RevocationDataForInclusion revocationDataForInclusion = cadesSignature.getRevocationDataForInclusion(validationContext);
+		for (final CRLToken crlToken : revocationDataForInclusion.crlTokens) {
+			final X509CRLHolder x509CRLHolder = getX509CrlHolder(crlToken);
+			newCrlsStore.add(x509CRLHolder);
+		}
+		crlsStore = new CollectionStore<X509CRLHolder>(newCrlsStore);
+
+		Store otherRevocationInfoFormatStoreBasic = cmsSignedData.getOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
+		final Collection<ASN1Primitive> newOtherRevocationInfoFormatStore = new HashSet<ASN1Primitive>(otherRevocationInfoFormatStoreBasic.getMatches(null));
+		for (final OCSPToken ocspToken : revocationDataForInclusion.ocspTokens) {
+			final BasicOCSPResp basicOCSPResp = ocspToken.getBasicOCSPResp();
+			if (basicOCSPResp != null) {
+				newOtherRevocationInfoFormatStore.add(DSSASN1Utils.toASN1Primitive(DSSASN1Utils.getEncoded(basicOCSPResp)));
+			}
+		}
+		otherRevocationInfoFormatStoreBasic = new CollectionStore(newOtherRevocationInfoFormatStore);
+
+		Store attributeCertificatesStore = cmsSignedData.getAttributeCertificates();
+		Store otherRevocationInfoFormatStoreOcsp = cmsSignedData.getOtherRevocationInfo(CMSObjectIdentifiers.id_ri_ocsp_response);
+
+		final CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
+		cmsSignedData = cmsSignedDataBuilder.regenerateCMSSignedData(cmsSignedData, detachedContents, certificatesStore, attributeCertificatesStore, crlsStore,
+				otherRevocationInfoFormatStoreBasic, otherRevocationInfoFormatStoreOcsp);
+		return cmsSignedData;
+	}
+
+	/**
+	 * @return the a copy of x509crl as a X509CRLHolder
+	 */
+	private X509CRLHolder getX509CrlHolder(CRLToken crlToken) {
+		try (InputStream is = crlToken.getCRLStream()) {
+			return new X509CRLHolder(is);
+		} catch (IOException e) {
+			throw new DSSException("Unable to convert X509CRL to X509CRLHolder", e);
 		}
 	}
 

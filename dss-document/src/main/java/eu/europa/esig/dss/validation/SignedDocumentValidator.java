@@ -324,7 +324,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		boolean structuralValidation = isRequireStructuralValidation(validationPolicy);
 		final ValidationContext validationContext = new SignatureValidationContext(validationCertPool);
 
-		List<AdvancedSignature> allSignatureList = processSignaturesValidation(validationContext, structuralValidation);
+		List<AdvancedSignature> allSignatureList = prepareSignatureValidationContext(validationContext);
+		allSignatureList = processSignaturesValidation(validationContext, allSignatureList, structuralValidation);
 
 		final DiagnosticData diagnosticData = new DiagnosticDataBuilder().document(document).containerInfo(getContainerInfo()).foundSignatures(allSignatureList)
 				.usedCertificates(validationContext.getProcessedCertificates()).usedRevocations(validationContext.getProcessedRevocations())
@@ -338,9 +339,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 		return processValidationPolicy(diagnosticData, validationPolicy);
 	}
-
+	
 	@Override
-	public List<AdvancedSignature> processSignaturesValidation(final ValidationContext validationContext, boolean structuralValidation) {
+	public List<AdvancedSignature> prepareSignatureValidationContext(final ValidationContext validationContext) {
 		final List<AdvancedSignature> allSignatureList = getAllSignatures();
 		// The list of all signing certificates is created to allow a parallel
 		// validation.
@@ -353,7 +354,14 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			}
 		}
 		prepareCertificatesAndTimestamps(allSignatureList, validationContext);
+		
+		return allSignatureList;
+	}
 
+	@Override
+	public List<AdvancedSignature> processSignaturesValidation(final ValidationContext validationContext, 
+			final List<AdvancedSignature> allSignatureList, boolean structuralValidation) {
+		
 		final ListCRLSource signatureCRLSource = getSignatureCrlSource(allSignatureList);
 		certificateVerifier.setSignatureCRLSource(signatureCRLSource);
 
@@ -375,6 +383,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			signature.populateCRLTokenLists(signatureCRLSource);
 			signature.populateOCSPTokenLists(signatureOCSPSource);
 		}
+		
 		return allSignatureList;
 	}
 

@@ -236,8 +236,11 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 		}
 		if (signatureOCSPSource instanceof CMSOCSPSource) {
 			for (OCSPResponseIdentifier ocspResponse : ((CMSOCSPSource) signatureOCSPSource).getSignedDataOCSPIdentifiers()) {
+				// Compute DERTaggedObject with the same algorithm how it was created
+				// See: org.bouncycastle.cms.CMSUtils getOthersFromStore()
 				OtherRevocationInfoFormat otherRevocationInfoFormat = new OtherRevocationInfoFormat(ocspResponse.getAsn1ObjectIdentifier(), 
 						DSSASN1Utils.toASN1Primitive(ocspResponse.getBasicOCSPRespContent()));
+				// false value specifies an implicit encoding method
 				DERTaggedObject derTaggedObject = new DERTaggedObject(false, 1, otherRevocationInfoFormat);
 				if (isDigestValuePresent(DSSUtils.digest(digestAlgorithm, DSSASN1Utils.getDEREncoded(derTaggedObject)), crlsHashList)) {
 					addReference(references, new TimestampedReference(ocspResponse.asXmlId(), TimestampedObjectType.REVOCATION));
@@ -249,6 +252,25 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 			}
 		}
 		
+		return references;
+	}
+	
+	@Override
+	protected List<TimestampedReference> getSignatureSignedDataReferences() {
+		List<TimestampedReference> references = new ArrayList<TimestampedReference>();
+		if (signatureCertificateSource instanceof CMSCertificateSource) {
+			addReferences(references, createReferencesForCertificates(signatureCertificateSource.getKeyInfoCertificates()));
+		}
+		if (signatureCRLSource instanceof CMSCRLSource) {
+			for (CRLBinaryIdentifier crlBinary : ((CMSCRLSource) signatureCRLSource).getSignedDataCRLIdentifiers()) {
+				addReference(references, new TimestampedReference(crlBinary.asXmlId(), TimestampedObjectType.REVOCATION));
+			}
+		}
+		if (signatureOCSPSource instanceof CMSOCSPSource) {
+			for (OCSPResponseIdentifier ocspResponse : ((CMSOCSPSource) signatureOCSPSource).getSignedDataOCSPIdentifiers()) {
+				addReference(references, new TimestampedReference(ocspResponse.asXmlId(), TimestampedObjectType.REVOCATION));
+			}
+		}
 		return references;
 	}
 	
@@ -367,8 +389,8 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 	}
 	
 	@Override
-	protected void addTimestampedReferences(List<TimestampedReference> references, TimestampToken timestampedTimestamp) {
-		super.addTimestampedReferences(references, timestampedTimestamp);
+	protected void addEncapsulatedValuesFromTimestamp(List<TimestampedReference> references, TimestampToken timestampedTimestamp) {
+		super.addEncapsulatedValuesFromTimestamp(references, timestampedTimestamp);
 		
 		TimestampCRLSource timeStampCRLSource = timestampedTimestamp.getCRLSource();
 		crlSource.addAll(timeStampCRLSource);

@@ -184,7 +184,23 @@ public interface DocumentValidator {
 	 *            {@link AdvancedSignature} to find signer documents for
 	 */
 	List<DSSDocument> getOriginalDocuments(final AdvancedSignature advancedSignature);
+	
+	/**
+	 * Prepares and fills {@code validationContext} for the signature validation
+	 * @param validationContext {@link ValidationContext} to prepare
+	 * @return list of {@link AdvancedSignature}s to be validated
+	 */
+	List<AdvancedSignature> prepareSignatureValidationContext(final ValidationContext validationContext);
 
-	List<AdvancedSignature> processSignaturesValidation(ValidationContext validationContext, boolean structuralValidation);
+	/**
+	 * This method process the signature validation on the given {@code allSignatureList}
+	 * 
+	 * @param validationContext prepared and filled {@link ValidationContext}
+	 * @param allSignatureList list of {@link AdvancedSignature}s to be validated
+	 * @param structuralValidation specifies if structure of the signature must be validated
+	 * @return list of validated {@link AdvancedSignature}s
+	 */
+	List<AdvancedSignature> processSignaturesValidation(ValidationContext validationContext, 
+			List<AdvancedSignature> allSignatureList, boolean structuralValidation);
 
 }

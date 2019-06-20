@@ -180,8 +180,9 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	public void addExternalTimestamp(TimestampToken timestamp) {
 		// if timestamp tokens not created yet
 		if (archiveTimestamps == null) {
-			createAndValidate();;
+			createAndValidate();
 		}
+		processExternalTimestamp(timestamp);
 		switch (timestamp.getTimeStampType()) {
 			case CONTENT_TIMESTAMP:
 			case ALL_DATA_OBJECTS_TIMESTAMP:
@@ -635,12 +636,25 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	protected abstract List<OCSPResponseIdentifier> getEncapsulatedOCSPIdentifiers(SignatureAttribute unsignedAttribute);
 	
 	/**
-	 * Returns a list of {@code TimestampedReference}s found in signed properties of the signature
-	 * NODE: used only in CAdES. Needs {@code timestampToken} to be initialized before
-	 * @param timestampToken {@link TimestampToken} to get SignedData references from
+	 * Returns a list of {@code TimestampedReference}s for the given {@code timestampToken} 
+	 * found into signed properties of the signature
+	 * NOTE: used only in CAdES. Needs {@code timestampToken} to be initialized before
+	 * 
+	 * @param timestampToken {@link TimestampToken} to get SignedData references for
 	 * @return list of {@link TimestampedReference}s
 	 */
 	protected List<TimestampedReference> getSignedDataReferences(TimestampToken timestampToken) {
+		// empty by default
+		return new ArrayList<TimestampedReference>();
+	}
+
+	/**
+	 * Returns a list of all {@code TimestampedReference}s found into CMS SignedData of the signature
+	 * NOTE: used only in ASiC-E CAdES
+	 * 
+	 * @return list of {@link TimestampedReference}s
+	 */
+	protected List<TimestampedReference> getSignatureSignedDataReferences() {
 		// empty by default
 		return new ArrayList<TimestampedReference>();
 	}
@@ -700,17 +714,22 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 		for (final TimestampToken timestampToken : timestampedTimestamps) {
 			addReference(references, new TimestampedReference(timestampToken.getDSSIdAsString(), TimestampedObjectType.TIMESTAMP));
 			addTimestampedReferences(references, timestampToken);
-			addEncapsulatedCertificatesFromTimestamp(references, timestampToken);
+			addEncapsulatedValuesFromTimestamp(references, timestampToken);
 		}
 	}
 	
-	protected void addTimestampedReferences(List<TimestampedReference> references, TimestampToken timestampedTimestamp) {
+	private void addTimestampedReferences(List<TimestampedReference> references, TimestampToken timestampedTimestamp) {
 		for (TimestampedReference timestampedReference : timestampedTimestamp.getTimestampedReferences()) {
 			addReference(references, timestampedReference);
 		}
 	}
 	
-	private void addEncapsulatedCertificatesFromTimestamp(List<TimestampedReference> references, TimestampToken timestampedTimestamp) {
+	/**
+	 * Adds to the {@code references} list all validation data embedded to the {@code timestampedTimestamp}
+	 * @param references list of {@link TimestampedReference}s to extend
+	 * @param timestampedTimestamp {@link TimestampToken} to extract embedded values from
+	 */
+	protected void addEncapsulatedValuesFromTimestamp(List<TimestampedReference> references, TimestampToken timestampedTimestamp) {
 		List<CertificateToken> certificates = timestampedTimestamp.getCertificates();
 		for (final CertificateToken certificate : certificates) {
 			addReference(references, new TimestampedReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
@@ -838,6 +857,15 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 		for (CertificateToken certificate : certificates) {
 			timestampCertificateSource.addCertificate(certificate);
 		}
+	}
+	
+	private void processExternalTimestamp(TimestampToken externalTimestamp) {
+		// add all validation data present in Signature CMS SignedData, because an external timestamp covers a whole signature file
+		addReferences(externalTimestamp.getTimestampedReferences(), getSignatureSignedDataReferences());
+		// add references from previously added timestamps
+		addReferencesForPreviousTimestamps(externalTimestamp.getTimestampedReferences(), getAllTimestamps());
+		// populate timestamp certificate source with values present in the timestamp
+		populateTimestampCertificateSource(externalTimestamp);
 	}
 
 }

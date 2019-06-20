@@ -233,8 +233,20 @@ public final class DSSASN1Utils {
 	 * TimeStampToken} encoding fails
 	 */
 	public static byte[] getEncoded(final TimeStampToken timeStampToken) {
+		return getEncoded(timeStampToken.toCMSSignedData());
+	}
+
+	/**
+	 * Returns an ASN.1 encoded bytes representing the {@code CMSSignedData}
+	 *
+	 * @param cmsSignedData
+	 *                       {@code CMSSignedData}
+	 * @return the binary of the {@code CMSSignedData} @ if the {@code
+	 * CMSSignedData} encoding fails
+	 */
+	public static byte[] getEncoded(final CMSSignedData cmsSignedData) {
 		try {
-			return timeStampToken.getEncoded();
+			return cmsSignedData.getEncoded();
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}

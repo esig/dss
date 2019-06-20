@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package known.issues;
+package eu.europa.esig.dss.asic.signature.asice;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -136,7 +136,7 @@ public class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
 		assertNotNull(linkedManifest);
 
 		for (DSSDocument timestamp : timestamps) {
-			manifestValidator = new ASiCEWithCAdESManifestValidator(timestamp, manifestDocuments, signedDocuments);
+			manifestValidator = new ASiCEWithCAdESManifestValidator(timestamp, archiveManifestDocuments, result.getTimestampedDocuments(timestamp));
 			linkedManifest = manifestValidator.getLinkedManifest();
 			assertNotNull(linkedManifest);
 		}

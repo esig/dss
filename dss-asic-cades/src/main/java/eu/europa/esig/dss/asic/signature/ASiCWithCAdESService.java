@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +53,7 @@ import eu.europa.esig.dss.asic.signature.asice.ASiCEWithCAdESArchiveManifestBuil
 import eu.europa.esig.dss.asic.validation.ASiCEWithCAdESManifestValidator;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
+import eu.europa.esig.dss.cades.signature.CMSSignedDataBuilder;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -124,7 +126,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			ASiCEWithCAdESArchiveManifestBuilder builder = new ASiCEWithCAdESArchiveManifestBuilder(signatures, dataToSignHelper.getSignedDocuments(),
 					manifests, parameters.getArchiveTimestampParameters().getDigestAlgorithm(), timestampFilename);
 
-			DSSDocument archiveManfest = DomUtils.createDssDocumentFromDomDocument(builder.build(), getArchivManifestFilename(archiveManifests));
+			DSSDocument archiveManfest = DomUtils.createDssDocumentFromDomDocument(builder.build(), getArchiveManifestFilename(archiveManifests));
 			signatures.add(archiveManfest);
 
 			DigestAlgorithm digestAlgorithm = parameters.getArchiveTimestampParameters().getDigestAlgorithm();
@@ -198,11 +200,17 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		}
 
 		if (addASiCArchiveManifest) {
+			DSSDocument lastTimestamp = getLastTimestamp(timestamps);
+			if (lastTimestamp != null) {
+				DSSDocument extendedArchiveTimestamp = extendArchiveTimestamp(lastTimestamp, parameters.getDetachedContents());
+				extendedDocuments.add(extendedArchiveTimestamp);
+			}
+			
 			String timestampFilename = getArchiveTimestampFilename(timestamps);
 			ASiCEWithCAdESArchiveManifestBuilder builder = new ASiCEWithCAdESArchiveManifestBuilder(extendedDocuments, signedDocuments, manifests,
 					parameters.getArchiveTimestampParameters().getDigestAlgorithm(), timestampFilename);
 
-			DSSDocument archiveManfest = DomUtils.createDssDocumentFromDomDocument(builder.build(), getArchivManifestFilename(archiveManifests));
+			DSSDocument archiveManfest = DomUtils.createDssDocumentFromDomDocument(builder.build(), getArchiveManifestFilename(archiveManifests));
 			extendedDocuments.add(archiveManfest);
 
 			DigestAlgorithm digestAlgorithm = parameters.getArchiveTimestampParameters().getDigestAlgorithm();
@@ -218,8 +226,27 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 				DSSUtils.getFinalFileName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel(), parameters.aSiC().getContainerType()));
 		return extensionResult;
 	}
+	
+	private DSSDocument getLastTimestamp(List<DSSDocument> timestamps) {
+		DSSDocument lastTimestamp = null;
+		for (DSSDocument timestamp : timestamps) {
+			if (lastTimestamp == null || lastTimestamp.getName().compareTo(timestamp.getName()) < 0) {
+				lastTimestamp = timestamp;
+			}
+		}
+		return lastTimestamp;
+	}
+	
+	private DSSDocument extendArchiveTimestamp(DSSDocument archiveTimestamp, List<DSSDocument> detachedContents) {
+		CMSSignedData cmsSignedData = DSSUtils.toCMSSignedData(archiveTimestamp);
+		CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
+		CMSSignedData extendedCMSSignedData = cmsSignedDataBuilder.extendCMSSignedData(
+				cmsSignedData, cmsSignedData.getSignerInfos().iterator().next(), detachedContents);
+		DSSDocument extendedTimestamp = new InMemoryDocument(DSSASN1Utils.getEncoded(extendedCMSSignedData), archiveTimestamp.getName(), MimeType.TST);
+		return extendedTimestamp;
+	}
 
-	private String getArchivManifestFilename(List<DSSDocument> archiveManifests) {
+	private String getArchiveManifestFilename(List<DSSDocument> archiveManifests) {
 		String suffix = Utils.isCollectionEmpty(archiveManifests) ? Utils.EMPTY_STRING : String.valueOf(archiveManifests.size());
 		return "META-INF/ASiCArchiveManifest" + suffix + ".xml";
 	}

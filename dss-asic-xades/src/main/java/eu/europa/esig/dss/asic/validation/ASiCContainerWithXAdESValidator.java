@@ -133,9 +133,4 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 		return retrievedDocs;
 	}
 
-	@Override
-	protected void attachExternalTimestamps(List<AdvancedSignature> allSignatures) {
-		// Not-applicable for ASiC XAdES
-	}
-
 }

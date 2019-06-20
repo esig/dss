@@ -23,6 +23,7 @@ package eu.europa.esig.dss.asic.validation;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -41,6 +42,8 @@ import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.ValidationContext;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.x509.CertificateToken;
 
 public abstract class AbstractASiCContainerValidator extends SignedDocumentValidator {
 
@@ -82,17 +85,24 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	}
 
 	@Override
-	public List<AdvancedSignature> processSignaturesValidation(final ValidationContext validationContext, boolean structuralValidation) {
+	public List<AdvancedSignature> prepareSignatureValidationContext(final ValidationContext validationContext) {
 		List<AdvancedSignature> allSignatures = new ArrayList<AdvancedSignature>();
 		List<DocumentValidator> currentValidators = getValidators();
 		for (DocumentValidator documentValidator : currentValidators) { // CAdES / XAdES
-			allSignatures.addAll(documentValidator.processSignaturesValidation(validationContext, structuralValidation));
+			allSignatures.addAll(documentValidator.prepareSignatureValidationContext(validationContext));
 		}
-
-		// for CAdES
-		attachExternalTimestamps(allSignatures);
-
+		List<TimestampToken> externalTimestamps = attachExternalTimestamps(allSignatures);
+		for (TimestampToken timestamp : externalTimestamps) {
+			addTimestampTokenForVerification(validationContext, timestamp);
+		}
 		return allSignatures;
+	}
+	
+	private void addTimestampTokenForVerification(final ValidationContext validationContext, final TimestampToken timestamp) {
+		validationContext.addTimestampTokenForVerification(timestamp);
+		for (CertificateToken certificate : timestamp.getCertificates()) {
+			validationContext.addCertificateTokenForVerification(certificate);
+		}
 	}
 
 	/**
@@ -129,7 +139,15 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 		return containerInfo;
 	}
 
-	protected abstract void attachExternalTimestamps(List<AdvancedSignature> allSignatures);
+	/**
+	 * Attaches existing external timestamps to the list of {@code AdvancedSignature}s
+	 * @param allSignatures list of {@link AdvancedSignature}s
+	 * @return list of attached {@link TimestampToken}s
+	 */
+	protected List<TimestampToken> attachExternalTimestamps(List<AdvancedSignature> allSignatures) {
+		// Not applicable by default (used only in ASiC CAdES)
+		return Collections.emptyList();
+	}
 
 	protected abstract List<ManifestFile> getManifestFilesDecriptions();
 
@@ -164,6 +182,10 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 
 	protected List<DSSDocument> getTimestampDocuments() {
 		return extractResult.getTimestampDocuments();
+	}
+	
+	protected List<DSSDocument> getTimestampedDocuments(DSSDocument timestamp) {
+		return extractResult.getTimestampedDocuments(timestamp);
 	}
 
 	protected List<DSSDocument> getArchiveManifestDocuments() {

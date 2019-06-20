@@ -20,34 +20,17 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
-import org.bouncycastle.asn1.ASN1Primitive;
-import org.bouncycastle.asn1.cms.CMSObjectIdentifiers;
-import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
-import org.bouncycastle.cert.X509CRLHolder;
-import org.bouncycastle.cert.X509CertificateHolder;
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
-import org.bouncycastle.util.CollectionStore;
-import org.bouncycastle.util.Store;
 
-import eu.europa.esig.dss.DSSASN1Utils;
+import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
-import eu.europa.esig.dss.validation.ValidationContext;
-import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 /**
@@ -82,57 +65,10 @@ public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
 	}
 
 	@Override
-	protected CMSSignedData postExtendCMSSignedData(CMSSignedData cmsSignedData, SignerInformation signerInformation, CAdESSignatureParameters parameters) {
-		CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation, certificateVerifier.createValidationPool());
-		cadesSignature.setDetachedContents(parameters.getDetachedContents());
-		final ValidationContext validationContext = cadesSignature.getSignatureValidationContext(certificateVerifier);
-
-		Store<X509CertificateHolder> certificatesStore = cmsSignedData.getCertificates();
-		final Set<CertificateToken> certificates = cadesSignature.getCertificatesForInclusion(validationContext);
-		final Collection<X509CertificateHolder> newCertificateStore = new HashSet<X509CertificateHolder>(certificatesStore.getMatches(null));
-		for (final CertificateToken certificateToken : certificates) {
-			final X509CertificateHolder x509CertificateHolder = DSSASN1Utils.getX509CertificateHolder(certificateToken);
-			newCertificateStore.add(x509CertificateHolder);
-		}
-		certificatesStore = new CollectionStore<X509CertificateHolder>(newCertificateStore);
-
-		Store<X509CRLHolder> crlsStore = cmsSignedData.getCRLs();
-		final Collection<X509CRLHolder> newCrlsStore = new HashSet<X509CRLHolder>(crlsStore.getMatches(null));
-		final DefaultAdvancedSignature.RevocationDataForInclusion revocationDataForInclusion = cadesSignature.getRevocationDataForInclusion(validationContext);
-		for (final CRLToken crlToken : revocationDataForInclusion.crlTokens) {
-			final X509CRLHolder x509CRLHolder = getX509CrlHolder(crlToken);
-			newCrlsStore.add(x509CRLHolder);
-		}
-		crlsStore = new CollectionStore<X509CRLHolder>(newCrlsStore);
-
-		Store otherRevocationInfoFormatStoreBasic = cmsSignedData.getOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
-		final Collection<ASN1Primitive> newOtherRevocationInfoFormatStore = new HashSet<ASN1Primitive>(otherRevocationInfoFormatStoreBasic.getMatches(null));
-		for (final OCSPToken ocspToken : revocationDataForInclusion.ocspTokens) {
-			final BasicOCSPResp basicOCSPResp = ocspToken.getBasicOCSPResp();
-			if (basicOCSPResp != null) {
-				newOtherRevocationInfoFormatStore.add(DSSASN1Utils.toASN1Primitive(DSSASN1Utils.getEncoded(basicOCSPResp)));
-			}
-		}
-		otherRevocationInfoFormatStoreBasic = new CollectionStore(newOtherRevocationInfoFormatStore);
-
-		Store attributeCertificatesStore = cmsSignedData.getAttributeCertificates();
-		Store otherRevocationInfoFormatStoreOcsp = cmsSignedData.getOtherRevocationInfo(CMSObjectIdentifiers.id_ri_ocsp_response);
-
+	public CMSSignedData postExtendCMSSignedData(CMSSignedData cmsSignedData, SignerInformation signerInformation, List<DSSDocument> detachedContents) {
 		final CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
-		cmsSignedData = cmsSignedDataBuilder.regenerateCMSSignedData(cmsSignedData, parameters, certificatesStore, attributeCertificatesStore, crlsStore,
-				otherRevocationInfoFormatStoreBasic, otherRevocationInfoFormatStoreOcsp);
+		cmsSignedData = cmsSignedDataBuilder.extendCMSSignedData(cmsSignedData, signerInformation, detachedContents);
 		return cmsSignedData;
-	}
-
-	/**
-	 * @return the a copy of x509crl as a X509CRLHolder
-	 */
-	private X509CRLHolder getX509CrlHolder(CRLToken crlToken) {
-		try (InputStream is = crlToken.getCRLStream()) {
-			return new X509CRLHolder(is);
-		} catch (IOException e) {
-			throw new DSSException("Unable to convert X509CRL to X509CRLHolder", e);
-		}
 	}
 
 }

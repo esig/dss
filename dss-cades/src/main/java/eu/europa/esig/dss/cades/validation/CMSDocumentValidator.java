@@ -80,11 +80,7 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 	public CMSDocumentValidator(final DSSDocument document) throws DSSException {
 		this();
 		this.document = document;
-		try (InputStream inputStream = document.openStream()) {
-			this.cmsSignedData = new CMSSignedData(inputStream);
-		} catch (IOException | CMSException e) {
-			throw new DSSException("Not a valid CAdES file", e);
-		}
+		this.cmsSignedData = DSSUtils.toCMSSignedData(document);
 	}
 
 	@Override
