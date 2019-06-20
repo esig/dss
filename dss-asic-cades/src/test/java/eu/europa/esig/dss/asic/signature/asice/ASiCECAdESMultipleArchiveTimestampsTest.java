@@ -135,11 +135,14 @@ public class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
 		DSSDocument linkedManifest = manifestValidator.getLinkedManifest();
 		assertNotNull(linkedManifest);
 
+		String lastCreatedArchiveManifestName = null;
 		for (DSSDocument timestamp : timestamps) {
 			manifestValidator = new ASiCEWithCAdESManifestValidator(timestamp, archiveManifestDocuments, result.getTimestampedDocuments(timestamp));
 			linkedManifest = manifestValidator.getLinkedManifest();
 			assertNotNull(linkedManifest);
+			lastCreatedArchiveManifestName = linkedManifest.getName();
 		}
+		assertEquals("META-INF/ASiCArchiveManifest.xml", lastCreatedArchiveManifestName);
 
 		DSSDocument mimeTypeDocument = result.getMimeTypeDocument();
 

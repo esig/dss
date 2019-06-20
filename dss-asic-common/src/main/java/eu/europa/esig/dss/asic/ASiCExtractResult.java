@@ -129,6 +129,7 @@ public class ASiCExtractResult {
 		timestampedDocuments.addAll(getSignedDocuments());
 		timestampedDocuments.addAll(getManifestDocuments());
 		timestampedDocuments.addAll(getSignatureDocuments());
+		timestampedDocuments.addAll(getArchiveManifestDocuments());
 		for (DSSDocument timestampDocument : getTimestampDocuments()) {
 			if (timestampDocument.getName().compareTo(timestamp.getName()) < 0) {
 				timestampedDocuments.add(timestampDocument);
