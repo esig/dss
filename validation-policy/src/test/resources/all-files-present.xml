@@ -75,6 +75,9 @@
                 <Indication>http://uri.etsi.org/01903/v1.2.2#ProofOfOrigin</Indication>
             </CommitmentTypeIndication>
             <ClaimedRoles/>
+            <FoundCertificates/>
+            <FoundRevocations/>
+            <FoundTimestamps/>
             <SignatureScopes>
                 <SignatureScope SignerData="D-6b8e169ef6fce5bcdbea98fcf10a9b4f0792b2fb09cc2482835525ee7c25c032">
                     <Scope>FULL</Scope>

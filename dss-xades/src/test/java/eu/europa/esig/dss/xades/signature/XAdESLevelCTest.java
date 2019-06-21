@@ -81,15 +81,17 @@ public class XAdESLevelCTest extends AbstractXAdESTestSignature {
 
 		if (!ocspRefs.isEmpty()) {
 			for (OCSPRef ocspRef : ocspRefs) {
-				assertNotNull(ocspRef.getDigestAlgorithm());
-				assertNotNull(ocspRef.getDigestValue());
+				assertNotNull(ocspRef.getDigest());
+				assertNotNull(ocspRef.getDigest().getAlgorithm());
+				assertNotNull(ocspRef.getDigest().getValue());
 			}
 		}
 
 		if (!crlRefs.isEmpty()) {
 			for (CRLRef crlRef : crlRefs) {
-				assertNotNull(crlRef.getDigestAlgorithm());
-				assertNotNull(crlRef.getDigestValue());
+				assertNotNull(crlRef.getDigest());
+				assertNotNull(crlRef.getDigest().getAlgorithm());
+				assertNotNull(crlRef.getDigest().getValue());
 			}
 		}
 

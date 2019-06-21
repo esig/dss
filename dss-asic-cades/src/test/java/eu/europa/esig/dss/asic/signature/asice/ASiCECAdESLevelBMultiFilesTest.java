@@ -45,8 +45,8 @@ import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.signature.AbstractPkiFactoryTestMultipleDocumentsSignatureService;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
-import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 public class ASiCECAdESLevelBMultiFilesTest extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<ASiCWithCAdESSignatureParameters> {
 

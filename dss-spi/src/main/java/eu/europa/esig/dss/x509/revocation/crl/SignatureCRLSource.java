@@ -1,13 +1,17 @@
 package eu.europa.esig.dss.x509.revocation.crl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
-import eu.europa.esig.dss.CRLBinaryIdentifier;
+import eu.europa.esig.dss.Digest;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.SignatureRevocationSource;
 
@@ -24,34 +28,37 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	
 	private List<CRLRef> completeRevocationRefsCRLs = new ArrayList<CRLRef>();
 	private List<CRLRef> attributeRevocationRefsCRLs = new ArrayList<CRLRef>();
+	private List<CRLRef> timestampRevocationRefsCRLs = new ArrayList<CRLRef>();
+	
+	private List<CRLRef> orphanRevocationRefsCRLs;
+	
+	/**
+	 * Map that links {@link CRLToken}s with related {@link CRLRef}s
+	 */
+	private Map<CRLToken, Set<CRLRef>> revocationRefsMap;
 
 	@Override
 	public List<CRLToken> getRevocationValuesTokens() {
-		removeDuplicates(revocationValuesCRLs);
 		return revocationValuesCRLs;
 	}
 
 	@Override
 	public List<CRLToken> getAttributeRevocationValuesTokens() {
-		removeDuplicates(attributeRevocationValuesCRLs);
 		return attributeRevocationValuesCRLs;
 	}
 
 	@Override
 	public List<CRLToken> getTimestampRevocationValuesTokens() {
-		removeDuplicates(timestampRevocationValuesCRLs);
 		return timestampRevocationValuesCRLs;
 	}
 
 	@Override
 	public List<CRLToken> getDSSDictionaryTokens() {
-		removeDuplicates(dssDictionaryCRLs);
 		return dssDictionaryCRLs;
 	}
 
 	@Override
 	public List<CRLToken> getVRIDictionaryTokens() {
-		removeDuplicates(vriDictionaryCRLs);
 		return vriDictionaryCRLs;
 	}
 
@@ -62,18 +69,47 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	public List<CRLRef> getAttributeRevocationRefs() {
 		return attributeRevocationRefsCRLs;
 	}
+
+	public List<CRLRef> getTimestampRevocationRefs() {
+		return timestampRevocationRefsCRLs;
+	}
+	
+	/**
+	 * Retrieves all found CRL Tokens
+	 * @return list of {@link CRLToken}s
+	 */
+	public List<CRLToken> getAllCRLTokens() {
+		List<CRLToken> crlTokens = new ArrayList<CRLToken>();
+		crlTokens.addAll(getRevocationValuesTokens());
+		crlTokens.addAll(getAttributeRevocationValuesTokens());
+		crlTokens.addAll(getTimestampRevocationValuesTokens());
+		crlTokens.addAll(getDSSDictionaryTokens());
+		crlTokens.addAll(getVRIDictionaryTokens());
+		return crlTokens;
+	}
+
+	/**
+	 * Retrieves all found CRL Refs
+	 * @return list of {@link CRLRef}s
+	 */
+	public List<CRLRef> getAllCRLReferences() {
+		List<CRLRef> crlRefs = new ArrayList<CRLRef>();
+		crlRefs.addAll(getCompleteRevocationRefs());
+		crlRefs.addAll(getAttributeRevocationRefs());
+		crlRefs.addAll(getTimestampRevocationRefs());
+		return crlRefs;
+	}
 	
 	public Map<CRLBinaryIdentifier, List<CRLToken>> getCRLTokenMap() {
 		return crlTokenMap;
 	}
 	
 	/**
-	 * Allows to fill all CRL missing revocation tokens from the given {@link SignatureCRLSource}
+	 * Allows to fill all CRL missing revocation values from the given {@code signatureCRLSource}
 	 * @param signatureCRLSource {@link SignatureCRLSource} to populate values from
 	 */
-	public void populateCRLRevocationTokenLists(SignatureCRLSource signatureCRLSource) {
-		Map<CRLBinaryIdentifier, List<CRLToken>> mapToPopulateValuesFrom = signatureCRLSource.getCRLTokenMap();
-		for (Entry<CRLBinaryIdentifier, List<CRLToken>> entry : mapToPopulateValuesFrom.entrySet()) {
+	public void populateCRLRevocationValues(SignatureCRLSource signatureCRLSource) {
+		for (Entry<CRLBinaryIdentifier, List<CRLToken>> entry : signatureCRLSource.getCRLTokenMap().entrySet()) {
 			for (CRLToken crlToken : entry.getValue()) {
 				storeCRLToken(entry.getKey(), crlToken);
 			}
@@ -89,7 +125,9 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 				crlTokenMap.put(crlBinary, tokensList);
 			}
 			tokensList.add(crlToken);
-			addToRelevantList(crlToken, crlBinary.getOrigin());
+			for (RevocationOrigin origin : crlBinary.getOrigins()) {
+				addToRelevantList(crlToken, origin);
+			}
 		}
 	}
 	
@@ -125,23 +163,117 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 			if (!attributeRevocationRefsCRLs.contains(crlRef)) {
 				attributeRevocationRefsCRLs.add(crlRef);
 			}
+		case TIMESTAMP_REVOCATION_REFS:
+			if (!timestampRevocationRefsCRLs.contains(crlRef)) {
+				timestampRevocationRefsCRLs.add(crlRef);
+			}
 		default:
 			break;
 		}
 	}
 	
-	private void removeDuplicates(List<CRLToken> crlTokenList) {
-		List<String> usedIds = new ArrayList<String>();
-		Iterator<CRLToken> iterator = crlTokenList.iterator();
-		while (iterator.hasNext()) {
-			CRLToken crlToken = iterator.next();
-			String revocationRefId = crlToken.getDSSIdAsString() + crlToken.getRelatedCertificateID();
-			if (usedIds.contains(crlToken.getDSSIdAsString() + crlToken.getRelatedCertificateID())) {
-				iterator.remove();
-			} else {
-				usedIds.add(revocationRefId);
+	/**
+	 * Returns a list of {@link CRLRef}s assigned to the given {@code crlBinary}
+	 * @param crlBinary {@link CRLBinaryIdentifier} to get references for
+	 * @return list of {@link CRLRef}s
+	 */
+	public List<CRLRef> getReferencesForCRLIdentifier(CRLBinaryIdentifier crlBinary) {
+		List<CRLRef> relatedRefs = new ArrayList<CRLRef>();
+		for (CRLRef crlRef : getAllCRLReferences()) {
+			byte[] digestValue = crlBinary.getDigestValue(crlRef.getDigest().getAlgorithm());
+			if (Arrays.equals(crlRef.getDigest().getValue(), digestValue)) {
+				relatedRefs.add(crlRef);
 			}
 		}
+		return relatedRefs;
+	}
+	
+	/**
+	 * Returns a contained {@link CRLRef} with the given {@code digest}
+	 * @param digest {@link Digest} to find a {@link CRLRef} with
+	 * @return {@link CRLRef}
+	 */
+	public CRLRef getCRLRefByDigest(Digest digest) {
+		for (CRLRef crlRef : getAllCRLReferences()) {
+			if (digest.equals(crlRef.getDigest())) {
+				return crlRef;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns a list of orphan CRL Refs
+	 * @return list of {@link CRLRef}s
+	 */
+	public List<CRLRef> getOrphanCrlRefs() {
+		if (orphanRevocationRefsCRLs == null) {
+			orphanRevocationRefsCRLs = new ArrayList<CRLRef>();
+			for (CRLRef crlRef : getAllCRLReferences()) {
+				if (getIdentifier(crlRef) == null) {
+					orphanRevocationRefsCRLs.add(crlRef);
+				}
+			}
+		}
+		return orphanRevocationRefsCRLs;
+	}
+
+	/**
+	 * Retrieves a list of found CRL Tokens for the given {@code revocationRefs}
+	 * @param revocationRefs list of {@link CRLRef} to get tokens for
+	 * @return list of {@link CRLToken}s
+	 */
+	public List<CRLToken> findTokensFromRefs(List<CRLRef> revocationRefs) {
+		if (Utils.isMapEmpty(revocationRefsMap)) {
+			collectRevocationRefsMap();
+		}
+		List<CRLToken> tokensFromRefs = new ArrayList<CRLToken>();
+		for (Entry<CRLToken, Set<CRLRef>> revocationMapEntry : revocationRefsMap.entrySet()) {
+			for (CRLRef tokenRevocationRef : revocationMapEntry.getValue()) {
+				if (revocationRefs.contains(tokenRevocationRef)) {
+					tokensFromRefs.add(revocationMapEntry.getKey());
+					break;
+				}
+			}
+		}
+		return tokensFromRefs;
+	}
+	
+	/**
+	 * Retrieves a set of found CRL Refs for the given {@code revocationToken}
+	 * @param revocationToken {@link CRLToken} to get references for
+	 * @return list of {@link CRLRef}s
+	 */
+	public Set<CRLRef> findRefsForRevocationToken(CRLToken revocationToken) {
+		if (Utils.isMapEmpty(revocationRefsMap)) {
+			collectRevocationRefsMap();
+		}
+		Set<CRLRef> revocationRefs = revocationRefsMap.get(revocationToken);
+		if (revocationRefs != null) {
+			return revocationRefs;
+		} else {
+			return Collections.emptySet();
+		}
+	}
+	
+	private void collectRevocationRefsMap() {
+		revocationRefsMap = new HashMap<CRLToken, Set<CRLRef>>();
+		for (CRLToken revocationToken : getAllCRLTokens()) {
+			for (CRLRef reference : getAllCRLReferences()) {
+				if (Arrays.equals(reference.getDigest().getValue(), revocationToken.getDigest(reference.getDigest().getAlgorithm()))) {
+					addReferenceToMap(revocationToken, reference);
+				}
+			}
+		}
+	}
+	
+	private void addReferenceToMap(CRLToken revocationToken, CRLRef reference) {
+		Set<CRLRef> crlRefs = revocationRefsMap.get(revocationToken);
+		if (crlRefs == null) {
+			crlRefs = new HashSet<CRLRef>();
+			revocationRefsMap.put(revocationToken, crlRefs);
+		}
+		crlRefs.add(reference);
 	}
 
 }

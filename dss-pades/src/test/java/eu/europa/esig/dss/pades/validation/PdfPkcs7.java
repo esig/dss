@@ -29,8 +29,9 @@ import org.junit.Test;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateLocationType;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.CertificateOriginType;
+import eu.europa.esig.dss.validation.CertificateRefOriginType;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -50,8 +51,8 @@ public class PdfPkcs7 {
 		assertEquals(SignatureLevel.PKCS7_T.toString(), signatureById.getSignatureFormat());
 
 		// no signing certificate attribute
-		assertEquals(0, signatureById.getFoundCertificateIds(XmlCertificateLocationType.SIGNING_CERTIFICATE).size());
-		assertEquals(4, signatureById.getFoundCertificateIds(XmlCertificateLocationType.KEY_INFO).size());
+		assertEquals(0, signatureById.getFoundCertificatesByRefOrigin(CertificateRefOriginType.SIGNING_CERTIFICATE).size());
+		assertEquals(4, signatureById.getFoundCertificateIds(CertificateOriginType.KEY_INFO).size());
 
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		assertEquals(1, signatures.size());

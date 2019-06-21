@@ -122,21 +122,23 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 
 		Collection<SignerInformation> signerInformationCollection = cmsSignedData.getSignerInfos().getSigners();
 		final List<SignerInformation> newSignerInformationList = new ArrayList<SignerInformation>();
+		
 		for (SignerInformation signerInformation : signerInformationCollection) {
-
 			final CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
 			cadesSignature.setDetachedContents(parameters.getDetachedContents());
 			assertSignatureValid(cadesSignature, parameters);
 			final SignerInformation newSignerInformation = extendCMSSignature(cmsSignedData, signerInformation, parameters);
 			newSignerInformationList.add(newSignerInformation);
 		}
-
 		final SignerInformationStore newSignerStore = new SignerInformationStore(newSignerInformationList);
+		
 		cmsSignedData = CMSSignedData.replaceSigners(cmsSignedData, newSignerStore);
 		signerInformationCollection = cmsSignedData.getSignerInfos().getSigners();
+		
 		for (SignerInformation signerInformation : signerInformationCollection) {
-			cmsSignedData = postExtendCMSSignedData(cmsSignedData, signerInformation, parameters);
+			cmsSignedData = postExtendCMSSignedData(cmsSignedData, signerInformation, parameters.getDetachedContents());
 		}
+		
 		return cmsSignedData;
 	}
 
@@ -172,10 +174,10 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 		cmsSignedData = CMSSignedData.replaceSigners(cmsSignedData, newSignerStore);
 
 		lastSignerInformation = getFirstSigner(cmsSignedData);
-		return postExtendCMSSignedData(cmsSignedData, lastSignerInformation, parameters);
+		return postExtendCMSSignedData(cmsSignedData, lastSignerInformation, parameters.getDetachedContents());
 	}
 
-	private SignerInformation getFirstSigner(CMSSignedData cmsSignedData) {
+	protected SignerInformation getFirstSigner(CMSSignedData cmsSignedData) {
 		final Collection<SignerInformation> signers = cmsSignedData.getSignerInfos().getSigners();
 		return signers.iterator().next();
 	}
@@ -191,21 +193,21 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 	}
 
 	/**
-	 * Extends the signer
+	 * Extends the {@code SignerInformation}
 	 *
-	 * @param signedData
-	 * @param signerInformation
-	 * @param parameters
-	 * @return
+	 * @param signedData {@link CMSSignedData}
+	 * @param signerInformation {@link SignerInformation}
+	 * @param parameters {@link CAdESSignatureParameters}
+	 * @return {@link SignerInformation}
 	 */
 	protected abstract SignerInformation extendCMSSignature(CMSSignedData signedData, SignerInformation signerInformation, CAdESSignatureParameters parameters);
 
 	/**
 	 * Extends the root Signed Data. Nothing to do by default.
 	 *
-	 * @param cmsSignedData
-	 * @param parameters
-	 * @return
+	 * @param cmsSignedData {@link CMSSignedData}
+	 * @param parameters {@link CAdESSignatureParameters}
+	 * @return extended {@link CMSSignedData}
 	 */
 	protected CMSSignedData preExtendCMSSignedData(CMSSignedData cmsSignedData, CAdESSignatureParameters parameters) {
 		return cmsSignedData;
@@ -214,12 +216,12 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 	/**
 	 * Extends the root Signed Data. Nothing to do by default.
 	 *
-	 * @param cmsSignedData
-	 * @param signerInformation
-	 * @param parameters
-	 * @return
+	 * @param cmsSignedData {@link CMSSignedData}
+	 * @param signerInformation {@link SignerInformation}
+	 * @param detachedContents list of {@link DSSDocument}s
+	 * @return extended {@link CMSSignedData}
 	 */
-	protected CMSSignedData postExtendCMSSignedData(CMSSignedData cmsSignedData, SignerInformation signerInformation, CAdESSignatureParameters parameters) {
+	public CMSSignedData postExtendCMSSignedData(CMSSignedData cmsSignedData, SignerInformation signerInformation, List<DSSDocument> detachedContents) {
 		return cmsSignedData;
 	}
 

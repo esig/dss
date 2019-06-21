@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.x509.revocation.ocsp;
 
+import eu.europa.esig.dss.x509.RevocationOrigin;
+
 /**
  * This class allows to handle a list OCSP source.
  *
@@ -38,9 +40,7 @@ public class ListOCSPSource extends SignatureOCSPSource {
 	 *            an offline ocsp source
 	 */
 	public ListOCSPSource(final OfflineOCSPSource ocspSource) {
-		if (!ocspSource.getBasicOCSPResponses().isEmpty()) {
-			ocspResponses.addAll(ocspSource.getOCSPResponsesList());
-		}
+		addAll(ocspSource);
 	}
 
 	@Override
@@ -57,9 +57,21 @@ public class ListOCSPSource extends SignatureOCSPSource {
 	 *            the source to be added
 	 */
 	public void addAll(final OfflineOCSPSource offlineOCSPSource) {
-		for (OCSPResponse ocspResponse : offlineOCSPSource.getOCSPResponsesList()) {
-			if (!ocspResponses.contains(ocspResponse)) {
+		for (OCSPResponseIdentifier ocspResponse : offlineOCSPSource.getOCSPResponsesList()) {
+			int ii = ocspResponses.indexOf(ocspResponse);
+			if (ii > -1) {
+				OCSPResponseIdentifier storedOcspResponse = ocspResponses.get(ii);
+				for (RevocationOrigin origin : ocspResponse.getOrigins()) {
+					storedOcspResponse.addOrigin(origin);
+				}
+			} else {
 				ocspResponses.add(ocspResponse);
+			}
+		}
+		if (offlineOCSPSource instanceof SignatureOCSPSource) {
+			SignatureOCSPSource signatureOCSPSource = (SignatureOCSPSource) offlineOCSPSource;
+			for (OCSPRef ocspRef : signatureOCSPSource.getAllOCSPReferences()) {
+				addReference(ocspRef, ocspRef.getOrigin());
 			}
 		}
 	}

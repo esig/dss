@@ -60,6 +60,8 @@ import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.DigestInfo;
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.openssl.jcajce.JcaMiscPEMGenerator;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
@@ -558,6 +560,20 @@ public final class DSSUtils {
 			return Utils.toByteArray(inputStream);
 		} catch (IOException e) {
 			throw new DSSException(e);
+		}
+	}
+	
+	/**
+	 * Gets CMSSignedData from the {@code document} bytes
+	 * 
+	 * @param document {@link DSSDocument} contained CMSSignedData
+	 * @return {@link CMSSignedData}
+	 */
+	public static CMSSignedData toCMSSignedData(final DSSDocument document) {
+		try (InputStream inputStream = document.openStream()) {
+			return new CMSSignedData(inputStream);
+		} catch (IOException | CMSException e) {
+			throw new DSSException("Not a valid CAdES file", e);
 		}
 	}
 

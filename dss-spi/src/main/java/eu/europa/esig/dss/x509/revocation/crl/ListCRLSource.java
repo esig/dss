@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.x509.revocation.crl;
 
-import eu.europa.esig.dss.CRLBinaryIdentifier;
+import eu.europa.esig.dss.x509.RevocationOrigin;
 
 /**
  * This class allows to handle a list CRL source.
@@ -54,8 +54,16 @@ public class ListCRLSource extends SignatureCRLSource {
 	 *            the source to be added
 	 */
 	public void addAll(final OfflineCRLSource offlineCRLSource) {
-		for (CRLBinaryIdentifier crlBinary : offlineCRLSource.crlsBinaryList) {
-			super.addCRLBinary(crlBinary);
+		for (CRLBinaryIdentifier crlBinary : offlineCRLSource.getContainedX509CRLs()) {
+			for (RevocationOrigin origin : crlBinary.getOrigins()) {
+				addCRLBinary(crlBinary, origin);
+			}
+		}
+		if (offlineCRLSource instanceof SignatureCRLSource) {
+			SignatureCRLSource signatureCRLSource = (SignatureCRLSource) offlineCRLSource;
+			for (CRLRef crlRef : signatureCRLSource.getAllCRLReferences()) {
+				addReference(crlRef, crlRef.getOrigin());
+			}
 		}
 	}
 

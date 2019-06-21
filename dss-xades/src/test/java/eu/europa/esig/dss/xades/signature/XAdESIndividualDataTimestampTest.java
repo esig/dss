@@ -45,12 +45,12 @@ import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.TimestampInclude;
-import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
+import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.xades.DSSTransform;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
@@ -62,7 +62,6 @@ import eu.europa.esig.jaxb.validationreport.ValidationObjectType;
 import eu.europa.esig.jaxb.validationreport.ValidationReportType;
 import eu.europa.esig.jaxb.validationreport.enums.ObjectType;
 import eu.europa.esig.jaxb.xades132.DigestAlgAndValueType;
-import eu.europa.esig.jaxb.xmldsig.DigestMethodType;
 
 public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 
@@ -127,6 +126,9 @@ public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 			assertTrue(timestamp.isMessageImprintDataIntact());
 			assertTrue(timestamp.isSignatureValid());
 		}
+		
+		assertEquals(1, timestampList.get(0).getTimestampedObjects().size());
+		assertEquals(2, timestampList.get(1).getTimestampedObjects().size());
 
 		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChain(diagnosticData.getFirstSignatureId());
 		assertEquals(getCertificateChain().length, signatureCertificateChain.size());

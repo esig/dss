@@ -61,7 +61,7 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 		}
 
 		// Timestamps can already be loaded in memory (force reload)
-		xadesSignature.resetTimestamps();
+		xadesSignature.resetTimestampSource();
 
 		/**
 		 * In all cases the -LT level need to be regenerated.

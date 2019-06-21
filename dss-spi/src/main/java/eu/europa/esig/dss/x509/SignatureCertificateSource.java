@@ -28,9 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.CertificateRef;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Digest;
@@ -43,14 +40,23 @@ import eu.europa.esig.dss.utils.Utils;
  * wrapped certificates.
  *
  */
+@SuppressWarnings("serial")
 public abstract class SignatureCertificateSource extends CommonCertificateSource {
-
-	private static final Logger LOG = LoggerFactory.getLogger(SignatureCertificateSource.class);
+	
+	/**
+	 * Contains a list of all found {@link CertificateRef}s
+	 */
+	private List<CertificateRef> certificateRefs;
 	
 	/**
 	 * Contains a list of found {@link CertificateRef}s for each {@link CertificateToken}
 	 */
 	private Map<CertificateToken, List<CertificateRef>> certificateRefsMap;
+	
+	/**
+	 * List of orphan {@link CertificateRef}s
+	 */
+	private List<CertificateRef> orphanCertificateRefs;
 
 	/**
 	 * The default constructor with mandatory certificates pool.
@@ -189,7 +195,12 @@ public abstract class SignatureCertificateSource extends CommonCertificateSource
 		}
 	}
 
-	private List<CertificateToken> findTokensFromRefs(List<CertificateRef> certificateRefs) {
+	/**
+	 * Returns list of {@link CertificateToken}s for the provided {@link CertificateRef}s
+	 * @param certificateRefs list of {@link CertificateRef}s
+	 * @return list of {@link CertificateToken}s
+	 */
+	public List<CertificateToken> findTokensFromRefs(List<CertificateRef> certificateRefs) {
 		if (Utils.isMapEmpty(certificateRefsMap)) {
 			collectCertificateRefsMap();
 		}
@@ -205,12 +216,28 @@ public abstract class SignatureCertificateSource extends CommonCertificateSource
 		return tokensFromRefs;
 	}
 	
-	private List<CertificateRef> getAllCertificateRefs() {
-		List<CertificateRef> allCertificateRefs = new ArrayList<CertificateRef>();
-		allCertificateRefs.addAll(getCompleteCertificateRefs());
-		allCertificateRefs.addAll(getAttributeCertificateRefs());
-		allCertificateRefs.addAll(getSigningCertificateValues());
-		return allCertificateRefs;
+	public List<CertificateRef> getAllCertificateRefs() {
+		if (certificateRefs == null) {
+			certificateRefs = new ArrayList<CertificateRef>();
+			certificateRefs.addAll(getCompleteCertificateRefs());
+			certificateRefs.addAll(getAttributeCertificateRefs());
+			certificateRefs.addAll(getSigningCertificateValues());
+		}
+		return certificateRefs;
+	}
+	
+	/**
+	 * Returns a contained {@link CertificateRef} with the given {@code digest}
+	 * @param digest {@link Digest} to find a {@link CertificateRef} with
+	 * @return {@link CertificateRef}
+	 */
+	public CertificateRef getCertificateRefByDigest(Digest digest) {
+		for (CertificateRef certificateRef : getAllCertificateRefs()) {
+			if (digest.equals(certificateRef.getCertDigest())) {
+				return certificateRef;
+			}
+		}
+		return null;
 	}
 	
 	private void collectCertificateRefsMap() {
@@ -235,11 +262,38 @@ public abstract class SignatureCertificateSource extends CommonCertificateSource
 	}
 	
 	private void addCertificateRefToMap(CertificateToken certificateToken, CertificateRef certificateRef) {
-		if (certificateRefsMap.containsKey(certificateToken)) {
-			certificateRefsMap.get(certificateToken).add(certificateRef);
-		} else {
-			certificateRefsMap.put(certificateToken, new ArrayList<CertificateRef>(Arrays.asList(certificateRef)));
+		List<CertificateRef> certificateRefs = certificateRefsMap.get(certificateToken);
+		if (certificateRefs == null) {
+			certificateRefs = new ArrayList<CertificateRef>();
+			certificateRefsMap.put(certificateToken, certificateRefs);
 		}
+		certificateRefs.add(certificateRef);
+	}
+	
+	/**
+	 * Returns a list of orphan certificate refs
+	 * @return list of {@link CertificateRef}s
+	 */
+	public List<CertificateRef> getOrphanCertificateRefs() {
+		if (orphanCertificateRefs == null) {
+			orphanCertificateRefs = new ArrayList<CertificateRef>();
+			if (Utils.isMapEmpty(certificateRefsMap)) {
+				collectCertificateRefsMap();
+			}
+			for (CertificateRef certificateRef : getAllCertificateRefs()) {
+				boolean found = false;
+				for (List<CertificateRef> assignedCertificateRefs : certificateRefsMap.values()) {
+					if (assignedCertificateRefs.contains(certificateRef)) {
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					orphanCertificateRefs.add(certificateRef);
+				}
+			}
+		}
+		return orphanCertificateRefs;
 	}
 
 }

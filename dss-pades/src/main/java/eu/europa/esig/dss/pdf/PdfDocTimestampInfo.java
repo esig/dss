@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
-import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.TimestampLocation;
 import eu.europa.esig.dss.x509.TimestampType;
@@ -40,30 +40,31 @@ public class PdfDocTimestampInfo extends PdfCMSInfo implements PdfSignatureOrDoc
 
 	private final TimestampToken timestampToken;
 
-	private final byte[] content;
-
 	/**
-	 * @param validationCertPool
+	 * Default constructor to create PdfDocTimestampInfo
+	 * 
+	 * @param validationCertPool 
+	 *            {@link CertificatePool}
+	 * @param signatureDictionary
+	 *            {@link PdfSigDict}
 	 * @param dssDictionary
 	 *            the DSS dictionary
 	 * @param cms
 	 *            the CMS (CAdES) bytes
+	 * @param signedContent
+	 *            byte array representing the covered part by the timestamp
 	 * @param coverCompleteRevision
 	 *            true if the signature covers all bytes
-	 * @param isArchiveTimestamp
-	 *            true if the timestamp is an archive timestamp
 	 */
 	public PdfDocTimestampInfo(CertificatePool validationCertPool, PdfSigDict signatureDictionary,
-			PdfDssDict dssDictionary, byte[] cms, byte[] signedContent, boolean coverCompleteRevision,
-			boolean isArchiveTimestamp) {
+			PdfDssDict dssDictionary, byte[] cms, byte[] signedContent, boolean coverCompleteRevision) {
 		super(signatureDictionary, dssDictionary, cms, signedContent, coverCompleteRevision);
 		try {
 			TimestampType timestampType = TimestampType.SIGNATURE_TIMESTAMP;
-			if (isArchiveTimestamp) {
+			if (dssDictionary != null) {
 				timestampType = TimestampType.ARCHIVE_TIMESTAMP;
 			}
 			timestampToken = new TimestampToken(cms, timestampType, validationCertPool, TimestampLocation.DOC_TIMESTAMP);
-			content = cms;
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Created PdfDocTimestampInfo {} : {}", timestampType, uniqueId());
 			}
@@ -92,11 +93,6 @@ public class PdfDocTimestampInfo extends PdfCMSInfo implements PdfSignatureOrDoc
 
 	public TimestampToken getTimestampToken() {
 		return timestampToken;
-	}
-
-	@Override
-	public byte[] getContent() {
-		return content;
 	}
 
 }

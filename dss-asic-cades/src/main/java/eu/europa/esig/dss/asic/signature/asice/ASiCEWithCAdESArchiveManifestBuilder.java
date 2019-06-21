@@ -59,14 +59,16 @@ import eu.europa.esig.dss.asic.ASiCNamespace;
 public class ASiCEWithCAdESArchiveManifestBuilder extends AbstractManifestBuilder {
 
 	private final List<DSSDocument> signatures;
+	private final List<DSSDocument> timestamps;
 	private final List<DSSDocument> documents;
 	private final List<DSSDocument> manifests;
 	private final DigestAlgorithm digestAlgorithm;
 	private final String timestampUri;
 
-	public ASiCEWithCAdESArchiveManifestBuilder(List<DSSDocument> signatures, List<DSSDocument> documents, List<DSSDocument> manifests,
-			DigestAlgorithm digestAlgorithm, String timestampUri) {
+	public ASiCEWithCAdESArchiveManifestBuilder(List<DSSDocument> signatures, List<DSSDocument> timestamps, 
+			List<DSSDocument> documents, List<DSSDocument> manifests, DigestAlgorithm digestAlgorithm, String timestampUri) {
 		this.signatures = signatures;
+		this.timestamps = timestamps;
 		this.documents = documents;
 		this.manifests = manifests;
 		this.digestAlgorithm = digestAlgorithm;
@@ -83,13 +85,17 @@ public class ASiCEWithCAdESArchiveManifestBuilder extends AbstractManifestBuilde
 		for (DSSDocument signature : signatures) {
 			addDataObjectReference(documentDom, asicManifestDom, signature, digestAlgorithm);
 		}
-
-		for (DSSDocument document : documents) {
-			addDataObjectReference(documentDom, asicManifestDom, document, digestAlgorithm);
+		
+		for (DSSDocument timestamp : timestamps) {
+			addDataObjectReference(documentDom, asicManifestDom, timestamp, digestAlgorithm);
 		}
 
 		for (DSSDocument manifest : manifests) {
 			addDataObjectReference(documentDom, asicManifestDom, manifest, digestAlgorithm);
+		}
+
+		for (DSSDocument document : documents) {
+			addDataObjectReference(documentDom, asicManifestDom, document, digestAlgorithm);
 		}
 
 		return documentDom;

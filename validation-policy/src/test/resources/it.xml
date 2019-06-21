@@ -33,6 +33,9 @@
 	            <ChainItem Certificate="C-B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640"/>
 	        </CertificateChain>
 	        <ContentType>1.2.840.113549.1.7.1</ContentType>
+            <FoundCertificates/>
+            <FoundRevocations/>
+            <FoundTimestamps/>
 	        <SignatureScopes>
                 <SignatureScope SignerData="D-a24314eaf8e7415f498d7afcf752ed1ad4a8887c8ccc99d35939a10fe2e0aa15">
                     <Scope>FULL</Scope>

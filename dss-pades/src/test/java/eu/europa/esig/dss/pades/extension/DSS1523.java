@@ -60,7 +60,7 @@ public class DSS1523 extends PKIFactoryAccess {
 		assertEquals(1, signatures.size());
 		PAdESSignature signature = (PAdESSignature) signatures.get(0);
 
-		PAdESCertificateSource certificateSource = signature.getCertificateSource();
+		PAdESCertificateSource certificateSource = (PAdESCertificateSource) signature.getCertificateSource();
 		assertNotNull(certificateSource);
 		Map<Long, CertificateToken> certificateMap = certificateSource.getCertificateMap();
 		assertEquals(1, certificateMap.size());
@@ -104,7 +104,7 @@ public class DSS1523 extends PKIFactoryAccess {
 		assertEquals(1, signatures.size());
 		PAdESSignature signature = (PAdESSignature) signatures.get(0);
 
-		PAdESCertificateSource certificateSource = signature.getCertificateSource();
+		PAdESCertificateSource certificateSource = (PAdESCertificateSource) signature.getCertificateSource();
 		assertNotNull(certificateSource);
 		Map<Long, CertificateToken> certificateMap = certificateSource.getCertificateMap();
 //		assertEquals(1, certificateMap.size());

@@ -31,6 +31,8 @@ import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlContainerInfo;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlOrphanRevocation;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlOrphanToken;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRelatedRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
@@ -38,6 +40,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.OrphanTokenType;
 import eu.europa.esig.dss.validation.RevocationReason;
 import eu.europa.esig.dss.validation.RevocationType;
 import eu.europa.esig.dss.validation.XmlRevocationOrigin;
@@ -574,7 +577,7 @@ public class DiagnosticData {
 	 * @return timestamp wrapper or null
 	 */
 	public TimestampWrapper getTimestampById(String id) {
-		Set<TimestampWrapper> allTimestamps = getAllTimestamps();
+		Set<TimestampWrapper> allTimestamps = getTimestampSet();
 		for (TimestampWrapper timestampWrapper : allTimestamps) {
 			if (Utils.areStringsEqual(id, timestampWrapper.getId())) {
 				return timestampWrapper;
@@ -665,17 +668,47 @@ public class DiagnosticData {
 		} else if (originType != null) {
 			revocationSet = signature.getRelatedRevocationsByOrigin(originType);
 		} else {
-			revocationSet = new HashSet<XmlRelatedRevocation>(signature.getFoundRevocations().getRelatedRevocations());
+			revocationSet = new HashSet<XmlRelatedRevocation>(signature.getRelatedRevocations());
 		}
 
 		List<RevocationWrapper> revocations = new ArrayList<RevocationWrapper>();
-		for (XmlRelatedRevocation revocationRef : revocationSet) {
-			if ((revocationType == null || revocationRef.getType().equals(revocationType)) && 
-					(originType == null || revocationRef.getOrigin().equals(originType))) {
-				revocations.add(new RevocationWrapper(revocationRef.getRevocation()));
+		for (XmlRelatedRevocation relatedRevocation : revocationSet) {
+			if ((revocationType == null || relatedRevocation.getType().equals(revocationType)) && 
+					(originType == null || revocationContainsReferenceWithOrigin(relatedRevocation, originType))) {
+				revocations.add(new RevocationWrapper(relatedRevocation.getRevocation()));
 			}
 		}
 		return revocations;
+	}
+	
+	private boolean revocationContainsReferenceWithOrigin(XmlRelatedRevocation relatedRevocation, XmlRevocationOrigin revocationOrigin) {
+		return relatedRevocation.getOrigins().contains(revocationOrigin);
+	}
+	
+	/**
+	 * Returns a list of all found {@link XmlOrphanRevocation}s
+	 * @return list of {@link XmlOrphanRevocation}s
+	 */
+	public List<XmlOrphanRevocation> getAllOrphanRevocations() {
+		List<XmlOrphanRevocation> orphanRevocations = new ArrayList<XmlOrphanRevocation>();
+		for (SignatureWrapper signatureWrapper : getSignatures()) {
+			orphanRevocations.addAll(signatureWrapper.getOrphanRevocations());
+		}
+		return orphanRevocations;
+	}
+	
+	/**
+	 * Returns a list of all found {@link XmlOrphanToken} certificates
+	 * @return list of {@link XmlOrphanToken}s
+	 */
+	public List<XmlOrphanToken> getAllOrphanCertificates() {
+		List<XmlOrphanToken> orphanCertificateTokens = new ArrayList<XmlOrphanToken>();
+		for (XmlOrphanToken orphanToken : wrapped.getOrphanTokens()) {
+			if (OrphanTokenType.CERTIFICATE.equals(orphanToken.getType())) {
+				orphanCertificateTokens.add(orphanToken);
+			}
+		}
+		return orphanCertificateTokens;
 	}
 
 	/**
@@ -701,7 +734,7 @@ public class DiagnosticData {
 	 * 
 	 * @return a List of timestamp wrappers
 	 */
-	public List<TimestampWrapper> getTimestamps() {
+	public List<TimestampWrapper> getTimestampList() {
 		if (usedTimestamps == null) {
 			usedTimestamps = new ArrayList<TimestampWrapper>();
 			List<XmlTimestamp> xmlTimestamps = wrapped.getUsedTimestamps();
@@ -785,8 +818,8 @@ public class DiagnosticData {
 	 * 
 	 * @return a set of TimestampWrapper
 	 */
-	public Set<TimestampWrapper> getAllTimestamps() {
-		return new HashSet<TimestampWrapper>(getTimestamps());
+	public Set<TimestampWrapper> getTimestampSet() {
+		return new HashSet<TimestampWrapper>(getTimestampList());
 	}
 
 	/**
@@ -817,6 +850,20 @@ public class DiagnosticData {
 			}
 		}
 		return latest;
+	}
+	
+	/**
+	 * Returns {@link RevocationWrapper} with the given {@code id}
+	 * @param id {@link String} identifier to get {@link RevocationWrapper} with
+	 * @return {@link RevocationWrapper}
+	 */
+	public RevocationWrapper getRevocationById(String id) {
+		for (RevocationWrapper revocationWrapper : getAllRevocationData()) {
+			if (id.equals(revocationWrapper.getId())) {
+				return revocationWrapper;
+			}
+		}
+		return null;
 	}
 	
 	/**

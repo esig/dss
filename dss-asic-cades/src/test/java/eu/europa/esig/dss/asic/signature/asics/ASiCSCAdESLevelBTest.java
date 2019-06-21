@@ -43,7 +43,7 @@ import eu.europa.esig.dss.asic.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 public class ASiCSCAdESLevelBTest extends AbstractASiCSCAdESTestSignature {
 

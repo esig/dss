@@ -54,6 +54,7 @@ public class DSS1401Test {
 		List<TimestampWrapper> timestamps = signature.getTimestampListByType(TimestampType.ARCHIVE_TIMESTAMP);
 		TimestampWrapper archiveTimestamp = timestamps.get(0);
 
+		assertTrue(archiveTimestamp.isMessageImprintDataFound());
 		assertTrue(archiveTimestamp.isMessageImprintDataIntact());
 
 	}
@@ -74,8 +75,9 @@ public class DSS1401Test {
 
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		List<TimestampWrapper> timestamps = signature.getTimestampListByType(TimestampType.ARCHIVE_TIMESTAMP);
+		
 		TimestampWrapper archiveTimestamp = timestamps.get(0);
-
+		assertTrue(archiveTimestamp.isMessageImprintDataFound());
 		assertTrue(archiveTimestamp.isMessageImprintDataIntact());
 
 	}
@@ -96,6 +98,7 @@ public class DSS1401Test {
 		List<TimestampWrapper> timestamps = signature.getTimestampListByType(TimestampType.ARCHIVE_TIMESTAMP);
 		TimestampWrapper archiveTimestamp = timestamps.get(0);
 
+		assertTrue(archiveTimestamp.isMessageImprintDataFound());
 		assertTrue(archiveTimestamp.isMessageImprintDataIntact());
 
 	}
@@ -118,6 +121,7 @@ public class DSS1401Test {
 		List<TimestampWrapper> timestamps = signature.getTimestampListByType(TimestampType.ARCHIVE_TIMESTAMP);
 		TimestampWrapper archiveTimestamp = timestamps.get(0);
 
+		assertTrue(archiveTimestamp.isMessageImprintDataFound());
 		assertTrue(archiveTimestamp.isMessageImprintDataIntact());
 
 	}
@@ -140,6 +144,7 @@ public class DSS1401Test {
 		List<TimestampWrapper> timestamps = signature.getTimestampListByType(TimestampType.ARCHIVE_TIMESTAMP);
 		TimestampWrapper archiveTimestamp = timestamps.get(0);
 
+		assertTrue(archiveTimestamp.isMessageImprintDataFound());
 		assertTrue(archiveTimestamp.isMessageImprintDataIntact());
 
 	}

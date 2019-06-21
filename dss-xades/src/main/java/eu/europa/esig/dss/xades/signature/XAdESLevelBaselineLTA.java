@@ -33,8 +33,8 @@ import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.TimestampParameters;
 import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.validation.ValidationContext;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 
@@ -122,7 +122,7 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 	private void incorporateArchiveTimestamp() {
 		final TimestampParameters archiveTimestampParameters = params.getArchiveTimestampParameters();
 		final String canonicalizationMethod = archiveTimestampParameters.getCanonicalizationMethod();
-		final byte[] archiveTimestampData = xadesSignature.getArchiveTimestampData(null, canonicalizationMethod);
+		final byte[] archiveTimestampData = xadesSignature.getTimestampSource().getArchiveTimestampData(canonicalizationMethod);
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Data to be signed by the ArchiveTimestamp:");
 			LOG.trace(new String(archiveTimestampData));

@@ -20,8 +20,12 @@
  */
 package eu.europa.esig.dss.x509;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
 import eu.europa.esig.dss.x509.revocation.RevocationSourceType;
 
@@ -39,9 +43,9 @@ public abstract class RevocationToken extends Token {
 	protected RevocationSourceType revocationSourceType;
 
 	/**
-	 * Origin of the revocation data (signature or external)
+	 * Origins of the revocation data (signature or external)
 	 */
-	protected RevocationOrigin origin = RevocationOrigin.EXTERNAL;
+	protected List<RevocationOrigin> origins;
 
 	/**
 	 * The URL which was used to obtain the revocation data (online).
@@ -143,12 +147,15 @@ public abstract class RevocationToken extends Token {
 	 * 
 	 * @return the origin of this revocation data
 	 */
-	public RevocationOrigin getOrigin() {
-		return origin;
+	public List<RevocationOrigin> getOrigins() {
+		if (Utils.isCollectionEmpty(origins)) {
+			origins = new ArrayList<RevocationOrigin>(Arrays.asList(RevocationOrigin.EXTERNAL));
+		}
+		return origins;
 	}
 
-	public void setOrigin(RevocationOrigin origin) {
-		this.origin = origin;
+	public void setOrigins(List<RevocationOrigin> origins) {
+		this.origins = origins;
 	}
 
 	/**

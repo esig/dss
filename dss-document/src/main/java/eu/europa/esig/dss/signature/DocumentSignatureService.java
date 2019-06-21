@@ -22,7 +22,7 @@ package eu.europa.esig.dss.signature;
 
 import eu.europa.esig.dss.AbstractSerializableSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 /**

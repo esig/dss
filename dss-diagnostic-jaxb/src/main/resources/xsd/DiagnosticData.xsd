@@ -37,6 +37,13 @@
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
+				<xs:element name="OrphanTokens" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="OrphanToken" type="OrphanToken" minOccurs="0" maxOccurs="unbounded" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
 				<xs:element name="OriginalDocuments" minOccurs="0">
 					<xs:complexType>
 						<xs:sequence>
@@ -156,30 +163,25 @@
 						</xs:complexType>
 					</xs:element>
 					
-					<xs:element name="FoundCertificates" minOccurs="0">
+					<xs:element name="FoundCertificates">
 						<xs:complexType>
 							<xs:sequence>
-								<xs:element name="FoundCertificate" type="FoundCertificate" minOccurs="0" maxOccurs="unbounded" />
+								<xs:element name="RelatedCertificate" type="RelatedCertificate" minOccurs="0" maxOccurs="unbounded" />
+								<xs:element name="OrphanCertificate" type="OrphanCertificate" minOccurs="0" maxOccurs="unbounded" />
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
 					
-					<xs:element name="FoundRevocations" minOccurs="0">
+					<xs:element name="FoundRevocations">
 						<xs:complexType>
 							<xs:sequence>
-								<xs:element name="RelatedRevocations" type="RelatedRevocation" minOccurs="0" maxOccurs="unbounded" />
-								<xs:element name="OrphanRevocationRefs" minOccurs="0">
-									<xs:complexType>
-										<xs:sequence>
-											<xs:element name="RevocationRef" type="RevocationRef" minOccurs="0" maxOccurs="unbounded" />
-										</xs:sequence>
-									</xs:complexType>
-								</xs:element>
+								<xs:element name="RelatedRevocation" type="RelatedRevocation" minOccurs="0" maxOccurs="unbounded" />
+								<xs:element name="OrphanRevocation" type="OrphanRevocation" minOccurs="0" maxOccurs="unbounded" />
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
 								
-					<xs:element name="FoundTimestamps" minOccurs="0">
+					<xs:element name="FoundTimestamps">
 						<xs:complexType>
 							<xs:sequence>
 								<xs:element name="FoundTimestamp" type="FoundTimestamp" minOccurs="0" maxOccurs="unbounded" />
@@ -187,7 +189,7 @@
 						</xs:complexType>
 					</xs:element>
 					
-					<xs:element name="SignatureScopes" minOccurs="0">
+					<xs:element name="SignatureScopes">
 						<xs:complexType>
 							<xs:sequence>
 								<xs:element name="SignatureScope" type="SignatureScope" minOccurs="0" maxOccurs="unbounded" />
@@ -455,6 +457,7 @@
 	<xs:element name="TimestampedTimestamp" type="TimestampedTimestamp" substitutionGroup="TimestampedObject" />
 	<xs:element name="TimestampedSignature" type="TimestampedSignature" substitutionGroup="TimestampedObject" />
 	<xs:element name="TimestampedSignerData" type="TimestampedSignerData" substitutionGroup="TimestampedObject" />
+	<xs:element name="TimestampedOrphanToken" type="TimestampedOrphanToken" substitutionGroup="TimestampedObject" />
 	
 	<xs:complexType name="TimestampedObject" abstract="true">
 		<xs:sequence/>
@@ -494,6 +497,14 @@
     </xs:complexType>
     
 	<xs:complexType name="TimestampedSignerData">
+        <xs:complexContent>
+            <xs:restriction base="TimestampedObject">
+				<xs:attribute name="Token" type="xs:IDREF" use="required" />
+            </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+    
+	<xs:complexType name="TimestampedOrphanToken">
         <xs:complexContent>
             <xs:restriction base="TimestampedObject">
 				<xs:attribute name="Token" type="xs:IDREF" use="required" />
@@ -558,16 +569,32 @@
 		</xs:restriction>
 	</xs:simpleType>
 	
-	<xs:complexType name="FoundCertificate">
+	<xs:complexType name="FoundCertificate" abstract="true">
 		<xs:sequence>
+			<xs:element name="Origin" type="CertificateOriginType" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="CertificateRef" type="CertificateRef" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
-		<xs:attribute name="Certificate" type="xs:IDREF" use="required" />
-		<xs:attribute name="Location" type="CertificateLocationType" use="required" />
+	</xs:complexType>
+	
+	<xs:complexType name="RelatedCertificate">
+		<xs:complexContent>
+            <xs:extension base="FoundCertificate">
+				<xs:attribute name="Certificate" type="xs:IDREF" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="OrphanCertificate">
+		<xs:complexContent>
+            <xs:extension base="FoundCertificate">
+            	<xs:attribute name="Token" type="xs:IDREF" use="required" />
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 	
 	<xs:complexType name="CertificateRef">
 		<xs:sequence>
+			<xs:element name="Origin" type="CertificateRefOriginType" />
 			<xs:element name="IssuerSerial" type="xs:base64Binary" />
 			<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" />
 		</xs:sequence>
@@ -586,17 +613,23 @@
 		</xs:restriction>
 	</xs:simpleType>
 	
-	<xs:simpleType name="CertificateLocationType" final="restriction">
+	<xs:simpleType name="CertificateOriginType" final="restriction">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="KEY_INFO" />
-			<xs:enumeration value="SIGNING_CERTIFICATE" />
-			<xs:enumeration value="COMPLETE_CERTIFICATE_REFS" />
-			<xs:enumeration value="ATTRIBUTE_CERTIFICATE_REFS" />
 			<xs:enumeration value="CERTIFICATE_VALUES" />
 			<xs:enumeration value="ATTR_AUTORITIES_CERT_VALUES" />
 			<xs:enumeration value="TIMESTAMP_DATA_VALIDATION" />
 			<xs:enumeration value="DSS" />
 			<xs:enumeration value="VRI" />
+			<xs:enumeration value="INTERNAL_TIMESTAMP_CERTIFICATE_VALUES" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="CertificateRefOriginType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="SIGNING_CERTIFICATE" />
+			<xs:enumeration value="COMPLETE_CERTIFICATE_REFS" />
+			<xs:enumeration value="ATTRIBUTE_CERTIFICATE_REFS" />
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -699,23 +732,33 @@
 		</xs:complexContent>
 	</xs:complexType>
 	
-	<xs:complexType name="RelatedRevocation">
+	<xs:complexType name="FoundRevocation" abstract="true">
 		<xs:sequence>
-			<xs:element name="Revocation" type="xs:IDREF" />
 			<xs:element name="Type" type="RevocationType" />
-			<xs:element name="Origin" type="RevocationOriginType" />
-			<xs:element name="RevocationReferences" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="RevocationRef" type="RevocationRef" minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
+			<xs:element name="Origin" type="RevocationOriginType" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="RevocationRef" type="RevocationRef" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="RelatedRevocation">
+		<xs:complexContent>
+            <xs:extension base="FoundRevocation">
+            	<xs:attribute name="Revocation" type="xs:IDREF" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="OrphanRevocation">
+		<xs:complexContent>
+            <xs:extension base="FoundRevocation">
+            	<xs:attribute name="Token" type="xs:IDREF" use="required" />
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 	
 	<xs:complexType name="RevocationRef">
 		<xs:sequence>
+			<xs:element name="Origin" type="RevocationRefOriginType" />
 			<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" minOccurs="0" />
 			<xs:element name="ProducedAt" type="xs:dateTime" minOccurs="0" /> <!-- OCSP -->
 			<xs:choice minOccurs="0"> <!-- OCSP -->
@@ -723,8 +766,6 @@
 				<xs:element name="ResponderIdKey" type="xs:base64Binary" /> <!-- OCSP -->
 			</xs:choice>
 		</xs:sequence>
-		<xs:attribute name="Type" type="RevocationType" /> <!--  optional, used in case of unused revocation reference -->
-		<xs:attribute name="Location" type="RevocationRefLocationType" use="required" />
 	</xs:complexType>
 	
 	<xs:simpleType name="RevocationType" final="restriction">
@@ -747,10 +788,32 @@
 		</xs:restriction>
 	</xs:simpleType>
 	
-	<xs:simpleType name="RevocationRefLocationType" final="restriction">
+	<xs:simpleType name="RevocationRefOriginType" final="restriction">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="COMPLETE_REVOCATION_REFS" />
 			<xs:enumeration value="ATTRIBUTE_REVOCATION_REFS" />
+			<xs:enumeration value="TIMESTAMP_REVOCATION_REFS" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="OrphanToken">
+		<xs:complexContent>
+            <xs:extension base="AbstractToken">
+				<xs:sequence>
+					<xs:element name="Type" type="OrphanTokenType" />
+					<xs:choice>
+						<xs:element name="Base64Encoded" type="xs:base64Binary" />
+						<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" />
+					</xs:choice>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:simpleType name="OrphanTokenType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CERTIFICATE" />
+			<xs:enumeration value="REVOCATION" />
 		</xs:restriction>
 	</xs:simpleType>
 	

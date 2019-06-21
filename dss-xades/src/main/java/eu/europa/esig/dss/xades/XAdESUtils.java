@@ -16,6 +16,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.Digest;
+import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
@@ -182,6 +185,75 @@ public final class XAdESUtils {
 		}
 		// in case of exceptions return null value
 		return null;
+	}
+
+	/**
+	 * Returns {@link Digest} found in the given {@code element}
+	 * @param element {@link Element} to get digest from
+	 * @return {@link Digest}
+	 */
+	public static Digest getCertDigest(Element element, XPathQueryHolder xPathQueryHolder) {
+		final Element certDigestElement = DomUtils.getElement(element, xPathQueryHolder.XPATH__CERT_DIGEST);
+		if (certDigestElement == null) {
+			return null;
+		}
+		
+		final Element digestMethodElement = DomUtils.getElement(certDigestElement, xPathQueryHolder.XPATH__DIGEST_METHOD);
+		final Element digestValueElement = DomUtils.getElement(element, xPathQueryHolder.XPATH__CERT_DIGEST_DIGEST_VALUE);
+		if (digestMethodElement == null || digestValueElement == null) {
+			return null;
+		}
+		
+		final byte[] digestValue = Utils.fromBase64(digestValueElement.getTextContent());
+		
+		try {
+			final String xmlAlgorithmName = digestMethodElement.getAttribute(XPathQueryHolder.XMLE_ALGORITHM);
+			final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forXML(xmlAlgorithmName);
+			return new Digest(digestAlgorithm, digestValue);
+		} catch (DSSException e) {
+			LOG.warn("CertRef DigestMethod is not supported. Reason: {}", e.getMessage());
+			return null;
+		}
+		
+	}
+	
+	/**
+	 * Returns {@link Digest} found in the given {@code revocationRefNode}
+	 * @param revocationRefNode {@link Element} to get digest from
+	 * @param xPathQueryHolder {@link XPathQueryHolder}
+	 * @return {@link Digest}
+	 */
+	public static Digest getRevocationDigest(Element revocationRefNode, final XPathQueryHolder xPathQueryHolder) {
+		final Element digestAlgorithmEl = DomUtils.getElement(revocationRefNode, xPathQueryHolder.XPATH__DAAV_DIGEST_METHOD);
+		final Element digestValueEl = DomUtils.getElement(revocationRefNode, xPathQueryHolder.XPATH__DAAV_DIGEST_VALUE);
+		
+		DigestAlgorithm digestAlgo = null;
+		byte[] digestValue = null;
+		if (digestAlgorithmEl != null && digestValueEl != null) {
+			final String xmlName = digestAlgorithmEl.getAttribute(XPathQueryHolder.XMLE_ALGORITHM);
+			digestAlgo = DigestAlgorithm.forXML(xmlName);
+			digestValue = Utils.fromBase64(digestValueEl.getTextContent());
+			return new Digest(digestAlgo, digestValue);
+		}
+		return null;
+	}
+
+	/**
+	 * Determines if the given {@code reference} refers to SignedProperties element
+	 * @param reference {@link Reference} to check
+	 * @return TRUE if the reference refers to the SignedProperties, FALSE otherwise
+	 */
+	public static boolean isSignedProperties(final Reference reference, final XPathQueryHolder xPathQueryHolder) {
+		return xPathQueryHolder.XADES_SIGNED_PROPERTIES.equals(reference.getType());
+	}
+
+	/**
+	 * Determines if the given {@code reference} refers to CounterSignature element
+	 * @param reference {@link Reference} to check
+	 * @return TRUE if the reference refers to the CounterSignature, FALSE otherwise
+	 */
+	public static boolean isCounerSignature(final Reference reference, final XPathQueryHolder xPathQueryHolder) {
+		return xPathQueryHolder.XADES_COUNTERSIGNED_SIGNATURE.equals(reference.getType());
 	}
 
 }

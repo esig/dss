@@ -33,6 +33,8 @@
 	            <ChainItem Certificate="C-0AF09567AEFB2E6B8C76FE459CF2CCE0D5182A6D093D01BEA21C6423EDC47B46"/>
 	        </CertificateChain>
 	        <ContentType>application/pdf</ContentType>
+            <FoundCertificates/>
+            <FoundRevocations/>
 			<FoundTimestamps>
 				<FoundTimestamp Timestamp="T-B2F4019BDF9F53E6CB9313D56A6396FD07A5FF772E62F3BD5C3C46804616BCDC"/>
 				<FoundTimestamp Timestamp="T-C6E73AB142B57409F06DF8ABB1CC6DB944F56B0BE06C5FAD0FB39080069EE7FC"/>

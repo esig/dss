@@ -65,7 +65,7 @@ public class POEExtraction {
 		for (SignatureWrapper signature : signatures) {
 			addPOE(signature.getId(), proofOfExistence);
 		}
-		Set<TimestampWrapper> timestamps = diagnosticData.getAllTimestamps();
+		Set<TimestampWrapper> timestamps = diagnosticData.getTimestampSet();
 		for (TimestampWrapper timestamp : timestamps) {
 			addPOE(timestamp.getId(), proofOfExistence);
 		}
@@ -84,12 +84,12 @@ public class POEExtraction {
 	}
 	
 	public void collectAllPOE(DiagnosticData diagnosticData) {
-		for (TimestampWrapper timestamp : diagnosticData.getAllTimestamps()) {
-			extractPOE(timestamp, diagnosticData);
+		for (TimestampWrapper timestamp : diagnosticData.getTimestampSet()) {
+			extractPOE(timestamp);
 		}
 	}
 
-	public void extractPOE(TimestampWrapper timestamp, DiagnosticData diagnosticData) {
+	public void extractPOE(TimestampWrapper timestamp) {
 		List<XmlTimestampedObject> timestampedObjects = timestamp.getTimestampedObjects();
 		if (Utils.isCollectionNotEmpty(timestampedObjects)) {
 			XmlProofOfExistence poe = new XmlProofOfExistence();

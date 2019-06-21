@@ -60,6 +60,8 @@
             <ContentType>1.2.840.113549.1.7.1</ContentType>
             <CommitmentTypeIndication/>
             <ClaimedRoles/>
+            <FoundCertificates/>
+            <FoundRevocations/>
 			<FoundTimestamps>
 				<FoundTimestamp Timestamp="T-C70546FC1FEF916D9C13DA3167831B08D694147BA16EABBE5E07507909FA13BE"/>
 			</FoundTimestamps>

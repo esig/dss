@@ -39,7 +39,7 @@ import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignerLocation;
 import eu.europa.esig.dss.TimestampParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 public class XAdESLevelBInternallyDetachedWithRootTest extends AbstractXAdESTestSignature {

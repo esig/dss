@@ -54,6 +54,9 @@
             <ContentType>text/xml</ContentType>
             <CommitmentTypeIndication/>
             <ClaimedRoles/>
+            <FoundCertificates/>
+            <FoundRevocations/>
+            <FoundTimestamps/>
             <SignatureScopes>
                 <SignatureScope SignerData="D-db91482357a982ff4b61d29493505988085dadd583c3a0008d9e151ff2c1f98b">
                     <Scope>FULL</Scope>

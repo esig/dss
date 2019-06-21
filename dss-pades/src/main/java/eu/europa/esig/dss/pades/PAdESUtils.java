@@ -18,6 +18,11 @@ import eu.europa.esig.dss.utils.Utils;
 
 public final class PAdESUtils {
 	
+	/**
+	 * Returns original signed content for the {@code padesSignature}
+	 * @param padesSignature {@link PAdESSignature}
+	 * @return {@link InMemoryDocument}
+	 */
 	public static InMemoryDocument getOriginalPDF(PAdESSignature padesSignature) {
 		CAdESSignature cadesSignature = padesSignature.getCAdESSignature();
 		List<DSSDocument> cadesDetachedFile = cadesSignature.getDetachedContents();

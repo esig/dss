@@ -53,6 +53,9 @@
                 <ProcessingError></ProcessingError>
                 <DigestAlgorithmsEqual>false</DigestAlgorithmsEqual>
             </Policy>
+            <FoundCertificates/>
+            <FoundRevocations/>
+            <FoundTimestamps/>
             <SignatureScopes>
                 <SignatureScope SignerData="D-6a0d92f704f2ba58dc672bcb1caa13dd60bdede21b940e89e371ed6c7e8a2db2">
                     <Scope>FULL</Scope>
@@ -114,6 +117,9 @@
                 <ProcessingError></ProcessingError>
                 <DigestAlgorithmsEqual>false</DigestAlgorithmsEqual>
             </Policy>
+            <FoundCertificates/>
+            <FoundRevocations/>
+            <FoundTimestamps/>
             <SignatureScopes>
                 <SignatureScope SignerData="D-6eb0a17f99eaca6d2fab9c5e5978d17358d6b8e6223ee0f7505f9b7ee9340909">
                     <Scope>FULL</Scope>
@@ -174,6 +180,9 @@
                 <ProcessingError></ProcessingError>
                 <DigestAlgorithmsEqual>false</DigestAlgorithmsEqual>
             </Policy>
+            <FoundCertificates/>
+            <FoundRevocations/>
+            <FoundTimestamps/>
             <SignatureScopes>
                 <SignatureScope SignerData="D-2a439fffb825da1ec3372e646972c8f713bd257789a7476c4978d49508f8f551">
                     <Scope>FULL</Scope>
@@ -234,6 +243,9 @@
                 <ProcessingError></ProcessingError>
                 <DigestAlgorithmsEqual>false</DigestAlgorithmsEqual>
             </Policy>
+            <FoundCertificates/>
+            <FoundRevocations/>
+            <FoundTimestamps/>
             <SignatureScopes>
                 <SignatureScope SignerData="D-6555d90214394e526083b50eac4503b05396588f351d062a28b0ea20fa1f7202">
                     <Scope>FULL</Scope>

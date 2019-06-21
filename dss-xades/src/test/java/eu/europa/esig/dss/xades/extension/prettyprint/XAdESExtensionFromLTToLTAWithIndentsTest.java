@@ -134,7 +134,7 @@ public class XAdESExtensionFromLTToLTAWithIndentsTest extends PKIFactoryAccess {
 	}
 	
 	private void checkTimestamps(DiagnosticData diagnosticData) {
-		Set<TimestampWrapper> allTimestamps = diagnosticData.getAllTimestamps();
+		Set<TimestampWrapper> allTimestamps = diagnosticData.getTimestampSet();
 		for (TimestampWrapper timestampWrapper : allTimestamps) {
 			assertNotNull(timestampWrapper.getProductionTime());
 			assertTrue(timestampWrapper.isMessageImprintDataFound());

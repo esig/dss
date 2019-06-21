@@ -29,14 +29,15 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSRevocationUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponse;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseIdentifier;
 import eu.europa.esig.dss.x509.revocation.ocsp.ResponderId;
 import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
+import eu.europa.esig.dss.xades.XAdESUtils;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 /**
@@ -66,6 +67,8 @@ public class XAdESOCSPSource extends SignatureOCSPSource {
 
 		this.signatureElement = signatureElement;
 		this.xPathQueryHolder = xPathQueryHolder;
+		
+		appendContainedOCSPResponses();
 	}
 
 	@Override
@@ -97,9 +100,6 @@ public class XAdESOCSPSource extends SignatureOCSPSource {
 
 				final Element certId = (Element) ocspRefNodes.item(i);
 				
-				DigestAlgorithm digestAlgo = null;
-				byte[] base64EncodedDigestValue = null;
-				
 				ResponderId responderId = new ResponderId();
 				final Element responderIdEl = DomUtils.getElement(certId, xPathQueryHolder.XPATH__OCSP_RESPONDER_ID_ELEMENT);
 				if (responderIdEl != null && responderIdEl.hasChildNodes()) {
@@ -130,17 +130,12 @@ public class XAdESOCSPSource extends SignatureOCSPSource {
 					continue;
 				}
 				
-				final Element digestAlgorithmEl = DomUtils.getElement(certId, xPathQueryHolder.XPATH__DAAV_DIGEST_METHOD);
-				final Element digestValueEl = DomUtils.getElement(certId, xPathQueryHolder.XPATH__DAAV_DIGEST_VALUE);
-				if (digestAlgorithmEl != null && digestValueEl != null) {
-					final String xmlName = digestAlgorithmEl.getAttribute(XPathQueryHolder.XMLE_ALGORITHM);
-					digestAlgo = DigestAlgorithm.forXML(xmlName);
-					final String digestValue = digestValueEl.getTextContent();
-					base64EncodedDigestValue = Utils.fromBase64(digestValue);
-				}
+				final Digest digest = XAdESUtils.getRevocationDigest(certId, xPathQueryHolder);
 				
-				OCSPRef ocspRef = new OCSPRef(digestAlgo, base64EncodedDigestValue, producedAtDate, responderId, false, revocationOrigin);
-				addReference(ocspRef, revocationOrigin);
+				if (digest != null) {
+					OCSPRef ocspRef = new OCSPRef(digest, producedAtDate, responderId, revocationOrigin);
+					addReference(ocspRef, revocationOrigin);
+				}
 				
 			}
 		}
@@ -148,7 +143,14 @@ public class XAdESOCSPSource extends SignatureOCSPSource {
 
 	private void convertAndAppend(String ocspValue, RevocationOrigin origin) {
 		try {
-			ocspResponses.add(new OCSPResponse(DSSRevocationUtils.loadOCSPBase64Encoded(ocspValue), origin));
+			OCSPResponseIdentifier ocspIdentifier = OCSPResponseIdentifier.build(DSSRevocationUtils.loadOCSPBase64Encoded(ocspValue), origin);
+			int ii = ocspResponses.indexOf(ocspIdentifier);
+			if (ii > -1) {
+				OCSPResponseIdentifier storedOCSPResponse = ocspResponses.get(ii);
+				storedOCSPResponse.addOrigin(origin);
+			} else {
+				ocspResponses.add(ocspIdentifier);
+			}
 		} catch (Exception e) {
 			LOG.warn("Cannot retrieve OCSP response from '" + ocspValue + "' : " + e.getMessage(), e);
 		}

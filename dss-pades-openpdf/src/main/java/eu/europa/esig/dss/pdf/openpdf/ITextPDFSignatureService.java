@@ -62,7 +62,6 @@ import eu.europa.esig.dss.pades.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
-import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
 import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
 import eu.europa.esig.dss.pdf.PAdESConstants;
@@ -173,10 +172,9 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		return stp;
 	}
 
-	@SuppressWarnings("unchecked")
 	private PdfDictionary findExistingSignature(PdfReader reader, String signatureFieldId) {
 		AcroFields acroFields = reader.getAcroFields();
-		List<String> signatureNames = acroFields.getBlankSignatureNames();
+		List<String> signatureNames = acroFields.getFieldNamesWithBlankSignatures();
 		if (signatureNames.contains(signatureFieldId)) {
 			Item item = acroFields.getFieldItem(signatureFieldId);
 			return item.getMerged(0);
@@ -184,10 +182,9 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		throw new DSSException("The signature field '" + signatureFieldId + "' does not exist.");
 	}
 
-	@SuppressWarnings("unchecked")
 	private boolean containsFilledSignature(PdfReader reader) {
 		AcroFields acroFields = reader.getAcroFields();
-		List<String> signatureNames = acroFields.getSignatureNames();
+		List<String> signatureNames = acroFields.getSignedFieldNames();
 		for (String name : signatureNames) {
 			PdfDict dictionary = new ITextPdfDict(acroFields.getSignatureDictionary(name));
 			PdfSigDict signatureDictionary = new PdfSigDict(dictionary);
@@ -262,14 +259,13 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	@SuppressWarnings({ "unchecked" })
 	protected List<PdfSignatureOrDocTimestampInfo> getSignatures(CertificatePool validationCertPool, DSSDocument document) {
 		List<PdfSignatureOrDocTimestampInfo> result = new ArrayList<PdfSignatureOrDocTimestampInfo>();
 		try (InputStream is = document.openStream(); PdfReader reader = new PdfReader(is)) {
 			AcroFields af = reader.getAcroFields();
-			List<String> names = af.getSignatureNames();
+			List<String> names = af.getSignedFieldNames();
 
-			PdfDssDict dssDictionary = getDSSDictionary(reader);
+			final PdfDssDict dssDictionary = getDSSDictionary(reader);
 
 			LOG.info("{} signature(s)", names.size());
 			for (String name : names) {
@@ -289,20 +285,18 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 				final String subFilter = signatureDictionary.getSubFilter();
 				if (PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER.equals(subFilter)) {
 
-					boolean isArchiveTimestamp = false;
-
+					PdfDssDict timestampRevisionDssDict = null;
+					
 					// LT or LTA
 					if (dssDictionary != null) {
-						// check is DSS dictionary already exist
-						if (isDSSDictionaryPresentInPreviousRevision(getOriginalBytes(byteRange, signedContent))) {
-							isArchiveTimestamp = true;
-						}
+						// obtain covered DSS dictionary if already exist
+						timestampRevisionDssDict = getDSSDictionaryPresentInRevision(getOriginalBytes(byteRange, signedContent));
 					}
-
-					result.add(new PdfDocTimestampInfo(validationCertPool, signatureDictionary, dssDictionary, cms, signedContent, signatureCoversWholeDocument,
-							isArchiveTimestamp));
+					result.add(new PdfDocTimestampInfo(validationCertPool, signatureDictionary, timestampRevisionDssDict, cms, signedContent, signatureCoversWholeDocument));
+					
 				} else {
 					result.add(new PdfSignatureInfo(validationCertPool, signatureDictionary, dssDictionary, cms, signedContent, signatureCoversWholeDocument));
+					
 				}
 
 			}
@@ -321,12 +315,12 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		return PdfDssDict.extract(currentCatalog);
 	}
 
-	private boolean isDSSDictionaryPresentInPreviousRevision(byte[] originalBytes) {
+	private PdfDssDict getDSSDictionaryPresentInRevision(byte[] originalBytes) {
 		try (PdfReader reader = new PdfReader(originalBytes)) {
-			return getDSSDictionary(reader) != null;
+			return getDSSDictionary(reader);
 		} catch (Exception e) {
 			LOG.warn("Cannot check in previous revisions if DSS dictionary already exist : " + e.getMessage(), e);
-			return false;
+			return null;
 		}
 	}
 
@@ -449,12 +443,11 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public List<String> getAvailableSignatureFields(DSSDocument document) {
 		try (InputStream is = document.openStream(); PdfReader reader = new PdfReader(is)) {
 			List<String> result = new ArrayList<String>();
 			AcroFields acroFields = reader.getAcroFields();
-			List<String> names = acroFields.getSignatureNames();
+			List<String> names = acroFields.getSignedFieldNames();
 			for (String name : names) {
 				PdfDictionary dictionary = acroFields.getSignatureDictionary(name);
 				if (dictionary == null) {

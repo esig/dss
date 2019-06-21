@@ -2,6 +2,7 @@ package eu.europa.esig.dss.x509.revocation.ocsp;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Objects;
 
 import org.bouncycastle.asn1.ASN1OctetString;
@@ -54,9 +55,9 @@ public class OCSPTokenBuilder {
 	private OCSPRespStatus responseStatus;
 	
 	/**
-	 * Origin of the revocation data (signature or external)
+	 * Origins of the revocation data (signature or external)
 	 */
-	private RevocationOrigin origin;
+	private List<RevocationOrigin> origins;
 	
 	/**
 	 * This variable is used to prevent the replay attack.
@@ -100,8 +101,8 @@ public class OCSPTokenBuilder {
 		this.nonce = nonce;
 	}
 	
-	public void setOrigin(RevocationOrigin origin) {
-		this.origin = origin;
+	public void setOrigins(List<RevocationOrigin> origins) {
+		this.origins = origins;
 	}
 	
 	/**
@@ -118,8 +119,8 @@ public class OCSPTokenBuilder {
 			ocspToken.setRevocationTokenKey(DSSRevocationUtils.getOcspRevocationKey(certificateToken, ocspAccessLocation));
 		}
 		ocspToken.setCertId(DSSRevocationUtils.getOCSPCertificateID(certificateToken, issuerCertificateToken));
-		if (origin != null) {
-			ocspToken.setOrigin(origin);
+		if (origins != null) {
+			ocspToken.setOrigins(origins);
 		}
 		ocspToken.setAvailable(available);
 		ocspToken.setResponseStatus(responseStatus);

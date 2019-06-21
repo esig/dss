@@ -38,7 +38,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.ManifestFile;
-import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.TimestampType;
 
@@ -103,7 +103,8 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	}
 
 	@Override
-	protected void attachExternalTimestamps(List<AdvancedSignature> allSignatures) {
+	protected List<TimestampToken> attachExternalTimestamps(List<AdvancedSignature> allSignatures) {
+		List<TimestampToken> externalTimestamps = new ArrayList<TimestampToken>();
 		ASiCContainerType type = getContainerType();
 		if (ASiCContainerType.ASiC_E == type) {
 			List<ASiCEWithCAdESTimestampValidator> currentTimestampValidators = getTimestampValidators();
@@ -130,14 +131,17 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 							cadesTimestamps.addAll(cadesSig.getTimestampsX2());
 							// Archive timestamp from CAdES is skipped
 
-							timestamp.setTimestampedReferences(cadesSig.getTimestampReferencesForArchiveTimestamp(cadesTimestamps));
+							timestamp.getTimestampedReferences().addAll(cadesSig.getTimestampReferencesForArchiveTimestamp(cadesTimestamps));
 
 							advancedSignature.addExternalTimestamp(timestamp);
+							externalTimestamps.add(timestamp);
 						}
 					}
 				}
 			}
 		}
+		
+		return externalTimestamps;
 	}
 
 	private List<ASiCEWithCAdESTimestampValidator> getTimestampValidators() {
@@ -180,12 +184,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	}
 
 	private DSSDocument getTimestampedArchiveManifest(DSSDocument timestamp) {
-		List<DSSDocument> signedDocs = new ArrayList<DSSDocument>();
-		signedDocs.addAll(getSignedDocuments());
-		signedDocs.addAll(getManifestDocuments());
-		signedDocs.addAll(getSignatureDocuments());
-
-		ASiCEWithCAdESManifestValidator manifestValidator = new ASiCEWithCAdESManifestValidator(timestamp, getArchiveManifestDocuments(), signedDocs);
+		ASiCEWithCAdESManifestValidator manifestValidator = new ASiCEWithCAdESManifestValidator(timestamp, getArchiveManifestDocuments(), getTimestampedDocuments(timestamp));
 		return manifestValidator.getLinkedManifest();
 	}
 

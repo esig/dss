@@ -20,8 +20,9 @@
  */
 package eu.europa.esig.dss.x509.revocation.ocsp;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
-import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
@@ -29,14 +30,13 @@ import java.util.Objects;
 import org.bouncycastle.asn1.esf.OcspResponsesID;
 import org.bouncycastle.asn1.esf.OtherHash;
 import org.bouncycastle.asn1.x500.X500Name;
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.RevocationOrigin;
@@ -46,39 +46,33 @@ import eu.europa.esig.dss.x509.revocation.RevocationRef;
  * Reference an OCSPResponse
  */
 public class OCSPRef extends RevocationRef {
-
+	
 	private static final Logger LOG = LoggerFactory.getLogger(OCSPRef.class);
 	
 	private Date producedAt = null;
 	private ResponderId responderId = null;
 
-	private final boolean matchOnlyBasicOCSPResponse;
-	
-	public OCSPRef(Date producedAt, ResponderId responderId, boolean matchOnlyBasicOCSPResponse, RevocationOrigin location) {
+	/**
+	 * The default constructor for OCSPRef.
+	 */
+	public OCSPRef(Digest digest, Date producedAt, ResponderId responderId, RevocationOrigin origin) {
+		this.digest = digest;
 		this.producedAt = producedAt;
 		this.responderId = responderId;
-		this.matchOnlyBasicOCSPResponse = matchOnlyBasicOCSPResponse;
-		this.location = location;
+		this.origin = origin;
 	}
 
 	/**
 	 * The default constructor for OCSPRef.
 	 */
-	public OCSPRef(DigestAlgorithm algorithm, byte[] digestValue, Date producedAt, ResponderId responderId, 
-			boolean matchOnlyBasicOCSPResponse, RevocationOrigin location) {
-		this(producedAt, responderId, matchOnlyBasicOCSPResponse, location);
-		this.digestAlgorithm = algorithm;
-		this.digestValue = digestValue;
-	}
-
-	/**
-	 * The default constructor for OCSPRef.
-	 */
-	public OCSPRef(final OcspResponsesID ocspResponsesID, RevocationOrigin location) {
+	public OCSPRef(final OcspResponsesID ocspResponsesID, RevocationOrigin origin) {
 		final OtherHash otherHash = ocspResponsesID.getOcspRepHash();
 		if (otherHash != null) {
-			this.digestAlgorithm = DigestAlgorithm.forOID(otherHash.getHashAlgorithm().getAlgorithm().getId());
-			this.digestValue = otherHash.getHashValue();
+			DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(otherHash.getHashAlgorithm().getAlgorithm().getId());
+			byte[] digestValue = otherHash.getHashValue();
+			this.digest = new Digest(digestAlgorithm, digestValue);
+		} else {
+			LOG.warn("Digest is not present for an OCSPRef with location [{}]!", origin.name());
 		}
 		
 		this.producedAt = DSSASN1Utils.getDate(ocspResponsesID.getOcspIdentifier().getProducedAt());
@@ -93,46 +87,7 @@ public class OCSPRef extends RevocationRef {
 			this.responderId.setKey(key);
 		}
 		
-		this.matchOnlyBasicOCSPResponse = true;
-		this.location = location;
-	}
-
-	/**
-	 * @param ocspResp {@link BasicOCSPResp}
-	 * @return TRUE if the {@code ocspResp} matches, FALSE otherwise
-	 */
-	public boolean match(final BasicOCSPResp ocspResp) {
-
-		if (digestAlgorithm == null) { // -444
-			return false;
-		}
-		try {
-
-			MessageDigest digest = digestAlgorithm.getMessageDigest();
-			if (matchOnlyBasicOCSPResponse) {
-				digest.update(ocspResp.getEncoded());
-			} else {
-				digest.update(DSSRevocationUtils.fromBasicToResp(ocspResp).getEncoded());
-			}
-			byte[] computedValue = digest.digest();
-			if (LOG.isInfoEnabled()) {
-				LOG.info("Compare " + Utils.toHex(digestValue) + " to computed value " + Utils.toHex(computedValue) + " of " + "BasicOCSPResp produced at "
-						+ ocspResp.getProducedAt());
-			}
-			return Arrays.equals(digestValue, computedValue);
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	@Override
-	public DigestAlgorithm getDigestAlgorithm() {
-		return digestAlgorithm;
-	}
-
-	@Override
-	public byte[] getDigestValue() {
-		return digestValue;
+		this.origin = origin;
 	}
 	
 	public Date getProducedAt() {
@@ -141,6 +96,30 @@ public class OCSPRef extends RevocationRef {
 	
 	public ResponderId getResponderId() {
 		return responderId;
+	}
+	
+	@Override
+	public String getDSSIdAsString() {
+		if (digest != null) {
+			return super.getDSSIdAsString();
+		}
+		byte[] bytes;
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); DataOutputStream dos = new DataOutputStream(baos)) {
+			if (producedAt != null) {
+				dos.writeLong(producedAt.getTime());
+			}
+			if (responderId.getKey() != null) {
+				dos.write(responderId.getKey());
+			}
+			if (responderId.getName() != null) {
+				dos.writeChars(responderId.getName());
+			}
+			dos.flush();
+			bytes = baos.toByteArray();
+		}  catch (IOException e) {
+			throw new DSSException("Cannot build DSS ID for the OCSP Ref.", e);
+		}
+		return "R-" + DSSUtils.toHex(DSSUtils.digest(DigestAlgorithm.SHA256, bytes)).toUpperCase();
 	}
 	
 	@Override
@@ -163,11 +142,10 @@ public class OCSPRef extends RevocationRef {
 			return false;
 		}
 		OCSPRef o = (OCSPRef) obj;
-		if (!producedAt.equals(o.producedAt) || !location.equals(o.getLocation()) ||
+		if (!producedAt.equals(o.producedAt) || !origin.equals(o.getOrigin()) ||
 				responderId.getName() != null && !responderId.getName().equals(o.getResponderId().getName()) ||
 				responderId.getKey() != null && !Arrays.equals(responderId.getKey(), o.getResponderId().getKey()) ||
-				digestAlgorithm != null && !digestAlgorithm.equals(o.getDigestAlgorithm()) || 
-				digestValue != null && !Arrays.equals(digestValue, o.getDigestValue())) {
+				digest != null && !digest.equals(o.getDigest())) {
 			return false;
 		}
 		return true;
@@ -175,7 +153,7 @@ public class OCSPRef extends RevocationRef {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(producedAt, responderId.getName(), responderId.getKey(), digestAlgorithm, digestValue, location);
+		return Objects.hash(producedAt, responderId.getName(), responderId.getKey(), digest, origin);
 	}
 	
 }

@@ -44,6 +44,8 @@
             <ContentType>text/xml</ContentType>
             <CommitmentTypeIndication/>
             <ClaimedRoles/>
+            <FoundCertificates/>
+            <FoundRevocations/>
             <FoundTimestamps>
 				<FoundTimestamp Timestamp="T-6BC95837F1C1104A00F59028389FCAB9C2D3560C3E9D9354AAFB2426DFDED7FF"/>
 				<FoundTimestamp Timestamp="T-CC3CB51F6CA52D84138B6E53536CC2423D45E0BE583637D62A0186B421B3BC39"/>

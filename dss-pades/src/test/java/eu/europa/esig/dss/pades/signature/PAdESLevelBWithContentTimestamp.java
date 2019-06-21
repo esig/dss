@@ -29,7 +29,7 @@ import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 public class PAdESLevelBWithContentTimestamp extends AbstractPAdESTestSignature {
 

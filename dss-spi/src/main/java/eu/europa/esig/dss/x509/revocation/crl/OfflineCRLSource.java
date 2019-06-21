@@ -24,6 +24,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -34,9 +35,10 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.CRLBinaryIdentifier;
+import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.crl.CRLValidity;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 
@@ -50,10 +52,9 @@ public abstract class OfflineCRLSource implements CRLSource {
 	private static final Logger LOG = LoggerFactory.getLogger(OfflineCRLSource.class);
 
 	/**
-	 * This {@code HashMap} contains not validated CRL binaries. When the validation passes, the entry will be removed.
-	 * The key is the SHA256 digest of the CRL binaries.
+	 * This {@code List} contains all collected CRL binaries.
 	 */
-	protected List<CRLBinaryIdentifier> crlsBinaryList = new ArrayList<CRLBinaryIdentifier>();
+	protected final List<CRLBinaryIdentifier> crlsBinaryList = new ArrayList<CRLBinaryIdentifier>();
 
 	/**
 	 * This {@code HashMap} contains the {@code CRLValidity} object for each
@@ -164,36 +165,87 @@ public abstract class OfflineCRLSource implements CRLSource {
 				LOG.error("Unable to parse CRL", e);
 			}
 		}
-		if (crlValidity.getRevocationOrigin() == null) {
-			crlValidity.setRevocationOrigin(crlBinary.getOrigin());
+		if (crlValidity.getRevocationOrigins() == null) {
+			crlValidity.setRevocationOrigins(crlBinary.getOrigins());
 		}
 		return crlValidity;
 	}
 
 	/**
+	 * Builds {@code CRLBinaryIdentifier} from the given binaries and returns the identifier object
+	 * @param binaries byte array to compute identifier from
+	 * @param origin {@link RevocationOrigin} indicating the correct list to store the value
+	 * @return computed {@link CRLBinaryIdentifier}
+	 */
+	protected CRLBinaryIdentifier addCRLBinary(byte[] binaries, RevocationOrigin origin) {
+		CRLBinaryIdentifier crlBinary = CRLBinaryIdentifier.build(binaries, origin);
+		addCRLBinary(crlBinary, origin);
+		return crlBinary;
+	}
+
+	protected void addCRLBinary(CRLBinaryIdentifier crlBinary, RevocationOrigin origin) {
+		if (!crlValidityMap.containsKey(crlBinary)) {
+			int ii = crlsBinaryList.indexOf(crlBinary);
+			if (ii > -1) {
+				CRLBinaryIdentifier storedCrlBinary = crlsBinaryList.get(ii);
+				storedCrlBinary.addOrigin(origin);
+			} else {
+				crlsBinaryList.add(crlBinary);
+			}
+		}
+	}
+
+	/**
 	 * @return unmodifiable {@code Collection}
 	 */
-	public Collection<byte[]> getContainedX509CRLs() {
-		Collection<byte[]> binaries = new ArrayList<byte[]>();
-		for (CRLBinaryIdentifier crlBinary : crlsBinaryList) {
-			binaries.add(crlBinary.getBinaries());
+	public Collection<CRLBinaryIdentifier> getContainedX509CRLs() {
+		Collection<CRLBinaryIdentifier> crlBinaries = new ArrayList<CRLBinaryIdentifier>();
+		if (!isEmpty()) {
+			for (CRLBinaryIdentifier crlBinary : crlsBinaryList) {
+				crlBinaries.add(crlBinary);
+			}
 		}
-		return Collections.unmodifiableCollection(binaries);
+		return Collections.unmodifiableCollection(crlBinaries);
 	}
-
-	protected void addCRLBinary(byte[] binaries, RevocationOrigin origin) {
-		CRLBinaryIdentifier crlBinary = CRLBinaryIdentifier.build(binaries, origin);
-		addCRLBinary(crlBinary);
-	}
-
-	protected void addCRLBinary(CRLBinaryIdentifier crlBinary) {
-		if (!crlsBinaryList.contains(crlBinary) && !crlValidityMap.containsKey(crlBinary)) {
-			crlsBinaryList.add(crlBinary);
-		}
+	
+	public boolean isEmpty() {
+		return Utils.isCollectionEmpty(crlsBinaryList);
 	}
 	
 	protected void storeCRLToken(final CRLBinaryIdentifier crlBinary, final CRLToken crlToken) {
 		// do nothing
+	}
+	
+	/**
+	 * Returns all found in DSS and VRI dictionaries {@link CRLBinaryIdentifier}s
+	 * @return collection of {@link CRLBinaryIdentifier}s
+	 */
+	public Collection<CRLBinaryIdentifier> getAllCRLIdentifiers() {
+		return crlsBinaryList;
+	}
+
+	/**
+	 * Returns the identifier related to the {@code crlRef}
+	 * @param crlRef {@link CRLRef} to find identifier for
+	 * @return {@link CRLBinaryIdentifier} for the reference
+	 */
+	public CRLBinaryIdentifier getIdentifier(CRLRef crlRef) {
+		return getIdentifier(crlRef.getDigest());
+	}
+	
+	/**
+	 * Returns the identifier related for the provided digest of the reference
+	 * @param digest {@link Digest} of the reference
+	 * @return {@link CRLBinaryIdentifier} for the reference
+	 */
+	public CRLBinaryIdentifier getIdentifier(Digest digest) {
+		for (CRLBinaryIdentifier crlBinary : crlsBinaryList) {
+			byte[] digestValue = crlBinary.getDigestValue(digest.getAlgorithm());
+			if (Arrays.equals(digest.getValue(), digestValue)) {
+				return crlBinary;
+			}
+		}
+		return null;
 	}
 
 }

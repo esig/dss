@@ -39,6 +39,8 @@
 			<ContentType>application/pdf</ContentType>
 			<CommitmentTypeIndication />
 			<ClaimedRoles />
+            <FoundCertificates/>
+            <FoundRevocations/>
 			<FoundTimestamps>
 				<FoundTimestamp Timestamp="T-478805477111202956F33117583157569FBFA250686FE98FBF5D7131AACC8A57"/>
 			</FoundTimestamps>
@@ -77,6 +79,8 @@
 			<ContentType>application/pdf</ContentType>
 			<CommitmentTypeIndication />
 			<ClaimedRoles />
+            <FoundCertificates/>
+            <FoundRevocations/>
 			<FoundTimestamps>
 				<FoundTimestamp Timestamp="T-57FC751EC68ABA100E9D1A03354DD2BB90AB7C332190782077468B5E4F3098BE"/>
 			</FoundTimestamps>

@@ -41,6 +41,9 @@
 	            <ChainItem Certificate="C-B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5"/>
 	        </CertificateChain>
 	        <ContentType>text/xml</ContentType>
+            <FoundCertificates/>
+            <FoundRevocations/>
+            <FoundTimestamps/>
 	        <SignatureScopes>
                 <SignatureScope SignerData="D-4b52bc97f901d8e5f69b59580168b37071f935f2ac8b2287589c255729e518e7">
                     <Scope>FULL</Scope>

@@ -35,6 +35,9 @@
 	            </DigestAlgoAndValue>
 	            <Identified>true</Identified>
 	        </Policy>
+            <FoundCertificates/>
+            <FoundRevocations/>
+            <FoundTimestamps/>
 	        <SignatureScopes>
                 <SignatureScope SignerData="D-d079f51d74298c183710c490f15347d823bc49b1c840210bb885189900a7d377">
                     <Scope>FULL</Scope>

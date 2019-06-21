@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.x509;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -28,10 +29,13 @@ import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
+import eu.europa.esig.dss.Digest;
+
 /**
  * This source of certificates handles any non trusted certificates. (ex: intermediate certificates used in building
  * certification chain)
  */
+@SuppressWarnings("serial")
 public class CommonCertificateSource implements CertificateSource {
 
 	/**
@@ -66,6 +70,10 @@ public class CommonCertificateSource implements CertificateSource {
 	@Override
 	public CertificateSourceType getCertificateSourceType() {
 		return CertificateSourceType.OTHER;
+	}
+	
+	protected CertificatePool getCertificatePool() {
+		return certPool;
 	}
 
 	/**
@@ -138,6 +146,21 @@ public class CommonCertificateSource implements CertificateSource {
 	 */
 	public int getNumberOfCertificates() {
 		return certificateTokens.size();
+	}
+	
+	/**
+	 * Returns contained {@link CertificateToken} corresponding to the provided {@code digest}
+	 * @param digest {@link Digest} to find the CertificateToken
+	 * @return {@link CertificateToken}
+	 */
+	public CertificateToken getCertificateTokenByDigest(Digest digest) {
+		for (CertificateToken certificate : certificateTokens) {
+			byte[] digestValue = certificate.getDigest(digest.getAlgorithm());
+			if (Arrays.equals(digestValue, digest.getValue())) {
+				return certificate;
+			}
+		}
+		return null;
 	}
 
 }

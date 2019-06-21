@@ -24,7 +24,7 @@ import java.util.List;
 
 import eu.europa.esig.dss.AbstractSerializableSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 /**
  * This interface {@code MultipleDocumentsSignatureService} provides operations for the signature creation and for its

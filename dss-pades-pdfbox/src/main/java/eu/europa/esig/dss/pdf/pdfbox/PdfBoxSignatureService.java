@@ -319,7 +319,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			byte[] originalBytes = DSSUtils.toByteArray(document);
 			int originalBytesLength = originalBytes.length;
 
-			PdfDssDict dssDictionary = getDSSDictionary(doc);
+			final PdfDssDict dssDictionary = getDSSDictionary(doc);
 
 			List<PDSignatureField> pdSignatureFields = doc.getSignatureFields();
 
@@ -357,21 +357,21 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 						PdfSignatureOrDocTimestampInfo signatureInfo = null;
 						final String subFilter = signatureDictionary.getSubFilter();
 						if (PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER.equals(subFilter)) {
-							boolean isArchiveTimestamp = false;
+							
+							PdfDssDict timestampRevisionDssDict = null;
 
 							// LT or LTA
 							if (dssDictionary != null) {
-								// check is DSS dictionary already exist
-								if (isDSSDictionaryPresentInPreviousRevision(getOriginalBytes(byteRange, signedContent))) {
-									isArchiveTimestamp = true;
-								}
+								// obtain covered DSS dictionary if already exist
+								timestampRevisionDssDict = getDSSDictionaryPresentInRevision(getOriginalBytes(byteRange, signedContent));
 							}
-
-							signatureInfo = new PdfDocTimestampInfo(validationCertPool, signatureDictionary, dssDictionary, cms, signedContent,
-									coverAllOriginalBytes, isArchiveTimestamp);
+							signatureInfo = new PdfDocTimestampInfo(validationCertPool, signatureDictionary, timestampRevisionDssDict, cms, signedContent,
+									coverAllOriginalBytes);
+							
 						} else {
 							signatureInfo = new PdfSignatureInfo(validationCertPool, signatureDictionary, dssDictionary, cms, signedContent,
 									coverAllOriginalBytes);
+							
 						}
 
 						if (signatureInfo != null) {
@@ -407,12 +407,12 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		}
 	}
 
-	private boolean isDSSDictionaryPresentInPreviousRevision(byte[] originalBytes) {
+	private PdfDssDict getDSSDictionaryPresentInRevision(byte[] originalBytes) {
 		try (PDDocument doc = PDDocument.load(originalBytes)) {
-			return getDSSDictionary(doc) != null;
+			return getDSSDictionary(doc);
 		} catch (Exception e) {
 			LOG.warn("Cannot check in previous revisions if DSS dictionary already exist : " + e.getMessage(), e);
-			return false;
+			return null;
 		}
 	}
 
