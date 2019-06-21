@@ -207,7 +207,7 @@ public final class ASiCUtils {
 
 	/**
 	 * Transforms {@code num} with the pattern:
-	 *     2 -> 002, 10 -> 010, etc.
+	 *     {@code "2 -> 002"}, {@code "10 -> 010"}, etc.
 	 * @param num
 	 * @return {@link String}
 	 */

@@ -24,7 +24,7 @@ import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 
-public class PAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
+public class PAdESDoubleLTAValidationData extends PKIFactoryAccess {
 	
 	@Test
 	public void test() throws Exception {

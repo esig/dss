@@ -492,7 +492,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	/**
 	 * Returns a list of {@link TimestampedReference}s for an "individual-data-objects-timestamp"
 	 * NOTE: Used only in XAdES
-	 * @param includes - list of {@link TimestampInclude}s
+	 * @param signedAttribute {@link SignatureAttribute}
 	 * @return a list of {@link TimestampedReference}s
 	 */
 	protected abstract List<TimestampedReference> getIndividualContentTimestampedReferences(SignatureAttribute signedAttribute);

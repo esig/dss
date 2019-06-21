@@ -1077,7 +1077,9 @@ public final class DSSASN1Utils {
 	}
 
 	/**
-	 * @param timestampToken
+	 * Returns ats-hash-index table from timestamp's unsigned properties
+	 * 
+	 * @param timestampUnsignedAttributes {@link AttributeTable} unsigned properties of the timestamp
 	 * @return the content of SignedAttribute: ATS-hash-index unsigned attribute {itu-t(0) identified-organization(4)
 	 *         etsi(0) electronic-signature-standard(1733) attributes(2) 5}
 	 */
