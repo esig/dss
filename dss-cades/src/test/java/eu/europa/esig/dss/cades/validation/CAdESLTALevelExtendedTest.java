@@ -57,7 +57,7 @@ public class CAdESLTALevelExtendedTest {
 		int archiveTimestampCounter = 0;
 		for (TimestampWrapper timestamp : timestamps) {
 			if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestamp.getType())) {
-				assertEquals(9, timestamp.getTimestampedObjects().size());
+				assertEquals(11, timestamp.getTimestampedObjects().size());
 				archiveTimestampCounter++;
 			}
 			assertTrue(timestamp.isMessageImprintDataFound());

@@ -170,7 +170,15 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 
 	@Override
 	protected boolean isArchiveTimestamp(CAdESAttribute unsignedAttribute) {
-		return id_aa_ets_archiveTimestampV2.equals(unsignedAttribute.getASN1Oid()) || id_aa_ets_archiveTimestampV3.equals(unsignedAttribute.getASN1Oid());
+		return isArchiveTimestampV2(unsignedAttribute) || isArchiveTimestampV3(unsignedAttribute);
+	}
+	
+	private boolean isArchiveTimestampV2(CAdESAttribute unsignedAttribute) {
+		return id_aa_ets_archiveTimestampV2.equals(unsignedAttribute.getASN1Oid());
+	}
+	
+	private boolean isArchiveTimestampV3(CAdESAttribute unsignedAttribute) {
+		return id_aa_ets_archiveTimestampV3.equals(unsignedAttribute.getASN1Oid());
 	}
 
 	@Override
@@ -187,7 +195,15 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 			return null;
 		}
 		try {
-			return new TimestampToken(asn1Primitive.getEncoded(), timestampType, certificatePool, references, TimestampLocation.CAdES);
+			TimestampToken timestamp = new TimestampToken(asn1Primitive.getEncoded(), timestampType, certificatePool, references, TimestampLocation.CAdES);
+			if (isArchiveTimestampV2(signatureAttribute)) {
+				timestamp.setArchiveTimestampType(ArchiveTimestampType.CAdES_V2);
+			} else if (isArchiveTimestampV3(signatureAttribute)) {
+				timestamp.setArchiveTimestampType(ArchiveTimestampType.CAdES_V3);
+			} else {
+				timestamp.setArchiveTimestampType(ArchiveTimestampType.CAdES);
+			}
+			return timestamp;
 		} catch (Exception e) {
 			throw new DSSException("Cannot create a timestamp token", e);
 		}
@@ -201,6 +217,14 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 	
 	@Override
 	protected List<TimestampedReference> getSignedDataReferences(TimestampToken timestampToken) {
+		
+		if (ArchiveTimestampType.CAdES_V2.equals(timestampToken.getArchiveTimestampType()) ||
+				ArchiveTimestampType.CAdES.equals(timestampToken.getArchiveTimestampType())) {
+			// in case of ArchiveTimestampV2 or another earlier form of archive timestamp
+			// all SignedData is covered
+			return getSignatureSignedDataReferences();
+		}
+		
 		List<TimestampedReference> references = new ArrayList<TimestampedReference>();
 		
 		// Compare values present in the timestamp's Hash Index Table with signature's SignedData item digests

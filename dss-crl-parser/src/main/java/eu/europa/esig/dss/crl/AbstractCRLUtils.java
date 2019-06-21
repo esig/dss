@@ -64,7 +64,7 @@ public abstract class AbstractCRLUtils {
 			validity.setReasonFlags(issuingDistributionPoint.getOnlySomeReasons());
 			validity.setUrl(getUrl(issuingDistributionPoint.getDistributionPoint()));
 		} else {
-			LOG.warn("issuingDistributionPointBinary is null. Issuing Distribution Point fields in CRLValidity cannot be filled.");
+			LOG.debug("issuingDistributionPointBinary is null. Issuing Distribution Point fields in CRLValidity cannot be filled.");
 		}
 	}
 
