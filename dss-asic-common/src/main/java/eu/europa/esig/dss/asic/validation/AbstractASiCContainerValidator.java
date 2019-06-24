@@ -185,7 +185,7 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 		long containerSize = DSSUtils.getFileByteSize(packageZip);
 		try (InputStream is = packageZip.openStream(); ZipInputStream packageZipInputStream = new ZipInputStream(is)) {
 			ZipEntry entry;
-			while ((entry = packageZipInputStream.getNextEntry()) != null) {
+			while ((entry = ASiCUtils.getNextValidEntry(packageZipInputStream)) != null) {
 				result.add(ASiCUtils.getCurrentDocument(entry.getName(), packageZipInputStream, containerSize));
 			}
 		} catch (IOException e) {

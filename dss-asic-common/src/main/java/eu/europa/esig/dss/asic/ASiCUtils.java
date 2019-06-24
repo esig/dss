@@ -115,7 +115,7 @@ public final class ASiCUtils {
 	public static boolean isArchiveContainsCorrectSignatureFileWithExtension(DSSDocument toSignDocument, String extension) {
 		try (InputStream is = toSignDocument.openStream(); ZipInputStream zis = new ZipInputStream(is)) {
 			ZipEntry entry;
-			while ((entry = zis.getNextEntry()) != null) {
+			while ((entry = getNextValidEntry(zis)) != null) {
 				String entryName = entry.getName();
 				if (isSignature(entryName) && entryName.endsWith(extension)) {
 					return true;
@@ -261,6 +261,23 @@ public final class ASiCUtils {
 	    	}
 			Utils.write(Arrays.copyOfRange(data, 0, nRead), os);
 	    }
+	}
+	
+	/**
+	 * Returns the next entry from the given ZipInputStream by skipping corrupted or not accessible files
+	 * NOTE: returns null only when the end of ZipInputStream is reached
+	 * @param zis {@link ZipInputStream} to get next entry from
+	 * @return list of file name {@link String}s
+	 */
+	public static ZipEntry getNextValidEntry(ZipInputStream zis) {
+		while (true) {
+			try {
+				return zis.getNextEntry();
+			} catch (Exception e) {
+				LOG.warn("ZIP container contains a malformed, corrupted or not accessible entry! The entry is skipped. Reason: [{}]", e.getMessage());
+				// skip the entry and continue until find the next valid entry or end of the stream
+			}
+		}
 	}
 
     /**

@@ -53,7 +53,7 @@ public abstract class AbstractASiCContainerExtractor {
 		try (InputStream is = asicContainer.openStream(); ZipInputStream asicInputStream = new ZipInputStream(is)) {	
 			int fileAmountCounter = 0;		
 			ZipEntry entry;
-			while ((entry = asicInputStream.getNextEntry()) != null) {
+			while ((entry = ASiCUtils.getNextValidEntry(asicInputStream)) != null) {
 				ASiCUtils.validateAllowedFilesAmount(++fileAmountCounter);
 				String entryName = entry.getName();
 				if (isMetaInfFolder(entryName)) {
