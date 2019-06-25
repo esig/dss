@@ -204,6 +204,18 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public LevelConstraint getMessageDigestOrSignedPropertiesConstraint() {
+		SignatureConstraints mainSignature = policy.getSignatureConstraints();
+		if (mainSignature != null) {
+			SignedAttributesConstraints signedAttributeConstraints = mainSignature.getSignedAttributes();
+			if (signedAttributeConstraints != null) {
+				return signedAttributeConstraints.getMessageDigestOrSignedPropertiesPresent();
+			}
+		}
+		return null;
+	}
+
+	@Override
 	public MultiValuesConstraint getCommitmentTypeIndicationConstraint() {
 		SignatureConstraints mainSignature = policy.getSignatureConstraints();
 		if (mainSignature != null) {
