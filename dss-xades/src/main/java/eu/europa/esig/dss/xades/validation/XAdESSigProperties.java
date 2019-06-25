@@ -12,8 +12,8 @@ import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 public abstract class XAdESSigProperties implements SignatureProperties<XAdESAttribute> {
 	
-	final Element signatureProptiesDom;
-	final XPathQueryHolder xPathQueryHolder;
+	private final Element signatureProptiesDom;
+	private final XPathQueryHolder xPathQueryHolder;
 	
 	XAdESSigProperties(Element signaturePropties, XPathQueryHolder xPathQueryHolder) {
 		this.signatureProptiesDom = signaturePropties;

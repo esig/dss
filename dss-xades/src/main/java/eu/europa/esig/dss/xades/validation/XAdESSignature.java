@@ -394,8 +394,12 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			certificateValidity.setAttributePresent(Utils.isCollectionNotEmpty(potentialSigningCertificates));
 
 			final CertificateToken certificateToken = certificateValidity.getCertificateToken();
-			for (CertificateRef potentialSigningCert : potentialSigningCertificates) {
-				Digest certDigest = potentialSigningCert.getCertDigest();
+			
+			if (Utils.isCollectionNotEmpty(potentialSigningCertificates)) {
+				// must contain only one reference
+				final CertificateRef signingCert = potentialSigningCertificates.get(0);
+
+				Digest certDigest = signingCert.getCertDigest();
 				if (certDigest != null) {
 					certificateValidity.setDigestPresent(true);
 					DigestAlgorithm digestAlgorithm = certDigest.getAlgorithm();
@@ -405,7 +409,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					certificateValidity.setDigestEqual(digestEqual);
 				}
 
-				IssuerSerialInfo issuerInfo = potentialSigningCert.getIssuerInfo();
+				IssuerSerialInfo issuerInfo = signingCert.getIssuerInfo();
 				if (issuerInfo != null) {
 					BigInteger serialNumber = issuerInfo.getSerialNumber();
 					X500Principal issuerName = issuerInfo.getIssuerName();
@@ -432,7 +436,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				if (candidates.getTheCertificateValidity() == null) {
 					candidates.setTheCertificateValidity(certificateValidity);
 				}
-				break;
 			}
 		}
 	}

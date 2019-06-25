@@ -165,7 +165,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 				LOG.error("Unable to parse CRL", e);
 			}
 		}
-		if (crlValidity.getRevocationOrigins() == null) {
+		if (crlValidity != null && crlValidity.getRevocationOrigins() == null) {
 			crlValidity.setRevocationOrigins(crlBinary.getOrigins());
 		}
 		return crlValidity;

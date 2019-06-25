@@ -90,8 +90,7 @@ public class XAdESAttribute implements ISignatureAttribute {
 		return null;
 	}
 	
-	@Override 
-	public int hashCode() {
+	public int getElementHashCode() {
 		return element.hashCode();
 	}
 	

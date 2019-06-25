@@ -90,7 +90,7 @@ public class CAdESAttribute implements ISignatureAttribute {
 		if (asn1Oid != null) {
 			return asn1Oid.toString();
 		}
-		return null;
+		return Utils.EMPTY_STRING;
 	}
 
 }

@@ -322,7 +322,9 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 				// RFC 2634 / 5035 : The first certificate identified in the sequence of
 				// certificate identifiers MUST be the certificate used to verify the signature.
-				return signingCertificateValidity.isDigestEqual();
+				if (signingCertificateValidity.isDigestEqual()) {
+					return true;
+				}
 			}
 		}
 
