@@ -26,7 +26,10 @@ public enum DigestMatcherType {
 	REFERENCE, OBJECT, MANIFEST, MANIFEST_ENTRY, SIGNED_PROPERTIES, KEY_INFO,
 
 	/* CAdES */
-	MESSAGE_DIGEST, CONTENT_DIGEST,
+	MESSAGE_DIGEST, 
+	
+	// Digest from decrypted content SignatureValue (CAdES/PAdES)
+	CONTENT_DIGEST,
 
 	/* Timestamp */
 	MESSAGE_IMPRINT
