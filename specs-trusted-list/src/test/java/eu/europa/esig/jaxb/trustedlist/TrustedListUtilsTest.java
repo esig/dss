@@ -16,7 +16,7 @@ import org.junit.Test;
 
 import eu.europa.esig.jaxb.trustedlist.tsl.TrustStatusListType;
 
-public class MarshallTrustedListTest {
+public class TrustedListUtilsTest {
 
 	@Test
 	@SuppressWarnings("unchecked")
@@ -69,6 +69,13 @@ public class MarshallTrustedListTest {
 
 		JAXBElement<TrustStatusListType> unmarshalled2 = (JAXBElement<TrustStatusListType>) unmarshaller.unmarshal(new StringReader(tlString));
 		assertNotNull(unmarshalled2);
+	}
+
+	@Test
+	public void getSchema() {
+		assertNotNull(TrustedListUtils.getSchema());
+		// cached
+		assertNotNull(TrustedListUtils.getSchema());
 	}
 
 }

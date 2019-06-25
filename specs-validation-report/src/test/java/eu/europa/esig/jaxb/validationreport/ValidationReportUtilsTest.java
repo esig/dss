@@ -15,4 +15,11 @@ public class ValidationReportUtilsTest {
 		assertNotNull(ValidationReportUtils.getJAXBContext());
 	}
 
+	@Test
+	public void getSchema() {
+		assertNotNull(ValidationReportUtils.getSchema());
+		// cached
+		assertNotNull(ValidationReportUtils.getSchema());
+	}
+
 }

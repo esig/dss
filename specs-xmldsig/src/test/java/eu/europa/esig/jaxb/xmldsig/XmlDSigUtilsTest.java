@@ -15,7 +15,7 @@ import javax.xml.validation.Schema;
 
 import org.junit.Test;
 
-public class MarshallTest {
+public class XmlDSigUtilsTest {
 
 	@Test
 	@SuppressWarnings("unchecked")
@@ -45,6 +45,13 @@ public class MarshallTest {
 
 		JAXBElement<SignatureType> unmarshalled2 = (JAXBElement<SignatureType>) unmarshaller.unmarshal(new StringReader(xmldsigString));
 		assertNotNull(unmarshalled2);
+	}
+
+	@Test
+	public void getSchema() {
+		assertNotNull(XmlDSigUtils.getSchema());
+		// cached
+		assertNotNull(XmlDSigUtils.getSchema());
 	}
 
 }

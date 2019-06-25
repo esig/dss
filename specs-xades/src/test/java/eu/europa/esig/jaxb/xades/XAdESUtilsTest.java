@@ -15,10 +15,9 @@ import javax.xml.validation.Schema;
 
 import org.junit.Test;
 
-import eu.europa.esig.jaxb.xades.XAdESUtils;
 import eu.europa.esig.jaxb.xmldsig.SignatureType;
 
-public class MarshallTest {
+public class XAdESUtilsTest {
 
 	@Test
 	@SuppressWarnings("unchecked")
@@ -48,6 +47,13 @@ public class MarshallTest {
 
 		JAXBElement<SignatureType> unmarshalled2 = (JAXBElement<SignatureType>) unmarshaller.unmarshal(new StringReader(xadesString));
 		assertNotNull(unmarshalled2);
+	}
+
+	@Test
+	public void getSchema() {
+		assertNotNull(XAdESUtils.getSchema());
+		// cached
+		assertNotNull(XAdESUtils.getSchema());
 	}
 
 }
