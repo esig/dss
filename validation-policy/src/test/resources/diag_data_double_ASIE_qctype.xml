@@ -10,6 +10,20 @@
             <StructuralValidation>
                 <Valid>true</Valid>
             </StructuralValidation>
+            <DigestMatchers>
+                <DigestMatcher type="SIGNED_PROPERTIES" name="r-id-6fe99e5d341658ccc17e2dc22e55ae48-1">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>RcDHOZmYpTH4Jj4RmfVVi31Q9gkjwZhVfuDhuhCeCER=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="OBJECT" name="r-id-2fe99e52e55ae486d341658ccc17e2dc-1">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>kcDHOZjwZhVfuDhuhCeCERRmYpTH4Jj4RmfVVi31Q9g=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>

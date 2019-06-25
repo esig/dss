@@ -23,6 +23,7 @@ package eu.europa.esig.dss.xades.validation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -36,9 +37,11 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.DigestMatcherType;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.reports.SimpleReport;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 
@@ -108,7 +111,7 @@ public class SignedPropertiesNotCheckedTest {
 		XmlDigestMatcher refDigest = null;
 		
 		assertNotNull(digestMatchers);
-		assertEquals(2, digestMatchers.size());
+		assertEquals(1, digestMatchers.size());
 
 		for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
 			if (DigestMatcherType.SIGNED_PROPERTIES == xmlDigestMatcher.getType()) {
@@ -120,16 +123,20 @@ public class SignedPropertiesNotCheckedTest {
 			}
 		}
 
-		assertNotNull(signedPropertiesDigest);
-		assertFalse(signedPropertiesDigest.isDataFound());
-		assertFalse(signedPropertiesDigest.isDataIntact());
+		assertNull(signedPropertiesDigest);
 		assertNotNull(refDigest);
 		assertTrue(refDigest.isDataFound());
 		assertTrue(refDigest.isDataIntact());
 
 		DetailedReport detailedReport = reports.getDetailedReport();
-		assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND,
+		assertEquals(Indication.INDETERMINATE,
+				detailedReport.getBasicBuildingBlocksIndication(diagnosticData.getFirstSignatureId()));
+		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE,
 				detailedReport.getBasicBuildingBlocksSubIndication(diagnosticData.getFirstSignatureId()));
+		
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		
 	}
 
 	@Test

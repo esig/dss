@@ -103,6 +103,14 @@ public interface ValidationPolicy {
 	ValueConstraint getContentIdentifierConstraint();
 
 	/**
+	 * Indicates if the signed property: message-digest (for CAdES) or SignedProperties (for XAdES) should be checked.
+	 * If the relative element is absent within the constraint file then null is returned.
+	 *
+	 * @return {@code LevelConstraint} if message-digests/SignedProperties element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getMessageDigestOrSignedPropertiesConstraint();
+
+	/**
 	 * Indicates if the signed property: commitment-type-indication should be checked. If CommitmentTypeIndication
 	 * element is absent within the constraint file
 	 * then null is returned, otherwise the list of identifiers is initialised.

@@ -21,8 +21,8 @@
 package eu.europa.esig.dss.asic.validation;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -36,6 +36,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.DigestMatcherType;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -74,15 +75,15 @@ public class SignedPropertiesNotCheckedTest {
 			}
 		}
 
-		assertNotNull(signedPropertiesDigest);
-		assertFalse(signedPropertiesDigest.isDataFound());
-		assertFalse(signedPropertiesDigest.isDataIntact());
+		assertNull(signedPropertiesDigest);;
 		assertNotNull(refDigest);
 		assertTrue(refDigest.isDataFound());
 		assertTrue(refDigest.isDataIntact());
 
 		DetailedReport detailedReport = reports.getDetailedReport();
-		assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND,
+		assertEquals(Indication.INDETERMINATE,
+				detailedReport.getBasicBuildingBlocksIndication(diagnosticData.getFirstSignatureId()));
+		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE,
 				detailedReport.getBasicBuildingBlocksSubIndication(diagnosticData.getFirstSignatureId()));
 	}
 

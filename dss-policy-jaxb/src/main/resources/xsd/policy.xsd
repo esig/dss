@@ -210,6 +210,11 @@
 					<xsd:documentation>Checks if the content-identifier attribute (CAdES) has the expected value</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="MessageDigestOrSignedPropertiesPresent" type="tns:LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks the presence of message-digest attribute (CAdES) or SignedProperties (XAdES)</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="CommitmentTypeIndication" type="tns:MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if CommitmentTypeIndication is in the acceptable values list</xsd:documentation>

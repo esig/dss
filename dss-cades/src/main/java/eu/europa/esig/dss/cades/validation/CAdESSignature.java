@@ -1104,16 +1104,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				signerInformationToCheck = signerInformation;
 			}
 
-			boolean referenceDataFound = true;
-			boolean referenceDataIntact = true;
-			List<ReferenceValidation> refValidations = getReferenceValidations();
-			for (ReferenceValidation referenceValidation : refValidations) {
-				referenceDataFound = referenceDataFound && referenceValidation.isFound();
-				referenceDataIntact = referenceDataIntact && referenceValidation.isIntact();
-			}
-			signatureCryptographicVerification.setReferenceDataFound(referenceDataFound);
-			signatureCryptographicVerification.setReferenceDataIntact(referenceDataIntact);
-
 			LOG.debug("CHECK SIGNATURE VALIDITY: ");
 			if (signingCertificateValidity != null) {
 				// for (final CertificateValidity certificateValidity :
@@ -1138,15 +1128,25 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 					signatureCryptographicVerification.setSignatureIntact(false);
 				}
 			}
+
+			boolean referenceDataFound = true;
+			boolean referenceDataIntact = true;
+			List<ReferenceValidation> refValidations = getReferenceValidations(signerInformationToCheck);
+			for (ReferenceValidation referenceValidation : refValidations) {
+				referenceDataFound = referenceDataFound && referenceValidation.isFound();
+				referenceDataIntact = referenceDataIntact && referenceValidation.isIntact();
+			}
+			signatureCryptographicVerification.setReferenceDataFound(referenceDataFound);
+			signatureCryptographicVerification.setReferenceDataIntact(referenceDataIntact);
+			
 		} catch (CMSException | IOException e) {
 			LOG.error(e.getMessage(), e);
 			signatureCryptographicVerification.setErrorMessage(e.getMessage());
 		}
 		LOG.debug(" - RESULT: {}", signatureCryptographicVerification);
 	}
-
-	@Override
-	public List<ReferenceValidation> getReferenceValidations() {
+	
+	public List<ReferenceValidation> getReferenceValidations(SignerInformation signerInformationToCheck) {
 		if (referenceValidations == null) {
 			referenceValidations = new ArrayList<ReferenceValidation>();
 			ReferenceValidation validation = new ReferenceValidation();
@@ -1161,28 +1161,68 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 			Set<DigestAlgorithm> messageDigestAlgorithms = getMessageDigestAlgorithms();
 			byte[] expectedMessageDigestValue = getMessageDigestValue();
-			if (Utils.isCollectionNotEmpty(messageDigestAlgorithms) && Utils.isArrayNotEmpty(expectedMessageDigestValue)
-					&& (originalDocument != null)) {
+			
+			if (originalDocument != null) {
+				
+				if (Utils.isCollectionNotEmpty(messageDigestAlgorithms)) {
+					
+					if (Utils.isArrayNotEmpty(expectedMessageDigestValue)) {
+						Digest messageDigest = new Digest();
+						messageDigest.setValue(expectedMessageDigestValue);
+						
+						validation.setFound(true);
 
-				validation.setFound(true);
-				Digest messageDigest = new Digest();
-				messageDigest.setValue(expectedMessageDigestValue);
-
-				// try to match with found digest algorithm(s)
-				for (DigestAlgorithm digestAlgorithm : messageDigestAlgorithms) {
-					String digest = originalDocument.getDigest(digestAlgorithm);
-					if (Arrays.equals(expectedMessageDigestValue, Utils.fromBase64(digest))) {
-						messageDigest.setAlgorithm(digestAlgorithm);
-						validation.setIntact(true);
-						break;
+						// try to match with found digest algorithm(s)
+						for (DigestAlgorithm digestAlgorithm : messageDigestAlgorithms) {
+							String digest = originalDocument.getDigest(digestAlgorithm);
+							if (Arrays.equals(expectedMessageDigestValue, Utils.fromBase64(digest))) {
+								messageDigest.setAlgorithm(digestAlgorithm);
+								validation.setIntact(true);
+								break;
+							}
+						}
+						validation.setDigest(messageDigest);
+					} else {
+						LOG.warn("message-digest is not present in SignedData!");
+						if (signerInformationToCheck != null) {
+							LOG.warn("Extracting digests from content SignatureValue...");
+							validation = getContentReferenceValidation(originalDocument, signerInformationToCheck);
+						}
+						
 					}
+				} else {
+					LOG.warn("Message DigestAlgorithms not found in SignedData! Reference validation is not possible.");
+					
 				}
-				validation.setDigest(messageDigest);
+			} else {
+				LOG.warn("The original document is not found or cannot be extracted. Reference validation is not possible.");
+				
 			}
-
+			
 			referenceValidations.add(validation);
+
 		}
 		return referenceValidations;
+	}
+
+	@Override
+	public List<ReferenceValidation> getReferenceValidations() {
+		return getReferenceValidations(null);
+	}
+	
+	private ReferenceValidation getContentReferenceValidation(DSSDocument originalDocument, SignerInformation signerInformation) {
+		ReferenceValidation contentValidation = new ReferenceValidation();
+		contentValidation.setType(DigestMatcherType.CONTENT_DIGEST);
+		DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(signerInformation.getDigestAlgOID());
+		byte[] contentDigest = signerInformation.getContentDigest();
+		if (originalDocument != null && digestAlgorithm != null && Utils.isArrayNotEmpty(contentDigest)) {
+			contentValidation.setFound(true);
+			contentValidation.setDigest(new Digest(digestAlgorithm, contentDigest));
+			if (Arrays.equals(contentDigest, Utils.fromBase64(originalDocument.getDigest(digestAlgorithm)))) {
+				contentValidation.setIntact(true);
+			}
+		}
+		return contentValidation;
 	}
 
 	/**

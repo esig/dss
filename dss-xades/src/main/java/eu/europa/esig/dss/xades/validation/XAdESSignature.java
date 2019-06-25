@@ -1225,7 +1225,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			final SignedInfo signedInfo = santuarioSignature.getSignedInfo();
 			final int numberOfReferences = signedInfo.getLength();
 
-			boolean signedPropertiesFound = false;
 			boolean atLeastOneReferenceElementFound = false;
 			for (int ii = 0; ii < numberOfReferences; ii++) {
 				ReferenceValidation validation = new ReferenceValidation();
@@ -1256,7 +1255,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					if (isElementReference && isSignedProperties(reference)) {
 						validation.setType(DigestMatcherType.SIGNED_PROPERTIES);
 						found = found && (noDuplicateIdFound && findSignedPropertiesById(uri));
-						signedPropertiesFound = true;
 					} else if (isElementReference && isKeyInfoReference(reference, santuarioSignature.getElement())) {
 						validation.setType(DigestMatcherType.KEY_INFO);
 						found = true; // we check it in prior inside "isKeyInfoReference" method
@@ -1293,11 +1291,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				referenceValidations.add(validation);
 			}
 
-			// If at least one signedProperties is not found, we add an empty
-			// referenceValidation
-			if (!signedPropertiesFound) {
-				referenceValidations.add(notFound(DigestMatcherType.SIGNED_PROPERTIES));
-			}
 			// If at least one reference is not found, we add an empty
 			// referenceValidation
 			if (!atLeastOneReferenceElementFound) {
