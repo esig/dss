@@ -23,13 +23,13 @@ package eu.europa.esig.dss.validation.executor;
 import java.util.Date;
 import java.util.List;
 
-import eu.europa.esig.dss.jaxb.simplereport.SimpleReport;
 import eu.europa.esig.dss.jaxb.simplereport.XmlCertificate;
 import eu.europa.esig.dss.jaxb.simplereport.XmlCertificateChain;
 import eu.europa.esig.dss.jaxb.simplereport.XmlPolicy;
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignature;
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignatureLevel;
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignatureScope;
+import eu.europa.esig.dss.jaxb.simplereport.XmlSimpleReport;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureQualification;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
@@ -62,11 +62,11 @@ public class SimpleReportBuilder {
 	/**
 	 * This method generates the validation simpleReport.
 	 *
-	 * @return the object representing {@code SimpleReport}
+	 * @return the object representing {@code XmlSimpleReport}
 	 */
-	public eu.europa.esig.dss.jaxb.simplereport.SimpleReport build() {
+	public XmlSimpleReport build() {
 
-		SimpleReport simpleReport = new SimpleReport();
+		XmlSimpleReport simpleReport = new XmlSimpleReport();
 
 		addPolicyNode(simpleReport);
 		addValidationTime(simpleReport);
@@ -82,26 +82,26 @@ public class SimpleReportBuilder {
 		return simpleReport;
 	}
 
-	private void addPolicyNode(SimpleReport report) {
+	private void addPolicyNode(XmlSimpleReport report) {
 		XmlPolicy xmlpolicy = new XmlPolicy();
 		xmlpolicy.setPolicyName(policy.getPolicyName());
 		xmlpolicy.setPolicyDescription(policy.getPolicyDescription());
 		report.setPolicy(xmlpolicy);
 	}
 
-	private void addValidationTime(SimpleReport report) {
+	private void addValidationTime(XmlSimpleReport report) {
 		report.setValidationTime(currentTime);
 	}
 
-	private void addDocumentName(SimpleReport report) {
+	private void addDocumentName(XmlSimpleReport report) {
 		report.setDocumentName(diagnosticData.getDocumentName());
 	}
 
-	private void addContainerType(SimpleReport simpleReport) {
+	private void addContainerType(XmlSimpleReport simpleReport) {
 		simpleReport.setContainerType(diagnosticData.getContainerType());
 	}
 
-	private void addSignatures(SimpleReport simpleReport, boolean container) {
+	private void addSignatures(XmlSimpleReport simpleReport, boolean container) {
 		validSignatureCount = 0;
 		totalSignatureCount = 0;
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
@@ -110,7 +110,7 @@ public class SimpleReportBuilder {
 		}
 	}
 
-	private void addStatistics(SimpleReport simpleReport) {
+	private void addStatistics(XmlSimpleReport simpleReport) {
 		simpleReport.setValidSignaturesCount(validSignatureCount);
 		simpleReport.setSignaturesCount(totalSignatureCount);
 	}
@@ -123,7 +123,7 @@ public class SimpleReportBuilder {
 	 * @param container
 	 *            true if the current file is a container
 	 */
-	private void addSignature(SimpleReport simpleReport, SignatureWrapper signature, boolean container) {
+	private void addSignature(XmlSimpleReport simpleReport, SignatureWrapper signature, boolean container) {
 
 		totalSignatureCount++;
 

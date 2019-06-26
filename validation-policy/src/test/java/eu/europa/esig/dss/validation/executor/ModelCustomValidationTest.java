@@ -16,7 +16,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.jaxb.simplereport.SimpleReport;
+import eu.europa.esig.dss.jaxb.simplereport.XmlSimpleReport;
 import eu.europa.esig.dss.validation.CertificateQualification;
 import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
@@ -124,7 +124,7 @@ public class ModelCustomValidationTest extends ModelAbstractlValidation {
 		DetailedReport detailedReport = reports.getDetailedReportJaxb();
 		assertNotNull(detailedReport);
 
-		SimpleReport simpleReport = reports.getSimpleReportJaxb();
+		XmlSimpleReport simpleReport = reports.getSimpleReportJaxb();
 		assertNotNull(simpleReport);
 		assertTrue(1 == simpleReport.getSignaturesCount());
 		assertNotNull(simpleReport.getSignature().get(0));

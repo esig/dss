@@ -33,6 +33,8 @@ import javax.xml.validation.SchemaFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.jaxb.detailedreport.XmlDetailedReport;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
 /**
@@ -45,20 +47,8 @@ public abstract class AbstractReports {
 
 	private boolean validateXml = false;
 
-	/**
-	 * This variable contains the reference to the diagnostic data object.
-	 */
-	protected eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData diagnosticData;
-
-	protected DiagnosticData diagnosticDataWrapper;
-
-	/**
-	 * This is the detailed report of the validation.
-	 */
-	protected eu.europa.esig.dss.jaxb.detailedreport.DetailedReport detailedReport;
-
-	protected DetailedReport detailedReportWrapper;
-
+	private final DiagnosticData diagnosticDataWrapper;
+	private final DetailedReport detailedReportWrapper;
 	private String xmlDiagnosticData;
 	private String xmlDetailedReport;
 
@@ -66,15 +56,13 @@ public abstract class AbstractReports {
 	 * This is the default constructor to instantiate this container.
 	 *
 	 * @param diagnosticDataJaxb
-	 *            the JAXB {@code DiagnosticData}
+	 *                           the JAXB {@code XmlDiagnosticData}
 	 * @param detailedReport
-	 *            the JAXB {@code DetailedReport}
+	 *                           the JAXB {@code XmlDetailedReport}
 	 */
-	protected AbstractReports(final eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData diagnosticDataJaxb,
-			final eu.europa.esig.dss.jaxb.detailedreport.DetailedReport detailedReport) {
-		this.diagnosticData = diagnosticDataJaxb;
+	protected AbstractReports(final XmlDiagnosticData diagnosticDataJaxb,
+			final XmlDetailedReport detailedReport) {
 		this.diagnosticDataWrapper = new DiagnosticData(diagnosticDataJaxb);
-		this.detailedReport = detailedReport;
 		this.detailedReportWrapper = new DetailedReport(detailedReport);
 	}
 
@@ -104,19 +92,19 @@ public abstract class AbstractReports {
 	/**
 	 * This method returns the JAXB DiagnosticData
 	 * 
-	 * @return the JAXB {@code DiagnosticData}
+	 * @return the JAXB {@code XmlDiagnosticData}
 	 */
-	public eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData getDiagnosticDataJaxb() {
-		return diagnosticData;
+	public XmlDiagnosticData getDiagnosticDataJaxb() {
+		return diagnosticDataWrapper.getJaxbModel();
 	}
 
 	/**
 	 * This method returns the JAXB DetailedReport
 	 * 
-	 * @return the JAXB {@code DetailedReport}
+	 * @return the JAXB {@code XmlDetailedReport}
 	 */
-	public eu.europa.esig.dss.jaxb.detailedreport.DetailedReport getDetailedReportJaxb() {
-		return detailedReport;
+	public XmlDetailedReport getDetailedReportJaxb() {
+		return detailedReportWrapper.getJAXBModel();
 	}
 
 	/**
@@ -137,12 +125,13 @@ public abstract class AbstractReports {
 	/**
 	 * This method returns the XML representation of the JAXB DiagnosticData String
 	 * 
-	 * @return a String with the XML content of the JAXB {@code DiagnosticData}
+	 * @return a String with the XML content of the JAXB {@code XmlDiagnosticData}
 	 */
 	public String getXmlDiagnosticData() {
 		if (xmlDiagnosticData == null) {
-			xmlDiagnosticData = getJAXBObjectAsString(diagnosticData, eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData.class.getPackage().getName(),
-					"/xsd/DiagnosticData.xsd");
+			eu.europa.esig.dss.jaxb.diagnostic.ObjectFactory oFactory = new eu.europa.esig.dss.jaxb.diagnostic.ObjectFactory();
+			xmlDiagnosticData = getJAXBObjectAsString(oFactory.createDiagnosticData(diagnosticDataWrapper.getJaxbModel()),
+					XmlDiagnosticData.class.getPackage().getName(), "/xsd/DiagnosticData.xsd");
 		}
 		return xmlDiagnosticData;
 	}
@@ -150,12 +139,13 @@ public abstract class AbstractReports {
 	/**
 	 * This method returns the XML representation of the JAXB DetailedReport String
 	 * 
-	 * @return a String with the XML content of the JAXB {@code DetailedReport}
+	 * @return a String with the XML content of the JAXB {@code XmlDetailedReport}
 	 */
 	public String getXmlDetailedReport() {
 		if (xmlDetailedReport == null) {
-			xmlDetailedReport = getJAXBObjectAsString(detailedReport, eu.europa.esig.dss.jaxb.detailedreport.DetailedReport.class.getPackage().getName(),
-					"/xsd/DetailedReport.xsd");
+			eu.europa.esig.dss.jaxb.detailedreport.ObjectFactory oFactory = new eu.europa.esig.dss.jaxb.detailedreport.ObjectFactory();
+			xmlDetailedReport = getJAXBObjectAsString(oFactory.createDetailedReport(detailedReportWrapper.getJAXBModel()),
+					XmlDetailedReport.class.getPackage().getName(), "/xsd/DetailedReport.xsd");
 		}
 		return xmlDetailedReport;
 	}

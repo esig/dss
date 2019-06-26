@@ -35,7 +35,6 @@ import java.util.concurrent.Callable;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.datatype.XMLGregorianCalendar;
 
@@ -64,6 +63,7 @@ import eu.europa.esig.dss.util.TimeDependentValues;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.KeyUsageBit;
+import eu.europa.esig.jaxb.trustedlist.TrustedListUtils;
 import eu.europa.esig.jaxb.trustedlist.ecc.CriteriaListType;
 import eu.europa.esig.jaxb.trustedlist.ecc.KeyUsageBitType;
 import eu.europa.esig.jaxb.trustedlist.ecc.KeyUsageType;
@@ -86,7 +86,6 @@ import eu.europa.esig.jaxb.trustedlist.tsl.NextUpdateType;
 import eu.europa.esig.jaxb.trustedlist.tsl.NonEmptyMultiLangURIListType;
 import eu.europa.esig.jaxb.trustedlist.tsl.NonEmptyMultiLangURIType;
 import eu.europa.esig.jaxb.trustedlist.tsl.NonEmptyURIListType;
-import eu.europa.esig.jaxb.trustedlist.tsl.ObjectFactory;
 import eu.europa.esig.jaxb.trustedlist.tsl.OtherTSLPointerType;
 import eu.europa.esig.jaxb.trustedlist.tsl.PostalAddressType;
 import eu.europa.esig.jaxb.trustedlist.tsl.ServiceHistoryInstanceType;
@@ -117,18 +116,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 
 	private static final String TSL_MIME_TYPE = "application/vnd.etsi.tsl+xml";
 
-	private static final JAXBContext jaxbContext;
-
 	private final DSSDocument trustedList;
-
-	static {
-		try {
-			jaxbContext = JAXBContext.newInstance(ObjectFactory.class, eu.europa.esig.jaxb.trustedlist.ecc.ObjectFactory.class,
-					eu.europa.esig.jaxb.trustedlist.tslx.ObjectFactory.class);
-		} catch (JAXBException e) {
-			throw new DSSException("Unable to initialize JaxB : " + e.getMessage(), e);
-		}
-	}
 
 	public TSLParser(DSSDocument trustedList) {
 		this.trustedList = trustedList;
@@ -138,6 +126,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 	@SuppressWarnings("unchecked")
 	public TSLParserResult call() throws Exception {
 		try (InputStream is = trustedList.openStream()) {
+			JAXBContext jaxbContext = TrustedListUtils.getJAXBContext();
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 			JAXBElement<TrustStatusListType> jaxbElement = (JAXBElement<TrustStatusListType>) unmarshaller.unmarshal(DomUtils.getSecureXMLStreamReader(is));
 			TrustStatusListType trustStatusList = jaxbElement.getValue();

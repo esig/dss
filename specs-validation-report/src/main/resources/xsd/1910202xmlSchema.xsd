@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:dss="urn:oasis:names:tc:dss:1.0:core:schema" xmlns:tsl="http://uri.etsi.org/02231/v2#" xmlns:XAdES="http://uri.etsi.org/01903/v1.3.2#" xmlns:vr="http://uri.etsi.org/19102/v1.2.1#" targetNamespace="http://uri.etsi.org/19102/v1.2.1#" elementFormDefault="qualified" attributeFormDefault="unqualified" vc:minVersion="1.1">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:tsl="http://uri.etsi.org/02231/v2#" xmlns:XAdES="http://uri.etsi.org/01903/v1.3.2#" xmlns:vr="http://uri.etsi.org/19102/v1.2.1#" targetNamespace="http://uri.etsi.org/19102/v1.2.1#" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="http://www.w3.org/TR/2002/REC-xmldsig-core-20020212/xmldsig-core-schema.xsd"/>
 	<xs:import namespace="http://uri.etsi.org/01903/v1.3.2#" schemaLocation="http://uri.etsi.org/01903/v1.3.2/XAdES.xsd"/>
 	<xs:import namespace="http://uri.etsi.org/02231/v2#" schemaLocation="http://uri.etsi.org/19612/v2.2.1/ts_119612v020201_201601xsd.xsd"/>

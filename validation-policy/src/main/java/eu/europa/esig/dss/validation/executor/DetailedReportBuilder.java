@@ -29,9 +29,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusionWithProofOfExistence;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlDetailedReport;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessBasicSignatures;
@@ -59,8 +59,8 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 		this.validationLevel = validationLevel;
 	}
 
-	DetailedReport build() {
-		DetailedReport detailedReport = init();
+	XmlDetailedReport build() {
+		XmlDetailedReport detailedReport = init();
 
 		Map<String, XmlBasicBuildingBlocks> bbbs = executeAllBasicBuildingBlocks();
 		detailedReport.getBasicBuildingBlocks().addAll(bbbs.values());

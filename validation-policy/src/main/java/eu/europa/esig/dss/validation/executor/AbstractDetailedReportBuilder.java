@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlDetailedReport;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlTLAnalysis;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
 import eu.europa.esig.dss.utils.Utils;
@@ -51,8 +51,8 @@ public abstract class AbstractDetailedReportBuilder {
 
 	}
 
-	protected DetailedReport init() {
-		DetailedReport detailedReport = new DetailedReport();
+	protected XmlDetailedReport init() {
+		XmlDetailedReport detailedReport = new XmlDetailedReport();
 
 		if (policy.isEIDASConstraintPresent()) {
 			detailedReport.getTLAnalysis().addAll(executeAllTlAnalysis(diagnosticData, policy, currentTime));

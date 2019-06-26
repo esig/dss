@@ -20,7 +20,9 @@
  */
 package eu.europa.esig.dss.validation.reports;
 
-import eu.europa.esig.jaxb.validationreport.ObjectFactory;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlDetailedReport;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
+import eu.europa.esig.dss.jaxb.simplereport.XmlSimpleReport;
 import eu.europa.esig.jaxb.validationreport.ValidationReportType;
 
 /**
@@ -29,16 +31,11 @@ import eu.europa.esig.jaxb.validationreport.ValidationReportType;
  */
 public class Reports extends AbstractReports {
 
-	/**
-	 * This is the simple report generated at the end of the validation process.
-	 */
-	protected eu.europa.esig.dss.jaxb.simplereport.SimpleReport simpleReport;
-
-	protected SimpleReport simpleReportWrapper;
+	private final SimpleReport simpleReportWrapper;
 
 	private String xmlSimpleReport;
 	
-	private ValidationReportType etsiValidationReport;
+	private final ValidationReportType etsiValidationReport;
 	
 	private String xmlEtsiValidationReport;
 
@@ -46,19 +43,18 @@ public class Reports extends AbstractReports {
 	 * This is the default constructor to instantiate this container.
 	 *
 	 * @param diagnosticDataJaxb
-	 *            the JAXB {@code DiagnosticData}
+	 *                           the JAXB {@code XmlDiagnosticData}
 	 * @param detailedReport
-	 *            the JAXB {@code DetailedReport}
+	 *                           the JAXB {@code XmlDetailedReport}
 	 * @param simpleReport
-	 *            the JAXB {@code SimpleReport}
+	 *                           the JAXB {@code XmlSimpleReport}
 	 * @param validationReport
-	 *            the JAXB {@code ValidationReportType}
+	 *                           the JAXB {@code ValidationReportType}
 	 */
-	public Reports(final eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData diagnosticDataJaxb,
-			final eu.europa.esig.dss.jaxb.detailedreport.DetailedReport detailedReport, final eu.europa.esig.dss.jaxb.simplereport.SimpleReport simpleReport,
+	public Reports(final XmlDiagnosticData diagnosticDataJaxb,
+			final XmlDetailedReport detailedReport, final XmlSimpleReport simpleReport,
 			final ValidationReportType validationReport) {
 		super(diagnosticDataJaxb, detailedReport);
-		this.simpleReport = simpleReport;
 		this.simpleReportWrapper = new SimpleReport(simpleReport);
 		this.etsiValidationReport = validationReport;
 	}
@@ -75,10 +71,10 @@ public class Reports extends AbstractReports {
 	/**
 	 * This method returns the JAXB SimpleReport
 	 * 
-	 * @return the JAXB {@code SimpleReport}
+	 * @return the JAXB {@code XmlSimpleReport}
 	 */
-	public eu.europa.esig.dss.jaxb.simplereport.SimpleReport getSimpleReportJaxb() {
-		return simpleReport;
+	public XmlSimpleReport getSimpleReportJaxb() {
+		return simpleReportWrapper.getJaxbModel();
 	}
 
 	/**
@@ -98,7 +94,9 @@ public class Reports extends AbstractReports {
 	@Override
 	public String getXmlSimpleReport() {
 		if (xmlSimpleReport == null) {
-			xmlSimpleReport = getJAXBObjectAsString(simpleReport, eu.europa.esig.dss.jaxb.simplereport.SimpleReport.class.getPackage().getName(),
+			eu.europa.esig.dss.jaxb.simplereport.ObjectFactory oFactory = new eu.europa.esig.dss.jaxb.simplereport.ObjectFactory();
+			xmlSimpleReport = getJAXBObjectAsString(oFactory.createSimpleReport(simpleReportWrapper.getJaxbModel()),
+					XmlSimpleReport.class.getPackage().getName(),
 					"/xsd/SimpleReport.xsd");
 		}
 		return xmlSimpleReport;
@@ -111,7 +109,7 @@ public class Reports extends AbstractReports {
 	 */
 	public String getXmlValidationReport() {
 		if (xmlEtsiValidationReport == null) {
-			ObjectFactory oFactory = new ObjectFactory();
+			eu.europa.esig.jaxb.validationreport.ObjectFactory oFactory = new eu.europa.esig.jaxb.validationreport.ObjectFactory();
 			xmlEtsiValidationReport = getJAXBObjectAsString(oFactory.createValidationReport(etsiValidationReport), ValidationReportType.class.getPackage().getName(),
 					"/xsd/1910202xmlSchema.xsd");
 		}

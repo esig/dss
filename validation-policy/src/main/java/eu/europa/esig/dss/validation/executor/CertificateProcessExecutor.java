@@ -23,8 +23,9 @@ package eu.europa.esig.dss.validation.executor;
 import java.util.Date;
 import java.util.Objects;
 
-import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
-import eu.europa.esig.dss.jaxb.simplecertificatereport.SimpleCertificateReport;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlDetailedReport;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
+import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlSimpleCertificateReport;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
@@ -33,7 +34,7 @@ public class CertificateProcessExecutor implements ProcessExecutor<CertificateRe
 
 	private Date currentTime;
 	private ValidationPolicy policy;
-	private eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData jaxbDiagnosticData;
+	private XmlDiagnosticData jaxbDiagnosticData;
 	private String certificateId;
 
 	@Override
@@ -47,7 +48,7 @@ public class CertificateProcessExecutor implements ProcessExecutor<CertificateRe
 	}
 
 	@Override
-	public void setDiagnosticData(eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData diagnosticData) {
+	public void setDiagnosticData(XmlDiagnosticData diagnosticData) {
 		this.jaxbDiagnosticData = diagnosticData;
 	}
 
@@ -79,11 +80,11 @@ public class CertificateProcessExecutor implements ProcessExecutor<CertificateRe
 		DiagnosticData diagnosticData = new DiagnosticData(jaxbDiagnosticData);
 
 		DetailedReportForCertificateBuilder detailedReportBuilder = new DetailedReportForCertificateBuilder(diagnosticData, policy, currentTime, certificateId);
-		DetailedReport detailedReport = detailedReportBuilder.build();
+		XmlDetailedReport detailedReport = detailedReportBuilder.build();
 
 		SimpleReportForCertificateBuilder simpleReportBuilder = new SimpleReportForCertificateBuilder(diagnosticData,
 				new eu.europa.esig.dss.validation.reports.DetailedReport(detailedReport), currentTime, certificateId);
-		SimpleCertificateReport simpleReport = simpleReportBuilder.build();
+		XmlSimpleCertificateReport simpleReport = simpleReportBuilder.build();
 
 		return new CertificateReports(jaxbDiagnosticData, detailedReport, simpleReport);
 	}

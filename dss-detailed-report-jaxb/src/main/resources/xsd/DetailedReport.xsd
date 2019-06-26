@@ -2,18 +2,19 @@
 <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://dss.esig.europa.eu/validation/detailed-report" 
 	xmlns="http://dss.esig.europa.eu/validation/detailed-report" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-	<xs:element name="DetailedReport">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:choice>
-					<xs:element name="Signatures" type="Signature" minOccurs="0" maxOccurs="unbounded" />
-					<xs:element name="Certificate" type="Certificate" minOccurs="0" maxOccurs="1" />
-				</xs:choice>
-				<xs:element type="BasicBuildingBlocks" name="BasicBuildingBlocks" minOccurs="0" maxOccurs="unbounded" />
-				<xs:element name="TLAnalysis" type="TLAnalysis" minOccurs="0" maxOccurs="unbounded" />
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
+	<!-- Root element -->
+	<xs:element name="DetailedReport" type="DetailedReport" />
+
+	<xs:complexType name="DetailedReport">
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="Signatures" type="Signature" minOccurs="0" maxOccurs="unbounded" />
+				<xs:element name="Certificate" type="Certificate" minOccurs="0" maxOccurs="1" />
+			</xs:choice>
+			<xs:element type="BasicBuildingBlocks" name="BasicBuildingBlocks" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="TLAnalysis" type="TLAnalysis" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
 	
 	<xs:complexType name="Signature">
 		<xs:sequence>

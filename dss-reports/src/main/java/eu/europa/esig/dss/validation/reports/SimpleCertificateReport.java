@@ -29,6 +29,7 @@ import java.util.Set;
 
 import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlChainItem;
 import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlRevocation;
+import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlSimpleCertificateReport;
 import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlTrustAnchor;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateQualification;
@@ -41,9 +42,9 @@ import eu.europa.esig.dss.validation.policy.rules.SubIndication;
  */
 public class SimpleCertificateReport {
 
-	private final eu.europa.esig.dss.jaxb.simplecertificatereport.SimpleCertificateReport simpleReport;
+	private final XmlSimpleCertificateReport simpleReport;
 
-	public SimpleCertificateReport(eu.europa.esig.dss.jaxb.simplecertificatereport.SimpleCertificateReport simpleReport) {
+	public SimpleCertificateReport(XmlSimpleCertificateReport simpleReport) {
 		this.simpleReport = simpleReport;
 	}
 
@@ -457,7 +458,7 @@ public class SimpleCertificateReport {
 	 * 
 	 * @return the jaxb model
 	 */
-	public eu.europa.esig.dss.jaxb.simplecertificatereport.SimpleCertificateReport getJaxbModel() {
+	public XmlSimpleCertificateReport getJaxbModel() {
 		return simpleReport;
 	}
 

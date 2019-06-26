@@ -57,6 +57,7 @@ import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignerLocation;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
@@ -330,7 +331,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		checkSignaturePolicyIdentifier(diagnosticData);
 	}
 
-	protected void verifyDiagnosticDataJaxb(eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData diagnosticDataJaxb) {
+	protected void verifyDiagnosticDataJaxb(XmlDiagnosticData diagnosticDataJaxb) {
 
 	}
 

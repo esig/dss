@@ -23,7 +23,7 @@ package eu.europa.esig.dss.validation;
 import java.util.Date;
 import java.util.Objects;
 
-import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
 import eu.europa.esig.dss.validation.executor.CertificateProcessExecutor;
 import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
@@ -68,7 +68,7 @@ public class CertificateValidator {
 		svc.setCurrentTime(validationTime);
 		svc.validate();
 
-		final DiagnosticData diagnosticData = new DiagnosticDataBuilder().usedCertificates(svc.getProcessedCertificates())
+		final XmlDiagnosticData diagnosticData = new DiagnosticDataBuilder().usedCertificates(svc.getProcessedCertificates())
 				.usedRevocations(svc.getProcessedRevocations()).includeRawCertificateTokens(certificateVerifier.isIncludeCertificateTokenValues())
 				.includeRawRevocationData(certificateVerifier.isIncludeCertificateRevocationValues())
 				.certificateSourceTypes(svc.getCertificateSourceTypes())
