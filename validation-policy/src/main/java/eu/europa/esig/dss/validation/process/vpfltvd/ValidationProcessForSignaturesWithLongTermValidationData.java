@@ -30,13 +30,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlCV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessLongTermData;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
@@ -68,7 +66,6 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	private static final Logger LOG = LoggerFactory.getLogger(ValidationProcessForSignaturesWithLongTermValidationData.class);
 
 	private final XmlConstraintsConclusion basicSignatureValidation;
-	private final List<XmlValidationProcessTimestamps> timestampValidations;
 
 	private final DiagnosticData diagnosticData;
 	private final SignatureWrapper currentSignature;
@@ -82,7 +79,6 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		super(new XmlValidationProcessLongTermData());
 
 		this.basicSignatureValidation = signatureAnalysis.getValidationProcessBasicSignatures();
-		this.timestampValidations = signatureAnalysis.getValidationProcessTimestamps();
 
 		this.diagnosticData = diagnosticData;
 		this.currentSignature = currentSignature;
@@ -245,21 +241,21 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 			if (!TimestampType.SIGNATURE_TIMESTAMP.name().equals(timestampWrapper.getType())) {
 				break;
 			}
-			boolean foundValidationTSP = false;
-			for (XmlValidationProcessTimestamps timestampValidation : timestampValidations) {
-				List<XmlConstraint> constraints = timestampValidation.getConstraint();
-				for (XmlConstraint tspValidation : constraints) {
-					if (Utils.areStringsEqual(timestampWrapper.getId(), tspValidation.getId())) {
-						foundValidationTSP = true;
-						// PVA : if OK message imprint is validated in SVA of timestamp (depending of constraint.xml)
-						if (XmlStatus.OK.equals(tspValidation.getStatus())) {
-							result.add(timestampWrapper);
-							break;
-						}
+
+			XmlBasicBuildingBlocks bbbTST = bbbs.get(timestampWrapper.getId());
+			if (bbbTST != null) {
+				// PVA : if OK message imprint is validated in SVA of timestamp (depending of
+				// constraint.xml)
+				XmlCV cv = bbbTST.getCV();
+				if (cv != null) {
+					XmlConclusion conclusion = cv.getConclusion();
+					if (Indication.PASSED.equals(conclusion.getIndication())) {
+						result.add(timestampWrapper);
 					}
+				} else {
+					LOG.warn("Cryptographic validation (CV) for timestamp is required !");
 				}
-			}
-			if (!foundValidationTSP) {
+			} else {
 				LOG.warn("Cannot find tsp validation info for tsp {}", timestampWrapper.getId());
 			}
 		}
