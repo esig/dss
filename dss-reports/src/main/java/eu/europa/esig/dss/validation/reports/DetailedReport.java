@@ -422,7 +422,10 @@ public class DetailedReport {
 	private void collectTimestamps(MessageType type, Set<String> result, XmlSignature signatureById) {
 		List<XmlValidationProcessTimestamps> validationProcessTimestamps = signatureById.getValidationProcessTimestamps();
 		for (XmlValidationProcessTimestamps xmlValidationProcessTimestamp : validationProcessTimestamps) {
-			collect(type, result, xmlValidationProcessTimestamp);
+			if (!MessageType.ERROR.equals(type) || !Indication.PASSED.equals(
+					getBasicBuildingBlockById(xmlValidationProcessTimestamp.getId()).getConclusion().getIndication())) {
+				collect(type, result, xmlValidationProcessTimestamp);
+			}
 		}
 	}
 

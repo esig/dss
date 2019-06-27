@@ -157,6 +157,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 								Context.TIMESTAMP);
 						XmlPSV psvResult = psv.execute();
 						bbbTsp.setPSV(psvResult);
+						bbbTsp.setConclusion(psvResult.getConclusion());
 
 						/*
 						 * If it returns PASSED and the cryptographic hash function used in the time-stamp is considered
