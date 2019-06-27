@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.pdf;
 
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,6 +91,11 @@ public class PdfDocTimestampInfo extends PdfCMSInfo implements PdfSignatureOrDoc
 	@Override
 	public boolean isTimestamp() {
 		return true;
+	}
+
+	@Override
+	public Date getSigningDate() {
+		return timestampToken.getGenerationTime();
 	}
 
 	public TimestampToken getTimestampToken() {

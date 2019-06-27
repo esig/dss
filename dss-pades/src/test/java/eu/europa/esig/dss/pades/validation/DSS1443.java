@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pades.validation;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
@@ -74,6 +75,8 @@ public class DSS1443 extends PKIFactoryAccess {
 
 		for (TimestampWrapper timestampWrapper : allTimestamps) {
 			assertEquals(TimestampType.ARCHIVE_TIMESTAMP, timestampWrapper.getType());
+			assertTrue(timestampWrapper.isMessageImprintDataFound());
+			assertTrue(timestampWrapper.isMessageImprintDataIntact());
 		}
 	}
 

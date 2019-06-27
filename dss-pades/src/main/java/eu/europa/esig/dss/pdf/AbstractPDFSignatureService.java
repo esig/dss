@@ -20,7 +20,10 @@
  */
 package eu.europa.esig.dss.pdf;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +33,8 @@ import java.util.Map.Entry;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.tsp.TimeStampToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
@@ -48,6 +53,8 @@ import eu.europa.esig.dss.x509.Token;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 public abstract class AbstractPDFSignatureService implements PDFSignatureService, PDFTimestampService {
+
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractPDFSignatureService.class);
 
 	protected final boolean timestamp;
 	protected final SignatureDrawerFactory signatureDrawerFactory;
@@ -165,6 +172,65 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		}
 	}
 
+	protected byte[] getSignedContent(DSSDocument dssDocument, int[] byteRange) throws IOException {
+
+		try (InputStream is = dssDocument.openStream()) {
+			// Adobe Digital Signatures in a PDF (p5): In Figure 4, the hash is calculated
+			// for bytes 0 through 839, and 960 through 1200. [0, 840, 960, 1200]
+
+			int beginning = byteRange[0];
+			int startSigValueContent = byteRange[1];
+			int endSigValueContent = byteRange[2];
+			int endValue = byteRange[3];
+			
+			byte[] signedContentByteArray = new byte[startSigValueContent + endValue];
+
+			is.skip(beginning);
+			is.read(signedContentByteArray, 0, startSigValueContent);
+			is.skip(endSigValueContent - startSigValueContent - beginning);
+			is.read(signedContentByteArray, startSigValueContent, endValue);
+
+			return signedContentByteArray;
+		}
+	}
+	
+	protected void checkIsContentValueEqualsByteRangeExtraction(DSSDocument document, int[] byteRange, byte[] cms, String signatureName) {
+		try {
+			byte[] cmsWithByteRange = getSignatureValue(document, byteRange);
+			if (!Arrays.equals(cms, cmsWithByteRange)) {
+				LOG.warn("Conflict between /Content and ByteRange for Signature '{}'.", signatureName);
+			}
+		} catch (IOException | IllegalArgumentException e) {
+			String message = String.format("Unable to retrieve data from the ByteRange (%s to %s)", byteRange[0] + byteRange[1], byteRange[2]);
+			if (LOG.isDebugEnabled()) {
+				// Exception displays the (long) hex value
+				LOG.debug(message, e);
+			} else {
+				LOG.error(message);
+			}
+		}
+	}
+	
+	protected byte[] getSignatureValue(DSSDocument dssDocument, int[] byteRange) throws IOException {
+		try (InputStream is = dssDocument.openStream()) {
+			// Extracts bytes from 841 to 959. [0, 840, 960, 1200]
+			int startSigValueContent = byteRange[0] + byteRange[1] + 1;
+			int endSigValueContent = byteRange[2] - 1;
+			
+			int signatureValueArraySize = endSigValueContent - startSigValueContent;
+			if (signatureValueArraySize < 1) {
+				throw new DSSException("The byte range present in the document is not valid! "
+						+ "SignatureValue size cannot be negative or equal to zero!");
+			}
+
+			byte[] signatureValueArray = new byte[signatureValueArraySize];
+			is.skip(startSigValueContent);
+			is.read(signatureValueArray);
+
+			return Utils.fromHex(new String(signatureValueArray));
+		}
+	}
+
 	protected byte[] getOriginalBytes(int[] byteRange, byte[] signedContent) {
 		final int length = byteRange[1];
 		final byte[] result = new byte[length];
@@ -175,7 +241,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	protected void validateByteRange(int[] byteRange) {
 
 		if (byteRange == null || byteRange.length != 4) {
-			throw new DSSException("Incorrect BytRange size");
+			throw new DSSException("Incorrect ByteRange size");
 		}
 
 		final int a = byteRange[0];
@@ -184,7 +250,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		final int d = byteRange[3];
 
 		if (a != 0) {
-			throw new DSSException("The BytRange must cover start of file");
+			throw new DSSException("The ByteRange must cover start of file");
 		}
 		if (b <= 0) {
 			throw new DSSException("The first hash part doesn't cover anything");

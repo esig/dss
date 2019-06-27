@@ -26,7 +26,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -316,9 +315,6 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		List<PdfSignatureOrDocTimestampInfo> signatures = new ArrayList<PdfSignatureOrDocTimestampInfo>();
 		try (InputStream is = document.openStream(); PDDocument doc = PDDocument.load(is)) {
 
-			byte[] originalBytes = DSSUtils.toByteArray(document);
-			int originalBytesLength = originalBytes.length;
-
 			final PdfDssDict dssDictionary = getDSSDictionary(doc);
 
 			List<PDSignatureField> pdSignatureFields = doc.getSignatureFields();
@@ -340,19 +336,11 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 						validateByteRange(byteRange);
 
 						final byte[] cms = signatureDictionary.getContents();
-						if (!isContentValueEqualsByteRangeExtraction(cms, signature, originalBytes)) {
-							LOG.warn("Conflict between /Content and ByteRange for Signature '{}'.", signature.getName());
-						}
+						checkIsContentValueEqualsByteRangeExtraction(document, byteRange, cms, signature.getName());
 
-						byte[] signedContent = signature.getSignedContent(originalBytes);
+						byte[] signedContent = getSignedContent(document, byteRange);
 
-						// /ByteRange [0 575649 632483 10206]
-						int beforeSignatureLength = byteRange[1] - byteRange[0];
-						int expectedCMSLength = byteRange[2] - byteRange[1];
-						int afterSignatureLength = byteRange[3];
-						int totalCoveredByByteRange = beforeSignatureLength + expectedCMSLength + afterSignatureLength;
-
-						boolean coverAllOriginalBytes = (originalBytesLength == totalCoveredByByteRange);
+						boolean coverAllOriginalBytes = isSignatureCoversWholeDocument(document, byteRange);
 
 						PdfSignatureOrDocTimestampInfo signatureInfo = null;
 						final String subFilter = signatureDictionary.getSubFilter();
@@ -390,21 +378,18 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 		return signatures;
 	}
+	
+	private boolean isSignatureCoversWholeDocument(DSSDocument document, int[] byteRange) {
+		byte[] originalBytes = DSSUtils.toByteArray(document);
+		int originalBytesLength = originalBytes.length;
 
-	private boolean isContentValueEqualsByteRangeExtraction(byte[] cms, PDSignature signature, byte[] originalBytes) {
-		try {
-			byte[] cmsWithByteRange = signature.getContents(originalBytes);
-			return Arrays.equals(cms, cmsWithByteRange);
-		} catch (Exception e) {
-			String message = String.format("Unable to retrieve data from the ByteRange (signature name: %s)", signature.getName());
-			if (LOG.isDebugEnabled()) {
-				// Exception displays the (long) hex value
-				LOG.debug(message, e);
-			} else {
-				LOG.error(message);
-			}
-			return false;
-		}
+		// /ByteRange [0 575649 632483 10206]
+		int beforeSignatureLength = byteRange[1] - byteRange[0];
+		int expectedCMSLength = byteRange[2] - byteRange[1] - byteRange[0];
+		int afterSignatureLength = byteRange[3];
+		int totalCoveredByByteRange = beforeSignatureLength + expectedCMSLength + afterSignatureLength;
+
+		return (originalBytesLength == totalCoveredByByteRange);
 	}
 
 	private PdfDssDict getDSSDictionaryPresentInRevision(byte[] originalBytes) {

@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.pdf.openpdf;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -279,6 +278,8 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 				validateByteRange(byteRange);
 
 				final byte[] cms = signatureDictionary.getContents();
+				checkIsContentValueEqualsByteRangeExtraction(document, byteRange, cms, name);
+				
 				final byte[] signedContent = getSignedContent(document, byteRange);
 				boolean signatureCoversWholeDocument = af.signatureCoversWholeDocument(name);
 
@@ -292,10 +293,12 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 						// obtain covered DSS dictionary if already exist
 						timestampRevisionDssDict = getDSSDictionaryPresentInRevision(getOriginalBytes(byteRange, signedContent));
 					}
-					result.add(new PdfDocTimestampInfo(validationCertPool, signatureDictionary, timestampRevisionDssDict, cms, signedContent, signatureCoversWholeDocument));
+					result.add(new PdfDocTimestampInfo(validationCertPool, signatureDictionary, timestampRevisionDssDict, cms, signedContent, 
+							signatureCoversWholeDocument));
 					
 				} else {
-					result.add(new PdfSignatureInfo(validationCertPool, signatureDictionary, dssDictionary, cms, signedContent, signatureCoversWholeDocument));
+					result.add(new PdfSignatureInfo(validationCertPool, signatureDictionary, dssDictionary, cms, signedContent, 
+							signatureCoversWholeDocument));
 					
 				}
 
@@ -321,32 +324,6 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		} catch (Exception e) {
 			LOG.warn("Cannot check in previous revisions if DSS dictionary already exist : " + e.getMessage(), e);
 			return null;
-		}
-	}
-
-	private byte[] getSignedContent(DSSDocument dssDocument, int[] byteRange) throws IOException {
-
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				InputStream is = new BufferedInputStream(dssDocument.openStream())) {
-			// Adobe Digital Signatures in a PDF (p5): In Figure 4, the hash is calculated
-			// for bytes 0 through 839, and 960 through 1200. [0, 840, 960, 1200]
-
-			int begining = byteRange[0];
-			int startSigValueContent = byteRange[1];
-			int endSigValueContent = byteRange[2];
-			int end = endSigValueContent + byteRange[3];
-
-			int counter = 0;
-			int b;
-			while ((b = is.read()) != -1) {
-				if (((counter >= begining) && (counter < startSigValueContent))
-						|| ((counter >= endSigValueContent) && (counter < end))) {
-					baos.write(b);
-				}
-				counter++;
-			}
-
-			return baos.toByteArray();
 		}
 	}
 
