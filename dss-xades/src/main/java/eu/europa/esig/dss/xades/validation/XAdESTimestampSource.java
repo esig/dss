@@ -306,7 +306,9 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	@Override
 	protected List<EncapsulatedCertificateTokenIdentifier> getEncapsulatedCertificateIdentifiers(XAdESAttribute unsignedAttribute) {
 		List<EncapsulatedCertificateTokenIdentifier> certificateIdentifiers = new ArrayList<EncapsulatedCertificateTokenIdentifier>();
-		NodeList encapsulatedNodes = unsignedAttribute.getNodeList(xPathQueryHolder.XPATH___ENCAPSULATED_X509_CERT);
+		String xPathString = isTimeStampValidationData(unsignedAttribute) ? 
+				xPathQueryHolder.XPATH__ENCAPSULATED_X509_CERT : xPathQueryHolder.XPATH___ENCAPSULATED_X509_CERT;
+		NodeList encapsulatedNodes = unsignedAttribute.getNodeList(xPathString);
 		for (int ii = 0; ii < encapsulatedNodes.getLength(); ii++) {
 			Element element = (Element) encapsulatedNodes.item(ii);
 			byte[] binaries = getEncapsulatedTokenBinaries(element);
@@ -319,7 +321,9 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	@Override
 	protected List<CRLBinaryIdentifier> getEncapsulatedCRLIdentifiers(XAdESAttribute unsignedAttribute) {
 		List<CRLBinaryIdentifier> crlIdentifiers = new ArrayList<CRLBinaryIdentifier>();
-		NodeList encapsulatedNodes = unsignedAttribute.getNodeList(xPathQueryHolder.XPATH___ENCAPSULATED_CRL_VALUES);
+		String xPathString = isTimeStampValidationData(unsignedAttribute) ? 
+				xPathQueryHolder.XPATH__ENCAPSULATED_CRL_VALUES : xPathQueryHolder.XPATH___ENCAPSULATED_CRL_VALUES;
+		NodeList encapsulatedNodes = unsignedAttribute.getNodeList(xPathString);
 		for (int ii = 0; ii < encapsulatedNodes.getLength(); ii++) {
 			Element element = (Element) encapsulatedNodes.item(ii);
 			byte[] binaries = getEncapsulatedTokenBinaries(element);
@@ -338,7 +342,9 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	@Override
 	protected List<OCSPResponseIdentifier> getEncapsulatedOCSPIdentifiers(XAdESAttribute unsignedAttribute) {
 		List<OCSPResponseIdentifier> crlIdentifiers = new ArrayList<OCSPResponseIdentifier>();
-		NodeList encapsulatedNodes = unsignedAttribute.getNodeList(xPathQueryHolder.XPATH___ENCAPSULATED_CRL_VALUES);
+		String xPathString = isTimeStampValidationData(unsignedAttribute) ? 
+				xPathQueryHolder.XPATH__ENCAPSULATED_OCSP_VALUES : xPathQueryHolder.XPATH___ENCAPSULATED_OCSP_VALUES;
+		NodeList encapsulatedNodes = unsignedAttribute.getNodeList(xPathString);
 		for (int ii = 0; ii < encapsulatedNodes.getLength(); ii++) {
 			Element element = (Element) encapsulatedNodes.item(ii);
 			byte[] binaries = getEncapsulatedTokenBinaries(element);
