@@ -20,9 +20,18 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.process.AdditionalInfo;
+import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
+import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
+import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TokenProxy;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 
@@ -60,6 +69,35 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Abst
 		
 		return true;
 		
+	}
+
+	@Override
+	protected MessageTag getMessageTag() {
+		if (token instanceof CertificateWrapper) {
+			return MessageTag.ACCCM;
+		} else if (token instanceof RevocationWrapper) {
+			return MessageTag.ARCCM;
+		} else if (token instanceof TimestampWrapper) {
+			return MessageTag.ATCCM;
+		}
+		return super.getMessageTag();
+	}
+
+	@Override
+	protected String getAdditionalInfo() {
+		SimpleDateFormat sdf = new SimpleDateFormat(AdditionalInfo.DATE_FORMAT);
+		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+		String addInfo = null;
+		Object[] params = null;
+		String dateTime = sdf.format(validationDate);
+		if (Utils.isStringNotEmpty(failedAlgorithm)) {
+			addInfo = AdditionalInfo.CRYPTOGRAPHIC_CHECK_FAILURE_WITH_ID;
+			params = new Object[] { failedAlgorithm, dateTime, token.getId() };
+		} else {
+			addInfo = AdditionalInfo.VALIDATION_TIME_WITH_ID;
+			params = new Object[] { dateTime, token.getId() };
+		}
+		return MessageFormat.format(addInfo, params);
 	}
 
 }

@@ -104,11 +104,17 @@ public enum MessageTag implements IMessageTag {
 	ARCH_LTVV_ANS("The result of the LTV validation process is not acceptable to continue the process!"),
 
 	ASCCM("Are signature cryptographic constraints met?"),
+	ACCCM("Are certificate cryptographic constraints met?"),
+	ARCCM("Are revocation cryptographic constraints met?"),
+	ATCCM("Are timestamp cryptographic constraints met?"),
 	ASCCM_ANS_1("The encryption algorithm not authorised!"),
 	ASCCM_ANS_2("The digest algorithm not authorised!"),
 	ASCCM_ANS_3("The public key size is too small!"),
 	ASCCM_ANS_4("The algorithm expiration date not found!"),
 	ASCCM_ANS_5("The algorithm is expired!"),
+	
+	ACCCRM("Are cryptographic constraints for certificate revocation data met?"),
+	ACCCRM_ANS("Cryptographic constraints are not valid for revocation data!"),
 
 	BBB_SAV_ISVA("Is the signature accectable?"),
 	BBB_SAV_ISVA_ANS("The signature is not accectable!"),
