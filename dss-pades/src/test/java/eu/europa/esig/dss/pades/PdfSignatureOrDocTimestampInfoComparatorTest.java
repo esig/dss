@@ -25,6 +25,7 @@ import static org.junit.Assert.assertEquals;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -132,6 +133,20 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 		listToSort.add(mock0);
 
 		Collections.sort(listToSort, new PdfSignatureOrDocTimestampInfoComparator());
+	}
+
+	@Test
+	public void testDSS1690() {
+		PdfSignatureOrDocTimestampInfo sig = new MockPdfSignature(new int[] { 0, 6418, 17102, 332 });
+		PdfSignatureOrDocTimestampInfo archivalTST1 = new MockPdfSignature(new int[] { 0, 185123, 191125, 343 });
+		PdfSignatureOrDocTimestampInfo archivalTST2 = new MockPdfSignature(new int[] { 0, 200002, 237892, 637 });
+
+		List<PdfSignatureOrDocTimestampInfo> listToSort = Arrays.asList(archivalTST1, sig, archivalTST2);
+		Collections.sort(listToSort, new PdfSignatureOrDocTimestampInfoComparator());
+
+		assertEquals(sig, listToSort.get(0));
+		assertEquals(archivalTST1, listToSort.get(1));
+		assertEquals(archivalTST2, listToSort.get(2));
 	}
 
 	private class MockPdfSignature implements PdfSignatureOrDocTimestampInfo {
