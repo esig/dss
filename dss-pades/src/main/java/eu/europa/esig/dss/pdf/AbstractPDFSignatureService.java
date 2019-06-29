@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pdf;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -153,6 +154,9 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * revision number and to know if a TSP is over the DSS dictionary
 	 */
 	protected void linkSignatures(List<PdfSignatureOrDocTimestampInfo> signatures) {
+
+		Collections.sort(signatures, new PdfSignatureOrDocTimestampInfoComparator());
+
 		List<PdfSignatureOrDocTimestampInfo> previousList = new ArrayList<PdfSignatureOrDocTimestampInfo>();
 		for (PdfSignatureOrDocTimestampInfo sig : signatures) {
 			if (Utils.isCollectionNotEmpty(previousList)) {

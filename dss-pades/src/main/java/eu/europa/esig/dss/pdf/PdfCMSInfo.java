@@ -22,7 +22,7 @@ package eu.europa.esig.dss.pdf;
 
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -50,7 +50,7 @@ public abstract class PdfCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	private boolean verified;
 	private String uniqueId;
 
-	private Set<PdfSignatureOrDocTimestampInfo> outerSignatures = new HashSet<PdfSignatureOrDocTimestampInfo>();
+	private Set<PdfSignatureOrDocTimestampInfo> outerSignatures = new LinkedHashSet<PdfSignatureOrDocTimestampInfo>();
 
 	/**
 	 *

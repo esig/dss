@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -76,7 +75,6 @@ import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSigDict;
 import eu.europa.esig.dss.pdf.PdfSignatureInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
-import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfoComparator;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawer;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawerFactory;
 import eu.europa.esig.dss.utils.Utils;
@@ -377,7 +375,6 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 						LOG.error("Unable to parse signature '" + signature.getName() + "' : ", e);
 					}
 				}
-				Collections.sort(signatures, new PdfSignatureOrDocTimestampInfoComparator());
 				linkSignatures(signatures);
 			}
 		} catch (Exception e) {
