@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.jaxb.diagnostic;
 
 import java.io.File;
+import java.io.IOException;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -9,6 +10,8 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.stream.StreamSource;
+
+import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.MarshallerBuilder;
 
@@ -19,7 +22,7 @@ public class DiagnosticDataFacade {
 	}
 
 	@SuppressWarnings("unchecked")
-	public XmlDiagnosticData unmarshall(File file) throws JAXBException, XMLStreamException {
+	public XmlDiagnosticData unmarshall(File file) throws JAXBException, XMLStreamException, IOException, SAXException {
 
 		MarshallerBuilder builder = new MarshallerBuilder(DiagnosticDataXmlDefiner.getJAXBContext(), DiagnosticDataXmlDefiner.getSchema());
 		builder.setValidate(true);

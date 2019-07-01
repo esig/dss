@@ -25,24 +25,18 @@ public final class DiagnosticDataXmlDefiner {
 	// Thread-safe
 	private static Schema schema;
 
-	public static JAXBContext getJAXBContext() {
+	public static JAXBContext getJAXBContext() throws JAXBException {
 		if (jc == null) {
-			try {
-				jc = JAXBContext.newInstance(ObjectFactory.class);
-			} catch (JAXBException e) {
-				throw new RuntimeException("Unable to initialize the JAXBContext", e);
-			}
+			jc = JAXBContext.newInstance(ObjectFactory.class);
 		}
 		return jc;
 	}
 
-	public static Schema getSchema() {
+	public static Schema getSchema() throws IOException, SAXException {
 		if (schema == null) {
 			try (InputStream isXSDDiagnosticData = DiagnosticDataXmlDefiner.class.getResourceAsStream(DIAGNOSTIC_DATA_SCHEMA_LOCATION)) {
 				SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 				schema = sf.newSchema(new Source[] { new StreamSource(isXSDDiagnosticData) });
-			} catch (IOException | SAXException e) {
-				throw new RuntimeException("Unable to initialize the Schema", e);
 			}
 		}
 		return schema;
