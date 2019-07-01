@@ -2,18 +2,16 @@ package eu.europa.esig.dss.validation.executor;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.io.FileInputStream;
+import java.io.File;
 
 import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
-import eu.europa.esig.dss.validation.policy.XmlUtils;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
+import eu.europa.esig.jaxb.policy.ValidationPolicyFacade;
 
 public class AbstractValidationExecutorTest {
 	
 	protected ConstraintsParameters loadConstraintsParameters(String policyConstraintFile) throws Exception {
-		FileInputStream policyFis = new FileInputStream(policyConstraintFile);
-		ConstraintsParameters policyJaxB = XmlUtils.getJAXBObjectFromString(policyFis, ConstraintsParameters.class, "/xsd/policy.xsd");
-		return policyJaxB;
+		return ValidationPolicyFacade.newFacade().unmarshall(new File(policyConstraintFile));
 	}
 
 	protected EtsiValidationPolicy loadPolicy(String policyConstraintFile) throws Exception {
