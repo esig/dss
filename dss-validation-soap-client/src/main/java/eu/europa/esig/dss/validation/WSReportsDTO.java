@@ -22,16 +22,22 @@ package eu.europa.esig.dss.validation;
 
 import java.io.Serializable;
 
+import javax.activation.DataHandler;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlMimeType;
 
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlDetailedReport;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
 import eu.europa.esig.dss.jaxb.simplereport.XmlSimpleReport;
 import eu.europa.esig.jaxb.validationreport.ValidationReportType;
+import eu.europa.esig.jaxb.validationreport.ValidationReportUtils;
 
-//@XmlRootElement(name = "WSReportsDTO")
 @XmlAccessorType(XmlAccessType.FIELD)
 @SuppressWarnings("serial")
 public class WSReportsDTO implements Serializable {
@@ -45,8 +51,12 @@ public class WSReportsDTO implements Serializable {
 	@XmlElement(name = "DetailedReport", namespace = "http://dss.esig.europa.eu/validation/detailed-report")
 	private XmlDetailedReport detailedReport;
 
-	@XmlElement(name = "ValidationReport", namespace = "http://uri.etsi.org/19102/v1.2.1#")
-	private ValidationReportType validationReport;
+	// Use MTOM to avoid XML ID conflict (between diagnostic data and etsi
+	// validation report)
+	@XmlMimeType("application/octet-stream")
+	private DataHandler validationReportaDataHandler;
+
+	private transient ValidationReportType validationReport;
 
 	public WSReportsDTO() {
 	}
@@ -61,6 +71,8 @@ public class WSReportsDTO implements Serializable {
 			ValidationReportType validationReport) {
 		this(diagnosticData, simpleReport, detailedReport);
 		this.validationReport = validationReport;
+
+		this.validationReportaDataHandler = new DataHandler(new ValidationReportTypeDataSource(validationReport));
 	}
 
 	public XmlDiagnosticData getDiagnosticData() {
@@ -87,7 +99,28 @@ public class WSReportsDTO implements Serializable {
 		this.detailedReport = detailedReport;
 	}
 
+	public DataHandler getValidationReportaDataHandler() {
+		return validationReportaDataHandler;
+	}
+
+	public void setValidationReportaDataHandler(DataHandler validationReportaDataHandler) {
+		this.validationReportaDataHandler = validationReportaDataHandler;
+	}
+
+	@SuppressWarnings("unchecked")
 	public ValidationReportType getValidationReport() {
+		if ((validationReport == null) && (validationReportaDataHandler != null)) {
+			try {
+				JAXBContext jaxbContext = ValidationReportUtils.getJAXBContext();
+				Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+				JAXBElement<ValidationReportType> unmarshal = (JAXBElement<ValidationReportType>) unmarshaller
+						.unmarshal(validationReportaDataHandler.getInputStream());
+				return unmarshal.getValue();
+			} catch (Exception e) {
+				throw new DSSException("Unable to unmarshall ValidationReportType", e);
+			}
+		}
+
 		return validationReport;
 	}
 
