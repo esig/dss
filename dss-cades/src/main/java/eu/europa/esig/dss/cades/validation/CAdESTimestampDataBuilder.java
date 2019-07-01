@@ -223,9 +223,16 @@ public class CAdESTimestampDataBuilder implements TimestampDataBuilder {
 				}
 				data.write(certificatesBytes);
 			}
-			if (signedData.getCRLs() != null) {
-
-				final byte[] crlBytes = signedData.getCRLs().getEncoded();
+			
+			final ASN1Set crLs = signedData.getCRLs();
+			if (crLs != null) {
+				byte[] crlBytes = null;
+				
+				if (signedData.getCRLs() instanceof BERSet) {
+					crlBytes = new BERTaggedObject(false, 1, new BERSequence(crLs.toArray())).getEncoded();
+				} else {
+					crlBytes = new DERTaggedObject(false, 1, new DERSequence(crLs.toArray())).getEncoded();
+				}
 				if (LOG.isTraceEnabled()) {
 					LOG.trace("CRLs: {}", DSSUtils.toHex(crlBytes));
 				}
