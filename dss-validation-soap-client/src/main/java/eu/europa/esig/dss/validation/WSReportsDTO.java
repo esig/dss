@@ -115,7 +115,7 @@ public class WSReportsDTO implements Serializable {
 				Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 				JAXBElement<ValidationReportType> unmarshal = (JAXBElement<ValidationReportType>) unmarshaller
 						.unmarshal(validationReportaDataHandler.getInputStream());
-				return unmarshal.getValue();
+				validationReport = unmarshal.getValue();
 			} catch (Exception e) {
 				throw new DSSException("Unable to unmarshall ValidationReportType", e);
 			}
