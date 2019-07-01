@@ -636,8 +636,10 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public boolean hasLTProfile() {
 		Map<String, List<CertificateToken>> certificateChains = getCertificatesWithinSignatureAndTimestamps(true);
 		
-		boolean emptyOCSPs = Utils.isCollectionEmpty(getOCSPSource().getContainedOCSPResponses());
-		boolean emptyCRLs = Utils.isCollectionEmpty(getCRLSource().getContainedX509CRLs());
+		OfflineOCSPSource ocspSource = getOCSPSource();
+		boolean emptyOCSPs = Utils.isCollectionEmpty((ocspSource == null ? null : ocspSource.getContainedOCSPResponses()));
+		OfflineCRLSource crlSource = getCRLSource();
+		boolean emptyCRLs = Utils.isCollectionEmpty((crlSource == null ? null : crlSource.getContainedX509CRLs()));
 
 		if (certificateChains.isEmpty() && (emptyOCSPs || emptyCRLs)) {
 			return false;

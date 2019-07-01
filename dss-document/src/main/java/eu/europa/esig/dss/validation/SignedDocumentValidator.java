@@ -418,7 +418,13 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	private ListCRLSource getSignatureCrlSource(final List<AdvancedSignature> allSignatureList) {
 		final ListCRLSource signatureCrlSource = new ListCRLSource();
+		if(allSignatureList == null) {
+		    return signatureCrlSource;
+		}
 		for (final AdvancedSignature signature : allSignatureList) {
+        		if(signature == null) {
+        		    continue;
+        		}
 			signatureCrlSource.addAll(signature.getCRLSource());
 		}
 		return signatureCrlSource;
@@ -434,7 +440,13 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	private ListOCSPSource getSignatureOcspSource(final List<AdvancedSignature> allSignatureList) {
 		final ListOCSPSource signatureOcspSource = new ListOCSPSource();
+		if(allSignatureList == null) {
+		    return signatureOcspSource;
+		}
 		for (final AdvancedSignature signature : allSignatureList) {
+		  	if( signature == null ) {
+		  	  continue;
+		  	}
 			signatureOcspSource.addAll(signature.getOCSPSource());
 		}
 		return signatureOcspSource;

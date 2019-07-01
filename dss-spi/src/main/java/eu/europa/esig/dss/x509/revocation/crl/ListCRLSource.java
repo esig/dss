@@ -53,6 +53,9 @@ public class ListCRLSource extends OfflineCRLSource {
 	 *            the source to be added
 	 */
 	public void addAll(final OfflineCRLSource offlineCRLSource) {
+	  	if(offlineCRLSource == null) {
+	  	  return;
+	  	}
 		for (Entry<String, byte[]> entry : offlineCRLSource.crlsMap.entrySet()) {
 			super.addCRLBinary(entry.getKey(), entry.getValue());
 		}
