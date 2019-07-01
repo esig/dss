@@ -129,7 +129,8 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		 * 4) The process shall add the best-signature-time returned in step 3 
 		 * as POE for the signature to the set of POEs.
 		 */
-		poe.init(diagnosticData, validationProcessLongTermData.getProofOfExistence());
+		// TODO: useless ???
+		poe.addSignaturePOE(signature, validationProcessLongTermData.getProofOfExistence());
 
 		/*
 		 * 5) If there is at least one time-stamp attribute:
@@ -175,6 +176,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 								Context.TIMESTAMP);
 						XmlPSV psvResult = psv.execute();
 						bbbTsp.setPSV(psvResult);
+						bbbTsp.setConclusion(psvResult.getConclusion());
 
 						/*
 						 * If it returns PASSED and the cryptographic hash function used in the time-stamp is considered

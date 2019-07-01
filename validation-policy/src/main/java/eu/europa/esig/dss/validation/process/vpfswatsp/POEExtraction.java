@@ -112,6 +112,12 @@ public class POEExtraction {
 			poesById.add(proofOfExistence);
 		}
 	}
+	
+	public void addSignaturePOE(SignatureWrapper signature, XmlProofOfExistence proofOfExistence) {
+		if (signature != null) {
+			addPOE(signature.getId(), proofOfExistence);
+		}
+	}
 
 	/**
 	 * Returns true if there is a POE exists for a given id at (or before) the control time.
