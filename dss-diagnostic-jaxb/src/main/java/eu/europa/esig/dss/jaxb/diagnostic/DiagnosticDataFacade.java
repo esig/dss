@@ -2,9 +2,11 @@ package eu.europa.esig.dss.jaxb.diagnostic;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -19,6 +21,17 @@ public class DiagnosticDataFacade {
 	
 	public static DiagnosticDataFacade newFacade() {
 		return new DiagnosticDataFacade();
+	}
+
+	public String marshall(XmlDiagnosticData diagnosticDataJaxb, boolean validate) throws JAXBException, IOException, SAXException {
+		MarshallerBuilder marshallerBuilder = new MarshallerBuilder(DiagnosticDataXmlDefiner.getJAXBContext(), DiagnosticDataXmlDefiner.getSchema());
+		marshallerBuilder.setIndent(true);
+		marshallerBuilder.setValidate(validate);
+		Marshaller marshaller = marshallerBuilder.buildMarshaller();
+
+		StringWriter writer = new StringWriter();
+		marshaller.marshal(DiagnosticDataXmlDefiner.OBJECT_FACTORY.createDiagnosticData(diagnosticDataJaxb), writer);
+		return writer.toString();
 	}
 
 	@SuppressWarnings("unchecked")

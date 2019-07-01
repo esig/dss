@@ -20,20 +20,13 @@
  */
 package eu.europa.esig.dss.validation.reports;
 
-import java.io.InputStream;
-import java.io.StringWriter;
-
-import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.jaxb.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlDetailedReport;
+import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
@@ -45,7 +38,7 @@ public abstract class AbstractReports {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractReports.class);
 
-	private boolean validateXml = false;
+	protected boolean validateXml = false;
 
 	private final DiagnosticData diagnosticDataWrapper;
 	private final DetailedReport detailedReportWrapper;
@@ -129,9 +122,16 @@ public abstract class AbstractReports {
 	 */
 	public String getXmlDiagnosticData() {
 		if (xmlDiagnosticData == null) {
-			eu.europa.esig.dss.jaxb.diagnostic.ObjectFactory oFactory = new eu.europa.esig.dss.jaxb.diagnostic.ObjectFactory();
-			xmlDiagnosticData = getJAXBObjectAsString(oFactory.createDiagnosticData(diagnosticDataWrapper.getJaxbModel()),
-					XmlDiagnosticData.class.getPackage().getName(), "/xsd/DiagnosticData.xsd");
+			try {
+				xmlDiagnosticData = DiagnosticDataFacade.newFacade().marshall(getDiagnosticDataJaxb(), validateXml);
+			} catch (Exception e) {
+				String message = "Unable to generate string value for the diagnostic data : ";
+				if (validateXml) {
+					throw new DSSException(message, e);
+				} else {
+					LOG.error(message, e);
+				}
+			}
 		}
 		return xmlDiagnosticData;
 	}
@@ -143,38 +143,18 @@ public abstract class AbstractReports {
 	 */
 	public String getXmlDetailedReport() {
 		if (xmlDetailedReport == null) {
-			eu.europa.esig.dss.jaxb.detailedreport.ObjectFactory oFactory = new eu.europa.esig.dss.jaxb.detailedreport.ObjectFactory();
-			xmlDetailedReport = getJAXBObjectAsString(oFactory.createDetailedReport(detailedReportWrapper.getJAXBModel()),
-					XmlDetailedReport.class.getPackage().getName(), "/xsd/DetailedReport.xsd");
+			try {
+				xmlDetailedReport = DetailedReportFacade.newFacade().marshall(getDetailedReportJaxb(), validateXml);
+			} catch (Exception e) {
+				String message = "Unable to generate string value for the detailed report : ";
+				if (validateXml) {
+					throw new DSSException(message, e);
+				} else {
+					LOG.error(message, e);
+				}
+			}
 		}
 		return xmlDetailedReport;
-	}
-
-	protected String getJAXBObjectAsString(Object obj, String contextPath, String xsdFile) {
-		try {
-
-			JAXBContext context = JAXBContext.newInstance(contextPath);
-			Marshaller marshaller = context.createMarshaller();
-			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
-			if (validateXml) {
-				SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-				InputStream schemaStream = AbstractReports.class.getResourceAsStream(xsdFile);
-				Schema schema = sf.newSchema(new StreamSource(schemaStream));
-				marshaller.setSchema(schema);
-			}
-
-			StringWriter writer = new StringWriter();
-			marshaller.marshal(obj, writer);
-			return writer.toString();
-		} catch (Exception e) {
-			if (validateXml) {
-				throw new RuntimeException(e);
-			} else {
-				LOG.error("Unable to generate string value for context " + contextPath + " : " + e.getMessage(), e);
-				return null;
-			}
-		}
 	}
 
 }

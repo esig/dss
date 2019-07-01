@@ -25,6 +25,8 @@ public final class DetailedReportXmlDefiner {
 	private DetailedReportXmlDefiner() {
 	}
 
+	public static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
+
 	// Thread-safe
 	private static JAXBContext jc;
 	// Thread-safe

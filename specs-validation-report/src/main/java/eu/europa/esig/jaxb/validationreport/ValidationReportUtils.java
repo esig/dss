@@ -23,6 +23,8 @@ public final class ValidationReportUtils {
 	private ValidationReportUtils() {
 	}
 
+	public static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
+
 	private static JAXBContext jc;
 	private static Schema schema;
 

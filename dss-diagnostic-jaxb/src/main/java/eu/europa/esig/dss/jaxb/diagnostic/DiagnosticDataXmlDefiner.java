@@ -20,6 +20,8 @@ public final class DiagnosticDataXmlDefiner {
 	private DiagnosticDataXmlDefiner() {
 	}
 
+	public static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
+
 	// Thread-safe
 	private static JAXBContext jc;
 	// Thread-safe

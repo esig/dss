@@ -20,9 +20,15 @@
  */
 package eu.europa.esig.dss.validation.reports;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlDetailedReport;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
+import eu.europa.esig.dss.jaxb.simplereport.SimpleReportFacade;
 import eu.europa.esig.dss.jaxb.simplereport.XmlSimpleReport;
+import eu.europa.esig.jaxb.validationreport.ValidationReportFacade;
 import eu.europa.esig.jaxb.validationreport.ValidationReportType;
 
 /**
@@ -30,6 +36,8 @@ import eu.europa.esig.jaxb.validationreport.ValidationReportType;
  * process: diagnostic data, detailed report and simple report.
  */
 public class Reports extends AbstractReports {
+
+	private static final Logger LOG = LoggerFactory.getLogger(Reports.class);
 
 	private final SimpleReport simpleReportWrapper;
 
@@ -94,10 +102,16 @@ public class Reports extends AbstractReports {
 	@Override
 	public String getXmlSimpleReport() {
 		if (xmlSimpleReport == null) {
-			eu.europa.esig.dss.jaxb.simplereport.ObjectFactory oFactory = new eu.europa.esig.dss.jaxb.simplereport.ObjectFactory();
-			xmlSimpleReport = getJAXBObjectAsString(oFactory.createSimpleReport(simpleReportWrapper.getJaxbModel()),
-					XmlSimpleReport.class.getPackage().getName(),
-					"/xsd/SimpleReport.xsd");
+			try {
+				xmlSimpleReport = SimpleReportFacade.newFacade().marshall(getSimpleReportJaxb(), validateXml);
+			} catch (Exception e) {
+				String message = "Unable to generate string value for the simple report : ";
+				if (validateXml) {
+					throw new DSSException(message, e);
+				} else {
+					LOG.error(message, e);
+				}
+			}
 		}
 		return xmlSimpleReport;
 	}
@@ -109,9 +123,16 @@ public class Reports extends AbstractReports {
 	 */
 	public String getXmlValidationReport() {
 		if (xmlEtsiValidationReport == null) {
-			eu.europa.esig.jaxb.validationreport.ObjectFactory oFactory = new eu.europa.esig.jaxb.validationreport.ObjectFactory();
-			xmlEtsiValidationReport = getJAXBObjectAsString(oFactory.createValidationReport(etsiValidationReport), ValidationReportType.class.getPackage().getName(),
-					"/xsd/1910202xmlSchema.xsd");
+			try {
+				xmlEtsiValidationReport = ValidationReportFacade.newFacade().marshall(getEtsiValidationReportJaxb(), validateXml);
+			} catch (Exception e) {
+				String message = "Unable to generate string value for the etsi validation report : ";
+				if (validateXml) {
+					throw new DSSException(message, e);
+				} else {
+					LOG.error(message, e);
+				}
+			}
 		}
 		return xmlEtsiValidationReport;
 	}
