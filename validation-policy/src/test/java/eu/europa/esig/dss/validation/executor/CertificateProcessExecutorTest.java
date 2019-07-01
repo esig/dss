@@ -25,26 +25,18 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.File;
 import java.util.List;
-
-import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlCertificate;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlDetailedReport;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationCertificateQualification;
-import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.jaxb.simplecertificatereport.SimpleCertificateReport;
+import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticDataFacade;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
 import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlChainItem;
+import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlSimpleCertificateReport;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateQualification;
 import eu.europa.esig.dss.validation.RevocationReason;
@@ -56,8 +48,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 
 	@Test
 	public void deRevoked() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/de_revoked.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/de_revoked.xml"));
 		assertNotNull(diagnosticData);
 
 		String certificateId = "C-0E9B5C373AFEC1CED5723FCD9231F793BB330FFBF2B94BB8698301C90405B9BF";
@@ -70,7 +61,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 
 		CertificateReports reports = executor.execute();
 
-		DetailedReport detailedReportJaxb = reports.getDetailedReportJaxb();
+		XmlDetailedReport detailedReportJaxb = reports.getDetailedReportJaxb();
 		assertNotNull(detailedReportJaxb);
 		assertNotNull(detailedReportJaxb.getCertificate());
 		assertEquals(2, detailedReportJaxb.getTLAnalysis().size());
@@ -97,7 +88,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getCertificateCrlUrls(certificateId)));
 		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getTrustAnchorVATNumbers()));
 
-		SimpleCertificateReport simpleReportJaxb = reports.getSimpleReportJaxb();
+		XmlSimpleCertificateReport simpleReportJaxb = reports.getSimpleReportJaxb();
 		assertNotNull(simpleReportJaxb);
 		assertNotNull(simpleReportJaxb.getChain());
 		assertEquals(2, simpleReportJaxb.getChain().size());
@@ -117,8 +108,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 
 	@Test
 	public void beTSA() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/be_tsa.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/be_tsa.xml"));
 		assertNotNull(diagnosticData);
 
 		String certificateId = "C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19";
@@ -131,14 +121,14 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 
 		CertificateReports reports = executor.execute();
 
-		DetailedReport detailedReportJaxb = reports.getDetailedReportJaxb();
+		XmlDetailedReport detailedReportJaxb = reports.getDetailedReportJaxb();
 		assertNotNull(detailedReportJaxb);
 		assertNotNull(detailedReportJaxb.getCertificate());
 		assertEquals(2, detailedReportJaxb.getTLAnalysis().size());
 		assertEquals(1, detailedReportJaxb.getBasicBuildingBlocks().size());
 		assertEquals(0, detailedReportJaxb.getSignatures().size());
 
-		SimpleCertificateReport simpleReportJaxb = reports.getSimpleReportJaxb();
+		XmlSimpleCertificateReport simpleReportJaxb = reports.getSimpleReportJaxb();
 		assertNotNull(simpleReportJaxb);
 		assertNotNull(simpleReportJaxb.getChain());
 		assertEquals(2, simpleReportJaxb.getChain().size());
@@ -158,8 +148,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 
 	@Test
 	public void dkNoChain() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/dk_no_chain.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/dk_no_chain.xml"));
 		assertNotNull(diagnosticData);
 
 		String certificateId = "C-3ECBC4648AA3BCB671976F53D7516F774DB1C886FAB81FE5469462181187DB8D";
@@ -172,14 +161,14 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 
 		CertificateReports reports = executor.execute();
 
-		DetailedReport detailedReportJaxb = reports.getDetailedReportJaxb();
+		XmlDetailedReport detailedReportJaxb = reports.getDetailedReportJaxb();
 		assertNotNull(detailedReportJaxb);
 		assertNotNull(detailedReportJaxb.getCertificate());
 		assertEquals(0, detailedReportJaxb.getTLAnalysis().size());
 		assertEquals(1, detailedReportJaxb.getBasicBuildingBlocks().size());
 		assertEquals(0, detailedReportJaxb.getSignatures().size());
 
-		SimpleCertificateReport simpleReportJaxb = reports.getSimpleReportJaxb();
+		XmlSimpleCertificateReport simpleReportJaxb = reports.getSimpleReportJaxb();
 		assertNotNull(simpleReportJaxb);
 		assertNotNull(simpleReportJaxb.getChain());
 		assertEquals(1, simpleReportJaxb.getChain().size());
@@ -194,9 +183,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 
 	@Test
 	public void inconsistentTrustService() throws Exception {
-
-		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/inconsistent-state.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/inconsistent-state.xml"));
 		assertNotNull(diagnosticData);
 
 		String certificateId = "C-A1E2D4CA9C521332369FA3224F0B7282AD2596E8A7416CBC0DF087E05D8F5502";
@@ -216,9 +203,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 
 	@Test
 	public void invalidTL() throws Exception {
-
-		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/invalid-tl.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/invalid-tl.xml"));
 		assertNotNull(diagnosticData);
 
 		String certificateId = "C-86CA5DDDDCB6CA73C77511DFF3C94961BD675CA15111810103942CA7D96DCE1B";
@@ -238,9 +223,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 
 	@Test
 	public void expiredTL() throws Exception {
-
-		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/expired-tl.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/expired-tl.xml"));
 		assertNotNull(diagnosticData);
 
 		String certificateId = "C-86CA5DDDDCB6CA73C77511DFF3C94961BD675CA15111810103942CA7D96DCE1B";
@@ -261,9 +244,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 
 	@Test
 	public void wsaQC() throws Exception {
-
-		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/cert_WSAQC.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/cert_WSAQC.xml"));
 		assertNotNull(diagnosticData);
 
 		String certificateId = "C-24A830ADC0D077255FD14A607513D398CDB278A53A3DBAB79AC4ADE6A66EEAA6";
@@ -283,9 +264,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 
 	@Test
 	public void overruleNotQualified() throws Exception {
-
-		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/overrule-NotQualified-tl.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/overrule-NotQualified-tl.xml"));
 		assertNotNull(diagnosticData);
 
 		String certificateId = "C-86CA5DDDDCB6CA73C77511DFF3C94961BD675CA15111810103942CA7D96DCE1B";
@@ -305,9 +284,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 
 	@Test
 	public void overruleNoQSCD() throws Exception {
-
-		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/overrule-NoQSCD-tl.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/overrule-NoQSCD-tl.xml"));
 		assertNotNull(diagnosticData);
 
 		String certificateId = "C-86CA5DDDDCB6CA73C77511DFF3C94961BD675CA15111810103942CA7D96DCE1B";
@@ -326,9 +303,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 
 	@Test
 	public void overruleQSCD() throws Exception {
-
-		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/overrule-QSCD-tl.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/overrule-QSCD-tl.xml"));
 		assertNotNull(diagnosticData);
 
 		String certificateId = "C-86CA5DDDDCB6CA73C77511DFF3C94961BD675CA15111810103942CA7D96DCE1B";
@@ -348,9 +323,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 
 	@Test
 	public void overruleQualified() throws Exception {
-
-		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/overrule-Qualified-tl.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/overrule-Qualified-tl.xml"));
 		assertNotNull(diagnosticData);
 
 		String certificateId = "C-86CA5DDDDCB6CA73C77511DFF3C94961BD675CA15111810103942CA7D96DCE1B";
@@ -370,9 +343,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 
 	@Test
 	public void multipleSDI() throws Exception {
-
-		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/multiple-sdi.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/multiple-sdi.xml"));
 		assertNotNull(diagnosticData);
 
 		String certificateId = "C-C011F11E98AEFF48798AD5874A7A7F0C8192ADD1AB6D37825FE42C2F9F5847EB";
@@ -392,8 +363,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 
 	@Test
 	public void withdrawn() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/withdrawn.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/withdrawn.xml"));
 		assertNotNull(diagnosticData);
 
 		String certificateId = "C-18D60FFCE5904ED1E2B3DE04A7BA48BF7F904A34D6988962B964843649A33456";
@@ -412,8 +382,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 
 	@Test
 	public void twoSDIdiffentResults() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/2-sdi-different-results.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/2-sdi-different-results.xml"));
 		assertNotNull(diagnosticData);
 
 		String certificateId = "C-E4A94773CF7B28C2BDF25015BE6716E501E73AB82BF0A9788D0DF8AD14D6876D";
@@ -426,7 +395,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 
 		CertificateReports reports = executor.execute();
 
-		DetailedReport detailedReportJaxb = reports.getDetailedReportJaxb();
+		XmlDetailedReport detailedReportJaxb = reports.getDetailedReportJaxb();
 		XmlCertificate certificate = detailedReportJaxb.getCertificate();
 		List<XmlValidationCertificateQualification> validationCertificateQualification = certificate.getValidationCertificateQualification();
 		for (XmlValidationCertificateQualification xmlValidationCertificateQualification : validationCertificateQualification) {
@@ -436,8 +405,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 
 	@Test
 	public void trustAnchor() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/trust-anchor.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/trust-anchor.xml"));
 		assertNotNull(diagnosticData);
 
 		String certificateId = "C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F";
@@ -454,18 +422,4 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 		assertEquals(CertificateQualification.NA, simpleReport.getQualificationAtValidationTime());
 	}
 	
-	@SuppressWarnings("unchecked")
-	private <T extends Object> T getJAXBObjectFromString(InputStream is, Class<T> clazz, String xsd) throws Exception {
-		JAXBContext context = JAXBContext.newInstance(clazz.getPackage().getName());
-		Unmarshaller unmarshaller = context.createUnmarshaller();
-		if (Utils.isStringNotEmpty(xsd)) {
-			SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			InputStream inputStream = this.getClass().getResourceAsStream(xsd);
-			Source source = new StreamSource(inputStream);
-			Schema schema = sf.newSchema(source);
-			unmarshaller.setSchema(schema);
-		}
-		return (T) unmarshaller.unmarshal(is);
-	}
-
 }

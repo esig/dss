@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
-import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
 import eu.europa.esig.dss.validation.XmlTimestampType;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
@@ -284,7 +284,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 	
 	@Test
 	public void signatureWithContentTimestampTest() throws Exception {
-		DiagnosticData diagnosticData = initializeExecutor("src/test/resources/diag_data_pastSigValidation.xml");
+		XmlDiagnosticData diagnosticData = initializeExecutor("src/test/resources/diag_data_pastSigValidation.xml");
 		validationPolicyFile = "src/test/resources/policy/all-constraint-specified-policy.xml";
 		
 		Indication result = null;

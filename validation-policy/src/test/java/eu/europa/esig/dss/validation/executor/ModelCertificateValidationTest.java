@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,11 +17,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlDetailedReport;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
-import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticDataFacade;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
 import eu.europa.esig.dss.validation.CertificateQualification;
 import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
@@ -98,7 +100,7 @@ public class ModelCertificateValidationTest extends ModelAbstractlValidation {
 	
 	private final TestCase testCase;
 	private final EtsiValidationPolicy policy;
-	private final DiagnosticData diagnosticData;
+	private final XmlDiagnosticData diagnosticData;
 	
 	/**
 	 * Constructor.
@@ -117,8 +119,7 @@ public class ModelCertificateValidationTest extends ModelAbstractlValidation {
 		policyJaxB.setModel(mc);
 		policy = new EtsiValidationPolicy(policyJaxB);
 
-		FileInputStream fis = new FileInputStream(testCase.getTestData().getDiagnosticData());
-		diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File(testCase.getTestData().getDiagnosticData()));
 		assertNotNull(diagnosticData);
 		assertNotNull(diagnosticData.getSignatures());
 		assertTrue(!diagnosticData.getSignatures().isEmpty());
@@ -139,7 +140,7 @@ public class ModelCertificateValidationTest extends ModelAbstractlValidation {
 
 		CertificateReports reports = executor.execute();
 		
-		DetailedReport detailedReport = reports.getDetailedReportJaxb();
+		XmlDetailedReport detailedReport = reports.getDetailedReportJaxb();
 		assertNotNull(detailedReport);
 		assertNotNull(detailedReport.getBasicBuildingBlocks());
 		assertTrue(!detailedReport.getBasicBuildingBlocks().isEmpty());

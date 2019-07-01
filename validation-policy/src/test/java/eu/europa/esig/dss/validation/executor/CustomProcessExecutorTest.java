@@ -26,7 +26,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
+import java.io.File;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -38,14 +38,15 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlCryptographicInformation;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlDetailedReport;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
-import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticDataFacade;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignature;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureQualification;
 import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
-import eu.europa.esig.dss.validation.policy.XmlUtils;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.MessageTag;
@@ -59,8 +60,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void skipRevocationDataValidation() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/it.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/it.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -79,8 +79,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void testDSS1344() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/dss-1344.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/dss-1344.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -97,8 +96,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void testAllFilesCovered() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/all-files-present.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/all-files-present.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -120,8 +118,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void testDSS1453() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/DSS-1453/diag-data-lta-dss.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/DSS-1453/diag-data-lta-dss.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -137,8 +134,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 	// Added LuxTrust Global Root 2
 	@Test
 	public void testDSS1453Fixed() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/DSS-1453/diag-data-lta-dss-fixed.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/DSS-1453/diag-data-lta-dss-fixed.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -153,8 +149,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void testArchiveCutOff() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/archiveCutOff.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/archiveCutOff.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -171,8 +166,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void signedDataNotFound() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/signed_data_not_found.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/signed_data_not_found.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -204,8 +198,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void universign() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/universign.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/universign.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -221,8 +214,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void expiredRevocAndNoCheck() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/expiredRevocAndNoCheck.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/expiredRevocAndNoCheck.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -243,8 +235,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void noPoeRevokedNoTimestamp() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/no_poe_revoked_no_timestamp.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/no_poe_revoked_no_timestamp.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -276,8 +267,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void passedRevokedWithTimestamp() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/passed_revoked_with_timestamp.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/passed_revoked_with_timestamp.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -309,8 +299,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void passedOutOfBoundsWithTimestamps() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/passed_out_of_bounds_with_timestamps.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/passed_out_of_bounds_with_timestamps.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -344,8 +333,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void timestampsSameSecond() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/timestamps_same_second.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/timestamps_same_second.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -381,8 +369,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void timestampsIncorrectOrder() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/timestamps_same_second_incorrect_order.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/timestamps_same_second_incorrect_order.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -418,8 +405,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void hashFailure() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/hash_failure.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/hash_failure.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -451,8 +437,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void sigConstraintFailure() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/sig_constraint_failure.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/sig_constraint_failure.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -484,8 +469,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void signingCertificateNotFound() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/signing_certificate_not_found.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/signing_certificate_not_found.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -519,8 +503,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void testDSS943() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/DSS-943/NotQualified-service.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/DSS-943/NotQualified-service.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -537,8 +520,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void testDSS956AllValidationLevels() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/passed_revoked_with_timestamp.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/passed_revoked_with_timestamp.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -561,8 +543,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void qualification() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/preEIDAS.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/preEIDAS.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -580,8 +561,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void qualificationQESig() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/qualifQESig.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/qualifQESig.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -599,8 +579,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void qualificationQESigBrexit() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/qualifQESigBrexit.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/qualifQESigBrexit.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -618,8 +597,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void rsa1023() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/rsa1023.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/rsa1023.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -660,8 +638,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void qualificationNA() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/qualifNA.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/qualifNA.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -679,8 +656,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void noSigningTime() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/no-signing-date.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/no-signing-date.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -699,8 +675,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void testCertChain() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/qualifNA.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/qualifNA.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -723,8 +698,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void testWithoutCertChain() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/qualifNAWithoutCertChain.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/qualifNAWithoutCertChain.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -744,8 +718,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void testMultiSigs() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/multi-sign.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/multi-sign.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -770,8 +743,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void testCounterSignature() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/counter-signature-diag-data.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/counter-signature-diag-data.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -796,9 +768,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void multiFiles() throws Exception {
-
-		FileInputStream fis = new FileInputStream("src/test/resources/asic-e-multi-files-diag-data.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/asic-e-multi-files-diag-data.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -816,9 +786,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void multiFilesNoManifest() throws Exception {
-
-		FileInputStream fis = new FileInputStream("src/test/resources/asic-e-multi-files-no-manifest-diag-data.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/asic-e-multi-files-no-manifest-diag-data.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -836,9 +804,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void asicEXades() throws Exception {
-
-		FileInputStream fis = new FileInputStream("src/test/resources/asic-e-xades-diag-data.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/asic-e-xades-diag-data.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -856,8 +822,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void webSiteAuth() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/diag_data_WSA.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag_data_WSA.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -876,8 +841,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void doubleAsieAndQCType() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/diag_data_double_ASIE_qctype.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag_data_double_ASIE_qctype.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -895,8 +859,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void doubleAsie() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/diag_data_double_ASIE.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag_data_double_ASIE.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -914,9 +877,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void asicSXades() throws Exception {
-
-		FileInputStream fis = new FileInputStream("src/test/resources/asic-s-xades-diag-data.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/asic-s-xades-diag-data.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -934,9 +895,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void commisign() throws Exception {
-
-		FileInputStream fis = new FileInputStream("src/test/resources/commisign.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/commisign.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -952,8 +911,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void testDSS1330() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/DSS-1330-diag-data.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/DSS-1330-diag-data.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -970,8 +928,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void testTLOK() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/tl-ok.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/tl-ok.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -986,8 +943,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void testTLKO() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/tl-ko.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/tl-ko.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -1005,8 +961,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void testTLNoSigCertEmptyPolicy() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/tl-no-signing-cert.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/tl-no-signing-cert.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -1021,8 +976,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 	
 	@Test
 	public void LTAandAIAforTrustAnchor() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/LTAandAIAforTrustAnchor.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/LTAandAIAforTrustAnchor.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -1042,8 +996,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void testPdfSignatureDictionary() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/diag_data_pdfsigdict.xml");
-		DiagnosticData xmlDiagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag_data_pdfsigdict.xml"));
 		assertNotNull(xmlDiagnosticData);
 		
 		List<eu.europa.esig.dss.jaxb.diagnostic.XmlSignature> xmlSignatures = xmlDiagnosticData.getSignatures();
@@ -1081,8 +1034,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void testDSS1647() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/dss-1647.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/dss-1647.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -1099,8 +1051,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void testDSS1469() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/dss-1469-diag-data.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/dss-1469-diag-data.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -1115,8 +1066,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test
 	public void testDSS1670() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/dss-1670-diag-data.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/dss-1670-diag-data.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -1140,8 +1090,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test(expected = NullPointerException.class)
 	public void validationPolicyNotNull() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/DSS-1330-diag-data.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/DSS-1330-diag-data.xml"));
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
@@ -1153,8 +1102,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test(expected = NullPointerException.class)
 	public void currentDateNotNull() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/DSS-1330-diag-data.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/DSS-1330-diag-data.xml"));
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
@@ -1166,8 +1114,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	@Test(expected = NullPointerException.class)
 	public void validationLevelNotNull() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/DSS-1330-diag-data.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/DSS-1330-diag-data.xml"));
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
@@ -1193,7 +1140,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 	}
 
 	private void validateBestSigningTimes(Reports reports) {
-		eu.europa.esig.dss.jaxb.detailedreport.DetailedReport detailedReportJaxb = reports.getDetailedReportJaxb();
+		XmlDetailedReport detailedReportJaxb = reports.getDetailedReportJaxb();
 		List<eu.europa.esig.dss.jaxb.detailedreport.XmlSignature> xmlSignatures = detailedReportJaxb.getSignatures();
 		for (eu.europa.esig.dss.jaxb.detailedreport.XmlSignature xmlSignature : xmlSignatures) {
 			assertNotNull(xmlSignature.getValidationProcessBasicSignatures().getProofOfExistence());
