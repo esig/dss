@@ -56,7 +56,7 @@ public class ASiCSCAdESLevelBSHA512Test extends AbstractASiCSCAdESTestSignature 
 	}
 
 	@Override
-	protected boolean isGenerateHtmlReports() {
+	protected boolean isGenerateHtmlPdfReports() {
 		return true;
 	}
 

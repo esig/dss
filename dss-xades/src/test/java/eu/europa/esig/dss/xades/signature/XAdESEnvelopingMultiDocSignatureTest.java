@@ -51,7 +51,7 @@ public class XAdESEnvelopingMultiDocSignatureTest extends AbstractPkiFactoryTest
 	}
 
 	@Override
-	protected boolean isGenerateHtmlReports() {
+	protected boolean isGenerateHtmlPdfReports() {
 		return true;
 	}
 

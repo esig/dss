@@ -29,6 +29,7 @@ import static org.junit.Assert.fail;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,6 +40,7 @@ import javax.security.auth.x500.X500Principal;
 import javax.xml.bind.JAXBElement;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.stream.StreamResult;
 
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.exceptions.XMLSecurityException;
@@ -167,11 +169,11 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 
 		getOriginalDocument(signedDocument, diagnosticData);
 
-		generateHtmlReports(reports);
+		generateHtmlPdfReports(reports);
 	}
 
-	protected void generateHtmlReports(Reports reports) {
-		if (!isGenerateHtmlReports()) {
+	protected void generateHtmlPdfReports(Reports reports) {
+		if (!isGenerateHtmlPdfReports()) {
 			return;
 		}
 
@@ -199,6 +201,24 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 			assertNotNull(simpleReportFacade.generateHtmlReport(reports.getSimpleReportJaxb()));
 		} catch (Exception e) {
 			String message = "Unable to generate the html simple report from the jaxb source";
+			LOG.error(message, e);
+			fail(message);
+		}
+
+		try (StringWriter sw = new StringWriter()) {
+			simpleReportFacade.generatePdfReport(marshalledSimpleReport, new StreamResult(sw));
+			assertTrue(Utils.isStringNotBlank(sw.toString()));
+		} catch (Exception e) {
+			String message = "Unable to generate the pdf simple report from the string source";
+			LOG.error(message, e);
+			fail(message);
+		}
+
+		try (StringWriter sw = new StringWriter()) {
+			simpleReportFacade.generatePdfReport(reports.getSimpleReportJaxb(), new StreamResult(sw));
+			assertTrue(Utils.isStringNotBlank(sw.toString()));
+		} catch (Exception e) {
+			String message = "Unable to generate the pdf simple report from the jaxb source";
 			LOG.error(message, e);
 			fail(message);
 		}
@@ -231,9 +251,27 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 			fail(message);
 		}
 
+		try (StringWriter sw = new StringWriter()) {
+			detailedReportFacade.generatePdfReport(marshalledDetailedReport, new StreamResult(sw));
+			assertTrue(Utils.isStringNotBlank(sw.toString()));
+		} catch (Exception e) {
+			String message = "Unable to generate the pdf detailed report from the string source";
+			LOG.error(message, e);
+			fail(message);
+		}
+
+		try (StringWriter sw = new StringWriter()) {
+			detailedReportFacade.generatePdfReport(reports.getDetailedReportJaxb(), new StreamResult(sw));
+			assertTrue(Utils.isStringNotBlank(sw.toString()));
+		} catch (Exception e) {
+			String message = "Unable to generate the pdf detailed report from the jaxb source";
+			LOG.error(message, e);
+			fail(message);
+		}
+
 	}
 
-	protected boolean isGenerateHtmlReports() {
+	protected boolean isGenerateHtmlPdfReports() {
 		return false;
 	}
 

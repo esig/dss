@@ -54,7 +54,7 @@ public class ASiCEXAdESLevelLTTest extends AbstractASiCEXAdESTestSignature {
 	}
 
 	@Override
-	protected boolean isGenerateHtmlReports() {
+	protected boolean isGenerateHtmlPdfReports() {
 		return true;
 	}
 

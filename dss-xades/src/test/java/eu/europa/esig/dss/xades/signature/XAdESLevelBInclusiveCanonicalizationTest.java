@@ -57,7 +57,7 @@ public class XAdESLevelBInclusiveCanonicalizationTest extends AbstractXAdESTestS
 	}
 
 	@Override
-	protected boolean isGenerateHtmlReports() {
+	protected boolean isGenerateHtmlPdfReports() {
 		return true;
 	}
 

@@ -53,7 +53,7 @@ public class ASiCECAdESLevelBSpecialCharInFilenameTest extends AbstractASiCECAdE
 	}
 
 	@Override
-	protected boolean isGenerateHtmlReports() {
+	protected boolean isGenerateHtmlPdfReports() {
 		return true;
 	}
 

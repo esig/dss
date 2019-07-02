@@ -7,7 +7,9 @@ import java.io.StringWriter;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.util.JAXBSource;
+import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -36,20 +38,39 @@ public class SimpleReportFacade {
 
 	public String generateHtmlReport(XmlSimpleReport simpleReport) throws IOException, TransformerException, JAXBException {
 		try (StringWriter stringWriter = new StringWriter()) {
-			Transformer transformer = SimpleReportXmlDefiner.getHtmlTemplates().newTransformer();
-			transformer.transform(
-					new JAXBSource(SimpleReportXmlDefiner.getJAXBContext(), SimpleReportXmlDefiner.OBJECT_FACTORY.createSimpleReport(simpleReport)),
-					new StreamResult(stringWriter));
+			generateHtmlReport(simpleReport, new StreamResult(stringWriter));
 			return stringWriter.toString();
 		}
 	}
 
+	public void generateHtmlReport(XmlSimpleReport simpleReport, Result result)
+			throws TransformerConfigurationException, IOException, TransformerException, JAXBException {
+		Transformer transformer = SimpleReportXmlDefiner.getHtmlTemplates().newTransformer();
+		transformer.transform(new JAXBSource(SimpleReportXmlDefiner.getJAXBContext(), SimpleReportXmlDefiner.OBJECT_FACTORY.createSimpleReport(simpleReport)),
+				result);
+	}
+
 	public String generateHtmlReport(String marshalledSimpleReport) throws IOException, TransformerException {
 		try (StringWriter stringWriter = new StringWriter()) {
-			Transformer transformer = SimpleReportXmlDefiner.getHtmlTemplates().newTransformer();
-			transformer.transform(new StreamSource(new StringReader(marshalledSimpleReport)), new StreamResult(stringWriter));
+			generateHtmlReport(marshalledSimpleReport, new StreamResult(stringWriter));
 			return stringWriter.toString();
 		}
+	}
+
+	public void generateHtmlReport(String marshalledSimpleReport, Result result) throws TransformerConfigurationException, IOException, TransformerException {
+		Transformer transformer = SimpleReportXmlDefiner.getHtmlTemplates().newTransformer();
+		transformer.transform(new StreamSource(new StringReader(marshalledSimpleReport)), result);
+	}
+
+	public void generatePdfReport(XmlSimpleReport simpleReport, Result result) throws IOException, TransformerException, JAXBException {
+		Transformer transformer = SimpleReportXmlDefiner.getPdfTemplates().newTransformer();
+		transformer.transform(new JAXBSource(SimpleReportXmlDefiner.getJAXBContext(), SimpleReportXmlDefiner.OBJECT_FACTORY.createSimpleReport(simpleReport)),
+				result);
+	}
+
+	public void generatePdfReport(String marshalledSimpleReport, Result result) throws IOException, TransformerException {
+		Transformer transformer = SimpleReportXmlDefiner.getPdfTemplates().newTransformer();
+		transformer.transform(new StreamSource(new StringReader(marshalledSimpleReport)), result);
 	}
 
 }

@@ -51,7 +51,7 @@ public class PAdESLevelLTA extends AbstractPAdESTestSignature {
 	}
 
 	@Override
-	protected boolean isGenerateHtmlReports() {
+	protected boolean isGenerateHtmlPdfReports() {
 		return true;
 	}
 
