@@ -34,7 +34,7 @@ public class JaxbPolicyTest {
 		assertEquals("DSA", algoName);
 		assertEquals("128", algo.getSize());
 
-		JAXBContext jc = JAXBContext.newInstance("eu.europa.esig.jaxb.policy");
+		JAXBContext jc = ValidationPolicyXmlDefiner.getJAXBContext();
 		Marshaller marshaller = jc.createMarshaller();
 		marshaller.marshal(constraintsParameters, new FileOutputStream("target/constraint.xml"));
 	}

@@ -23,9 +23,6 @@ package eu.europa.esig.dss.validation;
 import java.io.Serializable;
 
 import javax.activation.DataHandler;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -35,8 +32,8 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlDetailedReport;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
 import eu.europa.esig.dss.jaxb.simplereport.XmlSimpleReport;
+import eu.europa.esig.jaxb.validationreport.ValidationReportFacade;
 import eu.europa.esig.jaxb.validationreport.ValidationReportType;
-import eu.europa.esig.jaxb.validationreport.ValidationReportUtils;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @SuppressWarnings("serial")
@@ -107,20 +104,14 @@ public class WSReportsDTO implements Serializable {
 		this.validationReportaDataHandler = validationReportaDataHandler;
 	}
 
-	@SuppressWarnings("unchecked")
 	public ValidationReportType getValidationReport() {
 		if ((validationReport == null) && (validationReportaDataHandler != null)) {
 			try {
-				JAXBContext jaxbContext = ValidationReportUtils.getJAXBContext();
-				Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-				JAXBElement<ValidationReportType> unmarshal = (JAXBElement<ValidationReportType>) unmarshaller
-						.unmarshal(validationReportaDataHandler.getInputStream());
-				validationReport = unmarshal.getValue();
+				validationReport = ValidationReportFacade.newFacade().unmarshall(validationReportaDataHandler.getInputStream());
 			} catch (Exception e) {
 				throw new DSSException("Unable to unmarshall ValidationReportType", e);
 			}
 		}
-
 		return validationReport;
 	}
 

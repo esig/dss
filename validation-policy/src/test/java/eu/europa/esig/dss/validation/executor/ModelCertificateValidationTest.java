@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,6 +29,7 @@ import eu.europa.esig.dss.validation.reports.CertificateReports;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 import eu.europa.esig.jaxb.policy.Model;
 import eu.europa.esig.jaxb.policy.ModelConstraint;
+import eu.europa.esig.jaxb.policy.ValidationPolicyFacade;
 
 /**
  * JUnit test implementation for model based certificate validation.
@@ -111,8 +111,7 @@ public class ModelCertificateValidationTest extends ModelAbstractlValidation {
 	public ModelCertificateValidationTest(final TestCase testCase) throws Exception {
 		this.testCase = testCase;
 		
-		FileInputStream policyFis = new FileInputStream(testCase.getTestData().getPolicy());
-		ConstraintsParameters policyJaxB = getJAXBObjectFromString(policyFis, ConstraintsParameters.class, "/xsd/policy.xsd");
+		ConstraintsParameters policyJaxB = ValidationPolicyFacade.newFacade().unmarshall(new File(testCase.getTestData().getPolicy()));
 
 		ModelConstraint mc = new ModelConstraint();
 		mc.setValue(testCase.getModel());

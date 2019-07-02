@@ -33,9 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.slf4j.Logger;
@@ -45,7 +43,6 @@ import org.w3c.dom.Element;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.tsl.CertSubjectDNAttributeCondition;
 import eu.europa.esig.dss.tsl.CompositeCondition;
 import eu.europa.esig.dss.tsl.Condition;
@@ -63,7 +60,7 @@ import eu.europa.esig.dss.util.TimeDependentValues;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.KeyUsageBit;
-import eu.europa.esig.jaxb.trustedlist.TrustedListUtils;
+import eu.europa.esig.jaxb.trustedlist.TrustedListFacade;
 import eu.europa.esig.jaxb.trustedlist.ecc.CriteriaListType;
 import eu.europa.esig.jaxb.trustedlist.ecc.KeyUsageBitType;
 import eu.europa.esig.jaxb.trustedlist.ecc.KeyUsageType;
@@ -126,10 +123,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 	@SuppressWarnings("unchecked")
 	public TSLParserResult call() throws Exception {
 		try (InputStream is = trustedList.openStream()) {
-			JAXBContext jaxbContext = TrustedListUtils.getJAXBContext();
-			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			JAXBElement<TrustStatusListType> jaxbElement = (JAXBElement<TrustStatusListType>) unmarshaller.unmarshal(DomUtils.getSecureXMLStreamReader(is));
-			TrustStatusListType trustStatusList = jaxbElement.getValue();
+			TrustStatusListType trustStatusList = TrustedListFacade.newFacade().unmarshall(is, false);
 			return getTslModel(trustStatusList);
 		} catch (Exception e) {
 			throw new DSSException("Unable to parse file '" + trustedList.getAbsolutePath() + "' : " + e.getMessage(), e);

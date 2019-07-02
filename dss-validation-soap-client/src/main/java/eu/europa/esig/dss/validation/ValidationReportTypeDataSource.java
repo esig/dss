@@ -7,12 +7,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import javax.activation.DataSource;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
 
-import eu.europa.esig.jaxb.validationreport.ObjectFactory;
+import eu.europa.esig.jaxb.validationreport.ValidationReportFacade;
 import eu.europa.esig.jaxb.validationreport.ValidationReportType;
-import eu.europa.esig.jaxb.validationreport.ValidationReportUtils;
 
 public class ValidationReportTypeDataSource implements DataSource {
 
@@ -40,12 +37,8 @@ public class ValidationReportTypeDataSource implements DataSource {
 	@Override
 	public OutputStream getOutputStream() throws IOException {
 		try {
-			ObjectFactory objectFactory = new ObjectFactory();
-			JAXBContext jaxbContext = ValidationReportUtils.getJAXBContext();
-			Marshaller marshaller = jaxbContext.createMarshaller();
-
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			marshaller.marshal(objectFactory.createValidationReport(validationReport), baos);
+			ValidationReportFacade.newFacade().marshall(validationReport, baos, true);
 			return baos;
 		} catch (Exception e) {
 			throw new IOException(e);
