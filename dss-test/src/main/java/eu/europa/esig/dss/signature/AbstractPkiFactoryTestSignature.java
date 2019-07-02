@@ -29,6 +29,7 @@ import static org.junit.Assert.fail;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,6 +40,7 @@ import javax.security.auth.x500.X500Principal;
 import javax.xml.bind.JAXBElement;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.stream.StreamResult;
 
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.exceptions.XMLSecurityException;
@@ -57,10 +59,13 @@ import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignerLocation;
+import eu.europa.esig.dss.jaxb.detailedreport.DetailedReportFacade;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerData;
+import eu.europa.esig.dss.jaxb.simplereport.SimpleReportFacade;
 import eu.europa.esig.dss.token.KSPrivateKeyEntry;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -163,6 +168,111 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		verifyETSIValidationReport(etsiValidationReportJaxb);
 
 		getOriginalDocument(signedDocument, diagnosticData);
+
+		generateHtmlPdfReports(reports);
+	}
+
+	protected void generateHtmlPdfReports(Reports reports) {
+		if (!isGenerateHtmlPdfReports()) {
+			return;
+		}
+
+		SimpleReportFacade simpleReportFacade = SimpleReportFacade.newFacade();
+
+		String marshalledSimpleReport = null;
+		try {
+			marshalledSimpleReport = simpleReportFacade.marshall(reports.getSimpleReportJaxb(), true);
+			assertNotNull(marshalledSimpleReport);
+		} catch (Exception e) {
+			String message = "Unable to marshall the simple report";
+			LOG.error(message, e);
+			fail(message);
+		}
+
+		try {
+			assertNotNull(simpleReportFacade.generateHtmlReport(marshalledSimpleReport));
+		} catch (Exception e) {
+			String message = "Unable to generate the html simple report from the string source";
+			LOG.error(message, e);
+			fail(message);
+		}
+
+		try {
+			assertNotNull(simpleReportFacade.generateHtmlReport(reports.getSimpleReportJaxb()));
+		} catch (Exception e) {
+			String message = "Unable to generate the html simple report from the jaxb source";
+			LOG.error(message, e);
+			fail(message);
+		}
+
+		try (StringWriter sw = new StringWriter()) {
+			simpleReportFacade.generatePdfReport(marshalledSimpleReport, new StreamResult(sw));
+			assertTrue(Utils.isStringNotBlank(sw.toString()));
+		} catch (Exception e) {
+			String message = "Unable to generate the pdf simple report from the string source";
+			LOG.error(message, e);
+			fail(message);
+		}
+
+		try (StringWriter sw = new StringWriter()) {
+			simpleReportFacade.generatePdfReport(reports.getSimpleReportJaxb(), new StreamResult(sw));
+			assertTrue(Utils.isStringNotBlank(sw.toString()));
+		} catch (Exception e) {
+			String message = "Unable to generate the pdf simple report from the jaxb source";
+			LOG.error(message, e);
+			fail(message);
+		}
+
+		DetailedReportFacade detailedReportFacade = DetailedReportFacade.newFacade();
+
+		String marshalledDetailedReport = null;
+		try {
+			marshalledDetailedReport = detailedReportFacade.marshall(reports.getDetailedReportJaxb(), true);
+			assertNotNull(marshalledDetailedReport);
+		} catch (Exception e) {
+			String message = "Unable to marshall the detailed report";
+			LOG.error(message, e);
+			fail(message);
+		}
+
+		try {
+			assertNotNull(detailedReportFacade.generateHtmlReport(marshalledDetailedReport));
+		} catch (Exception e) {
+			String message = "Unable to generate the html detailed report from the string source";
+			LOG.error(message, e);
+			fail(message);
+		}
+
+		try {
+			assertNotNull(detailedReportFacade.generateHtmlReport(reports.getDetailedReportJaxb()));
+		} catch (Exception e) {
+			String message = "Unable to generate the html detailed report from the jaxb source";
+			LOG.error(message, e);
+			fail(message);
+		}
+
+		try (StringWriter sw = new StringWriter()) {
+			detailedReportFacade.generatePdfReport(marshalledDetailedReport, new StreamResult(sw));
+			assertTrue(Utils.isStringNotBlank(sw.toString()));
+		} catch (Exception e) {
+			String message = "Unable to generate the pdf detailed report from the string source";
+			LOG.error(message, e);
+			fail(message);
+		}
+
+		try (StringWriter sw = new StringWriter()) {
+			detailedReportFacade.generatePdfReport(reports.getDetailedReportJaxb(), new StreamResult(sw));
+			assertTrue(Utils.isStringNotBlank(sw.toString()));
+		} catch (Exception e) {
+			String message = "Unable to generate the pdf detailed report from the jaxb source";
+			LOG.error(message, e);
+			fail(message);
+		}
+
+	}
+
+	protected boolean isGenerateHtmlPdfReports() {
+		return false;
 	}
 
 	protected void checkAdvancedSignatures(List<AdvancedSignature> signatures) {
@@ -330,7 +440,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		checkSignaturePolicyIdentifier(diagnosticData);
 	}
 
-	protected void verifyDiagnosticDataJaxb(eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData diagnosticDataJaxb) {
+	protected void verifyDiagnosticDataJaxb(XmlDiagnosticData diagnosticDataJaxb) {
 
 	}
 

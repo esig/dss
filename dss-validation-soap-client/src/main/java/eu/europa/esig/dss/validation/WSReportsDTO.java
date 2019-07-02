@@ -20,73 +20,103 @@
  */
 package eu.europa.esig.dss.validation;
 
+import java.io.Serializable;
+
+import javax.activation.DataHandler;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlMimeType;
 
-import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
-import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.jaxb.simplereport.SimpleReport;
+import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlDetailedReport;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
+import eu.europa.esig.dss.jaxb.simplereport.XmlSimpleReport;
+import eu.europa.esig.jaxb.validationreport.ValidationReportFacade;
 import eu.europa.esig.jaxb.validationreport.ValidationReportType;
 
-@XmlRootElement(name = "WSReportsDTO", namespace = "http://validation.dss.esig.europa.eu/")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class WSReportsDTO {
+@SuppressWarnings("serial")
+public class WSReportsDTO implements Serializable {
 
-	@XmlElement(namespace = "http://dss.esig.europa.eu/validation/diagnostic")
-	private DiagnosticData diagnosticData;
+	@XmlElement(name = "DiagnosticData", namespace = "http://dss.esig.europa.eu/validation/diagnostic")
+	private XmlDiagnosticData diagnosticData;
 
-	@XmlElement(namespace = "http://dss.esig.europa.eu/validation/simple-report")
-	private SimpleReport simpleReport;
+	@XmlElement(name = "SimpleReport", namespace = "http://dss.esig.europa.eu/validation/simple-report")
+	private XmlSimpleReport simpleReport;
 
-	@XmlElement(namespace = "http://dss.esig.europa.eu/validation/detailed-report")
-	private DetailedReport detailedReport;
+	@XmlElement(name = "DetailedReport", namespace = "http://dss.esig.europa.eu/validation/detailed-report")
+	private XmlDetailedReport detailedReport;
 
-	@XmlElement(namespace = "http://uri.etsi.org/19102/v1.2.1")
-	private ValidationReportType etsiValidationReport;
+	// Use MTOM to avoid XML ID conflict (between diagnostic data and etsi
+	// validation report)
+	@XmlMimeType("application/octet-stream")
+	private DataHandler validationReportaDataHandler;
+
+	private transient ValidationReportType validationReport;
 
 	public WSReportsDTO() {
 	}
 
-	public WSReportsDTO(DiagnosticData diagnosticData, SimpleReport simpleReport, DetailedReport detailedReport, 
-			ValidationReportType validationReport) {
+	public WSReportsDTO(XmlDiagnosticData diagnosticData, XmlSimpleReport simpleReport, XmlDetailedReport detailedReport) {
 		this.diagnosticData = diagnosticData;
 		this.detailedReport = detailedReport;
 		this.simpleReport = simpleReport;
-		this.etsiValidationReport = validationReport;
 	}
 
-	public DiagnosticData getDiagnosticData() {
+	public WSReportsDTO(XmlDiagnosticData diagnosticData, XmlSimpleReport simpleReport, XmlDetailedReport detailedReport,
+			ValidationReportType validationReport) {
+		this(diagnosticData, simpleReport, detailedReport);
+		this.validationReport = validationReport;
+
+		this.validationReportaDataHandler = new DataHandler(new ValidationReportTypeDataSource(validationReport));
+	}
+
+	public XmlDiagnosticData getDiagnosticData() {
 		return diagnosticData;
 	}
 
-	public void setDiagnosticData(DiagnosticData diagnosticData) {
+	public void setDiagnosticData(XmlDiagnosticData diagnosticData) {
 		this.diagnosticData = diagnosticData;
 	}
 
-	public SimpleReport getSimpleReport() {
+	public XmlSimpleReport getSimpleReport() {
 		return simpleReport;
 	}
 
-	public void setSimpleReport(SimpleReport simpleReport) {
+	public void setSimpleReport(XmlSimpleReport simpleReport) {
 		this.simpleReport = simpleReport;
 	}
 
-	public eu.europa.esig.dss.jaxb.detailedreport.DetailedReport getDetailedReport() {
+	public XmlDetailedReport getDetailedReport() {
 		return detailedReport;
 	}
 
-	public void setDetailedReport(eu.europa.esig.dss.jaxb.detailedreport.DetailedReport detailedReport) {
+	public void setDetailedReport(XmlDetailedReport detailedReport) {
 		this.detailedReport = detailedReport;
 	}
-	
-	public ValidationReportType getEtsiValidationReport() {
-		return etsiValidationReport;
+
+	public DataHandler getValidationReportaDataHandler() {
+		return validationReportaDataHandler;
 	}
-	
-	public void setEtsiValidationReport(ValidationReportType validationReport) {
-		this.etsiValidationReport = validationReport;
+
+	public void setValidationReportaDataHandler(DataHandler validationReportaDataHandler) {
+		this.validationReportaDataHandler = validationReportaDataHandler;
+	}
+
+	public ValidationReportType getValidationReport() {
+		if ((validationReport == null) && (validationReportaDataHandler != null)) {
+			try {
+				validationReport = ValidationReportFacade.newFacade().unmarshall(validationReportaDataHandler.getInputStream());
+			} catch (Exception e) {
+				throw new DSSException("Unable to unmarshall ValidationReportType", e);
+			}
+		}
+		return validationReport;
+	}
+
+	public void setValidationReport(ValidationReportType validationReport) {
+		this.validationReport = validationReport;
 	}
 
 }

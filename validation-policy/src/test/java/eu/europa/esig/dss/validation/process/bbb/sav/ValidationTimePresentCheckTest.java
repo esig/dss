@@ -2,15 +2,15 @@ package eu.europa.esig.dss.validation.process.bbb.sav;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.io.FileInputStream;
+import java.io.File;
 
 import org.junit.Test;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
-import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticDataFacade;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
 import eu.europa.esig.dss.validation.executor.AbstractValidationExecutorTest;
 import eu.europa.esig.dss.validation.executor.CustomProcessExecutor;
-import eu.europa.esig.dss.validation.policy.XmlUtils;
 import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
 
@@ -18,8 +18,7 @@ public class ValidationTimePresentCheckTest extends AbstractValidationExecutorTe
 	
 	@Test
 	public void test() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/universign.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/universign.xml"));
 		assertNotNull(diagnosticData);
 		
 		CustomProcessExecutor executor = new CustomProcessExecutor();

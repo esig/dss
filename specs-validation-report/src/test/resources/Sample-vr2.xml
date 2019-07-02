@@ -1,0 +1,128 @@
+<ns6:ValidationReport xmlns:ns5="http://www.w3.org/2000/09/xmldsig#" xmlns:ns6="http://uri.etsi.org/19102/v1.2.1#" xmlns:ns7="http://uri.etsi.org/01903/v1.3.2#" xmlns:ns8="http://uri.etsi.org/02231/v2#">
+	<ns6:SignatureValidationReport>
+		<ns6:SignatureIdentifier
+			id="S-36152328495695345EC536916548C76231B74DE03DCDCEC4600732B284B8FCD6">
+			<ns6:DigestAlgAndValue>
+				<ns5:DigestMethod
+					Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" />
+				<ns5:DigestValue>3slgQT/LwpEj3EUMNjCIiOipZP5FiWF8/vrc5YzD0VQ=</ns5:DigestValue>
+			</ns6:DigestAlgAndValue>
+			<ns5:SignatureValue>
+				VJH9vrEf3ko8nB9BCnLV+DxP0QQr2O7DxlF+VZqbkWhOWTQCTjNXGmnpZqmZ/PlYeMBjItP5jLtur0qvR1SHBpGa9mauckAMpBb8fH/TRfc029PqnRJrWBWefCcbz/eUpdXrBo9KoNre9EzrD/N9xKAYuWjzdqTUjKtB+Fbpmo2Dy9Y6z2CHDZnld9EIV7maI9wg8FS6SmVuhdQVDKCP1O9424ogsITcQDse4Y2p1hyOxRFDqs5h2ph9bYhq2sGZXgQPKPwUmoX70l0KdM4X4zttkw0Vn6B6VwZqtB8I/zrKv8F9T8uRE3/rdz4IVB/sPedBwf16s+FkkN5ellBSmA==
+			</ns5:SignatureValue>
+			<ns6:HashOnly>false</ns6:HashOnly>
+			<ns6:DocHashOnly>false</ns6:DocHashOnly>
+			<ns6:DAIdentifier>id-3fcf6164656fd9b93f2ddbd81c1c4b4d</ns6:DAIdentifier>
+		</ns6:SignatureIdentifier>
+		<ns6:ValidationTimeInfo>
+			<ns6:ValidationTime>2019-06-26T12:58:31Z</ns6:ValidationTime>
+			<ns6:BestSignatureTime>
+				<ns6:POETime>2019-06-26T12:58:31Z</ns6:POETime>
+				<ns6:TypeOfProof>urn:etsi:019102:poetype:validation</ns6:TypeOfProof>
+			</ns6:BestSignatureTime>
+		</ns6:ValidationTimeInfo>
+		<ns6:SignersDocument>
+			<ns6:DigestAlgAndValue>
+				<ns5:DigestMethod
+					Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" />
+				<ns5:DigestValue>Wqxm+Ogfc18GtIGkvxb0FddbJq978+lgJ2P2pxwdp4o=</ns5:DigestValue>
+			</ns6:DigestAlgAndValue>
+			<ns6:SignersDocumentRef
+				VOReference="D-27433747ED79416ACDA3F7E4F91FD0399D3407ADAD13C6FA3DDA72815A7C8B9B" />
+		</ns6:SignersDocument>
+		<ns6:SignatureAttributes>
+			<ns6:SigningTime>
+				<ns6:Time>2016-01-25T08:50:32Z</ns6:Time>
+			</ns6:SigningTime>
+			<ns6:SigningCertificate>
+				<ns6:AttributeObject
+					VOReference="C-3FFFFA6CC665DFB97E9A34F9CA62DB5EB441EC9F16A8667A7B6BCAB734DCCFFE" />
+				<ns6:CertID>
+					<ns6:X509IssuerSerial>
+						MD4wNKQyMDAxGzAZBgNVBAMTElJvb3RTZWxmU2lnbmVkRmFrZTERMA8GA1UEChMIRFNTLXRlc3QCBhODFN93cQ==
+					</ns6:X509IssuerSerial>
+					<ns5:DigestMethod
+						Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+					<ns5:DigestValue>WT1Ts8BIz2AC9wrQ9Pgb/h6NQnk=</ns5:DigestValue>
+				</ns6:CertID>
+			</ns6:SigningCertificate>
+			<ns6:DataObjectFormat>
+				<ns6:MimeType>text/xml</ns6:MimeType>
+			</ns6:DataObjectFormat>
+		</ns6:SignatureAttributes>
+		<ns6:SignerInformation>
+			<ns6:SignerCertificate
+				VOReference="C-3FFFFA6CC665DFB97E9A34F9CA62DB5EB441EC9F16A8667A7B6BCAB734DCCFFE" />
+			<ns6:Signer>SignerFake</ns6:Signer>
+		</ns6:SignerInformation>
+		<ns6:SignatureValidationProcess>
+			<ns6:SignatureValidationProcessID>urn::etsi:019102:validationprocess:LTA</ns6:SignatureValidationProcessID>
+		</ns6:SignatureValidationProcess>
+		<ns6:SignatureValidationStatus>
+			<ns6:MainIndication>urn:etsi:019102:mainindication:indeterminate</ns6:MainIndication>
+			<ns6:SubIndication>
+				urn:etsi:019102:subindication:NO_CERTIFICATE_CHAIN_FOUND
+			</ns6:SubIndication>
+			<ns6:AssociatedValidationReportData>
+				<ns6:CertificateChain>
+					<ns6:SigningCertificate
+						VOReference="C-3FFFFA6CC665DFB97E9A34F9CA62DB5EB441EC9F16A8667A7B6BCAB734DCCFFE" />
+					<ns6:IntermediateCertificate
+						VOReference="C-AD3620F1A826B491379CD45C3210914FCE7BEC18E2824BDDD7B171355BFA8FC7" />
+				</ns6:CertificateChain>
+				<ns6:CryptoInformation>
+					<ns6:Algorithm>http://www.w3.org/2001/04/xmldsig-more#rsa-sha256</ns6:Algorithm>
+					<ns6:SecureAlgorithm>true</ns6:SecureAlgorithm>
+					<ns6:NotAfter>2021-12-31T23:00:00Z</ns6:NotAfter>
+				</ns6:CryptoInformation>
+			</ns6:AssociatedValidationReportData>
+		</ns6:SignatureValidationStatus>
+	</ns6:SignatureValidationReport>
+	<ns6:SignatureValidationObjects>
+		<ns6:ValidationObject
+			id="C-AD3620F1A826B491379CD45C3210914FCE7BEC18E2824BDDD7B171355BFA8FC7">
+			<ns6:ObjectType>urn:etsi:019102:validationObject:certificate</ns6:ObjectType>
+			<ns6:ValidationObject>
+				<ns6:DigestAlgAndValue>
+					<ns5:DigestMethod
+						Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" />
+					<ns5:DigestValue>rTYg8agmtJE3nNRcMhCRT8577Bjigkvd17FxNVv6j8c=</ns5:DigestValue>
+				</ns6:DigestAlgAndValue>
+			</ns6:ValidationObject>
+			<ns6:POE>
+				<ns6:POETime>2019-06-26T12:58:31Z</ns6:POETime>
+				<ns6:TypeOfProof>urn:etsi:019102:poetype:validation</ns6:TypeOfProof>
+			</ns6:POE>
+		</ns6:ValidationObject>
+		<ns6:ValidationObject
+			id="C-3FFFFA6CC665DFB97E9A34F9CA62DB5EB441EC9F16A8667A7B6BCAB734DCCFFE">
+			<ns6:ObjectType>urn:etsi:019102:validationObject:certificate</ns6:ObjectType>
+			<ns6:ValidationObject>
+				<ns6:DigestAlgAndValue>
+					<ns5:DigestMethod
+						Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" />
+					<ns5:DigestValue>P//6bMZl37l+mjT5ymLbXrRB7J8WqGZ6e2vKtzTcz/4=</ns5:DigestValue>
+				</ns6:DigestAlgAndValue>
+			</ns6:ValidationObject>
+			<ns6:POE>
+				<ns6:POETime>2019-06-26T12:58:31Z</ns6:POETime>
+				<ns6:TypeOfProof>urn:etsi:019102:poetype:validation</ns6:TypeOfProof>
+			</ns6:POE>
+		</ns6:ValidationObject>
+		<ns6:ValidationObject
+			id="D-27433747ED79416ACDA3F7E4F91FD0399D3407ADAD13C6FA3DDA72815A7C8B9B">
+			<ns6:ObjectType>urn:etsi:019102:validationObject:signedData</ns6:ObjectType>
+			<ns6:ValidationObject>
+				<ns6:DigestAlgAndValue>
+					<ns5:DigestMethod
+						Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" />
+					<ns5:DigestValue>Wqxm+Ogfc18GtIGkvxb0FddbJq978+lgJ2P2pxwdp4o=</ns5:DigestValue>
+				</ns6:DigestAlgAndValue>
+			</ns6:ValidationObject>
+			<ns6:POE>
+				<ns6:POETime>2019-06-26T12:58:31Z</ns6:POETime>
+				<ns6:TypeOfProof>urn:etsi:019102:poetype:validation</ns6:TypeOfProof>
+			</ns6:POE>
+		</ns6:ValidationObject>
+	</ns6:SignatureValidationObjects>
+</ns6:ValidationReport>

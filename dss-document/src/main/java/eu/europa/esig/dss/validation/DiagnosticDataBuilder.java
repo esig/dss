@@ -59,7 +59,6 @@ import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.jaxb.diagnostic.ObjectFactory;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
@@ -69,6 +68,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertifiedRole;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlContainerInfo;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDistinguishedName;
@@ -317,8 +317,8 @@ public class DiagnosticDataBuilder {
 		return this;
 	}
 
-	public DiagnosticData build() {
-		DiagnosticData diagnosticData = new DiagnosticData();
+	public XmlDiagnosticData build() {
+		XmlDiagnosticData diagnosticData = new XmlDiagnosticData();
 		if (signedDocument != null) {
 			diagnosticData.setDocumentName(removeSpecialCharsForXml(signedDocument.getName()));
 		}

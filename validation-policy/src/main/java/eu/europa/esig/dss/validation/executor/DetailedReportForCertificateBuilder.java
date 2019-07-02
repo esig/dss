@@ -25,8 +25,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlDetailedReport;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.qualification.certificate.CertificateQualificationBlock;
@@ -42,9 +42,9 @@ public class DetailedReportForCertificateBuilder extends AbstractDetailedReportB
 		this.certificateId = certificateId;
 	}
 
-	DetailedReport build() {
+	XmlDetailedReport build() {
 
-		DetailedReport detailedReport = init();
+		XmlDetailedReport detailedReport = init();
 
 		CertificateWrapper certificate = diagnosticData.getUsedCertificateById(certificateId);
 

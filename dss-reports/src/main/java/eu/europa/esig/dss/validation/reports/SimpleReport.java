@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.List;
 
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignature;
+import eu.europa.esig.dss.jaxb.simplereport.XmlSimpleReport;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureQualification;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
@@ -36,9 +37,9 @@ import eu.europa.esig.dss.validation.policy.rules.SubIndication;
  */
 public class SimpleReport {
 
-	private final eu.europa.esig.dss.jaxb.simplereport.SimpleReport wrapped;
+	private final XmlSimpleReport wrapped;
 
-	public SimpleReport(final eu.europa.esig.dss.jaxb.simplereport.SimpleReport wrapped) {
+	public SimpleReport(final XmlSimpleReport wrapped) {
 		this.wrapped = wrapped;
 	}
 
@@ -270,7 +271,7 @@ public class SimpleReport {
 	 * 
 	 * @return the jaxb model
 	 */
-	public eu.europa.esig.dss.jaxb.simplereport.SimpleReport getJaxbModel() {
+	public XmlSimpleReport getJaxbModel() {
 		return wrapped;
 	}
 

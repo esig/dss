@@ -23,7 +23,7 @@ package eu.europa.esig.dss.validation.process.bbb.isc;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.FileInputStream;
+import java.io.File;
 import java.util.List;
 
 import org.junit.Test;
@@ -31,11 +31,11 @@ import org.junit.Test;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlISC;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
-import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
-import eu.europa.esig.dss.validation.process.bbb.LoadPolicyUtils;
 import eu.europa.esig.dss.validation.process.bbb.isc.checks.SigningCertificateRecognitionCheck;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.jaxb.policy.Level;
@@ -45,9 +45,7 @@ public class SigningCertificateRecognitionCheckTest {
 
 	@Test
 	public void signingCertificateRecognitionCheck() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/it.xml");
-		DiagnosticData diagnosticData = LoadPolicyUtils.getJAXBObjectFromString(fis, DiagnosticData.class,
-				"/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/it.xml"));
 		assertNotNull(diagnosticData);
 
 		XmlSigningCertificate xsc = new XmlSigningCertificate();

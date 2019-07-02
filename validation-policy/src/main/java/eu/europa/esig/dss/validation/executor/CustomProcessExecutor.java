@@ -23,7 +23,9 @@ package eu.europa.esig.dss.validation.executor;
 import java.util.Date;
 import java.util.Objects;
 
-import eu.europa.esig.dss.jaxb.simplereport.SimpleReport;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlDetailedReport;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
+import eu.europa.esig.dss.jaxb.simplereport.XmlSimpleReport;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -35,7 +37,7 @@ public class CustomProcessExecutor implements ProcessExecutor<Reports> {
 	private Date currentTime = new Date();
 	private ValidationLevel validationLevel = ValidationLevel.ARCHIVAL_DATA;
 
-	private eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData jaxbDiagnosticData;
+	private XmlDiagnosticData jaxbDiagnosticData;
 
 	private ValidationPolicy policy;
 
@@ -45,7 +47,7 @@ public class CustomProcessExecutor implements ProcessExecutor<Reports> {
 	}
 
 	@Override
-	public void setDiagnosticData(eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData diagnosticData) {
+	public void setDiagnosticData(XmlDiagnosticData diagnosticData) {
 		this.jaxbDiagnosticData = diagnosticData;
 	}
 
@@ -70,12 +72,12 @@ public class CustomProcessExecutor implements ProcessExecutor<Reports> {
 		DiagnosticData diagnosticData = new DiagnosticData(jaxbDiagnosticData);
 
 		DetailedReportBuilder detailedReportBuilder = new DetailedReportBuilder(currentTime, policy, validationLevel, diagnosticData);
-		eu.europa.esig.dss.jaxb.detailedreport.DetailedReport jaxbDetailedReport = detailedReportBuilder.build();
+		XmlDetailedReport jaxbDetailedReport = detailedReportBuilder.build();
 
 		DetailedReport detailedReportWrapper = new DetailedReport(jaxbDetailedReport);
 
 		SimpleReportBuilder simpleReportBuilder = new SimpleReportBuilder(currentTime, policy, diagnosticData, detailedReportWrapper);
-		SimpleReport simpleReport = simpleReportBuilder.build();
+		XmlSimpleReport simpleReport = simpleReportBuilder.build();
 		
 		ETSIValidationReportBuilder etsiValidationReportBuilder = new ETSIValidationReportBuilder(currentTime, policy, diagnosticData, detailedReportWrapper);
 		ValidationReportType validationReport = etsiValidationReportBuilder.build();

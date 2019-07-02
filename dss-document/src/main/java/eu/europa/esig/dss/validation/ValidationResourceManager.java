@@ -22,39 +22,19 @@ package eu.europa.esig.dss.validation;
 
 import java.io.InputStream;
 
-import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
-import eu.europa.esig.jaxb.policy.ObjectFactory;
+import eu.europa.esig.jaxb.policy.ValidationPolicyFacade;
 
 public class ValidationResourceManager {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ValidationResourceManager.class);
 
 	public static final String defaultPolicyConstraintsLocation = "/policy/constraint.xml";
-	public static final String defaultPolicyXsdLocation = "/xsd/policy.xsd";
-
-	private static JAXBContext jaxbContext;
-
-	static {
-		try {
-			jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
-		} catch (JAXBException e) {
-			throw new DSSException(e);
-		}
-	}
 
 	/**
 	 * This method loads the policy constraint file. If the validationPolicy is not specified then the default policy
@@ -65,16 +45,10 @@ public class ValidationResourceManager {
 	 * @return
 	 */
 	public static ConstraintsParameters loadPolicyData(InputStream policyDataStream) {
-
 		if (policyDataStream != null) {
-
 			return load(policyDataStream);
 		}
-		if ((defaultPolicyConstraintsLocation != null) && !defaultPolicyConstraintsLocation.isEmpty()) {
-
-			return load(defaultPolicyConstraintsLocation);
-		}
-		return null;
+		return load(defaultPolicyConstraintsLocation);
 	}
 
 	/**
@@ -85,8 +59,7 @@ public class ValidationResourceManager {
 	 */
 	public static InputStream getResourceInputStream(final String dataFileName) {
 		try {
-			InputStream inputStream = ValidationResourceManager.class.getResourceAsStream(dataFileName);
-			return inputStream;
+			return ValidationResourceManager.class.getResourceAsStream(dataFileName);
 		} catch (Exception e) {
 			throw new DSSException(e);
 		}
@@ -120,13 +93,8 @@ public class ValidationResourceManager {
 	 */
 	public static ConstraintsParameters load(final InputStream inputStream) throws DSSException {
 		try {
-			SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			Schema schema = sf.newSchema(new StreamSource(ValidationResourceManager.class.getResourceAsStream(defaultPolicyXsdLocation)));
-
-			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			unmarshaller.setSchema(schema);
-
-			return (ConstraintsParameters) unmarshaller.unmarshal(DomUtils.getSecureXMLStreamReader(inputStream));
+			ValidationPolicyFacade validationPolicyFacade = ValidationPolicyFacade.newFacade();
+			return validationPolicyFacade.unmarshall(inputStream);
 		} catch (Exception e) {
 			throw new DSSException("Unable to load policy : " + e.getMessage(), e);
 		}

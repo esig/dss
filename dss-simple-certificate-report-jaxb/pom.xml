@@ -28,6 +28,66 @@
 				</excludes>
 			</resource>
 		</resources>
+		
+		<plugins>
+			<plugin>
+				<groupId>org.jvnet.jaxb2.maven2</groupId>
+				<artifactId>maven-jaxb2-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<schemaDirectory>src/main/resources/xsd</schemaDirectory>
+							<generatePackage>eu.europa.esig.dss.jaxb.simplecertificatereport</generatePackage>
+							<schemaIncludes>
+								<schemaInclude>SimpleCertificateReport.xsd</schemaInclude>
+							</schemaIncludes>
+							<bindingIncludes>
+								<include>binding.xml</include>
+							</bindingIncludes>
+							<specVersion>2.1</specVersion>
+							<encoding>UTF-8</encoding>
+							<locale>en</locale>
+							
+							<extension>true</extension>
+			                <args>
+			                    <arg>-Xxew</arg>
+<!--							<arg>-Xxew:instantiate lazy</arg> -->
+			                </args>
+							 <plugins>
+			                    <plugin>
+			                        <groupId>com.github.jaxb-xew-plugin</groupId> <!-- Allows to add XmlElementWrapper -->
+			                        <artifactId>jaxb-xew-plugin</artifactId>
+									<version>1.9</version>
+			                    </plugin>
+			                </plugins>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+			    <groupId>org.codehaus.mojo</groupId>
+			    <artifactId>build-helper-maven-plugin</artifactId>
+			    <executions>
+			        <execution>
+			            <id>add-source</id>
+			            <!-- after generate-sources / process-sources -->
+			            <phase>compile</phase>
+			            <goals>
+			                <goal>add-source</goal>
+			            </goals>
+			            <configuration>
+			                <sources>
+			                    <source>${project.build.directory}/generated-sources/xjc/</source>
+			                </sources>
+			            </configuration>
+			        </execution>
+			    </executions>
+			 </plugin>
+		</plugins>
 	</build>
 
 	<dependencies>
@@ -44,51 +104,6 @@
 	</dependencies>
 
 	<profiles>
-		<profile>
-			<id>jaxb</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.jvnet.jaxb2.maven2</groupId>
-						<artifactId>maven-jaxb2-plugin</artifactId>
-						<executions>
-							<execution>
-								<phase>generate-sources</phase>
-								<goals>
-									<goal>generate</goal>
-								</goals>
-								<configuration>
-									<schemaDirectory>src/main/resources/xsd</schemaDirectory>
-									<generatePackage>eu.europa.esig.dss.jaxb.simplecertificatereport</generatePackage>
-									<schemaIncludes>
-										<schemaInclude>SimpleCertificateReport.xsd</schemaInclude>
-									</schemaIncludes>
-									<bindingIncludes>
-										<include>binding.xml</include>
-									</bindingIncludes>
-									<specVersion>2.1</specVersion>
-									<encoding>UTF-8</encoding>
-									<locale>en</locale>
-									
-									<extension>true</extension>
-					                <args>
-					                    <arg>-Xxew</arg>
-<!-- 					                    <arg>-Xxew:instantiate lazy</arg> -->
-					                </args>
-									 <plugins>
-					                    <plugin>
-					                        <groupId>com.github.jaxb-xew-plugin</groupId> <!-- Allows to add XmlElementWrapper -->
-					                        <artifactId>jaxb-xew-plugin</artifactId>
-                        					<version>1.9</version>
-					                    </plugin>
-					                </plugins>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
 		<profile>
             <id>jdk19-plus</id>
             <activation>

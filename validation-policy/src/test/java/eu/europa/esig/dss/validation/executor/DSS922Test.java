@@ -23,27 +23,24 @@ package eu.europa.esig.dss.validation.executor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
+import java.io.File;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticDataFacade;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
 import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.SimpleReport;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
+import eu.europa.esig.jaxb.policy.ValidationPolicyFacade;
 
 public class DSS922Test {
 
 	@Test
 	public void signedDataNotFound() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/DSS-922/diag-data.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class);
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/DSS-922/diag-data.xml"));
 		assertNotNull(diagnosticData);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -58,16 +55,9 @@ public class DSS922Test {
 	}
 
 	private EtsiValidationPolicy loadPolicy() throws Exception {
-		FileInputStream policyFis = new FileInputStream("src/test/resources/DSS-922/policy.xml");
-		ConstraintsParameters policyJaxB = getJAXBObjectFromString(policyFis, ConstraintsParameters.class);
+		ConstraintsParameters policyJaxB = ValidationPolicyFacade.newFacade().unmarshall(new File("src/test/resources/DSS-922/policy.xml"));
 		assertNotNull(policyJaxB);
 		return new EtsiValidationPolicy(policyJaxB);
 	}
 
-	@SuppressWarnings("unchecked")
-	private <T extends Object> T getJAXBObjectFromString(InputStream is, Class<T> clazz) throws Exception {
-		JAXBContext context = JAXBContext.newInstance(clazz.getPackage().getName());
-		Unmarshaller unmarshaller = context.createUnmarshaller();
-		return (T) unmarshaller.unmarshal(is);
-	}
 }

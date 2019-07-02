@@ -54,6 +54,11 @@ public class CAdESLevelBOnlySigningCertTest extends AbstractCAdESTestSignature {
 	}
 
 	@Override
+	protected boolean isGenerateHtmlPdfReports() {
+		return true;
+	}
+
+	@Override
 	protected String getSigningAlias() {
 		return GOOD_USER;
 	}

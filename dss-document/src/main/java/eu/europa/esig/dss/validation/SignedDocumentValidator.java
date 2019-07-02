@@ -38,7 +38,7 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSSecurityProvider;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.CustomProcessExecutor;
 import eu.europa.esig.dss.validation.executor.ProcessExecutor;
@@ -327,7 +327,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		List<AdvancedSignature> allSignatureList = prepareSignatureValidationContext(validationContext);
 		allSignatureList = processSignaturesValidation(validationContext, allSignatureList, structuralValidation);
 
-		final DiagnosticData diagnosticData = new DiagnosticDataBuilder().document(document).containerInfo(getContainerInfo()).foundSignatures(allSignatureList)
+		final XmlDiagnosticData diagnosticData = new DiagnosticDataBuilder().document(document).containerInfo(getContainerInfo())
+				.foundSignatures(allSignatureList)
 				.usedCertificates(validationContext.getProcessedCertificates()).usedRevocations(validationContext.getProcessedRevocations())
 				.setDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm())
 				.includeRawCertificateTokens(certificateVerifier.isIncludeCertificateTokenValues())
@@ -396,7 +397,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		return null;
 	}
 
-	protected Reports processValidationPolicy(DiagnosticData diagnosticData, ValidationPolicy validationPolicy) {
+	protected Reports processValidationPolicy(XmlDiagnosticData diagnosticData, ValidationPolicy validationPolicy) {
 		final ProcessExecutor<Reports> executor = provideProcessExecutorInstance();
 		executor.setValidationPolicy(validationPolicy);
 		executor.setValidationLevel(validationLevel);

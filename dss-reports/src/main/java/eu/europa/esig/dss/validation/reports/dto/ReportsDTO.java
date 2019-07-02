@@ -22,24 +22,24 @@ package eu.europa.esig.dss.validation.reports.dto;
 
 import java.io.Serializable;
 
-import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
-import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.jaxb.simplereport.SimpleReport;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlDetailedReport;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
+import eu.europa.esig.dss.jaxb.simplereport.XmlSimpleReport;
 import eu.europa.esig.jaxb.validationreport.ValidationReportType;
 
 public class ReportsDTO implements Serializable {
 
 	private static final long serialVersionUID = -6854645201561656069L;
 
-	private DiagnosticData diagnosticData;
-	private SimpleReport simpleReport;
-	private DetailedReport detailedReport;
+	private XmlDiagnosticData diagnosticData;
+	private XmlSimpleReport simpleReport;
+	private XmlDetailedReport detailedReport;
 	private ValidationReportType validationReport;
 
 	public ReportsDTO() {
 	}
 
-	public ReportsDTO(DiagnosticData diagnosticData, SimpleReport simpleReport, DetailedReport detailedReport, 
+	public ReportsDTO(XmlDiagnosticData diagnosticData, XmlSimpleReport simpleReport, XmlDetailedReport detailedReport,
 			ValidationReportType validationReport) {
 		this.diagnosticData = diagnosticData;
 		this.detailedReport = detailedReport;
@@ -47,27 +47,27 @@ public class ReportsDTO implements Serializable {
 		this.validationReport = validationReport;
 	}
 
-	public DiagnosticData getDiagnosticData() {
+	public XmlDiagnosticData getDiagnosticData() {
 		return diagnosticData;
 	}
 
-	public void setDiagnosticData(DiagnosticData diagnosticData) {
+	public void setDiagnosticData(XmlDiagnosticData diagnosticData) {
 		this.diagnosticData = diagnosticData;
 	}
 
-	public SimpleReport getSimpleReport() {
+	public XmlSimpleReport getSimpleReport() {
 		return simpleReport;
 	}
 
-	public void setSimpleReport(SimpleReport simpleReport) {
+	public void setSimpleReport(XmlSimpleReport simpleReport) {
 		this.simpleReport = simpleReport;
 	}
 
-	public eu.europa.esig.dss.jaxb.detailedreport.DetailedReport getDetailedReport() {
+	public XmlDetailedReport getDetailedReport() {
 		return detailedReport;
 	}
 
-	public void setDetailedReport(eu.europa.esig.dss.jaxb.detailedreport.DetailedReport detailedReport) {
+	public void setDetailedReport(XmlDetailedReport detailedReport) {
 		this.detailedReport = detailedReport;
 	}
 	

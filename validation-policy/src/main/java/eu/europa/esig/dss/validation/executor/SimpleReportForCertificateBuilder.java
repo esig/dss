@@ -30,9 +30,9 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlOID;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedService;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProvider;
-import eu.europa.esig.dss.jaxb.simplecertificatereport.SimpleCertificateReport;
 import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlChainItem;
 import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlRevocation;
+import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlSimpleCertificateReport;
 import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlSubject;
 import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlTrustAnchor;
 import eu.europa.esig.dss.utils.Utils;
@@ -55,8 +55,8 @@ public class SimpleReportForCertificateBuilder {
 		this.certificateId = certificateId;
 	}
 
-	public SimpleCertificateReport build() {
-		SimpleCertificateReport simpleReport = new SimpleCertificateReport();
+	public XmlSimpleCertificateReport build() {
+		XmlSimpleCertificateReport simpleReport = new XmlSimpleCertificateReport();
 		simpleReport.setValidationTime(currentTime);
 		List<XmlChainItem> chain = new ArrayList<XmlChainItem>();
 

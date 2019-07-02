@@ -31,6 +31,7 @@ import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlContainerInfo;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlOrphanRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlOrphanToken;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
@@ -50,13 +51,13 @@ import eu.europa.esig.dss.x509.TimestampType;
  */
 public class DiagnosticData {
 
-	private final eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData wrapped;
+	private final XmlDiagnosticData wrapped;
 
 	private List<SignatureWrapper> foundSignatures;
 	private List<CertificateWrapper> usedCertificates;
 	private List<TimestampWrapper> usedTimestamps;
 
-	public DiagnosticData(final eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData wrapped) {
+	public DiagnosticData(final XmlDiagnosticData wrapped) {
 		this.wrapped = wrapped;
 	}
 
@@ -812,7 +813,7 @@ public class DiagnosticData {
 	 * 
 	 * @return the jaxb model of the diagnostic data
 	 */
-	public eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData getJaxbModel() {
+	public XmlDiagnosticData getJaxbModel() {
 		return wrapped;
 	}
 

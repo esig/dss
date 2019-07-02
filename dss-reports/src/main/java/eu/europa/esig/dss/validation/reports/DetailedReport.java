@@ -34,6 +34,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlChainItem;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlDetailedReport;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlProofOfExistence;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
@@ -66,9 +67,9 @@ import eu.europa.esig.dss.validation.policy.rules.SubIndication;
  */
 public class DetailedReport {
 
-	private final eu.europa.esig.dss.jaxb.detailedreport.DetailedReport jaxbDetailedReport;
+	private final XmlDetailedReport jaxbDetailedReport;
 
-	public DetailedReport(eu.europa.esig.dss.jaxb.detailedreport.DetailedReport jaxbDetailedReport) {
+	public DetailedReport(XmlDetailedReport jaxbDetailedReport) {
 		this.jaxbDetailedReport = jaxbDetailedReport;
 	}
 
@@ -335,7 +336,7 @@ public class DetailedReport {
 		return null;
 	}
 
-	public eu.europa.esig.dss.jaxb.detailedreport.DetailedReport getJAXBModel() {
+	public XmlDetailedReport getJAXBModel() {
 		return jaxbDetailedReport;
 	}
 

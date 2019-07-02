@@ -66,6 +66,11 @@ public class CAdESLevelBDetachedTest extends AbstractCAdESTestSignature {
 	}
 
 	@Override
+	protected boolean isGenerateHtmlPdfReports() {
+		return true;
+	}
+
+	@Override
 	protected DocumentSignatureService<CAdESSignatureParameters> getService() {
 		return service;
 	}

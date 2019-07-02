@@ -35,6 +35,7 @@ import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRevocation;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
@@ -75,7 +76,7 @@ public class CAdESLevelLTTest extends AbstractCAdESTestSignature {
 	}
 
 	@Override
-	protected void verifyDiagnosticDataJaxb(eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData diagnosticDataJaxb) {
+	protected void verifyDiagnosticDataJaxb(XmlDiagnosticData diagnosticDataJaxb) {
 		super.verifyDiagnosticDataJaxb(diagnosticDataJaxb);
 
 		List<XmlCertificate> usedCertificates = diagnosticDataJaxb.getUsedCertificates();

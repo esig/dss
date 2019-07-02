@@ -41,9 +41,6 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -52,7 +49,6 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
@@ -589,13 +585,6 @@ public final class DomUtils {
 	 */
 	public static boolean isElementReference(String uri) {
 		return uri.startsWith("#");
-	}
-
-	public static XMLStreamReader getSecureXMLStreamReader(InputStream is) throws XMLStreamException {
-		XMLInputFactory xif = XMLInputFactory.newFactory();
-		xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
-		xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-		return xif.createXMLStreamReader(new StreamSource(is));
 	}
 
 }

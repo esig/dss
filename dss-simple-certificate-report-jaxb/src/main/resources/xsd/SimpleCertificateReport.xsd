@@ -5,14 +5,15 @@
 	xmlns="http://dss.esig.europa.eu/validation/simple-certificate-report" 
 	xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-	<xs:element name="SimpleCertificateReport">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="Chain" type="Chain" maxOccurs="1" minOccurs="0" />
-			</xs:sequence>
-			<xs:attribute name="ValidationTime" type="xs:dateTime" />
-		</xs:complexType>
-	</xs:element>
+	<!-- Root element -->
+	<xs:element name="SimpleCertificateReport" type="SimpleCertificateReport" />
+
+	<xs:complexType name="SimpleCertificateReport">
+		<xs:sequence>
+			<xs:element name="Chain" type="Chain" maxOccurs="1" minOccurs="0" />
+		</xs:sequence>
+		<xs:attribute name="ValidationTime" type="xs:dateTime" />
+	</xs:complexType>
 		
 	<xs:complexType name="Chain">
 		<xs:sequence>
@@ -24,7 +25,7 @@
 		<xs:sequence>
 			<xs:element name="id" type="xs:string" />
 			<xs:element name="subject" type="Subject" />
-			<xs:element name="issuerId" type="xs:string" />
+			<xs:element name="issuerId" type="xs:string" minOccurs="0" />
 			<xs:element name="notBefore" type="xs:dateTime" />
 			<xs:element name="notAfter" type="xs:dateTime" />
 			<xs:element name="keyUsages" type="KeyUsages" minOccurs="0" />	
@@ -34,8 +35,8 @@
 			<xs:element name="aiaUrls" type="ListUrls" minOccurs="0" />
 			<xs:element name="cpsUrls" type="ListUrls" minOccurs="0" />
 			<xs:element name="pdsUrls" type="ListUrls" minOccurs="0" />
-			<xs:element name="qualificationAtIssuance" type="CertificateQualification" />
-			<xs:element name="qualificationAtValidation" type="CertificateQualification" />
+			<xs:element name="qualificationAtIssuance" type="CertificateQualification" minOccurs="0" />
+			<xs:element name="qualificationAtValidation" type="CertificateQualification" minOccurs="0" />
 			<xs:element name="revocation" type="Revocation" minOccurs="0" />
 			<xs:element name="trustAnchors" type="TrustAnchors" minOccurs="0" />
 			<xs:element name="Indication" type="Indication" />

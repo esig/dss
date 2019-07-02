@@ -33,10 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.slf4j.Logger;
@@ -46,7 +43,6 @@ import org.w3c.dom.Element;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.tsl.CertSubjectDNAttributeCondition;
 import eu.europa.esig.dss.tsl.CompositeCondition;
 import eu.europa.esig.dss.tsl.Condition;
@@ -64,6 +60,7 @@ import eu.europa.esig.dss.util.TimeDependentValues;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.KeyUsageBit;
+import eu.europa.esig.jaxb.trustedlist.TrustedListFacade;
 import eu.europa.esig.jaxb.trustedlist.ecc.CriteriaListType;
 import eu.europa.esig.jaxb.trustedlist.ecc.KeyUsageBitType;
 import eu.europa.esig.jaxb.trustedlist.ecc.KeyUsageType;
@@ -86,7 +83,6 @@ import eu.europa.esig.jaxb.trustedlist.tsl.NextUpdateType;
 import eu.europa.esig.jaxb.trustedlist.tsl.NonEmptyMultiLangURIListType;
 import eu.europa.esig.jaxb.trustedlist.tsl.NonEmptyMultiLangURIType;
 import eu.europa.esig.jaxb.trustedlist.tsl.NonEmptyURIListType;
-import eu.europa.esig.jaxb.trustedlist.tsl.ObjectFactory;
 import eu.europa.esig.jaxb.trustedlist.tsl.OtherTSLPointerType;
 import eu.europa.esig.jaxb.trustedlist.tsl.PostalAddressType;
 import eu.europa.esig.jaxb.trustedlist.tsl.ServiceHistoryInstanceType;
@@ -117,18 +113,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 
 	private static final String TSL_MIME_TYPE = "application/vnd.etsi.tsl+xml";
 
-	private static final JAXBContext jaxbContext;
-
 	private final DSSDocument trustedList;
-
-	static {
-		try {
-			jaxbContext = JAXBContext.newInstance(ObjectFactory.class, eu.europa.esig.jaxb.trustedlist.ecc.ObjectFactory.class,
-					eu.europa.esig.jaxb.trustedlist.tslx.ObjectFactory.class);
-		} catch (JAXBException e) {
-			throw new DSSException("Unable to initialize JaxB : " + e.getMessage(), e);
-		}
-	}
 
 	public TSLParser(DSSDocument trustedList) {
 		this.trustedList = trustedList;
@@ -138,9 +123,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 	@SuppressWarnings("unchecked")
 	public TSLParserResult call() throws Exception {
 		try (InputStream is = trustedList.openStream()) {
-			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			JAXBElement<TrustStatusListType> jaxbElement = (JAXBElement<TrustStatusListType>) unmarshaller.unmarshal(DomUtils.getSecureXMLStreamReader(is));
-			TrustStatusListType trustStatusList = jaxbElement.getValue();
+			TrustStatusListType trustStatusList = TrustedListFacade.newFacade().unmarshall(is, false);
 			return getTslModel(trustStatusList);
 		} catch (Exception e) {
 			throw new DSSException("Unable to parse file '" + trustedList.getAbsolutePath() + "' : " + e.getMessage(), e);

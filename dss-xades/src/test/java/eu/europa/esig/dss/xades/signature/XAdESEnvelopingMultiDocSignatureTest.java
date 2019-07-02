@@ -51,6 +51,11 @@ public class XAdESEnvelopingMultiDocSignatureTest extends AbstractPkiFactoryTest
 	}
 
 	@Override
+	protected boolean isGenerateHtmlPdfReports() {
+		return true;
+	}
+
+	@Override
 	protected MultipleDocumentsSignatureService<XAdESSignatureParameters> getService() {
 		return new XAdESService(getCompleteCertificateVerifier());
 	}

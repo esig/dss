@@ -1,22 +1,12 @@
 package eu.europa.esig.dss.validation.executor;
 
-import java.io.InputStream;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateQualification;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
@@ -32,26 +22,6 @@ import eu.europa.esig.jaxb.policy.Model;
 public class ModelAbstractlValidation {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ModelAbstractlValidation.class);
-
-	@SuppressWarnings("unchecked")
-	protected final <T extends Object> T getJAXBObjectFromString(InputStream is, Class<T> clazz, String xsd)
-			throws Exception {
-		try {
-			JAXBContext context = JAXBContext.newInstance(clazz.getPackage().getName());
-			Unmarshaller unmarshaller = context.createUnmarshaller();
-			if (Utils.isStringNotEmpty(xsd)) {
-				SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-				InputStream inputStream = this.getClass().getResourceAsStream(xsd);
-				Source source = new StreamSource(inputStream);
-				Schema schema = sf.newSchema(source);
-				unmarshaller.setSchema(schema);
-			}
-			return (T) unmarshaller.unmarshal(is);
-		} catch (Exception e) {
-			LOG.error("Unable to unmarshall", e);
-			throw e;
-		}
-	}
 
 	/**
 	 * Defines the list of involved diagnostic data, policy and their associated

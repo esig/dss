@@ -2,13 +2,13 @@ package eu.europa.esig.dss.validation.executor;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.io.FileInputStream;
+import java.io.File;
 import java.util.Iterator;
 import java.util.List;
 
-import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticDataFacade;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
 import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
-import eu.europa.esig.dss.validation.policy.XmlUtils;
 import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.SimpleReport;
@@ -24,7 +24,6 @@ import eu.europa.esig.jaxb.policy.TimestampConstraints;
 
 public abstract class AbstractCryptographicConstraintsTest extends AbstractValidationExecutorTest {
 
-	
 	protected ConstraintsParameters constraintsParameters = null;
 	protected CustomProcessExecutor executor = null;
 	protected EtsiValidationPolicy validationPolicy = null;
@@ -40,9 +39,9 @@ public abstract class AbstractCryptographicConstraintsTest extends AbstractValid
 	
 	protected String validationPolicyFile = null; 
 	
-	protected DiagnosticData initializeExecutor(String diagnosticDataFile) throws Exception {
-		FileInputStream fis = new FileInputStream(diagnosticDataFile);
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+	protected XmlDiagnosticData initializeExecutor(String diagnosticDataFile) throws Exception {
+
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File(diagnosticDataFile));
 		assertNotNull(diagnosticData);
 
 		executor = new CustomProcessExecutor();
