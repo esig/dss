@@ -53,6 +53,11 @@ public class ASiCECAdESLevelBSpecialCharInFilenameTest extends AbstractASiCECAdE
 	}
 
 	@Override
+	protected boolean isGenerateHtmlReports() {
+		return true;
+	}
+
+	@Override
 	protected DocumentSignatureService<ASiCWithCAdESSignatureParameters> getService() {
 		return service;
 	}

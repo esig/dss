@@ -57,6 +57,11 @@ public class XAdESLevelBInclusiveCanonicalizationTest extends AbstractXAdESTestS
 	}
 
 	@Override
+	protected boolean isGenerateHtmlReports() {
+		return true;
+	}
+
+	@Override
 	protected DocumentSignatureService<XAdESSignatureParameters> getService() {
 		return service;
 	}

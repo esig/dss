@@ -81,6 +81,11 @@ public class ASiCSXAdESMultiFilesLevelBTest extends AbstractPkiFactoryTestMultip
 	}
 
 	@Override
+	protected boolean isGenerateHtmlReports() {
+		return true;
+	}
+
+	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
 		InMemoryDocument doc = new InMemoryDocument(byteArray);
 

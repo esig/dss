@@ -49,7 +49,7 @@
 			<xs:element name="PSV" type="PSV" minOccurs="0" />
 			<xs:element name="PCV" type="PCV" minOccurs="0" />
 			<xs:element name="VTS" type="VTS" minOccurs="0" />
-			<xs:element name="CertificateChain" type="CertificateChain" />
+			<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
 			<xs:element name="Conclusion" type="Conclusion" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" />

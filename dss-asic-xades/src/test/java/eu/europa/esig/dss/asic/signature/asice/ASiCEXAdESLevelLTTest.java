@@ -54,6 +54,11 @@ public class ASiCEXAdESLevelLTTest extends AbstractASiCEXAdESTestSignature {
 	}
 
 	@Override
+	protected boolean isGenerateHtmlReports() {
+		return true;
+	}
+
+	@Override
 	protected DocumentSignatureService<ASiCWithXAdESSignatureParameters> getService() {
 		return service;
 	}

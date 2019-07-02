@@ -56,6 +56,11 @@ public class ASiCSCAdESLevelBSHA512Test extends AbstractASiCSCAdESTestSignature 
 	}
 
 	@Override
+	protected boolean isGenerateHtmlReports() {
+		return true;
+	}
+
+	@Override
 	protected DocumentSignatureService<ASiCWithCAdESSignatureParameters> getService() {
 		return service;
 	}

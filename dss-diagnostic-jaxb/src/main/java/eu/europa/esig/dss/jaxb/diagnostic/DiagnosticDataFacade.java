@@ -29,9 +29,10 @@ public class DiagnosticDataFacade {
 		marshallerBuilder.setValidate(validate);
 		Marshaller marshaller = marshallerBuilder.buildMarshaller();
 
-		StringWriter writer = new StringWriter();
-		marshaller.marshal(DiagnosticDataXmlDefiner.OBJECT_FACTORY.createDiagnosticData(diagnosticDataJaxb), writer);
-		return writer.toString();
+		try (StringWriter writer = new StringWriter()) {
+			marshaller.marshal(DiagnosticDataXmlDefiner.OBJECT_FACTORY.createDiagnosticData(diagnosticDataJaxb), writer);
+			return writer.toString();
+		}
 	}
 
 	@SuppressWarnings("unchecked")

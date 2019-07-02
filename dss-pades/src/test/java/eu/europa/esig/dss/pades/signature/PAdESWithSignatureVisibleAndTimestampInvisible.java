@@ -63,6 +63,11 @@ public class PAdESWithSignatureVisibleAndTimestampInvisible extends AbstractPAdE
 	}
 
 	@Override
+	protected boolean isGenerateHtmlReports() {
+		return true;
+	}
+
+	@Override
 	protected DocumentSignatureService<PAdESSignatureParameters> getService() {
 		return service;
 	}
