@@ -36,7 +36,6 @@ import eu.europa.esig.dss.SignatureIdentifier;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.SignatureCertificateSource;
@@ -398,15 +397,6 @@ public interface AdvancedSignature extends Serializable {
 	 * @return a {@code List} of {@code AdvancedSignatures} representing the counter signatures
 	 */
 	List<AdvancedSignature> getCounterSignatures();
-
-	/**
-	 * Returns the {@code List} of {@code TimestampReference} representing digest value of the certification path
-	 * references and the revocation status references. (XAdES
-	 * example: CompleteCertificateRefs and CompleteRevocationRefs elements)
-	 *
-	 * @return a {@code List} of {@code TimestampReference}
-	 */
-	List<TimestampedReference> getTimestampedReferences();
 
 	/**
 	 * Retrieve list of certificate ref

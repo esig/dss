@@ -33,6 +33,8 @@ public abstract class Identifier implements Serializable {
 	private static final DigestAlgorithm DIGEST_ALGO = DigestAlgorithm.SHA256;
 
 	private final Digest id;
+	
+	private String hexValue;
 
 	Identifier(byte[] data) {
 		Objects.requireNonNull(data);
@@ -45,7 +47,10 @@ public abstract class Identifier implements Serializable {
 	 * @return the XML encoded ID
 	 */
 	public String asXmlId() {
-		return id.getHexValue();
+		if (hexValue == null) {
+			hexValue = id.getHexValue();
+		}
+		return hexValue;
 	}
 
 	@Override

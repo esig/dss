@@ -87,6 +87,7 @@
 			<CertDigestMatch Level="FAIL" />
 			<IssuerSerialMatch Level="WARN" />
 			<SigningTime Level="FAIL" />
+			<MessageDigestOrSignedPropertiesPresent Level="FAIL" />
 <!--		<ContentType Level="FAIL" value="1.2.840.113549.1.7.1" />
 			<ContentHints Level="FAIL" value="*" />
 			<CommitmentTypeIndication Level="FAIL">
@@ -159,6 +160,7 @@
 			<CertDigestMatch Level="FAIL" />
 			<IssuerSerialMatch Level="WARN" />
 			<SigningTime Level="FAIL" />
+			<MessageDigestOrSignedPropertiesPresent Level="FAIL" />
 <!--		<ContentType Level="FAIL" value="1.2.840.113549.1.7.1" />
 			<ContentHints Level="FAIL" value="*" />
 			<CommitmentTypeIndication Level="FAIL">
@@ -220,41 +222,41 @@
 				</AcceptableDigestAlgo>
 				<AlgoExpirationDate Format="yyyy">
 					<!-- Digest algorithms -->
-					<Algo Date="2006">MD5</Algo> <!-- ETSI TS 101 861 V1.3.1 -->
-					<Algo Date="2008">SHA1</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.0.0 -->
-					<Algo Date="2022">SHA224</Algo> <!-- ETSI 119 312 V1.3.1 -->
-					<Algo Date="2025">SHA256</Algo> <!-- ETSI 119 312 V1.3.1 -->
-					<Algo Date="2025">SHA384</Algo> <!-- ETSI 119 312 V1.3.1 -->
-					<Algo Date="2025">SHA512</Algo> <!-- ETSI 119 312 V1.3.1 -->
-					<Algo Date="2025">SHA3-224</Algo> <!-- ETSI 119 312 V1.3.1 -->
-					<Algo Date="2025">SHA3-256</Algo> <!-- ETSI 119 312 V1.3.1 -->
-					<Algo Date="2025">SHA3-384</Algo> <!-- ETSI 119 312 V1.3.1 -->
-					<Algo Date="2025">SHA3-512</Algo> <!-- ETSI 119 312 V1.3.1 -->
-					<Algo Date="2010">RIPEMD160</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.0.0 -->
-					<Algo Date="2014">WHIRLPOOL</Algo> <!-- ETSI 119 312 V1.1.1 -->
+					<Algo Date="2007">MD5</Algo> <!-- ETSI TS 101 861 V1.3.1 -->
+					<Algo Date="2009">SHA1</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.0.0 -->
+					<Algo Date="2023">SHA224</Algo> <!-- ETSI 119 312 V1.3.1 -->
+					<Algo Date="2026">SHA256</Algo> <!-- ETSI 119 312 V1.3.1 -->
+					<Algo Date="2026">SHA384</Algo> <!-- ETSI 119 312 V1.3.1 -->
+					<Algo Date="2026">SHA512</Algo> <!-- ETSI 119 312 V1.3.1 -->
+					<Algo Date="2026">SHA3-224</Algo> <!-- ETSI 119 312 V1.3.1 -->
+					<Algo Date="2026">SHA3-256</Algo> <!-- ETSI 119 312 V1.3.1 -->
+					<Algo Date="2026">SHA3-384</Algo> <!-- ETSI 119 312 V1.3.1 -->
+					<Algo Date="2026">SHA3-512</Algo> <!-- ETSI 119 312 V1.3.1 -->
+					<Algo Date="2011">RIPEMD160</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.0.0 -->
+					<Algo Date="2015">WHIRLPOOL</Algo> <!-- ETSI 119 312 V1.1.1 -->
 					<!-- end Digest algorithms -->
 					<!-- Encryption algorithms -->
-					<Algo Date="2012">DSA160</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
-					<Algo Date="2012">DSA192</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
-					<Algo Date="2022">DSA224</Algo> <!-- ETSI 119 312 V1.3.1 -->
-					<Algo Date="2025">DSA256</Algo> <!-- ETSI 119 312 V1.3.1 -->
-					<Algo Date="2008">RSA1024</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.0.0 -->
-					<Algo Date="2015">RSA1536</Algo> <!-- ETSI 119 312 V1.1.1 -->
-					<Algo Date="2022">RSA2048</Algo> <!-- ETSI 119 312 V1.3.1 -->
-					<Algo Date="2025">RSA3072</Algo> <!-- ETSI 119 312 V1.3.1 -->
-					<Algo Date="2025">RSA4096</Algo> <!-- ETSI 119 312 V1.3.1 -->
-					<Algo Date="2012">ECDSA160</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
+					<Algo Date="2013">DSA160</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
+					<Algo Date="2013">DSA192</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
+					<Algo Date="2023">DSA224</Algo> <!-- ETSI 119 312 V1.3.1 -->
+					<Algo Date="2026">DSA256</Algo> <!-- ETSI 119 312 V1.3.1 -->
+					<Algo Date="2009">RSA1024</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.0.0 -->
+					<Algo Date="2016">RSA1536</Algo> <!-- ETSI 119 312 V1.1.1 -->
+					<Algo Date="2023">RSA2048</Algo> <!-- ETSI 119 312 V1.3.1 -->
+					<Algo Date="2026">RSA3072</Algo> <!-- ETSI 119 312 V1.3.1 -->
+					<Algo Date="2026">RSA4096</Algo> <!-- ETSI 119 312 V1.3.1 -->
+					<Algo Date="2013">ECDSA160</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
 					<Algo Date="2012">ECDSA192</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
-					<Algo Date="2015">ECDSA224</Algo> <!-- ETSI 119 312 V1.1.1 -->
-					<Algo Date="2025">ECDSA256</Algo> <!-- ETSI 119 312 V1.3.1 -->
-					<Algo Date="2025">ECDSA384</Algo> <!-- ETSI 119 312 V1.3.1 -->
-					<Algo Date="2025">ECDSA512</Algo> <!-- ETSI 119 312 V1.3.1 -->
-					<Algo Date="2012">PLAIN-ECDSA160</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
-					<Algo Date="2012">PLAIN-ECDSA192</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
-					<Algo Date="2015">PLAIN-ECDSA224</Algo> <!-- ETSI 119 312 V1.1.1 -->
-					<Algo Date="2025">PLAIN-ECDSA256</Algo> <!-- ETSI 119 312 V1.3.1 -->
-					<Algo Date="2025">PLAIN-ECDSA384</Algo> <!-- ETSI 119 312 V1.3.1 -->
-					<Algo Date="2025">PLAIN-ECDSA512</Algo> <!-- ETSI 119 312 V1.3.1 -->
+					<Algo Date="2016">ECDSA224</Algo> <!-- ETSI 119 312 V1.1.1 -->
+					<Algo Date="2026">ECDSA256</Algo> <!-- ETSI 119 312 V1.3.1 -->
+					<Algo Date="2026">ECDSA384</Algo> <!-- ETSI 119 312 V1.3.1 -->
+					<Algo Date="2026">ECDSA512</Algo> <!-- ETSI 119 312 V1.3.1 -->
+					<Algo Date="2013">PLAIN-ECDSA160</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
+					<Algo Date="2013">PLAIN-ECDSA192</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
+					<Algo Date="2016">PLAIN-ECDSA224</Algo> <!-- ETSI 119 312 V1.1.1 -->
+					<Algo Date="2026">PLAIN-ECDSA256</Algo> <!-- ETSI 119 312 V1.3.1 -->
+					<Algo Date="2026">PLAIN-ECDSA384</Algo> <!-- ETSI 119 312 V1.3.1 -->
+					<Algo Date="2026">PLAIN-ECDSA512</Algo> <!-- ETSI 119 312 V1.3.1 -->
 					<!-- end Encryption algorithms -->
 				</AlgoExpirationDate>
 			</Cryptographic>
@@ -319,40 +321,40 @@
 		</AcceptableDigestAlgo>
 		<AlgoExpirationDate Format="yyyy">
 			<!-- Digest algorithms -->
-			<Algo Date="2008">SHA1</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.0.0 -->
-			<Algo Date="2022">SHA224</Algo> <!-- ETSI 119 312 V1.3.1 -->
-			<Algo Date="2025">SHA256</Algo> <!-- ETSI 119 312 V1.3.1 -->
-			<Algo Date="2025">SHA384</Algo> <!-- ETSI 119 312 V1.3.1 -->
-			<Algo Date="2025">SHA512</Algo> <!-- ETSI 119 312 V1.3.1 -->
-			<Algo Date="2025">SHA3-224</Algo> <!-- ETSI 119 312 V1.3.1 -->
-			<Algo Date="2025">SHA3-256</Algo> <!-- ETSI 119 312 V1.3.1 -->
-			<Algo Date="2025">SHA3-384</Algo> <!-- ETSI 119 312 V1.3.1 -->
-			<Algo Date="2025">SHA3-512</Algo> <!-- ETSI 119 312 V1.3.1 -->
-			<Algo Date="2010">RIPEMD160</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.0.0 -->
-			<Algo Date="2014">WHIRLPOOL</Algo> <!-- ETSI 119 312 V1.1.1 -->
+			<Algo Date="2009">SHA1</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.0.0 -->
+			<Algo Date="2023">SHA224</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2026">SHA256</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2026">SHA384</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2026">SHA512</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2026">SHA3-224</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2026">SHA3-256</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2026">SHA3-384</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2026">SHA3-512</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2011">RIPEMD160</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.0.0 -->
+			<Algo Date="2015">WHIRLPOOL</Algo> <!-- ETSI 119 312 V1.1.1 -->
 			<!-- end Digest algorithms -->
 			<!-- Encryption algorithms -->
-			<Algo Date="2012">DSA160</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
-			<Algo Date="2012">DSA192</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
-			<Algo Date="2022">DSA224</Algo> <!-- ETSI 119 312 V1.3.1 -->
-			<Algo Date="2025">DSA256</Algo> <!-- ETSI 119 312 V1.3.1 -->
-			<Algo Date="2008">RSA1024</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.0.0 -->
-			<Algo Date="2015">RSA1536</Algo> <!-- ETSI 119 312 V1.1.1 -->
-			<Algo Date="2022">RSA2048</Algo> <!-- ETSI 119 312 V1.3.1 -->
-			<Algo Date="2025">RSA3072</Algo> <!-- ETSI 119 312 V1.3.1 -->
-			<Algo Date="2025">RSA4096</Algo> <!-- ETSI 119 312 V1.3.1 -->
-			<Algo Date="2012">ECDSA160</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
-			<Algo Date="2012">ECDSA192</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
-			<Algo Date="2015">ECDSA224</Algo> <!-- ETSI 119 312 V1.1.1 -->
-			<Algo Date="2025">ECDSA256</Algo> <!-- ETSI 119 312 V1.3.1 -->
-			<Algo Date="2025">ECDSA384</Algo> <!-- ETSI 119 312 V1.3.1 -->
-			<Algo Date="2025">ECDSA512</Algo> <!-- ETSI 119 312 V1.3.1 -->
-			<Algo Date="2012">PLAIN-ECDSA160</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
-			<Algo Date="2012">PLAIN-ECDSA192</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
-			<Algo Date="2015">PLAIN-ECDSA224</Algo> <!-- ETSI 119 312 V1.1.1 -->
-			<Algo Date="2025">PLAIN-ECDSA256</Algo> <!-- ETSI 119 312 V1.3.1 -->
-			<Algo Date="2025">PLAIN-ECDSA384</Algo> <!-- ETSI 119 312 V1.3.1 -->
-			<Algo Date="2025">PLAIN-ECDSA512</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2013">DSA160</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
+			<Algo Date="2013">DSA192</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
+			<Algo Date="2023">DSA224</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2026">DSA256</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2009">RSA1024</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.0.0 -->
+			<Algo Date="2016">RSA1536</Algo> <!-- ETSI 119 312 V1.1.1 -->
+			<Algo Date="2023">RSA2048</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2026">RSA3072</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2026">RSA4096</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2013">ECDSA160</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
+			<Algo Date="2013">ECDSA192</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
+			<Algo Date="2016">ECDSA224</Algo> <!-- ETSI 119 312 V1.1.1 -->
+			<Algo Date="2026">ECDSA256</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2026">ECDSA384</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2026">ECDSA512</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2013">PLAIN-ECDSA160</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
+			<Algo Date="2013">PLAIN-ECDSA192</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
+			<Algo Date="2016">PLAIN-ECDSA224</Algo> <!-- ETSI 119 312 V1.1.1 -->
+			<Algo Date="2026">PLAIN-ECDSA256</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2026">PLAIN-ECDSA384</Algo> <!-- ETSI 119 312 V1.3.1 -->
+			<Algo Date="2026">PLAIN-ECDSA512</Algo> <!-- ETSI 119 312 V1.3.1 -->
 			<!-- end Encryption algorithms -->
 		</AlgoExpirationDate>
 	</Cryptographic> 

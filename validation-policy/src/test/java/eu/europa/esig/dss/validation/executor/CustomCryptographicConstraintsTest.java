@@ -241,7 +241,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_SHA256, "2019-01-01");
 		assertEquals(Indication.TOTAL_PASSED, result);
 		detailedReport = createDetailedReport();
-		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, true);
+		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 		
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_SHA256, "2018-01-01");
@@ -265,7 +265,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA2048, "2019-01-01");
 		assertEquals(Indication.TOTAL_PASSED, result);
 		detailedReport = createDetailedReport();
-		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, true);
+		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 		
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA2048, "2018-01-01");
@@ -277,7 +277,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA2048, "2019-01-01");
 		assertEquals(Indication.TOTAL_PASSED, result);
 		detailedReport = createDetailedReport();
-		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, true);
+		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 		
 	}

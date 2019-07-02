@@ -58,9 +58,9 @@ public abstract class OfflineCRLSource implements CRLSource {
 
 	/**
 	 * This {@code HashMap} contains the {@code CRLValidity} object for each
-	 * {@code CRLBinaryIdentifier}. It is used for performance reasons.
+	 * pair of crl's id + issuer token id {@code String}. It is used for performance reasons.
 	 */
-	private Map<CRLBinaryIdentifier, CRLValidity> crlValidityMap = new HashMap<CRLBinaryIdentifier, CRLValidity>();
+	private Map<String, CRLValidity> crlValidityMap = new HashMap<String, CRLValidity>();
 
 	private Map<CertificateToken, CRLToken> validCRLTokenList = new HashMap<CertificateToken, CRLToken>();
 
@@ -115,26 +115,22 @@ public abstract class OfflineCRLSource implements CRLSource {
 			if (crlValidity == null || !crlValidity.isValid()) {
 				continue;
 			}
-			if (issuerToken.getPublicKey().equals(crlValidity.getIssuerToken().getPublicKey())) {
-				// check the overlapping of the [thisUpdate, nextUpdate] from the CRL and
-				// [notBefore, notAfter] from the X509Certificate
-				final Date thisUpdate = crlValidity.getThisUpdate();
-				final Date nextUpdate = crlValidity.getNextUpdate();
-				final Date notAfter = certificateToken.getNotAfter();
-				final Date notBefore = certificateToken.getNotBefore();
-				boolean periodAreIntersecting = thisUpdate.before(notAfter) && (nextUpdate != null && nextUpdate.after(notBefore));
-				if (!periodAreIntersecting) {
-					LOG.warn("The CRL was not issued during the validity period of the certificate! Certificate: {}", certificateToken.getDSSIdAsString());
-					continue;
-				}
-
-				if ((bestX509UpdateDate == null) || thisUpdate.after(bestX509UpdateDate)) {
-					bestCRLValidity = crlValidity;
-					bestX509UpdateDate = thisUpdate;
-					bestX509UpdateDate = thisUpdate;
-					crlBinaries.clear();
-					crlBinaries.add(crlEntry);
-				}
+			// check the overlapping of the [thisUpdate, nextUpdate] from the CRL and
+			// [notBefore, notAfter] from the X509Certificate
+			final Date thisUpdate = crlValidity.getThisUpdate();
+			final Date nextUpdate = crlValidity.getNextUpdate();
+			final Date notAfter = certificateToken.getNotAfter();
+			final Date notBefore = certificateToken.getNotBefore();
+			boolean periodAreIntersecting = thisUpdate.before(notAfter) && (nextUpdate != null && nextUpdate.after(notBefore));
+			if (!periodAreIntersecting) {
+				LOG.warn("The CRL was not issued during the validity period of the certificate! Certificate: {}", certificateToken.getDSSIdAsString());
+				continue;
+			}
+			if ((bestX509UpdateDate == null) || thisUpdate.after(bestX509UpdateDate)) {
+				bestCRLValidity = crlValidity;
+				bestX509UpdateDate = thisUpdate;
+				crlBinaries.clear();
+				crlBinaries.add(crlEntry);
 			}
 		}
 		return bestCRLValidity;
@@ -152,14 +148,14 @@ public abstract class OfflineCRLSource implements CRLSource {
 	 *            {@code CertificateToken} issuer of the CRL
 	 * @return returns updated {@code CRLValidity} object
 	 */
-	private CRLValidity getCrlValidity(final CRLBinaryIdentifier crlBinary, final CertificateToken issuerToken) {
-		CRLValidity crlValidity = crlValidityMap.get(crlBinary);
+	private synchronized CRLValidity getCrlValidity(final CRLBinaryIdentifier crlBinary, final CertificateToken issuerToken) {
+		String crlValidityKey = getCrlValidityKey(crlBinary, issuerToken);
+		CRLValidity crlValidity = crlValidityMap.get(crlValidityKey);
 		if (crlValidity == null) {
 			try (InputStream is = new ByteArrayInputStream(crlBinary.getBinaries())) {
 				crlValidity = CRLUtils.isValidCRL(is, issuerToken);
 				if (crlValidity.isValid()) {
-					crlValidityMap.put(crlBinary, crlValidity);
-					// crlsMap.remove(key);
+					crlValidityMap.put(crlValidityKey, crlValidity);
 				}
 			} catch (IOException e) {
 				LOG.error("Unable to parse CRL", e);
@@ -184,15 +180,23 @@ public abstract class OfflineCRLSource implements CRLSource {
 	}
 
 	protected void addCRLBinary(CRLBinaryIdentifier crlBinary, RevocationOrigin origin) {
-		if (!crlValidityMap.containsKey(crlBinary)) {
-			int ii = crlsBinaryList.indexOf(crlBinary);
-			if (ii > -1) {
-				CRLBinaryIdentifier storedCrlBinary = crlsBinaryList.get(ii);
-				storedCrlBinary.addOrigin(origin);
-			} else {
-				crlsBinaryList.add(crlBinary);
-			}
+		int ii = crlsBinaryList.indexOf(crlBinary);
+		if (ii > -1) {
+			CRLBinaryIdentifier storedCrlBinary = crlsBinaryList.get(ii);
+			storedCrlBinary.addOrigin(origin);
+		} else {
+			crlsBinaryList.add(crlBinary);
 		}
+	}
+	
+	/**
+	 * Computes an issuer-dependent key for {@code crlValidityMap}
+	 * @param crlBinary {@link CRLBinaryIdentifier} of the CRL Entry
+	 * @param issuerToken {@link CertificateToken} of issuer
+	 * @return a new {@link String} key for CrlValidity map
+	 */
+	private String getCrlValidityKey(final CRLBinaryIdentifier crlBinary, final CertificateToken issuerToken) {
+		return crlBinary.asXmlId() + issuerToken.getDSSIdAsString();
 	}
 
 	/**
@@ -213,7 +217,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 	}
 	
 	protected void storeCRLToken(final CRLBinaryIdentifier crlBinary, final CRLToken crlToken) {
-		// do nothing
+		// not implemented by default
 	}
 	
 	/**

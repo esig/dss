@@ -295,7 +295,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 		// if alpha value is less then 255 (is transparent)
 		float alpha = color.getAlpha();
 		if (alpha < OPAQUE_VALUE) {
-			LOG.warn("Transparency detected and enabled (be careful not valid with PDF/A !)");
+			LOG.warn("Transparency detected and enabled (Be aware: not valid with PDF/A !)");
 			setAlpha(cs, alpha);
 		} 
 	}

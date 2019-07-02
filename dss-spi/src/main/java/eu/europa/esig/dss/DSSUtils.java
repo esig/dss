@@ -575,6 +575,19 @@ public final class DSSUtils {
 		} catch (IOException | CMSException e) {
 			throw new DSSException("Not a valid CAdES file", e);
 		}
+	}	
+	
+	/**		
+	 * Returns byte size of the given document
+	 * @param dssDocument {@link DSSDocument} to get size for
+	 * @return long size of the given document
+	 */
+	public static long getFileByteSize(DSSDocument dssDocument) {
+		try (InputStream is = dssDocument.openStream()) {
+			return Utils.getInputStreamSize(is);
+		} catch (IOException e) {
+			throw new DSSException(String.format("Cannot read the document with name [%s]", dssDocument.getName()));
+		}
 	}
 
 	/**

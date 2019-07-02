@@ -34,7 +34,6 @@ import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Set;
-import org.bouncycastle.asn1.DEROutputStream;
 import org.bouncycastle.asn1.DERSet;
 import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.DLSet;
@@ -69,24 +68,6 @@ public final class CMSUtils {
 	public static final DigestAlgorithm DEFAULT_ARCHIVE_TIMESTAMP_HASH_ALGO = DigestAlgorithm.SHA256;
 
 	private CMSUtils() {
-	}
-
-	/**
-	 * Returns the ASN.1 encoded representation of {@code CMSSignedData}.
-	 *
-	 * @param data
-	 *             the CMSSignedData to be encoded
-	 * @return the DER encoded CMSSignedData
-	 */
-	public static byte[] getEncoded(final CMSSignedData data) {
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			DEROutputStream deros = new DEROutputStream(baos);
-			deros.writeObject(data.toASN1Structure());
-			deros.close();
-			return baos.toByteArray();
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
 	}
 
 	/**

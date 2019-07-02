@@ -28,6 +28,7 @@ import eu.europa.esig.dss.XAdESNamespaces;
  * This class hold all XPath queries schema-dependent. It was created to cope with old signatures bases on http://uri.etsi.org/01903/v1.1.1.
  *
  */
+@SuppressWarnings("serial")
 public class XPathQueryHolder implements Serializable {
 
 	public static final String XMLE_SIGNATURE = "Signature";
@@ -49,7 +50,6 @@ public class XPathQueryHolder implements Serializable {
 	public static final String XMLE_UNSIGNED_PROPERTIES = "UnsignedProperties";
 	public static final String XMLE_UNSIGNED_SIGNATURE_PROPERTIES = "UnsignedSignatureProperties";
 	
-
 	public static final String XMLE_ALL_DATA_OBJECTS_TIME_STAMP = "AllDataObjectsTimeStamp";
 	public static final String XMLE_ARCHIVE_TIME_STAMP = "ArchiveTimeStamp";
 	public static final String XMLE_ARCHIVE_TIME_STAMP_V2 = "ArchiveTimeStampV2";

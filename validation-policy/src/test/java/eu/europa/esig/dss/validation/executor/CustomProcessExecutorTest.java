@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation.executor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
@@ -53,9 +54,12 @@ import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.SimpleReport;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
+import eu.europa.esig.jaxb.policy.Algo;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.Level;
+import eu.europa.esig.jaxb.policy.LevelConstraint;
+import eu.europa.esig.jaxb.policy.SignatureConstraints;
 
 public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
@@ -150,7 +154,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
-		 reports.print();
+		// reports.print();
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
@@ -670,19 +674,19 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertNotNull(reports);
 
 		SimpleReport simpleReport = reports.getSimpleReport();
-		assertEquals(Indication.TOTAL_FAILED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 
 		DetailedReport detailedReport = reports.getDetailedReport();
-		assertEquals(Indication.FAILED, detailedReport.getBasicValidationIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicValidationIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, detailedReport.getBasicValidationSubIndication(simpleReport.getFirstSignatureId()));
 
 		assertEquals(0, detailedReport.getTimestampIds().size());
 
-		assertEquals(Indication.FAILED, detailedReport.getLongTermValidationIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(Indication.INDETERMINATE, detailedReport.getLongTermValidationIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, detailedReport.getLongTermValidationSubIndication(simpleReport.getFirstSignatureId()));
 
-		assertEquals(Indication.FAILED, detailedReport.getArchiveDataValidationIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(Indication.INDETERMINATE, detailedReport.getArchiveDataValidationIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, detailedReport.getArchiveDataValidationSubIndication(simpleReport.getFirstSignatureId()));
 
 		validateBestSigningTimes(reports);
@@ -1226,6 +1230,67 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(Indication.FAILED, detailedReport.getArchiveDataValidationIndication(detailedReport.getFirstSignatureId()));
 		assertEquals(SubIndication.FORMAT_FAILURE, detailedReport.getArchiveDataValidationSubIndication(detailedReport.getFirstSignatureId()));
 	}
+	
+	@Test
+	public void signedPropertiesMissedTest() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/signedProperties_missed.xml");
+		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		assertNotNull(diagnosticData);
+
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+		
+		Reports reports = executor.execute();
+		// reports.print();
+		
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		XmlSAV sav = signatureBBB.getSAV();
+		assertEquals(Indication.INDETERMINATE, sav.getConclusion().getIndication());
+		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
+		
+	}
+	
+	@Test
+	public void signedPropertiesMissedNotStrictPolicyTest() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/signedProperties_missed.xml");
+		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		assertNotNull(diagnosticData);
+		
+		LevelConstraint passLevel = new LevelConstraint();
+		passLevel.setLevel(Level.WARN);
+		ConstraintsParameters policy = loadConstraintsParameters("src/main/resources/policy/constraint.xml");
+		SignatureConstraints signatureConstraints = policy.getSignatureConstraints();
+		signatureConstraints.getSignedAttributes().setMessageDigestOrSignedPropertiesPresent(passLevel);
+
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(new EtsiValidationPolicy(policy));
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+		
+		Reports reports = executor.execute();
+		// reports.print();
+		
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertNull(simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		
+		List<String> warnings = simpleReport.getWarnings(simpleReport.getFirstSignatureId());
+		assertEquals(1, warnings.size());
+		assertEquals(MessageTag.BBB_SAV_ISQPMDOSPP_ANS.getMessage(), warnings.get(0));
+		
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		XmlSAV sav = signatureBBB.getSAV();
+		assertEquals(Indication.PASSED, sav.getConclusion().getIndication());
+		
+	}
 
 	@Test
 	public void testTLNoSigCertEmptyPolicy() throws Exception {
@@ -1438,6 +1503,45 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		executor.setValidationLevel(null);
 
 		executor.execute();
+	}
+	
+	@Test
+	public void dss1635Test() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/dss-1635-diag-data.xml");
+		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		ConstraintsParameters defaultPolicy = loadConstraintsParameters("src/main/resources/policy/constraint.xml");
+		List<Algo> algos = defaultPolicy.getCryptographic().getAlgoExpirationDate().getAlgo();
+		for (Algo algo : algos) {
+			if ("SHA1".equals(algo.getValue())) {
+				algo.setDate("2014");
+				break;
+			}
+		}
+		executor.setValidationPolicy(new EtsiValidationPolicy(defaultPolicy));
+		executor.setCurrentTime(new Date());
+
+		Reports reports = executor.execute();
+		// reports.print();
+		
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		
+		// current year returns a first day
+		for (Algo algo : algos) {
+			if ("SHA1".equals(algo.getValue())) {
+				algo.setDate("2013");
+				break;
+			}
+		}
+
+		executor.setValidationPolicy(new EtsiValidationPolicy(defaultPolicy));
+		reports = executor.execute();
+		simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		
 	}
 
 	private void checkReports(Reports reports) {

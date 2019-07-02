@@ -34,6 +34,7 @@ import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentIdentifierChe
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentTimestampCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentTypeCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CounterSignatureCheck;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.MessageDigestOrSignedPropertiesCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SignerLocationCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningTimeCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.StructuralValidationCheck;
@@ -70,6 +71,9 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 
 		// content-hints
 		item = item.setNextItem(contentHints());
+		
+		// message-digest for CAdES and SignedProperties for XAdES are present
+		item = item.setNextItem(messageDigestOrSignedProperties());
 
 		// TODO content-reference
 
@@ -123,6 +127,11 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 	private ChainItem<XmlSAV> contentIdentifier() {
 		ValueConstraint constraint = validationPolicy.getContentIdentifierConstraint();
 		return new ContentIdentifierCheck(result, token, constraint);
+	}
+
+	private ChainItem<XmlSAV> messageDigestOrSignedProperties() {
+		LevelConstraint constraint = validationPolicy.getMessageDigestOrSignedPropertiesConstraint();
+		return new MessageDigestOrSignedPropertiesCheck(result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> commitmentTypeIndications() {

@@ -56,6 +56,8 @@ public class CertificateToken extends Token {
 	 * Encapsulated X509 certificate.
 	 */
 	private final X509Certificate x509Certificate;
+	
+	private final String canonicalizedSubject;
 
 	/**
 	 * Digest of the public key (cross certificates have same public key)
@@ -90,6 +92,7 @@ public class CertificateToken extends Token {
 
 		this.x509Certificate = x509Certificate;
 		this.entityKey = new EntityIdentifier(x509Certificate.getPublicKey());
+		this.canonicalizedSubject = x509Certificate.getSubjectX500Principal().getName(X500Principal.CANONICAL);
 
 		// The Algorithm OID is used and not the name {@code x509Certificate.getSigAlgName()}
 		this.signatureAlgorithm = SignatureAlgorithm.forOidAndParams(x509Certificate.getSigAlgOID(), x509Certificate.getSigAlgParams());
@@ -125,6 +128,10 @@ public class CertificateToken extends Token {
 	 */
 	public PublicKey getPublicKey() {
 		return x509Certificate.getPublicKey();
+	}
+	
+	public String getCanonicalizedSubject() {
+		return canonicalizedSubject;
 	}
 
 	/**

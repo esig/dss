@@ -8,6 +8,7 @@ import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.Reference;
 import org.apache.xml.security.signature.ReferenceNotInitializedException;
+import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.transforms.Transforms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,8 +65,11 @@ public final class XAdESUtils {
 							}
 						}
 					} else {
-						byte[] originalContentBytes = getReferenceOriginalContentBytes(reference);
-						result.add(new InMemoryDocument(originalContentBytes, reference.getURI()));
+						try {
+							result.add(new InMemoryDocument(reference.getReferencedBytes(), reference.getURI()));
+						} catch (XMLSignatureException e) {
+							LOG.warn("Unable to retrieve reference {}", reference.getId(), e);
+						}
 					}
 				}
 			}

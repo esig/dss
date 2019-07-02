@@ -55,18 +55,18 @@ public class DefaultDrawerImageUtils {
 					scaledImage = zoomImage(scaledImage, zoomFactor, zoomFactor);
 					switch (textParamaters.getSignerNamePosition()) {
 						case LEFT:
-							buffImg = ImagesMerger.mergeOnRight(buffImg, scaledImage, imageParameters.getBackgroundColor(),
+							buffImg = ImageMerger.mergeOnRight(buffImg, scaledImage, imageParameters.getBackgroundColor(),
 									imageParameters.getSignerTextImageVerticalAlignment());
 							break;
 						case RIGHT:
-							buffImg = ImagesMerger.mergeOnRight(scaledImage, buffImg, imageParameters.getBackgroundColor(),
+							buffImg = ImageMerger.mergeOnRight(scaledImage, buffImg, imageParameters.getBackgroundColor(),
 									imageParameters.getSignerTextImageVerticalAlignment());
 							break;
 						case TOP:
-							buffImg = ImagesMerger.mergeOnTop(scaledImage, buffImg, imageParameters.getBackgroundColor());
+							buffImg = ImageMerger.mergeOnTop(scaledImage, buffImg, imageParameters.getBackgroundColor());
 							break;
 						case BOTTOM:
-							buffImg = ImagesMerger.mergeOnTop(buffImg, scaledImage, imageParameters.getBackgroundColor());
+							buffImg = ImageMerger.mergeOnTop(buffImg, scaledImage, imageParameters.getBackgroundColor());
 							break;
 						default:
 							break;

@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
-import javax.xml.crypto.dsig.Transform;
 
 import org.apache.xml.security.signature.Reference;
 import org.bouncycastle.tsp.TimeStampToken;
@@ -43,10 +42,11 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.x509.TimestampType;
-import eu.europa.esig.dss.xades.DSSReference;
-import eu.europa.esig.dss.xades.DSSTransform;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.reference.Base64Transform;
+import eu.europa.esig.dss.xades.reference.DSSReference;
+import eu.europa.esig.dss.xades.reference.DSSTransform;
 
 public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractXAdESTestSignature {
 
@@ -64,8 +64,7 @@ public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractXAdEST
 		String canonicalizationAlgo = CanonicalizationMethod.EXCLUSIVE;
 
 		List<DSSTransform> transforms = new ArrayList<DSSTransform>();
-		DSSTransform dssTransform = new DSSTransform();
-		dssTransform.setAlgorithm(Transform.BASE64);
+		Base64Transform dssTransform = new Base64Transform();
 		transforms.add(dssTransform);
 
 		List<DSSReference> references = new ArrayList<DSSReference>();

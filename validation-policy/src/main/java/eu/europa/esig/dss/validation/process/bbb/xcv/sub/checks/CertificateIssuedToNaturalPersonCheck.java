@@ -56,7 +56,7 @@ public class CertificateIssuedToNaturalPersonCheck extends ChainItem<XmlSubXCV> 
 
 	@Override
 	protected Indication getFailedIndicationForConclusion() {
-		return Indication.FAILED;
+		return Indication.INDETERMINATE;
 	}
 
 	@Override

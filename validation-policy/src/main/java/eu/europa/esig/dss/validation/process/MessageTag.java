@@ -140,6 +140,8 @@ public enum MessageTag implements IMessageTag {
 	BBB_SAV_ISQPXTIP_ANS("The signed qualifying property: 'commitment-type-indication' is not present!"),
 	BBB_SAV_IUQPCSP("Is unsigned qualifying property: 'countersignature' present?"),
 	BBB_SAV_IUQPCSP_ANS("The unsigned qualifying property: 'countersignature' is not present!"),
+	BBB_SAV_ISQPMDOSPP("Is signed qualifying property: 'message-digest' or 'SignedProperties' present?"),
+	BBB_SAV_ISQPMDOSPP_ANS("The signed qualifying property: neither 'message-digest' nor 'SignedProperties' is present!"),
 
 	BBB_VCI_ISPK("Is the signature policy known?"),
 	BBB_VCI_ISPK_ANS_1("The signature policy is mandatory!"),

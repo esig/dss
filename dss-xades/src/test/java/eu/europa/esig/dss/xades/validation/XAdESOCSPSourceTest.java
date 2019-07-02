@@ -32,6 +32,7 @@ import eu.europa.esig.dss.validation.RevocationType;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 
 public class XAdESOCSPSourceTest extends PKIFactoryAccess {
 
@@ -40,17 +41,16 @@ public class XAdESOCSPSourceTest extends PKIFactoryAccess {
 		DSSDocument doc = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-XAdES/BE_ECON/Signature-X-BE_ECON-3.xml");
 
 		DiagnosticData diagnosticData = getDiagnosticData(doc);
-		String firstSignatureId = diagnosticData.getFirstSignatureId();
 		
-		assertEquals(5, diagnosticData.getAllRevocationForSignature(firstSignatureId).size());
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		
-		assertEquals(4, diagnosticData.getAllRevocationForSignatureByType(firstSignatureId, RevocationType.CRL).size());
-		assertEquals(1, diagnosticData.getAllRevocationForSignatureByType(firstSignatureId, RevocationType.OCSP).size());
+		assertEquals(5, signature.getFoundRevocations().size());
 		
-		assertEquals(1, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(firstSignatureId, RevocationType.OCSP, 
-				XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
-		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(firstSignatureId, RevocationType.OCSP, 
-				XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
+		assertEquals(4, signature.getRevocationIdsByType(RevocationType.CRL).size());
+		assertEquals(1, signature.getRevocationIdsByType(RevocationType.OCSP).size());
+		
+		assertEquals(1, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
+		assertEquals(0, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
 	}
 
 	@Test
@@ -58,17 +58,16 @@ public class XAdESOCSPSourceTest extends PKIFactoryAccess {
 		DSSDocument doc = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-XAdES/HU_POL/Signature-X-HU_POL-3.xml");
 
 		DiagnosticData diagnosticData = getDiagnosticData(doc);
-		String firstSignatureId = diagnosticData.getFirstSignatureId();
 		
-		assertEquals(4, diagnosticData.getAllRevocationForSignature(firstSignatureId).size());
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		
-		assertEquals(0, diagnosticData.getAllRevocationForSignatureByType(firstSignatureId, RevocationType.CRL).size());
-		assertEquals(4, diagnosticData.getAllRevocationForSignatureByType(firstSignatureId, RevocationType.OCSP).size());
+		assertEquals(4, signature.getFoundRevocations().size());
 		
-		assertEquals(2, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(firstSignatureId, RevocationType.OCSP, 
-				XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
-		assertEquals(2, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(firstSignatureId, RevocationType.OCSP, 
-				XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
+		assertEquals(0, signature.getRevocationIdsByType(RevocationType.CRL).size());
+		assertEquals(4, signature.getRevocationIdsByType(RevocationType.OCSP).size());
+		
+		assertEquals(2, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
+		assertEquals(2, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
 	}
 
 	@Test
@@ -76,23 +75,23 @@ public class XAdESOCSPSourceTest extends PKIFactoryAccess {
 		DSSDocument doc = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-XAdES/CY/Signature-X-CY-1.xml");
 
 		DiagnosticData diagnosticData = getDiagnosticData(doc);
-		String firstSignatureId = diagnosticData.getFirstSignatureId();
 		
-		assertEquals(0, diagnosticData.getAllRevocationForSignature(firstSignatureId).size());
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		
-		assertEquals(0, diagnosticData.getAllRevocationForSignatureByType(firstSignatureId, RevocationType.CRL).size());
-		assertEquals(0, diagnosticData.getAllRevocationForSignatureByType(firstSignatureId, RevocationType.OCSP).size());
+		assertEquals(0, signature.getFoundRevocations().size());
 		
-		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(firstSignatureId, RevocationType.OCSP, 
-				XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
-		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(firstSignatureId, RevocationType.OCSP, 
-				XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
+		assertEquals(0, signature.getRevocationIdsByType(RevocationType.CRL).size());
+		assertEquals(0, signature.getRevocationIdsByType(RevocationType.OCSP).size());
+		
+		assertEquals(0, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
+		assertEquals(0, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
 	}
 	
 	private DiagnosticData getDiagnosticData(DSSDocument doc) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		Reports reports = validator.validateDocument();
+		reports.print();
 		return reports.getDiagnosticData();
 	}
 

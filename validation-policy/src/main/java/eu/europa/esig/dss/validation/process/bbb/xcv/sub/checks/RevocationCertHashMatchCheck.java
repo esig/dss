@@ -69,7 +69,7 @@ public class RevocationCertHashMatchCheck extends ChainItem<XmlSubXCV> {
 
 	@Override
 	protected Indication getFailedIndicationForConclusion() {
-		return Indication.FAILED;
+		return Indication.INDETERMINATE;
 	}
 
 	@Override

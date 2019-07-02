@@ -79,8 +79,9 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 			}
 			return byteArray;
 		} catch (IOException | XMLSecurityException e) {
-			throw new DSSException("Unable to extract IndividualDataObjectsTimestampData/AllDataObjectsTimestampData", e);
+			LOG.warn("Unable to extract IndividualDataObjectsTimestampData/AllDataObjectsTimestampData", e);
 		}
+		return null;
 
 	}
 

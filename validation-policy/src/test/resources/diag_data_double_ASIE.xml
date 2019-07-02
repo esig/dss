@@ -19,7 +19,7 @@
                 </DigestMatcher>
                 <DigestMatcher type="SIGNED_PROPERTIES">
                     <DigestMethod>SHA256</DigestMethod>
-                    <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
+                    <DigestValue>kcDHOZjwZhVfuDhuhCeCERRmYpTH4Jj4RmfVVi31Q9g=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>

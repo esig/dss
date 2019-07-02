@@ -433,7 +433,7 @@ public class TimestampToken extends Token {
 
 	@Override
 	public byte[] getEncoded() {
-		return DSSASN1Utils.getEncoded(timeStamp);
+		return DSSASN1Utils.getDEREncoded(timeStamp);
 	}
 
 	/**

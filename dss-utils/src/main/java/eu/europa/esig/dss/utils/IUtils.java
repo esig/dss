@@ -98,6 +98,8 @@ public interface IUtils {
 	void copy(InputStream is, OutputStream os) throws IOException;
 
 	void write(byte[] content, OutputStream os) throws IOException;
+	
+	long getInputStreamSize(InputStream is) throws IOException;
 
 	void cleanDirectory(File directory) throws IOException;
 

@@ -42,17 +42,15 @@ public class CAdESRevocationWrapperTest extends PKIFactoryAccess {
 				revocationSignatureOriginCounter++;
 			}
 		}
+		
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		
 		assertEquals(2, revocationSignatureOriginCounter);
-		assertEquals(0, diagnosticData.getAllRevocationForSignatureByType(diagnosticData.getFirstSignatureId(), 
-				RevocationType.CRL).size());
-		assertEquals(2, diagnosticData.getAllRevocationForSignatureByType(diagnosticData.getFirstSignatureId(), 
-				RevocationType.OCSP).size());
-		assertEquals(2, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(diagnosticData.getFirstSignatureId(), 
-				RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
-		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(diagnosticData.getFirstSignatureId(), 
-				RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
-		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(diagnosticData.getFirstSignatureId(), 
-				RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_DSS).size());
+		assertEquals(0, signature.getRevocationIdsByType(RevocationType.CRL).size());
+		assertEquals(2, signature.getRevocationIdsByType(RevocationType.OCSP).size());
+		assertEquals(2, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
+		assertEquals(0, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
+		assertEquals(0, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_DSS).size());
 	}
 	
 	@Test

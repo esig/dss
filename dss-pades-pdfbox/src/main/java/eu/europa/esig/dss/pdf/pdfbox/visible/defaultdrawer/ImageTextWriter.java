@@ -66,7 +66,7 @@ public final class ImageTextWriter {
 
 		int imageType;
 		if (isTransparent(textParameters.getTextColor(), textParameters.getBackgroundColor())) {
-			LOG.warn("Transparency detected and enabled (be careful not valid with PDF/A !)");
+			LOG.warn("Transparency detected and enabled (Be aware: not valid with PDF/A !)");
 			imageType = BufferedImage.TYPE_INT_ARGB;
 		} else {
 			imageType = BufferedImage.TYPE_INT_RGB;

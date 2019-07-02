@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +43,6 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory;
@@ -141,7 +141,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		final DigestAlgorithm timestampDigestAlgorithm = parameters.getSignatureTimestampParameters().getDigestAlgorithm();
 		final byte[] digest = digest(document, parameters, timestampDigestAlgorithm);
 		final TimeStampToken timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, digest);
-		final byte[] encoded = CMSUtils.getEncoded(timeStampToken.toCMSSignedData());
+		final byte[] encoded = DSSASN1Utils.getDEREncoded(timeStampToken);
 		return sign(document, encoded, parameters, timestampDigestAlgorithm);
 	}
 
@@ -161,6 +161,9 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * revision number and to know if a TSP is over the DSS dictionary
 	 */
 	protected void linkSignatures(List<PdfSignatureOrDocTimestampInfo> signatures) {
+
+		Collections.sort(signatures, new PdfSignatureOrDocTimestampInfoComparator());
+
 		List<PdfSignatureOrDocTimestampInfo> previousList = new ArrayList<PdfSignatureOrDocTimestampInfo>();
 		for (PdfSignatureOrDocTimestampInfo sig : signatures) {
 			if (Utils.isCollectionNotEmpty(previousList)) {
@@ -176,7 +179,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 		try (InputStream is = dssDocument.openStream()) {
 			// Adobe Digital Signatures in a PDF (p5): In Figure 4, the hash is calculated
-			// for bytes 0 through 839, and 960 through 1200. [0, 840, 960, 1200]
+			// for bytes 0 through 840, and 960 through 1200. [0, 840, 960, 1200]
 
 			int beginning = byteRange[0];
 			int startSigValueContent = byteRange[1];

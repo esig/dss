@@ -51,20 +51,20 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 			revocationIds.add(revocation.getId());
 		}
 		assertEquals(4, revocationSignatureOriginCounter);
-		assertEquals(0, diagnosticData.getAllRevocationForSignatureByType(diagnosticData.getFirstSignatureId(), 
-				RevocationType.CRL).size());
-		assertEquals(4, diagnosticData.getAllRevocationForSignatureByType(diagnosticData.getFirstSignatureId(), 
-				RevocationType.OCSP).size());
-		assertEquals(2, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(diagnosticData.getFirstSignatureId(), 
-				RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
-		assertEquals(2, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(diagnosticData.getFirstSignatureId(), 
-				RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
+		
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertNotNull(signature);
+		
+		assertEquals(0, signature.getRevocationIdsByType(RevocationType.CRL).size());
+		assertEquals(4, signature.getRevocationIdsByType(RevocationType.OCSP).size());
+		assertEquals(2, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
+		assertEquals(2, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
 		
 		eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData xmlDiagnosticData = reports.getDiagnosticDataJaxb();
 		List<XmlSignature> xmlSignatures = xmlDiagnosticData.getSignatures();
 		assertNotNull(xmlSignatures);
-		for (XmlSignature signature : xmlSignatures) {
-			List<XmlRelatedRevocation> revocationRefs = signature.getFoundRevocations().getRelatedRevocations();
+		for (XmlSignature xmlSignature : xmlSignatures) {
+			List<XmlRelatedRevocation> revocationRefs = xmlSignature.getFoundRevocations().getRelatedRevocations();
 			assertNotNull(revocationRefs);
 			assertEquals(4, revocationRefs.size());
 			for (XmlRelatedRevocation revocation : revocationRefs) {
@@ -94,20 +94,20 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 			revocationIds.add(revocation.getId());
 		}
 		assertEquals(1, revocationSignatureOriginCounter);
-		assertEquals(1, diagnosticData.getAllRevocationForSignatureByType(diagnosticData.getFirstSignatureId(),
-				RevocationType.CRL).size());
-		assertEquals(0, diagnosticData.getAllRevocationForSignatureByType(diagnosticData.getFirstSignatureId(), 
-				RevocationType.OCSP).size());
-		assertEquals(1, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(diagnosticData.getFirstSignatureId(), 
-				RevocationType.CRL, XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
-		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(diagnosticData.getFirstSignatureId(), 
-				RevocationType.CRL, XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
+		
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertNotNull(signature);
+		
+		assertEquals(1, signature.getRevocationIdsByType(RevocationType.CRL).size());
+		assertEquals(0, signature.getRevocationIdsByType(RevocationType.OCSP).size());
+		assertEquals(1, signature.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
+		assertEquals(0, signature.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
 		
 		eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData xmlDiagnosticData = reports.getDiagnosticDataJaxb();
 		List<XmlSignature> xmlSignatures = xmlDiagnosticData.getSignatures();
 		assertNotNull(xmlSignatures);
-		for (XmlSignature signature : xmlSignatures) {
-			List<XmlRelatedRevocation> revocationRefs = signature.getFoundRevocations().getRelatedRevocations();
+		for (XmlSignature xmlSignature : xmlSignatures) {
+			List<XmlRelatedRevocation> revocationRefs = xmlSignature.getFoundRevocations().getRelatedRevocations();
 			assertNotNull(revocationRefs);
 			for (XmlRelatedRevocation revocation : revocationRefs) {
 				assertNotNull(revocation.getRevocation());
@@ -119,9 +119,9 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 		assertEquals(3, signatures.size());
 		
-		assertEquals(1, diagnosticData.getAllRevocationForSignature(signatures.get(0).getId()).size());
-		assertEquals(1, diagnosticData.getAllRevocationForSignature(signatures.get(1).getId()).size());
-		assertEquals(1, diagnosticData.getAllRevocationForSignature(signatures.get(2).getId()).size());
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			assertEquals(1, signatureWrapper.getFoundRevocations().size());
+		}
 		
 		// Same CRL has been inserted 3 times
 		assertEquals(1, diagnosticData.getAllRevocationData().size());

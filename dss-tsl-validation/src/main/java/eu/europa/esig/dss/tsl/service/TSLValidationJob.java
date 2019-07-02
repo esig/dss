@@ -121,7 +121,7 @@ public class TSLValidationJob {
 	 * @param ojurl
 	 *            the Official Journal URL
 	 */
-	public void setUsedOjKeystoreUrl(String ojurl) {
+	public void setOjUrl(String ojurl) {
 		this.ojUrl = ojurl;
 	}
 	

@@ -33,7 +33,6 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlContainerInfo;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlOrphanRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlOrphanToken;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlRelatedRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerData;
@@ -43,7 +42,6 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.OrphanTokenType;
 import eu.europa.esig.dss.validation.RevocationReason;
 import eu.europa.esig.dss.validation.RevocationType;
-import eu.europa.esig.dss.validation.XmlRevocationOrigin;
 import eu.europa.esig.dss.x509.TimestampType;
 
 /**
@@ -618,71 +616,6 @@ public class DiagnosticData {
 			}
 		}
 		return null;
-	}
-	
-	/**
-	 * Returns list of {@link RevocationWrapper}s for the given signature by {@code signatureId}
-	 * @param signatureId {@link String} id of the relevant signature
-	 * @return list of {@link RevocationWrapper}s
-	 */
-	public List<RevocationWrapper> getAllRevocationForSignature(String signatureId) {
-		return getAllRevocationForSignatureByType(signatureId, null);
-	}
-	
-	/**
-	 * Returns list of {@link RevocationWrapper}s for the given signature by {@code signatureId} and specified {@link RevocationType}
-	 * @param signatureId {@link String} id of the relevant signature
-	 * @param revocationType {@link RevocationType} type to get revocation data of. If NULL returns revocations of all revocation types
-	 * @return list of {@link RevocationWrapper}s
-	 */
-	public List<RevocationWrapper> getAllRevocationForSignatureByType(String signatureId, RevocationType revocationType) {
-		return getAllRevocationForSignatureByTypeAndOrigin(signatureId, revocationType, null);
-	}
-	
-	/**
-	 * Returns list of {@link RevocationWrapper}s for the given signature by
-	 * {@code signatureId}, specified {@link RevocationType} and specified
-	 * {@link XmlRevocationOrigin}
-	 * 
-	 * @param signatureId
-	 *                       {@link String} id of the relevant signature
-	 * @param revocationType
-	 *                       {@link RevocationType} type to get revocation data of.
-	 *                       If NULL returns revocations of all types
-	 * @param originType
-	 *                       {@link XmlRevocationOrigin} origin type to get
-	 *                       revocation data of. If NULL returns revocations of all
-	 *                       origin types
-	 * @return list of {@link RevocationWrapper}s
-	 */
-	public List<RevocationWrapper> getAllRevocationForSignatureByTypeAndOrigin(String signatureId, RevocationType revocationType, 
-			XmlRevocationOrigin originType) {
-		SignatureWrapper signature = getSignatureById(signatureId);
-		
-		Set<XmlRelatedRevocation> revocationSet = null;
-		if (revocationType != null) {
-			revocationSet = signature.getRelatedRevocationsByType(revocationType);
-			if (originType != null) {
-				revocationSet.retainAll(signature.getRelatedRevocationsByOrigin(originType));
-			}
-		} else if (originType != null) {
-			revocationSet = signature.getRelatedRevocationsByOrigin(originType);
-		} else {
-			revocationSet = new HashSet<XmlRelatedRevocation>(signature.getRelatedRevocations());
-		}
-
-		List<RevocationWrapper> revocations = new ArrayList<RevocationWrapper>();
-		for (XmlRelatedRevocation relatedRevocation : revocationSet) {
-			if ((revocationType == null || relatedRevocation.getType().equals(revocationType)) && 
-					(originType == null || revocationContainsReferenceWithOrigin(relatedRevocation, originType))) {
-				revocations.add(new RevocationWrapper(relatedRevocation.getRevocation()));
-			}
-		}
-		return revocations;
-	}
-	
-	private boolean revocationContainsReferenceWithOrigin(XmlRelatedRevocation relatedRevocation, XmlRevocationOrigin revocationOrigin) {
-		return relatedRevocation.getOrigins().contains(revocationOrigin);
 	}
 	
 	/**

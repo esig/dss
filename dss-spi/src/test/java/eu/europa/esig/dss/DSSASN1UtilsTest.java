@@ -23,21 +23,32 @@ package eu.europa.esig.dss;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.bouncycastle.asn1.ASN1Encoding;
+import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.ASN1Primitive;
+import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.bouncycastle.asn1.x509.qualified.ETSIQCObjectIdentifiers;
 import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.tsp.TSPException;
+import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -257,6 +268,45 @@ public class DSSASN1UtilsTest {
 		assertNotNull(issuerInfo);
 		assertNotNull(issuerInfo.getIssuerName());
 		assertNotNull(issuerInfo.getSerialNumber());
+	}
+
+	@Test
+	public void getDEREncoded() throws IOException, CMSException, TSPException {
+
+		String berEncodedTST = "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";
+		byte[] originalBinaries = Utils.fromBase64(berEncodedTST);
+
+		try (ByteArrayInputStream bais = new ByteArrayInputStream(originalBinaries)) {
+			CMSSignedData cms = new CMSSignedData(bais);
+			TimeStampToken tst = new TimeStampToken(cms);
+
+			byte[] defaultEncoded = tst.getEncoded();
+			String defaultEncodedBase64 = Utils.toBase64(defaultEncoded);
+			assertEquals(berEncodedTST, defaultEncodedBase64);
+
+			ASN1InputStream asn1IS = new ASN1InputStream(defaultEncoded);
+			ASN1Primitive firstObject = asn1IS.readObject();
+			byte[] expectedBinaries = firstObject.getEncoded(ASN1Encoding.DER);
+			byte[] berBinaries = firstObject.getEncoded(ASN1Encoding.BER);
+			asn1IS.close();
+
+			assertArrayEquals(originalBinaries, berBinaries);
+
+			byte[] derEncoded = DSSASN1Utils.getDEREncoded(tst);
+			assertNotNull(derEncoded);
+			String derEncodedBase64 = Utils.toBase64(derEncoded);
+			
+			assertNotEquals(derEncodedBase64, defaultEncodedBase64);
+			assertArrayEquals(expectedBinaries, derEncoded);
+
+			asn1IS = new ASN1InputStream(derEncoded);
+			DERSequence derSequence = new DERSequence(asn1IS.readObject());
+			assertNotNull(derSequence);
+			asn1IS.close();
+
+			TimeStampToken rebuiltTST = new TimeStampToken(new CMSSignedData(derEncoded));
+			assertNotNull(rebuiltTST);
+		}
 	}
 
 }

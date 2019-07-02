@@ -54,7 +54,7 @@ public class StructuralValidationCheck extends ChainItem<XmlSAV> {
 
 	@Override
 	protected Indication getFailedIndicationForConclusion() {
-		return Indication.FAILED;
+		return Indication.INDETERMINATE;
 	}
 
 	@Override

@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
@@ -38,9 +39,6 @@ public abstract class AbstractASiCContainerExtractor {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractASiCContainerExtractor.class);
 
-	private static final String MIME_TYPE = "mimetype";
-	protected static final String META_INF_FOLDER = "META-INF/";
-
 	private final DSSDocument asicContainer;
 
 	protected AbstractASiCContainerExtractor(DSSDocument asicContainer) {
@@ -49,28 +47,32 @@ public abstract class AbstractASiCContainerExtractor {
 
 	public ASiCExtractResult extract() {
 		ASiCExtractResult result = new ASiCExtractResult();
+		
+		long containerSize = DSSUtils.getFileByteSize(asicContainer);
 
-		try (InputStream is = asicContainer.openStream(); ZipInputStream asicInputStream = new ZipInputStream(is)) {
+		try (InputStream is = asicContainer.openStream(); ZipInputStream asicInputStream = new ZipInputStream(is)) {	
+			int fileAmountCounter = 0;		
 			ZipEntry entry;
-			while ((entry = asicInputStream.getNextEntry()) != null) {
+			while ((entry = ASiCUtils.getNextValidEntry(asicInputStream)) != null) {
+				ASiCUtils.validateAllowedFilesAmount(++fileAmountCounter);
 				String entryName = entry.getName();
 				if (isMetaInfFolder(entryName)) {
 					if (isAllowedSignature(entryName)) {
-						result.getSignatureDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream));
+						result.getSignatureDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream, containerSize));
 					} else if (isAllowedManifest(entryName)) {
-						result.getManifestDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream));
+						result.getManifestDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream, containerSize));
 					} else if (isAllowedArchiveManifest(entryName)) {
-						result.getArchiveManifestDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream));
+						result.getArchiveManifestDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream, containerSize));
 					} else if (isAllowedTimestamp(entryName)) {
-						result.getTimestampDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream));
+						result.getTimestampDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream, containerSize));
 					} else if (!isFolder(entryName)) {
-						result.getUnsupportedDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream));
+						result.getUnsupportedDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream, containerSize));
 					}
 				} else if (!isFolder(entryName)) {
 					if (isMimetype(entryName)) {
-						result.setMimeTypeDocument(ASiCUtils.getCurrentDocument(entryName, asicInputStream));
+						result.setMimeTypeDocument(ASiCUtils.getCurrentDocument(entryName, asicInputStream, containerSize));
 					} else {
-						result.getSignedDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream));
+						result.getSignedDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream, containerSize));
 					}
 				}
 			}
@@ -121,11 +123,11 @@ public abstract class AbstractASiCContainerExtractor {
 	}
 
 	private boolean isMimetype(String entryName) {
-		return MIME_TYPE.equals(entryName);
+		return ASiCUtils.MIME_TYPE.equals(entryName);
 	}
 
 	private boolean isMetaInfFolder(String entryName) {
-		return entryName.startsWith(META_INF_FOLDER);
+		return entryName.startsWith(ASiCUtils.META_INF_FOLDER);
 	}
 
 	private boolean isFolder(String entryName) {

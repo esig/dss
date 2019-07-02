@@ -22,6 +22,7 @@ package eu.europa.esig.dss;
 
 import static eu.europa.esig.dss.OID.id_aa_ATSHashIndex;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.PublicKey;
@@ -62,6 +63,7 @@ import org.bouncycastle.asn1.BERTags;
 import org.bouncycastle.asn1.DERBitString;
 import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.DEROctetString;
+import org.bouncycastle.asn1.DEROutputStream;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.DLSequence;
@@ -229,8 +231,7 @@ public final class DSSASN1Utils {
 	 *
 	 * @param timeStampToken
 	 *                       {@code TimeStampToken}
-	 * @return the binary of the {@code TimeStampToken} @ if the {@code
-	 * TimeStampToken} encoding fails
+	 * @return the DER encoded {@code TimeStampToken}
 	 */
 	public static byte[] getEncoded(final TimeStampToken timeStampToken) {
 		return getEncoded(timeStampToken.toCMSSignedData());
@@ -248,7 +249,29 @@ public final class DSSASN1Utils {
 		try {
 			return cmsSignedData.getEncoded();
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException("Unable to encode to DER", e);
+		}
+	}
+	
+	public static byte[] getDEREncoded(final TimeStampToken timeStampToken) {
+		return getDEREncoded(timeStampToken.toCMSSignedData());
+	}
+
+	/**
+	 * Returns the ASN.1 encoded representation of {@code CMSSignedData}.
+	 *
+	 * @param data
+	 *             the CMSSignedData to be encoded
+	 * @return the DER encoded CMSSignedData
+	 */
+	public static byte[] getDEREncoded(final CMSSignedData data) {
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			DEROutputStream deros = new DEROutputStream(baos);
+			deros.writeObject(data.toASN1Structure());
+			deros.close();
+			return baos.toByteArray();
+		} catch (IOException e) {
+			throw new DSSException("Unable to encode to DER", e);
 		}
 	}
 

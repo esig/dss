@@ -563,19 +563,17 @@ public class ETSIValidationReportBuilder {
 	}
 	
 	private DigestAlgAndValueType getDTBSRDigestAlgAndValue(List<XmlDigestMatcher> digestMatchers) {
+		XmlDigestMatcher digestMatcher = null;
 		if (Utils.isCollectionNotEmpty(digestMatchers)) {
-			if (digestMatchers.size() == 1) {
-				XmlDigestMatcher xmlDigestMatcher = digestMatchers.get(0);
-				return getDigestAlgAndValueType(xmlDigestMatcher.getDigestMethod(), xmlDigestMatcher.getDigestValue());
-			}
-			for (XmlDigestMatcher digestMatcher : digestMatchers) {
-				if (DigestMatcherType.SIGNED_PROPERTIES.equals(digestMatcher.getType()) &&
-						Utils.isStringNotEmpty(digestMatcher.getDigestMethod()) && Utils.isArrayNotEmpty(digestMatcher.getDigestValue())) {
-					return getDigestAlgAndValueType(digestMatcher.getDigestMethod(), digestMatcher.getDigestValue());
+			for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
+				if ( (digestMatcher == null || DigestMatcherType.SIGNED_PROPERTIES.equals(xmlDigestMatcher.getType()) || 
+						DigestMatcherType.CONTENT_DIGEST.equals(xmlDigestMatcher.getType()) ) &&
+						Utils.isStringNotEmpty(xmlDigestMatcher.getDigestMethod()) && Utils.isArrayNotEmpty(xmlDigestMatcher.getDigestValue())) {
+					digestMatcher = xmlDigestMatcher;
 				}
 			}
 		}
-		return null;
+		return digestMatcher == null ? null : getDigestAlgAndValueType(digestMatcher.getDigestMethod(), digestMatcher.getDigestValue());
 	}
 	
 	private void getSignersDocuments(SignatureValidationReportType signatureValidationReport, SignatureWrapper sigWrapper) {

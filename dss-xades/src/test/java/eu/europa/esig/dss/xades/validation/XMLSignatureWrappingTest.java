@@ -23,7 +23,6 @@ package eu.europa.esig.dss.xades.validation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -352,19 +351,17 @@ public class XMLSignatureWrappingTest {
 		boolean signedPropertiesMatcherFound = false;
 		for (XmlDigestMatcher digestMatcher : digestMatchers) {
 			if (DigestMatcherType.SIGNED_PROPERTIES.equals(digestMatcher.getType())) {
-				assertNull(digestMatcher.getDigestMethod());
-				assertNull(digestMatcher.getDigestValue());
 				signedPropertiesMatcherFound = true;
 			}
 		}
-		assertTrue(signedPropertiesMatcherFound);
+		assertFalse(signedPropertiesMatcherFound);
 		
 		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
 		SignatureValidationReportType signatureValidationReport = etsiValidationReport.getSignatureValidationReport().get(0);
 		assertNotNull(signatureValidationReport);
 		SignatureIdentifierType signatureIdentifier = signatureValidationReport.getSignatureIdentifier();
 		assertNotNull(signatureIdentifier);
-		assertNull(signatureIdentifier.getDigestAlgAndValue());
+		assertNotNull(signatureIdentifier.getDigestAlgAndValue());
 		
 	}
 	

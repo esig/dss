@@ -36,6 +36,7 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.keys.keyresolver.KeyResolverException;
 import org.apache.xml.security.signature.Reference;
+import org.apache.xml.security.signature.ReferenceNotInitializedException;
 import org.apache.xml.security.signature.SignedInfo;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.signature.XMLSignatureException;
@@ -73,11 +74,8 @@ import eu.europa.esig.dss.validation.ReferenceValidation;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
-import eu.europa.esig.dss.validation.TimestampedObjectType;
-import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.SignatureCertificateSource;
 import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
@@ -804,11 +802,13 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			referenceValidations = new ArrayList<ReferenceValidation>();
 
 			final XMLSignature santuarioSignature = getSantuarioSignature();
+			
+			boolean atLeastOneReferenceElementFound = false;
+			
 			List<Reference> references = getReferences();
-			boolean signedPropertiesFound = false;
-			boolean referenceFound = false;
 			for (Reference reference : references) {
 				ReferenceValidation validation = new ReferenceValidation();
+				validation.setType(DigestMatcherType.REFERENCE);
 				boolean found = false;
 				boolean intact = false;
 				try {
@@ -820,31 +820,36 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						validation.setName(uri);
 					}
 
-					found = reference.getContentsBeforeTransformation() != null;
+					try {
+						found = reference.getContentsBeforeTransformation() != null;
+					} catch (ReferenceNotInitializedException e) {
+						// continue, exception will be catched later
+					}
+					
 					boolean noDuplicateIdFound = XMLUtils.protectAgainstWrappingAttack(santuarioSignature.getDocument(), DomUtils.getId(uri));
-					if (XAdESUtils.isSignedProperties(reference, xPathQueryHolder)) {
+					boolean isElementReference = DomUtils.isElementReference(uri);
+							
+					if (isElementReference && XAdESUtils.isSignedProperties(reference, xPathQueryHolder)) {
 						validation.setType(DigestMatcherType.SIGNED_PROPERTIES);
 						found = found && (noDuplicateIdFound && findSignedPropertiesById(uri));
-						signedPropertiesFound = signedPropertiesFound || found;
-					} else if (isKeyInfoReference(reference, santuarioSignature.getElement())) {
+					} else if (isElementReference && isKeyInfoReference(reference, santuarioSignature.getElement())) {
 						validation.setType(DigestMatcherType.KEY_INFO);
 						found = true; // we check it in prior inside "isKeyInfoReference" method
-					} else if (reference.typeIsReferenceToObject()) {
+					} else if (isElementReference && reference.typeIsReferenceToObject()) {
 						validation.setType(DigestMatcherType.OBJECT);
-						found = found &&  (noDuplicateIdFound && findObjectById(uri));
-						referenceFound = referenceFound || found;
-					} else if (reference.typeIsReferenceToManifest()) {
+						found = found && (noDuplicateIdFound && findObjectById(uri));
+						atLeastOneReferenceElementFound = true;
+					} else if (isElementReference && reference.typeIsReferenceToManifest()) {
 						validation.setType(DigestMatcherType.MANIFEST);
 						Node manifestNode = getManifestById(uri);
 						found = found && (noDuplicateIdFound && (manifestNode != null));
-						referenceFound = referenceFound || found;
+						atLeastOneReferenceElementFound = true;
 						if (manifestNode != null && Utils.isCollectionNotEmpty(detachedContents)) {
 							referenceValidations.addAll(getManifestReferences(manifestNode));
 						}
 					} else {
-						validation.setType(DigestMatcherType.REFERENCE);
 						found = found && noDuplicateIdFound;
-						referenceFound = referenceFound || found;
+						atLeastOneReferenceElementFound = true;
 					}
 
 					final Digest digest = new Digest();
@@ -855,21 +860,16 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 					intact = reference.verify();
 				} catch (XMLSecurityException e) {
-					LOG.warn("Unable to verify reference with Id {} : {}", reference.getId(), e.getMessage());
+					LOG.warn("Unable to verify reference with Id [{}] : {}", reference.getId(), e.getMessage());
 				}
 				validation.setFound(found);
 				validation.setIntact(intact);
 				referenceValidations.add(validation);
 			}
 
-			// If at least one signedProperties is not found, we add an empty
-			// referenceValidation
-			if (!signedPropertiesFound) {
-				referenceValidations.add(notFound(DigestMatcherType.SIGNED_PROPERTIES));
-			}
 			// If at least one reference is not found, we add an empty
 			// referenceValidation
-			if (!referenceFound) {
+			if (!atLeastOneReferenceElementFound) {
 				referenceValidations.add(notFound(DigestMatcherType.REFERENCE));
 			}
 		}
@@ -1107,40 +1107,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			daIdentifier = DSSXMLUtils.getIDIdentifier(signatureElement);
 		}
 		return daIdentifier;
-	}
-
-	// TODO: can be removed ???
-	@Override
-	public List<TimestampedReference> getTimestampedReferences() {
-		final List<TimestampedReference> references = new ArrayList<TimestampedReference>();
-
-		SignatureCertificateSource certificateSource = getCertificateSource();
-
-		// CompleteCertificateRefsV2
-		List<CertificateToken> completeCertificates = certificateSource.getCompleteCertificates();
-		for (CertificateToken certificateToken : completeCertificates) {
-			references.add(new TimestampedReference(certificateToken.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
-		}
-
-		// CompleteRevocationRefs
-		List<RevocationToken> completeRevocationTokens = getCompleteRevocationTokens();
-		for (RevocationToken revocationToken : completeRevocationTokens) {
-			references.add(new TimestampedReference(revocationToken.getDSSIdAsString(), TimestampedObjectType.REVOCATION));
-		}
-
-		// AttributeCertificateRefsV2
-		List<CertificateToken> attributeCertificates = certificateSource.getAttributeCertificates();
-		for (CertificateToken certificateToken : attributeCertificates) {
-			references.add(new TimestampedReference(certificateToken.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
-		}
-
-		// AttributeRevocationRefs
-		List<RevocationToken> attributeRevocationTokens = getAttributeRevocationTokens();
-		for (RevocationToken revocationToken : attributeRevocationTokens) {
-			references.add(new TimestampedReference(revocationToken.getDSSIdAsString(), TimestampedObjectType.REVOCATION));
-		}
-
-		return references;
 	}
 
 	/**

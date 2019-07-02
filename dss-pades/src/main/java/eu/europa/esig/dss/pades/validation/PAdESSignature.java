@@ -244,12 +244,6 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	@Override
-	public List<TimestampedReference> getTimestampedReferences() {
-		/* Not applicable for PAdES */
-		return Collections.emptyList();
-	}
-
-	@Override
 	public boolean isDataForSignatureLevelPresent(SignatureLevel signatureLevel) {
 		boolean dataForLevelPresent = true;
 		switch (signatureLevel) {
