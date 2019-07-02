@@ -20,9 +20,7 @@
  */
 package eu.europa.esig.dss.x509.revocation.crl;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -38,6 +36,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.crl.CRLValidity;
+import eu.europa.esig.dss.identifier.CRLBinaryIdentifier;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationOrigin;
@@ -79,8 +78,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 			return null;
 		}
 
-		final List<CRLBinaryIdentifier> crlBinariesToAdd = new ArrayList<CRLBinaryIdentifier>(); // used to store revocation data from different sources
-		final CRLValidity bestCRLValidity = getBestCrlValidityEntry(certificateToken, issuerToken, crlBinariesToAdd);
+		final CRLValidity bestCRLValidity = getBestCrlValidityEntry(certificateToken, issuerToken);
 		if (bestCRLValidity == null) {
 			return null;
 		}
@@ -88,9 +86,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 		final CRLToken crlToken = new CRLToken(certificateToken, bestCRLValidity);
 		validCRLTokenList.put(certificateToken, crlToken);
 		// store tokens with different origins
-		for (CRLBinaryIdentifier crlBinary : crlBinariesToAdd) {
-			storeCRLToken(crlBinary, crlToken);
-		}
+		storeCRLToken(bestCRLValidity.getCrlBinaryIdentifier(), crlToken);
 		return crlToken;
 	}
 
@@ -105,7 +101,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 	 *            of the CRL
 	 * @return {@code CRLValidity}
 	 */
-	private CRLValidity getBestCrlValidityEntry(final CertificateToken certificateToken, final CertificateToken issuerToken, List<CRLBinaryIdentifier> crlBinaries) {
+	private CRLValidity getBestCrlValidityEntry(final CertificateToken certificateToken, final CertificateToken issuerToken) {
 
 		CRLValidity bestCRLValidity = null;
 		Date bestX509UpdateDate = null;
@@ -129,8 +125,6 @@ public abstract class OfflineCRLSource implements CRLSource {
 			if ((bestX509UpdateDate == null) || thisUpdate.after(bestX509UpdateDate)) {
 				bestCRLValidity = crlValidity;
 				bestX509UpdateDate = thisUpdate;
-				crlBinaries.clear();
-				crlBinaries.add(crlEntry);
 			}
 		}
 		return bestCRLValidity;
@@ -152,17 +146,14 @@ public abstract class OfflineCRLSource implements CRLSource {
 		String crlValidityKey = getCrlValidityKey(crlBinary, issuerToken);
 		CRLValidity crlValidity = crlValidityMap.get(crlValidityKey);
 		if (crlValidity == null) {
-			try (InputStream is = new ByteArrayInputStream(crlBinary.getBinaries())) {
-				crlValidity = CRLUtils.isValidCRL(is, issuerToken);
+			try {
+				crlValidity = CRLUtils.buildCrlValidity(crlBinary, issuerToken);
 				if (crlValidity.isValid()) {
 					crlValidityMap.put(crlValidityKey, crlValidity);
 				}
 			} catch (IOException e) {
 				LOG.error("Unable to parse CRL", e);
 			}
-		}
-		if (crlValidity != null && crlValidity.getRevocationOrigins() == null) {
-			crlValidity.setRevocationOrigins(crlBinary.getOrigins());
 		}
 		return crlValidity;
 	}

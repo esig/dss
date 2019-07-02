@@ -1,9 +1,8 @@
-package eu.europa.esig.dss.x509.revocation;
+package eu.europa.esig.dss.identifier;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.europa.esig.dss.EncapsulatedTokenIdentifier;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 
 public class EncapsulatedRevocationTokenIdentifier extends EncapsulatedTokenIdentifier {

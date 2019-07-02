@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import eu.europa.esig.dss.identifier.EncapsulatedTokenIdentifier;
 import eu.europa.esig.dss.x509.EncapsulatedCertificateTokenIdentifier;
 
 public class EncapsulatedTokenIdentifierTest {

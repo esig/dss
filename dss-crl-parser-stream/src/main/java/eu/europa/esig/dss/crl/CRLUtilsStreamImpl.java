@@ -39,15 +39,17 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.identifier.CRLBinaryIdentifier;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.KeyUsageBit;
+import eu.europa.esig.dss.x509.RevocationOrigin;
 
 public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CRLUtilsStreamImpl.class);
 
 	@Override
-	public CRLValidity isValidCRL(InputStream crlStream, CertificateToken issuerToken) throws IOException {
+	public CRLValidity isValidCRL(InputStream crlStream, CertificateToken issuerToken, boolean external) throws IOException {
 
 		final CRLValidity crlValidity = new CRLValidity();
 		try (ByteArrayOutputStream baos = getDERContent(crlStream)) {
@@ -57,7 +59,9 @@ public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
 			SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forOidAndParams(crlInfos.getCertificateListSignatureAlgorithmOid(),
 					crlInfos.getCertificateListSignatureAlgorithmParams());
 
-			crlValidity.setCrlEncoded(baos.toByteArray());
+			if (external) {
+				crlValidity.setCrlBinaryIdentifier(CRLBinaryIdentifier.build(baos.toByteArray(), RevocationOrigin.EXTERNAL));
+			}
 			crlValidity.setSignatureAlgorithm(signatureAlgorithm);
 			crlValidity.setThisUpdate(crlInfos.getThisUpdate());
 			crlValidity.setNextUpdate(crlInfos.getNextUpdate());

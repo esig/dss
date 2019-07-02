@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.crl;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -27,6 +28,7 @@ import java.security.cert.X509CRLEntry;
 import java.util.Iterator;
 import java.util.ServiceLoader;
 
+import eu.europa.esig.dss.identifier.CRLBinaryIdentifier;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 public class CRLUtils {
@@ -60,8 +62,16 @@ public class CRLUtils {
 	 * @throws IOException
 	 *             if an IO error occurred
 	 */
-	public static CRLValidity isValidCRL(final InputStream crlStream, final CertificateToken issuerToken) throws IOException {
-		return impl.isValidCRL(crlStream, issuerToken);
+	public static CRLValidity buildCrlValidity(final InputStream crlStream, final CertificateToken issuerToken) throws IOException {
+		return impl.isValidCRL(crlStream, issuerToken, true);
+	}
+	
+	public static CRLValidity buildCrlValidity(final CRLBinaryIdentifier crlBinaryIdentifier, final CertificateToken issuerToken) throws IOException {
+		try (InputStream is = new ByteArrayInputStream(crlBinaryIdentifier.getBinaries())) {
+			CRLValidity crlValidity = impl.isValidCRL(is, issuerToken, false);
+			crlValidity.setCrlBinaryIdentifier(crlBinaryIdentifier);
+			return crlValidity;
+		}
 	}
 
 	/**

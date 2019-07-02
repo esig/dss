@@ -10,8 +10,8 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.x509.RevocationOrigin;
-import eu.europa.esig.dss.x509.revocation.EncapsulatedRevocationTokenIdentifier;
 
 public class OCSPResponseIdentifier extends EncapsulatedRevocationTokenIdentifier {
 

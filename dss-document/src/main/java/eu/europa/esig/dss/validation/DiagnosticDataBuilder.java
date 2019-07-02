@@ -59,6 +59,8 @@ import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.identifier.CRLBinaryIdentifier;
+import eu.europa.esig.dss.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.jaxb.diagnostic.ObjectFactory;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
@@ -123,9 +125,7 @@ import eu.europa.esig.dss.x509.SignatureCertificateSource;
 import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.dss.x509.Token;
 import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
-import eu.europa.esig.dss.x509.revocation.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.x509.revocation.RevocationRef;
-import eu.europa.esig.dss.x509.revocation.crl.CRLBinaryIdentifier;
 import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
 

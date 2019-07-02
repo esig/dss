@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.x509.revocation.crl;
 
+import eu.europa.esig.dss.identifier.CRLBinaryIdentifier;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 
 /**

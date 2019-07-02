@@ -22,8 +22,8 @@ package eu.europa.esig.dss.validation;
 
 import java.util.List;
 
-import eu.europa.esig.dss.DataIdentifier;
 import eu.europa.esig.dss.Digest;
+import eu.europa.esig.dss.identifier.DataIdentifier;
 
 /**
  * This class describes the scope of the signature

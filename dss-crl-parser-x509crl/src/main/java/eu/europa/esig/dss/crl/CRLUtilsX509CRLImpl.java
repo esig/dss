@@ -39,8 +39,10 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.identifier.CRLBinaryIdentifier;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.KeyUsageBit;
+import eu.europa.esig.dss.x509.RevocationOrigin;
 
 public class CRLUtilsX509CRLImpl extends AbstractCRLUtils implements ICRLUtils {
 
@@ -60,17 +62,19 @@ public class CRLUtilsX509CRLImpl extends AbstractCRLUtils implements ICRLUtils {
 	 * @return {@code CRLValidity}
 	 */
 	@Override
-	public CRLValidity isValidCRL(final InputStream crlStream, final CertificateToken issuerToken) {
+	public CRLValidity isValidCRL(final InputStream crlStream, final CertificateToken issuerToken, boolean external) {
 
 		final X509CRLValidity crlValidity = new X509CRLValidity();
 
 		X509CRL x509CRL = loadCRL(crlStream);
+		crlValidity.setX509CRL(x509CRL);
 
-		try {
-			crlValidity.setX509CRL(x509CRL);
-			crlValidity.setCrlEncoded(x509CRL.getEncoded());
-		} catch (CRLException e) {
-			LOG.error("Unable to read the CRL binaries", e);
+		if (external) {
+			try {
+				crlValidity.setCrlBinaryIdentifier(CRLBinaryIdentifier.build(x509CRL.getEncoded(), RevocationOrigin.EXTERNAL));
+			} catch (CRLException e) {
+				LOG.error("Unable to read the CRL binaries", e);
+			}
 		}
 
 		final String sigAlgOID = x509CRL.getSigAlgOID();

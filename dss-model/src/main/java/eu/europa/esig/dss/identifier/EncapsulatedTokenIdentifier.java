@@ -1,6 +1,8 @@
-package eu.europa.esig.dss;
+package eu.europa.esig.dss.identifier;
 
 import java.util.EnumMap;
+
+import eu.europa.esig.dss.DigestAlgorithm;
 
 public abstract class EncapsulatedTokenIdentifier extends Identifier {
 

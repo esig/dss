@@ -5,6 +5,7 @@ import java.util.List;
 
 import eu.europa.esig.dss.cades.validation.CAdESAttribute;
 import eu.europa.esig.dss.cades.validation.CAdESTimestampSource;
+import eu.europa.esig.dss.identifier.CRLBinaryIdentifier;
 import eu.europa.esig.dss.pdf.PdfDocTimestampInfo;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureInfo;
@@ -17,7 +18,6 @@ import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.TimestampType;
-import eu.europa.esig.dss.x509.revocation.crl.CRLBinaryIdentifier;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseIdentifier;
 
 @SuppressWarnings("serial")

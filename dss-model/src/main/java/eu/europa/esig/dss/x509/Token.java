@@ -31,7 +31,7 @@ import javax.security.auth.x500.X500Principal;
 
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureAlgorithm;
-import eu.europa.esig.dss.TokenIdentifier;
+import eu.europa.esig.dss.identifier.TokenIdentifier;
 
 /**
  * This is the base class for the different types of tokens (certificate, OCSP,

@@ -1,9 +1,11 @@
-package eu.europa.esig.dss;
+package eu.europa.esig.dss.identifier;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Date;
+
+import eu.europa.esig.dss.DSSException;
 
 public class SignatureIdentifier extends Identifier {
 	

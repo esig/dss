@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import eu.europa.esig.dss.Digest;
+import eu.europa.esig.dss.identifier.CRLBinaryIdentifier;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.SignatureRevocationSource;

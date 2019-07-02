@@ -12,7 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.Digest;
-import eu.europa.esig.dss.EncapsulatedTokenIdentifier;
+import eu.europa.esig.dss.identifier.CRLBinaryIdentifier;
+import eu.europa.esig.dss.identifier.EncapsulatedTokenIdentifier;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
@@ -25,7 +26,6 @@ import eu.europa.esig.dss.x509.CommonCertificateSource;
 import eu.europa.esig.dss.x509.EncapsulatedCertificateTokenIdentifier;
 import eu.europa.esig.dss.x509.SignatureCertificateSource;
 import eu.europa.esig.dss.x509.TimestampType;
-import eu.europa.esig.dss.x509.revocation.crl.CRLBinaryIdentifier;
 import eu.europa.esig.dss.x509.revocation.crl.ListCRLSource;
 import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.ListOCSPSource;

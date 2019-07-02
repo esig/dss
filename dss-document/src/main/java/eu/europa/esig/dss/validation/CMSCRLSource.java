@@ -26,8 +26,8 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.identifier.CRLBinaryIdentifier;
 import eu.europa.esig.dss.x509.RevocationOrigin;
-import eu.europa.esig.dss.x509.revocation.crl.CRLBinaryIdentifier;
 import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
 

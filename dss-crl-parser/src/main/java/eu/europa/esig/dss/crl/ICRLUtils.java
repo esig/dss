@@ -39,11 +39,13 @@ public interface ICRLUtils {
 	 *            {@code InputStream} with the CRL to be verified (cannot be null)
 	 * @param issuerToken
 	 *            {@code CertificateToken} used to sign the {@code X509CRL} (cannot be null)
+	 * @param external
+	 * 			  (@code boolean) defines if the CRL was obtained from an external source
 	 * @return {@code CRLValidity}
 	 * @throws IOException
 	 *             if an IO error occurred
 	 */
-	CRLValidity isValidCRL(final InputStream crlStream, final CertificateToken issuerToken) throws IOException;
+	CRLValidity isValidCRL(final InputStream crlStream, final CertificateToken issuerToken, boolean external) throws IOException;
 
 	/**
 	 * This method verifies the revocation status for a given serial number

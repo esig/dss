@@ -140,7 +140,7 @@ public class OnlineCRLSource implements CRLSource, RevocationSourceAlternateUrls
 			return null;
 		}
 		try (ByteArrayInputStream bais = new ByteArrayInputStream(dataAndUrl.data)) {
-			final CRLValidity crlValidity = CRLUtils.isValidCRL(bais, issuerToken);
+			final CRLValidity crlValidity = CRLUtils.buildCrlValidity(bais, issuerToken);
 			final CRLToken crlToken = new CRLToken(certificateToken, crlValidity);
 			crlToken.setSourceURL(dataAndUrl.urlString);
 			crlToken.setAvailable(true);

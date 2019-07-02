@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.x509;
 
-import eu.europa.esig.dss.EncapsulatedTokenIdentifier;
+import eu.europa.esig.dss.identifier.EncapsulatedTokenIdentifier;
 
 public class EncapsulatedCertificateTokenIdentifier extends EncapsulatedTokenIdentifier {
 

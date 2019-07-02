@@ -18,10 +18,13 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss;
+package eu.europa.esig.dss.identifier;
 
 import java.io.Serializable;
 import java.util.Objects;
+
+import eu.europa.esig.dss.Digest;
+import eu.europa.esig.dss.DigestAlgorithm;
 
 /**
  * This class is used to obtain a unique id for an object
