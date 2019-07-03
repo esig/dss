@@ -37,8 +37,7 @@ public class ValidationPolicyFacade {
 	private Unmarshaller getUnmarshaller() throws JAXBException, IOException, SAXException {
 		MarshallerBuilder builder = new MarshallerBuilder(ValidationPolicyXmlDefiner.getJAXBContext(), ValidationPolicyXmlDefiner.getSchema());
 		builder.setValidate(true);
-		Unmarshaller unmarshaller = builder.buildUnmarshaller();
-		return unmarshaller;
+		return builder.buildUnmarshaller();
 	}
 
 	private XMLStreamReader avoidXXE(Source source) throws XMLStreamException {

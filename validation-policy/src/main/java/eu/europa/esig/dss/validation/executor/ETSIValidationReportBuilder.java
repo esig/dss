@@ -439,16 +439,17 @@ public class ETSIValidationReportBuilder {
 		} else {
 			representation.setDigestAlgAndValue(getDigestAlgAndValueType(revocationData.getDigestAlgoAndValue()));
 		}
-		String sourceAddress = revocationData.getSourceAddress();
-		if (Utils.isStringNotEmpty(sourceAddress)) {
-			representation.setURI(sourceAddress);
-		}
+//		Standard says choice
+//		String sourceAddress = revocationData.getSourceAddress();
+//		if (Utils.isStringNotEmpty(sourceAddress)) {
+//			representation.setURI(sourceAddress);
+//		}
 		validationObject.setValidationObject(representation);
 		validationObject.setPOE(getPOE(revocationData.getId(), poeExtraction));
 		validationObject.setValidationReport(getValidationReport(revocationData));
 		validationObjectListType.getValidationObject().add(validationObject);
 	}
-	
+
 	private void addOrphanRevocation(ValidationObjectListType validationObjectListType, XmlOrphanRevocation orphanRevocation, POEExtraction poeExtraction) {
 		ValidationObjectType validationObject = createOrphanToken(orphanRevocation.getToken(), poeExtraction);
 		if (RevocationType.CRL.equals(orphanRevocation.getType())) {
@@ -548,7 +549,7 @@ public class ETSIValidationReportBuilder {
 
 				XmlSAV sav = basicBuildingBlock.getSAV();
 				if (sav != null && sav.getCryptographicInfo() != null) {
-					fillCryptographicInfo(validationReportData, sav.getCryptographicInfo());
+					fillCryptographicInfo(validationReportData, token.getId(), sav.getCryptographicInfo());
 				}
 			}
 
@@ -560,8 +561,9 @@ public class ETSIValidationReportBuilder {
 		}
 	}
 
-	private void fillCryptographicInfo(ValidationReportDataType validationReportData, XmlCryptographicInformation cryptographicInfo) {
+	private void fillCryptographicInfo(ValidationReportDataType validationReportData, String tokenId, XmlCryptographicInformation cryptographicInfo) {
 		CryptoInformationType cryptoInformationType = objectFactory.createCryptoInformationType();
+		cryptoInformationType.setValidationObjectId(getVOReference(tokenId));
 		cryptoInformationType.setAlgorithm(cryptographicInfo.getAlgorithm());
 		cryptoInformationType.setSecureAlgorithm(cryptographicInfo.isSecure());
 		cryptoInformationType.setNotAfter(cryptographicInfo.getNotAfter());

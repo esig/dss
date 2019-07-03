@@ -1,5 +1,6 @@
 package eu.europa.esig.jaxb.trustedlist;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import javax.xml.bind.JAXBContext;
@@ -12,6 +13,8 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
+import org.xml.sax.SAXException;
+
 import eu.europa.esig.jaxb.trustedlist.tsl.TrustStatusListType;
 
 public class TrustedListFacade {
@@ -21,7 +24,7 @@ public class TrustedListFacade {
 	}
 
 	@SuppressWarnings("unchecked")
-	public TrustStatusListType unmarshall(InputStream is, boolean validate) throws JAXBException, XMLStreamException {
+	public TrustStatusListType unmarshall(InputStream is, boolean validate) throws JAXBException, XMLStreamException, IOException, SAXException {
 		JAXBContext jaxbContext = TrustedListUtils.getJAXBContext();
 		Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 		if (validate) {

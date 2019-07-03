@@ -16,6 +16,8 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
+import org.xml.sax.SAXException;
+
 import eu.europa.esig.dss.MarshallerBuilder;
 
 public class ValidationReportFacade {
@@ -24,7 +26,7 @@ public class ValidationReportFacade {
 		return new ValidationReportFacade();
 	}
 
-	public String marshall(ValidationReportType validationReport, boolean validate) throws JAXBException, IOException {
+	public String marshall(ValidationReportType validationReport, boolean validate) throws JAXBException, IOException, SAXException {
 		Marshaller marshaller = getMarshaller(validate);
 
 		try (StringWriter writer = new StringWriter()) {
@@ -33,18 +35,17 @@ public class ValidationReportFacade {
 		}
 	}
 
-	public void marshall(ValidationReportType validationReport, OutputStream os, boolean validate) throws JAXBException {
+	public void marshall(ValidationReportType validationReport, OutputStream os, boolean validate) throws JAXBException, IOException, SAXException {
 		Marshaller marshaller = getMarshaller(validate);
 
 		marshaller.marshal(ValidationReportUtils.OBJECT_FACTORY.createValidationReport(validationReport), os);
 	}
 
-	private Marshaller getMarshaller(boolean validate) throws JAXBException {
+	private Marshaller getMarshaller(boolean validate) throws JAXBException, IOException, SAXException {
 		MarshallerBuilder marshallerBuilder = new MarshallerBuilder(ValidationReportUtils.getJAXBContext(), ValidationReportUtils.getSchema());
 		marshallerBuilder.setIndent(true);
 		marshallerBuilder.setValidate(validate);
-		Marshaller marshaller = marshallerBuilder.buildMarshaller();
-		return marshaller;
+		return marshallerBuilder.buildMarshaller();
 	}
 
 	@SuppressWarnings("unchecked")

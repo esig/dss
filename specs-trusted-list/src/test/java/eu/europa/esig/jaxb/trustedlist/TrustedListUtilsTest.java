@@ -3,6 +3,7 @@ package eu.europa.esig.jaxb.trustedlist;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -13,6 +14,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 import eu.europa.esig.jaxb.trustedlist.tsl.TrustStatusListType;
 
@@ -72,7 +74,7 @@ public class TrustedListUtilsTest {
 	}
 
 	@Test
-	public void getSchema() {
+	public void getSchema() throws IOException, SAXException {
 		assertNotNull(TrustedListUtils.getSchema());
 		// cached
 		assertNotNull(TrustedListUtils.getSchema());
