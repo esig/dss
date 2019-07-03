@@ -44,6 +44,7 @@ import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.executor.CustomProcessExecutor;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
@@ -79,7 +80,8 @@ public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 		docs.add(notIndividuallyTimestampedFile);
 
 		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
+		Date currentTime = new Date();
+		signatureParameters.bLevel().setSigningDate(currentTime);
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
@@ -104,8 +106,13 @@ public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 		DSSDocument result = service.signDocument(docs, signatureParameters, value);
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(result);
+		CustomProcessExecutor processExecutor = new CustomProcessExecutor();
+		processExecutor.setCurrentTime(currentTime);
+		validator.setProcessExecutor(processExecutor);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		Reports reports = validator.validateDocument();
+
+//		reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertEquals(1, Utils.collectionSize(diagnosticData.getSignatureIdList()));
@@ -121,37 +128,37 @@ public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 			assertTrue(timestamp.isMessageImprintDataIntact());
 			assertTrue(timestamp.isSignatureValid());
 		}
-		
+
 		assertEquals(1, timestampList.get(0).getTimestampedObjects().size());
 		assertEquals(2, timestampList.get(1).getTimestampedObjects().size());
 
 		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChain(diagnosticData.getFirstSignatureId());
 		assertEquals(getCertificateChain().length, signatureCertificateChain.size());
 		assertEquals(signatureParameters.getSignatureLevel().toString(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
-		
+
 		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
 		SignatureValidationReportType signatureValidationReportType = etsiValidationReport.getSignatureValidationReport().get(0);
 		assertNotNull(signatureValidationReportType);
 		List<SignersDocumentType> signersDocuments = signatureValidationReportType.getSignersDocument();
 		assertNotNull(signersDocuments);
 		assertEquals(2, signersDocuments.size());
-		
+
 		assertNotNull(signersDocuments.get(0));
 		DigestAlgAndValueType digestAlgAndValueFirstDoc = signersDocuments.get(0).getDigestAlgAndValue();
 		assertNotNull(digestAlgAndValueFirstDoc);
 		assertNotNull(digestAlgAndValueFirstDoc.getDigestMethod());
 		assertNotNull(digestAlgAndValueFirstDoc.getDigestValue());
-		assertEquals(Utils.toBase64(digestAlgAndValueFirstDoc.getDigestValue()), fileToBeIndividualTimestamped.getDigest(
-				DigestAlgorithm.forXML(digestAlgAndValueFirstDoc.getDigestMethod().getAlgorithm())));
-		
+		assertEquals(Utils.toBase64(digestAlgAndValueFirstDoc.getDigestValue()),
+				fileToBeIndividualTimestamped.getDigest(DigestAlgorithm.forXML(digestAlgAndValueFirstDoc.getDigestMethod().getAlgorithm())));
+
 		assertNotNull(signersDocuments.get(1));
 		DigestAlgAndValueType digestAlgAndValueSecondDoc = signersDocuments.get(1).getDigestAlgAndValue();
 		assertNotNull(digestAlgAndValueSecondDoc);
 		assertNotNull(digestAlgAndValueSecondDoc.getDigestMethod());
 		assertNotNull(digestAlgAndValueSecondDoc.getDigestValue());
-		assertEquals(Utils.toBase64(digestAlgAndValueSecondDoc.getDigestValue()), notIndividuallyTimestampedFile.getDigest(
-				DigestAlgorithm.forXML(digestAlgAndValueSecondDoc.getDigestMethod().getAlgorithm())));
-		
+		assertEquals(Utils.toBase64(digestAlgAndValueSecondDoc.getDigestValue()),
+				notIndividuallyTimestampedFile.getDigest(DigestAlgorithm.forXML(digestAlgAndValueSecondDoc.getDigestMethod().getAlgorithm())));
+
 		ValidationObjectListType signatureValidationObjects = etsiValidationReport.getSignatureValidationObjects();
 		assertNotNull(signatureValidationObjects);
 		int timestampCounter = 0;
@@ -166,15 +173,18 @@ public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 				timestampCounter++;
 			} else if (ObjectType.SIGNED_DATA.equals(validationObject.getObjectType())) {
 				assertNotNull(validationObject.getPOE());
-				assertNotNull(validationObject.getPOE().getPOETime());
-				assertNotNull(validationObject.getPOE().getPOEObject());
+				Date poeTime = validationObject.getPOE().getPOETime();
+				assertNotNull(poeTime);
+				if (!poeTime.equals(currentTime)) {
+					assertNotNull(validationObject.getPOE().getPOEObject());
+				}
 				assertNotNull(validationObject.getPOE().getTypeOfProof());
 				signedDataCounter++;
 			}
 		}
 		assertEquals(2, timestampCounter);
 		assertEquals(2, signedDataCounter);
-		
+
 	}
 
 	@Override

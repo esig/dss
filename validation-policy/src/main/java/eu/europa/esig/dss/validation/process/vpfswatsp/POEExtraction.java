@@ -57,6 +57,9 @@ import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
  */
 public class POEExtraction {
 
+	/**
+	 * Map of proofs of existence by token ids
+	 */
 	private Map<String, List<XmlProofOfExistence>> poe = new HashMap<String, List<XmlProofOfExistence>>();
 
 	public void init(DiagnosticData diagnosticData, XmlProofOfExistence proofOfExistence) {
@@ -102,12 +105,12 @@ public class POEExtraction {
 		}
 	}
 
-	private void addPOE(String poeId, XmlProofOfExistence proofOfExistence) {
+	private void addPOE(String tokenId, XmlProofOfExistence proofOfExistence) {
 		if (proofOfExistence != null) {
-			List<XmlProofOfExistence> poesById = poe.get(poeId);
+			List<XmlProofOfExistence> poesById = poe.get(tokenId);
 			if (poesById == null) {
 				poesById = new ArrayList<XmlProofOfExistence>();
-				poe.put(poeId, poesById);
+				poe.put(tokenId, poesById);
 			}
 			poesById.add(proofOfExistence);
 		}
@@ -123,8 +126,8 @@ public class POEExtraction {
 	 * Returns true if there is a POE exists for a given id at (or before) the control time.
 	 * 
 	 */
-	public boolean isPOEExists(final String id, final Date controlTime) {
-		List<XmlProofOfExistence> poes = poe.get(id);
+	public boolean isPOEExists(final String tokenId, final Date controlTime) {
+		List<XmlProofOfExistence> poes = poe.get(tokenId);
 		if (poes != null) {
 			for (XmlProofOfExistence poe : poes) {
 				if (poe.getTime().compareTo(controlTime) < 0) {
@@ -135,21 +138,18 @@ public class POEExtraction {
 		return false;
 	}
 
-	public Date getLowestPOETime(final String id, final Date controlTime) {
-		return getLowestPOE(id, controlTime).getTime();
+	public Date getLowestPOETime(final String tokenId, final Date controlTime) {
+		return getLowestPOE(tokenId, controlTime).getTime();
 	}
-	
-	public XmlProofOfExistence getLowestPOE(final String id, final Date controlTime) {
+
+	public XmlProofOfExistence getLowestPOE(final String tokenId, final Date controlTime) {
 		XmlProofOfExistence lowestPOE = new XmlProofOfExistence();
 		lowestPOE.setTime(controlTime);
-		List<XmlProofOfExistence> poes = poe.get(id);
+		List<XmlProofOfExistence> poes = poe.get(tokenId);
 		if (poes != null) {
 			for (XmlProofOfExistence poe : poes) {
-				if (poe.getTime().compareTo(controlTime) <= 0) {
-					if (lowestPOE.getTime() == controlTime || 
-							lowestPOE.getTime().after(poe.getTime())) {
-						lowestPOE = poe;
-					}
+				if (poe.getTime().compareTo(lowestPOE.getTime()) <= 0) {
+					lowestPOE = poe;
 				}
 			}
 		}
