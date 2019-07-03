@@ -24,10 +24,11 @@ public enum SignatureValidationProcessID implements UriBasedEnum {
 
 	private final String uri;
 
-	private SignatureValidationProcessID(String uri) {
+	SignatureValidationProcessID(String uri) {
 		this.uri = uri;
 	}
 
+	@Override
 	public String getUri() {
 		return uri;
 	}

@@ -19,10 +19,11 @@ public enum TypeOfProof implements UriBasedEnum {
 
 	private final String uri;
 
-	private TypeOfProof(String uri) {
+	TypeOfProof(String uri) {
 		this.uri = uri;
 	}
 
+	@Override
 	public String getUri() {
 		return uri;
 	}

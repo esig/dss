@@ -9,7 +9,6 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.util.JAXBSource;
 import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -44,8 +43,7 @@ public class SimpleCertificateReportFacade {
 		}
 	}
 
-	public void generateHtmlReport(XmlSimpleCertificateReport simpleCertificateReport, Result result)
-			throws TransformerConfigurationException, IOException, TransformerException, JAXBException {
+	public void generateHtmlReport(XmlSimpleCertificateReport simpleCertificateReport, Result result) throws IOException, TransformerException, JAXBException {
 		Transformer transformer = SimpleCertificateReportXmlDefiner.getHtmlTemplates().newTransformer();
 		transformer.transform(new JAXBSource(SimpleCertificateReportXmlDefiner.getJAXBContext(),
 				SimpleCertificateReportXmlDefiner.OBJECT_FACTORY.createSimpleCertificateReport(simpleCertificateReport)), result);
@@ -58,8 +56,7 @@ public class SimpleCertificateReportFacade {
 		}
 	}
 
-	public void generateHtmlReport(String marshalledSimpleCertificateReport, Result result)
-			throws TransformerConfigurationException, IOException, TransformerException {
+	public void generateHtmlReport(String marshalledSimpleCertificateReport, Result result) throws IOException, TransformerException {
 		Transformer transformer = SimpleCertificateReportXmlDefiner.getHtmlTemplates().newTransformer();
 		transformer.transform(new StreamSource(new StringReader(marshalledSimpleCertificateReport)), result);
 	}

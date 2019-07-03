@@ -10,7 +10,7 @@ public enum EndorsementType {
 	
 	private final String value;
 	
-	private EndorsementType(String value) {
+	EndorsementType(String value) {
 		this.value = value;
 	}
 

@@ -26,11 +26,6 @@ import java.util.Set;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.bouncycastle.asn1.ASN1OctetString;
-import org.bouncycastle.asn1.ASN1Primitive;
-import org.bouncycastle.asn1.DERTaggedObject;
-import org.bouncycastle.asn1.ocsp.ResponderID;
-import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.RespID;
 import org.w3c.dom.Element;

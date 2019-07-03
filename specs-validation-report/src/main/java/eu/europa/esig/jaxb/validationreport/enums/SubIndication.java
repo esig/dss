@@ -48,10 +48,11 @@ public enum SubIndication implements UriBasedEnum {
 
 	private final String uri;
 
-	private SubIndication(String uri) {
+	SubIndication(String uri) {
 		this.uri = uri;
 	}
 
+	@Override
 	public String getUri() {
 		return uri;
 	}

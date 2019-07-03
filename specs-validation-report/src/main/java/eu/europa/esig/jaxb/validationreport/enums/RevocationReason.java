@@ -26,7 +26,7 @@ public enum RevocationReason implements UriBasedEnum {
 
 	private final String uri;
 
-	private RevocationReason(String uri) {
+	RevocationReason(String uri) {
 		this.uri = uri;
 	}
 

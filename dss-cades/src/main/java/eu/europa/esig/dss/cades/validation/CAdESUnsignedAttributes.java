@@ -8,14 +8,12 @@ import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signatureTi
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.cms.SignerInformation;
 
-import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.util.TimeStampTokenProductionComparator;
 
 public class CAdESUnsignedAttributes extends CAdESSigProperties {

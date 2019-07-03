@@ -9,7 +9,6 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.util.JAXBSource;
 import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -43,8 +42,7 @@ public class SimpleReportFacade {
 		}
 	}
 
-	public void generateHtmlReport(XmlSimpleReport simpleReport, Result result)
-			throws TransformerConfigurationException, IOException, TransformerException, JAXBException {
+	public void generateHtmlReport(XmlSimpleReport simpleReport, Result result) throws IOException, TransformerException, JAXBException {
 		Transformer transformer = SimpleReportXmlDefiner.getHtmlTemplates().newTransformer();
 		transformer.transform(new JAXBSource(SimpleReportXmlDefiner.getJAXBContext(), SimpleReportXmlDefiner.OBJECT_FACTORY.createSimpleReport(simpleReport)),
 				result);
@@ -57,7 +55,7 @@ public class SimpleReportFacade {
 		}
 	}
 
-	public void generateHtmlReport(String marshalledSimpleReport, Result result) throws TransformerConfigurationException, IOException, TransformerException {
+	public void generateHtmlReport(String marshalledSimpleReport, Result result) throws IOException, TransformerException {
 		Transformer transformer = SimpleReportXmlDefiner.getHtmlTemplates().newTransformer();
 		transformer.transform(new StreamSource(new StringReader(marshalledSimpleReport)), result);
 	}

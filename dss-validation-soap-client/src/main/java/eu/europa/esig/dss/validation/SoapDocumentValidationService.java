@@ -38,7 +38,7 @@ import eu.europa.esig.dss.RemoteDocument;
 @WebService(targetNamespace = SoapDocumentValidationService.VALIDATION_NS)
 public interface SoapDocumentValidationService extends Serializable {
 
-	public static final String VALIDATION_NS = "http://validation.dss.esig.europa.eu/";
+	String VALIDATION_NS = "http://validation.dss.esig.europa.eu/";
 
 	/**
 	 * This method returns the result of the validation of the signed file. The
@@ -51,7 +51,7 @@ public interface SoapDocumentValidationService extends Serializable {
 	 * @return a {@code WSReportsDTO} with the 4 reports : the diagnostic data, the
 	 *         detailed report, the simple report and the ETSI validation report
 	 */
-	@WebResult(name = "WSReportsDTO"/* , targetNamespace = VALIDATION_NS */)
+	@WebResult(name = "WSReportsDTO")
 	WSReportsDTO validateSignature(@WebParam(name = "dataToValidateDTO") DataToValidateDTO dataToValidate);
 
 	/**
@@ -64,7 +64,7 @@ public interface SoapDocumentValidationService extends Serializable {
 	 *                       optional signatureId
 	 * @return a List of {@code RemoteDocument}
 	 */
-	@WebResult(name = "OriginalDocuments"/* , targetNamespace = VALIDATION_NS */)
+	@WebResult(name = "OriginalDocuments")
 	List<RemoteDocument> getOriginalDocuments(@WebParam(name = "dataToValidateDTO") DataToValidateDTO dataToValidate);
 
 }

@@ -20,10 +20,11 @@ public enum ObjectType implements UriBasedEnum {
 
 	private final String uri;
 
-	private ObjectType(String uri) {
+	ObjectType(String uri) {
 		this.uri = uri;
 	}
 
+	@Override
 	public String getUri() {
 		return uri;
 	}

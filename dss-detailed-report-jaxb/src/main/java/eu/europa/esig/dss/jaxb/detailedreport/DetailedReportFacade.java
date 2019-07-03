@@ -9,7 +9,6 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.util.JAXBSource;
 import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -43,8 +42,7 @@ public class DetailedReportFacade {
 		}
 	}
 
-	public void generateHtmlReport(XmlDetailedReport detailedReport, Result result)
-			throws TransformerConfigurationException, IOException, TransformerException, JAXBException {
+	public void generateHtmlReport(XmlDetailedReport detailedReport, Result result) throws IOException, TransformerException, JAXBException {
 		Transformer transformer = DetailedReportXmlDefiner.getHtmlTemplates().newTransformer();
 		transformer.transform(
 				new JAXBSource(DetailedReportXmlDefiner.getJAXBContext(), DetailedReportXmlDefiner.OBJECT_FACTORY.createDetailedReport(detailedReport)),
@@ -58,7 +56,7 @@ public class DetailedReportFacade {
 		}
 	}
 
-	public void generateHtmlReport(String marshalledDetailedReport, Result result) throws TransformerConfigurationException, IOException, TransformerException {
+	public void generateHtmlReport(String marshalledDetailedReport, Result result) throws IOException, TransformerException {
 		Transformer transformer = DetailedReportXmlDefiner.getHtmlTemplates().newTransformer();
 		transformer.transform(new StreamSource(new StringReader(marshalledDetailedReport)), result);
 	}
