@@ -42,7 +42,6 @@ import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.identifier.CRLBinaryIdentifier;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.KeyUsageBit;
-import eu.europa.esig.dss.x509.RevocationOrigin;
 
 public class CRLUtilsX509CRLImpl extends AbstractCRLUtils implements ICRLUtils {
 
@@ -59,23 +58,27 @@ public class CRLUtilsX509CRLImpl extends AbstractCRLUtils implements ICRLUtils {
 	 *            {@code InputStream} to be verified (cannot be null)
 	 * @param issuerToken
 	 *            {@code CertificateToken} used to sign the {@code X509CRL} (cannot be null)
+	 * @param crlBinaryIdentifier
+	 * 			  (@code CRLBinaryIdentifier) to build the {@code CRLValidity}, 
+	 * 		      if null a new (@code CRLBinaryIdentifier) will be created
 	 * @return {@code CRLValidity}
 	 */
 	@Override
-	public CRLValidity isValidCRL(final InputStream crlStream, final CertificateToken issuerToken, boolean external) {
+	public CRLValidity buildCRLValidity(final InputStream crlStream, final CertificateToken issuerToken, CRLBinaryIdentifier crlBinaryIdentifier) {
 
-		final X509CRLValidity crlValidity = new X509CRLValidity();
+		final X509CRLValidity crlValidity;
 
 		X509CRL x509CRL = loadCRL(crlStream);
-		crlValidity.setX509CRL(x509CRL);
 
-		if (external) {
+		if (crlBinaryIdentifier == null) {
 			try {
-				crlValidity.setCrlBinaryIdentifier(CRLBinaryIdentifier.build(x509CRL.getEncoded(), RevocationOrigin.EXTERNAL));
+				crlBinaryIdentifier = new CRLBinaryIdentifier(x509CRL.getEncoded());
 			} catch (CRLException e) {
 				LOG.error("Unable to read the CRL binaries", e);
 			}
 		}
+		crlValidity = new X509CRLValidity(crlBinaryIdentifier);
+		crlValidity.setX509CRL(x509CRL);
 
 		final String sigAlgOID = x509CRL.getSigAlgOID();
 		final byte[] sigAlgParams = x509CRL.getSigAlgParams();

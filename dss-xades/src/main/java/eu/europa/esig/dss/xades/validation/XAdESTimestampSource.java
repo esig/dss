@@ -30,7 +30,6 @@ import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.x509.ArchiveTimestampType;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.EncapsulatedCertificateTokenIdentifier;
-import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.TimestampLocation;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseIdentifier;
@@ -327,14 +326,7 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 		for (int ii = 0; ii < encapsulatedNodes.getLength(); ii++) {
 			Element element = (Element) encapsulatedNodes.item(ii);
 			byte[] binaries = getEncapsulatedTokenBinaries(element);
-			CRLBinaryIdentifier tokenIdentifier;
-			if (isRevocationValues(unsignedAttribute)) {
-				tokenIdentifier = CRLBinaryIdentifier.build(binaries, RevocationOrigin.INTERNAL_REVOCATION_VALUES);
-			} else {
-				// timestamp validation data
-				tokenIdentifier = CRLBinaryIdentifier.build(binaries, RevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES);
-			}
-			crlIdentifiers.add(tokenIdentifier);
+			crlIdentifiers.add(new CRLBinaryIdentifier(binaries));
 		}
 		return crlIdentifiers;
 	}
@@ -350,14 +342,7 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 			byte[] binaries = getEncapsulatedTokenBinaries(element);
 			try {
 				BasicOCSPResp basicOCSPResp = DSSRevocationUtils.loadOCSPFromBinaries(binaries);
-				OCSPResponseIdentifier tokenIdentifier;
-				if (isRevocationValues(unsignedAttribute)) {
-					tokenIdentifier = OCSPResponseIdentifier.build(basicOCSPResp, RevocationOrigin.INTERNAL_REVOCATION_VALUES);
-				} else {
-					// timestamp validation data
-					tokenIdentifier = OCSPResponseIdentifier.build(basicOCSPResp, RevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES);
-				}
-				crlIdentifiers.add(tokenIdentifier);
+				crlIdentifiers.add(OCSPResponseIdentifier.build(basicOCSPResp));
 			} catch (IOException e) {
 				LOG.error("Cannot read encapsulated OCSP response. Reason: {}", e.getMessage());
 			}

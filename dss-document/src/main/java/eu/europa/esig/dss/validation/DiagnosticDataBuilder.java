@@ -126,8 +126,10 @@ import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.dss.x509.Token;
 import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
 import eu.europa.esig.dss.x509.revocation.RevocationRef;
+import eu.europa.esig.dss.x509.revocation.RevocationSourceType;
 import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseIdentifier;
 
 /**
  * This class is used to build JAXB objects from the DSS model
@@ -1113,13 +1115,16 @@ public class DiagnosticDataBuilder {
 	private XmlOrphanRevocation getXmlOrphanRevocation(EncapsulatedRevocationTokenIdentifier revocationIdentifier, AdvancedSignature signature) {
 		XmlOrphanRevocation xmlOrphanRevocation = new XmlOrphanRevocation();
 		xmlOrphanRevocation.setToken(createOrphanTokenFromRevocationIdentifier(revocationIdentifier));
-		for (RevocationOrigin origin : revocationIdentifier.getOrigins()) {
-			xmlOrphanRevocation.getOrigins().add(XmlRevocationOrigin.valueOf(origin.toString()));
-		}
 		if (revocationIdentifier instanceof CRLBinaryIdentifier) {
 			xmlOrphanRevocation.setType(RevocationType.CRL);
+			for (RevocationOrigin origin : signature.getCompleteCRLSource().getRevocationOrigins((CRLBinaryIdentifier) revocationIdentifier)) {
+				xmlOrphanRevocation.getOrigins().add(XmlRevocationOrigin.valueOf(origin.name()));
+			}
 		} else {
 			xmlOrphanRevocation.setType(RevocationType.OCSP);
+			for (RevocationOrigin origin : signature.getCompleteOCSPSource().getRevocationOrigins((OCSPResponseIdentifier) revocationIdentifier)) {
+				xmlOrphanRevocation.getOrigins().add(XmlRevocationOrigin.valueOf(origin.name()));
+			}
 		}
 		List<RevocationRef> refsForRevocationToken = signature.findRefsForRevocationIdentifier(revocationIdentifier);
 		for (RevocationRef revocationRef : refsForRevocationToken) {

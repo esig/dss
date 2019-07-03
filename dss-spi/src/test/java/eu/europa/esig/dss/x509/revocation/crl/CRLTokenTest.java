@@ -27,7 +27,7 @@ public class CRLTokenTest {
 		FileDocument tsaCert = new FileDocument("src/test/resources/TSA_BE.cer");
 
 		try (InputStream crlStream = doc.openStream()) {
-			CRLValidity crlValidity = CRLUtils.buildCrlValidity(crlStream, DSSUtils.loadCertificate(caCert.openStream()));
+			CRLValidity crlValidity = CRLUtils.buildCRLValidity(crlStream, DSSUtils.loadCertificate(caCert.openStream()));
 			assertNotNull(crlValidity);
 			assertTrue(crlValidity.isSignatureIntact());
 			assertTrue(crlValidity.isCrlSignKeyUsage());
@@ -58,7 +58,7 @@ public class CRLTokenTest {
 		FileDocument tsaCert = new FileDocument("src/test/resources/TSA_BE.cer");
 
 		try (InputStream crlStream = doc.openStream()) {
-			CRLValidity crlValidity = CRLUtils.buildCrlValidity(crlStream, DSSUtils.loadCertificate(tsaCert.openStream()));
+			CRLValidity crlValidity = CRLUtils.buildCRLValidity(crlStream, DSSUtils.loadCertificate(tsaCert.openStream()));
 			assertNotNull(crlValidity);
 			assertFalse(crlValidity.isSignatureIntact());
 			assertFalse(crlValidity.isCrlSignKeyUsage());
@@ -75,7 +75,7 @@ public class CRLTokenTest {
 		FileDocument caCert = new FileDocument("src/test/resources/belgiumrs2.crt");
 
 		try (InputStream crlStream = doc.openStream()) {
-			CRLValidity crlValidity = CRLUtils.buildCrlValidity(crlStream, DSSUtils.loadCertificate(caCert.openStream()));
+			CRLValidity crlValidity = CRLUtils.buildCRLValidity(crlStream, DSSUtils.loadCertificate(caCert.openStream()));
 			assertNotNull(crlValidity);
 			assertTrue(crlValidity.isSignatureIntact());
 			assertTrue(crlValidity.isCrlSignKeyUsage());

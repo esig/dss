@@ -150,8 +150,8 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSPToken> impleme
 			final OCSPResp ocspResp = new OCSPResp(data);
 			OCSPTokenBuilder ocspTokenBuilder = new OCSPTokenBuilder(ocspResp, certificateToken, issuerCert);
 			ocspTokenBuilder.setSourceURL(url);
-			ocspTokenBuilder.setOrigins(new ArrayList<RevocationOrigin>(Arrays.asList(RevocationOrigin.CACHED)));
 			OCSPToken ocspToken = ocspTokenBuilder.build();
+			ocspToken.setOrigins(new ArrayList<RevocationOrigin>(Arrays.asList(RevocationOrigin.CACHED)));
 			OCSPTokenUtils.checkTokenValidity(ocspToken, certificateToken, issuerCert);
 			return ocspToken;
 		} catch (SQLException | IOException | OCSPException e) {

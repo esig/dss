@@ -49,28 +49,40 @@ public class CRLUtils {
 	}
 
 	/**
-	 * This method verifies: the signature of the CRL, the key usage of its signing certificate and the coherence
+	 * This method verifies and creates: the signature of the CRL, the key usage of its signing certificate and the coherence
 	 * between the subject names of the CRL signing certificate and the issuer name of the certificate for which the
 	 * verification of the revocation data is carried out. A dedicated object based on {@code CRLValidity} is created
 	 * and accordingly updated.
 	 *
 	 * @param crlStream
-	 *            {@code InputStream} with the CRL to be verified (cannot be null)
+	 *            {@code InputStream} with the CRL to be created (cannot be null)
 	 * @param issuerToken
 	 *            {@code CertificateToken} used to sign the {@code X509CRL} (cannot be null)
 	 * @return {@code CRLValidity}
 	 * @throws IOException
 	 *             if an IO error occurred
 	 */
-	public static CRLValidity buildCrlValidity(final InputStream crlStream, final CertificateToken issuerToken) throws IOException {
-		return impl.isValidCRL(crlStream, issuerToken, true);
+	public static CRLValidity buildCRLValidity(final InputStream crlStream, final CertificateToken issuerToken) throws IOException {
+		return impl.buildCRLValidity(crlStream, issuerToken, null);
 	}
-	
-	public static CRLValidity buildCrlValidity(final CRLBinaryIdentifier crlBinaryIdentifier, final CertificateToken issuerToken) throws IOException {
+
+	/**
+	 * This method verifies and creates: the signature of the CRL, the key usage of its signing certificate and the coherence
+	 * between the subject names of the CRL signing certificate and the issuer name of the certificate for which the
+	 * verification of the revocation data is carried out. A dedicated object based on {@code CRLValidity} is created
+	 * and accordingly updated.
+	 *
+	 * @param crlBinaryIdentifier
+	 *            {@code CRLBinaryIdentifier} of the CRL to be created (cannot be null)
+	 * @param issuerToken
+	 *            {@code CertificateToken} used to sign the {@code X509CRL} (cannot be null)
+	 * @return {@code CRLValidity}
+	 * @throws IOException
+	 *             if an IO error occurred
+	 */
+	public static CRLValidity buildCRLValidity(final CRLBinaryIdentifier crlBinaryIdentifier, final CertificateToken issuerToken) throws IOException {
 		try (InputStream is = new ByteArrayInputStream(crlBinaryIdentifier.getBinaries())) {
-			CRLValidity crlValidity = impl.isValidCRL(is, issuerToken, false);
-			crlValidity.setCrlBinaryIdentifier(crlBinaryIdentifier);
-			return crlValidity;
+			return impl.buildCRLValidity(is, issuerToken, crlBinaryIdentifier);
 		}
 	}
 

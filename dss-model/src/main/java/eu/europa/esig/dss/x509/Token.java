@@ -22,10 +22,7 @@ package eu.europa.esig.dss.x509;
 
 import java.io.Serializable;
 import java.security.PublicKey;
-import java.util.Collections;
 import java.util.Date;
-import java.util.EnumMap;
-import java.util.Map;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -64,8 +61,6 @@ public abstract class Token implements Serializable {
 	 * The algorithm that was used to sign the token.
 	 */
 	protected SignatureAlgorithm signatureAlgorithm;
-
-	private Map<DigestAlgorithm, byte[]> digests = Collections.synchronizedMap(new EnumMap<DigestAlgorithm, byte[]>(DigestAlgorithm.class));
 
 	@Override
 	public boolean equals(Object obj) {
@@ -225,12 +220,7 @@ public abstract class Token implements Serializable {
 	 * @return the digest value in binaries
 	 */
 	public byte[] getDigest(DigestAlgorithm digestAlgorithm) {
-		byte[] digestValue = digests.get(digestAlgorithm);
-		if (digestValue == null) {
-			digestValue = digestAlgorithm.getMessageDigest().digest(getEncoded());
-			digests.put(digestAlgorithm, digestValue);
-		}
-		return digestValue;
+		return getDSSId().getDigestValue(digestAlgorithm);
 	}
 
 }

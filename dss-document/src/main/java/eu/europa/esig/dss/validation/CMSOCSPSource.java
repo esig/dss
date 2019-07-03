@@ -274,7 +274,7 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 	 */
 	protected OCSPResponseIdentifier addBasicOcspResp(final BasicOCSPResp basicOCSPResp, RevocationOrigin origin) {
 		if (basicOCSPResp != null) {
-			OCSPResponseIdentifier ocspResponse = OCSPResponseIdentifier.build(basicOCSPResp, origin);
+			OCSPResponseIdentifier ocspResponse = OCSPResponseIdentifier.build(basicOCSPResp);
 			addOCSPResponse(ocspResponse, origin);
 			return ocspResponse;
 		}

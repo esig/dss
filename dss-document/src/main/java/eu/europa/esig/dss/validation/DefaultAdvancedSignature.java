@@ -964,7 +964,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	@Override
 	public List<EncapsulatedRevocationTokenIdentifier> getAllFoundRevocationIdentifiers() {
 		List<EncapsulatedRevocationTokenIdentifier> allFoundRevocationTokens = new ArrayList<EncapsulatedRevocationTokenIdentifier>();
-		allFoundRevocationTokens.addAll(getCompleteCRLSource().getContainedX509CRLs());
+		allFoundRevocationTokens.addAll(getCompleteCRLSource().getCRLBinaryList());
 		allFoundRevocationTokens.addAll(getCompleteOCSPSource().getOCSPResponsesList());
 		return allFoundRevocationTokens;
 	}

@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.identifier.CRLBinaryIdentifier;
-import eu.europa.esig.dss.identifier.EncapsulatedTokenIdentifier;
+import eu.europa.esig.dss.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
@@ -597,7 +597,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	
 	protected List<TimestampedReference> getTimestampedCertificateValues(SignatureAttribute unsignedAttribute) {
 		List<TimestampedReference> timestampedReferences = new ArrayList<TimestampedReference>();
-		for (EncapsulatedTokenIdentifier certificateIdentifier : getEncapsulatedCertificateIdentifiers(unsignedAttribute)) {
+		for (EncapsulatedCertificateTokenIdentifier certificateIdentifier : getEncapsulatedCertificateIdentifiers(unsignedAttribute)) {
 			timestampedReferences.add(new TimestampedReference(certificateIdentifier.asXmlId(), TimestampedObjectType.CERTIFICATE));
 		}
 		return timestampedReferences;
@@ -612,10 +612,10 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	
 	protected List<TimestampedReference> getTimestampedRevocationValues(SignatureAttribute unsignedAttribute) {
 		List<TimestampedReference> timestampedReferences = new ArrayList<TimestampedReference>();
-		for (EncapsulatedTokenIdentifier revocationIdentifier : getEncapsulatedCRLIdentifiers(unsignedAttribute)) {
+		for (EncapsulatedRevocationTokenIdentifier revocationIdentifier : getEncapsulatedCRLIdentifiers(unsignedAttribute)) {
 			timestampedReferences.add(new TimestampedReference(revocationIdentifier.asXmlId(), TimestampedObjectType.REVOCATION));
 		}
-		for (EncapsulatedTokenIdentifier revocationIdentifier : getEncapsulatedOCSPIdentifiers(unsignedAttribute)) {
+		for (EncapsulatedRevocationTokenIdentifier revocationIdentifier : getEncapsulatedOCSPIdentifiers(unsignedAttribute)) {
 			timestampedReferences.add(new TimestampedReference(revocationIdentifier.asXmlId(), TimestampedObjectType.REVOCATION));
 		}
 		return timestampedReferences;
@@ -666,13 +666,13 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	 */
 	protected List<TimestampedReference> getTimestampValidationData(SignatureAttribute unsignedAttribute) {
 		List<TimestampedReference> timestampedReferences = new ArrayList<TimestampedReference>();
-		for (EncapsulatedTokenIdentifier certificateIdentifier : getEncapsulatedCertificateIdentifiers(unsignedAttribute)) {
+		for (EncapsulatedCertificateTokenIdentifier certificateIdentifier : getEncapsulatedCertificateIdentifiers(unsignedAttribute)) {
 			timestampedReferences.add(new TimestampedReference(certificateIdentifier.asXmlId(), TimestampedObjectType.CERTIFICATE));
 		}
-		for (EncapsulatedTokenIdentifier crlIdentifier : getEncapsulatedCRLIdentifiers(unsignedAttribute)) {
+		for (EncapsulatedRevocationTokenIdentifier crlIdentifier : getEncapsulatedCRLIdentifiers(unsignedAttribute)) {
 			timestampedReferences.add(new TimestampedReference(crlIdentifier.asXmlId(), TimestampedObjectType.REVOCATION));
 		}
-		for (EncapsulatedTokenIdentifier ocspIdentifier : getEncapsulatedOCSPIdentifiers(unsignedAttribute)) {
+		for (EncapsulatedRevocationTokenIdentifier ocspIdentifier : getEncapsulatedOCSPIdentifiers(unsignedAttribute)) {
 			timestampedReferences.add(new TimestampedReference(ocspIdentifier.asXmlId(), TimestampedObjectType.REVOCATION));
 		}
 		return timestampedReferences;

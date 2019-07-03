@@ -25,7 +25,7 @@ import eu.europa.esig.dss.x509.Token;
 /**
  * This class is used to obtain a unique id for Token
  */
-public final class TokenIdentifier extends Identifier {
+public final class TokenIdentifier extends MultipleDigestIdentifier {
 
 	private static final long serialVersionUID = 1201653840828853681L;
 

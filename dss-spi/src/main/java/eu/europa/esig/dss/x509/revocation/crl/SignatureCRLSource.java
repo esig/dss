@@ -119,14 +119,14 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	
 	@Override
 	protected void storeCRLToken(CRLBinaryIdentifier crlBinary, CRLToken crlToken) {
-		if (crlsBinaryList.contains(crlBinary)) {
+		if (getCRLBinaryList().contains(crlBinary)) {
 			List<CRLToken> tokensList = crlTokenMap.get(crlBinary);
 			if (tokensList == null) {
 				tokensList = new ArrayList<CRLToken>();
 				crlTokenMap.put(crlBinary, tokensList);
 			}
 			tokensList.add(crlToken);
-			for (RevocationOrigin origin : crlBinary.getOrigins()) {
+			for (RevocationOrigin origin : getRevocationOrigins(crlBinary)) {
 				addToRelevantList(crlToken, origin);
 			}
 		}

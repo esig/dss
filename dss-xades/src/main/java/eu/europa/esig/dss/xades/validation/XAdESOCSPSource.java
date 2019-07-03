@@ -143,14 +143,7 @@ public class XAdESOCSPSource extends SignatureOCSPSource {
 
 	private void convertAndAppend(String ocspValue, RevocationOrigin origin) {
 		try {
-			OCSPResponseIdentifier ocspIdentifier = OCSPResponseIdentifier.build(DSSRevocationUtils.loadOCSPBase64Encoded(ocspValue), origin);
-			int ii = ocspResponses.indexOf(ocspIdentifier);
-			if (ii > -1) {
-				OCSPResponseIdentifier storedOCSPResponse = ocspResponses.get(ii);
-				storedOCSPResponse.addOrigin(origin);
-			} else {
-				ocspResponses.add(ocspIdentifier);
-			}
+			addOCSPResponse(OCSPResponseIdentifier.build(DSSRevocationUtils.loadOCSPBase64Encoded(ocspValue)), origin);
 		} catch (Exception e) {
 			LOG.warn("Cannot retrieve OCSP response from '" + ocspValue + "' : " + e.getMessage(), e);
 		}

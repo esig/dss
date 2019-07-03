@@ -1,7 +1,6 @@
 package eu.europa.esig.dss.x509.revocation.ocsp;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
@@ -11,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.identifier.EncapsulatedRevocationTokenIdentifier;
-import eu.europa.esig.dss.x509.RevocationOrigin;
 
 public class OCSPResponseIdentifier extends EncapsulatedRevocationTokenIdentifier {
 
@@ -25,22 +23,13 @@ public class OCSPResponseIdentifier extends EncapsulatedRevocationTokenIdentifie
 	// Note: Used in CAdES only!
 	private ASN1ObjectIdentifier asn1ObjectIdentifier;
 	
-	public static OCSPResponseIdentifier build(BasicOCSPResp basicOCSPResp, RevocationOrigin origin) {
+	public static OCSPResponseIdentifier build(BasicOCSPResp basicOCSPResp) {
 		byte[] ocspRespBinary = DSSRevocationUtils.getEncodedFromBasicResp(basicOCSPResp);
-		return new OCSPResponseIdentifier(basicOCSPResp, ocspRespBinary, origin);
+		return new OCSPResponseIdentifier(basicOCSPResp, ocspRespBinary);
 	}
 	
-	public static OCSPResponseIdentifier build(BasicOCSPResp basicOCSPResp, List<RevocationOrigin> origins) {
-		RevocationOrigin nullOrigin = null;
-		OCSPResponseIdentifier ocspResponseIdentifier = build(basicOCSPResp, nullOrigin);
-		for (RevocationOrigin origin : origins) {
-			ocspResponseIdentifier.addOrigin(origin);
-		}
-		return ocspResponseIdentifier;
-	}
-	
-	OCSPResponseIdentifier(BasicOCSPResp basicOCSPResp, byte[] encoded, RevocationOrigin origin) {
-		super(encoded, origin);
+	OCSPResponseIdentifier(BasicOCSPResp basicOCSPResp, byte[] encoded) {
+		super(encoded);
 		this.basicOCSPResp = basicOCSPResp;
 	}
 	

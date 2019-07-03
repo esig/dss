@@ -4,7 +4,10 @@ import java.util.EnumMap;
 
 import eu.europa.esig.dss.DigestAlgorithm;
 
-public abstract class EncapsulatedTokenIdentifier extends Identifier {
+/**
+ * This class is used to obtain a requested digest from a stored binary array
+ */
+public abstract class MultipleDigestIdentifier extends Identifier {
 
 	private static final long serialVersionUID = 8499261315144968564L;
 
@@ -12,7 +15,7 @@ public abstract class EncapsulatedTokenIdentifier extends Identifier {
 
 	private final EnumMap<DigestAlgorithm, byte[]> digestMap = new EnumMap<DigestAlgorithm, byte[]>(DigestAlgorithm.class);
 	
-	protected EncapsulatedTokenIdentifier(byte[] binaries) {
+	protected MultipleDigestIdentifier(byte[] binaries) {
 		super(binaries);
 		this.binaries = binaries;
 	}

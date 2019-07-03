@@ -42,27 +42,28 @@ import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.identifier.CRLBinaryIdentifier;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.KeyUsageBit;
-import eu.europa.esig.dss.x509.RevocationOrigin;
 
 public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CRLUtilsStreamImpl.class);
 
 	@Override
-	public CRLValidity isValidCRL(InputStream crlStream, CertificateToken issuerToken, boolean external) throws IOException {
-
-		final CRLValidity crlValidity = new CRLValidity();
+	public CRLValidity buildCRLValidity(InputStream crlStream, CertificateToken issuerToken, CRLBinaryIdentifier crlBinaryIdentifier) throws IOException {
+		
+		final CRLValidity crlValidity;
 		try (ByteArrayOutputStream baos = getDERContent(crlStream)) {
+			
+			if (crlBinaryIdentifier == null) {
+				crlBinaryIdentifier = new CRLBinaryIdentifier(baos.toByteArray());
+			}
+			crlValidity = new CRLValidity(crlBinaryIdentifier);
 
-			CRLInfo crlInfos = getCrlInfos(baos);
+			CRLInfo crlInfos = getCrlInfo(baos);
 
 			SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forOidAndParams(crlInfos.getCertificateListSignatureAlgorithmOid(),
 					crlInfos.getCertificateListSignatureAlgorithmParams());
-
-			if (external) {
-				crlValidity.setCrlBinaryIdentifier(CRLBinaryIdentifier.build(baos.toByteArray(), RevocationOrigin.EXTERNAL));
-			}
 			crlValidity.setSignatureAlgorithm(signatureAlgorithm);
+
 			crlValidity.setThisUpdate(crlInfos.getThisUpdate());
 			crlValidity.setNextUpdate(crlInfos.getNextUpdate());
 
@@ -78,6 +79,7 @@ public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
 
 			checkSignatureValue(crlValidity, crlInfos.getSignatureValue(), signatureAlgorithm, getSignedData(baos), issuerToken);
 		}
+		
 		return crlValidity;
 	}
 
@@ -128,7 +130,7 @@ public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
 	}
 
 
-	private CRLInfo getCrlInfos(ByteArrayOutputStream baos) throws IOException {
+	private CRLInfo getCrlInfo(ByteArrayOutputStream baos) throws IOException {
 		try (InputStream is = new ByteArrayInputStream(baos.toByteArray()); BufferedInputStream bis = new BufferedInputStream(is)) {
 			CRLParser parser = new CRLParser();
 			return parser.retrieveInfo(bis);

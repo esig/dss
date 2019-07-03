@@ -122,9 +122,9 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 
 	@Override
 	protected void storeOCSPToken(OCSPResponseIdentifier ocspResponse, OCSPToken ocspToken) {
-		if (ocspResponses.contains(ocspResponse) && !ocspTokenMap.containsKey(ocspResponse)) {
+		if (getOCSPResponsesList().contains(ocspResponse) && !ocspTokenMap.containsKey(ocspResponse)) {
 			ocspTokenMap.put(ocspResponse, ocspToken);
-			for (RevocationOrigin origin : ocspResponse.getOrigins()) {
+			for (RevocationOrigin origin : getRevocationOrigins(ocspResponse)) {
 				switch (origin) {
 					case INTERNAL_REVOCATION_VALUES:
 						revocationValuesOCSPs.add(ocspToken);

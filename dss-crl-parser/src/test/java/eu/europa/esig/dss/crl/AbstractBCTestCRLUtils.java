@@ -69,7 +69,7 @@ public abstract class AbstractBCTestCRLUtils {
 
 			CertificateToken certificateToken = loadCert(isCer);
 
-			CRLValidity validity = CRLUtils.buildCrlValidity(is, certificateToken);
+			CRLValidity validity = CRLUtils.buildCRLValidity(is, certificateToken);
 
 			assertEquals(SignatureAlgorithm.RSA_SSA_PSS_SHA512_MGF1, validity.getSignatureAlgorithm());
 			assertNotNull(validity.getThisUpdate());
@@ -88,7 +88,7 @@ public abstract class AbstractBCTestCRLUtils {
 		try (InputStream crlIS = new ByteArrayInputStream(Base64.getDecoder().decode(crlB64));
 				InputStream certIS = new ByteArrayInputStream(Base64.getDecoder().decode(certB64))) {
 			CertificateToken certificateToken = loadCert(certIS);
-			CRLValidity validCRL = CRLUtils.buildCrlValidity(crlIS, certificateToken);
+			CRLValidity validCRL = CRLUtils.buildCRLValidity(crlIS, certificateToken);
 			assertNotNull(validCRL);
 			assertTrue(validCRL.isSignatureIntact());
 			assertTrue(validCRL.isValid());
@@ -104,7 +104,7 @@ public abstract class AbstractBCTestCRLUtils {
 		try (InputStream crlIS = new ByteArrayInputStream(Base64.getDecoder().decode(crlB64));
 				InputStream certIS = new ByteArrayInputStream(Base64.getDecoder().decode(certB64))) {
 			CertificateToken certificateToken = loadCert(certIS);
-			CRLValidity validCRL = CRLUtils.buildCrlValidity(crlIS, certificateToken);
+			CRLValidity validCRL = CRLUtils.buildCRLValidity(crlIS, certificateToken);
 			assertNotNull(validCRL);
 			assertTrue(validCRL.isSignatureIntact());
 			assertTrue(validCRL.isValid());
@@ -120,7 +120,7 @@ public abstract class AbstractBCTestCRLUtils {
 		try (InputStream crlIS = new ByteArrayInputStream(Base64.getDecoder().decode(crlB64));
 				InputStream certIS = new ByteArrayInputStream(Base64.getDecoder().decode(certB64))) {
 			CertificateToken certificateToken = loadCert(certIS);
-			CRLValidity validCRL = CRLUtils.buildCrlValidity(crlIS, certificateToken);
+			CRLValidity validCRL = CRLUtils.buildCRLValidity(crlIS, certificateToken);
 			assertNotNull(validCRL);
 			assertTrue(validCRL.isSignatureIntact());
 			assertTrue(validCRL.isValid());

@@ -22,9 +22,18 @@ package eu.europa.esig.dss.crl;
 
 import java.security.cert.X509CRL;
 
+import eu.europa.esig.dss.identifier.CRLBinaryIdentifier;
+
 public class X509CRLValidity extends CRLValidity {
 
 	private X509CRL x509CRL;
+	
+	/**
+	 * Default constructor
+	 */
+	public X509CRLValidity(CRLBinaryIdentifier crlBinaryIdentifier) {
+		super(crlBinaryIdentifier);
+	}
 
 	public X509CRL getX509CRL() {
 		return x509CRL;

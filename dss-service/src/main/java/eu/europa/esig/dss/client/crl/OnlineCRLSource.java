@@ -53,6 +53,7 @@ import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
  *
  */
 public class OnlineCRLSource implements CRLSource, RevocationSourceAlternateUrlsSupport<CRLToken>, OnlineRevocationSource<CRLToken> {
+	
 	private static final long serialVersionUID = 6912729291417315212L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(OnlineCRLSource.class);
@@ -140,7 +141,7 @@ public class OnlineCRLSource implements CRLSource, RevocationSourceAlternateUrls
 			return null;
 		}
 		try (ByteArrayInputStream bais = new ByteArrayInputStream(dataAndUrl.data)) {
-			final CRLValidity crlValidity = CRLUtils.buildCrlValidity(bais, issuerToken);
+			final CRLValidity crlValidity = CRLUtils.buildCRLValidity(bais, issuerToken);
 			final CRLToken crlToken = new CRLToken(certificateToken, crlValidity);
 			crlToken.setSourceURL(dataAndUrl.urlString);
 			crlToken.setAvailable(true);

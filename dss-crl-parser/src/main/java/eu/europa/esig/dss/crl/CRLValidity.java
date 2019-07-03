@@ -39,6 +39,8 @@ import eu.europa.esig.dss.x509.RevocationOrigin;
  */
 public class CRLValidity {
 
+	private final CRLBinaryIdentifier crlBinaryIdentifier;
+	
 	private boolean indirectCrl;
 	private boolean onlyAttributeCerts;
 	private boolean onlyCaCerts;
@@ -47,7 +49,6 @@ public class CRLValidity {
 	private boolean issuerX509PrincipalMatches = false;
 	private boolean signatureIntact = false;
 	private Boolean unknownCriticalExtension;
-	private CRLBinaryIdentifier crlBinaryIdentifier;
 	private CertificateToken issuerToken = null;
 	private Collection<String> criticalExtensionsOid;
 	private Date expiredCertsOnCRL;
@@ -58,21 +59,16 @@ public class CRLValidity {
 	private String key;
 	private String signatureInvalidityReason;
 	private String url;
-
-	public String getKey() {
-		return key;
-	}
-
-	public void setKey(String key) {
-		this.key = key;
+	
+	/**
+	 * Default constructor
+	 */	
+	public CRLValidity(CRLBinaryIdentifier crlBinaryIdentifier) {
+		this.crlBinaryIdentifier = crlBinaryIdentifier;
 	}
 
 	public CRLBinaryIdentifier getCrlBinaryIdentifier() {
 		return crlBinaryIdentifier;
-	}
-
-	public void setCrlBinaryIdentifier(CRLBinaryIdentifier crlBinaryIdentifier) {
-		this.crlBinaryIdentifier = crlBinaryIdentifier;
 	}
 
 	public byte[] getCrlEncoded() {
@@ -82,9 +78,13 @@ public class CRLValidity {
 	public InputStream getCrlInputStream() {
 		return new ByteArrayInputStream(getCrlEncoded());
 	}
-	
-	public List<RevocationOrigin> getRevocationOrigins() {
-		return crlBinaryIdentifier.getOrigins();
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
 	}
 
 	public SignatureAlgorithm getSignatureAlgorithm() {

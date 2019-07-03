@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.cert.X509CRLEntry;
 
+import eu.europa.esig.dss.identifier.CRLBinaryIdentifier;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 public interface ICRLUtils {
@@ -39,13 +40,14 @@ public interface ICRLUtils {
 	 *            {@code InputStream} with the CRL to be verified (cannot be null)
 	 * @param issuerToken
 	 *            {@code CertificateToken} used to sign the {@code X509CRL} (cannot be null)
-	 * @param external
-	 * 			  (@code boolean) defines if the CRL was obtained from an external source
+	 * @param crlBinaryIdentifier
+	 * 			  (@code CRLBinaryIdentifier) to build the {@code CRLValidity}, 
+	 * 		      if null a new (@code CRLBinaryIdentifier) will be created
 	 * @return {@code CRLValidity}
 	 * @throws IOException
 	 *             if an IO error occurred
 	 */
-	CRLValidity isValidCRL(final InputStream crlStream, final CertificateToken issuerToken, boolean external) throws IOException;
+	CRLValidity buildCRLValidity(final InputStream crlStream, final CertificateToken issuerToken, CRLBinaryIdentifier crlBinaryIdentifier) throws IOException;
 
 	/**
 	 * This method verifies the revocation status for a given serial number

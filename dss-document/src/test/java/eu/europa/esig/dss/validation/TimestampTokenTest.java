@@ -175,7 +175,7 @@ public class TimestampTokenTest {
 		
 		TimestampCRLSource crlSource = timestampToken.getCRLSource();
 		assertNotNull(crlSource);
-		assertEquals(1, crlSource.getAllCRLIdentifiers().size());
+		assertEquals(1, crlSource.getCRLBinaryList().size());
 		assertEquals(1, crlSource.getAllCRLReferences().size());
 	}
 	
@@ -190,12 +190,12 @@ public class TimestampTokenTest {
 
 		TimestampCRLSource crlSource = timestampToken.getCRLSource();
 		assertNotNull(crlSource);
-		assertEquals(1, crlSource.getAllCRLIdentifiers().size());
+		assertEquals(1, crlSource.getCRLBinaryList().size());
 		assertEquals(0, crlSource.getAllCRLReferences().size());
 		
 		TimestampOCSPSource ocspSource = timestampToken.getOCSPSource();
 		assertNotNull(ocspSource);
-		assertEquals(0, ocspSource.getAllOCSPIdentifiers().size());
+		assertEquals(0, ocspSource.getOCSPResponsesList().size());
 		assertEquals(0, ocspSource.getAllOCSPReferences().size());
 	}
 

@@ -58,14 +58,8 @@ public class ListOCSPSource extends SignatureOCSPSource {
 	 */
 	public void addAll(final OfflineOCSPSource offlineOCSPSource) {
 		for (OCSPResponseIdentifier ocspResponse : offlineOCSPSource.getOCSPResponsesList()) {
-			int ii = ocspResponses.indexOf(ocspResponse);
-			if (ii > -1) {
-				OCSPResponseIdentifier storedOcspResponse = ocspResponses.get(ii);
-				for (RevocationOrigin origin : ocspResponse.getOrigins()) {
-					storedOcspResponse.addOrigin(origin);
-				}
-			} else {
-				ocspResponses.add(ocspResponse);
+			for (RevocationOrigin origin : offlineOCSPSource.getRevocationOrigins(ocspResponse)) {
+				addOCSPResponse(ocspResponse, origin);
 			}
 		}
 		if (offlineOCSPSource instanceof SignatureOCSPSource) {
