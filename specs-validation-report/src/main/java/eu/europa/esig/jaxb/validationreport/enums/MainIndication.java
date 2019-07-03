@@ -20,10 +20,11 @@ public enum MainIndication implements UriBasedEnum {
 
 	private final String uri;
 
-	private MainIndication(String uri) {
+	MainIndication(String uri) {
 		this.uri = uri;
 	}
 
+	@Override
 	public String getUri() {
 		return uri;
 	}
