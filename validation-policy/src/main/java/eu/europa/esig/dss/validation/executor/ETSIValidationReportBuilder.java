@@ -13,7 +13,9 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlCertificateChain;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlChainItem;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlCryptographicInformation;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlProofOfExistence;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlRevocationInformation;
@@ -32,6 +34,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerData;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.BasicBuildingBlockUri;
 import eu.europa.esig.dss.validation.CertificateOriginType;
 import eu.europa.esig.dss.validation.CertificateRefOriginType;
 import eu.europa.esig.dss.validation.DigestMatcherType;
@@ -56,7 +59,9 @@ import eu.europa.esig.dss.x509.TimestampLocation;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.jaxb.validationreport.AttributeBaseType;
 import eu.europa.esig.jaxb.validationreport.CertificateChainType;
+import eu.europa.esig.jaxb.validationreport.ConstraintStatusType;
 import eu.europa.esig.jaxb.validationreport.CryptoInformationType;
+import eu.europa.esig.jaxb.validationreport.IndividualValidationConstraintReportType;
 import eu.europa.esig.jaxb.validationreport.ObjectFactory;
 import eu.europa.esig.jaxb.validationreport.POEProvisioningType;
 import eu.europa.esig.jaxb.validationreport.POEType;
@@ -91,6 +96,7 @@ import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
 import eu.europa.esig.jaxb.validationreport.SignerInformationType;
 import eu.europa.esig.jaxb.validationreport.SignersDocumentType;
 import eu.europa.esig.jaxb.validationreport.VOReferenceType;
+import eu.europa.esig.jaxb.validationreport.ValidationConstraintsEvaluationReportType;
 import eu.europa.esig.jaxb.validationreport.ValidationObjectListType;
 import eu.europa.esig.jaxb.validationreport.ValidationObjectRepresentationType;
 import eu.europa.esig.jaxb.validationreport.ValidationObjectType;
@@ -98,6 +104,7 @@ import eu.europa.esig.jaxb.validationreport.ValidationReportDataType;
 import eu.europa.esig.jaxb.validationreport.ValidationReportType;
 import eu.europa.esig.jaxb.validationreport.ValidationStatusType;
 import eu.europa.esig.jaxb.validationreport.ValidationTimeInfoType;
+import eu.europa.esig.jaxb.validationreport.enums.ConstraintStatus;
 import eu.europa.esig.jaxb.validationreport.enums.EndorsementType;
 import eu.europa.esig.jaxb.validationreport.enums.MainIndication;
 import eu.europa.esig.jaxb.validationreport.enums.ObjectType;
@@ -144,7 +151,60 @@ public class ETSIValidationReportBuilder {
 		signatureValidationReport.setSignatureValidationProcess(getSignatureValidationProcess(sigWrapper));
 		signatureValidationReport.setSignatureValidationStatus(getSignatureValidationStatus(sigWrapper));
 		signatureValidationReport.setValidationTimeInfo(getValidationTimeInfo(sigWrapper));
+		signatureValidationReport.setValidationConstraintsEvaluationReport(getValidationConstraintsEvaluationReport(sigWrapper));
 		return signatureValidationReport;
+	}
+
+	private ValidationConstraintsEvaluationReportType getValidationConstraintsEvaluationReport(SignatureWrapper sigWrapper) {
+		ValidationConstraintsEvaluationReportType validationConstraintsEvaluationReport = objectFactory.createValidationConstraintsEvaluationReportType();
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(sigWrapper.getId());
+		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockUri.FORMAT_CHECKING, signatureBBB.getFC());
+		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockUri.IDENTIFICATION_OF_THE_SIGNING_CERTIFICATE, signatureBBB.getISC());
+		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockUri.VALIDATION_CONTEXT_INITIALIZATION, signatureBBB.getVCI());
+		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockUri.CRYPTOGRAPHIC_VERIFICATION, signatureBBB.getCV());
+		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockUri.SIGNATURE_ACCEPTANCE_VALIDATION, signatureBBB.getSAV());
+		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockUri.X509_CERTIFICATE_VALIDATION, signatureBBB.getXCV());
+		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockUri.PAST_SIGNATURE_VALIDATION, signatureBBB.getPSV());
+		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockUri.PAST_CERTIFICATE_VALIDATION, signatureBBB.getPCV());
+		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockUri.VALIDATION_TIME_SLIDING, signatureBBB.getVTS());
+		return validationConstraintsEvaluationReport;
+	}
+
+	private void addBBB(ValidationConstraintsEvaluationReportType validationConstraintsEvaluationReport, BasicBuildingBlockUri bbbUri,
+			XmlConstraintsConclusion constraintConclusion) {
+		if (constraintConclusion != null) {
+			validationConstraintsEvaluationReport.getValidationConstraint()
+					.add(getIndividualValidationConstraintReport(bbbUri, constraintConclusion, applied()));
+		} else {
+			validationConstraintsEvaluationReport.getValidationConstraint()
+					.add(getIndividualValidationConstraintReport(bbbUri, constraintConclusion, disabled()));
+		}
+	}
+
+	private IndividualValidationConstraintReportType getIndividualValidationConstraintReport(BasicBuildingBlockUri bbbUri,
+			XmlConstraintsConclusion constraintConclusion,
+			ConstraintStatusType constraintStatusType) {
+		IndividualValidationConstraintReportType validationConstraint = objectFactory.createIndividualValidationConstraintReportType();
+		validationConstraint.setValidationConstraintIdentifier(bbbUri.getUri());
+		validationConstraint.setConstraintStatus(constraintStatusType);
+		if (constraintConclusion != null) {
+			validationConstraint.setValidationStatus(getValidationStatus(constraintConclusion.getConclusion()));
+		}
+		return validationConstraint;
+	}
+
+	private ConstraintStatusType applied() {
+		return constraintStatus(ConstraintStatus.APPLIED);
+	}
+
+	private ConstraintStatusType disabled() {
+		return constraintStatus(ConstraintStatus.DISABLED);
+	}
+
+	private ConstraintStatusType constraintStatus(ConstraintStatus status) {
+		ConstraintStatusType constraintStatus = objectFactory.createConstraintStatusType();
+		constraintStatus.setStatus(status);
+		return constraintStatus;
 	}
 
 	private SignatureValidationReportType getValidationReport(AbstractTokenProxy token) {
@@ -453,18 +513,25 @@ public class ETSIValidationReportBuilder {
 
 	private ValidationStatusType getValidationStatus(AbstractTokenProxy token) {
 		ValidationStatusType validationStatus = objectFactory.createValidationStatusType();
-
-		Indication indication = detailedReport.getBasicBuildingBlocksIndication(token.getId());
-		if (indication != null) {
-			validationStatus.setMainIndication(MainIndication.valueOf(indication.name()));
-			SubIndication subIndication = detailedReport.getBasicBuildingBlocksSubIndication(token.getId());
-			if (subIndication != null) {
-				validationStatus.getSubIndication().add(eu.europa.esig.jaxb.validationreport.enums.SubIndication.valueOf(subIndication.name()));
-			}
-		}
-
+		fillIndicationSubIndication(validationStatus, detailedReport.getBasicBuildingBlocksIndication(token.getId()),
+				detailedReport.getBasicBuildingBlocksSubIndication(token.getId()));
 		addValidationReportData(validationStatus, token);
 		return validationStatus;
+	}
+
+	private ValidationStatusType getValidationStatus(XmlConclusion conclusion) {
+		ValidationStatusType validationStatus = objectFactory.createValidationStatusType();
+		fillIndicationSubIndication(validationStatus, conclusion.getIndication(), conclusion.getSubIndication());
+		return validationStatus;
+	}
+
+	private void fillIndicationSubIndication(ValidationStatusType validationStatus, Indication indication, SubIndication subIndication) {
+		if (indication != null) {
+			validationStatus.setMainIndication(MainIndication.valueOf(indication.name()));
+		}
+		if (subIndication != null) {
+			validationStatus.getSubIndication().add(eu.europa.esig.jaxb.validationreport.enums.SubIndication.valueOf(subIndication.name()));
+		}
 	}
 
 	private void addValidationReportData(ValidationStatusType validationStatus, AbstractTokenProxy token) {
