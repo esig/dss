@@ -5,13 +5,13 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
+import eu.europa.esig.jaxb.validationreport.enums.ConstraintStatus;
 import eu.europa.esig.jaxb.validationreport.enums.MainIndication;
 import eu.europa.esig.jaxb.validationreport.enums.ObjectType;
 import eu.europa.esig.jaxb.validationreport.enums.RevocationReason;
 import eu.europa.esig.jaxb.validationreport.enums.SignatureValidationProcessID;
 import eu.europa.esig.jaxb.validationreport.enums.SubIndication;
 import eu.europa.esig.jaxb.validationreport.enums.TypeOfProof;
-import eu.europa.esig.jaxb.validationreport.parsers.UriBasedEnumParser;
 
 public class UriBasedEnumParserTest {
 
@@ -66,6 +66,15 @@ public class UriBasedEnumParserTest {
 			String string = UriBasedEnumParser.print(top);
 			assertNotNull(string);
 			assertEquals(top, UriBasedEnumParser.parseTypeOfProof(string));
+		}
+	}
+
+	@Test
+	public void constraintStatus() {
+		for (ConstraintStatus cs : ConstraintStatus.values()) {
+			String string = UriBasedEnumParser.print(cs);
+			assertNotNull(string);
+			assertEquals(cs, UriBasedEnumParser.parseConstraintStatus(string));
 		}
 	}
 

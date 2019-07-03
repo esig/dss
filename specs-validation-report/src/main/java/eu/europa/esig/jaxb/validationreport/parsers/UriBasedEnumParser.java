@@ -3,6 +3,7 @@ package eu.europa.esig.jaxb.validationreport.parsers;
 import java.util.HashMap;
 import java.util.Map;
 
+import eu.europa.esig.jaxb.validationreport.enums.ConstraintStatus;
 import eu.europa.esig.jaxb.validationreport.enums.MainIndication;
 import eu.europa.esig.jaxb.validationreport.enums.ObjectType;
 import eu.europa.esig.jaxb.validationreport.enums.RevocationReason;
@@ -22,6 +23,7 @@ public final class UriBasedEnumParser {
 		register(SignatureValidationProcessID.values());
 		register(SubIndication.values());
 		register(TypeOfProof.values());
+		register(ConstraintStatus.values());
 	}
 
 	private static void register(UriBasedEnum[] values) {
@@ -55,6 +57,10 @@ public final class UriBasedEnumParser {
 
 	public static TypeOfProof parseTypeOfProof(String v) {
 		return (TypeOfProof) parse(v);
+	}
+
+	public static ConstraintStatus parseConstraintStatus(String v) {
+		return (ConstraintStatus) parse(v);
 	}
 
 	private static UriBasedEnum parse(String v) {

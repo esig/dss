@@ -65,6 +65,12 @@
 				printMethod="eu.europa.esig.jaxb.validationreport.parsers.UriBasedEnumParser.print" />
 		</jaxb:bindings>
 		
+		<jaxb:bindings node="//xs:element[@name='Status']">
+			<jaxb:javaType
+				name="eu.europa.esig.jaxb.validationreport.enums.ConstraintStatus"
+				parseMethod="eu.europa.esig.jaxb.validationreport.parsers.UriBasedEnumParser.parseConstraintStatus"
+				printMethod="eu.europa.esig.jaxb.validationreport.parsers.UriBasedEnumParser.print" />
+		</jaxb:bindings>
 		
 		<jaxb:bindings node="//xs:element[@name='EndorsementType']">
 			<jaxb:javaType
