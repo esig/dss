@@ -41,6 +41,7 @@ import org.bouncycastle.cms.SignerInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.CRLBinary;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
@@ -49,7 +50,6 @@ import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.signature.CadesLevelBaselineLTATimestampExtractor;
-import eu.europa.esig.dss.identifier.CRLBinaryIdentifier;
 import eu.europa.esig.dss.validation.CMSCRLSource;
 import eu.europa.esig.dss.validation.CMSCertificateSource;
 import eu.europa.esig.dss.validation.CMSOCSPSource;
@@ -68,7 +68,7 @@ import eu.europa.esig.dss.x509.TimestampLocation;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseIdentifier;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseIBinary;
 
 @SuppressWarnings("serial")
 public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute> {
@@ -247,7 +247,7 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 		ASN1Sequence crlsHashIndex = DSSASN1Utils.getCRLHashIndex(atsHashIndex);
 		List<DEROctetString> crlsHashList = DSSASN1Utils.getDEROctetStrings(crlsHashIndex);
 		if (signatureCRLSource instanceof CMSCRLSource) {
-			for (CRLBinaryIdentifier crlBinary : ((CMSCRLSource) signatureCRLSource).getSignedDataCRLIdentifiers()) {
+			for (CRLBinary crlBinary : ((CMSCRLSource) signatureCRLSource).getSignedDataCRLIdentifiers()) {
 				if (isDigestValuePresent(crlBinary.getDigestValue(digestAlgorithm), crlsHashList)) {
 					addReference(references, new TimestampedReference(crlBinary.asXmlId(), TimestampedObjectType.REVOCATION));
 				} else {
@@ -258,7 +258,7 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 			}
 		}
 		if (signatureOCSPSource instanceof CMSOCSPSource) {
-			for (OCSPResponseIdentifier ocspResponse : ((CMSOCSPSource) signatureOCSPSource).getSignedDataOCSPIdentifiers()) {
+			for (OCSPResponseIBinary ocspResponse : ((CMSOCSPSource) signatureOCSPSource).getSignedDataOCSPIdentifiers()) {
 				// Compute DERTaggedObject with the same algorithm how it was created
 				// See: org.bouncycastle.cms.CMSUtils getOthersFromStore()
 				OtherRevocationInfoFormat otherRevocationInfoFormat = new OtherRevocationInfoFormat(ocspResponse.getAsn1ObjectIdentifier(), 
@@ -285,12 +285,12 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 			addReferences(references, createReferencesForCertificates(signatureCertificateSource.getKeyInfoCertificates()));
 		}
 		if (signatureCRLSource instanceof CMSCRLSource) {
-			for (CRLBinaryIdentifier crlBinary : ((CMSCRLSource) signatureCRLSource).getSignedDataCRLIdentifiers()) {
+			for (CRLBinary crlBinary : ((CMSCRLSource) signatureCRLSource).getSignedDataCRLIdentifiers()) {
 				addReference(references, new TimestampedReference(crlBinary.asXmlId(), TimestampedObjectType.REVOCATION));
 			}
 		}
 		if (signatureOCSPSource instanceof CMSOCSPSource) {
-			for (OCSPResponseIdentifier ocspResponse : ((CMSOCSPSource) signatureOCSPSource).getSignedDataOCSPIdentifiers()) {
+			for (OCSPResponseIBinary ocspResponse : ((CMSOCSPSource) signatureOCSPSource).getSignedDataOCSPIdentifiers()) {
 				addReference(references, new TimestampedReference(ocspResponse.asXmlId(), TimestampedObjectType.REVOCATION));
 			}
 		}
@@ -375,13 +375,13 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 	}
 
 	@Override
-	protected List<CRLBinaryIdentifier> getEncapsulatedCRLIdentifiers(CAdESAttribute unsignedAttribute) {
-		List<CRLBinaryIdentifier> crlBinaryIdentifiers = new ArrayList<CRLBinaryIdentifier>();
+	protected List<CRLBinary> getEncapsulatedCRLIdentifiers(CAdESAttribute unsignedAttribute) {
+		List<CRLBinary> crlBinaryIdentifiers = new ArrayList<CRLBinary>();
 		ASN1Encodable asn1Object = unsignedAttribute.getASN1Object();
 		final RevocationValues revValues = RevocationValues.getInstance(asn1Object);
 		for (final CertificateList revValue : revValues.getCrlVals()) {
 			try {
-				crlBinaryIdentifiers.add(new CRLBinaryIdentifier(revValue.getEncoded()));
+				crlBinaryIdentifiers.add(new CRLBinary(revValue.getEncoded()));
 			} catch (IOException e) {
 				LOG.warn("Unable to parse revocation value : {}", e.getMessage());
 			}
@@ -390,13 +390,13 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 	}
 
 	@Override
-	protected List<OCSPResponseIdentifier> getEncapsulatedOCSPIdentifiers(CAdESAttribute unsignedAttribute) {
-		List<OCSPResponseIdentifier> ocspIdentifiers = new ArrayList<OCSPResponseIdentifier>();
+	protected List<OCSPResponseIBinary> getEncapsulatedOCSPIdentifiers(CAdESAttribute unsignedAttribute) {
+		List<OCSPResponseIBinary> ocspIdentifiers = new ArrayList<OCSPResponseIBinary>();
 		ASN1Encodable asn1Object = unsignedAttribute.getASN1Object();
 		final RevocationValues revocationValues = RevocationValues.getInstance(asn1Object);
 		for (final BasicOCSPResponse basicOCSPResponse : revocationValues.getOcspVals()) {
 			final BasicOCSPResp basicOCSPResp = new BasicOCSPResp(basicOCSPResponse);
-			ocspIdentifiers.add(OCSPResponseIdentifier.build(basicOCSPResp));
+			ocspIdentifiers.add(OCSPResponseIBinary.build(basicOCSPResp));
 		}
 		return ocspIdentifiers;
 	}
@@ -417,12 +417,12 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 		
 		TimestampCRLSource timeStampCRLSource = timestampedTimestamp.getCRLSource();
 		crlSource.addAll(timeStampCRLSource);
-		for (CRLBinaryIdentifier crlBinary : timeStampCRLSource.getCRLBinaryList()) {
+		for (CRLBinary crlBinary : timeStampCRLSource.getCRLBinaryList()) {
 			TimestampedReference crlReference = new TimestampedReference(crlBinary.asXmlId(), TimestampedObjectType.REVOCATION);
 			addReference(references, crlReference);
 		}
 		for (CRLRef crlRef : timeStampCRLSource.getAllCRLReferences()) {
-			CRLBinaryIdentifier crlBinaryIdentifier = crlSource.getIdentifier(crlRef);
+			CRLBinary crlBinaryIdentifier = crlSource.getIdentifier(crlRef);
 			if (crlBinaryIdentifier != null) {
 				TimestampedReference crlReference = new TimestampedReference(crlBinaryIdentifier.asXmlId(), TimestampedObjectType.REVOCATION);
 				addReference(references, crlReference);
@@ -431,12 +431,12 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 		
 		TimestampOCSPSource timeStampOCSPSource = timestampedTimestamp.getOCSPSource();
 		ocspSource.addAll(timeStampOCSPSource);
-		for (OCSPResponseIdentifier ocspResponse : timeStampOCSPSource.getOCSPResponsesList()) {
+		for (OCSPResponseIBinary ocspResponse : timeStampOCSPSource.getOCSPResponsesList()) {
 			TimestampedReference ocspReference = new TimestampedReference(ocspResponse.asXmlId(), TimestampedObjectType.REVOCATION);
 			addReference(references, ocspReference);
 		}
 		for (OCSPRef ocspRef : timeStampOCSPSource.getAllOCSPReferences()) {
-			OCSPResponseIdentifier ocspResponseIdentifier = ocspSource.getIdentifier(ocspRef);
+			OCSPResponseIBinary ocspResponseIdentifier = ocspSource.getIdentifier(ocspRef);
 			if (ocspResponseIdentifier != null) {
 				TimestampedReference ocspReference = new TimestampedReference(ocspResponseIdentifier.asXmlId(), TimestampedObjectType.REVOCATION);
 				addReference(references, ocspReference);

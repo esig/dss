@@ -75,9 +75,7 @@ public class POEExtraction {
 			List<CertificateRevocationWrapper> revocations = certificate.getCertificateRevocationData();
 			if (Utils.isCollectionNotEmpty(revocations)) {
 				for (CertificateRevocationWrapper revocation : revocations) {
-					if (revocation.isInternalRevocationOrigin()) {
-						addPOE(revocation.getId(), proofOfExistence);
-					}
+					addPOE(revocation.getId(), proofOfExistence);
 				}
 			}
 		}

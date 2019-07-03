@@ -24,14 +24,12 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 import org.bouncycastle.asn1.x509.ReasonFlags;
 
+import eu.europa.esig.dss.CRLBinary;
 import eu.europa.esig.dss.SignatureAlgorithm;
-import eu.europa.esig.dss.identifier.CRLBinaryIdentifier;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.RevocationOrigin;
 
 /**
  * This class encapsulates all information related to the validity of a CRL. It
@@ -39,7 +37,7 @@ import eu.europa.esig.dss.x509.RevocationOrigin;
  */
 public class CRLValidity {
 
-	private final CRLBinaryIdentifier crlBinaryIdentifier;
+	private final CRLBinary crlBinaryIdentifier;
 	
 	private boolean indirectCrl;
 	private boolean onlyAttributeCerts;
@@ -63,11 +61,11 @@ public class CRLValidity {
 	/**
 	 * Default constructor
 	 */	
-	public CRLValidity(CRLBinaryIdentifier crlBinaryIdentifier) {
+	public CRLValidity(CRLBinary crlBinaryIdentifier) {
 		this.crlBinaryIdentifier = crlBinaryIdentifier;
 	}
 
-	public CRLBinaryIdentifier getCrlBinaryIdentifier() {
+	public CRLBinary getCrlBinaryIdentifier() {
 		return crlBinaryIdentifier;
 	}
 

@@ -11,8 +11,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.CRLBinary;
 import eu.europa.esig.dss.Digest;
-import eu.europa.esig.dss.identifier.CRLBinaryIdentifier;
 import eu.europa.esig.dss.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -29,7 +29,7 @@ import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.revocation.crl.ListCRLSource;
 import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.ListOCSPSource;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseIdentifier;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseIBinary;
 import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 
 /**
@@ -566,14 +566,14 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	protected List<TimestampedReference> getTimestampedRevocationRefs(SignatureAttribute unsignedAttribute) {
 		List<TimestampedReference> timestampedReferences = new ArrayList<TimestampedReference>();
 		for (Digest refDigest : getRevocationRefCRLDigests(unsignedAttribute)) {
-			CRLBinaryIdentifier identifier = crlSource.getIdentifier(refDigest);
+			CRLBinary identifier = crlSource.getIdentifier(refDigest);
 			if (identifier != null) {
 				timestampedReferences.add(new TimestampedReference(identifier.asXmlId(), TimestampedObjectType.REVOCATION));
 			}
 		}
 		
 		for (Digest refDigest : getRevocationRefOCSPDigests(unsignedAttribute)) {
-			OCSPResponseIdentifier identifier = ocspSource.getIdentifier(refDigest);
+			OCSPResponseIBinary identifier = ocspSource.getIdentifier(refDigest);
 			if (identifier != null) {
 				timestampedReferences.add(new TimestampedReference(identifier.asXmlId(), TimestampedObjectType.REVOCATION));
 			}
@@ -622,18 +622,18 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	}
 	
 	/**
-	 * Returns a list of {@link CRLBinaryIdentifier}s obtained from the given {@code unsignedAttribute}
+	 * Returns a list of {@link CRLBinary}s obtained from the given {@code unsignedAttribute}
 	 * @param unsignedAttribute {@link SignatureAttribute} to get CRL identifiers from
-	 * @return list of {@link CRLBinaryIdentifier}s
+	 * @return list of {@link CRLBinary}s
 	 */
-	protected abstract List<CRLBinaryIdentifier> getEncapsulatedCRLIdentifiers(SignatureAttribute unsignedAttribute);
+	protected abstract List<CRLBinary> getEncapsulatedCRLIdentifiers(SignatureAttribute unsignedAttribute);
 	
 	/**
-	 * Returns a list of {@link OCSPResponseIdentifier}s obtained from the given {@code unsignedAttribute}
+	 * Returns a list of {@link OCSPResponseIBinary}s obtained from the given {@code unsignedAttribute}
 	 * @param unsignedAttribute {@link SignatureAttribute} to get OCSP identifiers from
-	 * @return list of {@link OCSPResponseIdentifier}s
+	 * @return list of {@link OCSPResponseIBinary}s
 	 */
-	protected abstract List<OCSPResponseIdentifier> getEncapsulatedOCSPIdentifiers(SignatureAttribute unsignedAttribute);
+	protected abstract List<OCSPResponseIBinary> getEncapsulatedOCSPIdentifiers(SignatureAttribute unsignedAttribute);
 	
 	/**
 	 * Returns a list of {@code TimestampedReference}s for the given {@code timestampToken} 

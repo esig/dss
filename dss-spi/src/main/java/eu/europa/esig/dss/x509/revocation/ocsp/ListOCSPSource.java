@@ -57,7 +57,7 @@ public class ListOCSPSource extends SignatureOCSPSource {
 	 *            the source to be added
 	 */
 	public void addAll(final OfflineOCSPSource offlineOCSPSource) {
-		for (OCSPResponseIdentifier ocspResponse : offlineOCSPSource.getOCSPResponsesList()) {
+		for (OCSPResponseIBinary ocspResponse : offlineOCSPSource.getOCSPResponsesList()) {
 			for (RevocationOrigin origin : offlineOCSPSource.getRevocationOrigins(ocspResponse)) {
 				addOCSPResponse(ocspResponse, origin);
 			}

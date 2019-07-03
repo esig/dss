@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.crl;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.GeneralSecurityException;
@@ -37,9 +39,9 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.CRLBinary;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.SignatureAlgorithm;
-import eu.europa.esig.dss.identifier.CRLBinaryIdentifier;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.KeyUsageBit;
 
@@ -54,53 +56,47 @@ public class CRLUtilsX509CRLImpl extends AbstractCRLUtils implements ICRLUtils {
 	 * out. A dedicated object based on
 	 * {@code CRLValidity} is created and accordingly updated.
 	 *
-	 * @param crlStream
-	 *            {@code InputStream} to be verified (cannot be null)
+	 * @param crlBinary
+	 *            {@code CRLBinary} of the CRL to be created (cannot be null)
 	 * @param issuerToken
 	 *            {@code CertificateToken} used to sign the {@code X509CRL} (cannot be null)
-	 * @param crlBinaryIdentifier
-	 * 			  (@code CRLBinaryIdentifier) to build the {@code CRLValidity}, 
-	 * 		      if null a new (@code CRLBinaryIdentifier) will be created
 	 * @return {@code CRLValidity}
 	 */
 	@Override
-	public CRLValidity buildCRLValidity(final InputStream crlStream, final CertificateToken issuerToken, CRLBinaryIdentifier crlBinaryIdentifier) {
+	public CRLValidity buildCRLValidity(final CRLBinary crlBinary, final CertificateToken issuerToken) throws IOException {
+		
+		final X509CRLValidity crlValidity= new X509CRLValidity(crlBinary);
+		
+		try (InputStream bais = new ByteArrayInputStream(crlBinary.getBinaries())) {
+			
+			X509CRL x509CRL = loadCRL(bais);
+			crlValidity.setX509CRL(x509CRL);
 
-		final X509CRLValidity crlValidity;
+			final String sigAlgOID = x509CRL.getSigAlgOID();
+			final byte[] sigAlgParams = x509CRL.getSigAlgParams();
+			crlValidity.setSignatureAlgorithm(SignatureAlgorithm.forOidAndParams(sigAlgOID, sigAlgParams));
+			crlValidity.setThisUpdate(x509CRL.getThisUpdate());
+			crlValidity.setNextUpdate(x509CRL.getNextUpdate());
 
-		X509CRL x509CRL = loadCRL(crlStream);
-
-		if (crlBinaryIdentifier == null) {
-			try {
-				crlBinaryIdentifier = new CRLBinaryIdentifier(x509CRL.getEncoded());
-			} catch (CRLException e) {
-				LOG.error("Unable to read the CRL binaries", e);
+			final X500Principal x509CRLIssuerX500Principal = x509CRL.getIssuerX500Principal();
+			final X500Principal issuerTokenSubjectX500Principal = issuerToken.getSubjectX500Principal();
+			if (x509CRLIssuerX500Principal.equals(issuerTokenSubjectX500Principal)) {
+				crlValidity.setIssuerX509PrincipalMatches(true);
 			}
+
+			crlValidity.setCriticalExtensionsOid(x509CRL.getCriticalExtensionOIDs());
+			extractIssuingDistributionPointBinary(crlValidity, x509CRL.getExtensionValue(Extension.issuingDistributionPoint.getId()));
+			extractExpiredCertsOnCRL(crlValidity, x509CRL.getExtensionValue(Extension.expiredCertsOnCRL.getId()));
+
+			checkSignatureValue(x509CRL, issuerToken, crlValidity);
+			if (crlValidity.isSignatureIntact()) {
+				crlValidity.setCrlSignKeyUsage(issuerToken.checkKeyUsage(KeyUsageBit.crlSign));
+			}
+			
 		}
-		crlValidity = new X509CRLValidity(crlBinaryIdentifier);
-		crlValidity.setX509CRL(x509CRL);
-
-		final String sigAlgOID = x509CRL.getSigAlgOID();
-		final byte[] sigAlgParams = x509CRL.getSigAlgParams();
-		crlValidity.setSignatureAlgorithm(SignatureAlgorithm.forOidAndParams(sigAlgOID, sigAlgParams));
-		crlValidity.setThisUpdate(x509CRL.getThisUpdate());
-		crlValidity.setNextUpdate(x509CRL.getNextUpdate());
-
-		final X500Principal x509CRLIssuerX500Principal = x509CRL.getIssuerX500Principal();
-		final X500Principal issuerTokenSubjectX500Principal = issuerToken.getSubjectX500Principal();
-		if (x509CRLIssuerX500Principal.equals(issuerTokenSubjectX500Principal)) {
-			crlValidity.setIssuerX509PrincipalMatches(true);
-		}
-
-		crlValidity.setCriticalExtensionsOid(x509CRL.getCriticalExtensionOIDs());
-		extractIssuingDistributionPointBinary(crlValidity, x509CRL.getExtensionValue(Extension.issuingDistributionPoint.getId()));
-		extractExpiredCertsOnCRL(crlValidity, x509CRL.getExtensionValue(Extension.expiredCertsOnCRL.getId()));
-
-		checkSignatureValue(x509CRL, issuerToken, crlValidity);
-		if (crlValidity.isSignatureIntact()) {
-			crlValidity.setCrlSignKeyUsage(issuerToken.checkKeyUsage(KeyUsageBit.crlSign));
-		}
+		
 		return crlValidity;
+		
 	}
 
 	private void checkSignatureValue(final X509CRL x509CRL, final CertificateToken issuerToken, final CRLValidity crlValidity) {

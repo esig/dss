@@ -33,11 +33,11 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.CRLBinary;
 import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.crl.CRLValidity;
-import eu.europa.esig.dss.identifier.CRLBinaryIdentifier;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.JdbcRevocationSource;
@@ -169,7 +169,7 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRLToken> implement
 	@Override
 	protected CRLToken buildRevocationTokenFromResult(ResultSet rs, CertificateToken certificateToken, CertificateToken issuerCert) {
 		try {
-			CRLBinaryIdentifier crlBinaryIdentifier = new CRLBinaryIdentifier(rs.getBytes(SQL_FIND_QUERY_DATA));
+			CRLBinary crlBinaryIdentifier = new CRLBinary(rs.getBytes(SQL_FIND_QUERY_DATA));
 			final CRLValidity cached = new CRLValidity(crlBinaryIdentifier);
 			cached.setKey(rs.getString(SQL_FIND_QUERY_ID));
 			cached.setSignatureAlgorithm(SignatureAlgorithm.valueOf(rs.getString(SQL_FIND_QUERY_SIGNATURE_ALGO)));

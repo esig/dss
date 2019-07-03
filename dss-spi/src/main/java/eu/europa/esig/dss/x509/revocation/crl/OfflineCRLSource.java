@@ -33,10 +33,10 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.CRLBinary;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.crl.CRLValidity;
-import eu.europa.esig.dss.identifier.CRLBinaryIdentifier;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationOrigin;
@@ -53,7 +53,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 	/**
 	 * This {@code Map} contains all collected CRL binaries with a list of their origins
 	 */
-	protected final Map<CRLBinaryIdentifier, List<RevocationOrigin>> crlBinaryOriginsMap = new HashMap<CRLBinaryIdentifier, List<RevocationOrigin>>();
+	protected final Map<CRLBinary, List<RevocationOrigin>> crlBinaryOriginsMap = new HashMap<CRLBinary, List<RevocationOrigin>>();
 
 	/**
 	 * This {@code HashMap} contains the {@code CRLValidity} object for each
@@ -107,7 +107,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 		CRLValidity bestCRLValidity = null;
 		Date bestX509UpdateDate = null;
 
-		for (CRLBinaryIdentifier crlEntry : crlBinaryOriginsMap.keySet()) {
+		for (CRLBinary crlEntry : crlBinaryOriginsMap.keySet()) {
 			final CRLValidity crlValidity = getCrlValidity(crlEntry, issuerToken);
 			if (crlValidity == null || !crlValidity.isValid()) {
 				continue;
@@ -143,7 +143,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 	 *            {@code CertificateToken} issuer of the CRL
 	 * @return returns updated {@code CRLValidity} object
 	 */
-	private synchronized CRLValidity getCrlValidity(final CRLBinaryIdentifier crlBinary, final CertificateToken issuerToken) {
+	private CRLValidity getCrlValidity(final CRLBinary crlBinary, final CertificateToken issuerToken) {
 		String crlValidityKey = getCrlValidityKey(crlBinary, issuerToken);
 		CRLValidity crlValidity = crlValidityMap.get(crlValidityKey);
 		if (crlValidity == null) {
@@ -163,15 +163,15 @@ public abstract class OfflineCRLSource implements CRLSource {
 	 * Builds {@code CRLBinaryIdentifier} from the given binaries and returns the identifier object
 	 * @param binaries byte array to compute identifier from
 	 * @param origin {@link RevocationOrigin} indicating the correct list to store the value
-	 * @return computed {@link CRLBinaryIdentifier}
+	 * @return computed {@link CRLBinary}
 	 */
-	protected CRLBinaryIdentifier addCRLBinary(byte[] binaries, RevocationOrigin origin) {
-		CRLBinaryIdentifier crlBinary = new CRLBinaryIdentifier(binaries);
+	protected CRLBinary addCRLBinary(byte[] binaries, RevocationOrigin origin) {
+		CRLBinary crlBinary = new CRLBinary(binaries);
 		addCRLBinary(crlBinary, origin);
 		return crlBinary;
 	}
 
-	protected void addCRLBinary(CRLBinaryIdentifier crlBinary, RevocationOrigin origin) {
+	protected void addCRLBinary(CRLBinary crlBinary, RevocationOrigin origin) {
 		List<RevocationOrigin> origins = crlBinaryOriginsMap.get(crlBinary);
 		if (origins == null) {
 			origins = new ArrayList<RevocationOrigin>();
@@ -184,18 +184,18 @@ public abstract class OfflineCRLSource implements CRLSource {
 	
 	/**
 	 * Computes an issuer-dependent key for {@code crlValidityMap}
-	 * @param crlBinary {@link CRLBinaryIdentifier} of the CRL Entry
+	 * @param crlBinary {@link CRLBinary} of the CRL Entry
 	 * @param issuerToken {@link CertificateToken} of issuer
 	 * @return a new {@link String} key for CrlValidity map
 	 */
-	private String getCrlValidityKey(final CRLBinaryIdentifier crlBinary, final CertificateToken issuerToken) {
+	private String getCrlValidityKey(final CRLBinary crlBinary, final CertificateToken issuerToken) {
 		return crlBinary.asXmlId() + issuerToken.getDSSIdAsString();
 	}
 
 	/**
 	 * @return unmodifiable {@code Collection}
 	 */
-	public Collection<CRLBinaryIdentifier> getCRLBinaryList() {
+	public Collection<CRLBinary> getCRLBinaryList() {
 		return Collections.unmodifiableCollection(crlBinaryOriginsMap.keySet());
 	}
 	
@@ -203,26 +203,26 @@ public abstract class OfflineCRLSource implements CRLSource {
 		return Utils.isMapNotEmpty(crlBinaryOriginsMap);
 	}
 	
-	protected void storeCRLToken(final CRLBinaryIdentifier crlBinary, final CRLToken crlToken) {
+	protected void storeCRLToken(final CRLBinary crlBinary, final CRLToken crlToken) {
 		// not implemented by default
 	}
 
 	/**
 	 * Returns the identifier related to the {@code crlRef}
 	 * @param crlRef {@link CRLRef} to find identifier for
-	 * @return {@link CRLBinaryIdentifier} for the reference
+	 * @return {@link CRLBinary} for the reference
 	 */
-	public CRLBinaryIdentifier getIdentifier(CRLRef crlRef) {
+	public CRLBinary getIdentifier(CRLRef crlRef) {
 		return getIdentifier(crlRef.getDigest());
 	}
 	
 	/**
 	 * Returns the identifier related for the provided digest of the reference
 	 * @param digest {@link Digest} of the reference
-	 * @return {@link CRLBinaryIdentifier} for the reference
+	 * @return {@link CRLBinary} for the reference
 	 */
-	public CRLBinaryIdentifier getIdentifier(Digest digest) {
-		for (CRLBinaryIdentifier crlBinary : crlBinaryOriginsMap.keySet()) {
+	public CRLBinary getIdentifier(Digest digest) {
+		for (CRLBinary crlBinary : crlBinaryOriginsMap.keySet()) {
 			byte[] digestValue = crlBinary.getDigestValue(digest.getAlgorithm());
 			if (Arrays.equals(digest.getValue(), digestValue)) {
 				return crlBinary;
@@ -233,10 +233,10 @@ public abstract class OfflineCRLSource implements CRLSource {
 	
 	/**
 	 * Returns a list of {@code RevocationOrigin}s for the given {@code crlBinary}
-	 * @param crlBinary {@link CRLBinaryIdentifier} to get origins for
+	 * @param crlBinary {@link CRLBinary} to get origins for
 	 * @return list of {@link RevocationOrigin}s
 	 */
-	public List<RevocationOrigin> getRevocationOrigins(CRLBinaryIdentifier crlBinary) {
+	public List<RevocationOrigin> getRevocationOrigins(CRLBinary crlBinary) {
 		return crlBinaryOriginsMap.get(crlBinary);
 	}
 

@@ -21,11 +21,10 @@
 package eu.europa.esig.dss.crl;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.cert.X509CRLEntry;
 
-import eu.europa.esig.dss.identifier.CRLBinaryIdentifier;
+import eu.europa.esig.dss.CRLBinary;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 public interface ICRLUtils {
@@ -36,18 +35,15 @@ public interface ICRLUtils {
 	 * verification of the revocation data is carried out. A dedicated object based on {@code CRLValidity} is created
 	 * and accordingly updated.
 	 *
-	 * @param crlStream
-	 *            {@code InputStream} with the CRL to be verified (cannot be null)
+	 * @param crlBinaryIdentifier
+	 * 			  (@code CRLBinaryIdentifier) to build the {@code CRLValidity} and verify token (cannot be null)
 	 * @param issuerToken
 	 *            {@code CertificateToken} used to sign the {@code X509CRL} (cannot be null)
-	 * @param crlBinaryIdentifier
-	 * 			  (@code CRLBinaryIdentifier) to build the {@code CRLValidity}, 
-	 * 		      if null a new (@code CRLBinaryIdentifier) will be created
 	 * @return {@code CRLValidity}
 	 * @throws IOException
 	 *             if an IO error occurred
 	 */
-	CRLValidity buildCRLValidity(final InputStream crlStream, final CertificateToken issuerToken, CRLBinaryIdentifier crlBinaryIdentifier) throws IOException;
+	CRLValidity buildCRLValidity(final CRLBinary crlBinaryIdentifier, final CertificateToken issuerToken) throws IOException;
 
 	/**
 	 * This method verifies the revocation status for a given serial number
