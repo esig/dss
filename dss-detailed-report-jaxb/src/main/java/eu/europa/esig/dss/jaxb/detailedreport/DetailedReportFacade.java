@@ -43,7 +43,7 @@ public class DetailedReportFacade {
 	}
 
 	public void generateHtmlReport(XmlDetailedReport detailedReport, Result result) throws IOException, TransformerException, JAXBException {
-		Transformer transformer = DetailedReportXmlDefiner.getHtmlTemplates().newTransformer();
+		Transformer transformer = DetailedReportXmlDefiner.getHtmlBootstrap3Templates().newTransformer();
 		transformer.transform(
 				new JAXBSource(DetailedReportXmlDefiner.getJAXBContext(), DetailedReportXmlDefiner.OBJECT_FACTORY.createDetailedReport(detailedReport)),
 				result);
@@ -57,7 +57,7 @@ public class DetailedReportFacade {
 	}
 
 	public void generateHtmlReport(String marshalledDetailedReport, Result result) throws IOException, TransformerException {
-		Transformer transformer = DetailedReportXmlDefiner.getHtmlTemplates().newTransformer();
+		Transformer transformer = DetailedReportXmlDefiner.getHtmlBootstrap3Templates().newTransformer();
 		transformer.transform(new StreamSource(new StringReader(marshalledDetailedReport)), result);
 	}
 

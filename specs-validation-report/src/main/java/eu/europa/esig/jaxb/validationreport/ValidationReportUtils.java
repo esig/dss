@@ -1,7 +1,6 @@
 package eu.europa.esig.jaxb.validationreport;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.List;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -14,7 +13,6 @@ import javax.xml.validation.SchemaFactory;
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.jaxb.trustedlist.TrustedListUtils;
-import eu.europa.esig.jaxb.xades.XAdESUtils;
 
 public final class ValidationReportUtils {
 
@@ -35,16 +33,20 @@ public final class ValidationReportUtils {
 		return jc;
 	}
 
-	public static Schema getSchema() throws IOException, SAXException {
+	public static Schema getSchema() throws SAXException {
 		if (schema == null) {
-			try (InputStream isXsdXAdES = ValidationReportUtils.class.getResourceAsStream(XAdESUtils.XADES_SCHEMA_LOCATION);
-					InputStream isXsdTrustedList = ValidationReportUtils.class.getResourceAsStream(TrustedListUtils.TRUSTED_LIST_SCHEMA_LOCATION);
-					InputStream isXsdValidationReport = ValidationReportUtils.class.getResourceAsStream(VALIDATION_REPORT_SCHEMA_LOCATION)) {
-				SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-				schema = sf.newSchema(new Source[] { new StreamSource(isXsdXAdES), new StreamSource(isXsdTrustedList), new StreamSource(isXsdValidationReport) });
-			}
+			SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+			sf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+			List<Source> xsdSources = getXSDSources();
+			schema = sf.newSchema(xsdSources.toArray(new Source[xsdSources.size()]));
 		}
 		return schema;
+	}
+
+	public static List<Source> getXSDSources() {
+		List<Source> xsdSources = TrustedListUtils.getXSDSources();
+		xsdSources.add(new StreamSource(ValidationReportUtils.class.getResourceAsStream(VALIDATION_REPORT_SCHEMA_LOCATION)));
+		return xsdSources;
 	}
 
 }

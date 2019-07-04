@@ -10,7 +10,7 @@ public enum Assert {
 
 	private final String value;
 
-	private Assert(String value) {
+	Assert(String value) {
 		this.value = value;
 	}
 

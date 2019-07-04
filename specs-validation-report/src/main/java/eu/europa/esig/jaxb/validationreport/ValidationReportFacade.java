@@ -26,7 +26,7 @@ public class ValidationReportFacade {
 		return new ValidationReportFacade();
 	}
 
-	public String marshall(ValidationReportType validationReport, boolean validate) throws JAXBException, IOException, SAXException {
+	public String marshall(ValidationReportType validationReport, boolean validate) throws JAXBException, SAXException, IOException {
 		Marshaller marshaller = getMarshaller(validate);
 
 		try (StringWriter writer = new StringWriter()) {
@@ -35,13 +35,13 @@ public class ValidationReportFacade {
 		}
 	}
 
-	public void marshall(ValidationReportType validationReport, OutputStream os, boolean validate) throws JAXBException, IOException, SAXException {
+	public void marshall(ValidationReportType validationReport, OutputStream os, boolean validate) throws JAXBException, SAXException {
 		Marshaller marshaller = getMarshaller(validate);
 
 		marshaller.marshal(ValidationReportUtils.OBJECT_FACTORY.createValidationReport(validationReport), os);
 	}
 
-	private Marshaller getMarshaller(boolean validate) throws JAXBException, IOException, SAXException {
+	private Marshaller getMarshaller(boolean validate) throws JAXBException, SAXException {
 		MarshallerBuilder marshallerBuilder = new MarshallerBuilder(ValidationReportUtils.getJAXBContext(), ValidationReportUtils.getSchema());
 		marshallerBuilder.setIndent(true);
 		marshallerBuilder.setValidate(validate);

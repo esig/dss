@@ -22,7 +22,7 @@ public enum KeyUsageBit {
 
 	private final String value;
 
-	private KeyUsageBit(String value) {
+	KeyUsageBit(String value) {
 		this.value = value;
 	}
 

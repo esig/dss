@@ -26,12 +26,21 @@ public class SimpleCertificateReportXmlDefinerTest {
 	}
 
 	@Test
-	public void getHtmlTemplates() throws IOException, TransformerConfigurationException {
-		Templates htmlTemplates = SimpleCertificateReportXmlDefiner.getHtmlTemplates();
+	public void getHtmlBootstrap3Templates() throws IOException, TransformerConfigurationException {
+		Templates htmlTemplates = SimpleCertificateReportXmlDefiner.getHtmlBootstrap3Templates();
 		assertNotNull(htmlTemplates);
 		assertNotNull(htmlTemplates.newTransformer());
 
-		assertNotNull(SimpleCertificateReportXmlDefiner.getHtmlTemplates());
+		assertNotNull(SimpleCertificateReportXmlDefiner.getHtmlBootstrap3Templates());
+	}
+
+	@Test
+	public void getHtmlBootstrap4Templates() throws IOException, TransformerConfigurationException {
+		Templates htmlTemplates = SimpleCertificateReportXmlDefiner.getHtmlBootstrap4Templates();
+		assertNotNull(htmlTemplates);
+		assertNotNull(htmlTemplates.newTransformer());
+
+		assertNotNull(SimpleCertificateReportXmlDefiner.getHtmlBootstrap4Templates());
 	}
 
 }

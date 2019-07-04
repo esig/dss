@@ -38,6 +38,7 @@ public final class DiagnosticDataXmlDefiner {
 		if (schema == null) {
 			try (InputStream isXSDDiagnosticData = DiagnosticDataXmlDefiner.class.getResourceAsStream(DIAGNOSTIC_DATA_SCHEMA_LOCATION)) {
 				SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+				sf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 				schema = sf.newSchema(new Source[] { new StreamSource(isXSDDiagnosticData) });
 			}
 		}

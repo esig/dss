@@ -2,8 +2,6 @@ package eu.europa.esig.jaxb.validationreport;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.io.IOException;
-
 import javax.xml.bind.JAXBException;
 
 import org.junit.Test;
@@ -19,7 +17,7 @@ public class ValidationReportUtilsTest {
 	}
 
 	@Test
-	public void getSchema() throws IOException, SAXException {
+	public void getSchema() throws SAXException {
 		assertNotNull(ValidationReportUtils.getSchema());
 		// cached
 		assertNotNull(ValidationReportUtils.getSchema());

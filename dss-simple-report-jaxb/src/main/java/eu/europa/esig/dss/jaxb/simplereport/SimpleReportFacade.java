@@ -43,7 +43,7 @@ public class SimpleReportFacade {
 	}
 
 	public void generateHtmlReport(XmlSimpleReport simpleReport, Result result) throws IOException, TransformerException, JAXBException {
-		Transformer transformer = SimpleReportXmlDefiner.getHtmlTemplates().newTransformer();
+		Transformer transformer = SimpleReportXmlDefiner.getHtmlBootstrap3Templates().newTransformer();
 		transformer.transform(new JAXBSource(SimpleReportXmlDefiner.getJAXBContext(), SimpleReportXmlDefiner.OBJECT_FACTORY.createSimpleReport(simpleReport)),
 				result);
 	}
@@ -56,7 +56,7 @@ public class SimpleReportFacade {
 	}
 
 	public void generateHtmlReport(String marshalledSimpleReport, Result result) throws IOException, TransformerException {
-		Transformer transformer = SimpleReportXmlDefiner.getHtmlTemplates().newTransformer();
+		Transformer transformer = SimpleReportXmlDefiner.getHtmlBootstrap3Templates().newTransformer();
 		transformer.transform(new StreamSource(new StringReader(marshalledSimpleReport)), result);
 	}
 

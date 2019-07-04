@@ -14,12 +14,13 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.validation.Schema;
 
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 public class XmlDSigUtilsTest {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void test() throws JAXBException {
+	public void test() throws JAXBException, SAXException {
 
 		File xmldsigFile = new File("src/test/resources/XmlAliceSig.xml");
 
@@ -48,7 +49,14 @@ public class XmlDSigUtilsTest {
 	}
 
 	@Test
-	public void getSchema() {
+	public void getJAXBContext() throws JAXBException {
+		assertNotNull(XmlDSigUtils.getJAXBContext());
+		// cached
+		assertNotNull(XmlDSigUtils.getJAXBContext());
+	}
+
+	@Test
+	public void getSchema() throws SAXException {
 		assertNotNull(XmlDSigUtils.getSchema());
 		// cached
 		assertNotNull(XmlDSigUtils.getSchema());
