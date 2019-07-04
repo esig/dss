@@ -29,6 +29,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;
 import eu.europa.esig.dss.validation.process.vpftsp.checks.TimestampBasicBuildingBlocksCheck;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 
@@ -44,6 +45,7 @@ public class ValidationProcessForTimeStamps extends Chain<XmlValidationProcessTi
 
 	public ValidationProcessForTimeStamps(TimestampWrapper timestamp, Map<String, XmlBasicBuildingBlocks> bbbs) {
 		super(new XmlValidationProcessTimestamps());
+		result.setTitle(ValidationProcessDefinition.VPFTSP.getTitle());
 
 		this.timestamp = timestamp;
 		this.bbbs = bbbs;
