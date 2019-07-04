@@ -34,7 +34,7 @@ import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseIdentifier;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.x509.revocation.ocsp.ResponderId;
 import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 import eu.europa.esig.dss.xades.XAdESUtils;
@@ -143,14 +143,7 @@ public class XAdESOCSPSource extends SignatureOCSPSource {
 
 	private void convertAndAppend(String ocspValue, RevocationOrigin origin) {
 		try {
-			OCSPResponseIdentifier ocspIdentifier = OCSPResponseIdentifier.build(DSSRevocationUtils.loadOCSPBase64Encoded(ocspValue), origin);
-			int ii = ocspResponses.indexOf(ocspIdentifier);
-			if (ii > -1) {
-				OCSPResponseIdentifier storedOCSPResponse = ocspResponses.get(ii);
-				storedOCSPResponse.addOrigin(origin);
-			} else {
-				ocspResponses.add(ocspIdentifier);
-			}
+			addOCSPResponse(OCSPResponseBinary.build(DSSRevocationUtils.loadOCSPBase64Encoded(ocspValue)), origin);
 		} catch (Exception e) {
 			LOG.warn("Cannot retrieve OCSP response from '" + ocspValue + "' : " + e.getMessage(), e);
 		}

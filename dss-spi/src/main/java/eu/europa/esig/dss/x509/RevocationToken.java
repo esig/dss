@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.x509;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
@@ -45,7 +45,7 @@ public abstract class RevocationToken extends Token {
 	/**
 	 * Origins of the revocation data (signature or external)
 	 */
-	protected List<RevocationOrigin> origins;
+	protected Set<RevocationOrigin> origins;
 
 	/**
 	 * The URL which was used to obtain the revocation data (online).
@@ -147,14 +147,26 @@ public abstract class RevocationToken extends Token {
 	 * 
 	 * @return the origin of this revocation data
 	 */
-	public List<RevocationOrigin> getOrigins() {
+	public Set<RevocationOrigin> getOrigins() {
 		if (Utils.isCollectionEmpty(origins)) {
-			origins = new ArrayList<RevocationOrigin>(Arrays.asList(RevocationOrigin.EXTERNAL));
+			origins = new HashSet<RevocationOrigin>(Arrays.asList(RevocationOrigin.EXTERNAL));
 		}
 		return origins;
 	}
+	
+	/**
+	 * Returns first found origin from the set of {@code RevocationOrigin}s
+	 * @return {@link RevocationOrigin}
+	 */
+	public RevocationOrigin getFirstOrigin() {
+		Set<RevocationOrigin> origins = getOrigins();
+		if (Utils.isCollectionNotEmpty(origins)) {
+			return origins.iterator().next();
+		}
+		return null;
+	}
 
-	public void setOrigins(List<RevocationOrigin> origins) {
+	public void setOrigins(Set<RevocationOrigin> origins) {
 		this.origins = origins;
 	}
 

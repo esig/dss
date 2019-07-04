@@ -1,7 +1,6 @@
 package eu.europa.esig.dss.x509.revocation.ocsp;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
@@ -10,12 +9,11 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.x509.RevocationOrigin;
-import eu.europa.esig.dss.x509.revocation.EncapsulatedRevocationTokenIdentifier;
+import eu.europa.esig.dss.identifier.EncapsulatedRevocationTokenIdentifier;
 
-public class OCSPResponseIdentifier extends EncapsulatedRevocationTokenIdentifier {
+public class OCSPResponseBinary extends EncapsulatedRevocationTokenIdentifier {
 
-	private static final Logger LOG = LoggerFactory.getLogger(OCSPResponseIdentifier.class);
+	private static final Logger LOG = LoggerFactory.getLogger(OCSPResponseBinary.class);
 
 	private static final long serialVersionUID = 6693521503459405568L;
 	
@@ -25,22 +23,13 @@ public class OCSPResponseIdentifier extends EncapsulatedRevocationTokenIdentifie
 	// Note: Used in CAdES only!
 	private ASN1ObjectIdentifier asn1ObjectIdentifier;
 	
-	public static OCSPResponseIdentifier build(BasicOCSPResp basicOCSPResp, RevocationOrigin origin) {
+	public static OCSPResponseBinary build(BasicOCSPResp basicOCSPResp) {
 		byte[] ocspRespBinary = DSSRevocationUtils.getEncodedFromBasicResp(basicOCSPResp);
-		return new OCSPResponseIdentifier(basicOCSPResp, ocspRespBinary, origin);
+		return new OCSPResponseBinary(basicOCSPResp, ocspRespBinary);
 	}
 	
-	public static OCSPResponseIdentifier build(BasicOCSPResp basicOCSPResp, List<RevocationOrigin> origins) {
-		RevocationOrigin nullOrigin = null;
-		OCSPResponseIdentifier ocspResponseIdentifier = build(basicOCSPResp, nullOrigin);
-		for (RevocationOrigin origin : origins) {
-			ocspResponseIdentifier.addOrigin(origin);
-		}
-		return ocspResponseIdentifier;
-	}
-	
-	OCSPResponseIdentifier(BasicOCSPResp basicOCSPResp, byte[] encoded, RevocationOrigin origin) {
-		super(encoded, origin);
+	OCSPResponseBinary(BasicOCSPResp basicOCSPResp, byte[] encoded) {
+		super(encoded);
 		this.basicOCSPResp = basicOCSPResp;
 	}
 	

@@ -47,6 +47,9 @@ public class CertificateTokenTest {
 		keyUsageBits = certificate.getKeyUsageBits();
 		LOG.info("Key usage tsp cert : " + keyUsageBits);
 		assertFalse(keyUsageBits.contains(KeyUsageBit.crlSign));
+		
+		LOG.info(certificate.getDSSIdAsString());
+		
 	}
 
 }

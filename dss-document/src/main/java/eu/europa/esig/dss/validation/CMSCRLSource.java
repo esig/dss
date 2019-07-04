@@ -24,10 +24,10 @@ import org.bouncycastle.util.Store;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.CRLBinary;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.x509.RevocationOrigin;
-import eu.europa.esig.dss.x509.revocation.crl.CRLBinaryIdentifier;
 import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
 
@@ -44,9 +44,9 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 	protected final AttributeTable unsignedAttributes;
 	
 	/**
-	 * Cached list of {@code CRLBinaryIdentifier}s found in SignedData attribute
+	 * Cached list of {@code CRLBinary}s found in SignedData attribute
 	 */
-	private List<CRLBinaryIdentifier> signedDataCRLIdentifiers = new ArrayList<CRLBinaryIdentifier>();
+	private List<CRLBinary> signedDataCRLIdentifiers = new ArrayList<CRLBinary>();
 
 	/**
 	 * The default constructor for CMSCRLSource.
@@ -88,9 +88,9 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 	
 	/**
 	 * Returns a list of {@code CRLBinaryIdentifier} found in the SignedData container
-	 * @return list of {@link CRLBinaryIdentifier}
+	 * @return list of {@link CRLBinary}
 	 */
-	public List<CRLBinaryIdentifier> getSignedDataCRLIdentifiers() {
+	public List<CRLBinary> getSignedDataCRLIdentifiers() {
 		return signedDataCRLIdentifiers;
 	}
 
@@ -193,12 +193,12 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 	}
 
 	/**
-	 * Computes and store {@code CRLBinaryIdentifier} from {@code crlHolder}
+	 * Computes and store {@code CRLBinary} from {@code crlHolder}
 	 * @param crlHolder {@link X509CRLHolder} to compute values from
 	 * @param origin {@link RevocationOrigin} indicating the list where to save the object
-	 * @return {@link CRLBinaryIdentifier}
+	 * @return {@link CRLBinary}
 	 */
-	protected CRLBinaryIdentifier addX509CRLHolder(X509CRLHolder crlHolder, RevocationOrigin origin) {
+	protected CRLBinary addX509CRLHolder(X509CRLHolder crlHolder, RevocationOrigin origin) {
 		try {
 			return addCRLBinary(crlHolder.getEncoded(), origin);
 		} catch (IOException e) {

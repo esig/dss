@@ -70,7 +70,9 @@ public class CRLToken extends RevocationToken {
 		this.crlValidity = crlValidity;
 		initInfo();
 		setRevocationStatus(certificateToken);
-		LOG.debug("+CRLToken");
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("A CRLToken created with Id : [{}]", getDSSIdAsString());
+		}
 	}
 
 	@Override
@@ -90,9 +92,6 @@ public class CRLToken extends RevocationToken {
 
 		this.signatureValid = crlValidity.isSignatureIntact();
 		this.signatureInvalidityReason = crlValidity.getSignatureInvalidityReason();
-		if (crlValidity.getRevocationOrigins() != null) {
-			this.origins = crlValidity.getRevocationOrigins();
-		}
 	}
 
 	/**

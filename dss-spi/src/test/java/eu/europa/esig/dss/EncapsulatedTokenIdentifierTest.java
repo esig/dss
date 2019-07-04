@@ -12,7 +12,7 @@ public class EncapsulatedTokenIdentifierTest {
 	@Test
 	public void testEncapsulatedCertificateTokenIdentifier() {
 		byte[] binaries = new byte[] { 1, 2, 3 };
-		EncapsulatedTokenIdentifier encapsulatedTokenIdentifier = new EncapsulatedCertificateTokenIdentifier(binaries);
+		EncapsulatedCertificateTokenIdentifier encapsulatedTokenIdentifier = new EncapsulatedCertificateTokenIdentifier(binaries);
 		assertArrayEquals(binaries, encapsulatedTokenIdentifier.getBinaries());
 		byte[] digestValue = encapsulatedTokenIdentifier.getDigestValue(DigestAlgorithm.SHA256);
 		assertArrayEquals(digestValue, encapsulatedTokenIdentifier.getDigestValue(DigestAlgorithm.SHA256));

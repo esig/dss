@@ -1,4 +1,4 @@
-package eu.europa.esig.dss;
+package eu.europa.esig.dss.identifier;
 
 public final class DataIdentifier extends Identifier {
 

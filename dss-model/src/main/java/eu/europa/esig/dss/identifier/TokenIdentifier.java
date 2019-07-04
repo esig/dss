@@ -18,19 +18,19 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss;
+package eu.europa.esig.dss.identifier;
 
-import java.security.PublicKey;
+import eu.europa.esig.dss.x509.Token;
 
 /**
- * This class is used to obtain a unique id for Public key
+ * This class is used to obtain a unique id for Token
  */
-public final class EntityIdentifier extends Identifier {
+public final class TokenIdentifier extends MultipleDigestIdentifier {
 
-	private static final long serialVersionUID = -3608001942910223023L;
+	private static final long serialVersionUID = 1201653840828853681L;
 
-	public EntityIdentifier(final PublicKey publicKey) {
-		super(publicKey.getEncoded());
+	public TokenIdentifier(final Token token) {
+		super(token.getEncoded());
 	}
 
 }

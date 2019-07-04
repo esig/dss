@@ -32,15 +32,17 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.CRLBinary;
 import eu.europa.esig.dss.CertificateRef;
 import eu.europa.esig.dss.CertificateReorderer;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestDocument;
-import eu.europa.esig.dss.SignatureIdentifier;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.TokenIdentifier;
+import eu.europa.esig.dss.identifier.EncapsulatedRevocationTokenIdentifier;
+import eu.europa.esig.dss.identifier.SignatureIdentifier;
+import eu.europa.esig.dss.identifier.TokenIdentifier;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -52,17 +54,15 @@ import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.SignatureCertificateSource;
 import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.dss.x509.TimestampType;
-import eu.europa.esig.dss.x509.revocation.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.x509.revocation.RevocationSourceType;
-import eu.europa.esig.dss.x509.revocation.crl.CRLBinaryIdentifier;
 import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.x509.revocation.crl.ListCRLSource;
 import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.ListOCSPSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseIdentifier;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 
@@ -953,10 +953,10 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	@Override
 	public List<RevocationRef> findRefsForRevocationIdentifier(EncapsulatedRevocationTokenIdentifier revocationIdentifier) {
 		List<RevocationRef> revocationRefs = new ArrayList<RevocationRef>();
-		if (revocationIdentifier instanceof CRLBinaryIdentifier) {
-			revocationRefs.addAll(getCompleteCRLSource().getReferencesForCRLIdentifier((CRLBinaryIdentifier) revocationIdentifier));
+		if (revocationIdentifier instanceof CRLBinary) {
+			revocationRefs.addAll(getCompleteCRLSource().getReferencesForCRLIdentifier((CRLBinary) revocationIdentifier));
 		} else {
-			revocationRefs.addAll(getCompleteOCSPSource().getReferencesForOCSPIdentifier((OCSPResponseIdentifier) revocationIdentifier));
+			revocationRefs.addAll(getCompleteOCSPSource().getReferencesForOCSPIdentifier((OCSPResponseBinary) revocationIdentifier));
 		}
 		return revocationRefs;
 	}
@@ -964,7 +964,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	@Override
 	public List<EncapsulatedRevocationTokenIdentifier> getAllFoundRevocationIdentifiers() {
 		List<EncapsulatedRevocationTokenIdentifier> allFoundRevocationTokens = new ArrayList<EncapsulatedRevocationTokenIdentifier>();
-		allFoundRevocationTokens.addAll(getCompleteCRLSource().getContainedX509CRLs());
+		allFoundRevocationTokens.addAll(getCompleteCRLSource().getCRLBinaryList());
 		allFoundRevocationTokens.addAll(getCompleteOCSPSource().getOCSPResponsesList());
 		return allFoundRevocationTokens;
 	}

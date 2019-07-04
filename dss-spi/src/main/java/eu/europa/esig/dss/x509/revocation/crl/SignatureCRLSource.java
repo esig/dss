@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import eu.europa.esig.dss.CRLBinary;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.RevocationOrigin;
@@ -18,7 +19,7 @@ import eu.europa.esig.dss.x509.revocation.SignatureRevocationSource;
 @SuppressWarnings("serial")
 public abstract class SignatureCRLSource extends OfflineCRLSource implements SignatureRevocationSource<CRLToken> {
 	
-	private Map<CRLBinaryIdentifier, List<CRLToken>> crlTokenMap = new HashMap<CRLBinaryIdentifier, List<CRLToken>>();
+	private Map<CRLBinary, List<CRLToken>> crlTokenMap = new HashMap<CRLBinary, List<CRLToken>>();
 	
 	private List<CRLToken> revocationValuesCRLs = new ArrayList<CRLToken>();
 	private List<CRLToken> attributeRevocationValuesCRLs = new ArrayList<CRLToken>();
@@ -100,7 +101,7 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 		return crlRefs;
 	}
 	
-	public Map<CRLBinaryIdentifier, List<CRLToken>> getCRLTokenMap() {
+	public Map<CRLBinary, List<CRLToken>> getCRLTokenMap() {
 		return crlTokenMap;
 	}
 	
@@ -109,7 +110,7 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	 * @param signatureCRLSource {@link SignatureCRLSource} to populate values from
 	 */
 	public void populateCRLRevocationValues(SignatureCRLSource signatureCRLSource) {
-		for (Entry<CRLBinaryIdentifier, List<CRLToken>> entry : signatureCRLSource.getCRLTokenMap().entrySet()) {
+		for (Entry<CRLBinary, List<CRLToken>> entry : signatureCRLSource.getCRLTokenMap().entrySet()) {
 			for (CRLToken crlToken : entry.getValue()) {
 				storeCRLToken(entry.getKey(), crlToken);
 			}
@@ -117,15 +118,15 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	}
 	
 	@Override
-	protected void storeCRLToken(CRLBinaryIdentifier crlBinary, CRLToken crlToken) {
-		if (crlsBinaryList.contains(crlBinary)) {
+	protected void storeCRLToken(CRLBinary crlBinary, CRLToken crlToken) {
+		if (getCRLBinaryList().contains(crlBinary)) {
 			List<CRLToken> tokensList = crlTokenMap.get(crlBinary);
 			if (tokensList == null) {
 				tokensList = new ArrayList<CRLToken>();
 				crlTokenMap.put(crlBinary, tokensList);
 			}
 			tokensList.add(crlToken);
-			for (RevocationOrigin origin : crlBinary.getOrigins()) {
+			for (RevocationOrigin origin : getRevocationOrigins(crlBinary)) {
 				addToRelevantList(crlToken, origin);
 			}
 		}
@@ -174,10 +175,10 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	
 	/**
 	 * Returns a list of {@link CRLRef}s assigned to the given {@code crlBinary}
-	 * @param crlBinary {@link CRLBinaryIdentifier} to get references for
+	 * @param crlBinary {@link CRLBinary} to get references for
 	 * @return list of {@link CRLRef}s
 	 */
-	public List<CRLRef> getReferencesForCRLIdentifier(CRLBinaryIdentifier crlBinary) {
+	public List<CRLRef> getReferencesForCRLIdentifier(CRLBinary crlBinary) {
 		List<CRLRef> relatedRefs = new ArrayList<CRLRef>();
 		for (CRLRef crlRef : getAllCRLReferences()) {
 			byte[] digestValue = crlBinary.getDigestValue(crlRef.getDigest().getAlgorithm());

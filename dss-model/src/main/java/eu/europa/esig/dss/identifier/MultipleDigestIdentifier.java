@@ -1,8 +1,14 @@
-package eu.europa.esig.dss;
+package eu.europa.esig.dss.identifier;
 
 import java.util.EnumMap;
 
-public abstract class EncapsulatedTokenIdentifier extends Identifier {
+import eu.europa.esig.dss.Digest;
+import eu.europa.esig.dss.DigestAlgorithm;
+
+/**
+ * This class is used to obtain a requested digest from a stored binary array
+ */
+public abstract class MultipleDigestIdentifier extends Identifier {
 
 	private static final long serialVersionUID = 8499261315144968564L;
 
@@ -10,9 +16,12 @@ public abstract class EncapsulatedTokenIdentifier extends Identifier {
 
 	private final EnumMap<DigestAlgorithm, byte[]> digestMap = new EnumMap<DigestAlgorithm, byte[]>(DigestAlgorithm.class);
 	
-	protected EncapsulatedTokenIdentifier(byte[] binaries) {
+	protected MultipleDigestIdentifier(byte[] binaries) {
 		super(binaries);
 		this.binaries = binaries;
+		
+		Digest id = getDigestId();
+		digestMap.put(id.getAlgorithm(), id.getValue());
 	}
 	
 	public byte[] getBinaries() {

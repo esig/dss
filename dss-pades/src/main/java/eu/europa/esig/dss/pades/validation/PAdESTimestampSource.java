@@ -3,6 +3,7 @@ package eu.europa.esig.dss.pades.validation;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.europa.esig.dss.CRLBinary;
 import eu.europa.esig.dss.cades.validation.CAdESAttribute;
 import eu.europa.esig.dss.cades.validation.CAdESTimestampSource;
 import eu.europa.esig.dss.pdf.PdfDocTimestampInfo;
@@ -17,8 +18,7 @@ import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.TimestampType;
-import eu.europa.esig.dss.x509.revocation.crl.CRLBinaryIdentifier;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseIdentifier;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseBinary;
 
 @SuppressWarnings("serial")
 public class PAdESTimestampSource extends CAdESTimestampSource {
@@ -136,16 +136,18 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 	 */
 	private void addReferencesFromRevocationData(List<TimestampedReference> references, final PdfDssDict dssDictionary) {
 		PAdESCRLSource padesCRLSource = new PAdESCRLSource(dssDictionary);
-		for (CRLBinaryIdentifier crlIdentifier : padesCRLSource.getAllCRLIdentifiers()) {
-			if (crlIdentifier.getOrigins().contains(RevocationOrigin.INTERNAL_DSS) || crlIdentifier.getOrigins().contains(RevocationOrigin.INTERNAL_VRI)) {
+		for (CRLBinary crlIdentifier : padesCRLSource.getCRLBinaryList()) {
+			if (padesCRLSource.getRevocationOrigins(crlIdentifier).contains(RevocationOrigin.INTERNAL_DSS) || 
+					padesCRLSource.getRevocationOrigins(crlIdentifier).contains(RevocationOrigin.INTERNAL_VRI)) {
 				addReference(references, new TimestampedReference(crlIdentifier.asXmlId(), TimestampedObjectType.REVOCATION));
 			}
 		}
 		crlSource.addAll(padesCRLSource);
 		
 		PAdESOCSPSource padesOCSPSource = new PAdESOCSPSource(dssDictionary);
-		for (OCSPResponseIdentifier ocspIdentifier : padesOCSPSource.getAllOCSPIdentifiers()) {
-			if (ocspIdentifier.getOrigins().contains(RevocationOrigin.INTERNAL_DSS) || ocspIdentifier.getOrigins().contains(RevocationOrigin.INTERNAL_VRI)) {
+		for (OCSPResponseBinary ocspIdentifier : padesOCSPSource.getOCSPResponsesList()) {
+			if (padesOCSPSource.getRevocationOrigins(ocspIdentifier).contains(RevocationOrigin.INTERNAL_DSS) || 
+					padesOCSPSource.getRevocationOrigins(ocspIdentifier).contains(RevocationOrigin.INTERNAL_VRI)) {
 				addReference(references, new TimestampedReference(ocspIdentifier.asXmlId(), TimestampedObjectType.REVOCATION));
 			}
 		}

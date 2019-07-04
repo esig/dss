@@ -48,8 +48,8 @@ public class PAdESDoubleLTAValidationData extends PKIFactoryAccess {
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		AdvancedSignature advancedSignature = signatures.get(0);
 		
-		assertEquals(1, advancedSignature.getCRLSource().getAllCRLIdentifiers().size());
-		assertEquals(1, advancedSignature.getOCSPSource().getAllOCSPIdentifiers().size());
+		assertEquals(1, advancedSignature.getCRLSource().getCRLBinaryList().size());
+		assertEquals(1, advancedSignature.getOCSPSource().getOCSPResponsesList().size());
 		
 		Reports reports = validator.validateDocument();
 		
@@ -78,8 +78,8 @@ public class PAdESDoubleLTAValidationData extends PKIFactoryAccess {
 		signatures = validator.getSignatures();
 		advancedSignature = signatures.get(0);
 		
-		assertEquals(1, advancedSignature.getCRLSource().getAllCRLIdentifiers().size());
-		assertEquals(1, advancedSignature.getOCSPSource().getAllOCSPIdentifiers().size());
+		assertEquals(1, advancedSignature.getCRLSource().getCRLBinaryList().size());
+		assertEquals(1, advancedSignature.getOCSPSource().getOCSPResponsesList().size());
 		
 		diagnosticData = reports.getDiagnosticData();
 		List<String> revocationIdsLtaLevel = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId()).getRevocationIds();
@@ -112,8 +112,8 @@ public class PAdESDoubleLTAValidationData extends PKIFactoryAccess {
 		signatures = validator.getSignatures();
 		advancedSignature = signatures.get(0);
 		
-		assertEquals(2, advancedSignature.getCRLSource().getAllCRLIdentifiers().size());
-		assertEquals(1, advancedSignature.getOCSPSource().getAllOCSPIdentifiers().size());
+		assertEquals(2, advancedSignature.getCRLSource().getCRLBinaryList().size());
+		assertEquals(1, advancedSignature.getOCSPSource().getOCSPResponsesList().size());
 		
 		diagnosticData = reports.getDiagnosticData();
 		

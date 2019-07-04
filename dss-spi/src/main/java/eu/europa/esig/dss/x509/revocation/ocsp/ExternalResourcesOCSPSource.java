@@ -61,8 +61,7 @@ public class ExternalResourcesOCSPSource extends OfflineOCSPSource {
 		try (InputStream is = inputStream) {
 			final OCSPResp ocspResp = new OCSPResp(is);
 			final BasicOCSPResp basicOCSPResp = (BasicOCSPResp) ocspResp.getResponseObject();
-			OCSPResponseIdentifier ocspResponse = OCSPResponseIdentifier.build(basicOCSPResp, RevocationOrigin.EXTERNAL);
-			ocspResponses.add(ocspResponse);
+			addOCSPResponse(OCSPResponseBinary.build(basicOCSPResp), RevocationOrigin.EXTERNAL);
 		} catch (Exception e) {
 			throw new DSSException(e);
 		}

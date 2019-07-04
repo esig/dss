@@ -21,12 +21,12 @@
 package eu.europa.esig.dss.crl;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.cert.X509CRLEntry;
 import java.util.Iterator;
 import java.util.ServiceLoader;
 
+import eu.europa.esig.dss.CRLBinary;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 public class CRLUtils {
@@ -47,21 +47,21 @@ public class CRLUtils {
 	}
 
 	/**
-	 * This method verifies: the signature of the CRL, the key usage of its signing certificate and the coherence
+	 * This method verifies and creates: the signature of the CRL, the key usage of its signing certificate and the coherence
 	 * between the subject names of the CRL signing certificate and the issuer name of the certificate for which the
 	 * verification of the revocation data is carried out. A dedicated object based on {@code CRLValidity} is created
 	 * and accordingly updated.
 	 *
-	 * @param crlStream
-	 *            {@code InputStream} with the CRL to be verified (cannot be null)
+	 * @param crlBinary
+	 *            {@code CRLBinary} of the CRL to be created (cannot be null)
 	 * @param issuerToken
 	 *            {@code CertificateToken} used to sign the {@code X509CRL} (cannot be null)
 	 * @return {@code CRLValidity}
 	 * @throws IOException
 	 *             if an IO error occurred
 	 */
-	public static CRLValidity isValidCRL(final InputStream crlStream, final CertificateToken issuerToken) throws IOException {
-		return impl.isValidCRL(crlStream, issuerToken);
+	public static CRLValidity buildCRLValidity(final CRLBinary crlBinary, final CertificateToken issuerToken) throws IOException {
+		return impl.buildCRLValidity(crlBinary, issuerToken);
 	}
 
 	/**

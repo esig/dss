@@ -12,6 +12,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import eu.europa.esig.dss.CRLBinary;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.Digest;
@@ -29,11 +30,9 @@ import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.x509.ArchiveTimestampType;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.EncapsulatedCertificateTokenIdentifier;
-import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.TimestampLocation;
 import eu.europa.esig.dss.x509.TimestampType;
-import eu.europa.esig.dss.x509.revocation.crl.CRLBinaryIdentifier;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseIdentifier;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.xades.XAdESUtils;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
@@ -319,29 +318,22 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	}
 
 	@Override
-	protected List<CRLBinaryIdentifier> getEncapsulatedCRLIdentifiers(XAdESAttribute unsignedAttribute) {
-		List<CRLBinaryIdentifier> crlIdentifiers = new ArrayList<CRLBinaryIdentifier>();
+	protected List<CRLBinary> getEncapsulatedCRLIdentifiers(XAdESAttribute unsignedAttribute) {
+		List<CRLBinary> crlIdentifiers = new ArrayList<CRLBinary>();
 		String xPathString = isTimeStampValidationData(unsignedAttribute) ? 
 				xPathQueryHolder.XPATH__ENCAPSULATED_CRL_VALUES : xPathQueryHolder.XPATH___ENCAPSULATED_CRL_VALUES;
 		NodeList encapsulatedNodes = unsignedAttribute.getNodeList(xPathString);
 		for (int ii = 0; ii < encapsulatedNodes.getLength(); ii++) {
 			Element element = (Element) encapsulatedNodes.item(ii);
 			byte[] binaries = getEncapsulatedTokenBinaries(element);
-			CRLBinaryIdentifier tokenIdentifier;
-			if (isRevocationValues(unsignedAttribute)) {
-				tokenIdentifier = CRLBinaryIdentifier.build(binaries, RevocationOrigin.INTERNAL_REVOCATION_VALUES);
-			} else {
-				// timestamp validation data
-				tokenIdentifier = CRLBinaryIdentifier.build(binaries, RevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES);
-			}
-			crlIdentifiers.add(tokenIdentifier);
+			crlIdentifiers.add(new CRLBinary(binaries));
 		}
 		return crlIdentifiers;
 	}
 
 	@Override
-	protected List<OCSPResponseIdentifier> getEncapsulatedOCSPIdentifiers(XAdESAttribute unsignedAttribute) {
-		List<OCSPResponseIdentifier> crlIdentifiers = new ArrayList<OCSPResponseIdentifier>();
+	protected List<OCSPResponseBinary> getEncapsulatedOCSPIdentifiers(XAdESAttribute unsignedAttribute) {
+		List<OCSPResponseBinary> crlIdentifiers = new ArrayList<OCSPResponseBinary>();
 		String xPathString = isTimeStampValidationData(unsignedAttribute) ? 
 				xPathQueryHolder.XPATH__ENCAPSULATED_OCSP_VALUES : xPathQueryHolder.XPATH___ENCAPSULATED_OCSP_VALUES;
 		NodeList encapsulatedNodes = unsignedAttribute.getNodeList(xPathString);
@@ -350,14 +342,7 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 			byte[] binaries = getEncapsulatedTokenBinaries(element);
 			try {
 				BasicOCSPResp basicOCSPResp = DSSRevocationUtils.loadOCSPFromBinaries(binaries);
-				OCSPResponseIdentifier tokenIdentifier;
-				if (isRevocationValues(unsignedAttribute)) {
-					tokenIdentifier = OCSPResponseIdentifier.build(basicOCSPResp, RevocationOrigin.INTERNAL_REVOCATION_VALUES);
-				} else {
-					// timestamp validation data
-					tokenIdentifier = OCSPResponseIdentifier.build(basicOCSPResp, RevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES);
-				}
-				crlIdentifiers.add(tokenIdentifier);
+				crlIdentifiers.add(OCSPResponseBinary.build(basicOCSPResp));
 			} catch (IOException e) {
 				LOG.error("Cannot read encapsulated OCSP response. Reason: {}", e.getMessage());
 			}

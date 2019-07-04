@@ -24,13 +24,12 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 import org.bouncycastle.asn1.x509.ReasonFlags;
 
+import eu.europa.esig.dss.CRLBinary;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.RevocationOrigin;
 
 /**
  * This class encapsulates all information related to the validity of a CRL. It
@@ -38,6 +37,8 @@ import eu.europa.esig.dss.x509.RevocationOrigin;
  */
 public class CRLValidity {
 
+	private final CRLBinary crlBinaryIdentifier;
+	
 	private boolean indirectCrl;
 	private boolean onlyAttributeCerts;
 	private boolean onlyCaCerts;
@@ -46,18 +47,35 @@ public class CRLValidity {
 	private boolean issuerX509PrincipalMatches = false;
 	private boolean signatureIntact = false;
 	private Boolean unknownCriticalExtension;
-	private byte[] crlEncoded = null;
 	private CertificateToken issuerToken = null;
 	private Collection<String> criticalExtensionsOid;
 	private Date expiredCertsOnCRL;
 	private Date nextUpdate;
 	private Date thisUpdate;
 	private ReasonFlags onlySomeReasonFlags;
-	private List<RevocationOrigin> origins;
 	private SignatureAlgorithm signatureAlgorithm;
 	private String key;
 	private String signatureInvalidityReason;
 	private String url;
+	
+	/**
+	 * Default constructor
+	 */	
+	public CRLValidity(CRLBinary crlBinaryIdentifier) {
+		this.crlBinaryIdentifier = crlBinaryIdentifier;
+	}
+
+	public CRLBinary getCrlBinaryIdentifier() {
+		return crlBinaryIdentifier;
+	}
+
+	public byte[] getCrlEncoded() {
+		return crlBinaryIdentifier.getBinaries();
+	}
+
+	public InputStream getCrlInputStream() {
+		return new ByteArrayInputStream(getCrlEncoded());
+	}
 
 	public String getKey() {
 		return key;
@@ -65,18 +83,6 @@ public class CRLValidity {
 
 	public void setKey(String key) {
 		this.key = key;
-	}
-
-	public InputStream getCrlInputStream() {
-		return new ByteArrayInputStream(crlEncoded);
-	}
-
-	public byte[] getCrlEncoded() {
-		return crlEncoded;
-	}
-
-	public void setCrlEncoded(byte[] crlEncoded) {
-		this.crlEncoded = crlEncoded;
 	}
 
 	public SignatureAlgorithm getSignatureAlgorithm() {
@@ -159,14 +165,6 @@ public class CRLValidity {
 		this.url = url;
 	}
 	
-	public List<RevocationOrigin> getRevocationOrigins() {
-		return origins;
-	}
-	
-	public void setRevocationOrigins(List<RevocationOrigin> origins) {
-		this.origins = origins;
-	}
-	
 	public void setOnlyAttributeCerts(boolean onlyAttributeCerts) {
 		this.onlyAttributeCerts = onlyAttributeCerts;
 	}
@@ -222,9 +220,48 @@ public class CRLValidity {
 	}
 
 	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = (prime * result) + ((crlBinaryIdentifier == null) ? 0 : crlBinaryIdentifier.hashCode());
+		result = (prime * result) + ((issuerToken == null) ? 0 : issuerToken.hashCode());
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		CRLValidity crl = (CRLValidity) obj;
+		if (crlBinaryIdentifier == null) {
+			if (crl.getCrlBinaryIdentifier() != null) {
+				return false;
+			}
+		} else if (!crlBinaryIdentifier.equals(crl.getCrlBinaryIdentifier())) {
+			return false;
+		}
+		if (issuerToken == null) {
+			if (crl.getIssuerToken() != null) {
+				return false;
+			}
+		} else if (!issuerToken.equals(crl.getIssuerToken())) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
 	public String toString() {
-		return "CRLValidity{" + "issuerX509PrincipalMatches=" + issuerX509PrincipalMatches + ", signatureIntact=" + signatureIntact + ", crlSignKeyUsage="
-				+ crlSignKeyUsage + ", unknownCriticalExtension=" + isUnknownCriticalExtension() + ", issuerToken=" + issuerToken + ", signatureInvalidityReason='"
+		return "CRLValidity{" + "DSSID=" + crlBinaryIdentifier.asXmlId() + ", issuerX509PrincipalMatches=" + issuerX509PrincipalMatches + 
+				", signatureIntact=" + signatureIntact + ", crlSignKeyUsage=" + crlSignKeyUsage + ", unknownCriticalExtension=" 
+				+ isUnknownCriticalExtension() + ", issuerToken=" + issuerToken + ", signatureInvalidityReason='"
 				+ signatureInvalidityReason + '\'' + '}';
 	}
 }

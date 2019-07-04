@@ -25,7 +25,7 @@ public class DSS1647Test {
 
 	@Test
 	public void test() {
-		DSSDocument doc = new FileDocument("src/test/resources/validation/dss-1647_OJ_L_2018_109_FULL.xml");
+		DSSDocument doc = new FileDocument("C:\\Users\\aleksandr.beliakov\\Downloads\\OJ_L_2018_109_FULL.xml");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
 		//commonCertificateVerifier.setIncludeCertificateRevocationValues(true);

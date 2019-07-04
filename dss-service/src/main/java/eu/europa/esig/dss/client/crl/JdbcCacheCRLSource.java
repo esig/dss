@@ -26,13 +26,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.CRLBinary;
 import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.SignatureAlgorithm;
@@ -168,9 +169,9 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRLToken> implement
 	@Override
 	protected CRLToken buildRevocationTokenFromResult(ResultSet rs, CertificateToken certificateToken, CertificateToken issuerCert) {
 		try {
-			final CRLValidity cached = new CRLValidity();
+			CRLBinary crlBinaryIdentifier = new CRLBinary(rs.getBytes(SQL_FIND_QUERY_DATA));
+			final CRLValidity cached = new CRLValidity(crlBinaryIdentifier);
 			cached.setKey(rs.getString(SQL_FIND_QUERY_ID));
-			cached.setCrlEncoded(rs.getBytes(SQL_FIND_QUERY_DATA));
 			cached.setSignatureAlgorithm(SignatureAlgorithm.valueOf(rs.getString(SQL_FIND_QUERY_SIGNATURE_ALGO)));
 			cached.setThisUpdate(rs.getTimestamp(SQL_FIND_QUERY_THIS_UPDATE));
 			cached.setNextUpdate(rs.getTimestamp(SQL_FIND_QUERY_NEXT_UPDATE));
@@ -181,8 +182,9 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRLToken> implement
 			cached.setIssuerX509PrincipalMatches(rs.getBoolean(SQL_FIND_QUERY_ISSUER_PRINCIPAL_MATCH));
 			cached.setSignatureIntact(rs.getBoolean(SQL_FIND_QUERY_SIGNATURE_INTACT));
 			cached.setSignatureInvalidityReason(rs.getString(SQL_FIND_QUERY_SIGNATURE_INVALID_REASON));
-			cached.setRevocationOrigins(new ArrayList<RevocationOrigin>(Arrays.asList(RevocationOrigin.CACHED)));
-			return new CRLToken(certificateToken, cached);
+			CRLToken crlToken = new CRLToken(certificateToken, cached);
+			crlToken.setOrigins(new HashSet<RevocationOrigin>(Arrays.asList(RevocationOrigin.CACHED)));
+			return crlToken;
 		} catch (SQLException e) {
 			throw new RevocationException("An error occurred during an attempt to get a revocation token");
 		}

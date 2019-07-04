@@ -20,7 +20,7 @@ import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
 @SuppressWarnings("serial")
 public abstract class SignatureOCSPSource extends OfflineOCSPSource implements SignatureRevocationSource<OCSPToken> {
 	
-	private Map<OCSPResponseIdentifier, OCSPToken> ocspTokenMap = new HashMap<OCSPResponseIdentifier, OCSPToken>();
+	private Map<OCSPResponseBinary, OCSPToken> ocspTokenMap = new HashMap<OCSPResponseBinary, OCSPToken>();
 	
 	private final List<OCSPToken> revocationValuesOCSPs = new ArrayList<OCSPToken>();
 	private final List<OCSPToken> attributeRevocationValuesOCSPs = new ArrayList<OCSPToken>();
@@ -102,7 +102,7 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 		return ocspRefs;
 	}
 	
-	public Map<OCSPResponseIdentifier, OCSPToken> getOCSPTokenMap() {
+	public Map<OCSPResponseBinary, OCSPToken> getOCSPTokenMap() {
 		return ocspTokenMap;
 	}
 	
@@ -111,20 +111,20 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	 * @param signatureOCSPSource {@link SignatureOCSPSource} to populate values from
 	 */
 	public void populateOCSPRevocationTokenLists(SignatureOCSPSource signatureOCSPSource) {
-		for (Entry<OCSPResponseIdentifier, OCSPToken> entry : signatureOCSPSource.getOCSPTokenMap().entrySet()) {
+		for (Entry<OCSPResponseBinary, OCSPToken> entry : signatureOCSPSource.getOCSPTokenMap().entrySet()) {
 			storeOCSPToken(entry);
 		}
 	}
 	
-	private void storeOCSPToken(Entry<OCSPResponseIdentifier, OCSPToken> responseTokenEntry) {
+	private void storeOCSPToken(Entry<OCSPResponseBinary, OCSPToken> responseTokenEntry) {
 		storeOCSPToken(responseTokenEntry.getKey(), responseTokenEntry.getValue());
 	}
 
 	@Override
-	protected void storeOCSPToken(OCSPResponseIdentifier ocspResponse, OCSPToken ocspToken) {
-		if (ocspResponses.contains(ocspResponse) && !ocspTokenMap.containsKey(ocspResponse)) {
+	protected void storeOCSPToken(OCSPResponseBinary ocspResponse, OCSPToken ocspToken) {
+		if (getOCSPResponsesList().contains(ocspResponse) && !ocspTokenMap.containsKey(ocspResponse)) {
 			ocspTokenMap.put(ocspResponse, ocspToken);
-			for (RevocationOrigin origin : ocspResponse.getOrigins()) {
+			for (RevocationOrigin origin : getRevocationOrigins(ocspResponse)) {
 				switch (origin) {
 					case INTERNAL_REVOCATION_VALUES:
 						revocationValuesOCSPs.add(ocspToken);
@@ -169,10 +169,10 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	
 	/**
 	 * Returns a list of {@link OCSPRef}s assigned to the given {@code ocspResponse}
-	 * @param ocspResponse {@link OCSPResponseIdentifier} to get references for
+	 * @param ocspResponse {@link OCSPResponseBinary} to get references for
 	 * @return list of {@link OCSPRef}s
 	 */
-	public List<OCSPRef> getReferencesForOCSPIdentifier(OCSPResponseIdentifier ocspResponse) {
+	public List<OCSPRef> getReferencesForOCSPIdentifier(OCSPResponseBinary ocspResponse) {
 		List<OCSPRef> relatedRefs = new ArrayList<OCSPRef>();
 		for (OCSPRef ocspRef : getAllOCSPReferences()) {
 			byte[] digestValue = ocspResponse.getDigestValue(ocspRef.getDigest().getAlgorithm());

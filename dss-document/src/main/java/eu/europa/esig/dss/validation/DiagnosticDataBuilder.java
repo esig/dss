@@ -44,6 +44,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.AdapterUtils;
+import eu.europa.esig.dss.CRLBinary;
 import eu.europa.esig.dss.CertificatePolicy;
 import eu.europa.esig.dss.CertificateRef;
 import eu.europa.esig.dss.DSSASN1Utils;
@@ -59,6 +60,7 @@ import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.jaxb.diagnostic.ObjectFactory;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
@@ -123,11 +125,10 @@ import eu.europa.esig.dss.x509.SignatureCertificateSource;
 import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.dss.x509.Token;
 import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
-import eu.europa.esig.dss.x509.revocation.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.x509.revocation.RevocationRef;
-import eu.europa.esig.dss.x509.revocation.crl.CRLBinaryIdentifier;
 import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseBinary;
 
 /**
  * This class is used to build JAXB objects from the DSS model
@@ -646,7 +647,7 @@ public class DiagnosticDataBuilder {
 		if (isInternalOrigin(revocationToken)) {
 			xmlRevocation.setOrigin(XmlRevocationOrigin.SIGNATURE);
 		} else {
-			XmlRevocationOrigin revocationOriginType = XmlRevocationOrigin.valueOf(revocationToken.getOrigins().get(0).name());
+			XmlRevocationOrigin revocationOriginType = XmlRevocationOrigin.valueOf(revocationToken.getFirstOrigin().name());
 			xmlRevocation.setOrigin(revocationOriginType);
 		}
 		xmlRevocation.setType(RevocationType.valueOf(revocationToken.getRevocationSourceType().name()));
@@ -1113,13 +1114,16 @@ public class DiagnosticDataBuilder {
 	private XmlOrphanRevocation getXmlOrphanRevocation(EncapsulatedRevocationTokenIdentifier revocationIdentifier, AdvancedSignature signature) {
 		XmlOrphanRevocation xmlOrphanRevocation = new XmlOrphanRevocation();
 		xmlOrphanRevocation.setToken(createOrphanTokenFromRevocationIdentifier(revocationIdentifier));
-		for (RevocationOrigin origin : revocationIdentifier.getOrigins()) {
-			xmlOrphanRevocation.getOrigins().add(XmlRevocationOrigin.valueOf(origin.toString()));
-		}
-		if (revocationIdentifier instanceof CRLBinaryIdentifier) {
+		if (revocationIdentifier instanceof CRLBinary) {
 			xmlOrphanRevocation.setType(RevocationType.CRL);
+			for (RevocationOrigin origin : signature.getCompleteCRLSource().getRevocationOrigins((CRLBinary) revocationIdentifier)) {
+				xmlOrphanRevocation.getOrigins().add(XmlRevocationOrigin.valueOf(origin.name()));
+			}
 		} else {
 			xmlOrphanRevocation.setType(RevocationType.OCSP);
+			for (RevocationOrigin origin : signature.getCompleteOCSPSource().getRevocationOrigins((OCSPResponseBinary) revocationIdentifier)) {
+				xmlOrphanRevocation.getOrigins().add(XmlRevocationOrigin.valueOf(origin.name()));
+			}
 		}
 		List<RevocationRef> refsForRevocationToken = signature.findRefsForRevocationIdentifier(revocationIdentifier);
 		for (RevocationRef revocationRef : refsForRevocationToken) {
