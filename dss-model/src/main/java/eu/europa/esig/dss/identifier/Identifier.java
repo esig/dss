@@ -43,6 +43,10 @@ public abstract class Identifier implements Serializable {
 		Objects.requireNonNull(data);
 		this.id = new Digest(DIGEST_ALGO, DIGEST_ALGO.getMessageDigest().digest(data));
 	}
+	
+	Digest getDigestId() {
+		return id;
+	}
 
 	/**
 	 * Return an ID conformant to XML Id

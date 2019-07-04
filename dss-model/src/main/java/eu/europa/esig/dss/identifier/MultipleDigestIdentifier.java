@@ -2,6 +2,7 @@ package eu.europa.esig.dss.identifier;
 
 import java.util.EnumMap;
 
+import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
 
 /**
@@ -18,6 +19,9 @@ public abstract class MultipleDigestIdentifier extends Identifier {
 	protected MultipleDigestIdentifier(byte[] binaries) {
 		super(binaries);
 		this.binaries = binaries;
+		
+		Digest id = getDigestId();
+		digestMap.put(id.getAlgorithm(), id.getValue());
 	}
 	
 	public byte[] getBinaries() {
