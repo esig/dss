@@ -3,7 +3,6 @@ package eu.europa.esig.jaxb.xades;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -23,7 +22,7 @@ public class XAdESUtilsTest {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void test() throws JAXBException, SAXException, IOException {
+	public void test() throws JAXBException, SAXException {
 
 		File xmldsigFile = new File("src/test/resources/xades-lta.xml");
 
@@ -52,7 +51,7 @@ public class XAdESUtilsTest {
 	}
 
 	@Test
-	public void getSchema() throws SAXException, IOException {
+	public void getSchema() throws SAXException {
 		assertNotNull(XAdESUtils.getSchema());
 		// cached
 		assertNotNull(XAdESUtils.getSchema());

@@ -1,11 +1,12 @@
 package eu.europa.esig.jaxb.xmldsig;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -14,6 +15,7 @@ import org.xml.sax.SAXException;
 
 public final class XmlDSigUtils {
 
+	public static final String XML_SCHEMA_LOCATION = "/xsd/xml.xsd";
 	public static final String XMLDSIG_SCHEMA_LOCATION = "/xsd/xmldsig-core-schema.xsd";
 
 	private XmlDSigUtils() {
@@ -22,27 +24,28 @@ public final class XmlDSigUtils {
 	private static JAXBContext jc;
 	private static Schema schema;
 
-	public static JAXBContext getJAXBContext() {
+	public static JAXBContext getJAXBContext() throws JAXBException {
 		if (jc == null) {
-			try {
-				jc = JAXBContext.newInstance(ObjectFactory.class);
-			} catch (JAXBException e) {
-				throw new RuntimeException("Unable to initialize the JAXBContext", e);
-			}
+			jc = JAXBContext.newInstance(ObjectFactory.class);
 		}
 		return jc;
 	}
 
-	public static Schema getSchema() {
+	public static Schema getSchema() throws SAXException {
 		if (schema == null) {
-			try (InputStream is = XmlDSigUtils.class.getResourceAsStream(XMLDSIG_SCHEMA_LOCATION)) {
-				SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-				schema = sf.newSchema(new StreamSource(is));
-			} catch (IOException | SAXException e) {
-				throw new RuntimeException("Unable to initialize the Schema", e);
-			}
+			SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+			sf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+			List<Source> xsdSources = getXSDSources();
+			schema = sf.newSchema(xsdSources.toArray(new Source[xsdSources.size()]));
 		}
 		return schema;
+	}
+
+	public static List<Source> getXSDSources() {
+		List<Source> xsdSources = new ArrayList<Source>();
+		xsdSources.add(new StreamSource(XmlDSigUtils.class.getResourceAsStream(XML_SCHEMA_LOCATION)));
+		xsdSources.add(new StreamSource(XmlDSigUtils.class.getResourceAsStream(XMLDSIG_SCHEMA_LOCATION)));
+		return xsdSources;
 	}
 
 }
