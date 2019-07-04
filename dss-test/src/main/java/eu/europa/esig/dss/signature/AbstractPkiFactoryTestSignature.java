@@ -301,7 +301,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 				}
 
 				if (!MimeType.PDF.equals(original.getMimeType())) {
-					assertTrue("Unable to retrieve the document " + original.getName(), found);
+					assertTrue("Unable to retrieve the original document " + original.getName(), found);
 				} else if (!found) {
 					byte[] originalByteArray = DSSUtils.toByteArray(original);
 					DSSDocument retrieved = retrievedOriginalDocuments.get(0);

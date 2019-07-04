@@ -29,7 +29,7 @@ public class PAdESDoubleLTAValidationData extends PKIFactoryAccess {
 	@Test
 	public void test() throws Exception {
 
-		DSSDocument doc = new InMemoryDocument(PAdESDoubleSignature.class.getResourceAsStream("/sample.pdf"));
+		DSSDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 		
 		// Sign with LT level and GoodTSA
 		PAdESService service = new PAdESService(getCompleteCertificateVerifier());

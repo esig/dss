@@ -378,16 +378,19 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	}
 	
 	private boolean isSignatureCoversWholeDocument(DSSDocument document, int[] byteRange) {
-		byte[] originalBytes = DSSUtils.toByteArray(document);
-		int originalBytesLength = originalBytes.length;
+		try (InputStream is = document.openStream()) {
+			long originalBytesLength = Utils.getInputStreamSize(is);
+			// /ByteRange [0 575649 632483 10206]
+			long beforeSignatureLength = byteRange[1] - byteRange[0];
+			long expectedCMSLength = byteRange[2] - byteRange[1] - byteRange[0];
+			long afterSignatureLength = byteRange[3];
+			long totalCoveredByByteRange = beforeSignatureLength + expectedCMSLength + afterSignatureLength;
 
-		// /ByteRange [0 575649 632483 10206]
-		int beforeSignatureLength = byteRange[1] - byteRange[0];
-		int expectedCMSLength = byteRange[2] - byteRange[1] - byteRange[0];
-		int afterSignatureLength = byteRange[3];
-		int totalCoveredByByteRange = beforeSignatureLength + expectedCMSLength + afterSignatureLength;
-
-		return (originalBytesLength == totalCoveredByByteRange);
+			return (originalBytesLength == totalCoveredByByteRange);
+		} catch (IOException e) {
+			LOG.warn("Cannot determine the original file size for the document. Reason : {}", e.getMessage());
+			return false;
+		}
 	}
 
 	private PdfDssDict getDSSDictionaryPresentInRevision(byte[] originalBytes) {

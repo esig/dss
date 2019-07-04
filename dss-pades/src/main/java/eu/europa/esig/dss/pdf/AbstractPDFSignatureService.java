@@ -176,25 +176,27 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 
 	protected byte[] getSignedContent(DSSDocument dssDocument, int[] byteRange) throws IOException {
-
+		// Adobe Digital Signatures in a PDF (p5): In Figure 4, the hash is calculated
+		// for bytes 0 through 840, and 960 through 1200. [0, 840, 960, 1200]
+		int beginning = byteRange[0];
+		int startSigValueContent = byteRange[1];
+		int endSigValueContent = byteRange[2];
+		int endValue = byteRange[3];
+		
+		byte[] signedContentByteArray = new byte[startSigValueContent + endValue];
+		
 		try (InputStream is = dssDocument.openStream()) {
-			// Adobe Digital Signatures in a PDF (p5): In Figure 4, the hash is calculated
-			// for bytes 0 through 840, and 960 through 1200. [0, 840, 960, 1200]
-
-			int beginning = byteRange[0];
-			int startSigValueContent = byteRange[1];
-			int endSigValueContent = byteRange[2];
-			int endValue = byteRange[3];
 			
-			byte[] signedContentByteArray = new byte[startSigValueContent + endValue];
-
-			is.skip(beginning);
-			is.read(signedContentByteArray, 0, startSigValueContent);
-			is.skip(endSigValueContent - startSigValueContent - beginning);
-			is.read(signedContentByteArray, startSigValueContent, endValue);
-
-			return signedContentByteArray;
+			DSSUtils.skipAvailableBytes(is, beginning);
+			DSSUtils.readAvailableBytes(is, signedContentByteArray, 0, startSigValueContent);
+			DSSUtils.skipAvailableBytes(is, endSigValueContent - startSigValueContent - beginning);
+			DSSUtils.readAvailableBytes(is, signedContentByteArray, startSigValueContent, endValue);
+			
+		} catch (IllegalStateException e) {
+			LOG.error("Cannot extract signed content. Reason : {}", e.getMessage());
 		}
+		
+		return signedContentByteArray;
 	}
 	
 	protected void checkIsContentValueEqualsByteRangeExtraction(DSSDocument document, int[] byteRange, byte[] cms, String signatureName) {
@@ -215,23 +217,28 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 	
 	protected byte[] getSignatureValue(DSSDocument dssDocument, int[] byteRange) throws IOException {
-		try (InputStream is = dssDocument.openStream()) {
-			// Extracts bytes from 841 to 959. [0, 840, 960, 1200]
-			int startSigValueContent = byteRange[0] + byteRange[1] + 1;
-			int endSigValueContent = byteRange[2] - 1;
-			
-			int signatureValueArraySize = endSigValueContent - startSigValueContent;
-			if (signatureValueArraySize < 1) {
-				throw new DSSException("The byte range present in the document is not valid! "
-						+ "SignatureValue size cannot be negative or equal to zero!");
-			}
-
-			byte[] signatureValueArray = new byte[signatureValueArraySize];
-			is.skip(startSigValueContent);
-			is.read(signatureValueArray);
-
-			return Utils.fromHex(new String(signatureValueArray));
+		// Extracts bytes from 841 to 959. [0, 840, 960, 1200]
+		int startSigValueContent = byteRange[0] + byteRange[1] + 1;
+		int endSigValueContent = byteRange[2] - 1;
+		
+		int signatureValueArraySize = endSigValueContent - startSigValueContent;
+		if (signatureValueArraySize < 1) {
+			throw new DSSException("The byte range present in the document is not valid! "
+					+ "SignatureValue size cannot be negative or equal to zero!");
 		}
+
+		byte[] signatureValueArray = new byte[signatureValueArraySize];
+		
+		try (InputStream is = dssDocument.openStream()) {
+			
+			DSSUtils.skipAvailableBytes(is, startSigValueContent);
+			DSSUtils.readAvailableBytes(is, signatureValueArray);
+			
+		} catch (IllegalStateException e) {
+			LOG.error("Cannot extract signature value. Reason : {}", e.getMessage());
+		}
+		
+		return Utils.fromHex(new String(signatureValueArray));
 	}
 
 	protected byte[] getOriginalBytes(int[] byteRange, byte[] signedContent) {

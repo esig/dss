@@ -871,5 +871,61 @@ public final class DSSUtils {
 		}
 		return uri;
 	}
+	
+	/**
+	 * Skip the defined {@code n} number of bytes from the {@code InputStream}
+	 * and validates success of the operation
+	 * @param is {@link InputStream} to skip bytes from
+	 * @param n {@code long} number bytes to skip
+	 * @return actual number of bytes have been skipped
+     * @exception IllegalStateException in case of {@code InputStream} reading error 
+	 */
+	public static long skipAvailableBytes(InputStream is, long n) throws IllegalStateException {
+		try {
+			long skipped = is.skip(n);
+			if (skipped != n) {
+				throw new IllegalStateException(String.format("The number of skipped bytes [%s] differs from the expected value [%s]! "
+						+ "The InputStream is too small, corrupted or not accessible!", skipped, n));
+			}
+			return skipped;
+		} catch (IOException e) {
+			throw new DSSException("Cannot read the InputStream!");
+		}
+	}
+	
+	/**
+	 * Read the requested number of bytes from {@code InputStream} according to the size of 
+	 * the provided {@code byte}[] buffer and validates success of the operation
+	 * @param is {@link InputStream} to read bytes from
+	 * @param b {@code byte}[] buffer to fill
+	 * @return the total number of bytes read into buffer
+	 * @throws IllegalStateException in case of {@code InputStream} reading error 
+	 */
+	public static long readAvailableBytes(InputStream is, byte[] b) throws IllegalStateException {
+		return readAvailableBytes(is, b, 0, b.length);
+	}
+	
+	/**
+	 * Read the requested number of bytes from {@code InputStream}
+	 * and validates success of the operation
+	 * @param is {@link InputStream} to read bytes from
+	 * @param b {@code byte}[] buffer to fill
+	 * @param off {@code int} offset in the destination array
+	 * @param len {@code int} number of bytes to read
+	 * @return the total number of bytes read into buffer
+	 * @throws IllegalStateException in case of {@code InputStream} reading error 
+	 */
+	public static long readAvailableBytes(InputStream is, byte[] b, int off, int len) throws IllegalStateException {
+		try {
+			long read = is.read(b, off, len);
+			if (read != len) {
+				throw new IllegalStateException(String.format("The number of read bytes [%s] differs from the expected value [%s]! "
+						+ "The InputStream is too small, corrupted or not accessible!", read, len));
+			}
+			return read;
+		} catch (IOException e) {
+			throw new DSSException("Cannot read the InputStream!");
+		}
+	}
 
 }
