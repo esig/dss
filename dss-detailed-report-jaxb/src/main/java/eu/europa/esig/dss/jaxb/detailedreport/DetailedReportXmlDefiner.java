@@ -19,7 +19,8 @@ import org.xml.sax.SAXException;
 public final class DetailedReportXmlDefiner {
 
 	public static final String DETAILED_REPORT_SCHEMA_LOCATION = "/xsd/DetailedReport.xsd";
-	public static final String DETAILED_REPORT_XSLT_HTML_LOCATION = "/xslt/html/detailed-report.xslt";
+	public static final String DETAILED_REPORT_XSLT_HTML_BOOTSTRAP3_LOCATION = "/xslt/html/detailed-report.xslt";
+	public static final String DETAILED_REPORT_XSLT_HTML_BOOTSTRAP4_LOCATION = "/xslt/html/detailed-report-bootstrap4.xslt";
 	public static final String DETAILED_REPORT_XSLT_PDF_LOCATION = "/xslt/pdf/detailed-report.xslt";
 
 	private DetailedReportXmlDefiner() {
@@ -33,8 +34,8 @@ public final class DetailedReportXmlDefiner {
 	private static Schema schema;
 
 	// Thread-safe
-	private static Templates htmlTemplates;
-	// Thread-safe
+	private static Templates htmlBootstrap3Templates;
+	private static Templates htmlBootstrap4Templates;
 	private static Templates pdfTemplates;
 
 	public static JAXBContext getJAXBContext() throws JAXBException {
@@ -48,31 +49,39 @@ public final class DetailedReportXmlDefiner {
 		if (schema == null) {
 			try (InputStream isXSDDetailedReport = DetailedReportXmlDefiner.class.getResourceAsStream(DETAILED_REPORT_SCHEMA_LOCATION)) {
 				SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+				sf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 				schema = sf.newSchema(new Source[] { new StreamSource(isXSDDetailedReport) });
 			}
 		}
 		return schema;
 	}
 
-	public static Templates getHtmlTemplates() throws TransformerConfigurationException, IOException {
-		if (htmlTemplates == null) {
-			try (InputStream inputStream = DetailedReportXmlDefiner.class.getResourceAsStream(DETAILED_REPORT_XSLT_HTML_LOCATION)) {
-				TransformerFactory transformerFactory = getSecureTransformerFactory();
-				htmlTemplates = transformerFactory.newTemplates(new StreamSource(inputStream));
-			}
+	public static Templates getHtmlBootstrap3Templates() throws TransformerConfigurationException, IOException {
+		if (htmlBootstrap3Templates == null) {
+			htmlBootstrap3Templates = loadTemplates(DETAILED_REPORT_XSLT_HTML_BOOTSTRAP3_LOCATION);
 		}
-		return htmlTemplates;
+		return htmlBootstrap3Templates;
+	}
+
+	public static Templates getHtmlBootstrap4Templates() throws TransformerConfigurationException, IOException {
+		if (htmlBootstrap4Templates == null) {
+			htmlBootstrap4Templates = loadTemplates(DETAILED_REPORT_XSLT_HTML_BOOTSTRAP4_LOCATION);
+		}
+		return htmlBootstrap4Templates;
 	}
 
 	public static Templates getPdfTemplates() throws TransformerConfigurationException, IOException {
 		if (pdfTemplates == null) {
-			try (InputStream inputStream = DetailedReportXmlDefiner.class.getResourceAsStream(DETAILED_REPORT_XSLT_PDF_LOCATION)) {
-				TransformerFactory transformerFactory = getSecureTransformerFactory();
-				pdfTemplates = transformerFactory.newTemplates(new StreamSource(inputStream));
-			}
+			pdfTemplates = loadTemplates(DETAILED_REPORT_XSLT_PDF_LOCATION);
 		}
 		return pdfTemplates;
+	}
 
+	private static Templates loadTemplates(String path) throws TransformerConfigurationException, IOException {
+		try (InputStream is = DetailedReportXmlDefiner.class.getResourceAsStream(path)) {
+			TransformerFactory transformerFactory = getSecureTransformerFactory();
+			return transformerFactory.newTemplates(new StreamSource(is));
+		}
 	}
 
 	private static TransformerFactory getSecureTransformerFactory() throws TransformerConfigurationException {

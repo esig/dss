@@ -19,7 +19,8 @@ import org.xml.sax.SAXException;
 public final class SimpleCertificateReportXmlDefiner {
 
 	public static final String SIMPLE_CERTIFICATE_REPORT_SCHEMA_LOCATION = "/xsd/SimpleCertificateReport.xsd";
-	public static final String SIMPLE_CERTIFICATE_REPORT_XSLT_HTML_LOCATION = "/xslt/html/simple-certificate-report.xslt";
+	public static final String SIMPLE_CERTIFICATE_REPORT_XSLT_HTML_BOOTSTRAP3_LOCATION = "/xslt/html/simple-certificate-report.xslt";
+	public static final String SIMPLE_CERTIFICATE_REPORT_XSLT_HTML_BOOTSTRAP4_LOCATION = "/xslt/html/simple-certificate-report-bootstrap4.xslt";
 
 	private SimpleCertificateReportXmlDefiner() {
 	}
@@ -32,7 +33,8 @@ public final class SimpleCertificateReportXmlDefiner {
 	private static Schema schema;
 
 	// Thread-safe
-	private static Templates htmlTemplates;
+	private static Templates htmlBootstrap3Templates;
+	private static Templates htmlBootstrap4Templates;
 
 	public static JAXBContext getJAXBContext() throws JAXBException {
 		if (jc == null) {
@@ -45,20 +47,32 @@ public final class SimpleCertificateReportXmlDefiner {
 		if (schema == null) {
 			try (InputStream inputStream = SimpleCertificateReportXmlDefiner.class.getResourceAsStream(SIMPLE_CERTIFICATE_REPORT_SCHEMA_LOCATION)) {
 				SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+				sf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 				schema = sf.newSchema(new Source[] { new StreamSource(inputStream) });
 			}
 		}
 		return schema;
 	}
 
-	public static Templates getHtmlTemplates() throws TransformerConfigurationException, IOException {
-		if (htmlTemplates == null) {
-			try (InputStream inputStream = SimpleCertificateReportXmlDefiner.class.getResourceAsStream(SIMPLE_CERTIFICATE_REPORT_XSLT_HTML_LOCATION)) {
-				TransformerFactory transformerFactory = getSecureTransformerFactory();
-				htmlTemplates = transformerFactory.newTemplates(new StreamSource(inputStream));
-			}
+	public static Templates getHtmlBootstrap3Templates() throws TransformerConfigurationException, IOException {
+		if (htmlBootstrap3Templates == null) {
+			htmlBootstrap3Templates = loadTemplates(SIMPLE_CERTIFICATE_REPORT_XSLT_HTML_BOOTSTRAP3_LOCATION);
 		}
-		return htmlTemplates;
+		return htmlBootstrap3Templates;
+	}
+
+	public static Templates getHtmlBootstrap4Templates() throws TransformerConfigurationException, IOException {
+		if (htmlBootstrap4Templates == null) {
+			htmlBootstrap4Templates = loadTemplates(SIMPLE_CERTIFICATE_REPORT_XSLT_HTML_BOOTSTRAP4_LOCATION);
+		}
+		return htmlBootstrap4Templates;
+	}
+
+	private static Templates loadTemplates(String path) throws TransformerConfigurationException, IOException {
+		try (InputStream is = SimpleCertificateReportXmlDefiner.class.getResourceAsStream(path)) {
+			TransformerFactory transformerFactory = getSecureTransformerFactory();
+			return transformerFactory.newTemplates(new StreamSource(is));
+		}
 	}
 
 	private static TransformerFactory getSecureTransformerFactory() throws TransformerConfigurationException {

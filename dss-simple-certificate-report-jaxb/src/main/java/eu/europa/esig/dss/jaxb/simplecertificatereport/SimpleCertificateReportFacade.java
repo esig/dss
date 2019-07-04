@@ -44,7 +44,7 @@ public class SimpleCertificateReportFacade {
 	}
 
 	public void generateHtmlReport(XmlSimpleCertificateReport simpleCertificateReport, Result result) throws IOException, TransformerException, JAXBException {
-		Transformer transformer = SimpleCertificateReportXmlDefiner.getHtmlTemplates().newTransformer();
+		Transformer transformer = SimpleCertificateReportXmlDefiner.getHtmlBootstrap3Templates().newTransformer();
 		transformer.transform(new JAXBSource(SimpleCertificateReportXmlDefiner.getJAXBContext(),
 				SimpleCertificateReportXmlDefiner.OBJECT_FACTORY.createSimpleCertificateReport(simpleCertificateReport)), result);
 	}
@@ -57,7 +57,7 @@ public class SimpleCertificateReportFacade {
 	}
 
 	public void generateHtmlReport(String marshalledSimpleCertificateReport, Result result) throws IOException, TransformerException {
-		Transformer transformer = SimpleCertificateReportXmlDefiner.getHtmlTemplates().newTransformer();
+		Transformer transformer = SimpleCertificateReportXmlDefiner.getHtmlBootstrap3Templates().newTransformer();
 		transformer.transform(new StreamSource(new StringReader(marshalledSimpleCertificateReport)), result);
 	}
 
