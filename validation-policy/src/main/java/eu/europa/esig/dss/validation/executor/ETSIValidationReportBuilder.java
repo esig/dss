@@ -34,7 +34,6 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerData;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.BasicBuildingBlockUri;
 import eu.europa.esig.dss.validation.CertificateOriginType;
 import eu.europa.esig.dss.validation.CertificateRefOriginType;
 import eu.europa.esig.dss.validation.DigestMatcherType;
@@ -45,6 +44,7 @@ import eu.europa.esig.dss.validation.XmlRevocationRefOrigin;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.reports.DetailedReport;
@@ -158,19 +158,19 @@ public class ETSIValidationReportBuilder {
 	private ValidationConstraintsEvaluationReportType getValidationConstraintsEvaluationReport(SignatureWrapper sigWrapper) {
 		ValidationConstraintsEvaluationReportType validationConstraintsEvaluationReport = objectFactory.createValidationConstraintsEvaluationReportType();
 		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(sigWrapper.getId());
-		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockUri.FORMAT_CHECKING, signatureBBB.getFC());
-		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockUri.IDENTIFICATION_OF_THE_SIGNING_CERTIFICATE, signatureBBB.getISC());
-		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockUri.VALIDATION_CONTEXT_INITIALIZATION, signatureBBB.getVCI());
-		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockUri.CRYPTOGRAPHIC_VERIFICATION, signatureBBB.getCV());
-		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockUri.SIGNATURE_ACCEPTANCE_VALIDATION, signatureBBB.getSAV());
-		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockUri.X509_CERTIFICATE_VALIDATION, signatureBBB.getXCV());
-		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockUri.PAST_SIGNATURE_VALIDATION, signatureBBB.getPSV());
-		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockUri.PAST_CERTIFICATE_VALIDATION, signatureBBB.getPCV());
-		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockUri.VALIDATION_TIME_SLIDING, signatureBBB.getVTS());
+		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.FORMAT_CHECKING, signatureBBB.getFC());
+		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.IDENTIFICATION_OF_THE_SIGNING_CERTIFICATE, signatureBBB.getISC());
+		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.VALIDATION_CONTEXT_INITIALIZATION, signatureBBB.getVCI());
+		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.CRYPTOGRAPHIC_VERIFICATION, signatureBBB.getCV());
+		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.SIGNATURE_ACCEPTANCE_VALIDATION, signatureBBB.getSAV());
+		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.X509_CERTIFICATE_VALIDATION, signatureBBB.getXCV());
+		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.PAST_SIGNATURE_VALIDATION, signatureBBB.getPSV());
+		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.PAST_CERTIFICATE_VALIDATION, signatureBBB.getPCV());
+		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.VALIDATION_TIME_SLIDING, signatureBBB.getVTS());
 		return validationConstraintsEvaluationReport;
 	}
 
-	private void addBBB(ValidationConstraintsEvaluationReportType validationConstraintsEvaluationReport, BasicBuildingBlockUri bbbUri,
+	private void addBBB(ValidationConstraintsEvaluationReportType validationConstraintsEvaluationReport, BasicBuildingBlockDefinition bbbUri,
 			XmlConstraintsConclusion constraintConclusion) {
 		if (constraintConclusion != null) {
 			validationConstraintsEvaluationReport.getValidationConstraint()
@@ -181,7 +181,7 @@ public class ETSIValidationReportBuilder {
 		}
 	}
 
-	private IndividualValidationConstraintReportType getIndividualValidationConstraintReport(BasicBuildingBlockUri bbbUri,
+	private IndividualValidationConstraintReportType getIndividualValidationConstraintReport(BasicBuildingBlockDefinition bbbUri,
 			XmlConstraintsConclusion constraintConclusion,
 			ConstraintStatusType constraintStatusType) {
 		IndividualValidationConstraintReportType validationConstraint = objectFactory.createIndividualValidationConstraintReportType();

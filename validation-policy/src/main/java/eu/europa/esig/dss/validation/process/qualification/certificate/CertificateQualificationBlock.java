@@ -33,6 +33,7 @@ import eu.europa.esig.dss.validation.ValidationTime;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableTrustedListCheck;
 import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServiceFilter;
 import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServicesFilterFactory;
@@ -50,6 +51,7 @@ public class CertificateQualificationBlock extends Chain<XmlCertificate> {
 	public CertificateQualificationBlock(XmlConclusion buildingBlocksConclusion, Date validationTime, CertificateWrapper signingCertificate,
 			List<XmlTLAnalysis> tlAnalysis, String lotlCountryCode) {
 		super(new XmlCertificate());
+		result.setTitle(ValidationProcessDefinition.CERT_QUALIFICATION.getTitle());
 
 		this.buildingBlocksConclusion = buildingBlocksConclusion;
 		this.validationTime = validationTime;

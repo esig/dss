@@ -45,6 +45,7 @@ import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;
 import eu.europa.esig.dss.validation.process.bbb.sav.SignatureAcceptanceValidation;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SignatureAcceptanceValidationResultCheck;
@@ -83,6 +84,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	public ValidationProcessForSignaturesWithLongTermValidationData(XmlSignature signatureAnalysis, DiagnosticData diagnosticData,
 			SignatureWrapper currentSignature, Map<String, XmlBasicBuildingBlocks> bbbs, ValidationPolicy policy, Date currentDate) {
 		super(new XmlValidationProcessLongTermData());
+		result.setTitle(ValidationProcessDefinition.VPFLTVD.getTitle());
 
 		this.basicSignatureValidation = signatureAnalysis.getValidationProcessBasicSignatures();
 

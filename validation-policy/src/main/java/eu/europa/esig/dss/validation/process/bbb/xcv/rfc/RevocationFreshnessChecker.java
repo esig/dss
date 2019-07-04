@@ -26,6 +26,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.SubContext;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
+import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
@@ -57,6 +58,7 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 
 	public RevocationFreshnessChecker(RevocationWrapper revocationData, Date validationDate, Context context, SubContext subContext, ValidationPolicy policy) {
 		super(new XmlRFC());
+		result.setTitle(BasicBuildingBlockDefinition.REVOCATION_FRESHNESS_CHECKER.getTitle());
 
 		if (revocationData != null) {
 			result.setId(revocationData.getId());

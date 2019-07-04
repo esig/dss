@@ -31,6 +31,7 @@ import eu.europa.esig.dss.validation.CertificateQualification;
 import eu.europa.esig.dss.validation.ValidationTime;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.CaQcCheck;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.CertificateIssuedByConsistentTrustServiceCheck;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.CertificateTypeCoverageCheck;
@@ -69,6 +70,7 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 	public CertQualificationAtTimeBlock(ValidationTime validationTime, Date date, CertificateWrapper signingCertificate,
 			List<TrustedServiceWrapper> caqcServices) {
 		super(new XmlValidationCertificateQualification());
+		result.setTitle(ValidationProcessDefinition.CERT_QUALIFICATION.getTitle() + " @ " + validationTime);
 
 		this.validationTime = validationTime;
 		this.signingCertificate = signingCertificate;

@@ -30,6 +30,7 @@ import eu.europa.esig.dss.validation.policy.SubContext;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChecker;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.AuthorityInfoAccessPresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateCryptographicCheck;
@@ -79,9 +80,9 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	public SubX509CertificateValidation(DiagnosticData diagnosticData, CertificateWrapper currentCertificate, Date currentTime, 
 			Context context, SubContext subContext, ValidationPolicy validationPolicy) {
 		super(new XmlSubXCV());
-
 		result.setId(currentCertificate.getId());
 		result.setTrustAnchor(currentCertificate.isTrusted());
+		result.setTitle(ValidationProcessDefinition.SUB_XCV.getTitle() + " = " + currentCertificate.getId());
 
 		this.currentCertificate = currentCertificate;
 		this.currentTime = currentTime;

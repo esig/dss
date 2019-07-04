@@ -30,6 +30,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.SubContext;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
+import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
@@ -60,6 +61,7 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 	public PastCertificateValidation(TokenProxy token, DiagnosticData diagnosticData, XmlBasicBuildingBlocks bbb, POEExtraction poe, Date currentTime,
 			ValidationPolicy policy, Context context) {
 		super(new XmlPCV());
+		result.setTitle(BasicBuildingBlockDefinition.PAST_CERTIFICATE_VALIDATION.getTitle());
 
 		this.token = token;
 		this.diagnosticData = diagnosticData;

@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation.process.bbb.vci;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlVCI;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
+import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.vci.checks.SignaturePolicyHashValidCheck;
@@ -49,6 +50,7 @@ public class ValidationContextInitialization extends Chain<XmlVCI> {
 
 	public ValidationContextInitialization(SignatureWrapper signature, Context context, ValidationPolicy validationPolicy) {
 		super(new XmlVCI());
+		result.setTitle(BasicBuildingBlockDefinition.VALIDATION_CONTEXT_INITIALIZATION.getTitle());
 
 		this.signature = signature;
 		this.context = context;

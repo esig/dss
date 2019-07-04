@@ -27,6 +27,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;
 import eu.europa.esig.dss.validation.process.qualification.trust.checks.TLFreshnessCheck;
 import eu.europa.esig.dss.validation.process.qualification.trust.checks.TLNotExpiredCheck;
 import eu.europa.esig.dss.validation.process.qualification.trust.checks.TLVersionCheck;
@@ -44,6 +45,7 @@ public class TLValidationBlock extends Chain<XmlTLAnalysis> {
 	public TLValidationBlock(XmlTrustedList currentTL, Date currentTime, ValidationPolicy policy) {
 		super(new XmlTLAnalysis());
 
+		result.setTitle(ValidationProcessDefinition.TL.getTitle() + " " + currentTL.getCountryCode());
 		result.setCountryCode(currentTL.getCountryCode());
 
 		this.currentTL = currentTL;

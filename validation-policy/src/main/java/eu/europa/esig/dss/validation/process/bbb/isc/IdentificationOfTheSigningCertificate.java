@@ -29,6 +29,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlISC;
 import eu.europa.esig.dss.validation.XmlCertificateSourceType;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
+import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.isc.checks.DigestValueMatchCheck;
@@ -55,6 +56,7 @@ public class IdentificationOfTheSigningCertificate extends Chain<XmlISC> {
 
 	public IdentificationOfTheSigningCertificate(TokenProxy token, Context context, ValidationPolicy validationPolicy) {
 		super(new XmlISC());
+		result.setTitle(BasicBuildingBlockDefinition.IDENTIFICATION_OF_THE_SIGNING_CERTIFICATE.getTitle());
 
 		this.token = token;
 		this.context = context;

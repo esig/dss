@@ -33,6 +33,7 @@ import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.SubContext;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
+import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
@@ -61,6 +62,7 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 	public ValidationTimeSliding(TokenProxy token, Date currentTime, Context context, POEExtraction poe,
 			ValidationPolicy policy) {
 		super(new XmlVTS());
+		result.setTitle(BasicBuildingBlockDefinition.VALIDATION_TIME_SLIDING.getTitle());
 
 		this.token = token;
 		this.currentTime = currentTime;

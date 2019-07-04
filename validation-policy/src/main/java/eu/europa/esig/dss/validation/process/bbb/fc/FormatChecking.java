@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation.process.bbb.fc;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlFC;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
+import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.AcceptableMimetypeFileContentCheck;
@@ -55,6 +56,7 @@ public class FormatChecking extends Chain<XmlFC> {
 
 	public FormatChecking(DiagnosticData diagnosticData, SignatureWrapper signature, Context context, ValidationPolicy policy) {
 		super(new XmlFC());
+		result.setTitle(BasicBuildingBlockDefinition.FORMAT_CHECKING.getTitle());
 
 		this.diagnosticData = diagnosticData;
 		this.signature = signature;

@@ -29,6 +29,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.SubContext;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
+import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.CheckSubXCVResult;
@@ -65,6 +66,7 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 	public X509CertificateValidation(DiagnosticData diagnosticData, CertificateWrapper currentCertificate, Date validationDate, Date usageTime, Context context,
 			ValidationPolicy validationPolicy) {
 		super(new XmlXCV());
+		result.setTitle(BasicBuildingBlockDefinition.X509_CERTIFICATE_VALIDATION.getTitle());
 
 		this.diagnosticData = diagnosticData;
 		this.currentCertificate = currentCertificate;

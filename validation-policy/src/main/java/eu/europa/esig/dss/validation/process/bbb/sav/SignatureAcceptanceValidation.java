@@ -25,6 +25,7 @@ import java.util.Date;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
+import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CertifiedRolesCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ClaimedRolesCheck;
@@ -56,11 +57,13 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 	public SignatureAcceptanceValidation(DiagnosticData diagnosticData, Date currentTime, SignatureWrapper signature, Context context,
 			ValidationPolicy validationPolicy) {
 		super(signature, currentTime, context, validationPolicy);
+		result.setTitle(BasicBuildingBlockDefinition.SIGNATURE_ACCEPTANCE_VALIDATION.getTitle());
 		this.diagnosticData = diagnosticData;
 	}
 
 	@Override
 	protected void initChain() {
+
 		ChainItem<XmlSAV> item = firstItem = structuralValidation();
 
 		// signing-time

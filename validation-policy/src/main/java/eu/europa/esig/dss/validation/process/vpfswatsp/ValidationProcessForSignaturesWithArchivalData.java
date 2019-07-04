@@ -42,6 +42,7 @@ import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;
 import eu.europa.esig.dss.validation.process.bbb.sav.DigestAlgorithmAcceptanceValidation;
 import eu.europa.esig.dss.validation.process.bbb.sav.MessageImprintDigestAlgorithmValidation;
 import eu.europa.esig.dss.validation.process.bbb.sav.SignatureAcceptanceValidation;
@@ -71,6 +72,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	public ValidationProcessForSignaturesWithArchivalData(XmlSignature signatureAnalysis, SignatureWrapper signature, DiagnosticData diagnosticData,
 			Map<String, XmlBasicBuildingBlocks> bbbs, ValidationPolicy policy, Date currentTime) {
 		super(new XmlValidationProcessArchivalData());
+		result.setTitle(ValidationProcessDefinition.VPFSWATSP.getTitle());
 
 		this.validationProcessLongTermData = signatureAnalysis.getValidationProcessLongTermData();
 		this.validationProcessTimestamps = signatureAnalysis.getValidationProcessTimestamps();

@@ -27,6 +27,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
+import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.AllFilesSignedCheck;
@@ -52,6 +53,7 @@ public class CryptographicVerification extends Chain<XmlCV> {
 
 	public CryptographicVerification(DiagnosticData diagnosticData, TokenProxy token, Context context, ValidationPolicy validationPolicy) {
 		super(new XmlCV());
+		result.setTitle(BasicBuildingBlockDefinition.CRYPTOGRAPHIC_VERIFICATION.getTitle());
 
 		this.diagnosticData = diagnosticData;
 		this.token = token;

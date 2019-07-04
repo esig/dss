@@ -24,6 +24,7 @@ import java.util.Date;
 
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
+import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 
 /**
@@ -35,6 +36,7 @@ public class TimestampAcceptanceValidation extends AbstractAcceptanceValidation<
 
 	public TimestampAcceptanceValidation(Date currentTime, TimestampWrapper timestamp, ValidationPolicy validationPolicy) {
 		super(timestamp, currentTime, Context.TIMESTAMP, validationPolicy);
+		result.setTitle(BasicBuildingBlockDefinition.SIGNATURE_ACCEPTANCE_VALIDATION.getTitle());
 	}
 
 	@Override

@@ -68,47 +68,6 @@
 		</div>
 	</xsl:template>
 	
-    <xsl:template match="dss:Certificate">
-    	<div>
-	    	<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication/text()"/>
-	        <xsl:variable name="indicationCssClass">
-	        	<xsl:choose>
-					<xsl:when test="$indicationText='PASSED'">success</xsl:when>
-					<xsl:when test="$indicationText='INDETERMINATE'">warning</xsl:when>
-					<xsl:when test="$indicationText='FAILED'">danger</xsl:when>
-					<xsl:otherwise>default</xsl:otherwise>
-				</xsl:choose>
-	        </xsl:variable>
-    		<div>
-    			<xsl:attribute name="class">panel panel-<xsl:value-of select="$indicationCssClass" /></xsl:attribute>
-	    		<div>
-	    			<xsl:attribute name="class">panel-heading</xsl:attribute>
-		    		<xsl:attribute name="data-target">#collapseDssCert</xsl:attribute>
-			       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
-			       	<xsl:if test="string-length(dss:Conclusion/dss:SubIndication) &gt; 0">
-				        <span>
-				        	<xsl:attribute name="class">label label-<xsl:value-of select="$indicationCssClass" /> pull-right</xsl:attribute>
-				        	<xsl:if test="string-length(dss:Conclusion/dss:Error) &gt; 0">
-				        		<xsl:attribute name="title"><xsl:value-of select="dss:Conclusion/dss:Error"/></xsl:attribute>
-				        	</xsl:if>
-				        	<xsl:if test="string-length(dss:Conclusion/dss:Warning) &gt; 0">
-				        		<xsl:attribute name="title"><xsl:value-of select="dss:Conclusion/dss:Warning"/></xsl:attribute>
-				        	</xsl:if>
-				        	<xsl:value-of select="dss:Conclusion/dss:SubIndication"/>
-			        	</span>
-			        </xsl:if>
-	    			Certificate
-		        </div>
-	    		<div>
-	    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
-		        	<xsl:attribute name="id">collapseDssCert</xsl:attribute>
-		        	<xsl:apply-templates/>
-	    		</div>
-    		</div>
-    	</div>
-    </xsl:template>
-    
-	
 	<xsl:template match="dss:BasicBuildingBlocks">    
        <div>
        		<xsl:if test="@Id != ''">
@@ -139,7 +98,7 @@
 	   	</div>
     </xsl:template>
 
-	<xsl:template match="dss:ValidationProcessBasicSignatures">
+	<xsl:template match="dss:ValidationProcessBasicSignatures|dss:ValidationProcessLongTermData|dss:ValidationProcessArchivalData|dss:Certificate">
 		<div>
 			<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication/text()"/>
 	        <xsl:variable name="indicationCssClass">
@@ -154,7 +113,7 @@
 				<xsl:attribute name="class">panel panel-<xsl:value-of select="$indicationCssClass" /></xsl:attribute>
 	    		<div>
 					<xsl:attribute name="class">panel-heading</xsl:attribute>
-					<xsl:attribute name="data-target">#collapseBasicValidationData<xsl:value-of select="../@Id"/></xsl:attribute>
+					<xsl:attribute name="data-target">#collapse<xsl:value-of select="name(.)"/><xsl:value-of select="../@Id"/></xsl:attribute>
 					<xsl:attribute name="data-toggle">collapse</xsl:attribute>
 
 			       	<xsl:if test="@BestSignatureTime">
@@ -177,12 +136,12 @@
 			        	</span>
 			        </xsl:if>
 			        
-					Validation Process for Basic Signatures
+					<xsl:value-of select="@Title"/>
 				</div>
 				<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
 		    		<div>
 		    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
-			        	<xsl:attribute name="id">collapseBasicValidationData<xsl:value-of select="../@Id"/></xsl:attribute>
+			        	<xsl:attribute name="id">collapse<xsl:value-of select="name(.)"/><xsl:value-of select="../@Id"/></xsl:attribute>
 			        	<xsl:apply-templates/>
 		    		</div>
 		    	</xsl:if>
@@ -258,105 +217,6 @@
     	</xsl:if>
     </xsl:template>
     
-    <xsl:template match="dss:ValidationProcessArchivalData">
-    	<div>
-    		<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication/text()"/>
-	        <xsl:variable name="indicationCssClass">
-	        	<xsl:choose>
-					<xsl:when test="$indicationText='PASSED'">success</xsl:when>
-					<xsl:when test="$indicationText='INDETERMINATE'">warning</xsl:when>
-					<xsl:when test="$indicationText='FAILED'">danger</xsl:when>
-					<xsl:otherwise>default</xsl:otherwise>
-				</xsl:choose>
-	        </xsl:variable>
-    		<div>
-    			<xsl:attribute name="class">panel panel-<xsl:value-of select="$indicationCssClass" /></xsl:attribute>
-	    		<div>
-	    			<xsl:attribute name="class">panel-heading</xsl:attribute>
-		    		<xsl:attribute name="data-target">#collapseArchivalValidationData<xsl:value-of select="../@Id"/></xsl:attribute>
-			       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
-			       	
-			       	<xsl:if test="@BestSignatureTime">
-						<span>
-							<xsl:attribute name="class">pull-right glyphicon glyphicon-time dss-clock</xsl:attribute>
-							<xsl:attribute name="title">Best signature time : <xsl:value-of select="@BestSignatureTime"/></xsl:attribute>
-		       			</span>
-	       			</xsl:if>
-	       			
-			       	<xsl:if test="string-length(dss:Conclusion/dss:SubIndication) &gt; 0">
-				        <span>
-				        	<xsl:attribute name="class">label label-<xsl:value-of select="$indicationCssClass" /> pull-right</xsl:attribute>
-				        	<xsl:if test="string-length(dss:Conclusion/dss:Error) &gt; 0">
-				        		<xsl:attribute name="title"><xsl:value-of select="dss:Conclusion/dss:Error"/></xsl:attribute>
-				        	</xsl:if>
-				        	<xsl:if test="string-length(dss:Conclusion/dss:Warning) &gt; 0">
-				        		<xsl:attribute name="title"><xsl:value-of select="dss:Conclusion/dss:Warning"/></xsl:attribute>
-				        	</xsl:if>
-				        	<xsl:value-of select="dss:Conclusion/dss:SubIndication"/>
-			        	</span>
-			        </xsl:if>
-	    			Validation Process for Signatures with Archival Data
-		        </div>
-				<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
-		    		<div>
-		    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
-			        	<xsl:attribute name="id">collapseArchivalValidationData<xsl:value-of select="../@Id"/></xsl:attribute>
-			        	<xsl:apply-templates/>
-		    		</div>
-		    	</xsl:if>
-	    	</div>
-    	</div>
-    </xsl:template>
-
-    <xsl:template match="dss:ValidationProcessLongTermData">
-    	<div>
-	    	<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication/text()"/>
-	        <xsl:variable name="indicationCssClass">
-	        	<xsl:choose>
-					<xsl:when test="$indicationText='PASSED'">success</xsl:when>
-					<xsl:when test="$indicationText='INDETERMINATE'">warning</xsl:when>
-					<xsl:when test="$indicationText='FAILED'">danger</xsl:when>
-					<xsl:otherwise>default</xsl:otherwise>
-				</xsl:choose>
-	        </xsl:variable>
-    		<div>
-    			<xsl:attribute name="class">panel panel-<xsl:value-of select="$indicationCssClass" /></xsl:attribute>
-	    		<div>
-	    			<xsl:attribute name="class">panel-heading</xsl:attribute>
-		    		<xsl:attribute name="data-target">#collapseLongTermValidationData<xsl:value-of select="../@Id"/></xsl:attribute>
-			       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
-			       	
-			       	<xsl:if test="@BestSignatureTime">
-						<span>
-							<xsl:attribute name="class">pull-right glyphicon glyphicon-time dss-clock</xsl:attribute>
-							<xsl:attribute name="title">Best signature time : <xsl:value-of select="@BestSignatureTime"/></xsl:attribute>
-		       			</span>
-	       			</xsl:if>
-	       			
-			       	<xsl:if test="string-length(dss:Conclusion/dss:SubIndication) &gt; 0">
-				        <span>
-				        	<xsl:attribute name="class">label label-<xsl:value-of select="$indicationCssClass" /> pull-right</xsl:attribute>
-				        	<xsl:if test="string-length(dss:Conclusion/dss:Error) &gt; 0">
-				        		<xsl:attribute name="title"><xsl:value-of select="dss:Conclusion/dss:Error"/></xsl:attribute>
-				        	</xsl:if>
-				        	<xsl:if test="string-length(dss:Conclusion/dss:Warning) &gt; 0">
-				        		<xsl:attribute name="title"><xsl:value-of select="dss:Conclusion/dss:Warning"/></xsl:attribute>
-				        	</xsl:if>
-				        	<xsl:value-of select="dss:Conclusion/dss:SubIndication"/>
-			        	</span>
-			        </xsl:if>
-			        
-	    			Validation Process for Signatures with Time and Signatures with Long-Term Validation Data
-		        </div>
-	    		<div>
-	    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
-		        	<xsl:attribute name="id">collapseLongTermValidationData<xsl:value-of select="../@Id"/></xsl:attribute>
-		        	<xsl:apply-templates/>
-	    		</div>
-    		</div>
-    	</div>
-    </xsl:template>
-    
     <xsl:template match="dss:TLAnalysis">
     	<div>
        		<xsl:if test="@CountryCode != ''">
@@ -389,7 +249,7 @@
 				        	<xsl:value-of select="dss:Conclusion/dss:SubIndication"/>
 			        	</span>
 			        </xsl:if>
-	    			Trusted List <xsl:value-of select="@CountryCode"/>
+					<xsl:value-of select="@Title"/>
 		        </div>
 				<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
 		    		<div>
@@ -437,7 +297,7 @@
 						<xsl:value-of select="@SignatureQualification"/>	       			
 	       			</span>
 			        
-		       		Qualification
+		       		<xsl:value-of select="@Title"/>
 		        </div>
 	    		<div>
 	    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
@@ -488,7 +348,7 @@
 						<xsl:value-of select="@CertificateQualification"/>	       			
 	       			</span>
 			        
-		       		Certificate Qualification @ <xsl:value-of select="@ValidationTime" />	       
+		       		<xsl:value-of select="@Title"/>    
 		        </div>
 	    		<div>
 	    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
@@ -535,39 +395,7 @@
 			<div>
 				<xsl:attribute name="class">col-md-8</xsl:attribute>
 				<strong>
-					<xsl:choose>
-						<xsl:when test="name(.) = 'FC'">
-							Format Checking (FC)
-						</xsl:when>
-						<xsl:when test="name(.) = 'ISC'">
-							Identification of the Signing Certificate (ISC)
-						</xsl:when>
-						<xsl:when test="name(.) = 'VCI'">
-							Validation Context Initialization (VCI)
-						</xsl:when>
-						<xsl:when test="name(.) = 'CV'">
-							Cryptographic Verification (CV)
-						</xsl:when>
-						<xsl:when test="name(.) = 'SAV'">
-							Signature Acceptance Validation (SAV)
-						</xsl:when>
-						<xsl:when test="name(.) = 'XCV'">
-							X509 Certificate Validation (XCV)
-						</xsl:when>
-						<xsl:when test="name(.) = 'PSV'">
-							Past Signature Validation (PSV)
-						</xsl:when>
-						<xsl:when test="name(.) = 'PCV'">
-							Past Certificate Validation (PCV)
-						</xsl:when>
-						<xsl:when test="name(.) = 'VTS'">
-							Validation Time Sliding (VTS)
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:value-of select="name(.)" />
-						</xsl:otherwise>
-					</xsl:choose>
-					:
+					<xsl:value-of select="@Title"/> :
 				</strong>
 			</div>
 			<div>
@@ -608,7 +436,7 @@
 		       			</span>
 		       		</xsl:if>
 			       	
-	    			Certificate Id=<xsl:value-of select="@Id"/>
+	    			<xsl:value-of select="@Title"/>
 		        </div>
 		        
 		       	<xsl:if test="@TrustAnchor != 'true'">
@@ -641,7 +469,8 @@
 	    			<xsl:attribute name="class">panel-heading</xsl:attribute>
 		    		<xsl:attribute name="data-target">#collapseRFC<xsl:value-of select="@Id"/></xsl:attribute>
 			       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
-	    			Revocation Freshness Checker (RFC)
+			       	
+					<xsl:value-of select="@Title"/> :
 		        </div>
 	    		<div>
 	    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>

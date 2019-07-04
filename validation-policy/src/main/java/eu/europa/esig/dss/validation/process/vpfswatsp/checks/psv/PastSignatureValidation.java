@@ -33,6 +33,7 @@ import eu.europa.esig.dss.validation.policy.SubContext;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
@@ -65,6 +66,7 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 	public PastSignatureValidation(TokenProxy token, DiagnosticData diagnosticData, XmlBasicBuildingBlocks bbb, POEExtraction poe, Date currentTime,
 			ValidationPolicy policy, Context context) {
 		super(new XmlPSV());
+		result.setTitle(BasicBuildingBlockDefinition.PAST_SIGNATURE_VALIDATION.getTitle());
 
 		this.token = token;
 		this.diagnosticData = diagnosticData;

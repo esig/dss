@@ -37,6 +37,7 @@ import eu.europa.esig.dss.validation.ValidationTime;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;
 import eu.europa.esig.dss.validation.process.qualification.certificate.CertQualificationAtTimeBlock;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableTrustedListCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AdESAcceptableCheck;
@@ -64,6 +65,7 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 			CertificateWrapper signingCertificate,
 			List<XmlTLAnalysis> tlAnalysis, String lotlCountryCode) {
 		super(new XmlValidationSignatureQualification());
+		result.setTitle(ValidationProcessDefinition.SIG_QUALIFICATION.getTitle());
 		result.setId(signatureId);
 
 		this.etsi319102Conclusion = etsi319102validation.getConclusion();

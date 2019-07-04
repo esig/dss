@@ -92,6 +92,7 @@
 			<xs:element name="Constraint" type="Constraint" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="Conclusion" type="Conclusion" />
 		</xs:sequence>
+		<xs:attribute name="Title" type="xs:string" use="required" />
 	</xs:complexType>
 	
 	<xs:complexType name="ConstraintsConclusionWithControlTime">
