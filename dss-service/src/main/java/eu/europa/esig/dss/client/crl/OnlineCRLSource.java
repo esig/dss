@@ -20,10 +20,11 @@
  */
 package eu.europa.esig.dss.client.crl;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -33,7 +34,6 @@ import eu.europa.esig.dss.CRLBinary;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSRevocationUtils;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.client.http.Protocol;
 import eu.europa.esig.dss.client.http.commons.CommonsDataLoader;
@@ -41,6 +41,7 @@ import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.crl.CRLValidity;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.OnlineRevocationSource;
 import eu.europa.esig.dss.x509.revocation.RevocationSourceAlternateUrlsSupport;
 import eu.europa.esig.dss.x509.revocation.crl.CRLSource;
@@ -147,6 +148,7 @@ public class OnlineCRLSource implements CRLSource, RevocationSourceAlternateUrls
 			CRLBinary crlBinary = new CRLBinary(dataAndUrl.data);
 			final CRLValidity crlValidity = CRLUtils.buildCRLValidity(crlBinary, issuerToken);
 			final CRLToken crlToken = new CRLToken(certificateToken, crlValidity);
+			crlToken.setOrigins(new HashSet<RevocationOrigin>(Arrays.asList(RevocationOrigin.EXTERNAL)));
 			crlToken.setSourceURL(dataAndUrl.urlString);
 			crlToken.setAvailable(true);
 			crlToken.setRevocationTokenKey(DSSRevocationUtils.getCRLRevocationTokenKey(dataAndUrl.urlString));

@@ -44,7 +44,7 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 	protected final AttributeTable unsignedAttributes;
 	
 	/**
-	 * Cached list of {@code CRLBinaryIdentifier}s found in SignedData attribute
+	 * Cached list of {@code CRLBinary}s found in SignedData attribute
 	 */
 	private List<CRLBinary> signedDataCRLIdentifiers = new ArrayList<CRLBinary>();
 
@@ -193,7 +193,7 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 	}
 
 	/**
-	 * Computes and store {@code CRLBinaryIdentifier} from {@code crlHolder}
+	 * Computes and store {@code CRLBinary} from {@code crlHolder}
 	 * @param crlHolder {@link X509CRLHolder} to compute values from
 	 * @param origin {@link RevocationOrigin} indicating the list where to save the object
 	 * @return {@link CRLBinary}

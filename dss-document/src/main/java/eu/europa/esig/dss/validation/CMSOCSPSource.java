@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseIBinary;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 
 /**
@@ -48,9 +48,9 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 	protected final AttributeTable unsignedAttributes;
 	
 	/**
-	 * Cached list of {@code OCSPResponseIdentifier}s found in SignedData attribute
+	 * Cached list of {@code OCSPResponseBinary}s found in SignedData attribute
 	 */
-	private List<OCSPResponseIBinary> signedDataOCSPIdentifiers = new ArrayList<OCSPResponseIBinary>();
+	private List<OCSPResponseBinary> signedDataOCSPIdentifiers = new ArrayList<OCSPResponseBinary>();
 
 	/**
 	 * The default constructor for CAdESOCSPSource.
@@ -92,9 +92,9 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 	
 	/**
 	 * Returns a list of {@code OCSPResponseIdentifier} found in the SignedData container
-	 * @return list of {@link OCSPResponseIBinary}
+	 * @return list of {@link OCSPResponseBinary}
 	 */
-	public List<OCSPResponseIBinary> getSignedDataOCSPIdentifiers() {
+	public List<OCSPResponseBinary> getSignedDataOCSPIdentifiers() {
 		return signedDataOCSPIdentifiers;
 	}
 
@@ -190,7 +190,7 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 					final OCSPResp ocspResp = DSSRevocationUtils.getOcspResp(otherRevocationInfoMatch);
 					basicOCSPResp = DSSRevocationUtils.fromRespToBasic(ocspResp);
 				}
-				OCSPResponseIBinary ocspResponseIdentifier = addBasicOcspResp(basicOCSPResp, getInternalRevocationValuesOrigin());
+				OCSPResponseBinary ocspResponseIdentifier = addBasicOcspResp(basicOCSPResp, getInternalRevocationValuesOrigin());
 				if (ocspResponseIdentifier != null) {
 					ocspResponseIdentifier.setAsn1ObjectIdentifier(CMSObjectIdentifiers.id_ri_ocsp_response);
 					signedDataOCSPIdentifiers.add(ocspResponseIdentifier);
@@ -209,7 +209,7 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 			if (object instanceof DERSequence) {
 				final DERSequence otherRevocationInfoMatch = (DERSequence) object;
 				final BasicOCSPResp basicOCSPResp = DSSRevocationUtils.getBasicOcspResp(otherRevocationInfoMatch);
-				OCSPResponseIBinary ocspResponseIdentifier = addBasicOcspResp(basicOCSPResp, getInternalRevocationValuesOrigin());
+				OCSPResponseBinary ocspResponseIdentifier = addBasicOcspResp(basicOCSPResp, getInternalRevocationValuesOrigin());
 				if (ocspResponseIdentifier != null) {
 					ocspResponseIdentifier.setAsn1ObjectIdentifier(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
 					signedDataOCSPIdentifiers.add(ocspResponseIdentifier);
@@ -267,14 +267,14 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 	}
 
 	/**
-	 * Builds and returns {@code OCSPResponseIdentifier} from the provided {@code basicOCSPResp}
+	 * Builds and returns {@code OCSPResponseBinary} from the provided {@code basicOCSPResp}
 	 * @param basicOCSPResp {@link BasicOCSPResp} to build identifier from
 	 * @param origin {@link RevocationOrigin} specifing the list to store the value
-	 * @return {@link OCSPResponseIBinary}
+	 * @return {@link OCSPResponseBinary}
 	 */
-	protected OCSPResponseIBinary addBasicOcspResp(final BasicOCSPResp basicOCSPResp, RevocationOrigin origin) {
+	protected OCSPResponseBinary addBasicOcspResp(final BasicOCSPResp basicOCSPResp, RevocationOrigin origin) {
 		if (basicOCSPResp != null) {
-			OCSPResponseIBinary ocspResponse = OCSPResponseIBinary.build(basicOCSPResp);
+			OCSPResponseBinary ocspResponse = OCSPResponseBinary.build(basicOCSPResp);
 			addOCSPResponse(ocspResponse, origin);
 			return ocspResponse;
 		}

@@ -18,7 +18,7 @@ import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.TimestampType;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseIBinary;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseBinary;
 
 @SuppressWarnings("serial")
 public class PAdESTimestampSource extends CAdESTimestampSource {
@@ -145,7 +145,7 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 		crlSource.addAll(padesCRLSource);
 		
 		PAdESOCSPSource padesOCSPSource = new PAdESOCSPSource(dssDictionary);
-		for (OCSPResponseIBinary ocspIdentifier : padesOCSPSource.getOCSPResponsesList()) {
+		for (OCSPResponseBinary ocspIdentifier : padesOCSPSource.getOCSPResponsesList()) {
 			if (padesOCSPSource.getRevocationOrigins(ocspIdentifier).contains(RevocationOrigin.INTERNAL_DSS) || 
 					padesOCSPSource.getRevocationOrigins(ocspIdentifier).contains(RevocationOrigin.INTERNAL_VRI)) {
 				addReference(references, new TimestampedReference(ocspIdentifier.asXmlId(), TimestampedObjectType.REVOCATION));

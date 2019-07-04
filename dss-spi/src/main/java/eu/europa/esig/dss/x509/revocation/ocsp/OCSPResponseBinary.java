@@ -11,9 +11,9 @@ import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.identifier.EncapsulatedRevocationTokenIdentifier;
 
-public class OCSPResponseIBinary extends EncapsulatedRevocationTokenIdentifier {
+public class OCSPResponseBinary extends EncapsulatedRevocationTokenIdentifier {
 
-	private static final Logger LOG = LoggerFactory.getLogger(OCSPResponseIBinary.class);
+	private static final Logger LOG = LoggerFactory.getLogger(OCSPResponseBinary.class);
 
 	private static final long serialVersionUID = 6693521503459405568L;
 	
@@ -23,12 +23,12 @@ public class OCSPResponseIBinary extends EncapsulatedRevocationTokenIdentifier {
 	// Note: Used in CAdES only!
 	private ASN1ObjectIdentifier asn1ObjectIdentifier;
 	
-	public static OCSPResponseIBinary build(BasicOCSPResp basicOCSPResp) {
+	public static OCSPResponseBinary build(BasicOCSPResp basicOCSPResp) {
 		byte[] ocspRespBinary = DSSRevocationUtils.getEncodedFromBasicResp(basicOCSPResp);
-		return new OCSPResponseIBinary(basicOCSPResp, ocspRespBinary);
+		return new OCSPResponseBinary(basicOCSPResp, ocspRespBinary);
 	}
 	
-	OCSPResponseIBinary(BasicOCSPResp basicOCSPResp, byte[] encoded) {
+	OCSPResponseBinary(BasicOCSPResp basicOCSPResp, byte[] encoded) {
 		super(encoded);
 		this.basicOCSPResp = basicOCSPResp;
 	}

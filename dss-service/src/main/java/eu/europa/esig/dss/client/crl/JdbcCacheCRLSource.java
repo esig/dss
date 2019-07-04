@@ -26,8 +26,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -183,7 +183,7 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRLToken> implement
 			cached.setSignatureIntact(rs.getBoolean(SQL_FIND_QUERY_SIGNATURE_INTACT));
 			cached.setSignatureInvalidityReason(rs.getString(SQL_FIND_QUERY_SIGNATURE_INVALID_REASON));
 			CRLToken crlToken = new CRLToken(certificateToken, cached);
-			crlToken.setOrigins(new ArrayList<RevocationOrigin>(Arrays.asList(RevocationOrigin.CACHED)));
+			crlToken.setOrigins(new HashSet<RevocationOrigin>(Arrays.asList(RevocationOrigin.CACHED)));
 			return crlToken;
 		} catch (SQLException e) {
 			throw new RevocationException("An error occurred during an attempt to get a revocation token");

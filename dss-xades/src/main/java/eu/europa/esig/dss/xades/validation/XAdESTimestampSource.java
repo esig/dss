@@ -32,7 +32,7 @@ import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.EncapsulatedCertificateTokenIdentifier;
 import eu.europa.esig.dss.x509.TimestampLocation;
 import eu.europa.esig.dss.x509.TimestampType;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseIBinary;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.xades.XAdESUtils;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
@@ -332,8 +332,8 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	}
 
 	@Override
-	protected List<OCSPResponseIBinary> getEncapsulatedOCSPIdentifiers(XAdESAttribute unsignedAttribute) {
-		List<OCSPResponseIBinary> crlIdentifiers = new ArrayList<OCSPResponseIBinary>();
+	protected List<OCSPResponseBinary> getEncapsulatedOCSPIdentifiers(XAdESAttribute unsignedAttribute) {
+		List<OCSPResponseBinary> crlIdentifiers = new ArrayList<OCSPResponseBinary>();
 		String xPathString = isTimeStampValidationData(unsignedAttribute) ? 
 				xPathQueryHolder.XPATH__ENCAPSULATED_OCSP_VALUES : xPathQueryHolder.XPATH___ENCAPSULATED_OCSP_VALUES;
 		NodeList encapsulatedNodes = unsignedAttribute.getNodeList(xPathString);
@@ -342,7 +342,7 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 			byte[] binaries = getEncapsulatedTokenBinaries(element);
 			try {
 				BasicOCSPResp basicOCSPResp = DSSRevocationUtils.loadOCSPFromBinaries(binaries);
-				crlIdentifiers.add(OCSPResponseIBinary.build(basicOCSPResp));
+				crlIdentifiers.add(OCSPResponseBinary.build(basicOCSPResp));
 			} catch (IOException e) {
 				LOG.error("Cannot read encapsulated OCSP response. Reason: {}", e.getMessage());
 			}

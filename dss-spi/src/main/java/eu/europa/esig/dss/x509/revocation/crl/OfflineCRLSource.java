@@ -21,14 +21,14 @@
 package eu.europa.esig.dss.x509.revocation.crl;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,9 +51,9 @@ public abstract class OfflineCRLSource implements CRLSource {
 	private static final Logger LOG = LoggerFactory.getLogger(OfflineCRLSource.class);
 
 	/**
-	 * This {@code Map} contains all collected CRL binaries with a list of their origins
+	 * This {@code Map} contains all collected CRL binaries with a set of their origins
 	 */
-	protected final Map<CRLBinary, List<RevocationOrigin>> crlBinaryOriginsMap = new HashMap<CRLBinary, List<RevocationOrigin>>();
+	protected final Map<CRLBinary, Set<RevocationOrigin>> crlBinaryOriginsMap = new HashMap<CRLBinary, Set<RevocationOrigin>>();
 
 	/**
 	 * This {@code HashMap} contains the {@code CRLValidity} object for each
@@ -172,14 +172,12 @@ public abstract class OfflineCRLSource implements CRLSource {
 	}
 
 	protected void addCRLBinary(CRLBinary crlBinary, RevocationOrigin origin) {
-		List<RevocationOrigin> origins = crlBinaryOriginsMap.get(crlBinary);
+		Set<RevocationOrigin> origins = crlBinaryOriginsMap.get(crlBinary);
 		if (origins == null) {
-			origins = new ArrayList<RevocationOrigin>();
+			origins = new HashSet<RevocationOrigin>();
 			crlBinaryOriginsMap.put(crlBinary, origins);
 		}
-		if (!origins.contains(origin)) {
-			origins.add(origin);
-		}
+		origins.add(origin);
 	}
 	
 	/**
@@ -232,11 +230,11 @@ public abstract class OfflineCRLSource implements CRLSource {
 	}
 	
 	/**
-	 * Returns a list of {@code RevocationOrigin}s for the given {@code crlBinary}
+	 * Returns a set of {@code RevocationOrigin}s for the given {@code crlBinary}
 	 * @param crlBinary {@link CRLBinary} to get origins for
-	 * @return list of {@link RevocationOrigin}s
+	 * @return set of {@link RevocationOrigin}s
 	 */
-	public List<RevocationOrigin> getRevocationOrigins(CRLBinary crlBinary) {
+	public Set<RevocationOrigin> getRevocationOrigins(CRLBinary crlBinary) {
 		return crlBinaryOriginsMap.get(crlBinary);
 	}
 

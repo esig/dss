@@ -29,7 +29,7 @@ import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.revocation.crl.ListCRLSource;
 import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.ListOCSPSource;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseIBinary;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 
 /**
@@ -573,7 +573,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 		}
 		
 		for (Digest refDigest : getRevocationRefOCSPDigests(unsignedAttribute)) {
-			OCSPResponseIBinary identifier = ocspSource.getIdentifier(refDigest);
+			OCSPResponseBinary identifier = ocspSource.getIdentifier(refDigest);
 			if (identifier != null) {
 				timestampedReferences.add(new TimestampedReference(identifier.asXmlId(), TimestampedObjectType.REVOCATION));
 			}
@@ -629,11 +629,11 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	protected abstract List<CRLBinary> getEncapsulatedCRLIdentifiers(SignatureAttribute unsignedAttribute);
 	
 	/**
-	 * Returns a list of {@link OCSPResponseIBinary}s obtained from the given {@code unsignedAttribute}
+	 * Returns a list of {@link OCSPResponseBinary}s obtained from the given {@code unsignedAttribute}
 	 * @param unsignedAttribute {@link SignatureAttribute} to get OCSP identifiers from
-	 * @return list of {@link OCSPResponseIBinary}s
+	 * @return list of {@link OCSPResponseBinary}s
 	 */
-	protected abstract List<OCSPResponseIBinary> getEncapsulatedOCSPIdentifiers(SignatureAttribute unsignedAttribute);
+	protected abstract List<OCSPResponseBinary> getEncapsulatedOCSPIdentifiers(SignatureAttribute unsignedAttribute);
 	
 	/**
 	 * Returns a list of {@code TimestampedReference}s for the given {@code timestampToken} 
