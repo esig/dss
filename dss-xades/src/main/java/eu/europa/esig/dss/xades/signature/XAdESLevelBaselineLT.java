@@ -20,8 +20,12 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
+import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.w3c.dom.Element;
 
 import eu.europa.esig.dss.DSSException;
@@ -146,8 +150,36 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 
 			final Element revocationValuesDom = DomUtils.addElement(documentDom, parentDom, XAdESNamespaces.XAdES, "xades:RevocationValues");
 
-			incorporateCrlTokens(revocationValuesDom, revocationsForInclusion.crlTokens);
-			incorporateOcspTokens(revocationValuesDom, revocationsForInclusion.ocspTokens);
+			// Filter to avoid duplicate entries
+			List<CRLToken> crlTokens = revocationsForInclusion.crlTokens;
+			List<CRLToken> crlsToBeAdded = new ArrayList<CRLToken>();
+			Collection<byte[]> containedX509CRLs = xadesSignature.getCRLSource().getContainedX509CRLs();
+			for (CRLToken crlToken : crlTokens) {
+				boolean found = false;
+				byte[] expectedCrl = crlToken.getEncoded();
+				for (byte[] byteArray : containedX509CRLs) {
+					if (Arrays.equals(expectedCrl, byteArray)) {
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					crlsToBeAdded.add(crlToken);
+				}
+			}
+
+			List<OCSPToken> ocspTokens = revocationsForInclusion.ocspTokens;
+			List<OCSPToken> ocspToBeAdded = new ArrayList<OCSPToken>();
+			List<BasicOCSPResp> containedOCSPResponses = xadesSignature.getOCSPSource().getContainedOCSPResponses();
+			for (OCSPToken ocspToken : ocspTokens) {
+				BasicOCSPResp expectedBasicOCSP = ocspToken.getBasicOCSPResp();
+				if (!containedOCSPResponses.contains(expectedBasicOCSP)) {
+					ocspToBeAdded.add(ocspToken);
+				}
+			}
+
+			incorporateCrlTokens(revocationValuesDom, crlsToBeAdded);
+			incorporateOcspTokens(revocationValuesDom, ocspToBeAdded);
 		}
 	}
 
