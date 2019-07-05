@@ -20,11 +20,15 @@
  */
 package eu.europa.esig.dss.validation.timestamp;
 
+import java.io.Serializable;
+
 /**
  * This class represents XAdES Include tag in case of IndividualDataObjectsTimeStamp
  */
-public class TimestampInclude {
+public class TimestampInclude implements Serializable {
 
+	private static final long serialVersionUID = 8557108386646000784L;
+	
 	private String uri;
 	/* The referencedData attribute shall be present in each and every Include element, and set to "true". */
 	private boolean referencedData;

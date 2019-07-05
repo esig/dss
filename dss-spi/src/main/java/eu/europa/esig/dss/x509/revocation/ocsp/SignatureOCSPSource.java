@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import eu.europa.esig.dss.DSSASN1Utils;
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.RevocationOrigin;
@@ -32,7 +33,7 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	private List<OCSPRef> attributeRevocationRefsOCSPs = new ArrayList<OCSPRef>();
 	private List<OCSPRef> timestampRevocationRefsOCSPs = new ArrayList<OCSPRef>();
 	
-	private List<OCSPRef> orphanRevocationRefsOCSPs;
+	private transient List<OCSPRef> orphanRevocationRefsOCSPs;
 	
 	/**
 	 * Map that links {@link OCSPToken}s with related {@link OCSPRef}s
@@ -140,8 +141,10 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 						break;
 					case INTERNAL_VRI:
 						vriDictionaryOCSPs.add(ocspToken);
-					default:
 						break;
+					default:
+						throw new DSSException(String.format("The given RevocationOrigin [%s] is not supported for OCSPToken object "
+								+ "in the SignatureOCSPSource", origin.name()));
 				}
 			}
 		}
@@ -158,12 +161,15 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 				if (!attributeRevocationRefsOCSPs.contains(ocspRef)) {
 					attributeRevocationRefsOCSPs.add(ocspRef);
 				}
+				break;
 			case TIMESTAMP_REVOCATION_REFS:
 				if (!timestampRevocationRefsOCSPs.contains(ocspRef)) {
 					timestampRevocationRefsOCSPs.add(ocspRef);
 				}
-			default:
 				break;
+			default:
+				throw new DSSException(String.format("The given RevocationOrigin [%s] is not supported for OCSPRef object "
+						+ "in the SignatureOCSPSource", origin.name()));
 		}
 	}
 	

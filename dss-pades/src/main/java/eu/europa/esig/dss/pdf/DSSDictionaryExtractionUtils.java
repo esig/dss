@@ -27,7 +27,7 @@ public class DSSDictionaryExtractionUtils {
 						crlMap.put(objectNumber, crlArray.getBytes(ii));
 					}
 				} catch (Exception e) {
-					LOG.debug("Unable to read CRL " + ii + " from the '" + dictionaryName + "' dictionary : " + e.getMessage(), e);
+					LOG.debug("Unable to read CRL '{}' from the '{}' dictionary : {}", ii, dictionaryName, e.getMessage(), e);
 				}
 			}
 		} else {
@@ -48,7 +48,7 @@ public class DSSDictionaryExtractionUtils {
 						certMap.put(objectNumber, DSSUtils.loadCertificate(certsArray.getBytes(ii)));
 					}
 				} catch (Exception e) {
-					LOG.debug("Unable to read Cert " + ii + " from the '" + dictionaryName + "' dictionary : " + e.getMessage(), e);
+					LOG.debug("Unable to read Cert '{}' from the '{}' dictionary : {}", ii, dictionaryName, e.getMessage(), e);
 				}
 			}
 		} else {
@@ -71,7 +71,7 @@ public class DSSDictionaryExtractionUtils {
 						ocspMap.put(objectNumber, responseObject);
 					}
 				} catch (Exception e) {
-					LOG.debug("Unable to read OCSP " + ii + " from the '" + dictionaryName + "' dictionary : " + e.getMessage(), e);
+					LOG.debug("Unable to read OCSP '{}' from the '{}' dictionary : {}", ii, dictionaryName, e.getMessage(), e);
 				}
 			}
 		} else {

@@ -319,6 +319,7 @@ public class DiagnosticDataBuilder {
 	}
 
 	public XmlDiagnosticData build() {
+		
 		XmlDiagnosticData diagnosticData = new XmlDiagnosticData();
 		if (signedDocument != null) {
 			diagnosticData.setDocumentName(removeSpecialCharsForXml(signedDocument.getName()));
@@ -326,21 +327,63 @@ public class DiagnosticDataBuilder {
 		diagnosticData.setValidationDate(validationDate);
 		diagnosticData.setContainerInfo(getXmlContainerInfo());
 
+		Collection<XmlCertificate> xmlCertificates = buildXmlCertificates();
+		diagnosticData.getUsedCertificates().addAll(xmlCertificates);
 
+		Collection<XmlRevocation> xmlRevocations = buildXmlRevocations();
+		diagnosticData.getUsedRevocations().addAll(xmlRevocations);
+
+		if (Utils.isCollectionNotEmpty(signatures)) {
+			// collect original signer documents
+			Collection<XmlSignerData> xmlSignerData = buildXmlSignerData(signatures);
+			diagnosticData.getOriginalDocuments().addAll(xmlSignerData);
+			
+			Collection<XmlSignature> xmlSignatures = buildXmlSignatures(signatures);
+			diagnosticData.getSignatures().addAll(xmlSignatures);
+			
+			Collection<XmlTimestamp> XmlTimestamps = buildXmlTimestamps(signatures);
+			diagnosticData.getUsedTimestamps().addAll(XmlTimestamps);
+		}
+		
+		if (Utils.isMapNotEmpty(xmlOrphanTokens)) {
+			diagnosticData.getOrphanTokens().addAll(xmlOrphanTokens.values());
+		}
+
+		if (trustedCertSource instanceof TrustedListsCertificateSource) {
+			TrustedListsCertificateSource tlCS = (TrustedListsCertificateSource) trustedCertSource;
+
+			Collection<XmlTrustedList> xmlTrustedLists = buildXmlTrustedLists(tlCS);
+			diagnosticData.getTrustedLists().addAll(xmlTrustedLists);
+
+			TLInfo lotlInfo = tlCS.getLotlInfo();
+			if (Utils.isCollectionNotEmpty(xmlTrustedLists) && lotlInfo != null) {
+				diagnosticData.setListOfTrustedLists(getXmlTrustedList("LOTL", lotlInfo));
+			}
+
+			for (XmlCertificate xmlCert : diagnosticData.getUsedCertificates()) {
+				xmlCert.setTrustedServiceProviders(getXmlTrustedServiceProviders(getCertificateToken(xmlCert.getId())));
+			}
+		}
+
+		return diagnosticData;
+	}
+
+	private Collection<XmlCertificate> buildXmlCertificates() {
 		if (Utils.isCollectionNotEmpty(usedCertificates)) {
 			for (CertificateToken certificateToken : usedCertificates) {
 				XmlCertificate currentXmlCet = buildDetachedXmlCertificate(certificateToken);
 				xmlCerts.put(certificateToken.getDSSIdAsString(), currentXmlCet);
-				diagnosticData.getUsedCertificates().add(currentXmlCet);
 			}
-
 			for (CertificateToken certificateToken : usedCertificates) {
 				XmlCertificate xmlCertificate = xmlCerts.get(certificateToken.getDSSIdAsString());
 				xmlCertificate.setSigningCertificate(getXmlSigningCertificate(certificateToken.getPublicKeyOfTheSigner()));
 				xmlCertificate.setCertificateChain(getXmlForCertificateChain(certificateToken.getPublicKeyOfTheSigner()));
 			}
 		}
-
+		return xmlCerts.values();
+	}
+	
+	private Collection<XmlRevocation> buildXmlRevocations() {
 		if (Utils.isCollectionNotEmpty(usedRevocations)) {
 			for (RevocationToken revocationToken : usedRevocations) {
 				if (!xmlRevocations.containsKey(revocationToken.getDSSIdAsString())) {
@@ -348,10 +391,8 @@ public class DiagnosticDataBuilder {
 					currentXmlRevocation.setSigningCertificate(getXmlSigningCertificate(revocationToken.getPublicKeyOfTheSigner()));
 					currentXmlRevocation.setCertificateChain(getXmlForCertificateChain(revocationToken.getPublicKeyOfTheSigner()));
 					xmlRevocations.put(revocationToken.getDSSIdAsString(), currentXmlRevocation);
-					diagnosticData.getUsedRevocations().add(currentXmlRevocation);
 				}
 			}
-
 			for (CertificateToken certificateToken : usedCertificates) {
 				XmlCertificate xmlCertificate = xmlCerts.get(certificateToken.getDSSIdAsString());
 				Set<RevocationToken> revocationsForCert = getRevocationsForCert(certificateToken);
@@ -374,93 +415,73 @@ public class DiagnosticDataBuilder {
 				}
 			}
 		}
-
-		if (Utils.isCollectionNotEmpty(signatures)) {
-			// collect original signer documents
-			List<String> originalDocumentIds = new ArrayList<String>();
-			for (AdvancedSignature advancedSignature : signatures) {
-				for (SignatureScope signatureScope : advancedSignature.getSignatureScopes()) {
-					if (!originalDocumentIds.contains(signatureScope.getDSSIdAsString())) {
-						XmlSignerData signedData = getXmlSignerData(signatureScope);
-						xmlSignedData.put(signatureScope.getDSSIdAsString(), signedData);
-						diagnosticData.getOriginalDocuments().add(signedData);
-						originalDocumentIds.add(signatureScope.getDSSIdAsString());
-					}
-				}
-			}
-			
-			for (AdvancedSignature advancedSignature : signatures) {
-				XmlSignature currentXmlSignature = buildDetachedXmlSignature(advancedSignature);
-				xmlSignatures.put(advancedSignature.getId(), currentXmlSignature);
-				diagnosticData.getSignatures().add(currentXmlSignature);
-			}
-			
-			List<XmlTimestamp> builtTimestamps = new ArrayList<XmlTimestamp>();
-
-			for (AdvancedSignature advancedSignature : signatures) {
-				XmlSignature currentSignature = xmlSignatures.get(advancedSignature.getId());
-
-				// build timestamps
-				for (XmlTimestamp xmlTimestamp : getXmlTimestamps(advancedSignature)) {
-					addXmlTimestampToList(builtTimestamps, xmlTimestamp);
-				}
-
-				// attach timestamps
-				currentSignature.setFoundTimestamps(getXmlFoundTimestamps(advancedSignature));
-
-				// attach master
-				AdvancedSignature masterSignature = advancedSignature.getMasterSignature();
-				if (masterSignature != null) {
-					XmlSignature xmlMasterSignature = xmlSignatures.get(masterSignature.getId());
-					currentSignature.setCounterSignature(true);
-					currentSignature.setParent(xmlMasterSignature);
-				}
-			}
-			for (XmlTimestamp timestamp : builtTimestamps) {
-				diagnosticData.getUsedTimestamps().add(timestamp);
-			}
-		}
-		
-		if (Utils.isMapNotEmpty(xmlOrphanTokens)) {
-			for (XmlOrphanToken orphanToken : xmlOrphanTokens.values()) {
-				diagnosticData.getOrphanTokens().add(orphanToken);
-			}
-		}
-
-		if (trustedCertSource instanceof TrustedListsCertificateSource) {
-			TrustedListsCertificateSource tlCS = (TrustedListsCertificateSource) trustedCertSource;
-
-			Set<String> countryCodes = new HashSet<String>();
-			for (CertificateToken certificateToken : usedCertificates) {
-				Set<ServiceInfo> associatedTSPS = trustedCertSource.getTrustServices(certificateToken);
-				if (Utils.isCollectionNotEmpty(associatedTSPS)) {
-					for (ServiceInfo serviceInfo : associatedTSPS) {
-						countryCodes.add(serviceInfo.getTlCountryCode());
-					}
-				}
-			}
-
-			boolean addLOTL = false;
-			for (String countryCode : countryCodes) {
-				TLInfo tlInfo = tlCS.getTlInfo(countryCode);
-				if (tlInfo != null) {
-					diagnosticData.getTrustedLists().add(getXmlTrustedList(countryCode, tlInfo));
-					addLOTL = true;
-				}
-			}
-
-			if (addLOTL) {
-				diagnosticData.setListOfTrustedLists(getXmlTrustedList("LOTL", tlCS.getLotlInfo()));
-			}
-
-			for (XmlCertificate xmlCert : diagnosticData.getUsedCertificates()) {
-				xmlCert.setTrustedServiceProviders(getXmlTrustedServiceProviders(getCertificateToken(xmlCert.getId())));
-			}
-		}
-
-		return diagnosticData;
+		return xmlRevocations.values();
 	}
-
+	
+	private Collection<XmlSignerData> buildXmlSignerData(List<AdvancedSignature> signatures) {
+		List<String> originalDocumentIds = new ArrayList<String>();
+		for (AdvancedSignature advancedSignature : signatures) {
+			for (SignatureScope signatureScope : advancedSignature.getSignatureScopes()) {
+				if (!originalDocumentIds.contains(signatureScope.getDSSIdAsString())) {
+					XmlSignerData signedData = getXmlSignerData(signatureScope);
+					xmlSignedData.put(signatureScope.getDSSIdAsString(), signedData);
+					originalDocumentIds.add(signatureScope.getDSSIdAsString());
+				}
+			}
+		}
+		return xmlSignedData.values();
+	}
+	
+	private Collection<XmlSignature> buildXmlSignatures(List<AdvancedSignature> signatures) {
+		List<XmlSignature> builtSignatures = new ArrayList<XmlSignature>();
+		for (AdvancedSignature advancedSignature : signatures) {
+			XmlSignature currentXmlSignature = buildDetachedXmlSignature(advancedSignature);
+			xmlSignatures.put(advancedSignature.getId(), currentXmlSignature);
+			builtSignatures.add(currentXmlSignature);
+		}
+		return builtSignatures;
+	}
+	
+	private Collection<XmlTimestamp> buildXmlTimestamps(List<AdvancedSignature> signatures) {
+		List<XmlTimestamp> builtTimestamps = new ArrayList<XmlTimestamp>();
+		for (AdvancedSignature advancedSignature : signatures) {
+			XmlSignature currentSignature = xmlSignatures.get(advancedSignature.getId());
+			// build timestamps
+			for (XmlTimestamp xmlTimestamp : getXmlTimestamps(advancedSignature)) {
+				addXmlTimestampToList(builtTimestamps, xmlTimestamp);
+			}
+			// attach timestamps
+			currentSignature.setFoundTimestamps(getXmlFoundTimestamps(advancedSignature));
+			// attach master
+			AdvancedSignature masterSignature = advancedSignature.getMasterSignature();
+			if (masterSignature != null) {
+				XmlSignature xmlMasterSignature = xmlSignatures.get(masterSignature.getId());
+				currentSignature.setCounterSignature(true);
+				currentSignature.setParent(xmlMasterSignature);
+			}
+		}
+		return builtTimestamps;
+	}
+	
+	private Collection<XmlTrustedList> buildXmlTrustedLists(TrustedListsCertificateSource tlCS) {
+		List<XmlTrustedList> trustedLists = new ArrayList<XmlTrustedList>();
+		Set<String> countryCodes = new HashSet<String>();
+		for (CertificateToken certificateToken : usedCertificates) {
+			Set<ServiceInfo> associatedTSPS = trustedCertSource.getTrustServices(certificateToken);
+			if (Utils.isCollectionNotEmpty(associatedTSPS)) {
+				for (ServiceInfo serviceInfo : associatedTSPS) {
+					countryCodes.add(serviceInfo.getTlCountryCode());
+				}
+			}
+		}
+		for (String countryCode : countryCodes) {
+			TLInfo tlInfo = tlCS.getTlInfo(countryCode);
+			if (tlInfo != null) {
+				trustedLists.add(getXmlTrustedList(countryCode, tlInfo));
+			}
+		}
+		return trustedLists;
+	}
 
 	private XmlTrustedList getXmlTrustedList(String countryCode, TLInfo tlInfo) {
 		if (tlInfo != null) {
@@ -620,14 +641,7 @@ public class DiagnosticDataBuilder {
 			if (timestamp.getId().equals(timestampToAdd.getId())) {
 				List<JAXBElement<? extends XmlTimestampedObject>> timestampedObjects = timestampToAdd.getTimestampedObjects();
 				for (JAXBElement<? extends XmlTimestampedObject> timestampedObject : timestampedObjects) {
-					boolean found = false;
-					for (JAXBElement<? extends XmlTimestampedObject> oldObject : timestamp.getTimestampedObjects()) {
-						if (timestampedObject.getValue().getToken().getId().equals(oldObject.getValue().getToken().getId())) {
-							found = true;
-							break;
-						}
-					}
-					if (!found) {
+					if (!isTimestampContainsReference(timestamp, timestampedObject)) {
 						timestamp.getTimestampedObjects().add(timestampedObject);
 					}
 				}
@@ -637,6 +651,15 @@ public class DiagnosticDataBuilder {
 		if (!contains) {
 			timestampList.add(timestampToAdd);
 		}
+	}
+	
+	private boolean isTimestampContainsReference(XmlTimestamp timestamp, JAXBElement<? extends XmlTimestampedObject> timestampedObject) {
+		for (JAXBElement<? extends XmlTimestampedObject> oldObject : timestamp.getTimestampedObjects()) {
+			if (timestampedObject.getValue().getToken().getId().equals(oldObject.getValue().getToken().getId())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private XmlRevocation buildDetachedXmlRevocation(RevocationToken revocationToken) {
@@ -1299,60 +1322,64 @@ public class DiagnosticDataBuilder {
 	}
 
 	private List<JAXBElement<? extends XmlTimestampedObject>> getXmlTimestampedObjects(TimestampToken timestampToken) {
-		ObjectFactory objectFactory = new ObjectFactory();
 		List<TimestampedReference> timestampReferences = timestampToken.getTimestampedReferences();
 		if (Utils.isCollectionNotEmpty(timestampReferences)) {
-			//List<XmlTimestampedObject> objects = new ArrayList<XmlTimestampedObject>();
+			ObjectFactory objectFactory = new ObjectFactory();
 			List<JAXBElement<? extends XmlTimestampedObject>> objects = new ArrayList<JAXBElement<? extends XmlTimestampedObject>>();
 			for (final TimestampedReference timestampReference : timestampReferences) {
-				String objectId = timestampReference.getObjectId();
-				boolean orphanToken = false;
-				switch (timestampReference.getCategory()) {
-					case SIGNATURE:
-						XmlTimestampedSignature sigRef = new XmlTimestampedSignature();
-						sigRef.setToken(xmlSignatures.get(objectId));
-						objects.add(objectFactory.createTimestampedSignature(sigRef));
-						break;
-					case CERTIFICATE:
-						if (!isUsedToken(objectId, usedCertificates)) {
-							orphanToken = true;
-							break;
-						}
-						XmlTimestampedCertificate certRef = new XmlTimestampedCertificate();
-						certRef.setToken(xmlCerts.get(objectId));
-						objects.add(objectFactory.createTimestampedCertificate(certRef));
-						break;
-					case REVOCATION:
-						if (!isUsedToken(objectId, usedRevocations)) {
-							orphanToken = true;
-							break;
-						}
-						XmlTimestampedRevocationData revocRef = new XmlTimestampedRevocationData();
-						revocRef.setToken(xmlRevocations.get(objectId));
-						objects.add(objectFactory.createTimestampedRevocationData(revocRef));
-						break;
-					case TIMESTAMP:
-						XmlTimestampedTimestamp tstRef = new XmlTimestampedTimestamp();
-						tstRef.setToken(xmlTimestamps.get(objectId));
-						objects.add(objectFactory.createTimestampedTimestamp(tstRef));
-						break;
-					case SIGNED_DATA:
-						XmlTimestampedSignerData sdRef = new XmlTimestampedSignerData();
-						sdRef.setToken(xmlSignedData.get(objectId));
-						objects.add(objectFactory.createTimestampedSignerData(sdRef));
-						break;
-					default:
-						throw new DSSException("Unsupported category " + timestampReference.getCategory());
-				}
-				if (orphanToken) {
-					XmlTimestampedOrphanToken orphanRef = new XmlTimestampedOrphanToken();
-					orphanRef.setToken(xmlOrphanTokens.get(objectId));
-					objects.add(objectFactory.createTimestampedOrphanToken(orphanRef));
+				XmlTimestampedObject xmlTimestampedObject = createXmlTimestampedObject(timestampReference);
+				if (xmlTimestampedObject instanceof XmlTimestampedSignature) {
+					objects.add(objectFactory.createTimestampedSignature((XmlTimestampedSignature)xmlTimestampedObject));
+				} else if (xmlTimestampedObject instanceof XmlTimestampedCertificate) {
+					objects.add(objectFactory.createTimestampedCertificate((XmlTimestampedCertificate)xmlTimestampedObject));
+				} else if (xmlTimestampedObject instanceof XmlTimestampedRevocationData) {
+					objects.add(objectFactory.createTimestampedRevocationData((XmlTimestampedRevocationData)xmlTimestampedObject));
+				} else if (xmlTimestampedObject instanceof XmlTimestampedTimestamp) {
+					objects.add(objectFactory.createTimestampedTimestamp((XmlTimestampedTimestamp)xmlTimestampedObject));
+				} else if (xmlTimestampedObject instanceof XmlTimestampedSignerData) {
+					objects.add(objectFactory.createTimestampedSignerData((XmlTimestampedSignerData)xmlTimestampedObject));
+				}else if (xmlTimestampedObject instanceof XmlTimestampedOrphanToken) {
+					objects.add(objectFactory.createTimestampedOrphanToken((XmlTimestampedOrphanToken)xmlTimestampedObject));
 				}
 			}
 			return objects;
 		}
 		return null;
+	}
+	
+	private XmlTimestampedObject createXmlTimestampedObject(final TimestampedReference timestampReference) {
+		String objectId = timestampReference.getObjectId();
+		switch (timestampReference.getCategory()) {
+			case SIGNATURE:
+				XmlTimestampedSignature sigRef = new XmlTimestampedSignature();
+				sigRef.setToken(xmlSignatures.get(objectId));
+				return sigRef;
+			case CERTIFICATE:
+				if (!isUsedToken(objectId, usedCertificates))
+					break;
+				XmlTimestampedCertificate certRef = new XmlTimestampedCertificate();
+				certRef.setToken(xmlCerts.get(objectId));
+				return certRef;
+			case REVOCATION:
+				if (!isUsedToken(objectId, usedRevocations))
+					break;
+				XmlTimestampedRevocationData revocRef = new XmlTimestampedRevocationData();
+				revocRef.setToken(xmlRevocations.get(objectId));
+				return revocRef;
+			case TIMESTAMP:
+				XmlTimestampedTimestamp tstRef = new XmlTimestampedTimestamp();
+				tstRef.setToken(xmlTimestamps.get(objectId));
+				return tstRef;
+			case SIGNED_DATA:
+				XmlTimestampedSignerData sdRef = new XmlTimestampedSignerData();
+				sdRef.setToken(xmlSignedData.get(objectId));
+				return sdRef;
+			default:
+				throw new DSSException("Unsupported category " + timestampReference.getCategory());
+		}
+		XmlTimestampedOrphanToken orphanRef = new XmlTimestampedOrphanToken();
+		orphanRef.setToken(xmlOrphanTokens.get(objectId));
+		return orphanRef;
 	}
 	
 	private <T extends Token> boolean isUsedToken(String tokenId, Collection<T> usedTokens) {

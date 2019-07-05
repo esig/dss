@@ -51,7 +51,7 @@ public abstract class SignatureCertificateSource extends CommonCertificateSource
 	/**
 	 * Contains a list of found {@link CertificateRef}s for each {@link CertificateToken}
 	 */
-	private Map<CertificateToken, List<CertificateRef>> certificateRefsMap;
+	private transient Map<CertificateToken, List<CertificateRef>> certificateRefsMap;
 	
 	/**
 	 * List of orphan {@link CertificateRef}s
@@ -251,11 +251,12 @@ public abstract class SignatureCertificateSource extends CommonCertificateSource
 					if (Arrays.equals(currentDigest, certDigest.getValue())) {
 						addCertificateRefToMap(certificateToken, certificateRef);
 					}
-				} else if (issuerInfo != null) {
-					if (certificateToken.getSerialNumber().equals(issuerInfo.getSerialNumber()) && DSSUtils
-							.x500PrincipalAreEquals(certificateToken.getIssuerX500Principal(), issuerInfo.getIssuerName())) {
-						addCertificateRefToMap(certificateToken, certificateRef);
-					}
+					
+				} else if (issuerInfo != null && 
+						certificateToken.getSerialNumber().equals(issuerInfo.getSerialNumber()) && 
+						DSSUtils.x500PrincipalAreEquals(certificateToken.getIssuerX500Principal(), issuerInfo.getIssuerName())) {
+					addCertificateRefToMap(certificateToken, certificateRef);
+					
 				}
 			}
 		}

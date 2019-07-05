@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.util;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -17,7 +18,9 @@ import eu.europa.esig.dss.DSSASN1Utils;
  *     1 if the {@code timeStampTokenOne} was created after {@code timeStampTokenTwo}
  *     
  */
-public class TimeStampTokenProductionComparator implements Comparator<TimeStampToken> {
+public class TimeStampTokenProductionComparator implements Comparator<TimeStampToken>, Serializable {
+
+	private static final long serialVersionUID = 4125423970411266861L;
 
 	@Override
 	public int compare(TimeStampToken timeStampTokenOne, TimeStampToken timeStampTokenTwo) {

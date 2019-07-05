@@ -47,6 +47,8 @@ import eu.europa.esig.dss.x509.revocation.RevocationRef;
  */
 public class OCSPRef extends RevocationRef {
 	
+	private static final long serialVersionUID = -4757221403735075782L;
+
 	private static final Logger LOG = LoggerFactory.getLogger(OCSPRef.class);
 	
 	private Date producedAt = null;

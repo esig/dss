@@ -21,6 +21,7 @@
 package eu.europa.esig.dss;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 
@@ -64,6 +65,9 @@ public class DigestDocumentTest {
 		DigestDocument doc = new DigestDocument();
 		for (DigestAlgorithm digestAlgorithm : DigestAlgorithm.values()) {
 			doc.addDigest(digestAlgorithm, Utils.toBase64(DSSUtils.digest(digestAlgorithm, stringToEncode)));
+		}
+		for (DigestAlgorithm digestAlgorithm : DigestAlgorithm.values()) {
+			assertNotNull(doc.getDigest(digestAlgorithm));
 		}
 	}
 

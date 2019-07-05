@@ -189,7 +189,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 			
 			DSSUtils.skipAvailableBytes(is, beginning);
 			DSSUtils.readAvailableBytes(is, signedContentByteArray, 0, startSigValueContent);
-			DSSUtils.skipAvailableBytes(is, endSigValueContent - startSigValueContent - beginning);
+			DSSUtils.skipAvailableBytes(is, (long)endSigValueContent - startSigValueContent - beginning);
 			DSSUtils.readAvailableBytes(is, signedContentByteArray, startSigValueContent, endValue);
 			
 		} catch (IllegalStateException e) {

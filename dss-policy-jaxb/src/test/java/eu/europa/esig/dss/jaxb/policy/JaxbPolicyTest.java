@@ -59,7 +59,8 @@ public class JaxbPolicyTest {
 
 	@Test
 	public void testUnmarshalCoreValidation() throws Exception {
-		ValidationPolicyFacade.newFacade().unmarshall(new File("src/test/resources/constraint-core-validation.xml"));
+		ConstraintsParameters constraintsParameters = ValidationPolicyFacade.newFacade().unmarshall(new File("src/test/resources/constraint-core-validation.xml"));
+		assertNotNull(constraintsParameters);
 	}
 
 	@Test
@@ -77,7 +78,8 @@ public class JaxbPolicyTest {
 
 	// TODO @Test
 	public void testUnmarshalModel() throws Exception {
-		ValidationPolicyFacade.newFacade().unmarshall(new File("src/test/resources/constraints_MODEL.xml"));
+		ConstraintsParameters constraintsParameters = ValidationPolicyFacade.newFacade().unmarshall(new File("src/test/resources/constraints_MODEL.xml"));
+		assertNotNull(constraintsParameters);
 	}
 
 }

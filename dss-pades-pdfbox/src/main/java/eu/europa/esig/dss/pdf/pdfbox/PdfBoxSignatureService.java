@@ -381,8 +381,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		try (InputStream is = document.openStream()) {
 			long originalBytesLength = Utils.getInputStreamSize(is);
 			// /ByteRange [0 575649 632483 10206]
-			long beforeSignatureLength = byteRange[1] - byteRange[0];
-			long expectedCMSLength = byteRange[2] - byteRange[1] - byteRange[0];
+			long beforeSignatureLength = (long)byteRange[1] - byteRange[0];
+			long expectedCMSLength = (long)byteRange[2] - byteRange[1] - byteRange[0];
 			long afterSignatureLength = byteRange[3];
 			long totalCoveredByByteRange = beforeSignatureLength + expectedCMSLength + afterSignatureLength;
 

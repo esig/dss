@@ -115,7 +115,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	private final Element signatureElement;
 	
-	private XMLSignature santuarioSignature;
+	private transient XMLSignature santuarioSignature;
 	
 	/**
 	 * A signature identifier provided by a Driving Application.

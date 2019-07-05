@@ -51,7 +51,7 @@ public class WSReportsDTO implements Serializable {
 	// Use MTOM to avoid XML ID conflict (between diagnostic data and etsi
 	// validation report)
 	@XmlMimeType("application/octet-stream")
-	private DataHandler validationReportaDataHandler;
+	private transient DataHandler validationReportaDataHandler;
 
 	private transient ValidationReportType validationReport;
 

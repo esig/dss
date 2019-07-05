@@ -75,10 +75,10 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESTimestampSource.class);
 	
-	protected final SignerInformation signerInformation;
+	protected transient final SignerInformation signerInformation;
 	
-	protected final CMSSignedData cmsSignedData;
-	protected final List<DSSDocument> detachedDocuments;
+	protected transient final CMSSignedData cmsSignedData;
+	protected transient final List<DSSDocument> detachedDocuments;
 	
 	public CAdESTimestampSource(final CAdESSignature signature, final CertificatePool certificatePool) {
 		super(signature);
@@ -230,6 +230,19 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 		final ASN1Sequence atsHashIndex = DSSASN1Utils.getAtsHashIndex(timestampToken.getUnsignedAttributes());
 		final DigestAlgorithm digestAlgorithm = getHashIndexDigestAlgorithm(atsHashIndex);
 		
+		List<TimestampedReference> certificateReferences = getSignedDataCertificateReferences(
+				atsHashIndex, digestAlgorithm, timestampToken.getDSSIdAsString());
+		references.addAll(certificateReferences);
+
+		List<TimestampedReference> revocationReferences = getSignedDataRevocationReferences(atsHashIndex, digestAlgorithm, timestampToken.getDSSIdAsString());
+		references.addAll(revocationReferences);
+		
+		return references;
+	}
+	
+	private List<TimestampedReference> getSignedDataCertificateReferences(final ASN1Sequence atsHashIndex, final DigestAlgorithm digestAlgorithm,
+			final String timestampId) {
+		List<TimestampedReference> references = new ArrayList<TimestampedReference>();
 		if (signatureCertificateSource instanceof CMSCertificateSource) {
 			ASN1Sequence certsHashIndex = DSSASN1Utils.getCertificatesHashIndex(atsHashIndex);
 			List<DEROctetString> certsHashList = DSSASN1Utils.getDEROctetStrings(certsHashIndex);
@@ -239,11 +252,18 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 				} else {
 					LOG.warn("The certificate with id [{}] was not included to the message imprint of timestamp with id [{}] "
 							+ "or was added to the CMS SignedData after this ArchiveTimestamp!", 
-							certificate.getDSSIdAsString(), timestampToken.getDSSIdAsString());
+							certificate.getDSSIdAsString(), timestampId);
 				}
 			}
 		}
-
+		return references;
+	}
+	
+	private List<TimestampedReference> getSignedDataRevocationReferences(final ASN1Sequence atsHashIndex, final DigestAlgorithm digestAlgorithm,
+			final String timestampId) {
+		List<TimestampedReference> references = new ArrayList<TimestampedReference>();
+		
+		// get CRL references
 		ASN1Sequence crlsHashIndex = DSSASN1Utils.getCRLHashIndex(atsHashIndex);
 		List<DEROctetString> crlsHashList = DSSASN1Utils.getDEROctetStrings(crlsHashIndex);
 		if (signatureCRLSource instanceof CMSCRLSource) {
@@ -253,10 +273,21 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 				} else {
 					LOG.warn("The CRL Token with id [{}] was not included to the message imprint of timestamp with id [{}] "
 							+ "or was added to the CMS SignedData after this ArchiveTimestamp!", 
-							crlBinary.asXmlId(), timestampToken.getDSSIdAsString());
+							crlBinary.asXmlId(), timestampId);
 				}
 			}
 		}
+
+		// get OCSP references
+		List<TimestampedReference> ocspReferences = getSignedDataOCSPReferences(crlsHashList, digestAlgorithm, timestampId);
+		references.addAll(ocspReferences);
+		
+		return references;
+	}
+	
+	private List<TimestampedReference> getSignedDataOCSPReferences(List<DEROctetString> crlsHashList, final DigestAlgorithm digestAlgorithm,
+			final String timestampId) {
+		List<TimestampedReference> references = new ArrayList<TimestampedReference>();
 		if (signatureOCSPSource instanceof CMSOCSPSource) {
 			for (OCSPResponseBinary ocspResponse : ((CMSOCSPSource) signatureOCSPSource).getSignedDataOCSPIdentifiers()) {
 				// Compute DERTaggedObject with the same algorithm how it was created
@@ -270,11 +301,10 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 				} else {
 					LOG.warn("The OCSP Token with id [{}] was not included to the message imprint of timestamp with id [{}] "
 							+ "or was added to the CMS SignedData after this ArchiveTimestamp!", 
-							ocspResponse.asXmlId(), timestampToken.getDSSIdAsString());
+							ocspResponse.asXmlId(), timestampId);
 				}
 			}
 		}
-		
 		return references;
 	}
 	

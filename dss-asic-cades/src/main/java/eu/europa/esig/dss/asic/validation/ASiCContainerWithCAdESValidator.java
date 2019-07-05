@@ -105,43 +105,58 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	@Override
 	protected List<TimestampToken> attachExternalTimestamps(List<AdvancedSignature> allSignatures) {
 		List<TimestampToken> externalTimestamps = new ArrayList<TimestampToken>();
+		
 		ASiCContainerType type = getContainerType();
 		if (ASiCContainerType.ASiC_E == type) {
 			List<ASiCEWithCAdESTimestampValidator> currentTimestampValidators = getTimestampValidators();
 			for (ASiCEWithCAdESTimestampValidator tspValidator : currentTimestampValidators) {
-				List<String> coveredFilenames = tspValidator.getCoveredFilenames();
-
-				TimestampToken timestamp = tspValidator.getTimestamp();
-				// TODO temp fix
-				List<CertificateToken> certificates = timestamp.getCertificates();
-				for (CertificateToken candidate : certificates) {
-					if (timestamp.isSignedBy(candidate)) {
-						break;
-					}
+				TimestampToken timestamp = getExternalTimestamp(tspValidator, allSignatures);
+				if (timestamp != null) {
+					externalTimestamps.add(timestamp);
 				}
+			}
+			
+		}
+		
+		return externalTimestamps;
+	}
+	
+	private TimestampToken getExternalTimestamp(ASiCEWithCAdESTimestampValidator tspValidator, List<AdvancedSignature> allSignatures) {
+		List<String> coveredFilenames = tspValidator.getCoveredFilenames();
+		
+		TimestampToken timestamp = tspValidator.getTimestamp();
+		findTimestampTokenSigner(timestamp);
 
-				if (timestamp.isSignatureValid()) {
-					for (AdvancedSignature advancedSignature : allSignatures) {
-						if (coveredFilenames.contains(advancedSignature.getSignatureFilename())) {
-							CAdESSignature cadesSig = (CAdESSignature) advancedSignature;
-							List<TimestampToken> cadesTimestamps = new ArrayList<TimestampToken>();
-							cadesTimestamps.addAll(cadesSig.getContentTimestamps());
-							cadesTimestamps.addAll(cadesSig.getSignatureTimestamps());
-							cadesTimestamps.addAll(cadesSig.getTimestampsX1());
-							cadesTimestamps.addAll(cadesSig.getTimestampsX2());
-							// Archive timestamp from CAdES is skipped
+		if (timestamp.isSignatureValid()) {
+			for (AdvancedSignature advancedSignature : allSignatures) {
+				if (coveredFilenames.contains(advancedSignature.getSignatureFilename())) {
+					CAdESSignature cadesSig = (CAdESSignature) advancedSignature;
+					List<TimestampToken> cadesTimestamps = new ArrayList<TimestampToken>();
+					cadesTimestamps.addAll(cadesSig.getContentTimestamps());
+					cadesTimestamps.addAll(cadesSig.getSignatureTimestamps());
+					cadesTimestamps.addAll(cadesSig.getTimestampsX1());
+					cadesTimestamps.addAll(cadesSig.getTimestampsX2());
+					// Archive timestamp from CAdES is skipped
 
-							timestamp.getTimestampedReferences().addAll(cadesSig.getTimestampReferencesForArchiveTimestamp(cadesTimestamps));
-
-							advancedSignature.addExternalTimestamp(timestamp);
-							externalTimestamps.add(timestamp);
-						}
-					}
+					timestamp.getTimestampedReferences().addAll(cadesSig.getTimestampReferencesForArchiveTimestamp(cadesTimestamps));
+					advancedSignature.addExternalTimestamp(timestamp);
+					
+					return timestamp;
 				}
 			}
 		}
 		
-		return externalTimestamps;
+		return null;
+	}
+	
+	private void findTimestampTokenSigner(TimestampToken timestamp) {
+		// TODO temp fix
+		List<CertificateToken> certificates = timestamp.getCertificates();
+		for (CertificateToken candidate : certificates) {
+			if (timestamp.isSignedBy(candidate)) {
+				break;
+			}
+		}
 	}
 
 	private List<ASiCEWithCAdESTimestampValidator> getTimestampValidators() {

@@ -41,6 +41,8 @@ import eu.europa.esig.dss.x509.revocation.RevocationRef;
  */
 public final class CRLRef extends RevocationRef {
 
+	private static final long serialVersionUID = -6785644604097791548L;
+	
 	private X500Name crlIssuer;
 	private Date crlIssuedTime;
 	private BigInteger crlNumber;

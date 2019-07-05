@@ -155,10 +155,8 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		}
 
 		extractCurrentArchive(toExtendDocument);
+		
 		List<DSSDocument> signatureDocuments = getEmbeddedSignatures();
-		List<DSSDocument> manifests = getEmbeddedManifests();
-		List<DSSDocument> archiveManifests = getEmbeddedArchiveManifests();
-		List<DSSDocument> timestamps = getEmbeddedTimestamps();
 		List<DSSDocument> signedDocuments = getEmbeddedSignedDocuments();
 		DSSDocument mimetype = getEmbeddedMimetype();
 
@@ -170,73 +168,19 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		List<DSSDocument> extendedDocuments = new ArrayList<DSSDocument>();
 
 		CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters);
+		
 		boolean addASiCArchiveManifest = isAddASiCArchiveManifest(parameters);
 		if (addASiCArchiveManifest) {
 			cadesParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
 		}
 
 		for (DSSDocument signature : signatureDocuments) {
-
-			if (ASiCContainerType.ASiC_E == containerType) {
-
-				ASiCEWithCAdESManifestValidator manifestValidator = new ASiCEWithCAdESManifestValidator(signature, manifests, signedDocuments);
-				DSSDocument linkedManifest = manifestValidator.getLinkedManifest();
-
-				if (linkedManifest != null) {
-					String originalName = signature.getName();
-					cadesParameters.setDetachedContents(Arrays.asList(linkedManifest));
-
-					DSSDocument extendDocument = getCAdESService().extendDocument(signature, cadesParameters);
-					extendDocument.setName(originalName);
-					extendedDocuments.add(extendDocument);
-				} else {
-					LOG.warn("Manifest not found for signature file '{}' -> NOT EXTENDED !!!", signature.getName());
-					extendedDocuments.add(signature);
-				}
-			} else {
-				String originalName = signature.getName();
-				cadesParameters.setDetachedContents(signedDocuments);
-
-				DSSDocument extendDocument = getCAdESService().extendDocument(signature, cadesParameters);
-				extendDocument.setName(originalName);
-				extendedDocuments.add(extendDocument);
-			}
+			DSSDocument extendedSignature = extendSignatureDocument(signature, cadesParameters, containerType);
+			extendedDocuments.add(extendedSignature);
 		}
 
 		if (addASiCArchiveManifest) {
-			
-			String timestampFilename = getArchiveTimestampFilename(timestamps);
-			
-			DSSDocument lastTimestamp = getLastTimestamp(timestamps);
-			if (lastTimestamp != null) {
-				DSSDocument extendedArchiveTimestamp = extendArchiveTimestamp(lastTimestamp, parameters.getDetachedContents());
-				// a newer version of the timestamp must be created
-				timestamps.remove(lastTimestamp);
-				extendedDocuments.add(extendedArchiveTimestamp);
-				
-				for (DSSDocument manifest : archiveManifests) {
-					// current ArchiveManifest must be renamed if exists
-					if (DEFAULT_ARCHIVE_MANIFEST_FILENAME.equals(manifest.getName())) {
-						manifest.setName(getArchiveManifestFilename(archiveManifests));
-						extendedDocuments.add(manifest);
-					} else {
-						// all other present manifests must be included to the computing list as well
-						manifests.add(manifest);
-					}
-				}
-			}
-			
-			ASiCEWithCAdESArchiveManifestBuilder builder = new ASiCEWithCAdESArchiveManifestBuilder(extendedDocuments, timestamps, 
-					signedDocuments, manifests, parameters.getArchiveTimestampParameters().getDigestAlgorithm(), timestampFilename);
-
-			DSSDocument archiveManfest = DomUtils.createDssDocumentFromDomDocument(builder.build(), DEFAULT_ARCHIVE_MANIFEST_FILENAME);
-			extendedDocuments.add(archiveManfest);
-
-			DigestAlgorithm digestAlgorithm = parameters.getArchiveTimestampParameters().getDigestAlgorithm();
-			TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, DSSUtils.digest(digestAlgorithm, archiveManfest));
-			DSSDocument timestamp = new InMemoryDocument(DSSASN1Utils.getDEREncoded(timeStampResponse), timestampFilename, MimeType.TST);
-			extendedDocuments.add(timestamp);
-
+			extendWithArchiveManifest(parameters, extendedDocuments);
 			cadesParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 		}
 
@@ -244,6 +188,79 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		extensionResult.setName(
 				DSSUtils.getFinalFileName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel(), parameters.aSiC().getContainerType()));
 		return extensionResult;
+	}
+	
+	private DSSDocument extendSignatureDocument(DSSDocument signature, CAdESSignatureParameters cadesParameters, ASiCContainerType containerType) {
+
+		List<DSSDocument> manifests = getEmbeddedManifests();
+		List<DSSDocument> signedDocuments = getEmbeddedSignedDocuments();
+
+		if (ASiCContainerType.ASiC_E == containerType) {
+			ASiCEWithCAdESManifestValidator manifestValidator = new ASiCEWithCAdESManifestValidator(signature, manifests, signedDocuments);
+			
+			DSSDocument linkedManifest = manifestValidator.getLinkedManifest();
+			if (linkedManifest != null) {
+				String originalName = signature.getName();
+				cadesParameters.setDetachedContents(Arrays.asList(linkedManifest));
+
+				DSSDocument extendDocument = getCAdESService().extendDocument(signature, cadesParameters);
+				extendDocument.setName(originalName);
+				return extendDocument;
+			} else {
+				LOG.warn("Manifest not found for signature file '{}' -> NOT EXTENDED !!!", signature.getName());
+				return signature;
+			}
+			
+		} else {
+			String originalName = signature.getName();
+			cadesParameters.setDetachedContents(signedDocuments);
+
+			DSSDocument extendDocument = getCAdESService().extendDocument(signature, cadesParameters);
+			extendDocument.setName(originalName);
+			return extendDocument;
+			
+		}
+	}
+	
+	private void extendWithArchiveManifest(ASiCWithCAdESSignatureParameters parameters, List<DSSDocument> extendedDocuments) {
+		
+		List<DSSDocument> archiveManifests = getEmbeddedArchiveManifests();
+		List<DSSDocument> timestamps = getEmbeddedTimestamps();
+		List<DSSDocument> manifests = getEmbeddedManifests();
+		List<DSSDocument> signedDocuments = getEmbeddedSignedDocuments();
+		
+		String timestampFilename = getArchiveTimestampFilename(timestamps);
+		
+		DSSDocument lastTimestamp = getLastTimestamp(timestamps);
+		if (lastTimestamp != null) {
+			DSSDocument extendedArchiveTimestamp = extendArchiveTimestamp(lastTimestamp, parameters.getDetachedContents());
+			// a newer version of the timestamp must be created
+			timestamps.remove(lastTimestamp);
+			extendedDocuments.add(extendedArchiveTimestamp);
+			
+			for (DSSDocument manifest : archiveManifests) {
+				// current ArchiveManifest must be renamed if exists
+				if (DEFAULT_ARCHIVE_MANIFEST_FILENAME.equals(manifest.getName())) {
+					manifest.setName(getArchiveManifestFilename(archiveManifests));
+					extendedDocuments.add(manifest);
+				} else {
+					// all other present manifests must be included to the computing list as well
+					manifests.add(manifest);
+				}
+			}
+		}
+		
+		ASiCEWithCAdESArchiveManifestBuilder builder = new ASiCEWithCAdESArchiveManifestBuilder(extendedDocuments, timestamps, 
+				signedDocuments, manifests, parameters.getArchiveTimestampParameters().getDigestAlgorithm(), timestampFilename);
+
+		DSSDocument archiveManfest = DomUtils.createDssDocumentFromDomDocument(builder.build(), DEFAULT_ARCHIVE_MANIFEST_FILENAME);
+		extendedDocuments.add(archiveManfest);
+
+		DigestAlgorithm digestAlgorithm = parameters.getArchiveTimestampParameters().getDigestAlgorithm();
+		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, DSSUtils.digest(digestAlgorithm, archiveManfest));
+		DSSDocument timestamp = new InMemoryDocument(DSSASN1Utils.getDEREncoded(timeStampResponse), timestampFilename, MimeType.TST);
+		extendedDocuments.add(timestamp);
+
 	}
 	
 	private DSSDocument getLastTimestamp(List<DSSDocument> timestamps) {

@@ -23,9 +23,14 @@ package eu.europa.esig.dss.cades.signature;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
@@ -43,7 +48,13 @@ import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
  * @author axel.abinet
  *
  */
+@RunWith(Parameterized.class)
 public class CAdESDoubleSignatureTest extends PKIFactoryAccess {
+
+	@Parameters
+	public static List<Object[]> data() {
+		return Arrays.asList(new Object[10][0]);
+	}
 
 	@Test
 	public void test() throws Exception {

@@ -177,6 +177,17 @@ public class TimestampToken extends Token {
 		this(timeStamp, type, new TimestampCertificateSource(timeStamp, certPool), new TimestampCRLSource(timeStamp), 
 				new TimestampOCSPSource(timeStamp), timestampedReferences, timeStampLocation);
 	}
+
+	/**
+	 * Creates a new instance of {@link TimestampToken}
+	 * @param timestampToken
+	 *            {@code TimestampToken} to be cloned
+	 */
+	public TimestampToken(TimestampToken timestampToken) {
+		this(timestampToken.timeStamp, timestampToken.timeStampType, timestampToken.certificateSource, 
+				timestampToken.crlSource, timestampToken.ocspSource, new ArrayList<TimestampedReference>(timestampToken.timestampedReferences), 
+				timestampToken.timeStampLocation);
+	}
 	
 	TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final TimestampCertificateSource certificateSource, 
 			 final TimestampCRLSource crlSource, final TimestampOCSPSource ocspSource, final List<TimestampedReference> timestampedReferences,
@@ -190,14 +201,6 @@ public class TimestampToken extends Token {
 		if (timeStampLocation != null) {
 			this.timeStampLocation = timeStampLocation;
 		}
-	}
-	
-	/**
-	 * Creates a new instance of {@link TimestampToken}
-	 */
-	public TimestampToken clone() {
-		return new TimestampToken(timeStamp, timeStampType, certificateSource, 
-				crlSource, ocspSource, new ArrayList<TimestampedReference>(timestampedReferences), timeStampLocation);
 	}
 
 	@Override

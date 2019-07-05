@@ -48,7 +48,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	protected final SignatureOCSPSource signatureOCSPSource;
 	
 	protected final String signatureId;
-	protected final List<SignatureScope> signatureScopes;
+	protected transient final List<SignatureScope> signatureScopes;
 	
 	protected CertificatePool certificatePool;
 	
@@ -67,19 +67,19 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	private Map<String, List<CertificateToken>> certificateMap;
 
 	// Enclosed content timestamps.
-	protected List<TimestampToken> contentTimestamps;
+	private List<TimestampToken> contentTimestamps;
 
 	// Enclosed signature timestamps.
-	protected List<TimestampToken> signatureTimestamps;
+	private List<TimestampToken> signatureTimestamps;
 
 	// Enclosed SignAndRefs timestamps.
-	protected List<TimestampToken> sigAndRefsTimestamps;
+	private List<TimestampToken> sigAndRefsTimestamps;
 
 	// Enclosed RefsOnly timestamps.
-	protected List<TimestampToken> refsOnlyTimestamps;
+	private List<TimestampToken> refsOnlyTimestamps;
 
 	// This variable contains the list of enclosed archive signature timestamps.
-	protected List<TimestampToken> archiveTimestamps;
+	private List<TimestampToken> archiveTimestamps;
 
 	/**
 	 * Default constructor

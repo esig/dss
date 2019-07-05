@@ -1,12 +1,15 @@
 package eu.europa.esig.dss.x509.revocation;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 
-public abstract class RevocationRef {
+public abstract class RevocationRef implements Serializable {
+
+	private static final long serialVersionUID = 7313118727647264457L;
 
 	protected Digest digest = null;
 	

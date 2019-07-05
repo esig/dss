@@ -49,33 +49,43 @@ public final class XAdESUtils {
 			return result;
 		}
 		List<Reference> references = signature.getReferences();
-		if (!references.isEmpty()) {
-			
+		if (Utils.isCollectionNotEmpty(references)) {
 			for (Reference reference : references) {
 				if (isReferenceLinkedToDocument(reference, signature)) {
-					if (reference.typeIsReferenceToObject()) {
-						List<Element> signatureObjects = signature.getSignatureObjects();
-						for (Element sigObject : signatureObjects) {
-							String objectId = sigObject.getAttribute("Id");
-							if (Utils.endsWithIgnoreCase(reference.getURI(), objectId)) {
-								byte[] bytes = getNodeBytes(sigObject);
-								if (bytes != null) {
-									result.add(new InMemoryDocument(bytes, objectId));
-								}
-							}
-						}
-					} else {
-						try {
-							result.add(new InMemoryDocument(reference.getReferencedBytes(), reference.getURI()));
-						} catch (XMLSignatureException e) {
-							LOG.warn("Unable to retrieve reference {}", reference.getId(), e);
-						}
+					DSSDocument referenceDocument = getReferenceDocument(reference, signature);
+					if (referenceDocument != null) {
+						result.add(referenceDocument);
 					}
 				}
 			}
 			
 		}
 		return result;
+	}
+	
+	private static DSSDocument getReferenceDocument(Reference reference, XAdESSignature signature) {
+		if (reference.typeIsReferenceToObject()) {
+			List<Element> signatureObjects = signature.getSignatureObjects();
+			for (Element sigObject : signatureObjects) {
+				String objectId = sigObject.getAttribute("Id");
+				if (Utils.endsWithIgnoreCase(reference.getURI(), objectId)) {
+					byte[] bytes = getNodeBytes(sigObject);
+					if (bytes != null) {
+						return new InMemoryDocument(bytes, objectId);
+					}
+				}
+			}
+		} else {
+			try {
+				return new InMemoryDocument(reference.getReferencedBytes(), reference.getURI());
+			} catch (XMLSignatureException e) {
+				LOG.warn("Unable to retrieve reference {}", reference.getId(), e);
+			}
+		}
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("A referenced document not found for a reference with Id : [{}]", reference.getId());
+		}
+		return null;
 	}
 	
 	/**
@@ -142,25 +152,15 @@ public final class XAdESUtils {
 			Transforms transforms = reference.getTransforms();
 			if (transforms != null) {
 				Element transformsElement = transforms.getElement();
-				NodeList transfromChildNodes = transformsElement.getChildNodes();
-				if (transfromChildNodes != null && transfromChildNodes.getLength() > 0) {
-					for (int i = 0; i < transfromChildNodes.getLength(); i++) {
-						Node transformation = transfromChildNodes.item(i);
-						final String algorithm = DomUtils.getValue(transformation, "@Algorithm");
-						if (Transforms.TRANSFORM_ENVELOPED_SIGNATURE.equals(algorithm)) {
+				NodeList transformChildNodes = transformsElement.getChildNodes();
+				if (transformChildNodes != null && transformChildNodes.getLength() > 0) {
+					for (int i = 0; i < transformChildNodes.getLength(); i++) {
+						Node transformation = transformChildNodes.item(i);
+						if (isEnvelopedTransform(transformation)) {
 							return reference.getReferencedBytes();
-						} else if (Transforms.TRANSFORM_XPATH.equals(algorithm) || 
-								Transforms.TRANSFORM_XPATH2FILTER.equals(algorithm)) {
-							NodeList childNodes = transformation.getChildNodes();
-							for (int j = 0; j < childNodes.getLength(); j++) {
-								Node item = childNodes.item(j);
-								if (Node.ELEMENT_NODE == item.getNodeType() && TRANSFORMATION_XPATH_NODE_NAME.equals(item.getLocalName()) &&
-										TRANSFORMATION_EXCLUDE_SIGNATURE.equals(item.getTextContent())) {
-									return reference.getReferencedBytes();
-								}
-							}
-							// if transformations are not applied to the signature go further and return bytes before transformation
 						}
+					    // if enveloped transformations are not applied to the signature go further and 
+						// return bytes before transformation
 					}
 				}
 			}
@@ -171,10 +171,26 @@ public final class XAdESUtils {
 					+ "Original data cannot be obtained. Reason: [{}]", reference.getId(), e.getMessage());
 			
 		}
-
 		// otherwise bytes before transformation
 		return getBytesBeforeTransformation(reference);
-		
+	}
+	
+	private static boolean isEnvelopedTransform(Node transformation) {
+		final String algorithm = DomUtils.getValue(transformation, "@Algorithm");
+		if (Transforms.TRANSFORM_ENVELOPED_SIGNATURE.equals(algorithm)) {
+			return true;
+		} else if (Transforms.TRANSFORM_XPATH.equals(algorithm) || 
+				Transforms.TRANSFORM_XPATH2FILTER.equals(algorithm)) {
+			NodeList childNodes = transformation.getChildNodes();
+			for (int j = 0; j < childNodes.getLength(); j++) {
+				Node item = childNodes.item(j);
+				if (Node.ELEMENT_NODE == item.getNodeType() && TRANSFORMATION_XPATH_NODE_NAME.equals(item.getLocalName()) &&
+						TRANSFORMATION_EXCLUDE_SIGNATURE.equals(item.getTextContent())) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	private static byte[] getBytesBeforeTransformation(Reference reference) {

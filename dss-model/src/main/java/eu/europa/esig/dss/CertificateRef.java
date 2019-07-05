@@ -1,7 +1,11 @@
 package eu.europa.esig.dss;
 
-public class CertificateRef {
+import java.io.Serializable;
 
+public class CertificateRef implements Serializable {
+
+	private static final long serialVersionUID = -325165164194282066L;
+	
 	private Digest certDigest;
 	private IssuerSerialInfo issuerInfo;
 	private CertificateRefLocation location;

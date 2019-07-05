@@ -35,10 +35,8 @@ import eu.europa.esig.dss.RemoteDocument;
  * specific policy can be passed to perform the validation.
  * 
  */
-@WebService(targetNamespace = SoapDocumentValidationService.VALIDATION_NS)
+@WebService(targetNamespace = "http://validation.dss.esig.europa.eu/")
 public interface SoapDocumentValidationService extends Serializable {
-
-	String VALIDATION_NS = "http://validation.dss.esig.europa.eu/";
 
 	/**
 	 * This method returns the result of the validation of the signed file. The

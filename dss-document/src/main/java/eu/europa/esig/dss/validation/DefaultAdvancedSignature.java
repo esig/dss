@@ -91,12 +91,12 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	/**
 	 * In case of a ASiC signature this is the archive or manifest content.
 	 */
-	protected List<DSSDocument> containerContents;
+	private List<DSSDocument> containerContents;
 	
 	/**
 	 * In case of a ASiC-E signature this is the list of found manifest files.
 	 */
-	protected List<ManifestFile> manifestFiles;
+	private List<ManifestFile> manifestFiles;
 
 	/**
 	 * This variable contains a list of reference validations (reference tag for

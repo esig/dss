@@ -53,7 +53,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 	/**
 	 * This {@code Map} contains all collected CRL binaries with a set of their origins
 	 */
-	protected final Map<CRLBinary, Set<RevocationOrigin>> crlBinaryOriginsMap = new HashMap<CRLBinary, Set<RevocationOrigin>>();
+	private final Map<CRLBinary, Set<RevocationOrigin>> crlBinaryOriginsMap = new HashMap<CRLBinary, Set<RevocationOrigin>>();
 
 	/**
 	 * This {@code HashMap} contains the {@code CRLValidity} object for each

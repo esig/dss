@@ -45,7 +45,7 @@ public abstract class RevocationToken extends Token {
 	/**
 	 * Origins of the revocation data (signature or external)
 	 */
-	protected Set<RevocationOrigin> origins;
+	private Set<RevocationOrigin> origins;
 
 	/**
 	 * The URL which was used to obtain the revocation data (online).

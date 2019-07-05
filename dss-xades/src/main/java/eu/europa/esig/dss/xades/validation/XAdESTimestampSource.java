@@ -41,13 +41,13 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESTimestampSource.class);
 	
-	private final Element signatureElement;
+	private transient final Element signatureElement;
 	private final XPathQueryHolder xPathQueryHolder;
 	
-	private List<Reference> references;
+	private transient List<Reference> references;
 	private List<ReferenceValidation> referenceValidations;
 	
-	private XAdESTimestampDataBuilder timestampDataBuilder;
+	private transient XAdESTimestampDataBuilder timestampDataBuilder;
 	
 	public XAdESTimestampSource(final XAdESSignature signature, final Element signatureElement, 
 			final XPathQueryHolder xPathQueryHolder, final CertificatePool certificatePool) {

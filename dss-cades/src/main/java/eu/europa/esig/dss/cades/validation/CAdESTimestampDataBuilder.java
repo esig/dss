@@ -176,81 +176,31 @@ public class CAdESTimestampDataBuilder implements TimestampDataBuilder {
 	 */
 	private byte[] getArchiveTimestampDataV2(TimestampToken timestampToken, boolean includeUnsignedAttrsTagAndLength) throws DSSException {
 
-		try (ByteArrayOutputStream data = new ByteArrayOutputStream(); ByteArrayOutputStream signerByteArrayOutputStream = new ByteArrayOutputStream()) {
+		try (ByteArrayOutputStream data = new ByteArrayOutputStream()) {
 
 			final ContentInfo contentInfo = cmsSignedData.toASN1Structure();
 			final SignedData signedData = SignedData.getInstance(contentInfo.getContent());
-			final ContentInfo content = signedData.getEncapContentInfo();
-			byte[] contentInfoBytes;
-			if (content.getContent() instanceof BEROctetString) {
-				contentInfoBytes = DSSASN1Utils.getBEREncoded(content);
-			} else {
-				contentInfoBytes = DSSASN1Utils.getDEREncoded(content);
-			}
-			if (LOG.isTraceEnabled()) {
-				LOG.trace("Content Info: {}", DSSUtils.toHex(contentInfoBytes));
-			}
+			
+			byte[] contentInfoBytes = getContentInfoBytes(signedData);
 			data.write(contentInfoBytes);
+			
 			if (CMSUtils.isDetachedSignature(cmsSignedData)) {
-				/*
-				 * Detached signatures have either no encapContentInfo in signedData, or it
-				 * exists but has no eContent
-				 */
-				byte[] originalDocumentBinaries = DSSUtils.toByteArray(getOriginalDocument());
-				if (Utils.isArrayNotEmpty(originalDocumentBinaries)) {
-					data.write(originalDocumentBinaries);
-				} else {
-					throw new DSSException("Signature is detached and no original data provided.");
-				}
+				byte[] originalDocumentBinaries = getOriginalDocumentBinaries();
+				data.write(originalDocumentBinaries);
 			}
 			
-			final ASN1Set certificates = signedData.getCertificates();
-			if (certificates != null) {
-
-				byte[] certificatesBytes = null;
-				/*
-				 * In order to calculate correct message imprint it is important
-				 * to use the correct encoding.
-				 */
-				if (certificates instanceof BERSet) {
-					certificatesBytes = new BERTaggedObject(false, 0, new BERSequence(certificates.toArray())).getEncoded();
-				} else {
-					certificatesBytes = new DERTaggedObject(false, 0, new DERSequence(certificates.toArray())).getEncoded();
-				}
-				
-				if (LOG.isTraceEnabled()) {
-					LOG.trace("Certificates: {}", DSSUtils.toHex(certificatesBytes));
-				}
-				data.write(certificatesBytes);
+			byte[] certificateBytes = getCertificateDataBytes(signedData);
+			if (Utils.isArrayNotEmpty(certificateBytes)) {
+				data.write(certificateBytes);
 			}
 			
-			final ASN1Set crLs = signedData.getCRLs();
-			if (crLs != null) {
-				byte[] crlBytes = null;
-				
-				if (signedData.getCRLs() instanceof BERSet) {
-					crlBytes = new BERTaggedObject(false, 1, new BERSequence(crLs.toArray())).getEncoded();
-				} else {
-					crlBytes = new DERTaggedObject(false, 1, new DERSequence(crLs.toArray())).getEncoded();
-				}
-				if (LOG.isTraceEnabled()) {
-					LOG.trace("CRLs: {}", DSSUtils.toHex(crlBytes));
-				}
-				data.write(crlBytes);
+			byte[] crlDataBytes = getCRLDataBytes(signedData);
+			if (Utils.isArrayNotEmpty(crlDataBytes)) {
+				data.write(crlDataBytes);
 			}
 
 			final SignerInfo signerInfo = signerInformation.toASN1Structure();
-			final ASN1Set unauthenticatedAttributes = signerInfo.getUnauthenticatedAttributes();
-			final ASN1Sequence filteredUnauthenticatedAttributes = filterUnauthenticatedAttributes(unauthenticatedAttributes, timestampToken);
-			final ASN1Sequence asn1Object = getSignerInfoEncoded(signerInfo, filteredUnauthenticatedAttributes, includeUnsignedAttrsTagAndLength);
-			for (int ii = 0; ii < asn1Object.size(); ii++) {
-				final byte[] signerInfoBytes = DSSASN1Utils.getDEREncoded(asn1Object.getObjectAt(ii).toASN1Primitive());
-				signerByteArrayOutputStream.write(signerInfoBytes);
-			}
-			final byte[] signerInfoBytes = signerByteArrayOutputStream.toByteArray();
-			if (LOG.isTraceEnabled()) {
-				LOG.trace("SignerInfoBytes: {}", DSSUtils.toHex(signerInfoBytes));
-			}
+			byte[] signerInfoBytes = getSignerInfoBytes(timestampToken, includeUnsignedAttrsTagAndLength, signerInfo);
 			data.write(signerInfoBytes);
 
 			final byte[] result = data.toByteArray();
@@ -262,6 +212,99 @@ public class CAdESTimestampDataBuilder implements TimestampDataBuilder {
 			// When error in computing or in format the algorithm just continues.
 			LOG.warn("When error in computing or in format the algorithm just continue...", e);
 			return DSSUtils.EMPTY_BYTE_ARRAY;
+		}
+	}
+	
+	private byte[] getContentInfoBytes(final SignedData signedData) {
+		final ContentInfo content = signedData.getEncapContentInfo();
+		byte[] contentInfoBytes;
+		if (content.getContent() instanceof BEROctetString) {
+			contentInfoBytes = DSSASN1Utils.getBEREncoded(content);
+		} else {
+			contentInfoBytes = DSSASN1Utils.getDEREncoded(content);
+		}
+		if (LOG.isTraceEnabled()) {
+			LOG.trace("Content Info: {}", DSSUtils.toHex(contentInfoBytes));
+		}
+		return contentInfoBytes;
+	}
+	
+	private byte[] getOriginalDocumentBinaries() {
+		/*
+		 * Detached signatures have either no encapContentInfo in signedData, or it
+		 * exists but has no eContent
+		 */
+		byte[] originalDocumentBinaries = DSSUtils.toByteArray(getOriginalDocument());
+		if (Utils.isArrayNotEmpty(originalDocumentBinaries)) {
+			return originalDocumentBinaries;
+		} else {
+			throw new DSSException("Signature is detached and no original data provided.");
+		}
+	}
+	
+	private byte[] getCertificateDataBytes(final SignedData signedData) throws IOException {
+		byte[] certificatesBytes = null;
+		
+		final ASN1Set certificates = signedData.getCertificates();
+		if (certificates != null) {
+			/*
+			 * In order to calculate correct message imprint it is important
+			 * to use the correct encoding.
+			 */
+			if (certificates instanceof BERSet) {
+				certificatesBytes = new BERTaggedObject(false, 0, new BERSequence(certificates.toArray())).getEncoded();
+			} else {
+				certificatesBytes = new DERTaggedObject(false, 0, new DERSequence(certificates.toArray())).getEncoded();
+			}
+			
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("Certificates: {}", DSSUtils.toHex(certificatesBytes));
+			}
+		}
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Certificates are not present in the SignedData.");
+		}
+		return certificatesBytes;
+	}
+	
+	private byte[] getCRLDataBytes(final SignedData signedData) throws IOException {
+		byte[] crlBytes = null;
+		
+		final ASN1Set crLs = signedData.getCRLs();
+		if (crLs != null) {
+			
+			if (signedData.getCRLs() instanceof BERSet) {
+				crlBytes = new BERTaggedObject(false, 1, new BERSequence(crLs.toArray())).getEncoded();
+			} else {
+				crlBytes = new DERTaggedObject(false, 1, new DERSequence(crLs.toArray())).getEncoded();
+			}
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("CRLs: {}", DSSUtils.toHex(crlBytes));
+			}
+		}
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("CRLs are not present in the SignedData.");
+		}
+		return crlBytes;
+	}
+	
+	private byte[] getSignerInfoBytes(final TimestampToken timestampToken, boolean includeUnsignedAttrsTagAndLength, 
+			final SignerInfo signerInfo) throws IOException {
+		try (ByteArrayOutputStream signerByteArrayOutputStream = new ByteArrayOutputStream()) {
+			
+			final ASN1Set unauthenticatedAttributes = signerInfo.getUnauthenticatedAttributes();
+			final ASN1Sequence filteredUnauthenticatedAttributes = filterUnauthenticatedAttributes(unauthenticatedAttributes, timestampToken);
+			final ASN1Sequence asn1Object = getSignerInfoEncoded(signerInfo, filteredUnauthenticatedAttributes, includeUnsignedAttrsTagAndLength);
+			for (int ii = 0; ii < asn1Object.size(); ii++) {
+				final byte[] signerInfoBytes = DSSASN1Utils.getDEREncoded(asn1Object.getObjectAt(ii).toASN1Primitive());
+				signerByteArrayOutputStream.write(signerInfoBytes);
+			}
+			final byte[] signerInfoBytes = signerByteArrayOutputStream.toByteArray();
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("SignerInfoBytes: {}", DSSUtils.toHex(signerInfoBytes));
+			}
+			return signerInfoBytes;
+			
 		}
 	}
 

@@ -237,24 +237,31 @@ public class ETSIValidationReportBuilder {
 			return null;
 		}
 		SignerInformationType signerInfo = objectFactory.createSignerInformationType();
-		signerInfo.setPseudonym(isUsePseudo(token));
+		XmlStatus pseudoUseStatus = getPseudoUseStatus(token);
+		if (pseudoUseStatus != null) {
+			signerInfo.setPseudonym(isPseudoUse(pseudoUseStatus));
+		}
 		signerInfo.setSigner(signingCert.getReadableCertificateName());
 		signerInfo.setSignerCertificate(getVOReference(signingCert.getId()));
 		return signerInfo;
 	}
-
-	private Boolean isUsePseudo(AbstractTokenProxy token) {
+	
+	private XmlStatus getPseudoUseStatus(AbstractTokenProxy token) {
 		XmlSubXCV signingCertificateXCV = detailedReport.getSigningCertificate(token.getId());
 		if (signingCertificateXCV != null) {
 			List<XmlConstraint> constraints = signingCertificateXCV.getConstraint();
 			for (XmlConstraint xmlConstraint : constraints) {
 				if (MessageTag.BBB_XCV_PSEUDO_USE.name().equals(xmlConstraint.getName().getNameId())) {
 					XmlStatus status = xmlConstraint.getStatus();
-					return (XmlStatus.OK != status) && (XmlStatus.IGNORED != status);
+					return status;
 				}
 			}
 		}
 		return null;
+	}
+
+	private Boolean isPseudoUse(XmlStatus status) {
+		return (XmlStatus.OK != status) && (XmlStatus.IGNORED != status);
 	}
 
 	private VOReferenceType getVOReference(String id) {
@@ -1039,27 +1046,28 @@ public class ETSIValidationReportBuilder {
 			final String postalCode = sigWrapper.getPostalCode();
 			final String countryName = sigWrapper.getCountryName();
 
-			if (Utils.isAtLeastOneNotEmpty(address, city, stateOrProvince, postalCode, countryName)) {
-				SASignatureProductionPlaceType sigProductionPlace = objectFactory.createSASignatureProductionPlaceType();
-				if (Utils.isStringNotEmpty(address)) {
-					sigProductionPlace.getAddressString().add(address);
-				}
-				if (Utils.isStringNotEmpty(city)) {
-					sigProductionPlace.getAddressString().add(city);
-				}
-				if (Utils.isStringNotEmpty(stateOrProvince)) {
-					sigProductionPlace.getAddressString().add(stateOrProvince);
-				}
-				if (Utils.isStringNotEmpty(postalCode)) {
-					sigProductionPlace.getAddressString().add(postalCode);
-				}
-				if (Utils.isStringNotEmpty(countryName)) {
-					sigProductionPlace.getAddressString().add(countryName);
-				}
-				setSignedIfValid(sigWrapper, sigProductionPlace);
-				sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
-						.add(objectFactory.createSignatureAttributesTypeSignatureProductionPlace(sigProductionPlace));
+			if (!Utils.isAtLeastOneNotEmpty(address, city, stateOrProvince, postalCode, countryName)) { 
+				return;
 			}
+			SASignatureProductionPlaceType sigProductionPlace = objectFactory.createSASignatureProductionPlaceType();
+			if (Utils.isStringNotEmpty(address)) {
+				sigProductionPlace.getAddressString().add(address);
+			}
+			if (Utils.isStringNotEmpty(city)) {
+				sigProductionPlace.getAddressString().add(city);
+			}
+			if (Utils.isStringNotEmpty(stateOrProvince)) {
+				sigProductionPlace.getAddressString().add(stateOrProvince);
+			}
+			if (Utils.isStringNotEmpty(postalCode)) {
+				sigProductionPlace.getAddressString().add(postalCode);
+			}
+			if (Utils.isStringNotEmpty(countryName)) {
+				sigProductionPlace.getAddressString().add(countryName);
+			}
+			setSignedIfValid(sigWrapper, sigProductionPlace);
+			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
+					.add(objectFactory.createSignatureAttributesTypeSignatureProductionPlace(sigProductionPlace));
 		}
 	}
 

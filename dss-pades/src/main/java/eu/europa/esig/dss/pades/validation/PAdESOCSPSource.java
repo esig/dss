@@ -45,7 +45,7 @@ public class PAdESOCSPSource extends SignatureOCSPSource {
 	
 	private final String vriDictionaryName;
 	
-	private Map<Long, BasicOCSPResp> ocspMap;
+	private transient Map<Long, BasicOCSPResp> ocspMap;
 
 	/**
 	 * The default constructor for PAdESOCSPSource.

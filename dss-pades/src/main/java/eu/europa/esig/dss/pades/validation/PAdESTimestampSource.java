@@ -23,7 +23,7 @@ import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseBinary;
 @SuppressWarnings("serial")
 public class PAdESTimestampSource extends CAdESTimestampSource {
 	
-	private final PdfSignatureInfo pdfSignatureInfo;
+	private transient final PdfSignatureInfo pdfSignatureInfo;
 	
 	public PAdESTimestampSource(final PAdESSignature signature, final CertificatePool certificatePool) {
 		super(signature, certificatePool);
@@ -32,12 +32,12 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 	
 	@Override
 	public List<TimestampToken> getDocumentTimestamps() {
-		if (signatureTimestamps == null || archiveTimestamps == null) {
+		if (getSignatureTimestamps() == null || getArchiveTimestamps() == null) {
 			createAndValidate();
 		}
 		List<TimestampToken> documentTimestamps = new ArrayList<TimestampToken>();
-		documentTimestamps.addAll(signatureTimestamps);
-		documentTimestamps.addAll(archiveTimestamps);
+		documentTimestamps.addAll(getSignatureTimestamps());
+		documentTimestamps.addAll(getArchiveTimestamps());
 		return documentTimestamps;
 	}
 
@@ -53,7 +53,7 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 		// Creates signature timestamp tokens only (from CAdESTimestampSource)
 		super.makeTimestampTokens();
 		
-		final List<TimestampToken> timestampedTimestamps = new ArrayList<TimestampToken>(signatureTimestamps);
+		final List<TimestampToken> timestampedTimestamps = new ArrayList<TimestampToken>(getSignatureTimestamps());
 		
 		// contains KeyInfo certificates embedded to the timestamp's content
 		final List<CertificateToken> cmsContentCertificates = new ArrayList<CertificateToken>();
@@ -65,17 +65,17 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 				final PdfDocTimestampInfo timestampInfo = (PdfDocTimestampInfo) outerSignature;
 				// do not return this timestamp if it's an archive timestamp
 				// Timestamp needs to be cloned in order to avoid shared instances among sources
-				final TimestampToken timestampToken = timestampInfo.getTimestampToken().clone();
+				final TimestampToken timestampToken = new TimestampToken(timestampInfo.getTimestampToken());
 				// clear timestamped references list in order to avoid data mixing between different signatures
 				timestampToken.getTimestampedReferences().clear();
 				if (TimestampType.SIGNATURE_TIMESTAMP.equals(timestampToken.getTimeStampType())) {
 					timestampToken.getTimestampedReferences().addAll(getSignatureTimestampReferences());
-					signatureTimestamps.add(timestampToken);
+					getSignatureTimestamps().add(timestampToken);
 					
 				} else {
 					// Archive TimeStamps
 					List<TimestampedReference> references = new ArrayList<TimestampedReference>();
-					if (Utils.isCollectionEmpty(signatureTimestamps)) {
+					if (Utils.isCollectionEmpty(getSignatureTimestamps())) {
 						references = getSignatureTimestampReferences();
 					}
 					addReferencesForPreviousTimestamps(references, timestampedTimestamps);
@@ -93,7 +93,7 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 					cmsContentCertificates.addAll(getCMSContentReferences(padesCertificateSource));
 					
 					timestampToken.getTimestampedReferences().addAll(references);
-					archiveTimestamps.add(timestampToken);
+					getArchiveTimestamps().add(timestampToken);
 					
 				}
 				populateTimestampCertificateSource(timestampToken.getCertificates());

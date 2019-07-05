@@ -94,51 +94,55 @@ public class XAdESOCSPSource extends SignatureOCSPSource {
 	private void collectRefs(final String xPathQuery, RevocationOrigin revocationOrigin) {
 		final Element ocspRefsElement = DomUtils.getElement(signatureElement, xPathQuery);
 		if (ocspRefsElement != null) {
-
 			final NodeList ocspRefNodes = DomUtils.getNodeList(ocspRefsElement, xPathQueryHolder.XPATH__OCSPREF);
 			for (int i = 0; i < ocspRefNodes.getLength(); i++) {
-
-				final Element certId = (Element) ocspRefNodes.item(i);
-				
-				ResponderId responderId = new ResponderId();
-				final Element responderIdEl = DomUtils.getElement(certId, xPathQueryHolder.XPATH__OCSP_RESPONDER_ID_ELEMENT);
-				if (responderIdEl != null && responderIdEl.hasChildNodes()) {
-					final Element responderIdByName = DomUtils.getElement(responderIdEl, xPathQueryHolder.XPATH__RESPONDER_ID_BY_NAME);
-					if (responderIdByName != null) {
-						responderId.setName(responderIdByName.getTextContent());
-					} else {
-						final Element responderIdByKey = DomUtils.getElement(responderIdEl, xPathQueryHolder.XPATH__RESPONDER_ID_BY_KEY);
-						if (responderIdByKey != null) {
-							responderId.setKey(Utils.fromBase64(responderIdByKey.getTextContent()));
-						}
-					}
-				}
-				
-				// process only if ResponderId is present
-				if (responderId.getName() == null && responderId.getKey() == null) {
-					continue;
-				}
-				
-				Date producedAtDate = null;
-				final Element producedAtEl = DomUtils.getElement(certId, xPathQueryHolder.XPATH__OCSP_PRODUCED_AT_DATETIME);
-				if (producedAtEl != null) {
-					producedAtDate = DomUtils.getDate(producedAtEl.getTextContent());
-				}
-
-				// producedAtDate must be present
-				if (producedAtDate == null) {
-					continue;
-				}
-				
-				final Digest digest = XAdESUtils.getRevocationDigest(certId, xPathQueryHolder);
-				
-				if (digest != null) {
-					OCSPRef ocspRef = new OCSPRef(digest, producedAtDate, responderId, revocationOrigin);
+				final Element ocspRefElement = (Element) ocspRefNodes.item(i);
+				OCSPRef ocspRef = createOCSPRef(ocspRefElement, revocationOrigin);
+				if (ocspRef != null) {
 					addReference(ocspRef, revocationOrigin);
 				}
-				
 			}
 		}
+	}
+	
+	private OCSPRef createOCSPRef(final Element ocspRefElement, RevocationOrigin revocationOrigin) {
+		ResponderId responderId = new ResponderId();
+		
+		final Element responderIdEl = DomUtils.getElement(ocspRefElement, xPathQueryHolder.XPATH__OCSP_RESPONDER_ID_ELEMENT);
+		if (responderIdEl != null && responderIdEl.hasChildNodes()) {
+			final Element responderIdByName = DomUtils.getElement(responderIdEl, xPathQueryHolder.XPATH__RESPONDER_ID_BY_NAME);
+			if (responderIdByName != null) {
+				responderId.setName(responderIdByName.getTextContent());
+			} else {
+				final Element responderIdByKey = DomUtils.getElement(responderIdEl, xPathQueryHolder.XPATH__RESPONDER_ID_BY_KEY);
+				if (responderIdByKey != null) {
+					responderId.setKey(Utils.fromBase64(responderIdByKey.getTextContent()));
+				}
+			}
+		}
+		
+		// process only if ResponderId is present
+		if (responderId.getName() == null && responderId.getKey() == null) {
+			return null;
+		}
+		
+		Date producedAtDate = null;
+		final Element producedAtEl = DomUtils.getElement(ocspRefElement, xPathQueryHolder.XPATH__OCSP_PRODUCED_AT_DATETIME);
+		if (producedAtEl != null) {
+			producedAtDate = DomUtils.getDate(producedAtEl.getTextContent());
+		}
+		
+		// producedAtDate must be present
+		if (producedAtDate == null) {
+			return null;
+		}
+		
+		final Digest digest = XAdESUtils.getRevocationDigest(ocspRefElement, xPathQueryHolder);
+		if (digest == null) {
+			return null;
+		}
+		
+		return new OCSPRef(digest, producedAtDate, responderId, revocationOrigin);
 	}
 
 	private void convertAndAppend(String ocspValue, RevocationOrigin origin) {

@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import eu.europa.esig.dss.CRLBinary;
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.RevocationOrigin;
@@ -36,7 +37,7 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	/**
 	 * Map that links {@link CRLToken}s with related {@link CRLRef}s
 	 */
-	private Map<CRLToken, Set<CRLRef>> revocationRefsMap;
+	private transient Map<CRLToken, Set<CRLRef>> revocationRefsMap;
 
 	@Override
 	public List<CRLToken> getRevocationValuesTokens() {
@@ -148,8 +149,10 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 				break;
 			case INTERNAL_VRI:
 				vriDictionaryCRLs.add(crlToken);
-			default:
 				break;
+			default:
+				throw new DSSException(String.format("The given RevocationOrigin [%s] is not supported for CRLToken object "
+						+ "in the SignatureCRLSource", origin.name()));
 		}
 	}
 	
@@ -164,12 +167,15 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 			if (!attributeRevocationRefsCRLs.contains(crlRef)) {
 				attributeRevocationRefsCRLs.add(crlRef);
 			}
+			break;
 		case TIMESTAMP_REVOCATION_REFS:
 			if (!timestampRevocationRefsCRLs.contains(crlRef)) {
 				timestampRevocationRefsCRLs.add(crlRef);
 			}
-		default:
 			break;
+		default:
+			throw new DSSException(String.format("The given RevocationOrigin [%s] is not supported for CRLRef object "
+					+ "in the SignatureCRLSource", origin.name()));
 		}
 	}
 	

@@ -59,20 +59,12 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 		final List<TimestampInclude> includes = timestampToken.getTimestampIncludes();
 
 		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-
 			for (final Reference reference : references) {
 				if (isContentTimestampedReference(reference, timeStampType, includes)) {
-					byte[] referencedBytes = reference.getReferencedBytes();
-					if (Utils.isStringNotBlank(canonicalizationMethod) && DomUtils.isDOM(referencedBytes)) {
-						referencedBytes = DSSXMLUtils.canonicalize(canonicalizationMethod, referencedBytes);
-					}
-					if (LOG.isTraceEnabled()) {
-						LOG.trace("ReferencedBytes : {}", new String(referencedBytes));
-					}
-					outputStream.write(referencedBytes);
+					byte[] referenceBytes = getReferenceBytes(reference, canonicalizationMethod);
+					outputStream.write(referenceBytes);
 				}
 			}
-
 			byte[] byteArray = outputStream.toByteArray();
 			if (LOG.isTraceEnabled()) {
 				LOG.trace("IndividualDataObjectsTimestampData/AllDataObjectsTimestampData bytes: {}", new String(byteArray));
@@ -83,6 +75,17 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 		}
 		return null;
 
+	}
+	
+	private byte[] getReferenceBytes(final Reference reference, final String canonicalizationMethod) throws XMLSecurityException {
+		byte[] referencedBytes = reference.getReferencedBytes();
+		if (Utils.isStringNotBlank(canonicalizationMethod) && DomUtils.isDOM(referencedBytes)) {
+			referencedBytes = DSSXMLUtils.canonicalize(canonicalizationMethod, referencedBytes);
+		}
+		if (LOG.isTraceEnabled()) {
+			LOG.trace("ReferencedBytes : {}", new String(referencedBytes));
+		}
+		return referencedBytes;
 	}
 
 	/**
@@ -273,16 +276,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 			final Set<String> referenceURIs = new HashSet<String>();
 			for (final Reference reference : references) {
 				referenceURIs.add(DomUtils.getId(reference.getURI()));
-				try {
-					final byte[] referencedBytes = reference.getReferencedBytes();
-					if (referencedBytes != null) {
-						buffer.write(referencedBytes);
-					} else {
-						LOG.warn("No binaries found for URI '{}'", reference.getURI());
-					}
-				} catch (XMLSecurityException e) {
-					LOG.warn("Unable to retrieve content for URI '{}' : {}", reference.getURI(), e.getMessage());
-				}
+				writeReferenceBytes(reference, buffer);
 			}
 
 			/**
@@ -307,133 +301,17 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 			if (unsignedSignaturePropertiesDom == null) {
 				throw new NullPointerException(xPathQueryHolder.XPATH_UNSIGNED_SIGNATURE_PROPERTIES);
 			}
-			final NodeList unsignedProperties = unsignedSignaturePropertiesDom.getChildNodes();
-			for (int ii = 0; ii < unsignedProperties.getLength(); ii++) {
-
-				final Node node = unsignedProperties.item(ii);
-				if (node.getNodeType() != Node.ELEMENT_NODE) {
-					// This can happened when there is a blank line between tags.
-					continue;
-				}
-				final String localName = node.getLocalName();
-				// In the SD-DSS implementation when validating the signature
-				// the framework will not add missing data. To do so the
-				// signature must be extended.
-				// if (localName.equals("CertificateValues")) {
-				/*
-				 * - The xades:CertificateValues property MUST be added if it is not already present and the ds:KeyInfo
-				 * element does not contain the full set of
-				 * certificates used to validate the electronic signature.
-				 */
-				// } else if (localName.equals("RevocationValues")) {
-				/*
-				 * - The xades:RevocationValues property MUST be added if it is not already present and the ds:KeyInfo
-				 * element does not contain the revocation
-				 * information that has to be shipped with the electronic signature
-				 */
-				// } else if (localName.equals("AttrAuthoritiesCertValues")) {
-				/*
-				 * - The xades:AttrAuthoritiesCertValues property MUST be added if not already present and the following
-				 * conditions are true: there exist an
-				 * attribute certificate in the signature AND a number of certificates that have been used in its
-				 * validation do not appear in CertificateValues.
-				 * Its content will satisfy with the rules specified in clause 7.6.3.
-				 */
-				// } else if (localName.equals("AttributeRevocationValues")) {
-				/*
-				 * - The xades:AttributeRevocationValues property MUST be added if not already present and there the
-				 * following conditions are true: there exist
-				 * an attribute certificate AND some revocation data that have been used in its validation do not appear
-				 * in RevocationValues. Its content will
-				 * satisfy with the rules specified in clause 7.6.4.
-				 */
-				// } else
-				if (XPathQueryHolder.XMLE_ARCHIVE_TIME_STAMP.equals(localName)) {
-
-					// TODO: compare encoded base64
-					if ((timestampToken != null) && (timestampToken.getHashCode() == node.hashCode())) {
-						break;
-					}
-				} else if ("TimeStampValidationData".equals(localName)) {
-
-					/**
-					 * ETSI TS 101 903 V1.4.2 (2010-12) 8.1 The new XAdESv141:TimeStampValidationData element ../.. This
-					 * element is specified to serve as an
-					 * optional container for validation data required for carrying a full verification of time-stamp
-					 * tokens embedded within any of the
-					 * different time-stamp containers defined in the present document. ../.. 8.1.1 Use of URI attribute
-					 * ../.. a new
-					 * xadesv141:TimeStampValidationData element SHALL be created containing the missing validation data
-					 * information and it SHALL be added as a
-					 * child of UnsignedSignatureProperties elements immediately after the respective time-stamp
-					 * certificateToken container element.
-					 */
-				}
-				byte[] canonicalizedValue;
-				if (timestampToken == null) { // Creation of the timestamp
-
-					/**
-					 * This is the work around for the name space problem: The issue was reported on:
-					 * https://issues.apache.org/jira/browse/SANTUARIO-139 and
-					 * considered as close. But for me (Bob) it still does not work!
-					 */
-					final byte[] bytesToCanonicalize = DSSXMLUtils.serializeNode(node);
-					canonicalizedValue = DSSXMLUtils.canonicalize(canonicalizationMethod, bytesToCanonicalize);
-				} else {
-					canonicalizedValue = DSSXMLUtils.canonicalizeOrSerializeSubtree(canonicalizationMethod, node);
-				}
-				if (LOG.isTraceEnabled()) {
-					LOG.trace("{}: Canonicalization: {} : \n{}", localName, canonicalizationMethod,
-							new String(canonicalizedValue));
-				}
-				buffer.write(canonicalizedValue);
-			}
+			writeTimestampedUnsignedProperties(unsignedSignaturePropertiesDom, timestampToken, canonicalizationMethod, buffer);
+			
 			/**
 			 * 5) Take all the ds:Object elements except the one containing xades:QualifyingProperties element.
-			 * Canonicalize each one and concatenate each
-			 * resulting octet stream to the final octet stream. If ds:Canonicalization is present, the algorithm
-			 * indicated by this element is used. If not, the
-			 * standard canonicalization method specified by XMLDSIG is used.
+			 * Canonicalize each one and concatenate each resulting octet stream to the final octet stream. 
+			 * If ds:Canonicalization is present, the algorithm indicated by this element is used. If not, 
+			 * the standard canonicalization method specified by XMLDSIG is used.
 			 */
 			boolean xades141 = (timestampToken == null) || !ArchiveTimestampType.XAdES.equals(timestampToken.getArchiveTimestampType());
-
 			final NodeList objects = getObjects();
-			for (int ii = 0; ii < objects.getLength(); ii++) {
-
-				final Node node = objects.item(ii);
-				final Node qualifyingProperties = DomUtils.getElement(node, xPathQueryHolder.XPATH__QUALIFYING_PROPERTIES);
-				if (qualifyingProperties != null) {
-					continue;
-				}
-				if (!xades141) {
-					/**
-					 * !!! ETSI TS 101 903 V1.3.2 (2006-03) 5) Take any ds:Object element in the signature that is not
-					 * referenced by any ds:Reference within
-					 * ds:SignedInfo, except that one containing the QualifyingProperties element. Canonicalize each one
-					 * and concatenate each resulting octet
-					 * stream to the final octet stream. If ds:Canonicalization is present, the algorithm indicated by
-					 * this element is used. If not, the
-					 * standard canonicalization method specified by XMLDSIG is used.
-					 */
-					final NamedNodeMap attributes = node.getAttributes();
-					final int length = attributes.getLength();
-					String id = "";
-					for (int jj = 0; jj < length; jj++) {
-						final Node item = attributes.item(jj);
-						final String nodeName = item.getNodeName();
-						if (Utils.areStringsEqualIgnoreCase("ID", nodeName)) {
-							id = item.getNodeValue();
-							break;
-						}
-					}
-					final boolean contains = referenceURIs.contains(id);
-					if (contains) {
-						continue;
-					}
-				}
-				byte[] canonicalizedValue = DSSXMLUtils.canonicalizeOrSerializeSubtree(canonicalizationMethod, node);
-				buffer.write(canonicalizedValue);
-			}
+			writeObjectBytes(objects, referenceURIs, canonicalizationMethod, xades141, buffer);
 			
 			byte[] bytes = buffer.toByteArray();
 			if(LOG.isTraceEnabled()) {
@@ -441,13 +319,119 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 				LOG.trace(new String(bytes));
 			}
 			return bytes;
+			
 		} catch (IOException e) {
 			throw new DSSException("Error when computing the archive data", e);
+		}
+	}
+	
+	private void writeReferenceBytes(final Reference reference, ByteArrayOutputStream buffer) throws IOException {
+		try {
+			final byte[] referencedBytes = reference.getReferencedBytes();
+			if (referencedBytes != null) {
+				buffer.write(referencedBytes);
+			} else {
+				LOG.warn("No binaries found for URI '{}'", reference.getURI());
+			}
+		} catch (XMLSecurityException e) {
+			LOG.warn("Unable to retrieve content for URI '{}' : {}", reference.getURI(), e.getMessage());
+		}
+	}
+
+	private void writeCanonicalizedValue(final String xPathString, final String canonicalizationMethod, final ByteArrayOutputStream buffer) throws IOException {
+		final Element element = DomUtils.getElement(signature, xPathString);
+		if (element != null) {
+			buffer.write(DSSXMLUtils.canonicalizeOrSerializeSubtree(canonicalizationMethod, element));
 		}
 	}
 
 	private Element getUnsignedSignaturePropertiesDom() {
 		return DomUtils.getElement(signature, xPathQueryHolder.XPATH_UNSIGNED_SIGNATURE_PROPERTIES);
+	}
+	
+	private void writeTimestampedUnsignedProperties(final Element unsignedSignaturePropertiesDom, TimestampToken timestampToken, 
+			String canonicalizationMethod, ByteArrayOutputStream buffer) throws IOException {
+		
+		final NodeList unsignedProperties = unsignedSignaturePropertiesDom.getChildNodes();
+		for (int ii = 0; ii < unsignedProperties.getLength(); ii++) {
+
+			final Node node = unsignedProperties.item(ii);
+			if (node.getNodeType() != Node.ELEMENT_NODE) {
+				// This can happened when there is a blank line between tags.
+				continue;
+			}
+			final String localName = node.getLocalName();
+			// In the SD-DSS implementation when validating the signature
+			// the framework will not add missing data. To do so the
+			// signature must be extended.
+			// if (localName.equals("CertificateValues")) {
+			/*
+			 * - The xades:CertificateValues property MUST be added if it is not already present and the ds:KeyInfo
+			 * element does not contain the full set of
+			 * certificates used to validate the electronic signature.
+			 */
+			// } else if (localName.equals("RevocationValues")) {
+			/*
+			 * - The xades:RevocationValues property MUST be added if it is not already present and the ds:KeyInfo
+			 * element does not contain the revocation
+			 * information that has to be shipped with the electronic signature
+			 */
+			// } else if (localName.equals("AttrAuthoritiesCertValues")) {
+			/*
+			 * - The xades:AttrAuthoritiesCertValues property MUST be added if not already present and the following
+			 * conditions are true: there exist an
+			 * attribute certificate in the signature AND a number of certificates that have been used in its
+			 * validation do not appear in CertificateValues.
+			 * Its content will satisfy with the rules specified in clause 7.6.3.
+			 */
+			// } else if (localName.equals("AttributeRevocationValues")) {
+			/*
+			 * - The xades:AttributeRevocationValues property MUST be added if not already present and there the
+			 * following conditions are true: there exist
+			 * an attribute certificate AND some revocation data that have been used in its validation do not appear
+			 * in RevocationValues. Its content will
+			 * satisfy with the rules specified in clause 7.6.4.
+			 */
+			// } else
+			if (XPathQueryHolder.XMLE_ARCHIVE_TIME_STAMP.equals(localName)) {
+				// TODO: compare encoded base64
+				if ((timestampToken != null) && (timestampToken.getHashCode() == node.hashCode())) {
+					break;
+				}
+				
+			} else if ("TimeStampValidationData".equals(localName)) {
+				/**
+				 * ETSI TS 101 903 V1.4.2 (2010-12) 8.1 The new XAdESv141:TimeStampValidationData element ../.. This
+				 * element is specified to serve as an
+				 * optional container for validation data required for carrying a full verification of time-stamp
+				 * tokens embedded within any of the
+				 * different time-stamp containers defined in the present document. ../.. 8.1.1 Use of URI attribute
+				 * ../.. a new
+				 * xadesv141:TimeStampValidationData element SHALL be created containing the missing validation data
+				 * information and it SHALL be added as a
+				 * child of UnsignedSignatureProperties elements immediately after the respective time-stamp
+				 * certificateToken container element.
+				 */
+			}
+			
+			byte[] canonicalizedValue;
+			if (timestampToken == null) { // Creation of the timestamp
+				/**
+				 * This is the work around for the name space problem: The issue was reported on:
+				 * https://issues.apache.org/jira/browse/SANTUARIO-139 and
+				 * considered as close. But for me (Bob) it still does not work!
+				 */
+				final byte[] bytesToCanonicalize = DSSXMLUtils.serializeNode(node);
+				canonicalizedValue = DSSXMLUtils.canonicalize(canonicalizationMethod, bytesToCanonicalize);
+			} else {
+				canonicalizedValue = DSSXMLUtils.canonicalizeOrSerializeSubtree(canonicalizationMethod, node);
+			}
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("{}: Canonicalization: {} : \n{}", localName, canonicalizationMethod,
+						new String(canonicalizedValue));
+			}
+			buffer.write(canonicalizedValue);
+		}
 	}
 
 	/**
@@ -458,12 +442,46 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 	private NodeList getObjects() {
 		return DomUtils.getNodeList(signature, XPathQueryHolder.XPATH_OBJECT);
 	}
+	
+	private void writeObjectBytes(final NodeList objects, final Set<String> referenceURIs, String canonicalizationMethod, boolean xades141,
+			ByteArrayOutputStream buffer) throws IOException {
+		for (int ii = 0; ii < objects.getLength(); ii++) {
 
-	private void writeCanonicalizedValue(final String xPathString, final String canonicalizationMethod, final ByteArrayOutputStream buffer) throws IOException {
-		final Element element = DomUtils.getElement(signature, xPathString);
-		if (element != null) {
-			buffer.write(DSSXMLUtils.canonicalizeOrSerializeSubtree(canonicalizationMethod, element));
+			final Node node = objects.item(ii);
+			final Node qualifyingProperties = DomUtils.getElement(node, xPathQueryHolder.XPATH__QUALIFYING_PROPERTIES);
+			if (qualifyingProperties != null) {
+				continue;
+			}
+			if (!xades141) {
+				/**
+				 * !!! ETSI TS 101 903 V1.3.2 (2006-03) 5) Take any ds:Object element in the signature that is not
+				 * referenced by any ds:Reference within
+				 * ds:SignedInfo, except that one containing the QualifyingProperties element. Canonicalize each one
+				 * and concatenate each resulting octet
+				 * stream to the final octet stream. If ds:Canonicalization is present, the algorithm indicated by
+				 * this element is used. If not, the
+				 * standard canonicalization method specified by XMLDSIG is used.
+				 */
+				final NamedNodeMap attributes = node.getAttributes();
+				final int length = attributes.getLength();
+				String id = "";
+				for (int jj = 0; jj < length; jj++) {
+					final Node item = attributes.item(jj);
+					final String nodeName = item.getNodeName();
+					if (Utils.areStringsEqualIgnoreCase("ID", nodeName)) {
+						id = item.getNodeValue();
+						break;
+					}
+				}
+				final boolean contains = referenceURIs.contains(id);
+				if (contains) {
+					continue;
+				}
+			}
+			byte[] canonicalizedValue = DSSXMLUtils.canonicalizeOrSerializeSubtree(canonicalizationMethod, node);
+			buffer.write(canonicalizedValue);
 		}
+		
 	}
 
 }

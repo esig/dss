@@ -141,7 +141,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	private final CMSSignedData cmsSignedData;
 
-	protected final SignerInformation signerInformation;
+	private final SignerInformation signerInformation;
 
 	/**
 	 * The reference to the signing certificate. If the signing certificate is

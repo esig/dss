@@ -44,8 +44,8 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CMSOCSPSource.class);
 
-	protected final CMSSignedData cmsSignedData;
-	protected final AttributeTable unsignedAttributes;
+	protected transient final CMSSignedData cmsSignedData;
+	protected transient final AttributeTable unsignedAttributes;
 	
 	/**
 	 * Cached list of {@code OCSPResponseBinary}s found in SignedData attribute
