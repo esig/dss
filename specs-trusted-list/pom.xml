@@ -61,6 +61,10 @@
 					<specVersion>2.1</specVersion>
 					<episode>true</episode>
 					<locale>en</locale>
+										
+					<disableXmlSecurity>false</disableXmlSecurity>
+					<accessExternalSchema>file</accessExternalSchema>
+					<accessExternalDTD>file</accessExternalDTD>
 				</configuration>
 			</plugin>
 			

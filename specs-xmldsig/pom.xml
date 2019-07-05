@@ -38,6 +38,7 @@
 					<schemaIncludes>
 						<schemaInclude>xmldsig-core-schema.xsd</schemaInclude>
 					</schemaIncludes>
+					<catalog>src/main/resources/xsd/catalog.cat</catalog>
 					<bindingIncludes>
 						<include>bindings.xml</include>
 					</bindingIncludes>
@@ -45,6 +46,10 @@
 					<specVersion>2.3</specVersion>
 					<episode>true</episode>
 					<locale>en</locale>
+										
+					<disableXmlSecurity>false</disableXmlSecurity>
+					<accessExternalSchema>file</accessExternalSchema>
+					<accessExternalDTD>file</accessExternalDTD>
 				</configuration>
 			</plugin>
 			<plugin>
