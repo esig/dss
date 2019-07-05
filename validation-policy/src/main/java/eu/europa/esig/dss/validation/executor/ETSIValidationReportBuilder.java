@@ -1046,7 +1046,7 @@ public class ETSIValidationReportBuilder {
 			final String postalCode = sigWrapper.getPostalCode();
 			final String countryName = sigWrapper.getCountryName();
 
-			if (!Utils.isAtLeastOneNotEmpty(address, city, stateOrProvince, postalCode, countryName)) { 
+			if (Utils.areAllStringsEmpty(address, city, stateOrProvince, postalCode, countryName)) { 
 				return;
 			}
 			SASignatureProductionPlaceType sigProductionPlace = objectFactory.createSASignatureProductionPlaceType();

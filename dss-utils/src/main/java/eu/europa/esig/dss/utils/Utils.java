@@ -57,14 +57,18 @@ public final class Utils {
 	public static boolean isStringNotEmpty(String text) {
 		return impl.isStringNotEmpty(text);
 	}
-
-	public static boolean isAtLeastOneNotEmpty(String... values) {
+	
+	public static boolean areAllStringsEmpty(String... values) {
 		for (String value : values) {
 			if (isStringNotEmpty(value)) {
-				return true;
+				return false;
 			}
 		}
-		return false;
+		return true;
+	}
+
+	public static boolean isAtLeastOneStringNotEmpty(String... values) {
+		return !areAllStringsEmpty(values);
 	}
 
 	public static boolean isStringBlank(String text) {

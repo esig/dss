@@ -67,6 +67,38 @@ public abstract class AbstractUtilsTest {
 		assertFalse(Utils.isStringNotEmpty(null));
 		assertTrue(Utils.isStringNotEmpty("bla"));
 	}
+	
+	@Test
+	public void areAllStringsEmpty() {
+		String nullString = null;
+		assertTrue(Utils.areAllStringsEmpty(nullString));
+		assertTrue(Utils.areAllStringsEmpty(""));
+		assertFalse(Utils.areAllStringsEmpty("  "));
+		assertFalse(Utils.areAllStringsEmpty("bla"));
+		assertTrue(Utils.areAllStringsEmpty("", nullString));
+		assertFalse(Utils.areAllStringsEmpty("", " "));
+		assertFalse(Utils.areAllStringsEmpty("bla", " "));
+		assertTrue(Utils.areAllStringsEmpty("", "", ""));
+		assertTrue(Utils.areAllStringsEmpty(nullString, nullString, nullString));
+		assertFalse(Utils.areAllStringsEmpty("bla", " ", ""));
+		assertFalse(Utils.areAllStringsEmpty("bla", " ", "bla"));
+	}
+	
+	@Test
+	public void isAtLeastOneStringNotEmpty() {
+		String nullString = null;
+		assertFalse(Utils.isAtLeastOneStringNotEmpty(nullString));
+		assertFalse(Utils.isAtLeastOneStringNotEmpty(""));
+		assertTrue(Utils.isAtLeastOneStringNotEmpty("  "));
+		assertTrue(Utils.isAtLeastOneStringNotEmpty("bla"));
+		assertFalse(Utils.isAtLeastOneStringNotEmpty("", nullString));
+		assertTrue(Utils.isAtLeastOneStringNotEmpty("", " "));
+		assertTrue(Utils.isAtLeastOneStringNotEmpty("bla", " "));
+		assertFalse(Utils.isAtLeastOneStringNotEmpty("", "", ""));
+		assertFalse(Utils.isAtLeastOneStringNotEmpty(nullString, nullString, nullString));
+		assertTrue(Utils.isAtLeastOneStringNotEmpty("bla", " ", ""));
+		assertTrue(Utils.isAtLeastOneStringNotEmpty("bla", " ", "bla"));
+	}
 
 	@Test
 	public void isStringBlank() {
