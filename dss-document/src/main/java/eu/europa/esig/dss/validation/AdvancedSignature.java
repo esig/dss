@@ -536,7 +536,7 @@ public interface AdvancedSignature extends Serializable {
 	 * NOTE: Applicable only for XAdES revocation source
 	 * @return list of {@link RevocationToken}s
 	 */
-	List<RevocationToken> getTimestampRevocationValuesTokens();
+	List<RevocationToken> getTimestampValidationDataTokens();
 
 	/**
 	 * Retrieves the list of all {@code RevocationToken}s present in 'DSS' dictionary

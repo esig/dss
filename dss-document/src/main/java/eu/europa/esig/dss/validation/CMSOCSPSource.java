@@ -71,7 +71,7 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 	 * @return {@link RevocationOrigin}
 	 */
 	protected RevocationOrigin getInternalRevocationValuesOrigin() {
-		return RevocationOrigin.INTERNAL_REVOCATION_VALUES;
+		return RevocationOrigin.REVOCATION_VALUES;
 	}
 
 	/**

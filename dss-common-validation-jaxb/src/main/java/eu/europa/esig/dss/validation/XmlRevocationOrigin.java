@@ -5,27 +5,32 @@ public enum XmlRevocationOrigin {
 	/**
 	 * The revocation data was embedded in the signature 'revocation-values' attribute (used in CAdES and XAdES)
 	 */
-	INTERNAL_REVOCATION_VALUES(true),
+	REVOCATION_VALUES(true),
 
 	/**
 	 * The revocation data was embedded in the signature 'AttributeRevocationValues' attribute (used in XAdES)
 	 */
-	INTERNAL_ATTRIBUTE_REVOCATION_VALUES(true),
+	ATTRIBUTE_REVOCATION_VALUES(true),
 
 	/**
 	 * The revocation data was embedded in the signature 'TimeStampValidationData' attribute (used in XAdES)
 	 */
-	INTERNAL_TIMESTAMP_REVOCATION_VALUES(true),
+	TIMESTAMP_VALIDATION_DATA(true),
 
 	/**
 	 * The revocation data was embedded to the contents of DSS PDF dictionary (used in PAdES)
 	 */
-	INTERNAL_DSS(true),
+	DSS_DICTIONARY(true),
 
 	/**
 	 * The revocation data was embedded to VRI dictionary (used in PAdES)
 	 */
-	INTERNAL_VRI(true),
+	VRI_DICTIONARY(true),
+
+	/**
+	 * The revocation value was embedded in the timestamp attribute (used in CAdES)
+	 */
+	TIMESTAMP_REVOCATION_VALUES(true),
 
 	/**
 	 * The revocation data was embedded to Signature (all internal cases)

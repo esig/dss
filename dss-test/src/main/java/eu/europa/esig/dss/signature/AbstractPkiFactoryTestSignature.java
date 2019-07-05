@@ -63,6 +63,8 @@ import eu.europa.esig.dss.jaxb.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerData;
 import eu.europa.esig.dss.jaxb.simplereport.SimpleReportFacade;
@@ -438,6 +440,9 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		checkClaimedRoles(diagnosticData);
 		checkMessageDigestAlgorithm(diagnosticData);
 		checkSignaturePolicyIdentifier(diagnosticData);
+
+		checkNoDuplicateCompleteCertificates(diagnosticData);
+		checkNoDuplicateCompleteRevocationData(diagnosticData);
 	}
 
 	protected void verifyDiagnosticDataJaxb(XmlDiagnosticData diagnosticDataJaxb) {
@@ -918,6 +923,26 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		String street = signerLocation.getStreet();
 		if (street != null) {
 			assertTrue(addressString.contains(street));
+		}
+	}
+
+	protected void checkNoDuplicateCompleteCertificates(DiagnosticData diagnosticData) {
+		Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
+		for (SignatureWrapper signatureWrapper : allSignatures) {
+			List<XmlFoundCertificate> allFoundCertificates = signatureWrapper.getAllFoundCertificates();
+			for (XmlFoundCertificate foundCert : allFoundCertificates) {
+				assertEquals("Duplicate complete certificate in " + foundCert.getOrigins(), 1, foundCert.getOrigins().size());
+			}
+		}
+	}
+
+	protected void checkNoDuplicateCompleteRevocationData(DiagnosticData diagnosticData) {
+		Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
+		for (SignatureWrapper signatureWrapper : allSignatures) {
+			List<XmlFoundRevocation> allFoundRevocations = signatureWrapper.getAllFoundRevocations();
+			for (XmlFoundRevocation foundRevocation : allFoundRevocations) {
+				assertEquals("Duplicate complete revocation data in " + foundRevocation.getOrigins(), 1, foundRevocation.getOrigins().size());
+			}
 		}
 	}
 

@@ -18,7 +18,7 @@ public class TimestampOCSPSource extends CMSOCSPSource {
 	
 	@Override
 	protected RevocationOrigin getInternalRevocationValuesOrigin() {
-		return RevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES;
+		return RevocationOrigin.TIMESTAMP_REVOCATION_VALUES;
 	}
 
 	@Override

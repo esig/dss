@@ -91,6 +91,7 @@ public abstract class XAdESBuilder {
 	public static final String XADES_CERT_DIGEST = "xades:CertDigest";
 	public static final String XADES_CERT_REFS = "xades:CertRefs";
 	public static final String XADES_CERTIFICATE_VALUES = "xades:CertificateValues";
+	public static final String XADES_REVOCATION_VALUES = "xades:RevocationValues";
 	public static final String XADES_CERTIFIED_ROLES = "xades:CertifiedRoles";
 	public static final String XADES_CERTIFIED_ROLES_V2 = "xades:CertifiedRolesV2";
 	public static final String XADES_CERTIFIED_ROLE = "xades:CertifiedRole";

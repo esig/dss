@@ -62,12 +62,12 @@ public class DiagnosticDataComplete extends PKIFactoryAccess {
 
 		assertEquals(3, signature.getRevocationIdsByType(RevocationType.CRL).size());
 		assertEquals(4, signature.getRevocationIdsByType(RevocationType.OCSP).size());
-		assertEquals(0, signature.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
-		assertEquals(0, signature.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
-		assertEquals(3, signature.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.INTERNAL_DSS).size());
-		assertEquals(0, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
-		assertEquals(0, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
-		assertEquals(4, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_DSS).size());
+		assertEquals(0, signature.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.REVOCATION_VALUES).size());
+		assertEquals(0, signature.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.TIMESTAMP_VALIDATION_DATA).size());
+		assertEquals(3, signature.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.DSS_DICTIONARY).size());
+		assertEquals(0, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.REVOCATION_VALUES).size());
+		assertEquals(0, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.TIMESTAMP_VALIDATION_DATA).size());
+		assertEquals(4, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.DSS_DICTIONARY).size());
 	}
 	
 	@Test
@@ -83,23 +83,23 @@ public class DiagnosticDataComplete extends PKIFactoryAccess {
 		assertEquals(2, signatures.size());
 		
 		SignatureWrapper signatureOne = signatures.get(0);
-		assertEquals(2, signatureOne.getFoundRevocations().size());
+		assertEquals(2, signatureOne.getAllFoundRevocations().size());
 		assertEquals(2, signatureOne.getRevocationIdsByType(RevocationType.CRL).size());
 		assertEquals(0, signatureOne.getRevocationIdsByType(RevocationType.OCSP).size());
-		assertEquals(0, signatureOne.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
-		assertEquals(0, signatureOne.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
-		assertEquals(2, signatureOne.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.INTERNAL_DSS).size());
+		assertEquals(0, signatureOne.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.REVOCATION_VALUES).size());
+		assertEquals(0, signatureOne.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.TIMESTAMP_VALIDATION_DATA).size());
+		assertEquals(2, signatureOne.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.DSS_DICTIONARY).size());
 		
 		assertEquals(0, signatureOne.getAllFoundRevocationRefs().size());
 		assertEquals("Signature1", signatureOne.getSignatureFieldName());
 		
 		SignatureWrapper signatureTwo = signatures.get(1);
-		assertEquals(2, signatureOne.getFoundRevocations().size());
+		assertEquals(2, signatureOne.getAllFoundRevocations().size());
 		assertEquals(2, signatureOne.getRevocationIdsByType(RevocationType.CRL).size());
 		assertEquals(0, signatureOne.getRevocationIdsByType(RevocationType.OCSP).size());
-		assertEquals(0, signatureOne.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
-		assertEquals(0, signatureOne.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
-		assertEquals(2, signatureOne.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.INTERNAL_DSS).size());
+		assertEquals(0, signatureOne.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.REVOCATION_VALUES).size());
+		assertEquals(0, signatureOne.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.TIMESTAMP_VALIDATION_DATA).size());
+		assertEquals(2, signatureOne.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.DSS_DICTIONARY).size());
 		assertEquals(0, signatureTwo.getAllFoundRevocationRefs().size());
 		assertEquals("Signature3", signatureTwo.getSignatureFieldName());
 		
@@ -163,13 +163,13 @@ public class DiagnosticDataComplete extends PKIFactoryAccess {
 		assertNotNull(signatures);
 		
 		SignatureWrapper signature = signatures.get(0);
-		assertEquals(1, signature.getFoundRevocations().size());
+		assertEquals(1, signature.getAllFoundRevocations().size());
 		assertEquals(0, signature.getRevocationIdsByType(RevocationType.CRL).size());
 		assertEquals(1, signature.getRevocationIdsByType(RevocationType.OCSP).size());
-		assertEquals(0, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
-		assertEquals(0, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
-		assertEquals(1, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_DSS).size());
-		assertEquals(1, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_VRI).size());
+		assertEquals(0, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.REVOCATION_VALUES).size());
+		assertEquals(0, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.TIMESTAMP_VALIDATION_DATA).size());
+		assertEquals(1, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.DSS_DICTIONARY).size());
+		assertEquals(1, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.VRI_DICTIONARY).size());
 		
 		List<TimestampWrapper> timestamps = signature.getTimestampList();
 		assertNotNull(timestamps);

@@ -48,6 +48,7 @@ import eu.europa.esig.dss.pdf.PdfSignatureInfo;
 import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.jaxb.validationreport.SAContactInfoType;
 import eu.europa.esig.jaxb.validationreport.SADSSType;
 import eu.europa.esig.jaxb.validationreport.SAFilterType;
@@ -216,4 +217,13 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 		}
 	}
 
+	@Override
+	protected void checkNoDuplicateCompleteCertificates(DiagnosticData diagnosticData) {
+		// "Duplicate"
+	}
+
+	@Override
+	protected void checkNoDuplicateCompleteRevocationData(DiagnosticData diagnosticData) {
+		// "Duplicate"
+	}
 }

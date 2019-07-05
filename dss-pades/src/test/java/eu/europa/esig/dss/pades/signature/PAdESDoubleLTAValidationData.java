@@ -151,8 +151,8 @@ public class PAdESDoubleLTAValidationData extends PKIFactoryAccess {
 		
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertNotNull(signature);
-		assertEquals(3, signature.getRevocationIdsByOrigin(XmlRevocationOrigin.INTERNAL_DSS).size());
-		assertEquals(3, signature.getRevocationIdsByOrigin(XmlRevocationOrigin.INTERNAL_VRI).size());
+		assertEquals(3, signature.getRevocationIdsByOrigin(XmlRevocationOrigin.DSS_DICTIONARY).size());
+		assertEquals(3, signature.getRevocationIdsByOrigin(XmlRevocationOrigin.VRI_DICTIONARY).size());
 		
 	}
 

@@ -643,7 +643,7 @@ public class SignatureValidationContext implements ValidationContext {
 		if (lastUsageDate != null) {
 			boolean foundUpdatedRevocationData = false;
 			for (RevocationToken revocationToken : revocations) {
-				if ((lastUsageDate.compareTo(revocationToken.getProductionDate()) <= 0) && (CRLReasonEnum.certificateHold != revocationToken.getReason())) {
+				if ((lastUsageDate.compareTo(revocationToken.getProductionDate()) < 0) && (CRLReasonEnum.certificateHold != revocationToken.getReason())) {
 					foundUpdatedRevocationData = true;
 					break;
 				}

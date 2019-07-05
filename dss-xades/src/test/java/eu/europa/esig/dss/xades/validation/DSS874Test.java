@@ -89,10 +89,10 @@ public class DSS874Test {
 		assertEquals(5, signatureWrapper.getFoundCertificatesByRefOrigin(CertificateRefOriginType.COMPLETE_CERTIFICATE_REFS).size());
 		assertEquals(3, signatureWrapper.getFoundRevocationRefsByOrigin(XmlRevocationRefOrigin.COMPLETE_REVOCATION_REFS).size());
 		assertEquals(5, signatureWrapper.getRelatedCertificatesByOrigin(CertificateOriginType.CERTIFICATE_VALUES).size());
-		assertEquals(5, signatureWrapper.getRevocationIdsByOrigin(XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
+		assertEquals(5, signatureWrapper.getRevocationIdsByOrigin(XmlRevocationOrigin.REVOCATION_VALUES).size());
 		
-		assertEquals(3, signatureWrapper.getRelatedRevocationsByOrigin(XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
-		assertEquals(2, signatureWrapper.getOrphanRevocationsByOrigin(XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
+		assertEquals(3, signatureWrapper.getRelatedRevocationsByOrigin(XmlRevocationOrigin.REVOCATION_VALUES).size());
+		assertEquals(2, signatureWrapper.getOrphanRevocationsByOrigin(XmlRevocationOrigin.REVOCATION_VALUES).size());
 		
 		List<String> revocationIds = signatureWrapper.getRevocationIds();
 		

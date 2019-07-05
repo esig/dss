@@ -517,7 +517,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return signature.getFoundCertificates().getOrphanCertificates();
 	}
 	
-	public List<XmlFoundRevocation> getFoundRevocations() {
+	public List<XmlFoundRevocation> getAllFoundRevocations() {
 		List<XmlFoundRevocation> foundRevocations = new ArrayList<XmlFoundRevocation>();
 		foundRevocations.addAll(getRelatedRevocations());
 		foundRevocations.addAll(getOrphanRevocations());
@@ -649,7 +649,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	 */
 	public List<String> getRevocationIds() {
 		List<String> revocationIds = new ArrayList<String>();
-		List<XmlFoundRevocation> foundRevocations = getFoundRevocations();
+		List<XmlFoundRevocation> foundRevocations = getAllFoundRevocations();
 		for (XmlFoundRevocation foundRevocation : foundRevocations) {
 			if (foundRevocation instanceof XmlRelatedRevocation) {
 				revocationIds.add(((XmlRelatedRevocation)foundRevocation).getRevocation().getId());

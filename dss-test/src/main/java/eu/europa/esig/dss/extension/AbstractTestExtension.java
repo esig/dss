@@ -36,6 +36,8 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundRevocation;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
@@ -45,6 +47,7 @@ import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.SimpleReport;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
@@ -147,9 +150,32 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 	
 	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
 		checkTimestamps(diagnosticData);
+
+		checkNoDuplicateCompleteCertificates(diagnosticData);
+		checkNoDuplicateCompleteRevocationData(diagnosticData);
+	}
+
+	private void checkNoDuplicateCompleteCertificates(DiagnosticData diagnosticData) {
+		Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
+		for (SignatureWrapper signatureWrapper : allSignatures) {
+			List<XmlFoundCertificate> allFoundCertificates = signatureWrapper.getAllFoundCertificates();
+			for (XmlFoundCertificate foundCert : allFoundCertificates) {
+				assertEquals("Duplicate certificate in " + foundCert.getOrigins(), 1, foundCert.getOrigins().size());
+			}
+		}
+	}
+
+	private void checkNoDuplicateCompleteRevocationData(DiagnosticData diagnosticData) {
+		Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
+		for (SignatureWrapper signatureWrapper : allSignatures) {
+			List<XmlFoundRevocation> allFoundRevocations = signatureWrapper.getAllFoundRevocations();
+			for (XmlFoundRevocation foundRevocation : allFoundRevocations) {
+				assertEquals("Duplicate revocation data in " + foundRevocation.getOrigins(), 1, foundRevocation.getOrigins().size());
+			}
+		}
 	}
 	
-	private void checkTimestamps(DiagnosticData diagnosticData) {
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
 		Set<TimestampWrapper> allTimestamps = diagnosticData.getTimestampSet();
 		for (TimestampWrapper timestampWrapper : allTimestamps) {
 			assertNotNull(timestampWrapper.getProductionTime());

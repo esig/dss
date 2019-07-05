@@ -48,9 +48,9 @@ public class CAdESRevocationWrapperTest extends PKIFactoryAccess {
 		assertEquals(2, revocationSignatureOriginCounter);
 		assertEquals(0, signature.getRevocationIdsByType(RevocationType.CRL).size());
 		assertEquals(2, signature.getRevocationIdsByType(RevocationType.OCSP).size());
-		assertEquals(2, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
-		assertEquals(0, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
-		assertEquals(0, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_DSS).size());
+		assertEquals(2, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.REVOCATION_VALUES).size());
+		assertEquals(0, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.TIMESTAMP_VALIDATION_DATA).size());
+		assertEquals(0, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.DSS_DICTIONARY).size());
 	}
 	
 	@Test

@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import eu.europa.esig.dss.DSSASN1Utils;
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.RevocationOrigin;
@@ -24,9 +25,10 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	
 	private final List<OCSPToken> revocationValuesOCSPs = new ArrayList<OCSPToken>();
 	private final List<OCSPToken> attributeRevocationValuesOCSPs = new ArrayList<OCSPToken>();
-	private final List<OCSPToken> timestampRevocationValuesOCSPs = new ArrayList<OCSPToken>();
+	private final List<OCSPToken> timestampValidationDataOCSPs = new ArrayList<OCSPToken>();
 	private final List<OCSPToken> dssDictionaryOCSPs = new ArrayList<OCSPToken>();
 	private final List<OCSPToken> vriDictionaryOCSPs = new ArrayList<OCSPToken>();
+	private final List<OCSPToken> timestampRevocationValuesOCSPs = new ArrayList<OCSPToken>();
 	
 	private List<OCSPRef> completeRevocationRefsOCSPs = new ArrayList<OCSPRef>();
 	private List<OCSPRef> attributeRevocationRefsOCSPs = new ArrayList<OCSPRef>();
@@ -50,8 +52,8 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	}
 
 	@Override
-	public List<OCSPToken> getTimestampRevocationValuesTokens() {
-		return timestampRevocationValuesOCSPs;
+	public List<OCSPToken> getTimestampValidationDataTokens() {
+		return timestampValidationDataOCSPs;
 	}
 
 	@Override
@@ -62,6 +64,11 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	@Override
 	public List<OCSPToken> getVRIDictionaryTokens() {
 		return vriDictionaryOCSPs;
+	}
+
+	@Override
+	public List<OCSPToken> getTimestampRevocationValuesTokens() {
+		return timestampRevocationValuesOCSPs;
 	}
 
 	public List<OCSPRef> getCompleteRevocationRefs() {
@@ -84,9 +91,10 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 		List<OCSPToken> ocspTokens = new ArrayList<OCSPToken>();
 		ocspTokens.addAll(getRevocationValuesTokens());
 		ocspTokens.addAll(getAttributeRevocationValuesTokens());
-		ocspTokens.addAll(getTimestampRevocationValuesTokens());
+		ocspTokens.addAll(getTimestampValidationDataTokens());
 		ocspTokens.addAll(getDSSDictionaryTokens());
 		ocspTokens.addAll(getVRIDictionaryTokens());
+		ocspTokens.addAll(getTimestampRevocationValuesTokens());
 		return ocspTokens;
 	}
 
@@ -126,22 +134,26 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 			ocspTokenMap.put(ocspResponse, ocspToken);
 			for (RevocationOrigin origin : getRevocationOrigins(ocspResponse)) {
 				switch (origin) {
-					case INTERNAL_REVOCATION_VALUES:
-						revocationValuesOCSPs.add(ocspToken);
-						break;
-					case INTERNAL_ATTRIBUTE_REVOCATION_VALUES:
-						attributeRevocationValuesOCSPs.add(ocspToken);
-						break;
-					case INTERNAL_TIMESTAMP_REVOCATION_VALUES:
-						timestampRevocationValuesOCSPs.add(ocspToken);
-						break;
-					case INTERNAL_DSS:
-						dssDictionaryOCSPs.add(ocspToken);
-						break;
-					case INTERNAL_VRI:
-						vriDictionaryOCSPs.add(ocspToken);
-					default:
-						break;
+				case REVOCATION_VALUES:
+					revocationValuesOCSPs.add(ocspToken);
+					break;
+				case ATTRIBUTE_REVOCATION_VALUES:
+					attributeRevocationValuesOCSPs.add(ocspToken);
+					break;
+				case TIMESTAMP_VALIDATION_DATA:
+					timestampValidationDataOCSPs.add(ocspToken);
+					break;
+				case DSS_DICTIONARY:
+					dssDictionaryOCSPs.add(ocspToken);
+					break;
+				case VRI_DICTIONARY:
+					vriDictionaryOCSPs.add(ocspToken);
+					break;
+				case TIMESTAMP_REVOCATION_VALUES:
+					timestampRevocationValuesOCSPs.add(ocspToken);
+					break;
+				default:
+					throw new DSSException("Unsupported origin : " + origin);
 				}
 			}
 		}
@@ -149,21 +161,23 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	
 	protected void addReference(OCSPRef ocspRef, RevocationOrigin origin) {
 		switch (origin) {
-			case COMPLETE_REVOCATION_REFS:
-				if (!completeRevocationRefsOCSPs.contains(ocspRef)) {
-					completeRevocationRefsOCSPs.add(ocspRef);
-				}
-				break;
-			case ATTRIBUTE_REVOCATION_REFS:
-				if (!attributeRevocationRefsOCSPs.contains(ocspRef)) {
-					attributeRevocationRefsOCSPs.add(ocspRef);
-				}
-			case TIMESTAMP_REVOCATION_REFS:
-				if (!timestampRevocationRefsOCSPs.contains(ocspRef)) {
-					timestampRevocationRefsOCSPs.add(ocspRef);
-				}
-			default:
-				break;
+		case COMPLETE_REVOCATION_REFS:
+			if (!completeRevocationRefsOCSPs.contains(ocspRef)) {
+				completeRevocationRefsOCSPs.add(ocspRef);
+			}
+			break;
+		case ATTRIBUTE_REVOCATION_REFS:
+			if (!attributeRevocationRefsOCSPs.contains(ocspRef)) {
+				attributeRevocationRefsOCSPs.add(ocspRef);
+			}
+			break;
+		case TIMESTAMP_REVOCATION_REFS:
+			if (!timestampRevocationRefsOCSPs.contains(ocspRef)) {
+				timestampRevocationRefsOCSPs.add(ocspRef);
+			}
+			break;
+		default:
+			throw new DSSException("Unsupported origin : " + origin);
 		}
 	}
 	

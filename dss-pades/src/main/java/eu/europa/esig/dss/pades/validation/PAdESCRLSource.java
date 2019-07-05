@@ -90,7 +90,7 @@ public class PAdESCRLSource extends SignatureCRLSource {
 
 	private void extractDSSCRLs() {
 		for (byte[] crl : getDssCrlMap().values()) {
-			addCRLBinary(crl, RevocationOrigin.INTERNAL_DSS);
+			addCRLBinary(crl, RevocationOrigin.DSS_DICTIONARY);
 		}
 	}
 	
@@ -117,7 +117,7 @@ public class PAdESCRLSource extends SignatureCRLSource {
 				if (!crlMap.containsKey(crlEntry.getKey())) {
 					crlMap.put(crlEntry.getKey(), crlEntry.getValue());
 				}
-				addCRLBinary(crlEntry.getValue(), RevocationOrigin.INTERNAL_VRI);
+				addCRLBinary(crlEntry.getValue(), RevocationOrigin.VRI_DICTIONARY);
 			}
 		}
 	}

@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import eu.europa.esig.dss.CRLBinary;
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.RevocationOrigin;
@@ -23,9 +24,10 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	
 	private List<CRLToken> revocationValuesCRLs = new ArrayList<CRLToken>();
 	private List<CRLToken> attributeRevocationValuesCRLs = new ArrayList<CRLToken>();
-	private List<CRLToken> timestampRevocationValuesCRLs = new ArrayList<CRLToken>();
+	private List<CRLToken> timestampValidationDataCRLs = new ArrayList<CRLToken>();
 	private List<CRLToken> dssDictionaryCRLs = new ArrayList<CRLToken>();
 	private List<CRLToken> vriDictionaryCRLs = new ArrayList<CRLToken>();
+	private List<CRLToken> timestampRevocationValuesCRLs = new ArrayList<CRLToken>();
 	
 	private List<CRLRef> completeRevocationRefsCRLs = new ArrayList<CRLRef>();
 	private List<CRLRef> attributeRevocationRefsCRLs = new ArrayList<CRLRef>();
@@ -46,6 +48,11 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	@Override
 	public List<CRLToken> getAttributeRevocationValuesTokens() {
 		return attributeRevocationValuesCRLs;
+	}
+
+	@Override
+	public List<CRLToken> getTimestampValidationDataTokens() {
+		return timestampValidationDataCRLs;
 	}
 
 	@Override
@@ -83,9 +90,10 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 		List<CRLToken> crlTokens = new ArrayList<CRLToken>();
 		crlTokens.addAll(getRevocationValuesTokens());
 		crlTokens.addAll(getAttributeRevocationValuesTokens());
-		crlTokens.addAll(getTimestampRevocationValuesTokens());
+		crlTokens.addAll(getTimestampValidationDataTokens());
 		crlTokens.addAll(getDSSDictionaryTokens());
 		crlTokens.addAll(getVRIDictionaryTokens());
+		crlTokens.addAll(getTimestampRevocationValuesTokens());
 		return crlTokens;
 	}
 
@@ -134,22 +142,26 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	
 	private void addToRelevantList(CRLToken crlToken, RevocationOrigin origin) {
 		switch (origin) {
-			case INTERNAL_REVOCATION_VALUES:
-				revocationValuesCRLs.add(crlToken);
-				break;
-			case INTERNAL_ATTRIBUTE_REVOCATION_VALUES:
-				attributeRevocationValuesCRLs.add(crlToken);
-				break;
-			case INTERNAL_TIMESTAMP_REVOCATION_VALUES:
-				timestampRevocationValuesCRLs.add(crlToken);
-				break;
-			case INTERNAL_DSS:
-				dssDictionaryCRLs.add(crlToken);
-				break;
-			case INTERNAL_VRI:
-				vriDictionaryCRLs.add(crlToken);
-			default:
-				break;
+		case REVOCATION_VALUES:
+			revocationValuesCRLs.add(crlToken);
+			break;
+		case ATTRIBUTE_REVOCATION_VALUES:
+			attributeRevocationValuesCRLs.add(crlToken);
+			break;
+		case TIMESTAMP_VALIDATION_DATA:
+			timestampValidationDataCRLs.add(crlToken);
+			break;
+		case DSS_DICTIONARY:
+			dssDictionaryCRLs.add(crlToken);
+			break;
+		case VRI_DICTIONARY:
+			vriDictionaryCRLs.add(crlToken);
+			break;
+		case TIMESTAMP_REVOCATION_VALUES:
+			timestampRevocationValuesCRLs.add(crlToken);
+			break;
+		default:
+			throw new DSSException("Unsupported origin : " + origin);
 		}
 	}
 	
@@ -164,12 +176,14 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 			if (!attributeRevocationRefsCRLs.contains(crlRef)) {
 				attributeRevocationRefsCRLs.add(crlRef);
 			}
+			break;
 		case TIMESTAMP_REVOCATION_REFS:
 			if (!timestampRevocationRefsCRLs.contains(crlRef)) {
 				timestampRevocationRefsCRLs.add(crlRef);
 			}
-		default:
 			break;
+		default:
+			throw new DSSException("Unsupported origin : " + origin);
 		}
 	}
 	

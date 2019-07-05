@@ -25,28 +25,27 @@ public enum RevocationOrigin {
 	/**
 	 * The revocation data was embedded in the signature 'revocation-values' attribute (used in CAdES and XAdES)
 	 */
-	INTERNAL_REVOCATION_VALUES,
+	REVOCATION_VALUES,
 
 	/**
 	 * The revocation data was embedded in the signature 'AttributeRevocationValues' attribute (used in XAdES)
 	 */
-	INTERNAL_ATTRIBUTE_REVOCATION_VALUES,
+	ATTRIBUTE_REVOCATION_VALUES,
 
 	/**
 	 * The revocation data was embedded in the signature 'TimeStampValidationData' attribute (used in XAdES)
-	 * NOTE: in case of CAdES, the value is used when data were embedded to a TimestampToken
 	 */
-	INTERNAL_TIMESTAMP_REVOCATION_VALUES,
+	TIMESTAMP_VALIDATION_DATA,
 
 	/**
 	 * The revocation data was embedded to the contents of DSS PDF dictionary (used in PAdES)
 	 */
-	INTERNAL_DSS,
+	DSS_DICTIONARY,
 
 	/**
 	 * The revocation data was embedded to VRI dictionary (used in PAdES)
 	 */
-	INTERNAL_VRI,
+	VRI_DICTIONARY,
 	
 	/**
 	 * The revocation data was embedded in the signature 'complete-revocation-references' attribute (used in CAdES and XAdES)
@@ -57,6 +56,11 @@ public enum RevocationOrigin {
 	 * The revocation data was embedded in the signature 'attribute-revocation-references' attribute (used in CAdES and XAdES)
 	 */
 	ATTRIBUTE_REVOCATION_REFS,
+
+	/**
+	 * The revocation value was embedded in the timestamp attribute (used in CAdES)
+	 */
+	TIMESTAMP_REVOCATION_VALUES,
 
 	/**
 	 * The revocation ref was embedded in the timestamp attribute (used in CAdES)
