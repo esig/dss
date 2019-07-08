@@ -38,9 +38,12 @@ import javax.xml.bind.JAXB;
 import org.junit.Test;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlCryptographicInformation;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlDetailedReport;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPDFSignatureDictionary;
@@ -135,6 +138,27 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SignatureQualification.INDETERMINATE_QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+		
+		DetailedReport detailedReport = reports.getDetailedReport();
+		
+		XmlValidationProcessArchivalData validationProcessArchivalData = detailedReport.getJAXBModel().getSignatures().get(0).getValidationProcessArchivalData();
+		List<XmlConstraint> constraints = validationProcessArchivalData.getConstraint();
+		
+		List<String> timestampIds = detailedReport.getTimestampIds();
+		
+		int basicValidationTSTFailedCounter = 0;
+		for (String timestampId : timestampIds) {
+			Indication timestampValidationIndication = detailedReport.getTimestampValidationIndication(timestampId);
+			if (!Indication.PASSED.equals(timestampValidationIndication)) {
+				for (XmlConstraint constraint : constraints) {
+					if (Utils.isStringNotEmpty(constraint.getId()) && constraint.getId().contains(timestampId)) {
+						assertEquals(XmlStatus.OK, constraint.getStatus());
+						basicValidationTSTFailedCounter++;
+					}
+				}
+			}
+		}
+		assertEquals(2, basicValidationTSTFailedCounter);
 
 		validateBestSigningTimes(reports);
 	}
@@ -296,6 +320,28 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		
 		List<String> errors = simpleReport.getErrors(simpleReport.getFirstSignatureId());
 		assertEquals(4, errors.size());
+		
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		
+		XmlValidationProcessArchivalData validationProcessArchivalData = detailedReport.getJAXBModel().getSignatures().get(0).getValidationProcessArchivalData();
+		
+		List<XmlConstraint> constraints = validationProcessArchivalData.getConstraint();
+		
+		List<String> timestampIds = detailedReport.getTimestampIds();
+		int basicValidationTSTFailedCounter = 0;
+		for (String timestampId : timestampIds) {
+			Indication timestampValidationIndication = detailedReport.getTimestampValidationIndication(timestampId);
+			if (!Indication.PASSED.equals(timestampValidationIndication)) {
+				for (XmlConstraint constraint : constraints) {
+					if (Utils.isStringNotEmpty(constraint.getId()) && constraint.getId().contains(timestampId)) {
+						assertEquals(XmlStatus.WARNING, constraint.getStatus());
+						basicValidationTSTFailedCounter++;
+					}
+				}
+			}
+		}
+		assertEquals(1, basicValidationTSTFailedCounter);
 
 		validateBestSigningTimes(reports);
 	}

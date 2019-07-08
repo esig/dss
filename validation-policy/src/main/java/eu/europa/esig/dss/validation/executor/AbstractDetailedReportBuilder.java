@@ -21,10 +21,10 @@
 package eu.europa.esig.dss.validation.executor;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlDetailedReport;
@@ -80,7 +80,7 @@ public abstract class AbstractDetailedReportBuilder {
 		return result;
 	}
 
-	protected void process(Set<? extends AbstractTokenProxy> tokensToProcess, Context context, Map<String, XmlBasicBuildingBlocks> bbbs) {
+	protected void process(Collection<? extends AbstractTokenProxy> tokensToProcess, Context context, Map<String, XmlBasicBuildingBlocks> bbbs) {
 		for (AbstractTokenProxy token : tokensToProcess) {
 			BasicBuildingBlocks bbb = new BasicBuildingBlocks(diagnosticData, token, currentTime, policy, context);
 			XmlBasicBuildingBlocks result = bbb.execute();
