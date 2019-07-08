@@ -1278,7 +1278,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(Indication.FAILED, detailedReport.getArchiveDataValidationIndication(detailedReport.getFirstSignatureId()));
 		assertEquals(SubIndication.FORMAT_FAILURE, detailedReport.getArchiveDataValidationSubIndication(detailedReport.getFirstSignatureId()));
 		
-		reports.print();
+//		reports.print();
 
 		checkReports(reports);
 	}
@@ -1360,7 +1360,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		
-		reports.print();
+//		reports.print();
 
 		checkReports(reports);
 	}

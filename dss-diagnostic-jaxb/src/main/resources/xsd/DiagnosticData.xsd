@@ -415,6 +415,8 @@
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="FULL" />
 			<xs:enumeration value="PARTIAL" />
+			<xs:enumeration value="DIGEST" />
+			<xs:enumeration value="ARCHIVED" />
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -791,11 +793,12 @@
 	
 	<xs:simpleType name="RevocationOriginType" final="restriction">
 		<xs:restriction base="xs:string">
-			<xs:enumeration value="INTERNAL_REVOCATION_VALUES" />
-			<xs:enumeration value="INTERNAL_ATTRIBUTE_REVOCATION_VALUES" />
-			<xs:enumeration value="INTERNAL_TIMESTAMP_REVOCATION_VALUES" />
-			<xs:enumeration value="INTERNAL_DSS" />
-			<xs:enumeration value="INTERNAL_VRI" />
+			<xs:enumeration value="REVOCATION_VALUES" />
+			<xs:enumeration value="ATTRIBUTE_REVOCATION_VALUES" />
+			<xs:enumeration value="TIMESTAMP_VALIDATION_DATA" />
+			<xs:enumeration value="DSS_DICTIONARY" />
+			<xs:enumeration value="VRI_DICTIONARY" />
+			<xs:enumeration value="TIMESTAMP_REVOCATION_VALUES" />
 			<xs:enumeration value="SIGNATURE" />
 			<xs:enumeration value="EXTERNAL" />
 			<xs:enumeration value="CACHED" />

@@ -39,7 +39,7 @@ public class DiagnosticDataFacade {
 
 	public XmlDiagnosticData unmarshall(File file) throws JAXBException, XMLStreamException, IOException, SAXException {
 		try (FileInputStream fis = new FileInputStream(file)) {
-			return unmarshall(new FileInputStream(file));
+			return unmarshall(fis);
 		}
 	}
 
