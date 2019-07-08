@@ -27,7 +27,7 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.x509.CertificateToken;
 
-public class PAdESNoDuplicateValidationDataTest extends PKIFactoryAccess {
+public class PAdESNoDuplicateValidationData extends PKIFactoryAccess {
 	
 	@Test
 	public void test() throws IOException {
