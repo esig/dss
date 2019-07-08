@@ -26,6 +26,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,6 +62,7 @@ import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignerLocation;
 import eu.europa.esig.dss.jaxb.detailedreport.DetailedReportFacade;
+import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
@@ -173,7 +175,25 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 
 		getOriginalDocument(signedDocument, diagnosticData);
 
+		unmarshallXmlReports(reports);
 		generateHtmlPdfReports(reports);
+	}
+	
+	protected void unmarshallXmlReports(Reports reports) throws IOException {
+		String xmlDiagnosticData = reports.getXmlDiagnosticData();
+		assertTrue(Utils.isStringNotBlank(xmlDiagnosticData));
+		String xmlSimpleReport = reports.getXmlSimpleReport();
+		assertTrue(Utils.isStringNotBlank(xmlSimpleReport));
+		String xmlDetailedReport = reports.getXmlDetailedReport();
+		assertTrue(Utils.isStringNotBlank(xmlDetailedReport));
+		try {
+			assertNotNull(DiagnosticDataFacade.newFacade().unmarshall(new ByteArrayInputStream(xmlDiagnosticData.getBytes())));
+			assertNotNull(SimpleReportFacade.newFacade().unmarshall(new ByteArrayInputStream(xmlSimpleReport.getBytes())));
+			assertNotNull(DetailedReportFacade.newFacade().unmarshall(new ByteArrayInputStream(xmlDetailedReport.getBytes())));
+		} catch (Exception e) {
+			LOG.error("Not possible to unmarshall an XMl report", e);
+			fail();
+		}
 	}
 
 	protected void generateHtmlPdfReports(Reports reports) {

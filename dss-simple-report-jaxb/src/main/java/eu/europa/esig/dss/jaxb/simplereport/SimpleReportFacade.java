@@ -1,12 +1,20 @@
 package eu.europa.esig.dss.jaxb.simplereport;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.util.JAXBSource;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -33,6 +41,30 @@ public class SimpleReportFacade {
 			marshaller.marshal(SimpleReportXmlDefiner.OBJECT_FACTORY.createSimpleReport(simpleReport), writer);
 			return writer.toString();
 		}
+	}
+
+	public XmlSimpleReport unmarshall(File file) throws JAXBException, XMLStreamException, IOException, SAXException {
+		try (FileInputStream fis = new FileInputStream(file)) {
+			return unmarshall(new FileInputStream(file));
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public XmlSimpleReport unmarshall(InputStream is) throws JAXBException, XMLStreamException, IOException, SAXException {
+
+		MarshallerBuilder builder = new MarshallerBuilder(SimpleReportXmlDefiner.getJAXBContext(), SimpleReportXmlDefiner.getSchema());
+		builder.setValidate(true);
+		Unmarshaller unmarshaller = builder.buildUnmarshaller();
+
+		JAXBElement<XmlSimpleReport> unmarshal = (JAXBElement<XmlSimpleReport>) unmarshaller.unmarshal(avoidXXE(is));
+		return unmarshal.getValue();
+	}
+
+	private XMLStreamReader avoidXXE(InputStream is) throws XMLStreamException {
+		XMLInputFactory xif = XMLInputFactory.newFactory();
+		xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+		xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+		return xif.createXMLStreamReader(new StreamSource(is));
 	}
 
 	public String generateHtmlReport(XmlSimpleReport simpleReport) throws IOException, TransformerException, JAXBException {
