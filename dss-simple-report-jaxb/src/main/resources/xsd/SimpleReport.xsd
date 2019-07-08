@@ -13,8 +13,8 @@
 			<xs:element name="Policy">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element type="xs:string" name="PolicyName" />
-						<xs:element type="xs:string" name="PolicyDescription" />
+						<xs:element type="xs:string" name="PolicyName" minOccurs="0" />
+						<xs:element type="xs:string" name="PolicyDescription" minOccurs="0" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>

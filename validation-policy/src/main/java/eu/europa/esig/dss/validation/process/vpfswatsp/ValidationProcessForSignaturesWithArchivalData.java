@@ -49,6 +49,7 @@ import eu.europa.esig.dss.validation.process.bbb.sav.SignatureAcceptanceValidati
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SignatureAcceptanceValidationResultCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.LongTermValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.PastSignatureValidationCheck;
+import eu.europa.esig.dss.validation.process.vpfswatsp.checks.PastTimestampValidation;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.PastSignatureValidation;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
@@ -217,6 +218,16 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 			 * Otherwise, the SVA shall continue with step 5a.
 			 */
 			}
+			
+			// add past timestamp validation information in the proper order
+			Collections.reverse(timestampsList);
+			for (TimestampWrapper timestamp : timestampsList) {
+				XmlBasicBuildingBlocks bbbTsp = bbbs.get(timestamp.getId());
+				if (bbbTsp.getPSV() != null) {
+					item = item.setNextItem(pastTimestampValidation(timestamp, bbbTsp));
+				}
+			}
+			
 		}
 
 		/*
@@ -267,6 +278,10 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		XmlProofOfExistence xpoe = new XmlProofOfExistence();
 		xpoe.setTime(currentTime);
 		return xpoe;
+	}
+	
+	private ChainItem<XmlValidationProcessArchivalData> pastTimestampValidation(TimestampWrapper timestamp, XmlBasicBuildingBlocks bbbTsp) {
+		return new PastTimestampValidation(result, bbbTsp.getPSV(), bbbTsp.getSAV(), timestamp, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationProcessArchivalData> pastSignatureValidation(Context currentContext) {

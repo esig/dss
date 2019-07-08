@@ -1,7 +1,9 @@
 package eu.europa.esig.dss.jaxb.diagnostic;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 
 import javax.xml.bind.JAXBElement;
@@ -35,22 +37,28 @@ public class DiagnosticDataFacade {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public XmlDiagnosticData unmarshall(File file) throws JAXBException, XMLStreamException, IOException, SAXException {
+		try (FileInputStream fis = new FileInputStream(file)) {
+			return unmarshall(new FileInputStream(file));
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public XmlDiagnosticData unmarshall(InputStream is) throws JAXBException, XMLStreamException, IOException, SAXException {
 
 		MarshallerBuilder builder = new MarshallerBuilder(DiagnosticDataXmlDefiner.getJAXBContext(), DiagnosticDataXmlDefiner.getSchema());
 		builder.setValidate(true);
 		Unmarshaller unmarshaller = builder.buildUnmarshaller();
 
-		JAXBElement<XmlDiagnosticData> unmarshal = (JAXBElement<XmlDiagnosticData>) unmarshaller.unmarshal(avoidXXE(file));
+		JAXBElement<XmlDiagnosticData> unmarshal = (JAXBElement<XmlDiagnosticData>) unmarshaller.unmarshal(avoidXXE(is));
 		return unmarshal.getValue();
 	}
 
-	private XMLStreamReader avoidXXE(File file) throws XMLStreamException {
+	private XMLStreamReader avoidXXE(InputStream is) throws XMLStreamException {
 		XMLInputFactory xif = XMLInputFactory.newFactory();
 		xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
 		xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-		return xif.createXMLStreamReader(new StreamSource(file));
+		return xif.createXMLStreamReader(new StreamSource(is));
 	}
 
 }

@@ -71,6 +71,7 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 			List<TrustedServiceWrapper> caqcServices) {
 		super(new XmlValidationCertificateQualification());
 		result.setTitle(ValidationProcessDefinition.CERT_QUALIFICATION.getTitle() + " @ " + validationTime);
+		result.setId(signingCertificate.getId());
 
 		this.validationTime = validationTime;
 		this.signingCertificate = signingCertificate;

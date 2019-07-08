@@ -92,20 +92,18 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 			cryptoInfo.setSecure(true);
 		}
 
-		Date notAfter = null;
 		CryptographicConstraint cryptographicConstraint = validationPolicy.getSignatureCryptographicConstraint(context);
 		if (cryptographicConstraint != null) {
+			Date notAfter = null;
 			CryptographicConstraintWrapper wrapper = new CryptographicConstraintWrapper(cryptographicConstraint);
 			Map<String, Date> expirationDates = wrapper.getExpirationTimes();
-
 			notAfter = expirationDates.get(digestAlgoUsedToSignThisToken);
 			Date expirationEncryption = expirationDates.get(encryptionAlgoUsedToSignThisToken + keyLengthUsedToSignThisToken);
 			if (notAfter == null || (expirationEncryption != null && notAfter.after(expirationEncryption))) {
 				notAfter = expirationEncryption;
 			}
+			cryptoInfo.setNotAfter(notAfter);
 		}
-
-		cryptoInfo.setNotAfter(notAfter);
 
 		result.setCryptographicInfo(cryptoInfo);
 	}

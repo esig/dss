@@ -26,6 +26,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.math.BigInteger;
@@ -40,13 +41,18 @@ import org.junit.Test;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.jaxb.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlCryptographicInformation;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlDetailedReport;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPDFSignatureDictionary;
+import eu.europa.esig.dss.jaxb.simplereport.SimpleReportFacade;
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignature;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
@@ -81,6 +87,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -99,6 +106,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -116,6 +124,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -135,8 +144,30 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SignatureQualification.INDETERMINATE_QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+		
+		DetailedReport detailedReport = reports.getDetailedReport();
+		
+		XmlValidationProcessArchivalData validationProcessArchivalData = detailedReport.getJAXBModel().getSignatures().get(0).getValidationProcessArchivalData();
+		List<XmlConstraint> constraints = validationProcessArchivalData.getConstraint();
+		
+		List<String> timestampIds = detailedReport.getTimestampIds();
+		
+		int basicValidationTSTFailedCounter = 0;
+		for (String timestampId : timestampIds) {
+			Indication timestampValidationIndication = detailedReport.getTimestampValidationIndication(timestampId);
+			if (!Indication.PASSED.equals(timestampValidationIndication)) {
+				for (XmlConstraint constraint : constraints) {
+					if (Utils.isStringNotEmpty(constraint.getId()) && constraint.getId().contains(timestampId)) {
+						assertEquals(XmlStatus.OK, constraint.getStatus());
+						basicValidationTSTFailedCounter++;
+					}
+				}
+			}
+		}
+		assertEquals(2, basicValidationTSTFailedCounter);
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 	
 	@Test
@@ -164,6 +195,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(0, errors.size());
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -186,6 +218,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(SignatureQualification.INDETERMINATE_ADESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -214,6 +247,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(SignatureQualification.ADESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -243,6 +277,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(SignatureQualification.INDETERMINATE_ADESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -271,6 +306,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(1, errors.size());
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -296,8 +332,31 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		
 		List<String> errors = simpleReport.getErrors(simpleReport.getFirstSignatureId());
 		assertEquals(4, errors.size());
+		
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		
+		XmlValidationProcessArchivalData validationProcessArchivalData = detailedReport.getJAXBModel().getSignatures().get(0).getValidationProcessArchivalData();
+		
+		List<XmlConstraint> constraints = validationProcessArchivalData.getConstraint();
+		
+		List<String> timestampIds = detailedReport.getTimestampIds();
+		int basicValidationTSTFailedCounter = 0;
+		for (String timestampId : timestampIds) {
+			Indication timestampValidationIndication = detailedReport.getTimestampValidationIndication(timestampId);
+			if (!Indication.PASSED.equals(timestampValidationIndication)) {
+				for (XmlConstraint constraint : constraints) {
+					if (Utils.isStringNotEmpty(constraint.getId()) && constraint.getId().contains(timestampId)) {
+						assertEquals(XmlStatus.WARNING, constraint.getStatus());
+						basicValidationTSTFailedCounter++;
+					}
+				}
+			}
+		}
+		assertEquals(1, basicValidationTSTFailedCounter);
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -320,6 +379,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertTrue(warnings.contains(MessageTag.BBB_ICS_AIDNASNE_ANS.getMessage()));
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -335,6 +395,8 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		Reports reports = executor.execute();
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		
+		checkReports(reports);
 	}
 
 	// Added LuxTrust Global Root 2
@@ -351,6 +413,8 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		Reports reports = executor.execute();
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		
+		checkReports(reports);
 	}
 
 	@Test
@@ -368,6 +432,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -400,6 +465,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, detailedReport.getArchiveDataValidationSubIndication(simpleReport.getFirstSignatureId()));
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -416,6 +482,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertNotNull(reports);
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -437,6 +504,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(SignatureQualification.QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -469,6 +537,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(SubIndication.NO_POE, detailedReport.getArchiveDataValidationSubIndication(simpleReport.getFirstSignatureId()));
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -501,6 +570,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(Indication.INDETERMINATE, detailedReport.getArchiveDataValidationIndication(simpleReport.getFirstSignatureId()));
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -535,6 +605,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(Indication.PASSED, detailedReport.getArchiveDataValidationIndication(simpleReport.getFirstSignatureId()));
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -571,6 +642,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(Indication.PASSED, detailedReport.getArchiveDataValidationIndication(simpleReport.getFirstSignatureId()));
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -607,6 +679,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(Indication.PASSED, detailedReport.getArchiveDataValidationIndication(simpleReport.getFirstSignatureId()));
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -639,6 +712,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(SubIndication.HASH_FAILURE, detailedReport.getArchiveDataValidationSubIndication(simpleReport.getFirstSignatureId()));
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -671,6 +745,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, detailedReport.getArchiveDataValidationSubIndication(simpleReport.getFirstSignatureId()));
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -799,6 +874,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(SignatureQualification.INDETERMINATE_QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -847,6 +923,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(SubIndication.NO_POE, detailedReport.getBasicBuildingBlocksSubIndication(simpleReport.getFirstSignatureId()));
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -865,6 +942,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(SignatureQualification.NA, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -884,6 +962,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(SignatureQualification.INDETERMINATE_QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -907,6 +986,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		JAXB.marshal(simpleReport.getJaxbModel(), s);
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -924,9 +1004,11 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(1, simpleReport.getJaxbModel().getSignaturesCount());
 		XmlSignature xmlSignature = simpleReport.getJaxbModel().getSignature().get(0);
-		assertEquals(null, xmlSignature.getCertificateChain());
+		assertNotNull(xmlSignature.getCertificateChain());
+		assertTrue(Utils.isCollectionEmpty(xmlSignature.getCertificateChain().getCertificate()));
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -948,6 +1030,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(4, detailedReport.getSignatureIds().size());
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -969,6 +1052,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(2, detailedReport.getSignatureIds().size());
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -987,6 +1071,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -1005,6 +1090,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(Indication.TOTAL_FAILED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -1023,6 +1109,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -1042,6 +1129,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(SignatureQualification.NOT_ADES, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -1060,6 +1148,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(SignatureQualification.NA, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -1078,6 +1167,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(SignatureQualification.ADESEAL_QC, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -1096,6 +1186,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -1112,6 +1203,8 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SignatureQualification.ADESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+
+		checkReports(reports);
 	}
 
 	@Test
@@ -1130,6 +1223,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -1147,6 +1241,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -1162,6 +1257,8 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		Reports reports = executor.execute();
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		checkReports(reports);
 	}
 
 	@Test
@@ -1180,6 +1277,10 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		DetailedReport detailedReport = reports.getDetailedReport();
 		assertEquals(Indication.FAILED, detailedReport.getArchiveDataValidationIndication(detailedReport.getFirstSignatureId()));
 		assertEquals(SubIndication.FORMAT_FAILURE, detailedReport.getArchiveDataValidationSubIndication(detailedReport.getFirstSignatureId()));
+		
+		reports.print();
+
+		checkReports(reports);
 	}
 	
 	@Test
@@ -1204,6 +1305,8 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		XmlSAV sav = signatureBBB.getSAV();
 		assertEquals(Indication.INDETERMINATE, sav.getConclusion().getIndication());
 		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
+
+		checkReports(reports);
 		
 	}
 	
@@ -1238,6 +1341,8 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
 		XmlSAV sav = signatureBBB.getSAV();
 		assertEquals(Indication.PASSED, sav.getConclusion().getIndication());
+
+		checkReports(reports);
 		
 	}
 
@@ -1254,6 +1359,10 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		Reports reports = executor.execute();
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		
+		reports.print();
+
+		checkReports(reports);
 	}
 	
 	@Test
@@ -1274,6 +1383,8 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(Indication.INDETERMINATE, detailedReport.getLongTermValidationIndication(detailedReport.getFirstSignatureId()));
 		assertEquals(SubIndication.OUT_OF_BOUNDS_NO_POE, detailedReport.getLongTermValidationSubIndication(detailedReport.getFirstSignatureId()));
 		assertEquals(Indication.PASSED, detailedReport.getArchiveDataValidationIndication(detailedReport.getFirstSignatureId()));
+
+		checkReports(reports);
 	}
 
 	@Test
@@ -1312,6 +1423,8 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(xmlByteRange.get(2), byteRange.get(2));
 		assertEquals(xmlByteRange.get(3), byteRange.get(3));
 
+		checkReports(reports);
+
 	}
 
 	@Test
@@ -1330,6 +1443,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 
 		validateBestSigningTimes(reports);
+		checkReports(reports);
 	}
 
 	@Test
@@ -1345,6 +1459,8 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		Reports reports = executor.execute();
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		checkReports(reports);
 	}
 
 	@Test
@@ -1361,6 +1477,8 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+
+		checkReports(reports);
 	}
 
 	@Test
@@ -1376,6 +1494,8 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		Reports reports = executor.execute();
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		checkReports(reports);
 	}
 
 	@Test
@@ -1394,6 +1514,48 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+
+		checkReports(reports);
+		
+	}
+	
+	@Test
+	public void dss1635Test() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/dss-1635-diag-data.xml"));
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		ConstraintsParameters defaultPolicy = loadConstraintsParameters("src/main/resources/policy/constraint.xml");
+		List<Algo> algos = defaultPolicy.getCryptographic().getAlgoExpirationDate().getAlgo();
+		for (Algo algo : algos) {
+			if ("SHA1".equals(algo.getValue())) {
+				algo.setDate("2014");
+				break;
+			}
+		}
+		executor.setValidationPolicy(new EtsiValidationPolicy(defaultPolicy));
+		executor.setCurrentTime(new Date());
+
+		Reports reports = executor.execute();
+		// reports.print();
+		
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		
+		// current year returns a first day
+		for (Algo algo : algos) {
+			if ("SHA1".equals(algo.getValue())) {
+				algo.setDate("2013");
+				break;
+			}
+		}
+
+		executor.setValidationPolicy(new EtsiValidationPolicy(defaultPolicy));
+		reports = executor.execute();
+		simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+
+		checkReports(reports);
 		
 	}
 
@@ -1442,47 +1604,8 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 		executor.execute();
 	}
-	
-	@Test
-	public void dss1635Test() throws Exception {
-		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/dss-1635-diag-data.xml"));
-		CustomProcessExecutor executor = new CustomProcessExecutor();
-		executor.setDiagnosticData(diagnosticData);
-		ConstraintsParameters defaultPolicy = loadConstraintsParameters("src/main/resources/policy/constraint.xml");
-		List<Algo> algos = defaultPolicy.getCryptographic().getAlgoExpirationDate().getAlgo();
-		for (Algo algo : algos) {
-			if ("SHA1".equals(algo.getValue())) {
-				algo.setDate("2014");
-				break;
-			}
-		}
-		executor.setValidationPolicy(new EtsiValidationPolicy(defaultPolicy));
-		executor.setCurrentTime(new Date());
 
-		Reports reports = executor.execute();
-		// reports.print();
-		
-		SimpleReport simpleReport = reports.getSimpleReport();
-		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
-		
-		// current year returns a first day
-		for (Algo algo : algos) {
-			if ("SHA1".equals(algo.getValue())) {
-				algo.setDate("2013");
-				break;
-			}
-		}
-
-		executor.setValidationPolicy(new EtsiValidationPolicy(defaultPolicy));
-		reports = executor.execute();
-		simpleReport = reports.getSimpleReport();
-		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
-		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
-		
-	}
-
-	private void checkReports(Reports reports) {
-		// reports.print();
+	private void checkReports(Reports reports) throws Exception {
 		assertNotNull(reports);
 		assertNotNull(reports.getDiagnosticData());
 		assertNotNull(reports.getDiagnosticDataJaxb());
@@ -1490,9 +1613,15 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertNotNull(reports.getSimpleReportJaxb());
 		assertNotNull(reports.getDetailedReport());
 		assertNotNull(reports.getDetailedReportJaxb());
-		assertTrue(Utils.isStringNotBlank(reports.getXmlDiagnosticData()));
-		assertTrue(Utils.isStringNotBlank(reports.getXmlSimpleReport()));
-		assertTrue(Utils.isStringNotBlank(reports.getXmlDetailedReport()));
+		String xmlDiagnosticData = reports.getXmlDiagnosticData();
+		assertTrue(Utils.isStringNotBlank(xmlDiagnosticData));
+		String xmlSimpleReport = reports.getXmlSimpleReport();
+		assertTrue(Utils.isStringNotBlank(xmlSimpleReport));
+		String xmlDetailedReport = reports.getXmlDetailedReport();
+		assertTrue(Utils.isStringNotBlank(xmlDetailedReport));
+		assertNotNull(DiagnosticDataFacade.newFacade().unmarshall(new ByteArrayInputStream(xmlDiagnosticData.getBytes())));
+		assertNotNull(SimpleReportFacade.newFacade().unmarshall(new ByteArrayInputStream(xmlSimpleReport.getBytes())));
+		assertNotNull(DetailedReportFacade.newFacade().unmarshall(new ByteArrayInputStream(xmlDetailedReport.getBytes())));
 	}
 
 	private void validateBestSigningTimes(Reports reports) {

@@ -164,16 +164,16 @@ public class SimpleReportBuilder {
 		addSignatureProfile(xmlSignature);
 
 		List<String> certIds = detailedReport.getBasicBuildingBlocksCertChain(signatureId);
+		XmlCertificateChain xmlCertificateChain = new XmlCertificateChain();
 		if (Utils.isCollectionNotEmpty(certIds)) {
-			XmlCertificateChain xmlCertificateChain = new XmlCertificateChain();
 			for (String certid : certIds) {
 				XmlCertificate certificate = new XmlCertificate();
 				certificate.setId(certid);
 				certificate.setQualifiedName(getReadableCertificateName(certid));
 				xmlCertificateChain.getCertificate().add(certificate);
 			}
-			xmlSignature.setCertificateChain(xmlCertificateChain);
 		}
+		xmlSignature.setCertificateChain(xmlCertificateChain);
 
 		simpleReport.getSignature().add(xmlSignature);
 	}
