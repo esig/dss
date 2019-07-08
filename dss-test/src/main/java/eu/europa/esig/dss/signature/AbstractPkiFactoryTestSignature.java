@@ -29,6 +29,7 @@ import static org.junit.Assert.fail;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -95,6 +96,7 @@ import eu.europa.esig.jaxb.validationreport.SAMessageDigestType;
 import eu.europa.esig.jaxb.validationreport.SANameType;
 import eu.europa.esig.jaxb.validationreport.SAOneSignerRoleType;
 import eu.europa.esig.jaxb.validationreport.SAReasonType;
+import eu.europa.esig.jaxb.validationreport.SARevIDListType;
 import eu.europa.esig.jaxb.validationreport.SASignatureProductionPlaceType;
 import eu.europa.esig.jaxb.validationreport.SASignerRoleType;
 import eu.europa.esig.jaxb.validationreport.SASigningTimeType;
@@ -858,6 +860,9 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 				} else if (value instanceof SAVRIType) {
 					SAVRIType vri = (SAVRIType) value;
 					validateETSIVRIType(vri);
+				} else if (value instanceof SARevIDListType) {
+					SARevIDListType revIdList = (SARevIDListType) value;
+					validateETSIRevIDListType(revIdList);
 				} else {
 					LOG.warn("{} not tested", value.getClass());
 				}
@@ -898,6 +903,13 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 
 	protected void validateETSIVRIType(SAVRIType vri) {
 		assertNull(vri);
+	}
+
+	private void validateETSIRevIDListType(SARevIDListType revIdList) {
+		assertNotNull(revIdList);
+		List<Serializable> crlidOrOCSPID = revIdList.getCRLIDOrOCSPID();
+		assertNotNull(crlidOrOCSPID);
+		assertTrue(crlidOrOCSPID.size() > 0);
 	}
 
 	protected void validateETSISASignatureProductionPlaceType(SASignatureProductionPlaceType productionPlace) {
