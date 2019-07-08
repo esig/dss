@@ -22,6 +22,7 @@ package eu.europa.esig.dss.validation.policy;
 
 import java.util.Date;
 
+import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 import eu.europa.esig.jaxb.policy.Model;

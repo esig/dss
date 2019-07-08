@@ -45,10 +45,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.CertificateRef;
-import eu.europa.esig.dss.CertificateRefLocation;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -157,7 +157,7 @@ public class CAdESCertificateSource extends CMSCertificateSource {
 			final ASN1Encodable asn1Encodable = attrValues.getObjectAt(ii);
 			final SigningCertificate signingCertificate = SigningCertificate.getInstance(asn1Encodable);
 			if (signingCertificate != null) {
-				certificateRefs.addAll(extractESSCertIDs(signingCertificate.getCerts(), CertificateRefLocation.SIGNING_CERTIFICATE));
+				certificateRefs.addAll(extractESSCertIDs(signingCertificate.getCerts(), CertificateRefOrigin.SIGNING_CERTIFICATE));
 			} else {
 				LOG.warn("SigningCertificate attribute is not well defined!");
 			}
@@ -165,7 +165,7 @@ public class CAdESCertificateSource extends CMSCertificateSource {
 		return certificateRefs;
 	}
 
-	private List<CertificateRef> extractESSCertIDs(final ESSCertID[] essCertIDs, CertificateRefLocation location) {
+	private List<CertificateRef> extractESSCertIDs(final ESSCertID[] essCertIDs, CertificateRefOrigin location) {
 		List<CertificateRef> certificateRefs = new ArrayList<CertificateRef>();
 		for (final ESSCertID essCertID : essCertIDs) {
 			CertificateRef certRef = new CertificateRef();
@@ -182,7 +182,7 @@ public class CAdESCertificateSource extends CMSCertificateSource {
 			if (issuerSerial != null) {
 				certRef.setIssuerInfo(DSSASN1Utils.getIssuerInfo(issuerSerial));
 			}
-			certRef.setLocation(location);
+			certRef.setOrigin(location);
 
 			certificateRefs.add(certRef);
 		}
@@ -196,13 +196,13 @@ public class CAdESCertificateSource extends CMSCertificateSource {
 			final ASN1Encodable asn1Encodable = attrValues.getObjectAt(ii);
 			final SigningCertificateV2 signingCertificate = SigningCertificateV2.getInstance(asn1Encodable);
 			if (signingCertificate != null) {
-				certificateRefs.addAll(extractESSCertIDv2s(signingCertificate.getCerts(), CertificateRefLocation.SIGNING_CERTIFICATE));
+				certificateRefs.addAll(extractESSCertIDv2s(signingCertificate.getCerts(), CertificateRefOrigin.SIGNING_CERTIFICATE));
 			}
 		}
 		return certificateRefs;
 	}
 
-	private List<CertificateRef> extractESSCertIDv2s(ESSCertIDv2[] essCertIDv2s, CertificateRefLocation location) {
+	private List<CertificateRef> extractESSCertIDv2s(ESSCertIDv2[] essCertIDv2s, CertificateRefOrigin location) {
 		List<CertificateRef> certificateRefs = new ArrayList<CertificateRef>();
 		for (final ESSCertIDv2 essCertIDv2 : essCertIDv2s) {
 			CertificateRef certRef = new CertificateRef();
@@ -217,7 +217,7 @@ public class CAdESCertificateSource extends CMSCertificateSource {
 			if (issuerSerial != null) {
 				certRef.setIssuerInfo(DSSASN1Utils.getIssuerInfo(issuerSerial));
 			}
-			certRef.setLocation(location);
+			certRef.setOrigin(location);
 			certificateRefs.add(certRef);
 		}
 		return certificateRefs;

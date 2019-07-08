@@ -27,12 +27,12 @@ import java.util.List;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.XmlCertificateSourceType;
 
 public abstract class AbstractTokenProxy implements TokenProxy {
 
@@ -162,9 +162,9 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	public boolean isTrustedChain() {
 		List<CertificateWrapper> certificateChain = getCertificateChain();
 		for (CertificateWrapper certificate : certificateChain) {
-			List<XmlCertificateSourceType> currentCertSources = certificate.getSources();
-			if (currentCertSources.contains(XmlCertificateSourceType.TRUSTED_STORE) || 
-					currentCertSources.contains(XmlCertificateSourceType.TRUSTED_LIST)) {
+			List<CertificateSourceType> currentCertSources = certificate.getSources();
+			if (currentCertSources.contains(CertificateSourceType.TRUSTED_STORE) || 
+					currentCertSources.contains(CertificateSourceType.TRUSTED_LIST)) {
 				return true;
 			}
 		}
@@ -173,7 +173,7 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	
 	public boolean isCertificateChainFromTrustedStore() {
 		for (CertificateWrapper certificate : getCertificateChain()) {
-			if (certificate.getSources().contains(XmlCertificateSourceType.TRUSTED_STORE)) {
+			if (certificate.getSources().contains(CertificateSourceType.TRUSTED_STORE)) {
 				return true;
 			}
 		}

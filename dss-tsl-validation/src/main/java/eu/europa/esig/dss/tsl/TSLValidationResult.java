@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.tsl;
 
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
 
 /**
  * This class is a DTO result for TSLValidator Callable.

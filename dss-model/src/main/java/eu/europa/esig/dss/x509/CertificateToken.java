@@ -41,6 +41,7 @@ import javax.security.auth.x500.X500Principal;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.identifier.EntityIdentifier;
 
 /**

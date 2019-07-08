@@ -35,8 +35,8 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.DigestMatcherType;
 import eu.europa.esig.dss.validation.ReferenceValidation;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 

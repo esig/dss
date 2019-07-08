@@ -22,12 +22,15 @@ package eu.europa.esig.dss.validation.reports.wrapper;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import eu.europa.esig.dss.ExtendedKeyUsageOids;
+import eu.europa.esig.dss.enumerations.CertificateSourceType;
+import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificatePolicy;
@@ -40,7 +43,6 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedService;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProvider;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.XmlCertificateSourceType;
 
 public class CertificateWrapper extends AbstractTokenProxy {
 
@@ -78,19 +80,19 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return certificate.isSelfSigned();
 	}
 
-	public List<String> getKeyUsages() {
-		List<String> keyUsageBits = certificate.getKeyUsageBits();
+	public List<KeyUsageBit> getKeyUsages() {
+		List<KeyUsageBit> keyUsageBits = certificate.getKeyUsageBits();
 		if (Utils.isCollectionNotEmpty(keyUsageBits)) {
 			return keyUsageBits;
 		}
-		return new ArrayList<String>();
+		return Collections.emptyList();
 	}
 
 	public boolean isRevocationDataAvailable() {
 		return Utils.isCollectionNotEmpty(certificate.getRevocations());
 	}
 	
-	public List<XmlCertificateSourceType> getSources() {
+	public List<CertificateSourceType> getSources() {
 		return certificate.getSources();
 	}
 

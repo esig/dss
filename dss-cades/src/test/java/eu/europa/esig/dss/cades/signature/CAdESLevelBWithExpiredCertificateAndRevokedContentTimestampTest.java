@@ -34,12 +34,12 @@ import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.SimpleReport;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -50,7 +50,6 @@ import eu.europa.esig.jaxb.validationreport.ValidationObjectType;
 import eu.europa.esig.jaxb.validationreport.ValidationReportDataType;
 import eu.europa.esig.jaxb.validationreport.ValidationReportType;
 import eu.europa.esig.jaxb.validationreport.ValidationStatusType;
-import eu.europa.esig.jaxb.validationreport.enums.MainIndication;
 import eu.europa.esig.jaxb.validationreport.enums.ObjectType;
 
 /**
@@ -119,8 +118,8 @@ public class CAdESLevelBWithExpiredCertificateAndRevokedContentTimestampTest ext
 			if (ObjectType.TIMESTAMP.equals(vo.getObjectType())) {
 				SignatureValidationReportType validationReport = vo.getValidationReport();
 				ValidationStatusType signatureValidationStatus = validationReport.getSignatureValidationStatus();
-				assertEquals(MainIndication.INDETERMINATE, signatureValidationStatus.getMainIndication());
-				assertEquals(eu.europa.esig.jaxb.validationreport.enums.SubIndication.NO_POE, signatureValidationStatus.getSubIndication().get(0));
+				assertEquals(Indication.INDETERMINATE, signatureValidationStatus.getMainIndication());
+				assertEquals(SubIndication.NO_POE, signatureValidationStatus.getSubIndication().get(0));
 
 				List<ValidationReportDataType> associatedValidationReportData = signatureValidationStatus.getAssociatedValidationReportData();
 				ValidationReportDataType validationReportDataType = associatedValidationReportData.get(0);

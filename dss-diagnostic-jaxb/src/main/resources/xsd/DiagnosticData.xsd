@@ -303,7 +303,7 @@
 					<xs:element name="KeyUsageBits" minOccurs="0">
 						<xs:complexType>
 							<xs:sequence>
-								<xs:element name="KeyUsage" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+								<xs:element name="KeyUsage" type="KeyUsage" minOccurs="0" maxOccurs="unbounded" />
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
@@ -622,7 +622,7 @@
 			<xs:enumeration value="TIMESTAMP_DATA_VALIDATION" />
 			<xs:enumeration value="DSS" />
 			<xs:enumeration value="VRI" />
-			<xs:enumeration value="INTERNAL_TIMESTAMP_CERTIFICATE_VALUES" />
+			<xs:enumeration value="TIMESTAMP_CERTIFICATE_VALUES" />
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -699,10 +699,23 @@
 			<xs:enumeration value="superseded" />
 			<xs:enumeration value="cessationOfOperation" />
 			<xs:enumeration value="certificateHold" />
-			<xs:enumeration value="unknow" />
 			<xs:enumeration value="removeFromCRL" />
 			<xs:enumeration value="privilegeWithdrawn" />
 			<xs:enumeration value="aACompromise" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="KeyUsage" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="digitalSignature" />
+			<xs:enumeration value="nonRepudiation" />
+			<xs:enumeration value="keyEncipherment" />
+			<xs:enumeration value="dataEncipherment" />
+			<xs:enumeration value="keyAgreement" />
+			<xs:enumeration value="keyCertSign" />
+			<xs:enumeration value="crlSign" />
+			<xs:enumeration value="encipherOnly" />
+			<xs:enumeration value="decipherOnly" />
 		</xs:restriction>
 	</xs:simpleType>
 	

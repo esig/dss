@@ -29,6 +29,10 @@ import java.util.Set;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.OrphanTokenType;
+import eu.europa.esig.dss.enumerations.RevocationReason;
+import eu.europa.esig.dss.enumerations.RevocationType;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlContainerInfo;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
@@ -40,10 +44,6 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.OrphanTokenType;
-import eu.europa.esig.dss.validation.RevocationReason;
-import eu.europa.esig.dss.validation.RevocationType;
-import eu.europa.esig.dss.x509.TimestampType;
 
 /**
  * This class represents all static data extracted by the process analysing the signature. They are independent from the

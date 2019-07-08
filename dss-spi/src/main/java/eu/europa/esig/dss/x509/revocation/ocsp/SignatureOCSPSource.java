@@ -13,8 +13,9 @@ import java.util.Set;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.Digest;
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.SignatureRevocationSource;
 import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
 
@@ -160,7 +161,7 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 		}
 	}
 
-	protected void addReference(OCSPRef ocspRef, RevocationOrigin origin) {
+	protected void addReference(OCSPRef ocspRef, RevocationRefOrigin origin) {
 		switch (origin) {
 		case COMPLETE_REVOCATION_REFS:
 			if (!completeRevocationRefsOCSPs.contains(ocspRef)) {

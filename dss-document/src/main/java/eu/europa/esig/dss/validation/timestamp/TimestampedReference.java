@@ -22,7 +22,7 @@ package eu.europa.esig.dss.validation.timestamp;
 
 import java.io.Serializable;
 
-import eu.europa.esig.dss.validation.TimestampedObjectType;
+import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 
 /**
  * This class stocks the timestamped reference, which is composed of: - the

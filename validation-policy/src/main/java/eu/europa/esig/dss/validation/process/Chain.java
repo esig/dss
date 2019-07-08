@@ -22,11 +22,11 @@ package eu.europa.esig.dss.validation.process;
 
 import java.util.List;
 
+import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.jaxb.policy.Level;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 

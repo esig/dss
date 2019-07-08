@@ -17,11 +17,11 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRelatedCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateOriginType;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
@@ -230,7 +230,7 @@ public class DoubleSignaturePrettyPrintTest extends PKIFactoryAccess {
 		assertEquals(1, signatureWrapper.getRelatedRevocations().size());
 		assertEquals(1, signatureWrapper.getOrphanRevocations().size());
 		
-		List<XmlRelatedCertificate> foundCertificatesByLocation = signatureWrapper.getRelatedCertificatesByOrigin(CertificateOriginType.CERTIFICATE_VALUES);
+		List<XmlRelatedCertificate> foundCertificatesByLocation = signatureWrapper.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES);
 		assertNotNull(foundCertificatesByLocation);
 		assertEquals(2, foundCertificatesByLocation.size());
 		

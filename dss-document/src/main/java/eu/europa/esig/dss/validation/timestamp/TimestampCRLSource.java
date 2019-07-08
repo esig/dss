@@ -2,8 +2,9 @@ package eu.europa.esig.dss.validation.timestamp;
 
 import org.bouncycastle.tsp.TimeStampToken;
 
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.validation.CMSCRLSource;
-import eu.europa.esig.dss.x509.RevocationOrigin;
 
 /**
  * CRLSource that retrieves information embedded to a {@link TimeStampToken}
@@ -22,13 +23,13 @@ public class TimestampCRLSource extends CMSCRLSource {
 	}
 
 	@Override
-	protected RevocationOrigin getCompleteRevocationRefsOrigin() {
-		return RevocationOrigin.TIMESTAMP_REVOCATION_REFS;
+	protected RevocationRefOrigin getCompleteRevocationRefsOrigin() {
+		return RevocationRefOrigin.TIMESTAMP_REVOCATION_REFS;
 	}
 
 	@Override
-	protected RevocationOrigin getAttributeRevocationRefsOrigin() {
-		return RevocationOrigin.TIMESTAMP_REVOCATION_REFS;
+	protected RevocationRefOrigin getAttributeRevocationRefsOrigin() {
+		return RevocationRefOrigin.TIMESTAMP_REVOCATION_REFS;
 	}
 
 }

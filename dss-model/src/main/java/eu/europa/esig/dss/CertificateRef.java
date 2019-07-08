@@ -2,13 +2,15 @@ package eu.europa.esig.dss;
 
 import java.io.Serializable;
 
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+
 public class CertificateRef implements Serializable {
 
 	private static final long serialVersionUID = -325165164194282066L;
 	
 	private Digest certDigest;
 	private IssuerSerialInfo issuerInfo;
-	private CertificateRefLocation location;
+	private CertificateRefOrigin origin;
 	
 	private String dssId;
 
@@ -28,12 +30,12 @@ public class CertificateRef implements Serializable {
 		this.issuerInfo = issuerInfo;
 	}
 	
-	public CertificateRefLocation getLocation() {
-		return location;
+	public CertificateRefOrigin getOrigin() {
+		return origin;
 	}
 	
-	public void setLocation(CertificateRefLocation location) {
-		this.location = location;
+	public void setOrigin(CertificateRefOrigin origin) {
+		this.origin = origin;
 	}
 	
 	/**
@@ -49,7 +51,7 @@ public class CertificateRef implements Serializable {
 
 	@Override
 	public String toString() {
-		return "CertificateRef [certDigest=" + certDigest + ", issuerInfo=" + issuerInfo + ", location=" + location + "]";
+		return "CertificateRef [certDigest=" + certDigest + ", issuerInfo=" + issuerInfo + ", origin=" + origin + "]";
 	}
 	
 	@Override
@@ -69,8 +71,8 @@ public class CertificateRef implements Serializable {
 				(issuerInfo != null && !issuerInfo.equals(o.getIssuerInfo()))) {
 			return false;
 		}
-		if ((location == null && o.getLocation() != null) || 
-				(location != null && !location.equals(o.getLocation()))) {
+		if ((origin == null && o.getOrigin() != null) || 
+				(origin != null && !origin.equals(o.getOrigin()))) {
 			return false;
 		}
 		return true;
@@ -82,7 +84,7 @@ public class CertificateRef implements Serializable {
 		int result = 1;
 		result = (prime * result) + ((certDigest == null) ? 0 : certDigest.hashCode());
 		result = (prime * result) + ((issuerInfo == null) ? 0 : issuerInfo.hashCode());
-		result = (prime * result) + ((location == null) ? 0 : location.hashCode());
+		result = (prime * result) + ((origin == null) ? 0 : origin.hashCode());
 		return result;
 	}
 

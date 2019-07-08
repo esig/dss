@@ -22,9 +22,9 @@ package eu.europa.esig.dss.validation.timestamp;
 
 import org.bouncycastle.tsp.TimeStampToken;
 
+import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.validation.CAdESCertificateSource;
 import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.CertificateSourceType;
 
 @SuppressWarnings("serial")
 public class TimestampCertificateSource extends CAdESCertificateSource {

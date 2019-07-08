@@ -26,6 +26,8 @@ import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
+import eu.europa.esig.dss.enumerations.CertificateSourceType;
+
 /**
  * The validation of a certificate requires to access some other certificates from multiple sources (Trusted List, Trust
  * Store, the signature itself). This interface provides an abstraction for accessing a certificate, regardless of the

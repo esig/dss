@@ -11,6 +11,9 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlAbstractToken;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
@@ -19,13 +22,10 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedObject;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.XmlRevocationOrigin;
-import eu.europa.esig.dss.validation.XmlRevocationRefOrigin;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
-import eu.europa.esig.dss.x509.TimestampType;
 
 public class CAdESLTALevelExtendedTest {
 	
@@ -45,10 +45,10 @@ public class CAdESLTALevelExtendedTest {
 		List<XmlFoundRevocation> foundRevocations = signature.getAllFoundRevocations();
 		assertNotNull(foundRevocations);
 		assertEquals(2, foundRevocations.size());
-		List<String> timestampRevocationValues = signature.getRevocationIdsByOrigin(XmlRevocationOrigin.TIMESTAMP_REVOCATION_VALUES);
+		List<String> timestampRevocationValues = signature.getRevocationIdsByOrigin(RevocationOrigin.TIMESTAMP_REVOCATION_VALUES);
 		assertNotNull(timestampRevocationValues);
 		assertEquals(1, timestampRevocationValues.size());
-		List<XmlRevocationRef> timestampRevocationRefs = signature.getFoundRevocationRefsByOrigin(XmlRevocationRefOrigin.TIMESTAMP_REVOCATION_REFS);
+		List<XmlRevocationRef> timestampRevocationRefs = signature.getFoundRevocationRefsByOrigin(RevocationRefOrigin.TIMESTAMP_REVOCATION_REFS);
 		assertNotNull(timestampRevocationRefs);
 		assertEquals(1, timestampRevocationRefs.size());
 		

@@ -29,6 +29,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import eu.europa.esig.dss.enumerations.CertificateOrigin;
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
+import eu.europa.esig.dss.enumerations.RevocationType;
+import eu.europa.esig.dss.enumerations.TimestampLocation;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertifiedRole;
@@ -51,14 +59,6 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerDocumentRepresentations;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlStructuralValidation;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateOriginType;
-import eu.europa.esig.dss.validation.CertificateRefOriginType;
-import eu.europa.esig.dss.validation.DigestMatcherType;
-import eu.europa.esig.dss.validation.RevocationType;
-import eu.europa.esig.dss.validation.XmlRevocationOrigin;
-import eu.europa.esig.dss.validation.XmlRevocationRefOrigin;
-import eu.europa.esig.dss.x509.TimestampLocation;
-import eu.europa.esig.dss.x509.TimestampType;
 
 public class SignatureWrapper extends AbstractTokenProxy {
 
@@ -558,10 +558,10 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	
 	/**
 	 * Returns a list of all found {@link XmlRevocationRef}s with the given {@code origin}
-	 * @param origin {@link XmlRevocationRefOrigin} to get values with
+	 * @param origin {@link RevocationRefOrigin} to get values with
 	 * @return list of {@link XmlRevocationRef}s
 	 */
-	public List<XmlRevocationRef> getFoundRevocationRefsByOrigin(XmlRevocationRefOrigin origin) {
+	public List<XmlRevocationRef> getFoundRevocationRefsByOrigin(RevocationRefOrigin origin) {
 		List<XmlRevocationRef> revocationRefs = new ArrayList<XmlRevocationRef>();
 		for (XmlRevocationRef ref : getAllFoundRevocationRefs()) {
 			if (ref.getOrigin().equals(origin)) {
@@ -574,24 +574,24 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	/**
 	 * Returns a list of all {@link XmlRelatedRevocation}s used for the signature validation process
 	 * with the given {@code originType}
-	 * @param originType {@link XmlRevocationOrigin} to get values with
+	 * @param originType {@link RevocationOrigin} to get values with
 	 * @return list of {@link XmlRelatedRevocation}s
 	 */
-	public Set<XmlRelatedRevocation> getRelatedRevocationsByOrigin(XmlRevocationOrigin originType) {
+	public Set<XmlRelatedRevocation> getRelatedRevocationsByOrigin(RevocationOrigin originType) {
 		return filterRevocationsByOrigin(getRelatedRevocations(), originType);
 	}
 
 	/**
 	 * Returns a list of all {@link XmlOrphanRevocation}s found in the signature, but not used
 	 * during the validation process with the given {@code originType}
-	 * @param originType {@link XmlRevocationOrigin} to get values with
+	 * @param originType {@link RevocationOrigin} to get values with
 	 * @return list of {@link XmlOrphanRevocation}s
 	 */
-	public Set<XmlOrphanRevocation> getOrphanRevocationsByOrigin(XmlRevocationOrigin originType) {
+	public Set<XmlOrphanRevocation> getOrphanRevocationsByOrigin(RevocationOrigin originType) {
 		return filterRevocationsByOrigin(getOrphanRevocations(), originType);
 	}
 	
-	private <T extends XmlFoundRevocation> Set<T> filterRevocationsByOrigin(List<T> revocations, XmlRevocationOrigin originType) {
+	private <T extends XmlFoundRevocation> Set<T> filterRevocationsByOrigin(List<T> revocations, RevocationOrigin originType) {
 		Set<T> revocationsWithOrigin = new HashSet<T>();
 		if (revocations != null) {
 			for (T relatedRevocation : revocations) {
@@ -678,10 +678,10 @@ public class SignatureWrapper extends AbstractTokenProxy {
 
 	/**
 	 * Returns a list of revocation ids found in the signature with the specified {@code origin}
-	 * @param origin - {@link XmlRevocationOrigin} to find revocations with
+	 * @param origin - {@link RevocationOrigin} to find revocations with
 	 * @return list of ids
 	 */
-	public List<String> getRevocationIdsByOrigin(XmlRevocationOrigin origin) {
+	public List<String> getRevocationIdsByOrigin(RevocationOrigin origin) {
 		List<String> revocationIds = new ArrayList<String>();
 		for (XmlRelatedRevocation revocationRef : getRelatedRevocationsByOrigin(origin)) {
 			revocationIds.add(revocationRef.getRevocation().getId());
@@ -695,10 +695,10 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	/**
 	 * Returns a list of revocation ids found in the signature with the specified {@code type} and {@code origin}
 	 * @param type - {@link RevocationType} to find revocations with
-	 * @param origin - {@link XmlRevocationOrigin} to find revocations with
+	 * @param origin - {@link RevocationOrigin} to find revocations with
 	 * @return list of ids
 	 */
-	public List<String> getRevocationIdsByTypeAndOrigin(RevocationType type, XmlRevocationOrigin origin) {
+	public List<String> getRevocationIdsByTypeAndOrigin(RevocationType type, RevocationOrigin origin) {
 		List<String> revocationIds = getRevocationIdsByType(type);
 		revocationIds.retainAll(getRevocationIdsByOrigin(origin));
 		return revocationIds;
@@ -706,10 +706,10 @@ public class SignatureWrapper extends AbstractTokenProxy {
 
 	/**
 	 * Returns a list of found certificate ids based on the requested {@code origin}
-	 * @param origin {@link CertificateOriginType} to get certificate ids for
+	 * @param origin {@link CertificateOrigin} to get certificate ids for
 	 * @return list of certificate ids
 	 */
-	public List<String> getFoundCertificateIds(CertificateOriginType origin) {
+	public List<String> getFoundCertificateIds(CertificateOrigin origin) {
 		List<String> result = new ArrayList<String>();
 		XmlFoundCertificates foundCertificates = signature.getFoundCertificates();
 		if (foundCertificates != null) {
@@ -729,10 +729,10 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	
 	/**
 	 * Returns a list of found {@link XmlRelatedCertificate}s with the given {@code origin}
-	 * @param origin {@link CertificateOriginType} to get certificates with
+	 * @param origin {@link CertificateOrigin} to get certificates with
 	 * @return list of {@link XmlRelatedCertificate}
 	 */
-	public List<XmlRelatedCertificate> getRelatedCertificatesByOrigin(CertificateOriginType origin) {
+	public List<XmlRelatedCertificate> getRelatedCertificatesByOrigin(CertificateOrigin origin) {
 		List<XmlRelatedCertificate> certificatesByOrigin = new ArrayList<XmlRelatedCertificate>();
 		XmlFoundCertificates foundCertificates = signature.getFoundCertificates();
 		if (foundCertificates != null) {
@@ -746,11 +746,14 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 	
 	/**
-	 * Returns a list of found {@link XmlFoundCertificate} containing a reference from the given {@code origin}
-	 * @param origin {@link CertificateRefOriginType} of a certificate reference
+	 * Returns a list of found {@link XmlFoundCertificate} containing a reference
+	 * from the given {@code origin}
+	 * 
+	 * @param origin
+	 *               {@link CertificateRefOrigin} of a certificate reference
 	 * @return list of found {@link XmlFoundCertificate}
 	 */
-	public List<XmlFoundCertificate> getFoundCertificatesByRefOrigin(CertificateRefOriginType origin) {
+	public List<XmlFoundCertificate> getFoundCertificatesByRefOrigin(CertificateRefOrigin origin) {
 		List<XmlFoundCertificate> certificatesByLocation = new ArrayList<XmlFoundCertificate>();
 		for (XmlFoundCertificate foundCertificate : getAllFoundCertificates()) {
 			for (XmlCertificateRef certificateRef : foundCertificate.getCertificateRefs()) {

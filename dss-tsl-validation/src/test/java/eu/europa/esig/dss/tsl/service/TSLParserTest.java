@@ -34,6 +34,8 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.enumerations.Assert;
+import eu.europa.esig.dss.jaxb.parsers.KeyUsageBitParser;
 import eu.europa.esig.dss.tsl.Condition;
 import eu.europa.esig.dss.tsl.TSLConditionsForQualifiers;
 import eu.europa.esig.dss.tsl.TSLParserResult;
@@ -48,8 +50,6 @@ import eu.europa.esig.jaxb.trustedlist.ecc.CriteriaListType;
 import eu.europa.esig.jaxb.trustedlist.ecc.KeyUsageBitType;
 import eu.europa.esig.jaxb.trustedlist.ecc.KeyUsageType;
 import eu.europa.esig.jaxb.trustedlist.ecc.PoliciesListType;
-import eu.europa.esig.jaxb.trustedlist.ecc.enums.Assert;
-import eu.europa.esig.jaxb.trustedlist.ecc.parsers.KeyUsageBitParser;
 import eu.europa.esig.jaxb.xades132.IdentifierType;
 import eu.europa.esig.jaxb.xades132.ObjectIdentifierType;
 

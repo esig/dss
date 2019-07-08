@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation;
 import java.io.Serializable;
 
 import eu.europa.esig.dss.Digest;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
 
 /**
  * This class is used to store individual reference validations.

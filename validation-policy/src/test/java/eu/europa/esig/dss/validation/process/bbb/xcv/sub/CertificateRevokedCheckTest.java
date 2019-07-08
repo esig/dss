@@ -29,12 +29,12 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.junit.Test;
 
+import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
-import eu.europa.esig.dss.validation.RevocationReason;
 import eu.europa.esig.dss.validation.policy.SubContext;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateRevokedCheck;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateRevocationWrapper;
@@ -53,7 +53,7 @@ public class CertificateRevokedCheckTest {
 
 		XmlCertificateRevocation xcr = new XmlCertificateRevocation();
 		xcr.setStatus(false);
-		xcr.setReason(RevocationReason.certificateHold);
+		xcr.setReason(RevocationReason.CERTIFICATE_HOLD);
 		XmlRevocation xr = new XmlRevocation();
 		xcr.setRevocation(xr);
 
@@ -75,7 +75,7 @@ public class CertificateRevokedCheckTest {
 		XmlCertificateRevocation xcr = new XmlCertificateRevocation();
 		xcr.setStatus(false);
 		xcr.setRevocationDate(CAL1.getTime());
-		xcr.setReason(RevocationReason.cACompromise);
+		xcr.setReason(RevocationReason.CA_COMPROMISE);
 		XmlRevocation xr = new XmlRevocation();
 		xcr.setRevocation(xr);
 

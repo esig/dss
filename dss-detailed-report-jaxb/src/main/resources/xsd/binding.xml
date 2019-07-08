@@ -18,49 +18,49 @@
 		</jaxb:schemaBindings>
 
 		<jaxb:bindings node="//xs:simpleType[@name='Indication']">
-			<jaxb:javaType name="eu.europa.esig.dss.validation.policy.rules.Indication" 
+			<jaxb:javaType name="eu.europa.esig.dss.enumerations.Indication" 
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.IndicationParser.parse" 
 				printMethod="eu.europa.esig.dss.jaxb.parsers.IndicationParser.print" />
 		</jaxb:bindings>
 		
 		<jaxb:bindings node="//xs:simpleType[@name='SubIndication']">
-			<jaxb:javaType name="eu.europa.esig.dss.validation.policy.rules.SubIndication" 
+			<jaxb:javaType name="eu.europa.esig.dss.enumerations.SubIndication" 
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.SubIndicationParser.parse" 
 				printMethod="eu.europa.esig.dss.jaxb.parsers.SubIndicationParser.print" />
 		</jaxb:bindings>
 		
 		<jaxb:bindings node="//xs:simpleType[@name='CertificateQualification']">
-			<jaxb:javaType name="eu.europa.esig.dss.validation.CertificateQualification" 
+			<jaxb:javaType name="eu.europa.esig.dss.enumerations.CertificateQualification" 
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.CertificateQualificationParser.parse" 
 				printMethod="eu.europa.esig.dss.jaxb.parsers.CertificateQualificationParser.print" />
 		</jaxb:bindings>
 		
 		<jaxb:bindings node="//xs:simpleType[@name='SignatureQualification']">
-			<jaxb:javaType name="eu.europa.esig.dss.validation.SignatureQualification" 
+			<jaxb:javaType name="eu.europa.esig.dss.enumerations.SignatureQualification" 
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.SignatureQualificationParser.parse" 
 				printMethod="eu.europa.esig.dss.jaxb.parsers.SignatureQualificationParser.print" />
 		</jaxb:bindings>
 		
 		<jaxb:bindings node="//xs:simpleType[@name='Context']">
-			<jaxb:javaType name="eu.europa.esig.dss.validation.policy.Context" 
+			<jaxb:javaType name="eu.europa.esig.dss.enumerations.Context" 
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.ContextParser.parse" 
 				printMethod="eu.europa.esig.dss.jaxb.parsers.ContextParser.print" />
 		</jaxb:bindings>
 				
 		<jaxb:bindings node="//xs:simpleType[@name='ValidationTime']">
-			<jaxb:javaType name="eu.europa.esig.dss.validation.ValidationTime" 
+			<jaxb:javaType name="eu.europa.esig.dss.enumerations.ValidationTime" 
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.ValidationTimeParser.parse" 
 				printMethod="eu.europa.esig.dss.jaxb.parsers.ValidationTimeParser.print" />
 		</jaxb:bindings>
 		
   		<jaxb:bindings node="//xs:simpleType[@name='CertificateSourceType']">
-			<jaxb:javaType name="eu.europa.esig.dss.validation.XmlCertificateSourceType" 
+			<jaxb:javaType name="eu.europa.esig.dss.enumerations.CertificateSourceType" 
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.CertificateSourceTypeParser.parse" 
 				printMethod="eu.europa.esig.dss.jaxb.parsers.CertificateSourceTypeParser.print" />
 		</jaxb:bindings>
 		
   		<jaxb:bindings node="//xs:simpleType[@name='RevocationReason']">
-			<jaxb:javaType name="eu.europa.esig.dss.validation.RevocationReason" 
+			<jaxb:javaType name="eu.europa.esig.dss.enumerations.RevocationReason" 
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.RevocationReasonParser.parse" 
 				printMethod="eu.europa.esig.dss.jaxb.parsers.RevocationReasonParser.print" />
 		</jaxb:bindings>

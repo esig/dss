@@ -34,9 +34,9 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.crl.CRLValidity;
+import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
-import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
 import eu.europa.esig.dss.x509.revocation.RevocationSourceType;
 
 /**
@@ -121,7 +121,7 @@ public class CRLToken extends RevocationToken {
 			revocationDate = crlEntry.getRevocationDate();
 			CRLReason revocationReason = crlEntry.getRevocationReason();
 			if (revocationReason != null) {
-				reason = CRLReasonEnum.fromInt(revocationReason.ordinal());
+				reason = RevocationReason.fromInt(revocationReason.ordinal());
 			}
 		}
 	}

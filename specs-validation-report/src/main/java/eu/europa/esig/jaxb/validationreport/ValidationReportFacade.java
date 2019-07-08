@@ -18,7 +18,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.xml.sax.SAXException;
 
-import eu.europa.esig.dss.MarshallerBuilder;
+import eu.europa.esig.dss.jaxb.parsers.MarshallerBuilder;
 
 public class ValidationReportFacade {
 

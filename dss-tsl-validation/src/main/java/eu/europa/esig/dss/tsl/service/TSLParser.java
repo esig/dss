@@ -43,6 +43,7 @@ import org.w3c.dom.Element;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.enumerations.Assert;
 import eu.europa.esig.dss.tsl.CertSubjectDNAttributeCondition;
 import eu.europa.esig.dss.tsl.CompositeCondition;
 import eu.europa.esig.dss.tsl.Condition;
@@ -59,7 +60,6 @@ import eu.europa.esig.dss.util.MutableTimeDependentValues;
 import eu.europa.esig.dss.util.TimeDependentValues;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.KeyUsageBit;
 import eu.europa.esig.jaxb.trustedlist.TrustedListFacade;
 import eu.europa.esig.jaxb.trustedlist.ecc.CriteriaListType;
 import eu.europa.esig.jaxb.trustedlist.ecc.KeyUsageBitType;
@@ -69,7 +69,6 @@ import eu.europa.esig.jaxb.trustedlist.ecc.QualificationElementType;
 import eu.europa.esig.jaxb.trustedlist.ecc.QualificationsType;
 import eu.europa.esig.jaxb.trustedlist.ecc.QualifierType;
 import eu.europa.esig.jaxb.trustedlist.ecc.QualifiersType;
-import eu.europa.esig.jaxb.trustedlist.ecc.enums.Assert;
 import eu.europa.esig.jaxb.trustedlist.tsl.AdditionalServiceInformationType;
 import eu.europa.esig.jaxb.trustedlist.tsl.AnyType;
 import eu.europa.esig.jaxb.trustedlist.tsl.AttributedNonEmptyURIType;
@@ -120,7 +119,6 @@ public class TSLParser implements Callable<TSLParserResult> {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public TSLParserResult call() throws Exception {
 		try (InputStream is = trustedList.openStream()) {
 			TrustStatusListType trustStatusList = TrustedListFacade.newFacade().unmarshall(is, false);
@@ -562,7 +560,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 			for (KeyUsageType keyUsageType : keyUsages) {
 				CompositeCondition condition = new CompositeCondition();
 				for (KeyUsageBitType keyUsageBit : keyUsageType.getKeyUsageBit()) {
-					condition.addChild(new KeyUsageCondition(KeyUsageBit.fromString(keyUsageBit.getName().getValue()), keyUsageBit.isValue()));
+					condition.addChild(new KeyUsageCondition(keyUsageBit.getName(), keyUsageBit.isValue()));
 				}
 				criteriaCondition.addChild(condition);
 			}

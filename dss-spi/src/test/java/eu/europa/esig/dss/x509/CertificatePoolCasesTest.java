@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.enumerations.CertificateSourceType;
 
 public class CertificatePoolCasesTest {
 

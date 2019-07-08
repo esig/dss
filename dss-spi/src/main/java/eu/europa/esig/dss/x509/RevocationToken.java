@@ -25,8 +25,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
 import eu.europa.esig.dss.x509.revocation.RevocationSourceType;
 
 @SuppressWarnings("serial")
@@ -100,7 +101,7 @@ public abstract class RevocationToken extends Token {
 	/**
 	 * The reason of the revocation.
 	 */
-	protected CRLReasonEnum reason;
+	protected RevocationReason reason;
 	
 	/**
 	 * Revocation Token Key, used for {@link RevocationToken} identification (i.e. id in DB)
@@ -267,7 +268,7 @@ public abstract class RevocationToken extends Token {
 	 * 
 	 * @return the revocation reason or null
 	 */
-	public CRLReasonEnum getReason() {
+	public RevocationReason getReason() {
 		return reason;
 	}
 	

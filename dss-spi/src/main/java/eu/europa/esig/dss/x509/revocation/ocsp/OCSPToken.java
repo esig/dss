@@ -51,9 +51,9 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
-import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
 import eu.europa.esig.dss.x509.revocation.RevocationSourceType;
 
 /**
@@ -158,12 +158,12 @@ public class OCSPToken extends RevocationToken {
 			if (revokedStatus.hasRevocationReason()) {
 				reasonId = revokedStatus.getRevocationReason();
 			}
-			reason = CRLReasonEnum.fromInt(reasonId);
+			reason = RevocationReason.fromInt(reasonId);
 		} else if (certStatus instanceof UnknownStatus) {
 			if (LOG.isInfoEnabled()) {
 				LOG.info("OCSP status unknown");
 			}
-			reason = CRLReasonEnum.unknow;
+			reason = RevocationReason.UNSPECIFIED;
 		} else {
 			LOG.info("OCSP certificate status: {}", certStatus);
 		}

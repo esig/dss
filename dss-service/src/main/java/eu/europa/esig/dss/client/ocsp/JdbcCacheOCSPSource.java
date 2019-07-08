@@ -36,8 +36,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSRevocationUtils;
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.JdbcRevocationSource;
 import eu.europa.esig.dss.x509.revocation.exception.RevocationException;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPSource;

@@ -13,8 +13,9 @@ import java.util.Set;
 import eu.europa.esig.dss.CRLBinary;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.Digest;
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.SignatureRevocationSource;
 
 @SuppressWarnings("serial")
@@ -166,7 +167,7 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 		}
 	}
 	
-	protected void addReference(CRLRef crlRef, RevocationOrigin origin) {
+	protected void addReference(CRLRef crlRef, RevocationRefOrigin origin) {
 		switch (origin) {
 		case COMPLETE_REVOCATION_REFS:
 			if (!completeRevocationRefsCRLs.contains(crlRef)) {

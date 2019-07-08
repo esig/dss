@@ -27,8 +27,9 @@ import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
 import eu.europa.esig.dss.xades.XAdESUtils;
@@ -59,9 +60,9 @@ public class XAdESCRLSource extends SignatureCRLSource {
 		
 		// references
 		collectRefs(signatureElement, xPathQueryHolder, 
-				xPathQueryHolder.XPATH_COMPLETE_REVOCATION_CRL_REFS, RevocationOrigin.COMPLETE_REVOCATION_REFS);
+				xPathQueryHolder.XPATH_COMPLETE_REVOCATION_CRL_REFS, RevocationRefOrigin.COMPLETE_REVOCATION_REFS);
 		collectRefs(signatureElement, xPathQueryHolder, 
-				xPathQueryHolder.XPATH_ATTRIBUTE_REVOCATION_CRL_REFS, RevocationOrigin.ATTRIBUTE_REVOCATION_REFS);
+				xPathQueryHolder.XPATH_ATTRIBUTE_REVOCATION_CRL_REFS, RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS);
 	}
 
 	private void collect(Element signatureElement, final String xPathQuery, RevocationOrigin revocationOrigin) {
@@ -73,15 +74,15 @@ public class XAdESCRLSource extends SignatureCRLSource {
 	}
 	
 	private void collectRefs(Element signatureElement, final XPathQueryHolder xPathQueryHolder, 
-			final String xPathQuery, RevocationOrigin revocationOrigin) {
+			final String xPathQuery, RevocationRefOrigin revocationRefOrigin) {
 		final Element crlRefsElement = DomUtils.getElement(signatureElement, xPathQuery);
 		if (crlRefsElement != null) {
 			final NodeList crlRefNodes = DomUtils.getNodeList(crlRefsElement, xPathQueryHolder.XPATH__CRLREF);
 			for (int i = 0; i < crlRefNodes.getLength(); i++) {
 				final Element crlRefNode = (Element) crlRefNodes.item(i);
 				final Digest digest = XAdESUtils.getRevocationDigest(crlRefNode, xPathQueryHolder);
-				CRLRef crlRef = new CRLRef(digest, revocationOrigin);
-				addReference(crlRef, revocationOrigin);
+				CRLRef crlRef = new CRLRef(digest, revocationRefOrigin);
+				addReference(crlRef, revocationRefOrigin);
 			}
 		}
 	}

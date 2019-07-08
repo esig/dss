@@ -21,9 +21,9 @@
 package eu.europa.esig.dss.validation.process.qualification.signature;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.validation.CertificateQualification;
-import eu.europa.esig.dss.validation.SignatureQualification;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
+import eu.europa.esig.dss.enumerations.CertificateQualification;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SignatureQualification;
 
 public final class SigQualificationMatrix {
 

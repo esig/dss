@@ -23,9 +23,9 @@ package eu.europa.esig.dss.xades.validation;
 import java.util.List;
 
 import eu.europa.esig.dss.Digest;
+import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureScope;
-import eu.europa.esig.dss.validation.SignatureScopeType;
 
 /**
  *

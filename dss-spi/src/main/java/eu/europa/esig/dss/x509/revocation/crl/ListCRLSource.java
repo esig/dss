@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.x509.revocation.crl;
 
 import eu.europa.esig.dss.CRLBinary;
-import eu.europa.esig.dss.x509.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
 
 /**
  * This class allows to handle a list CRL source.

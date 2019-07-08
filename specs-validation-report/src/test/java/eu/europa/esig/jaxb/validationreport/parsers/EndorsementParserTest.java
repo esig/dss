@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNull;
 import org.junit.Test;
 
 import eu.europa.esig.jaxb.validationreport.enums.EndorsementType;
-import eu.europa.esig.jaxb.validationreport.parsers.EndorsementParser;
 
 public class EndorsementParserTest {
 

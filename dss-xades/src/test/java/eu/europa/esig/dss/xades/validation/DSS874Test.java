@@ -38,15 +38,15 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.enumerations.CertificateOrigin;
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
+import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateOriginType;
-import eu.europa.esig.dss.validation.CertificateRefOriginType;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.RevocationType;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.XmlRevocationOrigin;
-import eu.europa.esig.dss.validation.XmlRevocationRefOrigin;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
@@ -86,13 +86,13 @@ public class DSS874Test {
 		
 		assertEquals(5, signatureWrapper.getRevocationIdsByType(RevocationType.OCSP).size());
 		
-		assertEquals(5, signatureWrapper.getFoundCertificatesByRefOrigin(CertificateRefOriginType.COMPLETE_CERTIFICATE_REFS).size());
-		assertEquals(3, signatureWrapper.getFoundRevocationRefsByOrigin(XmlRevocationRefOrigin.COMPLETE_REVOCATION_REFS).size());
-		assertEquals(5, signatureWrapper.getRelatedCertificatesByOrigin(CertificateOriginType.CERTIFICATE_VALUES).size());
-		assertEquals(5, signatureWrapper.getRevocationIdsByOrigin(XmlRevocationOrigin.REVOCATION_VALUES).size());
+		assertEquals(5, signatureWrapper.getFoundCertificatesByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS).size());
+		assertEquals(3, signatureWrapper.getFoundRevocationRefsByOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS).size());
+		assertEquals(5, signatureWrapper.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
+		assertEquals(5, signatureWrapper.getRevocationIdsByOrigin(RevocationOrigin.REVOCATION_VALUES).size());
 		
-		assertEquals(3, signatureWrapper.getRelatedRevocationsByOrigin(XmlRevocationOrigin.REVOCATION_VALUES).size());
-		assertEquals(2, signatureWrapper.getOrphanRevocationsByOrigin(XmlRevocationOrigin.REVOCATION_VALUES).size());
+		assertEquals(3, signatureWrapper.getRelatedRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES).size());
+		assertEquals(2, signatureWrapper.getOrphanRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES).size());
 		
 		List<String> revocationIds = signatureWrapper.getRevocationIds();
 		

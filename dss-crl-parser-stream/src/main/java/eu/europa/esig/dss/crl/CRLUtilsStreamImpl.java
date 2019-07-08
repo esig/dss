@@ -40,8 +40,8 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.CRLBinary;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.KeyUsageBit;
 
 public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
 
@@ -108,7 +108,7 @@ public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
 			if (signature.verify(signatureValue)) {
 				crlValidity.setSignatureIntact(true);
 				crlValidity.setIssuerToken(signer);
-				crlValidity.setCrlSignKeyUsage(signer.checkKeyUsage(KeyUsageBit.crlSign));
+				crlValidity.setCrlSignKeyUsage(signer.checkKeyUsage(KeyUsageBit.CRL_SIGN));
 			} else {
 				crlValidity.setSignatureInvalidityReason("Signature value not correct");
 			}

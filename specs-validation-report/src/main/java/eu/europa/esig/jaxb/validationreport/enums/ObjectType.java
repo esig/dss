@@ -1,5 +1,7 @@
 package eu.europa.esig.jaxb.validationreport.enums;
 
+import eu.europa.esig.dss.enumerations.UriBasedEnum;
+
 public enum ObjectType implements UriBasedEnum {
 
 	CERTIFICATE("urn:etsi:019102:validationObject:certificate"),

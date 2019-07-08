@@ -12,13 +12,13 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRelatedCertificate;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.CertificateRefOriginType;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.XmlCertificateSourceType;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
@@ -41,11 +41,11 @@ public class CAdESCertificateWrapperTest extends PKIFactoryAccess {
 		for (CertificateWrapper certificate : certificates) {
 			assertNotNull(certificate.getSources());
 			assertNotEquals(0, certificate.getSources().size());
-			if (certificate.getSources().contains(XmlCertificateSourceType.OCSP_RESPONSE)) {
+			if (certificate.getSources().contains(CertificateSourceType.OCSP_RESPONSE)) {
 				assertTrue(certificate.getSources().size() > 1);
 				certsFromOcspResponse++;
 			}
-			if (certificate.getSources().contains(XmlCertificateSourceType.TIMESTAMP)) {
+			if (certificate.getSources().contains(CertificateSourceType.TIMESTAMP)) {
 				assertTrue(certificate.getSources().size() > 1);
 				certsFromTimestamp++;
 			}
@@ -53,7 +53,7 @@ public class CAdESCertificateWrapperTest extends PKIFactoryAccess {
 				certsFromMoreThanTwoSources++;
 				assertEquals(3, certificate.getSources().size());
 			}
-			assertFalse(certificate.getSources().contains(XmlCertificateSourceType.UNKNOWN));
+			assertFalse(certificate.getSources().contains(CertificateSourceType.UNKNOWN));
 		}
 		assertEquals(3, certsFromOcspResponse);
 		assertEquals(2, certsFromTimestamp);
@@ -63,7 +63,7 @@ public class CAdESCertificateWrapperTest extends PKIFactoryAccess {
 		List<XmlRelatedCertificate> foundCertificates = signatureWrapper.getRelatedCertificates();
 		assertNotNull(foundCertificates);
 		assertEquals(5, foundCertificates.size());
-		List<XmlFoundCertificate> signinigCertificates = signatureWrapper.getFoundCertificatesByRefOrigin(CertificateRefOriginType.SIGNING_CERTIFICATE);
+		List<XmlFoundCertificate> signinigCertificates = signatureWrapper.getFoundCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 		assertNotNull(foundCertificates);
 		assertEquals(1, signinigCertificates.size());
 		XmlFoundCertificate signCertificate = signinigCertificates.get(0);

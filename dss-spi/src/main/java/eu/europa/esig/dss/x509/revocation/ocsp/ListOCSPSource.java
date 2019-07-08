@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.x509.revocation.ocsp;
 
-import eu.europa.esig.dss.x509.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
 
 /**
  * This class allows to handle a list OCSP source.

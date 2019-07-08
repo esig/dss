@@ -24,17 +24,17 @@
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>specs-trusted-list</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-common-validation-jaxb</artifactId>
+			<artifactId>dss-jaxb-parsers</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -68,18 +68,18 @@
 
 					<extension>true</extension>
 					<useDependenciesAsEpisodes>true</useDependenciesAsEpisodes>
-					
+
 					<strict>false</strict>
 					<specVersion>2.1</specVersion>
 					<episode>true</episode>
 					<locale>en</locale>
-										
+
 					<disableXmlSecurity>false</disableXmlSecurity>
 					<accessExternalSchema>file</accessExternalSchema>
 					<accessExternalDTD>file</accessExternalDTD>
 				</configuration>
 			</plugin>
-				
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
@@ -92,31 +92,32 @@
 						</goals>
 						<configuration>
 							<target>
-								<delete dir="${basedir}/target/generated-sources/xjc/eu/europa/esig/jaxb/xmldsig" />
+								<delete
+									dir="${basedir}/target/generated-sources/xjc/eu/europa/esig/jaxb/xmldsig" />
 							</target>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
 			<plugin>
-			    <groupId>org.codehaus.mojo</groupId>
-			    <artifactId>build-helper-maven-plugin</artifactId>
-			    <executions>
-			        <execution>
-			            <id>add-source</id>
-			            <!-- after generate-sources / process-sources -->
-			            <phase>compile</phase>
-			            <goals>
-			                <goal>add-source</goal>
-			            </goals>
-			            <configuration>
-			                <sources>
-			                    <source>${project.build.directory}/generated-sources/xjc/</source>
-			                </sources>
-			            </configuration>
-			        </execution>
-			    </executions>
-			 </plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>add-source</id>
+						<!-- after generate-sources / process-sources -->
+						<phase>compile</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${project.build.directory}/generated-sources/xjc/</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 </project>
