@@ -53,9 +53,9 @@ public class XAdESCRLSource extends SignatureCRLSource {
 		Objects.requireNonNull(xPathQueryHolder, "XPathQueryHolder cannot be null");
 
 		// values
-		collect(signatureElement, xPathQueryHolder.XPATH_CRL_VALUES_ENCAPSULATED_CRL, RevocationOrigin.INTERNAL_REVOCATION_VALUES);
-		collect(signatureElement, xPathQueryHolder.XPATH_ATTR_REV_ENCAPSULATED_CRL_VALUES, RevocationOrigin.INTERNAL_ATTRIBUTE_REVOCATION_VALUES);
-		collect(signatureElement, xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_CRL_VALUES, RevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES);
+		collect(signatureElement, xPathQueryHolder.XPATH_CRL_VALUES_ENCAPSULATED_CRL, RevocationOrigin.REVOCATION_VALUES);
+		collect(signatureElement, xPathQueryHolder.XPATH_ATTR_REV_ENCAPSULATED_CRL_VALUES, RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES);
+		collect(signatureElement, xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_CRL_VALUES, RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
 		
 		// references
 		collectRefs(signatureElement, xPathQueryHolder, 

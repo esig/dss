@@ -70,8 +70,8 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 	 * Returns revocation-values {@link RevocationOrigin}
 	 * @return {@link RevocationOrigin}
 	 */
-	protected RevocationOrigin getInternalRevocationValuesOrigin() {
-		return RevocationOrigin.INTERNAL_REVOCATION_VALUES;
+	protected RevocationOrigin getRevocationValuesOrigin() {
+		return RevocationOrigin.REVOCATION_VALUES;
 	}
 
 	/**
@@ -121,7 +121,7 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
             ocspVals [1] SEQUENCE OF BasicOCSPResponse OPTIONAL,
             otherRevVals [2] OtherRevVals OPTIONAL}
 			 */
-			collectRevocationValues(unsignedAttributes, id_aa_ets_revocationValues, getInternalRevocationValuesOrigin());
+			collectRevocationValues(unsignedAttributes, id_aa_ets_revocationValues, getRevocationValuesOrigin());
 			
 			/*
 			 * ETSI TS 101 733 V2.2.1 (2013-04) pages 39,41
@@ -190,7 +190,7 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 					final OCSPResp ocspResp = DSSRevocationUtils.getOcspResp(otherRevocationInfoMatch);
 					basicOCSPResp = DSSRevocationUtils.fromRespToBasic(ocspResp);
 				}
-				OCSPResponseBinary ocspResponseIdentifier = addBasicOcspResp(basicOCSPResp, getInternalRevocationValuesOrigin());
+				OCSPResponseBinary ocspResponseIdentifier = addBasicOcspResp(basicOCSPResp, getRevocationValuesOrigin());
 				if (ocspResponseIdentifier != null) {
 					ocspResponseIdentifier.setAsn1ObjectIdentifier(CMSObjectIdentifiers.id_ri_ocsp_response);
 					signedDataOCSPIdentifiers.add(ocspResponseIdentifier);
@@ -209,7 +209,7 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 			if (object instanceof DERSequence) {
 				final DERSequence otherRevocationInfoMatch = (DERSequence) object;
 				final BasicOCSPResp basicOCSPResp = DSSRevocationUtils.getBasicOcspResp(otherRevocationInfoMatch);
-				OCSPResponseBinary ocspResponseIdentifier = addBasicOcspResp(basicOCSPResp, getInternalRevocationValuesOrigin());
+				OCSPResponseBinary ocspResponseIdentifier = addBasicOcspResp(basicOCSPResp, getRevocationValuesOrigin());
 				if (ocspResponseIdentifier != null) {
 					ocspResponseIdentifier.setAsn1ObjectIdentifier(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
 					signedDataOCSPIdentifiers.add(ocspResponseIdentifier);

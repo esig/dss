@@ -17,8 +17,8 @@ public class TimestampCRLSource extends CMSCRLSource {
 	}
 	
 	@Override
-	protected RevocationOrigin getInternalRevocationValuesOrigin() {
-		return RevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES;
+	protected RevocationOrigin getRevocationValuesOrigin() {
+		return RevocationOrigin.TIMESTAMP_REVOCATION_VALUES;
 	}
 
 	@Override

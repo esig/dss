@@ -42,10 +42,10 @@ public class CAdESLTALevelExtendedTest {
 		
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertNotNull(signature);
-		List<XmlFoundRevocation> foundRevocations = signature.getFoundRevocations();
+		List<XmlFoundRevocation> foundRevocations = signature.getAllFoundRevocations();
 		assertNotNull(foundRevocations);
 		assertEquals(2, foundRevocations.size());
-		List<String> timestampRevocationValues = signature.getRevocationIdsByOrigin(XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES);
+		List<String> timestampRevocationValues = signature.getRevocationIdsByOrigin(XmlRevocationOrigin.TIMESTAMP_REVOCATION_VALUES);
 		assertNotNull(timestampRevocationValues);
 		assertEquals(1, timestampRevocationValues.size());
 		List<XmlRevocationRef> timestampRevocationRefs = signature.getFoundRevocationRefsByOrigin(XmlRevocationRefOrigin.TIMESTAMP_REVOCATION_REFS);
@@ -78,7 +78,7 @@ public class CAdESLTALevelExtendedTest {
 		assertNotNull(diagnosticData);
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertNotNull(signature);
-		List<XmlFoundRevocation> foundRevocations = signature.getFoundRevocations();
+		List<XmlFoundRevocation> foundRevocations = signature.getAllFoundRevocations();
 		assertNotNull(foundRevocations);
 		assertEquals(3, foundRevocations.size());
 		

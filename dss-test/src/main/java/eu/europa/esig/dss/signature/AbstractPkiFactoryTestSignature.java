@@ -29,6 +29,7 @@ import static org.junit.Assert.fail;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -63,6 +64,8 @@ import eu.europa.esig.dss.jaxb.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerData;
 import eu.europa.esig.dss.jaxb.simplereport.SimpleReportFacade;
@@ -93,6 +96,7 @@ import eu.europa.esig.jaxb.validationreport.SAMessageDigestType;
 import eu.europa.esig.jaxb.validationreport.SANameType;
 import eu.europa.esig.jaxb.validationreport.SAOneSignerRoleType;
 import eu.europa.esig.jaxb.validationreport.SAReasonType;
+import eu.europa.esig.jaxb.validationreport.SARevIDListType;
 import eu.europa.esig.jaxb.validationreport.SASignatureProductionPlaceType;
 import eu.europa.esig.jaxb.validationreport.SASignerRoleType;
 import eu.europa.esig.jaxb.validationreport.SASigningTimeType;
@@ -438,6 +442,9 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		checkClaimedRoles(diagnosticData);
 		checkMessageDigestAlgorithm(diagnosticData);
 		checkSignaturePolicyIdentifier(diagnosticData);
+
+		checkNoDuplicateCompleteCertificates(diagnosticData);
+		checkNoDuplicateCompleteRevocationData(diagnosticData);
 	}
 
 	protected void verifyDiagnosticDataJaxb(XmlDiagnosticData diagnosticDataJaxb) {
@@ -853,6 +860,9 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 				} else if (value instanceof SAVRIType) {
 					SAVRIType vri = (SAVRIType) value;
 					validateETSIVRIType(vri);
+				} else if (value instanceof SARevIDListType) {
+					SARevIDListType revIdList = (SARevIDListType) value;
+					validateETSIRevIDListType(revIdList);
 				} else {
 					LOG.warn("{} not tested", value.getClass());
 				}
@@ -895,6 +905,13 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		assertNull(vri);
 	}
 
+	private void validateETSIRevIDListType(SARevIDListType revIdList) {
+		assertNotNull(revIdList);
+		List<Serializable> crlidOrOCSPID = revIdList.getCRLIDOrOCSPID();
+		assertNotNull(crlidOrOCSPID);
+		assertTrue(crlidOrOCSPID.size() > 0);
+	}
+
 	protected void validateETSISASignatureProductionPlaceType(SASignatureProductionPlaceType productionPlace) {
 		List<String> addressString = productionPlace.getAddressString();
 		SignerLocation signerLocation = getSignatureParameters().bLevel().getSignerLocation();
@@ -918,6 +935,26 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		String street = signerLocation.getStreet();
 		if (street != null) {
 			assertTrue(addressString.contains(street));
+		}
+	}
+
+	protected void checkNoDuplicateCompleteCertificates(DiagnosticData diagnosticData) {
+		Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
+		for (SignatureWrapper signatureWrapper : allSignatures) {
+			List<XmlFoundCertificate> allFoundCertificates = signatureWrapper.getAllFoundCertificates();
+			for (XmlFoundCertificate foundCert : allFoundCertificates) {
+				assertEquals("Duplicate complete certificate in " + foundCert.getOrigins(), 1, foundCert.getOrigins().size());
+			}
+		}
+	}
+
+	protected void checkNoDuplicateCompleteRevocationData(DiagnosticData diagnosticData) {
+		Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
+		for (SignatureWrapper signatureWrapper : allSignatures) {
+			List<XmlFoundRevocation> allFoundRevocations = signatureWrapper.getAllFoundRevocations();
+			for (XmlFoundRevocation foundRevocation : allFoundRevocations) {
+				assertEquals("Duplicate complete revocation data in " + foundRevocation.getOrigins(), 1, foundRevocation.getOrigins().size());
+			}
 		}
 	}
 

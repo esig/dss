@@ -854,10 +854,10 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	@Override
-	public List<RevocationToken> getTimestampRevocationValuesTokens() {
+	public List<RevocationToken> getTimestampValidationDataTokens() {
 		List<RevocationToken> revocationTokens = new ArrayList<RevocationToken>();
-		revocationTokens.addAll(getCRLSource().getTimestampRevocationValuesTokens());
-		revocationTokens.addAll(getOCSPSource().getTimestampRevocationValuesTokens());
+		revocationTokens.addAll(getCRLSource().getTimestampValidationDataTokens());
+		revocationTokens.addAll(getOCSPSource().getTimestampValidationDataTokens());
 		return revocationTokens;
 	}
 

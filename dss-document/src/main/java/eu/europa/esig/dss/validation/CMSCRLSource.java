@@ -66,8 +66,8 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 	 * Returns revocation-values {@link RevocationOrigin}
 	 * @return {@link RevocationOrigin}
 	 */
-	protected RevocationOrigin getInternalRevocationValuesOrigin() {
-		return RevocationOrigin.INTERNAL_REVOCATION_VALUES;
+	protected RevocationOrigin getRevocationValuesOrigin() {
+		return RevocationOrigin.REVOCATION_VALUES;
 	}
 
 	/**
@@ -119,7 +119,7 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 			 * ocspVals [1] SEQUENCE OF BasicOCSPResponse OPTIONAL,
 			 * otherRevVals [2] OtherRevVals OPTIONAL}
 			 */
-			collectRevocationValues(id_aa_ets_revocationValues, getInternalRevocationValuesOrigin());
+			collectRevocationValues(id_aa_ets_revocationValues, getRevocationValuesOrigin());
 			
 			/*
 			 * ETSI TS 101 733 V2.2.1 (2013-04) pages 39,41
@@ -178,7 +178,7 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 		final Store<X509CRLHolder> crLs = cmsSignedData.getCRLs();
 		final Collection<X509CRLHolder> collection = crLs.getMatches(null);
 		for (final X509CRLHolder x509CRLHolder : collection) {
-			signedDataCRLIdentifiers.add(addX509CRLHolder(x509CRLHolder, getInternalRevocationValuesOrigin()));
+			signedDataCRLIdentifiers.add(addX509CRLHolder(x509CRLHolder, getRevocationValuesOrigin()));
 		}
 	}
 

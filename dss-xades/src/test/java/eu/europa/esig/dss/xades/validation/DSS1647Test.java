@@ -57,15 +57,15 @@ public class DSS1647Test {
 			assertTrue(archiveTimestamp.getTimestampedCertificateIds().contains(certId));
 		}
 		
-		List<String> timestampValidationDataRevocationIds = signature.getRevocationIdsByOrigin(XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES);
+		List<String> timestampValidationDataRevocationIds = signature.getRevocationIdsByOrigin(XmlRevocationOrigin.TIMESTAMP_VALIDATION_DATA);
 		assertEquals(1, timestampValidationDataRevocationIds.size());
 		assertTrue(archiveTimestamp.getTimestampedRevocationIds().contains(timestampValidationDataRevocationIds.get(0)));
 		
-		List<String> crlRevocationValueIds = signature.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES);
+		List<String> crlRevocationValueIds = signature.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.REVOCATION_VALUES);
 		assertEquals(1, crlRevocationValueIds.size());
 		assertTrue(archiveTimestamp.getTimestampedRevocationIds().contains(crlRevocationValueIds.get(0)));
 		
-		List<String> ocspRevocationValueIds = signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES);
+		List<String> ocspRevocationValueIds = signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.REVOCATION_VALUES);
 		assertEquals(1, ocspRevocationValueIds.size());
 		assertTrue(archiveTimestamp.getTimestampedRevocationIds().contains(ocspRevocationValueIds.get(0)));
 	}

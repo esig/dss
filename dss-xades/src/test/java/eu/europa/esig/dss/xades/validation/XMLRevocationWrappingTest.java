@@ -58,8 +58,8 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 		
 		assertEquals(0, signature.getRevocationIdsByType(RevocationType.CRL).size());
 		assertEquals(4, signature.getRevocationIdsByType(RevocationType.OCSP).size());
-		assertEquals(2, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
-		assertEquals(2, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
+		assertEquals(2, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.REVOCATION_VALUES).size());
+		assertEquals(2, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.TIMESTAMP_VALIDATION_DATA).size());
 		
 		XmlDiagnosticData xmlDiagnosticData = reports.getDiagnosticDataJaxb();
 		List<XmlSignature> xmlSignatures = xmlDiagnosticData.getSignatures();
@@ -101,8 +101,8 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 		
 		assertEquals(1, signature.getRevocationIdsByType(RevocationType.CRL).size());
 		assertEquals(0, signature.getRevocationIdsByType(RevocationType.OCSP).size());
-		assertEquals(1, signature.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
-		assertEquals(0, signature.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
+		assertEquals(1, signature.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.REVOCATION_VALUES).size());
+		assertEquals(0, signature.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.TIMESTAMP_VALIDATION_DATA).size());
 		
 		XmlDiagnosticData xmlDiagnosticData = reports.getDiagnosticDataJaxb();
 		List<XmlSignature> xmlSignatures = xmlDiagnosticData.getSignatures();
@@ -121,7 +121,7 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 		assertEquals(3, signatures.size());
 		
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
-			assertEquals(1, signatureWrapper.getFoundRevocations().size());
+			assertEquals(1, signatureWrapper.getAllFoundRevocations().size());
 		}
 		
 		// Same CRL has been inserted 3 times
