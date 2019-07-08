@@ -20,8 +20,19 @@
  */
 package eu.europa.esig.dss.enumerations;
 
+/**
+ * Defines a type of revocation data response
+ */
 public enum RevocationType {
-	
-	CRL, OCSP,
+
+	/**
+	 * The revocation data was received from CRL response
+	 */
+	CRL,
+
+	/**
+	 * The revocation data was received from OCSP response
+	 */
+	OCSP;
 
 }

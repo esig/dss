@@ -675,7 +675,7 @@ public class DiagnosticDataBuilder {
 			RevocationOrigin revocationOriginType = RevocationOrigin.valueOf(revocationToken.getFirstOrigin().name());
 			xmlRevocation.setOrigin(revocationOriginType);
 		}
-		xmlRevocation.setType(RevocationType.valueOf(revocationToken.getRevocationSourceType().name()));
+		xmlRevocation.setType(revocationToken.getRevocationType());
 
 		xmlRevocation.setProductionDate(revocationToken.getProductionDate());
 		xmlRevocation.setThisUpdate(revocationToken.getThisUpdate());
@@ -1069,10 +1069,8 @@ public class DiagnosticDataBuilder {
 				if (xmlRevocation != null) {
 					XmlRelatedRevocation xmlRelatedRevocation = new XmlRelatedRevocation();
 					xmlRelatedRevocation.setRevocation(xmlRevocation);
-					xmlRelatedRevocation.setType(RevocationType.valueOf(revocationToken.getRevocationSourceType().name()));
-					for (RevocationOrigin origin : revocationToken.getOrigins()) {
-						xmlRelatedRevocation.getOrigins().add(RevocationOrigin.valueOf(origin.toString()));
-					}
+					xmlRelatedRevocation.setType(revocationToken.getRevocationType());
+					xmlRelatedRevocation.getOrigins().addAll(revocationToken.getOrigins());
 					List<RevocationRef> revocationRefs = signature.findRefsForRevocationToken(revocationToken);
 					if (Utils.isCollectionNotEmpty(revocationRefs)) {
 						xmlRelatedRevocation.getRevocationRefs().addAll(getXmlRevocationRefs(revocationRefs));

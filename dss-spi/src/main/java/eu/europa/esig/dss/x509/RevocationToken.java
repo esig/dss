@@ -27,8 +27,8 @@ import java.util.Set;
 
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationReason;
+import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.revocation.RevocationSourceType;
 
 @SuppressWarnings("serial")
 public abstract class RevocationToken extends Token {
@@ -41,7 +41,7 @@ public abstract class RevocationToken extends Token {
 	/**
 	 * An identifier referencing a CRL or OCSP response has been used for determining the revocation status.
 	 */
-	protected RevocationSourceType revocationSourceType;
+	protected RevocationType revocationType;
 
 	/**
 	 * Origins of the revocation data (signature or external)
@@ -108,8 +108,8 @@ public abstract class RevocationToken extends Token {
 	 */
 	protected String revocationTokenKey;
 	
-	public RevocationSourceType getRevocationSourceType() {
-		return revocationSourceType;
+	public RevocationType getRevocationType() {
+		return revocationType;
 	}
 
 	public String getRelatedCertificateID() {
