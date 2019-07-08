@@ -228,6 +228,7 @@ public class TSLRepository {
 	List<File> getStoredFiles() {
 		ensureCacheDirectoryExists();
 		File cacheDir = new File(cacheDirectoryPath);
+		LOG.info("TSL cache directory : {}", cacheDir);
 		File[] listFiles = cacheDir.listFiles(new IgnorePivotFilenameFilter());
 		return Arrays.asList(listFiles);
 	}
