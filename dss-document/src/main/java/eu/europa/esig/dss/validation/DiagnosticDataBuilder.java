@@ -65,10 +65,7 @@ import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.OrphanTokenType;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
-import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
-import eu.europa.esig.dss.enumerations.TimestampLocation;
-import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.jaxb.diagnostic.ObjectFactory;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
@@ -672,8 +669,7 @@ public class DiagnosticDataBuilder {
 		if (isInternalOrigin(revocationToken)) {
 			xmlRevocation.setOrigin(RevocationOrigin.SIGNATURE);
 		} else {
-			RevocationOrigin revocationOriginType = RevocationOrigin.valueOf(revocationToken.getFirstOrigin().name());
-			xmlRevocation.setOrigin(revocationOriginType);
+			xmlRevocation.setOrigin(revocationToken.getFirstOrigin());
 		}
 		xmlRevocation.setType(revocationToken.getRevocationType());
 
@@ -708,7 +704,7 @@ public class DiagnosticDataBuilder {
 	
 	private boolean isInternalOrigin(RevocationToken revocationToken) {
 		for (RevocationOrigin origin : revocationToken.getOrigins()) {
-			if (RevocationOrigin.valueOf(origin.name()).isInternalOrigin()) {
+			if (origin.isInternalOrigin()) {
 				return true;
 			}
 		}
@@ -1019,9 +1015,7 @@ public class DiagnosticDataBuilder {
 		for (TimestampToken timestampToken : tsts) {
 			XmlFoundTimestamp foundTimestamp = new XmlFoundTimestamp();
 			foundTimestamp.setTimestamp(xmlTimestamps.get(timestampToken.getDSSIdAsString()));
-			if (timestampToken.getTimestampLocation() != null) {
-				foundTimestamp.setLocation(TimestampLocation.valueOf(timestampToken.getTimestampLocation().name()));
-			}
+			foundTimestamp.setLocation(timestampToken.getTimestampLocation());
 			foundTimestamps.add(foundTimestamp);
 		}
 		return foundTimestamps;
@@ -1101,7 +1095,7 @@ public class DiagnosticDataBuilder {
 	
 	private XmlRevocationRef getXmlCRLRevocationRef(CRLRef crlRef) {
 		XmlRevocationRef xmlRevocationRef = new XmlRevocationRef();
-		xmlRevocationRef.setOrigin(RevocationRefOrigin.valueOf(crlRef.getOrigin().toString()));
+		xmlRevocationRef.setOrigin(crlRef.getOrigin());
 		if (crlRef.getDigest() != null) {
 			xmlRevocationRef.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(crlRef.getDigest()));
 		}
@@ -1110,7 +1104,7 @@ public class DiagnosticDataBuilder {
 	
 	private XmlRevocationRef getXmlOCSPRevocationRef(OCSPRef ocspRef) {
 		XmlRevocationRef xmlRevocationRef = new XmlRevocationRef();
-		xmlRevocationRef.setOrigin(RevocationRefOrigin.valueOf(ocspRef.getOrigin().toString()));
+		xmlRevocationRef.setOrigin(ocspRef.getOrigin());
 		if (ocspRef.getDigest() != null) {
 			xmlRevocationRef.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(ocspRef.getDigest()));
 		}
@@ -1140,12 +1134,12 @@ public class DiagnosticDataBuilder {
 		if (revocationIdentifier instanceof CRLBinary) {
 			xmlOrphanRevocation.setType(RevocationType.CRL);
 			for (RevocationOrigin origin : signature.getCompleteCRLSource().getRevocationOrigins((CRLBinary) revocationIdentifier)) {
-				xmlOrphanRevocation.getOrigins().add(RevocationOrigin.valueOf(origin.name()));
+				xmlOrphanRevocation.getOrigins().add(origin);
 			}
 		} else {
 			xmlOrphanRevocation.setType(RevocationType.OCSP);
 			for (RevocationOrigin origin : signature.getCompleteOCSPSource().getRevocationOrigins((OCSPResponseBinary) revocationIdentifier)) {
-				xmlOrphanRevocation.getOrigins().add(RevocationOrigin.valueOf(origin.name()));
+				xmlOrphanRevocation.getOrigins().add(origin);
 			}
 		}
 		List<RevocationRef> refsForRevocationToken = signature.findRefsForRevocationIdentifier(revocationIdentifier);
@@ -1291,7 +1285,7 @@ public class DiagnosticDataBuilder {
 		final XmlTimestamp xmlTimestampToken = new XmlTimestamp();
 
 		xmlTimestampToken.setId(timestampToken.getDSSIdAsString());
-		xmlTimestampToken.setType(TimestampType.valueOf(timestampToken.getTimeStampType().name()));
+		xmlTimestampToken.setType(timestampToken.getTimeStampType());
 		xmlTimestampToken.setProductionTime(timestampToken.getGenerationTime());
 		xmlTimestampToken.setDigestMatcher(getXmlDigestMatcher(timestampToken));
 		xmlTimestampToken.setBasicSignature(getXmlBasicSignature(timestampToken));
@@ -1545,9 +1539,7 @@ public class DiagnosticDataBuilder {
 		if (certificateSourceTypes != null) {
 			Set<CertificateSourceType> sourceTypes = certificateSourceTypes.get(token);
 			if (sourceTypes != null) {
-				for (CertificateSourceType source : sourceTypes) {
-					certificateSources.add(CertificateSourceType.valueOf(source.name()));
-				}
+				certificateSources.addAll(sourceTypes);
 			}
 		}
 		if (Utils.isCollectionEmpty(certificateSources)) {
