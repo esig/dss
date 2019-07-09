@@ -4,10 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
-import java.io.FileOutputStream;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
 
 import org.junit.Test;
 
@@ -20,9 +16,8 @@ import eu.europa.esig.jaxb.policy.RevocationConstraints;
 import eu.europa.esig.jaxb.policy.TimeConstraint;
 import eu.europa.esig.jaxb.policy.TimeUnit;
 import eu.europa.esig.jaxb.policy.ValidationPolicyFacade;
-import eu.europa.esig.jaxb.policy.ValidationPolicyXmlDefiner;
 
-public class JaxbPolicyTest {
+public class ValidationPolicyFacadeTest {
 
 	@Test
 	public void testUnmarshalling() throws Exception {
@@ -34,9 +29,8 @@ public class JaxbPolicyTest {
 		assertEquals("DSA", algoName);
 		assertEquals("128", algo.getSize());
 
-		JAXBContext jc = ValidationPolicyXmlDefiner.getJAXBContext();
-		Marshaller marshaller = jc.createMarshaller();
-		marshaller.marshal(constraintsParameters, new FileOutputStream("target/constraint.xml"));
+		String marshall = ValidationPolicyFacade.newFacade().marshall(constraintsParameters);
+		assertNotNull(marshall);
 	}
 	
 	@Test
@@ -46,12 +40,11 @@ public class JaxbPolicyTest {
 		ModelConstraint mc = new ModelConstraint();
 		mc.setValue(Model.SHELL);
 		constraintsParameters.setModel(mc);
+
+		String marshall = ValidationPolicyFacade.newFacade().marshall(constraintsParameters);
+		assertNotNull(marshall);
 		
-		JAXBContext jc = ValidationPolicyXmlDefiner.getJAXBContext();
-		Marshaller marshaller = jc.createMarshaller();
-		marshaller.marshal(constraintsParameters, new FileOutputStream("target/constraint.xml"));
-		
-		ConstraintsParameters cp = ValidationPolicyFacade.newFacade().unmarshall(new File("target/constraint.xml"));
+		ConstraintsParameters cp = ValidationPolicyFacade.newFacade().unmarshall(marshall);
 		assertNotNull(cp);
 		assertNotNull(cp.getModel());
 		assertEquals(mc.getValue(), cp.getModel().getValue());

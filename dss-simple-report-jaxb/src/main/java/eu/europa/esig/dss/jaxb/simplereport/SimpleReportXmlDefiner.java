@@ -3,7 +3,6 @@ package eu.europa.esig.dss.jaxb.simplereport;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
@@ -15,6 +14,8 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.xml.sax.SAXException;
+
+import eu.europa.esig.dss.jaxb.parsers.XmlDefinerUtils;
 
 public final class SimpleReportXmlDefiner {
 
@@ -48,8 +49,7 @@ public final class SimpleReportXmlDefiner {
 	public static Schema getSchema() throws IOException, SAXException {
 		if (schema == null) {
 			try (InputStream inputStream = SimpleReportXmlDefiner.class.getResourceAsStream(SIMPLE_REPORT_SCHEMA_LOCATION)) {
-				SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-				sf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+				SchemaFactory sf = XmlDefinerUtils.getSecureSchemaFactory();
 				schema = sf.newSchema(new Source[] { new StreamSource(inputStream) });
 			}
 		}
@@ -79,17 +79,9 @@ public final class SimpleReportXmlDefiner {
 
 	private static Templates loadTemplates(String path) throws TransformerConfigurationException, IOException {
 		try (InputStream is = SimpleReportXmlDefiner.class.getResourceAsStream(path)) {
-			TransformerFactory transformerFactory = getSecureTransformerFactory();
+			TransformerFactory transformerFactory = XmlDefinerUtils.getSecureTransformerFactory();
 			return transformerFactory.newTemplates(new StreamSource(is));
 		}
-	}
-
-	private static TransformerFactory getSecureTransformerFactory() throws TransformerConfigurationException {
-		TransformerFactory transformerFactory = TransformerFactory.newInstance();
-		transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-		transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-		transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
-		return transformerFactory;
 	}
 
 }

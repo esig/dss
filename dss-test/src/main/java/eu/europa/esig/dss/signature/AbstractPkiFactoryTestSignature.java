@@ -197,7 +197,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		}
 	}
 
-	private void unmarshallDetailedReport(Reports reports) {
+	protected void unmarshallDetailedReport(Reports reports) {
 		try {
 			String xmlDetailedReport = reports.getXmlDetailedReport();
 			assertTrue(Utils.isStringNotBlank(xmlDetailedReport));
@@ -208,7 +208,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		}
 	}
 
-	private void unmarshallSimpleReport(Reports reports) {
+	protected void unmarshallSimpleReport(Reports reports) {
 		try {
 			String xmlSimpleReport = reports.getXmlSimpleReport();
 			assertTrue(Utils.isStringNotBlank(xmlSimpleReport));
@@ -219,7 +219,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		}
 	}
 
-	private void unmarshallValidationReport(Reports reports) {
+	protected void unmarshallValidationReport(Reports reports) {
 		try {
 			String xmlValidationReport = reports.getXmlValidationReport();
 			assertTrue(Utils.isStringNotBlank(xmlValidationReport));
