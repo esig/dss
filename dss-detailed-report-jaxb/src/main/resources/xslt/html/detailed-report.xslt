@@ -530,6 +530,7 @@
     
     <xsl:template match="dss:FC|dss:ISC|dss:VCI|dss:CV|dss:SAV|dss:XCV|dss:PSV|dss:PCV|dss:VTS">
 		<div>
+       		<xsl:attribute name="id"><xsl:value-of select="../@Id"/>-<xsl:value-of select="name()"/></xsl:attribute>
 			<xsl:attribute name="class">row</xsl:attribute>
 			<xsl:attribute name="style">margin-bottom:5px;margin-top:5px;</xsl:attribute>
 			<div>

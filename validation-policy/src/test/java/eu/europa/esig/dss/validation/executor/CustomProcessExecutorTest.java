@@ -46,6 +46,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignature;
 import eu.europa.esig.dss.utils.Utils;
@@ -237,6 +240,28 @@ public class CustomProcessExecutorTest {
 		
 		List<String> errors = simpleReport.getErrors(simpleReport.getFirstSignatureId());
 		assertEquals(4, errors.size());
+		
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		
+		XmlValidationProcessArchivalData validationProcessArchivalData = detailedReport.getJAXBModel().getSignatures().get(0).getValidationProcessArchivalData();
+		
+		List<XmlConstraint> constraints = validationProcessArchivalData.getConstraint();
+		
+		List<String> timestampIds = detailedReport.getTimestampIds();
+		int basicValidationTSTFailedCounter = 0;
+		for (String timestampId : timestampIds) {
+			Indication timestampValidationIndication = detailedReport.getTimestampValidationIndication(timestampId);
+			if (!Indication.PASSED.equals(timestampValidationIndication)) {
+				for (XmlConstraint constraint : constraints) {
+					if (Utils.isStringNotEmpty(constraint.getId()) && constraint.getId().contains(timestampId)) {
+						assertEquals(XmlStatus.WARNING, constraint.getStatus());
+						basicValidationTSTFailedCounter++;
+					}
+				}
+			}
+		}
+		assertEquals(1, basicValidationTSTFailedCounter);
 
 		validateBestSigningTimes(reports);
 	}

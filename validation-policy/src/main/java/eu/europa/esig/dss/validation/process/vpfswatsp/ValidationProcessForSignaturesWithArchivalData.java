@@ -43,6 +43,7 @@ import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.LongTermValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.PastSignatureValidationCheck;
+import eu.europa.esig.dss.validation.process.vpfswatsp.checks.PastTimestampValidation;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.PastSignatureValidation;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
@@ -186,6 +187,16 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 					LOG.error("No timestamp validation found for timestamp {}", newestTimestamp.getId());
 				}
 			}
+			
+			// add past timestamp validation information in the proper order
+			Collections.reverse(timestampsList);
+			for (TimestampWrapper timestamp : timestampsList) {
+				XmlBasicBuildingBlocks bbbTsp = bbbs.get(timestamp.getId());
+				if (bbbTsp.getPSV() != null) {
+					item = item.setNextItem(pastTimestampValidation(timestamp, bbbTsp));
+				}
+			}
+			
 		}
 
 		/*
@@ -206,6 +217,10 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		 * NOTE 5: What the DA does with this information is out of the scope of the present document.
 		 */
 
+	}
+	
+	private ChainItem<XmlValidationProcessArchivalData> pastTimestampValidation(TimestampWrapper timestamp, XmlBasicBuildingBlocks bbbTsp) {
+		return new PastTimestampValidation(result, bbbTsp.getPSV(), timestamp, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationProcessArchivalData> pastSignatureValidation(Context currentContext) {

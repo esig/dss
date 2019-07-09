@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.validation.executor;
 
 import java.util.Date;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -148,7 +148,7 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 	}
 
 	private Map<String, XmlBasicBuildingBlocks> executeAllBasicBuildingBlocks() {
-		Map<String, XmlBasicBuildingBlocks> bbbs = new HashMap<String, XmlBasicBuildingBlocks>();
+		Map<String, XmlBasicBuildingBlocks> bbbs = new LinkedHashMap<String, XmlBasicBuildingBlocks>();
 		switch (validationLevel) {
 		case ARCHIVAL_DATA:
 		case LONG_TERM_DATA:

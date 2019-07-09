@@ -236,6 +236,8 @@ public enum MessageTag implements IMessageTag {
 	PSV_IPCVC_ANS("The current time validation is not conclusive!"),
 	PSV_IPSVC("Is past signature validation conclusive?"),
 	PSV_IPSVC_ANS("The past signature validation is not conclusive!"),
+	PSV_IPTVC("Is past timestamp validation conclusive?"),
+	PSV_IPTVC_ANS("The past timestamp validation is not conclusive!"),
 	PSV_ITPOCOBCT("Is there a POE of the certificate at (or before) control-time?"),
 	PSV_ITPOSVAOBCT("Is there a POE of the signature value at (or before) control-time?"),
 	PSV_ITPORDAOBCT("Is there a POE of the revocation data at (or before) control-time?"),
