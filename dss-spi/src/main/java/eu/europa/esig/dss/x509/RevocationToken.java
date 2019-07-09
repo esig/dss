@@ -20,9 +20,7 @@
  */
 package eu.europa.esig.dss.x509;
 
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
@@ -149,9 +147,6 @@ public abstract class RevocationToken extends Token {
 	 * @return the origin of this revocation data
 	 */
 	public Set<RevocationOrigin> getOrigins() {
-		if (Utils.isCollectionEmpty(origins)) {
-			origins = new HashSet<RevocationOrigin>(Arrays.asList(RevocationOrigin.EXTERNAL));
-		}
 		return origins;
 	}
 	

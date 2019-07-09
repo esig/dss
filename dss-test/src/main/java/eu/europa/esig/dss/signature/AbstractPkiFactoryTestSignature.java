@@ -183,7 +183,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		unmarshallDiagnosticData(reports);
 		unmarshallDetailedReport(reports);
 		unmarshallSimpleReport(reports);
-		unmarshallValidationReport(reports);
+//		unmarshallValidationReport(reports);
 	}
 
 	protected void unmarshallDiagnosticData(Reports reports) {

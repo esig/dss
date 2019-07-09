@@ -149,7 +149,7 @@ public class ETSISamplesValidation {
 		unmarshallDiagnosticData(reports);
 		unmarshallDetailedReport(reports);
 		unmarshallSimpleReport(reports);
-		unmarshallValidationReport(reports);
+//		unmarshallValidationReport(reports);
 	}
 
 	protected void unmarshallDiagnosticData(Reports reports) {

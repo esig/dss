@@ -43,6 +43,7 @@ import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.client.NonceSource;
 import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.client.http.commons.OCSPDataLoader;
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.revocation.OnlineRevocationSource;
@@ -145,6 +146,7 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 						ocspTokenBuilder.setSourceURL(ocspAccessLocation);
 						OCSPToken ocspToken = ocspTokenBuilder.build();
 						OCSPTokenUtils.checkTokenValidity(ocspToken, certificateToken, issuerCertificateToken);
+						ocspToken.setOrigins(Collections.singleton(RevocationOrigin.EXTERNAL));
 						return ocspToken;
 					} else {
 						LOG.warn("OCSP Response status with URL '{}' : {}", ocspAccessLocation, status);

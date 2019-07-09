@@ -22,9 +22,7 @@ package eu.europa.esig.dss.client.crl;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -148,7 +146,7 @@ public class OnlineCRLSource implements CRLSource, RevocationSourceAlternateUrls
 			CRLBinary crlBinary = new CRLBinary(dataAndUrl.data);
 			final CRLValidity crlValidity = CRLUtils.buildCRLValidity(crlBinary, issuerToken);
 			final CRLToken crlToken = new CRLToken(certificateToken, crlValidity);
-			crlToken.setOrigins(new HashSet<RevocationOrigin>(Arrays.asList(RevocationOrigin.EXTERNAL)));
+			crlToken.setOrigins(Collections.singleton(RevocationOrigin.EXTERNAL));
 			crlToken.setSourceURL(dataAndUrl.urlString);
 			crlToken.setAvailable(true);
 			crlToken.setRevocationTokenKey(DSSRevocationUtils.getCRLRevocationTokenKey(dataAndUrl.urlString));
