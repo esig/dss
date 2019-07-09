@@ -866,11 +866,11 @@ public class DiagnosticDataBuilder {
 				certificateSource.getCertificateValues(), certificateSource);
 		populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES, 
 				certificateSource.getAttrAuthoritiesCertValues(), certificateSource);
-		populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.TIMESTAMP_DATA_VALIDATION, 
+		populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.TIMESTAMP_VALIDATION_DATA, 
 				certificateSource.getTimeStampValidationDataCertValues(), certificateSource);
-		populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.DSS, 
+		populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.DSS_DICTIONARY, 
 				certificateSource.getDSSDictionaryCertValues(), certificateSource);
-		populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.VRI, 
+		populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.VRI_DICTIONARY, 
 				certificateSource.getVRIDictionaryCertValues(), certificateSource);
 		
 		return new ArrayList<XmlRelatedCertificate>(relatedCertificatesMap.values());

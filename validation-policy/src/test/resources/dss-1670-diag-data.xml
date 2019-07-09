@@ -112,7 +112,7 @@
 									
 																												   
                     <Type>CRL</Type>
-                    <Origin>INTERNAL_REVOCATION_VALUES</Origin>
+                    <Origin>REVOCATION_VALUES</Origin>
                     <RevocationRef>
                         <Origin>COMPLETE_REVOCATION_REFS</Origin>
                         <DigestAlgoAndValue>
@@ -123,11 +123,11 @@
                 </RelatedRevocation>
                 <RelatedRevocation Revocation="R-7A192FE67DE291A42A5167621BA7657AC9F1CAD267C07F7BC364E833B2E94D7F">
                     <Type>CRL</Type>
-                    <Origin>INTERNAL_TIMESTAMP_REVOCATION_VALUES</Origin>
+                    <Origin>TIMESTAMP_VALIDATION_DATA</Origin>
                 </RelatedRevocation>
                 <RelatedRevocation Revocation="R-ADD0A9B25B1DB305A80FB69659A26675D0A7F3DFDEE0B75CAD7C1C8381B2E4FF">
                     <Type>CRL</Type>
-                    <Origin>INTERNAL_REVOCATION_VALUES</Origin>
+                    <Origin>REVOCATION_VALUES</Origin>
                     <RevocationRef>
                         <Origin>COMPLETE_REVOCATION_REFS</Origin>
                         <DigestAlgoAndValue>
@@ -138,7 +138,7 @@
                 </RelatedRevocation>
                 <OrphanRevocation Token="R-E9DFB3E50CC006ED38F424CF18BF8A3F06260A1F35DDA36B1A4D229323F63B59">
                     <Type>CRL</Type>
-                    <Origin>INTERNAL_TIMESTAMP_REVOCATION_VALUES</Origin>
+                    <Origin>TIMESTAMP_VALIDATION_DATA</Origin>
                     <RevocationRef>
                         <Origin>TIMESTAMP_REVOCATION_REFS</Origin>
                         <DigestAlgoAndValue>

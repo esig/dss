@@ -59,12 +59,11 @@
 				printMethod="eu.europa.esig.dss.jaxb.parsers.CertificateSourceTypeParser.print" />
 		</jaxb:bindings>
 		
-  		<jaxb:bindings node="//xs:simpleType[@name='RevocationReason']">
+	  	<jaxb:bindings node="//xs:simpleType[@name='RevocationReason']">
 			<jaxb:javaType name="eu.europa.esig.dss.enumerations.RevocationReason" 
-				parseMethod="eu.europa.esig.dss.jaxb.parsers.RevocationReasonParser.parse" 
-				printMethod="eu.europa.esig.dss.jaxb.parsers.RevocationReasonParser.print" />
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.RevocationReasonParser.parseShortName" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.RevocationReasonParser.printShortName" />
 		</jaxb:bindings>
-		
 	</jaxb:bindings>
 
 </jaxb:bindings>

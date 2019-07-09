@@ -144,7 +144,7 @@
 			<Revocations>
 	            <CertificateRevocation Revocation="R-DC0E71B7A59FAE435C3F3A8B10A7CB4BDC42973BD93D139B352D439B0F071ECD">
 	                <Status>false</Status>
-	                <Reason>unknow</Reason>
+	                <Reason>unspecified</Reason>
 	            </CertificateRevocation>
 	        </Revocations>
             <DigestAlgoAndValue>

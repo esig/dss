@@ -743,7 +743,7 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private void addTimeStampValidationData(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		List<String> refIds = sigWrapper.getFoundCertificateIds(CertificateOrigin.TIMESTAMP_DATA_VALIDATION);
+		List<String> refIds = sigWrapper.getFoundCertificateIds(CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
 		refIds.addAll(sigWrapper.getRevocationIdsByOrigin(RevocationOrigin.TIMESTAMP_VALIDATION_DATA));
 		if (Utils.isCollectionNotEmpty(refIds)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
@@ -1122,7 +1122,7 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private void addDSS(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		List<String> certIds = sigWrapper.getFoundCertificateIds(CertificateOrigin.DSS);
+		List<String> certIds = sigWrapper.getFoundCertificateIds(CertificateOrigin.DSS_DICTIONARY);
 		List<String> crlIds = sigWrapper.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, RevocationOrigin.DSS_DICTIONARY);
 		List<String> ocspIds = sigWrapper.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.DSS_DICTIONARY);
 		if (Utils.isCollectionNotEmpty(certIds) || Utils.isCollectionNotEmpty(crlIds) || Utils.isCollectionNotEmpty(ocspIds)) {
@@ -1141,7 +1141,7 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private void addVRI(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		List<String> certIds = sigWrapper.getFoundCertificateIds(CertificateOrigin.VRI);
+		List<String> certIds = sigWrapper.getFoundCertificateIds(CertificateOrigin.VRI_DICTIONARY);
 		List<String> crlIds = sigWrapper.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, RevocationOrigin.VRI_DICTIONARY);
 		List<String> ocspIds = sigWrapper.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.VRI_DICTIONARY);
 

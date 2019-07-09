@@ -409,7 +409,7 @@
 		<xs:sequence>
 			<xs:element name="CertificateId" type="xs:string" />
 			<xs:element name="RevocationId" type="xs:string" />
-			<xs:element name="Reason" type="RevocationReason" />
+			<xs:element name="Reason" type="RevocationReason" minOccurs="0" />
 			<xs:element name="RevocationDate" type="xs:dateTime" />		
 		</xs:sequence>
 	</xs:complexType>
@@ -432,7 +432,6 @@
 			<xs:enumeration value="superseded" />
 			<xs:enumeration value="cessationOfOperation" />
 			<xs:enumeration value="certificateHold" />
-			<xs:enumeration value="unknow" />
 			<xs:enumeration value="removeFromCRL" />
 			<xs:enumeration value="privilegeWithdrawn" />
 			<xs:enumeration value="aACompromise" />

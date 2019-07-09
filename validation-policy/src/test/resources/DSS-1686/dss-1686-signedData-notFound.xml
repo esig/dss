@@ -70,21 +70,21 @@
                     </CertificateRef>
                 </RelatedCertificate>
                 <RelatedCertificate Certificate="C-81AF749F424A8DF91012FF63D44357A75384FF64BB1C2ED59D0A658EE3C8C755">
-                    <Origin>TIMESTAMP_DATA_VALIDATION</Origin>
+                    <Origin>TIMESTAMP_VALIDATION_DATA</Origin>
                 </RelatedCertificate>
             </FoundCertificates>
             <FoundRevocations>
                 <RelatedRevocation Revocation="R-BFE1DCADF795A5F8D0C4B69054DD551B514C61DC664C7F4AE3254E5FF80F28C5">
                     <Type>OCSP</Type>
-                    <Origin>INTERNAL_REVOCATION_VALUES</Origin>
+                    <Origin>REVOCATION_VALUES</Origin>
                 </RelatedRevocation>
                 <RelatedRevocation Revocation="R-AB75AE3DA23E461E1F8982E38CCFDF0F654515034EFCFC605E7C82B1D03D913A">
                     <Type>CRL</Type>
-                    <Origin>INTERNAL_REVOCATION_VALUES</Origin>
+                    <Origin>REVOCATION_VALUES</Origin>
                 </RelatedRevocation>
                 <RelatedRevocation Revocation="R-7ABA94DDE6F4FA3093ED23C3B9A96BEA9A3465EB9CD53537B8389B7574B87363">
                     <Type>CRL</Type>
-                    <Origin>INTERNAL_TIMESTAMP_REVOCATION_VALUES</Origin>
+                    <Origin>TIMESTAMP_VALIDATION_DATA</Origin>
                 </RelatedRevocation>
             </FoundRevocations>
             <FoundTimestamps>

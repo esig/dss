@@ -76,7 +76,7 @@
             <FoundRevocations>
                 <RelatedRevocation Revocation="R-F19DA13E95CC292BDD3138A6FAE8130E3E956AD636F97F1C7E8A73E9530CDB86">
                     <Type>CRL</Type>
-                    <Origin>INTERNAL_REVOCATION_VALUES</Origin>
+                    <Origin>REVOCATION_VALUES</Origin>
                     <RevocationRef>
                         <Origin>COMPLETE_REVOCATION_REFS</Origin>
                         <DigestAlgoAndValue>
@@ -87,7 +87,7 @@
                 </RelatedRevocation>
                 <RelatedRevocation Revocation="R-C8DB8054C56A548DAF0A81751C1E1D4709C3F1FF90C1D6927850FD5DD0F58428">
                     <Type>CRL</Type>
-                    <Origin>INTERNAL_TIMESTAMP_REVOCATION_VALUES</Origin>
+                    <Origin>TIMESTAMP_VALIDATION_DATA</Origin>
                     <RevocationRef>
                         <Origin>TIMESTAMP_REVOCATION_REFS</Origin>
                         <DigestAlgoAndValue>

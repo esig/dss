@@ -621,9 +621,9 @@
 			<xs:enumeration value="KEY_INFO" />
 			<xs:enumeration value="CERTIFICATE_VALUES" />
 			<xs:enumeration value="ATTR_AUTORITIES_CERT_VALUES" />
-			<xs:enumeration value="TIMESTAMP_DATA_VALIDATION" />
-			<xs:enumeration value="DSS" />
-			<xs:enumeration value="VRI" />
+			<xs:enumeration value="TIMESTAMP_VALIDATION_DATA" />
+			<xs:enumeration value="DSS_DICTIONARY" />
+			<xs:enumeration value="VRI_DICTIONARY" />
 			<xs:enumeration value="TIMESTAMP_CERTIFICATE_VALUES" />
 		</xs:restriction>
 	</xs:simpleType>

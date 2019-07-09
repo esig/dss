@@ -55,7 +55,7 @@
                     <Origin>KEY_INFO</Origin>
                 </RelatedCertificate>
                 <RelatedCertificate Certificate="C-F4E7DF969A590AF41E38E5854542EBF9DF6A5BE9B16FD31494FA689509057494">
-                    <Origin>TIMESTAMP_DATA_VALIDATION</Origin>
+                    <Origin>TIMESTAMP_VALIDATION_DATA</Origin>
                 </RelatedCertificate>
                 <RelatedCertificate Certificate="C-FE2461CBA57FE78B4D8FD8B72730C49F9370C38002E3AA0340795395513FB26E">
                     <Origin>KEY_INFO</Origin>
@@ -77,15 +77,15 @@
             <FoundRevocations>
                 <RelatedRevocation Revocation="R-7D7676569DEB225F315C8D1486A78EA2A1BA5C19828B97466E84E6BDD761A65E">
                     <Type>CRL</Type>
-                    <Origin>INTERNAL_REVOCATION_VALUES</Origin>
+                    <Origin>REVOCATION_VALUES</Origin>
                 </RelatedRevocation>
                 <RelatedRevocation Revocation="R-5BE1D322FC8AEA14B2B21EC20ADA7052F8DED3537320559BF12B72F3F184A6BC">
                     <Type>OCSP</Type>
-                    <Origin>INTERNAL_REVOCATION_VALUES</Origin>
+                    <Origin>REVOCATION_VALUES</Origin>
                 </RelatedRevocation>
                 <RelatedRevocation Revocation="R-52755F1B968292DA7D64235FC8BEE11023AE65436DB62822DE853B0F3B94A279">
                     <Type>CRL</Type>
-                    <Origin>INTERNAL_TIMESTAMP_REVOCATION_VALUES</Origin>
+                    <Origin>TIMESTAMP_VALIDATION_DATA</Origin>
                 </RelatedRevocation>
             </FoundRevocations>
             <FoundTimestamps>

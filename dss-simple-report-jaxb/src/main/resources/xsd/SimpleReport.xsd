@@ -29,8 +29,8 @@
 						<xs:element type="xs:string" name="Filename" minOccurs="0" />
 						<xs:element type="xs:dateTime" name="SigningTime" minOccurs="0" />
 						<xs:element type="xs:dateTime" name="BestSignatureTime" minOccurs="0" />
-						<xs:element type="xs:string" name="SignedBy" />
-						<xs:element name="CertificateChain" type="CertificateChain" />
+						<xs:element type="xs:string" name="SignedBy" minOccurs="0" />
+						<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
 						<xs:element type="SignatureLevel" name="SignatureLevel" minOccurs="0" />
 						<xs:element type="Indication" name="Indication" />
 						<xs:element type="SubIndication" name="SubIndication" minOccurs="0" />
