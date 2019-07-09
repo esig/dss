@@ -12,8 +12,8 @@ import javax.xml.validation.SchemaFactory;
 
 import org.xml.sax.SAXException;
 
+import eu.europa.esig.jaxb.trustedlist.tsl.ObjectFactory;
 import eu.europa.esig.jaxb.xades.XAdESUtils;
-import eu.europa.esig.jaxb.xmldsig.ObjectFactory;
 
 public final class TrustedListUtils {
 
@@ -26,11 +26,12 @@ public final class TrustedListUtils {
 
 	private static JAXBContext jc;
 	private static Schema schema;
+	public static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
 
 	public static JAXBContext getJAXBContext() throws JAXBException {
 		if (jc == null) {
-			jc = JAXBContext.newInstance(ObjectFactory.class, eu.europa.esig.jaxb.xades132.ObjectFactory.class,
-					eu.europa.esig.jaxb.xades141.ObjectFactory.class, eu.europa.esig.jaxb.trustedlist.tsl.ObjectFactory.class,
+			jc = JAXBContext.newInstance(eu.europa.esig.jaxb.xmldsig.ObjectFactory.class, eu.europa.esig.jaxb.xades132.ObjectFactory.class,
+					eu.europa.esig.jaxb.xades141.ObjectFactory.class, ObjectFactory.class,
 					eu.europa.esig.jaxb.trustedlist.tslx.ObjectFactory.class, eu.europa.esig.jaxb.trustedlist.ecc.ObjectFactory.class);
 		}
 		return jc;

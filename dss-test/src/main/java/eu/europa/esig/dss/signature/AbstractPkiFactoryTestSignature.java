@@ -26,7 +26,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -109,6 +108,7 @@ import eu.europa.esig.jaxb.validationreport.SignatureAttributesType;
 import eu.europa.esig.jaxb.validationreport.SignatureIdentifierType;
 import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
 import eu.europa.esig.jaxb.validationreport.SignerInformationType;
+import eu.europa.esig.jaxb.validationreport.ValidationReportFacade;
 import eu.europa.esig.jaxb.validationreport.ValidationReportType;
 import eu.europa.esig.jaxb.validationreport.ValidationStatusType;
 import eu.europa.esig.jaxb.validationreport.ValidationTimeInfoType;
@@ -179,20 +179,54 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		generateHtmlPdfReports(reports);
 	}
 	
-	protected void unmarshallXmlReports(Reports reports) throws IOException {
-		String xmlDiagnosticData = reports.getXmlDiagnosticData();
-		assertTrue(Utils.isStringNotBlank(xmlDiagnosticData));
-		String xmlSimpleReport = reports.getXmlSimpleReport();
-		assertTrue(Utils.isStringNotBlank(xmlSimpleReport));
-		String xmlDetailedReport = reports.getXmlDetailedReport();
-		assertTrue(Utils.isStringNotBlank(xmlDetailedReport));
+	protected void unmarshallXmlReports(Reports reports) {
+		unmarshallDiagnosticData(reports);
+		unmarshallDetailedReport(reports);
+		unmarshallSimpleReport(reports);
+		unmarshallValidationReport(reports);
+	}
+
+	protected void unmarshallDiagnosticData(Reports reports) {
 		try {
-			assertNotNull(DiagnosticDataFacade.newFacade().unmarshall(new ByteArrayInputStream(xmlDiagnosticData.getBytes())));
-			assertNotNull(SimpleReportFacade.newFacade().unmarshall(new ByteArrayInputStream(xmlSimpleReport.getBytes())));
-			assertNotNull(DetailedReportFacade.newFacade().unmarshall(new ByteArrayInputStream(xmlDetailedReport.getBytes())));
+			String xmlDiagnosticData = reports.getXmlDiagnosticData();
+			assertTrue(Utils.isStringNotBlank(xmlDiagnosticData));
+			assertNotNull(DiagnosticDataFacade.newFacade().unmarshall(xmlDiagnosticData));
 		} catch (Exception e) {
-			LOG.error("Not possible to unmarshall an XMl report", e);
-			fail();
+			LOG.error("Unable to unmarshall the Diagnostic data : " + e.getMessage(), e);
+			fail(e.getMessage());
+		}
+	}
+
+	private void unmarshallDetailedReport(Reports reports) {
+		try {
+			String xmlDetailedReport = reports.getXmlDetailedReport();
+			assertTrue(Utils.isStringNotBlank(xmlDetailedReport));
+			assertNotNull(DetailedReportFacade.newFacade().unmarshall(xmlDetailedReport));
+		} catch (Exception e) {
+			LOG.error("Unable to unmarshall the Detailed Report : " + e.getMessage(), e);
+			fail(e.getMessage());
+		}
+	}
+
+	private void unmarshallSimpleReport(Reports reports) {
+		try {
+			String xmlSimpleReport = reports.getXmlSimpleReport();
+			assertTrue(Utils.isStringNotBlank(xmlSimpleReport));
+			assertNotNull(SimpleReportFacade.newFacade().unmarshall(xmlSimpleReport));
+		} catch (Exception e) {
+			LOG.error("Unable to unmarshall the Simple Report : " + e.getMessage(), e);
+			fail(e.getMessage());
+		}
+	}
+
+	private void unmarshallValidationReport(Reports reports) {
+		try {
+			String xmlValidationReport = reports.getXmlValidationReport();
+			assertTrue(Utils.isStringNotBlank(xmlValidationReport));
+			assertNotNull(ValidationReportFacade.newFacade().unmarshall(xmlValidationReport));
+		} catch (Exception e) {
+			LOG.error("Unable to unmarshall the ETSI Validation Report : " + e.getMessage(), e);
+			fail(e.getMessage());
 		}
 	}
 
