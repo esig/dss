@@ -18,6 +18,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
+import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -90,6 +91,7 @@ import eu.europa.esig.jaxb.validationreport.SATimestampType;
 import eu.europa.esig.jaxb.validationreport.SAVRIType;
 import eu.europa.esig.jaxb.validationreport.SignatureAttributesType;
 import eu.europa.esig.jaxb.validationreport.SignatureIdentifierType;
+import eu.europa.esig.jaxb.validationreport.SignatureQualityType;
 import eu.europa.esig.jaxb.validationreport.SignatureReferenceType;
 import eu.europa.esig.jaxb.validationreport.SignatureValidationProcessType;
 import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
@@ -146,6 +148,7 @@ public class ETSIValidationReportBuilder {
 		getSignersDocuments(signatureValidationReport, sigWrapper);
 		signatureValidationReport.setSignatureAttributes(getSignatureAttributes(sigWrapper));
 		signatureValidationReport.setSignerInformation(getSignerInformation(sigWrapper));
+		signatureValidationReport.setSignatureQuality(getSignatureQuality(sigWrapper));
 		signatureValidationReport.setSignatureValidationProcess(getSignatureValidationProcess(sigWrapper));
 		signatureValidationReport.setSignatureValidationStatus(getSignatureValidationStatus(sigWrapper));
 		signatureValidationReport.setValidationTimeInfo(getValidationTimeInfo(sigWrapper));
@@ -260,6 +263,16 @@ public class ETSIValidationReportBuilder {
 
 	private Boolean isPseudoUse(XmlStatus status) {
 		return (XmlStatus.OK != status) && (XmlStatus.IGNORED != status);
+	}
+	
+	private SignatureQualityType getSignatureQuality(SignatureWrapper signatureWrapper) {
+		SignatureQualification signatureQualification = detailedReport.getSignatureQualification(signatureWrapper.getId());
+		if (signatureQualification != null) {
+			SignatureQualityType signatureQualityType = objectFactory.createSignatureQualityType();
+			signatureQualityType.getSignatureQualityInformation().add(signatureQualification.getUri());
+			return signatureQualityType;
+		}
+		return null;
 	}
 
 	private VOReferenceType getVOReference(String id) {
