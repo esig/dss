@@ -115,6 +115,7 @@ import eu.europa.esig.dss.validation.CommitmentType;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
 import eu.europa.esig.dss.validation.ReferenceValidation;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
+import eu.europa.esig.dss.validation.SignatureDigestReference;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -886,6 +887,19 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			}
 		}
 		return contentValidation;
+	}
+	
+	/**
+	 * TS 119 442 - V1.1.1 - Electronic Signatures and Infrastructures (ESI), ch. 5.1.4.2.1.3 XML component:
+	 * 
+	 * In case of CAdES signatures, the input to the digest value computation shall be one of the DER-encoded
+	 * instances of SignedInfo type present within the CMS structure. 
+	 */
+	@Override
+	public SignatureDigestReference getSignatureDigestReference(DigestAlgorithm digestAlgorithm) {
+		byte[] derEncodedSignerInfo = DSSASN1Utils.getDEREncoded(signerInformation.toASN1Structure());
+		byte[] digestValue = DSSUtils.digest(digestAlgorithm, derEncodedSignerInfo);
+		return new SignatureDigestReference(new Digest(digestAlgorithm, digestValue));
 	}
 
 	/**

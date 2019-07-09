@@ -107,6 +107,11 @@ public abstract class PdfCMSInfo implements PdfSignatureOrDocTimestampInfo {
 		}
 		return uniqueId;
 	}
+	
+	@Override
+	public byte[] getContents() {
+		return cms;
+	}
 
 	@Override
 	public void addOuterSignature(PdfSignatureOrDocTimestampInfo signatureInfo) {

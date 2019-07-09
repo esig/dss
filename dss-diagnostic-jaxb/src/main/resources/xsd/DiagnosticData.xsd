@@ -198,6 +198,7 @@
 						</xs:complexType>
 					</xs:element>
 					
+					<xs:element name="SignatureDigestReference" type="SignatureDigestReference" />
 					<xs:element name="SignatureValue" type="xs:base64Binary" minOccurs="0" />
 					
 				</xs:sequence>
@@ -574,6 +575,14 @@
 		</xs:restriction>
 	</xs:simpleType>
 	
+	<xs:complexType name="SignatureDigestReference">
+		<xs:sequence>
+			<xs:element name="CanonicalizationMethod" type="xs:string" minOccurs="0" /> <!-- Used in XAdES only -->
+			<xs:element name="DigestMethod" type="xs:string" />
+			<xs:element name="DigestValue" type="xs:base64Binary" />
+		</xs:sequence>
+	</xs:complexType>
+	
 	<xs:complexType name="FoundCertificate" abstract="true">
 		<xs:sequence>
 			<xs:element name="Origin" type="CertificateOriginType" minOccurs="0" maxOccurs="unbounded" />
@@ -600,7 +609,7 @@
 	<xs:complexType name="CertificateRef">
 		<xs:sequence>
 			<xs:element name="Origin" type="CertificateRefOriginType" />
-			<xs:element name="IssuerSerial" type="xs:base64Binary" />
+			<xs:element name="IssuerSerial" type="xs:base64Binary" minOccurs="0" />
 			<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" />
 		</xs:sequence>
 	</xs:complexType>

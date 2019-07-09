@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.security.auth.x500.X500Principal;
+import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.xml.security.algorithms.JCEMapper;
@@ -72,6 +73,7 @@ import eu.europa.esig.dss.validation.CommitmentType;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
 import eu.europa.esig.dss.validation.ReferenceValidation;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
+import eu.europa.esig.dss.validation.SignatureDigestReference;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.x509.CertificatePool;
@@ -102,6 +104,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	private static SignatureLevel[] signatureLevels = new SignatureLevel[] { SignatureLevel.XML_NOT_ETSI, SignatureLevel.XAdES_BASELINE_B,
 			SignatureLevel.XAdES_BASELINE_T, SignatureLevel.XAdES_C, SignatureLevel.XAdES_X, SignatureLevel.XAdES_BASELINE_LT,
 			SignatureLevel.XAdES_BASELINE_LTA };
+	
+	/**
+	 * The default canonicalization method used in {@link SignatureDigestReference} computation
+	 */
+	protected static final String DEFAULT_CANONICALIZATION_METHOD = CanonicalizationMethod.EXCLUSIVE;
 
 	/**
 	 * This variable contains the list of {@code XPathQueryHolder} adapted to the specific signature schema.
@@ -874,6 +881,21 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			}
 		}
 		return referenceValidations;
+	}
+
+	/**
+	 * TS 119 442 - V1.1.1 - Electronic Signatures and Infrastructures (ESI), ch. 5.1.4.2.1.3 XML component:
+	 * 
+	 * In case of XAdES signatures, the input of the digest value computation shall be the result of applying the
+	 * canonicalization algorithm identified within the CanonicalizationMethod child element's value to the
+	 * corresponding ds:Signature element and its contents. The canonicalization shall be computed keeping this
+	 * ds:Signature element as a descendant of the XML root element, without detaching it.
+	 */
+	@Override
+	public SignatureDigestReference getSignatureDigestReference(DigestAlgorithm digestAlgorithm) {
+		byte[] signatureElementBytes = DSSXMLUtils.canonicalizeSubtree(DEFAULT_CANONICALIZATION_METHOD, signatureElement);
+		byte[] digestValue = DSSUtils.digest(digestAlgorithm, signatureElementBytes);
+		return new SignatureDigestReference(DEFAULT_CANONICALIZATION_METHOD, new Digest(digestAlgorithm, digestValue));
 	}
 	
 	/**

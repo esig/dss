@@ -44,6 +44,7 @@ import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
@@ -98,6 +99,10 @@ public class XAdESDoubleSignatureTest extends PKIFactoryAccess {
 		}
 
 		assertFalse(DSSXMLUtils.isDuplicateIdsDetected(doubleSignedDocument));
+		
+		SignatureWrapper signatureOne = diagnosticData.getSignatures().get(0);
+		SignatureWrapper signatureTwo = diagnosticData.getSignatures().get(1);
+		assertFalse(Arrays.equals(signatureOne.getSignatureDigestReference().getDigestValue(), signatureTwo.getSignatureDigestReference().getDigestValue()));
 	}
 
 	@Override
