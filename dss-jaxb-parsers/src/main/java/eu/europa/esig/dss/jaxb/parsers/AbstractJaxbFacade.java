@@ -2,6 +2,7 @@ package eu.europa.esig.dss.jaxb.parsers;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -50,6 +51,14 @@ public abstract class AbstractJaxbFacade<T> {
 		return marshallerBuilder.buildMarshaller();
 	}
 
+	public T unmarshall(InputStream is) throws JAXBException, XMLStreamException, IOException, SAXException {
+		return unmarshall(is, true);
+	}
+
+	public T unmarshall(InputStream is, boolean validate) throws JAXBException, XMLStreamException, IOException, SAXException {
+		return unmarshall(new StreamSource(is), validate);
+	}
+
 	public T unmarshall(File file) throws JAXBException, XMLStreamException, IOException, SAXException {
 		return unmarshall(file, true);
 	}
@@ -58,7 +67,7 @@ public abstract class AbstractJaxbFacade<T> {
 		return unmarshall(new StreamSource(file), validate);
 	}
 
-	public T unmarshall(String xmlObject ) throws JAXBException, XMLStreamException, IOException, SAXException {
+	public T unmarshall(String xmlObject) throws JAXBException, XMLStreamException, IOException, SAXException {
 		return unmarshall(xmlObject, true);
 	}
 
@@ -66,12 +75,8 @@ public abstract class AbstractJaxbFacade<T> {
 		return unmarshall(new StreamSource(new StringReader(xmlObject)), validate);
 	}
 
-	public T unmarshall(Source source) throws JAXBException, XMLStreamException, IOException, SAXException {
-		return unmarshall(source, true);
-	}
-
 	@SuppressWarnings("unchecked")
-	public T unmarshall(Source source, boolean validate) throws JAXBException, XMLStreamException, IOException, SAXException {
+	private T unmarshall(Source source, boolean validate) throws JAXBException, XMLStreamException, IOException, SAXException {
 		MarshallerBuilder builder = new MarshallerBuilder(getJAXBContext(), getSchema());
 		builder.setValidate(validate);
 		Unmarshaller unmarshaller = builder.buildUnmarshaller();
