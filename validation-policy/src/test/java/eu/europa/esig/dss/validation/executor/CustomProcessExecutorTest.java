@@ -150,6 +150,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		for (String timestampId : timestampIds) {
 			Indication timestampValidationIndication = detailedReport.getTimestampValidationIndication(timestampId);
 			if (!Indication.PASSED.equals(timestampValidationIndication)) {
+				assertNotNull(detailedReport.getTimestampValidationSubIndication(timestampId));
 				for (XmlConstraint constraint : constraints) {
 					if (Utils.isStringNotEmpty(constraint.getId()) && constraint.getId().contains(timestampId)) {
 						assertEquals(XmlStatus.OK, constraint.getStatus());
@@ -157,6 +158,8 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 					}
 				}
 			}
+			assertEquals(Indication.PASSED, detailedReport.getBasicBuildingBlocksIndication(timestampId));
+			assertNull(detailedReport.getBasicBuildingBlocksSubIndication(timestampId));
 		}
 		assertEquals(2, basicValidationTSTFailedCounter);
 
@@ -333,6 +336,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		for (String timestampId : timestampIds) {
 			Indication timestampValidationIndication = detailedReport.getTimestampValidationIndication(timestampId);
 			if (!Indication.PASSED.equals(timestampValidationIndication)) {
+				assertEquals(SubIndication.OUT_OF_BOUNDS_NO_POE, detailedReport.getTimestampValidationSubIndication(timestampId));
 				for (XmlConstraint constraint : constraints) {
 					if (Utils.isStringNotEmpty(constraint.getId()) && constraint.getId().contains(timestampId)) {
 						assertEquals(XmlStatus.WARNING, constraint.getStatus());
@@ -340,6 +344,8 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 					}
 				}
 			}
+			assertEquals(Indication.INDETERMINATE, detailedReport.getBasicBuildingBlocksIndication(timestampId));
+			assertEquals(SubIndication.NO_POE, detailedReport.getBasicBuildingBlocksSubIndication(timestampId));
 		}
 		assertEquals(1, basicValidationTSTFailedCounter);
 
