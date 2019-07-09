@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation.executor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
@@ -125,8 +126,31 @@ public class CustomProcessExecutorTest {
 		Date bestSignatureTime = simpleReport.getJaxbModel().getSignature().get(0).getBestSignatureTime();
 		assertEquals(timestampProductionDate, bestSignatureTime);
 		
+		DetailedReport detailedReport = reports.getDetailedReport();
+		
 		List<String> errors = simpleReport.getErrors(simpleReport.getFirstSignatureId());
 		assertEquals(0, errors.size());
+		XmlValidationProcessArchivalData validationProcessArchivalData = detailedReport.getJAXBModel().getSignatures().get(0).getValidationProcessArchivalData();
+		List<XmlConstraint> constraints = validationProcessArchivalData.getConstraint();
+		
+		List<String> timestampIds = detailedReport.getTimestampIds();
+		
+		int basicValidationTSTFailedCounter = 0;
+		for (String timestampId : timestampIds) {
+			Indication timestampValidationIndication = detailedReport.getTimestampValidationIndication(timestampId);
+			if (!Indication.PASSED.equals(timestampValidationIndication)) {
+				assertNotNull(detailedReport.getTimestampValidationSubIndication(timestampId));
+				for (XmlConstraint constraint : constraints) {
+					if (Utils.isStringNotEmpty(constraint.getId()) && constraint.getId().contains(timestampId)) {
+						assertEquals(XmlStatus.OK, constraint.getStatus());
+						basicValidationTSTFailedCounter++;
+					}
+				}
+			}
+			assertEquals(Indication.PASSED, detailedReport.getBasicBuildingBlocksIndication(timestampId));
+			assertNull(detailedReport.getBasicBuildingBlocksSubIndication(timestampId));
+		}
+		assertEquals(2, basicValidationTSTFailedCounter);
 
 		validateBestSigningTimes(reports);
 	}
@@ -253,6 +277,7 @@ public class CustomProcessExecutorTest {
 		for (String timestampId : timestampIds) {
 			Indication timestampValidationIndication = detailedReport.getTimestampValidationIndication(timestampId);
 			if (!Indication.PASSED.equals(timestampValidationIndication)) {
+				assertEquals(SubIndication.OUT_OF_BOUNDS_NO_POE, detailedReport.getTimestampValidationSubIndication(timestampId));
 				for (XmlConstraint constraint : constraints) {
 					if (Utils.isStringNotEmpty(constraint.getId()) && constraint.getId().contains(timestampId)) {
 						assertEquals(XmlStatus.WARNING, constraint.getStatus());
@@ -260,6 +285,8 @@ public class CustomProcessExecutorTest {
 					}
 				}
 			}
+			assertEquals(Indication.INDETERMINATE, detailedReport.getBasicBuildingBlocksIndication(timestampId));
+			assertEquals(SubIndication.NO_POE, detailedReport.getBasicBuildingBlocksSubIndication(timestampId));
 		}
 		assertEquals(1, basicValidationTSTFailedCounter);
 
