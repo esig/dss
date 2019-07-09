@@ -566,6 +566,8 @@
 			
 			<!-- CAdES -->
 			<xs:enumeration value="MESSAGE_DIGEST" />
+			<!-- Digest from decrypted content SignatureValue (CAdES/PAdES) -->
+			<xs:enumeration value="CONTENT_DIGEST" />
 			
 			<!-- TIMESTAMP -->
 			<xs:enumeration value="MESSAGE_IMPRINT" />
