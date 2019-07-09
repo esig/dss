@@ -25,8 +25,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.math.BigInteger;
@@ -37,6 +37,8 @@ import java.util.List;
 import javax.xml.bind.JAXB;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
@@ -71,6 +73,8 @@ import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
 import eu.europa.esig.jaxb.validationreport.ValidationReportType;
 
 public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
+
+	private static final Logger LOG = LoggerFactory.getLogger(CustomProcessExecutorTest.class);
 
 	@Test
 	public void skipRevocationDataValidation() throws Exception {
@@ -1664,15 +1668,46 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertNotNull(reports.getSimpleReportJaxb());
 		assertNotNull(reports.getDetailedReport());
 		assertNotNull(reports.getDetailedReportJaxb());
-		String xmlDiagnosticData = reports.getXmlDiagnosticData();
-		assertTrue(Utils.isStringNotBlank(xmlDiagnosticData));
-		String xmlSimpleReport = reports.getXmlSimpleReport();
-		assertTrue(Utils.isStringNotBlank(xmlSimpleReport));
-		String xmlDetailedReport = reports.getXmlDetailedReport();
-		assertTrue(Utils.isStringNotBlank(xmlDetailedReport));
-		assertNotNull(DiagnosticDataFacade.newFacade().unmarshall(new ByteArrayInputStream(xmlDiagnosticData.getBytes())));
-		assertNotNull(SimpleReportFacade.newFacade().unmarshall(new ByteArrayInputStream(xmlSimpleReport.getBytes())));
-		assertNotNull(DetailedReportFacade.newFacade().unmarshall(new ByteArrayInputStream(xmlDetailedReport.getBytes())));
+		unmarshallXmlReports(reports);
+	}
+
+	protected void unmarshallXmlReports(Reports reports) {
+		unmarshallDiagnosticData(reports);
+		unmarshallDetailedReport(reports);
+		unmarshallSimpleReport(reports);
+	}
+
+	protected void unmarshallDiagnosticData(Reports reports) {
+		try {
+			String xmlDiagnosticData = reports.getXmlDiagnosticData();
+			assertTrue(Utils.isStringNotBlank(xmlDiagnosticData));
+			assertNotNull(DiagnosticDataFacade.newFacade().unmarshall(xmlDiagnosticData));
+		} catch (Exception e) {
+			LOG.error("Unable to unmarshall the Diagnostic data : " + e.getMessage(), e);
+			fail(e.getMessage());
+		}
+	}
+
+	private void unmarshallDetailedReport(Reports reports) {
+		try {
+			String xmlDetailedReport = reports.getXmlDetailedReport();
+			assertTrue(Utils.isStringNotBlank(xmlDetailedReport));
+			assertNotNull(DetailedReportFacade.newFacade().unmarshall(xmlDetailedReport));
+		} catch (Exception e) {
+			LOG.error("Unable to unmarshall the Detailed Report : " + e.getMessage(), e);
+			fail(e.getMessage());
+		}
+	}
+
+	private void unmarshallSimpleReport(Reports reports) {
+		try {
+			String xmlSimpleReport = reports.getXmlSimpleReport();
+			assertTrue(Utils.isStringNotBlank(xmlSimpleReport));
+			assertNotNull(SimpleReportFacade.newFacade().unmarshall(xmlSimpleReport));
+		} catch (Exception e) {
+			LOG.error("Unable to unmarshall the Simple Report : " + e.getMessage(), e);
+			fail(e.getMessage());
+		}
 	}
 
 	private void validateBestSigningTimes(Reports reports) {

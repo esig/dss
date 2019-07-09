@@ -23,6 +23,7 @@ package plugtests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -35,10 +36,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.client.http.IgnoreDataLoader;
+import eu.europa.esig.dss.jaxb.detailedreport.DetailedReportFacade;
+import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticDataFacade;
+import eu.europa.esig.dss.jaxb.simplereport.SimpleReportFacade;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -49,6 +56,7 @@ import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.x509.SignatureCertificateSource;
 import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
 import eu.europa.esig.jaxb.validationreport.SignersDocumentType;
+import eu.europa.esig.jaxb.validationreport.ValidationReportFacade;
 import eu.europa.esig.jaxb.validationreport.ValidationReportType;
 
 /**
@@ -57,6 +65,7 @@ import eu.europa.esig.jaxb.validationreport.ValidationReportType;
 @RunWith(Parameterized.class)
 public class ETSISamplesValidation {
 
+	private static final Logger LOG = LoggerFactory.getLogger(ETSISamplesValidation.class);
 
 	@Parameters(name = "Validation {index} : {0}")
 	public static Collection<Object[]> data() throws IOException {
@@ -89,20 +98,20 @@ public class ETSISamplesValidation {
 		certificateVerifier.setDataLoader(new IgnoreDataLoader());
 		validator.setCertificateVerifier(certificateVerifier);
 
-		Reports validateDocument = validator.validateDocument();
-		assertNotNull(validateDocument);
-		assertNotNull(validateDocument.getXmlDiagnosticData());
-		assertNotNull(validateDocument.getXmlDetailedReport());
-		assertNotNull(validateDocument.getXmlSimpleReport());
-		assertNotNull(validateDocument.getXmlValidationReport());
+		Reports reports = validator.validateDocument();
+		assertNotNull(reports);
+		assertNotNull(reports.getXmlDiagnosticData());
+		assertNotNull(reports.getXmlDetailedReport());
+		assertNotNull(reports.getXmlSimpleReport());
+		assertNotNull(reports.getXmlValidationReport());
 
-		DiagnosticData diagnosticData = validateDocument.getDiagnosticData();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertNotNull(diagnosticData);
 
-		SimpleReport simpleReport = validateDocument.getSimpleReport();
+		SimpleReport simpleReport = reports.getSimpleReport();
 		assertNotNull(simpleReport);
 
-		DetailedReport detailedReport = validateDocument.getDetailedReport();
+		DetailedReport detailedReport = reports.getDetailedReport();
 		assertNotNull(detailedReport);
 
 		List<AdvancedSignature> signatures = validator.getSignatures();
@@ -123,7 +132,7 @@ public class ETSISamplesValidation {
 			assertNotNull(advancedSignature.getOCSPSource());
 		}
 		
-		ValidationReportType etsiValidationReport = validateDocument.getEtsiValidationReportJaxb();
+		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
 		assertNotNull(etsiValidationReport);
 		List<SignatureValidationReportType> signatureValidationReports = etsiValidationReport.getSignatureValidationReport();
 		assertEquals(diagnosticData.getSignatures().size(), signatureValidationReports.size());
@@ -133,6 +142,58 @@ public class ETSISamplesValidation {
 			assertEquals(1, signersDocuments.size());
 		}
 		
+		unmarshallXmlReports(reports);
+	}
+
+	protected void unmarshallXmlReports(Reports reports) {
+		unmarshallDiagnosticData(reports);
+		unmarshallDetailedReport(reports);
+		unmarshallSimpleReport(reports);
+		unmarshallValidationReport(reports);
+	}
+
+	protected void unmarshallDiagnosticData(Reports reports) {
+		try {
+			String xmlDiagnosticData = reports.getXmlDiagnosticData();
+			assertTrue(Utils.isStringNotBlank(xmlDiagnosticData));
+			assertNotNull(DiagnosticDataFacade.newFacade().unmarshall(xmlDiagnosticData));
+		} catch (Exception e) {
+			LOG.error("Unable to unmarshall the Diagnostic data : " + e.getMessage(), e);
+			fail(e.getMessage());
+		}
+	}
+
+	private void unmarshallDetailedReport(Reports reports) {
+		try {
+			String xmlDetailedReport = reports.getXmlDetailedReport();
+			assertTrue(Utils.isStringNotBlank(xmlDetailedReport));
+			assertNotNull(DetailedReportFacade.newFacade().unmarshall(xmlDetailedReport));
+		} catch (Exception e) {
+			LOG.error("Unable to unmarshall the Detailed Report : " + e.getMessage(), e);
+			fail(e.getMessage());
+		}
+	}
+
+	private void unmarshallSimpleReport(Reports reports) {
+		try {
+			String xmlSimpleReport = reports.getXmlSimpleReport();
+			assertTrue(Utils.isStringNotBlank(xmlSimpleReport));
+			assertNotNull(SimpleReportFacade.newFacade().unmarshall(xmlSimpleReport));
+		} catch (Exception e) {
+			LOG.error("Unable to unmarshall the Simple Report : " + e.getMessage(), e);
+			fail(e.getMessage());
+		}
+	}
+
+	private void unmarshallValidationReport(Reports reports) {
+		try {
+			String xmlValidationReport = reports.getXmlValidationReport();
+			assertTrue(Utils.isStringNotBlank(xmlValidationReport));
+			assertNotNull(ValidationReportFacade.newFacade().unmarshall(xmlValidationReport));
+		} catch (Exception e) {
+			LOG.error("Unable to unmarshall the ETSI Validation Report : " + e.getMessage(), e);
+			fail(e.getMessage());
+		}
 	}
 
 }
