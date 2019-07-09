@@ -61,7 +61,7 @@ public class JdbcCacheCrlSourceTest {
 	}
 
 	@Test
-	public void test() throws SQLException {
+	public void test() throws Exception {
 		RevocationToken revocationToken = null;
 		
 		CertificateToken certificateToken = DSSUtils.loadCertificate(new File("src/test/resources/citizen_ca.crt"));
@@ -90,12 +90,14 @@ public class JdbcCacheCrlSourceTest {
 		assertNotNull(savedRevocationToken);
 		assertEquals(RevocationOrigin.CACHED, savedRevocationToken.getOrigin());
 
-		crlSource.setMaxNexUpdateDelay(1L);
+		crlSource.setMaxNextUpdateDelay(1L);
+		Thread.sleep(1000);
+		
 		forceRefresh = crlSource.getRevocationToken(certificateToken, caToken);
 		assertNotNull(forceRefresh);
 		assertEquals(RevocationOrigin.EXTERNAL, forceRefresh.getOrigin());
 
-		crlSource.setMaxNexUpdateDelay(null);
+		crlSource.setMaxNextUpdateDelay(null);
 		forceRefresh = crlSource.getRevocationToken(certificateToken, caToken);
 		assertNotNull(forceRefresh);
 		assertEquals(RevocationOrigin.CACHED, forceRefresh.getOrigin());

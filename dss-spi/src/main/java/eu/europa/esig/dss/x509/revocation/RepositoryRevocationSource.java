@@ -28,7 +28,7 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 	/**
 	 * Maximum cache delay for the revocation data
 	 */
-	private Long maxNexUpdateDelay;
+	private Long maxNextUpdateDelay;
 
 	/**
 	 * If true, removes revocation tokens from DB with nextUpdate before the current date
@@ -81,7 +81,7 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 	protected abstract void removeRevocation(T token);
 	
 	/**
-	 * Sets the default next update delay for the cached files in milliseconds. If
+	 * Sets the default next update delay for the cached files in seconds. If
 	 * more time has passed from the revocation token's thisUpdate and next update
 	 * time is not specified, then a fresh copy is downloaded and cached, otherwise
 	 * a cached copy is used.
@@ -91,26 +91,26 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 	 *}
 	 * 
 	 * @param defaultNextUpdateDelay
-	 *                               long value (milli seconds)
+	 *                               long value (seconds)
 	 */
 	public void setDefaultNextUpdateDelay(final Long defaultNextUpdateDelay) {
-		this.defaultNextUpdateDelay = defaultNextUpdateDelay;
+		this.defaultNextUpdateDelay = defaultNextUpdateDelay == null ? null : defaultNextUpdateDelay * 1000; // to milliseconds
 	}
 
 	/**
-	 * Sets the maximum allowed nextUpdate delay for cached files in milliseconds.
+	 * Sets the maximum allowed nextUpdate delay for cached files in seconds.
 	 * Allows to force refresh in case of long periods between revocation
 	 * publication (eg : 6 months for ARL).
 	 * 
 	 * {@code
-	 *  If revocation.nextUpdate > revocation.thisUpdate + maxNexUpdateDelay, then nextUpdate = revocation.thisUpdate + maxNexUpdateDelay
+	 *  If revocation.nextUpdate > revocation.thisUpdate + maxNextUpdateDelay, then nextUpdate = revocation.thisUpdate + maxNextUpdateDelay
 	 *}
 	 * 
-	 * @param maxNexUpdateDelay
-	 *                          long value (milli seconds)
+	 * @param maxNextUpdateDelay
+	 *                          long value (seconds)
 	 */
-	public void setMaxNexUpdateDelay(final Long maxNexUpdateDelay) {
-		this.maxNexUpdateDelay = maxNexUpdateDelay;
+	public void setMaxNextUpdateDelay(final Long maxNextUpdateDelay) {
+		this.maxNextUpdateDelay = maxNextUpdateDelay == null ? null : maxNextUpdateDelay * 1000; // to milliseconds
 	}
 
 	/**
@@ -247,8 +247,8 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 			nextUpdate = new Date(thisUpdate.getTime() + defaultNextUpdateDelay);
 		}
 		if (nextUpdate != null) {
-			if (maxNexUpdateDelay != null && thisUpdate != null) {
-				Date maxNextUpdate = new Date(thisUpdate.getTime() + maxNexUpdateDelay);
+			if (maxNextUpdateDelay != null && thisUpdate != null) {
+				Date maxNextUpdate = new Date(thisUpdate.getTime() + maxNextUpdateDelay);
 				if (nextUpdate.after(maxNextUpdate)) {
 					nextUpdate = maxNextUpdate;
 				}
