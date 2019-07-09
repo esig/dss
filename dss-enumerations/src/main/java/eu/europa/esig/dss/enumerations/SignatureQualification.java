@@ -23,117 +23,125 @@ package eu.europa.esig.dss.enumerations;
 import java.util.HashMap;
 import java.util.Map;
 
-public enum SignatureQualification {
+public enum SignatureQualification implements UriBasedEnum {
 
 	/**
 	 * Qualified Electronic Signature
 	 */
-	QESIG("QESig", "Qualified Electronic Signature"),
+	QESIG("QESig", "Qualified Electronic Signature", "urn:etsi:019102:signatureQualification:QESig"),
 
 	/**
 	 * Qualified Electronic Seal
 	 */
-	QESEAL("QESeal", "Qualified Electronic Seal"),
+	QESEAL("QESeal", "Qualified Electronic Seal", "urn:etsi:019102:signatureQualification:QESeal"),
 
 	/**
 	 * Qualified Electronic Signature or Seal
 	 */
-	QES("QES?", "Qualified Electronic Signature or Seal"),
+	QES("QES?", "Qualified Electronic Signature or Seal", "urn:etsi:019102:signatureQualification:QES"),
 
 	/**
 	 * Advanced Electronic Signature supported by a Qualified Certificate
 	 */
-	ADESIG_QC("AdESig-QC", "Advanced Electronic Signature supported by a Qualified Certificate"),
+	ADESIG_QC("AdESig-QC", "Advanced Electronic Signature supported by a Qualified Certificate", "urn:etsi:019102:signatureQualification:AdESigQC"),
 
 	/**
 	 * Advanced Electronic Seal supported by a Qualified Certificate
 	 */
-	ADESEAL_QC("AdESeal-QC", "Advanced Electronic Seal supported by a Qualified Certificate"),
+	ADESEAL_QC("AdESeal-QC", "Advanced Electronic Seal supported by a Qualified Certificate", "urn:etsi:019102:signatureQualification:AdESealQC"),
 
 	/**
 	 * Advanced Electronic Signature or Seal supported by a Qualified Certificate
 	 */
-	ADES_QC("AdES?-QC", "Advanced Electronic Signature or Seal supported by a Qualified Certificate"),
+	ADES_QC("AdES?-QC", "Advanced Electronic Signature or Seal supported by a Qualified Certificate", "urn:etsi:019102:signatureQualification:AdESQC"),
 
 	/**
 	 * Advanced Electronic Signature
 	 */
-	ADESIG("AdESig", "Advanced Electronic Signature"),
+	ADESIG("AdESig", "Advanced Electronic Signature", "urn:etsi:019102:signatureQualification:AdESig"),
 
 	/**
 	 * Advanced Electronic Seal
 	 */
-	ADESEAL("AdESeal", "Advanced Electronic Seal"),
+	ADESEAL("AdESeal", "Advanced Electronic Seal", "urn:etsi:019102:signatureQualification:AdESeal"),
 
 	/**
 	 * Advanced Electronic Signature or Seal
 	 */
-	ADES("AdES?", "Advanced Electronic Signature or Seal"),
+	ADES("AdES?", "Advanced Electronic Signature or Seal", "urn:etsi:019102:signatureQualification:AdES"),
 
 	/**
 	 * Indeterminate Qualified Electronic Signature
 	 */
-	INDETERMINATE_QESIG("Indeterminate QESig", "Indeterminate Qualified Electronic Signature"),
+	INDETERMINATE_QESIG("Indeterminate QESig", "Indeterminate Qualified Electronic Signature", "urn:etsi:019102:signatureQualification:indeterminateQESig"),
 
 	/**
 	 * Indeterminate Qualified Electronic Seal
 	 */
-	INDETERMINATE_QESEAL("Indeterminate QESeal", "Indeterminate Qualified Electronic Seal"),
+	INDETERMINATE_QESEAL("Indeterminate QESeal", "Indeterminate Qualified Electronic Seal", "urn:etsi:019102:signatureQualification:indeterminateQESeal"),
 
 	/**
 	 * Indeterminate Qualified Electronic Signature or Seal
 	 */
-	INDETERMINATE_QES("Indeterminate QES?", "Indeterminate Qualified Electronic Signature or Seal"),
+	INDETERMINATE_QES("Indeterminate QES?", "Indeterminate Qualified Electronic Signature or Seal", "urn:etsi:019102:signatureQualification:indeterminateQES"),
 
 	/**
 	 * Indeterminate Advanced Electronic Signature supported by a Qualified Certificate
 	 */
-	INDETERMINATE_ADESIG_QC("Indeterminate AdESig-QC", "Indeterminate Advanced Electronic Signature supported by a Qualified Certificate"),
+	INDETERMINATE_ADESIG_QC("Indeterminate AdESig-QC", "Indeterminate Advanced Electronic Signature supported by a Qualified Certificate", 
+			"urn:etsi:019102:signatureQualification:indeterminateAdESigQC"),
 
 	/**
 	 * Indeterminate Advanced Electronic Seal supported by a Qualified Certificate
 	 */
-	INDETERMINATE_ADESEAL_QC("Indeterminate AdESeal-QC", "Indeterminate Advanced Electronic Seal supported by a Qualified Certificate"),
+	INDETERMINATE_ADESEAL_QC("Indeterminate AdESeal-QC", "Indeterminate Advanced Electronic Seal supported by a Qualified Certificate", 
+			"urn:etsi:019102:signatureQualification:indeterminateAdESealQC"),
 
 	/**
 	 * Indeterminate Advanced Electronic Signature or Seal supported by a Qualified Certificate
 	 */
-	INDETERMINATE_ADES_QC("Indeterminate AdES?-QC", "Indeterminate Advanced Electronic Signature or Seal supported by a Qualified Certificate"),
+	INDETERMINATE_ADES_QC("Indeterminate AdES?-QC", "Indeterminate Advanced Electronic Signature or Seal supported by a Qualified Certificate", 
+			"urn:etsi:019102:signatureQualification:indeterminateAdESQC"),
 
 	/**
 	 * Indeterminate Advanced Electronic Signature
 	 */
-	INDETERMINATE_ADESIG("Indeterminate AdESig", "Indeterminate Advanced Electronic Signature"),
+	INDETERMINATE_ADESIG("Indeterminate AdESig", "Indeterminate Advanced Electronic Signature", 
+			"urn:etsi:019102:signatureQualification:indeterminateAdESig"),
 
 	/**
 	 * Indeterminate Advanced Electronic Seal
 	 */
-	INDETERMINATE_ADESEAL("Indeterminate AdESeal", "Indeterminate Advanced Electronic Seal"),
+	INDETERMINATE_ADESEAL("Indeterminate AdESeal", "Indeterminate Advanced Electronic Seal", 
+			"urn:etsi:019102:signatureQualification:indeterminateAdESeal"),
 
 	/**
 	 * Indeterminate Advanced Electronic Signature or Seal
 	 */
-	INDETERMINATE_ADES("Indeterminate AdES?", "Indeterminate Advanced Electronic Signature or Seal"),
+	INDETERMINATE_ADES("Indeterminate AdES?", "Indeterminate Advanced Electronic Signature or Seal", 
+			"urn:etsi:019102:signatureQualification:indeterminateAdES"),
 
 	/**
 	 * Not Advanced Electronic Signature but supported by a Qualified Certificate
 	 */
-	NOT_ADES_QC_QSCD("Not AdES but QC with QSCD", "Not Advanced Electronic Signature but supported by a Qualified Certificate"),
+	NOT_ADES_QC_QSCD("Not AdES but QC with QSCD", "Not Advanced Electronic Signature but supported by a Qualified Certificate", 
+	"urn:etsi:019102:signatureQualification:notAdESbutQCwithQSCD"),
 
 	/**
 	 * Not Advanced Electronic Signature but supported by a Qualified Certificate
 	 */
-	NOT_ADES_QC("Not AdES but QC", "Not Advanced Electronic Signature but supported by a Qualified Certificate"),
+	NOT_ADES_QC("Not AdES but QC", "Not Advanced Electronic Signature but supported by a Qualified Certificate", 
+			"urn:etsi:019102:signatureQualification:notAdESbutQC"),
 
 	/**
 	 * Not Advanced Electronic Signature
 	 */
-	NOT_ADES("Not AdES", "Not Advanced Electronic Signature"),
+	NOT_ADES("Not AdES", "Not Advanced Electronic Signature", "urn:etsi:019102:signatureQualification:notAdES"),
 
 	/**
 	 * Not Applicable
 	 */
-	NA("N/A", "Not applicable");
+	NA("N/A", "Not applicable", "urn:etsi:019102:signatureQualification:notApplicable");
 
 	private static class Registry {
 
@@ -150,10 +158,12 @@ public enum SignatureQualification {
 
 	private final String readable;
 	private final String label;
+	private final String uri;
 
-	SignatureQualification(String readable, String label) {
+	SignatureQualification(String readable, String label, String uri) {
 		this.readable = readable;
 		this.label = label;
+		this.uri = uri;
 	}
 
 	public String getReadable() {
@@ -162,6 +172,11 @@ public enum SignatureQualification {
 
 	public String getLabel() {
 		return label;
+	}
+
+	@Override
+	public String getUri() {
+		return uri;
 	}
 
 	/**
@@ -188,6 +203,24 @@ public enum SignatureQualification {
 	public static SignatureQualification fromReadable(String readable) {
 		if ((readable != null) && !readable.isEmpty()) {
 			return Registry.QUALIFS_BY_READABLE.get(readable);
+		}
+		return null;
+	}
+
+	/**
+	 * SignatureQualification can be null
+	 * 
+	 * @param uri
+	 *            the uri of the linked {@link SignatureQualification}
+	 * @return the linked SignatureQualification or null
+	 */
+	public static SignatureQualification forURI(String uri) {
+		if ((uri != null) && !uri.isEmpty()) {
+			for (SignatureQualification signatureQualification : values()) {
+				if (uri.equals(signatureQualification.uri)) {
+					return signatureQualification;
+				}
+			}
 		}
 		return null;
 	}
