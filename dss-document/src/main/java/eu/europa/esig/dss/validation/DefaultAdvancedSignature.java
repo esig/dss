@@ -482,8 +482,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 	
 	@Override
-	public Set<SignerRole> getSignerRoles() {
-		Set<SignerRole> signerRoles = getClaimedSignerRoles();
+	public List<SignerRole> getSignerRoles() {
+		List<SignerRole> signerRoles = getClaimedSignerRoles();
 		signerRoles.addAll(getCertifiedSignerRoles());
 		return signerRoles;
 	}

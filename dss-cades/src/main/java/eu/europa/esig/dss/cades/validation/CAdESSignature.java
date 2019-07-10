@@ -522,7 +522,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public Set<SignerRole> getClaimedSignerRoles() {
+	public List<SignerRole> getClaimedSignerRoles() {
 		final SignerAttribute signerAttr = getSignerAttributeV1();
 		final SignerAttributeV2 signerAttrV2 = getSignerAttributeV2();
 
@@ -535,10 +535,10 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				signerAttrValues = signerAttrV2.getValues();
 			}
 			if (signerAttrValues == null) {
-				return Collections.emptySet();
+				return Collections.emptyList();
 			}
 
-			final Set<SignerRole> claimedRoles = new HashSet<SignerRole>();
+			final List<SignerRole> claimedRoles = new ArrayList<SignerRole>();
 			for (final Object signerAttrValue : signerAttrValues) {
 				if (!(signerAttrValue instanceof org.bouncycastle.asn1.x509.Attribute[])) {
 					continue;
@@ -558,12 +558,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			return claimedRoles;
 		} catch (Exception e) {
 			LOG.error("Error when dealing with claimed signer roles: [" + signerAttrValues + "]", e);
-			return Collections.emptySet();
+			return Collections.emptyList();
 		}
 	}
 
 	@Override
-	public Set<SignerRole> getCertifiedSignerRoles() {
+	public List<SignerRole> getCertifiedSignerRoles() {
 		final SignerAttribute signerAttr = getSignerAttributeV1();
 		final SignerAttributeV2 signerAttrV2 = getSignerAttributeV2();
 
@@ -575,9 +575,9 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				signerAttrValues = signerAttrV2.getValues();
 			}
 			if (signerAttrValues == null) {
-				return Collections.emptySet();
+				return Collections.emptyList();
 			}
-			Set<SignerRole> roles = new HashSet<SignerRole>();
+			List<SignerRole> roles = new ArrayList<SignerRole>();
 			for (final Object signerAttrValue : signerAttrValues) {
 				if (signerAttrValue instanceof AttributeCertificate) {
 					final AttributeCertificate attributeCertificate = (AttributeCertificate) signerAttrValue;
@@ -601,7 +601,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			return roles;
 		} catch (Exception e) {
 			LOG.error("Error when dealing with certified signer roles: [" + signerAttrValues + "]", e);
-			return Collections.emptySet();
+			return Collections.emptyList();
 		}
 	}
 

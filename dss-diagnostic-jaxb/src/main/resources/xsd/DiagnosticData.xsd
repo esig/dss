@@ -550,9 +550,9 @@
 	
 	<xs:simpleType name="EndorsementType" final="restriction">
 		<xs:restriction base="xs:string">
-			<xs:enumeration value="CLAIMED" />
-			<xs:enumeration value="CERTIFIED" />
-			<xs:enumeration value="SIGNED" />
+			<xs:enumeration value="certified" />
+			<xs:enumeration value="claimed" />
+			<xs:enumeration value="signed" />
 		</xs:restriction>
 	</xs:simpleType>
 	

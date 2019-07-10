@@ -190,6 +190,9 @@
 				<RevocationDataAvailable Level="FAIL" />
 				<RevocationDataNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="FAIL" />
+				<ExtendedKeyUsage Level="WARN">
+					<Id>timeStamping</Id>
+				</ExtendedKeyUsage>
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<NotSelfSigned Level="WARN" />

@@ -27,9 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
@@ -72,7 +70,6 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.validation.CertificateValidity;
-import eu.europa.esig.dss.validation.SignerRole;
 import eu.europa.esig.dss.validation.CommitmentType;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
 import eu.europa.esig.dss.validation.ReferenceValidation;
@@ -80,6 +77,7 @@ import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.SignatureDigestReference;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
+import eu.europa.esig.dss.validation.SignerRole;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.SignatureCertificateSource;
@@ -548,15 +546,15 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public Set<SignerRole> getClaimedSignerRoles() {
+	public List<SignerRole> getClaimedSignerRoles() {
 		NodeList nodeList = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_CLAIMED_ROLE);
 		if (nodeList.getLength() == 0) {
 			nodeList = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_CLAIMED_ROLE_V2);
 			if (nodeList.getLength() == 0) {
-				return Collections.emptySet();
+				return Collections.emptyList();
 			}
 		}
-		Set<SignerRole> claimedRoles = new HashSet<SignerRole>();
+		List<SignerRole> claimedRoles = new ArrayList<SignerRole>();
 		for (int ii = 0; ii < nodeList.getLength(); ii++) {
 			claimedRoles.add(new SignerRole(nodeList.item(ii).getTextContent(), EndorsementType.CLAIMED));
 		}
@@ -564,7 +562,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public Set<SignerRole> getCertifiedSignerRoles() {
+	public List<SignerRole> getCertifiedSignerRoles() {
 		/**
 		 * <!-- Start EncapsulatedPKIDataType-->
 		 * <xsd:element name="EncapsulatedPKIData" type="EncapsulatedPKIDataType"/>
@@ -582,10 +580,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		if (nodeList.getLength() == 0) {
 			nodeList = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_CERTIFIED_ROLE_V2);
 			if (nodeList.getLength() == 0) {
-				return Collections.emptySet();
+				return Collections.emptyList();
 			}
 		}
-		final Set<SignerRole> certifiedRoles = new HashSet<SignerRole>();
+		final List<SignerRole> certifiedRoles = new ArrayList<SignerRole>();
 		for (int ii = 0; ii < nodeList.getLength(); ii++) {
 			final Element certEl = (Element) nodeList.item(ii);
 			final String textContent = certEl.getTextContent();

@@ -192,6 +192,8 @@ public enum MessageTag implements IMessageTag {
 	BBB_XCV_ISCR_ANS("The certificate is revoked!"),
 	BBB_XCV_ISCGKU("Has the signer's certificate given key-usage?"),
 	BBB_XCV_ISCGKU_ANS("The signer's certificate has not expected key-usage!"),
+	BBB_XCV_ISCGEKU("Has the signer's certificate given extended key-usage?"),
+	BBB_XCV_ISCGEKU_ANS("The signer's certificate has not expected extended key-usage!"),
 	BBB_XCV_ICSI("Is the certificate's signature intact?"),
 	BBB_XCV_ICSI_ANS("The signature of the certificate is spoiled or it is not possible to validate it!"),
 	BBB_XCV_OCSP_NO_CHECK("The certificate has the id-pkix-ocsp-nocheck extension (RFC is skipped)"),

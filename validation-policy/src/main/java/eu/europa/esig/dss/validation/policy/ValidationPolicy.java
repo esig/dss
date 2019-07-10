@@ -205,6 +205,8 @@ public interface ValidationPolicy {
 	 */
 	MultiValuesConstraint getCertificateKeyUsageConstraint(Context context, SubContext subContext);
 
+	MultiValuesConstraint getCertificateExtendedKeyUsageConstraint(Context context, SubContext subContext);
+
 	/**
 	 * @param context
 	 * @param subContext

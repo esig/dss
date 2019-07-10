@@ -303,25 +303,25 @@ public interface AdvancedSignature extends Serializable {
 	String getContentHints();
 
 	/**
-	 * Returns the set of roles of the signer.
+	 * Returns the list of roles of the signer.
 	 *
-	 * @return set of the {@link SignerRole}s
+	 * @return list of the {@link SignerRole}s
 	 */
-	Set<SignerRole> getSignerRoles();
+	List<SignerRole> getSignerRoles();
 
 	/**
 	 * Returns the claimed roles of the signer.
 	 *
-	 * @return set of the {@link SignerRole}s
+	 * @return list of the {@link SignerRole}s
 	 */
-	Set<SignerRole> getClaimedSignerRoles();
+	List<SignerRole> getClaimedSignerRoles();
 
 	/**
 	 * Returns the certified roles of the signer.
 	 *
-	 * @return set of the {@link SignerRole}s
+	 * @return list of the {@link SignerRole}s
 	 */
-	Set<SignerRole> getCertifiedSignerRoles();
+	List<SignerRole> getCertifiedSignerRoles();
 
 	/**
 	 * Get certificates embedded in the signature

@@ -41,6 +41,8 @@ public final class AdditionalInfo {
 
 	public static final String KEY_USAGE = "Key usage : {0}";
 
+	public static final String EXTENDED_KEY_USAGE = "Extended key usage : {0}";
+
 	public static final String NEXT_UPDATE = "Next update : {0}";
 
 	public static final String PSEUDO = "Pseudo : {0}";
