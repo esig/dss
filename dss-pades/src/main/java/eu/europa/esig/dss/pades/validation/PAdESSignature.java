@@ -47,7 +47,6 @@ import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureInfo;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CertifiedRole;
 import eu.europa.esig.dss.validation.SignatureDigestReference;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
@@ -151,11 +150,6 @@ public class PAdESSignature extends CAdESSignature {
 
 	@Override
 	public String getContentHints() {
-		return null;
-	}
-
-	@Override
-	public List<CertifiedRole> getCertifiedSignerRoles() {
 		return null;
 	}
 

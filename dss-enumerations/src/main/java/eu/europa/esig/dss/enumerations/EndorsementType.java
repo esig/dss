@@ -1,4 +1,4 @@
-package eu.europa.esig.jaxb.validationreport.enums;
+package eu.europa.esig.dss.enumerations;
 
 public enum EndorsementType {
 	

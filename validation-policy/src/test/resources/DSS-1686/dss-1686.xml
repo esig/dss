@@ -45,7 +45,7 @@
             </CertificateChain>
             <MimeType>text/xml</MimeType>
             <CommitmentTypeIndication/>
-            <ClaimedRoles/>
+            
             <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
             <FoundCertificates>
                 <RelatedCertificate Certificate="C-6028358BA7AC07EA61BB6502EEABBD1EB984948FBD5527C8778A7078E884A2C7">

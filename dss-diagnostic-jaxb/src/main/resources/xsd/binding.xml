@@ -97,6 +97,12 @@
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.KeyUsageBitParser.parse" 
 				printMethod="eu.europa.esig.dss.jaxb.parsers.KeyUsageBitParser.print" />
 		</jaxb:bindings>
+    
+  <jaxb:bindings node="//xs:simpleType[@name='EndorsementType']">
+			<jaxb:javaType name="eu.europa.esig.dss.enumerations.EndorsementType" 
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.EndorsementTypeParser.parse" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.EndorsementTypeParser.print" />
+		</jaxb:bindings>
 		
   	<jaxb:bindings node="//xs:complexType[@name='Signature']//xs:element[@name='FoundCertificates']//xs:element[@name='RelatedCertificate']">
 		<jaxb:property name="RelatedCertificates" />

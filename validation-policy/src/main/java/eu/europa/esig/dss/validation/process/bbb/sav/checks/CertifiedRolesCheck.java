@@ -41,7 +41,7 @@ public class CertifiedRolesCheck extends AbstractMultiValuesCheckItem<XmlSAV> {
 
 	@Override
 	protected boolean process() {
-		List<String> certifiedRoles = signature.getCertifiedRoles();
+		List<String> certifiedRoles = signature.getSignerRoleDetails(signature.getCertifiedRoles());
 		return processValuesCheck(certifiedRoles);
 	}
 

@@ -146,14 +146,7 @@
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
-					<xs:element name="ClaimedRoles" minOccurs="0">
-						<xs:complexType>
-							<xs:sequence>
-								<xs:element name="ClaimedRoles" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-							</xs:sequence>
-						</xs:complexType>
-					</xs:element>
-					<xs:element name="CertifiedRoles" type="CertifiedRole" minOccurs="0" maxOccurs="unbounded" />
+					<xs:element name="SignerRole" type="SignerRole" minOccurs="0" maxOccurs="unbounded" />
 					<xs:element name="Policy" type="Policy" minOccurs="0" />
 					<xs:element name="PDFSignatureDictionary" type="PDFSignatureDictionary" minOccurs="0" />
 					
@@ -526,13 +519,13 @@
 		</xs:sequence>
 	</xs:complexType>
 	
-	<xs:complexType name="CertifiedRole">
+	<xs:complexType name="SignerRole">
 		<xs:sequence>
-			<xs:element name="CertifiedRole" type="xs:string" />
-			<xs:element name="NotAfter" type="xs:dateTime" />
-			<xs:element name="NotBefore" type="xs:dateTime" />
+			<xs:element name="Role" type="xs:string" />
+			<xs:element name="NotAfter" type="xs:dateTime" minOccurs="0" />
+			<xs:element name="NotBefore" type="xs:dateTime" minOccurs="0" />
 		</xs:sequence>
-		<xs:attribute name="Category" type="xs:string" use="required" />
+		<xs:attribute name="Category" type="EndorsementType" use="required" />
 	</xs:complexType>
 	
 	<xs:complexType name="DigestAlgoAndValue">
@@ -554,6 +547,14 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	
+	<xs:simpleType name="EndorsementType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CLAIMED" />
+			<xs:enumeration value="CERTIFIED" />
+			<xs:enumeration value="SIGNED" />
+		</xs:restriction>
+	</xs:simpleType>
 	
 	<xs:simpleType name="DigestMatcherType" final="restriction">
 		<xs:restriction base="xs:string">

@@ -43,7 +43,6 @@
             </CertificateChain>
             <ContentType>text/xml</ContentType>
             <CommitmentTypeIndication/>
-            <ClaimedRoles/>
             <FoundCertificates/>
             <FoundRevocations/>
 			<FoundTimestamps>

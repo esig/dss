@@ -32,6 +32,7 @@ import java.util.Set;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.EndorsementType;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
@@ -39,7 +40,6 @@ import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRef;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertifiedRole;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundCertificate;
@@ -57,6 +57,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureDigestReference;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerDocumentRepresentations;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerRole;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlStructuralValidation;
 import eu.europa.esig.dss.utils.Utils;
@@ -324,29 +325,58 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return signature.getSignatureScopes();
 	}
 
-	public List<String> getCertifiedRoles() {
-		List<String> result = new ArrayList<String>();
-		List<XmlCertifiedRole> certifiedRoles = signature.getCertifiedRoles();
-		if (Utils.isCollectionNotEmpty(certifiedRoles)) {
-			for (XmlCertifiedRole certifiedRole : certifiedRoles) {
-				result.add(certifiedRole.getCertifiedRole());
+	/**
+	 * Returns list of all found SignerRoles
+	 * @return list of {@link XmlSignerRole}s
+	 */
+	public List<XmlSignerRole> getSignerRoles() {
+		return signature.getSignerRole();
+	}
+
+	/**
+	 * Returns list of found ClaimedRoles
+	 * @return list of {@link XmlSignerRole}s
+	 */
+	public List<XmlSignerRole> getClaimedRoles() {
+		return getSignerRolesByCategory(EndorsementType.CLAIMED);
+	}
+
+	/**
+	 * Returns list of found CertifiedRoles
+	 * @return list of {@link XmlSignerRole}s
+	 */
+	public List<XmlSignerRole> getCertifiedRoles() {
+		return getSignerRolesByCategory(EndorsementType.CERTIFIED);
+	}
+	
+	/**
+	 * Returns a list of {@code String}s describing the role for the given {@code listOfSignerRoles}
+	 * 
+	 * @param listOfSignerRoles - list of {@link XmlSignerRole} to get string role details from
+	 * @return list of role details
+	 */
+	public List<String> getSignerRoleDetails(List<XmlSignerRole> listOfSignerRoles) {
+		List<String> roles = new ArrayList<String>();
+		for (XmlSignerRole xmlSignerRole : listOfSignerRoles) {
+			roles.add(xmlSignerRole.getRole());
+		}
+		return roles;
+	}
+	
+	private List<XmlSignerRole> getSignerRolesByCategory(EndorsementType category) {
+		List<XmlSignerRole> roles = new ArrayList<XmlSignerRole>();
+		for (XmlSignerRole xmlSignerRole : getSignerRoles()) {
+			if (category.equals(xmlSignerRole.getCategory())) {
+				roles.add(xmlSignerRole);
 			}
 		}
-		return result;
+		return roles;
 	}
 
 	public List<String> getCommitmentTypeIdentifiers() {
 		List<String> commitmentTypeIndications = signature.getCommitmentTypeIndication();
 		if (Utils.isCollectionNotEmpty(commitmentTypeIndications)) {
 			return commitmentTypeIndications;
-		}
-		return Collections.emptyList();
-	}
-
-	public List<String> getClaimedRoles() {
-		List<String> claimedRoles = signature.getClaimedRoles();
-		if (Utils.isCollectionNotEmpty(claimedRoles)) {
-			return claimedRoles;
 		}
 		return Collections.emptyList();
 	}

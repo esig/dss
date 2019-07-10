@@ -41,7 +41,7 @@
                 <CountryName>test location</CountryName>
             </SignatureProductionPlace>
             <CommitmentTypeIndication/>
-            <ClaimedRoles/>
+            
             <FoundCertificates/>
             <FoundRevocations/>
 			<FoundTimestamps>

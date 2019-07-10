@@ -39,7 +39,7 @@
             </CertificateChain>
             <ContentType>application/pdf</ContentType>
             <CommitmentTypeIndication/>
-            <ClaimedRoles/>
+            
             <Policy>
                 <Id>2.16.76.1.7.1.11.1</Id>
                 <Url>http://politicas.icpbrasil.gov.br/PA_PAdES_AD_RB_v1_0.der</Url>
@@ -110,7 +110,7 @@
             </CertificateChain>
             <ContentType>application/pdf</ContentType>
             <CommitmentTypeIndication/>
-            <ClaimedRoles/>
+            
             <PDFSignatureDictionary>
                 <Filter>Adobe.PPKMS</Filter>
                 <SubFilter>adbe.pkcs7.detached</SubFilter>

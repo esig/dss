@@ -46,6 +46,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureDigestReference;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerData;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerRole;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
@@ -108,7 +109,6 @@ import eu.europa.esig.jaxb.validationreport.ValidationReportType;
 import eu.europa.esig.jaxb.validationreport.ValidationStatusType;
 import eu.europa.esig.jaxb.validationreport.ValidationTimeInfoType;
 import eu.europa.esig.jaxb.validationreport.enums.ConstraintStatus;
-import eu.europa.esig.jaxb.validationreport.enums.EndorsementType;
 import eu.europa.esig.jaxb.validationreport.enums.ObjectType;
 import eu.europa.esig.jaxb.validationreport.enums.SignatureValidationProcessID;
 import eu.europa.esig.jaxb.validationreport.enums.TypeOfProof;
@@ -1039,23 +1039,17 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private void addSignerRoles(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		List<String> claimedRoles = sigWrapper.getClaimedRoles();
-		List<String> certifiedRoles = sigWrapper.getCertifiedRoles();
-		if (Utils.isCollectionNotEmpty(claimedRoles) || Utils.isCollectionNotEmpty(certifiedRoles)) {
+		List<XmlSignerRole> signerRoles = sigWrapper.getSignerRoles();
+		if (Utils.isCollectionNotEmpty(signerRoles)) {
 			SASignerRoleType signerRoleType = objectFactory.createSASignerRoleType();
-			addSignerRoles(signerRoleType, claimedRoles, EndorsementType.CLAIMED);
-			addSignerRoles(signerRoleType, certifiedRoles, EndorsementType.CERTIFIED);
+			for (XmlSignerRole role : signerRoles) {
+				SAOneSignerRoleType oneSignerRole = objectFactory.createSAOneSignerRoleType();
+				oneSignerRole.setRole(role.getRole());
+				oneSignerRole.setEndorsementType(role.getCategory());
+				signerRoleType.getRoleDetails().add(oneSignerRole);
+			}
 			setSignedIfValid(sigWrapper, signerRoleType);
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(objectFactory.createSignatureAttributesTypeSignerRole(signerRoleType));
-		}
-	}
-
-	private void addSignerRoles(SASignerRoleType signerRoleType, List<String> roles, EndorsementType endorsement) {
-		for (String role : roles) {
-			SAOneSignerRoleType oneSignerRole = objectFactory.createSAOneSignerRoleType();
-			oneSignerRole.setRole(role);
-			oneSignerRole.setEndorsementType(endorsement);
-			signerRoleType.getRoleDetails().add(oneSignerRole);
 		}
 	}
 	

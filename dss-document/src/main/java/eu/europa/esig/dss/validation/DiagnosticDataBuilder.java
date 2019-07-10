@@ -73,7 +73,6 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificatePolicy;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRevocation;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertifiedRole;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlContainerInfo;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
@@ -100,6 +99,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureProductionPlace;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerDocumentRepresentations;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerRole;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlStructuralValidation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
@@ -545,8 +545,7 @@ public class DiagnosticDataBuilder {
 
 		xmlSignature.setSignatureProductionPlace(getXmlSignatureProductionPlace(signature.getSignatureProductionPlace()));
 		xmlSignature.setCommitmentTypeIndication(getXmlCommitmentTypeIndication(signature.getCommitmentTypeIndication()));
-		xmlSignature.setClaimedRoles(getXmlClaimedRole(signature.getClaimedSignerRoles()));
-		xmlSignature.getCertifiedRoles().addAll(getXmlCertifiedRoles(signature.getCertifiedSignerRoles()));
+		xmlSignature.getSignerRole().addAll(getXmlSignerRoles(signature.getSignerRoles()));
 
 		xmlSignature.setContentType(signature.getContentType());
 		xmlSignature.setMimeType(signature.getMimeType());
@@ -816,27 +815,20 @@ public class DiagnosticDataBuilder {
 		}
 		return null;
 	}
-
-	private List<XmlCertifiedRole> getXmlCertifiedRoles(List<CertifiedRole> certifiedRoles) {
-		List<XmlCertifiedRole> xmlCertRoles = new ArrayList<XmlCertifiedRole>();
-		if (Utils.isCollectionNotEmpty(certifiedRoles)) {
-			for (final CertifiedRole certifiedRole : certifiedRoles) {
-				final XmlCertifiedRole xmlCertifiedRole = new XmlCertifiedRole();
-				xmlCertifiedRole.setCertifiedRole(certifiedRole.getRole());
-				xmlCertifiedRole.setNotBefore(certifiedRole.getNotBefore());
-				xmlCertifiedRole.setNotAfter(certifiedRole.getNotAfter());
-				xmlCertRoles.add(xmlCertifiedRole);
+	
+	private List<XmlSignerRole> getXmlSignerRoles(Collection<SignerRole> signerRoles) {
+		List<XmlSignerRole> xmlSignerRoles = new ArrayList<XmlSignerRole>();
+		if (Utils.isCollectionNotEmpty(signerRoles)) {
+			for (SignerRole signerRole : signerRoles) {
+				XmlSignerRole xmlSignerRole = new XmlSignerRole();
+				xmlSignerRole.setRole(signerRole.getRole());
+				xmlSignerRole.setCategory(signerRole.getCategory());
+				xmlSignerRole.setNotBefore(signerRole.getNotBefore());
+				xmlSignerRole.setNotAfter(signerRole.getNotAfter());
+				xmlSignerRoles.add(xmlSignerRole);
 			}
-			return xmlCertRoles;
 		}
-		return Collections.emptyList();
-	}
-
-	private List<String> getXmlClaimedRole(String[] claimedRoles) {
-		if (Utils.isArrayNotEmpty(claimedRoles)) {
-			return Arrays.asList(claimedRoles);
-		}
-		return Collections.emptyList();
+		return xmlSignerRoles;
 	}
 
 	private List<String> getXmlCommitmentTypeIndication(CommitmentType commitmentTypeIndication) {

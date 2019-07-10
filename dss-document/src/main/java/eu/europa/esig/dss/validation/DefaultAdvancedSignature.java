@@ -480,6 +480,13 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 			return crlTokens.isEmpty() && ocspTokens.isEmpty();
 		}
 	}
+	
+	@Override
+	public Set<SignerRole> getSignerRoles() {
+		Set<SignerRole> signerRoles = getClaimedSignerRoles();
+		signerRoles.addAll(getCertifiedSignerRoles());
+		return signerRoles;
+	}
 
 	@Override
 	public CertificateToken getProvidedSigningCertificateToken() {

@@ -33,6 +33,7 @@ import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -102,6 +103,7 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.SignerAttributeV2;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.EndorsementType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.identifier.SignatureIdentifier;
 import eu.europa.esig.dss.identifier.TokenIdentifier;
@@ -110,7 +112,7 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CAdESCertificateSource;
 import eu.europa.esig.dss.validation.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.validation.CertificateValidity;
-import eu.europa.esig.dss.validation.CertifiedRole;
+import eu.europa.esig.dss.validation.SignerRole;
 import eu.europa.esig.dss.validation.CommitmentType;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
 import eu.europa.esig.dss.validation.ReferenceValidation;
@@ -520,7 +522,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public String[] getClaimedSignerRoles() {
+	public Set<SignerRole> getClaimedSignerRoles() {
 		final SignerAttribute signerAttr = getSignerAttributeV1();
 		final SignerAttributeV2 signerAttrV2 = getSignerAttributeV2();
 
@@ -533,10 +535,10 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				signerAttrValues = signerAttrV2.getValues();
 			}
 			if (signerAttrValues == null) {
-				return null;
+				return Collections.emptySet();
 			}
 
-			final List<String> claimedRoles = new ArrayList<String>();
+			final Set<SignerRole> claimedRoles = new HashSet<SignerRole>();
 			for (final Object signerAttrValue : signerAttrValues) {
 				if (!(signerAttrValue instanceof org.bouncycastle.asn1.x509.Attribute[])) {
 					continue;
@@ -547,22 +549,21 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 					for (final ASN1Encodable asn1Encodable : attrValues1) {
 						if (asn1Encodable instanceof ASN1String) {
 							ASN1String asn1String = (ASN1String) asn1Encodable;
-							final String s = asn1String.getString();
-							claimedRoles.add(s);
+							final String role = asn1String.getString();
+							claimedRoles.add(new SignerRole(role, EndorsementType.CLAIMED));
 						}
 					}
 				}
 			}
-			final String[] strings = claimedRoles.toArray(new String[claimedRoles.size()]);
-			return strings;
+			return claimedRoles;
 		} catch (Exception e) {
 			LOG.error("Error when dealing with claimed signer roles: [" + signerAttrValues + "]", e);
-			return null;
+			return Collections.emptySet();
 		}
 	}
 
 	@Override
-	public List<CertifiedRole> getCertifiedSignerRoles() {
+	public Set<SignerRole> getCertifiedSignerRoles() {
 		final SignerAttribute signerAttr = getSignerAttributeV1();
 		final SignerAttributeV2 signerAttrV2 = getSignerAttributeV2();
 
@@ -574,14 +575,11 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				signerAttrValues = signerAttrV2.getValues();
 			}
 			if (signerAttrValues == null) {
-				return null;
+				return Collections.emptySet();
 			}
-			List<CertifiedRole> roles = null;
+			Set<SignerRole> roles = new HashSet<SignerRole>();
 			for (final Object signerAttrValue : signerAttrValues) {
 				if (signerAttrValue instanceof AttributeCertificate) {
-					if (roles == null) {
-						roles = new ArrayList<CertifiedRole>();
-					}
 					final AttributeCertificate attributeCertificate = (AttributeCertificate) signerAttrValue;
 					final AttributeCertificateInfo acInfo = attributeCertificate.getAcinfo();
 					final AttCertValidityPeriod attrCertValidityPeriod = acInfo.getAttrCertValidityPeriod();
@@ -593,8 +591,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 						final ASN1Set attrValues1 = attribute.getAttrValues();
 						DERSequence derSequence = (DERSequence) attrValues1.getObjectAt(0);
 						RoleSyntax roleSyntax = RoleSyntax.getInstance(derSequence);
-						CertifiedRole certifiedRole = new CertifiedRole();
-						certifiedRole.setRole(roleSyntax.getRoleNameAsString());
+						SignerRole certifiedRole = new SignerRole(roleSyntax.getRoleNameAsString(), EndorsementType.CERTIFIED);
 						certifiedRole.setNotBefore(DSSASN1Utils.toDate(attrCertValidityPeriod.getNotBeforeTime()));
 						certifiedRole.setNotAfter(DSSASN1Utils.toDate(attrCertValidityPeriod.getNotAfterTime()));
 						roles.add(certifiedRole);
@@ -604,7 +601,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			return roles;
 		} catch (Exception e) {
 			LOG.error("Error when dealing with certified signer roles: [" + signerAttrValues + "]", e);
-			return null;
+			return Collections.emptySet();
 		}
 	}
 

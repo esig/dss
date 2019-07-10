@@ -38,7 +38,6 @@
 			</CertificateChain>
 			<ContentType>application/pdf</ContentType>
 			<CommitmentTypeIndication />
-			<ClaimedRoles />
             <FoundCertificates/>
             <FoundRevocations/>
 			<FoundTimestamps>
@@ -82,7 +81,6 @@
 			</CertificateChain>
 			<ContentType>application/pdf</ContentType>
 			<CommitmentTypeIndication />
-			<ClaimedRoles />
             <FoundCertificates/>
             <FoundRevocations/>
 			<FoundTimestamps>

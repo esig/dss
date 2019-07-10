@@ -44,7 +44,7 @@
             </CertificateChain>
             <ContentType>text/xml</ContentType>
             <CommitmentTypeIndication/>
-            <ClaimedRoles/>
+            
             <Policy>
                 <Id>IMPLICIT_POLICY</Id>
                 <Asn1Processable>false</Asn1Processable>

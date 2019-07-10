@@ -60,6 +60,7 @@ import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignerLocation;
+import eu.europa.esig.dss.enumerations.EndorsementType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.jaxb.detailedreport.DetailedReportFacade;
@@ -110,7 +111,6 @@ import eu.europa.esig.jaxb.validationreport.SignerInformationType;
 import eu.europa.esig.jaxb.validationreport.ValidationReportType;
 import eu.europa.esig.jaxb.validationreport.ValidationStatusType;
 import eu.europa.esig.jaxb.validationreport.ValidationTimeInfoType;
-import eu.europa.esig.jaxb.validationreport.enums.EndorsementType;
 
 public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatureParameters> extends PKIFactoryAccess {
 
@@ -699,8 +699,8 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		List<String> claimedRoles = getSignatureParameters().bLevel().getClaimedSignerRoles();
 		if (Utils.isCollectionNotEmpty(claimedRoles)) {
 			SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-			List<String> foundClaimedRoles = signatureWrapper.getClaimedRoles();
-			assertTrue(claimedRoles.equals(foundClaimedRoles));
+			List<String> foundClaimedRoles = signatureWrapper.getSignerRoleDetails(signatureWrapper.getClaimedRoles());
+			assertEquals(claimedRoles, foundClaimedRoles);
 		}
 	}
 
