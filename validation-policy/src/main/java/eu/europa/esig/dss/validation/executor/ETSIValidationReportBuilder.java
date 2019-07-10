@@ -43,6 +43,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlOrphanRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlOrphanToken;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRelatedCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureDigestReference;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerData;
 import eu.europa.esig.dss.utils.Utils;
@@ -440,15 +441,16 @@ public class ETSIValidationReportBuilder {
 		return poeProvisioning;
 	}
 	
-	private SignatureReferenceType getSignatureReference(SignatureWrapper timestampedSignature) {
+	private SignatureReferenceType getSignatureReference(SignatureWrapper signature) {
 		SignatureReferenceType signatureReference = objectFactory.createSignatureReferenceType();
-		if (timestampedSignature != null) {
-			signatureReference.setPAdESFieldName(timestampedSignature.getSignatureFieldName());
+		XmlSignatureDigestReference signatureDigestReference = signature.getSignatureDigestReference();
+		if (signatureDigestReference != null) {
+			signatureReference.setCanonicalizationMethod(signatureDigestReference.getCanonicalizationMethod());
+			signatureReference.setDigestMethod(DigestAlgorithm.forName(signatureDigestReference.getDigestMethod()).getXmlId());
+			signatureReference.setDigestValue(signatureDigestReference.getDigestValue());
+		} else if (signature.getSignatureFieldName() != null) {
+			signatureReference.setPAdESFieldName(signature.getSignatureFieldName());
 		}
-		// TODO: get digest
-//		signatureReference.setCanonicalizationMethod(value);
-//		signatureReference.setDigestMethod();
-//		signatureReference.setDigestValue(value);
 		return signatureReference;
 	}
 	

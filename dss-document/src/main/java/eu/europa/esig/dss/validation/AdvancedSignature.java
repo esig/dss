@@ -509,6 +509,15 @@ public interface AdvancedSignature extends Serializable {
 	 */
 	List<ReferenceValidation> getReferenceValidations();
 	
+	/**
+	 * Returns a signature reference element as defined in TS 119 442 - V1.1.1 - 
+	 * Electronic Signatures and Infrastructures (ESI), ch. 5.1.4.2.1.3 XML component
+	 * 
+	 * @param digestAlgorithm {@link DigestAlgorithm} to use
+	 * @return {@link SignatureDigestReference}
+	 */
+	SignatureDigestReference getSignatureDigestReference(DigestAlgorithm digestAlgorithm);
+	
 	// ------------------------ TS 119 102-2 Specifics
 
 	/**

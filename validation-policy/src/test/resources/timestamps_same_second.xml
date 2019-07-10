@@ -49,6 +49,10 @@
                     <Description>The document byte range: [0, 56223, 94117, 772]</Description>
                 </SignatureScope>
 	        </SignatureScopes>
+			<SignatureDigestReference>
+			    <DigestMethod>SHA256</DigestMethod>
+			    <DigestValue>A2QEE7LaCsjcEOQOjcQzhfHot95I8n+Fa1RrWFPHK7A=</DigestValue>
+			</SignatureDigestReference>
 	    </Signature>
     </Signatures>
     <UsedCertificates>

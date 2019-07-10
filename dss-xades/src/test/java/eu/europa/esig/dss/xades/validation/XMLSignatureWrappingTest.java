@@ -23,6 +23,7 @@ package eu.europa.esig.dss.xades.validation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -32,8 +33,13 @@ import java.util.List;
 import javax.xml.bind.JAXBElement;
 
 import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
@@ -47,6 +53,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRelatedCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureDigestReference;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerData;
 import eu.europa.esig.dss.tsl.ServiceInfo;
@@ -59,8 +66,12 @@ import eu.europa.esig.dss.validation.reports.SimpleReport;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.XPathQueryHolder;
+import eu.europa.esig.jaxb.validationreport.POEProvisioningType;
 import eu.europa.esig.jaxb.validationreport.SASigPolicyIdentifierType;
 import eu.europa.esig.jaxb.validationreport.SignatureIdentifierType;
+import eu.europa.esig.jaxb.validationreport.SignatureReferenceType;
 import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
 import eu.europa.esig.jaxb.validationreport.ValidationObjectListType;
 import eu.europa.esig.jaxb.validationreport.ValidationObjectType;
@@ -97,7 +108,9 @@ public class XMLSignatureWrappingTest {
 
 	@Test
 	public void testEnvelopedOriginal() {
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(new FileDocument(new File("src/test/resources/validation/xsw/original.xml")));
+		
+		FileDocument document = new FileDocument(new File("src/test/resources/validation/xsw/original.xml"));
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setDataLoader(new IgnoreDataLoader());
@@ -109,6 +122,21 @@ public class XMLSignatureWrappingTest {
 		SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertTrue(signatureById.isSignatureIntact());
 		assertTrue(signatureById.isSignatureValid());
+		
+		XmlSignatureDigestReference signatureDigestReference = signatureById.getSignatureDigestReference();
+		assertNotNull(signatureDigestReference);
+
+		XPathQueryHolder xPathQueryHolder = new XPathQueryHolder();
+		Document documentDom = DomUtils.buildDOM(document);
+		NodeList nodeList = DomUtils.getNodeList(documentDom.getDocumentElement(), xPathQueryHolder.XPATH__SIGNATURE);
+		Element signatureElement = (Element) nodeList.item(0);
+		byte[] canonicalizedSignatureElement = DSSXMLUtils.canonicalizeSubtree(signatureDigestReference.getCanonicalizationMethod(), signatureElement);
+		byte[] digest = DSSUtils.digest(DigestAlgorithm.forName(signatureDigestReference.getDigestMethod()), canonicalizedSignatureElement);
+		
+		String signatureReferenceDigestValue = Utils.toBase64(signatureDigestReference.getDigestValue());
+		String signatureElementDigestValue = Utils.toBase64(digest);
+		assertEquals(signatureReferenceDigestValue, signatureElementDigestValue);
+		
 	}
 
 	@Test
@@ -300,8 +328,9 @@ public class XMLSignatureWrappingTest {
 	
 	@Test
 	public void signatureIdentifierTest() {
-		SignedDocumentValidator validator = SignedDocumentValidator
-				.fromDocument(new FileDocument(new File("src/test/resources/validation/valid-xades.xml")));
+		
+		FileDocument document = new FileDocument(new File("src/test/resources/validation/valid-xades.xml"));
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setDataLoader(new IgnoreDataLoader());
@@ -328,6 +357,21 @@ public class XMLSignatureWrappingTest {
 		assertTrue(Arrays.equals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue()));
 		assertNotNull(signatureIdentifier.getDAIdentifier());
 		assertEquals(signature.getDAIdentifier(), signatureIdentifier.getDAIdentifier());
+		
+		XmlSignatureDigestReference signatureDigestReference = signature.getSignatureDigestReference();
+		assertNotNull(signatureDigestReference);
+
+		XPathQueryHolder xPathQueryHolder = new XPathQueryHolder();
+		Document documentDom = DomUtils.buildDOM(document);
+		NodeList nodeList = DomUtils.getNodeList(documentDom, xPathQueryHolder.XPATH__SIGNATURE);
+		assertEquals(1, nodeList.getLength());
+		Element signatureElement = (Element) nodeList.item(0);
+		byte[] canonicalizedSignatureElement = DSSXMLUtils.canonicalizeSubtree(signatureDigestReference.getCanonicalizationMethod(), signatureElement);
+		byte[] digest = DSSUtils.digest(DigestAlgorithm.forName(signatureDigestReference.getDigestMethod()), canonicalizedSignatureElement);
+		
+		String signatureReferenceDigestValue = Utils.toBase64(signatureDigestReference.getDigestValue());
+		String signatureElementDigestValue = Utils.toBase64(digest);
+		assertEquals(signatureReferenceDigestValue, signatureElementDigestValue);
 		
 	}
 	
@@ -446,15 +490,26 @@ public class XMLSignatureWrappingTest {
 		assertNotNull(etsiValidationReport);
 		ValidationObjectListType signatureValidationObjects = etsiValidationReport.getSignatureValidationObjects();
 		int signedDataCounter = 0;
+		int timestampCounter = 0;
 		for (ValidationObjectType validationObject : signatureValidationObjects.getValidationObject()) {
 			if (ObjectType.SIGNED_DATA.equals(validationObject.getObjectType())) {
 				assertNotNull(validationObject.getId());
 				assertNotNull(validationObject.getPOE());
 				signedDataCounter++;
+			} else if (ObjectType.TIMESTAMP.equals(validationObject.getObjectType())) {
+				POEProvisioningType poeProvisioning = validationObject.getPOEProvisioning();
+				List<SignatureReferenceType> signatureReferences = poeProvisioning.getSignatureReference();
+				assertEquals(1, signatureReferences.size());
+				SignatureReferenceType signatureReferenceType = signatureReferences.get(0);
+				assertNotNull(signatureReferenceType.getDigestMethod());
+				assertNotNull(signatureReferenceType.getDigestValue());
+				assertNotNull(signatureReferenceType.getCanonicalizationMethod());
+				assertNull(signatureReferenceType.getPAdESFieldName());
+				timestampCounter++;
 			}
 		}
 		assertEquals(10, signedDataCounter);
-
+		assertEquals(1, timestampCounter);
 	}
 	
 	@Test

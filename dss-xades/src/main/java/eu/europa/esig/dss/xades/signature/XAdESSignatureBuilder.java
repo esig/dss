@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
+import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.xml.security.transforms.Transforms;
@@ -83,6 +84,12 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * This is the reference to the original document to sign
 	 */
 	protected DSSDocument detachedDocument;
+	
+	/**
+	 * The default Canonicalization method.
+	 * Will be used if another is not specified.
+	 */
+	protected static final String DEFAULT_CANONICALIZATION_METHOD = CanonicalizationMethod.EXCLUSIVE;
 
 	protected String keyInfoCanonicalizationMethod;
 	protected String signedInfoCanonicalizationMethod;

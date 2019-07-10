@@ -48,6 +48,7 @@ import eu.europa.esig.dss.pdf.PdfSignatureInfo;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertifiedRole;
+import eu.europa.esig.dss.validation.SignatureDigestReference;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.x509.CertificatePool;
@@ -241,6 +242,20 @@ public class PAdESSignature extends CAdESSignature {
 	@Override
 	public int[] getSignatureByteRange() {
 		return pdfSignatureInfo.getSignatureByteRange();
+	}
+	
+	/**
+	 * TS 119 442 - V1.1.1 - Electronic Signatures and Infrastructures (ESI), ch. 5.1.4.2.1.3 XML component:
+	 * 
+	 * In case of PAdES signatures, the input of the digest value computation shall be the result of decoding the
+	 * hexadecimal string present within the Contents field of the Signature PDF dictionary enclosing one PAdES
+	 * digital signature. 
+	 */
+	@Override
+	public SignatureDigestReference getSignatureDigestReference(DigestAlgorithm digestAlgorithm) {
+		byte[] contents = pdfSignatureInfo.getContents();
+		byte[] digestValue = DSSUtils.digest(digestAlgorithm, contents);
+		return new SignatureDigestReference(new Digest(digestAlgorithm, digestValue));
 	}
 
 	@Override

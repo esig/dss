@@ -235,7 +235,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 */
 	@Override
 	public SignatureLevel getDataFoundUpToLevel() {
-
 		final SignatureLevel[] signatureLevels = getSignatureLevels();
 		final SignatureLevel dataFoundUpToProfile = getDataFoundUpToProfile(signatureLevels);
 		return dataFoundUpToProfile;

@@ -164,6 +164,11 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 		}
 
 		@Override
+		public byte[] getContents() {
+			return null;
+		}
+
+		@Override
 		public int[] getSignatureByteRange() {
 			return byteRange;
 		}

@@ -49,6 +49,10 @@
                     <Description>Full document</Description>
                 </SignatureScope>
             </SignatureScopes>
+            <SignatureDigestReference>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>BDpxh3TFcr2KJa2+sb/NXAJWrhHOz5+cP5JdDlK+r4k=</DigestValue>
+            </SignatureDigestReference>
         </Signature>
     </Signatures>
     <UsedCertificates>

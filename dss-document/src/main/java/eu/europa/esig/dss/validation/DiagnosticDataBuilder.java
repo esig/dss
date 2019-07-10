@@ -95,6 +95,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlRelatedRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureDigestReference;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureProductionPlace;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerData;
@@ -564,9 +565,9 @@ public class DiagnosticDataBuilder {
 
 		xmlSignature.setPolicy(getXmlPolicy(signature));
 		xmlSignature.setPDFSignatureDictionary(getXmlPDFSignatureDictionary(signature));
-		xmlSignature.setSignerDocumentRepresentations(getXmlSignerDocumentRepresentations(signature));
+		xmlSignature.setSignatureDigestReference(getXmlSignatureDigestReference(signature));
 		
-		// TODO: sigRef digest (for etsi SignatureReferenceType)
+		xmlSignature.setSignerDocumentRepresentations(getXmlSignerDocumentRepresentations(signature));
 
 		xmlSignature.setFoundRevocations(getXmlFoundRevocations(signature));
 		xmlSignature.setFoundCertificates(getXmlFoundCertificates(signature));
@@ -590,6 +591,18 @@ public class DiagnosticDataBuilder {
 			pdfSignatureDictionary.getSignatureByteRange().addAll(
 					AdapterUtils.intArrayToBigIntegerList(signature.getSignatureByteRange()));
 			return pdfSignatureDictionary;
+		}
+		return null;
+	}
+	
+	private XmlSignatureDigestReference getXmlSignatureDigestReference(AdvancedSignature signature) {
+		SignatureDigestReference signatureDigestReference = signature.getSignatureDigestReference(defaultDigestAlgorithm);
+		if (signatureDigestReference != null) {
+			XmlSignatureDigestReference xmlDigestReference = new XmlSignatureDigestReference();
+			xmlDigestReference.setCanonicalizationMethod(signatureDigestReference.getCanonicalizationMethod());
+			xmlDigestReference.setDigestMethod(signatureDigestReference.getDigestAlgorithm().getName());
+			xmlDigestReference.setDigestValue(signatureDigestReference.getDigestValue());
+			return xmlDigestReference;
 		}
 		return null;
 	}

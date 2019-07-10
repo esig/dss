@@ -57,7 +57,7 @@ class DetachedSignatureBuilder extends XAdESSignatureBuilder {
 	 */
 	public DetachedSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument origDoc, final CertificateVerifier certificateVerifier) {
 		super(params, origDoc, certificateVerifier);
-		setCanonicalizationMethods(params, CanonicalizationMethod.EXCLUSIVE);
+		setCanonicalizationMethods(params, DEFAULT_CANONICALIZATION_METHOD);
 	}
 
 	@Override

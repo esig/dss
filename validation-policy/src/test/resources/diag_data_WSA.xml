@@ -58,6 +58,10 @@
                     </Transformations>
                 </SignatureScope>
             </SignatureScopes>
+            <SignatureDigestReference>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>Arc90Jgr+0IbjnFSCe+njV7ntyHD9lZn0EBtZn1W1mc=</DigestValue>
+            </SignatureDigestReference>
         </Signature>
     </Signatures>
     <UsedCertificates>

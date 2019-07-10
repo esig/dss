@@ -54,6 +54,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlRelatedCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRelatedRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureDigestReference;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerDocumentRepresentations;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
@@ -145,6 +146,10 @@ public class SignatureWrapper extends AbstractTokenProxy {
 
 	public boolean isCounterSignature() {
 		return Utils.isTrue(signature.isCounterSignature());
+	}
+	
+	public XmlSignatureDigestReference getSignatureDigestReference() {
+		return signature.getSignatureDigestReference();
 	}
 
 	public List<TimestampWrapper> getTimestampList() {

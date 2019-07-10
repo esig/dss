@@ -209,6 +209,10 @@
                     <Description>Full document</Description>
                 </SignatureScope>
             </SignatureScopes>
+			<SignatureDigestReference>
+			    <DigestMethod>SHA256</DigestMethod>
+			    <DigestValue>7IAJRBSyKvnEVR5DueFypygxAII9jUEmy0k8/foYclw=</DigestValue>
+			</SignatureDigestReference>
             <SignatureValue>DWLG6TASAlDwdmkO5T2tUDMGDcc4lh1lNrT3ngLlvfUp4jUn3CJkryzRH0SCjaBWQ8N7T0SwAENdnQbsezcirm1YVv18JRkjUum7S0wxKv4knnwDtBD8ooQstvOpgCWCgAuHFQHA9wjnup3ojAtuTHJVU0eLtFqWHyb6LVpMe+8b+ZfZs8YQiADXsnVwoHelMW6xXn43qn8MUrddjR50T8/k2G0J9bmnI540vrFT892sw78nt2up0neKWThJxJEvd1o/ZT+IUQCcCi30XOM5ZSo69U/7XA7aAsDv+SAJFCahsuYEVUXjy3hQ9pYR3UTm0BLxw9ivkPqZ4QU3GotE5A==</SignatureValue>
         </Signature>
     </Signatures>
