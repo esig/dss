@@ -625,11 +625,14 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private void fillCertificateChainAndTrustAnchor(ValidationReportDataType validationReportData, XmlCertificateChain certificateChain) {
+		List<XmlChainItem> chainItem = certificateChain.getChainItem();
+		if (Utils.isCollectionEmpty(chainItem)) {
+			return;
+		}
+
 		CertificateChainType certificateChainType = objectFactory.createCertificateChainType();
 		VOReferenceType signingCert = null;
 		VOReferenceType trustAnchor = null;
-
-		List<XmlChainItem> chainItem = certificateChain.getChainItem();
 		for (int i = 0; i < chainItem.size(); i++) {
 			XmlChainItem currentChainItem = chainItem.get(i);
 			VOReferenceType currentVORef = getVOReference(currentChainItem.getId());
