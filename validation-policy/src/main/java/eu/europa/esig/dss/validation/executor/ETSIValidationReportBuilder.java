@@ -926,7 +926,7 @@ public class ETSIValidationReportBuilder {
 
 	private void addMessageDigest(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
 		XmlDigestMatcher messageDigest = sigWrapper.getMessageDigest();
-		if (messageDigest != null) {
+		if (messageDigest != null && messageDigest.getDigestValue() != null) {
 			SAMessageDigestType messageDigestType = objectFactory.createSAMessageDigestType();
 			messageDigestType.setDigest(messageDigest.getDigestValue());
 			setSignedIfValid(sigWrapper, messageDigestType);
