@@ -155,7 +155,10 @@ public class ETSIValidationReportBuilder {
 		SignatureValidationReportType signatureValidationReport = objectFactory.createSignatureValidationReportType();
 		signatureValidationReport.setSignatureIdentifier(getSignatureIdentifier(sigWrapper));
 		getSignersDocuments(signatureValidationReport, sigWrapper);
-		signatureValidationReport.setSignatureAttributes(getSignatureAttributes(sigWrapper));
+		SignatureAttributesType signatureAttributes = getSignatureAttributes(sigWrapper);
+		if (!signatureAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().isEmpty()) {
+			signatureValidationReport.setSignatureAttributes(signatureAttributes);
+		}
 		signatureValidationReport.setSignerInformation(getSignerInformation(sigWrapper));
 		signatureValidationReport.setSignatureQuality(getSignatureQuality(sigWrapper));
 		signatureValidationReport.setSignatureValidationProcess(getSignatureValidationProcess(sigWrapper));
