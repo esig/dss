@@ -133,9 +133,13 @@ public class ETSIValidationReportBuilder {
 	public ValidationReportType build() {
 		ValidationReportType result = objectFactory.createValidationReportType();
 
-		// iterate over the complete list of signatures, including counter signatures
-		for (SignatureWrapper sigWrapper : diagnosticData.getSignatures()) {
-			result.getSignatureValidationReport().add(getSignatureValidationReport(sigWrapper));
+		if (!diagnosticData.getSignatures().isEmpty()) {
+			// iterate over the complete list of signatures, including counter signatures
+			for (SignatureWrapper sigWrapper : diagnosticData.getSignatures()) {
+				result.getSignatureValidationReport().add(getSignatureValidationReport(sigWrapper));
+			}
+		} else {
+			result.getSignatureValidationReport().add(noSignatureFoundReport());
 		}
 
 		ValidationObjectListType signatureValidationObjects = getSignatureValidationObjects();
@@ -158,6 +162,18 @@ public class ETSIValidationReportBuilder {
 		signatureValidationReport.setValidationTimeInfo(getValidationTimeInfo(sigWrapper));
 		signatureValidationReport.setValidationConstraintsEvaluationReport(getValidationConstraintsEvaluationReport(sigWrapper));
 		return signatureValidationReport;
+	}
+
+	private SignatureValidationReportType noSignatureFoundReport() {
+		SignatureValidationReportType signatureValidationReport = objectFactory.createSignatureValidationReportType();
+		signatureValidationReport.setSignatureValidationStatus(noSignatureFoundValidationStatus());
+		return signatureValidationReport;
+	}
+
+	private ValidationStatusType noSignatureFoundValidationStatus() {
+		ValidationStatusType validationStatus = objectFactory.createValidationStatusType();
+		validationStatus.setMainIndication(Indication.NO_SIGNATURE_FOUND);
+		return validationStatus;
 	}
 
 	private ValidationConstraintsEvaluationReportType getValidationConstraintsEvaluationReport(SignatureWrapper sigWrapper) {

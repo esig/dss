@@ -41,7 +41,10 @@ public enum Indication implements UriBasedEnum {
 	// indication:
 	PASSED("urn:etsi:019102:mainindication:passed"),
 
-	FAILED("urn:etsi:019102:mainindication:failed");
+	FAILED("urn:etsi:019102:mainindication:failed"),
+
+	// Empty report is not permitted
+	NO_SIGNATURE_FOUND("urn:cef:dss:mainindication:noSignatureFound");
 
 	private final String uri;
 

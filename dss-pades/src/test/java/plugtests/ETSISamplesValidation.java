@@ -126,13 +126,14 @@ public class ETSISamplesValidation {
 		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
 		assertNotNull(etsiValidationReport);
 		List<SignatureValidationReportType> signatureValidationReports = etsiValidationReport.getSignatureValidationReport();
-		assertEquals(diagnosticData.getSignatures().size(), signatureValidationReports.size());
-		for (SignatureValidationReportType signatureValidationReport : signatureValidationReports) {
-			List<SignersDocumentType> signersDocuments = signatureValidationReport.getSignersDocument();
-			assertNotNull(signersDocuments);
-			assertEquals(1, signersDocuments.size());
+		if (!diagnosticData.getSignatures().isEmpty()) {
+			assertEquals(diagnosticData.getSignatures().size(), signatureValidationReports.size());
+			for (SignatureValidationReportType signatureValidationReport : signatureValidationReports) {
+				List<SignersDocumentType> signersDocuments = signatureValidationReport.getSignersDocument();
+				assertNotNull(signersDocuments);
+				assertEquals(1, signersDocuments.size());
+			}
 		}
-		
 		UnmarshallingTester.unmarshallXmlReports(reports);
 	}
 
