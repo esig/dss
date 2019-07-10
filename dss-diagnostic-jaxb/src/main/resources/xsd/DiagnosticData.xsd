@@ -600,7 +600,7 @@
 	<xs:complexType name="CertificateRef">
 		<xs:sequence>
 			<xs:element name="Origin" type="CertificateRefOriginType" />
-			<xs:element name="IssuerSerial" type="xs:base64Binary" />
+			<xs:element name="IssuerSerial" type="xs:base64Binary" minOccurs="0" />
 			<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" />
 		</xs:sequence>
 	</xs:complexType>

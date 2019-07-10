@@ -137,7 +137,11 @@ public class ETSIValidationReportBuilder {
 		for (SignatureWrapper sigWrapper : diagnosticData.getSignatures()) {
 			result.getSignatureValidationReport().add(getSignatureValidationReport(sigWrapper));
 		}
-		result.setSignatureValidationObjects(getSignatureValidationObjects());
+
+		ValidationObjectListType signatureValidationObjects = getSignatureValidationObjects();
+		if (!signatureValidationObjects.getValidationObject().isEmpty()) {
+			result.setSignatureValidationObjects(signatureValidationObjects);
+		}
 
 		return result;
 	}
