@@ -119,7 +119,11 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 				sigAlgo = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.valueOf(encryptionAlgoUsedToSignThisToken),
 						DigestAlgorithm.forName(digestAlgoUsedToSignThisToken));
 			}
-			cryptoInfo.setAlgorithm(sigAlgo.getXMLId());
+			String uri = sigAlgo.getXMLId();
+			if (uri == null) {
+				uri = sigAlgo.getURIBasedOnOID();
+			}
+			cryptoInfo.setAlgorithm(uri);
 		} catch (Exception e) {
 			cryptoInfo.setAlgorithm("???");
 		}

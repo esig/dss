@@ -160,6 +160,9 @@ public enum SignatureAlgorithm {
 	private final DigestAlgorithm digestAlgo;
 
 	private final MaskGenerationFunction maskGenerationFunction;
+	
+	/* RFC 3061 */
+	private static final String OID_NAMESPACE_PREFIX = "urn:oid:";
 
 	// http://www.w3.org/TR/2013/NOTE-xmlsec-algorithms-20130411/
 	private static final Map<String, SignatureAlgorithm> XML_ALGORITHMS = registerXmlAlgorithms();
@@ -225,6 +228,8 @@ public enum SignatureAlgorithm {
 	}
 
 	private static final Map<String, SignatureAlgorithm> OID_ALGORITHMS = registerOIDAlgorithms();
+
+	private static final Map<SignatureAlgorithm, String> OID_ALGORITHMS_FOR_KEY = registerOidAlgorithmsForKey();
 
 	private static Map<String, SignatureAlgorithm> registerOIDAlgorithms() {
 
@@ -307,6 +312,14 @@ public enum SignatureAlgorithm {
 
 		oidAlgorithms.put("1.2.840.113549.1.1.10", RSA_SSA_PSS_SHA1_MGF1);
 
+		return oidAlgorithms;
+	}
+
+	private static Map<SignatureAlgorithm, String> registerOidAlgorithmsForKey() {
+		Map<SignatureAlgorithm, String> oidAlgorithms = new EnumMap<SignatureAlgorithm, String>(SignatureAlgorithm.class);
+		for (Entry<String, SignatureAlgorithm> entry : OID_ALGORITHMS.entrySet()) {
+			oidAlgorithms.put(entry.getValue(), entry.getKey());
+		}
 		return oidAlgorithms;
 	}
 
@@ -614,6 +627,26 @@ public enum SignatureAlgorithm {
 	 */
 	public String getXMLId() {
 		return XML_ALGORITHMS_FOR_KEY.get(this);
+	}
+
+	/**
+	 * Returns the OID of the signature algorithm.
+	 *
+	 * @return the OID for the current signature algorithm.
+	 */
+	public String getOID() {
+		return OID_ALGORITHMS_FOR_KEY.get(this);
+	}
+
+	/**
+	 * Returns the URI of the signature algorithm generated from its OID:
+	 * Ex.: for OID = 1.2.4.5.6.8 -> URI = urn:oid:1.2.4.5.6.8
+	 * Note: see RFC 3061 "A URN Namespace of Object Identifiers"
+	 *
+	 * @return URI based on the algorithm's OID
+	 */
+	public String getURIBasedOnOID() {
+		return OID_NAMESPACE_PREFIX + getOID();
 	}
 
 	/**
