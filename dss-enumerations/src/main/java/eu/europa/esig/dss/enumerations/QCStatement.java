@@ -18,9 +18,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss;
+package eu.europa.esig.dss.enumerations;
 
-public enum QCStatementOids implements OidDescription {
+public enum QCStatement implements OidDescription {
 
 	// --- ETSI EN 319 412-5
 
@@ -84,7 +84,7 @@ public enum QCStatementOids implements OidDescription {
 	private final String description;
 	private final String oid;
 
-	QCStatementOids(String description, String oid) {
+	QCStatement(String description, String oid) {
 		this.description = description;
 		this.oid = oid;
 	}

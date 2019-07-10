@@ -1,6 +1,6 @@
-package eu.europa.esig.dss.jaxb.parsers;
+package eu.europa.esig.jaxb.trustedlist.parsers;
 
-import eu.europa.esig.dss.enumerations.Assert;
+import eu.europa.esig.jaxb.trustedlist.enums.Assert;
 
 public final class AssertParser {
 

@@ -23,23 +23,23 @@ package eu.europa.esig.dss.validation;
 import java.util.HashMap;
 import java.util.Map;
 
-import eu.europa.esig.dss.CertificatePolicyOids;
-import eu.europa.esig.dss.ExtendedKeyUsageOids;
-import eu.europa.esig.dss.OidDescription;
-import eu.europa.esig.dss.QCStatementOids;
+import eu.europa.esig.dss.enumerations.CertificatePolicy;
+import eu.europa.esig.dss.enumerations.ExtendedKeyUsage;
+import eu.europa.esig.dss.enumerations.OidDescription;
+import eu.europa.esig.dss.enumerations.QCStatement;
 
 public class OidRepository {
 
 	private static final Map<String, String> repository = new HashMap<String, String>();
 
 	static {
-		for (OidDescription oid : CertificatePolicyOids.values()) {
+		for (OidDescription oid : CertificatePolicy.values()) {
 			repository.put(oid.getOid(), oid.getDescription());
 		}
-		for (OidDescription oid : QCStatementOids.values()) {
+		for (OidDescription oid : QCStatement.values()) {
 			repository.put(oid.getOid(), oid.getDescription());
 		}
-		for (ExtendedKeyUsageOids oid : ExtendedKeyUsageOids.values()) {
+		for (ExtendedKeyUsage oid : ExtendedKeyUsage.values()) {
 			repository.put(oid.getOid(), oid.getDescription());
 		}
 	}

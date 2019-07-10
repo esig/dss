@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.jaxb.parsers;
+package eu.europa.esig.jaxb.trustedlist.parsers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -6,7 +6,8 @@ import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.enumerations.Assert;
+import eu.europa.esig.jaxb.trustedlist.enums.Assert;
+import eu.europa.esig.jaxb.trustedlist.parsers.AssertParser;
 
 public class AssertParserTest {
 

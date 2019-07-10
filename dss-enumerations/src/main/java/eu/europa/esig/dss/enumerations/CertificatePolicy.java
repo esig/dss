@@ -18,9 +18,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss;
+package eu.europa.esig.dss.enumerations;
 
-public enum CertificatePolicyOids implements OidDescription {
+public enum CertificatePolicy implements OidDescription {
 
 	// ------------ ETSI TS 101 456
 
@@ -125,7 +125,7 @@ public enum CertificatePolicyOids implements OidDescription {
 	private final String description;
 	private final String oid;
 
-	CertificatePolicyOids(String description, String oid) {
+	CertificatePolicy(String description, String oid) {
 		this.description = description;
 		this.oid = oid;
 	}

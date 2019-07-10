@@ -26,8 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.enumerations.Assert;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.jaxb.trustedlist.enums.Assert;
 
 /**
  * Condition resulting of the matchingCriteriaIndicator of other Conditions

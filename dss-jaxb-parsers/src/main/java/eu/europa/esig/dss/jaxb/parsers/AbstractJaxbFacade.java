@@ -302,7 +302,7 @@ public abstract class AbstractJaxbFacade<T> {
 		return unmarshal.getValue();
 	}
 
-	private Marshaller getMarshaller(boolean validate) throws JAXBException, SAXException, IOException {
+	public Marshaller getMarshaller(boolean validate) throws JAXBException, SAXException, IOException {
 		Marshaller marshaller = getJAXBContext().createMarshaller();
 		if (validate) {
 			marshaller.setSchema(getSchema());
@@ -311,7 +311,7 @@ public abstract class AbstractJaxbFacade<T> {
 		return marshaller;
 	}
 
-	private Unmarshaller getUnmarshaller(boolean validate) throws JAXBException, IOException, SAXException {
+	public Unmarshaller getUnmarshaller(boolean validate) throws JAXBException, IOException, SAXException {
 		Unmarshaller unmarshaller = getJAXBContext().createUnmarshaller();
 		if (validate) {
 			unmarshaller.setSchema(getSchema());

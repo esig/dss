@@ -18,9 +18,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss;
+package eu.europa.esig.dss.enumerations;
 
-public enum ExtendedKeyUsageOids implements OidDescription {
+public enum ExtendedKeyUsage implements OidDescription {
 
 	/**
 	 * The KeyPurposeId object.
@@ -56,7 +56,7 @@ public enum ExtendedKeyUsageOids implements OidDescription {
 	private final String description;
 	private final String oid;
 
-	ExtendedKeyUsageOids(String description, String oid) {
+	ExtendedKeyUsage(String description, String oid) {
 		this.description = description;
 		this.oid = oid;
 	}

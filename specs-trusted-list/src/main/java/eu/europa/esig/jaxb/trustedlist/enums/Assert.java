@@ -18,22 +18,24 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss;
+package eu.europa.esig.jaxb.trustedlist.enums;
 
-public interface OidDescription {
+public enum Assert {
 
-	/**
-	 * This method returns the OID value
-	 * 
-	 * @return the OID value
-	 */
-	String getOid();
+	ALL("all"),
 
-	/**
-	 * This method returns the literal description of the OID
-	 * 
-	 * @return the OID description
-	 */
-	String getDescription();
+	AT_LEAST_ONE("atLeastOne"),
+
+	NONE("none");
+
+	private final String value;
+
+	Assert(String value) {
+		this.value = value;
+	}
+
+	public String getValue() {
+		return value;
+	}
 
 }

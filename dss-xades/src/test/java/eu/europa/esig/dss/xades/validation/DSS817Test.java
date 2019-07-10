@@ -26,9 +26,9 @@ import java.util.List;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.CommitmentType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;

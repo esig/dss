@@ -28,8 +28,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import eu.europa.esig.dss.ExtendedKeyUsageOids;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
+import eu.europa.esig.dss.enumerations.ExtendedKeyUsage;
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
@@ -113,7 +113,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		List<XmlOID> extendedKeyUsages = certificate.getExtendedKeyUsages();
 		if (Utils.isCollectionNotEmpty(extendedKeyUsages)) {
 			for (XmlOID xmlOID : extendedKeyUsages) {
-				if (Utils.areStringsEqual(ExtendedKeyUsageOids.OCSP_SIGNING.getOid(), xmlOID.getValue())) {
+				if (Utils.areStringsEqual(ExtendedKeyUsage.OCSP_SIGNING.getOid(), xmlOID.getValue())) {
 					return true;
 				}
 			}

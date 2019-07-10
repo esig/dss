@@ -10,7 +10,6 @@ import javax.xml.crypto.dsig.CanonicalizationMethod;
 
 import org.junit.Before;
 
-import eu.europa.esig.dss.CommitmentType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
@@ -18,6 +17,7 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignerLocation;
 import eu.europa.esig.dss.TimestampParameters;
+import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;

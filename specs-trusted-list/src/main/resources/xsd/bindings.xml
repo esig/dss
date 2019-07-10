@@ -32,9 +32,9 @@
 				<jaxb:property>
 					<jaxb:baseType>
 						<jaxb:javaType
-							name="eu.europa.esig.dss.enumerations.Assert"
-							parseMethod="eu.europa.esig.dss.jaxb.parsers.AssertParser.parse"
-							printMethod="eu.europa.esig.dss.jaxb.parsers.AssertParser.print" />
+							name="eu.europa.esig.jaxb.trustedlist.enums.Assert"
+							parseMethod="eu.europa.esig.jaxb.trustedlist.parsers.AssertParser.parse"
+							printMethod="eu.europa.esig.jaxb.trustedlist.parsers.AssertParser.print" />
 					</jaxb:baseType>
 				</jaxb:property>
 			</jaxb:bindings>

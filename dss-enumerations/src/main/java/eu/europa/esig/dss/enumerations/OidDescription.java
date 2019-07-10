@@ -20,22 +20,20 @@
  */
 package eu.europa.esig.dss.enumerations;
 
-public enum Assert {
+public interface OidDescription {
 
-	ALL("all"),
+	/**
+	 * This method returns the OID value
+	 * 
+	 * @return the OID value
+	 */
+	String getOid();
 
-	AT_LEAST_ONE("atLeastOne"),
-
-	NONE("none");
-
-	private final String value;
-
-	Assert(String value) {
-		this.value = value;
-	}
-
-	public String getValue() {
-		return value;
-	}
+	/**
+	 * This method returns the literal description of the OID
+	 * 
+	 * @return the OID description
+	 */
+	String getDescription();
 
 }

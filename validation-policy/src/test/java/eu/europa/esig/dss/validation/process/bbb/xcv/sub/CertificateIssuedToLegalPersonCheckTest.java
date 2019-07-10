@@ -27,7 +27,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.CertificatePolicyOids;
+import eu.europa.esig.dss.enumerations.CertificatePolicy;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
@@ -47,7 +47,7 @@ public class CertificateIssuedToLegalPersonCheckTest {
 
 		List<XmlCertificatePolicy> qualifiers = new ArrayList<XmlCertificatePolicy>();
 		XmlCertificatePolicy oid = new XmlCertificatePolicy();
-		oid.setValue(CertificatePolicyOids.QCP_LEGAL.getOid());
+		oid.setValue(CertificatePolicy.QCP_LEGAL.getOid());
 		qualifiers.add(oid);
 
 		XmlCertificate xc = new XmlCertificate();
@@ -69,7 +69,7 @@ public class CertificateIssuedToLegalPersonCheckTest {
 
 		List<XmlCertificatePolicy> qualifiers = new ArrayList<XmlCertificatePolicy>();
 		XmlCertificatePolicy oid = new XmlCertificatePolicy();
-		oid.setValue(CertificatePolicyOids.QCP_NATURAL.getOid());
+		oid.setValue(CertificatePolicy.QCP_NATURAL.getOid());
 		qualifiers.add(oid);
 
 		XmlCertificate xc = new XmlCertificate();

@@ -27,8 +27,8 @@ import java.util.List;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.CertificatePolicyOids;
-import eu.europa.esig.dss.QCStatementOids;
+import eu.europa.esig.dss.enumerations.CertificatePolicy;
+import eu.europa.esig.dss.enumerations.QCStatement;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
@@ -51,7 +51,7 @@ public class CertificateQualifiedCheckTest {
 
 		List<XmlOID> qcStatementIds = new ArrayList<XmlOID>();
 		XmlOID oid = new XmlOID();
-		oid.setValue(QCStatementOids.QC_COMPLIANCE.getOid());
+		oid.setValue(QCStatement.QC_COMPLIANCE.getOid());
 		qcStatementIds.add(oid);
 		xc.setQCStatementIds(qcStatementIds);
 
@@ -72,7 +72,7 @@ public class CertificateQualifiedCheckTest {
 		XmlCertificate xc = new XmlCertificate();
 		List<XmlCertificatePolicy> certPolicies = new ArrayList<XmlCertificatePolicy>();
 		XmlCertificatePolicy oid = new XmlCertificatePolicy();
-		oid.setValue(CertificatePolicyOids.QCP_PUBLIC.getOid());
+		oid.setValue(CertificatePolicy.QCP_PUBLIC.getOid());
 		certPolicies.add(oid);
 		xc.setCertificatePolicies(certPolicies);
 

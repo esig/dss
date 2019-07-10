@@ -18,12 +18,12 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss;
+package eu.europa.esig.dss.enumerations;
 
 /**
  * Defined in ETSI TS 119 172-1 Annex B
  */
-public enum CommitmentType {
+public enum CommitmentType implements UriBasedEnum, OidDescription {
 
 	/**
 	 * It indicates that the signer recognizes to have created, approved and sent the signed data.
@@ -71,12 +71,19 @@ public enum CommitmentType {
 		this.oid = oid;
 	}
 
+	@Override
 	public String getUri() {
 		return uri;
 	}
 
+	@Override
 	public String getOid() {
 		return oid;
+	}
+
+	@Override
+	public String getDescription() {
+		return name();
 	}
 
 }
