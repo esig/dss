@@ -66,6 +66,10 @@
                     </Transformations>
                 </SignatureScope>
             </SignatureScopes>
+			<SignatureDigestReference>
+			    <DigestMethod>SHA256</DigestMethod>
+			    <DigestValue>AjM7oRhYCD0tYws8Blk1sTBuqP4GCNNyPsTKMZIEgd4=</DigestValue>
+			</SignatureDigestReference>
         </Signature>
         <Signature Id="Signature-52abf6c0-67ec-40d4-b73d-08ab4f6691d0">
             <SignatureFilename>more_then_one_signature.xml</SignatureFilename>
@@ -130,6 +134,10 @@
                     </Transformations>
                 </SignatureScope>
             </SignatureScopes>
+			<SignatureDigestReference>
+			    <DigestMethod>SHA256</DigestMethod>
+			    <DigestValue>IL44vjwY5FE/jgOj7znIhF7I8bGzitanbwUbPA2kLT8=</DigestValue>
+			</SignatureDigestReference>
         </Signature>
         <Signature Id="ID-8b009720-f82c-11e6-ae9c-0050569a5ac0">
             <SignatureFilename>more_then_one_signature.xml</SignatureFilename>
@@ -193,6 +201,10 @@
                     </Transformations>
                 </SignatureScope>
             </SignatureScopes>
+			<SignatureDigestReference>
+			    <DigestMethod>SHA256</DigestMethod>
+			    <DigestValue>E86f+AGGkx5ayPpPeRqabutB5SzRpBpl1G7gxtWIkSc=</DigestValue>
+			</SignatureDigestReference>
         </Signature>
         <Signature Id="ID-e5b77ba0-1b6a-11e7-a15a-0050569a0676">
             <SignatureFilename>more_then_one_signature.xml</SignatureFilename>
@@ -256,6 +268,10 @@
                     </Transformations>
                 </SignatureScope>
             </SignatureScopes>
+			<SignatureDigestReference>
+			    <DigestMethod>SHA256</DigestMethod>
+			    <DigestValue>P8NPS4IdxCSXTDmEVo1eATd8CWtZbsiNR+P2jr8Ojh8=</DigestValue>
+			</SignatureDigestReference>
         </Signature>
     </Signatures>
     <UsedCertificates>

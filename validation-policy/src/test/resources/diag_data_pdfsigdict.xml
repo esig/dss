@@ -72,6 +72,10 @@
                     <Description>The document byte range: [0, 234543, 300079, 5547]</Description>
                 </SignatureScope>
             </SignatureScopes>
+			<SignatureDigestReference>
+			    <DigestMethod>SHA256</DigestMethod>
+			    <DigestValue>KNaF5/l0cHSl/GABAaY5NZjQzZTLeyh6Vt6t8pqU6e4=</DigestValue>
+			</SignatureDigestReference>
         </Signature>
         <Signature Id="id-db705a41fda3e98f53acef69eae86ed559c9059a3cb67f9898d1488a8b8a1225">
             <SignatureFilename></SignatureFilename>
@@ -124,6 +128,10 @@
                     <Description>Full document</Description>
                 </SignatureScope>
             </SignatureScopes>
+			<SignatureDigestReference>
+			    <DigestMethod>SHA256</DigestMethod>
+			    <DigestValue>1sqBH7HXYX7gdavXSieVdmBTP/nZWhxhQ74VcJlc+Tg=</DigestValue>
+			</SignatureDigestReference>
         </Signature>
     </Signatures>
     <UsedCertificates>

@@ -1332,8 +1332,6 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		DetailedReport detailedReport = reports.getDetailedReport();
 		assertEquals(Indication.FAILED, detailedReport.getArchiveDataValidationIndication(detailedReport.getFirstSignatureId()));
 		assertEquals(SubIndication.FORMAT_FAILURE, detailedReport.getArchiveDataValidationSubIndication(detailedReport.getFirstSignatureId()));
-		
-		reports.print();
 
 		checkReports(reports);
 	}

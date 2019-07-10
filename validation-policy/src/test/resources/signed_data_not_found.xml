@@ -51,6 +51,10 @@
                     <Description>The full XML file</Description>
                 </SignatureScope>
 	        </SignatureScopes>
+			<SignatureDigestReference>
+			    <DigestMethod>SHA256</DigestMethod>
+			    <DigestValue>0crVv0rU6dIPDf/xFamXmXy9F8hLtDxGi/PfKlhP7Pc=</DigestValue>
+			</SignatureDigestReference>
 	    </Signature>
     </Signatures>
     <UsedCertificates>

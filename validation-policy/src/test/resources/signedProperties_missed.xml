@@ -83,6 +83,10 @@
                     </Transformations>
                 </SignatureScope>
             </SignatureScopes>
+			<SignatureDigestReference>
+			    <DigestMethod>SHA256</DigestMethod>
+			    <DigestValue>VRfL7w7g6cqT9rmCBXmB8e4OZPQ5d0aa822szuModLs=</DigestValue>
+			</SignatureDigestReference>
             <SignatureValue>EckivXY1cmzNizpvhR8KhKz0f40LX3v33DApRAAxKe99RBEC7d6BgvXCz948VOKAJQIAkkGc8MUc0z+0rx/+ub8+1foC5REqhfviSZI+TwpGfjD5kCprjcG1ZgHESz8t0xgNW2jUQNBnv0lv32mNFvWJbuhPmz0OyAx8vAPQ6sxCaTwa7U5Cdc85g0kO1LpgMncYnf/0IjSD66YcoQotota5d8FydXm6j3NYHLNry2ZtnenvJp+t0VdXhlst3SxuuAaW5TKX6EMQ9emyYFUG9O+EC7OfoL5y/lcndZKosa+GRJDRaLrE66+KlaT0l+dOdEx9UPffzHm7toXEP7TLDQ==</SignatureValue>
         </Signature>
     </Signatures>

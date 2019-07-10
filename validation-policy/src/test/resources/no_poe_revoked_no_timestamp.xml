@@ -49,6 +49,10 @@
                     <Description>The XML element with ID 'xmldsig-22bfe6ce-8d82-496a-9e97-e0f8e68403c2-object0'</Description>
                 </SignatureScope>
 	        </SignatureScopes>
+			<SignatureDigestReference>
+			    <DigestMethod>SHA256</DigestMethod>
+			    <DigestValue>EuxgIhqySTSSXbqEPf4J9MPLhXBjhpP21V62G04iv40=</DigestValue>
+			</SignatureDigestReference>
 	    </Signature>
     </Signatures>
     <UsedCertificates>

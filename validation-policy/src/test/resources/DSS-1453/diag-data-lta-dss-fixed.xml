@@ -60,6 +60,10 @@
                     </Transformations>
                 </SignatureScope>
             </SignatureScopes>
+            <SignatureDigestReference>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>179a50daR5qMxSJqU+5WvxDDrTdbeRJeA/wjjmVqfTg=</DigestValue>
+            </SignatureDigestReference>
         </Signature>
     </Signatures>
     <UsedCertificates>
