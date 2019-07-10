@@ -423,16 +423,13 @@ public class ETSIValidationReportBuilder {
 	
 	private SignatureReferenceType getSignatureReference(SignatureWrapper signature) {
 		SignatureReferenceType signatureReference = objectFactory.createSignatureReferenceType();
-		// if PAdES:
-		if (signature.getSignatureFieldName() != null) {
-			signatureReference.setPAdESFieldName(signature.getSignatureFieldName());
-		} 
-		// for XAdES and CAdES:
-		else {
-			XmlSignatureDigestReference signatureDigestReference = signature.getSignatureDigestReference();
+		XmlSignatureDigestReference signatureDigestReference = signature.getSignatureDigestReference();
+		if (signatureDigestReference != null) {
 			signatureReference.setCanonicalizationMethod(signatureDigestReference.getCanonicalizationMethod());
 			signatureReference.setDigestMethod(DigestAlgorithm.forName(signatureDigestReference.getDigestMethod()).getXmlId());
 			signatureReference.setDigestValue(signatureDigestReference.getDigestValue());
+		} else if (signature.getSignatureFieldName() != null) {
+			signatureReference.setPAdESFieldName(signature.getSignatureFieldName());
 		}
 		return signatureReference;
 	}

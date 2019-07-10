@@ -23,6 +23,7 @@ package eu.europa.esig.dss.xades.validation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -67,8 +68,10 @@ import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
+import eu.europa.esig.jaxb.validationreport.POEProvisioningType;
 import eu.europa.esig.jaxb.validationreport.SASigPolicyIdentifierType;
 import eu.europa.esig.jaxb.validationreport.SignatureIdentifierType;
+import eu.europa.esig.jaxb.validationreport.SignatureReferenceType;
 import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
 import eu.europa.esig.jaxb.validationreport.ValidationObjectListType;
 import eu.europa.esig.jaxb.validationreport.ValidationObjectType;
@@ -487,15 +490,26 @@ public class XMLSignatureWrappingTest {
 		assertNotNull(etsiValidationReport);
 		ValidationObjectListType signatureValidationObjects = etsiValidationReport.getSignatureValidationObjects();
 		int signedDataCounter = 0;
+		int timestampCounter = 0;
 		for (ValidationObjectType validationObject : signatureValidationObjects.getValidationObject()) {
 			if (ObjectType.SIGNED_DATA.equals(validationObject.getObjectType())) {
 				assertNotNull(validationObject.getId());
 				assertNotNull(validationObject.getPOE());
 				signedDataCounter++;
+			} else if (ObjectType.TIMESTAMP.equals(validationObject.getObjectType())) {
+				POEProvisioningType poeProvisioning = validationObject.getPOEProvisioning();
+				List<SignatureReferenceType> signatureReferences = poeProvisioning.getSignatureReference();
+				assertEquals(1, signatureReferences.size());
+				SignatureReferenceType signatureReferenceType = signatureReferences.get(0);
+				assertNotNull(signatureReferenceType.getDigestMethod());
+				assertNotNull(signatureReferenceType.getDigestValue());
+				assertNotNull(signatureReferenceType.getCanonicalizationMethod());
+				assertNull(signatureReferenceType.getPAdESFieldName());
+				timestampCounter++;
 			}
 		}
 		assertEquals(10, signedDataCounter);
-
+		assertEquals(1, timestampCounter);
 	}
 	
 	@Test

@@ -2,6 +2,7 @@ package eu.europa.esig.dss.cades.validation;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -26,9 +27,13 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
+import eu.europa.esig.jaxb.validationreport.POEProvisioningType;
 import eu.europa.esig.jaxb.validationreport.SignatureIdentifierType;
+import eu.europa.esig.jaxb.validationreport.SignatureReferenceType;
 import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
+import eu.europa.esig.jaxb.validationreport.ValidationObjectType;
 import eu.europa.esig.jaxb.validationreport.ValidationReportType;
+import eu.europa.esig.jaxb.validationreport.enums.ObjectType;
 
 public class CAdESSignatureWrapperTest extends PKIFactoryAccess {
 	
@@ -75,6 +80,25 @@ public class CAdESSignatureWrapperTest extends PKIFactoryAccess {
 		String signatureReferenceDigestValue = Utils.toBase64(signatureDigestReference.getDigestValue());
 		String signatureElementDigestValue = Utils.toBase64(digest);
 		assertEquals(signatureReferenceDigestValue, signatureElementDigestValue);
+		
+		List<ValidationObjectType> validationObjects = etsiValidationReport.getSignatureValidationObjects().getValidationObject();
+		int timestampCounter = 0;
+		for (ValidationObjectType validationObject : validationObjects) {
+			if (ObjectType.TIMESTAMP.equals(validationObject.getObjectType())) {
+				POEProvisioningType poeProvisioning = validationObject.getPOEProvisioning();
+				List<SignatureReferenceType> signatureReferences = poeProvisioning.getSignatureReference();
+				assertEquals(1, signatureReferences.size());
+				SignatureReferenceType signatureReferenceType = signatureReferences.get(0);
+				assertNotNull(signatureReferenceType.getDigestMethod());
+				assertNotNull(signatureReferenceType.getDigestValue());
+				assertNull(signatureReferenceType.getCanonicalizationMethod());
+				assertNull(signatureReferenceType.getXAdESSignaturePtr());
+				assertNull(signatureReferenceType.getPAdESFieldName());
+				assertEquals(signatureReferenceDigestValue, Utils.toBase64(signatureReferenceType.getDigestValue()));
+				timestampCounter++;
+			}
+		}
+		assertEquals(2, timestampCounter);
 	}
 
 	@Override

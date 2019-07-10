@@ -3,6 +3,7 @@ package eu.europa.esig.dss.pades.validation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -30,6 +31,11 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
+import eu.europa.esig.jaxb.validationreport.POEProvisioningType;
+import eu.europa.esig.jaxb.validationreport.SignatureReferenceType;
+import eu.europa.esig.jaxb.validationreport.ValidationObjectType;
+import eu.europa.esig.jaxb.validationreport.ValidationReportType;
+import eu.europa.esig.jaxb.validationreport.enums.ObjectType;
 
 public class DiagnosticDataComplete extends PKIFactoryAccess {
 
@@ -231,7 +237,33 @@ public class DiagnosticDataComplete extends PKIFactoryAccess {
 		
 		String signatureReferenceDigestValue = Utils.toBase64(signatureDigestReference.getDigestValue());
 		String signatureElementDigestValue = Utils.toBase64(digest);
-		assertEquals(signatureReferenceDigestValue, signatureElementDigestValue);		
+		assertEquals(signatureReferenceDigestValue, signatureElementDigestValue);
+	}
+	
+	@Test
+	public void SignatureDigestReferencePresenceTest() throws IOException {
+		DSSDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/validation/PAdES-LTA.pdf"));
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
+		Reports report = validator.validateDocument();
+		
+		ValidationReportType etsiValidationReport = report.getEtsiValidationReportJaxb();
+		List<ValidationObjectType> validationObjects = etsiValidationReport.getSignatureValidationObjects().getValidationObject();
+		int timestampCounter = 0;
+		for (ValidationObjectType validationObject : validationObjects) {
+			if (ObjectType.TIMESTAMP.equals(validationObject.getObjectType())) {
+				POEProvisioningType poeProvisioning = validationObject.getPOEProvisioning();
+				List<SignatureReferenceType> signatureReferences = poeProvisioning.getSignatureReference();
+				assertEquals(1, signatureReferences.size());
+				SignatureReferenceType signatureReferenceType = signatureReferences.get(0);
+				assertNotNull(signatureReferenceType.getDigestMethod());
+				assertNotNull(signatureReferenceType.getDigestValue());
+				assertNull(signatureReferenceType.getCanonicalizationMethod());
+				assertNull(signatureReferenceType.getXAdESSignaturePtr());
+				timestampCounter++;
+			}
+		}
+		assertEquals(1, timestampCounter);
 	}
 
 	@Override
