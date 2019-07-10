@@ -38,6 +38,7 @@ import org.junit.runners.Parameterized.Parameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.client.http.IgnoreDataLoader;
+import eu.europa.esig.dss.signature.UnmarshallingTester;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
@@ -87,20 +88,20 @@ public class ETSISamplesValidationTest {
 		certificateVerifier.setDataLoader(new IgnoreDataLoader());
 		validator.setCertificateVerifier(certificateVerifier);
 
-		Reports validateDocument = validator.validateDocument();
-		assertNotNull(validateDocument);
-		assertNotNull(validateDocument.getXmlDiagnosticData());
-		assertNotNull(validateDocument.getXmlDetailedReport());
-		assertNotNull(validateDocument.getXmlSimpleReport());
-		assertNotNull(validateDocument.getXmlValidationReport());
+		Reports reports = validator.validateDocument();
+		assertNotNull(reports);
+		assertNotNull(reports.getXmlDiagnosticData());
+		assertNotNull(reports.getXmlDetailedReport());
+		assertNotNull(reports.getXmlSimpleReport());
+		assertNotNull(reports.getXmlValidationReport());
 
-		DiagnosticData diagnosticData = validateDocument.getDiagnosticData();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertNotNull(diagnosticData);
 
-		SimpleReport simpleReport = validateDocument.getSimpleReport();
+		SimpleReport simpleReport = reports.getSimpleReport();
 		assertNotNull(simpleReport);
 
-		DetailedReport detailedReport = validateDocument.getDetailedReport();
+		DetailedReport detailedReport = reports.getDetailedReport();
 		assertNotNull(detailedReport);
 
 		List<AdvancedSignature> signatures = validator.getSignatures();
@@ -121,6 +122,8 @@ public class ETSISamplesValidationTest {
 			assertNotNull(advancedSignature.getCRLSource());
 			assertNotNull(advancedSignature.getOCSPSource());
 		}
+
+		UnmarshallingTester.unmarshallXmlReports(reports);
 	}
 
 }
