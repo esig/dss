@@ -28,7 +28,7 @@ import java.util.Date;
 import org.bouncycastle.asn1.x509.ReasonFlags;
 
 import eu.europa.esig.dss.CRLBinary;
-import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**

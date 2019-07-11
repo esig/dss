@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss;
+package eu.europa.esig.dss.enumerations;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -30,7 +30,7 @@ import java.util.Map;
  * Supported Algorithms
  *
  */
-public enum DigestAlgorithm {
+public enum DigestAlgorithm implements UriBasedEnum, OidBasedEnum {
 
 	// see DEPRECATED http://www.w3.org/TR/2012/WD-xmlsec-algorithms-20120105/
 	// see http://www.w3.org/TR/2013/NOTE-xmlsec-algorithms-20130411/
@@ -122,13 +122,14 @@ public enum DigestAlgorithm {
 	 * @param name
 	 *             the algorithm name
 	 * @return the digest algorithm linked to the given name
-	 * @throws DSSException
-	 *                      if the given name doesn't match any algorithm
+	 * @throws IllegalArgumentException
+	 *                                  if the given name doesn't match any
+	 *                                  algorithm
 	 */
 	public static DigestAlgorithm forName(final String name) {
 		final DigestAlgorithm algorithm = Registry.ALGORITHMS.get(name);
 		if (algorithm == null) {
-			throw new DSSException("Unsupported algorithm: " + name);
+			throw new IllegalArgumentException("Unsupported algorithm: " + name);
 		}
 		return algorithm;
 	}
@@ -149,10 +150,12 @@ public enum DigestAlgorithm {
 		}
 		return algorithm;
 	}
-	
+
 	/**
 	 * Returns indication if the algorithm with given {@code name} is supported
-	 * @param name {@link String} target algorithm's name
+	 * 
+	 * @param name
+	 *             {@link String} target algorithm's name
 	 * @return TRUE if the algorithm is supported, FALSE otherwise
 	 */
 	public static boolean isSupportedAlgorithm(final String name) {
@@ -165,13 +168,14 @@ public enum DigestAlgorithm {
 	 * @param javaName
 	 *                 the JCE algorithm name
 	 * @return the digest algorithm linked to the given name
-	 * @throws DSSException
-	 *                      if the given name doesn't match any algorithm
+	 * @throws IllegalArgumentException
+	 *                                  if the given name doesn't match any
+	 *                                  algorithm
 	 */
 	public static DigestAlgorithm forJavaName(final String javaName) {
 		final DigestAlgorithm algorithm = Registry.JAVA_ALGORITHMS.get(javaName);
 		if (algorithm == null) {
-			throw new DSSException("Unsupported algorithm: " + javaName);
+			throw new IllegalArgumentException("Unsupported algorithm: " + javaName);
 		}
 		return algorithm;
 	}
@@ -182,13 +186,14 @@ public enum DigestAlgorithm {
 	 * @param oid
 	 *            the algorithm oid
 	 * @return the digest algorithm linked to the oid
-	 * @throws DSSException
-	 *             if the oid doesn't match any digest algorithm
+	 * @throws IllegalArgumentException
+	 *                                  if the oid doesn't match any digest
+	 *                                  algorithm
 	 */
 	public static DigestAlgorithm forOID(final String oid) {
 		final DigestAlgorithm algorithm = Registry.OID_ALGORITHMS.get(oid);
 		if (algorithm == null) {
-			throw new DSSException("Unsupported algorithm: " + oid);
+			throw new IllegalArgumentException("Unsupported algorithm: " + oid);
 		}
 		return algorithm;
 	}
@@ -197,26 +202,28 @@ public enum DigestAlgorithm {
 	 * Returns the digest algorithm associated to the given XML url.
 	 *
 	 * @param xmlName
-	 *            the algorithm uri
+	 *                the algorithm uri
 	 * @return the digest algorithm linked to the given uri
-	 * @throws DSSException
-	 *             if the uri doesn't match any digest algorithm
+	 * @throws IllegalArgumentException
+	 *                                  if the uri doesn't match any digest
+	 *                                  algorithm
 	 */
 	public static DigestAlgorithm forXML(final String xmlName) {
 		final DigestAlgorithm algorithm = Registry.XML_ALGORITHMS.get(xmlName);
 		if (algorithm == null) {
-			throw new DSSException("Unsupported algorithm: " + xmlName);
+			throw new IllegalArgumentException("Unsupported algorithm: " + xmlName);
 		}
 		return algorithm;
 	}
 
 	/**
-	 * Returns the digest algorithm associated to the given XML url or the default one if the algorithm does not exist.
+	 * Returns the digest algorithm associated to the given XML url or the default
+	 * one if the algorithm does not exist.
 	 *
 	 * @param xmlName
-	 *            The XML representation of the digest algorithm
+	 *                     The XML representation of the digest algorithm
 	 * @param defaultValue
-	 *            The default value for the {@code DigestAlgorithm}
+	 *                     The default value for the {@code DigestAlgorithm}
 	 * @return the corresponding {@code DigestAlgorithm} or the default value
 	 */
 	public static DigestAlgorithm forXML(final String xmlName, final DigestAlgorithm defaultValue) {
@@ -262,6 +269,7 @@ public enum DigestAlgorithm {
 	 * 
 	 * @return the ASN1 algorithm OID
 	 */
+	@Override
 	public String getOid() {
 		return oid;
 	}
@@ -271,7 +279,8 @@ public enum DigestAlgorithm {
 	 * 
 	 * @return the algorithm uri
 	 */
-	public String getXmlId() {
+	@Override
+	public String getUri() {
 		return xmlId;
 	}
 
@@ -288,13 +297,10 @@ public enum DigestAlgorithm {
 	 * Get a new instance of MessageDigest for the current digestAlgorithm
 	 * 
 	 * @return an instance of MessageDigest
+	 * @throws NoSuchAlgorithmException
 	 */
-	public MessageDigest getMessageDigest() {
-		try {
-			return MessageDigest.getInstance(javaName);
-		} catch (NoSuchAlgorithmException e) {
-			throw new DSSException("Unable to create an instance of MessageDigest", e);
-		}
+	public MessageDigest getMessageDigest() throws NoSuchAlgorithmException {
+		return MessageDigest.getInstance(javaName);
 	}
 
 	/**
@@ -304,13 +310,10 @@ public enum DigestAlgorithm {
 	 *                 the security provider to be used
 	 * 
 	 * @return an instance of MessageDigest
+	 * @throws NoSuchAlgorithmException
 	 */
-	public MessageDigest getMessageDigest(Provider provider) {
-		try {
-			return MessageDigest.getInstance(javaName, provider);
-		} catch (NoSuchAlgorithmException e) {
-			throw new DSSException("Unable to create an instance of MessageDigest with the provider", e);
-		}
+	public MessageDigest getMessageDigest(Provider provider) throws NoSuchAlgorithmException {
+		return MessageDigest.getInstance(javaName, provider);
 	}
 
 }

@@ -33,6 +33,10 @@ import java.util.List;
 
 import org.junit.Test;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+
 public class SerializationTest {
 
 	@Test

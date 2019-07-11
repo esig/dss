@@ -26,9 +26,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.EncryptionAlgorithm;
-import eu.europa.esig.dss.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.OrphanTokenType;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.RevocationType;

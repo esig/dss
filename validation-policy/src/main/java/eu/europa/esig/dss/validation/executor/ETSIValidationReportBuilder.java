@@ -9,10 +9,10 @@ import java.util.Set;
 import javax.xml.bind.JAXBElement;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
@@ -383,11 +383,10 @@ public class ETSIValidationReportBuilder {
 		return getDigestAlgAndValueType(xmlDigestAlgoAndValue.getDigestMethod(), xmlDigestAlgoAndValue.getDigestValue());
 	}
 	
-	private DigestAlgAndValueType getDigestAlgAndValueType(String digestMethod, byte[] digestValue) {
+	private DigestAlgAndValueType getDigestAlgAndValueType(DigestAlgorithm digestAlgo, byte[] digestValue) {
 		DigestAlgAndValueType digestAlgAndValueType = new DigestAlgAndValueType();
 		DigestMethodType digestMethodType = new DigestMethodType();
-		digestMethodType.setAlgorithm(DigestAlgorithm.isSupportedAlgorithm(digestMethod) ? 
-				DigestAlgorithm.forName(digestMethod).getXmlId() : "?");
+		digestMethodType.setAlgorithm(digestAlgo.getUri());
 		digestAlgAndValueType.setDigestMethod(digestMethodType);
 		digestAlgAndValueType.setDigestValue(digestValue);
 		return digestAlgAndValueType;
@@ -449,7 +448,7 @@ public class ETSIValidationReportBuilder {
 		XmlSignatureDigestReference signatureDigestReference = signature.getSignatureDigestReference();
 		if (signatureDigestReference != null) {
 			signatureReference.setCanonicalizationMethod(signatureDigestReference.getCanonicalizationMethod());
-			signatureReference.setDigestMethod(DigestAlgorithm.forName(signatureDigestReference.getDigestMethod()).getXmlId());
+			signatureReference.setDigestMethod(signatureDigestReference.getDigestMethod().getUri());
 			signatureReference.setDigestValue(signatureDigestReference.getDigestValue());
 		} else if (signature.getSignatureFieldName() != null) {
 			signatureReference.setPAdESFieldName(signature.getSignatureFieldName());
@@ -683,7 +682,7 @@ public class ETSIValidationReportBuilder {
 			for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
 				if ( (digestMatcher == null || DigestMatcherType.SIGNED_PROPERTIES.equals(xmlDigestMatcher.getType()) || 
 						DigestMatcherType.CONTENT_DIGEST.equals(xmlDigestMatcher.getType()) ) &&
-						Utils.isStringNotEmpty(xmlDigestMatcher.getDigestMethod()) && Utils.isArrayNotEmpty(xmlDigestMatcher.getDigestValue())) {
+						xmlDigestMatcher.getDigestMethod() != null && Utils.isArrayNotEmpty(xmlDigestMatcher.getDigestValue())) {
 					digestMatcher = xmlDigestMatcher;
 				}
 			}
@@ -902,7 +901,7 @@ public class ETSIValidationReportBuilder {
 
 	private DigestMethodType getDigestMethodType(XmlDigestAlgoAndValue digestAlgoAndValue) {
 		DigestMethodType digestMethodType = new DigestMethodType();
-		digestMethodType.setAlgorithm(DigestAlgorithm.forName(digestAlgoAndValue.getDigestMethod()).getXmlId());
+		digestMethodType.setAlgorithm(digestAlgoAndValue.getDigestMethod().getUri());
 		return digestMethodType;
 	}
 

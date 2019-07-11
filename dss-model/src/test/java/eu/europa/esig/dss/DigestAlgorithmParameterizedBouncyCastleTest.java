@@ -23,6 +23,7 @@ package eu.europa.esig.dss;
 import static org.junit.Assert.assertNotNull;
 
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
 import java.util.Arrays;
 import java.util.Collection;
@@ -32,6 +33,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
 @RunWith(Parameterized.class)
 public class DigestAlgorithmParameterizedBouncyCastleTest {
@@ -50,7 +53,7 @@ public class DigestAlgorithmParameterizedBouncyCastleTest {
 	}
 
 	@Test
-	public void getMessageDigest() {
+	public void getMessageDigest() throws NoSuchAlgorithmException {
 		MessageDigest md = digestAlgo.getMessageDigest(provider);
 		assertNotNull(md);
 		assertNotNull(md.digest(new byte[] { 1, 2, 3 }));

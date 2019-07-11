@@ -92,19 +92,19 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSSecurityProvider;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Digest;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DigestDocument;
-import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.IssuerSerialInfo;
-import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.OID;
-import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.SignerAttributeV2;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.EndorsementType;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.identifier.SignatureIdentifier;
 import eu.europa.esig.dss.identifier.TokenIdentifier;
@@ -657,7 +657,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		String oid = signerInformation.getEncryptionAlgOID();
 		try {
 			return EncryptionAlgorithm.forOID(oid);
-		} catch (DSSException e) {
+		} catch (IllegalArgumentException e) {
 			// purposely empty
 		}
 
@@ -678,7 +678,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			try {
 				final String digestAlgOID = signerInformation.getDigestAlgOID();
 				return DigestAlgorithm.forOID(digestAlgOID);
-			} catch (DSSException e) {
+			} catch (IllegalArgumentException e) {
 				LOG.warn(e.getMessage());
 				return null;
 			}
@@ -957,7 +957,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			String oid = algorithmIdentifier.getAlgorithm().getId();
 			try {
 				result.add(DigestAlgorithm.forOID(oid));
-			} catch (DSSException e) {
+			} catch (IllegalArgumentException e) {
 				LOG.warn("Not a digest algorithm {} : {}", oid, e.getMessage());
 			}
 		}

@@ -22,9 +22,9 @@ package eu.europa.esig.dss.validation.reports.wrapper;
 
 import java.util.List;
 
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.EncryptionAlgorithm;
-import eu.europa.esig.dss.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 
 public interface TokenProxy {
@@ -35,15 +35,9 @@ public interface TokenProxy {
 
 	boolean isSignatureValid();
 
-	String getDigestAlgoUsedToSignThisToken();
-
 	DigestAlgorithm getDigestAlgorithm();
 
-	String getEncryptionAlgoUsedToSignThisToken();
-
 	EncryptionAlgorithm getEncryptionAlgorithm();
-
-	String getMaskGenerationFunctionUsedToSignThisToken();
 
 	MaskGenerationFunction getMaskGenerationFunction();
 

@@ -40,6 +40,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+
 public class DigestTest {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(DigestTest.class);

@@ -22,6 +22,11 @@ package eu.europa.esig.dss;
 
 import java.io.Serializable;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+
 /**
  * Parameters for a Signature creation/extension
  */

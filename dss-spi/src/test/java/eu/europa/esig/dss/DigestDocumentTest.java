@@ -27,6 +27,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.utils.Utils;
 
 public class DigestDocumentTest {

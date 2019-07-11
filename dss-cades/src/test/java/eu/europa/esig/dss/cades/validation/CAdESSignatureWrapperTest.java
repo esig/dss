@@ -17,8 +17,8 @@ import org.junit.Test;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureDigestReference;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
@@ -58,7 +58,7 @@ public class CAdESSignatureWrapperTest extends PKIFactoryAccess {
 		SignatureIdentifierType signatureIdentifier = signatureValidationReport.getSignatureIdentifier();
 		assertNotNull(signatureIdentifier);
 		assertNotNull(signatureIdentifier.getDigestAlgAndValue());
-		assertEquals(DigestAlgorithm.forName(signature.getDigestMatchers().get(0).getDigestMethod()), 
+		assertEquals(signature.getDigestMatchers().get(0).getDigestMethod(),
 				DigestAlgorithm.forXML(signatureIdentifier.getDigestAlgAndValue().getDigestMethod().getAlgorithm()));
 		assertTrue(Arrays.equals(signature.getDigestMatchers().get(0).getDigestValue(), signatureIdentifier.getDigestAlgAndValue().getDigestValue()));
 		assertNotNull(signatureIdentifier.getSignatureValue());
@@ -75,7 +75,7 @@ public class CAdESSignatureWrapperTest extends PKIFactoryAccess {
 		SignerInformation signerInformation = signerInfos.iterator().next();
 		SignerInfo signerInfo = signerInformation.toASN1Structure();
 		byte[] derEncoded = DSSASN1Utils.getDEREncoded(signerInfo);
-		byte[] digest = DSSUtils.digest(DigestAlgorithm.forName(signatureDigestReference.getDigestMethod()), derEncoded);
+		byte[] digest = DSSUtils.digest(signatureDigestReference.getDigestMethod(), derEncoded);
 		
 		String signatureReferenceDigestValue = Utils.toBase64(signatureDigestReference.getDigestValue());
 		String signatureElementDigestValue = Utils.toBase64(digest);

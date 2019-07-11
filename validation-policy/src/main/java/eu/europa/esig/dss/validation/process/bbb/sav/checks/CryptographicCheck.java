@@ -48,23 +48,23 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Abst
 	protected boolean process() {
 		
 		// Check encryption algorithm
-		if (!encryptionAlgorithmIsReliable(token.getEncryptionAlgoUsedToSignThisToken()))
+		if (!encryptionAlgorithmIsReliable(token.getEncryptionAlgorithm()))
 			return false;
 		
 		// Check digest algorithm
-		if (!digestAlgorithmIsReliable(token.getDigestAlgoUsedToSignThisToken()))
+		if (!digestAlgorithmIsReliable(token.getDigestAlgorithm()))
 			return false;
 		
 		// Check public key size
-		if (!publicKeySizeIsAcceptable(token.getEncryptionAlgoUsedToSignThisToken(), token.getKeyLengthUsedToSignThisToken()))
+		if (!publicKeySizeIsAcceptable(token.getEncryptionAlgorithm(), token.getKeyLengthUsedToSignThisToken()))
 			return false;
 		
 		// Check digest algorithm expiration date
-		if (!digestAlgorithmIsValidOnValidationDate(token.getDigestAlgoUsedToSignThisToken()))
+		if (!digestAlgorithmIsValidOnValidationDate(token.getDigestAlgorithm()))
 			return false;
 		
 		// Check encryption algorithm expiration date
-		if (!encryptionAlgorithmIsValidOnValidationDate(token.getEncryptionAlgoUsedToSignThisToken(), token.getKeyLengthUsedToSignThisToken()))
+		if (!encryptionAlgorithmIsValidOnValidationDate(token.getEncryptionAlgorithm(), token.getKeyLengthUsedToSignThisToken()))
 			return false;
 		
 		return true;

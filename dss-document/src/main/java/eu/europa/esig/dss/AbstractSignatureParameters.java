@@ -23,6 +23,7 @@ package eu.europa.esig.dss;
 import java.util.LinkedList;
 import java.util.List;
 
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.identifier.TokenIdentifier;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.x509.CertificateToken;

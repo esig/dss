@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.x509;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
 /**
  * Represents the value of a SignaturePolicy

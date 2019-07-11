@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss;
+package eu.europa.esig.dss.enumerations;
 
 import java.security.Key;
 import java.util.HashMap;
@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  * Supported signature encryption algorithms.
  */
-public enum EncryptionAlgorithm {
+public enum EncryptionAlgorithm implements OidBasedEnum {
 
 	RSA("RSA", "1.2.840.113549.1.1.1", "RSA/ECB/PKCS1Padding"),
 
@@ -62,13 +62,13 @@ public enum EncryptionAlgorithm {
 	 * @param oid
 	 *            the ASN1 algorithm OID
 	 * @return the linked encryption algorithm
-	 * @throws DSSException
-	 *             if the oid doesn't match any algorithm
+	 * @throws IllegalArgumentException
+	 *                                  if the oid doesn't match any algorithm
 	 */
 	public static EncryptionAlgorithm forOID(String oid) {
 		EncryptionAlgorithm algorithm = Registry.OID_ALGORITHMS.get(oid);
 		if (algorithm == null) {
-			throw new DSSException("Unsupported algorithm: " + oid);
+			throw new IllegalArgumentException("Unsupported algorithm: " + oid);
 		}
 		return algorithm;
 	}
@@ -76,9 +76,11 @@ public enum EncryptionAlgorithm {
 	/**
 	 * Returns the encryption algorithm associated to the given key.
 	 *
-	 * @param key the key
+	 * @param key
+	 *            the key
 	 * @return the linked encryption algorithm
-	 * @throws DSSException if the key doesn't match any algorithm
+	 * @throws IllegalArgumentException
+	 *                                  if the key doesn't match any algorithm
 	 */
 	public static EncryptionAlgorithm forKey(Key key) {
 		return forName(key.getAlgorithm());
@@ -88,10 +90,10 @@ public enum EncryptionAlgorithm {
 	 * Returns the encryption algorithm associated to the given JCE name.
 	 *
 	 * @param name
-	 *            the encryption algorithm name
+	 *             the encryption algorithm name
 	 * @return the linked encryption algorithm
-	 * @throws DSSException
-	 *             if the name doesn't match any algorithm
+	 * @throws IllegalArgumentException
+	 *                                  if the name doesn't match any algorithm
 	 */
 	public static EncryptionAlgorithm forName(final String name) {
 		// To be checked if ECC exists also .
@@ -106,7 +108,7 @@ public enum EncryptionAlgorithm {
 		try {
 			return valueOf(name);
 		} catch (Exception e) {
-			throw new DSSException("Unsupported algorithm: " + name);
+			throw new IllegalArgumentException("Unsupported algorithm: " + name);
 		}
 	}
 
@@ -147,6 +149,7 @@ public enum EncryptionAlgorithm {
 	 * 
 	 * @return the OID
 	 */
+	@Override
 	public String getOid() {
 		return oid;
 	}

@@ -33,10 +33,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.client.NonceSource;
 import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.client.http.NativeHTTPDataLoader;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 

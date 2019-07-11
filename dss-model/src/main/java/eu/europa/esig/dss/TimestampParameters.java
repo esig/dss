@@ -24,6 +24,8 @@ import java.io.Serializable;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+
 /**
  * This class represents the parameters provided when generating specific timestamps in a signature, such as an
  * AllDataObjectsTimestamp or an

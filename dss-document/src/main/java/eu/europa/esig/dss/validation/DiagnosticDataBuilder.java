@@ -53,19 +53,18 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSPKUtils;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Digest;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.IssuerSerialInfo;
-import eu.europa.esig.dss.MaskGenerationFunction;
-import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.OrphanTokenType;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.jaxb.diagnostic.ObjectFactory;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
@@ -600,7 +599,7 @@ public class DiagnosticDataBuilder {
 		if (signatureDigestReference != null) {
 			XmlSignatureDigestReference xmlDigestReference = new XmlSignatureDigestReference();
 			xmlDigestReference.setCanonicalizationMethod(signatureDigestReference.getCanonicalizationMethod());
-			xmlDigestReference.setDigestMethod(signatureDigestReference.getDigestAlgorithm().getName());
+			xmlDigestReference.setDigestMethod(signatureDigestReference.getDigestAlgorithm());
 			xmlDigestReference.setDigestValue(signatureDigestReference.getDigestValue());
 			return xmlDigestReference;
 		}
@@ -1314,7 +1313,7 @@ public class DiagnosticDataBuilder {
 		XmlDigestMatcher digestMatcher = new XmlDigestMatcher();
 		digestMatcher.setType(DigestMatcherType.MESSAGE_IMPRINT);
 		DigestAlgorithm digestAlgo = timestampToken.getSignedDataDigestAlgo();
-		digestMatcher.setDigestMethod(digestAlgo == null ? "" : digestAlgo.getName());
+		digestMatcher.setDigestMethod(digestAlgo);
 		digestMatcher.setDigestValue(timestampToken.getMessageImprintDigest());
 		digestMatcher.setDataFound(timestampToken.isMessageImprintDataFound());
 		digestMatcher.setDataIntact(timestampToken.isMessageImprintDataIntact());
@@ -1396,12 +1395,9 @@ public class DiagnosticDataBuilder {
 
 		SignatureAlgorithm signatureAlgorithm = token.getSignatureAlgorithm();
 		if (signatureAlgorithm != null) {
-			xmlBasicSignatureType.setEncryptionAlgoUsedToSignThisToken(signatureAlgorithm.getEncryptionAlgorithm().getName());
-			xmlBasicSignatureType.setDigestAlgoUsedToSignThisToken(signatureAlgorithm.getDigestAlgorithm().getName());
-			MaskGenerationFunction maskGenerationFunction = signatureAlgorithm.getMaskGenerationFunction();
-			if (maskGenerationFunction != null) {
-				xmlBasicSignatureType.setMaskGenerationFunctionUsedToSignThisToken(maskGenerationFunction.name());
-			}
+			xmlBasicSignatureType.setEncryptionAlgoUsedToSignThisToken(signatureAlgorithm.getEncryptionAlgorithm());
+			xmlBasicSignatureType.setDigestAlgoUsedToSignThisToken(signatureAlgorithm.getDigestAlgorithm());
+			xmlBasicSignatureType.setMaskGenerationFunctionUsedToSignThisToken(signatureAlgorithm.getMaskGenerationFunction());
 		}
 		xmlBasicSignatureType.setKeyLengthUsedToSignThisToken(DSSPKUtils.getPublicKeySize(token));
 
@@ -1413,20 +1409,12 @@ public class DiagnosticDataBuilder {
 
 	private XmlBasicSignature getXmlBasicSignature(AdvancedSignature signature, CertificateToken signingCertificateToken) {
 		XmlBasicSignature xmlBasicSignature = new XmlBasicSignature();
-
-		final EncryptionAlgorithm encryptionAlgorithm = signature.getEncryptionAlgorithm();
-		final String encryptionAlgorithmString = encryptionAlgorithm == null ? "?" : encryptionAlgorithm.getName();
-		xmlBasicSignature.setEncryptionAlgoUsedToSignThisToken(encryptionAlgorithmString);
+		xmlBasicSignature.setEncryptionAlgoUsedToSignThisToken(signature.getEncryptionAlgorithm());
 
 		final int keyLength = signingCertificateToken == null ? 0 : DSSPKUtils.getPublicKeySize(signingCertificateToken.getPublicKey());
 		xmlBasicSignature.setKeyLengthUsedToSignThisToken(String.valueOf(keyLength));
-		final DigestAlgorithm digestAlgorithm = signature.getDigestAlgorithm();
-		final String digestAlgorithmString = digestAlgorithm == null ? "?" : digestAlgorithm.getName();
-		xmlBasicSignature.setDigestAlgoUsedToSignThisToken(digestAlgorithmString);
-		MaskGenerationFunction maskGenerationFunction = signature.getMaskGenerationFunction();
-		if (maskGenerationFunction != null) {
-			xmlBasicSignature.setMaskGenerationFunctionUsedToSignThisToken(maskGenerationFunction.name());
-		}
+		xmlBasicSignature.setDigestAlgoUsedToSignThisToken(signature.getDigestAlgorithm());
+		xmlBasicSignature.setMaskGenerationFunctionUsedToSignThisToken(signature.getMaskGenerationFunction());
 
 		SignatureCryptographicVerification scv = signature.getSignatureCryptographicVerification();
 		xmlBasicSignature.setSignatureIntact(scv.isSignatureIntact());
@@ -1450,8 +1438,7 @@ public class DiagnosticDataBuilder {
 		Digest digest = referenceValidation.getDigest();
 		if (digest != null) {
 			ref.setDigestValue(digest.getValue());
-			DigestAlgorithm algorithm = digest.getAlgorithm();
-			ref.setDigestMethod(algorithm != null ? algorithm.getName() : "?");
+			ref.setDigestMethod(digest.getAlgorithm());
 		}
 		ref.setDataFound(referenceValidation.isFound());
 		ref.setDataIntact(referenceValidation.isIntact());
@@ -1514,7 +1501,7 @@ public class DiagnosticDataBuilder {
 		xmlCert.setNotBefore(certToken.getNotBefore());
 		final PublicKey publicKey = certToken.getPublicKey();
 		xmlCert.setPublicKeySize(DSSPKUtils.getPublicKeySize(publicKey));
-		xmlCert.setPublicKeyEncryptionAlgo(EncryptionAlgorithm.forKey(publicKey).getName());
+		xmlCert.setPublicKeyEncryptionAlgo(EncryptionAlgorithm.forKey(publicKey));
 
 		xmlCert.setKeyUsageBits(certToken.getKeyUsageBits());
 		xmlCert.setExtendedKeyUsages(getXmlOids(DSSASN1Utils.getExtendedKeyUsage(certToken)));
@@ -1733,7 +1720,7 @@ public class DiagnosticDataBuilder {
 
 	private XmlDigestAlgoAndValue getXmlDigestAlgoAndValue(DigestAlgorithm digestAlgo, byte[] digestValue) {
 		XmlDigestAlgoAndValue xmlDigestAlgAndValue = new XmlDigestAlgoAndValue();
-		xmlDigestAlgAndValue.setDigestMethod(digestAlgo == null ? "" : digestAlgo.getName());
+		xmlDigestAlgAndValue.setDigestMethod(digestAlgo);
 		xmlDigestAlgAndValue.setDigestValue(digestValue == null ? DSSUtils.EMPTY_BYTE_ARRAY : digestValue);
 		return xmlDigestAlgAndValue;
 	}

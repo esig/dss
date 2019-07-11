@@ -53,15 +53,15 @@ import org.xml.sax.SAXException;
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.Policy;
-import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignerLocation;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EndorsementType;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.jaxb.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
@@ -354,7 +354,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 
 		XmlDigestAlgoAndValue digestAlgoAndValue = signerData.getDigestAlgoAndValue();
 		assertNotNull(digestAlgoAndValue);
-		DigestAlgorithm digestAlgorithm = DigestAlgorithm.forName(digestAlgoAndValue.getDigestMethod());
+		DigestAlgorithm digestAlgorithm = digestAlgoAndValue.getDigestMethod();
 		assertNotNull(digestAlgorithm);
 		
 		List<DSSDocument> similarDocuments = buildCloseDocuments(originalDocument);
@@ -714,7 +714,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
 		assertTrue(Utils.isCollectionNotEmpty(digestMatchers));
 		for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
-			assertEquals(expectedDigestAlgorithm.getName(), xmlDigestMatcher.getDigestMethod());
+			assertEquals(expectedDigestAlgorithm, xmlDigestMatcher.getDigestMethod());
 		}
 	}
 

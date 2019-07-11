@@ -22,9 +22,9 @@ package eu.europa.esig.dss.cookbook.example.snippets;
 
 import java.util.List;
 
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.Pkcs11SignatureToken;
 import eu.europa.esig.dss.utils.Utils;

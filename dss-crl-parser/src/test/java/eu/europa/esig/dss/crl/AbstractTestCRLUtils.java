@@ -39,7 +39,7 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.CRLBinary;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 public abstract class AbstractTestCRLUtils extends AbstractCRLParserTestUtils {
@@ -344,7 +344,7 @@ public abstract class AbstractTestCRLUtils extends AbstractCRLParserTestUtils {
 		}
 	}
 
-	@Test(expected = DSSException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testPSSwithoutBouncyCastle() throws Exception {
 		try (InputStream is = AbstractTestCRLUtils.class.getResourceAsStream("/d-trust_root_ca_1_2017.crl");
 				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/D-TRUST_Root_CA_1_2017.crt")) {

@@ -27,10 +27,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.asic.ASiCNamespace;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
 public abstract class AbstractManifestBuilder {
 
@@ -50,7 +50,7 @@ public abstract class AbstractManifestBuilder {
 		}
 
 		final Element digestMethodDom = DomUtils.addElement(documentDom, dataObjectReferenceDom, XMLSignature.XMLNS, "DigestMethod");
-		digestMethodDom.setAttribute("Algorithm", digestAlgorithm.getXmlId());
+		digestMethodDom.setAttribute("Algorithm", digestAlgorithm.getUri());
 
 		final Element digestValueDom = DomUtils.addElement(documentDom, dataObjectReferenceDom, XMLSignature.XMLNS, "DigestValue");
 		final Text textNode = documentDom.createTextNode(document.getDigest(digestAlgorithm));

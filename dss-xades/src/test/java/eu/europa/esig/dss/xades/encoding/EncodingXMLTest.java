@@ -36,7 +36,7 @@ import org.apache.xml.security.algorithms.implementations.SignatureECDSA;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Test;
 
-import eu.europa.esig.dss.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.signature.DSSSignatureUtils;
 

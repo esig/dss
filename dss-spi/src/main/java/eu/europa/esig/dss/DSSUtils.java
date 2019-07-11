@@ -38,6 +38,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
 import java.security.Security;
 import java.security.cert.CertificateFactory;
@@ -70,6 +71,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.client.http.DataLoader;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.identifier.TokenIdentifier;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -352,8 +354,16 @@ public final class DSSUtils {
 	 * @return digested array of bytes
 	 */
 	public static byte[] digest(final DigestAlgorithm digestAlgorithm, final byte[] data) {
-		final MessageDigest messageDigest = digestAlgorithm.getMessageDigest();
+		final MessageDigest messageDigest = getMessageDigest(digestAlgorithm);
 		return messageDigest.digest(data);
+	}
+
+	public static MessageDigest getMessageDigest(DigestAlgorithm digestAlgorithm) {
+		try {
+			return digestAlgorithm.getMessageDigest();
+		} catch (NoSuchAlgorithmException e) {
+			throw new DSSException("Unable to create a MessageDigest for algorithm " + digestAlgorithm, e);
+		}
 	}
 
 	/**
@@ -388,8 +398,7 @@ public final class DSSUtils {
 	 */
 	public static byte[] digest(final DigestAlgorithm digestAlgo, final InputStream inputStream) {
 		try {
-
-			final MessageDigest messageDigest = digestAlgo.getMessageDigest();
+			final MessageDigest messageDigest = getMessageDigest(digestAlgo);
 			final byte[] buffer = new byte[4096];
 			int count = 0;
 			while ((count = inputStream.read(buffer)) > 0) {
@@ -410,7 +419,7 @@ public final class DSSUtils {
 	}
 
 	public static byte[] digest(DigestAlgorithm digestAlgorithm, byte[]... data) {
-		final MessageDigest messageDigest = digestAlgorithm.getMessageDigest();
+		final MessageDigest messageDigest = getMessageDigest(digestAlgorithm);
 		for (final byte[] bytes : data) {
 			messageDigest.update(bytes);
 		}

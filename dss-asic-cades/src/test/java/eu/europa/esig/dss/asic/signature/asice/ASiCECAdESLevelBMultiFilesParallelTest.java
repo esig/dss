@@ -37,7 +37,6 @@ import org.junit.Test;
 import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
@@ -48,6 +47,7 @@ import eu.europa.esig.dss.asic.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.signature.ASiCWithCAdESService;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
@@ -164,7 +164,7 @@ public class ASiCECAdESLevelBMultiFilesParallelTest extends PKIFactoryAccess {
 		assertNotNull(xmlSignatureScopeFirstDocument.getSignerData());
 		XmlDigestAlgoAndValue digestAlgoAndValue = xmlSignatureScopeFirstDocument.getSignerData().getDigestAlgoAndValue();
 		assertNotNull(digestAlgoAndValue);
-		DigestAlgorithm digestAlgorithm = DigestAlgorithm.forName(digestAlgoAndValue.getDigestMethod());
+		DigestAlgorithm digestAlgorithm = digestAlgoAndValue.getDigestMethod();
 		assertTrue(Arrays.equals(Utils.fromBase64(firstDocument.getDigest(digestAlgorithm)), digestAlgoAndValue.getDigestValue()));
 		
 		XmlSignatureScope xmlSignatureScopeSecondDocument = signatureScopes.get(2);
@@ -172,7 +172,7 @@ public class ASiCECAdESLevelBMultiFilesParallelTest extends PKIFactoryAccess {
 		assertNotNull(xmlSignatureScopeSecondDocument.getSignerData());
 		digestAlgoAndValue = xmlSignatureScopeSecondDocument.getSignerData().getDigestAlgoAndValue();
 		assertNotNull(digestAlgoAndValue);
-		digestAlgorithm = DigestAlgorithm.forName(digestAlgoAndValue.getDigestMethod());
+		digestAlgorithm = digestAlgoAndValue.getDigestMethod();
 		assertTrue(Arrays.equals(Utils.fromBase64(secondDocument.getDigest(digestAlgorithm)), digestAlgoAndValue.getDigestValue()));
 		
 	}

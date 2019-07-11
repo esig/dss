@@ -25,6 +25,8 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Locale;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+
 /**
  * Container for a Digest and his algorithm
  */

@@ -38,7 +38,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.client.http.IgnoreDataLoader;
@@ -131,7 +130,7 @@ public class XMLSignatureWrappingTest {
 		NodeList nodeList = DomUtils.getNodeList(documentDom.getDocumentElement(), xPathQueryHolder.XPATH__SIGNATURE);
 		Element signatureElement = (Element) nodeList.item(0);
 		byte[] canonicalizedSignatureElement = DSSXMLUtils.canonicalizeSubtree(signatureDigestReference.getCanonicalizationMethod(), signatureElement);
-		byte[] digest = DSSUtils.digest(DigestAlgorithm.forName(signatureDigestReference.getDigestMethod()), canonicalizedSignatureElement);
+		byte[] digest = DSSUtils.digest(signatureDigestReference.getDigestMethod(), canonicalizedSignatureElement);
 		
 		String signatureReferenceDigestValue = Utils.toBase64(signatureDigestReference.getDigestValue());
 		String signatureElementDigestValue = Utils.toBase64(digest);
@@ -367,7 +366,7 @@ public class XMLSignatureWrappingTest {
 		assertEquals(1, nodeList.getLength());
 		Element signatureElement = (Element) nodeList.item(0);
 		byte[] canonicalizedSignatureElement = DSSXMLUtils.canonicalizeSubtree(signatureDigestReference.getCanonicalizationMethod(), signatureElement);
-		byte[] digest = DSSUtils.digest(DigestAlgorithm.forName(signatureDigestReference.getDigestMethod()), canonicalizedSignatureElement);
+		byte[] digest = DSSUtils.digest(signatureDigestReference.getDigestMethod(), canonicalizedSignatureElement);
 		
 		String signatureReferenceDigestValue = Utils.toBase64(signatureDigestReference.getDigestValue());
 		String signatureElementDigestValue = Utils.toBase64(digest);

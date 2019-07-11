@@ -33,13 +33,13 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DigestDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
@@ -139,7 +139,7 @@ public class DSS920ValidationWithDigestTest extends PKIFactoryAccess {
 		assertNotNull(xmlSignatureScope.getSignerData().getDigestAlgoAndValue().getDigestValue());
 		
 		assertTrue(Arrays.equals(xmlSignatureScope.getSignerData().getDigestAlgoAndValue().getDigestValue(), 
-				Utils.fromBase64(toBeSigned.getDigest(DigestAlgorithm.forName(xmlSignatureScope.getSignerData().getDigestAlgoAndValue().getDigestMethod())))
+				Utils.fromBase64(toBeSigned.getDigest(xmlSignatureScope.getSignerData().getDigestAlgoAndValue().getDigestMethod()))
 				));
 		
 	}

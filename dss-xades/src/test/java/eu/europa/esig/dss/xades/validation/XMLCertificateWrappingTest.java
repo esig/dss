@@ -11,9 +11,9 @@ import java.util.List;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -59,7 +59,7 @@ public class XMLCertificateWrappingTest extends PKIFactoryAccess {
 			}
 			assertFalse(certificate.getSources().contains(CertificateSourceType.UNKNOWN));
 			assertNotNull(certificate.getDigestAlgoAndValue());
-			assertEquals(DigestAlgorithm.SHA256.name(), certificate.getDigestAlgoAndValue().getDigestMethod());
+			assertEquals(DigestAlgorithm.SHA256, certificate.getDigestAlgoAndValue().getDigestMethod());
 		}
 		assertEquals(1, certsFromTimestamp);
 	}

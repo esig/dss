@@ -30,9 +30,9 @@ import java.util.List;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
 public class Pkcs12SignatureTokenTest {
 

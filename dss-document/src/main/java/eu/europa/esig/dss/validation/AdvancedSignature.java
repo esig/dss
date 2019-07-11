@@ -27,12 +27,12 @@ import java.util.Set;
 
 import eu.europa.esig.dss.CertificateRef;
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.EncryptionAlgorithm;
-import eu.europa.esig.dss.MaskGenerationFunction;
-import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.identifier.SignatureIdentifier;
 import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
