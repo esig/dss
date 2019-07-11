@@ -42,7 +42,7 @@
             </CertificateChain>
             <ContentType>text/xml</ContentType>
             <CommitmentTypeIndication/>
-            <SignerRole Category="CLAIMED">
+            <SignerRole Category="claimed">
             	<Role>KalańskiMichał660426140762688287kalanskimkalanskim4</Role>
             </SignerRole>
             <Policy>
@@ -110,7 +110,7 @@
             </CertificateChain>
             <ContentType>text/xml</ContentType>
             <CommitmentTypeIndication/>
-            <SignerRole Category="CLAIMED">
+            <SignerRole Category="claimed">
             	<Role>KalańskiMichał660426140761013074kalanskimkalanskim1</Role>
             </SignerRole>
             <Policy>

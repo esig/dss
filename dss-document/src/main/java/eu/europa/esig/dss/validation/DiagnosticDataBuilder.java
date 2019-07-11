@@ -554,12 +554,13 @@ public class DiagnosticDataBuilder {
 
 		final CandidatesForSigningCertificate candidatesForSigningCertificate = signature.getCandidatesForSigningCertificate();
 		final CertificateValidity theCertificateValidity = candidatesForSigningCertificate.getTheCertificateValidity();
+		CertificateToken signingCertificateToken = null;
 		if (theCertificateValidity != null) {
 			xmlSignature.setSigningCertificate(getXmlSigningCertificate(theCertificateValidity));
-			CertificateToken signingCertificateToken = theCertificateValidity.getCertificateToken();
+			signingCertificateToken = theCertificateValidity.getCertificateToken();
 			xmlSignature.setCertificateChain(getXmlForCertificateChain(signingCertificateToken.getPublicKey()));
-			xmlSignature.setBasicSignature(getXmlBasicSignature(signature, signingCertificateToken));
 		}
+		xmlSignature.setBasicSignature(getXmlBasicSignature(signature, signingCertificateToken));
 		xmlSignature.setDigestMatchers(getXmlDigestMatchers(signature));
 
 		xmlSignature.setPolicy(getXmlPolicy(signature));
