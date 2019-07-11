@@ -22,6 +22,7 @@ package eu.europa.esig.dss;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.Provider;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -293,6 +294,22 @@ public enum DigestAlgorithm {
 			return MessageDigest.getInstance(javaName);
 		} catch (NoSuchAlgorithmException e) {
 			throw new DSSException("Unable to create an instance of MessageDigest", e);
+		}
+	}
+
+	/**
+	 * Get a new instance of MessageDigest for the current digestAlgorithm
+	 * 
+	 * @param provider
+	 *                 the security provider to be used
+	 * 
+	 * @return an instance of MessageDigest
+	 */
+	public MessageDigest getMessageDigest(Provider provider) {
+		try {
+			return MessageDigest.getInstance(javaName, provider);
+		} catch (NoSuchAlgorithmException e) {
+			throw new DSSException("Unable to create an instance of MessageDigest with the provider", e);
 		}
 	}
 

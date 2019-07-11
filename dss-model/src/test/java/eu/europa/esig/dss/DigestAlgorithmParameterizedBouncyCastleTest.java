@@ -23,13 +23,11 @@ package eu.europa.esig.dss;
 import static org.junit.Assert.assertNotNull;
 
 import java.security.MessageDigest;
-import java.security.Security;
+import java.security.Provider;
 import java.util.Arrays;
 import java.util.Collection;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -40,15 +38,7 @@ public class DigestAlgorithmParameterizedBouncyCastleTest {
 
 	private final DigestAlgorithm digestAlgo;
 
-	@BeforeClass
-	public static void init() {
-		Security.addProvider(new BouncyCastleProvider());
-	}
-
-	@AfterClass
-	public static void reset() {
-		Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME);
-	}
+	private Provider provider = new BouncyCastleProvider();
 
 	@Parameters(name = "Digest {index} : {0}")
 	public static Collection<DigestAlgorithm> data() {
@@ -61,7 +51,7 @@ public class DigestAlgorithmParameterizedBouncyCastleTest {
 
 	@Test
 	public void getMessageDigest() {
-		MessageDigest md = digestAlgo.getMessageDigest();
+		MessageDigest md = digestAlgo.getMessageDigest(provider);
 		assertNotNull(md);
 		assertNotNull(md.digest(new byte[] { 1, 2, 3 }));
 	}
