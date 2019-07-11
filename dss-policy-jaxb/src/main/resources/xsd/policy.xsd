@@ -326,6 +326,16 @@
 					<xsd:documentation>Checks if the embedded digest match the signed data</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="ManifestEntryObjectExistence" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the manifest entry was provided for the validation</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ManifestEntryObjectIntact" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the embedded digest in a manifest match the provided to the validation object</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="SignatureIntact" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the signature is based on the found public key</xsd:documentation>

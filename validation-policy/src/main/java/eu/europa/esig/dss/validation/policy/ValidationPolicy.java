@@ -321,10 +321,22 @@ public interface ValidationPolicy {
 	LevelConstraint getReferenceDataExistenceConstraint(Context context);
 
 	/**
-	 * @return {@code ReferenceDataIntact} if ReferenceDataIntact for a given context element is present in the
+	 * @return {@code LevelConstraint} if ReferenceDataIntact for a given context element is present in the
 	 *         constraint file, null otherwise.
 	 */
 	LevelConstraint getReferenceDataIntactConstraint(Context context);
+
+	/**
+	 * @return {@code LevelConstraint} if ManifestEntryObjectExistence for a given context element is present in the
+	 *         constraint file, null otherwise.
+	 */
+	LevelConstraint getManifestEntryObjectExistenceConstraint(Context context);
+
+	/**
+	 * @return {@code LevelConstraint} if ManifestEntryObjectIntact for a given context element is present in the
+	 *         constraint file, null otherwise.
+	 */
+	LevelConstraint getManifestEntryObjectIntactConstraint(Context context);
 
 	/**
 	 * @return {@code ReferenceDataIntact} if SignatureIntact for a given context element is present in the constraint

@@ -480,11 +480,11 @@ public class XMLSignatureWrappingTest {
 		assertNotNull(signature);
 		List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
 		assertNotNull(signatureScopes);
-		assertEquals(10, signatureScopes.size());
+		assertEquals(11, signatureScopes.size());
 		
 		List<XmlSignerData> originalSignerDocuments = diagnosticData.getOriginalSignerDocuments();
 		assertNotNull(originalSignerDocuments);
-		assertEquals(10, originalSignerDocuments.size());
+		assertEquals(11, originalSignerDocuments.size());
 		
 		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
 		assertNotNull(etsiValidationReport);
@@ -508,7 +508,7 @@ public class XMLSignatureWrappingTest {
 				timestampCounter++;
 			}
 		}
-		assertEquals(10, signedDataCounter);
+		assertEquals(11, signedDataCounter);
 		assertEquals(1, timestampCounter);
 	}
 	

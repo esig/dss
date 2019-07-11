@@ -1438,8 +1438,28 @@ public class DiagnosticDataBuilder {
 		List<ReferenceValidation> refValidations = signature.getReferenceValidations();
 		for (ReferenceValidation referenceValidation : refValidations) {
 			refs.add(getXmlDigestMatcher(referenceValidation));
+			List<ReferenceValidation> dependentValidations = referenceValidation.getDependentValidations();
+			if (Utils.isCollectionNotEmpty(dependentValidations) && 
+					(Utils.isCollectionNotEmpty(signature.getDetachedContents()) || isAtLeastOneFound(dependentValidations))) {
+				for (ReferenceValidation dependentValidation : referenceValidation.getDependentValidations()) {
+					refs.add(getXmlDigestMatcher(dependentValidation));
+				}
+			}
 		}
 		return refs;
+	}
+	
+	/**
+	 * Checks if at least one Manifest entry was found
+	 * @return TRUE if at least one ManifestEntry was found, FALSE otherwise
+	 */
+	public boolean isAtLeastOneFound(List<ReferenceValidation> referenceValidations) {
+		for (ReferenceValidation referenceValidation : referenceValidations) {
+			if (referenceValidation.isFound()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private XmlDigestMatcher getXmlDigestMatcher(ReferenceValidation referenceValidation) {

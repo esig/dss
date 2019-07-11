@@ -12,16 +12,12 @@ public abstract class AbstractSignatureScopeFinder<T extends AdvancedSignature> 
 	
 	private static final String ASICS_PACKAGE_ZIP_NAME = "package.zip";
 	
-	private static final String MANIFEST_FOLDER = "META-INF/";
-	private static final String MANIFEST_NAME = "ASiCManifest";
-	private static final String MANIFEST_EXTENSION = ".xml";
-	
 	@Override
 	public void setDefaultDigestAlgorithm(DigestAlgorithm defaultDigestAlgorithm) {
 		this.defaultDigestAlgorithm = defaultDigestAlgorithm;
 	}
 	
-	protected DigestAlgorithm getDigestAlgorithm() {
+	protected DigestAlgorithm getDefaultDigestAlgorithm() {
 		return defaultDigestAlgorithm;
 	}
 	

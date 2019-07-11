@@ -275,5 +275,21 @@ public final class XAdESUtils {
 	public static boolean isCounerSignature(final Reference reference, final XPathQueryHolder xPathQueryHolder) {
 		return xPathQueryHolder.XADES_COUNTERSIGNED_SIGNATURE.equals(reference.getType());
 	}
+	
+	/**
+	 * Checks if the given {@value reference} is linked to a <KeyInfo> element
+	 * @param reference - {@link Reference} to check
+	 * @param signature - {@link Element} signature the given {@value reference} belongs to
+	 * @return - TRUE if the {@value reference} is a <KeyInfo> reference, FALSE otherwise
+	 */
+	public static boolean isKeyInfoReference(final Reference reference, final Element signature, final XPathQueryHolder xPathQueryHolder) {
+		String uri = reference.getURI();
+		uri = DomUtils.getId(uri);
+		Element element = DomUtils.getElement(signature, "./" + xPathQueryHolder.XPATH_KEY_INFO + DomUtils.getXPathByIdAttribute(uri));
+		if (element != null) {
+			return true;
+		}
+		return false;
+	}
 
 }

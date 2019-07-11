@@ -88,6 +88,7 @@ import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.SantuarioInitializer;
 import eu.europa.esig.dss.xades.XAdESUtils;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
+import eu.europa.esig.dss.xades.reference.XAdESReferenceValidation;
 
 /**
  * Parse an XAdES signature structure. Note that for each signature to be validated a new instance of this object must
@@ -136,11 +137,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * {@code checkSignatureIntegrity} is called.
 	 */
 	private transient List<Reference> references;
-	
-	/**
-	 * Cached list of {@link ReferenceValidation} contained in the signature manifest file (if applicable)
-	 */
-	private List<ReferenceValidation> manifestReferences;
 
 	static {
 
@@ -805,23 +801,22 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			referenceValidations = new ArrayList<ReferenceValidation>();
 
 			final XMLSignature santuarioSignature = getSantuarioSignature();
-			
 			boolean atLeastOneReferenceElementFound = false;
 			
 			List<Reference> references = getReferences();
 			for (Reference reference : references) {
-				ReferenceValidation validation = new ReferenceValidation();
+				XAdESReferenceValidation validation = new XAdESReferenceValidation(reference);
 				validation.setType(DigestMatcherType.REFERENCE);
 				boolean found = false;
 				boolean intact = false;
+				
 				try {
-					final String id = reference.getId();
-					final String uri = reference.getURI();
-					if (Utils.isStringNotBlank(id)) {
-						validation.setName(id);
-					} else if (Utils.isStringNotBlank(uri)) {
-						validation.setName(uri);
-					}
+					
+					final Digest digest = new Digest();
+					digest.setValue(reference.getDigestValue());
+					digest.setAlgorithm(
+							DigestAlgorithm.forXML(reference.getMessageDigestAlgorithm().getAlgorithmURI()));
+					validation.setDigest(digest);
 
 					try {
 						found = reference.getContentsBeforeTransformation() != null;
@@ -829,45 +824,58 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						// continue, exception will be catched later
 					}
 					
+					final String uri = validation.getUri();
+					
 					boolean noDuplicateIdFound = XMLUtils.protectAgainstWrappingAttack(santuarioSignature.getDocument(), DomUtils.getId(uri));
 					boolean isElementReference = DomUtils.isElementReference(uri);
 							
 					if (isElementReference && XAdESUtils.isSignedProperties(reference, xPathQueryHolder)) {
 						validation.setType(DigestMatcherType.SIGNED_PROPERTIES);
 						found = found && (noDuplicateIdFound && findSignedPropertiesById(uri));
-					} else if (isElementReference && isKeyInfoReference(reference, santuarioSignature.getElement())) {
+						
+					} else if (DomUtils.isXPointerQuery(uri)) {
+						validation.setType(DigestMatcherType.XPOINTER);
+						found = found && noDuplicateIdFound;
+						
+					} else if (isElementReference && XAdESUtils.isKeyInfoReference(reference, santuarioSignature.getElement(), xPathQueryHolder)) {
 						validation.setType(DigestMatcherType.KEY_INFO);
 						found = true; // we check it in prior inside "isKeyInfoReference" method
+						
 					} else if (isElementReference && reference.typeIsReferenceToObject()) {
 						validation.setType(DigestMatcherType.OBJECT);
 						found = found && (noDuplicateIdFound && findObjectById(uri));
-						atLeastOneReferenceElementFound = true;
+						
 					} else if (isElementReference && reference.typeIsReferenceToManifest()) {
 						validation.setType(DigestMatcherType.MANIFEST);
 						Node manifestNode = getManifestById(uri);
 						found = found && (noDuplicateIdFound && (manifestNode != null));
-						atLeastOneReferenceElementFound = true;
-						if (manifestNode != null && Utils.isCollectionNotEmpty(detachedContents)) {
-							referenceValidations.addAll(getManifestReferences(manifestNode));
+						if (manifestNode != null) {
+							validation.getDependentValidations().addAll(getManifestReferences(manifestNode));
 						}
+						
 					} else {
 						found = found && noDuplicateIdFound;
-						atLeastOneReferenceElementFound = true;
+						
 					}
-
-					final Digest digest = new Digest();
-					digest.setValue(reference.getDigestValue());
-					digest.setAlgorithm(
-							DigestAlgorithm.forXML(reference.getMessageDigestAlgorithm().getAlgorithmURI()));
-					validation.setDigest(digest);
-
-					intact = reference.verify();
-				} catch (XMLSecurityException e) {
-					LOG.warn("Unable to verify reference with Id [{}] : {}", reference.getId(), e.getMessage());
+					
+					if (found) {
+						intact = reference.verify();
+					}
+					
+				} catch (Exception e) {
+					LOG.warn("Unable to verify reference with Id [{}] : {}", reference.getId(), e.getMessage(), e);
+					
 				}
+				
+				if (DigestMatcherType.REFERENCE.equals(validation.getType()) || DigestMatcherType.OBJECT.equals(validation.getType()) ||
+						DigestMatcherType.MANIFEST.equals(validation.getType()) || DigestMatcherType.XPOINTER.equals(validation.getType())) {
+					atLeastOneReferenceElementFound = true;
+				}
+					
 				validation.setFound(found);
 				validation.setIntact(intact);
 				referenceValidations.add(validation);
+				
 			}
 
 			// If at least one reference is not found, we add an empty
@@ -875,6 +883,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			if (!atLeastOneReferenceElementFound) {
 				referenceValidations.add(notFound(DigestMatcherType.REFERENCE));
 			}
+			
+			if (referenceValidations.size() < references.size()) {
+				LOG.warn("Not all references were validated!");
+			}
+			
 		}
 		return referenceValidations;
 	}
@@ -900,11 +913,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * @return list of {@link ReferenceValidation} objects
 	 */
 	public List<ReferenceValidation> getManifestReferences(Node manifestNode) {
-		if (manifestReferences == null) {
-			ManifestValidator mv = new ManifestValidator(manifestNode, detachedContents, xPathQueryHolder);
-			manifestReferences = mv.validate();
-		}
-		return manifestReferences;
+		ManifestValidator mv = new ManifestValidator(signatureElement, manifestNode, detachedContents, xPathQueryHolder);
+		return mv.validate();
 	}
 
 	private boolean findSignedPropertiesById(String uri) {
@@ -914,22 +924,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	private Node getSignedPropertiesById(String uri) {
 		String signedPropertiesById = xPathQueryHolder.XPATH_SIGNED_PROPERTIES + DomUtils.getXPathByIdAttribute(uri);
 		return DomUtils.getNode(signatureElement, signedPropertiesById);
-	}
-	
-	/**
-	 * Checks if the given {@value reference} is linked to a <KeyInfo> element
-	 * @param reference - {@link Reference} to check
-	 * @param signature - {@link Element} signature the given {@value reference} belongs to
-	 * @return - TRUE if the {@value reference} is a <KeyInfo> reference, FALSE otherwise
-	 */
-	private boolean isKeyInfoReference(final Reference reference, final Element signature) {
-		String uri = reference.getURI();
-		uri = DomUtils.getId(uri);
-		Element element = DomUtils.getElement(signature, "./" + xPathQueryHolder.XPATH_KEY_INFO + DomUtils.getXPathByIdAttribute(uri));
-		if (element != null) {
-			return true;
-		}
-		return false;
 	}
 
 	private boolean findObjectById(String uri) {

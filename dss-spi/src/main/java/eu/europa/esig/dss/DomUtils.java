@@ -74,6 +74,9 @@ public final class DomUtils {
 	private static final String TRANSFORMER_METHOD_VALUE = "xml";
 	private static final String TRANSFORMER_VALUE_YES = "yes";
 
+	private static final String XP_OPEN = "xpointer(";
+	private static final String XNS_OPEN = "xmlns(";
+
 	private DomUtils() {
 	}
 
@@ -572,19 +575,56 @@ public final class DomUtils {
 
 	public static String getId(String uri) {
 		String id = uri;
-		if (isElementReference(id)) {
+		if (startsFromHash(uri)) {
 			id = id.substring(1);
 		}
 		return id;
+	}
+
+	/**
+	 * Returns TRUE if the provided {@code uri} starts from the hash "#" character
+	 * @param uri {@link String} to be checked
+	 * @return TRUE if {@code uri} is starts from "#", FALSE otherwise
+	 */
+	private static boolean startsFromHash(String uri) {
+		return uri.startsWith("#");
 	}
 	
 	/**
 	 * Returns TRUE if the provided {@code uri} refers to an element in the signature
 	 * @param uri {@link String} to be checked
-	 * @return TRUE if {@code uri} is reffered to an element, FALSE otherwise
+	 * @return TRUE if {@code uri} is referred to an element, FALSE otherwise
 	 */
 	public static boolean isElementReference(String uri) {
-		return uri.startsWith("#");
+		return startsFromHash(uri) && !isXPointerQuery(uri);
+	}
+
+	/**
+	 * Indicates if the given URI is an XPointer query.
+	 *
+	 * @param uriValue
+	 *            URI to be analysed
+	 * @return true if it is an XPointer query
+	 */
+	public static boolean isXPointerQuery(String uriValue) {
+		if (uriValue.isEmpty()) {
+			return false;
+		}
+		String decodedUri = DSSUtils.decodeUrl(uriValue);
+		if (decodedUri == null) {
+			return false;
+		}
+		final String[] parts = getId(decodedUri).split("\\s");
+		int ii = 0;
+		for (; ii < parts.length - 1; ++ii) {
+			if (!parts[ii].endsWith(")") || !parts[ii].startsWith(XNS_OPEN)) {
+				return false;
+			}
+		}
+		if (!parts[ii].endsWith(")") || !parts[ii].startsWith(XP_OPEN)) {
+			return false;
+		}
+		return true;
 	}
 
 }

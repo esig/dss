@@ -57,19 +57,19 @@ public class CAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<CAdE
             	result.add(new ContainerSignatureScope(originalDocument.getName(), getDigest(DSSUtils.toByteArray(originalDocument))));
 				for (DSSDocument archivedDocument : cAdESSignature.getContainerContents()) {
 					result.add(new ContainerContentSignatureScope(DSSUtils.decodeUrl(archivedDocument.getName()), 
-							getDigest(DSSUtils.toByteArray(archivedDocument))));
+							new Digest(getDefaultDigestAlgorithm(), Utils.fromBase64(archivedDocument.getDigest(getDefaultDigestAlgorithm())))));
 				}
 				
             } else if (isASiCEArchive(cAdESSignature)) {
             	result.add(new ManifestSignatureScope(originalDocument.getName(), getDigest(DSSUtils.toByteArray(originalDocument))));
             	for (DSSDocument manifestContent : cAdESSignature.getManifestedDocuments()) {
 					result.add(new FullSignatureScope(manifestContent.getName(), 
-							getDigest(DSSUtils.toByteArray(manifestContent))));
+							new Digest(getDefaultDigestAlgorithm(), Utils.fromBase64(manifestContent.getDigest(getDefaultDigestAlgorithm())))));
             	}
             	
             } else {
-            	String digest64Base = originalDocument.getDigest(getDigestAlgorithm());
-                result.add(new FullSignatureScope("Full document", new Digest(getDigestAlgorithm(), Utils.fromBase64(digest64Base))));
+            	String digest64Base = originalDocument.getDigest(getDefaultDigestAlgorithm());
+                result.add(new FullSignatureScope("Full document", new Digest(getDefaultDigestAlgorithm(), Utils.fromBase64(digest64Base))));
             }
         } catch (DSSException e) {
         	LOG.warn("A CAdES signer's original document is not found [{}].", e.getMessage());

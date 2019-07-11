@@ -60,6 +60,7 @@ import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignerLocation;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EndorsementType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -603,8 +604,10 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
 		assertTrue(Utils.isCollectionNotEmpty(digestMatchers));
 		for (XmlDigestMatcher digestMatcher : digestMatchers) {
-			assertTrue(digestMatcher.isDataFound());
-			assertTrue(digestMatcher.isDataIntact());
+			if (!DigestMatcherType.MANIFEST_ENTRY.equals(digestMatcher.getType())) {
+				assertTrue(digestMatcher.isDataFound());
+				assertTrue(digestMatcher.isDataIntact());
+			}
 		}
 
 		assertTrue(signatureWrapper.isSignatureIntact());
@@ -714,7 +717,9 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
 		assertTrue(Utils.isCollectionNotEmpty(digestMatchers));
 		for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
-			assertEquals(expectedDigestAlgorithm.getName(), xmlDigestMatcher.getDigestMethod());
+			if (!DigestMatcherType.MANIFEST_ENTRY.equals(xmlDigestMatcher.getType())) {
+				assertEquals(expectedDigestAlgorithm.getName(), xmlDigestMatcher.getDigestMethod());
+			}
 		}
 	}
 

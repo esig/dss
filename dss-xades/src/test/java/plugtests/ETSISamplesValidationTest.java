@@ -82,6 +82,7 @@ public class ETSISamplesValidationTest {
 		validator.setCertificateVerifier(certificateVerifier);
 
 		Reports reports = validator.validateDocument();
+		reports.print();
 		assertNotNull(reports);
 		assertNotNull(reports.getXmlDiagnosticData());
 		assertNotNull(reports.getXmlDetailedReport());
