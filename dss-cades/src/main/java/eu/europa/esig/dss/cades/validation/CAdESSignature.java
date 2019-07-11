@@ -75,6 +75,7 @@ import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataParser;
+import org.bouncycastle.cms.CMSSignerDigestMismatchException;
 import org.bouncycastle.cms.CMSTypedStream;
 import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInformation;
@@ -112,7 +113,6 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CAdESCertificateSource;
 import eu.europa.esig.dss.validation.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.validation.CertificateValidity;
-import eu.europa.esig.dss.validation.SignerRole;
 import eu.europa.esig.dss.validation.CommitmentType;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
 import eu.europa.esig.dss.validation.ReferenceValidation;
@@ -120,6 +120,7 @@ import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.SignatureDigestReference;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
+import eu.europa.esig.dss.validation.SignerRole;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.x509.CertificatePool;
@@ -783,6 +784,10 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 					boolean signatureIntact = signerInformationToCheck.verify(signerInformationVerifier);
 					signatureCryptographicVerification.setSignatureIntact(signatureIntact);
 
+				} catch (CMSSignerDigestMismatchException e) {
+					LOG.warn("Unable to validate CMS Signature : {}", e.getMessage());
+					signatureCryptographicVerification.setErrorMessage(e.getMessage());
+					signatureCryptographicVerification.setSignatureIntact(false);
 				} catch (Exception e) {
 					LOG.error("Unable to validate CMS Signature : " + e.getMessage(), e);
 					signatureCryptographicVerification.setErrorMessage(e.getMessage());
