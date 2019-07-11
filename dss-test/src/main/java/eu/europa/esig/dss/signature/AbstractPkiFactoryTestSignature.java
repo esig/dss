@@ -154,21 +154,17 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		// reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		assertNotNull(reports.getXmlDiagnosticData());
 		verifyDiagnosticData(diagnosticData);
 
 		verifyDiagnosticDataJaxb(reports.getDiagnosticDataJaxb());
 
 		SimpleReport simpleReport = reports.getSimpleReport();
-		assertNotNull(reports.getXmlSimpleReport());
 		verifySimpleReport(simpleReport);
 
 		DetailedReport detailedReport = reports.getDetailedReport();
-		assertNotNull(reports.getXmlDetailedReport());
 		verifyDetailedReport(detailedReport);
 
 		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
-		assertNotNull(reports.getXmlValidationReport());
 		verifyETSIValidationReport(etsiValidationReportJaxb);
 
 		getOriginalDocument(signedDocument, diagnosticData);

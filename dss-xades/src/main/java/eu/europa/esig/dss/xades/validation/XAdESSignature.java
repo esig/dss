@@ -481,13 +481,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				signaturePolicy = new SignaturePolicy(policyIdString);
 				final Node policyDigestMethod = DomUtils.getNode(policyIdentifier, xPathQueryHolder.XPATH__POLICY_DIGEST_METHOD);
 				final String policyDigestMethodString = policyDigestMethod.getTextContent();
-				if (Utils.isStringNotEmpty(policyDigestMethodString)) {
-					final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forXML(policyDigestMethodString);
-					signaturePolicy.setDigestAlgorithm(digestAlgorithm);
-				}
+				final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forXML(policyDigestMethodString);
 				final Element policyDigestValue = DomUtils.getElement(policyIdentifier, xPathQueryHolder.XPATH__POLICY_DIGEST_VALUE);
 				final byte[] digestValue = Utils.fromBase64(policyDigestValue.getTextContent().trim());
-				signaturePolicy.setDigestValue(digestValue);
+				signaturePolicy.setDigest(new Digest(digestAlgorithm, digestValue));
 				final Element policyUrl = DomUtils.getElement(policyIdentifier, xPathQueryHolder.XPATH__POLICY_SPURI);
 				if (policyUrl != null) {
 					policyUrlString = policyUrl.getTextContent().trim();

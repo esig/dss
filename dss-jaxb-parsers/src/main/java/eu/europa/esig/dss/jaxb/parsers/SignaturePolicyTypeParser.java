@@ -18,22 +18,27 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.policy;
+package eu.europa.esig.dss.jaxb.parsers;
 
-import static org.junit.Assert.assertNotNull;
+import eu.europa.esig.dss.enumerations.SignaturePolicyType;
 
-import org.junit.Test;
+public final class SignaturePolicyTypeParser {
 
-public class DateUtilsTest {
-
-	@Test
-	public void test( ) {
-		assertNotNull(DateUtils.parseDate(DateUtils.DEFAULT_DATE_FORMAT, "2020-02-22"));
+	private SignaturePolicyTypeParser() {
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testException() {
-		DateUtils.parseDate(DateUtils.DEFAULT_DATE_FORMAT, "20-2020-02");
+	public static SignaturePolicyType parse(String v) {
+		if (v != null) {
+			return SignaturePolicyType.valueOf(v);
+		}
+		return null;
+	}
+
+	public static String print(SignaturePolicyType v) {
+		if (v != null) {
+			return v.name();
+		}
+		return null;
 	}
 
 }

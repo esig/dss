@@ -362,11 +362,9 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		final AlgorithmIdentifier digestAlgorithmIdentifier = hashAlgAndValue.getHashAlgorithm();
 		final String digestAlgorithmOID = digestAlgorithmIdentifier.getAlgorithm().getId();
 		final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(digestAlgorithmOID);
-		signaturePolicy.setDigestAlgorithm(digestAlgorithm);
-
 		final ASN1OctetString digestValue = hashAlgAndValue.getHashValue();
 		final byte[] digestValueBytes = digestValue.getOctets();
-		signaturePolicy.setDigestValue(digestValueBytes);
+		signaturePolicy.setDigest(new Digest(digestAlgorithm, digestValueBytes));
 
 		final SigPolicyQualifiers sigPolicyQualifiers = sigPolicy.getSigPolicyQualifiers();
 		if (sigPolicyQualifiers == null) {

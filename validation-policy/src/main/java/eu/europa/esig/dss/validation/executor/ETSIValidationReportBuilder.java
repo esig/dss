@@ -8,7 +8,6 @@ import java.util.Set;
 
 import javax.xml.bind.JAXBElement;
 
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
@@ -18,6 +17,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
+import eu.europa.esig.dss.enumerations.SignaturePolicyType;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampLocation;
@@ -59,7 +59,6 @@ import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
-import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.jaxb.validationreport.AttributeBaseType;
 import eu.europa.esig.jaxb.validationreport.CertificateChainType;
 import eu.europa.esig.jaxb.validationreport.ConstraintStatusType;
@@ -550,7 +549,7 @@ public class ETSIValidationReportBuilder {
 			validationStatus.setMainIndication(Indication.INDETERMINATE);
 			break;
 		default:
-			throw new DSSException("Unsupported indication : " + indication);
+			throw new IllegalArgumentException("Unsupported indication : " + indication);
 		}
 	}
 
@@ -1000,7 +999,7 @@ public class ETSIValidationReportBuilder {
 			case ARCHIVE_TIMESTAMP:
 				return objectFactory.createSignatureAttributesTypeArchiveTimeStamp(timestamp);
 			default:
-				throw new DSSException("Unsupported timestamp type " + timestampType);
+			throw new IllegalArgumentException("Unsupported timestamp type " + timestampType);
 		}
 	}
 
@@ -1009,14 +1008,14 @@ public class ETSIValidationReportBuilder {
 			case DOC_TIMESTAMP:
 				return objectFactory.createSignatureAttributesTypeDocTimeStamp(timestamp);
 			default:
-				throw new DSSException("Unsupported timestamp type " + timestampLocation);
+			throw new IllegalArgumentException("Unsupported timestamp type " + timestampLocation);
 		}
 	}
 	
 	private void addSigPolicyIdentifier(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
 		String policyId = sigWrapper.getPolicyId();
 		if (Utils.isStringNotEmpty(policyId) && // exclude empty and default values
-				!SignaturePolicy.IMPLICIT_POLICY.equals(policyId)) {
+				!SignaturePolicyType.IMPLICIT_POLICY.name().equals(policyId)) {
 			SASigPolicyIdentifierType saSigPolicyIdentifierType = objectFactory.createSASigPolicyIdentifierType();
 			saSigPolicyIdentifierType.setSigPolicyId(policyId);
 			setSignedIfValid(sigWrapper, saSigPolicyIdentifierType);

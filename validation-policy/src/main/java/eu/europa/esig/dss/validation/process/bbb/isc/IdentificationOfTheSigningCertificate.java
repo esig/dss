@@ -22,7 +22,6 @@ package eu.europa.esig.dss.validation.process.bbb.isc;
 
 import java.util.List;
 
-import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlCertificateChain;
@@ -86,7 +85,7 @@ public class IdentificationOfTheSigningCertificate extends Chain<XmlISC> {
 
 			// PKCS7 signatures have not these information
 			SignatureWrapper signature = (SignatureWrapper) token;
-			if (signature.getFormat() != null && signature.getFormat().contains(SignatureForm.PKCS7.name())) {
+			if (signature.getFormat() != null && signature.getFormat().contains("PKCS7")) {
 				return;
 			}
 

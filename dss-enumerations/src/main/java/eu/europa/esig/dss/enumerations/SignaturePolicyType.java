@@ -18,22 +18,21 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.policy;
+package eu.europa.esig.dss.enumerations;
 
-import static org.junit.Assert.assertNotNull;
+public enum SignaturePolicyType {
 
-import org.junit.Test;
+	/**
+	 * The validation process accepts no policy. No particular treatment is done.
+	 */
+	NO_POLICY,
 
-public class DateUtilsTest {
+	/**
+	 * The validation process accepts any policy. The used policy is only showed, no
+	 * particular treatment is done.
+	 */
+	ANY_POLICY,
 
-	@Test
-	public void test( ) {
-		assertNotNull(DateUtils.parseDate(DateUtils.DEFAULT_DATE_FORMAT, "2020-02-22"));
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testException() {
-		DateUtils.parseDate(DateUtils.DEFAULT_DATE_FORMAT, "20-2020-02");
-	}
+	IMPLICIT_POLICY;
 
 }

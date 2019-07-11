@@ -28,7 +28,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusionWithProofOfExistence;
@@ -160,7 +159,7 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 			process(diagnosticData.getAllCounterSignatures(), Context.COUNTER_SIGNATURE, bbbs);
 			break;
 		default:
-			throw new DSSException("Unsupported validation level " + validationLevel);
+			throw new IllegalArgumentException("Unsupported validation level " + validationLevel);
 		}
 		return bbbs;
 	}

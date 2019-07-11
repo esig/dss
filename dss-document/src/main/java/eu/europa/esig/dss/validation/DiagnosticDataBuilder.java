@@ -1217,23 +1217,14 @@ public class DiagnosticDataBuilder {
 
 		final XmlPolicy xmlPolicy = new XmlPolicy();
 
-		final String policyId = signaturePolicy.getIdentifier();
-		xmlPolicy.setId(policyId);
+		xmlPolicy.setId(signaturePolicy.getIdentifier());
+		xmlPolicy.setUrl(signaturePolicy.getUrl());
+		xmlPolicy.setDescription(signaturePolicy.getDescription());
+		xmlPolicy.setNotice(signaturePolicy.getNotice());
 
-		final String policyUrl = signaturePolicy.getUrl();
-		xmlPolicy.setUrl(policyUrl);
-		
-		final String description = signaturePolicy.getDescription();
-		xmlPolicy.setDescription(description);
-
-		final String notice = signaturePolicy.getNotice();
-		xmlPolicy.setNotice(notice);
-
-		final byte[] digestValue = signaturePolicy.getDigestValue();
-		final DigestAlgorithm signPolicyHashAlgFromSignature = signaturePolicy.getDigestAlgorithm();
-
-		if (Utils.isArrayNotEmpty(digestValue)) {
-			xmlPolicy.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(signPolicyHashAlgFromSignature, digestValue));
+		final Digest digest = signaturePolicy.getDigest();
+		if (digest != null) {
+			xmlPolicy.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(digest));
 		}
 
 		try {

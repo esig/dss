@@ -83,10 +83,6 @@ public class ETSISamplesValidationTest {
 
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);
-		assertNotNull(reports.getXmlDiagnosticData());
-		assertNotNull(reports.getXmlDetailedReport());
-		assertNotNull(reports.getXmlSimpleReport());
-		assertNotNull(reports.getXmlValidationReport());
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertNotNull(diagnosticData);

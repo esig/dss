@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.ValidationTime;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationCertificateQualification;
@@ -86,7 +85,7 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 			this.date = date;
 			break;
 		default:
-			throw new DSSException("Unknown qualification time : " + validationTime);
+			throw new IllegalArgumentException("Unknown qualification time : " + validationTime);
 		}
 	}
 

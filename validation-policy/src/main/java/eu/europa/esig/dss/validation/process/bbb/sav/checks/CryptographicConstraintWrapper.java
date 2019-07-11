@@ -8,7 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import eu.europa.esig.dss.DSSException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.jaxb.policy.Algo;
 import eu.europa.esig.jaxb.policy.AlgoExpirationDate;
@@ -16,6 +18,8 @@ import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.ListAlgo;
 
 public class CryptographicConstraintWrapper {
+
+	private static final Logger LOG = LoggerFactory.getLogger(CryptographicConstraintWrapper.class);
 
 	private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
 
@@ -61,7 +65,7 @@ public class CryptographicConstraintWrapper {
 				try {
 					result.put(currentAlgo, dateFormat.parse(expirationDate));
 				} catch (ParseException e) {
-					throw new DSSException("Unable to parse '" + expirationDate + "' with format '" + dateFormat + "'");
+					LOG.warn("Unable to parse '{}' with format '{}'", expirationDate, dateFormat);
 				}
 			}
 		}

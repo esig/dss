@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks;
 
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.ValidationTime;
@@ -57,7 +56,7 @@ public class ForEsigCheck extends ChainItem<XmlValidationCertificateQualificatio
 		case VALIDATION_TIME:
 			return MessageTag.QUAL_FOR_SIGN_AT_VT;
 		default:
-			throw new DSSException("Unsupported time " + validationTime);
+			throw new IllegalArgumentException("Unsupported time " + validationTime);
 		}
 	}
 
@@ -71,7 +70,7 @@ public class ForEsigCheck extends ChainItem<XmlValidationCertificateQualificatio
 		case VALIDATION_TIME:
 			return MessageTag.QUAL_FOR_SIGN_AT_VT_ANS;
 		default:
-			throw new DSSException("Unsupported time " + validationTime);
+			throw new IllegalArgumentException("Unsupported time " + validationTime);
 		}
 	}
 

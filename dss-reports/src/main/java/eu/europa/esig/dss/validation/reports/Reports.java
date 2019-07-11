@@ -20,10 +20,12 @@
  */
 package eu.europa.esig.dss.validation.reports;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
 
-import eu.europa.esig.dss.DSSException;
+import javax.xml.bind.JAXBException;
+
+import org.xml.sax.SAXException;
+
 import eu.europa.esig.dss.jaxb.detailedreport.XmlDetailedReport;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
 import eu.europa.esig.dss.jaxb.simplereport.SimpleReportFacade;
@@ -36,8 +38,6 @@ import eu.europa.esig.jaxb.validationreport.ValidationReportType;
  * process: diagnostic data, detailed report and simple report.
  */
 public class Reports extends AbstractReports {
-
-	private static final Logger LOG = LoggerFactory.getLogger(Reports.class);
 
 	private final SimpleReport simpleReportWrapper;
 
@@ -98,47 +98,37 @@ public class Reports extends AbstractReports {
 	 * This method returns the XML representation of the JAXB SimpleReport String
 	 * 
 	 * @return a String with the XML content of the JAXB {@code SimpleReport}
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws JAXBException
 	 */
 	@Override
-	public String getXmlSimpleReport() {
+	public String getXmlSimpleReport() throws JAXBException, IOException, SAXException {
 		if (xmlSimpleReport == null) {
-			try {
-				xmlSimpleReport = SimpleReportFacade.newFacade().marshall(getSimpleReportJaxb(), validateXml);
-			} catch (Exception e) {
-				String message = "Unable to generate string value for the simple report : ";
-				if (validateXml) {
-					throw new DSSException(message, e);
-				} else {
-					LOG.error(message, e);
-				}
-			}
+			xmlSimpleReport = SimpleReportFacade.newFacade().marshall(getSimpleReportJaxb(), validateXml);
 		}
 		return xmlSimpleReport;
 	}
 
 	/**
-	 * This method returns the XML representation of the JAXB ETSI Validation Report String
+	 * This method returns the XML representation of the JAXB ETSI Validation Report
+	 * String
 	 * 
-	 * @return a String with the XML content of the JAXB {@code ValidationReportType}
+	 * @return a String with the XML content of the JAXB
+	 *         {@code ValidationReportType}
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws JAXBException
 	 */
-	public String getXmlValidationReport() {
+	public String getXmlValidationReport() throws JAXBException, IOException, SAXException {
 		if (xmlEtsiValidationReport == null) {
-			try {
-				xmlEtsiValidationReport = ValidationReportFacade.newFacade().marshall(getEtsiValidationReportJaxb(), validateXml);
-			} catch (Exception e) {
-				String message = "Unable to generate string value for the etsi validation report : ";
-				if (validateXml) {
-					throw new DSSException(message, e);
-				} else {
-					LOG.error(message, e);
-				}
-			}
+			xmlEtsiValidationReport = ValidationReportFacade.newFacade().marshall(getEtsiValidationReportJaxb(), validateXml);
 		}
 		return xmlEtsiValidationReport;
 	}
 
 	@Override
-	public void print() {
+	public void print() throws JAXBException, IOException, SAXException {
 		System.out.println("----------------Diagnostic data-----------------");
 		System.out.println(getXmlDiagnosticData());
 		System.out.println("----------------Validation report---------------");
