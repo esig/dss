@@ -850,9 +850,7 @@ public class ETSIValidationReportBuilder {
 				if (certificateRef != null && certificateRef.getDigestAlgoAndValue() != null) {
 					SACertIDType certIDType = objectFactory.createSACertIDType();
 					XmlDigestAlgoAndValue digestAlgoAndValue = certificateRef.getDigestAlgoAndValue();
-					DigestMethodType digestMethodType = new DigestMethodType();
-					digestMethodType.setAlgorithm(DigestAlgorithm.forName(digestAlgoAndValue.getDigestMethod()).getXmlId());
-					certIDType.setDigestMethod(digestMethodType);
+					certIDType.setDigestMethod(getDigestMethodType(digestAlgoAndValue));
 					certIDType.setDigestValue(digestAlgoAndValue.getDigestValue());
 					if (certificateRef.getIssuerSerial() != null) {
 						certIDType.setX509IssuerSerial(certificateRef.getIssuerSerial());
@@ -882,30 +880,44 @@ public class ETSIValidationReportBuilder {
 	
 	private SARevIDListType buildRevIDListType(List<XmlRevocationRef> revocationRefs) {
 		SARevIDListType revIDListType = objectFactory.createSARevIDListType();
-		
+
 		for (XmlRevocationRef xmlRevocationRef : revocationRefs) {
 			// ProducedAt parameter is only for OCSP refs
 			if (xmlRevocationRef.getProducedAt() == null) {
 				SACRLIDType sacrlidType = objectFactory.createSACRLIDType();
-				DigestMethodType digestMethodType = new DigestMethodType();
 				XmlDigestAlgoAndValue digestAlgoAndValue = xmlRevocationRef.getDigestAlgoAndValue();
-				digestMethodType.setAlgorithm(DigestAlgorithm.forName(digestAlgoAndValue.getDigestMethod()).getXmlId());
-				sacrlidType.setDigestMethod(digestMethodType);
+				sacrlidType.setDigestMethod(getDigestMethodType(digestAlgoAndValue));
 				sacrlidType.setDigestValue(digestAlgoAndValue.getDigestValue());
 				revIDListType.getCRLIDOrOCSPID().add(sacrlidType);
 			} else {
-				SAOCSPIDType saocspidType = objectFactory.createSAOCSPIDType();
-				saocspidType.setProducedAt(xmlRevocationRef.getProducedAt());
-				if (Utils.isStringNotEmpty(xmlRevocationRef.getResponderIdName())) {
-					saocspidType.setResponderIDByName(xmlRevocationRef.getResponderIdName());
-				} else {
-					saocspidType.setResponderIDByKey(xmlRevocationRef.getResponderIdKey());
+				SAOCSPIDType ocspID = getOCSPID(xmlRevocationRef);
+				if (ocspID != null) {
+					revIDListType.getCRLIDOrOCSPID().add(ocspID);
 				}
-				revIDListType.getCRLIDOrOCSPID().add(saocspidType);
 			}
 		}
-		
+
 		return revIDListType;
+	}
+
+	private DigestMethodType getDigestMethodType(XmlDigestAlgoAndValue digestAlgoAndValue) {
+		DigestMethodType digestMethodType = new DigestMethodType();
+		digestMethodType.setAlgorithm(DigestAlgorithm.forName(digestAlgoAndValue.getDigestMethod()).getXmlId());
+		return digestMethodType;
+	}
+
+	private SAOCSPIDType getOCSPID(XmlRevocationRef xmlRevocationRef) {
+		if (Utils.isStringNotEmpty(xmlRevocationRef.getResponderIdName()) || Utils.isArrayNotEmpty(xmlRevocationRef.getResponderIdKey())) {
+			SAOCSPIDType saocspidType = objectFactory.createSAOCSPIDType();
+			saocspidType.setProducedAt(xmlRevocationRef.getProducedAt());
+			if (Utils.isStringNotEmpty(xmlRevocationRef.getResponderIdName())) {
+				saocspidType.setResponderIDByName(xmlRevocationRef.getResponderIdName());
+			} else {
+				saocspidType.setResponderIDByKey(xmlRevocationRef.getResponderIdKey());
+			}
+			return saocspidType;
+		}
+		return null;
 	}
 	
 	private void addRevocationValues(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
