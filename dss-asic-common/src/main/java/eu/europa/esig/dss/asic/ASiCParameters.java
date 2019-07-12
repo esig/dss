@@ -22,7 +22,7 @@ package eu.europa.esig.dss.asic;
 
 import java.io.Serializable;
 
-import eu.europa.esig.dss.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
 
 /**
  * This class regroups the signature parameters related to ASiC form.

@@ -23,13 +23,13 @@ package eu.europa.esig.dss.cookbook.example.sign;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.client.tsp.OnlineTSPSource;
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;

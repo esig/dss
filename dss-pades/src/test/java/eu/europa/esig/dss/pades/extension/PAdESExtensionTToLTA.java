@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.pades.extension;
 
-import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 
 public class PAdESExtensionTToLTA extends AbstractTestPAdESExtension {
 

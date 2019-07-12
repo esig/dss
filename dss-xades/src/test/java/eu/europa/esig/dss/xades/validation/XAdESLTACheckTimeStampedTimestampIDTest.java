@@ -32,10 +32,10 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedObject;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedTimestamp;

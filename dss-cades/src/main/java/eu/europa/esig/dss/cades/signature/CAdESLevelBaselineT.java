@@ -27,10 +27,10 @@ import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 /**

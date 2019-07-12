@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.asic.extension.asice;
 
-import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.asic.extension.AbstractTestASiCwithXAdESExtension;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
 public class LibreOfficeExtensionWithXAdESBToTTest extends AbstractTestASiCwithXAdESExtension {

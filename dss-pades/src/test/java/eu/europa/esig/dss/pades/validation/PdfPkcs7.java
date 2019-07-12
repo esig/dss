@@ -27,10 +27,10 @@ import java.util.List;
 import org.junit.Test;
 
 import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.SignatureForm;
-import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+import eu.europa.esig.dss.enumerations.SignatureForm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;

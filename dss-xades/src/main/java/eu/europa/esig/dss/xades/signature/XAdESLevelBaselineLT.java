@@ -23,7 +23,7 @@ package eu.europa.esig.dss.xades.signature;
 import org.w3c.dom.Element;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.ValidationContext;
