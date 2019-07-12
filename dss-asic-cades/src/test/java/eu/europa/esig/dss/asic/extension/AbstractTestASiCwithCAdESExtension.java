@@ -25,7 +25,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
-import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.FileDocument;
@@ -33,6 +32,7 @@ import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.asic.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.signature.ASiCWithCAdESService;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.extension.AbstractTestExtension;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.x509.tsp.TSPSource;

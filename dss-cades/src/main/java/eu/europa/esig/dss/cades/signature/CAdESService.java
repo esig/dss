@@ -41,19 +41,19 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestDocument;
 import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
-import eu.europa.esig.dss.SigningOperation;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.PrecomputedDigestCalculatorProvider;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
+import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -148,7 +148,7 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 			final SignatureExtension<CAdESSignatureParameters> extension = getExtensionProfile(parameters, true);
 			signature = extension.extendSignatures(signature, parameters);
 		}
-		signature.setName(DSSUtils.getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
+		signature.setName(getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
 		parameters.reinitDeterministicId();
 		return signature;
 	}
@@ -178,7 +178,7 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 		// false: All signature are extended
 		final SignatureExtension<CAdESSignatureParameters> extension = getExtensionProfile(parameters, false);
 		final DSSDocument dssDocument = extension.extendSignatures(toExtendDocument, parameters);
-		dssDocument.setName(DSSUtils.getFinalFileName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel()));
+		dssDocument.setName(getFinalFileName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel()));
 		return dssDocument;
 	}
 

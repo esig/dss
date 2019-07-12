@@ -26,9 +26,9 @@ import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.TimestampParameters;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 

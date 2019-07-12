@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.pades;
 
-import eu.europa.esig.dss.SignatureForm;
-import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.enumerations.SignatureForm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 
 public class PAdESSignatureParameters extends CAdESSignatureParameters {

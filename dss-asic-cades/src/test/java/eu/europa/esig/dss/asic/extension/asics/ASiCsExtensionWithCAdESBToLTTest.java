@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.asic.extension.asics;
 
-import eu.europa.esig.dss.ASiCContainerType;
-import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.asic.extension.AbstractTestASiCwithCAdESExtension;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 
 public class ASiCsExtensionWithCAdESBToLTTest extends AbstractTestASiCwithCAdESExtension {
 

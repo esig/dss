@@ -18,13 +18,14 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss;
+package eu.europa.esig.dss.enumerations;
 
 /**
- * Different signature forms.<br>
+ * Packaging method of the signature
+ *
  */
-public enum SignatureForm {
+public enum SignaturePackaging {
 
-	XAdES, CAdES, PAdES, PKCS7;
+	ENVELOPED, ENVELOPING, DETACHED, INTERNALLY_DETACHED
 
 }

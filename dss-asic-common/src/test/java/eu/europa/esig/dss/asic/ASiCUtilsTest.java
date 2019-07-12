@@ -24,8 +24,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
 
 public class ASiCUtilsTest {
 

@@ -33,16 +33,14 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignatureValue;
-import eu.europa.esig.dss.SigningOperation;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.signature.CAdESLevelBaselineT;
 import eu.europa.esig.dss.cades.signature.CustomContentSigner;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
@@ -50,6 +48,7 @@ import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PdfObjFactory;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
+import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
@@ -148,7 +147,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		}
 
 		parameters.reinitDeterministicId();
-		signature.setName(DSSUtils.getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
+		signature.setName(getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
 		return signature;
 	}
 
@@ -180,7 +179,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		final SignatureExtension<PAdESSignatureParameters> extension = getExtensionProfile(parameters.getSignatureLevel());
 		if (extension != null) {
 			DSSDocument extended = extension.extendSignatures(original, parameters);
-			extended.setName(DSSUtils.getFinalFileName(original, SigningOperation.EXTEND, parameters.getSignatureLevel()));
+			extended.setName(getFinalFileName(original, SigningOperation.EXTEND, parameters.getSignatureLevel()));
 			return extended;
 		}
 		return original;
