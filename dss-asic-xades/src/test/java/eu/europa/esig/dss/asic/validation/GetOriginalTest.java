@@ -30,10 +30,10 @@ import java.util.List;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.utils.Utils;
@@ -53,7 +53,7 @@ public class GetOriginalTest {
 	private final DSSDocument EXPECTED_ONEFILE = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
 
 	@Test
-	public void testMultifilesASICSOneToMuchFile() {
+	public void testMultifilesASICSOneToMuchFile() throws Exception {
 		FileDocument signedDoc = new FileDocument("src/test/resources/validation/multifiles-too-much-files.asics");
 
 		SignedDocumentValidator sdv = SignedDocumentValidator.fromDocument(signedDoc);

@@ -38,9 +38,9 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
 public class ASiCEWithCAdESManifestBuilderTest {
 

@@ -24,7 +24,7 @@ import java.util.Arrays;
 
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.SignaturePolicy;
 
@@ -48,16 +48,15 @@ public class NonASN1SignaturePolicyValidator extends AbstractSignaturePolicyVali
 		setIdentified(true);
 
 		SignaturePolicy signaturePolicy = getSignaturePolicy();
-		byte[] digestValue = signaturePolicy.getDigestValue();
-		DigestAlgorithm signPolicyHashAlgFromSignature = signaturePolicy.getDigestAlgorithm();
+		Digest digest = signaturePolicy.getDigest();
 
-		byte[] recalculatedDigestValue = DSSUtils.digest(signPolicyHashAlgFromSignature, signaturePolicy.getPolicyContent());
-		if (Arrays.equals(digestValue, recalculatedDigestValue)) {
+		byte[] recalculatedDigestValue = DSSUtils.digest(digest.getAlgorithm(), signaturePolicy.getPolicyContent());
+		if (Arrays.equals(digest.getValue(), recalculatedDigestValue)) {
 			setStatus(true);
 			setDigestAlgorithmsEqual(true);
 		} else {
 			addError("general",
-					"The policy digest value (" + Utils.toBase64(digestValue) + ") does not match the re-calculated digest value ("
+					"The policy digest value (" + Utils.toBase64(digest.getValue()) + ") does not match the re-calculated digest value ("
 							+ Utils.toBase64(recalculatedDigestValue) + ").");
 		}
 	}

@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.validation;
 
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.client.http.DataLoader;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSource;
 import eu.europa.esig.dss.x509.revocation.crl.CRLSource;

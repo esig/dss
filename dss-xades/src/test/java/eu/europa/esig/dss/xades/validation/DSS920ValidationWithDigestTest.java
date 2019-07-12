@@ -33,13 +33,13 @@ import java.util.List;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DigestDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerData;
@@ -97,7 +97,7 @@ public class DSS920ValidationWithDigestTest extends PKIFactoryAccess {
 		assertEquals(2, digestMatchers.size());
 		boolean refToDigestDocumentCreated = false;
 		for (XmlDigestMatcher digestMatcher : digestMatchers) {
-			if (signingDigestAlgorithm.name().equals(digestMatcher.getDigestMethod()) &&
+			if (signingDigestAlgorithm.equals(digestMatcher.getDigestMethod()) &&
 					toBeSigned.getDigest(signingDigestAlgorithm).equals(Utils.toBase64(digestMatcher.getDigestValue()))) {
 				refToDigestDocumentCreated = true;
 				assertFalse(digestMatcher.isDataFound());
@@ -112,7 +112,7 @@ public class DSS920ValidationWithDigestTest extends PKIFactoryAccess {
 		assertEquals(documentName, originalDoc.getReferencedName());
 		assertNotNull(originalDoc.getId());
 		assertNotNull(originalDoc.getDigestAlgoAndValue());
-		assertEquals(DigestAlgorithm.SHA1.name(), originalDoc.getDigestAlgoAndValue().getDigestMethod());
+		assertEquals(DigestAlgorithm.SHA1, originalDoc.getDigestAlgoAndValue().getDigestMethod());
 		assertEquals(toBeSigned.getDigest(DigestAlgorithm.SHA1), Utils.toBase64(originalDoc.getDigestAlgoAndValue().getDigestValue()));
 		
 	}
@@ -165,7 +165,7 @@ public class DSS920ValidationWithDigestTest extends PKIFactoryAccess {
 		assertNotNull(xmlSignatureScope.getSignerData().getDigestAlgoAndValue().getDigestValue());
 		
 		assertTrue(Arrays.equals(xmlSignatureScope.getSignerData().getDigestAlgoAndValue().getDigestValue(), 
-				Utils.fromBase64(toBeSigned.getDigest(DigestAlgorithm.forName(xmlSignatureScope.getSignerData().getDigestAlgoAndValue().getDigestMethod())))
+				Utils.fromBase64(toBeSigned.getDigest(xmlSignatureScope.getSignerData().getDigestAlgoAndValue().getDigestMethod()))
 				));
 		
 	}

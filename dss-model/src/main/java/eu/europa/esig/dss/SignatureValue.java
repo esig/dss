@@ -24,6 +24,8 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Base64;
 
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+
 @SuppressWarnings("serial")
 public final class SignatureValue implements Serializable {
 

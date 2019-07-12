@@ -23,32 +23,25 @@ package eu.europa.esig.dss;
 import static org.junit.Assert.assertNotNull;
 
 import java.security.MessageDigest;
-import java.security.Security;
+import java.security.NoSuchAlgorithmException;
+import java.security.Provider;
 import java.util.Arrays;
 import java.util.Collection;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
 @RunWith(Parameterized.class)
 public class DigestAlgorithmParameterizedBouncyCastleTest {
 
 	private final DigestAlgorithm digestAlgo;
 
-	@BeforeClass
-	public static void init() {
-		Security.addProvider(new BouncyCastleProvider());
-	}
-
-	@AfterClass
-	public static void reset() {
-		Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME);
-	}
+	private Provider provider = new BouncyCastleProvider();
 
 	@Parameters(name = "Digest {index} : {0}")
 	public static Collection<DigestAlgorithm> data() {
@@ -60,8 +53,8 @@ public class DigestAlgorithmParameterizedBouncyCastleTest {
 	}
 
 	@Test
-	public void getMessageDigest() {
-		MessageDigest md = digestAlgo.getMessageDigest();
+	public void getMessageDigest() throws NoSuchAlgorithmException {
+		MessageDigest md = digestAlgo.getMessageDigest(provider);
 		assertNotNull(md);
 		assertNotNull(md.digest(new byte[] { 1, 2, 3 }));
 	}

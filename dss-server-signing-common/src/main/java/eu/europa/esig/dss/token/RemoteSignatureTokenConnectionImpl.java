@@ -25,12 +25,12 @@ import java.util.List;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.Digest;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.RemoteCertificate;
 import eu.europa.esig.dss.RemoteKeyEntry;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 public class RemoteSignatureTokenConnectionImpl implements RemoteSignatureTokenConnection {

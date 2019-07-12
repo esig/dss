@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**

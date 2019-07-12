@@ -44,16 +44,16 @@ import org.w3c.dom.Text;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.EncryptionAlgorithm;
-import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.Policy;
-import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignerLocation;
 import eu.europa.esig.dss.XAdESNamespaces;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.signature.BaselineBCertificateSelector;
 import eu.europa.esig.dss.utils.Utils;
@@ -346,7 +346,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		final DigestAlgorithm digestAlgorithm = params.getDigestAlgorithm();
 		final MaskGenerationFunction mgf = params.getMaskGenerationFunction();
 		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm, mgf);
-		final String signatureAlgorithmXMLId = signatureAlgorithm.getXMLId();
+		final String signatureAlgorithmXMLId = signatureAlgorithm.getUri();
 		if (Utils.isStringBlank(signatureAlgorithmXMLId)) {
 			throw new DSSException("Unsupported signature algorithm " + signatureAlgorithm);
 		}

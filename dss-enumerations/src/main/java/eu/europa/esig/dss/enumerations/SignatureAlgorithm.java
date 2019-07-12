@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss;
+package eu.europa.esig.dss.enumerations;
 
 import java.io.IOException;
 import java.security.AlgorithmParameters;
@@ -33,7 +33,7 @@ import java.util.Map.Entry;
  * Supported signature algorithms.
  *
  */
-public enum SignatureAlgorithm {
+public enum SignatureAlgorithm implements UriBasedEnum, OidBasedEnum {
 
 	RSA_RAW(EncryptionAlgorithm.RSA, null),
 	
@@ -422,7 +422,7 @@ public enum SignatureAlgorithm {
 	public static SignatureAlgorithm forXML(final String xmlName) {
 		final SignatureAlgorithm algorithm = XML_ALGORITHMS.get(xmlName);
 		if (algorithm == null) {
-			throw new DSSException("Unsupported algorithm: " + xmlName);
+			throw new IllegalArgumentException("Unsupported algorithm: " + xmlName);
 		}
 		return algorithm;
 	}
@@ -451,7 +451,7 @@ public enum SignatureAlgorithm {
 	public static SignatureAlgorithm forOidAndParams(String oid, byte[] sigAlgParams) {
 		SignatureAlgorithm algorithm = OID_ALGORITHMS.get(oid);
 		if (algorithm == null) {
-			throw new DSSException("Unsupported algorithm: " + oid);
+			throw new IllegalArgumentException("Unsupported algorithm: " + oid);
 		}
 
 		if (sigAlgParams != null && algorithm.getMaskGenerationFunction() != null) {
@@ -462,7 +462,7 @@ public enum SignatureAlgorithm {
 				DigestAlgorithm digestAlgorithm = DigestAlgorithm.forJavaName(pssParam.getDigestAlgorithm());
 				algorithm = getAlgorithm(algorithm.getEncryptionAlgorithm(), digestAlgorithm, algorithm.getMaskGenerationFunction());
 			} catch (GeneralSecurityException | IOException e) {
-				throw new DSSException("Unable to initialize PSS", e);
+				throw new IllegalArgumentException("Unable to initialize PSS", e);
 			}
 		}
 
@@ -516,7 +516,7 @@ public enum SignatureAlgorithm {
 	public static SignatureAlgorithm forJAVA(final String javaName) {
 		final SignatureAlgorithm algorithm = JAVA_ALGORITHMS.get(javaName);
 		if (algorithm == null) {
-			throw new DSSException("Unsupported algorithm: " + javaName);
+			throw new IllegalArgumentException("Unsupported algorithm: " + javaName);
 		}
 		return algorithm;
 	}
@@ -625,7 +625,8 @@ public enum SignatureAlgorithm {
 	 *
 	 * @return the XML URI for the current signature algorithm.
 	 */
-	public String getXMLId() {
+	@Override
+	public String getUri() {
 		return XML_ALGORITHMS_FOR_KEY.get(this);
 	}
 
@@ -634,7 +635,8 @@ public enum SignatureAlgorithm {
 	 *
 	 * @return the OID for the current signature algorithm.
 	 */
-	public String getOID() {
+	@Override
+	public String getOid() {
 		return OID_ALGORITHMS_FOR_KEY.get(this);
 	}
 
@@ -646,7 +648,7 @@ public enum SignatureAlgorithm {
 	 * @return URI based on the algorithm's OID
 	 */
 	public String getURIBasedOnOID() {
-		return OID_NAMESPACE_PREFIX + getOID();
+		return OID_NAMESPACE_PREFIX + getOid();
 	}
 
 	/**

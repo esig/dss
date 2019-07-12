@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation.process.bbb.vci;
 
 import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.enumerations.SignaturePolicyType;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlVCI;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
@@ -30,7 +31,6 @@ import eu.europa.esig.dss.validation.process.bbb.vci.checks.SignaturePolicyHashV
 import eu.europa.esig.dss.validation.process.bbb.vci.checks.SignaturePolicyIdentifiedCheck;
 import eu.europa.esig.dss.validation.process.bbb.vci.checks.SignaturePolicyIdentifierCheck;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
-import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 
@@ -64,7 +64,7 @@ public class ValidationContextInitialization extends Chain<XmlVCI> {
 		ChainItem<XmlVCI> item = firstItem = signaturePolicyIdentifier(signaturePolicyConstraint);
 
 		if (signature.isPolicyPresent()
-				&& (!SignaturePolicy.NO_POLICY.equals(signature.getPolicyId()) && !SignaturePolicy.IMPLICIT_POLICY.equals(signature.getPolicyId()))) {
+				&& (!SignaturePolicyType.IMPLICIT_POLICY.name().equals(signature.getPolicyId()))) {
 			item = item.setNextItem(signaturePolicyIdentified());
 
 			item = item.setNextItem(signaturePolicyHashValid());

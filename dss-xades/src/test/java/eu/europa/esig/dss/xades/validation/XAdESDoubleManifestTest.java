@@ -32,7 +32,6 @@ public class XAdESDoubleManifestTest {
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		
 		Reports reports = validator.validateDocument();
-		 reports.print();
 		assertNotNull(reports);
 		
 		DiagnosticData diagnosticData = reports.getDiagnosticData();

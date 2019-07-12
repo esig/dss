@@ -23,6 +23,8 @@ package eu.europa.esig.dss;
 import java.io.Serializable;
 import java.util.Arrays;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+
 /**
  * This class allows to define the signature policy.
  */

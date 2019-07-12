@@ -49,7 +49,6 @@ public class XPointerValidationTest {
 		SignedDocumentValidator sdv = SignedDocumentValidator.fromDocument(new FileDocument("src/test/resources/validation/10963_signed.xml"));
 		sdv.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = sdv.validateDocument();
-		 reports.print();
 		assertNotNull(reports);
 		
 		DiagnosticData diagnosticData = reports.getDiagnosticData();

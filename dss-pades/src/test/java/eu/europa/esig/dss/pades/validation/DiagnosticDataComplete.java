@@ -15,7 +15,6 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
@@ -233,7 +232,7 @@ public class DiagnosticDataComplete extends PKIFactoryAccess {
 		assertEquals(1, signatures.size());
 		PAdESSignature padesSignature = (PAdESSignature) signatures.get(0);
 		byte[] contents = padesSignature.getPdfSignatureInfo().getContents();
-		byte[] digest = DSSUtils.digest(DigestAlgorithm.forName(signatureDigestReference.getDigestMethod()), contents);
+		byte[] digest = DSSUtils.digest(signatureDigestReference.getDigestMethod(), contents);
 		
 		String signatureReferenceDigestValue = Utils.toBase64(signatureDigestReference.getDigestValue());
 		String signatureElementDigestValue = Utils.toBase64(digest);

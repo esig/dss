@@ -18,13 +18,13 @@ import org.w3c.dom.Element;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
@@ -93,7 +93,7 @@ public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 		boolean objectFound = false;
 		for (XmlDigestMatcher digestMatcher : digestMatchers) {
 			if (DigestMatcherType.OBJECT.equals(digestMatcher.getType())) {
-				DigestAlgorithm digestAlgorithm = DigestAlgorithm.forName(digestMatcher.getDigestMethod());
+				DigestAlgorithm digestAlgorithm = digestMatcher.getDigestMethod();
 				assertEquals(image.getDigest(digestAlgorithm), Utils.toBase64(digestMatcher.getDigestValue()));
 				objectFound = true;
 			}

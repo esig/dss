@@ -20,10 +20,12 @@
  */
 package eu.europa.esig.dss.validation.reports;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
 
-import eu.europa.esig.dss.DSSException;
+import javax.xml.bind.JAXBException;
+
+import org.xml.sax.SAXException;
+
 import eu.europa.esig.dss.jaxb.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlDetailedReport;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticDataFacade;
@@ -35,8 +37,6 @@ import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
  * process: diagnostic data, detailed report and simple report.
  */
 public abstract class AbstractReports {
-
-	private static final Logger LOG = LoggerFactory.getLogger(AbstractReports.class);
 
 	protected boolean validateXml = false;
 
@@ -100,38 +100,19 @@ public abstract class AbstractReports {
 		return detailedReportWrapper.getJAXBModel();
 	}
 
-	/**
-	 * For debug purpose.
-	 */
-	public void print() {
-		System.out.println("----------------Diagnostic data-----------------");
-		System.out.println(getXmlDiagnosticData());
-		System.out.println("----------------Validation report---------------");
-		System.out.println(getXmlDetailedReport());
-		System.out.println("----------------Simple report-------------------");
-		System.out.println(getXmlSimpleReport());
-		System.out.println("------------------------------------------------");
-	}
-
-	public abstract String getXmlSimpleReport();
+	public abstract String getXmlSimpleReport() throws JAXBException, IOException, SAXException;
 
 	/**
 	 * This method returns the XML representation of the JAXB DiagnosticData String
 	 * 
 	 * @return a String with the XML content of the JAXB {@code XmlDiagnosticData}
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws JAXBException
 	 */
-	public String getXmlDiagnosticData() {
+	public String getXmlDiagnosticData() throws JAXBException, IOException, SAXException {
 		if (xmlDiagnosticData == null) {
-			try {
-				xmlDiagnosticData = DiagnosticDataFacade.newFacade().marshall(getDiagnosticDataJaxb(), validateXml);
-			} catch (Exception e) {
-				String message = "Unable to generate string value for the diagnostic data : ";
-				if (validateXml) {
-					throw new DSSException(message, e);
-				} else {
-					LOG.error(message, e);
-				}
-			}
+			xmlDiagnosticData = DiagnosticDataFacade.newFacade().marshall(getDiagnosticDataJaxb(), validateXml);
 		}
 		return xmlDiagnosticData;
 	}
@@ -140,21 +121,32 @@ public abstract class AbstractReports {
 	 * This method returns the XML representation of the JAXB DetailedReport String
 	 * 
 	 * @return a String with the XML content of the JAXB {@code XmlDetailedReport}
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws JAXBException
 	 */
-	public String getXmlDetailedReport() {
+	public String getXmlDetailedReport() throws JAXBException, IOException, SAXException {
 		if (xmlDetailedReport == null) {
-			try {
-				xmlDetailedReport = DetailedReportFacade.newFacade().marshall(getDetailedReportJaxb(), validateXml);
-			} catch (Exception e) {
-				String message = "Unable to generate string value for the detailed report : ";
-				if (validateXml) {
-					throw new DSSException(message, e);
-				} else {
-					LOG.error(message, e);
-				}
-			}
+			xmlDetailedReport = DetailedReportFacade.newFacade().marshall(getDetailedReportJaxb(), validateXml);
 		}
 		return xmlDetailedReport;
+	}
+
+	/**
+	 * For debug purpose.
+	 * 
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws JAXBException
+	 */
+	public void print() throws JAXBException, IOException, SAXException {
+		System.out.println("----------------Diagnostic data-----------------");
+		System.out.println(getXmlDiagnosticData());
+		System.out.println("----------------Validation report---------------");
+		System.out.println(getXmlDetailedReport());
+		System.out.println("----------------Simple report-------------------");
+		System.out.println(getXmlSimpleReport());
+		System.out.println("------------------------------------------------");
 	}
 
 }

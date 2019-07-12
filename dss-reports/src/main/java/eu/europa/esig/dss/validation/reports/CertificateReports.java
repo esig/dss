@@ -20,10 +20,14 @@
  */
 package eu.europa.esig.dss.validation.reports;
 
+import java.io.IOException;
+
+import javax.xml.bind.JAXBException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlDetailedReport;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
 import eu.europa.esig.dss.jaxb.simplecertificatereport.SimpleCertificateReportFacade;
@@ -81,20 +85,14 @@ public class CertificateReports extends AbstractReports {
 	 * 
 	 * @return a String with the XML content of the JAXB
 	 *         {@code XmlSimpleCertificateReport}
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws JAXBException
 	 */
 	@Override
-	public String getXmlSimpleReport() {
+	public String getXmlSimpleReport() throws JAXBException, IOException, SAXException {
 		if (xmlSimpleReport == null) {
-			try {
-				xmlSimpleReport = SimpleCertificateReportFacade.newFacade().marshall(getSimpleReportJaxb(), validateXml);
-			} catch (Exception e) {
-				String message = "Unable to generate string value for the simple certificate report : ";
-				if (validateXml) {
-					throw new DSSException(message, e);
-				} else {
-					LOG.error(message, e);
-				}
-			}
+			xmlSimpleReport = SimpleCertificateReportFacade.newFacade().marshall(getSimpleReportJaxb(), validateXml);
 		}
 		return xmlSimpleReport;
 	}

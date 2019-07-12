@@ -25,7 +25,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
@@ -74,7 +73,7 @@ public class POEExistsAtOrBeforeControlTimeCheck extends ChainItem<XmlVTS> {
 		} else if (TimestampedObjectType.REVOCATION.equals(referenceCategory)) {
 			return MessageTag.PSV_ITPORDAOBCT;
 		}
-		throw new DSSException("Problem VTS");
+		throw new IllegalStateException("Problem VTS");
 	}
 
 	@Override

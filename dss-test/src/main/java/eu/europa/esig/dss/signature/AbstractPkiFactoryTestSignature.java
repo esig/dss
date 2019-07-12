@@ -53,16 +53,16 @@ import org.xml.sax.SAXException;
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.Policy;
-import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignerLocation;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EndorsementType;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.jaxb.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
@@ -155,21 +155,17 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		// reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		assertNotNull(reports.getXmlDiagnosticData());
 		verifyDiagnosticData(diagnosticData);
 
 		verifyDiagnosticDataJaxb(reports.getDiagnosticDataJaxb());
 
 		SimpleReport simpleReport = reports.getSimpleReport();
-		assertNotNull(reports.getXmlSimpleReport());
 		verifySimpleReport(simpleReport);
 
 		DetailedReport detailedReport = reports.getDetailedReport();
-		assertNotNull(reports.getXmlDetailedReport());
 		verifyDetailedReport(detailedReport);
 
 		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
-		assertNotNull(reports.getXmlValidationReport());
 		verifyETSIValidationReport(etsiValidationReportJaxb);
 
 		getOriginalDocument(signedDocument, diagnosticData);
@@ -355,7 +351,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 
 		XmlDigestAlgoAndValue digestAlgoAndValue = signerData.getDigestAlgoAndValue();
 		assertNotNull(digestAlgoAndValue);
-		DigestAlgorithm digestAlgorithm = DigestAlgorithm.forName(digestAlgoAndValue.getDigestMethod());
+		DigestAlgorithm digestAlgorithm = digestAlgoAndValue.getDigestMethod();
 		assertNotNull(digestAlgorithm);
 		
 		List<DSSDocument> similarDocuments = buildCloseDocuments(originalDocument);
@@ -718,7 +714,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		assertTrue(Utils.isCollectionNotEmpty(digestMatchers));
 		for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
 			if (!DigestMatcherType.MANIFEST_ENTRY.equals(xmlDigestMatcher.getType())) {
-				assertEquals(expectedDigestAlgorithm.getName(), xmlDigestMatcher.getDigestMethod());
+				assertEquals(expectedDigestAlgorithm, xmlDigestMatcher.getDigestMethod());
 			}
 		}
 	}

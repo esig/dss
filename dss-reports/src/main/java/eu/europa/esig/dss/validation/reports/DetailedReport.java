@@ -27,7 +27,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -365,7 +364,7 @@ public class DetailedReport {
 
 	public XmlConclusion getCertificateXCVConclusion(String certificateId) {
 		if (jaxbDetailedReport.getCertificate() == null) {
-			throw new DSSException("Only supported in report for certificate");
+			throw new UnsupportedOperationException("Only supported in report for certificate");
 		}
 		List<XmlBasicBuildingBlocks> basicBuildingBlocks = jaxbDetailedReport.getBasicBuildingBlocks();
 		for (XmlBasicBuildingBlocks xmlBasicBuildingBlocks : basicBuildingBlocks) {

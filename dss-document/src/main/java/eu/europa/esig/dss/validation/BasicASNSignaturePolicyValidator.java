@@ -31,7 +31,8 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.Digest;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.SignaturePolicy;
 
@@ -53,8 +54,7 @@ public class BasicASNSignaturePolicyValidator extends AbstractSignaturePolicyVal
 
 		final DSSDocument policyContent = signaturePolicy.getPolicyContent();
 		byte[] policyBytes = DSSUtils.toByteArray(policyContent);
-		final byte[] digestValue = signaturePolicy.getDigestValue();
-		final DigestAlgorithm signPolicyHashAlgFromSignature = signaturePolicy.getDigestAlgorithm();
+		final Digest digest = signaturePolicy.getDigest();
 
 		setStatus(true);
 		setIdentified(true);
@@ -91,9 +91,9 @@ public class BasicASNSignaturePolicyValidator extends AbstractSignaturePolicyVal
 				 * zero, then the hash value should not be checked against the calculated hash value of the signature
 				 * policy.
 				 */
-				if (!signPolicyHashAlgFromPolicy.equals(signPolicyHashAlgFromSignature)) {
+				if (!signPolicyHashAlgFromPolicy.equals(digest.getAlgorithm())) {
 					addError("general", "The digest algorithm indicated in the SignPolicyHashAlg from the resulting document (" + signPolicyHashAlgFromPolicy
-							+ ") is not equal to the digest " + "algorithm (" + signPolicyHashAlgFromSignature + ").");
+							+ ") is not equal to the digest " + "algorithm (" + digest.getAlgorithm() + ").");
 					setDigestAlgorithmsEqual(false);
 					setStatus(false);
 					return;
@@ -103,21 +103,22 @@ public class BasicASNSignaturePolicyValidator extends AbstractSignaturePolicyVal
 
 				byte[] recalculatedDigestValue = DSSASN1Utils.getAsn1SignaturePolicyDigest(signPolicyHashAlgFromPolicy, policyBytes);
 
-				boolean equal = Arrays.equals(digestValue, recalculatedDigestValue);
+				boolean equal = Arrays.equals(digest.getValue(), recalculatedDigestValue);
 				setStatus(equal);
 				if (!equal) {
 					addError("general",
-							"The policy digest value (" + Utils.toBase64(digestValue) + ") does not match the re-calculated digest value ("
+							"The policy digest value (" + Utils.toBase64(digest.getValue()) + ") does not match the re-calculated digest value ("
 									+ Utils.toBase64(recalculatedDigestValue) + ").");
 					return;
 				}
 
 				final ASN1OctetString signPolicyHash = (ASN1OctetString) asn1Sequence.getObjectAt(2);
 				final byte[] policyDigestValueFromPolicy = signPolicyHash.getOctets();
-				equal = Arrays.equals(digestValue, policyDigestValueFromPolicy);
+				equal = Arrays.equals(digest.getValue(), policyDigestValueFromPolicy);
 				setStatus(equal);
 				if (!equal) {
-					addError("general", "The policy digest value (" + Utils.toBase64(digestValue) + ") does not match the digest value from the policy file ("
+					addError("general", "The policy digest value (" + Utils.toBase64(digest.getValue())
+							+ ") does not match the digest value from the policy file ("
 							+ Utils.toBase64(policyDigestValueFromPolicy) + ").");
 				}
 			}

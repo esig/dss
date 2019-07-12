@@ -26,6 +26,7 @@ import java.io.File;
 
 import org.junit.Test;
 
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 public class DSSPKUtilsTest {

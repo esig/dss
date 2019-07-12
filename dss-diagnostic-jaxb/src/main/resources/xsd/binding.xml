@@ -104,6 +104,42 @@
 				printMethod="eu.europa.esig.dss.jaxb.parsers.EndorsementTypeParser.print" />
 		</jaxb:bindings>
 		
+  	<jaxb:bindings node="//xs:complexType[@name='BasicSignature']//xs:element[@name='EncryptionAlgoUsedToSignThisToken']">
+			<jaxb:javaType name="eu.europa.esig.dss.enumerations.EncryptionAlgorithm" 
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.EncryptionAlgorithmParser.parse" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.EncryptionAlgorithmParser.print" />
+		</jaxb:bindings>
+		
+  	<jaxb:bindings node="//xs:complexType[@name='BasicSignature']//xs:element[@name='DigestAlgoUsedToSignThisToken']">
+			<jaxb:javaType name="eu.europa.esig.dss.enumerations.DigestAlgorithm" 
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.DigestAlgorithmParser.parse" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.DigestAlgorithmParser.print" />
+		</jaxb:bindings>
+		
+  	<jaxb:bindings node="//xs:complexType[@name='BasicSignature']//xs:element[@name='MaskGenerationFunctionUsedToSignThisToken']">
+			<jaxb:javaType name="eu.europa.esig.dss.enumerations.MaskGenerationFunction" 
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.MaskGenerationFunctionParser.parse" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.MaskGenerationFunctionParser.print" />
+		</jaxb:bindings>
+		
+  	<jaxb:bindings node="//xs:complexType[@name='Certificate']//xs:element[@name='PublicKeyEncryptionAlgo']">
+			<jaxb:javaType name="eu.europa.esig.dss.enumerations.EncryptionAlgorithm" 
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.EncryptionAlgorithmParser.parse" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.EncryptionAlgorithmParser.print" />
+		</jaxb:bindings>
+		
+  	<jaxb:bindings node="//xs:complexType[@name='DigestAlgoAndValue']//xs:element[@name='DigestMethod']">
+			<jaxb:javaType name="eu.europa.esig.dss.enumerations.DigestAlgorithm" 
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.DigestAlgorithmParser.parse" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.DigestAlgorithmParser.print" />
+		</jaxb:bindings>
+		
+  	<jaxb:bindings node="//xs:complexType[@name='SignatureDigestReference']//xs:element[@name='DigestMethod']">
+			<jaxb:javaType name="eu.europa.esig.dss.enumerations.DigestAlgorithm" 
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.DigestAlgorithmParser.parse" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.DigestAlgorithmParser.print" />
+		</jaxb:bindings>
+		
   	<jaxb:bindings node="//xs:complexType[@name='Signature']//xs:element[@name='FoundCertificates']//xs:element[@name='RelatedCertificate']">
 		<jaxb:property name="RelatedCertificates" />
 	</jaxb:bindings>

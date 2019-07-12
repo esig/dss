@@ -14,6 +14,10 @@
 			<artifactId>dss-reports</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-model</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>javax.ws.rs</groupId>
 			<artifactId>javax.ws.rs-api</artifactId>
 		</dependency>

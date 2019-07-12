@@ -22,8 +22,8 @@ package eu.europa.esig.dss.validation.reports.wrapper;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
@@ -41,9 +41,7 @@ public class RevocationWrapper extends AbstractTokenProxy {
 	private final XmlRevocation revocation;
 
 	public RevocationWrapper(XmlRevocation revocation) {
-		if (revocation == null) {
-			throw new DSSException("XMLRevocation cannot be null!");
-		}
+		Objects.requireNonNull(revocation, "XMLRevocation cannot be null!");
 		this.revocation = revocation;
 	}
 

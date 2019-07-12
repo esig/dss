@@ -18,13 +18,21 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss;
+package eu.europa.esig.dss.enumerations;
 
-/**
- * Mask generation function.
- */
-public enum MaskGenerationFunction {
+public enum SignaturePolicyType {
 
-	MGF1;
+	/**
+	 * The validation process accepts no policy. No particular treatment is done.
+	 */
+	NO_POLICY,
+
+	/**
+	 * The validation process accepts any policy. The used policy is only showed, no
+	 * particular treatment is done.
+	 */
+	ANY_POLICY,
+
+	IMPLICIT_POLICY;
 
 }

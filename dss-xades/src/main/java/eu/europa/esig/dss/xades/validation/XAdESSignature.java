@@ -54,16 +54,16 @@ import eu.europa.esig.dss.CertificateRef;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Digest;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.IssuerSerialInfo;
-import eu.europa.esig.dss.MaskGenerationFunction;
-import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.EndorsementType;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.identifier.SignatureIdentifier;
 import eu.europa.esig.dss.identifier.TokenIdentifier;
 import eu.europa.esig.dss.utils.Utils;
@@ -477,13 +477,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				signaturePolicy = new SignaturePolicy(policyIdString);
 				final Node policyDigestMethod = DomUtils.getNode(policyIdentifier, xPathQueryHolder.XPATH__POLICY_DIGEST_METHOD);
 				final String policyDigestMethodString = policyDigestMethod.getTextContent();
-				if (Utils.isStringNotEmpty(policyDigestMethodString)) {
-					final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forXML(policyDigestMethodString);
-					signaturePolicy.setDigestAlgorithm(digestAlgorithm);
-				}
+				final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forXML(policyDigestMethodString);
 				final Element policyDigestValue = DomUtils.getElement(policyIdentifier, xPathQueryHolder.XPATH__POLICY_DIGEST_VALUE);
 				final byte[] digestValue = Utils.fromBase64(policyDigestValue.getTextContent().trim());
-				signaturePolicy.setDigestValue(digestValue);
+				signaturePolicy.setDigest(new Digest(digestAlgorithm, digestValue));
 				final Element policyUrl = DomUtils.getElement(policyIdentifier, xPathQueryHolder.XPATH__POLICY_SPURI);
 				if (policyUrl != null) {
 					policyUrlString = policyUrl.getTextContent().trim();
