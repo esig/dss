@@ -613,7 +613,7 @@ public class XMLSignatureWrappingTest {
 		List<XmlRevocationRef> allOrphanRevocationRefs = signature.getAllOrphanRevocationRefs();
 		assertEquals(3, allOrphanRevocationRefs.size());
 		for (XmlRevocationRef revocationRef : allOrphanRevocationRefs) {
-			assertNotNull(revocationRef.getOrigin());
+			assertNotNull(revocationRef.getOrigins());
 			assertNotNull(revocationRef.getDigestAlgoAndValue());
 			assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestMethod());
 			assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestValue());

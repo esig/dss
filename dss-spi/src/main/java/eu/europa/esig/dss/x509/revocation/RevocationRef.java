@@ -1,7 +1,7 @@
 package eu.europa.esig.dss.x509.revocation;
 
 import java.io.Serializable;
-import java.util.Objects;
+import java.util.Set;
 
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
@@ -13,7 +13,7 @@ public abstract class RevocationRef implements Serializable {
 
 	protected Digest digest = null;
 	
-	protected RevocationRefOrigin origin;
+	protected Set<RevocationRefOrigin> origins;
 	
 	private String dssId;
 
@@ -21,8 +21,12 @@ public abstract class RevocationRef implements Serializable {
 		return digest;
 	}
 	
-	public RevocationRefOrigin getOrigin() {
-		return origin;
+	public Set<RevocationRefOrigin> getOrigins() {
+		return origins;
+	}
+	
+	public void addOrigin(RevocationRefOrigin revocationRefOrigin) {
+		origins.add(revocationRefOrigin);
 	}
 	
 	/**
@@ -50,12 +54,15 @@ public abstract class RevocationRef implements Serializable {
 			return false;
 		}
 		RevocationRef o = (RevocationRef) obj;
-		return digest.equals(o.getDigest()) && origin.equals(o.origin);
+		return digest.equals(o.getDigest());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(digest, origin);
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((digest == null) ? 0 : digest.hashCode());
+		return result;
 	}
 
 }

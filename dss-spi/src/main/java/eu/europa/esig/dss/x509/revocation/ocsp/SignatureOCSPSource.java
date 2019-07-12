@@ -31,9 +31,7 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	private final List<OCSPToken> vriDictionaryOCSPs = new ArrayList<OCSPToken>();
 	private final List<OCSPToken> timestampRevocationValuesOCSPs = new ArrayList<OCSPToken>();
 	
-	private List<OCSPRef> completeRevocationRefsOCSPs = new ArrayList<OCSPRef>();
-	private List<OCSPRef> attributeRevocationRefsOCSPs = new ArrayList<OCSPRef>();
-	private List<OCSPRef> timestampRevocationRefsOCSPs = new ArrayList<OCSPRef>();
+	private List<OCSPRef> ocspRefs = new ArrayList<OCSPRef>();
 	
 	private transient List<OCSPRef> orphanRevocationRefsOCSPs;
 	
@@ -73,15 +71,25 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	}
 
 	public List<OCSPRef> getCompleteRevocationRefs() {
-		return completeRevocationRefsOCSPs;
+		return getOCSPRefsByOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS);
 	}
 
 	public List<OCSPRef> getAttributeRevocationRefs() {
-		return attributeRevocationRefsOCSPs;
+		return getOCSPRefsByOrigin(RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS);
 	}
 
 	public List<OCSPRef> getTimestampRevocationRefs() {
-		return timestampRevocationRefsOCSPs;
+		return getOCSPRefsByOrigin(RevocationRefOrigin.TIMESTAMP_REVOCATION_REFS);
+	}
+	
+	private List<OCSPRef> getOCSPRefsByOrigin(RevocationRefOrigin origin) {
+		List<OCSPRef> revocationRefsOCSPs = new ArrayList<OCSPRef>();
+		for (OCSPRef ocspRef : ocspRefs) {
+			if (ocspRef.getOrigins().contains(origin)) {
+				revocationRefsOCSPs.add(ocspRef);
+			}
+		}
+		return revocationRefsOCSPs;
 	}
 	
 	/**
@@ -104,10 +112,6 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	 * @return list of {@link OCSPRef}s
 	 */
 	public List<OCSPRef> getAllOCSPReferences() {
-		List<OCSPRef> ocspRefs = new ArrayList<OCSPRef>();
-		ocspRefs.addAll(getCompleteRevocationRefs());
-		ocspRefs.addAll(getAttributeRevocationRefs());
-		ocspRefs.addAll(getTimestampRevocationRefs());
 		return ocspRefs;
 	}
 	
@@ -160,26 +164,20 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 			}
 		}
 	}
+	
+	protected void addReference(OCSPRef ocspRef) {
+		for (RevocationRefOrigin origin : ocspRef.getOrigins()) {
+			addReference(ocspRef, origin);
+		}
+	}
 
 	protected void addReference(OCSPRef ocspRef, RevocationRefOrigin origin) {
-		switch (origin) {
-		case COMPLETE_REVOCATION_REFS:
-			if (!completeRevocationRefsOCSPs.contains(ocspRef)) {
-				completeRevocationRefsOCSPs.add(ocspRef);
-			}
-			break;
-		case ATTRIBUTE_REVOCATION_REFS:
-			if (!attributeRevocationRefsOCSPs.contains(ocspRef)) {
-				attributeRevocationRefsOCSPs.add(ocspRef);
-			}
-			break;
-		case TIMESTAMP_REVOCATION_REFS:
-			if (!timestampRevocationRefsOCSPs.contains(ocspRef)) {
-				timestampRevocationRefsOCSPs.add(ocspRef);
-			}
-			break;
-		default:
-			throw new DSSException(String.format("The given RevocationOrigin [%s] is not supported for OCSPRef object in the SignatureOCSPSource", origin));
+		int index = ocspRefs.indexOf(ocspRef);
+		if (index == -1) {
+			ocspRefs.add(ocspRef);
+		} else {
+			OCSPRef storedOCSPRef = ocspRefs.get(index);
+			storedOCSPRef.addOrigin(origin);
 		}
 	}
 	

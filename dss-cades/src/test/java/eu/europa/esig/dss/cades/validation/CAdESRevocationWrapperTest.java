@@ -1,9 +1,11 @@
 package eu.europa.esig.dss.cades.validation;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -14,6 +16,9 @@ import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundRevocation;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlOrphanRevocation;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlOrphanToken;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
@@ -71,7 +76,7 @@ public class CAdESRevocationWrapperTest extends PKIFactoryAccess {
 			assertNotNull(revocationRef.getDigestAlgoAndValue());
 			assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestMethod());
 			assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestValue());
-			assertNotNull(revocationRef.getOrigin());
+			assertNotNull(revocationRef.getOrigins());
 		}
 	}
 	
@@ -94,10 +99,51 @@ public class CAdESRevocationWrapperTest extends PKIFactoryAccess {
 			assertNotNull(revocationRef.getDigestAlgoAndValue());
 			assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestMethod());
 			assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestValue());
-			assertNotNull(revocationRef.getOrigin());
+			assertNotNull(revocationRef.getOrigins());
 			assertNotNull(revocationRef.getProducedAt());
 			assertTrue(Utils.isStringNotEmpty(revocationRef.getResponderIdName()) || Utils.isArrayNotEmpty(revocationRef.getResponderIdKey()));
 		}
+	}
+	
+	@Test
+	public void revocationRefsWithMultipleOrigins() {
+		DSSDocument doc = new FileDocument("src/test/resources/plugtest/cades/CAdES-X/Sample_Set_12/Signature-C-X-1.p7m");
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		Reports report = validator.validateDocument();
+
+		DiagnosticData diagnosticData = report.getDiagnosticData();
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		
+		List<XmlRevocationRef> allFoundRevocationRefs = signature.getAllFoundRevocationRefs();
+		assertEquals(3, allFoundRevocationRefs.size());
+		
+		List<XmlFoundRevocation> allFoundRevocations = signature.getAllFoundRevocations();
+		assertEquals(3, allFoundRevocations.size());
+
+		List<String> revocationIds = new ArrayList<String>();
+		for (XmlFoundRevocation revocation : allFoundRevocations) {
+			assertNotNull(revocation.getType());
+			
+			assertTrue(revocation instanceof XmlOrphanRevocation);
+			XmlOrphanRevocation orphanRevocation = (XmlOrphanRevocation) revocation;
+			XmlOrphanToken orphanRevocationToken = orphanRevocation.getToken();
+			assertNotNull(orphanRevocationToken);
+			assertFalse(revocationIds.contains(orphanRevocationToken.getId()));
+			revocationIds.add(orphanRevocationToken.getId());
+			
+			List<XmlRevocationRef> revocationRefs = revocation.getRevocationRefs();
+			assertEquals(1, revocationRefs.size());
+			
+			XmlRevocationRef revocationRef = revocationRefs.get(0);
+			assertEquals(2, revocationRef.getOrigins().size());
+			assertNotNull(revocationRef.getDigestAlgoAndValue());
+			assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestMethod());
+			assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestValue());
+		}
+		
+		List<XmlOrphanRevocation> allOrphanRevocations = diagnosticData.getAllOrphanRevocations();
+		assertEquals(3, allOrphanRevocations.size());
 	}
 
 	@Override

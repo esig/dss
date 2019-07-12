@@ -90,7 +90,7 @@ public class XAdESLevelXTest extends AbstractXAdESTestSignature {
 				assertEquals(1, revocationRefs.size());
 				XmlRevocationRef xmlRevocationRef = revocationRefs.get(0);
 				assertNotNull(xmlRevocationRef);
-				assertNotNull(xmlRevocationRef.getOrigin());
+				assertNotNull(xmlRevocationRef.getOrigins());
 			}
 		}
 	}

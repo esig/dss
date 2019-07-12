@@ -63,7 +63,7 @@ public class ListCRLSource extends SignatureCRLSource {
 		if (offlineCRLSource instanceof SignatureCRLSource) {
 			SignatureCRLSource signatureCRLSource = (SignatureCRLSource) offlineCRLSource;
 			for (CRLRef crlRef : signatureCRLSource.getAllCRLReferences()) {
-				addReference(crlRef, crlRef.getOrigin());
+				addReference(crlRef);
 			}
 		}
 	}
