@@ -22,10 +22,10 @@ package eu.europa.esig.dss.validation.process.bbb.sav;
 
 import java.util.Date;
 
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
-import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 
 /**
  * 5.2.8 Signature acceptance validation (SAV) This building block covers any

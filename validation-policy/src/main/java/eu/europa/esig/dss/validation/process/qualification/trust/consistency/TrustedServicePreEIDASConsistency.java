@@ -23,10 +23,10 @@ package eu.europa.esig.dss.validation.process.qualification.trust.consistency;
 import java.util.Date;
 import java.util.List;
 
+import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
 import eu.europa.esig.dss.validation.process.qualification.trust.AdditionalServiceInformation;
 import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualification;
-import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
 /**
  * For Seals or Web Authentication are only allowed after eIDAS

@@ -22,9 +22,9 @@ package eu.europa.esig.dss.validation.process;
 
 import java.util.List;
 
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.CertificatePolicy;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 
 public final class CertificatePolicyIdentifiers {
 

@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
+import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -33,7 +34,6 @@ import eu.europa.esig.dss.validation.policy.SubContext;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateRevocationWrapper;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class CertificateRevokedCheck extends ChainItem<XmlSubXCV> {

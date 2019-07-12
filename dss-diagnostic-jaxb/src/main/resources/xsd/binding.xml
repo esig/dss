@@ -167,64 +167,64 @@
 		
  	<jaxb:bindings node="//xs:complexType[@name='Signature']//xs:element[@name='Parent']">
         <jaxb:property>
-            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlSignature" />
+            <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlSignature" />
         </jaxb:property>
     </jaxb:bindings>
  	<jaxb:bindings node="//xs:complexType[@name='RelatedRevocation']//xs:attribute[@name='Revocation']">
         <jaxb:property>
-            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation" />
+            <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation" />
         </jaxb:property>
     </jaxb:bindings>
     <jaxb:bindings node="//xs:complexType[@name='OrphanRevocation']//xs:attribute[@name='Token']">
         <jaxb:property>
-            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlOrphanToken" />
+            <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanToken" />
         </jaxb:property>
     </jaxb:bindings>
     <jaxb:bindings node="//xs:complexType[@name='SigningCertificate']//xs:attribute[@name='Certificate']">
         <jaxb:property>
-            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate" />
+            <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate" />
         </jaxb:property>
     </jaxb:bindings>
     <jaxb:bindings node="//xs:element[@name='ChainItem']//xs:attribute[@name='Certificate']">
         <jaxb:property>
-            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate" />
+            <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate" />
         </jaxb:property>
     </jaxb:bindings>
     <jaxb:bindings node="//xs:complexType[@name='RelatedCertificate']//xs:attribute[@name='Certificate']">
         <jaxb:property>
-            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate" />
+            <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate" />
         </jaxb:property>
     </jaxb:bindings>
     <jaxb:bindings node="//xs:complexType[@name='OrphanCertificate']//xs:attribute[@name='Token']">
         <jaxb:property>
-            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlOrphanToken" />
+            <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanToken" />
         </jaxb:property>
     </jaxb:bindings>
     <jaxb:bindings node="//xs:complexType[@name='CertificateRevocation']//xs:attribute[@name='Revocation']">
         <jaxb:property>
-            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation" />
+            <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation" />
         </jaxb:property>
     </jaxb:bindings>
     <jaxb:bindings node="//xs:complexType[@name='FoundTimestamp']//xs:attribute[@name='Timestamp']">
         <jaxb:property>
-            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp" />
+            <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp" />
         </jaxb:property>
     </jaxb:bindings>
     <jaxb:bindings node="//xs:complexType[@name='SignatureScope']//xs:attribute[@name='SignerData']">
         <jaxb:property>
-            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlSignerData" />
+            <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData" />
         </jaxb:property>
     </jaxb:bindings>
     
     <jaxb:bindings node="//xs:complexType[@name='TimestampedObject']//xs:attribute[@name='Token']">
         <jaxb:property>
-            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlAbstractToken" />
+            <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlAbstractToken" />
         </jaxb:property>
     </jaxb:bindings>
     
     <jaxb:bindings node="//xs:complexType[@name='TrustedService']//xs:element[@name='ServiceDigitalIdentifier']">
         <jaxb:property>
-            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate" />
+            <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate" />
         </jaxb:property>
     </jaxb:bindings>
 

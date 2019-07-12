@@ -23,14 +23,14 @@ package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 import java.util.Date;
 import java.util.List;
 
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
 import eu.europa.esig.dss.validation.process.qualification.certificate.Type;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.type.TypeStrategy;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.type.TypeStrategyFactory;
 import eu.europa.esig.dss.validation.process.qualification.trust.AdditionalServiceInformation;
 import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualification;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
 /**
  * Allowed services are :

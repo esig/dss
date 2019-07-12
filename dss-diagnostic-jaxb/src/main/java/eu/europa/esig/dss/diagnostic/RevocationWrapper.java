@@ -18,20 +18,19 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.reports.wrapper;
+package eu.europa.esig.dss.diagnostic;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
-import eu.europa.esig.dss.utils.Utils;
 
 /**
  * Revocation wrapper containing common revocation information
@@ -86,11 +85,11 @@ public class RevocationWrapper extends AbstractTokenProxy {
 	}
 
 	public boolean isCertHashExtensionPresent() {
-		return Utils.isTrue(revocation.isCertHashExtensionPresent());
+		return revocation.isCertHashExtensionPresent() != null && revocation.isCertHashExtensionPresent();
 	}
 
 	public boolean isCertHashExtensionMatch() {
-		return Utils.isTrue(revocation.isCertHashExtensionMatch());
+		return revocation.isCertHashExtensionMatch() != null && revocation.isCertHashExtensionMatch();
 	}
 
 	public RevocationOrigin getOrigin() {

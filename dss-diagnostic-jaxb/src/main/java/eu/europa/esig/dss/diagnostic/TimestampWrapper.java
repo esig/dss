@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.reports.wrapper;
+package eu.europa.esig.dss.diagnostic;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,23 +27,23 @@ import java.util.List;
 
 import javax.xml.bind.JAXBElement;
 
+import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanToken;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedOrphanToken;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedRevocationData;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedSignature;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedSignerData;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedTimestamp;
 import eu.europa.esig.dss.enumerations.OrphanTokenType;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlOrphanToken;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedCertificate;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedObject;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedOrphanToken;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedRevocationData;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedSignature;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedSignerData;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedTimestamp;
 
 public class TimestampWrapper extends AbstractTokenProxy {
 

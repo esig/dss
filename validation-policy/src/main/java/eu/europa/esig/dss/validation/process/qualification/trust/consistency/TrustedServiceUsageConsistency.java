@@ -22,8 +22,8 @@ package eu.europa.esig.dss.validation.process.qualification.trust.consistency;
 
 import java.util.List;
 
+import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualification;
-import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
 /**
  * A Trusted Service can only have one of these values {QcForEsig, QcForEseal or QcForWSA} or none.

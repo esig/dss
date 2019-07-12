@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.reports.wrapper;
+package eu.europa.esig.dss.diagnostic;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -28,21 +28,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRevocation;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDistinguishedName;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedService;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedServiceProvider;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.ExtendedKeyUsage;
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificatePolicy;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRevocation;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlDistinguishedName;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlOID;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedService;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProvider;
-import eu.europa.esig.dss.utils.Utils;
 
 public class CertificateWrapper extends AbstractTokenProxy {
 
@@ -82,14 +81,14 @@ public class CertificateWrapper extends AbstractTokenProxy {
 
 	public List<KeyUsageBit> getKeyUsages() {
 		List<KeyUsageBit> keyUsageBits = certificate.getKeyUsageBits();
-		if (Utils.isCollectionNotEmpty(keyUsageBits)) {
+		if (keyUsageBits != null) {
 			return keyUsageBits;
 		}
 		return Collections.emptyList();
 	}
 
 	public boolean isRevocationDataAvailable() {
-		return Utils.isCollectionNotEmpty(certificate.getRevocations());
+		return certificate.getRevocations() != null && certificate.getRevocations().size() > 0;
 	}
 	
 	public List<CertificateSourceType> getSources() {
@@ -106,14 +105,14 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 	
 	public boolean isIdPkixOcspNoCheck() {
-		return Utils.isTrue(certificate.isIdPkixOcspNoCheck());
+		return certificate.isIdPkixOcspNoCheck() != null && certificate.isIdPkixOcspNoCheck();
 	}
 
 	public boolean isIdKpOCSPSigning() {
 		List<XmlOID> extendedKeyUsages = certificate.getExtendedKeyUsages();
-		if (Utils.isCollectionNotEmpty(extendedKeyUsages)) {
+		if (extendedKeyUsages != null) {
 			for (XmlOID xmlOID : extendedKeyUsages) {
-				if (Utils.areStringsEqual(ExtendedKeyUsage.OCSP_SIGNING.getOid(), xmlOID.getValue())) {
+				if (ExtendedKeyUsage.OCSP_SIGNING.getOid().equals(xmlOID.getValue())) {
 					return true;
 				}
 			}
@@ -131,7 +130,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 
 	public Date getCertificateTSPServiceExpiredCertsRevocationInfo() {
 		List<XmlTrustedServiceProvider> trustedServiceProviders = certificate.getTrustedServiceProviders();
-		if (Utils.isCollectionNotEmpty(trustedServiceProviders)) {
+		if (trustedServiceProviders != null) {
 			for (XmlTrustedServiceProvider trustedServiceProvider : trustedServiceProviders) {
 				List<XmlTrustedService> trustedServices = trustedServiceProvider.getTrustedServices();
 				for (XmlTrustedService xmlTrustedService : trustedServices) {
@@ -146,7 +145,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 
 	public String getSerialNumber() {
 		BigInteger serialNumber = certificate.getSerialNumber();
-		return serialNumber == null ? Utils.EMPTY_STRING : serialNumber.toString();
+		return serialNumber == null ? "" : serialNumber.toString();
 	}
 
 	public String getCommonName() {
@@ -195,7 +194,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 
 	public boolean hasTrustedServices() {
 		List<XmlTrustedServiceProvider> tsps = certificate.getTrustedServiceProviders();
-		return Utils.isCollectionNotEmpty(tsps);
+		return tsps != null && tsps.size() > 0;
 	}
 
 	public List<XmlTrustedServiceProvider> getTrustServiceProviders() {
@@ -205,10 +204,10 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	public List<TrustedServiceWrapper> getTrustedServices() {
 		List<TrustedServiceWrapper> result = new ArrayList<TrustedServiceWrapper>();
 		List<XmlTrustedServiceProvider> tsps = certificate.getTrustedServiceProviders();
-		if (Utils.isCollectionNotEmpty(tsps)) {
+		if (tsps != null) {
 			for (XmlTrustedServiceProvider tsp : tsps) {
 				List<XmlTrustedService> trustedServices = tsp.getTrustedServices();
-				if (Utils.isCollectionNotEmpty(trustedServices)) {
+				if (trustedServices != null) {
 					for (XmlTrustedService trustedService : trustedServices) {
 						TrustedServiceWrapper wrapper = new TrustedServiceWrapper();
 						wrapper.setTspName(tsp.getTSPName());
@@ -238,14 +237,14 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	private String getFormat(List<XmlDistinguishedName> distinguishedNames, String format) {
-		if (Utils.isCollectionNotEmpty(distinguishedNames)) {
+		if (distinguishedNames != null) {
 			for (XmlDistinguishedName distinguishedName : distinguishedNames) {
-				if (Utils.areStringsEqual(distinguishedName.getFormat(), format)) {
+				if (distinguishedName.getFormat().equals(format)) {
 					return distinguishedName.getValue();
 				}
 			}
 		}
-		return Utils.EMPTY_STRING;
+		return "";
 	}
 
 	public List<String> getAuthorityInformationAccessUrls() {
@@ -263,10 +262,11 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	public List<String> getCpsUrls() {
 		List<String> result = new ArrayList<String>();
 		List<XmlCertificatePolicy> certificatePolicyIds = certificate.getCertificatePolicies();
-		if (Utils.isCollectionNotEmpty(certificatePolicyIds)) {
+		if (certificatePolicyIds != null) {
 			for (XmlCertificatePolicy xmlCertificatePolicy : certificatePolicyIds) {
-				if (Utils.isStringNotBlank(xmlCertificatePolicy.getCpsUrl())) {
-					result.add(xmlCertificatePolicy.getCpsUrl());
+				String cpsUrl = xmlCertificatePolicy.getCpsUrl();
+				if (cpsUrl != null) {
+					result.add(cpsUrl);
 				}
 			}
 		}
@@ -290,7 +290,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 
 	private List<String> getOidValues(List<? extends XmlOID> xmlOids) {
 		List<String> result = new ArrayList<String>();
-		if (Utils.isCollectionNotEmpty(xmlOids)) {
+		if (xmlOids != null) {
 			for (XmlOID xmlOID : xmlOids) {
 				result.add(xmlOID.getValue());
 			}
@@ -316,22 +316,22 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	public String getReadableCertificateName() {
-		if (Utils.isStringNotEmpty(certificate.getCommonName())) {
+		if (certificate.getCommonName() != null) {
 			return certificate.getCommonName();
 		}
-		if (Utils.isStringNotEmpty(certificate.getGivenName())) {
+		if (certificate.getGivenName() != null) {
 			return certificate.getGivenName();
 		}
-		if (Utils.isStringNotEmpty(certificate.getSurname())) {
+		if (certificate.getSurname() != null) {
 			return certificate.getSurname();
 		}
-		if (Utils.isStringNotEmpty(certificate.getPseudonym())) {
+		if (certificate.getPseudonym() != null) {
 			return certificate.getPseudonym();
 		}
-		if (Utils.isStringNotEmpty(certificate.getOrganizationName())) {
+		if (certificate.getOrganizationName() != null) {
 			return certificate.getOrganizationName();
 		}
-		if (Utils.isStringNotEmpty(certificate.getOrganizationalUnit())) {
+		if (certificate.getOrganizationalUnit() != null) {
 			return certificate.getOrganizationalUnit();
 		}
 		return "?";

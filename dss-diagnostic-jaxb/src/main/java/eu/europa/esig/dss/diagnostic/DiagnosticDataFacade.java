@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.jaxb.diagnostic;
+package eu.europa.esig.dss.diagnostic;
 
 import java.io.IOException;
 
@@ -9,6 +9,7 @@ import javax.xml.validation.Schema;
 
 import org.xml.sax.SAXException;
 
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.jaxb.parsers.AbstractJaxbFacade;
 
 public class DiagnosticDataFacade extends AbstractJaxbFacade<XmlDiagnosticData> {

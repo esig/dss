@@ -21,11 +21,11 @@
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks.pcv.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPCV;
+import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
-import eu.europa.esig.dss.validation.reports.wrapper.TokenProxy;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class ProspectiveCertificateChainCheck extends ChainItem<XmlPCV> {

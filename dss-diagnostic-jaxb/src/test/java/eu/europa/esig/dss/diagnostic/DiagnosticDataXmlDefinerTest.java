@@ -1,8 +1,10 @@
-package eu.europa.esig.dss.jaxb.diagnostic;
+package eu.europa.esig.dss.diagnostic;
 
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
+
+import eu.europa.esig.dss.diagnostic.DiagnosticDataXmlDefiner;
 
 public class DiagnosticDataXmlDefinerTest {
 

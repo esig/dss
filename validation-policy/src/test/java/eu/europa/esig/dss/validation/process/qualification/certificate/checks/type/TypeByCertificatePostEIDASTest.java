@@ -28,9 +28,9 @@ import java.util.List;
 
 import org.junit.Test;
 
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.QCStatement;
 import eu.europa.esig.dss.validation.process.qualification.certificate.Type;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 
 public class TypeByCertificatePostEIDASTest {
 

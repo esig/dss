@@ -49,12 +49,13 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
+import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticDataFacade;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.SimpleReportFacade;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignature;
@@ -62,7 +63,6 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.jaxb.policy.Algo;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
@@ -1451,9 +1451,9 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag_data_pdfsigdict.xml"));
 		assertNotNull(xmlDiagnosticData);
 		
-		List<eu.europa.esig.dss.jaxb.diagnostic.XmlSignature> xmlSignatures = xmlDiagnosticData.getSignatures();
+		List<eu.europa.esig.dss.diagnostic.jaxb.XmlSignature> xmlSignatures = xmlDiagnosticData.getSignatures();
 		assertNotNull(xmlSignatures);
-		for (eu.europa.esig.dss.jaxb.diagnostic.XmlSignature signature : xmlSignatures) {
+		for (eu.europa.esig.dss.diagnostic.jaxb.XmlSignature signature : xmlSignatures) {
 			XmlPDFSignatureDictionary pdfSignatureDictionary = signature.getPDFSignatureDictionary();
 			assertNotNull(pdfSignatureDictionary);
 			List<BigInteger> byteRange = pdfSignatureDictionary.getSignatureByteRange();
@@ -1469,7 +1469,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 		Reports reports = executor.execute();
 		assertNotNull(reports);
-		eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData diagnosticData = reports.getDiagnosticData();
+		eu.europa.esig.dss.diagnostic.DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertNotNull(diagnosticData.getAllSignatures());
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(xmlSignatures.get(0).getId());
 		assertNotNull(signatureWrapper);

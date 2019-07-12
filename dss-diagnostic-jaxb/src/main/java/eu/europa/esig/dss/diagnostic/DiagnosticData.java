@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.reports.wrapper;
+package eu.europa.esig.dss.diagnostic;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,6 +26,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocation;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanToken;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
@@ -33,17 +43,6 @@ import eu.europa.esig.dss.enumerations.OrphanTokenType;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlContainerInfo;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlOrphanRevocation;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlOrphanToken;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerData;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
-import eu.europa.esig.dss.utils.Utils;
 
 /**
  * This class represents all static data extracted by the process analysing the signature. They are independent from the
@@ -73,7 +72,7 @@ public class DiagnosticData {
 	public List<String> getSignatureIdList() {
 		List<String> signatureIds = new ArrayList<String>();
 		List<XmlSignature> signatures = wrapped.getSignatures();
-		if (Utils.isCollectionNotEmpty(signatures)) {
+		if (signatures != null) {
 			for (XmlSignature xmlSignature : signatures) {
 				signatureIds.add(xmlSignature.getId());
 			}
@@ -523,7 +522,7 @@ public class DiagnosticData {
 
 	private SignatureWrapper getFirstSignatureNullSafe() {
 		List<SignatureWrapper> signatures = getSignatures();
-		if (Utils.isCollectionNotEmpty(signatures)) {
+		if (signatures != null && signatures.size() > 0) {
 			return signatures.get(0);
 		}
 		return new SignatureWrapper(new XmlSignature()); // TODO improve ?
@@ -538,9 +537,9 @@ public class DiagnosticData {
 	 */
 	public SignatureWrapper getSignatureById(String id) {
 		List<SignatureWrapper> signatures = getSignatures();
-		if (Utils.isCollectionNotEmpty(signatures)) {
+		if (signatures != null) {
 			for (SignatureWrapper xmlSignature : signatures) {
-				if (Utils.areStringsEqual(id, xmlSignature.getId())) {
+				if (id.equals(xmlSignature.getId())) {
 					return xmlSignature;
 				}
 			}
@@ -550,9 +549,9 @@ public class DiagnosticData {
 
 	private SignatureWrapper getSignatureByIdNullSafe(String id) {
 		List<SignatureWrapper> signatures = getSignatures();
-		if (Utils.isCollectionNotEmpty(signatures)) {
+		if (signatures != null) {
 			for (SignatureWrapper xmlSignature : signatures) {
-				if (Utils.areStringsEqual(id, xmlSignature.getId())) {
+				if (id.equals(xmlSignature.getId())) {
 					return xmlSignature;
 				}
 			}
@@ -578,7 +577,7 @@ public class DiagnosticData {
 	public TimestampWrapper getTimestampById(String id) {
 		Set<TimestampWrapper> allTimestamps = getTimestampSet();
 		for (TimestampWrapper timestampWrapper : allTimestamps) {
-			if (Utils.areStringsEqual(id, timestampWrapper.getId())) {
+			if (id.equals(timestampWrapper.getId())) {
 				return timestampWrapper;
 			}
 		}
@@ -609,9 +608,9 @@ public class DiagnosticData {
 	 */
 	public CertificateWrapper getUsedCertificateById(String id) {
 		List<CertificateWrapper> certificates = getUsedCertificates();
-		if (Utils.isCollectionNotEmpty(certificates)) {
+		if (certificates != null) {
 			for (CertificateWrapper certificate : certificates) {
-				if (Utils.areStringsEqual(id, certificate.getId())) {
+				if (id.equals(certificate.getId())) {
 					return certificate;
 				}
 			}
@@ -654,7 +653,7 @@ public class DiagnosticData {
 		if (foundSignatures == null) {
 			foundSignatures = new ArrayList<SignatureWrapper>();
 			List<XmlSignature> xmlSignatures = wrapped.getSignatures();
-			if (Utils.isCollectionNotEmpty(xmlSignatures)) {
+			if (xmlSignatures != null) {
 				for (XmlSignature xmlSignature : xmlSignatures) {
 					foundSignatures.add(new SignatureWrapper(xmlSignature));
 				}
@@ -672,7 +671,7 @@ public class DiagnosticData {
 		if (usedTimestamps == null) {
 			usedTimestamps = new ArrayList<TimestampWrapper>();
 			List<XmlTimestamp> xmlTimestamps = wrapped.getUsedTimestamps();
-			if (Utils.isCollectionNotEmpty(xmlTimestamps)) {
+			if (xmlTimestamps != null) {
 				for (XmlTimestamp xmlTimestamp : xmlTimestamps) {
 					usedTimestamps.add(new TimestampWrapper(xmlTimestamp));
 				}
@@ -690,7 +689,7 @@ public class DiagnosticData {
 		if (usedCertificates == null) {
 			usedCertificates = new ArrayList<CertificateWrapper>();
 			List<XmlCertificate> xmlCertificates = wrapped.getUsedCertificates();
-			if (Utils.isCollectionNotEmpty(xmlCertificates)) {
+			if (xmlCertificates != null) {
 				for (XmlCertificate certificate : xmlCertificates) {
 					usedCertificates.add(new CertificateWrapper(certificate));
 				}

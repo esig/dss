@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.jaxb.diagnostic;
+package eu.europa.esig.dss.diagnostic;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,6 +12,7 @@ import javax.xml.validation.SchemaFactory;
 
 import org.xml.sax.SAXException;
 
+import eu.europa.esig.dss.diagnostic.jaxb.ObjectFactory;
 import eu.europa.esig.dss.jaxb.parsers.XmlDefinerUtils;
 
 public final class DiagnosticDataXmlDefiner {

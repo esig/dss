@@ -30,8 +30,8 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.junit.Test;
 
+import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
 public class ServiceByDateFilterTest {
 

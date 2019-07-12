@@ -23,13 +23,13 @@ package eu.europa.esig.dss.validation.process.qualification.certificate.checks;
 import java.text.MessageFormat;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
+import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.process.qualification.trust.consistency.TrustedServiceChecker;
-import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class ServiceConsistencyCheck extends ChainItem<XmlValidationCertificateQualification> {

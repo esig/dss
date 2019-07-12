@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 
+import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.validation.process.qualification.trust.ServiceTypeIdentifier;
-import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
 public class CaQcServiceFilter extends AbstractTrustedServiceFilter {
 

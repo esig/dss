@@ -18,21 +18,20 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.reports.wrapper;
+package eu.europa.esig.dss.diagnostic;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
-import eu.europa.esig.dss.utils.Utils;
 
 public abstract class AbstractTokenProxy implements TokenProxy {
 
@@ -51,7 +50,7 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	public List<CertificateWrapper> getCertificateChain() {
 		List<CertificateWrapper> result = new ArrayList<CertificateWrapper>();
 		List<XmlChainItem> certificateChain = getCurrentCertificateChain();
-		if (Utils.isCollectionNotEmpty(certificateChain)) {
+		if (certificateChain != null) {
 			for (XmlChainItem xmlChainCertificate : certificateChain) {
 				result.add(new CertificateWrapper(xmlChainCertificate.getCertificate()));
 			}
@@ -62,13 +61,13 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	@Override
 	public boolean isSignatureIntact() {
 		XmlBasicSignature basicSignature = getCurrentBasicSignature();
-		return (basicSignature != null) && Utils.isTrue(basicSignature.isSignatureIntact());
+		return (basicSignature != null) && basicSignature.isSignatureIntact();
 	}
 
 	@Override
 	public boolean isSignatureValid() {
 		XmlBasicSignature basicSignature = getCurrentBasicSignature();
-		return (basicSignature != null) && Utils.isTrue(basicSignature.isSignatureValid());
+		return (basicSignature != null) && basicSignature.isSignatureValid();
 	}
 
 	@Override
@@ -104,31 +103,35 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 		if (basicSignature != null) {
 			return basicSignature.getKeyLengthUsedToSignThisToken();
 		}
-		return Utils.EMPTY_STRING;
+		return "";
 	}
 
 	@Override
 	public boolean isIssuerSerialMatch() {
 		XmlSigningCertificate currentSigningCertificate = getCurrentSigningCertificate();
-		return (currentSigningCertificate != null) && Utils.isTrue(currentSigningCertificate.isIssuerSerialMatch());
+		return (currentSigningCertificate != null)
+				&& (currentSigningCertificate.isIssuerSerialMatch() != null && currentSigningCertificate.isIssuerSerialMatch());
 	}
 
 	@Override
 	public boolean isAttributePresent() {
 		XmlSigningCertificate currentSigningCertificate = getCurrentSigningCertificate();
-		return (currentSigningCertificate != null) && Utils.isTrue(currentSigningCertificate.isAttributePresent());
+		return (currentSigningCertificate != null)
+				&& (currentSigningCertificate.isAttributePresent() != null && currentSigningCertificate.isAttributePresent());
 	}
 
 	@Override
 	public boolean isDigestValueMatch() {
 		XmlSigningCertificate currentSigningCertificate = getCurrentSigningCertificate();
-		return (currentSigningCertificate != null) && Utils.isTrue(currentSigningCertificate.isDigestValueMatch());
+		return (currentSigningCertificate != null)
+				&& (currentSigningCertificate.isDigestValueMatch() != null && currentSigningCertificate.isDigestValueMatch());
 	}
 
 	@Override
 	public boolean isDigestValuePresent() {
 		XmlSigningCertificate currentSigningCertificate = getCurrentSigningCertificate();
-		return (currentSigningCertificate != null) && Utils.isTrue(currentSigningCertificate.isDigestValuePresent());
+		return (currentSigningCertificate != null)
+				&& (currentSigningCertificate.isDigestValuePresent() != null && currentSigningCertificate.isDigestValuePresent());
 	}
 
 	@Override
