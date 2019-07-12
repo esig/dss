@@ -105,7 +105,6 @@ public class ReferenceValidation implements Serializable {
 
 	/**
 	 * Returns a list of transformations contained in the {@code reference}
-	 * @param reference {@link Reference} to find transformations for
 	 * @return list of transformation names
 	 */
 	public List<String> getTransformationNames() {

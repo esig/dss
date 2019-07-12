@@ -642,7 +642,9 @@ public enum SignatureAlgorithm implements UriBasedEnum, OidBasedEnum {
 
 	/**
 	 * Returns the URI of the signature algorithm generated from its OID:
-	 * Ex.: for OID = 1.2.4.5.6.8 -> URI = urn:oid:1.2.4.5.6.8
+	 * 
+	 * Ex.: OID = 1.2.4.5.6.8 becomes URI = urn:oid:1.2.4.5.6.8
+	 * 
 	 * Note: see RFC 3061 "A URN Namespace of Object Identifiers"
 	 *
 	 * @return URI based on the algorithm's OID
