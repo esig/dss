@@ -27,6 +27,8 @@ import java.util.List;
 
 import javax.xml.bind.JAXBElement;
 
+import eu.europa.esig.dss.enumerations.OrphanTokenType;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
@@ -42,8 +44,6 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedRevocationData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedSignerData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedTimestamp;
-import eu.europa.esig.dss.validation.OrphanTokenType;
-import eu.europa.esig.dss.x509.TimestampType;
 
 public class TimestampWrapper extends AbstractTokenProxy {
 
@@ -74,7 +74,7 @@ public class TimestampWrapper extends AbstractTokenProxy {
 	}
 
 	public TimestampType getType() {
-		return TimestampType.valueOf(timestamp.getType().name());
+		return timestamp.getType();
 	}
 
 	public Date getProductionTime() {

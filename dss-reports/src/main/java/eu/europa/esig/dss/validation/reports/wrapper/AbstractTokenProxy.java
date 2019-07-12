@@ -24,15 +24,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.EncryptionAlgorithm;
-import eu.europa.esig.dss.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.CertificateSourceType;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.XmlCertificateSourceType;
 
 public abstract class AbstractTokenProxy implements TokenProxy {
 
@@ -72,48 +72,30 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	}
 
 	@Override
-	public String getDigestAlgoUsedToSignThisToken() {
-		XmlBasicSignature basicSignature = getCurrentBasicSignature();
-		if (basicSignature != null) {
-			return basicSignature.getDigestAlgoUsedToSignThisToken();
-		}
-		return Utils.EMPTY_STRING;
-	}
-
-	@Override
-	public DigestAlgorithm getDigestAlgorithm() {
-		String signatureDigestAlgorithmName = getDigestAlgoUsedToSignThisToken();
-		return DigestAlgorithm.forName(signatureDigestAlgorithmName, null);
-	}
-
-	@Override
-	public String getEncryptionAlgoUsedToSignThisToken() {
+	public EncryptionAlgorithm getEncryptionAlgorithm() {
 		XmlBasicSignature basicSignature = getCurrentBasicSignature();
 		if (basicSignature != null) {
 			return basicSignature.getEncryptionAlgoUsedToSignThisToken();
 		}
-		return Utils.EMPTY_STRING;
+		return null;
 	}
 
 	@Override
-	public String getMaskGenerationFunctionUsedToSignThisToken() {
+	public DigestAlgorithm getDigestAlgorithm() {
 		XmlBasicSignature basicSignature = getCurrentBasicSignature();
 		if (basicSignature != null) {
-			return basicSignature.getMaskGenerationFunctionUsedToSignThisToken();
+			return basicSignature.getDigestAlgoUsedToSignThisToken();
 		}
-		return Utils.EMPTY_STRING;
+		return null;
 	}
 
 	@Override
 	public MaskGenerationFunction getMaskGenerationFunction() {
-		String mgf = getMaskGenerationFunctionUsedToSignThisToken();
-		return MaskGenerationFunction.valueOf(mgf);
-	}
-
-	@Override
-	public EncryptionAlgorithm getEncryptionAlgorithm() {
-		String encryptionAlgoUsedToSignThisToken = getEncryptionAlgoUsedToSignThisToken();
-		return EncryptionAlgorithm.forName(encryptionAlgoUsedToSignThisToken, null);
+		XmlBasicSignature basicSignature = getCurrentBasicSignature();
+		if (basicSignature != null) {
+			return basicSignature.getMaskGenerationFunctionUsedToSignThisToken();
+		}
+		return null;
 	}
 
 	@Override
@@ -162,9 +144,9 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	public boolean isTrustedChain() {
 		List<CertificateWrapper> certificateChain = getCertificateChain();
 		for (CertificateWrapper certificate : certificateChain) {
-			List<XmlCertificateSourceType> currentCertSources = certificate.getSources();
-			if (currentCertSources.contains(XmlCertificateSourceType.TRUSTED_STORE) || 
-					currentCertSources.contains(XmlCertificateSourceType.TRUSTED_LIST)) {
+			List<CertificateSourceType> currentCertSources = certificate.getSources();
+			if (currentCertSources.contains(CertificateSourceType.TRUSTED_STORE) || 
+					currentCertSources.contains(CertificateSourceType.TRUSTED_LIST)) {
 				return true;
 			}
 		}
@@ -173,7 +155,7 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	
 	public boolean isCertificateChainFromTrustedStore() {
 		for (CertificateWrapper certificate : getCertificateChain()) {
-			if (certificate.getSources().contains(XmlCertificateSourceType.TRUSTED_STORE)) {
+			if (certificate.getSources().contains(CertificateSourceType.TRUSTED_STORE)) {
 				return true;
 			}
 		}

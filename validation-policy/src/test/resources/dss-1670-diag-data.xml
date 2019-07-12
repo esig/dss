@@ -39,7 +39,7 @@
             </CertificateChain>
             <ContentType>1.2.840.113549.1.7.1</ContentType>
             <CommitmentTypeIndication/>
-            <ClaimedRoles/>
+            
             <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
             <FoundCertificates>
                 <RelatedCertificate Certificate="C-A53125188D2110AA964B02C7B7C6DA3203170894E5FB71FFFB6667D5E6810A36">
@@ -112,7 +112,7 @@
 									
 																												   
                     <Type>CRL</Type>
-                    <Origin>INTERNAL_REVOCATION_VALUES</Origin>
+                    <Origin>REVOCATION_VALUES</Origin>
                     <RevocationRef>
                         <Origin>COMPLETE_REVOCATION_REFS</Origin>
                         <DigestAlgoAndValue>
@@ -123,11 +123,11 @@
                 </RelatedRevocation>
                 <RelatedRevocation Revocation="R-7A192FE67DE291A42A5167621BA7657AC9F1CAD267C07F7BC364E833B2E94D7F">
                     <Type>CRL</Type>
-                    <Origin>INTERNAL_TIMESTAMP_REVOCATION_VALUES</Origin>
+                    <Origin>TIMESTAMP_VALIDATION_DATA</Origin>
                 </RelatedRevocation>
                 <RelatedRevocation Revocation="R-ADD0A9B25B1DB305A80FB69659A26675D0A7F3DFDEE0B75CAD7C1C8381B2E4FF">
                     <Type>CRL</Type>
-                    <Origin>INTERNAL_REVOCATION_VALUES</Origin>
+                    <Origin>REVOCATION_VALUES</Origin>
                     <RevocationRef>
                         <Origin>COMPLETE_REVOCATION_REFS</Origin>
                         <DigestAlgoAndValue>
@@ -138,7 +138,7 @@
                 </RelatedRevocation>
                 <OrphanRevocation Token="R-E9DFB3E50CC006ED38F424CF18BF8A3F06260A1F35DDA36B1A4D229323F63B59">
                     <Type>CRL</Type>
-                    <Origin>INTERNAL_TIMESTAMP_REVOCATION_VALUES</Origin>
+                    <Origin>TIMESTAMP_VALIDATION_DATA</Origin>
                     <RevocationRef>
                         <Origin>TIMESTAMP_REVOCATION_REFS</Origin>
                         <DigestAlgoAndValue>
@@ -160,6 +160,10 @@
                     <Description>Full document</Description>
                 </SignatureScope>
             </SignatureScopes>
+			<SignatureDigestReference>
+			    <DigestMethod>SHA256</DigestMethod>
+			    <DigestValue>8XUAGVh7H4xCPZg/TYllCKtMmPH3aN1MrH1pybjrJhg=</DigestValue>
+			</SignatureDigestReference>
             <SignatureValue>BT5JiKMa11muqNnUJOjD+KXiwRA67R1kY6Kihbe4zCaJAV1kreUcW4txlURNwj3htpzE2x9KTTgcBKVuo/RpFLkJiK4fXSHaMr8496Y/sn+Met7f9ttqNKF+bccMQJuTSUxzN3BTSk1ohDSd+cdjIubHoCokHNqTFxhcPTKrmiypQXeFmqmdyjWd4PPrpxSoSOnZTpWYruRIj3G5aA43/V0pe14fR8METbgLMHpv2SkIaH7w3FKFgOOY+LCDzl1lOJEM0Dc6Z+44rn8QFKTqEc1QBuM7z6tHCPrrhGaP1G1IRH+MMom+MmzK87wQMgB6tIZ6pKRF3FviMoCspyFJlA==</SignatureValue>
         </Signature>
     </Signatures>

@@ -18,11 +18,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.CertificateRef;
-import eu.europa.esig.dss.CertificateRefLocation;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Digest;
-import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.SignatureCertificateSource;
@@ -46,12 +46,12 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 
 	@Override
 	public List<CertificateRef> getCompleteCertificateRefs() {
-		return getCertificateRefsFromUnsignedAttribute(id_aa_ets_certificateRefs, CertificateRefLocation.COMPLETE_CERTIFICATE_REFS);
+		return getCertificateRefsFromUnsignedAttribute(id_aa_ets_certificateRefs, CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS);
 	}
 
 	@Override
 	public List<CertificateRef> getAttributeCertificateRefs() {
-		return getCertificateRefsFromUnsignedAttribute(attributeCertificateRefsOid, CertificateRefLocation.ATTRIBUTE_CERTIFICATE_REFS);
+		return getCertificateRefsFromUnsignedAttribute(attributeCertificateRefsOid, CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS);
 	}
 
 	private List<CertificateToken> getCertificateFromUnsignedAttribute(ASN1ObjectIdentifier attributeOid) {
@@ -76,7 +76,7 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 		return certs;
 	}
 
-	private List<CertificateRef> getCertificateRefsFromUnsignedAttribute(ASN1ObjectIdentifier attributeOid, CertificateRefLocation location) {
+	private List<CertificateRef> getCertificateRefsFromUnsignedAttribute(ASN1ObjectIdentifier attributeOid, CertificateRefOrigin location) {
 		List<CertificateRef> result = new ArrayList<CertificateRef>();
 		if (unsignedAttributes != null) {
 			Attribute attribute = unsignedAttributes.get(attributeOid);
@@ -92,7 +92,7 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 						if (issuerSerial != null) {
 							certRef.setIssuerInfo(DSSASN1Utils.getIssuerInfo(issuerSerial));
 						}
-						certRef.setLocation(location);
+						certRef.setOrigin(location);
 						result.add(certRef);
 					} catch (Exception e) {
 						LOG.warn("Unable to parse encapsulated OtherCertID : {}", e.getMessage());

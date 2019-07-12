@@ -22,12 +22,12 @@ package eu.europa.esig.dss.asic.signature.asice;
 
 import org.junit.Before;
 
-import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.asic.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.signature.ASiCWithXAdESService;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
 public class ASiCEXAdESLevelBSpecialCharInFilenameTest extends AbstractASiCEXAdESTestSignature {

@@ -42,7 +42,7 @@
             </CertificateChain>
             <ContentType>text/xml</ContentType>
             <CommitmentTypeIndication/>
-            <ClaimedRoles/>
+            
             <FoundCertificates/>
             <FoundRevocations/>
             <FoundTimestamps/>
@@ -53,6 +53,10 @@
                     <Description>The full XML file with transformations.</Description>
                 </SignatureScope>
             </SignatureScopes>
+			<SignatureDigestReference>
+			    <DigestMethod>SHA256</DigestMethod>
+			    <DigestValue>U3vufA2gKzf6UBMZqxvl2hKVHb214LSMzEXAvlwTWkA=</DigestValue>
+			</SignatureDigestReference>
         </Signature>
     </Signatures>
     <UsedCertificates>

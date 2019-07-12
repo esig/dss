@@ -32,9 +32,9 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.TimestampParameters;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 

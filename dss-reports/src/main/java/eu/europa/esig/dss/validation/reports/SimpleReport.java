@@ -25,12 +25,12 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SignatureQualification;
+import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignature;
 import eu.europa.esig.dss.jaxb.simplereport.XmlSimpleReport;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignatureQualification;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 
 /**
  * A SimpleReport holder to fetch values from a JAXB SimpleReport.

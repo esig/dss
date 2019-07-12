@@ -69,7 +69,7 @@
             </CertificateChain>
             <ContentType>text/xml</ContentType>
             <CommitmentTypeIndication/>
-            <ClaimedRoles/>
+            
             <FoundCertificates/>
             <FoundRevocations/>
             <FoundTimestamps/>
@@ -85,6 +85,10 @@
                     <Description>Full document</Description>
                 </SignatureScope>
             </SignatureScopes>
+			<SignatureDigestReference>
+			    <DigestMethod>SHA256</DigestMethod>
+			    <DigestValue>SJ53DhjdEMAq0Ox8r0LngevVHYK/+C1PYq6wGoCFxsM=</DigestValue>
+			</SignatureDigestReference>
         </Signature>
     </Signatures>
     <UsedCertificates>

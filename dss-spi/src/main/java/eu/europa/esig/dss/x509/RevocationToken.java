@@ -20,14 +20,13 @@
  */
 package eu.europa.esig.dss.x509;
 
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationReason;
+import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
-import eu.europa.esig.dss.x509.revocation.RevocationSourceType;
 
 @SuppressWarnings("serial")
 public abstract class RevocationToken extends Token {
@@ -40,7 +39,7 @@ public abstract class RevocationToken extends Token {
 	/**
 	 * An identifier referencing a CRL or OCSP response has been used for determining the revocation status.
 	 */
-	protected RevocationSourceType revocationSourceType;
+	protected RevocationType revocationType;
 
 	/**
 	 * Origins of the revocation data (signature or external)
@@ -100,15 +99,15 @@ public abstract class RevocationToken extends Token {
 	/**
 	 * The reason of the revocation.
 	 */
-	protected CRLReasonEnum reason;
+	protected RevocationReason reason;
 	
 	/**
 	 * Revocation Token Key, used for {@link RevocationToken} identification (i.e. id in DB)
 	 */
 	protected String revocationTokenKey;
 	
-	public RevocationSourceType getRevocationSourceType() {
-		return revocationSourceType;
+	public RevocationType getRevocationType() {
+		return revocationType;
 	}
 
 	public String getRelatedCertificateID() {
@@ -148,9 +147,6 @@ public abstract class RevocationToken extends Token {
 	 * @return the origin of this revocation data
 	 */
 	public Set<RevocationOrigin> getOrigins() {
-		if (Utils.isCollectionEmpty(origins)) {
-			origins = new HashSet<RevocationOrigin>(Arrays.asList(RevocationOrigin.EXTERNAL));
-		}
 		return origins;
 	}
 	
@@ -267,7 +263,7 @@ public abstract class RevocationToken extends Token {
 	 * 
 	 * @return the revocation reason or null
 	 */
-	public CRLReasonEnum getReason() {
+	public RevocationReason getReason() {
 		return reason;
 	}
 	

@@ -26,8 +26,8 @@ import java.util.Date;
 
 import javax.security.auth.x500.X500Principal;
 
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.identifier.TokenIdentifier;
 
 /**

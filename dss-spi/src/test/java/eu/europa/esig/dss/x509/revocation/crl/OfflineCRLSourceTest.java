@@ -7,9 +7,9 @@ import static org.junit.Assert.assertNull;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.RevocationOrigin;
 
 public class OfflineCRLSourceTest {
 

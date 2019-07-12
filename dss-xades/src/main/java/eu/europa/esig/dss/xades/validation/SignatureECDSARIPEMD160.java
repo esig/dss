@@ -23,7 +23,7 @@ package eu.europa.esig.dss.xades.validation;
 import org.apache.xml.security.algorithms.implementations.SignatureECDSA;
 import org.apache.xml.security.signature.XMLSignatureException;
 
-import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 
 /**
  * Class SignatureECDSARIPEMD160
@@ -42,7 +42,7 @@ public class SignatureECDSARIPEMD160 extends SignatureECDSA {
 
 	@Override
 	public String engineGetURI() {
-		return SignatureAlgorithm.ECDSA_RIPEMD160.getXMLId();
+		return SignatureAlgorithm.ECDSA_RIPEMD160.getUri();
 	}
 
 }

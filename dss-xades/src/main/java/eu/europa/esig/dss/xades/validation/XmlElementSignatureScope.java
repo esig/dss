@@ -23,39 +23,25 @@ package eu.europa.esig.dss.xades.validation;
 import java.util.List;
 
 import eu.europa.esig.dss.Digest;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignatureScope;
-import eu.europa.esig.dss.validation.SignatureScopeType;
+import eu.europa.esig.dss.enumerations.SignatureScopeType;
+import eu.europa.esig.dss.validation.SignatureScopeWithTransformations;
 
 /**
  *
  */
-public class XmlElementSignatureScope extends SignatureScope {
+public class XmlElementSignatureScope extends SignatureScopeWithTransformations {
 
-	private final List<String> transformations;
-
-	protected XmlElementSignatureScope(String xmlId, final List<String> transformations, final Digest digest) {
-		super(xmlId, digest);
-		this.transformations = transformations;
+	protected XmlElementSignatureScope(final String xmlId, final List<String> transformations, final Digest digest) {
+		super(xmlId, digest, transformations);
 	}
 
 	@Override
 	public String getDescription() {
 		String description = "The XML element with ID '" + getName() + "'";
-		if (Utils.isCollectionNotEmpty(transformations)) {
+		if (isTransformationsNotEmpty()) {
 			description = addTransformationDescription(description);
 		}
 		return description;
-	}
-	
-	protected String addTransformationDescription(String description) {
-		description += " with transformations.";
-		return description;
-	}
-
-	@Override
-	public List<String> getTransformations() {
-		return transformations;
 	}
 
 	@Override

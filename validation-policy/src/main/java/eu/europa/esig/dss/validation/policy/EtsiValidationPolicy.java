@@ -26,6 +26,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.jaxb.policy.Algo;
 import eu.europa.esig.jaxb.policy.AlgoExpirationDate;
@@ -324,6 +325,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
 			return certificateConstraints.getKeyUsage();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificateExtendedKeyUsageConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getExtendedKeyUsage();
 		}
 		return null;
 	}
@@ -669,6 +679,24 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
 		if (basicSignatureConstraints != null) {
 			return basicSignatureConstraints.getReferenceDataIntact();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getManifestEntryObjectExistenceConstraint(Context context) {
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			return basicSignatureConstraints.getManifestEntryObjectExistence();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getManifestEntryObjectIntactConstraint(Context context) {
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			return basicSignatureConstraints.getManifestEntryObjectIntact();
 		}
 		return null;
 	}

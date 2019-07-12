@@ -22,6 +22,7 @@ package eu.europa.esig.dss.validation.policy;
 
 import java.util.Date;
 
+import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 import eu.europa.esig.jaxb.policy.Model;
@@ -204,6 +205,8 @@ public interface ValidationPolicy {
 	 */
 	MultiValuesConstraint getCertificateKeyUsageConstraint(Context context, SubContext subContext);
 
+	MultiValuesConstraint getCertificateExtendedKeyUsageConstraint(Context context, SubContext subContext);
+
 	/**
 	 * @param context
 	 * @param subContext
@@ -318,10 +321,22 @@ public interface ValidationPolicy {
 	LevelConstraint getReferenceDataExistenceConstraint(Context context);
 
 	/**
-	 * @return {@code ReferenceDataIntact} if ReferenceDataIntact for a given context element is present in the
+	 * @return {@code LevelConstraint} if ReferenceDataIntact for a given context element is present in the
 	 *         constraint file, null otherwise.
 	 */
 	LevelConstraint getReferenceDataIntactConstraint(Context context);
+
+	/**
+	 * @return {@code LevelConstraint} if ManifestEntryObjectExistence for a given context element is present in the
+	 *         constraint file, null otherwise.
+	 */
+	LevelConstraint getManifestEntryObjectExistenceConstraint(Context context);
+
+	/**
+	 * @return {@code LevelConstraint} if ManifestEntryObjectIntact for a given context element is present in the
+	 *         constraint file, null otherwise.
+	 */
+	LevelConstraint getManifestEntryObjectIntactConstraint(Context context);
 
 	/**
 	 * @return {@code ReferenceDataIntact} if SignatureIntact for a given context element is present in the constraint

@@ -45,7 +45,7 @@
             </CertificateChain>
             <MimeType>text/xml</MimeType>
             <CommitmentTypeIndication/>
-            <ClaimedRoles/>
+            
             <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
             <FoundCertificates>
                 <RelatedCertificate Certificate="C-948A9632F4F6BBADFC34A23C428CDD0BEA40D397796D4CABD0F80792A62FFFB3">
@@ -55,7 +55,7 @@
                     <Origin>KEY_INFO</Origin>
                 </RelatedCertificate>
                 <RelatedCertificate Certificate="C-F4E7DF969A590AF41E38E5854542EBF9DF6A5BE9B16FD31494FA689509057494">
-                    <Origin>TIMESTAMP_DATA_VALIDATION</Origin>
+                    <Origin>TIMESTAMP_VALIDATION_DATA</Origin>
                 </RelatedCertificate>
                 <RelatedCertificate Certificate="C-FE2461CBA57FE78B4D8FD8B72730C49F9370C38002E3AA0340795395513FB26E">
                     <Origin>KEY_INFO</Origin>
@@ -77,15 +77,15 @@
             <FoundRevocations>
                 <RelatedRevocation Revocation="R-7D7676569DEB225F315C8D1486A78EA2A1BA5C19828B97466E84E6BDD761A65E">
                     <Type>CRL</Type>
-                    <Origin>INTERNAL_REVOCATION_VALUES</Origin>
+                    <Origin>REVOCATION_VALUES</Origin>
                 </RelatedRevocation>
                 <RelatedRevocation Revocation="R-5BE1D322FC8AEA14B2B21EC20ADA7052F8DED3537320559BF12B72F3F184A6BC">
                     <Type>OCSP</Type>
-                    <Origin>INTERNAL_REVOCATION_VALUES</Origin>
+                    <Origin>REVOCATION_VALUES</Origin>
                 </RelatedRevocation>
                 <RelatedRevocation Revocation="R-52755F1B968292DA7D64235FC8BEE11023AE65436DB62822DE853B0F3B94A279">
                     <Type>CRL</Type>
-                    <Origin>INTERNAL_TIMESTAMP_REVOCATION_VALUES</Origin>
+                    <Origin>TIMESTAMP_VALIDATION_DATA</Origin>
                 </RelatedRevocation>
             </FoundRevocations>
             <FoundTimestamps>
@@ -209,6 +209,10 @@
                     <Description>Full document</Description>
                 </SignatureScope>
             </SignatureScopes>
+			<SignatureDigestReference>
+			    <DigestMethod>SHA256</DigestMethod>
+			    <DigestValue>7IAJRBSyKvnEVR5DueFypygxAII9jUEmy0k8/foYclw=</DigestValue>
+			</SignatureDigestReference>
             <SignatureValue>DWLG6TASAlDwdmkO5T2tUDMGDcc4lh1lNrT3ngLlvfUp4jUn3CJkryzRH0SCjaBWQ8N7T0SwAENdnQbsezcirm1YVv18JRkjUum7S0wxKv4knnwDtBD8ooQstvOpgCWCgAuHFQHA9wjnup3ojAtuTHJVU0eLtFqWHyb6LVpMe+8b+ZfZs8YQiADXsnVwoHelMW6xXn43qn8MUrddjR50T8/k2G0J9bmnI540vrFT892sw78nt2up0neKWThJxJEvd1o/ZT+IUQCcCi30XOM5ZSo69U/7XA7aAsDv+SAJFCahsuYEVUXjy3hQ9pYR3UTm0BLxw9ivkPqZ4QU3GotE5A==</SignatureValue>
         </Signature>
     </Signatures>

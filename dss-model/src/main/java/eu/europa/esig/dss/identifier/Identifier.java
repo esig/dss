@@ -21,10 +21,13 @@
 package eu.europa.esig.dss.identifier;
 
 import java.io.Serializable;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.Digest;
-import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
 /**
  * This class is used to obtain a unique id for an object
@@ -36,14 +39,22 @@ public abstract class Identifier implements Serializable {
 	private static final DigestAlgorithm DIGEST_ALGO = DigestAlgorithm.SHA256;
 
 	private final Digest id;
-	
+
 	private String hexValue;
 
 	Identifier(byte[] data) {
 		Objects.requireNonNull(data);
-		this.id = new Digest(DIGEST_ALGO, DIGEST_ALGO.getMessageDigest().digest(data));
+		this.id = new Digest(DIGEST_ALGO, getMessageDigest(DIGEST_ALGO).digest(data));
 	}
-	
+
+	protected MessageDigest getMessageDigest(DigestAlgorithm digestAlgorithm) {
+		try {
+			return digestAlgorithm.getMessageDigest();
+		} catch (NoSuchAlgorithmException e) {
+			throw new DSSException("Unable to create a MessageDigest for algorithm " + digestAlgorithm, e);
+		}
+	}
+
 	Digest getDigestId() {
 		return id;
 	}

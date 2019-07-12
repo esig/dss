@@ -24,11 +24,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.enumerations.CertificateQualification;
+import eu.europa.esig.dss.enumerations.ValidationTime;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateQualification;
-import eu.europa.esig.dss.validation.ValidationTime;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;
@@ -71,6 +70,7 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 			List<TrustedServiceWrapper> caqcServices) {
 		super(new XmlValidationCertificateQualification());
 		result.setTitle(ValidationProcessDefinition.CERT_QUALIFICATION.getTitle() + " @ " + validationTime);
+		result.setId(signingCertificate.getId());
 
 		this.validationTime = validationTime;
 		this.signingCertificate = signingCertificate;
@@ -85,7 +85,7 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 			this.date = date;
 			break;
 		default:
-			throw new DSSException("Unknown qualification time : " + validationTime);
+			throw new IllegalArgumentException("Unknown qualification time : " + validationTime);
 		}
 	}
 

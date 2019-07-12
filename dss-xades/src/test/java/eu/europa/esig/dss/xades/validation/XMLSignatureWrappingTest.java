@@ -23,6 +23,7 @@ package eu.europa.esig.dss.xades.validation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -32,35 +33,55 @@ import java.util.List;
 import javax.xml.bind.JAXBElement;
 
 import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.client.http.IgnoreDataLoader;
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.OrphanTokenType;
+import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
+import eu.europa.esig.dss.enumerations.RevocationType;
+import eu.europa.esig.dss.enumerations.SignatureScopeType;
+import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlAbstractToken;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlOrphanCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlOrphanRevocation;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlOrphanToken;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRelatedCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureDigestReference;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerData;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedObject;
 import eu.europa.esig.dss.tsl.ServiceInfo;
 import eu.europa.esig.dss.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateRefOriginType;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.DigestMatcherType;
-import eu.europa.esig.dss.validation.RevocationType;
-import eu.europa.esig.dss.validation.SignatureScopeType;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.XmlRevocationRefOrigin;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.SimpleReport;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
+import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.XPathQueryHolder;
+import eu.europa.esig.jaxb.validationreport.POEProvisioningType;
 import eu.europa.esig.jaxb.validationreport.SASigPolicyIdentifierType;
 import eu.europa.esig.jaxb.validationreport.SignatureIdentifierType;
+import eu.europa.esig.jaxb.validationreport.SignatureReferenceType;
 import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
 import eu.europa.esig.jaxb.validationreport.ValidationObjectListType;
 import eu.europa.esig.jaxb.validationreport.ValidationObjectType;
@@ -97,7 +118,9 @@ public class XMLSignatureWrappingTest {
 
 	@Test
 	public void testEnvelopedOriginal() {
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(new FileDocument(new File("src/test/resources/validation/xsw/original.xml")));
+		
+		FileDocument document = new FileDocument(new File("src/test/resources/validation/xsw/original.xml"));
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setDataLoader(new IgnoreDataLoader());
@@ -109,6 +132,21 @@ public class XMLSignatureWrappingTest {
 		SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertTrue(signatureById.isSignatureIntact());
 		assertTrue(signatureById.isSignatureValid());
+		
+		XmlSignatureDigestReference signatureDigestReference = signatureById.getSignatureDigestReference();
+		assertNotNull(signatureDigestReference);
+
+		XPathQueryHolder xPathQueryHolder = new XPathQueryHolder();
+		Document documentDom = DomUtils.buildDOM(document);
+		NodeList nodeList = DomUtils.getNodeList(documentDom.getDocumentElement(), xPathQueryHolder.XPATH__SIGNATURE);
+		Element signatureElement = (Element) nodeList.item(0);
+		byte[] canonicalizedSignatureElement = DSSXMLUtils.canonicalizeSubtree(signatureDigestReference.getCanonicalizationMethod(), signatureElement);
+		byte[] digest = DSSUtils.digest(signatureDigestReference.getDigestMethod(), canonicalizedSignatureElement);
+		
+		String signatureReferenceDigestValue = Utils.toBase64(signatureDigestReference.getDigestValue());
+		String signatureElementDigestValue = Utils.toBase64(digest);
+		assertEquals(signatureReferenceDigestValue, signatureElementDigestValue);
+		
 	}
 
 	@Test
@@ -300,8 +338,9 @@ public class XMLSignatureWrappingTest {
 	
 	@Test
 	public void signatureIdentifierTest() {
-		SignedDocumentValidator validator = SignedDocumentValidator
-				.fromDocument(new FileDocument(new File("src/test/resources/validation/valid-xades.xml")));
+		
+		FileDocument document = new FileDocument(new File("src/test/resources/validation/valid-xades.xml"));
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setDataLoader(new IgnoreDataLoader());
@@ -328,6 +367,21 @@ public class XMLSignatureWrappingTest {
 		assertTrue(Arrays.equals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue()));
 		assertNotNull(signatureIdentifier.getDAIdentifier());
 		assertEquals(signature.getDAIdentifier(), signatureIdentifier.getDAIdentifier());
+		
+		XmlSignatureDigestReference signatureDigestReference = signature.getSignatureDigestReference();
+		assertNotNull(signatureDigestReference);
+
+		XPathQueryHolder xPathQueryHolder = new XPathQueryHolder();
+		Document documentDom = DomUtils.buildDOM(document);
+		NodeList nodeList = DomUtils.getNodeList(documentDom, xPathQueryHolder.XPATH__SIGNATURE);
+		assertEquals(1, nodeList.getLength());
+		Element signatureElement = (Element) nodeList.item(0);
+		byte[] canonicalizedSignatureElement = DSSXMLUtils.canonicalizeSubtree(signatureDigestReference.getCanonicalizationMethod(), signatureElement);
+		byte[] digest = DSSUtils.digest(signatureDigestReference.getDigestMethod(), canonicalizedSignatureElement);
+		
+		String signatureReferenceDigestValue = Utils.toBase64(signatureDigestReference.getDigestValue());
+		String signatureElementDigestValue = Utils.toBase64(digest);
+		assertEquals(signatureReferenceDigestValue, signatureElementDigestValue);
 		
 	}
 	
@@ -421,7 +475,7 @@ public class XMLSignatureWrappingTest {
 	}
 	
 	@Test
-	public void xadesManifestSignatureScopeTest() {
+	public void xadesManifestSignatureScopeTest() throws Exception {
 		SignedDocumentValidator validator = SignedDocumentValidator
 				.fromDocument(new FileDocument(new File("src/test/resources/plugtest/esig2014/ESIG-XAdES/CZ_SEF/Signature-X-CZ_SEF-4.xml")));
 
@@ -436,25 +490,36 @@ public class XMLSignatureWrappingTest {
 		assertNotNull(signature);
 		List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
 		assertNotNull(signatureScopes);
-		assertEquals(10, signatureScopes.size());
+		assertEquals(12, signatureScopes.size());
 		
 		List<XmlSignerData> originalSignerDocuments = diagnosticData.getOriginalSignerDocuments();
 		assertNotNull(originalSignerDocuments);
-		assertEquals(10, originalSignerDocuments.size());
+		assertEquals(12, originalSignerDocuments.size());
 		
 		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
 		assertNotNull(etsiValidationReport);
 		ValidationObjectListType signatureValidationObjects = etsiValidationReport.getSignatureValidationObjects();
 		int signedDataCounter = 0;
+		int timestampCounter = 0;
 		for (ValidationObjectType validationObject : signatureValidationObjects.getValidationObject()) {
 			if (ObjectType.SIGNED_DATA.equals(validationObject.getObjectType())) {
 				assertNotNull(validationObject.getId());
 				assertNotNull(validationObject.getPOE());
 				signedDataCounter++;
+			} else if (ObjectType.TIMESTAMP.equals(validationObject.getObjectType())) {
+				POEProvisioningType poeProvisioning = validationObject.getPOEProvisioning();
+				List<SignatureReferenceType> signatureReferences = poeProvisioning.getSignatureReference();
+				assertEquals(1, signatureReferences.size());
+				SignatureReferenceType signatureReferenceType = signatureReferences.get(0);
+				assertNotNull(signatureReferenceType.getDigestMethod());
+				assertNotNull(signatureReferenceType.getDigestValue());
+				assertNotNull(signatureReferenceType.getCanonicalizationMethod());
+				assertNull(signatureReferenceType.getPAdESFieldName());
+				timestampCounter++;
 			}
 		}
-		assertEquals(10, signedDataCounter);
-
+		assertEquals(12, signedDataCounter);
+		assertEquals(1, timestampCounter);
 	}
 	
 	@Test
@@ -485,11 +550,11 @@ public class XMLSignatureWrappingTest {
 			assertTrue(Utils.isCollectionNotEmpty(relatedCertificate.getOrigins()));
 		}
 		
-		List<XmlFoundCertificate> completeCertificateRefs = signatureWrapper.getFoundCertificatesByRefOrigin(CertificateRefOriginType.COMPLETE_CERTIFICATE_REFS);
+		List<XmlFoundCertificate> completeCertificateRefs = signatureWrapper.getFoundCertificatesByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS);
 		assertNotNull(completeCertificateRefs);
 		assertEquals(3, completeCertificateRefs.size());
 		
-		List<XmlRevocationRef> completeRevocationRefs = signatureWrapper.getFoundRevocationRefsByOrigin(XmlRevocationRefOrigin.COMPLETE_REVOCATION_REFS);
+		List<XmlRevocationRef> completeRevocationRefs = signatureWrapper.getFoundRevocationRefsByOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS);
 		assertNotNull(completeRevocationRefs);
 		assertEquals(2, completeRevocationRefs.size());
 		
@@ -501,6 +566,189 @@ public class XMLSignatureWrappingTest {
 		assertNotNull(completeOCSPRefs);
 		assertEquals(1, completeOCSPRefs.size());
 		
+	}
+	
+	@Test
+	public void validationDataRefsWithValues() {
+		SignedDocumentValidator validator = SignedDocumentValidator
+				.fromDocument(new FileDocument(new File("src/test/resources/plugtest/esig2014/ESIG-XAdES/RO_TRA/Signature-X-RO_TRA-15.xml")));
+
+		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		certificateVerifier.setDataLoader(new IgnoreDataLoader());
+		validator.setCertificateVerifier(certificateVerifier);
+		
+		Reports reports = validator.validateDocument();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		assertNotNull(diagnosticData);
+		
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		
+		List<XmlOrphanCertificate> orphanCertificates = signature.getOrphanCertificates();
+		assertEquals(3, orphanCertificates.size());
+		for (XmlOrphanCertificate orphanCertificate : orphanCertificates) {
+			assertNotNull(orphanCertificate.getToken());
+			assertTrue(Utils.isCollectionEmpty(orphanCertificate.getOrigins()));
+			assertEquals(1, orphanCertificate.getCertificateRefs().size());
+			XmlCertificateRef xmlCertificateRef = orphanCertificate.getCertificateRefs().get(0);
+			assertEquals(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS, xmlCertificateRef.getOrigin());
+			assertNotNull(xmlCertificateRef.getIssuerSerial());
+			assertNotNull(xmlCertificateRef.getDigestAlgoAndValue());
+			assertNotNull(xmlCertificateRef.getDigestAlgoAndValue().getDigestMethod());
+			assertNotNull(xmlCertificateRef.getDigestAlgoAndValue().getDigestValue());
+		}
+		
+		List<XmlOrphanRevocation> orphanRevocations = signature.getOrphanRevocations();
+		assertEquals(3, orphanRevocations.size());
+		int ocspRevocationCounter = 0;
+		for (XmlOrphanRevocation orphanRevocation : orphanRevocations) {
+			assertNotNull(orphanRevocation.getToken());
+			assertNotNull(orphanRevocation.getType());
+			if (RevocationType.OCSP.equals(orphanRevocation.getType())) {
+				assertNotNull(orphanRevocation.getRevocationRefs().get(0).getProducedAt());
+				ocspRevocationCounter++;
+			}
+		}
+		assertEquals(1, ocspRevocationCounter);
+		
+		List<XmlRevocationRef> allOrphanRevocationRefs = signature.getAllOrphanRevocationRefs();
+		assertEquals(3, allOrphanRevocationRefs.size());
+		for (XmlRevocationRef revocationRef : allOrphanRevocationRefs) {
+			assertNotNull(revocationRef.getOrigin());
+			assertNotNull(revocationRef.getDigestAlgoAndValue());
+			assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestMethod());
+			assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestValue());
+		}
+		
+		List<String> revocationIds = signature.getRevocationIds();
+		assertEquals(3, revocationIds.size());
+		
+		List<XmlOrphanToken> allOrphanCertificates = diagnosticData.getAllOrphanCertificates();
+		assertEquals(3, allOrphanCertificates.size());
+		for (XmlOrphanToken orphanCertificate : allOrphanCertificates) {
+			assertEquals(OrphanTokenType.CERTIFICATE, orphanCertificate.getType());
+			assertNotNull(orphanCertificate.getDigestAlgoAndValue());
+			assertNotNull(orphanCertificate.getDigestAlgoAndValue().getDigestMethod());
+			assertNotNull(orphanCertificate.getDigestAlgoAndValue().getDigestValue());
+		}
+		
+		List<XmlOrphanRevocation> allOrphanRevocations = diagnosticData.getAllOrphanRevocations();
+		assertEquals(3, allOrphanRevocations.size());
+		for (XmlOrphanRevocation orphanRevocation : allOrphanRevocations) {
+			assertNotNull(orphanRevocation.getType());
+			XmlOrphanToken orphanRevocationToken = orphanRevocation.getToken();
+			assertNotNull(orphanRevocationToken);
+			assertTrue(revocationIds.contains(orphanRevocationToken.getId()));
+			assertEquals(OrphanTokenType.REVOCATION, orphanRevocationToken.getType());
+			assertNotNull(orphanRevocationToken.getDigestAlgoAndValue());
+			assertNotNull(orphanRevocationToken.getDigestAlgoAndValue().getDigestMethod());
+			assertNotNull(orphanRevocationToken.getDigestAlgoAndValue().getDigestValue());
+		}
+		
+		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+		assertEquals(3, timestampList.size());
+		int signatureTimestampCounter = 0;
+		int sigAndRefsTimestampCounter = 0;
+		int refsOnlyTimestampCounter = 0;
+		for (TimestampWrapper timestamp : timestampList) {
+			if (TimestampType.SIGNATURE_TIMESTAMP.equals(timestamp.getType())) {
+				List<XmlTimestampedObject> timestampedObjects = timestamp.getTimestampedObjects();
+				assertEquals(3, timestampedObjects.size());
+				int signatureTokenCounter = 0;
+				int signerDataTokenCounter = 0;
+				int certificateTokenCounter = 0;
+				for (XmlTimestampedObject timestampedObject : timestampedObjects) {
+					XmlAbstractToken token = timestampedObject.getToken();
+					assertNotNull(token);
+					signatureTokenCounter += token instanceof XmlSignature ? 1 : 0;
+					signerDataTokenCounter += token instanceof XmlSignerData ? 1 : 0;
+					certificateTokenCounter += token instanceof XmlCertificate ? 1 : 0;
+				}
+				assertEquals(1, signatureTokenCounter);
+				assertEquals(1, signerDataTokenCounter);
+				assertEquals(1, certificateTokenCounter);
+				signatureTimestampCounter++;
+			} else {
+				List<XmlTimestampedObject> timestampedObjects = timestamp.getTimestampedObjects();
+				int orphanCertificateTokenCounter = 0;
+				int orphanRevocationTokenCounter = 0;
+				for (XmlTimestampedObject timestampedObject : timestampedObjects) {
+					XmlAbstractToken token = timestampedObject.getToken();
+					assertNotNull(token);
+					if (token instanceof XmlOrphanToken) {
+						XmlOrphanToken orphanToken = (XmlOrphanToken) token;
+						if (OrphanTokenType.CERTIFICATE.equals(orphanToken.getType())) {
+							orphanCertificateTokenCounter++;
+						} else if (OrphanTokenType.REVOCATION.equals(orphanToken.getType())) {
+							orphanRevocationTokenCounter++;
+						}
+					}
+				}
+				assertEquals(3, orphanCertificateTokenCounter);
+				assertEquals(3, orphanRevocationTokenCounter);
+				if (TimestampType.VALIDATION_DATA_TIMESTAMP.equals(timestamp.getType())) {
+					assertEquals(11, timestampedObjects.size());
+					sigAndRefsTimestampCounter++;
+				} else if (TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP.equals(timestamp.getType())) {
+					assertEquals(6, timestampedObjects.size());
+					refsOnlyTimestampCounter++;
+				}
+			}
+		}
+		assertEquals(1, signatureTimestampCounter);
+		assertEquals(1, sigAndRefsTimestampCounter);
+		assertEquals(1, refsOnlyTimestampCounter);
+		
+	}
+	
+	@Test
+	public void certificateRefToOCSPResponceCertificateTest() {
+		SignedDocumentValidator validator = SignedDocumentValidator
+				.fromDocument(new FileDocument(new File("src/test/resources/plugtest/esig2014/ESIG-XAdES/RO_TRA/Signature-X-RO_TRA-4.xml")));
+
+		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		certificateVerifier.setDataLoader(new IgnoreDataLoader());
+		validator.setCertificateVerifier(certificateVerifier);
+		
+		Reports reports = validator.validateDocument();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		assertNotNull(diagnosticData);
+		
+		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
+		assertEquals(2, signatures.size());
+		boolean signatureFound = false;
+		for (SignatureWrapper signature : signatures) {
+			if ("Signature-2064753652".equals(signature.getDAIdentifier())) {
+				int completeCertificateRefsCounter = 0;
+				for (XmlFoundCertificate foundCertificate : signature.getAllFoundCertificates()) {
+					List<XmlCertificateRef> certificateRefs = foundCertificate.getCertificateRefs();
+					assertEquals(1, certificateRefs.size());
+					XmlCertificateRef xmlCertificateRef = certificateRefs.get(0);
+					if (CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS.equals(xmlCertificateRef.getOrigin())) {
+						completeCertificateRefsCounter++;
+					}
+					assertTrue(foundCertificate instanceof XmlRelatedCertificate);
+					XmlRelatedCertificate relatedCertificate = (XmlRelatedCertificate) foundCertificate;
+					assertNotNull(relatedCertificate.getCertificate());
+				}
+				assertEquals(3, completeCertificateRefsCounter);
+				signatureFound = true;
+			}
+		}
+		assertTrue(signatureFound);
+		
+		List<XmlOrphanToken> allOrphanCertificates = diagnosticData.getAllOrphanCertificates();
+		assertEquals(0, allOrphanCertificates.size());
+		List<XmlOrphanRevocation> allOrphanRevocations = diagnosticData.getAllOrphanRevocations();
+		assertEquals(0, allOrphanRevocations.size());
+		
+		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+		assertEquals(4, timestampList.size());
+		for (TimestampWrapper timestamp : timestampList) {
+			List<XmlTimestampedObject> timestampedObjects = timestamp.getTimestampedObjects();
+			for (XmlTimestampedObject timestampedObject : timestampedObjects) {
+				assertNotNull(timestampedObject.getToken());
+			}
+		}
 	}
 	
 	/**

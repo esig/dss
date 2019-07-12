@@ -25,10 +25,12 @@ import java.math.BigInteger;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import javax.security.auth.x500.X500Principal;
+import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.xml.security.algorithms.JCEMapper;
@@ -52,28 +54,30 @@ import eu.europa.esig.dss.CertificateRef;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Digest;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.IssuerSerialInfo;
-import eu.europa.esig.dss.MaskGenerationFunction;
-import eu.europa.esig.dss.SignatureAlgorithm;
-import eu.europa.esig.dss.SignatureForm;
-import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.EndorsementType;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureForm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.identifier.SignatureIdentifier;
 import eu.europa.esig.dss.identifier.TokenIdentifier;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.validation.CertificateValidity;
-import eu.europa.esig.dss.validation.CertifiedRole;
 import eu.europa.esig.dss.validation.CommitmentType;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
-import eu.europa.esig.dss.validation.DigestMatcherType;
 import eu.europa.esig.dss.validation.ReferenceValidation;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
+import eu.europa.esig.dss.validation.SignatureDigestReference;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
+import eu.europa.esig.dss.validation.SignerRole;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.SignatureCertificateSource;
@@ -84,6 +88,7 @@ import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.SantuarioInitializer;
 import eu.europa.esig.dss.xades.XAdESUtils;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
+import eu.europa.esig.dss.xades.reference.XAdESReferenceValidation;
 
 /**
  * Parse an XAdES signature structure. Note that for each signature to be validated a new instance of this object must
@@ -102,6 +107,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	private static SignatureLevel[] signatureLevels = new SignatureLevel[] { SignatureLevel.XML_NOT_ETSI, SignatureLevel.XAdES_BASELINE_B,
 			SignatureLevel.XAdES_BASELINE_T, SignatureLevel.XAdES_C, SignatureLevel.XAdES_X, SignatureLevel.XAdES_BASELINE_LT,
 			SignatureLevel.XAdES_BASELINE_LTA };
+	
+	/**
+	 * The default canonicalization method used in {@link SignatureDigestReference} computation
+	 */
+	protected static final String DEFAULT_CANONICALIZATION_METHOD = CanonicalizationMethod.EXCLUSIVE;
 
 	/**
 	 * This variable contains the list of {@code XPathQueryHolder} adapted to the specific signature schema.
@@ -127,11 +137,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * {@code checkSignatureIntegrity} is called.
 	 */
 	private transient List<Reference> references;
-	
-	/**
-	 * Cached list of {@link ReferenceValidation} contained in the signature manifest file (if applicable)
-	 */
-	private List<ReferenceValidation> manifestReferences;
 
 	static {
 
@@ -472,13 +477,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				signaturePolicy = new SignaturePolicy(policyIdString);
 				final Node policyDigestMethod = DomUtils.getNode(policyIdentifier, xPathQueryHolder.XPATH__POLICY_DIGEST_METHOD);
 				final String policyDigestMethodString = policyDigestMethod.getTextContent();
-				if (Utils.isStringNotEmpty(policyDigestMethodString)) {
-					final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forXML(policyDigestMethodString);
-					signaturePolicy.setDigestAlgorithm(digestAlgorithm);
-				}
+				final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forXML(policyDigestMethodString);
 				final Element policyDigestValue = DomUtils.getElement(policyIdentifier, xPathQueryHolder.XPATH__POLICY_DIGEST_VALUE);
 				final byte[] digestValue = Utils.fromBase64(policyDigestValue.getTextContent().trim());
-				signaturePolicy.setDigestValue(digestValue);
+				signaturePolicy.setDigest(new Digest(digestAlgorithm, digestValue));
 				final Element policyUrl = DomUtils.getElement(policyIdentifier, xPathQueryHolder.XPATH__POLICY_SPURI);
 				if (policyUrl != null) {
 					policyUrlString = policyUrl.getTextContent().trim();
@@ -537,25 +539,23 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public String[] getClaimedSignerRoles() {
-
+	public List<SignerRole> getClaimedSignerRoles() {
 		NodeList nodeList = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_CLAIMED_ROLE);
 		if (nodeList.getLength() == 0) {
 			nodeList = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_CLAIMED_ROLE_V2);
 			if (nodeList.getLength() == 0) {
-				return null;
+				return Collections.emptyList();
 			}
 		}
-		final String[] roles = new String[nodeList.getLength()];
+		List<SignerRole> claimedRoles = new ArrayList<SignerRole>();
 		for (int ii = 0; ii < nodeList.getLength(); ii++) {
-
-			roles[ii] = nodeList.item(ii).getTextContent();
+			claimedRoles.add(new SignerRole(nodeList.item(ii).getTextContent(), EndorsementType.CLAIMED));
 		}
-		return roles;
+		return claimedRoles;
 	}
 
 	@Override
-	public List<CertifiedRole> getCertifiedSignerRoles() {
+	public List<SignerRole> getCertifiedSignerRoles() {
 		/**
 		 * <!-- Start EncapsulatedPKIDataType-->
 		 * <xsd:element name="EncapsulatedPKIData" type="EncapsulatedPKIDataType"/>
@@ -573,20 +573,16 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		if (nodeList.getLength() == 0) {
 			nodeList = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_CERTIFIED_ROLE_V2);
 			if (nodeList.getLength() == 0) {
-				return null;
+				return Collections.emptyList();
 			}
 		}
-		final List<CertifiedRole> roles = new ArrayList<CertifiedRole>();
+		final List<SignerRole> certifiedRoles = new ArrayList<SignerRole>();
 		for (int ii = 0; ii < nodeList.getLength(); ii++) {
 			final Element certEl = (Element) nodeList.item(ii);
 			final String textContent = certEl.getTextContent();
-			CertifiedRole role = new CertifiedRole();
-			role.setRole(textContent);
-			if (!roles.contains(role)) {
-				roles.add(role);
-			}
+			certifiedRoles.add(new SignerRole(textContent, EndorsementType.CERTIFIED));
 		}
-		return roles;
+		return certifiedRoles;
 	}
 
 	@Override
@@ -802,23 +798,22 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			referenceValidations = new ArrayList<ReferenceValidation>();
 
 			final XMLSignature santuarioSignature = getSantuarioSignature();
-			
 			boolean atLeastOneReferenceElementFound = false;
 			
 			List<Reference> references = getReferences();
 			for (Reference reference : references) {
-				ReferenceValidation validation = new ReferenceValidation();
+				XAdESReferenceValidation validation = new XAdESReferenceValidation(reference);
 				validation.setType(DigestMatcherType.REFERENCE);
 				boolean found = false;
 				boolean intact = false;
+				
 				try {
-					final String id = reference.getId();
-					final String uri = reference.getURI();
-					if (Utils.isStringNotBlank(id)) {
-						validation.setName(id);
-					} else if (Utils.isStringNotBlank(uri)) {
-						validation.setName(uri);
-					}
+					
+					final Digest digest = new Digest();
+					digest.setValue(reference.getDigestValue());
+					digest.setAlgorithm(
+							DigestAlgorithm.forXML(reference.getMessageDigestAlgorithm().getAlgorithmURI()));
+					validation.setDigest(digest);
 
 					try {
 						found = reference.getContentsBeforeTransformation() != null;
@@ -826,45 +821,58 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						// continue, exception will be catched later
 					}
 					
+					final String uri = validation.getUri();
+					
 					boolean noDuplicateIdFound = XMLUtils.protectAgainstWrappingAttack(santuarioSignature.getDocument(), DomUtils.getId(uri));
 					boolean isElementReference = DomUtils.isElementReference(uri);
 							
 					if (isElementReference && XAdESUtils.isSignedProperties(reference, xPathQueryHolder)) {
 						validation.setType(DigestMatcherType.SIGNED_PROPERTIES);
 						found = found && (noDuplicateIdFound && findSignedPropertiesById(uri));
-					} else if (isElementReference && isKeyInfoReference(reference, santuarioSignature.getElement())) {
+						
+					} else if (DomUtils.isXPointerQuery(uri)) {
+						validation.setType(DigestMatcherType.XPOINTER);
+						found = found && noDuplicateIdFound;
+						
+					} else if (isElementReference && XAdESUtils.isKeyInfoReference(reference, santuarioSignature.getElement(), xPathQueryHolder)) {
 						validation.setType(DigestMatcherType.KEY_INFO);
 						found = true; // we check it in prior inside "isKeyInfoReference" method
+						
 					} else if (isElementReference && reference.typeIsReferenceToObject()) {
 						validation.setType(DigestMatcherType.OBJECT);
 						found = found && (noDuplicateIdFound && findObjectById(uri));
-						atLeastOneReferenceElementFound = true;
+						
 					} else if (isElementReference && reference.typeIsReferenceToManifest()) {
 						validation.setType(DigestMatcherType.MANIFEST);
 						Node manifestNode = getManifestById(uri);
 						found = found && (noDuplicateIdFound && (manifestNode != null));
-						atLeastOneReferenceElementFound = true;
-						if (manifestNode != null && Utils.isCollectionNotEmpty(detachedContents)) {
-							referenceValidations.addAll(getManifestReferences(manifestNode));
+						if (manifestNode != null) {
+							validation.getDependentValidations().addAll(getManifestReferences(manifestNode));
 						}
+						
 					} else {
 						found = found && noDuplicateIdFound;
-						atLeastOneReferenceElementFound = true;
+						
 					}
-
-					final Digest digest = new Digest();
-					digest.setValue(reference.getDigestValue());
-					digest.setAlgorithm(
-							DigestAlgorithm.forXML(reference.getMessageDigestAlgorithm().getAlgorithmURI()));
-					validation.setDigest(digest);
-
-					intact = reference.verify();
-				} catch (XMLSecurityException e) {
-					LOG.warn("Unable to verify reference with Id [{}] : {}", reference.getId(), e.getMessage());
+					
+					if (found) {
+						intact = reference.verify();
+					}
+					
+				} catch (Exception e) {
+					LOG.warn("Unable to verify reference with Id [{}] : {}", reference.getId(), e.getMessage(), e);
+					
 				}
+				
+				if (DigestMatcherType.REFERENCE.equals(validation.getType()) || DigestMatcherType.OBJECT.equals(validation.getType()) ||
+						DigestMatcherType.MANIFEST.equals(validation.getType()) || DigestMatcherType.XPOINTER.equals(validation.getType())) {
+					atLeastOneReferenceElementFound = true;
+				}
+					
 				validation.setFound(found);
 				validation.setIntact(intact);
 				referenceValidations.add(validation);
+				
 			}
 
 			// If at least one reference is not found, we add an empty
@@ -872,8 +880,28 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			if (!atLeastOneReferenceElementFound) {
 				referenceValidations.add(notFound(DigestMatcherType.REFERENCE));
 			}
+			
+			if (referenceValidations.size() < references.size()) {
+				LOG.warn("Not all references were validated!");
+			}
+			
 		}
 		return referenceValidations;
+	}
+
+	/**
+	 * TS 119 442 - V1.1.1 - Electronic Signatures and Infrastructures (ESI), ch. 5.1.4.2.1.3 XML component:
+	 * 
+	 * In case of XAdES signatures, the input of the digest value computation shall be the result of applying the
+	 * canonicalization algorithm identified within the CanonicalizationMethod child element's value to the
+	 * corresponding ds:Signature element and its contents. The canonicalization shall be computed keeping this
+	 * ds:Signature element as a descendant of the XML root element, without detaching it.
+	 */
+	@Override
+	public SignatureDigestReference getSignatureDigestReference(DigestAlgorithm digestAlgorithm) {
+		byte[] signatureElementBytes = DSSXMLUtils.canonicalizeSubtree(DEFAULT_CANONICALIZATION_METHOD, signatureElement);
+		byte[] digestValue = DSSUtils.digest(digestAlgorithm, signatureElementBytes);
+		return new SignatureDigestReference(DEFAULT_CANONICALIZATION_METHOD, new Digest(digestAlgorithm, digestValue));
 	}
 	
 	/**
@@ -882,11 +910,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * @return list of {@link ReferenceValidation} objects
 	 */
 	public List<ReferenceValidation> getManifestReferences(Node manifestNode) {
-		if (manifestReferences == null) {
-			ManifestValidator mv = new ManifestValidator(manifestNode, detachedContents, xPathQueryHolder);
-			manifestReferences = mv.validate();
-		}
-		return manifestReferences;
+		ManifestValidator mv = new ManifestValidator(signatureElement, manifestNode, detachedContents, xPathQueryHolder);
+		return mv.validate();
 	}
 
 	private boolean findSignedPropertiesById(String uri) {
@@ -896,22 +921,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	private Node getSignedPropertiesById(String uri) {
 		String signedPropertiesById = xPathQueryHolder.XPATH_SIGNED_PROPERTIES + DomUtils.getXPathByIdAttribute(uri);
 		return DomUtils.getNode(signatureElement, signedPropertiesById);
-	}
-	
-	/**
-	 * Checks if the given {@value reference} is linked to a <KeyInfo> element
-	 * @param reference - {@link Reference} to check
-	 * @param signature - {@link Element} signature the given {@value reference} belongs to
-	 * @return - TRUE if the {@value reference} is a <KeyInfo> reference, FALSE otherwise
-	 */
-	private boolean isKeyInfoReference(final Reference reference, final Element signature) {
-		String uri = reference.getURI();
-		uri = DomUtils.getId(uri);
-		Element element = DomUtils.getElement(signature, "./" + xPathQueryHolder.XPATH_KEY_INFO + DomUtils.getXPathByIdAttribute(uri));
-		if (element != null) {
-			return true;
-		}
-		return false;
 	}
 
 	private boolean findObjectById(String uri) {

@@ -22,8 +22,8 @@ package eu.europa.esig.dss.validation.process.bbb.xcv.rfc;
 
 import java.util.Date;
 
+import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
-import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.SubContext;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;

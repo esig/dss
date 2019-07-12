@@ -33,8 +33,8 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.CertificatePolicyOids;
-import eu.europa.esig.dss.QCStatementOids;
+import eu.europa.esig.dss.enumerations.CertificatePolicy;
+import eu.europa.esig.dss.enumerations.QCStatement;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificatePolicy;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlOID;
@@ -79,7 +79,7 @@ public class QSCDTest {
 
 	@Test
 	public void testPreQSCDStatement() {
-		CertificateWrapper signingCertificate = createPreEIDAS(Arrays.asList(QCStatementOids.QC_SSCD.getOid()), Collections.<String> emptyList());
+		CertificateWrapper signingCertificate = createPreEIDAS(Arrays.asList(QCStatement.QC_SSCD.getOid()), Collections.<String> emptyList());
 		qscd(signingCertificate);
 	}
 
@@ -92,7 +92,7 @@ public class QSCDTest {
 	@Test
 	public void testPreQSCDPolicyId() {
 		CertificateWrapper signingCertificate = createPreEIDAS(Collections.<String> emptyList(),
-				Arrays.asList(CertificatePolicyOids.QCP_PUBLIC_WITH_SSCD.getOid()));
+				Arrays.asList(CertificatePolicy.QCP_PUBLIC_WITH_SSCD.getOid()));
 		qscd(signingCertificate);
 	}
 
@@ -112,7 +112,7 @@ public class QSCDTest {
 
 	@Test
 	public void testPostQSCDStatement() {
-		CertificateWrapper signingCertificate = createPostEIDAS(Arrays.asList(QCStatementOids.QC_SSCD.getOid()), Collections.<String> emptyList());
+		CertificateWrapper signingCertificate = createPostEIDAS(Arrays.asList(QCStatement.QC_SSCD.getOid()), Collections.<String> emptyList());
 		qscd(signingCertificate);
 	}
 
@@ -125,7 +125,7 @@ public class QSCDTest {
 	@Test
 	public void testPostQSCDPolicyId() {
 		CertificateWrapper signingCertificate = createPostEIDAS(Collections.<String> emptyList(),
-				Arrays.asList(CertificatePolicyOids.QCP_PUBLIC_WITH_SSCD.getOid()));
+				Arrays.asList(CertificatePolicy.QCP_PUBLIC_WITH_SSCD.getOid()));
 		notQSCD(signingCertificate);
 	}
 

@@ -29,7 +29,7 @@
 			<xs:element name="notBefore" type="xs:dateTime" />
 			<xs:element name="notAfter" type="xs:dateTime" />
 			<xs:element name="keyUsages" type="KeyUsages" minOccurs="0" />	
-			<xs:element name="extendedKeyUsages" type="KeyUsages" minOccurs="0" />			
+			<xs:element name="extendedKeyUsages" type="ExtendedKeyUsages" minOccurs="0" />			
 			<xs:element name="ocspUrls" type="ListUrls" minOccurs="0" />
 			<xs:element name="crlUrls" type="ListUrls" minOccurs="0" />
 			<xs:element name="aiaUrls" type="ListUrls" minOccurs="0" />
@@ -61,9 +61,29 @@
 	
 	<xs:complexType name="KeyUsages">
 		<xs:sequence>
-			<xs:element name="keyUsage" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
+			<xs:element name="keyUsage" type="KeyUsage" minOccurs="1" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
+	
+	<xs:complexType name="ExtendedKeyUsages">
+		<xs:sequence>
+			<xs:element name="extendedKeyUsage" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="KeyUsage" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="digitalSignature" />
+			<xs:enumeration value="nonRepudiation" />
+			<xs:enumeration value="keyEncipherment" />
+			<xs:enumeration value="dataEncipherment" />
+			<xs:enumeration value="keyAgreement" />
+			<xs:enumeration value="keyCertSign" />
+			<xs:enumeration value="crlSign" />
+			<xs:enumeration value="encipherOnly" />
+			<xs:enumeration value="decipherOnly" />
+		</xs:restriction>
+	</xs:simpleType>
 	
 	<xs:complexType name="ListUrls">
 		<xs:sequence>

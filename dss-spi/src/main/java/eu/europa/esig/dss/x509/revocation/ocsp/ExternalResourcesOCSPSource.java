@@ -26,7 +26,7 @@ import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPResp;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.x509.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
 
 public class ExternalResourcesOCSPSource extends OfflineOCSPSource {
 

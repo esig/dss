@@ -21,7 +21,8 @@
 package eu.europa.esig.dss.x509;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.Digest;
+import eu.europa.esig.dss.enumerations.SignaturePolicyType;
 
 /**
  * Represents the value of a SignaturePolicy
@@ -29,24 +30,8 @@ import eu.europa.esig.dss.DigestAlgorithm;
  */
 public class SignaturePolicy {
 
-	/**
-	 * The validation process accepts no policy. No particular treatment is done.
-	 */
-	public static final String NO_POLICY = "NO_POLICY";
-
-	/**
-	 * The validation process accepts any policy. The used policy is only showed, no particular treatment is done.
-	 */
-	public static final String ANY_POLICY = "ANY_POLICY";
-
-	public static final String IMPLICIT_POLICY = "IMPLICIT_POLICY";
-
-	private String identifier;
-
-	private DigestAlgorithm digestAlgorithm;
-
-	private byte[] digestValue;
-
+	private final String identifier;
+	private Digest digest;
 	private DSSDocument policyContent;
 	
 	// optional parameter
@@ -64,7 +49,7 @@ public class SignaturePolicy {
 	 * The default constructor for SignaturePolicy. It represents the implied policy.
 	 */
 	public SignaturePolicy() {
-		this.identifier = IMPLICIT_POLICY;
+		this.identifier = SignaturePolicyType.IMPLICIT_POLICY.name();
 	}
 
 	/**
@@ -86,30 +71,12 @@ public class SignaturePolicy {
 		return identifier;
 	}
 
-	/**
-	 * Returns the used digest algorithm to digest the signature policy
-	 * 
-	 * @return the used digest algorithm (or null)
-	 */
-	public DigestAlgorithm getDigestAlgorithm() {
-		return digestAlgorithm;
+	public Digest getDigest() {
+		return digest;
 	}
 
-	public void setDigestAlgorithm(final DigestAlgorithm digestAlgorithm) {
-		this.digestAlgorithm = digestAlgorithm;
-	}
-
-	/**
-	 * Returns the signature policy's digest value
-	 * 
-	 * @return the digest value of the signature policy (or null)
-	 */
-	public byte[] getDigestValue() {
-		return digestValue;
-	}
-
-	public void setDigestValue(final byte[] digestValue) {
-		this.digestValue = digestValue;
+	public void setDigest(Digest digest) {
+		this.digest = digest;
 	}
 
 	/**

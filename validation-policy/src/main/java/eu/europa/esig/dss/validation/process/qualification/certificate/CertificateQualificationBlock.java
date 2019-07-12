@@ -25,12 +25,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.ValidationTime;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlCertificate;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlTLAnalysis;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.ValidationTime;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;

@@ -1,11 +1,18 @@
 package eu.europa.esig.dss.validation;
 
+import java.util.List;
+
 import eu.europa.esig.dss.Digest;
+import eu.europa.esig.dss.enumerations.SignatureScopeType;
 
-public final class ManifestSignatureScope extends SignatureScope {
+public final class ManifestSignatureScope extends SignatureScopeWithTransformations {
 
-	public ManifestSignatureScope(String name, Digest digest) {
-		super(name, digest);
+	public ManifestSignatureScope(final String name, final Digest digest) {
+		super(name, digest, null);
+	}
+
+	public ManifestSignatureScope(final String name, final Digest digest, final List<String> transformations) {
+		super(name, digest, transformations);
 	}
 
     @Override

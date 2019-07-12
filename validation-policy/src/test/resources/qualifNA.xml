@@ -38,7 +38,7 @@
             </CertificateChain>
             <ContentType>application/pdf</ContentType>
             <CommitmentTypeIndication/>
-            <ClaimedRoles/>
+            
             <FoundCertificates/>
             <FoundRevocations/>
             <FoundTimestamps/>
@@ -49,6 +49,10 @@
                     <Description>Full document</Description>
                 </SignatureScope>
             </SignatureScopes>
+			<SignatureDigestReference>
+			    <DigestMethod>SHA256</DigestMethod>
+			    <DigestValue>QKoctG4bSglD00YESFwOMoPzpB2ZusPUQcAd9BmWg6Y=</DigestValue>
+			</SignatureDigestReference>
         </Signature>
     </Signatures>
     <UsedCertificates>
@@ -194,7 +198,7 @@
                 </CertificateRevocation>
                 <CertificateRevocation Revocation="R-1bcf2b72c91c013c824ae6bd2c01358475118ed7e50d920ef78d7870f51513eee4d28fb520311e9a6a81279b408300874eecd3ca35f4f7462d78f4bf0514aae8">
                     <Status>false</Status>
-                    <Reason>unknow</Reason>
+                    <Reason>unspecified</Reason>
                 </CertificateRevocation>
             </Revocations>
             <DigestAlgoAndValue>

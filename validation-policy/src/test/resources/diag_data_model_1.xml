@@ -41,7 +41,6 @@
                 <CountryName>Berlin</CountryName>
             </SignatureProductionPlace>
             <CommitmentTypeIndication/>
-            <ClaimedRoles/>
             <FoundCertificates/>
             <FoundRevocations/>
             <FoundTimestamps/>
@@ -52,6 +51,10 @@
                 	<Description>Full document</Description>
                 </SignatureScope>
             </SignatureScopes>
+            <SignatureDigestReference>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>eIOPEalzXrzprVh1TMDXIAlnbMZk4rUtaHFTi2xYtiY=</DigestValue>
+            </SignatureDigestReference>
         </Signature>
     </Signatures>
     <UsedCertificates>

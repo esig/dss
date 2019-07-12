@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation;
 import java.util.List;
 
 import eu.europa.esig.dss.Digest;
+import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.identifier.DataIdentifier;
 
 /**

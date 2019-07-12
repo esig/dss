@@ -42,7 +42,7 @@
             </CertificateChain>
             <ContentType>text/xml</ContentType>
             <CommitmentTypeIndication/>
-            <ClaimedRoles/>
+            
             <FoundCertificates/>
             <FoundRevocations/>
             <FoundTimestamps/>
@@ -57,6 +57,10 @@
                     </Transformations>
                 </SignatureScope>
             </SignatureScopes>
+			<SignatureDigestReference>
+			    <DigestMethod>SHA256</DigestMethod>
+			    <DigestValue>izibx38LZZ644ZeAQaLKaVnuPBk+LDMGbAXlFVE/1hs=</DigestValue>
+			</SignatureDigestReference>
         </Signature>
         <Signature Id="XSIG2" CounterSignature="true">
             <SignatureFilename>TEST_S1a_C1a_InTL_VALID.xml</SignatureFilename>
@@ -98,11 +102,15 @@
             </CertificateChain>
             <ContentType>text/xml</ContentType>
             <CommitmentTypeIndication/>
-            <ClaimedRoles/>
+            
             <FoundCertificates/>
             <FoundRevocations/>
             <FoundTimestamps/>
             <SignatureScopes/>
+			<SignatureDigestReference>
+			    <DigestMethod>SHA256</DigestMethod>
+			    <DigestValue>9YOWtj1a74xzfcxKpTEppQuS/+eLyPiF++I+y8IGYLg=</DigestValue>
+			</SignatureDigestReference>
         </Signature>
     </Signatures>
     <UsedCertificates>

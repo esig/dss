@@ -24,8 +24,6 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSException;
-
 public class DateUtilsTest {
 
 	@Test
@@ -33,7 +31,7 @@ public class DateUtilsTest {
 		assertNotNull(DateUtils.parseDate(DateUtils.DEFAULT_DATE_FORMAT, "2020-02-22"));
 	}
 
-	@Test(expected = DSSException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testException() {
 		DateUtils.parseDate(DateUtils.DEFAULT_DATE_FORMAT, "20-2020-02");
 	}

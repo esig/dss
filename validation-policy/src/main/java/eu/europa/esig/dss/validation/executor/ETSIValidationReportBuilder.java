@@ -8,8 +8,20 @@ import java.util.Set;
 
 import javax.xml.bind.JAXBElement;
 
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.CertificateOrigin;
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+import eu.europa.esig.dss.enumerations.CertificateSourceType;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
+import eu.europa.esig.dss.enumerations.RevocationType;
+import eu.europa.esig.dss.enumerations.SignaturePolicyType;
+import eu.europa.esig.dss.enumerations.SignatureQualification;
+import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.enumerations.TimestampLocation;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlCertificateChain;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlChainItem;
@@ -31,19 +43,12 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlOrphanRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlOrphanToken;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRelatedCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureDigestReference;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerData;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerRole;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateOriginType;
-import eu.europa.esig.dss.validation.CertificateRefOriginType;
-import eu.europa.esig.dss.validation.DigestMatcherType;
-import eu.europa.esig.dss.validation.RevocationType;
-import eu.europa.esig.dss.validation.XmlCertificateSourceType;
-import eu.europa.esig.dss.validation.XmlRevocationOrigin;
-import eu.europa.esig.dss.validation.XmlRevocationRefOrigin;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
@@ -54,9 +59,6 @@ import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
-import eu.europa.esig.dss.x509.SignaturePolicy;
-import eu.europa.esig.dss.x509.TimestampLocation;
-import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.jaxb.validationreport.AttributeBaseType;
 import eu.europa.esig.jaxb.validationreport.CertificateChainType;
 import eu.europa.esig.jaxb.validationreport.ConstraintStatusType;
@@ -90,6 +92,7 @@ import eu.europa.esig.jaxb.validationreport.SATimestampType;
 import eu.europa.esig.jaxb.validationreport.SAVRIType;
 import eu.europa.esig.jaxb.validationreport.SignatureAttributesType;
 import eu.europa.esig.jaxb.validationreport.SignatureIdentifierType;
+import eu.europa.esig.jaxb.validationreport.SignatureQualityType;
 import eu.europa.esig.jaxb.validationreport.SignatureReferenceType;
 import eu.europa.esig.jaxb.validationreport.SignatureValidationProcessType;
 import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
@@ -105,10 +108,7 @@ import eu.europa.esig.jaxb.validationreport.ValidationReportType;
 import eu.europa.esig.jaxb.validationreport.ValidationStatusType;
 import eu.europa.esig.jaxb.validationreport.ValidationTimeInfoType;
 import eu.europa.esig.jaxb.validationreport.enums.ConstraintStatus;
-import eu.europa.esig.jaxb.validationreport.enums.EndorsementType;
-import eu.europa.esig.jaxb.validationreport.enums.MainIndication;
 import eu.europa.esig.jaxb.validationreport.enums.ObjectType;
-import eu.europa.esig.jaxb.validationreport.enums.RevocationReason;
 import eu.europa.esig.jaxb.validationreport.enums.SignatureValidationProcessID;
 import eu.europa.esig.jaxb.validationreport.enums.TypeOfProof;
 import eu.europa.esig.jaxb.xades132.DigestAlgAndValueType;
@@ -133,11 +133,19 @@ public class ETSIValidationReportBuilder {
 	public ValidationReportType build() {
 		ValidationReportType result = objectFactory.createValidationReportType();
 
-		// iterate over the complete list of signatures, including counter signatures
-		for (SignatureWrapper sigWrapper : diagnosticData.getSignatures()) {
-			result.getSignatureValidationReport().add(getSignatureValidationReport(sigWrapper));
+		if (!diagnosticData.getSignatures().isEmpty()) {
+			// iterate over the complete list of signatures, including counter signatures
+			for (SignatureWrapper sigWrapper : diagnosticData.getSignatures()) {
+				result.getSignatureValidationReport().add(getSignatureValidationReport(sigWrapper));
+			}
+		} else {
+			result.getSignatureValidationReport().add(noSignatureFoundReport());
 		}
-		result.setSignatureValidationObjects(getSignatureValidationObjects());
+
+		ValidationObjectListType signatureValidationObjects = getSignatureValidationObjects();
+		if (!signatureValidationObjects.getValidationObject().isEmpty()) {
+			result.setSignatureValidationObjects(signatureValidationObjects);
+		}
 
 		return result;
 	}
@@ -146,13 +154,29 @@ public class ETSIValidationReportBuilder {
 		SignatureValidationReportType signatureValidationReport = objectFactory.createSignatureValidationReportType();
 		signatureValidationReport.setSignatureIdentifier(getSignatureIdentifier(sigWrapper));
 		getSignersDocuments(signatureValidationReport, sigWrapper);
-		signatureValidationReport.setSignatureAttributes(getSignatureAttributes(sigWrapper));
+		SignatureAttributesType signatureAttributes = getSignatureAttributes(sigWrapper);
+		if (!signatureAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().isEmpty()) {
+			signatureValidationReport.setSignatureAttributes(signatureAttributes);
+		}
 		signatureValidationReport.setSignerInformation(getSignerInformation(sigWrapper));
+		signatureValidationReport.setSignatureQuality(getSignatureQuality(sigWrapper));
 		signatureValidationReport.setSignatureValidationProcess(getSignatureValidationProcess(sigWrapper));
 		signatureValidationReport.setSignatureValidationStatus(getSignatureValidationStatus(sigWrapper));
 		signatureValidationReport.setValidationTimeInfo(getValidationTimeInfo(sigWrapper));
 		signatureValidationReport.setValidationConstraintsEvaluationReport(getValidationConstraintsEvaluationReport(sigWrapper));
 		return signatureValidationReport;
+	}
+
+	private SignatureValidationReportType noSignatureFoundReport() {
+		SignatureValidationReportType signatureValidationReport = objectFactory.createSignatureValidationReportType();
+		signatureValidationReport.setSignatureValidationStatus(noSignatureFoundValidationStatus());
+		return signatureValidationReport;
+	}
+
+	private ValidationStatusType noSignatureFoundValidationStatus() {
+		ValidationStatusType validationStatus = objectFactory.createValidationStatusType();
+		validationStatus.setMainIndication(Indication.NO_SIGNATURE_FOUND);
+		return validationStatus;
 	}
 
 	private ValidationConstraintsEvaluationReportType getValidationConstraintsEvaluationReport(SignatureWrapper sigWrapper) {
@@ -263,6 +287,16 @@ public class ETSIValidationReportBuilder {
 	private Boolean isPseudoUse(XmlStatus status) {
 		return (XmlStatus.OK != status) && (XmlStatus.IGNORED != status);
 	}
+	
+	private SignatureQualityType getSignatureQuality(SignatureWrapper signatureWrapper) {
+		SignatureQualification signatureQualification = detailedReport.getSignatureQualification(signatureWrapper.getId());
+		if (signatureQualification != null) {
+			SignatureQualityType signatureQualityType = objectFactory.createSignatureQualityType();
+			signatureQualityType.getSignatureQualityInformation().add(signatureQualification.getUri());
+			return signatureQualityType;
+		}
+		return null;
+	}
 
 	private VOReferenceType getVOReference(String id) {
 		return getVOReference(Arrays.asList(id));
@@ -348,11 +382,10 @@ public class ETSIValidationReportBuilder {
 		return getDigestAlgAndValueType(xmlDigestAlgoAndValue.getDigestMethod(), xmlDigestAlgoAndValue.getDigestValue());
 	}
 	
-	private DigestAlgAndValueType getDigestAlgAndValueType(String digestMethod, byte[] digestValue) {
+	private DigestAlgAndValueType getDigestAlgAndValueType(DigestAlgorithm digestAlgo, byte[] digestValue) {
 		DigestAlgAndValueType digestAlgAndValueType = new DigestAlgAndValueType();
 		DigestMethodType digestMethodType = new DigestMethodType();
-		digestMethodType.setAlgorithm(DigestAlgorithm.isSupportedAlgorithm(digestMethod) ? 
-				DigestAlgorithm.forName(digestMethod).getXmlId() : "?");
+		digestMethodType.setAlgorithm(digestAlgo.getUri());
 		digestAlgAndValueType.setDigestMethod(digestMethodType);
 		digestAlgAndValueType.setDigestValue(digestValue);
 		return digestAlgAndValueType;
@@ -409,15 +442,16 @@ public class ETSIValidationReportBuilder {
 		return poeProvisioning;
 	}
 	
-	private SignatureReferenceType getSignatureReference(SignatureWrapper timestampedSignature) {
+	private SignatureReferenceType getSignatureReference(SignatureWrapper signature) {
 		SignatureReferenceType signatureReference = objectFactory.createSignatureReferenceType();
-		if (timestampedSignature != null) {
-			signatureReference.setPAdESFieldName(timestampedSignature.getSignatureFieldName());
+		XmlSignatureDigestReference signatureDigestReference = signature.getSignatureDigestReference();
+		if (signatureDigestReference != null) {
+			signatureReference.setCanonicalizationMethod(signatureDigestReference.getCanonicalizationMethod());
+			signatureReference.setDigestMethod(signatureDigestReference.getDigestMethod().getUri());
+			signatureReference.setDigestValue(signatureDigestReference.getDigestValue());
+		} else if (signature.getSignatureFieldName() != null) {
+			signatureReference.setPAdESFieldName(signature.getSignatureFieldName());
 		}
-		// TODO: get digest
-//		signatureReference.setCanonicalizationMethod(value);
-//		signatureReference.setDigestMethod();
-//		signatureReference.setDigestValue(value);
 		return signatureReference;
 	}
 	
@@ -495,7 +529,7 @@ public class ETSIValidationReportBuilder {
 			fillIndication(validationStatus, indication);
 			SubIndication subIndication = detailedReport.getHighestSubIndication(signature.getId());
 			if (subIndication != null) {
-				validationStatus.getSubIndication().add(eu.europa.esig.jaxb.validationreport.enums.SubIndication.valueOf(subIndication.name()));
+				validationStatus.getSubIndication().add(subIndication);
 			}
 		}
 
@@ -506,16 +540,16 @@ public class ETSIValidationReportBuilder {
 	private void fillIndication(ValidationStatusType validationStatus, Indication indication) {
 		switch (indication) {
 		case PASSED:
-			validationStatus.setMainIndication(MainIndication.TOTAL_PASSED);
+			validationStatus.setMainIndication(Indication.TOTAL_PASSED);
 			break;
 		case FAILED:
-			validationStatus.setMainIndication(MainIndication.TOTAL_FAILED);
+			validationStatus.setMainIndication(Indication.TOTAL_FAILED);
 			break;
 		case INDETERMINATE:
-			validationStatus.setMainIndication(MainIndication.INDETERMINATE);
+			validationStatus.setMainIndication(Indication.INDETERMINATE);
 			break;
 		default:
-			throw new DSSException("Unsupported indication : " + indication);
+			throw new IllegalArgumentException("Unsupported indication : " + indication);
 		}
 	}
 
@@ -535,10 +569,10 @@ public class ETSIValidationReportBuilder {
 
 	private void fillIndicationSubIndication(ValidationStatusType validationStatus, Indication indication, SubIndication subIndication) {
 		if (indication != null) {
-			validationStatus.setMainIndication(MainIndication.valueOf(indication.name()));
+			validationStatus.setMainIndication(indication);
 		}
 		if (subIndication != null) {
-			validationStatus.getSubIndication().add(eu.europa.esig.jaxb.validationreport.enums.SubIndication.valueOf(subIndication.name()));
+			validationStatus.getSubIndication().add(subIndication);
 		}
 	}
 
@@ -583,21 +617,24 @@ public class ETSIValidationReportBuilder {
 		revocationStatusInformationType.setRevocationObject(getVOReference(revocationInfo.getRevocationId()));
 		revocationStatusInformationType.setValidationObjectId(getVOReference(revocationInfo.getCertificateId()));
 		if (revocationInfo.getReason() != null) {
-			revocationStatusInformationType.setRevocationReason(RevocationReason.valueOf(revocationInfo.getReason().name()));
+			revocationStatusInformationType.setRevocationReason(revocationInfo.getReason());
 		}
 		validationReportData.setRevocationStatusInformation(revocationStatusInformationType);
 	}
 
 	private void fillCertificateChainAndTrustAnchor(ValidationReportDataType validationReportData, XmlCertificateChain certificateChain) {
+		List<XmlChainItem> chainItem = certificateChain.getChainItem();
+		if (Utils.isCollectionEmpty(chainItem)) {
+			return;
+		}
+
 		CertificateChainType certificateChainType = objectFactory.createCertificateChainType();
 		VOReferenceType signingCert = null;
 		VOReferenceType trustAnchor = null;
-
-		List<XmlChainItem> chainItem = certificateChain.getChainItem();
 		for (int i = 0; i < chainItem.size(); i++) {
 			XmlChainItem currentChainItem = chainItem.get(i);
 			VOReferenceType currentVORef = getVOReference(currentChainItem.getId());
-			XmlCertificateSourceType source = currentChainItem.getSource();
+			CertificateSourceType source = currentChainItem.getSource();
 
 			boolean isSigningCert = (i == 0);
 			boolean isTrustAnchor = isTrustAnchor(source);
@@ -621,8 +658,8 @@ public class ETSIValidationReportBuilder {
 		validationReportData.setTrustAnchor(trustAnchor);
 	}
 
-	private boolean isTrustAnchor(XmlCertificateSourceType source) {
-		return XmlCertificateSourceType.TRUSTED_LIST.equals(source) || XmlCertificateSourceType.TRUSTED_STORE.equals(source);
+	private boolean isTrustAnchor(CertificateSourceType source) {
+		return CertificateSourceType.TRUSTED_LIST.equals(source) || CertificateSourceType.TRUSTED_STORE.equals(source);
 	}
 
 	private SignatureIdentifierType getSignatureIdentifier(SignatureWrapper sigWrapper) {
@@ -644,7 +681,7 @@ public class ETSIValidationReportBuilder {
 			for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
 				if ( (digestMatcher == null || DigestMatcherType.SIGNED_PROPERTIES.equals(xmlDigestMatcher.getType()) || 
 						DigestMatcherType.CONTENT_DIGEST.equals(xmlDigestMatcher.getType()) ) &&
-						Utils.isStringNotEmpty(xmlDigestMatcher.getDigestMethod()) && Utils.isArrayNotEmpty(xmlDigestMatcher.getDigestValue())) {
+						xmlDigestMatcher.getDigestMethod() != null && Utils.isArrayNotEmpty(xmlDigestMatcher.getDigestValue())) {
 					digestMatcher = xmlDigestMatcher;
 				}
 			}
@@ -737,7 +774,7 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private void addAttrAuthoritiesCertValues(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		List<String> certIds = sigWrapper.getFoundCertificateIds(CertificateOriginType.ATTR_AUTORITIES_CERT_VALUES);
+		List<String> certIds = sigWrapper.getFoundCertificateIds(CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES);
 		if (Utils.isCollectionNotEmpty(certIds)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
 					.add(objectFactory.createSignatureAttributesTypeAttrAuthoritiesCertValues(buildTokenList(certIds)));
@@ -745,8 +782,8 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private void addTimeStampValidationData(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		List<String> refIds = sigWrapper.getFoundCertificateIds(CertificateOriginType.TIMESTAMP_DATA_VALIDATION);
-		refIds.addAll(sigWrapper.getRevocationIdsByOrigin(XmlRevocationOrigin.TIMESTAMP_VALIDATION_DATA));
+		List<String> refIds = sigWrapper.getFoundCertificateIds(CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
+		refIds.addAll(sigWrapper.getRevocationIdsByOrigin(RevocationOrigin.TIMESTAMP_VALIDATION_DATA));
 		if (Utils.isCollectionNotEmpty(refIds)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
 					.add(objectFactory.createSignatureAttributesTypeTimeStampValidationData(buildTokenList(refIds)));
@@ -754,7 +791,7 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private void addCertificateValues(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		List<String> certIds = sigWrapper.getFoundCertificateIds(CertificateOriginType.CERTIFICATE_VALUES);
+		List<String> certIds = sigWrapper.getFoundCertificateIds(CertificateOrigin.CERTIFICATE_VALUES);
 		if (Utils.isCollectionNotEmpty(certIds)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
 					.add(objectFactory.createSignatureAttributesTypeCertificateValues(buildTokenList(certIds)));
@@ -762,7 +799,7 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private void addAttributeCertificateRefs(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		List<XmlFoundCertificate> certs = sigWrapper.getFoundCertificatesByRefOrigin(CertificateRefOriginType.ATTRIBUTE_CERTIFICATE_REFS);
+		List<XmlFoundCertificate> certs = sigWrapper.getFoundCertificatesByRefOrigin(CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS);
 		if (Utils.isCollectionNotEmpty(certs)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
 					.add(objectFactory.createSignatureAttributesTypeAttributeCertificateRefs(buildCertIDListType(certs)));
@@ -770,7 +807,7 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private void addCompleteCertificateRefs(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		List<XmlFoundCertificate> certs = sigWrapper.getFoundCertificatesByRefOrigin(CertificateRefOriginType.COMPLETE_CERTIFICATE_REFS);
+		List<XmlFoundCertificate> certs = sigWrapper.getFoundCertificatesByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS);
 		if (Utils.isCollectionNotEmpty(certs)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
 					.add(objectFactory.createSignatureAttributesTypeCompleteCertificateRefs(buildCertIDListType(certs)));
@@ -778,7 +815,7 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private void addSigningCertificate(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		List<XmlFoundCertificate> certs = sigWrapper.getFoundCertificatesByRefOrigin(CertificateRefOriginType.SIGNING_CERTIFICATE);
+		List<XmlFoundCertificate> certs = sigWrapper.getFoundCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 		if (Utils.isCollectionNotEmpty(certs)) {
 			JAXBElement<SACertIDListType> signingCertAttribute = objectFactory.createSignatureAttributesTypeSigningCertificate(buildCertIDListType(certs));
 			if (sigWrapper.isBLevelTechnicallyValid()) {
@@ -811,9 +848,7 @@ public class ETSIValidationReportBuilder {
 				if (certificateRef != null && certificateRef.getDigestAlgoAndValue() != null) {
 					SACertIDType certIDType = objectFactory.createSACertIDType();
 					XmlDigestAlgoAndValue digestAlgoAndValue = certificateRef.getDigestAlgoAndValue();
-					DigestMethodType digestMethodType = new DigestMethodType();
-					digestMethodType.setAlgorithm(DigestAlgorithm.forName(digestAlgoAndValue.getDigestMethod()).getXmlId());
-					certIDType.setDigestMethod(digestMethodType);
+					certIDType.setDigestMethod(getDigestMethodType(digestAlgoAndValue));
 					certIDType.setDigestValue(digestAlgoAndValue.getDigestValue());
 					if (certificateRef.getIssuerSerial() != null) {
 						certIDType.setX509IssuerSerial(certificateRef.getIssuerSerial());
@@ -826,7 +861,7 @@ public class ETSIValidationReportBuilder {
 	}
 	
 	private void addCompleteRevocationRefs(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		List<XmlRevocationRef> revocationRefs = sigWrapper.getFoundRevocationRefsByOrigin(XmlRevocationRefOrigin.COMPLETE_REVOCATION_REFS);
+		List<XmlRevocationRef> revocationRefs = sigWrapper.getFoundRevocationRefsByOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS);
 		if (Utils.isCollectionNotEmpty(revocationRefs)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
 				.add(objectFactory.createSignatureAttributesTypeCompleteRevocationRefs(buildRevIDListType(revocationRefs)));
@@ -834,7 +869,7 @@ public class ETSIValidationReportBuilder {
 	}
 	
 	private void addAttributeRevocationRefs(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		List<XmlRevocationRef> revocationRefs = sigWrapper.getFoundRevocationRefsByOrigin(XmlRevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS);
+		List<XmlRevocationRef> revocationRefs = sigWrapper.getFoundRevocationRefsByOrigin(RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS);
 		if (Utils.isCollectionNotEmpty(revocationRefs)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
 				.add(objectFactory.createSignatureAttributesTypeAttributeRevocationRefs(buildRevIDListType(revocationRefs)));
@@ -843,34 +878,48 @@ public class ETSIValidationReportBuilder {
 	
 	private SARevIDListType buildRevIDListType(List<XmlRevocationRef> revocationRefs) {
 		SARevIDListType revIDListType = objectFactory.createSARevIDListType();
-		
+
 		for (XmlRevocationRef xmlRevocationRef : revocationRefs) {
 			// ProducedAt parameter is only for OCSP refs
 			if (xmlRevocationRef.getProducedAt() == null) {
 				SACRLIDType sacrlidType = objectFactory.createSACRLIDType();
-				DigestMethodType digestMethodType = new DigestMethodType();
 				XmlDigestAlgoAndValue digestAlgoAndValue = xmlRevocationRef.getDigestAlgoAndValue();
-				digestMethodType.setAlgorithm(DigestAlgorithm.forName(digestAlgoAndValue.getDigestMethod()).getXmlId());
-				sacrlidType.setDigestMethod(digestMethodType);
+				sacrlidType.setDigestMethod(getDigestMethodType(digestAlgoAndValue));
 				sacrlidType.setDigestValue(digestAlgoAndValue.getDigestValue());
 				revIDListType.getCRLIDOrOCSPID().add(sacrlidType);
 			} else {
-				SAOCSPIDType saocspidType = objectFactory.createSAOCSPIDType();
-				saocspidType.setProducedAt(xmlRevocationRef.getProducedAt());
-				if (Utils.isStringNotEmpty(xmlRevocationRef.getResponderIdName())) {
-					saocspidType.setResponderIDByName(xmlRevocationRef.getResponderIdName());
-				} else {
-					saocspidType.setResponderIDByKey(xmlRevocationRef.getResponderIdKey());
+				SAOCSPIDType ocspID = getOCSPID(xmlRevocationRef);
+				if (ocspID != null) {
+					revIDListType.getCRLIDOrOCSPID().add(ocspID);
 				}
-				revIDListType.getCRLIDOrOCSPID().add(saocspidType);
 			}
 		}
-		
+
 		return revIDListType;
+	}
+
+	private DigestMethodType getDigestMethodType(XmlDigestAlgoAndValue digestAlgoAndValue) {
+		DigestMethodType digestMethodType = new DigestMethodType();
+		digestMethodType.setAlgorithm(digestAlgoAndValue.getDigestMethod().getUri());
+		return digestMethodType;
+	}
+
+	private SAOCSPIDType getOCSPID(XmlRevocationRef xmlRevocationRef) {
+		if (Utils.isStringNotEmpty(xmlRevocationRef.getResponderIdName()) || Utils.isArrayNotEmpty(xmlRevocationRef.getResponderIdKey())) {
+			SAOCSPIDType saocspidType = objectFactory.createSAOCSPIDType();
+			saocspidType.setProducedAt(xmlRevocationRef.getProducedAt());
+			if (Utils.isStringNotEmpty(xmlRevocationRef.getResponderIdName())) {
+				saocspidType.setResponderIDByName(xmlRevocationRef.getResponderIdName());
+			} else {
+				saocspidType.setResponderIDByKey(xmlRevocationRef.getResponderIdKey());
+			}
+			return saocspidType;
+		}
+		return null;
 	}
 	
 	private void addRevocationValues(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		List<String> revocationRefs = sigWrapper.getRevocationIdsByOrigin(XmlRevocationOrigin.REVOCATION_VALUES);
+		List<String> revocationRefs = sigWrapper.getRevocationIdsByOrigin(RevocationOrigin.REVOCATION_VALUES);
 		if (Utils.isCollectionNotEmpty(revocationRefs)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
 					.add(objectFactory.createSignatureAttributesTypeRevocationValues(buildTokenList(revocationRefs)));
@@ -878,7 +927,7 @@ public class ETSIValidationReportBuilder {
 	}
 	
 	private void addAttributeRevocationValues(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		List<String> revocationRefs = sigWrapper.getRevocationIdsByOrigin(XmlRevocationOrigin.ATTRIBUTE_REVOCATION_VALUES);
+		List<String> revocationRefs = sigWrapper.getRevocationIdsByOrigin(RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES);
 		if (Utils.isCollectionNotEmpty(revocationRefs)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
 					.add(objectFactory.createSignatureAttributesTypeAttributeRevocationValues(buildTokenList(revocationRefs)));
@@ -887,7 +936,7 @@ public class ETSIValidationReportBuilder {
 
 	private void addMessageDigest(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
 		XmlDigestMatcher messageDigest = sigWrapper.getMessageDigest();
-		if (messageDigest != null) {
+		if (messageDigest != null && messageDigest.getDigestValue() != null) {
 			SAMessageDigestType messageDigestType = objectFactory.createSAMessageDigestType();
 			messageDigestType.setDigest(messageDigest.getDigestValue());
 			setSignedIfValid(sigWrapper, messageDigestType);
@@ -950,7 +999,7 @@ public class ETSIValidationReportBuilder {
 			case ARCHIVE_TIMESTAMP:
 				return objectFactory.createSignatureAttributesTypeArchiveTimeStamp(timestamp);
 			default:
-				throw new DSSException("Unsupported timestamp type " + timestampType);
+			throw new IllegalArgumentException("Unsupported timestamp type " + timestampType);
 		}
 	}
 
@@ -959,14 +1008,14 @@ public class ETSIValidationReportBuilder {
 			case DOC_TIMESTAMP:
 				return objectFactory.createSignatureAttributesTypeDocTimeStamp(timestamp);
 			default:
-				throw new DSSException("Unsupported timestamp type " + timestampLocation);
+			throw new IllegalArgumentException("Unsupported timestamp type " + timestampLocation);
 		}
 	}
 	
 	private void addSigPolicyIdentifier(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
 		String policyId = sigWrapper.getPolicyId();
 		if (Utils.isStringNotEmpty(policyId) && // exclude empty and default values
-				!SignaturePolicy.IMPLICIT_POLICY.equals(policyId)) {
+				!SignaturePolicyType.IMPLICIT_POLICY.name().equals(policyId)) {
 			SASigPolicyIdentifierType saSigPolicyIdentifierType = objectFactory.createSASigPolicyIdentifierType();
 			saSigPolicyIdentifierType.setSigPolicyId(policyId);
 			setSignedIfValid(sigWrapper, saSigPolicyIdentifierType);
@@ -1006,23 +1055,17 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private void addSignerRoles(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		List<String> claimedRoles = sigWrapper.getClaimedRoles();
-		List<String> certifiedRoles = sigWrapper.getCertifiedRoles();
-		if (Utils.isCollectionNotEmpty(claimedRoles) || Utils.isCollectionNotEmpty(certifiedRoles)) {
+		List<XmlSignerRole> signerRoles = sigWrapper.getSignerRoles();
+		if (Utils.isCollectionNotEmpty(signerRoles)) {
 			SASignerRoleType signerRoleType = objectFactory.createSASignerRoleType();
-			addSignerRoles(signerRoleType, claimedRoles, EndorsementType.CLAIMED);
-			addSignerRoles(signerRoleType, certifiedRoles, EndorsementType.CERTIFIED);
+			for (XmlSignerRole role : signerRoles) {
+				SAOneSignerRoleType oneSignerRole = objectFactory.createSAOneSignerRoleType();
+				oneSignerRole.setRole(role.getRole());
+				oneSignerRole.setEndorsementType(role.getCategory());
+				signerRoleType.getRoleDetails().add(oneSignerRole);
+			}
 			setSignedIfValid(sigWrapper, signerRoleType);
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(objectFactory.createSignatureAttributesTypeSignerRole(signerRoleType));
-		}
-	}
-
-	private void addSignerRoles(SASignerRoleType signerRoleType, List<String> roles, EndorsementType endorsement) {
-		for (String role : roles) {
-			SAOneSignerRoleType oneSignerRole = objectFactory.createSAOneSignerRoleType();
-			oneSignerRole.setRole(role);
-			oneSignerRole.setEndorsementType(endorsement);
-			signerRoleType.getRoleDetails().add(oneSignerRole);
 		}
 	}
 	
@@ -1124,9 +1167,9 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private void addDSS(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		List<String> certIds = sigWrapper.getFoundCertificateIds(CertificateOriginType.DSS);
-		List<String> crlIds = sigWrapper.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.DSS_DICTIONARY);
-		List<String> ocspIds = sigWrapper.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.DSS_DICTIONARY);
+		List<String> certIds = sigWrapper.getFoundCertificateIds(CertificateOrigin.DSS_DICTIONARY);
+		List<String> crlIds = sigWrapper.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, RevocationOrigin.DSS_DICTIONARY);
+		List<String> ocspIds = sigWrapper.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.DSS_DICTIONARY);
 		if (Utils.isCollectionNotEmpty(certIds) || Utils.isCollectionNotEmpty(crlIds) || Utils.isCollectionNotEmpty(ocspIds)) {
 			SADSSType dssType = objectFactory.createSADSSType();
 			if (Utils.isCollectionNotEmpty(certIds)) {
@@ -1143,9 +1186,9 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private void addVRI(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		List<String> certIds = sigWrapper.getFoundCertificateIds(CertificateOriginType.VRI);
-		List<String> crlIds = sigWrapper.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.VRI_DICTIONARY);
-		List<String> ocspIds = sigWrapper.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.VRI_DICTIONARY);
+		List<String> certIds = sigWrapper.getFoundCertificateIds(CertificateOrigin.VRI_DICTIONARY);
+		List<String> crlIds = sigWrapper.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, RevocationOrigin.VRI_DICTIONARY);
+		List<String> ocspIds = sigWrapper.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.VRI_DICTIONARY);
 
 		if (Utils.isCollectionNotEmpty(certIds) || Utils.isCollectionNotEmpty(crlIds) || Utils.isCollectionNotEmpty(ocspIds)) {
 			SAVRIType vriType = objectFactory.createSAVRIType();

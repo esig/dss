@@ -31,12 +31,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.CertificateRef;
-import eu.europa.esig.dss.CertificateRefLocation;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.IssuerSerialInfo;
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -165,11 +165,11 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 			signingCertificateValues = new ArrayList<CertificateRef>();
 			NodeList list = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_SIGNING_CERTIFICATE_CERT);
 			if (list != null && list.getLength() != 0) {
-				signingCertificateValues.addAll(extractXAdESCertsV1(list, CertificateRefLocation.SIGNING_CERTIFICATE));
+				signingCertificateValues.addAll(extractXAdESCertsV1(list, CertificateRefOrigin.SIGNING_CERTIFICATE));
 			}
 			list = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_SIGNING_CERTIFICATE_CERT_V2);
 			if (list != null && list.getLength() != 0) {
-				signingCertificateValues.addAll(extractXAdESCertsV2(list, CertificateRefLocation.SIGNING_CERTIFICATE));
+				signingCertificateValues.addAll(extractXAdESCertsV2(list, CertificateRefOrigin.SIGNING_CERTIFICATE));
 			}
 			if (Utils.isCollectionEmpty(signingCertificateValues)) {
 				LOG.warn("No signing certificate tag found");
@@ -184,11 +184,11 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 			completeCertificateRefs = new ArrayList<CertificateRef>();
 			NodeList list = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_CCR_CERT_REFS_CERT);
 			if (list != null && list.getLength() != 0) {
-				completeCertificateRefs.addAll(extractXAdESCertsV1(list, CertificateRefLocation.COMPLETE_CERTIFICATE_REFS));
+				completeCertificateRefs.addAll(extractXAdESCertsV1(list, CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS));
 			}
 			list = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_CCRV2_CERT_REFS_CERT);
 			if (list != null && list.getLength() != 0) {
-				completeCertificateRefs.addAll(extractXAdESCertsV2(list, CertificateRefLocation.COMPLETE_CERTIFICATE_REFS));
+				completeCertificateRefs.addAll(extractXAdESCertsV2(list, CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS));
 			}
 		}
 		return completeCertificateRefs;
@@ -200,17 +200,17 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 			attributeCertificateRefs = new ArrayList<CertificateRef>();
 			NodeList list = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_ACR_CERT_REFS_CERT);
 			if (list != null && list.getLength() != 0) {
-				attributeCertificateRefs.addAll(extractXAdESCertsV1(list, CertificateRefLocation.ATTRIBUTE_CERTIFICATE_REFS));
+				attributeCertificateRefs.addAll(extractXAdESCertsV1(list, CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS));
 			}
 			list = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_ACRV2_CERT_REFS_CERT);
 			if (list != null && list.getLength() != 0) {
-				attributeCertificateRefs.addAll(extractXAdESCertsV2(list, CertificateRefLocation.ATTRIBUTE_CERTIFICATE_REFS));
+				attributeCertificateRefs.addAll(extractXAdESCertsV2(list, CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS));
 			}
 		}
 		return attributeCertificateRefs;
 	}
 
-	private List<CertificateRef> extractXAdESCertsV1(NodeList list, CertificateRefLocation location) {
+	private List<CertificateRef> extractXAdESCertsV1(NodeList list, CertificateRefOrigin location) {
 		List<CertificateRef> result = new ArrayList<CertificateRef>();
 		for (int i = 0; i < list.getLength(); i++) {
 			final Element element = (Element) list.item(i);
@@ -220,7 +220,7 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 					CertificateRef certRef = new CertificateRef();
 					certRef.setCertDigest(certDigest);
 					certRef.setIssuerInfo(getIssuerV1(element));
-					certRef.setLocation(location);
+					certRef.setOrigin(location);
 					result.add(certRef);
 				}
 			}
@@ -228,7 +228,7 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 		return result;
 	}
 
-	private List<CertificateRef> extractXAdESCertsV2(NodeList list, CertificateRefLocation location) {
+	private List<CertificateRef> extractXAdESCertsV2(NodeList list, CertificateRefOrigin location) {
 		List<CertificateRef> result = new ArrayList<CertificateRef>();
 		for (int i = 0; i < list.getLength(); i++) {
 			final Element element = (Element) list.item(i);
@@ -238,7 +238,7 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 					CertificateRef certRef = new CertificateRef();
 					certRef.setCertDigest(certDigest);
 					certRef.setIssuerInfo(getIssuerV2(element));
-					certRef.setLocation(location);
+					certRef.setOrigin(location);
 					result.add(certRef);
 				}
 			}

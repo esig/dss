@@ -27,6 +27,7 @@ import java.io.OutputStream;
 import java.io.StringWriter;
 import java.util.EnumMap;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.utils.Utils;
 
 /**

@@ -22,7 +22,7 @@ package eu.europa.esig.dss.validation.process;
 
 import java.util.List;
 
-import eu.europa.esig.dss.QCStatementOids;
+import eu.europa.esig.dss.enumerations.QCStatement;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 
@@ -35,17 +35,17 @@ public final class QCStatementPolicyIdentifiers {
 	}
 
 	public static boolean isSupportedByQSCD(CertificateWrapper certificate) {
-		return hasQCStatementOID(certificate, QCStatementOids.QC_SSCD);
+		return hasQCStatementOID(certificate, QCStatement.QC_SSCD);
 	}
 
 	public static boolean isQCCompliant(CertificateWrapper certificate) {
-		return hasQCStatementOID(certificate, QCStatementOids.QC_COMPLIANCE);
+		return hasQCStatementOID(certificate, QCStatement.QC_COMPLIANCE);
 	}
 
-	private static boolean hasQCStatementOID(CertificateWrapper certificate, QCStatementOids... qcStatements) {
+	private static boolean hasQCStatementOID(CertificateWrapper certificate, QCStatement... qcStatements) {
 		List<String> qcStatementIds = certificate.getQCStatementIds();
 		if (Utils.isCollectionNotEmpty(qcStatementIds)) {
-			for (QCStatementOids qcStatement : qcStatements) {
+			for (QCStatement qcStatement : qcStatements) {
 				if (qcStatementIds.contains(qcStatement.getOid())) {
 					return true;
 				}

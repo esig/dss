@@ -31,8 +31,9 @@ import org.w3c.dom.NodeList;
 import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.x509.revocation.ocsp.ResponderId;
@@ -79,8 +80,8 @@ public class XAdESOCSPSource extends SignatureOCSPSource {
 		collect(xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_OCSP_VALUES, RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
 		
 		// references
-		collectRefs(xPathQueryHolder.XPATH_COMPLETE_REVOCATION_OCSP_REFS, RevocationOrigin.COMPLETE_REVOCATION_REFS);
-		collectRefs(xPathQueryHolder.XPATH_ATTRIBUTE_REVOCATION_OCSP_REFS, RevocationOrigin.ATTRIBUTE_REVOCATION_REFS);
+		collectRefs(xPathQueryHolder.XPATH_COMPLETE_REVOCATION_OCSP_REFS, RevocationRefOrigin.COMPLETE_REVOCATION_REFS);
+		collectRefs(xPathQueryHolder.XPATH_ATTRIBUTE_REVOCATION_OCSP_REFS, RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS);
 	}
 
 	private void collect(String xPathQuery, RevocationOrigin origin) {
@@ -91,21 +92,21 @@ public class XAdESOCSPSource extends SignatureOCSPSource {
 		}
 	}
 	
-	private void collectRefs(final String xPathQuery, RevocationOrigin revocationOrigin) {
+	private void collectRefs(final String xPathQuery, RevocationRefOrigin revocationRefOrigin) {
 		final Element ocspRefsElement = DomUtils.getElement(signatureElement, xPathQuery);
 		if (ocspRefsElement != null) {
 			final NodeList ocspRefNodes = DomUtils.getNodeList(ocspRefsElement, xPathQueryHolder.XPATH__OCSPREF);
 			for (int i = 0; i < ocspRefNodes.getLength(); i++) {
 				final Element ocspRefElement = (Element) ocspRefNodes.item(i);
-				OCSPRef ocspRef = createOCSPRef(ocspRefElement, revocationOrigin);
+				OCSPRef ocspRef = createOCSPRef(ocspRefElement, revocationRefOrigin);
 				if (ocspRef != null) {
-					addReference(ocspRef, revocationOrigin);
+					addReference(ocspRef, revocationRefOrigin);
 				}
 			}
 		}
 	}
 	
-	private OCSPRef createOCSPRef(final Element ocspRefElement, RevocationOrigin revocationOrigin) {
+	private OCSPRef createOCSPRef(final Element ocspRefElement, RevocationRefOrigin revocationRefOrigin) {
 		ResponderId responderId = new ResponderId();
 		
 		final Element responderIdEl = DomUtils.getElement(ocspRefElement, xPathQueryHolder.XPATH__OCSP_RESPONDER_ID_ELEMENT);
@@ -142,7 +143,7 @@ public class XAdESOCSPSource extends SignatureOCSPSource {
 			return null;
 		}
 		
-		return new OCSPRef(digest, producedAtDate, responderId, revocationOrigin);
+		return new OCSPRef(digest, producedAtDate, responderId, revocationRefOrigin);
 	}
 
 	private void convertAndAppend(String ocspValue, RevocationOrigin origin) {

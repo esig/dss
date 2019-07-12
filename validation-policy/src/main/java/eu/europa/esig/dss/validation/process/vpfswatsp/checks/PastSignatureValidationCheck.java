@@ -22,13 +22,13 @@ package eu.europa.esig.dss.validation.process.vpfswatsp.checks;
 
 import java.util.Date;
 
+import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlPSV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessArchivalData;
-import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;

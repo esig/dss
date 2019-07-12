@@ -49,6 +49,10 @@
                     <Description>The full XML file</Description>
                 </SignatureScope>
 	        </SignatureScopes>
+			<SignatureDigestReference>
+			    <DigestMethod>SHA256</DigestMethod>
+			    <DigestValue>wChQlevFdapaj9/m3wuaq7p6SZBszOKIn3akAXdQLFE=</DigestValue>
+			</SignatureDigestReference>
 	    </Signature>
 	    <Signature Id="Signature-1758282779">
 	    	<SignatureFilename>firmaok.zip.p7m</SignatureFilename>
@@ -96,6 +100,10 @@
                     <Description>The full XML file</Description>
                 </SignatureScope>
 	        </SignatureScopes>
+			<SignatureDigestReference>
+			    <DigestMethod>SHA256</DigestMethod>
+			    <DigestValue>5C/QLdOQtrFvUEuqXLiTz6l2BCHfIbYSts4XbBqJNkg=</DigestValue>
+			</SignatureDigestReference>
 	    </Signature>
     </Signatures>
     <UsedCertificates>

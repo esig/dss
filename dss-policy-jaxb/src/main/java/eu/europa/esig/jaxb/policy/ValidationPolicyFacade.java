@@ -1,50 +1,35 @@
 package eu.europa.esig.jaxb.policy;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
 
 import org.xml.sax.SAXException;
 
-import eu.europa.esig.dss.MarshallerBuilder;
+import eu.europa.esig.dss.jaxb.parsers.AbstractJaxbFacade;
 
-public class ValidationPolicyFacade {
+public class ValidationPolicyFacade extends AbstractJaxbFacade<ConstraintsParameters> {
 
 	public static ValidationPolicyFacade newFacade() {
 		return new ValidationPolicyFacade();
 	}
 
-	public ConstraintsParameters unmarshall(File file) throws JAXBException, XMLStreamException, IOException, SAXException {
-		Unmarshaller unmarshaller = getUnmarshaller();
-
-		return (ConstraintsParameters) unmarshaller.unmarshal(avoidXXE(new StreamSource(file)));
+	@Override
+	protected JAXBContext getJAXBContext() throws JAXBException {
+		return ValidationPolicyXmlDefiner.getJAXBContext();
 	}
 
-	public ConstraintsParameters unmarshall(InputStream inputStream) throws JAXBException, XMLStreamException, IOException, SAXException {
-		Unmarshaller unmarshaller = getUnmarshaller();
-
-		return (ConstraintsParameters) unmarshaller.unmarshal(avoidXXE(new StreamSource(inputStream)));
+	@Override
+	protected Schema getSchema() throws IOException, SAXException {
+		return ValidationPolicyXmlDefiner.getSchema();
 	}
 
-	private Unmarshaller getUnmarshaller() throws JAXBException, IOException, SAXException {
-		MarshallerBuilder builder = new MarshallerBuilder(ValidationPolicyXmlDefiner.getJAXBContext(), ValidationPolicyXmlDefiner.getSchema());
-		builder.setValidate(true);
-		return builder.buildUnmarshaller();
-	}
-
-	private XMLStreamReader avoidXXE(Source source) throws XMLStreamException {
-		XMLInputFactory xif = XMLInputFactory.newFactory();
-		xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
-		xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-		return xif.createXMLStreamReader(source);
+	@Override
+	protected JAXBElement<ConstraintsParameters> wrap(ConstraintsParameters jaxbObject) {
+		return ValidationPolicyXmlDefiner.OBJECT_FACTORY.createConstraintsParameters(jaxbObject);
 	}
 
 }

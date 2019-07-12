@@ -11,11 +11,11 @@ import java.util.List;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.enumerations.CertificateSourceType;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.XmlCertificateSourceType;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
@@ -34,7 +34,7 @@ public class XMLCertificateWrappingTest extends PKIFactoryAccess {
 		for (CertificateWrapper certificate : certificates) {
 			assertNotNull(certificate.getSources());
 			assertNotEquals(0, certificate.getSources().size());
-			assertFalse(certificate.getSources().contains(XmlCertificateSourceType.UNKNOWN));
+			assertFalse(certificate.getSources().contains(CertificateSourceType.UNKNOWN));
 		}
 	}
 	
@@ -49,17 +49,17 @@ public class XMLCertificateWrappingTest extends PKIFactoryAccess {
 		List<CertificateWrapper> certificates = diagnosticData.getUsedCertificates();
 		int certsFromTimestamp = 0;
 		for (CertificateWrapper certificate : certificates) {
-			List<XmlCertificateSourceType> certSources = certificate.getSources();
+			List<CertificateSourceType> certSources = certificate.getSources();
 			assertNotNull(certSources);
 			assertNotEquals(0, certSources.size());
-			if (certSources.contains(XmlCertificateSourceType.TIMESTAMP)) {
+			if (certSources.contains(CertificateSourceType.TIMESTAMP)) {
 				assertEquals(2, certSources.size());
-				assertTrue(certSources.contains(XmlCertificateSourceType.SIGNATURE));
+				assertTrue(certSources.contains(CertificateSourceType.SIGNATURE));
 				certsFromTimestamp++;
 			}
-			assertFalse(certificate.getSources().contains(XmlCertificateSourceType.UNKNOWN));
+			assertFalse(certificate.getSources().contains(CertificateSourceType.UNKNOWN));
 			assertNotNull(certificate.getDigestAlgoAndValue());
-			assertEquals(DigestAlgorithm.SHA256.name(), certificate.getDigestAlgoAndValue().getDigestMethod());
+			assertEquals(DigestAlgorithm.SHA256, certificate.getDigestAlgoAndValue().getDigestMethod());
 		}
 		assertEquals(1, certsFromTimestamp);
 	}

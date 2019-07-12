@@ -27,7 +27,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.enumerations.CertificateQualification;
+import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SignatureQualification;
+import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.enumerations.ValidationTime;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlCertificate;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlChainItem;
@@ -44,12 +49,6 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationSignatureQualification;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateQualification;
-import eu.europa.esig.dss.validation.SignatureQualification;
-import eu.europa.esig.dss.validation.ValidationTime;
-import eu.europa.esig.dss.validation.policy.Context;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 
 /**
  * This class represents the detailed report built during the validation process. It contains information on each
@@ -365,7 +364,7 @@ public class DetailedReport {
 
 	public XmlConclusion getCertificateXCVConclusion(String certificateId) {
 		if (jaxbDetailedReport.getCertificate() == null) {
-			throw new DSSException("Only supported in report for certificate");
+			throw new UnsupportedOperationException("Only supported in report for certificate");
 		}
 		List<XmlBasicBuildingBlocks> basicBuildingBlocks = jaxbDetailedReport.getBasicBuildingBlocks();
 		for (XmlBasicBuildingBlocks xmlBasicBuildingBlocks : basicBuildingBlocks) {

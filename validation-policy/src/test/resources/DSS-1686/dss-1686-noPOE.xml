@@ -45,7 +45,7 @@
             </CertificateChain>
             <MimeType>text/xml</MimeType>
             <CommitmentTypeIndication/>
-            <ClaimedRoles/>
+            
             <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
             <FoundCertificates>
                 <RelatedCertificate Certificate="C-A1B2DBEB64E706C6169E3C4118B23BAA09018A8427666D8BF0E28891EC051950">
@@ -70,21 +70,21 @@
                 	<Origin>CERTIFICATE_VALUES</Origin>
                 </RelatedCertificate>
                 <RelatedCertificate Certificate="C-81AF749F424A8DF91012FF63D44357A75384FF64BB1C2ED59D0A658EE3C8C755">
-                	<Origin>TIMESTAMP_DATA_VALIDATION</Origin>
+                	<Origin>TIMESTAMP_VALIDATION_DATA</Origin>
                 </RelatedCertificate>
             </FoundCertificates>
             <FoundRevocations>
                 <RelatedRevocation Revocation="R-AB75AE3DA23E461E1F8982E38CCFDF0F654515034EFCFC605E7C82B1D03D913A">
                     <Type>CRL</Type>
-                    <Origin>INTERNAL_REVOCATION_VALUES</Origin>
+                    <Origin>REVOCATION_VALUES</Origin>
                 </RelatedRevocation>
                 <RelatedRevocation Revocation="R-BFE1DCADF795A5F8D0C4B69054DD551B514C61DC664C7F4AE3254E5FF80F28C5">
                     <Type>OCSP</Type>
-                    <Origin>INTERNAL_REVOCATION_VALUES</Origin>
+                    <Origin>REVOCATION_VALUES</Origin>
                 </RelatedRevocation>
                 <RelatedRevocation Revocation="R-7ABA94DDE6F4FA3093ED23C3B9A96BEA9A3465EB9CD53537B8389B7574B87363">
                     <Type>CRL</Type>
-                    <Origin>INTERNAL_TIMESTAMP_REVOCATION_VALUES</Origin>
+                    <Origin>TIMESTAMP_VALIDATION_DATA</Origin>
                 </RelatedRevocation>
             </FoundRevocations>
             <FoundTimestamps>
@@ -207,6 +207,10 @@
                     <Description>Full document</Description>
                 </SignatureScope>
             </SignatureScopes>
+			<SignatureDigestReference>
+			    <DigestMethod>SHA256</DigestMethod>
+			    <DigestValue>WPssKyPyqBUAgFZuF+hLMShBBBbI3sjWvYrIbvrPb5c=</DigestValue>
+			</SignatureDigestReference>
             <SignatureValue>P6XAvsqozVbQAWpdTejjxa62ud0Me4OAhuHYSCxQZoS+iGmjNLuuYAMF3Bf/VxuySQrx1pXXr0YXEoTZ96vUEfZuxk8xbJ9JoLjNPaWy1naj8fdAlHavHTvU5gyB9WiYmuLcGcpdP3M8J125fHf6dgrclDz0zhKfGwuHHDmle8Z/66uA3bu9/TeWTePPpVbGeS0SU3heajLiWY3M45LOBnzrCjsvMIDwmWrf0YIfdPFZyX2uBqqJuitBlSW7Ahe7XDKN83l9f9gGVKBuDU6+h9yC5H4ABq+uvWEctaAKL8N4TN50pjuA6gPRacP9B0k47IAHFT9hQs2dHqfKlEsrXA==</SignatureValue>
         </Signature>
     </Signatures>

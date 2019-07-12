@@ -2,9 +2,9 @@ package eu.europa.esig.dss.validation.reports.wrapper;
 
 import java.util.Date;
 
+import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRevocation;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.RevocationReason;
 
 /**
  * Complete revocation wrapper, containing detailed certificate revocation and common information

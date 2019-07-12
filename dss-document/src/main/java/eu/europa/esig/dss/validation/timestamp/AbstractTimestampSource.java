@@ -12,23 +12,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.CRLBinary;
+import eu.europa.esig.dss.CertificateRef;
 import eu.europa.esig.dss.Digest;
+import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureScope;
-import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.x509.ArchiveTimestampType;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.CommonCertificateSource;
 import eu.europa.esig.dss.x509.EncapsulatedCertificateTokenIdentifier;
 import eu.europa.esig.dss.x509.SignatureCertificateSource;
-import eu.europa.esig.dss.x509.TimestampType;
+import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.x509.revocation.crl.ListCRLSource;
 import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.ListOCSPSource;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 
@@ -546,6 +549,12 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 			}
 			if (certificate != null) {
 				timestampedReferences.add(new TimestampedReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
+			} else {
+				// in case if no original Certificate value is present
+				CertificateRef certificateRef = signatureCertificateSource.getCertificateRefByDigest(certDigest);
+				if (certificateRef != null) {
+					timestampedReferences.add(new TimestampedReference(certificateRef.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
+				}
 			}
 		}
 		return timestampedReferences;
@@ -569,6 +578,12 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 			CRLBinary identifier = crlSource.getIdentifier(refDigest);
 			if (identifier != null) {
 				timestampedReferences.add(new TimestampedReference(identifier.asXmlId(), TimestampedObjectType.REVOCATION));
+			} else {
+				// in case if no original CRL value is present
+				CRLRef crlRef = crlSource.getCRLRefByDigest(refDigest);
+				if (crlRef != null) {
+					timestampedReferences.add(new TimestampedReference(crlRef.getDSSIdAsString(), TimestampedObjectType.REVOCATION));
+				}
 			}
 		}
 		
@@ -576,6 +591,13 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 			OCSPResponseBinary identifier = ocspSource.getIdentifier(refDigest);
 			if (identifier != null) {
 				timestampedReferences.add(new TimestampedReference(identifier.asXmlId(), TimestampedObjectType.REVOCATION));
+			} else {
+				// in case if no original OCSP value is present
+				OCSPRef ocspRef = ocspSource.getOCSPRefByDigest(refDigest);
+				if (ocspRef != null) {
+					timestampedReferences.add(new TimestampedReference(ocspRef.getDSSIdAsString(), TimestampedObjectType.REVOCATION));
+					
+				}
 			}
 		}
 		return timestampedReferences;

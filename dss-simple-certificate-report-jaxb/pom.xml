@@ -93,7 +93,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-common-validation-jaxb</artifactId>
+			<artifactId>dss-jaxb-parsers</artifactId>
 		</dependency>
 		
 		<dependency>

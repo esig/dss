@@ -33,12 +33,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
@@ -119,7 +119,7 @@ public class GetOriginalDocument extends PKIFactoryAccess {
 		assertNotNull(originalDocumentSignatureScope.getSignerData());
 		XmlDigestAlgoAndValue originalDocDigestAlgoAndValue = originalDocumentSignatureScope.getSignerData().getDigestAlgoAndValue();
 		assertNotNull(originalDocDigestAlgoAndValue);
-		DigestAlgorithm digestAlgorithmOriginalDocument = DigestAlgorithm.forName(originalDocDigestAlgoAndValue.getDigestMethod());
+		DigestAlgorithm digestAlgorithmOriginalDocument = originalDocDigestAlgoAndValue.getDigestMethod();
 		assertNotNull(digestAlgorithmOriginalDocument);
 		assertTrue(Arrays.equals(Utils.fromBase64(document.getDigest(digestAlgorithmOriginalDocument)), 
 				originalDocDigestAlgoAndValue.getDigestValue()));
@@ -136,7 +136,7 @@ public class GetOriginalDocument extends PKIFactoryAccess {
 		assertNotNull(firstSignedDocumentSignatureScope.getSignerData());
 		XmlDigestAlgoAndValue firstDocDigestAlgoAndValue = firstSignedDocumentSignatureScope.getSignerData().getDigestAlgoAndValue();
 		assertNotNull(firstDocDigestAlgoAndValue);
-		DigestAlgorithm digestAlgorithmSignedDocument = DigestAlgorithm.forName(firstDocDigestAlgoAndValue.getDigestMethod());
+		DigestAlgorithm digestAlgorithmSignedDocument = firstDocDigestAlgoAndValue.getDigestMethod();
 		assertNotNull(digestAlgorithmSignedDocument);
 		assertTrue(Arrays.equals(Utils.fromBase64(signedDocument.getDigest(digestAlgorithmSignedDocument)), 
 				firstDocDigestAlgoAndValue.getDigestValue()));

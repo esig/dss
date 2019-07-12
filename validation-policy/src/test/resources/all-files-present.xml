@@ -74,7 +74,7 @@
             <CommitmentTypeIndication>
                 <Indication>http://uri.etsi.org/01903/v1.2.2#ProofOfOrigin</Indication>
             </CommitmentTypeIndication>
-            <ClaimedRoles/>
+            
             <FoundCertificates/>
             <FoundRevocations/>
             <FoundTimestamps/>
@@ -95,6 +95,10 @@
                     <Description>The XML element with ID 'o_device-attestation'</Description>
                 </SignatureScope>
             </SignatureScopes>
+			<SignatureDigestReference>
+			    <DigestMethod>SHA256</DigestMethod>
+			    <DigestValue>xoZV5CV86enBIh6O3BYXvjHZf4tCyR+KbSqwJA6S0Zw=</DigestValue>
+			</SignatureDigestReference>
         </Signature>
     </Signatures>
     <UsedCertificates>

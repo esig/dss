@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.util.Objects;
 
 import eu.europa.esig.dss.Digest;
+import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.RevocationOrigin;
 
 public abstract class RevocationRef implements Serializable {
 
@@ -13,7 +13,7 @@ public abstract class RevocationRef implements Serializable {
 
 	protected Digest digest = null;
 	
-	protected RevocationOrigin origin;
+	protected RevocationRefOrigin origin;
 	
 	private String dssId;
 
@@ -21,7 +21,7 @@ public abstract class RevocationRef implements Serializable {
 		return digest;
 	}
 	
-	public RevocationOrigin getOrigin() {
+	public RevocationRefOrigin getOrigin() {
 		return origin;
 	}
 	

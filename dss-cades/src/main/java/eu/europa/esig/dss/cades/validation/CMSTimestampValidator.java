@@ -30,10 +30,10 @@ import org.bouncycastle.tsp.TimeStampToken;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampValidator;
-import eu.europa.esig.dss.x509.TimestampType;
 
 public class CMSTimestampValidator extends CMSDocumentValidator implements TimestampValidator {
 

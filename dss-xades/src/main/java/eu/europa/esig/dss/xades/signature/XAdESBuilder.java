@@ -42,10 +42,10 @@ import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -220,7 +220,7 @@ public abstract class XAdESBuilder {
 	 */
 	protected void incorporateDigestMethod(final Element parentDom, final DigestAlgorithm digestAlgorithm) {
 		final Element digestMethodDom = documentDom.createElementNS(XMLNS, DS_DIGEST_METHOD);
-		final String digestAlgorithmXmlId = digestAlgorithm.getXmlId();
+		final String digestAlgorithmXmlId = digestAlgorithm.getUri();
 		digestMethodDom.setAttribute(ALGORITHM, digestAlgorithmXmlId);
 		parentDom.appendChild(digestMethodDom);
 	}

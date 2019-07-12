@@ -8,8 +8,6 @@ import java.util.Date;
 
 import org.junit.Test;
 
-import eu.europa.esig.jaxb.validationreport.parsers.DateParser;
-
 public class DateParserTest {
 
 	@Test

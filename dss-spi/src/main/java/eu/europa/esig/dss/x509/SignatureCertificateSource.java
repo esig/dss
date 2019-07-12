@@ -32,6 +32,7 @@ import eu.europa.esig.dss.CertificateRef;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.IssuerSerialInfo;
+import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.utils.Utils;
 
 /**

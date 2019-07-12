@@ -1,43 +1,36 @@
 package eu.europa.esig.jaxb.trustedlist;
 
-import java.io.InputStream;
+import java.io.IOException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
 
 import org.xml.sax.SAXException;
 
+import eu.europa.esig.dss.jaxb.parsers.AbstractJaxbFacade;
 import eu.europa.esig.jaxb.trustedlist.tsl.TrustStatusListType;
 
-public class TrustedListFacade {
+public class TrustedListFacade extends AbstractJaxbFacade<TrustStatusListType> {
 
 	public static TrustedListFacade newFacade() {
 		return new TrustedListFacade();
 	}
 
-	@SuppressWarnings("unchecked")
-	public TrustStatusListType unmarshall(InputStream is, boolean validate) throws JAXBException, XMLStreamException, SAXException {
-		JAXBContext jaxbContext = TrustedListUtils.getJAXBContext();
-		Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-		if (validate) {
-			unmarshaller.setSchema(TrustedListUtils.getSchema());
-		}
-		JAXBElement<TrustStatusListType> jaxbElement = (JAXBElement<TrustStatusListType>) unmarshaller.unmarshal(avoidXXE(new StreamSource(is)));
-		return jaxbElement.getValue();
+	@Override
+	protected JAXBContext getJAXBContext() throws JAXBException {
+		return TrustedListUtils.getJAXBContext();
 	}
 
-	private XMLStreamReader avoidXXE(Source source) throws XMLStreamException {
-		XMLInputFactory xif = XMLInputFactory.newFactory();
-		xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
-		xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-		return xif.createXMLStreamReader(source);
+	@Override
+	protected Schema getSchema() throws IOException, SAXException {
+		return TrustedListUtils.getSchema();
+	}
+
+	@Override
+	protected JAXBElement<TrustStatusListType> wrap(TrustStatusListType jaxbObject) {
+		return TrustedListUtils.OBJECT_FACTORY.createTrustServiceStatusList(jaxbObject);
 	}
 
 }

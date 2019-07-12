@@ -23,6 +23,8 @@ package eu.europa.esig.dss;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
+
 @SuppressWarnings("serial")
 public class RemoteSignatureParameters extends AbstractSerializableSignatureParameters {
 

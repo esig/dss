@@ -58,6 +58,10 @@
                     <Description>Full document</Description>
                 </SignatureScope>
 	        </SignatureScopes>
+            <SignatureDigestReference>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>r9FsKfQMnizBZePWuAjbiUaBw9VmwDvrFU8RjESsyW8=</DigestValue>
+            </SignatureDigestReference>
 	    </Signature>
     </Signatures>
     <UsedCertificates>
@@ -144,7 +148,7 @@
 			<Revocations>
 	            <CertificateRevocation Revocation="R-DC0E71B7A59FAE435C3F3A8B10A7CB4BDC42973BD93D139B352D439B0F071ECD">
 	                <Status>false</Status>
-	                <Reason>unknow</Reason>
+	                <Reason>unspecified</Reason>
 	            </CertificateRevocation>
 	        </Revocations>
             <DigestAlgoAndValue>

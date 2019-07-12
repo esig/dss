@@ -32,11 +32,11 @@ import javax.ws.rs.core.MediaType;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.Digest;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.RemoteKeyEntry;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 
 @Path("/")
 @Produces(MediaType.APPLICATION_JSON)

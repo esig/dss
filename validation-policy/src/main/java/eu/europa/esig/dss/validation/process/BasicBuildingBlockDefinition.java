@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.validation.process;
 
-import eu.europa.esig.jaxb.validationreport.enums.UriBasedEnum;
+import eu.europa.esig.dss.enumerations.UriBasedEnum;
 
 public enum BasicBuildingBlockDefinition implements UriBasedEnum {
 

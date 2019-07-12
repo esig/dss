@@ -3,7 +3,6 @@ package eu.europa.esig.dss.jaxb.diagnostic;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
@@ -12,6 +11,8 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.xml.sax.SAXException;
+
+import eu.europa.esig.dss.jaxb.parsers.XmlDefinerUtils;
 
 public final class DiagnosticDataXmlDefiner {
 
@@ -37,8 +38,7 @@ public final class DiagnosticDataXmlDefiner {
 	public static Schema getSchema() throws IOException, SAXException {
 		if (schema == null) {
 			try (InputStream isXSDDiagnosticData = DiagnosticDataXmlDefiner.class.getResourceAsStream(DIAGNOSTIC_DATA_SCHEMA_LOCATION)) {
-				SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-				sf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+				SchemaFactory sf = XmlDefinerUtils.getSecureSchemaFactory();
 				schema = sf.newSchema(new Source[] { new StreamSource(isXSDDiagnosticData) });
 			}
 		}

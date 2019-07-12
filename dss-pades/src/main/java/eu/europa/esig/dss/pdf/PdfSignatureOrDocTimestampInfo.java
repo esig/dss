@@ -29,6 +29,12 @@ import org.bouncycastle.cms.CMSSignedData;
  * The usage of this interface permit the user to choose the underlying PDF library use to created PDF signatures.
  */
 public interface PdfSignatureOrDocTimestampInfo {
+	
+	/**
+	 * Returns byte array of decoding the hexadecimal string present within the /Contents dictionary
+	 * @return byte array
+	 */
+	byte[] getContents();
 
 	int[] getSignatureByteRange();
 

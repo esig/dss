@@ -146,14 +146,7 @@
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
-					<xs:element name="ClaimedRoles" minOccurs="0">
-						<xs:complexType>
-							<xs:sequence>
-								<xs:element name="ClaimedRoles" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-							</xs:sequence>
-						</xs:complexType>
-					</xs:element>
-					<xs:element name="CertifiedRoles" type="CertifiedRole" minOccurs="0" maxOccurs="unbounded" />
+					<xs:element name="SignerRole" type="SignerRole" minOccurs="0" maxOccurs="unbounded" />
 					<xs:element name="Policy" type="Policy" minOccurs="0" />
 					<xs:element name="PDFSignatureDictionary" type="PDFSignatureDictionary" minOccurs="0" />
 					
@@ -198,6 +191,7 @@
 						</xs:complexType>
 					</xs:element>
 					
+					<xs:element name="SignatureDigestReference" type="SignatureDigestReference" />
 					<xs:element name="SignatureValue" type="xs:base64Binary" minOccurs="0" />
 					
 				</xs:sequence>
@@ -303,7 +297,7 @@
 					<xs:element name="KeyUsageBits" minOccurs="0">
 						<xs:complexType>
 							<xs:sequence>
-								<xs:element name="KeyUsage" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+								<xs:element name="KeyUsage" type="KeyUsage" minOccurs="0" maxOccurs="unbounded" />
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
@@ -415,6 +409,8 @@
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="FULL" />
 			<xs:enumeration value="PARTIAL" />
+			<xs:enumeration value="DIGEST" />
+			<xs:enumeration value="ARCHIVED" />
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -523,13 +519,13 @@
 		</xs:sequence>
 	</xs:complexType>
 	
-	<xs:complexType name="CertifiedRole">
+	<xs:complexType name="SignerRole">
 		<xs:sequence>
-			<xs:element name="CertifiedRole" type="xs:string" />
-			<xs:element name="NotAfter" type="xs:dateTime" />
-			<xs:element name="NotBefore" type="xs:dateTime" />
+			<xs:element name="Role" type="xs:string" />
+			<xs:element name="NotAfter" type="xs:dateTime" minOccurs="0" />
+			<xs:element name="NotBefore" type="xs:dateTime" minOccurs="0" />
 		</xs:sequence>
-		<xs:attribute name="Category" type="xs:string" use="required" />
+		<xs:attribute name="Category" type="EndorsementType" use="required" />
 	</xs:complexType>
 	
 	<xs:complexType name="DigestAlgoAndValue">
@@ -552,6 +548,14 @@
 		</xs:complexContent>
 	</xs:complexType>
 	
+	<xs:simpleType name="EndorsementType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="certified" />
+			<xs:enumeration value="claimed" />
+			<xs:enumeration value="signed" />
+		</xs:restriction>
+	</xs:simpleType>
+	
 	<xs:simpleType name="DigestMatcherType" final="restriction">
 		<xs:restriction base="xs:string">
 			<!-- XAdES -->
@@ -561,14 +565,25 @@
 			<xs:enumeration value="MANIFEST" />
 			<xs:enumeration value="MANIFEST_ENTRY" />
 			<xs:enumeration value="SIGNED_PROPERTIES" />
+			<xs:enumeration value="XPOINTER" />
 			
 			<!-- CAdES -->
 			<xs:enumeration value="MESSAGE_DIGEST" />
+			<!-- Digest from decrypted content SignatureValue (CAdES/PAdES) -->
+			<xs:enumeration value="CONTENT_DIGEST" />
 			
 			<!-- TIMESTAMP -->
 			<xs:enumeration value="MESSAGE_IMPRINT" />
 		</xs:restriction>
 	</xs:simpleType>
+	
+	<xs:complexType name="SignatureDigestReference">
+		<xs:sequence>
+			<xs:element name="CanonicalizationMethod" type="xs:string" minOccurs="0" /> <!-- Used in XAdES only -->
+			<xs:element name="DigestMethod" type="xs:string" />
+			<xs:element name="DigestValue" type="xs:base64Binary" />
+		</xs:sequence>
+	</xs:complexType>
 	
 	<xs:complexType name="FoundCertificate" abstract="true">
 		<xs:sequence>
@@ -596,7 +611,7 @@
 	<xs:complexType name="CertificateRef">
 		<xs:sequence>
 			<xs:element name="Origin" type="CertificateRefOriginType" />
-			<xs:element name="IssuerSerial" type="xs:base64Binary" />
+			<xs:element name="IssuerSerial" type="xs:base64Binary" minOccurs="0" />
 			<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" />
 		</xs:sequence>
 	</xs:complexType>
@@ -619,10 +634,10 @@
 			<xs:enumeration value="KEY_INFO" />
 			<xs:enumeration value="CERTIFICATE_VALUES" />
 			<xs:enumeration value="ATTR_AUTORITIES_CERT_VALUES" />
-			<xs:enumeration value="TIMESTAMP_DATA_VALIDATION" />
-			<xs:enumeration value="DSS" />
-			<xs:enumeration value="VRI" />
-			<xs:enumeration value="INTERNAL_TIMESTAMP_CERTIFICATE_VALUES" />
+			<xs:enumeration value="TIMESTAMP_VALIDATION_DATA" />
+			<xs:enumeration value="DSS_DICTIONARY" />
+			<xs:enumeration value="VRI_DICTIONARY" />
+			<xs:enumeration value="TIMESTAMP_CERTIFICATE_VALUES" />
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -699,10 +714,23 @@
 			<xs:enumeration value="superseded" />
 			<xs:enumeration value="cessationOfOperation" />
 			<xs:enumeration value="certificateHold" />
-			<xs:enumeration value="unknow" />
 			<xs:enumeration value="removeFromCRL" />
 			<xs:enumeration value="privilegeWithdrawn" />
 			<xs:enumeration value="aACompromise" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="KeyUsage" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="digitalSignature" />
+			<xs:enumeration value="nonRepudiation" />
+			<xs:enumeration value="keyEncipherment" />
+			<xs:enumeration value="dataEncipherment" />
+			<xs:enumeration value="keyAgreement" />
+			<xs:enumeration value="keyCertSign" />
+			<xs:enumeration value="crlSign" />
+			<xs:enumeration value="encipherOnly" />
+			<xs:enumeration value="decipherOnly" />
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -778,11 +806,12 @@
 	
 	<xs:simpleType name="RevocationOriginType" final="restriction">
 		<xs:restriction base="xs:string">
-			<xs:enumeration value="INTERNAL_REVOCATION_VALUES" />
-			<xs:enumeration value="INTERNAL_ATTRIBUTE_REVOCATION_VALUES" />
-			<xs:enumeration value="INTERNAL_TIMESTAMP_REVOCATION_VALUES" />
-			<xs:enumeration value="INTERNAL_DSS" />
-			<xs:enumeration value="INTERNAL_VRI" />
+			<xs:enumeration value="REVOCATION_VALUES" />
+			<xs:enumeration value="ATTRIBUTE_REVOCATION_VALUES" />
+			<xs:enumeration value="TIMESTAMP_VALIDATION_DATA" />
+			<xs:enumeration value="DSS_DICTIONARY" />
+			<xs:enumeration value="VRI_DICTIONARY" />
+			<xs:enumeration value="TIMESTAMP_REVOCATION_VALUES" />
 			<xs:enumeration value="SIGNATURE" />
 			<xs:enumeration value="EXTERNAL" />
 			<xs:enumeration value="CACHED" />

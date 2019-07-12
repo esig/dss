@@ -30,8 +30,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -57,7 +57,7 @@ class DetachedSignatureBuilder extends XAdESSignatureBuilder {
 	 */
 	public DetachedSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument origDoc, final CertificateVerifier certificateVerifier) {
 		super(params, origDoc, certificateVerifier);
-		setCanonicalizationMethods(params, CanonicalizationMethod.EXCLUSIVE);
+		setCanonicalizationMethods(params, DEFAULT_CANONICALIZATION_METHOD);
 	}
 
 	@Override

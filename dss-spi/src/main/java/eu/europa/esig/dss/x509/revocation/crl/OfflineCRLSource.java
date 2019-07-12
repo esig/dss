@@ -37,9 +37,9 @@ import eu.europa.esig.dss.CRLBinary;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.crl.CRLValidity;
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.RevocationOrigin;
 
 /**
  * This class if a basic skeleton that is able to retrieve needed CRL data from

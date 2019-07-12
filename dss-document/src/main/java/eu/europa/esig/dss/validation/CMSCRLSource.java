@@ -27,7 +27,8 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.CRLBinary;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.x509.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
 
@@ -71,19 +72,21 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 	}
 
 	/**
-	 * Returns complete-revocation-refs {@link RevocationOrigin}
-	 * @return {@link RevocationOrigin}
+	 * Returns complete-revocation-refs {@link RevocationRefOrigin}
+	 * 
+	 * @return {@link RevocationRefOrigin}
 	 */
-	protected RevocationOrigin getCompleteRevocationRefsOrigin() {
-		return RevocationOrigin.COMPLETE_REVOCATION_REFS;
+	protected RevocationRefOrigin getCompleteRevocationRefsOrigin() {
+		return RevocationRefOrigin.COMPLETE_REVOCATION_REFS;
 	}
 
 	/**
-	 * Returns attribute-revocation-refs {@link RevocationOrigin}
-	 * @return {@link RevocationOrigin}
+	 * Returns attribute-revocation-refs {@link RevocationRefOrigin}
+	 * 
+	 * @return {@link RevocationRefOrigin}
 	 */
-	protected RevocationOrigin getAttributeRevocationRefsOrigin() {
-		return RevocationOrigin.ATTRIBUTE_REVOCATION_REFS;
+	protected RevocationRefOrigin getAttributeRevocationRefsOrigin() {
+		return RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS;
 	}
 	
 	/**
@@ -206,7 +209,7 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 		}
 	}
 	
-	private void collectRevocationRefs(ASN1ObjectIdentifier revocationRefsAttribute, RevocationOrigin origin) {
+	private void collectRevocationRefs(ASN1ObjectIdentifier revocationRefsAttribute, RevocationRefOrigin origin) {
 		try {
 			final ASN1Encodable attrValue = DSSASN1Utils.getAsn1Encodable(unsignedAttributes, revocationRefsAttribute);
 			if (attrValue != null) {

@@ -5,19 +5,19 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.RevocationReason;
+import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.jaxb.validationreport.enums.ConstraintStatus;
-import eu.europa.esig.jaxb.validationreport.enums.MainIndication;
 import eu.europa.esig.jaxb.validationreport.enums.ObjectType;
-import eu.europa.esig.jaxb.validationreport.enums.RevocationReason;
 import eu.europa.esig.jaxb.validationreport.enums.SignatureValidationProcessID;
-import eu.europa.esig.jaxb.validationreport.enums.SubIndication;
 import eu.europa.esig.jaxb.validationreport.enums.TypeOfProof;
 
 public class UriBasedEnumParserTest {
 
 	@Test
 	public void mainStatusIndication() {
-		for (MainIndication msi : MainIndication.values()) {
+		for (Indication msi : Indication.values()) {
 			String string = UriBasedEnumParser.print(msi);
 			assertNotNull(string);
 			assertEquals(msi, UriBasedEnumParser.parseMainIndication(string));

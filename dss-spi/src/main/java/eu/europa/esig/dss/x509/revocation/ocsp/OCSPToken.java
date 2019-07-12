@@ -49,12 +49,12 @@ import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DSSSecurityProvider;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Digest;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.RevocationReason;
+import eu.europa.esig.dss.enumerations.RevocationType;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
-import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
-import eu.europa.esig.dss.x509.revocation.RevocationSourceType;
 
 /**
  * OCSP Signed Token which encapsulate BasicOCSPResp (BC).
@@ -89,7 +89,7 @@ public class OCSPToken extends RevocationToken {
 	private BasicOCSPResp basicOCSPResp;
 
 	public OCSPToken() {
-		this.revocationSourceType = RevocationSourceType.OCSP;
+		this.revocationType = RevocationType.OCSP;
 	}
 
 	@Override
@@ -158,12 +158,12 @@ public class OCSPToken extends RevocationToken {
 			if (revokedStatus.hasRevocationReason()) {
 				reasonId = revokedStatus.getRevocationReason();
 			}
-			reason = CRLReasonEnum.fromInt(reasonId);
+			reason = RevocationReason.fromInt(reasonId);
 		} else if (certStatus instanceof UnknownStatus) {
 			if (LOG.isInfoEnabled()) {
 				LOG.info("OCSP status unknown");
 			}
-			reason = CRLReasonEnum.unknow;
+			reason = RevocationReason.UNSPECIFIED;
 		} else {
 			LOG.info("OCSP certificate status: {}", certStatus);
 		}

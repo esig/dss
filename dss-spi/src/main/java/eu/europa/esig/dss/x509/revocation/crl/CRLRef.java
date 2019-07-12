@@ -31,8 +31,8 @@ import org.bouncycastle.asn1.x500.X500Name;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.Digest;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.x509.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.x509.revocation.RevocationRef;
 
 /**
@@ -50,7 +50,7 @@ public final class CRLRef extends RevocationRef {
 	/**
 	 * The default constructor for CRLRef.
 	 */
-	public CRLRef(Digest digest, RevocationOrigin origin) {
+	public CRLRef(Digest digest, RevocationRefOrigin origin) {
 		this.digest = digest;
 		this.origin = origin;
 	}
@@ -60,7 +60,7 @@ public final class CRLRef extends RevocationRef {
 	 *
 	 * @param cmsRef
 	 */
-	public CRLRef(CrlValidatedID cmsRef, RevocationOrigin origin) {
+	public CRLRef(CrlValidatedID cmsRef, RevocationRefOrigin origin) {
 		try {
 			final CrlIdentifier crlIdentifier = cmsRef.getCrlIdentifier();
 			if (crlIdentifier != null) {

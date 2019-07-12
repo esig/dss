@@ -38,7 +38,6 @@
 			</CertificateChain>
 			<ContentType>application/pdf</ContentType>
 			<CommitmentTypeIndication />
-			<ClaimedRoles />
             <FoundCertificates/>
             <FoundRevocations/>
 			<FoundTimestamps>
@@ -51,6 +50,10 @@
                     <Description>The document byte range: [0, 311011, 341013, 856]</Description>
                 </SignatureScope>
 			</SignatureScopes>
+            <SignatureDigestReference>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>cChxX3zVLBDNiR3QO5hI07oJwYyvCOWKAFAlwvpDnsY=</DigestValue>
+            </SignatureDigestReference>
 		</Signature>
 		<Signature	Id="id-752da48ccad668fcade0d92a1cd8def412feb7562591d1b2a442294d7219c336">
 			<SignatureFilename>MVC.pdf</SignatureFilename>
@@ -78,7 +81,6 @@
 			</CertificateChain>
 			<ContentType>application/pdf</ContentType>
 			<CommitmentTypeIndication />
-			<ClaimedRoles />
             <FoundCertificates/>
             <FoundRevocations/>
 			<FoundTimestamps>
@@ -92,6 +94,10 @@
 					byte range: [0, 342036, 372038, 872]</Description>
                 </SignatureScope>
             </SignatureScopes>
+            <SignatureDigestReference>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>u3Ru50due6C9j7J4RFHM7Qw8z8k3mpsum3Is2tCe3rQ=</DigestValue>
+            </SignatureDigestReference>
 		</Signature>
 	</Signatures>
 	<UsedCertificates>

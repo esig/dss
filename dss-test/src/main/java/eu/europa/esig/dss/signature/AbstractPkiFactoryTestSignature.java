@@ -53,13 +53,17 @@ import org.xml.sax.SAXException;
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.Policy;
-import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignerLocation;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.EndorsementType;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.jaxb.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
@@ -74,7 +78,6 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.SimpleReport;
@@ -83,7 +86,6 @@ import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.jaxb.validationreport.POEType;
 import eu.europa.esig.jaxb.validationreport.SACertIDListType;
 import eu.europa.esig.jaxb.validationreport.SACertIDType;
@@ -110,7 +112,6 @@ import eu.europa.esig.jaxb.validationreport.SignerInformationType;
 import eu.europa.esig.jaxb.validationreport.ValidationReportType;
 import eu.europa.esig.jaxb.validationreport.ValidationStatusType;
 import eu.europa.esig.jaxb.validationreport.ValidationTimeInfoType;
-import eu.europa.esig.jaxb.validationreport.enums.EndorsementType;
 
 public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatureParameters> extends PKIFactoryAccess {
 
@@ -154,28 +155,26 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		// reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		assertNotNull(reports.getXmlDiagnosticData());
 		verifyDiagnosticData(diagnosticData);
 
 		verifyDiagnosticDataJaxb(reports.getDiagnosticDataJaxb());
 
 		SimpleReport simpleReport = reports.getSimpleReport();
-		assertNotNull(reports.getXmlSimpleReport());
 		verifySimpleReport(simpleReport);
 
 		DetailedReport detailedReport = reports.getDetailedReport();
-		assertNotNull(reports.getXmlDetailedReport());
 		verifyDetailedReport(detailedReport);
 
 		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
-		assertNotNull(reports.getXmlValidationReport());
 		verifyETSIValidationReport(etsiValidationReportJaxb);
 
 		getOriginalDocument(signedDocument, diagnosticData);
 
+		UnmarshallingTester.unmarshallXmlReports(reports);
+
 		generateHtmlPdfReports(reports);
 	}
-
+	
 	protected void generateHtmlPdfReports(Reports reports) {
 		if (!isGenerateHtmlPdfReports()) {
 			return;
@@ -352,7 +351,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 
 		XmlDigestAlgoAndValue digestAlgoAndValue = signerData.getDigestAlgoAndValue();
 		assertNotNull(digestAlgoAndValue);
-		DigestAlgorithm digestAlgorithm = DigestAlgorithm.forName(digestAlgoAndValue.getDigestMethod());
+		DigestAlgorithm digestAlgorithm = digestAlgoAndValue.getDigestMethod();
 		assertNotNull(digestAlgorithm);
 		
 		List<DSSDocument> similarDocuments = buildCloseDocuments(originalDocument);
@@ -601,8 +600,10 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
 		assertTrue(Utils.isCollectionNotEmpty(digestMatchers));
 		for (XmlDigestMatcher digestMatcher : digestMatchers) {
-			assertTrue(digestMatcher.isDataFound());
-			assertTrue(digestMatcher.isDataIntact());
+			if (!DigestMatcherType.MANIFEST_ENTRY.equals(digestMatcher.getType())) {
+				assertTrue(digestMatcher.isDataFound());
+				assertTrue(digestMatcher.isDataIntact());
+			}
 		}
 
 		assertTrue(signatureWrapper.isSignatureIntact());
@@ -697,8 +698,8 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		List<String> claimedRoles = getSignatureParameters().bLevel().getClaimedSignerRoles();
 		if (Utils.isCollectionNotEmpty(claimedRoles)) {
 			SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-			List<String> foundClaimedRoles = signatureWrapper.getClaimedRoles();
-			assertTrue(claimedRoles.equals(foundClaimedRoles));
+			List<String> foundClaimedRoles = signatureWrapper.getSignerRoleDetails(signatureWrapper.getClaimedRoles());
+			assertEquals(claimedRoles, foundClaimedRoles);
 		}
 	}
 
@@ -712,7 +713,9 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
 		assertTrue(Utils.isCollectionNotEmpty(digestMatchers));
 		for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
-			assertEquals(expectedDigestAlgorithm.getName(), xmlDigestMatcher.getDigestMethod());
+			if (!DigestMatcherType.MANIFEST_ENTRY.equals(xmlDigestMatcher.getType())) {
+				assertEquals(expectedDigestAlgorithm, xmlDigestMatcher.getDigestMethod());
+			}
 		}
 	}
 

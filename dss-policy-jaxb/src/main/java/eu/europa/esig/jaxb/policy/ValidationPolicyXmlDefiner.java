@@ -3,7 +3,6 @@ package eu.europa.esig.jaxb.policy;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
@@ -13,9 +12,13 @@ import javax.xml.validation.SchemaFactory;
 
 import org.xml.sax.SAXException;
 
+import eu.europa.esig.dss.jaxb.parsers.XmlDefinerUtils;
+
 public final class ValidationPolicyXmlDefiner {
 
 	public static final String VALIDATION_POLICY_SCHEMA_LOCATION = "/xsd/policy.xsd";
+
+	public static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
 
 	private ValidationPolicyXmlDefiner() {
 	}
@@ -35,7 +38,7 @@ public final class ValidationPolicyXmlDefiner {
 	public static Schema getSchema() throws IOException, SAXException {
 		if (schema == null) {
 			try (InputStream inputStream = ValidationPolicyXmlDefiner.class.getResourceAsStream(VALIDATION_POLICY_SCHEMA_LOCATION)) {
-				SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+				SchemaFactory sf = XmlDefinerUtils.getSecureSchemaFactory();
 				schema = sf.newSchema(new Source[] { new StreamSource(inputStream) });
 			}
 		}

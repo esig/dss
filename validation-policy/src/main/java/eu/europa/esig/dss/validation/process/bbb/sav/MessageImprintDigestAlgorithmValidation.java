@@ -2,8 +2,8 @@ package eu.europa.esig.dss.validation.process.bbb.sav;
 
 import java.util.Date;
 
+import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
-import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
@@ -20,7 +20,7 @@ public class MessageImprintDigestAlgorithmValidation extends DigestAlgorithmAcce
 	@Override
 	protected ChainItem<XmlSAV> digestCryptographic() {
 		CryptographicConstraint constraint = validationPolicy.getSignatureCryptographicConstraint(context);
-		return new DigestCryptographicCheck(result, digestAlgorithmName, currentTime, constraint) {
+		return new DigestCryptographicCheck(result, digestAlgorithm, currentTime, constraint) {
 			@Override
 			protected MessageTag getMessageTag() { return MessageTag.BBB_SAV_TSP_IMSDAV; }
 		};

@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.validation.policy.rules.Indication;
+import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.validation.reports.SimpleReport;
 import eu.europa.esig.jaxb.policy.Algo;
 import eu.europa.esig.jaxb.policy.BasicSignatureConstraints;

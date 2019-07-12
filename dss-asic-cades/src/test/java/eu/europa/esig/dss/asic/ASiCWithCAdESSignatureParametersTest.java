@@ -22,7 +22,7 @@ package eu.europa.esig.dss.asic;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 
 public class ASiCWithCAdESSignatureParametersTest {
 

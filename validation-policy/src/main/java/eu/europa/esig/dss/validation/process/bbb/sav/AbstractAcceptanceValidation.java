@@ -23,18 +23,17 @@ package eu.europa.esig.dss.validation.process.bbb.sav;
 import java.util.Date;
 import java.util.Map;
 
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.EncryptionAlgorithm;
-import eu.europa.esig.dss.MaskGenerationFunction;
-import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlCryptographicInformation;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
@@ -76,13 +75,8 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 
 		XmlCryptographicInformation cryptoInfo = new XmlCryptographicInformation();
 
-		String encryptionAlgoUsedToSignThisToken = token.getEncryptionAlgoUsedToSignThisToken();
-		String digestAlgoUsedToSignThisToken = token.getDigestAlgoUsedToSignThisToken();
-		String maskGenerationFunctionUsedToSignThisToken = token.getMaskGenerationFunctionUsedToSignThisToken();
-		String keyLengthUsedToSignThisToken = token.getKeyLengthUsedToSignThisToken();
-
-		fillAlgorithmURI(cryptoInfo, encryptionAlgoUsedToSignThisToken, digestAlgoUsedToSignThisToken, maskGenerationFunctionUsedToSignThisToken);
-		cryptoInfo.setKeyLength(keyLengthUsedToSignThisToken);
+		fillAlgorithmURI(cryptoInfo, token);
+		cryptoInfo.setKeyLength(token.getKeyLengthUsedToSignThisToken());
 		
 		XmlConclusion conclusion = result.getConclusion();
 		if (Indication.INDETERMINATE.equals(conclusion.getIndication())
@@ -92,36 +86,35 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 			cryptoInfo.setSecure(true);
 		}
 
-		Date notAfter = null;
 		CryptographicConstraint cryptographicConstraint = validationPolicy.getSignatureCryptographicConstraint(context);
 		if (cryptographicConstraint != null) {
+			Date notAfter = null;
 			CryptographicConstraintWrapper wrapper = new CryptographicConstraintWrapper(cryptographicConstraint);
 			Map<String, Date> expirationDates = wrapper.getExpirationTimes();
-
-			notAfter = expirationDates.get(digestAlgoUsedToSignThisToken);
-			Date expirationEncryption = expirationDates.get(encryptionAlgoUsedToSignThisToken + keyLengthUsedToSignThisToken);
+			String digestAlgoToFind = token.getDigestAlgorithm() == null ? "" : token.getDigestAlgorithm().getName();
+			notAfter = expirationDates.get(digestAlgoToFind);
+			String encryptionAlgoToFind = token.getEncryptionAlgorithm() == null ? "" : token.getEncryptionAlgorithm().name();
+			Date expirationEncryption = expirationDates.get(encryptionAlgoToFind + token.getKeyLengthUsedToSignThisToken());
 			if (notAfter == null || (expirationEncryption != null && notAfter.after(expirationEncryption))) {
 				notAfter = expirationEncryption;
 			}
+			cryptoInfo.setNotAfter(notAfter);
 		}
-
-		cryptoInfo.setNotAfter(notAfter);
 
 		result.setCryptographicInfo(cryptoInfo);
 	}
 
-	private void fillAlgorithmURI(XmlCryptographicInformation cryptoInfo, String encryptionAlgoUsedToSignThisToken, String digestAlgoUsedToSignThisToken,
-			String maskGenerationFunctionUsedToSignThisToken) {
+	private void fillAlgorithmURI(XmlCryptographicInformation cryptoInfo, AbstractTokenProxy token) {
 		try {
-			SignatureAlgorithm sigAlgo = null;
-			if (Utils.isStringNotEmpty(maskGenerationFunctionUsedToSignThisToken)) {
-				sigAlgo = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.forName(encryptionAlgoUsedToSignThisToken),
-						DigestAlgorithm.forName(digestAlgoUsedToSignThisToken), MaskGenerationFunction.valueOf(maskGenerationFunctionUsedToSignThisToken));
-			} else {
-				sigAlgo = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.valueOf(encryptionAlgoUsedToSignThisToken),
-						DigestAlgorithm.forName(digestAlgoUsedToSignThisToken));
+			EncryptionAlgorithm encryptionAlgorithm = token.getEncryptionAlgorithm();
+			MaskGenerationFunction maskGenerationFunction = token.getMaskGenerationFunction();
+			DigestAlgorithm digestAlgorithm = token.getDigestAlgorithm();
+			SignatureAlgorithm sigAlgo = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm, maskGenerationFunction);
+			String uri = sigAlgo.getUri();
+			if (uri == null) {
+				uri = sigAlgo.getURIBasedOnOID();
 			}
-			cryptoInfo.setAlgorithm(sigAlgo.getXMLId());
+			cryptoInfo.setAlgorithm(uri);
 		} catch (Exception e) {
 			cryptoInfo.setAlgorithm("???");
 		}

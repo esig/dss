@@ -9,10 +9,9 @@
 	<name>DSS Reports</name>
 
 	<dependencies>
-<!-- 		find a way to remove it -->
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-model</artifactId>
+			<artifactId>dss-enumerations</artifactId>
 		</dependency>
 		
 		<dependency>

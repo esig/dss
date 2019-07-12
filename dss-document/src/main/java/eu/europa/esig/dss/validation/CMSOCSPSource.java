@@ -30,7 +30,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSRevocationUtils;
-import eu.europa.esig.dss.x509.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
@@ -75,19 +76,21 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 	}
 
 	/**
-	 * Returns complete-revocation-refs {@link RevocationOrigin}
-	 * @return {@link RevocationOrigin}
+	 * Returns complete-revocation-refs {@link RevocationRefOrigin}
+	 * 
+	 * @return {@link RevocationRefOrigin}
 	 */
-	protected RevocationOrigin getCompleteRevocationRefsOrigin() {
-		return RevocationOrigin.COMPLETE_REVOCATION_REFS;
+	protected RevocationRefOrigin getCompleteRevocationRefsOrigin() {
+		return RevocationRefOrigin.COMPLETE_REVOCATION_REFS;
 	}
 
 	/**
-	 * Returns attribute-revocation-refs {@link RevocationOrigin}
-	 * @return {@link RevocationOrigin}
+	 * Returns attribute-revocation-refs {@link RevocationRefOrigin}
+	 * 
+	 * @return {@link RevocationRefOrigin}
 	 */
-	protected RevocationOrigin getAttributeRevocationRefsOrigin() {
-		return RevocationOrigin.ATTRIBUTE_REVOCATION_REFS;
+	protected RevocationRefOrigin getAttributeRevocationRefsOrigin() {
+		return RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS;
 	}
 	
 	/**
@@ -241,7 +244,7 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 		}
 	}
 	
-	private void collectRevocationRefs(AttributeTable unsignedAttributes, ASN1ObjectIdentifier revocationReferencesAttribute, RevocationOrigin origin) {
+	private void collectRevocationRefs(AttributeTable unsignedAttributes, ASN1ObjectIdentifier revocationReferencesAttribute, RevocationRefOrigin origin) {
 		final Attribute attribute = unsignedAttributes.get(revocationReferencesAttribute);
 		if (attribute == null) {
 			return;

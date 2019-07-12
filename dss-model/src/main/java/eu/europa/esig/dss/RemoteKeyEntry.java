@@ -22,6 +22,8 @@ package eu.europa.esig.dss;
 
 import java.io.Serializable;
 
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+
 @SuppressWarnings("serial")
 public class RemoteKeyEntry implements Serializable {
 

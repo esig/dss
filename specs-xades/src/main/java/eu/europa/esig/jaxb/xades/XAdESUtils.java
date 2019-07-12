@@ -2,7 +2,6 @@ package eu.europa.esig.jaxb.xades;
 
 import java.util.List;
 
-import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
@@ -12,6 +11,7 @@ import javax.xml.validation.SchemaFactory;
 
 import org.xml.sax.SAXException;
 
+import eu.europa.esig.dss.jaxb.parsers.XmlDefinerUtils;
 import eu.europa.esig.jaxb.xmldsig.ObjectFactory;
 import eu.europa.esig.jaxb.xmldsig.XmlDSigUtils;
 
@@ -36,8 +36,7 @@ public final class XAdESUtils {
 
 	public static Schema getSchema() throws SAXException {
 		if (schema == null) {
-			SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			sf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+			SchemaFactory sf = XmlDefinerUtils.getSecureSchemaFactory();
 			List<Source> xsdSources = getXSDSources();
 			schema = sf.newSchema(xsdSources.toArray(new Source[xsdSources.size()]));
 		}

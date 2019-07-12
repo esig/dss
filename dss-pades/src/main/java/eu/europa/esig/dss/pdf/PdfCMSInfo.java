@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.utils.Utils;
 
 public abstract class PdfCMSInfo implements PdfSignatureOrDocTimestampInfo {
@@ -106,6 +106,11 @@ public abstract class PdfCMSInfo implements PdfSignatureOrDocTimestampInfo {
 			uniqueId = Utils.toHex(digest);
 		}
 		return uniqueId;
+	}
+	
+	@Override
+	public byte[] getContents() {
+		return cms;
 	}
 
 	@Override

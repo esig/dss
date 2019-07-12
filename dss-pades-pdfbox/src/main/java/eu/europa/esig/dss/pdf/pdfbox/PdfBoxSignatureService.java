@@ -58,9 +58,9 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.pades.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
@@ -136,7 +136,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	private byte[] signDocumentAndReturnDigest(final PAdESSignatureParameters parameters, final byte[] signatureBytes, final OutputStream fileOutputStream,
 			final PDDocument pdDocument, final DigestAlgorithm digestAlgorithm) {
 
-		final MessageDigest digest = digestAlgorithm.getMessageDigest();
+		final MessageDigest digest = DSSUtils.getMessageDigest(digestAlgorithm);
 		SignatureInterface signatureInterface = new SignatureInterface() {
 
 			@Override

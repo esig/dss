@@ -37,8 +37,8 @@ import org.bouncycastle.asn1.cms.SignerInfo;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 
 public abstract class AbstractCAdESTestSignature extends AbstractPkiFactoryTestDocumentSignatureService<CAdESSignatureParameters> {

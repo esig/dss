@@ -34,8 +34,8 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
@@ -115,7 +115,7 @@ public class DSS1444Test {
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertNotNull(diagnosticData);
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		assertEquals(EncryptionAlgorithm.PLAIN_ECDSA.getName(), signature.getEncryptionAlgoUsedToSignThisToken());
+		assertEquals(EncryptionAlgorithm.PLAIN_ECDSA, signature.getEncryptionAlgorithm());
 		assertTrue(signature.isBLevelTechnicallyValid());
 		assertTrue(signature.isSignatureIntact());
 		assertTrue(signature.isSignatureValid());

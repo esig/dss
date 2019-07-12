@@ -22,10 +22,10 @@ package eu.europa.esig.dss.validation.process.bbb.xcv.sub;
 
 import java.util.Date;
 
+import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlRevocationInformation;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
-import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.SubContext;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.Chain;
@@ -48,6 +48,7 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSigna
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSupportedByQSCDCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CommonNameCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CountryCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.ExtendedKeyUsageCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.GivenNameCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.IdPkixOcspNoCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.KeyUsageCheck;
@@ -140,6 +141,8 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 		item = item.setNextItem(keyUsage(currentCertificate, subContext));
 
+		item = item.setNextItem(extendedKeyUsage(currentCertificate, subContext));
+
 		item = item.setNextItem(aiaPresent(currentCertificate, subContext));
 
 		item = item.setNextItem(revocationInfoAccessPresent(currentCertificate, subContext));
@@ -199,6 +202,11 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	private ChainItem<XmlSubXCV> keyUsage(CertificateWrapper certificate, SubContext subContext) {
 		MultiValuesConstraint constraint = validationPolicy.getCertificateKeyUsageConstraint(context, subContext);
 		return new KeyUsageCheck(result, certificate, constraint);
+	}
+
+	private ChainItem<XmlSubXCV> extendedKeyUsage(CertificateWrapper certificate, SubContext subContext) {
+		MultiValuesConstraint constraint = validationPolicy.getCertificateExtendedKeyUsageConstraint(context, subContext);
+		return new ExtendedKeyUsageCheck(result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> aiaPresent(CertificateWrapper certificate, SubContext subContext) {

@@ -22,7 +22,7 @@ package eu.europa.esig.dss.validation.process;
 
 import java.util.List;
 
-import eu.europa.esig.dss.CertificatePolicyOids;
+import eu.europa.esig.dss.enumerations.CertificatePolicy;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 
@@ -32,30 +32,30 @@ public final class CertificatePolicyIdentifiers {
 	}
 
 	public static boolean isSupportedByQSCD(CertificateWrapper certificate) {
-		return hasPolicyIdOIDs(certificate, CertificatePolicyOids.QCP_PUBLIC_WITH_SSCD, CertificatePolicyOids.QCP_LEGAL_QSCD,
-				CertificatePolicyOids.QCP_NATURAL_QSCD);
+		return hasPolicyIdOIDs(certificate, CertificatePolicy.QCP_PUBLIC_WITH_SSCD, CertificatePolicy.QCP_LEGAL_QSCD,
+				CertificatePolicy.QCP_NATURAL_QSCD);
 	}
 
 	public static boolean isQCP(CertificateWrapper certificate) {
-		return hasPolicyIdOIDs(certificate, CertificatePolicyOids.QCP_PUBLIC);
+		return hasPolicyIdOIDs(certificate, CertificatePolicy.QCP_PUBLIC);
 	}
 
 	public static boolean isQCPPlus(CertificateWrapper certificate) {
-		return hasPolicyIdOIDs(certificate, CertificatePolicyOids.QCP_PUBLIC_WITH_SSCD);
+		return hasPolicyIdOIDs(certificate, CertificatePolicy.QCP_PUBLIC_WITH_SSCD);
 	}
 
 	public static boolean isLegal(CertificateWrapper certificate) {
-		return hasPolicyIdOIDs(certificate, CertificatePolicyOids.QCP_LEGAL, CertificatePolicyOids.QCP_LEGAL_QSCD);
+		return hasPolicyIdOIDs(certificate, CertificatePolicy.QCP_LEGAL, CertificatePolicy.QCP_LEGAL_QSCD);
 	}
 
 	public static boolean isNatural(CertificateWrapper certificate) {
-		return hasPolicyIdOIDs(certificate, CertificatePolicyOids.QCP_NATURAL, CertificatePolicyOids.QCP_NATURAL_QSCD);
+		return hasPolicyIdOIDs(certificate, CertificatePolicy.QCP_NATURAL, CertificatePolicy.QCP_NATURAL_QSCD);
 	}
 
-	private static boolean hasPolicyIdOIDs(CertificateWrapper certificate, CertificatePolicyOids... certificatePolicyIds) {
+	private static boolean hasPolicyIdOIDs(CertificateWrapper certificate, CertificatePolicy... certificatePolicyIds) {
 		List<String> policyIds = certificate.getPolicyIds();
 		if (Utils.isCollectionNotEmpty(policyIds)) {
-			for (CertificatePolicyOids policyId : certificatePolicyIds) {
+			for (CertificatePolicy policyId : certificatePolicyIds) {
 				if (policyIds.contains(policyId.getOid())) {
 					return true;
 				}

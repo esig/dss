@@ -3,7 +3,7 @@ package eu.europa.esig.dss.identifier;
 import java.util.EnumMap;
 
 import eu.europa.esig.dss.Digest;
-import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
 /**
  * This class is used to obtain a requested digest from a stored binary array
@@ -31,7 +31,7 @@ public abstract class MultipleDigestIdentifier extends Identifier {
 	public byte[] getDigestValue(DigestAlgorithm digestAlgorithm) {
 		byte[] digestValue = digestMap.get(digestAlgorithm);
 		if (digestValue == null) {
-			digestValue = digestAlgorithm.getMessageDigest().digest(getBinaries());
+			digestValue = getMessageDigest(digestAlgorithm).digest(getBinaries());
 			digestMap.put(digestAlgorithm, digestValue);
 		}
 		return digestValue;

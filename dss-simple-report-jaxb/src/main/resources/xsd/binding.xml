@@ -16,15 +16,15 @@
 		</jaxb:schemaBindings>
 
 		<jaxb:bindings node="//xs:simpleType[@name='Indication']">
-			<jaxb:javaType name="eu.europa.esig.dss.validation.policy.rules.Indication" parseMethod="eu.europa.esig.dss.jaxb.parsers.IndicationParser.parse" printMethod="eu.europa.esig.dss.jaxb.parsers.IndicationParser.print" />
+			<jaxb:javaType name="eu.europa.esig.dss.enumerations.Indication" parseMethod="eu.europa.esig.dss.jaxb.parsers.IndicationParser.parse" printMethod="eu.europa.esig.dss.jaxb.parsers.IndicationParser.print" />
 		</jaxb:bindings>
 
 		<jaxb:bindings node="//xs:simpleType[@name='SubIndication']">
-			<jaxb:javaType name="eu.europa.esig.dss.validation.policy.rules.SubIndication" parseMethod="eu.europa.esig.dss.jaxb.parsers.SubIndicationParser.parse" printMethod="eu.europa.esig.dss.jaxb.parsers.SubIndicationParser.print" />
+			<jaxb:javaType name="eu.europa.esig.dss.enumerations.SubIndication" parseMethod="eu.europa.esig.dss.jaxb.parsers.SubIndicationParser.parse" printMethod="eu.europa.esig.dss.jaxb.parsers.SubIndicationParser.print" />
 		</jaxb:bindings>
 		
 		<jaxb:bindings node="//xs:simpleType[@name='SignatureQualification']">
-			<jaxb:javaType name="eu.europa.esig.dss.validation.SignatureQualification" 
+			<jaxb:javaType name="eu.europa.esig.dss.enumerations.SignatureQualification" 
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.SignatureQualificationParser.parse" 
 				printMethod="eu.europa.esig.dss.jaxb.parsers.SignatureQualificationParser.print" />
 		</jaxb:bindings>

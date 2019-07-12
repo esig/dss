@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
@@ -31,11 +29,10 @@ import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 import org.w3c.dom.Attr;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DigestDocument;
 import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.utils.Utils;
 
 /**

@@ -18,6 +18,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import eu.europa.esig.dss.enumerations.CertificateSourceType;
+
 @RunWith(Parameterized.class)
 public class CertificatePoolMultiThreadTest {
 

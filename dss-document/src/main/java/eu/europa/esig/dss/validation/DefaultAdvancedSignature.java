@@ -39,7 +39,11 @@ import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestDocument;
-import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.enumerations.CertificateSourceType;
+import eu.europa.esig.dss.enumerations.RevocationType;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.identifier.SignatureIdentifier;
 import eu.europa.esig.dss.identifier.TokenIdentifier;
@@ -48,14 +52,11 @@ import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.SignatureCertificateSource;
 import eu.europa.esig.dss.x509.SignaturePolicy;
-import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.revocation.RevocationRef;
-import eu.europa.esig.dss.x509.revocation.RevocationSourceType;
 import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.x509.revocation.crl.ListCRLSource;
@@ -234,7 +235,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 */
 	@Override
 	public SignatureLevel getDataFoundUpToLevel() {
-
 		final SignatureLevel[] signatureLevels = getSignatureLevels();
 		final SignatureLevel dataFoundUpToProfile = getDataFoundUpToProfile(signatureLevels);
 		return dataFoundUpToProfile;
@@ -479,6 +479,13 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 			return crlTokens.isEmpty() && ocspTokens.isEmpty();
 		}
+	}
+	
+	@Override
+	public List<SignerRole> getSignerRoles() {
+		List<SignerRole> signerRoles = getClaimedSignerRoles();
+		signerRoles.addAll(getCertifiedSignerRoles());
+		return signerRoles;
 	}
 
 	@Override
@@ -942,7 +949,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	@Override
 	public List<RevocationRef> findRefsForRevocationToken(RevocationToken revocationToken) {
 		List<RevocationRef> revocationRefs = new ArrayList<RevocationRef>();
-		if (RevocationSourceType.CRL.equals(revocationToken.getRevocationSourceType())) {
+		if (RevocationType.CRL.equals(revocationToken.getRevocationType())) {
 			revocationRefs.addAll(getCompleteCRLSource().findRefsForRevocationToken((CRLToken) revocationToken));
 		} else {
 			revocationRefs.addAll(getCompleteOCSPSource().findRefsForRevocationToken((OCSPToken) revocationToken));

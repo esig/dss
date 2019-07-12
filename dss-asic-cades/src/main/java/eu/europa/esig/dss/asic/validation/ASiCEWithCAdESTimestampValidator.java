@@ -24,7 +24,7 @@ import java.util.List;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.cades.validation.CMSTimestampValidator;
-import eu.europa.esig.dss.x509.TimestampType;
+import eu.europa.esig.dss.enumerations.TimestampType;
 
 public class ASiCEWithCAdESTimestampValidator extends CMSTimestampValidator {
 

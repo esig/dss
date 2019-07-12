@@ -10,16 +10,16 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.validation.CertificateOriginType;
+import eu.europa.esig.dss.enumerations.CertificateOrigin;
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationType;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.RevocationType;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.XmlRevocationOrigin;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
-import eu.europa.esig.dss.x509.TimestampType;
 
 public class DSS1647Test {
 
@@ -47,25 +47,25 @@ public class DSS1647Test {
 		
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		
-		List<String> timestampValidationDataCertificateIds = signature.getFoundCertificateIds(CertificateOriginType.TIMESTAMP_DATA_VALIDATION);
+		List<String> timestampValidationDataCertificateIds = signature.getFoundCertificateIds(CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
 		assertEquals(1, timestampValidationDataCertificateIds.size());
 		assertTrue(archiveTimestamp.getTimestampedCertificateIds().contains(timestampValidationDataCertificateIds.get(0)));
 		
-		List<String> certificateValueIds = signature.getFoundCertificateIds(CertificateOriginType.CERTIFICATE_VALUES);
+		List<String> certificateValueIds = signature.getFoundCertificateIds(CertificateOrigin.CERTIFICATE_VALUES);
 		assertEquals(3, certificateValueIds.size());
 		for (String certId : certificateValueIds) {
 			assertTrue(archiveTimestamp.getTimestampedCertificateIds().contains(certId));
 		}
 		
-		List<String> timestampValidationDataRevocationIds = signature.getRevocationIdsByOrigin(XmlRevocationOrigin.TIMESTAMP_VALIDATION_DATA);
+		List<String> timestampValidationDataRevocationIds = signature.getRevocationIdsByOrigin(RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
 		assertEquals(1, timestampValidationDataRevocationIds.size());
 		assertTrue(archiveTimestamp.getTimestampedRevocationIds().contains(timestampValidationDataRevocationIds.get(0)));
 		
-		List<String> crlRevocationValueIds = signature.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.REVOCATION_VALUES);
+		List<String> crlRevocationValueIds = signature.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, RevocationOrigin.REVOCATION_VALUES);
 		assertEquals(1, crlRevocationValueIds.size());
 		assertTrue(archiveTimestamp.getTimestampedRevocationIds().contains(crlRevocationValueIds.get(0)));
 		
-		List<String> ocspRevocationValueIds = signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.REVOCATION_VALUES);
+		List<String> ocspRevocationValueIds = signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.REVOCATION_VALUES);
 		assertEquals(1, ocspRevocationValueIds.size());
 		assertTrue(archiveTimestamp.getTimestampedRevocationIds().contains(ocspRevocationValueIds.get(0)));
 	}

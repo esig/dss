@@ -42,17 +42,17 @@ import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.client.http.DataLoader;
+import eu.europa.esig.dss.enumerations.CertificateSourceType;
+import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.x509.AlternateUrlsSourceAdapter;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSource;
-import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.Token;
-import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
 import eu.europa.esig.dss.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.x509.revocation.RevocationSourceAlternateUrlsSupport;
 import eu.europa.esig.dss.x509.revocation.crl.CRLSource;
@@ -643,7 +643,7 @@ public class SignatureValidationContext implements ValidationContext {
 		if (lastUsageDate != null) {
 			boolean foundUpdatedRevocationData = false;
 			for (RevocationToken revocationToken : revocations) {
-				if ((lastUsageDate.compareTo(revocationToken.getProductionDate()) < 0) && (CRLReasonEnum.certificateHold != revocationToken.getReason())) {
+				if ((lastUsageDate.compareTo(revocationToken.getProductionDate()) < 0) && (RevocationReason.CERTIFICATE_HOLD != revocationToken.getReason())) {
 					foundUpdatedRevocationData = true;
 					break;
 				}

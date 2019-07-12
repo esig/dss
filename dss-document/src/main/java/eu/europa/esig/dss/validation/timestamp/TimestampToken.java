@@ -35,8 +35,11 @@ import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerId;
+import org.bouncycastle.cms.SignerInformation;
+import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.cms.SignerInformationVerifier;
 import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
+import org.bouncycastle.operator.OperatorException;
 import org.bouncycastle.tsp.TSPException;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.bouncycastle.tsp.TimeStampTokenInfo;
@@ -46,16 +49,17 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.CertificateRef;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DSSSecurityProvider;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.EncryptionAlgorithm;
-import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.enumerations.TimestampLocation;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.ArchiveTimestampType;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.TimestampLocation;
-import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.Token;
 
 /**
@@ -234,31 +238,68 @@ public class TimestampToken extends Token {
 
 		final X509CertificateHolder x509CertificateHolder = DSSASN1Utils.getX509CertificateHolder(candidate);
 		if (timeStamp.getSID().match(x509CertificateHolder)) {
-			try {
-				final JcaSimpleSignerInfoVerifierBuilder verifierBuilder = new JcaSimpleSignerInfoVerifierBuilder();
-				final SignerInformationVerifier verifier = verifierBuilder.build(candidate.getCertificate());
-				timeStamp.validate(verifier);
-				signatureValid = true;
+			SignerInformationVerifier signerInformationVerifier = getSignerInformationVerifier(candidate);
 
+			// Try firstly to validate as a Timestamp and if that fails try to validate the
+			// timestamp as a CMSSignedData
+			if (isValidTimestamp(signerInformationVerifier) || isValidCMSSignedData(signerInformationVerifier)) {
+				signatureValid = true;
 				this.tsaX500Principal = candidate.getSubjectX500Principal();
 				final String algorithm = candidate.getPublicKey().getAlgorithm();
 				final EncryptionAlgorithm encryptionAlgorithm = EncryptionAlgorithm.forName(algorithm);
 				final AlgorithmIdentifier hashAlgorithm = timeStamp.getTimeStampInfo().getHashAlgorithm();
 				final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(hashAlgorithm.getAlgorithm().getId());
 				signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
-
-			} catch (Exception e) {
+			} else {
 				signatureValid = false;
-				if (LOG.isDebugEnabled()) {
-					LOG.debug("Unable to validate timestamp token : ", e);
-				} else {
-					LOG.warn("Unable to validate timestamp token : {}", e.getMessage());
-				}
-				signatureInvalidityReason = e.getClass().getSimpleName() + " : " + e.getMessage();
 			}
+
 			return signatureValid;
 		}
 		return false;
+	}
+
+	private boolean isValidTimestamp(SignerInformationVerifier signerInformationVerifier) {
+		try {
+			// Validate the timestamp, the signing certificate,...
+			timeStamp.validate(signerInformationVerifier);
+			return true;
+		} catch (TSPException e) {
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("Unable to validate timestamp token : ", e);
+			} else {
+				LOG.warn("Unable to validate timestamp token : {}", e.getMessage());
+			}
+			signatureInvalidityReason = e.getClass().getSimpleName() + " : " + e.getMessage();
+			return false;
+		}
+	}
+
+	private boolean isValidCMSSignedData(SignerInformationVerifier signerInformationVerifier) {
+		try {
+			// Only validate the cryptographic validity
+			SignerInformationStore signerInfos = timeStamp.toCMSSignedData().getSignerInfos();
+			SignerInformation signerInformation = signerInfos.get(timeStamp.getSID());
+			return signerInformation.verify(signerInformationVerifier);
+		} catch (CMSException e) {
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("Unable to validate the related CMSSignedData : ", e);
+			} else {
+				LOG.warn("Unable to validate the related CMSSignedData : {}", e.getMessage());
+			}
+			signatureInvalidityReason = e.getClass().getSimpleName() + " : " + e.getMessage();
+			return false;
+		}
+	}
+
+	private SignerInformationVerifier getSignerInformationVerifier(final CertificateToken candidate) {
+		try {
+			final JcaSimpleSignerInfoVerifierBuilder verifier = new JcaSimpleSignerInfoVerifierBuilder();
+			verifier.setProvider(DSSSecurityProvider.getSecurityProviderName());
+			return verifier.build(candidate.getCertificate());
+		} catch (OperatorException e) {
+			throw new DSSException("Unable to build an instance of SignerInformationVerifier", e);
+		}
 	}
 
 	/**

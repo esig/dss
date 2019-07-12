@@ -37,9 +37,9 @@ import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Digest;
-import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.RevocationRef;
 
 /**
@@ -57,7 +57,7 @@ public class OCSPRef extends RevocationRef {
 	/**
 	 * The default constructor for OCSPRef.
 	 */
-	public OCSPRef(Digest digest, Date producedAt, ResponderId responderId, RevocationOrigin origin) {
+	public OCSPRef(Digest digest, Date producedAt, ResponderId responderId, RevocationRefOrigin origin) {
 		this.digest = digest;
 		this.producedAt = producedAt;
 		this.responderId = responderId;
@@ -67,7 +67,7 @@ public class OCSPRef extends RevocationRef {
 	/**
 	 * The default constructor for OCSPRef.
 	 */
-	public OCSPRef(final OcspResponsesID ocspResponsesID, RevocationOrigin origin) {
+	public OCSPRef(final OcspResponsesID ocspResponsesID, RevocationRefOrigin origin) {
 		final OtherHash otherHash = ocspResponsesID.getOcspRepHash();
 		if (otherHash != null) {
 			DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(otherHash.getHashAlgorithm().getAlgorithm().getId());

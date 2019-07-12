@@ -28,8 +28,8 @@ import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.client.tsp.OnlineTSPSource;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
 /**
  * How to initialize online TSP source.

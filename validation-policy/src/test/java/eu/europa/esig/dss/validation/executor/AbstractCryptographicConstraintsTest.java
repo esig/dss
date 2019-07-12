@@ -134,10 +134,6 @@ public abstract class AbstractCryptographicConstraintsTest extends AbstractValid
 	
 	protected SimpleReport createSimpleReport() {
 		Reports reports = createReports();
-		assertNotNull(reports.getXmlDiagnosticData());
-		assertNotNull(reports.getXmlDetailedReport());
-		assertNotNull(reports.getXmlSimpleReport());
-		assertNotNull(reports.getXmlValidationReport());
 		return reports.getSimpleReport();
 	}
 	

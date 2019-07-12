@@ -20,11 +20,10 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static eu.europa.esig.dss.SignatureLevel.XAdES_BASELINE_T;
-import static eu.europa.esig.dss.SignaturePackaging.ENVELOPED;
 import static eu.europa.esig.dss.XAdESNamespaces.XAdES;
 import static eu.europa.esig.dss.XAdESNamespaces.XAdES141;
-import static eu.europa.esig.dss.x509.TimestampType.SIGNATURE_TIMESTAMP;
+import static eu.europa.esig.dss.enumerations.SignatureLevel.XAdES_BASELINE_T;
+import static eu.europa.esig.dss.enumerations.SignaturePackaging.ENVELOPED;
 import static eu.europa.esig.dss.xades.ProfileParameters.Operation.SIGNING;
 import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
 
@@ -46,12 +45,13 @@ import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.TimestampParameters;
 import eu.europa.esig.dss.XAdESNamespaces;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.utils.Utils;
@@ -60,7 +60,6 @@ import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
-import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.ProfileParameters;
@@ -172,7 +171,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 			final byte[] canonicalisedValue = xadesSignature.getTimestampSource().getSignatureTimestampData(canonicalizationMethod);
 			final DigestAlgorithm timestampDigestAlgorithm = signatureTimestampParameters.getDigestAlgorithm();
 			final byte[] digestValue = DSSUtils.digest(timestampDigestAlgorithm, canonicalisedValue);
-			createXAdESTimeStampType(SIGNATURE_TIMESTAMP, canonicalizationMethod, digestValue);
+			createXAdESTimeStampType(TimestampType.SIGNATURE_TIMESTAMP, canonicalizationMethod, digestValue);
 			
 			unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelBUnsignedProperties);
 		}

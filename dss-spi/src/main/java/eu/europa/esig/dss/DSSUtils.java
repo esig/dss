@@ -38,6 +38,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
 import java.security.Security;
 import java.security.cert.CertificateFactory;
@@ -70,6 +71,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.client.http.DataLoader;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.identifier.TokenIdentifier;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -352,8 +354,16 @@ public final class DSSUtils {
 	 * @return digested array of bytes
 	 */
 	public static byte[] digest(final DigestAlgorithm digestAlgorithm, final byte[] data) {
-		final MessageDigest messageDigest = digestAlgorithm.getMessageDigest();
+		final MessageDigest messageDigest = getMessageDigest(digestAlgorithm);
 		return messageDigest.digest(data);
+	}
+
+	public static MessageDigest getMessageDigest(DigestAlgorithm digestAlgorithm) {
+		try {
+			return digestAlgorithm.getMessageDigest();
+		} catch (NoSuchAlgorithmException e) {
+			throw new DSSException("Unable to create a MessageDigest for algorithm " + digestAlgorithm, e);
+		}
 	}
 
 	/**
@@ -388,8 +398,7 @@ public final class DSSUtils {
 	 */
 	public static byte[] digest(final DigestAlgorithm digestAlgo, final InputStream inputStream) {
 		try {
-
-			final MessageDigest messageDigest = digestAlgo.getMessageDigest();
+			final MessageDigest messageDigest = getMessageDigest(digestAlgo);
 			final byte[] buffer = new byte[4096];
 			int count = 0;
 			while ((count = inputStream.read(buffer)) > 0) {
@@ -410,7 +419,7 @@ public final class DSSUtils {
 	}
 
 	public static byte[] digest(DigestAlgorithm digestAlgorithm, byte[]... data) {
-		final MessageDigest messageDigest = digestAlgorithm.getMessageDigest();
+		final MessageDigest messageDigest = getMessageDigest(digestAlgorithm);
 		for (final byte[] bytes : data) {
 			messageDigest.update(bytes);
 		}
@@ -797,71 +806,6 @@ public final class DSSUtils {
 		return joinedArray;
 	}
 
-	public static String getFinalFileName(DSSDocument originalFile, SigningOperation operation, SignatureLevel level, ASiCContainerType containerType) {
-		StringBuilder finalName = new StringBuilder();
-
-		String originalName = null;
-		if (containerType != null) {
-			originalName = "container";
-		} else {
-			originalName = originalFile.getName();
-		}
-
-		if (Utils.isStringNotEmpty(originalName)) {
-			int dotPosition = originalName.lastIndexOf('.');
-			if (dotPosition > 0) {
-				// remove extension
-				finalName.append(originalName.substring(0, dotPosition));
-			} else {
-				finalName.append(originalName);
-			}
-		} else {
-			finalName.append("document");
-		}
-
-		if (SigningOperation.SIGN.equals(operation)) {
-			finalName.append("-signed-");
-		} else if (SigningOperation.EXTEND.equals(operation)) {
-			finalName.append("-extended-");
-		}
-
-		finalName.append(Utils.lowerCase(level.name().replaceAll("_", "-")));
-		finalName.append('.');
-
-		if (containerType != null) {
-			switch (containerType) {
-			case ASiC_S:
-				finalName.append("asics");
-				break;
-			case ASiC_E:
-				finalName.append("asice");
-				break;
-			default:
-				break;
-			}
-		} else {
-			SignatureForm signatureForm = level.getSignatureForm();
-			switch (signatureForm) {
-			case XAdES:
-				finalName.append("xml");
-				break;
-			case CAdES:
-				finalName.append("pkcs7");
-				break;
-			case PAdES:
-				finalName.append("pdf");
-				break;
-			default:
-				break;
-			}
-		}
-
-		return finalName.toString();
-	}
-
-	public static String getFinalFileName(DSSDocument originalFile, SigningOperation operation, SignatureLevel level) {
-		return getFinalFileName(originalFile, operation, level, null);
-	}
 
 	public static String decodeUrl(String uri) {
 		try {

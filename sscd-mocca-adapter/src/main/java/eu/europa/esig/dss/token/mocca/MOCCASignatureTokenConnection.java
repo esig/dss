@@ -50,12 +50,12 @@ import at.gv.egiz.smcc.util.SmartCardIO;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.Digest;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.EncryptionAlgorithm;
-import eu.europa.esig.dss.MaskGenerationFunction;
-import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.PasswordInputCallback;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
@@ -194,7 +194,7 @@ public class MOCCASignatureTokenConnection implements SignatureTokenConnection {
 		try {
 
 			final KeyboxName keyboxName = moccaKey.getKeyboxName();
-			byte[] signedData = signatureCard.createSignature(inputStream, keyboxName, callback, signatureAlgorithm.getXMLId());
+			byte[] signedData = signatureCard.createSignature(inputStream, keyboxName, callback, signatureAlgorithm.getUri());
 			if (EncryptionAlgorithm.ECDSA.equals(encryptionAlgo)) {
 
 				signedData = encode(signedData);

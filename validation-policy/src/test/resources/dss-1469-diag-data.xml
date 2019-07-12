@@ -39,7 +39,7 @@
             </CertificateChain>
             <ContentType>1.2.840.113549.1.7.1</ContentType>
             <CommitmentTypeIndication/>
-            <ClaimedRoles/>
+            
             <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
             <FoundCertificates>
                 <RelatedCertificate Certificate="C-D90B40132306D1094608B1B9A2F6A9E23B45FE121FEF514A1C9DF70A815AD95C">
@@ -76,7 +76,7 @@
             <FoundRevocations>
                 <RelatedRevocation Revocation="R-F19DA13E95CC292BDD3138A6FAE8130E3E956AD636F97F1C7E8A73E9530CDB86">
                     <Type>CRL</Type>
-                    <Origin>INTERNAL_REVOCATION_VALUES</Origin>
+                    <Origin>REVOCATION_VALUES</Origin>
                     <RevocationRef>
                         <Origin>COMPLETE_REVOCATION_REFS</Origin>
                         <DigestAlgoAndValue>
@@ -87,7 +87,7 @@
                 </RelatedRevocation>
                 <RelatedRevocation Revocation="R-C8DB8054C56A548DAF0A81751C1E1D4709C3F1FF90C1D6927850FD5DD0F58428">
                     <Type>CRL</Type>
-                    <Origin>INTERNAL_TIMESTAMP_REVOCATION_VALUES</Origin>
+                    <Origin>TIMESTAMP_VALIDATION_DATA</Origin>
                     <RevocationRef>
                         <Origin>TIMESTAMP_REVOCATION_REFS</Origin>
                         <DigestAlgoAndValue>
@@ -108,6 +108,10 @@
                     <Description>Full document</Description>
                 </SignatureScope>
             </SignatureScopes>
+			<SignatureDigestReference>
+			    <DigestMethod>SHA256</DigestMethod>
+			    <DigestValue>TqwEvjTRvDv0LP+fSUch0FR8ddFcGOphUNLnA/SLcrg=</DigestValue>
+			</SignatureDigestReference>
             <SignatureValue>gXQo71DX8D9/EDoQ8fjf46+uuxw/ISxBqe/NBUy7BGg8sf4FbKiej20QZ5D9L7eccqHtz13PUeyLd2kfIfcAz6PuiI05rJUFSkOOOJJAQoQaEuPpsxbfKNprUO4iXAPCF2ZogUi10+zIAV4B1SpBsikvi/LmxTsqnaUS3U3k9eM/svIrKPnGttz2wGPoY1pyXD19kVoA5fbua1L+biANID7/ObmCRNtCYtrH0klHGfqt1Z7eJUdqUPo70C4Upo8rsQantYi96ufi6ZHrBic0NSX/VHykFLdwFT0dF8Cn9rO6PMLlBH0Xuy8r6maFi4cSVVk73EfZuxjhRgZMSex2iA==</SignatureValue>
         </Signature>
     </Signatures>

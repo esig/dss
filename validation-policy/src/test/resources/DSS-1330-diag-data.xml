@@ -38,7 +38,7 @@
             </CertificateChain>
             <ContentType>application/pdf</ContentType>
             <CommitmentTypeIndication/>
-            <ClaimedRoles/>
+            
             <FoundCertificates/>
             <FoundRevocations/>
 			<FoundTimestamps>
@@ -53,6 +53,10 @@
                     <Description>The document byte range: [0, 6418, 17102, 332]</Description>
                 </SignatureScope>
             </SignatureScopes>
+            <SignatureDigestReference>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>gA9gQJB0t3WbFb8B3lSm1TmtvcEQT+e6tDdDeaVnUQ8=</DigestValue>
+            </SignatureDigestReference>
         </Signature>
     </Signatures>
     <UsedCertificates>

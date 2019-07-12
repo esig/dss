@@ -21,12 +21,14 @@
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.KeyUsageBit;
+import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
@@ -44,14 +46,22 @@ public class KeyUsageCheck extends AbstractMultiValuesCheckItem<XmlSubXCV> {
 
 	@Override
 	protected boolean process() {
-		List<String> keyUsages = certificate.getKeyUsages();
-		return processValuesCheck(keyUsages);
+		List<KeyUsageBit> keyUsages = certificate.getKeyUsages();
+		List<String> kubStrings = toString(keyUsages);
+		return processValuesCheck(kubStrings);
+	}
+
+	private List<String> toString(List<KeyUsageBit> keyUsages) {
+		List<String> result = new ArrayList<String>();
+		for (KeyUsageBit keyUsageBit : keyUsages) {
+			result.add(keyUsageBit.getValue());
+		}
+		return result;
 	}
 
 	@Override
 	protected String getAdditionalInfo() {
-		Object[] params = new Object[] { Utils.joinStrings(certificate.getKeyUsages(), ", ") };
-		return MessageFormat.format(AdditionalInfo.KEY_USAGE, params);
+		return MessageFormat.format(AdditionalInfo.KEY_USAGE, Arrays.toString(certificate.getKeyUsages().toArray()));
 	}
 
 	@Override

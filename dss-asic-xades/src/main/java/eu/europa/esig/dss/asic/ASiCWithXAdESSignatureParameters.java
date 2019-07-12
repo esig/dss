@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.asic;
 
-import eu.europa.esig.dss.SignatureForm;
-import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignatureForm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 public class ASiCWithXAdESSignatureParameters extends XAdESSignatureParameters {

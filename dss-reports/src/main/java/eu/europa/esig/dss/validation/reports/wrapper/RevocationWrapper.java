@@ -22,16 +22,16 @@ package eu.europa.esig.dss.validation.reports.wrapper;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.RevocationType;
-import eu.europa.esig.dss.validation.XmlRevocationOrigin;
 
 /**
  * Revocation wrapper containing common revocation information
@@ -41,9 +41,7 @@ public class RevocationWrapper extends AbstractTokenProxy {
 	private final XmlRevocation revocation;
 
 	public RevocationWrapper(XmlRevocation revocation) {
-		if (revocation == null) {
-			throw new DSSException("XMLRevocation cannot be null!");
-		}
+		Objects.requireNonNull(revocation, "XMLRevocation cannot be null!");
 		this.revocation = revocation;
 	}
 
@@ -95,7 +93,7 @@ public class RevocationWrapper extends AbstractTokenProxy {
 		return Utils.isTrue(revocation.isCertHashExtensionMatch());
 	}
 
-	public XmlRevocationOrigin getOrigin() {
+	public RevocationOrigin getOrigin() {
 		return revocation.getOrigin();
 	}
 
@@ -116,7 +114,7 @@ public class RevocationWrapper extends AbstractTokenProxy {
 	 * @return true if the revocation origin is internal, false otherwise
 	 */
 	public boolean isInternalRevocationOrigin() {
-		XmlRevocationOrigin originType = getOrigin();
+		RevocationOrigin originType = getOrigin();
 		if (originType != null) {
 			return getOrigin().isInternalOrigin();
 		}

@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.validation.executor;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +28,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusionWithProofOfExistence;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlDetailedReport;
@@ -37,7 +36,6 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessBasicSignatures;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessLongTermData;
-import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.qualification.signature.SignatureQualificationBlock;
 import eu.europa.esig.dss.validation.process.vpfbs.ValidationProcessForBasicSignatures;
@@ -161,7 +159,7 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 			process(diagnosticData.getAllCounterSignatures(), Context.COUNTER_SIGNATURE, bbbs);
 			break;
 		default:
-			throw new DSSException("Unsupported validation level " + validationLevel);
+			throw new IllegalArgumentException("Unsupported validation level " + validationLevel);
 		}
 		return bbbs;
 	}

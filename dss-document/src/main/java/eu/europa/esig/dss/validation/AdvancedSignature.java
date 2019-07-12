@@ -27,12 +27,12 @@ import java.util.Set;
 
 import eu.europa.esig.dss.CertificateRef;
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.EncryptionAlgorithm;
-import eu.europa.esig.dss.MaskGenerationFunction;
-import eu.europa.esig.dss.SignatureAlgorithm;
-import eu.europa.esig.dss.SignatureForm;
-import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureForm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.identifier.SignatureIdentifier;
 import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
@@ -303,18 +303,25 @@ public interface AdvancedSignature extends Serializable {
 	String getContentHints();
 
 	/**
-	 * Returns the claimed role of the signer.
+	 * Returns the list of roles of the signer.
 	 *
-	 * @return array of the claimed roles as {@code String} array
+	 * @return list of the {@link SignerRole}s
 	 */
-	String[] getClaimedSignerRoles();
+	List<SignerRole> getSignerRoles();
 
 	/**
-	 * Returns the certified role of the signer.
+	 * Returns the claimed roles of the signer.
 	 *
-	 * @return array of the certified roles
+	 * @return list of the {@link SignerRole}s
 	 */
-	List<CertifiedRole> getCertifiedSignerRoles();
+	List<SignerRole> getClaimedSignerRoles();
+
+	/**
+	 * Returns the certified roles of the signer.
+	 *
+	 * @return list of the {@link SignerRole}s
+	 */
+	List<SignerRole> getCertifiedSignerRoles();
 
 	/**
 	 * Get certificates embedded in the signature
@@ -508,6 +515,15 @@ public interface AdvancedSignature extends Serializable {
 	 * @return a list with one or more {@code ReferenceValidation}
 	 */
 	List<ReferenceValidation> getReferenceValidations();
+	
+	/**
+	 * Returns a signature reference element as defined in TS 119 442 - V1.1.1 - 
+	 * Electronic Signatures and Infrastructures (ESI), ch. 5.1.4.2.1.3 XML component
+	 * 
+	 * @param digestAlgorithm {@link DigestAlgorithm} to use
+	 * @return {@link SignatureDigestReference}
+	 */
+	SignatureDigestReference getSignatureDigestReference(DigestAlgorithm digestAlgorithm);
 	
 	// ------------------------ TS 119 102-2 Specifics
 

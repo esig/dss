@@ -24,6 +24,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+
 public class EncryptionAlgorithmTest {
 
 	@Test
@@ -31,7 +33,7 @@ public class EncryptionAlgorithmTest {
 		assertEquals(EncryptionAlgorithm.RSA, EncryptionAlgorithm.forName(EncryptionAlgorithm.RSA.getName()));
 	}
 
-	@Test(expected = DSSException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void forNameException() {
 		EncryptionAlgorithm.forName("aaa");
 	}
@@ -52,7 +54,7 @@ public class EncryptionAlgorithmTest {
 		assertEquals(EncryptionAlgorithm.RSA, EncryptionAlgorithm.forOID(EncryptionAlgorithm.RSA.getOid()));
 	}
 
-	@Test(expected = DSSException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void forOIDException() {
 		EncryptionAlgorithm.forOID("aaa");
 	}

@@ -22,15 +22,18 @@ package eu.europa.esig.dss.validation.process.bbb.cv;
 
 import java.util.List;
 
+import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlCV;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.AllFilesSignedCheck;
+import eu.europa.esig.dss.validation.process.bbb.cv.checks.ManifestEntryExistenceCheck;
+import eu.europa.esig.dss.validation.process.bbb.cv.checks.ManifestEntryIntactCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataExistenceCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataIntactCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.SignatureIntactCheck;
@@ -77,28 +80,42 @@ public class CryptographicVerification extends Chain<XmlCV> {
 		 */
 
 		List<XmlDigestMatcher> digestMatchers = token.getDigestMatchers();
+		
 		if (Utils.isCollectionNotEmpty(digestMatchers)) {
 			for (XmlDigestMatcher digestMatcher : digestMatchers) {
-
-				/*
-				 * 1) The building block shall obtain the signed data object(s) if not provided
-				 * in the inputs (e.g. by dereferencing an URI present in the signature). If the
-				 * signed data object(s) cannot be obtained, the building block shall return the
-				 * indication INDETERMINATE with the sub-indication SIGNED_DATA_NOT_FOUND.
-				 */
-				ChainItem<XmlCV> referenceDataFound = referenceDataFound(digestMatcher);
-				if (item == null) {
-					firstItem = item = referenceDataFound;
+				if (!DigestMatcherType.MANIFEST_ENTRY.equals(digestMatcher.getType())) {
+					/*
+					 * 1) The building block shall obtain the signed data object(s) if not provided
+					 * in the inputs (e.g. by dereferencing an URI present in the signature). If the
+					 * signed data object(s) cannot be obtained, the building block shall return the
+					 * indication INDETERMINATE with the sub-indication SIGNED_DATA_NOT_FOUND.
+					 */
+					ChainItem<XmlCV> referenceDataFound = referenceDataFound(digestMatcher);
+					if (item == null) {
+						firstItem = item = referenceDataFound;
+					} else {
+						item = item.setNextItem(referenceDataFound);
+					}
+					/*
+					 * 2) The SVA shall check the integrity of the signed data objects. In case of
+					 * failure, the building block shall return the indication FAILED with the
+					 * sub-indication HASH_FAILURE.
+					 */
+					item = item.setNextItem(referenceDataIntact(digestMatcher));
+					
 				} else {
-					item = item.setNextItem(referenceDataFound);
+					/* 
+					 * Check if reference data found and intact for ManifestEntries
+					 * as specified in validation policy
+					 */
+					ChainItem<XmlCV> manifestEntryFound = manifestEntryFound(digestMatcher);
+					if (item == null) {
+						firstItem = item = manifestEntryFound;
+					} else {
+						item = item.setNextItem(manifestEntryFound);
+					}
+					item = item.setNextItem(manifestEntryIntact(digestMatcher));
 				}
-
-				/*
-				 * 2) The SVA shall check the integrity of the signed data objects. In case of
-				 * failure, the building block shall return the indication FAILED with the
-				 * sub-indication HASH_FAILURE.
-				 */
-				item = item.setNextItem(referenceDataIntact(digestMatcher));
 			}
 		}
 
@@ -132,6 +149,16 @@ public class CryptographicVerification extends Chain<XmlCV> {
 	private ChainItem<XmlCV> referenceDataIntact(XmlDigestMatcher digestMatcher) {
 		LevelConstraint constraint = validationPolicy.getReferenceDataIntactConstraint(context);
 		return new ReferenceDataIntactCheck(result, digestMatcher, constraint);
+	}
+
+	private ChainItem<XmlCV> manifestEntryFound(XmlDigestMatcher digestMatcher) {
+		LevelConstraint constraint = validationPolicy.getManifestEntryObjectExistenceConstraint(context);
+		return new ManifestEntryExistenceCheck(result, digestMatcher, constraint);
+	}
+
+	private ChainItem<XmlCV> manifestEntryIntact(XmlDigestMatcher digestMatcher) {
+		LevelConstraint constraint = validationPolicy.getManifestEntryObjectIntactConstraint(context);
+		return new ManifestEntryIntactCheck(result, digestMatcher, constraint);
 	}
 
 	private ChainItem<XmlCV> signatureIntact() {
