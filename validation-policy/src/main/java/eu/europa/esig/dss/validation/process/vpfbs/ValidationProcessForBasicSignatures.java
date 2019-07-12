@@ -22,8 +22,8 @@ package eu.europa.esig.dss.validation.process.vpfbs;
 
 import java.util.Map;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessBasicSignatures;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicSignatures;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;

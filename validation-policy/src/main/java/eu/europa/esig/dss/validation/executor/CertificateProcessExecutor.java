@@ -23,7 +23,7 @@ package eu.europa.esig.dss.validation.executor;
 import java.util.Date;
 import java.util.Objects;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlDetailedReport;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSimpleCertificateReport;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
@@ -83,7 +83,7 @@ public class CertificateProcessExecutor implements ProcessExecutor<CertificateRe
 		XmlDetailedReport detailedReport = detailedReportBuilder.build();
 
 		SimpleReportForCertificateBuilder simpleReportBuilder = new SimpleReportForCertificateBuilder(diagnosticData,
-				new eu.europa.esig.dss.validation.reports.DetailedReport(detailedReport), currentTime, certificateId);
+				new eu.europa.esig.dss.detailedreport.DetailedReport(detailedReport), currentTime, certificateId);
 		XmlSimpleCertificateReport simpleReport = simpleReportBuilder.build();
 
 		return new CertificateReports(jaxbDiagnosticData, detailedReport, simpleReport);

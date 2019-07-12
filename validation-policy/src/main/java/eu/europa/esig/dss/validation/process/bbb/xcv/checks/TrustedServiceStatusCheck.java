@@ -24,10 +24,10 @@ import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.MessageTag;

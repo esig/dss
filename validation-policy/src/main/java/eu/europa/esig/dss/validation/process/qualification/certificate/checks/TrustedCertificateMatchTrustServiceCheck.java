@@ -23,9 +23,9 @@ package eu.europa.esig.dss.validation.process.qualification.certificate.checks;
 import java.util.Arrays;
 import java.util.List;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;

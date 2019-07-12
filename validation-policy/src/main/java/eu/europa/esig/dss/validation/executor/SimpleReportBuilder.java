@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation.executor;
 import java.util.Date;
 import java.util.List;
 
+import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificate;
@@ -34,7 +35,6 @@ import eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
-import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;

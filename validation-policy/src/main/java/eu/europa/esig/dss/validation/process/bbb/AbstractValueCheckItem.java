@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.bbb;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.jaxb.policy.LevelConstraint;

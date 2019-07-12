@@ -26,10 +26,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.enumerations.Context;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlDetailedReport;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlTLAnalysis;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;

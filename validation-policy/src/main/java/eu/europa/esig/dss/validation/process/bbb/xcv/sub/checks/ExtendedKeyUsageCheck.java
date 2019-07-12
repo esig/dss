@@ -25,9 +25,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlOID;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.MessageTag;

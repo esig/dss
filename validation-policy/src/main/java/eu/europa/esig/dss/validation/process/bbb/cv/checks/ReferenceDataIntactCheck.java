@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.cv.checks;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlCV;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;

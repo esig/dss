@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.vci.checks;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlVCI;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignaturePolicyType;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlVCI;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;

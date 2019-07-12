@@ -2,9 +2,9 @@ package eu.europa.esig.dss.validation.process.bbb.sav;
 
 import java.util.Date;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;

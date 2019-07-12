@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.jaxb.detailedreport;
+package eu.europa.esig.dss.detailedreport;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +15,7 @@ import javax.xml.validation.SchemaFactory;
 
 import org.xml.sax.SAXException;
 
+import eu.europa.esig.dss.detailedreport.jaxb.ObjectFactory;
 import eu.europa.esig.dss.jaxb.parsers.XmlDefinerUtils;
 
 public final class DetailedReportXmlDefiner {

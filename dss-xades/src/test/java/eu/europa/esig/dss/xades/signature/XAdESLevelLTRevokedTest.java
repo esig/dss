@@ -30,13 +30,13 @@ import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.detailedreport.DetailedReport;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlRevocationInformation;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlRevocationInformation;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.jaxb.validationreport.RevocationStatusInformationType;
 import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;

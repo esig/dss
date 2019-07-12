@@ -22,10 +22,10 @@ package eu.europa.esig.dss.validation.process.bbb.xcv.sub;
 
 import java.util.Date;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlRevocationInformation;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.enumerations.Context;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlRevocationInformation;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.validation.policy.SubContext;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.Chain;

@@ -26,13 +26,13 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.jaxb.policy.Level;
 import eu.europa.esig.jaxb.policy.LevelConstraint;

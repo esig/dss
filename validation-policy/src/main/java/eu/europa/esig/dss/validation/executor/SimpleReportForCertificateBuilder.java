@@ -26,7 +26,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
+import eu.europa.esig.dss.detailedreport.DetailedReport;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlOID;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedService;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProvider;
@@ -36,7 +37,6 @@ import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSimpleCertificateRepor
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSubject;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlTrustAnchor;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateRevocationWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;

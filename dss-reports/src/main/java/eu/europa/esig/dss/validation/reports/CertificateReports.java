@@ -26,7 +26,7 @@ import javax.xml.bind.JAXBException;
 
 import org.xml.sax.SAXException;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlDetailedReport;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
 import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport;
 import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReportFacade;

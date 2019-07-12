@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.checks;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;

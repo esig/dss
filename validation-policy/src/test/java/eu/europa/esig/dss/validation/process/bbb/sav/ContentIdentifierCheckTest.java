@@ -26,9 +26,9 @@ import java.util.List;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentIdentifierCheck;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;

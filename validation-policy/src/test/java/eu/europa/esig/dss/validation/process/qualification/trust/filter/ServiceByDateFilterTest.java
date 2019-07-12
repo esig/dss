@@ -31,7 +31,6 @@ import javax.xml.bind.DatatypeConverter;
 import org.junit.Test;
 
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.process.qualification.trust.filter.ServiceByDateFilter;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
 public class ServiceByDateFilterTest {

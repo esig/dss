@@ -23,10 +23,10 @@ package eu.europa.esig.dss.validation.process.bbb.cv.checks;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlCV;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlContainerInfo;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlManifestFile;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;

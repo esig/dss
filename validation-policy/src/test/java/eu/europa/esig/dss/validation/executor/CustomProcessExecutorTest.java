@@ -40,17 +40,18 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.detailedreport.DetailedReport;
+import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCryptographicInformation;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.jaxb.detailedreport.DetailedReportFacade;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlCryptographicInformation;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlDetailedReport;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPDFSignatureDictionary;
@@ -60,7 +61,6 @@ import eu.europa.esig.dss.simplereport.jaxb.XmlSignature;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.validation.process.MessageTag;
-import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.jaxb.policy.Algo;
@@ -1716,8 +1716,8 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	private void validateBestSigningTimes(Reports reports) {
 		XmlDetailedReport detailedReportJaxb = reports.getDetailedReportJaxb();
-		List<eu.europa.esig.dss.jaxb.detailedreport.XmlSignature> xmlSignatures = detailedReportJaxb.getSignatures();
-		for (eu.europa.esig.dss.jaxb.detailedreport.XmlSignature xmlSignature : xmlSignatures) {
+		List<eu.europa.esig.dss.detailedreport.jaxb.XmlSignature> xmlSignatures = detailedReportJaxb.getSignatures();
+		for (eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature : xmlSignatures) {
 			assertNotNull(xmlSignature.getValidationProcessBasicSignatures().getProofOfExistence());
 			assertNotNull(xmlSignature.getValidationProcessLongTermData().getProofOfExistence());
 			assertNotNull(xmlSignature.getValidationProcessArchivalData().getProofOfExistence());

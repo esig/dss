@@ -25,8 +25,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamps;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;

@@ -27,9 +27,9 @@ import java.util.List;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataFreshCheckWithNullConstraint;
 import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;

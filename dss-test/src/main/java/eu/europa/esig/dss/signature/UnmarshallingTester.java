@@ -7,7 +7,7 @@ import static org.junit.Assert.fail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.jaxb.detailedreport.DetailedReportFacade;
+import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.simplereport.SimpleReportFacade;
 import eu.europa.esig.dss.utils.Utils;

@@ -24,13 +24,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlPCV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlPCV;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlPSV;
 import eu.europa.esig.dss.validation.policy.SubContext;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;

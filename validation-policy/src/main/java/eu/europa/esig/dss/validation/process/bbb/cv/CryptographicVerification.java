@@ -22,9 +22,9 @@ package eu.europa.esig.dss.validation.process.bbb.cv;
 
 import java.util.List;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlCV;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;

@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.ValidationTime;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;

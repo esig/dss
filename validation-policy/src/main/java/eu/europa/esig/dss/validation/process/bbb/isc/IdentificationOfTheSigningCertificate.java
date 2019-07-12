@@ -22,11 +22,11 @@ package eu.europa.esig.dss.validation.process.bbb.isc;
 
 import java.util.List;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCertificateChain;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlChainItem;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.Context;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlCertificateChain;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlChainItem;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlISC;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.Chain;

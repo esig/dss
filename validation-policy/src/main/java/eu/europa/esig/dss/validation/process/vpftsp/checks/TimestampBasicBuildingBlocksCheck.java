@@ -20,15 +20,15 @@
  */
 package eu.europa.esig.dss.validation.process.vpftsp.checks;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamps;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlCV;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlISC;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.jaxb.policy.LevelConstraint;

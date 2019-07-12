@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlProofOfExistence;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlProofOfExistence;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedObject;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateRevocationWrapper;

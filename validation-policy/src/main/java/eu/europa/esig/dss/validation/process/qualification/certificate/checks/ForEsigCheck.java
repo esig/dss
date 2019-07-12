@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.ValidationTime;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.process.qualification.certificate.Type;

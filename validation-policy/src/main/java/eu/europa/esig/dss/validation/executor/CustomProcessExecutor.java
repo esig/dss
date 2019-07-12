@@ -23,11 +23,11 @@ package eu.europa.esig.dss.validation.executor;
 import java.util.Date;
 import java.util.Objects;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlDetailedReport;
+import eu.europa.esig.dss.detailedreport.DetailedReport;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
-import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.jaxb.validationreport.ValidationReportType;

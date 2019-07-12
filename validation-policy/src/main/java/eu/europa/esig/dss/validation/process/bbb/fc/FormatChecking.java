@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.fc;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.enumerations.Context;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlFC;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.Chain;

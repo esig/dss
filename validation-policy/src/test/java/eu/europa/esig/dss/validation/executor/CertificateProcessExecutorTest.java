@@ -30,13 +30,13 @@ import java.util.List;
 
 import org.junit.Test;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCertificate;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlCertificate;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlDetailedReport;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlChainItem;

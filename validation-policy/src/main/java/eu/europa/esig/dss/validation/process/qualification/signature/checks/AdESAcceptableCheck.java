@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.signature.checks;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationSignatureQualification;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationSignatureQualification;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.jaxb.policy.LevelConstraint;

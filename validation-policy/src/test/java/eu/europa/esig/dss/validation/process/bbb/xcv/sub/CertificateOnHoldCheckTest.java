@@ -29,10 +29,10 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.junit.Test;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.enumerations.RevocationReason;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateOnHoldCheck;

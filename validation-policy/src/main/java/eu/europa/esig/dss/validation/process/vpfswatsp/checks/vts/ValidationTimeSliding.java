@@ -25,11 +25,11 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlVTS;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlVTS;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.SubContext;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;

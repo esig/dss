@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.reports;
+package eu.europa.esig.dss.detailedreport;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,28 +27,27 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCertificate;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlChainItem;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlProofOfExistence;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamps;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationSignatureQualification;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.ValidationTime;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlCertificate;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlChainItem;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlDetailedReport;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlProofOfExistence;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationCertificateQualification;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationSignatureQualification;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
-import eu.europa.esig.dss.utils.Utils;
 
 /**
  * This class represents the detailed report built during the validation process. It contains information on each
@@ -107,7 +106,7 @@ public class DetailedReport {
 		XmlBasicBuildingBlocks bbb = getBasicBuildingBlockById(tokenId);
 		if (bbb != null) {
 			List<XmlChainItem> chainItems = bbb.getCertificateChain().getChainItem();
-			if (Utils.isCollectionNotEmpty(chainItems)) {
+			if (chainItems != null) {
 				for (XmlChainItem chainItem : chainItems) {
 					certIds.add(chainItem.getId());
 				}
@@ -125,9 +124,9 @@ public class DetailedReport {
 	 */
 	public XmlBasicBuildingBlocks getBasicBuildingBlockById(String tokenId) {
 		List<XmlBasicBuildingBlocks> basicBuildingBlocks = jaxbDetailedReport.getBasicBuildingBlocks();
-		if (Utils.isCollectionNotEmpty(basicBuildingBlocks)) {
+		if (basicBuildingBlocks != null) {
 			for (XmlBasicBuildingBlocks xmlBasicBuildingBlocks : basicBuildingBlocks) {
-				if (Utils.areStringsEqual(xmlBasicBuildingBlocks.getId(), tokenId)) {
+				if (tokenId.equals(xmlBasicBuildingBlocks.getId())) {
 					return xmlBasicBuildingBlocks;
 				}
 			}
@@ -153,7 +152,7 @@ public class DetailedReport {
 	 */
 	public String getBasicBuildingBlocksSignatureId(final int index) {
 		List<XmlBasicBuildingBlocks> bbbs = jaxbDetailedReport.getBasicBuildingBlocks();
-		if (Utils.collectionSize(bbbs) >= index) {
+		if (bbbs != null && (bbbs.size() >= index)) {
 			XmlBasicBuildingBlocks bbb = jaxbDetailedReport.getBasicBuildingBlocks().get(index);
 			if (bbb != null) {
 				return bbb.getId();
@@ -308,9 +307,9 @@ public class DetailedReport {
 
 	public XmlSignature getXmlSignatureById(String signatureId) {
 		List<XmlSignature> signatures = jaxbDetailedReport.getSignatures();
-		if (Utils.isCollectionNotEmpty(signatures)) {
+		if (signatures != null) {
 			for (XmlSignature xmlSignature : signatures) {
-				if (Utils.areStringsEqual(signatureId, xmlSignature.getId())) {
+				if (signatureId.equals(xmlSignature.getId())) {
 					return xmlSignature;
 				}
 			}
@@ -320,12 +319,12 @@ public class DetailedReport {
 
 	private XmlValidationProcessTimestamps getTimestampValidationById(String timestampId) {
 		List<XmlSignature> signatures = jaxbDetailedReport.getSignatures();
-		if (Utils.isCollectionNotEmpty(signatures)) {
+		if (signatures != null) {
 			for (XmlSignature xmlSignature : signatures) {
 				List<XmlValidationProcessTimestamps> validationTimestamps = xmlSignature.getValidationProcessTimestamps();
-				if (Utils.isCollectionNotEmpty(validationTimestamps)) {
+				if (validationTimestamps != null) {
 					for (XmlValidationProcessTimestamps tspValidation : validationTimestamps) {
-						if (Utils.areStringsEqual(tspValidation.getId(), timestampId)) {
+						if (timestampId.equals(tspValidation.getId())) {
 							return tspValidation;
 						}
 					}
@@ -351,7 +350,7 @@ public class DetailedReport {
 		XmlCertificate certificate = jaxbDetailedReport.getCertificate();
 		if (certificate != null) {
 			List<XmlValidationCertificateQualification> validationCertificateQualifications = certificate.getValidationCertificateQualification();
-			if (Utils.isCollectionNotEmpty(validationCertificateQualifications)) {
+			if (validationCertificateQualifications != null) {
 				for (XmlValidationCertificateQualification validationCertificateQualification : validationCertificateQualifications) {
 					if (validationTime == validationCertificateQualification.getValidationTime()) {
 						return validationCertificateQualification.getCertificateQualification();
@@ -372,7 +371,7 @@ public class DetailedReport {
 			if (xcv != null) {
 				List<XmlSubXCV> subXCV = xcv.getSubXCV();
 				for (XmlSubXCV xmlSubXCV : subXCV) {
-					if (Utils.areStringsEqual(certificateId, xmlSubXCV.getId())) {
+					if (certificateId.equals(xmlSubXCV.getId())) {
 						return xmlSubXCV.getConclusion();
 					}
 				}
@@ -455,15 +454,16 @@ public class DetailedReport {
 	}
 
 	private void collect(MessageType type, Set<String> result, XmlConstraintsConclusion constraintConclusion) {
-		if (constraintConclusion != null && Utils.isCollectionNotEmpty(constraintConclusion.getConstraint())) {
+		if (constraintConclusion != null && constraintConclusion.getConstraint() != null) {
 			for (XmlConstraint constraint : constraintConclusion.getConstraint()) {
 				XmlName message = getMessage(type, constraint);
 				if (message != null) {
 					result.add(message.getValue());
 				}
 
-				if (Utils.isStringNotBlank(constraint.getId())) {
-					collect(type, result, getBasicBuildingBlockById(constraint.getId()));
+				String constraintId = constraint.getId();
+				if (constraintId != null && !constraintId.isEmpty()) {
+					collect(type, result, getBasicBuildingBlockById(constraintId));
 				}
 			}
 		}
@@ -479,7 +479,7 @@ public class DetailedReport {
 			if (xcv != null) {
 				collect(type, result, xcv);
 				List<XmlSubXCV> subXCV = xcv.getSubXCV();
-				if (Utils.isCollectionNotEmpty(subXCV)) {
+				if (subXCV != null) {
 					for (XmlSubXCV xmlSubXCV : subXCV) {
 						collect(type, result, xmlSubXCV);
 					}
@@ -517,7 +517,7 @@ public class DetailedReport {
 			XmlXCV xcv = basicBuildingBlocks.getXCV();
 			if (xcv != null) {
 				List<XmlSubXCV> subXCVs = xcv.getSubXCV();
-				if (Utils.isCollectionNotEmpty(subXCVs)) {
+				if (subXCVs != null && subXCVs.size() > 0) {
 					return subXCVs.get(0);
 				}
 			}

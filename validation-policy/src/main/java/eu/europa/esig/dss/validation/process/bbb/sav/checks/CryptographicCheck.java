@@ -25,7 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.MessageTag;

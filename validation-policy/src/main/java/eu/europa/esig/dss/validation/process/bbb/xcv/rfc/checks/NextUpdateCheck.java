@@ -22,9 +22,9 @@ package eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks;
 
 import java.util.Date;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;

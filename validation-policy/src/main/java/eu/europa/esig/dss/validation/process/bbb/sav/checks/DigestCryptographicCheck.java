@@ -2,8 +2,8 @@ package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 
 import java.util.Date;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 
 public class DigestCryptographicCheck extends AbstractCryptographicCheck<XmlSAV> {
