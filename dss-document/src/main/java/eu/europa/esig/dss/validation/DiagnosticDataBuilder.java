@@ -1031,11 +1031,17 @@ public class DiagnosticDataBuilder {
 		foundRevocations.getRelatedRevocations().addAll(getXmlRelatedRevocations(signature));
 
 		List<EncapsulatedRevocationTokenIdentifier> orphanRevocations = getOrphanRevocations(signature);
+		
 		if (Utils.isCollectionNotEmpty(orphanRevocations)) {
 			foundRevocations.getOrphanRevocations().addAll(getXmlOrphanRevocations(orphanRevocations, signature));
 		}
+		
+		List<RevocationRef> orphanRevocationRefs = signature.getOrphanRevocationRefs();
+		for (List<RevocationRef> assignedRevocationRefs : revocationRefsMap.values()) {
+			orphanRevocationRefs.removeAll(assignedRevocationRefs);
+		} 
 
-		for (RevocationRef leftRevocationRef : signature.getOrphanRevocationRefs()) {
+		for (RevocationRef leftRevocationRef : orphanRevocationRefs) {
 			XmlOrphanRevocation revocationFromRef = createOrphanRevocationFromRef(leftRevocationRef);
 			foundRevocations.getOrphanRevocations().add(revocationFromRef);
 		}
@@ -1345,14 +1351,26 @@ public class DiagnosticDataBuilder {
 				sigRef.setToken(xmlSignatures.get(objectId));
 				return sigRef;
 			case CERTIFICATE:
-				if (!isUsedToken(objectId, usedCertificates))
-					break;
+				if (!isUsedToken(objectId, usedCertificates)) {
+					String relatedCertificateId = getRelatedCertificateId(objectId);
+					if (relatedCertificateId != null && isUsedToken(relatedCertificateId, usedCertificates)) {
+						objectId = relatedCertificateId;
+					} else {
+						break;
+					}
+				}
 				XmlTimestampedCertificate certRef = new XmlTimestampedCertificate();
 				certRef.setToken(xmlCerts.get(objectId));
 				return certRef;
 			case REVOCATION:
-				if (!isUsedToken(objectId, usedRevocations))
-					break;
+				if (!isUsedToken(objectId, usedRevocations)) {
+					String relatedRevocationId = getRelatedRevocationId(objectId);
+					if (relatedRevocationId != null && isUsedToken(relatedRevocationId, usedRevocations)) {
+						objectId = relatedRevocationId;
+					} else {
+						break;
+					}
+				}
 				XmlTimestampedRevocationData revocRef = new XmlTimestampedRevocationData();
 				revocRef.setToken(xmlRevocations.get(objectId));
 				return revocRef;
@@ -1379,6 +1397,28 @@ public class DiagnosticDataBuilder {
 			}
 		}
 		return false;
+	}
+	
+	private String getRelatedCertificateId(String orphanCertId) {
+		for (Map.Entry<String, List<CertificateRef>> entry : certificateRefsMap.entrySet()) {
+			for (CertificateRef certificateRef : entry.getValue()) {
+				if (certificateRef.getDSSIdAsString().equals(orphanCertId)) {
+					return entry.getKey();
+				}
+			}
+		}
+		return null;
+	}
+	
+	private String getRelatedRevocationId(String orphanRevocationId) {
+		for (Map.Entry<String, List<RevocationRef>> entry : revocationRefsMap.entrySet()) {
+			for (RevocationRef revocationRef : entry.getValue()) {
+				if (revocationRef.getDSSIdAsString().equals(orphanRevocationId)) {
+					return entry.getKey();
+				}
+			}
+		}
+		return null;
 	}
 
 	private XmlBasicSignature getXmlBasicSignature(final Token token) {
