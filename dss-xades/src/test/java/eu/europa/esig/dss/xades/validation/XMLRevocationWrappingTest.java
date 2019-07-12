@@ -147,7 +147,7 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 			assertNotNull(revocationRef.getDigestAlgoAndValue());
 			assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestMethod());
 			assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestValue());
-			assertNotNull(revocationRef.getOrigin());
+			assertNotNull(revocationRef.getOrigins());
 			if (revocationRef.getProducedAt() != null) {
 				assertTrue(Utils.isStringNotEmpty(revocationRef.getResponderIdName()) || Utils.isArrayNotEmpty(revocationRef.getResponderIdKey()));
 				ocspResponses++;
@@ -192,7 +192,7 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 		assertEquals(1, signature.getFoundRevocationRefsByOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS).size());
 		assertEquals(0, signature.getFoundRevocationRefsByOrigin(RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS).size());
 		XmlRevocationRef revocationRef = signature.getRelatedRevocations().get(0).getRevocationRefs().get(0);
-		assertNotNull(revocationRef.getOrigin());
+		assertNotNull(revocationRef.getOrigins());
 		assertNotNull(revocationRef.getDigestAlgoAndValue());
 		assertNotNull(revocationRef.getProducedAt());
 		assertNotNull(revocationRef.getResponderIdKey());

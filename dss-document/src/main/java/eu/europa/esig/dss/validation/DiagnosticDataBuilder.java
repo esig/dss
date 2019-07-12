@@ -1106,7 +1106,7 @@ public class DiagnosticDataBuilder {
 	
 	private XmlRevocationRef getXmlCRLRevocationRef(CRLRef crlRef) {
 		XmlRevocationRef xmlRevocationRef = new XmlRevocationRef();
-		xmlRevocationRef.setOrigin(crlRef.getOrigin());
+		xmlRevocationRef.getOrigins().addAll(crlRef.getOrigins());
 		if (crlRef.getDigest() != null) {
 			xmlRevocationRef.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(crlRef.getDigest()));
 		}
@@ -1115,7 +1115,7 @@ public class DiagnosticDataBuilder {
 	
 	private XmlRevocationRef getXmlOCSPRevocationRef(OCSPRef ocspRef) {
 		XmlRevocationRef xmlRevocationRef = new XmlRevocationRef();
-		xmlRevocationRef.setOrigin(ocspRef.getOrigin());
+		xmlRevocationRef.getOrigins().addAll(ocspRef.getOrigins());
 		if (ocspRef.getDigest() != null) {
 			xmlRevocationRef.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(ocspRef.getDigest()));
 		}

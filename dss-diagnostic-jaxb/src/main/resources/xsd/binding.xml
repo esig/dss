@@ -164,6 +164,9 @@
   	<jaxb:bindings node="//xs:complexType[@name='FoundRevocation']//xs:element[@name='RevocationRef']">
 		<jaxb:property name="RevocationRefs" />
 	</jaxb:bindings>
+  	<jaxb:bindings node="//xs:complexType[@name='RevocationRef']//xs:element[@name='Origin']">
+		<jaxb:property name="Origins" />
+	</jaxb:bindings>
 		
  	<jaxb:bindings node="//xs:complexType[@name='Signature']//xs:element[@name='Parent']">
         <jaxb:property>

@@ -598,7 +598,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	public List<XmlRevocationRef> getFoundRevocationRefsByOrigin(RevocationRefOrigin origin) {
 		List<XmlRevocationRef> revocationRefs = new ArrayList<XmlRevocationRef>();
 		for (XmlRevocationRef ref : getAllFoundRevocationRefs()) {
-			if (ref.getOrigin().equals(origin)) {
+			if (ref.getOrigins().contains(origin)) {
 				revocationRefs.add(ref);
 			}
 		}

@@ -25,7 +25,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Objects;
+import java.util.HashSet;
 
 import org.bouncycastle.asn1.esf.OcspResponsesID;
 import org.bouncycastle.asn1.esf.OtherHash;
@@ -61,7 +61,7 @@ public class OCSPRef extends RevocationRef {
 		this.digest = digest;
 		this.producedAt = producedAt;
 		this.responderId = responderId;
-		this.origin = origin;
+		this.origins = new HashSet<RevocationRefOrigin>(Arrays.asList(origin));
 	}
 
 	/**
@@ -88,8 +88,7 @@ public class OCSPRef extends RevocationRef {
 		if (Utils.isArrayNotEmpty(key)) {
 			this.responderId.setKey(key);
 		}
-		
-		this.origin = origin;
+		this.origins = new HashSet<RevocationRefOrigin>(Arrays.asList(origin));
 	}
 	
 	public Date getProducedAt() {
@@ -144,7 +143,7 @@ public class OCSPRef extends RevocationRef {
 			return false;
 		}
 		OCSPRef o = (OCSPRef) obj;
-		if (!producedAt.equals(o.producedAt) || !origin.equals(o.getOrigin()) ||
+		if (!producedAt.equals(o.producedAt) ||
 				responderId.getName() != null && !responderId.getName().equals(o.getResponderId().getName()) ||
 				responderId.getKey() != null && !Arrays.equals(responderId.getKey(), o.getResponderId().getKey()) ||
 				digest != null && !digest.equals(o.getDigest())) {
@@ -155,7 +154,13 @@ public class OCSPRef extends RevocationRef {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(producedAt, responderId.getName(), responderId.getKey(), digest, origin);
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((digest == null) ? 0 : digest.hashCode());
+		result = prime * result + ((producedAt == null) ? 0 : producedAt.hashCode());
+		result = prime * result + ((responderId.getName() == null) ? 0 : responderId.getName().hashCode());
+		result = prime * result + ((responderId.getKey() == null) ? 0 : responderId.getKey().hashCode());
+		return result;
 	}
 	
 }

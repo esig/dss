@@ -30,9 +30,7 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	private List<CRLToken> vriDictionaryCRLs = new ArrayList<CRLToken>();
 	private List<CRLToken> timestampRevocationValuesCRLs = new ArrayList<CRLToken>();
 	
-	private List<CRLRef> completeRevocationRefsCRLs = new ArrayList<CRLRef>();
-	private List<CRLRef> attributeRevocationRefsCRLs = new ArrayList<CRLRef>();
-	private List<CRLRef> timestampRevocationRefsCRLs = new ArrayList<CRLRef>();
+	private List<CRLRef> crlRefs = new ArrayList<CRLRef>();
 	
 	private List<CRLRef> orphanRevocationRefsCRLs;
 	
@@ -72,15 +70,25 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	}
 
 	public List<CRLRef> getCompleteRevocationRefs() {
-		return completeRevocationRefsCRLs;
+		return getCRLRefsByOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS);
 	}
 
 	public List<CRLRef> getAttributeRevocationRefs() {
-		return attributeRevocationRefsCRLs;
+		return getCRLRefsByOrigin(RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS);
 	}
 
 	public List<CRLRef> getTimestampRevocationRefs() {
-		return timestampRevocationRefsCRLs;
+		return getCRLRefsByOrigin(RevocationRefOrigin.TIMESTAMP_REVOCATION_REFS);
+	}
+	
+	private List<CRLRef> getCRLRefsByOrigin(RevocationRefOrigin origin) {
+		List<CRLRef> revocationRefsCRLs = new ArrayList<CRLRef>();
+		for (CRLRef crlRef : crlRefs) {
+			if (crlRef.getOrigins().contains(origin)) {
+				revocationRefsCRLs.add(crlRef);
+			}
+		}
+		return revocationRefsCRLs;
 	}
 	
 	/**
@@ -103,10 +111,6 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	 * @return list of {@link CRLRef}s
 	 */
 	public List<CRLRef> getAllCRLReferences() {
-		List<CRLRef> crlRefs = new ArrayList<CRLRef>();
-		crlRefs.addAll(getCompleteRevocationRefs());
-		crlRefs.addAll(getAttributeRevocationRefs());
-		crlRefs.addAll(getTimestampRevocationRefs());
 		return crlRefs;
 	}
 	
@@ -167,25 +171,19 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 		}
 	}
 	
+	protected void addReference(CRLRef crlRef) {
+		for (RevocationRefOrigin origin : crlRef.getOrigins()) {
+			addReference(crlRef, origin);
+		}
+	}
+	
 	protected void addReference(CRLRef crlRef, RevocationRefOrigin origin) {
-		switch (origin) {
-		case COMPLETE_REVOCATION_REFS:
-			if (!completeRevocationRefsCRLs.contains(crlRef)) {
-				completeRevocationRefsCRLs.add(crlRef);
-			}
-			break;
-		case ATTRIBUTE_REVOCATION_REFS:
-			if (!attributeRevocationRefsCRLs.contains(crlRef)) {
-				attributeRevocationRefsCRLs.add(crlRef);
-			}
-			break;
-		case TIMESTAMP_REVOCATION_REFS:
-			if (!timestampRevocationRefsCRLs.contains(crlRef)) {
-				timestampRevocationRefsCRLs.add(crlRef);
-			}
-			break;
-		default:
-			throw new DSSException(String.format("The given RevocationOrigin [%s] is not supported for CRLRef object in the SignatureCRLSource", origin));
+		int index = crlRefs.indexOf(crlRef);
+		if (index == -1) {
+			crlRefs.add(crlRef);
+		} else {
+			CRLRef storedCRLRef = crlRefs.get(index);
+			storedCRLRef.addOrigin(origin);
 		}
 	}
 	

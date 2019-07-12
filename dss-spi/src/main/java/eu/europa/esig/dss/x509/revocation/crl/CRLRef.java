@@ -22,7 +22,9 @@ package eu.europa.esig.dss.x509.revocation.crl;
 
 import java.math.BigInteger;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 
 import org.bouncycastle.asn1.esf.CrlIdentifier;
 import org.bouncycastle.asn1.esf.CrlValidatedID;
@@ -52,7 +54,7 @@ public final class CRLRef extends RevocationRef {
 	 */
 	public CRLRef(Digest digest, RevocationRefOrigin origin) {
 		this.digest = digest;
-		this.origin = origin;
+		this.origins = new HashSet<RevocationRefOrigin>(Arrays.asList(origin));
 	}
 
 	/**
@@ -73,8 +75,7 @@ public final class CRLRef extends RevocationRef {
 			DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(crlHash.getHashAlgorithm().getAlgorithm().getId());
 			byte[] digestValue = crlHash.getHashValue();
 			this.digest = new Digest(digestAlgorithm, digestValue);
-			
-			this.origin = origin;
+			this.origins = new HashSet<RevocationRefOrigin>(Arrays.asList(origin));
 		} catch (ParseException ex) {
 			throw new DSSException(ex);
 		}

@@ -787,7 +787,7 @@
 	
 	<xs:complexType name="RevocationRef">
 		<xs:sequence>
-			<xs:element name="Origin" type="RevocationRefOriginType" />
+			<xs:element name="Origin" type="RevocationRefOriginType" maxOccurs="unbounded" />
 			<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" minOccurs="0" />
 			<xs:element name="ProducedAt" type="xs:dateTime" minOccurs="0" /> <!-- OCSP -->
 			<xs:choice minOccurs="0"> <!-- OCSP -->
