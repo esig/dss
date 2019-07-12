@@ -21,12 +21,14 @@
 package eu.europa.esig.dss.cades.signature;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -43,6 +45,7 @@ import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 
 /**
  * @author axel.abinet
@@ -50,10 +53,20 @@ import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
  */
 @RunWith(Parameterized.class)
 public class CAdESDoubleSignatureTest extends PKIFactoryAccess {
+	
+	private static Date date;
+	
+	private static String firstSignatureId;
+	private static String secondSignatureId;
 
 	@Parameters
 	public static List<Object[]> data() {
 		return Arrays.asList(new Object[10][0]);
+	}
+	
+	@BeforeClass
+	public static void init() {
+		date = new Date();
 	}
 
 	@Test
@@ -61,7 +74,7 @@ public class CAdESDoubleSignatureTest extends PKIFactoryAccess {
 		DSSDocument documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
 
 		CAdESSignatureParameters signatureParameters = new CAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
+		signatureParameters.bLevel().setSigningDate(date);
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
@@ -73,7 +86,7 @@ public class CAdESDoubleSignatureTest extends PKIFactoryAccess {
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 
-		signatureParameters.bLevel().setSigningDate(new Date());
+		signatureParameters.bLevel().setSigningDate(date);
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
@@ -97,6 +110,17 @@ public class CAdESDoubleSignatureTest extends PKIFactoryAccess {
 		for (String id : diagnosticData.getSignatureIdList()) {
 			assertTrue(diagnosticData.isBLevelTechnicallyValid(id));
 		}
+		
+		SignatureWrapper signatureOne = diagnosticData.getSignatures().get(0);
+		SignatureWrapper signatureTwo = diagnosticData.getSignatures().get(1);
+		assertNotEquals(signatureOne.getId(), signatureTwo.getId());
+		if (firstSignatureId == null) {
+			firstSignatureId = signatureOne.getId();
+			secondSignatureId = signatureTwo.getId();
+		}
+		assertEquals(firstSignatureId, signatureOne.getId());
+		assertEquals(secondSignatureId, signatureTwo.getId());
+		
 	}
 
 	@Override

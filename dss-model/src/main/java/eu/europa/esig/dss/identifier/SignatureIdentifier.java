@@ -14,8 +14,13 @@ public class SignatureIdentifier extends Identifier {
 	public static SignatureIdentifier buildSignatureIdentifier(Date signingTime, TokenIdentifier tokenIdentifier) {
 		return buildSignatureIdentifier(signingTime, tokenIdentifier, null);
 	}
-
+	
 	public static SignatureIdentifier buildSignatureIdentifier(Date signingTime, TokenIdentifier tokenIdentifier, String customIdentifier) {
+		return buildSignatureIdentifier(signingTime, tokenIdentifier, customIdentifier, null);
+	}
+
+	public static SignatureIdentifier buildSignatureIdentifier(Date signingTime, TokenIdentifier tokenIdentifier, 
+			String customIdentifier, Integer customInteger) {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); DataOutputStream dos = new DataOutputStream(baos)) {
 			if (signingTime != null) {
 				dos.writeLong(signingTime.getTime());
@@ -25,6 +30,9 @@ public class SignatureIdentifier extends Identifier {
 			}
 			if (customIdentifier != null) {
 				dos.writeChars(customIdentifier);
+			}
+			if (customInteger != null) {
+				dos.writeInt(customInteger);
 			}
 			dos.flush();
 			return new SignatureIdentifier(baos.toByteArray());
