@@ -189,7 +189,7 @@ public class ModelCertificateValidationTest extends ModelAbstractlValidation {
 			}
 		}
 
-		eu.europa.esig.dss.validation.reports.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertNotNull(simpleReport);
 		assertNotNull(simpleReport.getCertificateIds());
 		assertEquals(testCase.getTestData().getNumberOfInvolvedCertificates(), simpleReport.getCertificateIds().size());

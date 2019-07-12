@@ -13,8 +13,8 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
+import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
-import eu.europa.esig.dss.validation.reports.SimpleCertificateReport;
 
 public class DSS1566Test extends AbstractValidationExecutorTest {
 	

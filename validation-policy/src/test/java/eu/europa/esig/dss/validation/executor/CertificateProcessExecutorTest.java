@@ -39,8 +39,8 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlDetailedReport;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
-import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlChainItem;
-import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlSimpleCertificateReport;
+import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlChainItem;
+import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSimpleCertificateReport;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 
@@ -68,7 +68,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 		assertEquals(1, detailedReportJaxb.getBasicBuildingBlocks().size());
 		assertEquals(0, detailedReportJaxb.getSignatures().size());
 
-		eu.europa.esig.dss.validation.reports.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertNotNull(simpleReport);
 		List<String> certificateIds = simpleReport.getCertificateIds();
 		assertEquals(2, certificateIds.size());
@@ -196,7 +196,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 
 		CertificateReports reports = executor.execute();
 
-		eu.europa.esig.dss.validation.reports.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtCertificateIssuance());
 		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtValidationTime());
 	}
@@ -216,7 +216,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 
 		CertificateReports reports = executor.execute();
 
-		eu.europa.esig.dss.validation.reports.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtCertificateIssuance());
 		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtValidationTime());
 	}
@@ -236,7 +236,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 
 		CertificateReports reports = executor.execute();
 
-		eu.europa.esig.dss.validation.reports.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG_QSCD,
 				simpleReport.getQualificationAtCertificateIssuance());
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG_QSCD, simpleReport.getQualificationAtValidationTime());
@@ -257,7 +257,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 
 		CertificateReports reports = executor.execute();
 
-		eu.europa.esig.dss.validation.reports.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.QCERT_FOR_WSA, simpleReport.getQualificationAtCertificateIssuance());
 		assertEquals(CertificateQualification.QCERT_FOR_WSA, simpleReport.getQualificationAtValidationTime());
 	}
@@ -277,7 +277,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 
 		CertificateReports reports = executor.execute();
 
-		eu.europa.esig.dss.validation.reports.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtCertificateIssuance());
 		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtValidationTime());
 	}
@@ -296,7 +296,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
-		eu.europa.esig.dss.validation.reports.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG, simpleReport.getQualificationAtCertificateIssuance());
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG, simpleReport.getQualificationAtValidationTime());
 	}
@@ -315,7 +315,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
-		eu.europa.esig.dss.validation.reports.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG_QSCD,
 				simpleReport.getQualificationAtCertificateIssuance());
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG_QSCD, simpleReport.getQualificationAtValidationTime());
@@ -335,7 +335,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
-		eu.europa.esig.dss.validation.reports.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG_QSCD,
 				simpleReport.getQualificationAtCertificateIssuance());
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG_QSCD, simpleReport.getQualificationAtValidationTime());
@@ -355,7 +355,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
-		eu.europa.esig.dss.validation.reports.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG,
 				simpleReport.getQualificationAtCertificateIssuance());
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG, simpleReport.getQualificationAtValidationTime());
@@ -375,7 +375,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
-		eu.europa.esig.dss.validation.reports.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtCertificateIssuance());
 		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtValidationTime());
 	}
@@ -417,7 +417,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
-		eu.europa.esig.dss.validation.reports.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.NA, simpleReport.getQualificationAtCertificateIssuance());
 		assertEquals(CertificateQualification.NA, simpleReport.getQualificationAtValidationTime());
 	}

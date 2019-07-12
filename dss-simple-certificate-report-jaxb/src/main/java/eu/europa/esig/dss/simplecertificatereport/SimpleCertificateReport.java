@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.reports;
+package eu.europa.esig.dss.simplecertificatereport;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,11 +31,10 @@ import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlChainItem;
-import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlRevocation;
-import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlSimpleCertificateReport;
-import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlTrustAnchor;
-import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlChainItem;
+import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlRevocation;
+import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSimpleCertificateReport;
+import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlTrustAnchor;
 
 /**
  * A SimpleCertificateReport holder to fetch values from a JAXB SimpleCertificateReport.
@@ -422,7 +421,7 @@ public class SimpleCertificateReport {
 	private XmlChainItem getTrustAnchorCertificate() {
 		List<XmlChainItem> chain = simpleReport.getChain();
 		for (XmlChainItem xmlChainItem : chain) {
-			if (Utils.isCollectionNotEmpty(xmlChainItem.getTrustAnchors())) {
+			if (xmlChainItem.getTrustAnchors() != null) {
 				return xmlChainItem;
 			}
 		}
@@ -446,7 +445,7 @@ public class SimpleCertificateReport {
 	private XmlChainItem getCertificate(String certificateId) {
 		List<XmlChainItem> chain = simpleReport.getChain();
 		for (XmlChainItem xmlChainItem : chain) {
-			if (Utils.areStringsEqual(certificateId, xmlChainItem.getId())) {
+			if (certificateId.equals(xmlChainItem.getId())) {
 				return xmlChainItem;
 			}
 		}

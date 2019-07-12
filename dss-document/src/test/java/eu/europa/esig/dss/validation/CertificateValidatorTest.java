@@ -33,7 +33,7 @@ import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.jaxb.detailedreport.DetailedReportFacade;
-import eu.europa.esig.dss.jaxb.simplecertificatereport.SimpleCertificateReportFacade;
+import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReportFacade;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 
 public class CertificateValidatorTest {
