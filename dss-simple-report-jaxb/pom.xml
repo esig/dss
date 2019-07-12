@@ -41,7 +41,7 @@
 						</goals>
 						<configuration>
 							<schemaDirectory>src/main/resources/xsd</schemaDirectory>
-							<generatePackage>eu.europa.esig.dss.jaxb.simplereport</generatePackage>
+							<generatePackage>eu.europa.esig.dss.simplereport.jaxb</generatePackage>
 							<schemaIncludes>
 								<schemaInclude>SimpleReport.xsd</schemaInclude>
 							</schemaIncludes>

@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.jaxb.simplereport;
+package eu.europa.esig.dss.simplereport;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -18,6 +18,7 @@ import javax.xml.validation.Schema;
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.jaxb.parsers.AbstractJaxbFacade;
+import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 
 public class SimpleReportFacade extends AbstractJaxbFacade<XmlSimpleReport> {
 

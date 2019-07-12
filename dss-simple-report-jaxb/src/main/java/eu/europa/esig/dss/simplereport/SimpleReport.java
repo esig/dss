@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.reports;
+package eu.europa.esig.dss.simplereport;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,9 +28,8 @@ import java.util.List;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.jaxb.simplereport.XmlSignature;
-import eu.europa.esig.dss.jaxb.simplereport.XmlSimpleReport;
-import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.simplereport.jaxb.XmlSignature;
+import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 
 /**
  * A SimpleReport holder to fetch values from a JAXB SimpleReport.
@@ -118,7 +117,7 @@ public class SimpleReport {
 	public List<String> getSignatureIdList() {
 		final List<String> signatureIdList = new ArrayList<String>();
 		List<XmlSignature> signatures = wrapped.getSignature();
-		if (Utils.isCollectionNotEmpty(signatures)) {
+		if (signatures != null) {
 			for (XmlSignature xmlSignature : signatures) {
 				signatureIdList.add(xmlSignature.getId());
 			}
@@ -196,7 +195,7 @@ public class SimpleReport {
 		if (xmlSignature != null) {
 			return xmlSignature.getSignatureFormat();
 		}
-		return Utils.EMPTY_STRING;
+		return "";
 	}
 
 	/**
@@ -226,7 +225,7 @@ public class SimpleReport {
 		if (xmlSignature != null) {
 			return xmlSignature.getSignedBy();
 		}
-		return Utils.EMPTY_STRING;
+		return "";
 	}
 
 	/**
@@ -256,9 +255,9 @@ public class SimpleReport {
 	 */
 	private XmlSignature getSignatureById(String signatureId) {
 		List<XmlSignature> signatures = wrapped.getSignature();
-		if (Utils.isCollectionNotEmpty(signatures)) {
+		if (signatures != null) {
 			for (XmlSignature xmlSignature : signatures) {
-				if (Utils.areStringsEqual(signatureId, xmlSignature.getId())) {
+				if (signatureId.equals(xmlSignature.getId())) {
 					return xmlSignature;
 				}
 			}

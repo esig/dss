@@ -31,7 +31,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.reports.SimpleReport;
+import eu.europa.esig.dss.simplereport.SimpleReport;
 
 public class CAdESLevelBOnlySigningCertTest extends AbstractCAdESTestSignature {
 

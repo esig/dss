@@ -28,8 +28,9 @@ import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlDetailedReport;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDiagnosticData;
-import eu.europa.esig.dss.jaxb.simplereport.SimpleReportFacade;
-import eu.europa.esig.dss.jaxb.simplereport.XmlSimpleReport;
+import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.simplereport.SimpleReportFacade;
+import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.jaxb.validationreport.ValidationReportFacade;
 import eu.europa.esig.jaxb.validationreport.ValidationReportType;
 

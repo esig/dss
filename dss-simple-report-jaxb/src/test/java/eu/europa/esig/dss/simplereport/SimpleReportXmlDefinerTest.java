@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.jaxb.simplereport;
+package eu.europa.esig.dss.simplereport;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -10,6 +10,8 @@ import javax.xml.transform.TransformerConfigurationException;
 
 import org.junit.Test;
 import org.xml.sax.SAXException;
+
+import eu.europa.esig.dss.simplereport.SimpleReportXmlDefiner;
 
 public class SimpleReportXmlDefinerTest {
 

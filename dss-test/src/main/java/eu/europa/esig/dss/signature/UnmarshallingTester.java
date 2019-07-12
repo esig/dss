@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.jaxb.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticDataFacade;
-import eu.europa.esig.dss.jaxb.simplereport.SimpleReportFacade;
+import eu.europa.esig.dss.simplereport.SimpleReportFacade;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.jaxb.validationreport.ValidationReportFacade;
