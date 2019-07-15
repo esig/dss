@@ -350,18 +350,16 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 						PdfSignatureOrDocTimestampInfo signatureInfo = null;
 						final String subFilter = signatureDictionary.getSubFilter();
 						if (PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER.equals(subFilter)) {
-							boolean isArchiveTimestamp = false;
+							PdfDssDict timestampedDssDictionary = null;
 
 							// LT or LTA
 							if (dssDictionary != null) {
 								// check is DSS dictionary already exist
-								if (isDSSDictionaryPresentInPreviousRevision(getOriginalBytes(byteRange, signedContent))) {
-									isArchiveTimestamp = true;
-								}
+								timestampedDssDictionary = getDSSDictionaryPresentInPreviousRevision(getOriginalBytes(byteRange, signedContent));
 							}
 
-							signatureInfo = new PdfDocTimestampInfo(validationCertPool, signatureDictionary, dssDictionary, cms, signedContent,
-									coverAllOriginalBytes, isArchiveTimestamp);
+							signatureInfo = new PdfDocTimestampInfo(validationCertPool, signatureDictionary, timestampedDssDictionary, cms, signedContent,
+									coverAllOriginalBytes);
 						} else {
 							signatureInfo = new PdfSignatureInfo(validationCertPool, signatureDictionary, dssDictionary, cms, signedContent,
 									coverAllOriginalBytes);
@@ -399,12 +397,12 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		}
 	}
 
-	private boolean isDSSDictionaryPresentInPreviousRevision(byte[] originalBytes) {
+	private PdfDssDict getDSSDictionaryPresentInPreviousRevision(byte[] originalBytes) {
 		try (PDDocument doc = PDDocument.load(originalBytes)) {
-			return getDSSDictionary(doc) != null;
+			return getDSSDictionary(doc);
 		} catch (Exception e) {
 			LOG.warn("Cannot check in previous revisions if DSS dictionary already exist : " + e.getMessage(), e);
-			return false;
+			return null;
 		}
 	}
 
@@ -513,20 +511,23 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 					}
 					array.add(stream);
 				} else {
-					List<COSObject> objects = pdDocument.getDocument().getObjects();
-					COSObject foundCosObject = null;
-					for (COSObject cosObject : objects) {
-						if (cosObject.getObjectNumber() == objectNumber) {
-							foundCosObject = cosObject;
-							break;
-						}
-					}
+					COSObject foundCosObject = getByObjectNumber(pdDocument, objectNumber);
 					array.add(foundCosObject);
 				}
 				currentObjIds.add(digest);
 			}
 		}
 		return array;
+	}
+
+	private COSObject getByObjectNumber(PDDocument pdDocument, Long objectNumber) {
+		List<COSObject> objects = pdDocument.getDocument().getObjects();
+		for (COSObject cosObject : objects) {
+			if (cosObject.getObjectNumber() == objectNumber) {
+				return cosObject;
+			}
+		}
+		return null;
 	}
 
 	@Override
