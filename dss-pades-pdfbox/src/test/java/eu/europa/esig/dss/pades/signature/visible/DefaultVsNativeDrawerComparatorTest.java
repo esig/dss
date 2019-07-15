@@ -305,6 +305,18 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 	}
 	
 	@Test
+	public void cyrillicCharactersTest() throws IOException {
+		initVisibleCombinationTest();
+		SignatureImageParameters signatureImageParameters = new SignatureImageParameters();
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setText("Моя подпись 1");
+		textParameters.setFont(new DSSFileFont(getClass().getResourceAsStream("/fonts/OpenSansBold.ttf")));
+		signatureImageParameters.setTextParameters(textParameters);
+		signatureParameters.setSignatureImageParameters(signatureImageParameters);
+		drawAndCompareVisually();
+	}
+	
+	@Test
 	public void rotationTest() throws IOException {
 		initPdfATest();
 		SignatureImageParameters imageParameters = new SignatureImageParameters();

@@ -17,8 +17,7 @@ import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.common.PDStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.font.PDTrueTypeFont;
-import org.apache.pdfbox.pdmodel.font.encoding.WinAnsiEncoding;
+import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
@@ -60,7 +59,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	}
 	
 	/**
-	 * Method to initialize the specific for PdfBpx {@link PDFont}
+	 * Method to initialize the specific font for PdfBox {@link PDFont}
 	 */
 	private PDFont initFont() throws IOException {
 		DSSFont dssFont = parameters.getTextParameters().getFont();
@@ -68,7 +67,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 			return PdfBoxFontMapper.getPDFont(dssFont.getJavaFont());
 		} else {
 			try (InputStream is = dssFont.getInputStream()) {
-				return PDTrueTypeFont.load(document, is, WinAnsiEncoding.INSTANCE);
+				return PDType0Font.load(document, is);
 			}
 		}
 	}

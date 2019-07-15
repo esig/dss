@@ -53,7 +53,6 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 
 		String text = parameters.getTextParameters().getText();
 		
-
 		if (Utils.isStringNotBlank(signatureFieldId)) {
 			appearance.setVisibleSignature(signatureFieldId);
 		} else {
@@ -92,7 +91,7 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		} else {
 			try (InputStream iStream = dssFont.getInputStream()) {
 				byte[] fontBytes = DSSUtils.toByteArray(iStream);
-				baseFont = BaseFont.createFont(dssFont.getName(), BaseFont.WINANSI, BaseFont.EMBEDDED, true, fontBytes, null);
+				baseFont = BaseFont.createFont(dssFont.getName(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED, true, fontBytes, null);
 				baseFont.setSubset(false);
 			} catch (IOException e) {
 				throw new DSSException("The iText font cannot be initialized", e);
