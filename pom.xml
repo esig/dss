@@ -58,7 +58,6 @@
 		
 		<!-- JDK9+ -->
 		<jaxb.version>2.3.0</jaxb.version>
-		<jaxws-ri.version>2.3.0</jaxws-ri.version>
 		<jaxws-ri.version>2.3.2</jaxws-ri.version>
 		<activation.version>1.2.0</activation.version>
 
