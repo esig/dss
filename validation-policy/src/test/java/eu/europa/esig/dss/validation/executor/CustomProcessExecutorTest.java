@@ -71,8 +71,8 @@ import eu.europa.esig.dss.simplereport.jaxb.XmlSignature;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
-import eu.europa.esig.jaxb.validationreport.ValidationReportType;
+import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
+import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
 public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 

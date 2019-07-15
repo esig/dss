@@ -25,7 +25,7 @@ import java.io.Serializable;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
-import eu.europa.esig.jaxb.validationreport.ValidationReportType;
+import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
 public class ReportsDTO implements Serializable {
 

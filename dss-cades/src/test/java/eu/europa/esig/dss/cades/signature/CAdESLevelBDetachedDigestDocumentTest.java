@@ -45,9 +45,9 @@ import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.jaxb.validationreport.SignatureIdentifierType;
-import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
-import eu.europa.esig.jaxb.validationreport.ValidationReportType;
+import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
+import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
+import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
 public class CAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 

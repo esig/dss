@@ -49,14 +49,14 @@ import eu.europa.esig.dss.pdf.PdfSignatureInfo;
 import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.jaxb.validationreport.SAContactInfoType;
-import eu.europa.esig.jaxb.validationreport.SADSSType;
-import eu.europa.esig.jaxb.validationreport.SAFilterType;
-import eu.europa.esig.jaxb.validationreport.SANameType;
-import eu.europa.esig.jaxb.validationreport.SAReasonType;
-import eu.europa.esig.jaxb.validationreport.SASignatureProductionPlaceType;
-import eu.europa.esig.jaxb.validationreport.SASubFilterType;
-import eu.europa.esig.jaxb.validationreport.SAVRIType;
+import eu.europa.esig.validationreport.jaxb.SAContactInfoType;
+import eu.europa.esig.validationreport.jaxb.SADSSType;
+import eu.europa.esig.validationreport.jaxb.SAFilterType;
+import eu.europa.esig.validationreport.jaxb.SANameType;
+import eu.europa.esig.validationreport.jaxb.SAReasonType;
+import eu.europa.esig.validationreport.jaxb.SASignatureProductionPlaceType;
+import eu.europa.esig.validationreport.jaxb.SASubFilterType;
+import eu.europa.esig.validationreport.jaxb.SAVRIType;
 
 public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestDocumentSignatureService<PAdESSignatureParameters> {
 

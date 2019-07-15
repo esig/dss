@@ -45,13 +45,13 @@ import eu.europa.esig.dss.tsl.TSLServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.util.TimeDependentValues;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.jaxb.trustedlist.ecc.CriteriaListType;
-import eu.europa.esig.jaxb.trustedlist.ecc.KeyUsageBitType;
-import eu.europa.esig.jaxb.trustedlist.ecc.KeyUsageType;
-import eu.europa.esig.jaxb.trustedlist.ecc.PoliciesListType;
-import eu.europa.esig.jaxb.trustedlist.enums.Assert;
-import eu.europa.esig.jaxb.xades132.IdentifierType;
-import eu.europa.esig.jaxb.xades132.ObjectIdentifierType;
+import eu.europa.esig.trustedlist.enums.Assert;
+import eu.europa.esig.trustedlist.jaxb.ecc.CriteriaListType;
+import eu.europa.esig.trustedlist.jaxb.ecc.KeyUsageBitType;
+import eu.europa.esig.trustedlist.jaxb.ecc.KeyUsageType;
+import eu.europa.esig.trustedlist.jaxb.ecc.PoliciesListType;
+import eu.europa.esig.xades.jaxb.xades132.IdentifierType;
+import eu.europa.esig.xades.jaxb.xades132.ObjectIdentifierType;
 
 public class TSLParserTest {
 

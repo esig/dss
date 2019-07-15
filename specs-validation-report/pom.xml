@@ -93,7 +93,7 @@
 						<configuration>
 							<target>
 								<delete
-									dir="${basedir}/target/generated-sources/xjc/eu/europa/esig/jaxb/xmldsig" />
+									dir="${basedir}/target/generated-sources/xjc/eu/europa/esig/xmldsig" />
 							</target>
 						</configuration>
 					</execution>

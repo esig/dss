@@ -38,11 +38,11 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.jaxb.validationreport.RevocationStatusInformationType;
-import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
-import eu.europa.esig.jaxb.validationreport.ValidationReportDataType;
-import eu.europa.esig.jaxb.validationreport.ValidationReportType;
-import eu.europa.esig.jaxb.validationreport.ValidationStatusType;
+import eu.europa.esig.validationreport.jaxb.RevocationStatusInformationType;
+import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
+import eu.europa.esig.validationreport.jaxb.ValidationReportDataType;
+import eu.europa.esig.validationreport.jaxb.ValidationReportType;
+import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
 
 public class XAdESLevelLTRevokedTest extends AbstractXAdESTestSignature {
 

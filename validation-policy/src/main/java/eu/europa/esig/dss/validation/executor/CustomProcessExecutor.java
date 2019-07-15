@@ -30,7 +30,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.jaxb.validationreport.ValidationReportType;
+import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
 public class CustomProcessExecutor implements ProcessExecutor<Reports> {
 

@@ -11,7 +11,7 @@
 
 	<jaxb:bindings schemaLocation="xmldsig-core-schema.xsd" node="/xs:schema">
 		<jaxb:schemaBindings>
-			<jaxb:package name="eu.europa.esig.jaxb.xmldsig" />
+			<jaxb:package name="eu.europa.esig.xmldsig.jaxb" />
 		</jaxb:schemaBindings>
 	</jaxb:bindings>
 

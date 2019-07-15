@@ -11,12 +11,12 @@
 
 	<jaxb:bindings schemaLocation="XAdESv141.xsd" node="/xs:schema">
 		<jaxb:schemaBindings>
-			<jaxb:package name="eu.europa.esig.jaxb.xades141" />
+			<jaxb:package name="eu.europa.esig.xades.jaxb.xades141" />
 		</jaxb:schemaBindings>
 		<jaxb:bindings
 			schemaLocation="http://uri.etsi.org/01903/v1.3.2/XAdES.xsd"	node="/xs:schema">
 			<jaxb:schemaBindings>
-				<jaxb:package name="eu.europa.esig.jaxb.xades132" />
+				<jaxb:package name="eu.europa.esig.xades.jaxb.xades132" />
 			</jaxb:schemaBindings>
 		</jaxb:bindings>
 	</jaxb:bindings>

@@ -50,10 +50,10 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.jaxb.validationreport.ValidationObjectListType;
-import eu.europa.esig.jaxb.validationreport.ValidationObjectType;
-import eu.europa.esig.jaxb.validationreport.ValidationReportType;
-import eu.europa.esig.jaxb.validationreport.enums.ObjectType;
+import eu.europa.esig.validationreport.enums.ObjectType;
+import eu.europa.esig.validationreport.jaxb.ValidationObjectListType;
+import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
+import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
 public class DSS874Test {
 

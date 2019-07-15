@@ -53,9 +53,9 @@ import eu.europa.esig.dss.xades.reference.Base64Transform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
 import eu.europa.esig.dss.xades.signature.XAdESService;
-import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
-import eu.europa.esig.jaxb.validationreport.SignersDocumentType;
-import eu.europa.esig.jaxb.validationreport.ValidationReportType;
+import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
+import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
+import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
 public class GetOriginalDocumentTest extends PKIFactoryAccess {
 

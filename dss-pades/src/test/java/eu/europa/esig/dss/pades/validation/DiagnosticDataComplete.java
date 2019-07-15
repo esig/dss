@@ -30,11 +30,11 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.jaxb.validationreport.POEProvisioningType;
-import eu.europa.esig.jaxb.validationreport.SignatureReferenceType;
-import eu.europa.esig.jaxb.validationreport.ValidationObjectType;
-import eu.europa.esig.jaxb.validationreport.ValidationReportType;
-import eu.europa.esig.jaxb.validationreport.enums.ObjectType;
+import eu.europa.esig.validationreport.enums.ObjectType;
+import eu.europa.esig.validationreport.jaxb.POEProvisioningType;
+import eu.europa.esig.validationreport.jaxb.SignatureReferenceType;
+import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
+import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
 public class DiagnosticDataComplete extends PKIFactoryAccess {
 

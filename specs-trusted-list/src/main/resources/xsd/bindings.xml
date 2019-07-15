@@ -11,7 +11,7 @@
 
 	<jaxb:bindings schemaLocation="ts_119612v020101_sie_xsd.xsd" node="/xs:schema">
 		<jaxb:schemaBindings>
-			<jaxb:package name="eu.europa.esig.jaxb.trustedlist.ecc" />
+			<jaxb:package name="eu.europa.esig.trustedlist.jaxb.ecc" />
 		</jaxb:schemaBindings>
 		
 		<jaxb:bindings node="//xs:complexType[@name='KeyUsageBitType']/xs:simpleContent/xs:extension">
@@ -32,9 +32,9 @@
 				<jaxb:property>
 					<jaxb:baseType>
 						<jaxb:javaType
-							name="eu.europa.esig.jaxb.trustedlist.enums.Assert"
-							parseMethod="eu.europa.esig.jaxb.trustedlist.parsers.AssertParser.parse"
-							printMethod="eu.europa.esig.jaxb.trustedlist.parsers.AssertParser.print" />
+							name="eu.europa.esig.trustedlist.enums.Assert"
+							parseMethod="eu.europa.esig.trustedlist.parsers.AssertParser.parse"
+							printMethod="eu.europa.esig.trustedlist.parsers.AssertParser.print" />
 					</jaxb:baseType>
 				</jaxb:property>
 			</jaxb:bindings>
@@ -44,11 +44,11 @@
 
 	<jaxb:bindings schemaLocation="ts_119612v020101_additionaltypes_xsd.xsd" node="/xs:schema">
 		<jaxb:schemaBindings>
-			<jaxb:package name="eu.europa.esig.jaxb.trustedlist.tslx" />
+			<jaxb:package name="eu.europa.esig.trustedlist.jaxb.tslx" />
 		</jaxb:schemaBindings>
 	    <jaxb:bindings schemaLocation="http://uri.etsi.org/19612/v1.2.1/tsl.xsd" node="/xs:schema">
 	      <jaxb:schemaBindings>
-	        <jaxb:package name="eu.europa.esig.jaxb.trustedlist.tsl" />
+	        <jaxb:package name="eu.europa.esig.trustedlist.jaxb.tsl" />
 	      </jaxb:schemaBindings>
 	    </jaxb:bindings>
 	</jaxb:bindings>

@@ -38,10 +38,10 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.jaxb.validationreport.SACounterSignatureType;
-import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
-import eu.europa.esig.jaxb.validationreport.ValidationObjectType;
-import eu.europa.esig.jaxb.validationreport.ValidationReportType;
+import eu.europa.esig.validationreport.jaxb.SACounterSignatureType;
+import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
+import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
+import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
 public class CounterSignatureValidationTest {
 

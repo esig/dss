@@ -8,8 +8,8 @@ import java.io.OutputStream;
 
 import javax.activation.DataSource;
 
-import eu.europa.esig.jaxb.validationreport.ValidationReportFacade;
-import eu.europa.esig.jaxb.validationreport.ValidationReportType;
+import eu.europa.esig.validationreport.ValidationReportFacade;
+import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
 public class ValidationReportTypeDataSource implements DataSource {
 

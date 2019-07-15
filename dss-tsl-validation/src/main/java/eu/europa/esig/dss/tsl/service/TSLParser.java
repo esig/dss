@@ -59,44 +59,44 @@ import eu.europa.esig.dss.util.MutableTimeDependentValues;
 import eu.europa.esig.dss.util.TimeDependentValues;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.jaxb.trustedlist.TrustedListFacade;
-import eu.europa.esig.jaxb.trustedlist.ecc.CriteriaListType;
-import eu.europa.esig.jaxb.trustedlist.ecc.KeyUsageBitType;
-import eu.europa.esig.jaxb.trustedlist.ecc.KeyUsageType;
-import eu.europa.esig.jaxb.trustedlist.ecc.PoliciesListType;
-import eu.europa.esig.jaxb.trustedlist.ecc.QualificationElementType;
-import eu.europa.esig.jaxb.trustedlist.ecc.QualificationsType;
-import eu.europa.esig.jaxb.trustedlist.ecc.QualifierType;
-import eu.europa.esig.jaxb.trustedlist.ecc.QualifiersType;
-import eu.europa.esig.jaxb.trustedlist.enums.Assert;
-import eu.europa.esig.jaxb.trustedlist.tsl.AdditionalServiceInformationType;
-import eu.europa.esig.jaxb.trustedlist.tsl.AnyType;
-import eu.europa.esig.jaxb.trustedlist.tsl.AttributedNonEmptyURIType;
-import eu.europa.esig.jaxb.trustedlist.tsl.DigitalIdentityListType;
-import eu.europa.esig.jaxb.trustedlist.tsl.DigitalIdentityType;
-import eu.europa.esig.jaxb.trustedlist.tsl.ExtensionType;
-import eu.europa.esig.jaxb.trustedlist.tsl.ExtensionsListType;
-import eu.europa.esig.jaxb.trustedlist.tsl.InternationalNamesType;
-import eu.europa.esig.jaxb.trustedlist.tsl.MultiLangNormStringType;
-import eu.europa.esig.jaxb.trustedlist.tsl.NextUpdateType;
-import eu.europa.esig.jaxb.trustedlist.tsl.NonEmptyMultiLangURIListType;
-import eu.europa.esig.jaxb.trustedlist.tsl.NonEmptyMultiLangURIType;
-import eu.europa.esig.jaxb.trustedlist.tsl.NonEmptyURIListType;
-import eu.europa.esig.jaxb.trustedlist.tsl.OtherTSLPointerType;
-import eu.europa.esig.jaxb.trustedlist.tsl.PostalAddressType;
-import eu.europa.esig.jaxb.trustedlist.tsl.ServiceHistoryInstanceType;
-import eu.europa.esig.jaxb.trustedlist.tsl.ServiceSupplyPointsType;
-import eu.europa.esig.jaxb.trustedlist.tsl.TSPInformationType;
-import eu.europa.esig.jaxb.trustedlist.tsl.TSPServiceInformationType;
-import eu.europa.esig.jaxb.trustedlist.tsl.TSPServiceType;
-import eu.europa.esig.jaxb.trustedlist.tsl.TSPServicesListType;
-import eu.europa.esig.jaxb.trustedlist.tsl.TSPType;
-import eu.europa.esig.jaxb.trustedlist.tsl.TrustServiceProviderListType;
-import eu.europa.esig.jaxb.trustedlist.tsl.TrustStatusListType;
-import eu.europa.esig.jaxb.trustedlist.tslx.CertSubjectDNAttributeType;
-import eu.europa.esig.jaxb.trustedlist.tslx.ExtendedKeyUsageType;
-import eu.europa.esig.jaxb.xades132.IdentifierType;
-import eu.europa.esig.jaxb.xades132.ObjectIdentifierType;
+import eu.europa.esig.trustedlist.TrustedListFacade;
+import eu.europa.esig.trustedlist.enums.Assert;
+import eu.europa.esig.trustedlist.jaxb.ecc.CriteriaListType;
+import eu.europa.esig.trustedlist.jaxb.ecc.KeyUsageBitType;
+import eu.europa.esig.trustedlist.jaxb.ecc.KeyUsageType;
+import eu.europa.esig.trustedlist.jaxb.ecc.PoliciesListType;
+import eu.europa.esig.trustedlist.jaxb.ecc.QualificationElementType;
+import eu.europa.esig.trustedlist.jaxb.ecc.QualificationsType;
+import eu.europa.esig.trustedlist.jaxb.ecc.QualifierType;
+import eu.europa.esig.trustedlist.jaxb.ecc.QualifiersType;
+import eu.europa.esig.trustedlist.jaxb.tsl.AdditionalServiceInformationType;
+import eu.europa.esig.trustedlist.jaxb.tsl.AnyType;
+import eu.europa.esig.trustedlist.jaxb.tsl.AttributedNonEmptyURIType;
+import eu.europa.esig.trustedlist.jaxb.tsl.DigitalIdentityListType;
+import eu.europa.esig.trustedlist.jaxb.tsl.DigitalIdentityType;
+import eu.europa.esig.trustedlist.jaxb.tsl.ExtensionType;
+import eu.europa.esig.trustedlist.jaxb.tsl.ExtensionsListType;
+import eu.europa.esig.trustedlist.jaxb.tsl.InternationalNamesType;
+import eu.europa.esig.trustedlist.jaxb.tsl.MultiLangNormStringType;
+import eu.europa.esig.trustedlist.jaxb.tsl.NextUpdateType;
+import eu.europa.esig.trustedlist.jaxb.tsl.NonEmptyMultiLangURIListType;
+import eu.europa.esig.trustedlist.jaxb.tsl.NonEmptyMultiLangURIType;
+import eu.europa.esig.trustedlist.jaxb.tsl.NonEmptyURIListType;
+import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointerType;
+import eu.europa.esig.trustedlist.jaxb.tsl.PostalAddressType;
+import eu.europa.esig.trustedlist.jaxb.tsl.ServiceHistoryInstanceType;
+import eu.europa.esig.trustedlist.jaxb.tsl.ServiceSupplyPointsType;
+import eu.europa.esig.trustedlist.jaxb.tsl.TSPInformationType;
+import eu.europa.esig.trustedlist.jaxb.tsl.TSPServiceInformationType;
+import eu.europa.esig.trustedlist.jaxb.tsl.TSPServiceType;
+import eu.europa.esig.trustedlist.jaxb.tsl.TSPServicesListType;
+import eu.europa.esig.trustedlist.jaxb.tsl.TSPType;
+import eu.europa.esig.trustedlist.jaxb.tsl.TrustServiceProviderListType;
+import eu.europa.esig.trustedlist.jaxb.tsl.TrustStatusListType;
+import eu.europa.esig.trustedlist.jaxb.tslx.CertSubjectDNAttributeType;
+import eu.europa.esig.trustedlist.jaxb.tslx.ExtendedKeyUsageType;
+import eu.europa.esig.xades.jaxb.xades132.IdentifierType;
+import eu.europa.esig.xades.jaxb.xades132.ObjectIdentifierType;
 
 /**
  * This class allows to parse a TSL from JAXB object to DTO's. It can be executed as a Callable
@@ -505,7 +505,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 	 * @param condition
 	 */
 	@SuppressWarnings("rawtypes")
-	private void addOtherCriteriaListConditionsIfPresent(eu.europa.esig.jaxb.xades132.AnyType otherCriteriaList, CompositeCondition condition) {
+	private void addOtherCriteriaListConditionsIfPresent(eu.europa.esig.xades.jaxb.xades132.AnyType otherCriteriaList, CompositeCondition condition) {
 		if (otherCriteriaList != null && Utils.isCollectionNotEmpty(otherCriteriaList.getContent())) {
 			for (Object content : otherCriteriaList.getContent()) {
 				if (content instanceof JAXBElement) {

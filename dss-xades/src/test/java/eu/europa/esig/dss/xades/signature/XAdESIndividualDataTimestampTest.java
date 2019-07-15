@@ -54,13 +54,13 @@ import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
-import eu.europa.esig.jaxb.validationreport.SignersDocumentType;
-import eu.europa.esig.jaxb.validationreport.ValidationObjectListType;
-import eu.europa.esig.jaxb.validationreport.ValidationObjectType;
-import eu.europa.esig.jaxb.validationreport.ValidationReportType;
-import eu.europa.esig.jaxb.validationreport.enums.ObjectType;
-import eu.europa.esig.jaxb.xades132.DigestAlgAndValueType;
+import eu.europa.esig.validationreport.enums.ObjectType;
+import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
+import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
+import eu.europa.esig.validationreport.jaxb.ValidationObjectListType;
+import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
+import eu.europa.esig.validationreport.jaxb.ValidationReportType;
+import eu.europa.esig.xades.jaxb.xades132.DigestAlgAndValueType;
 
 public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 

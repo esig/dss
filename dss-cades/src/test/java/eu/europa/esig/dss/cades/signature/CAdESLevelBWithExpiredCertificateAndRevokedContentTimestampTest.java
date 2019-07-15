@@ -43,14 +43,14 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import eu.europa.esig.jaxb.validationreport.RevocationStatusInformationType;
-import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
-import eu.europa.esig.jaxb.validationreport.ValidationObjectListType;
-import eu.europa.esig.jaxb.validationreport.ValidationObjectType;
-import eu.europa.esig.jaxb.validationreport.ValidationReportDataType;
-import eu.europa.esig.jaxb.validationreport.ValidationReportType;
-import eu.europa.esig.jaxb.validationreport.ValidationStatusType;
-import eu.europa.esig.jaxb.validationreport.enums.ObjectType;
+import eu.europa.esig.validationreport.enums.ObjectType;
+import eu.europa.esig.validationreport.jaxb.RevocationStatusInformationType;
+import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
+import eu.europa.esig.validationreport.jaxb.ValidationObjectListType;
+import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
+import eu.europa.esig.validationreport.jaxb.ValidationReportDataType;
+import eu.europa.esig.validationreport.jaxb.ValidationReportType;
+import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
 
 /**
  * Cryptographic signature is valid with expired certificate

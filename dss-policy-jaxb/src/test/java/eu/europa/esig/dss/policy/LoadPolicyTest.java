@@ -22,6 +22,7 @@ package eu.europa.esig.dss.policy;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.File;
 import java.io.IOException;
 
 import javax.xml.bind.JAXBException;
@@ -34,7 +35,7 @@ public class LoadPolicyTest {
 
 	@Test(expected = Exception.class)
 	public void testInvalid() throws JAXBException, XMLStreamException, IOException, SAXException {
-		ValidationPolicyFacade.newFacade().getValidationPolicy("src/test/resources/invalid-policy.xml");
+		ValidationPolicyFacade.newFacade().getValidationPolicy(new File("src/test/resources/invalid-policy.xml"));
 	}
 
 	@Test
