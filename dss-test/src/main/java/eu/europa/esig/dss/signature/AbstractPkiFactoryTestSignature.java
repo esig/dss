@@ -954,8 +954,8 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 	protected void checkNoDuplicateCompleteRevocationData(DiagnosticData diagnosticData) {
 		Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
 		for (SignatureWrapper signatureWrapper : allSignatures) {
-			List<XmlFoundRevocation> allFoundRevocations = signatureWrapper.getAllFoundRevocations();
-			for (XmlFoundRevocation foundRevocation : allFoundRevocations) {
+			List<XmlRelatedRevocation> allFoundRevocations = signatureWrapper.getRelatedRevocations();
+			for (XmlRelatedRevocation foundRevocation : allFoundRevocations) {
 				assertEquals("Duplicate complete revocation data in " + foundRevocation.getOrigins(), 1, foundRevocation.getOrigins().size());
 			}
 		}
