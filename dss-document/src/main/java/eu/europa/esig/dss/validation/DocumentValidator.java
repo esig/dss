@@ -26,12 +26,12 @@ import java.net.URL;
 import java.util.List;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.validation.executor.ProcessExecutor;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 
 /**
  * This is the interface to be used when implementing different signature validators.

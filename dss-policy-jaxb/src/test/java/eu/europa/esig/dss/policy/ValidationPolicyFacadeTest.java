@@ -1,21 +1,25 @@
-package eu.europa.esig.dss.jaxb.policy;
+package eu.europa.esig.dss.policy;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
+import java.io.IOException;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
 
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
-import eu.europa.esig.jaxb.policy.Algo;
-import eu.europa.esig.jaxb.policy.ConstraintsParameters;
-import eu.europa.esig.jaxb.policy.Level;
-import eu.europa.esig.jaxb.policy.Model;
-import eu.europa.esig.jaxb.policy.ModelConstraint;
-import eu.europa.esig.jaxb.policy.RevocationConstraints;
-import eu.europa.esig.jaxb.policy.TimeConstraint;
-import eu.europa.esig.jaxb.policy.TimeUnit;
-import eu.europa.esig.jaxb.policy.ValidationPolicyFacade;
+import eu.europa.esig.dss.policy.jaxb.Algo;
+import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
+import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.jaxb.Model;
+import eu.europa.esig.dss.policy.jaxb.ModelConstraint;
+import eu.europa.esig.dss.policy.jaxb.RevocationConstraints;
+import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
+import eu.europa.esig.dss.policy.jaxb.TimeUnit;
 
 public class ValidationPolicyFacadeTest {
 
@@ -54,6 +58,16 @@ public class ValidationPolicyFacadeTest {
 	public void testUnmarshalCoreValidation() throws Exception {
 		ConstraintsParameters constraintsParameters = ValidationPolicyFacade.newFacade().unmarshall(new File("src/test/resources/constraint-core-validation.xml"));
 		assertNotNull(constraintsParameters);
+	}
+
+	@Test
+	public void getDefaultValidationPolicy() throws JAXBException, XMLStreamException, IOException, SAXException {
+		assertNotNull(ValidationPolicyFacade.newFacade().getDefaultValidationPolicy());
+	}
+
+	@Test
+	public void getTrustedListValidationPolicy() throws JAXBException, XMLStreamException, IOException, SAXException {
+		assertNotNull(ValidationPolicyFacade.newFacade().getTrustedListValidationPolicy());
 	}
 
 	@Test

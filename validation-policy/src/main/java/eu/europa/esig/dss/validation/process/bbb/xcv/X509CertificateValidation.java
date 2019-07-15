@@ -28,9 +28,12 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.policy.SubContext;
+import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.policy.jaxb.Model;
+import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.policy.SubContext;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
@@ -39,9 +42,6 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.checks.ProspectiveCertifica
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.TrustedServiceStatusCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.TrustedServiceTypeIdentifierCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.SubX509CertificateValidation;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
-import eu.europa.esig.jaxb.policy.Model;
-import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 
 /**
  * 5.2.6 X.509 certificate validation

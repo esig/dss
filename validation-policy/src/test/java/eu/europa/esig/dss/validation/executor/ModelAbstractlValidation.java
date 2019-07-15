@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.jaxb.policy.Model;
+import eu.europa.esig.dss.policy.jaxb.Model;
 
 /**
  * Implements basic test class for the model based certificate and signature

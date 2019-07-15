@@ -4,7 +4,7 @@ import java.util.Date;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.jaxb.policy.CryptographicConstraint;
+import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 
 public class DigestCryptographicCheck extends AbstractCryptographicCheck<XmlSAV> {
 	

@@ -24,7 +24,10 @@ import java.util.Date;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
+import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;
@@ -32,9 +35,6 @@ import eu.europa.esig.dss.validation.process.qualification.trust.checks.TLFreshn
 import eu.europa.esig.dss.validation.process.qualification.trust.checks.TLNotExpiredCheck;
 import eu.europa.esig.dss.validation.process.qualification.trust.checks.TLVersionCheck;
 import eu.europa.esig.dss.validation.process.qualification.trust.checks.TLWellSignedCheck;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
-import eu.europa.esig.jaxb.policy.TimeConstraint;
-import eu.europa.esig.jaxb.policy.ValueConstraint;
 
 public class TLValidationBlock extends Chain<XmlTLAnalysis> {
 

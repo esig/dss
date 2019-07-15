@@ -18,17 +18,18 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.policy;
+package eu.europa.esig.dss.policy;
 
 import java.util.Date;
 
 import eu.europa.esig.dss.enumerations.Context;
-import eu.europa.esig.jaxb.policy.CryptographicConstraint;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
-import eu.europa.esig.jaxb.policy.Model;
-import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
-import eu.europa.esig.jaxb.policy.TimeConstraint;
-import eu.europa.esig.jaxb.policy.ValueConstraint;
+import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.policy.jaxb.Model;
+import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.policy.jaxb.SignatureConstraints;
+import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
+import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
 
 /**
  * This class encapsulates the constraint file that controls the policy to be used during the validation process. This
@@ -425,5 +426,9 @@ public interface ValidationPolicy {
 	 * @return the validation model to be used
 	 */
 	Model getValidationModel();
+
+	SignatureConstraints getSignatureConstraints();
+
+	CryptographicConstraint getCryptographic();
 
 }

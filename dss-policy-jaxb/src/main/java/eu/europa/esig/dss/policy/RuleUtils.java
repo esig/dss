@@ -18,26 +18,33 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.policy;
+package eu.europa.esig.dss.policy;
 
-import static org.junit.Assert.assertNotNull;
+import java.util.concurrent.TimeUnit;
 
-import java.io.File;
+import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
 
-import org.junit.Test;
+public final class RuleUtils {
 
-import eu.europa.esig.jaxb.policy.ConstraintsParameters;
-import eu.europa.esig.jaxb.policy.ValidationPolicyFacade;
+	private RuleUtils() {
+	}
 
-public class ValidationPolicyTest {
+	public static long convertDuration(eu.europa.esig.dss.policy.jaxb.TimeUnit fromJaxb, eu.europa.esig.dss.policy.jaxb.TimeUnit toJaxb, int value) {
+		TimeUnit from = TimeUnit.valueOf(fromJaxb.name());
+		TimeUnit to = TimeUnit.valueOf(toJaxb.name());
+		Long convert = to.convert(value, from);
+		if (convert == 0) {
+			return Long.MAX_VALUE;
+		} else {
+			return convert.longValue();
+		}
+	}
 
-	@Test
-	public void test1() throws Exception {
-		ConstraintsParameters constraints = ValidationPolicyFacade.newFacade().unmarshall(new File("src/main/resources/policy/constraint.xml"));
-		assertNotNull(constraints);
-
-		EtsiValidationPolicy policy = new EtsiValidationPolicy(constraints);
-		assertNotNull(policy);
+	public static long convertDuration(TimeConstraint timeConstraint) {
+		if (timeConstraint != null) {
+			return convertDuration(timeConstraint.getUnit(), eu.europa.esig.dss.policy.jaxb.TimeUnit.MILLISECONDS, timeConstraint.getValue());
+		}
+		return Long.MAX_VALUE;
 	}
 
 }

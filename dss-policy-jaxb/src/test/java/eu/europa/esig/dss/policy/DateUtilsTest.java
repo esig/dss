@@ -18,33 +18,22 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.policy;
+package eu.europa.esig.dss.policy;
 
-import java.util.concurrent.TimeUnit;
+import static org.junit.Assert.assertNotNull;
 
-import eu.europa.esig.jaxb.policy.TimeConstraint;
+import org.junit.Test;
 
-public final class RuleUtils {
+public class DateUtilsTest {
 
-	private RuleUtils() {
+	@Test
+	public void test( ) {
+		assertNotNull(DateUtils.parseDate(DateUtils.DEFAULT_DATE_FORMAT, "2020-02-22"));
 	}
 
-	public static long convertDuration(eu.europa.esig.jaxb.policy.TimeUnit fromJaxb, eu.europa.esig.jaxb.policy.TimeUnit toJaxb, int value) {
-		TimeUnit from = TimeUnit.valueOf(fromJaxb.name());
-		TimeUnit to = TimeUnit.valueOf(toJaxb.name());
-		Long convert = to.convert(value, from);
-		if (convert == 0) {
-			return Long.MAX_VALUE;
-		} else {
-			return convert.longValue();
-		}
-	}
-
-	public static long convertDuration(TimeConstraint timeConstraint) {
-		if (timeConstraint != null) {
-			return convertDuration(timeConstraint.getUnit(), eu.europa.esig.jaxb.policy.TimeUnit.MILLISECONDS, timeConstraint.getValue());
-		}
-		return Long.MAX_VALUE;
+	@Test(expected = IllegalArgumentException.class)
+	public void testException() {
+		DateUtils.parseDate(DateUtils.DEFAULT_DATE_FORMAT, "20-2020-02");
 	}
 
 }

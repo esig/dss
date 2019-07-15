@@ -32,10 +32,10 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
+import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
+import eu.europa.esig.dss.policy.jaxb.TimeUnit;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataFreshCheck;
-import eu.europa.esig.jaxb.policy.Level;
-import eu.europa.esig.jaxb.policy.TimeConstraint;
-import eu.europa.esig.jaxb.policy.TimeUnit;
 
 public class RevocationDataFreshCheckTest {
 

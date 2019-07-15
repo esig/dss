@@ -30,11 +30,10 @@ import org.junit.Test;
 import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.simplereport.SimpleReport;
-import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.jaxb.policy.ConstraintsParameters;
-import eu.europa.esig.jaxb.policy.ValidationPolicyFacade;
 
 public class DSS922Test {
 
@@ -54,10 +53,8 @@ public class DSS922Test {
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 	}
 
-	private EtsiValidationPolicy loadPolicy() throws Exception {
-		ConstraintsParameters policyJaxB = ValidationPolicyFacade.newFacade().unmarshall(new File("src/test/resources/DSS-922/policy.xml"));
-		assertNotNull(policyJaxB);
-		return new EtsiValidationPolicy(policyJaxB);
+	private ValidationPolicy loadPolicy() throws Exception {
+		return ValidationPolicyFacade.newFacade().getValidationPolicy(new File("src/test/resources/DSS-922/policy.xml"));
 	}
 
 }

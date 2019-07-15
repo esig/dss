@@ -56,19 +56,21 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
+import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.ValidationPolicyFacade;
+import eu.europa.esig.dss.policy.jaxb.Algo;
+import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
+import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
+import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.policy.jaxb.SignatureConstraints;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.SimpleReportFacade;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignature;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.jaxb.policy.Algo;
-import eu.europa.esig.jaxb.policy.ConstraintsParameters;
-import eu.europa.esig.jaxb.policy.CryptographicConstraint;
-import eu.europa.esig.jaxb.policy.Level;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
-import eu.europa.esig.jaxb.policy.SignatureConstraints;
 import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
 import eu.europa.esig.jaxb.validationreport.ValidationReportType;
 
@@ -1376,13 +1378,13 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		
 		LevelConstraint passLevel = new LevelConstraint();
 		passLevel.setLevel(Level.WARN);
-		ConstraintsParameters policy = loadConstraintsParameters("src/main/resources/policy/constraint.xml");
+		ValidationPolicy policy = ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
 		SignatureConstraints signatureConstraints = policy.getSignatureConstraints();
 		signatureConstraints.getSignedAttributes().setMessageDigestOrSignedPropertiesPresent(passLevel);
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(new EtsiValidationPolicy(policy));
+		executor.setValidationPolicy(policy);
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 		
 		Reports reports = executor.execute();
@@ -1583,7 +1585,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/dss-1635-diag-data.xml"));
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		ConstraintsParameters defaultPolicy = loadConstraintsParameters("src/main/resources/policy/constraint.xml");
+		ValidationPolicy defaultPolicy = ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
 		List<Algo> algos = defaultPolicy.getCryptographic().getAlgoExpirationDate().getAlgo();
 		for (Algo algo : algos) {
 			if ("SHA1".equals(algo.getValue())) {
@@ -1591,7 +1593,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 				break;
 			}
 		}
-		executor.setValidationPolicy(new EtsiValidationPolicy(defaultPolicy));
+		executor.setValidationPolicy(defaultPolicy);
 		executor.setCurrentTime(new Date());
 
 		Reports reports = executor.execute();
@@ -1608,7 +1610,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 			}
 		}
 
-		executor.setValidationPolicy(new EtsiValidationPolicy(defaultPolicy));
+		executor.setValidationPolicy(defaultPolicy);
 		reports = executor.execute();
 		simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
@@ -1724,16 +1726,16 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		}
 	}
 
-	private EtsiValidationPolicy loadTLPolicy() throws Exception {
-		return loadPolicy("src/test/resources/tsl-constraint.xml");
+	private ValidationPolicy loadTLPolicy() throws Exception {
+		return ValidationPolicyFacade.newFacade().getTrustedListValidationPolicy();
 	}
 
-	private EtsiValidationPolicy loadPolicyNoRevoc() throws Exception {
-		return loadPolicy("src/test/resources/constraint-no-revoc.xml");
+	private ValidationPolicy loadPolicyNoRevoc() throws Exception {
+		return ValidationPolicyFacade.newFacade().getValidationPolicy("src/test/resources/constraint-no-revoc.xml");
 	}
 
-	private EtsiValidationPolicy loadPolicyCryptoWarn() throws Exception {
-		EtsiValidationPolicy defaultPolicy = loadDefaultPolicy();
+	private ValidationPolicy loadPolicyCryptoWarn() throws Exception {
+		EtsiValidationPolicy defaultPolicy = (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
 		CryptographicConstraint cryptographicConstraint = defaultPolicy.getDefaultCryptographicConstraint();
 		cryptographicConstraint.setLevel(Level.WARN);
 		return defaultPolicy;

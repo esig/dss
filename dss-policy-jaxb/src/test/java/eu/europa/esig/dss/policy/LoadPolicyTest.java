@@ -18,22 +18,28 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.policy;
+package eu.europa.esig.dss.policy;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.IOException;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
+
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
-public class DateUtilsTest {
+public class LoadPolicyTest {
 
-	@Test
-	public void test( ) {
-		assertNotNull(DateUtils.parseDate(DateUtils.DEFAULT_DATE_FORMAT, "2020-02-22"));
+	@Test(expected = Exception.class)
+	public void testInvalid() throws JAXBException, XMLStreamException, IOException, SAXException {
+		ValidationPolicyFacade.newFacade().getValidationPolicy("src/test/resources/invalid-policy.xml");
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testException() {
-		DateUtils.parseDate(DateUtils.DEFAULT_DATE_FORMAT, "20-2020-02");
+	@Test
+	public void testValid() throws Exception {
+		assertNotNull(ValidationPolicyFacade.newFacade().getDefaultValidationPolicy());
 	}
 
 }

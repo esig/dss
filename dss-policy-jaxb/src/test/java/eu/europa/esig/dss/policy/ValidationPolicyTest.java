@@ -18,22 +18,25 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.process.bbb;
+package eu.europa.esig.dss.policy;
 
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 
-import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
-import eu.europa.esig.jaxb.policy.ConstraintsParameters;
-import eu.europa.esig.jaxb.policy.ValidationPolicyFacade;
+import org.junit.Test;
 
-public class LoadPolicyUtils {
+import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 
-	public static EtsiValidationPolicy loadPolicy() throws Exception {
-		ConstraintsParameters policyJaxB = ValidationPolicyFacade.newFacade().unmarshall(new File("src/main/resources/policy/test_constraint.xml"));
-		assertNotNull(policyJaxB);
-		return new EtsiValidationPolicy(policyJaxB);
+public class ValidationPolicyTest {
+
+	@Test
+	public void test1() throws Exception {
+		ConstraintsParameters constraints = ValidationPolicyFacade.newFacade().unmarshall(new File("src/main/resources/policy/constraint.xml"));
+		assertNotNull(constraints);
+
+		EtsiValidationPolicy policy = new EtsiValidationPolicy(constraints);
+		assertNotNull(policy);
 	}
 
 }

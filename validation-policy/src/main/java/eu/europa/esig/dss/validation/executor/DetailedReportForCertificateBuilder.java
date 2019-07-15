@@ -30,7 +30,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.Context;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.qualification.certificate.CertificateQualificationBlock;
 
 public class DetailedReportForCertificateBuilder extends AbstractDetailedReportBuilder {

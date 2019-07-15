@@ -23,7 +23,7 @@
 						</goals>
 						<configuration>
 							<schemaDirectory>src/main/resources/xsd</schemaDirectory>
-							<generatePackage>eu.europa.esig.jaxb.policy</generatePackage>
+							<generatePackage>eu.europa.esig.dss.policy.jaxb</generatePackage>
 							<schemaIncludes>
 								<schemaInclude>policy.xsd</schemaInclude>
 							</schemaIncludes>

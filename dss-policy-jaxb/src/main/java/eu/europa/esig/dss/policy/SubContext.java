@@ -18,26 +18,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss;
+package eu.europa.esig.dss.policy;
 
-import static org.junit.Assert.assertNotNull;
+public enum SubContext {
 
-import java.io.FileInputStream;
-
-import org.junit.Test;
-
-import eu.europa.esig.dss.validation.ValidationResourceManager;
-
-public class LoadPolicyTest {
-
-	@Test(expected = DSSException.class)
-	public void testInvalid() {
-		ValidationResourceManager.load("src/test/resources/invalid-policy.xml");
-	}
-
-	@Test
-	public void testValid() throws Exception {
-		assertNotNull(ValidationResourceManager.loadPolicyData(new FileInputStream("src/test/resources/constraint.xml")));
-	}
-
+	SIGNING_CERT, CA_CERTIFICATE
 }

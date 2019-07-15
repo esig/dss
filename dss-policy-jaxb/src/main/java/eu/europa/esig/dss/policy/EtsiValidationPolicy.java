@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.policy;
+package eu.europa.esig.dss.policy;
 
 import java.util.Date;
 import java.util.List;
@@ -27,26 +27,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.Context;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.jaxb.policy.Algo;
-import eu.europa.esig.jaxb.policy.AlgoExpirationDate;
-import eu.europa.esig.jaxb.policy.BasicSignatureConstraints;
-import eu.europa.esig.jaxb.policy.CertificateConstraints;
-import eu.europa.esig.jaxb.policy.ConstraintsParameters;
-import eu.europa.esig.jaxb.policy.ContainerConstraints;
-import eu.europa.esig.jaxb.policy.CryptographicConstraint;
-import eu.europa.esig.jaxb.policy.EIDAS;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
-import eu.europa.esig.jaxb.policy.Model;
-import eu.europa.esig.jaxb.policy.ModelConstraint;
-import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
-import eu.europa.esig.jaxb.policy.RevocationConstraints;
-import eu.europa.esig.jaxb.policy.SignatureConstraints;
-import eu.europa.esig.jaxb.policy.SignedAttributesConstraints;
-import eu.europa.esig.jaxb.policy.TimeConstraint;
-import eu.europa.esig.jaxb.policy.TimestampConstraints;
-import eu.europa.esig.jaxb.policy.UnsignedAttributesConstraints;
-import eu.europa.esig.jaxb.policy.ValueConstraint;
+import eu.europa.esig.dss.policy.jaxb.Algo;
+import eu.europa.esig.dss.policy.jaxb.AlgoExpirationDate;
+import eu.europa.esig.dss.policy.jaxb.BasicSignatureConstraints;
+import eu.europa.esig.dss.policy.jaxb.CertificateConstraints;
+import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
+import eu.europa.esig.dss.policy.jaxb.ContainerConstraints;
+import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
+import eu.europa.esig.dss.policy.jaxb.EIDAS;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.policy.jaxb.Model;
+import eu.europa.esig.dss.policy.jaxb.ModelConstraint;
+import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.policy.jaxb.RevocationConstraints;
+import eu.europa.esig.dss.policy.jaxb.SignatureConstraints;
+import eu.europa.esig.dss.policy.jaxb.SignedAttributesConstraints;
+import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
+import eu.europa.esig.dss.policy.jaxb.TimestampConstraints;
+import eu.europa.esig.dss.policy.jaxb.UnsignedAttributesConstraints;
+import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
 
 /**
  * This class encapsulates the constraint file that controls the policy to be used during the validation process. It
@@ -82,17 +81,17 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		AlgoExpirationDate algoExpirationDate = signatureCryptographicConstraint.getAlgoExpirationDate();
 		String dateFormat = DateUtils.DEFAULT_DATE_FORMAT;
 		if (algoExpirationDate != null) {
-			if (Utils.isStringNotEmpty(algoExpirationDate.getFormat())) {
+			if (algoExpirationDate.getFormat() != null) {
 				dateFormat = algoExpirationDate.getFormat();
 			}
 			List<Algo> algos = algoExpirationDate.getAlgo();
 			String foundExpirationDate = null;
 			for (Algo algo : algos) {
-				if (Utils.areStringsEqualIgnoreCase(algo.getValue(), algorithm)) {
+				if (algo.getValue().equalsIgnoreCase(algorithm)) {
 					foundExpirationDate = algo.getDate();
 				}
 			}
-			if (Utils.isStringNotEmpty(foundExpirationDate)) {
+			if (foundExpirationDate != null) {
 				return DateUtils.parseDate(dateFormat, foundExpirationDate);
 			}
 		}
@@ -962,4 +961,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		}
 		return currentModel;
 	}
+
+	@Override
+	public SignatureConstraints getSignatureConstraints() {
+		return policy.getSignatureConstraints();
+	}
+
+	@Override
+	public CryptographicConstraint getCryptographic() {
+		return policy.getCryptographic();
+	}
+
 }

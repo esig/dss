@@ -5,11 +5,11 @@ import java.util.Date;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Context;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.DigestCryptographicCheck;
-import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 
 public class MessageImprintDigestAlgorithmValidation extends DigestAlgorithmAcceptanceValidation {
 

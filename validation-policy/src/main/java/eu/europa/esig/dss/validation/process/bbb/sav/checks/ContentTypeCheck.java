@@ -24,9 +24,9 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.process.bbb.AbstractValueCheckItem;
-import eu.europa.esig.jaxb.policy.ValueConstraint;
 
 public class ContentTypeCheck extends AbstractValueCheckItem<XmlSAV> {
 

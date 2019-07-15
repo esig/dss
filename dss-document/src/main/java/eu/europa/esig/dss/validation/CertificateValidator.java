@@ -23,13 +23,13 @@ package eu.europa.esig.dss.validation;
 import java.util.Date;
 import java.util.Objects;
 
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
+import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.validation.executor.CertificateProcessExecutor;
-import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 
 public class CertificateValidator {
 
@@ -55,9 +55,13 @@ public class CertificateValidator {
 	}
 
 	public CertificateReports validate() {
-		final ConstraintsParameters validationPolicyJaxb = ValidationResourceManager.loadPolicyData(null);
-		final ValidationPolicy validationPolicy = new EtsiValidationPolicy(validationPolicyJaxb);
-		return validate(validationPolicy);
+		ValidationPolicy defaultPolicy = null;
+		try {
+			defaultPolicy = ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+		} catch (Exception e) {
+			throw new DSSException("Unable to load the default policy", e);
+		}
+		return validate(defaultPolicy);
 	}
 
 	public CertificateReports validate(ValidationPolicy validationPolicy) {

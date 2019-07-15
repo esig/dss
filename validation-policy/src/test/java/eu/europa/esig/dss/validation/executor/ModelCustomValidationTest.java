@@ -20,13 +20,14 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
+import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.ValidationPolicyFacade;
+import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
+import eu.europa.esig.dss.policy.jaxb.Model;
+import eu.europa.esig.dss.policy.jaxb.ModelConstraint;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
-import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.jaxb.policy.ConstraintsParameters;
-import eu.europa.esig.jaxb.policy.Model;
-import eu.europa.esig.jaxb.policy.ModelConstraint;
-import eu.europa.esig.jaxb.policy.ValidationPolicyFacade;
 
 /**
  * JUnit test implementation for model based custom validation.
@@ -81,7 +82,7 @@ public class ModelCustomValidationTest extends ModelAbstractlValidation {
 	
 	
 	private final TestCase testCase;
-	private final EtsiValidationPolicy policy;
+	private final ValidationPolicy policy;
 	private final XmlDiagnosticData diagnosticData;
 	
 	/**

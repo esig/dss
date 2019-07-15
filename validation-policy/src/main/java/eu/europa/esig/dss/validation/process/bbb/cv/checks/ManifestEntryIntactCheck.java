@@ -2,8 +2,8 @@ package eu.europa.esig.dss.validation.process.bbb.cv.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.MessageTag;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class ManifestEntryIntactCheck extends ReferenceDataIntactCheck {
 

@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.tsl.TSLValidationResult;
 import eu.europa.esig.dss.utils.Utils;
@@ -81,7 +82,7 @@ public class TSLValidator implements Callable<TSLValidationResult> {
 		xPathQueryHolders.clear();
 		xPathQueryHolders.add(new XPathQueryHolder());
 
-		Reports reports = xmlDocumentValidator.validateDocument(TSLValidator.class.getResourceAsStream("/tsl-constraint.xml"));
+		Reports reports = xmlDocumentValidator.validateDocument(ValidationPolicyFacade.newFacade().getTrustedListValidationPolicy());
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		Indication indication = simpleReport.getIndication(simpleReport.getFirstSignatureId());

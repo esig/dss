@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.jaxb.policy;
+package eu.europa.esig.dss.policy;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -8,8 +8,6 @@ import javax.xml.bind.JAXBException;
 
 import org.junit.Test;
 import org.xml.sax.SAXException;
-
-import eu.europa.esig.jaxb.policy.ValidationPolicyXmlDefiner;
 
 public class ValidationPolicyXmlDefinerTest {
 
