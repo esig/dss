@@ -43,14 +43,17 @@ public class PdfDocTimestampInfo extends PdfCMSInfo implements PdfSignatureOrDoc
 
 	/**
 	 * @param validationCertPool
-	 * @param dssDictionary
-	 *            the DSS dictionary
+	 *                                 the certificate pool
+	 * @param signatureDictionary
+	 *                                 the signature dictionary
+	 * @param timestampedDssDictionary
+	 *                                 the covered DSS dictionary
 	 * @param cms
-	 *            the CMS (CAdES) bytes
+	 *                                 the CMS (CAdES) bytes
+	 * @param signedContent
+	 *                                 the signed data
 	 * @param coverCompleteRevision
-	 *            true if the signature covers all bytes
-	 * @param isArchiveTimestamp
-	 *            true if the timestamp is an archive timestamp
+	 *                                 true if the signature covers all bytes
 	 */
 	public PdfDocTimestampInfo(CertificatePool validationCertPool, PdfSigDict signatureDictionary,
 			PdfDssDict timestampedDssDictionary, byte[] cms, byte[] signedContent, boolean coverCompleteRevision) {
