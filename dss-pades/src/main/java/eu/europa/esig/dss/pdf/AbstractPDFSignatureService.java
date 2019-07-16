@@ -287,18 +287,27 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 			Map<Long, CertificateToken> storedCertificates = callback.getStoredCertificates();
 			for (Entry<Long, CertificateToken> certEntry : storedCertificates.entrySet()) {
-				result.put(getTokenDigest(certEntry.getValue()), certEntry.getKey());
+				String tokenKey = getTokenDigest(certEntry.getValue());
+				if (!result.containsKey(tokenKey)) { // keeps the really first occurrence
+					result.put(tokenKey, certEntry.getKey());
+				}
 			}
 
 			Map<Long, BasicOCSPResp> storedOcspResps = callback.getStoredOcspResps();
 			for (Entry<Long, BasicOCSPResp> ocspEntry : storedOcspResps.entrySet()) {
 				final OCSPResp ocspResp = DSSRevocationUtils.fromBasicToResp(ocspEntry.getValue());
-				result.put(Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, DSSRevocationUtils.getEncoded(ocspResp))), ocspEntry.getKey());
+				String tokenKey = Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, DSSRevocationUtils.getEncoded(ocspResp)));
+				if (!result.containsKey(tokenKey)) { // keeps the really first occurrence
+					result.put(tokenKey, ocspEntry.getKey());
+				}
 			}
 
 			Map<Long, byte[]> storedCrls = callback.getStoredCrls();
 			for (Entry<Long, byte[]> crlEntry : storedCrls.entrySet()) {
-				result.put(Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, crlEntry.getValue())), crlEntry.getKey());
+				String tokenKey = Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, crlEntry.getValue()));
+				if (!result.containsKey(tokenKey)) { // keeps the really first occurrence
+					result.put(tokenKey, crlEntry.getKey());
+				}
 			}
 		}
 		return result;

@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.pades.signature;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -83,8 +83,9 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 
 		signatures = pdfDocumentValidator.getSignatures();
 
-		// create DSS dictionary
-		List<DSSDictionaryCallback> callbacks = new ArrayList<DSSDictionaryCallback>();
+		// create DSS dictionary (order is important to know the original object
+		// streams)
+		List<DSSDictionaryCallback> callbacks = new LinkedList<DSSDictionaryCallback>();
 		for (final AdvancedSignature signature : signatures) {
 			if (signature instanceof PAdESSignature) {
 				callbacks.add(validate((PAdESSignature) signature));
@@ -102,7 +103,7 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 		return Utils.isCollectionEmpty(signatureTimestamps) && Utils.isCollectionEmpty(archiveTimestamps);
 	}
 
-	private DSSDictionaryCallback validate(PAdESSignature signature) {
+	protected DSSDictionaryCallback validate(PAdESSignature signature) {
 
 		ValidationContext validationContext = signature.getSignatureValidationContext(certificateVerifier);
 
