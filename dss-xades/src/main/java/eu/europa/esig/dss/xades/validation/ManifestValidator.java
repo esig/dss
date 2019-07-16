@@ -22,7 +22,6 @@ package eu.europa.esig.dss.xades.validation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
@@ -212,18 +211,13 @@ public class ManifestValidator {
 			return false;
 		}
 	}
-	
-	private List<Transform> getTransforms(List<String> transformNames) {
-		try {
-			List<Transform> transforms = new ArrayList<Transform>();
-			for (String algorithm : transformNames) {
-				transforms.add(new Transform(signatureElement.getOwnerDocument(), algorithm));
-			}
-			return transforms;
-		} catch (InvalidTransformException e) {
-			LOG.warn("The provided transform algorithm [{}] is not supported!");
-			return Collections.emptyList();
+
+	private List<Transform> getTransforms(List<String> transformNames) throws InvalidTransformException {
+		List<Transform> transforms = new ArrayList<Transform>();
+		for (String algorithm : transformNames) {
+			transforms.add(new Transform(signatureElement.getOwnerDocument(), algorithm));
 		}
+		return transforms;
 	}
 	
 	private byte[] getBytesAfterTransforms(Node nodeToTransform, final List<Transform> transforms) throws DSSException {

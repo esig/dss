@@ -159,7 +159,7 @@ public class OCSPRef extends RevocationRef {
 		result = prime * result + ((digest == null) ? 0 : digest.hashCode());
 		result = prime * result + ((producedAt == null) ? 0 : producedAt.hashCode());
 		result = prime * result + ((responderId.getName() == null) ? 0 : responderId.getName().hashCode());
-		result = prime * result + ((responderId.getKey() == null) ? 0 : responderId.getKey().hashCode());
+		result = prime * result + ((responderId.getKey() == null) ? 0 : Arrays.hashCode(responderId.getKey()));
 		return result;
 	}
 	
