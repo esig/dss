@@ -23,19 +23,25 @@ package eu.europa.esig.dss.signature;
 import java.io.Serializable;
 import java.util.List;
 
-import eu.europa.esig.dss.AbstractSerializableSignatureParameters;
-import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.RemoteDocument;
+import eu.europa.esig.dss.RemoteSignatureParameters;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 /**
- * This interface {@code MultipleDocumentsSignatureService} provides operations for the signature creation and for its
- * extension.
- *
+ * This interface {@code RemoteMultipleDocumentsSignatureService} provides operations for the signature creation.
+ * 
+ * This interface allows to sign a set of documents.
+ * 
+ * Supported implementations :
+ * -XAdES Enveloping
+ * -XAdES Detached
+ * -ASiC-S/E with XAdES
+ * -ASiC-S/E with CAdES
+ * 
  */
-public interface MultipleDocumentsSignatureService<SP extends AbstractSerializableSignatureParameters> extends Serializable {
+public interface RemoteMultipleDocumentsSignatureService extends Serializable {
 
 	/**
 	 * Retrieves the bytes of the data that need to be signed based on the {@code toSignDocuments} and
@@ -52,7 +58,7 @@ public interface MultipleDocumentsSignatureService<SP extends AbstractSerializab
 	 * @throws DSSException
 	 *             if an error occurred
 	 */
-	ToBeSigned getDataToSign(final List<DSSDocument> toSignDocuments, final SP parameters) throws DSSException;
+	ToBeSigned getDataToSign(final List<RemoteDocument> toSignDocuments, final RemoteSignatureParameters parameters) throws DSSException;
 
 	/**
 	 * Signs the toSignDocuments with the provided signatureValue.
@@ -67,7 +73,7 @@ public interface MultipleDocumentsSignatureService<SP extends AbstractSerializab
 	 * @throws DSSException
 	 *             if an error occurred
 	 */
-	DSSDocument signDocument(final List<DSSDocument> toSignDocuments, final SP parameters, SignatureValue signatureValue) throws DSSException;
+	RemoteDocument signDocument(final List<RemoteDocument> toSignDocuments, final RemoteSignatureParameters parameters, SignatureValue signatureValue) throws DSSException;
 
 	/**
 	 * Extends the level of the signatures in the {@code toExtendDocument}
@@ -80,8 +86,6 @@ public interface MultipleDocumentsSignatureService<SP extends AbstractSerializab
 	 * @throws DSSException
 	 *             if an error occurred
 	 */
-	DSSDocument extendDocument(final DSSDocument toExtendDocument, final SP parameters) throws DSSException;
-
-	TimestampToken getContentTimestamp(List<DSSDocument> toSignDocuments, SP parameters);
+	RemoteDocument extendDocument(final RemoteDocument toExtendDocument, final RemoteSignatureParameters parameters) throws DSSException;
 
 }

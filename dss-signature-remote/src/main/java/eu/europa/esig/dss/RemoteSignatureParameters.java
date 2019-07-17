@@ -21,7 +21,10 @@
 package eu.europa.esig.dss;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
@@ -29,27 +32,31 @@ import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 
-/**
- * Parameters for a Signature creation/extension
- */
 @SuppressWarnings("serial")
-public abstract class AbstractSerializableSignatureParameters implements Serializable {
+public class RemoteSignatureParameters implements Serializable {
+
+	private RemoteCertificate signingCertificate;
+	private List<RemoteCertificate> certificateChain = new ArrayList<RemoteCertificate>();
 
 	/**
-	 * This variable indicates if it is possible to sign with an expired certificate.
+	 * The documents to be signed
 	 */
-	private boolean signWithExpiredCertificate = false;
+	private List<RemoteDocument> detachedContents;
 
 	/**
-	 * This variable indicates if it is possible to generate ToBeSigned data without
-	 * the signing certificate.
+	 * ASiC Container type
 	 */
-	private boolean generateTBSWithoutCertificate = false;
+	private ASiCContainerType asicContainerType;
 
 	/**
 	 * This variable indicates the expected signature level
 	 */
 	private SignatureLevel signatureLevel;
+
+	/**
+	 * The object representing the parameters related to B- level.
+	 */
+	private BLevelParameters bLevelParams = new BLevelParameters();
 
 	/**
 	 * This variable indicates the expected signature packaging
@@ -62,29 +69,19 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	private SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.RSA_SHA256;
 
 	/**
-	 * The encryption algorithm shall be automatically extracted from the signing token.
-	 */
-	private EncryptionAlgorithm encryptionAlgorithm = signatureAlgorithm.getEncryptionAlgorithm();
-
-	/**
 	 * XAdES: The digest algorithm used to hash ds:SignedInfo.
 	 */
 	private DigestAlgorithm digestAlgorithm = signatureAlgorithm.getDigestAlgorithm();
 
 	/**
-	 * XAdES: The digest algorithm used to hash ds:Reference.
+	 * The encryption algorithm shall be automatically extracted from the signing token.
 	 */
-	private DigestAlgorithm referenceDigestAlgorithm;
+	private EncryptionAlgorithm encryptionAlgorithm = signatureAlgorithm.getEncryptionAlgorithm();
 
 	/**
 	 * The mask generation function
 	 */
 	private MaskGenerationFunction maskGenerationFunction = signatureAlgorithm.getMaskGenerationFunction();
-
-	/**
-	 * The object representing the parameters related to B- level.
-	 */
-	private BLevelParameters bLevelParams = new BLevelParameters();
 
 	/**
 	 * The object representing the parameters related to the content timestamp (Baseline-B)
@@ -102,43 +99,43 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	private TimestampParameters archiveTimestampParameters;
 
 	/**
-	 * Indicates if it is possible to sign with an expired certificate. The default value is false.
-	 *
-	 * @return true if signature with an expired certificate is allowed
+	 * This variable indicates if it is possible to sign with an expired certificate.
 	 */
-	public boolean isSignWithExpiredCertificate() {
-		return signWithExpiredCertificate;
+	private boolean signWithExpiredCertificate = false;
+
+	public RemoteSignatureParameters() {
 	}
 
-	/**
-	 * Allows to change the default behavior regarding the use of an expired certificate.
-	 *
-	 * @param signWithExpiredCertificate
-	 *            true if signature with an expired certificate is allowed
-	 */
-	public void setSignWithExpiredCertificate(final boolean signWithExpiredCertificate) {
-		this.signWithExpiredCertificate = signWithExpiredCertificate;
+	public RemoteCertificate getSigningCertificate() {
+		return signingCertificate;
 	}
 
-	/**
-	 * Indicates if it is possible to generate ToBeSigned data without the signing certificate.
-	 * The default values is false.
-	 *
-	 * @return true if signing certificate is not required when generating ToBeSigned data.
-	 */
-	public boolean isGenerateTBSWithoutCertificate() {
-		return generateTBSWithoutCertificate;
+	public void setSigningCertificate(RemoteCertificate signingCertificate) {
+		this.signingCertificate = signingCertificate;
 	}
 
-	/**
-	 * Allows to change the default behaviour regarding the requirements of signing certificate
-	 * to generate ToBeSigned data.
-	 *
-	 * @param generateTBSWithoutCertificate
-	 *            true if it should be possible to generate ToBeSigned data without certificate.
-	 */
-	public void setGenerateTBSWithoutCertificate(final boolean generateTBSWithoutCertificate) {
-		this.generateTBSWithoutCertificate = generateTBSWithoutCertificate;
+	public List<RemoteCertificate> getCertificateChain() {
+		return certificateChain;
+	}
+
+	public void setCertificateChain(List<RemoteCertificate> certificateChain) {
+		this.certificateChain = certificateChain;
+	}
+
+	public List<RemoteDocument> getDetachedContents() {
+		return detachedContents;
+	}
+
+	public void setDetachedContents(List<RemoteDocument> detachedContents) {
+		this.detachedContents = detachedContents;
+	}
+
+	public ASiCContainerType getAsicContainerType() {
+		return asicContainerType;
+	}
+
+	public void setAsicContainerType(ASiCContainerType asicContainerType) {
+		this.asicContainerType = asicContainerType;
 	}
 
 	/**
@@ -161,6 +158,25 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 			throw new NullPointerException("signatureLevel");
 		}
 		this.signatureLevel = signatureLevel;
+	}
+
+	/**
+	 * Get Baseline B parameters (signed properties)
+	 * 
+	 * @return the Baseline B parameters
+	 */
+	public BLevelParameters bLevel() {
+		return bLevelParams;
+	}
+
+	/**
+	 * Set the Baseline B parameters (signed properties)
+	 * 
+	 * @param bLevelParams
+	 *            the baseline B properties
+	 */
+	public void setBLevelParams(BLevelParameters bLevelParams) {
+		this.bLevelParams = bLevelParams;
 	}
 
 	/**
@@ -243,42 +259,6 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 		return signatureAlgorithm;
 	}
 
-	public MaskGenerationFunction getMaskGenerationFunction() {
-		return maskGenerationFunction;
-	}
-
-	/**
-	 * Get the digest algorithm for ds:Reference or message-digest attribute
-	 * 
-	 * @return the digest algorithm for ds:Reference or message-digest attribute
-	 */
-	public DigestAlgorithm getReferenceDigestAlgorithm() {
-		return referenceDigestAlgorithm;
-	}
-
-	public void setReferenceDigestAlgorithm(DigestAlgorithm referenceDigestAlgorithm) {
-		this.referenceDigestAlgorithm = referenceDigestAlgorithm;
-	}
-
-	/**
-	 * Get Baseline B parameters (signed properties)
-	 * 
-	 * @return the Baseline B parameters
-	 */
-	public BLevelParameters bLevel() {
-		return bLevelParams;
-	}
-
-	/**
-	 * Set the Baseline B parameters (signed properties)
-	 * 
-	 * @param bLevelParams
-	 *            the baseline B properties
-	 */
-	public void setBLevelParams(BLevelParameters bLevelParams) {
-		this.bLevelParams = bLevelParams;
-	}
-
 	/**
 	 * Get the parameters for content timestamp (Baseline-B)
 	 * 
@@ -345,12 +325,30 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 		this.archiveTimestampParameters = archiveTimestampParameters;
 	}
 
+	/**
+	 * Indicates if it is possible to sign with an expired certificate. The default value is false.
+	 *
+	 * @return true if signature with an expired certificate is allowed
+	 */
+	public boolean isSignWithExpiredCertificate() {
+		return signWithExpiredCertificate;
+	}
+
+	/**
+	 * Allows to change the default behavior regarding the use of an expired certificate.
+	 *
+	 * @param signWithExpiredCertificate
+	 *            true if signature with an expired certificate is allowed
+	 */
+	public void setSignWithExpiredCertificate(final boolean signWithExpiredCertificate) {
+		this.signWithExpiredCertificate = signWithExpiredCertificate;
+	}
+
 	@Override
 	public String toString() {
-		return "AbstractSerializableSignatureParameters [signWithExpiredCertificate=" + signWithExpiredCertificate + ", generateTBSWithoutCertificate="
-				+ generateTBSWithoutCertificate + ", signatureLevel=" + signatureLevel + ", signaturePackaging=" + signaturePackaging + ", signatureAlgorithm="
-				+ signatureAlgorithm + ", encryptionAlgorithm=" + encryptionAlgorithm + ", digestAlgorithm=" + digestAlgorithm + ", referenceDigestAlgorithm="
-				+ referenceDigestAlgorithm + ", maskGenerationFunction=" + maskGenerationFunction + ", bLevelParams=" + bLevelParams
+		return "AbstractSerializableSignatureParameters [signWithExpiredCertificate=" + signWithExpiredCertificate + ", signatureLevel=" + signatureLevel 
+				+ ", signaturePackaging=" + signaturePackaging + ", signatureAlgorithm=" + signatureAlgorithm + ", encryptionAlgorithm=" 
+				+ encryptionAlgorithm + ", digestAlgorithm=" + digestAlgorithm + ", maskGenerationFunction=" + maskGenerationFunction + ", bLevelParams=" + bLevelParams
 				+ ", contentTimestampParameters=" + contentTimestampParameters + ", signatureTimestampParameters=" + signatureTimestampParameters
 				+ ", archiveTimestampParameters=" + archiveTimestampParameters + "]";
 	}
@@ -364,9 +362,7 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 		result = prime * result + ((contentTimestampParameters == null) ? 0 : contentTimestampParameters.hashCode());
 		result = prime * result + ((digestAlgorithm == null) ? 0 : digestAlgorithm.hashCode());
 		result = prime * result + ((encryptionAlgorithm == null) ? 0 : encryptionAlgorithm.hashCode());
-		result = prime * result + (generateTBSWithoutCertificate ? 1231 : 1237);
 		result = prime * result + ((maskGenerationFunction == null) ? 0 : maskGenerationFunction.hashCode());
-		result = prime * result + ((referenceDigestAlgorithm == null) ? 0 : referenceDigestAlgorithm.hashCode());
 		result = prime * result + (signWithExpiredCertificate ? 1231 : 1237);
 		result = prime * result + ((signatureAlgorithm == null) ? 0 : signatureAlgorithm.hashCode());
 		result = prime * result + ((signatureLevel == null) ? 0 : signatureLevel.hashCode());
@@ -386,7 +382,7 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		AbstractSerializableSignatureParameters other = (AbstractSerializableSignatureParameters) obj;
+		RemoteSignatureParameters other = (RemoteSignatureParameters) obj;
 		if (archiveTimestampParameters == null) {
 			if (other.archiveTimestampParameters != null) {
 				return false;
@@ -414,13 +410,7 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 		if (encryptionAlgorithm != other.encryptionAlgorithm) {
 			return false;
 		}
-		if (generateTBSWithoutCertificate != other.generateTBSWithoutCertificate) {
-			return false;
-		}
 		if (maskGenerationFunction != other.maskGenerationFunction) {
-			return false;
-		}
-		if (referenceDigestAlgorithm != other.referenceDigestAlgorithm) {
 			return false;
 		}
 		if (signWithExpiredCertificate != other.signWithExpiredCertificate) {

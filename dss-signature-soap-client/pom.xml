@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -8,32 +6,38 @@
 		<artifactId>sd-dss</artifactId>
 		<version>5.5-SNAPSHOT</version>
 	</parent>
-	
-	<artifactId>dss-model</artifactId>
-	<name>DSS Model</name>
-	<description>DSS Model contains the data model representation for DSS</description>
-	
+
+	<artifactId>dss-signature-soap-client</artifactId>
+	<name>DSS Soap Client</name>
+	<description>DSS Soap Client contains the SOAP interfaces</description>
+
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-enumerations</artifactId>
+			<artifactId>dss-signature-remote</artifactId>
 		</dependency>
-		
-		<!-- No other dependencies than in scope test  -->
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.bouncycastle</groupId>
-			<artifactId>bcpkix-jdk15on</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
+
+	<profiles>
+		<profile>
+            <id>jdk19-plus</id>
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+            
+            <dependencies>
+	            <dependency>
+				    <groupId>com.sun.xml.ws</groupId>
+				    <artifactId>jaxws-ri</artifactId>
+			    	<type>pom</type>
+				</dependency>
+            </dependencies>
+    	</profile>
+    </profiles>
 </project>

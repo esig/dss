@@ -6,13 +6,14 @@
 		<version>5.5-SNAPSHOT</version>
 	</parent>
 	
-	<name>DSS Server signing SOAP Service</name>
-	<artifactId>dss-server-signing-soap</artifactId>
+	<artifactId>dss-signature-rest</artifactId>
+	<name>DSS REST</name>
+	<description>DSS REST contains the implementation of the REST service (defined in dss-rest-client)</description>
 
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-server-signing-soap-client</artifactId>
+			<artifactId>dss-signature-rest-client</artifactId>
 		</dependency>
 	</dependencies>
 </project>

@@ -28,10 +28,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlMimeType;
 
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
+import eu.europa.esig.dss.validation.reports.exception.DSSReportException;
 import eu.europa.esig.validationreport.ValidationReportFacade;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
@@ -109,7 +109,7 @@ public class WSReportsDTO implements Serializable {
 			try {
 				validationReport = ValidationReportFacade.newFacade().unmarshall(validationReportaDataHandler.getInputStream());
 			} catch (Exception e) {
-				throw new DSSException("Unable to unmarshall ValidationReportType", e);
+				throw new DSSReportException("Unable to unmarshall ValidationReportType", e);
 			}
 		}
 		return validationReport;

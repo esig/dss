@@ -5,14 +5,17 @@
 		<artifactId>sd-dss</artifactId>
 		<version>5.5-SNAPSHOT</version>
 	</parent>
-	
-	<name>DSS Server signing SOAP Service</name>
-	<artifactId>dss-server-signing-soap</artifactId>
+	<artifactId>dss-validation-common</artifactId>
+	<name>DSS Validation Common</name>
 
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-server-signing-soap-client</artifactId>
+			<artifactId>dss-reports</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-common-remote-dto</artifactId>
 		</dependency>
 	</dependencies>
 </project>

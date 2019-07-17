@@ -9,6 +9,10 @@
 	<artifactId>dss-server-signing-common</artifactId>
 
 	<dependencies>
+	  	<dependency>
+	    	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+	  		<artifactId>dss-common-remote-dto</artifactId>
+	  	</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-token</artifactId>

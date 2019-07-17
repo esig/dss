@@ -1,21 +1,24 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  
   <parent>
     <groupId>eu.europa.ec.joinup.sd-dss</groupId>
     <artifactId>sd-dss</artifactId>
     <version>5.5-SNAPSHOT</version>
   </parent>
-  <artifactId>dss-validation-soap</artifactId>
-	<name>DSS Validation SOAP Service</name>
+  
+  <artifactId>dss-signature-rest-client</artifactId>
+  <name>DSS REST Client</name>
+  <description>DSS REST Client contains the REST interfaces</description>
   
   <dependencies>
   	<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-validation-soap-client</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-signature-remote</artifactId>
-		</dependency>
+    	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+    	<artifactId>dss-signature-remote</artifactId>
+  	</dependency>
+	<dependency>
+		<groupId>javax.ws.rs</groupId>
+		<artifactId>javax.ws.rs-api</artifactId>
+	</dependency>
   </dependencies>
 </project>
