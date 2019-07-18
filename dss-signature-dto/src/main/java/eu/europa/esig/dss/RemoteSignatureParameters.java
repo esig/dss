@@ -56,7 +56,7 @@ public class RemoteSignatureParameters implements Serializable {
 	/**
 	 * The object representing the parameters related to B- level.
 	 */
-	private BLevelParameters bLevelParams = new BLevelParameters();
+	private RemoteBLevelParameters bLevelParams = new RemoteBLevelParameters();
 
 	/**
 	 * This variable indicates the expected signature packaging
@@ -86,17 +86,17 @@ public class RemoteSignatureParameters implements Serializable {
 	/**
 	 * The object representing the parameters related to the content timestamp (Baseline-B)
 	 */
-	private TimestampParameters contentTimestampParameters;
+	private RemoteTimestampParameters contentTimestampParameters;
 
 	/**
 	 * The object representing the parameters related to the signature timestamp (Baseline-T)
 	 */
-	private TimestampParameters signatureTimestampParameters;
+	private RemoteTimestampParameters signatureTimestampParameters;
 
 	/**
 	 * The object representing the parameters related to the archive timestamp (Baseline-LTA)
 	 */
-	private TimestampParameters archiveTimestampParameters;
+	private RemoteTimestampParameters archiveTimestampParameters;
 
 	/**
 	 * This variable indicates if it is possible to sign with an expired certificate.
@@ -165,7 +165,7 @@ public class RemoteSignatureParameters implements Serializable {
 	 * 
 	 * @return the Baseline B parameters
 	 */
-	public BLevelParameters bLevel() {
+	public RemoteBLevelParameters bLevel() {
 		return bLevelParams;
 	}
 
@@ -175,7 +175,7 @@ public class RemoteSignatureParameters implements Serializable {
 	 * @param bLevelParams
 	 *            the baseline B properties
 	 */
-	public void setBLevelParams(BLevelParameters bLevelParams) {
+	public void setBLevelParams(RemoteBLevelParameters bLevelParams) {
 		this.bLevelParams = bLevelParams;
 	}
 
@@ -264,9 +264,9 @@ public class RemoteSignatureParameters implements Serializable {
 	 * 
 	 * @return the parameters to produce a content timestamp
 	 */
-	public TimestampParameters getContentTimestampParameters() {
+	public RemoteTimestampParameters getContentTimestampParameters() {
 		if (contentTimestampParameters == null) {
-			contentTimestampParameters = new TimestampParameters();
+			contentTimestampParameters = new RemoteTimestampParameters();
 		}
 		return contentTimestampParameters;
 	}
@@ -277,7 +277,7 @@ public class RemoteSignatureParameters implements Serializable {
 	 * @param contentTimestampParameters
 	 *            the parameters to produce the content timestamp
 	 */
-	public void setContentTimestampParameters(TimestampParameters contentTimestampParameters) {
+	public void setContentTimestampParameters(RemoteTimestampParameters contentTimestampParameters) {
 		this.contentTimestampParameters = contentTimestampParameters;
 	}
 
@@ -286,9 +286,9 @@ public class RemoteSignatureParameters implements Serializable {
 	 * 
 	 * @return the parameters to produce a signature timestamp
 	 */
-	public TimestampParameters getSignatureTimestampParameters() {
+	public RemoteTimestampParameters getSignatureTimestampParameters() {
 		if (signatureTimestampParameters == null) {
-			signatureTimestampParameters = new TimestampParameters();
+			signatureTimestampParameters = new RemoteTimestampParameters();
 		}
 		return signatureTimestampParameters;
 	}
@@ -299,7 +299,7 @@ public class RemoteSignatureParameters implements Serializable {
 	 * @param signatureTimestampParameters
 	 *            the parameters to produce the signature timestamp
 	 */
-	public void setSignatureTimestampParameters(TimestampParameters signatureTimestampParameters) {
+	public void setSignatureTimestampParameters(RemoteTimestampParameters signatureTimestampParameters) {
 		this.signatureTimestampParameters = signatureTimestampParameters;
 	}
 
@@ -308,9 +308,9 @@ public class RemoteSignatureParameters implements Serializable {
 	 * 
 	 * @return the parameters to produce an archive timestamp
 	 */
-	public TimestampParameters getArchiveTimestampParameters() {
+	public RemoteTimestampParameters getArchiveTimestampParameters() {
 		if (archiveTimestampParameters == null) {
-			archiveTimestampParameters = new TimestampParameters();
+			archiveTimestampParameters = new RemoteTimestampParameters();
 		}
 		return archiveTimestampParameters;
 	}
@@ -321,7 +321,7 @@ public class RemoteSignatureParameters implements Serializable {
 	 * @param archiveTimestampParameters
 	 *            the parameters to produce the archive timestamp
 	 */
-	public void setArchiveTimestampParameters(TimestampParameters archiveTimestampParameters) {
+	public void setArchiveTimestampParameters(RemoteTimestampParameters archiveTimestampParameters) {
 		this.archiveTimestampParameters = archiveTimestampParameters;
 	}
 
@@ -346,7 +346,7 @@ public class RemoteSignatureParameters implements Serializable {
 
 	@Override
 	public String toString() {
-		return "AbstractSerializableSignatureParameters [signWithExpiredCertificate=" + signWithExpiredCertificate + ", signatureLevel=" + signatureLevel 
+		return "RemoteSignatureParameters [signWithExpiredCertificate=" + signWithExpiredCertificate + ", signatureLevel=" + signatureLevel 
 				+ ", signaturePackaging=" + signaturePackaging + ", signatureAlgorithm=" + signatureAlgorithm + ", encryptionAlgorithm=" 
 				+ encryptionAlgorithm + ", digestAlgorithm=" + digestAlgorithm + ", maskGenerationFunction=" + maskGenerationFunction + ", bLevelParams=" + bLevelParams
 				+ ", contentTimestampParameters=" + contentTimestampParameters + ", signatureTimestampParameters=" + signatureTimestampParameters

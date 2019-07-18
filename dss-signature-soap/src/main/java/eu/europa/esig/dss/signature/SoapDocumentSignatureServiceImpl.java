@@ -24,11 +24,11 @@ import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.ToBeSigned;
 
 @SuppressWarnings("serial")
-public class SoapDocumentSignatureServiceImpl implements SoapDocumentSignatureService {
+public class SoapDocumentSignatureServiceImpl implements SoapDocumentSignatureService<ToBeSigned> {
 
-	private RemoteDocumentSignatureService service;
+	private RemoteDocumentSignatureService<ToBeSigned> service;
 
-	public void setService(RemoteDocumentSignatureService service) {
+	public void setService(RemoteDocumentSignatureService<ToBeSigned> service) {
 		this.service = service;
 	}
 

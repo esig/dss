@@ -13,7 +13,7 @@
   <dependencies>
   	<dependency>
     	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-  		<artifactId>dss-common-remote-dto</artifactId>
+  		<artifactId>dss-signature-dto</artifactId>
   	</dependency>
   	<dependency>
     	<groupId>eu.europa.ec.joinup.sd-dss</groupId>

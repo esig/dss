@@ -21,18 +21,17 @@
 package eu.europa.esig.dss.signature;
 
 import eu.europa.esig.dss.RemoteSignatureParameters;
-import eu.europa.esig.dss.SignatureValue;
 
 public abstract class AbstractSignDocumentDTO {
 
 	private RemoteSignatureParameters parameters;
-	private SignatureValue signatureValue;
+	private SignatureValueDTO signatureValue;
 	
 	public AbstractSignDocumentDTO() {
 		super();
 	}
 
-	public AbstractSignDocumentDTO(RemoteSignatureParameters parameters, SignatureValue signatureValue) {
+	public AbstractSignDocumentDTO(RemoteSignatureParameters parameters, SignatureValueDTO signatureValue) {
 		super();
 		this.parameters = parameters;
 		this.signatureValue = signatureValue;
@@ -46,11 +45,11 @@ public abstract class AbstractSignDocumentDTO {
 		this.parameters = parameters;
 	}
 
-	public SignatureValue getSignatureValue() {
+	public SignatureValueDTO getSignatureValue() {
 		return signatureValue;
 	}
 
-	public void setSignatureValue(SignatureValue signatureValue) {
+	public void setSignatureValue(SignatureValueDTO signatureValue) {
 		this.signatureValue = signatureValue;
 	}
 

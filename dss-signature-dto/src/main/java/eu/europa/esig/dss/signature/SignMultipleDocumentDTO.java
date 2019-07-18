@@ -25,7 +25,6 @@ import java.util.List;
 
 import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.RemoteSignatureParameters;
-import eu.europa.esig.dss.SignatureValue;
 
 /**
  * This class is a DTO to transfer required objects to execute signDocument method
@@ -41,7 +40,7 @@ public class SignMultipleDocumentDTO extends AbstractSignDocumentDTO implements 
 		super(null, null);
 	}
 
-	public SignMultipleDocumentDTO(List<RemoteDocument> toSignDocuments, RemoteSignatureParameters parameters, SignatureValue signatureValue) {
+	public SignMultipleDocumentDTO(List<RemoteDocument> toSignDocuments, RemoteSignatureParameters parameters, SignatureValueDTO signatureValue) {
 		super(parameters, signatureValue);
 		this.toSignDocuments = toSignDocuments;
 	}

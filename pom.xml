@@ -131,21 +131,23 @@
 		<module>dss-tsl-validation</module>
 		
     	<module>dss-common-remote-dto</module>
+		<module>dss-signature-dto</module>
 		<module>dss-signature-remote</module>
 		<module>dss-signature-rest-client</module>
-		<module>dss-signature-rest</module>
 		<module>dss-signature-soap-client</module>
+		<module>dss-signature-rest</module>
 		<module>dss-signature-soap</module>
 		<module>dss-server-signing-common</module>
 		<module>dss-server-signing-rest-client</module>
-		<module>dss-server-signing-rest</module>
 		<module>dss-server-signing-soap-client</module>
+		<module>dss-server-signing-rest</module>
 		<module>dss-server-signing-soap</module>
+		<module>dss-validation-dto</module>
 		<module>dss-validation-common</module>
 		<module>dss-validation-rest-client</module>
+		<module>dss-validation-soap-client</module>
 		<module>dss-validation-rest</module>
 		<module>dss-validation-soap</module>
-		<module>dss-validation-soap-client</module>
 		
 		<module>dss-cookbook</module>
 
@@ -571,6 +573,11 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-signature-dto</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-signature-rest</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -587,6 +594,11 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-signature-soap-client</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-validation-dto</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

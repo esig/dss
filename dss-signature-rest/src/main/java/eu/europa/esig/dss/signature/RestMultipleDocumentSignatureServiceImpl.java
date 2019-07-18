@@ -24,11 +24,11 @@ import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.ToBeSigned;
 
 @SuppressWarnings("serial")
-public class RestMultipleDocumentSignatureServiceImpl implements RestMultipleDocumentSignatureService {
+public class RestMultipleDocumentSignatureServiceImpl implements RestMultipleDocumentSignatureService<ToBeSigned> {
 
-	private RemoteMultipleDocumentsSignatureService service;
+	private RemoteMultipleDocumentsSignatureService<ToBeSigned> service;
 
-	public void setService(RemoteMultipleDocumentsSignatureService service) {
+	public void setService(RemoteMultipleDocumentsSignatureService<ToBeSigned> service) {
 		this.service = service;
 	}
 

@@ -24,11 +24,18 @@ import java.util.LinkedList;
 import java.util.List;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
+import eu.europa.esig.dss.BLevelParameters;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.Policy;
+import eu.europa.esig.dss.RemoteBLevelParameters;
 import eu.europa.esig.dss.RemoteCertificate;
 import eu.europa.esig.dss.RemoteConverter;
 import eu.europa.esig.dss.RemoteSignatureParameters;
+import eu.europa.esig.dss.RemoteTimestampParameters;
+import eu.europa.esig.dss.SignatureValue;
+import eu.europa.esig.dss.SignerLocation;
+import eu.europa.esig.dss.TimestampParameters;
 import eu.europa.esig.dss.asic.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
@@ -87,15 +94,15 @@ public class AbstractRemoteSignatureServiceImpl {
 	}
 
 	protected void fillParameters(AbstractSignatureParameters parameters, RemoteSignatureParameters remoteParameters) {
-		parameters.setBLevelParams(remoteParameters.bLevel());
+		parameters.setBLevelParams(toBLevelParameters(remoteParameters.bLevel()));
 		parameters.setDetachedContents(RemoteConverter.toDSSDocuments(remoteParameters.getDetachedContents()));
 		parameters.setDigestAlgorithm(remoteParameters.getDigestAlgorithm());
 		parameters.setEncryptionAlgorithm(remoteParameters.getEncryptionAlgorithm());
 		parameters.setSignatureLevel(remoteParameters.getSignatureLevel());
 		parameters.setSignaturePackaging(remoteParameters.getSignaturePackaging());
-		parameters.setSignatureTimestampParameters(remoteParameters.getSignatureTimestampParameters());
-		parameters.setArchiveTimestampParameters(remoteParameters.getArchiveTimestampParameters());
-		parameters.setContentTimestampParameters(remoteParameters.getContentTimestampParameters());
+		parameters.setSignatureTimestampParameters(toTimestampParameters(remoteParameters.getSignatureTimestampParameters()));
+		parameters.setArchiveTimestampParameters(toTimestampParameters(remoteParameters.getArchiveTimestampParameters()));
+		parameters.setContentTimestampParameters(toTimestampParameters(remoteParameters.getContentTimestampParameters()));
 		parameters.setSignWithExpiredCertificate(remoteParameters.isSignWithExpiredCertificate());
 
 		RemoteCertificate signingCertificate = remoteParameters.getSigningCertificate();
@@ -112,6 +119,45 @@ public class AbstractRemoteSignatureServiceImpl {
 			}
 			parameters.setCertificateChain(certificateChain);
 		}
+	}
+	
+	private BLevelParameters toBLevelParameters(RemoteBLevelParameters remoteBLevelParameters) {
+		BLevelParameters bLevelParameters = new BLevelParameters();
+		bLevelParameters.setClaimedSignerRoles(remoteBLevelParameters.getClaimedSignerRoles());
+		bLevelParameters.setCommitmentTypeIndications(remoteBLevelParameters.getCommitmentTypeIndications());
+		bLevelParameters.setSigningDate(remoteBLevelParameters.getSigningDate());
+		bLevelParameters.setTrustAnchorBPPolicy(remoteBLevelParameters.isTrustAnchorBPPolicy());
+		
+		Policy policy = new Policy();
+		policy.setDescription(remoteBLevelParameters.getPolicyDescription());
+		policy.setDigestAlgorithm(remoteBLevelParameters.getPolicyDigestAlgorithm());
+		policy.setDigestValue(remoteBLevelParameters.getPolicyDigestValue());
+		policy.setId(remoteBLevelParameters.getPolicyId());
+		policy.setQualifier(remoteBLevelParameters.getPolicyQualifier());
+		policy.setSpuri(remoteBLevelParameters.getPolicySpuri());
+		bLevelParameters.setSignaturePolicy(policy);
+		
+		SignerLocation signerLocation = new SignerLocation();
+		signerLocation.setCountry(remoteBLevelParameters.getSignerLocationCountry());
+		signerLocation.setLocality(remoteBLevelParameters.getSignerLocationLocality());
+		signerLocation.setPostalAddress(remoteBLevelParameters.getSignerLocationPostalAddress());
+		signerLocation.setPostalCode(remoteBLevelParameters.getSignerLocationPostalCode());
+		signerLocation.setStateOrProvince(remoteBLevelParameters.getSignerLocationStateOrProvince());
+		signerLocation.setStreet(remoteBLevelParameters.getSignerLocationStreet());
+		bLevelParameters.setSignerLocation(signerLocation);
+		
+		return bLevelParameters;
+	}
+	
+	private TimestampParameters toTimestampParameters(RemoteTimestampParameters remoteTimestampParameters) {
+		TimestampParameters timestampParameters = new TimestampParameters();
+		timestampParameters.setCanonicalizationMethod(remoteTimestampParameters.getCanonicalizationMethod());
+		timestampParameters.setDigestAlgorithm(remoteTimestampParameters.getDigestAlgorithm());
+		return timestampParameters;
+	}
+	
+	protected SignatureValue toSignatureValue(SignatureValueDTO signatureValueDTO) {
+		return new SignatureValue(signatureValueDTO.getAlgorithm(), signatureValueDTO.getValue());
 	}
 
 }

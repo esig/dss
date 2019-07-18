@@ -26,9 +26,7 @@ import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.jws.WebService;
 
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.RemoteDocument;
-import eu.europa.esig.dss.ToBeSigned;
 
 /**
  * Interface for the Contract of the Signature Web Service. The signing web service allows to create a new signature or
@@ -41,7 +39,7 @@ import eu.europa.esig.dss.ToBeSigned;
  * The process is controlled by a set of parameters.
  */
 @WebService
-public interface SoapMultipleDocumentsSignatureService extends Serializable {
+public interface SoapMultipleDocumentsSignatureService<TBS extends Serializable> extends Serializable {
 
 	/**
 	 * This method computes the digest to be signed
@@ -49,11 +47,9 @@ public interface SoapMultipleDocumentsSignatureService extends Serializable {
 	 * @param dataToSign
 	 *            a DTO which contains the documents to sign and parameters
 	 * @return the data to be signed
-	 * @throws DSSException
-	 *             if an error occurred
 	 */
 	@WebResult(name = "response")
-	ToBeSigned getDataToSign(@WebParam(name = "dataToSignDTO") DataToSignMultipleDocumentsDTO dataToSign) throws DSSException;
+	TBS getDataToSign(@WebParam(name = "dataToSignDTO") DataToSignMultipleDocumentsDTO dataToSign);
 
 	/**
 	 * This web service operation signs a document according to a previously signed digest, a level of signature, some
@@ -62,11 +58,9 @@ public interface SoapMultipleDocumentsSignatureService extends Serializable {
 	 * @param signDocument
 	 *            a DTO which contains the documents to be signed, the parameters and the signature value
 	 * @return the signed document
-	 * @throws DSSException
-	 *             if an error occurred
 	 */
 	@WebResult(name = "response")
-	RemoteDocument signDocument(@WebParam(name = "signDocumentDTO") SignMultipleDocumentDTO signDocument) throws DSSException;
+	RemoteDocument signDocument(@WebParam(name = "signDocumentDTO") SignMultipleDocumentDTO signDocument);
 
 	/**
 	 * This web service operation extends the signature of a given document to the level of the signature provided. The
@@ -75,10 +69,8 @@ public interface SoapMultipleDocumentsSignatureService extends Serializable {
 	 * @param extendDocument
 	 *            a DTO which contains the document to be extented and the parameters
 	 * @return the document with an extended signature
-	 * @throws DSSException
-	 *             if an error occurred
 	 */
 	@WebResult(name = "response")
-	RemoteDocument extendDocument(@WebParam(name = "extendDocumentDTO") ExtendDocumentDTO extendDocument) throws DSSException;
+	RemoteDocument extendDocument(@WebParam(name = "extendDocumentDTO") ExtendDocumentDTO extendDocument);
 
 }

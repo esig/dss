@@ -15,5 +15,9 @@
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-signature-rest-client</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-signature-remote</artifactId>
+		</dependency>
 	</dependencies>
 </project>

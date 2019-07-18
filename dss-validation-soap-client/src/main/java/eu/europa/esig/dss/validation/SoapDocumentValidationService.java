@@ -27,8 +27,8 @@ import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.jws.WebService;
 
-import eu.europa.esig.dss.DataToValidateDTO;
 import eu.europa.esig.dss.RemoteDocument;
+import eu.europa.esig.dss.dto.DataToValidateDTO;
 
 /**
  * The validation web service allow to validate the signature inside a signed file. In addition, the original file and a

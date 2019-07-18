@@ -11,11 +11,11 @@
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-reports</artifactId>
+			<artifactId>dss-signature-remote</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-common-remote-dto</artifactId>
+			<artifactId>dss-validation-dto</artifactId>
 		</dependency>
 	</dependencies>
 </project>

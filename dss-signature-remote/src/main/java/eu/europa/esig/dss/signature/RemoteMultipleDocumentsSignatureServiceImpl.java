@@ -31,7 +31,6 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.RemoteConverter;
 import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.RemoteSignatureParameters;
-import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.asic.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.ASiCWithXAdESSignatureParameters;
@@ -42,7 +41,7 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 @SuppressWarnings("serial")
 public class RemoteMultipleDocumentsSignatureServiceImpl extends AbstractRemoteSignatureServiceImpl
-		implements RemoteMultipleDocumentsSignatureService {
+		implements RemoteMultipleDocumentsSignatureService<ToBeSigned> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RemoteMultipleDocumentsSignatureServiceImpl.class);
 
@@ -78,12 +77,12 @@ public class RemoteMultipleDocumentsSignatureServiceImpl extends AbstractRemoteS
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public RemoteDocument signDocument(List<RemoteDocument> toSignDocuments, RemoteSignatureParameters remoteParameters, SignatureValue signatureValue) {
+	public RemoteDocument signDocument(List<RemoteDocument> toSignDocuments, RemoteSignatureParameters remoteParameters, SignatureValueDTO signatureValueDTO) {
 		LOG.info("SignDocument in process...");
 		AbstractSignatureParameters parameters = createParameters(remoteParameters);
 		MultipleDocumentsSignatureService service = getServiceForSignature(remoteParameters);
 		List<DSSDocument> dssDocuments = RemoteConverter.toDSSDocuments(toSignDocuments);
-		DSSDocument signDocument = (DSSDocument) service.signDocument(dssDocuments, parameters, signatureValue);
+		DSSDocument signDocument = (DSSDocument) service.signDocument(dssDocuments, parameters, toSignatureValue(signatureValueDTO));
 		LOG.info("SignDocument is finished");
 		return RemoteConverter.toRemoteDocument(signDocument);
 	}

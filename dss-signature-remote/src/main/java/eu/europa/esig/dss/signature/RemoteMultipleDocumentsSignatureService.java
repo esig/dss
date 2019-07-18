@@ -26,8 +26,6 @@ import java.util.List;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.RemoteSignatureParameters;
-import eu.europa.esig.dss.SignatureValue;
-import eu.europa.esig.dss.ToBeSigned;
 
 /**
  * This interface {@code RemoteMultipleDocumentsSignatureService} provides operations for the signature creation.
@@ -41,7 +39,7 @@ import eu.europa.esig.dss.ToBeSigned;
  * -ASiC-S/E with CAdES
  * 
  */
-public interface RemoteMultipleDocumentsSignatureService extends Serializable {
+public interface RemoteMultipleDocumentsSignatureService<TBS extends Serializable> extends Serializable {
 
 	/**
 	 * Retrieves the bytes of the data that need to be signed based on the {@code toSignDocuments} and
@@ -58,7 +56,7 @@ public interface RemoteMultipleDocumentsSignatureService extends Serializable {
 	 * @throws DSSException
 	 *             if an error occurred
 	 */
-	ToBeSigned getDataToSign(final List<RemoteDocument> toSignDocuments, final RemoteSignatureParameters parameters) throws DSSException;
+	TBS getDataToSign(final List<RemoteDocument> toSignDocuments, final RemoteSignatureParameters parameters) throws DSSException;
 
 	/**
 	 * Signs the toSignDocuments with the provided signatureValue.
@@ -73,7 +71,7 @@ public interface RemoteMultipleDocumentsSignatureService extends Serializable {
 	 * @throws DSSException
 	 *             if an error occurred
 	 */
-	RemoteDocument signDocument(final List<RemoteDocument> toSignDocuments, final RemoteSignatureParameters parameters, SignatureValue signatureValue) throws DSSException;
+	RemoteDocument signDocument(final List<RemoteDocument> toSignDocuments, final RemoteSignatureParameters parameters, SignatureValueDTO signatureValue) throws DSSException;
 
 	/**
 	 * Extends the level of the signatures in the {@code toExtendDocument}

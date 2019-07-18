@@ -24,7 +24,6 @@ import java.io.Serializable;
 
 import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.RemoteSignatureParameters;
-import eu.europa.esig.dss.SignatureValue;
 
 /**
  * This class is a DTO to transfer required objects to execute signDocument method
@@ -40,7 +39,7 @@ public class SignOneDocumentDTO extends AbstractSignDocumentDTO implements Seria
 		super(null, null);
 	}
 
-	public SignOneDocumentDTO(RemoteDocument toSignDocument, RemoteSignatureParameters parameters, SignatureValue signatureValue) {
+	public SignOneDocumentDTO(RemoteDocument toSignDocument, RemoteSignatureParameters parameters, SignatureValueDTO signatureValue) {
 		super(parameters, signatureValue);
 		this.toSignDocument = toSignDocument;
 	}

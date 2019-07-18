@@ -25,15 +25,13 @@ import java.io.Serializable;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.RemoteSignatureParameters;
-import eu.europa.esig.dss.SignatureValue;
-import eu.europa.esig.dss.ToBeSigned;
 
 /**
  * This interface {@code RemoteDocumentSignatureService} provides operations for the signature creation and for its
  * extension.
  *
  */
-public interface RemoteDocumentSignatureService extends Serializable {
+public interface RemoteDocumentSignatureService<TBS extends Serializable> extends Serializable {
 
 	/**
 	 * Retrieves the bytes of the data that need to be signed based on the {@code toSignDocument} and {@code parameters}
@@ -65,7 +63,7 @@ public interface RemoteDocumentSignatureService extends Serializable {
 	 * @throws DSSException
 	 *             if an error occurred
 	 */
-	ToBeSigned getDataToSign(final RemoteDocument toSignDocument, final RemoteSignatureParameters parameters) throws DSSException;
+	TBS getDataToSign(final RemoteDocument toSignDocument, final RemoteSignatureParameters parameters) throws DSSException;
 
 	/**
 	 * Signs the toSignDocument with the provided signatureValue.
@@ -80,7 +78,7 @@ public interface RemoteDocumentSignatureService extends Serializable {
 	 * @throws DSSException
 	 *             if an error occurred
 	 */
-	RemoteDocument signDocument(final RemoteDocument toSignDocument, final RemoteSignatureParameters parameters, SignatureValue signatureValue) throws DSSException;
+	RemoteDocument signDocument(final RemoteDocument toSignDocument, final RemoteSignatureParameters parameters, SignatureValueDTO signatureValue) throws DSSException;
 
 	/**
 	 * Extends the level of the signatures in the {@code toExtendDocument}

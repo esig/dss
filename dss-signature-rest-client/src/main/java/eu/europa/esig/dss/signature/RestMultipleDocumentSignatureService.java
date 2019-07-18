@@ -28,9 +28,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.RemoteDocument;
-import eu.europa.esig.dss.ToBeSigned;
 
 /**
  * This REST interface provides operations for the signature creation and for its extension.
@@ -38,7 +36,7 @@ import eu.europa.esig.dss.ToBeSigned;
 @Path("/")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public interface RestMultipleDocumentSignatureService extends Serializable {
+public interface RestMultipleDocumentSignatureService<TBS extends Serializable> extends Serializable {
 
 	/**
 	 * Retrieves the bytes of the data that need to be signed based on the toSignDocument and parameters.
@@ -47,12 +45,10 @@ public interface RestMultipleDocumentSignatureService extends Serializable {
 	 *            a DTO with the needed information (one or more document(s) and parameters) to compute the data to be
 	 *            signed
 	 * @return the data to be signed
-	 * @throws DSSException
-	 *             if an error occurred
 	 */
 	@POST
 	@Path("getDataToSignMultiple")
-	ToBeSigned getDataToSign(DataToSignMultipleDocumentsDTO dataToSign) throws DSSException;
+	TBS getDataToSign(DataToSignMultipleDocumentsDTO dataToSign);
 
 	/**
 	 * Signs the toSignDocuments with the provided signatureValue.
@@ -61,12 +57,10 @@ public interface RestMultipleDocumentSignatureService extends Serializable {
 	 *            a DTO with the needed information (one or more document(s), parameters and signature value) to
 	 *            generate the signed document
 	 * @return the signed document
-	 * @throws DSSException
-	 *             if an error occurred
 	 */
 	@POST
 	@Path("signDocument")
-	RemoteDocument signDocument(SignMultipleDocumentDTO signDocument) throws DSSException;
+	RemoteDocument signDocument(SignMultipleDocumentDTO signDocument);
 
 	/**
 	 * Extends the level of the signatures in the toExtendDocument
@@ -75,11 +69,9 @@ public interface RestMultipleDocumentSignatureService extends Serializable {
 	 *            a DTO with the needed information (the signed document and extension parameters) to generate the
 	 *            extended document
 	 * @return the extended document
-	 * @throws DSSException
-	 *             if an error occurred
 	 */
 	@POST
 	@Path("extendDocument")
-	RemoteDocument extendDocument(ExtendDocumentDTO extendDocument) throws DSSException;
+	RemoteDocument extendDocument(ExtendDocumentDTO extendDocument);
 
 }
