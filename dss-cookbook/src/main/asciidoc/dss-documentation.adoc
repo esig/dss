@@ -186,20 +186,24 @@ dss-crl-parser-stream:: Implementation of dss-crl-parser which streams the CRL (
 dss-crl-parser-x509crl:: Implementation of dss-crl-parser which uses the java object X509CRL.
 dss-tsl-validation:: Module which allows to load / parse / validate LOTL and TSLs.
 validation-policy:: Business of the signature's validation (ETSI EN 319 102).
-dss-rest:: REST webservices to sign (getDataToSign, signDocument methods) and extend a signature.
-dss-rest-client:: Client for the REST webservices.
-dss-soap:: SOAP webservices to sign (getDataToSign, signDocument methods) and extend a signature.
-dss-soap-client:: Client for the SOAP webservices.
-dss-validation-rest:: REST webservices to validate a signature.
-dss-validation-rest-client:: Client for the REST webservices.
-dss-validation-soap:: SOAP webservices to validate a signature.
-dss-validation-soap-client:: Client for the SOAP webservices.
-dss-remote-services:: Common code between dss-rest and dss-soap.
-dss-server-signing-common:: Common code for server signing
+dss-common-remote-dto:: Common classes between all remote services (REST and SOAP).
+dss-signature-dto:: Data Transfer Objects used for signature creation/extension (REST and SOAP).
+dss-signature-remote:: Common classes between dss-signature-rest and dss-signature-soap.
+dss-signature-rest-client:: Client for the REST webservices.
+dss-signature-rest:: REST webservices to sign (getDataToSign, signDocument methods) and extend a signature.
+dss-signature-soap-client:: Client for the SOAP webservices.
+dss-signature-soap:: SOAP webservices to sign (getDataToSign, signDocument methods) and extend a signature.
+dss-server-signing-common:: Common classes for server signing
 dss-server-signing-rest:: REST webservice for server signing
 dss-server-signing-rest-client:: REST client for server signing 
 dss-server-signing-soap:: SOAP webservice for server signing
 dss-server-signing-soap-client:: SOAP client for server signing
+dss-validation-dto:: Data Transfer Objects used for signature validation (REST and SOAP).
+dss-validation-common:: Common classes between dss-validation-rest and dss-validation-soap.
+dss-validation-rest-client:: Client for the REST webservices.
+dss-validation-soap-client:: Client for the SOAP webservices.
+dss-validation-rest:: REST webservices to validate a signature.
+dss-validation-soap:: SOAP webservices to validate a signature.
 sscd-mocca-adapter:: Implementation for MOCCA token.
 dss-policy-jaxb:: JAXB model of the validation policy.
 dss-diagnostic-jaxb:: JAXB model of the diagnostic data.
