@@ -40,7 +40,8 @@ public interface SoapDocumentValidationService extends Serializable {
 
 	/**
 	 * This method returns the result of the validation of the signed file. The
-	 * results contains a Diagnostic Data, a simple report and a detailed report
+	 * results contains a Diagnostic Data, simple report, detailed report and
+	 * ETSI validation report
 	 * 
 	 * @param dataToValidate
 	 *                       a {@code DataToValidateDTO} which contains the

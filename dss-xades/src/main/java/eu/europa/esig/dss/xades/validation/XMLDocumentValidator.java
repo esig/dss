@@ -152,6 +152,8 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 		}
 		throw new DSSException("The signature with the given id was not found!");
 	}
+	
+	// TODO: getOriginalDocumentsBy DAsignatureId
 
 	@Override
 	public List<DSSDocument> getOriginalDocuments(final String signatureId) throws DSSException {
@@ -161,7 +163,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 
 		List<AdvancedSignature> signatureList = getSignatures();
 		for (AdvancedSignature advancedSignature : signatureList) {
-			if (signatureId.equals(advancedSignature.getDAIdentifier())) {
+			if (signatureId.equals(advancedSignature.getId())) {
 				return getOriginalDocuments(advancedSignature);
 			}
 		}

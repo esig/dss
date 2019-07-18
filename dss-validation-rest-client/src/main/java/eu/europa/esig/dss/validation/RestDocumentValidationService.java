@@ -50,8 +50,8 @@ public interface RestDocumentValidationService extends Serializable {
 	 *                       a {@code DataToValidateDTO} which contains the
 	 *                       signature, the optional original document(s) and the
 	 *                       optional validation policy
-	 * @return a {@code ReportsDTO} with the 3 reports : the diagnostic data, the
-	 *         detailed report and the simple report
+	 * @return a {@code ReportsDTO} with  4 reports : the diagnostic data, the
+	 *         detailed report, the simple report and the ETSI validation report
 	 */
 	@POST
 	@Path("validateSignature")

@@ -55,9 +55,7 @@ public class DataToValidateDTO {
 	}
 
 	public DataToValidateDTO(RemoteDocument signedDocument, List<RemoteDocument> originalDocuments, RemoteDocument policy) {
-		this.signedDocument = signedDocument;
-		this.originalDocuments = originalDocuments;
-		this.policy = policy;
+		this(signedDocument, originalDocuments, policy, null);
 	}
 
 	public DataToValidateDTO(RemoteDocument signedDocument, RemoteDocument originalDocument, RemoteDocument policy, String signatureId) {

@@ -148,6 +148,12 @@
 		<module>dss-validation-soap-client</module>
 		<module>dss-validation-rest</module>
 		<module>dss-validation-soap</module>
+		<module>dss-certificate-validation-dto</module>
+		<module>dss-certificate-validation-common</module>
+    	<module>dss-certificate-validation-rest-client</module>
+    	<module>dss-certificate-validation-soap-client</module>
+    	<module>dss-certificate-validation-rest</module>
+    	<module>dss-certificate-validation-soap</module>
 		
 		<module>dss-cookbook</module>
 
@@ -619,6 +625,36 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-validation-soap</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-certificate-validation-dto</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-certificate-validation-common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-certificate-validation-rest-client</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-certificate-validation-soap-client</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-certificate-validation-rest</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-certificate-validation-soap</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
