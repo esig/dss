@@ -98,12 +98,14 @@ public class AbstractRemoteSignatureServiceImpl {
 		parameters.setDetachedContents(RemoteConverter.toDSSDocuments(remoteParameters.getDetachedContents()));
 		parameters.setDigestAlgorithm(remoteParameters.getDigestAlgorithm());
 		parameters.setEncryptionAlgorithm(remoteParameters.getEncryptionAlgorithm());
+		parameters.setReferenceDigestAlgorithm(remoteParameters.getReferenceDigestAlgorithm());
 		parameters.setSignatureLevel(remoteParameters.getSignatureLevel());
 		parameters.setSignaturePackaging(remoteParameters.getSignaturePackaging());
 		parameters.setSignatureTimestampParameters(toTimestampParameters(remoteParameters.getSignatureTimestampParameters()));
 		parameters.setArchiveTimestampParameters(toTimestampParameters(remoteParameters.getArchiveTimestampParameters()));
 		parameters.setContentTimestampParameters(toTimestampParameters(remoteParameters.getContentTimestampParameters()));
 		parameters.setSignWithExpiredCertificate(remoteParameters.isSignWithExpiredCertificate());
+		parameters.setGenerateTBSWithoutCertificate(remoteParameters.isGenerateTBSWithoutCertificate());
 
 		RemoteCertificate signingCertificate = remoteParameters.getSigningCertificate();
 		if (signingCertificate != null) { // extends do not require signing certificate

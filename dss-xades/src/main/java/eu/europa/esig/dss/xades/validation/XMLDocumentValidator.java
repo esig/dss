@@ -161,7 +161,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 
 		List<AdvancedSignature> signatureList = getSignatures();
 		for (AdvancedSignature advancedSignature : signatureList) {
-			if (signatureId.equals(advancedSignature.getId())) {
+			if (signatureId.equals(advancedSignature.getDAIdentifier())) {
 				return getOriginalDocuments(advancedSignature);
 			}
 		}

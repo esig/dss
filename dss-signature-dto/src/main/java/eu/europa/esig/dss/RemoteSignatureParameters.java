@@ -79,6 +79,11 @@ public class RemoteSignatureParameters implements Serializable {
 	private EncryptionAlgorithm encryptionAlgorithm = signatureAlgorithm.getEncryptionAlgorithm();
 
 	/**
+	 * XAdES: The digest algorithm used to hash ds:Reference.
+	 */
+	private DigestAlgorithm referenceDigestAlgorithm;
+
+	/**
 	 * The mask generation function
 	 */
 	private MaskGenerationFunction maskGenerationFunction = signatureAlgorithm.getMaskGenerationFunction();
@@ -102,6 +107,12 @@ public class RemoteSignatureParameters implements Serializable {
 	 * This variable indicates if it is possible to sign with an expired certificate.
 	 */
 	private boolean signWithExpiredCertificate = false;
+
+	/**
+	 * This variable indicates if it is possible to generate ToBeSigned data without
+	 * the signing certificate.
+	 */
+	private boolean generateTBSWithoutCertificate = false;
 
 	public RemoteSignatureParameters() {
 	}
@@ -158,6 +169,19 @@ public class RemoteSignatureParameters implements Serializable {
 			throw new NullPointerException("signatureLevel");
 		}
 		this.signatureLevel = signatureLevel;
+	}
+
+	/**
+	 * Get the digest algorithm for ds:Reference or message-digest attribute
+	 * 
+	 * @return the digest algorithm for ds:Reference or message-digest attribute
+	 */
+	public DigestAlgorithm getReferenceDigestAlgorithm() {
+		return referenceDigestAlgorithm;
+	}
+
+	public void setReferenceDigestAlgorithm(DigestAlgorithm referenceDigestAlgorithm) {
+		this.referenceDigestAlgorithm = referenceDigestAlgorithm;
 	}
 
 	/**
@@ -344,13 +368,34 @@ public class RemoteSignatureParameters implements Serializable {
 		this.signWithExpiredCertificate = signWithExpiredCertificate;
 	}
 
+	/**
+	 * Indicates if it is possible to generate ToBeSigned data without the signing certificate.
+	 * The default values is false.
+	 *
+	 * @return true if signing certificate is not required when generating ToBeSigned data.
+	 */
+	public boolean isGenerateTBSWithoutCertificate() {
+		return generateTBSWithoutCertificate;
+	}
+
+	/**
+	 * Allows to change the default behaviour regarding the requirements of signing certificate
+	 * to generate ToBeSigned data.
+	 *
+	 * @param generateTBSWithoutCertificate
+	 *            true if it should be possible to generate ToBeSigned data without certificate.
+	 */
+	public void setGenerateTBSWithoutCertificate(final boolean generateTBSWithoutCertificate) {
+		this.generateTBSWithoutCertificate = generateTBSWithoutCertificate;
+	}
+
 	@Override
 	public String toString() {
-		return "RemoteSignatureParameters [signWithExpiredCertificate=" + signWithExpiredCertificate + ", signatureLevel=" + signatureLevel 
-				+ ", signaturePackaging=" + signaturePackaging + ", signatureAlgorithm=" + signatureAlgorithm + ", encryptionAlgorithm=" 
-				+ encryptionAlgorithm + ", digestAlgorithm=" + digestAlgorithm + ", maskGenerationFunction=" + maskGenerationFunction + ", bLevelParams=" + bLevelParams
-				+ ", contentTimestampParameters=" + contentTimestampParameters + ", signatureTimestampParameters=" + signatureTimestampParameters
-				+ ", archiveTimestampParameters=" + archiveTimestampParameters + "]";
+		return "RemoteSignatureParameters [signWithExpiredCertificate=" + signWithExpiredCertificate + ", signatureLevel=" + signatureLevel + ", generateTBSWithoutCertificate="
+				+ generateTBSWithoutCertificate + ", signaturePackaging=" + signaturePackaging + ", signatureAlgorithm=" + signatureAlgorithm + ", encryptionAlgorithm=" 
+				+ encryptionAlgorithm + ", digestAlgorithm=" + digestAlgorithm + ", referenceDigestAlgorithm=" + referenceDigestAlgorithm + ", maskGenerationFunction=" 
+				+ maskGenerationFunction + ", bLevelParams=" + bLevelParams + ", contentTimestampParameters=" + contentTimestampParameters + ", signatureTimestampParameters=" 
+				+ signatureTimestampParameters + ", archiveTimestampParameters=" + archiveTimestampParameters + "]";
 	}
 
 	@Override
@@ -362,7 +407,9 @@ public class RemoteSignatureParameters implements Serializable {
 		result = prime * result + ((contentTimestampParameters == null) ? 0 : contentTimestampParameters.hashCode());
 		result = prime * result + ((digestAlgorithm == null) ? 0 : digestAlgorithm.hashCode());
 		result = prime * result + ((encryptionAlgorithm == null) ? 0 : encryptionAlgorithm.hashCode());
+		result = prime * result + (generateTBSWithoutCertificate ? 1231 : 1237);
 		result = prime * result + ((maskGenerationFunction == null) ? 0 : maskGenerationFunction.hashCode());
+		result = prime * result + ((referenceDigestAlgorithm == null) ? 0 : referenceDigestAlgorithm.hashCode());
 		result = prime * result + (signWithExpiredCertificate ? 1231 : 1237);
 		result = prime * result + ((signatureAlgorithm == null) ? 0 : signatureAlgorithm.hashCode());
 		result = prime * result + ((signatureLevel == null) ? 0 : signatureLevel.hashCode());
@@ -410,7 +457,13 @@ public class RemoteSignatureParameters implements Serializable {
 		if (encryptionAlgorithm != other.encryptionAlgorithm) {
 			return false;
 		}
+		if (generateTBSWithoutCertificate != other.generateTBSWithoutCertificate) {
+			return false;
+		}
 		if (maskGenerationFunction != other.maskGenerationFunction) {
+			return false;
+		}
+		if (referenceDigestAlgorithm != other.referenceDigestAlgorithm) {
 			return false;
 		}
 		if (signWithExpiredCertificate != other.signWithExpiredCertificate) {
