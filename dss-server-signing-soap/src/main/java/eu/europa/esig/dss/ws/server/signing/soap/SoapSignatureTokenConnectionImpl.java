@@ -1,0 +1,73 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+package eu.europa.esig.dss.ws.server.signing.soap;
+
+import java.util.List;
+
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
+import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
+import eu.europa.esig.dss.ws.server.signing.common.RemoteSignatureTokenConnection;
+import eu.europa.esig.dss.ws.server.signing.dto.DigestDTO;
+import eu.europa.esig.dss.ws.server.signing.dto.RemoteKeyEntry;
+import eu.europa.esig.dss.ws.server.signing.soap.client.SoapSignatureTokenConnection;
+
+@SuppressWarnings("serial")
+public class SoapSignatureTokenConnectionImpl implements SoapSignatureTokenConnection {
+
+	private RemoteSignatureTokenConnection token;
+
+	public void setToken(RemoteSignatureTokenConnection token) {
+		this.token = token;
+	}
+
+	@Override
+	public List<RemoteKeyEntry> getKeys() {
+		return token.getKeys();
+	}
+
+	@Override
+	public RemoteKeyEntry getKey(String alias) {
+		return token.getKey(alias);
+	}
+
+	@Override
+	public SignatureValueDTO sign(ToBeSignedDTO toBeSigned, DigestAlgorithm digestAlgorithm, String alias) {
+		return token.sign(toBeSigned, digestAlgorithm, alias);
+	}
+
+	@Override
+	public SignatureValueDTO sign(ToBeSignedDTO toBeSigned, DigestAlgorithm digestAlgorithm, MaskGenerationFunction mgf, String alias) {
+		return token.sign(toBeSigned, digestAlgorithm, mgf, alias);
+	}
+
+	@Override
+	public SignatureValueDTO signDigest(DigestDTO digest, String alias) {
+		return token.signDigest(digest, alias);
+	}
+
+	@Override
+	public SignatureValueDTO signDigest(DigestDTO digest, MaskGenerationFunction mgf, String alias) {
+		return token.signDigest(digest, mgf, alias);
+	}
+
+}

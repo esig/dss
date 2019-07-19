@@ -34,6 +34,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
+import eu.europa.esig.dss.ws.server.signing.common.RemoteSignatureTokenConnectionImpl;
 import eu.europa.esig.dss.ws.server.signing.dto.RemoteKeyEntry;
 
 public class RemoteSignatureTokenConnectionImplTest {

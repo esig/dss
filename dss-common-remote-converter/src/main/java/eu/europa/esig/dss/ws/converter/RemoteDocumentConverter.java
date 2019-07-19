@@ -40,7 +40,8 @@ public class RemoteDocumentConverter {
 			List<DSSDocument> dssDocuments = new ArrayList<DSSDocument>();
 			for (RemoteDocument remoteDocument : remoteDocuments) {
 				if (remoteDocument != null) {
-					dssDocuments.add(toDSSDocument(remoteDocument));
+					DSSDocument dssDocument = toDSSDocument(remoteDocument);
+					dssDocuments.add(dssDocument);
 				}
 			}
 			return dssDocuments;

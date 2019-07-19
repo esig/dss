@@ -28,7 +28,7 @@ import java.util.Date;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.signature.DateAdapter;
+import eu.europa.esig.dss.ws.signature.soap.client.DateAdapter;
 
 public class DateAdapterTest {
 
