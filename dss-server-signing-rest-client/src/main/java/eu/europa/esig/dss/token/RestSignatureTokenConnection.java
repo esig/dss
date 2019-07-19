@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.token;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -30,48 +31,106 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.Digest;
-import eu.europa.esig.dss.RemoteKeyEntry;
-import eu.europa.esig.dss.SignatureValue;
-import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
+import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
+import eu.europa.esig.dss.ws.server.signing.dto.DigestDTO;
+import eu.europa.esig.dss.ws.server.signing.dto.RemoteKeyEntry;
 
 @Path("/")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public interface RestSignatureTokenConnection extends RemoteSignatureTokenConnection {
+public interface RestSignatureTokenConnection extends Serializable {
 
-	@Override
+	/**
+	 * Retrieves all the available keys (private keys entries) from the token.
+	 *
+	 * @return List of encapsulated private keys
+	 */
 	@GET
 	@Path("keys")
-	List<RemoteKeyEntry> getKeys() throws DSSException;
+	List<RemoteKeyEntry> getKeys();
 
-	@Override
+	/**
+	 * Retrieves a key by its alias
+	 * 
+	 * @param alias
+	 *            the key alias to retrieve
+	 * 
+	 * @return the RemoteKeyEntry with the given alias
+	 * 
+	 */
 	@GET
 	@Path("key/{alias}")
-	RemoteKeyEntry getKey(@PathParam("alias") String alias) throws DSSException;
+	RemoteKeyEntry getKey(@PathParam("alias") String alias);
 
-	@Override
+	/**
+	 * This method signs the {@code toBeSigned} data with the digest
+	 * {@code digestAlgorithm} and the given {@code alias}.
+	 * 
+	 * @param toBeSigned
+	 *                        The data that need to be signed
+	 * @param digestAlgorithm
+	 *                        The digest algorithm to be used before signing
+	 * @param alias
+	 *                        The key alias to be used
+	 * @return The array of bytes representing the signature value
+	 */
 	@POST
 	@Path("sign/{alias}/{algo}")
-	SignatureValue sign(ToBeSigned toBeSigned, @PathParam("algo") DigestAlgorithm digestAlgorithm, @PathParam("alias") String alias) throws DSSException;
+	SignatureValueDTO sign(ToBeSignedDTO toBeSigned, @PathParam("algo") DigestAlgorithm digestAlgorithm, @PathParam("alias") String alias);
 
-	@Override
+	/**
+	 * This method signs the {@code toBeSigned} data with the digest
+	 * {@code digestAlgorithm}, the mask {@code mgf} and the given {@code alias}.
+	 * 
+	 * @param toBeSigned
+	 *                        The data that need to be signed
+	 * @param digestAlgorithm
+	 *                        The digest algorithm to be used before signing
+	 * @param mgf
+	 *                        the mask generation function
+	 * @param alias
+	 *                        The key alias to be used
+	 * @return The array of bytes representing the signature value
+	 */
 	@POST
 	@Path("sign/{alias}/{digest-algo}/{mask}")
-	SignatureValue sign(ToBeSigned toBeSigned, @PathParam("digest-algo") DigestAlgorithm digestAlgorithm, @PathParam("mask") MaskGenerationFunction mgf,
-			@PathParam("alias") String alias) throws DSSException;
+	SignatureValueDTO sign(ToBeSignedDTO toBeSigned, @PathParam("digest-algo") DigestAlgorithm digestAlgorithm, @PathParam("mask") MaskGenerationFunction mgf,
+			@PathParam("alias") String alias);
 
-	@Override
+	/**
+	 * 
+	 * This method signs the {@code digest} data with the given {@code alias}.
+	 * 
+	 * @param digest
+	 *               The digested data that need to be signed
+	 * @param alias
+	 *               The key alias to be used
+	 * @return the signature value representation with the used algorithm and the
+	 *         binary value
+	 */
 	@POST
 	@Path("sign-digest/{alias}")
-	SignatureValue signDigest(Digest digest, @PathParam("alias") String alias) throws DSSException;
+	SignatureValueDTO signDigest(DigestDTO digest, @PathParam("alias") String alias);
 
-	@Override
+	/**
+	 * 
+	 * This method signs the {@code digest} data with a mask {@code mgf} and the
+	 * given {@code alias}.
+	 * 
+	 * @param digest
+	 *               The digested data that need to be signed
+	 * @param mgf
+	 *               the mask generation function
+	 * @param alias
+	 *               The key alias to be used
+	 * @return the signature value representation with the used algorithm and the
+	 *         binary value
+	 */
 	@POST
 	@Path("sign-digest/{alias}/{mask}")
-	SignatureValue signDigest(Digest digest, @PathParam("mask") MaskGenerationFunction mgf, @PathParam("alias") String alias) throws DSSException;
+	SignatureValueDTO signDigest(DigestDTO digest, @PathParam("mask") MaskGenerationFunction mgf, @PathParam("alias") String alias);
 
 }

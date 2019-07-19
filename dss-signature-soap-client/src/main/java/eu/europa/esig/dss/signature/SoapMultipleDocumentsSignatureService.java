@@ -26,7 +26,8 @@ import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.jws.WebService;
 
-import eu.europa.esig.dss.RemoteDocument;
+import eu.europa.esig.dss.ws.dto.RemoteDocument;
+import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 
 /**
  * Interface for the Contract of the Signature Web Service. The signing web service allows to create a new signature or
@@ -39,7 +40,7 @@ import eu.europa.esig.dss.RemoteDocument;
  * The process is controlled by a set of parameters.
  */
 @WebService
-public interface SoapMultipleDocumentsSignatureService<TBS extends Serializable> extends Serializable {
+public interface SoapMultipleDocumentsSignatureService extends Serializable {
 
 	/**
 	 * This method computes the digest to be signed
@@ -49,7 +50,7 @@ public interface SoapMultipleDocumentsSignatureService<TBS extends Serializable>
 	 * @return the data to be signed
 	 */
 	@WebResult(name = "response")
-	TBS getDataToSign(@WebParam(name = "dataToSignDTO") DataToSignMultipleDocumentsDTO dataToSign);
+	ToBeSignedDTO getDataToSign(@WebParam(name = "dataToSignDTO") DataToSignMultipleDocumentsDTO dataToSign);
 
 	/**
 	 * This web service operation signs a document according to a previously signed digest, a level of signature, some

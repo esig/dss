@@ -22,14 +22,14 @@ package eu.europa.esig.dss.token;
 
 import java.util.List;
 
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.Digest;
-import eu.europa.esig.dss.RemoteKeyEntry;
-import eu.europa.esig.dss.SignatureValue;
-import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
+import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
+import eu.europa.esig.dss.ws.server.signing.dto.DigestDTO;
+import eu.europa.esig.dss.ws.server.signing.dto.RemoteKeyEntry;
 
+@SuppressWarnings("serial")
 public class SoapSignatureTokenConnectionImpl implements SoapSignatureTokenConnection {
 
 	private RemoteSignatureTokenConnection token;
@@ -39,32 +39,32 @@ public class SoapSignatureTokenConnectionImpl implements SoapSignatureTokenConne
 	}
 
 	@Override
-	public List<RemoteKeyEntry> getKeys() throws DSSException {
+	public List<RemoteKeyEntry> getKeys() {
 		return token.getKeys();
 	}
 
 	@Override
-	public RemoteKeyEntry getKey(String alias) throws DSSException {
+	public RemoteKeyEntry getKey(String alias) {
 		return token.getKey(alias);
 	}
 
 	@Override
-	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, String alias) throws DSSException {
+	public SignatureValueDTO sign(ToBeSignedDTO toBeSigned, DigestAlgorithm digestAlgorithm, String alias) {
 		return token.sign(toBeSigned, digestAlgorithm, alias);
 	}
 
 	@Override
-	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, MaskGenerationFunction mgf, String alias) throws DSSException {
+	public SignatureValueDTO sign(ToBeSignedDTO toBeSigned, DigestAlgorithm digestAlgorithm, MaskGenerationFunction mgf, String alias) {
 		return token.sign(toBeSigned, digestAlgorithm, mgf, alias);
 	}
 
 	@Override
-	public SignatureValue signDigest(Digest digest, String alias) throws DSSException {
+	public SignatureValueDTO signDigest(DigestDTO digest, String alias) {
 		return token.signDigest(digest, alias);
 	}
 
 	@Override
-	public SignatureValue signDigest(Digest digest, MaskGenerationFunction mgf, String alias) throws DSSException {
+	public SignatureValueDTO signDigest(DigestDTO digest, MaskGenerationFunction mgf, String alias) {
 		return token.signDigest(digest, mgf, alias);
 	}
 

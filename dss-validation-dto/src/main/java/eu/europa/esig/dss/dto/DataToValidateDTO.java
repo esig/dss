@@ -23,7 +23,7 @@ package eu.europa.esig.dss.dto;
 import java.util.Arrays;
 import java.util.List;
 
-import eu.europa.esig.dss.RemoteDocument;
+import eu.europa.esig.dss.ws.dto.RemoteDocument;
 
 public class DataToValidateDTO {
 

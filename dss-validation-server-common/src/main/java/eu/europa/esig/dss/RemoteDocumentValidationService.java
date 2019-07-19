@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.dto.ReportsDTO;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -37,6 +36,8 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.ws.converter.RemoteDocumentConverter;
+import eu.europa.esig.dss.ws.dto.RemoteDocument;
 
 public class RemoteDocumentValidationService {
 
@@ -82,17 +83,17 @@ public class RemoteDocumentValidationService {
 		}
 
 		List<DSSDocument> originalDocuments = validator.getOriginalDocuments(signatureId);
-		List<RemoteDocument> remoteDocuments = RemoteConverter.toRemoteDocuments(originalDocuments);
+		List<RemoteDocument> remoteDocuments = RemoteDocumentConverter.toRemoteDocuments(originalDocuments);
 		LOG.info("GetOriginalDocuments is finished");
 		return remoteDocuments;
 	}
 
 	private DocumentValidator initValidator(RemoteDocument signedFile, List<RemoteDocument> originalFiles) {
-		DSSDocument signedDocument = RemoteConverter.toDSSDocument(signedFile);
+		DSSDocument signedDocument = RemoteDocumentConverter.toDSSDocument(signedFile);
 		SignedDocumentValidator signedDocValidator = SignedDocumentValidator.fromDocument(signedDocument);
 		signedDocValidator.setCertificateVerifier(verifier);
 		if (Utils.isCollectionNotEmpty(originalFiles)) {
-			signedDocValidator.setDetachedContents(RemoteConverter.toDSSDocuments(originalFiles));
+			signedDocValidator.setDetachedContents(RemoteDocumentConverter.toDSSDocuments(originalFiles));
 		}
 		return signedDocValidator;
 	}

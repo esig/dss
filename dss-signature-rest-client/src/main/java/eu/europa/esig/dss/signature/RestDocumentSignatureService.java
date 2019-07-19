@@ -28,7 +28,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import eu.europa.esig.dss.RemoteDocument;
+import eu.europa.esig.dss.ws.dto.RemoteDocument;
+import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 
 /**
  * This REST interface provides operations for the signature creation and for its extension.
@@ -36,7 +37,7 @@ import eu.europa.esig.dss.RemoteDocument;
 @Path("/")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public interface RestDocumentSignatureService<TBS extends Serializable> extends Serializable {
+public interface RestDocumentSignatureService extends Serializable {
 
 	/**
 	 * Retrieves the bytes of the data that need to be signed based on the toSignDocument and parameters.
@@ -47,7 +48,7 @@ public interface RestDocumentSignatureService<TBS extends Serializable> extends 
 	 */
 	@POST
 	@Path("getDataToSign")
-	TBS getDataToSign(DataToSignOneDocumentDTO dataToSign);
+	ToBeSignedDTO getDataToSign(DataToSignOneDocumentDTO dataToSign);
 
 	/**
 	 * Signs the toSignDocument with the provided signatureValue.

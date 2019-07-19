@@ -20,20 +20,20 @@
  */
 package eu.europa.esig.dss.signature;
 
-import eu.europa.esig.dss.RemoteDocument;
-import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.ws.dto.RemoteDocument;
+import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 
 @SuppressWarnings("serial")
-public class SoapMultipleDocumentsSignatureServiceImpl implements SoapMultipleDocumentsSignatureService<ToBeSigned> {
+public class SoapMultipleDocumentsSignatureServiceImpl implements SoapMultipleDocumentsSignatureService {
 
-	private RemoteMultipleDocumentsSignatureService<ToBeSigned> service;
+	private RemoteMultipleDocumentsSignatureService service;
 
-	public void setService(RemoteMultipleDocumentsSignatureService<ToBeSigned> service) {
+	public void setService(RemoteMultipleDocumentsSignatureService service) {
 		this.service = service;
 	}
 
 	@Override
-	public ToBeSigned getDataToSign(DataToSignMultipleDocumentsDTO dataToSignDto) {
+	public ToBeSignedDTO getDataToSign(DataToSignMultipleDocumentsDTO dataToSignDto) {
 		return service.getDataToSign(dataToSignDto.getToSignDocuments(), dataToSignDto.getParameters());
 	}
 

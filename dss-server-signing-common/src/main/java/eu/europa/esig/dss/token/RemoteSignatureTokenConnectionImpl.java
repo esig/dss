@@ -25,12 +25,15 @@ import java.util.List;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.Digest;
-import eu.europa.esig.dss.RemoteCertificate;
-import eu.europa.esig.dss.RemoteKeyEntry;
-import eu.europa.esig.dss.SignatureValue;
-import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.ws.converter.DTOConverter;
+import eu.europa.esig.dss.ws.converter.RemoteCertificateConverter;
+import eu.europa.esig.dss.ws.dto.RemoteCertificate;
+import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
+import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
+import eu.europa.esig.dss.ws.server.signing.dto.DigestDTO;
+import eu.europa.esig.dss.ws.server.signing.dto.RemoteKeyEntry;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 public class RemoteSignatureTokenConnectionImpl implements RemoteSignatureTokenConnection {
@@ -58,25 +61,25 @@ public class RemoteSignatureTokenConnectionImpl implements RemoteSignatureTokenC
 	}
 
 	@Override
-	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, String alias) throws DSSException {
+	public SignatureValueDTO sign(ToBeSignedDTO toBeSigned, DigestAlgorithm digestAlgorithm, String alias) throws DSSException {
 		return sign(toBeSigned, digestAlgorithm, null, alias);
 	}
 
 	@Override
-	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, MaskGenerationFunction mgf, String alias) throws DSSException {
+	public SignatureValueDTO sign(ToBeSignedDTO toBeSigned, DigestAlgorithm digestAlgorithm, MaskGenerationFunction mgf, String alias) throws DSSException {
 		DSSPrivateKeyEntry key = token.getKey(alias);
-		return token.sign(toBeSigned, digestAlgorithm, mgf, key);
+		return DTOConverter.toSignatureValueDTO(token.sign(DTOConverter.toToBeSigned(toBeSigned), digestAlgorithm, mgf, key));
 	}
 
 	@Override
-	public SignatureValue signDigest(Digest digest, String alias) throws DSSException {
+	public SignatureValueDTO signDigest(DigestDTO digest, String alias) throws DSSException {
 		return signDigest(digest, null, alias);
 	}
 
 	@Override
-	public SignatureValue signDigest(Digest digest, MaskGenerationFunction mgf, String alias) throws DSSException {
+	public SignatureValueDTO signDigest(DigestDTO digest, MaskGenerationFunction mgf, String alias) throws DSSException {
 		DSSPrivateKeyEntry key = token.getKey(alias);
-		return token.signDigest(digest, mgf, key);
+		return DTOConverter.toSignatureValueDTO(token.signDigest(convert(digest), mgf, key));
 	}
 
 	private RemoteKeyEntry convert(KSPrivateKeyEntry key) {
@@ -87,14 +90,14 @@ public class RemoteSignatureTokenConnectionImpl implements RemoteSignatureTokenC
 		RemoteKeyEntry dto = new RemoteKeyEntry();
 		dto.setAlias(key.getAlias());
 		dto.setEncryptionAlgo(key.getEncryptionAlgorithm());
-		dto.setCertificate(getRemoteCertificate(key.getCertificate()));
+		dto.setCertificate(RemoteCertificateConverter.toRemoteCertificate(key.getCertificate()));
 
 		CertificateToken[] certificateChain = key.getCertificateChain();
 		if (certificateChain != null) {
 			RemoteCertificate[] dtos = new RemoteCertificate[certificateChain.length];
 			int i = 0;
 			for (CertificateToken certificateToken : certificateChain) {
-				dtos[i] = getRemoteCertificate(certificateToken);
+				dtos[i] = RemoteCertificateConverter.toRemoteCertificate(certificateToken);
 				i++;
 			}
 			dto.setCertificateChain(dtos);
@@ -102,11 +105,12 @@ public class RemoteSignatureTokenConnectionImpl implements RemoteSignatureTokenC
 
 		return dto;
 	}
-
-	private RemoteCertificate getRemoteCertificate(CertificateToken certificate) {
-		RemoteCertificate dto = new RemoteCertificate();
-		dto.setEncodedCertificate(certificate.getEncoded());
-		return dto;
+	
+	private Digest convert(DigestDTO digestDTO) {
+		if (digestDTO == null) {
+			return null;
+		}
+		return new Digest(digestDTO.getAlgorithm(), digestDTO.getValue());
 	}
 
 }

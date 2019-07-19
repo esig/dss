@@ -23,15 +23,17 @@ package eu.europa.esig.dss.signature;
 import java.io.Serializable;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.RemoteSignatureParameters;
+import eu.europa.esig.dss.ws.dto.RemoteDocument;
+import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
+import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 
 /**
  * This interface {@code RemoteDocumentSignatureService} provides operations for the signature creation and for its
  * extension.
  *
  */
-public interface RemoteDocumentSignatureService<TBS extends Serializable> extends Serializable {
+public interface RemoteDocumentSignatureService extends Serializable {
 
 	/**
 	 * Retrieves the bytes of the data that need to be signed based on the {@code toSignDocument} and {@code parameters}
@@ -63,7 +65,7 @@ public interface RemoteDocumentSignatureService<TBS extends Serializable> extend
 	 * @throws DSSException
 	 *             if an error occurred
 	 */
-	TBS getDataToSign(final RemoteDocument toSignDocument, final RemoteSignatureParameters parameters) throws DSSException;
+	ToBeSignedDTO getDataToSign(final RemoteDocument toSignDocument, final RemoteSignatureParameters parameters) throws DSSException;
 
 	/**
 	 * Signs the toSignDocument with the provided signatureValue.

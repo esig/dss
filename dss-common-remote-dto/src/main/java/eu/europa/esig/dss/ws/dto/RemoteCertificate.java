@@ -18,50 +18,28 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss;
-
+package eu.europa.esig.dss.ws.dto;
 import java.io.Serializable;
 
-import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 
 @SuppressWarnings("serial")
-public class RemoteKeyEntry implements Serializable {
+public class RemoteCertificate implements Serializable {
 
-	private String alias;
-	private EncryptionAlgorithm encryptionAlgo;
-	private RemoteCertificate certificate;
-	private RemoteCertificate[] certificateChain;
+	private byte[] encodedCertificate;
 
-	public String getAlias() {
-		return alias;
+	public RemoteCertificate(){
 	}
 
-	public void setAlias(String alias) {
-		this.alias = alias;
+	public RemoteCertificate(byte[] encodedCertificate) {
+		this.encodedCertificate = encodedCertificate;
 	}
 
-	public EncryptionAlgorithm getEncryptionAlgo() {
-		return encryptionAlgo;
+	public byte[] getEncodedCertificate() {
+		return encodedCertificate;
 	}
 
-	public void setEncryptionAlgo(EncryptionAlgorithm encryptionAlgo) {
-		this.encryptionAlgo = encryptionAlgo;
-	}
-
-	public RemoteCertificate getCertificate() {
-		return certificate;
-	}
-
-	public void setCertificate(RemoteCertificate certificate) {
-		this.certificate = certificate;
-	}
-
-	public RemoteCertificate[] getCertificateChain() {
-		return certificateChain;
-	}
-
-	public void setCertificateChain(RemoteCertificate[] certificateChain) {
-		this.certificateChain = certificateChain;
+	public void setEncodedCertificate(byte[] encodedCertificate) {
+		this.encodedCertificate = encodedCertificate;
 	}
 
 }

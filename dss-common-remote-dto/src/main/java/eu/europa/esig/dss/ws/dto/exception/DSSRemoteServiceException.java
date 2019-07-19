@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.exception;
+package eu.europa.esig.dss.ws.dto.exception;
 
 /**
  * Exception to be thrown in case of Remote Service error

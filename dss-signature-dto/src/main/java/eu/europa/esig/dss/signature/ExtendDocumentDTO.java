@@ -22,8 +22,8 @@ package eu.europa.esig.dss.signature;
 
 import java.io.Serializable;
 
-import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.RemoteSignatureParameters;
+import eu.europa.esig.dss.ws.dto.RemoteDocument;
 
 /**
  * This class is a DTO to transfer required objects to execute extendDocument method

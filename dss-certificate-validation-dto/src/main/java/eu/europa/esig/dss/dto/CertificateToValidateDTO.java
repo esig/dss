@@ -3,7 +3,7 @@ package eu.europa.esig.dss.dto;
 import java.sql.Date;
 import java.util.List;
 
-import eu.europa.esig.dss.RemoteCertificate;
+import eu.europa.esig.dss.ws.dto.RemoteCertificate;
 
 public class CertificateToValidateDTO {
 	

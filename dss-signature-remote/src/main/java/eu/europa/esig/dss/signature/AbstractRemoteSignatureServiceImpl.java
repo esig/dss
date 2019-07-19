@@ -29,8 +29,6 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.RemoteBLevelParameters;
-import eu.europa.esig.dss.RemoteCertificate;
-import eu.europa.esig.dss.RemoteConverter;
 import eu.europa.esig.dss.RemoteSignatureParameters;
 import eu.europa.esig.dss.RemoteTimestampParameters;
 import eu.europa.esig.dss.SignatureValue;
@@ -43,6 +41,9 @@ import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.ws.converter.RemoteDocumentConverter;
+import eu.europa.esig.dss.ws.dto.RemoteCertificate;
+import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
@@ -95,7 +96,7 @@ public class AbstractRemoteSignatureServiceImpl {
 
 	protected void fillParameters(AbstractSignatureParameters parameters, RemoteSignatureParameters remoteParameters) {
 		parameters.setBLevelParams(toBLevelParameters(remoteParameters.bLevel()));
-		parameters.setDetachedContents(RemoteConverter.toDSSDocuments(remoteParameters.getDetachedContents()));
+		parameters.setDetachedContents(RemoteDocumentConverter.toDSSDocuments(remoteParameters.getDetachedContents()));
 		parameters.setDigestAlgorithm(remoteParameters.getDigestAlgorithm());
 		parameters.setEncryptionAlgorithm(remoteParameters.getEncryptionAlgorithm());
 		parameters.setReferenceDigestAlgorithm(remoteParameters.getReferenceDigestAlgorithm());

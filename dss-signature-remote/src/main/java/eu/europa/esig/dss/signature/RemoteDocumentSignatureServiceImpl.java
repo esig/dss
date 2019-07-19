@@ -26,8 +26,6 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.RemoteConverter;
-import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.RemoteSignatureParameters;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.asic.ASiCWithCAdESSignatureParameters;
@@ -37,11 +35,16 @@ import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.ws.converter.RemoteDocumentConverter;
+import eu.europa.esig.dss.ws.converter.DTOConverter;
+import eu.europa.esig.dss.ws.dto.RemoteDocument;
+import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
+import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 @SuppressWarnings("serial")
 public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureServiceImpl
-		implements RemoteDocumentSignatureService<ToBeSigned> {
+		implements RemoteDocumentSignatureService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RemoteDocumentSignatureServiceImpl.class);
 
@@ -105,14 +108,14 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public ToBeSigned getDataToSign(RemoteDocument remoteDocument, RemoteSignatureParameters remoteParameters) {
+	public ToBeSignedDTO getDataToSign(RemoteDocument remoteDocument, RemoteSignatureParameters remoteParameters) {
 		LOG.info("GetDataToSign in process...");
 		AbstractSignatureParameters parameters = createParameters(remoteParameters);
 		DocumentSignatureService service = getServiceForSignature(remoteParameters);
-		DSSDocument dssDocument = RemoteConverter.toDSSDocument(remoteDocument);
+		DSSDocument dssDocument = RemoteDocumentConverter.toDSSDocument(remoteDocument);
 		ToBeSigned dataToSign = service.getDataToSign(dssDocument, parameters);
 		LOG.info("GetDataToSign is finished");
-		return dataToSign;
+		return DTOConverter.toToBeSignedDTO(dataToSign);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -121,10 +124,10 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 		LOG.info("SignDocument in process...");
 		AbstractSignatureParameters parameters = createParameters(remoteParameters);
 		DocumentSignatureService service = getServiceForSignature(remoteParameters);
-		DSSDocument dssDocument = RemoteConverter.toDSSDocument(remoteDocument);
+		DSSDocument dssDocument = RemoteDocumentConverter.toDSSDocument(remoteDocument);
 		DSSDocument signDocument = (DSSDocument) service.signDocument(dssDocument, parameters, toSignatureValue(signatureValueDTO));
 		LOG.info("SignDocument is finished");
-		return RemoteConverter.toRemoteDocument(signDocument);
+		return RemoteDocumentConverter.toRemoteDocument(signDocument);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -133,10 +136,10 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 		LOG.info("ExtendDocument in process...");
 		AbstractSignatureParameters parameters = createParameters(remoteParameters);
 		DocumentSignatureService service = getServiceForSignature(remoteParameters);
-		DSSDocument dssDocument = RemoteConverter.toDSSDocument(remoteDocument);
+		DSSDocument dssDocument = RemoteDocumentConverter.toDSSDocument(remoteDocument);
 		DSSDocument extendDocument = (DSSDocument) service.extendDocument(dssDocument, parameters);
 		LOG.info("ExtendDocument is finished");
-		return RemoteConverter.toRemoteDocument(extendDocument);
+		return RemoteDocumentConverter.toRemoteDocument(extendDocument);
 	}
 
 }

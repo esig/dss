@@ -21,20 +21,20 @@
 package eu.europa.esig.dss.signature;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.RemoteDocument;
-import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.ws.dto.RemoteDocument;
+import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 
 @SuppressWarnings("serial")
-public class RestDocumentSignatureServiceImpl extends AbstractRemoteSignatureServiceImpl implements RestDocumentSignatureService<ToBeSigned> {
+public class RestDocumentSignatureServiceImpl extends AbstractRemoteSignatureServiceImpl implements RestDocumentSignatureService {
 
-	private RemoteDocumentSignatureService<ToBeSigned> service;
+	private RemoteDocumentSignatureService service;
 
-	public void setService(RemoteDocumentSignatureService<ToBeSigned> service) {
+	public void setService(RemoteDocumentSignatureService service) {
 		this.service = service;
 	}
 
 	@Override
-	public ToBeSigned getDataToSign(DataToSignOneDocumentDTO dataToSignDto) throws DSSException {
+	public ToBeSignedDTO getDataToSign(DataToSignOneDocumentDTO dataToSignDto) throws DSSException {
 		return service.getDataToSign(dataToSignDto.getToSignDocument(), dataToSignDto.getParameters());
 	}
 

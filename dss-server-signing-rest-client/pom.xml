@@ -12,7 +12,7 @@
 	<dependencies>
 	  	<dependency>
 	    	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-	    	<artifactId>dss-server-signing-common</artifactId>
+	    	<artifactId>dss-server-signing-dto</artifactId>
 	  	</dependency>
 		<dependency>
 			<groupId>javax.ws.rs</groupId>

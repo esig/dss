@@ -29,9 +29,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.dto.DataToValidateDTO;
 import eu.europa.esig.dss.dto.ReportsDTO;
+import eu.europa.esig.dss.ws.dto.RemoteDocument;
 
 /**
  * This REST interface provides operations for the validation of signature.

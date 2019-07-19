@@ -23,8 +23,8 @@ package eu.europa.esig.dss.signature;
 import java.io.Serializable;
 import java.util.List;
 
-import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.RemoteSignatureParameters;
+import eu.europa.esig.dss.ws.dto.RemoteDocument;
 
 /**
  * This class is a DTO to transfer required objects to execute getDataToSign method

@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.signature;
 
 import eu.europa.esig.dss.RemoteSignatureParameters;
+import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 
 public abstract class AbstractSignDocumentDTO {
 

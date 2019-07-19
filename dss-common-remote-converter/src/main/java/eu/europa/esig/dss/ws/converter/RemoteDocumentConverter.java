@@ -18,17 +18,21 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss;
+package eu.europa.esig.dss.ws.converter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.europa.esig.dss.RemoteDocument;
+import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DigestDocument;
+import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.ws.dto.RemoteDocument;
 
-public class RemoteConverter {
+public class RemoteDocumentConverter {
 
-	private RemoteConverter() {
+	private RemoteDocumentConverter() {
 	}
 
 	public static List<DSSDocument> toDSSDocuments(List<RemoteDocument> remoteDocuments) {

@@ -31,6 +31,7 @@ import eu.europa.esig.dss.utils.Utils;
  * Digest representation of a {@code DSSDocument}. It can be used to handle a large file to be signed. The computation
  * of the digest associated to the file can be done externally.
  */
+@SuppressWarnings("serial")
 public class DigestDocument extends CommonDocument {
 	
 	/**

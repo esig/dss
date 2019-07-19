@@ -30,11 +30,11 @@ import java.util.List;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.RemoteKeyEntry;
-import eu.europa.esig.dss.SignatureValue;
-import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
+import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
+import eu.europa.esig.dss.ws.server.signing.dto.RemoteKeyEntry;
 
 public class RemoteSignatureTokenConnectionImplTest {
 
@@ -61,8 +61,8 @@ public class RemoteSignatureTokenConnectionImplTest {
 		}
 		
 		RemoteKeyEntry remoteKeyEntry = keys.get(0);
-		ToBeSigned toBeSigned = new ToBeSigned(new byte[] {1,2,3,4,5});
-		SignatureValue signatureValue = exposedToken.sign(toBeSigned, DigestAlgorithm.SHA256,
+		ToBeSignedDTO toBeSigned = new ToBeSignedDTO(new byte[] {1,2,3,4,5});
+		SignatureValueDTO signatureValue = exposedToken.sign(toBeSigned, DigestAlgorithm.SHA256,
 				remoteKeyEntry.getAlias());
 		assertNotNull(signatureValue);
 		assertNotNull(signatureValue.getValue());
