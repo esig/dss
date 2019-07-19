@@ -1227,6 +1227,7 @@ public class DiagnosticDataBuilder {
 		xmlPolicy.setUrl(signaturePolicy.getUrl());
 		xmlPolicy.setDescription(signaturePolicy.getDescription());
 		xmlPolicy.setNotice(signaturePolicy.getNotice());
+		xmlPolicy.setZeroHash(signaturePolicy.isZeroHash());
 
 		final Digest digest = signaturePolicy.getDigest();
 		if (digest != null) {

@@ -366,13 +366,18 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		signaturePolicy = new SignaturePolicy(policyId);
 
 		final OtherHashAlgAndValue hashAlgAndValue = sigPolicy.getSigPolicyHash();
-
-		final AlgorithmIdentifier digestAlgorithmIdentifier = hashAlgAndValue.getHashAlgorithm();
-		final String digestAlgorithmOID = digestAlgorithmIdentifier.getAlgorithm().getId();
-		final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(digestAlgorithmOID);
 		final ASN1OctetString digestValue = hashAlgAndValue.getHashValue();
 		final byte[] digestValueBytes = digestValue.getOctets();
-		signaturePolicy.setDigest(new Digest(digestAlgorithm, digestValueBytes));
+		boolean zeroHash = isZeroHash(digestValueBytes);
+		signaturePolicy.setZeroHash(zeroHash);
+
+		if (!zeroHash) {
+			final AlgorithmIdentifier digestAlgorithmIdentifier = hashAlgAndValue.getHashAlgorithm();
+			final String digestAlgorithmOID = digestAlgorithmIdentifier.getAlgorithm().getId();
+			final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(digestAlgorithmOID);
+
+			signaturePolicy.setDigest(new Digest(digestAlgorithm, digestValueBytes));
+		}
 
 		final SigPolicyQualifiers sigPolicyQualifiers = sigPolicy.getSigPolicyQualifiers();
 		if (sigPolicyQualifiers == null) {
@@ -402,6 +407,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				signaturePolicyProvider.getSignaturePoliciesById().put(policyId, signaturePolicy.getPolicyContent());
 			}
 		}
+	}
+
+	private boolean isZeroHash(byte[] hashValue) {
+		// The hashValue within the sigPolicyHash may be set to zero to indicate that
+		// the policy hash value is not known.
+		return (hashValue != null) && (hashValue.length == 1) && (hashValue[0] == 0);
 	}
 
 	@Override

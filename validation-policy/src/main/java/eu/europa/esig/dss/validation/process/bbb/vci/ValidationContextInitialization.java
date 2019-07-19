@@ -63,11 +63,12 @@ public class ValidationContextInitialization extends Chain<XmlVCI> {
 
 		ChainItem<XmlVCI> item = firstItem = signaturePolicyIdentifier(signaturePolicyConstraint);
 
-		if (signature.isPolicyPresent()
-				&& (!SignaturePolicyType.IMPLICIT_POLICY.name().equals(signature.getPolicyId()))) {
+		if (signature.isPolicyPresent() && (!SignaturePolicyType.IMPLICIT_POLICY.name().equals(signature.getPolicyId()))) {
 			item = item.setNextItem(signaturePolicyIdentified());
 
-			item = item.setNextItem(signaturePolicyHashValid());
+			if (!signature.isZeroHashPolicy()) {
+				item = item.setNextItem(signaturePolicyHashValid());
+			}
 		}
 
 	}

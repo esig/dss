@@ -31,6 +31,7 @@ import eu.europa.esig.dss.enumerations.SignaturePolicyType;
 public class SignaturePolicy {
 
 	private final String identifier;
+	private boolean zeroHash;
 	private Digest digest;
 	private DSSDocument policyContent;
 	
@@ -69,6 +70,14 @@ public class SignaturePolicy {
 	 */
 	public String getIdentifier() {
 		return identifier;
+	}
+
+	public boolean isZeroHash() {
+		return zeroHash;
+	}
+
+	public void setZeroHash(boolean zeroHash) {
+		this.zeroHash = zeroHash;
 	}
 
 	public Digest getDigest() {

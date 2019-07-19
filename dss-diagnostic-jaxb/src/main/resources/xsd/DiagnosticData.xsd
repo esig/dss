@@ -216,6 +216,7 @@
 			<xs:element name="Url" type="xs:string" minOccurs="0" />
 			<xs:element name="Description" type="xs:string" minOccurs="0" />
 			<xs:element name="Notice" type="xs:string" minOccurs="0" />
+			<xs:element name="ZeroHash" type="xs:boolean" minOccurs="0" />
 			<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" minOccurs="0" />
 			<xs:element name="Asn1Processable" type="xs:boolean" minOccurs="0" />
 			<xs:element name="Identified" type="xs:boolean" minOccurs="0" />
