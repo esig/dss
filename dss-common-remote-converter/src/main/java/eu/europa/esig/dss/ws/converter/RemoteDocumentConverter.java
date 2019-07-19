@@ -39,8 +39,8 @@ public class RemoteDocumentConverter {
 		if (Utils.isCollectionNotEmpty(remoteDocuments)) {
 			List<DSSDocument> dssDocuments = new ArrayList<DSSDocument>();
 			for (RemoteDocument remoteDocument : remoteDocuments) {
-				if (remoteDocument != null) {
-					DSSDocument dssDocument = toDSSDocument(remoteDocument);
+				DSSDocument dssDocument = toDSSDocument(remoteDocument);
+				if (dssDocument != null) {
 					dssDocuments.add(dssDocument);
 				}
 			}
@@ -50,6 +50,9 @@ public class RemoteDocumentConverter {
 	}
 
 	public static DSSDocument toDSSDocument(RemoteDocument remoteDocument) {
+		if (remoteDocument == null || Utils.isArrayEmpty(remoteDocument.getBytes())) {
+			return null;
+		}
 		if (remoteDocument.getDigestAlgorithm() != null) {
 			DigestDocument digestDocument = new DigestDocument(remoteDocument.getDigestAlgorithm(), Utils.toBase64(remoteDocument.getBytes()));
 			digestDocument.setName(remoteDocument.getName());
