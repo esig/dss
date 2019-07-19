@@ -1372,3 +1372,15 @@ include::restdocs/get-original-documents/http-request.adoc[]
 
 .Response
 include::restdocs/get-original-documents/http-response.adoc[]
+
+=== REST certificate validation service
+
+==== Validate a certificate
+
+This service allows to validate a certificate (provided in a binary format).
+
+.Request
+include::restdocs/validate-cert/http-request.adoc[]
+
+.Response
+include::restdocs/validate-cert/http-response.adoc[]

@@ -33,9 +33,7 @@
       "trustAnchorBPPolicy" : true,
       "signingDate" : 1542794106964,
       "claimedSignerRoles" : null,
-      "signaturePolicy" : null,
-      "commitmentTypeIndications" : null,
-      "signerLocation" : null
+      "commitmentTypeIndications" : null
     }
   },
   "signatureValue" : {
@@ -45,8 +43,7 @@
   "toSignDocument" : {
     "bytes" : "SGVsbG8=",
     "digestAlgorithm" : null,
-    "name" : "RemoteDocument",
-    "mimeType" : null
+    "name" : "RemoteDocument"
   }
 }
 ----

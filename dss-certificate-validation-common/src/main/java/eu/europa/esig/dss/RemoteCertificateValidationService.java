@@ -25,7 +25,7 @@ public class RemoteCertificateValidationService {
 		this.verifier = verifier;
 	}
 	
-	public CertificateReportsDTO validateCertificate(RemoteDocument certificate, List<RemoteDocument> certificateChain, 
+	public CertificateReportsDTO validateCertificate(RemoteCertificate certificate, List<RemoteCertificate> certificateChain, 
 			Date validationTime) {
 		LOG.info("ValidateCertificate in process...");
 		CertificateValidator validator = initValidator(certificate, certificateChain, validationTime);
@@ -38,11 +38,11 @@ public class RemoteCertificateValidationService {
 		return certificateReportsDTO;
 	}
 	
-	private CertificateValidator initValidator(RemoteDocument certificate, List<RemoteDocument> certificateChain, 
+	private CertificateValidator initValidator(RemoteCertificate certificate, List<RemoteCertificate> certificateChain, 
 			Date validationTime) {
 		if (Utils.isCollectionNotEmpty(certificateChain)) {
 			CertificateSource adjunctCertSource = new CommonCertificateSource();
-			for (RemoteDocument certificateInChain : certificateChain) {
+			for (RemoteCertificate certificateInChain : certificateChain) {
 				CertificateToken certificateChainItem = RemoteCertificateConverter.toCertificateToken(certificateInChain);
 				if (certificateChainItem != null) {
 					adjunctCertSource.addCertificate(certificateChainItem);

@@ -9,8 +9,8 @@ public class RemoteCertificateConverter {
 	 * @param remoteCertificate {@link RemoteDocument} to convert
 	 * @return {@link CertificateToken}
 	 */
-	public static CertificateToken toCertificateToken(RemoteDocument remoteCertificate) {
-		return DSSUtils.loadCertificate(remoteCertificate.getBytes());
+	public static CertificateToken toCertificateToken(RemoteCertificate remoteCertificate) {
+		return DSSUtils.loadCertificate(remoteCertificate.getEncodedCertificate());
 	}
 
 }
