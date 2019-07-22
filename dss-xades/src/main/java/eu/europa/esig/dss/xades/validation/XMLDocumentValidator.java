@@ -58,10 +58,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 
 	private List<AdvancedSignature> signatures;
 
-	/**
-	 * Default constructor used with reflexion (see SignedDocumentValidator)
-	 */
-	private XMLDocumentValidator() {
+	XMLDocumentValidator() {
 		super(null);
 	}
 

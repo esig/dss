@@ -42,7 +42,7 @@ import eu.europa.esig.dss.xades.validation.XAdESSignature;
  */
 public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValidator {
 
-	private ASiCContainerWithXAdESValidator() {
+	ASiCContainerWithXAdESValidator() {
 		super(null);
 	}
 
