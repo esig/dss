@@ -445,70 +445,26 @@
 	
 	<xs:complexType name="TimestampedObjects">
 		<xs:sequence>
-			<xs:element ref="TimestampedObject" maxOccurs="unbounded" />
+			<xs:element name="TimestampedObject" type="TimestampedObject" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 	
-	<xs:element name="TimestampedObject" type="TimestampedObject" />
-	<xs:element name="TimestampedCertificate" type="TimestampedCertificate" substitutionGroup="TimestampedObject" />
-	<xs:element name="TimestampedRevocationData" type="TimestampedRevocationData" substitutionGroup="TimestampedObject" />
-	<xs:element name="TimestampedTimestamp" type="TimestampedTimestamp" substitutionGroup="TimestampedObject" />
-	<xs:element name="TimestampedSignature" type="TimestampedSignature" substitutionGroup="TimestampedObject" />
-	<xs:element name="TimestampedSignerData" type="TimestampedSignerData" substitutionGroup="TimestampedObject" />
-	<xs:element name="TimestampedOrphanToken" type="TimestampedOrphanToken" substitutionGroup="TimestampedObject" />
-	
-	<xs:complexType name="TimestampedObject" abstract="true">
+	<xs:complexType name="TimestampedObject">
 		<xs:sequence/>
 		<xs:attribute name="Token" type="xs:IDREF" use="required" />
+		<xs:attribute name="Category" type="TimestampedObjectType" use="required" />
 	</xs:complexType>
-    
-	<xs:complexType name="TimestampedCertificate">
-        <xs:complexContent>
-            <xs:restriction base="TimestampedObject">
-				<xs:attribute name="Token" type="xs:IDREF" use="required" />
-            </xs:restriction>
-        </xs:complexContent>
-    </xs:complexType>
-    
-	<xs:complexType name="TimestampedRevocationData">
-        <xs:complexContent>
-            <xs:restriction base="TimestampedObject">
-				<xs:attribute name="Token" type="xs:IDREF" use="required" />
-            </xs:restriction>
-        </xs:complexContent>
-    </xs:complexType>
 	
-	<xs:complexType name="TimestampedTimestamp">
-        <xs:complexContent>
-            <xs:restriction base="TimestampedObject">
-				<xs:attribute name="Token" type="xs:IDREF" use="required" />
-            </xs:restriction>
-        </xs:complexContent>
-    </xs:complexType>
-    
-	<xs:complexType name="TimestampedSignature">
-        <xs:complexContent>
-            <xs:restriction base="TimestampedObject">
-				<xs:attribute name="Token" type="xs:IDREF" use="required" />
-            </xs:restriction>
-        </xs:complexContent>
-    </xs:complexType>
-    
-	<xs:complexType name="TimestampedSignerData">
-        <xs:complexContent>
-            <xs:restriction base="TimestampedObject">
-				<xs:attribute name="Token" type="xs:IDREF" use="required" />
-            </xs:restriction>
-        </xs:complexContent>
-    </xs:complexType>
-    
-	<xs:complexType name="TimestampedOrphanToken">
-        <xs:complexContent>
-            <xs:restriction base="TimestampedObject">
-				<xs:attribute name="Token" type="xs:IDREF" use="required" />
-            </xs:restriction>
-        </xs:complexContent>
-    </xs:complexType>
+	<xs:simpleType name="TimestampedObjectType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="SIGNED_DATA" />
+			<xs:enumeration value="SIGNATURE" />
+			<xs:enumeration value="CERTIFICATE" />
+			<xs:enumeration value="REVOCATION" />
+			<xs:enumeration value="TIMESTAMP" />
+			<xs:enumeration value="ORPHAN" />
+		</xs:restriction>
+	</xs:simpleType>
     
 	<xs:complexType name="CertificateChain">
 		<xs:sequence>

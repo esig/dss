@@ -18,20 +18,27 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.enumerations;
+package eu.europa.esig.dss.jaxb.parsers;
 
-public enum TimestampedObjectType {
-	
-	SIGNED_DATA,
+import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 
-	SIGNATURE,
+public final class TimestampedObjectTypeParser {
 
-	CERTIFICATE,
+	private TimestampedObjectTypeParser() {
+	}
 
-	REVOCATION,
+	public static TimestampedObjectType parse(String v) {
+		if (v != null) {
+			return TimestampedObjectType.valueOf(v);
+		}
+		return null;
+	}
 
-	TIMESTAMP,
-
-	ORPHAN;
+	public static String print(TimestampedObjectType v) {
+		if (v != null) {
+			return v.name();
+		}
+		return null;
+	}
 
 }
