@@ -14,14 +14,14 @@
             <OrganizationName>Disig a.s.</OrganizationName>
             <OrganizationalUnit>ACA-307-2007-2</OrganizationalUnit>
             <AuthorityInformationAccessUrls>
-                <Url>http://ep.nbusr.sk/kca/certs/kca3/kcanbusr3_p7c.p7c</Url>
-                <Url>ldap://ep.nbusr.sk/cn=KCA NBU SR 3,ou=SIBEP,o=Narodny bezpecnostny urad,l=Bratislava,c=SK?caCertificate;binary</Url>
-                <Url>ldap:///cn=KCA NBU SR 3,ou=SIBEP,o=Narodny bezpecnostny urad,l=Bratislava,c=SK?caCertificate;binary</Url>
+                <aiaUrl>http://ep.nbusr.sk/kca/certs/kca3/kcanbusr3_p7c.p7c</aiaUrl>
+                <aiaUrl>ldap://ep.nbusr.sk/cn=KCA NBU SR 3,ou=SIBEP,o=Narodny bezpecnostny urad,l=Bratislava,c=SK?caCertificate;binary</aiaUrl>
+                <aiaUrl>ldap:///cn=KCA NBU SR 3,ou=SIBEP,o=Narodny bezpecnostny urad,l=Bratislava,c=SK?caCertificate;binary</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints>
-                <Url>http://ep.nbusr.sk/kca/crls3/kcanbusr3.crl</Url>
-                <Url>ldap://ep.nbusr.sk/cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</Url>
-                <Url>ldap:///cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</Url>
+                <crlUrl>http://ep.nbusr.sk/kca/crls3/kcanbusr3.crl</crlUrl>
+                <crlUrl>ldap://ep.nbusr.sk/cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</crlUrl>
+                <crlUrl>ldap:///cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
             <Sources>
@@ -75,9 +75,9 @@
             <OrganizationalUnit>SIBEP</OrganizationalUnit>
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints>
-                <Url>http://ep.nbusr.sk/kca/crls3/kcanbusr3.crl</Url>
-                <Url>ldap://ep.nbusr.sk/cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</Url>
-                <Url>ldap:///cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</Url>
+                <crlUrl>http://ep.nbusr.sk/kca/crls3/kcanbusr3.crl</crlUrl>
+                <crlUrl>ldap://ep.nbusr.sk/cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</crlUrl>
+                <crlUrl>ldap:///cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
             <Sources>
@@ -130,15 +130,15 @@
             <GivenName>Ján</GivenName>
             <Surname>Procháska</Surname>
             <AuthorityInformationAccessUrls>
-                <Url>http://eidrep1.disig.sk/svkeidaca/cert/svkeidaca.p7c</Url>
-                <Url>http://eidrep2.disig.sk/svkeidaca/cert/svkeidaca.p7c</Url>
+                <aiaUrl>http://eidrep1.disig.sk/svkeidaca/cert/svkeidaca.p7c</aiaUrl>
+                <aiaUrl>http://eidrep2.disig.sk/svkeidaca/cert/svkeidaca.p7c</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints>
-                <Url>http://eidrep1.disig.sk/svkeidaca/crl/svkeidaca.crl</Url>
-                <Url>http://eidrep2.disig.sk/svkeidaca/crl/svkeidaca.crl</Url>
+                <crlUrl>http://eidrep1.disig.sk/svkeidaca/crl/svkeidaca.crl</crlUrl>
+                <crlUrl>http://eidrep2.disig.sk/svkeidaca/crl/svkeidaca.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls>
-                <Url>http://svkeidaca-ocsp.disig.sk/ocsp/svkeidaca</Url>
+                <ocspServerUrl>http://svkeidaca-ocsp.disig.sk/ocsp/svkeidaca</ocspServerUrl>
             </OCSPAccessUrls>
             <Sources>
             	<Source>AIA</Source>
@@ -172,13 +172,13 @@
                 <certificatePolicy cpsUrl="http://www.disig.sk/_pdf/cp_svk_eid.pdf">1.3.158.35975946.0.0.1.1.9</certificatePolicy>
             </CertificatePolicies>
             <QCStatementIds>
-                <oid Description="qc-compliance">0.4.0.1862.1.1</oid>
-                <oid Description="qc-sscd">0.4.0.1862.1.4</oid>
-                <oid>0.4.0.1862.1.6</oid>
-                <oid Description="qc-pds">0.4.0.1862.1.5</oid>
+                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
+                <qcStatementOid Description="qc-sscd">0.4.0.1862.1.4</qcStatementOid>
+                <qcStatementOid>0.4.0.1862.1.6</qcStatementOid>
+                <qcStatementOid Description="qc-pds">0.4.0.1862.1.5</qcStatementOid>
             </QCStatementIds>
             <QCTypes>
-                <oid Description="qc-type-esign">0.4.0.1862.1.6.1</oid>
+                <qcTypeOid Description="qc-type-esign">0.4.0.1862.1.6.1</qcTypeOid>
             </QCTypes>
             <TrustedServiceProviders/>
             <Revocations/>

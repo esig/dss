@@ -164,7 +164,7 @@
             <OrganizationalUnit>0002 43912916400026</OrganizationalUnit>
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints>
-                <Url>http://crl.universign.eu/universign_tsa_root_2015.crl</Url>
+                <crlUrl>http://crl.universign.eu/universign_tsa_root_2015.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
             <Sources>
@@ -240,7 +240,7 @@
             <OrganizationalUnit>0002 43912916400026</OrganizationalUnit>
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints>
-                <Url>http://crl.universign.eu/universign_tsa_root_2015.crl</Url>
+                <crlUrl>http://crl.universign.eu/universign_tsa_root_2015.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
             <Sources>
@@ -316,7 +316,7 @@
             <OrganizationalUnit>0002 43912916400026</OrganizationalUnit>
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints>
-                <Url>http://crl.universign.eu/tsa_root.crl</Url>
+                <crlUrl>http://crl.universign.eu/tsa_root.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
             <Sources>
@@ -416,7 +416,7 @@
             <OrganizationName>Certipost s.a./n.v.</OrganizationName>
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints>
-                <Url>http://crl.e-trust.be/QCA.crl</Url>
+                <crlUrl>http://crl.e-trust.be/QCA.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
             <Sources>
@@ -461,8 +461,8 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
                             <StartDate>2016-12-14T22:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
@@ -473,8 +473,8 @@
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <EndDate>2016-12-14T22:00:00</EndDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
@@ -485,7 +485,7 @@
                             <StartDate>2005-07-26T10:00:00</StartDate>
                             <EndDate>2016-06-30T22:00:00</EndDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -513,10 +513,10 @@
             <OrganizationName>Organization nv / sa</OrganizationName>
             <OrganizationalUnit>Date of birth : 01/04/1965</OrganizationalUnit>
             <AuthorityInformationAccessUrls>
-                <Url>http://ca.e-trust.be/QCA_PhP.crt</Url>
+                <aiaUrl>http://ca.e-trust.be/QCA_PhP.crt</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints>
-                <Url>http://crl.e-trust.be/QCA_PhP.crl</Url>
+                <crlUrl>http://crl.e-trust.be/QCA_PhP.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
             <Sources>
@@ -550,7 +550,7 @@
                 <certificatePolicy Description="qcp-public-with-sscd">0.4.0.1456.1.1</certificatePolicy>
             </CertificatePolicies>
             <QCStatementIds>
-                <oid Description="qc-compliant">0.4.0.1862.1.1</oid>
+                <qcStatementOid Description="qc-compliant">0.4.0.1862.1.1</qcStatementOid>
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
@@ -566,8 +566,8 @@
                             <StartDate>2016-12-14T22:00:00</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
@@ -579,8 +579,8 @@
                             <EndDate>2016-12-14T22:00:00</EndDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
@@ -592,7 +592,7 @@
                             <EndDate>2016-06-30T22:00:00</EndDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -620,7 +620,7 @@
             <OrganizationName>Certipost s.a./n.v.</OrganizationName>
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints>
-                <Url>http://www.public-trust.com/cgi-bin/CRL/2018/cdp.crl</Url>
+                <crlUrl>http://www.public-trust.com/cgi-bin/CRL/2018/cdp.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
             <Sources>
@@ -840,8 +840,8 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
                             <StartDate>2016-12-14T22:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
@@ -852,8 +852,8 @@
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <EndDate>2016-12-14T22:00:00</EndDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
@@ -864,7 +864,7 @@
                             <StartDate>2005-07-26T10:00:00</StartDate>
                             <EndDate>2016-06-30T22:00:00</EndDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -990,18 +990,18 @@
                         <ChainItem Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
                     </CertificateChain>
                     <TimestampedObjects>
-					   	<TimestampedSignature Token="id-795d321e327383fe3ff2473c27d3a34e13718d06502da587978b7a5e060511fd" />
-					   	<TimestampedCertificate Token="C-E07F11472BC72BB04A6E3C012DFC838CD323D130BDB3F0E5B1E9558DE1B723D0" />
-					   	<TimestampedCertificate Token="C-1A07376222BF46318884EA94953003ECF8E35635C373305C973C1B39169202F0" />
-					   	<TimestampedCertificate Token="C-E07F11472BC72BB04A6E3C012DFC838CD323D130BDB3F0E5B1E9558DE1B723D0" />
-					   	<TimestampedCertificate Token="C-3D62E6557C1DB8C28114420B85F9632206A12586E9EEC4F91280E4D5B6171E1A" />
-					   	<TimestampedCertificate Token="C-A53125188D2110AA964B02C7B7C6DA3203170894E5FB71FFFB6667D5E6810A36" />
-					   	<TimestampedCertificate Token="C-058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4" />
+					   	<TimestampedObject Category="SIGNATURE" Token="id-795d321e327383fe3ff2473c27d3a34e13718d06502da587978b7a5e060511fd" />
+					   	<TimestampedObject Category="CERTIFICATE" Token="C-E07F11472BC72BB04A6E3C012DFC838CD323D130BDB3F0E5B1E9558DE1B723D0" />
+					   	<TimestampedObject Category="CERTIFICATE" Token="C-1A07376222BF46318884EA94953003ECF8E35635C373305C973C1B39169202F0" />
+					   	<TimestampedObject Category="CERTIFICATE" Token="C-E07F11472BC72BB04A6E3C012DFC838CD323D130BDB3F0E5B1E9558DE1B723D0" />
+					   	<TimestampedObject Category="CERTIFICATE" Token="C-3D62E6557C1DB8C28114420B85F9632206A12586E9EEC4F91280E4D5B6171E1A" />
+					   	<TimestampedObject Category="CERTIFICATE" Token="C-A53125188D2110AA964B02C7B7C6DA3203170894E5FB71FFFB6667D5E6810A36" />
+					   	<TimestampedObject Category="CERTIFICATE" Token="C-058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4" />
 					   	
-		   				<TimestampedRevocationData Token="R-e07f11472bc72bb04a6e3c012dfc838cd323d130bdb3f0e5b1e9558de1b723d0deaa5ee0c0f35ec13292a79f2ed0fce2f0b14994838c52768adac2b5dd6a700a" />
-		   				<TimestampedRevocationData Token="R-67877e78139a499c1a04375c3899f9f99eaf368f75895328dc077929fb1705ff" />
-		   				<TimestampedRevocationData Token="R-1a07376222bf46318884ea94953003ecf8e35635c373305c973c1b39169202f013951d706f0812fcc1b09200fef43f07d038a6b1bad18a1fd08f9b8b746d01fe" />
-		   				<TimestampedRevocationData Token="R-cff2e3b95d7ebf7d89b1d586102d09632ce5e39bfa31115c3c9577461dd856ad8751833704dd53bf5510c421764fc4226f236cfdeffef807de46c72a5cbe5f17" />
+		   				<TimestampedObject Category="REVOCATION" Token="R-e07f11472bc72bb04a6e3c012dfc838cd323d130bdb3f0e5b1e9558de1b723d0deaa5ee0c0f35ec13292a79f2ed0fce2f0b14994838c52768adac2b5dd6a700a" />
+		   				<TimestampedObject Category="REVOCATION" Token="R-67877e78139a499c1a04375c3899f9f99eaf368f75895328dc077929fb1705ff" />
+		   				<TimestampedObject Category="REVOCATION" Token="R-1a07376222bf46318884ea94953003ecf8e35635c373305c973c1b39169202f013951d706f0812fcc1b09200fef43f07d038a6b1bad18a1fd08f9b8b746d01fe" />
+		   				<TimestampedObject Category="REVOCATION" Token="R-cff2e3b95d7ebf7d89b1d586102d09632ce5e39bfa31115c3c9577461dd856ad8751833704dd53bf5510c421764fc4226f236cfdeffef807de46c72a5cbe5f17" />
 					</TimestampedObjects>
 		            <DigestAlgoAndValue>
 		            	<DigestMethod>SHA1</DigestMethod>
@@ -1029,19 +1029,19 @@
                         <ChainItem Certificate="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A"/>
                     </CertificateChain>
                      <TimestampedObjects>
-					   	<TimestampedSignature Token="id-795d321e327383fe3ff2473c27d3a34e13718d06502da587978b7a5e060511fd" />
-		   				<TimestampedTimestamp Token="T-45DD4912007272F5DDAA25AE6893909987050A5348FF873F4073A476A860C696" />
-					   	<TimestampedCertificate Token="C-E07F11472BC72BB04A6E3C012DFC838CD323D130BDB3F0E5B1E9558DE1B723D0" />
-					   	<TimestampedCertificate Token="C-1A07376222BF46318884EA94953003ECF8E35635C373305C973C1B39169202F0" />
-					   	<TimestampedCertificate Token="C-E07F11472BC72BB04A6E3C012DFC838CD323D130BDB3F0E5B1E9558DE1B723D0" />
-					   	<TimestampedCertificate Token="C-3D62E6557C1DB8C28114420B85F9632206A12586E9EEC4F91280E4D5B6171E1A" />
-					   	<TimestampedCertificate Token="C-A53125188D2110AA964B02C7B7C6DA3203170894E5FB71FFFB6667D5E6810A36" />
-					   	<TimestampedCertificate Token="C-058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4" />
+					   	<TimestampedObject Category="SIGNATURE" Token="id-795d321e327383fe3ff2473c27d3a34e13718d06502da587978b7a5e060511fd" />
+		   				<TimestampedObject Category="TIMESTAMP" Token="T-45DD4912007272F5DDAA25AE6893909987050A5348FF873F4073A476A860C696" />
+					   	<TimestampedObject Category="CERTIFICATE" Token="C-E07F11472BC72BB04A6E3C012DFC838CD323D130BDB3F0E5B1E9558DE1B723D0" />
+					   	<TimestampedObject Category="CERTIFICATE" Token="C-1A07376222BF46318884EA94953003ECF8E35635C373305C973C1B39169202F0" />
+					   	<TimestampedObject Category="CERTIFICATE" Token="C-E07F11472BC72BB04A6E3C012DFC838CD323D130BDB3F0E5B1E9558DE1B723D0" />
+					   	<TimestampedObject Category="CERTIFICATE" Token="C-3D62E6557C1DB8C28114420B85F9632206A12586E9EEC4F91280E4D5B6171E1A" />
+					   	<TimestampedObject Category="CERTIFICATE" Token="C-A53125188D2110AA964B02C7B7C6DA3203170894E5FB71FFFB6667D5E6810A36" />
+					   	<TimestampedObject Category="CERTIFICATE" Token="C-058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4" />
 					   	
-		   				<TimestampedRevocationData Token="R-e07f11472bc72bb04a6e3c012dfc838cd323d130bdb3f0e5b1e9558de1b723d0deaa5ee0c0f35ec13292a79f2ed0fce2f0b14994838c52768adac2b5dd6a700a" />
-		   				<TimestampedRevocationData Token="R-67877e78139a499c1a04375c3899f9f99eaf368f75895328dc077929fb1705ff" />
-		   				<TimestampedRevocationData Token="R-1a07376222bf46318884ea94953003ecf8e35635c373305c973c1b39169202f013951d706f0812fcc1b09200fef43f07d038a6b1bad18a1fd08f9b8b746d01fe" />
-		   				<TimestampedRevocationData Token="R-cff2e3b95d7ebf7d89b1d586102d09632ce5e39bfa31115c3c9577461dd856ad8751833704dd53bf5510c421764fc4226f236cfdeffef807de46c72a5cbe5f17" />
+		   				<TimestampedObject Category="REVOCATION" Token="R-e07f11472bc72bb04a6e3c012dfc838cd323d130bdb3f0e5b1e9558de1b723d0deaa5ee0c0f35ec13292a79f2ed0fce2f0b14994838c52768adac2b5dd6a700a" />
+		   				<TimestampedObject Category="REVOCATION" Token="R-67877e78139a499c1a04375c3899f9f99eaf368f75895328dc077929fb1705ff" />
+		   				<TimestampedObject Category="REVOCATION" Token="R-1a07376222bf46318884ea94953003ecf8e35635c373305c973c1b39169202f013951d706f0812fcc1b09200fef43f07d038a6b1bad18a1fd08f9b8b746d01fe" />
+		   				<TimestampedObject Category="REVOCATION" Token="R-cff2e3b95d7ebf7d89b1d586102d09632ce5e39bfa31115c3c9577461dd856ad8751833704dd53bf5510c421764fc4226f236cfdeffef807de46c72a5cbe5f17" />
 					</TimestampedObjects>
 		            <DigestAlgoAndValue>
 		            	<DigestMethod>SHA1</DigestMethod>
@@ -1069,20 +1069,20 @@
                         <ChainItem Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
                     </CertificateChain>
                      <TimestampedObjects>
-					   	<TimestampedSignature Token="id-795d321e327383fe3ff2473c27d3a34e13718d06502da587978b7a5e060511fd" />
-		   				<TimestampedTimestamp Token="T-45DD4912007272F5DDAA25AE6893909987050A5348FF873F4073A476A860C696" />
-		   				<TimestampedTimestamp Token="T-950D06E9BC8B0CDB73D88349F14D3BC702BF4947752A121A940EE03639C1249D" />
-					   	<TimestampedCertificate Token="C-E07F11472BC72BB04A6E3C012DFC838CD323D130BDB3F0E5B1E9558DE1B723D0" />
-					   	<TimestampedCertificate Token="C-1A07376222BF46318884EA94953003ECF8E35635C373305C973C1B39169202F0" />
-					   	<TimestampedCertificate Token="C-E07F11472BC72BB04A6E3C012DFC838CD323D130BDB3F0E5B1E9558DE1B723D0" />
-					   	<TimestampedCertificate Token="C-3D62E6557C1DB8C28114420B85F9632206A12586E9EEC4F91280E4D5B6171E1A" />
-					   	<TimestampedCertificate Token="C-A53125188D2110AA964B02C7B7C6DA3203170894E5FB71FFFB6667D5E6810A36" />
-					   	<TimestampedCertificate Token="C-058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4" />
+					   	<TimestampedObject Category="SIGNATURE" Token="id-795d321e327383fe3ff2473c27d3a34e13718d06502da587978b7a5e060511fd" />
+		   				<TimestampedObject Category="TIMESTAMP" Token="T-45DD4912007272F5DDAA25AE6893909987050A5348FF873F4073A476A860C696" />
+		   				<TimestampedObject Category="TIMESTAMP" Token="T-950D06E9BC8B0CDB73D88349F14D3BC702BF4947752A121A940EE03639C1249D" />
+					   	<TimestampedObject Category="CERTIFICATE" Token="C-E07F11472BC72BB04A6E3C012DFC838CD323D130BDB3F0E5B1E9558DE1B723D0" />
+					   	<TimestampedObject Category="CERTIFICATE" Token="C-1A07376222BF46318884EA94953003ECF8E35635C373305C973C1B39169202F0" />
+					   	<TimestampedObject Category="CERTIFICATE" Token="C-E07F11472BC72BB04A6E3C012DFC838CD323D130BDB3F0E5B1E9558DE1B723D0" />
+					   	<TimestampedObject Category="CERTIFICATE" Token="C-3D62E6557C1DB8C28114420B85F9632206A12586E9EEC4F91280E4D5B6171E1A" />
+					   	<TimestampedObject Category="CERTIFICATE" Token="C-A53125188D2110AA964B02C7B7C6DA3203170894E5FB71FFFB6667D5E6810A36" />
+					   	<TimestampedObject Category="CERTIFICATE" Token="C-058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4" />
 					   	
-		   				<TimestampedRevocationData Token="R-e07f11472bc72bb04a6e3c012dfc838cd323d130bdb3f0e5b1e9558de1b723d0deaa5ee0c0f35ec13292a79f2ed0fce2f0b14994838c52768adac2b5dd6a700a" />
-		   				<TimestampedRevocationData Token="R-67877e78139a499c1a04375c3899f9f99eaf368f75895328dc077929fb1705ff" />
-		   				<TimestampedRevocationData Token="R-1a07376222bf46318884ea94953003ecf8e35635c373305c973c1b39169202f013951d706f0812fcc1b09200fef43f07d038a6b1bad18a1fd08f9b8b746d01fe" />
-		   				<TimestampedRevocationData Token="R-cff2e3b95d7ebf7d89b1d586102d09632ce5e39bfa31115c3c9577461dd856ad8751833704dd53bf5510c421764fc4226f236cfdeffef807de46c72a5cbe5f17" />
+		   				<TimestampedObject Category="REVOCATION" Token="R-e07f11472bc72bb04a6e3c012dfc838cd323d130bdb3f0e5b1e9558de1b723d0deaa5ee0c0f35ec13292a79f2ed0fce2f0b14994838c52768adac2b5dd6a700a" />
+		   				<TimestampedObject Category="REVOCATION" Token="R-67877e78139a499c1a04375c3899f9f99eaf368f75895328dc077929fb1705ff" />
+		   				<TimestampedObject Category="REVOCATION" Token="R-1a07376222bf46318884ea94953003ecf8e35635c373305c973c1b39169202f013951d706f0812fcc1b09200fef43f07d038a6b1bad18a1fd08f9b8b746d01fe" />
+		   				<TimestampedObject Category="REVOCATION" Token="R-cff2e3b95d7ebf7d89b1d586102d09632ce5e39bfa31115c3c9577461dd856ad8751833704dd53bf5510c421764fc4226f236cfdeffef807de46c72a5cbe5f17" />
 					</TimestampedObjects>
 		            <DigestAlgoAndValue>
 		            	<DigestMethod>SHA1</DigestMethod>

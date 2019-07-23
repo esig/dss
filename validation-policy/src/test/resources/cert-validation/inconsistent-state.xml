@@ -12,13 +12,13 @@
             <CountryName>HR</CountryName>
             <OrganizationName>f a</OrganizationName>
             <AuthorityInformationAccessUrls>
-                <Url>http://rdc.f.hr/Root/fRootCA.cer</Url>
+                <aiaUrl>http://rdc.f.hr/Root/fRootCA.cer</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints>
-                <Url>http://rdc.f.hr/Root/fRootCA.crl</Url>
+                <crlUrl>http://rdc.f.hr/Root/fRootCA.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls>
-                <Url>http://ocsp.f.hr</Url>
+                <ocspServerUrl>http://ocsp.f.hr</ocspServerUrl>
             </OCSPAccessUrls>
             <Sources>
             	<Source>TRUSTED_LIST</Source>
@@ -60,8 +60,8 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
@@ -79,7 +79,7 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
@@ -106,14 +106,14 @@
             <CountryName>HR</CountryName>
             <OrganizationName>f a</OrganizationName>
             <AuthorityInformationAccessUrls>
-                <Url>http://rdc.f.hr/RDC2015/fRDCCA2015.cer</Url>
+                <aiaUrl>http://rdc.f.hr/RDC2015/fRDCCA2015.cer</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints>
-                <Url>http://rdc.f.hr/RDC2015/fRDCCA2015.crl</Url>
-                <Url>ldap://rdc-ldap2.f.hr/cn=f%20RDC%202015,o=f%20a,c=HR?certificateRevocationList%3Bbinary</Url>
+                <crlUrl>http://rdc.f.hr/RDC2015/fRDCCA2015.crl</crlUrl>
+                <crlUrl>ldap://rdc-ldap2.f.hr/cn=f%20RDC%202015,o=f%20a,c=HR?certificateRevocationList%3Bbinary</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls>
-                <Url>http://ocsp.f.hr</Url>
+                <ocspServerUrl>http://ocsp.f.hr</ocspServerUrl>
             </OCSPAccessUrls>
             <Sources>
             	<Source>OCSP_RESPONSE</Source>
@@ -127,7 +127,7 @@
                 <KeyUsage>digitalSignature</KeyUsage>
             </KeyUsageBits>
             <ExtendedKeyUsages>
-                <oid Description="ocspSigning">1.3.6.1.5.5.7.3.9</oid>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
             </ExtendedKeyUsages>
             <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
@@ -167,8 +167,8 @@
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement</Qualifier>
                             </CapturedQualifiers>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
@@ -178,7 +178,7 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -199,14 +199,14 @@
             <GivenName>e</GivenName>
             <Surname>m</Surname>
             <AuthorityInformationAccessUrls>
-                <Url>http://rdc.f.hr/RDC2015/fRDCCA2015.cer</Url>
+                <aiaUrl>http://rdc.f.hr/RDC2015/fRDCCA2015.cer</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints>
-                <Url>http://rdc.f.hr/RDC2015/fRDCCA2015.crl</Url>
-                <Url>ldap://rdc-ldap2.f.hr/cn=f%20RDC%202015,o=f%20a,c=HR?certificateRevocationList%3Bbinary</Url>
+                <crlUrl>http://rdc.f.hr/RDC2015/fRDCCA2015.crl</crlUrl>
+                <crlUrl>ldap://rdc-ldap2.f.hr/cn=f%20RDC%202015,o=f%20a,c=HR?certificateRevocationList%3Bbinary</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls>
-                <Url>http://ocsp.f.hr</Url>
+                <ocspServerUrl>http://ocsp.f.hr</ocspServerUrl>
             </OCSPAccessUrls>
             <Sources>
             	<Source>UNKNOWN</Source>
@@ -238,12 +238,12 @@
                 <certificatePolicy Description="qcp-natural">0.4.0.194112.1.0</certificatePolicy>
             </CertificatePolicies>
             <QCStatementIds>
-                <oid Description="qc-compliance">0.4.0.1862.1.1</oid>
-                <oid Description="qc-pds">0.4.0.1862.1.5</oid>
-                <oid>0.4.0.1862.1.6</oid>
+                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
+                <qcStatementOid Description="qc-pds">0.4.0.1862.1.5</qcStatementOid>
+                <qcStatementOid>0.4.0.1862.1.6</qcStatementOid>
             </QCStatementIds>
             <QCTypes>
-                <oid Description="qc-type-esign">0.4.0.1862.1.6.1</oid>
+                <qcTypeOid Description="qc-type-esign">0.4.0.1862.1.6.1</qcTypeOid>
             </QCTypes>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
@@ -264,8 +264,8 @@
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement</Qualifier>
                             </CapturedQualifiers>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
@@ -276,7 +276,7 @@
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>

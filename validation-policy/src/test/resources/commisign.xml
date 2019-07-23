@@ -64,10 +64,10 @@
          <CommonName>C - 2</CommonName>
          <OrganizationName>European Commission</OrganizationName>
          <AuthorityInformationAccessUrls>
-            <Url>http://hide.eu/info/aia/RootCA.crt</Url>
+            <aiaUrl>http://hide.eu/info/aia/RootCA.crt</aiaUrl>
          </AuthorityInformationAccessUrls>
          <CRLDistributionPoints>
-            <Url>http://hide.eu/info/crl/RootCA.arl</Url>
+            <crlUrl>http://hide.eu/info/crl/RootCA.arl</crlUrl>
          </CRLDistributionPoints>
          <OCSPAccessUrls/>
          <Sources>
@@ -145,7 +145,7 @@
             <KeyUsage>digitalSignature</KeyUsage>
          </KeyUsageBits>
          <ExtendedKeyUsages>
-            <oid Description="ocspSigning">1.3.6.1.5.5.7.3.9</oid>
+            <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
          </ExtendedKeyUsages>
          <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
          <BasicSignature>
@@ -242,13 +242,13 @@
          <OrganizationName>European Commission</OrganizationName>
          <Email>A.R@ext.ec.europa.eu</Email>
          <AuthorityInformationAccessUrls>
-            <Url>http://hide.eu/info/aia/onlineCA.crt</Url>
+            <aiaUrl>http://hide.eu/info/aia/onlineCA.crt</aiaUrl>
          </AuthorityInformationAccessUrls>
          <CRLDistributionPoints>
-            <Url>http://hide.eu/info/crl/onlineCA.crl</Url>
+            <crlUrl>http://hide.eu/info/crl/onlineCA.crl</crlUrl>
          </CRLDistributionPoints>
          <OCSPAccessUrls>
-            <Url>http://hide.eu/ocsp</Url>
+            <ocspServerUrl>http://hide.eu/ocsp</ocspServerUrl>
          </OCSPAccessUrls>
          <Sources>
          	<Source>UNKNOWN</Source>
@@ -262,7 +262,7 @@
             <KeyUsage>digitalSignature</KeyUsage>
          </KeyUsageBits>
          <ExtendedKeyUsages>
-            <oid Description="emailProtection">1.3.6.1.5.5.7.3.4</oid>
+            <extendedKeyUsagesOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsagesOid>
          </ExtendedKeyUsages>
          <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
          <BasicSignature>
