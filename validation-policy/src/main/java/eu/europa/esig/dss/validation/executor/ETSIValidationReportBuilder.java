@@ -435,8 +435,9 @@ public class ETSIValidationReportBuilder {
 		for (String id : timestamp.getTimestampedSignedDataIds()) {
 			poeProvisioning.getValidationObject().add(getVOReference(id));
 		}
-		List<SignatureWrapper> timestampedSignatures = timestamp.getTimestampedSignatures();
-		for (SignatureWrapper timestampedSignature : timestampedSignatures) {
+		List<String> timestampedSignatureIds = timestamp.getTimestampedSignatureIds();
+		for (String signatureId : timestampedSignatureIds) {
+			SignatureWrapper timestampedSignature = diagnosticData.getSignatureById(signatureId);
 			poeProvisioning.getSignatureReference().add(getSignatureReference(timestampedSignature));
 		}
 		return poeProvisioning;

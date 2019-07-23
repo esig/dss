@@ -45,25 +45,25 @@ public class PdfDocTimestampInfo extends PdfCMSInfo implements PdfSignatureOrDoc
 	/**
 	 * Default constructor to create PdfDocTimestampInfo
 	 * 
-	 * @param validationCertPool 
-	 *            {@link CertificatePool}
+	 * @param validationCertPool
+	 *                                 the certificate pool
 	 * @param signatureDictionary
-	 *            {@link PdfSigDict}
-	 * @param dssDictionary
-	 *            the DSS dictionary
+	 *                                 the signature dictionary
+	 * @param timestampedDssDictionary
+	 *                                 the covered DSS dictionary
 	 * @param cms
-	 *            the CMS (CAdES) bytes
+	 *                                 the CMS (CAdES) bytes
 	 * @param signedContent
-	 *            byte array representing the covered part by the timestamp
+	 *                                 the signed data
 	 * @param coverCompleteRevision
-	 *            true if the signature covers all bytes
+	 *                                 true if the signature covers all bytes
 	 */
 	public PdfDocTimestampInfo(CertificatePool validationCertPool, PdfSigDict signatureDictionary,
-			PdfDssDict dssDictionary, byte[] cms, byte[] signedContent, boolean coverCompleteRevision) {
-		super(signatureDictionary, dssDictionary, cms, signedContent, coverCompleteRevision);
+			PdfDssDict timestampedDssDictionary, byte[] cms, byte[] signedContent, boolean coverCompleteRevision) {
+		super(signatureDictionary, timestampedDssDictionary, cms, signedContent, coverCompleteRevision);
 		try {
 			TimestampType timestampType = TimestampType.SIGNATURE_TIMESTAMP;
-			if (dssDictionary != null) {
+			if (timestampedDssDictionary != null) {
 				timestampType = TimestampType.ARCHIVE_TIMESTAMP;
 			}
 			timestampToken = new TimestampToken(cms, timestampType, validationCertPool, TimestampLocation.DOC_TIMESTAMP);

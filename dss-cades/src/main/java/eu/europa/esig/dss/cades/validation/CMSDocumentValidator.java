@@ -48,10 +48,7 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 
 	protected CMSSignedData cmsSignedData;
 
-	/**
-	 * This constructor is used with {@code TimeStampToken}.
-	 */
-	public CMSDocumentValidator() {
+	CMSDocumentValidator() {
 		super(new CAdESSignatureScopeFinder());
 	}
 
@@ -62,7 +59,6 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 	 *            pkcs7-signature(s)
 	 */
 	public CMSDocumentValidator(final CMSSignedData cmsSignedData) {
-
 		this();
 		this.cmsSignedData = cmsSignedData;
 	}

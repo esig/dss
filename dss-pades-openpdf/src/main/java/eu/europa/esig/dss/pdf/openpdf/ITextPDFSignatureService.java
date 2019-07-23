@@ -277,29 +277,28 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 				final byte[] cms = signatureDictionary.getContents();
 				checkIsContentValueEqualsByteRangeExtraction(document, byteRange, cms, name);
-				
+
 				final byte[] signedContent = getSignedContent(document, byteRange);
 				boolean signatureCoversWholeDocument = af.signatureCoversWholeDocument(name);
 
 				final String subFilter = signatureDictionary.getSubFilter();
 				if (PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER.equals(subFilter)) {
 
-					PdfDssDict timestampRevisionDssDict = null;
-					
+					PdfDssDict timestampedRevisionDssDict = null;
+
 					// LT or LTA
 					if (dssDictionary != null) {
 						// obtain covered DSS dictionary if already exist
-						timestampRevisionDssDict = getDSSDictionaryPresentInRevision(getOriginalBytes(byteRange, signedContent));
+						timestampedRevisionDssDict = getDSSDictionaryPresentInRevision(getOriginalBytes(byteRange, signedContent));
 					}
-					result.add(new PdfDocTimestampInfo(validationCertPool, signatureDictionary, timestampRevisionDssDict, cms, signedContent, 
-							signatureCoversWholeDocument));
-					
-				} else {
-					result.add(new PdfSignatureInfo(validationCertPool, signatureDictionary, dssDictionary, cms, signedContent, 
-							signatureCoversWholeDocument));
-					
-				}
 
+					result.add(new PdfDocTimestampInfo(validationCertPool, signatureDictionary, timestampedRevisionDssDict, cms, signedContent,
+							signatureCoversWholeDocument));
+
+				} else {
+					result.add(new PdfSignatureInfo(validationCertPool, signatureDictionary, dssDictionary, cms, signedContent, signatureCoversWholeDocument));
+
+				}
 			}
 
 			linkSignatures(result);

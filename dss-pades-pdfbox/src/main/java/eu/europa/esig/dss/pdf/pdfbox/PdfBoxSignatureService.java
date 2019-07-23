@@ -344,17 +344,17 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 						PdfSignatureOrDocTimestampInfo signatureInfo = null;
 						final String subFilter = signatureDictionary.getSubFilter();
 						if (PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER.equals(subFilter)) {
-							
-							PdfDssDict timestampRevisionDssDict = null;
+
+							PdfDssDict timestampedDssDictionary = null;
 
 							// LT or LTA
 							if (dssDictionary != null) {
-								// obtain covered DSS dictionary if already exist
-								timestampRevisionDssDict = getDSSDictionaryPresentInRevision(getOriginalBytes(byteRange, signedContent));
+								// check is DSS dictionary already exist
+								timestampedDssDictionary = getDSSDictionaryPresentInRevision(getOriginalBytes(byteRange, signedContent));
 							}
-							signatureInfo = new PdfDocTimestampInfo(validationCertPool, signatureDictionary, timestampRevisionDssDict, cms, signedContent,
+
+							signatureInfo = new PdfDocTimestampInfo(validationCertPool, signatureDictionary, timestampedDssDictionary, cms, signedContent,
 									coverAllOriginalBytes);
-							
 						} else {
 							signatureInfo = new PdfSignatureInfo(validationCertPool, signatureDictionary, dssDictionary, cms, signedContent,
 									coverAllOriginalBytes);
@@ -504,20 +504,23 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 					}
 					array.add(stream);
 				} else {
-					List<COSObject> objects = pdDocument.getDocument().getObjects();
-					COSObject foundCosObject = null;
-					for (COSObject cosObject : objects) {
-						if (cosObject.getObjectNumber() == objectNumber) {
-							foundCosObject = cosObject;
-							break;
-						}
-					}
+					COSObject foundCosObject = getByObjectNumber(pdDocument, objectNumber);
 					array.add(foundCosObject);
 				}
 				currentObjIds.add(digest);
 			}
 		}
 		return array;
+	}
+
+	private COSObject getByObjectNumber(PDDocument pdDocument, Long objectNumber) {
+		List<COSObject> objects = pdDocument.getDocument().getObjects();
+		for (COSObject cosObject : objects) {
+			if (cosObject.getObjectNumber() == objectNumber) {
+				return cosObject;
+			}
+		}
+		return null;
 	}
 
 	@Override

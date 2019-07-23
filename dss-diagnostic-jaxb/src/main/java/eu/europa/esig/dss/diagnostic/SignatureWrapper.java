@@ -241,6 +241,14 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return "";
 	}
 
+	public boolean isZeroHashPolicy() {
+		XmlPolicy policy = signature.getPolicy();
+		if (policy != null) {
+			return policy.isZeroHash() != null && policy.isZeroHash();
+		}
+		return false;
+	}
+
 	public boolean isBLevelTechnicallyValid() {
 		return (signature.getBasicSignature() != null) && signature.getBasicSignature().isSignatureValid();
 	}

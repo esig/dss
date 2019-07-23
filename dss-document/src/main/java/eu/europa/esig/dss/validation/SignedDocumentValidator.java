@@ -23,12 +23,11 @@ package eu.europa.esig.dss.validation;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
+import java.util.ServiceLoader;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +44,6 @@ import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.CustomProcessExecutor;
 import eu.europa.esig.dss.validation.executor.ProcessExecutor;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
@@ -121,31 +119,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	// Default configuration with the highest level
 	private ValidationLevel validationLevel = ValidationLevel.ARCHIVAL_DATA;
 
-	private static List<Class<SignedDocumentValidator>> registredDocumentValidators = new ArrayList<Class<SignedDocumentValidator>>();
-
-	static {
-		Properties properties = new Properties();
-		try {
-			properties.load(SignedDocumentValidator.class.getResourceAsStream("/document-validators.properties"));
-		} catch (IOException e) {
-			LOG.error("Cannot load properties from document-validators.properties : " + e.getMessage(), e);
-		}
-		for (String propName : properties.stringPropertyNames()) {
-			registerDocumentValidator(propName, properties.getProperty(propName));
-		}
-	}
-
-	private static void registerDocumentValidator(String type, String clazzToFind) {
-		try {
-			@SuppressWarnings("unchecked")
-			Class<SignedDocumentValidator> documentValidator = (Class<SignedDocumentValidator>) Class.forName(clazzToFind);
-			registredDocumentValidators.add(documentValidator);
-			LOG.info("Validator '{}' is registred", documentValidator.getName());
-		} catch (ClassNotFoundException e) {
-			LOG.warn("Validator not found for signature type : {}", type);
-		}
-	}
-
 	protected SignedDocumentValidator(SignatureScopeFinder signatureScopeFinder) {
 		this.signatureScopeFinder = signatureScopeFinder;
 	}
@@ -166,21 +139,10 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 *         of the document type
 	 */
 	public static SignedDocumentValidator fromDocument(final DSSDocument dssDocument) {
-		if (Utils.isCollectionEmpty(registredDocumentValidators)) {
-			throw new DSSException("No validator registred");
-		}
-
-		for (Class<SignedDocumentValidator> clazz : registredDocumentValidators) {
-			try {
-				Constructor<SignedDocumentValidator> defaultAndPrivateConstructor = clazz.getDeclaredConstructor();
-				defaultAndPrivateConstructor.setAccessible(true);
-				SignedDocumentValidator validator = defaultAndPrivateConstructor.newInstance();
-				if (validator.isSupported(dssDocument)) {
-					Constructor<? extends SignedDocumentValidator> constructor = clazz.getDeclaredConstructor(DSSDocument.class);
-					return constructor.newInstance(dssDocument);
-				}
-			} catch (Exception e) {
-				LOG.error("Cannot instanciate class '" + clazz.getName() + "' : " + e.getMessage(), e);
+		ServiceLoader<DocumentValidatorFactory> serviceLoaders = ServiceLoader.load(DocumentValidatorFactory.class);
+		for (DocumentValidatorFactory factory : serviceLoaders) {
+			if (factory.isSupported(dssDocument)) {
+				return factory.create(dssDocument);
 			}
 		}
 		throw new DSSException("Document format not recognized/handled");

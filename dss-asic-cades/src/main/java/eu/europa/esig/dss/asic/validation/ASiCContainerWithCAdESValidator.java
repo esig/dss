@@ -50,7 +50,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCContainerWithCAdESValidator.class);
 
-	private ASiCContainerWithCAdESValidator() {
+	ASiCContainerWithCAdESValidator() {
 		super(null);
 	}
 

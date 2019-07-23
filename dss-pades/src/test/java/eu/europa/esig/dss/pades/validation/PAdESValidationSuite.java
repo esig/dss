@@ -27,7 +27,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses(value = { ASN1Policy.class, DSS1188.class, DSS1376GetOriginalDoc.class, DSS1420.class, DSS818.class, DSS917.class, PadesWrongDigestAlgo.class,
 		PdfPkcs7.class, DSS1443.class, DSS1538.class, DSS1683.class, DSS1690.class, DiagnosticDataComplete.class, EtsiValidationReportComplete.class,
-		SignatureTimestampCertificateNotFound.class, PAdESCorruptedSig.class, PAdESNonLatinCharactersValidation.class })
+		SignatureTimestampCertificateNotFound.class, PAdESCorruptedSig.class, PAdESNonLatinCharactersValidation.class, ArchiveTimestampCoverage.class,
+		PolicyZeroHash.class })
 public class PAdESValidationSuite {
 
 }

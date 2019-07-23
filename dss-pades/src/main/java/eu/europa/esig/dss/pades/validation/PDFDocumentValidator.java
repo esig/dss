@@ -44,10 +44,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 
 	private final PDFSignatureService pdfSignatureService;
 
-	/**
-	 * Default constructor used with reflexion (see SignedDocumentValidator)
-	 */
-	private PDFDocumentValidator() {
+	PDFDocumentValidator() {
 		super(null);
 		pdfSignatureService = null;
 	}
