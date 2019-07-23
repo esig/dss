@@ -110,7 +110,7 @@ public class Reports extends AbstractReports {
 			}
 			return xmlSimpleReport;
 		} catch (JAXBException | IOException | SAXException e) {
-			throw new DSSReportException("An error occured during marshalling of JAXB Simple Report");
+			throw new DSSReportException("An error occurred during marshalling of JAXB Simple Report", e);
 		}
 	}
 
@@ -129,7 +129,7 @@ public class Reports extends AbstractReports {
 			}
 			return xmlEtsiValidationReport;
 		} catch (JAXBException | IOException | SAXException e) {
-			throw new DSSReportException("An error occured during marshalling of JAXB Etsi Validation Report");
+			throw new DSSReportException("An error occurred during marshalling of JAXB Etsi Validation Report", e);
 		}
 	}
 

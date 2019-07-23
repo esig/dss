@@ -117,7 +117,7 @@ public abstract class AbstractReports {
 			}
 			return xmlDiagnosticData;
 		} catch (JAXBException | IOException | SAXException e) {
-			throw new DSSReportException("An error occured during marshalling of JAXB Diagnostic Data");
+			throw new DSSReportException("An error occurred during marshalling of JAXB Diagnostic Data", e);
 		}
 	}
 
@@ -134,7 +134,7 @@ public abstract class AbstractReports {
 			}
 			return xmlDetailedReport;
 		} catch (JAXBException | IOException | SAXException e) {
-			throw new DSSReportException("An error occured during marshalling of JAXB Detailed Report");
+			throw new DSSReportException("An error occurred during marshalling of JAXB Detailed Report", e);
 		}
 	}
 

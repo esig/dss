@@ -55,6 +55,21 @@ public class DigestDocument extends CommonDocument {
 	}
 
 	/**
+	 * Creates DigestDocument.
+	 * 
+	 * @param digestAlgorithm
+	 *            {@code DigestAlgorithm}
+	 * @param base64EncodeDigest
+	 *            the corresponding base 64 encoded digest value
+	 * @param name
+	 *            the name of the document
+	 */
+	public DigestDocument(final DigestAlgorithm digestAlgorithm, final String base64EncodeDigest, final String name) {
+		this(digestAlgorithm, base64EncodeDigest);
+		this.name = name;
+	}
+
+	/**
 	 * This method allows to add a pair: {@code DigestAlgorithm} and the corresponding digest value calculated
 	 * externally on the encapsulated file. The digest value is base 64 encoded.
 	 *

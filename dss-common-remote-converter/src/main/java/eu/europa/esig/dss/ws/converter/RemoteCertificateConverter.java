@@ -35,6 +35,11 @@ public class RemoteCertificateConverter {
 		return new RemoteCertificate(certificate.getEncoded());
 	}
 	
+	/**
+	 * Converts the given list of {@code remoteCertificates} to a list of {@code CertificateToken}s
+	 * @param remoteCertificates list of {@link RemoteCertificate}s
+	 * @return list of {@link CertificateToken}s
+	 */
 	public static List<CertificateToken> toCertificateTokens(List<RemoteCertificate> remoteCertificates) {
 		if (Utils.isCollectionNotEmpty(remoteCertificates)) {
 			List<CertificateToken> certificateTokens = new LinkedList<CertificateToken>();

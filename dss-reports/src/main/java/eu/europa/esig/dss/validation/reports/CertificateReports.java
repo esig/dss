@@ -93,7 +93,7 @@ public class CertificateReports extends AbstractReports {
 			}
 			return xmlSimpleReport;
 		} catch (JAXBException | IOException | SAXException e) {
-			throw new DSSReportException("An error occured during marshalling of JAXB Simple Report");
+			throw new DSSReportException("An error occurred during marshalling of JAXB Simple Report", e);
 		}
 	}
 

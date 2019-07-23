@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.ws.signature.rest;
 
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 import eu.europa.esig.dss.ws.signature.common.AbstractRemoteSignatureServiceImpl;
@@ -40,17 +39,17 @@ public class RestDocumentSignatureServiceImpl extends AbstractRemoteSignatureSer
 	}
 
 	@Override
-	public ToBeSignedDTO getDataToSign(DataToSignOneDocumentDTO dataToSignDto) throws DSSException {
+	public ToBeSignedDTO getDataToSign(DataToSignOneDocumentDTO dataToSignDto) {
 		return service.getDataToSign(dataToSignDto.getToSignDocument(), dataToSignDto.getParameters());
 	}
 
 	@Override
-	public RemoteDocument signDocument(SignOneDocumentDTO signDocumentDto) throws DSSException {
+	public RemoteDocument signDocument(SignOneDocumentDTO signDocumentDto) {
 		return service.signDocument(signDocumentDto.getToSignDocument(), signDocumentDto.getParameters(), signDocumentDto.getSignatureValue());
 	}
 
 	@Override
-	public RemoteDocument extendDocument(ExtendDocumentDTO extendDocumentDto) throws DSSException {
+	public RemoteDocument extendDocument(ExtendDocumentDTO extendDocumentDto) {
 		return service.extendDocument(extendDocumentDto.getToExtendDocument(), extendDocumentDto.getParameters());
 	}
 

@@ -25,10 +25,12 @@ import java.util.List;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
+import eu.europa.esig.dss.ws.dto.exception.DSSRemoteServiceException;
 
 public class RemoteDocumentConverter {
 
@@ -65,12 +67,26 @@ public class RemoteDocumentConverter {
 	public static List<RemoteDocument> toRemoteDocuments(List<DSSDocument> originalDocuments) {
 		List<RemoteDocument> results = new ArrayList<RemoteDocument>();
 		for (DSSDocument originalDocument : originalDocuments) {
-			results.add(toRemoteDocument(originalDocument));
+			RemoteDocument remoteDocument = toRemoteDocument(originalDocument);
+			if (remoteDocument != null) {
+				results.add(remoteDocument);
+			}
 		}
 		return results;
 	}
 
 	public static RemoteDocument toRemoteDocument(DSSDocument originalDocument) {
+		if (originalDocument == null) {
+			return null;
+		}
+		if (originalDocument instanceof DigestDocument) {
+			DigestDocument digestDocument = (DigestDocument) originalDocument;
+			Digest digest = digestDocument.getExistingDigest();
+			if (digest.getAlgorithm() == null || digest.getValue() == null) {
+				throw new DSSRemoteServiceException("Impossible to create a RemoteDocument from a DigestDocument with not defined Digest");
+			}
+			return new RemoteDocument(digest.getValue(), digest.getAlgorithm(), originalDocument.getName());
+		}
 		return new RemoteDocument(DSSUtils.toByteArray(originalDocument), originalDocument.getName());
 	}
 
