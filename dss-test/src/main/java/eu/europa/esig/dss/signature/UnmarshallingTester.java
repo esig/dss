@@ -7,7 +7,11 @@ import static org.junit.Assert.fail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 
 import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
@@ -35,7 +39,7 @@ public class UnmarshallingTester {
 		unmarshallValidationReport(reports);
 
 		// JSON
-//		mapDiagnosticData(reports);
+		mapDiagnosticData(reports);
 		mapDetailedReport(reports);
 		mapSimpleReport(reports);
 		mapValidationReport(reports);
@@ -53,13 +57,40 @@ public class UnmarshallingTester {
 	}
 
 	public static void mapDiagnosticData(Reports reports) {
+		ObjectMapper om = new ObjectMapper();
+		JaxbAnnotationIntrospector jai = new JaxbAnnotationIntrospector(TypeFactory.defaultInstance(), true);
+		om.setAnnotationIntrospector(jai);
+		om.enable(SerializationFeature.INDENT_OUTPUT);
+		om.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+
+//		om.findAndRegisterModules();
+//		om.enableDefaultTyping(ObjectMapper.DefaultTyping.JAVA_LANG_OBJECT);
+//		om.enableDefaultTyping();
+
+//		om.setDefaultTyping(null);
+
+//		om.registerSubtypes(new NamedType(XmlTimestampedSignature.class, "TimestampedSignature"));
+//		om.registerSubtypes(new NamedType(XmlTimestampedRevocationData.class, "TimestampedRevocationData"));
+
+		om.disable(DeserializationFeature.FAIL_ON_NULL_CREATOR_PROPERTIES);
+		om.disable(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES);
+//		om.enable(MapperFeature.USE_BASE_TYPE_AS_DEFAULT_IMPL);
+
+		String json = null;
 		try {
-			String json = OBJECT_MAPPER.writeValueAsString(reports.getDiagnosticDataJaxb());
+			json = om.writeValueAsString(reports.getDiagnosticDataJaxb());
 			assertNotNull(json);
-			XmlDiagnosticData diagnosticDataObject = OBJECT_MAPPER.readValue(json, XmlDiagnosticData.class);
+			LOG.info(json);
+		} catch (Exception e) {
+			LOG.error("Unable to writeValueAsString for the Diagnostic data : " + e.getMessage(), e);
+			fail(e.getMessage());
+		}
+
+		try {
+			XmlDiagnosticData diagnosticDataObject = om.readerFor(XmlDiagnosticData.class).readValue(json);
 			assertNotNull(diagnosticDataObject);
 		} catch (Exception e) {
-			LOG.error("Unable to map the Diagnostic data : " + e.getMessage(), e);
+			LOG.error("Unable to readValue the Diagnostic data : " + e.getMessage(), e);
 			fail(e.getMessage());
 		}
 	}

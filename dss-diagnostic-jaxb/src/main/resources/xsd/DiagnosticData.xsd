@@ -263,21 +263,21 @@
 					<xs:element name="AuthorityInformationAccessUrls" minOccurs="0">
 						<xs:complexType>
 							<xs:sequence>
-								<xs:element name="Url" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+								<xs:element name="aiaUrl" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
 					<xs:element name="CRLDistributionPoints" minOccurs="0">
 						<xs:complexType>
 							<xs:sequence>
-								<xs:element name="Url" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+								<xs:element name="crlUrl" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
 					<xs:element name="OCSPAccessUrls" minOccurs="0">
 						<xs:complexType>
 							<xs:sequence>
-								<xs:element name="Url" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+								<xs:element name="ocspServerUrl" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
@@ -305,7 +305,7 @@
 					<xs:element name="ExtendedKeyUsages" minOccurs="0">
 						<xs:complexType>
 							<xs:sequence>
-								<xs:element name="oid" type="OID" minOccurs="0" maxOccurs="unbounded" />
+								<xs:element name="extendedKeyUsagesOid" type="OID" minOccurs="0" maxOccurs="unbounded" />
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
@@ -329,14 +329,14 @@
 					<xs:element name="QCStatementIds" minOccurs="0">
 						<xs:complexType>
 							<xs:sequence>
-								<xs:element name="oid" type="OID" minOccurs="0" maxOccurs="unbounded" />
+								<xs:element name="qcStatementOid" type="OID" minOccurs="0" maxOccurs="unbounded" />
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
 					<xs:element name="QCTypes" minOccurs="0">
 						<xs:complexType>
 							<xs:sequence>
-								<xs:element name="oid" type="OID" minOccurs="0" maxOccurs="unbounded" />
+								<xs:element name="qcTypeOid" type="OID" minOccurs="0" maxOccurs="unbounded" />
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
@@ -749,7 +749,6 @@
 					<xs:element name="ArchiveCutOff" type="xs:dateTime" minOccurs="0" /> <!-- OCSP -->
 					<xs:element name="CertHashExtensionPresent" type="xs:boolean" minOccurs="0" /> <!-- OCSP -->
 					<xs:element name="CertHashExtensionMatch" type="xs:boolean" minOccurs="0" /> <!-- OCSP -->
-					<xs:element name="DigestAlgoAndValues" type="DigestAlgoAndValues" minOccurs="0" />
 					<xs:element name="BasicSignature" type="BasicSignature" minOccurs="0" /> <!-- Can be null in case of no SUCCESSFUL response of OCSP -->
 					<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
 					<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
@@ -908,7 +907,7 @@
 			<xs:element name="AdditionalServiceInfoUris" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="URI" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="additionalServiceInfoUri" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -916,7 +915,7 @@
 			<xs:element name="ServiceSupplyPoints" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="URI" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="serviceSupplyPoint" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
