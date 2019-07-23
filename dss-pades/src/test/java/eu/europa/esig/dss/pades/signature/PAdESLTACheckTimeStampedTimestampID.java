@@ -33,8 +33,6 @@ import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedTimestamp;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
@@ -71,13 +69,10 @@ public class PAdESLTACheckTimeStampedTimestampID extends PKIFactoryAccess {
 		for (TimestampWrapper wrapper : diagnostic.getTimestampList(diagnostic.getFirstSignatureId())) {
 			if (TimestampType.ARCHIVE_TIMESTAMP.equals(wrapper.getType())) {
 				boolean coverPreviousTsp = false;
-				List<XmlTimestampedObject> timestampedObjects = wrapper.getTimestampedObjects();
-				for (XmlTimestampedObject xmlTimestampedObject : timestampedObjects) {
-					if (xmlTimestampedObject instanceof XmlTimestampedTimestamp) {
-						String id = xmlTimestampedObject.getToken().getId();
-						if (timestampId.equals(id)) {
-							coverPreviousTsp = true;
-						}
+				List<String> timestampedTimestampIds = wrapper.getTimestampedTimestampIds();
+				for (String id : timestampedTimestampIds) {
+					if (timestampId.equals(id)) {
+						coverPreviousTsp = true;
 					}
 				}
 				assertTrue(coverPreviousTsp);

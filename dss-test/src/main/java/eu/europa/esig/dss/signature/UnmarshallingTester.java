@@ -7,7 +7,6 @@ import static org.junit.Assert.fail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
@@ -60,33 +59,13 @@ public class UnmarshallingTester {
 		ObjectMapper om = new ObjectMapper();
 		JaxbAnnotationIntrospector jai = new JaxbAnnotationIntrospector(TypeFactory.defaultInstance(), true);
 		om.setAnnotationIntrospector(jai);
-		om.enable(SerializationFeature.INDENT_OUTPUT);
+//		om.enable(SerializationFeature.INDENT_OUTPUT);
 		om.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+		om.enableDefaultTyping();
 
-//		om.findAndRegisterModules();
-//		om.enableDefaultTyping(ObjectMapper.DefaultTyping.JAVA_LANG_OBJECT);
-//		om.enableDefaultTyping();
-
-//		om.setDefaultTyping(null);
-
-//		om.registerSubtypes(new NamedType(XmlTimestampedSignature.class, "TimestampedSignature"));
-//		om.registerSubtypes(new NamedType(XmlTimestampedRevocationData.class, "TimestampedRevocationData"));
-
-		om.disable(DeserializationFeature.FAIL_ON_NULL_CREATOR_PROPERTIES);
-		om.disable(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES);
-//		om.enable(MapperFeature.USE_BASE_TYPE_AS_DEFAULT_IMPL);
-
-		String json = null;
 		try {
-			json = om.writeValueAsString(reports.getDiagnosticDataJaxb());
+			String json = om.writeValueAsString(reports.getDiagnosticDataJaxb());
 			assertNotNull(json);
-			LOG.info(json);
-		} catch (Exception e) {
-			LOG.error("Unable to writeValueAsString for the Diagnostic data : " + e.getMessage(), e);
-			fail(e.getMessage());
-		}
-
-		try {
 			XmlDiagnosticData diagnosticDataObject = om.readerFor(XmlDiagnosticData.class).readValue(json);
 			assertNotNull(diagnosticDataObject);
 		} catch (Exception e) {
