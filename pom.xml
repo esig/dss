@@ -64,7 +64,7 @@
 		<junit.version>4.12</junit.version>
 		<mockito.version>2.12.0</mockito.version>
 		<h2database.version>1.4.197</h2database.version>
-		<jackson.version>2.9.9.1</jackson.version>
+		<jackson.version>2.9.9</jackson.version>
 		
 	    <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 	    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
@@ -813,8 +813,8 @@
 			    <scope>test</scope>
 			</dependency>
 			<dependency>
-			    <groupId>com.fasterxml.jackson.core</groupId>
-			    <artifactId>jackson-databind</artifactId>
+				<groupId>com.fasterxml.jackson.module</groupId>
+				<artifactId>jackson-module-jaxb-annotations</artifactId>
 				<version>${jackson.version}</version>
 			</dependency>
 						
