@@ -37,7 +37,7 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.ws.converter.RemoteDocumentConverter;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
-import eu.europa.esig.dss.ws.validation.dto.ReportsDTO;
+import eu.europa.esig.dss.ws.validation.dto.WSReportsDTO;
 
 public class RemoteDocumentValidationService {
 
@@ -49,7 +49,7 @@ public class RemoteDocumentValidationService {
 		this.verifier = verifier;
 	}
 
-	public ReportsDTO validateDocument(RemoteDocument signedFile, List<RemoteDocument> originalFiles, RemoteDocument policy) {
+	public WSReportsDTO validateDocument(RemoteDocument signedFile, List<RemoteDocument> originalFiles, RemoteDocument policy) {
 		LOG.info("ValidateDocument in process...");
 		DocumentValidator validator = initValidator(signedFile, originalFiles);
 
@@ -64,7 +64,7 @@ public class RemoteDocumentValidationService {
 			}
 		}
 
-		ReportsDTO reportsDTO = new ReportsDTO(reports.getDiagnosticDataJaxb(), reports.getSimpleReportJaxb(), 
+		WSReportsDTO reportsDTO = new WSReportsDTO(reports.getDiagnosticDataJaxb(), reports.getSimpleReportJaxb(), 
 				reports.getDetailedReportJaxb(), reports.getEtsiValidationReportJaxb());
 		LOG.info("ValidateDocument is finished");
 		return reportsDTO;

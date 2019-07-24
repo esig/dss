@@ -25,7 +25,7 @@ import java.util.List;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.validation.common.RemoteDocumentValidationService;
 import eu.europa.esig.dss.ws.validation.dto.DataToValidateDTO;
-import eu.europa.esig.dss.ws.validation.dto.ReportsDTO;
+import eu.europa.esig.dss.ws.validation.dto.WSReportsDTO;
 import eu.europa.esig.dss.ws.validation.rest.client.RestDocumentValidationService;
 
 @SuppressWarnings("serial")
@@ -38,7 +38,7 @@ public class RestDocumentValidationServiceImpl implements RestDocumentValidation
 	}
 	
 	@Override
-	public ReportsDTO validateSignature(DataToValidateDTO dataToValidate) {
+	public WSReportsDTO validateSignature(DataToValidateDTO dataToValidate) {
 		return validationService.validateDocument(dataToValidate.getSignedDocument(), dataToValidate.getOriginalDocuments(), dataToValidate.getPolicy());
 	}
 

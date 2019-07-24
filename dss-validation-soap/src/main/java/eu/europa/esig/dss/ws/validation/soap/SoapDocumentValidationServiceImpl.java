@@ -25,9 +25,8 @@ import java.util.List;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.validation.common.RemoteDocumentValidationService;
 import eu.europa.esig.dss.ws.validation.dto.DataToValidateDTO;
-import eu.europa.esig.dss.ws.validation.dto.ReportsDTO;
+import eu.europa.esig.dss.ws.validation.dto.WSReportsDTO;
 import eu.europa.esig.dss.ws.validation.soap.client.SoapDocumentValidationService;
-import eu.europa.esig.dss.ws.validation.soap.client.WSReportsDTO;
 
 @SuppressWarnings("serial")
 public class SoapDocumentValidationServiceImpl implements SoapDocumentValidationService {
@@ -40,10 +39,9 @@ public class SoapDocumentValidationServiceImpl implements SoapDocumentValidation
 
 	@Override
 	public WSReportsDTO validateSignature(DataToValidateDTO dataToValidate) {
-		ReportsDTO reportsDTO = validationService.validateDocument(dataToValidate.getSignedDocument(), dataToValidate.getOriginalDocuments(),
+		WSReportsDTO reportsDTO = validationService.validateDocument(dataToValidate.getSignedDocument(), dataToValidate.getOriginalDocuments(),
 				dataToValidate.getPolicy());
-		return new WSReportsDTO(reportsDTO.getDiagnosticData(), reportsDTO.getSimpleReport(), reportsDTO.getDetailedReport(), 
-				reportsDTO.getEtsiValidationReport());
+		return reportsDTO;
 	}
 
 	@Override

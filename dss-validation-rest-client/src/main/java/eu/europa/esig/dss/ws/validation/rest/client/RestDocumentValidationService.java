@@ -31,7 +31,7 @@ import javax.ws.rs.core.MediaType;
 
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.validation.dto.DataToValidateDTO;
-import eu.europa.esig.dss.ws.validation.dto.ReportsDTO;
+import eu.europa.esig.dss.ws.validation.dto.WSReportsDTO;
 
 /**
  * This REST interface provides operations for the validation of signature.
@@ -55,7 +55,7 @@ public interface RestDocumentValidationService extends Serializable {
 	 */
 	@POST
 	@Path("validateSignature")
-	ReportsDTO validateSignature(DataToValidateDTO dataToValidate);
+	WSReportsDTO validateSignature(DataToValidateDTO dataToValidate);
 
 	/**
 	 * This method returns the original document(s) for the given signed file and

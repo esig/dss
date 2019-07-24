@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.ws.validation.soap.client;
+package eu.europa.esig.dss.ws.validation.dto;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
