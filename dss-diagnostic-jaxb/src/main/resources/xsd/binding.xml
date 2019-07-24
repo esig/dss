@@ -231,7 +231,7 @@
         </jaxb:property>
     </jaxb:bindings>
     
-    <jaxb:bindings node="//xs:complexType[@name='TrustedService']//xs:element[@name='ServiceDigitalIdentifier']">
+    <jaxb:bindings node="//xs:complexType[@name='TrustedService']//xs:attribute[@name='ServiceDigitalIdentifier']">
         <jaxb:property>
             <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate" />
         </jaxb:property>
