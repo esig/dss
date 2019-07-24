@@ -45,8 +45,7 @@
                     <TSPName>TSP-3.1 Name</TSPName>
                     <CountryCode>LU</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376">
                             <ServiceName>TS-3.1.4 Name</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
@@ -122,8 +121,7 @@
                     <TSPName>TSP-3.1 Name</TSPName>
                     <CountryCode>LU</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376">
                             <ServiceName>TS-3.1.4 Name</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
