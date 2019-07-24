@@ -149,8 +149,6 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 		}
 		throw new DSSException("The signature with the given id was not found!");
 	}
-	
-	// TODO: getOriginalDocumentsBy DAsignatureId
 
 	@Override
 	public List<DSSDocument> getOriginalDocuments(final String signatureId) throws DSSException {

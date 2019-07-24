@@ -173,7 +173,7 @@ public interface DocumentValidator {
 	 * This method returns the signed document(s) without their signature(s)
 	 *
 	 * @param signatureId
-	 *            the id of the signature to be removed.
+	 *            the DSS ID of the signature to extract original signer data for
 	 */
 	List<DSSDocument> getOriginalDocuments(final String signatureId);
 
