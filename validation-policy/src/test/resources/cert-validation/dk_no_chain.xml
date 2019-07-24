@@ -13,10 +13,10 @@
             <OrganizationName>Ingen organisatorisk tilknytning</OrganizationName>
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints>
-                <Url>http://crl.oces-issuing01.trust2408.com/ica011.crl</Url>
+                <crlUrl>http://crl.oces-issuing01.trust2408.com/ica011.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls>
-                <Url>http://ocsp.oces-issuing01.trust2408.com/responder</Url>
+                <ocspServerUrl>http://ocsp.oces-issuing01.trust2408.com/responder</ocspServerUrl>
             </OCSPAccessUrls>
             <Sources>
             	<Source>UNKNOWN</Source>

@@ -84,13 +84,13 @@
             <CountryName>LU</CountryName>
             <OrganizationName>LuxTrust S.A.</OrganizationName>
             <AuthorityInformationAccessUrls>
-                <Url>http://ca.luxtrust.lu/LTGRCA2.crt</Url>
+                <aiaUrl>http://ca.luxtrust.lu/LTGRCA2.crt</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints>
-                <Url>http://crl.luxtrust.lu/LTGRCA2.crl</Url>
+                <crlUrl>http://crl.luxtrust.lu/LTGRCA2.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls>
-                <Url>http://ltgroot.ocsp.luxtrust.lu</Url>
+                <ocspServerUrl>http://ltgroot.ocsp.luxtrust.lu</ocspServerUrl>
             </OCSPAccessUrls>
             <Sources>
             	<Source>TRUSTED_LIST</Source>
@@ -133,8 +133,8 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2018-04-06T13:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
@@ -145,7 +145,7 @@
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <EndDate>2018-04-06T13:00:00</EndDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
@@ -221,8 +221,8 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
@@ -233,7 +233,7 @@
                             <StartDate>2013-06-26T12:00:00</StartDate>
                             <EndDate>2016-06-30T22:00:00</EndDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -257,13 +257,13 @@
             <Surname>Naramski </Surname>
             <Email>david.naramski@nowina.lu</Email>
             <AuthorityInformationAccessUrls>
-                <Url>http://ca.luxtrust.lu/LTGQCA3.crt</Url>
+                <aiaUrl>http://ca.luxtrust.lu/LTGQCA3.crt</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints>
-                <Url>http://crl.luxtrust.lu/LTGQCA3.crl</Url>
+                <crlUrl>http://crl.luxtrust.lu/LTGQCA3.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls>
-                <Url>http://qca.ocsp.luxtrust.lu</Url>
+                <ocspServerUrl>http://qca.ocsp.luxtrust.lu</ocspServerUrl>
             </OCSPAccessUrls>
             <Sources>
             	<Source>SIGNATURE</Source>
@@ -295,8 +295,8 @@
                 <certificatePolicy Description="qcp-public-with-sscd">0.4.0.1456.1.1</certificatePolicy>
             </CertificatePolicies>
             <QCStatementIds>
-                <oid Description="qc-compliance">0.4.0.1862.1.1</oid>
-                <oid Description="qc-sscd">0.4.0.1862.1.4</oid>
+                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
+                <qcStatementOid Description="qc-sscd">0.4.0.1862.1.4</qcStatementOid>
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
@@ -313,8 +313,8 @@
                             <StartDate>2018-04-06T13:00:00</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
@@ -326,7 +326,7 @@
                             <EndDate>2018-04-06T13:00:00</EndDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
@@ -362,7 +362,7 @@
             <OrganizationName>Belgium Federal Government</OrganizationName>
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints>
-                <Url>http://crl.pki.belgium.be/belgium4.crl</Url>
+                <crlUrl>http://crl.pki.belgium.be/belgium4.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
             <Sources>
@@ -377,7 +377,7 @@
                 <KeyUsage>nonRepudiation</KeyUsage>
             </KeyUsageBits>
             <ExtendedKeyUsages>
-                <oid Description="timeStamping">1.3.6.1.5.5.7.3.8</oid>
+                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
             </ExtendedKeyUsages>
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
@@ -411,8 +411,8 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -440,7 +440,7 @@
             <OrganizationalUnit>Pki entity</OrganizationalUnit>
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints>
-                <Url>http://crl.luxtrust.lu/LTGQCA3-OCSP.crl</Url>
+                <crlUrl>http://crl.luxtrust.lu/LTGQCA3-OCSP.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
             <Sources>
@@ -454,7 +454,7 @@
                 <KeyUsage>digitalSignature</KeyUsage>
             </KeyUsageBits>
             <ExtendedKeyUsages>
-                <oid Description="ocspSigning">1.3.6.1.5.5.7.3.9</oid>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
             </ExtendedKeyUsages>
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
@@ -486,8 +486,8 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2018-04-06T13:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
@@ -635,8 +635,8 @@
                 <ChainItem Certificate="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F"/>
             </CertificateChain>
 			  <TimestampedObjects>
-			   	<TimestampedSignature Token="id-a580bb5de82017b87ca1379275078677" />
-			   	<TimestampedCertificate Token="C-49FC84B2CEFB368E43A731E5362A78B31877F0100FB8BA6C8C0C72748D486DB3" />
+			   	<TimestampedObject Category="SIGNATURE" Token="id-a580bb5de82017b87ca1379275078677" />
+			   	<TimestampedObject Category="CERTIFICATE" Token="C-49FC84B2CEFB368E43A731E5362A78B31877F0100FB8BA6C8C0C72748D486DB3" />
 			  </TimestampedObjects>
             <DigestAlgoAndValue>
             	<DigestMethod>SHA1</DigestMethod>
@@ -664,17 +664,17 @@
                 <ChainItem Certificate="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F"/>
             </CertificateChain>
 		  <TimestampedObjects>
-		   	<TimestampedSignature Token="id-a580bb5de82017b87ca1379275078677" />
-		   	<TimestampedCertificate Token="C-49FC84B2CEFB368E43A731E5362A78B31877F0100FB8BA6C8C0C72748D486DB3" />
-		   	<TimestampedTimestamp Token="T-103AD3B43018C3C0E440F768067B73AD1D88B3B899135AE71320236AD32F99FC" />
-		   	<TimestampedCertificate Token="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF" />
-		   	<TimestampedCertificate Token="C-3478BB8F616A268841F5CF0C7B71CF0D87B998172FD3DA7FA3B2DF741D6B7E66" />
-		   	<TimestampedCertificate Token="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F" />
-		   	<TimestampedCertificate Token="C-49FC84B2CEFB368E43A731E5362A78B31877F0100FB8BA6C8C0C72748D486DB3" />
+		   	<TimestampedObject Category="SIGNATURE" Token="id-a580bb5de82017b87ca1379275078677" />
+		   	<TimestampedObject Category="CERTIFICATE" Token="C-49FC84B2CEFB368E43A731E5362A78B31877F0100FB8BA6C8C0C72748D486DB3" />
+		   	<TimestampedObject Category="TIMESTAMP" Token="T-103AD3B43018C3C0E440F768067B73AD1D88B3B899135AE71320236AD32F99FC" />
+		   	<TimestampedObject Category="CERTIFICATE" Token="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF" />
+		   	<TimestampedObject Category="CERTIFICATE" Token="C-3478BB8F616A268841F5CF0C7B71CF0D87B998172FD3DA7FA3B2DF741D6B7E66" />
+		   	<TimestampedObject Category="CERTIFICATE" Token="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F" />
+		   	<TimestampedObject Category="CERTIFICATE" Token="C-49FC84B2CEFB368E43A731E5362A78B31877F0100FB8BA6C8C0C72748D486DB3" />
 		   	
-		   	<TimestampedRevocationData Token="R-e21432ced54f9e0b01dfaa2eacf1bf635a7b6c79f1ced934bb5256fc0459cac" />
-		   	<TimestampedRevocationData Token="R-ee3c22e06087bfec213709ad3e7f2dda9ce9d19ce238dca81a6433e9070a9fbe039d9d40d1f446ff3d1a56fbb46eda6ca5bfd9eb2b19c58365e0dd0a54b0d0e3" />
-		   	<TimestampedRevocationData Token="R-49fc84b2cefb368e43a731e5362a78b31877f0100fb8ba6c8c0c72748d486db38e9dcd8a374ad8cce7869cc5c2ed4d68d1b30ad7d6dba093acb85f5373efd999" />
+		   	<TimestampedObject Category="REVOCATION" Token="R-e21432ced54f9e0b01dfaa2eacf1bf635a7b6c79f1ced934bb5256fc0459cac" />
+		   	<TimestampedObject Category="REVOCATION" Token="R-ee3c22e06087bfec213709ad3e7f2dda9ce9d19ce238dca81a6433e9070a9fbe039d9d40d1f446ff3d1a56fbb46eda6ca5bfd9eb2b19c58365e0dd0a54b0d0e3" />
+		   	<TimestampedObject Category="REVOCATION" Token="R-49fc84b2cefb368e43a731e5362a78b31877f0100fb8ba6c8c0c72748d486db38e9dcd8a374ad8cce7869cc5c2ed4d68d1b30ad7d6dba093acb85f5373efd999" />
 		  </TimestampedObjects>
             <DigestAlgoAndValue>
             	<DigestMethod>SHA1</DigestMethod>

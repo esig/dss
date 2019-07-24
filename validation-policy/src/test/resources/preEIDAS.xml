@@ -62,14 +62,14 @@
             <CountryName>CZ</CountryName>
             <OrganizationalUnit>P232050</OrganizationalUnit>
             <AuthorityInformationAccessUrls>
-                <Url>http://www.postsignum.cz/crt/psqualifiedca2.crt</Url>
-                <Url>http://www2.postsignum.cz/crt/psqualifiedca2.crt</Url>
-                <Url>http://postsignum.ttc.cz/crt/psqualifiedca2.crt</Url>
+                <aiaUrl>http://www.postsignum.cz/crt/psqualifiedca2.crt</aiaUrl>
+                <aiaUrl>http://www2.postsignum.cz/crt/psqualifiedca2.crt</aiaUrl>
+                <aiaUrl>http://postsignum.ttc.cz/crt/psqualifiedca2.crt</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints>
-                <Url>http://www.postsignum.cz/crl/psqualifiedca2.crl</Url>
-                <Url>http://www2.postsignum.cz/crl/psqualifiedca2.crl</Url>
-                <Url>http://postsignum.ttc.cz/crl/psqualifiedca2.crl</Url>
+                <crlUrl>http://www.postsignum.cz/crl/psqualifiedca2.crl</crlUrl>
+                <crlUrl>http://www2.postsignum.cz/crl/psqualifiedca2.crl</crlUrl>
+                <crlUrl>http://postsignum.ttc.cz/crl/psqualifiedca2.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
             <Sources>
@@ -102,7 +102,7 @@
                 <certificatePolicy>2.23.134.1.4.1.7.300</certificatePolicy>
             </CertificatePolicies>
             <QCStatementIds>
-                <oid Description="qc-compliance">0.4.0.1862.1.1</oid>
+                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
@@ -120,7 +120,7 @@
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDStatusAsInCert</Qualifier>
                             </CapturedQualifiers>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
@@ -158,14 +158,14 @@
             <CountryName>CZ</CountryName>
             <OrganizationName>Česká pošta, s.p. [IČ 47114983]</OrganizationName>
             <AuthorityInformationAccessUrls>
-                <Url>http://www.postsignum.cz/crt/psrootqca2.crt</Url>
-                <Url>http://www2.postsignum.cz/crt/psrootqca2.crt</Url>
-                <Url>http://postsignum.ttc.cz/crt/psrootqca2.crt</Url>
+                <aiaUrl>http://www.postsignum.cz/crt/psrootqca2.crt</aiaUrl>
+                <aiaUrl>http://www2.postsignum.cz/crt/psrootqca2.crt</aiaUrl>
+                <aiaUrl>http://postsignum.ttc.cz/crt/psrootqca2.crt</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints>
-                <Url>http://www.postsignum.cz/crl/psrootqca2.crl</Url>
-                <Url>http://www2.postsignum.cz/crl/psrootqca2.crl</Url>
-                <Url>http://postsignum.ttc.cz/crl/psrootqca2.crl</Url>
+                <crlUrl>http://www.postsignum.cz/crl/psrootqca2.crl</crlUrl>
+                <crlUrl>http://www2.postsignum.cz/crl/psrootqca2.crl</crlUrl>
+                <crlUrl>http://postsignum.ttc.cz/crl/psrootqca2.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
             <Sources>
@@ -207,7 +207,7 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-07-01T02:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
@@ -238,9 +238,9 @@
             <OrganizationName>Česká pošta, s.p. [IČ 47114983]</OrganizationName>
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints>
-                <Url>http://www.postsignum.cz/crl/psrootqca2.crl</Url>
-                <Url>http://www2.postsignum.cz/crl/psrootqca2.crl</Url>
-                <Url>http://postsignum.ttc.cz/crl/psrootqca2.crl</Url>
+                <crlUrl>http://www.postsignum.cz/crl/psrootqca2.crl</crlUrl>
+                <crlUrl>http://www2.postsignum.cz/crl/psrootqca2.crl</crlUrl>
+                <crlUrl>http://postsignum.ttc.cz/crl/psrootqca2.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
             <Sources>

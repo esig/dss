@@ -259,7 +259,7 @@
             <CountryName>HU</CountryName>
             <OrganizationName>NISZ Nemzeti Infokommunikációs Szolgáltató Zrt.</OrganizationName>
             <AuthorityInformationAccessUrls>
-                <Url>http://qca.hiteles.gov.hu/cer/GOVCA-ROOT.cer</Url>
+                <aiaUrl>http://qca.hiteles.gov.hu/cer/GOVCA-ROOT.cer</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints/>
             <OCSPAccessUrls/>
@@ -281,7 +281,7 @@
                 <KeyUsage>nonRepudiation</KeyUsage>
             </KeyUsageBits>
             <ExtendedKeyUsages>
-                <oid Description="ocspSigning">1.3.6.1.5.5.7.3.9</oid>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
             </ExtendedKeyUsages>
             <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
@@ -319,7 +319,7 @@
             <CountryName>HU</CountryName>
             <OrganizationName>NISZ Nemzeti Infokommunikációs Szolgáltató Zrt.</OrganizationName>
             <AuthorityInformationAccessUrls>
-                <Url>http://qca.hiteles.gov.hu/cer/GOVCA-Qv2.cer</Url>
+                <aiaUrl>http://qca.hiteles.gov.hu/cer/GOVCA-Qv2.cer</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints/>
             <OCSPAccessUrls/>
@@ -341,7 +341,7 @@
                 <KeyUsage>nonRepudiation</KeyUsage>
             </KeyUsageBits>
             <ExtendedKeyUsages>
-                <oid Description="ocspSigning">1.3.6.1.5.5.7.3.9</oid>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
             </ExtendedKeyUsages>
             <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
@@ -380,11 +380,11 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/deprecatedatnationallevel</Status>
                             <StartDate>2017-06-30T22:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://www.nmhh.hu/tl/ServiceStatus/QualifiedatNationalLevel</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+                                <additionalServiceInfoUri>http://www.nmhh.hu/tl/ServiceStatus/QualifiedatNationalLevel</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                             <ServiceSupplyPoints>
-                                <URI>http://qca.hiteles.gov.hu/crl/GOVCA-Qv2.crl</URI>
+                                <serviceSupplyPoint>http://qca.hiteles.gov.hu/crl/GOVCA-Qv2.crl</serviceSupplyPoint>
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService>
@@ -395,8 +395,8 @@
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <EndDate>2017-06-30T22:00:00</EndDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://www.nmhh.hu/tl/ServiceStatus/QualifiedatNationalLevel</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+                                <additionalServiceInfoUri>http://www.nmhh.hu/tl/ServiceStatus/QualifiedatNationalLevel</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
@@ -406,11 +406,11 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2017-06-30T22:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                             <ServiceSupplyPoints>
-                                <URI>http://qca.hiteles.gov.hu/crl/GOVCA-Qv2.crl</URI>
+                                <serviceSupplyPoint>http://qca.hiteles.gov.hu/crl/GOVCA-Qv2.crl</serviceSupplyPoint>
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService>
@@ -421,8 +421,8 @@
                             <StartDate>2017-06-16T22:00:00</StartDate>
                             <EndDate>2017-06-30T22:00:00</EndDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
@@ -433,7 +433,7 @@
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <EndDate>2017-06-16T22:00:00</EndDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
@@ -451,7 +451,7 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2017-06-28T22:00:00</StartDate>
                             <ServiceSupplyPoints>
-                                <URI>https://tsa.hiteles.gov.hu/ts</URI>
+                                <serviceSupplyPoint>https://tsa.hiteles.gov.hu/ts</serviceSupplyPoint>
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService>
@@ -461,10 +461,10 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/deprecatedatnationallevel</Status>
                             <StartDate>2017-06-28T22:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://www.nmhh.hu/tl/ServiceStatus/QualifiedatNationalLevel</URI>
+                                <additionalServiceInfoUri>http://www.nmhh.hu/tl/ServiceStatus/QualifiedatNationalLevel</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                             <ServiceSupplyPoints>
-                                <URI>https://tsa.hiteles.gov.hu/ts</URI>
+                                <serviceSupplyPoint>https://tsa.hiteles.gov.hu/ts</serviceSupplyPoint>
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService>
@@ -475,7 +475,7 @@
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <EndDate>2017-06-28T22:00:00</EndDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://www.nmhh.hu/tl/ServiceStatus/QualifiedatNationalLevel</URI>
+                                <additionalServiceInfoUri>http://www.nmhh.hu/tl/ServiceStatus/QualifiedatNationalLevel</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -546,13 +546,13 @@
             <Surname>Polyák</Surname>
             <Email>ferenc.polyak@polysys.eu</Email>
             <AuthorityInformationAccessUrls>
-                <Url>http://www.e-szigno.hu/qkca2009.crt</Url>
+                <aiaUrl>http://www.e-szigno.hu/qkca2009.crt</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints>
-                <Url>http://crl.e-szigno.hu/qkca2009.crl</Url>
+                <crlUrl>http://crl.e-szigno.hu/qkca2009.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls>
-                <Url>http://qkocsp2009.e-szigno.hu</Url>
+                <ocspServerUrl>http://qkocsp2009.e-szigno.hu</ocspServerUrl>
             </OCSPAccessUrls>
             <DigestAlgoAndValues>
                 <DigestAlgoAndValue>
@@ -595,10 +595,10 @@
                 <certificatePolicy cpsUrl="http://cp.e-szigno.hu/qcps">0.2.216.1.100.42.101.1.2.1</certificatePolicy>
             </CertificatePolicies>
             <QCStatementIds>
-                <oid Description="qc-compliance">0.4.0.1862.1.1</oid>
-                <oid Description="qc-limit-value">0.4.0.1862.1.2</oid>
-                <oid Description="qc-retention-period">0.4.0.1862.1.3</oid>
-                <oid Description="qc-sscd">0.4.0.1862.1.4</oid>
+                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
+                <qcStatementOid Description="qc-limit-value">0.4.0.1862.1.2</qcStatementOid>
+                <qcStatementOid Description="qc-retention-period">0.4.0.1862.1.3</qcStatementOid>
+                <qcStatementOid Description="qc-sscd">0.4.0.1862.1.4</qcStatementOid>
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
@@ -615,11 +615,11 @@
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                             <ServiceSupplyPoints>
-                                <URI>http://www.e-szigno.hu/qkca2009.crl</URI>
-                                <URI>http://qkocsp2009.e-szigno.hu</URI>
+                                <serviceSupplyPoint>http://www.e-szigno.hu/qkca2009.crl</serviceSupplyPoint>
+                                <serviceSupplyPoint>http://qkocsp2009.e-szigno.hu</serviceSupplyPoint>
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService>
@@ -725,7 +725,7 @@
             <Email>info@e-szigno.hu</Email>
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints>
-                <Url>http://crl.kgyhsz.gov.hu/KGYHSZ_CA_20091210.crl</Url>
+                <crlUrl>http://crl.kgyhsz.gov.hu/KGYHSZ_CA_20091210.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
             <DigestAlgoAndValues>
@@ -781,11 +781,11 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                             <ServiceSupplyPoints>
-                                <URI>http://www.e-szigno.hu/qkca2009.crl</URI>
-                                <URI>http://qkocsp2009.e-szigno.hu</URI>
+                                <serviceSupplyPoint>http://www.e-szigno.hu/qkca2009.crl</serviceSupplyPoint>
+                                <serviceSupplyPoint>http://qkocsp2009.e-szigno.hu</serviceSupplyPoint>
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService>
@@ -812,10 +812,10 @@
             <CountryName>HU</CountryName>
             <OrganizationName>National Media and Infocommunications Authority</OrganizationName>
             <AuthorityInformationAccessUrls>
-                <Url>http://aia.kgyhsz.gov.hu/KGYHSZ_CA_20091210.cer</Url>
+                <aiaUrl>http://aia.kgyhsz.gov.hu/KGYHSZ_CA_20091210.cer</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints>
-                <Url>http://crl.kgyhsz.gov.hu/KGYHSZ_CA_20091210.crl</Url>
+                <crlUrl>http://crl.kgyhsz.gov.hu/KGYHSZ_CA_20091210.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
             <DigestAlgoAndValues>
@@ -837,7 +837,7 @@
                 <KeyUsage>nonRepudiation</KeyUsage>
             </KeyUsageBits>
             <ExtendedKeyUsages>
-                <oid Description="ocspSigning">1.3.6.1.5.5.7.3.9</oid>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
             </ExtendedKeyUsages>
             <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
@@ -875,13 +875,13 @@
             <CountryName>HU</CountryName>
             <OrganizationName>NISZ Nemzeti Infokommunikációs Szolgáltató Zrt.</OrganizationName>
             <AuthorityInformationAccessUrls>
-                <Url>http://qca.hiteles.gov.hu/cer/GOVCA-ROOT.cer</Url>
+                <aiaUrl>http://qca.hiteles.gov.hu/cer/GOVCA-ROOT.cer</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints>
-                <Url>http://qca.hiteles.gov.hu/crl/GOVCA-ROOT.crl</Url>
+                <crlUrl>http://qca.hiteles.gov.hu/crl/GOVCA-ROOT.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls>
-                <Url>http://qocsp.hiteles.gov.hu/ocsp-root</Url>
+                <ocspServerUrl>http://qocsp.hiteles.gov.hu/ocsp-root</ocspServerUrl>
             </OCSPAccessUrls>
             <DigestAlgoAndValues>
                 <DigestAlgoAndValue>
@@ -936,11 +936,11 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/deprecatedatnationallevel</Status>
                             <StartDate>2017-06-30T22:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://www.nmhh.hu/tl/ServiceStatus/QualifiedatNationalLevel</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+                                <additionalServiceInfoUri>http://www.nmhh.hu/tl/ServiceStatus/QualifiedatNationalLevel</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                             <ServiceSupplyPoints>
-                                <URI>http://qca.hiteles.gov.hu/crl/GOVCA-Qv2.crl</URI>
+                                <serviceSupplyPoint>http://qca.hiteles.gov.hu/crl/GOVCA-Qv2.crl</serviceSupplyPoint>
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService>
@@ -951,8 +951,8 @@
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <EndDate>2017-06-30T22:00:00</EndDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://www.nmhh.hu/tl/ServiceStatus/QualifiedatNationalLevel</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+                                <additionalServiceInfoUri>http://www.nmhh.hu/tl/ServiceStatus/QualifiedatNationalLevel</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
@@ -962,11 +962,11 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2017-06-30T22:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                             <ServiceSupplyPoints>
-                                <URI>http://qca.hiteles.gov.hu/crl/GOVCA-Qv2.crl</URI>
+                                <serviceSupplyPoint>http://qca.hiteles.gov.hu/crl/GOVCA-Qv2.crl</serviceSupplyPoint>
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService>
@@ -977,8 +977,8 @@
                             <StartDate>2017-06-16T22:00:00</StartDate>
                             <EndDate>2017-06-30T22:00:00</EndDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
@@ -989,7 +989,7 @@
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <EndDate>2017-06-16T22:00:00</EndDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
@@ -1007,7 +1007,7 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2017-06-28T22:00:00</StartDate>
                             <ServiceSupplyPoints>
-                                <URI>https://tsa.hiteles.gov.hu/ts</URI>
+                                <serviceSupplyPoint>https://tsa.hiteles.gov.hu/ts</serviceSupplyPoint>
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService>
@@ -1017,10 +1017,10 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/deprecatedatnationallevel</Status>
                             <StartDate>2017-06-28T22:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://www.nmhh.hu/tl/ServiceStatus/QualifiedatNationalLevel</URI>
+                                <additionalServiceInfoUri>http://www.nmhh.hu/tl/ServiceStatus/QualifiedatNationalLevel</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                             <ServiceSupplyPoints>
-                                <URI>https://tsa.hiteles.gov.hu/ts</URI>
+                                <serviceSupplyPoint>https://tsa.hiteles.gov.hu/ts</serviceSupplyPoint>
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService>
@@ -1031,7 +1031,7 @@
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <EndDate>2017-06-28T22:00:00</EndDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://www.nmhh.hu/tl/ServiceStatus/QualifiedatNationalLevel</URI>
+                                <additionalServiceInfoUri>http://www.nmhh.hu/tl/ServiceStatus/QualifiedatNationalLevel</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -1049,10 +1049,10 @@
             <CommonName>KGYHSZ (Public Administration Root CA - Hungary)</CommonName>
             <CountryName>hu</CountryName>
             <AuthorityInformationAccessUrls>
-                <Url>http://aia.kgyhsz.gov.hu/KGYHSZ_CA_20091210.crt</Url>
+                <aiaUrl>http://aia.kgyhsz.gov.hu/KGYHSZ_CA_20091210.crt</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints>
-                <Url>http://crl.kgyhsz.gov.hu/KGYHSZ_CA_20091210.crl</Url>
+                <crlUrl>http://crl.kgyhsz.gov.hu/KGYHSZ_CA_20091210.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
             <DigestAlgoAndValues>
@@ -1154,13 +1154,13 @@
             <CountryName>HU</CountryName>
             <OrganizationName>NISZ Nemzeti Infokommunikációs Szolgáltató Zrt.</OrganizationName>
             <AuthorityInformationAccessUrls>
-                <Url>http://qca.hiteles.gov.hu/cer/GOVCA-Qv2.cer</Url>
+                <aiaUrl>http://qca.hiteles.gov.hu/cer/GOVCA-Qv2.cer</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints>
-                <Url>http://qca.hiteles.gov.hu/crl/GOVCA-Qv2.crl</Url>
+                <crlUrl>http://qca.hiteles.gov.hu/crl/GOVCA-Qv2.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls>
-                <Url>http://qocsp.hiteles.gov.hu/ocsp</Url>
+                <ocspServerUrl>http://qocsp.hiteles.gov.hu/ocsp</ocspServerUrl>
             </OCSPAccessUrls>
             <DigestAlgoAndValues>
                 <DigestAlgoAndValue>
@@ -1180,7 +1180,7 @@
                 <KeyUsage>nonRepudiation</KeyUsage>
             </KeyUsageBits>
             <ExtendedKeyUsages>
-                <oid Description="timeStamping">1.3.6.1.5.5.7.3.8</oid>
+                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
             </ExtendedKeyUsages>
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
@@ -1219,11 +1219,11 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/deprecatedatnationallevel</Status>
                             <StartDate>2017-06-30T22:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://www.nmhh.hu/tl/ServiceStatus/QualifiedatNationalLevel</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+                                <additionalServiceInfoUri>http://www.nmhh.hu/tl/ServiceStatus/QualifiedatNationalLevel</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                             <ServiceSupplyPoints>
-                                <URI>http://qca.hiteles.gov.hu/crl/GOVCA-Qv2.crl</URI>
+                                <serviceSupplyPoint>http://qca.hiteles.gov.hu/crl/GOVCA-Qv2.crl</serviceSupplyPoint>
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService>
@@ -1234,8 +1234,8 @@
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <EndDate>2017-06-30T22:00:00</EndDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://www.nmhh.hu/tl/ServiceStatus/QualifiedatNationalLevel</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+                                <additionalServiceInfoUri>http://www.nmhh.hu/tl/ServiceStatus/QualifiedatNationalLevel</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
@@ -1245,11 +1245,11 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2017-06-30T22:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                             <ServiceSupplyPoints>
-                                <URI>http://qca.hiteles.gov.hu/crl/GOVCA-Qv2.crl</URI>
+                                <serviceSupplyPoint>http://qca.hiteles.gov.hu/crl/GOVCA-Qv2.crl</serviceSupplyPoint>
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService>
@@ -1260,8 +1260,8 @@
                             <StartDate>2017-06-16T22:00:00</StartDate>
                             <EndDate>2017-06-30T22:00:00</EndDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
@@ -1272,7 +1272,7 @@
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <EndDate>2017-06-16T22:00:00</EndDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
@@ -1290,7 +1290,7 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2017-06-28T22:00:00</StartDate>
                             <ServiceSupplyPoints>
-                                <URI>https://tsa.hiteles.gov.hu/ts</URI>
+                                <serviceSupplyPoint>https://tsa.hiteles.gov.hu/ts</URI>
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService>
@@ -1300,10 +1300,10 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/deprecatedatnationallevel</Status>
                             <StartDate>2017-06-28T22:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://www.nmhh.hu/tl/ServiceStatus/QualifiedatNationalLevel</URI>
+                                <additionalServiceInfoUri>http://www.nmhh.hu/tl/ServiceStatus/QualifiedatNationalLevel</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                             <ServiceSupplyPoints>
-                                <URI>https://tsa.hiteles.gov.hu/ts</URI>
+                                <serviceSupplyPoint>https://tsa.hiteles.gov.hu/ts</serviceSupplyPoint>
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService>
@@ -1314,7 +1314,7 @@
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <EndDate>2017-06-28T22:00:00</EndDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://www.nmhh.hu/tl/ServiceStatus/QualifiedatNationalLevel</URI>
+                                <additionalServiceInfoUri>http://www.nmhh.hu/tl/ServiceStatus/QualifiedatNationalLevel</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -1331,7 +1331,7 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <ServiceSupplyPoints>
-                                <URI>https://tsa.hiteles.gov.hu/ts</URI>
+                                <serviceSupplyPoint>https://tsa.hiteles.gov.hu/ts</serviceSupplyPoint>
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService>
@@ -1360,7 +1360,7 @@
             <OrganizationName>Microsec Ltd.</OrganizationName>
             <Email>info@e-szigno.hu</Email>
             <AuthorityInformationAccessUrls>
-                <Url>http://www.e-szigno.hu/qkca2009.crt</Url>
+                <aiaUrl>http://www.e-szigno.hu/qkca2009.crt</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints/>
             <OCSPAccessUrls/>
@@ -1383,7 +1383,7 @@
                 <KeyUsage>nonRepudiation</KeyUsage>
             </KeyUsageBits>
             <ExtendedKeyUsages>
-                <oid Description="ocspSigning">1.3.6.1.5.5.7.3.9</oid>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
             </ExtendedKeyUsages>
             <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
@@ -1422,11 +1422,11 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                             <ServiceSupplyPoints>
-                                <URI>http://www.e-szigno.hu/qkca2009.crl</URI>
-                                <URI>http://qkocsp2009.e-szigno.hu</URI>
+                                <serviceSupplyPoint>http://www.e-szigno.hu/qkca2009.crl</serviceSupplyPoint>
+                                <serviceSupplyPoint>http://qkocsp2009.e-szigno.hu</serviceSupplyPoint>
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService>
@@ -1455,13 +1455,13 @@
             <OrganizationName>Microsec Ltd.</OrganizationName>
             <Email>info@e-szigno.hu</Email>
             <AuthorityInformationAccessUrls>
-                <Url>http://www.e-szigno.hu/rootca2009.crt</Url>
+                <aiaUrl>http://www.e-szigno.hu/rootca2009.crt</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints>
-                <Url>http://crl.e-szigno.hu/rootca2009.crl</Url>
+                <crlUrl>http://crl.e-szigno.hu/rootca2009.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls>
-                <Url>http://rootocsp2009.e-szigno.hu</Url>
+                <ocspServerUrl>http://rootocsp2009.e-szigno.hu</ocspServerUrl>
             </OCSPAccessUrls>
             <DigestAlgoAndValues>
                 <DigestAlgoAndValue>
@@ -1482,7 +1482,7 @@
                 <KeyUsage>nonRepudiation</KeyUsage>
             </KeyUsageBits>
             <ExtendedKeyUsages>
-                <oid Description="timeStamping">1.3.6.1.5.5.7.3.8</oid>
+                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
             </ExtendedKeyUsages>
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
@@ -1518,8 +1518,8 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-12-20T23:00:00</StartDate>
                             <ServiceSupplyPoints>
-                                <URI>https://tsa.e-szigno.hu/tsa2</URI>
-                                <URI>https://btsa.e-szigno.hu/tsa2</URI>
+                                <serviceSupplyPoint>https://tsa.e-szigno.hu/tsa2</serviceSupplyPoint>
+                                <serviceSupplyPoint>https://btsa.e-szigno.hu/tsa2</serviceSupplyPoint>
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService>

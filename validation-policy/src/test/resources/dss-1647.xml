@@ -272,7 +272,7 @@
             <OrganizationName>LuxTrust S.A.</OrganizationName>
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints>
-                <Url>http://crl.luxtrust.lu/LTGRCA.crl</Url>
+                <crlUrl>http://crl.luxtrust.lu/LTGRCA.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
             <Sources>
@@ -320,7 +320,7 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
@@ -355,13 +355,13 @@
             <Surname>Sever</Surname>
             <Email>janez.sever@publications.europa.eu</Email>
             <AuthorityInformationAccessUrls>
-                <Url>http://ca.luxtrust.lu/LTGQCA2.crt</Url>
+                <aiaUrl>http://ca.luxtrust.lu/LTGQCA2.crt</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints>
-                <Url>http://crl.luxtrust.lu/LTGQCA2.crl</Url>
+                <crlUrl>http://crl.luxtrust.lu/LTGQCA2.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls>
-                <Url>http://ocsp.luxtrust.lu</Url>
+                <ocspServerUrl>http://ocsp.luxtrust.lu</ocspServerUrl>
             </OCSPAccessUrls>
             <Sources>
                 <Source>SIGNATURE</Source>
@@ -394,8 +394,8 @@
                 <certificatePolicy Description="qcp-public-with-sscd">0.4.0.1456.1.1</certificatePolicy>
             </CertificatePolicies>
             <QCStatementIds>
-                <oid Description="qc-compliance">0.4.0.1862.1.1</oid>
-                <oid Description="qc-sscd">0.4.0.1862.1.4</oid>
+                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
+                <qcStatementOid Description="qc-sscd">0.4.0.1862.1.4</qcStatementOid>
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
@@ -412,7 +412,7 @@
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
@@ -540,7 +540,7 @@
             <OrganizationalUnit>Pki entity</OrganizationalUnit>
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints>
-                <Url>http://crl.luxtrust.lu/LTGQCA2.crl</Url>
+                <crlUrl>http://crl.luxtrust.lu/LTGQCA2.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
             <Sources>
@@ -555,7 +555,7 @@
                 <KeyUsage>digitalSignature</KeyUsage>
             </KeyUsageBits>
             <ExtendedKeyUsages>
-                <oid Description="ocspSigning">1.3.6.1.5.5.7.3.9</oid>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
             </ExtendedKeyUsages>
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
@@ -588,7 +588,7 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -616,7 +616,7 @@
             <OrganizationalUnit>0002 43912916400026</OrganizationalUnit>
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints>
-                <Url>http://crl.universign.eu/universign_tsa_root_2015.crl</Url>
+                <crlUrl>http://crl.universign.eu/universign_tsa_root_2015.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
             <Sources>
@@ -630,7 +630,7 @@
                 <KeyUsage>digitalSignature</KeyUsage>
             </KeyUsageBits>
             <ExtendedKeyUsages>
-                <oid Description="timeStamping">1.3.6.1.5.5.7.3.8</oid>
+                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
             </ExtendedKeyUsages>
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
@@ -700,7 +700,7 @@
             <OrganizationalUnit>0002 43912916400026</OrganizationalUnit>
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints>
-                <Url>http://crl.universign.eu/universign_tsa_root_2015.crl</Url>
+                <crlUrl>http://crl.universign.eu/universign_tsa_root_2015.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
             <Sources>
@@ -715,7 +715,7 @@
                 <KeyUsage>digitalSignature</KeyUsage>
             </KeyUsageBits>
             <ExtendedKeyUsages>
-                <oid Description="timeStamping">1.3.6.1.5.5.7.3.8</oid>
+                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
             </ExtendedKeyUsages>
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
@@ -897,31 +897,31 @@
                 <ChainItem Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
             </CertificateChain>
             <TimestampedObjects>
-                <TimestampedSignerData Token="D-0A18BBCC8DFAF11A42F34326F5E8AEA2BEAC2CB6DE981EF99655F493E937DD79"/>
-                <TimestampedSignerData Token="D-C000FD4DD14E9AB87E486EBE20C97F762B7AB736EE6F0F4A1AA255E7CF52959A"/>
-                <TimestampedSignerData Token="D-7F02F26768CA4F54D98FD3F857FA5A9AC8D37C2EA02FA97BDB9144A3F008FC3C"/>
-                <TimestampedSignerData Token="D-A2150EB1EF85E8C2A2EDA73FEC145BD511B4B9C2FA1885A2D87A8AE0BD0B83EF"/>
-                <TimestampedSignerData Token="D-72AFCE3E0DFC8DCD4A2FEA3B52898E3A20E628682EABB9B652955B2CED1CFB58"/>
-                <TimestampedSignerData Token="D-8C6740CA0FE7B5B0433E5242DEEBDF336DF4EFE69CE01BAD4A8818CBD66DD6FF"/>
-                <TimestampedSignerData Token="D-8B7C46C1BB8B39F00A1311756D3E2C05727F5D4A7CFCB515B2B78C8A4B97DEB5"/>
-                <TimestampedSignerData Token="D-73AA688A14C5B37E00600BEAB0003F0F71515C2D083C66671E20CA64F826F49C"/>
-                <TimestampedSignerData Token="D-A3FC9BFECC145526A6705E3D5278B9E37F032A03498AFA7BD05C264FF22467DE"/>
-                <TimestampedSignerData Token="D-5B70270BF015042C5C4AF22B1EA734351043B081FFD835F9E66AAEB9E83BF260"/>
-                <TimestampedSignerData Token="D-8F1E5899FBE275D73044ACD8658D85ED122E982EA2137342B5F71610924FE5D9"/>
-                <TimestampedSignerData Token="D-392E5BD0EC1416AA586C5131709C819FD800E3CC110355BC4A73D1F3C6C663B4"/>
-                <TimestampedSignerData Token="D-A666B5D1AAA1B383565017EDD29B0A46DA83A8E172245D4D2C6B0DE48A2740AB"/>
-                <TimestampedSignerData Token="D-C70E28FCA79A3F5CA05645CEA754C3B6146038564D1D5719C3E0A148A4A71BAF"/>
-                <TimestampedSignerData Token="D-1F7D2941AC9AA7CBE315D64D0DE9D591DC7E8B0EFD4F113472B91DCA6B41EDCC"/>
-                <TimestampedSignerData Token="D-EAD6D36000709C8238DADA90CA1B7BC2F60FD5E815EC2F4A9CC5B55EDD3BD4F0"/>
-                <TimestampedSignerData Token="D-0629DA4FE3A5FD68C62B2705A940377A4FFDB7E438758963E8EC07B478A13534"/>
-                <TimestampedSignerData Token="D-C79DA9EC922A0614827D8DA3F56408D48AC36DA4EA5B540A0129F2ACF53057EC"/>
-                <TimestampedSignerData Token="D-3C728D6748E2B295EA1C06A89C8E5E5D43C865D1603EAEF684444B6B4E9C0AF5"/>
-                <TimestampedSignerData Token="D-38582D337E8B495F85EB3CA02330B94FA93E88ED3733901F2A0CADCEEBA9337F"/>
-                <TimestampedSignerData Token="D-8D9F9F5588D040FC5B8B02D75FF191F7CBEC2739C936B903F6871DE9DF1F1986"/>
-                <TimestampedSignerData Token="D-015F964A2C6DF192ACA32A0463A687DC857CACE58246F8B98ECA3687549656AE"/>
-                <TimestampedSignerData Token="D-7CE55ECD9A7258D252B534DFC09E60FA35F65FE8CDFD48C5FDD7882C1260F6A8"/>
-                <TimestampedSignature Token="S-1D3BBA4FFAD5602A653CECC413A51B70DB3BF98C5A05B7BE3425A0E42BC501C6"/>
-                <TimestampedCertificate Token="C-FE2461CBA57FE78B4D8FD8B72730C49F9370C38002E3AA0340795395513FB26E"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-0A18BBCC8DFAF11A42F34326F5E8AEA2BEAC2CB6DE981EF99655F493E937DD79"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-C000FD4DD14E9AB87E486EBE20C97F762B7AB736EE6F0F4A1AA255E7CF52959A"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-7F02F26768CA4F54D98FD3F857FA5A9AC8D37C2EA02FA97BDB9144A3F008FC3C"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-A2150EB1EF85E8C2A2EDA73FEC145BD511B4B9C2FA1885A2D87A8AE0BD0B83EF"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-72AFCE3E0DFC8DCD4A2FEA3B52898E3A20E628682EABB9B652955B2CED1CFB58"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-8C6740CA0FE7B5B0433E5242DEEBDF336DF4EFE69CE01BAD4A8818CBD66DD6FF"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-8B7C46C1BB8B39F00A1311756D3E2C05727F5D4A7CFCB515B2B78C8A4B97DEB5"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-73AA688A14C5B37E00600BEAB0003F0F71515C2D083C66671E20CA64F826F49C"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-A3FC9BFECC145526A6705E3D5278B9E37F032A03498AFA7BD05C264FF22467DE"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-5B70270BF015042C5C4AF22B1EA734351043B081FFD835F9E66AAEB9E83BF260"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-8F1E5899FBE275D73044ACD8658D85ED122E982EA2137342B5F71610924FE5D9"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-392E5BD0EC1416AA586C5131709C819FD800E3CC110355BC4A73D1F3C6C663B4"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-A666B5D1AAA1B383565017EDD29B0A46DA83A8E172245D4D2C6B0DE48A2740AB"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-C70E28FCA79A3F5CA05645CEA754C3B6146038564D1D5719C3E0A148A4A71BAF"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-1F7D2941AC9AA7CBE315D64D0DE9D591DC7E8B0EFD4F113472B91DCA6B41EDCC"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-EAD6D36000709C8238DADA90CA1B7BC2F60FD5E815EC2F4A9CC5B55EDD3BD4F0"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-0629DA4FE3A5FD68C62B2705A940377A4FFDB7E438758963E8EC07B478A13534"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-C79DA9EC922A0614827D8DA3F56408D48AC36DA4EA5B540A0129F2ACF53057EC"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-3C728D6748E2B295EA1C06A89C8E5E5D43C865D1603EAEF684444B6B4E9C0AF5"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-38582D337E8B495F85EB3CA02330B94FA93E88ED3733901F2A0CADCEEBA9337F"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-8D9F9F5588D040FC5B8B02D75FF191F7CBEC2739C936B903F6871DE9DF1F1986"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-015F964A2C6DF192ACA32A0463A687DC857CACE58246F8B98ECA3687549656AE"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-7CE55ECD9A7258D252B534DFC09E60FA35F65FE8CDFD48C5FDD7882C1260F6A8"/>
+                <TimestampedObject Category="SIGNATURE" Token="S-1D3BBA4FFAD5602A653CECC413A51B70DB3BF98C5A05B7BE3425A0E42BC501C6"/>
+                <TimestampedObject Category="CERTIFICATE" Token="C-FE2461CBA57FE78B4D8FD8B72730C49F9370C38002E3AA0340795395513FB26E"/>
             </TimestampedObjects>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -949,38 +949,38 @@
                 <ChainItem Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
             </CertificateChain>
             <TimestampedObjects>
-                <TimestampedTimestamp Token="T-FB6A7EA61BCE6E3C2545CB591DF4D68D14B8124EDAEC9D1A1F76096B16739A61"/>
-                <TimestampedSignerData Token="D-0A18BBCC8DFAF11A42F34326F5E8AEA2BEAC2CB6DE981EF99655F493E937DD79"/>
-                <TimestampedSignerData Token="D-C000FD4DD14E9AB87E486EBE20C97F762B7AB736EE6F0F4A1AA255E7CF52959A"/>
-                <TimestampedSignerData Token="D-7F02F26768CA4F54D98FD3F857FA5A9AC8D37C2EA02FA97BDB9144A3F008FC3C"/>
-                <TimestampedSignerData Token="D-A2150EB1EF85E8C2A2EDA73FEC145BD511B4B9C2FA1885A2D87A8AE0BD0B83EF"/>
-                <TimestampedSignerData Token="D-72AFCE3E0DFC8DCD4A2FEA3B52898E3A20E628682EABB9B652955B2CED1CFB58"/>
-                <TimestampedSignerData Token="D-8C6740CA0FE7B5B0433E5242DEEBDF336DF4EFE69CE01BAD4A8818CBD66DD6FF"/>
-                <TimestampedSignerData Token="D-8B7C46C1BB8B39F00A1311756D3E2C05727F5D4A7CFCB515B2B78C8A4B97DEB5"/>
-                <TimestampedSignerData Token="D-73AA688A14C5B37E00600BEAB0003F0F71515C2D083C66671E20CA64F826F49C"/>
-                <TimestampedSignerData Token="D-A3FC9BFECC145526A6705E3D5278B9E37F032A03498AFA7BD05C264FF22467DE"/>
-                <TimestampedSignerData Token="D-5B70270BF015042C5C4AF22B1EA734351043B081FFD835F9E66AAEB9E83BF260"/>
-                <TimestampedSignerData Token="D-8F1E5899FBE275D73044ACD8658D85ED122E982EA2137342B5F71610924FE5D9"/>
-                <TimestampedSignerData Token="D-392E5BD0EC1416AA586C5131709C819FD800E3CC110355BC4A73D1F3C6C663B4"/>
-                <TimestampedSignerData Token="D-A666B5D1AAA1B383565017EDD29B0A46DA83A8E172245D4D2C6B0DE48A2740AB"/>
-                <TimestampedSignerData Token="D-C70E28FCA79A3F5CA05645CEA754C3B6146038564D1D5719C3E0A148A4A71BAF"/>
-                <TimestampedSignerData Token="D-1F7D2941AC9AA7CBE315D64D0DE9D591DC7E8B0EFD4F113472B91DCA6B41EDCC"/>
-                <TimestampedSignerData Token="D-EAD6D36000709C8238DADA90CA1B7BC2F60FD5E815EC2F4A9CC5B55EDD3BD4F0"/>
-                <TimestampedSignerData Token="D-0629DA4FE3A5FD68C62B2705A940377A4FFDB7E438758963E8EC07B478A13534"/>
-                <TimestampedSignerData Token="D-C79DA9EC922A0614827D8DA3F56408D48AC36DA4EA5B540A0129F2ACF53057EC"/>
-                <TimestampedSignerData Token="D-3C728D6748E2B295EA1C06A89C8E5E5D43C865D1603EAEF684444B6B4E9C0AF5"/>
-                <TimestampedSignerData Token="D-38582D337E8B495F85EB3CA02330B94FA93E88ED3733901F2A0CADCEEBA9337F"/>
-                <TimestampedSignerData Token="D-8D9F9F5588D040FC5B8B02D75FF191F7CBEC2739C936B903F6871DE9DF1F1986"/>
-                <TimestampedSignerData Token="D-015F964A2C6DF192ACA32A0463A687DC857CACE58246F8B98ECA3687549656AE"/>
-                <TimestampedSignerData Token="D-7CE55ECD9A7258D252B534DFC09E60FA35F65FE8CDFD48C5FDD7882C1260F6A8"/>
-                <TimestampedSignature Token="S-1D3BBA4FFAD5602A653CECC413A51B70DB3BF98C5A05B7BE3425A0E42BC501C6"/>
-                <TimestampedCertificate Token="C-FE2461CBA57FE78B4D8FD8B72730C49F9370C38002E3AA0340795395513FB26E"/>
-                <TimestampedCertificate Token="C-F4E7DF969A590AF41E38E5854542EBF9DF6A5BE9B16FD31494FA689509057494"/>
-                <TimestampedRevocationData Token="R-52755F1B968292DA7D64235FC8BEE11023AE65436DB62822DE853B0F3B94A279"/>
-                <TimestampedCertificate Token="C-7E76DA9EA8D0E6C5C63023D0D8C06E555AECE4FE346C0E50693DF6BD5468E484"/>
-                <TimestampedCertificate Token="C-948A9632F4F6BBADFC34A23C428CDD0BEA40D397796D4CABD0F80792A62FFFB3"/>
-                <TimestampedRevocationData Token="R-7D7676569DEB225F315C8D1486A78EA2A1BA5C19828B97466E84E6BDD761A65E"/>
-                <TimestampedRevocationData Token="R-5BE1D322FC8AEA14B2B21EC20ADA7052F8DED3537320559BF12B72F3F184A6BC"/>
+                <TimestampedObject Category="TIMESTAMP" Token="T-FB6A7EA61BCE6E3C2545CB591DF4D68D14B8124EDAEC9D1A1F76096B16739A61"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-0A18BBCC8DFAF11A42F34326F5E8AEA2BEAC2CB6DE981EF99655F493E937DD79"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-C000FD4DD14E9AB87E486EBE20C97F762B7AB736EE6F0F4A1AA255E7CF52959A"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-7F02F26768CA4F54D98FD3F857FA5A9AC8D37C2EA02FA97BDB9144A3F008FC3C"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-A2150EB1EF85E8C2A2EDA73FEC145BD511B4B9C2FA1885A2D87A8AE0BD0B83EF"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-72AFCE3E0DFC8DCD4A2FEA3B52898E3A20E628682EABB9B652955B2CED1CFB58"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-8C6740CA0FE7B5B0433E5242DEEBDF336DF4EFE69CE01BAD4A8818CBD66DD6FF"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-8B7C46C1BB8B39F00A1311756D3E2C05727F5D4A7CFCB515B2B78C8A4B97DEB5"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-73AA688A14C5B37E00600BEAB0003F0F71515C2D083C66671E20CA64F826F49C"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-A3FC9BFECC145526A6705E3D5278B9E37F032A03498AFA7BD05C264FF22467DE"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-5B70270BF015042C5C4AF22B1EA734351043B081FFD835F9E66AAEB9E83BF260"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-8F1E5899FBE275D73044ACD8658D85ED122E982EA2137342B5F71610924FE5D9"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-392E5BD0EC1416AA586C5131709C819FD800E3CC110355BC4A73D1F3C6C663B4"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-A666B5D1AAA1B383565017EDD29B0A46DA83A8E172245D4D2C6B0DE48A2740AB"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-C70E28FCA79A3F5CA05645CEA754C3B6146038564D1D5719C3E0A148A4A71BAF"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-1F7D2941AC9AA7CBE315D64D0DE9D591DC7E8B0EFD4F113472B91DCA6B41EDCC"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-EAD6D36000709C8238DADA90CA1B7BC2F60FD5E815EC2F4A9CC5B55EDD3BD4F0"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-0629DA4FE3A5FD68C62B2705A940377A4FFDB7E438758963E8EC07B478A13534"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-C79DA9EC922A0614827D8DA3F56408D48AC36DA4EA5B540A0129F2ACF53057EC"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-3C728D6748E2B295EA1C06A89C8E5E5D43C865D1603EAEF684444B6B4E9C0AF5"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-38582D337E8B495F85EB3CA02330B94FA93E88ED3733901F2A0CADCEEBA9337F"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-8D9F9F5588D040FC5B8B02D75FF191F7CBEC2739C936B903F6871DE9DF1F1986"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-015F964A2C6DF192ACA32A0463A687DC857CACE58246F8B98ECA3687549656AE"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-7CE55ECD9A7258D252B534DFC09E60FA35F65FE8CDFD48C5FDD7882C1260F6A8"/>
+                <TimestampedObject Category="SIGNATURE" Token="S-1D3BBA4FFAD5602A653CECC413A51B70DB3BF98C5A05B7BE3425A0E42BC501C6"/>
+                <TimestampedObject Category="CERTIFICATE" Token="C-FE2461CBA57FE78B4D8FD8B72730C49F9370C38002E3AA0340795395513FB26E"/>
+                <TimestampedObject Category="CERTIFICATE" Token="C-F4E7DF969A590AF41E38E5854542EBF9DF6A5BE9B16FD31494FA689509057494"/>
+                <TimestampedObject Category="REVOCATION" Token="R-52755F1B968292DA7D64235FC8BEE11023AE65436DB62822DE853B0F3B94A279"/>
+                <TimestampedObject Category="CERTIFICATE" Token="C-7E76DA9EA8D0E6C5C63023D0D8C06E555AECE4FE346C0E50693DF6BD5468E484"/>
+                <TimestampedObject Category="CERTIFICATE" Token="C-948A9632F4F6BBADFC34A23C428CDD0BEA40D397796D4CABD0F80792A62FFFB3"/>
+                <TimestampedObject Category="REVOCATION" Token="R-7D7676569DEB225F315C8D1486A78EA2A1BA5C19828B97466E84E6BDD761A65E"/>
+                <TimestampedObject Category="REVOCATION" Token="R-5BE1D322FC8AEA14B2B21EC20ADA7052F8DED3537320559BF12B72F3F184A6BC"/>
             </TimestampedObjects>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>

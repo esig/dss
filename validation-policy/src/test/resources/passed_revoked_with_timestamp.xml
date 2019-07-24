@@ -182,9 +182,9 @@
                 <certificatePolicy>1.3.76.24.1.1.2</certificatePolicy>
             </CertificatePolicies>
             <QCStatementIds>
-                <oid>0.4.0.1862.1.1</oid>
-                <oid>0.4.0.1862.1.4</oid>
-                <oid>0.4.0.1862.1.3</oid>
+                <qcStatementOid>0.4.0.1862.1.1</qcStatementOid>
+                <qcStatementOid>0.4.0.1862.1.4</qcStatementOid>
+                <qcStatementOid>0.4.0.1862.1.3</qcStatementOid>
             </QCStatementIds>
             <QCTypes />
             <TrustedServiceProviders />
@@ -466,8 +466,8 @@
                 <ChainItem Certificate="C-FC8BFE53A334F6F762F5EA9AFF47E01AA62DF620E55E8CE9BECB713BB70755A7"/>
             </CertificateChain>
             <TimestampedObjects>
-            	<TimestampedSignature Token="xmldsig-0a9a9d45-c8f6-44c5-9e74-462fa3441a26" />
-            	<TimestampedCertificate Token="C-F3001FF8575E8C49F0D04A9A3C7A36E6F28E389CC514C2CBFC55227ACE4A275A" />
+            	<TimestampedObject Category="SIGNATURE" Token="xmldsig-0a9a9d45-c8f6-44c5-9e74-462fa3441a26" />
+            	<TimestampedObject Category="CERTIFICATE" Token="C-F3001FF8575E8C49F0D04A9A3C7A36E6F28E389CC514C2CBFC55227ACE4A275A" />
             </TimestampedObjects>
             <DigestAlgoAndValue>
             	<DigestMethod>SHA1</DigestMethod>

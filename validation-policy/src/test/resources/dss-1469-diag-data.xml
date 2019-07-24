@@ -259,13 +259,13 @@
             <CountryName>BE</CountryName>
             <OrganizationName>QuoVadis Trustlink BVBA</OrganizationName>
             <AuthorityInformationAccessUrls>
-                <Url>http://trust.quovadisglobal.com/qventca1g3.crt</Url>
+                <aiaUrl>http://trust.quovadisglobal.com/qventca1g3.crt</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints>
-                <Url>http://crl.quovadisglobal.com/qventca1g3.crl</Url>
+                <crlUrl>http://crl.quovadisglobal.com/qventca1g3.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls>
-                <Url>http://ocsp.quovadisglobal.com</Url>
+                <ocspServerUrl>http://ocsp.quovadisglobal.com</ocspServerUrl>
             </OCSPAccessUrls>
             <Sources>
                 <Source>SIGNATURE</Source>
@@ -313,8 +313,8 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2018-02-08T00:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
@@ -325,7 +325,7 @@
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <EndDate>2018-02-08T00:00:00</EndDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
@@ -356,13 +356,13 @@
             <OrganizationName>European Commission</OrganizationName>
             <OrganizationalUnit>DIGIT ESSI TEST</OrganizationalUnit>
             <AuthorityInformationAccessUrls>
-                <Url>http://trust.quovadisglobal.com/qvbecag2.crt</Url>
+                <aiaUrl>http://trust.quovadisglobal.com/qvbecag2.crt</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints>
-                <Url>http://crl.quovadisglobal.com/qvbecag2.crl</Url>
+                <crlUrl>http://crl.quovadisglobal.com/qvbecag2.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls>
-                <Url>http://uw.ocsp.quovadisglobal.com</Url>
+                <ocspServerUrl>http://uw.ocsp.quovadisglobal.com</ocspServerUrl>
             </OCSPAccessUrls>
             <Sources>
                 <Source>SIGNATURE</Source>
@@ -375,8 +375,8 @@
                 <KeyUsage>nonRepudiation</KeyUsage>
             </KeyUsageBits>
             <ExtendedKeyUsages>
-                <oid Description="emailProtection">1.3.6.1.5.5.7.3.4</oid>
-                <oid>1.3.6.1.4.1.311.10.3.12</oid>
+                <extendedKeyUsagesOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsagesOid>
+                <extendedKeyUsagesOid>1.3.6.1.4.1.311.10.3.12</extendedKeyUsagesOid>
             </ExtendedKeyUsages>
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
@@ -399,13 +399,13 @@
                 <certificatePolicy Description="qcp-legal">0.4.0.194112.1.1</certificatePolicy>
             </CertificatePolicies>
             <QCStatementIds>
-                <oid>1.3.6.1.5.5.7.11.2</oid>
-                <oid Description="qc-compliance">0.4.0.1862.1.1</oid>
-                <oid>0.4.0.1862.1.6</oid>
-                <oid Description="qc-pds">0.4.0.1862.1.5</oid>
+                <qcStatementOid>1.3.6.1.5.5.7.11.2</qcStatementOid>
+                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
+                <qcStatementOid>0.4.0.1862.1.6</qcStatementOid>
+                <qcStatementOid Description="qc-pds">0.4.0.1862.1.5</qcStatementOid>
             </QCStatementIds>
             <QCTypes>
-                <oid Description="qc-type-eseal">0.4.0.1862.1.6.2</oid>
+                <qcTypeOid Description="qc-type-eseal">0.4.0.1862.1.6.2</qcTypeOid>
             </QCTypes>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
@@ -421,8 +421,8 @@
                             <StartDate>2018-02-08T00:00:00</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -450,7 +450,7 @@
             <OrganizationalUnit>002 43912916400026</OrganizationalUnit>
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints>
-                <Url>http://crl.universign.eu/universign_tsa_root_2015.crl</Url>
+                <crlUrl>http://crl.universign.eu/universign_tsa_root_2015.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
             <Sources>
@@ -465,7 +465,7 @@
                 <KeyUsage>digitalSignature</KeyUsage>
             </KeyUsageBits>
             <ExtendedKeyUsages>
-                <oid Description="timeStamping">1.3.6.1.5.5.7.3.8</oid>
+                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
             </ExtendedKeyUsages>
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
@@ -530,13 +530,13 @@
             <CountryName>BM</CountryName>
             <OrganizationName>QuoVadis Limited</OrganizationName>
             <AuthorityInformationAccessUrls>
-                <Url>http://trust.quovadisglobal.com/qvrca1g3.crt</Url>
+                <aiaUrl>http://trust.quovadisglobal.com/qvrca1g3.crt</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints>
-                <Url>http://crl.quovadisglobal.com/qvrca1g3.crl</Url>
+                <crlUrl>http://crl.quovadisglobal.com/qvrca1g3.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls>
-                <Url>http://ocsp.quovadisglobal.com</Url>
+                <ocspServerUrl>http://ocsp.quovadisglobal.com</ocspServerUrl>
             </OCSPAccessUrls>
             <Sources>
                 <Source>SIGNATURE</Source>
@@ -645,9 +645,9 @@
                 <ChainItem Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
             </CertificateChain>
             <TimestampedObjects>
-                <TimestampedSignerData Token="D-0283B5CA2B6FFABE8D14592F9D09FC8F5B4CDDCD2E90AF29C32F58E6D792EF62"/>
-                <TimestampedSignature Token="S-8C53CF5EB069156ED529C92CCB4E5F3296502A7BDF7FF39D6A0215EEB098EC39"/>
-                <TimestampedCertificate Token="C-55A136D0DBCFFE8DFA33D87290E046D7A799CA345C63B8D5E9E9CC19532D32FB"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-0283B5CA2B6FFABE8D14592F9D09FC8F5B4CDDCD2E90AF29C32F58E6D792EF62"/>
+                <TimestampedObject Category="SIGNATURE" Token="S-8C53CF5EB069156ED529C92CCB4E5F3296502A7BDF7FF39D6A0215EEB098EC39"/>
+                <TimestampedObject Category="CERTIFICATE" Token="C-55A136D0DBCFFE8DFA33D87290E046D7A799CA345C63B8D5E9E9CC19532D32FB"/>
             </TimestampedObjects>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -675,15 +675,15 @@
                 <ChainItem Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
             </CertificateChain>
             <TimestampedObjects>
-                <TimestampedTimestamp Token="T-896227D85AA1FFAB933AD4DFBBB680C47DD25666C403C214FA23860A5480BAD0"/>
-                <TimestampedCertificate Token="C-3A528F2E01089B11A013258F58F9E6B7BC3C405A14831916212DA9208B5C9DAE"/>
-                <TimestampedCertificate Token="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
-                <TimestampedSignerData Token="D-0283B5CA2B6FFABE8D14592F9D09FC8F5B4CDDCD2E90AF29C32F58E6D792EF62"/>
-                <TimestampedSignature Token="S-8C53CF5EB069156ED529C92CCB4E5F3296502A7BDF7FF39D6A0215EEB098EC39"/>
-                <TimestampedCertificate Token="C-55A136D0DBCFFE8DFA33D87290E046D7A799CA345C63B8D5E9E9CC19532D32FB"/>
-                <TimestampedRevocationData Token="R-C8DB8054C56A548DAF0A81751C1E1D4709C3F1FF90C1D6927850FD5DD0F58428"/>
-                <TimestampedRevocationData Token="R-F19DA13E95CC292BDD3138A6FAE8130E3E956AD636F97F1C7E8A73E9530CDB86"/>
-                <TimestampedCertificate Token="C-D90B40132306D1094608B1B9A2F6A9E23B45FE121FEF514A1C9DF70A815AD95C"/>
+                <TimestampedObject Category="TIMESTAMP" Token="T-896227D85AA1FFAB933AD4DFBBB680C47DD25666C403C214FA23860A5480BAD0"/>
+                <TimestampedObject Category="CERTIFICATE" Token="C-3A528F2E01089B11A013258F58F9E6B7BC3C405A14831916212DA9208B5C9DAE"/>
+                <TimestampedObject Category="CERTIFICATE" Token="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-0283B5CA2B6FFABE8D14592F9D09FC8F5B4CDDCD2E90AF29C32F58E6D792EF62"/>
+                <TimestampedObject Category="SIGNATURE" Token="S-8C53CF5EB069156ED529C92CCB4E5F3296502A7BDF7FF39D6A0215EEB098EC39"/>
+                <TimestampedObject Category="CERTIFICATE" Token="C-55A136D0DBCFFE8DFA33D87290E046D7A799CA345C63B8D5E9E9CC19532D32FB"/>
+                <TimestampedObject Category="REVOCATION" Token="R-C8DB8054C56A548DAF0A81751C1E1D4709C3F1FF90C1D6927850FD5DD0F58428"/>
+                <TimestampedObject Category="REVOCATION" Token="R-F19DA13E95CC292BDD3138A6FAE8130E3E956AD636F97F1C7E8A73E9530CDB86"/>
+                <TimestampedObject Category="CERTIFICATE" Token="C-D90B40132306D1094608B1B9A2F6A9E23B45FE121FEF514A1C9DF70A815AD95C"/>
             </TimestampedObjects>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>

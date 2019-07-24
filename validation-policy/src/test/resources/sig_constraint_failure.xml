@@ -170,7 +170,7 @@
                 <certificatePolicy>0.4.0.1456.1.1</certificatePolicy>
             </CertificatePolicies>
             <QCStatementIds>
-                <oid>0.4.0.1862.1.1</oid>
+                <qcStatementOid>0.4.0.1862.1.1</qcStatementOid>
             </QCStatementIds>
             <QCTypes />
             <TrustedServiceProviders />
