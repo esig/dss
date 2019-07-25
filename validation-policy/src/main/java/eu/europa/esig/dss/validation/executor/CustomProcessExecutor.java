@@ -36,7 +36,7 @@ public class CustomProcessExecutor implements ProcessExecutor<Reports> {
 
 	private Date currentTime = new Date();
 	private ValidationLevel validationLevel = ValidationLevel.ARCHIVAL_DATA;
-	private boolean executeETSIValidationReport = true;
+	private boolean enableEtsiValidationReport = true;
 	private XmlDiagnosticData jaxbDiagnosticData;
 	private ValidationPolicy policy;
 
@@ -60,8 +60,8 @@ public class CustomProcessExecutor implements ProcessExecutor<Reports> {
 		this.validationLevel = validationLevel;
 	}
 
-	public void setExecuteETSIValidationReport(boolean executeETSIValidationReport) {
-		this.executeETSIValidationReport = executeETSIValidationReport;
+	public void setEnableEtsiValidationReport(boolean enableEtsiValidationReport) {
+		this.enableEtsiValidationReport = enableEtsiValidationReport;
 	}
 
 	@Override
@@ -83,7 +83,7 @@ public class CustomProcessExecutor implements ProcessExecutor<Reports> {
 		XmlSimpleReport simpleReport = simpleReportBuilder.build();
 
 		ValidationReportType validationReport = null;
-		if (executeETSIValidationReport) {
+		if (enableEtsiValidationReport) {
 			ETSIValidationReportBuilder etsiValidationReportBuilder = new ETSIValidationReportBuilder(currentTime, policy, diagnosticData,
 					detailedReportWrapper);
 			validationReport = etsiValidationReportBuilder.build();

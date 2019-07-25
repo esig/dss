@@ -45,7 +45,6 @@ import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.validation.executor.CustomProcessExecutor;
-import eu.europa.esig.dss.validation.executor.ProcessExecutor;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.x509.CertificatePool;
@@ -70,9 +69,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * This variable can hold a specific {@code ProcessExecutor}
+	 * This variable can hold a specific {@code CustomProcessExecutor}
 	 */
-	protected ProcessExecutor processExecutor = null;
+	protected CustomProcessExecutor processExecutor = null;
 
 	/**
 	 * This is the pool of certificates used in the validation process. The
@@ -118,6 +117,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	// Default configuration with the highest level
 	private ValidationLevel validationLevel = ValidationLevel.ARCHIVAL_DATA;
+	
+	// Produces the ETSI Validation Report by default
+	private boolean enableEtsiValidationReport = true;
 
 	protected SignedDocumentValidator(SignatureScopeFinder signatureScopeFinder) {
 		this.signatureScopeFinder = signatureScopeFinder;
@@ -194,13 +196,14 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		this.manifestFiles = manifestFiles;
 	}
 
-	/**
-	 * This method allows to specify the validation level (Basic / Timestamp /
-	 * Long Term / Archival). By default, the selected validation is ARCHIVAL
-	 */
 	@Override
 	public void setValidationLevel(ValidationLevel validationLevel) {
 		this.validationLevel = validationLevel;
+	}
+	
+	@Override
+	public void setEnableEtsiValidationReport(boolean enableEtsiValidationReport) {
+		this.enableEtsiValidationReport = enableEtsiValidationReport;
 	}
 
 	@Override
@@ -366,10 +369,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	protected Reports processValidationPolicy(XmlDiagnosticData diagnosticData, ValidationPolicy validationPolicy) {
-		final ProcessExecutor<Reports> executor = provideProcessExecutorInstance();
+		final CustomProcessExecutor executor = provideProcessExecutorInstance();
 		executor.setValidationPolicy(validationPolicy);
 		executor.setValidationLevel(validationLevel);
 		executor.setDiagnosticData(diagnosticData);
+		executor.setEnableEtsiValidationReport(enableEtsiValidationReport);
 		final Reports reports = executor.execute();
 		return reports;
 	}
@@ -387,7 +391,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	@Override
-	public void setProcessExecutor(final ProcessExecutor processExecutor) {
+	public void setProcessExecutor(final CustomProcessExecutor processExecutor) {
 		this.processExecutor = processExecutor;
 	}
 
@@ -397,7 +401,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 *
 	 * @return {@code ProcessExecutor}
 	 */
-	public ProcessExecutor<Reports> provideProcessExecutorInstance() {
+	public CustomProcessExecutor provideProcessExecutorInstance() {
 		if (processExecutor == null) {
 			processExecutor = new CustomProcessExecutor();
 		}
