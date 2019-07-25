@@ -115,7 +115,6 @@
 				<xs:sequence>
 					<xs:element name="DAIdentifier" type="xs:string" minOccurs="0" /> <!-- ID produced by a signer application -->
 					<xs:element name="SignatureFilename" type="xs:string" />
-					<xs:element name="Parent" type="xs:IDREF" minOccurs="0" />
 					<xs:element name="ErrorMessage" type="xs:string" minOccurs="0" />
 					<xs:element name="DateTime" type="xs:dateTime" minOccurs="0" />
 					<xs:element name="SignatureFormat" type="xs:string" />
@@ -196,6 +195,7 @@
 					
 				</xs:sequence>
 				<xs:attribute name="CounterSignature" type="xs:boolean" use="optional" />
+				<xs:attribute name="Parent" type="xs:IDREF" use="optional" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
