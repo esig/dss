@@ -24,7 +24,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -259,13 +258,13 @@ public final class ASiCUtils {
 		byte[] data = new byte[8192];
 		int nRead;
 	    int byteCounter = 0;
+	    long allowedSize = containerSize * ZIP_ENTRY_RATIO;
 	    while ((nRead = is.read(data)) != -1) {
 	    	byteCounter += nRead;
-	    	if (byteCounter > ZIP_ENTRY_THRESHOLD && 
-	    			byteCounter > containerSize * ZIP_ENTRY_RATIO) {
+	    	if (byteCounter > ZIP_ENTRY_THRESHOLD && byteCounter > allowedSize) {
 	    		throw new DSSException("Zip Bomb detected in the ZIP container. Validation is interrupted.");
 	    	}
-			Utils.write(Arrays.copyOfRange(data, 0, nRead), os);
+	    	os.write(data, 0, nRead);
 	    }
 	}
 	
