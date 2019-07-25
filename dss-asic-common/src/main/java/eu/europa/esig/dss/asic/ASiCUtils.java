@@ -61,6 +61,11 @@ public final class ASiCUtils {
      * Maximum compression ratio.
      */
     private static final long ZIP_ENTRY_RATIO = 100;
+	
+    /**
+	 * Max iteration over the zip entries
+	 */
+	private static final int MAX_MALFORMED_FILES = 100;
 
 	private ASiCUtils() {
 	}
@@ -267,22 +272,29 @@ public final class ASiCUtils {
 	    	os.write(data, 0, nRead);
 	    }
 	}
-	
+
 	/**
-	 * Returns the next entry from the given ZipInputStream by skipping corrupted or not accessible files
-	 * NOTE: returns null only when the end of ZipInputStream is reached
+	 * Returns the next entry from the given ZipInputStream by skipping corrupted or
+	 * not accessible files NOTE: returns null only when the end of ZipInputStream
+	 * is reached
+	 * 
 	 * @param zis {@link ZipInputStream} to get next entry from
 	 * @return list of file name {@link String}s
+	 * @throws DSSException if too much tries failed
 	 */
 	public static ZipEntry getNextValidEntry(ZipInputStream zis) {
-		while (true) {
+		int counter = 0;
+		while (counter < MAX_MALFORMED_FILES) {
 			try {
 				return zis.getNextEntry();
 			} catch (Exception e) {
 				LOG.warn("ZIP container contains a malformed, corrupted or not accessible entry! The entry is skipped. Reason: [{}]", e.getMessage());
-				// skip the entry and continue until find the next valid entry or end of the stream
+				// skip the entry and continue until find the next valid entry or end of the
+				// stream
+				counter++;
 			}
 		}
+		throw new DSSException("Unable to retrieve a valid ZipEntry (" + MAX_MALFORMED_FILES + " tries)");
 	}
 
     /**
