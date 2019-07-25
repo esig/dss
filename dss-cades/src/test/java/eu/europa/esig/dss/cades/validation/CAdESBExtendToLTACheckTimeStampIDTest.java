@@ -35,8 +35,6 @@ import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedSignature;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
@@ -75,14 +73,11 @@ public class CAdESBExtendToLTACheckTimeStampIDTest extends PKIFactoryAccess {
 		DiagnosticData diagnostic = report.getDiagnosticData();
 		String signatureId = diagnostic.getFirstSignatureId();
 		for (TimestampWrapper wrapper : diagnostic.getTimestampList(signatureId)) {
-			List<XmlTimestampedObject> timestampedObjects = wrapper.getTimestampedObjects();
+			List<String> timestampedSignatureIds = wrapper.getTimestampedSignatureIds();
 			boolean found = false;
-			for (XmlTimestampedObject xmlTimestampedObject : timestampedObjects) {
-				if (xmlTimestampedObject instanceof XmlTimestampedSignature) {
-					String id = xmlTimestampedObject.getToken().getId();
-					if (signatureId.equals(id)) {
-						found = true;
-					}
+			for (String id : timestampedSignatureIds) {
+				if (signatureId.equals(id)) {
+					found = true;
 				}
 			}
 			assertTrue(found);

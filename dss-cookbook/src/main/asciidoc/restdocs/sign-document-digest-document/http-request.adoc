@@ -39,9 +39,7 @@ Content-Length: 2560
       "trustAnchorBPPolicy" : true,
       "signingDate" : 1542794106712,
       "claimedSignerRoles" : null,
-      "signaturePolicy" : null,
-      "commitmentTypeIndications" : null,
-      "signerLocation" : null
+      "commitmentTypeIndications" : null
     }
   },
   "signatureValue" : {
@@ -51,8 +49,7 @@ Content-Length: 2560
   "toSignDocument" : {
     "bytes" : "kcDHOZjwZhVfuDhuhCeCERRmYpTH4Jj4RmfVVi31Q9g=",
     "digestAlgorithm" : "SHA256",
-    "name" : "RemoteDocument",
-    "mimeType" : null
+    "name" : "RemoteDocument"
   }
 }
 ----

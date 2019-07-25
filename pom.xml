@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
@@ -38,6 +38,13 @@
 				<role>developer</role>
 			</roles>
 		</developer>
+		<developer>
+			<id>beliakov</id>
+			<name>Aleksandr Beliakov</name>
+			<roles>
+				<role>developer</role>
+			</roles>
+		</developer>
 
 	</developers>
 
@@ -64,7 +71,7 @@
 		<junit.version>4.12</junit.version>
 		<mockito.version>2.12.0</mockito.version>
 		<h2database.version>1.4.197</h2database.version>
-		<jackson.version>2.9.9.1</jackson.version>
+		<jackson.version>2.9.9</jackson.version>
 		
 	    <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 	    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
@@ -123,22 +130,37 @@
 		<module>dss-asic-xades</module>
 		<module>dss-asic-cades</module>
 		<module>dss-tsl-validation</module>
-		<module>dss-remote-services</module>
-		<module>dss-rest-client</module>
-		<module>dss-rest</module>
-		<module>dss-soap-client</module>
-		<module>dss-soap</module>
-		<module>dss-validation-rest-client</module>
-		<module>dss-validation-rest</module>
-		<module>dss-validation-soap</module>
-		<module>dss-validation-soap-client</module>
+		
+    	<module>dss-common-remote-dto</module>
+    	<module>dss-common-remote-converter</module>
+		<module>dss-signature-dto</module>
+		<module>dss-signature-remote</module>
+		<module>dss-signature-rest-client</module>
+		<module>dss-signature-soap-client</module>
+		<module>dss-signature-rest</module>
+		<module>dss-signature-soap</module>
+		<module>dss-server-signing-dto</module>
 		<module>dss-server-signing-common</module>
 		<module>dss-server-signing-rest-client</module>
-		<module>dss-server-signing-rest</module>
 		<module>dss-server-signing-soap-client</module>
+		<module>dss-server-signing-rest</module>
 		<module>dss-server-signing-soap</module>
+		<module>dss-validation-dto</module>
+		<module>dss-validation-server-common</module>
+		<module>dss-validation-rest-client</module>
+		<module>dss-validation-soap-client</module>
+		<module>dss-validation-rest</module>
+		<module>dss-validation-soap</module>
+		<module>dss-certificate-validation-dto</module>
+		<module>dss-certificate-validation-common</module>
+    	<module>dss-certificate-validation-rest-client</module>
+    	<module>dss-certificate-validation-soap-client</module>
+    	<module>dss-certificate-validation-rest</module>
+    	<module>dss-certificate-validation-soap</module>
+		
 		<module>dss-cookbook</module>
-	</modules>
+
+  </modules>
 
 	<build>
 		<plugins>
@@ -314,8 +336,8 @@
 						</goals>
 						<configuration>
 							<rules>
-                				<banDuplicatePomDependencyVersions />
-								<dependencyConvergence />
+                				<banDuplicatePomDependencyVersions/>
+								<dependencyConvergence/>
 								<bannedDependencies>
 									<excludes>
 										<exclude>xalan:xalan</exclude>
@@ -558,27 +580,52 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-remote-services</artifactId>
+				<artifactId>dss-common-remote-dto</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-rest</artifactId>
+				<artifactId>dss-common-remote-converter</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-rest-client</artifactId>
+				<artifactId>dss-signature-remote</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-soap</artifactId>
+				<artifactId>dss-signature-dto</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-soap-client</artifactId>
+				<artifactId>dss-signature-rest</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-signature-rest-client</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-signature-soap</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-signature-soap-client</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-validation-dto</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-validation-server-common</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -598,6 +645,36 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-certificate-validation-dto</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-certificate-validation-common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-certificate-validation-rest-client</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-certificate-validation-soap-client</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-certificate-validation-rest</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-certificate-validation-soap</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-validation-soap-client</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -607,6 +684,11 @@
 				<version>${project.version}</version>
 			</dependency>
 			
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-server-signing-dto</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-server-signing-common</artifactId>
@@ -821,8 +903,8 @@
 			    <scope>test</scope>
 			</dependency>
 			<dependency>
-			    <groupId>com.fasterxml.jackson.core</groupId>
-			    <artifactId>jackson-databind</artifactId>
+				<groupId>com.fasterxml.jackson.module</groupId>
+				<artifactId>jackson-module-jaxb-annotations</artifactId>
 				<version>${jackson.version}</version>
 			</dependency>
 						

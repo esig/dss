@@ -127,7 +127,7 @@ Please note that the DSS framework is still under maintenance and new features w
 [cols=4]
 |=======================
 |Ref.			|Title																			|Reference					|Version
-|[[R01]]	R01	|ESI - XAdES digital signatures													|ETSI EN 319 132 part 1-2	|1.0.0
+|[[R01]]	R01	|ESI - XAdES digital signatures													|ETSI EN 319 132 part 1-2	|1.1.1
 |[[R02]]	R02	|ESI - CAdES digital signatures													|ETSI EN 319 122 part 1-2	|1.1.1
 |[[R03]]	R03	|ESI - PAdES digital signatures													|ETSI EN 319 142 part 1-2	|1.1.1
 |[[R04]]	R04	|ESI - Associated Signature Containers (ASiC)									|ETSI EN 319 162 part 1-2	|1.1.1
@@ -135,10 +135,10 @@ Please note that the DSS framework is still under maintenance and new features w
 |[[R06]]	R06	|Directive 1999/93/EC of the European Parliament and of the Council of 13 December 1999 on a Community framework for electronic signatures.	|DIRECTIVE 1999/93/EC	|
 |[[R07]]	R07	|Internet X.509 Public Key Infrastructure - Time-Stamp Protocol (TSP)			|RFC 3161					|
 |[[R08]]	R08	|ESI - Procedures for Creation and Validation of AdES Digital Signatures		|ETSI EN 319 102-1			|1.1.1
-|[[R09]]	R09	|ESI - Signature validation policy for European qualified electronic signatures/seals using trusted lists		|ETSI TS 119 172-4			|draft
-|[[R10]]	R10	|ESI - Trusted Lists															|ETSI TS 119 612		|2.1.1
-|[[R11]]	R11	|eIDAS Regulation No 910/2014													|910/2014/EU			|
-
+|[[R09]]	R09	|ESI - Signature validation policy for European qualified electronic signatures/seals using trusted lists   |ETSI TS 119 172-4			|draft
+|[[R10]]	R10	|ESI - Trusted Lists															|ETSI TS 119 612		    |2.1.1
+|[[R11]]	R11	|eIDAS Regulation No 910/2014													|910/2014/EU			    |
+|[[R12]]	R12	|ESI - Procedures for Creation and Validation of AdES Digital Signatures		|ETSI TS 119 102-2		    |1.1.1
 
 |=======================
 
@@ -186,20 +186,24 @@ dss-crl-parser-stream:: Implementation of dss-crl-parser which streams the CRL (
 dss-crl-parser-x509crl:: Implementation of dss-crl-parser which uses the java object X509CRL.
 dss-tsl-validation:: Module which allows to load / parse / validate LOTL and TSLs.
 validation-policy:: Business of the signature's validation (ETSI EN 319 102).
-dss-rest:: REST webservices to sign (getDataToSign, signDocument methods) and extend a signature.
-dss-rest-client:: Client for the REST webservices.
-dss-soap:: SOAP webservices to sign (getDataToSign, signDocument methods) and extend a signature.
-dss-soap-client:: Client for the SOAP webservices.
-dss-validation-rest:: REST webservices to validate a signature.
-dss-validation-rest-client:: Client for the REST webservices.
-dss-validation-soap:: SOAP webservices to validate a signature.
-dss-validation-soap-client:: Client for the SOAP webservices.
-dss-remote-services:: Common code between dss-rest and dss-soap.
-dss-server-signing-common:: Common code for server signing
+dss-common-remote-dto:: Common classes between all remote services (REST and SOAP).
+dss-signature-dto:: Data Transfer Objects used for signature creation/extension (REST and SOAP).
+dss-signature-remote:: Common classes between dss-signature-rest and dss-signature-soap.
+dss-signature-rest-client:: Client for the REST webservices.
+dss-signature-rest:: REST webservices to sign (getDataToSign, signDocument methods) and extend a signature.
+dss-signature-soap-client:: Client for the SOAP webservices.
+dss-signature-soap:: SOAP webservices to sign (getDataToSign, signDocument methods) and extend a signature.
+dss-server-signing-common:: Common classes for server signing
 dss-server-signing-rest:: REST webservice for server signing
 dss-server-signing-rest-client:: REST client for server signing 
 dss-server-signing-soap:: SOAP webservice for server signing
 dss-server-signing-soap-client:: SOAP client for server signing
+dss-validation-dto:: Data Transfer Objects used for signature validation (REST and SOAP).
+dss-validation-common:: Common classes between dss-validation-rest and dss-validation-soap.
+dss-validation-rest-client:: Client for the REST webservices.
+dss-validation-soap-client:: Client for the SOAP webservices.
+dss-validation-rest:: REST webservices to validate a signature.
+dss-validation-soap:: SOAP webservices to validate a signature.
 sscd-mocca-adapter:: Implementation for MOCCA token.
 dss-policy-jaxb:: JAXB model of the validation policy.
 dss-diagnostic-jaxb:: JAXB model of the diagnostic data.
@@ -737,9 +741,10 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/LOTLLoading
 
 The result of the validation process consists of three elements: 
 
- * the simple report, 
- * the detailed report and,
- * the diagnostic data.
+ * the Simple Report, 
+ * the Detailed Report,
+ * the Diagnostic Data and
+ * the ETSI Validation Report.
  
 All these reports are encoded using XML, which allows the implementer to easily manipulate and extract information for further analysis. For each report, XML Schema and JaxB model are available as maven dependencies.
 
@@ -749,7 +754,7 @@ You will find below a detailed description of each of these elements.
 
 ==== Simple Report 
 
-This is a sample of the simple validation report.
+This is a sample of the simple validation report:
 
 .Simple Report 
 include::samples/simple-report-example.adoc[]
@@ -786,10 +791,19 @@ Each block contains a number of rules that are executed sequentially. The rules 
 
 This is a data set constructed from the information contained in the signature itself, but also from information retrieved dynamically as revocation data and information extrapolated as the mathematical validity of a signature. All this information is independent of the applied validation policy. Two different validation policies applied to the same diagnostic data can lead to different results.
 
-This is an example of the diagnostic data for a PAdES signature. Certain fields and certain values were trimmed or deleted to make reading easier:
+This is an example of the diagnostic data for a XAdES signature. Certain fields and certain values were trimmed or deleted to make reading easier:
 
 .Diagnostic Data
 include::samples/diagnostic-data-example.adoc[]
+
+==== ETSI Validation Report
+
+The ETSI Validation Report represents an implementation of TS 119 102-2 (cf. <<R12>>). The report contains a standardized result of an ASiC digital signature validation. It includes the original validation input data, the applied validation policy, as well as the validation result of one or more signature(s) and its(their) constraints.
+
+This is an example of the ETSI validation report:
+
+.ETSI Validation Report (TS 119 102-2)
+include::samples/etsi-validation-report-example.adoc[]
 
 === Customised Validation Policy
 
@@ -1368,3 +1382,15 @@ include::restdocs/get-original-documents/http-request.adoc[]
 
 .Response
 include::restdocs/get-original-documents/http-response.adoc[]
+
+=== REST certificate validation service
+
+==== Validate a certificate
+
+This service allows to validate a certificate (provided in a binary format).
+
+.Request
+include::restdocs/validate-cert/http-request.adoc[]
+
+.Response
+include::restdocs/validate-cert/http-response.adoc[]

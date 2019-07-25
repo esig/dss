@@ -31,6 +31,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.SimpleReportFacade;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
+import eu.europa.esig.dss.validation.reports.exception.DSSReportException;
 import eu.europa.esig.validationreport.ValidationReportFacade;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
@@ -99,16 +100,18 @@ public class Reports extends AbstractReports {
 	 * This method returns the XML representation of the JAXB SimpleReport String
 	 * 
 	 * @return a String with the XML content of the JAXB {@code SimpleReport}
-	 * @throws SAXException
-	 * @throws IOException
-	 * @throws JAXBException
+	 * @throws DSSReportException - in case of marshalling error
 	 */
 	@Override
-	public String getXmlSimpleReport() throws JAXBException, IOException, SAXException {
-		if (xmlSimpleReport == null) {
-			xmlSimpleReport = SimpleReportFacade.newFacade().marshall(getSimpleReportJaxb(), validateXml);
+	public String getXmlSimpleReport() {
+		try {
+			if (xmlSimpleReport == null) {
+				xmlSimpleReport = SimpleReportFacade.newFacade().marshall(getSimpleReportJaxb(), validateXml);
+			}
+			return xmlSimpleReport;
+		} catch (JAXBException | IOException | SAXException e) {
+			throw new DSSReportException("An error occurred during marshalling of JAXB Simple Report", e);
 		}
-		return xmlSimpleReport;
 	}
 
 	/**
@@ -117,19 +120,21 @@ public class Reports extends AbstractReports {
 	 * 
 	 * @return a String with the XML content of the JAXB
 	 *         {@code ValidationReportType}
-	 * @throws SAXException
-	 * @throws IOException
-	 * @throws JAXBException
+	 * @throws DSSReportException - in case of marshalling error
 	 */
-	public String getXmlValidationReport() throws JAXBException, IOException, SAXException {
-		if (xmlEtsiValidationReport == null) {
-			xmlEtsiValidationReport = ValidationReportFacade.newFacade().marshall(getEtsiValidationReportJaxb(), validateXml);
+	public String getXmlValidationReport() {
+		try {
+			if (xmlEtsiValidationReport == null) {
+				xmlEtsiValidationReport = ValidationReportFacade.newFacade().marshall(getEtsiValidationReportJaxb(), validateXml);
+			}
+			return xmlEtsiValidationReport;
+		} catch (JAXBException | IOException | SAXException e) {
+			throw new DSSReportException("An error occurred during marshalling of JAXB Etsi Validation Report", e);
 		}
-		return xmlEtsiValidationReport;
 	}
 
 	@Override
-	public void print() throws JAXBException, IOException, SAXException {
+	public void print() {
 		System.out.println("----------------Diagnostic data-----------------");
 		System.out.println(getXmlDiagnosticData());
 		System.out.println("----------------Validation report---------------");

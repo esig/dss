@@ -30,6 +30,8 @@ public enum TimestampedObjectType {
 
 	REVOCATION,
 
-	TIMESTAMP;
+	TIMESTAMP,
+
+	ORPHAN;
 
 }

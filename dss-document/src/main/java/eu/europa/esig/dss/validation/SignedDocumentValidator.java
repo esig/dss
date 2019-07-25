@@ -44,8 +44,8 @@ import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
-import eu.europa.esig.dss.validation.executor.CustomProcessExecutor;
-import eu.europa.esig.dss.validation.executor.ProcessExecutor;
+import eu.europa.esig.dss.validation.executor.DefaultSignatureProcessExecutor;
+import eu.europa.esig.dss.validation.executor.SignatureProcessExecutor;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.x509.CertificatePool;
@@ -61,7 +61,7 @@ import eu.europa.esig.dss.x509.revocation.ocsp.ListOCSPSource;
  * SignatureScopeFinder as defined by
  * eu.europa.esig.dss.validation.scope.SignatureScopeFinderFactory
  */
-public abstract class SignedDocumentValidator implements DocumentValidator {
+public abstract class SignedDocumentValidator implements DocumentValidator, ProcessExecutorProvider<SignatureProcessExecutor> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SignedDocumentValidator.class);
 
@@ -70,9 +70,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * This variable can hold a specific {@code ProcessExecutor}
+	 * This variable can hold a specific {@code SignatureProcessExecutor}
 	 */
-	protected ProcessExecutor processExecutor = null;
+	protected SignatureProcessExecutor processExecutor = null;
 
 	/**
 	 * This is the pool of certificates used in the validation process. The
@@ -118,6 +118,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	// Default configuration with the highest level
 	private ValidationLevel validationLevel = ValidationLevel.ARCHIVAL_DATA;
+	
+	// Produces the ETSI Validation Report by default
+	private boolean enableEtsiValidationReport = true;
 
 	protected SignedDocumentValidator(SignatureScopeFinder signatureScopeFinder) {
 		this.signatureScopeFinder = signatureScopeFinder;
@@ -194,13 +197,14 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		this.manifestFiles = manifestFiles;
 	}
 
-	/**
-	 * This method allows to specify the validation level (Basic / Timestamp /
-	 * Long Term / Archival). By default, the selected validation is ARCHIVAL
-	 */
 	@Override
 	public void setValidationLevel(ValidationLevel validationLevel) {
 		this.validationLevel = validationLevel;
+	}
+	
+	@Override
+	public void setEnableEtsiValidationReport(boolean enableEtsiValidationReport) {
+		this.enableEtsiValidationReport = enableEtsiValidationReport;
 	}
 
 	@Override
@@ -366,10 +370,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	protected Reports processValidationPolicy(XmlDiagnosticData diagnosticData, ValidationPolicy validationPolicy) {
-		final ProcessExecutor<Reports> executor = provideProcessExecutorInstance();
+		final SignatureProcessExecutor executor = provideProcessExecutorInstance();
 		executor.setValidationPolicy(validationPolicy);
 		executor.setValidationLevel(validationLevel);
 		executor.setDiagnosticData(diagnosticData);
+		executor.setEnableEtsiValidationReport(enableEtsiValidationReport);
 		final Reports reports = executor.execute();
 		return reports;
 	}
@@ -387,7 +392,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	@Override
-	public void setProcessExecutor(final ProcessExecutor processExecutor) {
+	public void setProcessExecutor(final SignatureProcessExecutor processExecutor) {
 		this.processExecutor = processExecutor;
 	}
 
@@ -395,11 +400,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * This method returns the process executor. If the instance of this class
 	 * is not yet instantiated then the new instance is created.
 	 *
-	 * @return {@code ProcessExecutor}
+	 * @return {@code SignatureProcessExecutor}
 	 */
-	public ProcessExecutor<Reports> provideProcessExecutorInstance() {
+	public SignatureProcessExecutor provideProcessExecutorInstance() {
 		if (processExecutor == null) {
-			processExecutor = new CustomProcessExecutor();
+			processExecutor = new DefaultSignatureProcessExecutor();
 		}
 		return processExecutor;
 	}

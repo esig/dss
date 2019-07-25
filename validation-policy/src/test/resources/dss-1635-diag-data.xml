@@ -229,7 +229,7 @@
             <OrganizationalUnit>0002 43912916400026</OrganizationalUnit>
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints>
-                <Url>http://crl.universign.eu/tsa_root.crl</Url>
+                <crlUrl>http://crl.universign.eu/tsa_root.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
             <Sources>
@@ -243,7 +243,7 @@
                 <KeyUsage>digitalSignature</KeyUsage>
             </KeyUsageBits>
             <ExtendedKeyUsages>
-                <oid Description="timeStamping">1.3.6.1.5.5.7.3.8</oid>
+                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
             </ExtendedKeyUsages>
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
@@ -270,31 +270,27 @@
                     <TSPRegistrationIdentifier>VATFR-46439129164</TSPRegistrationIdentifier>
                     <CountryCode>FR</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A">
                             <ServiceName>Universign Time Stamping</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2019-04-03T00:00:00</StartDate>
                         </TrustedService>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A">
                             <ServiceName>Universign Time Stamping</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-12-01T01:00:00</StartDate>
                             <EndDate>2019-04-03T00:00:00</EndDate>
                         </TrustedService>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A">
                             <ServiceName>Universign Time Stamping</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <EndDate>2016-12-01T01:00:00</EndDate>
                         </TrustedService>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A">
                             <ServiceName>Universign Time Stamping</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
@@ -361,31 +357,27 @@
                     <TSPRegistrationIdentifier>VATFR-46439129164</TSPRegistrationIdentifier>
                     <CountryCode>FR</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A">
                             <ServiceName>Universign Time Stamping</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2019-04-03T00:00:00</StartDate>
                         </TrustedService>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A">
                             <ServiceName>Universign Time Stamping</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-12-01T01:00:00</StartDate>
                             <EndDate>2019-04-03T00:00:00</EndDate>
                         </TrustedService>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A">
                             <ServiceName>Universign Time Stamping</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <EndDate>2016-12-01T01:00:00</EndDate>
                         </TrustedService>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A">
                             <ServiceName>Universign Time Stamping</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
@@ -416,13 +408,13 @@
             <Surname>SANDIN AMOR</Surname>
             <Email>ana-maria.sandin-amor@publications.europa.eu</Email>
             <AuthorityInformationAccessUrls>
-                <Url>http://ca.luxtrust.lu/LTGQCA.crt</Url>
+                <aiaUrl>http://ca.luxtrust.lu/LTGQCA.crt</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints>
-                <Url>http://crl.luxtrust.lu/LTGQCA.crl</Url>
+                <crlUrl>http://crl.luxtrust.lu/LTGQCA.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls>
-                <Url>http://ocsp.luxtrust.lu</Url>
+                <ocspServerUrl>http://ocsp.luxtrust.lu</ocspServerUrl>
             </OCSPAccessUrls>
             <Sources>
                 <Source>SIGNATURE</Source>
@@ -455,8 +447,8 @@
                 <certificatePolicy Description="qcp-public-with-sscd">0.4.0.1456.1.1</certificatePolicy>
             </CertificatePolicies>
             <QCStatementIds>
-                <oid Description="qc-compliance">0.4.0.1862.1.1</oid>
-                <oid Description="qc-sscd">0.4.0.1862.1.4</oid>
+                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
+                <qcStatementOid Description="qc-sscd">0.4.0.1862.1.4</qcStatementOid>
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
@@ -465,19 +457,17 @@
                     <TSPRegistrationIdentifier>VATLU-20976985</TSPRegistrationIdentifier>
                     <CountryCode>LU</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548">
                             <ServiceName>LuxTrust Global Qualified Certification Authority</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
                             <StartDate>2018-08-31T01:00:00</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548">
                             <ServiceName>LuxTrust Global Qualified Certification Authority</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -485,11 +475,10 @@
                             <EndDate>2018-08-31T01:00:00</EndDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548">
                             <ServiceName>LuxTrust Global Qualified Certification Authority</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
@@ -498,8 +487,7 @@
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris/>
                         </TrustedService>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548">
                             <ServiceName>LuxTrust Global Qualified Certification Authority</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accreditationceased</Status>
@@ -508,8 +496,7 @@
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris/>
                         </TrustedService>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548">
                             <ServiceName>LuxTrust Global Qualified Certification Authority</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
@@ -581,31 +568,27 @@
                     <TSPRegistrationIdentifier>VATFR-46439129164</TSPRegistrationIdentifier>
                     <CountryCode>FR</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                             <ServiceName>Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2019-04-03T00:00:00</StartDate>
                         </TrustedService>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                             <ServiceName>Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-12-01T01:00:00</StartDate>
                             <EndDate>2019-04-03T00:00:00</EndDate>
                         </TrustedService>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                             <ServiceName>Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <EndDate>2016-12-01T01:00:00</EndDate>
                         </TrustedService>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                             <ServiceName>Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
@@ -632,7 +615,7 @@
             <OrganizationName>LuxTrust S.A.</OrganizationName>
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints>
-                <Url>http://crl.luxtrust.lu/LTGRCA.crl</Url>
+                <crlUrl>http://crl.luxtrust.lu/LTGRCA.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
             <Sources>
@@ -673,53 +656,47 @@
                     <TSPRegistrationIdentifier>VATLU-20976985</TSPRegistrationIdentifier>
                     <CountryCode>LU</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548">
                             <ServiceName>LuxTrust Global Qualified Certification Authority</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
                             <StartDate>2018-08-31T01:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548">
                             <ServiceName>LuxTrust Global Qualified Certification Authority</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <EndDate>2018-08-31T01:00:00</EndDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548">
                             <ServiceName>LuxTrust Global Qualified Certification Authority</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
                             <StartDate>2013-10-13T00:00:00</StartDate>
                             <EndDate>2016-06-30T22:00:00</EndDate>
                         </TrustedService>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548">
                             <ServiceName>LuxTrust Global Qualified Certification Authority</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accreditationceased</Status>
                             <StartDate>2013-10-12T23:59:59</StartDate>
                             <EndDate>2013-10-13T00:00:00</EndDate>
                         </TrustedService>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548">
                             <ServiceName>LuxTrust Global Qualified Certification Authority</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
                             <StartDate>2012-11-30T00:00:00</StartDate>
                             <EndDate>2013-10-12T23:59:59</EndDate>
                         </TrustedService>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548">
                             <ServiceName>LuxTrust Global Qualified Certification Authority</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
@@ -747,7 +724,7 @@
             <OrganizationalUnit>pki entity</OrganizationalUnit>
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints>
-                <Url>http://crl.luxtrust.lu/LTGQCA.crl</Url>
+                <crlUrl>http://crl.luxtrust.lu/LTGQCA.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
             <Sources>
@@ -762,7 +739,7 @@
                 <KeyUsage>digitalSignature</KeyUsage>
             </KeyUsageBits>
             <ExtendedKeyUsages>
-                <oid Description="ocspSigning">1.3.6.1.5.5.7.3.9</oid>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
             </ExtendedKeyUsages>
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
@@ -790,45 +767,40 @@
                     <TSPRegistrationIdentifier>VATLU-20976985</TSPRegistrationIdentifier>
                     <CountryCode>LU</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548">
                             <ServiceName>LuxTrust Global Qualified Certification Authority</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
                             <StartDate>2018-08-31T01:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548">
                             <ServiceName>LuxTrust Global Qualified Certification Authority</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <EndDate>2018-08-31T01:00:00</EndDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548">
                             <ServiceName>LuxTrust Global Qualified Certification Authority</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
                             <StartDate>2013-10-13T00:00:00</StartDate>
                             <EndDate>2016-06-30T22:00:00</EndDate>
                         </TrustedService>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548">
                             <ServiceName>LuxTrust Global Qualified Certification Authority</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accreditationceased</Status>
                             <StartDate>2013-10-12T23:59:59</StartDate>
                             <EndDate>2013-10-13T00:00:00</EndDate>
                         </TrustedService>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548">
                             <ServiceName>LuxTrust Global Qualified Certification Authority</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
@@ -904,7 +876,7 @@
             <OrganizationalUnit>0002 43912916400026</OrganizationalUnit>
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints>
-                <Url>http://crl.universign.eu/tsa_root.crl</Url>
+                <crlUrl>http://crl.universign.eu/tsa_root.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
             <Sources>
@@ -919,7 +891,7 @@
                 <KeyUsage>digitalSignature</KeyUsage>
             </KeyUsageBits>
             <ExtendedKeyUsages>
-                <oid Description="timeStamping">1.3.6.1.5.5.7.3.8</oid>
+                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
             </ExtendedKeyUsages>
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
@@ -946,31 +918,27 @@
                     <TSPRegistrationIdentifier>VATFR-46439129164</TSPRegistrationIdentifier>
                     <CountryCode>FR</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A">
                             <ServiceName>Universign Time Stamping</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2019-04-03T00:00:00</StartDate>
                         </TrustedService>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A">
                             <ServiceName>Universign Time Stamping</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-12-01T01:00:00</StartDate>
                             <EndDate>2019-04-03T00:00:00</EndDate>
                         </TrustedService>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A">
                             <ServiceName>Universign Time Stamping</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <EndDate>2016-12-01T01:00:00</EndDate>
                         </TrustedService>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A">
                             <ServiceName>Universign Time Stamping</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
@@ -1002,7 +970,7 @@
             <OrganizationalUnit>0002 43912916400026</OrganizationalUnit>
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints>
-                <Url>http://crl.universign.eu/universign_tsa_root_2015.crl</Url>
+                <crlUrl>http://crl.universign.eu/universign_tsa_root_2015.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
             <Sources>
@@ -1016,7 +984,7 @@
                 <KeyUsage>digitalSignature</KeyUsage>
             </KeyUsageBits>
             <ExtendedKeyUsages>
-                <oid Description="timeStamping">1.3.6.1.5.5.7.3.8</oid>
+                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
             </ExtendedKeyUsages>
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
@@ -1043,15 +1011,13 @@
                     <TSPRegistrationIdentifier>VATFR-46439129164</TSPRegistrationIdentifier>
                     <CountryCode>FR</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                             <ServiceName>Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2019-04-03T00:00:00</StartDate>
                         </TrustedService>
-                        <TrustedService>
-                            <ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                             <ServiceName>Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -1196,31 +1162,31 @@
                 <ChainItem Certificate="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A"/>
             </CertificateChain>
             <TimestampedObjects>
-                <TimestampedSignerData Token="D-8AE74C55A08E465AC528438682973F010EE823E5B958698EBEC94273C5D80A8E"/>
-                <TimestampedSignerData Token="D-43BB2D87788B83E6386DDE787EC2D0646C75D3D61C71A2ED94552EA20BB7461B"/>
-                <TimestampedSignerData Token="D-C236F3D760A92992A61C7A50682A1DE814B4BF30718FADD195C6DF6FD25B8D67"/>
-                <TimestampedSignerData Token="D-AFC7F6645411A6C55B530C6B5E7F921DEE9050A6C34642440A2C3B9FB79E397B"/>
-                <TimestampedSignerData Token="D-7640E54A86AE764156F09AFF44340E8CA9FBC9C11ED7EF90FBE193628C632637"/>
-                <TimestampedSignerData Token="D-711EAA5C70FF6CA10DAA4B6E19435F0CE100360DC8C906BA240C0D915D9FE7D8"/>
-                <TimestampedSignerData Token="D-C0244DAA6ABE36A130111DF8CAFB23CF026392AE12E1206BCD90423AC8BD9711"/>
-                <TimestampedSignerData Token="D-1916CA045EEC7C975426F242A7DBB65224D8A8E5D089CCEE91AF878F896E1B95"/>
-                <TimestampedSignerData Token="D-F286BB12806AD1AAF16EC18934FDB4592CECDC10DE5E1C99DCC1C4D395A7669C"/>
-                <TimestampedSignerData Token="D-711C2C1C03A44E723E0D8ACF3C25E41443AF89F609EEE60029BC92228B584B32"/>
-                <TimestampedSignerData Token="D-4CE3FEB339AC8CCBA769F31C0E9291E732474F976C8C6DAF94104FDAA04EA65D"/>
-                <TimestampedSignerData Token="D-15A4559D6B65A6888EB8219671CBF4F5C986DD29908B6A8DA4B2E8766BBFD143"/>
-                <TimestampedSignerData Token="D-718A436EABC5B34C4ACD9124FF40DFC9A05306FC411804B0BCD945BD35072102"/>
-                <TimestampedSignerData Token="D-7F3197BEB05EDD927EA572034C87A9CC1216D2CB588472B1687A88DC3B370C43"/>
-                <TimestampedSignerData Token="D-729F0598815F5FA5ADE5D1EB1341127110DEC77C0BC79F142EA38D50E0C126E0"/>
-                <TimestampedSignerData Token="D-C3714132CC0F315107D7CC5FE0FC4530B2B2A4FF07D5DAADB0DE93EF8C96E51A"/>
-                <TimestampedSignerData Token="D-196992F7F0B87F7B39B4E0B2C1B03B256BA1EA1C15D36A202EBE0A5233F3CD2E"/>
-                <TimestampedSignerData Token="D-5FEC18B9F83922DAF7AB9621A25D80FDFC12227DE53D1096204630E525117F57"/>
-                <TimestampedSignerData Token="D-F1D7C79449B8D0CCF80D37B84BC760C3B7C88BDDB051ACD42E021B09E6E8D487"/>
-                <TimestampedSignerData Token="D-43FE6D627189FD6FD11CDFAEB376F99CBCE1EF0AB1257DD184A382A25AF512EE"/>
-                <TimestampedSignerData Token="D-C2384DA30D40C598224D19C8E03DED80EC446BA2686428F6821F4CB56AC5B7D3"/>
-                <TimestampedSignerData Token="D-F9EE18145D59B51BC2F74D29EC83E57265EC886DBDFF60460322018DE235CD64"/>
-                <TimestampedSignerData Token="D-EA93328A218583B4DEA6A5FAD66234354C1409311A1F12C7E4A665196E9A3E2A"/>
-                <TimestampedSignature Token="S-FD250CA7E7B75083F41CE8FF0566801336800A73E8C8FA51FB2E538F339C9C61"/>
-                <TimestampedCertificate Token="C-FB84A075A10EC93E4327B5FF9C94B9F16E0C9BD60070B3C68A32E8D282C25506"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-8AE74C55A08E465AC528438682973F010EE823E5B958698EBEC94273C5D80A8E"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-43BB2D87788B83E6386DDE787EC2D0646C75D3D61C71A2ED94552EA20BB7461B"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-C236F3D760A92992A61C7A50682A1DE814B4BF30718FADD195C6DF6FD25B8D67"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-AFC7F6645411A6C55B530C6B5E7F921DEE9050A6C34642440A2C3B9FB79E397B"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-7640E54A86AE764156F09AFF44340E8CA9FBC9C11ED7EF90FBE193628C632637"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-711EAA5C70FF6CA10DAA4B6E19435F0CE100360DC8C906BA240C0D915D9FE7D8"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-C0244DAA6ABE36A130111DF8CAFB23CF026392AE12E1206BCD90423AC8BD9711"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-1916CA045EEC7C975426F242A7DBB65224D8A8E5D089CCEE91AF878F896E1B95"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-F286BB12806AD1AAF16EC18934FDB4592CECDC10DE5E1C99DCC1C4D395A7669C"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-711C2C1C03A44E723E0D8ACF3C25E41443AF89F609EEE60029BC92228B584B32"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-4CE3FEB339AC8CCBA769F31C0E9291E732474F976C8C6DAF94104FDAA04EA65D"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-15A4559D6B65A6888EB8219671CBF4F5C986DD29908B6A8DA4B2E8766BBFD143"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-718A436EABC5B34C4ACD9124FF40DFC9A05306FC411804B0BCD945BD35072102"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-7F3197BEB05EDD927EA572034C87A9CC1216D2CB588472B1687A88DC3B370C43"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-729F0598815F5FA5ADE5D1EB1341127110DEC77C0BC79F142EA38D50E0C126E0"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-C3714132CC0F315107D7CC5FE0FC4530B2B2A4FF07D5DAADB0DE93EF8C96E51A"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-196992F7F0B87F7B39B4E0B2C1B03B256BA1EA1C15D36A202EBE0A5233F3CD2E"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-5FEC18B9F83922DAF7AB9621A25D80FDFC12227DE53D1096204630E525117F57"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-F1D7C79449B8D0CCF80D37B84BC760C3B7C88BDDB051ACD42E021B09E6E8D487"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-43FE6D627189FD6FD11CDFAEB376F99CBCE1EF0AB1257DD184A382A25AF512EE"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-C2384DA30D40C598224D19C8E03DED80EC446BA2686428F6821F4CB56AC5B7D3"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-F9EE18145D59B51BC2F74D29EC83E57265EC886DBDFF60460322018DE235CD64"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-EA93328A218583B4DEA6A5FAD66234354C1409311A1F12C7E4A665196E9A3E2A"/>
+                <TimestampedObject Category="SIGNATURE" Token="S-FD250CA7E7B75083F41CE8FF0566801336800A73E8C8FA51FB2E538F339C9C61"/>
+                <TimestampedObject Category="CERTIFICATE" Token="C-FB84A075A10EC93E4327B5FF9C94B9F16E0C9BD60070B3C68A32E8D282C25506"/>
             </TimestampedObjects>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -1248,36 +1214,36 @@
                 <ChainItem Certificate="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A"/>
             </CertificateChain>
             <TimestampedObjects>
-                <TimestampedTimestamp Token="T-DC28990F58F563B39B12796B809101F99D2DD9CD400F4D36771130ED37D8C95C"/>
-                <TimestampedSignerData Token="D-8AE74C55A08E465AC528438682973F010EE823E5B958698EBEC94273C5D80A8E"/>
-                <TimestampedSignerData Token="D-43BB2D87788B83E6386DDE787EC2D0646C75D3D61C71A2ED94552EA20BB7461B"/>
-                <TimestampedSignerData Token="D-C236F3D760A92992A61C7A50682A1DE814B4BF30718FADD195C6DF6FD25B8D67"/>
-                <TimestampedSignerData Token="D-AFC7F6645411A6C55B530C6B5E7F921DEE9050A6C34642440A2C3B9FB79E397B"/>
-                <TimestampedSignerData Token="D-7640E54A86AE764156F09AFF44340E8CA9FBC9C11ED7EF90FBE193628C632637"/>
-                <TimestampedSignerData Token="D-711EAA5C70FF6CA10DAA4B6E19435F0CE100360DC8C906BA240C0D915D9FE7D8"/>
-                <TimestampedSignerData Token="D-C0244DAA6ABE36A130111DF8CAFB23CF026392AE12E1206BCD90423AC8BD9711"/>
-                <TimestampedSignerData Token="D-1916CA045EEC7C975426F242A7DBB65224D8A8E5D089CCEE91AF878F896E1B95"/>
-                <TimestampedSignerData Token="D-F286BB12806AD1AAF16EC18934FDB4592CECDC10DE5E1C99DCC1C4D395A7669C"/>
-                <TimestampedSignerData Token="D-711C2C1C03A44E723E0D8ACF3C25E41443AF89F609EEE60029BC92228B584B32"/>
-                <TimestampedSignerData Token="D-4CE3FEB339AC8CCBA769F31C0E9291E732474F976C8C6DAF94104FDAA04EA65D"/>
-                <TimestampedSignerData Token="D-15A4559D6B65A6888EB8219671CBF4F5C986DD29908B6A8DA4B2E8766BBFD143"/>
-                <TimestampedSignerData Token="D-718A436EABC5B34C4ACD9124FF40DFC9A05306FC411804B0BCD945BD35072102"/>
-                <TimestampedSignerData Token="D-7F3197BEB05EDD927EA572034C87A9CC1216D2CB588472B1687A88DC3B370C43"/>
-                <TimestampedSignerData Token="D-729F0598815F5FA5ADE5D1EB1341127110DEC77C0BC79F142EA38D50E0C126E0"/>
-                <TimestampedSignerData Token="D-C3714132CC0F315107D7CC5FE0FC4530B2B2A4FF07D5DAADB0DE93EF8C96E51A"/>
-                <TimestampedSignerData Token="D-196992F7F0B87F7B39B4E0B2C1B03B256BA1EA1C15D36A202EBE0A5233F3CD2E"/>
-                <TimestampedSignerData Token="D-5FEC18B9F83922DAF7AB9621A25D80FDFC12227DE53D1096204630E525117F57"/>
-                <TimestampedSignerData Token="D-F1D7C79449B8D0CCF80D37B84BC760C3B7C88BDDB051ACD42E021B09E6E8D487"/>
-                <TimestampedSignerData Token="D-43FE6D627189FD6FD11CDFAEB376F99CBCE1EF0AB1257DD184A382A25AF512EE"/>
-                <TimestampedSignerData Token="D-C2384DA30D40C598224D19C8E03DED80EC446BA2686428F6821F4CB56AC5B7D3"/>
-                <TimestampedSignerData Token="D-F9EE18145D59B51BC2F74D29EC83E57265EC886DBDFF60460322018DE235CD64"/>
-                <TimestampedSignerData Token="D-EA93328A218583B4DEA6A5FAD66234354C1409311A1F12C7E4A665196E9A3E2A"/>
-                <TimestampedSignature Token="S-FD250CA7E7B75083F41CE8FF0566801336800A73E8C8FA51FB2E538F339C9C61"/>
-                <TimestampedCertificate Token="C-FB84A075A10EC93E4327B5FF9C94B9F16E0C9BD60070B3C68A32E8D282C25506"/>
-                <TimestampedCertificate Token="C-81AF749F424A8DF91012FF63D44357A75384FF64BB1C2ED59D0A658EE3C8C755"/>
-                <TimestampedCertificate Token="C-F33B97C90BB9470AE49E108242C5C900D2DB2F0AC47727259C467F7E6B71C35D"/>
-                <TimestampedRevocationData Token="R-CE06D1168CFC7741D96BCC8E08F8F32E01DFDD90BE5E63E0CB51B7D05A8E422F"/>
-                <TimestampedRevocationData Token="R-7D8C7AB2A7A62EC0B259F2C46468D5E9CCD4C14A741E9FECE5C24E292560BC35"/>
+                <TimestampedObject Category="TIMESTAMP" Token="T-DC28990F58F563B39B12796B809101F99D2DD9CD400F4D36771130ED37D8C95C"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-8AE74C55A08E465AC528438682973F010EE823E5B958698EBEC94273C5D80A8E"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-43BB2D87788B83E6386DDE787EC2D0646C75D3D61C71A2ED94552EA20BB7461B"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-C236F3D760A92992A61C7A50682A1DE814B4BF30718FADD195C6DF6FD25B8D67"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-AFC7F6645411A6C55B530C6B5E7F921DEE9050A6C34642440A2C3B9FB79E397B"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-7640E54A86AE764156F09AFF44340E8CA9FBC9C11ED7EF90FBE193628C632637"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-711EAA5C70FF6CA10DAA4B6E19435F0CE100360DC8C906BA240C0D915D9FE7D8"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-C0244DAA6ABE36A130111DF8CAFB23CF026392AE12E1206BCD90423AC8BD9711"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-1916CA045EEC7C975426F242A7DBB65224D8A8E5D089CCEE91AF878F896E1B95"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-F286BB12806AD1AAF16EC18934FDB4592CECDC10DE5E1C99DCC1C4D395A7669C"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-711C2C1C03A44E723E0D8ACF3C25E41443AF89F609EEE60029BC92228B584B32"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-4CE3FEB339AC8CCBA769F31C0E9291E732474F976C8C6DAF94104FDAA04EA65D"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-15A4559D6B65A6888EB8219671CBF4F5C986DD29908B6A8DA4B2E8766BBFD143"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-718A436EABC5B34C4ACD9124FF40DFC9A05306FC411804B0BCD945BD35072102"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-7F3197BEB05EDD927EA572034C87A9CC1216D2CB588472B1687A88DC3B370C43"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-729F0598815F5FA5ADE5D1EB1341127110DEC77C0BC79F142EA38D50E0C126E0"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-C3714132CC0F315107D7CC5FE0FC4530B2B2A4FF07D5DAADB0DE93EF8C96E51A"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-196992F7F0B87F7B39B4E0B2C1B03B256BA1EA1C15D36A202EBE0A5233F3CD2E"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-5FEC18B9F83922DAF7AB9621A25D80FDFC12227DE53D1096204630E525117F57"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-F1D7C79449B8D0CCF80D37B84BC760C3B7C88BDDB051ACD42E021B09E6E8D487"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-43FE6D627189FD6FD11CDFAEB376F99CBCE1EF0AB1257DD184A382A25AF512EE"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-C2384DA30D40C598224D19C8E03DED80EC446BA2686428F6821F4CB56AC5B7D3"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-F9EE18145D59B51BC2F74D29EC83E57265EC886DBDFF60460322018DE235CD64"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-EA93328A218583B4DEA6A5FAD66234354C1409311A1F12C7E4A665196E9A3E2A"/>
+                <TimestampedObject Category="SIGNATURE" Token="S-FD250CA7E7B75083F41CE8FF0566801336800A73E8C8FA51FB2E538F339C9C61"/>
+                <TimestampedObject Category="CERTIFICATE" Token="C-FB84A075A10EC93E4327B5FF9C94B9F16E0C9BD60070B3C68A32E8D282C25506"/>
+                <TimestampedObject Category="CERTIFICATE" Token="C-81AF749F424A8DF91012FF63D44357A75384FF64BB1C2ED59D0A658EE3C8C755"/>
+                <TimestampedObject Category="CERTIFICATE" Token="C-F33B97C90BB9470AE49E108242C5C900D2DB2F0AC47727259C467F7E6B71C35D"/>
+                <TimestampedObject Category="REVOCATION" Token="R-CE06D1168CFC7741D96BCC8E08F8F32E01DFDD90BE5E63E0CB51B7D05A8E422F"/>
+                <TimestampedObject Category="REVOCATION" Token="R-7D8C7AB2A7A62EC0B259F2C46468D5E9CCD4C14A741E9FECE5C24E292560BC35"/>
             </TimestampedObjects>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -1305,39 +1271,39 @@
                 <ChainItem Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
             </CertificateChain>
             <TimestampedObjects>
-                <TimestampedTimestamp Token="T-DC28990F58F563B39B12796B809101F99D2DD9CD400F4D36771130ED37D8C95C"/>
-                <TimestampedSignerData Token="D-8AE74C55A08E465AC528438682973F010EE823E5B958698EBEC94273C5D80A8E"/>
-                <TimestampedSignerData Token="D-43BB2D87788B83E6386DDE787EC2D0646C75D3D61C71A2ED94552EA20BB7461B"/>
-                <TimestampedSignerData Token="D-C236F3D760A92992A61C7A50682A1DE814B4BF30718FADD195C6DF6FD25B8D67"/>
-                <TimestampedSignerData Token="D-AFC7F6645411A6C55B530C6B5E7F921DEE9050A6C34642440A2C3B9FB79E397B"/>
-                <TimestampedSignerData Token="D-7640E54A86AE764156F09AFF44340E8CA9FBC9C11ED7EF90FBE193628C632637"/>
-                <TimestampedSignerData Token="D-711EAA5C70FF6CA10DAA4B6E19435F0CE100360DC8C906BA240C0D915D9FE7D8"/>
-                <TimestampedSignerData Token="D-C0244DAA6ABE36A130111DF8CAFB23CF026392AE12E1206BCD90423AC8BD9711"/>
-                <TimestampedSignerData Token="D-1916CA045EEC7C975426F242A7DBB65224D8A8E5D089CCEE91AF878F896E1B95"/>
-                <TimestampedSignerData Token="D-F286BB12806AD1AAF16EC18934FDB4592CECDC10DE5E1C99DCC1C4D395A7669C"/>
-                <TimestampedSignerData Token="D-711C2C1C03A44E723E0D8ACF3C25E41443AF89F609EEE60029BC92228B584B32"/>
-                <TimestampedSignerData Token="D-4CE3FEB339AC8CCBA769F31C0E9291E732474F976C8C6DAF94104FDAA04EA65D"/>
-                <TimestampedSignerData Token="D-15A4559D6B65A6888EB8219671CBF4F5C986DD29908B6A8DA4B2E8766BBFD143"/>
-                <TimestampedSignerData Token="D-718A436EABC5B34C4ACD9124FF40DFC9A05306FC411804B0BCD945BD35072102"/>
-                <TimestampedSignerData Token="D-7F3197BEB05EDD927EA572034C87A9CC1216D2CB588472B1687A88DC3B370C43"/>
-                <TimestampedSignerData Token="D-729F0598815F5FA5ADE5D1EB1341127110DEC77C0BC79F142EA38D50E0C126E0"/>
-                <TimestampedSignerData Token="D-C3714132CC0F315107D7CC5FE0FC4530B2B2A4FF07D5DAADB0DE93EF8C96E51A"/>
-                <TimestampedSignerData Token="D-196992F7F0B87F7B39B4E0B2C1B03B256BA1EA1C15D36A202EBE0A5233F3CD2E"/>
-                <TimestampedSignerData Token="D-5FEC18B9F83922DAF7AB9621A25D80FDFC12227DE53D1096204630E525117F57"/>
-                <TimestampedSignerData Token="D-F1D7C79449B8D0CCF80D37B84BC760C3B7C88BDDB051ACD42E021B09E6E8D487"/>
-                <TimestampedSignerData Token="D-43FE6D627189FD6FD11CDFAEB376F99CBCE1EF0AB1257DD184A382A25AF512EE"/>
-                <TimestampedSignerData Token="D-C2384DA30D40C598224D19C8E03DED80EC446BA2686428F6821F4CB56AC5B7D3"/>
-                <TimestampedSignerData Token="D-F9EE18145D59B51BC2F74D29EC83E57265EC886DBDFF60460322018DE235CD64"/>
-                <TimestampedSignerData Token="D-EA93328A218583B4DEA6A5FAD66234354C1409311A1F12C7E4A665196E9A3E2A"/>
-                <TimestampedSignature Token="S-FD250CA7E7B75083F41CE8FF0566801336800A73E8C8FA51FB2E538F339C9C61"/>
-                <TimestampedCertificate Token="C-FB84A075A10EC93E4327B5FF9C94B9F16E0C9BD60070B3C68A32E8D282C25506"/>
-                <TimestampedCertificate Token="C-81AF749F424A8DF91012FF63D44357A75384FF64BB1C2ED59D0A658EE3C8C755"/>
-                <TimestampedTimestamp Token="T-6F8D0A2ABE179D04110320814551A68A219DDDAEAC214B3E63FC0BE0C90E33D1"/>
-                <TimestampedCertificate Token="C-F33B97C90BB9470AE49E108242C5C900D2DB2F0AC47727259C467F7E6B71C35D"/>
-                <TimestampedRevocationData Token="R-CE06D1168CFC7741D96BCC8E08F8F32E01DFDD90BE5E63E0CB51B7D05A8E422F"/>
-                <TimestampedRevocationData Token="R-7D8C7AB2A7A62EC0B259F2C46468D5E9CCD4C14A741E9FECE5C24E292560BC35"/>
-                <TimestampedCertificate Token="C-CFF2E3B95D7EBF7D89B1D586102D09632CE5E39BFA31115C3C9577461DD856AD"/>
-                <TimestampedRevocationData Token="R-4805687433DCD55E012F95A2C6E1CEDA7EE8AF63B0EC7863328FB0D23388BEF8"/>
+                <TimestampedObject Category="TIMESTAMP" Token="T-DC28990F58F563B39B12796B809101F99D2DD9CD400F4D36771130ED37D8C95C"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-8AE74C55A08E465AC528438682973F010EE823E5B958698EBEC94273C5D80A8E"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-43BB2D87788B83E6386DDE787EC2D0646C75D3D61C71A2ED94552EA20BB7461B"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-C236F3D760A92992A61C7A50682A1DE814B4BF30718FADD195C6DF6FD25B8D67"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-AFC7F6645411A6C55B530C6B5E7F921DEE9050A6C34642440A2C3B9FB79E397B"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-7640E54A86AE764156F09AFF44340E8CA9FBC9C11ED7EF90FBE193628C632637"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-711EAA5C70FF6CA10DAA4B6E19435F0CE100360DC8C906BA240C0D915D9FE7D8"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-C0244DAA6ABE36A130111DF8CAFB23CF026392AE12E1206BCD90423AC8BD9711"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-1916CA045EEC7C975426F242A7DBB65224D8A8E5D089CCEE91AF878F896E1B95"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-F286BB12806AD1AAF16EC18934FDB4592CECDC10DE5E1C99DCC1C4D395A7669C"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-711C2C1C03A44E723E0D8ACF3C25E41443AF89F609EEE60029BC92228B584B32"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-4CE3FEB339AC8CCBA769F31C0E9291E732474F976C8C6DAF94104FDAA04EA65D"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-15A4559D6B65A6888EB8219671CBF4F5C986DD29908B6A8DA4B2E8766BBFD143"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-718A436EABC5B34C4ACD9124FF40DFC9A05306FC411804B0BCD945BD35072102"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-7F3197BEB05EDD927EA572034C87A9CC1216D2CB588472B1687A88DC3B370C43"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-729F0598815F5FA5ADE5D1EB1341127110DEC77C0BC79F142EA38D50E0C126E0"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-C3714132CC0F315107D7CC5FE0FC4530B2B2A4FF07D5DAADB0DE93EF8C96E51A"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-196992F7F0B87F7B39B4E0B2C1B03B256BA1EA1C15D36A202EBE0A5233F3CD2E"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-5FEC18B9F83922DAF7AB9621A25D80FDFC12227DE53D1096204630E525117F57"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-F1D7C79449B8D0CCF80D37B84BC760C3B7C88BDDB051ACD42E021B09E6E8D487"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-43FE6D627189FD6FD11CDFAEB376F99CBCE1EF0AB1257DD184A382A25AF512EE"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-C2384DA30D40C598224D19C8E03DED80EC446BA2686428F6821F4CB56AC5B7D3"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-F9EE18145D59B51BC2F74D29EC83E57265EC886DBDFF60460322018DE235CD64"/>
+                <TimestampedObject Category="SIGNED_DATA" Token="D-EA93328A218583B4DEA6A5FAD66234354C1409311A1F12C7E4A665196E9A3E2A"/>
+                <TimestampedObject Category="SIGNATURE" Token="S-FD250CA7E7B75083F41CE8FF0566801336800A73E8C8FA51FB2E538F339C9C61"/>
+                <TimestampedObject Category="CERTIFICATE" Token="C-FB84A075A10EC93E4327B5FF9C94B9F16E0C9BD60070B3C68A32E8D282C25506"/>
+                <TimestampedObject Category="CERTIFICATE" Token="C-81AF749F424A8DF91012FF63D44357A75384FF64BB1C2ED59D0A658EE3C8C755"/>
+                <TimestampedObject Category="TIMESTAMP" Token="T-6F8D0A2ABE179D04110320814551A68A219DDDAEAC214B3E63FC0BE0C90E33D1"/>
+                <TimestampedObject Category="CERTIFICATE" Token="C-F33B97C90BB9470AE49E108242C5C900D2DB2F0AC47727259C467F7E6B71C35D"/>
+                <TimestampedObject Category="REVOCATION" Token="R-CE06D1168CFC7741D96BCC8E08F8F32E01DFDD90BE5E63E0CB51B7D05A8E422F"/>
+                <TimestampedObject Category="REVOCATION" Token="R-7D8C7AB2A7A62EC0B259F2C46468D5E9CCD4C14A741E9FECE5C24E292560BC35"/>
+                <TimestampedObject Category="CERTIFICATE" Token="C-CFF2E3B95D7EBF7D89B1D586102D09632CE5E39BFA31115C3C9577461DD856AD"/>
+                <TimestampedObject Category="REVOCATION" Token="R-4805687433DCD55E012F95A2C6E1CEDA7EE8AF63B0EC7863328FB0D23388BEF8"/>
             </TimestampedObjects>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>

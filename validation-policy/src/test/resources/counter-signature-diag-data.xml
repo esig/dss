@@ -62,9 +62,8 @@
 			    <DigestValue>izibx38LZZ644ZeAQaLKaVnuPBk+LDMGbAXlFVE/1hs=</DigestValue>
 			</SignatureDigestReference>
         </Signature>
-        <Signature Id="XSIG2" CounterSignature="true">
+        <Signature Id="XSIG2" CounterSignature="true" Parent="XSIG1">
             <SignatureFilename>TEST_S1a_C1a_InTL_VALID.xml</SignatureFilename>
-            <Parent>XSIG1</Parent>
             <DateTime>2017-09-21T16:04:55</DateTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation>
@@ -128,11 +127,11 @@
             <Surname>DE F</Surname>
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints>
-                <Url>http://www.pki.difesa.it/cafirmadigitale.crl</Url>
-                <Url>ldap://ldappkiff.difesa.it:389/CN=Ministero%20della%20Difesa%20-%20CA%20di%20Firma%20Digitale,OU=S.M.D.%20-%20C.do%20C4%20Difesa,O=Ministero%20della%20Difesa,C=IT</Url>
+                <crlUrl>http://www.pki.difesa.it/cafirmadigitale.crl</crlUrl>
+                <crlUrl>ldap://ldappkiff.difesa.it:389/CN=Ministero%20della%20Difesa%20-%20CA%20di%20Firma%20Digitale,OU=S.M.D.%20-%20C.do%20C4%20Difesa,O=Ministero%20della%20Difesa,C=IT</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls>
-                <Url>http://ocsppkiff.difesa.it/</Url>
+                <ocspServerUrl>http://ocsppkiff.difesa.it/</ocspServerUrl>
             </OCSPAccessUrls>
             <Sources>
             	<Source>UNKNOWN</Source>
@@ -159,10 +158,10 @@
                 <certificatePolicy>1.3.6.1.4.1.14031.2.1.1.6</certificatePolicy>
             </CertificatePolicies>
             <QCStatementIds>
-                <oid>1.3.6.1.5.5.7.11.1</oid>
-                <oid Description="qc-compliance">0.4.0.1862.1.1</oid>
-                <oid>0.4.0.1862.1.3</oid>
-                <oid Description="qc-sscd">0.4.0.1862.1.4</oid>
+                <qcStatementOid>1.3.6.1.5.5.7.11.1</qcStatementOid>
+                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
+                <qcStatementOid>0.4.0.1862.1.3</qcStatementOid>
+                <qcStatementOid Description="qc-sscd">0.4.0.1862.1.4</qcStatementOid>
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders/>

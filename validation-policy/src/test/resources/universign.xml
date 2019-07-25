@@ -112,7 +112,7 @@
             <OrganizationalUnit>0002 43912916400026</OrganizationalUnit>
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints>
-                <Url>http://crl.universign.eu/universign_tsa_root_2015.crl</Url>
+                <crlUrl>http://crl.universign.eu/universign_tsa_root_2015.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
             <Sources>
@@ -149,38 +149,33 @@
                     <TSPName>Cryptolog International</TSPName>
                     <CountryCode>FR</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
 		                    <ServiceName>Certification Authority for Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
                             <StartDate>2016-07-01T00:00:00</StartDate>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                             <ServiceName>Certification Authority for Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
                             <StartDate>2015-04-13T22:00:00</StartDate>
                             <EndDate>2016-07-01T00:00:00</EndDate>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                             <ServiceName>Certification Authority for Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-12-01T01:00:00</StartDate>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                             <ServiceName>Certification Authority for Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
                             <StartDate>2016-07-01T00:00:00</StartDate>
                             <EndDate>2016-12-01T01:00:00</EndDate>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                             <ServiceName>Certification Authority for Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
@@ -206,10 +201,10 @@
             <CommonName>MARIE ANGE LIEGEOIS</CommonName>
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints>
-                <Url>http://crl.universign.eu/universign_ca_hardware.crl</Url>
+                <crlUrl>http://crl.universign.eu/universign_ca_hardware.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls>
-                <Url>http://scah.ocsp.universign.eu/</Url>
+                <ocspServerUrl>http://scah.ocsp.universign.eu/</ocspServerUrl>
             </OCSPAccessUrls>
             <Sources>
             	<Source>UNKNOWN</Source>
@@ -239,7 +234,7 @@
                 <certificatePolicy>1.3.6.1.4.1.15819.5.1.3.1</certificatePolicy>
             </CertificatePolicies>
             <QCStatementIds>
-                <oid Description="qc-compliant">0.4.0.1862.1.1</oid>
+                <qcStatementOid Description="qc-compliant">0.4.0.1862.1.1</qcStatementOid>
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
@@ -247,8 +242,7 @@
                     <TSPName>Cryptolog International</TSPName>
                     <CountryCode>FR</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC">
                     		<ServiceName>Universign CA hardware</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -257,11 +251,10 @@
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoQSCD</Qualifier>
                             </CapturedQualifiers>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC">
                     		<ServiceName>Universign CA hardware</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
@@ -294,7 +287,7 @@
             <OrganizationalUnit>0002 43912916400026</OrganizationalUnit>
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints>
-                <Url>http://crl.universign.eu/universign_tsa_root_2015.crl</Url>
+                <crlUrl>http://crl.universign.eu/universign_tsa_root_2015.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
             <Sources>
@@ -331,38 +324,33 @@
                     <TSPName>Cryptolog International</TSPName>
                     <CountryCode>FR</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                     		<ServiceName>Certification Authority for Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
                             <StartDate>2016-07-01T00:00:00</StartDate>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                     		<ServiceName>Certification Authority for Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
                             <StartDate>2015-04-13T22:00:00</StartDate>
                             <EndDate>2016-07-01T00:00:00</EndDate>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                     		<ServiceName>Certification Authority for Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-12-01T01:00:00</StartDate>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                     		<ServiceName>Certification Authority for Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
                             <StartDate>2016-07-01T00:00:00</StartDate>
                             <EndDate>2016-12-01T01:00:00</EndDate>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                     		<ServiceName>Certification Authority for Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
@@ -424,38 +412,33 @@
                 	<TSPName>Universign</TSPName>
                     <CountryCode>FR</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                     		<ServiceName>Certification Authority for Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
                             <StartDate>2016-07-01T00:00:00</StartDate>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                     		<ServiceName>Certification Authority for Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
                             <StartDate>2015-04-13T22:00:00</StartDate>
                             <EndDate>2016-07-01T00:00:00</EndDate>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                     		<ServiceName>Certification Authority for Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-12-01T01:00:00</StartDate>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                     		<ServiceName>Certification Authority for Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
                             <StartDate>2016-07-01T00:00:00</StartDate>
                             <EndDate>2016-12-01T01:00:00</EndDate>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                     		<ServiceName>Certification Authority for Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
@@ -513,14 +496,13 @@
                     <TSPName>Cryptolog International</TSPName>
                     <CountryCode>FR</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                     		<ServiceName>Certification Authority for Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-07-01T00:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -541,10 +523,10 @@
             <OrganizationalUnit>0002 310499959</OrganizationalUnit>
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints>
-                <Url>http://crl.universign.eu/universign_ca_hardware.crl</Url>
+                <crlUrl>http://crl.universign.eu/universign_ca_hardware.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls>
-                <Url>http://scah.ocsp.universign.eu/</Url>
+                <ocspServerUrl>http://scah.ocsp.universign.eu/</ocspServerUrl>
             </OCSPAccessUrls>
             <Sources>
             	<Source>UNKNOWN</Source>
@@ -580,8 +562,7 @@
                     <TSPName>Cryptolog International</TSPName>
                     <CountryCode>FR</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                     		<ServiceName>Certification Authority for Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -591,11 +572,10 @@
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoQSCD</Qualifier>
                             </CapturedQualifiers>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                     		<ServiceName>Certification Authority for Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
@@ -659,15 +639,13 @@
                     <TSPName>Cryptolog International</TSPName>
                     <CountryCode>FR</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                     		<ServiceName>Certification Authority for Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
                             <StartDate>2016-07-01T00:00:00</StartDate>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                     		<ServiceName>Certification Authority for Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
@@ -692,7 +670,7 @@
             <OrganizationalUnit>0002 43912916400026</OrganizationalUnit>
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints>
-                <Url>http://crl.universign.eu/universign_primary_ca_hardware.crl</Url>
+                <crlUrl>http://crl.universign.eu/universign_primary_ca_hardware.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
             <Sources>
@@ -726,18 +704,16 @@
                     <TSPName>Cryptolog International</TSPName>
                     <CountryCode>FR</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                     		<ServiceName>Certification Authority for Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-07-01T00:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                     		<ServiceName>Certification Authority for Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
@@ -870,8 +846,8 @@
                         <ChainItem Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
                     </CertificateChain>
 			       <TimestampedObjects>
-				       	<TimestampedSignature Token="id-a28e6cf46b56eb7ab0eb91f9c7b08f77819f4f2160a03c5d92a0555745d53b52" />
-				       	<TimestampedCertificate Token="C-5A2F7F6FC616CB7FCC1084819F0D1B91CF9F1CAF18C8808AAB6779001DBF2CAD" />
+				       	<TimestampedObject Category="SIGNATURE" Token="id-a28e6cf46b56eb7ab0eb91f9c7b08f77819f4f2160a03c5d92a0555745d53b52" />
+				       	<TimestampedObject Category="CERTIFICATE" Token="C-5A2F7F6FC616CB7FCC1084819F0D1B91CF9F1CAF18C8808AAB6779001DBF2CAD" />
 			       </TimestampedObjects>
 		            <DigestAlgoAndValue>
 		            	<DigestMethod>SHA1</DigestMethod>
@@ -899,8 +875,8 @@
                         <ChainItem Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
                     </CertificateChain>
 			       <TimestampedObjects>
-				       	<TimestampedSignature Token="id-752da48ccad668fcade0d92a1cd8def412feb7562591d1b2a442294d7219c336" />
-				       	<TimestampedCertificate Token="C-F43D5E9D13F33DA1113595D755C7946D0DB74961B469CB139F03EDA1CFD77BB2" />
+				       	<TimestampedObject Category="SIGNATURE" Token="id-752da48ccad668fcade0d92a1cd8def412feb7562591d1b2a442294d7219c336" />
+				       	<TimestampedObject Category="CERTIFICATE" Token="C-F43D5E9D13F33DA1113595D755C7946D0DB74961B469CB139F03EDA1CFD77BB2" />
 			       </TimestampedObjects>
 		            <DigestAlgoAndValue>
 		            	<DigestMethod>SHA1</DigestMethod>

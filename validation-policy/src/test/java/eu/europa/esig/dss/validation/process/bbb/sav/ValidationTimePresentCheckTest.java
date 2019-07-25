@@ -11,7 +11,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.validation.executor.AbstractValidationExecutorTest;
-import eu.europa.esig.dss.validation.executor.CustomProcessExecutor;
+import eu.europa.esig.dss.validation.executor.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class ValidationTimePresentCheckTest extends AbstractValidationExecutorTest {
@@ -21,7 +21,7 @@ public class ValidationTimePresentCheckTest extends AbstractValidationExecutorTe
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/universign.xml"));
 		assertNotNull(diagnosticData);
 		
-		CustomProcessExecutor executor = new CustomProcessExecutor();
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(loadPolicy("src/test/resources/policy/default-only-constraint-policy.xml"));
 		executor.setCurrentTime(diagnosticData.getValidationDate());

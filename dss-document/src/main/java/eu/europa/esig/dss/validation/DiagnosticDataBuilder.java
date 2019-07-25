@@ -36,7 +36,6 @@ import java.util.ServiceLoader;
 import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
-import javax.xml.bind.JAXBElement;
 
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x509.IssuerSerial;
@@ -54,7 +53,6 @@ import eu.europa.esig.dss.DSSPKUtils;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.IssuerSerialInfo;
-import eu.europa.esig.dss.diagnostic.jaxb.ObjectFactory;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
@@ -90,13 +88,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerRole;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlStructuralValidation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedOrphanToken;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedRevocationData;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedSignature;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedSignerData;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedService;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedServiceProvider;
@@ -111,6 +103,7 @@ import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.tsl.Condition;
 import eu.europa.esig.dss.tsl.ServiceInfo;
@@ -650,8 +643,8 @@ public class DiagnosticDataBuilder {
 		boolean contains = false;
 		for (XmlTimestamp timestamp : timestampList) {
 			if (timestamp.getId().equals(timestampToAdd.getId())) {
-				List<JAXBElement<? extends XmlTimestampedObject>> timestampedObjects = timestampToAdd.getTimestampedObjects();
-				for (JAXBElement<? extends XmlTimestampedObject> timestampedObject : timestampedObjects) {
+				List<XmlTimestampedObject> timestampedObjects = timestampToAdd.getTimestampedObjects();
+				for (XmlTimestampedObject timestampedObject : timestampedObjects) {
 					if (!isTimestampContainsReference(timestamp, timestampedObject)) {
 						timestamp.getTimestampedObjects().add(timestampedObject);
 					}
@@ -664,9 +657,9 @@ public class DiagnosticDataBuilder {
 		}
 	}
 	
-	private boolean isTimestampContainsReference(XmlTimestamp timestamp, JAXBElement<? extends XmlTimestampedObject> timestampedObject) {
-		for (JAXBElement<? extends XmlTimestampedObject> oldObject : timestamp.getTimestampedObjects()) {
-			if (timestampedObject.getValue().getToken().getId().equals(oldObject.getValue().getToken().getId())) {
+	private boolean isTimestampContainsReference(XmlTimestamp timestamp, XmlTimestampedObject timestampedObject) {
+		for (XmlTimestampedObject oldObject : timestamp.getTimestampedObjects()) {
+			if (timestampedObject.getToken().getId().equals(oldObject.getToken().getId())) {
 				return true;
 			}
 		}
@@ -1318,77 +1311,62 @@ public class DiagnosticDataBuilder {
 		return digestMatcher;
 	}
 
-	private List<JAXBElement<? extends XmlTimestampedObject>> getXmlTimestampedObjects(TimestampToken timestampToken) {
+	private List<XmlTimestampedObject> getXmlTimestampedObjects(TimestampToken timestampToken) {
 		List<TimestampedReference> timestampReferences = timestampToken.getTimestampedReferences();
 		if (Utils.isCollectionNotEmpty(timestampReferences)) {
-			ObjectFactory objectFactory = new ObjectFactory();
-			List<JAXBElement<? extends XmlTimestampedObject>> objects = new ArrayList<JAXBElement<? extends XmlTimestampedObject>>();
+			List<XmlTimestampedObject> objects = new ArrayList<XmlTimestampedObject>();
 			for (final TimestampedReference timestampReference : timestampReferences) {
-				XmlTimestampedObject xmlTimestampedObject = createXmlTimestampedObject(timestampReference);
-				if (xmlTimestampedObject instanceof XmlTimestampedSignature) {
-					objects.add(objectFactory.createTimestampedSignature((XmlTimestampedSignature)xmlTimestampedObject));
-				} else if (xmlTimestampedObject instanceof XmlTimestampedCertificate) {
-					objects.add(objectFactory.createTimestampedCertificate((XmlTimestampedCertificate)xmlTimestampedObject));
-				} else if (xmlTimestampedObject instanceof XmlTimestampedRevocationData) {
-					objects.add(objectFactory.createTimestampedRevocationData((XmlTimestampedRevocationData)xmlTimestampedObject));
-				} else if (xmlTimestampedObject instanceof XmlTimestampedTimestamp) {
-					objects.add(objectFactory.createTimestampedTimestamp((XmlTimestampedTimestamp)xmlTimestampedObject));
-				} else if (xmlTimestampedObject instanceof XmlTimestampedSignerData) {
-					objects.add(objectFactory.createTimestampedSignerData((XmlTimestampedSignerData)xmlTimestampedObject));
-				}else if (xmlTimestampedObject instanceof XmlTimestampedOrphanToken) {
-					objects.add(objectFactory.createTimestampedOrphanToken((XmlTimestampedOrphanToken)xmlTimestampedObject));
-				}
+				objects.add(createXmlTimestampedObject(timestampReference));
 			}
 			return objects;
 		}
 		return null;
 	}
-	
+
 	private XmlTimestampedObject createXmlTimestampedObject(final TimestampedReference timestampReference) {
+		XmlTimestampedObject timestampedObj = new XmlTimestampedObject();
+		timestampedObj.setCategory(timestampReference.getCategory());
+
 		String objectId = timestampReference.getObjectId();
 		switch (timestampReference.getCategory()) {
-			case SIGNATURE:
-				XmlTimestampedSignature sigRef = new XmlTimestampedSignature();
-				sigRef.setToken(xmlSignatures.get(objectId));
-				return sigRef;
-			case CERTIFICATE:
-				if (!isUsedToken(objectId, usedCertificates)) {
-					String relatedCertificateId = getRelatedCertificateId(objectId);
-					if (relatedCertificateId != null && isUsedToken(relatedCertificateId, usedCertificates)) {
-						objectId = relatedCertificateId;
-					} else {
-						break;
-					}
+		case SIGNATURE:
+			timestampedObj.setToken(xmlSignatures.get(objectId));
+			return timestampedObj;
+		case CERTIFICATE:
+			if (!isUsedToken(objectId, usedCertificates)) {
+				String relatedCertificateId = getRelatedCertificateId(objectId);
+				if (relatedCertificateId != null && isUsedToken(relatedCertificateId, usedCertificates)) {
+					objectId = relatedCertificateId;
+				} else {
+					break;
 				}
-				XmlTimestampedCertificate certRef = new XmlTimestampedCertificate();
-				certRef.setToken(xmlCerts.get(objectId));
-				return certRef;
-			case REVOCATION:
-				if (!isUsedToken(objectId, usedRevocations)) {
-					String relatedRevocationId = getRelatedRevocationId(objectId);
-					if (relatedRevocationId != null && isUsedToken(relatedRevocationId, usedRevocations)) {
-						objectId = relatedRevocationId;
-					} else {
-						break;
-					}
+			}
+			timestampedObj.setToken(xmlCerts.get(objectId));
+			return timestampedObj;
+		case REVOCATION:
+			if (!isUsedToken(objectId, usedRevocations)) {
+				String relatedRevocationId = getRelatedRevocationId(objectId);
+				if (relatedRevocationId != null && isUsedToken(relatedRevocationId, usedRevocations)) {
+					objectId = relatedRevocationId;
+				} else {
+					break;
 				}
-				XmlTimestampedRevocationData revocRef = new XmlTimestampedRevocationData();
-				revocRef.setToken(xmlRevocations.get(objectId));
-				return revocRef;
-			case TIMESTAMP:
-				XmlTimestampedTimestamp tstRef = new XmlTimestampedTimestamp();
-				tstRef.setToken(xmlTimestamps.get(objectId));
-				return tstRef;
-			case SIGNED_DATA:
-				XmlTimestampedSignerData sdRef = new XmlTimestampedSignerData();
-				sdRef.setToken(xmlSignedData.get(objectId));
-				return sdRef;
-			default:
-				throw new DSSException("Unsupported category " + timestampReference.getCategory());
+			}
+			timestampedObj.setToken(xmlRevocations.get(objectId));
+			return timestampedObj;
+		case TIMESTAMP:
+			timestampedObj.setToken(xmlTimestamps.get(objectId));
+			return timestampedObj;
+		case SIGNED_DATA:
+			timestampedObj.setToken(xmlSignedData.get(objectId));
+			return timestampedObj;
+		default:
+			throw new DSSException("Unsupported category " + timestampReference.getCategory());
 		}
-		XmlTimestampedOrphanToken orphanRef = new XmlTimestampedOrphanToken();
-		orphanRef.setToken(xmlOrphanTokens.get(objectId));
-		return orphanRef;
+
+		timestampedObj.setCategory(TimestampedObjectType.ORPHAN);
+		timestampedObj.setToken(xmlOrphanTokens.get(objectId));
+		return timestampedObj;
 	}
 	
 	private <T extends Token> boolean isUsedToken(String tokenId, Collection<T> usedTokens) {

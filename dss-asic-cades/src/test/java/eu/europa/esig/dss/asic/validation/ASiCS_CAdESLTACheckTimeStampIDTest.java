@@ -34,8 +34,6 @@ import eu.europa.esig.dss.asic.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedSignature;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
@@ -71,12 +69,9 @@ public class ASiCS_CAdESLTACheckTimeStampIDTest extends PKIFactoryAccess {
 		String signatureId = diagnostic.getFirstSignatureId();
 		for (TimestampWrapper wrapper : diagnostic.getTimestampList(signatureId)) {
 			boolean found = false;
-			for (XmlTimestampedObject xmlTimestampedObject : wrapper.getTimestampedObjects()) {
-				if (xmlTimestampedObject instanceof XmlTimestampedSignature) {
-					String id = xmlTimestampedObject.getToken().getId();
-					if (signatureId.equals(id)) {
-						found = true;
-					}
+			for (String id : wrapper.getTimestampedSignatureIds()) {
+				if (signatureId.equals(id)) {
+					found = true;
 				}
 			}
 			assertTrue(found);

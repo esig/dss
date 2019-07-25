@@ -15,7 +15,7 @@
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-remote-services</artifactId>
+			<artifactId>dss-validation-server-common</artifactId>
 		</dependency>
   </dependencies>
 </project>

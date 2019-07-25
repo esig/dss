@@ -270,15 +270,6 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	}
 
 	/**
-	 * Get Baseline B parameters (signed properties)
-	 * 
-	 * @return the Baseline B parameters
-	 */
-	public BLevelParameters getBLevelParams() {
-		return bLevelParams;
-	}
-
-	/**
 	 * Set the Baseline B parameters (signed properties)
 	 * 
 	 * @param bLevelParams

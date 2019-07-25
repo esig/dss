@@ -70,10 +70,10 @@
             <Email>CRYPTOMODULE_CHAIN_ROOT@openlimit.com</Email>
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints>
-                <Url>http://www.openlimit.ol:8083/ejbca/publicweb/webdist/certdist?cmd=crl&amp;issuer=CN=CRYPTOMODULE_CA_2019_CHAIN_ROOT</Url>
+                <crlUrl>http://www.openlimit.ol:8083/ejbca/publicweb/webdist/certdist?cmd=crl&amp;issuer=CN=CRYPTOMODULE_CA_2019_CHAIN_ROOT</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls>
-                <Url>http://www.openlimit.ol/CRYPTOMODULE/OCSP</Url>
+                <ocspServerUrl>http://www.openlimit.ol/CRYPTOMODULE/OCSP</ocspServerUrl>
             </OCSPAccessUrls>
             <Sources>
             	<Source>TRUSTED_LIST</Source>
@@ -88,7 +88,7 @@
                 <KeyUsage>crlSign</KeyUsage>
             </KeyUsageBits>
             <ExtendedKeyUsages>
-                <oid Description="ocspSigning">1.3.6.1.5.5.7.3.9</oid>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
             </ExtendedKeyUsages>
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
@@ -108,24 +108,22 @@
                     <TSPName>OpenLimit Test-CA</TSPName>
                     <CountryCode>OL</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
                             <ServiceName>OpenLimit CryptoModule 2019 XCA CHAIN ROOT 1</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-13T13:30:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
                             <ServiceName>OpenLimit CryptoModule 2019 XCA CHAIN ROOT</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-13T13:30:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -150,7 +148,7 @@
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints/>
             <OCSPAccessUrls>
-                <Url>http://www.openlimit.ol:88/CRYPTOMODULE/OCSP</Url>
+                <ocspServerUrl>http://www.openlimit.ol:88/CRYPTOMODULE/OCSP</ocspServerUrl>
             </OCSPAccessUrls>
             <Sources>
             	<Source>SIGNATURE</Source>
@@ -187,26 +185,24 @@
                     <TSPName>OpenLimit Test-CA</TSPName>
                     <CountryCode>OL</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
                             <ServiceName>OpenLimit CryptoModule 2019 XCA CHAIN ROOT 1</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-13T13:30:00</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
                             <ServiceName>OpenLimit CryptoModule 2019 XCA CHAIN ROOT</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-13T13:30:00</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -235,7 +231,7 @@
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints/>
             <OCSPAccessUrls>
-                <Url>http://www.openlimit.ol:88/CRYPTOMODULE/OCSP</Url>
+                <ocspServerUrl>http://www.openlimit.ol:88/CRYPTOMODULE/OCSP</ocspServerUrl>
             </OCSPAccessUrls>
             <Sources>
             	<Source>OCSP_RESPONSE</Source>
@@ -272,24 +268,22 @@
                     <TSPName>OpenLimit Test-CA</TSPName>
                     <CountryCode>OL</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
                             <ServiceName>OpenLimit CryptoModule 2019 XCA CHAIN ROOT 1</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-13T13:30:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
                             <ServiceName>OpenLimit CryptoModule 2019 XCA CHAIN ROOT</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-13T13:30:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -318,7 +312,7 @@
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints/>
             <OCSPAccessUrls>
-                <Url>http://www.openlimit.ol:88/CRYPTOMODULE/OCSP</Url>
+                <ocspServerUrl>http://www.openlimit.ol:88/CRYPTOMODULE/OCSP</ocspServerUrl>
             </OCSPAccessUrls>
             <Sources>
             	<Source>SIGNATURE</Source>
@@ -333,7 +327,7 @@
                 <KeyUsage>crlSign</KeyUsage>
             </KeyUsageBits>
             <ExtendedKeyUsages>
-                <oid Description="ocspSigning">1.3.6.1.5.5.7.3.9</oid>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
             </ExtendedKeyUsages>
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
@@ -357,24 +351,22 @@
                     <TSPName>OpenLimit Test-CA</TSPName>
                     <CountryCode>OL</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
                             <ServiceName>OpenLimit CryptoModule 2019 XCA CHAIN ROOT 1</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-13T13:30:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
                             <ServiceName>OpenLimit CryptoModule 2019 XCA CHAIN ROOT</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-13T13:30:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -395,12 +387,6 @@
             <SourceAddress>http://www.openlimit.ol:88/CRYPTOMODULE/OCSP</SourceAddress>
             <ProductionDate>2019-01-18T08:59:31</ProductionDate>
             <ThisUpdate>2019-01-18T08:59:31</ThisUpdate>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>m4wf3IB7Or0vEEfQGSJZfJo75TI=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -421,12 +407,6 @@
             <SourceAddress>http://www.openlimit.ol:88/CRYPTOMODULE/OCSP</SourceAddress>
             <ProductionDate>2019-01-18T08:59:31</ProductionDate>
             <ThisUpdate>2019-01-18T08:59:31</ThisUpdate>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>sQs1YM60fmzMHSW2NlvVboN9+Ww=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -447,12 +427,6 @@
             <SourceAddress>http://www.openlimit.ol:88/CRYPTOMODULE/OCSP</SourceAddress>
             <ProductionDate>2019-01-18T08:59:32</ProductionDate>
             <ThisUpdate>2019-01-18T08:59:32</ThisUpdate>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>7pr3M5wiRBIcWjaAoGZBKBwTfP8=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>

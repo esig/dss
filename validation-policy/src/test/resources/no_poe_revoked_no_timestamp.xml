@@ -136,9 +136,9 @@
                 <certificatePolicy>1.3.76.24.1.1.2</certificatePolicy>
             </CertificatePolicies>
             <QCStatementIds>
-                <oid>0.4.0.1862.1.1</oid>
-                <oid>0.4.0.1862.1.4</oid>
-                <oid>0.4.0.1862.1.3</oid>
+                <qcStatementOid>0.4.0.1862.1.1</qcStatementOid>
+                <qcStatementOid>0.4.0.1862.1.4</qcStatementOid>
+                <qcStatementOid>0.4.0.1862.1.3</qcStatementOid>
             </QCStatementIds>
             <QCTypes />
             <TrustedServiceProviders />

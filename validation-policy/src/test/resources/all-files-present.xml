@@ -115,13 +115,13 @@
             <OrganizationalUnit>digital signature</OrganizationalUnit>
             <Surname>a</Surname>
             <AuthorityInformationAccessUrls>
-                <Url>http://c.sk.ee/ESTEID-SK_2015.der.crt</Url>
+                <aiaUrl>http://c.sk.ee/ESTEID-SK_2015.der.crt</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints>
-                <Url>http://www.sk.ee/crls/esteid/esteid2015.crl</Url>
+                <crlUrl>http://www.sk.ee/crls/esteid/esteid2015.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls>
-                <Url>http://aia.sk.ee/esteid2015</Url>
+                <ocspServerUrl>http://aia.sk.ee/esteid2015</ocspServerUrl>
             </OCSPAccessUrls>
             <Sources>
             	<Source>UNKNOWN</Source>
@@ -153,13 +153,13 @@
                 <certificatePolicy Description="qcp-natural-qscd">0.4.0.194112.1.2</certificatePolicy>
             </CertificatePolicies>
             <QCStatementIds>
-                <oid Description="qc-compliance">0.4.0.1862.1.1</oid>
-                <oid Description="qc-sscd">0.4.0.1862.1.4</oid>
-                <oid Description="qc-pds">0.4.0.1862.1.5</oid>
-                <oid>0.4.0.1862.1.6</oid>
+                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
+                <qcStatementOid Description="qc-sscd">0.4.0.1862.1.4</qcStatementOid>
+                <qcStatementOid Description="qc-pds">0.4.0.1862.1.5</qcStatementOid>
+                <qcStatementOid>0.4.0.1862.1.6</qcStatementOid>
             </QCStatementIds>
             <QCTypes>
-                <oid Description="qc-type-esign">0.4.0.1862.1.6.1</oid>
+                <qcTypeOid Description="qc-type-esign">0.4.0.1862.1.6.1</qcTypeOid>
             </QCTypes>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
@@ -167,8 +167,7 @@
                     <TSPRegistrationIdentifier>VATEE-100687640</TSPRegistrationIdentifier>
                     <CountryCode>EE</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F">
                             <ServiceName>ESTEID qualified certificates for electronic signatures (ESTEID-SK 2015)</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -177,7 +176,7 @@
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD</Qualifier>
                             </CapturedQualifiers>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -204,7 +203,7 @@
             <OrganizationName>SK ID Solutions AS</OrganizationName>
             <OrganizationalUnit>OCSP</OrganizationalUnit>
             <AuthorityInformationAccessUrls>
-                <Url>https://sk.ee/upload/files/ESTEID-SK_2015.der.crt</Url>
+                <aiaUrl>https://sk.ee/upload/files/ESTEID-SK_2015.der.crt</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints/>
             <OCSPAccessUrls/>
@@ -219,7 +218,7 @@
                 <KeyUsage>digitalSignature</KeyUsage>
             </KeyUsageBits>
             <ExtendedKeyUsages>
-                <oid Description="ocspSigning">1.3.6.1.5.5.7.3.9</oid>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
             </ExtendedKeyUsages>
             <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
@@ -244,8 +243,7 @@
                     <TSPRegistrationIdentifier>VATEE-100687640</TSPRegistrationIdentifier>
                     <CountryCode>EE</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F">
                             <ServiceName>ESTEID qualified certificates for electronic signatures (ESTEID-SK 2015)</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -254,11 +252,10 @@
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD</Qualifier>
                             </CapturedQualifiers>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F">
                             <ServiceName>ESTEID-SK 2015 qualified certificates for electronic signatures</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -268,7 +265,7 @@
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD</Qualifier>
                             </CapturedQualifiers>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -290,13 +287,13 @@
             <CountryName>EE</CountryName>
             <OrganizationName>AS Sertifitseerimiskeskus</OrganizationName>
             <AuthorityInformationAccessUrls>
-                <Url>http://www.sk.ee/certs/EE_Certification_Centre_Root_CA.der.crt</Url>
+                <aiaUrl>http://www.sk.ee/certs/EE_Certification_Centre_Root_CA.der.crt</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints>
-                <Url>http://www.sk.ee/repository/crls/eeccrca.crl</Url>
+                <crlUrl>http://www.sk.ee/repository/crls/eeccrca.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls>
-                <Url>http://ocsp.sk.ee/CA</Url>
+                <ocspServerUrl>http://ocsp.sk.ee/CA</ocspServerUrl>
             </OCSPAccessUrls>
             <Sources>
             	<Source>TRUSTED_LIST</Source>
@@ -310,9 +307,9 @@
                 <KeyUsage>crlSign</KeyUsage>
             </KeyUsageBits>
             <ExtendedKeyUsages>
-                <oid Description="ocspSigning">1.3.6.1.5.5.7.3.9</oid>
-                <oid Description="clientAuth">1.3.6.1.5.5.7.3.2</oid>
-                <oid Description="emailProtection">1.3.6.1.5.5.7.3.4</oid>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                <extendedKeyUsagesOid Description="clientAuth">1.3.6.1.5.5.7.3.2</extendedKeyUsagesOid>
+                <extendedKeyUsagesOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsagesOid>
             </ExtendedKeyUsages>
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
@@ -340,8 +337,7 @@
                     <TSPRegistrationIdentifier>VATEE-100687640</TSPRegistrationIdentifier>
                     <CountryCode>EE</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F">
                             <ServiceName>ESTEID qualified certificates for electronic signatures (ESTEID-SK 2015)</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -350,22 +346,20 @@
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD</Qualifier>
                             </CapturedQualifiers>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F">
                             <ServiceName>ESTEID-SK 2015 qualified certificates for electronic signatures</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <EndDate>2018-11-02T14:00:00</EndDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F">
                             <ServiceName>ESTEID-SK 2015: Qualified certificates for Estonian ID-card, the residence permit card, the digital identity card, the digital identity card in form of the Mobile-ID</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>

@@ -317,21 +317,19 @@
                     <TSPName>Polish Security Printing Works</TSPName>
                     <CountryCode>PL</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86">
                     		<ServiceName>Certification authority issuing qualified certificates</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-07-01T00:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                             <ServiceSupplyPoints>
-                                <URI>http://193.178.164.4/repozytorium/ca1_2015.crl</URI>
+                                <serviceSupplyPoint>http://193.178.164.4/repozytorium/ca1_2015.crl</serviceSupplyPoint>
                             </ServiceSupplyPoints>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86">
                             <ServiceName>Certification authority issuing qualified certificates</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
@@ -355,7 +353,7 @@
             <OrganizationName>Ministerstwo Cyfryzacji</OrganizationName>
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints>
-                <Url>http://www.cencert.pl/crl/CCfirmowy.crl</Url>
+                <crlUrl>http://www.cencert.pl/crl/CCfirmowy.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
             <Sources>
@@ -429,8 +427,8 @@
                 <certificatePolicy>1.2.616.1.113560.10.1.1.0</certificatePolicy>
             </CertificatePolicies>
             <QCStatementIds>
-                <oid>0.4.0.1862.1.2</oid>
-                <oid>1.2.616.1.101.3.1.1.2</oid>
+                <qcStatementOid>0.4.0.1862.1.2</qcStatementOid>
+                <qcStatementOid>1.2.616.1.101.3.1.1.2</qcStatementOid>
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
@@ -438,8 +436,7 @@
                     <TSPName>Polish Security Printing Works</TSPName>
                     <CountryCode>PL</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86">
                         	<ServiceName>Certification authority issuing qualified certificates</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -450,14 +447,13 @@
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement</Qualifier>
                             </CapturedQualifiers>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                             <ServiceSupplyPoints>
-                                <URI>http://193.178.164.4/repozytorium/ca1_2015.crl</URI>
+                                <serviceSupplyPoint>http://193.178.164.4/repozytorium/ca1_2015.crl</serviceSupplyPoint>
                             </ServiceSupplyPoints>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86">
                         	<ServiceName>Certification authority issuing qualified certificates</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>

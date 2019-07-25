@@ -6,10 +6,11 @@ Content-Type: application/json
 Transfer-Encoding: chunked
 Content-Length: 101
 
-[ {
-  "bytes" : "aGVsbG8=",
-  "digestAlgorithm" : null,
-  "name" : null,
-  "mimeType" : null
-} ]
+[
+    {
+        "bytes": "aGVsbG8=",
+        "digestAlgorithm": null,
+        "name": "o-id-1"
+    }
+]
 ----

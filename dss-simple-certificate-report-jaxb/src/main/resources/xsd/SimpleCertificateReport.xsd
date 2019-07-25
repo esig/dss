@@ -30,11 +30,41 @@
 			<xs:element name="notAfter" type="xs:dateTime" />
 			<xs:element name="keyUsages" type="KeyUsages" minOccurs="0" />	
 			<xs:element name="extendedKeyUsages" type="ExtendedKeyUsages" minOccurs="0" />			
-			<xs:element name="ocspUrls" type="ListUrls" minOccurs="0" />
-			<xs:element name="crlUrls" type="ListUrls" minOccurs="0" />
-			<xs:element name="aiaUrls" type="ListUrls" minOccurs="0" />
-			<xs:element name="cpsUrls" type="ListUrls" minOccurs="0" />
-			<xs:element name="pdsUrls" type="ListUrls" minOccurs="0" />
+			<xs:element name="ocspUrls" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="ocspUrl" type="xs:string" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="crlUrls" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="crlUrl" type="xs:string" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="aiaUrls" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="aiaUrl" type="xs:string" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="cpsUrls" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="cpsUrl" type="xs:string" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="pdsUrls" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="pdsUrl" type="xs:string" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
 			<xs:element name="qualificationAtIssuance" type="CertificateQualification" minOccurs="0" />
 			<xs:element name="qualificationAtValidation" type="CertificateQualification" minOccurs="0" />
 			<xs:element name="revocation" type="Revocation" minOccurs="0" />
@@ -84,12 +114,6 @@
 			<xs:enumeration value="decipherOnly" />
 		</xs:restriction>
 	</xs:simpleType>
-	
-	<xs:complexType name="ListUrls">
-		<xs:sequence>
-			<xs:element name="url" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
-		</xs:sequence>
-	</xs:complexType>
 
 	<xs:complexType name="Revocation">
 		<xs:sequence>

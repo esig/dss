@@ -36,21 +36,17 @@ $ curl 'http://localhost:8080/services/rest/signature/multiple-documents/getData
       "trustAnchorBPPolicy" : true,
       "signingDate" : 1542794107100,
       "claimedSignerRoles" : null,
-      "signaturePolicy" : null,
-      "commitmentTypeIndications" : null,
-      "signerLocation" : null
+      "commitmentTypeIndications" : null
     }
   },
   "toSignDocuments" : [ {
     "bytes" : "SGVsbG8=",
     "digestAlgorithm" : null,
-    "name" : "test1.bin",
-    "mimeType" : null
+    "name" : "test1.bin"
   }, {
     "bytes" : "V29ybGQ=",
     "digestAlgorithm" : null,
-    "name" : "test2.bin",
-    "mimeType" : null
+    "name" : "test2.bin"
   } ]
 }'
 ----

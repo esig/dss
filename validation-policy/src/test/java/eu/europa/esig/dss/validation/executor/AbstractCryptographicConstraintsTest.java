@@ -27,7 +27,7 @@ import eu.europa.esig.dss.validation.reports.Reports;
 public abstract class AbstractCryptographicConstraintsTest extends AbstractValidationExecutorTest {
 
 	protected ConstraintsParameters constraintsParameters = null;
-	protected CustomProcessExecutor executor = null;
+	protected DefaultSignatureProcessExecutor executor = null;
 	protected ValidationPolicy validationPolicy = null;
 
 	protected static final String ALGORITHM_DSA = "DSA";
@@ -46,7 +46,7 @@ public abstract class AbstractCryptographicConstraintsTest extends AbstractValid
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File(diagnosticDataFile));
 		assertNotNull(diagnosticData);
 
-		executor = new CustomProcessExecutor();
+		executor = new DefaultSignatureProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 		return diagnosticData;

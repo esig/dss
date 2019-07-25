@@ -148,13 +148,13 @@
             <OrganizationName>MAT</OrganizationName>
             <OrganizationalUnit>DIRECTION GENERALE</OrganizationalUnit>
             <AuthorityInformationAccessUrls>
-                <Url>http://www.certification.tn/pub/TunPersonalCA1.crt</Url>
+                <aiaUrl>http://www.certification.tn/pub/TunPersonalCA1.crt</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints>
-                <Url>http://crl.certification.tn/TunPersonalCA1.crl</Url>
+                <crlUrl>http://crl.certification.tn/TunPersonalCA1.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls>
-                <Url>http://ocsp.certification.tn</Url>
+                <ocspServerUrl>http://ocsp.certification.tn</ocspServerUrl>
             </OCSPAccessUrls>
             <Sources>
             	<Source>UNKNOWN</Source>
@@ -211,13 +211,13 @@
             <CountryName>TN</CountryName>
             <OrganizationName>National Digital Certification Agency</OrganizationName>
             <AuthorityInformationAccessUrls>
-                <Url>http://www.certification.tn/pub/TunRootCA1.crt</Url>
+                <aiaUrl>http://www.certification.tn/pub/TunRootCA1.crt</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints>
-                <Url>http://crl.certification.tn/TunRootCA1.crl</Url>
+                <crlUrl>http://crl.certification.tn/TunRootCA1.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls>
-                <Url>http://ocsp.certification.tn</Url>
+                <ocspServerUrl>http://ocsp.certification.tn</ocspServerUrl>
             </OCSPAccessUrls>
             <Sources>
             	<Source>SIGNATURE</Source>

@@ -76,13 +76,13 @@
             <OrganizationName>TL5 Organization</OrganizationName>
             <OrganizationalUnit>CERT FOR TEST</OrganizationalUnit>
             <AuthorityInformationAccessUrls>
-                <Url>http://localhost:8080/qes-validation-web/crt/SDI-5.1.5.crt</Url>
+                <aiaUrl>http://localhost:8080/qes-validation-web/crt/SDI-5.1.5.crt</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints>
-                <Url>http://localhost:8080/qes-validation-web/crl/SDI-5.1.5.crl</Url>
+                <crlUrl>http://localhost:8080/qes-validation-web/crl/SDI-5.1.5.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls>
-                <Url>http://localhost:8080/qes-validation-web/ocsp/SDI-5.1.5</Url>
+                <ocspServerUrl>http://localhost:8080/qes-validation-web/ocsp/SDI-5.1.5</ocspServerUrl>
             </OCSPAccessUrls>
             <Sources>
             	<Source>SIGNATURE</Source>
@@ -111,28 +111,27 @@
             <SelfSigned>false</SelfSigned>
             <CertificatePolicies/>
             <QCStatementIds>
-                <oid Description="qc-compliance">0.4.0.1862.1.1</oid>
-                <oid>0.4.0.1862.1.6</oid>
+                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
+                <qcStatementOid>0.4.0.1862.1.6</qcStatementOid>
             </QCStatementIds>
             <QCTypes>
-                <oid Description="qc-type-esign">0.4.0.1862.1.6.1</oid>
-                <oid Description="qc-type-eseal">0.4.0.1862.1.6.2</oid>
+                <qcTypeOid Description="qc-type-esign">0.4.0.1862.1.6.1</qcTypeOid>
+                <qcTypeOid Description="qc-type-eseal">0.4.0.1862.1.6.2</qcTypeOid>
             </QCTypes>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>TSP-5.1 Name</TSPName>
                     <CountryCode>IT</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-53763FCFD428B9878B97E4C1B9DE17E431842E2AF43B5A51BEEBE5B53F360619</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-53763FCFD428B9878B97E4C1B9DE17E431842E2AF43B5A51BEEBE5B53F360619">
                             <ServiceName>TS-5.1.5 Name</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -167,7 +166,7 @@
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <KeyUsageBits/>
             <ExtendedKeyUsages>
-                <oid Description="ocspSigning">1.3.6.1.5.5.7.3.9</oid>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
             </ExtendedKeyUsages>
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
@@ -188,15 +187,14 @@
                     <TSPName>TSP-5.1 Name</TSPName>
                     <CountryCode>IT</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-53763FCFD428B9878B97E4C1B9DE17E431842E2AF43B5A51BEEBE5B53F360619</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-53763FCFD428B9878B97E4C1B9DE17E431842E2AF43B5A51BEEBE5B53F360619">
                             <ServiceName>TS-5.1.5 Name</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>

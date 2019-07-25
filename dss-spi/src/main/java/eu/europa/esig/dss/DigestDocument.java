@@ -31,6 +31,7 @@ import eu.europa.esig.dss.utils.Utils;
  * Digest representation of a {@code DSSDocument}. It can be used to handle a large file to be signed. The computation
  * of the digest associated to the file can be done externally.
  */
+@SuppressWarnings("serial")
 public class DigestDocument extends CommonDocument {
 	
 	/**
@@ -51,6 +52,21 @@ public class DigestDocument extends CommonDocument {
 	 */
 	public DigestDocument(final DigestAlgorithm digestAlgorithm, final String base64EncodeDigest) {
 		addDigest(digestAlgorithm, base64EncodeDigest);
+	}
+
+	/**
+	 * Creates DigestDocument.
+	 * 
+	 * @param digestAlgorithm
+	 *            {@code DigestAlgorithm}
+	 * @param base64EncodeDigest
+	 *            the corresponding base 64 encoded digest value
+	 * @param name
+	 *            the name of the document
+	 */
+	public DigestDocument(final DigestAlgorithm digestAlgorithm, final String base64EncodeDigest, final String name) {
+		this(digestAlgorithm, base64EncodeDigest);
+		this.name = name;
 	}
 
 	/**

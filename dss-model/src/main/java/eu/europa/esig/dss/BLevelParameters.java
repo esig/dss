@@ -49,6 +49,7 @@ public class BLevelParameters implements Serializable {
 	private Policy signaturePolicy;
 
 	private List<String> commitmentTypeIndications;
+	
 	private SignerLocation signerLocation;
 
 	public BLevelParameters() {

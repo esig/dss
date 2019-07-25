@@ -78,13 +78,13 @@
             <Surname>Ottoy</Surname>
             <Email>maarten.ottoy@ec.europa.eu</Email>
             <AuthorityInformationAccessUrls>
-                <Url>http://ca.luxtrust.lu/LTGQCA3.crt</Url>
+                <aiaUrl>http://ca.luxtrust.lu/LTGQCA3.crt</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints>
-                <Url>http://crl.luxtrust.lu/LTGQCA3.crl</Url>
+                <crlUrl>http://crl.luxtrust.lu/LTGQCA3.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls>
-                <Url>http://qca.ocsp.luxtrust.lu</Url>
+                <ocspServerUrl>http://qca.ocsp.luxtrust.lu</ocspServerUrl>
             </OCSPAccessUrls>
             <Sources>
             	<Source>TRUSTED_STORE</Source>
@@ -113,8 +113,8 @@
                 <certificatePolicy Description="qcp-public-with-sscd">0.4.0.1456.1.1</certificatePolicy>
             </CertificatePolicies>
             <QCStatementIds>
-                <oid Description="qc-compliance">0.4.0.1862.1.1</oid>
-                <oid Description="qc-sscd">0.4.0.1862.1.4</oid>
+                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
+                <qcStatementOid Description="qc-sscd">0.4.0.1862.1.4</qcStatementOid>
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders/>

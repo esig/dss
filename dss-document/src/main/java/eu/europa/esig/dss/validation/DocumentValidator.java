@@ -28,7 +28,6 @@ import java.util.List;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
-import eu.europa.esig.dss.validation.executor.ProcessExecutor;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -80,21 +79,28 @@ public interface DocumentValidator {
 	void setManifestFiles(final List<ManifestFile> manifestFiles);
 
 	/**
-	 * This method allows to define the signing certificate. It is useful in the case of ,non AdES signatures.
+	 * This method allows to define the signing certificate. It is useful in the case of non AdES signatures.
 	 *
 	 * @param x509Certificate
 	 */
 	void defineSigningCertificate(final CertificateToken x509Certificate);
 
-	void setValidationLevel(ValidationLevel validationLevel);
-
 	/**
-	 * This method provides the possibility to set the specific {@code ProcessExecutor}
+	 * This method allows to specify the validation level (Basic / Timestamp /
+	 * Long Term / Archival). By default, the selected validation is ARCHIVAL
 	 *
-	 * @param processExecutor
+	 * @param validationLevel {@link ValidationLevel}
 	 */
-	void setProcessExecutor(final ProcessExecutor processExecutor);
-
+	void setValidationLevel(ValidationLevel validationLevel);
+	
+	/**
+	 * This method allows to specify if the ETSI Validation Report must be generated.
+	 * By default the value if TRUE (the ETSI Validation report will be generated).
+	 * 
+	 * @param enableEtsiValidationReport - TRUE if the report must be generated, FALSE otherwise
+	 */
+	void setEnableEtsiValidationReport(boolean enableEtsiValidationReport);
+	
 	/**
 	 * This method allows to set a provider for Signature policies
 	 * 
@@ -173,7 +179,7 @@ public interface DocumentValidator {
 	 * This method returns the signed document(s) without their signature(s)
 	 *
 	 * @param signatureId
-	 *            the id of the signature to be removed.
+	 *            the DSS ID of the signature to extract original signer data for
 	 */
 	List<DSSDocument> getOriginalDocuments(final String signatureId);
 

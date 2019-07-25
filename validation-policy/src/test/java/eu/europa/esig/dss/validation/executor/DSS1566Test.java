@@ -22,7 +22,7 @@ public class DSS1566Test extends AbstractValidationExecutorTest {
 	public void test() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/dss1566-diagnostic.xml"));
 
-		CertificateProcessExecutor executor = new CertificateProcessExecutor();
+		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
 		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setDiagnosticData(diagnosticData);
 		executor.setCertificateId("C-D04D16660A6BA5FDD2C3A519DAD8877B64D1D2C56BF91316208A0AE2FB76D368");
