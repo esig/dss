@@ -22,18 +22,51 @@ package eu.europa.esig.dss;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map.Entry;
+
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.utils.Utils;
 
 /**
  * Digest representation of a {@code DSSDocument}. It can be used to handle a large file to be signed. The computation
  * of the digest associated to the file can be done externally.
  */
+@SuppressWarnings("serial")
 public class DigestDocument extends CommonDocument {
+	
+	/**
+	 * Creates DigestDocument with an empty digest map.
+	 * Initial algorithm and digest must be specified in order to use the object
+	 */
+	public DigestDocument() {
+		
+	}
 
 	/**
 	 * Creates DigestDocument.
-	 *
+	 * 
+	 * @param digestAlgorithm
+	 *            {@code DigestAlgorithm}
+	 * @param base64EncodeDigest
+	 *            the corresponding base 64 encoded digest value
 	 */
-	public DigestDocument() {
+	public DigestDocument(final DigestAlgorithm digestAlgorithm, final String base64EncodeDigest) {
+		addDigest(digestAlgorithm, base64EncodeDigest);
+	}
+
+	/**
+	 * Creates DigestDocument.
+	 * 
+	 * @param digestAlgorithm
+	 *            {@code DigestAlgorithm}
+	 * @param base64EncodeDigest
+	 *            the corresponding base 64 encoded digest value
+	 * @param name
+	 *            the name of the document
+	 */
+	public DigestDocument(final DigestAlgorithm digestAlgorithm, final String base64EncodeDigest, final String name) {
+		this(digestAlgorithm, base64EncodeDigest);
+		this.name = name;
 	}
 
 	/**
@@ -56,6 +89,14 @@ public class DigestDocument extends CommonDocument {
 			throw new DSSException("Unknown digest value for algorithm : " + digestAlgorithm);
 		}
 		return base64EncodeDigest;
+	}
+	
+	public Digest getExistingDigest() {
+		if (Utils.isMapNotEmpty(base64EncodeDigestMap)) {
+			Entry<DigestAlgorithm, String> digestEntry = base64EncodeDigestMap.entrySet().iterator().next();
+			return new Digest(digestEntry.getKey(), Utils.fromBase64(digestEntry.getValue()));
+		}
+		throw new DSSException("The DigestDocument does not contain any digest! You must specify it by using addDigest() method.");
 	}
 
 	@Override

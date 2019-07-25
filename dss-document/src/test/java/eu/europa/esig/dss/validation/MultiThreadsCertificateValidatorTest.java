@@ -37,9 +37,9 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.client.http.DataLoader;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 public class MultiThreadsCertificateValidatorTest {

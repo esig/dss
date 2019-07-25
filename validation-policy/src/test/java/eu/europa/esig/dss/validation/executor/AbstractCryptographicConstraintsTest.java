@@ -2,32 +2,33 @@ package eu.europa.esig.dss.validation.executor;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.io.FileInputStream;
+import java.io.File;
 import java.util.Iterator;
 import java.util.List;
 
-import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
-import eu.europa.esig.dss.validation.policy.XmlUtils;
-import eu.europa.esig.dss.validation.reports.DetailedReport;
+import eu.europa.esig.dss.detailedreport.DetailedReport;
+import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
+import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.ValidationPolicyFacade;
+import eu.europa.esig.dss.policy.jaxb.Algo;
+import eu.europa.esig.dss.policy.jaxb.AlgoExpirationDate;
+import eu.europa.esig.dss.policy.jaxb.BasicSignatureConstraints;
+import eu.europa.esig.dss.policy.jaxb.CertificateConstraints;
+import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
+import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
+import eu.europa.esig.dss.policy.jaxb.RevocationConstraints;
+import eu.europa.esig.dss.policy.jaxb.SignatureConstraints;
+import eu.europa.esig.dss.policy.jaxb.TimestampConstraints;
+import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.reports.SimpleReport;
-import eu.europa.esig.jaxb.policy.Algo;
-import eu.europa.esig.jaxb.policy.AlgoExpirationDate;
-import eu.europa.esig.jaxb.policy.BasicSignatureConstraints;
-import eu.europa.esig.jaxb.policy.CertificateConstraints;
-import eu.europa.esig.jaxb.policy.ConstraintsParameters;
-import eu.europa.esig.jaxb.policy.CryptographicConstraint;
-import eu.europa.esig.jaxb.policy.RevocationConstraints;
-import eu.europa.esig.jaxb.policy.SignatureConstraints;
-import eu.europa.esig.jaxb.policy.TimestampConstraints;
 
 public abstract class AbstractCryptographicConstraintsTest extends AbstractValidationExecutorTest {
 
-	
 	protected ConstraintsParameters constraintsParameters = null;
-	protected CustomProcessExecutor executor = null;
-	protected EtsiValidationPolicy validationPolicy = null;
+	protected DefaultSignatureProcessExecutor executor = null;
+	protected ValidationPolicy validationPolicy = null;
 
 	protected static final String ALGORITHM_DSA = "DSA";
 	protected static final String ALGORITHM_RSA = "RSA";
@@ -38,21 +39,21 @@ public abstract class AbstractCryptographicConstraintsTest extends AbstractValid
 	
 	protected static final String BIT_SIZE_4096 = "4096";
 	
-	protected String validationPolicyFile = null; 
+	protected File validationPolicyFile = null;
 	
-	protected DiagnosticData initializeExecutor(String diagnosticDataFile) throws Exception {
-		FileInputStream fis = new FileInputStream(diagnosticDataFile);
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+	protected XmlDiagnosticData initializeExecutor(String diagnosticDataFile) throws Exception {
+
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File(diagnosticDataFile));
 		assertNotNull(diagnosticData);
 
-		executor = new CustomProcessExecutor();
+		executor = new DefaultSignatureProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 		return diagnosticData;
 	}
 
 	protected ConstraintsParameters loadConstraintsParameters() throws Exception {
-		ConstraintsParameters constraintsParameters = loadConstraintsParameters(validationPolicyFile);
+		ConstraintsParameters constraintsParameters = ValidationPolicyFacade.newFacade().unmarshall(validationPolicyFile);
 		this.constraintsParameters = constraintsParameters;
 		return constraintsParameters;
 	}

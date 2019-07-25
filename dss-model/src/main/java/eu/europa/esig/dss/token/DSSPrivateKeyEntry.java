@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.token;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**

@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pades.signature;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -34,17 +35,18 @@ import org.junit.runners.Parameterized.Parameters;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 
 @RunWith(Parameterized.class)
 public class PAdESDoubleSignature extends PKIFactoryAccess {
@@ -107,6 +109,10 @@ public class PAdESDoubleSignature extends PKIFactoryAccess {
 		checkAllRevocationOnce(diagnosticData2);
 
 		checkAllPreviousRevocationDataInNewDiagnosticData(diagnosticData1, diagnosticData2);
+		
+		SignatureWrapper signatureOne = diagnosticData2.getSignatures().get(0);
+		SignatureWrapper signatureTwo = diagnosticData2.getSignatures().get(1);
+		assertFalse(Arrays.equals(signatureOne.getSignatureDigestReference().getDigestValue(), signatureTwo.getSignatureDigestReference().getDigestValue()));
 
 	}
 
@@ -132,7 +138,7 @@ public class PAdESDoubleSignature extends PKIFactoryAccess {
 			if (certificateWrapper.isTrusted() || certificateWrapper.isSelfSigned() || certificateWrapper.isIdPkixOcspNoCheck()) {
 				continue;
 			}
-			int nbRevoc = certificateWrapper.getRevocationData().size();
+			int nbRevoc = certificateWrapper.getCertificateRevocationData().size();
 			assertEquals("Nb revoc for cert " + certificateWrapper.getCommonName() + " = " + nbRevoc, 1, nbRevoc);
 		}
 	}

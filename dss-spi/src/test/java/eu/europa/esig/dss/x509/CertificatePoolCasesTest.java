@@ -2,23 +2,16 @@ package eu.europa.esig.dss.x509;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.enumerations.CertificateSourceType;
 
 public class CertificatePoolCasesTest {
 
@@ -117,61 +110,6 @@ public class CertificatePoolCasesTest {
 
 		assertEquals(2438, certPool.getNumberOfCertificates());
 		assertEquals(2338, certPool.getNumberOfEntities());
-	}
-
-	@Test
-	public void testMultiThreads() throws IOException {
-
-		KeyStoreCertificateSource kscs = new KeyStoreCertificateSource(new File("src/test/resources/extract-tls.p12"),
-				"PKCS12", "ks-password");
-		List<CertificateToken> certificates = kscs.getCertificates();
-
-		CertificatePool sharedPool = new CertificatePool();
-
-		ExecutorService executor = Executors.newFixedThreadPool(50);
-
-		List<Future<Integer>> futures = new ArrayList<Future<Integer>>();
-
-		for (int i = 0; i < 500; i++) {
-			futures.add(executor.submit(new TestConcurrent(sharedPool, certificates)));
-		}
-
-		for (Future<Integer> future : futures) {
-			try {
-				assertEquals(2438, future.get().intValue());
-			} catch (Exception e) {
-				fail(e.getMessage());
-			}
-		}
-
-		executor.shutdown();
-
-	}
-
-	class TestConcurrent implements Callable<Integer> {
-
-		private final CertificatePool sharedPool;
-		private final List<CertificateToken> certificates;
-
-		public TestConcurrent(CertificatePool sharedPool, List<CertificateToken> certificates) {
-			this.sharedPool = sharedPool;
-			this.certificates = certificates;
-		}
-
-		@Override
-		public Integer call() throws Exception {
-
-			for (CertificateToken certificateToken : certificates) {
-				for (CertificateSourceType source : CertificateSourceType.values()) {
-					sharedPool.getInstance(certificateToken, source);
-					sharedPool.isTrusted(certificateToken);
-				}
-				assertNotNull(sharedPool.getSources(certificateToken));
-				assertFalse(sharedPool.get(certificateToken.getSubjectX500Principal()).isEmpty());
-			}
-			return sharedPool.getNumberOfCertificates();
-		}
-
 	}
 
 }

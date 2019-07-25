@@ -27,12 +27,12 @@ import org.junit.Before;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.Policy;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.SignaturePolicyType;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.x509.SignaturePolicy;
 
 public class CAdESLevelBWithImplicitPolicyTest extends AbstractCAdESTestSignature {
 
@@ -63,7 +63,7 @@ public class CAdESLevelBWithImplicitPolicyTest extends AbstractCAdESTestSignatur
 	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
 		super.verifyDiagnosticData(diagnosticData);
 		String policyId = diagnosticData.getFirstPolicyId();
-		assertEquals(SignaturePolicy.IMPLICIT_POLICY, policyId);
+		assertEquals(SignaturePolicyType.IMPLICIT_POLICY.name(), policyId);
 	}
 
 	@Override

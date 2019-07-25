@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.client.http.NativeHTTPDataLoader;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSource;
 import eu.europa.esig.dss.x509.revocation.crl.CRLSource;
@@ -98,6 +99,13 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	 * : false
 	 */
 	private boolean exceptionOnUncoveredPOE = false;
+	
+	/**
+	 * This variable set the default Digest Algorithm what will be used for calculation
+	 * of digests for validation tokns and signed data
+	 * Default: SHA256
+	 */
+	private DigestAlgorithm defaultDigestAlgorithm = DigestAlgorithm.SHA256;
 
 	/**
 	 * This variable set the behavior to include raw certificate tokens into the
@@ -314,6 +322,16 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 			validationPool.importCerts(adjunctCertSource);
 		}
 		return validationPool;
+	}
+
+	@Override
+	public void setDefaultDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
+		this.defaultDigestAlgorithm = digestAlgorithm;
+	}
+	
+	@Override
+	public DigestAlgorithm getDefaultDigestAlgorithm() {
+		return defaultDigestAlgorithm;
 	}
 
 	@Override

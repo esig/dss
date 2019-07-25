@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
@@ -38,6 +38,13 @@
 				<role>developer</role>
 			</roles>
 		</developer>
+		<developer>
+			<id>beliakov</id>
+			<name>Aleksandr Beliakov</name>
+			<roles>
+				<role>developer</role>
+			</roles>
+		</developer>
 
 	</developers>
 
@@ -51,19 +58,20 @@
 
 		<bouncycastle.version>1.62</bouncycastle.version>
 		<xmlsec.version>2.0.10</xmlsec.version>
-		<pdfbox.version>2.0.15</pdfbox.version>
+		<pdfbox.version>2.0.16</pdfbox.version>
 		<openpdf.version>1.2.16</openpdf.version>
 		<httpclient.version>4.5.8</httpclient.version>
 		<rs-api.version>2.0.1</rs-api.version>
 		
 		<!-- JDK9+ -->
 		<jaxb.version>2.3.0</jaxb.version>
-		<jaxws-ri.version>2.3.0</jaxws-ri.version>
+		<jaxws-ri.version>2.3.2</jaxws-ri.version>
 		<activation.version>1.2.0</activation.version>
 
 		<junit.version>4.12</junit.version>
 		<mockito.version>2.12.0</mockito.version>
 		<h2database.version>1.4.197</h2database.version>
+		<jackson.version>2.9.9</jackson.version>
 		
 	    <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 	    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
@@ -83,6 +91,21 @@
 	</licenses>
 	
 	<modules>
+	
+		<module>dss-enumerations</module>
+		<module>dss-jaxb-parsers</module>
+	
+		<module>specs-xmldsig</module>
+		<module>specs-xades</module>
+		<module>specs-trusted-list</module>
+		<module>specs-validation-report</module>
+		
+		<module>dss-policy-jaxb</module>
+		<module>dss-diagnostic-jaxb</module>
+		<module>dss-detailed-report-jaxb</module>
+		<module>dss-simple-report-jaxb</module>
+		<module>dss-simple-certificate-report-jaxb</module>
+	
 		<module>dss-model</module>
 		<module>dss-token</module>
 		<module>dss-utils</module>
@@ -96,13 +119,6 @@
 		<module>dss-service</module>
 		<module>dss-test</module>
 		<module>sscd-mocca-adapter</module>
-		<module>dss-policy-jaxb</module>
-		<module>dss-common-validation-jaxb</module>
-		<module>dss-tsl-jaxb</module>
-		<module>dss-diagnostic-jaxb</module>
-		<module>dss-simple-report-jaxb</module>
-		<module>dss-simple-certificate-report-jaxb</module>
-		<module>dss-detailed-report-jaxb</module>
 		<module>dss-reports</module>
 		<module>validation-policy</module>
 		<module>dss-xades</module>
@@ -114,22 +130,37 @@
 		<module>dss-asic-xades</module>
 		<module>dss-asic-cades</module>
 		<module>dss-tsl-validation</module>
-		<module>dss-remote-services</module>
-		<module>dss-rest-client</module>
-		<module>dss-rest</module>
-		<module>dss-soap-client</module>
-		<module>dss-soap</module>
-		<module>dss-validation-rest-client</module>
-		<module>dss-validation-rest</module>
-		<module>dss-validation-soap</module>
-		<module>dss-validation-soap-client</module>
+		
+    	<module>dss-common-remote-dto</module>
+    	<module>dss-common-remote-converter</module>
+		<module>dss-signature-dto</module>
+		<module>dss-signature-remote</module>
+		<module>dss-signature-rest-client</module>
+		<module>dss-signature-soap-client</module>
+		<module>dss-signature-rest</module>
+		<module>dss-signature-soap</module>
+		<module>dss-server-signing-dto</module>
 		<module>dss-server-signing-common</module>
 		<module>dss-server-signing-rest-client</module>
-		<module>dss-server-signing-rest</module>
 		<module>dss-server-signing-soap-client</module>
+		<module>dss-server-signing-rest</module>
 		<module>dss-server-signing-soap</module>
+		<module>dss-validation-dto</module>
+		<module>dss-validation-server-common</module>
+		<module>dss-validation-rest-client</module>
+		<module>dss-validation-soap-client</module>
+		<module>dss-validation-rest</module>
+		<module>dss-validation-soap</module>
+		<module>dss-certificate-validation-dto</module>
+		<module>dss-certificate-validation-common</module>
+    	<module>dss-certificate-validation-rest-client</module>
+    	<module>dss-certificate-validation-soap-client</module>
+    	<module>dss-certificate-validation-rest</module>
+    	<module>dss-certificate-validation-soap</module>
+		
 		<module>dss-cookbook</module>
-	</modules>
+
+  </modules>
 
 	<build>
 		<plugins>
@@ -158,6 +189,14 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 			    <configuration>
+					<fileSets>
+						<fileSet>
+							<directory>${project.build.directory}</directory>
+							<includes>
+								<include>*.exec</include>
+							</includes>
+						</fileSet>
+					</fileSets>
 			        <destFile>${sonar.jacoco.reportPaths}</destFile>
 			        <append>true</append>
 			    </configuration>
@@ -297,8 +336,8 @@
 						</goals>
 						<configuration>
 							<rules>
-                				<banDuplicatePomDependencyVersions />
-								<dependencyConvergence />
+                				<banDuplicatePomDependencyVersions/>
+								<dependencyConvergence/>
 								<bannedDependencies>
 									<excludes>
 										<exclude>xalan:xalan</exclude>
@@ -317,7 +356,7 @@
 				<plugin>
 					<groupId>org.jacoco</groupId>
 					<artifactId>jacoco-maven-plugin</artifactId>
-					<version>0.8.1</version>
+					<version>0.8.4</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -332,7 +371,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.22.0</version>
+					<version>2.22.2</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -398,6 +437,16 @@
 					<artifactId>maven-project-info-reports-plugin</artifactId>
 					<version>2.9</version>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-antrun-plugin</artifactId>
+					<version>1.8</version>
+				</plugin>
+				<plugin>
+				    <groupId>org.codehaus.mojo</groupId>
+				    <artifactId>build-helper-maven-plugin</artifactId>
+				    <version>3.0.0</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -412,6 +461,26 @@
 	<dependencyManagement>
 		<dependencies>
 			<!-- Internal Dependencies -->
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>specs-xmldsig</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>specs-xades</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>specs-trusted-list</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>specs-validation-report</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>sscd-mocca-adapter</artifactId>
@@ -511,27 +580,52 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-remote-services</artifactId>
+				<artifactId>dss-common-remote-dto</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-rest</artifactId>
+				<artifactId>dss-common-remote-converter</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-rest-client</artifactId>
+				<artifactId>dss-signature-remote</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-soap</artifactId>
+				<artifactId>dss-signature-dto</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-soap-client</artifactId>
+				<artifactId>dss-signature-rest</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-signature-rest-client</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-signature-soap</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-signature-soap-client</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-validation-dto</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-validation-server-common</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -551,6 +645,36 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-certificate-validation-dto</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-certificate-validation-common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-certificate-validation-rest-client</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-certificate-validation-soap-client</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-certificate-validation-rest</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-certificate-validation-soap</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-validation-soap-client</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -560,6 +684,11 @@
 				<version>${project.version}</version>
 			</dependency>
 			
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-server-signing-dto</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-server-signing-common</artifactId>
@@ -587,17 +716,17 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-tsl-jaxb</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-tsl-validation</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-common-validation-jaxb</artifactId>
+				<artifactId>dss-enumerations</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-jaxb-parsers</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -773,6 +902,11 @@
 			    <version>${h2database.version}</version>
 			    <scope>test</scope>
 			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.module</groupId>
+				<artifactId>jackson-module-jaxb-annotations</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
 						
 		</dependencies>
 	</dependencyManagement>
@@ -802,7 +936,7 @@
 					<plugin>
 						<groupId>org.owasp</groupId>
 						<artifactId>dependency-check-maven</artifactId>
-						<version>3.3.4</version>
+						<version>5.1.1</version>
 <!-- 						<configuration> -->
 <!-- 							<failBuildOnCVSS>8</failBuildOnCVSS> -->
 <!-- 						</configuration> -->

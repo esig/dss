@@ -1,18 +1,21 @@
 [source,xml]
 ----
 <DetailedReport xmlns="http://dss.esig.europa.eu/validation/detailed-report">
-    <Signatures Id="id-2056753e8b67ab9c96a6fe80ec9f619f8e9b4505b66b078c7a2b6e151edc2bbb">
-        <ValidationProcessBasicSignatures BestSignatureTime="2018-02-23T05:50:46">
-            <Constraint Id="id-2056753e8b67ab9c96a6fe80ec9f619f8e9b4505b66b078c7a2b6e151edc2bbb">
+    <Signatures Id="S-F55073FB926640BC883BC1E6D8D262776621E3E8CCFB1C53485CB62EAD435C2F">
+        <ValidationProcessBasicSignatures Title="Validation Process for Basic Signatures">
+            <Constraint Id="S-F55073FB926640BC883BC1E6D8D262776621E3E8CCFB1C53485CB62EAD435C2F">
                 <Name NameId="ADEST_ROBVPIIC">Is the result of the Basic Validation Process conclusive?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Conclusion>
                 <Indication>PASSED</Indication>
             </Conclusion>
+            <ProofOfExistence>
+                <Time>2019-07-25T06:28:44</Time>
+            </ProofOfExistence>
         </ValidationProcessBasicSignatures>
-        <ValidationProcessTimestamps Id="F8B72B7574450E84664DE88950BC781CA2528CF5B39ABB3E1F93947B752BE79F" Type="SIGNATURE_TIMESTAMP" ProductionTime="2017-10-27T11:55:08">
-            <Constraint Id="F8B72B7574450E84664DE88950BC781CA2528CF5B39ABB3E1F93947B752BE79F">
+        <ValidationProcessTimestamps Id="T-CE969723715C1152FE1695855AF9C9E2F12085DCB1D87637A3437474A0477C74" Type="SIGNATURE_TIMESTAMP" ProductionTime="2019-07-25T06:28:27" Title="Validation Process for Timestamps">
+            <Constraint Id="T-CE969723715C1152FE1695855AF9C9E2F12085DCB1D87637A3437474A0477C74">
                 <Name NameId="ADEST_ROTVPIIC">Is the result of the timestamps validation process conclusive?</Name>
                 <Status>OK</Status>
             </Constraint>
@@ -20,8 +23,8 @@
                 <Indication>PASSED</Indication>
             </Conclusion>
         </ValidationProcessTimestamps>
-        <ValidationProcessTimestamps Id="7F9B88A8161CC87905298FF8E0CD080516452FBA1480DD6AFAE38B7DD18E2A1B" Type="ARCHIVE_TIMESTAMP" ProductionTime="2017-10-27T11:55:08">
-            <Constraint Id="7F9B88A8161CC87905298FF8E0CD080516452FBA1480DD6AFAE38B7DD18E2A1B">
+        <ValidationProcessTimestamps Id="T-0A0AA730F5D2C057EA93A1FD318FBE1D547A4C624C0635B318C1C1F95510D173" Type="ARCHIVE_TIMESTAMP" ProductionTime="2019-07-25T06:28:27" Title="Validation Process for Timestamps">
+            <Constraint Id="T-0A0AA730F5D2C057EA93A1FD318FBE1D547A4C624C0635B318C1C1F95510D173">
                 <Name NameId="ADEST_ROTVPIIC">Is the result of the timestamps validation process conclusive?</Name>
                 <Status>OK</Status>
             </Constraint>
@@ -29,190 +32,419 @@
                 <Indication>PASSED</Indication>
             </Conclusion>
         </ValidationProcessTimestamps>
-        <ValidationProcessLongTermData BestSignatureTime="2017-10-27T11:55:08">
+        <ValidationProcessLongTermData Title="Validation Process for Signatures with Time and Signatures with Long-Term Validation Data">
             <Constraint>
-                ...
+                <Name NameId="LTV_ABSV">Is the result of the Basic Validation Process acceptable?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Constraint>
+                <Name NameId="TSV_ASTPTCT">Are timestamps in the right order?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Constraint>
+                <Name NameId="BBB_SAV_ISQPSTP">Is signed qualifying property: 'signing-time' present?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Constraint>
+                <Name NameId="ADEST_ISTPTDABST">Is the signing-time plus the timestamp delay after the best-signature-time?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Constraint>
+                <Name NameId="BBB_SAV_ISVA">Is the signature acceptable?</Name>
+                <Status>OK</Status>
             </Constraint>
             <Conclusion>
                 <Indication>PASSED</Indication>
             </Conclusion>
+            <ProofOfExistence>
+                <Time>2019-07-25T06:28:27</Time>
+                <TimestampId>T-CE969723715C1152FE1695855AF9C9E2F12085DCB1D87637A3437474A0477C74</TimestampId>
+            </ProofOfExistence>
         </ValidationProcessLongTermData>
-        <ValidationProcessArchivalData BestSignatureTime="2017-10-27T11:55:08">
+        <ValidationProcessArchivalData Title="Validation Process for Signatures with Archival Data">
             <Constraint>
-                ...
+                <Name NameId="ARCH_LTVV">Is the result of the LTV validation process acceptable?</Name>
+                <Status>OK</Status>
             </Constraint>
             <Conclusion>
                 <Indication>PASSED</Indication>
             </Conclusion>
+            <ProofOfExistence>
+                <Time>2019-07-25T06:28:27</Time>
+                <TimestampId>T-CE969723715C1152FE1695855AF9C9E2F12085DCB1D87637A3437474A0477C74</TimestampId>
+            </ProofOfExistence>
         </ValidationProcessArchivalData>
-        <ValidationSignatureQualification SignatureQualification="QESig">
+        <ValidationSignatureQualification Id="S-F55073FB926640BC883BC1E6D8D262776621E3E8CCFB1C53485CB62EAD435C2F" SignatureQualification="N/A" Title="Signature Qualification">
             <Constraint>
-                ...
+                <Name NameId="QUAL_IS_ADES">Is the signature/seal an acceptable AdES (ETSI EN 319 102-1) ?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Constraint>
+                <Name NameId="QUAL_TRUSTED_CERT_PATH">Is the certificate path trusted?</Name>
+                <Status>NOT OK</Status>
+                <Error NameId="QUAL_TRUSTED_CERT_PATH_ANS">The certificate path is not trusted!</Error>
             </Constraint>
             <Conclusion>
-                <Indication>PASSED</Indication>
+                <Indication>FAILED</Indication>
+                <Errors NameId="QUAL_TRUSTED_CERT_PATH_ANS">The certificate path is not trusted!</Errors>
+                <Errors NameId="QUAL_TRUSTED_CERT_PATH_ANS">The certificate path is not trusted!</Errors>
             </Conclusion>
-            <ValidationCertificateQualification DateTime="2017-05-15T16:19:53" ValidationTime="CERTIFICATE_ISSUANCE_TIME" CertificateQualification="QC Cert for ESig with QSCD">
-                <Constraint>
-                    ...
-                </Constraint>
-                <Conclusion>
-                    <Indication>PASSED</Indication>
-                </Conclusion>
-            </ValidationCertificateQualification>
-            <ValidationCertificateQualification DateTime="2017-10-27T11:55:08" ValidationTime="BEST_SIGNATURE_TIME" CertificateQualification="QC Cert for ESig with QSCD">
-                <Constraint>
-                    ...
-                </Constraint>
-                <Conclusion>
-                    <Indication>PASSED</Indication>
-                </Conclusion>
-            </ValidationCertificateQualification>
         </ValidationSignatureQualification>
     </Signatures>
-    <BasicBuildingBlocks Id="021ec5069eb8a903bd62b6769eddfe439dfa90a720c9a362d5fe76b9c31d0302bfc08d553a774d1f440ab36525a3290e2cc23b46d0ac954ea4d8201faff0d91a" Type="REVOCATION">
-        <ISC>
+    <BasicBuildingBlocks Id="R-379134AF270381E452E0B9336911E44134304A46A2DEF045E43682603C33D7DE" Type="REVOCATION">
+        <ISC Title="Identification of the Signing Certificate">
             <Constraint>
-				...
-            </Constraint>
-            <Conclusion>
-                <Indication>PASSED</Indication>
-            </Conclusion>
-        </ISC>
-        <CV>
-            <Constraint>
-                ...
-            </Constraint>
-            <Conclusion>
-                <Indication>PASSED</Indication>
-            </Conclusion>
-        </CV>
-        <SAV>
-            <Constraint>
-                ...
-            </Constraint>
-            <Conclusion>
-                <Indication>PASSED</Indication>
-            </Conclusion>
-        </SAV>
-        <XCV>
-            <Constraint>
-                ...
-            </Constraint>
-            <Conclusion>
-                <Indication>INDETERMINATE</Indication>
-                <SubIndication>OUT_OF_BOUNDS_NO_POE</SubIndication>
-                <Errors NameId="BBB_XCV_ICTIVRSC_ANS">The current time is not in the validity range of the signer's certificate.</Errors>
-            </Conclusion>
-            <SubXCV Id="CB217219BADFC13B4FEA3EFA43882E9FECE49E542DCDBA83428DC6854499A35F" TrustAnchor="false">
-                ...
-            </SubXCV>
-            <SubXCV Id="80AC352930875BA0AFE7F70DD389130C8E1E7BEFFDC96477356AD2A9E003AD2B" TrustAnchor="false">
-                ...
-            </SubXCV>
-            <SubXCV Id="702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F" TrustAnchor="true">
-               ...
-            </SubXCV>
-        </XCV>
-        <CertificateChain>
-            ...
-        </CertificateChain>
-        <Conclusion>
-            <Indication>INDETERMINATE</Indication>
-            <SubIndication>OUT_OF_BOUNDS_NO_POE</SubIndication>
-            <Errors NameId="BBB_XCV_ICTIVRSC_ANS">The current time is not in the validity range of the signer's certificate.</Errors>
-        </Conclusion>
-    </BasicBuildingBlocks>
-    <BasicBuildingBlocks Id="id-2056753e8b67ab9c96a6fe80ec9f619f8e9b4505b66b078c7a2b6e151edc2bbb" Type="SIGNATURE">
-        <FC>
-            <Constraint>
-                ...
-            </Constraint>
-            <Conclusion>
-                <Indication>PASSED</Indication>
-            </Conclusion>
-        </FC>
-        <ISC>
-            <Constraint>
-                ...
+                <Name NameId="BBB_ICS_ISCI">Is there an identified candidate for the signing certificate?</Name>
+                <Status>OK</Status>
             </Constraint>
             <Conclusion>
                 <Indication>PASSED</Indication>
             </Conclusion>
             <CertificateChain>
-                <ChainItem Id="021EC5069EB8A903BD62B6769EDDFE439DFA90A720C9A362D5FE76B9C31D0302">
-                    <Source>UNKNOWN</Source>
+                <ChainItem Id="C-F945D749E930BB699A5B5C62CF3D9F6F50ED99F6DBB246DCC890FFDC4163B230">
+                    <Source>SIGNATURE</Source>
                 </ChainItem>
-                <ChainItem Id="80AC352930875BA0AFE7F70DD389130C8E1E7BEFFDC96477356AD2A9E003AD2B">
-                    <Source>UNKNOWN</Source>
-                </ChainItem>
-                <ChainItem Id="702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
-                    <Source>TRUSTED_LIST</Source>
+                <ChainItem Id="C-120E8DC626116B9D1456E98E8950961212CFA6A68B911CE2E78C76CF85868AB8">
+                    <Source>TRUSTED_STORE</Source>
                 </ChainItem>
             </CertificateChain>
         </ISC>
-        <VCI>
+        <CV Title="Cryptographic Verification">
             <Constraint>
-                <Name NameId="BBB_VCI_ISPK">Is the signature policy known?</Name>
+                <Name NameId="BBB_CV_ISI">Is the signature intact?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Conclusion>
                 <Indication>PASSED</Indication>
             </Conclusion>
-        </VCI>
-        <CV>
-            <Constraint>
-                ...
-            </Constraint>
-            <Conclusion>
-                <Indication>PASSED</Indication>
-            </Conclusion>
         </CV>
-        <SAV>
+        <SAV ValidationTime="2019-07-25T06:28:44" Title="Signature Acceptance Validation">
             <Constraint>
-                ...
+                <Name NameId="ARCCM">Are revocation cryptographic constraints met?</Name>
+                <Status>OK</Status>
+                <AdditionalInfo>Validation time : 2019-07-25 06:28 for token with ID : [R-379134AF270381E452E0B9336911E44134304A46A2DEF045E43682603C33D7DE]</AdditionalInfo>
             </Constraint>
             <Conclusion>
                 <Indication>PASSED</Indication>
             </Conclusion>
+            <CryptographicInfo>
+                <Algorithm>http://www.w3.org/2001/04/xmldsig-more#rsa-sha256</Algorithm>
+                <KeyLength>2048</KeyLength>
+                <Secure>true</Secure>
+                <NotAfter>2022-12-31T23:00:00</NotAfter>
+            </CryptographicInfo>
         </SAV>
-        <XCV>
+        <XCV Title="X509 Certificate Validation">
             ...
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+            <SubXCV Id="C-F945D749E930BB699A5B5C62CF3D9F6F50ED99F6DBB246DCC890FFDC4163B230" TrustAnchor="false" Title="Certificate Id = C-F945D749E930BB699A5B5C62CF3D9F6F50ED99F6DBB246DCC890FFDC4163B230">
+                ...
+                <Conclusion>
+                    <Indication>PASSED</Indication>
+                </Conclusion>
+            </SubXCV>
+            <SubXCV Id="C-120E8DC626116B9D1456E98E8950961212CFA6A68B911CE2E78C76CF85868AB8" TrustAnchor="true" Title="Certificate Id = C-120E8DC626116B9D1456E98E8950961212CFA6A68B911CE2E78C76CF85868AB8">
+                <Conclusion>
+                    <Indication>PASSED</Indication>
+                </Conclusion>
+            </SubXCV>
         </XCV>
         <CertificateChain>
-            ...
+            <ChainItem Id="C-F945D749E930BB699A5B5C62CF3D9F6F50ED99F6DBB246DCC890FFDC4163B230">
+                <Source>SIGNATURE</Source>
+            </ChainItem>
+            <ChainItem Id="C-120E8DC626116B9D1456E98E8950961212CFA6A68B911CE2E78C76CF85868AB8">
+                <Source>TRUSTED_STORE</Source>
+            </ChainItem>
         </CertificateChain>
         <Conclusion>
             <Indication>PASSED</Indication>
         </Conclusion>
     </BasicBuildingBlocks>
-    <BasicBuildingBlocks Id="F8B72B7574450E84664DE88950BC781CA2528CF5B39ABB3E1F93947B752BE79F" Type="TIMESTAMP">
-        ...
-    </BasicBuildingBlocks>
-    <BasicBuildingBlocks Id="ee3c22e06087bfec213709ad3e7f2dda9ce9d19ce238dca81a6433e9070a9fbee7a38824e892663bfaa50ba2edf0f5bfb5437dbeb73af1c9fec79b6ce77df88d" Type="REVOCATION">
-        ...
-    </BasicBuildingBlocks>
-    <BasicBuildingBlocks Id="7F9B88A8161CC87905298FF8E0CD080516452FBA1480DD6AFAE38B7DD18E2A1B" Type="TIMESTAMP">
-        ...
-    </BasicBuildingBlocks>
-    <BasicBuildingBlocks Id="80ac352930875ba0afe7f70dd389130c8e1e7beffdc96477356ad2a9e003ad2be7a38824e892663bfaa50ba2edf0f5bfb5437dbeb73af1c9fec79b6ce77df88d" Type="REVOCATION">
-        ...
-    </BasicBuildingBlocks>
-    <TLAnalysis CountryCode="EU">
-        <Constraint>
-          	...
-        </Constraint>
+    <BasicBuildingBlocks Id="R-F96DFDCA7020E1CC3F52294A3516C71615DD2F24FEE997F14DFC8C4C7CD3E476" Type="REVOCATION">
+        <ISC Title="Identification of the Signing Certificate">
+            <Constraint>
+                <Name NameId="BBB_ICS_ISCI">Is there an identified candidate for the signing certificate?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+            <CertificateChain>
+                <ChainItem Id="C-120E8DC626116B9D1456E98E8950961212CFA6A68B911CE2E78C76CF85868AB8">
+                    <Source>TRUSTED_STORE</Source>
+                </ChainItem>
+            </CertificateChain>
+        </ISC>
+        <CV Title="Cryptographic Verification">
+            ...
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+        </CV>
+        <SAV ValidationTime="2019-07-25T06:28:44" Title="Signature Acceptance Validation">
+            ...
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+            ...
+        </SAV>
+        <XCV Title="X509 Certificate Validation">
+            ...
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+            <SubXCV Id="C-120E8DC626116B9D1456E98E8950961212CFA6A68B911CE2E78C76CF85868AB8" TrustAnchor="true" Title="Certificate Id = C-120E8DC626116B9D1456E98E8950961212CFA6A68B911CE2E78C76CF85868AB8">
+                <Conclusion>
+                    <Indication>PASSED</Indication>
+                </Conclusion>
+            </SubXCV>
+        </XCV>
+        <CertificateChain>
+            <ChainItem Id="C-120E8DC626116B9D1456E98E8950961212CFA6A68B911CE2E78C76CF85868AB8">
+                <Source>TRUSTED_STORE</Source>
+            </ChainItem>
+        </CertificateChain>
         <Conclusion>
             <Indication>PASSED</Indication>
         </Conclusion>
-    </TLAnalysis>
-    <TLAnalysis CountryCode="BE">
-        <Constraint>
-          	...
-        </Constraint>
+    </BasicBuildingBlocks>
+    <BasicBuildingBlocks Id="T-CE969723715C1152FE1695855AF9C9E2F12085DCB1D87637A3437474A0477C74" Type="TIMESTAMP">
+        <ISC Title="Identification of the Signing Certificate">
+            <Constraint>
+                <Name NameId="BBB_ICS_ISCI">Is there an identified candidate for the signing certificate?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+            <CertificateChain>
+                <ChainItem Id="C-DC1CD75D6E0F8F1D6D33F1F99E1B709693A38DDFA7DC7A357100295A6CF4C955">
+                    <Source>TIMESTAMP</Source>
+                </ChainItem>
+                <ChainItem Id="C-120E8DC626116B9D1456E98E8950961212CFA6A68B911CE2E78C76CF85868AB8">
+                    <Source>TRUSTED_STORE</Source>
+                </ChainItem>
+            </CertificateChain>
+        </ISC>
+        <CV Title="Cryptographic Verification">
+            ...
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+        </CV>
+        <SAV ValidationTime="2019-07-25T06:28:44" Title="Signature Acceptance Validation">
+            ...
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+            <CryptographicInfo>
+                <Algorithm>http://www.w3.org/2001/04/xmldsig-more#rsa-sha256</Algorithm>
+                <KeyLength>2048</KeyLength>
+                <Secure>true</Secure>
+                <NotAfter>2022-12-31T23:00:00</NotAfter>
+            </CryptographicInfo>
+        </SAV>
+        <XCV Title="X509 Certificate Validation">
+            ...
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+            <SubXCV Id="C-DC1CD75D6E0F8F1D6D33F1F99E1B709693A38DDFA7DC7A357100295A6CF4C955" TrustAnchor="false" Title="Certificate Id = C-DC1CD75D6E0F8F1D6D33F1F99E1B709693A38DDFA7DC7A357100295A6CF4C955">
+                ...
+                <Conclusion>
+                    <Indication>PASSED</Indication>
+                </Conclusion>
+                <RFC Id="R-F96DFDCA7020E1CC3F52294A3516C71615DD2F24FEE997F14DFC8C4C7CD3E476" Title="Revocation Freshness Checker">
+                    ...
+                    <Conclusion>
+                        <Indication>PASSED</Indication>
+                    </Conclusion>
+                </RFC>
+            </SubXCV>
+            <SubXCV Id="C-120E8DC626116B9D1456E98E8950961212CFA6A68B911CE2E78C76CF85868AB8" TrustAnchor="true" Title="Certificate Id = C-120E8DC626116B9D1456E98E8950961212CFA6A68B911CE2E78C76CF85868AB8">
+                <Conclusion>
+                    <Indication>PASSED</Indication>
+                </Conclusion>
+            </SubXCV>
+        </XCV>
+        <CertificateChain>
+            <ChainItem Id="C-DC1CD75D6E0F8F1D6D33F1F99E1B709693A38DDFA7DC7A357100295A6CF4C955">
+                <Source>TIMESTAMP</Source>
+            </ChainItem>
+            <ChainItem Id="C-120E8DC626116B9D1456E98E8950961212CFA6A68B911CE2E78C76CF85868AB8">
+                <Source>TRUSTED_STORE</Source>
+            </ChainItem>
+        </CertificateChain>
         <Conclusion>
             <Indication>PASSED</Indication>
         </Conclusion>
-    </TLAnalysis>
+    </BasicBuildingBlocks>
+    <BasicBuildingBlocks Id="T-0A0AA730F5D2C057EA93A1FD318FBE1D547A4C624C0635B318C1C1F95510D173" Type="TIMESTAMP">
+        <ISC Title="Identification of the Signing Certificate">
+            ...
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+            <CertificateChain>
+                <ChainItem Id="C-DC1CD75D6E0F8F1D6D33F1F99E1B709693A38DDFA7DC7A357100295A6CF4C955">
+                    <Source>TIMESTAMP</Source>
+                </ChainItem>
+                <ChainItem Id="C-120E8DC626116B9D1456E98E8950961212CFA6A68B911CE2E78C76CF85868AB8">
+                    <Source>TRUSTED_STORE</Source>
+                </ChainItem>
+            </CertificateChain>
+        </ISC>
+        <CV Title="Cryptographic Verification">
+            ...
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+        </CV>
+        <SAV ValidationTime="2019-07-25T06:28:44" Title="Signature Acceptance Validation">
+            ...
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+            <CryptographicInfo>
+                <Algorithm>http://www.w3.org/2001/04/xmldsig-more#rsa-sha256</Algorithm>
+                <KeyLength>2048</KeyLength>
+                <Secure>true</Secure>
+                <NotAfter>2022-12-31T23:00:00</NotAfter>
+            </CryptographicInfo>
+        </SAV>
+        <XCV Title="X509 Certificate Validation">
+            ...
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+            <SubXCV Id="C-DC1CD75D6E0F8F1D6D33F1F99E1B709693A38DDFA7DC7A357100295A6CF4C955" TrustAnchor="false" Title="Certificate Id = C-DC1CD75D6E0F8F1D6D33F1F99E1B709693A38DDFA7DC7A357100295A6CF4C955">
+                ...
+                <Conclusion>
+                    <Indication>PASSED</Indication>
+                </Conclusion>
+                <RFC Id="R-F96DFDCA7020E1CC3F52294A3516C71615DD2F24FEE997F14DFC8C4C7CD3E476" Title="Revocation Freshness Checker">
+                    ...
+                    <Conclusion>
+                        <Indication>PASSED</Indication>
+                    </Conclusion>
+                </RFC>
+            </SubXCV>
+            <SubXCV Id="C-120E8DC626116B9D1456E98E8950961212CFA6A68B911CE2E78C76CF85868AB8" TrustAnchor="true" Title="Certificate Id = C-120E8DC626116B9D1456E98E8950961212CFA6A68B911CE2E78C76CF85868AB8">
+                <Conclusion>
+                    <Indication>PASSED</Indication>
+                </Conclusion>
+            </SubXCV>
+        </XCV>
+        ...
+        <Conclusion>
+            <Indication>PASSED</Indication>
+        </Conclusion>
+    </BasicBuildingBlocks>
+    <BasicBuildingBlocks Id="S-F55073FB926640BC883BC1E6D8D262776621E3E8CCFB1C53485CB62EAD435C2F" Type="SIGNATURE">
+        <FC Title="Format Checking">
+            ...
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+        </FC>
+        <ISC Title="Identification of the Signing Certificate">
+            ...
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+            <CertificateChain>
+                <ChainItem Id="C-B9B8051A58645938F660EC1261B7534E2DC7422882D873B2876204BBA1078352">
+                    <Source>SIGNATURE</Source>
+                </ChainItem>
+                <ChainItem Id="C-FE7DFD7173311743BAFD5D919292663470D94A18FCF4300BE49C80AF0C4180F3">
+                    <Source>SIGNATURE</Source>
+                </ChainItem>
+                <ChainItem Id="C-120E8DC626116B9D1456E98E8950961212CFA6A68B911CE2E78C76CF85868AB8">
+                    <Source>TRUSTED_STORE</Source>
+                </ChainItem>
+            </CertificateChain>
+        </ISC>
+        <VCI Title="Validation Context Initialization">
+            ...
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+        </VCI>
+        <CV Title="Cryptographic Verification">
+            <Constraint>
+                <Name NameId="BBB_CV_IRDOF">Is the reference data object found?</Name>
+                <Status>OK</Status>
+                <AdditionalInfo>Reference : r-id-87e10c3267a50d56de93241478704549-1</AdditionalInfo>
+            </Constraint>
+            ...
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+        </CV>
+        <SAV ValidationTime="2019-07-25T06:28:44" Title="Signature Acceptance Validation">
+            ...
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+            <CryptographicInfo>
+                <Algorithm>http://www.w3.org/2001/04/xmldsig-more#rsa-sha256</Algorithm>
+                <KeyLength>2048</KeyLength>
+                <Secure>true</Secure>
+                <NotAfter>2022-12-31T23:00:00</NotAfter>
+            </CryptographicInfo>
+        </SAV>
+        <XCV Title="X509 Certificate Validation">
+            ...
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+            <SubXCV Id="C-B9B8051A58645938F660EC1261B7534E2DC7422882D873B2876204BBA1078352" TrustAnchor="false" Title="Certificate Id = C-B9B8051A58645938F660EC1261B7534E2DC7422882D873B2876204BBA1078352">
+                ...
+                <Conclusion>
+                    <Indication>PASSED</Indication>
+                </Conclusion>
+                <RFC Id="R-379134AF270381E452E0B9336911E44134304A46A2DEF045E43682603C33D7DE" Title="Revocation Freshness Checker">
+                    ...
+                    <Conclusion>
+                        <Indication>PASSED</Indication>
+                    </Conclusion>
+                </RFC>
+            </SubXCV>
+            <SubXCV Id="C-FE7DFD7173311743BAFD5D919292663470D94A18FCF4300BE49C80AF0C4180F3" TrustAnchor="false" Title="Certificate Id = C-FE7DFD7173311743BAFD5D919292663470D94A18FCF4300BE49C80AF0C4180F3">
+                ...
+                <Conclusion>
+                    <Indication>PASSED</Indication>
+                </Conclusion>
+                <RFC Id="R-F96DFDCA7020E1CC3F52294A3516C71615DD2F24FEE997F14DFC8C4C7CD3E476" Title="Revocation Freshness Checker">
+                    ...
+                    <Conclusion>
+                        <Indication>PASSED</Indication>
+                    </Conclusion>
+                </RFC>
+            </SubXCV>
+            <SubXCV Id="C-120E8DC626116B9D1456E98E8950961212CFA6A68B911CE2E78C76CF85868AB8" TrustAnchor="true" Title="Certificate Id = C-120E8DC626116B9D1456E98E8950961212CFA6A68B911CE2E78C76CF85868AB8">
+                <Conclusion>
+                    <Indication>PASSED</Indication>
+                </Conclusion>
+            </SubXCV>
+        </XCV>
+        <CertificateChain>
+            <ChainItem Id="C-B9B8051A58645938F660EC1261B7534E2DC7422882D873B2876204BBA1078352">
+                <Source>SIGNATURE</Source>
+            </ChainItem>
+            <ChainItem Id="C-FE7DFD7173311743BAFD5D919292663470D94A18FCF4300BE49C80AF0C4180F3">
+                <Source>SIGNATURE</Source>
+            </ChainItem>
+            <ChainItem Id="C-120E8DC626116B9D1456E98E8950961212CFA6A68B911CE2E78C76CF85868AB8">
+                <Source>TRUSTED_STORE</Source>
+            </ChainItem>
+        </CertificateChain>
+        <Conclusion>
+            <Indication>PASSED</Indication>
+        </Conclusion>
+    </BasicBuildingBlocks>
 </DetailedReport>
 ----

@@ -69,7 +69,7 @@ import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.SignerAttributeV2;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 /**
  * This class holds the CAdES-B signature profile; it supports the inclusion of the mandatory signed

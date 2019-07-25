@@ -22,7 +22,7 @@ package eu.europa.esig.dss.validation;
 
 import java.util.List;
 
-import eu.europa.esig.dss.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
 
 public class ContainerInfo {
 

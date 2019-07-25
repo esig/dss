@@ -22,10 +22,10 @@ package eu.europa.esig.dss.asic.extension.asice;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.asic.extension.AbstractTestASiCwithXAdESExtension;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 public class ASiCeExtensionWithXAdESLTToLTAWithFailTimestampTest extends AbstractTestASiCwithXAdESExtension {

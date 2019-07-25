@@ -11,9 +11,14 @@
 	
 	<artifactId>dss-model</artifactId>
 	<name>DSS Model</name>
-	<description>DSS Model contains the data model representation for DSS. All classes should be serializable (REST/SOAP)</description>
+	<description>DSS Model contains the data model representation for DSS</description>
 	
 	<dependencies>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-enumerations</artifactId>
+		</dependency>
+		
 		<!-- No other dependencies than in scope test  -->
 		<dependency>
 			<groupId>junit</groupId>

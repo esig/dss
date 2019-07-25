@@ -23,6 +23,7 @@ package eu.europa.esig.dss.asic.signature;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.zip.CRC32;
@@ -45,7 +46,7 @@ import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureParameters> extends AbstractSignatureService<SP>
 		implements MultipleDocumentsSignatureService<SP> {
@@ -111,7 +112,7 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 
 	protected DSSDocument mergeArchiveAndExtendedSignatures(DSSDocument archiveDocument, List<DSSDocument> signaturesToAdd) {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); ZipOutputStream zos = new ZipOutputStream(baos)) {
-			copyArchiveContentWithoutSignatures(archiveDocument, zos);
+			copyArchiveContentWithoutSignatures(archiveDocument, zos, signaturesToAdd);
 			storeDocuments(signaturesToAdd, zos);
 
 			zos.finish();
@@ -122,14 +123,15 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 		}
 	}
 
-	private void copyArchiveContentWithoutSignatures(DSSDocument archiveDocument, ZipOutputStream zos) throws IOException {
+	private void copyArchiveContentWithoutSignatures(DSSDocument archiveDocument, ZipOutputStream zos, List<DSSDocument> documentsToAdd) throws IOException {
+		List<String> documentNames = getDocumentNames(documentsToAdd);
 		long containerSize = DSSUtils.getFileByteSize(archiveDocument);
 		try (InputStream is = archiveDocument.openStream(); ZipInputStream zis = new ZipInputStream(is)) {
 			ZipEntry entry;
 			while ((entry = ASiCUtils.getNextValidEntry(zis)) != null) {
 				final String name = entry.getName();
 				final ZipEntry newEntry = new ZipEntry(name);
-				if (!isSignatureFilename(name)) {
+				if (!isSignatureFilename(name) && !documentNames.contains(name)) {
 					zos.putNextEntry(newEntry);
 					ASiCUtils.secureCopy(zis, zos, containerSize);
 				}
@@ -138,6 +140,14 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 	}
 
 	abstract boolean isSignatureFilename(String name);
+	
+	private List<String> getDocumentNames(List<DSSDocument> documents) {
+		List<String> names = new ArrayList<String>();
+		for (DSSDocument document : documents) {
+			names.add(document.getName());
+		}
+		return names;
+	}
 
 	protected DSSDocument buildASiCContainer(List<DSSDocument> documentsToBeSigned, List<DSSDocument> signatures, List<DSSDocument> manifestDocuments,
 			ASiCParameters asicParameters) {

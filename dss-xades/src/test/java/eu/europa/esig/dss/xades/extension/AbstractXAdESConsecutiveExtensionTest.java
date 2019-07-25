@@ -13,20 +13,20 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
+import eu.europa.esig.dss.detailedreport.DetailedReport;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.reports.SimpleReport;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
@@ -109,7 +109,7 @@ public abstract class AbstractXAdESConsecutiveExtensionTest<SP extends AbstractS
 	}
 	
 	private void checkTimestamps(DiagnosticData diagnosticData) {
-		Set<TimestampWrapper> allTimestamps = diagnosticData.getAllTimestamps();
+		Set<TimestampWrapper> allTimestamps = diagnosticData.getTimestampSet();
 		for (TimestampWrapper timestampWrapper : allTimestamps) {
 			assertNotNull(timestampWrapper.getProductionTime());
 			assertTrue(timestampWrapper.isMessageImprintDataFound());

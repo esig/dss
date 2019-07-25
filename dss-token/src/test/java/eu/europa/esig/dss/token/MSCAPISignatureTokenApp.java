@@ -23,9 +23,9 @@ package eu.europa.esig.dss.token;
 import java.util.Base64;
 import java.util.List;
 
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
 public class MSCAPISignatureTokenApp {
 

@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.RevocationOrigin;
 
 public class OCSPTokenBuilder {
 
@@ -52,11 +51,6 @@ public class OCSPTokenBuilder {
 	 * Status of the OCSP response
 	 */
 	private OCSPRespStatus responseStatus;
-	
-	/**
-	 * Origin of the revocation data (signature or external)
-	 */
-	private RevocationOrigin origin;
 	
 	/**
 	 * This variable is used to prevent the replay attack.
@@ -100,10 +94,6 @@ public class OCSPTokenBuilder {
 		this.nonce = nonce;
 	}
 	
-	public void setOrigin(RevocationOrigin origin) {
-		this.origin = origin;
-	}
-	
 	/**
 	 * Build {@link OCSPToken} based on the provided parameters
 	 * @return {@link OCSPToken} object
@@ -118,12 +108,9 @@ public class OCSPTokenBuilder {
 			ocspToken.setRevocationTokenKey(DSSRevocationUtils.getOcspRevocationKey(certificateToken, ocspAccessLocation));
 		}
 		ocspToken.setCertId(DSSRevocationUtils.getOCSPCertificateID(certificateToken, issuerCertificateToken));
-		if (origin != null) {
-			ocspToken.setOrigin(origin);
-		}
 		ocspToken.setAvailable(available);
 		ocspToken.setResponseStatus(responseStatus);
-		ocspToken.setRelatedCertificateID(certificateToken.getDSSIdAsString());
+		ocspToken.setRelatedCertificate(certificateToken);
 		
 		ocspToken.setBasicOCSPResp(basicOCSPResp);
 		if (nonce != null) {

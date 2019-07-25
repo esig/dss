@@ -26,15 +26,15 @@ import java.util.List;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
+import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSignatureValidCheck;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
-import eu.europa.esig.jaxb.policy.Level;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class CertificateSignatureValidCheckTest {
 

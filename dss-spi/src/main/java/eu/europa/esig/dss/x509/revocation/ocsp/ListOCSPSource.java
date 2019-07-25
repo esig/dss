@@ -20,21 +20,17 @@
  */
 package eu.europa.esig.dss.x509.revocation.ocsp;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
 
 /**
  * This class allows to handle a list OCSP source.
  *
  */
-public class ListOCSPSource extends OfflineOCSPSource {
-
-	protected List<BasicOCSPResp> basicOCSPRespList = null;
-
+@SuppressWarnings("serial")
+public class ListOCSPSource extends SignatureOCSPSource {
+	
 	public ListOCSPSource() {
-		basicOCSPRespList = new ArrayList<BasicOCSPResp>();
+		// default constructor
 	}
 
 	/**
@@ -44,12 +40,12 @@ public class ListOCSPSource extends OfflineOCSPSource {
 	 *            an offline ocsp source
 	 */
 	public ListOCSPSource(final OfflineOCSPSource ocspSource) {
-		basicOCSPRespList = new ArrayList<BasicOCSPResp>(ocspSource.getContainedOCSPResponses());
+		addAll(ocspSource);
 	}
 
 	@Override
-	public List<BasicOCSPResp> getContainedOCSPResponses() {
-		return basicOCSPRespList;
+	public void appendContainedOCSPResponses() {
+		// do nothing
 	}
 
 	/**
@@ -61,11 +57,15 @@ public class ListOCSPSource extends OfflineOCSPSource {
 	 *            the source to be added
 	 */
 	public void addAll(final OfflineOCSPSource offlineOCSPSource) {
-
-		for (BasicOCSPResp basicOCSPResp : offlineOCSPSource.getContainedOCSPResponses()) {
-
-			if (!basicOCSPRespList.contains(basicOCSPResp)) {
-				basicOCSPRespList.add(basicOCSPResp);
+		for (OCSPResponseBinary ocspResponse : offlineOCSPSource.getOCSPResponsesList()) {
+			for (RevocationOrigin origin : offlineOCSPSource.getRevocationOrigins(ocspResponse)) {
+				addOCSPResponse(ocspResponse, origin);
+			}
+		}
+		if (offlineOCSPSource instanceof SignatureOCSPSource) {
+			SignatureOCSPSource signatureOCSPSource = (SignatureOCSPSource) offlineOCSPSource;
+			for (OCSPRef ocspRef : signatureOCSPSource.getAllOCSPReferences()) {
+				addReference(ocspRef);
 			}
 		}
 	}

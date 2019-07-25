@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks.type;
 
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
 import eu.europa.esig.dss.validation.process.qualification.certificate.QualifiedStatus;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
 public final class TypeStrategyFactory {
 

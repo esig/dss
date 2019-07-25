@@ -25,37 +25,37 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlCertificate;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlTLAnalysis;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCertificate;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.ValidationTime;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.ValidationTime;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableTrustedListCheck;
 import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServiceFilter;
 import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServicesFilterFactory;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
 public class CertificateQualificationBlock extends Chain<XmlCertificate> {
 
 	private final XmlConclusion buildingBlocksConclusion;
 	private final Date validationTime;
 	private final CertificateWrapper signingCertificate;
-	private final List<CertificateWrapper> usedCertificates;
 	private final List<XmlTLAnalysis> tlAnalysis;
 	private final String lotlCountryCode;
 
 	public CertificateQualificationBlock(XmlConclusion buildingBlocksConclusion, Date validationTime, CertificateWrapper signingCertificate,
-			List<CertificateWrapper> usedCertificates, List<XmlTLAnalysis> tlAnalysis, String lotlCountryCode) {
+			List<XmlTLAnalysis> tlAnalysis, String lotlCountryCode) {
 		super(new XmlCertificate());
+		result.setTitle(ValidationProcessDefinition.CERT_QUALIFICATION.getTitle());
 
 		this.buildingBlocksConclusion = buildingBlocksConclusion;
 		this.validationTime = validationTime;
 		this.signingCertificate = signingCertificate;
-		this.usedCertificates = usedCertificates;
 		this.tlAnalysis = tlAnalysis;
 		this.lotlCountryCode = lotlCountryCode;
 	}
@@ -96,11 +96,11 @@ public class CertificateQualificationBlock extends Chain<XmlCertificate> {
 			List<TrustedServiceWrapper> caqcServices = filter.filter(acceptableServices);
 
 			CertQualificationAtTimeBlock certQualAtIssuanceBlock = new CertQualificationAtTimeBlock(ValidationTime.CERTIFICATE_ISSUANCE_TIME,
-					signingCertificate, usedCertificates, caqcServices);
+					signingCertificate, caqcServices);
 			result.getValidationCertificateQualification().add(certQualAtIssuanceBlock.execute());
 
 			CertQualificationAtTimeBlock certQualAtSigningTimeBlock = new CertQualificationAtTimeBlock(ValidationTime.VALIDATION_TIME, validationTime,
-					signingCertificate, usedCertificates, caqcServices);
+					signingCertificate, caqcServices);
 			result.getValidationCertificateQualification().add(certQualAtSigningTimeBlock.execute());
 
 		}

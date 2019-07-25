@@ -52,6 +52,7 @@ import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
@@ -260,6 +261,15 @@ public class DSSASN1UtilsTest {
 		List<String> ocspAccessLocations = DSSASN1Utils.getOCSPAccessLocations(caTokenA);
 		assertNotNull(ocspAccessLocations);
 	}
+	
+	@Test
+	public void getIssuerInfo() {
+		String issuerV2base64 = "MFYwUaRPME0xEDAOBgNVBAMMB2dvb2QtY2ExGTAXBgNVBAoMEE5vd2luYSBTb2x1dGlvbnMxETAPBgNVBAsMCFBLSS1URVNUMQswCQYDVQQGEwJMVQIBCg==";
+		IssuerSerialInfo issuerInfo = DSSASN1Utils.getIssuerInfo(Utils.fromBase64(issuerV2base64));
+		assertNotNull(issuerInfo);
+		assertNotNull(issuerInfo.getIssuerName());
+		assertNotNull(issuerInfo.getSerialNumber());
+	}
 
 	@Test
 	public void getDEREncoded() throws IOException, CMSException, TSPException {
@@ -299,4 +309,5 @@ public class DSSASN1UtilsTest {
 			assertNotNull(rebuiltTST);
 		}
 	}
+
 }

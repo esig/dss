@@ -20,11 +20,12 @@
  */
 package eu.europa.esig.dss.asic.extension.asice;
 
-import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.asic.extension.AbstractTestASiCwithXAdESExtension;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 
 public class LibreOfficeExtensionWithXAdESBToTTest extends AbstractTestASiCwithXAdESExtension {
 
@@ -46,6 +47,13 @@ public class LibreOfficeExtensionWithXAdESBToTTest extends AbstractTestASiCwithX
 	@Override
 	protected ASiCContainerType getContainerType() {
 		return ASiCContainerType.ASiC_E;
+	}
+
+	@Override
+	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
+		checkTimestamps(diagnosticData);
+
+		// Overrided because original file contains duplicate certificate values
 	}
 
 }

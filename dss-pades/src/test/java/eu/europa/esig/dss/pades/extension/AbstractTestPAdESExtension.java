@@ -31,6 +31,7 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.extension.AbstractTestExtension;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
@@ -77,6 +78,11 @@ public abstract class AbstractTestPAdESExtension extends AbstractTestExtension<P
 		ToBeSigned dataToSign = service.getDataToSign(doc, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		return service.signDocument(doc, signatureParameters, signatureValue);
+	}
+
+	@Override
+	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
+		checkTimestamps(diagnosticData);
 	}
 
 	@Override

@@ -32,26 +32,27 @@ import java.util.List;
 
 import org.junit.Before;
 
-import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.TimestampParameters;
 import eu.europa.esig.dss.asic.ASiCExtractResult;
 import eu.europa.esig.dss.asic.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.signature.ASiCWithXAdESService;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.signature.AbstractPkiFactoryTestMultipleDocumentsSignatureService;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.TimestampToken;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 public class ASiCSXAdESMultiFilesLevelBTest extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<ASiCWithXAdESSignatureParameters> {
 
@@ -77,6 +78,11 @@ public class ASiCSXAdESMultiFilesLevelBTest extends AbstractPkiFactoryTestMultip
 		signatureParameters.setContentTimestampParameters(new TimestampParameters(DigestAlgorithm.SHA256));
 		TimestampToken contentTimestamp = service.getContentTimestamp(documentToSigns, signatureParameters);
 		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp));
+	}
+
+	@Override
+	protected boolean isGenerateHtmlPdfReports() {
+		return true;
 	}
 
 	@Override
@@ -114,7 +120,19 @@ public class ASiCSXAdESMultiFilesLevelBTest extends AbstractPkiFactoryTestMultip
 	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
-		assertEquals(1, Utils.collectionSize(signatureScopes)); // package.zip
+		assertEquals(3, Utils.collectionSize(signatureScopes)); // package.zip + two signed files
+		int archive = 0;
+		int archiveContent = 0;
+		for (XmlSignatureScope signatureScope : signatureScopes) {
+			if ("package.zip".equals(signatureScope.getName()) && SignatureScopeType.FULL.equals(signatureScope.getScope())) {
+				archive++;
+			}
+			if (SignatureScopeType.ARCHIVED.equals(signatureScope.getScope())) {
+				archiveContent++;
+			}
+		}
+		assertEquals(1, archive);
+		assertEquals(2, archiveContent);
 	}
 
 	@Override

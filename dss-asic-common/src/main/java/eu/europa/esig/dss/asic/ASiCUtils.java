@@ -32,11 +32,11 @@ import java.util.zip.ZipInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.utils.Utils;
 
 public final class ASiCUtils {
@@ -225,10 +225,16 @@ public final class ASiCUtils {
 		return null;
 	}
 
+	/**
+	 * Transforms {@code num} with the pattern:
+	 *     {@code "2 -> 002"}, {@code "10 -> 010"}, etc.
+	 * @param num
+	 * @return {@link String}
+	 */
 	public static String getPadNumber(int num) {
 		String numStr = String.valueOf(num);
 		String zeroPad = "000";
-		return zeroPad.substring(numStr.length()) + numStr; // 2 -> 002
+		return zeroPad.substring(numStr.length()) + numStr;
 	}
 
 	public static boolean isAsic(List<DSSDocument> documents) {

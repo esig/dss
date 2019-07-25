@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.FileInputStream;
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,17 +14,20 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
-import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.jaxb.simplereport.SimpleReport;
-import eu.europa.esig.dss.validation.CertificateQualification;
-import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
+import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
+import eu.europa.esig.dss.enumerations.CertificateQualification;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
+import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.ValidationPolicyFacade;
+import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
+import eu.europa.esig.dss.policy.jaxb.Model;
+import eu.europa.esig.dss.policy.jaxb.ModelConstraint;
+import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.jaxb.policy.ConstraintsParameters;
-import eu.europa.esig.jaxb.policy.Model;
-import eu.europa.esig.jaxb.policy.ModelConstraint;
 
 /**
  * JUnit test implementation for model based custom validation.
@@ -79,8 +82,8 @@ public class ModelCustomValidationTest extends ModelAbstractlValidation {
 	
 	
 	private final TestCase testCase;
-	private final EtsiValidationPolicy policy;
-	private final DiagnosticData diagnosticData;
+	private final ValidationPolicy policy;
+	private final XmlDiagnosticData diagnosticData;
 	
 	/**
 	 * Constructor.
@@ -91,16 +94,14 @@ public class ModelCustomValidationTest extends ModelAbstractlValidation {
 	public ModelCustomValidationTest(final TestCase testCase) throws Exception {
 		this.testCase = testCase;
 		
-		FileInputStream policyFis = new FileInputStream(testCase.getTestData().getPolicy());
-		ConstraintsParameters policyJaxB = getJAXBObjectFromString(policyFis, ConstraintsParameters.class, "/xsd/policy.xsd");
+		ConstraintsParameters policyJaxB = ValidationPolicyFacade.newFacade().unmarshall(new File(testCase.getTestData().getPolicy()));
 
 		ModelConstraint mc = new ModelConstraint();
 		mc.setValue(testCase.getModel());
 		policyJaxB.setModel(mc);
 		policy = new EtsiValidationPolicy(policyJaxB);
 
-		FileInputStream fis = new FileInputStream(testCase.getTestData().getDiagnosticData());
-		diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File(testCase.getTestData().getDiagnosticData()));
 		assertNotNull(diagnosticData);
 		assertNotNull(diagnosticData.getSignatures());
 		assertTrue(!diagnosticData.getSignatures().isEmpty());
@@ -110,10 +111,10 @@ public class ModelCustomValidationTest extends ModelAbstractlValidation {
 
 	@Test
 	public void testModelBasedSignedDocument() throws Exception {
-		final String signerCertId = diagnosticData.getSignatures().get(0).getSigningCertificate().getId();
+		final String signerCertId = diagnosticData.getSignatures().get(0).getSigningCertificate().getCertificate().getId();
 		assertTrue(testCase.getTestData().getSignerCertificateIdentifier().equals(signerCertId));
 		
-		CustomProcessExecutor executor = new CustomProcessExecutor();
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(policy);
 		executor.setCurrentTime(diagnosticData.getValidationDate());
@@ -121,10 +122,10 @@ public class ModelCustomValidationTest extends ModelAbstractlValidation {
 		Reports reports = executor.execute();
 		assertNotNull(reports);
 		
-		DetailedReport detailedReport = reports.getDetailedReportJaxb();
+		XmlDetailedReport detailedReport = reports.getDetailedReportJaxb();
 		assertNotNull(detailedReport);
 
-		SimpleReport simpleReport = reports.getSimpleReportJaxb();
+		XmlSimpleReport simpleReport = reports.getSimpleReportJaxb();
 		assertNotNull(simpleReport);
 		assertTrue(1 == simpleReport.getSignaturesCount());
 		assertNotNull(simpleReport.getSignature().get(0));

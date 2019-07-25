@@ -36,14 +36,15 @@ import org.junit.runners.Parameterized.Parameters;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
@@ -83,7 +84,7 @@ public class XAdESDoubleSignatureTest extends PKIFactoryAccess {
 		dataToSign = service.getDataToSign(signedDocument, params);
 		signatureValue = getToken().sign(dataToSign, params.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument doubleSignedDocument = service.signDocument(signedDocument, params, signatureValue);
-		doubleSignedDocument.save("target/" + "doubleSignedTest.xml");
+//		doubleSignedDocument.save("target/" + "doubleSignedTest.xml");
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doubleSignedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
@@ -98,6 +99,10 @@ public class XAdESDoubleSignatureTest extends PKIFactoryAccess {
 		}
 
 		assertFalse(DSSXMLUtils.isDuplicateIdsDetected(doubleSignedDocument));
+		
+		SignatureWrapper signatureOne = diagnosticData.getSignatures().get(0);
+		SignatureWrapper signatureTwo = diagnosticData.getSignatures().get(1);
+		assertFalse(Arrays.equals(signatureOne.getSignatureDigestReference().getDigestValue(), signatureTwo.getSignatureDigestReference().getDigestValue()));
 	}
 
 	@Override

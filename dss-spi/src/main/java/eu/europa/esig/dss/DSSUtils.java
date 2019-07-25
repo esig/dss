@@ -38,6 +38,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
 import java.security.Security;
 import java.security.cert.CertificateFactory;
@@ -60,6 +61,8 @@ import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.DigestInfo;
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.openssl.jcajce.JcaMiscPEMGenerator;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
@@ -68,6 +71,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.client.http.DataLoader;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.identifier.TokenIdentifier;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
@@ -349,8 +354,16 @@ public final class DSSUtils {
 	 * @return digested array of bytes
 	 */
 	public static byte[] digest(final DigestAlgorithm digestAlgorithm, final byte[] data) {
-		final MessageDigest messageDigest = digestAlgorithm.getMessageDigest();
+		final MessageDigest messageDigest = getMessageDigest(digestAlgorithm);
 		return messageDigest.digest(data);
+	}
+
+	public static MessageDigest getMessageDigest(DigestAlgorithm digestAlgorithm) {
+		try {
+			return digestAlgorithm.getMessageDigest();
+		} catch (NoSuchAlgorithmException e) {
+			throw new DSSException("Unable to create a MessageDigest for algorithm " + digestAlgorithm, e);
+		}
 	}
 
 	/**
@@ -385,8 +398,7 @@ public final class DSSUtils {
 	 */
 	public static byte[] digest(final DigestAlgorithm digestAlgo, final InputStream inputStream) {
 		try {
-
-			final MessageDigest messageDigest = digestAlgo.getMessageDigest();
+			final MessageDigest messageDigest = getMessageDigest(digestAlgo);
 			final byte[] buffer = new byte[4096];
 			int count = 0;
 			while ((count = inputStream.read(buffer)) > 0) {
@@ -407,7 +419,7 @@ public final class DSSUtils {
 	}
 
 	public static byte[] digest(DigestAlgorithm digestAlgorithm, byte[]... data) {
-		final MessageDigest messageDigest = digestAlgorithm.getMessageDigest();
+		final MessageDigest messageDigest = getMessageDigest(digestAlgorithm);
 		for (final byte[] bytes : data) {
 			messageDigest.update(bytes);
 		}
@@ -562,6 +574,20 @@ public final class DSSUtils {
 	}
 	
 	/**
+	 * Gets CMSSignedData from the {@code document} bytes
+	 * 
+	 * @param document {@link DSSDocument} contained CMSSignedData
+	 * @return {@link CMSSignedData}
+	 */
+	public static CMSSignedData toCMSSignedData(final DSSDocument document) {
+		try (InputStream inputStream = document.openStream()) {
+			return new CMSSignedData(inputStream);
+		} catch (IOException | CMSException e) {
+			throw new DSSException("Not a valid CAdES file", e);
+		}
+	}	
+	
+	/**		
 	 * Returns byte size of the given document
 	 * @param dssDocument {@link DSSDocument} to get size for
 	 * @return long size of the given document
@@ -598,7 +624,7 @@ public final class DSSUtils {
 	 *            the signing time
 	 * @param id
 	 *            the token identifier
-	 * @return an unique string
+	 * @return a unique string
 	 */
 	public static String getDeterministicId(final Date signingTime, TokenIdentifier id) {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); DataOutputStream dos = new DataOutputStream(baos)) {
@@ -780,71 +806,6 @@ public final class DSSUtils {
 		return joinedArray;
 	}
 
-	public static String getFinalFileName(DSSDocument originalFile, SigningOperation operation, SignatureLevel level, ASiCContainerType containerType) {
-		StringBuilder finalName = new StringBuilder();
-
-		String originalName = null;
-		if (containerType != null) {
-			originalName = "container";
-		} else {
-			originalName = originalFile.getName();
-		}
-
-		if (Utils.isStringNotEmpty(originalName)) {
-			int dotPosition = originalName.lastIndexOf('.');
-			if (dotPosition > 0) {
-				// remove extension
-				finalName.append(originalName.substring(0, dotPosition));
-			} else {
-				finalName.append(originalName);
-			}
-		} else {
-			finalName.append("document");
-		}
-
-		if (SigningOperation.SIGN.equals(operation)) {
-			finalName.append("-signed-");
-		} else if (SigningOperation.EXTEND.equals(operation)) {
-			finalName.append("-extended-");
-		}
-
-		finalName.append(Utils.lowerCase(level.name().replaceAll("_", "-")));
-		finalName.append('.');
-
-		if (containerType != null) {
-			switch (containerType) {
-			case ASiC_S:
-				finalName.append("asics");
-				break;
-			case ASiC_E:
-				finalName.append("asice");
-				break;
-			default:
-				break;
-			}
-		} else {
-			SignatureForm signatureForm = level.getSignatureForm();
-			switch (signatureForm) {
-			case XAdES:
-				finalName.append("xml");
-				break;
-			case CAdES:
-				finalName.append("pkcs7");
-				break;
-			case PAdES:
-				finalName.append("pdf");
-				break;
-			default:
-				break;
-			}
-		}
-
-		return finalName.toString();
-	}
-
-	public static String getFinalFileName(DSSDocument originalFile, SigningOperation operation, SignatureLevel level) {
-		return getFinalFileName(originalFile, operation, level, null);
-	}
 
 	public static String decodeUrl(String uri) {
 		try {
@@ -853,6 +814,62 @@ public final class DSSUtils {
 			LOG.error("Unable to decode '" + uri + "' : " + e.getMessage(), e);
 		}
 		return uri;
+	}
+	
+	/**
+	 * Skip the defined {@code n} number of bytes from the {@code InputStream}
+	 * and validates success of the operation
+	 * @param is {@link InputStream} to skip bytes from
+	 * @param n {@code long} number bytes to skip
+	 * @return actual number of bytes have been skipped
+     * @exception IllegalStateException in case of {@code InputStream} reading error 
+	 */
+	public static long skipAvailableBytes(InputStream is, long n) throws IllegalStateException {
+		try {
+			long skipped = is.skip(n);
+			if (skipped != n) {
+				throw new IllegalStateException(String.format("The number of skipped bytes [%s] differs from the expected value [%s]! "
+						+ "The InputStream is too small, corrupted or not accessible!", skipped, n));
+			}
+			return skipped;
+		} catch (IOException e) {
+			throw new DSSException("Cannot read the InputStream!");
+		}
+	}
+	
+	/**
+	 * Read the requested number of bytes from {@code InputStream} according to the size of 
+	 * the provided {@code byte}[] buffer and validates success of the operation
+	 * @param is {@link InputStream} to read bytes from
+	 * @param b {@code byte}[] buffer to fill
+	 * @return the total number of bytes read into buffer
+	 * @throws IllegalStateException in case of {@code InputStream} reading error 
+	 */
+	public static long readAvailableBytes(InputStream is, byte[] b) throws IllegalStateException {
+		return readAvailableBytes(is, b, 0, b.length);
+	}
+	
+	/**
+	 * Read the requested number of bytes from {@code InputStream}
+	 * and validates success of the operation
+	 * @param is {@link InputStream} to read bytes from
+	 * @param b {@code byte}[] buffer to fill
+	 * @param off {@code int} offset in the destination array
+	 * @param len {@code int} number of bytes to read
+	 * @return the total number of bytes read into buffer
+	 * @throws IllegalStateException in case of {@code InputStream} reading error 
+	 */
+	public static long readAvailableBytes(InputStream is, byte[] b, int off, int len) throws IllegalStateException {
+		try {
+			long read = is.read(b, off, len);
+			if (read != len) {
+				throw new IllegalStateException(String.format("The number of read bytes [%s] differs from the expected value [%s]! "
+						+ "The InputStream is too small, corrupted or not accessible!", read, len));
+			}
+			return read;
+		} catch (IOException e) {
+			throw new DSSException("Cannot read the InputStream!");
+		}
 	}
 
 }

@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
 
 import com.google.common.base.Ascii;
@@ -196,6 +197,16 @@ public class GoogleGuavaUtils implements IUtils {
 	}
 
 	@Override
+	public boolean isMapEmpty(Map<?,?> map) {
+		return map == null || map.isEmpty();
+	}
+
+	@Override
+	public boolean isMapNotEmpty(Map<?,?> map) {
+		return map != null && !map.isEmpty();
+	}
+
+	@Override
 	@SuppressWarnings("rawtypes")
 	public int collectionSize(Collection collection) {
 		if (collection == null) {
@@ -212,6 +223,11 @@ public class GoogleGuavaUtils implements IUtils {
 	@Override
 	public byte[] fromHex(String hex) {
 		return BaseEncoding.base16().lowerCase().decode(Ascii.toLowerCase(hex));
+	}
+	
+	@Override
+	public boolean isBase64Encoded(String base64String) {
+		return BaseEncoding.base64().canDecode(CharMatcher.whitespace().removeFrom(base64String));
 	}
 
 	@Override

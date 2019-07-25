@@ -27,7 +27,7 @@ import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
@@ -60,6 +60,11 @@ public class PAdESWithSignatureVisibleAndTimestampInvisible extends AbstractPAdE
 
 		service = new PAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
+	}
+
+	@Override
+	protected boolean isGenerateHtmlPdfReports() {
+		return true;
 	}
 
 	@Override

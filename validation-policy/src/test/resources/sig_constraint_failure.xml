@@ -22,28 +22,35 @@
 	            <SignatureIntact>true</SignatureIntact>
 	            <SignatureValid>true</SignatureValid>
 	        </BasicSignature>
-	        <SigningCertificate Id="CAA0910D7F836EB51888AD951455258EDA15F1F84B5D077F324B8FE60407C314">
+	        <SigningCertificate Certificate="C-CAA0910D7F836EB51888AD951455258EDA15F1F84B5D077F324B8FE60407C314">
 	            <AttributePresent>true</AttributePresent>
 	            <DigestValuePresent>true</DigestValuePresent>
 	            <DigestValueMatch>true</DigestValueMatch>
 	            <IssuerSerialMatch>true</IssuerSerialMatch>
 	        </SigningCertificate>
 	        <CertificateChain>
-	            <ChainItem Id="CAA0910D7F836EB51888AD951455258EDA15F1F84B5D077F324B8FE60407C314">
-	                <Source>SIGNATURE</Source>
-	            </ChainItem>
-	            <ChainItem Id="4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67">
-	                <Source>TRUSTED_LIST</Source>
-	            </ChainItem>
+	            <ChainItem Certificate="C-CAA0910D7F836EB51888AD951455258EDA15F1F84B5D077F324B8FE60407C314"/>
+	            <ChainItem Certificate="C-4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67"/>
 	        </CertificateChain>
 	        <ContentType>1.2.840.113549.1.7.1</ContentType>
+            <FoundCertificates/>
+            <FoundRevocations/>
+            <FoundTimestamps/>
 	        <SignatureScopes>
-	            <SignatureScope name="Full document" scope="FULL">Full document</SignatureScope>
+                <SignatureScope SignerData="D-1b0d829ae53640c6f4b5222774dfe60d27c71ab21780850241dc1f985492dee6">
+                    <Scope>FULL</Scope>
+                    <Name>Full document</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
 	        </SignatureScopes>
+            <SignatureDigestReference>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>6RNVluifcqKS3+raE9ErKZ/QOjBrPsP/fl0OqWqYbAo=</DigestValue>
+            </SignatureDigestReference>
 	    </Signature>
     </Signatures>
     <UsedCertificates>
-        <Certificate Id="4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67">
+        <Certificate Id="C-4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67">
             <SubjectDistinguishedName Format="CANONICAL">cn=trans sped qca,ou=trans sped certification authority,o=trans sped srl,c=ro</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=Trans Sped QCA,OU=Trans Sped Certification Authority,O=Trans Sped SRL,C=RO</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=tc trustcenter class 3 ca ii,ou=tc trustcenter class 3 ca,o=tc trustcenter gmbh,c=de</IssuerDistinguishedName>
@@ -53,12 +60,9 @@
             <CountryName>RO</CountryName>
             <OrganizationName>Trans Sped SRL</OrganizationName>
             <OrganizationalUnit>Trans Sped Certification Authority</OrganizationalUnit>
-            <DigestAlgoAndValues>
-	            <DigestAlgoAndValue>
-	                <DigestMethod>SHA256</DigestMethod>
-	                <DigestValue>SFUiAAK84hgQExXOJyzBtKX02uA3Ay9jMF75CIZwHGc=</DigestValue>
-	            </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
+            <Sources>
+            	<Source>TRUSTED_LIST</Source>
+            </Sources>
             <NotAfter>2023-01-02T22:59:59</NotAfter>
             <NotBefore>2013-01-10T15:13:21</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -83,8 +87,12 @@
             <QCStatementIds />
             <QCTypes />
             <TrustedServiceProviders />
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>SFUiAAK84hgQExXOJyzBtKX02uA3Ay9jMF75CIZwHGc=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
-        <Certificate Id="5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E">
+        <Certificate Id="C-5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E">
             <SubjectDistinguishedName Format="CANONICAL">cn=certum trusted network ca,ou=certum certification authority,o=unizeto technologies s.a.,c=pl</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=Certum Trusted Network CA,OU=Certum Certification Authority,O=Unizeto Technologies S.A.,C=PL</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=certum trusted network ca,ou=certum certification authority,o=unizeto technologies s.a.,c=pl</IssuerDistinguishedName>
@@ -94,12 +102,9 @@
             <CountryName>PL</CountryName>
             <OrganizationName>Unizeto Technologies S.A.</OrganizationName>
             <OrganizationalUnit>Certum Certification Authority</OrganizationalUnit>
-            <DigestAlgoAndValues>
-	            <DigestAlgoAndValue>
-	                <DigestMethod>SHA256</DigestMethod>
-	                <DigestValue>XFhGjVX1jkl+dDmC0rUAELbRZTdKz4On1KMtt2jEQI4=</DigestValue>
-	            </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
+            <Sources>
+            	<Source>SIGNATURE</Source>
+            </Sources>
             <NotAfter>2029-12-31T13:07:37</NotAfter>
             <NotBefore>2008-10-22T14:07:37</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -121,8 +126,12 @@
             <QCStatementIds />
             <QCTypes />
             <TrustedServiceProviders />
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>XFhGjVX1jkl+dDmC0rUAELbRZTdKz4On1KMtt2jEQI4=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
-        <Certificate Id="CAA0910D7F836EB51888AD951455258EDA15F1F84B5D077F324B8FE60407C314">
+        <Certificate Id="C-CAA0910D7F836EB51888AD951455258EDA15F1F84B5D077F324B8FE60407C314">
             <SubjectDistinguishedName Format="CANONICAL">c=ro,2.5.4.5=#130d32303034313232333441415635,2.5.4.4=#0c05416e656369,2.5.4.42=#0c0d41647269616e2d566173696c65,cn=A-V A</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">C=RO,2.5.4.5=#130d32303034313232333441415635,2.5.4.4=#0c05416e656369,2.5.4.42=#0c0d41647269616e2d566173696c65,CN=A-V A</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=trans sped qca,ou=trans sped certification authority,o=trans sped srl,c=ro</IssuerDistinguishedName>
@@ -132,12 +141,9 @@
             <CountryName>RO</CountryName>
             <GivenName>A-V</GivenName>
             <Surname>A</Surname>
-            <DigestAlgoAndValues>
-	            <DigestAlgoAndValue>
-	                <DigestMethod>SHA256</DigestMethod>
-	                <DigestValue>yqCRDX+DbrUYiK2VFFUljtoV8fhLXQd/MkuP5gQHwxQ=</DigestValue>
-	            </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
+            <Sources>
+            	<Source>SIGNATURE</Source>
+            </Sources>
             <NotAfter>2017-04-16T01:59:59</NotAfter>
             <NotBefore>2016-04-15T02:00:00</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -153,11 +159,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67"/>
+            <SigningCertificate Certificate="C-4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67"/>
             <CertificateChain>
-                <ChainItem Id="4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -166,45 +170,21 @@
                 <certificatePolicy>0.4.0.1456.1.1</certificatePolicy>
             </CertificatePolicies>
             <QCStatementIds>
-                <oid>0.4.0.1862.1.1</oid>
+                <qcStatementOid>0.4.0.1862.1.1</qcStatementOid>
             </QCStatementIds>
             <QCTypes />
             <TrustedServiceProviders />
             <Revocations>
-	            <Revocation Id="79ADAE6C275B8805AF16746D43CEA07C1E1102C6476C9E9C4B2B4F30230B4F74">
-	                <Origin>EXTERNAL</Origin>
-	                <Source>OCSPToken</Source>
-	                <SourceAddress>http://ocsp.s-trust.de</SourceAddress>
-	                <Available>true</Available>
+	            <CertificateRevocation Revocation="R-79ADAE6C275B8805AF16746D43CEA07C1E1102C6476C9E9C4B2B4F30230B4F74">
 	                <Status>true</Status>
-	                <ProductionDate>2016-05-04T15:55:17</ProductionDate>
-	                <ThisUpdate>2016-05-04T15:55:17</ThisUpdate>
-	                <DigestAlgoAndValues>
-		                <DigestAlgoAndValue>
-		                    <DigestMethod>SHA256</DigestMethod>
-		                    <DigestValue>Fh+ie77tvClEw75bwguQz4cF7A3dlSDi9qe1vEm5jQ8=</DigestValue>
-		                </DigestAlgoAndValue>
-	                </DigestAlgoAndValues>
-	                <BasicSignature>
-	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-	                    <DigestAlgoUsedToSignThisToken>SHA224</DigestAlgoUsedToSignThisToken>
-	                    <SignatureIntact>true</SignatureIntact>
-	                    <SignatureValid>true</SignatureValid>
-	                </BasicSignature>
-	                <SigningCertificate Id="19F1F410A503DB645E0851141333A75A74E55E5F07DF45ED33C0620857519002"/>
-	                <CertificateChain>
-	                    <ChainItem Id="19F1F410A503DB645E0851141333A75A74E55E5F07DF45ED33C0620857519002">
-	                        <Source>OCSP_RESPONSE</Source>
-	                    </ChainItem>
-	                    <ChainItem Id="4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67">
-	                        <Source>TRUSTED_LIST</Source>
-	                    </ChainItem>
-	                </CertificateChain>
-	            </Revocation>
+	            </CertificateRevocation>
             </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>yqCRDX+DbrUYiK2VFFUljtoV8fhLXQd/MkuP5gQHwxQ=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
-        <Certificate Id="D9CAABC3225B7030CDB83E3846E3691C14ED790B1764CE1B4F043157899C5C58">
+        <Certificate Id="C-D9CAABC3225B7030CDB83E3846E3691C14ED790B1764CE1B4F043157899C5C58">
             <SubjectDistinguishedName Format="CANONICAL">cn=certum ev tsa sha2,ou=certum certification authority,o=unizeto technologies s.a.,c=pl</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=Certum EV TSA SHA2,OU=Certum Certification Authority,O=Unizeto Technologies S.A.,C=PL</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=certum trusted network ca,ou=certum certification authority,o=unizeto technologies s.a.,c=pl</IssuerDistinguishedName>
@@ -214,12 +194,9 @@
             <CountryName>PL</CountryName>
             <OrganizationName>Unizeto Technologies S.A.</OrganizationName>
             <OrganizationalUnit>Certum Certification Authority</OrganizationalUnit>
-            <DigestAlgoAndValues>
-	            <DigestAlgoAndValue>
-	                <DigestMethod>SHA256</DigestMethod>
-	                <DigestValue>2cqrwyJbcDDNuD44RuNpHBTteQsXZM4bTwQxV4mcXFg=</DigestValue>
-	            </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
+            <Sources>
+            	<Source>UNKNOWN</Source>
+            </Sources>
             <NotAfter>2027-05-30T15:10:43</NotAfter>
             <NotBefore>2016-03-08T14:10:43</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -234,11 +211,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E"/>
+            <SigningCertificate Certificate="C-5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E"/>
             <CertificateChain>
-                <ChainItem Id="5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E">
-                    <Source>SIGNATURE</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -249,41 +224,16 @@
             <QCTypes />
             <TrustedServiceProviders />
             <Revocations>
-	            <Revocation Id="44E8F4F581737AD1B43EA4562D51AB3F3EB458C3A0E91979EF35F133EE31797E">
-	                <Origin>EXTERNAL</Origin>
-	                <Source>OCSPToken</Source>
-	                <SourceAddress>http://subca.ocsp-certum.com</SourceAddress>
-	                <Available>true</Available>
+	            <CertificateRevocation Revocation="R-44E8F4F581737AD1B43EA4562D51AB3F3EB458C3A0E91979EF35F133EE31797E">
 	                <Status>true</Status>
-	                <ProductionDate>2016-05-04T15:55:21</ProductionDate>
-	                <ThisUpdate>2016-05-04T15:55:21</ThisUpdate>
-	                <NextUpdate>2016-05-11T15:55:21</NextUpdate>
-	                <DigestAlgoAndValues>
-		                <DigestAlgoAndValue>
-		                    <DigestMethod>SHA256</DigestMethod>
-		                    <DigestValue>r4vdxeqLiOifpHicRjeIatoKW/jyaZk3t/ogUoP8gUY=</DigestValue>
-		                </DigestAlgoAndValue>
-	                </DigestAlgoAndValues>
-	                <BasicSignature>
-	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-	                    <DigestAlgoUsedToSignThisToken>SHA224</DigestAlgoUsedToSignThisToken>
-	                    <SignatureIntact>true</SignatureIntact>
-	                    <SignatureValid>true</SignatureValid>
-	                </BasicSignature>
-	                <SigningCertificate Id="8F3CBD3815591583E63725FA33DAF5CB01852E6CF82C9DFD4F091D160349C733"/>
-	                <CertificateChain>
-	                    <ChainItem Id="8F3CBD3815591583E63725FA33DAF5CB01852E6CF82C9DFD4F091D160349C733">
-	                        <Source>OCSP_RESPONSE</Source>
-	                    </ChainItem>
-	                    <ChainItem Id="5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E">
-	                        <Source>SIGNATURE</Source>
-	                    </ChainItem>
-	                </CertificateChain>
-	            </Revocation>
+	            </CertificateRevocation>
             </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>2cqrwyJbcDDNuD44RuNpHBTteQsXZM4bTwQxV4mcXFg=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
-        <Certificate Id="8F3CBD3815591583E63725FA33DAF5CB01852E6CF82C9DFD4F091D160349C733">
+        <Certificate Id="C-8F3CBD3815591583E63725FA33DAF5CB01852E6CF82C9DFD4F091D160349C733">
             <SubjectDistinguishedName Format="CANONICAL">cn=certum validation service,ou=certum certification authority,o=unizeto technologies s.a.,c=pl</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=Certum Validation Service,OU=Certum Certification Authority,O=Unizeto Technologies S.A.,C=PL</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=certum trusted network ca,ou=certum certification authority,o=unizeto technologies s.a.,c=pl</IssuerDistinguishedName>
@@ -293,12 +243,9 @@
             <CountryName>PL</CountryName>
             <OrganizationName>Unizeto Technologies S.A.</OrganizationName>
             <OrganizationalUnit>Certum Certification Authority</OrganizationalUnit>
-            <DigestAlgoAndValues>
-	            <DigestAlgoAndValue>
-	                <DigestMethod>SHA256</DigestMethod>
-	                <DigestValue>jzy9OBVZFYPmNyX6M9r1ywGFLmz4LJ39TwkdFgNJxzM=</DigestValue>
-	            </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
+            <Sources>
+            	<Source>OCSP_RESPONSE</Source>
+            </Sources>
             <NotAfter>2017-02-06T14:04:39</NotAfter>
             <NotBefore>2016-01-07T14:04:39</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -316,11 +263,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E"/>
+            <SigningCertificate Certificate="C-5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E"/>
             <CertificateChain>
-                <ChainItem Id="5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E">
-                    <Source>SIGNATURE</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -328,8 +273,12 @@
             <QCStatementIds />
             <QCTypes />
             <TrustedServiceProviders />
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>jzy9OBVZFYPmNyX6M9r1ywGFLmz4LJ39TwkdFgNJxzM=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
-        <Certificate Id="8DA084FCF99CE07722F89B3205939806FA5CB811E1C813F6A108C7D336B3408E">
+        <Certificate Id="C-8DA084FCF99CE07722F89B3205939806FA5CB811E1C813F6A108C7D336B3408E">
             <SubjectDistinguishedName Format="CANONICAL">cn=tc trustcenter class 3 ca ii,ou=tc trustcenter class 3 ca,o=tc trustcenter gmbh,c=de</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=TC TrustCenter Class 3 CA II,OU=TC TrustCenter Class 3 CA,O=TC TrustCenter GmbH,C=DE</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=tc trustcenter class 3 ca ii,ou=tc trustcenter class 3 ca,o=tc trustcenter gmbh,c=de</IssuerDistinguishedName>
@@ -339,12 +288,9 @@
             <CountryName>DE</CountryName>
             <OrganizationName>TC TrustCenter GmbH</OrganizationName>
             <OrganizationalUnit>TC TrustCenter Class 3 CA</OrganizationalUnit>
-            <DigestAlgoAndValues>
-	            <DigestAlgoAndValue>
-	                <DigestMethod>SHA256</DigestMethod>
-	                <DigestValue>jaCE/Pmc4Hci+JsyBZOYBvpcuBHhyBP2oQjH0zazQI4=</DigestValue>
-	            </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
+            <Sources>
+            	<Source>UNKNOWN</Source>
+            </Sources>
             <NotAfter>2025-12-31T23:59:59</NotAfter>
             <NotBefore>2006-01-12T15:41:57</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -366,8 +312,12 @@
             <QCStatementIds />
             <QCTypes />
             <TrustedServiceProviders />
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>jaCE/Pmc4Hci+JsyBZOYBvpcuBHhyBP2oQjH0zazQI4=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
-        <Certificate Id="19F1F410A503DB645E0851141333A75A74E55E5F07DF45ED33C0620857519002">
+        <Certificate Id="C-19F1F410A503DB645E0851141333A75A74E55E5F07DF45ED33C0620857519002">
             <SubjectDistinguishedName Format="CANONICAL">cn=trans sped qca ocsp signer,ou=trans sped certification authority,o=trans sped srl,c=ro</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=Trans Sped QCA OCSP Signer,OU=Trans Sped Certification Authority,O=Trans Sped SRL,C=RO</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=trans sped qca,ou=trans sped certification authority,o=trans sped srl,c=ro</IssuerDistinguishedName>
@@ -377,12 +327,9 @@
             <CountryName>RO</CountryName>
             <OrganizationName>Trans Sped SRL</OrganizationName>
             <OrganizationalUnit>Trans Sped Certification Authority</OrganizationalUnit>
-            <DigestAlgoAndValues>
-	            <DigestAlgoAndValue>
-	                <DigestMethod>SHA256</DigestMethod>
-	                <DigestValue>GfH0EKUD22ReCFEUEzOnWnTlXl8H30XtM8BiCFdRkAI=</DigestValue>
-	            </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
+            <Sources>
+            	 <Source>OCSP_RESPONSE</Source>
+            </Sources>
             <NotAfter>2016-11-01T00:59:59</NotAfter>
             <NotBefore>2015-09-01T02:00:00</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -398,11 +345,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67"/>
+            <SigningCertificate Certificate="C-4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67"/>
             <CertificateChain>
-                <ChainItem Id="4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -410,6 +355,68 @@
             <QCStatementIds />
             <QCTypes />
             <TrustedServiceProviders />
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>GfH0EKUD22ReCFEUEzOnWnTlXl8H30XtM8BiCFdRkAI=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
     </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-79ADAE6C275B8805AF16746D43CEA07C1E1102C6476C9E9C4B2B4F30230B4F74">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://ocsp.s-trust.de</SourceAddress>
+            <ProductionDate>2016-05-04T15:55:17</ProductionDate>
+            <ThisUpdate>2016-05-04T15:55:17</ThisUpdate>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA224</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-19F1F410A503DB645E0851141333A75A74E55E5F07DF45ED33C0620857519002"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-19F1F410A503DB645E0851141333A75A74E55E5F07DF45ED33C0620857519002"/>
+                <ChainItem Certificate="C-4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>Fh+ie77tvClEw75bwguQz4cF7A3dlSDi9qe1vEm5jQ8=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-44E8F4F581737AD1B43EA4562D51AB3F3EB458C3A0E91979EF35F133EE31797E">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://subca.ocsp-certum.com</SourceAddress>
+            <ProductionDate>2016-05-04T15:55:21</ProductionDate>
+            <ThisUpdate>2016-05-04T15:55:21</ThisUpdate>
+            <NextUpdate>2016-05-11T15:55:21</NextUpdate>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA224</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-8F3CBD3815591583E63725FA33DAF5CB01852E6CF82C9DFD4F091D160349C733"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-8F3CBD3815591583E63725FA33DAF5CB01852E6CF82C9DFD4F091D160349C733"/>
+                <ChainItem Certificate="C-5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>r4vdxeqLiOifpHicRjeIatoKW/jyaZk3t/ogUoP8gUY=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    <OriginalDocuments>
+        <SignerData Id="D-1b0d829ae53640c6f4b5222774dfe60d27c71ab21780850241dc1f985492dee6">
+            <ReferencedName>Full document</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>Gw2CmuU2QMb0tSIndN/mDSfHGrIXgIUCQdwfmFSS3uY=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
 </DiagnosticData>

@@ -34,7 +34,7 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.validation.PAdESCRLSource;
@@ -60,7 +60,7 @@ public class DSS1523 extends PKIFactoryAccess {
 		assertEquals(1, signatures.size());
 		PAdESSignature signature = (PAdESSignature) signatures.get(0);
 
-		PAdESCertificateSource certificateSource = signature.getCertificateSource();
+		PAdESCertificateSource certificateSource = (PAdESCertificateSource) signature.getCertificateSource();
 		assertNotNull(certificateSource);
 		Map<Long, CertificateToken> certificateMap = certificateSource.getCertificateMap();
 		assertEquals(1, certificateMap.size());
@@ -104,7 +104,7 @@ public class DSS1523 extends PKIFactoryAccess {
 		assertEquals(1, signatures.size());
 		PAdESSignature signature = (PAdESSignature) signatures.get(0);
 
-		PAdESCertificateSource certificateSource = signature.getCertificateSource();
+		PAdESCertificateSource certificateSource = (PAdESCertificateSource) signature.getCertificateSource();
 		assertNotNull(certificateSource);
 		Map<Long, CertificateToken> certificateMap = certificateSource.getCertificateMap();
 //		assertEquals(1, certificateMap.size());

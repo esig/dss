@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.pades.signature;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -38,8 +38,8 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
-import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.validation.ValidationContext;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
@@ -83,8 +83,9 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 
 		signatures = pdfDocumentValidator.getSignatures();
 
-		// create DSS dictionary
-		List<DSSDictionaryCallback> callbacks = new ArrayList<DSSDictionaryCallback>();
+		// create DSS dictionary (order is important to know the original object
+		// streams)
+		List<DSSDictionaryCallback> callbacks = new LinkedList<DSSDictionaryCallback>();
 		for (final AdvancedSignature signature : signatures) {
 			if (signature instanceof PAdESSignature) {
 				callbacks.add(validate((PAdESSignature) signature));
@@ -102,7 +103,7 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 		return Utils.isCollectionEmpty(signatureTimestamps) && Utils.isCollectionEmpty(archiveTimestamps);
 	}
 
-	private DSSDictionaryCallback validate(PAdESSignature signature) {
+	protected DSSDictionaryCallback validate(PAdESSignature signature) {
 
 		ValidationContext validationContext = signature.getSignatureValidationContext(certificateVerifier);
 
@@ -114,7 +115,7 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 		validationCallback.setOcsps(revocationsForInclusionInProfileLT.ocspTokens);
 
 		Set<CertificateToken> certificatesForInclusion = signature.getCertificatesForInclusion(validationContext);
-		certificatesForInclusion.addAll(signature.getCertificatesWithinSignatureAndTimestamps());
+		certificatesForInclusion.addAll(signature.getCertificateListWithinSignatureAndTimestamps());
 		// DSS dictionary includes current certs + discovered with AIA,...
 		validationCallback.setCertificates(certificatesForInclusion);
 

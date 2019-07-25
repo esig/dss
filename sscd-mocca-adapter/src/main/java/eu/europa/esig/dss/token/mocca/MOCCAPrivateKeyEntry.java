@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 import at.gv.egiz.smcc.SignatureCard.KeyboxName;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.x509.CertificateToken;
 

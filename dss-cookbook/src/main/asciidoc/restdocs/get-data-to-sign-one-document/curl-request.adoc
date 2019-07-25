@@ -36,16 +36,13 @@ $ curl 'http://localhost:8080/services/rest/signature/one-document/getDataToSign
       "trustAnchorBPPolicy" : true,
       "signingDate" : 1542794107033,
       "claimedSignerRoles" : null,
-      "signaturePolicy" : null,
-      "commitmentTypeIndications" : null,
-      "signerLocation" : null
+      "commitmentTypeIndications" : null
     }
   },
   "toSignDocument" : {
     "bytes" : "SGVsbG8=",
     "digestAlgorithm" : null,
-    "name" : "RemoteDocument",
-    "mimeType" : null
+    "name" : "RemoteDocument"
   }
 }'
 ----

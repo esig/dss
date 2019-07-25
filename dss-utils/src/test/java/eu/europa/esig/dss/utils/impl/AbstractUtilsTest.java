@@ -37,7 +37,9 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -64,6 +66,38 @@ public abstract class AbstractUtilsTest {
 		assertTrue(Utils.isStringNotEmpty("  "));
 		assertFalse(Utils.isStringNotEmpty(null));
 		assertTrue(Utils.isStringNotEmpty("bla"));
+	}
+	
+	@Test
+	public void areAllStringsEmpty() {
+		String nullString = null;
+		assertTrue(Utils.areAllStringsEmpty(nullString));
+		assertTrue(Utils.areAllStringsEmpty(""));
+		assertFalse(Utils.areAllStringsEmpty("  "));
+		assertFalse(Utils.areAllStringsEmpty("bla"));
+		assertTrue(Utils.areAllStringsEmpty("", nullString));
+		assertFalse(Utils.areAllStringsEmpty("", " "));
+		assertFalse(Utils.areAllStringsEmpty("bla", " "));
+		assertTrue(Utils.areAllStringsEmpty("", "", ""));
+		assertTrue(Utils.areAllStringsEmpty(nullString, nullString, nullString));
+		assertFalse(Utils.areAllStringsEmpty("bla", " ", ""));
+		assertFalse(Utils.areAllStringsEmpty("bla", " ", "bla"));
+	}
+	
+	@Test
+	public void isAtLeastOneStringNotEmpty() {
+		String nullString = null;
+		assertFalse(Utils.isAtLeastOneStringNotEmpty(nullString));
+		assertFalse(Utils.isAtLeastOneStringNotEmpty(""));
+		assertTrue(Utils.isAtLeastOneStringNotEmpty("  "));
+		assertTrue(Utils.isAtLeastOneStringNotEmpty("bla"));
+		assertFalse(Utils.isAtLeastOneStringNotEmpty("", nullString));
+		assertTrue(Utils.isAtLeastOneStringNotEmpty("", " "));
+		assertTrue(Utils.isAtLeastOneStringNotEmpty("bla", " "));
+		assertFalse(Utils.isAtLeastOneStringNotEmpty("", "", ""));
+		assertFalse(Utils.isAtLeastOneStringNotEmpty(nullString, nullString, nullString));
+		assertTrue(Utils.isAtLeastOneStringNotEmpty("bla", " ", ""));
+		assertTrue(Utils.isAtLeastOneStringNotEmpty("bla", " ", "bla"));
 	}
 
 	@Test
@@ -236,6 +270,32 @@ public abstract class AbstractUtilsTest {
 		list.add("c");
 		assertTrue(Utils.isCollectionNotEmpty(list));
 	}
+	
+	@Test
+	public void isMapEmpty() {
+		assertTrue(Utils.isMapEmpty(null));
+		assertTrue(Utils.isMapEmpty(new HashMap<String, Integer>()));
+		
+		Map<String, Boolean> map = new HashMap<String, Boolean>();
+		map.put("a", true);
+		map.put("b", false);
+		map.put("c", true);
+		assertFalse(Utils.isMapEmpty(map));
+		assertEquals(3, map.size());
+	}
+	
+	@Test
+	public void isMapNotEmpty() {
+		assertFalse(Utils.isMapNotEmpty(null));
+		assertFalse(Utils.isMapNotEmpty(new HashMap<String, Integer>()));
+		
+		Map<String, Boolean> map = new HashMap<String, Boolean>();
+		map.put("a", true);
+		map.put("b", false);
+		map.put("c", true);
+		assertTrue(Utils.isMapNotEmpty(map));
+		assertEquals(3, map.size());
+	}
 
 	@Test
 	public void collectionSize() {
@@ -273,6 +333,23 @@ public abstract class AbstractUtilsTest {
 	@Test(expected = Exception.class)
 	public void fromHexNull() {
 		Utils.fromHex(null);
+	}
+	
+	@Test
+	public void isBase64Encoded() {
+		assertTrue(Utils.isBase64Encoded(""));
+		assertTrue(Utils.isBase64Encoded("AQIDBAU="));
+		assertTrue(Utils.isBase64Encoded("AQIDBAU"));
+		assertTrue(Utils.isBase64Encoded("AQIDBAU=="));
+		assertTrue(Utils.isBase64Encoded("AQIDBAU==="));
+		assertTrue(Utils.isBase64Encoded("\nAQI\nD BA\tU=\n"));
+		assertFalse(Utils.isBase64Encoded("1.3.5"));
+		assertFalse(Utils.isBase64Encoded("AS.DF,GH/JK"));
+	}
+	
+	@Test(expected = NullPointerException.class)
+	public void isBase64EncodedNullPointer() {
+		assertFalse(Utils.isBase64Encoded(null));
 	}
 
 	@Test

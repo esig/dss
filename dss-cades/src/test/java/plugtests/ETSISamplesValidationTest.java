@@ -21,6 +21,7 @@
 package plugtests;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -35,14 +36,17 @@ import org.junit.runners.Parameterized.Parameters;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.client.http.IgnoreDataLoader;
+import eu.europa.esig.dss.detailedreport.DetailedReport;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.signature.UnmarshallingTester;
+import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.reports.SimpleReport;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.x509.SignatureCertificateSource;
 
 /**
  * This test is only to ensure that we don't have exception with valid? files
@@ -75,10 +79,10 @@ public class ETSISamplesValidationTest {
 		certificateVerifier.setDataLoader(new IgnoreDataLoader());
 		validator.setCertificateVerifier(certificateVerifier);
 
-		Reports validateDocument = validator.validateDocument();
-		assertNotNull(validateDocument);
+		Reports reports = validator.validateDocument();
+		assertNotNull(reports);
 
-		DiagnosticData diagnosticData = validateDocument.getDiagnosticData();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertNotNull(diagnosticData);
 
 		List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
@@ -87,11 +91,32 @@ public class ETSISamplesValidationTest {
 			assertNotNull(DSSUtils.loadCertificate(binaries));
 		}
 
-		SimpleReport simpleReport = validateDocument.getSimpleReport();
+		SimpleReport simpleReport = reports.getSimpleReport();
 		assertNotNull(simpleReport);
 
-		DetailedReport detailedReport = validateDocument.getDetailedReport();
+		DetailedReport detailedReport = reports.getDetailedReport();
 		assertNotNull(detailedReport);
+
+		List<AdvancedSignature> signatures = validator.getSignatures();
+		for (AdvancedSignature advancedSignature : signatures) {
+			assertNotNull(advancedSignature);
+			SignatureCertificateSource certificateSource = advancedSignature.getCertificateSource();
+			assertNotNull(certificateSource);
+
+			assertNotNull(certificateSource.getKeyInfoCertificates());
+			assertNotNull(certificateSource.getSigningCertificateValues());
+			assertNotNull(certificateSource.getCertificateValues());
+			assertNotNull(certificateSource.getCompleteCertificateRefs());
+			assertNotNull(certificateSource.getAttributeCertificateRefs());
+			assertNotNull(certificateSource.getTimeStampValidationDataCertValues());
+			assertTrue(certificateSource.getDSSDictionaryCertValues().isEmpty());
+			assertTrue(certificateSource.getVRIDictionaryCertValues().isEmpty());
+
+			assertNotNull(advancedSignature.getCRLSource());
+			assertNotNull(advancedSignature.getOCSPSource());
+		}
+
+		UnmarshallingTester.unmarshallXmlReports(reports);
 	}
 
 }

@@ -31,28 +31,36 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="9C1A3B646EAF132398EF319E41C8E7ED725B64D5772580AE125D59C0F6845630">
+            <SigningCertificate Certificate="C-9C1A3B646EAF132398EF319E41C8E7ED725B64D5772580AE125D59C0F6845630">
                 <AttributePresent>true</AttributePresent>
                 <DigestValuePresent>true</DigestValuePresent>
                 <DigestValueMatch>true</DigestValueMatch>
                 <IssuerSerialMatch>true</IssuerSerialMatch>
             </SigningCertificate>
             <CertificateChain>
-                <ChainItem Id="9C1A3B646EAF132398EF319E41C8E7ED725B64D5772580AE125D59C0F6845630">
-                    <Source>TRUSTED_STORE</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-9C1A3B646EAF132398EF319E41C8E7ED725B64D5772580AE125D59C0F6845630"/>
             </CertificateChain>
             <ContentType>text/xml</ContentType>
             <CommitmentTypeIndication/>
-            <ClaimedRoles/>
-            <Timestamps/>
+            
+            <FoundCertificates/>
+            <FoundRevocations/>
+            <FoundTimestamps/>
             <SignatureScopes>
-                <SignatureScope name="#ROOT" scope="PARTIAL">The XML element with ID '#ROOT'.</SignatureScope>
+                <SignatureScope SignerData="D-03dbf8e874bde1cd222196fb56b6395a653b698ef88d0df910ab922f9ebd8f34">
+                    <Scope>PARTIAL</Scope>
+                    <Name>#ROOT</Name>
+                    <Description>The XML element with ID '#ROOT'.</Description>
+                </SignatureScope>
             </SignatureScopes>
+			<SignatureDigestReference>
+			    <DigestMethod>SHA256</DigestMethod>
+			    <DigestValue>TPTeQTT33ZcNJb+xY/u6d31IlV+Xak58/KSu9u0u0Gc=</DigestValue>
+			</SignatureDigestReference>
         </Signature>
     </Signatures>
     <UsedCertificates>
-        <Certificate Id="9C1A3B646EAF132398EF319E41C8E7ED725B64D5772580AE125D59C0F6845630">
+        <Certificate Id="C-9C1A3B646EAF132398EF319E41C8E7ED725B64D5772580AE125D59C0F6845630">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.12=#131350726f66657373696f6e616c20506572736f6e,1.2.840.113549.1.9.1=#161a6d61617274656e2e6f74746f794065632e6575726f70612e6575,2.5.4.5=#13143130333034343434313130303830383337353932,2.5.4.42=#130d4d61617274656e204a6f726973,2.5.4.4=#13054f74746f79,cn=maarten joris ottoy,ou=0949.383.342,o=european commission,l=be,c=be</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">2.5.4.12=#131350726f66657373696f6e616c20506572736f6e,1.2.840.113549.1.9.1=#161a6d61617274656e2e6f74746f794065632e6575726f70612e6575,2.5.4.5=#13143130333034343434313130303830383337353932,2.5.4.42=#130d4d61617274656e204a6f726973,2.5.4.4=#13054f74746f79,CN=Maarten Joris Ottoy,OU=0949.383.342,O=European Commission,L=BE,C=BE</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=luxtrust global qualified ca 3,o=luxtrust s.a.,c=lu</IssuerDistinguishedName>
@@ -67,15 +75,17 @@
             <Surname>Ottoy</Surname>
             <Email>maarten.ottoy@ec.europa.eu</Email>
             <AuthorityInformationAccessUrls>
-                <Url>http://ca.luxtrust.lu/LTGQCA3.crt</Url>
+                <aiaUrl>http://ca.luxtrust.lu/LTGQCA3.crt</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints>
-                <Url>http://crl.luxtrust.lu/LTGQCA3.crl</Url>
+                <crlUrl>http://crl.luxtrust.lu/LTGQCA3.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls>
-                <Url>http://qca.ocsp.luxtrust.lu</Url>
+                <ocspServerUrl>http://qca.ocsp.luxtrust.lu</ocspServerUrl>
             </OCSPAccessUrls>
-            <DigestAlgoAndValues/>
+            <Sources>
+            	<Source>TRUSTED_STORE</Source>
+            </Sources>
             <NotAfter>2019-09-15T09:00:12</NotAfter>
             <NotBefore>2016-09-15T09:00:12</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -100,11 +110,24 @@
                 <certificatePolicy Description="qcp-public-with-sscd">0.4.0.1456.1.1</certificatePolicy>
             </CertificatePolicies>
             <QCStatementIds>
-                <oid Description="qc-compliance">0.4.0.1862.1.1</oid>
-                <oid Description="qc-sscd">0.4.0.1862.1.4</oid>
+                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
+                <qcStatementOid Description="qc-sscd">0.4.0.1862.1.4</qcStatementOid>
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders/>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>9b3f9fced4876a560af1c336b6551b45ec75444d</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
     </UsedCertificates>
+    <OriginalDocuments>
+        <SignerData Id="D-03dbf8e874bde1cd222196fb56b6395a653b698ef88d0df910ab922f9ebd8f34">
+            <ReferencedName>#ROOT</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>A9v46HS94c0iIZb7VrY5WmU7aY74jQ35EKuSL569jzQ=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
 </DiagnosticData>

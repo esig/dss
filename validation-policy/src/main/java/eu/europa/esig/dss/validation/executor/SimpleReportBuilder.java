@@ -23,21 +23,21 @@ package eu.europa.esig.dss.validation.executor;
 import java.util.Date;
 import java.util.List;
 
-import eu.europa.esig.dss.jaxb.simplereport.SimpleReport;
-import eu.europa.esig.dss.jaxb.simplereport.XmlCertificate;
-import eu.europa.esig.dss.jaxb.simplereport.XmlCertificateChain;
-import eu.europa.esig.dss.jaxb.simplereport.XmlPolicy;
-import eu.europa.esig.dss.jaxb.simplereport.XmlSignature;
-import eu.europa.esig.dss.jaxb.simplereport.XmlSignatureLevel;
-import eu.europa.esig.dss.jaxb.simplereport.XmlSignatureScope;
+import eu.europa.esig.dss.detailedreport.DetailedReport;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SignatureQualification;
+import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.simplereport.jaxb.XmlCertificate;
+import eu.europa.esig.dss.simplereport.jaxb.XmlCertificateChain;
+import eu.europa.esig.dss.simplereport.jaxb.XmlPolicy;
+import eu.europa.esig.dss.simplereport.jaxb.XmlSignature;
+import eu.europa.esig.dss.simplereport.jaxb.XmlSignatureLevel;
+import eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope;
+import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignatureQualification;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.reports.DetailedReport;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 
 /**
  * This class builds a SimpleReport XmlDom from the diagnostic data and detailed validation report.
@@ -62,11 +62,11 @@ public class SimpleReportBuilder {
 	/**
 	 * This method generates the validation simpleReport.
 	 *
-	 * @return the object representing {@code SimpleReport}
+	 * @return the object representing {@code XmlSimpleReport}
 	 */
-	public eu.europa.esig.dss.jaxb.simplereport.SimpleReport build() {
+	public XmlSimpleReport build() {
 
-		SimpleReport simpleReport = new SimpleReport();
+		XmlSimpleReport simpleReport = new XmlSimpleReport();
 
 		addPolicyNode(simpleReport);
 		addValidationTime(simpleReport);
@@ -82,26 +82,26 @@ public class SimpleReportBuilder {
 		return simpleReport;
 	}
 
-	private void addPolicyNode(SimpleReport report) {
+	private void addPolicyNode(XmlSimpleReport report) {
 		XmlPolicy xmlpolicy = new XmlPolicy();
 		xmlpolicy.setPolicyName(policy.getPolicyName());
 		xmlpolicy.setPolicyDescription(policy.getPolicyDescription());
 		report.setPolicy(xmlpolicy);
 	}
 
-	private void addValidationTime(SimpleReport report) {
+	private void addValidationTime(XmlSimpleReport report) {
 		report.setValidationTime(currentTime);
 	}
 
-	private void addDocumentName(SimpleReport report) {
+	private void addDocumentName(XmlSimpleReport report) {
 		report.setDocumentName(diagnosticData.getDocumentName());
 	}
 
-	private void addContainerType(SimpleReport simpleReport) {
+	private void addContainerType(XmlSimpleReport simpleReport) {
 		simpleReport.setContainerType(diagnosticData.getContainerType());
 	}
 
-	private void addSignatures(SimpleReport simpleReport, boolean container) {
+	private void addSignatures(XmlSimpleReport simpleReport, boolean container) {
 		validSignatureCount = 0;
 		totalSignatureCount = 0;
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
@@ -110,7 +110,7 @@ public class SimpleReportBuilder {
 		}
 	}
 
-	private void addStatistics(SimpleReport simpleReport) {
+	private void addStatistics(XmlSimpleReport simpleReport) {
 		simpleReport.setValidSignaturesCount(validSignatureCount);
 		simpleReport.setSignaturesCount(totalSignatureCount);
 	}
@@ -123,7 +123,7 @@ public class SimpleReportBuilder {
 	 * @param container
 	 *            true if the current file is a container
 	 */
-	private void addSignature(SimpleReport simpleReport, SignatureWrapper signature, boolean container) {
+	private void addSignature(XmlSimpleReport simpleReport, SignatureWrapper signature, boolean container) {
 
 		totalSignatureCount++;
 
@@ -137,7 +137,10 @@ public class SimpleReportBuilder {
 		addBestSignatureTime(signature, xmlSignature);
 		addSignatureFormat(signature, xmlSignature);
 
-		xmlSignature.setSignedBy(getSignedBy(signature));
+		CertificateWrapper signingCertificate = signature.getSigningCertificate();
+		if (signingCertificate != null) {
+			xmlSignature.setSignedBy(signingCertificate.getId());
+		}
 
 		xmlSignature.getErrors().addAll(detailedReport.getErrors(signatureId));
 		xmlSignature.getWarnings().addAll(detailedReport.getWarnings(signatureId));
@@ -161,16 +164,16 @@ public class SimpleReportBuilder {
 		addSignatureProfile(xmlSignature);
 
 		List<String> certIds = detailedReport.getBasicBuildingBlocksCertChain(signatureId);
+		XmlCertificateChain xmlCertificateChain = new XmlCertificateChain();
 		if (Utils.isCollectionNotEmpty(certIds)) {
-			XmlCertificateChain xmlCertificateChain = new XmlCertificateChain();
 			for (String certid : certIds) {
 				XmlCertificate certificate = new XmlCertificate();
 				certificate.setId(certid);
 				certificate.setQualifiedName(getReadableCertificateName(certid));
 				xmlCertificateChain.getCertificate().add(certificate);
 			}
-			xmlSignature.setCertificateChain(xmlCertificateChain);
 		}
+		xmlSignature.setCertificateChain(xmlCertificateChain);
 
 		simpleReport.getSignature().add(xmlSignature);
 	}
@@ -182,18 +185,18 @@ public class SimpleReportBuilder {
 	private void addCounterSignature(SignatureWrapper signature, XmlSignature xmlSignature) {
 		if (signature.isCounterSignature()) {
 			xmlSignature.setCounterSignature(true);
-			xmlSignature.setParentId(signature.getParentId());
+			xmlSignature.setParentId(signature.getParent().getId());
 		}
 	}
 
 	private void addSignatureScope(final SignatureWrapper signature, final XmlSignature xmlSignature) {
-		List<eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
+		List<eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
 		if (Utils.isCollectionNotEmpty(signatureScopes)) {
-			for (eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope scopeType : signatureScopes) {
+			for (eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope scopeType : signatureScopes) {
 				XmlSignatureScope scope = new XmlSignatureScope();
 				scope.setName(scopeType.getName());
 				scope.setScope(scopeType.getScope().name());
-				scope.setValue(scopeType.getValue());
+				scope.setValue(scopeType.getDescription());
 				xmlSignature.getSignatureScope().add(scope);
 			}
 		}
@@ -207,33 +210,9 @@ public class SimpleReportBuilder {
 		xmlSignature.setSignatureFormat(signature.getSignatureFormat());
 	}
 
-	private String getSignedBy(final SignatureWrapper signature) {
-		return getReadableCertificateName(signature.getSigningCertificateId());
-	}
-
-	private String getReadableCertificateName(String certId) {
-		CertificateWrapper signingCert = diagnosticData.getUsedCertificateById(certId);
-		if (signingCert != null) {
-			if (Utils.isStringNotEmpty(signingCert.getCommonName())) {
-				return signingCert.getCommonName();
-			}
-			if (Utils.isStringNotEmpty(signingCert.getGivenName())) {
-				return signingCert.getGivenName();
-			}
-			if (Utils.isStringNotEmpty(signingCert.getSurname())) {
-				return signingCert.getSurname();
-			}
-			if (Utils.isStringNotEmpty(signingCert.getPseudo())) {
-				return signingCert.getPseudo();
-			}
-			if (Utils.isStringNotEmpty(signingCert.getOrganizationName())) {
-				return signingCert.getOrganizationName();
-			}
-			if (Utils.isStringNotEmpty(signingCert.getOrganizationalUnit())) {
-				return signingCert.getOrganizationalUnit();
-			}
-		}
-		return "?";
+	private String getReadableCertificateName(final String certId) {
+		CertificateWrapper certificateWrapper = diagnosticData.getUsedCertificateByIdNullSafe(certId);
+		return certificateWrapper.getReadableCertificateName();
 	}
 
 	private void addSignatureProfile(final XmlSignature xmlSignature) {

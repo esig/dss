@@ -34,9 +34,10 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.crl.CRLValidity;
+import eu.europa.esig.dss.enumerations.RevocationReason;
+import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
-import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
 
 /**
  * This class represents a CRL and provides the information about its validity.
@@ -69,11 +70,14 @@ public class CRLToken extends RevocationToken {
 		this.crlValidity = crlValidity;
 		initInfo();
 		setRevocationStatus(certificateToken);
-		LOG.debug("+CRLToken");
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("A CRLToken created with Id : [{}]", getDSSIdAsString());
+		}
 	}
 
 	@Override
 	public void initInfo() {
+		this.revocationType = RevocationType.CRL;
 		this.revocationTokenKey = crlValidity.getKey();
 		this.signatureAlgorithm = crlValidity.getSignatureAlgorithm();
 		this.thisUpdate = crlValidity.getThisUpdate();
@@ -88,9 +92,6 @@ public class CRLToken extends RevocationToken {
 
 		this.signatureValid = crlValidity.isSignatureIntact();
 		this.signatureInvalidityReason = crlValidity.getSignatureInvalidityReason();
-		if (crlValidity.getRevocationOrigin() != null) {
-			this.origin = crlValidity.getRevocationOrigin();
-		}
 	}
 
 	/**
@@ -120,7 +121,7 @@ public class CRLToken extends RevocationToken {
 			revocationDate = crlEntry.getRevocationDate();
 			CRLReason revocationReason = crlEntry.getRevocationReason();
 			if (revocationReason != null) {
-				reason = CRLReasonEnum.fromInt(revocationReason.ordinal());
+				reason = RevocationReason.fromInt(revocationReason.ordinal());
 			}
 		}
 	}

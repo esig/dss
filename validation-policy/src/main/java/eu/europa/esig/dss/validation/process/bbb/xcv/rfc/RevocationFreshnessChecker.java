@@ -22,10 +22,15 @@ package eu.europa.esig.dss.validation.process.bbb.xcv.rfc;
 
 import java.util.Date;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
-import eu.europa.esig.dss.validation.policy.Context;
-import eu.europa.esig.dss.validation.policy.SubContext;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
+import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.policy.SubContext;
+import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
+import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
@@ -33,10 +38,6 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.NextUpdateCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataAvailableCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataFreshCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataFreshCheckWithNullConstraint;
-import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
-import eu.europa.esig.jaxb.policy.CryptographicConstraint;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
-import eu.europa.esig.jaxb.policy.TimeConstraint;
 
 /**
  * 5.2.5 Revocation freshness checker This building block checks that a given
@@ -57,6 +58,11 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 
 	public RevocationFreshnessChecker(RevocationWrapper revocationData, Date validationDate, Context context, SubContext subContext, ValidationPolicy policy) {
 		super(new XmlRFC());
+		result.setTitle(BasicBuildingBlockDefinition.REVOCATION_FRESHNESS_CHECKER.getTitle());
+
+		if (revocationData != null) {
+			result.setId(revocationData.getId());
+		}
 
 		this.revocationData = revocationData;
 		this.validationDate = validationDate;

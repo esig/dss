@@ -34,6 +34,6 @@ public enum ArchiveTimestampType {
 
 	CAdES_V2,
 
-	CAdES_v3;
+	CAdES_V3;
 
 }

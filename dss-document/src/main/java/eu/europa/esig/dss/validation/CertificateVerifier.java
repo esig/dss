@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.client.http.DataLoader;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSource;
 import eu.europa.esig.dss.x509.revocation.crl.CRLSource;
@@ -167,6 +168,18 @@ public interface CertificateVerifier {
 	 * @return true if an exception is thrown, false if a warning message is added
 	 */
 	boolean isExceptionOnMissingRevocationData();
+	
+	/**
+	 * This method allows to change the Digest Algorithm that will be used for tokens' digest calculation
+	 * @param digestAlgorithm {@link DigestAlgorithm} to use
+	 */
+	void setDefaultDigestAlgorithm(DigestAlgorithm digestAlgorithm);
+	
+	/**
+	 * This method returns a default Digest Algorithm what will be used for digest calculation
+	 * @return {@link DigestAlgorithm}
+	 */
+	DigestAlgorithm getDefaultDigestAlgorithm();
 	
 	/**
 	 * This method allows to change the behavior by including raw certificate tokens

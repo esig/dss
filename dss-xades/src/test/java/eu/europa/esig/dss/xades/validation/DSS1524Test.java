@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -29,15 +30,15 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DigestDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 
 public class DSS1524Test {
 
@@ -50,6 +51,12 @@ public class DSS1524Test {
 		
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);
+
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+
+		assertFalse(signatureWrapper.isSignatureIntact());
+		assertEquals(1, signatureWrapper.getSignatureScopes().size());
 	}
 
 	@Test
@@ -57,8 +64,7 @@ public class DSS1524Test {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/sig_bundle.signed_detached.xml");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 
-		DigestDocument digestDoc = new DigestDocument();
-		digestDoc.addDigest(DigestAlgorithm.SHA512, "kSi69weRFM3ehJVf/RZ6ASMoHUuY2g0toUYNFr68FU3nS5fT48NZK4W4Ks33zDOo+0GzIbOFMa7GRQ1r0gCXzg==");
+		DigestDocument digestDoc = new DigestDocument(DigestAlgorithm.SHA512, "kSi69weRFM3ehJVf/RZ6ASMoHUuY2g0toUYNFr68FU3nS5fT48NZK4W4Ks33zDOo+0GzIbOFMa7GRQ1r0gCXzg==");
 		validator.setDetachedContents(Arrays.<DSSDocument>asList(digestDoc));
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		
@@ -73,6 +79,8 @@ public class DSS1524Test {
 
 		// Unable to validate archive timestamp with a digest document
 		assertFalse(signatureWrapper.isALevelTechnicallyValid());
+		
+		assertEquals(1, signatureWrapper.getSignatureScopes().size());
 	}
 	
 	@Test
@@ -83,7 +91,12 @@ public class DSS1524Test {
 
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);
-		reports.print();
+
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertNotNull(signatureWrapper);
+		
+		assertEquals(0, signatureWrapper.getSignatureScopes().size());
 	}
 
 }

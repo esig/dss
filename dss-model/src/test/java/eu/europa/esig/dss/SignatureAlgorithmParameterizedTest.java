@@ -30,6 +30,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+
 @RunWith(Parameterized.class)
 public class SignatureAlgorithmParameterizedTest {
 

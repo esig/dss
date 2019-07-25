@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.asic;
 
-import eu.europa.esig.dss.SignatureForm;
-import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.enumerations.SignatureForm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 
 public class ASiCWithCAdESSignatureParameters extends CAdESSignatureParameters {
 

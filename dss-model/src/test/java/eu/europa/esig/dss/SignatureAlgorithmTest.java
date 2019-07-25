@@ -24,14 +24,28 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+
 public class SignatureAlgorithmTest {
 
 	@Test
-	public void forXML() {
-		assertEquals(SignatureAlgorithm.RSA_SHA512, SignatureAlgorithm.forXML(SignatureAlgorithm.RSA_SHA512.getXMLId()));
+	public void getAlgorithm() {
+		for (SignatureAlgorithm sigAlgo : SignatureAlgorithm.values()) {
+			assertEquals(sigAlgo,
+					SignatureAlgorithm.getAlgorithm(sigAlgo.getEncryptionAlgorithm(), sigAlgo.getDigestAlgorithm(), sigAlgo.getMaskGenerationFunction()));
+		}
 	}
 
-	@Test(expected = DSSException.class)
+	@Test
+	public void forXML() {
+		for (SignatureAlgorithm sigAlgo : SignatureAlgorithm.values()) {
+			if (sigAlgo.getUri() != null) {
+				assertEquals(sigAlgo, SignatureAlgorithm.forXML(sigAlgo.getUri()));
+			}
+		}
+	}
+
+	@Test(expected = IllegalArgumentException.class)
 	public void forXMLException() {
 		SignatureAlgorithm.forXML("aaa");
 	}
@@ -46,7 +60,7 @@ public class SignatureAlgorithmTest {
 		assertEquals(SignatureAlgorithm.RSA_SHA512, SignatureAlgorithm.forOID("1.2.840.113549.1.1.13"));
 	}
 
-	@Test(expected = DSSException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void forOidException() {
 		SignatureAlgorithm.forOID("1.2.3");
 	}

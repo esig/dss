@@ -42,8 +42,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.KeyUsageBit;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 
 public class CertificateTokenTest {
 
@@ -69,8 +70,8 @@ public class CertificateTokenTest {
 		assertNotNull(certificate1.getDigest(DigestAlgorithm.SHA256));
 		assertNotNull(certificate1.getDigest(DigestAlgorithm.SHA256));
 
-		assertTrue(certificate1.checkKeyUsage(KeyUsageBit.crlSign));
-		assertFalse(certificate1.checkKeyUsage(KeyUsageBit.nonRepudiation));
+		assertTrue(certificate1.checkKeyUsage(KeyUsageBit.CRL_SIGN));
+		assertFalse(certificate1.checkKeyUsage(KeyUsageBit.NON_REPUDIATION));
 
 		LOG.info("{}", certificate1);
 		LOG.info("{}", certificate2);

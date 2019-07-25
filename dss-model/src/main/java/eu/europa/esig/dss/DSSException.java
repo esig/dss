@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss;
 
+/**
+ * Exception to be thrown in case of error during DSS framework processing
+ */
 public class DSSException extends RuntimeException {
 
     private static final long serialVersionUID = 5375189169063686846L;
@@ -39,4 +42,5 @@ public class DSSException extends RuntimeException {
     public DSSException(String message, Throwable cause) {
         super(message, cause);
     }
+    
 }

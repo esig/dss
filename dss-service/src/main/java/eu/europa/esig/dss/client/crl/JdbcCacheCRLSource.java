@@ -26,17 +26,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.CRLBinary;
 import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.crl.CRLValidity;
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.JdbcRevocationSource;
 import eu.europa.esig.dss.x509.revocation.crl.CRLSource;
 import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
@@ -166,9 +168,9 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRLToken> implement
 	@Override
 	protected CRLToken buildRevocationTokenFromResult(ResultSet rs, CertificateToken certificateToken, CertificateToken issuerCert) {
 		try {
-			final CRLValidity cached = new CRLValidity();
+			CRLBinary crlBinaryIdentifier = new CRLBinary(rs.getBytes(SQL_FIND_QUERY_DATA));
+			final CRLValidity cached = new CRLValidity(crlBinaryIdentifier);
 			cached.setKey(rs.getString(SQL_FIND_QUERY_ID));
-			cached.setCrlEncoded(rs.getBytes(SQL_FIND_QUERY_DATA));
 			cached.setSignatureAlgorithm(SignatureAlgorithm.valueOf(rs.getString(SQL_FIND_QUERY_SIGNATURE_ALGO)));
 			cached.setThisUpdate(rs.getTimestamp(SQL_FIND_QUERY_THIS_UPDATE));
 			cached.setNextUpdate(rs.getTimestamp(SQL_FIND_QUERY_NEXT_UPDATE));
@@ -179,8 +181,9 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRLToken> implement
 			cached.setIssuerX509PrincipalMatches(rs.getBoolean(SQL_FIND_QUERY_ISSUER_PRINCIPAL_MATCH));
 			cached.setSignatureIntact(rs.getBoolean(SQL_FIND_QUERY_SIGNATURE_INTACT));
 			cached.setSignatureInvalidityReason(rs.getString(SQL_FIND_QUERY_SIGNATURE_INVALID_REASON));
-			cached.setRevocationOrigin(RevocationOrigin.CACHED);
-			return new CRLToken(certificateToken, cached);
+			CRLToken crlToken = new CRLToken(certificateToken, cached);
+			crlToken.setOrigins(Collections.singleton(RevocationOrigin.CACHED));
+			return crlToken;
 		} catch (SQLException e) {
 			throw new RevocationException("An error occurred during an attempt to get a revocation token");
 		}

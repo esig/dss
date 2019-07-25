@@ -23,16 +23,23 @@ package eu.europa.esig.dss.validation;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
+import java.io.IOException;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.transform.TransformerException;
 
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
+import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReportFacade;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 
 public class CertificateValidatorTest {
 
 	@Test
-	public void test() {
+	public void test() throws JAXBException, IOException, SAXException, TransformerException {
 		CertificateValidator cv = CertificateValidator.fromCertificate(DSSUtils.loadCertificate(new File("src/test/resources/CZ.cer")));
 		cv.setCertificateVerifier(new CommonCertificateVerifier());
 
@@ -45,6 +52,18 @@ public class CertificateValidatorTest {
 		assertNotNull(reports.getXmlDetailedReport());
 		assertNotNull(reports.getSimpleReportJaxb());
 		assertNotNull(reports.getXmlSimpleReport());
+
+		SimpleCertificateReportFacade simpleCertificateReportFacade = SimpleCertificateReportFacade.newFacade();
+		String marshalled = simpleCertificateReportFacade.marshall(reports.getSimpleReportJaxb(), true);
+		assertNotNull(marshalled);
+		assertNotNull(simpleCertificateReportFacade.generateHtmlReport(marshalled));
+		assertNotNull(simpleCertificateReportFacade.generateHtmlReport(reports.getSimpleReportJaxb()));
+
+		DetailedReportFacade detailedReportFacade = DetailedReportFacade.newFacade();
+		String marshalledDetailedReport = detailedReportFacade.marshall(reports.getDetailedReportJaxb(), true);
+		assertNotNull(marshalledDetailedReport);
+		assertNotNull(detailedReportFacade.generateHtmlReport(marshalledDetailedReport));
+		assertNotNull(detailedReportFacade.generateHtmlReport(reports.getDetailedReportJaxb()));
 	}
 
 	@Test(expected = NullPointerException.class)

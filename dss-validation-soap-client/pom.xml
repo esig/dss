@@ -11,7 +11,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-reports</artifactId>
+			<artifactId>dss-validation-dto</artifactId>
 		</dependency>
 	</dependencies>
 	

@@ -27,14 +27,16 @@ import java.util.List;
 import org.junit.Test;
 
 import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.SignatureForm;
-import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.CertificateOrigin;
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+import eu.europa.esig.dss.enumerations.SignatureForm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 
 public class PdfPkcs7 {
 
@@ -47,6 +49,10 @@ public class PdfPkcs7 {
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertEquals(SignatureLevel.PKCS7_T.toString(), signatureById.getSignatureFormat());
+
+		// no signing certificate attribute
+		assertEquals(0, signatureById.getFoundCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
+		assertEquals(4, signatureById.getFoundCertificateIds(CertificateOrigin.KEY_INFO).size());
 
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		assertEquals(1, signatures.size());

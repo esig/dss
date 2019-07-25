@@ -20,13 +20,13 @@
  */
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlVTS;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlVTS;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
-import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class SatisfyingRevocationDataExistsCheck extends ChainItem<XmlVTS> {
 

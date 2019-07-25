@@ -22,10 +22,10 @@ package eu.europa.esig.dss.validation.process.bbb;
 
 import java.util.List;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
+import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 
 public abstract class AbstractMultiValuesCheckItem<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

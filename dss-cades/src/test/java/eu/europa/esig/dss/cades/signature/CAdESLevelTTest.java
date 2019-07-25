@@ -20,16 +20,20 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.Date;
 
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
+import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
 public class CAdESLevelTTest extends AbstractCAdESTestSignature {
 
@@ -69,7 +73,16 @@ public class CAdESLevelTTest extends AbstractCAdESTestSignature {
 
 	@Override
 	protected String getSigningAlias() {
-		return GOOD_USER;
+		return GOOD_USER_WITH_PSEUDO;
+	}
+
+	@Override
+	protected void verifyETSIValidationReport(ValidationReportType etsiValidationReportJaxb) {
+		super.verifyETSIValidationReport(etsiValidationReportJaxb);
+
+		for (SignatureValidationReportType signatureValidationReport : etsiValidationReportJaxb.getSignatureValidationReport()) {
+			assertTrue(signatureValidationReport.getSignerInformation().isPseudonym());
+		}
 	}
 
 }

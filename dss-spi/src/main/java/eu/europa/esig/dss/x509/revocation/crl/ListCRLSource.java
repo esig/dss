@@ -20,13 +20,15 @@
  */
 package eu.europa.esig.dss.x509.revocation.crl;
 
-import java.util.Map.Entry;
+import eu.europa.esig.dss.CRLBinary;
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
 
 /**
  * This class allows to handle a list CRL source.
  *
  */
-public class ListCRLSource extends OfflineCRLSource {
+@SuppressWarnings("serial")
+public class ListCRLSource extends SignatureCRLSource {
 
 	/**
 	 * This is the constructor for this class, it allows to instantiate the list which will contain all {@code X509CRL}.
@@ -53,8 +55,16 @@ public class ListCRLSource extends OfflineCRLSource {
 	 *            the source to be added
 	 */
 	public void addAll(final OfflineCRLSource offlineCRLSource) {
-		for (Entry<String, byte[]> entry : offlineCRLSource.crlsMap.entrySet()) {
-			super.addCRLBinary(entry.getKey(), entry.getValue());
+		for (CRLBinary crlBinary : offlineCRLSource.getCRLBinaryList()) {
+			for (RevocationOrigin origin : offlineCRLSource.getRevocationOrigins(crlBinary)) {
+				addCRLBinary(crlBinary, origin);
+			}
+		}
+		if (offlineCRLSource instanceof SignatureCRLSource) {
+			SignatureCRLSource signatureCRLSource = (SignatureCRLSource) offlineCRLSource;
+			for (CRLRef crlRef : signatureCRLSource.getAllCRLReferences()) {
+				addReference(crlRef);
+			}
 		}
 	}
 

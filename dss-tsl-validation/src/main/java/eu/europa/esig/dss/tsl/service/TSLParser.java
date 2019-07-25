@@ -33,10 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.slf4j.Logger;
@@ -46,13 +43,11 @@ import org.w3c.dom.Element;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.tsl.CertSubjectDNAttributeCondition;
 import eu.europa.esig.dss.tsl.CompositeCondition;
 import eu.europa.esig.dss.tsl.Condition;
 import eu.europa.esig.dss.tsl.ExtendedKeyUsageCondition;
 import eu.europa.esig.dss.tsl.KeyUsageCondition;
-import eu.europa.esig.dss.tsl.MatchingCriteriaIndicator;
 import eu.europa.esig.dss.tsl.PolicyIdCondition;
 import eu.europa.esig.dss.tsl.TSLConditionsForQualifiers;
 import eu.europa.esig.dss.tsl.TSLParserResult;
@@ -64,42 +59,44 @@ import eu.europa.esig.dss.util.MutableTimeDependentValues;
 import eu.europa.esig.dss.util.TimeDependentValues;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.jaxb.ecc.CriteriaListType;
-import eu.europa.esig.jaxb.ecc.KeyUsageBitType;
-import eu.europa.esig.jaxb.ecc.KeyUsageType;
-import eu.europa.esig.jaxb.ecc.PoliciesListType;
-import eu.europa.esig.jaxb.ecc.QualificationElementType;
-import eu.europa.esig.jaxb.ecc.QualificationsType;
-import eu.europa.esig.jaxb.ecc.QualifierType;
-import eu.europa.esig.jaxb.ecc.QualifiersType;
-import eu.europa.esig.jaxb.tsl.AdditionalServiceInformationType;
-import eu.europa.esig.jaxb.tsl.AnyType;
-import eu.europa.esig.jaxb.tsl.DigitalIdentityListType;
-import eu.europa.esig.jaxb.tsl.DigitalIdentityType;
-import eu.europa.esig.jaxb.tsl.ExtensionType;
-import eu.europa.esig.jaxb.tsl.ExtensionsListType;
-import eu.europa.esig.jaxb.tsl.InternationalNamesType;
-import eu.europa.esig.jaxb.tsl.MultiLangNormStringType;
-import eu.europa.esig.jaxb.tsl.NextUpdateType;
-import eu.europa.esig.jaxb.tsl.NonEmptyMultiLangURIListType;
-import eu.europa.esig.jaxb.tsl.NonEmptyMultiLangURIType;
-import eu.europa.esig.jaxb.tsl.NonEmptyURIListType;
-import eu.europa.esig.jaxb.tsl.ObjectFactory;
-import eu.europa.esig.jaxb.tsl.OtherTSLPointerType;
-import eu.europa.esig.jaxb.tsl.PostalAddressType;
-import eu.europa.esig.jaxb.tsl.ServiceHistoryInstanceType;
-import eu.europa.esig.jaxb.tsl.ServiceSupplyPointsType;
-import eu.europa.esig.jaxb.tsl.TSPInformationType;
-import eu.europa.esig.jaxb.tsl.TSPServiceInformationType;
-import eu.europa.esig.jaxb.tsl.TSPServiceType;
-import eu.europa.esig.jaxb.tsl.TSPServicesListType;
-import eu.europa.esig.jaxb.tsl.TSPType;
-import eu.europa.esig.jaxb.tsl.TrustServiceProviderListType;
-import eu.europa.esig.jaxb.tsl.TrustStatusListType;
-import eu.europa.esig.jaxb.tslx.CertSubjectDNAttributeType;
-import eu.europa.esig.jaxb.tslx.ExtendedKeyUsageType;
-import eu.europa.esig.jaxb.xades.IdentifierType;
-import eu.europa.esig.jaxb.xades.ObjectIdentifierType;
+import eu.europa.esig.trustedlist.TrustedListFacade;
+import eu.europa.esig.trustedlist.enums.Assert;
+import eu.europa.esig.trustedlist.jaxb.ecc.CriteriaListType;
+import eu.europa.esig.trustedlist.jaxb.ecc.KeyUsageBitType;
+import eu.europa.esig.trustedlist.jaxb.ecc.KeyUsageType;
+import eu.europa.esig.trustedlist.jaxb.ecc.PoliciesListType;
+import eu.europa.esig.trustedlist.jaxb.ecc.QualificationElementType;
+import eu.europa.esig.trustedlist.jaxb.ecc.QualificationsType;
+import eu.europa.esig.trustedlist.jaxb.ecc.QualifierType;
+import eu.europa.esig.trustedlist.jaxb.ecc.QualifiersType;
+import eu.europa.esig.trustedlist.jaxb.tsl.AdditionalServiceInformationType;
+import eu.europa.esig.trustedlist.jaxb.tsl.AnyType;
+import eu.europa.esig.trustedlist.jaxb.tsl.AttributedNonEmptyURIType;
+import eu.europa.esig.trustedlist.jaxb.tsl.DigitalIdentityListType;
+import eu.europa.esig.trustedlist.jaxb.tsl.DigitalIdentityType;
+import eu.europa.esig.trustedlist.jaxb.tsl.ExtensionType;
+import eu.europa.esig.trustedlist.jaxb.tsl.ExtensionsListType;
+import eu.europa.esig.trustedlist.jaxb.tsl.InternationalNamesType;
+import eu.europa.esig.trustedlist.jaxb.tsl.MultiLangNormStringType;
+import eu.europa.esig.trustedlist.jaxb.tsl.NextUpdateType;
+import eu.europa.esig.trustedlist.jaxb.tsl.NonEmptyMultiLangURIListType;
+import eu.europa.esig.trustedlist.jaxb.tsl.NonEmptyMultiLangURIType;
+import eu.europa.esig.trustedlist.jaxb.tsl.NonEmptyURIListType;
+import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointerType;
+import eu.europa.esig.trustedlist.jaxb.tsl.PostalAddressType;
+import eu.europa.esig.trustedlist.jaxb.tsl.ServiceHistoryInstanceType;
+import eu.europa.esig.trustedlist.jaxb.tsl.ServiceSupplyPointsType;
+import eu.europa.esig.trustedlist.jaxb.tsl.TSPInformationType;
+import eu.europa.esig.trustedlist.jaxb.tsl.TSPServiceInformationType;
+import eu.europa.esig.trustedlist.jaxb.tsl.TSPServiceType;
+import eu.europa.esig.trustedlist.jaxb.tsl.TSPServicesListType;
+import eu.europa.esig.trustedlist.jaxb.tsl.TSPType;
+import eu.europa.esig.trustedlist.jaxb.tsl.TrustServiceProviderListType;
+import eu.europa.esig.trustedlist.jaxb.tsl.TrustStatusListType;
+import eu.europa.esig.trustedlist.jaxb.tslx.CertSubjectDNAttributeType;
+import eu.europa.esig.trustedlist.jaxb.tslx.ExtendedKeyUsageType;
+import eu.europa.esig.xades.jaxb.xades132.IdentifierType;
+import eu.europa.esig.xades.jaxb.xades132.ObjectIdentifierType;
 
 /**
  * This class allows to parse a TSL from JAXB object to DTO's. It can be executed as a Callable
@@ -115,30 +112,16 @@ public class TSLParser implements Callable<TSLParserResult> {
 
 	private static final String TSL_MIME_TYPE = "application/vnd.etsi.tsl+xml";
 
-	private static final JAXBContext jaxbContext;
-
 	private final DSSDocument trustedList;
-
-	static {
-		try {
-			jaxbContext = JAXBContext.newInstance(ObjectFactory.class, eu.europa.esig.jaxb.ecc.ObjectFactory.class,
-					eu.europa.esig.jaxb.tslx.ObjectFactory.class);
-		} catch (JAXBException e) {
-			throw new DSSException("Unable to initialize JaxB : " + e.getMessage(), e);
-		}
-	}
 
 	public TSLParser(DSSDocument trustedList) {
 		this.trustedList = trustedList;
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public TSLParserResult call() throws Exception {
 		try (InputStream is = trustedList.openStream()) {
-			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			JAXBElement<TrustStatusListType> jaxbElement = (JAXBElement<TrustStatusListType>) unmarshaller.unmarshal(DomUtils.getSecureXMLStreamReader(is));
-			TrustStatusListType trustStatusList = jaxbElement.getValue();
+			TrustStatusListType trustStatusList = TrustedListFacade.newFacade().unmarshall(is, false);
 			return getTslModel(trustStatusList);
 		} catch (Exception e) {
 			throw new DSSException("Unable to parse file '" + trustedList.getAbsolutePath() + "' : " + e.getMessage(), e);
@@ -362,10 +345,15 @@ public class TSLParser implements Callable<TSLParserResult> {
 	}
 
 	private List<String> getServiceSupplyPoints(ServiceSupplyPointsType serviceSupplyPoints) {
-		if (serviceSupplyPoints == null) {
+		if (serviceSupplyPoints == null || Utils.isCollectionEmpty(serviceSupplyPoints.getServiceSupplyPoint())) {
 			return Collections.emptyList();
 		}
-		return serviceSupplyPoints.getServiceSupplyPoint();
+		List<String> result = new ArrayList<String>();
+		List<AttributedNonEmptyURIType> serviceSupplyPointList = serviceSupplyPoints.getServiceSupplyPoint();
+		for (AttributedNonEmptyURIType nonEmptyURI : serviceSupplyPointList) {
+			result.add(nonEmptyURI.getValue());
+		}
+		return result;
 	}
 
 	private TimeDependentValues<TSLServiceStatusAndInformationExtensions> getStatusHistory(TSPServiceType tslService) {
@@ -499,7 +487,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 	}
 
 	protected Condition getCondition(CriteriaListType criteriaList) {
-		MatchingCriteriaIndicator matchingCriteriaIndicator = MatchingCriteriaIndicator.valueOf(criteriaList.getAssert());
+		Assert matchingCriteriaIndicator = criteriaList.getAssert();
 		CompositeCondition condition = new CompositeCondition(matchingCriteriaIndicator);
 
 		addKeyUsageConditionsIfPresent(criteriaList.getKeyUsage(), condition);
@@ -517,7 +505,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 	 * @param condition
 	 */
 	@SuppressWarnings("rawtypes")
-	private void addOtherCriteriaListConditionsIfPresent(eu.europa.esig.jaxb.xades.AnyType otherCriteriaList, CompositeCondition condition) {
+	private void addOtherCriteriaListConditionsIfPresent(eu.europa.esig.xades.jaxb.xades132.AnyType otherCriteriaList, CompositeCondition condition) {
 		if (otherCriteriaList != null && Utils.isCollectionNotEmpty(otherCriteriaList.getContent())) {
 			for (Object content : otherCriteriaList.getContent()) {
 				if (content instanceof JAXBElement) {

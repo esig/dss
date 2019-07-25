@@ -29,8 +29,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
+import org.bouncycastle.cms.CMSSignedData;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -164,6 +164,11 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 		}
 
 		@Override
+		public byte[] getContents() {
+			return null;
+		}
+
+		@Override
 		public int[] getSignatureByteRange() {
 			return byteRange;
 		}
@@ -217,7 +222,7 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 		}
 
 		@Override
-		public Set<PdfSignatureOrDocTimestampInfo> getOuterSignatures() {
+		public List<PdfSignatureOrDocTimestampInfo> getOuterSignatures() {
 			return null;
 		}
 
@@ -227,7 +232,7 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 		}
 
 		@Override
-		public byte[] getContent() {
+		public CMSSignedData getCMSSignedData() {
 			return null;
 		}
 
@@ -239,6 +244,16 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 		@Override
 		public boolean isCoverAllOriginalBytes() {
 			return false;
+		}
+
+		@Override
+		public String getSignerName() {
+			return null;
+		}
+		
+		@Override
+		public String getSigFieldName() {
+			return null;
 		}
 
 	}

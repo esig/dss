@@ -22,13 +22,10 @@ package eu.europa.esig.dss.validation.process.bbb.sav;
 
 import java.util.Date;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
-import eu.europa.esig.dss.validation.policy.Context;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy;
-import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
-import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
-import eu.europa.esig.jaxb.policy.CryptographicConstraint;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 
 /**
  * 5.2.8 Signature acceptance validation (SAV) This building block covers any
@@ -37,18 +34,14 @@ import eu.europa.esig.jaxb.policy.CryptographicConstraint;
  */
 public class TimestampAcceptanceValidation extends AbstractAcceptanceValidation<TimestampWrapper> {
 
-	public TimestampAcceptanceValidation( Date currentTime, TimestampWrapper timestamp, ValidationPolicy validationPolicy) {
-		super(timestamp, currentTime, validationPolicy);
+	public TimestampAcceptanceValidation(Date currentTime, TimestampWrapper timestamp, ValidationPolicy validationPolicy) {
+		super(timestamp, currentTime, Context.TIMESTAMP, validationPolicy);
+		result.setTitle(BasicBuildingBlockDefinition.SIGNATURE_ACCEPTANCE_VALIDATION.getTitle());
 	}
 
 	@Override
 	protected void initChain() {
-		firstItem = timestampCryptographic();
-	}
-
-	private ChainItem<XmlSAV> timestampCryptographic() {
-		CryptographicConstraint constraint = validationPolicy.getSignatureCryptographicConstraint(Context.TIMESTAMP);
-		return new CryptographicCheck<XmlSAV>(result, token, currentTime, constraint);
+		firstItem = cryptographic();
 	}
 
 }

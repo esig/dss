@@ -20,11 +20,20 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
-import eu.europa.esig.dss.validation.reports.wrapper.TokenProxy;
-import eu.europa.esig.jaxb.policy.CryptographicConstraint;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.diagnostic.TokenProxy;
+import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.process.AdditionalInfo;
+import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class CryptographicCheck<T extends XmlConstraintsConclusion> extends AbstractCryptographicCheck<T> {
 
@@ -39,27 +48,56 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Abst
 	protected boolean process() {
 		
 		// Check encryption algorithm
-		if (!encryptionAlgorithmIsReliable(token.getEncryptionAlgoUsedToSignThisToken()))
+		if (!encryptionAlgorithmIsReliable(token.getEncryptionAlgorithm()))
 			return false;
 		
 		// Check digest algorithm
-		if (!digestAlgorithmIsReliable(token.getDigestAlgoUsedToSignThisToken()))
+		if (!digestAlgorithmIsReliable(token.getDigestAlgorithm()))
 			return false;
 		
 		// Check public key size
-		if (!publicKeySizeIsAcceptable(token.getEncryptionAlgoUsedToSignThisToken(), token.getKeyLengthUsedToSignThisToken()))
+		if (!publicKeySizeIsAcceptable(token.getEncryptionAlgorithm(), token.getKeyLengthUsedToSignThisToken()))
 			return false;
 		
 		// Check digest algorithm expiration date
-		if (!digestAlgorithmIsValidOnValidationDate(token.getDigestAlgoUsedToSignThisToken()))
+		if (!digestAlgorithmIsValidOnValidationDate(token.getDigestAlgorithm()))
 			return false;
 		
 		// Check encryption algorithm expiration date
-		if (!encryptionAlgorithmIsValidOnValidationDate(token.getEncryptionAlgoUsedToSignThisToken(), token.getKeyLengthUsedToSignThisToken()))
+		if (!encryptionAlgorithmIsValidOnValidationDate(token.getEncryptionAlgorithm(), token.getKeyLengthUsedToSignThisToken()))
 			return false;
 		
 		return true;
 		
+	}
+
+	@Override
+	protected MessageTag getMessageTag() {
+		if (token instanceof CertificateWrapper) {
+			return MessageTag.ACCCM;
+		} else if (token instanceof RevocationWrapper) {
+			return MessageTag.ARCCM;
+		} else if (token instanceof TimestampWrapper) {
+			return MessageTag.ATCCM;
+		}
+		return super.getMessageTag();
+	}
+
+	@Override
+	protected String getAdditionalInfo() {
+		SimpleDateFormat sdf = new SimpleDateFormat(AdditionalInfo.DATE_FORMAT);
+		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+		String addInfo = null;
+		Object[] params = null;
+		String dateTime = sdf.format(validationDate);
+		if (Utils.isStringNotEmpty(failedAlgorithm)) {
+			addInfo = AdditionalInfo.CRYPTOGRAPHIC_CHECK_FAILURE_WITH_ID;
+			params = new Object[] { failedAlgorithm, dateTime, token.getId() };
+		} else {
+			addInfo = AdditionalInfo.VALIDATION_TIME_WITH_ID;
+			params = new Object[] { dateTime, token.getId() };
+		}
+		return MessageFormat.format(addInfo, params);
 	}
 
 }

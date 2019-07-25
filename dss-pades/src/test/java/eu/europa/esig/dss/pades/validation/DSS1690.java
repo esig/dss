@@ -1,7 +1,7 @@
 package eu.europa.esig.dss.pades.validation;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 import java.util.List;
 
@@ -12,13 +12,11 @@ import org.junit.runners.Parameterized;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.client.http.IgnoreDataLoader;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedObject;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 
 @RunWith(Parameterized.class)
 public class DSS1690 {
@@ -34,7 +32,7 @@ public class DSS1690 {
 	@Test
 	public void validateArchiveTimestampsOrder() {
 
-		String firstTimestampId = "32902C8337E0351C4AA33052A3E1DA9232D204C4839BB52879DF7183678CEE61";
+		String firstTimestampId = "T-32902C8337E0351C4AA33052A3E1DA9232D204C4839BB52879DF7183678CEE61";
 
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/Test.signed_Certipost-2048-SHA512.extended-LTA.pdf"));
 
@@ -45,13 +43,8 @@ public class DSS1690 {
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		TimestampWrapper firstATST = diagnosticData.getTimestampById(firstTimestampId);
 		assertNotNull("Timestamp " + firstTimestampId + " not found", firstATST);
-		List<XmlTimestampedObject> timestampedObjects = firstATST.getTimestampedObjects();
-		for (XmlTimestampedObject xmlTimestampedObject : timestampedObjects) {
-			if (TimestampedObjectType.TIMESTAMP.equals(xmlTimestampedObject.getCategory())) {
-				fail("First timestamp can't cover the second one");
-			}
-		}
-
+		List<String> timestampedTimestampsIds = firstATST.getTimestampedTimestampIds();
+		assertEquals("First timestamp can't cover the second one", 0, timestampedTimestampsIds.size());
 	}
 
 	protected CertificateVerifier getOfflineCertificateVerifier() {

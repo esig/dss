@@ -29,6 +29,8 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+
 public class FileDocumentTest {
 
 	@Test(expected = NullPointerException.class)

@@ -20,9 +20,7 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1InputStream;
@@ -34,21 +32,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.signature.ExternalSignatureResult;
 import eu.europa.esig.dss.x509.CertificateToken;
 
-public class PAdESLevelBExternalSignature extends AbstractPkiFactoryTestDocumentSignatureService<PAdESSignatureParameters> {
+public class PAdESLevelBExternalSignature extends AbstractPAdESTestSignature {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESLevelBExternalSignature.class);
 	private DocumentSignatureService<PAdESSignatureParameters> service;
@@ -138,11 +134,6 @@ public class PAdESLevelBExternalSignature extends AbstractPkiFactoryTestDocument
 	}
 
 	@Override
-	protected DSSDocument getDocumentToSign() {
-		return documentToSign;
-	}
-
-	@Override
 	protected DocumentSignatureService<PAdESSignatureParameters> getService() {
 		return service;
 	}
@@ -153,18 +144,8 @@ public class PAdESLevelBExternalSignature extends AbstractPkiFactoryTestDocument
 	}
 
 	@Override
-	protected MimeType getExpectedMime() {
-		return MimeType.PDF;
-	}
-
-	@Override
-	protected boolean isBaselineT() {
-		return false;
-	}
-
-	@Override
-	protected boolean isBaselineLTA() {
-		return false;
+	protected DSSDocument getDocumentToSign() {
+		return documentToSign;
 	}
 
 	@Override
@@ -172,8 +153,4 @@ public class PAdESLevelBExternalSignature extends AbstractPkiFactoryTestDocument
 		return GOOD_USER;
 	}
 
-	@Override
-	protected List<DSSDocument> getOriginalDocuments() {
-		return Collections.singletonList(getDocumentToSign());
-	}
 }

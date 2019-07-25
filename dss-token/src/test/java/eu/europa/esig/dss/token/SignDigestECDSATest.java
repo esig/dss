@@ -22,11 +22,11 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Digest;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.EncryptionAlgorithm;
-import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 
 @RunWith(Parameterized.class)
 public class SignDigestECDSATest {

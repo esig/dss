@@ -26,6 +26,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Collections;
 import java.util.List;
 
 import org.bouncycastle.cert.ocsp.OCSPException;
@@ -34,8 +35,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSRevocationUtils;
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.JdbcRevocationSource;
 import eu.europa.esig.dss.x509.revocation.exception.RevocationException;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPSource;
@@ -148,8 +149,8 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSPToken> impleme
 			final OCSPResp ocspResp = new OCSPResp(data);
 			OCSPTokenBuilder ocspTokenBuilder = new OCSPTokenBuilder(ocspResp, certificateToken, issuerCert);
 			ocspTokenBuilder.setSourceURL(url);
-			ocspTokenBuilder.setOrigin(RevocationOrigin.CACHED);
 			OCSPToken ocspToken = ocspTokenBuilder.build();
+			ocspToken.setOrigins(Collections.singleton(RevocationOrigin.CACHED));
 			OCSPTokenUtils.checkTokenValidity(ocspToken, certificateToken, issuerCert);
 			return ocspToken;
 		} catch (SQLException | IOException | OCSPException e) {

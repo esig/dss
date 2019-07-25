@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.pseudo;
 
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 
 public interface PseudoStrategy {
 

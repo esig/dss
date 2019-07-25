@@ -31,11 +31,8 @@ import org.w3c.dom.Element;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
-import eu.europa.esig.dss.SigningOperation;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.asic.ASiCNamespace;
 import eu.europa.esig.dss.asic.ASiCParameters;
@@ -45,9 +42,11 @@ import eu.europa.esig.dss.asic.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.ManifestNamespace;
 import eu.europa.esig.dss.asic.OpenDocumentSupportUtils;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
@@ -107,7 +106,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 
 		final DSSDocument asicSignature = buildASiCContainer(signedDocuments, signatures, manifestFiles, asicParameters);
 		asicSignature
-				.setName(DSSUtils.getFinalFileName(asicSignature, SigningOperation.SIGN, parameters.getSignatureLevel(), parameters.aSiC().getContainerType()));
+				.setName(getFinalFileName(asicSignature, SigningOperation.SIGN, parameters.getSignatureLevel(), parameters.aSiC().getContainerType()));
 		parameters.reinitDeterministicId();
 		return asicSignature;
 	}
@@ -137,7 +136,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 
 		DSSDocument extensionResult = mergeArchiveAndExtendedSignatures(toExtendDocument, extendedDocuments);
 		extensionResult.setName(
-				DSSUtils.getFinalFileName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel(), parameters.aSiC().getContainerType()));
+				getFinalFileName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel(), parameters.aSiC().getContainerType()));
 		return extensionResult;
 	}
 

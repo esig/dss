@@ -31,21 +31,21 @@ import java.util.List;
 
 import org.junit.Before;
 
-import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.TimestampParameters;
 import eu.europa.esig.dss.asic.ASiCExtractResult;
 import eu.europa.esig.dss.asic.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.signature.ASiCWithXAdESService;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 public class ASiCSXAdESLevelBTest extends AbstractASiCSXAdESTestSignature {
 

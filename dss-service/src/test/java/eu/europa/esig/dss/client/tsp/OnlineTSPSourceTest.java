@@ -27,11 +27,11 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.client.SecureRandomNonceSource;
 import eu.europa.esig.dss.client.http.NativeHTTPDataLoader;
 import eu.europa.esig.dss.client.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.client.http.commons.TimestampDataLoader;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
 public class OnlineTSPSourceTest {
 

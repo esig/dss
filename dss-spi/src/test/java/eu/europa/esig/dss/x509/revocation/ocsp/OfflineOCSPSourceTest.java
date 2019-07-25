@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.x509.revocation.ocsp;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -33,8 +32,7 @@ import java.io.File;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.Digest;
-import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
@@ -52,7 +50,6 @@ public class OfflineOCSPSourceTest {
 		CertificateToken caUniversign = DSSUtils.loadCertificateFromBase64EncodedString(
 				"MIIEYTCCA0mgAwIBAgIQIVWN4tmvyrr2CIjMBjGC1zANBgkqhkiG9w0BAQsFADB2MQswCQYDVQQGEwJGUjEgMB4GA1UEChMXQ3J5cHRvbG9nIEludGVybmF0aW9uYWwxHDAaBgNVBAsTEzAwMDIgNDM5MTI5MTY0MDAwMjYxJzAlBgNVBAMTHlVuaXZlcnNpZ24gUHJpbWFyeSBDQSBoYXJkd2FyZTAeFw0xMjA2MTUxMjU2MjVaFw0yMjA2MTUxMjU2MjVaMG4xCzAJBgNVBAYTAkZSMSAwHgYDVQQKExdDcnlwdG9sb2cgSW50ZXJuYXRpb25hbDEcMBoGA1UECxMTMDAwMiA0MzkxMjkxNjQwMDAyNjEfMB0GA1UEAxMWVW5pdmVyc2lnbiBDQSBoYXJkd2FyZTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKHfv76grtwK9PRFTBq4BDtmmLaaHDAqkj1wd0lHIN2QH1jM6hKWeS4U/wy8QuYtvw0aFxYxiMWzS/vrj0Sczv5hAt8reE1Eg1uQcx6+aSUBqJ6a+1TbM7PtkHg1ozgbmVXGuiOLyviLhhUo8XmeeGEhux+cyRNiYCs37VPN5OVrKks29dspMkvllkexfrxiPfc+gB58EU+iNEcip/YrZLu4ZqErlCePIVBLyX9skb7QwKXDW8XBIgAzpoBj0U9/4Vxaiyj209xT1Uuz2vKsuT8Hq7I1vt7miYviHg/ovsWXH6yGcNomxX55l0qWQ4z+mGlVhCLDPMKmspY5D+1kSqsCAwEAAaOB8jCB7zA7BgNVHSAENDAyMDAGBFUdIAAwKDAmBggrBgEFBQcCARYaaHR0cDovL2RvY3MudW5pdmVyc2lnbi5ldS8wEgYDVR0TAQH/BAgwBgEB/wIBADBMBgNVHR8ERTBDMEGgP6A9hjtodHRwOi8vY3JsLnVuaXZlcnNpZ24uZXUvdW5pdmVyc2lnbl9wcmltYXJ5X2NhX2hhcmR3YXJlLmNybDAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFGDkMN3uetTQfl0l2f07eyFkT927MB8GA1UdIwQYMBaAFE3Z/Kgtx8hapK1fSa5opNyeihIiMA0GCSqGSIb3DQEBCwUAA4IBAQAQrQJxwn+DBwN+KTt75IuOkaPOnZ+FfmF/1V7zDt3YNz7n1hRXlflbx9wBJn30TwyuTuZ/Cq1gEiA+TJMrsdZPKvagY8a/q7oCm6jYw6cBhopErwV/sZ9R3Ic+fphKSxoEnygpZs4uKMU2bB7nbul+sdJkP/OrIHKfHydMk3ayeAxnnieOj8EU+Z5w3fpekOGOtb4VUTESWU/xQfDZcNaauNRU2DYFi1eDypfVnyD8tORDoFVaAqzdIJuMJ06jJB5fnmNBXU7GOQFLcdK7hy3ZDmPNh5FNGnaQRrlY2st7lXfV3mu9AgHmjPjxrbAwgo1GzLRY0byI9bfitN0sLT+d");
 		OCSPToken ocspToken = ocspSource.getRevocationToken(userUniversign, caUniversign);
-		ocspToken.initInfo();
 
 		assertNotNull(ocspToken);
 		assertNotNull(ocspToken.getArchiveCutOff());
@@ -63,6 +60,8 @@ public class OfflineOCSPSourceTest {
 		assertNotNull(ocspToken.getCertId());
 		assertNull(ocspToken.getExpiredCertsOnCRL());
 		assertTrue(ocspToken.getStatus());
+		assertFalse(ocspToken.isCertHashPresent());
+		assertFalse(ocspToken.isCertHashMatch());
 	}
 
 	@Test
@@ -77,7 +76,6 @@ public class OfflineOCSPSourceTest {
 		CertificateToken caUniversign = DSSUtils.loadCertificateFromBase64EncodedString(
 				"MIID5zCCAs+gAwIBAgICDJcwDQYJKoZIhvcNAQELBQAwRDELMAkGA1UEBhMCTFUxFjAUBgNVBAoTDUx1eFRydXN0IHMuYS4xHTAbBgNVBAMTFEx1eFRydXN0IEdsb2JhbCBSb290MB4XDTExMTEyMjA5MzQyNFoXDTE3MTEyMjA5MzQyNFowTDELMAkGA1UEBhMCTFUxFjAUBgNVBAoTDUx1eFRydXN0IFMuQS4xJTAjBgNVBAMTHEx1eFRydXN0IEdsb2JhbCBRdWFsaWZpZWQgQ0EwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCo0Cl9yek22xZb2PNZN0gIgx26qgQChKJ3az/r+qhAv/d/jVBLZy5mQvKRQFrvnLZp5gY5RzrgIcMyZxCwCitQ+MyLPiUYZ4mg/lUrHfOfhWRjYaJY4Dz+M69icdzAsKuVrfsurJ/UEmaIkGvgjBzeCd0qd8BXYnnt6GAT9bAsJ7Vh8lDyTho4D1mbude6jmupBTRNqW1TqnuzeJcooI8JAWkWZ0X4gGXzG0iZlC4irIlB/aaQiJoo+8QVr511T+zAJSJv2CpPS68dpL7AZBTw7/fhsyF84HcBf4tCH7Qhl9zFrdaWGdqrZiebSM4SeTBAnuuKUdYuuZyjoAHFnjj3AgMBAAGjgdowgdcwDwYDVR0TBAgwBgEB/wIBADBDBgNVHSAEPDA6MDgGCCuBKwEBAQoDMCwwKgYIKwYBBQUHAgEWHmh0dHBzOi8vcmVwb3NpdG9yeS5sdXh0cnVzdC5sdTALBgNVHQ8EBAMCAQYwHwYDVR0jBBgwFoAUFxWFiQkvJIdvPx0b5PKWeYNIE84wMgYDVR0fBCswKTAnoCWgI4YhaHR0cDovL2NybC5sdXh0cnVzdC5sdS9MVEdSQ0EuY3JsMB0GA1UdDgQWBBQ0Fhvx02RnYkyjNLwNs1OkfKHxFzANBgkqhkiG9w0BAQsFAAOCAQEAGPCWTo1SQy6Kmpwin+GaWVW9h2JO3Qwr6qVwZAQHXPhZGQTD+ghIxN949SGyoMmkGTvJjOSaIs8qJ5lGtDWJuy056rN5FCc2P+0qYofpGdNgSkyRY3xtuKteEPcoi+eFBphY+dlilSPXm3j6Vp/6BRb70Zd35O1Zic95ZUNCxDDVkaDbuN9tjGIBKhnq/ExtpheEdZJPjppVXpsBrCUUpJ0A9oSSFOQewwKSMD/vJKF32M9A2TlRd62XdHeNJrahdU/tO55f9tz3ekl/aKoS2khJxMfBvdvlw2Yc2g02g5rYsBxrSphph6IjqIkALM95jbm9T2Xo2CSROTAtprdhKw==");
 		OCSPToken ocspToken = ocspSource.getRevocationToken(userUniversign, caUniversign);
-		ocspToken.initInfo();
 
 		assertNotNull(ocspToken);
 		assertNull(ocspToken.getArchiveCutOff());
@@ -86,7 +84,7 @@ public class OfflineOCSPSourceTest {
 		assertNotNull(ocspToken.getBasicOCSPResp());
 		assertNotNull(ocspToken.getCertId());
 		assertNull(ocspToken.getExpiredCertsOnCRL());
-		assertNull(ocspToken.getCertHash());
+		assertFalse(ocspToken.isCertHashPresent());
 		assertNotNull(ocspToken.getReason());
 	}
 
@@ -100,17 +98,12 @@ public class OfflineOCSPSourceTest {
 		OCSPSource ocspSource = new ExternalResourcesOCSPSource("/sk_ocsp.bin");
 
 		OCSPToken ocspToken = ocspSource.getRevocationToken(user, caToken);
-		ocspToken.initInfo();
 
 		assertNotNull(ocspToken);
 		assertNotNull(ocspToken.getRevocationDate());
 
-		Digest ocspCertHash = ocspToken.getCertHash();
-		assertNotNull(ocspCertHash);
-		assertNotNull(ocspCertHash.getAlgorithm());
-		assertNotNull(ocspCertHash.getValue());
-
-		assertArrayEquals(ocspCertHash.getValue(), user.getDigest(ocspCertHash.getAlgorithm()));
+		assertTrue(ocspToken.isCertHashPresent());
+		assertTrue(ocspToken.isCertHashMatch());
 	}
 
 	@Test
@@ -129,7 +122,8 @@ public class OfflineOCSPSourceTest {
 		assertEquals(SignatureAlgorithm.RSA_SSA_PSS_SHA256_MGF1, ocspToken.getSignatureAlgorithm());
 		assertTrue(ocspToken.isSignatureValid());
 		assertTrue(ocspToken.isValid());
-		assertNotNull(ocspToken.getCertHash());
+		assertTrue(ocspToken.isCertHashPresent());
+		assertTrue(ocspToken.isCertHashMatch());
 		assertFalse(ocspToken.isUseNonce());
 		assertTrue(ocspToken.getStatus());
 		assertNull(ocspToken.getReason());

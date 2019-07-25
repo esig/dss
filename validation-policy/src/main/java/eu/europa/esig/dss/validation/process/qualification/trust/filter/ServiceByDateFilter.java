@@ -22,7 +22,7 @@ package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 
 import java.util.Date;
 
-import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 
 public class ServiceByDateFilter extends AbstractTrustedServiceFilter {
 

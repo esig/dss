@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.x509.revocation.ocsp;
 
-import java.io.IOException;
 import java.io.StringWriter;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Date;
 
 import javax.security.auth.x500.X500Principal;
@@ -36,7 +36,6 @@ import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.CertificateID;
 import org.bouncycastle.cert.ocsp.CertificateStatus;
-import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.cert.ocsp.RevokedStatus;
 import org.bouncycastle.cert.ocsp.SingleResp;
 import org.bouncycastle.cert.ocsp.UnknownStatus;
@@ -46,16 +45,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSASN1Utils;
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DSSSecurityProvider;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Digest;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.RevocationReason;
+import eu.europa.esig.dss.enumerations.RevocationType;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
-import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
 
 /**
  * OCSP Signed Token which encapsulate BasicOCSPResp (BC).
@@ -90,6 +89,7 @@ public class OCSPToken extends RevocationToken {
 	private BasicOCSPResp basicOCSPResp;
 
 	public OCSPToken() {
+		this.revocationType = RevocationType.OCSP;
 	}
 
 	@Override
@@ -158,12 +158,12 @@ public class OCSPToken extends RevocationToken {
 			if (revokedStatus.hasRevocationReason()) {
 				reasonId = revokedStatus.getRevocationReason();
 			}
-			reason = CRLReasonEnum.fromInt(reasonId);
+			reason = RevocationReason.fromInt(reasonId);
 		} else if (certStatus instanceof UnknownStatus) {
 			if (LOG.isInfoEnabled()) {
 				LOG.info("OCSP status unknown");
 			}
-			reason = CRLReasonEnum.unknow;
+			reason = RevocationReason.UNSPECIFIED;
 		} else {
 			LOG.info("OCSP certificate status: {}", certStatus);
 		}
@@ -200,7 +200,13 @@ public class OCSPToken extends RevocationToken {
 			try {
 				CertHash asn1CertHash = CertHash.getInstance(extension.getParsedValue());
 				DigestAlgorithm digestAlgo = DigestAlgorithm.forOID(asn1CertHash.getHashAlgorithm().getAlgorithm().getId());
-				certHash = new Digest(digestAlgo, asn1CertHash.getCertificateHash());
+				Digest certHash = new Digest(digestAlgo, asn1CertHash.getCertificateHash());
+				if (certHash != null) {
+					certHashPresent = true;
+					byte[] expectedDigest = relatedCertificate.getDigest(certHash.getAlgorithm());
+					byte[] foundDigest = certHash.getValue();
+					certHashMatch = Arrays.equals(expectedDigest, foundDigest);
+				}
 			} catch (Exception e) {
 				LOG.warn("Unable to extract id_isismtt_at_certHash : {}", e.getMessage());
 			}
@@ -301,16 +307,7 @@ public class OCSPToken extends RevocationToken {
 
 	@Override
 	public byte[] getEncoded() {
-		try {
-			if (basicOCSPResp != null) {
-				final OCSPResp ocspResp = DSSRevocationUtils.fromBasicToResp(basicOCSPResp);
-				return ocspResp.getEncoded();
-			} else {
-				throw new DSSException("Empty OCSP response");
-			}
-		} catch (IOException e) {
-			throw new DSSException("OCSP encoding error: " + e.getMessage(), e);
-		}
+		return DSSRevocationUtils.getEncodedFromBasicResp(basicOCSPResp);
 	}
 
 	public void setIssuerX500Principal(X500Principal issuerX500Principal) {

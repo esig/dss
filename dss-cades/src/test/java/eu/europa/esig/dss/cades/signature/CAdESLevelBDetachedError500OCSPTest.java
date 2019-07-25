@@ -29,14 +29,14 @@ import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
-import eu.europa.esig.dss.validation.reports.SimpleReport;
 
 public class CAdESLevelBDetachedError500OCSPTest extends AbstractCAdESTestSignature {
 

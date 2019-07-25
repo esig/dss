@@ -27,18 +27,18 @@ import java.util.List;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.CertificatePolicyOids;
-import eu.europa.esig.dss.QCStatementOids;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificatePolicy;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlOID;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
+import eu.europa.esig.dss.enumerations.CertificatePolicy;
+import eu.europa.esig.dss.enumerations.QCStatement;
+import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQualifiedCheck;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
-import eu.europa.esig.jaxb.policy.Level;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class CertificateQualifiedCheckTest {
 
@@ -51,7 +51,7 @@ public class CertificateQualifiedCheckTest {
 
 		List<XmlOID> qcStatementIds = new ArrayList<XmlOID>();
 		XmlOID oid = new XmlOID();
-		oid.setValue(QCStatementOids.QC_COMPLIANCE.getOid());
+		oid.setValue(QCStatement.QC_COMPLIANCE.getOid());
 		qcStatementIds.add(oid);
 		xc.setQCStatementIds(qcStatementIds);
 
@@ -72,7 +72,7 @@ public class CertificateQualifiedCheckTest {
 		XmlCertificate xc = new XmlCertificate();
 		List<XmlCertificatePolicy> certPolicies = new ArrayList<XmlCertificatePolicy>();
 		XmlCertificatePolicy oid = new XmlCertificatePolicy();
-		oid.setValue(CertificatePolicyOids.QCP_PUBLIC.getOid());
+		oid.setValue(CertificatePolicy.QCP_PUBLIC.getOid());
 		certPolicies.add(oid);
 		xc.setCertificatePolicies(certPolicies);
 

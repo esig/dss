@@ -18,21 +18,21 @@ import org.w3c.dom.Element;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.DigestMatcherType;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.reference.Base64Transform;
 import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
@@ -93,8 +93,8 @@ public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 		boolean objectFound = false;
 		for (XmlDigestMatcher digestMatcher : digestMatchers) {
 			if (DigestMatcherType.OBJECT.equals(digestMatcher.getType())) {
-				DigestAlgorithm digestAlgorithm = DigestAlgorithm.forName(digestMatcher.getDigestMethod());
-				assertEquals(image.getDigest(digestAlgorithm), digestMatcher.getDigestValue());
+				DigestAlgorithm digestAlgorithm = digestMatcher.getDigestMethod();
+				assertEquals(image.getDigest(digestAlgorithm), Utils.toBase64(digestMatcher.getDigestValue()));
 				objectFound = true;
 			}
 		}

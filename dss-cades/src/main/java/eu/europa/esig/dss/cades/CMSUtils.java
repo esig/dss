@@ -26,11 +26,14 @@ import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCert
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1InputStream;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Set;
-import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.DERSet;
 import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.DLSet;
@@ -40,12 +43,7 @@ import org.bouncycastle.asn1.ess.ESSCertID;
 import org.bouncycastle.asn1.ess.ESSCertIDv2;
 import org.bouncycastle.asn1.ess.SigningCertificate;
 import org.bouncycastle.asn1.ess.SigningCertificateV2;
-import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
-import org.bouncycastle.asn1.ocsp.OCSPResponse;
 import org.bouncycastle.asn1.x509.IssuerSerial;
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-import org.bouncycastle.cert.ocsp.OCSPException;
-import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSProcessableByteArray;
 import org.bouncycastle.cms.CMSSignedData;
@@ -56,14 +54,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSASN1Utils;
+import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 public final class CMSUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CMSUtils.class);
+	
+	public static final DigestAlgorithm DEFAULT_ARCHIVE_TIMESTAMP_HASH_ALGO = DigestAlgorithm.SHA256;
 
 	private CMSUtils() {
 	}
@@ -169,65 +171,6 @@ public final class CMSUtils {
 	}
 
 	/**
-	 * This method allows to create a {@code BasicOCSPResp} from a {@code DERSequence}.
-	 * The value for response SHALL be the DER encoding of BasicOCSPResponse (RFC 2560).
-	 *
-	 * @param derSequence
-	 *            {@code DERSequence} to convert to {@code BasicOCSPResp}
-	 * @return {@code BasicOCSPResp}
-	 */
-	public static BasicOCSPResp getBasicOcspResp(final DERSequence derSequence) {
-		BasicOCSPResp basicOCSPResp = null;
-		try {
-			final BasicOCSPResponse basicOcspResponse = BasicOCSPResponse.getInstance(derSequence);
-			basicOCSPResp = new BasicOCSPResp(basicOcspResponse);
-		} catch (Exception e) {
-			LOG.error("Impossible to create BasicOCSPResp from DERSequence!", e);
-		}
-		return basicOCSPResp;
-	}
-
-	/**
-	 * This method allows to create a {@code OCSPResp} from a {@code DERSequence}.
-	 *
-	 * @param derSequence
-	 *            {@code DERSequence} to convert to {@code OCSPResp}
-	 * @return {@code OCSPResp}
-	 */
-	public static OCSPResp getOcspResp(final DERSequence derSequence) {
-		OCSPResp ocspResp = null;
-		try {
-			final OCSPResponse ocspResponse = OCSPResponse.getInstance(derSequence);
-			ocspResp = new OCSPResp(ocspResponse);
-		} catch (Exception e) {
-			LOG.error("Impossible to create OCSPResp from DERSequence!", e);
-		}
-		return ocspResp;
-	}
-
-	/**
-	 * This method returns the {@code BasicOCSPResp} from a {@code OCSPResp}.
-	 *
-	 * @param ocspResp
-	 *            {@code OCSPResp} to analysed
-	 * @return
-	 */
-	public static BasicOCSPResp getBasicOcspResp(final OCSPResp ocspResp) {
-		BasicOCSPResp basicOCSPResp = null;
-		try {
-			final Object responseObject = ocspResp.getResponseObject();
-			if (responseObject instanceof BasicOCSPResp) {
-				basicOCSPResp = (BasicOCSPResp) responseObject;
-			} else {
-				LOG.warn("Unknown OCSP response type: {}", responseObject.getClass());
-			}
-		} catch (OCSPException e) {
-			LOG.error("Impossible to process OCSPResp!", e);
-		}
-		return basicOCSPResp;
-	}
-
-	/**
 	 * Method to add signing certificate to ASN.1 DER encoded signed attributes. Certificate
 	 * will be added as either signing-certificate or signing-certificate-v2 attribute depending
 	 * on digest algorithm being used.
@@ -266,6 +209,81 @@ public final class CMSUtils {
 			attribute = new Attribute(id_aa_signingCertificateV2, new DERSet(signingCertificateV2));
 		}
 		signedAttributes.add(attribute);
+	}
+	
+	/**
+	 * Returns a new {@code AttributeTable} with replaced {@code attributeToReplace} by {@code attributeToAdd} 
+	 * 
+	 * @param attributeTable {@link AttributeTable} to replace value in
+	 * @param attributeToReplace {@link CMSSignedData} to be replaced
+	 * @param attributeToAdd {@link CMSSignedData} to replace by
+	 * @return a new {@link AttributeTable}
+	 * @throws IOException in case of encoding error
+	 * @throws CMSException in case of CMSException
+	 */
+	public static AttributeTable replaceAttribute(AttributeTable attributeTable, 
+			CMSSignedData attributeToReplace, CMSSignedData attributeToAdd) throws IOException, CMSException {
+		ASN1EncodableVector newAsn1EncodableVector = new ASN1EncodableVector();
+		ASN1EncodableVector oldAsn1EncodableVector = attributeTable.toASN1EncodableVector();
+		for (int ii = 0; ii < oldAsn1EncodableVector.size(); ii++) {
+			Attribute attribute = (Attribute) oldAsn1EncodableVector.get(ii);
+			if (equals(DSSASN1Utils.getCMSSignedData(attribute), attributeToReplace)) {
+				ASN1Primitive asn1Primitive = DSSASN1Utils.toASN1Primitive(attributeToAdd.getEncoded());
+				newAsn1EncodableVector.add(new Attribute(attribute.getAttrType(), new DERSet(asn1Primitive)));
+			} else {
+				newAsn1EncodableVector.add(attribute);
+			}
+		}
+		return new AttributeTable(newAsn1EncodableVector);		
+	}
+	
+	private static boolean equals(CMSSignedData signedData, CMSSignedData signedDataToCompare) throws IOException {
+		if (Arrays.equals(signedData.getEncoded(), signedDataToCompare.getEncoded())) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Returns an unsigned attribute by its given {@code oid}
+	 * @param signerInformation {@link SignerInformation} to get attribute from
+	 * @param oid {@link ASN1ObjectIdentifier} of the target attribute
+	 * @return {@link Attribute}
+	 */
+	public static Attribute getUnsignedAttribute(SignerInformation signerInformation, ASN1ObjectIdentifier oid) {
+		final AttributeTable unsignedAttributes = signerInformation.getUnsignedAttributes();
+		if (unsignedAttributes == null) {
+			return null;
+		}
+		return unsignedAttributes.get(oid);
+	}
+
+	/**
+	 * Checks if the signature is detached
+	 * @param cmsSignedData {@link CMSSignedData}
+	 * @return TRUE if the signature is detached, FALSE otherwise
+	 */
+	public static boolean isDetachedSignature(CMSSignedData cmsSignedData) {
+		return cmsSignedData.isDetachedSignature();
+	}
+	
+	/**
+	 * Returns the original document from the provided {@code cmsSignedData}
+	 * @param cmsSignedData {@link CMSSignedData} to get original document from
+	 * @return original {@link DSSDocument}
+	 */
+	public static DSSDocument getOriginalDocument(CMSSignedData cmsSignedData, List<DSSDocument> detachedDocuments) {
+		CMSTypedData signedContent = null;
+		if (cmsSignedData != null) {
+			signedContent = cmsSignedData.getSignedContent();
+		}
+		if (signedContent != null) {
+			return new InMemoryDocument(CMSUtils.getSignedContent(signedContent));
+		} else if (Utils.collectionSize(detachedDocuments) == 1) {
+			return detachedDocuments.get(0);
+		} else {
+			throw new DSSException("Only enveloping and detached signatures are supported");
+		}
 	}
 
 }

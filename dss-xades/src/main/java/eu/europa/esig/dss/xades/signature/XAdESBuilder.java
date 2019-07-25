@@ -42,10 +42,10 @@ import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -91,6 +91,7 @@ public abstract class XAdESBuilder {
 	public static final String XADES_CERT_DIGEST = "xades:CertDigest";
 	public static final String XADES_CERT_REFS = "xades:CertRefs";
 	public static final String XADES_CERTIFICATE_VALUES = "xades:CertificateValues";
+	public static final String XADES_REVOCATION_VALUES = "xades:RevocationValues";
 	public static final String XADES_CERTIFIED_ROLES = "xades:CertifiedRoles";
 	public static final String XADES_CERTIFIED_ROLES_V2 = "xades:CertifiedRolesV2";
 	public static final String XADES_CERTIFIED_ROLE = "xades:CertifiedRole";
@@ -219,7 +220,7 @@ public abstract class XAdESBuilder {
 	 */
 	protected void incorporateDigestMethod(final Element parentDom, final DigestAlgorithm digestAlgorithm) {
 		final Element digestMethodDom = documentDom.createElementNS(XMLNS, DS_DIGEST_METHOD);
-		final String digestAlgorithmXmlId = digestAlgorithm.getXmlId();
+		final String digestAlgorithmXmlId = digestAlgorithm.getUri();
 		digestMethodDom.setAttribute(ALGORITHM, digestAlgorithmXmlId);
 		parentDom.appendChild(digestMethodDom);
 	}

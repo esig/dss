@@ -23,12 +23,11 @@ package eu.europa.esig.dss.validation;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
+import java.util.ServiceLoader;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,21 +36,22 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSSecurityProvider;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.executor.CustomProcessExecutor;
-import eu.europa.esig.dss.validation.executor.ProcessExecutor;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
+import eu.europa.esig.dss.enumerations.CertificateSourceType;
+import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
+import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.ValidationPolicyFacade;
+import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
+import eu.europa.esig.dss.validation.executor.DefaultSignatureProcessExecutor;
+import eu.europa.esig.dss.validation.executor.SignatureProcessExecutor;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
-import eu.europa.esig.dss.validation.policy.Context;
-import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.revocation.crl.ListCRLSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.ListOCSPSource;
-import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 
 /**
  * Validate the signed document. The content of the document is determined
@@ -61,7 +61,7 @@ import eu.europa.esig.jaxb.policy.ConstraintsParameters;
  * SignatureScopeFinder as defined by
  * eu.europa.esig.dss.validation.scope.SignatureScopeFinderFactory
  */
-public abstract class SignedDocumentValidator implements DocumentValidator {
+public abstract class SignedDocumentValidator implements DocumentValidator, ProcessExecutorProvider<SignatureProcessExecutor> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SignedDocumentValidator.class);
 
@@ -70,9 +70,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * This variable can hold a specific {@code ProcessExecutor}
+	 * This variable can hold a specific {@code SignatureProcessExecutor}
 	 */
-	protected ProcessExecutor processExecutor = null;
+	protected SignatureProcessExecutor processExecutor = null;
 
 	/**
 	 * This is the pool of certificates used in the validation process. The
@@ -92,6 +92,16 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	protected List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
 
+	/**
+	 * In case of an ASiC signature this {@code List} of container documents.
+	 */
+	protected List<DSSDocument> containerContents;
+	
+	/**
+	 * List of all found {@link ManifestFile}s
+	 */
+	protected List<ManifestFile> manifestFiles;
+
 	protected CertificateToken providedSigningCertificateToken = null;
 
 	/**
@@ -108,34 +118,18 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	// Default configuration with the highest level
 	private ValidationLevel validationLevel = ValidationLevel.ARCHIVAL_DATA;
-
-	private static List<Class<SignedDocumentValidator>> registredDocumentValidators = new ArrayList<Class<SignedDocumentValidator>>();
-
-	static {
-		Properties properties = new Properties();
-		try {
-			properties.load(SignedDocumentValidator.class.getResourceAsStream("/document-validators.properties"));
-		} catch (IOException e) {
-			LOG.error("Cannot load properties from document-validators.properties : " + e.getMessage(), e);
-		}
-		for (String propName : properties.stringPropertyNames()) {
-			registerDocumentValidator(propName, properties.getProperty(propName));
-		}
-	}
-
-	private static void registerDocumentValidator(String type, String clazzToFind) {
-		try {
-			@SuppressWarnings("unchecked")
-			Class<SignedDocumentValidator> documentValidator = (Class<SignedDocumentValidator>) Class.forName(clazzToFind);
-			registredDocumentValidators.add(documentValidator);
-			LOG.info("Validator '{}' is registred", documentValidator.getName());
-		} catch (ClassNotFoundException e) {
-			LOG.warn("Validator not found for signature type : {}", type);
-		}
-	}
+	
+	// Produces the ETSI Validation Report by default
+	private boolean enableEtsiValidationReport = true;
 
 	protected SignedDocumentValidator(SignatureScopeFinder signatureScopeFinder) {
 		this.signatureScopeFinder = signatureScopeFinder;
+	}
+	
+	private void setSignedScopeFinderDefaultDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
+		if (signatureScopeFinder != null) {
+			signatureScopeFinder.setDefaultDigestAlgorithm(digestAlgorithm);
+		}
 	}
 
 	/**
@@ -148,21 +142,10 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 *         of the document type
 	 */
 	public static SignedDocumentValidator fromDocument(final DSSDocument dssDocument) {
-		if (Utils.isCollectionEmpty(registredDocumentValidators)) {
-			throw new DSSException("No validator registred");
-		}
-
-		for (Class<SignedDocumentValidator> clazz : registredDocumentValidators) {
-			try {
-				Constructor<SignedDocumentValidator> defaultAndPrivateConstructor = clazz.getDeclaredConstructor();
-				defaultAndPrivateConstructor.setAccessible(true);
-				SignedDocumentValidator validator = defaultAndPrivateConstructor.newInstance();
-				if (validator.isSupported(dssDocument)) {
-					Constructor<? extends SignedDocumentValidator> constructor = clazz.getDeclaredConstructor(DSSDocument.class);
-					return constructor.newInstance(dssDocument);
-				}
-			} catch (Exception e) {
-				LOG.error("Cannot instanciate class '" + clazz.getName() + "' : " + e.getMessage(), e);
+		ServiceLoader<DocumentValidatorFactory> serviceLoaders = ServiceLoader.load(DocumentValidatorFactory.class);
+		for (DocumentValidatorFactory factory : serviceLoaders) {
+			if (factory.isSupported(dssDocument)) {
+				return factory.create(dssDocument);
 			}
 		}
 		throw new DSSException("Document format not recognized/handled");
@@ -203,14 +186,25 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	public void setDetachedContents(final List<DSSDocument> detachedContents) {
 		this.detachedContents = detachedContents;
 	}
+	
+	@Override
+	public void setContainerContents(List<DSSDocument> containerContents) {
+		this.containerContents = containerContents;
+	}
+	
+	@Override
+	public void setManifestFiles(List<ManifestFile> manifestFiles) {
+		this.manifestFiles = manifestFiles;
+	}
 
-	/**
-	 * This method allows to specify the validation level (Basic / Timestamp /
-	 * Long Term / Archival). By default, the selected validation is ARCHIVAL
-	 */
 	@Override
 	public void setValidationLevel(ValidationLevel validationLevel) {
 		this.validationLevel = validationLevel;
+	}
+	
+	@Override
+	public void setEnableEtsiValidationReport(boolean enableEtsiValidationReport) {
+		this.enableEtsiValidationReport = enableEtsiValidationReport;
 	}
 
 	@Override
@@ -257,8 +251,13 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	@Override
 	public Reports validateDocument(final InputStream policyDataStream) {
-		final ConstraintsParameters validationPolicyJaxb = ValidationResourceManager.loadPolicyData(policyDataStream);
-		return validateDocument(validationPolicyJaxb);
+		ValidationPolicy validationPolicy = null;
+		try {
+			validationPolicy = ValidationPolicyFacade.newFacade().getValidationPolicy(policyDataStream);
+		} catch (Exception e) {
+			throw new DSSException("Unable to load the policy", e);
+		}
+		return validateDocument(validationPolicy);
 	}
 
 	/**
@@ -297,10 +296,13 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		boolean structuralValidation = isRequireStructuralValidation(validationPolicy);
 		final ValidationContext validationContext = new SignatureValidationContext(validationCertPool);
 
-		List<AdvancedSignature> allSignatureList = processSignaturesValidation(validationContext, structuralValidation);
+		List<AdvancedSignature> allSignatureList = prepareSignatureValidationContext(validationContext);
+		allSignatureList = processSignaturesValidation(validationContext, allSignatureList, structuralValidation);
 
-		final DiagnosticData diagnosticData = new DiagnosticDataBuilder().document(document).containerInfo(getContainerInfo()).foundSignatures(allSignatureList)
+		final XmlDiagnosticData diagnosticData = new DiagnosticDataBuilder().document(document).containerInfo(getContainerInfo())
+				.foundSignatures(allSignatureList)
 				.usedCertificates(validationContext.getProcessedCertificates()).usedRevocations(validationContext.getProcessedRevocations())
+				.setDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm())
 				.includeRawCertificateTokens(certificateVerifier.isIncludeCertificateTokenValues())
 				.includeRawRevocationData(certificateVerifier.isIncludeCertificateRevocationValues())
 				.includeRawTimestampTokens(certificateVerifier.isIncludeTimestampTokenValues())
@@ -310,14 +312,29 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 		return processValidationPolicy(diagnosticData, validationPolicy);
 	}
-
+	
 	@Override
-	public List<AdvancedSignature> processSignaturesValidation(final ValidationContext validationContext, boolean structuralValidation) {
+	public List<AdvancedSignature> prepareSignatureValidationContext(final ValidationContext validationContext) {
 		final List<AdvancedSignature> allSignatureList = getAllSignatures();
 		// The list of all signing certificates is created to allow a parallel
 		// validation.
+		
+		// Signature Scope must be processed before in order to properly initialize content timestamps
+		setSignedScopeFinderDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm());
+		for (final AdvancedSignature signature : allSignatureList) {
+			if (signatureScopeFinder != null) {
+				signature.findSignatureScope(signatureScopeFinder);
+			}
+		}
 		prepareCertificatesAndTimestamps(allSignatureList, validationContext);
+		
+		return allSignatureList;
+	}
 
+	@Override
+	public List<AdvancedSignature> processSignaturesValidation(final ValidationContext validationContext, 
+			final List<AdvancedSignature> allSignatureList, boolean structuralValidation) {
+		
 		final ListCRLSource signatureCRLSource = getSignatureCrlSource(allSignatureList);
 		certificateVerifier.setSignatureCRLSource(signatureCRLSource);
 
@@ -331,16 +348,15 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		for (final AdvancedSignature signature : allSignatureList) {
 			signature.checkSigningCertificate();
 			signature.checkSignatureIntegrity();
-			signature.validateTimestamps();
 			if (structuralValidation) {
 				signature.validateStructure();
 			}
 			signature.checkSignaturePolicy(signaturePolicyProvider);
 
-			if (signatureScopeFinder != null) {
-				signature.findSignatureScope(signatureScopeFinder);
-			}
+			signature.populateCRLTokenLists(signatureCRLSource);
+			signature.populateOCSPTokenLists(signatureOCSPSource);
 		}
+		
 		return allSignatureList;
 	}
 
@@ -353,11 +369,12 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		return null;
 	}
 
-	protected Reports processValidationPolicy(DiagnosticData diagnosticData, ValidationPolicy validationPolicy) {
-		final ProcessExecutor<Reports> executor = provideProcessExecutorInstance();
+	protected Reports processValidationPolicy(XmlDiagnosticData diagnosticData, ValidationPolicy validationPolicy) {
+		final SignatureProcessExecutor executor = provideProcessExecutorInstance();
 		executor.setValidationPolicy(validationPolicy);
 		executor.setValidationLevel(validationLevel);
 		executor.setDiagnosticData(diagnosticData);
+		executor.setEnableEtsiValidationReport(enableEtsiValidationReport);
 		final Reports reports = executor.execute();
 		return reports;
 	}
@@ -375,7 +392,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	@Override
-	public void setProcessExecutor(final ProcessExecutor processExecutor) {
+	public void setProcessExecutor(final SignatureProcessExecutor processExecutor) {
 		this.processExecutor = processExecutor;
 	}
 
@@ -383,11 +400,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * This method returns the process executor. If the instance of this class
 	 * is not yet instantiated then the new instance is created.
 	 *
-	 * @return {@code ProcessExecutor}
+	 * @return {@code SignatureProcessExecutor}
 	 */
-	public ProcessExecutor<Reports> provideProcessExecutorInstance() {
+	public SignatureProcessExecutor provideProcessExecutorInstance() {
 		if (processExecutor == null) {
-			processExecutor = new CustomProcessExecutor();
+			processExecutor = new DefaultSignatureProcessExecutor();
 		}
 		return processExecutor;
 	}
@@ -419,7 +436,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	private ListCRLSource getSignatureCrlSource(final List<AdvancedSignature> allSignatureList) {
 		final ListCRLSource signatureCrlSource = new ListCRLSource();
 		for (final AdvancedSignature signature : allSignatureList) {
-			signatureCrlSource.addAll(signature.getCRLSource());
+			signatureCrlSource.addAll(signature.getCompleteCRLSource());
 		}
 		return signatureCrlSource;
 	}
@@ -435,7 +452,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	private ListOCSPSource getSignatureOcspSource(final List<AdvancedSignature> allSignatureList) {
 		final ListOCSPSource signatureOcspSource = new ListOCSPSource();
 		for (final AdvancedSignature signature : allSignatureList) {
-			signatureOcspSource.addAll(signature.getOCSPSource());
+			signatureOcspSource.addAll(signature.getCompleteOCSPSource());
 		}
 		return signatureOcspSource;
 	}

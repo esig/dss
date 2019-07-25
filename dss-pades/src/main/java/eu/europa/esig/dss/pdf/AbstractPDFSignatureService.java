@@ -20,7 +20,10 @@
  */
 package eu.europa.esig.dss.pdf;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -31,13 +34,15 @@ import java.util.Map.Entry;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.tsp.TimeStampToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory;
@@ -48,6 +53,8 @@ import eu.europa.esig.dss.x509.Token;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 public abstract class AbstractPDFSignatureService implements PDFSignatureService, PDFTimestampService {
+
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractPDFSignatureService.class);
 
 	protected final boolean timestamp;
 	protected final SignatureDrawerFactory signatureDrawerFactory;
@@ -168,6 +175,72 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		}
 	}
 
+	protected byte[] getSignedContent(DSSDocument dssDocument, int[] byteRange) throws IOException {
+		// Adobe Digital Signatures in a PDF (p5): In Figure 4, the hash is calculated
+		// for bytes 0 through 840, and 960 through 1200. [0, 840, 960, 1200]
+		int beginning = byteRange[0];
+		int startSigValueContent = byteRange[1];
+		int endSigValueContent = byteRange[2];
+		int endValue = byteRange[3];
+		
+		byte[] signedContentByteArray = new byte[startSigValueContent + endValue];
+		
+		try (InputStream is = dssDocument.openStream()) {
+			
+			DSSUtils.skipAvailableBytes(is, beginning);
+			DSSUtils.readAvailableBytes(is, signedContentByteArray, 0, startSigValueContent);
+			DSSUtils.skipAvailableBytes(is, (long)endSigValueContent - startSigValueContent - beginning);
+			DSSUtils.readAvailableBytes(is, signedContentByteArray, startSigValueContent, endValue);
+			
+		} catch (IllegalStateException e) {
+			LOG.error("Cannot extract signed content. Reason : {}", e.getMessage());
+		}
+		
+		return signedContentByteArray;
+	}
+	
+	protected void checkIsContentValueEqualsByteRangeExtraction(DSSDocument document, int[] byteRange, byte[] cms, String signatureName) {
+		try {
+			byte[] cmsWithByteRange = getSignatureValue(document, byteRange);
+			if (!Arrays.equals(cms, cmsWithByteRange)) {
+				LOG.warn("Conflict between /Content and ByteRange for Signature '{}'.", signatureName);
+			}
+		} catch (IOException | IllegalArgumentException e) {
+			String message = String.format("Unable to retrieve data from the ByteRange (%s to %s)", byteRange[0] + byteRange[1], byteRange[2]);
+			if (LOG.isDebugEnabled()) {
+				// Exception displays the (long) hex value
+				LOG.debug(message, e);
+			} else {
+				LOG.error(message);
+			}
+		}
+	}
+	
+	protected byte[] getSignatureValue(DSSDocument dssDocument, int[] byteRange) throws IOException {
+		// Extracts bytes from 841 to 959. [0, 840, 960, 1200]
+		int startSigValueContent = byteRange[0] + byteRange[1] + 1;
+		int endSigValueContent = byteRange[2] - 1;
+		
+		int signatureValueArraySize = endSigValueContent - startSigValueContent;
+		if (signatureValueArraySize < 1) {
+			throw new DSSException("The byte range present in the document is not valid! "
+					+ "SignatureValue size cannot be negative or equal to zero!");
+		}
+
+		byte[] signatureValueArray = new byte[signatureValueArraySize];
+		
+		try (InputStream is = dssDocument.openStream()) {
+			
+			DSSUtils.skipAvailableBytes(is, startSigValueContent);
+			DSSUtils.readAvailableBytes(is, signatureValueArray);
+			
+		} catch (IllegalStateException e) {
+			LOG.error("Cannot extract signature value. Reason : {}", e.getMessage());
+		}
+		
+		return Utils.fromHex(new String(signatureValueArray));
+	}
+
 	protected byte[] getOriginalBytes(int[] byteRange, byte[] signedContent) {
 		final int length = byteRange[1];
 		final byte[] result = new byte[length];
@@ -178,7 +251,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	protected void validateByteRange(int[] byteRange) {
 
 		if (byteRange == null || byteRange.length != 4) {
-			throw new DSSException("Incorrect BytRange size");
+			throw new DSSException("Incorrect ByteRange size");
 		}
 
 		final int a = byteRange[0];
@@ -187,7 +260,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		final int d = byteRange[3];
 
 		if (a != 0) {
-			throw new DSSException("The BytRange must cover start of file");
+			throw new DSSException("The ByteRange must cover start of file");
 		}
 		if (b <= 0) {
 			throw new DSSException("The first hash part doesn't cover anything");
@@ -214,18 +287,27 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 			Map<Long, CertificateToken> storedCertificates = callback.getStoredCertificates();
 			for (Entry<Long, CertificateToken> certEntry : storedCertificates.entrySet()) {
-				result.put(getTokenDigest(certEntry.getValue()), certEntry.getKey());
+				String tokenKey = getTokenDigest(certEntry.getValue());
+				if (!result.containsKey(tokenKey)) { // keeps the really first occurrence
+					result.put(tokenKey, certEntry.getKey());
+				}
 			}
 
 			Map<Long, BasicOCSPResp> storedOcspResps = callback.getStoredOcspResps();
 			for (Entry<Long, BasicOCSPResp> ocspEntry : storedOcspResps.entrySet()) {
 				final OCSPResp ocspResp = DSSRevocationUtils.fromBasicToResp(ocspEntry.getValue());
-				result.put(Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, DSSRevocationUtils.getEncoded(ocspResp))), ocspEntry.getKey());
+				String tokenKey = Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, DSSRevocationUtils.getEncoded(ocspResp)));
+				if (!result.containsKey(tokenKey)) { // keeps the really first occurrence
+					result.put(tokenKey, ocspEntry.getKey());
+				}
 			}
 
 			Map<Long, byte[]> storedCrls = callback.getStoredCrls();
 			for (Entry<Long, byte[]> crlEntry : storedCrls.entrySet()) {
-				result.put(Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, crlEntry.getValue())), crlEntry.getKey());
+				String tokenKey = Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, crlEntry.getValue()));
+				if (!result.containsKey(tokenKey)) { // keeps the really first occurrence
+					result.put(tokenKey, crlEntry.getKey());
+				}
 			}
 		}
 		return result;

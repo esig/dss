@@ -21,19 +21,30 @@
 package eu.europa.esig.dss.x509;
 
 import java.util.Date;
+import java.util.Set;
 
-import eu.europa.esig.dss.Digest;
-import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationReason;
+import eu.europa.esig.dss.enumerations.RevocationType;
+import eu.europa.esig.dss.utils.Utils;
 
 @SuppressWarnings("serial")
 public abstract class RevocationToken extends Token {
 
-	private String relatedCertificateID;
+	/**
+	 * Related {@link CertificateToken} to this revocation object
+	 */
+	protected CertificateToken relatedCertificate;
+	
+	/**
+	 * An identifier referencing a CRL or OCSP response has been used for determining the revocation status.
+	 */
+	protected RevocationType revocationType;
 
 	/**
-	 * Origin of the revocation data (signature or external)
+	 * Origins of the revocation data (signature or external)
 	 */
-	protected RevocationOrigin origin = RevocationOrigin.EXTERNAL;
+	private Set<RevocationOrigin> origins;
 
 	/**
 	 * The URL which was used to obtain the revocation data (online).
@@ -76,26 +87,38 @@ public abstract class RevocationToken extends Token {
 	protected Date archiveCutOff;
 
 	/**
-	 * Represents the certHash extension from an OCSP Response (optional)
+	 * Represents if the certHash extension from an OCSP Response is present (optional)
 	 */
-	protected Digest certHash;
+	protected boolean certHashPresent = false;
+
+	/**
+	 * Represents if the certHash extension from an OCSP Response is match with the related certificate's hash (optional)
+	 */
+	protected boolean certHashMatch = false;
 
 	/**
 	 * The reason of the revocation.
 	 */
-	protected CRLReasonEnum reason;
+	protected RevocationReason reason;
 	
 	/**
 	 * Revocation Token Key, used for {@link RevocationToken} identification (i.e. id in DB)
 	 */
 	protected String revocationTokenKey;
-
-	public String getRelatedCertificateID() {
-		return relatedCertificateID;
+	
+	public RevocationType getRevocationType() {
+		return revocationType;
 	}
 
-	public void setRelatedCertificateID(String relatedCertificateID) {
-		this.relatedCertificateID = relatedCertificateID;
+	public String getRelatedCertificateID() {
+		if (relatedCertificate != null) {
+			return relatedCertificate.getDSSIdAsString();
+		}
+		return null;
+	}
+
+	public void setRelatedCertificate(CertificateToken relatedCertificate) {
+		this.relatedCertificate = relatedCertificate;
 	}
 
 	/**
@@ -123,12 +146,24 @@ public abstract class RevocationToken extends Token {
 	 * 
 	 * @return the origin of this revocation data
 	 */
-	public RevocationOrigin getOrigin() {
-		return origin;
+	public Set<RevocationOrigin> getOrigins() {
+		return origins;
+	}
+	
+	/**
+	 * Returns first found origin from the set of {@code RevocationOrigin}s
+	 * @return {@link RevocationOrigin}
+	 */
+	public RevocationOrigin getFirstOrigin() {
+		Set<RevocationOrigin> origins = getOrigins();
+		if (Utils.isCollectionNotEmpty(origins)) {
+			return origins.iterator().next();
+		}
+		return null;
 	}
 
-	public void setOrigin(RevocationOrigin origin) {
-		this.origin = origin;
+	public void setOrigins(Set<RevocationOrigin> origins) {
+		this.origins = origins;
 	}
 
 	/**
@@ -208,12 +243,19 @@ public abstract class RevocationToken extends Token {
 	}
 
 	/**
-	 * Returns the certHash extension (from an OCSP Response)
-	 * 
-	 * @return the certHash contains or null
+	 * Returns TRUE if the certHash extension (from an OCSP Response) is present
+	 * @return the TRUE if certHash is present, FALSE otherwise
 	 */
-	public Digest getCertHash() {
-		return certHash;
+	public boolean isCertHashPresent() {
+		return certHashPresent;
+	}
+
+	/**
+	 * Returns TRUE if the certHash extension (from an OCSP Response) is match to the hash of related certificate token
+	 * @return the TRUE if certHash is match, FALSE otherwise
+	 */
+	public boolean isCertHashMatch() {
+		return certHashMatch;
 	}
 
 	/**
@@ -221,7 +263,7 @@ public abstract class RevocationToken extends Token {
 	 * 
 	 * @return the revocation reason or null
 	 */
-	public CRLReasonEnum getReason() {
+	public RevocationReason getReason() {
 		return reason;
 	}
 	
@@ -255,11 +297,16 @@ public abstract class RevocationToken extends Token {
 	public abstract boolean isValid();
 
 	@Override
+	public String getDSSIdAsString() {
+		return "R-" + super.getDSSIdAsString();
+	}
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result + ((productionDate == null) ? 0 : productionDate.hashCode());
-		result = prime * result + ((relatedCertificateID == null) ? 0 : relatedCertificateID.hashCode());
+		result = prime * result + ((relatedCertificate == null) ? 0 : relatedCertificate.getDSSIdAsString().hashCode());
 		return result;
 	}
 
@@ -282,11 +329,11 @@ public abstract class RevocationToken extends Token {
 		} else if (!productionDate.equals(other.productionDate)) {
 			return false;
 		}
-		if (relatedCertificateID == null) {
-			if (other.relatedCertificateID != null) {
+		if (relatedCertificate == null) {
+			if (other.relatedCertificate != null) {
 				return false;
 			}
-		} else if (!relatedCertificateID.equals(other.relatedCertificateID)) {
+		} else if (!relatedCertificate.equals(other.relatedCertificate)) {
 			return false;
 		}
 		return true;

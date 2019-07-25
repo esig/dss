@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.xades.signature;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.util.Collections;
@@ -32,11 +33,12 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.validationreport.jaxb.SAMessageDigestType;
 
 public abstract class AbstractXAdESTestSignature extends AbstractPkiFactoryTestDocumentSignatureService<XAdESSignatureParameters> {
 
@@ -86,6 +88,11 @@ public abstract class AbstractXAdESTestSignature extends AbstractPkiFactoryTestD
 	protected boolean isBaselineLTA() {
 		SignatureLevel signatureLevel = getSignatureParameters().getSignatureLevel();
 		return SignatureLevel.XAdES_BASELINE_LTA.equals(signatureLevel) || SignatureLevel.XAdES_A.equals(signatureLevel);
+	}
+
+	@Override
+	protected void validateETSIMessageDigest(SAMessageDigestType md) {
+		assertNull(md);
 	}
 
 }

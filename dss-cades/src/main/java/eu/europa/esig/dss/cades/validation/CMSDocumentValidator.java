@@ -20,14 +20,15 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
@@ -43,12 +44,11 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
  */
 public class CMSDocumentValidator extends SignedDocumentValidator {
 
+	private static final Logger LOG = LoggerFactory.getLogger(CMSDocumentValidator.class);
+
 	protected CMSSignedData cmsSignedData;
 
-	/**
-	 * This constructor is used with {@code TimeStampToken}.
-	 */
-	public CMSDocumentValidator() {
+	CMSDocumentValidator() {
 		super(new CAdESSignatureScopeFinder());
 	}
 
@@ -59,7 +59,6 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 	 *            pkcs7-signature(s)
 	 */
 	public CMSDocumentValidator(final CMSSignedData cmsSignedData) {
-
 		this();
 		this.cmsSignedData = cmsSignedData;
 	}
@@ -74,11 +73,7 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 	public CMSDocumentValidator(final DSSDocument document) throws DSSException {
 		this();
 		this.document = document;
-		try (InputStream inputStream = document.openStream()) {
-			this.cmsSignedData = new CMSSignedData(inputStream);
-		} catch (IOException | CMSException e) {
-			throw new DSSException("Not a valid CAdES file", e);
-		}
+		this.cmsSignedData = DSSUtils.toCMSSignedData(document);
 	}
 
 	@Override
@@ -99,6 +94,8 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 					cadesSignature.setSignatureFilename(document.getName());
 				}
 				cadesSignature.setDetachedContents(detachedContents);
+				cadesSignature.setContainerContents(containerContents);
+				cadesSignature.setManifestFiles(manifestFiles);
 				cadesSignature.setProvidedSigningCertificateToken(providedSigningCertificateToken);
 				signatures.add(cadesSignature);
 			}
@@ -125,6 +122,17 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 			}
 		}
 		return results;
+	}
+
+	@Override
+	public List<DSSDocument> getOriginalDocuments(final AdvancedSignature advancedSignature) throws DSSException {
+		final CAdESSignature cadesSignature = (CAdESSignature) advancedSignature;
+		try {
+			return Arrays.asList(cadesSignature.getOriginalDocument());
+		} catch (DSSException e) {
+			LOG.error("Cannot retrieve a list of original documents");
+			return Collections.emptyList();
+		}
 	}
 
 }

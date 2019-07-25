@@ -33,14 +33,14 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.CertificatePolicyOids;
-import eu.europa.esig.dss.QCStatementOids;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificatePolicy;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlOID;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
+import eu.europa.esig.dss.enumerations.CertificatePolicy;
+import eu.europa.esig.dss.enumerations.QCStatement;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.qualification.certificate.QualifiedStatus;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 
 public class QualifiedTest {
 
@@ -60,7 +60,7 @@ public class QualifiedTest {
 
 	@Test
 	public void testPreQcCompliant() {
-		CertificateWrapper signingCertificate = createPreEIDAS(Arrays.asList(QCStatementOids.QC_COMPLIANCE.getOid()), Collections.<String> emptyList());
+		CertificateWrapper signingCertificate = createPreEIDAS(Arrays.asList(QCStatement.QC_COMPLIANCE.getOid()), Collections.<String> emptyList());
 		qc(signingCertificate);
 	}
 
@@ -72,14 +72,14 @@ public class QualifiedTest {
 
 	@Test
 	public void testPreQCP() {
-		CertificateWrapper signingCertificate = createPreEIDAS(Collections.<String> emptyList(), Arrays.asList(CertificatePolicyOids.QCP_PUBLIC.getOid()));
+		CertificateWrapper signingCertificate = createPreEIDAS(Collections.<String> emptyList(), Arrays.asList(CertificatePolicy.QCP_PUBLIC.getOid()));
 		qc(signingCertificate);
 	}
 
 	@Test
 	public void testPreQCPPlus() {
 		CertificateWrapper signingCertificate = createPreEIDAS(Collections.<String> emptyList(),
-				Arrays.asList(CertificatePolicyOids.QCP_PUBLIC_WITH_SSCD.getOid()));
+				Arrays.asList(CertificatePolicy.QCP_PUBLIC_WITH_SSCD.getOid()));
 		qc(signingCertificate);
 	}
 
@@ -92,7 +92,7 @@ public class QualifiedTest {
 	@Test
 	public void testPreQcTypeEsigOnly() {
 		CertificateWrapper signingCertificate = createPreEIDAS(Collections.<String> emptyList(), Collections.<String> emptyList(),
-				Arrays.asList(QCStatementOids.QCT_ESIGN.getOid()));
+				Arrays.asList(QCStatement.QCT_ESIGN.getOid()));
 		notQC(signingCertificate);
 	}
 
@@ -106,7 +106,7 @@ public class QualifiedTest {
 
 	@Test
 	public void testPostQcCompliant() {
-		CertificateWrapper signingCertificate = createPostEIDAS(Arrays.asList(QCStatementOids.QC_COMPLIANCE.getOid()), Collections.<String> emptyList());
+		CertificateWrapper signingCertificate = createPostEIDAS(Arrays.asList(QCStatement.QC_COMPLIANCE.getOid()), Collections.<String> emptyList());
 		qc(signingCertificate);
 	}
 
@@ -118,49 +118,49 @@ public class QualifiedTest {
 
 	@Test
 	public void testPostQCP() {
-		CertificateWrapper signingCertificate = createPostEIDAS(Collections.<String> emptyList(), Arrays.asList(CertificatePolicyOids.QCP_PUBLIC.getOid()));
+		CertificateWrapper signingCertificate = createPostEIDAS(Collections.<String> emptyList(), Arrays.asList(CertificatePolicy.QCP_PUBLIC.getOid()));
 		notQC(signingCertificate); // QcCompliant is missing
 	}
 
 	@Test
 	public void testPostQcCompliantQCP() {
-		CertificateWrapper signingCertificate = createPostEIDAS(Arrays.asList(QCStatementOids.QC_COMPLIANCE.getOid()),
-				Arrays.asList(CertificatePolicyOids.QCP_PUBLIC.getOid()));
+		CertificateWrapper signingCertificate = createPostEIDAS(Arrays.asList(QCStatement.QC_COMPLIANCE.getOid()),
+				Arrays.asList(CertificatePolicy.QCP_PUBLIC.getOid()));
 		qc(signingCertificate);
 	}
 
 	@Test
 	public void testPostQCPPlus() {
 		CertificateWrapper signingCertificate = createPostEIDAS(Collections.<String> emptyList(),
-				Arrays.asList(CertificatePolicyOids.QCP_PUBLIC_WITH_SSCD.getOid()));
+				Arrays.asList(CertificatePolicy.QCP_PUBLIC_WITH_SSCD.getOid()));
 		notQC(signingCertificate); // QcCompliant is missing
 	}
 
 	@Test
 	public void testPostQcCompliantQCPPlus() {
-		CertificateWrapper signingCertificate = createPostEIDAS(Arrays.asList(QCStatementOids.QC_COMPLIANCE.getOid()),
-				Arrays.asList(CertificatePolicyOids.QCP_PUBLIC_WITH_SSCD.getOid()));
+		CertificateWrapper signingCertificate = createPostEIDAS(Arrays.asList(QCStatement.QC_COMPLIANCE.getOid()),
+				Arrays.asList(CertificatePolicy.QCP_PUBLIC_WITH_SSCD.getOid()));
 		qc(signingCertificate);
 	}
 
 	@Test
 	public void testPostQcTypeEsigOnly() {
 		CertificateWrapper signingCertificate = createPostEIDAS(Collections.<String> emptyList(), Collections.<String> emptyList(),
-				Arrays.asList(QCStatementOids.QCT_ESIGN.getOid()));
+				Arrays.asList(QCStatement.QCT_ESIGN.getOid()));
 		notQC(signingCertificate);
 	}
 
 	@Test
 	public void testPostQcCompliantQcTypeEsig() {
-		CertificateWrapper signingCertificate = createPostEIDAS(Arrays.asList(QCStatementOids.QC_COMPLIANCE.getOid()), Collections.<String> emptyList(),
-				Arrays.asList(QCStatementOids.QCT_ESIGN.getOid()));
+		CertificateWrapper signingCertificate = createPostEIDAS(Arrays.asList(QCStatement.QC_COMPLIANCE.getOid()), Collections.<String> emptyList(),
+				Arrays.asList(QCStatement.QCT_ESIGN.getOid()));
 		qc(signingCertificate);
 	}
 
 	@Test
 	public void testPostQcCompliantQcTypeEseals() {
-		CertificateWrapper signingCertificate = createPostEIDAS(Arrays.asList(QCStatementOids.QC_COMPLIANCE.getOid()), Collections.<String> emptyList(),
-				Arrays.asList(QCStatementOids.QCT_ESEAL.getOid()));
+		CertificateWrapper signingCertificate = createPostEIDAS(Arrays.asList(QCStatement.QC_COMPLIANCE.getOid()), Collections.<String> emptyList(),
+				Arrays.asList(QCStatement.QCT_ESEAL.getOid()));
 		qc(signingCertificate);
 	}
 

@@ -20,12 +20,19 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.isc;
 
-import eu.europa.esig.dss.SignatureForm;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlCertificateChain;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlChainItem;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlISC;
-import eu.europa.esig.dss.validation.policy.Context;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy;
+import java.util.List;
+
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCertificateChain;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlChainItem;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TokenProxy;
+import eu.europa.esig.dss.enumerations.CertificateSourceType;
+import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.isc.checks.DigestValueMatchCheck;
@@ -33,10 +40,6 @@ import eu.europa.esig.dss.validation.process.bbb.isc.checks.DigestValuePresentCh
 import eu.europa.esig.dss.validation.process.bbb.isc.checks.IssuerSerialMatchCheck;
 import eu.europa.esig.dss.validation.process.bbb.isc.checks.SigningCertificateAttributePresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.isc.checks.SigningCertificateRecognitionCheck;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.TokenProxy;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 /**
  * 5.2.3 Identification of the signing certificate
@@ -45,16 +48,15 @@ import eu.europa.esig.jaxb.policy.LevelConstraint;
  */
 public class IdentificationOfTheSigningCertificate extends Chain<XmlISC> {
 
-	private final DiagnosticData diagnosticData;
 	private final TokenProxy token;
 
 	private final Context context;
 	private final ValidationPolicy validationPolicy;
 
-	public IdentificationOfTheSigningCertificate(DiagnosticData diagnosticData, TokenProxy token, Context context, ValidationPolicy validationPolicy) {
+	public IdentificationOfTheSigningCertificate(TokenProxy token, Context context, ValidationPolicy validationPolicy) {
 		super(new XmlISC());
+		result.setTitle(BasicBuildingBlockDefinition.IDENTIFICATION_OF_THE_SIGNING_CERTIFICATE.getTitle());
 
-		this.diagnosticData = diagnosticData;
 		this.token = token;
 		this.context = context;
 		this.validationPolicy = validationPolicy;
@@ -83,7 +85,7 @@ public class IdentificationOfTheSigningCertificate extends Chain<XmlISC> {
 
 			// PKCS7 signatures have not these information
 			SignatureWrapper signature = (SignatureWrapper) token;
-			if (signature.getFormat() != null && signature.getFormat().contains(SignatureForm.PKCS7.name())) {
+			if (signature.getFormat() != null && signature.getFormat().contains("PKCS7")) {
 				return;
 			}
 
@@ -116,10 +118,17 @@ public class IdentificationOfTheSigningCertificate extends Chain<XmlISC> {
 
 		if (token.getCertificateChain() != null) {
 			XmlCertificateChain certificateChain = new XmlCertificateChain();
-			for (eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem diagnosticChainItem : token.getCertificateChain()) {
+			for (CertificateWrapper certificate : token.getCertificateChain()) {
 				XmlChainItem chainItem = new XmlChainItem();
-				chainItem.setId(diagnosticChainItem.getId());
-				chainItem.setSource(diagnosticChainItem.getSource());
+				chainItem.setId(certificate.getId());
+				List<CertificateSourceType> sources = certificate.getSources();
+				if (sources.contains(CertificateSourceType.TRUSTED_LIST)) {
+					chainItem.setSource(CertificateSourceType.TRUSTED_LIST);
+				} else if (sources.contains(CertificateSourceType.TRUSTED_STORE)) {
+					chainItem.setSource(CertificateSourceType.TRUSTED_STORE);
+				} else {
+					chainItem.setSource(sources.iterator().next());
+				}
 				certificateChain.getChainItem().add(chainItem);
 			}
 			result.setCertificateChain(certificateChain);
@@ -128,7 +137,7 @@ public class IdentificationOfTheSigningCertificate extends Chain<XmlISC> {
 
 	private ChainItem<XmlISC> signingCertificateRecognition() {
 		LevelConstraint constraint = validationPolicy.getSigningCertificateRecognitionConstraint(context);
-		return new SigningCertificateRecognitionCheck(result, token, diagnosticData, constraint);
+		return new SigningCertificateRecognitionCheck(result, token, constraint);
 	}
 
 	private ChainItem<XmlISC> signingCertificateAttributePresent() {

@@ -22,13 +22,13 @@ package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 
 import java.util.List;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
-import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
-import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 
 public class CertifiedRolesCheck extends AbstractMultiValuesCheckItem<XmlSAV> {
 
@@ -41,7 +41,7 @@ public class CertifiedRolesCheck extends AbstractMultiValuesCheckItem<XmlSAV> {
 
 	@Override
 	protected boolean process() {
-		List<String> certifiedRoles = signature.getCertifiedRoles();
+		List<String> certifiedRoles = signature.getSignerRoleDetails(signature.getCertifiedRoles());
 		return processValuesCheck(certifiedRoles);
 	}
 

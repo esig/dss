@@ -25,15 +25,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
-import eu.europa.esig.dss.validation.policy.RuleUtils;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.policy.RuleUtils;
+import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
-import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
-import eu.europa.esig.jaxb.policy.TimeConstraint;
 
 public class RevocationDataFreshCheck extends ChainItem<XmlRFC> {
 

@@ -24,6 +24,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+
 public class DigestAlgorithmTest {
 
 	@Test
@@ -31,17 +33,17 @@ public class DigestAlgorithmTest {
 		assertEquals(DigestAlgorithm.SHA256, DigestAlgorithm.forOID(DigestAlgorithm.SHA256.getOid()));
 	}
 
-	@Test(expected = DSSException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void forOidException() {
 		DigestAlgorithm.forOID("aaa");
 	}
 
 	@Test
 	public void forXML() {
-		assertEquals(DigestAlgorithm.SHA256, DigestAlgorithm.forXML(DigestAlgorithm.SHA256.getXmlId()));
+		assertEquals(DigestAlgorithm.SHA256, DigestAlgorithm.forXML(DigestAlgorithm.SHA256.getUri()));
 	}
 
-	@Test(expected = DSSException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void forXMLException() {
 		DigestAlgorithm.forXML("aaa");
 	}
@@ -53,10 +55,12 @@ public class DigestAlgorithmTest {
 
 	@Test
 	public void forName() {
-		assertEquals(DigestAlgorithm.SHA256, DigestAlgorithm.forName(DigestAlgorithm.SHA256.getName()));
+		for (DigestAlgorithm digestAlgo : DigestAlgorithm.values()) {
+			assertEquals(digestAlgo, DigestAlgorithm.forName(digestAlgo.getName()));
+		}
 	}
 
-	@Test(expected = DSSException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void forNameException() {
 		DigestAlgorithm.forName("aaa");
 	}

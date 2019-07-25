@@ -41,9 +41,6 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -52,7 +49,6 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
@@ -72,11 +68,12 @@ public final class DomUtils {
 	private static final Logger LOG = LoggerFactory.getLogger(DomUtils.class);
 	
 	// values used to pretty print xades signature
-	private static final String TRANSFORMER_INDENT_AMOUNT_ATTRIBUTE = "{http://xml.apache.org/xslt}indent-amount";
 	public static final int TRANSFORMER_INDENT_NUMBER = 4;
-	private static final String TRANSFORMER_INDENT_NUMBER_VALUE = String.valueOf(TRANSFORMER_INDENT_NUMBER);
+	
 	private static final String TRANSFORMER_METHOD_VALUE = "xml";
-	private static final String TRANSFORMER_VALUE_YES = "yes";
+
+	private static final String XP_OPEN = "xpointer(";
+	private static final String XNS_OPEN = "xmlns(";
 
 	private DomUtils() {
 	}
@@ -178,19 +175,6 @@ public final class DomUtils {
 			throw new DSSException(e);
 		}
 		transformer.setErrorListener(new DSSXmlErrorListener());
-		return transformer;
-	}
-	
-	/**
-	 * This method returns a new instance of Transformer with secured and pretty print features enabled
-	 * 
-	 * @return an instance of Transformer with enabled secure and pretty print features
-	 */
-	public static Transformer getPrettyPrintTransformer() {
-		Transformer transformer = getSecureTransformer();
-		transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, TRANSFORMER_VALUE_YES);
-		transformer.setOutputProperty(OutputKeys.INDENT, TRANSFORMER_VALUE_YES);
-		transformer.setOutputProperty(TRANSFORMER_INDENT_AMOUNT_ATTRIBUTE, TRANSFORMER_INDENT_NUMBER_VALUE);
 		return transformer;
 	}
 
@@ -564,32 +548,68 @@ public final class DomUtils {
 		return new HashMap<String, String>(namespaces);
 	}
 
+	/**
+	 * Returns case-insensitive xPath expression
+	 * @param uri to find
+	 * @return {@link String} xPath expression
+	 */
 	public static String getXPathByIdAttribute(String uri) {
-		return "[@Id='" + getId(uri) + "']";
+		String id = getId(uri);
+		return "[@Id='" + id + "' or @id='" + id + "' or @ID='" + id + "']";
 	}
 
 	public static String getId(String uri) {
 		String id = uri;
-		if (isElementReference(uri)) {
+		if (startsFromHash(uri)) {
 			id = id.substring(1);
 		}
 		return id;
+	}
+
+	/**
+	 * Returns TRUE if the provided {@code uri} starts from the hash "#" character
+	 * @param uri {@link String} to be checked
+	 * @return TRUE if {@code uri} is starts from "#", FALSE otherwise
+	 */
+	private static boolean startsFromHash(String uri) {
+		return uri.startsWith("#");
 	}
 	
 	/**
 	 * Returns TRUE if the provided {@code uri} refers to an element in the signature
 	 * @param uri {@link String} to be checked
-	 * @return TRUE if {@code uri} is reffered to an element, FALSE otherwise
+	 * @return TRUE if {@code uri} is referred to an element, FALSE otherwise
 	 */
 	public static boolean isElementReference(String uri) {
-		return uri.startsWith("#");
+		return startsFromHash(uri) && !isXPointerQuery(uri);
 	}
 
-	public static XMLStreamReader getSecureXMLStreamReader(InputStream is) throws XMLStreamException {
-		XMLInputFactory xif = XMLInputFactory.newFactory();
-		xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
-		xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-		return xif.createXMLStreamReader(new StreamSource(is));
+	/**
+	 * Indicates if the given URI is an XPointer query.
+	 *
+	 * @param uriValue
+	 *            URI to be analysed
+	 * @return true if it is an XPointer query
+	 */
+	public static boolean isXPointerQuery(String uriValue) {
+		if (uriValue.isEmpty()) {
+			return false;
+		}
+		String decodedUri = DSSUtils.decodeUrl(uriValue);
+		if (decodedUri == null) {
+			return false;
+		}
+		final String[] parts = getId(decodedUri).split("\\s");
+		int ii = 0;
+		for (; ii < parts.length - 1; ++ii) {
+			if (!parts[ii].endsWith(")") || !parts[ii].startsWith(XNS_OPEN)) {
+				return false;
+			}
+		}
+		if (!parts[ii].endsWith(")") || !parts[ii].startsWith(XP_OPEN)) {
+			return false;
+		}
+		return true;
 	}
 
 }

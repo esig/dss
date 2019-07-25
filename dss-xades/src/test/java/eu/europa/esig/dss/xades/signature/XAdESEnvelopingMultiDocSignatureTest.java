@@ -28,8 +28,8 @@ import org.junit.Before;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.signature.AbstractPkiFactoryTestMultipleDocumentsSignatureService;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -48,6 +48,11 @@ public class XAdESEnvelopingMultiDocSignatureTest extends AbstractPkiFactoryTest
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+	}
+
+	@Override
+	protected boolean isGenerateHtmlPdfReports() {
+		return true;
 	}
 
 	@Override

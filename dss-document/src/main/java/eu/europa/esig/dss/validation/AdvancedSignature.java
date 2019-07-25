@@ -25,18 +25,31 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import eu.europa.esig.dss.CertificateRef;
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.EncryptionAlgorithm;
-import eu.europa.esig.dss.MaskGenerationFunction;
-import eu.europa.esig.dss.SignatureAlgorithm;
-import eu.europa.esig.dss.SignatureForm;
-import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureForm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.identifier.EncapsulatedRevocationTokenIdentifier;
+import eu.europa.esig.dss.identifier.SignatureIdentifier;
+import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.SignatureCertificateSource;
 import eu.europa.esig.dss.x509.SignaturePolicy;
-import eu.europa.esig.dss.x509.revocation.crl.OfflineCRLSource;
-import eu.europa.esig.dss.x509.revocation.ocsp.OfflineOCSPSource;
+import eu.europa.esig.dss.x509.revocation.RevocationRef;
+import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
+import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.x509.revocation.crl.ListCRLSource;
+import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
+import eu.europa.esig.dss.x509.revocation.ocsp.ListOCSPSource;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 
 /**
  * Provides an abstraction for an Advanced Electronic Signature. This ease the validation process. Every signature
@@ -68,6 +81,32 @@ public interface AdvancedSignature extends Serializable {
 	 *            {@code List} of {@code DSSDocument} representing the signed detached contents.
 	 */
 	void setDetachedContents(final List<DSSDocument> detachedContents);
+	
+	/**
+	 * @return in case of ASiC signature returns a list of container documents
+	 */
+	List<DSSDocument> getContainerContents();
+	
+	/**
+	 * This method allows to set the container contents in the case of ASiC signature.
+	 *
+	 * @param containerContents
+	 *            {@code List} of {@code DSSDocument} representing the container contents.
+	 */
+	void setContainerContents(final List<DSSDocument> containerContents);
+
+	/**
+	 * This method allows to set the manifest files in the case of ASiC-E signature.
+	 *
+	 * @param manifestFiles
+	 *            {@code List} of {@code ManifestFile}s
+	 */
+	void setManifestFiles(List<ManifestFile> manifestFiles);
+
+	/**
+	 * @return in case of ASiC-E signature returns a list of {@link DSSDocument}s contained in the related signature manifest
+	 */
+	List<DSSDocument> getManifestedDocuments();
 
 	/**
 	 * @return This method returns the provided signing certificate or {@code null}
@@ -134,16 +173,39 @@ public interface AdvancedSignature extends Serializable {
 	/**
 	 * Gets a CRL source which contains ALL CRLs embedded in the signature.
 	 *
-	 * @return
+	 * @return {@code SignatureCRLSource}
 	 */
-	OfflineCRLSource getCRLSource();
+	SignatureCRLSource getCRLSource();
 
 	/**
 	 * Gets an OCSP source which contains ALL OCSP responses embedded in the signature.
 	 *
-	 * @return
+	 * @return {@code SignatureOCSPSource}
 	 */
-	OfflineOCSPSource getOCSPSource();
+	SignatureOCSPSource getOCSPSource();
+	
+	/**
+	 * Gets a ListCRLSource representing a merged source from {@code signatureCRLSourse} and 
+	 * all included to the signature timestamp objects
+	 * 
+	 * @return {@link ListCRLSource}
+	 */
+	ListCRLSource getCompleteCRLSource();
+	
+	/**
+	 * Gets a ListOCSPSource representing a merged source from {@code signatureOCSPSourse} and 
+	 * all included to the signature timestamp objects
+	 * 
+	 * @return {@link ListOCSPSource}
+	 */
+	ListOCSPSource getCompleteOCSPSource();
+	
+	/**
+	 * Gets a Signature Timestamp source which contains ALL timestamps embedded in the signature.
+	 *
+	 * @return {@code SignatureTimestampSource}
+	 */
+	SignatureTimestampSource getTimestampSource();
 
 	/**
 	 * Gets an object containing the signing certificate or information indicating why it is impossible to extract it
@@ -217,11 +279,18 @@ public interface AdvancedSignature extends Serializable {
 	CommitmentType getCommitmentTypeIndication();
 
 	/**
-	 * Returns the content type of the signed data
+	 * Returns the value of the signed attribute content-type
 	 *
 	 * @return content type as {@code String}
 	 */
 	String getContentType();
+
+	/**
+	 * Returns the value of the signed attribute mime-type
+	 *
+	 * @return mime type as {@code String}
+	 */
+	String getMimeType();
 
 	/**
 	 * @return content identifier as {@code String}
@@ -234,18 +303,25 @@ public interface AdvancedSignature extends Serializable {
 	String getContentHints();
 
 	/**
-	 * Returns the claimed role of the signer.
+	 * Returns the list of roles of the signer.
 	 *
-	 * @return array of the claimed roles as {@code String} array
+	 * @return list of the {@link SignerRole}s
 	 */
-	String[] getClaimedSignerRoles();
+	List<SignerRole> getSignerRoles();
 
 	/**
-	 * Returns the certified role of the signer.
+	 * Returns the claimed roles of the signer.
 	 *
-	 * @return array of the certified roles
+	 * @return list of the {@link SignerRole}s
 	 */
-	List<CertifiedRole> getCertifiedSignerRoles();
+	List<SignerRole> getClaimedSignerRoles();
+
+	/**
+	 * Returns the certified roles of the signer.
+	 *
+	 * @return list of the {@link SignerRole}s
+	 */
+	List<SignerRole> getCertifiedSignerRoles();
 
 	/**
 	 * Get certificates embedded in the signature
@@ -253,6 +329,14 @@ public interface AdvancedSignature extends Serializable {
 	 * @return a list of certificate contained within the signature
 	 */
 	List<CertificateToken> getCertificates();
+	
+
+	/**
+	 * Returns a list of all certificates found into signature and timestamps
+	 * 
+	 * @return list of {@link CertificateToken}s
+	 */
+	List<CertificateToken> getCertificateListWithinSignatureAndTimestamps();
 
 	/**
 	 * Returns the content timestamps
@@ -262,28 +346,11 @@ public interface AdvancedSignature extends Serializable {
 	List<TimestampToken> getContentTimestamps();
 
 	/**
-	 * Returns the content timestamp data (timestamped or to be).
-	 *
-	 * @param timestampToken
-	 * @return {@code byte} array representing the canonicalized data to be timestamped
-	 */
-	byte[] getContentTimestampData(final TimestampToken timestampToken);
-
-	/**
 	 * Returns the signature timestamps
 	 *
 	 * @return {@code List} of {@code TimestampToken}
 	 */
 	List<TimestampToken> getSignatureTimestamps();
-
-	/**
-	 * Returns the data (signature value) that was timestamped by the SignatureTimeStamp for the given timestamp.
-	 *
-	 * @param timestampToken
-	 * @param canonicalizationMethod
-	 * @return {@code byte} array representing the canonicalized data to be timestamped
-	 */
-	byte[] getSignatureTimestampData(final TimestampToken timestampToken, String canonicalizationMethod);
 
 	/**
 	 * Returns the time-stamp which is placed on the digital signature (XAdES example: ds:SignatureValue element), the
@@ -295,19 +362,6 @@ public interface AdvancedSignature extends Serializable {
 	List<TimestampToken> getTimestampsX1();
 
 	/**
-	 * Returns the data to be time-stamped. The data contains the digital signature (XAdES example: ds:SignatureValue
-	 * element), the signature time-stamp(s) present in the AdES-T form, the certification path references and the
-	 * revocation status references.
-	 *
-	 * @param timestampToken
-	 *            {@code TimestampToken} or null during the creation process
-	 * @param canonicalizationMethod
-	 *            canonicalization method
-	 * @return {@code byte} array representing the canonicalized data to be timestamped
-	 */
-	byte[] getTimestampX1Data(final TimestampToken timestampToken, String canonicalizationMethod);
-
-	/**
 	 * Returns the time-stamp which is computed over the concatenation of CompleteCertificateRefs and
 	 * CompleteRevocationRefs elements (XAdES example).
 	 *
@@ -316,33 +370,28 @@ public interface AdvancedSignature extends Serializable {
 	List<TimestampToken> getTimestampsX2();
 
 	/**
-	 * Returns the data to be time-stamped which contains the concatenation of CompleteCertificateRefs and
-	 * CompleteRevocationRefs elements (XAdES example).
-	 *
-	 * @return {@code byte} array representing the canonicalized data to be timestamped
-	 */
-	byte[] getTimestampX2Data(final TimestampToken timestampToken, String canonicalizationMethod);
-
-	/**
 	 * Returns the archive Timestamps
 	 *
-	 * @return {@code List} of {@code TimestampToken}
+	 * @return {@code List} of {@code TimestampToken}s
 	 */
 	List<TimestampToken> getArchiveTimestamps();
-
+	
 	/**
-	 * Archive timestamp seals the data of the signature in a specific order. We need to retrieve the data for each
-	 * timestamp.
-	 *
-	 * @param timestampToken
-	 *            null when adding a new archive timestamp
-	 * @param canonicalizationMethod
-	 * @return {@code byte} array representing the canonicalized data to be timestamped
+	 * Returns a list of timestamps defined with the 'DocTimeStamp' type
+	 * NOTE: applicable only for PAdES
+	 * @return {@code List} of {@code TimestampToken}s
 	 */
-	byte[] getArchiveTimestampData(final TimestampToken timestampToken, String canonicalizationMethod);
+	List<TimestampToken> getDocumentTimestamps();
 
 	/**
-	 * This method allows to add an external timestamp. The given timestamp must be checked before.
+	 * Returns a list of all timestamps found in the signature
+	 * 
+	 * @return {@code List} of {@code TimestampToken}s
+	 */
+	List<TimestampToken> getAllTimestamps();
+
+	/**
+	 * This method allows to add an external timestamp. The given timestamp must be processed before.
 	 * 
 	 * @param timestamp
 	 *            the timestamp token
@@ -357,30 +406,24 @@ public interface AdvancedSignature extends Serializable {
 	List<AdvancedSignature> getCounterSignatures();
 
 	/**
-	 * Returns the {@code List} of {@code TimestampReference} representing digest value of the certification path
-	 * references and the revocation status references. (XAdES
-	 * example: CompleteCertificateRefs and CompleteRevocationRefs elements)
-	 *
-	 * @return a {@code List} of {@code TimestampReference}
-	 */
-	List<TimestampReference> getTimestampedReferences();
-
-	/**
 	 * Retrieve list of certificate ref
 	 *
 	 * @return {@code List} of {@code CertificateRef}
 	 */
 	List<CertificateRef> getCertificateRefs();
-
+	
 	/**
-	 * @return The list of CRLRefs contained in the Signature
+	 * Returns a list of orphan certificate refs, that are not associated to any {@link CertificateToken}
+	 * @return list of found {@link CertificateRef}s
 	 */
-	List<CRLRef> getCRLRefs();
-
+	List<CertificateRef> getOrphanCertificateRefs();
+	
 	/**
-	 * @return The list of OCSPRef contained in the Signature
+	 * This method returns the {@link SignatureIdentifier}.
+	 * 
+	 * @return unique {@link SignatureIdentifier}
 	 */
-	List<OCSPRef> getOCSPRefs();
+	SignatureIdentifier getDSSId();
 
 	/**
 	 * This method returns the DSS unique signature id. It allows to unambiguously identify each signature.
@@ -388,14 +431,14 @@ public interface AdvancedSignature extends Serializable {
 	 * @return The signature unique Id
 	 */
 	String getId();
-
+	
 	/**
-	 * Returns the set of digest algorithms used to build the certificate's digest. For example, these digests are
-	 * referenced in CompleteCertificateRefs in the case of XAdES signature.
-	 *
-	 * @return
+	 * This method returns an identifier provided by the Driving Application (DA)
+	 * Note: used only for XAdES
+	 * 
+	 * @return The signature identifier
 	 */
-	Set<DigestAlgorithm> getUsedCertificatesDigestAlgorithms();
+	String getDAIdentifier();
 
 	/**
 	 * @param signatureLevel
@@ -415,12 +458,20 @@ public interface AdvancedSignature extends Serializable {
 
 	void prepareTimestamps(ValidationContext validationContext);
 
-	void validateTimestamps();
-
 	/**
 	 * This method allows the structure validation of the signature.
 	 */
 	void validateStructure();
+	
+	/**
+	 * Fills all the missing {@link CRLToken}s from the given {@code signatureCRLSource}
+	 */
+	void populateCRLTokenLists(SignatureCRLSource signatureCRLSource);
+	
+	/**
+	 * Fills all the missing {@link OCSPToken}s from the given {@code signatureOCSPSource}
+	 */
+	void populateOCSPTokenLists(SignatureOCSPSource signatureOCSPSource);
 
 	String getStructureValidationResult();
 
@@ -429,6 +480,33 @@ public interface AdvancedSignature extends Serializable {
 	void findSignatureScope(SignatureScopeFinder signatureScopeFinder);
 
 	List<SignatureScope> getSignatureScopes();
+	
+	/**
+	 * Returns true if the validation of the signature has been performed only on Signer's Document Representation (SDR).
+	 * (An SDR typically is built on a cryptographic hash of the Signer's Document)
+	 * @return true of it is DocHashOnly validation, false otherwise
+	 */
+	boolean isDocHashOnlyValidation();
+	
+	/**
+	 * Returns true if the validation of the signature has been performed only on Data To Be Signed Representation (DTBSR).
+	 * 
+	 * EN 319 102-1 v1.1.1 (4.2.8 Data to be signed representation (DTBSR)):
+	 * The DTBS preparation component shall take the DTBSF and hash it according to the hash algorithm specified in the
+	 * cryptographic suite. The result of this process is the DTBSR, which is then used to create the signature. 
+	 * NOTE: In order for the produced hash to be representative of the DTBSF, the hashing function has the property 
+	 * that it is computationally infeasible to find collisions for the expected signature lifetime. Should the hash
+	 * function become weak in the future, additional security measures, such as applying time-stamp tokens,
+	 * can be taken. 
+	 * @return true of it is HashOnly validation, false otherwise
+	 */
+	boolean isHashOnlyValidation();
+	
+	/**
+	 * Returns the digital signature value
+	 * @return digital signature value byte array
+	 */
+	byte[] getSignatureValue();
 
 	/**
 	 * Returns individual validation foreach reference (XAdES) or for the
@@ -437,5 +515,165 @@ public interface AdvancedSignature extends Serializable {
 	 * @return a list with one or more {@code ReferenceValidation}
 	 */
 	List<ReferenceValidation> getReferenceValidations();
+	
+	/**
+	 * Returns a signature reference element as defined in TS 119 442 - V1.1.1 - 
+	 * Electronic Signatures and Infrastructures (ESI), ch. 5.1.4.2.1.3 XML component
+	 * 
+	 * @param digestAlgorithm {@link DigestAlgorithm} to use
+	 * @return {@link SignatureDigestReference}
+	 */
+	SignatureDigestReference getSignatureDigestReference(DigestAlgorithm digestAlgorithm);
+	
+	// ------------------------ TS 119 102-2 Specifics
+
+	/**
+	 * Retrieves the set of all {@code RevocationToken}s in the signature
+	 * @return list of {@link RevocationToken}s
+	 */
+	Set<RevocationToken> getAllRevocationTokens();
+	
+	/**
+	 * Retrieves the list of all {@code RevocationToken}s present in 'RevocationValues' element
+	 * NOTE: Applicable only for CAdES and XAdES revocation sources
+	 * @return list of {@link RevocationToken}s
+	 */
+	List<RevocationToken> getRevocationValuesTokens();
+
+	/**
+	 * Retrieves the list of all {@code RevocationToken}s present in 'AttributeRevocationValues' element
+	 * NOTE: Applicable only for XAdES revocation source
+	 * @return list of {@link RevocationToken}s
+	 */
+	List<RevocationToken> getAttributeRevocationValuesTokens();
+
+	/**
+	 * Retrieves the list of all {@code RevocationToken}s present in 'TimestampValidationData/RevocationValues' element
+	 * NOTE: Applicable only for XAdES revocation source
+	 * @return list of {@link RevocationToken}s
+	 */
+	List<RevocationToken> getTimestampValidationDataTokens();
+
+	/**
+	 * Retrieves the list of all {@code RevocationToken}s present in 'DSS' dictionary
+	 * NOTE: Applicable only for PAdES revocation source
+	 * @return list of {@link RevocationToken}s
+	 */
+	List<RevocationToken> getDSSDictionaryRevocationTokens();
+
+	/**
+	 * Retrieves the list of all {@code RevocationToken}s present in 'VRI' dictionary
+	 * NOTE: Applicable only for PAdES revocation source
+	 * @return list of {@link RevocationToken}s
+	 */
+	List<RevocationToken> getVRIDictionaryRevocationTokens();
+
+	/**
+	 * Retrieves the list of all {@code RevocationToken}s present in 'CompleteRevocationRefs' element
+	 * NOTE: Applicable only for XAdES and CAdES revocation sources
+	 * @return list of {@link RevocationToken}s
+	 */
+	List<RevocationToken> getCompleteRevocationTokens();
+
+	/**
+	 * Retrieves the list of all {@code RevocationToken}s present in 'AttributeRevocationRefs' element
+	 * NOTE: Applicable only for XAdES and CAdES revocation sources
+	 * @return list of {@link RevocationToken}s
+	 */
+	List<RevocationToken> getAttributeRevocationTokens();
+	
+	/**
+	 * Retrieves a list of all {@code CRLRef}s present in 'CompleteRevocationRefs' element
+	 * NOTE: Applicable only for XAdES and CAdES revocation sources
+	 * @return list of {@link CRLRef}s
+	 */
+	List<CRLRef> getCompleteRevocationCRLReferences();
+	
+	/**
+	 * Retrieves a list of all {@code CRLRef}s present in 'AttributeRevocationRefs' element
+	 * NOTE: Applicable only for XAdES and CAdES revocation sources
+	 * @return list of {@link CRLRef}s
+	 */
+	List<CRLRef> getAttributeRevocationCRLReferences();
+	
+	/**
+	 * Retrieves a list of all {@code CRLRef}s present in a timestamp element
+	 * NOTE: Applicable only for CAdES revocation source
+	 * @return list of {@link CRLRef}s
+	 */
+	List<CRLRef> getTimestampRevocationCRLReferences();
+	
+	/**
+	 * Retrieves a list of all {@code OCSPRef}s present in 'CompleteRevocationRefs' element
+	 * NOTE: Applicable only for XAdES and CAdES revocation sources
+	 * @return list of {@link OCSPRef}s
+	 */
+	List<OCSPRef> getCompleteRevocationOCSPReferences();
+	
+	/**
+	 * Retrieves a list of all {@code OCSPRef}s present in 'AttributeRevocationRefs' element
+	 * NOTE: Applicable only for XAdES and CAdES revocation sources
+	 * @return list of {@link OCSPRef}s
+	 */
+	List<OCSPRef> getAttributeRevocationOCSPReferences();
+	
+	/**
+	 * Retrieves a list of all {@code OCSPRef}s present in a timestamp element
+	 * NOTE: Applicable only for CAdES revocation source
+	 * @return list of {@link OCSPRef}s
+	 */
+	List<OCSPRef> getTimestampRevocationOCSPReferences();
+	
+	/**
+	 * Returns a list of all {@code EncapsulatedRevocationTokenIdentifier}s found in CRL and OCSP sources
+	 * @return list of all {@link EncapsulatedRevocationTokenIdentifier}s
+	 */
+	List<EncapsulatedRevocationTokenIdentifier> getAllFoundRevocationIdentifiers();
+	
+	/**
+	 * Retrieves a list of all found {@code RevocationRef}s present in the signature
+	 * @return list of {@link RevocationRef}s
+	 */
+	List<RevocationRef> getAllFoundRevocationRefs();
+	
+	/**
+	 * Returns a list of all orphan {@code RevocationRef}s found into the signature
+	 * @return list of {@link RevocationRef}s
+	 */
+	List<RevocationRef> getOrphanRevocationRefs();
+	
+	/**
+	 * Retrieves a list of found {@code RevocationRef}s for the given {@code revocationToken}
+	 * @param revocationToken {@link RevocationToken} to get references for
+	 * @return list of {@link RevocationRef}s
+	 */
+	List<RevocationRef> findRefsForRevocationToken(RevocationToken revocationToken);
+	
+	/**
+	 * Retrieves a list of found {@code RevocationRef}s for the given {@code revocationIdentifier}
+	 * @param revocationIdentifier {@link EncapsulatedRevocationTokenIdentifier} to get references for
+	 * @return list of {@link RevocationRef}s
+	 */
+	List<RevocationRef> findRefsForRevocationIdentifier(EncapsulatedRevocationTokenIdentifier revocationIdentifier);
+
+	// ------------------------ CAdES Specifics for TS 119 102-2
+
+	byte[] getMessageDigestValue();
+
+	// ------------------------ PDF Specifics for TS 119 102-2
+	
+	String getSignatureFieldName();
+
+	String getSignerName();
+
+	String getFilter();
+
+	String getSubFilter();
+
+	String getContactInfo();
+
+	String getReason();
+	
+	int[] getSignatureByteRange();
 
 }

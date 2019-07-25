@@ -32,7 +32,6 @@ import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.FileDocument;
@@ -41,6 +40,7 @@ import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.asic.ASiCUtils;
 import eu.europa.esig.dss.asic.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.signature.ASiCWithXAdESService;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.extension.AbstractTestExtension;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.x509.tsp.TSPSource;

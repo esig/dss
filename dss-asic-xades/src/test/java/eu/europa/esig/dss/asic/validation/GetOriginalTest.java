@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.asic.validation;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -29,14 +30,19 @@ import java.util.List;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.reports.Reports;
 
 public class GetOriginalTest {
 
@@ -47,7 +53,7 @@ public class GetOriginalTest {
 	private final DSSDocument EXPECTED_ONEFILE = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
 
 	@Test
-	public void testMultifilesASICSOneToMuchFile() {
+	public void testMultifilesASICSOneToMuchFile() throws Exception {
 		FileDocument signedDoc = new FileDocument("src/test/resources/validation/multifiles-too-much-files.asics");
 
 		SignedDocumentValidator sdv = SignedDocumentValidator.fromDocument(signedDoc);
@@ -58,13 +64,31 @@ public class GetOriginalTest {
 		for (AdvancedSignature advancedSignature : signatures) {
 			List<DSSDocument> originalDocuments = sdv.getOriginalDocuments(advancedSignature.getId());
 			assertEquals(2, originalDocuments.size());
-			isFindAllOriginals(originalDocuments);
+			isFoundAllOriginals(originalDocuments);
+		}
+		
+		Reports reports = sdv.validateDocument();
+		// reports.print();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		assertNotNull(diagnosticData);
+		List<SignatureWrapper> signatureWrappers = diagnosticData.getSignatures();
+		for (SignatureWrapper signature : signatureWrappers) {
+			assertNotNull(signature);
+			List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
+			assertNotNull(signatureScopes);
+			assertEquals(3, signatureScopes.size());
+			int archivedFiles = 0;
+			for (XmlSignatureScope signatureScope : signatureScopes) {
+				if (SignatureScopeType.ARCHIVED.equals(signatureScope.getScope())) {
+					archivedFiles++;
+				}
+			}
+			assertEquals(2, archivedFiles);
 		}
 	}
 
 	@Test
 	public void testMultifilesASICEOneToMuchFile() {
-
 		FileDocument signedDoc = new FileDocument("src/test/resources/validation/multifiles-too-much-files.asice");
 
 		SignedDocumentValidator sdv = SignedDocumentValidator.fromDocument(signedDoc);
@@ -75,11 +99,19 @@ public class GetOriginalTest {
 		for (AdvancedSignature advancedSignature : signatures) {
 			List<DSSDocument> originalDocuments = sdv.getOriginalDocuments(advancedSignature.getId());
 			assertEquals(2, originalDocuments.size());
-			isFindAllOriginals(originalDocuments);
+			isFoundAllOriginals(originalDocuments);
 		}
+		
+		Reports reports = sdv.validateDocument();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		assertNotNull(diagnosticData);
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertNotNull(signature);
+		assertNotNull(signature.getSignatureScopes());
+		assertEquals(2, signature.getSignatureScopes().size());
 	}
 
-	private void isFindAllOriginals(List<DSSDocument> retrievedDocuments) {
+	private void isFoundAllOriginals(List<DSSDocument> retrievedDocuments) {
 		for (DSSDocument dssDocument : EXPECTED_MULTIFILES) {
 			String digestExpected = dssDocument.getDigest(DigestAlgorithm.SHA256);
 			boolean found = false;
@@ -107,6 +139,14 @@ public class GetOriginalTest {
 			assertEquals(1, originalDocuments.size());
 			assertEquals(EXPECTED_ONEFILE.getDigest(DigestAlgorithm.SHA256), originalDocuments.get(0).getDigest(DigestAlgorithm.SHA256));
 		}
+		
+		Reports reports = sdv.validateDocument();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		assertNotNull(diagnosticData);
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertNotNull(signature);
+		assertNotNull(signature.getSignatureScopes());
+		assertEquals(1, signature.getSignatureScopes().size());
 	}
 
 	@Test

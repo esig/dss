@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.cades.validation;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
@@ -44,8 +45,18 @@ public class CAdESWithSpecialCharInFilenameTest {
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);
-		// reports.print();
+		assertNotNull(reports.getEtsiValidationReportJaxb());
+	}
 
+	@Test
+	public void testFile1SkipETSIVR() {
+		DSSDocument dssDocument = new FileDocument(FILE_TO_TEST);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
+		validator.setEnableEtsiValidationReport(false);
+		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		Reports reports = validator.validateDocument();
+		assertNotNull(reports);
+		assertNull(reports.getEtsiValidationReportJaxb());
 	}
 
 }

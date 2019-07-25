@@ -31,13 +31,13 @@ import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.client.crl.OnlineCRLSource;
 import eu.europa.esig.dss.client.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.client.ocsp.OnlineOCSPSource;
+import eu.europa.esig.dss.detailedreport.DetailedReport;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.reports.SimpleReport;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.x509.CertificateSource;
 
 /**

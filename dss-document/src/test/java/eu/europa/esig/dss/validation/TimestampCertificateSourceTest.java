@@ -27,6 +27,7 @@ import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.Test;
 
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.timestamp.TimestampCertificateSource;
 import eu.europa.esig.dss.x509.CertificatePool;
 
 public class TimestampCertificateSourceTest {
@@ -42,7 +43,6 @@ public class TimestampCertificateSourceTest {
 		TimestampCertificateSource tcs = new TimestampCertificateSource(token, certPool);
 
 		assertEquals(4, tcs.getKeyInfoCertificates().size());
-		assertEquals(0, tcs.getEncapsulatedCertificates().size());
 	}
 
 }

@@ -17,8 +17,8 @@ import org.junit.Test;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.client.ocsp.JdbcCacheOCSPSource;
 import eu.europa.esig.dss.client.ocsp.OnlineOCSPSource;
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.RevocationToken;
 
 public class JdbcCacheOcspSourceTest {
@@ -49,7 +49,7 @@ public class JdbcCacheOcspSourceTest {
 		revocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(revocationToken);
 		assertNotNull(revocationToken.getRevocationTokenKey());
-		assertEquals(RevocationOrigin.EXTERNAL, revocationToken.getOrigin());
+		assertEquals(RevocationOrigin.EXTERNAL, revocationToken.getFirstOrigin());
 
 		RevocationToken savedRevocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(savedRevocationToken);
@@ -60,8 +60,8 @@ public class JdbcCacheOcspSourceTest {
 		assertEquals(Hex.encodeHexString(revocationToken.getEncoded()), Hex.encodeHexString(savedRevocationToken.getEncoded()));
 		assertEquals(Hex.encodeHexString(revocationToken.getIssuerX500Principal().getEncoded()), Hex.encodeHexString(savedRevocationToken.getIssuerX500Principal().getEncoded()));
 		assertEquals(revocationToken.getNextUpdate(), savedRevocationToken.getNextUpdate());
-		assertEquals(RevocationOrigin.CACHED, savedRevocationToken.getOrigin());
-		assertNotEquals(revocationToken.getOrigin(), savedRevocationToken.getOrigin());
+		assertEquals(RevocationOrigin.CACHED, savedRevocationToken.getFirstOrigin());
+		assertNotEquals(revocationToken.getFirstOrigin(), savedRevocationToken.getFirstOrigin());
 		assertEquals(revocationToken.getProductionDate(), savedRevocationToken.getProductionDate());
 		assertEquals(Hex.encodeHexString(revocationToken.getPublicKeyOfTheSigner().getEncoded()), Hex.encodeHexString(savedRevocationToken.getPublicKeyOfTheSigner().getEncoded()));
 		assertEquals(revocationToken.getReason(), savedRevocationToken.getReason());
@@ -78,7 +78,7 @@ public class JdbcCacheOcspSourceTest {
 		
 		RevocationToken refreshedRevocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(refreshedRevocationToken);
-		assertEquals(RevocationOrigin.EXTERNAL, refreshedRevocationToken.getOrigin());
+		assertEquals(RevocationOrigin.EXTERNAL, refreshedRevocationToken.getFirstOrigin());
 
 	}
 	

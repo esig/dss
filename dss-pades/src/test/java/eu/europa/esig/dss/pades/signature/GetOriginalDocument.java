@@ -21,7 +21,10 @@
 package eu.europa.esig.dss.pades.signature;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -30,17 +33,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
 public class GetOriginalDocument extends PKIFactoryAccess {
 
@@ -99,6 +106,41 @@ public class GetOriginalDocument extends PKIFactoryAccess {
 		LOG.info("SIGNED RETRIEVED : {}", retrievedResignedDocument.getDigest(DigestAlgorithm.SHA256));
 
 		assertEquals(signedDocument.getDigest(DigestAlgorithm.SHA256), retrievedResignedDocument.getDigest(DigestAlgorithm.SHA256));
+		
+		SignatureWrapper firstSignature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertNotNull(firstSignature);
+		List<XmlSignatureScope> firstSignatureScopes = firstSignature.getSignatureScopes();
+		assertNotNull(firstSignatureScopes);
+		assertEquals(1, firstSignatureScopes.size());
+		XmlSignatureScope originalDocumentSignatureScope = firstSignatureScopes.get(0);
+		assertNotNull(originalDocumentSignatureScope);
+		assertNotNull(originalDocumentSignatureScope.getName());
+		assertNotNull(originalDocumentSignatureScope.getScope());
+		assertNotNull(originalDocumentSignatureScope.getSignerData());
+		XmlDigestAlgoAndValue originalDocDigestAlgoAndValue = originalDocumentSignatureScope.getSignerData().getDigestAlgoAndValue();
+		assertNotNull(originalDocDigestAlgoAndValue);
+		DigestAlgorithm digestAlgorithmOriginalDocument = originalDocDigestAlgoAndValue.getDigestMethod();
+		assertNotNull(digestAlgorithmOriginalDocument);
+		assertTrue(Arrays.equals(Utils.fromBase64(document.getDigest(digestAlgorithmOriginalDocument)), 
+				originalDocDigestAlgoAndValue.getDigestValue()));
+		
+		SignatureWrapper secondSignature = diagnosticData.getSignatures().get(1);
+		assertNotNull(secondSignature);
+		List<XmlSignatureScope> secondSignatureScopes = secondSignature.getSignatureScopes();
+		assertNotNull(secondSignatureScopes);
+		assertEquals(1, secondSignatureScopes.size());
+		XmlSignatureScope firstSignedDocumentSignatureScope = secondSignatureScopes.get(0);
+		assertNotNull(firstSignedDocumentSignatureScope);
+		assertNotNull(firstSignedDocumentSignatureScope.getName());
+		assertNotNull(firstSignedDocumentSignatureScope.getScope());
+		assertNotNull(firstSignedDocumentSignatureScope.getSignerData());
+		XmlDigestAlgoAndValue firstDocDigestAlgoAndValue = firstSignedDocumentSignatureScope.getSignerData().getDigestAlgoAndValue();
+		assertNotNull(firstDocDigestAlgoAndValue);
+		DigestAlgorithm digestAlgorithmSignedDocument = firstDocDigestAlgoAndValue.getDigestMethod();
+		assertNotNull(digestAlgorithmSignedDocument);
+		assertTrue(Arrays.equals(Utils.fromBase64(signedDocument.getDigest(digestAlgorithmSignedDocument)), 
+				firstDocDigestAlgoAndValue.getDigestValue()));
+		
 	}
 
 	@Override

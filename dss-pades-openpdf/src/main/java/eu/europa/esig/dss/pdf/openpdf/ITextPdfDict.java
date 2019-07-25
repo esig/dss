@@ -77,7 +77,6 @@ class ITextPdfDict implements eu.europa.esig.dss.pdf.PdfDict {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public String[] list() {
 		Set<PdfName> keyPdfNames = wrapped.getKeys();
 		String[] keys = new String[keyPdfNames.size()];
@@ -94,7 +93,7 @@ class ITextPdfDict implements eu.europa.esig.dss.pdf.PdfDict {
 		if (pdfString == null) {
 			return null;
 		} else {
-			return pdfString.toString();
+			return pdfString.toUnicodeString();
 		}
 	}
 

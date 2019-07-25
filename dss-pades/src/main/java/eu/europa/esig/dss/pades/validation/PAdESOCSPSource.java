@@ -20,23 +20,32 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.pdf.PdfDssDict;
-import eu.europa.esig.dss.x509.revocation.ocsp.OfflineOCSPSource;
+import eu.europa.esig.dss.pdf.PdfVRIDict;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseBinary;
+import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 
 /**
  * OCSPSource that retrieves the OCSPResp from a PAdES Signature
  *
  */
-public class PAdESOCSPSource extends OfflineOCSPSource {
+@SuppressWarnings("serial")
+public class PAdESOCSPSource extends SignatureOCSPSource {
 
 	private final PdfDssDict dssDictionary;
+	
+	private final String vriDictionaryName;
+	
+	private transient Map<Long, BasicOCSPResp> ocspMap;
 
 	/**
 	 * The default constructor for PAdESOCSPSource.
@@ -45,12 +54,34 @@ public class PAdESOCSPSource extends OfflineOCSPSource {
 	 *                      the DSS dictionary
 	 */
 	public PAdESOCSPSource(PdfDssDict dssDictionary) {
+		this(dssDictionary, null);
+	}
+	
+	public PAdESOCSPSource(PdfDssDict dssDictionary, String vriDictionaryName) {
 		this.dssDictionary = dssDictionary;
+		this.vriDictionaryName = vriDictionaryName;
 	}
 
 	@Override
-	public List<BasicOCSPResp> getContainedOCSPResponses() {
-		return new ArrayList<BasicOCSPResp>(getOcspMap().values());
+	public void appendContainedOCSPResponses() {
+		extractDSSOCSPs();
+		extractVRIOCSPs();
+	}
+	
+	/**
+	 * Returns a map of all OCSP entries contained in DSS dictionary or into nested
+	 * VRI dictionaries
+	 * 
+	 * @return a map of BasicOCSPResp with their object ids
+	 */
+	public Map<Long, BasicOCSPResp> getOcspMap() {
+		if (ocspMap == null) {
+			appendContainedOCSPResponses();
+		}
+		if (ocspMap != null) {
+			return ocspMap;
+		}
+		return Collections.emptyMap();
 	}
 
 	/**
@@ -58,11 +89,46 @@ public class PAdESOCSPSource extends OfflineOCSPSource {
 	 * 
 	 * @return a map with the object number and the ocsp response
 	 */
-	public Map<Long, BasicOCSPResp> getOcspMap() {
+	private Map<Long, BasicOCSPResp> getDssOcspMap() {
 		if (dssDictionary != null) {
-			return dssDictionary.getOcspMap();
+			ocspMap = dssDictionary.getOCSPs();
+			return ocspMap;
 		}
 		return Collections.emptyMap();
+	}
+	
+	private void extractDSSOCSPs() {
+		for (BasicOCSPResp basicOCSPResp : getDssOcspMap().values()) {
+			addOCSPResponse(OCSPResponseBinary.build(basicOCSPResp), RevocationOrigin.DSS_DICTIONARY);
+		}
+	}
+	
+	private PdfVRIDict findVriDict() {
+		PdfVRIDict vriDictionary = null;
+		if (dssDictionary != null) {
+			List<PdfVRIDict> vriDictList = dssDictionary.getVRIs();
+			if (vriDictionaryName != null && Utils.isCollectionNotEmpty(vriDictList)) {
+				for (PdfVRIDict vriDict : vriDictList) {
+					if (vriDictionaryName.equals(vriDict.getName())) {
+						vriDictionary = vriDict;
+						break;
+					}
+				}
+			}
+		}
+		return vriDictionary;
+	}
+	
+	private void extractVRIOCSPs() {
+		PdfVRIDict vriDictionary = findVriDict();
+		if (vriDictionary != null) {
+			for (Entry<Long, BasicOCSPResp> ocspEntry : vriDictionary.getOcspMap().entrySet()) {
+				if (!ocspMap.containsKey(ocspEntry.getKey())) {
+					ocspMap.put(ocspEntry.getKey(), ocspEntry.getValue());
+				}
+				addOCSPResponse(OCSPResponseBinary.build(ocspEntry.getValue()), RevocationOrigin.VRI_DICTIONARY);
+			}
+		}
 	}
 
 }

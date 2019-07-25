@@ -20,12 +20,18 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bouncycastle.cms.CMSSignedData;
 
+import eu.europa.esig.dss.CertificateRef;
 import eu.europa.esig.dss.pdf.PdfDssDict;
+import eu.europa.esig.dss.pdf.PdfVRIDict;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CAdESCertificateSource;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -34,6 +40,7 @@ import eu.europa.esig.dss.x509.CertificateToken;
  * CertificateSource that will retrieve the certificate from a PAdES Signature
  *
  */
+@SuppressWarnings("serial")
 public class PAdESCertificateSource extends CAdESCertificateSource {
 
 	private final PdfDssDict dssDictionary;
@@ -52,6 +59,7 @@ public class PAdESCertificateSource extends CAdESCertificateSource {
 
 		this.dssDictionary = dssDictionary;
 
+		// init CertPool
 		extractFromDSSDict();
 	}
 
@@ -64,9 +72,58 @@ public class PAdESCertificateSource extends CAdESCertificateSource {
 
 	public Map<Long, CertificateToken> getCertificateMap() {
 		if (dssDictionary != null) {
-			return dssDictionary.getCertMap();
+			Map<Long, CertificateToken> dssCerts = dssDictionary.getCERTs();
+			List<PdfVRIDict> vriDicts = dssDictionary.getVRIs();
+			if (Utils.isCollectionNotEmpty(vriDicts)) {
+				for (PdfVRIDict vriDict : vriDicts) {
+					dssCerts.putAll(vriDict.getCertMap());
+				}
+			}
+			return dssCerts;
 		}
 		return Collections.emptyMap();
+	}
+
+	@Override
+	public List<CertificateToken> getCertificateValues() {
+		// Not applicable for PAdES
+		return Collections.emptyList();
+	}
+
+	@Override
+	public List<CertificateRef> getCompleteCertificateRefs() {
+		// Not applicable for PAdES
+		return Collections.emptyList();
+	}
+
+	@Override
+	public List<CertificateRef> getAttributeCertificateRefs() {
+		// Not applicable for PAdES
+		return Collections.emptyList();
+	}
+
+	@Override
+	public List<CertificateToken> getDSSDictionaryCertValues() {
+		if (dssDictionary != null) {
+			Map<Long, CertificateToken> dssCerts = dssDictionary.getCERTs();
+			return new ArrayList<CertificateToken>(dssCerts.values());
+		}
+		return Collections.emptyList();
+	}
+
+	@Override
+	public List<CertificateToken> getVRIDictionaryCertValues() {
+		if (dssDictionary != null) {
+			Map<Long, CertificateToken> vriCerts = new HashMap<Long, CertificateToken>();
+			List<PdfVRIDict> vris = dssDictionary.getVRIs();
+			if (vris != null) {
+				for (PdfVRIDict vri : vris) {
+					vriCerts.putAll(vri.getCertMap());
+				}
+			}
+			return new ArrayList<CertificateToken>(vriCerts.values());
+		}
+		return Collections.emptyList();
 	}
 
 }

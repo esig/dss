@@ -42,16 +42,17 @@ import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.client.http.DataLoader;
+import eu.europa.esig.dss.enumerations.CertificateSourceType;
+import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.x509.AlternateUrlsSourceAdapter;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSource;
-import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.Token;
-import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
 import eu.europa.esig.dss.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.x509.revocation.RevocationSourceAlternateUrlsSupport;
 import eu.europa.esig.dss.x509.revocation.crl.CRLSource;
@@ -486,16 +487,15 @@ public class SignatureValidationContext implements ValidationContext {
 			}
 		}
 		
-
 		if (revocations.isEmpty() || isRevocationDataRefreshNeeded(certToken, revocations)) {
-
-			if (checkRevocationForUntrustedChains || isInTrustedChain(certChain)) {
+			if (checkRevocationForUntrustedChains || containsTrustAnchor(certChain)) {
+				CertificateToken trustAnchor = (CertificateToken) getFirstTrustAnchor(certChain);
 
 				// Online resources (OCSP and CRL if OCSP doesn't reply)
 				OCSPAndCRLCertificateVerifier onlineVerifier = null;
 
-				if (trustedCertSource instanceof CommonTrustedCertificateSource) {
-					onlineVerifier = instantiateWithTrustServices((CommonTrustedCertificateSource) trustedCertSource, certToken, certChain);
+				if (trustedCertSource instanceof CommonTrustedCertificateSource && (trustAnchor != null)) {
+					onlineVerifier = instantiateWithTrustServices((CommonTrustedCertificateSource) trustedCertSource, trustAnchor);
 				} else {
 					onlineVerifier = new OCSPAndCRLCertificateVerifier(crlSource, ocspSource, validationCertificatePool);
 				}
@@ -506,10 +506,9 @@ public class SignatureValidationContext implements ValidationContext {
 					revocations.add(onlineRevocationToken);
 				}
 			} else {
-				LOG.warn("External revocation check is skipped for untrusted certificate : {}", certChain.iterator().next().getDSSIdAsString());
+				LOG.warn("External revocation check is skipped for untrusted certificate : {}", certToken.getDSSIdAsString());
 			}
 		}
-
 		if (revocations.isEmpty()) {
 			LOG.warn("No revocation found for certificate {}", certToken.getDSSIdAsString());
 		}
@@ -517,25 +516,21 @@ public class SignatureValidationContext implements ValidationContext {
 		return revocations;
 	}
 
-	private boolean isInTrustedChain(List<Token> certChain) {
+	private boolean containsTrustAnchor(List<Token> certChain) {
+		return getFirstTrustAnchor(certChain) != null;
+	}
+
+	private Token getFirstTrustAnchor(List<Token> certChain) {
 		for (Token token : certChain) {
 			if (isTrusted(token)) {
-				return true;
+				return token;
 			}
 		}
-		return false;
+		return null;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private OCSPAndCRLCertificateVerifier instantiateWithTrustServices(CommonTrustedCertificateSource trustedCertSource, CertificateToken certToken,
-			List<Token> certChain) {
-
-		CertificateToken trustAnchor = certToken;
-		Token lastToken = certChain.get(certChain.size() - 1);
-		if (lastToken instanceof CertificateToken) {
-			trustAnchor = (CertificateToken) lastToken;
-		}
-
+	private OCSPAndCRLCertificateVerifier instantiateWithTrustServices(CommonTrustedCertificateSource trustedCertSource, CertificateToken trustAnchor) {
 		RevocationSource currentOCSPSource = null;
 		List<String> alternativeOCSPUrls = trustedCertSource.getAlternativeOCSPUrls(trustAnchor);
 		if (Utils.isCollectionNotEmpty(alternativeOCSPUrls) && ocspSource instanceof RevocationSourceAlternateUrlsSupport) {
@@ -616,7 +611,7 @@ public class SignatureValidationContext implements ValidationContext {
 	public boolean isAllTimestampValid() {
 		for (TimestampToken timestampToken : processedTimestamps) {
 			if (!timestampToken.isSignatureValid() || !timestampToken.isMessageImprintDataFound() || !timestampToken.isMessageImprintDataIntact()) {
-				LOG.debug("Invalid timestamp detected : {}", timestampToken.getDSSIdAsString());
+				LOG.warn("Invalid timestamp detected : {}", timestampToken.getDSSIdAsString());
 				return false;
 			}
 		}
@@ -648,7 +643,7 @@ public class SignatureValidationContext implements ValidationContext {
 		if (lastUsageDate != null) {
 			boolean foundUpdatedRevocationData = false;
 			for (RevocationToken revocationToken : revocations) {
-				if ((lastUsageDate.compareTo(revocationToken.getProductionDate()) <= 0) && (CRLReasonEnum.certificateHold != revocationToken.getReason())) {
+				if ((lastUsageDate.compareTo(revocationToken.getProductionDate()) < 0) && (RevocationReason.CERTIFICATE_HOLD != revocationToken.getReason())) {
 					foundUpdatedRevocationData = true;
 					break;
 				}

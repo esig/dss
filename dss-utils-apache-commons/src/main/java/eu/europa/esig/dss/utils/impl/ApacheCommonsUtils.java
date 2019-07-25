@@ -27,11 +27,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.Map;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -151,6 +153,16 @@ public class ApacheCommonsUtils implements IUtils {
 	}
 
 	@Override
+	public boolean isMapEmpty(Map<?,?> map) {
+		return MapUtils.isEmpty(map);
+	}
+
+	@Override
+	public boolean isMapNotEmpty(Map<?,?> map) {
+		return MapUtils.isNotEmpty(map);
+	}
+
+	@Override
 	@SuppressWarnings("rawtypes")
 	public int collectionSize(Collection collection) {
 		return CollectionUtils.size(collection);
@@ -168,6 +180,11 @@ public class ApacheCommonsUtils implements IUtils {
 		} catch (DecoderException e) {
 			throw new IllegalArgumentException("Unable to extract binary from Hex", e);
 		}
+	}
+	
+	@Override
+	public boolean isBase64Encoded(String base64String) {
+		return Base64.isBase64(base64String);
 	}
 
 	@Override

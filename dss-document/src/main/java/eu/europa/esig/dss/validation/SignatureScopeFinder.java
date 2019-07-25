@@ -22,7 +22,12 @@ package eu.europa.esig.dss.validation;
 
 import java.util.List;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+
 public interface SignatureScopeFinder<T extends AdvancedSignature> {
 
 	List<SignatureScope> findSignatureScope(final T advancedSignature);
+	
+	void setDefaultDigestAlgorithm(DigestAlgorithm digestAlgorithm);
+	
 }

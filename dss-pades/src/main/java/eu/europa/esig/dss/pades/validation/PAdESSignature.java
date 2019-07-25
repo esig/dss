@@ -27,43 +27,42 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.CertificateRef;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.SignatureForm;
-import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
-import eu.europa.esig.dss.pdf.PdfDocTimestampInfo;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureForm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.TimestampedObjectType;
+import eu.europa.esig.dss.identifier.SignatureIdentifier;
+import eu.europa.esig.dss.identifier.TokenIdentifier;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureInfo;
-import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CRLRef;
-import eu.europa.esig.dss.validation.CertificateRef;
-import eu.europa.esig.dss.validation.CertifiedRole;
-import eu.europa.esig.dss.validation.OCSPRef;
+import eu.europa.esig.dss.validation.SignatureDigestReference;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
-import eu.europa.esig.dss.validation.TimestampReference;
-import eu.europa.esig.dss.validation.TimestampToken;
-import eu.europa.esig.dss.validation.TimestampedObjectType;
+import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.TimestampType;
-import eu.europa.esig.dss.x509.revocation.crl.OfflineCRLSource;
-import eu.europa.esig.dss.x509.revocation.ocsp.OfflineOCSPSource;
+import eu.europa.esig.dss.x509.RevocationToken;
+import eu.europa.esig.dss.x509.SignatureCertificateSource;
+import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
+import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 
 /**
  * Implementation of AdvancedSignature for PAdES
  */
 public class PAdESSignature extends CAdESSignature {
+
+	private static final long serialVersionUID = 3818555396958720967L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESSignature.class);
 
@@ -71,8 +70,6 @@ public class PAdESSignature extends CAdESSignature {
 	private final PdfDssDict dssDictionary;
 
 	private final PdfSignatureInfo pdfSignatureInfo;
-
-	private PAdESCertificateSource padesCertSources;
 
 	/**
 	 * The default constructor for PAdESSignature.
@@ -98,27 +95,35 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	@Override
-	public PAdESCertificateSource getCertificateSource() {
-		if (padesCertSources == null) {
-			padesCertSources = new PAdESCertificateSource(dssDictionary, super.getCmsSignedData(), certPool);
+	public SignatureCertificateSource getCertificateSource() {
+		if (offlineCertificateSource == null) {
+			offlineCertificateSource = new PAdESCertificateSource(dssDictionary, super.getCmsSignedData(), certPool);
 		}
-		return padesCertSources;
+		return offlineCertificateSource;
 	}
 
 	@Override
-	public OfflineCRLSource getCRLSource() {
-		if (offlineCRLSource == null) {
-			offlineCRLSource = new PAdESCRLSource(dssDictionary);
+	public SignatureCRLSource getCRLSource() {
+		if (signatureCRLSource == null) {
+			signatureCRLSource = new PAdESCRLSource(dssDictionary, getVRIKey());
 		}
-		return offlineCRLSource;
+		return signatureCRLSource;
 	}
 
 	@Override
-	public OfflineOCSPSource getOCSPSource() {
-		if (offlineOCSPSource == null) {
-			offlineOCSPSource = new PAdESOCSPSource(dssDictionary);
+	public SignatureOCSPSource getOCSPSource() {
+		if (signatureOCSPSource == null) {
+			signatureOCSPSource = new PAdESOCSPSource(dssDictionary, getVRIKey());
 		}
-		return offlineOCSPSource;
+		return signatureOCSPSource;
+	}
+	
+	@Override
+	public PAdESTimestampSource getTimestampSource() {
+		if (signatureTimestampSource == null) {
+			signatureTimestampSource = new PAdESTimestampSource(this, certPool);
+		}
+		return (PAdESTimestampSource) signatureTimestampSource;
 	}
 
 	@Override
@@ -139,11 +144,6 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	@Override
-	public String getContentType() {
-		return MimeType.PDF.getMimeTypeString();
-	}
-
-	@Override
 	public String getContentIdentifier() {
 		return null;
 	}
@@ -154,103 +154,33 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	@Override
-	public List<CertifiedRole> getCertifiedSignerRoles() {
-		return null;
-	}
-
-	@Override
-	public List<TimestampToken> getSignatureTimestamps() {
-
-		final List<TimestampToken> result = new ArrayList<TimestampToken>();
-		result.addAll(super.getSignatureTimestamps());
-		final Set<PdfSignatureOrDocTimestampInfo> outerSignatures = pdfSignatureInfo.getOuterSignatures();
-		for (final PdfSignatureOrDocTimestampInfo outerSignature : outerSignatures) {
-
-			if (outerSignature.isTimestamp() && (outerSignature instanceof PdfDocTimestampInfo)) {
-
-				final PdfDocTimestampInfo timestampInfo = (PdfDocTimestampInfo) outerSignature;
-				// do not return this timestamp if it's an archive timestamp
-				final TimestampToken timestampToken = timestampInfo.getTimestampToken();
-				if (timestampToken.getTimeStampType() == TimestampType.SIGNATURE_TIMESTAMP) {
-
-					timestampToken.setTimestampedReferences(getSignatureTimestampedReferences());
-					result.add(timestampToken);
-				}
-			}
+	protected void addReferencesForCertificates(List<TimestampedReference> references) {
+		List<CertificateToken> dssDictionaryCertValues = getCertificateSource().getDSSDictionaryCertValues();
+		for (CertificateToken certificate : dssDictionaryCertValues) {
+			addReference(references, new TimestampedReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 		}
-		return Collections.unmodifiableList(result);
+		List<CertificateToken> vriDictionaryCertValues = getCertificateSource().getVRIDictionaryCertValues();
+		for (CertificateToken certificate : vriDictionaryCertValues) {
+			addReference(references, new TimestampedReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
+		}
 	}
 
+	/**
+	 * This method adds references to retrieved revocation data.
+	 * 
+	 * @param references
+	 */
 	@Override
-	public List<TimestampToken> getTimestampsX1() {
-		/* Not applicable for PAdES */
-		return Collections.emptyList();
-	}
-
-	@Override
-	public List<TimestampToken> getTimestampsX2() {
-		/* Not applicable for PAdES */
-		return Collections.emptyList();
-	}
-
-	@Override
-	public List<TimestampToken> getArchiveTimestamps() {
-		final List<TimestampToken> archiveTimestampTokenList = new ArrayList<TimestampToken>();
-		final List<String> timestampedTimestamps = new ArrayList<String>();
-		final Set<PdfSignatureOrDocTimestampInfo> outerSignatures = pdfSignatureInfo.getOuterSignatures();
-		usedCertificatesDigestAlgorithms.add(DigestAlgorithm.SHA1);
-
-		for (TimestampToken token : super.getSignatureTimestamps()) {
-			timestampedTimestamps.add(token.getDSSIdAsString());
+	protected void addReferencesFromRevocationData(List<TimestampedReference> references) {
+		List<RevocationToken> vriRevocationTokens = getVRIDictionaryRevocationTokens();
+		for (RevocationToken revocationToken : vriRevocationTokens) {
+			addReference(references, new TimestampedReference(revocationToken.getDSSIdAsString(), TimestampedObjectType.REVOCATION));
 		}
 
-		for (final PdfSignatureOrDocTimestampInfo outerSignature : outerSignatures) {
-
-			if (outerSignature.isTimestamp()) {
-
-				PdfDocTimestampInfo timestampInfo = (PdfDocTimestampInfo) outerSignature;
-				// return this timestamp if it's an archive timestamp
-				final TimestampToken timestampToken = timestampInfo.getTimestampToken();
-				if (timestampToken.getTimeStampType() == TimestampType.ARCHIVE_TIMESTAMP) {
-					final List<TimestampReference> references = getSignatureTimestampedReferences();
-					for (final String timestampId : timestampedTimestamps) {
-						references.add(new TimestampReference(timestampId, TimestampedObjectType.TIMESTAMP));
-					}
-					final List<CertificateRef> certRefs = getCertificateRefs();
-					for (final CertificateRef certRef : certRefs) {
-						references.add(createCertificateTimestampReference(certRef));
-					}
-
-					addReferencesFromOfflineCRLSource(references);
-					addReferencesFromOfflineOCSPSource(references);
-
-					timestampToken.setTimestampedReferences(references);
-					archiveTimestampTokenList.add(timestampToken);
-				}
-				timestampedTimestamps.add(timestampToken.getDSSIdAsString());
-			}
-
+		List<RevocationToken> dssRevocationTokens = getDSSDictionaryRevocationTokens();
+		for (RevocationToken revocationToken : dssRevocationTokens) {
+			addReference(references, new TimestampedReference(revocationToken.getDSSIdAsString(), TimestampedObjectType.REVOCATION));
 		}
-		return Collections.unmodifiableList(archiveTimestampTokenList);
-	}
-
-	@Override
-	public List<TimestampReference> getSignatureTimestampedReferences() {
-		final List<TimestampReference> references = new ArrayList<TimestampReference>();
-		// timestamp of the current signature
-		references.add(new TimestampReference(getId()));
-		// retrieve references from CMS Object
-		final List<TimestampReference> signingCertificateTimestampReferences = super.getSigningCertificateTimestampReferences();
-		for (TimestampReference timestampReference : signingCertificateTimestampReferences) {
-			usedCertificatesDigestAlgorithms.add(timestampReference.getDigestAlgorithm());
-		}
-		references.addAll(signingCertificateTimestampReferences);
-		return references;
-	}
-
-	private TimestampReference createCertificateTimestampReference(CertificateRef ref) {
-		usedCertificatesDigestAlgorithms.add(ref.getDigestAlgorithm());
-		return new TimestampReference(ref.getDigestAlgorithm(), Utils.toBase64(ref.getDigestValue()), TimestampedObjectType.CERTIFICATE);
 	}
 
 	@Override
@@ -266,7 +196,7 @@ public class PAdESSignature extends CAdESSignature {
 		List<CertificateToken> encapsulatedCertificates = getCAdESSignature().getCertificateSource().getKeyInfoCertificates();
 		addCertRefs(refs, encapsulatedCertificates);
 		if (dssDictionary != null) {
-			Map<Long, CertificateToken> certMap = dssDictionary.getCertMap();
+			Map<Long, CertificateToken> certMap = dssDictionary.getCERTs();
 			addCertRefs(refs, certMap.values());
 		}
 		return refs;
@@ -275,50 +205,9 @@ public class PAdESSignature extends CAdESSignature {
 	private void addCertRefs(List<CertificateRef> refs, Collection<CertificateToken> encapsulatedCertificates) {
 		for (CertificateToken certificateToken : encapsulatedCertificates) {
 			CertificateRef ref = new CertificateRef();
-			ref.setDigestAlgorithm(DigestAlgorithm.SHA1);
-			ref.setDigestValue(certificateToken.getDigest(DigestAlgorithm.SHA1));
+			ref.setCertDigest(new Digest(DigestAlgorithm.SHA1, certificateToken.getDigest(DigestAlgorithm.SHA1)));
 			refs.add(ref);
 		}
-	}
-
-	@Override
-	public List<CRLRef> getCRLRefs() {
-		return Collections.emptyList();
-	}
-
-	@Override
-	public List<OCSPRef> getOCSPRefs() {
-		return Collections.emptyList();
-	}
-
-	@Override
-	public byte[] getSignatureTimestampData(final TimestampToken timestampToken, String canonicalizationMethod) {
-		if (super.getSignatureTimestamps().contains(timestampToken)) {
-			return super.getSignatureTimestampData(timestampToken, null);
-		} else {
-			for (final PdfSignatureOrDocTimestampInfo signatureInfo : pdfSignatureInfo.getOuterSignatures()) {
-				if (signatureInfo instanceof PdfDocTimestampInfo) {
-					PdfDocTimestampInfo pdfTimestampInfo = (PdfDocTimestampInfo) signatureInfo;
-					if (pdfTimestampInfo.getTimestampToken().equals(timestampToken)) {
-						final byte[] signedDocumentBytes = pdfTimestampInfo.getSignedDocumentBytes();
-						return signedDocumentBytes;
-					}
-				}
-			}
-		}
-		throw new DSSException("Timestamp Data not found");
-	}
-
-	@Override
-	public byte[] getTimestampX1Data(final TimestampToken timestampToken, String canonicalizationMethod) {
-		/* Not applicable for PAdES */
-		return null;
-	}
-
-	@Override
-	public byte[] getTimestampX2Data(final TimestampToken timestampToken, String canonicalizationMethod) {
-		/* Not applicable for PAdES */
-		return null;
 	}
 
 	/**
@@ -327,25 +216,12 @@ public class PAdESSignature extends CAdESSignature {
 	public CAdESSignature getCAdESSignature() {
 		return pdfSignatureInfo.getCades();
 	}
-
+	
 	@Override
-	public byte[] getArchiveTimestampData(TimestampToken timestampToken, String canonicalizationMethod) {
-		for (final PdfSignatureOrDocTimestampInfo signatureInfo : pdfSignatureInfo.getOuterSignatures()) {
-			if (signatureInfo instanceof PdfDocTimestampInfo) {
-				PdfDocTimestampInfo pdfTimestampInfo = (PdfDocTimestampInfo) signatureInfo;
-				if (pdfTimestampInfo.getTimestampToken().equals(timestampToken)) {
-					final byte[] signedDocumentBytes = pdfTimestampInfo.getSignedDocumentBytes();
-					return signedDocumentBytes;
-				}
-			}
-		}
-		throw new DSSException("Timestamp Data not found");
-	}
-
-	@Override
-	public String getId() {
-		String cadesId = super.getId();
-		return cadesId + getDigestOfByteRange();
+	public SignatureIdentifier buildSignatureIdentifier() {
+		final CertificateToken certificateToken = getSigningCertificateToken();
+		final TokenIdentifier identifier = certificateToken == null ? null : certificateToken.getDSSId();
+		return SignatureIdentifier.buildSignatureIdentifier(getSigningTime(), identifier, getDigestOfByteRange());
 	}
 
 	private String getDigestOfByteRange() {
@@ -357,14 +233,23 @@ public class PAdESSignature extends CAdESSignature {
 		return DSSUtils.getMD5Digest(baos.toByteArray());
 	}
 
+	@Override
 	public int[] getSignatureByteRange() {
 		return pdfSignatureInfo.getSignatureByteRange();
 	}
-
+	
+	/**
+	 * TS 119 442 - V1.1.1 - Electronic Signatures and Infrastructures (ESI), ch. 5.1.4.2.1.3 XML component:
+	 * 
+	 * In case of PAdES signatures, the input of the digest value computation shall be the result of decoding the
+	 * hexadecimal string present within the Contents field of the Signature PDF dictionary enclosing one PAdES
+	 * digital signature. 
+	 */
 	@Override
-	public List<TimestampReference> getTimestampedReferences() {
-		/* Not applicable for PAdES */
-		return Collections.emptyList();
+	public SignatureDigestReference getSignatureDigestReference(DigestAlgorithm digestAlgorithm) {
+		byte[] contents = pdfSignatureInfo.getContents();
+		byte[] digestValue = DSSUtils.digest(digestAlgorithm, contents);
+		return new SignatureDigestReference(new Digest(digestAlgorithm, digestValue));
 	}
 
 	@Override
@@ -425,6 +310,46 @@ public class PAdESSignature extends CAdESSignature {
 
 	public PdfSignatureInfo getPdfSignatureInfo() {
 		return pdfSignatureInfo;
+	}
+	
+	@Override
+	public String getSignatureFieldName() {
+		return pdfSignatureInfo.getSigFieldName();
+	}
+
+	@Override
+	public String getSignerName() {
+		return pdfSignatureInfo.getSignerName();
+	}
+
+	@Override
+	public String getFilter() {
+		return pdfSignatureInfo.getFilter();
+	}
+
+	@Override
+	public String getSubFilter() {
+		return pdfSignatureInfo.getSubFilter();
+	}
+
+	@Override
+	public String getContactInfo() {
+		return pdfSignatureInfo.getContactInfo();
+	}
+
+	@Override
+	public String getReason() {
+		return pdfSignatureInfo.getReason();
+	}
+	
+	/**
+	 * Name of the related to the signature VRI dictionary
+	 * @return related {@link String} VRI dictionary name
+	 */
+	public String getVRIKey() {
+		// By ETSI EN 319 142-1 V1.1.1, VRI dictionary's name is the base-16-encoded (uppercase)
+		// SHA1 digest of the signature to which it applies
+		return pdfSignatureInfo.uniqueId().toUpperCase();
 	}
 
 }

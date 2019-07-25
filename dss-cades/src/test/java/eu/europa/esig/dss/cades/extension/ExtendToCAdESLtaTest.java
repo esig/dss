@@ -22,6 +22,7 @@ package eu.europa.esig.dss.cades.extension;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,13 +33,16 @@ import org.junit.Test;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedRevocation;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
 /**
  * Unit test to fix issue https://esig-dss.atlassian.net/browse/DSS-646
@@ -64,6 +68,18 @@ public class ExtendToCAdESLtaTest extends PKIFactoryAccess {
 		// Since all the attributes have the same tag, the length decide the order, and the messageDigest should be
 		// before the signingTime
 		assertFalse(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+		
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertNotNull(signature);
+		
+		List<XmlRelatedRevocation> relatedRevocations = signature.getRelatedRevocations();
+		assertTrue(Utils.isCollectionNotEmpty(relatedRevocations));
+		for (XmlRelatedRevocation revocation : relatedRevocations) {
+			assertNotNull(revocation.getRevocation());
+			assertNotNull(revocation.getRevocation().getId());
+		}
+		assertTrue(Utils.isCollectionEmpty(signature.getOrphanRevocations()));
+		
 	}
 
 	@Test(expected = DSSException.class)

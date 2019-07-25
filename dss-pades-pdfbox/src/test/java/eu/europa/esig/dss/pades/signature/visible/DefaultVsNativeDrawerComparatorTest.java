@@ -17,9 +17,9 @@ import org.junit.Test;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.pades.DSSFileFont;
 import eu.europa.esig.dss.pades.DSSJavaFont;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
@@ -301,6 +301,18 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 		// right alignment
 		imageParameters.getTextParameters().setSignerTextHorizontalAlignment(SignatureImageTextParameters.SignerTextHorizontalAlignment.RIGHT);
 		signatureParameters.setSignatureImageParameters(imageParameters);
+		drawAndCompareVisually();
+	}
+	
+	@Test
+	public void cyrillicCharactersTest() throws IOException {
+		initVisibleCombinationTest();
+		SignatureImageParameters signatureImageParameters = new SignatureImageParameters();
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setText("Моя подпись 1");
+		textParameters.setFont(new DSSFileFont(getClass().getResourceAsStream("/fonts/OpenSansBold.ttf")));
+		signatureImageParameters.setTextParameters(textParameters);
+		signatureParameters.setSignatureImageParameters(signatureImageParameters);
 		drawAndCompareVisually();
 	}
 	

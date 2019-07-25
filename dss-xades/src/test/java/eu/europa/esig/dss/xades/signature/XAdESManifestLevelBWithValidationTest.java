@@ -28,16 +28,16 @@ import java.util.List;
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DigestDocument;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 public class XAdESManifestLevelBWithValidationTest extends AbstractXAdESTestSignature {
@@ -79,9 +79,8 @@ public class XAdESManifestLevelBWithValidationTest extends AbstractXAdESTestSign
 
 		FileDocument fileDoc = new FileDocument("src/test/resources/sample.txt");
 
-		DigestDocument digestDocument = new DigestDocument();
+		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA512, fileDoc.getDigest(DigestAlgorithm.SHA512));
 		digestDocument.setName(fileDoc.getName());
-		digestDocument.addDigest(DigestAlgorithm.SHA512, fileDoc.getDigest(DigestAlgorithm.SHA512));
 
 		documents.add(digestDocument);
 

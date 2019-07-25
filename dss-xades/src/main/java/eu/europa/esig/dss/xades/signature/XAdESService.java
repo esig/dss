@@ -29,23 +29,22 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
-import eu.europa.esig.dss.SigningOperation;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
+import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.ProfileParameters;
-import eu.europa.esig.dss.xades.SantuarioInitializer;
 import eu.europa.esig.dss.xades.ProfileParameters.Operation;
-import eu.europa.esig.dss.xades.reference.DSSReference;
+import eu.europa.esig.dss.xades.SantuarioInitializer;
 import eu.europa.esig.dss.xades.SignatureProfile;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.reference.DSSReference;
 
 /**
  * XAdES implementation of DocumentSignatureService
@@ -148,12 +147,12 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 			// signatures with the same Id within the
 			// same document.
 			parameters.reinitDeterministicId();
-			dssExtendedDocument.setName(DSSUtils.getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
+			dssExtendedDocument.setName(getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
 			return dssExtendedDocument;
 		}
 
 		parameters.reinitDeterministicId();
-		signedDoc.setName(DSSUtils.getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
+		signedDoc.setName(getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
 		return signedDoc;
 	}
 
@@ -174,7 +173,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		final SignatureExtension<XAdESSignatureParameters> extension = getExtensionProfile(parameters);
 		if (extension != null) {
 			final DSSDocument dssDocument = extension.extendSignatures(toExtendDocument, parameters);
-			dssDocument.setName(DSSUtils.getFinalFileName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel()));
+			dssDocument.setName(getFinalFileName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel()));
 			return dssDocument;
 		}
 		throw new DSSException("Cannot extend to " + parameters.getSignatureLevel().name());

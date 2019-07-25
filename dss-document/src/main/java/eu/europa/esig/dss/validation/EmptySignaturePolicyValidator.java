@@ -30,7 +30,7 @@ public class EmptySignaturePolicyValidator extends AbstractSignaturePolicyValida
 	@Override
 	public boolean canValidate() {
 		SignaturePolicy signaturePolicy = getSignaturePolicy();
-		return signaturePolicy.getPolicyContent() == null;
+		return signaturePolicy.getPolicyContent() == null && !signaturePolicy.isZeroHash();
 	}
 
 	@Override

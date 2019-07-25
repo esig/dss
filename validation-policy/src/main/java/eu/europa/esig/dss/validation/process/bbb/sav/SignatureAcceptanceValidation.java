@@ -22,9 +22,15 @@ package eu.europa.esig.dss.validation.process.bbb.sav;
 
 import java.util.Date;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
-import eu.europa.esig.dss.validation.policy.Context;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
+import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CertifiedRolesCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ClaimedRolesCheck;
@@ -34,17 +40,10 @@ import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentIdentifierChe
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentTimestampCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentTypeCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CounterSignatureCheck;
-import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.MessageDigestOrSignedPropertiesCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SignerLocationCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningTimeCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.StructuralValidationCheck;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
-import eu.europa.esig.jaxb.policy.CryptographicConstraint;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
-import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
-import eu.europa.esig.jaxb.policy.ValueConstraint;
 
 /**
  * 5.2.8 Signature acceptance validation (SAV) This building block covers any
@@ -54,17 +53,17 @@ import eu.europa.esig.jaxb.policy.ValueConstraint;
 public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<SignatureWrapper> {
 
 	private final DiagnosticData diagnosticData;
-	private final Context context;
 
 	public SignatureAcceptanceValidation(DiagnosticData diagnosticData, Date currentTime, SignatureWrapper signature, Context context,
 			ValidationPolicy validationPolicy) {
-		super(signature, currentTime, validationPolicy);
+		super(signature, currentTime, context, validationPolicy);
+		result.setTitle(BasicBuildingBlockDefinition.SIGNATURE_ACCEPTANCE_VALIDATION.getTitle());
 		this.diagnosticData = diagnosticData;
-		this.context = context;
 	}
 
 	@Override
 	protected void initChain() {
+
 		ChainItem<XmlSAV> item = firstItem = structuralValidation();
 
 		// signing-time
@@ -105,7 +104,7 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 		item = item.setNextItem(certifiedRoles());
 
 		// cryptographic check
-		item = item.setNextItem(signatureCryptographic());
+		item = item.setNextItem(cryptographic());
 	}
 
 	private ChainItem<XmlSAV> structuralValidation() {
@@ -150,7 +149,7 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 
 	private ChainItem<XmlSAV> contentTimestamp() {
 		LevelConstraint constraint = validationPolicy.getContentTimestampConstraint();
-		return new ContentTimestampCheck(result, diagnosticData, token, constraint);
+		return new ContentTimestampCheck(result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> countersignature() {
@@ -166,16 +165,6 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 	private ChainItem<XmlSAV> certifiedRoles() {
 		MultiValuesConstraint constraint = validationPolicy.getCertifiedRolesConstraint();
 		return new CertifiedRolesCheck(result, token, constraint);
-	}
-
-	private ChainItem<XmlSAV> signatureCryptographic() {
-		CryptographicConstraint constraint = validationPolicy.getSignatureCryptographicConstraint(context);
-		return new CryptographicCheck<XmlSAV>(result, token, currentTime, constraint);
-	}
-
-	@Override
-	protected void addAdditionalInfo() {
-		result.setValidationTime(currentTime);
 	}
 
 }

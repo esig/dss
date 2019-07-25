@@ -29,17 +29,17 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DigestDocument;
 import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 public class XAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
@@ -153,8 +153,7 @@ public class XAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 	}
 
 	private DSSDocument getDigestDocument() {
-		DigestDocument digestDocument = new DigestDocument();
-		digestDocument.addDigest(USED_DIGEST, getCompleteDocument().getDigest(USED_DIGEST));
+		DigestDocument digestDocument = new DigestDocument(USED_DIGEST, getCompleteDocument().getDigest(USED_DIGEST));
 		return digestDocument;
 	}
 
