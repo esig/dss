@@ -57,6 +57,7 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.xades.signature.PrettyPrintTransformer;
 
 /**
  * Utility class that contains some XML related method.
@@ -167,7 +168,7 @@ public final class DSSXMLUtils {
 		indentedNode = alignChildrenIndents(indentedNode);
 		Node importedNode = document.importNode(indentedNode, true);
 		NodeList nodeList = importedNode.getChildNodes();
-		for (int i = getPositionToStartExtention(oldNode, importedNode); i < nodeList.getLength(); i++) {
+		for (int i = getPositionToStartExtension(oldNode, importedNode); i < nodeList.getLength(); i++) {
 			Node nodeToAppend = nodeList.item(i).cloneNode(true);
 			if (Node.ELEMENT_NODE != nodeToAppend.getNodeType() || !checkIfExists(oldNode, nodeToAppend)) {
 				oldNode.appendChild(nodeToAppend);
@@ -177,7 +178,7 @@ public final class DSSXMLUtils {
 		return oldNode;
 	}
 	
-	private static int getPositionToStartExtention(Node oldNode, Node indentedNode) {
+	private static int getPositionToStartExtension(Node oldNode, Node indentedNode) {
 		NodeList nodeList = oldNode.getChildNodes();
 		int startPosition = nodeList.getLength();
 		Node child = null;
@@ -263,7 +264,7 @@ public final class DSSXMLUtils {
 				Element sigChild = (Element) childNode;
 				String idAttribute = getIDIdentifier(sigChild);
 				if (noIndentObjectIds.contains(idAttribute)) {
-					Node nodeToReplace = DomUtils.getNode(indentedSignature, "//*" + DomUtils.getXPathByIdAttribute(idAttribute));
+					Node nodeToReplace = DomUtils.getNode(indentedSignature, ".//*" + DomUtils.getXPathByIdAttribute(idAttribute));
 					Node importedNode = indentedSignature.getOwnerDocument().importNode(sigChild, true);
 					indentedSignature.replaceChild(importedNode, nodeToReplace);
 				}
@@ -306,16 +307,8 @@ public final class DSSXMLUtils {
 	}
 	
 	private static Node getIndentedNode(final Node xmlNode) {
-		try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
-			Transformer transformer = DomUtils.getPrettyPrintTransformer();
-			Source source = new DOMSource(xmlNode);
-			StreamResult result = new StreamResult(bos);
-			transformer.transform(source, result);
-			byte[] bytes = bos.toByteArray();
-			return DomUtils.buildDOM(bytes).getFirstChild();
-		} catch (Exception e) {
-			throw new DSSException("Cannot pretty print the node", e);
-		}
+		PrettyPrintTransformer prettyPrintTransformer = new PrettyPrintTransformer();
+		return prettyPrintTransformer.transform(xmlNode);
 	}
 	
 	private static boolean isNodeListContains(final NodeList nodeList, final Node node) {
