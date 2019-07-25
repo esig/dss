@@ -118,8 +118,7 @@
                     <TSPRegistrationIdentifier>VATDE-202620438 </TSPRegistrationIdentifier>
                     <CountryCode>DE</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-DE5AE81F11D1B93516A65E6BBEFC07C17D9EEF01B66E1330CB0424D7AC2FD569</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-DE5AE81F11D1B93516A65E6BBEFC07C17D9EEF01B66E1330CB0424D7AC2FD569">
                             <ServiceName>D-TRUST Qualified Root CA 3 2014:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
@@ -132,8 +131,7 @@
                                 <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-DE5AE81F11D1B93516A65E6BBEFC07C17D9EEF01B66E1330CB0424D7AC2FD569</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-DE5AE81F11D1B93516A65E6BBEFC07C17D9EEF01B66E1330CB0424D7AC2FD569">
                             <ServiceName>D-TRUST Qualified Root CA 3 2014:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -147,8 +145,7 @@
                                 <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-DE5AE81F11D1B93516A65E6BBEFC07C17D9EEF01B66E1330CB0424D7AC2FD569</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-DE5AE81F11D1B93516A65E6BBEFC07C17D9EEF01B66E1330CB0424D7AC2FD569">
                             <ServiceName>D-TRUST Qualified Root CA 3 2014:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
@@ -161,8 +158,7 @@
                                 <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-DE5AE81F11D1B93516A65E6BBEFC07C17D9EEF01B66E1330CB0424D7AC2FD569</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-DE5AE81F11D1B93516A65E6BBEFC07C17D9EEF01B66E1330CB0424D7AC2FD569">
                             <ServiceName>D-TRUST Qualified CA 3 2014:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
@@ -174,8 +170,7 @@
                                 <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-DE5AE81F11D1B93516A65E6BBEFC07C17D9EEF01B66E1330CB0424D7AC2FD569</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-DE5AE81F11D1B93516A65E6BBEFC07C17D9EEF01B66E1330CB0424D7AC2FD569">
                             <ServiceName>D-TRUST Qualified CA 3 2014:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -188,8 +183,7 @@
                                 <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-DE5AE81F11D1B93516A65E6BBEFC07C17D9EEF01B66E1330CB0424D7AC2FD569</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-DE5AE81F11D1B93516A65E6BBEFC07C17D9EEF01B66E1330CB0424D7AC2FD569">
                             <ServiceName>D-TRUST Qualified CA 3 2014:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
@@ -267,8 +261,7 @@
                     <TSPRegistrationIdentifier>VATDE-202620438 </TSPRegistrationIdentifier>
                     <CountryCode>DE</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-454A164B9236CF9C380DF9959F751DED503F91BE3EC646C7042CBB0E1E17A7D5</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-454A164B9236CF9C380DF9959F751DED503F91BE3EC646C7042CBB0E1E17A7D5">
                             <ServiceName>D-TRUST qualified Signature ID card</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -338,8 +331,7 @@
                     <TSPRegistrationIdentifier>VATDE-202620438 </TSPRegistrationIdentifier>
                     <CountryCode>DE</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-454A164B9236CF9C380DF9959F751DED503F91BE3EC646C7042CBB0E1E17A7D5</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-454A164B9236CF9C380DF9959F751DED503F91BE3EC646C7042CBB0E1E17A7D5">
                             <ServiceName>D-TRUST qualified Signature ID card</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -412,8 +404,7 @@
                     <TSPRegistrationIdentifier>VATDE-202620438 </TSPRegistrationIdentifier>
                     <CountryCode>DE</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-5454A5036E584DDA98B55AE89C34BA27571302F176C3034DAE254C34363AE8F3</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-5454A5036E584DDA98B55AE89C34BA27571302F176C3034DAE254C34363AE8F3">
                             <ServiceName>D-TRUST Qualified Root CA 3 2014:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
@@ -423,8 +414,7 @@
                                 <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-5454A5036E584DDA98B55AE89C34BA27571302F176C3034DAE254C34363AE8F3</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-5454A5036E584DDA98B55AE89C34BA27571302F176C3034DAE254C34363AE8F3">
                             <ServiceName>D-TRUST Qualified Root CA 3 2014:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -435,8 +425,7 @@
                                 <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-5454A5036E584DDA98B55AE89C34BA27571302F176C3034DAE254C34363AE8F3</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-5454A5036E584DDA98B55AE89C34BA27571302F176C3034DAE254C34363AE8F3">
                             <ServiceName>D-TRUST Qualified Root CA 3 2014:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
@@ -446,8 +435,7 @@
                                 <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-5454A5036E584DDA98B55AE89C34BA27571302F176C3034DAE254C34363AE8F3</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-5454A5036E584DDA98B55AE89C34BA27571302F176C3034DAE254C34363AE8F3">
                             <ServiceName>D-TRUST Qualified CA 3 2014:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
@@ -456,8 +444,7 @@
                                 <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-5454A5036E584DDA98B55AE89C34BA27571302F176C3034DAE254C34363AE8F3</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-5454A5036E584DDA98B55AE89C34BA27571302F176C3034DAE254C34363AE8F3">
                             <ServiceName>D-TRUST Qualified CA 3 2014:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -467,8 +454,7 @@
                                 <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-5454A5036E584DDA98B55AE89C34BA27571302F176C3034DAE254C34363AE8F3</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-5454A5036E584DDA98B55AE89C34BA27571302F176C3034DAE254C34363AE8F3">
                             <ServiceName>D-TRUST Qualified CA 3 2014:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
@@ -539,8 +525,7 @@
                     <TSPRegistrationIdentifier>VATDE-202620438 </TSPRegistrationIdentifier>
                     <CountryCode>DE</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-5454A5036E584DDA98B55AE89C34BA27571302F176C3034DAE254C34363AE8F3</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-5454A5036E584DDA98B55AE89C34BA27571302F176C3034DAE254C34363AE8F3">
                             <ServiceName>D-TRUST Qualified Root CA 3 2014:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
@@ -550,8 +535,7 @@
                                 <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-5454A5036E584DDA98B55AE89C34BA27571302F176C3034DAE254C34363AE8F3</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-5454A5036E584DDA98B55AE89C34BA27571302F176C3034DAE254C34363AE8F3">
                             <ServiceName>D-TRUST Qualified Root CA 3 2014:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -562,8 +546,7 @@
                                 <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-5454A5036E584DDA98B55AE89C34BA27571302F176C3034DAE254C34363AE8F3</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-5454A5036E584DDA98B55AE89C34BA27571302F176C3034DAE254C34363AE8F3">
                             <ServiceName>D-TRUST Qualified Root CA 3 2014:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
@@ -632,8 +615,7 @@
                     <TSPRegistrationIdentifier>VATDE-202620438 </TSPRegistrationIdentifier>
                     <CountryCode>DE</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-454A164B9236CF9C380DF9959F751DED503F91BE3EC646C7042CBB0E1E17A7D5</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-454A164B9236CF9C380DF9959F751DED503F91BE3EC646C7042CBB0E1E17A7D5">
                             <ServiceName>D-TRUST qualified Signature ID card</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>

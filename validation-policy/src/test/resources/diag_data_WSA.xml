@@ -107,8 +107,7 @@
                     <TSPName>TSP-5.1 Name</TSPName>
                     <CountryCode>IT</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-754629916B5EB3642FAA544FBCB105795A67AA1BAB84763EC839EF6EAE5CE998</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-754629916B5EB3642FAA544FBCB105795A67AA1BAB84763EC839EF6EAE5CE998">
                             <ServiceName>TS-5.1.2 Name</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -181,8 +180,7 @@
                     <TSPName>TSP-5.1 Name</TSPName>
                     <CountryCode>IT</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>C-754629916B5EB3642FAA544FBCB105795A67AA1BAB84763EC839EF6EAE5CE998</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-754629916B5EB3642FAA544FBCB105795A67AA1BAB84763EC839EF6EAE5CE998">
                             <ServiceName>TS-5.1.2 Name</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
