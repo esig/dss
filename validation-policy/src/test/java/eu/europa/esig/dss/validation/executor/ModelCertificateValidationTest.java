@@ -132,7 +132,7 @@ public class ModelCertificateValidationTest extends ModelAbstractlValidation {
 		final String signerCertId = diagnosticData.getSignatures().get(0).getSigningCertificate().getCertificate().getId();
 		assertTrue(testCase.getTestData().getSignerCertificateIdentifier().equals(signerCertId));
 		
-		CertificateProcessExecutor executor = new CertificateProcessExecutor();
+		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
 		executor.setCertificateId(signerCertId);
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(policy);

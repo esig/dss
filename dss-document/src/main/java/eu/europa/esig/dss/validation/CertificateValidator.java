@@ -28,14 +28,17 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.validation.executor.CertificateProcessExecutor;
+import eu.europa.esig.dss.validation.executor.DefaultCertificateProcessExecutor;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 import eu.europa.esig.dss.x509.CertificateToken;
 
-public class CertificateValidator {
+public class CertificateValidator implements ProcessExecutorProvider<CertificateProcessExecutor> {
 
 	private Date validationTime = new Date();
 	private final CertificateToken token;
 	private CertificateVerifier certificateVerifier;
+	
+	private CertificateProcessExecutor processExecutor;
 
 	private CertificateValidator(CertificateToken token) {
 		Objects.requireNonNull(token, "The certificate is missing");
@@ -87,8 +90,16 @@ public class CertificateValidator {
 		return executor.execute();
 	}
 
+	@Override
+	public void setProcessExecutor(CertificateProcessExecutor processExecutor) {
+		this.processExecutor = processExecutor;
+	}
+
 	public CertificateProcessExecutor provideProcessExecutorInstance() {
-		return new CertificateProcessExecutor();
+		if (processExecutor == null) {
+			processExecutor = new DefaultCertificateProcessExecutor();
+		}
+		return processExecutor;
 	}
 
 }

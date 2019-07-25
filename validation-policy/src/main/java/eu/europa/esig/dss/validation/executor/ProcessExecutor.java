@@ -61,15 +61,6 @@ public interface ProcessExecutor<R extends AbstractReports> {
 	ValidationPolicy getValidationPolicy();
 
 	/**
-	 * This method allows to set the validation level that is used during the
-	 * validation process execution.
-	 *
-	 * @param validationLevel
-	 *            the validation level.
-	 */
-	void setValidationLevel(ValidationLevel validationLevel);
-
-	/**
 	 * This method allows to run the validation process.
 	 *
 	 * @return the {@code Reports}

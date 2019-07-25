@@ -42,7 +42,7 @@ public class DSS922Test {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/DSS-922/diag-data.xml"));
 		assertNotNull(diagnosticData);
 
-		CustomProcessExecutor executor = new CustomProcessExecutor();
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(loadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());

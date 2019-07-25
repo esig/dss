@@ -28,7 +28,6 @@ import java.util.List;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
-import eu.europa.esig.dss.validation.executor.CustomProcessExecutor;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -101,14 +100,7 @@ public interface DocumentValidator {
 	 * @param enableEtsiValidationReport - TRUE if the report must be generated, FALSE otherwise
 	 */
 	void setEnableEtsiValidationReport(boolean enableEtsiValidationReport);
-
-	/**
-	 * This method provides the possibility to set the specific {@code CustomProcessExecutor}
-	 *
-	 * @param processExecutor
-	 */
-	void setProcessExecutor(final CustomProcessExecutor processExecutor);
-
+	
 	/**
 	 * This method allows to set a provider for Signature policies
 	 * 

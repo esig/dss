@@ -32,7 +32,7 @@ import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
-public class CustomProcessExecutor implements ProcessExecutor<Reports> {
+public class DefaultSignatureProcessExecutor implements SignatureProcessExecutor {
 
 	private Date currentTime = new Date();
 	private ValidationLevel validationLevel = ValidationLevel.ARCHIVAL_DATA;
@@ -60,6 +60,7 @@ public class CustomProcessExecutor implements ProcessExecutor<Reports> {
 		this.validationLevel = validationLevel;
 	}
 
+	@Override
 	public void setEnableEtsiValidationReport(boolean enableEtsiValidationReport) {
 		this.enableEtsiValidationReport = enableEtsiValidationReport;
 	}

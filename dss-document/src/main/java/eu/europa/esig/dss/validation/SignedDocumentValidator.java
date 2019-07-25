@@ -44,7 +44,8 @@ import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
-import eu.europa.esig.dss.validation.executor.CustomProcessExecutor;
+import eu.europa.esig.dss.validation.executor.DefaultSignatureProcessExecutor;
+import eu.europa.esig.dss.validation.executor.SignatureProcessExecutor;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.x509.CertificatePool;
@@ -60,7 +61,7 @@ import eu.europa.esig.dss.x509.revocation.ocsp.ListOCSPSource;
  * SignatureScopeFinder as defined by
  * eu.europa.esig.dss.validation.scope.SignatureScopeFinderFactory
  */
-public abstract class SignedDocumentValidator implements DocumentValidator {
+public abstract class SignedDocumentValidator implements DocumentValidator, ProcessExecutorProvider<SignatureProcessExecutor> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SignedDocumentValidator.class);
 
@@ -69,9 +70,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * This variable can hold a specific {@code CustomProcessExecutor}
+	 * This variable can hold a specific {@code SignatureProcessExecutor}
 	 */
-	protected CustomProcessExecutor processExecutor = null;
+	protected SignatureProcessExecutor processExecutor = null;
 
 	/**
 	 * This is the pool of certificates used in the validation process. The
@@ -369,7 +370,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	protected Reports processValidationPolicy(XmlDiagnosticData diagnosticData, ValidationPolicy validationPolicy) {
-		final CustomProcessExecutor executor = provideProcessExecutorInstance();
+		final SignatureProcessExecutor executor = provideProcessExecutorInstance();
 		executor.setValidationPolicy(validationPolicy);
 		executor.setValidationLevel(validationLevel);
 		executor.setDiagnosticData(diagnosticData);
@@ -391,7 +392,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	@Override
-	public void setProcessExecutor(final CustomProcessExecutor processExecutor) {
+	public void setProcessExecutor(final SignatureProcessExecutor processExecutor) {
 		this.processExecutor = processExecutor;
 	}
 
@@ -399,11 +400,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * This method returns the process executor. If the instance of this class
 	 * is not yet instantiated then the new instance is created.
 	 *
-	 * @return {@code ProcessExecutor}
+	 * @return {@code SignatureProcessExecutor}
 	 */
-	public CustomProcessExecutor provideProcessExecutorInstance() {
+	public SignatureProcessExecutor provideProcessExecutorInstance() {
 		if (processExecutor == null) {
-			processExecutor = new CustomProcessExecutor();
+			processExecutor = new DefaultSignatureProcessExecutor();
 		}
 		return processExecutor;
 	}
