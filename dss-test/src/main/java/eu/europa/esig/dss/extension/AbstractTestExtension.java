@@ -45,6 +45,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.signature.UnmarshallingTester;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -81,6 +82,7 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 		Reports reports = validator.validateDocument();
 
 		// reports.print();
+		UnmarshallingTester.unmarshallXmlReports(reports);
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		verifyDiagnosticData(diagnosticData);
@@ -107,6 +109,7 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 		reports = validator.validateDocument();
 
 		// reports.print();
+		UnmarshallingTester.unmarshallXmlReports(reports);
 
 		diagnosticData = reports.getDiagnosticData();
 		verifyDiagnosticData(diagnosticData);
