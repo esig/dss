@@ -31,6 +31,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.FormatCheck;
@@ -40,7 +41,7 @@ public class FormatCheckTest {
 	@Test
 	public void validFormat() throws Exception {
 		XmlSignature sig = new XmlSignature();
-		sig.setSignatureFormat("CAdES_BASELINE_B");
+		sig.setSignatureFormat(SignatureLevel.CAdES_BASELINE_B);
 
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
 		constraint.setLevel(Level.FAIL);
@@ -58,7 +59,7 @@ public class FormatCheckTest {
 	@Test
 	public void invalidFormat() throws Exception {
 		XmlSignature sig = new XmlSignature();
-		sig.setSignatureFormat("Invalid_format");
+		sig.setSignatureFormat(SignatureLevel.UNKNOWN);
 
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
 		constraint.setLevel(Level.FAIL);

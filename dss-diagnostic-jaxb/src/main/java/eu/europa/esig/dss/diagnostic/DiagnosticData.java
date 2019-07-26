@@ -42,6 +42,7 @@ import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.OrphanTokenType;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.RevocationType;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 
 /**
@@ -117,7 +118,7 @@ public class DiagnosticData {
 	 *
 	 * @return The first signature format
 	 */
-	public String getFirstSignatureFormat() {
+	public SignatureLevel getFirstSignatureFormat() {
 		SignatureWrapper signature = getFirstSignatureNullSafe();
 		return signature.getSignatureFormat();
 	}
@@ -129,7 +130,7 @@ public class DiagnosticData {
 	 *            The identifier of the signature, for which the format is sought.
 	 * @return The signature format
 	 */
-	public String getSignatureFormat(final String signatureId) {
+	public SignatureLevel getSignatureFormat(final String signatureId) {
 		SignatureWrapper signature = getSignatureByIdNullSafe(signatureId);
 		return signature.getSignatureFormat();
 	}

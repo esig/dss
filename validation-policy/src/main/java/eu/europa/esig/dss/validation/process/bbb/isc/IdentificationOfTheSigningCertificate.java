@@ -30,6 +30,7 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
@@ -85,7 +86,7 @@ public class IdentificationOfTheSigningCertificate extends Chain<XmlISC> {
 
 			// PKCS7 signatures have not these information
 			SignatureWrapper signature = (SignatureWrapper) token;
-			if (signature.getFormat() != null && signature.getFormat().contains("PKCS7")) {
+			if (signature.getSignatureFormat() != null && SignatureForm.PKCS7.equals(signature.getSignatureFormat().getSignatureForm())) {
 				return;
 			}
 

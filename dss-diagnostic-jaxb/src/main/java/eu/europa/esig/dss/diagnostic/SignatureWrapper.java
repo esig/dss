@@ -58,6 +58,7 @@ import eu.europa.esig.dss.enumerations.EndorsementType;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
 
@@ -217,7 +218,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return signature.getSignatureProductionPlace().getStateOrProvince();
 	}
 
-	public String getSignatureFormat() {
+	public SignatureLevel getSignatureFormat() {
 		return signature.getSignatureFormat();
 	}
 
@@ -458,10 +459,6 @@ public class SignatureWrapper extends AbstractTokenProxy {
 			return policy.isStatus() != null && policy.isStatus();
 		}
 		return false;
-	}
-
-	public String getFormat() {
-		return signature.getSignatureFormat();
 	}
 	
 	public String getSignatureFieldName() {

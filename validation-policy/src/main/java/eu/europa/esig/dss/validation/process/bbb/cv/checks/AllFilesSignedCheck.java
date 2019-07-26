@@ -29,6 +29,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlManifestFile;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
@@ -64,7 +65,7 @@ public class AllFilesSignedCheck extends ChainItem<XmlCV> {
 			}
 
 			// XAdES -> check signature scope
-			if (signature.getFormat().startsWith("XAdES")) {
+			if (SignatureForm.XAdES.equals(signature.getSignatureFormat().getSignatureForm())) {
 				List<String> coveredFilesFromScope = getCoveredFilesFromScope();
 				return sameContent(coveredFilesFromScope, contentFiles);
 			}

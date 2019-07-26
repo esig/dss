@@ -46,7 +46,7 @@ public class LevelBWithCertificateValue {
 		List<String> signatureIdList = simpleReport.getSignatureIdList();
 		Assert.assertEquals(1, signatureIdList.size());
 
-		String signatureFormat = simpleReport.getSignatureFormat(signatureIdList.get(0));
-		Assert.assertEquals(SignatureLevel.XAdES_BASELINE_B, SignatureLevel.valueByName(signatureFormat));
+		SignatureLevel signatureFormat = simpleReport.getSignatureFormat(signatureIdList.get(0));
+		Assert.assertEquals(SignatureLevel.XAdES_BASELINE_B, signatureFormat);
 	}
 }

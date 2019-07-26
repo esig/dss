@@ -102,7 +102,6 @@ import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
-import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.tsl.Condition;
@@ -533,7 +532,7 @@ public class DiagnosticDataBuilder {
 		xmlSignature.setDAIdentifier(signature.getDAIdentifier());
 		xmlSignature.setDateTime(signature.getSigningTime());
 		xmlSignature.setStructuralValidation(getXmlStructuralValidation(signature));
-		xmlSignature.setSignatureFormat(getXmlSignatureFormat(signature.getDataFoundUpToLevel()));
+		xmlSignature.setSignatureFormat(signature.getDataFoundUpToLevel());
 
 		xmlSignature.setSignatureProductionPlace(getXmlSignatureProductionPlace(signature.getSignatureProductionPlace()));
 		xmlSignature.setCommitmentTypeIndication(getXmlCommitmentTypeIndication(signature.getCommitmentTypeIndication()));
@@ -829,10 +828,6 @@ public class DiagnosticDataBuilder {
 			return commitmentTypeIndication.getIdentifiers();
 		}
 		return Collections.emptyList();
-	}
-
-	private String getXmlSignatureFormat(SignatureLevel signatureLevel) {
-		return signatureLevel == null ? "UNKNOWN" : signatureLevel.toString();
 	}
 
 	private XmlDistinguishedName getXmlDistinguishedName(final String x500PrincipalFormat, final X500Principal X500PrincipalName) {

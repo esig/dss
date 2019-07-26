@@ -591,7 +591,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 	}
 
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-		assertEquals(getSignatureParameters().getSignatureLevel().toString(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+		assertEquals(getSignatureParameters().getSignatureLevel(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 
 	protected void checkBLevelValid(DiagnosticData diagnosticData) {

@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.List;
 
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignature;
@@ -190,12 +191,12 @@ public class SimpleReport {
 	 *            the signature id
 	 * @return the linked signature format
 	 */
-	public String getSignatureFormat(final String signatureId) {
+	public SignatureLevel getSignatureFormat(final String signatureId) {
 		XmlSignature xmlSignature = getSignatureById(signatureId);
 		if (xmlSignature != null) {
 			return xmlSignature.getSignatureFormat();
 		}
-		return "";
+		return null;
 	}
 
 	/**

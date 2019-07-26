@@ -51,7 +51,7 @@
 					<xs:attribute type="xs:string" name="Id" use="required" />
 					<xs:attribute type="xs:boolean" name="CounterSignature" use="optional" />
 					<xs:attribute type="xs:string" name="ParentId" use="optional" />
-					<xs:attribute type="xs:string" name="SignatureFormat" use="required" />
+					<xs:attribute type="SignatureFormat" name="SignatureFormat" use="required" />
 				</xs:complexType>
 			</xs:element>
 		</xs:sequence>
@@ -129,6 +129,38 @@
 			<xs:enumeration value="Not AdES" />
 			
 			<xs:enumeration value="N/A" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="SignatureFormat" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="XML_NOT_ETSI" />
+			<xs:enumeration value="XAdES_C" />
+			<xs:enumeration value="XAdES_X" />
+			<xs:enumeration value="XAdES_XL" />
+			<xs:enumeration value="XAdES_A" />
+			<xs:enumeration value="XAdES_BASELINE_LTA" />
+			<xs:enumeration value="XAdES_BASELINE_LT" />
+			<xs:enumeration value="XAdES_BASELINE_T" />
+			<xs:enumeration value="XAdES_BASELINE_B" />
+			<xs:enumeration value="CMS_NOT_ETSI" />
+			<xs:enumeration value="CAdES_BASELINE_LTA" />
+			<xs:enumeration value="CAdES_BASELINE_LT" />
+			<xs:enumeration value="CAdES_BASELINE_T" />
+			<xs:enumeration value="CAdES_BASELINE_B" />
+			<xs:enumeration value="CAdES_101733_C" />
+			<xs:enumeration value="CAdES_101733_X" />
+			<xs:enumeration value="CAdES_101733_A" />
+			<xs:enumeration value="PDF_NOT_ETSI" />
+			<xs:enumeration value="PAdES_BASELINE_LTA" />
+			<xs:enumeration value="PAdES_BASELINE_LT" />
+			<xs:enumeration value="PAdES_BASELINE_T" />
+			<xs:enumeration value="PAdES_BASELINE_B" />
+			<xs:enumeration value="PKCS7_B" />
+			<xs:enumeration value="PKCS7_T" />
+			<xs:enumeration value="PKCS7_LT" />
+			<xs:enumeration value="PKCS7_LTA" />
+			<xs:enumeration value="UNKNOWN" />
 		</xs:restriction>
 	</xs:simpleType>
 	

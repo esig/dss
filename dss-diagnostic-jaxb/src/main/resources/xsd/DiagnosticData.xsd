@@ -117,7 +117,7 @@
 					<xs:element name="SignatureFilename" type="xs:string" />
 					<xs:element name="ErrorMessage" type="xs:string" minOccurs="0" />
 					<xs:element name="DateTime" type="xs:dateTime" minOccurs="0" />
-					<xs:element name="SignatureFormat" type="xs:string" />
+					<xs:element name="SignatureFormat" type="SignatureFormat" />
 		
 					<xs:element name="StructuralValidation"	type="StructuralValidation" minOccurs="0" />
 					
@@ -405,6 +405,38 @@
 		</xs:sequence>
 		<xs:attribute name="SignerData" type="xs:IDREF" use="required" />
 	</xs:complexType>
+	
+	<xs:simpleType name="SignatureFormat" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="XML_NOT_ETSI" />
+			<xs:enumeration value="XAdES_C" />
+			<xs:enumeration value="XAdES_X" />
+			<xs:enumeration value="XAdES_XL" />
+			<xs:enumeration value="XAdES_A" />
+			<xs:enumeration value="XAdES_BASELINE_LTA" />
+			<xs:enumeration value="XAdES_BASELINE_LT" />
+			<xs:enumeration value="XAdES_BASELINE_T" />
+			<xs:enumeration value="XAdES_BASELINE_B" />
+			<xs:enumeration value="CMS_NOT_ETSI" />
+			<xs:enumeration value="CAdES_BASELINE_LTA" />
+			<xs:enumeration value="CAdES_BASELINE_LT" />
+			<xs:enumeration value="CAdES_BASELINE_T" />
+			<xs:enumeration value="CAdES_BASELINE_B" />
+			<xs:enumeration value="CAdES_101733_C" />
+			<xs:enumeration value="CAdES_101733_X" />
+			<xs:enumeration value="CAdES_101733_A" />
+			<xs:enumeration value="PDF_NOT_ETSI" />
+			<xs:enumeration value="PAdES_BASELINE_LTA" />
+			<xs:enumeration value="PAdES_BASELINE_LT" />
+			<xs:enumeration value="PAdES_BASELINE_T" />
+			<xs:enumeration value="PAdES_BASELINE_B" />
+			<xs:enumeration value="PKCS7_B" />
+			<xs:enumeration value="PKCS7_T" />
+			<xs:enumeration value="PKCS7_LT" />
+			<xs:enumeration value="PKCS7_LTA" />
+			<xs:enumeration value="UNKNOWN" />
+		</xs:restriction>
+	</xs:simpleType>
 	
 	<xs:simpleType name="ScopeType" final="restriction">
 		<xs:restriction base="xs:string">
