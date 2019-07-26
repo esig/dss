@@ -144,8 +144,12 @@ public abstract class SignedDocumentValidator implements DocumentValidator, Proc
 	public static SignedDocumentValidator fromDocument(final DSSDocument dssDocument) {
 		ServiceLoader<DocumentValidatorFactory> serviceLoaders = ServiceLoader.load(DocumentValidatorFactory.class);
 		for (DocumentValidatorFactory factory : serviceLoaders) {
-			if (factory.isSupported(dssDocument)) {
-				return factory.create(dssDocument);
+			try {
+				if (factory.isSupported(dssDocument)) {
+					return factory.create(dssDocument);
+				}
+			} catch (Exception e) {
+				LOG.error(String.format("Unable to create a DocumentValidator with the factory '%s'", factory.getClass().getSimpleName()), e);
 			}
 		}
 		throw new DSSException("Document format not recognized/handled");
