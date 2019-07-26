@@ -303,19 +303,25 @@ public final class ASiCUtils {
 				// skip the entry and continue until find the next valid entry or end of the
 				// stream
 				counter++;
+				closeEntry(zis);
 			}
 		}
 		throw new DSSException("Unable to retrieve a valid ZipEntry (" + MAX_MALFORMED_FILES + " tries)");
 	}
 
-    /**
-     * Returns file from the given ZipInputStream
-     * @param filepath {@link String} filepath where the file is located
-     * @param zis {@link ZipInputStream} of the file
-     * @param containerSize - long byte size of the parent container
-     * @return {@link DSSDocument} created from the given {@code zis}
-     * @throws IOException in case of ZipInputStream read error
-     */
+	/**
+	 * Returns file from the given ZipInputStream
+	 * 
+	 * @param filepath
+	 *                      {@link String} filepath where the file is located
+	 * @param zis
+	 *                      {@link ZipInputStream} of the file
+	 * @param containerSize
+	 *                      - long byte size of the parent container
+	 * @return {@link DSSDocument} created from the given {@code zis}
+	 * @throws IOException
+	 *                     in case of ZipInputStream read error
+	 */
 	public static DSSDocument getCurrentDocument(String filepath, ZipInputStream zis, long containerSize) throws IOException {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 		    secureCopy(zis, baos, containerSize);
@@ -324,4 +330,19 @@ public final class ASiCUtils {
 		}
 	}
 	
+	/**
+	 * This method closes the current Zip Entry. If an error occurs, a
+	 * {@link DSSException} is thrown.
+	 * 
+	 * @param zis
+	 *            the {@link ZipInputStream}
+	 */
+	public static void closeEntry(ZipInputStream zis) {
+		try {
+			zis.closeEntry();
+		} catch (IOException e) {
+			throw new DSSException("Unable to close entry", e);
+		}
+	}
+
 }
