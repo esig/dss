@@ -5,7 +5,10 @@
 		<artifactId>sd-dss</artifactId>
 		<version>5.5-SNAPSHOT</version>
 	</parent>
+	
 	<artifactId>dss-enumerations</artifactId>
+	<name>DSS Enumerations</name>
+	<description>DSS Enumerations contains all shared enumerations</description>
 
 	<dependencies>
 		<dependency>

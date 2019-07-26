@@ -8,7 +8,7 @@
   </parent>
   
   <artifactId>dss-signature-rest-client</artifactId>
-  <name>DSS REST Client</name>
+  <name>DSS Signature REST Client</name>
   <description>DSS REST Client contains the REST interfaces</description>
   
   <dependencies>

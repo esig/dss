@@ -10,6 +10,8 @@
 	</parent>
 
 	<artifactId>specs-trusted-list</artifactId>
+	<name>JAXB ETSI Trusted List Model</name>
+	<description>Generated sources from the ETSI Trusted List XML Schemas (ETSI TS 119 612).</description>
 
 	<dependencies>
 		<dependency>

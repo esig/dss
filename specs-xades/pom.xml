@@ -10,6 +10,8 @@
 	</parent>
 
 	<artifactId>specs-xades</artifactId>
+	<name>JAXB ETSI XAdES Model</name>
+	<description>Generated sources from the ETSI XAdES XML Schemas.</description>
 
 	<dependencies>
 		<dependency>

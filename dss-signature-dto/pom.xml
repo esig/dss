@@ -7,7 +7,7 @@
   </parent>
   
   <artifactId>dss-signature-dto</artifactId>
-  <name>DSS Remote Services</name>
+  <name>DSS Signature DTO</name>
   <description>DSS Signature DTO contains objects to be transferred.</description>
   
   <dependencies>

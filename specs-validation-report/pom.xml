@@ -10,6 +10,8 @@
 	</parent>
 
 	<artifactId>specs-validation-report</artifactId>
+	<name>JAXB ETSI Validation Report Model</name>
+	<description>Generated sources from the ETSI Validation Report XML Schema (ETSI TS 119 102-2).</description>
 
 	<dependencies>
 		<dependency>

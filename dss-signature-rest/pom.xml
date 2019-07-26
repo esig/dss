@@ -7,7 +7,7 @@
 	</parent>
 	
 	<artifactId>dss-signature-rest</artifactId>
-	<name>DSS REST</name>
+	<name>DSS Signature REST Service</name>
 	<description>DSS REST contains the implementation of the REST service (defined in dss-rest-client)</description>
 
 	<dependencies>

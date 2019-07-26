@@ -8,7 +8,7 @@
 	</parent>
 
 	<artifactId>dss-signature-soap-client</artifactId>
-	<name>DSS Soap Client</name>
+	<name>DSS Signature Soap Client</name>
 	<description>DSS Soap Client contains the SOAP interfaces</description>
 
 	<dependencies>

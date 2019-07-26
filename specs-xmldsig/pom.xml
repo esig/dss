@@ -10,6 +10,8 @@
 	</parent>
 	
 	<artifactId>specs-xmldsig</artifactId>
+	<name>JAXB XMLDsig Model</name>
+	<description>Generated sources from the xmldsig XSD</description>
 	
 	<dependencies>
 		<dependency>

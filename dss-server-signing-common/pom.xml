@@ -5,6 +5,7 @@
 		<artifactId>sd-dss</artifactId>
 		<version>5.5-SNAPSHOT</version>
 	</parent>
+	
 	<artifactId>dss-server-signing-common</artifactId>
 	<name>DSS Server Signing Common</name>
 
