@@ -24,6 +24,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -46,11 +47,6 @@ public final class ASiCUtils {
 	public static final String MIME_TYPE_COMMENT = MIME_TYPE + "=";
 	public static final String META_INF_FOLDER = "META-INF/";
 	public static final String PACKAGE_ZIP = "package.zip";
-	
-	/**
-	 * Defines the maximal amount of files that can be inside a ZIP container
-	 */
-	private static final int MAXIMAL_ALLOWED_FILE_AMOUNT = 1024;
 
     /**
      * Minimum file size to be analized on zip bombing
@@ -60,7 +56,7 @@ public final class ASiCUtils {
     /**
      * Maximum compression ratio.
      */
-    private static final long ZIP_ENTRY_RATIO = 100;
+	private static final long ZIP_ENTRY_RATIO = 50;
 	
     /**
 	 * Max iteration over the zip entries
@@ -117,16 +113,11 @@ public final class ASiCUtils {
 	}
 
 	public static boolean isArchiveContainsCorrectSignatureFileWithExtension(DSSDocument toSignDocument, String extension) {
-		try (InputStream is = toSignDocument.openStream(); ZipInputStream zis = new ZipInputStream(is)) {
-			ZipEntry entry;
-			while ((entry = getNextValidEntry(zis)) != null) {
-				String entryName = entry.getName();
-				if (isSignature(entryName) && entryName.endsWith(extension)) {
-					return true;
-				}
+		List<String> filenames = getFileNames(toSignDocument);
+		for (String filename : filenames) {
+			if (isSignature(filename) && filename.endsWith(extension)) {
+				return true;
 			}
-		} catch (IOException e) {
-			throw new DSSException("Unable to analyze the archive content", e);
 		}
 		return false;
 	}
@@ -260,7 +251,7 @@ public final class ASiCUtils {
 	 * @param containerSize - zip container size
 	 */
 	public static void secureCopy(InputStream is, OutputStream os, long containerSize) throws IOException {
-		byte[] data = new byte[8192];
+		byte[] data = new byte[2048];
 		int nRead;
 	    int byteCounter = 0;
 	    long allowedSize = containerSize * ZIP_ENTRY_RATIO;
@@ -271,6 +262,26 @@ public final class ASiCUtils {
 	    	}
 	    	os.write(data, 0, nRead);
 	    }
+	}
+
+	/**
+	 * Returns the file names for the given archive
+	 * 
+	 * @param archive
+	 *                the archive to be analyzed
+	 * @return a list of filename
+	 */
+	public static List<String> getFileNames(DSSDocument archive) {
+		List<String> filenames = new ArrayList<String>();
+		try (InputStream is = archive.openStream(); ZipInputStream zis = new ZipInputStream(is)) {
+			ZipEntry entry;
+			while ((entry = getNextValidEntry(zis)) != null) {
+				filenames.add(entry.getName());
+			}
+		} catch (IOException e) {
+			throw new DSSException("Unable to retrieve filenames", e);
+		}
+		return filenames;
 	}
 
 	/**
@@ -313,15 +324,4 @@ public final class ASiCUtils {
 		}
 	}
 	
-	/**
-	 * Validates if the given {@code filesAmount} is not bigger than the predefined threshold
-	 * If FALSE throws a {@link DSSException}
-	 * @param filesAmount - amount of files extracted from an archive
-	 */
-	public static void validateAllowedFilesAmount(int filesAmount) {
-		if (filesAmount > MAXIMAL_ALLOWED_FILE_AMOUNT) {
-			throw new DSSException("Too many files detected. Cannot extract ASiC content");
-		}
-	}
-
 }

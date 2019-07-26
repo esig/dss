@@ -22,6 +22,7 @@ package eu.europa.esig.dss.asic;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -29,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -38,6 +40,11 @@ import eu.europa.esig.dss.utils.Utils;
 public abstract class AbstractASiCContainerExtractor {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractASiCContainerExtractor.class);
+
+	/**
+	 * Defines the maximal amount of files that can be inside a ZIP container
+	 */
+	private static final int MAXIMAL_ALLOWED_FILE_AMOUNT = 1024;
 
 	private final DSSDocument asicContainer;
 
@@ -49,12 +56,14 @@ public abstract class AbstractASiCContainerExtractor {
 		ASiCExtractResult result = new ASiCExtractResult();
 		
 		long containerSize = DSSUtils.getFileByteSize(asicContainer);
+		List<String> fileNames = ASiCUtils.getFileNames(asicContainer);
+		if (fileNames.size() > MAXIMAL_ALLOWED_FILE_AMOUNT) {
+			throw new DSSException("Too many files detected. Cannot extract ASiC content");
+		}
 
 		try (InputStream is = asicContainer.openStream(); ZipInputStream asicInputStream = new ZipInputStream(is)) {	
-			int fileAmountCounter = 0;		
 			ZipEntry entry;
 			while ((entry = ASiCUtils.getNextValidEntry(asicInputStream)) != null) {
-				ASiCUtils.validateAllowedFilesAmount(++fileAmountCounter);
 				String entryName = entry.getName();
 				if (isMetaInfFolder(entryName)) {
 					if (isAllowedSignature(entryName)) {
