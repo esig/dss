@@ -9,7 +9,7 @@ import eu.europa.esig.dss.ws.cert.validation.soap.client.WSCertificateReportsDTO
 @SuppressWarnings("serial")
 public class SoapCertificateValidationServiceImpl implements SoapCertificateValidationService {
 	
-	public RemoteCertificateValidationService validationService;
+	private RemoteCertificateValidationService validationService;
 	
 	public void setValidationService(RemoteCertificateValidationService validationService) {
 		this.validationService = validationService;

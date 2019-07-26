@@ -8,7 +8,7 @@ import eu.europa.esig.dss.ws.cert.validation.rest.client.RestCertificateValidati
 @SuppressWarnings("serial")
 public class RestCertificateValidationServiceImpl implements RestCertificateValidationService {
 	
-	public RemoteCertificateValidationService validationService;
+	private RemoteCertificateValidationService validationService;
 	
 	public void setValidationService(RemoteCertificateValidationService validationService) {
 		this.validationService = validationService;
