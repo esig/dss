@@ -39,5 +39,11 @@
     	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
   		<artifactId>dss-asic-xades</artifactId>
   	</dependency>
+  	
+	<dependency>
+		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+		<artifactId>dss-test</artifactId>
+		<scope>test</scope>
+	</dependency>
   </dependencies>
 </project>

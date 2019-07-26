@@ -46,7 +46,7 @@ import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteTimestampParameters;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
-public class AbstractRemoteSignatureServiceImpl {
+public abstract class AbstractRemoteSignatureServiceImpl {
 
 	protected AbstractSignatureParameters getASiCSignatureParameters(ASiCContainerType asicContainerType,
 			SignatureForm signatureForm) {
