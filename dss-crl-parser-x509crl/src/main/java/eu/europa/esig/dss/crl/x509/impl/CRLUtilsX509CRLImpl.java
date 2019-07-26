@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.crl;
+package eu.europa.esig.dss.crl.x509.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -41,6 +41,9 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.CRLBinary;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.crl.AbstractCRLUtils;
+import eu.europa.esig.dss.crl.CRLValidity;
+import eu.europa.esig.dss.crl.ICRLUtils;
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.x509.CertificateToken;

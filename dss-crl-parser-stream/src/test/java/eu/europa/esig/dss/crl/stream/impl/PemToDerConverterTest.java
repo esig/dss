@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.crl;
+package eu.europa.esig.dss.crl.stream.impl;
 
 import static org.junit.Assert.assertTrue;
 
@@ -30,6 +30,7 @@ import org.bouncycastle.util.io.Streams;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.crl.AbstractTestCRLUtils;
 
 public class PemToDerConverterTest {
 

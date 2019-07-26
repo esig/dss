@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.crl;
+package eu.europa.esig.dss.crl.stream.impl;
 
 import java.io.FilterInputStream;
 import java.io.IOException;
