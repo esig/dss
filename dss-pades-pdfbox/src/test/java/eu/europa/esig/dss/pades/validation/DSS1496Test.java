@@ -72,7 +72,7 @@ public class DSS1496Test extends PKIFactoryAccess {
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		// Not LTA, missing certs,...
-		assertEquals(SignatureLevel.PAdES_BASELINE_T.toString(), signatureWrapper.getSignatureFormat());
+		assertEquals(SignatureLevel.PAdES_BASELINE_T, signatureWrapper.getSignatureFormat());
 	}
 
 	@Test
@@ -88,7 +88,7 @@ public class DSS1496Test extends PKIFactoryAccess {
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		assertEquals(SignatureLevel.PAdES_BASELINE_LT.toString(), signatureWrapper.getSignatureFormat());
+		assertEquals(SignatureLevel.PAdES_BASELINE_LT, signatureWrapper.getSignatureFormat());
 
 		List<TimestampWrapper> timestampList = signatureWrapper.getTimestampList();
 		assertEquals(1, timestampList.size());

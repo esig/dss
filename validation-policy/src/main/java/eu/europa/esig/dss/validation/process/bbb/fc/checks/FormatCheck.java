@@ -40,7 +40,7 @@ public class FormatCheck extends AbstractMultiValuesCheckItem<XmlFC> {
 
 	@Override
 	protected boolean process() {
-		return processValueCheck(signature.getSignatureFormat().name());
+		return processValueCheck(signature.getSignatureFormat().toString());
 	}
 
 	@Override

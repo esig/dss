@@ -6,7 +6,7 @@
         <Signature Id="id-2056753e8b67ab9c96a6fe80ec9f619f8e9b4505b66b078c7a2b6e151edc2bbb">
             <SignatureFilename>testdocument(1).pdf</SignatureFilename>
             <DateTime>2017-10-27T11:54:56</DateTime>
-            <SignatureFormat>PAdES-BASE-LTA</SignatureFormat>
+            <SignatureFormat>PAdES-BASELINE-LTA</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>
             </StructuralValidation>

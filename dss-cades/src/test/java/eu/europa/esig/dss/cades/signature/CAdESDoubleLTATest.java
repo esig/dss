@@ -77,7 +77,7 @@ public class CAdESDoubleLTATest extends PKIFactoryAccess {
 
 		DiagnosticData diagnosticData1 = reports.getDiagnosticData();
 
-		assertEquals(SignatureLevel.CAdES_BASELINE_LTA.toString(), diagnosticData1.getSignatureFormat(diagnosticData1.getFirstSignatureId()));
+		assertEquals(SignatureLevel.CAdES_BASELINE_LTA, diagnosticData1.getSignatureFormat(diagnosticData1.getFirstSignatureId()));
 
 		checkAllRevocationOnce(diagnosticData1);
 

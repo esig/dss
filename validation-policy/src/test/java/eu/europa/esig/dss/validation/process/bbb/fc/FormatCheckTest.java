@@ -45,7 +45,7 @@ public class FormatCheckTest {
 
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
 		constraint.setLevel(Level.FAIL);
-		constraint.getId().add("CAdES_BASELINE_B");
+		constraint.getId().add("CAdES-BASELINE-B");
 
 		XmlFC result = new XmlFC();
 		FormatCheck fc = new FormatCheck(result, new SignatureWrapper(sig), constraint);
@@ -57,13 +57,13 @@ public class FormatCheckTest {
 	}
 
 	@Test
-	public void invalidFormat() throws Exception {
+	public void unknownFormat() throws Exception {
 		XmlSignature sig = new XmlSignature();
 		sig.setSignatureFormat(SignatureLevel.UNKNOWN);
 
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
 		constraint.setLevel(Level.FAIL);
-		constraint.getId().add("CAdES_BASELINE_B");
+		constraint.getId().add("CAdES-BASELINE-B");
 
 		XmlFC result = new XmlFC();
 		FormatCheck fc = new FormatCheck(result, new SignatureWrapper(sig), constraint);

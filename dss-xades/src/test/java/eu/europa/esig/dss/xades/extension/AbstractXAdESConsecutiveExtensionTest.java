@@ -105,7 +105,7 @@ public abstract class AbstractXAdESConsecutiveExtensionTest<SP extends AbstractS
 		DetailedReport detailedReport = reports.getDetailedReport();
 		assertNotNull(detailedReport);
 		validateDetailedReport(detailedReport);
-		assertEquals(signatureLevel.toString(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+		assertEquals(signatureLevel, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 	
 	private void checkTimestamps(DiagnosticData diagnosticData) {

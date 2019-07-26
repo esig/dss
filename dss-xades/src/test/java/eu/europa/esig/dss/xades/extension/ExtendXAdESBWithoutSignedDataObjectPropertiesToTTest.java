@@ -81,7 +81,7 @@ public class ExtendXAdESBWithoutSignedDataObjectPropertiesToTTest extends PKIFac
 		List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(signatureId);
 		assertEquals(1, retrievedOriginalDocuments.size());
 		
-		Assert.assertEquals(SignatureLevel.XAdES_BASELINE_T.toString(), diagnosticData.getSignatureFormat(simpleReport.getFirstSignatureId()));
+		Assert.assertEquals(SignatureLevel.XAdES_BASELINE_T, diagnosticData.getSignatureFormat(simpleReport.getFirstSignatureId()));
 	}
 
 	@Override

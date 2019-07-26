@@ -55,7 +55,7 @@ public class DSS1443 extends PKIFactoryAccess {
 		Reports reports = validator.validateDocument();
 
 		SimpleReport simpleReport = reports.getSimpleReport();
-		assertEquals(SignatureLevel.PAdES_BASELINE_LTA.toString(), simpleReport.getSignatureFormat(simpleReport.getFirstSignatureId()));
+		assertEquals(SignatureLevel.PAdES_BASELINE_LTA, simpleReport.getSignatureFormat(simpleReport.getFirstSignatureId()));
 
 		PAdESService service = new PAdESService(getCertificateVerifier());
 		service.setTspSource(getCompositeTsa());

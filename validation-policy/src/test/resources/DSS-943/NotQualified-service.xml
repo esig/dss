@@ -6,7 +6,7 @@
 	    <Signature Id="id-5f10afd0f54237a13101adc397e64fd1">
 	    	<SignatureFilename>firmaok.zip.p7m</SignatureFilename>
 	        <DateTime>2016-06-10T16:50:58</DateTime>
-	        <SignatureFormat>CAdES_BASELINE_B</SignatureFormat>
+	        <SignatureFormat>CAdES-BASELINE-B</SignatureFormat>
 	        <DigestMatchers>
                 <DigestMatcher type="MESSAGE_DIGEST">
                     <DigestMethod>SHA256</DigestMethod>

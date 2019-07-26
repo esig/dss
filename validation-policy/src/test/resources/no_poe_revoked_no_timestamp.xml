@@ -6,7 +6,7 @@
 	    <Signature Id="xmldsig-22bfe6ce-8d82-496a-9e97-e0f8e68403c2">
 	    	<SignatureFilename>firmaok.zip.p7m</SignatureFilename>
 	        <DateTime>2014-10-14T14:49:13</DateTime>
-	        <SignatureFormat>XAdES_BASELINE_B</SignatureFormat>
+	        <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
 	        <DigestMatchers>
                 <DigestMatcher type="REFERENCE" name="#test">
                     <DigestMethod>SHA256</DigestMethod>

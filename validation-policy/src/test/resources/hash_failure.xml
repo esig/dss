@@ -6,7 +6,7 @@
 	    <Signature Id="Signature-1462660098">
 	    	<SignatureFilename>firmaok.zip.p7m</SignatureFilename>
 	        <DateTime>2016-04-19T11:50:47</DateTime>
-	        <SignatureFormat>XAdES_BASELINE_B</SignatureFormat>
+	        <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
 	        <DigestMatchers>
                 <DigestMatcher type="REFERENCE" name="ref1">
                     <DigestMethod>SHA256</DigestMethod>
@@ -57,7 +57,7 @@
 	    <Signature Id="Signature-1758282779">
 	    	<SignatureFilename>firmaok.zip.p7m</SignatureFilename>
 	        <DateTime>2016-04-19T11:53:08</DateTime>
-	        <SignatureFormat>XAdES_BASELINE_B</SignatureFormat>
+	        <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
 	        <DigestMatchers>
                 <DigestMatcher type="REFERENCE" name="ref1">
                     <DigestMethod>SHA256</DigestMethod>

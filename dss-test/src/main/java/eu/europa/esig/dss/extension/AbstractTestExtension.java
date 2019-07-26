@@ -264,11 +264,11 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 	protected abstract SP getExtensionParameters();
 
 	private void checkOriginalLevel(DiagnosticData diagnosticData) {
-		assertEquals(getOriginalSignatureLevel().toString(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+		assertEquals(getOriginalSignatureLevel(), diagnosticData.getFirstSignatureFormat());
 	}
 
 	private void checkFinalLevel(DiagnosticData diagnosticData) {
-		assertEquals(getFinalSignatureLevel().toString(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+		assertEquals(getFinalSignatureLevel(), diagnosticData.getFirstSignatureFormat());
 	}
 
 	private void checkBLevelValid(DiagnosticData diagnosticData) {

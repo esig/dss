@@ -9,14 +9,14 @@ public class SignatureFormatParser {
 
 	public static SignatureLevel parse(String v) {
 		if (v != null) {
-			return SignatureLevel.valueOf(v);
+			return SignatureLevel.valueByName(v);
 		}
 		return null;
 	}
 
 	public static String print(SignatureLevel v) {
 		if (v != null) {
-			return v.name();
+			return v.toString();
 		}
 		return null;
 	}

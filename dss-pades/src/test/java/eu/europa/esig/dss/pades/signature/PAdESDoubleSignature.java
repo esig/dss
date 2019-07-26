@@ -80,7 +80,7 @@ public class PAdESDoubleSignature extends PKIFactoryAccess {
 		Reports reports1 = validator.validateDocument();
 
 		DiagnosticData diagnosticData1 = reports1.getDiagnosticData();
-		assertEquals(SignatureLevel.PAdES_BASELINE_LTA.toString(), diagnosticData1.getSignatureFormat(diagnosticData1.getFirstSignatureId()));
+		assertEquals(SignatureLevel.PAdES_BASELINE_LTA, diagnosticData1.getSignatureFormat(diagnosticData1.getFirstSignatureId()));
 
 		params = new PAdESSignatureParameters();
 		params.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);

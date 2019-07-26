@@ -48,7 +48,7 @@ public class PdfPkcs7 {
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		assertEquals(SignatureLevel.PKCS7_T.toString(), signatureById.getSignatureFormat());
+		assertEquals(SignatureLevel.PKCS7_T, signatureById.getSignatureFormat());
 
 		// no signing certificate attribute
 		assertEquals(0, signatureById.getFoundCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());

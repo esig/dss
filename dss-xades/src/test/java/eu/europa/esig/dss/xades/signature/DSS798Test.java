@@ -106,7 +106,7 @@ public class DSS798Test extends PKIFactoryAccess {
 		Reports reports = validator.validateDocument();
 
 		SimpleReport simpleReport = reports.getSimpleReport();
-		assertEquals(SignatureLevel.XAdES_BASELINE_T.toString(), simpleReport.getSignatureFormat(simpleReport.getFirstSignatureId()));
+		assertEquals(SignatureLevel.XAdES_BASELINE_T, simpleReport.getSignatureFormat(simpleReport.getFirstSignatureId()));
 	}
 
 	@Override

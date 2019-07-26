@@ -132,7 +132,7 @@ public class UntrustedConfigTest extends PKIFactoryAccess {
 		Reports reports = validator.validateDocument();
 
 		SimpleReport simpleReport = reports.getSimpleReport();
-		assertEquals(SignatureLevel.CAdES_BASELINE_T.toString(), simpleReport.getSignatureFormat(simpleReport.getFirstSignatureId()));
+		assertEquals(SignatureLevel.CAdES_BASELINE_T, simpleReport.getSignatureFormat(simpleReport.getFirstSignatureId()));
 	}
 
 	@Test
@@ -159,7 +159,7 @@ public class UntrustedConfigTest extends PKIFactoryAccess {
 		Reports reports = validator.validateDocument();
 
 		SimpleReport simpleReport = reports.getSimpleReport();
-		assertEquals(SignatureLevel.CAdES_BASELINE_LT.toString(), simpleReport.getSignatureFormat(simpleReport.getFirstSignatureId()));
+		assertEquals(SignatureLevel.CAdES_BASELINE_LT, simpleReport.getSignatureFormat(simpleReport.getFirstSignatureId()));
 	}
 
 	@Override

@@ -6,7 +6,7 @@
 	    <Signature Id="id-f6fa8e7d67936a16b15109757654e3db">
 	    	<SignatureFilename>firmaok.zip.p7m</SignatureFilename>
 	        <ErrorMessage>java.lang.NullPointerException</ErrorMessage>
-	        <SignatureFormat>CAdES_BASELINE_T</SignatureFormat>
+	        <SignatureFormat>CAdES-BASELINE-T</SignatureFormat>
 	        <DigestMatchers>
                 <DigestMatcher type="MESSAGE_DIGEST">
                     <DigestMethod>SHA256</DigestMethod>
