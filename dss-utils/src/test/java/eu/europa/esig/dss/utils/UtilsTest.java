@@ -18,28 +18,17 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.utils.impl;
+package eu.europa.esig.dss.utils;
 
-import java.io.File;
+import org.junit.Test;
 
-import com.google.common.base.Predicate;
+import eu.europa.esig.dss.utils.Utils;
 
-public class FilterByExtensions implements Predicate<File> {
+public class UtilsTest {
 
-	private final String[] extensions;
-
-	public FilterByExtensions(String[] extensions) {
-		this.extensions = extensions;
-	}
-
-	@Override
-	public boolean apply(File file) {
-		for (String extension : extensions) {
-			if (file.getName().endsWith(extension)) {
-				return true;
-			}
-		}
-		return false;
+	@Test(expected = ExceptionInInitializerError.class)
+	public void testNoImplementationException() {
+		Utils.isStringBlank("test");
 	}
 
 }

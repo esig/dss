@@ -18,8 +18,28 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.utils.impl;
+package eu.europa.esig.dss.utils.guava.impl;
 
-public class ApacheCommonsUtilsTest extends AbstractUtilsTest {
+import java.io.File;
+
+import com.google.common.base.Predicate;
+
+public class FilterByExtensions implements Predicate<File> {
+
+	private final String[] extensions;
+
+	public FilterByExtensions(String[] extensions) {
+		this.extensions = extensions;
+	}
+
+	@Override
+	public boolean apply(File file) {
+		for (String extension : extensions) {
+			if (file.getName().endsWith(extension)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 }

@@ -18,17 +18,10 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.utils.impl;
+package eu.europa.esig.dss.utils.apache.impl;
 
-import org.junit.Test;
+import eu.europa.esig.dss.utils.AbstractUtilsTest;
 
-import eu.europa.esig.dss.utils.Utils;
-
-public class UtilsTest {
-
-	@Test(expected = ExceptionInInitializerError.class)
-	public void testNoImplementationException() {
-		Utils.isStringBlank("test");
-	}
+public class ApacheCommonsUtilsTest extends AbstractUtilsTest {
 
 }
