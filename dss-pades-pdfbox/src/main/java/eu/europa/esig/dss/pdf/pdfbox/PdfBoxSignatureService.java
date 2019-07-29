@@ -333,11 +333,12 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 						validateByteRange(byteRange);
 
 						final byte[] cms = signatureDictionary.getContents();
+						byte[] signedContent = new byte[] {};
 						if (!isContentValueEqualsByteRangeExtraction(cms, signature, originalBytes)) {
 							LOG.warn("Conflict between /Content and ByteRange for Signature '{}'.", signature.getName());
+						} else {
+							signedContent = signature.getSignedContent(originalBytes);
 						}
-
-						byte[] signedContent = signature.getSignedContent(originalBytes);
 
 						// /ByteRange [0 575649 632483 10206]
 						int beforeSignatureLength = byteRange[1] - byteRange[0];

@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -283,7 +284,14 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 					validateByteRange(byteRange);
 
 					final byte[] cms = signatureDictionary.getContents();
-					final byte[] signedContent = getSignedContent(document, byteRange);
+
+					byte[] signedContent = new byte[] {};
+					if (!isContentValueEqualsByteRangeExtraction(cms, document, byteRange, name)) {
+						LOG.warn("Conflict between /Content and ByteRange for Signature '{}'.", name);
+					} else {
+						signedContent = getSignedContent(document, byteRange);
+					}
+
 					boolean signatureCoversWholeDocument = af.signatureCoversWholeDocument(name);
 
 					final String subFilter = signatureDictionary.getSubFilter();
@@ -329,6 +337,46 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			LOG.warn("Cannot check in previous revisions if DSS dictionary already exist : " + e.getMessage(), e);
 			return null;
 		}
+	}
+
+	private boolean isContentValueEqualsByteRangeExtraction(byte[] cms, DSSDocument document, int[] byteRange, String name) {
+		try {
+			byte[] cmsWithByteRange = getSignatureValue(document, byteRange);
+			return Arrays.equals(cms, cmsWithByteRange);
+		} catch (Exception e) {
+			String message = String.format("Unable to retrieve data from the ByteRange (signature name: %s)", name);
+			if (LOG.isDebugEnabled()) {
+				// Exception displays the (long) hex value
+				LOG.debug(message, e);
+			} else {
+				LOG.error(message);
+			}
+			return false;
+		}
+	}
+
+	protected byte[] getSignatureValue(DSSDocument dssDocument, int[] byteRange) throws IOException {
+		// Extracts bytes from 841 to 959. [0, 840, 960, 1200]
+		int startSigValueContent = byteRange[0] + byteRange[1] + 1;
+		int endSigValueContent = byteRange[2] - 1;
+
+		int signatureValueArraySize = endSigValueContent - startSigValueContent;
+		if (signatureValueArraySize < 1) {
+			throw new DSSException("The byte range present in the document is not valid! " + "SignatureValue size cannot be negative or equal to zero!");
+		}
+
+		byte[] signatureValueArray = new byte[signatureValueArraySize];
+
+		try (InputStream is = dssDocument.openStream()) {
+
+			is.skip(startSigValueContent);
+			is.read(signatureValueArray, 0, signatureValueArraySize);
+
+		} catch (IOException | IllegalArgumentException e) {
+			LOG.error("Cannot extract signature value. Reason : {}", e.getMessage());
+		}
+
+		return Utils.fromHex(new String(signatureValueArray));
 	}
 
 	private byte[] getSignedContent(DSSDocument dssDocument, int[] byteRange) throws IOException {
