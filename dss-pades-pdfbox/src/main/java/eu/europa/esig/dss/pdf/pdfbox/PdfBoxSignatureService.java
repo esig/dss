@@ -335,9 +335,12 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 						validateByteRange(byteRange);
 
 						final byte[] cms = signatureDictionary.getContents();
-						checkIsContentValueEqualsByteRangeExtraction(document, byteRange, cms, signature.getName());
-
-						byte[] signedContent = getSignedContent(document, byteRange);
+						byte[] signedContent = new byte[] {};
+						if (!isContentValueEqualsByteRangeExtraction(document, byteRange, cms, signature.getName())) {
+							LOG.warn("Signature '{}' is skipped. SIWA detected !", signatureField.getPartialName());
+						} else {
+							signedContent = getSignedContent(document, byteRange);
+						}
 
 						boolean coverAllOriginalBytes = isSignatureCoversWholeDocument(document, byteRange);
 

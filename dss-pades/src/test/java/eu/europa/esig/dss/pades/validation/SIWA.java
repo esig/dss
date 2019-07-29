@@ -21,12 +21,15 @@
 package eu.europa.esig.dss.pades.validation;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.client.http.IgnoreDataLoader;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -44,8 +47,12 @@ public class SIWA {
 		validator.setCertificateVerifier(certificateVerifier);
 
 		Reports reports = validator.validateDocument();
-		assertEquals(0, reports.getSimpleReport().getSignaturesCount());
+		assertEquals(1, reports.getSimpleReport().getSignaturesCount());
 		assertEquals(0, reports.getSimpleReport().getValidSignaturesCount());
+
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertFalse(signatureWrapper.isBLevelTechnicallyValid());
 	}
 
 }
