@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.asic.signature.ASiCWithXAdESService;
+import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
