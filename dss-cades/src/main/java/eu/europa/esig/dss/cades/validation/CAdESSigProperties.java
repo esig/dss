@@ -7,7 +7,7 @@ import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 
-import eu.europa.esig.dss.validation.timestamp.SignatureProperties;
+import eu.europa.esig.dss.validation.SignatureProperties;
 
 public abstract class CAdESSigProperties implements SignatureProperties<CAdESAttribute> {
 	

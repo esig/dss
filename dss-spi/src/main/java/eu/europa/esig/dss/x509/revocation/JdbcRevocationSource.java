@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
-import eu.europa.esig.dss.x509.revocation.exception.RevocationException;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
 
 /**

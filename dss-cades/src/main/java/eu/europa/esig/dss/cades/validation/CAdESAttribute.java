@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.timestamp.ISignatureAttribute;
+import eu.europa.esig.dss.validation.ISignatureAttribute;
 
 public class CAdESAttribute implements ISignatureAttribute {
 

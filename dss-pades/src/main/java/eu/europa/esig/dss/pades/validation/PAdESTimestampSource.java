@@ -3,9 +3,9 @@ package eu.europa.esig.dss.pades.validation;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.europa.esig.dss.CRLBinary;
 import eu.europa.esig.dss.cades.validation.CAdESAttribute;
 import eu.europa.esig.dss.cades.validation.CAdESTimestampSource;
+import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;

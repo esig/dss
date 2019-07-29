@@ -7,7 +7,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.validation.timestamp.ISignatureAttribute;
+import eu.europa.esig.dss.validation.ISignatureAttribute;
 import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 

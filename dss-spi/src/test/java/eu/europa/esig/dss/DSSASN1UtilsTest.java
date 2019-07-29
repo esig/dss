@@ -54,7 +54,9 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.x509.CertificatePolicy;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.IssuerSerialInfo;
 
 public class DSSASN1UtilsTest {
 

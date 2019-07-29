@@ -37,7 +37,6 @@ import java.util.Base64;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.CRLBinary;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.x509.CertificateToken;

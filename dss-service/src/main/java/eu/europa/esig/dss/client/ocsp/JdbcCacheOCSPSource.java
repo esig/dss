@@ -38,7 +38,7 @@ import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.revocation.JdbcRevocationSource;
-import eu.europa.esig.dss.x509.revocation.exception.RevocationException;
+import eu.europa.esig.dss.x509.revocation.RevocationException;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPTokenBuilder;

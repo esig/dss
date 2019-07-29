@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.x509.revocation.crl;
 
-import eu.europa.esig.dss.CRLBinary;
+import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 
 /**

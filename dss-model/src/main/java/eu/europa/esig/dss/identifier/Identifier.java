@@ -42,7 +42,7 @@ public abstract class Identifier implements Serializable {
 
 	private String hexValue;
 
-	Identifier(byte[] data) {
+	protected Identifier(byte[] data) {
 		Objects.requireNonNull(data);
 		this.id = new Digest(DIGEST_ALGO, getMessageDigest(DIGEST_ALGO).digest(data));
 	}

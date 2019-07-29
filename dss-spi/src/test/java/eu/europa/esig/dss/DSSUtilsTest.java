@@ -47,6 +47,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.client.http.NativeHTTPDataLoader;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
@@ -288,6 +289,14 @@ public class DSSUtilsTest {
 
 		assertEquals("012éù*34ä5µ£ 6789~#%&()+=` @{[]}'.txt",
 				DSSUtils.decodeUrl("012%C3%A9%C3%B9*34%C3%A45%C2%B5%C2%A3%206789%7E%23%25%26%28%29%2B%3D%60%20%40%7B%5B%5D%7D%27.txt"));
+	}
+
+	@Test
+	public void testRSASSAPSS() {
+		CertificateToken token = DSSUtils.loadCertificate(this.getClass().getResourceAsStream("/BA-QC-Wurzel-CA-2_PN.txt"));
+		assertTrue(token.isSelfSigned());
+		assertTrue(token.isSignedBy(token));
+		assertEquals(SignatureAlgorithm.RSA_SSA_PSS_SHA256_MGF1, token.getSignatureAlgorithm());
 	}
 
 }

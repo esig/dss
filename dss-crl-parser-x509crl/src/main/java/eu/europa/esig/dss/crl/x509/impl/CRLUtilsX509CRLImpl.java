@@ -39,9 +39,9 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.CRLBinary;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.crl.AbstractCRLUtils;
+import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.crl.CRLValidity;
 import eu.europa.esig.dss.crl.ICRLUtils;
 import eu.europa.esig.dss.enumerations.KeyUsageBit;

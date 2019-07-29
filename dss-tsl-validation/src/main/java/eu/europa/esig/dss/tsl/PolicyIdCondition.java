@@ -22,8 +22,8 @@ package eu.europa.esig.dss.tsl;
 
 import java.util.List;
 
-import eu.europa.esig.dss.CertificatePolicy;
 import eu.europa.esig.dss.DSSASN1Utils;
+import eu.europa.esig.dss.x509.CertificatePolicy;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
