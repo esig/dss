@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.validation.reports.exception;
+package eu.europa.esig.dss.validation.reports;
 
 /**
  * Exception to be thrown in case of JAXB Report marshaling or unmarshaling error

@@ -31,7 +31,6 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.SimpleReportFacade;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
-import eu.europa.esig.dss.validation.reports.exception.DSSReportException;
 import eu.europa.esig.validationreport.ValidationReportFacade;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 

@@ -119,7 +119,6 @@
 		<module>dss-service</module>
 		<module>dss-test</module>
 		<module>sscd-mocca-adapter</module>
-		<module>dss-reports</module>
 		<module>validation-policy</module>
 		<module>dss-xades</module>
 		<module>dss-cades</module>
@@ -571,11 +570,6 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-model</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-reports</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
