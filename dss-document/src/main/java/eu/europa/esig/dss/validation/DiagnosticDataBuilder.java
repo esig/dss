@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.validation;
 
+import java.math.BigInteger;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,7 +43,6 @@ import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.AdapterUtils;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
@@ -582,12 +582,20 @@ public class DiagnosticDataBuilder {
 			pdfSignatureDictionary.setContactInfo(emptyToNull(signature.getContactInfo()));
 			pdfSignatureDictionary.setReason(emptyToNull(signature.getReason()));
 			pdfSignatureDictionary.getSignatureByteRange().addAll(
-					AdapterUtils.intArrayToBigIntegerList(signature.getSignatureByteRange()));
+					intArrayToBigIntegerList(signature.getSignatureByteRange()));
 			return pdfSignatureDictionary;
 		}
 		return null;
 	}
 	
+	public List<BigInteger> intArrayToBigIntegerList(int[] v) {
+		List<BigInteger> bi = new ArrayList<BigInteger>();
+		for (int i : v) {
+			bi.add(BigInteger.valueOf(i));
+		}
+		return bi;
+	}
+
 	private XmlSignatureDigestReference getXmlSignatureDigestReference(AdvancedSignature signature) {
 		SignatureDigestReference signatureDigestReference = signature.getSignatureDigestReference(defaultDigestAlgorithm);
 		if (signatureDigestReference != null) {
