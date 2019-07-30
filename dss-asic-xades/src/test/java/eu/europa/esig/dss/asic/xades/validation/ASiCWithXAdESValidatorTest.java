@@ -1,101 +1,50 @@
 package eu.europa.esig.dss.asic.xades.validation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.junit.Test;
-
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.simplereport.SimpleReport;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.AbstractTestValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
 
-public class ASiCWithXAdESValidatorTest {
-	
-	@Test
-	public void asiceTest() {
-		ASiCContainerWithXAdESValidator validator = new ASiCContainerWithXAdESValidator(
-				new FileDocument("src/test/resources/validation/onefile-ok.asice"));
-		validate(validator, 1);
-	}
-	
-	@Test
-	public void asiceMultiFileTest() {
-		ASiCContainerWithXAdESValidator validator = new ASiCContainerWithXAdESValidator(
-				new FileDocument("src/test/resources/validation/multifiles-ok.asice"));
-		validate(validator, 2);
-	}
-	
-	@Test
-	public void asicsTest() {
-		ASiCContainerWithXAdESValidator validator = new ASiCContainerWithXAdESValidator(
-				new FileDocument("src/test/resources/validation/onefile-ok.asics"));
-		validate(validator, 1);
-	}
-	
-	@Test
-	public void asicsMultiFileTest() {
-		ASiCContainerWithXAdESValidator validator = new ASiCContainerWithXAdESValidator(
-				new FileDocument("src/test/resources/validation/multifiles-ok.asics"));
-		validate(validator, 2);
-	}
-	
-	@Test(expected = DSSException.class)
-	public void binaryFileValidation() {
-		ASiCContainerWithXAdESValidator validator = new ASiCContainerWithXAdESValidator(
-				new InMemoryDocument(new byte[] {'1', '2', '3'}));
-		validate(validator, 0);
-	}
-	
-	@Test(expected = DSSException.class)
-	public void malformedArchiveValidation() {
-		ASiCContainerWithXAdESValidator validator = new ASiCContainerWithXAdESValidator(
-				new FileDocument("src/test/resources/validation/malformed-container.asice"));
-		validate(validator, 1);
-	}
-	
-	@Test(expected = NullPointerException.class)
-	public void emptyValidatorTest() {
-		ASiCContainerWithXAdESValidator validator = new ASiCContainerWithXAdESValidator();
-		validate(validator, 0);
+public class ASiCWithXAdESValidatorTest extends AbstractTestValidator {
+
+	@Override
+	protected SignedDocumentValidator initEmptyValidator() {
+		return new ASiCContainerWithXAdESValidator();
 	}
 
-	@Test
-	public void isSupportedBinaryFileTest() {
-		ASiCContainerWithXAdESValidator validator = new ASiCContainerWithXAdESValidator();
-		assertFalse(validator.isSupported(new InMemoryDocument(new byte[] {'1', '2', '3'})));
+	@Override
+	protected SignedDocumentValidator initValidator(DSSDocument document) {
+		return new ASiCContainerWithXAdESValidator(document);
 	}
 
-	@Test
-	public void isSupportedMalformedContainerTest() {
-		ASiCContainerWithXAdESValidator validator = new ASiCContainerWithXAdESValidator();
-		assertFalse(validator.isSupported(new FileDocument("src/test/resources/validation/malformed-container.asice")));
+	@Override
+	protected List<DSSDocument> getValidDocuments() {
+		List<DSSDocument> documents = new ArrayList<DSSDocument>();
+		documents.add(new FileDocument("src/test/resources/validation/onefile-ok.asice"));
+		documents.add(new FileDocument("src/test/resources/validation/onefile-ok.asics"));
+		documents.add(new FileDocument("src/test/resources/validation/multifiles-ok.asice"));
+		documents.add(new FileDocument("src/test/resources/validation/multifiles-ok.asics"));
+		documents.add(new FileDocument("src/test/resources/validation/libreoffice.ods"));
+		documents.add(new FileDocument("src/test/resources/validation/libreoffice.odt"));
+		return documents;
 	}
 
-	@Test(expected = DSSException.class)
-	public void validateBinaryFileFromDocumentTest() {
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(new InMemoryDocument(new byte[] {'1', '2', '3'}));
-		validate(validator, 0);
+	@Override
+	protected DSSDocument getMalformedDocument() {
+		return new FileDocument("src/test/resources/validation/malformed-container.asice");
 	}
 
-	@Test(expected = DSSException.class)
-	public void validateMalformedContainerFromDocumentTest() {
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(
-				new FileDocument("src/test/resources/validation/malformed-container.asice"));
-		validate(validator, 1);
+	@Override
+	protected DSSDocument getOtherTypeDocument() {
+		return new FileDocument("src/test/resources/manifest-sample.xml");
 	}
-	
-	private void validate(SignedDocumentValidator validator, int signatures) {
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
-		Reports reports = validator.validateDocument();
-		assertNotNull(reports);
-		SimpleReport simpleReport = reports.getSimpleReport();
-		assertNotNull(simpleReport);
-		assertEquals(signatures, simpleReport.getSignaturesCount());
+
+	@Override
+	protected DSSDocument getNoSignatureDocument() {
+		return new FileDocument("src/test/resources/validation/no-signature.asics");
 	}
 
 }

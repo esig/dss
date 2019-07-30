@@ -40,6 +40,7 @@ public class XAdESLevelBEnvelopedNoHeaderTest extends AbstractXAdESTestSignature
 
 	@Before
 	public void init() throws Exception {
+		
 		documentToSign = new FileDocument(new File("src/test/resources/sampleNoHeader.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();

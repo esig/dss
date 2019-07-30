@@ -25,18 +25,22 @@ import static org.junit.Assert.assertTrue;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.junit.Test;
 
+import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AbstractTestValidator;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
-public class CMSDocumentValidatorTest {
+public class CMSDocumentValidatorTest extends AbstractTestValidator {
 
 	private static final String PATH = "src/test/resources/validation/dss-768/FD1&FD2&FEA.pdf.p7m";
 
@@ -60,6 +64,41 @@ public class CMSDocumentValidatorTest {
 		CMSDocumentValidator validator = new CMSDocumentValidator(new InMemoryDocument(new FileInputStream(PATH)));
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		assertTrue(Utils.isCollectionNotEmpty(signatures));
+	}
+
+	@Override
+	protected SignedDocumentValidator initEmptyValidator() {
+		return new CMSDocumentValidator();
+	}
+
+	@Override
+	protected SignedDocumentValidator initValidator(DSSDocument document) {
+		return new CMSDocumentValidator(document);
+	}
+
+	@Override
+	protected List<DSSDocument> getValidDocuments() {
+		List<DSSDocument> documents = new ArrayList<DSSDocument>();
+		documents.add(new FileDocument(PATH));
+		documents.add(new FileDocument("src/test/resources/validation/CAdESDoubleLTA.p7m"));
+		documents.add(new FileDocument("src/test/resources/validation/counterSig.p7m"));
+		return documents;
+	}
+
+	@Override
+	protected DSSDocument getMalformedDocument() {
+		return new FileDocument("src/test/resources/validation/malformed-cades.p7m");
+	}
+
+	@Override
+	protected DSSDocument getOtherTypeDocument() {
+		return new FileDocument("src/test/resources/validation/dss-916/test.txt");
+	}
+
+	@Override
+	protected DSSDocument getNoSignatureDocument() {
+		// not applicable
+		return null;
 	}
 
 }

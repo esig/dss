@@ -84,7 +84,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator, Proc
 	protected CertificatePool validationCertPool = null;
 
 	/**
-	 * The document to validated (with the signature(s))
+	 * The document to be validated (with the signature(s))
 	 */
 	protected DSSDocument document;
 
@@ -144,6 +144,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator, Proc
 	 *         of the document type
 	 */
 	public static SignedDocumentValidator fromDocument(final DSSDocument dssDocument) {
+		Objects.requireNonNull(dssDocument, "DSSDocument is null");
 		ServiceLoader<DocumentValidatorFactory> serviceLoaders = ServiceLoader.load(DocumentValidatorFactory.class);
 		for (DocumentValidatorFactory factory : serviceLoaders) {
 			try {

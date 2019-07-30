@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.xades.validation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -33,7 +32,6 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -47,8 +45,8 @@ import eu.europa.esig.dss.xades.validation.scope.XAdESSignatureScopeFinder;
  */
 public class XMLDocumentValidator extends SignedDocumentValidator {
 
-	private static final byte[] xmlPreamble = new byte[] { '<', '?', 'x', 'm', 'l' };
-	private static final byte[] xmlUtf8 = new byte[] { -17, -69, -65, '<', '?' };
+	private static final byte[] xmlPreamble = new byte[] { '<' };
+	private static final byte[] xmlWithBomPreample = new byte[] { -17, -69, -65, '<' }; // UTF-8 with BOM
 
 	/**
 	 * This variable contains the list of {@code XPathQueryHolder} adapted to the specific signature schema.
@@ -91,18 +89,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 
 	@Override
 	public boolean isSupported(DSSDocument dssDocument) {
-		final MimeType documentMimeType = dssDocument.getMimeType();
-		if ((documentMimeType != null) && MimeType.XML.equals(documentMimeType)) {
-			return true;
-		}
-		final String dssDocumentName = dssDocument.getName();
-		if ((dssDocumentName != null) && MimeType.XML.equals(MimeType.fromFileName(dssDocumentName))) {
-			return true;
-		}
-		int headerLength = xmlPreamble.length;
-		byte[] preamble = new byte[headerLength];
-		DSSUtils.readToArray(dssDocument, headerLength, preamble);
-		return Arrays.equals(preamble, xmlPreamble) || Arrays.equals(preamble, xmlUtf8);
+		return DSSUtils.compareFirstBytes(dssDocument, xmlPreamble) || DSSUtils.compareFirstBytes(dssDocument, xmlWithBomPreample);
 	}
 
 	@Override
