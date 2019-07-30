@@ -183,10 +183,12 @@ public final class ASiCUtils {
 
 		if (containerType == null) {
 			LOG.warn("Unable to define the ASiC Container type with its properties");
-			if (Utils.collectionSize(signedDocuments) <= 1) {
+			if (Utils.collectionSize(signedDocuments) == 1) {
 				containerType = ASiCContainerType.ASiC_S;
-			} else {
+			} else if (Utils.collectionSize(signedDocuments) > 1) {
 				containerType = ASiCContainerType.ASiC_E;
+			} else {
+				throw new DSSException("The provided file does not contain signed documents. The signature validation is not possible");
 			}
 		}
 

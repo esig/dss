@@ -57,7 +57,10 @@ public abstract class AbstractASiCContainerExtractor {
 		
 		long containerSize = DSSUtils.getFileByteSize(asicContainer);
 		List<String> fileNames = ASiCUtils.getFileNames(asicContainer);
-		if (fileNames.size() > MAXIMAL_ALLOWED_FILE_AMOUNT) {
+		if (Utils.isCollectionEmpty(fileNames)) {
+			throw new DSSException("The provided file does not contain documents inside. Probably file has an unsupported format or has been corrupted. "
+					+ "The signature validation is not possible");
+		} else if (fileNames.size() > MAXIMAL_ALLOWED_FILE_AMOUNT) {
 			throw new DSSException("Too many files detected. Cannot extract ASiC content");
 		}
 

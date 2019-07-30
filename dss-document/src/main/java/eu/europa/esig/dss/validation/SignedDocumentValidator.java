@@ -27,6 +27,7 @@ import java.net.URL;
 import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.ServiceLoader;
 
 import org.slf4j.Logger;
@@ -292,9 +293,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator, Proc
 	@Override
 	public Reports validateDocument(final ValidationPolicy validationPolicy) {
 		LOG.info("Document validation...");
-		if (certificateVerifier == null) {
-			throw new NullPointerException("CertificateVerifier not defined");
-		}
+		Objects.requireNonNull(certificateVerifier, "CertificateVerifier is not defined");
+		Objects.requireNonNull(document, "Document is not provided to the validator");
 
 		ensureSignaturePolicyDetectorInitialized();
 
