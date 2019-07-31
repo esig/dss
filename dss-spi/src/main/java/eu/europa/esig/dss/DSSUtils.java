@@ -45,6 +45,7 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -737,25 +738,6 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * Reads maximum {@code headerLength} bytes from {@code dssDocument} to the given {@code byte} array.
-	 *
-	 * @param dssDocument
-	 *            {@code DSSDocument} to read
-	 * @param headerLength
-	 *            {@code int}: maximum number of bytes to read
-	 * @param destinationByteArray
-	 *            destination {@code byte} array
-	 * @return the number of read bytes
-	 */
-	public static int readToArray(final DSSDocument dssDocument, final int headerLength, final byte[] destinationByteArray) {
-		try (InputStream inputStream = dssDocument.openStream()) {
-			return inputStream.read(destinationByteArray, 0, headerLength);
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	/**
 	 * Reads the first byte from the DSSDocument
 	 * 
 	 * @param dssDocument
@@ -767,9 +749,27 @@ public final class DSSUtils {
 		try (InputStream inputStream = dssDocument.openStream()) {
 			inputStream.read(result, 0, 1);
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException("Cannot read first byte of the document.", e);
 		}
 		return result[0];
+	}
+	
+	/**
+	 * Reads first {@code byteArray.length} bytes of the {@code dssDocument} and compares them with {@code byteArray}
+	 * 
+	 * @param dssDocument {@link DSSDocument} to read bytes from
+	 * @param byteArray {@code byte} array to compare the beginning string with
+	 * @return TRUE if the document starts from {@code byteArray}, FALSE otherwise
+	 */
+	public static boolean compareFirstBytes(final DSSDocument dssDocument, byte[] byteArray) {
+		try {
+			byte[] preamble = new byte[byteArray.length];
+			readAvailableBytes(dssDocument, preamble);
+			return Arrays.equals(byteArray, preamble);
+		} catch (IllegalStateException e) {
+			LOG.warn("Cannot compare first bytes of the document. Reason : {}", e.getMessage());
+			return false;
+		}
 	}
 
 	/**
@@ -834,6 +834,22 @@ public final class DSSUtils {
 			return skipped;
 		} catch (IOException e) {
 			throw new DSSException("Cannot read the InputStream!");
+		}
+	}
+
+	/**
+	 * Read the requested number of bytes from {@code DSSDocument} according to the size of 
+	 * the provided {@code byte}[] buffer and validates success of the operation
+	 * @param is {@link DSSDocument} to read bytes from
+	 * @param b {@code byte}[] buffer to fill
+	 * @return the total number of bytes read into buffer
+	 * @throws IllegalStateException in case of {@code InputStream} reading error 
+	 */
+	public static long readAvailableBytes(DSSDocument dssDocument, byte[] b) throws IllegalStateException {
+		try (InputStream is = dssDocument.openStream()) {
+			return readAvailableBytes(is, b);
+		} catch (IOException e) {
+			throw new DSSException("Cannot read a sequence of bytes from the document.", e);
 		}
 	}
 	

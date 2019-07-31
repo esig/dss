@@ -42,6 +42,8 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
  * Validation of PDF document.
  */
 public class PDFDocumentValidator extends SignedDocumentValidator {
+	
+	private static final byte[] pdfPreamble = new byte[] { '%', 'P', 'D', 'F', '-' };
 
 	private final PDFSignatureService pdfSignatureService;
 
@@ -61,11 +63,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 
 	@Override
 	public boolean isSupported(DSSDocument dssDocument) {
-		int headerLength = 50;
-		byte[] preamble = new byte[headerLength];
-		DSSUtils.readToArray(dssDocument, headerLength, preamble);
-		String preambleString = new String(preamble);
-		return preambleString.startsWith("%PDF-");
+		return DSSUtils.compareFirstBytes(dssDocument, pdfPreamble);
 	}
 
 	@Override
