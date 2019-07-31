@@ -838,12 +838,17 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * Read the requested number of bytes from {@code DSSDocument} according to the size of 
-	 * the provided {@code byte}[] buffer and validates success of the operation
-	 * @param is {@link DSSDocument} to read bytes from
-	 * @param b {@code byte}[] buffer to fill
+	 * Read the requested number of bytes from {@code DSSDocument} according to the
+	 * size of the provided {@code byte}[] buffer and validates success of the
+	 * operation
+	 * 
+	 * @param dssDocument
+	 *                    {@link DSSDocument} to read bytes from
+	 * @param b
+	 *                    {@code byte}[] buffer to fill
 	 * @return the total number of bytes read into buffer
-	 * @throws IllegalStateException in case of {@code InputStream} reading error 
+	 * @throws IllegalStateException
+	 *                               in case of {@code InputStream} reading error
 	 */
 	public static long readAvailableBytes(DSSDocument dssDocument, byte[] b) throws IllegalStateException {
 		try (InputStream is = dssDocument.openStream()) {
