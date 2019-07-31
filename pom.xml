@@ -49,8 +49,6 @@
 	</developers>
 
 	<properties>
-		<project.source.version>1.7</project.source.version>
-		<project.target.version>1.7</project.target.version>
 		<project.encoding>UTF-8</project.encoding>
 
 		<slf4j.version>1.7.26</slf4j.version>
@@ -180,8 +178,9 @@
 				<artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <encoding>${project.encoding}</encoding>
-                    <source>${project.source.version}</source>
-                    <target>${project.target.version}</target>
+                    
+                    <showWarnings>true</showWarnings>
+                    <showDeprecation>true</showDeprecation>
                 </configuration>
 			</plugin>
 			<plugin>
@@ -296,7 +295,7 @@
 	                    <plugin>
 	                        <groupId>org.apache.maven.plugins</groupId>
 	                        <artifactId>maven-javadoc-plugin</artifactId>
-							<version>3.0.1</version>
+							<version>3.1.1</version>
 	                        <reportSets>
 	                            <reportSet>
 	                                <id>aggregate</id>
@@ -375,7 +374,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>3.0.1</version>
+					<version>3.1.1</version>
 				</plugin>
 				<plugin>
 		            <groupId>org.apache.maven.plugins</groupId>
@@ -957,12 +956,16 @@
             <activation>
                 <jdk>[9,)</jdk>
             </activation>
+            <properties>
+				<maven.compiler.release>9</maven.compiler.release>
+            </properties>
             <build>
             	<plugins>
             		<plugin>
 			            <groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
 						<configuration>
+							<release>8</release>
 							<additionalJOptions>
 								<additionalJOption>-html5</additionalJOption>
 							</additionalJOptions>
@@ -970,6 +973,16 @@
             		</plugin>
             	</plugins>
             </build>
+		</profile>
+		<profile>
+			<id>jdk18</id>
+			<activation>
+				<jdk>1.8</jdk>
+			</activation>
+			<properties>
+		    	<maven.compiler.target>1.8</maven.compiler.target>
+		    	<maven.compiler.source>1.8</maven.compiler.source>
+			</properties>
 		</profile>
 	</profiles>
 </project>
