@@ -1113,11 +1113,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		final TokenIdentifier identifier = certificateToken == null ? null : certificateToken.getDSSId();
 		
 		// introduce additional variables in order to avoid signatures with duplicate ids
-		String masterSignatureId = getMasterSignatureId();
 		Integer uniqueInteger = getUniqueIntegerIfNeeded();
 		if (uniqueInteger == 0) uniqueInteger = null;
+		String masterSignatureId = getMasterSignatureId();
+		String fileName = getSignatureFilename();
 
-		return SignatureIdentifier.buildSignatureIdentifier(getSigningTime(), identifier, masterSignatureId, uniqueInteger);
+		return SignatureIdentifier.buildSignatureIdentifier(getSigningTime(), identifier, uniqueInteger, masterSignatureId, fileName);
 	}
 	
 	/**
