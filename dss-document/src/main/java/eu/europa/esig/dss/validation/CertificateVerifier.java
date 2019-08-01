@@ -276,6 +276,25 @@ public interface CertificateVerifier {
 	 */
 	boolean isExceptionOnRevokedCertificate();
 
+	/**
+	 * This method allows to change the behavior on revocation data issued after
+	 * a control time. (default : false)
+	 * 
+	 * @param exceptionOnNoRevocationAfterBestSignatureTime
+	 *                                           true if an exception is raised on
+	 *                                           no revocation data issued after the bestSignatureTime,
+	 *                                           false will only display a warning message
+	 */
+	void setExceptionOnNoRevocationAfterBestSignatureTime(boolean exceptionOnNoRevocationAfterBestSignatureTime);
+	
+	/**
+	 * This method returns true if an exception needs to be thrown in case if
+	 * no revocation data obtained with an issuance time after the bestSignatureTime
+	 * 
+	 * @return true if an exception is thrown, false if a warning message is added
+	 */
+	boolean isExceptionOnNoRevocationAfterBestSignatureTime();
+
 	
 	/**
 	 * This method allows to change the behavior on uncovered POE (timestamp).

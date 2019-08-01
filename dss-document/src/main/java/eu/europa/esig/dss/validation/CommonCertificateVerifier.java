@@ -141,6 +141,13 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	private boolean exceptionOnInvalidTimestamp = true;
 
 	/**
+	 * This variable set the behavior to follow in case of no revocation data issued
+	 * after the bestSignatureTime (augmentation process). 
+	 * True : throw an exception / False : add a warning message. Default : false
+	 */
+	private boolean exceptionOnNoRevocationAfterBestSignatureTime = false;
+
+	/**
 	 * This variable set the behavior to follow for revocation retrieving in case of
 	 * untrusted certificate chains. Default : false (revocation are not checked in
 	 * case of certificates issued from an unsure source)
@@ -305,6 +312,16 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	@Override
 	public boolean isExceptionOnInvalidTimestamp() {
 		return exceptionOnInvalidTimestamp;
+	}
+
+	@Override
+	public void setExceptionOnNoRevocationAfterBestSignatureTime(boolean exceptionOnNoRevocationAfterBestSignatureTime) {
+		this.exceptionOnNoRevocationAfterBestSignatureTime = exceptionOnNoRevocationAfterBestSignatureTime;
+	}
+
+	@Override
+	public boolean isExceptionOnNoRevocationAfterBestSignatureTime() {
+		return exceptionOnNoRevocationAfterBestSignatureTime;
 	}
 
 	@Override

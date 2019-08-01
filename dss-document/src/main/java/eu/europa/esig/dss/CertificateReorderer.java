@@ -102,16 +102,17 @@ public class CertificateReorderer {
 	 * @return a map of one or more ordered certificates chain
 	 */
 	public Map<CertificateToken, List<CertificateToken>> getOrderedCertificateChains() {
-
+		Map<CertificateToken, List<CertificateToken>> result = new HashMap<CertificateToken, List<CertificateToken>>();
+		
 		List<CertificateToken> certificates = getAllCertificatesOnce();
 		if (Utils.collectionSize(certificates) == 1) {
 			CertificateToken uniqueCert = certificates.get(0);
-			return Collections.singletonMap(uniqueCert, Collections.singletonList(uniqueCert));
+			result.put(uniqueCert, Collections.singletonList(uniqueCert));
+			return result;
 		}
 
 		initIssuerPublicKeys(certificates);
 
-		Map<CertificateToken, List<CertificateToken>> result = new HashMap<CertificateToken, List<CertificateToken>>();
 		List<CertificateToken> identifiedSigningCerts = getSigningCertificates(certificates);
 		for (CertificateToken identifiedSigningCert : identifiedSigningCerts) {
 			result.put(identifiedSigningCert, buildCertificateChainForCert(certificates, identifiedSigningCert));

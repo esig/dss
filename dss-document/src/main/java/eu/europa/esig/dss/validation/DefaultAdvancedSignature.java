@@ -295,25 +295,15 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		checkAllRevocationDataPresent(certificateVerifier, validationContext);
 		checkAllTimestampCoveredByRevocationData(certificateVerifier, validationContext);
 		checkAllCertificateNotRevoked(certificateVerifier, validationContext);
+		checkRevocationThisUpdateIsAfterBestSignatureTime(certificateVerifier, validationContext);
 
 		return validationContext;
 	}
 
-	private void checkAllCertificateNotRevoked(final CertificateVerifier certificateVerifier, final ValidationContext validationContext) {
-		if (!validationContext.isAllCertificateValid()) {
-			String message = "Revoked certificate detected";
-			if (certificateVerifier.isExceptionOnRevokedCertificate()) {
-				throw new DSSException(message);
-			} else {
-				LOG.warn(message);
-			}
-		}
-	}
-
-	private void checkAllTimestampCoveredByRevocationData(final CertificateVerifier certificateVerifier, final ValidationContext validationContext) {
-		if (!validationContext.isAllPOECoveredByRevocationData()) {
-			String message = "A POE is not covered by an usable revocation data";
-			if (certificateVerifier.isExceptionOnUncoveredPOE()) {
+	private void checkTimestamp(final CertificateVerifier certificateVerifier, final ValidationContext validationContext) {
+		if (!validationContext.isAllTimestampValid()) {
+			String message = "Broken timestamp detected";
+			if (certificateVerifier.isExceptionOnInvalidTimestamp()) {
 				throw new DSSException(message);
 			} else {
 				LOG.warn(message);
@@ -332,10 +322,32 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		}
 	}
 
-	private void checkTimestamp(final CertificateVerifier certificateVerifier, final ValidationContext validationContext) {
-		if (!validationContext.isAllTimestampValid()) {
-			String message = "Broken timestamp detected";
-			if (certificateVerifier.isExceptionOnInvalidTimestamp()) {
+	private void checkAllTimestampCoveredByRevocationData(final CertificateVerifier certificateVerifier, final ValidationContext validationContext) {
+		if (!validationContext.isAllPOECoveredByRevocationData()) {
+			String message = "A POE is not covered by an usable revocation data";
+			if (certificateVerifier.isExceptionOnUncoveredPOE()) {
+				throw new DSSException(message);
+			} else {
+				LOG.warn(message);
+			}
+		}
+	}
+
+	private void checkAllCertificateNotRevoked(final CertificateVerifier certificateVerifier, final ValidationContext validationContext) {
+		if (!validationContext.isAllCertificateValid()) {
+			String message = "Revoked certificate detected";
+			if (certificateVerifier.isExceptionOnRevokedCertificate()) {
+				throw new DSSException(message);
+			} else {
+				LOG.warn(message);
+			}
+		}
+	}
+
+	private void checkRevocationThisUpdateIsAfterBestSignatureTime(final CertificateVerifier certificateVerifier, final ValidationContext validationContext) {
+		if (!validationContext.isAtLeastOneRevocationDataPresentAfterBestSignatureTime(getSigningCertificateToken())) {
+			String message = "Revocation data thisUpdate time is after the bestSignatureTime";
+			if (certificateVerifier.isExceptionOnNoRevocationAfterBestSignatureTime()) {
 				throw new DSSException(message);
 			} else {
 				LOG.warn(message);
@@ -500,7 +512,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	@Override
 	public CertificateToken getSigningCertificateToken() {
-
 		// This ensures that the variable candidatesForSigningCertificate has been initialized
 		candidatesForSigningCertificate = getCandidatesForSigningCertificate();
 		// This ensures that the variable signatureCryptographicVerification has been initialized

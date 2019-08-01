@@ -97,6 +97,8 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 			 * nextUpdate time, the revocation status information will not be
 			 * considered fresh.
 			 */
+			// TODO: check interval between thisUpdate and nextUpdate
+			
 			item = item.setNextItem(nextUpdateCheck(revocationData));
 
 			/*

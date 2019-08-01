@@ -88,6 +88,9 @@ public class SignatureValidationContext implements ValidationContext {
 	private final Map<Token, Boolean> tokensToProcess = new HashMap<Token, Boolean>();
 
 	private final Map<CertificateToken, Date> lastUsageDates = new HashMap<CertificateToken, Date>();
+	
+	/* The map contains all the certificate chains that has been used into the signature. Links the signing certificate and its chain. */
+	private Map<CertificateToken, List<CertificateToken>> orderedCertificateChains;
 
 	// External OCSP source.
 	private OCSPSource ocspSource;
@@ -188,6 +191,14 @@ public class SignatureValidationContext implements ValidationContext {
 			}
 			return null;
 		}
+	}
+	
+	private Map<CertificateToken, List<CertificateToken>> getOrderedCertificateChains() {
+		if (orderedCertificateChains == null) {
+			CertificateReorderer order = new CertificateReorderer(processedCertificates);
+			orderedCertificateChains = order.getOrderedCertificateChains();
+		}
+		return orderedCertificateChains;
 	}
 
 	/**
@@ -363,7 +374,7 @@ public class SignatureValidationContext implements ValidationContext {
 	@Override
 	public void addRevocationTokensForVerification(final List<RevocationToken> revocationTokens) {
 		for (RevocationToken revocationToken : revocationTokens) {
-
+			
 			if (addTokenForVerification(revocationToken)) {
 
 				final boolean added = processedRevocations.add(revocationToken);
@@ -381,7 +392,6 @@ public class SignatureValidationContext implements ValidationContext {
 
 	@Override
 	public void addCertificateTokenForVerification(final CertificateToken certificateToken) {
-
 		if (addTokenForVerification(certificateToken)) {
 
 			final boolean added = processedCertificates.add(certificateToken);
@@ -399,8 +409,6 @@ public class SignatureValidationContext implements ValidationContext {
 	public void addTimestampTokenForVerification(final TimestampToken timestampToken) {
 		if (addTokenForVerification(timestampToken)) {
 
-			registerUsageDate(timestampToken.getCreationDate(), timestampToken.getCertificates());
-
 			final boolean added = processedTimestamps.add(timestampToken);
 			if (LOG.isTraceEnabled()) {
 				if (added) {
@@ -412,27 +420,39 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 	}
 
-	private void registerUsageDate(Date usageDate, List<CertificateToken> certificates) {
-		if (Utils.isCollectionEmpty(certificates)) {
-			LOG.warn("Empty certificate chain for timestamp");
+	private void registerUsageDate(TimestampToken timestampToken) {
+		CertificateToken tsaCertificate = getTSACertificate(timestampToken);
+		if (tsaCertificate == null) {
+			LOG.warn("No Timestamp Certificate found. Chain is skipped.");
 			return;
 		}
-
-		CertificateReorderer certificateReorderer = new CertificateReorderer(certificates);
-		Map<CertificateToken, List<CertificateToken>> orderedCertificateChains = certificateReorderer.getOrderedCertificateChains();
-
-		for (Entry<CertificateToken, List<CertificateToken>> entry : orderedCertificateChains.entrySet()) {
-			List<CertificateToken> chain = entry.getValue();
-			for (CertificateToken cert : chain) {
-				if (cert.isSelfIssued() || isTrusted(cert)) {
-					return;
-				}
-				Date lastUsage = lastUsageDates.get(cert);
-				if (lastUsage == null || lastUsage.before(usageDate)) {
-					lastUsageDates.put(cert, usageDate);
-				}
+		
+		Map<CertificateToken, List<CertificateToken>> certificateChains = getOrderedCertificateChains();
+		List<CertificateToken> tsaCertificateChain = certificateChains.get(tsaCertificate);
+		if (tsaCertificateChain == null) {
+			tsaCertificateChain = toCertificateTokenChain(getCertChain(tsaCertificate));
+			certificateChains.put(tsaCertificate, tsaCertificateChain);
+		}
+		Date usageDate = timestampToken.getCreationDate();
+		for (CertificateToken cert : tsaCertificateChain) {
+			if (isSelfSignedOrTrusted(cert)) {
+				return;
+			}
+			Date lastUsage = lastUsageDates.get(cert);
+			if (lastUsage == null || lastUsage.before(usageDate)) {
+				lastUsageDates.put(cert, usageDate);
 			}
 		}
+	}
+	
+	private List<CertificateToken> toCertificateTokenChain(List<Token> tokens) {
+		List<CertificateToken> chain = new LinkedList<CertificateToken>();
+		for (Token token : tokens) {
+			if (token instanceof CertificateToken) {
+				chain.add((CertificateToken) token);
+			}
+		}
+		return chain;
 	}
 
 	@Override
@@ -444,6 +464,8 @@ public class SignatureValidationContext implements ValidationContext {
 			if (token instanceof CertificateToken) {
 				final List<RevocationToken> revocationTokens = getRevocationData((CertificateToken) token, certChain);
 				addRevocationTokensForVerification(revocationTokens);
+			} else if (token instanceof TimestampToken) {
+				registerUsageDate((TimestampToken) token);
 			}
 			token = getNotYetVerifiedToken();
 		}
@@ -552,27 +574,51 @@ public class SignatureValidationContext implements ValidationContext {
 
 	@Override
 	public boolean isAllRequiredRevocationDataPresent() {
-		CertificateReorderer order = new CertificateReorderer(processedCertificates);
-		Map<CertificateToken, List<CertificateToken>> orderedCertificateChains = order.getOrderedCertificateChains();
-
+		Map<CertificateToken, List<CertificateToken>> orderedCertificateChains = getOrderedCertificateChains();
+		// TODO: check thisUpdate after the last usage
 		for (List<CertificateToken> orderedCertChain : orderedCertificateChains.values()) {
-			for (CertificateToken certificateToken : orderedCertChain) {
-				if (isRevocationDataNotRequired(certificateToken)) {
-					break;
-				}
-				boolean found = false;
-				for (RevocationToken revocationToken : processedRevocations) {
-					if (Utils.areStringsEqual(certificateToken.getDSSIdAsString(), revocationToken.getRelatedCertificateID())) {
-						found = true;
-						break;
-					}
-				}
-				if (!found) {
-					LOG.debug("No revocation data found for certificate : {}", certificateToken.getDSSIdAsString());
-					return false;
-				}
+			if (!checkRevocationPresentForCertificateChain(orderedCertChain)) {
+				return false;
 			}
 		}
+		return true;
+	}
+	
+	
+	
+	private boolean checkRevocationPresentForCertificateChain(List<CertificateToken> certificates) {
+		return checkRevocationForCertificateChainAgainstBestSignatureTime(certificates, null);
+	}
+	
+	private boolean checkRevocationForCertificateChainAgainstBestSignatureTime(List<CertificateToken> certificates, Date bestSignatureTime) {
+		for (CertificateToken certificateToken : certificates) {
+			if (isSelfSignedOrTrusted(certificateToken)) {
+				// break on the first trusted entry
+				break;
+			} else if (isOCSPNoCheckExtension(certificateToken)) {
+				// skip the revocation check for OCSP certs if no check is specified
+				continue;
+			}
+			boolean found = false;
+			for (RevocationToken revocationToken : processedRevocations) {
+				if (Utils.areStringsEqual(certificateToken.getDSSIdAsString(), revocationToken.getRelatedCertificateID()) &&
+						(bestSignatureTime == null || revocationToken.getThisUpdate().after(bestSignatureTime))) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				if (bestSignatureTime == null) {
+					// simple revocation presence check
+					LOG.debug("No revocation data found for certificate : {}", certificateToken.getDSSIdAsString());
+				} else {
+					LOG.debug("No revocation data found after the signature time [{}] for certificate : {}", 
+							bestSignatureTime, certificateToken.getDSSIdAsString());
+				}
+				return false;
+			}
+		}
+		// a valid revocation is present for all certificates in the chain
 		return true;
 	}
 
@@ -635,7 +681,15 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	private boolean isRevocationDataNotRequired(CertificateToken certToken) {
-		return certToken.isSelfSigned() || isTrusted(certToken) || DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certToken);
+		return isSelfSignedOrTrusted(certToken) || isOCSPNoCheckExtension(certToken);
+	}
+	
+	private boolean isSelfSignedOrTrusted(CertificateToken certToken) {
+		return certToken.isSelfSigned() || isTrusted(certToken);
+	}
+	
+	private boolean isOCSPNoCheckExtension(CertificateToken certToken) {
+		return DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certToken);
 	}
 
 	private boolean isRevocationDataRefreshNeeded(CertificateToken certToken, List<RevocationToken> revocations) {
@@ -648,13 +702,37 @@ public class SignatureValidationContext implements ValidationContext {
 					break;
 				}
 			}
-
 			if (!foundUpdatedRevocationData) {
 				LOG.debug("Revocation data refresh is needed");
 				return true;
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public boolean isAtLeastOneRevocationDataPresentAfterBestSignatureTime(CertificateToken signingCertificate) {
+		Map<CertificateToken, List<CertificateToken>> orderedCertificateChains = getOrderedCertificateChains();
+		for (Map.Entry<CertificateToken, List<CertificateToken>> entry : orderedCertificateChains.entrySet()) {
+			CertificateToken firstChainCertificate = entry.getKey();
+			Date bestSignatureTime = firstChainCertificate.equals(signingCertificate) ? 
+					getEarliestTimestampTime() : lastUsageDates.get(firstChainCertificate);
+			if (!checkRevocationForCertificateChainAgainstBestSignatureTime(entry.getValue(), bestSignatureTime)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	private Date getEarliestTimestampTime() {
+		Date earliestDate = null;
+		for (TimestampToken timestamp : getProcessedTimestamps()) {
+			Date timestampTime = timestamp.getCreationDate();
+			if (earliestDate == null || timestampTime.before(earliestDate)) {
+				earliestDate = timestampTime;
+			}
+		}
+		return earliestDate;
 	}
 
 	@Override

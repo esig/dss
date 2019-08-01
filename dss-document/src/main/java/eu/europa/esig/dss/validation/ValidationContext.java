@@ -117,6 +117,16 @@ public interface ValidationContext {
 	boolean isAllCertificateValid();
 
 	/**
+	 * This method allows to verify if there is at least one revocation data present
+	 * after the earliest available timestamp token producing time
+	 * @param signingCertificate
+	 *            {@code CertificateToken} signing certificate of the signature to be checked
+	 * 
+	 * @return true if there is at least one revocation data issued after the earliest timestamp time
+	 */
+	boolean isAtLeastOneRevocationDataPresentAfterBestSignatureTime(CertificateToken signingCertificate);
+
+	/**
 	 * Returns a read only list of all certificates used in the process of the validation of all signatures from the
 	 * given document. This list
 	 * includes the certificate to check, certification chain certificates, OCSP response certificate...

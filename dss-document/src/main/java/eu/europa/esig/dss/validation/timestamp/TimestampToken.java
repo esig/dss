@@ -535,9 +535,7 @@ public class TimestampToken extends Token {
 
 	@Override
 	public String toString(String indentStr) {
-
 		try {
-
 			final StringBuilder out = new StringBuilder();
 			out.append(indentStr).append("TimestampToken[signedBy=").append(getIssuerX500Principal());
 			out.append(", generated: ").append(DSSUtils.formatInternal(timeStamp.getTimeStampInfo().getGenTime()));
