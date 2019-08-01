@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.AcroFields.Item;
 import com.lowagie.text.pdf.ByteBuffer;
-import com.lowagie.text.pdf.DSSIndirectReference;
+import com.lowagie.text.pdf.PRIndirectReference;
 import com.lowagie.text.pdf.PdfArray;
 import com.lowagie.text.pdf.PdfDate;
 import com.lowagie.text.pdf.PdfDictionary;
@@ -415,7 +415,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			PdfStream ps = new PdfStream(token.getEncoded());
 			return writer.addToBody(ps, false).getIndirectReference();
 		} else {
-			return new DSSIndirectReference(reader, objectNumber.intValue());
+			return new PRIndirectReference(reader, objectNumber.intValue());
 		}
 	}
 
