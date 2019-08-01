@@ -13,6 +13,10 @@
 	<name>DSS Model</name>
 	<description>DSS Model contains the data model representation for DSS</description>
 	
+	<properties>
+		<module-name>jpms_dss_model</module-name>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>

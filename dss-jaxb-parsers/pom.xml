@@ -11,6 +11,10 @@
 	<artifactId>dss-jaxb-parsers</artifactId>
 	<name>DSS JAXB Parsers</name>
 	<description>DSS JAXB Parsers contains parsers to parse/print enumerations from/to XML</description>
+	
+	<properties>
+		<module-name>jpms_dss_jaxb_parsers</module-name>
+	</properties>
 
 	<dependencies>
 		<dependency>
