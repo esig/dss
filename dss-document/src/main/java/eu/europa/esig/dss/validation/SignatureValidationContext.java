@@ -598,20 +598,36 @@ public class SignatureValidationContext implements ValidationContext {
 				// skip the revocation check for OCSP certs if no check is specified
 				continue;
 			}
+			
 			boolean found = false;
+			Date earliestNextUpdate = null; // used for informational purpose only
 			for (RevocationToken revocationToken : processedRevocations) {
-				if (Utils.areStringsEqual(certificateToken.getDSSIdAsString(), revocationToken.getRelatedCertificateID()) &&
-						(bestSignatureTime == null || revocationToken.getThisUpdate().after(bestSignatureTime))) {
-					found = true;
-					break;
+				
+				if (Utils.areStringsEqual(certificateToken.getDSSIdAsString(), revocationToken.getRelatedCertificateID())) {
+					if (bestSignatureTime == null || revocationToken.getThisUpdate().after(bestSignatureTime)) {
+						found = true;
+						break;
+						
+					} else {
+						if (revocationToken.getNextUpdate() != null && 
+								(earliestNextUpdate == null || revocationToken.getNextUpdate().before(earliestNextUpdate))) {
+							earliestNextUpdate = revocationToken.getNextUpdate();
+						}
+						
+					}
 				}
 			}
+			
 			if (!found) {
 				if (bestSignatureTime == null) {
 					// simple revocation presence check
 					LOG.debug("No revocation data found for certificate : {}", certificateToken.getDSSIdAsString());
+				} else if (earliestNextUpdate != null) {
+					LOG.warn("No revocation data found after the best signature time [{}] for the certificate : {}. \n"
+							+ "The nextUpdate available after : [{}]",
+							bestSignatureTime, certificateToken.getDSSIdAsString(), earliestNextUpdate);
 				} else {
-					LOG.debug("No revocation data found after the signature time [{}] for certificate : {}", 
+					LOG.warn("No revocation data found after the best signature time [{}] for the certificate : {}", 
 							bestSignatureTime, certificateToken.getDSSIdAsString());
 				}
 				return false;

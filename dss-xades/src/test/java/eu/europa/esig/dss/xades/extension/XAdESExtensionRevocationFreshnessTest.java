@@ -69,7 +69,6 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 		certificateVerifier.setExceptionOnNoRevocationAfterBestSignatureTime(true);
 		XAdESService service = new XAdESService(certificateVerifier);
         service.setTspSource(getGoodTsa());
-        signingAlias = GOOD_USER;
 
 		DSSDocument signedDocument = sign(service, documentToSign);
 		
