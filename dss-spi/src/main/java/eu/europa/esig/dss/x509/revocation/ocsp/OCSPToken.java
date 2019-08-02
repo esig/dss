@@ -54,7 +54,7 @@ import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.RevocationToken;
+import eu.europa.esig.dss.x509.revocation.RevocationToken;
 
 /**
  * OCSP Signed Token which encapsulate BasicOCSPResp (BC).

@@ -23,6 +23,7 @@ package eu.europa.esig.dss.x509;
 import java.util.List;
 
 import eu.europa.esig.dss.x509.revocation.RevocationSourceAlternateUrlsSupport;
+import eu.europa.esig.dss.x509.revocation.RevocationToken;
 
 /**
  * This class allows to inject alternative urls to collect revocation data. This

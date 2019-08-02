@@ -1,7 +1,6 @@
 package eu.europa.esig.dss.x509.revocation;
 
 import eu.europa.esig.dss.client.http.DataLoader;
-import eu.europa.esig.dss.x509.RevocationToken;
 
 /**
  * Sub-interface for online sources of {@link RevocationToken}s

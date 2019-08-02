@@ -2,8 +2,6 @@ package eu.europa.esig.dss.x509.revocation;
 
 import java.util.List;
 
-import eu.europa.esig.dss.x509.RevocationToken;
-
 public interface SignatureRevocationSource<T extends RevocationToken> {
 	
 	/**

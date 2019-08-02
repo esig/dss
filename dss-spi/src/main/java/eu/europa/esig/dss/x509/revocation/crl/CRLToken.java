@@ -37,7 +37,7 @@ import eu.europa.esig.dss.crl.CRLValidity;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.RevocationToken;
+import eu.europa.esig.dss.x509.revocation.RevocationToken;
 
 /**
  * This class represents a CRL and provides the information about its validity.

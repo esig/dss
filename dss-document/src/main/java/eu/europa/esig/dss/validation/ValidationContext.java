@@ -29,7 +29,7 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.RevocationToken;
+import eu.europa.esig.dss.x509.revocation.RevocationToken;
 
 /**
  * This interface allows the implementation of the validators for: certificates, timestamps and revocation data.

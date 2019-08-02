@@ -23,7 +23,6 @@ package eu.europa.esig.dss.x509.revocation;
 import java.io.Serializable;
 
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.RevocationToken;
 
 /**
  * This interface allows to retrieve revocation data for a given certificate.
