@@ -145,6 +145,11 @@ public abstract class AbstractUtilsTest {
 		assertFalse(Utils.isStringDigits("bla"));
 		assertTrue(Utils.isStringDigits("123"));
 		assertFalse(Utils.isStringDigits("123BLA"));
+		assertFalse(Utils.isStringDigits("12 3"));
+		assertFalse(Utils.isStringDigits("12-3"));
+		assertFalse(Utils.isStringDigits("12.3"));
+		assertFalse(Utils.isStringDigits("-123"));
+		assertFalse(Utils.isStringDigits("+123"));
 	}
 
 	@Test

@@ -36,6 +36,8 @@ import com.google.common.base.Ascii;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.io.BaseEncoding;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Closeables;
@@ -89,7 +91,7 @@ public class GoogleGuavaUtils implements IUtils {
 
 	@Override
 	public boolean isStringDigits(String text) {
-		return !Strings.isNullOrEmpty(text) && CharMatcher.digit().matchesAllOf(text);
+		return !Strings.isNullOrEmpty(text) && CharMatcher.inRange('0', '9').matchesAllOf(text);
 	}
 
 	@Override
@@ -290,7 +292,7 @@ public class GoogleGuavaUtils implements IUtils {
 
 	@Override
 	public Collection<File> listFiles(File folder, String[] extensions, boolean recursive) {
-		return Files.fileTreeTraverser().preOrderTraversal(folder).filter(new FilterByExtensions(extensions)).toList();
+		return Lists.newArrayList(Iterables.filter(Files.fileTraverser().depthFirstPostOrder(folder), new FilterByExtensions(extensions)));
 	}
 
 }
