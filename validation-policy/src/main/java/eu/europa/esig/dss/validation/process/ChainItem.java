@@ -200,7 +200,9 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 				xmlConstraint.setInfo(buildXmlName(getErrorMessageTag()));
 			}
 		}
-		xmlConstraint.setAdditionalInfo(getAdditionalInfo());
+		if (!XmlStatus.IGNORED.equals(status)) {
+			xmlConstraint.setAdditionalInfo(getAdditionalInfo());
+		}
 		addConstraint(xmlConstraint);
 	}
 
