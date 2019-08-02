@@ -28,6 +28,7 @@ import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
+import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
 import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
@@ -97,9 +98,10 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 			 * nextUpdate time, the revocation status information will not be
 			 * considered fresh.
 			 */
-			// TODO: check interval between thisUpdate and nextUpdate
-			
-			item = item.setNextItem(nextUpdateCheck(revocationData));
+			TimeConstraint revocationFreshnessConstraint = policy.getRevocationFreshnessConstraint();
+			if (revocationFreshnessConstraint == null || Level.IGNORE.equals(revocationFreshnessConstraint.getLevel())) {
+				item = item.setNextItem(nextUpdateCheck(revocationData));
+			}
 
 			/*
 			 * 2) If the issuance time of the revocation information status is
@@ -107,7 +109,7 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 			 * the building block shall return the indication PASSED. Otherwise
 			 * the building block shall return the indication FAILED.
 			 */
-			item = item.setNextItem(revocationDataFreshCheck(revocationData));
+			item = item.setNextItem(revocationDataFreshCheck(revocationData, revocationFreshnessConstraint));
 
 			item = item.setNextItem(revocationCryptographic(revocationData));
 		}
@@ -123,15 +125,14 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 		return new NextUpdateCheck(result, revocationData, constraint);
 	}
 
-	private ChainItem<XmlRFC> revocationDataFreshCheck(RevocationWrapper revocationData) {
-		TimeConstraint timeConstraint = policy.getRevocationFreshnessConstraint();
+	private ChainItem<XmlRFC> revocationDataFreshCheck(RevocationWrapper revocationData, TimeConstraint revocationFreshnessConstraint) {
 		/*
 		 * The building block shall get the maximum accepted revocation
 		 * freshness from the X.509 validation constraints for the given
 		 * certificate.
 		 */
-		if (timeConstraint != null) {
-			return new RevocationDataFreshCheck(result, revocationData, validationDate, timeConstraint);
+		if (revocationFreshnessConstraint != null) {
+			return new RevocationDataFreshCheck(result, revocationData, validationDate, revocationFreshnessConstraint);
 		}
 		/*
 		 * If the constraints do not contain a value for the maximum accepted

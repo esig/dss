@@ -42,6 +42,8 @@ public final class AdditionalInfo {
 	public static final String KEY_USAGE = "Key usage : {0}";
 
 	public static final String EXTENDED_KEY_USAGE = "Extended key usage : {0}";
+	
+	public static final String REVOCATION_CHECK = "Validation time : {0}; Production time : {1}; NextUpdate time : {2}";
 
 	public static final String NEXT_UPDATE = "Next update : {0}";
 

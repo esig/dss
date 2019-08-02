@@ -20,82 +20,33 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks;
 
-import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
-import eu.europa.esig.dss.enumerations.Indication;
-import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.RuleUtils;
 import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
-import eu.europa.esig.dss.validation.process.AdditionalInfo;
-import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
-public class RevocationDataFreshCheck extends ChainItem<XmlRFC> {
+public class RevocationDataFreshCheck extends AbstractRevocationFreshCheck {
 
-	private final RevocationWrapper revocationData;
-	private final Date validationDate;
 	private final TimeConstraint timeConstraint;
 
 	public RevocationDataFreshCheck(XmlRFC result, RevocationWrapper revocationData, Date validationDate, TimeConstraint constraint) {
-		super(result, constraint);
-
-		this.revocationData = revocationData;
-		this.validationDate = validationDate;
+		super(result, revocationData, validationDate, constraint);
 		this.timeConstraint = constraint;
 	}
 
 	@Override
 	protected boolean process() {
 		if (revocationData != null) {
-			long maxFreshness = getMaxFreshness();
-			long validationDateTime = validationDate.getTime();
-			long limit = validationDateTime - maxFreshness;
-
-			Date productionDate = revocationData.getProductionDate();
-			return productionDate != null && productionDate.after(new Date(limit));
+			return isProductionDateNotBeforeValidationTime();
 		}
 		return false;
 	}
 
-	private long getMaxFreshness() {
+	@Override
+	protected long getMaxFreshness() {
 		return RuleUtils.convertDuration(timeConstraint);
-	}
-
-	@Override
-	protected String getAdditionalInfo() {
-		String nextUpdateString = "not defined";
-		if (revocationData != null && revocationData.getNextUpdate() != null) {
-			SimpleDateFormat sdf = new SimpleDateFormat(AdditionalInfo.DATE_FORMAT);
-			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-			nextUpdateString = sdf.format(revocationData.getNextUpdate());
-		}
-		Object[] params = new Object[] { nextUpdateString };
-		return MessageFormat.format(AdditionalInfo.NEXT_UPDATE, params);
-	}
-
-	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.BBB_RFC_IRIF;
-	}
-
-	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_RFC_IRIF_ANS;
-	}
-
-	@Override
-	protected Indication getFailedIndicationForConclusion() {
-		return Indication.INDETERMINATE;
-	}
-
-	@Override
-	protected SubIndication getFailedSubIndicationForConclusion() {
-		return SubIndication.TRY_LATER;
 	}
 
 }
