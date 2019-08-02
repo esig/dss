@@ -1,9 +1,10 @@
-package eu.europa.esig.dss.x509;
+package eu.europa.esig.dss.validation;
 
 import java.io.Serializable;
 
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+import eu.europa.esig.dss.x509.IssuerSerialInfo;
 
 public class CertificateRef implements Serializable {
 

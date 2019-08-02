@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.x509;
+package eu.europa.esig.dss.validation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +32,10 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.x509.CertificatePool;
+import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.CommonCertificateSource;
+import eu.europa.esig.dss.x509.IssuerSerialInfo;
 
 /**
  * The advanced signature contains a list of certificate that was needed to validate the signature. This class is a

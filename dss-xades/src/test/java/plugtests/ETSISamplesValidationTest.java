@@ -44,9 +44,9 @@ import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.x509.SignatureCertificateSource;
 
 /**
  * This test is only to ensure that we don't have exception with valid? files
