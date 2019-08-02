@@ -20,11 +20,7 @@
  */
 package eu.europa.esig.dss.token;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.security.AuthProvider;
 import java.security.KeyStore;
 import java.security.KeyStore.PasswordProtection;
@@ -49,8 +45,6 @@ import eu.europa.esig.dss.DSSException;
 public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 
 	private static final String SUN_PKCS11_KEYSTORE_TYPE = "PKCS11";
-	private static final String SUN_PKCS11_PROVIDERNAME = "SunPKCS11";
-	private static final String SUN_PKCS11_CLASSNAME = "sun.security.pkcs11.SunPKCS11";
 
 	private static final String NEW_LINE = "\n";
 	private static final String DOUBLE_QUOTE = "\"";
@@ -217,11 +211,7 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 			String configString = buildConfig();
 			LOG.debug("PKCS11 Config : \n{}", configString);
 
-			if (isJavaGreaterOrEquals9()) {
-				provider = getProviderJavaGreaterOrEquals9(configString);
-			} else {
-				provider = getProviderJavaLowerThan9(configString);
-			}
+			provider = SunPKCS11Initializer.getProvider(configString);
 
 			if (provider == null) {
 				throw new DSSException("Unable to create PKCS11 provider");
@@ -233,39 +223,6 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 		return provider;
 	}
 
-	private Provider getProviderJavaLowerThan9(String configString) {
-		try (ByteArrayInputStream bais = new ByteArrayInputStream(configString.getBytes())) {
-			Class<?> sunPkcs11ProviderClass = Class.forName(SUN_PKCS11_CLASSNAME);
-			Constructor<?> constructor = sunPkcs11ProviderClass.getConstructor(InputStream.class);
-			return (Provider) constructor.newInstance(bais);
-		} catch (Exception e) {
-			throw new DSSException("Unable to instantiate PKCS11 (JDK < 9) ", e);
-		}
-	}
-
-	private boolean isJavaGreaterOrEquals9() {
-		try {
-			Provider provider = Security.getProvider(SUN_PKCS11_PROVIDERNAME);
-			if (provider != null) {
-				Method configureMethod = provider.getClass().getMethod("configure", String.class);
-				return configureMethod != null;
-			}
-		} catch (NoSuchMethodException e) {
-			// ignore
-		}
-		return false;
-	}
-
-	private Provider getProviderJavaGreaterOrEquals9(String configString) {
-		try {
-			Provider provider = Security.getProvider(SUN_PKCS11_PROVIDERNAME);
-			Method configureMethod = provider.getClass().getMethod("configure", String.class);
-			// "--" is permitted in the constructor sun.security.pkcs11.Config
-			return (Provider) configureMethod.invoke(provider, "--" + configString);
-		} catch (Exception e) {
-			throw new DSSException("Unable to instantiate PKCS11 (JDK >= 9)", e);
-		}
-	}
 
 	protected String buildConfig() {
 		/*

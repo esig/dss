@@ -10,6 +10,10 @@
 	<name>DSS ASiC with XAdES signature(s)</name>
 	<description>DSS ASiC with XAdES contains the code for the creation and validation of ASiC containers with XAdES signature(s).</description>
 
+	<properties>
+		<module-name>jpms_dss_asic_xades</module-name>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>

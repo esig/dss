@@ -104,11 +104,11 @@
 		<module>dss-simple-report-jaxb</module>
 		<module>dss-simple-certificate-report-jaxb</module>
 	
-		<module>dss-model</module>
-		<module>dss-token</module>
 		<module>dss-utils</module>
 		<module>dss-utils-apache-commons</module>
 		<module>dss-utils-google-guava</module>
+		
+		<module>dss-model</module>
 		<module>dss-crl-parser</module>
 		<module>dss-crl-parser-x509crl</module>
 		<module>dss-crl-parser-stream</module>
@@ -116,6 +116,7 @@
 		<module>dss-document</module>
 		<module>dss-service</module>
 		<module>dss-test</module>
+		<module>dss-token</module>
 		<module>sscd-mocca-adapter</module>
 		<module>validation-policy</module>
 		<module>dss-xades</module>

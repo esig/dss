@@ -10,6 +10,10 @@
 	<name>DSS ASiC Common</name>
 	<description>DSS ASiC-common contains common classes between ASiC C/XAdES.</description>
 
+	<properties>
+		<module-name>jpms_dss_asic_common</module-name>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
