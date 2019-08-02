@@ -24,10 +24,12 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.security.KeyStore.PasswordProtection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.client.crl.OnlineCRLSource;
 import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.client.http.IgnoreDataLoader;
@@ -98,6 +100,8 @@ public abstract class PKIFactoryAccess {
 	protected static final String RSA_SHA3_USER = "sha3-good-user";
 	protected static final String SELF_SIGNED_USER = "self-signed";
 	protected static final String EE_GOOD_USER = "ee-good-user";
+	
+	private static final String DEFAULT_TSA_DATE_FORMAT = "yyyy-MM-dd-HH-mm";
 
 	protected abstract String getSigningAlias();
 
@@ -213,7 +217,19 @@ public abstract class PKIFactoryAccess {
 	}
 
 	private OnlineTSPSource getOnlineTSPSource(String tsaName) {
-		OnlineTSPSource tspSource = new OnlineTSPSource(getTsaUrl(tsaName));
+		return getTSPSourceByUrl(getTsaUrl(tsaName));
+	}
+	
+	protected TSPSource getGoodTsaByTime(Date date) {
+		return getOnlineTSPSourceByNameAndTime(GOOD_TSA, date);
+	}
+	
+	private OnlineTSPSource getOnlineTSPSourceByNameAndTime(String tsaName, Date date) {
+		return getTSPSourceByUrl(getTsaUrl(tsaName, date));
+	}
+	
+	private OnlineTSPSource getTSPSourceByUrl(String tsaUrl) {
+		OnlineTSPSource tspSource = new OnlineTSPSource(tsaUrl);
 		TimestampDataLoader dataLoader = new TimestampDataLoader();
 		dataLoader.setProxyConfig(getProxyConfig());
 		tspSource.setDataLoader(dataLoader);
@@ -222,6 +238,11 @@ public abstract class PKIFactoryAccess {
 
 	private String getTsaUrl(String tsaName) {
 		return PKI_FACTORY_HOST + TSA_ROOT_PATH + tsaName;
+	}
+
+	private String getTsaUrl(String tsaName, Date date) {
+		String dateString = DSSUtils.formatDateWithCustomFormat(date, DEFAULT_TSA_DATE_FORMAT);
+		return PKI_FACTORY_HOST + TSA_ROOT_PATH + dateString + "/" + tsaName;
 	}
 
 	// Allows to configure a proxy

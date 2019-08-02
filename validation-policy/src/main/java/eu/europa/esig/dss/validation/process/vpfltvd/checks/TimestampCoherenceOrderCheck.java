@@ -48,16 +48,14 @@ public class TimestampCoherenceOrderCheck extends ChainItem<XmlValidationProcess
 			return true;
 		}
 
-		Date latestContent = getLatestTimestampProductionDate(timestamps, TimestampType.CONTENT_TIMESTAMP, TimestampType.ALL_DATA_OBJECTS_TIMESTAMP,
-				TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
+		Date latestContent = getLatestTimestampProductionDate(timestamps, TimestampType.getContentTimestampTypes());
 
 		Date earliestSignature = getEarliestTimestampProductionTime(timestamps, TimestampType.SIGNATURE_TIMESTAMP);
 		Date latestSignature = getLatestTimestampProductionDate(timestamps, TimestampType.SIGNATURE_TIMESTAMP);
 
-		Date earliestValidationData = getEarliestTimestampProductionTime(timestamps, TimestampType.VALIDATION_DATA_TIMESTAMP,
-				TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP);
-		Date latestValidationData = getLatestTimestampProductionDate(timestamps, TimestampType.VALIDATION_DATA_TIMESTAMP,
-				TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP);
+		TimestampType[] timestampTypesCoveringValidationData = TimestampType.getTimestampTypesCoveringValidationData();
+		Date earliestValidationData = getEarliestTimestampProductionTime(timestamps, timestampTypesCoveringValidationData);
+		Date latestValidationData = getLatestTimestampProductionDate(timestamps, timestampTypesCoveringValidationData);
 
 		Date earliestArchive = getEarliestTimestampProductionTime(timestamps, TimestampType.ARCHIVE_TIMESTAMP);
 

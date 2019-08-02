@@ -575,7 +575,6 @@ public class SignatureValidationContext implements ValidationContext {
 	@Override
 	public boolean isAllRequiredRevocationDataPresent() {
 		Map<CertificateToken, List<CertificateToken>> orderedCertificateChains = getOrderedCertificateChains();
-		// TODO: check thisUpdate after the last usage
 		for (List<CertificateToken> orderedCertChain : orderedCertificateChains.values()) {
 			if (!checkRevocationPresentForCertificateChain(orderedCertChain)) {
 				return false;
@@ -727,9 +726,11 @@ public class SignatureValidationContext implements ValidationContext {
 	private Date getEarliestTimestampTime() {
 		Date earliestDate = null;
 		for (TimestampToken timestamp : getProcessedTimestamps()) {
-			Date timestampTime = timestamp.getCreationDate();
-			if (earliestDate == null || timestampTime.before(earliestDate)) {
-				earliestDate = timestampTime;
+			if (timestamp.getTimeStampType().coversSignature()) {
+				Date timestampTime = timestamp.getCreationDate();
+				if (earliestDate == null || timestampTime.before(earliestDate)) {
+					earliestDate = timestampTime;
+				}
 			}
 		}
 		return earliestDate;

@@ -748,7 +748,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 			throw new DSSException("Timestamp token must be validated first !");
 		}
 
-		if (!TimestampType.ARCHIVE_TIMESTAMP.equals(timestamp.getTimeStampType())) {
+		if (!timestamp.getTimeStampType().isArchivalTimestamp()) {
 			throw new DSSException("Only archival timestamp is allowed !");
 		}
 

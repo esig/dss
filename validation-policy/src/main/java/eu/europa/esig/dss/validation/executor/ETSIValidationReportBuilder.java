@@ -952,7 +952,7 @@ public class ETSIValidationReportBuilder {
 		List<TimestampWrapper> docTimestamps = sigWrapper.getTimestampListByLocation(TimestampLocation.DOC_TIMESTAMP);
 		timestampListByType.removeAll(docTimestamps);
 
-		boolean isSigned = sigWrapper.isBLevelTechnicallyValid() && isSignedAttribute(timestampType);
+		boolean isSigned = sigWrapper.isBLevelTechnicallyValid() && timestampType.isContentTimestamp();
 
 		for (TimestampWrapper timestampWrapper : timestampListByType) {
 			SATimestampType timestamp = getSATimestampType(timestampWrapper);
@@ -962,11 +962,6 @@ public class ETSIValidationReportBuilder {
 			}
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(wrap);
 		}
-	}
-
-	private boolean isSignedAttribute(TimestampType timestampType) {
-		return TimestampType.CONTENT_TIMESTAMP.equals(timestampType) || TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP.equals(timestampType)
-				|| TimestampType.ALL_DATA_OBJECTS_TIMESTAMP.equals(timestampType);
 	}
 
 	private void addTimestampsByLocation(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper, TimestampLocation timestampLocation) {

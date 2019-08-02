@@ -27,7 +27,6 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
@@ -46,9 +45,7 @@ public class ContentTimestampCheck extends ChainItem<XmlSAV> {
 		List<TimestampWrapper> timestampList = signature.getTimestampList();
 
 		for (TimestampWrapper timestampWrapper : timestampList) {
-			if (TimestampType.CONTENT_TIMESTAMP.equals(timestampWrapper.getType())
-					|| TimestampType.ALL_DATA_OBJECTS_TIMESTAMP.equals(timestampWrapper.getType())
-					|| TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP.equals(timestampWrapper.getType())) {
+			if (timestampWrapper.getType().isContentTimestamp()) {
 				return true;
 			}
 		}

@@ -45,8 +45,6 @@ public final class AdditionalInfo {
 	
 	public static final String REVOCATION_CHECK = "Validation time : {0}; Production time : {1}; NextUpdate time : {2}";
 
-	public static final String NEXT_UPDATE = "Next update : {0}";
-
 	public static final String PSEUDO = "Pseudo : {0}";
 
 	public static final String REVOCATION = "Revocation reason : {0} (date : {1})";

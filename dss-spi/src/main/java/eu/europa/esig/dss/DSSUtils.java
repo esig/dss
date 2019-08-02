@@ -108,7 +108,11 @@ public final class DSSUtils {
 	 * @return the textual representation (a null date will result in "N/A")
 	 */
 	public static String formatInternal(final Date date) {
-		return (date == null) ? "N/A" : new SimpleDateFormat(DEFAULT_DATE_TIME_FORMAT).format(date);
+		return formatDateWithCustomFormat(date, DEFAULT_DATE_TIME_FORMAT);
+	}
+	
+	public static String formatDateWithCustomFormat(final Date date, final String format) {
+		return (date == null) ? "N/A" : new SimpleDateFormat(format).format(date);
 	}
 
 	/**

@@ -44,7 +44,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 	@Override
 	public byte[] getContentTimestampData(final TimestampToken timestampToken) {
 		final TimestampType timeStampType = timestampToken.getTimeStampType();
-		if (!TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP.equals(timeStampType) && !TimestampType.ALL_DATA_OBJECTS_TIMESTAMP.equals(timeStampType)) {
+		if (!timeStampType.isContentTimestamp()) {
 			return null;
 		}
 

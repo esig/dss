@@ -20,19 +20,97 @@
  */
 package eu.europa.esig.dss.enumerations;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Source of the timestamp
+ * Type of the timestamp
  *
  */
 public enum TimestampType {
 	
-	CONTENT_TIMESTAMP, // CAdES: id-aa-ets-contentTimestamp
-	ALL_DATA_OBJECTS_TIMESTAMP, // XAdES: AllDataObjectsTimestamp
-	INDIVIDUAL_DATA_OBJECTS_TIMESTAMP, // XAdES: IndividualDataObjectsTimeStamp
-	SIGNATURE_TIMESTAMP, // CAdES: id-aa-signatureTimeStampToken, XAdES: SignatureTimeStamp
-	VALIDATION_DATA_REFSONLY_TIMESTAMP, // CAdES: id-aa-ets-certCRLTimestamp, XAdES: RefsOnlyTimeStamp
-	VALIDATION_DATA_TIMESTAMP, // CAdES: id-aa-ets-escTimeStamp, XAdES: SigAndRefsTimeStamp
-	ARCHIVE_TIMESTAMP; // CAdES: id-aa-ets-archiveTimestamp, XAdES: ArchiveTimeStamp, PAdES-LTV
-						// "document timestamp"
+	// CAdES: id-aa-ets-contentTimestamp
+	CONTENT_TIMESTAMP(true, false, false, false),
+	
+	// XAdES: AllDataObjectsTimestamp
+	ALL_DATA_OBJECTS_TIMESTAMP(true, false, false, false),
+	
+	// XAdES: IndividualDataObjectsTimeStamp
+	INDIVIDUAL_DATA_OBJECTS_TIMESTAMP(true, false, false, false),
+	
+	// CAdES: id-aa-signatureTimeStampToken, XAdES: SignatureTimeStamp
+	SIGNATURE_TIMESTAMP(false, true, false, false),
+	
+	// CAdES: id-aa-ets-certCRLTimestamp, XAdES: RefsOnlyTimeStamp
+	VALIDATION_DATA_REFSONLY_TIMESTAMP(false, false, true, false),
+	
+	// CAdES: id-aa-ets-escTimeStamp, XAdES: SigAndRefsTimeStamp
+	VALIDATION_DATA_TIMESTAMP(false, true, true, false),
+	
+	// CAdES: id-aa-ets-archiveTimestamp, XAdES: ArchiveTimeStamp, PAdES-LTV, "document timestamp"
+	ARCHIVE_TIMESTAMP(false, true, true, true);
+	
+	/* TRUE if the timestamp is a Content timestamp */
+	private boolean contentTimestamp;
+	
+	/* TRUE if the timestamp covers a Signature */
+	private boolean coversSignarture;
+
+	/* TRUE if the timestamp covers a ValidationData (certificates or revocation) */
+	private boolean coversValidationData;
+	
+	/* TRUE if the timestamp is an Archival one */
+	private boolean archivalTimestamp;
+	
+	private TimestampType(boolean contentTimestamp, boolean coversSignature, boolean coversValidationData, boolean archivalTimestamp) {
+		this.contentTimestamp = contentTimestamp;
+		this.coversSignarture = coversSignature;
+		this.coversValidationData = coversValidationData;
+		this.archivalTimestamp = archivalTimestamp;
+	}
+	
+	public boolean isContentTimestamp() {
+		return contentTimestamp;
+	}
+	
+	public boolean coversSignature() {
+		return coversSignarture;
+	}
+	
+	public boolean coversValidationData() {
+		return coversValidationData;
+	}
+	
+	public boolean isArchivalTimestamp() {
+		return archivalTimestamp;
+	}
+	
+	/**
+	 * Returns an array of all available content timestamps
+	 * @return array of content {@link TimestampType}
+	 */
+	public static TimestampType[] getContentTimestampTypes() {
+		List<TimestampType> contentTimestamps = new ArrayList<TimestampType>();
+		for (TimestampType timestampType : values()) {
+			if (timestampType.isContentTimestamp()) {
+				contentTimestamps.add(timestampType);
+			}
+		}
+		return contentTimestamps.toArray(new TimestampType[contentTimestamps.size()]);
+	}
+
+	/**
+	 * Returns an array of all available timestamps covering Validation Data
+	 * @return array of {@link TimestampType}s that cover Validation Data
+	 */
+	public static TimestampType[] getTimestampTypesCoveringValidationData() {
+		List<TimestampType> contentTimestamps = new ArrayList<TimestampType>();
+		for (TimestampType timestampType : values()) {
+			if (timestampType.coversValidationData()) {
+				contentTimestamps.add(timestampType);
+			}
+		}
+		return contentTimestamps.toArray(new TimestampType[contentTimestamps.size()]);
+	}
 
 }

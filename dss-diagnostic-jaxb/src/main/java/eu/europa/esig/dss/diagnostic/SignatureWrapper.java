@@ -185,15 +185,6 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return tsps;
 	}
 
-	public Set<TimestampWrapper> getAllTimestampsNotArchival() {
-		Set<TimestampWrapper> notArchivalTimestamps = new HashSet<TimestampWrapper>();
-		notArchivalTimestamps.addAll(getTimestampListByType(TimestampType.SIGNATURE_TIMESTAMP));
-		notArchivalTimestamps.addAll(getTimestampListByType(TimestampType.CONTENT_TIMESTAMP));
-		notArchivalTimestamps.addAll(getTimestampListByType(TimestampType.ALL_DATA_OBJECTS_TIMESTAMP));
-		notArchivalTimestamps.addAll(getTimestampListByType(TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP));
-		return notArchivalTimestamps;
-	}
-
 	public boolean isSignatureProductionPlacePresent() {
 		return signature.getSignatureProductionPlace() != null;
 	}
