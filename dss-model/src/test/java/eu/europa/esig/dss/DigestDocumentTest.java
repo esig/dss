@@ -24,11 +24,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.Security;
+import java.util.Base64;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Test;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.utils.Utils;
 
 public class DigestDocumentTest {
 
@@ -61,15 +64,17 @@ public class DigestDocumentTest {
 	}
 
 	@Test
-	public void defaultConstructorTest() throws IOException {
+	public void defaultConstructorTest() throws IOException, NoSuchAlgorithmException {
+		Security.addProvider(new BouncyCastleProvider());
 		byte[] stringToEncode = "aaa".getBytes();
 		DigestDocument doc = new DigestDocument();
 		for (DigestAlgorithm digestAlgorithm : DigestAlgorithm.values()) {
-			doc.addDigest(digestAlgorithm, Utils.toBase64(DSSUtils.digest(digestAlgorithm, stringToEncode)));
+			doc.addDigest(digestAlgorithm, Base64.getEncoder().encodeToString(digestAlgorithm.getMessageDigest().digest(stringToEncode)));
 		}
 		for (DigestAlgorithm digestAlgorithm : DigestAlgorithm.values()) {
 			assertNotNull(doc.getDigest(digestAlgorithm));
 		}
+		Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME);
 	}
 
 }

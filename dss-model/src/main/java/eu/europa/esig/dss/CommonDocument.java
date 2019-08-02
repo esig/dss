@@ -25,10 +25,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.security.MessageDigest;
+import java.util.Base64;
 import java.util.EnumMap;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.utils.Utils;
 
 /**
  * This class implements the default methods.
@@ -97,9 +98,19 @@ public abstract class CommonDocument implements DSSDocument {
 	public String getDigest(final DigestAlgorithm digestAlgorithm) {
 		String base64EncodeDigest = base64EncodeDigestMap.get(digestAlgorithm);
 		if (base64EncodeDigest == null) {
-			final byte[] digestBytes = DSSUtils.digest(digestAlgorithm, this);
-			base64EncodeDigest = Utils.toBase64(digestBytes);
-			base64EncodeDigestMap.put(digestAlgorithm, base64EncodeDigest);
+			try (InputStream is = openStream()) {
+				MessageDigest messageDigest = digestAlgorithm.getMessageDigest();
+				final byte[] buffer = new byte[4096];
+				int count = 0;
+				while ((count = is.read(buffer)) > 0) {
+					messageDigest.update(buffer, 0, count);
+				}
+				final byte[] digestBytes = messageDigest.digest();
+				base64EncodeDigest = Base64.getEncoder().encodeToString(digestBytes);
+				base64EncodeDigestMap.put(digestAlgorithm, base64EncodeDigest);
+			} catch (Exception e) {
+				throw new DSSException("Unable to compute the digest", e);
+			}
 		}
 		return base64EncodeDigest;
 	}

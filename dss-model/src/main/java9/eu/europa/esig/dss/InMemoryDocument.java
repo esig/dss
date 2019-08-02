@@ -21,9 +21,9 @@
 package eu.europa.esig.dss;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-
-import eu.europa.esig.dss.utils.Utils;
+import java.util.Base64;
 
 /**
  * In memory representation of a document
@@ -83,7 +83,7 @@ public class InMemoryDocument extends CommonDocument {
 	 *            input stream representing the document
 	 */
 	public InMemoryDocument(final InputStream inputStream) {
-		this(DSSUtils.toByteArray(inputStream), null, null);
+		this(toByteArray(inputStream), null, null);
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class InMemoryDocument extends CommonDocument {
 	 *            the file name if the data originates from a file
 	 */
 	public InMemoryDocument(final InputStream inputStream, final String name) {
-		this(DSSUtils.toByteArray(inputStream), name);
+		this(toByteArray(inputStream), name);
 	}
 
 	/**
@@ -109,7 +109,15 @@ public class InMemoryDocument extends CommonDocument {
 	 *            the mime type of the file if the data originates from a file
 	 */
 	public InMemoryDocument(final InputStream inputStream, final String name, final MimeType mimeType) {
-		this(DSSUtils.toByteArray(inputStream), name, mimeType);
+		this(toByteArray(inputStream), name, mimeType);
+	}
+
+	private static byte[] toByteArray(InputStream inputStream) {
+		try (InputStream is = inputStream) {
+			return is.readAllBytes();
+		} catch (Exception e) {
+			throw new DSSException("Unable to fully read the InputStream", e);
+		}
 	}
 
 	@Override
@@ -126,7 +134,7 @@ public class InMemoryDocument extends CommonDocument {
 	}
 
 	public String getBase64Encoded() {
-		return Utils.toBase64(bytes);
+		return Base64.getEncoder().encodeToString(bytes);
 	}
 
 }

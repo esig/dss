@@ -21,6 +21,8 @@
 package eu.europa.esig.dss;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 /**
@@ -61,7 +63,11 @@ public class FileDocument extends CommonDocument {
 
 	@Override
 	public InputStream openStream() {
-		return DSSUtils.toInputStream(file);
+		try {
+			return new FileInputStream(file);
+		} catch (FileNotFoundException e) {
+			throw new DSSException("Unable to create a FileInputStream", e);
+		}
 	}
 
 	public boolean exists() {

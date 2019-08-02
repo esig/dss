@@ -22,10 +22,10 @@ package eu.europa.esig.dss;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Base64;
 import java.util.Map.Entry;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.utils.Utils;
 
 /**
  * Digest representation of a {@code DSSDocument}. It can be used to handle a large file to be signed. The computation
@@ -92,9 +92,9 @@ public class DigestDocument extends CommonDocument {
 	}
 	
 	public Digest getExistingDigest() {
-		if (Utils.isMapNotEmpty(base64EncodeDigestMap)) {
+		if (base64EncodeDigestMap != null) {
 			Entry<DigestAlgorithm, String> digestEntry = base64EncodeDigestMap.entrySet().iterator().next();
-			return new Digest(digestEntry.getKey(), Utils.fromBase64(digestEntry.getValue()));
+			return new Digest(digestEntry.getKey(), Base64.getDecoder().decode(digestEntry.getValue()));
 		}
 		throw new DSSException("The DigestDocument does not contain any digest! You must specify it by using addDigest() method.");
 	}
