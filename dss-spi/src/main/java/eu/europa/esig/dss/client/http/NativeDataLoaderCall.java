@@ -34,7 +34,7 @@ import eu.europa.esig.dss.utils.Utils;
 
 public class NativeDataLoaderCall implements Callable<byte[]> {
 
-	private static final String ERROR_MESSAGE = "An error occured while reading from url '%s' : %s";
+	private static final String ERROR_MESSAGE = "An error occurred while reading from url '%s' : %s";
 	
 	private String url;
 	private byte[] content;
