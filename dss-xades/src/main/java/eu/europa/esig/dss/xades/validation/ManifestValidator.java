@@ -170,9 +170,11 @@ public class ManifestValidator {
 	}
 
 	private DSSDocument findByFilename(String filename) {
-		for (DSSDocument dssDocument : detachedContents) {
-			if (Utils.areStringsEqual(filename, dssDocument.getName())) {
-				return dssDocument;
+		if (detachedContents != null) {
+			for (DSSDocument dssDocument : detachedContents) {
+				if (Utils.areStringsEqual(filename, dssDocument.getName())) {
+					return dssDocument;
+				}
 			}
 		}
 		return null;
