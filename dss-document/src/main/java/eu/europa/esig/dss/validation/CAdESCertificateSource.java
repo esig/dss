@@ -179,7 +179,7 @@ public class CAdESCertificateSource extends CMSCertificateSource {
 
 			final IssuerSerial issuerSerial = essCertID.getIssuerSerial();
 			if (issuerSerial != null) {
-				certRef.setIssuerInfo(DSSASN1Utils.getIssuerInfo(issuerSerial));
+				certRef.setIssuerInfo(getIssuerInfo(issuerSerial));
 			}
 			certRef.setOrigin(location);
 
@@ -214,7 +214,7 @@ public class CAdESCertificateSource extends CMSCertificateSource {
 			}
 			final IssuerSerial issuerSerial = essCertIDv2.getIssuerSerial();
 			if (issuerSerial != null) {
-				certRef.setIssuerInfo(DSSASN1Utils.getIssuerInfo(issuerSerial));
+				certRef.setIssuerInfo(getIssuerInfo(issuerSerial));
 			}
 			certRef.setOrigin(location);
 			certificateRefs.add(certRef);

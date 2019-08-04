@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.x509;
+package eu.europa.esig.dss.validation;
 
 import java.math.BigInteger;
 

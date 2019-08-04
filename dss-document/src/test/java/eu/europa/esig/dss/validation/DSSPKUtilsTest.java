@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss;
+package eu.europa.esig.dss.validation;
 
 import static org.junit.Assert.assertEquals;
 
@@ -26,6 +26,7 @@ import java.io.File;
 
 import org.junit.Test;
 
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.x509.CertificateToken;
 

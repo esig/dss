@@ -56,7 +56,6 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificatePolicy;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.IssuerSerialInfo;
 
 public class DSSASN1UtilsTest {
 
@@ -208,7 +207,7 @@ public class DSSASN1UtilsTest {
 	}
 
 	@Test
-	public void getIssuerSerial() {
+	public void getIssuerSerialFromCert() {
 		IssuerSerial issuerSerial = DSSASN1Utils.getIssuerSerial(certificateWithAIA);
 		assertNotNull(issuerSerial);
 		assertNotNull(issuerSerial.getIssuer());
@@ -267,10 +266,10 @@ public class DSSASN1UtilsTest {
 	@Test
 	public void getIssuerInfo() {
 		String issuerV2base64 = "MFYwUaRPME0xEDAOBgNVBAMMB2dvb2QtY2ExGTAXBgNVBAoMEE5vd2luYSBTb2x1dGlvbnMxETAPBgNVBAsMCFBLSS1URVNUMQswCQYDVQQGEwJMVQIBCg==";
-		IssuerSerialInfo issuerInfo = DSSASN1Utils.getIssuerInfo(Utils.fromBase64(issuerV2base64));
+		IssuerSerial issuerInfo = DSSASN1Utils.getIssuerSerial(Utils.fromBase64(issuerV2base64));
 		assertNotNull(issuerInfo);
-		assertNotNull(issuerInfo.getIssuerName());
-		assertNotNull(issuerInfo.getSerialNumber());
+		assertNotNull(issuerInfo.getIssuer());
+		assertNotNull(issuerInfo.getSerial());
 	}
 
 	@Test

@@ -28,6 +28,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.security.auth.x500.X500Principal;
+
+import org.bouncycastle.asn1.ASN1Encoding;
+import org.bouncycastle.asn1.ASN1Integer;
+import org.bouncycastle.asn1.x509.GeneralName;
+import org.bouncycastle.asn1.x509.GeneralNames;
+import org.bouncycastle.asn1.x509.IssuerSerial;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
@@ -35,7 +45,6 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.CommonCertificateSource;
-import eu.europa.esig.dss.x509.IssuerSerialInfo;
 
 /**
  * The advanced signature contains a list of certificate that was needed to validate the signature. This class is a
@@ -45,6 +54,8 @@ import eu.europa.esig.dss.x509.IssuerSerialInfo;
  */
 @SuppressWarnings("serial")
 public abstract class SignatureCertificateSource extends CommonCertificateSource {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(SignatureCertificateSource.class);
 	
 	/**
 	 * Contains a list of all found {@link CertificateRef}s
@@ -298,6 +309,31 @@ public abstract class SignatureCertificateSource extends CommonCertificateSource
 			}
 		}
 		return orphanCertificateRefs;
+	}
+
+	protected IssuerSerialInfo getIssuerInfo(IssuerSerial issuerAndSerial) {
+		try {
+			IssuerSerialInfo issuerInfo = new IssuerSerialInfo();
+			GeneralNames gnames = issuerAndSerial.getIssuer();
+			if (gnames != null) {
+				GeneralName[] names = gnames.getNames();
+				if (names.length == 1) {
+					issuerInfo.setIssuerName(new X500Principal(names[0].getName().toASN1Primitive().getEncoded(ASN1Encoding.DER)));
+				} else {
+					LOG.warn("More than one GeneralName");
+				}
+			}
+
+			ASN1Integer serialNumber = issuerAndSerial.getSerial();
+			if (serialNumber != null) {
+				issuerInfo.setSerialNumber(serialNumber.getValue());
+			}
+
+			return issuerInfo;
+		} catch (Exception e) {
+			LOG.error("Unable to read the IssuerSerial object", e);
+			return null;
+		}
 	}
 
 }

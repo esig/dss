@@ -17,7 +17,6 @@ import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
@@ -88,7 +87,7 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 						certRef.setCertDigest(new Digest(digestAlgo, otherCertId.getCertHash()));
 						IssuerSerial issuerSerial = otherCertId.getIssuerSerial();
 						if (issuerSerial != null) {
-							certRef.setIssuerInfo(DSSASN1Utils.getIssuerInfo(issuerSerial));
+							certRef.setIssuerInfo(getIssuerInfo(issuerSerial));
 						}
 						certRef.setOrigin(location);
 						result.add(certRef);
