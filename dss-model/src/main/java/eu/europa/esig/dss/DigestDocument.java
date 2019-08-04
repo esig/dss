@@ -92,7 +92,7 @@ public class DigestDocument extends CommonDocument {
 	}
 	
 	public Digest getExistingDigest() {
-		if (base64EncodeDigestMap != null) {
+		if (!base64EncodeDigestMap.isEmpty()) {
 			Entry<DigestAlgorithm, String> digestEntry = base64EncodeDigestMap.entrySet().iterator().next();
 			return new Digest(digestEntry.getKey(), Base64.getDecoder().decode(digestEntry.getValue()));
 		}
