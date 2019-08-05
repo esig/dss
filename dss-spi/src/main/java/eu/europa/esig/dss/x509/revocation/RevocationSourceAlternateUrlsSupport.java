@@ -22,7 +22,7 @@ package eu.europa.esig.dss.x509.revocation;
 
 import java.util.List;
 
-import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 
 public interface RevocationSourceAlternateUrlsSupport<T extends RevocationToken> extends RevocationSource<T> {
 

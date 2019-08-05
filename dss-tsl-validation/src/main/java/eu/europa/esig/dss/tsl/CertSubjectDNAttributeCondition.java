@@ -30,8 +30,8 @@ import javax.security.auth.x500.X500Principal;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 
 import eu.europa.esig.dss.DSSASN1Utils;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
  * CertSubjectDNAttribute

@@ -30,9 +30,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.xades.ManifestNamespace;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.validation.ManifestFile;
 
 public class ASiCEWithXAdESManifestParser {

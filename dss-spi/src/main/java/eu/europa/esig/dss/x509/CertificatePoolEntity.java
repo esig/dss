@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 
 /**
  * This class re-groups equivalent certificates.

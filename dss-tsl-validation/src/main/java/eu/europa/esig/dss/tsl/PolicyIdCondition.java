@@ -23,8 +23,8 @@ package eu.europa.esig.dss.tsl;
 import java.util.List;
 
 import eu.europa.esig.dss.DSSASN1Utils;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.x509.CertificatePolicy;
-import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
  * Checks if a certificate has a specific policy OID.<br>

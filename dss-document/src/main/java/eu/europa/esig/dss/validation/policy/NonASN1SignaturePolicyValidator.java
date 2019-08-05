@@ -24,7 +24,7 @@ import java.util.Arrays;
 
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.Digest;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignaturePolicy;
 

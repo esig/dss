@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.security.Provider;
 
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.model.DSSException;
 
 public final class SunPKCS11Initializer {
 

@@ -22,7 +22,7 @@ package eu.europa.esig.dss.pades;
 
 import java.awt.Color;
 
-import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 
 /**

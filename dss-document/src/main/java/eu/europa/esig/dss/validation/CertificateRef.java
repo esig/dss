@@ -2,8 +2,8 @@ package eu.europa.esig.dss.validation;
 
 import java.io.Serializable;
 
-import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+import eu.europa.esig.dss.model.Digest;
 
 public class CertificateRef implements Serializable {
 

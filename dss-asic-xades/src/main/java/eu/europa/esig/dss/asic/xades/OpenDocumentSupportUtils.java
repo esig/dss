@@ -23,8 +23,8 @@ package eu.europa.esig.dss.asic.xades;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
+import eu.europa.esig.dss.model.DSSDocument;
 
 public final class OpenDocumentSupportUtils {
 

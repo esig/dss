@@ -22,7 +22,7 @@ package eu.europa.esig.dss.asic.cades.extension.asics;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.asic.cades.extension.AbstractTestASiCwithCAdESExtension;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;

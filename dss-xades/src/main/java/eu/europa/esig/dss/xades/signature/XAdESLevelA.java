@@ -22,11 +22,11 @@ package eu.europa.esig.dss.xades.signature;
 
 import org.w3c.dom.Element;
 
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.TimestampParameters;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 
 /**

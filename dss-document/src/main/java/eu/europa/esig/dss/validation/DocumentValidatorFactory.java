@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation;
 
-import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.model.DSSDocument;
 
 /**
  * This interface defines the factory to create a {@link DocumentValidator} for

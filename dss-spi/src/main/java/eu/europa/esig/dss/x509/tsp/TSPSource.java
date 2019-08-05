@@ -24,7 +24,7 @@ import java.io.Serializable;
 
 import org.bouncycastle.tsp.TimeStampToken;
 
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
 /**

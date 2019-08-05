@@ -27,6 +27,7 @@ import java.util.Set;
 import javax.security.auth.x500.X500Principal;
 
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 
 /**
  * The validation of a certificate requires to access some other certificates from multiple sources (Trusted List, Trust

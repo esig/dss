@@ -21,9 +21,9 @@
 package eu.europa.esig.dss.signature;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.SignatureValue;
-import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.ToBeSigned;
 
 public abstract class AbstractPkiFactoryTestDocumentSignatureService<SP extends AbstractSignatureParameters> extends AbstractPkiFactoryTestSignature<SP> {
 

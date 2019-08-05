@@ -30,8 +30,9 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.utils.Utils;
 
 public class KeyStoreCertificateSourceTest {

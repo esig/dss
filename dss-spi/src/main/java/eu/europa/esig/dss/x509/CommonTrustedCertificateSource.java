@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.tsl.ServiceInfo;
 
 /**

@@ -28,7 +28,7 @@ import java.util.Date;
 import org.bouncycastle.asn1.x509.ReasonFlags;
 
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
-import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 
 /**
  * This class encapsulates all information related to the validity of a CRL. It

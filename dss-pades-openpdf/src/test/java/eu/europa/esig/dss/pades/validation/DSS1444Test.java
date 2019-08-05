@@ -29,8 +29,8 @@ import org.junit.Test;
 
 import com.lowagie.text.pdf.PdfReader;
 
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.InMemoryDocument;
 
 public class DSS1444Test {
 

@@ -31,10 +31,10 @@ import org.bouncycastle.asn1.esf.CrlValidatedID;
 import org.bouncycastle.asn1.esf.OtherHash;
 import org.bouncycastle.asn1.x500.X500Name;
 
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.Digest;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.x509.revocation.RevocationRef;
 
 /**

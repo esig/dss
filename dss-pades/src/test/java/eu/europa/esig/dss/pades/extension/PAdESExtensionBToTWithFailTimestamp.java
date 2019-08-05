@@ -22,7 +22,7 @@ package eu.europa.esig.dss.pades.extension;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 

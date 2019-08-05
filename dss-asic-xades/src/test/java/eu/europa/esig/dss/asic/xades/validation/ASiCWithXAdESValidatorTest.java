@@ -3,8 +3,8 @@ package eu.europa.esig.dss.asic.xades.validation;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.AbstractTestValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 

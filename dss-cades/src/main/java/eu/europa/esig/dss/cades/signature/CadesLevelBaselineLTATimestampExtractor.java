@@ -60,9 +60,9 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
  * Extracts the necessary information to compute the CAdES Archive Timestamp V3.
@@ -168,13 +168,15 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	}
 
 	/**
-	 * The field certificatesHashIndex is a sequence of octet strings. Each one contains the hash value of one
-	 * instance of CertificateChoices within certificates field of the root SignedData. A hash value for
-	 * every instance of CertificateChoices, as present at the time when the corresponding archive time-stamp is
-	 * requested, shall be included in certificatesHashIndex. No other hash value shall be included in this field.
+	 * The field certificatesHashIndex is a sequence of octet strings. Each one
+	 * contains the hash value of one instance of CertificateChoices within
+	 * certificates field of the root SignedData. A hash value for every instance of
+	 * CertificateChoices, as present at the time when the corresponding archive
+	 * time-stamp is requested, shall be included in certificatesHashIndex. No other
+	 * hash value shall be included in this field.
 	 *
 	 * @return
-	 * @throws eu.europa.esig.dss.DSSException
+	 * @throws eu.europa.esig.dss.model.DSSException
 	 */
 	private ASN1Sequence getCertificatesHashIndex() {
 
@@ -193,13 +195,15 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	}
 
 	/**
-	 * The field certificatesHashIndex is a sequence of octet strings. Each one contains the hash value of one
-	 * instance of CertificateChoices within certificates field of the root SignedData. A hash value for
-	 * every instance of CertificateChoices, as present at the time when the corresponding archive time-stamp is
-	 * requested, shall be included in certificatesHashIndex. No other hash value shall be included in this field.
+	 * The field certificatesHashIndex is a sequence of octet strings. Each one
+	 * contains the hash value of one instance of CertificateChoices within
+	 * certificates field of the root SignedData. A hash value for every instance of
+	 * CertificateChoices, as present at the time when the corresponding archive
+	 * time-stamp is requested, shall be included in certificatesHashIndex. No other
+	 * hash value shall be included in this field.
 	 *
 	 * @return
-	 * @throws eu.europa.esig.dss.DSSException
+	 * @throws eu.europa.esig.dss.model.DSSException
 	 */
 	private ASN1Sequence getVerifiedCertificatesHashIndex(final ASN1Sequence timestampHashIndex) {
 
@@ -227,13 +231,15 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	}
 
 	/**
-	 * The field crlsHashIndex is a sequence of octet strings. Each one contains the hash value of one instance of
-	 * RevocationInfoChoice within crls field of the root SignedData. A hash value for every instance of
-	 * RevocationInfoChoice, as present at the time when the corresponding archive time-stamp is requested, shall be
-	 * included in crlsHashIndex. No other hash values shall be included in this field.
+	 * The field crlsHashIndex is a sequence of octet strings. Each one contains the
+	 * hash value of one instance of RevocationInfoChoice within crls field of the
+	 * root SignedData. A hash value for every instance of RevocationInfoChoice, as
+	 * present at the time when the corresponding archive time-stamp is requested,
+	 * shall be included in crlsHashIndex. No other hash values shall be included in
+	 * this field.
 	 *
 	 * @return
-	 * @throws eu.europa.esig.dss.DSSException
+	 * @throws eu.europa.esig.dss.model.DSSException
 	 */
 	@SuppressWarnings("unchecked")
 	private ASN1Sequence getCRLsHashIndex() {
@@ -265,13 +271,15 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	}
 
 	/**
-	 * The field crlsHashIndex is a sequence of octet strings. Each one contains the hash value of one instance of
-	 * RevocationInfoChoice within crls field of the root SignedData. A hash value for every instance of
-	 * RevocationInfoChoice, as present at the time when the corresponding archive time-stamp is requested, shall be
-	 * included in crlsHashIndex. No other hash values shall be included in this field.
+	 * The field crlsHashIndex is a sequence of octet strings. Each one contains the
+	 * hash value of one instance of RevocationInfoChoice within crls field of the
+	 * root SignedData. A hash value for every instance of RevocationInfoChoice, as
+	 * present at the time when the corresponding archive time-stamp is requested,
+	 * shall be included in crlsHashIndex. No other hash values shall be included in
+	 * this field.
 	 *
 	 * @return
-	 * @throws eu.europa.esig.dss.DSSException
+	 * @throws eu.europa.esig.dss.model.DSSException
 	 */
 	@SuppressWarnings("unchecked")
 	private ASN1Sequence getVerifiedCRLsHashIndex(final ASN1Sequence timestampHashIndex) {

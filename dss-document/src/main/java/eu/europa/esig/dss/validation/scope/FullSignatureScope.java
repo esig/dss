@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.validation.scope;
 
-import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
+import eu.europa.esig.dss.model.Digest;
 
 /**
  * Marker class meaning that the signature covers the whole document.

@@ -10,12 +10,12 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.crl.CRLValidity;
+import eu.europa.esig.dss.model.FileDocument;
 
 public class CRLTokenTest {
 

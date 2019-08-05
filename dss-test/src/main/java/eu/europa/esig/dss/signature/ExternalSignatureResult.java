@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.signature;
 
-import eu.europa.esig.dss.SignatureValue;
-import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 
 /**
  * Class used during test to represent the result returned by

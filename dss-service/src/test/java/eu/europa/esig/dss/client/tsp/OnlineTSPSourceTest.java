@@ -25,7 +25,7 @@ import static org.junit.Assert.assertNotNull;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.client.SecureRandomNonceSource;
 import eu.europa.esig.dss.client.http.NativeHTTPDataLoader;

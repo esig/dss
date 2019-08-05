@@ -26,7 +26,7 @@ import java.security.cert.X509CRLEntry;
 import java.util.Iterator;
 import java.util.ServiceLoader;
 
-import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 
 public class CRLUtils {
 

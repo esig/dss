@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.x509.revocation;
 
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.model.DSSException;
 
 public class RevocationException extends DSSException {
 	

@@ -29,8 +29,9 @@ import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
-import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
+import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 
 /**
  * This source of certificates handles any non trusted certificates. (ex: intermediate certificates used in building

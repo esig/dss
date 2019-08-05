@@ -32,7 +32,6 @@ import java.util.Set;
 import org.junit.Test;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
-import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -43,6 +42,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundRevocation;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.signature.UnmarshallingTester;

@@ -1,7 +1,7 @@
 package eu.europa.esig.dss.validation;
 
-import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.Digest;
 
 /**
  * A signature reference element references a specific electronic signature.

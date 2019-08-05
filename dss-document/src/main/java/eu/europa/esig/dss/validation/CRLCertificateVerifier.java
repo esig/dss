@@ -23,8 +23,8 @@ package eu.europa.esig.dss.validation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.x509.revocation.crl.CRLToken;

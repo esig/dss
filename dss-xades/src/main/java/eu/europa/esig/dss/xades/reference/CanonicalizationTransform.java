@@ -2,7 +2,7 @@ package eu.europa.esig.dss.xades.reference;
 
 import org.w3c.dom.Node;
 
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 
 public class CanonicalizationTransform extends AbstractTransform {

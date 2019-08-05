@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.model.DSSException;
 
 public abstract class AbstractKeyStoreTokenConnection extends AbstractSignatureTokenConnection {
 

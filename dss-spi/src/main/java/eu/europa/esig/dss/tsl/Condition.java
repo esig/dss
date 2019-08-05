@@ -22,7 +22,7 @@ package eu.europa.esig.dss.tsl;
 
 import java.io.Serializable;
 
-import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 
 /**
  * Represents a condition defined in the trusted list on a certificate.

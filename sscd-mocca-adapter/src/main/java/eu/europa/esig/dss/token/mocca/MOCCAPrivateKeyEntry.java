@@ -32,11 +32,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import at.gv.egiz.smcc.SignatureCard.KeyboxName;
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
+imimport eu.europa.esig.dss.model.DSSException;import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
-import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
  * A DSSPrivateKeyEntry implementation for the MOCCA framework

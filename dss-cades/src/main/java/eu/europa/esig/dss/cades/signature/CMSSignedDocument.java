@@ -29,10 +29,10 @@ import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.DEROutputStream;
 import org.bouncycastle.cms.CMSSignedData;
 
-import eu.europa.esig.dss.CommonDocument;
 import eu.europa.esig.dss.DSSASN1Utils;
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.CommonDocument;
+import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.utils.Utils;
 
 /**

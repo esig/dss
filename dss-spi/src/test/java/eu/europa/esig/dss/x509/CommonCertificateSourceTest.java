@@ -29,6 +29,7 @@ import java.util.Set;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 
 public class CommonCertificateSourceTest {
 

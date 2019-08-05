@@ -2,7 +2,7 @@ package eu.europa.esig.dss.validation.scope;
 
 import java.util.List;
 
-import eu.europa.esig.dss.Digest;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.utils.Utils;
 
 public abstract class SignatureScopeWithTransformations extends SignatureScope {

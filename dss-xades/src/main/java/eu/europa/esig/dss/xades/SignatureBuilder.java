@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.xades;
 
-import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.model.DSSDocument;
 
 public interface SignatureBuilder {
 

@@ -3,8 +3,8 @@ package eu.europa.esig.dss.x509.revocation;
 import java.io.Serializable;
 import java.util.Set;
 
-import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.utils.Utils;
 
 public abstract class RevocationRef implements Serializable {

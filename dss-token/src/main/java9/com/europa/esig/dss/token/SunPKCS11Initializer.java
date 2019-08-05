@@ -7,7 +7,7 @@ import java.lang.reflect.Method;
 import java.security.Provider;
 import java.security.Security;
 
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.model.DSSException;
 
 public final class SunPKCS11Initializer {
 

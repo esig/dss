@@ -4,9 +4,9 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.validation.ListCRLSource;
 import eu.europa.esig.dss.validation.ListOCSPSource;
-import eu.europa.esig.dss.x509.CertificateToken;
 
 public interface SignatureTimestampSource extends Serializable {
 	
