@@ -52,8 +52,6 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.revocation.crl.ListCRLSource;
-import eu.europa.esig.dss.x509.revocation.ocsp.ListOCSPSource;
 
 /**
  * Validate the signed document. The content of the document is determined

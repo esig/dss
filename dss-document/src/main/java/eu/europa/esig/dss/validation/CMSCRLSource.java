@@ -30,7 +30,6 @@ import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
-import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
 
 /**
  * CRLSource that retrieves information from a {@link CMSSignedData} container.

@@ -21,7 +21,11 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateRef;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
 import eu.europa.esig.dss.validation.ISignatureAttribute;
+import eu.europa.esig.dss.validation.ListCRLSource;
+import eu.europa.esig.dss.validation.ListOCSPSource;
+import eu.europa.esig.dss.validation.SignatureCRLSource;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
+import eu.europa.esig.dss.validation.SignatureOCSPSource;
 import eu.europa.esig.dss.validation.SignatureProperties;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.x509.CertificatePool;
@@ -29,12 +33,8 @@ import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.CommonCertificateSource;
 import eu.europa.esig.dss.x509.EncapsulatedCertificateTokenIdentifier;
 import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
-import eu.europa.esig.dss.x509.revocation.crl.ListCRLSource;
-import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
-import eu.europa.esig.dss.x509.revocation.ocsp.ListOCSPSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseBinary;
-import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 
 /**
  * Contains a set of {@link TimestampToken}s found in a {@link DefaultAdvancedSignature} object

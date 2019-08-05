@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.x509.revocation.crl;
+package eu.europa.esig.dss.validation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,7 +16,9 @@ import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.revocation.SignatureRevocationSource;
+import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
+import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.x509.revocation.crl.OfflineCRLSource;
 
 @SuppressWarnings("serial")
 public abstract class SignatureCRLSource extends OfflineCRLSource implements SignatureRevocationSource<CRLToken> {

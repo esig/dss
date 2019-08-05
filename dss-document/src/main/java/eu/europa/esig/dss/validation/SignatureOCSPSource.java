@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.x509.revocation.ocsp;
+package eu.europa.esig.dss.validation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,8 +16,11 @@ import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.revocation.SignatureRevocationSource;
 import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseBinary;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.x509.revocation.ocsp.OfflineOCSPSource;
 
 @SuppressWarnings("serial")
 public abstract class SignatureOCSPSource extends OfflineOCSPSource implements SignatureRevocationSource<OCSPToken> {
