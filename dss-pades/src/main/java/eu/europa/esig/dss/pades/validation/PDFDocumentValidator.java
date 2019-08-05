@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.List;
 
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESUtils;
@@ -34,6 +33,7 @@ import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PdfObjFactory;
 import eu.europa.esig.dss.pdf.PdfSignatureInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureValidationCallback;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;

@@ -31,14 +31,14 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.client.SecureRandomNonceSource;
 import eu.europa.esig.dss.client.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.client.http.commons.OCSPDataLoader;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.x509.AlternateUrlsSourceAdapter;
-import eu.europa.esig.dss.x509.revocation.RevocationSource;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.AlternateUrlsSourceAdapter;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 
 public class OnlineOCSPSourceTest {
 

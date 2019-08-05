@@ -25,11 +25,11 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.TimestampParameters;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 
 /**

@@ -38,13 +38,13 @@ import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.CommonCertificateSource;
 
 /**
  * The advanced signature contains a list of certificate that was needed to validate the signature. This class is a

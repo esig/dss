@@ -29,10 +29,10 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 public abstract class AbstractGetDataToSignASiCS {

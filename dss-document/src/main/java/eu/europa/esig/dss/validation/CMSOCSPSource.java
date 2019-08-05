@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.validation;
 
-import static eu.europa.esig.dss.OID.attributeRevocationRefsOid;
+import static eu.europa.esig.dss.spi.OID.attributeRevocationRefsOid;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationRefs;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationValues;
 
@@ -29,11 +29,11 @@ import org.bouncycastle.util.Store;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseBinary;
+import eu.europa.esig.dss.spi.DSSRevocationUtils;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 
 /**
  * OCSPSource that retrieves information from a {@link CMSSignedData} container.

@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateValidator;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -14,8 +16,6 @@ import eu.europa.esig.dss.validation.reports.CertificateReports;
 import eu.europa.esig.dss.ws.cert.validation.dto.CertificateReportsDTO;
 import eu.europa.esig.dss.ws.converter.RemoteCertificateConverter;
 import eu.europa.esig.dss.ws.dto.RemoteCertificate;
-import eu.europa.esig.dss.x509.CertificateSource;
-import eu.europa.esig.dss.x509.CommonCertificateSource;
 
 public class RemoteCertificateValidationService {
 

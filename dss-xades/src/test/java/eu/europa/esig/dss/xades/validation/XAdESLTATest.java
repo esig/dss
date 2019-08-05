@@ -36,7 +36,6 @@ import javax.xml.bind.JAXBException;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedService;
@@ -44,15 +43,16 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedServiceProvider;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.UnmarshallingTester;
-import eu.europa.esig.dss.tsl.Condition;
-import eu.europa.esig.dss.tsl.ServiceInfo;
-import eu.europa.esig.dss.tsl.ServiceInfoStatus;
-import eu.europa.esig.dss.tsl.TrustedListsCertificateSource;
-import eu.europa.esig.dss.util.MutableTimeDependentValues;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.tsl.Condition;
+import eu.europa.esig.dss.spi.tsl.ServiceInfo;
+import eu.europa.esig.dss.spi.tsl.ServiceInfoStatus;
+import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.spi.util.MutableTimeDependentValues;
+import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
 
 public class XAdESLTATest {
 

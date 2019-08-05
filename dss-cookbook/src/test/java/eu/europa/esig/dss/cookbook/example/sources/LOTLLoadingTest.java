@@ -27,11 +27,11 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import eu.europa.esig.dss.client.http.commons.CommonsDataLoader;
+import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
 import eu.europa.esig.dss.tsl.OtherTrustedList;
-import eu.europa.esig.dss.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.tsl.service.TSLRepository;
 import eu.europa.esig.dss.tsl.service.TSLValidationJob;
-import eu.europa.esig.dss.x509.KeyStoreCertificateSource;
 
 public class LOTLLoadingTest {
 

@@ -9,13 +9,13 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.ws.converter.DTOConverter;
 import eu.europa.esig.dss.ws.converter.RemoteCertificateConverter;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;

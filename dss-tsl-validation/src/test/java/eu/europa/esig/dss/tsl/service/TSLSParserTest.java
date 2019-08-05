@@ -34,12 +34,12 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.spi.util.TimeDependentValues;
 import eu.europa.esig.dss.tsl.TSLParserResult;
 import eu.europa.esig.dss.tsl.TSLPointer;
 import eu.europa.esig.dss.tsl.TSLService;
 import eu.europa.esig.dss.tsl.TSLServiceProvider;
 import eu.europa.esig.dss.tsl.TSLServiceStatusAndInformationExtensions;
-import eu.europa.esig.dss.util.TimeDependentValues;
 import eu.europa.esig.dss.utils.Utils;
 
 @RunWith(Parameterized.class)

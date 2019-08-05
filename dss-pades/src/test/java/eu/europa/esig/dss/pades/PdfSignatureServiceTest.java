@@ -15,7 +15,7 @@ import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
 import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory;
-import eu.europa.esig.dss.x509.CertificatePool;
+import eu.europa.esig.dss.spi.x509.CertificatePool;
 
 public class PdfSignatureServiceTest {
 	

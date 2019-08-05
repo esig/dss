@@ -27,7 +27,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
-import eu.europa.esig.dss.x509.CertificatePool;
+import eu.europa.esig.dss.spi.x509.CertificatePool;
 
 /**
  * The usage of this interface permits the user to choose the underlying PDF library used to create PDF signatures.

@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
-import static eu.europa.esig.dss.OID.id_aa_ets_archiveTimestampV2;
+import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV2;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certificateRefs;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_escTimeStamp;
@@ -83,11 +83,6 @@ import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSASN1Utils;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.DSSSecurityProvider;
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.OID;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.SignerAttributeV2;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -100,10 +95,16 @@ import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSSecurityProvider;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.OID;
+import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CAdESCertificateSource;
@@ -126,7 +127,6 @@ import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.SignerRole;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
-import eu.europa.esig.dss.x509.CertificatePool;
 
 /**
  * CAdES Signature class helper

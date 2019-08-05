@@ -22,7 +22,6 @@ package eu.europa.esig.dss.cookbook.example.sign;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -32,6 +31,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;

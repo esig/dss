@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import static eu.europa.esig.dss.OID.id_aa_ATSHashIndex;
+import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndex;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certValues;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationValues;
 
@@ -55,12 +55,12 @@ import org.bouncycastle.cms.SignerInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSASN1Utils;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 

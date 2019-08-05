@@ -24,11 +24,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.revocation.RevocationSource;
-import eu.europa.esig.dss.x509.revocation.RevocationToken;
-import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 
 /**
  * Fetchs revocation data from a certificate by querying an OCSP server first and then a CRL server if no OCSP response

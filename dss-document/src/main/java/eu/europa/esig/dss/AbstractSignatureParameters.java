@@ -28,6 +28,7 @@ import eu.europa.esig.dss.model.AbstractSerializableSignatureParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 /**

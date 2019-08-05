@@ -42,7 +42,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -57,6 +56,7 @@ import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.model.SignerLocation;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.BaselineBCertificateSelector;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.timestamp.TimestampInclude;

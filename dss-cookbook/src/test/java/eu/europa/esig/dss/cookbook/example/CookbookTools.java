@@ -27,18 +27,18 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 public class CookbookTools extends PKIFactoryAccess {
 

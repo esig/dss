@@ -7,9 +7,9 @@ import javax.sql.DataSource;
 import eu.europa.esig.dss.client.ocsp.JdbcCacheOCSPSource;
 import eu.europa.esig.dss.client.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.x509.revocation.RevocationToken;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPSource;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 
 public class OCSPSourceSnippet {
 

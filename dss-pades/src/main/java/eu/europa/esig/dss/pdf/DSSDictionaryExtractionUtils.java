@@ -8,8 +8,8 @@ import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSUtils;
 
 public class DSSDictionaryExtractionUtils {
 

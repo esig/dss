@@ -1,7 +1,7 @@
 package eu.europa.esig.dss.cades.validation;
 
-import static eu.europa.esig.dss.OID.id_aa_ets_archiveTimestampV2;
-import static eu.europa.esig.dss.OID.id_aa_ets_archiveTimestampV3;
+import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV2;
+import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV3;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certificateRefs;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationRefs;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signatureTimeStampToken;
@@ -30,13 +30,13 @@ import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSASN1Utils;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.signature.CadesLevelBaselineLTATimestampExtractor;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.ArchiveTimestampType;
 import eu.europa.esig.dss.validation.timestamp.TimestampDataBuilder;

@@ -34,7 +34,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import eu.europa.esig.dss.client.http.MemoryDataLoader;
+import eu.europa.esig.dss.spi.client.http.MemoryDataLoader;
 
 public class FileCacheDataLoaderTest {
 

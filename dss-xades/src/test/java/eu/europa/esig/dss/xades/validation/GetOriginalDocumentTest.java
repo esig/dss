@@ -33,7 +33,6 @@ import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.signature.Reference;
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
@@ -46,6 +45,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;

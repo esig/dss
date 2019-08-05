@@ -28,8 +28,8 @@ import java.util.Set;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import eu.europa.esig.dss.x509.revocation.RevocationToken;
 
 /**
  * This interface allows the implementation of the validators for: certificates, timestamps and revocation data.

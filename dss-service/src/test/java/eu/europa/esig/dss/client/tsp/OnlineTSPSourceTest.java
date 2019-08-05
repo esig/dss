@@ -26,9 +26,9 @@ import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.Test;
 
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
 import eu.europa.esig.dss.client.SecureRandomNonceSource;
-import eu.europa.esig.dss.client.http.NativeHTTPDataLoader;
 import eu.europa.esig.dss.client.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.client.http.commons.TimestampDataLoader;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;

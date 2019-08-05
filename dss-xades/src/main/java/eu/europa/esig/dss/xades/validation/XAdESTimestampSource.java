@@ -13,7 +13,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
@@ -22,6 +21,9 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.EncapsulatedCertificateTokenIdentifier;
+import eu.europa.esig.dss.spi.DSSRevocationUtils;
+import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ReferenceValidation;
 import eu.europa.esig.dss.validation.SignatureProperties;
@@ -31,8 +33,6 @@ import eu.europa.esig.dss.validation.timestamp.ArchiveTimestampType;
 import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
-import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.xades.XAdESUtils;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 

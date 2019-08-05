@@ -34,7 +34,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;

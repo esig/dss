@@ -1,9 +1,9 @@
 package eu.europa.esig.dss.cades.validation;
 
-import static eu.europa.esig.dss.OID.attributeCertificateRefsOid;
-import static eu.europa.esig.dss.OID.attributeRevocationRefsOid;
-import static eu.europa.esig.dss.OID.id_aa_ets_archiveTimestampV2;
-import static eu.europa.esig.dss.OID.id_aa_ets_archiveTimestampV3;
+import static eu.europa.esig.dss.spi.OID.attributeCertificateRefsOid;
+import static eu.europa.esig.dss.spi.OID.attributeRevocationRefsOid;
+import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV2;
+import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV3;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certValues;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certificateRefs;
@@ -41,9 +41,6 @@ import org.bouncycastle.cms.SignerInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSASN1Utils;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.signature.CadesLevelBaselineLTATimestampExtractor;
 import eu.europa.esig.dss.crl.CRLBinary;
@@ -52,9 +49,16 @@ import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.EncapsulatedCertificateTokenIdentifier;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.validation.CMSCRLSource;
 import eu.europa.esig.dss.validation.CMSCertificateSource;
 import eu.europa.esig.dss.validation.CMSOCSPSource;
@@ -65,10 +69,6 @@ import eu.europa.esig.dss.validation.timestamp.TimestampCRLSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampOCSPSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
-import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseBinary;
 
 @SuppressWarnings("serial")
 public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute> {

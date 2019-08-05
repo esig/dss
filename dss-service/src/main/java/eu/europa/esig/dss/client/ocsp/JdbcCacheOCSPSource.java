@@ -34,15 +34,15 @@ import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.x509.revocation.JdbcRevocationSource;
-import eu.europa.esig.dss.x509.revocation.RevocationException;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPSource;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPTokenBuilder;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPTokenUtils;
+import eu.europa.esig.dss.spi.DSSRevocationUtils;
+import eu.europa.esig.dss.spi.x509.revocation.JdbcRevocationSource;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationException;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPTokenBuilder;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPTokenUtils;
 
 /**
  * OCSPSource that retrieve information from a JDBC data-source.

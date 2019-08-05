@@ -51,7 +51,6 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
@@ -80,6 +79,7 @@ import eu.europa.esig.dss.model.SignerLocation;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.SimpleReportFacade;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.token.KSPrivateKeyEntry;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;

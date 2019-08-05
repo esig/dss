@@ -30,7 +30,6 @@ import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.signature.CAdESLevelBaselineT;
@@ -49,6 +48,7 @@ import eu.europa.esig.dss.pdf.PdfObjFactory;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.signature.SigningOperation;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 

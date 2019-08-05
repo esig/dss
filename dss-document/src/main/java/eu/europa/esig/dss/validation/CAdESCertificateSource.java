@@ -44,13 +44,13 @@ import org.bouncycastle.cms.SignerInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.CertificatePool;
 
 /**
  * CertificateSource that retrieves items from a CAdES Signature

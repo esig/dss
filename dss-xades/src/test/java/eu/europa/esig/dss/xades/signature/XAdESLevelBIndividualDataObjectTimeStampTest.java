@@ -31,7 +31,6 @@ import org.apache.xml.security.signature.Reference;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.Before;
 
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -39,6 +38,7 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;

@@ -25,11 +25,11 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.revocation.RevocationSource;
-import eu.europa.esig.dss.x509.revocation.RevocationToken;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPTokenUtils;
+import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPTokenUtils;
 
 /**
  * Check the status of the certificate using an OCSPSource

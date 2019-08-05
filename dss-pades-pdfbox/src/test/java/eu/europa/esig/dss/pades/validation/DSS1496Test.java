@@ -29,11 +29,7 @@ import java.util.Map;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.client.crl.OnlineCRLSource;
-import eu.europa.esig.dss.client.http.DataLoader;
-import eu.europa.esig.dss.client.http.IgnoreDataLoader;
-import eu.europa.esig.dss.client.http.MemoryDataLoader;
 import eu.europa.esig.dss.client.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -44,12 +40,16 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.client.http.DataLoader;
+import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
+import eu.europa.esig.dss.spi.client.http.MemoryDataLoader;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.x509.CertificateSource;
-import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
 
 public class DSS1496Test extends PKIFactoryAccess {
 

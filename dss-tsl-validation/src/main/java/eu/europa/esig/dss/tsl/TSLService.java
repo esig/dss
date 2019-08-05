@@ -23,7 +23,7 @@ package eu.europa.esig.dss.tsl;
 import java.util.List;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.util.TimeDependentValues;
+import eu.europa.esig.dss.spi.util.TimeDependentValues;
 
 /**
  * This class is a DTO representation for a TSL service

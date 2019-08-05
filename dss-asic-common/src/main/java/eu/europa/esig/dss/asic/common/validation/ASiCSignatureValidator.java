@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.asic.common.validation;
 
+import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.validation.DocumentValidator;
-import eu.europa.esig.dss.x509.CertificatePool;
 
 public interface ASiCSignatureValidator extends DocumentValidator {
 

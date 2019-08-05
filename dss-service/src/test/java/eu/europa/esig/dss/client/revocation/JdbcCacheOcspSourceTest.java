@@ -14,12 +14,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.client.ocsp.JdbcCacheOCSPSource;
 import eu.europa.esig.dss.client.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.x509.revocation.RevocationToken;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 
 public class JdbcCacheOcspSourceTest {
 	

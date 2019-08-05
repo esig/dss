@@ -27,9 +27,9 @@ import javax.sql.DataSource;
 import eu.europa.esig.dss.client.crl.JdbcCacheCRLSource;
 import eu.europa.esig.dss.client.crl.OnlineCRLSource;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.x509.revocation.RevocationToken;
-import eu.europa.esig.dss.x509.revocation.crl.CRLSource;
-import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 
 public class CRLSourceSnippet {
 

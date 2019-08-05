@@ -36,8 +36,8 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 public abstract class AbstractTestPAdESExtension extends AbstractTestExtension<PAdESSignatureParameters> {
 

@@ -36,17 +36,17 @@ import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSASN1Utils;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.OID;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.OID;
+import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.timestamp.TimeStampTokenProductionComparator;
-import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 /**
  * This class holds the CAdES-A signature profiles; it supports the later, over time _extension_ of a signature with

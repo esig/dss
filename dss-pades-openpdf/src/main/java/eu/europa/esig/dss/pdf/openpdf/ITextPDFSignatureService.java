@@ -51,7 +51,6 @@ import com.lowagie.text.pdf.PdfString;
 import com.lowagie.text.pdf.PdfWriter;
 
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -73,10 +72,11 @@ import eu.europa.esig.dss.pdf.PdfSignatureInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
 import eu.europa.esig.dss.pdf.openpdf.visible.ITextSignatureDrawer;
 import eu.europa.esig.dss.pdf.openpdf.visible.ITextSignatureDrawerFactory;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
 
 /**
  * Implementation of PDFSignatureService using iText

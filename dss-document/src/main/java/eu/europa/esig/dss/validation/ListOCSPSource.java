@@ -21,9 +21,9 @@
 package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseBinary;
-import eu.europa.esig.dss.x509.revocation.ocsp.OfflineOCSPSource;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 
 /**
  * This class allows to handle a list OCSP source.

@@ -23,14 +23,14 @@ package eu.europa.esig.dss.validation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.client.http.DataLoader;
-import eu.europa.esig.dss.client.http.NativeHTTPDataLoader;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.CertificateSource;
-import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
-import eu.europa.esig.dss.x509.revocation.crl.CRLSource;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPSource;
+import eu.europa.esig.dss.spi.client.http.DataLoader;
+import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
+import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
 
 /**
  * This class provides the different sources used to verify the status of a certificate using the trust model. There are

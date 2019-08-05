@@ -32,18 +32,18 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.jaxb.parsers.KeyUsageBitParser;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.tsl.Condition;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.tsl.Condition;
+import eu.europa.esig.dss.spi.util.TimeDependentValues;
 import eu.europa.esig.dss.tsl.TSLConditionsForQualifiers;
 import eu.europa.esig.dss.tsl.TSLParserResult;
 import eu.europa.esig.dss.tsl.TSLPointer;
 import eu.europa.esig.dss.tsl.TSLService;
 import eu.europa.esig.dss.tsl.TSLServiceProvider;
 import eu.europa.esig.dss.tsl.TSLServiceStatusAndInformationExtensions;
-import eu.europa.esig.dss.util.TimeDependentValues;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.trustedlist.enums.Assert;
 import eu.europa.esig.trustedlist.jaxb.ecc.CriteriaListType;

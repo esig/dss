@@ -30,7 +30,6 @@ import java.util.List;
 
 import org.junit.Before;
 
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
@@ -42,6 +41,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 public class ASiCSCAdESLevelBWithSignatureNameTest extends AbstractASiCSCAdESTestSignature {

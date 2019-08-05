@@ -32,17 +32,17 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSRevocationUtils;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.crl.CRLValidity;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.x509.revocation.JdbcRevocationSource;
-import eu.europa.esig.dss.x509.revocation.RevocationException;
-import eu.europa.esig.dss.x509.revocation.crl.CRLSource;
-import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.spi.DSSRevocationUtils;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.revocation.JdbcRevocationSource;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationException;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 
 /**
  * CRLSource that retrieve information from a JDBC datasource

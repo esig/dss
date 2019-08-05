@@ -38,10 +38,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.client.http.DataLoader;
+import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
 import eu.europa.esig.dss.tsl.OtherTrustedList;
 import eu.europa.esig.dss.tsl.TSLLoaderResult;
 import eu.europa.esig.dss.tsl.TSLParserResult;
@@ -49,7 +50,6 @@ import eu.europa.esig.dss.tsl.TSLPointer;
 import eu.europa.esig.dss.tsl.TSLValidationModel;
 import eu.europa.esig.dss.tsl.TSLValidationResult;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.KeyStoreCertificateSource;
 
 /**
  * This class is job class which allows to launch TSL loading/parsing/validation. An instance of this class can be

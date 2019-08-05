@@ -15,10 +15,10 @@ import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
-import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
-import eu.europa.esig.dss.x509.revocation.crl.OfflineCRLSource;
 
 @SuppressWarnings("serial")
 public abstract class SignatureCRLSource extends OfflineCRLSource implements SignatureRevocationSource<CRLToken> {

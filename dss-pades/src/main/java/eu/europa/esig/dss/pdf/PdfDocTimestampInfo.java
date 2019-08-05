@@ -26,11 +26,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import eu.europa.esig.dss.x509.CertificatePool;
 
 /**
  * Signature timestamp representation

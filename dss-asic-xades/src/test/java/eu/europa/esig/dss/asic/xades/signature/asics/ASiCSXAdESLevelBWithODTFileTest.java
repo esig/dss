@@ -30,7 +30,6 @@ import java.util.List;
 
 import org.junit.Before;
 
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
@@ -43,6 +42,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.DSSUtils;
 
 public class ASiCSXAdESLevelBWithODTFileTest extends AbstractASiCSXAdESTestSignature {
 

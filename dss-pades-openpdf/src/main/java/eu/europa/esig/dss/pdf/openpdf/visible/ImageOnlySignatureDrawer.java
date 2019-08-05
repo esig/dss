@@ -27,7 +27,7 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.ColumnText;
 import com.lowagie.text.pdf.PdfTemplate;
 
-import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {

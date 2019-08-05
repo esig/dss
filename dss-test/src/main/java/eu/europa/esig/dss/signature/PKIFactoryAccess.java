@@ -29,8 +29,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import eu.europa.esig.dss.client.crl.OnlineCRLSource;
-import eu.europa.esig.dss.client.http.DataLoader;
-import eu.europa.esig.dss.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.client.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.client.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.client.http.commons.OCSPDataLoader;
@@ -39,16 +37,18 @@ import eu.europa.esig.dss.client.http.proxy.ProxyConfig;
 import eu.europa.esig.dss.client.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.client.tsp.OnlineTSPSource;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.client.http.DataLoader;
+import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
+import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
+import eu.europa.esig.dss.spi.x509.tsp.CompositeTSPSource;
+import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.token.AbstractKeyStoreTokenConnection;
 import eu.europa.esig.dss.token.KSPrivateKeyEntry;
 import eu.europa.esig.dss.token.KeyStoreSignatureTokenConnection;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.x509.CertificateSource;
-import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
-import eu.europa.esig.dss.x509.KeyStoreCertificateSource;
-import eu.europa.esig.dss.x509.tsp.CompositeTSPSource;
-import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 public abstract class PKIFactoryAccess {
 

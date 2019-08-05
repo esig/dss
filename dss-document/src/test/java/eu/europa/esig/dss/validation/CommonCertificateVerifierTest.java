@@ -25,10 +25,10 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.CommonCertificateSource;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 
 public class CommonCertificateVerifierTest {
 

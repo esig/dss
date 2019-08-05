@@ -29,9 +29,9 @@ import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureCRLSource;
-import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.xades.XAdESUtils;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 

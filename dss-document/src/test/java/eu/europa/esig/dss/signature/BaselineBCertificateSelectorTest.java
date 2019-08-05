@@ -29,12 +29,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.x509.CertificateSource;
-import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
 
 public class BaselineBCertificateSelectorTest {
 

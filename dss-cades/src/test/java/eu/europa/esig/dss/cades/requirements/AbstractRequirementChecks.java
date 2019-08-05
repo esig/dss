@@ -38,10 +38,10 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.utils.Utils;
 
 public abstract class AbstractRequirementChecks extends PKIFactoryAccess {

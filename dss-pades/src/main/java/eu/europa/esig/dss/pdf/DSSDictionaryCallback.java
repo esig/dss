@@ -31,8 +31,8 @@ import eu.europa.esig.dss.pades.validation.PAdESCRLSource;
 import eu.europa.esig.dss.pades.validation.PAdESCertificateSource;
 import eu.europa.esig.dss.pades.validation.PAdESOCSPSource;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
-import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 
 public class DSSDictionaryCallback {
 

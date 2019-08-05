@@ -26,7 +26,7 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pdf.PDFTimestampService;
 import eu.europa.esig.dss.pdf.PdfObjFactory;
 import eu.europa.esig.dss.signature.SignatureExtension;
-import eu.europa.esig.dss.x509.tsp.TSPSource;
+import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 
 /**
  * PAdES Baseline T signature

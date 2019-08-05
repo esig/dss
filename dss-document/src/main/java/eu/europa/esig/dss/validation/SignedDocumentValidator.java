@@ -34,8 +34,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.DSSSecurityProvider;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.Context;
@@ -46,12 +44,14 @@ import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
+import eu.europa.esig.dss.spi.DSSSecurityProvider;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.validation.executor.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.executor.SignatureProcessExecutor;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
-import eu.europa.esig.dss.x509.CertificatePool;
 
 /**
  * Validate the signed document. The content of the document is determined

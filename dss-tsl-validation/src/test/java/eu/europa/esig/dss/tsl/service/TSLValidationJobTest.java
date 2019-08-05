@@ -38,17 +38,17 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.client.http.MemoryDataLoader;
 import eu.europa.esig.dss.client.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.client.http.MemoryDataLoader;
+import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
 import eu.europa.esig.dss.tsl.OtherTrustedList;
 import eu.europa.esig.dss.tsl.TSLParserResult;
 import eu.europa.esig.dss.tsl.TSLValidationModel;
 import eu.europa.esig.dss.tsl.TSLValidationResult;
-import eu.europa.esig.dss.tsl.TrustedListsCertificateSource;
-import eu.europa.esig.dss.x509.KeyStoreCertificateSource;
 
 public class TSLValidationJobTest {
 

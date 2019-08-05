@@ -22,8 +22,8 @@ package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
-import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
-import eu.europa.esig.dss.x509.revocation.crl.OfflineCRLSource;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
+import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 
 /**
  * This class allows to handle a list CRL source.

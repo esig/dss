@@ -58,8 +58,6 @@ import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSASN1Utils;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -74,6 +72,8 @@ import eu.europa.esig.dss.model.SignerLocation;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 public class CAdESLevelBTest extends AbstractPkiFactoryTestDocumentSignatureService<CAdESSignatureParameters> {

@@ -41,13 +41,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.tsl.Condition;
-import eu.europa.esig.dss.tsl.ServiceInfo;
-import eu.europa.esig.dss.tsl.ServiceInfoStatus;
-import eu.europa.esig.dss.tsl.TLInfo;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.tsl.Condition;
+import eu.europa.esig.dss.spi.tsl.ServiceInfo;
+import eu.europa.esig.dss.spi.tsl.ServiceInfoStatus;
+import eu.europa.esig.dss.spi.tsl.TLInfo;
+import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.spi.util.MutableTimeDependentValues;
+import eu.europa.esig.dss.spi.util.TimeDependentValues;
 import eu.europa.esig.dss.tsl.TSLConditionsForQualifiers;
 import eu.europa.esig.dss.tsl.TSLLoaderResult;
 import eu.europa.esig.dss.tsl.TSLParserResult;
@@ -56,9 +59,6 @@ import eu.europa.esig.dss.tsl.TSLServiceProvider;
 import eu.europa.esig.dss.tsl.TSLServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.tsl.TSLValidationModel;
 import eu.europa.esig.dss.tsl.TSLValidationResult;
-import eu.europa.esig.dss.tsl.TrustedListsCertificateSource;
-import eu.europa.esig.dss.util.MutableTimeDependentValues;
-import eu.europa.esig.dss.util.TimeDependentValues;
 import eu.europa.esig.dss.utils.Utils;
 
 /**

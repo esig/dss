@@ -25,9 +25,9 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSUtils;
 
 public class KeyUsageConditionTest {
 

@@ -28,7 +28,7 @@ import org.bouncycastle.cms.CMSException;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.x509.CertificatePool;
+import eu.europa.esig.dss.spi.x509.CertificatePool;
 
 public class PdfSignatureInfo extends PdfCMSInfo implements PdfSignatureOrDocTimestampInfo {
 

@@ -13,10 +13,10 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlChainItem;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 import eu.europa.esig.dss.ws.cert.validation.dto.CertificateReportsDTO;
