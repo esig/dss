@@ -25,6 +25,8 @@ import java.io.IOException;
 import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.ColumnText;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfTemplate;
 
 import eu.europa.esig.dss.DSSUtils;
@@ -48,6 +50,7 @@ public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		}
 		width *= zoom;
 		height *= zoom;
+		image.scaleAbsolute(width, height);
 
 		if (Utils.isStringNotBlank(signatureFieldId)) {
 			appearance.setVisibleSignature(signatureFieldId);
@@ -63,8 +66,15 @@ public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 
 		PdfTemplate layer = appearance.getLayer(2);
 		ColumnText ct = new ColumnText(layer);
-		ct.addElement(image);
 		ct.setSimpleColumn(0, 0, width, height);
+		
+		PdfPTable table = new PdfPTable(1);
+		table.setWidthPercentage(100);
+		PdfPCell pdfPCell = new PdfPCell(image);
+		pdfPCell.setBorder(PdfPCell.NO_BORDER);
+		table.addCell(pdfPCell);
+		
+		ct.addElement(table);
 		ct.go();
 	}
 

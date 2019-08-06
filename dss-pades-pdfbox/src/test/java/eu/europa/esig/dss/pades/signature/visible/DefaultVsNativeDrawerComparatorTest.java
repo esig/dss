@@ -228,7 +228,7 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 	public void imageAndTextGlobalAlignmentTest() throws IOException {
 		initVisibleCombinationTest();
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
-		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG));
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
 		imageParameters.setxAxis(100);
 		imageParameters.setyAxis(100);
 
@@ -354,6 +354,67 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 		compareDoc("/visualSignature/test_-90.pdf");
 		compareDoc("/visualSignature/test_-180.pdf");
 		compareDoc("/visualSignature/test_-270.pdf");
+	}
+	
+	@Test
+	public void simpleTest() throws IOException {
+		initPdfATest();
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
+		imageParameters.setxAxis(20);
+		imageParameters.setyAxis(50);
+		
+		signatureParameters.setSignatureImageParameters(imageParameters);
+
+		drawAndCompareExplicitly();
+	}
+	
+	@Test
+	public void stretchedTest() throws IOException {
+		initPdfATest();
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
+		imageParameters.setxAxis(20);
+		imageParameters.setyAxis(20);
+		imageParameters.setWidth(100);
+		imageParameters.setHeight(150);
+
+		signatureParameters.setSignatureImageParameters(imageParameters);
+
+		drawAndCompareExplicitly();
+	}
+	
+	@Test
+	public void rotationOnlyTest() throws IOException {
+		initPdfATest();
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
+		imageParameters.setxAxis(20);
+		imageParameters.setyAxis(50);
+		imageParameters.setWidth(100);
+		imageParameters.setHeight(300);
+		
+		imageParameters.setRotation(VisualSignatureRotation.ROTATE_90);
+		signatureParameters.setSignatureImageParameters(imageParameters);
+
+		drawAndCompareExplicitly();
+	}
+	
+	@Test
+	public void zoomAndRotationTest() throws IOException {
+		initPdfATest();
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
+		imageParameters.setxAxis(20);
+		imageParameters.setyAxis(50);
+		imageParameters.setWidth(100);
+		imageParameters.setHeight(300);
+		
+		imageParameters.setZoom(150);
+		imageParameters.setRotation(VisualSignatureRotation.ROTATE_90);
+		signatureParameters.setSignatureImageParameters(imageParameters);
+
+		drawAndCompareExplicitly();
 	}
 	
 	private void compareDoc(String docPath) throws IOException {

@@ -44,8 +44,10 @@ public final class SignatureImageAndPositionProcessor {
     private static final String SUPPORTED_VERTICAL_ALIGNMENT_ERROR_MESSAGE = "not supported vertical alignment: ";
     private static final String SUPPORTED_HORIZONTAL_ALIGNMENT_ERROR_MESSAGE = "not supported horizontal alignment: ";
 
-    public static SignatureImageAndPosition process(final SignatureImageParameters signatureImageParameters, final PDDocument doc, final ImageAndResolution ires) throws IOException {
+    public static SignatureImageAndPosition process(final SignatureImageParameters signatureImageParameters, 
+    		final PDDocument doc, final ImageAndResolution ires) throws IOException {
 		try (InputStream is = ires.getInputStream()) {
+			
 			BufferedImage visualImageSignature = ImageIO.read(is);
 			PDPage pdPage = doc.getPages().get(signatureImageParameters.getPage() - 1);
 
@@ -68,23 +70,24 @@ public final class SignatureImageAndPositionProcessor {
 		}
     }
 
-    private static float processX(int rotate, ImageAndResolution ires, BufferedImage visualImageSignature, PDPage pdPage, SignatureImageParameters signatureImageParameters) {
+    private static float processX(int rotation, ImageAndResolution ires, BufferedImage visualImageSignature, PDPage pdPage, SignatureImageParameters signatureImageParameters) {
         float x;
+        
+        PDRectangle pageBox = pdPage.getMediaBox();
+        float width = getWidth(signatureImageParameters, visualImageSignature, ires, ImageRotationUtils.isSwapOfDimensionsRequired(rotation));
 
-        PDRectangle mediaBox = pdPage.getMediaBox();
-
-        switch (rotate) {
+        switch (rotation) {
             case ImageRotationUtils.ANGLE_90:
-                x = processXAngle90(mediaBox, ires, signatureImageParameters, visualImageSignature);
+                x = processXAngle90(pageBox, ires, signatureImageParameters, width);
                 break;
             case ImageRotationUtils.ANGLE_180:
-                x = processXAngle180(mediaBox, ires, signatureImageParameters, visualImageSignature);
+                x = processXAngle180(pageBox, ires, signatureImageParameters, width);
                 break;
             case ImageRotationUtils.ANGLE_270:
-                x = processXAngle270(mediaBox, ires, signatureImageParameters, visualImageSignature);
+                x = processXAngle270(pageBox, ires, signatureImageParameters, width);
                 break;
             case ImageRotationUtils.ANGLE_360:
-                x = processXAngle360(mediaBox, ires, signatureImageParameters, visualImageSignature);
+                x = processXAngle360(pageBox, ires, signatureImageParameters, width);
                 break;
             default:
                 throw new IllegalStateException(ImageRotationUtils.SUPPORTED_ANGLES_ERROR_MESSAGE);
@@ -93,23 +96,24 @@ public final class SignatureImageAndPositionProcessor {
         return x;
     }
 
-    private static float processY(int rotate, ImageAndResolution ires, BufferedImage visualImageSignature, PDPage pdPage, SignatureImageParameters signatureImageParameters) {
+    private static float processY(int rotation, ImageAndResolution ires, BufferedImage visualImageSignature, PDPage pdPage, SignatureImageParameters signatureImageParameters) {
         float y;
-
-        PDRectangle mediaBox = pdPage.getMediaBox();
-
-        switch (rotate) {
+        
+        PDRectangle pageBox = pdPage.getMediaBox();
+        float height = getHeight(signatureImageParameters, visualImageSignature, ires, ImageRotationUtils.isSwapOfDimensionsRequired(rotation));
+        
+        switch (rotation) {
             case ImageRotationUtils.ANGLE_90:
-                y = processYAngle90(mediaBox, ires, signatureImageParameters, visualImageSignature);
+                y = processYAngle90(pageBox, ires, signatureImageParameters, height);
                 break;
             case ImageRotationUtils.ANGLE_180:
-                y = processYAngle180(mediaBox, ires, signatureImageParameters, visualImageSignature);
+                y = processYAngle180(pageBox, ires, signatureImageParameters, height);
                 break;
             case ImageRotationUtils.ANGLE_270:
-                y = processYAngle270(mediaBox, ires, signatureImageParameters, visualImageSignature);
+                y = processYAngle270(pageBox, ires, signatureImageParameters, height);
                 break;
             case ImageRotationUtils.ANGLE_360:
-                y = processYAngle360(mediaBox, ires, signatureImageParameters, visualImageSignature);
+                y = processYAngle360(pageBox, ires, signatureImageParameters, height);
                 break;
             default:
                 throw new IllegalStateException(ImageRotationUtils.SUPPORTED_ANGLES_ERROR_MESSAGE);
@@ -117,8 +121,26 @@ public final class SignatureImageAndPositionProcessor {
 
         return y;
     }
+    
+    private static float getWidth(SignatureImageParameters signatureImageParameters, BufferedImage visualImageSignature, ImageAndResolution ires, boolean swapDimensions) {
+        float width = swapDimensions ? signatureImageParameters.getHeight() : signatureImageParameters.getWidth();
+        if (width == 0)
+        	width = visualImageSignature.getWidth();
+        if (signatureImageParameters.getTextParameters() != null)
+        	width = swapDimensions ? ires.toYPoint(width) : ires.toXPoint(width);
+        return width;
+    }
+    
+    private static float getHeight(SignatureImageParameters signatureImageParameters, BufferedImage visualImageSignature, ImageAndResolution ires, boolean swapDimensions) {
+        float height = swapDimensions ? signatureImageParameters.getWidth() : signatureImageParameters.getHeight();
+        if (height == 0)
+        	height = visualImageSignature.getHeight();
+        if (signatureImageParameters.getTextParameters() != null)
+        	height = swapDimensions ? ires.toXPoint(height) : ires.toYPoint(height);
+        return height;
+    }
 
-    private static float processXAngle90(PDRectangle mediaBox, ImageAndResolution ires, SignatureImageParameters signatureImageParameters, BufferedImage visualImageSignature) {
+    private static float processXAngle90(PDRectangle mediaBox, ImageAndResolution ires, SignatureImageParameters signatureImageParameters, float width) {
         float x;
 
         SignatureImageParameters.VisualSignatureAlignmentVertical alignmentVertical = signatureImageParameters.getVisualSignatureAlignmentVertical();
@@ -126,10 +148,10 @@ public final class SignatureImageAndPositionProcessor {
         switch (alignmentVertical) {
             case TOP:
             case NONE:
-                x = mediaBox.getWidth() - ires.toXPoint(visualImageSignature.getWidth()) - signatureImageParameters.getyAxis();
+                x = mediaBox.getWidth() - zoom(width, signatureImageParameters.getZoom()) - signatureImageParameters.getyAxis();
                 break;
             case MIDDLE:
-                x = (mediaBox.getWidth() - ires.toXPoint(visualImageSignature.getWidth())) / 2;
+                x = (mediaBox.getWidth() - zoom(width, signatureImageParameters.getZoom())) / 2;
                 break;
             case BOTTOM:
                 x = signatureImageParameters.getyAxis();
@@ -141,7 +163,7 @@ public final class SignatureImageAndPositionProcessor {
         return x;
     }
 
-    private static float processXAngle180(PDRectangle mediaBox, ImageAndResolution ires, SignatureImageParameters signatureImageParameters, BufferedImage visualImageSignature) {
+    private static float processXAngle180(PDRectangle mediaBox, ImageAndResolution ires, SignatureImageParameters signatureImageParameters, float width) {
         float x;
 
         SignatureImageParameters.VisualSignatureAlignmentHorizontal alignmentHorizontal = signatureImageParameters.getVisualSignatureAlignmentHorizontal();
@@ -149,10 +171,10 @@ public final class SignatureImageAndPositionProcessor {
         switch (alignmentHorizontal) {
             case LEFT:
             case NONE:
-                x = mediaBox.getWidth() - ires.toXPoint(visualImageSignature.getWidth()) - signatureImageParameters.getxAxis();
+                x = mediaBox.getWidth() - zoom(width, signatureImageParameters.getZoom()) - signatureImageParameters.getxAxis();
                 break;
             case CENTER:
-                x = (mediaBox.getWidth() - ires.toXPoint(visualImageSignature.getWidth())) / 2;
+                x = (mediaBox.getWidth() - zoom(width, signatureImageParameters.getZoom())) / 2;
                 break;
             case RIGHT:
                 x = signatureImageParameters.getxAxis();
@@ -164,7 +186,7 @@ public final class SignatureImageAndPositionProcessor {
         return x;
     }
 
-    private static float processXAngle270(PDRectangle mediaBox, ImageAndResolution ires, SignatureImageParameters signatureImageParameters, BufferedImage visualImageSignature) {
+    private static float processXAngle270(PDRectangle mediaBox, ImageAndResolution ires, SignatureImageParameters signatureImageParameters, float width) {
         float x;
 
         SignatureImageParameters.VisualSignatureAlignmentVertical alignmentVertical = signatureImageParameters.getVisualSignatureAlignmentVertical();
@@ -175,10 +197,10 @@ public final class SignatureImageAndPositionProcessor {
                 x = signatureImageParameters.getyAxis();
                 break;
             case MIDDLE:
-                x = (mediaBox.getWidth() - ires.toXPoint(visualImageSignature.getWidth())) / 2;
+                x = (mediaBox.getWidth() - zoom(width, signatureImageParameters.getZoom())) / 2;
                 break;
             case BOTTOM:
-                x = mediaBox.getWidth() - ires.toXPoint(visualImageSignature.getWidth()) - signatureImageParameters.getyAxis();
+                x = mediaBox.getWidth() - zoom(width, signatureImageParameters.getZoom()) - signatureImageParameters.getyAxis();
                 break;
             default:
                 throw new IllegalStateException(SUPPORTED_VERTICAL_ALIGNMENT_ERROR_MESSAGE + alignmentVertical.name());
@@ -187,7 +209,7 @@ public final class SignatureImageAndPositionProcessor {
         return x;
     }
 
-    private static float processXAngle360(PDRectangle mediaBox, ImageAndResolution ires, SignatureImageParameters signatureImageParameters, BufferedImage visualImageSignature) {
+    private static float processXAngle360(PDRectangle mediaBox, ImageAndResolution ires, SignatureImageParameters signatureImageParameters, float width) {
         float x;
 
         SignatureImageParameters.VisualSignatureAlignmentHorizontal alignmentHorizontal = signatureImageParameters.getVisualSignatureAlignmentHorizontal();
@@ -198,10 +220,10 @@ public final class SignatureImageAndPositionProcessor {
                 x = signatureImageParameters.getxAxis();
                 break;
             case CENTER:
-                x = (mediaBox.getWidth() - ires.toXPoint(visualImageSignature.getWidth())) / 2;
+                x = (mediaBox.getWidth() - zoom(width, signatureImageParameters.getZoom())) / 2;
                 break;
             case RIGHT:
-                x = mediaBox.getWidth() -ires.toXPoint(visualImageSignature.getWidth()) - signatureImageParameters.getxAxis();
+                x = mediaBox.getWidth() - zoom(width, signatureImageParameters.getZoom()) - signatureImageParameters.getxAxis();
                 break;
             default:
                 throw new IllegalStateException(SUPPORTED_HORIZONTAL_ALIGNMENT_ERROR_MESSAGE + alignmentHorizontal.name());
@@ -210,7 +232,7 @@ public final class SignatureImageAndPositionProcessor {
         return x;
     }
 
-    private static float processYAngle90(PDRectangle mediaBox, ImageAndResolution ires, SignatureImageParameters signatureImageParameters, BufferedImage visualImageSignature) {
+    private static float processYAngle90(PDRectangle mediaBox, ImageAndResolution ires, SignatureImageParameters signatureImageParameters, float height) {
         float y;
 
         SignatureImageParameters.VisualSignatureAlignmentHorizontal alignmentHorizontal = signatureImageParameters.getVisualSignatureAlignmentHorizontal();
@@ -221,10 +243,10 @@ public final class SignatureImageAndPositionProcessor {
                 y = signatureImageParameters.getxAxis();
                 break;
             case CENTER:
-                y = (mediaBox.getHeight() - ires.toXPoint(visualImageSignature.getHeight())) / 2;
+                y = (mediaBox.getHeight() - zoom(height, signatureImageParameters.getZoom())) / 2;
                 break;
             case RIGHT:
-                y = mediaBox.getHeight() - ires.toYPoint(visualImageSignature.getHeight()) - signatureImageParameters.getxAxis();
+                y = mediaBox.getHeight() - zoom(height, signatureImageParameters.getZoom()) - signatureImageParameters.getxAxis();
                 break;
             default:
                 throw new IllegalStateException(SUPPORTED_HORIZONTAL_ALIGNMENT_ERROR_MESSAGE + alignmentHorizontal.name());
@@ -233,7 +255,7 @@ public final class SignatureImageAndPositionProcessor {
         return y;
     }
 
-    private static float processYAngle180(PDRectangle mediaBox, ImageAndResolution ires, SignatureImageParameters signatureImageParameters, BufferedImage visualImageSignature) {
+    private static float processYAngle180(PDRectangle mediaBox, ImageAndResolution ires, SignatureImageParameters signatureImageParameters, float height) {
         float y;
 
         SignatureImageParameters.VisualSignatureAlignmentVertical alignmentVertical = signatureImageParameters.getVisualSignatureAlignmentVertical();
@@ -241,10 +263,10 @@ public final class SignatureImageAndPositionProcessor {
         switch (alignmentVertical) {
             case TOP:
             case NONE:
-                y = mediaBox.getHeight() - ires.toYPoint(visualImageSignature.getHeight()) - signatureImageParameters.getyAxis();
+                y = mediaBox.getHeight() - zoom(height, signatureImageParameters.getZoom()) - signatureImageParameters.getyAxis();
                 break;
             case MIDDLE:
-                y = (mediaBox.getHeight() - ires.toYPoint(visualImageSignature.getHeight())) / 2;
+                y = (mediaBox.getHeight() - zoom(height, signatureImageParameters.getZoom())) / 2;
                 break;
             case BOTTOM:
                 y = signatureImageParameters.getyAxis();
@@ -256,7 +278,7 @@ public final class SignatureImageAndPositionProcessor {
         return y;
     }
 
-    private static float processYAngle270(PDRectangle mediaBox, ImageAndResolution ires, SignatureImageParameters signatureImageParameters, BufferedImage visualImageSignature) {
+    private static float processYAngle270(PDRectangle mediaBox, ImageAndResolution ires, SignatureImageParameters signatureImageParameters, float height) {
         float y;
 
         SignatureImageParameters.VisualSignatureAlignmentHorizontal alignmentHorizontal = signatureImageParameters.getVisualSignatureAlignmentHorizontal();
@@ -264,10 +286,10 @@ public final class SignatureImageAndPositionProcessor {
         switch (alignmentHorizontal) {
             case LEFT:
             case NONE:
-                y = mediaBox.getHeight() - ires.toYPoint(visualImageSignature.getHeight()) - signatureImageParameters.getxAxis();
+                y = mediaBox.getHeight() - zoom(height, signatureImageParameters.getZoom()) - signatureImageParameters.getxAxis();
                 break;
             case CENTER:
-                y = (mediaBox.getHeight() - ires.toXPoint(visualImageSignature.getHeight())) / 2;
+                y = (mediaBox.getHeight() - zoom(height, signatureImageParameters.getZoom())) / 2;
                 break;
             case RIGHT:
                 y = signatureImageParameters.getxAxis();
@@ -279,7 +301,7 @@ public final class SignatureImageAndPositionProcessor {
         return y;
     }
 
-    private static float processYAngle360(PDRectangle mediaBox, ImageAndResolution ires, SignatureImageParameters signatureImageParameters, BufferedImage visualImageSignature) {
+    private static float processYAngle360(PDRectangle mediaBox, ImageAndResolution ires, SignatureImageParameters signatureImageParameters, float height) {
         float y;
 
         SignatureImageParameters.VisualSignatureAlignmentVertical alignmentVertical = signatureImageParameters.getVisualSignatureAlignmentVertical();
@@ -290,16 +312,20 @@ public final class SignatureImageAndPositionProcessor {
                 y = signatureImageParameters.getyAxis();
                 break;
             case MIDDLE:
-                y = (mediaBox.getHeight() - ires.toYPoint(visualImageSignature.getHeight())) / 2;
+                y = (mediaBox.getHeight() - zoom(height, signatureImageParameters.getZoom())) / 2;
                 break;
             case BOTTOM:
-                y = mediaBox.getHeight() - ires.toYPoint(visualImageSignature.getHeight()) - signatureImageParameters.getyAxis();
+                y = mediaBox.getHeight() - zoom(height, signatureImageParameters.getZoom()) - signatureImageParameters.getyAxis();
                 break;
             default:
                 throw new IllegalStateException(SUPPORTED_VERTICAL_ALIGNMENT_ERROR_MESSAGE + alignmentVertical.name());
         }
 
         return y;
+    }
+    
+    private static float zoom(float originalFloat, int zoom) {
+        return originalFloat * zoom / 100;
     }
 
 }

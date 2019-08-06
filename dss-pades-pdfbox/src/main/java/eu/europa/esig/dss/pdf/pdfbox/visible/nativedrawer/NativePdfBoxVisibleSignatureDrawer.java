@@ -194,15 +194,46 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 			try (InputStream is = image.openStream()) {
 	            cs.saveGraphicsState();
 	            float scaleFactor = parameters.getScaleFactor();
-	            cs.transform(Matrix.getScaleInstance(dimensionAndPosition.getxDpiRatio() * scaleFactor, 
-	            		dimensionAndPosition.getyDpiRatio() * scaleFactor));
+	            cs.transform(Matrix.getScaleInstance(scaleFactor, scaleFactor));
 	    		byte[] bytes = IOUtils.toByteArray(is);
 	    		PDImageXObject imageXObject = PDImageXObject.createFromByteArray(doc, bytes, image.getName());
+	    		
 	    		// divide to scale factor, because PdfBox due to the matrix transformation also changes position parameters of the image
-	        	cs.drawImage(imageXObject, dimensionAndPosition.getImageX() / scaleFactor, dimensionAndPosition.getImageY() / scaleFactor);
+	    		float xAxis = dimensionAndPosition.getImageX() / scaleFactor;
+	    		if (parameters.getTextParameters() != null)
+	    			xAxis *= dimensionAndPosition.getxDpiRatio();
+	    		float yAxis = dimensionAndPosition.getImageY() / scaleFactor;
+	    		if (parameters.getTextParameters() != null)
+	    			yAxis *= dimensionAndPosition.getyDpiRatio();
+	    		
+	    		boolean swap = ImageRotationUtils.isSwapOfDimensionsRequired(parameters.getRotation());
+	    		float width = getWidth(dimensionAndPosition, imageXObject, swap);
+	    		float height = getHeight(dimensionAndPosition, imageXObject, swap);
+	    				
+		        cs.drawImage(imageXObject, xAxis, yAxis, width, height);
+	            cs.transform(Matrix.getRotateInstance(360 - ImageRotationUtils.getRotation(parameters.getRotation()), width, height));
+	            
 	            cs.restoreGraphicsState();
 			}
     	}
+	}
+	
+	private float getWidth(SignatureFieldDimensionAndPosition dimensionAndPosition, PDImageXObject imageXObject, boolean swapDimensions) {
+        float width = swapDimensions ? dimensionAndPosition.getBoxHeight() : dimensionAndPosition.getBoxWidth();
+        if (parameters.getTextParameters() != null) {
+        	width = imageXObject.getWidth();
+        	width *= swapDimensions ? dimensionAndPosition.getyDpiRatio() : dimensionAndPosition.getxDpiRatio();
+        }
+        return width;
+	}
+	
+	private float getHeight(SignatureFieldDimensionAndPosition dimensionAndPosition, PDImageXObject imageXObject, boolean swapDimensions) {
+        float height = swapDimensions ? dimensionAndPosition.getBoxWidth() : dimensionAndPosition.getBoxHeight();
+        if (parameters.getTextParameters() != null) {
+        	height = imageXObject.getHeight();
+        	height *= swapDimensions ? dimensionAndPosition.getxDpiRatio() : dimensionAndPosition.getyDpiRatio();
+        }
+        return height;
 	}
 	
 	/**

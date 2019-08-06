@@ -187,23 +187,25 @@ public class ImageUtils {
 	}
 	
 	public static Dimension getImageDimension(SignatureImageParameters imageParameters) {
-		float width = 0;
-		float height = 0;
+		float width = imageParameters.getWidth();
+		float height = imageParameters.getHeight();
 		float scaleFactor = imageParameters.getScaleFactor();
-		try {
-			DSSDocument docImage = imageParameters.getImage();
-			if (docImage != null) {
-				try (InputStream is = docImage.openStream()) {
-					BufferedImage image = ImageIO.read(is);
-					width = image.getWidth() * scaleFactor;
-					height = image.getHeight() * scaleFactor;
+		if (width == 0 && height == 0) {
+			try {
+				DSSDocument docImage = imageParameters.getImage();
+				if (docImage != null) {
+					try (InputStream is = docImage.openStream()) {
+						BufferedImage image = ImageIO.read(is);
+						width = width == 0 ? image.getWidth() : width;
+						height = height == 0 ? image.getHeight(): height;
+					}
 				}
-		}
-		} catch (IOException e) {
-			LOG.error("Cannot read the given image", e);
+			} catch (IOException e) {
+				LOG.error("Cannot read the given image", e);
+			}
 		}
 		Dimension dimension = new Dimension();
-		dimension.setSize(width, height);
+		dimension.setSize(width * scaleFactor, height * scaleFactor);
 		return dimension;
 	}
 

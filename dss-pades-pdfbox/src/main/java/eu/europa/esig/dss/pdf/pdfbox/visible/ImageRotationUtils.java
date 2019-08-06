@@ -65,4 +65,22 @@ public class ImageRotationUtils {
         return rotate;
     }
     
+    /**
+     * Verifies if swap of dimensions is required with the current rotation
+     * @param visualSignatureRotation {@link VisualSignatureRotation}
+     * @return TRUE is swap of dimensions is required, FALSE otherwise
+     */
+    public static boolean isSwapOfDimensionsRequired(VisualSignatureRotation visualSignatureRotation) {
+    	return isSwapOfDimensionsRequired(getRotation(visualSignatureRotation));
+    }
+
+    /**
+     * Verifies if swap of dimensions is required with the current rotation
+     * @param rotation {@code int} rotation degree
+     * @return TRUE is swap of dimensions is required, FALSE otherwise
+     */
+    public static boolean isSwapOfDimensionsRequired(int rotation) {
+    	return ImageRotationUtils.ANGLE_90 == rotation || ImageRotationUtils.ANGLE_270 == rotation;
+    }
+    
 }

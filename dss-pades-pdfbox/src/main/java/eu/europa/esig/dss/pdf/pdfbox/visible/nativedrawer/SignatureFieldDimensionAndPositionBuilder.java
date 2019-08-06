@@ -108,9 +108,12 @@ public class SignatureFieldDimensionAndPositionBuilder {
 			dimensionAndPosition.setTextWidth(toDpiPagePoint(textWidth, dimensionAndPosition.getxDpi()));
 			dimensionAndPosition.setTextHeight(toDpiPagePoint(textHeight, dimensionAndPosition.getyDpi()));
 			dimensionAndPosition.marginShift(textParameters.getMargin());
+			
+			width = toDpiPagePoint(width, dimensionAndPosition.getxDpi());
+			height = toDpiPagePoint(height, dimensionAndPosition.getyDpi());
 		}
-		dimensionAndPosition.setBoxWidth(toDpiPagePoint(width, dimensionAndPosition.getxDpi()));
-		dimensionAndPosition.setBoxHeight(toDpiPagePoint(height, dimensionAndPosition.getyDpi()));
+		dimensionAndPosition.setBoxWidth((float)width);
+		dimensionAndPosition.setBoxHeight((float)height);
 	}
 	
 	private void textImageVerticalAlignment(Float height, float imageHeight, float textHeight) {
