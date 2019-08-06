@@ -28,13 +28,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-
-import javax.security.auth.x500.X500Principal;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -74,13 +71,13 @@ public class CertificatePoolTest {
 			}
 
 			@Override
-			public Set<CertificateToken> get(X500Principal x500Principal) {
-				return Collections.emptySet();
+			public CertificateToken addCertificate(CertificateToken certificate) {
+				return null;
 			}
 
 			@Override
-			public CertificateToken addCertificate(CertificateToken certificate) {
-				return null;
+			public boolean isTrusted(CertificateToken certificateToken) {
+				return false;
 			}
 		};
 	}

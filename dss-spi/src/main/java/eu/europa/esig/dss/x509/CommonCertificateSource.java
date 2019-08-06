@@ -25,9 +25,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
-
-import javax.security.auth.x500.X500Principal;
 
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
@@ -106,30 +103,6 @@ public class CommonCertificateSource implements CertificateSource {
 	}
 
 	/**
-	 * This method returns the <code>List</code> of <code>CertificateToken</code>(s) corresponding to the given subject
-	 * distinguished name.
-	 * The content of the encapsulated certificates pool can be different from the content of the source.
-	 *
-	 * @param x500Principal
-	 *            subject distinguished names of the certificate to find
-	 * @return If no match is found then an empty list is returned.
-	 */
-	@Override
-	public Set<CertificateToken> get(final X500Principal x500Principal) {
-		final List<CertificateToken> missingCertificateTokens = new ArrayList<CertificateToken>();
-		Set<CertificateToken> certificateTokensSet = certPool.get(x500Principal);
-		for (final CertificateToken certificateToken : certificateTokensSet) {
-			if (!certificateTokens.contains(certificateToken)) {
-				missingCertificateTokens.add(certificateToken);
-			}
-		}
-		if (missingCertificateTokens.size() > 0) {
-			certificateTokensSet.removeAll(missingCertificateTokens);
-		}
-		return Collections.unmodifiableSet(certificateTokensSet);
-	}
-
-	/**
 	 * This method is used internally to remove a certificate from the <code>CertificatePool</code>.
 	 *
 	 * @param certificate
@@ -162,6 +135,11 @@ public class CommonCertificateSource implements CertificateSource {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public boolean isTrusted(CertificateToken certificateToken) {
+		return certPool.isTrusted(certificateToken);
 	}
 
 }

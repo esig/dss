@@ -744,7 +744,7 @@ public class DiagnosticDataBuilder {
 	}
 
 	private boolean isTrusted(CertificateToken cert) {
-		return trustedCertSource != null && !trustedCertSource.get(cert.getSubjectX500Principal()).isEmpty();
+		return trustedCertSource != null && trustedCertSource.isTrusted(cert);
 	}
 
 	private XmlChainItem getXmlChainItem(final CertificateToken token) {
