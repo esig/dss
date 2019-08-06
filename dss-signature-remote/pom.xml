@@ -1,49 +1,55 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-    <artifactId>sd-dss</artifactId>
-    <version>5.5-SNAPSHOT</version>
-  </parent>
-  
-  <artifactId>dss-signature-remote</artifactId>
-  <name>DSS Remote Services</name>
-  <description>DSS Remote Services contains common implementation used in REST and SOAP services.</description>
-  
-  <dependencies>
-  	<dependency>
-    	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-  		<artifactId>dss-signature-dto</artifactId>
-  	</dependency>
-  	<dependency>
-    	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-  		<artifactId>dss-common-remote-converter</artifactId>
-  	</dependency>
-  	<dependency>
-    	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-  		<artifactId>dss-xades</artifactId>
-  	</dependency>
-  	<dependency>
-    	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-  		<artifactId>dss-cades</artifactId>
-  	</dependency>
-  	<dependency>
-    	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-  		<artifactId>dss-pades</artifactId>
-  	</dependency>
-  	<dependency>
-    	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-  		<artifactId>dss-asic-cades</artifactId>
-  	</dependency>
-  	<dependency>
-    	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-  		<artifactId>dss-asic-xades</artifactId>
-  	</dependency>
-  	
-	<dependency>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-		<artifactId>dss-test</artifactId>
-		<scope>test</scope>
-	</dependency>
-  </dependencies>
+		<artifactId>sd-dss</artifactId>
+		<version>5.5-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>dss-signature-remote</artifactId>
+	<name>DSS Remote Services</name>
+	<description>DSS Remote Services contains common implementation used in REST and SOAP services.</description>
+
+	<properties>
+		<module-name>jpms_dss_signature_remote</module-name>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-signature-dto</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-common-remote-converter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-xades</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-cades</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-pades</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-asic-cades</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-asic-xades</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 </project>
