@@ -18,34 +18,30 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.cades.validation;
+package eu.europa.esig.dss.service.http.commons;
 
-import java.io.IOException;
+/**
+ * Implementation of DataLoader using HttpClient to request a timestamp server.
+ */
+public class TimestampDataLoader extends CommonsDataLoader {
 
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
-import eu.europa.esig.dss.utils.Utils;
+	public static final String TIMESTAMP_QUERY_CONTENT_TYPE = "application/timestamp-query";
 
-public class MockDataLoader extends CommonsDataLoader {
-
-	private static final long serialVersionUID = -8743201861357700742L;
-
-	public MockDataLoader() {
+	/**
+	 * The default constructor for CommonsDataLoader.
+	 */
+	public TimestampDataLoader() {
+		super(TIMESTAMP_QUERY_CONTENT_TYPE);
 	}
 
+	/**
+	 * In case of TimestampDataLoader the contentType is fixed to: Content-Type "application/timestamp-query"
+	 *
+	 * @param contentType
+	 */
 	@Override
-	public byte[] get(final String urlString) {
-		if (urlString.equals("https://sede.060.gob.es/politica_de_firma_anexo_1.pdf")) {
-			DSSDocument document = new FileDocument("src/test/resources/validation/dss-728/politica_de_firma_anexo_1.pdf");
-			try {
-				return Utils.toByteArray(document.openStream());
-			} catch (IOException e) {
-				throw new DSSException(e);
-			}
-		} else {
-			return super.get(urlString);
-		}
+	public void setContentType(final String contentType) {
+		// do nothing: in case of TimestampDataLoader the contentType is fixed.
 	}
+
 }

@@ -18,34 +18,32 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.cades.validation;
+package eu.europa.esig.dss.service.http.commons;
 
-import java.io.IOException;
+/**
+ * Implementation of DataLoader using HttpClient. More flexible for HTTPS without having to add the certificate to the
+ * JVM TrustStore.
+ *
+ */
+public class OCSPDataLoader extends CommonsDataLoader {
 
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
-import eu.europa.esig.dss.utils.Utils;
+	public static final String OCSP_CONTENT_TYPE = "application/ocsp-request";
 
-public class MockDataLoader extends CommonsDataLoader {
-
-	private static final long serialVersionUID = -8743201861357700742L;
-
-	public MockDataLoader() {
+	/**
+	 * The default constructor for CommonsDataLoader.
+	 */
+	public OCSPDataLoader() {
+		super(OCSP_CONTENT_TYPE);
 	}
 
+	/**
+	 * In case of OCSPDataLoader the contentType is fixed to: Content-Type "application/ocsp-request"
+	 *
+	 * @param contentType
+	 */
 	@Override
-	public byte[] get(final String urlString) {
-		if (urlString.equals("https://sede.060.gob.es/politica_de_firma_anexo_1.pdf")) {
-			DSSDocument document = new FileDocument("src/test/resources/validation/dss-728/politica_de_firma_anexo_1.pdf");
-			try {
-				return Utils.toByteArray(document.openStream());
-			} catch (IOException e) {
-				throw new DSSException(e);
-			}
-		} else {
-			return super.get(urlString);
-		}
+	public void setContentType(final String contentType) {
+		// do nothing: in case of OCSPDataLoader the contentType is fixed.
 	}
+
 }

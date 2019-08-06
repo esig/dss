@@ -18,34 +18,33 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.cades.validation;
+package eu.europa.esig.dss.service.http.proxy;
 
-import java.io.IOException;
+/**
+ * This class is a DTO which contains the proxy configuration (HTTP and/or HTTPS)
+ */
+public class ProxyConfig {
 
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
-import eu.europa.esig.dss.utils.Utils;
+	/* Properties for HTTP Proxy (null if disabled) */
+	private ProxyProperties httpProperties;
 
-public class MockDataLoader extends CommonsDataLoader {
+	/* Properties for HTTPS Proxy (null if disabled) */
+	private ProxyProperties httpsProperties;
 
-	private static final long serialVersionUID = -8743201861357700742L;
-
-	public MockDataLoader() {
+	public ProxyProperties getHttpProperties() {
+		return httpProperties;
 	}
 
-	@Override
-	public byte[] get(final String urlString) {
-		if (urlString.equals("https://sede.060.gob.es/politica_de_firma_anexo_1.pdf")) {
-			DSSDocument document = new FileDocument("src/test/resources/validation/dss-728/politica_de_firma_anexo_1.pdf");
-			try {
-				return Utils.toByteArray(document.openStream());
-			} catch (IOException e) {
-				throw new DSSException(e);
-			}
-		} else {
-			return super.get(urlString);
-		}
+	public void setHttpProperties(ProxyProperties httpProperties) {
+		this.httpProperties = httpProperties;
 	}
+
+	public ProxyProperties getHttpsProperties() {
+		return httpsProperties;
+	}
+
+	public void setHttpsProperties(ProxyProperties httpsProperties) {
+		this.httpsProperties = httpsProperties;
+	}
+
 }

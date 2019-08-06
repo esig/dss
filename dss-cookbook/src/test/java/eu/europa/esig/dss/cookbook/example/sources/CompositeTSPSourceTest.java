@@ -29,8 +29,8 @@ import java.util.Map;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.Test;
 
-import eu.europa.esig.dss.client.tsp.OnlineTSPSource;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.service.tsp.OnlineTSPSource;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.tsp.CompositeTSPSource;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
