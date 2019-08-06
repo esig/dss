@@ -57,7 +57,7 @@ public class BaselineBCertificateSelector extends CertificateReorderer {
 
 			List<CertificateToken> result = new LinkedList<CertificateToken>();
 			for (CertificateToken certificateToken : orderedCertificates) {
-				if (!trustedCertSource.get(certificateToken.getSubjectX500Principal()).isEmpty()) {
+				if (trustedCertSource.isTrusted(certificateToken)) {
 					// trust anchor and its parents are skipped
 					break;
 				}

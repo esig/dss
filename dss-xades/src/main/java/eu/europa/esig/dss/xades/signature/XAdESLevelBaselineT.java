@@ -224,7 +224,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 			boolean trustAnchorIncluded = false;
 			for (final CertificateToken certificateToken : toIncludeCertificates) {
 				if (trustAnchorBPPolicy && (trustedCertSource != null)) {
-					if (!trustedCertSource.get(certificateToken.getSubjectX500Principal()).isEmpty()) {
+					if (trustedCertSource.isTrusted(certificateToken)) {
 						trustAnchorIncluded = true;
 					}
 				}

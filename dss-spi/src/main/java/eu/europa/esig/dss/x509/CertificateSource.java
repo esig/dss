@@ -44,18 +44,6 @@ public interface CertificateSource extends Serializable {
 	CertificateToken addCertificate(final CertificateToken certificate);
 
 	/**
-	 * This method returns the <code>List</code> of <code>CertificateToken</code>(s) corresponding to the given subject
-	 * distinguished name.
-	 * The search is performed at the level of source and not at the pool level (The same pool can be shared by many
-	 * sources).
-	 *
-	 * @param x500Principal
-	 *            subject distinguished names of the certificate to find
-	 * @return a {@link List} of {@link CertificateToken} which have x500Principal as subject
-	 */
-	List<CertificateToken> get(final X500Principal x500Principal);
-
-	/**
 	 * This method returns the certificate source type associated to the
 	 * implementation class.
 	 *
@@ -69,5 +57,13 @@ public interface CertificateSource extends Serializable {
 	 * @return all certificates from this source
 	 */
 	List<CertificateToken> getCertificates();
+
+	/**
+	 * This method checks if a given certificate is trusted
+	 * 
+	 * @param certificateToken the certificate to be tested
+	 * @return true if the certificate is trusted
+	 */
+	boolean isTrusted(CertificateToken certificateToken);
 
 }

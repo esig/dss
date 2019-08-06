@@ -96,36 +96,6 @@ public class CommonCertificateSource implements CertificateSource {
 	}
 
 	/**
-	 * This method returns the <code>List</code> of <code>CertificateToken</code>(s) corresponding to the given subject
-	 * distinguished name.
-	 * The content of the encapsulated certificates pool can be different from the content of the source.
-	 *
-	 * @param x500Principal
-	 *            subject distinguished names of the certificate to find
-	 * @return If no match is found then an empty list is returned.
-	 */
-	@Override
-	public List<CertificateToken> get(final X500Principal x500Principal) {
-		List<CertificateToken> certificateTokenList = null;
-		if (x500Principal != null) {
-			final List<CertificateToken> missingCertificateTokens = new ArrayList<CertificateToken>();
-			certificateTokenList = certPool.get(x500Principal);
-			for (final CertificateToken certificateToken : certificateTokenList) {
-				if (!certificateTokens.contains(certificateToken)) {
-					missingCertificateTokens.add(certificateToken);
-				}
-			}
-			if (missingCertificateTokens.size() > 0) {
-				certificateTokenList.removeAll(missingCertificateTokens);
-			}
-		} else {
-
-			certificateTokenList = new ArrayList<CertificateToken>();
-		}
-		return Collections.unmodifiableList(certificateTokenList);
-	}
-
-	/**
 	 * This method is used internally to remove a certificate from the <code>CertificatePool</code>.
 	 *
 	 * @param certificate
@@ -143,6 +113,11 @@ public class CommonCertificateSource implements CertificateSource {
 	 */
 	public int getNumberOfCertificates() {
 		return certificateTokens.size();
+	}
+
+	@Override
+	public boolean isTrusted(CertificateToken certificateToken) {
+		return certPool.isTrusted(certificateToken);
 	}
 
 }

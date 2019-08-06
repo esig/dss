@@ -33,8 +33,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import javax.security.auth.x500.X500Principal;
-
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,13 +70,13 @@ public class CertificatePoolTest {
 			}
 
 			@Override
-			public List<CertificateToken> get(X500Principal x500Principal) {
+			public CertificateToken addCertificate(CertificateToken certificate) {
 				return null;
 			}
 
 			@Override
-			public CertificateToken addCertificate(CertificateToken certificate) {
-				return null;
+			public boolean isTrusted(CertificateToken certificateToken) {
+				return false;
 			}
 		};
 	}
