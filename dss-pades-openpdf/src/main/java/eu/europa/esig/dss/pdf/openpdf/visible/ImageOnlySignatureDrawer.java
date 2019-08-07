@@ -42,6 +42,7 @@ public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		float zoom = parameters.getScaleFactor();
 		int width = parameters.getWidth();
 		int height = parameters.getHeight();
+		
 		if (width == 0) {
 			width = (int) image.getWidth();
 		}
@@ -50,10 +51,14 @@ public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		}
 		width *= zoom;
 		height *= zoom;
-		image.scaleAbsolute(width, height);
 
 		if (Utils.isStringNotBlank(signatureFieldId)) {
 			appearance.setVisibleSignature(signatureFieldId);
+			Rectangle rect = appearance.getRect();
+			if (rect != null) {
+				width = (int) rect.getWidth();
+				height = (int) rect.getHeight();
+			}
 		} else {
 			Rectangle pageSize = appearance.getStamper().getReader().getPageSize(parameters.getPage());
 			float originY = pageSize.getHeight();
@@ -63,6 +68,8 @@ public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 			rect.setBackgroundColor(parameters.getBackgroundColor());
 			appearance.setVisibleSignature(rect, parameters.getPage());
 		}
+		
+		image.scaleAbsolute(width, height);
 
 		PdfTemplate layer = appearance.getLayer(2);
 		ColumnText ct = new ColumnText(layer);
