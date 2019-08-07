@@ -7,12 +7,15 @@ import static org.junit.Assert.assertNull;
 
 import java.io.File;
 import java.sql.SQLException;
+import java.util.Date;
 
 import org.apache.commons.codec.binary.Hex;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.client.ocsp.JdbcCacheOCSPSource;
@@ -20,15 +23,21 @@ import eu.europa.esig.dss.client.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
 
 public class JdbcCacheOcspSourceTest {
+
+	private static final Logger LOG = LoggerFactory.getLogger(JdbcCacheOcspSourceTest.class);
+	
+	private JdbcCacheOCSPSource ocspSource = new MockJdbcCacheOCSPSource();
 	
 	private JdbcDataSource dataSource = new JdbcDataSource();
 	
-	private JdbcCacheOCSPSource ocspSource = new JdbcCacheOCSPSource();
+	private OCSPToken storedRevocationToken = null;
+	private Date requestTime = null;
 	
 	@Before
-	public void setUp() throws SQLException {		
+	public void setUp() throws SQLException {
 		dataSource.setUrl("jdbc:h2:mem:test;create=true;DB_CLOSE_DELAY=-1");
 		ocspSource.setDataSource(dataSource);
 		ocspSource.initTable();
@@ -50,7 +59,9 @@ public class JdbcCacheOcspSourceTest {
 		assertNotNull(revocationToken);
 		assertNotNull(revocationToken.getRevocationTokenKey());
 		assertEquals(RevocationOrigin.EXTERNAL, revocationToken.getFirstOrigin());
+		requestTime = new Date();
 
+		// check real {@code findRevocation()} method behavior
 		RevocationToken savedRevocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(savedRevocationToken);
 		assertEquals(revocationToken.getRevocationTokenKey(), savedRevocationToken.getRevocationTokenKey());
@@ -72,14 +83,45 @@ public class JdbcCacheOcspSourceTest {
 		assertEquals(revocationToken.getStatus(), savedRevocationToken.getStatus());
 		assertEquals(revocationToken.getThisUpdate(), savedRevocationToken.getThisUpdate());
 		
+		// check that token can be obtained more than once
+		storedRevocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
+		assertNotNull(storedRevocationToken);
+		assertEquals(RevocationOrigin.CACHED, storedRevocationToken.getFirstOrigin());
+
+		// check a dummy token with the old maxUpdateDelay
+		RevocationToken refreshedRevocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
+		assertNotNull(refreshedRevocationToken);
+		assertEquals(RevocationOrigin.CACHED, refreshedRevocationToken.getFirstOrigin());
+		
 		// Force refresh (1 second)
 		ocspSource.setMaxNextUpdateDelay(1L);
 		Thread.sleep(1000);
-		
-		RevocationToken refreshedRevocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
+
+		// check the dummy token with forcing one second refresh
+		refreshedRevocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(refreshedRevocationToken);
 		assertEquals(RevocationOrigin.EXTERNAL, refreshedRevocationToken.getFirstOrigin());
 
+	}
+	
+	/**
+	 * Mocked to avoid time synchronization issue between this computer time and the OCSP responder
+	 * (remote server is synchronized with UTC)
+	 */
+	@SuppressWarnings("serial")
+	private class MockJdbcCacheOCSPSource extends JdbcCacheOCSPSource {
+		
+		@Override
+		protected OCSPToken findRevocation(String key, CertificateToken certificateToken,
+				CertificateToken issuerCertificateToken) {
+			if (storedRevocationToken == null) {
+				return super.findRevocation(key, certificateToken, issuerCertificateToken);
+			} else {
+				LOG.info("ThisUpdate was overriden from {} to {}", storedRevocationToken.getThisUpdate(), requestTime);
+				storedRevocationToken.getThisUpdate().setTime(requestTime.getTime());
+				return storedRevocationToken;
+			}
+		}
 	}
 	
 	@After
