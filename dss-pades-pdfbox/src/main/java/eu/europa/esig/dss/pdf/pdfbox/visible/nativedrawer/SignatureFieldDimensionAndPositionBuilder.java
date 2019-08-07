@@ -62,42 +62,53 @@ public class SignatureFieldDimensionAndPositionBuilder {
 	}
 	
 	private void assignImageBoxDimension() {
+		
 		Dimension imageAndDimension = ImageUtils.getImageDimension(imageParameters);
 		double imageWidth = imageAndDimension.getWidth();
 		double imageHeight = imageAndDimension.getHeight();
 		double width = imageWidth;
 		double height = imageHeight;
+		
 		SignatureImageTextParameters textParameters = imageParameters.getTextParameters();
 		// if text is present
 		if (textParameters != null) {
+			
+			if (imageParameters.getImage() == null) {
+				// adds an empty space
+				width = toDpiTextPoint(width, dimensionAndPosition.getxDpi());
+				height = toDpiTextPoint(height, dimensionAndPosition.getyDpi());
+			}
+			
 			DSSFont dssFont = textParameters.getFont();
-			Font properFont = FontUtils.computeProperFont(dssFont.getJavaFont(), dssFont.getSize(), imageParameters.getDpi());
+			// native implementation uses dpi-independent font
+			Font properFont = FontUtils.computeProperFont(dssFont.getJavaFont(), dssFont.getSize(), CommonDrawerUtils.getTextDpi());
 			Dimension textBox = FontUtils.computeSize(properFont, textParameters.getText(), textParameters.getMargin());
 			float textWidth = (float) textBox.getWidth() / CommonDrawerUtils.getScaleFactor(dimensionAndPosition.getxDpi());
 			float textHeight = (float) textBox.getHeight() / CommonDrawerUtils.getScaleFactor(dimensionAndPosition.getyDpi());
+			
 			switch (imageParameters.getTextParameters().getSignerNamePosition()) {
 				case LEFT:
-					width += textWidth;
+					width += imageParameters.getImage() != null || width == 0 ? textWidth : 0;
 					height = Math.max(height, textHeight);
 					dimensionAndPosition.setImageX((float)(width - imageWidth));
-					textImageVerticalAlignment((float)height, (float)imageHeight, textHeight);
+					textImageVerticalAlignment(height, imageHeight, textHeight);
 					break;
 				case RIGHT:
-					width += textWidth;
+					width += imageParameters.getImage() != null || width == 0 ? textWidth : 0;
 					height = Math.max(height, textHeight);
-					dimensionAndPosition.setTextX(toDpiPagePoint((float)imageWidth, dimensionAndPosition.getxDpi()));
-					textImageVerticalAlignment((float)height, (float)imageHeight, textHeight);
+					dimensionAndPosition.setTextX(toDpiPagePoint(imageWidth, dimensionAndPosition.getxDpi()));
+					textImageVerticalAlignment(height, imageHeight, textHeight);
 					break;
 				case TOP:
 					width = Math.max(width, textWidth);
-					height += textHeight;
-					dimensionAndPosition.setTextY(toDpiPagePoint((float)imageHeight, dimensionAndPosition.getyDpi()));
-					dimensionAndPosition.setTextX(toDpiPagePoint((float)(width - textWidth)/2, dimensionAndPosition.getxDpi()));
+					height += imageParameters.getImage() != null || height == 0 ? textHeight : 0;
+					dimensionAndPosition.setTextY(toDpiPagePoint(imageHeight, dimensionAndPosition.getyDpi()));
+					dimensionAndPosition.setTextX(toDpiPagePoint((width - textWidth)/2, dimensionAndPosition.getxDpi()));
 					dimensionAndPosition.setImageX((float)(width - imageWidth)/2);
 					break;
 				case BOTTOM:
 					width = Math.max(width, textWidth);
-					height += textHeight;
+					height += imageParameters.getImage() != null || height == 0 ? textHeight : 0;
 					dimensionAndPosition.setImageY((float)(height - imageHeight));
 					dimensionAndPosition.setTextX(toDpiPagePoint((float)(width - textWidth)/2, dimensionAndPosition.getxDpi()));
 					dimensionAndPosition.setImageX((float)(width - imageWidth)/2);
@@ -105,6 +116,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
 				default:
 					break;
 				}
+			
 			dimensionAndPosition.setTextWidth(toDpiPagePoint(textWidth, dimensionAndPosition.getxDpi()));
 			dimensionAndPosition.setTextHeight(toDpiPagePoint(textHeight, dimensionAndPosition.getyDpi()));
 			dimensionAndPosition.marginShift(textParameters.getMargin());
@@ -112,15 +124,16 @@ public class SignatureFieldDimensionAndPositionBuilder {
 			width = toDpiPagePoint(width, dimensionAndPosition.getxDpi());
 			height = toDpiPagePoint(height, dimensionAndPosition.getyDpi());
 		}
+		
 		dimensionAndPosition.setBoxWidth((float)width);
 		dimensionAndPosition.setBoxHeight((float)height);
 	}
 	
-	private void textImageVerticalAlignment(Float height, float imageHeight, float textHeight) {
+	private void textImageVerticalAlignment(double height, double imageHeight, float textHeight) {
 		switch (imageParameters.getSignerTextImageVerticalAlignment()) {
 			case TOP:
 				dimensionAndPosition.setTextY(toDpiPagePoint((height - textHeight), dimensionAndPosition.getyDpi()));
-				dimensionAndPosition.setImageY(height - imageHeight);
+				dimensionAndPosition.setImageY((float)(height - imageHeight));
 				break;
 			case BOTTOM:
 				dimensionAndPosition.setTextY(0);
@@ -129,7 +142,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
 			case MIDDLE:
 			default:
 				dimensionAndPosition.setTextY(toDpiPagePoint((height - textHeight)/2, dimensionAndPosition.getyDpi()));
-				dimensionAndPosition.setImageY((height - imageHeight)/2);
+				dimensionAndPosition.setImageY((float)(height - imageHeight)/2);
 				break;
 		}
 	}
@@ -211,8 +224,14 @@ public class SignatureFieldDimensionAndPositionBuilder {
 		dimensionAndPosition.setBoxHeight(temp);
 	}
     
+	// decrease size
     private float toDpiPagePoint(double x, Integer dpi) {
     	return CommonDrawerUtils.toDpiAxisPoint((float)x, CommonDrawerUtils.getDpi(dpi));
+    }
+    
+    // increase size
+    private float toDpiTextPoint(double x, Integer dpi) {
+    	return CommonDrawerUtils.computeProperSize((float)x, CommonDrawerUtils.getDpi(dpi));
     }
     
 }

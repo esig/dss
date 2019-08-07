@@ -196,8 +196,8 @@ public class ImageUtils {
 				if (docImage != null) {
 					try (InputStream is = docImage.openStream()) {
 						BufferedImage image = ImageIO.read(is);
-						width = width == 0 ? image.getWidth() : width;
-						height = height == 0 ? image.getHeight(): height;
+						width = image.getWidth();
+						height = image.getHeight();
 					}
 				}
 			} catch (IOException e) {

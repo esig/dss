@@ -10,6 +10,10 @@ public class CommonDrawerUtils {
 	
 	private CommonDrawerUtils() {
 	}
+	
+	public static int getTextDpi() {
+		return DPI;
+	}
 
 	public static int getDpi(Integer dpi) {
 		int result = DPI;

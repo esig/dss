@@ -60,6 +60,17 @@ public final class ImageTextWriter {
 		Dimension dimension = FontUtils.computeSize(properFont, textParameters.getText(), textParameters.getMargin());
 		return createTextImage(textParameters, properFont, dimension);
 	}
+	
+	/**
+	 * Computes the original text dimension with no respect to DPI
+	 * @param textParameters {@link SignatureImageTextParameters}
+	 * @return {@link Dimension}
+	 */
+	public static Dimension getOriginalTextDimension(final SignatureImageTextParameters textParameters) {
+		DSSFont dssFont = textParameters.getFont();
+		Font properFont = FontUtils.computeProperFont(dssFont.getJavaFont(), dssFont.getSize(), CommonDrawerUtils.getDpi(null));
+		return FontUtils.computeSize(properFont, textParameters.getText(), textParameters.getMargin());
+	}
 
 	private static BufferedImage createTextImage(final SignatureImageTextParameters textParameters, final Font font, final Dimension dimension) {
 		String[] lines = textParameters.getText().split("\n");

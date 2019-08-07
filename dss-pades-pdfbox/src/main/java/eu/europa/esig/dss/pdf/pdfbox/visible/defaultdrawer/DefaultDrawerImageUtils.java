@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.pdf.pdfbox.visible.defaultdrawer;
 
+import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
@@ -28,6 +29,7 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
+import eu.europa.esig.dss.pades.SignatureImageTextParameters.SignerPosition;
 import eu.europa.esig.dss.pdf.pdfbox.visible.ImageUtils;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
@@ -47,32 +49,39 @@ public class DefaultDrawerImageUtils {
 		if ((textParamaters != null) && Utils.isStringNotEmpty(textParamaters.getText())) {
 			BufferedImage buffImg = ImageTextWriter.createTextImage(imageParameters);
 
-			if (image != null) {
+			BufferedImage scaledImage = null;
+			if (image == null && buffImg != null) {
+				// reserve empty space if only text must be drawed
+				scaledImage = createEmptyImage(imageParameters, buffImg.getWidth(), buffImg.getHeight());
+			} else {
 				// need to scale image due to usage default page 300 dpi instead of native image parameters
-				BufferedImage scaledImage = getDpiScaledImage(image);
-				if (scaledImage != null) {
-					float zoomFactor = imageParameters.getScaleFactor();
-					scaledImage = zoomImage(scaledImage, zoomFactor, zoomFactor);
-					switch (textParamaters.getSignerNamePosition()) {
-						case LEFT:
-							buffImg = ImageMerger.mergeOnRight(buffImg, scaledImage, imageParameters.getBackgroundColor(),
-									imageParameters.getSignerTextImageVerticalAlignment());
-							break;
-						case RIGHT:
-							buffImg = ImageMerger.mergeOnRight(scaledImage, buffImg, imageParameters.getBackgroundColor(),
-									imageParameters.getSignerTextImageVerticalAlignment());
-							break;
-						case TOP:
-							buffImg = ImageMerger.mergeOnTop(scaledImage, buffImg, imageParameters.getBackgroundColor());
-							break;
-						case BOTTOM:
-							buffImg = ImageMerger.mergeOnTop(buffImg, scaledImage, imageParameters.getBackgroundColor());
-							break;
-						default:
-							break;
-					}
+				scaledImage = getDpiScaledImage(image);
+			}
+			
+			if (scaledImage != null) {
+				float zoomFactor = imageParameters.getScaleFactor();
+				scaledImage = zoomImage(scaledImage, zoomFactor, zoomFactor);
+				SignerPosition signerNamePosition = textParamaters.getSignerNamePosition();
+				switch (signerNamePosition) {
+					case LEFT:
+						buffImg = ImageMerger.mergeOnRight(buffImg, scaledImage, imageParameters.getBackgroundColor(),
+								imageParameters.getSignerTextImageVerticalAlignment());
+						break;
+					case RIGHT:
+						buffImg = ImageMerger.mergeOnRight(scaledImage, buffImg, imageParameters.getBackgroundColor(),
+								imageParameters.getSignerTextImageVerticalAlignment());
+						break;
+					case TOP:
+						buffImg = ImageMerger.mergeOnTop(scaledImage, buffImg, imageParameters.getBackgroundColor());
+						break;
+					case BOTTOM:
+						buffImg = ImageMerger.mergeOnTop(buffImg, scaledImage, imageParameters.getBackgroundColor());
+						break;
+					default:
+						throw new DSSException(String.format("The SignerNamePosition [%s] is not supported!", signerNamePosition.name()));
 				}
 			}
+			
 			return convertToInputStream(buffImg, CommonDrawerUtils.getDpi(imageParameters.getDpi()));
 		}
 
@@ -80,9 +89,40 @@ public class DefaultDrawerImageUtils {
 		return ImageUtils.readDisplayMetadata(image);
 	}
 	
+	private static BufferedImage createEmptyImage(final SignatureImageParameters imageParameters, final int textWidth, final int textHeight) {
+		int width = 0;
+		int height = 0;
+		int fieldWidth = (int)CommonDrawerUtils.computeProperSize(imageParameters.getWidth(), imageParameters.getDpi());
+		int fieldHeight = (int)CommonDrawerUtils.computeProperSize(imageParameters.getHeight(), imageParameters.getDpi());
+		SignerPosition signerNamePosition = imageParameters.getTextParameters().getSignerNamePosition();
+		switch (signerNamePosition) {
+			case LEFT:
+			case RIGHT:
+				width = fieldWidth - textWidth;
+				height = Math.max(fieldHeight, textHeight);
+				break;
+			case TOP:
+			case BOTTOM:
+				width = Math.max(fieldWidth, textWidth);
+				height = fieldHeight - textHeight;
+				break;
+			default:
+				throw new DSSException(String.format("The SignerNamePosition [%s] is not supported!", signerNamePosition.name()));
+		}
+		if (width > 0 && height > 0) {
+			BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+			Graphics2D graphics2d = image.createGraphics();
+			graphics2d.setComposite(AlphaComposite.Clear);
+			graphics2d.fillRect(0, 0, width, height);
+			graphics2d.dispose();
+			return image;
+		}
+		return null;
+	}
+	
 	/**
 	 * Returns a scaled {@link BufferedImage} based on its dpi parameters relatively to page dpi
-	 * @param image {@link BufferedImage} to scale
+	 * @param image {@link DSSDocument} containing image to scale
 	 * @return scaled {@link BufferedImage}
 	 * @throws IOException in case of error
 	 */
@@ -131,7 +171,9 @@ public class DefaultDrawerImageUtils {
 		} else {
 			return convertToInputStreamJPG(buffImage, dpi);
 		}
-	}	private static ImageAndResolution convertToInputStreamJPG(BufferedImage buffImage, int dpi) throws IOException {
+	}	
+	
+	private static ImageAndResolution convertToInputStreamJPG(BufferedImage buffImage, int dpi) throws IOException {
 		ImageWriter writer = getImageWriter("jpeg");
 
 		JPEGImageWriteParam jpegParams = (JPEGImageWriteParam) writer.getDefaultWriteParam();

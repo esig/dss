@@ -194,7 +194,9 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 			try (InputStream is = image.openStream()) {
 	            cs.saveGraphicsState();
 	            float scaleFactor = parameters.getScaleFactor();
-	            cs.transform(Matrix.getScaleInstance(scaleFactor, scaleFactor));
+	            if (parameters.getImage() != null && parameters.getTextParameters() != null) {
+	            	cs.transform(Matrix.getScaleInstance(scaleFactor, scaleFactor));
+	            }
 	    		byte[] bytes = IOUtils.toByteArray(is);
 	    		PDImageXObject imageXObject = PDImageXObject.createFromByteArray(doc, bytes, image.getName());
 	    		
