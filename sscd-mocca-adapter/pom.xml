@@ -51,41 +51,4 @@
 		</dependency>
 	</dependencies>
 
-	<profiles>
-		<profile>
-            <id>jdk19-plus</id>
-            <activation>
-                <jdk>[9,)</jdk>
-            </activation>
-            
-            <build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-compiler-plugin</artifactId>
-						<configuration>
-	                        <compilerArgs>
-								<arg>--add-modules</arg>
-								<arg>java.smartcardio</arg>
-							</compilerArgs>
-						</configuration>
-					</plugin>
-<!-- 					<plugin> -->
-<!-- 	                    <groupId>org.apache.maven.plugins</groupId> -->
-<!-- 	                    <artifactId>maven-javadoc-plugin</artifactId> -->
-<!-- 	                    <configuration> -->
-<!-- 	                        <additionalJOptions> -->
-<!-- 	                        	<additionalJOption>-html5</additionalJOption> -->
-<!-- 	                            <additionalJOption> - -add-modules</additionalJOption> -->
-<!-- 	                            <additionalJOption>java.smartcardio</additionalJOption> -->
-<!-- 	                        </additionalJOptions> -->
-<!-- 	                    </configuration> -->
-<!-- 					</plugin> -->
-				</plugins>
-			</build>
-			
-			<properties>
-				<maven.javadoc.skip>true</maven.javadoc.skip>
-            </properties>
-		</profile>
-	</profiles>
 </project>
