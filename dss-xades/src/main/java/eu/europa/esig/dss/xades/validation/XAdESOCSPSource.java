@@ -38,7 +38,7 @@ import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.x509.revocation.ocsp.ResponderId;
 import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
-import eu.europa.esig.dss.xades.XAdESUtils;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 /**
@@ -138,7 +138,7 @@ public class XAdESOCSPSource extends SignatureOCSPSource {
 			return null;
 		}
 		
-		final Digest digest = XAdESUtils.getRevocationDigest(ocspRefElement, xPathQueryHolder);
+		final Digest digest = DSSXMLUtils.getRevocationDigest(ocspRefElement, xPathQueryHolder);
 		if (digest == null) {
 			return null;
 		}

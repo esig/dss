@@ -18,7 +18,7 @@ import org.w3c.dom.NodeList;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ReferenceValidation;
-import eu.europa.esig.dss.xades.XAdESUtils;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
 
 public class XAdESReferenceValidation extends ReferenceValidation {
 
@@ -74,7 +74,7 @@ public class XAdESReferenceValidation extends ReferenceValidation {
 	 * @return byte array
 	 */
 	public byte[] getOriginalContentBytes() {
-		return XAdESUtils.getReferenceOriginalContentBytes(reference);
+		return DSSXMLUtils.getReferenceOriginalContentBytes(reference);
 	}
 	
 	@Override

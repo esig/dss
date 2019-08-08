@@ -86,7 +86,7 @@ import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.SantuarioInitializer;
-import eu.europa.esig.dss.xades.XAdESUtils;
+import eu.europa.esig.dss.xades.XAdESSignatureUtils;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 import eu.europa.esig.dss.xades.reference.XAdESReferenceValidation;
 
@@ -826,7 +826,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					boolean noDuplicateIdFound = XMLUtils.protectAgainstWrappingAttack(santuarioSignature.getDocument(), DomUtils.getId(uri));
 					boolean isElementReference = DomUtils.isElementReference(uri);
 							
-					if (isElementReference && XAdESUtils.isSignedProperties(reference, xPathQueryHolder)) {
+					if (isElementReference && DSSXMLUtils.isSignedProperties(reference, xPathQueryHolder)) {
 						validation.setType(DigestMatcherType.SIGNED_PROPERTIES);
 						found = found && (noDuplicateIdFound && findSignedPropertiesById(uri));
 						
@@ -834,7 +834,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						validation.setType(DigestMatcherType.XPOINTER);
 						found = found && noDuplicateIdFound;
 						
-					} else if (isElementReference && XAdESUtils.isKeyInfoReference(reference, santuarioSignature.getElement(), xPathQueryHolder)) {
+					} else if (isElementReference && DSSXMLUtils.isKeyInfoReference(reference, santuarioSignature.getElement(), xPathQueryHolder)) {
 						validation.setType(DigestMatcherType.KEY_INFO);
 						found = true; // we check it in prior inside "isKeyInfoReference" method
 						
@@ -1091,7 +1091,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	private boolean isCounterSignature(final XAdESSignature xadesCounterSignature) {
 		final List<Reference> references = xadesCounterSignature.getReferences();
 		for (final Reference reference : references) {
-			if (XAdESUtils.isCounerSignature(reference, xPathQueryHolder)) {
+			if (DSSXMLUtils.isCounerSignature(reference, xPathQueryHolder)) {
 				return true;
 			}
 		}

@@ -35,7 +35,7 @@ import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.xades.XAdESUtils;
+import eu.europa.esig.dss.xades.XAdESSignatureUtils;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 import eu.europa.esig.dss.xades.validation.scope.XAdESSignatureScopeFinder;
 
@@ -156,7 +156,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	@Override
 	public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) throws DSSException {
 		XAdESSignature signature = (XAdESSignature) advancedSignature;
-		return XAdESUtils.getSignerDocuments(signature);
+		return XAdESSignatureUtils.getSignerDocuments(signature);
 	}
 
 	/**

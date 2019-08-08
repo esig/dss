@@ -27,21 +27,22 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.xml.XMLConstants;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 
+import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.signature.Reference;
+import org.apache.xml.security.signature.ReferenceNotInitializedException;
 import org.apache.xml.security.transforms.Transforms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,9 +56,12 @@ import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.signature.PrettyPrintTransformer;
+import eu.europa.esig.xades.XAdESUtils;
 
 /**
  * Utility class that contains some XML related method.
@@ -72,8 +76,12 @@ public final class DSSXMLUtils {
 	private static final Set<String> transforms;
 
 	private static final Set<String> canonicalizers;
+	
+	private static final String TRANSFORMATION_EXCLUDE_SIGNATURE = "not(ancestor-or-self::ds:Signature)";
+	private static final String TRANSFORMATION_XPATH_NODE_NAME = "XPath";
 
-	private static Schema XADES_SCHEMA = null;
+	public static final String HTTP_WWW_W3_ORG_2000_09_XMLDSIG_OBJECT = "http://www.w3.org/2000/09/xmldsig#Object";
+	public static final String HTTP_WWW_W3_ORG_2000_09_XMLDSIG_MANIFEST = "http://www.w3.org/2000/09/xmldsig#Manifest";
 
 	static {
 
@@ -530,19 +538,6 @@ public final class DSSXMLUtils {
 		}
 	}
 
-	private static Schema getXAdESValidationSchema() {
-		if (XADES_SCHEMA == null) {
-			try (InputStream xsd1 = DSSXMLUtils.class.getResourceAsStream("/XAdES01903v132-201601.xsd");
-					InputStream xsd2 = DSSXMLUtils.class.getResourceAsStream("/XAdES01903v141-201601.xsd")) {
-				SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-				XADES_SCHEMA = sf.newSchema(new Source[] { new StreamSource(xsd1), new StreamSource(xsd2) });
-			} catch (Exception e) {
-				throw new DSSException("Unable to load the XSD files", e);
-			}
-		}
-		return XADES_SCHEMA;
-	}
-
 	/**
 	 * This method allows to validate a DSSDocument XML against the XAdES XSD schema.
 	 *
@@ -553,7 +548,7 @@ public final class DSSXMLUtils {
 	 */
 	public static void validateAgainstXSD(DSSDocument document) throws SAXException {
 		try (InputStream is = document.openStream()) {
-			final Validator validator = getXAdESValidationSchema().newValidator();
+			final Validator validator = XAdESUtils.getSchemaETSI_EN_319_132().newValidator();
 			validator.validate(new StreamSource(is));
 		} catch (IOException e) {
 			throw new DSSException("Unable to read document", e);
@@ -569,7 +564,7 @@ public final class DSSXMLUtils {
 	 */
 	public static String validateAgainstXSD(final StreamSource streamSource) {
 		try {
-			final Validator validator = getXAdESValidationSchema().newValidator();
+			final Validator validator = XAdESUtils.getSchemaETSI_EN_319_132().newValidator();
 			validator.validate(streamSource);
 			return Utils.EMPTY_STRING;
 		} catch (Exception e) {
@@ -621,6 +616,204 @@ public final class DSSXMLUtils {
 			throw new DSSException("Unable to check if duplicate ids are present", e);
 		}
 		return false;
+	}
+	
+	/**
+	 * Returns bytes of the given {@code node}
+	 * @param node {@link Node} to get bytes for
+	 * @return byte array
+	 */
+	public static byte[] getNodeBytes(Node node) {
+		Node firstChild = node.getFirstChild();
+		if (firstChild.getNodeType() == Node.ELEMENT_NODE) {
+			byte[] bytes = DSSXMLUtils.serializeNode(firstChild);
+			String str = new String(bytes);
+			// TODO: better
+			// remove <?xml version="1.0" encoding="UTF-8"?>
+			str = str.substring(str.indexOf("?>") + 2);
+			return str.getBytes();
+		} else if (firstChild.getNodeType() == Node.TEXT_NODE) {
+			String textContent = firstChild.getTextContent();
+			if (Utils.isBase64Encoded(textContent)) {
+				return Utils.fromBase64(firstChild.getTextContent());
+			} else {
+				return textContent.getBytes();
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns bytes of the original referenced data
+	 * @param reference {@link Reference} to get bytes from
+	 * @return byte array containing original data
+	 */
+	public static byte[] getReferenceOriginalContentBytes(Reference reference) {
+		
+		try {
+			// returns bytes after transformation in case of enveloped signature
+			Transforms transforms = reference.getTransforms();
+			if (transforms != null) {
+				Element transformsElement = transforms.getElement();
+				NodeList transformChildNodes = transformsElement.getChildNodes();
+				if (transformChildNodes != null && transformChildNodes.getLength() > 0) {
+					for (int i = 0; i < transformChildNodes.getLength(); i++) {
+						Node transformation = transformChildNodes.item(i);
+						if (isEnvelopedTransform(transformation)) {
+							return reference.getReferencedBytes();
+						}
+					    // if enveloped transformations are not applied to the signature go further and 
+						// return bytes before transformation
+					}
+				}
+			}
+			
+		} catch (XMLSecurityException e) {
+			// if exception occurs during the transformations
+			LOG.warn("Signature reference with id [{}] is corrupted or has an invalid format. "
+					+ "Original data cannot be obtained. Reason: [{}]", reference.getId(), e.getMessage());
+			
+		}
+		// otherwise bytes before transformation
+		return getBytesBeforeTransformation(reference);
+	}
+	
+	private static boolean isEnvelopedTransform(Node transformation) {
+		final String algorithm = DomUtils.getValue(transformation, "@Algorithm");
+		if (Transforms.TRANSFORM_ENVELOPED_SIGNATURE.equals(algorithm)) {
+			return true;
+		} else if (Transforms.TRANSFORM_XPATH.equals(algorithm) || 
+				Transforms.TRANSFORM_XPATH2FILTER.equals(algorithm)) {
+			NodeList childNodes = transformation.getChildNodes();
+			for (int j = 0; j < childNodes.getLength(); j++) {
+				Node item = childNodes.item(j);
+				if (Node.ELEMENT_NODE == item.getNodeType() && TRANSFORMATION_XPATH_NODE_NAME.equals(item.getLocalName()) &&
+						TRANSFORMATION_EXCLUDE_SIGNATURE.equals(item.getTextContent())) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	private static byte[] getBytesBeforeTransformation(Reference reference) {
+		try {
+			return reference.getContentsBeforeTransformation().getBytes();
+		} catch (ReferenceNotInitializedException e) {
+			// if exception occurs during an attempt to access reference original data
+			LOG.warn("Original data is not provided for the reference with id [" + reference.getId() + "]. Reason: [{}]", e.getMessage());
+		} catch (IOException | CanonicalizationException e) {
+			// if exception occurs by another reason
+			LOG.error("Unable to retrieve the content of reference with id [" + reference.getId() + "].", e);
+		}
+		// in case of exceptions return null value
+		return null;
+	}
+
+	/**
+	 * Returns {@link Digest} found in the given {@code element}
+	 * @param element {@link Element} to get digest from
+	 * @return {@link Digest}
+	 */
+	public static Digest getCertDigest(Element element, XPathQueryHolder xPathQueryHolder) {
+		final Element certDigestElement = DomUtils.getElement(element, xPathQueryHolder.XPATH__CERT_DIGEST);
+		if (certDigestElement == null) {
+			return null;
+		}
+		
+		final Element digestMethodElement = DomUtils.getElement(certDigestElement, xPathQueryHolder.XPATH__DIGEST_METHOD);
+		final Element digestValueElement = DomUtils.getElement(element, xPathQueryHolder.XPATH__CERT_DIGEST_DIGEST_VALUE);
+		if (digestMethodElement == null || digestValueElement == null) {
+			return null;
+		}
+		
+		final byte[] digestValue = Utils.fromBase64(digestValueElement.getTextContent());
+		
+		try {
+			final String xmlAlgorithmName = digestMethodElement.getAttribute(XPathQueryHolder.XMLE_ALGORITHM);
+			final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forXML(xmlAlgorithmName);
+			return new Digest(digestAlgorithm, digestValue);
+		} catch (DSSException e) {
+			LOG.warn("CertRef DigestMethod is not supported. Reason: {}", e.getMessage());
+			return null;
+		}
+		
+	}
+	
+	/**
+	 * Returns {@link Digest} found in the given {@code revocationRefNode}
+	 * @param revocationRefNode {@link Element} to get digest from
+	 * @param xPathQueryHolder {@link XPathQueryHolder}
+	 * @return {@link Digest}
+	 */
+	public static Digest getRevocationDigest(Element revocationRefNode, final XPathQueryHolder xPathQueryHolder) {
+		final Element digestAlgorithmEl = DomUtils.getElement(revocationRefNode, xPathQueryHolder.XPATH__DAAV_DIGEST_METHOD);
+		final Element digestValueEl = DomUtils.getElement(revocationRefNode, xPathQueryHolder.XPATH__DAAV_DIGEST_VALUE);
+		
+		DigestAlgorithm digestAlgo = null;
+		byte[] digestValue = null;
+		if (digestAlgorithmEl != null && digestValueEl != null) {
+			final String xmlName = digestAlgorithmEl.getAttribute(XPathQueryHolder.XMLE_ALGORITHM);
+			digestAlgo = DigestAlgorithm.forXML(xmlName);
+			digestValue = Utils.fromBase64(digestValueEl.getTextContent());
+			return new Digest(digestAlgo, digestValue);
+		}
+		return null;
+	}
+
+	/**
+	 * Determines if the given {@code reference} refers to SignedProperties element
+	 * @param reference {@link Reference} to check
+	 * @return TRUE if the reference refers to the SignedProperties, FALSE otherwise
+	 */
+	public static boolean isSignedProperties(final Reference reference, final XPathQueryHolder xPathQueryHolder) {
+		return xPathQueryHolder.XADES_SIGNED_PROPERTIES.equals(reference.getType());
+	}
+
+	/**
+	 * Determines if the given {@code reference} refers to CounterSignature element
+	 * @param reference {@link Reference} to check
+	 * @return TRUE if the reference refers to the CounterSignature, FALSE otherwise
+	 */
+	public static boolean isCounerSignature(final Reference reference, final XPathQueryHolder xPathQueryHolder) {
+		return xPathQueryHolder.XADES_COUNTERSIGNED_SIGNATURE.equals(reference.getType());
+	}
+	
+	/**
+	 * Checks if the given reference is linked to a KeyInfo element
+	 * 
+	 * @param reference
+	 *                  the {@link Reference} to check
+	 * @param signature
+	 *                  the {@link Element} signature the given reference belongs to
+	 * @return TRUE if the reference is a KeyInfo reference, FALSE otherwise
+	 */
+	public static boolean isKeyInfoReference(final Reference reference, final Element signature, final XPathQueryHolder xPathQueryHolder) {
+		String uri = reference.getURI();
+		uri = DomUtils.getId(uri);
+		Element element = DomUtils.getElement(signature, "./" + xPathQueryHolder.XPATH_KEY_INFO + DomUtils.getXPathByIdAttribute(uri));
+		if (element != null) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Checks if the given {@code referenceType} is an xmldsig Object type
+	 * @param referenceType {@link String} to check the type for
+	 * @return TRUE if the provided {@code referenceType} is an Object type, FALSE otherwise
+	 */
+	public static boolean isObjectReferenceType(String referenceType) {
+		return HTTP_WWW_W3_ORG_2000_09_XMLDSIG_OBJECT.equals(referenceType);
+	}
+	
+	/**
+	 * Checks if the given {@code referenceType} is an xmldsig Manifest type
+	 * @param referenceType {@link String} to check the type for
+	 * @return TRUE if the provided {@code referenceType} is an Manifest type, FALSE otherwise
+	 */
+	public static boolean isManifestReferenceType(String referenceType) {
+		return HTTP_WWW_W3_ORG_2000_09_XMLDSIG_MANIFEST.equals(referenceType);
 	}
 
 }

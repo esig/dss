@@ -46,7 +46,6 @@ import eu.europa.esig.dss.validation.scope.ManifestEntrySignatureScope;
 import eu.europa.esig.dss.validation.scope.ManifestSignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.dss.xades.XAdESUtils;
 import eu.europa.esig.dss.xades.reference.XAdESReferenceValidation;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 
@@ -84,7 +83,7 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 			} else if (xadesReferenceValidation.isFound() && DigestMatcherType.OBJECT.equals(xadesReferenceValidation.getType())) {
 				Node objectById = xadesSignature.getObjectById(uri);
 				if (objectById != null) {
-					result.add(new XmlElementSignatureScope(xmlIdOfSignedElement, transformations, getDigest(XAdESUtils.getNodeBytes(objectById))));
+					result.add(new XmlElementSignatureScope(xmlIdOfSignedElement, transformations, getDigest(DSSXMLUtils.getNodeBytes(objectById))));
 				}
 				
 			} else if (xadesReferenceValidation.isFound() && DigestMatcherType.MANIFEST.equals(xadesReferenceValidation.getType())) {
@@ -121,9 +120,9 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 				if (nodeList != null && nodeList.getLength() == 1) {
 					Node signedElement = nodeList.item(0);
 					if (isEverythingCovered) {
-						result.add(new XmlRootSignatureScope(transformations, getDigest(XAdESUtils.getNodeBytes(signedElement))));
+						result.add(new XmlRootSignatureScope(transformations, getDigest(DSSXMLUtils.getNodeBytes(signedElement))));
 					} else {
-						result.add(new XmlElementSignatureScope(xmlIdOfSignedElement, transformations, getDigest(XAdESUtils.getNodeBytes(signedElement))));
+						result.add(new XmlElementSignatureScope(xmlIdOfSignedElement, transformations, getDigest(DSSXMLUtils.getNodeBytes(signedElement))));
 					}
 				}
 				
@@ -189,7 +188,7 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 		List<Reference> references = signature.getReferences();
 		Set<String> result = new HashSet<String>();
 		for (Reference reference : references) {
-			if (!reference.typeIsReferenceToManifest() && !reference.typeIsReferenceToObject() && !XAdESUtils.isSignedProperties(reference, signature.getXPathQueryHolder())
+			if (!reference.typeIsReferenceToManifest() && !reference.typeIsReferenceToObject() && !DSSXMLUtils.isSignedProperties(reference, signature.getXPathQueryHolder())
 					&& !DomUtils.isXPointerQuery(reference.getURI())) {
 				result.add(DomUtils.getId(reference.getURI()));
 			}

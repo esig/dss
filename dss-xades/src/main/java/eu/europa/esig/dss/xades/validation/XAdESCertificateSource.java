@@ -41,7 +41,7 @@ import eu.europa.esig.dss.x509.CertificateRef;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.IssuerSerialInfo;
 import eu.europa.esig.dss.x509.SignatureCertificateSource;
-import eu.europa.esig.dss.xades.XAdESUtils;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 /**
@@ -215,7 +215,7 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 		for (int i = 0; i < list.getLength(); i++) {
 			final Element element = (Element) list.item(i);
 			if (element != null) {
-				Digest certDigest = XAdESUtils.getCertDigest(element, xPathQueryHolder);
+				Digest certDigest = DSSXMLUtils.getCertDigest(element, xPathQueryHolder);
 				if (certDigest != null) {
 					CertificateRef certRef = new CertificateRef();
 					certRef.setCertDigest(certDigest);
@@ -233,7 +233,7 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 		for (int i = 0; i < list.getLength(); i++) {
 			final Element element = (Element) list.item(i);
 			if (element != null) {
-				Digest certDigest = XAdESUtils.getCertDigest(element, xPathQueryHolder);
+				Digest certDigest = DSSXMLUtils.getCertDigest(element, xPathQueryHolder);
 				if (certDigest != null) {
 					CertificateRef certRef = new CertificateRef();
 					certRef.setCertDigest(certDigest);

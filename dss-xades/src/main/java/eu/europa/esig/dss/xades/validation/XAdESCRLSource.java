@@ -32,7 +32,7 @@ import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
-import eu.europa.esig.dss.xades.XAdESUtils;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 /**
@@ -80,7 +80,7 @@ public class XAdESCRLSource extends SignatureCRLSource {
 			final NodeList crlRefNodes = DomUtils.getNodeList(crlRefsElement, xPathQueryHolder.XPATH__CRLREF);
 			for (int i = 0; i < crlRefNodes.getLength(); i++) {
 				final Element crlRefNode = (Element) crlRefNodes.item(i);
-				final Digest digest = XAdESUtils.getRevocationDigest(crlRefNode, xPathQueryHolder);
+				final Digest digest = DSSXMLUtils.getRevocationDigest(crlRefNode, xPathQueryHolder);
 				CRLRef crlRef = new CRLRef(digest, revocationRefOrigin);
 				addReference(crlRef, revocationRefOrigin);
 			}

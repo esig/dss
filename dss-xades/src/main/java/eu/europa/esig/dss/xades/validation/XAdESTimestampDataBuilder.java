@@ -24,7 +24,6 @@ import eu.europa.esig.dss.validation.timestamp.TimestampDataBuilder;
 import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.dss.xades.XAdESUtils;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
@@ -111,7 +110,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 	private boolean isContentTimestampedReference(Reference reference, TimestampType timeStampType, List<TimestampInclude> includes) {
 		if (TimestampType.ALL_DATA_OBJECTS_TIMESTAMP.equals(timeStampType)) {
 			// All references are covered except the one referencing the SignedProperties
-			return !XAdESUtils.isSignedProperties(reference, new XPathQueryHolder());
+			return !DSSXMLUtils.isSignedProperties(reference, new XPathQueryHolder());
 		} else {
 			for (TimestampInclude timestampInclude : includes) {
 				String id = timestampInclude.getURI();

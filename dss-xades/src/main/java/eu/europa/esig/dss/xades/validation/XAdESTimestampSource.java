@@ -33,7 +33,7 @@ import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.EncapsulatedCertificateTokenIdentifier;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseBinary;
-import eu.europa.esig.dss.xades.XAdESUtils;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 @SuppressWarnings("serial")
@@ -266,7 +266,7 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 		NodeList nodeList = unsignedAttribute.getNodeList(xPathQueryHolder.XPATH__CERTIFICATE_REFS);
 		for (int ii = 0; ii < nodeList.getLength(); ii++) {
 			Element certElement = (Element) nodeList.item(ii);
-			Digest certDigest = XAdESUtils.getCertDigest(certElement, xPathQueryHolder);
+			Digest certDigest = DSSXMLUtils.getCertDigest(certElement, xPathQueryHolder);
 			if (certDigest != null) {
 				digests.add(certDigest);
 			}
@@ -280,7 +280,7 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 		NodeList crlRefs = unsignedAttribute.getNodeList(xPathQueryHolder.XPATH__CRLREFS);
 		for (int ii = 0; ii < crlRefs.getLength(); ii++) {
 			Element crlRef = (Element) crlRefs.item(ii);
-			Digest digest = XAdESUtils.getRevocationDigest(crlRef, xPathQueryHolder);
+			Digest digest = DSSXMLUtils.getRevocationDigest(crlRef, xPathQueryHolder);
 			if (digest != null) {
 				crlRefDigests.add(digest);
 			}
@@ -294,7 +294,7 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 		NodeList ocspRefs = unsignedAttribute.getNodeList(xPathQueryHolder.XPATH__OCSPREFS);
 		for (int ii = 0; ii < ocspRefs.getLength(); ii++) {
 			Element ocspRef = (Element) ocspRefs.item(ii);
-			Digest digest = XAdESUtils.getRevocationDigest(ocspRef, xPathQueryHolder);
+			Digest digest = DSSXMLUtils.getRevocationDigest(ocspRef, xPathQueryHolder);
 			if (digest != null) {
 				ocspRefDigests.add(digest);
 			}

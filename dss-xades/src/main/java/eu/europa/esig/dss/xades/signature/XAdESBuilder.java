@@ -168,10 +168,6 @@ public abstract class XAdESBuilder {
 	public static final String XMLNS_DS = "xmlns:ds";
 	public static final String XMLNS_XADES = "xmlns:xades";
 
-	public static final String HTTP_WWW_W3_ORG_2000_09_XMLDSIG_OBJECT = "http://www.w3.org/2000/09/xmldsig#Object";
-
-	public static final String HTTP_WWW_W3_ORG_2000_09_XMLDSIG_MANIFEST = "http://www.w3.org/2000/09/xmldsig#Manifest";
-
 	/**
 	 * This variable holds the {@code XPathQueryHolder} which contains all constants and queries needed to cope with the
 	 * default signature schema.
@@ -406,7 +402,7 @@ public abstract class XAdESBuilder {
 		if (dssReferences != null) {
 			for (DSSReference reference : dssReferences) {
 				// do not change external objects
-				if (HTTP_WWW_W3_ORG_2000_09_XMLDSIG_OBJECT.equals(reference.getType())) {
+				if (DSSXMLUtils.isObjectReferenceType(reference.getType())) {
 					ids.add(DomUtils.getId(reference.getUri()));
 				}
 			}

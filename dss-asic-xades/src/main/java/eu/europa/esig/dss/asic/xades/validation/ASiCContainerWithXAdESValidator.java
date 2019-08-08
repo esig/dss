@@ -34,7 +34,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.ManifestFile;
-import eu.europa.esig.dss.xades.XAdESUtils;
+import eu.europa.esig.dss.xades.XAdESSignatureUtils;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 
 /**
@@ -120,7 +120,7 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 	@Override
 	public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) {
 		XAdESSignature xadesignature = (XAdESSignature) advancedSignature;
-		List<DSSDocument> retrievedDocs = XAdESUtils.getSignerDocuments(xadesignature);
+		List<DSSDocument> retrievedDocs = XAdESSignatureUtils.getSignerDocuments(xadesignature);
 		return extractArchiveDocuments(retrievedDocs);
 	}
 	
