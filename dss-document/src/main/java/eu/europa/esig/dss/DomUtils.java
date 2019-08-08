@@ -96,10 +96,10 @@ public final class DomUtils {
 
 		// disable external entities details :
 		// https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet#Java
-		setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-		setFeature("http://xml.org/sax/features/external-general-entities", false);
-		setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-		setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+		setSecurityFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+		setSecurityFeature("http://xml.org/sax/features/external-general-entities", false);
+		setSecurityFeature("http://xml.org/sax/features/external-parameter-entities", false);
+		setSecurityFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
 	}
 
 	/**
@@ -113,10 +113,34 @@ public final class DomUtils {
 		registerNamespace("xades122", XAdESNamespaces.XAdES122);
 		registerNamespace("xades111", XAdESNamespaces.XAdES111);
 	}
+	
+	/**
+	 * Enables a feature for the DocumentBuilderFactory
+	 * @param feature {@link String} feature name (URL) to enable
+	 * @throws ParserConfigurationException 
+	 */
+	public static void enableFeature(String feature) throws ParserConfigurationException {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Enabling DocumentBuilderFactory feature [{}]...", feature);
+		}
+		setFeature(feature, true);
+	}
 
-	private static void setFeature(String property, boolean enable) {
+	/**
+	 * Disables a feature for the DocumentBuilderFactory
+	 * @param feature {@link String} feature name (URL) to disable
+	 * @throws ParserConfigurationException 
+	 */
+	public static void disableFeature(String feature) throws ParserConfigurationException {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Disabling DocumentBuilderFactory feature [{}]...", feature);
+		}
+		setFeature(feature, false);
+	}
+
+	private static void setSecurityFeature(String property, boolean enable) {
 		try {
-			dbFactory.setFeature(property, enable);
+			setFeature(property, enable);
 		} catch (ParserConfigurationException e) {
 			String message = String.format("SECURITY : unable to set feature %s = %s (more details in LOG debug)", property, enable);
 			if (LOG.isDebugEnabled()) {
@@ -125,6 +149,10 @@ public final class DomUtils {
 				LOG.warn(message);
 			}
 		}
+	}
+
+	private static void setFeature(String property, boolean enable) throws ParserConfigurationException {
+		dbFactory.setFeature(property, enable);
 	}
 
 	/**
