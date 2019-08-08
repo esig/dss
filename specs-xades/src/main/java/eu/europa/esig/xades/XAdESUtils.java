@@ -19,12 +19,15 @@ public final class XAdESUtils {
 
 	public static final String XADES_SCHEMA_LOCATION = "/xsd/XAdES.xsd";
 	public static final String XADES_141_SCHEMA_LOCATION = "/xsd/XAdESv141.xsd";
+	public static final String XADES_SCHEMA_LOCATION_EN_319_132 = "/xsd/XAdES01903v132-201601.xsd";
+	public static final String XADES_141_SCHEMA_LOCATION_EN_319_132 = "/xsd/XAdES01903v141-201601.xsd";
 
 	private XAdESUtils() {
 	}
 
 	private static JAXBContext jc;
 	private static Schema schema;
+	private static Schema schemaETSIEN319132;
 
 	public static JAXBContext getJAXBContext() throws JAXBException {
 		if (jc == null) {
@@ -36,17 +39,34 @@ public final class XAdESUtils {
 
 	public static Schema getSchema() throws SAXException {
 		if (schema == null) {
-			SchemaFactory sf = XmlDefinerUtils.getSecureSchemaFactory();
-			List<Source> xsdSources = getXSDSources();
-			schema = sf.newSchema(xsdSources.toArray(new Source[xsdSources.size()]));
+			schema = getSchema(getXSDSources());
 		}
 		return schema;
+	}
+
+	public static Schema getSchemaETSI_EN_319_132() throws SAXException {
+		if (schemaETSIEN319132 == null) {
+			schemaETSIEN319132 = getSchema(getXSDSourcesETSI_EN_319_132());
+		}
+		return schemaETSIEN319132;
+	}
+
+	private static Schema getSchema(List<Source> xsdSources) throws SAXException {
+		SchemaFactory sf = XmlDefinerUtils.getSecureSchemaFactory();
+		return sf.newSchema(xsdSources.toArray(new Source[xsdSources.size()]));
 	}
 
 	public static List<Source> getXSDSources() {
 		List<Source> xsdSources = XmlDSigUtils.getXSDSources();
 		xsdSources.add(new StreamSource(XAdESUtils.class.getResourceAsStream(XADES_SCHEMA_LOCATION)));
 		xsdSources.add(new StreamSource(XAdESUtils.class.getResourceAsStream(XADES_141_SCHEMA_LOCATION)));
+		return xsdSources;
+	}
+
+	public static List<Source> getXSDSourcesETSI_EN_319_132() {
+		List<Source> xsdSources = XmlDSigUtils.getXSDSources();
+		xsdSources.add(new StreamSource(XAdESUtils.class.getResourceAsStream(XADES_SCHEMA_LOCATION_EN_319_132)));
+		xsdSources.add(new StreamSource(XAdESUtils.class.getResourceAsStream(XADES_141_SCHEMA_LOCATION_EN_319_132)));
 		return xsdSources;
 	}
 

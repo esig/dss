@@ -57,4 +57,11 @@ public class XAdESUtilsTest {
 		assertNotNull(XAdESUtils.getSchema());
 	}
 
+	@Test
+	public void getSchemaETSI_EN_319_132() throws SAXException {
+		assertNotNull(XAdESUtils.getSchemaETSI_EN_319_132());
+		// cached
+		assertNotNull(XAdESUtils.getSchemaETSI_EN_319_132());
+	}
+
 }
