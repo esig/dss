@@ -81,11 +81,6 @@
 			<name>GNU Lesser General Public License</name>
 			<url>https://www.gnu.org/licenses/lgpl-2.1.html</url>
 		</license>
-		<license>
-			<comments>If your project is including the module 'sscd-mocca-adapter', it inherits the MOCCA license</comments>
-      		<name>EUPL v1.1</name>
-      		<url>https://joinup.ec.europa.eu/collection/eupl/eupl-text-11-12</url>
-		</license>
 	</licenses>
 	
 	<modules>
@@ -117,7 +112,6 @@
 		<module>dss-service</module>
 		<module>dss-test</module>
 		<module>dss-token</module>
-		<module>sscd-mocca-adapter</module>
 		<module>validation-policy</module>
 		<module>dss-xades</module>
 		<module>dss-cades</module>
@@ -520,11 +514,6 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>specs-validation-report</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>sscd-mocca-adapter</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

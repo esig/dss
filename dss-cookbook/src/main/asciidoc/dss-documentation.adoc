@@ -204,7 +204,6 @@ dss-validation-rest-client:: Client for the REST webservices.
 dss-validation-soap-client:: Client for the SOAP webservices.
 dss-validation-rest:: REST webservices to validate a signature.
 dss-validation-soap:: SOAP webservices to validate a signature.
-sscd-mocca-adapter:: Implementation for MOCCA token.
 dss-policy-jaxb:: JAXB model of the validation policy.
 dss-diagnostic-jaxb:: JAXB model of the diagnostic data.
 dss-simple-report-jaxb:: JAXB model of the simple report.
