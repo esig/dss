@@ -25,7 +25,6 @@ import static org.junit.Assert.assertFalse;
 
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 
-import eu.europa.esig.dss.OID;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -34,6 +33,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.spi.OID;
 
 public class CAdESBaselineLTATest extends AbstractRequirementChecks {
 
