@@ -1,4 +1,5 @@
 module jpms_dss_service {
+	requires java.sql;
 	requires transitive jpms_dss_spi;
 	
 	exports eu.europa.esig.dss.service;

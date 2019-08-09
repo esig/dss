@@ -10,6 +10,10 @@
 	<name>DSS Signature REST Service</name>
 	<description>DSS REST contains the implementation of the REST service (defined in dss-rest-client)</description>
 
+	<properties>
+		<module-name>jpms_dss_ws_signature_rest</module-name>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>

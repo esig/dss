@@ -13,7 +13,7 @@
 	<description>DSS Signature DTO contains objects to be transferred.</description>
 
 	<properties>
-		<module-name>jpms_dss_signature_dto</module-name>
+		<module-name>jpms_dss_ws_signature_dto</module-name>
 	</properties>
 
 	<dependencies>

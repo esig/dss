@@ -9,11 +9,11 @@
 	</parent>
 
 	<artifactId>dss-signature-remote</artifactId>
-	<name>DSS Remote Services</name>
+	<name>DSS Remote Signature Services</name>
 	<description>DSS Remote Services contains common implementation used in REST and SOAP services.</description>
 
 	<properties>
-		<module-name>jpms_dss_signature_remote</module-name>
+		<module-name>jpms_dss_ws_signature_remote</module-name>
 	</properties>
 
 	<dependencies>
