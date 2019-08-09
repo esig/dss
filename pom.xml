@@ -383,6 +383,10 @@
 						</goals>
 						<configuration>
 							<rules>
+								<requireJavaVersion>
+                  					<version>[1.9,)</version>
+								</requireJavaVersion>
+                				<reactorModuleConvergence />
                 				<banDuplicatePomDependencyVersions/>
 								<dependencyConvergence/>
 								<bannedDependencies>
