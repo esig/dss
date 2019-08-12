@@ -124,19 +124,19 @@ public final class SignatureImageAndPositionProcessor {
     
     private static float getWidth(SignatureImageParameters signatureImageParameters, BufferedImage visualImageSignature, ImageAndResolution ires, boolean swapDimensions) {
         float width = swapDimensions ? signatureImageParameters.getHeight() : signatureImageParameters.getWidth();
-        if (width == 0)
+        if (width == 0) {
         	width = visualImageSignature.getWidth();
-        if (signatureImageParameters.getTextParameters() != null)
         	width = swapDimensions ? ires.toYPoint(width) : ires.toXPoint(width);
+        }
         return width;
     }
     
     private static float getHeight(SignatureImageParameters signatureImageParameters, BufferedImage visualImageSignature, ImageAndResolution ires, boolean swapDimensions) {
         float height = swapDimensions ? signatureImageParameters.getWidth() : signatureImageParameters.getHeight();
-        if (height == 0)
+        if (height == 0) {
         	height = visualImageSignature.getHeight();
-        if (signatureImageParameters.getTextParameters() != null)
         	height = swapDimensions ? ires.toXPoint(height) : ires.toYPoint(height);
+        }
         return height;
     }
 

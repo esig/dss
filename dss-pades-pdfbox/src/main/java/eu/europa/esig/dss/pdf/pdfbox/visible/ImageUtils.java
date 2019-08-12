@@ -109,7 +109,34 @@ public class ImageUtils {
 		float ration = CommonDrawerUtils.getRation(imageParameters.getDpi());
 		return new Dimension(Math.round((int)width / ration), Math.round((int)height / ration));
 	}
+	
+	/**
+	 * Reads image's metadata in a secure way. If metadata is not accessible from {@link image}, 
+	 * returns values from {@code imageParameters}
+	 * 
+	 * @param image {@link DSSDocument} image to read metadata from
+	 * @param imageParameters {@link SignatureImageParameters}
+	 * @return {@link ImageAndResolution} metadata
+	 * @throws IOException in case of image reading error
+	 */
+	public static ImageAndResolution secureReadMetadata(DSSDocument image, SignatureImageParameters imageParameters) throws IOException {
+		ImageAndResolution imageAndResolution;
+		try {
+			imageAndResolution = ImageUtils.readDisplayMetadata(imageParameters.getImage());
+		} catch (Exception e) {
+			LOG.warn("Cannot access the image metadata : {}. Returns default info.", e.getMessage());
+			imageAndResolution = new ImageAndResolution(imageParameters.getImage(), imageParameters.getDpi(), imageParameters.getDpi());
+		}
+		return imageAndResolution;
+	}
 
+	/**
+	 * Reads image's metadata
+	 * 
+	 * @param image {@link DSSDocument} image to read metadata from
+	 * @return {@link ImageAndResolution} metadata
+	 * @throws IOException in case of image reading error
+	 */
 	public static ImageAndResolution readDisplayMetadata(DSSDocument image) throws IOException {
 		if (isImageWithContentType(image, MimeType.JPEG)) {
 			return readAndDisplayMetadataJPEG(image);
@@ -122,7 +149,7 @@ public class ImageUtils {
 	private static boolean isImageWithContentType(DSSDocument image, MimeType expectedContentType) {
 		if (image.getMimeType() != null) {
 			return expectedContentType == image.getMimeType();
-		} else {
+		} else if (image.getName() != null) {
 			String contentType = null;
 			try {
 				contentType = Files.probeContentType(Paths.get(image.getName()));
@@ -132,6 +159,8 @@ public class ImageUtils {
 				throw new DSSException("An error occurred during an attempt to read the image's content type", e);
 			}
 			return Utils.areStringsEqual(expectedContentType.getMimeTypeString(), contentType);
+		} else {
+			throw new DSSException("Cannot read image metadata. MimeType or image name must be specified!");
 		}
 	}
 
@@ -205,7 +234,7 @@ public class ImageUtils {
 			}
 		}
 		Dimension dimension = new Dimension();
-		dimension.setSize(width * scaleFactor, height * scaleFactor);
+		dimension.setSize((int)width * scaleFactor, (int)height * scaleFactor);
 		return dimension;
 	}
 
@@ -218,7 +247,7 @@ public class ImageUtils {
 		SignatureImageTextParameters textParameters = imageParameters.getTextParameters();
 		DSSFont dssFont = textParameters.getFont();
 		Font properFont = FontUtils.computeProperFont(dssFont.getJavaFont(), dssFont.getSize(), imageParameters.getDpi());
-		return FontUtils.computeSize(properFont, textParameters.getText(), textParameters.getMargin());
+		return FontUtils.computeSize(properFont, textParameters.getText(), textParameters.getPadding());
 	}
 
 	public static BufferedImage rotate(BufferedImage image, double angle) {
@@ -254,6 +283,15 @@ public class ImageUtils {
 	public static boolean isTransparent(BufferedImage bufferedImage) {
 		int type = bufferedImage.getType();
 		return Arrays.binarySearch(IMAGE_TRANSPARENT_TYPES, type) > -1;
+	}
+
+	public static int getImageType(final BufferedImage image) {
+		int imageType = BufferedImage.TYPE_INT_RGB;
+		if (ImageUtils.isTransparent(image)) {
+			LOG.warn("Transparency detected and enabled (Be aware: not valid with PDF/A !)");
+			imageType = BufferedImage.TYPE_INT_ARGB;
+		}
+		return imageType;
 	}
 
 }

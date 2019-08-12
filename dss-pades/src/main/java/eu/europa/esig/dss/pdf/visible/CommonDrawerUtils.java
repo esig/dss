@@ -36,7 +36,12 @@ public class CommonDrawerUtils {
 		return floatDpi / PDF_DEFAULT_DPI;
 	}
 	
-	public static float getScaleFactor(Integer dpi) {
+	public static float getPageScaleFactor(Integer dpi) {
+		float floatDpi = getDpi(dpi);
+		return PDF_DEFAULT_DPI / floatDpi;
+	}
+	
+	public static float getTextScaleFactor(Integer dpi) {
 		float floatDpi = getDpi(dpi);
 		return DPI / floatDpi;
 	}

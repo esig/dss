@@ -194,7 +194,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 			try (InputStream is = image.openStream()) {
 	            cs.saveGraphicsState();
 	            float scaleFactor = parameters.getScaleFactor();
-	            if (parameters.getImage() != null && parameters.getTextParameters() != null) {
+	            if (parameters.getImage() != null && parameters.getTextParameters() != null && scaleFactor != 1) {
 	            	cs.transform(Matrix.getScaleInstance(scaleFactor, scaleFactor));
 	            }
 	    		byte[] bytes = IOUtils.toByteArray(is);
@@ -208,9 +208,8 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	    		if (parameters.getTextParameters() != null)
 	    			yAxis *= dimensionAndPosition.getyDpiRatio();
 	    		
-	    		boolean swap = ImageRotationUtils.isSwapOfDimensionsRequired(parameters.getRotation());
-	    		float width = getWidth(dimensionAndPosition, imageXObject, swap);
-	    		float height = getHeight(dimensionAndPosition, imageXObject, swap);
+	    		float width = getWidth(dimensionAndPosition);
+	    		float height = getHeight(dimensionAndPosition);
 	    				
 		        cs.drawImage(imageXObject, xAxis, yAxis, width, height);
 	            cs.transform(Matrix.getRotateInstance(360 - ImageRotationUtils.getRotation(parameters.getRotation()), width, height));
@@ -220,20 +219,18 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
     	}
 	}
 	
-	private float getWidth(SignatureFieldDimensionAndPosition dimensionAndPosition, PDImageXObject imageXObject, boolean swapDimensions) {
-        float width = swapDimensions ? dimensionAndPosition.getBoxHeight() : dimensionAndPosition.getBoxWidth();
+	private float getWidth(SignatureFieldDimensionAndPosition dimensionAndPosition) {
+        float width = dimensionAndPosition.getImageWidth();
         if (parameters.getTextParameters() != null) {
-        	width = imageXObject.getWidth();
-        	width *= swapDimensions ? dimensionAndPosition.getyDpiRatio() : dimensionAndPosition.getxDpiRatio();
+        	width *= dimensionAndPosition.getxDpiRatio();
         }
         return width;
 	}
 	
-	private float getHeight(SignatureFieldDimensionAndPosition dimensionAndPosition, PDImageXObject imageXObject, boolean swapDimensions) {
-        float height = swapDimensions ? dimensionAndPosition.getBoxWidth() : dimensionAndPosition.getBoxHeight();
+	private float getHeight(SignatureFieldDimensionAndPosition dimensionAndPosition) {
+        float height = dimensionAndPosition.getImageHeight();
         if (parameters.getTextParameters() != null) {
-        	height = imageXObject.getHeight();
-        	height *= swapDimensions ? dimensionAndPosition.getxDpiRatio() : dimensionAndPosition.getyDpiRatio();
+        	height *= dimensionAndPosition.getyDpiRatio();
         }
         return height;
 	}
@@ -278,11 +275,11 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
                 switch (textParameters.getSignerTextHorizontalAlignment()) {
 					case RIGHT:
 						offsetX = (dimensionAndPosition.getTextWidth() - stringWidth - 
-								textSizeWithDpi(textParameters.getMargin()*2, dimensionAndPosition.getxDpi())) - previousOffset;
+								textSizeWithDpi(textParameters.getPadding()*2, dimensionAndPosition.getxDpi())) - previousOffset;
 						break;
 					case CENTER:
 						offsetX = (dimensionAndPosition.getTextWidth() - stringWidth) / 2 - 
-								textSizeWithDpi(textParameters.getMargin(), dimensionAndPosition.getxDpi()) - previousOffset;
+								textSizeWithDpi(textParameters.getPadding(), dimensionAndPosition.getxDpi()) - previousOffset;
 						break;
 					default:
 						break;
@@ -301,8 +298,8 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 			SignatureFieldDimensionAndPosition dimensionAndPosition) throws IOException {
 		if (textParameters.getBackgroundColor() != null) {
 			PDRectangle rect = new PDRectangle(
-					dimensionAndPosition.getTextX() - textSizeWithDpi(textParameters.getMargin(), dimensionAndPosition.getxDpi()), 
-					dimensionAndPosition.getTextY() + textSizeWithDpi(textParameters.getMargin(), dimensionAndPosition.getyDpi()), 
+					dimensionAndPosition.getTextX() - textSizeWithDpi(textParameters.getPadding(), dimensionAndPosition.getxDpi()), 
+					dimensionAndPosition.getTextY() + textSizeWithDpi(textParameters.getPadding(), dimensionAndPosition.getyDpi()), 
 					dimensionAndPosition.getTextWidth(), 
 					dimensionAndPosition.getTextHeight()
 					);
@@ -311,7 +308,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	}
 	
 	private float textSizeWithDpi(float size, int dpi) {
-		return CommonDrawerUtils.toDpiAxisPoint(size / CommonDrawerUtils.getScaleFactor(dpi), dpi);
+		return CommonDrawerUtils.toDpiAxisPoint(size / CommonDrawerUtils.getTextScaleFactor(dpi), dpi);
 	}
 	
 	/**

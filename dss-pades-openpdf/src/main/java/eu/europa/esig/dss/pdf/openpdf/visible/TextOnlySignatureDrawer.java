@@ -63,7 +63,7 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 			int height = parameters.getHeight();
 			if (width == 0 || height == 0) {
 				SignatureImageTextParameters textParameters = parameters.getTextParameters();
-				Dimension dimension = FontUtils.computeSize(textParameters.getFont(), text, textParameters.getMargin());
+				Dimension dimension = FontUtils.computeSize(textParameters.getFont(), text, textParameters.getPadding());
 				width = dimension.width;
 				height = dimension.height;
 			}

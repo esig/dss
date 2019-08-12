@@ -57,7 +57,7 @@ public final class ImageTextWriter {
 		SignatureImageTextParameters textParameters = imageParameters.getTextParameters();
 		DSSFont dssFont = textParameters.getFont();
 		Font properFont = FontUtils.computeProperFont(dssFont.getJavaFont(), dssFont.getSize(), imageParameters.getDpi());
-		Dimension dimension = FontUtils.computeSize(properFont, textParameters.getText(), textParameters.getMargin());
+		Dimension dimension = FontUtils.computeSize(properFont, textParameters.getText(), textParameters.getPadding());
 		return createTextImage(textParameters, properFont, dimension);
 	}
 	
@@ -69,7 +69,7 @@ public final class ImageTextWriter {
 	public static Dimension getOriginalTextDimension(final SignatureImageTextParameters textParameters) {
 		DSSFont dssFont = textParameters.getFont();
 		Font properFont = FontUtils.computeProperFont(dssFont.getJavaFont(), dssFont.getSize(), CommonDrawerUtils.getDpi(null));
-		return FontUtils.computeSize(properFont, textParameters.getText(), textParameters.getMargin());
+		return FontUtils.computeSize(properFont, textParameters.getText(), textParameters.getPadding());
 	}
 
 	private static BufferedImage createTextImage(final SignatureImageTextParameters textParameters, final Font font, final Dimension dimension) {
@@ -105,10 +105,10 @@ public final class ImageTextWriter {
 		}
 
 		int lineHeight = fm.getHeight();
-		float y = fm.getMaxAscent() + textParameters.getMargin();
+		float y = fm.getMaxAscent() + textParameters.getPadding();
 
 		for (String line : lines) {
-			float x = textParameters.getMargin(); // left alignment
+			float x = textParameters.getPadding(); // left alignment
 			if (textParameters.getSignerTextHorizontalAlignment() != null) {
 				switch (textParameters.getSignerTextHorizontalAlignment()) {
 					case RIGHT:

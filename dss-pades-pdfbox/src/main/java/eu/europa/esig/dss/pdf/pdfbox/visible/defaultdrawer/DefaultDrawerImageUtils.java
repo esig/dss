@@ -44,37 +44,42 @@ public class DefaultDrawerImageUtils {
 
 	public static ImageAndResolution create(final SignatureImageParameters imageParameters) throws IOException {
 		SignatureImageTextParameters textParamaters = imageParameters.getTextParameters();
-
 		DSSDocument image = imageParameters.getImage();
+		
 		if ((textParamaters != null) && Utils.isStringNotEmpty(textParamaters.getText())) {
+			BufferedImage scaledImage = null;
+			if (image != null) {
+				scaledImage = getDpiScaledImage(image, imageParameters);
+			}
+			
 			BufferedImage buffImg = ImageTextWriter.createTextImage(imageParameters);
 
-			BufferedImage scaledImage = null;
-			if (image == null && buffImg != null) {
+			if (scaledImage == null && buffImg != null) {
 				// reserve empty space if only text must be drawed
 				scaledImage = createEmptyImage(imageParameters, buffImg.getWidth(), buffImg.getHeight());
-			} else {
-				// need to scale image due to usage default page 300 dpi instead of native image parameters
-				scaledImage = getDpiScaledImage(image);
 			}
 			
 			if (scaledImage != null) {
 				float zoomFactor = imageParameters.getScaleFactor();
-				scaledImage = zoomImage(scaledImage, zoomFactor, zoomFactor);
+				if (zoomFactor != 1) {
+					scaledImage = zoomImage(scaledImage, zoomFactor, zoomFactor);
+				}
 				SignerPosition signerNamePosition = textParamaters.getSignerNamePosition();
 				switch (signerNamePosition) {
 					case LEFT:
-						buffImg = ImageMerger.mergeOnRight(buffImg, scaledImage, imageParameters.getBackgroundColor(),
-								imageParameters.getSignerTextImageVerticalAlignment());
+						scaledImage = writeImageToSignatureField(scaledImage, buffImg, imageParameters, false);
+						buffImg = ImageMerger.mergeOnRight(buffImg, scaledImage, imageParameters.getBackgroundColor(), imageParameters.getSignerTextImageVerticalAlignment());
 						break;
 					case RIGHT:
-						buffImg = ImageMerger.mergeOnRight(scaledImage, buffImg, imageParameters.getBackgroundColor(),
-								imageParameters.getSignerTextImageVerticalAlignment());
+						scaledImage = writeImageToSignatureField(scaledImage, buffImg, imageParameters, false);
+						buffImg = ImageMerger.mergeOnRight(scaledImage, buffImg, imageParameters.getBackgroundColor(), imageParameters.getSignerTextImageVerticalAlignment());
 						break;
 					case TOP:
+						scaledImage = writeImageToSignatureField(scaledImage, buffImg, imageParameters, true);
 						buffImg = ImageMerger.mergeOnTop(scaledImage, buffImg, imageParameters.getBackgroundColor());
 						break;
 					case BOTTOM:
+						scaledImage = writeImageToSignatureField(scaledImage, buffImg, imageParameters, true);
 						buffImg = ImageMerger.mergeOnTop(buffImg, scaledImage, imageParameters.getBackgroundColor());
 						break;
 					default:
@@ -123,25 +128,72 @@ public class DefaultDrawerImageUtils {
 	/**
 	 * Returns a scaled {@link BufferedImage} based on its dpi parameters relatively to page dpi
 	 * @param image {@link DSSDocument} containing image to scale
+	 * @param imageParameters {@link SignatureImageParameters}
 	 * @return scaled {@link BufferedImage}
 	 * @throws IOException in case of error
 	 */
-	private static BufferedImage getDpiScaledImage(DSSDocument image) throws IOException {
+	private static BufferedImage getDpiScaledImage(DSSDocument image, SignatureImageParameters imageParameters) throws IOException {
+		BufferedImage original = toBufferedImage(image);
+		if (original == null) {
+			return null;
+		}
+		try {
+			ImageAndResolution imageAndResolution = ImageUtils.secureReadMetadata(image, imageParameters);
+			float xScaleFactor = CommonDrawerUtils.getPageScaleFactor(imageAndResolution.getxDpi());
+			xScaleFactor = CommonDrawerUtils.computeProperSize(xScaleFactor, CommonDrawerUtils.getDpi(imageParameters.getDpi()));
+			float yScaleFactor = CommonDrawerUtils.getPageScaleFactor(imageAndResolution.getyDpi());
+			yScaleFactor = CommonDrawerUtils.computeProperSize(yScaleFactor, CommonDrawerUtils.getDpi(imageParameters.getDpi()));
+			return zoomImage(original, xScaleFactor, yScaleFactor);
+		} catch (DSSException e) {
+			LOG.warn("Cannot zoom image. Return the original : {}", e.getMessage());
+			return original;
+		}
+	}
+	
+	private static BufferedImage toBufferedImage(DSSDocument image) throws IOException {
 		try (InputStream is = image.openStream()) {
 			if (is != null) {
-				BufferedImage original = ImageIO.read(is);
-				try {
-					ImageAndResolution imageAndResolution = ImageUtils.readDisplayMetadata(image);
-					float xScaleFactor = CommonDrawerUtils.getScaleFactor(imageAndResolution.getxDpi());
-					float yScaleFactor = CommonDrawerUtils.getScaleFactor(imageAndResolution.getyDpi());
-					return zoomImage(original, xScaleFactor, yScaleFactor);
-				} catch (DSSException e) {
-					LOG.warn("Cannot zoom image. Return the original : {}", e.getMessage());
-					return original;
-				}
+				return ImageIO.read(is);
 			}
 			return null;
 		}
+	}
+	
+	private static BufferedImage writeImageToSignatureField(BufferedImage image, BufferedImage textImage, 
+			SignatureImageParameters imageParameters, boolean verticalAlignment) {
+		if (image == null) {
+			return null;
+		} else if (textImage == null) {
+			return image;
+		}
+		
+		int imageWidth = imageParameters.getWidth() == 0 ? image.getWidth() : imageParameters.getWidth();
+		int imageHeight = imageParameters.getHeight() == 0 ? image.getHeight() : imageParameters.getHeight();
+		
+		int boxWidth = imageParameters.getWidth() == 0 ? imageWidth : (int)CommonDrawerUtils.computeProperSize(imageWidth, CommonDrawerUtils.getTextDpi());
+		int boxHeight = imageParameters.getHeight() == 0 ? imageHeight : (int)CommonDrawerUtils.computeProperSize(imageHeight, CommonDrawerUtils.getTextDpi());
+		
+		if (imageParameters.getWidth() != 0) {
+			imageWidth = verticalAlignment ? boxWidth : boxWidth - textImage.getWidth();
+		} else {
+			imageWidth = boxWidth;
+		}
+		if (imageParameters.getHeight() != 0) {
+			imageHeight = (int)(verticalAlignment ? boxHeight - textImage.getHeight() : boxHeight);
+		} else {
+			imageHeight = boxHeight;
+		}
+		
+		if (imageWidth < 1 || imageHeight < 1) {
+			return null;
+		}
+
+		BufferedImage alignedImage = new BufferedImage(imageWidth, imageHeight, ImageUtils.getImageType(image));
+		Graphics2D g = alignedImage.createGraphics();
+		CommonDrawerUtils.initRendering(g);
+		g.drawImage(image, 0, 0, imageWidth, imageHeight, null);
+		
+		return alignedImage;
 	}
 	
 	/**

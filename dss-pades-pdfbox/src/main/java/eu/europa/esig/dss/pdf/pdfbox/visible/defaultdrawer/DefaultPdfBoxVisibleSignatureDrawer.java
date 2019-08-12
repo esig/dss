@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox.visible.defaultdrawer;
 
-import java.awt.Dimension;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
@@ -49,35 +48,24 @@ public class DefaultPdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignature
 		
 		float width = parameters.getWidth();
 		float height = parameters.getHeight();
-		
 		if (ImageRotationUtils.isSwapOfDimensionsRequired(parameters.getRotation())) {
 			width = parameters.getHeight();
 			height = parameters.getWidth();
 		}
 		
-		Dimension originalTextDimension = null;
-		if (parameters.getImage() == null && parameters.getTextParameters() != null) {
-			originalTextDimension = ImageTextWriter.getOriginalTextDimension(parameters.getTextParameters());
-		}
-		
 		if (width != 0) {
 			visibleSig.width(width);
 		} else if (parameters.getTextParameters() != null) {
-			if (originalTextDimension != null) {
-				// when only text is defined
-				visibleSig.width(CommonDrawerUtils.toDpiAxisPoint((float)originalTextDimension.getWidth(), CommonDrawerUtils.getTextDpi()));
-			} else {
-				visibleSig.width(ires.toXPoint(visibleSig.getWidth()));
-			}
+			visibleSig.width(CommonDrawerUtils.toDpiAxisPoint((float)visibleSig.getWidth(), CommonDrawerUtils.getDpi(parameters.getDpi())));
+		} else {
+			visibleSig.width(ires.toXPoint(visibleSig.getWidth()));
 		}
 		if (height != 0) {
 			visibleSig.height(height);
 		} else if (parameters.getTextParameters() != null) {
-			if (originalTextDimension != null) {
-				visibleSig.height(CommonDrawerUtils.toDpiAxisPoint((float)originalTextDimension.getHeight(), CommonDrawerUtils.getTextDpi()));
-			} else {
-				visibleSig.height(ires.toYPoint(visibleSig.getHeight()));
-			}
+			visibleSig.height(CommonDrawerUtils.toDpiAxisPoint((float)visibleSig.getHeight(), CommonDrawerUtils.getDpi(parameters.getDpi())));
+		} else {
+			visibleSig.height(ires.toYPoint(visibleSig.getHeight()));
 		}
 
 		// zoom image only when it does not have text parameters, in other case does zoom inside DefaultDrawerImageUtils.create() method
