@@ -21,8 +21,8 @@
 package eu.europa.esig.dss.signature;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 
 /**
  * Extends the level of AdES signature of a document. After level -B, going upper in the signature format level

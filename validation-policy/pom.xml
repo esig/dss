@@ -7,6 +7,10 @@
 	</parent>
 	<artifactId>validation-policy</artifactId>
 
+	<properties>
+		<module-name>jpms_dss_validation_policy</module-name>
+	</properties>
+	
 	<dependencies>
 		<dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>

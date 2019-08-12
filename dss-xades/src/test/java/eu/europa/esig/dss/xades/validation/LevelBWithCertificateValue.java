@@ -25,8 +25,8 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;

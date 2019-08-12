@@ -35,20 +35,20 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.signature.UnmarshallingTester;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
+import eu.europa.esig.dss.test.signature.UnmarshallingTester;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.x509.SignatureCertificateSource;
 
 /**
  * This test is only to ensure that we don't have exception with valid? files

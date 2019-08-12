@@ -55,12 +55,13 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.pades.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
@@ -76,12 +77,11 @@ import eu.europa.esig.dss.pdf.PdfSignatureInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawer;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawerFactory;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.Token;
-import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
 
 public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 

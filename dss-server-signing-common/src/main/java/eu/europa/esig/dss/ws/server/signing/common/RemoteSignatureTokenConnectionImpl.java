@@ -23,10 +23,11 @@ package eu.europa.esig.dss.ws.server.signing.common;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.token.AbstractKeyStoreTokenConnection;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.KSPrivateKeyEntry;
@@ -37,7 +38,6 @@ import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 import eu.europa.esig.dss.ws.server.signing.dto.DigestDTO;
 import eu.europa.esig.dss.ws.server.signing.dto.RemoteKeyEntry;
-import eu.europa.esig.dss.x509.CertificateToken;
 
 public class RemoteSignatureTokenConnectionImpl implements RemoteSignatureTokenConnection {
 

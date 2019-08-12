@@ -25,9 +25,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.asic.xades.signature.GetDataToSignASiCWithXAdESHelper;
+import eu.europa.esig.dss.model.DSSDocument;
 
 public class DataToSignASiCEWithXAdESFromFiles extends AbstractDataToSignASiCEWithXAdES implements GetDataToSignASiCWithXAdESHelper {
 

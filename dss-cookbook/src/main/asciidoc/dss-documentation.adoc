@@ -212,7 +212,6 @@ dss-certificate-validation-rest-client:: Client for the REST certificate-validat
 dss-certificate-validation-soap-client:: Client for the SOAP certificate-validation webservices.
 dss-certificate-validation-rest:: REST webservices to validate a certificate.
 dss-certificate-validation-soap:: SOAP webservices to validate a certificate.
-sscd-mocca-adapter:: Implementation for MOCCA token.
 dss-enumerations:: Contains a list of all used enumerations in the DSS project.
 dss-jaxb-parsers:: Contains a list of all classes used to transform JAXB objects/strings to Java objects and vice versa.
 dss-policy-jaxb:: JAXB model of the validation policy.

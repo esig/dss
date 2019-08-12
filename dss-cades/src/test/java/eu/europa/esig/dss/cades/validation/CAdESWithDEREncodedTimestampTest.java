@@ -30,10 +30,10 @@ import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;

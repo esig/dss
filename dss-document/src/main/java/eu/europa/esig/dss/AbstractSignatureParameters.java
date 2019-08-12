@@ -24,9 +24,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.identifier.TokenIdentifier;
+import eu.europa.esig.dss.model.AbstractSerializableSignatureParameters;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.identifier.TokenIdentifier;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
  * Parameters for a Signature creation/extension

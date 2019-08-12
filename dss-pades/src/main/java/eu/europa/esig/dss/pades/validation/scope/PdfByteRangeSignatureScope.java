@@ -22,7 +22,7 @@ package eu.europa.esig.dss.pades.validation.scope;
 
 import java.util.Arrays;
 
-import eu.europa.esig.dss.Digest;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.validation.scope.PartialSignatureScope;
 
 public class PdfByteRangeSignatureScope extends PartialSignatureScope {

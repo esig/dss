@@ -5,9 +5,14 @@
 		<artifactId>sd-dss</artifactId>
 		<version>5.5-SNAPSHOT</version>
 	</parent>
+
 	<artifactId>dss-utils</artifactId>
 	<name>DSS Utils API</name>
 	<description>DSS Utils API : utility methods for String, Collection,...</description>
+
+	<properties>
+		<module-name>jpms_dss_utils</module-name>
+	</properties>
 
 	<dependencies>
 		<dependency>

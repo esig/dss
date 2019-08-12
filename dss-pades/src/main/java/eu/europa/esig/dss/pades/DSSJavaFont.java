@@ -6,7 +6,7 @@ import java.io.InputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.model.DSSException;
 
 public class DSSJavaFont extends AbstractDSSFont {
 

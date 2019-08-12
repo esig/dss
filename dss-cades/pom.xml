@@ -13,6 +13,10 @@
 	<name>DSS CAdES</name>
 	<description>DSS CAdES contains the code for the creation and validation of CAdES signatures.</description>
 	
+	<properties>
+		<module-name>jpms_dss_cades</module-name>
+	</properties>
+	
 	<dependencies>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>

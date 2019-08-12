@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.bouncycastle.cms.SignerInformation;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.cades.validation.CAdESTimestampDataBuilder;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pdf.PdfDocTimestampInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;

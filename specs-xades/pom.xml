@@ -13,6 +13,10 @@
 	<name>JAXB ETSI XAdES Model</name>
 	<description>Generated sources from the ETSI XAdES XML Schemas.</description>
 
+	<properties>
+		<module-name>jpms_dss_specs_xades</module-name>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>

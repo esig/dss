@@ -32,11 +32,11 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 public class DataToSignASiCSWithXAdESFromFilesTest {

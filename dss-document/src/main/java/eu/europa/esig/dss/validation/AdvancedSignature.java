@@ -25,31 +25,25 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.identifier.EncapsulatedRevocationTokenIdentifier;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import eu.europa.esig.dss.x509.CertificateRef;
-import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.RevocationToken;
-import eu.europa.esig.dss.x509.SignatureCertificateSource;
-import eu.europa.esig.dss.x509.revocation.RevocationRef;
-import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
-import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
-import eu.europa.esig.dss.x509.revocation.crl.ListCRLSource;
-import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
-import eu.europa.esig.dss.x509.revocation.ocsp.ListOCSPSource;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
-import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 
 /**
  * Provides an abstraction for an Advanced Electronic Signature. This ease the validation process. Every signature

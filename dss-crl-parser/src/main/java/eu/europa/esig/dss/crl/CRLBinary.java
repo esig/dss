@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.crl;
 
-import eu.europa.esig.dss.identifier.EncapsulatedRevocationTokenIdentifier;
+import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 
 public class CRLBinary extends EncapsulatedRevocationTokenIdentifier {
 

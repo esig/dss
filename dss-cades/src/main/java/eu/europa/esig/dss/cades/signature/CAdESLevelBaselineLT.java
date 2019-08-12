@@ -25,13 +25,13 @@ import java.util.List;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 /**
  * This class holds the CAdES-LT signature profiles

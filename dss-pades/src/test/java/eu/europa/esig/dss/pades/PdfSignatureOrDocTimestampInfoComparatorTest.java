@@ -34,7 +34,7 @@ import org.bouncycastle.cms.CMSSignedData;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfoComparator;

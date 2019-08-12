@@ -23,13 +23,13 @@ package eu.europa.esig.dss.asic.xades.validation;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.validation.AbstractASiCContainerValidator;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.OpenDocumentSupportUtils;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DocumentValidator;

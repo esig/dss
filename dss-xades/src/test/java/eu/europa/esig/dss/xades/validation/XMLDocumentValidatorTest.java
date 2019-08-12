@@ -28,11 +28,11 @@ import java.util.List;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.validation.AbstractTestValidator;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.test.validation.AbstractTestValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 public class XMLDocumentValidatorTest extends AbstractTestValidator {

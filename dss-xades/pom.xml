@@ -13,6 +13,10 @@
 	<name>DSS XAdES</name>
 	<description>DSS XAdES contains the code for the creation and validation of XAdES signatures.</description>
 	
+	<properties>
+		<module-name>jpms_dss_xades</module-name>
+	</properties>
+	
 	<dependencies>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>

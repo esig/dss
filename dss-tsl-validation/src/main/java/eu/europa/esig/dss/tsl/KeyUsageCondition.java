@@ -23,7 +23,8 @@ package eu.europa.esig.dss.tsl;
 import static java.util.Objects.requireNonNull;
 
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
-import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.tsl.Condition;
 
 /**
  * Condition based on the certificate key usage

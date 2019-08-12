@@ -28,8 +28,8 @@ import org.apache.pdfbox.cos.COSObject;
 import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
 
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.pdf.PdfArray;
+import eu.europa.esig.dss.spi.DSSUtils;
 
 class PdfBoxArray implements PdfArray {
 

@@ -10,6 +10,10 @@
 	<name>JAXB Simple Report Model</name>
 	<description>Generated source from XSD for Simple Report and additional XSLT (for HTML/PDF renderings).</description>
 
+	<properties>
+		<module-name>jpms_dss_simple_report</module-name>
+	</properties>
+	
 	<build>
 		<!-- Inject version number in XSLT -->
 		<resources>

@@ -33,7 +33,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.model.DSSException;
 
 /**
  * Class holding all MS CAPI API access logic.

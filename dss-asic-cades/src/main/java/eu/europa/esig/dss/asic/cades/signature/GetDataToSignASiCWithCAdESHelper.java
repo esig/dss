@@ -22,8 +22,8 @@ package eu.europa.esig.dss.asic.cades.signature;
 
 import java.util.List;
 
-import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.asic.common.signature.GetDataToSignHelper;
+import eu.europa.esig.dss.model.DSSDocument;
 
 public interface GetDataToSignASiCWithCAdESHelper extends GetDataToSignHelper {
 

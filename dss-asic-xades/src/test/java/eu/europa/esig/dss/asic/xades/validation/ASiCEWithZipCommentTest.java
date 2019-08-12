@@ -25,9 +25,9 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;

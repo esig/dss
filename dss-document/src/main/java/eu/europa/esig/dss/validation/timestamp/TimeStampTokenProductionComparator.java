@@ -6,7 +6,7 @@ import java.util.Comparator;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.tsp.TimeStampToken;
 
-import eu.europa.esig.dss.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 
 /**
  * The class used to compare production time of {@code TimeStampToken}s

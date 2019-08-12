@@ -29,7 +29,7 @@ import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfVRIDict;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
+import eu.europa.esig.dss.validation.SignatureCRLSource;
 
 /**
  * CRLSource that will retrieve the CRL from a PAdES Signature

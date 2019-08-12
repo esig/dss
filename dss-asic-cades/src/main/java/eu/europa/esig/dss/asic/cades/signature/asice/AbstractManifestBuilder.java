@@ -26,11 +26,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
-import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.asic.common.ASiCNamespace;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.MimeType;
 
 public abstract class AbstractManifestBuilder {
 

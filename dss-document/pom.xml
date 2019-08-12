@@ -13,6 +13,10 @@
 	<name>DSS Document</name>
 	<description>DSS Document contains the code for the creation and validation of XAdES, CAdES, PAdES and ASiC signatures.</description>
 
+	<properties>
+		<module-name>jpms_dss_document</module-name>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>

@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.validation;
 
-import eu.europa.esig.dss.identifier.Identifier;
+import eu.europa.esig.dss.model.identifier.Identifier;
 
 public final class DataIdentifier extends Identifier {
 

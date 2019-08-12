@@ -13,6 +13,10 @@
 	<name>JAXB ETSI Validation Report Model</name>
 	<description>Generated sources from the ETSI Validation Report XML Schema (ETSI TS 119 102-2).</description>
 
+	<properties>
+		<module-name>jpms_dss_specs_validation_report</module-name>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>

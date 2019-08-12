@@ -1,7 +1,7 @@
 package eu.europa.esig.dss.cades.validation;
 
-import static eu.europa.esig.dss.OID.id_aa_ets_archiveTimestampV2;
-import static eu.europa.esig.dss.OID.id_aa_ets_archiveTimestampV3;
+import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV2;
+import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV3;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_escTimeStamp;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signatureTimeStampToken;

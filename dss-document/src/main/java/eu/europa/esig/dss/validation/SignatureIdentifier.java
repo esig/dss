@@ -5,9 +5,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Date;
 
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.identifier.Identifier;
-import eu.europa.esig.dss.identifier.TokenIdentifier;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.identifier.Identifier;
+import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 
 public class SignatureIdentifier extends Identifier {
 	

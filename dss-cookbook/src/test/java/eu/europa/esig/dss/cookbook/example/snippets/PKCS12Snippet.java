@@ -24,9 +24,9 @@ import java.io.IOException;
 import java.security.KeyStore.PasswordProtection;
 import java.util.List;
 
-import eu.europa.esig.dss.SignatureValue;
-import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.Pkcs12SignatureToken;
 import eu.europa.esig.dss.utils.Utils;

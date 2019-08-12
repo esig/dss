@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.asic.cades;
 
-import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.model.DSSDocument;
 
 public class ASiCWithCAdESContainerExtractor extends AbstractASiCContainerExtractor {
 

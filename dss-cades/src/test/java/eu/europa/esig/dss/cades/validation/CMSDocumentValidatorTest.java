@@ -32,11 +32,11 @@ import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.test.validation.AbstractTestValidator;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AbstractTestValidator;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 

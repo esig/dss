@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.token;
 
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 
 /**
  * Interface for a PrivateKey.

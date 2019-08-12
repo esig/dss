@@ -10,6 +10,10 @@
 	<name>DSS Enumerations</name>
 	<description>DSS Enumerations contains all shared enumerations</description>
 
+	<properties>
+		<module-name>jpms_dss_enumerations</module-name>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.slf4j</groupId>

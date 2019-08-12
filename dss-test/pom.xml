@@ -12,6 +12,10 @@
 	<name>DSS Test</name>
 	<description>DSS Test contains useful classes to do test.</description>
 	<artifactId>dss-test</artifactId>
+		
+	<properties>
+		<module-name>jpms_dss_test</module-name>
+	</properties>
 	
 	<dependencies>
 		<dependency>

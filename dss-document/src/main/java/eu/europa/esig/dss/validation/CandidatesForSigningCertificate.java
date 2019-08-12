@@ -24,8 +24,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 
 /**
  * This class holds the list of the candidates for the signing certificate of the main signature.

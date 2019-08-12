@@ -28,6 +28,9 @@ import java.io.InputStream;
 
 import org.junit.Test;
 
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.InMemoryDocument;
+
 public class DomUtilsTest {
 
 	private static final String XML_HEADER = "<?xml version='1.0' encoding='UTF-8'?>";

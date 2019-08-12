@@ -63,6 +63,12 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.spi.DSSUtils;
+
 public final class DomUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DomUtils.class);
@@ -242,11 +248,11 @@ public final class DomUtils {
 	}
 
 	/**
-	 * This method returns the {@link org.w3c.dom.Document} created based on the {@link eu.europa.esig.dss.DSSDocument}.
+	 * This method returns the {@link org.w3c.dom.Document} created based on the {@link eu.europa.esig.dss.model.DSSDocument}.
 	 *
 	 * @param dssDocument
 	 *            The DSS representation of the document from which the dssDocument is created.
-	 * @return a new {@link org.w3c.dom.Document} from {@link eu.europa.esig.dss.DSSDocument}
+	 * @return a new {@link org.w3c.dom.Document} from {@link eu.europa.esig.dss.model.DSSDocument}
 	 */
 	public static Document buildDOM(final DSSDocument dssDocument) {
 		return buildDOM(dssDocument.openStream());

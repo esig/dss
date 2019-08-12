@@ -25,11 +25,11 @@ import java.util.List;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.asic.common.ASiCNamespace;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.MimeType;
 
 /**
  * This class is used to generate the ASiCManifest.xml content (ASiC-E)

@@ -41,26 +41,26 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import eu.europa.esig.dss.DSSASN1Utils;
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.TimestampParameters;
 import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.identifier.EncapsulatedRevocationTokenIdentifier;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.TimestampParameters;
+import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.SignatureExtension;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
 import eu.europa.esig.dss.validation.ValidationContext;
-import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.RevocationToken;
-import eu.europa.esig.dss.x509.tsp.TSPSource;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.ProfileParameters;
 import eu.europa.esig.dss.xades.ProfileParameters.Operation;
@@ -148,7 +148,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 * the ds:SignatureValue element of the [XMLDSIG] signature. The timestamp token is obtained from TSP source.<br>
 	 * Adds {@code <SignatureTimeStamp>} segment into {@code <UnsignedSignatureProperties>} element.
 	 *
-	 * @throws eu.europa.esig.dss.DSSException
+	 * @throws eu.europa.esig.dss.model.DSSException
 	 */
 	protected void extendSignatureTag() throws DSSException {
 

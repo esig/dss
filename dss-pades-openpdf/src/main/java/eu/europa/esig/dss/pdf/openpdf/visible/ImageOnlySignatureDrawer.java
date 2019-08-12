@@ -29,10 +29,10 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfTemplate;
 
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {

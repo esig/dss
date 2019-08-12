@@ -29,19 +29,19 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.Digest;
-import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.SignatureValue;
-import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 @RunWith(Parameterized.class)
