@@ -29,7 +29,7 @@ import java.awt.Color;
 public class SignatureImageTextParameters {
 
 	private static final Color DEFAULT_BACKGROUND_COLOR = Color.WHITE;
-	private static final float DEFAULT_MARGIN = 5f;
+	private static final float DEFAULT_PADDING = 5f;
 	private static final Color DEFAULT_TEXT_COLOR = Color.BLACK;
 
 	/**
@@ -68,10 +68,10 @@ public class SignatureImageTextParameters {
 	private DSSFont dssFont = DSSFileFont.initializeDefault();
 	
 	/**
-	 * This variable defines a margin in pixels to bound text around
+	 * This variable defines a padding in pixels to bound text around
 	 * (default is 5)
 	 */
-	private float margin = DEFAULT_MARGIN;
+	private float padding = DEFAULT_PADDING;
 
 	/**
 	 * This variable defines the text color to use 
@@ -109,12 +109,12 @@ public class SignatureImageTextParameters {
 		this.dssFont = dssFont;
 	}
 	
-	public float getMargin() {
-		return margin;
+	public float getPadding() {
+		return padding;
 	}
 	
-	public void setMargin(float margin) {
-		this.margin = margin;
+	public void setPadding(float padding) {
+		this.padding = padding;
 	}
 
 	public Color getTextColor() {

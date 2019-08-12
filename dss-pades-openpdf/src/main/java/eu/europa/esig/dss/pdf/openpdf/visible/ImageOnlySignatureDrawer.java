@@ -29,6 +29,9 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfTemplate;
 
+import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
+import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
+import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -43,11 +46,12 @@ public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		int width = parameters.getWidth();
 		int height = parameters.getHeight();
 		
+		ImageAndResolution ires = ImageUtils.readDisplayMetadata(parameters.getImage());
 		if (width == 0) {
-			width = (int) image.getWidth();
+			width = (int) (image.getWidth() * CommonDrawerUtils.getPageScaleFactor(ires.getxDpi()));
 		}
 		if (height == 0) {
-			height = (int) image.getHeight();
+			height = (int) (image.getHeight() * CommonDrawerUtils.getPageScaleFactor(ires.getyDpi()));
 		}
 		width *= zoom;
 		height *= zoom;
