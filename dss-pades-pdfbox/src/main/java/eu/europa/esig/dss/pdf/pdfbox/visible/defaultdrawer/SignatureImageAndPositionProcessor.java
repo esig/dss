@@ -33,8 +33,8 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.pdfbox.visible.ImageRotationUtils;
-import eu.europa.esig.dss.pdf.pdfbox.visible.ImageUtils;
 import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
+import eu.europa.esig.dss.pdf.visible.ImageUtils;
 
 public final class SignatureImageAndPositionProcessor {
 
