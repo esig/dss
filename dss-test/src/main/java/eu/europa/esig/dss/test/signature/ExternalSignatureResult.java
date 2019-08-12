@@ -18,27 +18,43 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.signature;
+package eu.europa.esig.dss.test.signature;
 
-import java.util.Date;
+import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 
 /**
  * Class used during test to represent the result returned by
- * an external XAdES signature process.
+ * an external signature process.
  */
-public class ExternalXAdESSignatureResult extends ExternalSignatureResult {
-    private Date signingDate;
-    private byte[] signedAdESObject;
+public class ExternalSignatureResult {
 
-    public Date getSigningDate() { return signingDate; }
+	private byte[] signedData;
+	private SignatureValue signatureValue;
+	private CertificateToken signingCertificate;
 
-    public void setSigningDate(Date signingDate) { this.signingDate = signingDate; }
+	public byte[] getSignedData() {
+		return signedData;
+	}
 
-    public byte[] getSignedAdESObject() {
-        return signedAdESObject;
-    }
+	public void setSignedData(byte[] signedData) {
+		this.signedData = signedData;
+	}
 
-    public void setSignedAdESObject(byte[] signedAdESObject) {
-        this.signedAdESObject = signedAdESObject;
-    }
+	public CertificateToken getSigningCertificate() {
+		return signingCertificate;
+	}
+
+	public void setSigningCertificate(CertificateToken signingCertificate) {
+		this.signingCertificate = signingCertificate;
+	}
+
+	public SignatureValue getSignatureValue() {
+		return signatureValue;
+	}
+
+	public void setSignatureValue(SignatureValue signatureValue) {
+		this.signatureValue = signatureValue;
+	}
+
 }

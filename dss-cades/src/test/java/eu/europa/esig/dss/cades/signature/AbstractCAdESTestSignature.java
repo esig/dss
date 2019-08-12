@@ -39,7 +39,7 @@ import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.MimeType;
-import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
+import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
 
 public abstract class AbstractCAdESTestSignature extends AbstractPkiFactoryTestDocumentSignatureService<CAdESSignatureParameters> {
 

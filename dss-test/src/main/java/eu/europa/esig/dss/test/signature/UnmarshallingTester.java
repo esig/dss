@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.signature;
+package eu.europa.esig.dss.test.signature;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;

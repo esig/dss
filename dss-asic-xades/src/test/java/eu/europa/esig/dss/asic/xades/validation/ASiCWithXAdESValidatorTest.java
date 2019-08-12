@@ -5,7 +5,7 @@ import java.util.List;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.validation.AbstractTestValidator;
+import eu.europa.esig.dss.test.validation.AbstractTestValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 public class ASiCWithXAdESValidatorTest extends AbstractTestValidator {

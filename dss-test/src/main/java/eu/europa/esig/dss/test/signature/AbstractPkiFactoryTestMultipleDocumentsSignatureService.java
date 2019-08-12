@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.signature;
+package eu.europa.esig.dss.test.signature;
 
 import java.util.List;
 
@@ -26,6 +26,7 @@ import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 
 public abstract class AbstractPkiFactoryTestMultipleDocumentsSignatureService<SP extends AbstractSignatureParameters>
 		extends AbstractPkiFactoryTestSignature<SP> {

@@ -44,9 +44,9 @@ import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.signature.ExternalSignatureResult;
+import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
+import eu.europa.esig.dss.test.signature.ExternalSignatureResult;
 
 public class CAdESLevelBExternalSignatureTest extends AbstractPkiFactoryTestDocumentSignatureService<CAdESSignatureParameters> {
 	private static final String HELLO_WORLD = "Hello World";

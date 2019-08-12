@@ -42,7 +42,7 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.signature.ExternalSignatureResult;
+import eu.europa.esig.dss.test.signature.ExternalSignatureResult;
 
 public class PAdESLevelBExternalSignature extends AbstractPAdESTestSignature {
 
