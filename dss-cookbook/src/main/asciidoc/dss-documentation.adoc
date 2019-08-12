@@ -309,6 +309,9 @@ In general can be said that for each format of the digital signature the number 
 
 Note that the new version (v4) of the DSS framework is compatible with the baseline profiles, it is no longer possible to use the standard profiles for signing purpose. The validation of the signature still takes into account the old profiles.
 
+[.landscape]
+<<<
+
 === Signature profile guide
 
 Below you can find a table specifying various signature possibilities with available in DSS signature's profiles/formats.
@@ -316,8 +319,8 @@ The vertical column specifies available signature profiles and their extensions.
 
 [cols="9*^.^"]
 |=======================
-  3+|Signature profiles                        |XML   |PDF   |Binary   |Digest   |Multi files   |Multi signatures
-.10+|XAdES   .4+|Enveloping  |Base64 encoded   |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"]
+  3+|Signature profiles                        |XML   |PDF   |Binary   |Digest   |Multi files   |Parallel signatures
+.10+|XAdES   .4+|Enveloping  |Base64 encoded   |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"]
                              |Embed XML    |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |XML only |icon:check-circle[role="lime"]
                              |Manifest     |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"]
                              |Canonicalization   |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |XML only |icon:check-circle[role="lime"]
@@ -327,12 +330,15 @@ The vertical column specifies available signature profiles and their extensions.
                              |Canonicalization   |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |XML only |icon:check-circle[role="lime"]
               2+|Detached                  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"]
               2+|Internally Detached       |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |XML only |icon:check-circle[role="lime"]
-.2+|CAdES     2+|Enveloping                |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"]
+.2+|CAdES     2+|Enveloping                |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"]
               2+|Detached                  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"]
 |PAdES        2+|Enveloped                 |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"]
-.2+|ASiC        |ASiCS       |CAdES/XAdES  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"]
-                |ASiCE       |CAdES/XAdES  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"]
+.2+|ASiC        |ASiCS       |CAdES/XAdES  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"]
+                |ASiCE       |CAdES/XAdES  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"]
 |=======================
+
+[.portrait]
+<<<
 
 == The XML Signature (XAdES)
 
