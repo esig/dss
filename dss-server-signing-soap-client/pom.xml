@@ -18,22 +18,11 @@
 	    	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 	    	<artifactId>dss-server-signing-dto</artifactId>
 	  	</dependency>
+        <dependency>
+		    <groupId>com.sun.xml.ws</groupId>
+		    <artifactId>jaxws-ri</artifactId>
+	    	<type>pom</type>
+		</dependency>
 	</dependencies>
 	
-	<profiles>
-		<profile>
-            <id>jdk19-plus</id>
-            <activation>
-                <jdk>[9,)</jdk>
-            </activation>
-            
-            <dependencies>
-	            <dependency>
-				    <groupId>com.sun.xml.ws</groupId>
-				    <artifactId>jaxws-ri</artifactId>
-			    	<type>pom</type>
-				</dependency>
-            </dependencies>
-    	</profile>
-    </profiles>
 </project>
