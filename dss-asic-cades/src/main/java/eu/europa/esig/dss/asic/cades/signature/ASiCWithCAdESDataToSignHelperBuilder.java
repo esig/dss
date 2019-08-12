@@ -22,8 +22,6 @@ package eu.europa.esig.dss.asic.cades.signature;
 
 import java.util.List;
 
-import eu.europa.esig.dss.BLevelParameters;
-import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.asice.DataToSignASiCEWithCAdESFromArchive;
@@ -32,6 +30,8 @@ import eu.europa.esig.dss.asic.cades.signature.asics.DataToSignASiCSWithCAdESFro
 import eu.europa.esig.dss.asic.cades.signature.asics.DataToSignASiCSWithCAdESFromFiles;
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
+import eu.europa.esig.dss.model.BLevelParameters;
+import eu.europa.esig.dss.model.DSSDocument;
 
 public class ASiCWithCAdESDataToSignHelperBuilder {
 

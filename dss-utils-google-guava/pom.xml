@@ -9,6 +9,10 @@
 	<artifactId>dss-utils-google-guava</artifactId>
 	<name>DSS Utils implementation with Google Guava</name>
 	<description>DSS Utils with Google Guava : utility methods for String, Collection,...</description>
+	
+	<properties>
+		<module-name>jpms_dss_utils_google_guava</module-name>
+	</properties>
 
 	<dependencies>
 		<dependency>

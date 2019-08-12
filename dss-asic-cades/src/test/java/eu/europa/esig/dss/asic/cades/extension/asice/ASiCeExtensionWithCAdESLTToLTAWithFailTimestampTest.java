@@ -22,11 +22,11 @@ package eu.europa.esig.dss.asic.cades.extension.asice;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.asic.cades.extension.AbstractTestASiCwithCAdESExtension;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.x509.tsp.TSPSource;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 
 public class ASiCeExtensionWithCAdESLTToLTAWithFailTimestampTest extends AbstractTestASiCwithCAdESExtension {
 

@@ -1,7 +1,7 @@
 package eu.europa.esig.dss.validation.scope;
 
-import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
+import eu.europa.esig.dss.model.Digest;
 
 public class ContainerContentSignatureScope extends ContainerSignatureScope {
 

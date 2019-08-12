@@ -2,7 +2,7 @@ package eu.europa.esig.dss.xades.validation.scope;
 
 import java.util.List;
 
-import eu.europa.esig.dss.Digest;
+import eu.europa.esig.dss.model.Digest;
 
 public final class XmlFullSignatureScope extends XmlRootSignatureScope {
 

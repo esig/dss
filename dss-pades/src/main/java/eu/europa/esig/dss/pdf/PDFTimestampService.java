@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.pdf;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.x509.tsp.TSPSource;
+import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 
 public interface PDFTimestampService {
 

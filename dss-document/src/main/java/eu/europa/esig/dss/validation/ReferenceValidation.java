@@ -24,8 +24,8 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
-import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.model.Digest;
 
 /**
  * This class is used to store individual reference validations.

@@ -23,8 +23,8 @@ package eu.europa.esig.dss.pades.validation.scope;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.europa.esig.dss.Digest;
-import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pdf.PdfSignatureInfo;

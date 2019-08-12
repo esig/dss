@@ -67,7 +67,7 @@
 		<activation.version>1.2.0</activation.version>
 
 		<junit.version>4.12</junit.version>
-		<mockito.version>2.12.0</mockito.version>
+		<mockito.version>2.28.2</mockito.version>
 		<h2database.version>1.4.197</h2database.version>
 		<jackson.version>2.9.9</jackson.version>
 		
@@ -80,11 +80,6 @@
 		<license>
 			<name>GNU Lesser General Public License</name>
 			<url>https://www.gnu.org/licenses/lgpl-2.1.html</url>
-		</license>
-		<license>
-			<comments>If your project is including the module 'sscd-mocca-adapter', it inherits the MOCCA license</comments>
-      		<name>EUPL v1.1</name>
-      		<url>https://joinup.ec.europa.eu/collection/eupl/eupl-text-11-12</url>
 		</license>
 	</licenses>
 	
@@ -104,11 +99,11 @@
 		<module>dss-simple-report-jaxb</module>
 		<module>dss-simple-certificate-report-jaxb</module>
 	
-		<module>dss-model</module>
-		<module>dss-token</module>
 		<module>dss-utils</module>
 		<module>dss-utils-apache-commons</module>
 		<module>dss-utils-google-guava</module>
+		
+		<module>dss-model</module>
 		<module>dss-crl-parser</module>
 		<module>dss-crl-parser-x509crl</module>
 		<module>dss-crl-parser-stream</module>
@@ -116,7 +111,7 @@
 		<module>dss-document</module>
 		<module>dss-service</module>
 		<module>dss-test</module>
-		<module>sscd-mocca-adapter</module>
+		<module>dss-token</module>
 		<module>validation-policy</module>
 		<module>dss-xades</module>
 		<module>dss-cades</module>
@@ -179,10 +174,64 @@
                 <configuration>
                     <encoding>${project.encoding}</encoding>
                     
+                    <!-- Default + Test -->
+					<release>8</release> <!-- XML Security requires 8+ -->
+					
                     <showWarnings>true</showWarnings>
                     <showDeprecation>true</showDeprecation>
                 </configuration>
+
+				<executions>
+					<execution>
+						<id>default-compile</id>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<configuration>
+							<release>8</release> <!-- XML Security requires 8+ -->
+						</configuration>
+					</execution>
+			
+					<execution>
+						<id>module-compile</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<configuration>
+							<release>9</release>
+							<compileSourceRoots>
+								<compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
+							</compileSourceRoots>
+							<outputDirectory>${project.build.outputDirectory}/META-INF/versions/9</outputDirectory>
+							<compilerArgs>
+								<arg>--patch-module</arg>
+								<arg>${module-name}=${project.build.outputDirectory}</arg>
+							</compilerArgs>
+						</configuration>
+					</execution>
+				</executions>          
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.1.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<archive>
+			            <manifestEntries>
+			                <Multi-Release>true</Multi-Release>
+			            </manifestEntries>
+			        </archive>
+				</configuration>
+			</plugin>
+			
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
@@ -334,6 +383,9 @@
 						</goals>
 						<configuration>
 							<rules>
+								<requireJavaVersion>
+                  					<version>[1.9,)</version>
+								</requireJavaVersion>
                 				<banDuplicatePomDependencyVersions/>
 								<dependencyConvergence/>
 								<bannedDependencies>
@@ -359,7 +411,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.8.0</version>
+					<version>3.8.1</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -397,18 +449,6 @@
 							<nonFilteredFileExtension>p12</nonFilteredFileExtension>
 						</nonFilteredFileExtensions>
 					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-jar-plugin</artifactId>
-					<version>3.1.0</version>
-					<executions>
-						<execution>
-							<goals>
-								<goal>test-jar</goal>
-							</goals>
-						</execution>
-					</executions>
 				</plugin>
 				<plugin>
 	                <groupId>org.apache.maven.plugins</groupId>
@@ -477,11 +517,6 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>specs-validation-report</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>sscd-mocca-adapter</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -956,9 +991,9 @@
             <activation>
                 <jdk>[9,)</jdk>
             </activation>
-            <properties>
-				<maven.compiler.release>9</maven.compiler.release>
-            </properties>
+<!--             <properties> -->
+<!-- 				<maven.compiler.release>9</maven.compiler.release> -->
+<!--             </properties> -->
             <build>
             	<plugins>
             		<plugin>
@@ -974,15 +1009,15 @@
             	</plugins>
             </build>
 		</profile>
-		<profile>
-			<id>jdk18</id>
-			<activation>
-				<jdk>1.8</jdk>
-			</activation>
-			<properties>
-		    	<maven.compiler.target>1.8</maven.compiler.target>
-		    	<maven.compiler.source>1.8</maven.compiler.source>
-			</properties>
-		</profile>
+<!-- 		<profile> -->
+<!-- 			<id>jdk18</id> -->
+<!-- 			<activation> -->
+<!-- 				<jdk>1.8</jdk> -->
+<!-- 			</activation> -->
+<!-- 			<properties> -->
+<!-- 		    	<maven.compiler.target>1.8</maven.compiler.target> -->
+<!-- 		    	<maven.compiler.source>1.8</maven.compiler.source> -->
+<!-- 			</properties> -->
+<!-- 		</profile> -->
 	</profiles>
 </project>

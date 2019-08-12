@@ -23,17 +23,18 @@ package eu.europa.esig.dss.ws.signature.common;
 import java.util.List;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
-import eu.europa.esig.dss.BLevelParameters;
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.Policy;
-import eu.europa.esig.dss.SignatureValue;
-import eu.europa.esig.dss.SignerLocation;
-import eu.europa.esig.dss.TimestampParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureForm;
+import eu.europa.esig.dss.model.BLevelParameters;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.Policy;
+import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.SignerLocation;
+import eu.europa.esig.dss.model.TimestampParameters;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.ws.converter.RemoteCertificateConverter;
@@ -43,7 +44,6 @@ import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteBLevelParameters;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteTimestampParameters;
-import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 public abstract class AbstractRemoteSignatureServiceImpl {

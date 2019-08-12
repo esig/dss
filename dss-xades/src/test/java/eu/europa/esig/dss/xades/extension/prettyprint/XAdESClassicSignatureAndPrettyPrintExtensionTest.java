@@ -1,10 +1,10 @@
 package eu.europa.esig.dss.xades.extension.prettyprint;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.SignatureValue;
-import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.extension.AbstractTestXAdESExtension;
 import eu.europa.esig.dss.xades.signature.XAdESService;

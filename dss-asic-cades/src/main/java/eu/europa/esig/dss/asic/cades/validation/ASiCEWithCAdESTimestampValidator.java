@@ -22,9 +22,9 @@ package eu.europa.esig.dss.asic.cades.validation;
 
 import java.util.List;
 
-import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.cades.validation.CMSTimestampValidator;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.model.DSSDocument;
 
 public class ASiCEWithCAdESTimestampValidator extends CMSTimestampValidator {
 

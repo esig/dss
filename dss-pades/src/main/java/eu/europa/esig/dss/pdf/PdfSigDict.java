@@ -23,7 +23,7 @@ package eu.europa.esig.dss.pdf;
 import java.io.IOException;
 import java.util.Date;
 
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.model.DSSException;
 
 public class PdfSigDict {
 

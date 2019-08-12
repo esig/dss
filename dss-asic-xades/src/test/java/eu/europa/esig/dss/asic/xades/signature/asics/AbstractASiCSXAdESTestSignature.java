@@ -23,11 +23,11 @@ package eu.europa.esig.dss.asic.xades.signature.asics;
 import java.util.Collections;
 import java.util.List;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
 
 public abstract class AbstractASiCSXAdESTestSignature extends AbstractPkiFactoryTestDocumentSignatureService<ASiCWithXAdESSignatureParameters> {
 

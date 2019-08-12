@@ -22,8 +22,8 @@ package eu.europa.esig.dss.validation;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.FileDocument;
 
 public class SignedDocumentValidatorTest {
 

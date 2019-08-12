@@ -29,7 +29,7 @@ import java.io.InputStream;
 import org.bouncycastle.util.io.Streams;
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.crl.AbstractTestCRLUtils;
 
 public class PemToDerConverterTest {

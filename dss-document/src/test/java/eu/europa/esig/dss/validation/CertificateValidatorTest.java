@@ -31,9 +31,9 @@ import javax.xml.transform.TransformerException;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReportFacade;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 
 public class CertificateValidatorTest {

@@ -10,6 +10,10 @@
 	<name>JAXB Diagnostic Data Model</name>
 	<description>Generated source from XSD for Diagnostic Data.</description>
 	
+	<properties>
+		<module-name>jpms_dss_diagnostic_data</module-name>
+	</properties>
+	
 	<build>
 		<plugins>
 			<plugin>

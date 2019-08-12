@@ -22,9 +22,9 @@ package eu.europa.esig.dss.cades.extension;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.x509.tsp.TSPSource;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 
 public class CAdESExtensionBToTWithError500TimestampTest extends AbstractTestCAdESExtension {
 

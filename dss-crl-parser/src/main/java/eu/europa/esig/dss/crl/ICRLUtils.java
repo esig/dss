@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.security.cert.X509CRLEntry;
 
-import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 
 public interface ICRLUtils {
 

@@ -12,6 +12,10 @@
 	<description>Module CookBook in the project SD-DSS</description>
 	<artifactId>dss-cookbook</artifactId>
 
+	<properties>
+		<module-name>jpms_dss_cookbook</module-name>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>

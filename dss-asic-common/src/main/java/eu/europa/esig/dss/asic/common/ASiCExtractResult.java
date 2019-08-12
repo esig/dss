@@ -23,7 +23,7 @@ package eu.europa.esig.dss.asic.common;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.validation.ManifestFile;
 
 public class ASiCExtractResult {

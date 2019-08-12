@@ -13,6 +13,10 @@
 	<name>JAXB ETSI Trusted List Model</name>
 	<description>Generated sources from the ETSI Trusted List XML Schemas (ETSI TS 119 612).</description>
 
+	<properties>
+		<module-name>jpms_dss_specs_trusted_list</module-name>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>

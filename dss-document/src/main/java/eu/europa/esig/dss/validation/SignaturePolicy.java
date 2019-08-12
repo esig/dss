@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.validation;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.enumerations.SignaturePolicyType;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.Digest;
 
 /**
  * Represents the value of a SignaturePolicy

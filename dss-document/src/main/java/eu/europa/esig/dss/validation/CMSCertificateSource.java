@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.validation;
 
-import static eu.europa.esig.dss.OID.attributeCertificateRefsOid;
+import static eu.europa.esig.dss.spi.OID.attributeCertificateRefsOid;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certificateRefs;
 
 import java.util.ArrayList;
@@ -17,15 +17,12 @@ import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSASN1Utils;
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.CertificateRef;
-import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.SignatureCertificateSource;
+import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.CertificatePool;
 
 @SuppressWarnings("serial")
 public abstract class CMSCertificateSource extends SignatureCertificateSource {
@@ -90,7 +87,7 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 						certRef.setCertDigest(new Digest(digestAlgo, otherCertId.getCertHash()));
 						IssuerSerial issuerSerial = otherCertId.getIssuerSerial();
 						if (issuerSerial != null) {
-							certRef.setIssuerInfo(DSSASN1Utils.getIssuerInfo(issuerSerial));
+							certRef.setIssuerInfo(getIssuerInfo(issuerSerial));
 						}
 						certRef.setOrigin(location);
 						result.add(certRef);

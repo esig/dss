@@ -34,11 +34,11 @@ import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.junit.Test;
 import org.w3c.dom.Attr;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestDocument;
-import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DigestDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.xades.SantuarioInitializer;
 
 public class DetachedSignatureResolverTest {
