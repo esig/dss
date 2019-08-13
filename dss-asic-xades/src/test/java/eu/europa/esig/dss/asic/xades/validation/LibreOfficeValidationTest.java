@@ -21,7 +21,10 @@
 package eu.europa.esig.dss.asic.xades.validation;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.List;
 
 import org.junit.Test;
 
@@ -29,9 +32,12 @@ import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -47,6 +53,7 @@ public class LibreOfficeValidationTest {
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+		assertTrue(areManifestAndMimetypeCovered(diagnosticData));
 		
 		DetailedReport detailedReport = reports.getDetailedReport();
 		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
@@ -65,6 +72,7 @@ public class LibreOfficeValidationTest {
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+		assertTrue(areManifestAndMimetypeCovered(diagnosticData));
 		
 		DetailedReport detailedReport = reports.getDetailedReport();
 		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
@@ -81,12 +89,33 @@ public class LibreOfficeValidationTest {
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+		assertTrue(areManifestAndMimetypeCovered(diagnosticData));
 		
 		DetailedReport detailedReport = reports.getDetailedReport();
 		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
 		XmlSAV sav = signatureBBB.getSAV();
 		assertEquals(Indication.INDETERMINATE, sav.getConclusion().getIndication());
 		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
+	}
+	
+	private boolean areManifestAndMimetypeCovered(DiagnosticData diagnosticData) {
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertNotNull(signature);
+		assertTrue(signature.isBLevelTechnicallyValid());
+		List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
+		assertTrue(Utils.isCollectionNotEmpty(digestMatchers));
+		boolean isManifestCovered = false;
+		boolean isMimetypeCovered = false;
+		for (XmlDigestMatcher digestMatcher : digestMatchers) {
+			if (digestMatcher.getName().contains("manifest.xml")) {
+				isManifestCovered = true;
+			} else if (digestMatcher.getName().contains("mimetype")) {
+				isMimetypeCovered = true;
+			}
+			assertTrue(digestMatcher.isDataFound());
+			assertTrue(digestMatcher.isDataFound());
+		}
+		return isManifestCovered && isMimetypeCovered;
 	}
 
 }
