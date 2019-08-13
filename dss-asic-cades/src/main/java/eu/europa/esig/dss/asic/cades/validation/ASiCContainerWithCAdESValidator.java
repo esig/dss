@@ -168,7 +168,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 				ASiCEWithCAdESManifestParser parser = new ASiCEWithCAdESManifestParser(archiveManifest);
 				ManifestFile manifestContent = parser.getDescription();
 				ASiCEWithCAdESTimestampValidator timestampValidator = new ASiCEWithCAdESTimestampValidator(timestamp, TimestampType.ARCHIVE_TIMESTAMP,
-						manifestContent.getEntries());
+						manifestContent.getEntries(), validationCertPool);
 				timestampValidator.setCertificateVerifier(certificateVerifier);
 				timestampValidator.setTimestampedData(archiveManifest);
 				timestampValidators.add(timestampValidator);
