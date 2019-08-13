@@ -32,7 +32,7 @@ import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
-import eu.europa.esig.dss.pades.SignatureImageTextParameters.SignerPosition;
+import eu.europa.esig.dss.pades.SignatureImageTextParameters.SignerTextPosition;
 import eu.europa.esig.dss.pades.signature.AbstractPAdESTestSignature;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
@@ -63,7 +63,7 @@ public class PAdESWithSignatureAndTimestampVisible extends AbstractPAdESTestSign
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature");
 		textParameters.setTextColor(Color.GREEN);
-		textParameters.setSignerNamePosition(SignerPosition.BOTTOM);
+		textParameters.setSignerTextPosition(SignerTextPosition.BOTTOM);
 		timestampImageParameters.setTextParameters(textParameters);
 		signatureParameters.setTimestampImageParameters(timestampImageParameters);
 

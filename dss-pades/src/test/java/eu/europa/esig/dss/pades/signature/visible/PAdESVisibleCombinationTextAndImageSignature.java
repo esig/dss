@@ -40,7 +40,7 @@ import eu.europa.esig.dss.pades.DSSFileFont;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
-import eu.europa.esig.dss.pades.SignatureImageTextParameters.SignerPosition;
+import eu.europa.esig.dss.pades.SignatureImageTextParameters.SignerTextPosition;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
@@ -93,7 +93,7 @@ public class PAdESVisibleCombinationTextAndImageSignature extends PKIFactoryAcce
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature");
 		textParameters.setTextColor(Color.GREEN);
-		textParameters.setSignerNamePosition(SignerPosition.TOP);
+		textParameters.setSignerTextPosition(SignerTextPosition.TOP);
 		imageParameters.setTextParameters(textParameters);
 
 		signatureParameters.setSignatureImageParameters(imageParameters);
@@ -111,7 +111,7 @@ public class PAdESVisibleCombinationTextAndImageSignature extends PKIFactoryAcce
 		textParameters.setTextColor(Color.BLUE);
 		textParameters.setFont(new DSSFileFont(getClass().getResourceAsStream("/fonts/OpenSansBold.ttf")));
 		textParameters.setSize(15);
-		textParameters.setSignerNamePosition(SignerPosition.TOP);
+		textParameters.setSignerTextPosition(SignerTextPosition.TOP);
 		imageParameters.setTextParameters(textParameters);
 		signatureParameters.setSignatureImageParameters(imageParameters);
 
@@ -126,7 +126,7 @@ public class PAdESVisibleCombinationTextAndImageSignature extends PKIFactoryAcce
 		signAndValidate();
 
 		// image and text on right
-		imageParameters.getTextParameters().setSignerNamePosition(SignerPosition.RIGHT);
+		imageParameters.getTextParameters().setSignerTextPosition(SignerTextPosition.RIGHT);
 		signAndValidate();
 
 		// image and text on right and horizontal align is right
@@ -152,17 +152,17 @@ public class PAdESVisibleCombinationTextAndImageSignature extends PKIFactoryAcce
 
 		// image and text on right and horizontal align is center with transparent colors with big image and vertical
 		// align top
-		imageParameters.setSignerTextImageVerticalAlignment(SignatureImageParameters.SignerTextImageVerticalAlignment.TOP);
+		imageParameters.getTextParameters().setSignerTextVerticalAlignment(SignatureImageTextParameters.SignerTextVerticalAlignment.TOP);
 		signAndValidate();
 
 		// image and text on right and horizontal align is center with transparent colors with big image and vertical
 		// align bottom
-		imageParameters.setSignerTextImageVerticalAlignment(SignatureImageParameters.SignerTextImageVerticalAlignment.BOTTOM);
+		imageParameters.getTextParameters().setSignerTextVerticalAlignment(SignatureImageTextParameters.SignerTextVerticalAlignment.BOTTOM);
 		signAndValidate();
 
 		// image and text on left and horizontal align is center with transparent colors with big image and vertical
 		// align bottom
-		imageParameters.getTextParameters().setSignerNamePosition(SignerPosition.LEFT);
+		imageParameters.getTextParameters().setSignerTextPosition(SignerTextPosition.LEFT);
 		signAndValidate();
 
 		// image and text on left and horizontal align is center with transparent colors and vertical align bottom
@@ -178,7 +178,7 @@ public class PAdESVisibleCombinationTextAndImageSignature extends PKIFactoryAcce
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature\nsecond line\nlong line is very long line with long text example this");
 		textParameters.setTextColor(Color.BLUE);
-		textParameters.setSignerNamePosition(SignerPosition.LEFT);
+		textParameters.setSignerTextPosition(SignerTextPosition.LEFT);
 		imageParameters.setTextParameters(textParameters);
 
 		return imageParameters;

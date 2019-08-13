@@ -96,7 +96,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
 				textHeight /= CommonDrawerUtils.getTextScaleFactor(dimensionAndPosition.getyDpi());
 			}
 			
-			switch (imageParameters.getTextParameters().getSignerNamePosition()) {
+			switch (imageParameters.getTextParameters().getSignerTextPosition()) {
 				case LEFT:
 					if (imageParameters.getWidth() == 0) {
 						width += imageParameters.getImage() != null || width == 0 ? textWidth : 0;
@@ -166,7 +166,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
 	}
 	
 	private void textImageVerticalAlignment(double height, double imageHeight, float textHeight) {
-		switch (imageParameters.getSignerTextImageVerticalAlignment()) {
+		switch (imageParameters.getTextParameters().getSignerTextVerticalAlignment()) {
 			case TOP:
 				dimensionAndPosition.setTextY(toDpiPagePoint((height - textHeight), dimensionAndPosition.getyDpi()));
 				dimensionAndPosition.setImageY((float)(height - imageHeight));

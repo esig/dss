@@ -314,7 +314,7 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 		imageParameters.setImage(signitureImage);
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature\nsecond line\nlong line is very long line with long text example this");
-		textParameters.setSignerNamePosition(SignatureImageTextParameters.SignerPosition.RIGHT);
+		textParameters.setSignerTextPosition(SignatureImageTextParameters.SignerTextPosition.RIGHT);
 		textParameters.setBackgroundColor(TRANSPARENT);
 		textParameters.setTextColor(Color.MAGENTA);
 		textParameters.setFont(new DSSFileFont(getClass().getResourceAsStream("/fonts/OpenSansExtraBold.ttf")));

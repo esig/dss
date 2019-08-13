@@ -29,7 +29,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
-import eu.europa.esig.dss.pades.SignatureImageTextParameters.SignerPosition;
+import eu.europa.esig.dss.pades.SignatureImageTextParameters.SignerTextPosition;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
@@ -64,15 +64,15 @@ public class DefaultDrawerImageUtils {
 				if (zoomFactor != 1) {
 					scaledImage = zoomImage(scaledImage, zoomFactor, zoomFactor);
 				}
-				SignerPosition signerNamePosition = textParamaters.getSignerNamePosition();
+				SignerTextPosition signerNamePosition = textParamaters.getSignerTextPosition();
 				switch (signerNamePosition) {
 					case LEFT:
 						scaledImage = writeImageToSignatureField(scaledImage, buffImg, imageParameters, false);
-						buffImg = ImageMerger.mergeOnRight(buffImg, scaledImage, imageParameters.getBackgroundColor(), imageParameters.getSignerTextImageVerticalAlignment());
+						buffImg = ImageMerger.mergeOnRight(buffImg, scaledImage, imageParameters.getBackgroundColor(), textParamaters.getSignerTextVerticalAlignment());
 						break;
 					case RIGHT:
 						scaledImage = writeImageToSignatureField(scaledImage, buffImg, imageParameters, false);
-						buffImg = ImageMerger.mergeOnRight(scaledImage, buffImg, imageParameters.getBackgroundColor(), imageParameters.getSignerTextImageVerticalAlignment());
+						buffImg = ImageMerger.mergeOnRight(scaledImage, buffImg, imageParameters.getBackgroundColor(), textParamaters.getSignerTextVerticalAlignment());
 						break;
 					case TOP:
 						scaledImage = writeImageToSignatureField(scaledImage, buffImg, imageParameters, true);
@@ -99,7 +99,7 @@ public class DefaultDrawerImageUtils {
 		int height = 0;
 		int fieldWidth = (int)CommonDrawerUtils.computeProperSize(imageParameters.getWidth(), imageParameters.getDpi());
 		int fieldHeight = (int)CommonDrawerUtils.computeProperSize(imageParameters.getHeight(), imageParameters.getDpi());
-		SignerPosition signerNamePosition = imageParameters.getTextParameters().getSignerNamePosition();
+		SignerTextPosition signerNamePosition = imageParameters.getTextParameters().getSignerTextPosition();
 		switch (signerNamePosition) {
 			case LEFT:
 			case RIGHT:

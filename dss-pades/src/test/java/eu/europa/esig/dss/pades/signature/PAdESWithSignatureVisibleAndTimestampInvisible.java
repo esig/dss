@@ -31,7 +31,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
-import eu.europa.esig.dss.pades.SignatureImageTextParameters.SignerPosition;
+import eu.europa.esig.dss.pades.SignatureImageTextParameters.SignerTextPosition;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
 public class PAdESWithSignatureVisibleAndTimestampInvisible extends AbstractPAdESTestSignature {
@@ -54,7 +54,7 @@ public class PAdESWithSignatureVisibleAndTimestampInvisible extends AbstractPAdE
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature");
 		textParameters.setTextColor(Color.GREEN);
-		textParameters.setSignerNamePosition(SignerPosition.BOTTOM);
+		textParameters.setSignerTextPosition(SignerTextPosition.BOTTOM);
 		signatureImageParameters.setTextParameters(textParameters);
 		signatureParameters.setSignatureImageParameters(signatureImageParameters);
 
