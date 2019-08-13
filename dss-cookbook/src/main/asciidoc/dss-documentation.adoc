@@ -924,8 +924,8 @@ The extension of a signature of the level PAdES-BASELINE-B up to PAdES-BASELINE-
 
 === PAdES Visible Signature
 
-The framework also allows creation PDF files with visible signature as specified in ETSI EN 319 142 (cf. <<R03>>). In the SignatureParameters object, there's a special attribute named ImageParameters. This parameter let you custom the visual signature (with text, with image or with image and text).
-Below is an example of code to perform a PADES-BASELINE-B type signature with a visible signature:
+The framework also allows creation of PDF files with visible signature as specified in ETSI EN 319 142 (cf. <<R03>>). In the SignatureParameters object, there's a special attribute named ImageParameters. This parameter allows you customize the visual signature (with text, with image or with image and text).
+Below there is an example of code to perform a PADES-BASELINE-B type signature with a visible signature:
 
 [source,java,indent=0]
 .Add a visible signature to a PDF document
@@ -939,6 +939,79 @@ Additionally, DSS also allows you to insert a visible signature to an existing f
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=select-pdf-signature-field]
 ----
+
+In case of placing an image or text to an existing field, the visible signature will fill out the whole available area of the field.
+
+==== Visible signature parameters (image and text)
+
+This chapter introduces existing parameters for creation of visible signatures with DSS.
+DSS has three implementations for visible signature drawing:
+
+ * *OpenPDF (iText)* - supports separate image and text drawing;
+ * *PDFBox Default* - supports separate image and text drawing, as well as a joint drawing of image and text together. Transforms text to an image;
+ * *PDFBox Native* - supports separate image and text drawing, as well as a joint drawing of image and text together. Prints text in a native way, that increases quality of the produced signature.
+
+===== Positioning
+
+DSS provides a set of functions allowing to place the signature field on a specific place in the PDF page.
+
+ * *setPage(int page)* - allows defining of a specific page in a PDF document where the signature must be placed. The counting of pages starts from 1 (the first page) (the default value = 1).
+ * *setxAxis(float xAxis)* - absolute positioning function, allowing to specify a margin between the left page side and a signature field (if no rotation and alignment is applied).
+ * *setyAxis(float yAxis)* - absolute positioning function, allowing to specify a margin between the top page side and a signature field (if no rotation and alignment is applied).
+ * *setAlignmentHorizontal(VisualSignatureAlignmentHorizontal alignmentHorizontal)* - allows alignment of a signature field horizontally to a page. Allows the following values:
+ ** _NONE_ (_DEFAULT value._ None alignment is applied, coordinates are counted from the left page side);
+ ** _LEFT_ (the signature is aligned to the left side, coordinated are counted from the left page side);
+ ** _CENTER_ (the signature is aligned to the center of the page, coordinates are counted automatically);
+ ** _RIGHT_ (the signature is aligned to the right side, coordinated are counted from the right page side).
+ * *setAlignmentVertical(VisualSignatureAlignmentVertical alignmentVertical)* - allows alignment of a signature field vertically to a page. Allows the following values:
+ * _NONE_ (_DEFAULT value._ None alignment is applied, coordinated are counted from the top side of a page);
+ * _TOP_ (the signature is aligned to a top side, coordinated are counted from the top page side);
+ * _MIDDLE_ (the signature aligned to a middle of a page, coordinated are counted automatically);
+ * _BOTTOM_ (the signature is aligned to a bottom side, coordinated are counted from the bottom page side).
+ * *setRotation(VisualSignatureRotation rotation)* - rotates the signature field and changes the coordinates' origin respectively to its values as following:
+ ** _NONE_ (_DEFAULT value._ No rotation is applied. The origin of coordinates begins from the top left corner of a page);
+ ** _AUTOMATIC_ (Rotates a signature field respectively to the page's rotation. Rotates the signature field on the same value as a defined in a PDF page);
+ ** _ROTATE_90_ (Rotates a signature field for a 90&#176; clockwise. Coordinates' origin begins from top right page corner);
+ ** _ROTATE_180_ (Rotates a signature field for a 180&#176; clockwise. Coordinates' origin begins from the bottom right page corner);
+ ** _ROTATE_270_ (Rotates a signature field for a 270&#176; clockwise. Coordinates' origin begins from the bottom left page corner).
+
+===== Dimensions
+
+DSS framework provides a set of functions to manage the signature field size:
+
+ * *setWidth(int width)* - allows specifying of a precise signature field's width in pixels. If not defined, the default image/text width will be used;
+ * *setHeight(int height)* - allows specifying of a precise signature field's height in pixels. If not defined, the default image/text height will be used;
+ * *setZoom(int zoom)* - defines a zoom of the image. The value is applied to width and height of a signature field. The value must be defined in percentage (default value is 100, no zoom is applied);
+ * *setBackgroundColor(Color backgroundColor)* - specifies a background color for a signature field.
+
+===== Text Parameters
+
+The available implementations allow placing of a visible text to a signature field.
+
+[source,java,indent=0]
+.List of available visible text parameters
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBVisibleTest.java[tags=text]
+----
+
+ * *setFont(DSSFont dssFont)* - allows you to set a DSSFont object that defines the text style (see more information in the section "Fonts usage");
+ * *setText(String text)* - defins the text content;
+ * *setSize(int size)* - specifies the text size value (the default font size is 12pt);
+ * *setTextColor(Color textColor)* - defines the color of the characters;
+ * *setBackgroundColor(Color backgroundColor)* - defines the background color for the area filled out by the text;
+ * *setPadding(float padding)* - defines a padding between the text and a border of its bounding area.
+ 
+===== Text and image combination
+
+DSS provides a set of functions to align a text respectively to an image. The parameters must be applied to a 'SignatureImageTextParameters' object:
+
+ * *setSignerNamePosition(SignerPosition signerNamePosition)* - specifies a text position relatively to an image (Note: applicable only for joint image+text visible signatures). Thus with _SignerPosition.LEFT_ value, the text will be placed on the left side, and image will appear on the right side inside the signature field.
+ * *setSignerTextHorizontalAlignment(SignerTextHorizontalAlignment signerTextHorizontalAlignment)* - specifies a horizontal alignment of a text with respect to its area.
+ * *setSignerTextVerticalAlignment(SignerTextVerticalAlignment signerTextVerticalAlignment)* - specifies a vertical alignment of a text block with respect to a signature field area.
+ 
+The result of applying the foregoing transformations is provided on the image below:
+
+image::visual-sig-text-parameters.jpg[]
 
 ==== Fonts usage
 

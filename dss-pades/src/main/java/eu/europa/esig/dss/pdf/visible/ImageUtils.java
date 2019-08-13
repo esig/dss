@@ -86,7 +86,7 @@ public class ImageUtils {
 		SignatureImageTextParameters textParamaters = imageParameters.getTextParameters();
 		if ((textParamaters != null) && !textParamaters.getText().isEmpty()) {
 			Dimension textDimension = getTextDimension(imageParameters);
-			switch (textParamaters.getSignerNamePosition()) {
+			switch (textParamaters.getSignerTextPosition()) {
 			case LEFT:
 			case RIGHT:
 				width += textDimension.width;
@@ -108,7 +108,7 @@ public class ImageUtils {
 	}
 	
 	/**
-	 * Reads image's metadata in a secure way. If metadata is not accessible from {@link image}, 
+	 * Reads image's metadata in a secure way. If metadata is not accessible from {@code image}, 
 	 * returns values from {@code imageParameters}
 	 * 
 	 * @param image {@link DSSDocument} image to read metadata from
