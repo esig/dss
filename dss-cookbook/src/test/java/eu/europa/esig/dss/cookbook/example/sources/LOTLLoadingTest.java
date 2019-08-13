@@ -49,7 +49,7 @@ public class LOTLLoadingTest {
 		job.setDataLoader(new CommonsDataLoader());
 		job.setCheckLOTLSignature(true);
 		job.setCheckTSLSignatures(true);
-		job.setLotlUrl("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml");
+		job.setLotlUrl("https://ec.europa.eu/tools/lotl/eu-lotl.xml");
 		job.setLotlCode("EU");
 
 		// Defines a URL where the keystore certificates were obtained from

@@ -38,7 +38,7 @@ import eu.europa.esig.dss.spi.client.http.MemoryDataLoader;
 
 public class FileCacheDataLoaderTest {
 
-	static final String URL_TO_LOAD = "https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml";
+	static final String URL_TO_LOAD = "https://ec.europa.eu/tools/lotl/eu-lotl.xml";
 
 	@Rule
 	public TemporaryFolder testFolder = new TemporaryFolder();
