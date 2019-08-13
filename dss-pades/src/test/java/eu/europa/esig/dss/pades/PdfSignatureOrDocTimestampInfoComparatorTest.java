@@ -25,15 +25,16 @@ import static org.junit.Assert.assertEquals;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
+import org.bouncycastle.cms.CMSSignedData;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfoComparator;
@@ -134,6 +135,20 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 		Collections.sort(listToSort, new PdfSignatureOrDocTimestampInfoComparator());
 	}
 
+	@Test
+	public void testDSS1690() {
+		PdfSignatureOrDocTimestampInfo sig = new MockPdfSignature(new int[] { 0, 6418, 17102, 332 });
+		PdfSignatureOrDocTimestampInfo archivalTST1 = new MockPdfSignature(new int[] { 0, 185123, 191125, 343 });
+		PdfSignatureOrDocTimestampInfo archivalTST2 = new MockPdfSignature(new int[] { 0, 200002, 237892, 637 });
+
+		List<PdfSignatureOrDocTimestampInfo> listToSort = Arrays.asList(archivalTST1, sig, archivalTST2);
+		Collections.sort(listToSort, new PdfSignatureOrDocTimestampInfoComparator());
+
+		assertEquals(sig, listToSort.get(0));
+		assertEquals(archivalTST1, listToSort.get(1));
+		assertEquals(archivalTST2, listToSort.get(2));
+	}
+
 	private class MockPdfSignature implements PdfSignatureOrDocTimestampInfo {
 
 		private int[] byteRange;
@@ -146,6 +161,11 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 		MockPdfSignature(int[] byteRange, Date signingDate) {
 			this.byteRange = byteRange;
 			this.signingDate = signingDate;
+		}
+
+		@Override
+		public byte[] getContents() {
+			return null;
 		}
 
 		@Override
@@ -202,7 +222,7 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 		}
 
 		@Override
-		public Set<PdfSignatureOrDocTimestampInfo> getOuterSignatures() {
+		public List<PdfSignatureOrDocTimestampInfo> getOuterSignatures() {
 			return null;
 		}
 
@@ -212,7 +232,7 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 		}
 
 		@Override
-		public byte[] getContent() {
+		public CMSSignedData getCMSSignedData() {
 			return null;
 		}
 
@@ -224,6 +244,16 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 		@Override
 		public boolean isCoverAllOriginalBytes() {
 			return false;
+		}
+
+		@Override
+		public String getSignerName() {
+			return null;
+		}
+		
+		@Override
+		public String getSigFieldName() {
+			return null;
 		}
 
 	}

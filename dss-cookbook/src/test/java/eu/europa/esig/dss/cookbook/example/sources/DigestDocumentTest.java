@@ -28,11 +28,11 @@ import java.io.InputStream;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.DigestDocument;
-import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DigestDocument;
+import eu.europa.esig.dss.model.FileDocument;
 
 public class DigestDocumentTest {
 
@@ -45,10 +45,10 @@ public class DigestDocumentTest {
 		DSSDocument fileDocument = new FileDocument("src/main/resources/xml_example.xml");
 
 		// After that, we create a DigestDocument
-		DigestDocument digestDocument = new DigestDocument();
+		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA1, fileDocument.getDigest(DigestAlgorithm.SHA1));
 		digestDocument.setName(fileDocument.getName());
-
-		// We add needed digest value(s). Eg : for a SHA-256 based signature
+		
+		// We can add an additional needed digest value(s). Eg : for a SHA-256 based signature
 		digestDocument.addDigest(DigestAlgorithm.SHA256, fileDocument.getDigest(DigestAlgorithm.SHA256));
 
 		// end::demo[]

@@ -10,6 +10,10 @@
 	<name>DSS ASiC with CAdES signature(s)</name>
 	<description>DSS ASiC with CAdES contains the code for the creation and validation of ASiC containers with CAdES signature(s).</description>
 	
+	<properties>
+		<module-name>jpms_dss_asic_cades</module-name>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>

@@ -26,17 +26,18 @@ import java.util.concurrent.Callable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.policy.ValidationPolicyFacade;
+import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.tsl.TSLValidationResult;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.reports.SimpleReport;
-import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 
@@ -81,7 +82,7 @@ public class TSLValidator implements Callable<TSLValidationResult> {
 		xPathQueryHolders.clear();
 		xPathQueryHolders.add(new XPathQueryHolder());
 
-		Reports reports = xmlDocumentValidator.validateDocument(TSLValidator.class.getResourceAsStream("/tsl-constraint.xml"));
+		Reports reports = xmlDocumentValidator.validateDocument(ValidationPolicyFacade.newFacade().getTrustedListValidationPolicy());
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		Indication indication = simpleReport.getIndication(simpleReport.getFirstSignatureId());

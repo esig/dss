@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--                  ****** NOTICE ******
+This document is part of ETSI TS 119 612. In the event that any
+part of this document in conflict with the text of TS 119 612 
+then that text shall prevail as the authoritative source
+-->
+<xsd:schema targetNamespace="http://uri.etsi.org/TrstSvc/SvcInfoExt/eSigDir-1999-93-EC-TrustedList/#" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://uri.etsi.org/TrstSvc/SvcInfoExt/eSigDir-1999-93-EC-TrustedList/#" xmlns:tsl="http://uri.etsi.org/02231/v2#" xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xsd:import namespace="http://uri.etsi.org/01903/v1.3.2#" schemaLocation="http://uri.etsi.org/01903/v1.3.2/XAdES.xsd"/> 
+	<xsd:annotation><xsd:documentation>Specified in TS 119 612 v2.1.1 clause 5.5.9.2 Qualifications Extension</xsd:documentation></xsd:annotation>
+	<xsd:element name="Qualifications" type="tns:QualificationsType"/>
+	<xsd:complexType name="QualificationsType">
+		<xsd:sequence maxOccurs="unbounded">
+		   <!--Specified in TS 119 612 v2.1.1 clause 5.5.9.2.1 QualificationElement-->
+			<xsd:element name="QualificationElement" type="tns:QualificationElementType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:annotation><xsd:documentation>Specified in TS 119 612 v2.1.1 clause 5.5.9.2.1 QualificationElement</xsd:documentation></xsd:annotation>
+	<xsd:complexType name="QualificationElementType">
+		<xsd:sequence>
+		   <!--Specified in TS 119 612 v2.1.1 clause 5.5.9.2.3 Qualifier-->
+			<xsd:element name="Qualifiers" type="tns:QualifiersType"/>
+			<!--Specified in TS 119 612 v2.1.1 clause 5.5.9.2.2 CriteriaList-->
+			<xsd:element name="CriteriaList" type="tns:CriteriaListType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+		<xsd:annotation>
+			<xsd:documentation>Please first try to use the CriteriaList before doing the OtherCriteria extension point.</xsd:documentation>
+		</xsd:annotation>
+	<xsd:annotation><xsd:documentation>Specified in TS 119 612 v2.1.1 clause 5.5.9.2.2 CriteriaList</xsd:documentation></xsd:annotation>
+	<xsd:complexType name="CriteriaListType">
+		<xsd:sequence>
+		   <!--Specified in TS 119 612 v2.1.1 clause 5.5.9.2.2.1 KeyUsage-->
+		   <xsd:element name="KeyUsage" type="tns:KeyUsageType" minOccurs="0" maxOccurs="unbounded"/>
+		   <!--Specified in TS 119 612 v2.1.1 clause 5.5.9.2.2.2 PolicySet-->
+			<xsd:element name="PolicySet" type="tns:PoliciesListType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="CriteriaList" type="tns:CriteriaListType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Description" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="otherCriteriaList" type="xades:AnyType" minOccurs="0"/>
+		</xsd:sequence>
+		<xsd:attribute name="assert">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="all"/>
+					<xsd:enumeration value="atLeastOne"/>
+					<xsd:enumeration value="none"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+	</xsd:complexType>
+	<xsd:annotation><xsd:documentation>Specified in TS 119 612 v2.1.1 clause 5.5.9.2.3 Qualifier</xsd:documentation></xsd:annotation>
+	<xsd:complexType name="QualifiersType">
+		<xsd:sequence maxOccurs="unbounded">
+			<xsd:element name="Qualifier" type="tns:QualifierType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="QualifierType">
+		<xsd:attribute name="uri" type="anyURI"/>
+	</xsd:complexType>
+	<xsd:annotation><xsd:documentation>Specified in TS 119 612 v2.1.1 clause 5.5.9.2.2.2 PolicySet</xsd:documentation></xsd:annotation>
+	<xsd:complexType name="PoliciesListType">
+		<xsd:sequence maxOccurs="unbounded">
+			<xsd:element name="PolicyIdentifier" type="xades:ObjectIdentifierType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:annotation><xsd:documentation>Specified in TS 119 612 v2.1.1 clause 5.5.9.2.2.1 KeyUsage</xsd:documentation></xsd:annotation>
+	<xsd:complexType name="KeyUsageType">
+		<xsd:sequence maxOccurs="9">
+			<xsd:element name="KeyUsageBit" type="tns:KeyUsageBitType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="KeyUsageBitType">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:boolean">
+				<xsd:attribute name="name">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:enumeration value="digitalSignature"/>
+							<xsd:enumeration value="nonRepudiation"/>
+							<xsd:enumeration value="keyEncipherment"/>
+							<xsd:enumeration value="dataEncipherment"/>
+							<xsd:enumeration value="keyAgreement"/>
+							<xsd:enumeration value="keyCertSign"/>
+							<xsd:enumeration value="crlSign"/>
+							<xsd:enumeration value="encipherOnly"/>
+							<xsd:enumeration value="decipherOnly"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:attribute>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+</xsd:schema>

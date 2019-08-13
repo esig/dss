@@ -20,15 +20,15 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.vci.checks;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlVCI;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlVCI;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SignaturePolicyType;
+import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
-import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
-import eu.europa.esig.dss.x509.SignaturePolicy;
-import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 
 public class SignaturePolicyIdentifierCheck extends AbstractMultiValuesCheckItem<XmlVCI> {
 
@@ -44,11 +44,12 @@ public class SignaturePolicyIdentifierCheck extends AbstractMultiValuesCheckItem
 	@Override
 	protected boolean process() {
 		String policyId = signature.getPolicyId();
-		if (multiValues.getId().contains(SignaturePolicy.NO_POLICY) && Utils.isStringEmpty(policyId)) {
+		if (multiValues.getId().contains(SignaturePolicyType.NO_POLICY.name()) && Utils.isStringEmpty(policyId)) {
 			return true;
-		} else if (multiValues.getId().contains(SignaturePolicy.ANY_POLICY) && Utils.isStringNotEmpty(policyId)) {
+		} else if (multiValues.getId().contains(SignaturePolicyType.ANY_POLICY.name()) && Utils.isStringNotEmpty(policyId)) {
 			return true;
-		} else if (multiValues.getId().contains(SignaturePolicy.IMPLICIT_POLICY) && Utils.areStringsEqual(SignaturePolicy.IMPLICIT_POLICY, policyId)) {
+		} else if (multiValues.getId().contains(SignaturePolicyType.IMPLICIT_POLICY.name())
+				&& Utils.areStringsEqual(SignaturePolicyType.IMPLICIT_POLICY.name(), policyId)) {
 			return true;
 		}
 		// oids

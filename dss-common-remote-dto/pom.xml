@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+		<artifactId>sd-dss</artifactId>
+		<version>5.5-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>dss-common-remote-dto</artifactId>
+	<name>DSS Common Remote DTO</name>
+	<description>DSS Common Remote DTO contains the data model representation for DSS remote services. All classes should be serializable (REST/SOAP)</description>
+
+	<properties>
+		<module-name>jpms_dss_common_remote_dto</module-name>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-enumerations</artifactId>
+		</dependency>
+
+		<!-- No other dependencies than in scope test -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>

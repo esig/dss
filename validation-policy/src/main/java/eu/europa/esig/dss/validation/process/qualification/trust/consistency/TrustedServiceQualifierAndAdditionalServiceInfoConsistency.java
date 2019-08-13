@@ -24,10 +24,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.qualification.trust.AdditionalServiceInformation;
 import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualification;
-import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
 class TrustedServiceQualifierAndAdditionalServiceInfoConsistency implements TrustedServiceCondition {
 

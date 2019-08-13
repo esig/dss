@@ -23,7 +23,7 @@ package eu.europa.esig.dss.validation.process.vpfswatsp;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 
 public class TimestampComparator implements Comparator<TimestampWrapper>, Serializable {
 

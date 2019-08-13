@@ -2,24 +2,27 @@
 <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://dss.esig.europa.eu/validation/detailed-report" 
 	xmlns="http://dss.esig.europa.eu/validation/detailed-report" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-	<xs:element name="DetailedReport">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element type="Signature" name="Signatures" minOccurs="0" maxOccurs="unbounded" />
-				<xs:element type="Certificate" name="Certificate" minOccurs="0" maxOccurs="1" />
-				<xs:element type="BasicBuildingBlocks" name="BasicBuildingBlocks" minOccurs="0" maxOccurs="unbounded" />
-				<xs:element name="TLAnalysis" type="TLAnalysis" minOccurs="0" maxOccurs="unbounded" />
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
+	<!-- Root element -->
+	<xs:element name="DetailedReport" type="DetailedReport" />
+
+	<xs:complexType name="DetailedReport">
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="Signatures" type="Signature" minOccurs="0" maxOccurs="unbounded" />
+				<xs:element name="Certificate" type="Certificate" minOccurs="0" maxOccurs="1" />
+			</xs:choice>
+			<xs:element type="BasicBuildingBlocks" name="BasicBuildingBlocks" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="TLAnalysis" type="TLAnalysis" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
 	
 	<xs:complexType name="Signature">
 		<xs:sequence>
-			<xs:element type="ValidationProcessBasicSignatures" name="ValidationProcessBasicSignatures" minOccurs="0" />
-			<xs:element type="ValidationProcessTimestamps" name="ValidationProcessTimestamps" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element type="ValidationProcessLongTermData" name="ValidationProcessLongTermData" minOccurs="0" />
-			<xs:element type="ValidationProcessArchivalData" name="ValidationProcessArchivalData" minOccurs="0" />
-			<xs:element type="ValidationSignatureQualification" name="ValidationSignatureQualification" minOccurs="0" />
+			<xs:element name="ValidationProcessBasicSignatures" type="ValidationProcessBasicSignatures" minOccurs="0" />
+			<xs:element name="ValidationProcessTimestamps" type="ValidationProcessTimestamps" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="ValidationProcessLongTermData" type="ValidationProcessLongTermData" minOccurs="0" />
+			<xs:element name="ValidationProcessArchivalData" type="ValidationProcessArchivalData" minOccurs="0" />
+			<xs:element name="ValidationSignatureQualification" type="ValidationSignatureQualification" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" />
 		<xs:attribute name="CounterSignature" type="xs:boolean" use="optional" />
@@ -37,17 +40,17 @@
 
 	<xs:complexType name="BasicBuildingBlocks">
 		<xs:sequence>
-			<xs:element type="FC" name="FC" minOccurs="0" />
-			<xs:element type="ISC" name="ISC" minOccurs="0" />
-			<xs:element type="VCI" name="VCI" minOccurs="0" />
-			<xs:element type="CV"  name="CV"  minOccurs="0" />
-			<xs:element type="SAV" name="SAV" minOccurs="0" />
-			<xs:element type="XCV" name="XCV" minOccurs="0" />
-			<xs:element type="PSV" name="PSV" minOccurs="0" />
-			<xs:element type="PCV" name="PCV" minOccurs="0" />
-			<xs:element type="VTS" name="VTS" minOccurs="0" />
-			<xs:element name="CertificateChain" type="CertificateChain" />
-			<xs:element type="Conclusion" name="Conclusion" />
+			<xs:element name="FC" type="FC" minOccurs="0" /> <!-- 5.2.2 Format Checking -->
+			<xs:element name="ISC" type="ISC" minOccurs="0" /> <!-- 5.2.3 Identification of the signing certificate -->
+			<xs:element name="VCI" type="VCI" minOccurs="0" /> <!-- 5.2.4 Validation context initialization -->
+			<xs:element name="XCV" type="XCV" minOccurs="0" /> <!-- 5.2.6 X.509 certificate validation -->
+			<xs:element name="CV"  type="CV"  minOccurs="0" /> <!-- 5.2.7 Cryptographic verification -->
+			<xs:element name="SAV" type="SAV" minOccurs="0" /> <!-- 5.2.8 Signature acceptance validation (SAV) -->
+			<xs:element name="PSV" type="PSV" minOccurs="0" />
+			<xs:element name="PCV" type="PCV" minOccurs="0" />
+			<xs:element name="VTS" type="VTS" minOccurs="0" />
+			<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
+			<xs:element name="Conclusion" type="Conclusion" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" />
 		<xs:attribute name="Type" type="Context" use="required" />
@@ -86,9 +89,10 @@
 
 	<xs:complexType name="ConstraintsConclusion">
 		<xs:sequence>
-			<xs:element type="Constraint" name="Constraint" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element type="Conclusion" name="Conclusion" />
+			<xs:element name="Constraint" type="Constraint" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Conclusion" type="Conclusion" />
 		</xs:sequence>
+		<xs:attribute name="Title" type="xs:string" use="required" />
 	</xs:complexType>
 	
 	<xs:complexType name="ConstraintsConclusionWithControlTime">
@@ -101,11 +105,26 @@
 		</xs:complexContent>
 	</xs:complexType>
 	
-	<xs:complexType name="ValidationProcessBasicSignatures">	
+	<xs:complexType name="ConstraintsConclusionWithProofOfExistence">
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusion">
-				<xs:attribute name="BestSignatureTime" type="xs:dateTime" use="required" />
+				<xs:sequence>
+	       			<xs:element name="ProofOfExistence" type="ProofOfExistence" minOccurs="0" />
+				</xs:sequence>
 			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="ProofOfExistence">
+		<xs:sequence>
+			<xs:element name="Time" type="xs:dateTime" />
+			<xs:element name="TimestampId" type="xs:string" minOccurs="0" /> <!-- No present means current/validation time -->
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="ValidationProcessBasicSignatures">	
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusionWithProofOfExistence" />
 		</xs:complexContent>
 	</xs:complexType>
 
@@ -121,17 +140,13 @@
 
 	<xs:complexType name="ValidationProcessLongTermData">	
 		<xs:complexContent>
-			<xs:extension base="ConstraintsConclusion">
-				<xs:attribute name="BestSignatureTime" type="xs:dateTime" use="required" />
-			</xs:extension>
+			<xs:extension base="ConstraintsConclusionWithProofOfExistence" />
 		</xs:complexContent>
 	</xs:complexType>
 
 	<xs:complexType name="ValidationProcessArchivalData">	
 		<xs:complexContent>
-			<xs:extension base="ConstraintsConclusion">
-				<xs:attribute name="BestSignatureTime" type="xs:dateTime" use="required" />
-			</xs:extension>
+			<xs:extension base="ConstraintsConclusionWithProofOfExistence" />
 		</xs:complexContent>
 	</xs:complexType>
 
@@ -157,7 +172,7 @@
 	<xs:complexType name="RFC">
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusion">
-				<xs:attribute name="Id" type="xs:string" use="required" />
+				<xs:attribute name="Id" type="xs:string" use="optional" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -169,6 +184,9 @@
 	<xs:complexType name="SAV">
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusion">
+				<xs:sequence>
+					<xs:element name="CryptographicInfo" type="CryptographicInformation" />
+				</xs:sequence>
 				<xs:attribute name="ValidationTime" type="xs:dateTime" use="optional" />
 			</xs:extension>
 		</xs:complexContent>
@@ -187,6 +205,7 @@
 			<xs:extension base="ConstraintsConclusion">
 				<xs:sequence>
 					<xs:element name="RFC" type="RFC" minOccurs="0" />
+					<xs:element name="RevocationInfo" type="RevocationInformation" minOccurs="0" />
 				</xs:sequence>
 				<xs:attribute name="Id" type="xs:string" use="required" />
 				<xs:attribute name="TrustAnchor" type="xs:boolean" />
@@ -217,23 +236,23 @@
 	
 	<xs:complexType name="Constraint">
 		<xs:sequence>
-			<xs:element type="Name" name="Name" />
-			<xs:element type="Status" name="Status" />
-			<xs:element type="Name" name="Error" minOccurs="0" />
-			<xs:element type="Name" name="Warning" minOccurs="0" />
-			<xs:element type="Name" name="Info" minOccurs="0" />
-			<xs:element type="xs:string" name="AdditionalInfo" minOccurs="0" />
+			<xs:element name="Name" type="Name" />
+			<xs:element name="Status" type="Status" />
+			<xs:element name="Error" type="Name" minOccurs="0" />
+			<xs:element name="Warning" type="Name" minOccurs="0" />
+			<xs:element name="Info" type="Name" minOccurs="0" />
+			<xs:element name="AdditionalInfo" type="xs:string" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="optional" /> <!-- In case of constraint with a BBB -->
 	</xs:complexType>
 
 	<xs:complexType name="Conclusion">
 		<xs:sequence>
-			<xs:element type="Indication" name="Indication" />
-			<xs:element type="SubIndication" name="SubIndication" minOccurs="0" />
-			<xs:element type="Name" name="Errors" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element type="Name" name="Warnings" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element type="Name" name="Infos" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Indication" type="Indication" />
+			<xs:element name="SubIndication" type="SubIndication" minOccurs="0" />
+			<xs:element name="Errors" type="Name" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Warnings" type="Name" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Infos" type="Name" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 
@@ -294,16 +313,16 @@
 	<xs:simpleType name="CertificateQualification" final="restriction">
 		<xs:restriction base="xs:string">
 		
-			<xs:enumeration value="QC Cert for ESig with QSCD" />
-			<xs:enumeration value="QC Cert for ESeal with QSCD" />
+			<xs:enumeration value="QC for eSig with QSCD" />
+			<xs:enumeration value="QC for eSeal with QSCD" />
 			<!-- non sense <xs:enumeration value="QC Cert for WSA with QSCD" /> -->
 			
-			<xs:enumeration value="QC Cert for ESig" />
-			<xs:enumeration value="QC Cert for ESeal" />
-			<xs:enumeration value="QC Cert for WSA" />
+			<xs:enumeration value="QC for eSig" />
+			<xs:enumeration value="QC for eSeal" />
+			<xs:enumeration value="QC for WSA" />
 			
-			<xs:enumeration value="Cert for ESig" />
-			<xs:enumeration value="Cert for ESeal" />
+			<xs:enumeration value="Cert for eSig" />
+			<xs:enumeration value="Cert for eSeal" />
 			<xs:enumeration value="Cert for WSA" />
 			
 			<xs:enumeration value="N/A" />
@@ -365,12 +384,58 @@
 			<xs:element name="ChainItem" minOccurs="0" maxOccurs="unbounded">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="Source" type="xs:string" />
+						<xs:element name="Source" type="CertificateSourceType" />
 					</xs:sequence>
 					<xs:attribute name="Id" type="xs:string" use="required" />
 				</xs:complexType>
 			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
+	
+	<xs:simpleType name="CertificateSourceType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="TRUSTED_STORE" />
+			<xs:enumeration value="TRUSTED_LIST" />
+			<xs:enumeration value="SIGNATURE" />
+			<xs:enumeration value="OCSP_RESPONSE" />
+			<xs:enumeration value="OTHER" />
+			<xs:enumeration value="AIA" />
+			<xs:enumeration value="TIMESTAMP" />
+			<xs:enumeration value="UNKNOWN" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="RevocationInformation">
+		<xs:sequence>
+			<xs:element name="CertificateId" type="xs:string" />
+			<xs:element name="RevocationId" type="xs:string" />
+			<xs:element name="Reason" type="RevocationReason" minOccurs="0" />
+			<xs:element name="RevocationDate" type="xs:dateTime" />		
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="CryptographicInformation">
+		<xs:sequence>
+			<xs:element name="Algorithm" type="xs:string" />
+			<xs:element name="KeyLength" type="xs:string" />
+			<xs:element name="Secure" type="xs:boolean" />
+			<xs:element name="NotAfter" type="xs:dateTime" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="RevocationReason" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="unspecified" />
+			<xs:enumeration value="keyCompromise" />
+			<xs:enumeration value="cACompromise" />
+			<xs:enumeration value="affiliationChanged" />
+			<xs:enumeration value="superseded" />
+			<xs:enumeration value="cessationOfOperation" />
+			<xs:enumeration value="certificateHold" />
+			<xs:enumeration value="removeFromCRL" />
+			<xs:enumeration value="privilegeWithdrawn" />
+			<xs:enumeration value="aACompromise" />
+		</xs:restriction>
+	</xs:simpleType>
 	
 </xs:schema>

@@ -2,7 +2,7 @@
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <ValidationDate>2018-02-09T07:03:45</ValidationDate>
     <UsedCertificates>
-        <Certificate Id="5C7199AD1BD04360237812292EAFB2FC010C3C7681831A99FED2C9E0FE567C8B">
+        <Certificate Id="C-5C7199AD1BD04360237812292EAFB2FC010C3C7681831A99FED2C9E0FE567C8B">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.97=#130e4e545244452d4852423734333436,cn=d-trust ocsp 1 3-1 2016,o=d-trust gmbh,c=de</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">2.5.4.97=#130e4e545244452d4852423734333436,CN=D-TRUST OCSP 1 3-1 2016,O=D-Trust GmbH,C=DE</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">2.5.4.97=#130e4e545244452d4852423734333436,cn=d-trust ca 3-1 2016,o=d-trust gmbh,c=de</IssuerDistinguishedName>
@@ -12,15 +12,17 @@
             <CountryName>DE</CountryName>
             <OrganizationName>D-Trust GmbH</OrganizationName>
             <AuthorityInformationAccessUrls>
-                <Url>http://www.d-trust.net/cgi-bin/D-TRUST_CA_3-1_2016.crt</Url>
-                <Url>ldap://directory.d-trust.net/CN=D-TRUST%20CA%203-1%202016,O=D-Trust%20GmbH,C=DE?cACertificate?base?</Url>
+                <aiaUrl>http://www.d-trust.net/cgi-bin/D-TRUST_CA_3-1_2016.crt</aiaUrl>
+                <aiaUrl>ldap://directory.d-trust.net/CN=D-TRUST%20CA%203-1%202016,O=D-Trust%20GmbH,C=DE?cACertificate?base?</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints>
-                <Url>ldap://directory.d-trust.net/CN=D-TRUST%20CA%203-1%202016,O=D-Trust%20GmbH,C=DE?certificaterevocationlist</Url>
-                <Url>http://crl.d-trust.net/crl/d-trust_ca_3-1_2016.crl</Url>
+                <crlUrl>ldap://directory.d-trust.net/CN=D-TRUST%20CA%203-1%202016,O=D-Trust%20GmbH,C=DE?certificaterevocationlist</crlUrl>
+                <crlUrl>http://crl.d-trust.net/crl/d-trust_ca_3-1_2016.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
-            <DigestAlgoAndValues/>
+            <Sources>
+            	<Source>OCSP_RESPONSE</Source>
+            </Sources>
             <NotAfter>2031-10-26T08:36:50</NotAfter>
             <NotBefore>2016-11-07T13:52:19</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -29,7 +31,7 @@
                 <KeyUsage>nonRepudiation</KeyUsage>
             </KeyUsageBits>
             <ExtendedKeyUsages>
-                <oid Description="ocspSigning">1.3.6.1.5.5.7.3.9</oid>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
             </ExtendedKeyUsages>
             <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
@@ -39,11 +41,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="454A164B9236CF9C380DF9959F751DED503F91BE3EC646C7042CBB0E1E17A7D5"/>
+            <SigningCertificate Certificate="C-454A164B9236CF9C380DF9959F751DED503F91BE3EC646C7042CBB0E1E17A7D5"/>
             <CertificateChain>
-                <ChainItem Id="454A164B9236CF9C380DF9959F751DED503F91BE3EC646C7042CBB0E1E17A7D5">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-454A164B9236CF9C380DF9959F751DED503F91BE3EC646C7042CBB0E1E17A7D5"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -56,14 +56,13 @@
                     <TSPRegistrationIdentifier>VATDE-202620438 </TSPRegistrationIdentifier>
                     <CountryCode>DE</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>454A164B9236CF9C380DF9959F751DED503F91BE3EC646C7042CBB0E1E17A7D5</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-454A164B9236CF9C380DF9959F751DED503F91BE3EC646C7042CBB0E1E17A7D5">
                             <ServiceName>D-TRUST qualified Signature ID card</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2017-03-17T11:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -71,7 +70,7 @@
             </TrustedServiceProviders>
             <Base64Encoded>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</Base64Encoded>
         </Certificate>
-        <Certificate Id="454A164B9236CF9C380DF9959F751DED503F91BE3EC646C7042CBB0E1E17A7D5">
+        <Certificate Id="C-454A164B9236CF9C380DF9959F751DED503F91BE3EC646C7042CBB0E1E17A7D5">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.97=#130e4e545244452d4852423734333436,cn=d-trust ca 3-1 2016,o=d-trust gmbh,c=de</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">2.5.4.97=#130e4e545244452d4852423734333436,CN=D-TRUST CA 3-1 2016,O=D-Trust GmbH,C=DE</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">2.5.4.97=#130e4e545244452d4852423734333436,cn=d-trust root ca 3 2016,o=d-trust gmbh,c=de</IssuerDistinguishedName>
@@ -81,16 +80,18 @@
             <CountryName>DE</CountryName>
             <OrganizationName>D-Trust GmbH</OrganizationName>
             <AuthorityInformationAccessUrls>
-                <Url>http://www.d-trust.net/cgi-bin/D-TRUST_Root_CA_3_2016.crt</Url>
+                <aiaUrl>http://www.d-trust.net/cgi-bin/D-TRUST_Root_CA_3_2016.crt</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints>
-                <Url>ldap://directory.d-trust.net/CN=D-TRUST%20Root%20CA%203%202016,O=D-Trust%20GmbH,C=DE?certificaterevocationlist</Url>
-                <Url>http://crl.d-trust.net/crl/d-trust_root_ca_3_2016.crl</Url>
+                <crlUrl>ldap://directory.d-trust.net/CN=D-TRUST%20Root%20CA%203%202016,O=D-Trust%20GmbH,C=DE?certificaterevocationlist</crlUrl>
+                <crlUrl>http://crl.d-trust.net/crl/d-trust_root_ca_3_2016.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls>
-                <Url>http://root-ca-3-2016.ocsp.d-trust.net</Url>
+                <ocspServerUrl>http://root-ca-3-2016.ocsp.d-trust.net</ocspServerUrl>
             </OCSPAccessUrls>
-            <DigestAlgoAndValues/>
+            <Sources>
+            	<Source>TRUSTED_LIST</Source>
+            </Sources>
             <NotAfter>2031-10-26T08:36:50</NotAfter>
             <NotBefore>2016-10-26T08:36:38</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
@@ -122,14 +123,13 @@
                     <TSPRegistrationIdentifier>VATDE-202620438 </TSPRegistrationIdentifier>
                     <CountryCode>DE</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>454A164B9236CF9C380DF9959F751DED503F91BE3EC646C7042CBB0E1E17A7D5</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-454A164B9236CF9C380DF9959F751DED503F91BE3EC646C7042CBB0E1E17A7D5">
                             <ServiceName>D-TRUST qualified Signature ID card</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2017-03-17T11:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -137,7 +137,7 @@
             </TrustedServiceProviders>
             <Base64Encoded>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</Base64Encoded>
         </Certificate>
-        <Certificate Id="0E9B5C373AFEC1CED5723FCD9231F793BB330FFBF2B94BB8698301C90405B9BF">
+        <Certificate Id="C-0E9B5C373AFEC1CED5723FCD9231F793BB330FFBF2B94BB8698301C90405B9BF">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#13144454525745333231353330323439353630323435,2.5.4.4=#0c075363686c656465,2.5.4.42=#0c164d61747468696173204a6f68616e6e2053746566616e,cn=matthias schlede,o=secrypt gmbh,c=de</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">2.5.4.5=#13144454525745333231353330323439353630323435,2.5.4.4=#0c075363686c656465,2.5.4.42=#0c164d61747468696173204a6f68616e6e2053746566616e,CN=Matthias Schlede,O=secrypt GmbH,C=DE</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=d-trust qualified ca 1 2008:pn,o=d-trust gmbh,c=de</IssuerDistinguishedName>
@@ -150,13 +150,15 @@
             <Surname>Schlede</Surname>
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints>
-                <Url>ldap://directory.d-trust.net/CN=D-TRUST%20Qualified%20CA%201%202008%3APN,O=D-Trust%20GmbH,C=DE?certificaterevocationlist</Url>
-                <Url>http://www.d-trust.net/crl/d-trust_qualified_ca_1_2008.crl</Url>
+                <crlUrl>ldap://directory.d-trust.net/CN=D-TRUST%20Qualified%20CA%201%202008%3APN,O=D-Trust%20GmbH,C=DE?certificaterevocationlist</crlUrl>
+                <crlUrl>http://www.d-trust.net/crl/d-trust_qualified_ca_1_2008.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls>
-                <Url>http://qual.ocsp.d-trust.net</Url>
+                <ocspServerUrl>http://qual.ocsp.d-trust.net</ocspServerUrl>
             </OCSPAccessUrls>
-            <DigestAlgoAndValues/>
+            <Sources>
+            	<Source>UNKNOWN</Source>
+            </Sources>
             <NotAfter>2015-11-27T13:17:27</NotAfter>
             <NotBefore>2011-11-17T13:17:27</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -173,11 +175,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="A3EDFADFCBE288E5688051D3AD081A0CA09633E52E3E9C9A6E2C436657B2D1A9"/>
+            <SigningCertificate Certificate="C-A3EDFADFCBE288E5688051D3AD081A0CA09633E52E3E9C9A6E2C436657B2D1A9"/>
             <CertificateChain>
-                <ChainItem Id="A3EDFADFCBE288E5688051D3AD081A0CA09633E52E3E9C9A6E2C436657B2D1A9">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-A3EDFADFCBE288E5688051D3AD081A0CA09633E52E3E9C9A6E2C436657B2D1A9"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -185,8 +185,8 @@
                 <certificatePolicy>1.3.6.1.4.1.4788.2.31.1</certificatePolicy>
             </CertificatePolicies>
             <QCStatementIds>
-                <oid Description="qc-compliance">0.4.0.1862.1.1</oid>
-                <oid Description="qc-retention-period">0.4.0.1862.1.3</oid>
+                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
+                <qcStatementOid Description="qc-retention-period">0.4.0.1862.1.3</qcStatementOid>
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
@@ -195,8 +195,7 @@
                     <TSPRegistrationIdentifier>VATDE-202620438 </TSPRegistrationIdentifier>
                     <CountryCode>DE</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>A3EDFADFCBE288E5688051D3AD081A0CA09633E52E3E9C9A6E2C436657B2D1A9</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-A3EDFADFCBE288E5688051D3AD081A0CA09633E52E3E9C9A6E2C436657B2D1A9">
                             <ServiceName>D-TRUST Qualified CA 1 2008:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -205,11 +204,10 @@
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD</Qualifier>
                             </CapturedQualifiers>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>A3EDFADFCBE288E5688051D3AD081A0CA09633E52E3E9C9A6E2C436657B2D1A9</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-A3EDFADFCBE288E5688051D3AD081A0CA09633E52E3E9C9A6E2C436657B2D1A9">
                             <ServiceName>D-TRUST Qualified CA 1 2008:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
@@ -224,38 +222,15 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations>
-                <Revocation Id="0e9b5c373afec1ced5723fcd9231f793bb330ffbf2b94bb8698301c90405b9bfcfa17dcb6fe2588a8209a374c1e685a7ecd2068f975bfe1d4ba9234a521e4e36">
-                    <Origin>EXTERNAL</Origin>
-                    <Source>OCSPToken</Source>
-                    <SourceAddress>http://qual.ocsp.d-trust.net</SourceAddress>
-                    <Available>true</Available>
+                <CertificateRevocation Revocation="R-0e9b5c373afec1ced5723fcd9231f793bb330ffbf2b94bb8698301c90405b9bfcfa17dcb6fe2588a8209a374c1e685a7ecd2068f975bfe1d4ba9234a521e4e36">
                     <Status>false</Status>
                     <Reason>unspecified</Reason>
-                    <ProductionDate>2018-02-09T07:03:45</ProductionDate>
-                    <ThisUpdate>2018-02-09T07:03:45</ThisUpdate>
                     <RevocationDate>2014-12-30T13:28:24</RevocationDate>
-                    <DigestAlgoAndValues/>
-                    <BasicSignature>
-                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-                        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-                        <SignatureIntact>true</SignatureIntact>
-                        <SignatureValid>true</SignatureValid>
-                    </BasicSignature>
-                    <SigningCertificate Id="5C7199AD1BD04360237812292EAFB2FC010C3C7681831A99FED2C9E0FE567C8B"/>
-                    <CertificateChain>
-                        <ChainItem Id="5C7199AD1BD04360237812292EAFB2FC010C3C7681831A99FED2C9E0FE567C8B">
-                            <Source>OCSP_RESPONSE</Source>
-                        </ChainItem>
-                        <ChainItem Id="454A164B9236CF9C380DF9959F751DED503F91BE3EC646C7042CBB0E1E17A7D5">
-                            <Source>TRUSTED_LIST</Source>
-                        </ChainItem>
-                    </CertificateChain>
-                </Revocation>
+                </CertificateRevocation>
             </Revocations>
             <Base64Encoded>MIIFLjCCBBagAwIBAgIDDjK2MA0GCSqGSIb3DQEBCwUAME0xCzAJBgNVBAYTAkRFMRUwEwYDVQQKDAxELVRydXN0IEdtYkgxJzAlBgNVBAMMHkQtVFJVU1QgUXVhbGlmaWVkIENBIDEgMjAwODpQTjAeFw0xMTExMTcxMzE3MjdaFw0xNTExMjcxMzE3MjdaMIGRMQswCQYDVQQGEwJERTEVMBMGA1UECgwMc2VjcnlwdCBHbWJIMRkwFwYDVQQDDBBNYXR0aGlhcyBTY2hsZWRlMR8wHQYDVQQqDBZNYXR0aGlhcyBKb2hhbm4gU3RlZmFuMRAwDgYDVQQEDAdTY2hsZWRlMR0wGwYDVQQFExREVFJXRTMyMTUzMDI0OTU2MDI0NTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAIETmF3TMfrg0thKrLWHQTHQzgIjdShFz6ti7D0WP2sLQlbyhpYGNECGRDmfiKTeFBSpkAbQQROuwFCAJ3wuGq3gaTHg0NtGHotco8RzB3njjOuEO1ZfjJeoYP4rBuqhtGejz5fo0Xyqv8Oyoc5ZUGd4wohRCRjfeN5cEKENU0KpTDMqlS5KYeHlMMlNkjO2+96G9YJiUBTLqBQSlL/1SR0GUGlw19vLw25xDy68t1aVtWzPtQ08U/AmvBdYWRwSGb/vb+wox4PXIfxHW+eRNr/Rsh25FhUW1B9TYX4AyWoE8DFz/OJjYlTHtgK4u+vP21NBuF/pqA9WBD1ekS2v/NsCAwC5BaOCAdAwggHMMB8GA1UdIwQYMBaAFHexY8VjZaUsc+n1pI8dSnVMgft9MCUGCCsGAQUFBwEDBBkwFzAIBgYEAI5GAQEwCwYGBACORgEDAgEeMDgGCCsGAQUFBwEBBCwwKjAoBggrBgEFBQcwAYYcaHR0cDovL3F1YWwub2NzcC5kLXRydXN0Lm5ldDAXBgNVHSAEEDAOMAwGCisGAQQBpTQCHwEwgcoGA1UdHwSBwjCBvzCBvKCBuaCBtoZ4bGRhcDovL2RpcmVjdG9yeS5kLXRydXN0Lm5ldC9DTj1ELVRSVVNUJTIwUXVhbGlmaWVkJTIwQ0ElMjAxJTIwMjAwOCUzQVBOLE89RC1UcnVzdCUyMEdtYkgsQz1ERT9jZXJ0aWZpY2F0ZXJldm9jYXRpb25saXN0hjpodHRwOi8vd3d3LmQtdHJ1c3QubmV0L2NybC9kLXRydXN0X3F1YWxpZmllZF9jYV8xXzIwMDguY3JsMDMGA1UdEgQsMCqBEGluZm9AZC10cnVzdC5uZXSGFmh0dHA6Ly93d3cuZC10cnVzdC5uZXQwHQYDVR0OBBYEFBSuVkfarU8Kuahe92clYaKhf73rMA4GA1UdDwEB/wQEAwIGQDANBgkqhkiG9w0BAQsFAAOCAQEAFYsQ4qAP/Ki0wp5vGP0GIDp0qCcJC9J0y9sZdVveneJ7TOp/mpsjrQaXaW9ES1oYPUS0JR6k/7Fyoyk90doc0wt1wbNKdD7V0xU7RXt0WsiLDSf3VLv4s6Z5spd4Yr4Gn52DEcT8xnBnUGR/GvOjnLQxxNv7PA3RpPKBkP2czH0SS3chEg3yyjkgEaoAYizasR/tkSrelGr6h+/5L8plMtM/o0P3eHU0j7oQt+7tdxMkCG2Xw23mnUwTBkRF6753GlgBfKlYcLjdGRWv9+T4BUeV8JUiu4z8EUOPL5Cu1A26+APDpOMxRsVi83gwxnahL+yVJiu7P2gEfMnLDUlJFQ==</Base64Encoded>
         </Certificate>
-        <Certificate Id="A3EDFADFCBE288E5688051D3AD081A0CA09633E52E3E9C9A6E2C436657B2D1A9">
+        <Certificate Id="C-A3EDFADFCBE288E5688051D3AD081A0CA09633E52E3E9C9A6E2C436657B2D1A9">
             <SubjectDistinguishedName Format="CANONICAL">cn=d-trust qualified ca 1 2008:pn,o=d-trust gmbh,c=de</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=D-TRUST Qualified CA 1 2008:PN,O=D-Trust GmbH,C=DE</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=d-trust qualified root ca 1 2008:pn,o=d-trust gmbh,c=de</IssuerDistinguishedName>
@@ -266,13 +241,15 @@
             <OrganizationName>D-Trust GmbH</OrganizationName>
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints>
-                <Url>ldap://directory.d-trust.net/CN=D-TRUST%20Qualified%20Root%20CA%201%202008%3APN,O=D-Trust%20GmbH,C=DE?certificaterevocationlist</Url>
-                <Url>http://www.d-trust.net/crl/d-trust_qualified_root_ca_1_2008.crl</Url>
+                <crlUrl>ldap://directory.d-trust.net/CN=D-TRUST%20Qualified%20Root%20CA%201%202008%3APN,O=D-Trust%20GmbH,C=DE?certificaterevocationlist</crlUrl>
+                <crlUrl>http://www.d-trust.net/crl/d-trust_qualified_root_ca_1_2008.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls>
-                <Url>http://qual.ocsp.d-trust.net</Url>
+                <ocspServerUrl>http://qual.ocsp.d-trust.net</ocspServerUrl>
             </OCSPAccessUrls>
-            <DigestAlgoAndValues/>
+            <Sources>
+            	<Source>TRUSTED_LIST</Source>
+            </Sources>
             <NotAfter>2013-07-24T15:30:00</NotAfter>
             <NotBefore>2008-07-24T16:54:11</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -296,7 +273,7 @@
                 <certificatePolicy>1.3.6.1.4.1.4788.2.31.1</certificatePolicy>
             </CertificatePolicies>
             <QCStatementIds>
-                <oid Description="qc-compliance">0.4.0.1862.1.1</oid>
+                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
@@ -305,18 +282,16 @@
                     <TSPRegistrationIdentifier>VATDE-202620438 </TSPRegistrationIdentifier>
                     <CountryCode>DE</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>A3EDFADFCBE288E5688051D3AD081A0CA09633E52E3E9C9A6E2C436657B2D1A9</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-A3EDFADFCBE288E5688051D3AD081A0CA09633E52E3E9C9A6E2C436657B2D1A9">
                             <ServiceName>D-TRUST Qualified CA 1 2008:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
-                        <TrustedService>
-                        	<ServiceDigitalIdentifier>A3EDFADFCBE288E5688051D3AD081A0CA09633E52E3E9C9A6E2C436657B2D1A9</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-A3EDFADFCBE288E5688051D3AD081A0CA09633E52E3E9C9A6E2C436657B2D1A9">
                             <ServiceName>D-TRUST Qualified CA 1 2008:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
@@ -330,6 +305,31 @@
             <Base64Encoded>MIIFAzCCA+ugAwIBAgIDB9wxMA0GCSqGSIb3DQEBCwUAMFIxCzAJBgNVBAYTAkRFMRUwEwYDVQQKDAxELVRydXN0IEdtYkgxLDAqBgNVBAMMI0QtVFJVU1QgUXVhbGlmaWVkIFJvb3QgQ0EgMSAyMDA4OlBOMB4XDTA4MDcyNDE2NTQxMVoXDTEzMDcyNDE1MzAwMFowTTELMAkGA1UEBhMCREUxFTATBgNVBAoMDEQtVHJ1c3QgR21iSDEnMCUGA1UEAwweRC1UUlVTVCBRdWFsaWZpZWQgQ0EgMSAyMDA4OlBOMIIBJDANBgkqhkiG9w0BAQEFAAOCAREAMIIBDAKCAQEA75dOYYcc+7whvO9TghzZxvpu1jKDybqleE91IBzfM9uwaM9uMNDbOaefPK5NvibSgzp0ASns94o9Y1geUVJLp5dP11tjx+up4etREfrsyjeqMdfLR4+UT149/mTjHZPSFnbOgtT3CP1czzKWsZ/yDsCePhQ8bGXLttyxPSkJTSfhmIGvBHdYtlxj3xq6EW3SjLQQLn1UbDBZBCpP9Uyx3jWD6Z4YUfOPX4DrQn6h0X2BhV7AvrotpfuIXDOoOiX662CVvwqISWmIUwSJ6tJJKEB4uS1WHXPdnrnk85SePfnFpipnwJ7/Php+wf4KNg1V1xr8c6QHpGVJoUu/qiDgVQIFALsUjUmjggHjMIIB3zAfBgNVHSMEGDAWgBRn4GVW/H0lN8W/7XiIKvD68kfAOjAYBggrBgEFBQcBAwQMMAowCAYGBACORgEBMDgGCCsGAQUFBwEBBCwwKjAoBggrBgEFBQcwAYYcaHR0cDovL3F1YWwub2NzcC5kLXRydXN0Lm5ldDAXBgNVHSAEEDAOMAwGCisGAQQBpTQCHwEwMwYDVR0RBCwwKoEQaW5mb0BkLXRydXN0Lm5ldIYWaHR0cDovL3d3dy5kLXRydXN0Lm5ldDCB1gYDVR0fBIHOMIHLMIHIoIHFoIHChn9sZGFwOi8vZGlyZWN0b3J5LmQtdHJ1c3QubmV0L0NOPUQtVFJVU1QlMjBRdWFsaWZpZWQlMjBSb290JTIwQ0ElMjAxJTIwMjAwOCUzQVBOLE89RC1UcnVzdCUyMEdtYkgsQz1ERT9jZXJ0aWZpY2F0ZXJldm9jYXRpb25saXN0hj9odHRwOi8vd3d3LmQtdHJ1c3QubmV0L2NybC9kLXRydXN0X3F1YWxpZmllZF9yb290X2NhXzFfMjAwOC5jcmwwHQYDVR0OBBYEFHexY8VjZaUsc+n1pI8dSnVMgft9MA4GA1UdDwEB/wQEAwIBBjASBgNVHRMBAf8ECDAGAQH/AgEAMA0GCSqGSIb3DQEBCwUAA4IBAQBfonGItG9cFyWQfd1mbDeTEPHulMUqi8YEufpIG3gysIcKXgn8FLaqlPqD22gL+Z6BgWRELhIKYCne024wbnpF5UgHHhCkt+iVjl65mH8BPgUcPseOQN8mnYR8BmvkTGBvUBjy2hhObwUHuj9LAWz3qG2w9f6zojA6EqxDu6VQEpq5EIrTLuvFbPI9gMMr15Zc6H9G+6uNct3XWglcTQ60h4Tt6Qf1a0aHK75zLmCZGV4+pKUkReL8nG8TIVqJ7/pF5nf2M+DBjPs9dTYA3rUIDdzy3HyeM/YWascJ42KjgeIUZhENXLQmJq3YBDpW0Vm4xQf15p2webrX81opBATC</Base64Encoded>
         </Certificate>
     </UsedCertificates>
+    <UsedRevocations>
+    	<Revocation Id="R-0e9b5c373afec1ced5723fcd9231f793bb330ffbf2b94bb8698301c90405b9bfcfa17dcb6fe2588a8209a374c1e685a7ecd2068f975bfe1d4ba9234a521e4e36">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://qual.ocsp.d-trust.net</SourceAddress>
+            <ProductionDate>2018-02-09T07:03:45</ProductionDate>
+            <ThisUpdate>2018-02-09T07:03:45</ThisUpdate>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-5C7199AD1BD04360237812292EAFB2FC010C3C7681831A99FED2C9E0FE567C8B"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-5C7199AD1BD04360237812292EAFB2FC010C3C7681831A99FED2C9E0FE567C8B"/>
+                <ChainItem Certificate="C-454A164B9236CF9C380DF9959F751DED503F91BE3EC646C7042CBB0E1E17A7D5"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>68837c0c9d75de4420c66b98d9394c55e3291717</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
     <TrustedLists>
         <TrustedList>
             <CountryCode>DE</CountryCode>

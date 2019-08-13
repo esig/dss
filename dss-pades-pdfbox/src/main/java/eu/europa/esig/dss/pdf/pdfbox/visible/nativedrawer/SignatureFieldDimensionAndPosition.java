@@ -12,6 +12,8 @@ public class SignatureFieldDimensionAndPosition {
 	
 	private float imageX = 0;
 	private float imageY = 0;
+	private float imageWidth = 0;
+	private float imageHeight = 0;
 	
 	private float textX = 0;
 	private float textY = 0;
@@ -69,6 +71,22 @@ public class SignatureFieldDimensionAndPosition {
 	
 	public void setImageY(float imageY) {
 		this.imageY = imageY;
+	}
+	
+	public float getImageHeight() {
+		return imageHeight;
+	}
+	
+	public void setImageHeight(float imageHeight) {
+		this.imageHeight = imageHeight;
+	}
+	
+	public float getImageWidth() {
+		return imageWidth;
+	}
+	
+	public void setImageWidth(float imageWidth) {
+		this.imageWidth = imageWidth;
 	}
 	
 	public float getTextX() {
@@ -132,8 +150,8 @@ public class SignatureFieldDimensionAndPosition {
 	}
 	
 	public void marginShift(float margin) {
-		this.textX += CommonDrawerUtils.toDpiAxisPoint(margin / CommonDrawerUtils.getScaleFactor(getxDpi()), getxDpi());
-		this.textY -= CommonDrawerUtils.toDpiAxisPoint(margin / CommonDrawerUtils.getScaleFactor(getyDpi()), getyDpi()); // because PDF starts to count from bottom
+		this.textX += CommonDrawerUtils.toDpiAxisPoint(margin / CommonDrawerUtils.getTextScaleFactor(getxDpi()), getxDpi());
+		this.textY -= CommonDrawerUtils.toDpiAxisPoint(margin / CommonDrawerUtils.getTextScaleFactor(getyDpi()), getyDpi()); // because PDF starts to count from bottom
 	}
 	
 }

@@ -3,26 +3,27 @@ package eu.europa.esig.dss.validation.executor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.util.List;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
-import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+import eu.europa.esig.dss.detailedreport.DetailedReport;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.policy.jaxb.Algo;
+import eu.europa.esig.dss.policy.jaxb.AlgoExpirationDate;
+import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
+import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
+import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.jaxb.ListAlgo;
+import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.process.MessageTag;
-import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.reports.SimpleReport;
-import eu.europa.esig.dss.x509.TimestampType;
-import eu.europa.esig.jaxb.policy.Algo;
-import eu.europa.esig.jaxb.policy.AlgoExpirationDate;
-import eu.europa.esig.jaxb.policy.ConstraintsParameters;
-import eu.europa.esig.jaxb.policy.CryptographicConstraint;
-import eu.europa.esig.jaxb.policy.Level;
-import eu.europa.esig.jaxb.policy.ListAlgo;
 
 public class CustomCryptographicConstraintsTest extends AbstractCryptographicConstraintsTest {
 
@@ -31,10 +32,10 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 	 * Validation date is set on 2018-02-06T09:39:33
 	 */
 	@Test
-	public void defaultOnlyCryptographicConstrantTest() throws Exception {
+	public void defaultOnlyCryptographicConstraintTest() throws Exception {
 		
 		initializeExecutor("src/test/resources/universign.xml");
-		validationPolicyFile = "src/test/resources/policy/default-only-constraint-policy.xml";
+		validationPolicyFile = new File("src/test/resources/policy/default-only-constraint-policy.xml");
 		
 		Indication result = null;
 		DetailedReport detailedReport = null;
@@ -113,10 +114,10 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 	}
 
 	@Test
-	public void overrideDefaultCryptographicConstrantTest() throws Exception {
+	public void overrideDefaultCryptographicConstraintTest() throws Exception {
 		
 		initializeExecutor("src/test/resources/universign.xml");
-		validationPolicyFile = "src/test/resources/policy/all-constraint-specified-policy.xml";
+		validationPolicyFile = new File("src/test/resources/policy/all-constraint-specified-policy.xml");
 		
 		Indication result = null;
 		DetailedReport detailedReport = null;
@@ -210,12 +211,37 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_2, true);
 		
 	}
+	
+	@Test
+	public void noCryptoPolicyTest() throws Exception {
+		initializeExecutor("src/test/resources/universign.xml");
+		validationPolicyFile = new File("src/test/resources/policy/no-crypto-constraint-policy.xml");
+		
+		ConstraintsParameters constraintsParameters = loadConstraintsParameters();
+		setValidationPolicy(constraintsParameters);
+		SimpleReport simpleReport = createSimpleReport();
+		Indication result = simpleReport.getIndication(simpleReport.getFirstSignatureId());
+		assertEquals(Indication.TOTAL_PASSED, result);
+	}
+	
+	@Test
+	public void failTimestampDelayTest() throws Exception {
+		initializeExecutor("src/test/resources/universign.xml");
+		validationPolicyFile = new File("src/test/resources/policy/no-crypto-constraint-policy.xml");
+		
+		ConstraintsParameters constraintsParameters = loadConstraintsParameters();
+		constraintsParameters.getTimestamp().getTimestampDelay().setLevel(Level.FAIL);
+		setValidationPolicy(constraintsParameters);
+		SimpleReport simpleReport = createSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+	}
 
 	@Test
 	public void pastSignatureValidationTest() throws Exception {
 		
 		initializeExecutor("src/test/resources/diag_data_pastSigValidation.xml");
-		validationPolicyFile = "src/test/resources/policy/all-constraint-specified-policy.xml";
+		validationPolicyFile = new File("src/test/resources/policy/all-constraint-specified-policy.xml");
 		
 		Indication result = null;
 		DetailedReport detailedReport = null;
@@ -229,7 +255,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_SHA256, "2019-01-01");
 		assertEquals(Indication.TOTAL_PASSED, result);
 		detailedReport = createDetailedReport();
-		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, true);
+		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 		
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_SHA256, "2018-01-01");
@@ -253,7 +279,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA2048, "2019-01-01");
 		assertEquals(Indication.TOTAL_PASSED, result);
 		detailedReport = createDetailedReport();
-		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, true);
+		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 		
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA2048, "2018-01-01");
@@ -265,15 +291,15 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA2048, "2019-01-01");
 		assertEquals(Indication.TOTAL_PASSED, result);
 		detailedReport = createDetailedReport();
-		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, true);
+		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 		
 	}
 	
 	@Test
 	public void signatureWithContentTimestampTest() throws Exception {
-		DiagnosticData diagnosticData = initializeExecutor("src/test/resources/diag_data_pastSigValidation.xml");
-		validationPolicyFile = "src/test/resources/policy/all-constraint-specified-policy.xml";
+		XmlDiagnosticData diagnosticData = initializeExecutor("src/test/resources/diag_data_pastSigValidation.xml");
+		validationPolicyFile = new File("src/test/resources/policy/all-constraint-specified-policy.xml");
 		
 		Indication result = null;
 		DetailedReport detailedReport = null;
@@ -284,7 +310,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicValidationIndication(detailedReport.getFirstSignatureId()));
 		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, detailedReport.getBasicValidationSubIndication(detailedReport.getFirstSignatureId()));
 		
-		diagnosticData.getSignatures().get(0).getTimestamps().get(0).setType(TimestampType.CONTENT_TIMESTAMP.name());
+		diagnosticData.getUsedTimestamps().get(0).setType(TimestampType.CONTENT_TIMESTAMP);
 
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_SHA256, "2020-01-01");
 		assertEquals(Indication.TOTAL_PASSED, result);

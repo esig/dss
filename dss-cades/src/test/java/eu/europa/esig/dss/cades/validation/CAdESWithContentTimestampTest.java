@@ -39,13 +39,13 @@ import org.bouncycastle.asn1.cms.SignerInfo;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.junit.Test;
 
-import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.x509.TimestampType;
 
 public class CAdESWithContentTimestampTest {
 
@@ -89,8 +89,8 @@ public class CAdESWithContentTimestampTest {
 
 		boolean foundContentTimestamp = false;
 		for (String timestampId : timestampIdList) {
-			String timestampType = diagnosticData.getTimestampType(timestampId);
-			if (TimestampType.CONTENT_TIMESTAMP.name().equals(timestampType)) {
+			TimestampType timestampType = diagnosticData.getTimestampType(timestampId);
+			if (TimestampType.CONTENT_TIMESTAMP.equals(timestampType)) {
 				foundContentTimestamp = true;
 			}
 		}

@@ -172,7 +172,7 @@
 		</SignedAttributes>
 	</CounterSignatureConstraints>
 	<Timestamp>
-		<TimestampDelay Level="FAIL" Unit="DAYS" Value="0" />
+		<TimestampDelay Level="IGNORE" Unit="DAYS" Value="0" />
 		<RevocationTimeAgainstBestSignatureTime	Level="FAIL" />
 		<BestSignatureTimeBeforeIssuanceDateOfSigningCertificate Level="FAIL" />
 		<Coherence Level="WARN" />
@@ -207,7 +207,7 @@
 		</BasicSignatureConstraints>
 	</Timestamp>
 	<Revocation>
-		<RevocationFreshness Level="FAIL" Unit="DAYS" Value="0" />
+		<RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
 		<BasicSignatureConstraints>
 			<ReferenceDataExistence Level="FAIL" />
 			<ReferenceDataIntact Level="FAIL" />

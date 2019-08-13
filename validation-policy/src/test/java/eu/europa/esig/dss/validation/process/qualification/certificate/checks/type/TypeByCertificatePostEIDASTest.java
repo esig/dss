@@ -28,16 +28,16 @@ import java.util.List;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.QCStatementOids;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.enumerations.QCStatement;
 import eu.europa.esig.dss.validation.process.qualification.certificate.Type;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 
 public class TypeByCertificatePostEIDASTest {
 
 	@Test
 	public void esig() {
 
-		CertificateWrapper cert = new MockCertificateWrapper(Arrays.asList(QCStatementOids.QCT_ESIGN.getOid()));
+		CertificateWrapper cert = new MockCertificateWrapper(Arrays.asList(QCStatement.QCT_ESIGN.getOid()));
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
 		assertEquals(Type.ESIGN, strategy.getType());
@@ -55,7 +55,7 @@ public class TypeByCertificatePostEIDASTest {
 	@Test
 	public void eseal() {
 
-		CertificateWrapper cert = new MockCertificateWrapper(Arrays.asList(QCStatementOids.QCT_ESEAL.getOid()));
+		CertificateWrapper cert = new MockCertificateWrapper(Arrays.asList(QCStatement.QCT_ESEAL.getOid()));
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
 		assertEquals(Type.ESEAL, strategy.getType());
@@ -63,7 +63,7 @@ public class TypeByCertificatePostEIDASTest {
 
 	@Test
 	public void wsa() {
-		CertificateWrapper cert = new MockCertificateWrapper(Arrays.asList(QCStatementOids.QCT_WEB.getOid()));
+		CertificateWrapper cert = new MockCertificateWrapper(Arrays.asList(QCStatement.QCT_WEB.getOid()));
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
 		assertEquals(Type.WSA, strategy.getType());
@@ -73,7 +73,7 @@ public class TypeByCertificatePostEIDASTest {
 	@Test
 	public void multiple() {
 		CertificateWrapper cert = new MockCertificateWrapper(
-				Arrays.asList(QCStatementOids.QCT_ESIGN.getOid(), QCStatementOids.QCT_ESEAL.getOid()));
+				Arrays.asList(QCStatement.QCT_ESIGN.getOid(), QCStatement.QCT_ESEAL.getOid()));
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
 		assertEquals(Type.UNKNOWN, strategy.getType());

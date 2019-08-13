@@ -29,11 +29,11 @@ import java.util.Map;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.client.tsp.OnlineTSPSource;
-import eu.europa.esig.dss.x509.tsp.CompositeTSPSource;
-import eu.europa.esig.dss.x509.tsp.TSPSource;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.service.tsp.OnlineTSPSource;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.tsp.CompositeTSPSource;
+import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 
 /**
  * How to configure a Composite TSP Source.

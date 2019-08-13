@@ -25,9 +25,9 @@ import java.util.List;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.CertificateReorderer;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.x509.CertificateSource;
-import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
  * This class is used to retrieve the used certificates for a signature from the user parameters.
@@ -57,7 +57,7 @@ public class BaselineBCertificateSelector extends CertificateReorderer {
 
 			List<CertificateToken> result = new LinkedList<CertificateToken>();
 			for (CertificateToken certificateToken : orderedCertificates) {
-				if (!trustedCertSource.get(certificateToken.getSubjectX500Principal()).isEmpty()) {
+				if (trustedCertSource.isTrusted(certificateToken)) {
 					// trust anchor and its parents are skipped
 					break;
 				}

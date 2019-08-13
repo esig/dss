@@ -24,13 +24,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationCertificateQualification;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.enumerations.CertificateQualification;
+import eu.europa.esig.dss.enumerations.ValidationTime;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateQualification;
-import eu.europa.esig.dss.validation.ValidationTime;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.CaQcCheck;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.CertificateIssuedByConsistentTrustServiceCheck;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.CertificateTypeCoverageCheck;
@@ -49,31 +51,29 @@ import eu.europa.esig.dss.validation.process.qualification.certificate.checks.ty
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.type.TypeStrategyFactory;
 import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServiceFilter;
 import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServicesFilterFactory;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
 public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificateQualification> {
 
 	private final ValidationTime validationTime;
 	private final Date date;
 	private final CertificateWrapper signingCertificate;
-	private final List<CertificateWrapper> usedCertificates;
 	private final List<TrustedServiceWrapper> caqcServices;
 
 	private CertificateQualification certificateQualification = CertificateQualification.NA;
 
-	public CertQualificationAtTimeBlock(ValidationTime validationTime, CertificateWrapper signingCertificate, List<CertificateWrapper> usedCertificates,
+	public CertQualificationAtTimeBlock(ValidationTime validationTime, CertificateWrapper signingCertificate,
 			List<TrustedServiceWrapper> caqcServices) {
-		this(validationTime, null, signingCertificate, usedCertificates, caqcServices);
+		this(validationTime, null, signingCertificate, caqcServices);
 	}
 
 	public CertQualificationAtTimeBlock(ValidationTime validationTime, Date date, CertificateWrapper signingCertificate,
-			List<CertificateWrapper> usedCertificates, List<TrustedServiceWrapper> caqcServices) {
+			List<TrustedServiceWrapper> caqcServices) {
 		super(new XmlValidationCertificateQualification());
+		result.setTitle(ValidationProcessDefinition.CERT_QUALIFICATION.getTitle() + " @ " + validationTime);
+		result.setId(signingCertificate.getId());
 
 		this.validationTime = validationTime;
 		this.signingCertificate = signingCertificate;
-		this.usedCertificates = usedCertificates;
 		this.caqcServices = new ArrayList<TrustedServiceWrapper>(caqcServices);
 
 		switch (validationTime) {
@@ -85,7 +85,7 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 			this.date = date;
 			break;
 		default:
-			throw new DSSException("Unknown qualification time : " + validationTime);
+			throw new IllegalArgumentException("Unknown qualification time : " + validationTime);
 		}
 	}
 
@@ -189,7 +189,7 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> isTrustedCertificateMatchTrustService(TrustedServiceWrapper selectedTrustService) {
-		return new TrustedCertificateMatchTrustServiceCheck(result, usedCertificates, selectedTrustService, getWarnLevelConstraint());
+		return new TrustedCertificateMatchTrustServiceCheck(result, selectedTrustService, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> isQualified(QualifiedStatus qualifiedStatus) {

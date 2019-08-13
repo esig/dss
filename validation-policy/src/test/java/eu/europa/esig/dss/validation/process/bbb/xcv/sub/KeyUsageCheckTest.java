@@ -27,25 +27,26 @@ import java.util.List;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
+import eu.europa.esig.dss.enumerations.KeyUsageBit;
+import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.KeyUsageCheck;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
-import eu.europa.esig.jaxb.policy.Level;
-import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 
 public class KeyUsageCheckTest {
 
 	@Test
 	public void keyUsageCheck() throws Exception {
-		List<String> keyUsageBits = new ArrayList<String>();
-		keyUsageBits.add("Valid_Key");
+		List<KeyUsageBit> keyUsageBits = new ArrayList<KeyUsageBit>();
+		keyUsageBits.add(KeyUsageBit.CRL_SIGN);
 
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
 		constraint.setLevel(Level.FAIL);
-		constraint.getId().add(keyUsageBits.get(0));
+		constraint.getId().add(keyUsageBits.get(0).getValue());
 
 		XmlCertificate xc = new XmlCertificate();
 		xc.setKeyUsageBits(keyUsageBits);
@@ -61,8 +62,8 @@ public class KeyUsageCheckTest {
 
 	@Test
 	public void failedKeyUsageCheck() throws Exception {
-		List<String> keyUsageBits = new ArrayList<String>();
-		keyUsageBits.add("Valid_Key");
+		List<KeyUsageBit> keyUsageBits = new ArrayList<KeyUsageBit>();
+		keyUsageBits.add(KeyUsageBit.CRL_SIGN);
 
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
 		constraint.setLevel(Level.FAIL);

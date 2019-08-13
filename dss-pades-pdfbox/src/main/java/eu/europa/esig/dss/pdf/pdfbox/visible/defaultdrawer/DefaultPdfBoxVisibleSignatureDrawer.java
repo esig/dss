@@ -27,6 +27,8 @@ import org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleS
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleSignDesigner;
 
 import eu.europa.esig.dss.pdf.pdfbox.visible.AbstractPdfBoxSignatureDrawer;
+import eu.europa.esig.dss.pdf.pdfbox.visible.ImageRotationUtils;
+import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
 
 public class DefaultPdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureDrawer {
@@ -43,16 +45,31 @@ public class DefaultPdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignature
 
 		visibleSig.xAxis(signatureImageAndPosition.getX());
 		visibleSig.yAxis(signatureImageAndPosition.getY());
-
-		if ((parameters.getWidth() != 0) && (parameters.getHeight() != 0)) {
-			visibleSig.width(parameters.getWidth());
-			visibleSig.height(parameters.getHeight());
+		
+		float width = parameters.getWidth();
+		float height = parameters.getHeight();
+		if (ImageRotationUtils.isSwapOfDimensionsRequired(parameters.getRotation())) {
+			width = parameters.getHeight();
+			height = parameters.getWidth();
+		}
+		
+		if (width != 0) {
+			visibleSig.width(width);
+		} else if (parameters.getTextParameters() != null) {
+			visibleSig.width(CommonDrawerUtils.toDpiAxisPoint((float)visibleSig.getWidth(), CommonDrawerUtils.getDpi(parameters.getDpi())));
 		} else {
 			visibleSig.width(ires.toXPoint(visibleSig.getWidth()));
+		}
+		if (height != 0) {
+			visibleSig.height(height);
+		} else if (parameters.getTextParameters() != null) {
+			visibleSig.height(CommonDrawerUtils.toDpiAxisPoint((float)visibleSig.getHeight(), CommonDrawerUtils.getDpi(parameters.getDpi())));
+		} else {
 			visibleSig.height(ires.toYPoint(visibleSig.getHeight()));
 		}
-		// zoom image only when it does not have text parameters, in other case does zoom inside ImageUtils.create() method
-		if (parameters.getTextParameters() == null) {
+
+		// zoom image only when it does not have text parameters, in other case does zoom inside DefaultDrawerImageUtils.create() method
+		if (parameters.getImage() == null || parameters.getTextParameters() == null) {
 			visibleSig.zoom(((float) parameters.getZoom()) - 100); // pdfbox is 0 based
 		}
 		

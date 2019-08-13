@@ -5,9 +5,14 @@
 		<artifactId>sd-dss</artifactId>
 		<version>5.5-SNAPSHOT</version>
 	</parent>
+	
 	<artifactId>dss-utils-apache-commons</artifactId>
 	<name>DSS Utils implementation with Apache Commons</name>
 	<description>DSS Utils with Apache Commons : utility methods for String, Collection,...</description>
+	
+	<properties>
+		<module-name>jpms_dss_utils_apache_commons</module-name>
+	</properties>
 
 	<dependencies>
 		<dependency>

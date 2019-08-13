@@ -22,6 +22,8 @@ package eu.europa.esig.dss.tsl;
 
 import java.util.List;
 
+import eu.europa.esig.dss.spi.tsl.Condition;
+
 /**
  * This class is a DTO representation for qualifier and conditions
  *

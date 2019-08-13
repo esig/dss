@@ -23,14 +23,20 @@ package eu.europa.esig.dss.validation.process.vpfswatsp.checks.pcv;
 import java.util.Date;
 import java.util.List;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlPCV;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlVTS;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlPCV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlVTS;
+import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.TokenProxy;
+import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.policy.SubContext;
+import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.policy.Context;
-import eu.europa.esig.dss.validation.policy.SubContext;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy;
+import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
@@ -39,12 +45,6 @@ import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.pcv.checks.ProspectiveCertificateChainCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.pcv.checks.ValidationTimeSlidingCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.ValidationTimeSliding;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.TokenProxy;
-import eu.europa.esig.jaxb.policy.CryptographicConstraint;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class PastCertificateValidation extends Chain<XmlPCV> {
 
@@ -61,6 +61,7 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 	public PastCertificateValidation(TokenProxy token, DiagnosticData diagnosticData, XmlBasicBuildingBlocks bbb, POEExtraction poe, Date currentTime,
 			ValidationPolicy policy, Context context) {
 		super(new XmlPCV());
+		result.setTitle(BasicBuildingBlockDefinition.PAST_CERTIFICATE_VALIDATION.getTitle());
 
 		this.token = token;
 		this.diagnosticData = diagnosticData;
@@ -75,7 +76,7 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 	@Override
 	protected void initChain() {
 
-		String signingCertificateId = token.getSigningCertificateId();
+		CertificateWrapper signingCertificate = token.getSigningCertificate();
 
 		/*
 		 * 9.2.1.4 Processing The following steps shall be performed: 1) Build a
@@ -114,16 +115,15 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 		Date intervalNotBefore = null;
 		Date intervalNotAfter = null;
 
-		List<XmlChainItem> certificateChain = token.getCertificateChain();
-		for (XmlChainItem certChainItem : certificateChain) {
-			CertificateWrapper certificate = diagnosticData.getUsedCertificateById(certChainItem.getId());
+		List<CertificateWrapper> certificateChain = token.getCertificateChain();
+		for (CertificateWrapper certificate : certificateChain) {
 			if (certificate.isTrusted()) {
 				// There is not need to check for the trusted certificate
-				continue;
+				break;
 			}
 
 			SubContext subContext = SubContext.CA_CERTIFICATE;
-			if (Utils.areStringsEqual(signingCertificateId, certChainItem.getId())) {
+			if (Utils.areStringsEqual(signingCertificate.getId(), certificate.getId())) {
 				subContext = SubContext.SIGNING_CERT;
 			}
 
@@ -135,7 +135,7 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 			}
 
 			if (SubContext.CA_CERTIFICATE.equals(subContext)) {
-				RevocationWrapper latestRevocation = certificate.getLatestRevocationData();
+				CertificateRevocationWrapper latestRevocation = diagnosticData.getLatestRevocationDataForCertificate(certificate);
 				if (latestRevocation != null && latestRevocation.isRevoked()) {
 					Date caRevocationDate = latestRevocation.getRevocationDate();
 					if (caRevocationDate != null && intervalNotAfter.after(caRevocationDate)) {
@@ -168,15 +168,14 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 		 */
 		if (controlTime != null) {
 			certificateChain = token.getCertificateChain();
-			for (XmlChainItem certChainItem : certificateChain) {
-				CertificateWrapper certificate = diagnosticData.getUsedCertificateById(certChainItem.getId());
+			for (CertificateWrapper certificate : certificateChain) {
 				if (certificate.isTrusted()) {
 					// There is not need to check for the trusted certificate
-					continue;
+					break;
 				}
 
 				SubContext subContext = SubContext.CA_CERTIFICATE;
-				if (Utils.areStringsEqual(signingCertificateId, certChainItem.getId())) {
+				if (Utils.areStringsEqual(signingCertificate.getId(), certificate.getId())) {
 					subContext = SubContext.SIGNING_CERT;
 				}
 
@@ -204,7 +203,7 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 	}
 
 	private ChainItem<XmlPCV> validationTimeSliding() {
-		ValidationTimeSliding validationTimeSliding = new ValidationTimeSliding(diagnosticData, token, currentTime, context, poe, policy);
+		ValidationTimeSliding validationTimeSliding = new ValidationTimeSliding(token, currentTime, context, poe, policy);
 		XmlVTS vts = validationTimeSliding.execute();
 		bbb.setVTS(vts);
 		controlTime = vts.getControlTime();

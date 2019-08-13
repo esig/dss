@@ -36,9 +36,7 @@ $ curl 'http://localhost:8080/services/rest/signature/one-document/signDocument'
       "trustAnchorBPPolicy" : true,
       "signingDate" : 1542794106712,
       "claimedSignerRoles" : null,
-      "signaturePolicy" : null,
-      "commitmentTypeIndications" : null,
-      "signerLocation" : null
+      "commitmentTypeIndications" : null
     }
   },
   "signatureValue" : {
@@ -48,8 +46,7 @@ $ curl 'http://localhost:8080/services/rest/signature/one-document/signDocument'
   "toSignDocument" : {
     "bytes" : "kcDHOZjwZhVfuDhuhCeCERRmYpTH4Jj4RmfVVi31Q9g=",
     "digestAlgorithm" : "SHA256",
-    "name" : "RemoteDocument",
-    "mimeType" : null
+    "name" : "RemoteDocument"
   }
 }'
 ----

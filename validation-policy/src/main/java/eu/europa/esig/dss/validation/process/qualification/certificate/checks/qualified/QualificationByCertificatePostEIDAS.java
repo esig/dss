@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks.qualified;
 
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.validation.process.QCStatementPolicyIdentifiers;
 import eu.europa.esig.dss.validation.process.qualification.certificate.QualifiedStatus;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 
 class QualificationByCertificatePostEIDAS implements QualificationStrategy {
 

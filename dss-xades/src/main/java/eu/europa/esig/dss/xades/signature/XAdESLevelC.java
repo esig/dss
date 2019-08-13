@@ -26,27 +26,24 @@ import java.util.Set;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.bouncycastle.asn1.ASN1OctetString;
-import org.bouncycastle.asn1.ASN1Primitive;
-import org.bouncycastle.asn1.DERTaggedObject;
-import org.bouncycastle.asn1.ocsp.ResponderID;
-import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.RespID;
 import org.w3c.dom.Element;
 
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.XAdESNamespaces;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSRevocationUtils;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.ResponderId;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ValidationContext;
-import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.RevocationToken;
-import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
 
 /**
  * Contains XAdES-C profile aspects
@@ -157,7 +154,7 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 	 * 
 	 * @param completeRevocationRefsDom
 	 * @param processedRevocationTokens
-	 * @throws eu.europa.esig.dss.DSSException
+	 * @throws eu.europa.esig.dss.model.DSSException
 	 */
 	private void incorporateOCSPRefs(final Element completeRevocationRefsDom, final Set<RevocationToken> processedRevocationTokens) throws DSSException {
 
@@ -192,20 +189,14 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 					final Element ocspIdentifierDom = DomUtils.addElement(documentDom, ocspRefDom, XAdESNamespaces.XAdES, XADES_OCSP_IDENTIFIER);
 					final Element responderIDDom = DomUtils.addElement(documentDom, ocspIdentifierDom, XAdESNamespaces.XAdES, XADES_OCSP_RESPONDER_ID);
 
-					final RespID responderId = basicOcspResp.getResponderId();
-					final ResponderID responderIdAsASN1Object = responderId.toASN1Primitive();
-					final DERTaggedObject derTaggedObject = (DERTaggedObject) responderIdAsASN1Object.toASN1Primitive();
-					if (2 == derTaggedObject.getTagNo()) {
-
-						final ASN1OctetString keyHashOctetString = (ASN1OctetString) derTaggedObject.getObject();
-						final byte[] keyHashOctetStringBytes = keyHashOctetString.getOctets();
-						final String base65EncodedKeyHashOctetStringBytes = Utils.toBase64(keyHashOctetStringBytes);
-						DomUtils.addTextElement(documentDom, responderIDDom, XAdESNamespaces.XAdES, XADES_BY_KEY, base65EncodedKeyHashOctetStringBytes);
+					final RespID respID = basicOcspResp.getResponderId();
+					final ResponderId responderId = DSSRevocationUtils.getDSSResponderId(respID);
+					
+					if (Utils.isStringNotEmpty(responderId.getName())) {
+						DomUtils.addTextElement(documentDom, responderIDDom, XAdESNamespaces.XAdES, XADES_BY_NAME, responderId.getName());
 					} else {
-
-						final ASN1Primitive derObject = derTaggedObject.getObject();
-						final X500Name name = X500Name.getInstance(derObject);
-						DomUtils.addTextElement(documentDom, responderIDDom, XAdESNamespaces.XAdES, XADES_BY_NAME, name.toString());
+						final String base64EncodedKeyHashOctetStringBytes = Utils.toBase64(responderId.getKey());
+						DomUtils.addTextElement(documentDom, responderIDDom, XAdESNamespaces.XAdES, XADES_BY_KEY, base64EncodedKeyHashOctetStringBytes);
 					}
 
 					final Date producedAt = basicOcspResp.getProducedAt();

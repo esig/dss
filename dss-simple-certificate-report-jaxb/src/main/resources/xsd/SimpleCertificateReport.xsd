@@ -5,14 +5,15 @@
 	xmlns="http://dss.esig.europa.eu/validation/simple-certificate-report" 
 	xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-	<xs:element name="SimpleCertificateReport">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="Chain" type="Chain" maxOccurs="1" minOccurs="0" />
-			</xs:sequence>
-			<xs:attribute name="ValidationTime" type="xs:dateTime" />
-		</xs:complexType>
-	</xs:element>
+	<!-- Root element -->
+	<xs:element name="SimpleCertificateReport" type="SimpleCertificateReport" />
+
+	<xs:complexType name="SimpleCertificateReport">
+		<xs:sequence>
+			<xs:element name="Chain" type="Chain" maxOccurs="1" minOccurs="0" />
+		</xs:sequence>
+		<xs:attribute name="ValidationTime" type="xs:dateTime" />
+	</xs:complexType>
 		
 	<xs:complexType name="Chain">
 		<xs:sequence>
@@ -24,18 +25,48 @@
 		<xs:sequence>
 			<xs:element name="id" type="xs:string" />
 			<xs:element name="subject" type="Subject" />
-			<xs:element name="issuerId" type="xs:string" />
+			<xs:element name="issuerId" type="xs:string" minOccurs="0" />
 			<xs:element name="notBefore" type="xs:dateTime" />
 			<xs:element name="notAfter" type="xs:dateTime" />
 			<xs:element name="keyUsages" type="KeyUsages" minOccurs="0" />	
-			<xs:element name="extendedKeyUsages" type="KeyUsages" minOccurs="0" />			
-			<xs:element name="ocspUrls" type="ListUrls" minOccurs="0" />
-			<xs:element name="crlUrls" type="ListUrls" minOccurs="0" />
-			<xs:element name="aiaUrls" type="ListUrls" minOccurs="0" />
-			<xs:element name="cpsUrls" type="ListUrls" minOccurs="0" />
-			<xs:element name="pdsUrls" type="ListUrls" minOccurs="0" />
-			<xs:element name="qualificationAtIssuance" type="CertificateQualification" />
-			<xs:element name="qualificationAtValidation" type="CertificateQualification" />
+			<xs:element name="extendedKeyUsages" type="ExtendedKeyUsages" minOccurs="0" />			
+			<xs:element name="ocspUrls" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="ocspUrl" type="xs:string" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="crlUrls" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="crlUrl" type="xs:string" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="aiaUrls" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="aiaUrl" type="xs:string" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="cpsUrls" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="cpsUrl" type="xs:string" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="pdsUrls" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="pdsUrl" type="xs:string" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="qualificationAtIssuance" type="CertificateQualification" minOccurs="0" />
+			<xs:element name="qualificationAtValidation" type="CertificateQualification" minOccurs="0" />
 			<xs:element name="revocation" type="Revocation" minOccurs="0" />
 			<xs:element name="trustAnchors" type="TrustAnchors" minOccurs="0" />
 			<xs:element name="Indication" type="Indication" />
@@ -60,23 +91,53 @@
 	
 	<xs:complexType name="KeyUsages">
 		<xs:sequence>
-			<xs:element name="keyUsage" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
+			<xs:element name="keyUsage" type="KeyUsage" minOccurs="1" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 	
-	<xs:complexType name="ListUrls">
+	<xs:complexType name="ExtendedKeyUsages">
 		<xs:sequence>
-			<xs:element name="url" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
+			<xs:element name="extendedKeyUsage" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
+	
+	<xs:simpleType name="KeyUsage" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="digitalSignature" />
+			<xs:enumeration value="nonRepudiation" />
+			<xs:enumeration value="keyEncipherment" />
+			<xs:enumeration value="dataEncipherment" />
+			<xs:enumeration value="keyAgreement" />
+			<xs:enumeration value="keyCertSign" />
+			<xs:enumeration value="crlSign" />
+			<xs:enumeration value="encipherOnly" />
+			<xs:enumeration value="decipherOnly" />
+		</xs:restriction>
+	</xs:simpleType>
 
 	<xs:complexType name="Revocation">
 		<xs:sequence>
 			<xs:element name="productionDate" type="xs:dateTime" minOccurs="0" />
 			<xs:element name="revocationDate" type="xs:dateTime" minOccurs="0" />
-			<xs:element name="revocationReason" type="xs:string" minOccurs="0" />		
+			<xs:element name="revocationReason" type="RevocationReason" minOccurs="0" />		
 		</xs:sequence>
 	</xs:complexType>
+	
+	<xs:simpleType name="RevocationReason" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="unspecified" />
+			<xs:enumeration value="keyCompromise" />
+			<xs:enumeration value="cACompromise" />
+			<xs:enumeration value="affiliationChanged" />
+			<xs:enumeration value="superseded" />
+			<xs:enumeration value="cessationOfOperation" />
+			<xs:enumeration value="certificateHold" />
+			<xs:enumeration value="unknow" />
+			<xs:enumeration value="removeFromCRL" />
+			<xs:enumeration value="privilegeWithdrawn" />
+			<xs:enumeration value="aACompromise" />
+		</xs:restriction>
+	</xs:simpleType>
 	
 	<xs:complexType name="TrustAnchors">
 		<xs:sequence>

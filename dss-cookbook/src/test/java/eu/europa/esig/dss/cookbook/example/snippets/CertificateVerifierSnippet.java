@@ -1,11 +1,11 @@
 package eu.europa.esig.dss.cookbook.example.snippets;
 
-import eu.europa.esig.dss.client.http.DataLoader;
+import eu.europa.esig.dss.spi.client.http.DataLoader;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.x509.CertificateSource;
-import eu.europa.esig.dss.x509.revocation.crl.CRLSource;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPSource;
 
 public class CertificateVerifierSnippet {
 

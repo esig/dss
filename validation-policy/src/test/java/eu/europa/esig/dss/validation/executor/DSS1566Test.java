@@ -3,30 +3,29 @@ package eu.europa.esig.dss.validation.executor;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.FileInputStream;
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.validation.policy.XmlUtils;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
-import eu.europa.esig.dss.validation.reports.SimpleCertificateReport;
 
 public class DSS1566Test extends AbstractValidationExecutorTest {
 	
 	@Test
 	public void test() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/dss1566-diagnostic.xml");
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/dss1566-diagnostic.xml"));
 
-		CertificateProcessExecutor executor = new CertificateProcessExecutor();
+		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
 		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setDiagnosticData(diagnosticData);
-		executor.setCertificateId("D04D16660A6BA5FDD2C3A519DAD8877B64D1D2C56BF91316208A0AE2FB76D368");
+		executor.setCertificateId("C-D04D16660A6BA5FDD2C3A519DAD8877B64D1D2C56BF91316208A0AE2FB76D368");
 		executor.setCurrentTime(new Date());
 		
 		CertificateReports reports = executor.execute();

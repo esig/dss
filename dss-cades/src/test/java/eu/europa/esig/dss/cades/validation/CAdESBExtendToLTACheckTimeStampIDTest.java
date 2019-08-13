@@ -27,21 +27,19 @@ import java.util.List;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
-import eu.europa.esig.dss.SignatureValue;
-import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedObject;
-import eu.europa.esig.dss.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 
 public class CAdESBExtendToLTACheckTimeStampIDTest extends PKIFactoryAccess {
 
@@ -75,10 +73,10 @@ public class CAdESBExtendToLTACheckTimeStampIDTest extends PKIFactoryAccess {
 		DiagnosticData diagnostic = report.getDiagnosticData();
 		String signatureId = diagnostic.getFirstSignatureId();
 		for (TimestampWrapper wrapper : diagnostic.getTimestampList(signatureId)) {
-			List<XmlTimestampedObject> timestampedObjects = wrapper.getTimestampedObjects();
+			List<String> timestampedSignatureIds = wrapper.getTimestampedSignatureIds();
 			boolean found = false;
-			for (XmlTimestampedObject xmlTimestampedObject : timestampedObjects) {
-				if (TimestampedObjectType.SIGNATURE == xmlTimestampedObject.getCategory() && signatureId.equals(xmlTimestampedObject.getId())) {
+			for (String id : timestampedSignatureIds) {
+				if (signatureId.equals(id)) {
 					found = true;
 				}
 			}

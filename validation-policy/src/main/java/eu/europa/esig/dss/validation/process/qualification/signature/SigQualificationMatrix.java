@@ -20,10 +20,9 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.signature;
 
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.validation.CertificateQualification;
-import eu.europa.esig.dss.validation.SignatureQualification;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
+import eu.europa.esig.dss.enumerations.CertificateQualification;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SignatureQualification;
 
 public final class SigQualificationMatrix {
 
@@ -107,7 +106,7 @@ public final class SigQualificationMatrix {
 		case INDETERMINATE:
 			return 2;
 		default:
-			throw new DSSException("Unsupported indication " + indication);
+			throw new IllegalStateException("Unsupported indication " + indication);
 		}
 	}
 
@@ -132,7 +131,7 @@ public final class SigQualificationMatrix {
 		case NA:
 			return NA;
 		default:
-			throw new DSSException("Unsupported certificate qualification " + certQualification);
+			throw new IllegalStateException("Unsupported certificate qualification " + certQualification);
 		}
 	}
 

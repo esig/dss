@@ -33,9 +33,7 @@ $ echo '{
       "trustAnchorBPPolicy" : true,
       "signingDate" : 1542794106712,
       "claimedSignerRoles" : null,
-      "signaturePolicy" : null,
-      "commitmentTypeIndications" : null,
-      "signerLocation" : null
+      "commitmentTypeIndications" : null
     }
   },
   "signatureValue" : {
@@ -45,8 +43,7 @@ $ echo '{
   "toSignDocument" : {
     "bytes" : "kcDHOZjwZhVfuDhuhCeCERRmYpTH4Jj4RmfVVi31Q9g=",
     "digestAlgorithm" : "SHA256",
-    "name" : "RemoteDocument",
-    "mimeType" : null
+    "name" : "RemoteDocument"
   }
 }' | http POST 'http://localhost:8080/services/rest/signature/one-document/signDocument' \
     'Accept:application/json, application/javascript, text/javascript, text/json' \

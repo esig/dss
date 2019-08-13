@@ -26,7 +26,7 @@ import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.DefaultSignatureAlgorithmIdentifierFinder;
 
-import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.spi.DSSUtils;
 
 /**
  * ContentSigner using a provided pre-computed signature

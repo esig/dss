@@ -20,13 +20,13 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.signature.checks;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationSignatureQualification;
-import eu.europa.esig.dss.validation.CertificateQualification;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationSignatureQualification;
+import eu.europa.esig.dss.enumerations.CertificateQualification;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class ForeSignatureAtSigningTimeCheck extends ChainItem<XmlValidationSignatureQualification> {
 

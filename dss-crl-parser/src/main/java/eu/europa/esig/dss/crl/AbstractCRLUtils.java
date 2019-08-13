@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.crl;
 
-import java.util.Collection;
-
 import org.bouncycastle.asn1.ASN1GeneralizedTime;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Primitive;
@@ -31,7 +29,6 @@ import org.bouncycastle.asn1.x509.DistributionPointName;
 import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.IssuingDistributionPoint;
-import org.bouncycastle.asn1.x509.ReasonFlags;
 import org.bouncycastle.asn1.x509.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,24 +52,19 @@ public abstract class AbstractCRLUtils {
 			}
 		}
 	}
-
-	protected void checkCriticalExtensions(CRLValidity validity, Collection<String> criticalExtensionsOid, byte[] issuingDistributionPointBinary) {
-		if (criticalExtensionsOid == null || criticalExtensionsOid.isEmpty()) {
-			validity.setUnknownCriticalExtension(false);
-		} else {
+	
+	protected void extractIssuingDistributionPointBinary(CRLValidity validity, byte[] issuingDistributionPointBinary) {
+		if (issuingDistributionPointBinary != null) {
 			IssuingDistributionPoint issuingDistributionPoint = IssuingDistributionPoint
 					.getInstance(ASN1OctetString.getInstance(issuingDistributionPointBinary).getOctets());
-			final boolean onlyAttributeCerts = issuingDistributionPoint.onlyContainsAttributeCerts();
-			final boolean onlyCaCerts = issuingDistributionPoint.onlyContainsCACerts();
-			final boolean onlyUserCerts = issuingDistributionPoint.onlyContainsUserCerts();
-			final boolean indirectCrl = issuingDistributionPoint.isIndirectCRL();
-			ReasonFlags onlySomeReasons = issuingDistributionPoint.getOnlySomeReasons();
-			final String url = getUrl(issuingDistributionPoint.getDistributionPoint());
-			validity.setUrl(url);
-			final boolean urlFound = url != null;
-			if (!(onlyAttributeCerts && onlyCaCerts && onlyUserCerts && indirectCrl) && (onlySomeReasons == null) && urlFound) {
-				validity.setUnknownCriticalExtension(false);
-			}
+			validity.setOnlyAttributeCerts(issuingDistributionPoint.onlyContainsAttributeCerts());
+			validity.setOnlyCaCerts(issuingDistributionPoint.onlyContainsCACerts());
+			validity.setOnlyUserCerts(issuingDistributionPoint.onlyContainsUserCerts());
+			validity.setIndirectCrl(issuingDistributionPoint.isIndirectCRL());
+			validity.setReasonFlags(issuingDistributionPoint.getOnlySomeReasons());
+			validity.setUrl(getUrl(issuingDistributionPoint.getDistributionPoint()));
+		} else {
+			LOG.debug("issuingDistributionPointBinary is null. Issuing Distribution Point fields in CRLValidity cannot be filled.");
 		}
 	}
 

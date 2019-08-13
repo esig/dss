@@ -24,13 +24,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.TimestampParameters;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.TimestampParameters;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.x509.TimestampType;
 
 /**
  * This class represents the implementation of XAdES level -X extension.
@@ -79,7 +79,7 @@ public class XAdESLevelX extends XAdESLevelC {
 
 			final TimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
 			final String canonicalizationMethod = signatureTimestampParameters.getCanonicalizationMethod();
-			final byte[] timestampX1Data = xadesSignature.getTimestampX1Data(null, canonicalizationMethod);
+			final byte[] timestampX1Data = xadesSignature.getTimestampSource().getTimestampX1Data(canonicalizationMethod);
 			final DigestAlgorithm timestampDigestAlgorithm = signatureTimestampParameters.getDigestAlgorithm();
 			final byte[] digestValue = DSSUtils.digest(timestampDigestAlgorithm, timestampX1Data);
 			createXAdESTimeStampType(TimestampType.VALIDATION_DATA_TIMESTAMP, canonicalizationMethod, digestValue);

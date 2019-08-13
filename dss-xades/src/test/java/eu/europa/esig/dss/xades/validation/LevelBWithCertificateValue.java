@@ -25,12 +25,12 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.reports.SimpleReport;
 
 public class LevelBWithCertificateValue {
 
@@ -46,7 +46,7 @@ public class LevelBWithCertificateValue {
 		List<String> signatureIdList = simpleReport.getSignatureIdList();
 		Assert.assertEquals(1, signatureIdList.size());
 
-		String signatureFormat = simpleReport.getSignatureFormat(signatureIdList.get(0));
-		Assert.assertEquals(SignatureLevel.XAdES_BASELINE_B, SignatureLevel.valueByName(signatureFormat));
+		SignatureLevel signatureFormat = simpleReport.getSignatureFormat(signatureIdList.get(0));
+		Assert.assertEquals(SignatureLevel.XAdES_BASELINE_B, signatureFormat);
 	}
 }

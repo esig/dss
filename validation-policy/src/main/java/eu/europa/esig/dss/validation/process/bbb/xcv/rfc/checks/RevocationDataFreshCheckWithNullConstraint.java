@@ -20,46 +20,28 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks;
 
-import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
-import eu.europa.esig.dss.validation.process.AdditionalInfo;
-import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
-import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 
-public class RevocationDataFreshCheckWithNullConstraint extends ChainItem<XmlRFC> {
-
-	private final RevocationWrapper revocationData;
-	private final Date validationDate;
+public class RevocationDataFreshCheckWithNullConstraint extends AbstractRevocationFreshCheck {
 
 	public RevocationDataFreshCheckWithNullConstraint(XmlRFC result, RevocationWrapper revocationData, Date validationDate, LevelConstraint constraint) {
-		super(result, constraint);
-
-		this.revocationData = revocationData;
-		this.validationDate = validationDate;
+		super(result, revocationData, validationDate, constraint);
 	}
 
 	@Override
 	protected boolean process() {
 		if (revocationData != null && revocationData.getNextUpdate() != null) {
-			long maxFreshness = getMaxFreshness();
-			long validationDateTime = validationDate.getTime();
-			long limit = validationDateTime - maxFreshness;
-
-			Date productionDate = revocationData.getProductionDate();
-			return productionDate != null && productionDate.after(new Date(limit));
+			return isProductionDateNotBeforeValidationTime();
 		}
 		return false;
 	}
 
-	private long getMaxFreshness() {
+	@Override
+	protected long getMaxFreshness() {
 		return diff(revocationData.getNextUpdate(), revocationData.getThisUpdate());
 	}
 
@@ -67,38 +49,6 @@ public class RevocationDataFreshCheckWithNullConstraint extends ChainItem<XmlRFC
 		long nextUpdateTime = nextUpdate == null ? 0 : nextUpdate.getTime();
 		long thisUpdateTime = thisUpdate == null ? 0 : thisUpdate.getTime();
 		return nextUpdateTime - thisUpdateTime;
-	}
-
-	@Override
-	protected String getAdditionalInfo() {
-		String nextUpdateString = "not defined";
-		if (revocationData != null && revocationData.getNextUpdate() != null) {
-			SimpleDateFormat sdf = new SimpleDateFormat(AdditionalInfo.DATE_FORMAT);
-			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-			nextUpdateString = sdf.format(revocationData.getNextUpdate());
-		}
-		Object[] params = new Object[] { nextUpdateString };
-		return MessageFormat.format(AdditionalInfo.NEXT_UPDATE, params);
-	}
-
-	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.BBB_RFC_IRIF;
-	}
-
-	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_RFC_IRIF_ANS;
-	}
-
-	@Override
-	protected Indication getFailedIndicationForConclusion() {
-		return Indication.INDETERMINATE;
-	}
-
-	@Override
-	protected SubIndication getFailedSubIndicationForConclusion() {
-		return SubIndication.TRY_LATER;
 	}
 
 }

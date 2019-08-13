@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.tsl;
 
-import eu.europa.esig.dss.x509.KeyStoreCertificateSource;
+import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
 
 public class OtherTrustedList {
 

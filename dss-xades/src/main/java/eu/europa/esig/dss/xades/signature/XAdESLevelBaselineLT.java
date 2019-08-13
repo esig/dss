@@ -22,8 +22,8 @@ package eu.europa.esig.dss.xades.signature;
 
 import org.w3c.dom.Element;
 
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.ValidationContext;
@@ -61,7 +61,7 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 		}
 
 		// Timestamps can already be loaded in memory (force reload)
-		xadesSignature.resetTimestamps();
+		xadesSignature.resetTimestampSource();
 
 		/**
 		 * In all cases the -LT level need to be regenerated.
@@ -88,7 +88,7 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 	/**
 	 * This method checks the signature integrity and throws a {@code DSSException} if the signature is broken.
 	 *
-	 * @throws eu.europa.esig.dss.DSSException
+	 * @throws eu.europa.esig.dss.model.DSSException
 	 */
 	protected void checkSignatureIntegrity() throws DSSException {
 		final SignatureCryptographicVerification signatureCryptographicVerification = xadesSignature.getSignatureCryptographicVerification();

@@ -8,6 +8,10 @@
 	<artifactId>dss-pades-pdfbox</artifactId>
 	<name>DSS PAdES using PDFBox</name>
 
+	<properties>
+		<module-name>jpms_dss_pades_pdfbox</module-name>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>

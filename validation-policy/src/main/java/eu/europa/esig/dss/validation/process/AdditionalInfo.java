@@ -32,18 +32,26 @@ public final class AdditionalInfo {
 	public static final String CONTROL_TIME = "Control time : {0}";
 	
 	public static final String CRYPTOGRAPHIC_CHECK_FAILURE = "Algorithm [{0}] is not reliable at the validation time : {1}";
+	
+	public static final String CRYPTOGRAPHIC_CHECK_FAILURE_WITH_ID = "Algorithm [{0}] is not reliable at the validation time : {1} for token with ID [{2}]";
+	
+	public static final String REVOCATION_CRYPTOGRAPHIC_CHECK_FAILURE = "Revocation data for certificate with id [{0}] is not reliable";
 
 	public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
 
 	public static final String KEY_USAGE = "Key usage : {0}";
 
-	public static final String NEXT_UPDATE = "Next update : {0}";
+	public static final String EXTENDED_KEY_USAGE = "Extended key usage : {0}";
+	
+	public static final String REVOCATION_CHECK = "Validation time : {0}; Production time : {1}; NextUpdate time : {2}";
 
 	public static final String PSEUDO = "Pseudo : {0}";
 
 	public static final String REVOCATION = "Revocation reason : {0} (date : {1})";
 
 	public static final String VALIDATION_TIME = "Validation time : {0}";
+
+	public static final String VALIDATION_TIME_WITH_ID = "Validation time : {0} for token with ID : [{1}]";
 
 	public static final String TRUST_SERVICE_NAME = "Trust service name : {0}";
 

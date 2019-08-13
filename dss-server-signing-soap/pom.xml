@@ -9,6 +9,10 @@
 	<name>DSS Server signing SOAP Service</name>
 	<artifactId>dss-server-signing-soap</artifactId>
 
+	<properties>
+		<module-name>jpms_dss_ws_server_signing_soap</module-name>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>

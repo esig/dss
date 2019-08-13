@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.pades.extension;
 
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.x509.tsp.TSPSource;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 
 public class PAdESExtensionBToTWithCompositeTSA extends AbstractTestPAdESExtension {
 

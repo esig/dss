@@ -39,9 +39,7 @@ Content-Length: 2640
       "trustAnchorBPPolicy" : true,
       "signingDate" : 1542794106511,
       "claimedSignerRoles" : null,
-      "signaturePolicy" : null,
-      "commitmentTypeIndications" : null,
-      "signerLocation" : null
+      "commitmentTypeIndications" : null
     }
   },
   "signatureValue" : {
@@ -51,13 +49,11 @@ Content-Length: 2640
   "toSignDocuments" : [ {
     "bytes" : "SGVsbG8=",
     "digestAlgorithm" : null,
-    "name" : "test1.bin",
-    "mimeType" : null
+    "name" : "test1.bin"
   }, {
     "bytes" : "V29ybGQ=",
     "digestAlgorithm" : null,
-    "name" : "test2.bin",
-    "mimeType" : null
+    "name" : "test2.bin"
   } ]
 }
 ----

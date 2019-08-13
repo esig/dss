@@ -26,16 +26,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.SignaturePackaging;
-import eu.europa.esig.dss.SignatureValue;
-import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.extension.AbstractTestExtension;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
+import eu.europa.esig.dss.test.extension.AbstractTestExtension;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.tsp.TSPSource;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
