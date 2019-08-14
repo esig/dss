@@ -116,6 +116,7 @@ public enum MessageTag implements IMessageTag {
 	ASCCM_ANS_3("The public key size is too small!"),
 	ASCCM_ANS_4("The algorithm expiration date not found!"),
 	ASCCM_ANS_5("The algorithm is expired!"),
+	ASCCM_ANS_6("The public key size is not known!"),
 	
 	ACCCRM("Are cryptographic constraints for certificate revocation data met?"),
 	ACCCRM_ANS("Cryptographic constraints are not valid for revocation data!"),

@@ -46,6 +46,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCryptographicInformation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
@@ -938,7 +939,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 			}
 		}
 		assertTrue(foundWeakAlgo);
-
+		
 		SimpleReport simpleReport = reports.getSimpleReport();
 		
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
@@ -959,6 +960,36 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 		validateBestSigningTimes(reports);
 		checkReports(reports);
+	}
+	
+	@Test
+	public void ocspRevocationMessage() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/ocspRevocationMessage.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		Date validationDate = diagnosticData.getValidationDate();
+		executor.setCurrentTime(validationDate);
+
+		Reports reports = executor.execute();
+		
+		System.out.println(reports.getXmlDetailedReport());
+				
+		DetailedReport detailedReport = reports.getDetailedReport();
+		
+		
+		
+		// Extract the build block where the verification failed
+		XmlBasicBuildingBlocks basicBuildingBlockById = detailedReport.getBasicBuildingBlockById("R-F104CADD12E8C96491EB3F95667AFB7E594162A461F968CE2D488C32E6A18624");
+
+		//Get the Error Message as well as any extra information
+		XmlSAV sav = basicBuildingBlockById.getSAV();
+		XmlConstraint xmlConstraint = sav.getConstraint().get(0);
+		XmlName error = xmlConstraint.getError();
+		
+		assertEquals(MessageTag.ASCCM_ANS_6.getMessage(), error.getValue());
 	}
 
 	@Test

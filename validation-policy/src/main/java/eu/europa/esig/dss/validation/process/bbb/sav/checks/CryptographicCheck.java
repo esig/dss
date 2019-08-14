@@ -55,12 +55,16 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Abst
 		if (!digestAlgorithmIsReliable(token.getDigestAlgorithm()))
 			return false;
 		
-		// Check public key size
-		if (!publicKeySizeIsAcceptable(token.getEncryptionAlgorithm(), token.getKeyLengthUsedToSignThisToken()))
-			return false;
-		
 		// Check digest algorithm expiration date
 		if (!digestAlgorithmIsValidOnValidationDate(token.getDigestAlgorithm()))
+			return false;
+		
+		// Check key size
+		if(!isPublicKeySizeKnown(token.getKeyLengthUsedToSignThisToken()))
+			return false;
+		
+		// Check public key size
+		if (!publicKeySizeIsAcceptable(token.getEncryptionAlgorithm(), token.getKeyLengthUsedToSignThisToken()))
 			return false;
 		
 		// Check encryption algorithm expiration date
