@@ -55,7 +55,7 @@ public class TSLValidationJobTest {
 	private static final Logger logger = LoggerFactory.getLogger(TSLValidationJobTest.class);
 
 	private static final String USED_OJ_URL = "http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2016.233.01.0001.01.ENG";
-	private static final String LOTL_URL = "https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml";
+	private static final String LOTL_URL = "https://ec.europa.eu/tools/lotl/eu-lotl.xml";
 	private KeyStoreCertificateSource dssKeyStore;
 
 	@Before

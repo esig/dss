@@ -23,6 +23,7 @@ package eu.europa.esig.dss.xades.signature;
 import java.io.File;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -34,7 +35,6 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.transforms.Transforms;
-import org.apache.xml.security.utils.Base64;
 import org.junit.Assert;
 import org.junit.Before;
 import org.w3c.dom.Document;
@@ -117,14 +117,16 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractXAdESTestSign
 			Canonicalizer c14n = Canonicalizer.getInstance("http://www.w3.org/2001/10/xml-exc-c14n#");
 			byte c14nBytes[] = c14n.canonicalizeSubtree(node);
 
-			Assert.assertEquals("AdGdZ+/VQVVvC9yzL4Yj8iRK33cQBiRW2UpKGMswdZQ=", Base64.encode(MessageDigest.getInstance("SHA-256").digest(c14nBytes)));
+			Assert.assertEquals("AdGdZ+/VQVVvC9yzL4Yj8iRK33cQBiRW2UpKGMswdZQ=",
+					Base64.getEncoder().encodeToString(MessageDigest.getInstance("SHA-256").digest(c14nBytes)));
 
 			node = (Node) xPath.evaluate("root/data[@id='data2']", doc, XPathConstants.NODE);
 
 			c14n = Canonicalizer.getInstance("http://www.w3.org/2001/10/xml-exc-c14n#");
 			c14nBytes = c14n.canonicalizeSubtree(node);
 
-			Assert.assertEquals("R69a3Im5463c09SuOrn9Sfly9h9LxVxSqg/0CVumJjA=", Base64.encode(MessageDigest.getInstance("SHA-256").digest(c14nBytes)));
+			Assert.assertEquals("R69a3Im5463c09SuOrn9Sfly9h9LxVxSqg/0CVumJjA=",
+					Base64.getEncoder().encodeToString(MessageDigest.getInstance("SHA-256").digest(c14nBytes)));
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
 		}

@@ -36,6 +36,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
+import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
@@ -617,6 +618,21 @@ public class DiagnosticData {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Returns a list of certificates by their origin source
+	 * @param certificateSourceType {@link CertificateSourceType} to get certificates with
+	 * @return list of {@link CertificateWrapper}s
+	 */
+	public List<CertificateWrapper> getCertificatesFromSource(CertificateSourceType certificateSourceType) {
+		List<CertificateWrapper> certificates = new ArrayList<CertificateWrapper>();
+		for (CertificateWrapper certificate : getUsedCertificates()) {
+			if (certificate.getSources().contains(certificateSourceType)) {
+				certificates.add(certificate);
+			}
+		}
+		return certificates;
 	}
 	
 	/**

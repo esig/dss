@@ -54,7 +54,6 @@ import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.MessageTag;
@@ -119,13 +118,11 @@ public class ETSIValidationReportBuilder {
 
 	private final ObjectFactory objectFactory = new ObjectFactory();
 	private final Date currentTime;
-	private final ValidationPolicy policy;
 	private final DiagnosticData diagnosticData;
 	private final DetailedReport detailedReport;
 
-	public ETSIValidationReportBuilder(Date currentTime, ValidationPolicy policy, DiagnosticData diagnosticData, DetailedReport detailedReport) {
+	public ETSIValidationReportBuilder(Date currentTime, DiagnosticData diagnosticData, DetailedReport detailedReport) {
 		this.currentTime = currentTime;
-		this.policy = policy;
 		this.diagnosticData = diagnosticData;
 		this.detailedReport = detailedReport;
 	}

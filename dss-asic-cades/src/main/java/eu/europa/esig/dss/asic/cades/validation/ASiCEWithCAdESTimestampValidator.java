@@ -25,15 +25,18 @@ import java.util.List;
 import eu.europa.esig.dss.cades.validation.CMSTimestampValidator;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.spi.x509.CertificatePool;
 
 public class ASiCEWithCAdESTimestampValidator extends CMSTimestampValidator {
 
 	/* Extracted filenames from ASiCArchiveManifest */
 	private final List<String> coveredFilenames;
 
-	public ASiCEWithCAdESTimestampValidator(DSSDocument timestamp, TimestampType type, List<String> coveredFilenames) {
+	public ASiCEWithCAdESTimestampValidator(DSSDocument timestamp, TimestampType type, List<String> coveredFilenames, 
+			CertificatePool certificatePool) {
 		super(timestamp, type);
 		this.coveredFilenames = coveredFilenames;
+		this.validationCertPool = certificatePool;
 	}
 
 	public List<String> getCoveredFilenames() {
