@@ -85,7 +85,7 @@ public class DefaultSignatureProcessExecutor implements SignatureProcessExecutor
 
 		ValidationReportType validationReport = null;
 		if (enableEtsiValidationReport) {
-			ETSIValidationReportBuilder etsiValidationReportBuilder = new ETSIValidationReportBuilder(currentTime, policy, diagnosticData,
+			ETSIValidationReportBuilder etsiValidationReportBuilder = new ETSIValidationReportBuilder(currentTime, diagnosticData,
 					detailedReportWrapper);
 			validationReport = etsiValidationReportBuilder.build();
 		}
