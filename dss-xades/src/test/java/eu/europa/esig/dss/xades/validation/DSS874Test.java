@@ -27,11 +27,11 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.xml.security.utils.Base64;
 import org.junit.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -120,7 +120,7 @@ public class DSS874Test {
 
 		byte[] asn1SignaturePolicyDigest = DSSUtils.digest(DigestAlgorithm.SHA1, byteArray);
 
-		assertEquals("G7roucf600+f03r/o0bAOQ6WAs0=", Base64.encode(asn1SignaturePolicyDigest));
+		assertEquals("G7roucf600+f03r/o0bAOQ6WAs0=", Base64.getEncoder().encodeToString(asn1SignaturePolicyDigest));
 	}
 
 }

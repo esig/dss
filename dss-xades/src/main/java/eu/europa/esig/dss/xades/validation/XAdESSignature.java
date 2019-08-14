@@ -954,7 +954,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			DSSXMLUtils.setIDIdentifier(rootElement);
 			DSSXMLUtils.recursiveIdBrowse(rootElement);
 
-			santuarioSignature = new XMLSignature(signatureElement, "");
+			// Secure validation disabled to support all signature algos
+			santuarioSignature = new XMLSignature(signatureElement, "", false);
 			if (Utils.isCollectionNotEmpty(detachedContents)) {
 				santuarioSignature.addResourceResolver(new DetachedSignatureResolver(detachedContents, getSignatureAlgorithm().getDigestAlgorithm()));
 			}

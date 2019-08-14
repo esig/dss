@@ -23,9 +23,8 @@
 			<artifactId>dss-signature-dto</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.sun.xml.ws</groupId>
-			<artifactId>jaxws-ri</artifactId>
-			<type>pom</type>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>javax.ws.rs-api</artifactId>
 		</dependency>
 
 		<dependency>
