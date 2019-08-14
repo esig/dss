@@ -34,6 +34,7 @@
 		<BasicSignatureConstraints>
 			<ReferenceDataExistence Level="FAIL" />
 			<ReferenceDataIntact Level="FAIL" />
+			<ManifestEntryObjectExistence Level="WARN" />
 			<SignatureIntact Level="FAIL" />
 			<ProspectiveCertificateChain Level="FAIL" />
 <!-- 			<TrustedServiceTypeIdentifier Level="WARN"> -->

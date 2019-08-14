@@ -37,7 +37,6 @@ import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.AllFilesSignedCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ManifestEntryExistenceCheck;
-import eu.europa.esig.dss.validation.process.bbb.cv.checks.ManifestEntryIntactCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataExistenceCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataIntactCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.SignatureIntactCheck;
@@ -83,40 +82,32 @@ public class CryptographicVerification extends Chain<XmlCV> {
 		
 		if (Utils.isCollectionNotEmpty(digestMatchers)) {
 			for (XmlDigestMatcher digestMatcher : digestMatchers) {
-				if (!DigestMatcherType.MANIFEST_ENTRY.equals(digestMatcher.getType())) {
-					/*
-					 * 1) The building block shall obtain the signed data object(s) if not provided
-					 * in the inputs (e.g. by dereferencing an URI present in the signature). If the
-					 * signed data object(s) cannot be obtained, the building block shall return the
-					 * indication INDETERMINATE with the sub-indication SIGNED_DATA_NOT_FOUND.
-					 */
-					ChainItem<XmlCV> referenceDataFound = referenceDataFound(digestMatcher);
-					if (item == null) {
-						firstItem = item = referenceDataFound;
-					} else {
-						item = item.setNextItem(referenceDataFound);
-					}
-					/*
-					 * 2) The SVA shall check the integrity of the signed data objects. In case of
-					 * failure, the building block shall return the indication FAILED with the
-					 * sub-indication HASH_FAILURE.
-					 */
-					item = item.setNextItem(referenceDataIntact(digestMatcher));
-					
+				/*
+				 * 1) The building block shall obtain the signed data object(s) if not provided
+				 * in the inputs (e.g. by dereferencing an URI present in the signature). If the
+				 * signed data object(s) cannot be obtained, the building block shall return the
+				 * indication INDETERMINATE with the sub-indication SIGNED_DATA_NOT_FOUND.
+				 */
+				ChainItem<XmlCV> referenceDataFound = referenceDataFound(digestMatcher);
+				if (item == null) {
+					firstItem = item = referenceDataFound;
 				} else {
-					/* 
-					 * Check if reference data found and intact for ManifestEntries
-					 * as specified in validation policy
-					 */
-					ChainItem<XmlCV> manifestEntryFound = manifestEntryFound(digestMatcher);
-					if (item == null) {
-						firstItem = item = manifestEntryFound;
-					} else {
-						item = item.setNextItem(manifestEntryFound);
-					}
-					item = item.setNextItem(manifestEntryIntact(digestMatcher));
+					item = item.setNextItem(referenceDataFound);
 				}
+				/*
+				 * 2) The SVA shall check the integrity of the signed data objects. In case of
+				 * failure, the building block shall return the indication FAILED with the
+				 * sub-indication HASH_FAILURE.
+				 */
+				item = item.setNextItem(referenceDataIntact(digestMatcher));
 			}
+		}
+
+
+		if (containsManifest(digestMatchers)) {
+			// If we are verifying a signature based on Manifest, check if at least one
+			// entry is validated
+			item = item.setNextItem(manifestEntryExistence(digestMatchers));
 		}
 
 		/*
@@ -141,6 +132,15 @@ public class CryptographicVerification extends Chain<XmlCV> {
 		}
 	}
 
+	private boolean containsManifest(List<XmlDigestMatcher> digestMatchers) {
+		for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
+			if (DigestMatcherType.MANIFEST.equals(xmlDigestMatcher.getType())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private ChainItem<XmlCV> referenceDataFound(XmlDigestMatcher digestMatcher) {
 		LevelConstraint constraint = validationPolicy.getReferenceDataExistenceConstraint(context);
 		return new ReferenceDataExistenceCheck(result, digestMatcher, constraint);
@@ -151,21 +151,15 @@ public class CryptographicVerification extends Chain<XmlCV> {
 		return new ReferenceDataIntactCheck(result, digestMatcher, constraint);
 	}
 
-	private ChainItem<XmlCV> manifestEntryFound(XmlDigestMatcher digestMatcher) {
+	private ChainItem<XmlCV> manifestEntryExistence(List<XmlDigestMatcher> digestMatchers) {
 		LevelConstraint constraint = validationPolicy.getManifestEntryObjectExistenceConstraint(context);
-		return new ManifestEntryExistenceCheck(result, digestMatcher, constraint);
-	}
-
-	private ChainItem<XmlCV> manifestEntryIntact(XmlDigestMatcher digestMatcher) {
-		LevelConstraint constraint = validationPolicy.getManifestEntryObjectIntactConstraint(context);
-		return new ManifestEntryIntactCheck(result, digestMatcher, constraint);
+		return new ManifestEntryExistenceCheck(result, digestMatchers, constraint);
 	}
 
 	private ChainItem<XmlCV> signatureIntact() {
 		LevelConstraint constraint = validationPolicy.getSignatureIntactConstraint(context);
 		return new SignatureIntactCheck(result, token, constraint);
 	}
-
 
 	private ChainItem<XmlCV> allFilesSignedCheck() {
 		LevelConstraint constraint = validationPolicy.getAllFilesSignedConstraint();
