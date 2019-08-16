@@ -104,10 +104,15 @@ public class CryptographicVerification extends Chain<XmlCV> {
 		}
 
 
+		// If we are verifying a signature based on Manifest, check if at least one
+		// entry is validated
 		if (containsManifest(digestMatchers)) {
-			// If we are verifying a signature based on Manifest, check if at least one
-			// entry is validated
-			item = item.setNextItem(manifestEntryExistence(digestMatchers));
+			ChainItem<XmlCV> manifestEntryExistence = manifestEntryExistence(digestMatchers);
+			if (item == null) {
+				firstItem = item = manifestEntryExistence;
+			} else {
+				item = item.setNextItem(manifestEntryExistence);
+			}
 		}
 
 		/*
