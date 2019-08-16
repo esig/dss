@@ -18,6 +18,7 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.common.PDStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
+import org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace;
 import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
@@ -356,6 +357,16 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 		pdRectangle.setUpperRightX(dimensionAndPosition.getBoxX() + dimensionAndPosition.getBoxWidth());
 		pdRectangle.setUpperRightY(pageRect.getHeight() - dimensionAndPosition.getBoxY());
 		return pdRectangle;
+	}
+
+	@Override
+	protected String getColorSpaceName(DSSDocument image) throws IOException {
+		try (InputStream is = image.openStream()) {
+			byte[] bytes = IOUtils.toByteArray(is);
+			PDImageXObject imageXObject = PDImageXObject.createFromByteArray(document, bytes, image.getName());
+			PDColorSpace colorSpace = imageXObject.getColorSpace();
+			return colorSpace.getName();
+		}
 	}
 
 }

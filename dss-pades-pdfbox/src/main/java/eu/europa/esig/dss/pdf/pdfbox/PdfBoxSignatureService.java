@@ -40,16 +40,12 @@ import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSObject;
 import org.apache.pdfbox.cos.COSStream;
-import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
-import org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace;
-import org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent;
-import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureInterface;
@@ -59,9 +55,9 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -81,7 +77,6 @@ import eu.europa.esig.dss.pdf.PdfSignatureInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawer;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawerFactory;
-import eu.europa.esig.dss.pdf.pdfbox.visible.defaultdrawer.PdfBoxDefaultSignatureDrawerFactory;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
@@ -91,9 +86,6 @@ import eu.europa.esig.dss.utils.Utils;
 public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PdfBoxSignatureService.class);
-
-	private static final String CMYK_PROFILE_NAME = "cmyk";
-	private static final String RGB_PROFILE_NAME = "rgb";
 
 	/**
 	 * Constructor for the PdfBoxSignatureService
@@ -165,7 +157,6 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 			SignatureImageParameters imageParameters = getImageParameters(parameters);
 			if (imageParameters != null && signatureDrawerFactory != null) {
-				checkColorSpace(pdDocument, imageParameters.getImage());
 				PdfBoxSignatureDrawer signatureDrawer = (PdfBoxSignatureDrawer) signatureDrawerFactory.getSignatureDrawer(imageParameters);
 				signatureDrawer.init(imageParameters, pdDocument, options);
 				signatureDrawer.draw();
@@ -302,50 +293,6 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		permsDict.setItem(COSName.DOCMDP, signature);
 		catalogDict.setNeedToBeUpdated(true);
 		permsDict.setNeedToBeUpdated(true);
-	}
-	
-	private void checkColorSpace(PDDocument pdDocument, DSSDocument image) throws IOException {
-		if (image != null) {
-	        PDDocumentCatalog catalog = pdDocument.getDocumentCatalog();
-	        List<PDOutputIntent> profiles = catalog.getOutputIntents();
-	        if (Utils.isCollectionEmpty(profiles)) {
-	        	LOG.warn("No color profile is present in the document. Not compatible with PDF/A");
-	        	return;
-	        }
-			try (InputStream is = image.openStream()) {
-				byte[] bytes = IOUtils.toByteArray(is);
-				
-	    		// Default PDFBox converts CMYK images to the RGB format
-	    		String colorSpaceName = COSName.DEVICERGB.getName();
-	    		boolean isDefaultDrawerFactory = signatureDrawerFactory instanceof PdfBoxDefaultSignatureDrawerFactory;
-	    		
-	    		if (!isDefaultDrawerFactory) {
-		    		PDImageXObject imageXObject = PDImageXObject.createFromByteArray(pdDocument, bytes, image.getName());
-		    		PDColorSpace colorSpace = imageXObject.getColorSpace();
-		    		colorSpaceName = colorSpace.getName();
-	    		}
-	    		
-	    		if (COSName.DEVICECMYK.getName().equals(colorSpaceName) && isProfilePresent(profiles, RGB_PROFILE_NAME)) {
-	    			LOG.warn("A CMYK image will be added to an RGB color space PDF. Be aware: not compatible with PDF/A.");
-	    		} else if (COSName.DEVICERGB.getName().equals(colorSpaceName) && isProfilePresent(profiles, CMYK_PROFILE_NAME)) {
-	    			LOG.warn("An RGB image will be added to a CMYK color space PDF. Be aware: not compatible with PDF/A.");
-	    		}
-			}
-		}
-	}
-	
-	private boolean isProfilePresent(List<PDOutputIntent> profiles, String profileName) {
-        for (PDOutputIntent profile : profiles) {
-            if (Utils.isStringNotEmpty(profile.getInfo()) && 
-            		profile.getInfo().toLowerCase().contains(profileName) ||
-                Utils.isStringNotEmpty(profile.getOutputCondition()) && 
-                	profile.getOutputCondition().toLowerCase().contains(profileName) ||
-                Utils.isStringNotEmpty(profile.getOutputConditionIdentifier()) && 
-                	profile.getOutputConditionIdentifier().toLowerCase().contains(profileName)) {
-                return true;
-            }
-        }
-        return false;
 	}
 
 	public void saveDocumentIncrementally(PAdESSignatureParameters parameters, OutputStream outputStream, PDDocument pdDocument) throws DSSException {
