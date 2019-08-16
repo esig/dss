@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.Objects;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -97,6 +98,8 @@ public abstract class AbstractJaxbFacade<T> {
 	 *                       if an exception occurred with the {@link Schema}
 	 */
 	public String marshall(T jaxbObject, boolean validate) throws JAXBException, IOException, SAXException {
+		Objects.requireNonNull(jaxbObject, "JAXBObject is null");
+
 		Marshaller marshaller = getMarshaller(validate);
 
 		try (StringWriter writer = new StringWriter()) {
@@ -145,6 +148,9 @@ public abstract class AbstractJaxbFacade<T> {
 	 *                       if an exception occurred with the {@link Schema}
 	 */
 	public void marshall(T jaxbObject, OutputStream os, boolean validate) throws JAXBException, SAXException, IOException {
+		Objects.requireNonNull(jaxbObject, "JAXBObject is null");
+		Objects.requireNonNull(os, "OutputStream is null");
+
 		Marshaller marshaller = getMarshaller(validate);
 
 		marshaller.marshal(wrap(jaxbObject), os);
@@ -195,6 +201,7 @@ public abstract class AbstractJaxbFacade<T> {
 	 *                            if an exception occurred with the {@link Schema}
 	 */
 	public T unmarshall(InputStream is, boolean validate) throws JAXBException, XMLStreamException, IOException, SAXException {
+		Objects.requireNonNull(is, "InputStream is null");
 		return unmarshall(new StreamSource(is), validate);
 	}
 
@@ -243,6 +250,7 @@ public abstract class AbstractJaxbFacade<T> {
 	 *                            if an exception occurred with the {@link Schema}
 	 */
 	public T unmarshall(File file, boolean validate) throws JAXBException, XMLStreamException, IOException, SAXException {
+		Objects.requireNonNull(file, "File is null");
 		return unmarshall(new StreamSource(file), validate);
 	}
 
@@ -291,6 +299,7 @@ public abstract class AbstractJaxbFacade<T> {
 	 *                            if an exception occurred with the {@link Schema}
 	 */
 	public T unmarshall(String xmlObject, boolean validate) throws JAXBException, XMLStreamException, IOException, SAXException {
+		Objects.requireNonNull(xmlObject, "xmlObject is null");
 		return unmarshall(new StreamSource(new StringReader(xmlObject)), validate);
 	}
 

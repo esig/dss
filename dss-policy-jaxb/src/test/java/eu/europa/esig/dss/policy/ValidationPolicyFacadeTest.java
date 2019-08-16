@@ -5,8 +5,10 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.UnmarshalException;
 import javax.xml.stream.XMLStreamException;
 
 import org.junit.Test;
@@ -83,10 +85,34 @@ public class ValidationPolicyFacadeTest {
 		assertEquals(0, revocationFreshness.getValue().intValue());
 	}
 
-	// TODO @Test
-	public void testUnmarshalModel() throws Exception {
-		ConstraintsParameters constraintsParameters = ValidationPolicyFacade.newFacade().unmarshall(new File("src/test/resources/constraints_MODEL.xml"));
-		assertNotNull(constraintsParameters);
+	@Test(expected = UnmarshalException.class)
+	public void testInvalid() throws Exception {
+		ValidationPolicyFacade.newFacade().unmarshall(new File("src/test/resources/invalid-policy.xml"));
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void unmarshallNullIS() throws Exception {
+		ValidationPolicyFacade.newFacade().unmarshall((InputStream) null);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void unmarshallNullFile() throws Exception {
+		ValidationPolicyFacade.newFacade().unmarshall((File) null);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void unmarshallNullString() throws Exception {
+		ValidationPolicyFacade.newFacade().unmarshall((String) null);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void marshallNull() throws Exception {
+		ValidationPolicyFacade.newFacade().marshall(null);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void marshallNull2() throws Exception {
+		ValidationPolicyFacade.newFacade().marshall(null, null);
 	}
 
 }
