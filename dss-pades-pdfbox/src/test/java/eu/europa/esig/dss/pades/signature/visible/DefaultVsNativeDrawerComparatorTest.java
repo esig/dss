@@ -563,6 +563,23 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 		drawAndCompareVisually();
 	}
 	
+	@Test
+	public void testWithCMYKImage() throws IOException {
+		initPdfATest();
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setxAxis(50);
+		imageParameters.setyAxis(50);
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/cmyk.jpg"), "cmyk.jpg", MimeType.JPEG));
+
+		signatureParameters.setSignatureImageParameters(imageParameters);
+		
+		PdfObjFactory.setInstance(new PdfBoxDefaultObjectFactory());
+		DSSDocument defaultDrawerPdf = sign("default");
+		PdfObjFactory.setInstance(new PdfBoxNativeObjectFactory());
+		DSSDocument nativeDrawerPdf = sign("native");
+		compareAnnotations(defaultDrawerPdf, nativeDrawerPdf);
+	}
+	
 	private void compareDoc(String docPath) throws IOException {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream(docPath));
 		drawAndCompareVisually();

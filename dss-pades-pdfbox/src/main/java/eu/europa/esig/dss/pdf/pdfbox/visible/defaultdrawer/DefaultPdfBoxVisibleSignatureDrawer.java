@@ -23,9 +23,11 @@ package eu.europa.esig.dss.pdf.pdfbox.visible.defaultdrawer;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
+import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleSigProperties;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleSignDesigner;
 
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pdf.pdfbox.visible.AbstractPdfBoxSignatureDrawer;
 import eu.europa.esig.dss.pdf.pdfbox.visible.ImageRotationUtils;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
@@ -80,6 +82,11 @@ public class DefaultPdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignature
 		
 		signatureOptions.setVisualSignature(signatureProperties);
 		signatureOptions.setPage(parameters.getPage() - 1); // DSS-1138
+	}
+
+	@Override
+	protected String getColorSpaceName(DSSDocument image) throws IOException {
+		return COSName.DEVICERGB.getName();
 	}
 
 }

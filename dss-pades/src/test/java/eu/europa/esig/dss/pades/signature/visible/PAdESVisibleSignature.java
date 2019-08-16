@@ -122,6 +122,17 @@ public class PAdESVisibleSignature extends PKIFactoryAccess {
 
 		signAndValidate();
 	}
+	
+	@Test
+	public void testCMYKPicture() throws IOException {
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(getCMYKPicture());
+		imageParameters.setxAxis(100);
+		imageParameters.setyAxis(100);
+		signatureParameters.setSignatureImageParameters(imageParameters);
+
+		signAndValidate();
+	}
 
 	private void signAndValidate() throws IOException {
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
@@ -149,6 +160,10 @@ public class PAdESVisibleSignature extends PKIFactoryAccess {
 
 	private DSSDocument getPngPicture() {
 		return new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG);
+	}
+
+	private DSSDocument getCMYKPicture() {
+		return new InMemoryDocument(getClass().getResourceAsStream("/cmyk.jpg"), "cmyk.jpg", MimeType.JPEG);
 	}
 
 }
