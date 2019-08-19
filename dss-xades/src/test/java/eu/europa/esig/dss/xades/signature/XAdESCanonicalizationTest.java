@@ -22,21 +22,19 @@
 package eu.europa.esig.dss.xades.signature;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.security.Signature;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
-
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.Canonicalizer;
@@ -49,7 +47,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -126,7 +123,7 @@ public class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
 		super.onDocumentSigned(byteArray);
-		saveDocument(byteArray);
+		saveDocumentAndDelete(byteArray);
 					
 		try {
 			Document doc = DomUtils.buildDOM(byteArray);
@@ -162,7 +159,7 @@ public class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
 		}
 	}
 	
-	private void checkOriginalDocument(Document doc) throws IOException, InvalidCanonicalizerException, CanonicalizationException, SAXException, ParserConfigurationException{
+	private void checkOriginalDocument(Document doc) throws Exception {
 		//------------------------------------ ORIGINAL FILE -----------------------------------------------------
 		String originalFileDigest = "";
 		byte[] originalFilByteArray = null;
@@ -272,17 +269,18 @@ public class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
 		}
 	}
 	
-	private void saveDocument(byte[] byteArray) {
-		 try {
-			// Create File and Output Stream
-			File file = new File("src/test/resources/sample-sig.xml");
-			FileOutputStream fop = new FileOutputStream(file);
-			
+	private void saveDocumentAndDelete(byte[] byteArray) {
+		File file = new File("target/sample-sig.xml");
+		// Create File and Output Stream
+		try (FileOutputStream fos = new FileOutputStream(file)) {
 			// Write signature to file
-			Utils.write(byteArray, fop);
+			Utils.write(byteArray, fos);
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}
+		assertTrue(file.exists());
+		assertTrue("Cannot delete the document (IO error)", file.delete());
+		assertFalse(file.exists());
 	}
 	
 	private NodeList getReferenceTransforms(Document doc, String URI) {
