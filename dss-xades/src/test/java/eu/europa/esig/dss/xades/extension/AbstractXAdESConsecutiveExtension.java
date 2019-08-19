@@ -30,7 +30,7 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
-public abstract class AbstractXAdESConsecutiveExtensionTest<SP extends AbstractSignatureParameters> extends PKIFactoryAccess {
+public abstract class AbstractXAdESConsecutiveExtension<SP extends AbstractSignatureParameters> extends PKIFactoryAccess {
 	
 	protected SignatureLevel signatureLevel;
 	protected XAdESService service;

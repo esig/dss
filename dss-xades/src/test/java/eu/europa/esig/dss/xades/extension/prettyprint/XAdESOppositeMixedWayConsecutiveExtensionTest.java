@@ -4,9 +4,9 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.extension.AbstractXAdESConsecutiveExtensionTest;
+import eu.europa.esig.dss.xades.extension.AbstractXAdESConsecutiveExtension;
 
-public class XAdESOppositeMixedWayConsecutiveExtensionTest extends AbstractXAdESConsecutiveExtensionTest<XAdESSignatureParameters> {
+public class XAdESOppositeMixedWayConsecutiveExtensionTest extends AbstractXAdESConsecutiveExtension<XAdESSignatureParameters> {
 
 	@Override
 	protected DSSDocument getOriginalDocument() {

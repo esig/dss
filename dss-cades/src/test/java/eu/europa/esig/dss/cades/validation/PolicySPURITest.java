@@ -25,6 +25,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +36,10 @@ import org.junit.Test;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -57,6 +61,28 @@ public class PolicySPURITest {
 
 		validatePolicy(reports);
 
+	}
+	
+	public class MockDataLoader extends CommonsDataLoader {
+
+		private static final long serialVersionUID = -8743201861357700742L;
+		
+		public MockDataLoader() {
+		}
+
+		@Override
+		public byte[] get(final String urlString) {
+			if (urlString.equals("https://sede.060.gob.es/politica_de_firma_anexo_1.pdf")) {
+				DSSDocument document = new FileDocument("src/test/resources/validation/dss-728/politica_de_firma_anexo_1.pdf");
+				try {
+					return Utils.toByteArray(document.openStream());
+				} catch (IOException e) {
+					throw new DSSException(e);
+				}
+			} else {
+				return super.get(urlString);
+			}
+		}
 	}
 
 	@Test

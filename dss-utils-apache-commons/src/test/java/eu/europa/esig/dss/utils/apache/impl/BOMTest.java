@@ -30,7 +30,7 @@ import java.io.IOException;
 import org.apache.commons.io.input.BOMInputStream;
 import org.junit.Test;
 
-public class TestBOM {
+public class BOMTest {
 
 	@Test
 	public void test() throws IOException {
