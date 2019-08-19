@@ -68,12 +68,6 @@ public class XAdESLevelXL extends XAdESLevelX {
 
 			incorporateCertificateValues(unsignedSignaturePropertiesDom, valContext, afterCertificateText);
 			incorporateRevocationValues(unsignedSignaturePropertiesDom, valContext, afterCertificateText);
-
-			/**
-			 * Certificate(s), revocation data where added, XAdES signature certificate source must be reset.
-			 */
-			xadesSignature.resetCertificateSource();
-			xadesSignature.resetRevocationSources();
 			
 			unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelXUnsignedProperties);
 		}

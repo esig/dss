@@ -429,11 +429,10 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 * @return {@code RevocationDataForInclusion}
 	 */
 	public RevocationDataForInclusion getRevocationDataForInclusion(final ValidationContext validationContext) {
-		// TODO: to be checked: there can be also CRL and OCSP in TimestampToken CMS data
 		final Set<RevocationToken> revocationTokens = validationContext.getProcessedRevocations();
 		final List<CRLToken> crlTokens = new ArrayList<CRLToken>();
 		final List<OCSPToken> ocspTokens = new ArrayList<OCSPToken>();
-		final List<TokenIdentifier> revocationIds = new ArrayList<TokenIdentifier>(); // revocation equals : TokenId + certId + date
+		final List<TokenIdentifier> revocationIds = new ArrayList<TokenIdentifier>();
 		for (final RevocationToken revocationToken : revocationTokens) {
 			if (!revocationIds.contains(revocationToken.getDSSId())) {
 				revocationIds.add(revocationToken.getDSSId());
