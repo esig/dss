@@ -844,14 +844,14 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			byte[] expectedMessageDigestValue = getMessageDigestValue();
 			
 			if (originalDocument != null) {
-				
-				if (Utils.isCollectionNotEmpty(messageDigestAlgorithms)) {
 					
-					if (Utils.isArrayNotEmpty(expectedMessageDigestValue)) {
-						Digest messageDigest = new Digest();
-						messageDigest.setValue(expectedMessageDigestValue);
-						
-						validation.setFound(true);
+				if (Utils.isArrayNotEmpty(expectedMessageDigestValue)) {
+					Digest messageDigest = new Digest();
+					messageDigest.setValue(expectedMessageDigestValue);
+					
+					validation.setFound(true);
+					
+					if (Utils.isCollectionNotEmpty(messageDigestAlgorithms)) {
 
 						// try to match with found digest algorithm(s)
 						for (DigestAlgorithm digestAlgorithm : messageDigestAlgorithms) {
@@ -862,17 +862,22 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 								break;
 							}
 						}
+						
+						// add digest algorithm if message digest does not much
+						if (messageDigest.getAlgorithm() == null && messageDigestAlgorithms.size() == 1) {
+							messageDigest.setAlgorithm(messageDigestAlgorithms.iterator().next());
+						}
 						validation.setDigest(messageDigest);
 					} else {
-						LOG.warn("message-digest is not present in SignedData!");
-						if (signerInformationToCheck != null) {
-							LOG.warn("Extracting digests from content SignatureValue...");
-							validation = getContentReferenceValidation(originalDocument, signerInformationToCheck);
-						}
+						LOG.warn("Message DigestAlgorithms not found in SignedData! Reference validation is not possible.");
 						
 					}
 				} else {
-					LOG.warn("Message DigestAlgorithms not found in SignedData! Reference validation is not possible.");
+					LOG.warn("message-digest is not present in SignedData!");
+					if (signerInformationToCheck != null) {
+						LOG.warn("Extracting digests from content SignatureValue...");
+						validation = getContentReferenceValidation(originalDocument, signerInformationToCheck);
+					}
 					
 				}
 			} else {
