@@ -186,8 +186,8 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 
 	private void collectRevocationValues(ASN1ObjectIdentifier revocationValuesAttribute, RevocationOrigin origin) {
 		final ASN1Encodable attValue = DSSASN1Utils.getAsn1Encodable(unsignedAttributes, revocationValuesAttribute);
-		if (attValue != null) {
-			final RevocationValues revValues = RevocationValues.getInstance(attValue);
+		RevocationValues revValues = DSSASN1Utils.getRevocationValues(attValue);
+		if (revValues != null) {
 			for (final CertificateList revValue : revValues.getCrlVals()) {
 				addX509CRLHolder(new X509CRLHolder(revValue), origin);
 			}

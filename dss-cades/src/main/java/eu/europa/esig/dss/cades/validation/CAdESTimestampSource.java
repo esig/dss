@@ -408,12 +408,14 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 	protected List<CRLBinary> getEncapsulatedCRLIdentifiers(CAdESAttribute unsignedAttribute) {
 		List<CRLBinary> crlBinaryIdentifiers = new ArrayList<CRLBinary>();
 		ASN1Encodable asn1Object = unsignedAttribute.getASN1Object();
-		final RevocationValues revValues = RevocationValues.getInstance(asn1Object);
-		for (final CertificateList revValue : revValues.getCrlVals()) {
-			try {
-				crlBinaryIdentifiers.add(new CRLBinary(revValue.getEncoded()));
-			} catch (IOException e) {
-				LOG.warn("Unable to parse revocation value : {}", e.getMessage());
+		RevocationValues revocationValues = DSSASN1Utils.getRevocationValues(asn1Object);
+		if (revocationValues != null) {
+			for (final CertificateList revValue : revocationValues.getCrlVals()) {
+				try {
+					crlBinaryIdentifiers.add(new CRLBinary(revValue.getEncoded()));
+				} catch (IOException e) {
+					LOG.warn("Unable to parse revocation value : {}", e.getMessage());
+				}
 			}
 		}
 		return crlBinaryIdentifiers;
@@ -423,10 +425,12 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 	protected List<OCSPResponseBinary> getEncapsulatedOCSPIdentifiers(CAdESAttribute unsignedAttribute) {
 		List<OCSPResponseBinary> ocspIdentifiers = new ArrayList<OCSPResponseBinary>();
 		ASN1Encodable asn1Object = unsignedAttribute.getASN1Object();
-		final RevocationValues revocationValues = RevocationValues.getInstance(asn1Object);
-		for (final BasicOCSPResponse basicOCSPResponse : revocationValues.getOcspVals()) {
-			final BasicOCSPResp basicOCSPResp = new BasicOCSPResp(basicOCSPResponse);
-			ocspIdentifiers.add(OCSPResponseBinary.build(basicOCSPResp));
+		RevocationValues revocationValues = DSSASN1Utils.getRevocationValues(asn1Object);
+		if (revocationValues != null) {
+			for (final BasicOCSPResponse basicOCSPResponse : revocationValues.getOcspVals()) {
+				final BasicOCSPResp basicOCSPResp = new BasicOCSPResp(basicOCSPResponse);
+				ocspIdentifiers.add(OCSPResponseBinary.build(basicOCSPResp));
+			}
 		}
 		return ocspIdentifiers;
 	}

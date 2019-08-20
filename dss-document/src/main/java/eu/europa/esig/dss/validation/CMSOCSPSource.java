@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
@@ -226,19 +227,20 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 	private void collectRevocationValues(AttributeTable unsignedAttributes, ASN1ObjectIdentifier revocacationValuesAttribute, RevocationOrigin origin) {
 		final Attribute attribute = unsignedAttributes.get(revocacationValuesAttribute);
 		if (attribute != null) {
-
 			final ASN1Set attrValues = attribute.getAttrValues();
 			final ASN1Encodable attValue = attrValues.getObjectAt(0);
-			final RevocationValues revocationValues = RevocationValues.getInstance(attValue);
-			for (final BasicOCSPResponse basicOCSPResponse : revocationValues.getOcspVals()) {
-
-				final BasicOCSPResp basicOCSPResp = new BasicOCSPResp(basicOCSPResponse);
-				addBasicOcspResp(basicOCSPResp, origin);
+			RevocationValues revocationValues = DSSASN1Utils.getRevocationValues(attValue);
+			if (revocationValues != null) {
+				for (final BasicOCSPResponse basicOCSPResponse : revocationValues.getOcspVals()) {
+					final BasicOCSPResp basicOCSPResp = new BasicOCSPResp(basicOCSPResponse);
+					addBasicOcspResp(basicOCSPResp, origin);
+				}
 			}
-			/* TODO: should add also OtherRevVals, but:
-			 "The syntax and semantics of the other revocation values (OtherRevVals) are outside the scope of the present
-            document. The definition of the syntax of the other form of revocation information is as identified by
-            OtherRevRefType."
+			/*
+			 * TODO: should add also OtherRevVals, but: "The syntax and semantics of the
+			 * other revocation values (OtherRevVals) are outside the scope of the present
+			 * document. The definition of the syntax of the other form of revocation
+			 * information is as identified by OtherRevRefType."
 			 */
 		}
 	}

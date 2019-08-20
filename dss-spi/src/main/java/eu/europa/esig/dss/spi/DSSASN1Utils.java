@@ -70,6 +70,7 @@ import org.bouncycastle.asn1.DLSet;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.cms.Attributes;
+import org.bouncycastle.asn1.esf.RevocationValues;
 import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.x500.AttributeTypeAndValue;
@@ -1206,6 +1207,24 @@ public final class DSSASN1Utils {
 	public static Date getTimeStampTokenGenerationTime(TimeStampToken timeStampToken) {
 		if (timeStampToken != null) {
 			return timeStampToken.getTimeStampInfo().getGenTime();
+		}
+		return null;
+	}
+
+	/**
+	 * Returns {@link RevocationValues} from the given encodable
+	 * 
+	 * @param encodable
+	 *                  the encoded data to be parsed
+	 * @return an instance of RevocationValues or null if the parsing failled
+	 */
+	public static RevocationValues getRevocationValues(ASN1Encodable encodable) {
+		if (encodable != null) {
+			try {
+				return RevocationValues.getInstance(encodable);
+			} catch (Exception e) {
+				LOG.warn("Unable to parse RevocationValues", e);
+			}
 		}
 		return null;
 	}
