@@ -127,7 +127,7 @@ public abstract class JdbcRevocationSource<T extends RevocationToken> extends Re
 			createTable();
 			LOG.info("Table was created.");
 		} else {
-			LOG.info("Table already exists.");
+			LOG.debug("Table already exists.");
 		}
 	}
 	

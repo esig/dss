@@ -24,18 +24,24 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.security.KeyStore.PasswordProtection;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.h2.jdbcx.JdbcDataSource;
+
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.service.crl.JdbcCacheCRLSource;
 import eu.europa.esig.dss.service.crl.OnlineCRLSource;
 import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.service.http.commons.OCSPDataLoader;
 import eu.europa.esig.dss.service.http.commons.TimestampDataLoader;
 import eu.europa.esig.dss.service.http.proxy.ProxyConfig;
+import eu.europa.esig.dss.service.ocsp.JdbcCacheOCSPSource;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.service.tsp.OnlineTSPSource;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -57,6 +63,8 @@ public abstract class PKIFactoryAccess {
 
 	private static final String PKI_FACTORY_HOST;
 	private static final String PKI_FACTORY_KEYSTORE_PASSWORD;
+	
+	private static final JdbcDataSource dataSource;
 
 	static {
 		try (InputStream is = PKIFactoryAccess.class.getResourceAsStream("/pki-factory.properties")) {
@@ -65,6 +73,9 @@ public abstract class PKIFactoryAccess {
 
 			PKI_FACTORY_HOST = props.getProperty("pki.factory.host");
 			PKI_FACTORY_KEYSTORE_PASSWORD = props.getProperty("pki.factory.keystore.password");
+			
+			dataSource = new JdbcDataSource();
+			dataSource.setUrl("jdbc:h2:mem:test;create=true;DB_CLOSE_DELAY=-1");
 		} catch (Exception e) {
 			throw new RuntimeException("Unable to initialize from pki-factory.properties", e);
 		}
@@ -113,8 +124,8 @@ public abstract class PKIFactoryAccess {
 	protected CertificateVerifier getCompleteCertificateVerifier() {
 		CertificateVerifier cv = new CommonCertificateVerifier();
 		cv.setDataLoader(getFileCacheDataLoader());
-		cv.setCrlSource(onlineCrlSource());
-		cv.setOcspSource(onlineOcspSource());
+		cv.setCrlSource(cacheCRLSource());
+		cv.setOcspSource(cacheOCSPSource());
 		cv.setTrustedCertSource(getTrustedCertificateSource());
 		return cv;
 	}
@@ -125,11 +136,45 @@ public abstract class PKIFactoryAccess {
 		cv.setTrustedCertSource(getTrustedCertificateSource());
 		return cv;
 	}
+	
+	private JdbcCacheCRLSource cacheCRLSource() {
+		JdbcCacheCRLSource cacheCRLSource = new JdbcCacheCRLSource();
+		cacheCRLSource.setProxySource(onlineCrlSource());
+		cacheCRLSource.setDataSource(dataSource);
+		cacheCRLSource.setDefaultNextUpdateDelay(3 * 24 * 60 * 60l); // 3 days
+		try {
+			cacheCRLSource.initTable();
+		} catch (SQLException e) {
+			throw new DSSException("Cannot initialize table for CRL source.", e);
+		}
+		return cacheCRLSource;
+	}
 
 	private OnlineCRLSource onlineCrlSource() {
 		OnlineCRLSource onlineCRLSource = new OnlineCRLSource();
 		onlineCRLSource.setDataLoader(getFileCacheDataLoader());
 		return onlineCRLSource;
+	}
+	
+	private JdbcCacheOCSPSource cacheOCSPSource() {
+		JdbcCacheOCSPSource cacheOCSPSource = new JdbcCacheOCSPSource();
+		cacheOCSPSource.setProxySource(onlineOcspSource());
+		cacheOCSPSource.setDataSource(dataSource);
+		cacheOCSPSource.setDefaultNextUpdateDelay(3 * 60l); // 3 minutes
+		try {
+			cacheOCSPSource.initTable();
+		} catch (SQLException e) {
+			throw new DSSException("Cannot initialize table for OCSP source.", e);
+		}
+		return cacheOCSPSource;
+	}
+
+	private OnlineOCSPSource onlineOcspSource() {
+		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
+		OCSPDataLoader dataLoader = new OCSPDataLoader();
+		dataLoader.setProxyConfig(getProxyConfig());
+		ocspSource.setDataLoader(dataLoader);
+		return ocspSource;
 	}
 
 	protected CertificateToken getSigningCert() {
@@ -163,14 +208,6 @@ public abstract class PKIFactoryAccess {
 
 	private KeyStoreCertificateSource getTrustAnchors() {
 		return new KeyStoreCertificateSource(new ByteArrayInputStream(getKeystoreContent("trust-anchors.jks")), TRUSTSTORE_TYPE, PKI_FACTORY_KEYSTORE_PASSWORD);
-	}
-
-	private OnlineOCSPSource onlineOcspSource() {
-		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
-		OCSPDataLoader dataLoader = new OCSPDataLoader();
-		dataLoader.setProxyConfig(getProxyConfig());
-		ocspSource.setDataLoader(dataLoader);
-		return ocspSource;
 	}
 
 	private DataLoader getFileCacheDataLoader() {

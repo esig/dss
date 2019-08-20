@@ -42,10 +42,10 @@ public class XAdESExtensionWithContentTimestampTest extends PKIFactoryAccess {
 		
 		DSSDocument documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 		
-		Date sixMonthBefore = getDateWithHoursDifference(-24);
+		Date oneDayBefore = getDateWithHoursDifference(-24);
 		
 		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(sixMonthBefore);
+		signatureParameters.bLevel().setSigningDate(oneDayBefore);
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
@@ -54,7 +54,7 @@ public class XAdESExtensionWithContentTimestampTest extends PKIFactoryAccess {
 		CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();
 		certificateVerifier.setExceptionOnNoRevocationAfterBestSignatureTime(true);
 		XAdESService service = new XAdESService(certificateVerifier);
-        service.setTspSource(getGoodTsaByTime(sixMonthBefore));
+        service.setTspSource(getGoodTsaByTime(oneDayBefore));
 		
 		TimestampToken contentTimestamp = service.getContentTimestamp(documentToSign, signatureParameters);
 
