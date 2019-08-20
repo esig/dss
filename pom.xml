@@ -64,7 +64,7 @@
 		
 		<!-- JDK9+ -->
 		<jaxb.version>2.3.0</jaxb.version>
-		<jaxws-ri.version>2.3.2</jaxws-ri.version>
+		<jaxws-api.version>2.3.1</jaxws-api.version>
 		<activation.version>1.2.0</activation.version>
 
 		<junit.version>4.12</junit.version>
@@ -904,6 +904,13 @@
 			    <groupId>com.sun.activation</groupId>
 			    <artifactId>javax.activation</artifactId>
 			    <version>${activation.version}</version>
+			</dependency>
+		
+			<!-- JDK9+ : jax-ws (http://openjdk.java.net/jeps/320#Java-EE-modules) -->
+			<dependency>
+			  <groupId>javax.xml.ws</groupId>
+			  <artifactId>jaxws-api</artifactId>
+			  <version>${jaxws-api.version}</version>
 			</dependency>
 
 			<!-- Testing -->
