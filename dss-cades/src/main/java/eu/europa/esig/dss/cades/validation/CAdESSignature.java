@@ -899,13 +899,15 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	private ReferenceValidation getContentReferenceValidation(DSSDocument originalDocument, SignerInformation signerInformation) {
 		ReferenceValidation contentValidation = new ReferenceValidation();
 		contentValidation.setType(DigestMatcherType.CONTENT_DIGEST);
-		DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(signerInformation.getDigestAlgOID());
-		byte[] contentDigest = signerInformation.getContentDigest();
-		if (originalDocument != null && digestAlgorithm != null && Utils.isArrayNotEmpty(contentDigest)) {
-			contentValidation.setFound(true);
-			contentValidation.setDigest(new Digest(digestAlgorithm, contentDigest));
-			if (Arrays.equals(contentDigest, Utils.fromBase64(originalDocument.getDigest(digestAlgorithm)))) {
-				contentValidation.setIntact(true);
+		DigestAlgorithm digestAlgorithm = getDigestAlgorithmForOID(signerInformation.getDigestAlgOID());
+		if (originalDocument != null && digestAlgorithm != null) {
+			byte[] contentDigest = signerInformation.getContentDigest();
+			if (Utils.isArrayNotEmpty(contentDigest)) {
+				contentValidation.setFound(true);
+				contentValidation.setDigest(new Digest(digestAlgorithm, contentDigest));
+				if (Arrays.equals(contentDigest, Utils.fromBase64(originalDocument.getDigest(digestAlgorithm)))) {
+					contentValidation.setIntact(true);
+				}
 			}
 		}
 		return contentValidation;
@@ -976,13 +978,21 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		Set<AlgorithmIdentifier> digestAlgorithmIDs = cmsSignedData.getDigestAlgorithmIDs();
 		for (AlgorithmIdentifier algorithmIdentifier : digestAlgorithmIDs) {
 			String oid = algorithmIdentifier.getAlgorithm().getId();
-			try {
+			DigestAlgorithm digestAlgorithm = getDigestAlgorithmForOID(oid);
+			if (digestAlgorithm != null) {
 				result.add(DigestAlgorithm.forOID(oid));
-			} catch (IllegalArgumentException e) {
-				LOG.warn("Not a digest algorithm {} : {}", oid, e.getMessage());
 			}
 		}
 		return result;
+	}
+	
+	private DigestAlgorithm getDigestAlgorithmForOID(String oid) {
+		try {
+			return DigestAlgorithm.forOID(oid);
+		} catch (IllegalArgumentException e) {
+			LOG.warn("Not a digest algorithm {} : {}", oid, e.getMessage());
+			return null;
+		}
 	}
 
 	@Override
