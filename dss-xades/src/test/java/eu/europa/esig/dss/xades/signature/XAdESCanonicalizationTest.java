@@ -117,7 +117,7 @@ public class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
 		signatureParameters.setSignedPropertiesCanonicalizationMethod(canonicalizationSignedProperties);
 		signatureParameters.setSignedInfoCanonicalizationMethod(canonicalizationSignedInfo);
 
-		service = new XAdESService(getCompleteCertificateVerifier());
+		service = new XAdESService(getOfflineCertificateVerifier());
 	}
 
 	@Override

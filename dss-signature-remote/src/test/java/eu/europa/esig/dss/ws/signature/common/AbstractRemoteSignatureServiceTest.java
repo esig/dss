@@ -32,7 +32,7 @@ public abstract class AbstractRemoteSignatureServiceTest extends PKIFactoryAcces
 	
 	protected void validate(DSSDocument doc, List<DSSDocument> detachedContents) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		validator.setDetachedContents(detachedContents);
 		
 		Reports reports = validator.validateDocument();

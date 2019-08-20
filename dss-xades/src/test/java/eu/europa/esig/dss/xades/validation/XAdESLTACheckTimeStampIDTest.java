@@ -63,7 +63,7 @@ public class XAdESLTACheckTimeStampIDTest extends PKIFactoryAccess {
 		final DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 
 		Reports report = validator.validateDocument();
 		// report.print();

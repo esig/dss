@@ -41,7 +41,6 @@ import eu.europa.esig.dss.utils.Utils;
 
 public abstract class AbstractTestPAdESExtension extends AbstractTestExtension<PAdESSignatureParameters> {
 
-
 	@Override
 	protected TSPSource getUsedTSPSourceAtSignatureTime() {
 		return getGoodTsa();

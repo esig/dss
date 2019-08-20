@@ -46,7 +46,7 @@ public class CMSTimestampValidatorTest extends PKIFactoryAccess {
 
 		CMSTimestampValidator validator = new CMSTimestampValidator(new InMemoryDocument(timeStampResponse.getEncoded()));
 		validator.setTimestampedData(new InMemoryDocument(data));
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 
 		assertTrue(Utils.isCollectionEmpty(validator.getSignatures()));
 

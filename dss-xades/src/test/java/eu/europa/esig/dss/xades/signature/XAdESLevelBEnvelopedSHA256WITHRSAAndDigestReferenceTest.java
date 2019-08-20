@@ -69,7 +69,7 @@ public class XAdESLevelBEnvelopedSHA256WITHRSAAndDigestReferenceTest extends Abs
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.setReferenceDigestAlgorithm(referenceDigestAlgo);
 
-		service = new XAdESService(getCompleteCertificateVerifier());
+		service = new XAdESService(getOfflineCertificateVerifier());
 	}
 
 	@Override

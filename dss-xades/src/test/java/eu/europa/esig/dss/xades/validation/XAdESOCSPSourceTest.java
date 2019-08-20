@@ -89,7 +89,7 @@ public class XAdESOCSPSourceTest extends PKIFactoryAccess {
 	
 	private DiagnosticData getDiagnosticData(DSSDocument doc) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 //		reports.print();
 		return reports.getDiagnosticData();
