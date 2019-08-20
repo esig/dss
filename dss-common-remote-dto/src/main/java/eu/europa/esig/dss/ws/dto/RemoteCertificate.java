@@ -19,15 +19,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package eu.europa.esig.dss.ws.dto;
-import java.io.Serializable;
 
+import java.io.Serializable;
 
 @SuppressWarnings("serial")
 public class RemoteCertificate implements Serializable {
 
 	private byte[] encodedCertificate;
 
-	public RemoteCertificate(){
+	public RemoteCertificate() {
 	}
 
 	public RemoteCertificate(byte[] encodedCertificate) {
