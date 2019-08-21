@@ -64,7 +64,8 @@
 		
 		<!-- JDK9+ -->
 		<jaxb.version>2.3.0</jaxb.version>
-		<jaxws-api.version>2.3.1</jaxws-api.version>
+		<jaxws-rt.version>2.3.0</jaxws-rt.version>
+		<stax-ex.version>1.7.8</stax-ex.version>
 		<activation.version>1.2.0</activation.version>
 
 		<junit.version>4.12</junit.version>
@@ -906,11 +907,16 @@
 			    <version>${activation.version}</version>
 			</dependency>
 		
-			<!-- JDK9+ : jax-ws (http://openjdk.java.net/jeps/320#Java-EE-modules) -->
+			<!-- JDK9+ : jax-ws -->
 			<dependency>
-			  <groupId>javax.xml.ws</groupId>
-			  <artifactId>jaxws-api</artifactId>
-			  <version>${jaxws-api.version}</version>
+			    <groupId>com.sun.xml.ws</groupId>
+			    <artifactId>jaxws-rt</artifactId>
+		  		<version>${jaxws-rt.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jvnet.staxex</groupId> <!-- Version conflict -->
+				<artifactId>stax-ex</artifactId>
+				<version>${stax-ex.version}</version>
 			</dependency>
 
 			<!-- Testing -->

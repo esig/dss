@@ -21,9 +21,22 @@
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-validation-dto</artifactId>
 		</dependency>
+		
 		<dependency>
-		  <groupId>javax.xml.ws</groupId>
-		  <artifactId>jaxws-api</artifactId>
+			<groupId>com.sun.xml.ws</groupId>
+			<artifactId>jaxws-rt</artifactId>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jvnet.staxex</groupId> <!-- Version conflict -->
+					<artifactId>stax-ex</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.jvnet.staxex</groupId> <!-- Version conflict -->
+			<artifactId>stax-ex</artifactId>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 </project>
