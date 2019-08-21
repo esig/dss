@@ -135,7 +135,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 
 		LOG.info("=================== VALIDATION =================");
 
-		 signedDocument.save("target/" + signedDocument.getName());
+		// signedDocument.save("target/" + signedDocument.getName());
 
 		byte[] byteArray = DSSUtils.toByteArray(signedDocument);
 		onDocumentSigned(byteArray);
