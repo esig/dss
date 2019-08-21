@@ -38,6 +38,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 
 /**
  * Validation of CMS document
@@ -50,7 +51,11 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 	protected CMSSignedData cmsSignedData;
 
 	CMSDocumentValidator() {
-		super(new CAdESSignatureScopeFinder());
+		this(new CAdESSignatureScopeFinder());
+	}
+	
+	CMSDocumentValidator(SignatureScopeFinder<CAdESSignature> signatureScopeFinder) {
+		super(signatureScopeFinder);
 	}
 
 	/**
@@ -69,10 +74,15 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 	 *
 	 * @param document
 	 *            document to validate (with the signature(s))
-	 * @throws DSSException
 	 */
-	public CMSDocumentValidator(final DSSDocument document) throws DSSException {
+	public CMSDocumentValidator(final DSSDocument document) {
 		this();
+		this.document = document;
+		this.cmsSignedData = DSSUtils.toCMSSignedData(document);
+	}
+	
+	protected CMSDocumentValidator(final DSSDocument document, SignatureScopeFinder<CAdESSignature> signatureScopeFinder) {
+		this(signatureScopeFinder);
 		this.document = document;
 		this.cmsSignedData = DSSUtils.toCMSSignedData(document);
 	}

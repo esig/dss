@@ -77,7 +77,7 @@ public class ASiCEWithCAdESArchiveManifestBuilder extends AbstractManifestBuilde
 
 	public Document build() {
 		final Document documentDom = DomUtils.buildDOM();
-		final Element asicManifestDom = documentDom.createElementNS(ASiCNamespace.NS, ASiCNamespace.ASIC_MANIFEST);
+		final Element asicManifestDom = documentDom.createElementNS(ASiCNamespace.ASIC_NS, ASiCNamespace.ASIC_MANIFEST);
 		documentDom.appendChild(asicManifestDom);
 
 		addSigReference(documentDom, asicManifestDom, timestampUri, MimeType.TST);

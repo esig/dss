@@ -34,7 +34,7 @@ import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.asice.ASiCEWithCAdESArchiveManifestBuilder;
-import eu.europa.esig.dss.asic.cades.validation.ASiCEWithCAdESManifestValidator;
+import eu.europa.esig.dss.asic.cades.validation.ASiCEWithCAdESManifestParser;
 import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
@@ -197,9 +197,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		List<DSSDocument> signedDocuments = getEmbeddedSignedDocuments();
 
 		if (ASiCContainerType.ASiC_E == containerType) {
-			ASiCEWithCAdESManifestValidator manifestValidator = new ASiCEWithCAdESManifestValidator(signature, manifests, signedDocuments);
-			
-			DSSDocument linkedManifest = manifestValidator.getLinkedManifest();
+			DSSDocument linkedManifest = ASiCEWithCAdESManifestParser.getLinkedManifest(manifests, signature.getName());
 			if (linkedManifest != null) {
 				String originalName = signature.getName();
 				cadesParameters.setDetachedContents(Arrays.asList(linkedManifest));

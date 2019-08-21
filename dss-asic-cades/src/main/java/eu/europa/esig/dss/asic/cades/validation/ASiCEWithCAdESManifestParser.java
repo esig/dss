@@ -32,50 +32,122 @@ import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.common.ASiCNamespace;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
 
 public class ASiCEWithCAdESManifestParser {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCEWithCAdESManifestParser.class);
 
-	private final DSSDocument manifestDocument;
-
 	static {
-		DomUtils.registerNamespace("asic", ASiCNamespace.NS);
+		DomUtils.registerNamespace("asic", ASiCNamespace.ASIC_NS);
 	}
 
-	public ASiCEWithCAdESManifestParser(DSSDocument manifestDocument) {
-		this.manifestDocument = manifestDocument;
+	/**
+	 * Parses and converts {@code DSSDocument} to {@code ManifestFile}
+	 * @param manifestDocument {@link DSSDocument} to parse
+	 * @return {@link ManifestFile}
+	 */
+	public static ManifestFile getManifestFile(DSSDocument manifestDocument) {
+		ManifestFile manifest = new ManifestFile();
+		manifest.setDocument(manifestDocument);
+
+		Element root = getManifestRootElement(manifestDocument);
+		manifest.setSignatureFilename(getLinkedSignatureName(root));
+		manifest.setEntries(parseManifestEntries(root));
+
+		return manifest;
 	}
-
-	public ManifestFile getDescription() {
-		ManifestFile description = new ManifestFile();
-		description.setFilename(manifestDocument.getName());
-
+	
+	/**
+	 * Returns the relative manifests for the given signature name 
+	 * @param manifestDocuments list of found manifests {@link DSSDocument} in the container (candidates)
+	 * @param signatureName {@link String} name of the signature to get related manifest for
+	 * @return {@link DSSDocument} the related manifests
+	 */
+	public static DSSDocument getLinkedManifest(List<DSSDocument> manifestDocuments, String signatureName) {
+		for (DSSDocument manifest : manifestDocuments) {
+			Element manifestRoot = getManifestRootElement(manifest);
+			String linkedSignatureName = getLinkedSignatureName(manifestRoot);
+			if (signatureName.equals(linkedSignatureName)) {
+				return manifest;
+			}
+		}
+		return null;
+	}
+	
+	private static Element getManifestRootElement(DSSDocument manifestDocument) {
 		try (InputStream is = manifestDocument.openStream()) {
 			Document manifestDom = DomUtils.buildDOM(is);
-			Element root = DomUtils.getElement(manifestDom, ASiCNamespace.ASIC_MANIFEST);
-
-			description.setSignatureFilename(DomUtils.getValue(root, ASiCNamespace.SIG_REFERENCE_URI));
-			description.setEntries(getDataObjectReferenceUris(root));
-
+			return DomUtils.getElement(manifestDom, ASiCNamespace.ASIC_MANIFEST);
 		} catch (Exception e) {
 			LOG.warn("Unable to analyze manifest file '{}' : {}", manifestDocument.getName(), e.getMessage());
+			return null;
 		}
-
-		return description;
+	}
+	
+	private static String getLinkedSignatureName(Element root) {
+		return DomUtils.getValue(root, ASiCNamespace.SIG_REFERENCE_URI);
+	}
+	
+	private static MimeType getMimeType(Element dataObjectReference) {
+		try {
+			return MimeType.fromMimeTypeString(dataObjectReference.getAttribute(ASiCNamespace.DATA_OBJECT_REFERENCE_MIMETYPE));
+		} catch (DSSException e) {
+			LOG.warn("Cannot extract MimeType for a reference. Reason : [{}]", e.getMessage());
+			return null;
+		}
+	}
+	
+	private static DigestAlgorithm getDigestAlgorithm(Element dataObjectReference) {
+		Element digestMethodElement = DomUtils.getElement(dataObjectReference, ASiCNamespace.DIGEST_METHOD);
+		if (digestMethodElement != null) {
+			try {
+				return DigestAlgorithm.forXML((digestMethodElement).getAttribute(ASiCNamespace.DIGEST_METHOD_ALGORITHM));
+			} catch (IllegalArgumentException e) {
+				LOG.warn("Unable to extract DigestAlgorithm. Reason : [{}]", e.getMessage());
+			}
+		}
+		return null;
+	}
+	
+	private static byte[] getDigestValue(Element dataObjectReference) {
+		Element digestValueElement = DomUtils.getElement(dataObjectReference, ASiCNamespace.DIGEST_VALUE);
+		if (digestValueElement != null) {
+			try {
+				return Utils.fromBase64(digestValueElement.getTextContent());
+			} catch (Exception e) {
+				LOG.warn("Unable to extract DigestValue. Reason : [{}]", e.getMessage());
+			}
+		}
+		return null;
 	}
 
-	private List<String> getDataObjectReferenceUris(Element root) {
-		List<String> entries = new ArrayList<String>();
+	private static List<ManifestEntry> parseManifestEntries(Element root) {
+		List<ManifestEntry> entries = new ArrayList<ManifestEntry>();
 		NodeList dataObjectReferences = DomUtils.getNodeList(root, ASiCNamespace.DATA_OBJECT_REFERENCE);
 		if (dataObjectReferences == null || dataObjectReferences.getLength() == 0) {
 			LOG.warn("No DataObjectReference found in manifest file");
 		} else {
 			for (int i = 0; i < dataObjectReferences.getLength(); i++) {
+				ManifestEntry entry = new ManifestEntry();
 				Element dataObjectReference = (Element) dataObjectReferences.item(i);
-				entries.add(dataObjectReference.getAttribute("URI"));
+				entry.setFileName(dataObjectReference.getAttribute(ASiCNamespace.DATA_OBJECT_REFERENCE_URI));
+				entry.setMimeType(getMimeType(dataObjectReference));
+
+				DigestAlgorithm digestAlgorithm = getDigestAlgorithm(dataObjectReference);
+				byte[] digestValueBinary = getDigestValue(dataObjectReference);
+				if (digestAlgorithm != null && digestValueBinary != null) {
+					entry.setDigest(new Digest(digestAlgorithm, digestValueBinary));
+				}
+				
+				entries.add(entry);
 			}
 		}
 		return entries;

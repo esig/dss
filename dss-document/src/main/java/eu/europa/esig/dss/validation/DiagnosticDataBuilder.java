@@ -514,7 +514,9 @@ public class DiagnosticDataBuilder {
 				XmlManifestFile xmlManifest = new XmlManifestFile();
 				xmlManifest.setFilename(manifestFile.getFilename());
 				xmlManifest.setSignatureFilename(manifestFile.getSignatureFilename());
-				xmlManifest.getEntries().addAll(manifestFile.getEntries());
+				for (ManifestEntry entry : manifestFile.getEntries()) {
+					xmlManifest.getEntries().add(entry.getFileName());
+				}
 				xmlManifests.add(xmlManifest);
 			}
 			return xmlManifests;

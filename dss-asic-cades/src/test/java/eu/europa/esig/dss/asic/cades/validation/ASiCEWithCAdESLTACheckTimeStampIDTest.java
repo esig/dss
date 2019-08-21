@@ -40,7 +40,7 @@ import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
-public class ASiCS_CAdESLTACheckTimeStampIDTest extends PKIFactoryAccess {
+public class ASiCEWithCAdESLTACheckTimeStampIDTest extends PKIFactoryAccess {
 
 	@Test
 	public void test() throws Exception {
@@ -51,7 +51,7 @@ public class ASiCS_CAdESLTACheckTimeStampIDTest extends PKIFactoryAccess {
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
-		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
+		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 
 		ASiCWithCAdESService service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());

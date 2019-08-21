@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.asic.cades.validation;
 
+import eu.europa.esig.dss.asic.cades.validation.scope.ASiCWithCAdESSignatureScopeFinder;
 import eu.europa.esig.dss.asic.common.validation.ASiCSignatureValidator;
 import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -27,8 +28,8 @@ import eu.europa.esig.dss.spi.x509.CertificatePool;
 
 public class CMSDocumentForASiCValidator extends CMSDocumentValidator implements ASiCSignatureValidator {
 
-	public CMSDocumentForASiCValidator(DSSDocument signature) {
-		super(signature);
+	public CMSDocumentForASiCValidator(DSSDocument signatureDocument) {
+		super(signatureDocument, new ASiCWithCAdESSignatureScopeFinder());
 	}
 
 	public void setValidationCertPool(CertificatePool validationCertPool) {

@@ -35,6 +35,7 @@ import org.junit.Test;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
+import eu.europa.esig.dss.asic.cades.validation.ASiCEWithCAdESManifestParser;
 import eu.europa.esig.dss.asic.cades.validation.ASiCEWithCAdESManifestValidator;
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
@@ -50,6 +51,9 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.ManifestEntry;
+import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
@@ -131,16 +135,24 @@ public class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
 		List<DSSDocument> signedDocuments = result.getSignedDocuments();
 		assertEquals(2, signedDocuments.size());
 
-		ASiCEWithCAdESManifestValidator manifestValidator = new ASiCEWithCAdESManifestValidator(signatureDocument, manifestDocuments, signedDocuments);
-		DSSDocument linkedManifest = manifestValidator.getLinkedManifest();
+		DSSDocument linkedManifest = ASiCEWithCAdESManifestParser.getLinkedManifest(manifestDocuments, signatureDocument.getName());
 		assertNotNull(linkedManifest);
+		ManifestFile linkedManifestFile = ASiCEWithCAdESManifestParser.getManifestFile(linkedManifest);
+		assertNotNull(linkedManifestFile);
+		ASiCEWithCAdESManifestValidator linkedManifestFileValidator = new ASiCEWithCAdESManifestValidator(linkedManifestFile, signedDocuments);
+		List<ManifestEntry> linkedManifestFileEntries = linkedManifestFileValidator.validateEntries();
+		validateEntries(linkedManifestFileEntries);
 
 		String lastCreatedArchiveManifestName = null;
 		for (DSSDocument timestamp : timestamps) {
-			manifestValidator = new ASiCEWithCAdESManifestValidator(timestamp, archiveManifestDocuments, result.getTimestampedDocuments(timestamp));
-			linkedManifest = manifestValidator.getLinkedManifest();
+			linkedManifest = ASiCEWithCAdESManifestParser.getLinkedManifest(archiveManifestDocuments, timestamp.getName());
 			assertNotNull(linkedManifest);
-			lastCreatedArchiveManifestName = linkedManifest.getName();
+			ManifestFile archiveManifestFile = ASiCEWithCAdESManifestParser.getManifestFile(linkedManifest);
+			assertNotNull(archiveManifestFile);
+			lastCreatedArchiveManifestName = archiveManifestFile.getFilename();
+			ASiCEWithCAdESManifestValidator archiveManifestValidator = new ASiCEWithCAdESManifestValidator(archiveManifestFile, result.getTimestampedDocuments(timestamp));
+			List<ManifestEntry> archiveManifestEntries = archiveManifestValidator.validateEntries();
+			validateEntries(archiveManifestEntries);
 		}
 		assertEquals("META-INF/ASiCArchiveManifest.xml", lastCreatedArchiveManifestName);
 
@@ -153,6 +165,17 @@ public class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
 			fail(e.getMessage());
 		}
 
+	}
+	
+	private void validateEntries(List<ManifestEntry> entries) {
+		assertTrue(Utils.isCollectionNotEmpty(entries));
+		for (ManifestEntry entry : entries) {
+			assertNotNull(entry.getFileName());
+			assertNotNull(entry.getMimeType());;
+			assertNotNull(entry.getDigest());
+			assertTrue(entry.isFound());
+			assertTrue(entry.isIntact());
+		}
 	}
 
 	@Override

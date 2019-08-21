@@ -101,7 +101,7 @@ public class ASiCEXAdESMultiFilesLevelBTest extends AbstractPkiFactoryTestMultip
 		assertEquals("META-INF/manifest.xml", manifestFilename);
 
 		ASiCEWithXAdESManifestParser parse = new ASiCEWithXAdESManifestParser(signatureDocuments.get(0), manifestDocuments.get(0));
-		ManifestFile description = parse.getDescription();
+		ManifestFile description = parse.getManifest();
 		assertNotNull(description);
 		assertNotNull(description.getFilename());
 		assertNotNull(description.getSignatureFilename());

@@ -20,114 +20,75 @@
  */
 package eu.europa.esig.dss.asic.cades.validation;
 
-import java.io.InputStream;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
-import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.asic.common.ASiCNamespace;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.ManifestEntry;
+import eu.europa.esig.dss.validation.ManifestFile;
 
 public class ASiCEWithCAdESManifestValidator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCEWithCAdESManifestValidator.class);
 
-	static {
-		DomUtils.registerNamespace("asic", ASiCNamespace.NS);
-	}
-
-	private final DSSDocument signature;
-	private final List<DSSDocument> manifestDocuments;
+	private final ManifestFile manifest;
 	private final List<DSSDocument> signedDocuments;
 
-	public ASiCEWithCAdESManifestValidator(DSSDocument signature, List<DSSDocument> manifestDocuments, List<DSSDocument> signedDocuments) {
-		this.signature = signature;
-		this.manifestDocuments = manifestDocuments;
+	public ASiCEWithCAdESManifestValidator(ManifestFile manifest, List<DSSDocument> signedDocuments) {
+		Objects.requireNonNull(manifest, "ManifestFile must be defined!");
+		this.manifest = manifest;
 		this.signedDocuments = signedDocuments;
 	}
-
-	public DSSDocument getLinkedManifest() {
-		String expectedSignatureURI = signature.getName();
-		for (DSSDocument manifestDocument : manifestDocuments) {
-			try (InputStream is = manifestDocument.openStream()) {
-				Document manifestDom = DomUtils.buildDOM(is);
-				Element root = DomUtils.getElement(manifestDom, ASiCNamespace.ASIC_MANIFEST);
-				String signatureURI = DomUtils.getValue(root, ASiCNamespace.SIG_REFERENCE_URI);
-				if (Utils.areStringsEqual(expectedSignatureURI, signatureURI) && checkManifestDigests(root)) {
-					return manifestDocument;
+	
+	/**
+	 * Validates the manifest entries
+	 * @return list of validated {@link ManifestEntry}s
+	 */
+	public List<ManifestEntry> validateEntries() {
+		List<ManifestEntry> manifestEntries = manifest.getEntries();
+		if (signedDocuments == null) {
+			// no signed data to validate on
+			return manifestEntries;
+		}
+		for (ManifestEntry entry : manifestEntries) {
+			
+			if (entry.getDigest() != null) {
+				for (DSSDocument signedDocument : signedDocuments) {
+					
+					if (entry.getFileName().equals(signedDocument.getName())) {
+						entry.setFound(true);
+						String computedDigest = signedDocument.getDigest(entry.getDigest().getAlgorithm());
+						if (Arrays.equals(entry.getDigest().getValue(), Utils.fromBase64(computedDigest))) {
+							entry.setIntact(true);
+							
+						} else {
+							LOG.warn("Digest value doesn't match for signed data with name '{}'", entry.getFileName());
+							LOG.warn("Expected : '{}'", Utils.toBase64(entry.getDigest().getValue()));
+							LOG.warn("Computed : '{}'", computedDigest);
+							
+						}
+						break;
+						
+					}
 				}
-			} catch (Exception e) {
-				LOG.warn("Unable to analyze manifest file '{}' : {}", manifestDocument.getName(), e.getMessage());
+				
+			} else {
+				LOG.warn("Digest is not defined for signed data with name '{}'", entry.getFileName());
+				
 			}
-		}
-		return null;
-	}
-
-	private boolean checkManifestDigests(Element root) {
-		NodeList dataObjectReferences = DomUtils.getNodeList(root, ASiCNamespace.DATA_OBJECT_REFERENCE);
-		if (dataObjectReferences == null || dataObjectReferences.getLength() == 0) {
-			LOG.warn("No DataObjectReference found in manifest file");
-			return false;
-		} else {
-			for (int i = 0; i < dataObjectReferences.getLength(); i++) {
-				Element dataObjectReference = (Element) dataObjectReferences.item(i);
-
-				String filename = dataObjectReference.getAttribute("URI");
-
-				DSSDocument signedFile = getSignedFileByName(filename);
-				if (signedFile == null) {
-					LOG.warn("Signed data with name '{}' not found", filename);
-					return false;
-				}
-
-				DigestAlgorithm digestAlgo = getDigestAlgorithm(dataObjectReference);
-				if (digestAlgo == null) {
-					LOG.warn("Digest algo is not defined for signed data with name '{}'", filename);
-					return false;
-				}
-
-				String expectedDigestB64 = getDigestValue(dataObjectReference);
-				String computedDigestB64 = signedFile.getDigest(digestAlgo);
-				if (!Utils.areStringsEqual(expectedDigestB64, computedDigestB64)) {
-					LOG.warn("Digest value doesn't match for signed data with name '{}'", filename);
-					LOG.warn("Expected : '{}'", expectedDigestB64);
-					LOG.warn("Computed : '{}'", computedDigestB64);
-					return false;
-				}
-
+			
+			if (!entry.isFound()) {
+				LOG.warn("Signed data with name '{}' not found", entry.getFileName());
 			}
+			
 		}
-
-		return true;
-	}
-
-	private DSSDocument getSignedFileByName(String filename) {
-		for (DSSDocument signedDocument : signedDocuments) {
-			if (Utils.areStringsEqual(filename, signedDocument.getName())) {
-				return signedDocument;
-			}
-		}
-		return null;
-	}
-
-	private DigestAlgorithm getDigestAlgorithm(Element element) {
-		final String xmlName = DomUtils.getElement(element, "ds:DigestMethod").getAttribute("Algorithm");
-		return DigestAlgorithm.forXML(xmlName, null);
-	}
-
-	private String getDigestValue(Element element) {
-		Element digestValueElement = DomUtils.getElement(element, "ds:DigestValue");
-		if (digestValueElement != null) {
-			return digestValueElement.getTextContent();
-		}
-		return Utils.EMPTY_STRING;
+		
+		return manifestEntries;
 	}
 
 }
