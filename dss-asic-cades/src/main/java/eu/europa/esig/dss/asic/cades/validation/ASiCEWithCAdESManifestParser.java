@@ -35,6 +35,7 @@ import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.common.ASiCNamespace;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.utils.Utils;
@@ -45,35 +46,67 @@ public class ASiCEWithCAdESManifestParser {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCEWithCAdESManifestParser.class);
 
-	private final DSSDocument manifestDocument;
-
 	static {
 		DomUtils.registerNamespace("asic", ASiCNamespace.NS);
 	}
 
-	public ASiCEWithCAdESManifestParser(DSSDocument manifestDocument) {
-		this.manifestDocument = manifestDocument;
-	}
-
-	public ManifestFile getManifest() {
+	/**
+	 * Parses and converts {@code DSSDocument} to {@code ManifestFile}
+	 * @param manifestDocument {@link DSSDocument} to parse
+	 * @return {@link ManifestFile}
+	 */
+	public static ManifestFile getManifestFile(DSSDocument manifestDocument) {
 		ManifestFile manifest = new ManifestFile();
 		manifest.setDocument(manifestDocument);
 
-		try (InputStream is = manifestDocument.openStream()) {
-			Document manifestDom = DomUtils.buildDOM(is);
-			Element root = DomUtils.getElement(manifestDom, ASiCNamespace.ASIC_MANIFEST);
-
-			manifest.setSignatureFilename(DomUtils.getValue(root, ASiCNamespace.SIG_REFERENCE_URI));
-			manifest.setEntries(parseManifestEntries(root));
-
-		} catch (Exception e) {
-			LOG.warn("Unable to analyze manifest file '{}' : {}", manifestDocument.getName(), e.getMessage());
-		}
+		Element root = getManifestRootElement(manifestDocument);
+		manifest.setSignatureFilename(getLinkedSignatureName(root));
+		manifest.setEntries(parseManifestEntries(root));
 
 		return manifest;
 	}
+	
+	/**
+	 * Returns the relative manifests for the given signature name 
+	 * @param manifestDocuments list of found manifests {@link DSSDocument} in the container (candidates)
+	 * @param signatureName {@link String} name of the signature to get related manifest for
+	 * @return {@link DSSDocument} the related manifests
+	 */
+	public static DSSDocument getLinkedManifest(List<DSSDocument> manifestDocuments, String signatureName) {
+		for (DSSDocument manifest : manifestDocuments) {
+			Element manifestRoot = getManifestRootElement(manifest);
+			String linkedSignatureName = getLinkedSignatureName(manifestRoot);
+			if (signatureName.equals(linkedSignatureName)) {
+				return manifest;
+			}
+		}
+		return null;
+	}
+	
+	private static Element getManifestRootElement(DSSDocument manifestDocument) {
+		try (InputStream is = manifestDocument.openStream()) {
+			Document manifestDom = DomUtils.buildDOM(is);
+			return DomUtils.getElement(manifestDom, ASiCNamespace.ASIC_MANIFEST);
+		} catch (Exception e) {
+			LOG.warn("Unable to analyze manifest file '{}' : {}", manifestDocument.getName(), e.getMessage());
+			return null;
+		}
+	}
+	
+	private static String getLinkedSignatureName(Element root) {
+		return DomUtils.getValue(root, ASiCNamespace.SIG_REFERENCE_URI);
+	}
+	
+	private static MimeType getMimeType(Element dataObjectReference) {
+		try {
+			return MimeType.fromMimeTypeString(dataObjectReference.getAttribute(ASiCNamespace.DATA_OBJECT_REFERENCE_MIMETYPE));
+		} catch (DSSException e) {
+			LOG.warn("Cannot extract MimeType for a reference. Reason : [{}]", e.getMessage());
+			return null;
+		}
+	}
 
-	private List<ManifestEntry> parseManifestEntries(Element root) {
+	private static List<ManifestEntry> parseManifestEntries(Element root) {
 		List<ManifestEntry> entries = new ArrayList<ManifestEntry>();
 		NodeList dataObjectReferences = DomUtils.getNodeList(root, ASiCNamespace.DATA_OBJECT_REFERENCE);
 		if (dataObjectReferences == null || dataObjectReferences.getLength() == 0) {
@@ -83,11 +116,7 @@ public class ASiCEWithCAdESManifestParser {
 				ManifestEntry entry = new ManifestEntry();
 				Element dataObjectReference = (Element) dataObjectReferences.item(i);
 				entry.setFileName(dataObjectReference.getAttribute(ASiCNamespace.DATA_OBJECT_REFERENCE_URI));
-				
-				MimeType mimeType = MimeType.fromMimeTypeString(dataObjectReference.getAttribute(ASiCNamespace.DATA_OBJECT_REFERENCE_MIMETYPE));
-				if (mimeType != null) {
-					entry.setMimeType(mimeType);
-				}
+				entry.setMimeType(getMimeType(dataObjectReference));
 
 				DigestAlgorithm digestAlgorithm = null;
 				byte[] digestValueBinary = null;

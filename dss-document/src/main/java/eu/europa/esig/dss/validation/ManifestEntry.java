@@ -9,6 +9,10 @@ public class ManifestEntry {
 	private MimeType mimeType;
 	private Digest digest;
 	
+	// used for reference validation
+	private boolean dataFound;
+	private boolean dataIntact;
+	
 	public String getFileName() {
 		return filename;
 	}
@@ -31,6 +35,22 @@ public class ManifestEntry {
 	
 	public void setDigest(Digest digest) {
 		this.digest = digest;
+	}
+	
+	public boolean isFound() {
+		return dataFound;
+	}
+	
+	public void setFound(boolean found) {
+		this.dataFound = found;
+	}
+	
+	public boolean isIntact() {
+		return dataIntact;
+	}
+	
+	public void setIntact(boolean intact) {
+		this.dataIntact = intact;
 	}
 
 }

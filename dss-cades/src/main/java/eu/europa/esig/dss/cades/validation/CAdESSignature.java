@@ -902,7 +902,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	
 	private List<ReferenceValidation> getManifestEntryValidation(final DSSDocument originalDocument, final Digest messageDigest) {
 		List<ReferenceValidation> manifestEntryValidations = new ArrayList<ReferenceValidation>();
-		ManifestFile manifest = getRelatedManifest(originalDocument, messageDigest);
+		ManifestFile manifest = getSignedManifest(originalDocument, messageDigest);
 		if (manifest == null) {
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("No related manifest file found for a signature with name [{}]", getSignatureFilename());
@@ -913,35 +913,16 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			ReferenceValidation entryValidation = new ReferenceValidation();
 			entryValidation.setType(DigestMatcherType.MANIFEST_ENTRY);
 			entryValidation.setName(entry.getFileName());
-			if (entry.getDigest() != null) {
-				entryValidation.setDigest(entry.getDigest());
-				for (DSSDocument containerContent : getManifestedDocuments()) {
-					if (entry.getFileName().equals(containerContent.getName())) {
-						entryValidation.setFound(true);
-						String computedDigest = containerContent.getDigest(entry.getDigest().getAlgorithm());
-						if (Arrays.equals(entry.getDigest().getValue(), Utils.fromBase64(computedDigest))) {
-							entryValidation.setIntact(true);
-						} else {
-							LOG.warn("Digest value doesn't match for signed data with name '{}'", entry.getFileName());
-							LOG.warn("Expected : '{}'", Utils.toBase64(entry.getDigest().getValue()));
-							LOG.warn("Computed : '{}'", computedDigest);
-						}
-						break;
-					}
-				}
-			} else {
-				LOG.warn("Digest is not defined for signed data with name '{}'", entry.getFileName());
-			}
-			if (!entryValidation.isFound()) {
-				LOG.warn("Signed data with name '{}' not found", entry.getFileName());
-			}
+			entryValidation.setDigest(entry.getDigest());
+			entryValidation.setFound(entry.isFound());
+			entryValidation.setIntact(entry.isIntact());
 			manifestEntryValidations.add(entryValidation);
 		}
 		
 		return manifestEntryValidations;
 	}
 	
-	private ManifestFile getRelatedManifest(final DSSDocument originalDocument, final Digest messageDigest) {
+	private ManifestFile getSignedManifest(final DSSDocument originalDocument, final Digest messageDigest) {
 		if (Utils.isCollectionNotEmpty(manifestFiles)) {
 			DigestAlgorithm digestAlgorithm = messageDigest.getAlgorithm() != null ? messageDigest.getAlgorithm() : DigestAlgorithm.SHA256;
 			String digestValue = originalDocument.getDigest(digestAlgorithm);

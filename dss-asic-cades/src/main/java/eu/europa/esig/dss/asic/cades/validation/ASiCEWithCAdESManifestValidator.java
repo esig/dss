@@ -20,52 +20,75 @@
  */
 package eu.europa.esig.dss.asic.cades.validation;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
 
 public class ASiCEWithCAdESManifestValidator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCEWithCAdESManifestValidator.class);
 
-	private final String signatureName;
-	private final List<ManifestFile> manifestFiles;
+	private final ManifestFile manifest;
 	private final List<DSSDocument> signedDocuments;
 
-	public ASiCEWithCAdESManifestValidator(String signatureName, List<DSSDocument> manifestDocuments, List<DSSDocument> signedDocuments) {
-		this.signatureName = signatureName;
-		this.manifestFiles = new ArrayList<ManifestFile>();
-		if (Utils.isCollectionNotEmpty(manifestFiles)) {
-			for (DSSDocument document : manifestDocuments) {
-				ASiCEWithCAdESManifestParser asiceWithCAdESManifestParser = new ASiCEWithCAdESManifestParser(document);
-				ManifestFile manifest = asiceWithCAdESManifestParser.getManifest();
-				if (manifest != null) {
-					manifestFiles.add(manifest);
+	public ASiCEWithCAdESManifestValidator(ManifestFile manifest, List<DSSDocument> signedDocuments) {
+		Objects.requireNonNull(manifest, "ManifestFile must be defined!");
+		this.manifest = manifest;
+		this.signedDocuments = signedDocuments;
+	}
+	
+	/**
+	 * Validates the manifest entries
+	 * @return list of validated {@link ManifestEntry}s
+	 */
+	public List<ManifestEntry> validateEntries() {
+		List<ManifestEntry> manifestEntries = manifest.getEntries();
+		if (signedDocuments == null) {
+			// no signed data to validate on
+			return manifestEntries;
+		}
+		for (ManifestEntry entry : manifestEntries) {
+			
+			if (entry.getDigest() != null) {
+				for (DSSDocument signedDocument : signedDocuments) {
+					
+					if (entry.getFileName().equals(signedDocument.getName())) {
+						entry.setFound(true);
+						String computedDigest = signedDocument.getDigest(entry.getDigest().getAlgorithm());
+						if (Arrays.equals(entry.getDigest().getValue(), Utils.fromBase64(computedDigest))) {
+							entry.setIntact(true);
+							
+						} else {
+							LOG.warn("Digest value doesn't match for signed data with name '{}'", entry.getFileName());
+							LOG.warn("Expected : '{}'", Utils.toBase64(entry.getDigest().getValue()));
+							LOG.warn("Computed : '{}'", computedDigest);
+							
+						}
+						break;
+						
+					}
 				}
+				
+			} else {
+				LOG.warn("Digest is not defined for signed data with name '{}'", entry.getFileName());
+				
 			}
-		}
-		this.signedDocuments = signedDocuments;
-	}
-
-	public ASiCEWithCAdESManifestValidator(List<ManifestFile> manifestFiles, List<DSSDocument> signedDocuments, String signatureName) {
-		this.signatureName = signatureName;
-		this.manifestFiles = manifestFiles;
-		this.signedDocuments = signedDocuments;
-	}
-
-	public ManifestFile getLinkedManifest() {
-		for (ManifestFile manifest : manifestFiles) {
-			if (Utils.areStringsEqual(signatureName, manifest.getSignatureFilename())) {
-				return manifest;
+			
+			if (!entry.isFound()) {
+				LOG.warn("Signed data with name '{}' not found", entry.getFileName());
 			}
+			
 		}
-		return null;
+		
+		return manifestEntries;
 	}
 
 }

@@ -33,6 +33,7 @@ import org.w3c.dom.NodeList;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.xades.ManifestNamespace;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
@@ -73,10 +74,7 @@ public class ASiCEWithXAdESManifestParser {
 					String fullpathValue = fileEntryElement.getAttribute(ManifestNamespace.FULL_PATH);
 					if (!isFolder(fullpathValue)) {
 						manifestEntry.setFileName(fullpathValue);
-						MimeType mimeType = MimeType.fromMimeTypeString(fileEntryElement.getAttribute(ManifestNamespace.MEDIA_TYPE));
-						if (mimeType != null) {
-							manifestEntry.setMimeType(mimeType);
-						}
+						manifestEntry.setMimeType(getMimeType(fileEntryElement));
 						result.add(manifestEntry);
 					}
 				}
@@ -85,6 +83,15 @@ public class ASiCEWithXAdESManifestParser {
 			LOG.error("Unable to parse manifest file " + manifestDocument.getName(), e);
 		}
 		return result;
+	}
+	
+	private static MimeType getMimeType(Element fileEntryElement) {
+		try {
+			return MimeType.fromMimeTypeString(fileEntryElement.getAttribute(ManifestNamespace.MEDIA_TYPE));
+		} catch (DSSException e) {
+			LOG.warn("Cannot extract MimeType for a reference. Reason : [{}]", e.getMessage());
+			return null;
+		}
 	}
 
 	private boolean isFolder(String fullpathValue) {
