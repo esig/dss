@@ -196,7 +196,7 @@
 					<Algo Date="2026">RSA3072</Algo>
 					<Algo Date="2026">RSA4096</Algo> 
 					<Algo Date="2013">ECDSA160</Algo>
-					<Algo Date="2012">ECDSA192</Algo> 
+					<Algo Date="2013">ECDSA192</Algo> 
 					<Algo Date="2016">ECDSA224</Algo>
 					<Algo Date="2026">ECDSA256</Algo>
 					<Algo Date="2026">ECDSA384</Algo>
@@ -294,7 +294,7 @@
 			<Algo Date="2026">RSA3072</Algo>
 			<Algo Date="2026">RSA4096</Algo> 
 			<Algo Date="2013">ECDSA160</Algo>
-			<Algo Date="2012">ECDSA192</Algo> 
+			<Algo Date="2013">ECDSA192</Algo> 
 			<Algo Date="2016">ECDSA224</Algo>
 			<Algo Date="2026">ECDSA256</Algo>
 			<Algo Date="2026">ECDSA384</Algo>
