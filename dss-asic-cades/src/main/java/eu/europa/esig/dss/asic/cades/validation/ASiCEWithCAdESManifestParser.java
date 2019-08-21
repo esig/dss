@@ -28,7 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DomUtils;
@@ -47,7 +46,7 @@ public class ASiCEWithCAdESManifestParser {
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCEWithCAdESManifestParser.class);
 
 	static {
-		DomUtils.registerNamespace("asic", ASiCNamespace.NS);
+		DomUtils.registerNamespace("asic", ASiCNamespace.ASIC_NS);
 	}
 
 	/**
@@ -105,6 +104,30 @@ public class ASiCEWithCAdESManifestParser {
 			return null;
 		}
 	}
+	
+	private static DigestAlgorithm getDigestAlgorithm(Element dataObjectReference) {
+		Element digestMethodElement = DomUtils.getElement(dataObjectReference, ASiCNamespace.DIGEST_METHOD);
+		if (digestMethodElement != null) {
+			try {
+				return DigestAlgorithm.forXML((digestMethodElement).getAttribute(ASiCNamespace.DIGEST_METHOD_ALGORITHM));
+			} catch (IllegalArgumentException e) {
+				LOG.warn("Unable to extract DigestAlgorithm. Reason : [{}]", e.getMessage());
+			}
+		}
+		return null;
+	}
+	
+	private static byte[] getDigestValue(Element dataObjectReference) {
+		Element digestValueElement = DomUtils.getElement(dataObjectReference, ASiCNamespace.DIGEST_VALUE);
+		if (digestValueElement != null) {
+			try {
+				return Utils.fromBase64(digestValueElement.getTextContent());
+			} catch (Exception e) {
+				LOG.warn("Unable to extract DigestValue. Reason : [{}]", e.getMessage());
+			}
+		}
+		return null;
+	}
 
 	private static List<ManifestEntry> parseManifestEntries(Element root) {
 		List<ManifestEntry> entries = new ArrayList<ManifestEntry>();
@@ -118,23 +141,8 @@ public class ASiCEWithCAdESManifestParser {
 				entry.setFileName(dataObjectReference.getAttribute(ASiCNamespace.DATA_OBJECT_REFERENCE_URI));
 				entry.setMimeType(getMimeType(dataObjectReference));
 
-				DigestAlgorithm digestAlgorithm = null;
-				byte[] digestValueBinary = null;
-				
-				// Loop over child nodes because in order to ignore namespace
-				// TODO: resolve namespace issue
-				if (dataObjectReference.hasChildNodes()) {
-					NodeList childNodes = dataObjectReference.getChildNodes();
-					for (int ii = 0; ii < childNodes.getLength(); ii++) {
-						Node child = childNodes.item(ii);
-						if (ASiCNamespace.DIGEST_METHOD.equals(child.getLocalName())) {
-							digestAlgorithm = DigestAlgorithm.forXML(((Element)child).getAttribute(ASiCNamespace.DIGEST_METHOD_ALGORITHM));
-						} else if (ASiCNamespace.DIGEST_VALUE.equals(child.getLocalName())) {
-							digestValueBinary = Utils.fromBase64(child.getTextContent());
-						}
-					}
-				}
-				
+				DigestAlgorithm digestAlgorithm = getDigestAlgorithm(dataObjectReference);
+				byte[] digestValueBinary = getDigestValue(dataObjectReference);
 				if (digestAlgorithm != null && digestValueBinary != null) {
 					entry.setDigest(new Digest(digestAlgorithm, digestValueBinary));
 				}

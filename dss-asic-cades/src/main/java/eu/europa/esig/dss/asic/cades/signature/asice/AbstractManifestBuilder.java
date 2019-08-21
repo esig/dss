@@ -35,13 +35,13 @@ import eu.europa.esig.dss.model.MimeType;
 public abstract class AbstractManifestBuilder {
 
 	protected void addSigReference(final Document documentDom, final Element asicManifestDom, String uri, MimeType mimeType) {
-		final Element sigReferenceDom = DomUtils.addElement(documentDom, asicManifestDom, ASiCNamespace.NS, ASiCNamespace.SIG_REFERENCE);
+		final Element sigReferenceDom = DomUtils.addElement(documentDom, asicManifestDom, ASiCNamespace.ASIC_NS, ASiCNamespace.SIG_REFERENCE);
 		sigReferenceDom.setAttribute("URI", uri);
 		sigReferenceDom.setAttribute("MimeType", mimeType.getMimeTypeString());
 	}
 
 	protected void addDataObjectReference(final Document documentDom, final Element asicManifestDom, DSSDocument document, DigestAlgorithm digestAlgorithm) {
-		final Element dataObjectReferenceDom = DomUtils.addElement(documentDom, asicManifestDom, ASiCNamespace.NS, ASiCNamespace.DATA_OBJECT_REFERENCE);
+		final Element dataObjectReferenceDom = DomUtils.addElement(documentDom, asicManifestDom, ASiCNamespace.ASIC_NS, ASiCNamespace.DATA_OBJECT_REFERENCE);
 		dataObjectReferenceDom.setAttribute("URI", document.getName());
 
 		MimeType mimeType = document.getMimeType();

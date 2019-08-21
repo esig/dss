@@ -26,7 +26,7 @@ package eu.europa.esig.dss.asic.common;
  */
 public final class ASiCNamespace {
 
-	public static final String NS = "http://uri.etsi.org/02918/v1.2.1#";
+	public static final String ASIC_NS = "http://uri.etsi.org/02918/v1.2.1#";
 	public static final String XADES_SIGNATURES = "asic:XAdESSignatures";
 	public static final String ASIC_MANIFEST = "asic:ASiCManifest";
 	public static final String SIG_REFERENCE = "asic:SigReference";
@@ -34,12 +34,11 @@ public final class ASiCNamespace {
 	public static final String DATA_OBJECT_REFERENCE = "asic:DataObjectReference";
 	public static final String DATA_OBJECT_REFERENCE_MIMETYPE = "MimeType";
 	public static final String DATA_OBJECT_REFERENCE_URI = "URI";
-	public static final String DIGEST_METHOD = "DigestMethod";
+	public static final String DIGEST_METHOD = "ds:DigestMethod";
 	public static final String DIGEST_METHOD_ALGORITHM = "Algorithm";
-	public static final String DIGEST_VALUE = "DigestValue";
+	public static final String DIGEST_VALUE = "ds:DigestValue";
 	
-	
-
 	private ASiCNamespace() {
 	}
+	
 }
