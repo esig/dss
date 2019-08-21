@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<SimpleCertificateReport ValidationTime="2018-02-09T07:03:45" xmlns="http://dss.esig.europa.eu/validation/simple-certificate-report">
+    <Chain>
+        <ChainItem>
+            <id>C-0E9B5C373AFEC1CED5723FCD9231F793BB330FFBF2B94BB8698301C90405B9BF</id>
+            <subject>
+                <commonName>Matthias Schlede</commonName>
+                <surname>Schlede</surname>
+                <givenName>Matthias Johann Stefan</givenName>
+                <organizationName>secrypt GmbH</organizationName>
+                <country>DE</country>
+            </subject>
+            <issuerId>C-A3EDFADFCBE288E5688051D3AD081A0CA09633E52E3E9C9A6E2C436657B2D1A9</issuerId>
+            <notBefore>2011-11-17T13:17:27</notBefore>
+            <notAfter>2015-11-27T13:17:27</notAfter>
+            <keyUsages>
+                <keyUsage>nonRepudiation</keyUsage>
+            </keyUsages>
+            <ocspUrls>
+                <ocspUrl>http://qual.ocsp.d-trust.net</ocspUrl>
+            </ocspUrls>
+            <crlUrls>
+                <crlUrl>ldap://directory.d-trust.net/CN=D-TRUST%20Qualified%20CA%201%202008%3APN,O=D-Trust%20GmbH,C=DE?certificaterevocationlist</crlUrl>
+                <crlUrl>http://www.d-trust.net/crl/d-trust_qualified_ca_1_2008.crl</crlUrl>
+            </crlUrls>
+            <qualificationAtIssuance>QC for eSig with QSCD</qualificationAtIssuance>
+            <qualificationAtValidation>QC for eSig with QSCD</qualificationAtValidation>
+            <revocation>
+                <productionDate>2018-02-09T07:03:45</productionDate>
+                <revocationDate>2014-12-30T13:28:24</revocationDate>
+                <revocationReason>unspecified</revocationReason>
+            </revocation>
+            <Indication>INDETERMINATE</Indication>
+            <SubIndication>OUT_OF_BOUNDS_NO_POE</SubIndication>
+        </ChainItem>
+        <ChainItem>
+            <id>C-A3EDFADFCBE288E5688051D3AD081A0CA09633E52E3E9C9A6E2C436657B2D1A9</id>
+            <subject>
+                <commonName>D-TRUST Qualified CA 1 2008:PN</commonName>
+                <organizationName>D-Trust GmbH</organizationName>
+                <country>DE</country>
+            </subject>
+            <notBefore>2008-07-24T16:54:11</notBefore>
+            <notAfter>2013-07-24T15:30:00</notAfter>
+            <keyUsages>
+                <keyUsage>keyCertSign</keyUsage>
+                <keyUsage>crlSign</keyUsage>
+            </keyUsages>
+            <ocspUrls>
+                <ocspUrl>http://qual.ocsp.d-trust.net</ocspUrl>
+            </ocspUrls>
+            <crlUrls>
+                <crlUrl>ldap://directory.d-trust.net/CN=D-TRUST%20Qualified%20Root%20CA%201%202008%3APN,O=D-Trust%20GmbH,C=DE?certificaterevocationlist</crlUrl>
+                <crlUrl>http://www.d-trust.net/crl/d-trust_qualified_root_ca_1_2008.crl</crlUrl>
+            </crlUrls>
+            <revocation/>
+            <trustAnchors>
+                <trustAnchor>
+                    <countryCode>DE</countryCode>
+                    <trustServiceProvider>D-Trust GmbH</trustServiceProvider>
+                    <trustServiceProviderRegistrationId>VATDE-202620438 </trustServiceProviderRegistrationId>
+                    <trustServiceName>D-TRUST Qualified CA 1 2008:PN</trustServiceName>
+                </trustAnchor>
+            </trustAnchors>
+            <Indication>PASSED</Indication>
+        </ChainItem>
+    </Chain>
+</SimpleCertificateReport>

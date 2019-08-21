@@ -188,14 +188,10 @@
 		    <xsl:attribute name="class">dl-horizontal</xsl:attribute>
 		    
 		    <dt>Extended key usages</dt>
-			<xsl:apply-templates select="dss:keyUsage"/>
+			<xsl:apply-templates select="dss:extendedKeyUsage"/>
 		</dl>
 	</xsl:template>
 	
-    <xsl:template match="dss:keyUsage">
-    	<dd><xsl:value-of select="." /></dd>
-    </xsl:template>
-    
     <xsl:template match="dss:revocation">
     	<xsl:choose>
 			<xsl:when test="dss:revocationDate">
@@ -227,7 +223,7 @@
   				OCSP
   			</acronym>
 		</dt>
-		<xsl:apply-templates select="dss:url"/>
+		<xsl:apply-templates select="dss:ocspUrl"/>
 	</xsl:template>
 	
   	<xsl:template match="dss:crlUrls">
@@ -237,7 +233,7 @@
 		  		CRL
 		  	</acronym>
 		</dt>
-		<xsl:apply-templates select="dss:url"/>
+		<xsl:apply-templates select="dss:crlUrl"/>
 	</xsl:template>
 	
 	<xsl:template match="dss:aiaUrls">
@@ -247,7 +243,7 @@
   		  		AIA
   		  	</acronym>
 		</dt>
-		<xsl:apply-templates select="dss:url"/>
+		<xsl:apply-templates select="dss:aiaUrl"/>
 	</xsl:template>
 	
     <xsl:template match="dss:cpsUrls">
@@ -257,7 +253,7 @@
   		  		CPS
   		  	</acronym>
 		</dt>
-		<xsl:apply-templates select="dss:url"/>
+		<xsl:apply-templates select="dss:cpsUrl"/>
 	</xsl:template>
 	
     <xsl:template match="dss:trustAnchors">
@@ -305,7 +301,11 @@
     	</dd>
     </xsl:template>
     
-    <xsl:template match="dss:url">
+    <xsl:template match="dss:keyUsage | dss:extendedKeyUsage">
+    	<dd><xsl:value-of select="." /></dd>
+    </xsl:template>
+    
+    <xsl:template match="dss:ocspUrl | dss:crlUrl | dss:aiaUrl | dss:cpsUrl | dss:pdsUrl">
     	<dd>
     		<a>
     			<xsl:attribute name="href"><xsl:value-of select="." /></xsl:attribute>
