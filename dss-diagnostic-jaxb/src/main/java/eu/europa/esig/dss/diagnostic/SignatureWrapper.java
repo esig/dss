@@ -795,4 +795,9 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return certificatesByLocation;
 	}
 
+	@Override
+	public byte[] getBinaries() {
+		return signature.getSignatureValue();
+	}
+
 }

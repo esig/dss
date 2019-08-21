@@ -189,6 +189,7 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		return timestampedObjectIds;
 	}
 
+	@Override
 	public byte[] getBinaries() {
 		return timestamp.getBase64Encoded();
 	}
