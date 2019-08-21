@@ -114,6 +114,8 @@ import eu.europa.esig.dss.validation.CertificateValidity;
 import eu.europa.esig.dss.validation.CommitmentType;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
 import eu.europa.esig.dss.validation.IssuerSerialInfo;
+import eu.europa.esig.dss.validation.ManifestEntry;
+import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.ReferenceValidation;
 import eu.europa.esig.dss.validation.SignatureCRLSource;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
@@ -855,8 +857,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 						// try to match with found digest algorithm(s)
 						for (DigestAlgorithm digestAlgorithm : messageDigestAlgorithms) {
-							String digest = originalDocument.getDigest(digestAlgorithm);
-							if (Arrays.equals(expectedMessageDigestValue, Utils.fromBase64(digest))) {
+							String base64Digest = originalDocument.getDigest(digestAlgorithm);
+							if (Arrays.equals(expectedMessageDigestValue, Utils.fromBase64(base64Digest))) {
 								messageDigest.setAlgorithm(digestAlgorithm);
 								validation.setIntact(true);
 								break;
@@ -868,10 +870,17 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 							messageDigest.setAlgorithm(messageDigestAlgorithms.iterator().next());
 						}
 						validation.setDigest(messageDigest);
+						
 					} else {
 						LOG.warn("Message DigestAlgorithms not found in SignedData! Reference validation is not possible.");
 						
 					}
+					
+					// get references to documents contained in the manifest file (for ASiC-E container)
+					if (validation.isFound()) {
+						validation.getDependentValidations().addAll(getManifestEntryValidation(originalDocument, messageDigest));
+					}
+					
 				} else {
 					LOG.warn("message-digest is not present in SignedData!");
 					if (signerInformationToCheck != null) {
@@ -889,6 +898,61 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 		}
 		return referenceValidations;
+	}
+	
+	private List<ReferenceValidation> getManifestEntryValidation(final DSSDocument originalDocument, final Digest messageDigest) {
+		List<ReferenceValidation> manifestEntryValidations = new ArrayList<ReferenceValidation>();
+		ManifestFile manifest = getRelatedManifest(originalDocument, messageDigest);
+		if (manifest == null) {
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("No related manifest file found for a signature with name [{}]", getSignatureFilename());
+			}
+			return manifestEntryValidations;
+		}
+		for (ManifestEntry entry : manifest.getEntries()) {
+			ReferenceValidation entryValidation = new ReferenceValidation();
+			entryValidation.setType(DigestMatcherType.MANIFEST_ENTRY);
+			entryValidation.setName(entry.getFileName());
+			if (entry.getDigest() != null) {
+				entryValidation.setDigest(entry.getDigest());
+				for (DSSDocument containerContent : getManifestedDocuments()) {
+					if (entry.getFileName().equals(containerContent.getName())) {
+						entryValidation.setFound(true);
+						String computedDigest = containerContent.getDigest(entry.getDigest().getAlgorithm());
+						if (Arrays.equals(entry.getDigest().getValue(), Utils.fromBase64(computedDigest))) {
+							entryValidation.setIntact(true);
+						} else {
+							LOG.warn("Digest value doesn't match for signed data with name '{}'", entry.getFileName());
+							LOG.warn("Expected : '{}'", Utils.toBase64(entry.getDigest().getValue()));
+							LOG.warn("Computed : '{}'", computedDigest);
+						}
+						break;
+					}
+				}
+			} else {
+				LOG.warn("Digest is not defined for signed data with name '{}'", entry.getFileName());
+			}
+			if (!entryValidation.isFound()) {
+				LOG.warn("Signed data with name '{}' not found", entry.getFileName());
+			}
+			manifestEntryValidations.add(entryValidation);
+		}
+		
+		return manifestEntryValidations;
+	}
+	
+	private ManifestFile getRelatedManifest(final DSSDocument originalDocument, final Digest messageDigest) {
+		if (Utils.isCollectionNotEmpty(manifestFiles)) {
+			DigestAlgorithm digestAlgorithm = messageDigest.getAlgorithm() != null ? messageDigest.getAlgorithm() : DigestAlgorithm.SHA256;
+			String digestValue = originalDocument.getDigest(digestAlgorithm);
+			
+			for (ManifestFile manifestFile : manifestFiles) {
+				if (digestValue.equals(manifestFile.getDigestBase64String(digestAlgorithm))) {
+					return manifestFile;
+				}
+			}
+		}
+		return null;
 	}
 
 	@Override

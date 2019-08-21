@@ -95,7 +95,7 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 		for (DSSDocument signatureDoc : signatureDocuments) {
 			for (DSSDocument manifestDoc : manifestDocuments) {
 				ASiCEWithXAdESManifestParser manifestParser = new ASiCEWithXAdESManifestParser(signatureDoc, manifestDoc);
-				descriptions.add(manifestParser.getDescription());
+				descriptions.add(manifestParser.getManifest());
 			}
 		}
 		return descriptions;

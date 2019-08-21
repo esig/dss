@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.validation;
 
 import java.io.Serializable;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
@@ -51,6 +51,8 @@ public class ReferenceValidation implements Serializable {
 	private String name;
 	/* List of used transforms to compute digest of the reference */
 	protected List<String> transforms;
+	/* List of dependent {@code ReferenceValidation}s (used in case of manifest type for manifest entries) */
+	private List<ReferenceValidation> dependentReferenceValidations;
 
 	public DigestMatcherType getType() {
 		return type;
@@ -99,8 +101,10 @@ public class ReferenceValidation implements Serializable {
 	 * @return list of {@link ReferenceValidation}s
 	 */
 	public List<ReferenceValidation> getDependentValidations() {
-		// not supported by default
-		return Collections.emptyList();
+		if (dependentReferenceValidations == null) {
+			dependentReferenceValidations = new ArrayList<ReferenceValidation>();
+		}
+		return dependentReferenceValidations;
 	}
 
 	/**

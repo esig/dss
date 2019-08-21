@@ -32,6 +32,13 @@ public final class ASiCNamespace {
 	public static final String SIG_REFERENCE = "asic:SigReference";
 	public static final String SIG_REFERENCE_URI = "asic:SigReference/@URI";
 	public static final String DATA_OBJECT_REFERENCE = "asic:DataObjectReference";
+	public static final String DATA_OBJECT_REFERENCE_MIMETYPE = "MimeType";
+	public static final String DATA_OBJECT_REFERENCE_URI = "URI";
+	public static final String DIGEST_METHOD = "DigestMethod";
+	public static final String DIGEST_METHOD_ALGORITHM = "Algorithm";
+	public static final String DIGEST_VALUE = "DigestValue";
+	
+	
 
 	private ASiCNamespace() {
 	}

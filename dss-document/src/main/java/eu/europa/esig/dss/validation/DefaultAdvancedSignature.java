@@ -90,7 +90,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	/**
 	 * In case of a ASiC-E signature this is the list of found manifest files.
 	 */
-	private List<ManifestFile> manifestFiles;
+	protected List<ManifestFile> manifestFiles;
 
 	/**
 	 * This variable contains a list of reference validations (reference tag for
@@ -212,8 +212,10 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
     	for (ManifestFile manifestFile : manifestFiles) {
     		if (manifestFile.getSignatureFilename().equals(signatureFilename)) {
     			for (DSSDocument document : containerContents) {
-    				if (manifestFile.getEntries().contains(document.getName())) {
-    					foundManifestedDocuments.add(document);
+    				for (ManifestEntry entry : manifestFile.getEntries()) {
+        				if (entry.getFileName().equals(document.getName())) {
+        					foundManifestedDocuments.add(document);
+        				}
     				}
     			}
     			break;

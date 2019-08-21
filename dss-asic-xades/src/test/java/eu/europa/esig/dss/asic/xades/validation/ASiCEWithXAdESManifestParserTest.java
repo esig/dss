@@ -32,6 +32,7 @@ import org.junit.Test;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
 
 public class ASiCEWithXAdESManifestParserTest {
@@ -42,14 +43,26 @@ public class ASiCEWithXAdESManifestParserTest {
 		DSSDocument manifestDoc = new FileDocument(new File("src/test/resources/manifest-sample.xml"));
 		ASiCEWithXAdESManifestParser parser = new ASiCEWithXAdESManifestParser(signatureDoc, manifestDoc);
 
-		ManifestFile description = parser.getDescription();
+		ManifestFile description = parser.getManifest();
 		assertNotNull(description);
 		assertEquals("manifest-sample.xml", description.getFilename());
 		assertEquals("test", description.getSignatureFilename());
-		List<String> entries = description.getEntries();
+		List<ManifestEntry> entries = description.getEntries();
 		assertEquals(2, entries.size());
-		assertTrue(entries.contains("test.txt"));
-		assertTrue(entries.contains("test-data-file.bin"));
+		boolean containsTestTxt = false;
+		boolean containsTestDataFileBin = false;
+		for (ManifestEntry entry : entries) {
+			if ("test.txt".equals(entry.getFileName())) {
+				containsTestTxt = true;
+			}
+			if ("test-data-file.bin".equals(entry.getFileName())) {
+				containsTestDataFileBin = true;
+			}
+			assertNotNull(entry.getFileName());
+			assertNotNull(entry.getMimeType());
+		}
+		assertTrue(containsTestTxt);
+		assertTrue(containsTestDataFileBin);
 	}
 
 }

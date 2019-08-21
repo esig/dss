@@ -131,13 +131,13 @@ public class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
 		List<DSSDocument> signedDocuments = result.getSignedDocuments();
 		assertEquals(2, signedDocuments.size());
 
-		ASiCEWithCAdESManifestValidator manifestValidator = new ASiCEWithCAdESManifestValidator(signatureDocument, manifestDocuments, signedDocuments);
+		ASiCEWithCAdESManifestValidator manifestValidator = new ASiCEWithCAdESManifestValidator(signatureDocument, manifestDocuments);
 		DSSDocument linkedManifest = manifestValidator.getLinkedManifest();
 		assertNotNull(linkedManifest);
 
 		String lastCreatedArchiveManifestName = null;
 		for (DSSDocument timestamp : timestamps) {
-			manifestValidator = new ASiCEWithCAdESManifestValidator(timestamp, archiveManifestDocuments, result.getTimestampedDocuments(timestamp));
+			manifestValidator = new ASiCEWithCAdESManifestValidator(timestamp, archiveManifestDocuments);
 			linkedManifest = manifestValidator.getLinkedManifest();
 			assertNotNull(linkedManifest);
 			lastCreatedArchiveManifestName = linkedManifest.getName();
