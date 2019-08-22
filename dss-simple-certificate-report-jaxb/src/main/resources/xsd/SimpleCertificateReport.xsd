@@ -91,13 +91,13 @@
 	
 	<xs:complexType name="KeyUsages">
 		<xs:sequence>
-			<xs:element name="keyUsage" type="KeyUsage" minOccurs="1" maxOccurs="unbounded" />
+			<xs:element name="keyUsage" type="KeyUsage" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 	
 	<xs:complexType name="ExtendedKeyUsages">
 		<xs:sequence>
-			<xs:element name="extendedKeyUsage" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
+			<xs:element name="extendedKeyUsage" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 	
