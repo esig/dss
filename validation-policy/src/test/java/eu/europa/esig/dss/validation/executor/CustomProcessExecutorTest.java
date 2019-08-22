@@ -1840,7 +1840,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		}
 	}
 
-	public static void unmarshallValidationReport(Reports reports) {
+	public void unmarshallValidationReport(Reports reports) {
 		try {
 			String xmlValidationReport = reports.getXmlValidationReport();
 			assertTrue(Utils.isStringNotBlank(xmlValidationReport));

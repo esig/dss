@@ -229,6 +229,11 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private SignatureValidationReportType getValidationReport(AbstractTokenProxy token) {
+		XmlBasicBuildingBlocks tokenBBB = detailedReport.getBasicBuildingBlockById(token.getId());
+		// return null if validation was not performed
+		if (tokenBBB == null) {
+			return null;
+		}
 		SignatureValidationReportType signatureValidationReport = objectFactory.createSignatureValidationReportType();
 		signatureValidationReport.setSignerInformation(getSignerInformation(token));
 		signatureValidationReport.setSignatureValidationStatus(getValidationStatus(token));
