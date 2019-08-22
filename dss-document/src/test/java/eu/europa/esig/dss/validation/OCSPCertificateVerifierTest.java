@@ -39,8 +39,8 @@ public class OCSPCertificateVerifierTest {
 
 	@Test
 	public void testKeyHash() {
-		CertificateToken toCheckToken = DSSUtils.loadCertificate(new File("src/test/resources/peru_client.cer"));
-		CertificateToken caToken = DSSUtils.loadCertificate(new File("src/test/resources/peru_CA.cer"));
+		CertificateToken toCheckToken = DSSUtils.loadCertificate(new File("src/test/resources/certificates/peru_client.cer"));
+		CertificateToken caToken = DSSUtils.loadCertificate(new File("src/test/resources/certificates/peru_CA.cer"));
 		assertTrue(toCheckToken.isSignedBy(caToken));
 
 		OCSPSource ocspSource = new ExternalResourcesOCSPSource("/peru_ocsp.bin");

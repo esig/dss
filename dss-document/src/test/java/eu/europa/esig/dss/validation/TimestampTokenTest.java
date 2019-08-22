@@ -63,7 +63,7 @@ public class TimestampTokenTest {
 
 	@Test
 	public void correctToken() throws Exception {
-		CertificateToken wrongToken = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
+		CertificateToken wrongToken = DSSUtils.loadCertificate(new File("src/test/resources/certificates/ec.europa.eu.crt"));
 
 		try (FileInputStream fis = new FileInputStream("src/test/resources/archive_timestamp.tst")) {
 			byte[] byteArray = Utils.toByteArray(fis);

@@ -51,7 +51,7 @@ public class DeterministicIdGenerationTest {
 
 	@Before
 	public void setUp() throws Exception {
-		signingCert = DSSUtils.loadCertificate(new FileInputStream("src/test/resources/ec.europa.eu.crt"));
+		signingCert = DSSUtils.loadCertificate(new FileInputStream("src/test/resources/certificates/ec.europa.eu.crt"));
 	}
 
 	@Test
