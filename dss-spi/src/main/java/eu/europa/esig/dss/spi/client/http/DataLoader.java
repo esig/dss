@@ -39,18 +39,26 @@ public interface DataLoader extends Serializable {
 		/**
 		 * Url used to obtain data.
 		 */
-		public String urlString;
+		private String urlString;
 
 		/**
 		 * Obtained data.
 		 */
-		public byte[] data;
+		private byte[] data;
 
 		public DataAndUrl(final byte[] data, final String urlString) {
-
 			this.data = data;
 			this.urlString = urlString;
 		}
+		
+		public String getUrlString() {
+			return urlString;
+		}
+		
+		public byte[] getData() {
+			return data;
+		}
+		
 	}
 
 	/**
