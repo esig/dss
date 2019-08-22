@@ -96,6 +96,7 @@ public class XAdESLTATest {
 		ServiceInfo serviceInfo = new ServiceInfo();
 		serviceInfo.setTlCountryCode("BE");
 		serviceInfo.setTspName("CN=Belgium Root CA2, C=BE");
+		serviceInfo.setTspRegistrationIdentifier("VATDE-203462028");
 
 		MutableTimeDependentValues<ServiceInfoStatus> statusHistoryList = new MutableTimeDependentValues<ServiceInfoStatus>();
 		ServiceInfoStatus sis = new ServiceInfoStatus("CN=Belgium Root CA2, C=BE", "http://uri.etsi.org/TrstSvc/Svctype/CA/QC",

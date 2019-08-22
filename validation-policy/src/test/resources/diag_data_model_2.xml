@@ -106,6 +106,7 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>OpenLimit Test-CA</TSPName>
+                    <TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier>
                     <CountryCode>OL</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
@@ -183,6 +184,7 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>OpenLimit Test-CA</TSPName>
+                    <TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier>
                     <CountryCode>OL</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
@@ -266,6 +268,7 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>OpenLimit Test-CA</TSPName>
+                    <TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier>
                     <CountryCode>OL</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
@@ -349,6 +352,7 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>OpenLimit Test-CA</TSPName>
+                    <TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier>
                     <CountryCode>OL</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">

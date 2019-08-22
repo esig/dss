@@ -45,6 +45,7 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>TSP-5.3 Name</TSPName>
+                    <TSPRegistrationIdentifier>VATDE-200438262</TSPRegistrationIdentifier>
                     <CountryCode>IT</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-D63E106FC51D93A2A04C36C66BC951B1C774AFC9A50CEBFC43836AE63C60B02A">
@@ -128,6 +129,7 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>TSP-5.3 Name</TSPName>
+                    <TSPRegistrationIdentifier>VATDE-200438262</TSPRegistrationIdentifier>
                     <CountryCode>IT</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-D63E106FC51D93A2A04C36C66BC951B1C774AFC9A50CEBFC43836AE63C60B02A">

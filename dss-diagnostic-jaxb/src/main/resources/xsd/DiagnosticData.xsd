@@ -862,7 +862,7 @@
 	<xs:complexType name="TrustedServiceProvider">
 		<xs:sequence>
 			<xs:element name="TSPName" type="xs:string" />
-			<xs:element name="TSPRegistrationIdentifier" type="xs:string" minOccurs="0" />
+			<xs:element name="TSPRegistrationIdentifier" type="xs:string" />
 			<xs:element name="CountryCode" type="xs:string" />
 			
 			<xs:element name="TrustedServices">
