@@ -93,7 +93,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		// TODO: Etsi Validation Report
 
 		SimpleReport simpleReport = reports.getSimpleReport();
-		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 
 		validateBestSigningTimes(reports);
 		checkReports(reports);
@@ -823,7 +823,8 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 		Reports reports = executor.execute();
 		SimpleReport simpleReport = reports.getSimpleReport();
-		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.TRY_LATER, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 
 		validateBestSigningTimes(reports);
 	}
@@ -973,13 +974,10 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		Date validationDate = diagnosticData.getValidationDate();
 		executor.setCurrentTime(validationDate);
 
+		executor.setValidationLevel(ValidationLevel.ARCHIVAL_DATA);
 		Reports reports = executor.execute();
 		
-		System.out.println(reports.getXmlDetailedReport());
-				
 		DetailedReport detailedReport = reports.getDetailedReport();
-		
-		
 		
 		// Extract the build block where the verification failed
 		XmlBasicBuildingBlocks basicBuildingBlockById = detailedReport.getBasicBuildingBlockById("R-F104CADD12E8C96491EB3F95667AFB7E594162A461F968CE2D488C32E6A18624");
@@ -990,6 +988,24 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		XmlName error = xmlConstraint.getError();
 		
 		assertEquals(MessageTag.ASCCM_ANS_6.getMessage(), error.getValue());
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.NO_SIGNING_CERTIFICATE_FOUND, simpleReport.getSubIndication(simpleReport.getFirstSignatureId())); // OCSP Cert not found
+
+		executor.setValidationLevel(ValidationLevel.LONG_TERM_DATA);
+		reports = executor.execute();
+		simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.NO_SIGNING_CERTIFICATE_FOUND, simpleReport.getSubIndication(simpleReport.getFirstSignatureId())); // OCSP Cert not found
+
+		executor.setValidationLevel(ValidationLevel.BASIC_SIGNATURES);
+		reports = executor.execute();
+		simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId())); // Crypto for OCSP
+																																			// Cert not found
+
 	}
 
 	@Test
