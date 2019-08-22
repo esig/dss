@@ -12,8 +12,10 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -121,13 +123,19 @@ public class PAdESDoubleLTAValidationData extends PKIFactoryAccess {
 		assertNotNull(timestamps);
 		assertEquals(3, timestamps.size());
 		
+		int archiveTimestampCounter = 0;
 		for (TimestampWrapper timestamp : timestamps) {
 			CertificateWrapper signingCertificate = timestamp.getSigningCertificate();
 			assertNotNull(signingCertificate);
 			assertTrue(signingCertificate.isRevocationDataAvailable());
 			assertTrue(timestamp.getDigestMatchers().get(0).isDataFound());
 			assertTrue(timestamp.getDigestMatchers().get(0).isDataIntact());
+			if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestamp.getType())) {
+				assertEquals(ArchiveTimestampType.PAdES, timestamp.getArchiveTimestampType());
+				archiveTimestampCounter++;
+			}
 		}
+		assertEquals(2, archiveTimestampCounter);
 		
 		TimestampWrapper timestampWrapper = timestamps.get(0);
 		assertEquals(3, timestampWrapper.getTimestampedObjects().size());
@@ -141,8 +149,6 @@ public class PAdESDoubleLTAValidationData extends PKIFactoryAccess {
 		assertEquals(18, timestampWrapper.getTimestampedObjects().size());
 		assertEquals(3, timestampWrapper.getTimestampedRevocationIds().size());
 		
-		
-		diagnosticData = reports.getDiagnosticData();
 		List<String> revocationIdsDoubleLtaLevel = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId()).getRevocationIds();
 		assertEquals(3, revocationIdsDoubleLtaLevel.size());
 		for (String id : revocationIdsLtaLevel) {

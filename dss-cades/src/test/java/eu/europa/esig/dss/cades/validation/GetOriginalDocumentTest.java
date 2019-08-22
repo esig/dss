@@ -45,7 +45,7 @@ import eu.europa.esig.dss.validation.reports.Reports;
 
 public class GetOriginalDocumentTest extends PKIFactoryAccess {
 
-	private static String HELLO_WORLD = "HELLO WORLD !";
+	private static final String HELLO_WORLD = "HELLO WORLD !";
 
 	@Test
 	public final void getOriginalDocumentFromEnvelopingSignature() throws Exception {

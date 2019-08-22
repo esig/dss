@@ -14,6 +14,7 @@ import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.crl.CRLBinary;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -29,7 +30,6 @@ import eu.europa.esig.dss.validation.ReferenceValidation;
 import eu.europa.esig.dss.validation.SignatureProperties;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.timestamp.AbstractTimestampSource;
-import eu.europa.esig.dss.validation.timestamp.ArchiveTimestampType;
 import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;

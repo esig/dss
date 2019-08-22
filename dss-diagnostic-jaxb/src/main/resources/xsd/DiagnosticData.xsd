@@ -647,6 +647,7 @@
 		<xs:complexContent>
             <xs:extension base="AbstractToken">
 				<xs:sequence>
+					<xs:element name="ArchiveTimestampType" type="ArchiveTimestampType" minOccurs="0" />
 					<xs:element name="ProductionTime" type="xs:dateTime" />
 					<xs:element name="DigestMatcher" type="DigestMatcher" />
 					<xs:element name="BasicSignature" type="BasicSignature" />
@@ -682,6 +683,18 @@
 			<xs:enumeration value="XAdES" />
 			<xs:enumeration value="CAdES" />
 			<xs:enumeration value="DOC_TIMESTAMP" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="ArchiveTimestampType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="XAdES" />
+			<xs:enumeration value="XAdES_141" />
+			<xs:enumeration value="CAdES" />
+			<xs:enumeration value="CAdES_V2" />
+			<xs:enumeration value="CAdES_V3" />
+			<xs:enumeration value="CAdES_DETACHED" />
+			<xs:enumeration value="PAdES" />
 		</xs:restriction>
 	</xs:simpleType>
 	

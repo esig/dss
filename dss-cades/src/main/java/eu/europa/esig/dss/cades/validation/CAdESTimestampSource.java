@@ -44,6 +44,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.signature.CadesLevelBaselineLTATimestampExtractor;
 import eu.europa.esig.dss.crl.CRLBinary;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -64,7 +65,6 @@ import eu.europa.esig.dss.validation.CMSCertificateSource;
 import eu.europa.esig.dss.validation.CMSOCSPSource;
 import eu.europa.esig.dss.validation.SignatureProperties;
 import eu.europa.esig.dss.validation.timestamp.AbstractTimestampSource;
-import eu.europa.esig.dss.validation.timestamp.ArchiveTimestampType;
 import eu.europa.esig.dss.validation.timestamp.TimestampCRLSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampOCSPSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -194,15 +194,7 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 			return null;
 		}
 		try {
-			TimestampToken timestamp = new TimestampToken(asn1Primitive.getEncoded(), timestampType, certificatePool, references, TimestampLocation.CAdES);
-			if (isArchiveTimestampV2(signatureAttribute)) {
-				timestamp.setArchiveTimestampType(ArchiveTimestampType.CAdES_V2);
-			} else if (isArchiveTimestampV3(signatureAttribute)) {
-				timestamp.setArchiveTimestampType(ArchiveTimestampType.CAdES_V3);
-			} else {
-				timestamp.setArchiveTimestampType(ArchiveTimestampType.CAdES);
-			}
-			return timestamp;
+			return new TimestampToken(asn1Primitive.getEncoded(), timestampType, certificatePool, references, TimestampLocation.CAdES);
 		} catch (Exception e) {
 			throw new DSSException("Cannot create a timestamp token", e);
 		}

@@ -56,6 +56,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureDigestReference;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -743,12 +744,18 @@ public class XMLSignatureWrappingTest {
 		
 		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
 		assertEquals(4, timestampList.size());
+		int archiveTimestampCounter = 0;
 		for (TimestampWrapper timestamp : timestampList) {
 			List<XmlTimestampedObject> timestampedObjects = timestamp.getTimestampedObjects();
 			for (XmlTimestampedObject timestampedObject : timestampedObjects) {
 				assertNotNull(timestampedObject.getToken());
 			}
+			if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestamp.getType())) {
+				archiveTimestampCounter++;
+				assertEquals(ArchiveTimestampType.XAdES, timestamp.getArchiveTimestampType());
+			}
 		}
+		assertEquals(1, archiveTimestampCounter);
 	}
 	
 	/**

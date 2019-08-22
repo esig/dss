@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -30,6 +31,7 @@ import org.junit.Test;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
@@ -54,6 +56,7 @@ public class DSS1401Test {
 		List<TimestampWrapper> timestamps = signature.getTimestampListByType(TimestampType.ARCHIVE_TIMESTAMP);
 		TimestampWrapper archiveTimestamp = timestamps.get(0);
 
+		assertEquals(ArchiveTimestampType.CAdES_V2, archiveTimestamp.getArchiveTimestampType());
 		assertTrue(archiveTimestamp.isMessageImprintDataFound());
 		assertTrue(archiveTimestamp.isMessageImprintDataIntact());
 

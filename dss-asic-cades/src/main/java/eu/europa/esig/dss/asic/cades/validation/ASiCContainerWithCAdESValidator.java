@@ -34,6 +34,7 @@ import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.validation.AbstractASiCContainerValidator;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -142,6 +143,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 						cadesTimestamps.addAll(cadesSig.getTimestampsX2());
 						// Archive timestamp from CAdES is skipped
 
+						timestamp.setArchiveTimestampType(ArchiveTimestampType.CAdES_DETACHED);
 						timestamp.getTimestampedReferences().addAll(cadesSig.getTimestampReferencesForArchiveTimestamp(cadesTimestamps));
 						advancedSignature.addExternalTimestamp(timestamp);
 						
