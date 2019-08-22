@@ -55,13 +55,14 @@ public class ASiCEWithCAdESManifestParser {
 	 * @return {@link ManifestFile}
 	 */
 	public static ManifestFile getManifestFile(DSSDocument manifestDocument) {
+		Element root = getManifestRootElement(manifestDocument);
+		if (root == null) {
+			return null;
+		}
 		ManifestFile manifest = new ManifestFile();
 		manifest.setDocument(manifestDocument);
-
-		Element root = getManifestRootElement(manifestDocument);
 		manifest.setSignatureFilename(getLinkedSignatureName(root));
 		manifest.setEntries(parseManifestEntries(root));
-
 		return manifest;
 	}
 	
@@ -74,9 +75,11 @@ public class ASiCEWithCAdESManifestParser {
 	public static DSSDocument getLinkedManifest(List<DSSDocument> manifestDocuments, String signatureName) {
 		for (DSSDocument manifest : manifestDocuments) {
 			Element manifestRoot = getManifestRootElement(manifest);
-			String linkedSignatureName = getLinkedSignatureName(manifestRoot);
-			if (signatureName.equals(linkedSignatureName)) {
-				return manifest;
+			if (manifestRoot != null) {
+				String linkedSignatureName = getLinkedSignatureName(manifestRoot);
+				if (signatureName.equals(linkedSignatureName)) {
+					return manifest;
+				}
 			}
 		}
 		return null;

@@ -19,6 +19,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -67,6 +68,25 @@ public class ASiCEBrokenReferenceTest extends PKIFactoryAccess {
 		assertEquals(Indication.FAILED, signatureBBB.getConclusion().getIndication());
 		assertEquals(SubIndication.HASH_FAILURE, signatureBBB.getConclusion().getSubIndication());
 		
+	}
+
+	@Test
+	public void testBrokenReferenceAndAlteredManifest() {
+
+		DSSDocument document = new FileDocument("src/test/resources/validation/brokenReferenceAndAlteredManifest.asice");
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
+
+		Reports reports = validator.validateDocument();
+		assertNotNull(reports);
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_FAILED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.FORMAT_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+
+		List<DSSDocument> originalDocuments = validator.getOriginalDocuments(simpleReport.getFirstSignatureId());
+		assertNotNull(originalDocuments);
+		assertEquals(0, originalDocuments.size());
 	}
 
 	@Override
