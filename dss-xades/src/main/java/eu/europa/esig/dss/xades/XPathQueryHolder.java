@@ -255,6 +255,6 @@ public class XPathQueryHolder implements Serializable {
 	 * @return
 	 */
 	public boolean canUseThisXPathQueryHolder(final String namespace) {
-		return XAdESNamespaces.XAdES.equals(namespace);
+		return XAdESNamespaces.getXAdESDefaultNamespace().equals(namespace);
 	}
 }
