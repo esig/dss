@@ -146,7 +146,10 @@ Please note that the DSS framework is still under maintenance and new features w
 === Useful links
 
  * https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/eSignature[CEF Digital]
+ * https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/eSignature+FAQ[eSignature FAQ]
  * https://webgate.ec.europa.eu/tl-browser/#/[TL Browser]
+ * https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/eSignature+validation+tests[eSignature validation tests]
+ * https://ec.europa.eu/cefdigital/wiki/display/TLSO/Trusted+List+Manager+non-EU[Trusted List Manager non-EU]
  * https://github.com/esig/dss[Source code (GitHub)]
  * https://ec.europa.eu/cefdigital/code/projects/ESIG/repos/dss/browse[Source code (EC Bitbucket)]
  * https://ec.europa.eu/cefdigital/code/projects/ESIG/repos/dss-demos/browse[Source code demonstrations (EC Bitbucket)]
@@ -168,65 +171,93 @@ You can easily download them with the following Maven repository :
 </repository>
 ----
 
-[horizontal]
+=== Maven modules
+
+==== Shared modules
+
+dss-enumerations:: Contains a list of all used enumerations in the DSS project.
+dss-jaxb-parsers:: Contains a list of all classes used to transform JAXB objects/strings to Java objects and vice versa.
+
+==== JAXB model modules
+
+specs-xmldsig:: W3C XSD schema for signatures http://www.w3.org/2000/09/xmldsig
+specs-xades:: ETSI EN 319 132-1 XSD schema for XAdES
+specs-trusted-list:: ETSI TS 119 612 XSD schema for parsing Trusted Lists
+specs-validation-report:: ETSI TS 119 102-2 XSD schema for the Validation report
+
+'''
+dss-policy-jaxb:: JAXB model of the validation policy.
+dss-diagnostic-jaxb:: JAXB model of the diagnostic data.
+dss-detailed-report-jaxb:: JAXB model of the detailed report.
+dss-simple-report-jaxb:: JAXB model of the simple report.
+dss-simple-certificate-report-jaxb:: JAXB model of the simple report for certificates.
+
+==== Utils modules
+
+dss-utils:: API with utility methods for String, Collection, I/O,...
+dss-utils-apache-commons:: Implementation of dss-utils with Apache Commons libraries
+dss-utils-google-guava:: Implementation of dss-utils with Google Guava
+
+==== Core modules
+
 dss-model:: Data model used in almost every module.
-dss-token:: Token definitions and implementations for MS CAPI, PKCS#11, PKCS#12.
+dss-crl-parser:: API to validate CRLs and retrieve revocation data
+dss-crl-parser-stream:: Implementation of dss-crl-parser which streams the CRL.
+dss-crl-parser-x509crl:: Implementation of dss-crl-parser which uses the java object X509CRL.
+dss-spi:: Interfaces, util classes to manipulate ASN1, compute digests,... 
 dss-document:: Common module to sign and validate document. This module doen't contain any implementation.
-dss-asic-common:: Common code which is shared between dss-asic-xades and dss-asic-cades.
-dss-asic-cades:: Implementation of the ASiC-S and ASiC-E signature, extension and validation based on CAdES signatures.
-dss-asic-xades:: Implementation of the ASiC-S and ASiC-E signature, extension and validation based on XAdES signatures.
+dss-service:: Implementations to communicate with online resources (TSP, CRL, OCSP). 
+dss-token:: Token definitions and implementations for MS CAPI, PKCS#11, PKCS#12.
+validation-policy:: Business of the signature's validation (ETSI EN 319 102 / TS 119 172-4).
+dss-xades:: Implementation of the XAdES signature, extension and validation.
 dss-cades:: Implementation of the CAdES signature, extension and validation.
 dss-pades:: Common code which is shared between dss-pades-pdfbox and dss-pades-openpdf.
 dss-pades-pdfbox:: Implementation of the PAdES signature, extension and validation with https://pdfbox.apache.org/[PDFBox].
 dss-pades-openpdf:: Implementation of the PAdES signature, extension and validation with https://github.com/LibrePDF/OpenPDF[OpenPDF (fork of iText)].
-dss-xades:: Implementation of the XAdES signature, extension and validation.
-dss-spi:: Interfaces, util classes to manipulate ASN1, compute digests,... 
-dss-service:: Implementations to communicate with online resources (TSP, CRL, OCSP). 
-dss-crl-parser:: API to validate CRLs and retrieve revocation data
-dss-crl-parser-stream:: Implementation of dss-crl-parser which streams the CRL (experimental).
-dss-crl-parser-x509crl:: Implementation of dss-crl-parser which uses the java object X509CRL.
+dss-asic-common:: Common code which is shared between dss-asic-xades and dss-asic-cades.
+dss-asic-cades:: Implementation of the ASiC-S and ASiC-E signature, extension and validation based on CAdES signatures.
+dss-asic-xades:: Implementation of the ASiC-S and ASiC-E signature, extension and validation based on XAdES signatures.
 dss-tsl-validation:: Module which allows loading / parsing / validating of LOTL and TSLs.
-validation-policy:: Business of the signature's validation (ETSI EN 319 102).
+
+==== WebServices
+
 dss-common-remote-dto:: Common classes between all remote services (REST and SOAP).
+dss-common-remote-converter:: Classes which convert the DTO to DSS Objects.
+
+'''
 dss-signature-dto:: Data Transfer Objects used for signature creation/extension (REST and SOAP).
 dss-signature-remote:: Common classes between dss-signature-rest and dss-signature-soap.
 dss-signature-rest-client:: Client for the REST webservices.
 dss-signature-rest:: REST webservices to sign (getDataToSign, signDocument methods) and extend a signature.
 dss-signature-soap-client:: Client for the SOAP webservices.
 dss-signature-soap:: SOAP webservices to sign (getDataToSign, signDocument methods) and extend a signature.
+
+'''
 dss-server-signing-dto:: Data Transfer Objects used for the server signing module (REST and SOAP).
 dss-server-signing-common:: Common classes for server signing
 dss-server-signing-rest:: REST webservice for server signing
-dss-server-signing-rest-client:: REST client for server signing 
+dss-server-signing-rest-client:: REST client for server signing (sign method)
 dss-server-signing-soap:: SOAP webservice for server signing
-dss-server-signing-soap-client:: SOAP client for server signing
+dss-server-signing-soap-client:: SOAP client for server signing (sign method)
+
+'''
 dss-validation-dto:: Data Transfer Objects used for signature validation (REST and SOAP).
 dss-validation-common:: Common classes between dss-validation-rest and dss-validation-soap.
 dss-validation-rest-client:: Client for the REST signature-validation webservices.
 dss-validation-soap-client:: Client for the SOAP signature-validation webservices.
 dss-validation-rest:: REST webservices to validate a signature.
 dss-validation-soap:: SOAP webservices to validate a signature.
+
+'''
 dss-certificate-validation-dto:: Data Transfer Objects used for certificate validation (REST and SOAP).
 dss-certificate-validation-common:: Common classes between dss-certificate-validation-rest and dss-certificate-validation-soap.
-dss-certificate-validation-rest-client:: Client for the REST certificate-validation webservices.
-dss-certificate-validation-soap-client:: Client for the SOAP certificate-validation webservices.
-dss-certificate-validation-rest:: REST webservices to validate a certificate.
-dss-certificate-validation-soap:: SOAP webservices to validate a certificate.
-dss-enumerations:: Contains a list of all used enumerations in the DSS project.
-dss-jaxb-parsers:: Contains a list of all classes used to transform JAXB objects/strings to Java objects and vice versa.
-dss-policy-jaxb:: JAXB model of the validation policy.
-dss-diagnostic-jaxb:: JAXB model of the diagnostic data.
-dss-simple-report-jaxb:: JAXB model of the simple report.
-dss-detailed-report-jaxb:: JAXB model of the detailed report.
-dss-reports:: Wrappers to easily manipulate the reports JAXB models (diagnostic-data, simple-report, detailed-report).
-dss-tsl-jaxb:: JAXB model of the TSL.
-specs-xmldsig:: W3C XSD schema for signatures http://www.w3.org/2000/09/xmldsig
-specs-xades:: ETSI EN 319 132-1 V1.1.1 XSD schema for XAdES
-specs-trusted-list:: ETSI TS 119 612 XSD schema for parsing Trusted Lists
-specs-validation-report:: ETSI TS 119 102-2 V1.2.1 XSD schema for the Validation report
-dss-utils:: API with utility methods for String, Collection, I/O,...
-dss-utils-apache-commons:: Implementation of dss-utils with Apache Commons libraries
-dss-utils-google-guava:: Implementation of dss-utils with Google Guava
+dss-certificate-validation-rest-client:: Client for the REST certificate-validation webservice.
+dss-certificate-validation-soap-client:: Client for the SOAP certificate-validation webservice.
+dss-certificate-validation-rest:: REST webservice to validate a certificate.
+dss-certificate-validation-soap:: SOAP webservice to validate a certificate.
+
+==== Other modules
+
 dss-test:: Mocks and util classes for unit tests.
 dss-cookbook:: Samples and documentation of DSS used to generate this documentation.
 
@@ -283,6 +314,8 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBV
 With the framework, some demonstrations are provided.
 
 [horizontal]
+dss-mock-tsa:: The class which generate false timestamps from a self-signed certificate.
+sscd-mocca-adapter:: Adapter for the MOCCA connection.
 dss-standalone-app:: Standalone application which allows signing a document with different formats and tokens (JavaFX).
 dss-standalone-app-package:: Packaging module for dss-standalone-app.
 dss-demo-webapp:: Demonstration web application which presents a part of the DSS possibilities.
@@ -750,7 +783,7 @@ DSS provides a method to initialize a relevant validator based on the provided s
 [source,java,indent=0]
 .SignedDocumentValidator usage
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocumentValidatorSnippet.java[tags=demo]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocumentValidatorTest.java[tags=demo]
 ----
 
 ===	EU Trusted Lists of Certification Service Providers
@@ -1375,6 +1408,44 @@ In opposition, the adjunct certificates cannot be shared. These certificates con
 
 In case of multi-threading usage, we strongly recommend caching of external resources. All external resources can be cached (AIA, CRL, OCSP) to improve performances and to avoid requesting too much time the same resources. FileCacheDataLoader and JdbcCacheCRLSource can help you in this way. 
 
+== JAXB modules useful classes
+
+Since the version 5.5, JAXB modules are provide with a harmonized structure : 
+
+`*_dss-detailed-report_*`::
+	`*_src/main/java_*`:::
+		`*_eu.europa.esig.dss.detailedreport_*`::::
+			** `*_DetailedReport.java_*` wrapper(s) which ease the JAXB manipulation
+			** `*_..._*`
+			** `*_DetailedReportFacade.java_*` class which allows to marshall/unmarshall jaxb objects, generate HTML/PDF content,...
+			** `*_DetailedReportXmlDefiner.java_*` class which contains the model definition (XSD, XSLT references, ObjectFactory)
+			** `*_jaxb_*` generated on compile time
+			 	*** `*_XmlDetailedReport.java_*` JAXB model
+				*** `*_..._*`
+	`*_src/main/resources_*`:::
+		`*_xsd_*`::::
+			** `*_DetailedReport.xsd_*` XML Schema (XSD) for the Detailed Report model
+			** `*_binding.xml_*` XJC instructions to generate the JAXB model from the XSD
+		`*_xslt_*`::::
+			** `*_html_*`
+			*** 	`*_detailed-report.xslt_*` XML Stylesheet for the HTML generation
+			** `*_pdf_*`
+			***	`*_detailed-report.xslt_*` XML Stylesheet for the PDF generation
+
+In the main classes, a `Facade` is present to quickly operate with the JAXB objects (eg: marshall, unmarshall, generate the HTML/PDF, validate the XML structure,...).	
+
+[source,java,indent=0]
+.DetailedReportFacade usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocumentValidatorTest.java[tags=demo-facade]
+----
+
+A `XmlDefiner` is also available with the access to the embedded XML Schemas (XSD), the XML Stylesheets (XSLT) to be able to generate the HTML or the PDF content (for DSS specific JAXB) and the JAXB Object Factory. 
+[source,java,indent=0]
+.DetailedReportXmlDefiner usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocumentValidatorTest.java[tags=demo-xml-definer]
+----
 
 == Additional features
 

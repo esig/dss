@@ -23,6 +23,7 @@ package eu.europa.esig.dss.service.tsp;
 import static org.junit.Assert.assertNotNull;
 
 import org.bouncycastle.tsp.TimeStampToken;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -35,18 +36,19 @@ import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
 
 public class OnlineTSPSourceTest {
 
-	private static final String TSA_URL = "http://tsa.belgium.be/connect";
+	private static final String TSA_URL = "http://dss.nowina.lu/pki-factory/tsa/good-tsa";
 
 	@Test
 	public void testWithoutNonce() {
 		OnlineTSPSource tspSource = new OnlineTSPSource(TSA_URL);
+		tspSource.setDataLoader(new TimestampDataLoader());
 
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
 		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);
 		assertNotNull(timeStampResponse);
 	}
 
-	@Test
+	@Ignore("Content-type is required")
 	public void testWithCommonDataLoader() {
 		OnlineTSPSource tspSource = new OnlineTSPSource(TSA_URL);
 		tspSource.setDataLoader(new CommonsDataLoader());
@@ -67,7 +69,7 @@ public class OnlineTSPSourceTest {
 		assertNotNull(timeStampResponse);
 	}
 
-	@Test
+	@Ignore("Content-type is required")
 	public void testWithNativeHTTPDataLoader() {
 		OnlineTSPSource tspSource = new OnlineTSPSource(TSA_URL);
 		tspSource.setDataLoader(new NativeHTTPDataLoader());
@@ -80,7 +82,7 @@ public class OnlineTSPSourceTest {
 	@Test
 	public void testWithNonce() {
 		OnlineTSPSource tspSource = new OnlineTSPSource(TSA_URL);
-		tspSource.setDataLoader(new NativeHTTPDataLoader());
+		tspSource.setDataLoader(new TimestampDataLoader());
 		tspSource.setNonceSource(new SecureRandomNonceSource());
 
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());

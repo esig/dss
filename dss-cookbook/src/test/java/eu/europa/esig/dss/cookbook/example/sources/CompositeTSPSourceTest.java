@@ -30,6 +30,7 @@ import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.Test;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.service.http.commons.TimestampDataLoader;
 import eu.europa.esig.dss.service.tsp.OnlineTSPSource;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.tsp.CompositeTSPSource;
@@ -46,9 +47,16 @@ public class CompositeTSPSourceTest {
 		// tag::demo[]
 
 		// Create a map with several TSPSources
+		TimestampDataLoader timestampDataLoader = new TimestampDataLoader();// uses the specific content-type
+
+		OnlineTSPSource tsa1 = new OnlineTSPSource("http://dss.nowina.lu/pki-factory/tsa/ee-good-tsa");
+		tsa1.setDataLoader(timestampDataLoader);
+		OnlineTSPSource tsa2 = new OnlineTSPSource("http://dss.nowina.lu/pki-factory/tsa/good-tsa");
+		tsa2.setDataLoader(timestampDataLoader);
+
 		Map<String, TSPSource> tspSources = new HashMap<String, TSPSource>();
-		tspSources.put("Poland", new OnlineTSPSource("http://time.certum.pl/"));
-		tspSources.put("Belgium", new OnlineTSPSource("http://tsa.belgium.be/connect"));
+		tspSources.put("TSA1", tsa1);
+		tspSources.put("TSA2", tsa2);
 
 		// Instantiate a new CompositeTSPSource and set the different sources
 		CompositeTSPSource tspSource = new CompositeTSPSource();
