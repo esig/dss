@@ -7,15 +7,20 @@
     "name" : "xades-detached.xml"
   },
   "parameters" : {
-    "signWithExpiredCertificate" : false,
-    "generateTBSWithoutCertificate" : false,
+    "signingCertificate" : null,
+    "certificateChain" : [ ],
+    "detachedContents" : [ {
+      "bytes" : "77u/PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4NCjxoOnRhYmxlIHhtbG5zOmg9Imh0dHA6Ly93d3cudzMub3JnL1RSL2h0bWw0LyI+DQoJPGg6dHI+DQoJCTxoOnRkPkhlbGxvPC9oOnRkPg0KCQk8aDp0ZD5Xb3JsZDwvaDp0ZD4NCgk8L2g6dHI+DQo8L2g6dGFibGU+",
+      "digestAlgorithm" : null,
+      "name" : "sample.xml"
+    } ],
+    "asicContainerType" : null,
     "signatureLevel" : "XAdES_BASELINE_T",
     "signaturePackaging" : null,
     "signatureAlgorithm" : "RSA_SHA256",
-    "encryptionAlgorithm" : "RSA",
     "digestAlgorithm" : "SHA256",
+    "encryptionAlgorithm" : "RSA",
     "referenceDigestAlgorithm" : null,
-    "maskGenerationFunction" : null,
     "contentTimestampParameters" : {
       "digestAlgorithm" : "SHA256",
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#"
@@ -28,19 +33,25 @@
       "digestAlgorithm" : "SHA256",
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#"
     },
-    "signingCertificate" : null,
-    "certificateChain" : [ ],
-    "detachedContents" : [ {
-      "bytes" : "77u/PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4NCjxoOnRhYmxlIHhtbG5zOmg9Imh0dHA6Ly93d3cudzMub3JnL1RSL2h0bWw0LyI+DQoJPGg6dHI+DQoJCTxoOnRkPkhlbGxvPC9oOnRkPg0KCQk8aDp0ZD5Xb3JsZDwvaDp0ZD4NCgk8L2g6dHI+DQo8L2g6dGFibGU+",
-      "digestAlgorithm" : null,
-      "name" : "sample.xml"
-    } ],
-    "asicContainerType" : null,
+    "signWithExpiredCertificate" : false,
+    "generateTBSWithoutCertificate" : false,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1542794104583,
+      "signingDate" : 1566540523973,
       "claimedSignerRoles" : null,
-      "commitmentTypeIndications" : null
+      "policyId" : null,
+      "policyQualifier" : null,
+      "policyDescription" : null,
+      "policyDigestAlgorithm" : null,
+      "policyDigestValue" : null,
+      "policySpuri" : null,
+      "commitmentTypeIndications" : null,
+      "signerLocationPostalAddress" : [ ],
+      "signerLocationPostalCode" : null,
+      "signerLocationLocality" : null,
+      "signerLocationStateOrProvince" : null,
+      "signerLocationCountry" : null,
+      "signerLocationStreet" : null
     }
   }
 }
