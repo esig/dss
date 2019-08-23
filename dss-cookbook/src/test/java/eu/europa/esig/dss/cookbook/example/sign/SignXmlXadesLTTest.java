@@ -102,7 +102,7 @@ public class SignXmlXadesLTTest extends CookbookTools {
 			job.setDataLoader(commonsHttpDataLoader);
 			job.setOjContentKeyStore(keyStoreCertificateSource);
 			job.setLotlUrl("https://ec.europa.eu/tools/lotl/eu-lotl.xml");
-			job.setOjUrl("http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2016.233.01.0001.01.ENG");
+			job.setOjUrl("https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2019.276.01.0001.01.ENG");
 			job.setLotlCode("EU");
 			job.setRepository(tslRepository);
 			job.refresh();

@@ -792,7 +792,7 @@ On 16 October 2009 the European Commission adopted a Decision setting out measur
 
 In order to allow access to the trusted lists of all Member States in an easy manner, the European Commission has published a central list with links to national "trusted lists". This central list will now be designated in the document under the abbreviation LOTL.
 
-The LOTL is published by the EU at the following URL : https://ec.europa.eu/tools/lotl/eu-lotl.xml. This XML file contains the list of the trusted list. This file must be signed by an allowed certificate. To know who has the permission to sign / publish the LOTL, we need to refer to the Official Journal Of the Union (http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2016.233.01.0001.01.ENG).
+The LOTL is published by the EU at the following URL : https://ec.europa.eu/tools/lotl/eu-lotl.xml. This XML file contains the list of the trusted list. This file must be signed by an allowed certificate. To know who has the permission to sign / publish the LOTL, we need to refer to the Official Journal Of the Union (https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2019.276.01.0001.01.ENG).
 
 The signature format of the LOTL and TL should be XAdES-BASELINE-B. If the LOTL signature is valid, its content can be trusted. The LOTL contains for each country some information : urls of the XML/PDF files, the allowed certificates to sign, ...
 
