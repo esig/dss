@@ -21,20 +21,25 @@
 package eu.europa.esig.dss.cookbook.example.sign;
 
 import java.awt.Color;
-import java.awt.Font;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignatureValue;
-import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.pades.DSSFileFont;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
+import eu.europa.esig.dss.pades.SignatureImageTextParameters.SignerTextHorizontalAlignment;
+import eu.europa.esig.dss.pades.SignatureImageTextParameters.SignerTextPosition;
 import eu.europa.esig.dss.pades.signature.PAdESService;
+import eu.europa.esig.dss.pdf.PdfObjFactory;
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
@@ -46,6 +51,10 @@ public class SignPdfPadesBVisibleTest extends CookbookTools {
 
 	@Test
 	public void signPAdESBaselineBWithVisibleSignature() throws Exception {
+		
+		// tag::custom-factory[]
+		PdfObjFactory.setInstance(new PdfBoxNativeObjectFactory());
+		// end::custom-factory[]
 
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument
@@ -76,15 +85,29 @@ public class SignPdfPadesBVisibleTest extends CookbookTools {
 
 			// Initialize visual signature
 			SignatureImageParameters imageParameters = new SignatureImageParameters();
+			// set an image
+			imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-pen.png")));
 			// the origin is the left and top corner of the page
 			imageParameters.setxAxis(200);
-			imageParameters.setyAxis(500);
+			imageParameters.setyAxis(400);
+			imageParameters.setWidth(300);
+			imageParameters.setHeight(200);
 
+			// tag::font[]
 			// Initialize text to generate for visual signature
+			DSSFileFont font = new DSSFileFont(getClass().getResourceAsStream("/fonts/OpenSansRegular.ttf"));
+			// tag::text[]
 			SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
-			textParameters.setFont(new Font("serif", Font.PLAIN, 14));
+			textParameters.setFont(font);
+			textParameters.setSize(14);
 			textParameters.setTextColor(Color.BLUE);
-			textParameters.setText("My visual signature");
+			textParameters.setText("My visual signature \n #1");
+			textParameters.setBackgroundColor(Color.YELLOW);
+			textParameters.setPadding(20);
+			textParameters.setSignerTextPosition(SignerTextPosition.LEFT);
+			textParameters.setSignerTextHorizontalAlignment(SignerTextHorizontalAlignment.RIGHT);
+			// end::text[]
+			// end::font[]
 			imageParameters.setTextParameters(textParameters);
 
 			parameters.setSignatureImageParameters(imageParameters);

@@ -24,23 +24,25 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import javax.xml.XMLConstants;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 
+import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.signature.Reference;
+import org.apache.xml.security.signature.ReferenceNotInitializedException;
 import org.apache.xml.security.transforms.Transforms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,10 +54,14 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.xades.signature.PrettyPrintTransformer;
+import eu.europa.esig.xades.XAdESUtils;
 
 /**
  * Utility class that contains some XML related method.
@@ -70,8 +76,12 @@ public final class DSSXMLUtils {
 	private static final Set<String> transforms;
 
 	private static final Set<String> canonicalizers;
+	
+	private static final String TRANSFORMATION_EXCLUDE_SIGNATURE = "not(ancestor-or-self::ds:Signature)";
+	private static final String TRANSFORMATION_XPATH_NODE_NAME = "XPath";
 
-	private static Schema XADES_SCHEMA = null;
+	public static final String HTTP_WWW_W3_ORG_2000_09_XMLDSIG_OBJECT = "http://www.w3.org/2000/09/xmldsig#Object";
+	public static final String HTTP_WWW_W3_ORG_2000_09_XMLDSIG_MANIFEST = "http://www.w3.org/2000/09/xmldsig#Manifest";
 
 	static {
 
@@ -140,9 +150,230 @@ public final class DSSXMLUtils {
 		final boolean added = canonicalizers.add(c14nAlgorithmURI);
 		return added;
 	}
+	
+	/**
+	 * Indents the given node and replaces it with a new one on the document
+	 * @param document {@link Document} to indent the node in
+	 * @param node {@link Node} to be indented
+	 * @return the indented {@link Node}
+	 */
+	public static Node indentAndReplace(final Document document, Node node) {
+		Node indentedNode = getIndentedNode(document, node);
+		Node importedNode = document.importNode(indentedNode, true);
+		node.getParentNode().replaceChild(importedNode, node);
+		return importedNode;
+	}
+	
+	/**
+	 * Extends the given oldNode by appending new indented childs from the given newNode
+	 * @param document owner {@link Document} of the node
+	 * @param newNode new {@link Node} to indent
+	 * @param oldNode old {@link Node} to extend with new indented elements
+	 * @return the extended {@link Node}
+	 */
+	public static Node indentAndExtend(final Document document, Node newNode, Node oldNode) {
+		Node indentedNode = getIndentedNode(document, newNode);
+		indentedNode = alignChildrenIndents(indentedNode);
+		Node importedNode = document.importNode(indentedNode, true);
+		NodeList nodeList = importedNode.getChildNodes();
+		for (int i = getPositionToStartExtension(oldNode, importedNode); i < nodeList.getLength(); i++) {
+			Node nodeToAppend = nodeList.item(i).cloneNode(true);
+			if (Node.ELEMENT_NODE != nodeToAppend.getNodeType() || !checkIfExists(oldNode, nodeToAppend)) {
+				oldNode.appendChild(nodeToAppend);
+			}
+		}
+		newNode.getParentNode().replaceChild(oldNode, newNode);
+		return oldNode;
+	}
+	
+	private static int getPositionToStartExtension(Node oldNode, Node indentedNode) {
+		NodeList nodeList = oldNode.getChildNodes();
+		int startPosition = nodeList.getLength();
+		Node child = null;
+		while(oldNode.hasChildNodes()) {
+			child = oldNode.getLastChild();
+			if (Node.TEXT_NODE == child.getNodeType()) {
+				oldNode.removeChild(child);
+			} else {
+				break;
+			}
+		}
+		Integer position = getPosition(indentedNode, child);
+		if (position != null) {
+			return position;
+		}
+		return startPosition;
+	}
+	
+	private static boolean checkIfExists(Node parentNode, Node childToCheck) {
+		return getPosition(parentNode, childToCheck) != null;
+	}
+	
+	private static Integer getPosition(Node parentNode, Node childToCheck) {
+		if (parentNode != null && childToCheck != null) {
+			String nodeName = childToCheck.getLocalName();
+			NodeList newNodeChildList = parentNode.getChildNodes();
+			for (int i = 0; i < newNodeChildList.getLength(); i++) {
+				Node newChildNode = newNodeChildList.item(i);
+				if (nodeName.equals(newChildNode.getLocalName())) {
+					String idIdentifier = getIDIdentifier(childToCheck);
+					if (idIdentifier == null || idIdentifier.equals(getIDIdentifier(newChildNode))) {
+						return i + 1;
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns first {@link Element} child from the given parentNode
+	 * @param parentNode {@link Node} to get first {@link Element} child from
+	 * @return {@link Element} child
+	 */
+	public static Element getFirstElementChildNode(Node parentNode) {
+		if (parentNode.hasChildNodes()) {
+			NodeList nodeList = parentNode.getChildNodes();
+			for (int i = 0; i < nodeList.getLength(); i++) {
+				Node child = nodeList.item(i);
+				if (Node.ELEMENT_NODE == child.getNodeType()) {
+					return (Element) child;
+				}
+			}
+		}
+		return null;
+	}
+	
+	public static Document getDocWithIndentedSignatures(final Document documentDom, String signatureId, List<String> noIndentObjectIds) {
+		NodeList signatures = DomUtils.getNodeList(documentDom, "//" + XPathQueryHolder.ELEMENT_SIGNATURE);
+		for (int i = 0; i < signatures.getLength(); i++) {
+			Element signature = (Element) signatures.item(i);
+			String signatureAttrIdValue = getIDIdentifier(signature);
+			if (Utils.isStringNotEmpty(signatureAttrIdValue) && signatureAttrIdValue.contains(signatureId)) {
+				Node unsignedSignatureProperties = DomUtils.getNode(signature, ".//" + "xades:UnsignedSignatureProperties");
+				Node indentedSignature = getIndentedSignature(signature, noIndentObjectIds);
+				Node importedSignature = documentDom.importNode(indentedSignature, true);
+				signature.getParentNode().replaceChild(importedSignature, signature);
+				if (unsignedSignatureProperties != null) {
+					Node newUnsignedSignatureProperties = DomUtils.getNode(signature, ".//" + "xades:UnsignedSignatureProperties");
+					newUnsignedSignatureProperties.getParentNode().replaceChild(unsignedSignatureProperties, newUnsignedSignatureProperties);
+				}
+			}
+		}
+		return documentDom;
+	}
+	
+	private static Node getIndentedSignature(final Node signature, List<String> noIndentObjectIds) {
+		Node indentedSignature = getIndentedNode(signature);
+		NodeList sigChildNodes = signature.getChildNodes();
+		for (int i = 0; i < sigChildNodes.getLength(); i++) {
+			Node childNode = sigChildNodes.item(i);
+			if (childNode.getNodeType() == Node.ELEMENT_NODE) {
+				Element sigChild = (Element) childNode;
+				String idAttribute = getIDIdentifier(sigChild);
+				if (noIndentObjectIds.contains(idAttribute)) {
+					Node nodeToReplace = DomUtils.getNode(indentedSignature, ".//*" + DomUtils.getXPathByIdAttribute(idAttribute));
+					Node importedNode = indentedSignature.getOwnerDocument().importNode(sigChild, true);
+					indentedSignature.replaceChild(importedNode, nodeToReplace);
+				}
+			}
+		}
+		return indentedSignature;
+	}
+	
+	/**
+	 * Returns an indented xmlNode
+	 * @param documentDom is an owner {@link Document} of the xmlNode
+	 * @param xmlNode {@link Node} to indent
+	 * @return an indented {@link Node} xmlNode
+	 */
+	public static Node getIndentedNode(final Node documentDom, final Node xmlNode) {
+		NodeList signatures = DomUtils.getNodeList(documentDom, "//" + XPathQueryHolder.ELEMENT_SIGNATURE);
+		for (int i = 0; i < signatures.getLength(); i++) {
+			Node signature = signatures.item(i);
+			NodeList candidateList;
+			String idAttribute = getIDIdentifier(xmlNode);
+			if (idAttribute != null) {
+				candidateList = DomUtils.getNodeList(signature, ".//*" + DomUtils.getXPathByIdAttribute(idAttribute));
+			} else {
+				candidateList = DomUtils.getNodeList(signature, ".//" +  xmlNode.getNodeName());
+			}
+			if (isNodeListContains(candidateList, xmlNode)) {
+				Node indentedSignature = getIndentedNode(signature);
+				Node indentedXmlNode;
+				if (idAttribute != null) {
+					indentedXmlNode = DomUtils.getNode(indentedSignature, ".//*" + DomUtils.getXPathByIdAttribute(idAttribute));
+				} else {
+					indentedXmlNode = DomUtils.getNode(indentedSignature, ".//" +  xmlNode.getNodeName());
+				}
+				if (indentedXmlNode != null) {
+					return indentedXmlNode;
+				}
+			}
+		}
+		return xmlNode;
+	}
+	
+	private static Node getIndentedNode(final Node xmlNode) {
+		PrettyPrintTransformer prettyPrintTransformer = new PrettyPrintTransformer();
+		return prettyPrintTransformer.transform(xmlNode);
+	}
+	
+	private static boolean isNodeListContains(final NodeList nodeList, final Node node) {
+		for (int i = 0; i < nodeList.getLength(); i++) {
+			Node child = nodeList.item(i);
+			if (child == node) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Aligns indents for all children of the given node
+	 * @param parentNode {@link Node} to align children into
+	 * @return the given {@link Node} with aligned children
+	 */
+	public static Node alignChildrenIndents(Node parentNode) {
+		if (parentNode.hasChildNodes()) {
+			NodeList nodeChildren = parentNode.getChildNodes();
+			String targetIndent = getTargetIndent(nodeChildren);
+			if (targetIndent != null) {
+				for (int i = 0; i < nodeChildren.getLength() - 1; i++) {
+					Node node = nodeChildren.item(i);
+					if (Node.TEXT_NODE == node.getNodeType()) {
+						node.setNodeValue(targetIndent);
+					}
+				}
+				Node lastChild = parentNode.getLastChild();
+				targetIndent = targetIndent.substring(0, targetIndent.length() - DomUtils.TRANSFORMER_INDENT_NUMBER);
+				switch (lastChild.getNodeType()) {
+				case Node.ELEMENT_NODE:
+					DomUtils.setTextNode(parentNode.getOwnerDocument(), (Element) parentNode, targetIndent);
+					break;
+				case Node.TEXT_NODE:
+					lastChild.setNodeValue(targetIndent);
+					break;
+				default:
+					break;
+				}
+			}
+		}
+		return parentNode;
+	}
+	
+	private static String getTargetIndent(NodeList nodeChildren) {
+		for (int i = 0; i < nodeChildren.getLength() - 1; i++) {
+			Node node = nodeChildren.item(i);
+			if (Node.TEXT_NODE == node.getNodeType()) {
+				return node.getNodeValue();
+			}
+		}
+		return null;
+	}
 
 	/**
-	 * This method is used to serialize a given node
+	 * This method performs the serialization of the given node
 	 *
 	 * @param xmlNode
 	 *            The node to be serialized.
@@ -168,9 +399,10 @@ public final class DSSXMLUtils {
 			StreamResult result = new StreamResult(bos);
 			Source source = new DOMSource(xmlNode);
 			transformer.transform(source, result);
+			
 			return bos.toByteArray();
 		} catch (Exception e) {
-			throw new DSSException(e);
+			throw new DSSException("An error occurred during a node serialization.", e);
 		}
 	}
 
@@ -262,7 +494,7 @@ public final class DSSXMLUtils {
 	}
 
 	/**
-	 * If this method finds an attribute with names ID (case-insensitive) then it is
+	 * If this method finds an attribute with the name ID (case-insensitive) then it is
 	 * returned. If there is more than one ID attributes then the first one is
 	 * returned.
 	 *
@@ -274,10 +506,9 @@ public final class DSSXMLUtils {
 		final NamedNodeMap attributes = node.getAttributes();
 		for (int jj = 0; jj < attributes.getLength(); jj++) {
 			final Node item = attributes.item(jj);
-			final String localName = item.getLocalName();
+			final String localName = item.getLocalName() != null ? item.getLocalName() : item.getNodeName();
 			if (localName != null) {
-				final String id = localName.toLowerCase();
-				if (ID_ATTRIBUTE_NAME.equals(id)) {
+				if (Utils.areStringsEqualIgnoreCase(ID_ATTRIBUTE_NAME, localName)) {
 					return item.getTextContent();
 				}
 			}
@@ -300,27 +531,12 @@ public final class DSSXMLUtils {
 			final String localName = item.getLocalName();
 			final String nodeName = item.getNodeName();
 			if (localName != null) {
-				final String id = localName.toLowerCase();
-				if (ID_ATTRIBUTE_NAME.equals(id)) {
-
+				if (Utils.areStringsEqualIgnoreCase(ID_ATTRIBUTE_NAME, localName)) {
 					childElement.setIdAttribute(nodeName, true);
 					break;
 				}
 			}
 		}
-	}
-
-	private static Schema getXAdESValidationSchema() {
-		if (XADES_SCHEMA == null) {
-			try (InputStream xsd1 = DSSXMLUtils.class.getResourceAsStream("/XAdES01903v132-201601.xsd");
-					InputStream xsd2 = DSSXMLUtils.class.getResourceAsStream("/XAdES01903v141-201601.xsd")) {
-				SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-				XADES_SCHEMA = sf.newSchema(new Source[] { new StreamSource(xsd1), new StreamSource(xsd2) });
-			} catch (Exception e) {
-				throw new DSSException("Unable to load the XSD files", e);
-			}
-		}
-		return XADES_SCHEMA;
 	}
 
 	/**
@@ -333,7 +549,7 @@ public final class DSSXMLUtils {
 	 */
 	public static void validateAgainstXSD(DSSDocument document) throws SAXException {
 		try (InputStream is = document.openStream()) {
-			final Validator validator = getXAdESValidationSchema().newValidator();
+			final Validator validator = XAdESUtils.getSchemaETSI_EN_319_132().newValidator();
 			validator.validate(new StreamSource(is));
 		} catch (IOException e) {
 			throw new DSSException("Unable to read document", e);
@@ -349,7 +565,7 @@ public final class DSSXMLUtils {
 	 */
 	public static String validateAgainstXSD(final StreamSource streamSource) {
 		try {
-			final Validator validator = getXAdESValidationSchema().newValidator();
+			final Validator validator = XAdESUtils.getSchemaETSI_EN_319_132().newValidator();
 			validator.validate(streamSource);
 			return Utils.EMPTY_STRING;
 		} catch (Exception e) {
@@ -360,6 +576,16 @@ public final class DSSXMLUtils {
 
 	public static boolean isOid(String policyId) {
 		return policyId != null && policyId.matches("^(?i)urn:oid:.*$");
+	}
+	
+	/**
+	 * Keeps only code of the oid string
+	 * e.g. "urn:oid:1.2.3" to "1.2.3"
+	 * @param oid {@link String} Oid
+	 * @return Oid Code
+	 */
+	public static String getOidCode(String oid) {
+		return oid.substring(oid.lastIndexOf(':') + 1);
 	}
 
 	/**
@@ -391,6 +617,204 @@ public final class DSSXMLUtils {
 			throw new DSSException("Unable to check if duplicate ids are present", e);
 		}
 		return false;
+	}
+	
+	/**
+	 * Returns bytes of the given {@code node}
+	 * @param node {@link Node} to get bytes for
+	 * @return byte array
+	 */
+	public static byte[] getNodeBytes(Node node) {
+		Node firstChild = node.getFirstChild();
+		if (firstChild.getNodeType() == Node.ELEMENT_NODE) {
+			byte[] bytes = DSSXMLUtils.serializeNode(firstChild);
+			String str = new String(bytes);
+			// TODO: better
+			// remove <?xml version="1.0" encoding="UTF-8"?>
+			str = str.substring(str.indexOf("?>") + 2);
+			return str.getBytes();
+		} else if (firstChild.getNodeType() == Node.TEXT_NODE) {
+			String textContent = firstChild.getTextContent();
+			if (Utils.isBase64Encoded(textContent)) {
+				return Utils.fromBase64(firstChild.getTextContent());
+			} else {
+				return textContent.getBytes();
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns bytes of the original referenced data
+	 * @param reference {@link Reference} to get bytes from
+	 * @return byte array containing original data
+	 */
+	public static byte[] getReferenceOriginalContentBytes(Reference reference) {
+		
+		try {
+			// returns bytes after transformation in case of enveloped signature
+			Transforms transforms = reference.getTransforms();
+			if (transforms != null) {
+				Element transformsElement = transforms.getElement();
+				NodeList transformChildNodes = transformsElement.getChildNodes();
+				if (transformChildNodes != null && transformChildNodes.getLength() > 0) {
+					for (int i = 0; i < transformChildNodes.getLength(); i++) {
+						Node transformation = transformChildNodes.item(i);
+						if (isEnvelopedTransform(transformation)) {
+							return reference.getReferencedBytes();
+						}
+					    // if enveloped transformations are not applied to the signature go further and 
+						// return bytes before transformation
+					}
+				}
+			}
+			
+		} catch (XMLSecurityException e) {
+			// if exception occurs during the transformations
+			LOG.warn("Signature reference with id [{}] is corrupted or has an invalid format. "
+					+ "Original data cannot be obtained. Reason: [{}]", reference.getId(), e.getMessage());
+			
+		}
+		// otherwise bytes before transformation
+		return getBytesBeforeTransformation(reference);
+	}
+	
+	private static boolean isEnvelopedTransform(Node transformation) {
+		final String algorithm = DomUtils.getValue(transformation, "@Algorithm");
+		if (Transforms.TRANSFORM_ENVELOPED_SIGNATURE.equals(algorithm)) {
+			return true;
+		} else if (Transforms.TRANSFORM_XPATH.equals(algorithm) || 
+				Transforms.TRANSFORM_XPATH2FILTER.equals(algorithm)) {
+			NodeList childNodes = transformation.getChildNodes();
+			for (int j = 0; j < childNodes.getLength(); j++) {
+				Node item = childNodes.item(j);
+				if (Node.ELEMENT_NODE == item.getNodeType() && TRANSFORMATION_XPATH_NODE_NAME.equals(item.getLocalName()) &&
+						TRANSFORMATION_EXCLUDE_SIGNATURE.equals(item.getTextContent())) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	private static byte[] getBytesBeforeTransformation(Reference reference) {
+		try {
+			return reference.getContentsBeforeTransformation().getBytes();
+		} catch (ReferenceNotInitializedException e) {
+			// if exception occurs during an attempt to access reference original data
+			LOG.warn("Original data is not provided for the reference with id [" + reference.getId() + "]. Reason: [{}]", e.getMessage());
+		} catch (IOException | CanonicalizationException e) {
+			// if exception occurs by another reason
+			LOG.error("Unable to retrieve the content of reference with id [" + reference.getId() + "].", e);
+		}
+		// in case of exceptions return null value
+		return null;
+	}
+
+	/**
+	 * Returns {@link Digest} found in the given {@code element}
+	 * @param element {@link Element} to get digest from
+	 * @return {@link Digest}
+	 */
+	public static Digest getCertDigest(Element element, XPathQueryHolder xPathQueryHolder) {
+		final Element certDigestElement = DomUtils.getElement(element, xPathQueryHolder.XPATH__CERT_DIGEST);
+		if (certDigestElement == null) {
+			return null;
+		}
+		
+		final Element digestMethodElement = DomUtils.getElement(certDigestElement, xPathQueryHolder.XPATH__DIGEST_METHOD);
+		final Element digestValueElement = DomUtils.getElement(element, xPathQueryHolder.XPATH__CERT_DIGEST_DIGEST_VALUE);
+		if (digestMethodElement == null || digestValueElement == null) {
+			return null;
+		}
+		
+		final byte[] digestValue = Utils.fromBase64(digestValueElement.getTextContent());
+		
+		try {
+			final String xmlAlgorithmName = digestMethodElement.getAttribute(XPathQueryHolder.XMLE_ALGORITHM);
+			final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forXML(xmlAlgorithmName);
+			return new Digest(digestAlgorithm, digestValue);
+		} catch (DSSException e) {
+			LOG.warn("CertRef DigestMethod is not supported. Reason: {}", e.getMessage());
+			return null;
+		}
+		
+	}
+	
+	/**
+	 * Returns {@link Digest} found in the given {@code revocationRefNode}
+	 * @param revocationRefNode {@link Element} to get digest from
+	 * @param xPathQueryHolder {@link XPathQueryHolder}
+	 * @return {@link Digest}
+	 */
+	public static Digest getRevocationDigest(Element revocationRefNode, final XPathQueryHolder xPathQueryHolder) {
+		final Element digestAlgorithmEl = DomUtils.getElement(revocationRefNode, xPathQueryHolder.XPATH__DAAV_DIGEST_METHOD);
+		final Element digestValueEl = DomUtils.getElement(revocationRefNode, xPathQueryHolder.XPATH__DAAV_DIGEST_VALUE);
+		
+		DigestAlgorithm digestAlgo = null;
+		byte[] digestValue = null;
+		if (digestAlgorithmEl != null && digestValueEl != null) {
+			final String xmlName = digestAlgorithmEl.getAttribute(XPathQueryHolder.XMLE_ALGORITHM);
+			digestAlgo = DigestAlgorithm.forXML(xmlName);
+			digestValue = Utils.fromBase64(digestValueEl.getTextContent());
+			return new Digest(digestAlgo, digestValue);
+		}
+		return null;
+	}
+
+	/**
+	 * Determines if the given {@code reference} refers to SignedProperties element
+	 * @param reference {@link Reference} to check
+	 * @return TRUE if the reference refers to the SignedProperties, FALSE otherwise
+	 */
+	public static boolean isSignedProperties(final Reference reference, final XPathQueryHolder xPathQueryHolder) {
+		return xPathQueryHolder.XADES_SIGNED_PROPERTIES.equals(reference.getType());
+	}
+
+	/**
+	 * Determines if the given {@code reference} refers to CounterSignature element
+	 * @param reference {@link Reference} to check
+	 * @return TRUE if the reference refers to the CounterSignature, FALSE otherwise
+	 */
+	public static boolean isCounerSignature(final Reference reference, final XPathQueryHolder xPathQueryHolder) {
+		return xPathQueryHolder.XADES_COUNTERSIGNED_SIGNATURE.equals(reference.getType());
+	}
+	
+	/**
+	 * Checks if the given reference is linked to a KeyInfo element
+	 * 
+	 * @param reference
+	 *                  the {@link Reference} to check
+	 * @param signature
+	 *                  the {@link Element} signature the given reference belongs to
+	 * @return TRUE if the reference is a KeyInfo reference, FALSE otherwise
+	 */
+	public static boolean isKeyInfoReference(final Reference reference, final Element signature, final XPathQueryHolder xPathQueryHolder) {
+		String uri = reference.getURI();
+		uri = DomUtils.getId(uri);
+		Element element = DomUtils.getElement(signature, "./" + xPathQueryHolder.XPATH_KEY_INFO + DomUtils.getXPathByIdAttribute(uri));
+		if (element != null) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Checks if the given {@code referenceType} is an xmldsig Object type
+	 * @param referenceType {@link String} to check the type for
+	 * @return TRUE if the provided {@code referenceType} is an Object type, FALSE otherwise
+	 */
+	public static boolean isObjectReferenceType(String referenceType) {
+		return HTTP_WWW_W3_ORG_2000_09_XMLDSIG_OBJECT.equals(referenceType);
+	}
+	
+	/**
+	 * Checks if the given {@code referenceType} is an xmldsig Manifest type
+	 * @param referenceType {@link String} to check the type for
+	 * @return TRUE if the provided {@code referenceType} is an Manifest type, FALSE otherwise
+	 */
+	public static boolean isManifestReferenceType(String referenceType) {
+		return HTTP_WWW_W3_ORG_2000_09_XMLDSIG_MANIFEST.equals(referenceType);
 	}
 
 }

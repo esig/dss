@@ -24,21 +24,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.xades.DSSReference;
-import eu.europa.esig.dss.xades.DSSTransform;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
+import eu.europa.esig.dss.xades.reference.DSSReference;
+import eu.europa.esig.dss.xades.reference.DSSTransform;
 
 /**
  * This class handles the specifics of the internally detached XML signature.
@@ -60,7 +59,7 @@ class InternallyDetachedSignatureBuilder extends XAdESSignatureBuilder {
 	 */
 	public InternallyDetachedSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument origDoc, final CertificateVerifier certificateVerifier) {
 		super(params, origDoc, certificateVerifier);
-		setCanonicalizationMethods(params, CanonicalizationMethod.EXCLUSIVE);
+		setCanonicalizationMethods(params, DEFAULT_CANONICALIZATION_METHOD);
 	}
 
 	@Override
@@ -94,12 +93,11 @@ class InternallyDetachedSignatureBuilder extends XAdESSignatureBuilder {
 		reference.setUri("#" + identifier);
 
 		reference.setContents(document);
-		DigestAlgorithm digestAlgorithm = params.getReferenceDigestAlgorithm() != null ? params.getReferenceDigestAlgorithm() : params.getDigestAlgorithm();
+		DigestAlgorithm digestAlgorithm = getReferenceDigestAlgorithmOrDefault(params);
 		reference.setDigestMethodAlgorithm(digestAlgorithm);
 
 		List<DSSTransform> dssTransformList = new ArrayList<DSSTransform>();
-		DSSTransform canonicalization = new DSSTransform();
-		canonicalization.setAlgorithm(CanonicalizationMethod.EXCLUSIVE);
+		CanonicalizationTransform canonicalization = new CanonicalizationTransform(DEFAULT_CANONICALIZATION_METHOD);
 		dssTransformList.add(canonicalization);
 		reference.setTransforms(dssTransformList);
 		return reference;

@@ -29,7 +29,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,37 +55,32 @@ import org.bouncycastle.asn1.pkcs.Attribute;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.x509.DigestInfo;
 import org.bouncycastle.cert.X509CertificateHolder;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSASN1Utils;
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.EncryptionAlgorithm;
-import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.client.http.IgnoreDataLoader;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
-import eu.europa.esig.dss.x509.CertificateToken;
 
 public class InfiniteLoopDSS621Test {
 
 	private static final Logger logger = LoggerFactory.getLogger(InfiniteLoopDSS621Test.class);
 
 	private static final String FILE_PATH = "/validation/pades-5-signatures-and-1-document-timestamp.pdf";
-
-	static {
-		Security.addProvider(new BouncyCastleProvider());
-	}
 
 	@Test(timeout = 5000)
 	public void testReadTimestamp1() throws Exception {

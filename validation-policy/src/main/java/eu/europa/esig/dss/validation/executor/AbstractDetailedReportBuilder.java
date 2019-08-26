@@ -26,17 +26,17 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlTLAnalysis;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
+import eu.europa.esig.dss.diagnostic.AbstractTokenProxy;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
+import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.policy.Context;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.bbb.BasicBuildingBlocks;
 import eu.europa.esig.dss.validation.process.qualification.trust.TLValidationBlock;
-import eu.europa.esig.dss.validation.reports.wrapper.AbstractTokenProxy;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
 public abstract class AbstractDetailedReportBuilder {
 
@@ -51,8 +51,8 @@ public abstract class AbstractDetailedReportBuilder {
 
 	}
 
-	protected DetailedReport init() {
-		DetailedReport detailedReport = new DetailedReport();
+	protected XmlDetailedReport init() {
+		XmlDetailedReport detailedReport = new XmlDetailedReport();
 
 		if (policy.isEIDASConstraintPresent()) {
 			detailedReport.getTLAnalysis().addAll(executeAllTlAnalysis(diagnosticData, policy, currentTime));

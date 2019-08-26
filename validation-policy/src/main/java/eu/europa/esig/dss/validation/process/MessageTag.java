@@ -55,6 +55,8 @@ public enum MessageTag implements IMessageTag {
 	BBB_CV_IRDOF_ANS("The reference data object is not found!"),
 	BBB_CV_IRDOI("Is the reference data object intact?"),
 	BBB_CV_IRDOI_ANS("The reference data object is not intact!"),
+	BBB_CV_ISMEC("Is the validation of manifest entries performed?"),
+	BBB_CV_ISMEC_ANS("The validation of manifest entries is not performed!"),
 	BBB_CV_ISI("Is the signature intact?"),
 	BBB_CV_ISI_ANS("The signature is not intact!"),
 	BBB_CV_IAFS("Is all files signed?"),
@@ -81,6 +83,7 @@ public enum MessageTag implements IMessageTag {
 	/* BBB -> SAV -> TSP*/
 	BBB_SAV_TSP_IMIDF("Is message imprint data found?"),
 	BBB_SAV_TSP_IMIDF_ANS("The timestamp message imprint data is not found!"),
+	BBB_SAV_TSP_IMSDAV("Is the digest algorithm for timestamp message imprint valid?"),
 	BBB_SAV_TSP_IMIVC("Is message imprint verification conclusive?"),
 	BBB_SAV_TSP_IMIVC_ANS("The timestamp message imprint verification has failed!"),
 	
@@ -103,12 +106,21 @@ public enum MessageTag implements IMessageTag {
 	ARCH_LTVV_ANS("The result of the LTV validation process is not acceptable to continue the process!"),
 
 	ASCCM("Are signature cryptographic constraints met?"),
+	ACCCM("Are certificate cryptographic constraints met?"),
+	ARCCM("Are revocation cryptographic constraints met?"),
+	ATCCM("Are timestamp cryptographic constraints met?"),
 	ASCCM_ANS_1("The encryption algorithm not authorised!"),
 	ASCCM_ANS_2("The digest algorithm not authorised!"),
 	ASCCM_ANS_3("The public key size is too small!"),
 	ASCCM_ANS_4("The algorithm expiration date not found!"),
 	ASCCM_ANS_5("The algorithm is expired!"),
+	ASCCM_ANS_6("The public key size is not known!"),
+	
+	ACCCRM("Are cryptographic constraints for certificate revocation data met?"),
+	ACCCRM_ANS("Cryptographic constraints are not valid for revocation data!"),
 
+	BBB_SAV_ISVA("Is the signature acceptable?"),
+	BBB_SAV_ISVA_ANS("The signature is not acceptable!"),
 	BBB_SAV_ISSV("Is the structure of the signature valid?"),
 	BBB_SAV_ISSV_ANS("The structure of the signature is not valid!"),
 	BBB_SAV_ICERRM("Is the requested certified role present?"),
@@ -131,6 +143,8 @@ public enum MessageTag implements IMessageTag {
 	BBB_SAV_ISQPXTIP_ANS("The signed qualifying property: 'commitment-type-indication' is not present!"),
 	BBB_SAV_IUQPCSP("Is unsigned qualifying property: 'countersignature' present?"),
 	BBB_SAV_IUQPCSP_ANS("The unsigned qualifying property: 'countersignature' is not present!"),
+	BBB_SAV_ISQPMDOSPP("Is signed qualifying property: 'message-digest' or 'SignedProperties' present?"),
+	BBB_SAV_ISQPMDOSPP_ANS("The signed qualifying property: neither 'message-digest' nor 'SignedProperties' is present!"),
 
 	BBB_VCI_ISPK("Is the signature policy known?"),
 	BBB_VCI_ISPK_ANS_1("The signature policy is mandatory!"),
@@ -181,6 +195,8 @@ public enum MessageTag implements IMessageTag {
 	BBB_XCV_ISCR_ANS("The certificate is revoked!"),
 	BBB_XCV_ISCGKU("Has the signer's certificate given key-usage?"),
 	BBB_XCV_ISCGKU_ANS("The signer's certificate has not expected key-usage!"),
+	BBB_XCV_ISCGEKU("Has the signer's certificate given extended key-usage?"),
+	BBB_XCV_ISCGEKU_ANS("The signer's certificate has not expected extended key-usage!"),
 	BBB_XCV_ICSI("Is the certificate's signature intact?"),
 	BBB_XCV_ICSI_ANS("The signature of the certificate is spoiled or it is not possible to validate it!"),
 	BBB_XCV_OCSP_NO_CHECK("The certificate has the id-pkix-ocsp-nocheck extension (RFC is skipped)"),

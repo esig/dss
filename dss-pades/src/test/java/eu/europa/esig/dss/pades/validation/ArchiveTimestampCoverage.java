@@ -6,16 +6,15 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
-import eu.europa.esig.dss.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 
 public class ArchiveTimestampCoverage extends PKIFactoryAccess {
@@ -46,10 +45,10 @@ public class ArchiveTimestampCoverage extends PKIFactoryAccess {
 		PdfSignatureInfo pdfSignatureInfo = pades.getPdfSignatureInfo();
 		PdfDssDict dssDictionary = pdfSignatureInfo.getDssDictionary();
 		assertNotNull(dssDictionary);
-		assertEquals(3, dssDictionary.getCertMap().size());
-		assertEquals(5, dssDictionary.getCrlMap().size());
+		assertEquals(3, dssDictionary.getCERTs().size());
+		assertEquals(5, dssDictionary.getCRLs().size());
 
-		PAdESCertificateSource certificateSource = pades.getCertificateSource();
+		PAdESCertificateSource certificateSource = (PAdESCertificateSource) pades.getCertificateSource();
 		assertEquals(3, certificateSource.getCertificateMap().size()); // only from the DSS dictionary
 
 		PAdESOCSPSource padesOCSPSource = (PAdESOCSPSource) pades.getOCSPSource();
@@ -58,7 +57,7 @@ public class ArchiveTimestampCoverage extends PKIFactoryAccess {
 		PAdESCRLSource crlSource = (PAdESCRLSource) pades.getCRLSource();
 		assertEquals(5, crlSource.getCrlMap().size());
 
-		Set<PdfSignatureOrDocTimestampInfo> outerSignatures = pdfSignatureInfo.getOuterSignatures();
+		List<PdfSignatureOrDocTimestampInfo> outerSignatures = pdfSignatureInfo.getOuterSignatures();
 		assertEquals(2, outerSignatures.size());
 
 		// <</Type /DSS
@@ -70,8 +69,8 @@ public class ArchiveTimestampCoverage extends PKIFactoryAccess {
 		assertTrue(archiveTST.isTimestamp());
 		dssDictionary = archiveTST.getDssDictionary();
 		assertNotNull(dssDictionary);
-		assertEquals(1, dssDictionary.getCertMap().size());
-		assertEquals(2, dssDictionary.getCrlMap().size());
+		assertEquals(1, dssDictionary.getCERTs().size());
+		assertEquals(2, dssDictionary.getCRLs().size());
 
 		// Same than for the signature
 		// <</Type /DSS
@@ -81,8 +80,8 @@ public class ArchiveTimestampCoverage extends PKIFactoryAccess {
 		assertTrue(archiveTST2.isTimestamp());
 		dssDictionary = archiveTST2.getDssDictionary();
 		assertNotNull(dssDictionary);
-		assertEquals(3, dssDictionary.getCertMap().size());
-		assertEquals(5, dssDictionary.getCrlMap().size());
+		assertEquals(3, dssDictionary.getCERTs().size());
+		assertEquals(5, dssDictionary.getCRLs().size());
 
 	}
 
@@ -103,10 +102,10 @@ public class ArchiveTimestampCoverage extends PKIFactoryAccess {
 		PdfSignatureInfo pdfSignatureInfo = pades.getPdfSignatureInfo();
 		PdfDssDict dssDictionary = pdfSignatureInfo.getDssDictionary();
 		assertNotNull(dssDictionary);
-		assertEquals(6, dssDictionary.getCertMap().size());
-		assertEquals(9, dssDictionary.getCrlMap().size());
+		assertEquals(6, dssDictionary.getCERTs().size());
+		assertEquals(9, dssDictionary.getCRLs().size());
 
-		Set<PdfSignatureOrDocTimestampInfo> outerSignatures = pdfSignatureInfo.getOuterSignatures();
+		List<PdfSignatureOrDocTimestampInfo> outerSignatures = pdfSignatureInfo.getOuterSignatures();
 		assertEquals(3, outerSignatures.size());
 
 		// <</Type /DSS
@@ -117,8 +116,8 @@ public class ArchiveTimestampCoverage extends PKIFactoryAccess {
 		assertTrue(archiveTST.isTimestamp());
 		dssDictionary = archiveTST.getDssDictionary();
 		assertNotNull(dssDictionary);
-		assertEquals(1, dssDictionary.getCertMap().size());
-		assertEquals(2, dssDictionary.getCrlMap().size());
+		assertEquals(1, dssDictionary.getCERTs().size());
+		assertEquals(2, dssDictionary.getCRLs().size());
 
 		// <</Type /DSS
 		// /Certs [20 0 R 26 0 R 30 0 R]
@@ -127,8 +126,8 @@ public class ArchiveTimestampCoverage extends PKIFactoryAccess {
 		assertTrue(archiveTST.isTimestamp());
 		dssDictionary = archiveTST.getDssDictionary();
 		assertNotNull(dssDictionary);
-		assertEquals(3, dssDictionary.getCertMap().size());
-		assertEquals(5, dssDictionary.getCrlMap().size());
+		assertEquals(3, dssDictionary.getCERTs().size());
+		assertEquals(5, dssDictionary.getCRLs().size());
 
 		// Same than for signature
 		// <</Type /DSS
@@ -138,8 +137,8 @@ public class ArchiveTimestampCoverage extends PKIFactoryAccess {
 		assertTrue(archiveTST.isTimestamp());
 		dssDictionary = archiveTST.getDssDictionary();
 		assertNotNull(dssDictionary);
-		assertEquals(6, dssDictionary.getCertMap().size());
-		assertEquals(9, dssDictionary.getCrlMap().size());
+		assertEquals(6, dssDictionary.getCERTs().size());
+		assertEquals(9, dssDictionary.getCRLs().size());
 	}
 
 	@Override

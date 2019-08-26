@@ -4,12 +4,16 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.4.3</version>
+		<version>5.5.RC1</version>
 	</parent>
 
 	<artifactId>dss-crl-parser-x509crl</artifactId>
 	<name>DSS CRL Parser with X509CRL object</name>
 	<description>DSS CRL Parser with X509CRL object is an implementation of DSS CRL Parser API which uses the X509CRL object. The CRL are fully loaded in the memory to be parsed.</description>
+
+	<properties>
+		<module-name>jpms_dss_crl_parser_x509crl</module-name>
+	</properties>
 
 	<dependencies>
 		<dependency>

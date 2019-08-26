@@ -22,14 +22,10 @@ package eu.europa.esig.dss.validation.process.bbb.sav;
 
 import java.util.Date;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
-import eu.europa.esig.dss.validation.policy.Context;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy;
-import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
-import eu.europa.esig.jaxb.policy.CryptographicConstraint;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
+import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 
 /**
  * 5.2.8 Signature acceptance validation (SAV) This building block covers any
@@ -38,18 +34,15 @@ import eu.europa.esig.jaxb.policy.CryptographicConstraint;
  */
 public class RevocationAcceptanceValidation extends AbstractAcceptanceValidation<RevocationWrapper> {
 
-	public RevocationAcceptanceValidation(DiagnosticData diagnosticData, Date currentTime, RevocationWrapper timestamp, ValidationPolicy validationPolicy) {
-		super(diagnosticData, timestamp, currentTime, validationPolicy);
+	public RevocationAcceptanceValidation(Date currentTime, RevocationWrapper revocationWrapper,
+			ValidationPolicy validationPolicy) {
+		super(revocationWrapper, currentTime, Context.REVOCATION, validationPolicy);
+		result.setTitle(BasicBuildingBlockDefinition.SIGNATURE_ACCEPTANCE_VALIDATION.getTitle());
 	}
 
 	@Override
 	protected void initChain() {
-		firstItem = revocationCryptographic();
-	}
-
-	private ChainItem<XmlSAV> revocationCryptographic() {
-		CryptographicConstraint constraint = validationPolicy.getSignatureCryptographicConstraint(Context.REVOCATION);
-		return new CryptographicCheck<XmlSAV>(result, token, currentTime, constraint);
+		firstItem = cryptographic();
 	}
 
 }

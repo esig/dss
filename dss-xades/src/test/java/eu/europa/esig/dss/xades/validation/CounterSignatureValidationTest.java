@@ -22,18 +22,26 @@ package eu.europa.esig.dss.xades.validation;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import javax.xml.bind.JAXBElement;
+
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
+import eu.europa.esig.validationreport.jaxb.SACounterSignatureType;
+import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
+import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
+import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
 public class CounterSignatureValidationTest {
 
@@ -53,9 +61,11 @@ public class CounterSignatureValidationTest {
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 		int countSignatures = 0;
 		int countCounterSignatures = 0;
+		String ddCounterSignatureId = null; 
 
 		for (SignatureWrapper signatureWrapper : signatures) {
 			if (signatureWrapper.isCounterSignature()) {
+				ddCounterSignatureId = signatureWrapper.getId();
 				countCounterSignatures++;
 			} else {
 				countSignatures++;
@@ -64,6 +74,42 @@ public class CounterSignatureValidationTest {
 		}
 		assertEquals(1, countSignatures);
 		assertEquals(1, countCounterSignatures);
+		
+		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
+
+		countSignatures = 0;
+		countCounterSignatures = 0;
+		String etsiCounterSignatureId = null; 
+		
+		List<SignatureValidationReportType> signatureValidationReports = etsiValidationReport.getSignatureValidationReport();
+		for (SignatureValidationReportType signatureValidationReport : signatureValidationReports) {
+			List<Object> signingTimeOrSigningCertificateOrDataObjectFormat = signatureValidationReport.getSignatureAttributes()
+					.getSigningTimeOrSigningCertificateOrDataObjectFormat();
+			boolean containsCounterSignatures = false;
+			for (Object object : signingTimeOrSigningCertificateOrDataObjectFormat) {
+				JAXBElement<?> jaxbElement = (JAXBElement<?>) object;
+				if (jaxbElement.getValue() instanceof SACounterSignatureType) {
+					SACounterSignatureType counterSignatureType = (SACounterSignatureType) jaxbElement.getValue();
+					assertNotNull(counterSignatureType.getAttributeObject());
+					assertEquals(1, counterSignatureType.getAttributeObject().size());
+					assertTrue(Utils.isCollectionNotEmpty(counterSignatureType.getAttributeObject()));
+					assertNotNull(counterSignatureType.getCounterSignature());
+					ValidationObjectType counterSignatureReference = (ValidationObjectType) counterSignatureType.getAttributeObject().get(0).getVOReference().get(0);
+					etsiCounterSignatureId = counterSignatureReference.getId();
+					countCounterSignatures++;
+					containsCounterSignatures = true;
+				}
+			}
+			if (!containsCounterSignatures) {
+				countSignatures++;
+			}
+		}
+		assertEquals(1, countSignatures);
+		assertEquals(1, countCounterSignatures);
+		assertNotNull(ddCounterSignatureId);
+		assertNotNull(etsiCounterSignatureId);
+		assertEquals(ddCounterSignatureId, etsiCounterSignatureId);
+		
 	}
 
 }

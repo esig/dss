@@ -25,31 +25,37 @@
             <SignatureIntact>true</SignatureIntact>
             <SignatureValid>true</SignatureValid>
          </BasicSignature>
-         <SigningCertificate Id="96DE975C5D625EB6B23007402A12F7EDC7240E6FC22888B9E6A47A23587183CC">
+         <SigningCertificate Certificate="C-96DE975C5D625EB6B23007402A12F7EDC7240E6FC22888B9E6A47A23587183CC">
             <AttributePresent>true</AttributePresent>
             <DigestValuePresent>true</DigestValuePresent>
             <DigestValueMatch>true</DigestValueMatch>
             <IssuerSerialMatch>true</IssuerSerialMatch>
          </SigningCertificate>
          <CertificateChain>
-            <ChainItem Id="96DE975C5D625EB6B23007402A12F7EDC7240E6FC22888B9E6A47A23587183CC">
-               <Source>UNKNOWN</Source>
-            </ChainItem>
-            <ChainItem Id="E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
-               <Source>TRUSTED_LIST</Source>
-            </ChainItem>
+            <ChainItem Certificate="C-96DE975C5D625EB6B23007402A12F7EDC7240E6FC22888B9E6A47A23587183CC"/>
+            <ChainItem Certificate="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672"/>
          </CertificateChain>
          <ContentType>application/pdf</ContentType>
          <CommitmentTypeIndication/>
-         <ClaimedRoles/>
-         <Timestamps/>
+         
+         <FoundCertificates/>
+         <FoundRevocations/>
+         <FoundTimestamps/>
          <SignatureScopes>
-            <SignatureScope name="Full PDF" scope="FULL">Full document</SignatureScope>
+            <SignatureScope SignerData="D-a497ebfc9e2c3edf940760576741dc7f985ed26d91edd062559d18ef8c05ecd4">
+                <Scope>FULL</Scope>
+                <Name>Full PDF</Name>
+                <Description>Full document</Description>
+            </SignatureScope>
          </SignatureScopes>
+         <SignatureDigestReference>
+             <DigestMethod>SHA256</DigestMethod>
+             <DigestValue>hTtZCf1B792s0Lcfk+xt8d6ULL10EMa5GZOJE9g2POI=</DigestValue>
+         </SignatureDigestReference>
       </Signature>
    </Signatures>
    <UsedCertificates>
-      <Certificate Id="E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
+      <Certificate Id="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
          <SubjectDistinguishedName Format="CANONICAL">cn=C - 2,o=european commission</SubjectDistinguishedName>
          <SubjectDistinguishedName Format="RFC2253">CN=C - 2,O=European Commission</SubjectDistinguishedName>
          <IssuerDistinguishedName Format="CANONICAL">cn=european commission root ca - 2</IssuerDistinguishedName>
@@ -58,18 +64,15 @@
          <CommonName>C - 2</CommonName>
          <OrganizationName>European Commission</OrganizationName>
          <AuthorityInformationAccessUrls>
-            <Url>http://hide.eu/info/aia/RootCA.crt</Url>
+            <aiaUrl>http://hide.eu/info/aia/RootCA.crt</aiaUrl>
          </AuthorityInformationAccessUrls>
          <CRLDistributionPoints>
-            <Url>http://hide.eu/info/crl/RootCA.arl</Url>
+            <crlUrl>http://hide.eu/info/crl/RootCA.arl</crlUrl>
          </CRLDistributionPoints>
          <OCSPAccessUrls/>
-         <DigestAlgoAndValues>
-            <DigestAlgoAndValue>
-               <DigestMethod>SHA1</DigestMethod>
-               <DigestValue>exi2JlxCfs6H1FbIo1RasWjB0Qs=</DigestValue>
-            </DigestAlgoAndValue>
-         </DigestAlgoAndValues>
+         <Sources>
+         	<Source>TRUSTED_LIST</Source>
+         </Sources>
          <NotAfter>2026-10-04T12:58:02</NotAfter>
          <NotBefore>2016-10-04T12:58:02</NotBefore>
          <PublicKeySize>4096</PublicKeySize>
@@ -87,11 +90,9 @@
             <SignatureIntact>true</SignatureIntact>
             <SignatureValid>true</SignatureValid>
          </BasicSignature>
-         <SigningCertificate Id="C968B9F102F0DF46A1D67EB4F7ECFAAA5568CFF6C98D8D821BF51B602EF887CA"/>
+         <SigningCertificate Certificate="C-C968B9F102F0DF46A1D67EB4F7ECFAAA5568CFF6C98D8D821BF51B602EF887CA"/>
          <CertificateChain>
-            <ChainItem Id="C968B9F102F0DF46A1D67EB4F7ECFAAA5568CFF6C98D8D821BF51B602EF887CA">
-               <Source>UNKNOWN</Source>
-            </ChainItem>
+            <ChainItem Certificate="C-C968B9F102F0DF46A1D67EB4F7ECFAAA5568CFF6C98D8D821BF51B602EF887CA"/>
          </CertificateChain>
          <Trusted>true</Trusted>
          <SelfSigned>false</SelfSigned>
@@ -107,8 +108,7 @@
                <TSPRegistrationIdentifier>NTRBE-0949.383.342 </TSPRegistrationIdentifier>
                <CountryCode>EC</CountryCode>
                <TrustedServices>
-                  <TrustedService>
-					<ServiceDigitalIdentifier>E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672</ServiceDigitalIdentifier>
+                  <TrustedService ServiceDigitalIdentifier="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
                      <ServiceName>C - 2</ServiceName>
                      <ServiceType>https://webgate.ec.europa.eu/esig/TrustedList/TrstSvc/ScvType/CA/EC/Internal</ServiceType>
                      <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -118,8 +118,12 @@
             </TrustedServiceProvider>
          </TrustedServiceProviders>
          <Revocations/>
+         <DigestAlgoAndValue>
+            <DigestMethod>SHA1</DigestMethod>
+            <DigestValue>exi2JlxCfs6H1FbIo1RasWjB0Qs=</DigestValue>
+         </DigestAlgoAndValue>
       </Certificate>
-      <Certificate Id="43A0ED9707DDA706A7A03BA78487025019B2BCBE8226CA3BFD822D5617A9E9A8">
+      <Certificate Id="C-43A0ED9707DDA706A7A03BA78487025019B2BCBE8226CA3BFD822D5617A9E9A8">
          <SubjectDistinguishedName Format="CANONICAL">cn=ocsp2-C-prod</SubjectDistinguishedName>
          <SubjectDistinguishedName Format="RFC2253">CN=ocsp2-C-prod</SubjectDistinguishedName>
          <IssuerDistinguishedName Format="CANONICAL">cn=C - 2,o=european commission</IssuerDistinguishedName>
@@ -129,12 +133,9 @@
          <AuthorityInformationAccessUrls/>
          <CRLDistributionPoints/>
          <OCSPAccessUrls/>
-         <DigestAlgoAndValues>
-            <DigestAlgoAndValue>
-               <DigestMethod>SHA1</DigestMethod>
-               <DigestValue>ewC5U78HlNMPIzbA5GGnuwtGlOE=</DigestValue>
-            </DigestAlgoAndValue>
-         </DigestAlgoAndValues>
+         <Sources>
+         	<Source>OCSP_RESPONSE</Source>
+         </Sources>
          <NotAfter>2019-09-07T09:14:13</NotAfter>
          <NotBefore>2017-09-07T09:14:13</NotBefore>
          <PublicKeySize>2048</PublicKeySize>
@@ -143,7 +144,7 @@
             <KeyUsage>digitalSignature</KeyUsage>
          </KeyUsageBits>
          <ExtendedKeyUsages>
-            <oid Description="ocspSigning">1.3.6.1.5.5.7.3.9</oid>
+            <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
          </ExtendedKeyUsages>
          <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
          <BasicSignature>
@@ -153,11 +154,9 @@
             <SignatureIntact>true</SignatureIntact>
             <SignatureValid>true</SignatureValid>
          </BasicSignature>
-         <SigningCertificate Id="E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672"/>
+         <SigningCertificate Certificate="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672"/>
          <CertificateChain>
-            <ChainItem Id="E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
-               <Source>TRUSTED_LIST</Source>
-            </ChainItem>
+            <ChainItem Certificate="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672"/>
          </CertificateChain>
          <Trusted>false</Trusted>
          <SelfSigned>false</SelfSigned>
@@ -170,8 +169,7 @@
                <TSPRegistrationIdentifier>NTRBE-0949.383.342 </TSPRegistrationIdentifier>
                <CountryCode>EC</CountryCode>
                <TrustedServices>
-                  <TrustedService>
-                  		<ServiceDigitalIdentifier>E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672</ServiceDigitalIdentifier>
+                  <TrustedService ServiceDigitalIdentifier="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
                      <ServiceName>C - 2</ServiceName>
                      <ServiceType>https://webgate.ec.europa.eu/esig/TrustedList/TrstSvc/ScvType/CA/EC/Internal</ServiceType>
                      <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -183,8 +181,12 @@
             </TrustedServiceProvider>
          </TrustedServiceProviders>
          <Revocations/>
+         <DigestAlgoAndValue>
+            <DigestMethod>SHA1</DigestMethod>
+            <DigestValue>ewC5U78HlNMPIzbA5GGnuwtGlOE=</DigestValue>
+         </DigestAlgoAndValue>
       </Certificate>
-      <Certificate Id="C968B9F102F0DF46A1D67EB4F7ECFAAA5568CFF6C98D8D821BF51B602EF887CA">
+      <Certificate Id="C-C968B9F102F0DF46A1D67EB4F7ECFAAA5568CFF6C98D8D821BF51B602EF887CA">
          <SubjectDistinguishedName Format="CANONICAL">cn=european commission root ca - 2</SubjectDistinguishedName>
          <SubjectDistinguishedName Format="RFC2253">CN=European Commission Root CA - 2</SubjectDistinguishedName>
          <IssuerDistinguishedName Format="CANONICAL">cn=european commission root ca - 2</IssuerDistinguishedName>
@@ -194,12 +196,9 @@
          <AuthorityInformationAccessUrls/>
          <CRLDistributionPoints/>
          <OCSPAccessUrls/>
-         <DigestAlgoAndValues>
-            <DigestAlgoAndValue>
-               <DigestMethod>SHA1</DigestMethod>
-               <DigestValue>gjcTffdNpqyGKIdMlaZOH4lz//Q=</DigestValue>
-            </DigestAlgoAndValue>
-         </DigestAlgoAndValues>
+         <Sources>
+         	<Source>UNKNOWN</Source>
+         </Sources>
          <NotAfter>2046-10-04T11:21:17</NotAfter>
          <NotBefore>2016-10-04T11:21:17</NotBefore>
          <PublicKeySize>4096</PublicKeySize>
@@ -226,8 +225,12 @@
          <QCTypes/>
          <TrustedServiceProviders/>
          <Revocations/>
+         <DigestAlgoAndValue>
+            <DigestMethod>SHA1</DigestMethod>
+            <DigestValue>gjcTffdNpqyGKIdMlaZOH4lz//Q=</DigestValue>
+         </DigestAlgoAndValue>
       </Certificate>
-      <Certificate Id="96DE975C5D625EB6B23007402A12F7EDC7240E6FC22888B9E6A47A23587183CC">
+      <Certificate Id="C-96DE975C5D625EB6B23007402A12F7EDC7240E6FC22888B9E6A47A23587183CC">
          <SubjectDistinguishedName Format="CANONICAL">cn=R A,o=european commission,1.2.840.113549.1.9.1=#1626416e64726561732e524549465343484e4549444552406578742e65632e6575726f70612e6575</SubjectDistinguishedName>
          <SubjectDistinguishedName Format="RFC2253">CN=R A,O=European Commission,1.2.840.113549.1.9.1=#1626416e64726561732e524549465343484e4549444552406578742e65632e6575726f70612e6575</SubjectDistinguishedName>
          <IssuerDistinguishedName Format="CANONICAL">cn=C - 2,o=european commission</IssuerDistinguishedName>
@@ -237,20 +240,17 @@
          <OrganizationName>European Commission</OrganizationName>
          <Email>A.R@ext.ec.europa.eu</Email>
          <AuthorityInformationAccessUrls>
-            <Url>http://hide.eu/info/aia/onlineCA.crt</Url>
+            <aiaUrl>http://hide.eu/info/aia/onlineCA.crt</aiaUrl>
          </AuthorityInformationAccessUrls>
          <CRLDistributionPoints>
-            <Url>http://hide.eu/info/crl/onlineCA.crl</Url>
+            <crlUrl>http://hide.eu/info/crl/onlineCA.crl</crlUrl>
          </CRLDistributionPoints>
          <OCSPAccessUrls>
-            <Url>http://hide.eu/ocsp</Url>
+            <ocspServerUrl>http://hide.eu/ocsp</ocspServerUrl>
          </OCSPAccessUrls>
-         <DigestAlgoAndValues>
-            <DigestAlgoAndValue>
-               <DigestMethod>SHA1</DigestMethod>
-               <DigestValue>JLPakAqo5lg5j4MkLVYuX6QUbNk=</DigestValue>
-            </DigestAlgoAndValue>
-         </DigestAlgoAndValues>
+         <Sources>
+         	<Source>UNKNOWN</Source>
+         </Sources>
          <NotAfter>2021-04-18T13:11:25</NotAfter>
          <NotBefore>2017-04-18T13:11:25</NotBefore>
          <PublicKeySize>2048</PublicKeySize>
@@ -260,7 +260,7 @@
             <KeyUsage>digitalSignature</KeyUsage>
          </KeyUsageBits>
          <ExtendedKeyUsages>
-            <oid Description="emailProtection">1.3.6.1.5.5.7.3.4</oid>
+            <extendedKeyUsagesOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsagesOid>
          </ExtendedKeyUsages>
          <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
          <BasicSignature>
@@ -270,11 +270,9 @@
             <SignatureIntact>true</SignatureIntact>
             <SignatureValid>true</SignatureValid>
          </BasicSignature>
-         <SigningCertificate Id="E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672"/>
+         <SigningCertificate Certificate="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672"/>
          <CertificateChain>
-            <ChainItem Id="E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
-               <Source>TRUSTED_LIST</Source>
-            </ChainItem>
+            <ChainItem Certificate="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672"/>
          </CertificateChain>
          <Trusted>false</Trusted>
          <SelfSigned>false</SelfSigned>
@@ -287,7 +285,7 @@
                <TSPRegistrationIdentifier>NTRBE-0949.383.342 </TSPRegistrationIdentifier>
                <CountryCode>EC</CountryCode>
                <TrustedServices>
-                  <TrustedService><ServiceDigitalIdentifier>E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672</ServiceDigitalIdentifier>
+                  <TrustedService ServiceDigitalIdentifier="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
                      <ServiceName>C - 2</ServiceName>
                      <ServiceType>https://webgate.ec.europa.eu/esig/TrustedList/TrstSvc/ScvType/CA/EC/Internal</ServiceType>
                      <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -299,41 +297,51 @@
             </TrustedServiceProvider>
          </TrustedServiceProviders>
          <Revocations>
-            <Revocation Id="96de975c5d625eb6b23007402a12f7edc7240e6fc22888b9e6a47a23587183ccd44b3bc2cbfca258343153ddc0197a58e747bc1153f83d0fbcd1617bb9724a95">
-               <Origin>EXTERNAL</Origin>
-               <Source>OCSPToken</Source>
-               <SourceAddress>http://hide.eu/ocsp</SourceAddress>
-               <Available>true</Available>
+            <CertificateRevocation Revocation="R-96de975c5d625eb6b23007402a12f7edc7240e6fc22888b9e6a47a23587183ccd44b3bc2cbfca258343153ddc0197a58e747bc1153f83d0fbcd1617bb9724a95">
                <Status>true</Status>
-               <ProductionDate>2018-07-10T15:24:39</ProductionDate>
-               <ThisUpdate>2018-07-10T07:55:03</ThisUpdate>
-               <NextUpdate>2018-07-16T07:55:03</NextUpdate>
-               <DigestAlgoAndValues>
-                  <DigestAlgoAndValue>
-                     <DigestMethod>SHA1</DigestMethod>
-                     <DigestValue>6Gy3VRznvktjj8L+mKoO68KKjVY=</DigestValue>
-                  </DigestAlgoAndValue>
-               </DigestAlgoAndValues>
-               <BasicSignature>
-                  <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-                  <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-                  <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-                  <SignatureIntact>true</SignatureIntact>
-                  <SignatureValid>true</SignatureValid>
-               </BasicSignature>
-               <SigningCertificate Id="43A0ED9707DDA706A7A03BA78487025019B2BCBE8226CA3BFD822D5617A9E9A8"/>
-               <CertificateChain>
-                  <ChainItem Id="43A0ED9707DDA706A7A03BA78487025019B2BCBE8226CA3BFD822D5617A9E9A8">
-                     <Source>OCSP_RESPONSE</Source>
-                  </ChainItem>
-                  <ChainItem Id="E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
-                     <Source>TRUSTED_LIST</Source>
-                  </ChainItem>
-               </CertificateChain>
-            </Revocation>
+            </CertificateRevocation>
          </Revocations>
+         <DigestAlgoAndValue>
+            <DigestMethod>SHA1</DigestMethod>
+            <DigestValue>JLPakAqo5lg5j4MkLVYuX6QUbNk=</DigestValue>
+         </DigestAlgoAndValue>
       </Certificate>
    </UsedCertificates>
+   <UsedRevocations>
+      <Revocation Id="R-96de975c5d625eb6b23007402a12f7edc7240e6fc22888b9e6a47a23587183ccd44b3bc2cbfca258343153ddc0197a58e747bc1153f83d0fbcd1617bb9724a95">
+         <Origin>EXTERNAL</Origin>
+         <Type>OCSP</Type>
+         <SourceAddress>http://hide.eu/ocsp</SourceAddress>
+         <ProductionDate>2018-07-10T15:24:39</ProductionDate>
+         <ThisUpdate>2018-07-10T07:55:03</ThisUpdate>
+         <NextUpdate>2018-07-16T07:55:03</NextUpdate>
+         <BasicSignature>
+            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+            <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+            <SignatureIntact>true</SignatureIntact>
+            <SignatureValid>true</SignatureValid>
+         </BasicSignature>
+         <SigningCertificate Certificate="C-43A0ED9707DDA706A7A03BA78487025019B2BCBE8226CA3BFD822D5617A9E9A8"/>
+         <CertificateChain>
+            <ChainItem Certificate="C-43A0ED9707DDA706A7A03BA78487025019B2BCBE8226CA3BFD822D5617A9E9A8"/>
+            <ChainItem Certificate="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672"/>
+         </CertificateChain>
+         <DigestAlgoAndValue>
+            <DigestMethod>SHA1</DigestMethod>
+            <DigestValue>6Gy3VRznvktjj8L+mKoO68KKjVY=</DigestValue>
+         </DigestAlgoAndValue>
+      </Revocation>
+   </UsedRevocations>
+    <OriginalDocuments>
+        <SignerData Id="D-a497ebfc9e2c3edf940760576741dc7f985ed26d91edd062559d18ef8c05ecd4">
+            <ReferencedName>Full document</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>pJfr/J4sPt+UB2BXZ0Hcf5he0m2R7dBiVZ0Y74wF7NQ=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
    <TrustedLists>
       <TrustedList>
          <CountryCode>EC</CountryCode>

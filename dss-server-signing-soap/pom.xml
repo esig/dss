@@ -3,11 +3,15 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.4.3</version>
+		<version>5.5.RC1</version>
 	</parent>
 	
 	<name>DSS Server signing SOAP Service</name>
 	<artifactId>dss-server-signing-soap</artifactId>
+
+	<properties>
+		<module-name>jpms_dss_ws_server_signing_soap</module-name>
+	</properties>
 
 	<dependencies>
 		<dependency>

@@ -24,19 +24,24 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.transforms.InvalidTransformException;
+import org.apache.xml.security.transforms.Transform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.Digest;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.DigestMatcherType;
 import eu.europa.esig.dss.validation.ReferenceValidation;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
@@ -63,12 +68,16 @@ import eu.europa.esig.dss.xades.XPathQueryHolder;
 public class ManifestValidator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ManifestValidator.class);
+	
+	private static final String ALGORITHM_ATTRIBUTE = "Algorithm";
 
+	private final Element signatureElement;
 	private final Node manifestNode;
 	private final List<DSSDocument> detachedContents;
 	private final XPathQueryHolder xPathQueryHolder;
 
-	ManifestValidator(Node manifestNode, List<DSSDocument> detachedContents, XPathQueryHolder xPathQueryHolder) {
+	ManifestValidator(Element signatureElement, Node manifestNode, List<DSSDocument> detachedContents, XPathQueryHolder xPathQueryHolder) {
+		this.signatureElement = signatureElement;
 		this.manifestNode = manifestNode;
 		this.detachedContents = detachedContents;
 		this.xPathQueryHolder = xPathQueryHolder;
@@ -83,39 +92,73 @@ public class ManifestValidator {
 		NodeList nodeList = DomUtils.getNodeList(manifestNode, "./ds:Reference");
 		if (nodeList != null && nodeList.getLength() > 0) {
 			for (int i = 0; i < nodeList.getLength(); i++) {
-				ReferenceValidation refValidation = new ReferenceValidation();
-				refValidation.setType(DigestMatcherType.MANIFEST_ENTRY);
 
 				Element refNode = (Element) nodeList.item(i);
-				String filename = refNode.getAttribute("URI");
-				refValidation.setName(filename);
-
-				Digest digest = getDigest(refNode);
-				refValidation.setDigest(digest);
-
-				DSSDocument doc = findByFilename(filename);
-				if (doc != null) {
-					refValidation.setFound(true);
-					refValidation.setIntact(isIntact(digest, doc));
+				String uri = refNode.getAttribute("URI");
+				
+				if (DomUtils.isElementReference(uri)) {
+					result.add(getInternalReferenceValidation(refNode, uri));
 				} else {
-					refValidation.setFound(false);
+					result.add(getDetachedReferenceValidation(refNode, uri));
 				}
-
-				result.add(refValidation);
 			}
 		}
 
 		return result;
 	}
-
-	private Digest getDigest(Element refNode) {
-		try {
-
-			NodeList nodeList = DomUtils.getNodeList(refNode, xPathQueryHolder.XPATH__DS_TRANSFORM);
-			if (nodeList != null && nodeList.getLength() > 0) {
-				throw new DSSException("Transformations are not supported");
+	
+	private List<String> getTransformNames(Element refNode) {
+		List<String> transfromNames = new ArrayList<String>();
+		NodeList nodeList = DomUtils.getNodeList(refNode, xPathQueryHolder.XPATH__DS_TRANSFORM);
+		if (nodeList != null && nodeList.getLength() > 0) {
+			for (int ii = 0; ii < nodeList.getLength(); ii++) {
+				Element transformElement = (Element) nodeList.item(ii);
+				String algorithm = transformElement.getAttribute(ALGORITHM_ATTRIBUTE);
+				if (Utils.isStringNotBlank(algorithm)) {
+					transfromNames.add(algorithm);
+				}
 			}
+		}
+		return transfromNames;
+	}
+	
+	private ReferenceValidation getInternalReferenceValidation(final Element refNode, final String uri) {
+		ReferenceValidation refValidation = getReferenceValidationWithDigest(refNode, uri);
+		NodeList nodeList = DomUtils.getNodeList(signatureElement.getOwnerDocument().getDocumentElement(),
+				"//*" + DomUtils.getXPathByIdAttribute(uri));
+		if (nodeList != null && nodeList.getLength() == 1) {
+			refValidation.setFound(true);
+			refValidation.setIntact(isIntact(refValidation, nodeList.item(0)));
+		} else {
+			refValidation.setFound(false);
+		}
+		return refValidation;
+	}
+	
+	private ReferenceValidation getDetachedReferenceValidation(final Element refNode, final String uri) {
+		ReferenceValidation refValidation = getReferenceValidationWithDigest(refNode, uri);
+		DSSDocument doc = findByFilename(uri);
+		if (doc != null) {
+			refValidation.setFound(true);
+			refValidation.setIntact(isIntact(refValidation, doc));
+		} else {
+			refValidation.setFound(false);
+		}
+		return refValidation;
+	}
+	
+	private ReferenceValidation getReferenceValidationWithDigest(final Element refNode, final String uri) {
+		ReferenceValidation refValidation = new ReferenceValidation();
+		refValidation.setType(DigestMatcherType.MANIFEST_ENTRY);
+		refValidation.setName(uri);
+		Digest digest = getReferenceDigest(refNode);
+		refValidation.setDigest(digest);
+		refValidation.setTransformationNames(getTransformNames(refNode));
+		return refValidation;
+	}
 
+	private Digest getReferenceDigest(Element refNode) {
+		try {
 			String digestAlgoUri = DomUtils.getValue(refNode, xPathQueryHolder.XPATH__DIGEST_METHOD_ALGORITHM);
 			DigestAlgorithm digestAlgorithm = DigestAlgorithm.forXML(digestAlgoUri);
 			String digestValueB64 = DomUtils.getValue(refNode, xPathQueryHolder.XPATH__DIGEST_VALUE);
@@ -127,25 +170,67 @@ public class ManifestValidator {
 	}
 
 	private DSSDocument findByFilename(String filename) {
-		for (DSSDocument dssDocument : detachedContents) {
-			if (Utils.areStringsEqual(filename, dssDocument.getName())) {
-				return dssDocument;
+		if (detachedContents != null) {
+			for (DSSDocument dssDocument : detachedContents) {
+				if (Utils.areStringsEqual(filename, dssDocument.getName())) {
+					return dssDocument;
+				}
 			}
 		}
 		return null;
 	}
 
-	private boolean isIntact(Digest digest, DSSDocument doc) {
+	private boolean isIntact(final ReferenceValidation referenceValidation, DSSDocument doc) {
+		Digest digest = referenceValidation.getDigest();
 		if (digest == null) {
 			return false;
 		}
-
 		try {
-			String documentDigestB64 = doc.getDigest(digest.getAlgorithm());
-			return Arrays.equals(digest.getValue(), Utils.fromBase64(documentDigestB64));
+			if (Utils.isCollectionNotEmpty(referenceValidation.getTransformationNames())) {
+				Document documentDOM = DomUtils.buildDOM(doc);
+				return isIntact(referenceValidation, documentDOM);
+			} else {
+				String documentDigestB64 = doc.getDigest(digest.getAlgorithm());
+				return Arrays.equals(digest.getValue(), Utils.fromBase64(documentDigestB64));
+			}
 		} catch (Exception e) {
 			LOG.warn("Unable to verify integrity for document '{}' : {}", doc.getName(), e.getMessage());
 			return false;
+		}
+	}
+	
+	private boolean isIntact(final ReferenceValidation referenceValidation, Node node) {
+		Digest digest = referenceValidation.getDigest();
+		if (digest == null) {
+			return false;
+		}
+		try {
+			List<Transform> transforms = getTransforms(referenceValidation.getTransformationNames());
+			byte[] bytesAfterTransforms = getBytesAfterTransforms(node, transforms);
+			return Arrays.equals(digest.getValue(), DSSUtils.digest(digest.getAlgorithm(), bytesAfterTransforms));
+		} catch (Exception e) {
+			LOG.warn("Unable to verify integrity for element '{}' : {}", node.getLocalName(), e.getMessage());
+			return false;
+		}
+	}
+
+	private List<Transform> getTransforms(List<String> transformNames) throws InvalidTransformException {
+		List<Transform> transforms = new ArrayList<Transform>();
+		for (String algorithm : transformNames) {
+			transforms.add(new Transform(signatureElement.getOwnerDocument(), algorithm));
+		}
+		return transforms;
+	}
+	
+	private byte[] getBytesAfterTransforms(Node nodeToTransform, final List<Transform> transforms) throws DSSException {
+		try {
+			XMLSignatureInput xmlSignatureInput = new XMLSignatureInput(nodeToTransform);
+			for (Transform transform : transforms) {
+				xmlSignatureInput = transform.performTransform(xmlSignatureInput);
+			}
+			return xmlSignatureInput.getBytes();
+		} catch (Exception e) {
+			throw new DSSException("An error occurred during applying of transformations. Transforms cannot be performed!");
 		}
 	}
 

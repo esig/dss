@@ -34,12 +34,12 @@ import com.lowagie.text.pdf.PdfDictionary;
 import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfReader;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pdf.PDFTimestampService;
 import eu.europa.esig.dss.pdf.PdfObjFactory;
-import eu.europa.esig.dss.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 
 public class PDFTimestampServiceTest extends PKIFactoryAccess {
 

@@ -1,21 +1,27 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-    <artifactId>sd-dss</artifactId>
-    <version>5.4.3</version>
-  </parent>
-  <artifactId>dss-validation-soap</artifactId>
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+		<artifactId>sd-dss</artifactId>
+		<version>5.5.RC1</version>
+	</parent>
+	
+	<artifactId>dss-validation-soap</artifactId>
 	<name>DSS Validation SOAP Service</name>
-  
-  <dependencies>
-  	<dependency>
+
+	<properties>
+		<module-name>jpms_dss_ws_validation_soap</module-name>
+	</properties>
+
+	<dependencies>
+		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-validation-soap-client</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-remote-services</artifactId>
+			<artifactId>dss-validation-server-common</artifactId>
 		</dependency>
-  </dependencies>
+	</dependencies>
 </project>

@@ -33,7 +33,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSUtils;
 
 @RunWith(Parameterized.class)
 public class DeterministicIdGenerationTest {
@@ -50,7 +51,7 @@ public class DeterministicIdGenerationTest {
 
 	@Before
 	public void setUp() throws Exception {
-		signingCert = DSSUtils.loadCertificate(new FileInputStream("src/test/resources/ec.europa.eu.crt"));
+		signingCert = DSSUtils.loadCertificate(new FileInputStream("src/test/resources/certificates/ec.europa.eu.crt"));
 	}
 
 	@Test

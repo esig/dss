@@ -23,9 +23,8 @@ package eu.europa.esig.dss.pdf.visible;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
+import java.awt.image.Raster;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -33,45 +32,36 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.ImageTypeSpecifier;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.ImageWriter;
-import javax.imageio.metadata.IIOInvalidTreeException;
 import javax.imageio.metadata.IIOMetadata;
-import javax.imageio.metadata.IIOMetadataNode;
-import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 import javax.imageio.stream.ImageInputStream;
-import javax.imageio.stream.ImageOutputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.pades.DSSFont;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
- * A static utilities that helps in creating ImageAndResolution
- * 
+ * Static utilities that helps in creating ImageAndResolution
  * @author pakeyser
- *
  */
 public class ImageUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ImageUtils.class);
 
-	private static final int DPI = 300;
-
 	private static final int[] IMAGE_TRANSPARENT_TYPES;
+	
+	private static final int DEFAULT_DPI = 96;
 
 	static {
 		int[] imageAlphaTypes = new int[] { BufferedImage.TYPE_4BYTE_ABGR, BufferedImage.TYPE_4BYTE_ABGR_PRE, BufferedImage.TYPE_INT_ARGB,
@@ -79,47 +69,8 @@ public class ImageUtils {
 		Arrays.sort(imageAlphaTypes);
 		IMAGE_TRANSPARENT_TYPES = imageAlphaTypes;
 	}
-
+	
 	private ImageUtils() {
-	}
-
-	public static ImageAndResolution create(final SignatureImageParameters imageParameters) throws IOException {
-		SignatureImageTextParameters textParamaters = imageParameters.getTextParameters();
-
-		DSSDocument image = imageParameters.getImage();
-		if ((textParamaters != null) && Utils.isStringNotEmpty(textParamaters.getText())) {
-			BufferedImage buffImg = ImageTextWriter.createTextImage(textParamaters.getText(), textParamaters.getFont(), textParamaters.getTextColor(),
-					textParamaters.getBackgroundColor(), getDpi(imageParameters.getDpi()), textParamaters.getSignerTextHorizontalAlignment());
-
-			if (image != null) {
-				try (InputStream is = image.openStream()) {
-					if (is != null) {
-						switch (textParamaters.getSignerNamePosition()) {
-						case LEFT:
-							buffImg = ImagesMerger.mergeOnRight(ImageIO.read(is), buffImg, textParamaters.getBackgroundColor(),
-									imageParameters.getSignerTextImageVerticalAlignment());
-							break;
-						case RIGHT:
-							buffImg = ImagesMerger.mergeOnRight(buffImg, ImageIO.read(is), textParamaters.getBackgroundColor(),
-									imageParameters.getSignerTextImageVerticalAlignment());
-							break;
-						case TOP:
-							buffImg = ImagesMerger.mergeOnTop(ImageIO.read(is), buffImg, textParamaters.getBackgroundColor());
-							break;
-						case BOTTOM:
-							buffImg = ImagesMerger.mergeOnTop(buffImg, ImageIO.read(is), textParamaters.getBackgroundColor());
-							break;
-						default:
-							break;
-						}
-					}
-				}
-			}
-			return convertToInputStream(buffImg, getDpi(imageParameters.getDpi()));
-		}
-
-		// Image only
-		return readAndDisplayMetadata(image);
 	}
 
 	/**
@@ -130,23 +81,16 @@ public class ImageUtils {
 	 * @return a Dimension object
 	 * @throws IOException
 	 */
-	static Dimension getOptimalSize(SignatureImageParameters imageParameters) throws IOException {
-		int width = 0;
-		int height = 0;
+	public static Dimension getOptimalSize(SignatureImageParameters imageParameters) throws IOException {
 
-		DSSDocument docImage = imageParameters.getImage();
-		if (docImage != null) {
-			try (InputStream is = docImage.openStream()) {
-				BufferedImage image = ImageIO.read(is);
-				width = image.getWidth();
-				height = image.getHeight();
-			}
-		}
+		Dimension dimension = getImageDimension(imageParameters);
+		double width = dimension.getWidth();
+		double height = dimension.getHeight();
 
 		SignatureImageTextParameters textParamaters = imageParameters.getTextParameters();
 		if ((textParamaters != null) && !textParamaters.getText().isEmpty()) {
-			Dimension textDimension = getTextDimension(textParamaters.getText(), textParamaters.getFont(), imageParameters.getDpi());
-			switch (textParamaters.getSignerNamePosition()) {
+			Dimension textDimension = getTextDimension(imageParameters);
+			switch (textParamaters.getSignerTextPosition()) {
 			case LEFT:
 			case RIGHT:
 				width += textDimension.width;
@@ -163,11 +107,38 @@ public class ImageUtils {
 
 		}
 
-		float ration = getRation(imageParameters.getDpi());
-		return new Dimension(Math.round(width / ration), Math.round(height / ration));
+		float ration = CommonDrawerUtils.getRation(imageParameters.getDpi());
+		return new Dimension(Math.round((int)width / ration), Math.round((int)height / ration));
+	}
+	
+	/**
+	 * Reads image's metadata in a secure way. If metadata is not accessible from {@code image}, 
+	 * returns values from {@code imageParameters}
+	 * 
+	 * @param image {@link DSSDocument} image to read metadata from
+	 * @param imageParameters {@link SignatureImageParameters}
+	 * @return {@link ImageAndResolution} metadata
+	 * @throws IOException in case of image reading error
+	 */
+	public static ImageAndResolution secureReadMetadata(DSSDocument image, SignatureImageParameters imageParameters) throws IOException {
+		ImageAndResolution imageAndResolution;
+		try {
+			imageAndResolution = ImageUtils.readDisplayMetadata(imageParameters.getImage());
+		} catch (Exception e) {
+			LOG.warn("Cannot access the image metadata : {}. Returns default info.", e.getMessage());
+			imageAndResolution = new ImageAndResolution(imageParameters.getImage(), imageParameters.getDpi(), imageParameters.getDpi());
+		}
+		return imageAndResolution;
 	}
 
-	private static ImageAndResolution readAndDisplayMetadata(DSSDocument image) throws IOException {
+	/**
+	 * Reads image's metadata
+	 * 
+	 * @param image {@link DSSDocument} image to read metadata from
+	 * @return {@link ImageAndResolution} metadata
+	 * @throws IOException in case of image reading error
+	 */
+	public static ImageAndResolution readDisplayMetadata(DSSDocument image) throws IOException {
 		if (isImageWithContentType(image, MimeType.JPEG)) {
 			return readAndDisplayMetadataJPEG(image);
 		} else if (isImageWithContentType(image, MimeType.PNG)) {
@@ -179,14 +150,18 @@ public class ImageUtils {
 	private static boolean isImageWithContentType(DSSDocument image, MimeType expectedContentType) {
 		if (image.getMimeType() != null) {
 			return expectedContentType == image.getMimeType();
-		} else {
+		} else if (image.getName() != null) {
 			String contentType = null;
 			try {
 				contentType = Files.probeContentType(Paths.get(image.getName()));
 			} catch (IOException e) {
 				LOG.warn("Unable to retrieve the content-type : {}", e.getMessage());
+			} catch (Exception e) {
+				throw new DSSException("An error occurred during an attempt to read the image's content type", e);
 			}
 			return Utils.areStringsEqual(expectedContentType.getMimeTypeString(), contentType);
+		} else {
+			throw new DSSException("Cannot read image metadata. MimeType or image name must be specified!");
 		}
 	}
 
@@ -196,19 +171,27 @@ public class ImageUtils {
 			ImageReader reader = getImageReader("jpeg");
 			// attach source to the reader
 			reader.setInput(iis, true);
+			
+			int hdpi = DEFAULT_DPI;
+			int vdpi = DEFAULT_DPI;
 
-			// read metadata of first image
-			IIOMetadata metadata = reader.getImageMetadata(0);
+			if (isSupportedColorSpace(reader)) {
+				// read metadata of first image
+				IIOMetadata metadata = reader.getImageMetadata(0);
 
-			Element root = (Element) metadata.getAsTree("javax_imageio_jpeg_image_1.0");
+				Element root = (Element) metadata.getAsTree("javax_imageio_jpeg_image_1.0");
 
-			NodeList elements = root.getElementsByTagName("app0JFIF");
+				NodeList elements = root.getElementsByTagName("app0JFIF");
 
-			Element e = (Element) elements.item(0);
-			int x = Integer.parseInt(e.getAttribute("Xdensity"));
-			int y = Integer.parseInt(e.getAttribute("Ydensity"));
+				Element e = (Element) elements.item(0);
+				hdpi = Integer.parseInt(e.getAttribute("Xdensity"));
+				vdpi = Integer.parseInt(e.getAttribute("Ydensity"));
+			} else {
+				LOG.warn("Cannot read metadata of the image with name [{}]. The color space is not supported. "
+						+ "Using the default dpi with value [{}]", image.getName(), DEFAULT_DPI);
+			}
 
-			return new ImageAndResolution(image, x, y);
+			return new ImageAndResolution(image, hdpi, vdpi);
 		}
 	}
 
@@ -218,136 +201,134 @@ public class ImageUtils {
 			ImageReader reader = getImageReader("png");
 			// attach source to the reader
 			reader.setInput(iis, true);
+			
+			int hdpi = DEFAULT_DPI;
+			int vdpi = DEFAULT_DPI;
 
-			// read metadata of first image
-			IIOMetadata metadata = reader.getImageMetadata(0);
+			if (isSupportedColorSpace(reader)) {
+				// read metadata of first image
+				IIOMetadata metadata = reader.getImageMetadata(0);
 
-			int hdpi = 96;
-			int vdpi = 96;
-			double mm2inch = 25.4;
+				double mm2inch = 25.4;
 
-			Element node = (Element) metadata.getAsTree("javax_imageio_1.0");
-			NodeList lst = node.getElementsByTagName("HorizontalPixelSize");
-			if (lst != null && lst.getLength() == 1) {
-				hdpi = (int) (mm2inch / Float.parseFloat(((Element) lst.item(0)).getAttribute("value")));
-			}
+				Element node = (Element) metadata.getAsTree("javax_imageio_1.0");
+				NodeList lst = node.getElementsByTagName("HorizontalPixelSize");
+				if (lst != null && lst.getLength() == 1) {
+					hdpi = (int) (mm2inch / Float.parseFloat(((Element) lst.item(0)).getAttribute("value")));
+				} else {
+					LOG.debug("Cannot get HorizontalPixelSize value. Using the default dpi [{}]", DEFAULT_DPI);
+				}
 
-			lst = node.getElementsByTagName("VerticalPixelSize");
-			if (lst != null && lst.getLength() == 1) {
-				vdpi = (int) (mm2inch / Float.parseFloat(((Element) lst.item(0)).getAttribute("value")));
+				lst = node.getElementsByTagName("VerticalPixelSize");
+				if (lst != null && lst.getLength() == 1) {
+					vdpi = (int) (mm2inch / Float.parseFloat(((Element) lst.item(0)).getAttribute("value")));
+				} else {
+					LOG.debug("Cannot get HorizontalPixelSize value. Using the default dpi [{}]", DEFAULT_DPI);
+				}
+			} else {
+				LOG.warn("Cannot read metadata of the image with name [{}]. The color space is not supported. "
+						+ "Using the default dpi with value [{}]", image.getName(), DEFAULT_DPI);
 			}
 
 			return new ImageAndResolution(image, hdpi, vdpi);
 		}
 	}
-
-	private static Dimension getTextDimension(String text, Font font, Integer dpi) {
-		float fontSize = Math.round((font.getSize() * getDpi(dpi)) / (float) ImageTextWriter.PDF_DEFAULT_DPI);
-		Font largerFont = font.deriveFont(fontSize);
-		return ImageTextWriter.computeSize(largerFont, text);
+	
+	private static boolean isSupportedColorSpace(ImageReader reader) throws IOException {
+		Iterator<ImageTypeSpecifier> imageTypes = reader.getImageTypes(0);
+		// ImageReader detects only processable types
+		return imageTypes.hasNext();
 	}
-
-	private static ImageAndResolution convertToInputStream(BufferedImage buffImage, int dpi) throws IOException {
-		if (isTransparent(buffImage)) {
-			return convertToInputStreamPNG(buffImage, dpi);
-		} else {
-			return convertToInputStreamJPG(buffImage, dpi);
+	
+	/**
+	 * Returns Dimensions. Tries to retrieve explicetly set values in the parameters,
+	 * in other case reads dimensions from the provided image
+	 * @param imageParameters {@link SignatureImageParameters}
+	 * @return {@link Dimension}
+	 */
+	public static Dimension getImageDimension(SignatureImageParameters imageParameters) {
+		float width = imageParameters.getWidth();
+		float height = imageParameters.getHeight();
+		float scaleFactor = imageParameters.getScaleFactor();
+		if (width == 0 && height == 0) {
+			try {
+				DSSDocument docImage = imageParameters.getImage();
+				if (docImage != null) {
+					try (InputStream is = docImage.openStream()) {
+						BufferedImage bufferedImage = read(is);
+						width = bufferedImage.getWidth();
+						height = bufferedImage.getHeight();
+					}
+				}
+			} catch (IOException e) {
+				LOG.error("Cannot read the given image", e);
+			}
+		}
+		Dimension dimension = new Dimension();
+		dimension.setSize((int)width * scaleFactor, (int)height * scaleFactor);
+		return dimension;
+	}
+	
+	/**
+	 * Reads image from InputStream. Detects and converts CMYK images to RGB if needed
+	 * @param is {@link InputStream} to read the image from
+	 * @return {@link BufferedImage}
+	 * @throws IOException - in case of InputStream reading error
+	 */
+	public static BufferedImage read(InputStream is) throws IOException {
+		try (ImageInputStream iis = ImageIO.createImageInputStream(is)) {
+			ImageReader imageReader = getImageReader(iis);
+			imageReader.setInput(iis, true, true);
+			if (isSupportedColorSpace(imageReader)) {
+				return imageReader.read(0, imageReader.getDefaultReadParam());
+			}
+			LOG.warn("The image format is not supported by the current ImageReader!");
+			Raster raster = getRaster(imageReader);
+			if (isCMYKType(raster)) {
+				LOG.info("Converting from CMYK to RGB...");
+				return convertCMYKToRGB(raster);
+			}
+			throw new DSSException("The color space of image is not supported!");
 		}
 	}
-
-	private static ImageAndResolution convertToInputStreamJPG(BufferedImage buffImage, int dpi) throws IOException {
-		ImageWriter writer = getImageWriter("jpeg");
-
-		JPEGImageWriteParam jpegParams = (JPEGImageWriteParam) writer.getDefaultWriteParam();
-		jpegParams.setCompressionMode(JPEGImageWriteParam.MODE_EXPLICIT);
-		jpegParams.setCompressionQuality(1);
-
-		ImageTypeSpecifier typeSpecifier = ImageTypeSpecifier.createFromBufferedImageType(BufferedImage.TYPE_INT_RGB);
-		IIOMetadata metadata = writer.getDefaultImageMetadata(typeSpecifier, jpegParams);
-
-		initDpiJPG(metadata, dpi);
-
-		return getImageAndResolution(buffImage, dpi, writer, jpegParams, metadata);
+	
+	private static Raster getRaster(ImageReader imageReader) throws IOException {
+		return imageReader.readRaster(0, imageReader.getDefaultReadParam());
 	}
-
-	private static void initDpiJPG(IIOMetadata metadata, int dpi) throws IIOInvalidTreeException {
-		Element tree = (Element) metadata.getAsTree("javax_imageio_jpeg_image_1.0");
-		Element jfif = (Element) tree.getElementsByTagName("app0JFIF").item(0);
-		jfif.setAttribute("Xdensity", Integer.toString(dpi));
-		jfif.setAttribute("Ydensity", Integer.toString(dpi));
-		jfif.setAttribute("resUnits", "1"); // density is dots per inch
-		metadata.setFromTree("javax_imageio_jpeg_image_1.0", tree);
+	
+	private static boolean isCMYKType(Raster raster) {
+		return raster.getNumBands() == 4; // number of parameters for CMYK color scheme per pixel
 	}
-
-	private static ImageAndResolution convertToInputStreamPNG(BufferedImage buffImage, int dpi) throws IOException {
-		ImageWriter writer = getImageWriter("png");
-
-		ImageWriteParam imageWriterParams = writer.getDefaultWriteParam();
-
-		ImageTypeSpecifier typeSpecifier = ImageTypeSpecifier.createFromBufferedImageType(BufferedImage.TYPE_INT_ARGB);
-		IIOMetadata metadata = writer.getDefaultImageMetadata(typeSpecifier, imageWriterParams);
-
-		initDpiPNG(metadata, dpi);
-
-		return getImageAndResolution(buffImage, dpi, writer, imageWriterParams, metadata);
-	}
-
-	private static ImageAndResolution getImageAndResolution(BufferedImage buffImage, int dpi, ImageWriter writer, ImageWriteParam imageWriterParams,
-			IIOMetadata metadata) throws IOException {
-		try (ByteArrayOutputStream os = new ByteArrayOutputStream(); ImageOutputStream imageOs = ImageIO.createImageOutputStream(os)) {
-			writer.setOutput(imageOs);
-			writer.write(metadata, new IIOImage(buffImage, null, metadata), imageWriterParams);
-			return new ImageAndResolution(new InMemoryDocument(os.toByteArray()), dpi, dpi);
+	
+	private static BufferedImage convertCMYKToRGB(Raster raster) throws IOException {
+		int width = raster.getWidth();
+		int height = raster.getHeight();
+		BufferedImage rgbImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		int[] cmyk = new int[4];
+		int r, g, b, p;
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				cmyk = raster.getPixel(x, y, cmyk);
+				r = ((cmyk[0]) * (cmyk[3])) / 255;
+				g = ((cmyk[1]) * (cmyk[3])) / 255;
+				b = ((cmyk[2]) * (cmyk[3])) / 255;
+				p = (r << 16) | (g << 8) | b;
+				rgbImage.setRGB(x, y, p);
+			}
 		}
+		return rgbImage;
 	}
 
-	private static void initDpiPNG(IIOMetadata metadata, int dpi) throws IIOInvalidTreeException {
-
-		// for PNG, it's dots per millimeter
-		double dotsPerMilli = 1.0 * dpi / 25.4;
-
-		IIOMetadataNode horiz = new IIOMetadataNode("HorizontalPixelSize");
-		horiz.setAttribute("value", Double.toString(dotsPerMilli));
-
-		IIOMetadataNode vert = new IIOMetadataNode("VerticalPixelSize");
-		vert.setAttribute("value", Double.toString(dotsPerMilli));
-
-		IIOMetadataNode dim = new IIOMetadataNode("Dimension");
-		dim.appendChild(horiz);
-		dim.appendChild(vert);
-
-		IIOMetadataNode root = new IIOMetadataNode("javax_imageio_1.0");
-		root.appendChild(dim);
-
-		metadata.mergeTree("javax_imageio_1.0", root);
-	}
-
-	static int getDpi(Integer dpi) {
-		int result = DPI;
-		if (dpi != null && dpi.intValue() > 0) {
-			result = dpi.intValue();
-		}
-		return result;
-	}
-
-	private static float getRation(Integer dpi) {
-		float floatDpi = getDpi(dpi);
-		return floatDpi / ImageTextWriter.PDF_DEFAULT_DPI;
-	}
-
-	public static boolean isTransparent(BufferedImage bufferedImage) {
-		int type = bufferedImage.getType();
-
-		return Arrays.binarySearch(IMAGE_TRANSPARENT_TYPES, type) > -1;
-	}
-
-	public static void initRendering(Graphics2D g) {
-		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+	/**
+	 * Computes {@link Dimension} of the text box to create
+	 * @param imageParameters {@link SignatureImageParameters} to use
+	 * @return {@link Dimension} of the text box
+	 */
+	private static Dimension getTextDimension(SignatureImageParameters imageParameters) {
+		SignatureImageTextParameters textParameters = imageParameters.getTextParameters();
+		DSSFont dssFont = textParameters.getFont();
+		Font properFont = FontUtils.computeProperFont(dssFont.getJavaFont(), dssFont.getSize(), imageParameters.getDpi());
+		return FontUtils.computeSize(properFont, textParameters.getText(), textParameters.getPadding());
 	}
 
 	public static BufferedImage rotate(BufferedImage image, double angle) {
@@ -371,21 +352,48 @@ public class ImageUtils {
 		return result;
 	}
 
-	private static ImageWriter getImageWriter(String type) {
-		Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName(type);
-		if (!writers.hasNext()) {
-			throw new DSSException("No writer for '" + type + "' found");
-		}
-		return writers.next();
-	}
-
 	private static ImageReader getImageReader(String type) {
 		Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName(type);
-		if (!readers.hasNext()) {
+		ImageReader reader = getRasterReader(readers);
+		if (reader == null) {
 			throw new DSSException("No reader for '" + type + "' found");
 		}
-		// pick the first available ImageReader
-		return readers.next();
+		return reader;
+	}
+	
+	private static ImageReader getImageReader(ImageInputStream iis) {
+		Iterator<ImageReader> readers = ImageIO.getImageReaders(iis);
+		ImageReader reader = getRasterReader(readers);
+		if (reader == null) {
+			throw new DSSException("No reader for the image found");
+		}
+		return reader;
+	}
+	
+	private static ImageReader getRasterReader(Iterator<ImageReader> readers) {
+		ImageReader reader = null;
+		// pick the first available ImageReader that reads raster
+		while (readers.hasNext()) {
+			reader = readers.next();
+			if (reader.canReadRaster()) {
+				break;
+			}
+		}
+		return reader;
+	}
+
+	public static boolean isTransparent(BufferedImage bufferedImage) {
+		int type = bufferedImage.getType();
+		return Arrays.binarySearch(IMAGE_TRANSPARENT_TYPES, type) > -1;
+	}
+
+	public static int getImageType(final BufferedImage image) {
+		int imageType = BufferedImage.TYPE_INT_RGB;
+		if (ImageUtils.isTransparent(image)) {
+			LOG.warn("Transparency detected and enabled (Be aware: not valid with PDF/A !)");
+			imageType = BufferedImage.TYPE_INT_ARGB;
+		}
+		return imageType;
 	}
 
 }

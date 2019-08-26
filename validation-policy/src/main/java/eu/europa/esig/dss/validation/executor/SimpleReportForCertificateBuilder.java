@@ -26,19 +26,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import eu.europa.esig.dss.jaxb.diagnostic.XmlOID;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedService;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProvider;
-import eu.europa.esig.dss.jaxb.simplecertificatereport.SimpleCertificateReport;
-import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlChainItem;
-import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlRevocation;
-import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlSubject;
-import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlTrustAnchor;
+import eu.europa.esig.dss.detailedreport.DetailedReport;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
+import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedService;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedServiceProvider;
+import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlChainItem;
+import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlRevocation;
+import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSimpleCertificateReport;
+import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSubject;
+import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlTrustAnchor;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.reports.DetailedReport;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 
 public class SimpleReportForCertificateBuilder {
 
@@ -54,8 +55,8 @@ public class SimpleReportForCertificateBuilder {
 		this.certificateId = certificateId;
 	}
 
-	public SimpleCertificateReport build() {
-		SimpleCertificateReport simpleReport = new SimpleCertificateReport();
+	public XmlSimpleCertificateReport build() {
+		XmlSimpleCertificateReport simpleReport = new XmlSimpleCertificateReport();
 		simpleReport.setValidationTime(currentTime);
 		List<XmlChainItem> chain = new ArrayList<XmlChainItem>();
 
@@ -64,10 +65,9 @@ public class SimpleReportForCertificateBuilder {
 		addQualifications(firstChainItem);
 		chain.add(firstChainItem);
 
-		List<String> certificateChainIds = certificate.getCertificateChainIds();
-		for (String certId : certificateChainIds) {
-			CertificateWrapper issuer = diagnosticData.getUsedCertificateById(certId);
-			chain.add(getChainItem(issuer));
+		List<CertificateWrapper> certificateChain = certificate.getCertificateChain();
+		for (CertificateWrapper cert : certificateChain) {
+			chain.add(getChainItem(cert));
 		}
 		simpleReport.setChain(chain);
 
@@ -78,9 +78,9 @@ public class SimpleReportForCertificateBuilder {
 		XmlChainItem item = new XmlChainItem();
 		item.setId(certificate.getId());
 		item.setSubject(getSubject(certificate));
-		String signingCertificateId = certificate.getSigningCertificateId();
-		if (Utils.isStringNotBlank(signingCertificateId)) {
-			item.setIssuerId(signingCertificateId);
+		CertificateWrapper signingCertificate = certificate.getSigningCertificate();
+		if (signingCertificate != null) {
+			item.setIssuerId(signingCertificate.getId());
 		}
 		item.setNotBefore(certificate.getNotBefore());
 		item.setNotAfter(certificate.getNotAfter());
@@ -93,7 +93,7 @@ public class SimpleReportForCertificateBuilder {
 		item.setPdsUrls(null);
 
 		XmlRevocation revocation = new XmlRevocation();
-		RevocationWrapper revocationData = certificate.getLatestRevocationData();
+		CertificateRevocationWrapper revocationData = diagnosticData.getLatestRevocationDataForCertificate(certificate);
 		if (revocationData != null) {
 			revocation.setProductionDate(revocationData.getProductionDate());
 			revocation.setRevocationDate(revocationData.getRevocationDate());
@@ -121,7 +121,9 @@ public class SimpleReportForCertificateBuilder {
 			item.setTrustAnchors(null);
 		}
 
-		item.setIndication(detailedReport.getCertificateXCVIndication(certificate.getId()));
+		XmlConclusion conclusion = detailedReport.getCertificateXCVConclusion(certificate.getId());
+		item.setIndication(conclusion.getIndication());
+		item.setSubIndication(conclusion.getSubIndication());
 
 		return item;
 	}
@@ -132,7 +134,7 @@ public class SimpleReportForCertificateBuilder {
 			List<XmlTrustedService> trustedServices = xmlTrustedServiceProvider.getTrustedServices();
 			boolean foundCertId = false;
 			for (XmlTrustedService xmlTrustedService : trustedServices) {
-				if (Utils.areStringsEqual(certificateId, xmlTrustedService.getServiceDigitalIdentifier())) {
+				if (Utils.areStringsEqual(certificateId, xmlTrustedService.getServiceDigitalIdentifier().getId())) {
 					foundCertId = true;
 					break;
 				}

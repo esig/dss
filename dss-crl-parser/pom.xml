@@ -4,12 +4,16 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.4.3</version>
+		<version>5.5.RC1</version>
 	</parent>
 
 	<artifactId>dss-crl-parser</artifactId>
 	<name>DSS CRL Parser API</name>
 	<description>DSS CRL Parser API contains an interface which allows to validate a CRL and extract revocation data.</description>
+
+	<properties>
+		<module-name>jpms_dss_crl_parser</module-name>
+	</properties>
 
 	<dependencies>
 		<dependency>

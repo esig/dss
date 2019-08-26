@@ -6,18 +6,32 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.4.3</version>
+		<version>5.5.RC1</version>
 	</parent>
 	
 	<artifactId>dss-model</artifactId>
 	<name>DSS Model</name>
-	<description>DSS Model contains the data model representation for DSS. All classes should be serializable (REST/SOAP)</description>
+	<description>DSS Model contains the data model representation for DSS</description>
+	
+	<properties>
+		<module-name>jpms_dss_model</module-name>
+	</properties>
 	
 	<dependencies>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-enumerations</artifactId>
+		</dependency>
+		
 		<!-- No other dependencies than in scope test  -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcpkix-jdk15on</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.certificate;
 
-import eu.europa.esig.dss.validation.CertificateQualification;
+import eu.europa.esig.dss.enumerations.CertificateQualification;
 
 public final class CertQualificationMatrix {
 

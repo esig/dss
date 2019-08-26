@@ -1,28 +1,31 @@
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlPSV;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessArchivalData;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.IMessageTag;
 import eu.europa.esig.dss.validation.process.MessageTag;
-import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class PastTimestampValidation extends ChainItem<XmlValidationProcessArchivalData> {
 	
 	private XmlPSV xmlPSV;
+	private XmlSAV xmlSAV;
 
 	private Indication indication;
 	private SubIndication subIndication;
 	
 	private static final String PSV_BLOCK_SUFFIX = "-PSV";
 
-	public PastTimestampValidation(XmlValidationProcessArchivalData result, XmlPSV xmlPSV, 
+	public PastTimestampValidation(XmlValidationProcessArchivalData result, XmlPSV xmlPSV, XmlSAV xmlSAV, 
 			TimestampWrapper timestamp, LevelConstraint constraint) {
 		super(result, constraint, timestamp.getId() + PSV_BLOCK_SUFFIX);
 		this.xmlPSV = xmlPSV;
+		this.xmlSAV = xmlSAV;
 	}
 
 	@Override
@@ -30,6 +33,10 @@ public class PastTimestampValidation extends ChainItem<XmlValidationProcessArchi
 		if (!isValid(xmlPSV)) {
 			indication = xmlPSV.getConclusion().getIndication();
 			subIndication = xmlPSV.getConclusion().getSubIndication();
+			return false;
+		} else if (!isValid(xmlSAV)) {
+			indication = xmlSAV.getConclusion().getIndication();
+			subIndication = xmlSAV.getConclusion().getSubIndication();
 			return false;
 		}
 		return true;

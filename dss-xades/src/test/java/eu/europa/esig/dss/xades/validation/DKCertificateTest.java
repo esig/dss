@@ -14,27 +14,28 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.client.http.DataLoader;
-import eu.europa.esig.dss.client.http.IgnoreDataLoader;
-import eu.europa.esig.dss.client.http.MemoryDataLoader;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.policy.ValidationPolicyFacade;
+import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.client.http.DataLoader;
+import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
+import eu.europa.esig.dss.spi.client.http.MemoryDataLoader;
+import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.executor.CustomProcessExecutor;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+import eu.europa.esig.dss.validation.executor.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.reports.SimpleReport;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
-import eu.europa.esig.dss.x509.SignatureCertificateSource;
 
 public class DKCertificateTest {
 
@@ -57,7 +58,7 @@ public class DKCertificateTest {
 	private static final CertificateToken AIA_CERT = DSSUtils.loadCertificateFromBase64EncodedString(AIA_BASE64_CONTENT);
 
 	@Test
-	public void dkPreviousSigCert() throws ParseException {
+	public void dkPreviousSigCert() throws Exception {
 		SignedDocumentValidator val = SignedDocumentValidator.fromDocument(DOC);
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		CommonTrustedCertificateSource certSource = new CommonTrustedCertificateSource();
@@ -66,14 +67,14 @@ public class DKCertificateTest {
 		certificateVerifier.setDataLoader(getMemoryDataLoader());
 		val.setCertificateVerifier(certificateVerifier);
 		val.setProcessExecutor(fixedTime());
-		Reports reports = val.validateDocument(new File("src/test/resources/tsl-constraint.xml"));
+		Reports reports = val.validateDocument(ValidationPolicyFacade.newFacade().getTrustedListValidationPolicy());
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 	}
 
 	@Test
-	public void dkTestOther() throws ParseException {
+	public void dkTestOther() throws Exception {
 		SignedDocumentValidator val = SignedDocumentValidator.fromDocument(DOC);
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		CommonTrustedCertificateSource certSource = new CommonTrustedCertificateSource();
@@ -82,14 +83,14 @@ public class DKCertificateTest {
 		certificateVerifier.setDataLoader(getMemoryDataLoader());
 		val.setCertificateVerifier(certificateVerifier);
 		val.setProcessExecutor(fixedTime());
-		Reports reports = val.validateDocument(new File("src/test/resources/tsl-constraint.xml"));
+		Reports reports = val.validateDocument(ValidationPolicyFacade.newFacade().getTrustedListValidationPolicy());
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SubIndication.NO_CERTIFICATE_CHAIN_FOUND, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 	}
 
 	@Test
-	public void dkExpectedSigCert() throws ParseException {
+	public void dkExpectedSigCert() throws Exception {
 		SignedDocumentValidator val = SignedDocumentValidator.fromDocument(DOC);
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		CommonTrustedCertificateSource certSource = new CommonTrustedCertificateSource();
@@ -98,7 +99,7 @@ public class DKCertificateTest {
 		certificateVerifier.setDataLoader(getMemoryDataLoader());
 		val.setCertificateVerifier(certificateVerifier);
 		val.setProcessExecutor(fixedTime());
-		Reports reports = val.validateDocument(new File("src/test/resources/tsl-constraint.xml"));
+		Reports reports = val.validateDocument(ValidationPolicyFacade.newFacade().getTrustedListValidationPolicy());
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SubIndication.NO_CERTIFICATE_CHAIN_FOUND, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
@@ -110,8 +111,8 @@ public class DKCertificateTest {
 		}
 	}
 
-	private CustomProcessExecutor fixedTime() throws ParseException {
-		CustomProcessExecutor processExecutor = new CustomProcessExecutor();
+	private DefaultSignatureProcessExecutor fixedTime() throws ParseException {
+		DefaultSignatureProcessExecutor processExecutor = new DefaultSignatureProcessExecutor();
 		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
 		Date currentTime = sdf.parse(DATE_STRING);
 		processExecutor.setCurrentTime(currentTime);

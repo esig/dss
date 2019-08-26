@@ -40,6 +40,7 @@ import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1GeneralizedTime;
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.DERIA5String;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.DERSet;
@@ -61,14 +62,14 @@ import org.bouncycastle.asn1.x509.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSASN1Utils;
-import eu.europa.esig.dss.OID;
-import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.SignerAttributeV2;
+import eu.europa.esig.dss.model.Policy;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 /**
  * This class holds the CAdES-B signature profile; it supports the inclusion of the mandatory signed
@@ -207,7 +208,7 @@ public class CAdESLevelBaselineB {
 			return;
 		}
 
-		final eu.europa.esig.dss.SignerLocation signerLocationParameter = parameters.bLevel().getSignerLocation();
+		final eu.europa.esig.dss.model.SignerLocation signerLocationParameter = parameters.bLevel().getSignerLocation();
 		if (signerLocationParameter != null) {
 
 			final DERUTF8String country = signerLocationParameter.getCountry() == null ? null : new DERUTF8String(signerLocationParameter.getCountry());
@@ -407,7 +408,7 @@ public class CAdESLevelBaselineB {
 
 				if (Utils.isStringNotEmpty(policy.getSpuri())) {
 					SigPolicyQualifierInfo policyQualifierInfo = new SigPolicyQualifierInfo(PKCSObjectIdentifiers.id_spq_ets_uri,
-							new DERUTF8String(policy.getSpuri()));
+							new DERIA5String(policy.getSpuri()));
 					SigPolicyQualifierInfo[] qualifierInfos = new SigPolicyQualifierInfo[] { policyQualifierInfo };
 					SigPolicyQualifiers qualifiers = new SigPolicyQualifiers(qualifierInfos);
 

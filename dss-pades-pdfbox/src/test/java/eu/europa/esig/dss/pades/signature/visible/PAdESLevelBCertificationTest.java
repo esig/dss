@@ -29,9 +29,9 @@ import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.junit.Before;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
@@ -72,8 +72,7 @@ public class PAdESLevelBCertificationTest extends AbstractPAdESTestSignature {
 	protected void onDocumentSigned(byte[] byteArray) {
 		super.onDocumentSigned(byteArray);
 
-		try {
-			PDDocument document = PDDocument.load(byteArray);
+		try (PDDocument document = PDDocument.load(byteArray);) {
 			COSBase docMDP = null;
 			COSBase perms = document.getDocumentCatalog().getCOSObject().getDictionaryObject(COSName.PERMS);
 			if (perms instanceof COSDictionary) {

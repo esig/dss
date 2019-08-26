@@ -33,7 +33,7 @@ public interface PdfDict {
 
 	PdfArray getAsArray(String name);
 
-	byte[] get(String name) throws IOException;
+	byte[] getBinariesValue(String name) throws IOException;
 
 	String[] list();
 

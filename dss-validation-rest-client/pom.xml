@@ -1,17 +1,23 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.4.3</version>
+		<version>5.5.RC1</version>
 	</parent>
+	
 	<artifactId>dss-validation-rest-client</artifactId>
 	<name>DSS Validation REST Client</name>
+	
+	<properties>
+		<module-name>jpms_dss_ws_validation_rest_client</module-name>
+	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-reports</artifactId>
+			<artifactId>dss-validation-dto</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>javax.ws.rs</groupId>

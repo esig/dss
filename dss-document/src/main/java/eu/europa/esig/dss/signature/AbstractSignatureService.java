@@ -23,21 +23,23 @@ package eu.europa.esig.dss.signature;
 import java.security.Security;
 import java.util.Date;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-
 import eu.europa.esig.dss.AbstractSignatureParameters;
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.SignatureForm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSSecurityProvider;
+import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.tsp.TSPSource;
 
-/**
- *
- */
+@SuppressWarnings("serial")
 public abstract class AbstractSignatureService<SP extends AbstractSignatureParameters> implements DocumentSignatureService<SP> {
 
 	static {
-		Security.addProvider(new BouncyCastleProvider());
+		Security.addProvider(DSSSecurityProvider.getSecurityProvider());
 	}
 
 	protected TSPSource tspSource;
@@ -82,4 +84,71 @@ public abstract class AbstractSignatureService<SP extends AbstractSignatureParam
 					notBefore.toString(), notAfter.toString()));
 		}
 	}
+
+	protected String getFinalFileName(DSSDocument originalFile, SigningOperation operation, SignatureLevel level, ASiCContainerType containerType) {
+		StringBuilder finalName = new StringBuilder();
+
+		String originalName = null;
+		if (containerType != null) {
+			originalName = "container";
+		} else {
+			originalName = originalFile.getName();
+		}
+
+		if (Utils.isStringNotEmpty(originalName)) {
+			int dotPosition = originalName.lastIndexOf('.');
+			if (dotPosition > 0) {
+				// remove extension
+				finalName.append(originalName.substring(0, dotPosition));
+			} else {
+				finalName.append(originalName);
+			}
+		} else {
+			finalName.append("document");
+		}
+
+		if (SigningOperation.SIGN.equals(operation)) {
+			finalName.append("-signed-");
+		} else if (SigningOperation.EXTEND.equals(operation)) {
+			finalName.append("-extended-");
+		}
+
+		finalName.append(Utils.lowerCase(level.name().replaceAll("_", "-")));
+		finalName.append('.');
+
+		if (containerType != null) {
+			switch (containerType) {
+			case ASiC_S:
+				finalName.append("asics");
+				break;
+			case ASiC_E:
+				finalName.append("asice");
+				break;
+			default:
+				break;
+			}
+		} else {
+			SignatureForm signatureForm = level.getSignatureForm();
+			switch (signatureForm) {
+			case XAdES:
+				finalName.append("xml");
+				break;
+			case CAdES:
+				finalName.append("pkcs7");
+				break;
+			case PAdES:
+				finalName.append("pdf");
+				break;
+			default:
+				break;
+			}
+		}
+
+		return finalName.toString();
+	}
+
+	protected String getFinalFileName(DSSDocument originalFile, SigningOperation operation, SignatureLevel level) {
+		return getFinalFileName(originalFile, operation, level, null);
+	}
+
 }

@@ -26,7 +26,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses(value = { PAdESSignatureField.class, PAdESVisibleSignature.class, PAdESFieldLevelB.class, PAdESWithSignatureAndTimestampVisible.class,
-		PAdESWithSignatureInvisibleAndTimestampVisible.class })
+		PAdESWithSignatureInvisibleAndTimestampVisible.class, PAdESVisibleSignatureWithJavaFont.class, PAdESNonLatinCharactersSignature.class,
+		PAdESVisibleZoomRotation.class, PAdESVisibleSignWithSignatureField.class })
 public class PAdESVisibleSignatureSuite {
 
 }

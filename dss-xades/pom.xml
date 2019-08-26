@@ -6,12 +6,16 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.4.3</version>
+		<version>5.5.RC1</version>
 	</parent>
 
 	<artifactId>dss-xades</artifactId>
 	<name>DSS XAdES</name>
 	<description>DSS XAdES contains the code for the creation and validation of XAdES signatures.</description>
+	
+	<properties>
+		<module-name>jpms_dss_xades</module-name>
+	</properties>
 	
 	<dependencies>
         <dependency>

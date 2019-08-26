@@ -30,7 +30,7 @@ import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStream;
 
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.model.DSSException;
 
 class ITextPdfArray implements eu.europa.esig.dss.pdf.PdfArray {
 

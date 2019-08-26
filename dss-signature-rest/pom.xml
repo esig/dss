@@ -1,0 +1,27 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+		<artifactId>sd-dss</artifactId>
+		<version>5.5.RC1</version>
+	</parent>
+	
+	<artifactId>dss-signature-rest</artifactId>
+	<name>DSS Signature REST Service</name>
+	<description>DSS REST contains the implementation of the REST service (defined in dss-rest-client)</description>
+
+	<properties>
+		<module-name>jpms_dss_ws_signature_rest</module-name>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-signature-rest-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-signature-remote</artifactId>
+		</dependency>
+	</dependencies>
+</project>

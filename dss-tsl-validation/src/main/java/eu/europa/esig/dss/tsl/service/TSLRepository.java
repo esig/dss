@@ -40,13 +40,17 @@ import javax.xml.bind.DatatypeConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.tsl.Condition;
-import eu.europa.esig.dss.tsl.ServiceInfo;
-import eu.europa.esig.dss.tsl.ServiceInfoStatus;
-import eu.europa.esig.dss.tsl.TLInfo;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.tsl.Condition;
+import eu.europa.esig.dss.spi.tsl.ServiceInfo;
+import eu.europa.esig.dss.spi.tsl.ServiceInfoStatus;
+import eu.europa.esig.dss.spi.tsl.TLInfo;
+import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.spi.util.MutableTimeDependentValues;
+import eu.europa.esig.dss.spi.util.TimeDependentValues;
 import eu.europa.esig.dss.tsl.TSLConditionsForQualifiers;
 import eu.europa.esig.dss.tsl.TSLLoaderResult;
 import eu.europa.esig.dss.tsl.TSLParserResult;
@@ -55,11 +59,7 @@ import eu.europa.esig.dss.tsl.TSLServiceProvider;
 import eu.europa.esig.dss.tsl.TSLServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.tsl.TSLValidationModel;
 import eu.europa.esig.dss.tsl.TSLValidationResult;
-import eu.europa.esig.dss.tsl.TrustedListsCertificateSource;
-import eu.europa.esig.dss.util.MutableTimeDependentValues;
-import eu.europa.esig.dss.util.TimeDependentValues;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
  * This class is a repository which allows to store TSL loading/parsing/validation results.
@@ -73,6 +73,7 @@ public class TSLRepository {
 
 	private Map<String, TSLValidationModel> tsls = new HashMap<String, TSLValidationModel>();
 	private Map<String, TSLValidationModel> pivots = new HashMap<String, TSLValidationModel>();
+	private String ojActualUrl;
 
 	private TrustedListsCertificateSource trustedListsCertificateSource;
 
@@ -94,6 +95,14 @@ public class TSLRepository {
 
 	public TSLValidationModel getPivotByUrl(String pivotUrl) {
 		return pivots.get(pivotUrl);
+	}
+	
+	public String getActualOjUrl() {
+		return ojActualUrl;
+	}
+	
+	public void setActualOjUrl(String ojActualUrl) {
+		this.ojActualUrl = ojActualUrl;
 	}
 
 	public Map<String, TSLValidationModel> getAllMapTSLValidationModels() {
@@ -219,6 +228,7 @@ public class TSLRepository {
 	List<File> getStoredFiles() {
 		ensureCacheDirectoryExists();
 		File cacheDir = new File(cacheDirectoryPath);
+		LOG.info("TSL cache directory : {}", cacheDir);
 		File[] listFiles = cacheDir.listFiles(new IgnorePivotFilenameFilter());
 		return Arrays.asList(listFiles);
 	}

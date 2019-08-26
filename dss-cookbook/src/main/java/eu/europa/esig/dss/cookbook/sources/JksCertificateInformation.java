@@ -28,9 +28,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.JKSSignatureToken;
-import eu.europa.esig.dss.x509.CertificateToken;
 
 public class JksCertificateInformation {
 

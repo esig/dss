@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.pdf.openpdf.visible;
 
+import java.io.IOException;
+
 import com.lowagie.text.pdf.PdfSignatureAppearance;
 
 import eu.europa.esig.dss.pades.SignatureImageParameters;
@@ -31,11 +33,10 @@ public abstract class AbstractITextSignatureDrawer implements ITextSignatureDraw
 	protected PdfSignatureAppearance appearance;
 
 	@Override
-	public void init(String signatureFieldId, SignatureImageParameters parameters, PdfSignatureAppearance appearance) {
+	public void init(String signatureFieldId, SignatureImageParameters parameters, PdfSignatureAppearance appearance) throws IOException {
 		this.signatureFieldId = signatureFieldId;
 		this.parameters = parameters;
 		this.appearance = appearance;
 	}
-
 
 }

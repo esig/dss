@@ -1,11 +1,12 @@
 package eu.europa.esig.dss.cookbook.example.snippets;
 
-import eu.europa.esig.dss.client.http.DataLoader;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.spi.client.http.DataLoader;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.x509.CertificateSource;
-import eu.europa.esig.dss.x509.crl.CRLSource;
-import eu.europa.esig.dss.x509.ocsp.OCSPSource;
 
 public class CertificateVerifierSnippet {
 
@@ -40,13 +41,19 @@ public class CertificateVerifierSnippet {
 		// The OCSP Source to be used for external accesses (can be configured with a
 		// cache,...)
 		cv.setOcspSource(ocspSource);
+		
+		// Sets the default digest algorithm that will be used for digest calculation
+		// of tokens used during the validation process. 
+		// The values will be used in validation reports.
+		// Default : DigestAlgorithm.SHA256
+		cv.setDefaultDigestAlgorithm(DigestAlgorithm.SHA512);
 
 		// Define the behavior to be followed by DSS in case of revocation checking for
-		// certificates issued from an unsure source (DSS v 5.4+)
+		// certificates issued from an unsure source (DSS v5.4+)
 		// Default : revocation check is disabled for unsure sources (security reasons)
 		cv.setCheckRevocationForUntrustedChains(false);
 
-		// DSS v 5.4+ : The 3 below configurations concern the extension mode (LT/LTA
+		// DSS v5.4+ : The 3 below configurations concern the extension mode (LT/LTA
 		// extension)
 
 		// DSS throws an exception by default in case of missing revocation data
@@ -66,6 +73,28 @@ public class CertificateVerifierSnippet {
 		// DSS stops the extension process if an invalid timestamp is met
 		// Default : true
 		cv.setExceptionOnInvalidTimestamp(true);
+		
+		// DSS v5.5+ : throw an exception in case if there is no valid revocation data 
+		// with thisUpdate time after the best signature time
+		// Example: if a signature was extended to T level then the obtained revocation 
+		// must have thisUpdate time after production time of the signature timestamp.
+		// Default : false
+		cv.setExceptionOnNoRevocationAfterBestSignatureTime(true);
+		
+		// DSS v5.4+ : defines if binary of certificates used during validation must be included
+		// to produced validation reports. If false only digests will be included.
+		// Default : false
+		cv.setIncludeCertificateRevocationValues(true);
+
+		// DSS v5.4+ : defines if binary of revocation data used during validation must be included
+		// to produced validation reports. If false only digests will be included.
+		// Default : false
+		cv.setIncludeCertificateRevocationValues(true);
+
+		// DSS v5.4+ : defines if binary of timestamps present into the signature must be included
+		// to produced validation reports. If false only digests will be included.
+		// Default : false
+		cv.setIncludeTimestampTokenValues(true);
 
 		// end::demo[]
 

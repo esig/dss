@@ -22,14 +22,15 @@ package eu.europa.esig.dss.cookbook.example.sign;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
-import eu.europa.esig.dss.SignatureValue;
-import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.client.tsp.OnlineTSPSource;
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.service.http.commons.TimestampDataLoader;
+import eu.europa.esig.dss.service.tsp.OnlineTSPSource;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
@@ -82,8 +83,9 @@ public class SignXmlXadesTWithOnlineSourceTest extends CookbookTools {
 			XAdESService service = new XAdESService(commonCertificateVerifier);
 
 			// Set the Timestamp source
-			String tspServer = "http://tsa.belgium.be/connect";
+			String tspServer = "http://dss.nowina.lu/pki-factory/tsa/good-tsa";
 			OnlineTSPSource onlineTSPSource = new OnlineTSPSource(tspServer);
+			onlineTSPSource.setDataLoader(new TimestampDataLoader()); // uses the specific content-type
 			service.setTspSource(onlineTSPSource);
 
 			// Get the SignedInfo XML segment that need to be signed.

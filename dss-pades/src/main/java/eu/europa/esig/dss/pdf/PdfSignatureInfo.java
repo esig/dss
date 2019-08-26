@@ -25,16 +25,14 @@ import java.util.Arrays;
 
 import org.bouncycastle.cms.CMSException;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
-import eu.europa.esig.dss.x509.CertificatePool;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.spi.x509.CertificatePool;
 
 public class PdfSignatureInfo extends PdfCMSInfo implements PdfSignatureOrDocTimestampInfo {
 
 	private final CAdESSignature cades;
-
-	private final byte[] content;
 
 	/**
 	 * @param validationCertPool
@@ -51,7 +49,6 @@ public class PdfSignatureInfo extends PdfCMSInfo implements PdfSignatureOrDocTim
 		super(signatureDictionary, dssDictionary, cms, originalBytes, coverCompleteRevision);
 		try {
 			cades = new CAdESSignature(cms, validationCertPool);
-			content = cms;
 			final DSSDocument detachedContent = new InMemoryDocument(getSignedDocumentBytes());
 			cades.setDetachedContents(Arrays.asList(detachedContent));
 		} catch (CMSException e) {
@@ -71,11 +68,6 @@ public class PdfSignatureInfo extends PdfCMSInfo implements PdfSignatureOrDocTim
 
 	public CAdESSignature getCades() {
 		return cades;
-	}
-
-	@Override
-	public byte[] getContent() {
-		return content;
 	}
 
 }

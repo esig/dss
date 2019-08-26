@@ -21,23 +21,38 @@
 package eu.europa.esig.dss.pdf.openpdf.visible;
 
 import java.awt.Dimension;
+import java.io.IOException;
+import java.io.InputStream;
 
 import com.lowagie.text.Font;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.BaseFont;
+import com.lowagie.text.pdf.DefaultFontMapper;
 import com.lowagie.text.pdf.PdfSignatureAppearance;
 
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.pades.DSSFont;
+import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
-import eu.europa.esig.dss.pdf.visible.ImageTextWriter;
+import eu.europa.esig.dss.pdf.visible.FontUtils;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
+	
+	private Font iTextFont;
+	
+	@Override
+	public void init(String signatureFieldId, SignatureImageParameters parameters, PdfSignatureAppearance appearance) throws IOException {
+		super.init(signatureFieldId, parameters, appearance);
+		this.iTextFont = initFont();
+	}
 
 	@Override
 	public void draw() {
 
 		String text = parameters.getTextParameters().getText();
 		
-
 		if (Utils.isStringNotBlank(signatureFieldId)) {
 			appearance.setVisibleSignature(signatureFieldId);
 		} else {
@@ -47,7 +62,8 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 			int width = parameters.getWidth();
 			int height = parameters.getHeight();
 			if (width == 0 || height == 0) {
-				Dimension dimension = ImageTextWriter.computeSize(parameters.getTextParameters().getFont(), text);
+				SignatureImageTextParameters textParameters = parameters.getTextParameters();
+				Dimension dimension = FontUtils.computeSize(textParameters.getFont(), text, textParameters.getPadding());
 				width = dimension.width;
 				height = dimension.height;
 			}
@@ -60,23 +76,30 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		}
 
 		appearance.setRender(PdfSignatureAppearance.SignatureRenderDescription);
-		appearance.setLayer2Font(getFont());
+		appearance.setLayer2Font(iTextFont);
 		appearance.setLayer2Text(text);
 
 	}
 
-	private Font getFont() {
+	private Font initFont() throws IOException {
 		SignatureImageTextParameters textParameters = parameters.getTextParameters();
-
-		java.awt.Font font = textParameters.getFont();
-
-		Font itextFont = new Font();
-		itextFont.setFamily(font.getFamily());
-		itextFont.setSize(font.getSize());
-		itextFont.setStyle(font.getStyle());
-
-		itextFont.setColor(textParameters.getTextColor());
-		return itextFont;
+		DSSFont dssFont = textParameters.getFont();
+		BaseFont baseFont;
+		if (dssFont.isLogicalFont()) {
+			DefaultFontMapper fontMapper = new DefaultFontMapper();
+			baseFont = fontMapper.awtToPdf(dssFont.getJavaFont());
+		} else {
+			try (InputStream iStream = dssFont.getInputStream()) {
+				byte[] fontBytes = DSSUtils.toByteArray(iStream);
+				baseFont = BaseFont.createFont(dssFont.getName(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED, true, fontBytes, null);
+				baseFont.setSubset(false);
+			} catch (IOException e) {
+				throw new DSSException("The iText font cannot be initialized", e);
+			}
+		}
+		Font font = new Font(baseFont, dssFont.getSize());
+		font.setColor(textParameters.getTextColor());
+		return font;
 	}
 
 }

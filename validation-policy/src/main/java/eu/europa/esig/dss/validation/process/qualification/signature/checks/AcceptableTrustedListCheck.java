@@ -22,14 +22,14 @@ package eu.europa.esig.dss.validation.process.qualification.signature.checks;
 
 import java.text.MessageFormat;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlTLAnalysis;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class AcceptableTrustedListCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

@@ -5,13 +5,17 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.4.3</version>
+		<version>5.5.RC1</version>
 	</parent>
 
 	<name>CookBook</name>
 	<description>Module CookBook in the project SD-DSS</description>
 	<artifactId>dss-cookbook</artifactId>
 
+	<properties>
+		<module-name>jpms_dss_cookbook</module-name>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
@@ -42,14 +46,14 @@
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-cades</artifactId>
 		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>eu.europa.ec.joinup.sd-dss</groupId> -->
-<!-- 			<artifactId>dss-pades-pdfbox</artifactId> -->
-<!-- 		</dependency> -->
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-pades-openpdf</artifactId>
+			<artifactId>dss-pades-pdfbox</artifactId>
 		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>eu.europa.ec.joinup.sd-dss</groupId> -->
+<!-- 			<artifactId>dss-pades-openpdf</artifactId> -->
+<!-- 		</dependency> -->
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-xades</artifactId>
@@ -71,18 +75,13 @@
 					<plugin>
 						<groupId>org.asciidoctor</groupId>
 						<artifactId>asciidoctor-maven-plugin</artifactId>
-						<version>1.5.7.1</version>
+						<version>1.6.0</version>
 						<dependencies>
 		                    <dependency>
 		                        <groupId>org.asciidoctor</groupId>
 		                        <artifactId>asciidoctorj-pdf</artifactId>
-		                        <version>1.5.0-alpha.16</version>
+		                        <version>1.5.0-beta.2</version>
 		                    </dependency>
-		                    <dependency>
-							    <groupId>org.jruby</groupId>
-							    <artifactId>jruby-complete</artifactId>
-							    <version>9.1.17.0</version>
-							</dependency>
 						</dependencies>
 						<executions>
 					        <execution>

@@ -3,12 +3,16 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.4.3</version>
+		<version>5.5.RC1</version>
 	</parent>
 	
 	<artifactId>dss-asic-cades</artifactId>
 	<name>DSS ASiC with CAdES signature(s)</name>
 	<description>DSS ASiC with CAdES contains the code for the creation and validation of ASiC containers with CAdES signature(s).</description>
+	
+	<properties>
+		<module-name>jpms_dss_asic_cades</module-name>
+	</properties>
 	
 	<dependencies>
 		<dependency>

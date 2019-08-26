@@ -28,22 +28,23 @@ import java.util.List;
 
 import org.junit.Before;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRevocation;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 
 public class CAdESLevelLTTest extends AbstractCAdESTestSignature {
 
@@ -75,16 +76,21 @@ public class CAdESLevelLTTest extends AbstractCAdESTestSignature {
 	}
 
 	@Override
-	protected void verifyDiagnosticDataJaxb(eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData diagnosticDataJaxb) {
+	protected void verifyDiagnosticDataJaxb(XmlDiagnosticData diagnosticDataJaxb) {
 		super.verifyDiagnosticDataJaxb(diagnosticDataJaxb);
 
 		List<XmlCertificate> usedCertificates = diagnosticDataJaxb.getUsedCertificates();
 		for (XmlCertificate xmlCertificate : usedCertificates) {
 			if (!xmlCertificate.isTrusted() && !xmlCertificate.isIdPkixOcspNoCheck() && !xmlCertificate.isSelfSigned()) {
-				List<XmlRevocation> revocations = xmlCertificate.getRevocations();
+				List<XmlCertificateRevocation> revocations = xmlCertificate.getRevocations();
 				assertTrue(Utils.isCollectionNotEmpty(revocations));
-				for (XmlRevocation xmlRevocation : revocations) {
-					assertNotNull(xmlRevocation.getBase64Encoded());
+				for (XmlCertificateRevocation xmlCertificateRevocation : revocations) {
+					List<XmlRevocation> xmlRevocations = diagnosticDataJaxb.getUsedRevocations();
+					for (XmlRevocation revocation : xmlRevocations) {
+						if (xmlCertificateRevocation.getRevocation().getId().equals(revocation.getId())) {
+							assertNotNull(revocation.getBase64Encoded());
+						}
+					}
 				}
 			}
 
@@ -94,12 +100,9 @@ public class CAdESLevelLTTest extends AbstractCAdESTestSignature {
 			}
 		}
 
-		List<XmlSignature> signatures = diagnosticDataJaxb.getSignatures();
-		for (XmlSignature xmlSignature : signatures) {
-			List<XmlTimestamp> timestamps = xmlSignature.getTimestamps();
-			for (XmlTimestamp xmlTimestamp : timestamps) {
-				assertNotNull(xmlTimestamp.getBase64Encoded());
-			}
+		List<XmlTimestamp> timestamps = diagnosticDataJaxb.getUsedTimestamps();
+		for (XmlTimestamp xmlTimestamp : timestamps) {
+			assertNotNull(xmlTimestamp.getBase64Encoded());
 		}
 
 		DiagnosticData dd = new DiagnosticData(diagnosticDataJaxb);
@@ -108,15 +111,14 @@ public class CAdESLevelLTTest extends AbstractCAdESTestSignature {
 			assertNotNull(certificateWrapper);
 			assertNotNull(certificateWrapper.getBinaries());
 		}
-		for (TimestampWrapper tst : dd.getAllTimestamps()) {
+		for (TimestampWrapper tst : dd.getTimestampSet()) {
 			TimestampWrapper timestampWrapper = dd.getTimestampById(tst.getId());
 			assertNotNull(timestampWrapper);
 			assertNotNull(timestampWrapper.getBinaries());
 		}
 		for (RevocationWrapper revocation : dd.getAllRevocationData()) {
-			RevocationWrapper revocationWrapper = dd.getRevocationDataById(revocation.getId());
-			assertNotNull(revocationWrapper);
-			assertNotNull(revocationWrapper.getBinaries());
+			assertNotNull(revocation);
+			assertNotNull(revocation.getBinaries());
 		}
 	}
 

@@ -26,23 +26,24 @@ import java.util.List;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.crypto.dsig.XMLSignature;
 
-import org.apache.xml.security.transforms.Transforms;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.xades.DSSReference;
-import eu.europa.esig.dss.xades.DSSTransform;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
+import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
+import eu.europa.esig.dss.xades.reference.DSSReference;
+import eu.europa.esig.dss.xades.reference.DSSTransform;
+import eu.europa.esig.dss.xades.reference.XPathEnvelopedSignatureTransform;
 
 /**
  * This class handles the specifics of the enveloped XML signature
@@ -63,7 +64,7 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 	 */
 	public EnvelopedSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument origDoc, final CertificateVerifier certificateVerifier) {
 		super(params, origDoc, certificateVerifier);
-		setCanonicalizationMethods(params, CanonicalizationMethod.EXCLUSIVE);
+		setCanonicalizationMethods(params, DEFAULT_CANONICALIZATION_METHOD);
 	}
 
 	/**
@@ -87,35 +88,30 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 	@Override
 	protected DSSReference createReference(DSSDocument document, int referenceIndex) {
 
-		DSSReference reference = new DSSReference();
-		reference.setId(REFERENCE_ID_SUFFIX + deterministicId + "-" + referenceIndex);
+		DSSReference dssReference = new DSSReference();
+		dssReference.setId(REFERENCE_ID_SUFFIX + deterministicId + "-" + referenceIndex);
 		// XMLDSIG : 4.4.3.2
 		// URI=""
 		// Identifies the node-set (minus any comment nodes) of the XML resource
 		// containing the signature
-		reference.setUri("");
-		reference.setContents(document);
-		DigestAlgorithm digestAlgorithm = params.getReferenceDigestAlgorithm() != null ? params.getReferenceDigestAlgorithm() : params.getDigestAlgorithm();
-		reference.setDigestMethodAlgorithm(digestAlgorithm);
+		dssReference.setUri("");
+		dssReference.setContents(document);
+		DigestAlgorithm digestAlgorithm = getReferenceDigestAlgorithmOrDefault(params);
+		dssReference.setDigestMethodAlgorithm(digestAlgorithm);
 
 		final List<DSSTransform> dssTransformList = new ArrayList<DSSTransform>();
 
 		// For parallel signatures
-		DSSTransform dssTransform = new DSSTransform();
-		dssTransform.setAlgorithm(Transforms.TRANSFORM_XPATH);
-		dssTransform.setElementName(DS_XPATH);
-		dssTransform.setNamespace(XMLSignature.XMLNS);
-		dssTransform.setTextContent(NOT_ANCESTOR_OR_SELF_DS_SIGNATURE);
-		dssTransformList.add(dssTransform);
+		XPathEnvelopedSignatureTransform xPathTransform = new XPathEnvelopedSignatureTransform();
+		dssTransformList.add(xPathTransform);
 
 		// Canonicalization is the last operation, its better to operate the canonicalization on the smaller document
-		dssTransform = new DSSTransform();
-		dssTransform.setAlgorithm(CanonicalizationMethod.EXCLUSIVE);
-		dssTransformList.add(dssTransform);
+		CanonicalizationTransform canonicalizationTransform = new CanonicalizationTransform(CanonicalizationMethod.EXCLUSIVE);
+		dssTransformList.add(canonicalizationTransform);
 
-		reference.setTransforms(dssTransformList);
+		dssReference.setTransforms(dssTransformList);
 
-		return reference;
+		return dssReference;
 	}
 
 	/**

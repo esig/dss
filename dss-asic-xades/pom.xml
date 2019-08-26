@@ -3,13 +3,17 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.4.3</version>
+		<version>5.5.RC1</version>
 	</parent>
 
 	<artifactId>dss-asic-xades</artifactId>
 	<name>DSS ASiC with XAdES signature(s)</name>
 	<description>DSS ASiC with XAdES contains the code for the creation and validation of ASiC containers with XAdES signature(s).</description>
 
+	<properties>
+		<module-name>jpms_dss_asic_xades</module-name>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>

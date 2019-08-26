@@ -6,13 +6,17 @@
     <parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.4.3</version>
+		<version>5.5.RC1</version>
     </parent>
 
     <artifactId>dss-service</artifactId>
     <name>DSS Service</name>
     <description>DSS Service contains the server-side code of DSS. Like online TSP, OCSP, TSL and CRL request, caching of resources...</description>
 
+	<properties>
+		<module-name>jpms_dss_service</module-name>
+	</properties>
+	
     <dependencies>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
@@ -29,7 +33,18 @@
 <!--				<groupId>commons-logging</groupId> -->
 <!--			</exclusion> -->
 <!--		</exclusions> -->
+        	<exclusions>
+        		<exclusion>
+        			<groupId>commons-codec</groupId>
+        			<artifactId>commons-codec</artifactId> <!-- Synchronize with santuario version (1/2) -->
+        		</exclusion>
+        	</exclusions>
         </dependency>
+        <dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>${commons-codec.version}</version> <!-- Synchronize with santuario version (2/2) -->
+		</dependency>
 		
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
@@ -51,6 +66,16 @@
 			<artifactId>dss-utils-google-guava</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+		    <groupId>com.h2database</groupId>
+		    <artifactId>h2</artifactId>
+		    <scope>test</scope>
+		</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-crl-parser-x509crl</artifactId>
+		    	<scope>test</scope>
+			</dependency>
 		
     </dependencies>
 </project>

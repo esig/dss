@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -29,12 +30,14 @@ import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.Policy;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
@@ -43,6 +46,8 @@ public class XAdESLevelBWithPolicyTest extends AbstractXAdESTestSignature {
 	private static final Logger logger = LoggerFactory.getLogger(XAdESLevelBWithPolicyTest.class);
 
 	private static final String HTTP_SPURI_TEST = "http://spuri.test";
+	private static final String SIGNATURE_POLICY_ID = "1.2.3.4.5.6";
+	private static final String SIGNATURE_POLICY_DESCRIPTION = "Test description";
 
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -53,8 +58,8 @@ public class XAdESLevelBWithPolicyTest extends AbstractXAdESTestSignature {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		Policy signaturePolicy = new Policy();
-		signaturePolicy.setId("1.2.3.4.5.6");
-		signaturePolicy.setDescription("Test description");
+		signaturePolicy.setId(SIGNATURE_POLICY_ID);
+		signaturePolicy.setDescription(SIGNATURE_POLICY_DESCRIPTION);
 		signaturePolicy.setDigestAlgorithm(DigestAlgorithm.SHA1);
 		signaturePolicy.setDigestValue(new byte[] { 'd', 'i', 'g', 'e', 's', 't', 'v', 'a', 'l', 'u', 'e' });
 		signaturePolicy.setSpuri(HTTP_SPURI_TEST);
@@ -80,6 +85,15 @@ public class XAdESLevelBWithPolicyTest extends AbstractXAdESTestSignature {
 		assertTrue(xmlContent.contains(":SigPolicyQualifiers>"));
 		assertTrue(xmlContent.contains(":SigPolicyQualifier>"));
 		assertTrue(xmlContent.contains(HTTP_SPURI_TEST));
+	}
+	
+	@Override
+	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
+		super.verifyDiagnosticData(diagnosticData);
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertEquals(HTTP_SPURI_TEST, signature.getPolicyUrl());
+		assertEquals(SIGNATURE_POLICY_ID, signature.getPolicyId());
+		assertEquals(SIGNATURE_POLICY_DESCRIPTION, signature.getPolicyDescription());
 	}
 
 	@Override

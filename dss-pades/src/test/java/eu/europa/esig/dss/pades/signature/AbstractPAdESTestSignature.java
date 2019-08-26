@@ -38,16 +38,25 @@ import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.SignedData;
 import org.bouncycastle.asn1.cms.SignerInfo;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pdf.PdfSignatureInfo;
-import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
+import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.validationreport.jaxb.SAContactInfoType;
+import eu.europa.esig.validationreport.jaxb.SADSSType;
+import eu.europa.esig.validationreport.jaxb.SAFilterType;
+import eu.europa.esig.validationreport.jaxb.SANameType;
+import eu.europa.esig.validationreport.jaxb.SAReasonType;
+import eu.europa.esig.validationreport.jaxb.SASignatureProductionPlaceType;
+import eu.europa.esig.validationreport.jaxb.SASubFilterType;
+import eu.europa.esig.validationreport.jaxb.SAVRIType;
 
 public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestDocumentSignatureService<PAdESSignatureParameters> {
 
@@ -144,4 +153,77 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 		return SignatureLevel.PAdES_BASELINE_LTA.equals(getSignatureParameters().getSignatureLevel());
 	}
 
+	@Override
+	protected void validateETSISASignatureProductionPlaceType(SASignatureProductionPlaceType productionPlace) {
+		List<String> addressString = productionPlace.getAddressString();
+		String signerLocation = getSignatureParameters().getLocation();
+		if (signerLocation != null) {
+			assertTrue(addressString.contains(signerLocation));
+		} else {
+			fail("Not defined location");
+		}
+	}
+
+	@Override
+	protected void validateETSISAReasonType(SAReasonType reasonType) {
+		String reason = getSignatureParameters().getReason();
+		assertEquals(reason, reasonType.getReasonElement());
+	}
+
+	@Override
+	protected void validateETSISubFilter(SASubFilterType subFilterType) {
+		String subFilter = getSignatureParameters().getSignatureSubFilter();
+		assertEquals(subFilter, subFilterType.getSubFilterElement());
+	}
+
+	@Override
+	protected void validateETSIFilter(SAFilterType filterType) {
+		String filter = getSignatureParameters().getSignatureFilter();
+		assertEquals(filter, filterType.getFilter());
+	}
+
+	@Override
+	protected void validateETSIContactInfo(SAContactInfoType contactTypeInfo) {
+		String contactInfo = getSignatureParameters().getContactInfo();
+		assertEquals(contactInfo, contactTypeInfo.getContactInfoElement());
+	}
+
+	@Override
+	protected void validateETSISAName(SANameType nameType) {
+		String signatureName = getSignatureParameters().getSignatureName();
+		// if null, DSS generates the signature name
+		if (signatureName != null) {
+			assertEquals(signatureName, nameType.getNameElement());
+		}
+	}
+
+	@Override
+	protected void validateETSIDSSType(SADSSType dss) {
+		SignatureLevel signatureLevel = getSignatureParameters().getSignatureLevel();
+		if (SignatureLevel.PAdES_BASELINE_LT.equals(signatureLevel) || SignatureLevel.PAdES_BASELINE_LTA.equals(signatureLevel)) {
+			assertNotNull(dss);
+		} else {
+			assertNull(dss);
+		}
+	}
+
+	@Override
+	protected void validateETSIVRIType(SAVRIType vri) {
+		SignatureLevel signatureLevel = getSignatureParameters().getSignatureLevel();
+		if (SignatureLevel.PAdES_BASELINE_LT.equals(signatureLevel) || SignatureLevel.PAdES_BASELINE_LTA.equals(signatureLevel)) {
+			assertNotNull(vri);
+		} else {
+			assertNull(vri);
+		}
+	}
+
+	@Override
+	protected void checkNoDuplicateCompleteCertificates(DiagnosticData diagnosticData) {
+		// "Duplicate"
+	}
+
+	@Override
+	protected void checkNoDuplicateCompleteRevocationData(DiagnosticData diagnosticData) {
+		// "Duplicate"
+	}
 }

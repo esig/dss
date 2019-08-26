@@ -4,12 +4,16 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.4.3</version>
+		<version>5.5.RC1</version>
 	</parent>
 	
 	<artifactId>dss-crl-parser-stream</artifactId>
 	<name>DSS CRL Parser with stream</name>
 	<description>DSS CRL Parser with stream is an implementation of DSS CRL Parser API which streams the CRL to validate it and extract revocation data. This implementation is experimental but offers better performances.</description>
+	
+	<properties>
+		<module-name>jpms_dss_crl_parser_stream</module-name>
+	</properties>
 	
 	<dependencies>
 		<dependency>

@@ -23,11 +23,11 @@ package eu.europa.esig.dss.validation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.RevocationSource;
-import eu.europa.esig.dss.x509.RevocationToken;
-import eu.europa.esig.dss.x509.crl.CRLToken;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 
 /**
  * Verifier based on CRL
@@ -72,7 +72,7 @@ public class CRLCertificateVerifier implements CertificateStatusVerifier {
 				LOG.debug("{} : No CRL found for: {}", crlSource.getClass().getSimpleName(), certificateToken.getDSSIdAsString());
 				return null;
 			}
-			crlToken.setRelatedCertificateID(certificateToken.getDSSIdAsString());
+			crlToken.setRelatedCertificate(certificateToken);
 			if (!crlToken.isValid()) {
 				LOG.warn("{} : The CRL is not valid !", crlSource.getClass().getSimpleName());
 				return null;

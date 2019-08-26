@@ -66,18 +66,12 @@ class PdfBoxDict implements PdfDict {
 	}
 
 	@Override
-	public byte[] get(String name) throws IOException {
+	public byte[] getBinariesValue(String name) throws IOException {
 		COSBase val = wrapped.getDictionaryObject(name);
-		if (val == null) {
-			return null;
-		}
 		if (val instanceof COSString) {
 			return ((COSString) val).getBytes();
 		}
-		if (val instanceof COSName) {
-			return ((COSName) val).getName().getBytes();
-		}
-		throw new IOException(name + " was expected to be a COSString element but was " + val.getClass() + " : " + val);
+		throw new IOException(name + " was expected to be a COSString element but was : " + val);
 	}
 
 	@Override

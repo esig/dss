@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>PDF</DocumentName>
+    <ValidationDate>2019-01-18T08:59:31</ValidationDate>
+    <Signatures>
+        <Signature Id="id-31f56201b6a3dce0b6acbc112d64acf6afbc68af445779db6a841015c6d1e9ef">
+            <SignatureFilename>PDF</SignatureFilename>
+            <DateTime>2019-01-18T08:48:13</DateTime>
+            <SignatureFormat>PAdES-BASELINE-B</SignatureFormat>
+            <StructuralValidation>
+                <Valid>true</Valid>
+            </StructuralValidation>
+            <DigestMatchers>
+                <DigestMatcher type="MESSAGE_DIGEST">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>u//lv4TZAf1UAcIF0MXpSXX+QXVokBhTdhP+2bhVRYU=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-C01FC833D83EAF08F4031A1915A72BE6602A63587C5B65227D37461E35019532">
+                <AttributePresent>true</AttributePresent>
+                <DigestValuePresent>true</DigestValuePresent>
+                <DigestValueMatch>true</DigestValueMatch>
+                <IssuerSerialMatch>true</IssuerSerialMatch>
+            </SigningCertificate>
+            <CertificateChain>
+                <ChainItem Certificate="C-C01FC833D83EAF08F4031A1915A72BE6602A63587C5B65227D37461E35019532"/>
+                <ChainItem Certificate="C-F4703E9EF1A4F93A57EB9CD2E63738870838FBB59F6DE9C07D4ADABE2255B729"/>
+                <ChainItem Certificate="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD"/>
+            </CertificateChain>
+            <ContentType>application/pdf</ContentType>
+            <CommitmentTypeIndication/>
+            <FoundCertificates/>
+            <FoundRevocations/>
+            <FoundTimestamps/>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-252f10c83610ebca1a059c0bae8255eba2f95be4d1d7bcfa89d7248a82d9f111">
+                    <Scope>FULL</Scope>
+                    <Name>Full PDF</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
+            </SignatureScopes>
+            <SignatureDigestReference>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>BDpxh3TFcr2KJa2+sb/NXAJWrhHOz5+cP5JdDlK+r4k=</DigestValue>
+            </SignatureDigestReference>
+        </Signature>
+    </Signatures>
+    <UsedCertificates>
+        <Certificate Id="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
+            <SubjectDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#162543525950544f4d4f44554c455f434841494e5f524f4f54406f70656e6c696d69742e636f6d,cn=cryptomodule_chain_root_1,ou=ol,o=ol,l=ol,st=ol,c=ol</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">1.2.840.113549.1.9.1=#162543525950544f4d4f44554c455f434841494e5f524f4f54406f70656e6c696d69742e636f6d,CN=CRYPTOMODULE_CHAIN_ROOT_1,OU=OL,O=OL,L=OL,ST=OL,C=OL</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#162543525950544f4d4f44554c455f434841494e5f524f4f54406f70656e6c696d69742e636f6d,cn=cryptomodule_chain_root_1,ou=ol,o=ol,l=ol,st=ol,c=ol</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">1.2.840.113549.1.9.1=#162543525950544f4d4f44554c455f434841494e5f524f4f54406f70656e6c696d69742e636f6d,CN=CRYPTOMODULE_CHAIN_ROOT_1,OU=OL,O=OL,L=OL,ST=OL,C=OL</IssuerDistinguishedName>
+            <SerialNumber>1420137776267518227</SerialNumber>
+            <CommonName>CRYPTOMODULE_CHAIN_ROOT_1</CommonName>
+            <Locality>OL</Locality>
+            <State>OL</State>
+            <CountryName>OL</CountryName>
+            <OrganizationName>OL</OrganizationName>
+            <OrganizationalUnit>OL</OrganizationalUnit>
+            <Email>CRYPTOMODULE_CHAIN_ROOT@openlimit.com</Email>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints>
+                <crlUrl>http://www.openlimit.ol:8083/ejbca/publicweb/webdist/certdist?cmd=crl&amp;issuer=CN=CRYPTOMODULE_CA_2019_CHAIN_ROOT</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://www.openlimit.ol/CRYPTOMODULE/OCSP</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+            	<Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2015-11-17T00:00:00</NotAfter>
+            <NotBefore>2014-11-17T00:00:00</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <Trusted>true</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificatePolicies/>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider>
+                    <TSPName>OpenLimit Test-CA</TSPName>
+                    <TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier>
+                    <CountryCode>OL</CountryCode>
+                    <TrustedServices>
+                        <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
+                            <ServiceName>OpenLimit CryptoModule 2019 XCA CHAIN ROOT 1</ServiceName>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-13T13:30:00</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                        <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
+                            <ServiceName>OpenLimit CryptoModule 2019 XCA CHAIN ROOT</ServiceName>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-13T13:30:00</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <Revocations/>
+            <Base64Encoded>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</Base64Encoded>
+        </Certificate>
+        <Certificate Id="C-C01FC833D83EAF08F4031A1915A72BE6602A63587C5B65227D37461E35019532">
+            <SubjectDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#162743525950544f4d4f44554c455f434841494e5f555345525f34406f70656e6c696d69742e636f6d,cn=cryptomodule_chain_user_4,ou=ol,o=ol,l=ol,st=b,c=ol</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">1.2.840.113549.1.9.1=#162743525950544f4d4f44554c455f434841494e5f555345525f34406f70656e6c696d69742e636f6d,CN=CRYPTOMODULE_CHAIN_USER_4,OU=OL,O=OL,L=OL,ST=B,C=OL</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#162543525950544f4d4f44554c455f434841494e5f43415f34406f70656e6c696d69742e636f6d,cn=cryptomodule_chain_ca_4,ou=ol,o=ol,l=ol,st=b,c=ol</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">1.2.840.113549.1.9.1=#162543525950544f4d4f44554c455f434841494e5f43415f34406f70656e6c696d69742e636f6d,CN=CRYPTOMODULE_CHAIN_CA_4,OU=OL,O=OL,L=OL,ST=B,C=OL</IssuerDistinguishedName>
+            <SerialNumber>5826090033014891814</SerialNumber>
+            <CommonName>CRYPTOMODULE_CHAIN_USER_4</CommonName>
+            <Locality>OL</Locality>
+            <State>B</State>
+            <CountryName>OL</CountryName>
+            <OrganizationName>OL</OrganizationName>
+            <OrganizationalUnit>OL</OrganizationalUnit>
+            <Email>CRYPTOMODULE_CHAIN_USER_4@openlimit.com</Email>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://www.openlimit.ol:88/CRYPTOMODULE/OCSP</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+            	<Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2020-11-17T00:00:00</NotAfter>
+            <NotBefore>2016-05-12T00:00:00</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-F4703E9EF1A4F93A57EB9CD2E63738870838FBB59F6DE9C07D4ADABE2255B729"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-F4703E9EF1A4F93A57EB9CD2E63738870838FBB59F6DE9C07D4ADABE2255B729"/>
+                <ChainItem Certificate="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies/>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider>
+                    <TSPName>OpenLimit Test-CA</TSPName>
+                    <TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier>
+                    <CountryCode>OL</CountryCode>
+                    <TrustedServices>
+                        <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
+                            <ServiceName>OpenLimit CryptoModule 2019 XCA CHAIN ROOT 1</ServiceName>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-13T13:30:00</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                        <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
+                            <ServiceName>OpenLimit CryptoModule 2019 XCA CHAIN ROOT</ServiceName>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-13T13:30:00</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <Revocations>
+                <CertificateRevocation Revocation="R-c01fc833d83eaf08f4031a1915a72be6602a63587c5b65227d37461e35019532a089b92ca229216ae9b9f8bd39a8b3ef699a47371a5222f18b4a39995cca222b">
+                    <Status>true</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <Base64Encoded>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</Base64Encoded>
+        </Certificate>
+        <Certificate Id="C-24ABE927F4C70FB2371FA5463A31ACBDA662E791D0AA081BBBBAD36B2BF52B2B">
+            <SubjectDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#162543525950544f4d4f44554c455f434841494e5f43415f33406f70656e6c696d69742e636f6d,cn=cryptomodule_chain_ca_3,ou=ol,o=ol,l=ol,st=b,c=ol</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">1.2.840.113549.1.9.1=#162543525950544f4d4f44554c455f434841494e5f43415f33406f70656e6c696d69742e636f6d,CN=CRYPTOMODULE_CHAIN_CA_3,OU=OL,O=OL,L=OL,ST=B,C=OL</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#162543525950544f4d4f44554c455f434841494e5f524f4f54406f70656e6c696d69742e636f6d,cn=cryptomodule_chain_root_1,ou=ol,o=ol,l=ol,st=ol,c=ol</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">1.2.840.113549.1.9.1=#162543525950544f4d4f44554c455f434841494e5f524f4f54406f70656e6c696d69742e636f6d,CN=CRYPTOMODULE_CHAIN_ROOT_1,OU=OL,O=OL,L=OL,ST=OL,C=OL</IssuerDistinguishedName>
+            <SerialNumber>599539700352815734</SerialNumber>
+            <CommonName>CRYPTOMODULE_CHAIN_CA_3</CommonName>
+            <Locality>OL</Locality>
+            <State>B</State>
+            <CountryName>OL</CountryName>
+            <OrganizationName>OL</OrganizationName>
+            <OrganizationalUnit>OL</OrganizationalUnit>
+            <Email>CRYPTOMODULE_CHAIN_CA_3@openlimit.com</Email>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://www.openlimit.ol:88/CRYPTOMODULE/OCSP</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+            	<Source>OCSP_RESPONSE</Source>
+            </Sources>
+            <NotAfter>2028-11-17T00:00:00</NotAfter>
+            <NotBefore>2015-10-17T00:00:00</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies/>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider>
+                    <TSPName>OpenLimit Test-CA</TSPName>
+                    <TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier>
+                    <CountryCode>OL</CountryCode>
+                    <TrustedServices>
+                        <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
+                            <ServiceName>OpenLimit CryptoModule 2019 XCA CHAIN ROOT 1</ServiceName>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-13T13:30:00</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                        <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
+                            <ServiceName>OpenLimit CryptoModule 2019 XCA CHAIN ROOT</ServiceName>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-13T13:30:00</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <Revocations>
+                <CertificateRevocation Revocation="R-24abe927f4c70fb2371fa5463a31acbda662e791d0aa081bbbbad36b2bf52b2b05cec01ec463a560fe91afd35a34ef0013b00a1ae3c683d6221da519f914f596">
+                    <Status>true</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <Base64Encoded>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</Base64Encoded>
+        </Certificate>
+        <Certificate Id="C-F4703E9EF1A4F93A57EB9CD2E63738870838FBB59F6DE9C07D4ADABE2255B729">
+            <SubjectDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#162543525950544f4d4f44554c455f434841494e5f43415f34406f70656e6c696d69742e636f6d,cn=cryptomodule_chain_ca_4,ou=ol,o=ol,l=ol,st=b,c=ol</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">1.2.840.113549.1.9.1=#162543525950544f4d4f44554c455f434841494e5f43415f34406f70656e6c696d69742e636f6d,CN=CRYPTOMODULE_CHAIN_CA_4,OU=OL,O=OL,L=OL,ST=B,C=OL</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#162543525950544f4d4f44554c455f434841494e5f524f4f54406f70656e6c696d69742e636f6d,cn=cryptomodule_chain_root_1,ou=ol,o=ol,l=ol,st=ol,c=ol</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">1.2.840.113549.1.9.1=#162543525950544f4d4f44554c455f434841494e5f524f4f54406f70656e6c696d69742e636f6d,CN=CRYPTOMODULE_CHAIN_ROOT_1,OU=OL,O=OL,L=OL,ST=OL,C=OL</IssuerDistinguishedName>
+            <SerialNumber>6841685620613824110</SerialNumber>
+            <CommonName>CRYPTOMODULE_CHAIN_CA_4</CommonName>
+            <Locality>OL</Locality>
+            <State>B</State>
+            <CountryName>OL</CountryName>
+            <OrganizationName>OL</OrganizationName>
+            <OrganizationalUnit>OL</OrganizationalUnit>
+            <Email>CRYPTOMODULE_CHAIN_CA_4@openlimit.com</Email>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://www.openlimit.ol:88/CRYPTOMODULE/OCSP</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+            	<Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2016-11-17T00:00:00</NotAfter>
+            <NotBefore>2015-10-17T00:00:00</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies/>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider>
+                    <TSPName>OpenLimit Test-CA</TSPName>
+                    <TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier>
+                    <CountryCode>OL</CountryCode>
+                    <TrustedServices>
+                        <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
+                            <ServiceName>OpenLimit CryptoModule 2019 XCA CHAIN ROOT 1</ServiceName>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-13T13:30:00</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                        <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
+                            <ServiceName>OpenLimit CryptoModule 2019 XCA CHAIN ROOT</ServiceName>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-13T13:30:00</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <Revocations>
+                <CertificateRevocation Revocation="R-f4703e9ef1a4f93a57eb9cd2e63738870838fbb59f6de9c07d4adabe2255b7290522d1b953212894552cc55819e3ace59011930fca14e38f65c67fc15e4adca9">
+                    <Status>true</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <Base64Encoded>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</Base64Encoded>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+    	<Revocation Id="R-c01fc833d83eaf08f4031a1915a72be6602a63587c5b65227d37461e35019532a089b92ca229216ae9b9f8bd39a8b3ef699a47371a5222f18b4a39995cca222b">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://www.openlimit.ol:88/CRYPTOMODULE/OCSP</SourceAddress>
+            <ProductionDate>2019-01-18T08:59:31</ProductionDate>
+            <ThisUpdate>2019-01-18T08:59:31</ThisUpdate>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-24ABE927F4C70FB2371FA5463A31ACBDA662E791D0AA081BBBBAD36B2BF52B2B"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-24ABE927F4C70FB2371FA5463A31ACBDA662E791D0AA081BBBBAD36B2BF52B2B"/>
+                <ChainItem Certificate="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD"/>
+            </CertificateChain>
+            <Base64Encoded>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</Base64Encoded>
+        </Revocation>
+        <Revocation Id="R-24abe927f4c70fb2371fa5463a31acbda662e791d0aa081bbbbad36b2bf52b2b05cec01ec463a560fe91afd35a34ef0013b00a1ae3c683d6221da519f914f596">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://www.openlimit.ol:88/CRYPTOMODULE/OCSP</SourceAddress>
+            <ProductionDate>2019-01-18T08:59:31</ProductionDate>
+            <ThisUpdate>2019-01-18T08:59:31</ThisUpdate>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-24ABE927F4C70FB2371FA5463A31ACBDA662E791D0AA081BBBBAD36B2BF52B2B"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-24ABE927F4C70FB2371FA5463A31ACBDA662E791D0AA081BBBBAD36B2BF52B2B"/>
+                <ChainItem Certificate="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD"/>
+            </CertificateChain>
+            <Base64Encoded>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</Base64Encoded>
+        </Revocation>
+        <Revocation Id="R-f4703e9ef1a4f93a57eb9cd2e63738870838fbb59f6de9c07d4adabe2255b7290522d1b953212894552cc55819e3ace59011930fca14e38f65c67fc15e4adca9">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://www.openlimit.ol:88/CRYPTOMODULE/OCSP</SourceAddress>
+            <ProductionDate>2019-01-18T08:59:32</ProductionDate>
+            <ThisUpdate>2019-01-18T08:59:32</ThisUpdate>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-24ABE927F4C70FB2371FA5463A31ACBDA662E791D0AA081BBBBAD36B2BF52B2B"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-24ABE927F4C70FB2371FA5463A31ACBDA662E791D0AA081BBBBAD36B2BF52B2B"/>
+                <ChainItem Certificate="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD"/>
+            </CertificateChain>
+            <Base64Encoded>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</Base64Encoded>
+        </Revocation>
+    </UsedRevocations>
+    <OriginalDocuments>
+        <SignerData Id="D-252f10c83610ebca1a059c0bae8255eba2f95be4d1d7bcfa89d7248a82d9f111">
+            <ReferencedName>Full document</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>Wlpe/yFJlySJdOb+Wnq9lDP+lYmau6I+fF3X2MgJMEQ=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists>
+        <TrustedList>
+            <CountryCode>OL</CountryCode>
+            <Url>http://www.openlimit.ol/TSL-OL.xml</Url>
+            <SequenceNumber>12</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2019-01-18T08:57:58</LastLoading>
+            <IssueDate>2016-07-05T01:00:00</IssueDate>
+            <NextUpdate>2020-01-05T00:00:00</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+    </TrustedLists>
+</DiagnosticData>

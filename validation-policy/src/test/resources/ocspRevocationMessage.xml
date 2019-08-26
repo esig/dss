@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>test-signed-cades-baseline-b.pkcs7</DocumentName>
+    <ValidationDate>2019-08-14T07:00:47</ValidationDate>
+    <Signatures>
+        <Signature Id="S-AED1933650CCAE36030F94BD50321D36F77CEFE1319B64C5C93F3511A4B69A82">
+            <SignatureFilename>test-signed-cades-baseline-b.pkcs7</SignatureFilename>
+            <DateTime>2019-08-08T08:20:43</DateTime>
+            <SignatureFormat>CAdES-BASELINE-B</SignatureFormat>
+            <StructuralValidation>
+                <Valid>true</Valid>
+            </StructuralValidation>
+            <DigestMatchers>
+                <DigestMatcher type="MESSAGE_DIGEST">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>n4bQgYhMfWWaL+qgxVrQFaO/TxsrC4Is0V1sFbDwCgg=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-49AAB7F1E44D844E956892C769BC457C0257F6403A634804A0A8622C317AC2B1">
+                <AttributePresent>true</AttributePresent>
+                <DigestValuePresent>true</DigestValuePresent>
+                <DigestValueMatch>true</DigestValueMatch>
+                <IssuerSerialMatch>true</IssuerSerialMatch>
+            </SigningCertificate>
+            <CertificateChain>
+                <ChainItem Certificate="C-49AAB7F1E44D844E956892C769BC457C0257F6403A634804A0A8622C317AC2B1"/>
+                <ChainItem Certificate="C-C670C79BF277AF7E7B34A6AA4FA304441833C6BD01A70A7E9B7A2D94C1C1F926"/>
+                <ChainItem Certificate="C-657CFE2FA73FAA38462571F332A2363A46FCE7020951710702CDFBB6EEDA3305"/>
+            </CertificateChain>
+            <ContentType>1.2.840.113549.1.7.1</ContentType>
+            <CommitmentTypeIndication/>
+            <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-49AAB7F1E44D844E956892C769BC457C0257F6403A634804A0A8622C317AC2B1">
+                    <Origin>KEY_INFO</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial>MHAwYKReMFwxCzAJBgNVBAYTAlJPMRQwEgYDVQQKEwtDRVJUU0lHTiBTQTEeMBwGA1UEAxMVY2VydFNJR04gUXVhbGlmaWVkIENBMRcwFQYDVQRhEw5WQVRSTy0xODI4ODI1MAIMIgEL9hLW3V/+z1Vq</IssuerSerial>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>Saq38eRNhE6VaJLHabxFfAJX9kA6Y0gEoKhiLDF6wrE=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <FoundTimestamps/>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-E7C48620F704A3FF0A2C43C521A43191604B50BF4125B08F2D538CCA19DCD600">
+                    <Scope>FULL</Scope>
+                    <Name>Full document</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
+            </SignatureScopes>
+            <SignatureDigestReference>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>k6KTtxOzayxSKNNQkMG71FRD8Om5MPd+kBx9qruSntI=</DigestValue>
+            </SignatureDigestReference>
+            <SignatureValue>MGtjAEFL7MbpRtyD07XRIUwA6PdEMhcHQuRCuilakaL4iwdYJNMCNivM2F9NVgn9G3Y/c3lrG5gm4+qtohdDT55OL3iPUQ4/EBGuseKtWn3LleqniwVZrdVm3IB9bvKZ9xrhwkP5QX6VuKRPzF23xb5lWD9FNptapoMmOeMDvOzBhYLlV45q1ZpnpRJHZKAw3GsphoAu7OOUQbqDJGDTZfX+RNN6p33CgmGAjpvcitzxnbYMRfeMyrlvtGDmEAyoExwoykvzJ/51vPL+rEuivGTe1jmTPBpdLt0ESC2UraX9c1MiwAEBoWDevGZu0TKKsMnQSom8MT5bjMr+CYBBIA==</SignatureValue>
+        </Signature>
+    </Signatures>
+    <UsedCertificates>
+        <Certificate Id="C-657CFE2FA73FAA38462571F332A2363A46FCE7020951710702CDFBB6EEDA3305">
+            <SubjectDistinguishedName Format="CANONICAL">ou=certsign root ca g2,o=certsign sa,c=ro</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">OU=certSIGN ROOT CA G2,O=CERTSIGN SA,C=RO</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">ou=certsign root ca g2,o=certsign sa,c=ro</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">OU=certSIGN ROOT CA G2,O=CERTSIGN SA,C=RO</IssuerDistinguishedName>
+            <SerialNumber>313609486401300475190</SerialNumber>
+            <CountryName>RO</CountryName>
+            <OrganizationName>CERTSIGN SA</OrganizationName>
+            <OrganizationalUnit>certSIGN ROOT CA G2</OrganizationalUnit>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>AIA</Source>
+            </Sources>
+            <NotAfter>2042-02-06T09:27:35</NotAfter>
+            <NotBefore>2017-02-06T09:27:35</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <Trusted>false</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificatePolicies/>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <Revocations/>
+            <Base64Encoded>MIIFRzCCAy+gAwIBAgIJEQA0tk7GNi02MA0GCSqGSIb3DQEBCwUAMEExCzAJBgNVBAYTAlJPMRQwEgYDVQQKEwtDRVJUU0lHTiBTQTEcMBoGA1UECxMTY2VydFNJR04gUk9PVCBDQSBHMjAeFw0xNzAyMDYwOTI3MzVaFw00MjAyMDYwOTI3MzVaMEExCzAJBgNVBAYTAlJPMRQwEgYDVQQKEwtDRVJUU0lHTiBTQTEcMBoGA1UECxMTY2VydFNJR04gUk9PVCBDQSBHMjCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAMDFdRmRfUR0dIf+DjuW3NgBFszuY5HnC2/OOwppGnzC46+CjobXXo9X69MhWf05N0IwvlDqtg+piNguLWkh59E3GE59kdUWX2tbAMI5Qw02hVK5U2UPHULlj88F0+7cDBrZuIt4ImfkabBoxTzkbFpG583H+u/E7Eu9aqSs/cwoUe+StCmrqzWaTOTECMYmzPhpn+Sc8CnTXPnGFiWeI8MgwT0PPzhAsP6CRDiqWhqKa2NYOLQV07YRaXseVO6MGiKscpc/I1mbySKEwQdPzH/iV8oScLumZfNpdWO9lfsbl83kqK/20U6o2YpxJM02PbyWxPFsqa7lzw1uKA2wDrXKUXt4FMMgL3/7FFXhEZn91QqhngLjYl/rNUssuHLoPj1PrCy7Lobio3aP5ZMqz6WryFyNSwb/EkaseMsUBzXgqd+L6a8VTxaJW732jcZZroiFDsGJ6x9nxUWO/203Nit4ZoORUSs9/1F3dmKh7Gc+PoGD4FapUB8fepmrY7+EF3fxDTvf95xhszWYijqy7DwaNz9+j5LP2RIUZNoQAhVB/0/E6xyjyfqZ90bp4RjZsbgyLcsUDFDYg2WD7rlcz8sFWkz6GZdr1l0T08JcVLwyc6B49fFtHsufpaafItzRUZ6CeWRgKRM+o/1Pcmqr4tTluCRVLERLiohEnMqE0yo7AgMBAAGjQjBAMA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0PAQH/BAQDAgEGMB0GA1UdDgQWBBSCIS1mxteg4BXrzkwJd8RgnlRuAzANBgkqhkiG9w0BAQsFAAOCAgEAYN4auOfyYILVAzOBywaK8SJJ6ejqkX/GM15oGQOGO0MBzwdw5AgeZYWR5hEit/UCI46uuR59H35s5r0l1ZUa8gWmr4UCb6741jH/JclKyMeKqdmfS0mbEVeZkkMR3rYzpMzXjWR91M08KCy0mpbqTfXERMQlqiCA2ClV9+BB/AYm/7k29UMUA2Z44RGx2iBfRgB4ACGlHgAoYXhvqAEBj500mv/0OJD7uNGzcgbJceaBxXntC6Z58hMLnPddDnskk7RI24Zf3lCGeOdA5jGokHZwYa+cNywRtYK3qq4kNFtyDGkNzVmf9nGvnAvRCjj5BiKDUyUM/FHE5r7iOZULJK2v0ZXkltd0ZGtxTgI8qoXzIKNDOXZbbFD+mpwUHmUUihW9o4JFWklWatKcsWMy5WHgUyIOpwpJ6st+H6jiYoD2EEVSmAYY3qXNL3+q1Ok+CHLsIwMCPKaq2LxndD0UF/tUSxfj03k9bWtJySgOLnRQvwzZRjoQhsmnP+mg7H/rpXdYaXHmgwo38oZJar55CJD2AhZkPuXaTH4MNMn5X7azKFGnpyuqSfqNZSlO42sTp5SjLVFteAxEy9/eCG/Oo2Sr05WE1LlSVHJ7liXMvGnjSG4N0MedJ5qq+BOS3R7fY581qRY27Iy4g/Q9iY/NtBde17MXQRBdJ3NghVdJIgc=</Base64Encoded>
+        </Certificate>
+        <Certificate Id="C-49AAB7F1E44D844E956892C769BC457C0257F6403A634804A0A8622C317AC2B1">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.97=#0c0e564154524f2d3138323838323530,2.5.4.4=#0c085061747261736375,2.5.4.42=#0c0e426f6764616e2d4e69636f6c6165,2.5.4.5=#130450424e31,cn=bogdan-nicolae patrascu,o=certsign sa,c=ro</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.97=#0c0e564154524f2d3138323838323530,2.5.4.4=#0c085061747261736375,2.5.4.42=#0c0e426f6764616e2d4e69636f6c6165,2.5.4.5=#130450424e31,CN=Bogdan-Nicolae Patrascu,O=CERTSIGN SA,C=RO</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">2.5.4.97=#130e564154524f2d3138323838323530,cn=certsign qualified ca,o=certsign sa,c=ro</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">2.5.4.97=#130e564154524f2d3138323838323530,CN=certSIGN Qualified CA,O=CERTSIGN SA,C=RO</IssuerDistinguishedName>
+            <SerialNumber>10523755745033216406529725802</SerialNumber>
+            <CommonName>Bogdan-Nicolae Patrascu</CommonName>
+            <CountryName>RO</CountryName>
+            <OrganizationName>CERTSIGN SA</OrganizationName>
+            <GivenName>Bogdan-Nicolae</GivenName>
+            <Surname>Patrascu</Surname>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://www.certsign.ro/certcrl/certsign-qualifiedca.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://crl.certsign.ro/certsign-qualifiedca.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://ocsp.certsign.ro</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2021-07-16T12:52:10</NotAfter>
+            <NotBefore>2018-07-16T12:52:10</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="clientAuth">1.3.6.1.5.5.7.3.2</extendedKeyUsagesOid>
+                <extendedKeyUsagesOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsagesOid>
+                <extendedKeyUsagesOid>1.3.6.1.4.1.311.10.3.12</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-C670C79BF277AF7E7B34A6AA4FA304441833C6BD01A70A7E9B7A2D94C1C1F926"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-C670C79BF277AF7E7B34A6AA4FA304441833C6BD01A70A7E9B7A2D94C1C1F926"/>
+                <ChainItem Certificate="C-657CFE2FA73FAA38462571F332A2363A46FCE7020951710702CDFBB6EEDA3305"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://www.certsign.ro/repository" Description="qcp-natural-qscd">0.4.0.194112.1.2</certificatePolicy>
+                <certificatePolicy cpsUrl="http://www.certsign.ro/repository">1.3.6.1.4.1.25017.3.1.3.2</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds>
+                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
+                <qcStatementOid Description="qc-sscd">0.4.0.1862.1.4</qcStatementOid>
+                <qcStatementOid>0.4.0.1862.1.6</qcStatementOid>
+                <qcStatementOid Description="qc-pds">0.4.0.1862.1.5</qcStatementOid>
+            </QCStatementIds>
+            <QCTypes>
+                <qcTypeOid Description="qc-type-esign">0.4.0.1862.1.6.1</qcTypeOid>
+            </QCTypes>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider>
+                    <TSPName>CERTSIGN S.A.</TSPName>
+                    <TSPRegistrationIdentifier>VATRO-18288250</TSPRegistrationIdentifier>
+                    <CountryCode>RO</CountryCode>
+                    <TrustedServices>
+                        <TrustedService ServiceDigitalIdentifier="C-C670C79BF277AF7E7B34A6AA4FA304441833C6BD01A70A7E9B7A2D94C1C1F926">
+                            <ServiceName>certSIGN Qualified CA</ServiceName>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2017-06-25T22:00:00</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <Revocations>
+                <CertificateRevocation Revocation="R-F104CADD12E8C96491EB3F95667AFB7E594162A461F968CE2D488C32E6A18624">
+                    <Status>true</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <Base64Encoded>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</Base64Encoded>
+        </Certificate>
+        <Certificate Id="C-C670C79BF277AF7E7B34A6AA4FA304441833C6BD01A70A7E9B7A2D94C1C1F926">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.97=#130e564154524f2d3138323838323530,cn=certsign qualified ca,o=certsign sa,c=ro</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.97=#130e564154524f2d3138323838323530,CN=certSIGN Qualified CA,O=CERTSIGN SA,C=RO</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">ou=certsign root ca g2,o=certsign sa,c=ro</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">OU=certSIGN ROOT CA G2,O=CERTSIGN SA,C=RO</IssuerDistinguishedName>
+            <SerialNumber>75606971252637778173192</SerialNumber>
+            <CommonName>certSIGN Qualified CA</CommonName>
+            <CountryName>RO</CountryName>
+            <OrganizationName>CERTSIGN SA</OrganizationName>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://www.certsign.ro/certcrl/certsign-rootg2.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://crl.certsign.ro/certsign-rootg2.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://ocsp.certsign.ro</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>TRUSTED_LIST</Source>
+                <Source>AIA</Source>
+            </Sources>
+            <NotAfter>2027-02-06T10:06:03</NotAfter>
+            <NotBefore>2017-02-06T10:06:03</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-657CFE2FA73FAA38462571F332A2363A46FCE7020951710702CDFBB6EEDA3305"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-657CFE2FA73FAA38462571F332A2363A46FCE7020951710702CDFBB6EEDA3305"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://www.certsign.ro/repository">2.5.29.32.0</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider>
+                    <TSPName>CERTSIGN S.A.</TSPName>
+                    <TSPRegistrationIdentifier>VATRO-18288250</TSPRegistrationIdentifier>
+                    <CountryCode>RO</CountryCode>
+                    <TrustedServices>
+                        <TrustedService ServiceDigitalIdentifier="C-C670C79BF277AF7E7B34A6AA4FA304441833C6BD01A70A7E9B7A2D94C1C1F926">
+                            <ServiceName>certSIGN Qualified CA</ServiceName>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2017-06-25T22:00:00</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <Revocations/>
+            <Base64Encoded>MIIGgTCCBGmgAwIBAgIKEAKpgPtfRYXdCDANBgkqhkiG9w0BAQsFADBBMQswCQYDVQQGEwJSTzEUMBIGA1UEChMLQ0VSVFNJR04gU0ExHDAaBgNVBAsTE2NlcnRTSUdOIFJPT1QgQ0EgRzIwHhcNMTcwMjA2MTAwNjAzWhcNMjcwMjA2MTAwNjAzWjBcMQswCQYDVQQGEwJSTzEUMBIGA1UEChMLQ0VSVFNJR04gU0ExHjAcBgNVBAMTFWNlcnRTSUdOIFF1YWxpZmllZCBDQTEXMBUGA1UEYRMOVkFUUk8tMTgyODgyNTAwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQCd9bJaGqh3+GST+b3neWPc0+BIPIV/bZm3NB0gYhacZlxHKTiiYsj5/e4GxPUrbYmEvVKnfP5lJ1kpr9rMskmBYaduzo0fc5Z3vWS8Uy2ZT4GZ0pvqgaHNM0mPD1tT0X6xDSy2CDkZ0jaWU1s+cWSwrgh2c9JOnQegn4jgQLDPFGmdDs+7fews2BfGShcqyRK3u9hoSABL4wJJWclXxVRHiY1Az0ghZ1LAPoc/+v+pel+ofdZZPiaMLk1N58A2ci6GesVASRPfUxDwoeOkVWMZt1r2JMYh06nSy/ww/9lMEqAqiseW2BKoDRmCY4e1+cPB4dOJ5UE0XRJLEy7t994P6BHrPI4vi9Hjer970pDZb8OwlHfZLSu/s5QJITrIjsRIaJBzV7cYgEkeXdyv3Ps1SbaxZWpvzRjmQSs/kdB+k5KfSqdPkweSSmDZP49Y5Mab4l/KclqdBnR9++IC4PE5B944dYhux4Q9id2h+y8c9k9K9JYFFbNmyfduTajk3FpKsvskmvOIG56ShCIfVkUTat7o25ndHLEdgeOox1gUV7adf1NsVMgwNNxcu2Ltzkto+gjbe/Qt8LF26L1hkcCA+jIjL504HmRoGJ9t5VCxyvySOCb5PqjbLl9mx2+FAHF82CrO9D3XA2mtfyoZEWe12TVCfMbBiU6KyL4VL4lftQIDAQABo4IBXjCCAVowcwYIKwYBBQUHAQEEZzBlMCMGCCsGAQUFBzABhhdodHRwOi8vb2NzcC5jZXJ0c2lnbi5ybzA+BggrBgEFBQcwAoYyaHR0cDovL3d3dy5jZXJ0c2lnbi5yby9jZXJ0Y3JsL2NlcnRzaWduLXJvb3RnMi5jcnQwEgYDVR0TAQH/BAgwBgEB/wIBADAOBgNVHQ8BAf8EBAMCAQYwHwYDVR0jBBgwFoAUgiEtZsbXoOAV685MCXfEYJ5UbgMwHQYDVR0OBBYEFI9Nh1FeEX/hmcOR8WhMP6xZBLGLMEIGA1UdIAQ7MDkwNwYEVR0gADAvMC0GCCsGAQUFBwIBFiFodHRwOi8vd3d3LmNlcnRzaWduLnJvL3JlcG9zaXRvcnkwOwYDVR0fBDQwMjAwoC6gLIYqaHR0cDovL2NybC5jZXJ0c2lnbi5yby9jZXJ0c2lnbi1yb290ZzIuY3JsMA0GCSqGSIb3DQEBCwUAA4ICAQC5Kle7JamsjB2fgwlH1em6ay5IldIjVbbIo5UrbRW7MR1YpULwmS3dEuraDp0JzFv4xwhpXMnlQCyfwBTzUpTIuRHU71AeNsip0G62kg8GoVXZOT8fFcQZnfQ4oN3FhMxgkUKhbkILqPJFgcCN+P3mQYZnIRk4LWS9dem6F6CoIdcTefVRmNM41FjYcoPpV799oBxnbuxOOsi0PocF4ki+2uC+xUBgRfyrVL+OiXivssDA7phVdezK397w4CRxSM6GXSoYLa8rYuXBSkX4loSy9mLDLj/5aAO68gtunHCJxnxnAW7m2c3X9QmfWHvwzKfxiLwxgX92k3cUnontQAvpi55cumxKqV/APOr44h6Fkpoh+qSkMAmTMgUUuIyD8s5Lr5bqkQI8R3DtRPku7a2xrJcqH6i4GyvS8yvljINgmxUxFFpu0s3+VR5DwidLT71h+RL0HtQUXqpD/iHU/tEiK1Ku/T7vyabSkDdli3qxAqCb8pD8Nf0qZ5i03SOES0mjIV+yLWtQnCHf8WUXsoqmCtyLuNg3wQfB2Qg6Bh8UdzJPFKSd31R6e6XDfr4ZvrOGEIdRqUTIo5TfREkYQ8vTo0WTW26Krt8PRt2T5hEuNUt6hcROVt9fKTtOk2UZW3jW2eRsyfpIM6umnP8lyuoj3kZ0eefZM5PmoLeVS8DX5g==</Base64Encoded>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-F104CADD12E8C96491EB3F95667AFB7E594162A461F968CE2D488C32E6A18624">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://ocsp.certsign.ro</SourceAddress>
+            <ProductionDate>2019-08-14T07:00:47</ProductionDate>
+            <ThisUpdate>2019-08-14T07:00:47</ThisUpdate>
+            <NextUpdate>2019-08-15T07:00:47</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>false</SignatureIntact>
+                <SignatureValid>false</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Base64Encoded>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</Base64Encoded>
+        </Revocation>
+    </UsedRevocations>
+    <UsedTimestamps/>
+    <OrphanTokens/>
+    <OriginalDocuments>
+        <SignerData Id="D-E7C48620F704A3FF0A2C43C521A43191604B50BF4125B08F2D538CCA19DCD600">
+            <ReferencedName>Full document</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>n4bQgYhMfWWaL+qgxVrQFaO/TxsrC4Is0V1sFbDwCgg=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists>
+        <TrustedList>
+            <CountryCode>RO</CountryCode>
+            <Url>https://comunicatii.gov.ro/trustedlist.xml</Url>
+            <SequenceNumber>37</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2019-08-13T13:22:23</LastLoading>
+            <IssueDate>2019-07-10T01:00:00</IssueDate>
+            <NextUpdate>2020-01-10T00:00:00</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+    </TrustedLists>
+    <ListOfTrustedLists>
+        <CountryCode>EU</CountryCode>
+        <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
+        <SequenceNumber>247</SequenceNumber>
+        <Version>5</Version>
+        <LastLoading>2019-08-13T13:22:19</LastLoading>
+        <IssueDate>2019-08-13T06:00:00</IssueDate>
+        <NextUpdate>2020-02-13T00:00:00</NextUpdate>
+        <WellSigned>true</WellSigned>
+    </ListOfTrustedLists>
+</DiagnosticData>

@@ -27,20 +27,18 @@ import java.util.List;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignatureValue;
-import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedObject;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
-import eu.europa.esig.dss.x509.TimestampType;
 
 public class PAdESLTACheckTimeStampedTimestampID extends PKIFactoryAccess {
 
@@ -69,11 +67,11 @@ public class PAdESLTACheckTimeStampedTimestampID extends PKIFactoryAccess {
 		DiagnosticData diagnostic = report.getDiagnosticData();
 		String timestampId = diagnostic.getSignatures().get(0).getTimestampList().get(0).getId();
 		for (TimestampWrapper wrapper : diagnostic.getTimestampList(diagnostic.getFirstSignatureId())) {
-			if (wrapper.getType().equals(TimestampType.ARCHIVE_TIMESTAMP.toString())) {
+			if (TimestampType.ARCHIVE_TIMESTAMP.equals(wrapper.getType())) {
 				boolean coverPreviousTsp = false;
-				List<XmlTimestampedObject> timestampedObjects = wrapper.getTimestampedObjects();
-				for (XmlTimestampedObject xmlTimestampedObject : timestampedObjects) {
-					if (TimestampedObjectType.TIMESTAMP == xmlTimestampedObject.getCategory() && timestampId.equals(xmlTimestampedObject.getId())) {
+				List<String> timestampedTimestampIds = wrapper.getTimestampedTimestampIds();
+				for (String id : timestampedTimestampIds) {
+					if (timestampId.equals(id)) {
 						coverPreviousTsp = true;
 					}
 				}

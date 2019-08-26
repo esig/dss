@@ -23,18 +23,19 @@ package eu.europa.esig.dss.validation.process.bbb.cv.checks;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlCV;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlContainerInfo;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlManifestFile;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlManifestFile;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SignatureForm;
+import eu.europa.esig.dss.enumerations.SignatureScopeType;
+import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignatureScopeType;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
-import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class AllFilesSignedCheck extends ChainItem<XmlCV> {
 
@@ -64,7 +65,7 @@ public class AllFilesSignedCheck extends ChainItem<XmlCV> {
 			}
 
 			// XAdES -> check signature scope
-			if (signature.getFormat().startsWith("XAdES")) {
+			if (SignatureForm.XAdES.equals(signature.getSignatureFormat().getSignatureForm())) {
 				List<String> coveredFilesFromScope = getCoveredFilesFromScope();
 				return sameContent(coveredFilesFromScope, contentFiles);
 			}

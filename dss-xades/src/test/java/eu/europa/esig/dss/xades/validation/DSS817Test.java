@@ -26,14 +26,14 @@ import java.util.List;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.CommitmentType;
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.CommitmentType;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 
 public class DSS817Test {
 
@@ -47,6 +47,11 @@ public class DSS817Test {
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		List<String> commitmentTypeIdentifiers = signatureWrapper.getCommitmentTypeIdentifiers();
+		
+		String signatureId = diagnosticData.getFirstSignatureId();
+		List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(signatureId);
+		assertEquals(1, retrievedOriginalDocuments.size());
+		
 		assertEquals(1, commitmentTypeIdentifiers.size());
 		assertEquals(CommitmentType.ProofOfApproval.getUri(), commitmentTypeIdentifiers.get(0));
 	}

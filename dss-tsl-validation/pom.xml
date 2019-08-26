@@ -3,17 +3,21 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.4.3</version>
+		<version>5.5.RC1</version>
 	</parent>
 
 	<artifactId>dss-tsl-validation</artifactId>
 	<name>DSS TSL Validation</name>
 	<description>TSL validation business</description>
 
+	<properties>
+		<module-name>jpms_dss_tsl_validation</module-name>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-tsl-jaxb</artifactId>
+			<artifactId>specs-trusted-list</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>

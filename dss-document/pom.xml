@@ -6,13 +6,17 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.4.3</version>
+		<version>5.5.RC1</version>
 	</parent>
 
 	<artifactId>dss-document</artifactId>
 	<name>DSS Document</name>
 	<description>DSS Document contains the code for the creation and validation of XAdES, CAdES, PAdES and ASiC signatures.</description>
 
+	<properties>
+		<module-name>jpms_dss_document</module-name>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
@@ -26,6 +30,11 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.module</groupId>
+			<artifactId>jackson-module-jaxb-annotations</artifactId>
 			<scope>test</scope>
 		</dependency>
  		<dependency>

@@ -27,17 +27,17 @@ import java.util.Date;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignatureValue;
-import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
 public class PDFOverrideFilters extends PKIFactoryAccess {
 
@@ -72,7 +72,7 @@ public class PDFOverrideFilters extends PKIFactoryAccess {
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
-		assertEquals(SignatureLevel.PDF_NOT_ETSI.toString(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+		assertEquals(SignatureLevel.PDF_NOT_ETSI, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 
 	@Override

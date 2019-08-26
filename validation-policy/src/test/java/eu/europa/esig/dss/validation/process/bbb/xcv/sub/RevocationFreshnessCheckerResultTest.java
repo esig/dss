@@ -26,15 +26,15 @@ import java.util.List;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationFreshnessCheckerResult;
-import eu.europa.esig.jaxb.policy.Level;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationFreshnessCheckerResultCheck;
 
 public class RevocationFreshnessCheckerResultTest {
 
@@ -50,7 +50,7 @@ public class RevocationFreshnessCheckerResultTest {
 		resultRFC.setConclusion(xc);
 
 		XmlSubXCV result = new XmlSubXCV();
-		RevocationFreshnessCheckerResult rfc = new RevocationFreshnessCheckerResult(result, resultRFC, constraint);
+		RevocationFreshnessCheckerResultCheck rfc = new RevocationFreshnessCheckerResultCheck(result, resultRFC, constraint);
 		rfc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -70,7 +70,7 @@ public class RevocationFreshnessCheckerResultTest {
 		resultRFC.setConclusion(xc);
 
 		XmlSubXCV result = new XmlSubXCV();
-		RevocationFreshnessCheckerResult rfc = new RevocationFreshnessCheckerResult(result, resultRFC, constraint);
+		RevocationFreshnessCheckerResultCheck rfc = new RevocationFreshnessCheckerResultCheck(result, resultRFC, constraint);
 		rfc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

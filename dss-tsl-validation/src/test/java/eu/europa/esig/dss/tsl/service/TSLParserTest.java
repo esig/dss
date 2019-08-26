@@ -32,24 +32,26 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.tsl.Condition;
+import eu.europa.esig.dss.jaxb.parsers.KeyUsageBitParser;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.tsl.Condition;
+import eu.europa.esig.dss.spi.util.TimeDependentValues;
 import eu.europa.esig.dss.tsl.TSLConditionsForQualifiers;
 import eu.europa.esig.dss.tsl.TSLParserResult;
 import eu.europa.esig.dss.tsl.TSLPointer;
 import eu.europa.esig.dss.tsl.TSLService;
 import eu.europa.esig.dss.tsl.TSLServiceProvider;
 import eu.europa.esig.dss.tsl.TSLServiceStatusAndInformationExtensions;
-import eu.europa.esig.dss.util.TimeDependentValues;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.jaxb.ecc.CriteriaListType;
-import eu.europa.esig.jaxb.ecc.KeyUsageBitType;
-import eu.europa.esig.jaxb.ecc.KeyUsageType;
-import eu.europa.esig.jaxb.ecc.PoliciesListType;
-import eu.europa.esig.jaxb.xades.IdentifierType;
-import eu.europa.esig.jaxb.xades.ObjectIdentifierType;
+import eu.europa.esig.trustedlist.enums.Assert;
+import eu.europa.esig.trustedlist.jaxb.ecc.CriteriaListType;
+import eu.europa.esig.trustedlist.jaxb.ecc.KeyUsageBitType;
+import eu.europa.esig.trustedlist.jaxb.ecc.KeyUsageType;
+import eu.europa.esig.trustedlist.jaxb.ecc.PoliciesListType;
+import eu.europa.esig.xades.jaxb.xades132.IdentifierType;
+import eu.europa.esig.xades.jaxb.xades132.ObjectIdentifierType;
 
 public class TSLParserTest {
 
@@ -180,7 +182,7 @@ public class TSLParserTest {
 		CertificateToken certificate = DSSUtils.loadCertificateFromBase64EncodedString(
 				"MIID3DCCAsSgAwIBAgIER/idhzANBgkqhkiG9w0BAQUFADBbMQswCQYDVQQGEwJFRTEiMCAGA1UEChMZQVMgU2VydGlmaXRzZWVyaW1pc2tlc2t1czEPMA0GA1UECxMGRVNURUlEMRcwFQYDVQQDEw5FU1RFSUQtU0sgMjAwNzAeFw0wODA0MDYwOTUzMDlaFw0xMjAzMDUyMjAwMDBaMIGWMQswCQYDVQQGEwJFRTEPMA0GA1UEChMGRVNURUlEMRowGAYDVQQLExFkaWdpdGFsIHNpZ25hdHVyZTEiMCAGA1UEAxMZU0lOSVZFRSxWRUlLTywzNjcwNjAyMDIxMDEQMA4GA1UEBBMHU0lOSVZFRTEOMAwGA1UEKhMFVkVJS08xFDASBgNVBAUTCzM2NzA2MDIwMjEwMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCGRN42R9e6VEHMCyvacuubjtm1+5Kk92WgIgtWA8hY8DW2iNvQJ3jOF5XlVIyIDTwl2JVKxWKhXX+8+yNFPpqAK43IINcmMfznw/KcR7jACGNuTrivA9HrvRiqDzTg5E1rktjho6OkDkdV3dgOLB2wyhVm2anNpICfrUq8c09HPwIDMMP5o4HvMIHsMA4GA1UdDwEB/wQEAwIGQDA8BgNVHR8ENTAzMDGgL6AthitodHRwOi8vd3d3LnNrLmVlL2NybHMvZXN0ZWlkL2VzdGVpZDIwMDcuY3JsMFEGA1UdIARKMEgwRgYLKwYBBAHOHwEBAQEwNzASBggrBgEFBQcCAjAGGgRub25lMCEGCCsGAQUFBwIBFhVodHRwOi8vd3d3LnNrLmVlL2Nwcy8wHwYDVR0jBBgwFoAUSAbevoyHV5WAeGP6nCMrK6A6GHUwHQYDVR0OBBYEFJAJUyDrH3rdxTStU+LDa6aHdE8dMAkGA1UdEwQCMAAwDQYJKoZIhvcNAQEFBQADggEBAA5qjfeuTdOoEtatiA9hpjDHzyqN1PROcaPrABXGqpLxcHbLVr7xmovILAjxS9fJAw28u9ZE3asRNa9xgQNTeX23mMlojJAYVbYCeIeJ6jtsRiCo34wgvO3CtVfO3+C1T8Du5XLCHa6SoT8SpCApW+Crwe+6eCZDmv2NKTjhn1wCCNO2e8HuSt+pTUNBTUB+rkvF4KO9VnuzRzT7zN7AUdW4OFF3bI+9+VmW3t9vq1zDOxNTdBkCM3zm5TRa8ZtyAPL48bW19JAcYzQLjPGORwoIRNSXdVTqX+cDiw2wbmb2IhPdxRqN9uPwU1x/ltZZ3W5GzJ1t8JeQN7PuGM0OHqE=");
 
-		parser = new TSLParser(new FileDocument("src/test/resources/tsls/0A191C3E18CAB7B783E690D3E4431C354A068FF0-2.xml"));
+		parser = new TSLParser(new FileDocument("src/test/resources/tsls/EE.xml"));
 		model = parser.call();
 
 		serviceProviders = model.getServiceProviders();
@@ -260,7 +262,7 @@ public class TSLParserTest {
 		policiesB.getPolicyIdentifier().add(oid("2.999.7"));
 
 		CriteriaListType criteria = new CriteriaListType();
-		criteria.setAssert("atLeastOne");
+		criteria.setAssert(Assert.AT_LEAST_ONE);
 		criteria.getPolicySet().add(policiesA);
 		criteria.getPolicySet().add(policiesB);
 
@@ -290,7 +292,7 @@ public class TSLParserTest {
 		policiesB.getPolicyIdentifier().add(oid("22.33.44"));
 
 		CriteriaListType criteria = new CriteriaListType();
-		criteria.setAssert("all");
+		criteria.setAssert(Assert.ALL);
 		criteria.getPolicySet().add(policiesA);
 		criteria.getPolicySet().add(policiesB);
 		return criteria;
@@ -298,7 +300,7 @@ public class TSLParserTest {
 
 	private KeyUsageBitType kub(String kub, boolean val) {
 		KeyUsageBitType keyUsageBitType = new KeyUsageBitType();
-		keyUsageBitType.setName(kub);
+		keyUsageBitType.setName(KeyUsageBitParser.parse(kub));
 		keyUsageBitType.setValue(val);
 		return keyUsageBitType;
 	}

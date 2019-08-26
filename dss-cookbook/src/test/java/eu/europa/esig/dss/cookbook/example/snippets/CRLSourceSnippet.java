@@ -20,14 +20,21 @@
  */
 package eu.europa.esig.dss.cookbook.example.snippets;
 
-import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.crl.CRLSource;
-import eu.europa.esig.dss.x509.crl.CRLToken;
+import java.sql.SQLException;
+
+import javax.sql.DataSource;
+
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.service.crl.JdbcCacheCRLSource;
+import eu.europa.esig.dss.service.crl.OnlineCRLSource;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 
 public class CRLSourceSnippet {
 
 	@SuppressWarnings({ "unused", "null" })
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SQLException {
 
 		CRLSource crlSource = null;
 		CertificateToken certificateToken = null;
@@ -36,6 +43,19 @@ public class CRLSourceSnippet {
 		// tag::demo[]
 		CRLToken crlToken = crlSource.getRevocationToken(certificateToken, issuerCertificateToken);
 		// end::demo[]
+
+		DataSource dataSource = null;
+		OnlineCRLSource onlineCRLSource = null;
+
+		// tag::demo-cached[]
+		JdbcCacheCRLSource cacheCRLSource = new JdbcCacheCRLSource();
+		cacheCRLSource.setDataSource(dataSource);
+		cacheCRLSource.setProxySource(onlineCRLSource);
+		Long oneWeek = (long) (60 * 60 * 24 * 7);
+		cacheCRLSource.setMaxNextUpdateDelay(oneWeek); // force refresh every week (eg : ARL)
+		cacheCRLSource.initTable();
+		RevocationToken crlRevocationToken = cacheCRLSource.getRevocationToken(certificateToken, certificateToken);
+		// end::demo-cached[]
 
 	}
 

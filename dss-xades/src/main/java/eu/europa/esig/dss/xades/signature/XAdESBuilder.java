@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static eu.europa.esig.dss.XAdESNamespaces.XAdES;
 import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -37,21 +37,26 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
-import eu.europa.esig.dss.DSSASN1Utils;
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.XAdESNamespaces;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.Token;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.Token;
-import eu.europa.esig.dss.xades.DSSReference;
-import eu.europa.esig.dss.xades.DSSTransform;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.ProfileParameters.Operation;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
+import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
+import eu.europa.esig.dss.xades.reference.DSSReference;
+import eu.europa.esig.dss.xades.reference.DSSTransform;
 
 public abstract class XAdESBuilder {
 
@@ -79,10 +84,14 @@ public abstract class XAdESBuilder {
 
 	public static final String XADES_ALL_DATA_OBJECTS_TIME_STAMP = "xades:AllDataObjectsTimeStamp";
 	public static final String XADES_ALL_SIGNED_DATA_OBJECTS = "xades:AllSignedDataObjects";
+	public static final String XADES_BY_KEY = "xades:ByKey";
+	public static final String XADES_BY_NAME = "xades:ByName";
 	public static final String XADES_COUNTER_SIGNATURE = "xades:CounterSignature";
 	public static final String XADES_CERT = "xades:Cert";
 	public static final String XADES_CERT_DIGEST = "xades:CertDigest";
+	public static final String XADES_CERT_REFS = "xades:CertRefs";
 	public static final String XADES_CERTIFICATE_VALUES = "xades:CertificateValues";
+	public static final String XADES_REVOCATION_VALUES = "xades:RevocationValues";
 	public static final String XADES_CERTIFIED_ROLES = "xades:CertifiedRoles";
 	public static final String XADES_CERTIFIED_ROLES_V2 = "xades:CertifiedRolesV2";
 	public static final String XADES_CERTIFIED_ROLE = "xades:CertifiedRole";
@@ -91,18 +100,31 @@ public abstract class XAdESBuilder {
 	public static final String XADES_CLAIMED_ROLE = "xades:ClaimedRole";
 	public static final String XADES_COMMITMENT_TYPE_ID = "xades:CommitmentTypeId";
 	public static final String XADES_COMMITMENT_TYPE_INDICATION = "xades:CommitmentTypeIndication";
+	public static final String XADES_COMPLETE_CERTIFICATE_REFS = "xades:CompleteCertificateRefs";
+	public static final String XADES_COMPLETE_REVOCATION_REFS = "xades:CompleteRevocationRefs";
 	public static final String XADES_COUNTRY_NAME = "xades:CountryName";
+	public static final String XADES_CRL_IDENTIFIER = "xades:CRLIdentifier";
+	public static final String XADES_CRL_REF = "xades:CRLRef";
+	public static final String XADES_CRL_REFS = "xades:CRLRefs";
 	public static final String XADES_DATA_OBJECT_FORMAT = "xades:DataObjectFormat";
+	public static final String XADES_DESCRIPTION = "xades:Description";
+	public static final String XADES_DIGEST_ALG_AND_VALUE = "xades:DigestAlgAndValue";
 	public static final String XADES_ENCAPSULATED_TIME_STAMP = "xades:EncapsulatedTimeStamp";
 	public static final String XADES_ENCAPSULATED_X509_CERTIFICATE = "xades:EncapsulatedX509Certificate";
 	public static final String XADES_IDENTIFIER = "xades:Identifier";
-	public static final String XADES_DESCRIPTION = "xades:Description";
 	public static final String XADES_INCLUDE = "xades:Include";
 	public static final String XADES_INDIVIDUAL_DATA_OBJECTS_TIME_STAMP = "xades:IndividualDataObjectsTimeStamp";
+	public static final String XADES_ISSUER = "xades:Issuer";
 	public static final String XADES_ISSUER_SERIAL = "xades:IssuerSerial";
 	public static final String XADES_ISSUER_SERIAL_V2 = "xades:IssuerSerialV2";
+	public static final String XADES_ISSUER_TIME = "xades:IssueTime";
 	public static final String XADES_MIME_TYPE = "xades:MimeType";
+	public static final String XADES_OCSP_IDENTIFIER = "xades:OCSPIdentifier";
+	public static final String XADES_OCSP_REF = "xades:OCSPRef";
+	public static final String XADES_OCSP_REFS = "xades:OCSPRefs";
+	public static final String XADES_OCSP_RESPONDER_ID = "xades:ResponderID";
 	public static final String XADES_POSTAL_CODE = "xades:PostalCode";
+	public static final String XADES_PRODUCED_AT = "xades:ProducedAt";
 	public static final String XADES_QUALIFYING_PROPERTIES = "xades:QualifyingProperties";
 	public static final String XADES_SIG_AND_REFS_TIME_STAMP = "xades:SigAndRefsTimeStamp";
 	public static final String XADES_SIG_AND_REFS_TIME_STAMP_V2 = "xades:SigAndRefsTimeStampV2";
@@ -113,22 +135,23 @@ public abstract class XAdESBuilder {
 	public static final String XADES_SIGNATURE_POLICY_IMPLIED = "xades:SignaturePolicyImplied";
 	public static final String XADES_SIGNATURE_POLICY_QUALIFIERS = "xades:SigPolicyQualifiers";
 	public static final String XADES_SIGNATURE_POLICY_QUALIFIER = "xades:SigPolicyQualifier";
-	public static final String XADES_SPURI = "xades:SPURI";
 	public static final String XADES_SIGNATURE_PRODUCTION_PLACE = "xades:SignatureProductionPlace";
 	public static final String XADES_SIGNATURE_PRODUCTION_PLACE_V2 = "xades:SignatureProductionPlaceV2";
 	public static final String XADES_SIGNATURE_TIME_STAMP = "xades:SignatureTimeStamp";
 	public static final String XADES_SIGNED_DATA_OBJECT_PROPERTIES = "xades:SignedDataObjectProperties";
 	public static final String XADES_SIGNED_PROPERTIES = "xades:SignedProperties";
 	public static final String XADES_SIGNED_SIGNATURE_PROPERTIES = "xades:SignedSignatureProperties";
-	public static final String XADES_STREET_ADDRESS = "xades:StreetAddress";
-	public static final String XADES_UNSIGNED_PROPERTIES = "xades:UnsignedProperties";
-	public static final String XADES_UNSIGNED_SIGNATURE_PROPERTIES = "xades:UnsignedSignatureProperties";
 	public static final String XADES_SIGNER_ROLE = "xades:SignerRole";
 	public static final String XADES_SIGNER_ROLE_V2 = "xades:SignerRoleV2";
 	public static final String XADES_SIGNING_TIME = "xades:SigningTime";
+	public static final String XADES_SPURI = "xades:SPURI";
+	public static final String XADES_STREET_ADDRESS = "xades:StreetAddress";
+	public static final String XADES_UNSIGNED_PROPERTIES = "xades:UnsignedProperties";
+	public static final String XADES_UNSIGNED_SIGNATURE_PROPERTIES = "xades:UnsignedSignatureProperties";
 	public static final String XADES_STATE_OR_PROVINCE = "xades:StateOrProvince";
 
 	public static final String XADES141_ARCHIVE_TIME_STAMP = "xades141:ArchiveTimeStamp";
+	public static final String XADES141_TIME_STAMP_VALIDATION_DATA = "xades141:TimeStampValidationData";
 
 	public static final String ALGORITHM = "Algorithm";
 	public static final String ID = "Id";
@@ -144,15 +167,6 @@ public abstract class XAdESBuilder {
 
 	public static final String XMLNS_DS = "xmlns:ds";
 	public static final String XMLNS_XADES = "xmlns:xades";
-
-	public static final String HTTP_WWW_W3_ORG_2000_09_XMLDSIG_OBJECT = "http://www.w3.org/2000/09/xmldsig#Object";
-
-	public static final String HTTP_WWW_W3_ORG_2000_09_XMLDSIG_MANIFEST = "http://www.w3.org/2000/09/xmldsig#Manifest";
-
-	/**
-	 * This XPath filter allows to remove all ds:Signature elements from the XML
-	 */
-	public static final String NOT_ANCESTOR_OR_SELF_DS_SIGNATURE = "not(ancestor-or-self::ds:Signature)";
 
 	/**
 	 * This variable holds the {@code XPathQueryHolder} which contains all constants and queries needed to cope with the
@@ -202,7 +216,7 @@ public abstract class XAdESBuilder {
 	 */
 	protected void incorporateDigestMethod(final Element parentDom, final DigestAlgorithm digestAlgorithm) {
 		final Element digestMethodDom = documentDom.createElementNS(XMLNS, DS_DIGEST_METHOD);
-		final String digestAlgorithmXmlId = digestAlgorithm.getXmlId();
+		final String digestAlgorithmXmlId = digestAlgorithm.getUri();
 		digestMethodDom.setAttribute(ALGORITHM, digestAlgorithmXmlId);
 		parentDom.appendChild(digestMethodDom);
 	}
@@ -232,12 +246,13 @@ public abstract class XAdESBuilder {
 
 		String base64EncodedDigestBytes = null;
 		if (params.isManifestSignature()) {
-			DSSTransform dssTransform = getUniqueTransformation(dssReference);
+			DSSTransform dssTransform = getUniqueCanonicalizationTransform(dssReference);
 			Document doc = DomUtils.buildDOM(originalDocument);
-			byte[] bytes = DSSXMLUtils.canonicalizeSubtree(dssTransform.getAlgorithm(), doc);
+			
+			byte[] bytes = dssTransform.getBytesAfterTranformation(doc);
 			base64EncodedDigestBytes = Utils.toBase64(DSSUtils.digest(digestAlgorithm, bytes));
 		} else if (params.isEmbedXML()) {
-			DSSTransform dssTransform = getUniqueTransformation(dssReference);
+			DSSTransform dssTransform = getUniqueCanonicalizationTransform(dssReference);
 
 			Document doc = DomUtils.buildDOM(originalDocument);
 			Element root = doc.getDocumentElement();
@@ -252,7 +267,7 @@ public abstract class XAdESBuilder {
 			Node adopted = doc2.adoptNode(root);
 			dom.appendChild(adopted);
 
-			byte[] bytes = DSSXMLUtils.canonicalizeSubtree(dssTransform.getAlgorithm(), dom);
+			byte[] bytes = dssTransform.getBytesAfterTranformation(dom);
 			base64EncodedDigestBytes = Utils.toBase64(DSSUtils.digest(digestAlgorithm, bytes));
 		} else {
 			base64EncodedDigestBytes = originalDocument.getDigest(digestAlgorithm);
@@ -264,12 +279,16 @@ public abstract class XAdESBuilder {
 		parentDom.appendChild(digestValueDom);
 	}
 
-	private DSSTransform getUniqueTransformation(DSSReference dssReference) {
+	private DSSTransform getUniqueCanonicalizationTransform(DSSReference dssReference) {
 		List<DSSTransform> transforms = dssReference.getTransforms();
 		if (Utils.collectionSize(transforms) != 1) {
 			throw new DSSException("Only one transformation is supported");
 		}
-		return transforms.get(0);
+		DSSTransform dssTransform = transforms.get(0);
+		if (!(dssTransform instanceof CanonicalizationTransform)) {
+			throw new DSSException("Only canonicalization transform is allowed in the given use case");
+		}
+		return dssTransform;
 	}
 
 	/**
@@ -341,9 +360,9 @@ public abstract class XAdESBuilder {
 	 *            the certificate to be added
 	 */
 	protected Element incorporateCert(final Element parentDom, final CertificateToken certificate) {
-		final Element certDom = DomUtils.addElement(documentDom, parentDom, XAdES, XADES_CERT);
+		final Element certDom = DomUtils.addElement(documentDom, parentDom, XAdESNamespaces.getXAdESDefaultNamespace(), XADES_CERT);
 
-		final Element certDigestDom = DomUtils.addElement(documentDom, certDom, XAdES, XADES_CERT_DIGEST);
+		final Element certDigestDom = DomUtils.addElement(documentDom, certDom, XAdESNamespaces.getXAdESDefaultNamespace(), XADES_CERT_DIGEST);
 
 		final DigestAlgorithm signingCertificateDigestMethod = params.getSigningCertificateDigestMethod();
 		incorporateDigestMethod(certDigestDom, signingCertificateDigestMethod);
@@ -353,7 +372,7 @@ public abstract class XAdESBuilder {
 	}
 
 	protected void incorporateIssuerV1(final Element parentDom, final CertificateToken certificate) {
-		final Element issuerSerialDom = DomUtils.addElement(documentDom, parentDom, XAdES, XADES_ISSUER_SERIAL);
+		final Element issuerSerialDom = DomUtils.addElement(documentDom, parentDom, XAdESNamespaces.getXAdESDefaultNamespace(), XADES_ISSUER_SERIAL);
 
 		final Element x509IssuerNameDom = DomUtils.addElement(documentDom, issuerSerialDom, XMLNS, DS_X509_ISSUER_NAME);
 		final String issuerX500PrincipalName = certificate.getIssuerX500Principal().getName();
@@ -366,11 +385,48 @@ public abstract class XAdESBuilder {
 	}
 
 	protected void incorporateIssuerV2(final Element parentDom, final CertificateToken certificate) {
-		final Element issuerSerialDom = DomUtils.addElement(documentDom, parentDom, XAdES, XADES_ISSUER_SERIAL_V2);
+		final Element issuerSerialDom = DomUtils.addElement(documentDom, parentDom, XAdESNamespaces.getXAdESDefaultNamespace(), XADES_ISSUER_SERIAL_V2);
 
 		IssuerSerial issuerSerial = DSSASN1Utils.getIssuerSerial(certificate);
 		String issuerBase64 = Utils.toBase64(DSSASN1Utils.getDEREncoded(issuerSerial));
 		DomUtils.setTextNode(documentDom, issuerSerialDom, issuerBase64);
 	}
+	
+	/**
+	 * Returns list of object ids that must not be indented in any case
+	 * @return list of object ids to no indent
+	 */
+	private List<String> getNotIndentedObjectIds() {
+		List<String> ids = new ArrayList<String>();
+		List<DSSReference> dssReferences = params.getReferences();
+		if (dssReferences != null) {
+			for (DSSReference reference : dssReferences) {
+				// do not change external objects
+				if (DSSXMLUtils.isObjectReferenceType(reference.getType())) {
+					ids.add(DomUtils.getId(reference.getUri()));
+				}
+			}
+		}
+		return ids;
+	}
+	
+	/**
+	 * Creates {@link DSSDocument} from the current documentDom
+	 * @return {@link DSSDocument}
+	 */
+	protected DSSDocument createXmlDocument() {
+		byte[] bytes;
+		if (Operation.SIGNING.equals(params.getContext().getOperationKind()) && params.isPrettyPrint()) {
+			alignNodes();
+			bytes = DSSXMLUtils.serializeNode(DSSXMLUtils.getDocWithIndentedSignatures(documentDom, params.getDeterministicId(), getNotIndentedObjectIds()));
+		} else {
+			bytes = DSSXMLUtils.serializeNode(documentDom);
+		}
+		final InMemoryDocument inMemoryDocument = new InMemoryDocument(bytes);
+		inMemoryDocument.setMimeType(MimeType.XML);
+		return inMemoryDocument;
+	}
+	
+	protected abstract void alignNodes();
 
 }

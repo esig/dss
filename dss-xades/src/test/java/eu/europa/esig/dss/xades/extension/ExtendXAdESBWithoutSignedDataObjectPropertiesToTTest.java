@@ -20,23 +20,26 @@
  */
 package eu.europa.esig.dss.xades.extension;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
-import eu.europa.esig.dss.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.reports.SimpleReport;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
@@ -73,7 +76,12 @@ public class ExtendXAdESBWithoutSignedDataObjectPropertiesToTTest extends PKIFac
 		Reports reports = validator.validateDocument();
 		SimpleReport simpleReport = reports.getSimpleReport();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		Assert.assertEquals(SignatureLevel.XAdES_BASELINE_T.toString(), diagnosticData.getSignatureFormat(simpleReport.getFirstSignatureId()));
+
+		String signatureId = diagnosticData.getFirstSignatureId();
+		List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(signatureId);
+		assertEquals(1, retrievedOriginalDocuments.size());
+		
+		Assert.assertEquals(SignatureLevel.XAdES_BASELINE_T, diagnosticData.getSignatureFormat(simpleReport.getFirstSignatureId()));
 	}
 
 	@Override

@@ -30,7 +30,7 @@ import java.security.KeyStore.PasswordProtection;
 
 import javax.security.auth.DestroyFailedException;
 
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.model.DSSException;
 
 public class KeyStoreSignatureTokenConnection extends AbstractKeyStoreTokenConnection {
 

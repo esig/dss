@@ -3,12 +3,16 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.4.3</version>
+		<version>5.5.RC1</version>
 	</parent>
 
 	<artifactId>dss-utils-google-guava</artifactId>
 	<name>DSS Utils implementation with Google Guava</name>
 	<description>DSS Utils with Google Guava : utility methods for String, Collection,...</description>
+	
+	<properties>
+		<module-name>jpms_dss_utils_google_guava</module-name>
+	</properties>
 
 	<dependencies>
 		<dependency>
@@ -17,9 +21,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>20.0</version> <!-- 21.0 requires Java 8 -->
+		    <groupId>com.google.guava</groupId>
+		    <artifactId>guava</artifactId>
+		    <version>28.0-jre</version>
 		</dependency>
 		
 		<dependency>

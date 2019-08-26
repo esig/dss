@@ -22,13 +22,14 @@ package eu.europa.esig.dss.token;
 
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
+import java.security.KeyStore.Entry;
 import java.security.KeyStore.PasswordProtection;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.model.DSSException;
 
 public abstract class AbstractKeyStoreTokenConnection extends AbstractSignatureTokenConnection {
 
@@ -44,11 +45,9 @@ public abstract class AbstractKeyStoreTokenConnection extends AbstractSignatureT
 			final Enumeration<String> aliases = keyStore.aliases();
 			while (aliases.hasMoreElements()) {
 				final String alias = aliases.nextElement();
-				if (keyStore.isKeyEntry(alias)) {
-					final PrivateKeyEntry entry = (PrivateKeyEntry) keyStore.getEntry(alias, getKeyProtectionParameter());
-					list.add(new KSPrivateKeyEntry(alias, entry));
-				} else {
-					LOG.debug("No related/supported key found for alias '{}'", alias);
+				DSSPrivateKeyEntry dssPrivateKeyEntry = getDSSPrivateKeyEntry(keyStore, alias, getKeyProtectionParameter());
+				if (dssPrivateKeyEntry != null) {
+					list.add(dssPrivateKeyEntry);
 				}
 			}
 		} catch (GeneralSecurityException e) {
@@ -80,11 +79,20 @@ public abstract class AbstractKeyStoreTokenConnection extends AbstractSignatureT
 	 * @return the private key or null if the alias does not exist
 	 */
 	public DSSPrivateKeyEntry getKey(String alias, PasswordProtection passwordProtection) {
+		final KeyStore keyStore = getKeyStore();
+		return getDSSPrivateKeyEntry(keyStore, alias, passwordProtection);
+	}
+
+	private DSSPrivateKeyEntry getDSSPrivateKeyEntry(KeyStore keyStore, String alias, PasswordProtection passwordProtection) {
 		try {
-			final KeyStore keyStore = getKeyStore();
 			if (keyStore.isKeyEntry(alias)) {
-				final PrivateKeyEntry entry = (PrivateKeyEntry) keyStore.getEntry(alias, passwordProtection);
-				return new KSPrivateKeyEntry(alias, entry);
+				final Entry entry = keyStore.getEntry(alias, passwordProtection);
+				if (entry instanceof PrivateKeyEntry) {
+					PrivateKeyEntry pke = (PrivateKeyEntry) entry;
+					return new KSPrivateKeyEntry(alias, pke);
+				} else {
+					LOG.warn("Skipped entry (unsupported class : {})", entry.getClass().getSimpleName());
+				}
 			} else {
 				LOG.debug("No related/supported key found for alias '{}'", alias);
 			}

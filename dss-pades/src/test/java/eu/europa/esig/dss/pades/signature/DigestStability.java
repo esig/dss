@@ -29,15 +29,15 @@ import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -65,7 +65,7 @@ public class DigestStability extends PKIFactoryAccess {
 		ToBeSigned dataToSign1 = getDataToSign(toBeSigned, privateKeyEntry, signingDate);
 		ToBeSigned dataToSign2 = getDataToSign(toBeSigned, privateKeyEntry, signingDate);
 
-		final MessageDigest messageDigest = MessageDigest.getInstance(DigestAlgorithm.SHA256.getOid());
+		final MessageDigest messageDigest = DigestAlgorithm.SHA256.getMessageDigest();
 		byte[] digest1 = messageDigest.digest(dataToSign1.getBytes());
 		byte[] digest2 = messageDigest.digest(dataToSign2.getBytes());
 
@@ -85,7 +85,7 @@ public class DigestStability extends PKIFactoryAccess {
 		ToBeSigned dataToSign1 = getDataToSign(toBeSigned1, privateKeyEntry, signingDate);
 		ToBeSigned dataToSign2 = getDataToSign(toBeSigned2, privateKeyEntry, signingDate);
 
-		final MessageDigest messageDigest = MessageDigest.getInstance(DigestAlgorithm.SHA256.getOid());
+		final MessageDigest messageDigest = DigestAlgorithm.SHA256.getMessageDigest();
 		byte[] digest1 = messageDigest.digest(dataToSign1.getBytes());
 		byte[] digest2 = messageDigest.digest(dataToSign2.getBytes());
 
@@ -104,7 +104,7 @@ public class DigestStability extends PKIFactoryAccess {
 		Date signingDate2 = new Date();
 		ToBeSigned dataToSign2 = getDataToSign(toBeSigned, privateKeyEntry, signingDate2);
 
-		final MessageDigest messageDigest = MessageDigest.getInstance(DigestAlgorithm.SHA256.getOid());
+		final MessageDigest messageDigest = DigestAlgorithm.SHA256.getMessageDigest();
 		byte[] digest1 = messageDigest.digest(dataToSign1.getBytes());
 		byte[] digest2 = messageDigest.digest(dataToSign2.getBytes());
 
