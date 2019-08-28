@@ -107,6 +107,7 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>QuoVadis Trustlink B.V.</TSPName>
+                    <TSPRegistrationIdentifier>VATDE-280226043</TSPRegistrationIdentifier>
                     <CountryCode>NL</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E">
@@ -179,6 +180,7 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>QuoVadis Trustlink B.V.</TSPName>
+                    <TSPRegistrationIdentifier>VATDE-280226043</TSPRegistrationIdentifier>
                     <CountryCode>NL</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E">
@@ -257,6 +259,7 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>QuoVadis Trustlink B.V.</TSPName>
+                    <TSPRegistrationIdentifier>VATDE-280226043</TSPRegistrationIdentifier>
                     <CountryCode>NL</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E">

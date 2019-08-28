@@ -54,7 +54,7 @@ public class MultiThreadsCertificateValidatorTest {
 		List<Future<CertificateReports>> futures = new ArrayList<Future<CertificateReports>>();
 
 		for (int i = 0; i < 100; i++) {
-			futures.add(executor.submit(new TestConcurrent(DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt")))));
+			futures.add(executor.submit(new TestConcurrent(DSSUtils.loadCertificate(new File("src/test/resources/certificates/ec.europa.eu.crt")))));
 		}
 
 		for (Future<CertificateReports> future : futures) {

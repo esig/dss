@@ -71,7 +71,7 @@ public class XAdESLevelBEnvelopedRSAandMGF1Test extends AbstractXAdESTestSignatu
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 
-		service = new XAdESService(getCompleteCertificateVerifier());
+		service = new XAdESService(getOfflineCertificateVerifier());
 	}
 
 	@Override

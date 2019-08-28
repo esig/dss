@@ -40,7 +40,7 @@ public class CertificateValidatorTest {
 
 	@Test
 	public void test() throws JAXBException, IOException, SAXException, TransformerException {
-		CertificateValidator cv = CertificateValidator.fromCertificate(DSSUtils.loadCertificate(new File("src/test/resources/CZ.cer")));
+		CertificateValidator cv = CertificateValidator.fromCertificate(DSSUtils.loadCertificate(new File("src/test/resources/certificates/CZ.cer")));
 		cv.setCertificateVerifier(new CommonCertificateVerifier());
 
 		CertificateReports reports = cv.validate();
@@ -73,14 +73,14 @@ public class CertificateValidatorTest {
 
 	@Test(expected = NullPointerException.class)
 	public void testPolicyNull() {
-		CertificateValidator cv = CertificateValidator.fromCertificate(DSSUtils.loadCertificate(new File("src/test/resources/CZ.cer")));
+		CertificateValidator cv = CertificateValidator.fromCertificate(DSSUtils.loadCertificate(new File("src/test/resources/certificates/CZ.cer")));
 		cv.setCertificateVerifier(new CommonCertificateVerifier());
 		cv.validate(null);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testDateNull() {
-		CertificateValidator cv = CertificateValidator.fromCertificate(DSSUtils.loadCertificate(new File("src/test/resources/CZ.cer")));
+		CertificateValidator cv = CertificateValidator.fromCertificate(DSSUtils.loadCertificate(new File("src/test/resources/certificates/CZ.cer")));
 		cv.setCertificateVerifier(new CommonCertificateVerifier());
 		cv.setValidationTime(null);
 		cv.validate();

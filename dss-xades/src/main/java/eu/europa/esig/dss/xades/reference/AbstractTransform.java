@@ -9,7 +9,7 @@ import eu.europa.esig.dss.DomUtils;
 
 public abstract class AbstractTransform implements DSSTransform {
 
-	public static final String ALGORITHM = "Algorithm";
+	public static final String ALGORITHM_ATTRIBUTE_NAME = "Algorithm";
 	public static final String DS_TRANSFORM = "ds:Transform";
 	
 	protected final String algorithm;
@@ -32,7 +32,7 @@ public abstract class AbstractTransform implements DSSTransform {
 	@Override
 	public Element createTransform(Document document, Element parentNode) {
 		final Element transformDom = DomUtils.addElement(document, parentNode, namespace, DS_TRANSFORM);
-		transformDom.setAttribute(ALGORITHM, algorithm);
+		transformDom.setAttribute(ALGORITHM_ATTRIBUTE_NAME, algorithm);
 		return transformDom;
 	}
 	

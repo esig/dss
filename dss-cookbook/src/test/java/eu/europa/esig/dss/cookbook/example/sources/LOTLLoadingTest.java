@@ -49,12 +49,12 @@ public class LOTLLoadingTest {
 		job.setDataLoader(new CommonsDataLoader());
 		job.setCheckLOTLSignature(true);
 		job.setCheckTSLSignatures(true);
-		job.setLotlUrl("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml");
+		job.setLotlUrl("https://ec.europa.eu/tools/lotl/eu-lotl.xml");
 		job.setLotlCode("EU");
 
 		// Defines a URL where the keystore certificates were obtained from
 		// This information is needed to be able to filter the LOTL pivots
-		job.setOjUrl("http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2016.233.01.0001.01.ENG");
+		job.setOjUrl("https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2019.276.01.0001.01.ENG");
 
 		// The keystore contains certificates referenced in the Official Journal Link (OJ URL)
 		KeyStoreCertificateSource keyStoreCertificateSource = new KeyStoreCertificateSource(new File("src/main/resources/keystore.p12"), "PKCS12",

@@ -60,6 +60,7 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChec
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationFreshnessCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.AcceptableBasicSignatureValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeNotBeforeCertificateIssuanceCheck;
+import eu.europa.esig.dss.validation.process.vpfltvd.checks.RevocationBasicBuildingBlocksCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.RevocationDateAfterBestSignatureTimeCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.SigningTimeAttributePresentCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampCoherenceOrderCheck;
@@ -125,6 +126,18 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 * validation process for Basic Signatures.
 		 */
 		ChainItem<XmlValidationProcessLongTermData> item = firstItem = isAcceptableBasicSignatureValidation();
+
+		Set<CertificateRevocationWrapper> certificateRevocationData = getLinkedCertificateRevocationData();
+		if (Utils.isCollectionNotEmpty(certificateRevocationData)) {
+			for (CertificateRevocationWrapper certificateRevocation : certificateRevocationData) {
+				XmlBasicBuildingBlocks revocationBBB = bbbs.get(certificateRevocation.getId());
+				if (revocationBBB != null) {
+					item = item.setNextItem(revocationBasicBuildingBlocksValid(revocationBBB));
+				} else {
+					LOG.warn("No BBB found for revocation : {}", certificateRevocation.getId());
+				}
+			}
+		}
 
 		/*
 		 * 3) Signature time-stamp validation:
@@ -266,6 +279,28 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 */
 
 		result.setProofOfExistence(bestSignatureTime);
+	}
+
+	private Set<CertificateRevocationWrapper> getLinkedCertificateRevocationData() {
+		Set<CertificateRevocationWrapper> result = new HashSet<CertificateRevocationWrapper>();
+		extractRevocationDataFromCertificateChain(result, currentSignature.getCertificateChain());
+		List<TimestampWrapper> timestampList = currentSignature.getTimestampList();
+		for (TimestampWrapper timestamp : timestampList) {
+			extractRevocationDataFromCertificateChain(result, timestamp.getCertificateChain());
+		}
+		return result;
+	}
+
+	private void extractRevocationDataFromCertificateChain(Set<CertificateRevocationWrapper> result, List<CertificateWrapper> certificateChain) {
+		for (CertificateWrapper certificate : certificateChain) {
+			if (certificate != null && Utils.isCollectionNotEmpty(certificate.getCertificateRevocationData())) {
+				result.addAll(certificate.getCertificateRevocationData());
+			}
+		}
+	}
+
+	private ChainItem<XmlValidationProcessLongTermData> revocationBasicBuildingBlocksValid(XmlBasicBuildingBlocks revocationBBB) {
+		return new RevocationBasicBuildingBlocksCheck(result, revocationBBB, getFailLevelConstraint());
 	}
 
 	private XmlProofOfExistence getCurrentTime() {

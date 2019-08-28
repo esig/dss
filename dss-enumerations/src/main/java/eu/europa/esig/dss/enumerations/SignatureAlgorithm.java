@@ -163,6 +163,8 @@ public enum SignatureAlgorithm implements UriBasedEnum, OidBasedEnum {
 	
 	/* RFC 3061 */
 	private static final String OID_NAMESPACE_PREFIX = "urn:oid:";
+	
+	private static final String UNSUPPORTED_ALGO_MSG = "Unsupported algorithm: %s";
 
 	// http://www.w3.org/TR/2013/NOTE-xmlsec-algorithms-20130411/
 	private static final Map<String, SignatureAlgorithm> XML_ALGORITHMS = registerXmlAlgorithms();
@@ -422,7 +424,7 @@ public enum SignatureAlgorithm implements UriBasedEnum, OidBasedEnum {
 	public static SignatureAlgorithm forXML(final String xmlName) {
 		final SignatureAlgorithm algorithm = XML_ALGORITHMS.get(xmlName);
 		if (algorithm == null) {
-			throw new IllegalArgumentException("Unsupported algorithm: " + xmlName);
+			throw new IllegalArgumentException(String.format(UNSUPPORTED_ALGO_MSG, xmlName));
 		}
 		return algorithm;
 	}
@@ -451,7 +453,7 @@ public enum SignatureAlgorithm implements UriBasedEnum, OidBasedEnum {
 	public static SignatureAlgorithm forOidAndParams(String oid, byte[] sigAlgParams) {
 		SignatureAlgorithm algorithm = OID_ALGORITHMS.get(oid);
 		if (algorithm == null) {
-			throw new IllegalArgumentException("Unsupported algorithm: " + oid);
+			throw new IllegalArgumentException(String.format(UNSUPPORTED_ALGO_MSG, oid));
 		}
 
 		if (sigAlgParams != null && algorithm.getMaskGenerationFunction() != null) {
@@ -516,7 +518,7 @@ public enum SignatureAlgorithm implements UriBasedEnum, OidBasedEnum {
 	public static SignatureAlgorithm forJAVA(final String javaName) {
 		final SignatureAlgorithm algorithm = JAVA_ALGORITHMS.get(javaName);
 		if (algorithm == null) {
-			throw new IllegalArgumentException("Unsupported algorithm: " + javaName);
+			throw new IllegalArgumentException(String.format(UNSUPPORTED_ALGO_MSG, javaName));
 		}
 		return algorithm;
 	}

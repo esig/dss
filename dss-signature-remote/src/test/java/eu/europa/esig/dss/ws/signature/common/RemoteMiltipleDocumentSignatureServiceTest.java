@@ -59,14 +59,14 @@ public class RemoteMiltipleDocumentSignatureServiceTest extends AbstractRemoteSi
 
 		parameters = new RemoteSignatureParameters();
 		parameters.setAsicContainerType(ASiCContainerType.ASiC_E);
-		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
+		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
 
 		RemoteDocument extendedDocument = signatureService.extendDocument(signedDocument, parameters);
 
 		assertNotNull(extendedDocument);
 
 		InMemoryDocument iMD = new InMemoryDocument(extendedDocument.getBytes());
-		iMD.save("target/test.asice");
+		// iMD.save("target/test.asice");
 		
 		validate(iMD, null);
 	}

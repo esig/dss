@@ -80,7 +80,7 @@ public class XAdESLevelBEnvelopedNONEWithRSAandMGF1Test extends AbstractXAdESTes
 		signatureParameters.setDigestAlgorithm(digestAlgo);
 		signatureParameters.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
 
-		service = new XAdESService(getCompleteCertificateVerifier());
+		service = new XAdESService(getOfflineCertificateVerifier());
 	}
 
 	@Override

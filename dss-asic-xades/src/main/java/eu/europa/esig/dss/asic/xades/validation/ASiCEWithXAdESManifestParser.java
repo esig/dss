@@ -33,6 +33,9 @@ import org.w3c.dom.NodeList;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.xades.ManifestNamespace;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
 
 public class ASiCEWithXAdESManifestParser {
@@ -51,25 +54,28 @@ public class ASiCEWithXAdESManifestParser {
 		this.manifestDocument = manifestDocument;
 	}
 
-	public ManifestFile getDescription() {
-		ManifestFile description = new ManifestFile();
-		description.setSignatureFilename(signatureDocument.getName());
-		description.setFilename(manifestDocument.getName());
-		description.setEntries(getEntries());
-		return description;
+	public ManifestFile getManifest() {
+		ManifestFile manifest = new ManifestFile();
+		manifest.setDocument(manifestDocument);
+		manifest.setSignatureFilename(signatureDocument.getName());
+		manifest.setEntries(getEntries());
+		return manifest;
 	}
 
-	private List<String> getEntries() {
-		List<String> result = new ArrayList<String>();
+	private List<ManifestEntry> getEntries() {
+		List<ManifestEntry> result = new ArrayList<ManifestEntry>();
 		try (InputStream is = manifestDocument.openStream()) {
 			Document manifestDom = DomUtils.buildDOM(is);
 			NodeList nodeList = DomUtils.getNodeList(manifestDom, "/manifest:manifest/manifest:file-entry");
 			if (nodeList != null && nodeList.getLength() > 0) {
 				for (int i = 0; i < nodeList.getLength(); i++) {
+					ManifestEntry manifestEntry = new ManifestEntry();
 					Element fileEntryElement = (Element) nodeList.item(i);
 					String fullpathValue = fileEntryElement.getAttribute(ManifestNamespace.FULL_PATH);
 					if (!isFolder(fullpathValue)) {
-						result.add(fullpathValue);
+						manifestEntry.setFileName(fullpathValue);
+						manifestEntry.setMimeType(getMimeType(fileEntryElement));
+						result.add(manifestEntry);
 					}
 				}
 			}
@@ -77,6 +83,15 @@ public class ASiCEWithXAdESManifestParser {
 			LOG.error("Unable to parse manifest file " + manifestDocument.getName(), e);
 		}
 		return result;
+	}
+	
+	private static MimeType getMimeType(Element fileEntryElement) {
+		try {
+			return MimeType.fromMimeTypeString(fileEntryElement.getAttribute(ManifestNamespace.MEDIA_TYPE));
+		} catch (DSSException e) {
+			LOG.warn("Cannot extract MimeType for a reference. Reason : [{}]", e.getMessage());
+			return null;
+		}
 	}
 
 	private boolean isFolder(String fullpathValue) {

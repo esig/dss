@@ -13,9 +13,12 @@ import org.junit.Test;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -72,11 +75,19 @@ public class XAdESDoubleLTATest extends PKIFactoryAccess {
         DetailedReport detailedReport = reports.getDetailedReport();
         List<String> timestampIds = detailedReport.getTimestampIds();
         assertEquals(3, timestampIds.size());
-        for (String id : timestampIds) {
-            assertEquals(Indication.PASSED, detailedReport.getTimestampValidationIndication(id));
-        }
         
         DiagnosticData diagnosticData = reports.getDiagnosticData();
+        
+        int archiveTimestampCounter = 0;
+        for (String id : timestampIds) {
+            assertEquals(Indication.PASSED, detailedReport.getTimestampValidationIndication(id));
+            TimestampWrapper timestamp = diagnosticData.getTimestampById(id);
+            if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestamp.getType())) {
+            	assertEquals(ArchiveTimestampType.XAdES_141, timestamp.getArchiveTimestampType());
+            	archiveTimestampCounter++;
+            }
+        }
+        assertEquals(2, archiveTimestampCounter);
         
         List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
         for (CertificateWrapper certificate : usedCertificates) {

@@ -126,7 +126,7 @@ public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess 
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 
-		 signedDocument.save("target/test.pdf");
+		// signedDocument.save("target/test.pdf");
 
 		assertEquals(expectedValidPDFA, PDFAUtils.validatePDFAStructure(signedDocument));
 

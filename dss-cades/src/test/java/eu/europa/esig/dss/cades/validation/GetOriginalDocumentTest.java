@@ -45,7 +45,7 @@ import eu.europa.esig.dss.validation.reports.Reports;
 
 public class GetOriginalDocumentTest extends PKIFactoryAccess {
 
-	private static String HELLO_WORLD = "HELLO WORLD !";
+	private static final String HELLO_WORLD = "HELLO WORLD !";
 
 	@Test
 	public final void getOriginalDocumentFromEnvelopingSignature() throws Exception {
@@ -65,7 +65,7 @@ public class GetOriginalDocumentTest extends PKIFactoryAccess {
 		final DSSDocument signedDocument = service.signDocument(document, signatureParameters, signatureValue);
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
 		List<DSSDocument> results = validator.getOriginalDocuments(reports.getDiagnosticData().getFirstSignatureId());
@@ -94,7 +94,7 @@ public class GetOriginalDocumentTest extends PKIFactoryAccess {
 		final DSSDocument signedDocument = service.signDocument(document, signatureParameters, signatureValue);
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
 		List<DSSDocument> results = validator.getOriginalDocuments(reports.getDiagnosticData().getFirstSignatureId());
@@ -125,7 +125,7 @@ public class GetOriginalDocumentTest extends PKIFactoryAccess {
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setDetachedContents(Arrays.asList(document));
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		List<DSSDocument> results = validator.getOriginalDocuments(reports.getDiagnosticData().getFirstSignatureId());
 		assertEquals(1, results.size());

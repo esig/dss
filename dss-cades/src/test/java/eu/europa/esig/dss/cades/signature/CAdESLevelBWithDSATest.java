@@ -82,7 +82,7 @@ public class CAdESLevelBWithDSATest extends AbstractCAdESTestSignature {
 		signatureParameters.setDigestAlgorithm(digestAlgo);
 		signatureParameters.setReferenceDigestAlgorithm(messageDigestAlgo);
 
-		service = new CAdESService(getCompleteCertificateVerifier());
+		service = new CAdESService(getOfflineCertificateVerifier());
 	}
 
 	@Override

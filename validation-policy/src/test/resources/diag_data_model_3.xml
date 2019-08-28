@@ -111,6 +111,7 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>OpenLimit Test-CA</TSPName>
+                    <TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier>
                     <CountryCode>OL</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-B2A1ED94EDFD732D0EA08218B5899A8DDBE209C1FA8B3E29D5506799C44AEA6B">
@@ -184,6 +185,7 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>OpenLimit Test-CA</TSPName>
+                    <TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier>
                     <CountryCode>OL</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-D823D1CB01C995262DAF465BEEDC1E170CA8568E8E28480E87369FB78AD53708">
@@ -257,6 +259,7 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>OpenLimit Test-CA</TSPName>
+                    <TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier>
                     <CountryCode>OL</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-D823D1CB01C995262DAF465BEEDC1E170CA8568E8E28480E87369FB78AD53708">
@@ -333,6 +336,7 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>OpenLimit Test-CA</TSPName>
+                    <TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier>
                     <CountryCode>OL</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-D823D1CB01C995262DAF465BEEDC1E170CA8568E8E28480E87369FB78AD53708">
@@ -405,6 +409,7 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>OpenLimit Test-CA</TSPName>
+                    <TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier>
                     <CountryCode>OL</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-B2A1ED94EDFD732D0EA08218B5899A8DDBE209C1FA8B3E29D5506799C44AEA6B">
@@ -478,6 +483,7 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>OpenLimit Test-CA</TSPName>
+                    <TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier>
                     <CountryCode>OL</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-D823D1CB01C995262DAF465BEEDC1E170CA8568E8E28480E87369FB78AD53708">

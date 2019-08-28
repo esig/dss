@@ -26,7 +26,7 @@ public class XMLCertificateWrappingTest extends PKIFactoryAccess {
 	public void certificateSourcesTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-XAdES/HU_POL/Signature-X-HU_POL-3.xml");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		// reports.print();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
@@ -42,7 +42,7 @@ public class XMLCertificateWrappingTest extends PKIFactoryAccess {
 	public void certificateMultipleSourcesTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-XAdES/CZ_SEF/Signature-X-CZ_SEF-5.xml");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		// reports.print();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();

@@ -34,6 +34,7 @@
 		<BasicSignatureConstraints>
 			<ReferenceDataExistence Level="FAIL" />
 			<ReferenceDataIntact Level="FAIL" />
+			<ManifestEntryObjectExistence Level="WARN" />
 			<SignatureIntact Level="FAIL" />
 			<ProspectiveCertificateChain Level="FAIL" />
 <!-- 			<TrustedServiceTypeIdentifier Level="WARN"> -->
@@ -249,7 +250,7 @@
 					<Algo Date="2026">RSA3072</Algo> <!-- ETSI 119 312 V1.3.1 -->
 					<Algo Date="2026">RSA4096</Algo> <!-- ETSI 119 312 V1.3.1 -->
 					<Algo Date="2013">ECDSA160</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
-					<Algo Date="2012">ECDSA192</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
+					<Algo Date="2013">ECDSA192</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
 					<Algo Date="2016">ECDSA224</Algo> <!-- ETSI 119 312 V1.1.1 -->
 					<Algo Date="2026">ECDSA256</Algo> <!-- ETSI 119 312 V1.3.1 -->
 					<Algo Date="2026">ECDSA384</Algo> <!-- ETSI 119 312 V1.3.1 -->

@@ -315,6 +315,7 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>Polish Security Printing Works</TSPName>
+                    <TSPRegistrationIdentifier>VATDE-226080243</TSPRegistrationIdentifier>
                     <CountryCode>PL</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86">
@@ -434,6 +435,7 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>Polish Security Printing Works</TSPName>
+                    <TSPRegistrationIdentifier>VATDE-226080243</TSPRegistrationIdentifier>
                     <CountryCode>PL</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86">

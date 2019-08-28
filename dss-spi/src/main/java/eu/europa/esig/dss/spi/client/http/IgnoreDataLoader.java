@@ -33,10 +33,11 @@ public class IgnoreDataLoader implements DataLoader {
 	private static final long serialVersionUID = -1808691070503805042L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(IgnoreDataLoader.class);
+	private static final String URL_IS_IGNORED = "Url '{}' is ignored";
 
 	@Override
 	public byte[] get(String url) {
-		LOG.debug("Url '{}' is ignored", url);
+		LOG.debug(URL_IS_IGNORED, url);
 		return null;
 	}
 
@@ -48,13 +49,13 @@ public class IgnoreDataLoader implements DataLoader {
 
 	@Override
 	public byte[] get(String url, boolean refresh) {
-		LOG.debug("Url '{}' is ignored", url);
+		LOG.debug(URL_IS_IGNORED, url);
 		return null;
 	}
 
 	@Override
 	public byte[] post(String url, byte[] content) {
-		LOG.debug("Url '{}' is ignored", url);
+		LOG.debug(URL_IS_IGNORED, url);
 		return null;
 	}
 

@@ -67,7 +67,7 @@ public class XAdESLevelBWithECDSATest extends AbstractXAdESTestSignature {
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.setDigestAlgorithm(digestAlgo);
 
-		service = new XAdESService(getCompleteCertificateVerifier());
+		service = new XAdESService(getOfflineCertificateVerifier());
 	}
 
 	@Override

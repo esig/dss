@@ -55,9 +55,9 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -220,6 +220,24 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		return signature;
 	}
 
+	private PDSignature findExistingSignature(PDDocument doc, String sigFieldName) {
+		PDAcroForm acroForm = doc.getDocumentCatalog().getAcroForm();
+		if (acroForm != null) {
+			PDSignatureField signatureField = (PDSignatureField) acroForm.getField(sigFieldName);
+			if (signatureField != null) {
+				PDSignature signature = signatureField.getSignature();
+				if (signature == null) {
+					signature = new PDSignature();
+					signatureField.getCOSObject().setItem(COSName.V, signature);
+					return signature;
+				} else {
+					throw new DSSException("The signature field '" + sigFieldName + "' can not be signed since its already signed.");
+				}
+			}
+		}
+		throw new DSSException("The signature field '" + sigFieldName + "' does not exist.");
+	}
+
 	private boolean containsFilledSignature(PDDocument pdDocument) {
 		try {
 			List<PDSignature> signatures = pdDocument.getSignatureDictionaries();
@@ -275,24 +293,6 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		permsDict.setItem(COSName.DOCMDP, signature);
 		catalogDict.setNeedToBeUpdated(true);
 		permsDict.setNeedToBeUpdated(true);
-	}
-
-	private PDSignature findExistingSignature(PDDocument doc, String sigFieldName) {
-		PDAcroForm acroForm = doc.getDocumentCatalog().getAcroForm();
-		if (acroForm != null) {
-			PDSignatureField signatureField = (PDSignatureField) acroForm.getField(sigFieldName);
-			if (signatureField != null) {
-				PDSignature signature = signatureField.getSignature();
-				if (signature == null) {
-					signature = new PDSignature();
-					signatureField.getCOSObject().setItem(COSName.V, signature);
-					return signature;
-				} else {
-					throw new DSSException("The signature field '" + sigFieldName + "' can not be signed since its already signed.");
-				}
-			}
-		}
-		throw new DSSException("The signature field '" + sigFieldName + "' does not exist.");
 	}
 
 	public void saveDocumentIncrementally(PAdESSignatureParameters parameters, OutputStream outputStream, PDDocument pdDocument) throws DSSException {

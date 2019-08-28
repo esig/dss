@@ -41,7 +41,7 @@ public class DSS922Test {
 
 	@Test
 	public void dss922Test() throws Exception {
-		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/DSS-922/diag-data.xml"));
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/DSS-922-diag-data.xml"));
 		assertNotNull(diagnosticData);
 
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
@@ -58,7 +58,7 @@ public class DSS922Test {
 	
 	@Test
 	public void testIgnoreRevocationFreshness() throws Exception {
-		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/DSS-922/diag-data.xml"));
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/DSS-922-diag-data.xml"));
 		assertNotNull(diagnosticData);
 
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
@@ -75,7 +75,7 @@ public class DSS922Test {
 	}
 
 	private ValidationPolicy loadPolicy() throws Exception {
-		return ValidationPolicyFacade.newFacade().getValidationPolicy(new File("src/test/resources/DSS-922/policy.xml"));
+		return ValidationPolicyFacade.newFacade().getValidationPolicy(new File("src/test/resources/policy/DSS-922-policy.xml"));
 	}
 
 }

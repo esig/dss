@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
@@ -30,15 +31,16 @@ public class CAdESDoubleLTATest extends PKIFactoryAccess {
 		List<TimestampWrapper> allTimestamps = diagnosticData.getTimestampList();
 		assertNotNull(allTimestamps);
 		assertEquals(3, allTimestamps.size());
-		int counter = 0;
+		int archiveTimestampCounter = 0;
 		for (TimestampWrapper timestampWrapper : allTimestamps) {
 			if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampWrapper.getType())) {
-				counter++;
+				archiveTimestampCounter++;
+				assertEquals(ArchiveTimestampType.CAdES_V3, timestampWrapper.getArchiveTimestampType());
 			}
 			assertTrue(timestampWrapper.isMessageImprintDataFound());
 			assertTrue(timestampWrapper.isMessageImprintDataIntact());
 		}
-		assertEquals(2, counter);
+		assertEquals(2, archiveTimestampCounter);
 		
 		assertEquals(0, allTimestamps.get(0).getTimestampedRevocationIds().size());
 		assertEquals(2, allTimestamps.get(1).getTimestampedRevocationIds().size());

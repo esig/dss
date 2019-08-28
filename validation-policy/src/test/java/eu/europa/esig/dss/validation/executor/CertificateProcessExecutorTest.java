@@ -24,12 +24,21 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.util.List;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
+
+import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCertificate;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
@@ -39,12 +48,15 @@ import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReportFacade;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlChainItem;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSimpleCertificateReport;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 
 public class CertificateProcessExecutorTest extends AbstractValidationExecutorTest {
+
+	private static final Logger LOG = LoggerFactory.getLogger(CertificateProcessExecutorTest.class);
 
 	@Test
 	public void deRevoked() throws Exception {
@@ -60,6 +72,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
+		checkReports(reports);
 
 		XmlDetailedReport detailedReportJaxb = reports.getDetailedReportJaxb();
 		assertNotNull(detailedReportJaxb);
@@ -120,6 +133,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
+		checkReports(reports);
 
 		XmlDetailedReport detailedReportJaxb = reports.getDetailedReportJaxb();
 		assertNotNull(detailedReportJaxb);
@@ -160,6 +174,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
+		checkReports(reports);
 
 		XmlDetailedReport detailedReportJaxb = reports.getDetailedReportJaxb();
 		assertNotNull(detailedReportJaxb);
@@ -195,6 +210,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
+		checkReports(reports);
 
 		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtCertificateIssuance());
@@ -215,6 +231,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
+		checkReports(reports);
 
 		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtCertificateIssuance());
@@ -235,6 +252,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
+		checkReports(reports);
 
 		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG_QSCD,
@@ -256,6 +274,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
+		checkReports(reports);
 
 		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.QCERT_FOR_WSA, simpleReport.getQualificationAtCertificateIssuance());
@@ -276,6 +295,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
+		checkReports(reports);
 
 		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtCertificateIssuance());
@@ -296,6 +316,8 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
+		checkReports(reports);
+		
 		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG, simpleReport.getQualificationAtCertificateIssuance());
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG, simpleReport.getQualificationAtValidationTime());
@@ -315,6 +337,8 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
+		checkReports(reports);
+		
 		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG_QSCD,
 				simpleReport.getQualificationAtCertificateIssuance());
@@ -335,6 +359,8 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
+		checkReports(reports);
+		
 		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG_QSCD,
 				simpleReport.getQualificationAtCertificateIssuance());
@@ -355,6 +381,8 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
+		checkReports(reports);
+		
 		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG,
 				simpleReport.getQualificationAtCertificateIssuance());
@@ -375,6 +403,8 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
+		checkReports(reports);
+		
 		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtCertificateIssuance());
 		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtValidationTime());
@@ -394,6 +424,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
+		checkReports(reports);
 
 		XmlDetailedReport detailedReportJaxb = reports.getDetailedReportJaxb();
 		XmlCertificate certificate = detailedReportJaxb.getCertificate();
@@ -417,6 +448,8 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
+		checkReports(reports);
+		
 		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.NA, simpleReport.getQualificationAtCertificateIssuance());
 		assertEquals(CertificateQualification.NA, simpleReport.getQualificationAtValidationTime());
@@ -431,6 +464,117 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 		executor.execute();
+	}
+	
+	private void checkReports(CertificateReports reports) {
+		assertNotNull(reports);
+		assertNotNull(reports.getDiagnosticData());
+		assertNotNull(reports.getDiagnosticDataJaxb());
+		assertNotNull(reports.getDetailedReport());
+		assertNotNull(reports.getDetailedReportJaxb());
+		assertNotNull(reports.getSimpleReport());
+		assertNotNull(reports.getSimpleReportJaxb());
+		
+		unmarshallXmlReports(reports);
+	}
+
+	private void unmarshallXmlReports(CertificateReports reports) {
+		
+		unmarshallDiagnosticData(reports);
+		unmarshallDetailedReport(reports);
+		unmarshallSimpleReport(reports);
+		
+		mapDiagnosticData(reports);
+		mapDetailedReport(reports);
+		mapSimpleReport(reports);
+		
+	}
+
+	private void unmarshallDiagnosticData(CertificateReports reports) {
+		try {
+			String xmlDiagnosticData = reports.getXmlDiagnosticData();
+			assertTrue(Utils.isStringNotBlank(xmlDiagnosticData));
+//			LOG.info(xmlDiagnosticData);
+			assertNotNull(DiagnosticDataFacade.newFacade().unmarshall(xmlDiagnosticData));
+		} catch (Exception e) {
+			LOG.error("Unable to unmarshall the Diagnostic data : " + e.getMessage(), e);
+			fail(e.getMessage());
+		}
+	}
+
+	private void mapDiagnosticData(CertificateReports reports) {
+		ObjectMapper om = getObjectMapper();
+
+		try {
+			String json = om.writeValueAsString(reports.getDiagnosticDataJaxb());
+			assertNotNull(json);
+//			LOG.info(json);
+			XmlDiagnosticData diagnosticDataObject = om.readValue(json, XmlDiagnosticData.class);
+			assertNotNull(diagnosticDataObject);
+		} catch (Exception e) {
+			LOG.error("Unable to map the Diagnostic data : " + e.getMessage(), e);
+			fail(e.getMessage());
+		}
+	}
+
+	private void unmarshallDetailedReport(CertificateReports reports) {
+		try {
+			String xmlDetailedReport = reports.getXmlDetailedReport();
+			assertTrue(Utils.isStringNotBlank(xmlDetailedReport));
+//			LOG.info(xmlDetailedReport);
+			assertNotNull(DetailedReportFacade.newFacade().unmarshall(xmlDetailedReport));
+		} catch (Exception e) {
+			LOG.error("Unable to unmarshall the Detailed Report : " + e.getMessage(), e);
+			fail(e.getMessage());
+		}
+	}
+
+	private void mapDetailedReport(CertificateReports reports) {
+		ObjectMapper om = getObjectMapper();
+		try {
+			String json = om.writeValueAsString(reports.getDetailedReportJaxb());
+			assertNotNull(json);
+//			LOG.info(json);
+			XmlDetailedReport detailedReportObject = om.readValue(json, XmlDetailedReport.class);
+			assertNotNull(detailedReportObject);
+		} catch (Exception e) {
+			LOG.error("Unable to map the Detailed Report : " + e.getMessage(), e);
+			fail(e.getMessage());
+		}
+	}
+
+	private void unmarshallSimpleReport(CertificateReports reports) {
+		try {
+			String xmlSimpleReport = reports.getXmlSimpleReport();
+			assertTrue(Utils.isStringNotBlank(xmlSimpleReport));
+//			LOG.info(xmlSimpleReport);
+			assertNotNull(SimpleCertificateReportFacade.newFacade().unmarshall(xmlSimpleReport));
+		} catch (Exception e) {
+			LOG.error("Unable to unmarshall the Simple Report : " + e.getMessage(), e);
+			fail(e.getMessage());
+		}
+	}
+
+	private void mapSimpleReport(CertificateReports reports) {
+		ObjectMapper om = getObjectMapper();
+		try {
+			String json = om.writeValueAsString(reports.getSimpleReportJaxb());
+			assertNotNull(json);
+//			LOG.info(json);
+			XmlSimpleCertificateReport simpleReportObject = om.readValue(json, XmlSimpleCertificateReport.class);
+			assertNotNull(simpleReportObject);
+		} catch (Exception e) {
+			LOG.error("Unable to map the Simple Report : " + e.getMessage(), e);
+			fail(e.getMessage());
+		}
+	}
+
+	private static ObjectMapper getObjectMapper() {
+		ObjectMapper om = new ObjectMapper();
+		JaxbAnnotationIntrospector jai = new JaxbAnnotationIntrospector(TypeFactory.defaultInstance());
+		om.setAnnotationIntrospector(jai);
+		om.enable(SerializationFeature.INDENT_OUTPUT);
+		return om;
 	}
 	
 }

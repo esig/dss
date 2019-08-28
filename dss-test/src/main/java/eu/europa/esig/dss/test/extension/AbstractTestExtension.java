@@ -41,6 +41,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundRevocation;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
@@ -191,6 +192,9 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 			for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
 				assertTrue(xmlDigestMatcher.isDataFound());
 				assertTrue(xmlDigestMatcher.isDataIntact());
+			}
+			if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampWrapper.getType())) {
+				assertNotNull(timestampWrapper.getArchiveTimestampType());
 			}
 		}
 	}

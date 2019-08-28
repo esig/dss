@@ -6,6 +6,7 @@ import java.util.List;
 import eu.europa.esig.dss.cades.validation.CAdESAttribute;
 import eu.europa.esig.dss.cades.validation.CAdESTimestampSource;
 import eu.europa.esig.dss.crl.CRLBinary;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
@@ -74,6 +75,8 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 					
 				} else {
 					// Archive TimeStamps
+					timestampToken.setArchiveTimestampType(getArchiveTimestampType());
+					
 					List<TimestampedReference> references = new ArrayList<TimestampedReference>();
 					if (Utils.isCollectionEmpty(getSignatureTimestamps())) {
 						references = getSignatureTimestampReferences();
@@ -206,6 +209,15 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 	protected boolean isArchiveTimestamp(CAdESAttribute unsignedAttribute) {
 		// not applicable for PAdES
 		return false;
+	}
+
+	private ArchiveTimestampType getArchiveTimestampType() {
+		return getArchiveTimestampType(null);
+	}
+	
+	@Override
+	protected ArchiveTimestampType getArchiveTimestampType(CAdESAttribute unsignedAttribute) {
+		return ArchiveTimestampType.PAdES;
 	}
 	
 }

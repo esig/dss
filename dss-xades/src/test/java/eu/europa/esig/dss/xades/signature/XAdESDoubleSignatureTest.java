@@ -87,7 +87,7 @@ public class XAdESDoubleSignatureTest extends PKIFactoryAccess {
 //		doubleSignedDocument.save("target/" + "doubleSignedTest.xml");
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doubleSignedDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 
 		Reports reports = validator.validateDocument();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();

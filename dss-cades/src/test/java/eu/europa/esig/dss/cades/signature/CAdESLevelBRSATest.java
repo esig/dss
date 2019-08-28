@@ -71,7 +71,7 @@ public class CAdESLevelBRSATest extends AbstractCAdESTestSignature {
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		signatureParameters.setDigestAlgorithm(digestAlgo);
 
-		service = new CAdESService(getCompleteCertificateVerifier());
+		service = new CAdESService(getOfflineCertificateVerifier());
 
 	}
 

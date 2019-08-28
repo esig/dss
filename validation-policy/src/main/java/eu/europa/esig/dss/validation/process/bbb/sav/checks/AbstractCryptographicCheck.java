@@ -25,11 +25,19 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 
 	protected String failedAlgorithm = null;
 	protected MessageTag errorMessage = MessageTag.EMPTY;
-
+		
 	protected AbstractCryptographicCheck(T result, Date currentTime, CryptographicConstraint constraint) {
 		super(result, constraint);
 		this.validationDate = currentTime;
 		this.constraintWrapper = new CryptographicConstraintWrapper(constraint);
+	}
+	
+	protected boolean isPublicKeySizeKnown(String keyLengthUsedToSignThisToken) {
+		if (!Utils.isStringDigits(keyLengthUsedToSignThisToken)) {
+			errorMessage = MessageTag.ASCCM_ANS_6;
+			return false;
+		}
+		return true;
 	}
 
 	protected boolean encryptionAlgorithmIsReliable(EncryptionAlgorithm encryptionAlgo) {

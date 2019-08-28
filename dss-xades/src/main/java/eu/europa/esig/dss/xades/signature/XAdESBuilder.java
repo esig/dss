@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static eu.europa.esig.dss.XAdESNamespaces.XAdES;
 import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
 
 import java.math.BigInteger;
@@ -39,6 +38,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -360,9 +360,9 @@ public abstract class XAdESBuilder {
 	 *            the certificate to be added
 	 */
 	protected Element incorporateCert(final Element parentDom, final CertificateToken certificate) {
-		final Element certDom = DomUtils.addElement(documentDom, parentDom, XAdES, XADES_CERT);
+		final Element certDom = DomUtils.addElement(documentDom, parentDom, XAdESNamespaces.getXAdESDefaultNamespace(), XADES_CERT);
 
-		final Element certDigestDom = DomUtils.addElement(documentDom, certDom, XAdES, XADES_CERT_DIGEST);
+		final Element certDigestDom = DomUtils.addElement(documentDom, certDom, XAdESNamespaces.getXAdESDefaultNamespace(), XADES_CERT_DIGEST);
 
 		final DigestAlgorithm signingCertificateDigestMethod = params.getSigningCertificateDigestMethod();
 		incorporateDigestMethod(certDigestDom, signingCertificateDigestMethod);
@@ -372,7 +372,7 @@ public abstract class XAdESBuilder {
 	}
 
 	protected void incorporateIssuerV1(final Element parentDom, final CertificateToken certificate) {
-		final Element issuerSerialDom = DomUtils.addElement(documentDom, parentDom, XAdES, XADES_ISSUER_SERIAL);
+		final Element issuerSerialDom = DomUtils.addElement(documentDom, parentDom, XAdESNamespaces.getXAdESDefaultNamespace(), XADES_ISSUER_SERIAL);
 
 		final Element x509IssuerNameDom = DomUtils.addElement(documentDom, issuerSerialDom, XMLNS, DS_X509_ISSUER_NAME);
 		final String issuerX500PrincipalName = certificate.getIssuerX500Principal().getName();
@@ -385,7 +385,7 @@ public abstract class XAdESBuilder {
 	}
 
 	protected void incorporateIssuerV2(final Element parentDom, final CertificateToken certificate) {
-		final Element issuerSerialDom = DomUtils.addElement(documentDom, parentDom, XAdES, XADES_ISSUER_SERIAL_V2);
+		final Element issuerSerialDom = DomUtils.addElement(documentDom, parentDom, XAdESNamespaces.getXAdESDefaultNamespace(), XADES_ISSUER_SERIAL_V2);
 
 		IssuerSerial issuerSerial = DSSASN1Utils.getIssuerSerial(certificate);
 		String issuerBase64 = Utils.toBase64(DSSASN1Utils.getDEREncoded(issuerSerial));

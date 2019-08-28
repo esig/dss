@@ -35,24 +35,24 @@ import eu.europa.esig.dss.model.MimeType;
 public abstract class AbstractManifestBuilder {
 
 	protected void addSigReference(final Document documentDom, final Element asicManifestDom, String uri, MimeType mimeType) {
-		final Element sigReferenceDom = DomUtils.addElement(documentDom, asicManifestDom, ASiCNamespace.NS, ASiCNamespace.SIG_REFERENCE);
-		sigReferenceDom.setAttribute("URI", uri);
-		sigReferenceDom.setAttribute("MimeType", mimeType.getMimeTypeString());
+		final Element sigReferenceDom = DomUtils.addElement(documentDom, asicManifestDom, ASiCNamespace.ASIC_NS, ASiCNamespace.SIG_REFERENCE);
+		sigReferenceDom.setAttribute(ASiCNamespace.DATA_OBJECT_REFERENCE_URI, uri);
+		sigReferenceDom.setAttribute(ASiCNamespace.DATA_OBJECT_REFERENCE_MIMETYPE, mimeType.getMimeTypeString());
 	}
 
 	protected void addDataObjectReference(final Document documentDom, final Element asicManifestDom, DSSDocument document, DigestAlgorithm digestAlgorithm) {
-		final Element dataObjectReferenceDom = DomUtils.addElement(documentDom, asicManifestDom, ASiCNamespace.NS, ASiCNamespace.DATA_OBJECT_REFERENCE);
-		dataObjectReferenceDom.setAttribute("URI", document.getName());
+		final Element dataObjectReferenceDom = DomUtils.addElement(documentDom, asicManifestDom, ASiCNamespace.ASIC_NS, ASiCNamespace.DATA_OBJECT_REFERENCE);
+		dataObjectReferenceDom.setAttribute(ASiCNamespace.DATA_OBJECT_REFERENCE_URI, document.getName());
 
 		MimeType mimeType = document.getMimeType();
 		if (mimeType != null) {
-			dataObjectReferenceDom.setAttribute("MimeType", mimeType.getMimeTypeString());
+			dataObjectReferenceDom.setAttribute(ASiCNamespace.DATA_OBJECT_REFERENCE_MIMETYPE, mimeType.getMimeTypeString());
 		}
 
-		final Element digestMethodDom = DomUtils.addElement(documentDom, dataObjectReferenceDom, XMLSignature.XMLNS, "DigestMethod");
-		digestMethodDom.setAttribute("Algorithm", digestAlgorithm.getUri());
+		final Element digestMethodDom = DomUtils.addElement(documentDom, dataObjectReferenceDom, XMLSignature.XMLNS, ASiCNamespace.DIGEST_METHOD);
+		digestMethodDom.setAttribute(ASiCNamespace.DIGEST_METHOD_ALGORITHM, digestAlgorithm.getUri());
 
-		final Element digestValueDom = DomUtils.addElement(documentDom, dataObjectReferenceDom, XMLSignature.XMLNS, "DigestValue");
+		final Element digestValueDom = DomUtils.addElement(documentDom, dataObjectReferenceDom, XMLSignature.XMLNS, ASiCNamespace.DIGEST_VALUE);
 		final Text textNode = documentDom.createTextNode(document.getDigest(digestAlgorithm));
 		digestValueDom.appendChild(textNode);
 	}

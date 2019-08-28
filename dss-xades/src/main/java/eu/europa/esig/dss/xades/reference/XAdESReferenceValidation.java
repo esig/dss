@@ -52,9 +52,6 @@ public class XAdESReferenceValidation extends ReferenceValidation {
 	/* For XAdES : reference uri */
 	private final String uri;
 	
-	/* List of dependent {@code ReferenceValidation}s (used in case of manifest type for manifest entries) */
-	private List<ReferenceValidation> dependentReferenceValidations;
-	
 	public XAdESReferenceValidation(Reference reference) {
 		this.reference = reference;
 		this.id = reference.getId();
@@ -85,14 +82,6 @@ public class XAdESReferenceValidation extends ReferenceValidation {
 			return uri;
 		}
 		return Utils.EMPTY_STRING;
-	}
-	
-	@Override
-	public List<ReferenceValidation> getDependentValidations() {
-		if (dependentReferenceValidations == null) {
-			dependentReferenceValidations = new ArrayList<ReferenceValidation>();
-		}
-		return dependentReferenceValidations;
 	}
 
 	@Override

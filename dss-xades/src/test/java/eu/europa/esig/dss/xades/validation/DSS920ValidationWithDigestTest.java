@@ -76,7 +76,7 @@ public class DSS920ValidationWithDigestTest extends PKIFactoryAccess {
 		DSSDocument signedDocument = service.signDocument(toBeSigned, params, signatureValue);
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 
 		// Provide only the digest value
 		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
@@ -135,7 +135,7 @@ public class DSS920ValidationWithDigestTest extends PKIFactoryAccess {
 		DSSDocument signedDocument = service.signDocument(toBeSigned, params, signatureValue);
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 
 		// Provide only the digest value
 		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();

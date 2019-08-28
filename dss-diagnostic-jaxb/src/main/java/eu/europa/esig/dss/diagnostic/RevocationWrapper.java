@@ -100,6 +100,7 @@ public class RevocationWrapper extends AbstractTokenProxy {
 		return revocation.getType();
 	}
 	
+	@Override
 	public byte[] getBinaries() {
 		return revocation.getBase64Encoded();
 	}

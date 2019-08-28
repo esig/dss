@@ -102,6 +102,7 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>Certipost n.v./s.a.</TSPName>
+                    <TSPRegistrationIdentifier>VATDE-2034482260</TSPRegistrationIdentifier>
                     <CountryCode>BE</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-C3FBF37259AF0954EEEA4282DD1C7226A54E7150F7C29A2C495BA34DBFE09CA0">
@@ -179,6 +180,7 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>Certipost n.v./s.a.</TSPName>
+                    <TSPRegistrationIdentifier>VATDE-2034482260</TSPRegistrationIdentifier>
                     <CountryCode>BE</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-C3FBF37259AF0954EEEA4282DD1C7226A54E7150F7C29A2C495BA34DBFE09CA0">
@@ -265,6 +267,7 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>Certipost n.v./s.a.</TSPName>
+                    <TSPRegistrationIdentifier>VATDE-2034482260</TSPRegistrationIdentifier>
                     <CountryCode>BE</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-C3FBF37259AF0954EEEA4282DD1C7226A54E7150F7C29A2C495BA34DBFE09CA0">
@@ -335,6 +338,7 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>Certipost n.v./s.a.</TSPName>
+                    <TSPRegistrationIdentifier>VATDE-2034482260</TSPRegistrationIdentifier>
                     <CountryCode>BE</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-C3FBF37259AF0954EEEA4282DD1C7226A54E7150F7C29A2C495BA34DBFE09CA0">

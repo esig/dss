@@ -165,6 +165,8 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 		return false;
 	}
 
+	public abstract byte[] getBinaries();
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

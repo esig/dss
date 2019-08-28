@@ -114,7 +114,7 @@ public final class DomUtils {
 	private static void registerDefaultNamespaces() {
 		registerNamespace("ds", XMLSignature.XMLNS);
 		registerNamespace("dsig", XMLSignature.XMLNS);
-		registerNamespace("xades", XAdESNamespaces.XAdES); // 1.3.2
+		registerNamespace("xades", XAdESNamespaces.getXAdESDefaultNamespace()); // 1.3.2 by default
 		registerNamespace("xades141", XAdESNamespaces.XAdES141);
 		registerNamespace("xades122", XAdESNamespaces.XAdES122);
 		registerNamespace("xades111", XAdESNamespaces.XAdES111);

@@ -43,7 +43,6 @@ import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
@@ -96,6 +95,7 @@ import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -514,7 +514,9 @@ public class DiagnosticDataBuilder {
 				XmlManifestFile xmlManifest = new XmlManifestFile();
 				xmlManifest.setFilename(manifestFile.getFilename());
 				xmlManifest.setSignatureFilename(manifestFile.getSignatureFilename());
-				xmlManifest.getEntries().addAll(manifestFile.getEntries());
+				for (ManifestEntry entry : manifestFile.getEntries()) {
+					xmlManifest.getEntries().add(entry.getFileName());
+				}
 				xmlManifests.add(xmlManifest);
 			}
 			return xmlManifests;
@@ -1283,6 +1285,7 @@ public class DiagnosticDataBuilder {
 
 		xmlTimestampToken.setId(timestampToken.getDSSIdAsString());
 		xmlTimestampToken.setType(timestampToken.getTimeStampType());
+		xmlTimestampToken.setArchiveTimestampType(timestampToken.getArchiveTimestampType()); // property is defined only for archival timestamps
 		xmlTimestampToken.setProductionTime(timestampToken.getGenerationTime());
 		xmlTimestampToken.setDigestMatcher(getXmlDigestMatcher(timestampToken));
 		xmlTimestampToken.setBasicSignature(getXmlBasicSignature(timestampToken));

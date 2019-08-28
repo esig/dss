@@ -54,7 +54,6 @@ import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.MessageTag;
@@ -119,13 +118,11 @@ public class ETSIValidationReportBuilder {
 
 	private final ObjectFactory objectFactory = new ObjectFactory();
 	private final Date currentTime;
-	private final ValidationPolicy policy;
 	private final DiagnosticData diagnosticData;
 	private final DetailedReport detailedReport;
 
-	public ETSIValidationReportBuilder(Date currentTime, ValidationPolicy policy, DiagnosticData diagnosticData, DetailedReport detailedReport) {
+	public ETSIValidationReportBuilder(Date currentTime, DiagnosticData diagnosticData, DetailedReport detailedReport) {
 		this.currentTime = currentTime;
-		this.policy = policy;
 		this.diagnosticData = diagnosticData;
 		this.detailedReport = detailedReport;
 	}
@@ -232,6 +229,11 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private SignatureValidationReportType getValidationReport(AbstractTokenProxy token) {
+		XmlBasicBuildingBlocks tokenBBB = detailedReport.getBasicBuildingBlockById(token.getId());
+		// return null if validation was not performed
+		if (tokenBBB == null) {
+			return null;
+		}
 		SignatureValidationReportType signatureValidationReport = objectFactory.createSignatureValidationReportType();
 		signatureValidationReport.setSignerInformation(getSignerInformation(token));
 		signatureValidationReport.setSignatureValidationStatus(getValidationStatus(token));
@@ -373,7 +375,7 @@ public class ETSIValidationReportBuilder {
 		} else {
 			representation.setDigestAlgAndValue(getDigestAlgAndValueType(certificate.getDigestAlgoAndValue()));
 		}
-		validationObject.setValidationObject(representation);
+		validationObject.setValidationObjectRepresentation(representation);
 		validationObject.setPOE(getPOE(certificate.getId(), poeExtraction));
 		validationObjectListType.getValidationObject().add(validationObject);
 	}
@@ -414,7 +416,7 @@ public class ETSIValidationReportBuilder {
 		} else {
 			representation.setDigestAlgAndValue(getDigestAlgAndValueType(timestamp.getDigestAlgoAndValue()));
 		}
-		validationObject.setValidationObject(representation);
+		validationObject.setValidationObjectRepresentation(representation);
 		validationObject.setPOEProvisioning(getPOEProvisioningType(timestamp));
 		validationObject.setValidationReport(getValidationReport(timestamp));
 		validationObjectListType.getValidationObject().add(validationObject);
@@ -462,7 +464,7 @@ public class ETSIValidationReportBuilder {
 		validationObject.setObjectType(ObjectType.SIGNED_DATA);
 		ValidationObjectRepresentationType representation = objectFactory.createValidationObjectRepresentationType();
 		representation.setDigestAlgAndValue(getDigestAlgAndValueType(signedData.getDigestAlgoAndValue()));
-		validationObject.setValidationObject(representation);
+		validationObject.setValidationObjectRepresentation(representation);
 		validationObject.setPOE(getPOE(signedData.getId(), poeExtraction));
 		validationObjectListType.getValidationObject().add(validationObject);
 	}
@@ -486,7 +488,7 @@ public class ETSIValidationReportBuilder {
 //		if (Utils.isStringNotEmpty(sourceAddress)) {
 //			representation.setURI(sourceAddress);
 //		}
-		validationObject.setValidationObject(representation);
+		validationObject.setValidationObjectRepresentation(representation);
 		validationObject.setPOE(getPOE(revocationData.getId(), poeExtraction));
 		validationObject.setValidationReport(getValidationReport(revocationData));
 		validationObjectListType.getValidationObject().add(validationObject);
@@ -517,7 +519,7 @@ public class ETSIValidationReportBuilder {
 		} else {
 			representation.setDigestAlgAndValue(getDigestAlgAndValueType(orphanToken.getDigestAlgoAndValue()));
 		}
-		validationObject.setValidationObject(representation);
+		validationObject.setValidationObjectRepresentation(representation);
 		validationObject.setPOE(getPOE(orphanToken.getId(), poeExtraction));
 		return validationObject;
 	}

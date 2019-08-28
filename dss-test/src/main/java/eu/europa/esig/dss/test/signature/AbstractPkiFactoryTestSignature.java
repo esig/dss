@@ -672,6 +672,9 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 				assertTrue(xmlDigestMatcher.isDataFound());
 				assertTrue(xmlDigestMatcher.isDataIntact());
 			}
+			if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampWrapper.getType())) {
+				assertNotNull(timestampWrapper.getArchiveTimestampType());
+			}
 		}
 	}
 

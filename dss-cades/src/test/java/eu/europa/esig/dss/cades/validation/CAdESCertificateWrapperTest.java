@@ -30,7 +30,7 @@ public class CAdESCertificateWrapperTest extends PKIFactoryAccess {
 	public void certificateSourcesTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/plugtest/cades/CAdES-Baseline_profile_LT/Sample_Set_3/Signature-CBp-LT-2.p7m");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		// reports.print();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();

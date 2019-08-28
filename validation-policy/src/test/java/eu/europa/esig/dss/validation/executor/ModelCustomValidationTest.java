@@ -39,23 +39,23 @@ import eu.europa.esig.dss.validation.reports.Reports;
 public class ModelCustomValidationTest extends ModelAbstractlValidation {
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
-	@Parameters(name = "{index}: inputData - {0}")
+	@Parameters(name = "{index}")
 	public static final List<Object[]> data() throws Exception {
 		final List<Object[]> data = new ArrayList<>();
 		
 		data.add( new Object[] { new TestCase( TestData.DATA_2, Model.SHELL, sdf.parse("22-05-2016"), CertificateQualification.NA, "ind:" + Indication.TOTAL_PASSED ) } );
 		data.add( new Object[] { new TestCase( TestData.DATA_2, Model.SHELL, sdf.parse("18-11-2016"), CertificateQualification.NA, "ind:" + Indication.INDETERMINATE, "sub:" + SubIndication.NO_POE ) } );
-		data.add( new Object[] { new TestCase( TestData.DATA_2, Model.SHELL, sdf.parse("18-11-2020"), CertificateQualification.NA, "ind:" + Indication.INDETERMINATE, "sub:" + SubIndication.NO_POE ) } );
+		data.add( new Object[] { new TestCase( TestData.DATA_2, Model.SHELL, sdf.parse("18-11-2020"), CertificateQualification.NA, "ind:" + Indication.INDETERMINATE, "sub:" + SubIndication.TRY_LATER ) } ); // Revoc not fresh
 		data.add( new Object[] { new TestCase( TestData.DATA_2, Model.SHELL, sdf.parse("01-05-2016"), CertificateQualification.NA, "ind:" + Indication.TOTAL_FAILED,  "sub:" + SubIndication.NOT_YET_VALID ) } );
 
 		data.add( new Object[] { new TestCase( TestData.DATA_2, Model.CHAIN, sdf.parse("22-05-2016"), CertificateQualification.NA, "ind:" + Indication.TOTAL_PASSED ) } );
 		data.add( new Object[] { new TestCase( TestData.DATA_2, Model.CHAIN, sdf.parse("18-11-2016"), CertificateQualification.NA, "ind:" + Indication.TOTAL_PASSED ) } );
-		data.add( new Object[] { new TestCase( TestData.DATA_2, Model.CHAIN, sdf.parse("18-11-2020"), CertificateQualification.NA, "ind:" + Indication.INDETERMINATE, "sub:" + SubIndication.NO_POE ) } );
+		data.add( new Object[] { new TestCase( TestData.DATA_2, Model.CHAIN, sdf.parse("18-11-2020"), CertificateQualification.NA, "ind:" + Indication.INDETERMINATE, "sub:" +  SubIndication.TRY_LATER ) } ); // Revoc not fresh
 		data.add( new Object[] { new TestCase( TestData.DATA_2, Model.CHAIN, sdf.parse("01-05-2016"), CertificateQualification.NA, "ind:" + Indication.TOTAL_FAILED,  "sub:" + SubIndication.NOT_YET_VALID ) } );
 		
 		data.add( new Object[] { new TestCase( TestData.DATA_2, Model.HYBRID, sdf.parse("22-05-2016"), CertificateQualification.NA, "ind:" + Indication.TOTAL_PASSED ) } );
 		data.add( new Object[] { new TestCase( TestData.DATA_2, Model.HYBRID, sdf.parse("18-11-2016"), CertificateQualification.NA, "ind:" + Indication.TOTAL_PASSED ) } );
-		data.add( new Object[] { new TestCase( TestData.DATA_2, Model.HYBRID, sdf.parse("18-11-2020"), CertificateQualification.NA, "ind:" + Indication.INDETERMINATE, "sub:" + SubIndication.NO_POE ) } );
+		data.add( new Object[] { new TestCase( TestData.DATA_2, Model.HYBRID, sdf.parse("18-11-2020"), CertificateQualification.NA, "ind:" + Indication.INDETERMINATE, "sub:" +  SubIndication.TRY_LATER ) } ); // Revoc not fresh
 		data.add( new Object[] { new TestCase( TestData.DATA_2, Model.HYBRID, sdf.parse("01-05-2016"), CertificateQualification.NA, "ind:" + Indication.TOTAL_FAILED,  "sub:" + SubIndication.NOT_YET_VALID ) } );
 		
 		
@@ -120,6 +120,7 @@ public class ModelCustomValidationTest extends ModelAbstractlValidation {
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
+//		reports.print();
 		assertNotNull(reports);
 		
 		XmlDetailedReport detailedReport = reports.getDetailedReportJaxb();

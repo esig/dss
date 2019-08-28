@@ -52,37 +52,45 @@ public class TimestampBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 		// Format check is skipped
 
 		XmlISC isc = timestampBBB.getISC();
-		XmlConclusion iscConclusion = isc.getConclusion();
-		if (!Indication.PASSED.equals(iscConclusion.getIndication())) {
-			indication = iscConclusion.getIndication();
-			subIndication = iscConclusion.getSubIndication();
-			return false;
+		if (isc != null) {
+			XmlConclusion iscConclusion = isc.getConclusion();
+			if (!Indication.PASSED.equals(iscConclusion.getIndication())) {
+				indication = iscConclusion.getIndication();
+				subIndication = iscConclusion.getSubIndication();
+				return false;
+			}
 		}
 
 		// VCI is skipped
 
 		XmlCV cv = timestampBBB.getCV();
-		XmlConclusion cvConclusion = cv.getConclusion();
-		if (!Indication.PASSED.equals(cvConclusion.getIndication())) {
-			indication = cvConclusion.getIndication();
-			subIndication = cvConclusion.getSubIndication();
-			return false;
+		if (cv != null) {
+			XmlConclusion cvConclusion = cv.getConclusion();
+			if (!Indication.PASSED.equals(cvConclusion.getIndication())) {
+				indication = cvConclusion.getIndication();
+				subIndication = cvConclusion.getSubIndication();
+				return false;
+			}
 		}
 
 		XmlXCV xcv = timestampBBB.getXCV();
-		XmlConclusion xcvConclusion = xcv.getConclusion();
-		if (!Indication.PASSED.equals(xcvConclusion.getIndication())) {
-			indication = xcvConclusion.getIndication();
-			subIndication = xcvConclusion.getSubIndication();
-			return false;
+		if (xcv != null) {
+			XmlConclusion xcvConclusion = xcv.getConclusion();
+			if (!Indication.PASSED.equals(xcvConclusion.getIndication())) {
+				indication = xcvConclusion.getIndication();
+				subIndication = xcvConclusion.getSubIndication();
+				return false;
+			}
 		}
 
 		XmlSAV sav = timestampBBB.getSAV();
-		XmlConclusion savConclusion = sav.getConclusion();
-		if (!Indication.PASSED.equals(savConclusion.getIndication())) {
-			indication = savConclusion.getIndication();
-			subIndication = savConclusion.getSubIndication();
-			return false;
+		if (sav != null) {
+			XmlConclusion savConclusion = sav.getConclusion();
+			if (!Indication.PASSED.equals(savConclusion.getIndication())) {
+				indication = savConclusion.getIndication();
+				subIndication = savConclusion.getSubIndication();
+				return false;
+			}
 		}
 
 		return true;

@@ -80,7 +80,7 @@ public class CAdESDoubleSignatureTest extends PKIFactoryAccess {
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 
-		CAdESService service = new CAdESService(getCompleteCertificateVerifier());
+		CAdESService service = new CAdESService(getOfflineCertificateVerifier());
 
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
@@ -92,14 +92,14 @@ public class CAdESDoubleSignatureTest extends PKIFactoryAccess {
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 
-		service = new CAdESService(getCompleteCertificateVerifier());
+		service = new CAdESService(getOfflineCertificateVerifier());
 
 		dataToSign = service.getDataToSign(signedDocument, signatureParameters);
 		signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument resignedDocument = service.signDocument(signedDocument, signatureParameters, signatureValue);
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(resignedDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 
 		Reports reports = validator.validateDocument();
 

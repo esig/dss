@@ -108,19 +108,19 @@ public class CommonsDataLoader implements DataLoader {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommonsDataLoader.class);
 
-	public static final int TIMEOUT_CONNECTION = 6000;
+	private static final int TIMEOUT_CONNECTION = 6000;
 
-	public static final int TIMEOUT_SOCKET = 6000;
+	private static final int TIMEOUT_SOCKET = 6000;
 
-	public static final int CONNECTIONS_MAX_TOTAL = 20;
+	private static final int CONNECTIONS_MAX_TOTAL = 20;
 
-	public static final int CONNECTIONS_MAX_PER_ROUTE = 2;
+	private static final int CONNECTIONS_MAX_PER_ROUTE = 2;
 
-	public static final String CONTENT_TYPE = "Content-Type";
+	private static final String CONTENT_TYPE = "Content-Type";
 
-	public static final String DEFAULT_SSL_PROTOCOL = "TLSv1.2";
+	private static final String DEFAULT_SSL_PROTOCOL = "TLSv1.2";
 
-	public static final List<Integer> ACCEPTED_HTTP_STATUS = Arrays.asList(HttpStatus.SC_OK);
+	private static final List<Integer> ACCEPTED_HTTP_STATUS = Arrays.asList(HttpStatus.SC_OK);
 
 	protected String contentType;
 

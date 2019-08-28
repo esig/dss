@@ -40,7 +40,7 @@ public class DSSPKUtilsTest {
 
 	@Test
 	public void getPublicKeyEncryptionAlgoECDSA() {
-		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/ecdsa.cer"));
+		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/certificates/ecdsa.cer"));
 		assertEquals(EncryptionAlgorithm.ECDSA, EncryptionAlgorithm.forKey(certificate.getPublicKey()));
 	}
 
@@ -53,13 +53,13 @@ public class DSSPKUtilsTest {
 
 	@Test
 	public void getPublicKeySizeECDSA() {
-		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/ecdsa.cer"));
+		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/certificates/ecdsa.cer"));
 		assertEquals(256, DSSPKUtils.getPublicKeySize(certificate.getPublicKey()));
 	}
 
 	@Test
 	public void getPublicKeySizeSelfSign() {
-		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/belgiumrca2-self-sign.crt"));
+		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/certificates/belgiumrca2-self-sign.crt"));
 		assertEquals(2048, DSSPKUtils.getPublicKeySize(certificate.getPublicKey()));
 		assertEquals("2048", DSSPKUtils.getPublicKeySize(certificate));
 

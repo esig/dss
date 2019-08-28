@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.asic.cades.signature.asice;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -36,7 +37,12 @@ import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlManifestFile;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -102,6 +108,25 @@ public class ASiCECAdESLevelBTest extends AbstractASiCECAdESTestSignature {
 		} catch (UnsupportedEncodingException e) {
 			fail(e.getMessage());
 		}
+	}
+	
+	@Override
+	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
+		super.verifyDiagnosticData(diagnosticData);
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
+		assertEquals(2, digestMatchers.size());
+		int manifestEntriesCounter = 0;
+		for (XmlDigestMatcher digestMatcher : digestMatchers) {
+			if (DigestMatcherType.MANIFEST_ENTRY.equals(digestMatcher.getType())) {
+				manifestEntriesCounter++;
+			}
+		}
+		List<XmlManifestFile> manifestFiles = diagnosticData.getContainerInfo().getManifestFiles();
+		assertEquals(1, manifestFiles.size());
+		List<String> entries = manifestFiles.get(0).getEntries();
+		assertNotNull(entries);
+		assertEquals(entries.size(), manifestEntriesCounter);
 	}
 
 	@Override

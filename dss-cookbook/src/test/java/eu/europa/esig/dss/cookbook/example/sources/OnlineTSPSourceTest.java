@@ -28,6 +28,7 @@ import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.Test;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.service.http.commons.TimestampDataLoader;
 import eu.europa.esig.dss.service.tsp.OnlineTSPSource;
 import eu.europa.esig.dss.spi.DSSUtils;
 
@@ -41,8 +42,9 @@ public class OnlineTSPSourceTest {
 
 		// tag::demo[]
 
-		final String tspServer = "http://tsa.belgium.be/connect";
+		final String tspServer = "http://dss.nowina.lu/pki-factory/tsa/good-tsa";
 		OnlineTSPSource tspSource = new OnlineTSPSource(tspServer);
+		tspSource.setDataLoader(new TimestampDataLoader()); // uses the specific content-type
 
 		final DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA256;
 		final byte[] toDigest = "Hello world".getBytes("UTF-8");

@@ -21,7 +21,7 @@ public class XPath2FilterTransform extends XPathTransform {
 	@Override
 	public Element createTransform(Document document, Element parentNode) {
 		final Element transform = DomUtils.addElement(document, parentNode, namespace, DS_TRANSFORM);
-		transform.setAttribute(ALGORITHM, algorithm);
+		transform.setAttribute(ALGORITHM_ATTRIBUTE_NAME, algorithm);
 		// XPath element must have a specific namespace
 		Element xPathElement = DomUtils.addTextElement(document, transform, XPATH2_FILTER_NAMESPACE, DS_XPATH, xPathExpression);
 		xPathElement.setPrefix("dsig-xpath");

@@ -114,6 +114,8 @@ import eu.europa.esig.dss.validation.CertificateValidity;
 import eu.europa.esig.dss.validation.CommitmentType;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
 import eu.europa.esig.dss.validation.IssuerSerialInfo;
+import eu.europa.esig.dss.validation.ManifestEntry;
+import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.ReferenceValidation;
 import eu.europa.esig.dss.validation.SignatureCRLSource;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
@@ -844,35 +846,47 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			byte[] expectedMessageDigestValue = getMessageDigestValue();
 			
 			if (originalDocument != null) {
-				
-				if (Utils.isCollectionNotEmpty(messageDigestAlgorithms)) {
 					
-					if (Utils.isArrayNotEmpty(expectedMessageDigestValue)) {
-						Digest messageDigest = new Digest();
-						messageDigest.setValue(expectedMessageDigestValue);
-						
-						validation.setFound(true);
+				if (Utils.isArrayNotEmpty(expectedMessageDigestValue)) {
+					Digest messageDigest = new Digest();
+					messageDigest.setValue(expectedMessageDigestValue);
+					
+					validation.setFound(true);
+					
+					if (Utils.isCollectionNotEmpty(messageDigestAlgorithms)) {
 
 						// try to match with found digest algorithm(s)
 						for (DigestAlgorithm digestAlgorithm : messageDigestAlgorithms) {
-							String digest = originalDocument.getDigest(digestAlgorithm);
-							if (Arrays.equals(expectedMessageDigestValue, Utils.fromBase64(digest))) {
+							String base64Digest = originalDocument.getDigest(digestAlgorithm);
+							if (Arrays.equals(expectedMessageDigestValue, Utils.fromBase64(base64Digest))) {
 								messageDigest.setAlgorithm(digestAlgorithm);
 								validation.setIntact(true);
 								break;
 							}
 						}
-						validation.setDigest(messageDigest);
-					} else {
-						LOG.warn("message-digest is not present in SignedData!");
-						if (signerInformationToCheck != null) {
-							LOG.warn("Extracting digests from content SignatureValue...");
-							validation = getContentReferenceValidation(originalDocument, signerInformationToCheck);
+						
+						// add digest algorithm if message digest does not much
+						if (messageDigest.getAlgorithm() == null && messageDigestAlgorithms.size() == 1) {
+							messageDigest.setAlgorithm(messageDigestAlgorithms.iterator().next());
 						}
+						validation.setDigest(messageDigest);
+						
+					} else {
+						LOG.warn("Message DigestAlgorithms not found in SignedData! Reference validation is not possible.");
 						
 					}
+					
+					// get references to documents contained in the manifest file (for ASiC-E container)
+					if (validation.isFound()) {
+						validation.getDependentValidations().addAll(getManifestEntryValidation(originalDocument, messageDigest));
+					}
+					
 				} else {
-					LOG.warn("Message DigestAlgorithms not found in SignedData! Reference validation is not possible.");
+					LOG.warn("message-digest is not present in SignedData!");
+					if (signerInformationToCheck != null) {
+						LOG.warn("Extracting digests from content SignatureValue...");
+						validation = getContentReferenceValidation(originalDocument, signerInformationToCheck);
+					}
 					
 				}
 			} else {
@@ -885,6 +899,42 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		}
 		return referenceValidations;
 	}
+	
+	private List<ReferenceValidation> getManifestEntryValidation(final DSSDocument originalDocument, final Digest messageDigest) {
+		List<ReferenceValidation> manifestEntryValidations = new ArrayList<ReferenceValidation>();
+		ManifestFile manifest = getSignedManifest(originalDocument, messageDigest);
+		if (manifest == null) {
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("No related manifest file found for a signature with name [{}]", getSignatureFilename());
+			}
+			return manifestEntryValidations;
+		}
+		for (ManifestEntry entry : manifest.getEntries()) {
+			ReferenceValidation entryValidation = new ReferenceValidation();
+			entryValidation.setType(DigestMatcherType.MANIFEST_ENTRY);
+			entryValidation.setName(entry.getFileName());
+			entryValidation.setDigest(entry.getDigest());
+			entryValidation.setFound(entry.isFound());
+			entryValidation.setIntact(entry.isIntact());
+			manifestEntryValidations.add(entryValidation);
+		}
+		
+		return manifestEntryValidations;
+	}
+	
+	private ManifestFile getSignedManifest(final DSSDocument originalDocument, final Digest messageDigest) {
+		if (Utils.isCollectionNotEmpty(manifestFiles)) {
+			DigestAlgorithm digestAlgorithm = messageDigest.getAlgorithm() != null ? messageDigest.getAlgorithm() : DigestAlgorithm.SHA256;
+			String digestValue = originalDocument.getDigest(digestAlgorithm);
+			
+			for (ManifestFile manifestFile : manifestFiles) {
+				if (digestValue.equals(manifestFile.getDigestBase64String(digestAlgorithm))) {
+					return manifestFile;
+				}
+			}
+		}
+		return null;
+	}
 
 	@Override
 	public List<ReferenceValidation> getReferenceValidations() {
@@ -894,13 +944,15 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	private ReferenceValidation getContentReferenceValidation(DSSDocument originalDocument, SignerInformation signerInformation) {
 		ReferenceValidation contentValidation = new ReferenceValidation();
 		contentValidation.setType(DigestMatcherType.CONTENT_DIGEST);
-		DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(signerInformation.getDigestAlgOID());
-		byte[] contentDigest = signerInformation.getContentDigest();
-		if (originalDocument != null && digestAlgorithm != null && Utils.isArrayNotEmpty(contentDigest)) {
-			contentValidation.setFound(true);
-			contentValidation.setDigest(new Digest(digestAlgorithm, contentDigest));
-			if (Arrays.equals(contentDigest, Utils.fromBase64(originalDocument.getDigest(digestAlgorithm)))) {
-				contentValidation.setIntact(true);
+		DigestAlgorithm digestAlgorithm = getDigestAlgorithmForOID(signerInformation.getDigestAlgOID());
+		if (originalDocument != null && digestAlgorithm != null) {
+			byte[] contentDigest = signerInformation.getContentDigest();
+			if (Utils.isArrayNotEmpty(contentDigest)) {
+				contentValidation.setFound(true);
+				contentValidation.setDigest(new Digest(digestAlgorithm, contentDigest));
+				if (Arrays.equals(contentDigest, Utils.fromBase64(originalDocument.getDigest(digestAlgorithm)))) {
+					contentValidation.setIntact(true);
+				}
 			}
 		}
 		return contentValidation;
@@ -971,13 +1023,21 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		Set<AlgorithmIdentifier> digestAlgorithmIDs = cmsSignedData.getDigestAlgorithmIDs();
 		for (AlgorithmIdentifier algorithmIdentifier : digestAlgorithmIDs) {
 			String oid = algorithmIdentifier.getAlgorithm().getId();
-			try {
+			DigestAlgorithm digestAlgorithm = getDigestAlgorithmForOID(oid);
+			if (digestAlgorithm != null) {
 				result.add(DigestAlgorithm.forOID(oid));
-			} catch (IllegalArgumentException e) {
-				LOG.warn("Not a digest algorithm {} : {}", oid, e.getMessage());
 			}
 		}
 		return result;
+	}
+	
+	private DigestAlgorithm getDigestAlgorithmForOID(String oid) {
+		try {
+			return DigestAlgorithm.forOID(oid);
+		} catch (IllegalArgumentException e) {
+			LOG.warn("Not a digest algorithm {} : {}", oid, e.getMessage());
+			return null;
+		}
 	}
 
 	@Override

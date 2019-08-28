@@ -1,3 +1,6 @@
-module jpms_dss_enumerations { 
-  exports eu.europa.esig.dss.enumerations;
+module jpms_dss_enumerations {
+
+	requires transitive org.slf4j;
+	
+	exports eu.europa.esig.dss.enumerations;
 }

@@ -44,6 +44,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.signature.CadesLevelBaselineLTATimestampExtractor;
 import eu.europa.esig.dss.crl.CRLBinary;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -64,7 +65,6 @@ import eu.europa.esig.dss.validation.CMSCertificateSource;
 import eu.europa.esig.dss.validation.CMSOCSPSource;
 import eu.europa.esig.dss.validation.SignatureProperties;
 import eu.europa.esig.dss.validation.timestamp.AbstractTimestampSource;
-import eu.europa.esig.dss.validation.timestamp.ArchiveTimestampType;
 import eu.europa.esig.dss.validation.timestamp.TimestampCRLSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampOCSPSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -194,15 +194,7 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 			return null;
 		}
 		try {
-			TimestampToken timestamp = new TimestampToken(asn1Primitive.getEncoded(), timestampType, certificatePool, references, TimestampLocation.CAdES);
-			if (isArchiveTimestampV2(signatureAttribute)) {
-				timestamp.setArchiveTimestampType(ArchiveTimestampType.CAdES_V2);
-			} else if (isArchiveTimestampV3(signatureAttribute)) {
-				timestamp.setArchiveTimestampType(ArchiveTimestampType.CAdES_V3);
-			} else {
-				timestamp.setArchiveTimestampType(ArchiveTimestampType.CAdES);
-			}
-			return timestamp;
+			return new TimestampToken(asn1Primitive.getEncoded(), timestampType, certificatePool, references, TimestampLocation.CAdES);
 		} catch (Exception e) {
 			throw new DSSException("Cannot create a timestamp token", e);
 		}
@@ -408,12 +400,14 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 	protected List<CRLBinary> getEncapsulatedCRLIdentifiers(CAdESAttribute unsignedAttribute) {
 		List<CRLBinary> crlBinaryIdentifiers = new ArrayList<CRLBinary>();
 		ASN1Encodable asn1Object = unsignedAttribute.getASN1Object();
-		final RevocationValues revValues = RevocationValues.getInstance(asn1Object);
-		for (final CertificateList revValue : revValues.getCrlVals()) {
-			try {
-				crlBinaryIdentifiers.add(new CRLBinary(revValue.getEncoded()));
-			} catch (IOException e) {
-				LOG.warn("Unable to parse revocation value : {}", e.getMessage());
+		RevocationValues revocationValues = DSSASN1Utils.getRevocationValues(asn1Object);
+		if (revocationValues != null) {
+			for (final CertificateList revValue : revocationValues.getCrlVals()) {
+				try {
+					crlBinaryIdentifiers.add(new CRLBinary(revValue.getEncoded()));
+				} catch (IOException e) {
+					LOG.warn("Unable to parse revocation value : {}", e.getMessage());
+				}
 			}
 		}
 		return crlBinaryIdentifiers;
@@ -423,10 +417,12 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 	protected List<OCSPResponseBinary> getEncapsulatedOCSPIdentifiers(CAdESAttribute unsignedAttribute) {
 		List<OCSPResponseBinary> ocspIdentifiers = new ArrayList<OCSPResponseBinary>();
 		ASN1Encodable asn1Object = unsignedAttribute.getASN1Object();
-		final RevocationValues revocationValues = RevocationValues.getInstance(asn1Object);
-		for (final BasicOCSPResponse basicOCSPResponse : revocationValues.getOcspVals()) {
-			final BasicOCSPResp basicOCSPResp = new BasicOCSPResp(basicOCSPResponse);
-			ocspIdentifiers.add(OCSPResponseBinary.build(basicOCSPResp));
+		RevocationValues revocationValues = DSSASN1Utils.getRevocationValues(asn1Object);
+		if (revocationValues != null) {
+			for (final BasicOCSPResponse basicOCSPResponse : revocationValues.getOcspVals()) {
+				final BasicOCSPResp basicOCSPResp = new BasicOCSPResp(basicOCSPResponse);
+				ocspIdentifiers.add(OCSPResponseBinary.build(basicOCSPResp));
+			}
 		}
 		return ocspIdentifiers;
 	}

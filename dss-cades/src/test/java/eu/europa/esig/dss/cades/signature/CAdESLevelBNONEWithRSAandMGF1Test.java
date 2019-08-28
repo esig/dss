@@ -81,7 +81,7 @@ public class CAdESLevelBNONEWithRSAandMGF1Test extends AbstractCAdESTestSignatur
 		signatureParameters.setDigestAlgorithm(digestAlgo);
 		signatureParameters.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
 
-		service = new CAdESService(getCompleteCertificateVerifier());
+		service = new CAdESService(getOfflineCertificateVerifier());
 	}
 
 	@Override

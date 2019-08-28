@@ -31,12 +31,21 @@ public final class XAdESNamespaces {
 	public static final String XAdES122 = "http://uri.etsi.org/01903/v1.2.2#";
 	public static final String XAdES111 = "http://uri.etsi.org/01903/v1.1.1#";
 
-	public static String XAdES = XAdES132;
+	private static String XAdES = XAdES132;
 
 	protected static String XADES_SIGNING_CERTIFICATE = "xades:SigningCertificate";
 	protected static String XADES_SIGNING_CERTIFICATE_V2 = "xades:SigningCertificateV2";
 
 	private XAdESNamespaces() {
+	}
+	
+	/**
+	 * This getter returns the default namespace as defined.
+	 * Default : XADES132 ({@code "http://uri.etsi.org/01903/v1.3.2#"})
+	 * @return {@link String} default namespace
+	 */
+	public static String getXAdESDefaultNamespace() {
+		return XAdES;
 	}
 
 	/**
@@ -47,7 +56,6 @@ public final class XAdESNamespaces {
 	 *            new default namespace
 	 */
 	public static void setXAdESDefaultNamespace(final String XAdES) {
-
 		XAdESNamespaces.XAdES = XAdES;
 		if (XAdES132.equals(XAdES)) {
 			XADES_SIGNING_CERTIFICATE = "xades:SigningCertificate";

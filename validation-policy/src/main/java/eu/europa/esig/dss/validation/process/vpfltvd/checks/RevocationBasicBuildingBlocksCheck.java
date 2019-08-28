@@ -56,41 +56,49 @@ public class RevocationBasicBuildingBlocksCheck extends ChainItem<XmlValidationP
 		// Format check is skipped
 
 		XmlISC isc = revocationBBB.getISC();
-		XmlConclusion iscConclusion = isc.getConclusion();
-		if (!isAllowed(iscConclusion)) {
-			indication = iscConclusion.getIndication();
-			subIndication = iscConclusion.getSubIndication();
-			errors = iscConclusion.getErrors();
-			return false;
+		if (isc != null) {
+			XmlConclusion iscConclusion = isc.getConclusion();
+			if (!isAllowed(iscConclusion)) {
+				indication = iscConclusion.getIndication();
+				subIndication = iscConclusion.getSubIndication();
+				errors = iscConclusion.getErrors();
+				return false;
+			}
 		}
 
 		// VCI is skipped
 
 		XmlCV cv = revocationBBB.getCV();
-		XmlConclusion cvConclusion = cv.getConclusion();
-		if (!isAllowed(cvConclusion)) {
-			indication = cvConclusion.getIndication();
-			subIndication = cvConclusion.getSubIndication();
-			errors = cvConclusion.getErrors();
-			return false;
+		if (cv != null) {
+			XmlConclusion cvConclusion = cv.getConclusion();
+			if (!isAllowed(cvConclusion)) {
+				indication = cvConclusion.getIndication();
+				subIndication = cvConclusion.getSubIndication();
+				errors = cvConclusion.getErrors();
+				return false;
+			}
 		}
 
 		XmlXCV xcv = revocationBBB.getXCV();
-		XmlConclusion xcvConclusion = xcv.getConclusion();
-		if (!isAllowed(xcvConclusion)) {
-			indication = xcvConclusion.getIndication();
-			subIndication = xcvConclusion.getSubIndication();
-			errors = xcvConclusion.getErrors();
-			return false;
+		if (xcv != null) {
+			XmlConclusion xcvConclusion = xcv.getConclusion();
+			if (!isAllowed(xcvConclusion)) {
+				indication = xcvConclusion.getIndication();
+				subIndication = xcvConclusion.getSubIndication();
+				errors = xcvConclusion.getErrors();
+				return false;
+			}
 		}
 
 		XmlSAV sav = revocationBBB.getSAV();
-		XmlConclusion savConclusion = sav.getConclusion();
-		if (!isAllowed(savConclusion)) {
-			indication = savConclusion.getIndication();
-			subIndication = savConclusion.getSubIndication();
-			errors = savConclusion.getErrors();
-			return false;
+		if (sav != null) {
+			XmlConclusion savConclusion = sav.getConclusion();
+			if (!isAllowed(savConclusion)) {
+				indication = savConclusion.getIndication();
+				subIndication = savConclusion.getSubIndication();
+				errors = savConclusion.getErrors();
+				return false;
+			}
 		}
 
 		return true;

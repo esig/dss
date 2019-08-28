@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.crl.CRLBinary;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.Digest;
@@ -335,9 +336,9 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 				if (timestampToken == null) {
 					continue;
 				}
+				timestampToken.setArchiveTimestampType(getArchiveTimestampType(unsignedAttribute));
 				addReferences(timestampToken.getTimestampedReferences(), getSignedDataReferences(timestampToken));
 				
-				timestampToken.setArchiveTimestampType(getArchiveTimestampType(unsignedAttribute));
 				archiveTimestamps.add(timestampToken);
 				
 			} else if (isTimeStampValidationData(unsignedAttribute)) {

@@ -113,7 +113,7 @@ public class CAdESLevelBWithRSATest extends AbstractCAdESTestSignature {
 		signatureParameters.setDigestAlgorithm(digestAlgo);
 		signatureParameters.setMaskGenerationFunction(maskGenerationFunction);
 
-		service = new CAdESService(getCompleteCertificateVerifier());
+		service = new CAdESService(getOfflineCertificateVerifier());
 
 	}
 

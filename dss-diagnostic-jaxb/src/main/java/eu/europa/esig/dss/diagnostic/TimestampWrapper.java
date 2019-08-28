@@ -33,6 +33,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.OrphanTokenType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
@@ -67,6 +68,10 @@ public class TimestampWrapper extends AbstractTokenProxy {
 
 	public TimestampType getType() {
 		return timestamp.getType();
+	}
+	
+	public ArchiveTimestampType getArchiveTimestampType() {
+		return timestamp.getArchiveTimestampType();
 	}
 
 	public Date getProductionTime() {
@@ -189,6 +194,7 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		return timestampedObjectIds;
 	}
 
+	@Override
 	public byte[] getBinaries() {
 		return timestamp.getBase64Encoded();
 	}

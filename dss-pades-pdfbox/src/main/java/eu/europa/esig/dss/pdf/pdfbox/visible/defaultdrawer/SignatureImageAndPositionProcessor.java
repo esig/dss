@@ -48,7 +48,8 @@ public final class SignatureImageAndPositionProcessor {
     		final PDDocument doc, final ImageAndResolution ires) throws IOException {
 		try (InputStream is = ires.getInputStream()) {
 			
-			BufferedImage visualImageSignature = ImageIO.read(is);
+			BufferedImage visualImageSignature = ImageUtils.read(is);
+			
 			PDPage pdPage = doc.getPages().get(signatureImageParameters.getPage() - 1);
 
 			int rotate = ImageRotationUtils.getRotation(signatureImageParameters.getRotation(), pdPage);

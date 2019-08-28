@@ -84,10 +84,19 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 
 	/**
 	 * This method removes the timestamp validation data of the last archive timestamp.
+	 * @return indent of the last {@code TimeStampValidationData} xml element, if present
 	 */
 	private String removeLastTimestampValidationData() {
 		final Element toRemove = xadesSignature.getLastTimestampValidationData();
-		return removeChild(unsignedSignaturePropertiesDom, toRemove);
+		if (toRemove != null) {
+			/* Certificate and revocation sources need to be reset because of 
+			 * the removing of timeStampValidationData element */
+			xadesSignature.resetCertificateSource();
+			xadesSignature.resetRevocationSources();
+			
+			return removeChild(unsignedSignaturePropertiesDom, toRemove);
+		}
+		return null;
 	}
 
 	/**

@@ -143,16 +143,16 @@ public class OnlineCRLSource implements CRLSource, RevocationSourceAlternateUrls
 			return null;
 		}
 		try {
-			CRLBinary crlBinary = new CRLBinary(dataAndUrl.data);
+			CRLBinary crlBinary = new CRLBinary(dataAndUrl.getData());
 			final CRLValidity crlValidity = CRLUtils.buildCRLValidity(crlBinary, issuerToken);
 			final CRLToken crlToken = new CRLToken(certificateToken, crlValidity);
 			crlToken.setOrigins(Collections.singleton(RevocationOrigin.EXTERNAL));
-			crlToken.setSourceURL(dataAndUrl.urlString);
+			crlToken.setSourceURL(dataAndUrl.getUrlString());
 			crlToken.setAvailable(true);
-			crlToken.setRevocationTokenKey(DSSRevocationUtils.getCRLRevocationTokenKey(dataAndUrl.urlString));
+			crlToken.setRevocationTokenKey(DSSRevocationUtils.getCRLRevocationTokenKey(dataAndUrl.getUrlString()));
 			return crlToken;
 		} catch (IOException e) {
-			LOG.warn("Unable to parse/validate the CRL (url:" + dataAndUrl.urlString + ") : " + e.getMessage(), e);
+			LOG.warn("Unable to parse/validate the CRL (url:" + dataAndUrl.getUrlString() + ") : " + e.getMessage(), e);
 			return null;
 		}
 	}

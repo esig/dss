@@ -348,13 +348,14 @@ public final class DSSXMLUtils {
 				Node lastChild = parentNode.getLastChild();
 				targetIndent = targetIndent.substring(0, targetIndent.length() - DomUtils.TRANSFORMER_INDENT_NUMBER);
 				switch (lastChild.getNodeType()) {
-					case Node.ELEMENT_NODE:
-						DomUtils.setTextNode(parentNode.getOwnerDocument(), (Element)parentNode, targetIndent);
-						break;
-					case Node.TEXT_NODE:
-						lastChild.setNodeValue(targetIndent);
-					default:
-						break;
+				case Node.ELEMENT_NODE:
+					DomUtils.setTextNode(parentNode.getOwnerDocument(), (Element) parentNode, targetIndent);
+					break;
+				case Node.TEXT_NODE:
+					lastChild.setNodeValue(targetIndent);
+					break;
+				default:
+					break;
 				}
 			}
 		}
