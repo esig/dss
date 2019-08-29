@@ -149,9 +149,18 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 		return names;
 	}
 
-	protected DSSDocument buildASiCContainer(List<DSSDocument> documentsToBeSigned, List<DSSDocument> signatures, List<DSSDocument> manifestDocuments,
-			ASiCParameters asicParameters) {
+	protected DSSDocument buildASiCContainer(List<DSSDocument> documentsToBeSigned, List<DSSDocument> signatures,
+			List<DSSDocument> manifestDocuments,  ASiCParameters asicParameters,
+			DSSDocument rootContainer) {
 
+		if (rootContainer != null) {
+			return mergeArchiveAndExtendedSignatures(rootContainer, signatures);
+		} else {
+			return buildASiCContainerType(documentsToBeSigned, signatures, manifestDocuments, asicParameters);
+		}
+	}
+	
+	private DSSDocument buildASiCContainerType(List<DSSDocument> documentsToBeSigned, List<DSSDocument> signatures, List<DSSDocument> manifestDocuments, ASiCParameters asicParameters) {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); ZipOutputStream zos = new ZipOutputStream(baos)) {
 			if (ASiCUtils.isASiCE(asicParameters)) {
 				storeDocuments(manifestDocuments, zos);

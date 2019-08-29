@@ -81,4 +81,10 @@ public class DataToSignASiCSWithXAdESFromArchive extends AbstractGetDataToSignAS
 		return embeddedSignatures;
 	}
 
+	@Override
+	public DSSDocument getRootDocument() {
+		// No root container needed
+		return null;
+	}
+
 }

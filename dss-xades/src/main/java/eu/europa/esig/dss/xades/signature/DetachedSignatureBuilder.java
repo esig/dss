@@ -80,18 +80,29 @@ class DetachedSignatureBuilder extends XAdESSignatureBuilder {
 		reference.setId(REFERENCE_ID_SUFFIX + deterministicId + "-" + referenceIndex);
 		if (Utils.isStringNotEmpty(document.getName())) {
 			final String fileURI = document.getName();
-			try {
-				// MUST comply RFC 3896 (see DSS-1475 for details)
-				reference.setUri(URLEncoder.encode(fileURI, "UTF-8").replace("+", "%20"));
-			} catch (Exception e) {
-				LOG.warn("Unable to encode uri '{}' : {}", fileURI, e.getMessage());
-				reference.setUri(fileURI);
+			StringBuilder sb = new StringBuilder();
+		    String uriDelimiter = "";
+			final String[] uriParts = fileURI.split("/");
+			for(String part: uriParts) {
+				sb.append(uriDelimiter + encodeURI(part));
+				uriDelimiter = "/";
 			}
+			reference.setUri(sb.toString());
 		}
 		reference.setContents(document);
 		DigestAlgorithm digestAlgorithm = getReferenceDigestAlgorithmOrDefault(params);
 		reference.setDigestMethodAlgorithm(digestAlgorithm);
 		return reference;
+	}
+	
+	private String encodeURI(String uriPart) {
+		// MUST comply RFC 3986 (see DSS-1475 for details)
+		try {
+			return URLEncoder.encode(uriPart, "UTF-8").replace("+", "%20");
+		} catch (Exception e) {
+			LOG.warn("Unable to encode uri '{}' : {}", uriPart, e.getMessage());
+			return uriPart;
+		}
 	}
 
 	@Override

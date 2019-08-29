@@ -38,6 +38,7 @@ public class ASiCExtractResult {
 	private List<DSSDocument> signedDocuments = new ArrayList<DSSDocument>();
 	private List<DSSDocument> unsupportedDocuments = new ArrayList<DSSDocument>();
 	private List<DSSDocument> containerDocuments = new ArrayList<DSSDocument>(); // for ASiC signatures
+	private DSSDocument rootContainer; // For OpenDocument
 
 	public String getZipComment() {
 		return zipComment;
@@ -119,6 +120,14 @@ public class ASiCExtractResult {
 		this.containerDocuments = containerDocuments;
 	}
 	
+	public DSSDocument getRootContainer() {
+		return rootContainer;
+	}
+
+	public void setRootContainer(DSSDocument rootContainer) {
+		this.rootContainer = rootContainer;
+	}
+
 	/**
 	 * Returns list of documents covered by the {@code timestamp}
 	 * @param timestamp {@link DSSDocument}
