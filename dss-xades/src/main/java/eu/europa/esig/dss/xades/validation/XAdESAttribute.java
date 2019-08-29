@@ -9,6 +9,7 @@ import org.w3c.dom.NodeList;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.validation.ISignatureAttribute;
 import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
+import eu.europa.esig.dss.xades.XMLDSigAttribute;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 public class XAdESAttribute implements ISignatureAttribute {
@@ -65,7 +66,7 @@ public class XAdESAttribute implements ISignatureAttribute {
 	public String getTimestampCanonicalizationMethod() {
 		final Element canonicalizationMethodElement = DomUtils.getElement(element, xPathQueryHolder.XPATH__CANONICALIZATION_METHOD);
 		if (canonicalizationMethodElement != null) {
-			return canonicalizationMethodElement.getAttribute(XPathQueryHolder.XMLE_ALGORITHM);
+			return canonicalizationMethodElement.getAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName());
 		}
 		return null;
 	}

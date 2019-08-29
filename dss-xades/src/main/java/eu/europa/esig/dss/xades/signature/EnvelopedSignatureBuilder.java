@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
-import javax.xml.crypto.dsig.XMLSignature;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -39,7 +38,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.XPathQueryHolder;
+import eu.europa.esig.dss.xades.XMLDSigElement;
 import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
@@ -163,8 +162,8 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 	 *            {@code Document} containing the signatures to analyse
 	 */
 	protected void removeExistingSignatures(final Document domDoc) {
-
-		final NodeList signatureNodeList = domDoc.getElementsByTagNameNS(XMLSignature.XMLNS, XPathQueryHolder.XMLE_SIGNATURE);
+		final NodeList signatureNodeList = domDoc.getElementsByTagNameNS(XMLDSigElement.SIGNATURE.getURI(),
+				XMLDSigElement.SIGNATURE.getTagName());
 		for (int ii = signatureNodeList.getLength() - 1; ii >= 0; ii--) {
 			final Element signatureDOM = (Element) signatureNodeList.item(ii);
 			signatureDOM.getParentNode().removeChild(signatureDOM);

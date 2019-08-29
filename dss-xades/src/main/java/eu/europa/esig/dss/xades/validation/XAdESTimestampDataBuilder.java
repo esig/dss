@@ -24,6 +24,9 @@ import eu.europa.esig.dss.validation.timestamp.TimestampDataBuilder;
 import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.XAdES141Element;
+import eu.europa.esig.dss.xades.XAdESElement;
+import eu.europa.esig.dss.xades.XMLDSigPaths;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
@@ -139,7 +142,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 	protected byte[] getSignatureTimestampData(final TimestampToken timestampToken, String canonicalizationMethod) {
 		canonicalizationMethod = timestampToken != null ? timestampToken.getCanonicalizationMethod() : canonicalizationMethod;
 		try (ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
-			writeCanonicalizedValue(xPathQueryHolder.XPATH_SIGNATURE_VALUE, canonicalizationMethod, buffer);
+			writeCanonicalizedValue(XMLDSigPaths.SIGNATURE_VALUE_PATH, canonicalizationMethod, buffer);
 			final byte[] byteArray = buffer.toByteArray();
 			if (LOG.isTraceEnabled()) {
 				LOG.trace("Signature timestamp canonicalized string : \n{}", new String(byteArray));
@@ -167,7 +170,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 	protected byte[] getTimestampX1Data(final TimestampToken timestampToken, String canonicalizationMethod) {
 		canonicalizationMethod = timestampToken != null ? timestampToken.getCanonicalizationMethod() : canonicalizationMethod;
 		try (ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
-			writeCanonicalizedValue(xPathQueryHolder.XPATH_SIGNATURE_VALUE, canonicalizationMethod, buffer);
+			writeCanonicalizedValue(XMLDSigPaths.SIGNATURE_VALUE_PATH, canonicalizationMethod, buffer);
 			final NodeList signatureTimeStampNode = DomUtils.getNodeList(signature, xPathQueryHolder.XPATH_SIGNATURE_TIMESTAMP);
 			if (signatureTimeStampNode != null) {
 				for (int ii = 0; ii < signatureTimeStampNode.getLength(); ii++) {
@@ -286,9 +289,9 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 			 * - The ds:SignatureValue element.<br>
 			 * - The ds:KeyInfo element, if present.
 			 */
-			writeCanonicalizedValue(xPathQueryHolder.XPATH_SIGNED_INFO, canonicalizationMethod, buffer);
-			writeCanonicalizedValue(xPathQueryHolder.XPATH_SIGNATURE_VALUE, canonicalizationMethod, buffer);
-			writeCanonicalizedValue(xPathQueryHolder.XPATH_KEY_INFO, canonicalizationMethod, buffer);
+			writeCanonicalizedValue(XMLDSigPaths.SIGNED_INFO_PATH, canonicalizationMethod, buffer);
+			writeCanonicalizedValue(XMLDSigPaths.SIGNATURE_VALUE_PATH, canonicalizationMethod, buffer);
+			writeCanonicalizedValue(XMLDSigPaths.KEY_INFO_PATH, canonicalizationMethod, buffer);
 			/**
 			 * 4) Take the unsigned signature properties that appear before the current xadesv141:ArchiveTimeStamp in
 			 * the order they appear within the
@@ -392,13 +395,13 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 			 * satisfy with the rules specified in clause 7.6.4.
 			 */
 			// } else
-			if (XPathQueryHolder.XMLE_ARCHIVE_TIME_STAMP.equals(localName)) {
+			if (XAdESElement.ARCHIVE_TIMESTAMP.isSameTagName(localName)) {
 				// TODO: compare encoded base64
 				if ((timestampToken != null) && (timestampToken.getHashCode() == node.hashCode())) {
 					break;
 				}
 				
-			} else if ("TimeStampValidationData".equals(localName)) {
+			} else if (XAdES141Element.TIMESTAMP_VALIDATION_DATA.isSameTagName(localName)) {
 				/**
 				 * ETSI TS 101 903 V1.4.2 (2010-12) 8.1 The new XAdESv141:TimeStampValidationData element ../.. This
 				 * element is specified to serve as an

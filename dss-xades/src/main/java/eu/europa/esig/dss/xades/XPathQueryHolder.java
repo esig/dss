@@ -31,43 +31,11 @@ import eu.europa.esig.dss.XAdESNamespaces;
 @SuppressWarnings("serial")
 public class XPathQueryHolder implements Serializable {
 
-	public static final String XMLE_SIGNATURE = "Signature";
-	public static final String XMLE_ALGORITHM = "Algorithm";
-
-	public static final String XMLE_KEYINFO = "KeyInfo";
-	public static final String XMLE_X509DATA = "X509Data";
-	public static final String XMLE_X509CERTIFICATE = "X509Certificate";
-
-	public static final String XMLE_TRANSFORM = "Transform";
-	public static final String XMLE_CITY = "City";
-	public static final String XMLE_STATE_OR_PROVINCE = "StateOrProvince";
-	public static final String XMLE_STREET_ADDRESS = "StreetAddress";
-
-	public static final String XMLE_POSTAL_CODE = "PostalCode";
-	public static final String XMLE_COUNTRY_NAME = "CountryName";
-	public static final String XMLE_QUALIFYING_PROPERTIES = "QualifyingProperties";
-
-	public static final String XMLE_UNSIGNED_PROPERTIES = "UnsignedProperties";
-	public static final String XMLE_UNSIGNED_SIGNATURE_PROPERTIES = "UnsignedSignatureProperties";
-	
-	public static final String XMLE_ALL_DATA_OBJECTS_TIME_STAMP = "AllDataObjectsTimeStamp";
 	public static final String XMLE_ARCHIVE_TIME_STAMP = "ArchiveTimeStamp";
-	public static final String XMLE_ARCHIVE_TIME_STAMP_V2 = "ArchiveTimeStampV2";
-	public static final String XMLE_ATTRIBUTE_CERTIFICATE_REFS = "AttributeCertificateRefs";
-	public static final String XMLE_ATTRIBUTE_CERTIFICATE_REFS_V2 = "AttributeCertificateRefsV2";
-	public static final String XMLE_ATTRIBUTE_REVOCATION_REFS = "AttributeRevocationRefs";
-	public static final String XMLE_CERTIFICATE_VALUES = "CertificateValues";
-	public static final String XMLE_COMPLETE_CERTIFICATE_REFS = "CompleteCertificateRefs";
-	public static final String XMLE_COMPLETE_CERTIFICATE_REFS_V2 = "CompleteCertificateRefsV2";
-	public static final String XMLE_COMPLETE_REVOCATION_REFS = "CompleteRevocationRefs";
-	public static final String XMLE_INDIVIDUAL_DATA_OBJECTS_TIME_STAMP = "IndividualDataObjectsTimeStamp";
-	public static final String XMLE_REFS_ONLY_TIME_STAMP = "RefsOnlyTimeStamp";
-	public static final String XMLE_REFS_ONLY_TIME_STAMP_V2 = "RefsOnlyTimeStampV2";
-	public static final String XMLE_REVOCATION_VALUES = "RevocationValues";
 	public static final String XMLE_SIG_AND_REFS_TIME_STAMP = "SigAndRefsTimeStamp";
-	public static final String XMLE_SIG_AND_REFS_TIME_STAMP_V2 = "SigAndRefsTimeStampV2";
 	public static final String XMLE_SIGNATURE_TIME_STAMP = "SignatureTimeStamp";
-	public static final String XMLE_TIME_STAMP_VALIDATION_DATA = "TimeStampValidationData";
+
+	public static final String XMLE_SIG_AND_REFS_TIME_STAMP_V2 = "SigAndRefsTimeStampV2";
 
 	public String XADES_SIGNED_PROPERTIES = "http://uri.etsi.org/01903#SignedProperties";
 
@@ -97,17 +65,6 @@ public class XPathQueryHolder implements Serializable {
 	public final String XPATH_CERTDIGEST = "/xades:CertDigest";
 	public final String XPATH_CERTREFS = "/xades:CertRefs";
 	
-	public static final String ELEMENT_NAME_OBJECT = "ds:Object";
-	public static final String ELEMENT_NAME_MANIFEST = "ds:Manifest";
-	public static final String ELEMENT_SIGNATURE = "ds:Signature";
-
-	public final String XPATH__SIGNATURE = "./" + ELEMENT_SIGNATURE;
-	public final String XPATH_SIGNED_INFO = "./ds:SignedInfo";
-	public final String XPATH_SIGNATURE_METHOD = XPATH_SIGNED_INFO + "/ds:SignatureMethod";
-	public final String XPATH_SIGNATURE_VALUE = "./ds:SignatureValue";
-	public final String XPATH_REFERENCE = XPATH_SIGNED_INFO + "/ds:Reference";
-	public final String XPATH_KEY_INFO = "./ds:KeyInfo";
-	public final String XPATH_X509_DATA = XPATH_KEY_INFO + "/ds:X509Data";
 	public final String XPATH__ALL_DATA_OBJECTS_TIMESTAMP = "xades:AllDataObjectsTimeStamp";
 	public final String XPATH__INDIVIDUAL_DATA_OBJECTS_TIMESTAMP = "xades:IndividualDataObjectsTimeStamp";
 	public final String XPATH__COMMITMENT_TYPE_INDICATION = "xades:CommitmentTypeIndication";
@@ -118,10 +75,7 @@ public class XPathQueryHolder implements Serializable {
 	public final String XPATH__RESPONDER_ID_BY_NAME = "xades:ByName";
 	public final String XPATH__RESPONDER_ID_BY_KEY = "xades:ByKey";
 
-	public final String XPATH_KEY_INFO_X509_CERTIFICATE = XPATH_X509_DATA + "/ds:X509Certificate";
-
-	public static final String XPATH_OBJECT = "./" + ELEMENT_NAME_OBJECT;
-	public static final String XPATH_MANIFEST = XPATH_OBJECT + "/" + ELEMENT_NAME_MANIFEST;
+	public static final String XPATH_OBJECT = "./ds:Object";
 
 	public String XPATH_QUALIFYING_PROPERTIES = XPATH_OBJECT + "/xades:QualifyingProperties";
 	public String XPATH__QUALIFYING_PROPERTIES = "./xades:QualifyingProperties";

@@ -34,6 +34,8 @@ import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.XAdES141Element;
+import eu.europa.esig.dss.xades.XAdESElement;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 @SuppressWarnings("serial")
@@ -121,71 +123,71 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 
 	@Override
 	protected boolean isAllDataObjectsTimestamp(XAdESAttribute signedAttribute) {
-		return XPathQueryHolder.XMLE_ALL_DATA_OBJECTS_TIME_STAMP.equals(signedAttribute.getName());
+		return XAdESElement.ALL_DATA_OBJECTS_TIMESTAMP.isSameTagName(signedAttribute.getName());
 	}
 
 	@Override
 	protected boolean isIndividualDataObjectsTimestamp(XAdESAttribute signedAttribute) {
-		return XPathQueryHolder.XMLE_INDIVIDUAL_DATA_OBJECTS_TIME_STAMP.equals(signedAttribute.getName());
+		return XAdESElement.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP.isSameTagName(signedAttribute.getName());
 	}
 
 	@Override
 	protected boolean isSignatureTimestamp(XAdESAttribute unsignedAttribute) {
-		return XPathQueryHolder.XMLE_SIGNATURE_TIME_STAMP.equals(unsignedAttribute.getName());
+		return XAdESElement.SIGNATURE_TIMESTAMP.isSameTagName(unsignedAttribute.getName());
 	}
 
 	@Override
 	protected boolean isCompleteCertificateRef(XAdESAttribute unsignedAttribute) {
 		String localName = unsignedAttribute.getName();
-		return XPathQueryHolder.XMLE_COMPLETE_CERTIFICATE_REFS.equals(localName) || XPathQueryHolder.XMLE_COMPLETE_CERTIFICATE_REFS_V2.equals(localName);
+		return XAdESElement.COMPLETE_CERTIFICATE_REFS.isSameTagName(localName) || XAdES141Element.COMPLETE_CERTIFICATE_REFS_V2.isSameTagName(localName);
 	}
 
 	@Override
 	protected boolean isAttributeCertificateRef(XAdESAttribute unsignedAttribute) {
 		String localName = unsignedAttribute.getName();
-		return XPathQueryHolder.XMLE_ATTRIBUTE_CERTIFICATE_REFS.equals(localName) || XPathQueryHolder.XMLE_ATTRIBUTE_CERTIFICATE_REFS_V2.equals(localName);
+		return XAdESElement.ATTRIBUTE_CERTIFICATE_REFS.isSameTagName(localName) || XAdES141Element.ATTRIBUTE_CERTIFICATE_REFS_V2.isSameTagName(localName);
 	}
 
 	@Override
 	protected boolean isCompleteRevocationRef(XAdESAttribute unsignedAttribute) {
-		return XPathQueryHolder.XMLE_COMPLETE_REVOCATION_REFS.equals(unsignedAttribute.getName());
+		return XAdESElement.COMPLETE_REVOCATION_REFS.isSameTagName(unsignedAttribute.getName());
 	}
 
 	@Override
 	protected boolean isAttributeRevocationRef(XAdESAttribute unsignedAttribute) {
-		return XPathQueryHolder.XMLE_ATTRIBUTE_REVOCATION_REFS.equals(unsignedAttribute.getName());
+		return XAdESElement.ATTRIBUTE_REVOCATION_REFS.isSameTagName(unsignedAttribute.getName());
 	}
 
 	@Override
 	protected boolean isRefsOnlyTimestamp(XAdESAttribute unsignedAttribute) {
 		String localName = unsignedAttribute.getName();
-		return XPathQueryHolder.XMLE_REFS_ONLY_TIME_STAMP.equals(localName) || XPathQueryHolder.XMLE_REFS_ONLY_TIME_STAMP_V2.equals(localName);
+		return XAdESElement.REFS_ONLY_TIMESTAMP.isSameTagName(localName) || XAdES141Element.REFS_ONLY_TIMESTAMP_V2.isSameTagName(localName);
 	}
 
 	@Override
 	protected boolean isSigAndRefsTimestamp(XAdESAttribute unsignedAttribute) {
 		String localName = unsignedAttribute.getName();
-		return XPathQueryHolder.XMLE_SIG_AND_REFS_TIME_STAMP.equals(localName) || XPathQueryHolder.XMLE_SIG_AND_REFS_TIME_STAMP_V2.equals(localName);
+		return XAdESElement.SIG_AND_REFS_TIMESTAMP.isSameTagName(localName) || XAdES141Element.SIG_AND_REFS_TIMESTAMP_V2.isSameTagName(localName);
 	}
 
 	@Override
 	protected boolean isCertificateValues(XAdESAttribute unsignedAttribute) {
-		return XPathQueryHolder.XMLE_CERTIFICATE_VALUES.equals(unsignedAttribute.getName());
+		return XAdESElement.CERTIFICATE_VALUES.isSameTagName(unsignedAttribute.getName());
 	}
 
 	@Override
 	protected boolean isRevocationValues(XAdESAttribute unsignedAttribute) {
-		return XPathQueryHolder.XMLE_REVOCATION_VALUES.equals(unsignedAttribute.getName());
+		return XAdESElement.REVOCATION_VALUES.isSameTagName(unsignedAttribute.getName());
 	}
 
 	@Override
 	protected boolean isArchiveTimestamp(XAdESAttribute unsignedAttribute) {
-		return XPathQueryHolder.XMLE_ARCHIVE_TIME_STAMP.equals(unsignedAttribute.getName());
+		return XAdESElement.ARCHIVE_TIMESTAMP.isSameTagName(unsignedAttribute.getName());
 	}
 
 	@Override
 	protected boolean isTimeStampValidationData(XAdESAttribute unsignedAttribute) {
-		return XPathQueryHolder.XMLE_TIME_STAMP_VALIDATION_DATA.equals(unsignedAttribute.getName());
+		return XAdES141Element.TIMESTAMP_VALIDATION_DATA.isSameTagName(unsignedAttribute.getName());
 	}
 
 	@Override

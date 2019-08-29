@@ -42,6 +42,7 @@ import eu.europa.esig.dss.validation.CertificateRef;
 import eu.europa.esig.dss.validation.IssuerSerialInfo;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.XMLDSigPaths;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 /**
@@ -104,7 +105,7 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 	@Override
 	public List<CertificateToken> getKeyInfoCertificates() {
 		if (keyInfoCertificates == null) {
-			keyInfoCertificates = getCertificates(xPathQueryHolder.XPATH_KEY_INFO_X509_CERTIFICATE);
+			keyInfoCertificates = getCertificates(XMLDSigPaths.KEY_INFO_X509_CERTIFICATE_PATH);
 		}
 		return keyInfoCertificates;
 	}

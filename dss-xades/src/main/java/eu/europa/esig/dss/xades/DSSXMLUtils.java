@@ -245,7 +245,7 @@ public final class DSSXMLUtils {
 	}
 	
 	public static Document getDocWithIndentedSignatures(final Document documentDom, String signatureId, List<String> noIndentObjectIds) {
-		NodeList signatures = DomUtils.getNodeList(documentDom, "//" + XPathQueryHolder.ELEMENT_SIGNATURE);
+		NodeList signatures = DomUtils.getNodeList(documentDom, XMLDSigPaths.ALL_SIGNATURES_PATH);
 		for (int i = 0; i < signatures.getLength(); i++) {
 			Element signature = (Element) signatures.item(i);
 			String signatureAttrIdValue = getIDIdentifier(signature);
@@ -288,7 +288,7 @@ public final class DSSXMLUtils {
 	 * @return an indented {@link Node} xmlNode
 	 */
 	public static Node getIndentedNode(final Node documentDom, final Node xmlNode) {
-		NodeList signatures = DomUtils.getNodeList(documentDom, "//" + XPathQueryHolder.ELEMENT_SIGNATURE);
+		NodeList signatures = DomUtils.getNodeList(documentDom, XMLDSigPaths.ALL_SIGNATURES_PATH);
 		for (int i = 0; i < signatures.getLength(); i++) {
 			Node signature = signatures.item(i);
 			NodeList candidateList;
@@ -731,7 +731,7 @@ public final class DSSXMLUtils {
 		final byte[] digestValue = Utils.fromBase64(digestValueElement.getTextContent());
 		
 		try {
-			final String xmlAlgorithmName = digestMethodElement.getAttribute(XPathQueryHolder.XMLE_ALGORITHM);
+			final String xmlAlgorithmName = digestMethodElement.getAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName());
 			final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forXML(xmlAlgorithmName);
 			return new Digest(digestAlgorithm, digestValue);
 		} catch (DSSException e) {
@@ -754,7 +754,7 @@ public final class DSSXMLUtils {
 		DigestAlgorithm digestAlgo = null;
 		byte[] digestValue = null;
 		if (digestAlgorithmEl != null && digestValueEl != null) {
-			final String xmlName = digestAlgorithmEl.getAttribute(XPathQueryHolder.XMLE_ALGORITHM);
+			final String xmlName = digestAlgorithmEl.getAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName());
 			digestAlgo = DigestAlgorithm.forXML(xmlName);
 			digestValue = Utils.fromBase64(digestValueEl.getTextContent());
 			return new Digest(digestAlgo, digestValue);
@@ -792,7 +792,7 @@ public final class DSSXMLUtils {
 	public static boolean isKeyInfoReference(final Reference reference, final Element signature, final XPathQueryHolder xPathQueryHolder) {
 		String uri = reference.getURI();
 		uri = DomUtils.getId(uri);
-		Element element = DomUtils.getElement(signature, "./" + xPathQueryHolder.XPATH_KEY_INFO + DomUtils.getXPathByIdAttribute(uri));
+		Element element = DomUtils.getElement(signature, XMLDSigPaths.KEY_INFO_PATH + DomUtils.getXPathByIdAttribute(uri));
 		if (element != null) {
 			return true;
 		}

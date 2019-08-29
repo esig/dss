@@ -86,6 +86,11 @@ import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.SignerRole;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.SantuarioInitializer;
+import eu.europa.esig.dss.xades.XAdES141Element;
+import eu.europa.esig.dss.xades.XAdESElement;
+import eu.europa.esig.dss.xades.XMLDSigAttribute;
+import eu.europa.esig.dss.xades.XMLDSigElement;
+import eu.europa.esig.dss.xades.XMLDSigPaths;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 import eu.europa.esig.dss.xades.reference.XAdESReferenceValidation;
 
@@ -229,9 +234,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				final Element childElement = (Element) node;
 				final String namespaceURI = childElement.getNamespaceURI();
 				final String localName = childElement.getLocalName();
-				if (XPathQueryHolder.XMLE_TRANSFORM.equals(localName) && javax.xml.crypto.dsig.XMLSignature.XMLNS.equals(namespaceURI)) {
+				if (XMLDSigElement.TRANSFORM.isSameTagName(localName) && XMLDSigElement.TRANSFORM.getURI().equals(namespaceURI)) {
 					continue;
-				} else if (XPathQueryHolder.XMLE_QUALIFYING_PROPERTIES.equals(localName)) {
+				} else if (XAdESElement.QUALIFYING_PROPERTIES.isSameTagName(localName)) {
 
 					setXPathQueryHolder(namespaceURI);
 					return;
@@ -242,6 +247,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private void setXPathQueryHolder(final String namespaceURI) {
+
+		// TODO
 
 		for (final XPathQueryHolder xPathQueryHolder : xPathQueryHolders) {
 
@@ -305,7 +312,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public SignatureAlgorithm getSignatureAlgorithm() {
-		final String xmlName = DomUtils.getElement(signatureElement, xPathQueryHolder.XPATH_SIGNATURE_METHOD).getAttribute(XPathQueryHolder.XMLE_ALGORITHM);
+		final String xmlName = DomUtils.getElement(signatureElement, XMLDSigPaths.SIGNATURE_METHOD_PATH)
+				.getAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName());
 		return SignatureAlgorithm.forXML(xmlName, null);
 	}
 
@@ -517,20 +525,15 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			final Node item = list.item(ii);
 			final String name = item.getLocalName();
 			final String nodeValue = item.getTextContent();
-			if (XPathQueryHolder.XMLE_CITY.equals(name)) {
-
+			if (XAdESElement.CITY.isSameTagName(name)) {
 				signatureProductionPlace.setCity(nodeValue);
-			} else if (XPathQueryHolder.XMLE_STATE_OR_PROVINCE.equals(name)) {
-
+			} else if (XAdESElement.STATE_OR_PROVINCE.isSameTagName(name)) {
 				signatureProductionPlace.setStateOrProvince(nodeValue);
-			} else if (XPathQueryHolder.XMLE_POSTAL_CODE.equals(name)) {
-
+			} else if (XAdESElement.POSTAL_CODE.isSameTagName(name)) {
 				signatureProductionPlace.setPostalCode(nodeValue);
-			} else if (XPathQueryHolder.XMLE_COUNTRY_NAME.equals(name)) {
-
+			} else if (XAdESElement.COUNTRY_NAME.isSameTagName(name)) {
 				signatureProductionPlace.setCountryName(nodeValue);
-			} else if (XPathQueryHolder.XMLE_STREET_ADDRESS.equals(name)) {
-
+			} else if (XAdESElement.STREET_ADDRESS.isSameTagName(name)) {
 				signatureProductionPlace.setStreetAddress(nodeValue);
 			}
 		}
@@ -632,7 +635,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public byte[] getSignatureValue() {
-		Element signatureValueElement = DomUtils.getElement(signatureElement, xPathQueryHolder.XPATH_SIGNATURE_VALUE);
+		Element signatureValueElement = DomUtils.getElement(signatureElement, XMLDSigPaths.SIGNATURE_VALUE_PATH);
 		if (signatureValueElement != null) {
 			return Utils.fromBase64(signatureValueElement.getTextContent());
 		}
@@ -927,12 +930,12 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	public Node getObjectById(String uri) {
-		String objectById = XPathQueryHolder.XPATH_OBJECT + DomUtils.getXPathByIdAttribute(uri);
+		String objectById = XMLDSigPaths.OBJECT_PATH + DomUtils.getXPathByIdAttribute(uri);
 		return DomUtils.getNode(signatureElement, objectById);
 	}
 
 	public Node getManifestById(String uri) {
-		String manifestById = XPathQueryHolder.XPATH_MANIFEST + DomUtils.getXPathByIdAttribute(uri);
+		String manifestById = XMLDSigPaths.MANIFEST_PATH + DomUtils.getXPathByIdAttribute(uri);
 		return DomUtils.getNode(signatureElement, manifestById);
 	}
 
@@ -1061,7 +1064,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		for (int ii = 0; ii < counterSignatures.getLength(); ii++) {
 
 			final Element counterSignatureElement = (Element) counterSignatures.item(ii);
-			final Element signatureElement = DomUtils.getElement(counterSignatureElement, xPathQueryHolder.XPATH__SIGNATURE);
+			final Element signatureElement = DomUtils.getElement(counterSignatureElement, XMLDSigPaths.SIGNATURE_PATH);
 
 			// Verify that the element is a proper signature by trying to build
 			// a XAdESSignature out of it
@@ -1212,7 +1215,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		if (nodeList.getLength() > 0) {
 			final Element unsignedSignatureElement = (Element) nodeList.item(nodeList.getLength() - 1);
 			final String nodeName = unsignedSignatureElement.getLocalName();
-			if ("TimeStampValidationData".equals(nodeName)) {
+			if (XAdES141Element.TIMESTAMP_VALIDATION_DATA.isSameTagName(nodeName)) {
 				return unsignedSignatureElement;
 			}
 		}
