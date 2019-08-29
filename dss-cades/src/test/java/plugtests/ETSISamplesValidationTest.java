@@ -24,7 +24,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -37,6 +39,7 @@ import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
@@ -53,6 +56,8 @@ import eu.europa.esig.dss.validation.reports.Reports;
  */
 @RunWith(Parameterized.class)
 public class ETSISamplesValidationTest {
+
+	private static final List<String> DETACHED_SIGNATURES = Arrays.asList("Signature-C-SK-20.p7s", "Signature-C-SK-59.p7s");
 
 	@Parameters(name = "Validation {index} : {0}")
 	public static Collection<Object[]> data() {
@@ -78,6 +83,10 @@ public class ETSISamplesValidationTest {
 		certificateVerifier.setIncludeCertificateTokenValues(true);
 		certificateVerifier.setDataLoader(new IgnoreDataLoader());
 		validator.setCertificateVerifier(certificateVerifier);
+
+		if (DETACHED_SIGNATURES.contains(fileToTest.getName())) {
+			validator.setDetachedContents(Arrays.asList(new InMemoryDocument("Hello world".getBytes(StandardCharsets.UTF_8))));
+		}
 
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);
