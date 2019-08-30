@@ -8,16 +8,16 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.validation.SignatureProperties;
-import eu.europa.esig.dss.xades.XPathQueryHolder;
+import eu.europa.esig.dss.xades.XAdESPaths;
 
 public abstract class XAdESSigProperties implements SignatureProperties<XAdESAttribute> {
 	
 	private final Element signatureProptiesDom;
-	private final XPathQueryHolder xPathQueryHolder;
+	private final XAdESPaths xadesPaths;
 	
-	XAdESSigProperties(Element signaturePropties, XPathQueryHolder xPathQueryHolder) {
+	XAdESSigProperties(Element signaturePropties, XAdESPaths xadesPaths) {
 		this.signatureProptiesDom = signaturePropties;
-		this.xPathQueryHolder = xPathQueryHolder;
+		this.xadesPaths = xadesPaths;
 	}
 	
 	@Override
@@ -33,7 +33,7 @@ public abstract class XAdESSigProperties implements SignatureProperties<XAdESAtt
 			for (int ii = 0; ii < unsignedProperties.getLength(); ii++) {
 				Node node = unsignedProperties.item(ii);
 				if (isElementNode(node)) {
-					XAdESAttribute unsignedAttribute = new XAdESAttribute((Element) node, xPathQueryHolder);
+					XAdESAttribute unsignedAttribute = new XAdESAttribute((Element) node, xadesPaths);
 					unsignedAttributes.add(unsignedAttribute);
 				}
 			}

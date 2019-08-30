@@ -24,8 +24,9 @@ import eu.europa.esig.dss.validation.timestamp.TimestampDataBuilder;
 import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.XAdES132Element;
 import eu.europa.esig.dss.xades.XAdES141Element;
-import eu.europa.esig.dss.xades.XAdESElement;
+import eu.europa.esig.dss.xades.XAdESPaths;
 import eu.europa.esig.dss.xades.XMLDSigPaths;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
@@ -35,12 +36,13 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 	
 	private final List<Reference> references;
 	private final Element signature;
-	private final XPathQueryHolder xPathQueryHolder;
 	
-	public XAdESTimestampDataBuilder(final Element signature, final List<Reference> references, final XPathQueryHolder xPathQueryHolder) {
+	private final XAdESPaths xadesPaths;
+
+	public XAdESTimestampDataBuilder(final Element signature, final List<Reference> references, final XAdESPaths xadesPaths) {
 		this.signature = signature;
 		this.references = references;
-		this.xPathQueryHolder = xPathQueryHolder;
+		this.xadesPaths = xadesPaths;
 	}
 
 	@Override
@@ -171,7 +173,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 		canonicalizationMethod = timestampToken != null ? timestampToken.getCanonicalizationMethod() : canonicalizationMethod;
 		try (ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
 			writeCanonicalizedValue(XMLDSigPaths.SIGNATURE_VALUE_PATH, canonicalizationMethod, buffer);
-			final NodeList signatureTimeStampNode = DomUtils.getNodeList(signature, xPathQueryHolder.XPATH_SIGNATURE_TIMESTAMP);
+			final NodeList signatureTimeStampNode = DomUtils.getNodeList(signature, xadesPaths.getSignatureTimestampsPath());
 			if (signatureTimeStampNode != null) {
 				for (int ii = 0; ii < signatureTimeStampNode.getLength(); ii++) {
 					final Node item = signatureTimeStampNode.item(ii);
@@ -179,8 +181,8 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 					buffer.write(canonicalizedValue);
 				}
 			}
-			writeCanonicalizedValue(xPathQueryHolder.XPATH_COMPLETE_CERTIFICATE_REFS, canonicalizationMethod, buffer);
-			writeCanonicalizedValue(xPathQueryHolder.XPATH_COMPLETE_REVOCATION_REFS, canonicalizationMethod, buffer);
+			writeCanonicalizedValue(xadesPaths.getCompleteCertificateRefsPath(), canonicalizationMethod, buffer);
+			writeCanonicalizedValue(xadesPaths.getCompleteRevocationRefsPath(), canonicalizationMethod, buffer);
 			final byte[] byteArray = buffer.toByteArray();
 			if (LOG.isTraceEnabled()) {
 				LOG.trace("X1Timestamp (SigAndRefsTimeStamp) canonicalised string : \n{}", new String(byteArray));
@@ -208,8 +210,9 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 	protected byte[] getTimestampX2Data(final TimestampToken timestampToken, String canonicalizationMethod) {
 		canonicalizationMethod = timestampToken != null ? timestampToken.getCanonicalizationMethod() : canonicalizationMethod;
 		try (ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
-			writeCanonicalizedValue(xPathQueryHolder.XPATH_COMPLETE_CERTIFICATE_REFS, canonicalizationMethod, buffer);
-			writeCanonicalizedValue(xPathQueryHolder.XPATH_COMPLETE_REVOCATION_REFS, canonicalizationMethod, buffer);
+
+			writeCanonicalizedValue(xadesPaths.getCompleteCertificateRefsPath(), canonicalizationMethod, buffer);
+			writeCanonicalizedValue(xadesPaths.getCompleteRevocationRefsPath(), canonicalizationMethod, buffer);
 
 			final byte[] byteArray = buffer.toByteArray();
 			if (LOG.isTraceEnabled()) {
@@ -301,7 +304,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 			 */
 			final Element unsignedSignaturePropertiesDom = getUnsignedSignaturePropertiesDom();
 			if (unsignedSignaturePropertiesDom == null) {
-				throw new NullPointerException(xPathQueryHolder.XPATH_UNSIGNED_SIGNATURE_PROPERTIES);
+				throw new NullPointerException(xadesPaths.getUnsignedSignaturePropertiesPath());
 			}
 			writeTimestampedUnsignedProperties(unsignedSignaturePropertiesDom, timestampToken, canonicalizationMethod, buffer);
 			
@@ -348,7 +351,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 	}
 
 	private Element getUnsignedSignaturePropertiesDom() {
-		return DomUtils.getElement(signature, xPathQueryHolder.XPATH_UNSIGNED_SIGNATURE_PROPERTIES);
+		return DomUtils.getElement(signature, xadesPaths.getUnsignedSignaturePropertiesPath());
 	}
 	
 	private void writeTimestampedUnsignedProperties(final Element unsignedSignaturePropertiesDom, TimestampToken timestampToken, 
@@ -395,7 +398,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 			 * satisfy with the rules specified in clause 7.6.4.
 			 */
 			// } else
-			if (XAdESElement.ARCHIVE_TIMESTAMP.isSameTagName(localName)) {
+			if (XAdES132Element.ARCHIVE_TIMESTAMP.isSameTagName(localName)) {
 				// TODO: compare encoded base64
 				if ((timestampToken != null) && (timestampToken.getHashCode() == node.hashCode())) {
 					break;
@@ -450,7 +453,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 		for (int ii = 0; ii < objects.getLength(); ii++) {
 
 			final Node node = objects.item(ii);
-			final Node qualifyingProperties = DomUtils.getElement(node, xPathQueryHolder.XPATH__QUALIFYING_PROPERTIES);
+			final Node qualifyingProperties = DomUtils.getElement(node, xadesPaths.getQualifyingPropertiesPath());
 			if (qualifyingProperties != null) {
 				continue;
 			}

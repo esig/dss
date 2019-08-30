@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.xades;
 
-public enum XAdESElement implements DSSElement {
+public enum XAdES132Element implements DSSElement {
 
 	ANY("Any"),
 
@@ -218,12 +218,14 @@ public enum XAdESElement implements DSSElement {
 
 	ATTRIBUTE_REVOCATION_VALUES("AttributeRevocationValues"),
 
-	ARCHIVE_TIMESTAMP("ArchiveTimeStamp");
+	ARCHIVE_TIMESTAMP("ArchiveTimeStamp"),
+	
+	INT("int");
 
 	private final String tagName;
 	private final DSSNamespace namespace;
 
-	XAdESElement(String tagName) {
+	XAdES132Element(String tagName) {
 		this.tagName = tagName;
 		this.namespace = DSSNamespaces.XADES;
 	}

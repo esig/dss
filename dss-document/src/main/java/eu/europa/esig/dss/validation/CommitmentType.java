@@ -26,11 +26,6 @@ import java.util.List;
 /**
  * This class represents the commitment type indication identifiers extracted from the signature.
  *
- *
- *
- *
- *
- *
  */
 public class CommitmentType {
 
@@ -41,11 +36,10 @@ public class CommitmentType {
     }
 
     public void addIdentifier(final String identifier) {
-
         if (identifiers == null) {
-
             identifiers = new ArrayList<String>();
         }
         identifiers.add(identifier);
     }
+
 }

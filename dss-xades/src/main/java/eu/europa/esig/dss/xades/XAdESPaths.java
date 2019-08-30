@@ -1,52 +1,119 @@
 package eu.europa.esig.dss.xades;
 
-public class XAdESPaths extends AbstractPaths {
+public interface XAdESPaths {
 
-	public String getQualifyingPropertiesPath() {
-		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdESElement.QUALIFYING_PROPERTIES);
-	}
+	String getSignedPropertiesUri();
 
-	public String getSignedPropertiesPath() {
-		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdESElement.QUALIFYING_PROPERTIES, XAdESElement.SIGNED_PROPERTIES);
-	}
+	String getCounterSignatureUri();
 
-	public String getSignedSignaturePropertiesPath() {
-		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdESElement.QUALIFYING_PROPERTIES, XAdESElement.SIGNED_PROPERTIES,
-				XAdESElement.SIGNED_SIGNATURE_PROPERTIES);
-	}
+	// ----------------------- From Object
 
-	public String getSigningTimePath() {
-		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdESElement.QUALIFYING_PROPERTIES, XAdESElement.SIGNED_PROPERTIES,
-				XAdESElement.SIGNED_SIGNATURE_PROPERTIES, XAdESElement.SIGNING_TIME);
-	}
+	String getQualifyingPropertiesPath();
 
-	public String getSigningCertificatePath() {
-		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdESElement.QUALIFYING_PROPERTIES, XAdESElement.SIGNED_PROPERTIES,
-				XAdESElement.SIGNED_SIGNATURE_PROPERTIES, XAdESElement.SIGNING_CERTIFICATE);
-	}
+	String getSignedPropertiesPath();
 
-	public String getSigningCertificateV2Path() {
-		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdESElement.QUALIFYING_PROPERTIES, XAdESElement.SIGNED_PROPERTIES,
-				XAdESElement.SIGNED_SIGNATURE_PROPERTIES, XAdESElement.SIGNING_CERTIFICATE_V2);
-	}
+	String getSignedSignaturePropertiesPath();
 
-	public String getSignatureProductionPlacePath() {
-		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdESElement.QUALIFYING_PROPERTIES, XAdESElement.SIGNED_PROPERTIES,
-				XAdESElement.SIGNED_SIGNATURE_PROPERTIES, XAdESElement.SIGNATURE_PRODUCTION_PLACE);
-	}
+	String getSigningTimePath();
 
-	public String getSignatureProductionPlaceV2Path() {
-		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdESElement.QUALIFYING_PROPERTIES, XAdESElement.SIGNED_PROPERTIES,
-				XAdESElement.SIGNED_SIGNATURE_PROPERTIES, XAdESElement.SIGNATURE_PRODUCTION_PLACE_V2);
-	}
+	String getSigningCertificatePath();
 
-	public String getSignedDataObjectPropertiesPath() {
-		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdESElement.QUALIFYING_PROPERTIES, XAdESElement.SIGNED_PROPERTIES,
-				XAdESElement.SIGNED_DATA_OBJECT_PROPERTIES);
-	}
+	String getSigningCertificateV2Path();
 
-	public String getUnsignedPropertiesPath() {
-		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdESElement.QUALIFYING_PROPERTIES, XAdESElement.UNSIGNED_PROPERTIES);
-	}
+	String getSignatureProductionPlacePath();
+
+	String getSignatureProductionPlaceV2Path();
+
+	String getSignedDataObjectPropertiesPath();
+
+	String getDataObjectFormatMimeType();
+
+	String getDataObjectFormatObjectIdentifier();
+
+	String getCommitmentTypeIndicationPath();
+
+	String getUnsignedPropertiesPath();
+
+	String getUnsignedSignaturePropertiesPath();
+
+	String getCounterSignaturePath();
+
+	String getAttributeRevocationRefsPath();
+
+	String getCompleteRevocationRefsPath();
+
+	String getCompleteCertificateRefsPath();
+
+	String getCompleteCertificateRefsV2Path();
+
+	String getAttributeCertificateRefsPath();
+
+	String getAttributeCertificateRefsV2Path();
+
+	String getCertificateValuesPath();
+
+	String getRevocationValuesPath();
+
+	String getAttributeRevocationValuesPath();
+	
+	String getTimeStampValidationDataRevocationValuesPath();
+
+	String getSignatureTimestampsPath();
+
+	String getSigAndRefsTimestampPath();
+
+	String getSigAndRefsTimestampV2Path();
+
+	String getSignaturePolicyIdentifier();
+
+	String getEncapsulatedCertificateValuesPath();
+
+	String getEncapsulatedAttrAuthoritiesCertValuesPath();
+
+	String getEncapsulatedTimeStampValidationDataCertValuesPath();
+
+	// ----------------
+
+	String getCurrentCRLValuesChildren();
+
+	String getCurrentCRLRefsChildren();
+
+	String getCurrentOCSPValuesChildren();
+
+	String getCurrentOCSPRefsChildren();
+
+	String getCurrentOCSPRefResponderID();
+
+	String getCurrentOCSPRefResponderIDByName();
+
+	String getCurrentOCSPRefResponderIDByKey();
+
+	String getCurrentOCSPRefProducedAt();
+
+	String getCurrentDigestAlgAndValue();
+
+	String getCurrentCertRefsChildren();
+
+	String getCurrentCertDigest();
+
+	String getCurrentEncapsulatedTimestamp();
+	
+	String getCurrentIssuerSerialIssuerNamePath();
+
+	String getCurrentIssuerSerialSerialNumberPath();
+
+	String getCurrentIssuerSerialV2Path();
+
+	// --------------------------- Policy
+
+	String getCurrentSignaturePolicyId();
+
+	String getCurrentSignaturePolicyDigestAlgAndValue();
+
+	String getCurrentSignaturePolicySPURI();
+
+	String getCurrentSignaturePolicyDescription();
+
+	String getCurrentSignaturePolicyImplied();
 
 }

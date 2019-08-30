@@ -25,19 +25,19 @@ public class XAdESPathsTest {
 
 	@Test
 	public void allTimestamps() {
-		String path = XAdESPaths.getAll(XAdESElement.ENCAPSULATED_TIMESTAMP);
+		String path = XAdESPaths.all(XAdES132Element.ENCAPSULATED_TIMESTAMP);
 		assertEquals("//xades:EncapsulatedTimeStamp", path);
 	}
 
 	@Test
 	public void fromCurrentPosition() {
-		String path = XAdESPaths.fromCurrentPosition(XAdESElement.OCSP_REF);
+		String path = XAdESPaths.fromCurrentPosition(XAdES132Element.OCSP_REF);
 		assertEquals("./xades:OCSPRef", path);
 	}
 
 	@Test
 	public void fromCurrentPositionMultiple() {
-		String path = XAdESPaths.fromCurrentPosition(XAdESElement.OCSP_REFS, XAdESElement.OCSP_REF);
+		String path = XAdESPaths.fromCurrentPosition(XAdES132Element.OCSP_REFS, XAdES132Element.OCSP_REF);
 		assertEquals("./xades:OCSPRefs/xades:OCSPRef", path);
 	}
 

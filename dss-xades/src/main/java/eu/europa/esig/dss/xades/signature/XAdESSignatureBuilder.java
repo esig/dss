@@ -546,7 +546,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	protected void incorporateReferenceSignedProperties() {
 		
 		final Element reference = DomUtils.addElement(documentDom, signedInfoDom, XMLNS, DS_REFERENCE);
-		reference.setAttribute(TYPE, xPathQueryHolder.XADES_SIGNED_PROPERTIES);
+		reference.setAttribute(TYPE, xadesPaths.getSignedPropertiesUri());
 		reference.setAttribute(URI, "#" + XADES_SUFFIX + deterministicId);
 
 		final Element transforms = DomUtils.addElement(documentDom, reference, XMLNS, DS_TRANSFORMS);

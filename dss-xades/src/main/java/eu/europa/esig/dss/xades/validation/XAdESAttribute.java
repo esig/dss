@@ -9,19 +9,19 @@ import org.w3c.dom.NodeList;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.validation.ISignatureAttribute;
 import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
-import eu.europa.esig.dss.xades.XMLDSigAttribute;
-import eu.europa.esig.dss.xades.XPathQueryHolder;
+import eu.europa.esig.dss.xades.XAdESPaths;
+import eu.europa.esig.dss.xades.XMLDSigPaths;
 
 public class XAdESAttribute implements ISignatureAttribute {
 	
 	private final Element element;
-	private final XPathQueryHolder xPathQueryHolder;
+	private final XAdESPaths xadesPaths;
 	
 	private String localName;
 	
-	XAdESAttribute(Element element, XPathQueryHolder xPathQueryHolder) {
+	XAdESAttribute(Element element, XAdESPaths xadesPaths) {
 		this.element = element;
-		this.xPathQueryHolder = xPathQueryHolder;
+		this.xadesPaths = xadesPaths;
 	}
 	
 	/**
@@ -64,11 +64,7 @@ public class XAdESAttribute implements ISignatureAttribute {
 	 * @return {@link String} timestamp canonicalization mathod
 	 */
 	public String getTimestampCanonicalizationMethod() {
-		final Element canonicalizationMethodElement = DomUtils.getElement(element, xPathQueryHolder.XPATH__CANONICALIZATION_METHOD);
-		if (canonicalizationMethodElement != null) {
-			return canonicalizationMethodElement.getAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName());
-		}
-		return null;
+		return DomUtils.getValue(element, XMLDSigPaths.CANONICALIZATION_ALGORITHM_PATH);
 	}
 	
 	/**

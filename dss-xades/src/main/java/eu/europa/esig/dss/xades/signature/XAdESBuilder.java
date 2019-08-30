@@ -52,6 +52,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.ProfileParameters.Operation;
+import eu.europa.esig.dss.xades.XAdESPaths;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
@@ -173,6 +174,8 @@ public abstract class XAdESBuilder {
 	 * default signature schema.
 	 */
 	protected final XPathQueryHolder xPathQueryHolder = new XPathQueryHolder();
+
+	protected XAdESPaths xadesPaths;
 
 	/*
 	 * This variable is a reference to the set of parameters relating to the structure and process of the creation or

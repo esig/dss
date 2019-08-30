@@ -712,54 +712,32 @@ public final class DSSXMLUtils {
 	}
 
 	/**
-	 * Returns {@link Digest} found in the given {@code element}
-	 * @param element {@link Element} to get digest from
-	 * @return {@link Digest}
+	 * This method extracts the Digest algorithm and value from an element of type
+	 * DigestAlgAndValueType
+	 * 
+	 * @param element
+	 *                an Element of type DigestAlgAndValueType
+	 * @return an instance of Digest
 	 */
-	public static Digest getCertDigest(Element element, XPathQueryHolder xPathQueryHolder) {
-		final Element certDigestElement = DomUtils.getElement(element, xPathQueryHolder.XPATH__CERT_DIGEST);
-		if (certDigestElement == null) {
+	public static Digest getDigestAndValue(Element element) {
+		if (element == null) {
 			return null;
 		}
-		
-		final Element digestMethodElement = DomUtils.getElement(certDigestElement, xPathQueryHolder.XPATH__DIGEST_METHOD);
-		final Element digestValueElement = DomUtils.getElement(element, xPathQueryHolder.XPATH__CERT_DIGEST_DIGEST_VALUE);
-		if (digestMethodElement == null || digestValueElement == null) {
+
+		String digestAlgorithmUri = DomUtils.getValue(element, XMLDSigPaths.DIGEST_METHOD_ALGORITHM_PATH);
+		String digestValueBase64 = DomUtils.getValue(element, XMLDSigPaths.DIGEST_VALUE_PATH);
+		if (digestAlgorithmUri == null || digestValueBase64 == null) {
 			return null;
 		}
-		
-		final byte[] digestValue = Utils.fromBase64(digestValueElement.getTextContent());
-		
+
 		try {
-			final String xmlAlgorithmName = digestMethodElement.getAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName());
-			final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forXML(xmlAlgorithmName);
+			final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forXML(digestAlgorithmUri);
+			final byte[] digestValue = Utils.fromBase64(digestValueBase64);
 			return new Digest(digestAlgorithm, digestValue);
 		} catch (DSSException e) {
-			LOG.warn("CertRef DigestMethod is not supported. Reason: {}", e.getMessage());
+			LOG.warn("Digest object cannot be built. Reason: {}", e.getMessage());
 			return null;
 		}
-		
-	}
-	
-	/**
-	 * Returns {@link Digest} found in the given {@code revocationRefNode}
-	 * @param revocationRefNode {@link Element} to get digest from
-	 * @param xPathQueryHolder {@link XPathQueryHolder}
-	 * @return {@link Digest}
-	 */
-	public static Digest getRevocationDigest(Element revocationRefNode, final XPathQueryHolder xPathQueryHolder) {
-		final Element digestAlgorithmEl = DomUtils.getElement(revocationRefNode, xPathQueryHolder.XPATH__DAAV_DIGEST_METHOD);
-		final Element digestValueEl = DomUtils.getElement(revocationRefNode, xPathQueryHolder.XPATH__DAAV_DIGEST_VALUE);
-		
-		DigestAlgorithm digestAlgo = null;
-		byte[] digestValue = null;
-		if (digestAlgorithmEl != null && digestValueEl != null) {
-			final String xmlName = digestAlgorithmEl.getAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName());
-			digestAlgo = DigestAlgorithm.forXML(xmlName);
-			digestValue = Utils.fromBase64(digestValueEl.getTextContent());
-			return new Digest(digestAlgo, digestValue);
-		}
-		return null;
 	}
 
 	/**
@@ -767,8 +745,8 @@ public final class DSSXMLUtils {
 	 * @param reference {@link Reference} to check
 	 * @return TRUE if the reference refers to the SignedProperties, FALSE otherwise
 	 */
-	public static boolean isSignedProperties(final Reference reference, final XPathQueryHolder xPathQueryHolder) {
-		return xPathQueryHolder.XADES_SIGNED_PROPERTIES.equals(reference.getType());
+	public static boolean isSignedProperties(final Reference reference, final XAdESPaths xadesPaths) {
+		return xadesPaths.getSignedPropertiesUri().equals(reference.getType());
 	}
 
 	/**
@@ -776,8 +754,8 @@ public final class DSSXMLUtils {
 	 * @param reference {@link Reference} to check
 	 * @return TRUE if the reference refers to the CounterSignature, FALSE otherwise
 	 */
-	public static boolean isCounerSignature(final Reference reference, final XPathQueryHolder xPathQueryHolder) {
-		return xPathQueryHolder.XADES_COUNTERSIGNED_SIGNATURE.equals(reference.getType());
+	public static boolean isCounterSignature(final Reference reference, final XAdESPaths xadesPaths) {
+		return xadesPaths.getCounterSignatureUri().equals(reference.getType());
 	}
 	
 	/**
@@ -789,7 +767,7 @@ public final class DSSXMLUtils {
 	 *                  the {@link Element} signature the given reference belongs to
 	 * @return TRUE if the reference is a KeyInfo reference, FALSE otherwise
 	 */
-	public static boolean isKeyInfoReference(final Reference reference, final Element signature, final XPathQueryHolder xPathQueryHolder) {
+	public static boolean isKeyInfoReference(final Reference reference, final Element signature) {
 		String uri = reference.getURI();
 		uri = DomUtils.getId(uri);
 		Element element = DomUtils.getElement(signature, XMLDSigPaths.KEY_INFO_PATH + DomUtils.getXPathByIdAttribute(uri));

@@ -12,6 +12,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
@@ -34,9 +35,9 @@ import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.XAdES132Element;
 import eu.europa.esig.dss.xades.XAdES141Element;
-import eu.europa.esig.dss.xades.XAdESElement;
-import eu.europa.esig.dss.xades.XPathQueryHolder;
+import eu.europa.esig.dss.xades.XAdESPaths;
 
 @SuppressWarnings("serial")
 public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute> {
@@ -44,37 +45,37 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESTimestampSource.class);
 	
 	private transient final Element signatureElement;
-	private final XPathQueryHolder xPathQueryHolder;
-	
+	private final XAdESPaths xadesPaths;
+
 	private transient List<Reference> references;
 	private List<ReferenceValidation> referenceValidations;
 	
 	private transient XAdESTimestampDataBuilder timestampDataBuilder;
 	
 	public XAdESTimestampSource(final XAdESSignature signature, final Element signatureElement, 
-			final XPathQueryHolder xPathQueryHolder, final CertificatePool certificatePool) {
+			final XAdESPaths xadesPaths, final CertificatePool certificatePool) {
 		super(signature);
 		this.references = signature.getReferences();
 		this.referenceValidations = signature.getReferenceValidations();
 		this.signatureElement = signatureElement;
-		this.xPathQueryHolder = xPathQueryHolder;
+		this.xadesPaths = xadesPaths;
 		this.certificatePool = certificatePool;
 	}
 
 	@Override
 	protected SignatureProperties<XAdESAttribute> getSignedSignatureProperties() {
-		return XAdESSignedDataObjectProperties.build(signatureElement, xPathQueryHolder);
+		return XAdESSignedDataObjectProperties.build(signatureElement, xadesPaths);
 	}
 
 	@Override
 	protected SignatureProperties<XAdESAttribute> getUnsignedSignatureProperties() {
-		return XAdESUnsignedSigProperties.build(signatureElement, xPathQueryHolder);
+		return XAdESUnsignedSigProperties.build(signatureElement, xadesPaths);
 	}
 
 	@Override
 	protected XAdESTimestampDataBuilder getTimestampDataBuilder() {
 		if (timestampDataBuilder == null) {
-			timestampDataBuilder = new XAdESTimestampDataBuilder(signatureElement, references, xPathQueryHolder);
+			timestampDataBuilder = new XAdESTimestampDataBuilder(signatureElement, references, xadesPaths);
 		}
 		return timestampDataBuilder;
 	}
@@ -123,66 +124,66 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 
 	@Override
 	protected boolean isAllDataObjectsTimestamp(XAdESAttribute signedAttribute) {
-		return XAdESElement.ALL_DATA_OBJECTS_TIMESTAMP.isSameTagName(signedAttribute.getName());
+		return XAdES132Element.ALL_DATA_OBJECTS_TIMESTAMP.isSameTagName(signedAttribute.getName());
 	}
 
 	@Override
 	protected boolean isIndividualDataObjectsTimestamp(XAdESAttribute signedAttribute) {
-		return XAdESElement.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP.isSameTagName(signedAttribute.getName());
+		return XAdES132Element.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP.isSameTagName(signedAttribute.getName());
 	}
 
 	@Override
 	protected boolean isSignatureTimestamp(XAdESAttribute unsignedAttribute) {
-		return XAdESElement.SIGNATURE_TIMESTAMP.isSameTagName(unsignedAttribute.getName());
+		return XAdES132Element.SIGNATURE_TIMESTAMP.isSameTagName(unsignedAttribute.getName());
 	}
 
 	@Override
 	protected boolean isCompleteCertificateRef(XAdESAttribute unsignedAttribute) {
 		String localName = unsignedAttribute.getName();
-		return XAdESElement.COMPLETE_CERTIFICATE_REFS.isSameTagName(localName) || XAdES141Element.COMPLETE_CERTIFICATE_REFS_V2.isSameTagName(localName);
+		return XAdES132Element.COMPLETE_CERTIFICATE_REFS.isSameTagName(localName) || XAdES141Element.COMPLETE_CERTIFICATE_REFS_V2.isSameTagName(localName);
 	}
 
 	@Override
 	protected boolean isAttributeCertificateRef(XAdESAttribute unsignedAttribute) {
 		String localName = unsignedAttribute.getName();
-		return XAdESElement.ATTRIBUTE_CERTIFICATE_REFS.isSameTagName(localName) || XAdES141Element.ATTRIBUTE_CERTIFICATE_REFS_V2.isSameTagName(localName);
+		return XAdES132Element.ATTRIBUTE_CERTIFICATE_REFS.isSameTagName(localName) || XAdES141Element.ATTRIBUTE_CERTIFICATE_REFS_V2.isSameTagName(localName);
 	}
 
 	@Override
 	protected boolean isCompleteRevocationRef(XAdESAttribute unsignedAttribute) {
-		return XAdESElement.COMPLETE_REVOCATION_REFS.isSameTagName(unsignedAttribute.getName());
+		return XAdES132Element.COMPLETE_REVOCATION_REFS.isSameTagName(unsignedAttribute.getName());
 	}
 
 	@Override
 	protected boolean isAttributeRevocationRef(XAdESAttribute unsignedAttribute) {
-		return XAdESElement.ATTRIBUTE_REVOCATION_REFS.isSameTagName(unsignedAttribute.getName());
+		return XAdES132Element.ATTRIBUTE_REVOCATION_REFS.isSameTagName(unsignedAttribute.getName());
 	}
 
 	@Override
 	protected boolean isRefsOnlyTimestamp(XAdESAttribute unsignedAttribute) {
 		String localName = unsignedAttribute.getName();
-		return XAdESElement.REFS_ONLY_TIMESTAMP.isSameTagName(localName) || XAdES141Element.REFS_ONLY_TIMESTAMP_V2.isSameTagName(localName);
+		return XAdES132Element.REFS_ONLY_TIMESTAMP.isSameTagName(localName) || XAdES141Element.REFS_ONLY_TIMESTAMP_V2.isSameTagName(localName);
 	}
 
 	@Override
 	protected boolean isSigAndRefsTimestamp(XAdESAttribute unsignedAttribute) {
 		String localName = unsignedAttribute.getName();
-		return XAdESElement.SIG_AND_REFS_TIMESTAMP.isSameTagName(localName) || XAdES141Element.SIG_AND_REFS_TIMESTAMP_V2.isSameTagName(localName);
+		return XAdES132Element.SIG_AND_REFS_TIMESTAMP.isSameTagName(localName) || XAdES141Element.SIG_AND_REFS_TIMESTAMP_V2.isSameTagName(localName);
 	}
 
 	@Override
 	protected boolean isCertificateValues(XAdESAttribute unsignedAttribute) {
-		return XAdESElement.CERTIFICATE_VALUES.isSameTagName(unsignedAttribute.getName());
+		return XAdES132Element.CERTIFICATE_VALUES.isSameTagName(unsignedAttribute.getName());
 	}
 
 	@Override
 	protected boolean isRevocationValues(XAdESAttribute unsignedAttribute) {
-		return XAdESElement.REVOCATION_VALUES.isSameTagName(unsignedAttribute.getName());
+		return XAdES132Element.REVOCATION_VALUES.isSameTagName(unsignedAttribute.getName());
 	}
 
 	@Override
 	protected boolean isArchiveTimestamp(XAdESAttribute unsignedAttribute) {
-		return XAdESElement.ARCHIVE_TIMESTAMP.isSameTagName(unsignedAttribute.getName());
+		return XAdES132Element.ARCHIVE_TIMESTAMP.isSameTagName(unsignedAttribute.getName());
 	}
 
 	@Override
@@ -194,7 +195,7 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	protected TimestampToken makeTimestampToken(XAdESAttribute unsignedAttribute, TimestampType timestampType, 
 			List<TimestampedReference> references) {
 
-		final Element timestampTokenNode = unsignedAttribute.findElement(xPathQueryHolder.XPATH__ENCAPSULATED_TIMESTAMP);
+		final Element timestampTokenNode = unsignedAttribute.findElement(xadesPaths.getCurrentEncapsulatedTimestamp());
 		if (timestampTokenNode == null) {
 			LOG.warn("The timestamp {} cannot be extracted from the signature!", timestampType.name());
 			return null;
@@ -265,10 +266,10 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	@Override
 	protected List<Digest> getCertificateRefDigests(XAdESAttribute unsignedAttribute) {
 		List<Digest> digests = new ArrayList<Digest>();
-		NodeList nodeList = unsignedAttribute.getNodeList(xPathQueryHolder.XPATH__CERTIFICATE_REFS);
-		for (int ii = 0; ii < nodeList.getLength(); ii++) {
-			Element certElement = (Element) nodeList.item(ii);
-			Digest certDigest = DSSXMLUtils.getCertDigest(certElement, xPathQueryHolder);
+		NodeList certRefs = unsignedAttribute.getNodeList(xadesPaths.getCurrentCertRefsChildren());
+		for (int ii = 0; ii < certRefs.getLength(); ii++) {
+			Element certRefElement = (Element) certRefs.item(ii);
+			Digest certDigest = DSSXMLUtils.getDigestAndValue(DomUtils.getElement(certRefElement, xadesPaths.getCurrentCertDigest()));
 			if (certDigest != null) {
 				digests.add(certDigest);
 			}
@@ -279,10 +280,10 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	@Override
 	protected List<Digest> getRevocationRefCRLDigests(XAdESAttribute unsignedAttribute) {
 		List<Digest> crlRefDigests = new ArrayList<Digest>();
-		NodeList crlRefs = unsignedAttribute.getNodeList(xPathQueryHolder.XPATH__CRLREFS);
+		NodeList crlRefs = unsignedAttribute.getNodeList(xadesPaths.getCurrentCRLRefsChildren());
 		for (int ii = 0; ii < crlRefs.getLength(); ii++) {
 			Element crlRef = (Element) crlRefs.item(ii);
-			Digest digest = DSSXMLUtils.getRevocationDigest(crlRef, xPathQueryHolder);
+			final Digest digest = DSSXMLUtils.getDigestAndValue(DomUtils.getElement(crlRef, xadesPaths.getCurrentDigestAlgAndValue()));
 			if (digest != null) {
 				crlRefDigests.add(digest);
 			}
@@ -293,10 +294,10 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	@Override
 	protected List<Digest> getRevocationRefOCSPDigests(XAdESAttribute unsignedAttribute) {
 		List<Digest> ocspRefDigests = new ArrayList<Digest>();
-		NodeList ocspRefs = unsignedAttribute.getNodeList(xPathQueryHolder.XPATH__OCSPREFS);
+		NodeList ocspRefs = unsignedAttribute.getNodeList(xadesPaths.getCurrentOCSPRefsChildren());
 		for (int ii = 0; ii < ocspRefs.getLength(); ii++) {
 			Element ocspRef = (Element) ocspRefs.item(ii);
-			Digest digest = DSSXMLUtils.getRevocationDigest(ocspRef, xPathQueryHolder);
+			final Digest digest = DSSXMLUtils.getDigestAndValue(DomUtils.getElement(ocspRef, xadesPaths.getCurrentDigestAlgAndValue()));
 			if (digest != null) {
 				ocspRefDigests.add(digest);
 			}
@@ -323,7 +324,7 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	protected List<CRLBinary> getEncapsulatedCRLIdentifiers(XAdESAttribute unsignedAttribute) {
 		List<CRLBinary> crlIdentifiers = new ArrayList<CRLBinary>();
 		String xPathString = isTimeStampValidationData(unsignedAttribute) ? 
-				xPathQueryHolder.XPATH__ENCAPSULATED_CRL_VALUES : xPathQueryHolder.XPATH___ENCAPSULATED_CRL_VALUES;
+			xPathQueryHolder	xPathQueryHolder.XPATH__ENCAPSULATED_CRL_VALUES : xPathQueryHolder.XPATH___ENCAPSULATED_CRL_VALUES;
 		NodeList encapsulatedNodes = unsignedAttribute.getNodeList(xPathString);
 		for (int ii = 0; ii < encapsulatedNodes.getLength(); ii++) {
 			Element element = (Element) encapsulatedNodes.item(ii);
