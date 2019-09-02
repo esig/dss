@@ -1,10 +1,22 @@
 package eu.europa.esig.dss.xades.definition.xades111;
 
 import eu.europa.esig.dss.xades.definition.AbstractPaths;
+import eu.europa.esig.dss.xades.definition.DSSNamespace;
+import eu.europa.esig.dss.xades.definition.DSSNamespaces;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
+import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigElement;
 
 public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
+
+	public static final String DIGEST_METHOD_ALGORITHM_PATH = fromCurrentPosition(XAdES111Element.DIGEST_METHOD, XMLDSigAttribute.ALGORITHM);
+
+	public static final String DIGEST_VALUE_PATH = fromCurrentPosition(XAdES111Element.DIGEST_VALUE);
+
+	@Override
+	public DSSNamespace getNamespace() {
+		return DSSNamespaces.XADES_111;
+	}
 
 	@Override
 	public String getSignedPropertiesUri() {
@@ -41,7 +53,7 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 	@Override
 	public String getSigningCertificatePath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES111Element.QUALIFYING_PROPERTIES, XAdES111Element.SIGNED_PROPERTIES,
-				XAdES111Element.SIGNED_SIGNATURE_PROPERTIES, XAdES111Element.SIGNING_CERTIFICATE);
+				XAdES111Element.SIGNED_SIGNATURE_PROPERTIES, XAdES111Element.SIGNING_CERTIFICATE, XAdES111Element.CERT);
 	}
 
 	@Override
@@ -147,7 +159,18 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 	}
 
 	@Override
+	public String getCompleteCertificateRefsCertPath() {
+		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES111Element.QUALIFYING_PROPERTIES, XAdES111Element.UNSIGNED_PROPERTIES,
+				XAdES111Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES111Element.COMPLETE_CERTIFICATE_REFS, XAdES111Element.CERT_REFS, XAdES111Element.CERT);
+	}
+
+	@Override
 	public String getCompleteCertificateRefsV2Path() {
+		return null;
+	}
+
+	@Override
+	public String getCompleteCertificateRefsV2CertPath() {
 		return null;
 	}
 
@@ -157,7 +180,17 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 	}
 
 	@Override
+	public String getAttributeCertificateRefsCertPath() {
+		return null;
+	}
+
+	@Override
 	public String getAttributeCertificateRefsV2Path() {
+		return null;
+	}
+
+	@Override
+	public String getAttributeCertificateRefsV2CertPath() {
 		return null;
 	}
 
@@ -285,7 +318,7 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 
 	@Override
 	public String getCurrentSignaturePolicyId() {
-		return fromCurrentPosition(XAdES111Element.SIGNATURE_POLICY_ID, XAdES111Element.SIG_POLICY_ID);
+		return fromCurrentPosition(XAdES111Element.SIGNATURE_POLICY_ID, XAdES111Element.SIG_POLICY_ID, XAdES111Element.IDENTIFIER);
 	}
 
 	@Override

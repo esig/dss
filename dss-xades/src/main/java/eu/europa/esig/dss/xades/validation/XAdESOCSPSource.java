@@ -78,15 +78,20 @@ public class XAdESOCSPSource extends SignatureOCSPSource {
 		collectValues(xadesPaths.getRevocationValuesPath(), RevocationOrigin.REVOCATION_VALUES);
 		collectValues(xadesPaths.getAttributeRevocationValuesPath(), RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES);
 		collectValues(xadesPaths.getTimeStampValidationDataRevocationValuesPath(), RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
-		
+
 		// references
 		collectRefs(xadesPaths.getCompleteRevocationRefsPath(), RevocationRefOrigin.COMPLETE_REVOCATION_REFS);
 		collectRefs(xadesPaths.getAttributeRevocationRefsPath(), RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS);
 	}
 
 	private void collectValues(String revocationValuesPath, RevocationOrigin origin) {
-		final Element revocationValuesElement = DomUtils.getElement(signatureElement, revocationValuesPath);
-		if (revocationValuesElement != null) {
+		if (revocationValuesPath == null) {
+			return;
+		}
+
+		final NodeList revocationValuesNodeList = DomUtils.getNodeList(signatureElement, revocationValuesPath);
+		for (int i = 0; i < revocationValuesNodeList.getLength(); i++) {
+			final Element revocationValuesElement = (Element) revocationValuesNodeList.item(i);
 			final NodeList ocspValueNodes = DomUtils.getNodeList(revocationValuesElement, xadesPaths.getCurrentOCSPValuesChildren());
 			for (int ii = 0; ii < ocspValueNodes.getLength(); ii++) {
 				final Element ocspValueEl = (Element) ocspValueNodes.item(ii);
@@ -94,13 +99,18 @@ public class XAdESOCSPSource extends SignatureOCSPSource {
 			}
 		}
 	}
-	
+
 	private void collectRefs(final String revocationRefsPath, RevocationRefOrigin revocationRefOrigin) {
-		final Element revocationRefsElement = DomUtils.getElement(signatureElement, revocationRefsPath);
-		if (revocationRefsElement != null) {
+		if (revocationRefsPath == null) {
+			return;
+		}
+
+		final NodeList revocationRefsNodeList = DomUtils.getNodeList(signatureElement, revocationRefsPath);
+		for (int i = 0; i < revocationRefsNodeList.getLength(); i++) {
+			final Element revocationRefsElement = (Element) revocationRefsNodeList.item(i);
 			final NodeList ocspRefNodes = DomUtils.getNodeList(revocationRefsElement, xadesPaths.getCurrentOCSPRefsChildren());
-			for (int i = 0; i < ocspRefNodes.getLength(); i++) {
-				final Element ocspRefElement = (Element) ocspRefNodes.item(i);
+			for (int ii = 0; ii < ocspRefNodes.getLength(); ii++) {
+				final Element ocspRefElement = (Element) ocspRefNodes.item(ii);
 				OCSPRef ocspRef = createOCSPRef(ocspRefElement, revocationRefOrigin);
 				if (ocspRef != null) {
 					addReference(ocspRef, revocationRefOrigin);

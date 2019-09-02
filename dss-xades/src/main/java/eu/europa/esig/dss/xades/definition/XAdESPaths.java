@@ -2,6 +2,8 @@ package eu.europa.esig.dss.xades.definition;
 
 public interface XAdESPaths {
 
+	DSSNamespace getNamespace();
+
 	String getSignedPropertiesUri();
 
 	String getCounterSignatureUri();
@@ -44,18 +46,26 @@ public interface XAdESPaths {
 
 	String getCompleteCertificateRefsPath();
 
+	String getCompleteCertificateRefsCertPath();
+
 	String getCompleteCertificateRefsV2Path();
+
+	String getCompleteCertificateRefsV2CertPath();
 
 	String getAttributeCertificateRefsPath();
 
+	String getAttributeCertificateRefsCertPath();
+
 	String getAttributeCertificateRefsV2Path();
+
+	String getAttributeCertificateRefsV2CertPath();
 
 	String getCertificateValuesPath();
 
 	String getRevocationValuesPath();
 
 	String getAttributeRevocationValuesPath();
-	
+
 	String getTimeStampValidationDataRevocationValuesPath();
 
 	String getSignatureTimestampsPath();
@@ -107,7 +117,7 @@ public interface XAdESPaths {
 	String getCurrentCertDigest();
 
 	String getCurrentEncapsulatedTimestamp();
-	
+
 	String getCurrentEncapsulatedCertificate();
 
 	String getCurrentCertificateValuesEncapsulatedCertificate();

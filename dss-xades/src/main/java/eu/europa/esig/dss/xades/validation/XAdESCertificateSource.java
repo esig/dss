@@ -170,15 +170,15 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 	public List<CertificateRef> getSigningCertificateValues() {
 		if (signingCertificateValues == null) {
 			signingCertificateValues = new ArrayList<CertificateRef>();
-			Element element = DomUtils.getElement(signatureElement, xadesPaths.getSigningCertificatePath());
-			if (element != null) {
-				signingCertificateValues.addAll(extractXAdESCertsV1(element, CertificateRefOrigin.SIGNING_CERTIFICATE));
+			NodeList certNodeList = DomUtils.getNodeList(signatureElement, xadesPaths.getSigningCertificatePath());
+			if (certNodeList != null) {
+				signingCertificateValues.addAll(extractXAdESCertsV1(certNodeList, CertificateRefOrigin.SIGNING_CERTIFICATE));
 			}
 			String signingCertificateV2Path = xadesPaths.getSigningCertificateV2Path();
 			if (signingCertificateV2Path != null) {
-				element = DomUtils.getElement(signatureElement, signingCertificateV2Path);
-				if (element != null) {
-					signingCertificateValues.addAll(extractXAdESCertsV2(element, CertificateRefOrigin.SIGNING_CERTIFICATE));
+				certNodeList = DomUtils.getNodeList(signatureElement, signingCertificateV2Path);
+				if (certNodeList != null) {
+					signingCertificateValues.addAll(extractXAdESCertsV2(certNodeList, CertificateRefOrigin.SIGNING_CERTIFICATE));
 				}
 			}
 			if (Utils.isCollectionEmpty(signingCertificateValues)) {
@@ -192,15 +192,15 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 	public List<CertificateRef> getCompleteCertificateRefs() {
 		if (completeCertificateRefs == null) {
 			completeCertificateRefs = new ArrayList<CertificateRef>();
-			Element element = DomUtils.getElement(signatureElement, xadesPaths.getCompleteCertificateRefsPath());
-			if (element != null) {
-				completeCertificateRefs.addAll(extractXAdESCertsV1(element, CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS));
+			NodeList certNodeList = DomUtils.getNodeList(signatureElement, xadesPaths.getCompleteCertificateRefsCertPath());
+			if (certNodeList != null) {
+				completeCertificateRefs.addAll(extractXAdESCertsV1(certNodeList, CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS));
 			}
-			String completeCertificateRefsV2Path = xadesPaths.getCompleteCertificateRefsV2Path();
-			if (completeCertificateRefsV2Path != null) {
-				element = DomUtils.getElement(signatureElement, completeCertificateRefsV2Path);
-				if (element != null) {
-					completeCertificateRefs.addAll(extractXAdESCertsV2(element, CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS));
+			String completeCertificateRefsV2CertPath = xadesPaths.getCompleteCertificateRefsV2CertPath();
+			if (completeCertificateRefsV2CertPath != null) {
+				certNodeList = DomUtils.getNodeList(signatureElement, completeCertificateRefsV2CertPath);
+				if (certNodeList != null) {
+					completeCertificateRefs.addAll(extractXAdESCertsV2(certNodeList, CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS));
 				}
 			}
 		}
@@ -211,29 +211,28 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 	public List<CertificateRef> getAttributeCertificateRefs() {
 		if (attributeCertificateRefs == null) {
 			attributeCertificateRefs = new ArrayList<CertificateRef>();
-			String attributeCertificateRefsV1Path = xadesPaths.getAttributeCertificateRefsPath();
-			if (attributeCertificateRefsV1Path != null) {
-				Element element = DomUtils.getElement(signatureElement, attributeCertificateRefsV1Path);
-				if (element != null) {
-					attributeCertificateRefs.addAll(extractXAdESCertsV1(element, CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS));
+			String attributeCertificateRefsCertPath = xadesPaths.getAttributeCertificateRefsCertPath();
+			if (attributeCertificateRefsCertPath != null) {
+				NodeList certNodeList = DomUtils.getNodeList(signatureElement, attributeCertificateRefsCertPath);
+				if (certNodeList != null) {
+					attributeCertificateRefs.addAll(extractXAdESCertsV1(certNodeList, CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS));
 				}
 			}
-			String attributeCertificateRefsV2Path = xadesPaths.getAttributeCertificateRefsV2Path();
-			if (attributeCertificateRefsV2Path != null) {
-				Element element = DomUtils.getElement(signatureElement, attributeCertificateRefsV2Path);
-				if (element != null) {
-					attributeCertificateRefs.addAll(extractXAdESCertsV2(element, CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS));
+			String attributeCertificateRefsV2CertPath = xadesPaths.getAttributeCertificateRefsV2CertPath();
+			if (attributeCertificateRefsV2CertPath != null) {
+				NodeList certNodeList = DomUtils.getNodeList(signatureElement, attributeCertificateRefsV2CertPath);
+				if (certNodeList != null) {
+					attributeCertificateRefs.addAll(extractXAdESCertsV2(certNodeList, CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS));
 				}
 			}
 		}
 		return attributeCertificateRefs;
 	}
 
-	private List<CertificateRef> extractXAdESCertsV1(Element element, CertificateRefOrigin location) {
+	private List<CertificateRef> extractXAdESCertsV1(NodeList certNodeList, CertificateRefOrigin location) {
 		List<CertificateRef> result = new ArrayList<CertificateRef>();
-		NodeList certList = DomUtils.getNodeList(element, xadesPaths.getCurrentCertChildren());
-		for (int i = 0; i < certList.getLength(); i++) {
-			final Element cert = (Element) certList.item(i);
+		for (int i = 0; i < certNodeList.getLength(); i++) {
+			final Element cert = (Element) certNodeList.item(i);
 			if (cert != null) {
 				Digest certDigest = DSSXMLUtils.getDigestAndValue(DomUtils.getElement(cert, xadesPaths.getCurrentCertDigest()));
 				if (certDigest != null) {
@@ -248,11 +247,10 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 		return result;
 	}
 
-	private List<CertificateRef> extractXAdESCertsV2(Element element, CertificateRefOrigin location) {
+	private List<CertificateRef> extractXAdESCertsV2(NodeList certNodeList, CertificateRefOrigin location) {
 		List<CertificateRef> result = new ArrayList<CertificateRef>();
-		NodeList certList = DomUtils.getNodeList(element, xadesPaths.getCurrentCertChildren());
-		for (int i = 0; i < certList.getLength(); i++) {
-			final Element cert = (Element) certList.item(i);
+		for (int i = 0; i < certNodeList.getLength(); i++) {
+			final Element cert = (Element) certNodeList.item(i);
 			if (cert != null) {
 				Digest certDigest = DSSXMLUtils.getDigestAndValue(DomUtils.getElement(cert, xadesPaths.getCurrentCertDigest()));
 				if (certDigest != null) {

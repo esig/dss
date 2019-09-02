@@ -253,7 +253,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	private void setXPathQueryHolder(final String namespaceURI) {
 		for (final XAdESPaths currentXAdESPaths : xadesPathsHolders) {
-			if (Utils.areStringsEqual(namespaceURI, currentXAdESPaths.getSignedPropertiesUri())) {
+			if (Utils.areStringsEqual(namespaceURI, currentXAdESPaths.getNamespace().getUri())) {
 				this.xadesPaths = currentXAdESPaths;
 			}
 		}
@@ -510,10 +510,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			String signatureProductionPlaceV2Path = xadesPaths.getSignatureProductionPlaceV2Path();
 			if (signatureProductionPlaceV2Path != null) {
 				nodeList = DomUtils.getNodeList(signatureElement, signatureProductionPlaceV2Path);
-				if ((nodeList.getLength() == 0) || (nodeList.item(0) == null)) {
-					return null;
-				}
 			}
+		}
+		if ((nodeList.getLength() == 0) || (nodeList.item(0) == null)) {
+			return null;
 		}
 		final SignatureProductionPlace signatureProductionPlace = new SignatureProductionPlace();
 		final NodeList list = nodeList.item(0).getChildNodes();

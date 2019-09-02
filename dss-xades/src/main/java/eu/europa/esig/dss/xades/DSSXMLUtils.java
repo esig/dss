@@ -60,7 +60,9 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.xades.definition.DSSNamespaces;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
+import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
 import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.xades.signature.PrettyPrintTransformer;
 import eu.europa.esig.xades.XAdESUtils;
@@ -465,7 +467,7 @@ public final class DSSXMLUtils {
 	 * @return array of bytes
 	 */
 	public static byte[] canonicalizeOrSerializeSubtree(final String canonicalizationMethod, final Node node) {
-		if (canonicalizationMethod == null) {
+		if (Utils.isStringEmpty(canonicalizationMethod)) {
 			return serializeNode(node);
 		} else {
 			return canonicalizeSubtree(canonicalizationMethod, node);
@@ -724,9 +726,18 @@ public final class DSSXMLUtils {
 			return null;
 		}
 
-		String digestAlgorithmUri = DomUtils.getValue(element, XMLDSigPaths.DIGEST_METHOD_ALGORITHM_PATH);
-		String digestValueBase64 = DomUtils.getValue(element, XMLDSigPaths.DIGEST_VALUE_PATH);
-		if (digestAlgorithmUri == null || digestValueBase64 == null) {
+		String digestAlgorithmUri = null;
+		String digestValueBase64 = null;
+		if (DSSNamespaces.XADES_111.getUri().equals(element.getNamespaceURI())) {
+			digestAlgorithmUri = DomUtils.getValue(element, XAdES111Paths.DIGEST_METHOD_ALGORITHM_PATH);
+			digestValueBase64 = DomUtils.getValue(element, XAdES111Paths.DIGEST_VALUE_PATH);
+		} else {
+			digestAlgorithmUri = DomUtils.getValue(element, XMLDSigPaths.DIGEST_METHOD_ALGORITHM_PATH);
+			digestValueBase64 = DomUtils.getValue(element, XMLDSigPaths.DIGEST_VALUE_PATH);
+		}
+
+		if (Utils.isStringEmpty(digestAlgorithmUri) || Utils.isStringEmpty(digestValueBase64)) {
+			LOG.warn("Unable to parse the digest/value");
 			return null;
 		}
 

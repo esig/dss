@@ -1,11 +1,18 @@
 package eu.europa.esig.dss.xades.definition.xades132;
 
 import eu.europa.esig.dss.xades.definition.AbstractPaths;
+import eu.europa.esig.dss.xades.definition.DSSNamespace;
+import eu.europa.esig.dss.xades.definition.DSSNamespaces;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigElement;
 
 public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
+
+	@Override
+	public DSSNamespace getNamespace() {
+		return DSSNamespaces.XADES_132;
+	}
 
 	@Override
 	public String getSignedPropertiesUri() {
@@ -42,13 +49,13 @@ public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 	@Override
 	public String getSigningCertificatePath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.SIGNED_PROPERTIES,
-				XAdES132Element.SIGNED_SIGNATURE_PROPERTIES, XAdES132Element.SIGNING_CERTIFICATE);
+				XAdES132Element.SIGNED_SIGNATURE_PROPERTIES, XAdES132Element.SIGNING_CERTIFICATE, XAdES132Element.CERT);
 	}
 
 	@Override
 	public String getSigningCertificateV2Path() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.SIGNED_PROPERTIES,
-				XAdES132Element.SIGNED_SIGNATURE_PROPERTIES, XAdES132Element.SIGNING_CERTIFICATE_V2);
+				XAdES132Element.SIGNED_SIGNATURE_PROPERTIES, XAdES132Element.SIGNING_CERTIFICATE_V2, XAdES132Element.CERT);
 	}
 
 	@Override
@@ -154,9 +161,21 @@ public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 	}
 
 	@Override
+	public String getCompleteCertificateRefsCertPath() {
+		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
+				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES132Element.COMPLETE_CERTIFICATE_REFS, XAdES132Element.CERT_REFS, XAdES132Element.CERT);
+	}
+
+	@Override
 	public String getCompleteCertificateRefsV2Path() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES141Element.COMPLETE_CERTIFICATE_REFS_V2);
+	}
+
+	@Override
+	public String getCompleteCertificateRefsV2CertPath() {
+		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
+				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES141Element.COMPLETE_CERTIFICATE_REFS_V2, XAdES132Element.CERT_REFS, XAdES132Element.CERT);
 	}
 
 	@Override
@@ -166,9 +185,21 @@ public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 	}
 
 	@Override
+	public String getAttributeCertificateRefsCertPath() {
+		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
+				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES132Element.ATTRIBUTE_CERTIFICATE_REFS, XAdES132Element.CERT_REFS, XAdES132Element.CERT);
+	}
+
+	@Override
 	public String getAttributeCertificateRefsV2Path() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES141Element.ATTRIBUTE_CERTIFICATE_REFS_V2);
+	}
+
+	@Override
+	public String getAttributeCertificateRefsV2CertPath() {
+		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
+				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES141Element.ATTRIBUTE_CERTIFICATE_REFS_V2, XAdES132Element.CERT_REFS, XAdES132Element.CERT);
 	}
 
 	@Override
@@ -198,7 +229,8 @@ public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 	@Override
 	public String getEncapsulatedTimeStampValidationDataCertValuesPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
-				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES141Element.TIMESTAMP_VALIDATION_DATA, XAdES132Element.ENCAPSULATED_X509_CERTIFICATE);
+				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES141Element.TIMESTAMP_VALIDATION_DATA, XAdES132Element.CERTIFICATE_VALUES,
+				XAdES132Element.ENCAPSULATED_X509_CERTIFICATE);
 	}
 
 	@Override
@@ -300,7 +332,7 @@ public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 
 	@Override
 	public String getCurrentSignaturePolicyId() {
-		return fromCurrentPosition(XAdES132Element.SIGNATURE_POLICY_ID, XAdES132Element.SIG_POLICY_ID);
+		return fromCurrentPosition(XAdES132Element.SIGNATURE_POLICY_ID, XAdES132Element.SIG_POLICY_ID, XAdES132Element.IDENTIFIER);
 	}
 
 	@Override

@@ -74,8 +74,9 @@ public class XAdESCRLSource extends SignatureCRLSource {
 			return;
 		}
 
-		final Element revocationValuesElement = DomUtils.getElement(signatureElement, revocationValuesPath);
-		if (revocationValuesElement != null) {
+		final NodeList revocationValuesNodeList = DomUtils.getNodeList(signatureElement, revocationValuesPath);
+		for (int i = 0; i < revocationValuesNodeList.getLength(); i++) {
+			final Element revocationValuesElement = (Element) revocationValuesNodeList.item(i);
 			final NodeList crlValueNodes = DomUtils.getNodeList(revocationValuesElement, xadesPaths.getCurrentCRLValuesChildren());
 			for (int ii = 0; ii < crlValueNodes.getLength(); ii++) {
 				final Element crlValueEl = (Element) crlValueNodes.item(ii);
@@ -91,11 +92,12 @@ public class XAdESCRLSource extends SignatureCRLSource {
 			return;
 		}
 
-		final Element revocationRefsElement = DomUtils.getElement(signatureElement, revocationRefsPath);
-		if (revocationRefsElement != null) {
+		final NodeList revocationRefsNodeList = DomUtils.getNodeList(signatureElement, revocationRefsPath);
+		for (int i = 0; i < revocationRefsNodeList.getLength(); i++) {
+			final Element revocationRefsElement = (Element) revocationRefsNodeList.item(i);
 			final NodeList crlRefNodes = DomUtils.getNodeList(revocationRefsElement, xadesPaths.getCurrentCRLRefsChildren());
-			for (int i = 0; i < crlRefNodes.getLength(); i++) {
-				final Element crlRefNode = (Element) crlRefNodes.item(i);
+			for (int ii = 0; ii < crlRefNodes.getLength(); ii++) {
+				final Element crlRefNode = (Element) crlRefNodes.item(ii);
 				final Digest digest = DSSXMLUtils.getDigestAndValue(DomUtils.getElement(crlRefNode, xadesPaths.getCurrentDigestAlgAndValue()));
 				if (digest != null) {
 					CRLRef crlRef = new CRLRef(digest, revocationRefOrigin);
