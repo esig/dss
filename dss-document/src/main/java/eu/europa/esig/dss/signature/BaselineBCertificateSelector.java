@@ -49,19 +49,22 @@ public class BaselineBCertificateSelector extends CertificateReorderer {
 	public List<CertificateToken> getCertificates() {
 
 		List<CertificateToken> orderedCertificates = getOrderedCertificates();
-
-		CertificateSource trustedCertSource = certificateVerifier.getTrustedCertSource();
+		
+		List<CertificateSource> trustedCertSources = certificateVerifier.getTrustedCertSources();
 
 		// if true, trust anchor certificates (and upper certificates) are not included in the signature
-		if (parameters.bLevel().isTrustAnchorBPPolicy() && trustedCertSource != null) {
+		if (parameters.bLevel().isTrustAnchorBPPolicy() && trustedCertSources != null
+				&& !trustedCertSources.isEmpty()) {
 
 			List<CertificateToken> result = new LinkedList<CertificateToken>();
-			for (CertificateToken certificateToken : orderedCertificates) {
-				if (trustedCertSource.isTrusted(certificateToken)) {
-					// trust anchor and its parents are skipped
-					break;
+			for (CertificateSource source : trustedCertSources) {
+				for (CertificateToken certificateToken : orderedCertificates) {
+					if (source.isTrusted(certificateToken)) {
+						// trust anchor and its parents are skipped
+						break;
+					}
+					result.add(certificateToken);
 				}
-				result.add(certificateToken);
 			}
 
 			return result;

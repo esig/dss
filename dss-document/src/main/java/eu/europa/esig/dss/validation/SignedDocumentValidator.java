@@ -33,12 +33,12 @@ import java.util.ServiceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicy;
@@ -311,7 +311,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator, Proc
 				.includeRawRevocationData(certificateVerifier.isIncludeCertificateRevocationValues())
 				.includeRawTimestampTokens(certificateVerifier.isIncludeTimestampTokenValues())
 				.certificateSourceTypes(validationContext.getCertificateSourceTypes())
-				.trustedCertificateSource(certificateVerifier.getTrustedCertSource())
+				.trustedCertificateSources(certificateVerifier.getTrustedCertSources())
 				.validationDate(validationContext.getCurrentTime()).build();
 
 		return processValidationPolicy(diagnosticData, validationPolicy);

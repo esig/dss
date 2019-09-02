@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.validation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,12 +50,12 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
 public class CommonCertificateVerifier implements CertificateVerifier {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommonCertificateVerifier.class);
-
+	
 	/**
-	 * This field contains the reference to the trusted certificate source. This source is fixed, it means that the same
-	 * source is used for different validations.
+	 * This field contains the reference to multiple trusted certificate sources. These sources are fixed, it means that the same
+	 * sources are used for different validations.
 	 */
-	private CertificateSource trustedCertSource;
+	private List<CertificateSource> trustedCertSources;
 
 	/**
 	 * This field contains the reference to any certificate source, can contain the trust store, or the any intermediate
@@ -172,13 +175,14 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 		if (!simpleCreationOnly) {
 			dataLoader = new NativeHTTPDataLoader();
 		}
+		trustedCertSources = new ArrayList<CertificateSource>();
 	}
 
 	/**
 	 * The constructor with key parameters.
 	 *
-	 * @param trustedCertSource
-	 *            the reference to the trusted certificate source.
+	 * @param trustedCertSources
+	 *            the reference to the trusted certificate sources.
 	 * @param crlSource
 	 *            contains the reference to the {@code OCSPSource}.
 	 * @param ocspSource
@@ -186,11 +190,11 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	 * @param dataLoader
 	 *            contains the reference to a data loader used to access AIA certificate source.
 	 */
-	public CommonCertificateVerifier(final CertificateSource trustedCertSource, final CRLSource crlSource, final OCSPSource ocspSource,
+	public CommonCertificateVerifier(final List<CertificateSource> trustedCertSources, final CRLSource crlSource, final OCSPSource ocspSource,
 			final DataLoader dataLoader) {
 
 		LOG.info("+ New CommonCertificateVerifier created with parameters.");
-		this.trustedCertSource = trustedCertSource;
+		this.trustedCertSources = trustedCertSources;
 		this.crlSource = crlSource;
 		this.ocspSource = ocspSource;
 		this.dataLoader = dataLoader;
@@ -200,8 +204,8 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	@Override
-	public CertificateSource getTrustedCertSource() {
-		return trustedCertSource;
+	public List<CertificateSource> getTrustedCertSources() {
+		return trustedCertSources;
 	}
 
 	@Override
@@ -226,7 +230,16 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	@Override
 	public void setTrustedCertSource(final CertificateSource trustedCertSource) {
-		this.trustedCertSource = trustedCertSource;
+		if(trustedCertSource != null) {
+			this.trustedCertSources.add(trustedCertSource);
+		}
+	}
+	
+	@Override
+	public void setTrustedCertSources(final CertificateSource... certSources) {
+		for(CertificateSource source : certSources) {
+			setTrustedCertSource(source);
+		}
 	}
 
 	@Override
@@ -335,8 +348,10 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	@Override
 	public CertificatePool createValidationPool() {
 		final CertificatePool validationPool = new CertificatePool();
-		if (trustedCertSource != null) {
-			validationPool.importCerts(trustedCertSource);
+		for(CertificateSource trustedSource : trustedCertSources) {
+			if (trustedSource != null) {
+				validationPool.importCerts(trustedSource);
+			}
 		}
 		if (adjunctCertSource != null) {
 			validationPool.importCerts(adjunctCertSource);
