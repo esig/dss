@@ -24,11 +24,10 @@ import eu.europa.esig.dss.validation.timestamp.TimestampDataBuilder;
 import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.dss.xades.XAdES132Element;
-import eu.europa.esig.dss.xades.XAdES141Element;
-import eu.europa.esig.dss.xades.XAdESPaths;
-import eu.europa.esig.dss.xades.XMLDSigPaths;
-import eu.europa.esig.dss.xades.XPathQueryHolder;
+import eu.europa.esig.dss.xades.definition.XAdESPaths;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
+import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigPaths;
 
 public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 
@@ -115,7 +114,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 	private boolean isContentTimestampedReference(Reference reference, TimestampType timeStampType, List<TimestampInclude> includes) {
 		if (TimestampType.ALL_DATA_OBJECTS_TIMESTAMP.equals(timeStampType)) {
 			// All references are covered except the one referencing the SignedProperties
-			return !DSSXMLUtils.isSignedProperties(reference, new XPathQueryHolder());
+			return !DSSXMLUtils.isSignedProperties(reference, xadesPaths);
 		} else {
 			for (TimestampInclude timestampInclude : includes) {
 				String id = timestampInclude.getURI();
@@ -445,7 +444,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 	 * @return
 	 */
 	private NodeList getObjects() {
-		return DomUtils.getNodeList(signature, XPathQueryHolder.XPATH_OBJECT);
+		return DomUtils.getNodeList(signature, XMLDSigPaths.OBJECT_PATH);
 	}
 	
 	private void writeObjectBytes(final NodeList objects, final Set<String> referenceURIs, String canonicalizationMethod, boolean xades141,

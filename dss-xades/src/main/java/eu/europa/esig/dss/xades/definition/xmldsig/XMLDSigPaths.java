@@ -1,6 +1,12 @@
-package eu.europa.esig.dss.xades;
+package eu.europa.esig.dss.xades.definition.xmldsig;
+
+import eu.europa.esig.dss.xades.definition.AbstractPaths;
 
 public class XMLDSigPaths extends AbstractPaths {
+
+	public static final String OBJECT_TYPE = "http://www.w3.org/2000/09/xmldsig#Object";
+
+	public static final String MANIFEST_TYPE = "http://www.w3.org/2000/09/xmldsig#Manifest";
 
 	public static final String SIGNATURE_PATH = fromCurrentPosition(XMLDSigElement.SIGNATURE);
 

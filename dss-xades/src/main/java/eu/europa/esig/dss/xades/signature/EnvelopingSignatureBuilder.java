@@ -41,8 +41,8 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.xades.reference.Base64Transform;
 import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
@@ -82,20 +82,20 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 		reference.setDigestMethodAlgorithm(digestAlgorithm);
 
 		if (params.isManifestSignature()) {
-			reference.setType(DSSXMLUtils.HTTP_WWW_W3_ORG_2000_09_XMLDSIG_MANIFEST);
+			reference.setType(XMLDSigPaths.MANIFEST_TYPE);
 			Document manifestDoc = DomUtils.buildDOM(document);
 			Element manifestElement = manifestDoc.getDocumentElement();
 			reference.setUri("#" + manifestElement.getAttribute(ID));
 			DSSTransform xmlTransform = new CanonicalizationTransform(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
 			reference.setTransforms(Arrays.asList(xmlTransform));
 		} else if (params.isEmbedXML()) {
-			reference.setType(DSSXMLUtils.HTTP_WWW_W3_ORG_2000_09_XMLDSIG_OBJECT);
+			reference.setType(XMLDSigPaths.OBJECT_TYPE);
 			reference.setUri("#" + OBJECT_ID_SUFFIX + suffix);
 
 			DSSTransform xmlTransform = new CanonicalizationTransform(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
 			reference.setTransforms(Arrays.asList(xmlTransform));
 		} else {
-			reference.setType(DSSXMLUtils.HTTP_WWW_W3_ORG_2000_09_XMLDSIG_OBJECT);
+			reference.setType(XMLDSigPaths.OBJECT_TYPE);
 			reference.setUri("#" + OBJECT_ID_SUFFIX + suffix);
 
 			DSSTransform base64Transform = new Base64Transform();

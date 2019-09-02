@@ -188,7 +188,8 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 		List<Reference> references = signature.getReferences();
 		Set<String> result = new HashSet<String>();
 		for (Reference reference : references) {
-			if (!reference.typeIsReferenceToManifest() && !reference.typeIsReferenceToObject() && !DSSXMLUtils.isSignedProperties(reference, signature.getXPathQueryHolder())
+			if (!reference.typeIsReferenceToManifest() && !reference.typeIsReferenceToObject()
+					&& !DSSXMLUtils.isSignedProperties(reference, signature.getXAdESPaths())
 					&& !DomUtils.isXPointerQuery(reference.getURI())) {
 				result.add(DomUtils.getId(reference.getURI()));
 			}

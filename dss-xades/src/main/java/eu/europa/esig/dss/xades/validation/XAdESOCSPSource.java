@@ -39,7 +39,7 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.ResponderId;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureOCSPSource;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.dss.xades.XAdESPaths;
+import eu.europa.esig.dss.xades.definition.XAdESPaths;
 
 /**
  * Retrieves OCSP values from an XAdES (XL/LT) signature.
@@ -112,14 +112,23 @@ public class XAdESOCSPSource extends SignatureOCSPSource {
 	private OCSPRef createOCSPRef(final Element ocspRefElement, RevocationRefOrigin revocationRefOrigin) {
 		ResponderId responderId = new ResponderId();
 		
-		final Element responderIdByName = DomUtils.getElement(ocspRefElement, xadesPaths.getCurrentOCSPRefResponderIDByName());
-		if (responderIdByName != null) {
-			responderId.setName(responderIdByName.getTextContent());
-		}
+		String currentOCSPRefResponderIDByName = xadesPaths.getCurrentOCSPRefResponderIDByName();
+		String currentOCSPRefResponderIDByKey = xadesPaths.getCurrentOCSPRefResponderIDByKey();
+		if (currentOCSPRefResponderIDByName != null && currentOCSPRefResponderIDByKey != null) {
+			final Element responderIdByName = DomUtils.getElement(ocspRefElement, currentOCSPRefResponderIDByName);
+			if (responderIdByName != null) {
+				responderId.setName(responderIdByName.getTextContent());
+			}
 
-		final Element responderIdByKey = DomUtils.getElement(ocspRefElement, xadesPaths.getCurrentOCSPRefResponderIDByKey());
-		if (responderIdByKey != null) {
-			responderId.setKey(Utils.fromBase64(responderIdByKey.getTextContent()));
+			final Element responderIdByKey = DomUtils.getElement(ocspRefElement, currentOCSPRefResponderIDByKey);
+			if (responderIdByKey != null) {
+				responderId.setKey(Utils.fromBase64(responderIdByKey.getTextContent()));
+			}
+		} else {
+			final Element responderIdElement = DomUtils.getElement(ocspRefElement, xadesPaths.getCurrentOCSPRefResponderID());
+			if (responderIdElement != null) {
+				responderId.setName(responderIdElement.getTextContent());
+			}
 		}
 		
 		// process only if ResponderId is present

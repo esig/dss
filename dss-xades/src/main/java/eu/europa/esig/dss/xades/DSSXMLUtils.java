@@ -60,6 +60,8 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.xades.definition.XAdESPaths;
+import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.xades.signature.PrettyPrintTransformer;
 import eu.europa.esig.xades.XAdESUtils;
 
@@ -80,8 +82,6 @@ public final class DSSXMLUtils {
 	private static final String TRANSFORMATION_EXCLUDE_SIGNATURE = "not(ancestor-or-self::ds:Signature)";
 	private static final String TRANSFORMATION_XPATH_NODE_NAME = "XPath";
 
-	public static final String HTTP_WWW_W3_ORG_2000_09_XMLDSIG_OBJECT = "http://www.w3.org/2000/09/xmldsig#Object";
-	public static final String HTTP_WWW_W3_ORG_2000_09_XMLDSIG_MANIFEST = "http://www.w3.org/2000/09/xmldsig#Manifest";
 
 	static {
 
@@ -783,7 +783,7 @@ public final class DSSXMLUtils {
 	 * @return TRUE if the provided {@code referenceType} is an Object type, FALSE otherwise
 	 */
 	public static boolean isObjectReferenceType(String referenceType) {
-		return HTTP_WWW_W3_ORG_2000_09_XMLDSIG_OBJECT.equals(referenceType);
+		return XMLDSigPaths.OBJECT_TYPE.equals(referenceType);
 	}
 	
 	/**
@@ -792,7 +792,7 @@ public final class DSSXMLUtils {
 	 * @return TRUE if the provided {@code referenceType} is an Manifest type, FALSE otherwise
 	 */
 	public static boolean isManifestReferenceType(String referenceType) {
-		return HTTP_WWW_W3_ORG_2000_09_XMLDSIG_MANIFEST.equals(referenceType);
+		return XMLDSigPaths.MANIFEST_TYPE.equals(referenceType);
 	}
 
 }

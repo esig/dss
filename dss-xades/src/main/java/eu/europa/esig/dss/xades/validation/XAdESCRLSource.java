@@ -33,7 +33,7 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureCRLSource;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.dss.xades.XAdESPaths;
+import eu.europa.esig.dss.xades.definition.XAdESPaths;
 
 /**
  * Retrieves CRL values from an XAdES (-XL) signature.
@@ -70,6 +70,10 @@ public class XAdESCRLSource extends SignatureCRLSource {
 	}
 
 	private void collectValues(final String revocationValuesPath, RevocationOrigin revocationOrigin) {
+		if (revocationValuesPath == null) {
+			return;
+		}
+
 		final Element revocationValuesElement = DomUtils.getElement(signatureElement, revocationValuesPath);
 		if (revocationValuesElement != null) {
 			final NodeList crlValueNodes = DomUtils.getNodeList(revocationValuesElement, xadesPaths.getCurrentCRLValuesChildren());
@@ -83,6 +87,10 @@ public class XAdESCRLSource extends SignatureCRLSource {
 	}
 
 	private void collectRefs(final String revocationRefsPath, RevocationRefOrigin revocationRefOrigin) {
+		if (revocationRefsPath == null) {
+			return;
+		}
+
 		final Element revocationRefsElement = DomUtils.getElement(signatureElement, revocationRefsPath);
 		if (revocationRefsElement != null) {
 			final NodeList crlRefNodes = DomUtils.getNodeList(revocationRefsElement, xadesPaths.getCurrentCRLRefsChildren());

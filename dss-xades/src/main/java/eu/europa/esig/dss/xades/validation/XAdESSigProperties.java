@@ -8,7 +8,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.validation.SignatureProperties;
-import eu.europa.esig.dss.xades.XAdESPaths;
+import eu.europa.esig.dss.xades.definition.XAdESPaths;
 
 public abstract class XAdESSigProperties implements SignatureProperties<XAdESAttribute> {
 	

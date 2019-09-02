@@ -13,7 +13,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
@@ -35,9 +34,10 @@ import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.dss.xades.XAdES132Element;
-import eu.europa.esig.dss.xades.XAdES141Element;
-import eu.europa.esig.dss.xades.XAdESPaths;
+import eu.europa.esig.dss.xades.definition.DSSNamespaces;
+import eu.europa.esig.dss.xades.definition.XAdESPaths;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 
 @SuppressWarnings("serial")
 public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute> {
@@ -266,7 +266,7 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	@Override
 	protected List<Digest> getCertificateRefDigests(XAdESAttribute unsignedAttribute) {
 		List<Digest> digests = new ArrayList<Digest>();
-		NodeList certRefs = unsignedAttribute.getNodeList(xadesPaths.getCurrentCertRefsChildren());
+		NodeList certRefs = unsignedAttribute.getNodeList(xadesPaths.getCurrentCertRefsCertChildren());
 		for (int ii = 0; ii < certRefs.getLength(); ii++) {
 			Element certRefElement = (Element) certRefs.item(ii);
 			Digest certDigest = DSSXMLUtils.getDigestAndValue(DomUtils.getElement(certRefElement, xadesPaths.getCurrentCertDigest()));
@@ -308,8 +308,8 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	@Override
 	protected List<EncapsulatedCertificateTokenIdentifier> getEncapsulatedCertificateIdentifiers(XAdESAttribute unsignedAttribute) {
 		List<EncapsulatedCertificateTokenIdentifier> certificateIdentifiers = new ArrayList<EncapsulatedCertificateTokenIdentifier>();
-		String xPathString = isTimeStampValidationData(unsignedAttribute) ? 
-				xPathQueryHolder.XPATH__ENCAPSULATED_X509_CERT : xPathQueryHolder.XPATH___ENCAPSULATED_X509_CERT;
+		String xPathString = isTimeStampValidationData(unsignedAttribute) ? xadesPaths.getCurrentCertificateValuesEncapsulatedCertificate()
+				: xadesPaths.getCurrentEncapsulatedCertificate();
 		NodeList encapsulatedNodes = unsignedAttribute.getNodeList(xPathString);
 		for (int ii = 0; ii < encapsulatedNodes.getLength(); ii++) {
 			Element element = (Element) encapsulatedNodes.item(ii);
@@ -324,7 +324,7 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	protected List<CRLBinary> getEncapsulatedCRLIdentifiers(XAdESAttribute unsignedAttribute) {
 		List<CRLBinary> crlIdentifiers = new ArrayList<CRLBinary>();
 		String xPathString = isTimeStampValidationData(unsignedAttribute) ? 
-			xPathQueryHolder	xPathQueryHolder.XPATH__ENCAPSULATED_CRL_VALUES : xPathQueryHolder.XPATH___ENCAPSULATED_CRL_VALUES;
+				xadesPaths.getCurrentRevocationValuesEncapsulatedCRLValue() : xadesPaths.getCurrentEncapsulatedCRLValue();
 		NodeList encapsulatedNodes = unsignedAttribute.getNodeList(xPathString);
 		for (int ii = 0; ii < encapsulatedNodes.getLength(); ii++) {
 			Element element = (Element) encapsulatedNodes.item(ii);
@@ -338,7 +338,7 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 	protected List<OCSPResponseBinary> getEncapsulatedOCSPIdentifiers(XAdESAttribute unsignedAttribute) {
 		List<OCSPResponseBinary> crlIdentifiers = new ArrayList<OCSPResponseBinary>();
 		String xPathString = isTimeStampValidationData(unsignedAttribute) ? 
-				xPathQueryHolder.XPATH__ENCAPSULATED_OCSP_VALUES : xPathQueryHolder.XPATH___ENCAPSULATED_OCSP_VALUES;
+				xadesPaths.getCurrentRevocationValuesEncapsulatedOCSPValue() : xadesPaths.getCurrentEncapsulatedOCSPValue();
 		NodeList encapsulatedNodes = unsignedAttribute.getNodeList(xPathString);
 		for (int ii = 0; ii < encapsulatedNodes.getLength(); ii++) {
 			Element element = (Element) encapsulatedNodes.item(ii);
@@ -374,7 +374,7 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 
 	@Override
 	protected ArchiveTimestampType getArchiveTimestampType(XAdESAttribute unsignedAttribute) {
-		if (XAdESNamespaces.XAdES141.equals(unsignedAttribute.getNamespace())) {
+		if (DSSNamespaces.XADES_141.getUri().equals(unsignedAttribute.getNamespace())) {
 			return ArchiveTimestampType.XAdES_141;
 		}
 		return ArchiveTimestampType.XAdES;

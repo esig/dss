@@ -3,7 +3,7 @@ package eu.europa.esig.dss.xades.validation;
 import org.w3c.dom.Element;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.xades.XAdESPaths;
+import eu.europa.esig.dss.xades.definition.XAdESPaths;
 
 public class XAdESSignedDataObjectProperties extends XAdESSigProperties {
 

@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.xades;
+package eu.europa.esig.dss.xades.definition;
 
 public interface XAdESPaths {
 
@@ -72,6 +72,14 @@ public interface XAdESPaths {
 
 	String getEncapsulatedTimeStampValidationDataCertValuesPath();
 
+	String getClaimedRolePath();
+
+	String getClaimedRoleV2Path();
+
+	String getCertifiedRolePath();
+
+	String getCertifiedRoleV2Path();
+
 	// ----------------
 
 	String getCurrentCRLValuesChildren();
@@ -92,17 +100,33 @@ public interface XAdESPaths {
 
 	String getCurrentDigestAlgAndValue();
 
-	String getCurrentCertRefsChildren();
+	String getCurrentCertRefsCertChildren();
+
+	String getCurrentCertChildren();
 
 	String getCurrentCertDigest();
 
 	String getCurrentEncapsulatedTimestamp();
 	
+	String getCurrentEncapsulatedCertificate();
+
+	String getCurrentCertificateValuesEncapsulatedCertificate();
+
+	String getCurrentRevocationValuesEncapsulatedOCSPValue();
+
+	String getCurrentEncapsulatedOCSPValue();
+
+	String getCurrentRevocationValuesEncapsulatedCRLValue();
+
+	String getCurrentEncapsulatedCRLValue();
+
 	String getCurrentIssuerSerialIssuerNamePath();
 
 	String getCurrentIssuerSerialSerialNumberPath();
 
 	String getCurrentIssuerSerialV2Path();
+
+	String getCurrentCommitmentIdentifierPath();
 
 	// --------------------------- Policy
 
@@ -115,5 +139,7 @@ public interface XAdESPaths {
 	String getCurrentSignaturePolicyDescription();
 
 	String getCurrentSignaturePolicyImplied();
+
+	String getCurrentInclude();
 
 }

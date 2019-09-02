@@ -28,8 +28,9 @@ import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.XMLDSigPaths;
-import eu.europa.esig.dss.xades.XPathQueryHolder;
+import eu.europa.esig.dss.xades.definition.XAdESPaths;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
+import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
 public class ExtendWithLastTimestampValidationDataTest extends PKIFactoryAccess {
@@ -61,12 +62,13 @@ public class ExtendWithLastTimestampValidationDataTest extends PKIFactoryAccess 
 		
 		DSSDocument doubleExtendedDocument = service.extendDocument(extendedDocument, parameters);
 		
+		XAdESPaths xadesPaths = new XAdES132Paths();
+
 		Document extendedDocDom = DomUtils.buildDOM(doubleExtendedDocument);
-		XPathQueryHolder xPathQueryHolder = new XPathQueryHolder();
 		NodeList signatures = DomUtils.getNodeList(extendedDocDom, XMLDSigPaths.ALL_SIGNATURES_PATH);
 		assertEquals(1, signatures.getLength());
 		Node signatureElement = signatures.item(0);
-		Node unsignedSignatureProperties = DomUtils.getNode(signatureElement, xPathQueryHolder.XPATH_UNSIGNED_SIGNATURE_PROPERTIES);
+		Node unsignedSignatureProperties = DomUtils.getNode(signatureElement, xadesPaths.getUnsignedSignaturePropertiesPath());
 		Node lastArchveTST = unsignedSignatureProperties.getLastChild();
 		unsignedSignatureProperties.removeChild(lastArchveTST);
 		

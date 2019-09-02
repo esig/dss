@@ -1,4 +1,9 @@
-package eu.europa.esig.dss.xades;
+package eu.europa.esig.dss.xades.definition.xades132;
+
+import eu.europa.esig.dss.xades.definition.AbstractPaths;
+import eu.europa.esig.dss.xades.definition.XAdESPaths;
+import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
+import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigElement;
 
 public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 
@@ -62,6 +67,31 @@ public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 	public String getSignaturePolicyIdentifier() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.SIGNED_PROPERTIES,
 				XAdES132Element.SIGNED_SIGNATURE_PROPERTIES, XAdES132Element.SIGNATURE_POLICY_IDENTIFIER);
+	}
+
+	@Override
+	public String getClaimedRolePath() {
+		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.SIGNED_PROPERTIES,
+				XAdES132Element.SIGNED_SIGNATURE_PROPERTIES, XAdES132Element.SIGNER_ROLE, XAdES132Element.CLAIMED_ROLES, XAdES132Element.CLAIMED_ROLE);
+	}
+
+	@Override
+	public String getClaimedRoleV2Path() {
+		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.SIGNED_PROPERTIES,
+				XAdES132Element.SIGNED_SIGNATURE_PROPERTIES, XAdES132Element.SIGNER_ROLE_V2, XAdES132Element.CLAIMED_ROLES, XAdES132Element.CLAIMED_ROLE);
+	}
+
+	@Override
+	public String getCertifiedRolePath() {
+		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.SIGNED_PROPERTIES,
+				XAdES132Element.SIGNED_SIGNATURE_PROPERTIES, XAdES132Element.SIGNER_ROLE, XAdES132Element.CERTIFIED_ROLES, XAdES132Element.CERTIFIED_ROLE);
+	}
+
+	@Override
+	public String getCertifiedRoleV2Path() {
+		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.SIGNED_PROPERTIES,
+				XAdES132Element.SIGNED_SIGNATURE_PROPERTIES, XAdES132Element.SIGNER_ROLE_V2, XAdES132Element.CERTIFIED_ROLES_V2,
+				XAdES132Element.CERTIFIED_ROLE);
 	}
 
 	@Override
@@ -249,8 +279,13 @@ public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 	}
 
 	@Override
-	public String getCurrentCertRefsChildren() {
+	public String getCurrentCertRefsCertChildren() {
 		return fromCurrentPosition(XAdES132Element.CERT_REFS, XAdES132Element.CERT);
+	}
+
+	@Override
+	public String getCurrentCertChildren() {
+		return fromCurrentPosition(XAdES132Element.CERT);
 	}
 
 	@Override
@@ -302,6 +337,46 @@ public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 	@Override
 	public String getCurrentIssuerSerialV2Path() {
 		return fromCurrentPosition(XAdES132Element.ISSUER_SERIAL_V2);
+	}
+
+	@Override
+	public String getCurrentCommitmentIdentifierPath() {
+		return fromCurrentPosition(XAdES132Element.COMMITMENT_TYPE_ID, XAdES132Element.IDENTIFIER);
+	}
+
+	@Override
+	public String getCurrentInclude() {
+		return fromCurrentPosition(XAdES132Element.INCLUDE);
+	}
+
+	@Override
+	public String getCurrentEncapsulatedCertificate() {
+		return fromCurrentPosition(XAdES132Element.ENCAPSULATED_X509_CERTIFICATE);
+	}
+
+	@Override
+	public String getCurrentCertificateValuesEncapsulatedCertificate() {
+		return fromCurrentPosition(XAdES132Element.CERTIFICATE_VALUES, XAdES132Element.ENCAPSULATED_X509_CERTIFICATE);
+	}
+
+	@Override
+	public String getCurrentEncapsulatedOCSPValue() {
+		return fromCurrentPosition(XAdES132Element.OCSP_VALUES, XAdES132Element.ENCAPSULATED_OCSP_VALUE);
+	}
+
+	@Override
+	public String getCurrentRevocationValuesEncapsulatedOCSPValue() {
+		return fromCurrentPosition(XAdES132Element.REVOCATION_VALUES, XAdES132Element.OCSP_VALUES, XAdES132Element.ENCAPSULATED_OCSP_VALUE);
+	}
+
+	@Override
+	public String getCurrentEncapsulatedCRLValue() {
+		return fromCurrentPosition(XAdES132Element.CRL_VALUES, XAdES132Element.ENCAPSULATED_CRL_VALUE);
+	}
+
+	@Override
+	public String getCurrentRevocationValuesEncapsulatedCRLValue() {
+		return fromCurrentPosition(XAdES132Element.REVOCATION_VALUES, XAdES132Element.CRL_VALUES, XAdES132Element.ENCAPSULATED_CRL_VALUE);
 	}
 
 }

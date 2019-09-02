@@ -78,7 +78,7 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.dss.xades.XMLDSigPaths;
+import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.validationreport.enums.ObjectType;
 import eu.europa.esig.validationreport.jaxb.POEProvisioningType;
 import eu.europa.esig.validationreport.jaxb.SASigPolicyIdentifierType;

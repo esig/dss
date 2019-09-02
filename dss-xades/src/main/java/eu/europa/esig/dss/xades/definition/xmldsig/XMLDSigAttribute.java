@@ -1,20 +1,22 @@
-package eu.europa.esig.dss.xades;
+package eu.europa.esig.dss.xades.definition.xmldsig;
+
+import eu.europa.esig.dss.xades.definition.DSSAttribute;
 
 public enum XMLDSigAttribute implements DSSAttribute {
 
-	ID("Id"),
-
 	ALGORITHM("Algorithm"),
-
-	URI("URI"),
-
-	TYPE("Type"),
-
-	MIME_TYPE("MimeType"),
 
 	ENCODING("Encoding"),
 
-	TARGET("Target");
+	ID("Id"),
+
+	MIME_TYPE("MimeType"),
+
+	TARGET("Target"),
+
+	TYPE("Type"),
+
+	URI("URI");
 
 	private final String attributeName;
 

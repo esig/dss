@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.xades;
+package eu.europa.esig.dss.xades.definition;
 
 public abstract class AbstractPaths {
 

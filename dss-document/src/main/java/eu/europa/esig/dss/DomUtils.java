@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.XMLConstants;
-import javax.xml.crypto.dsig.XMLSignature;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -93,7 +92,6 @@ public final class DomUtils {
 	static {
 		namespacePrefixMapper = new NamespaceContextMap();
 		namespaces = new HashMap<String, String>();
-		registerDefaultNamespaces();
 
 		dbFactory = DocumentBuilderFactory.newInstance();
 		dbFactory.setNamespaceAware(true);
@@ -106,18 +104,6 @@ public final class DomUtils {
 		setSecurityFeature("http://xml.org/sax/features/external-general-entities", false);
 		setSecurityFeature("http://xml.org/sax/features/external-parameter-entities", false);
 		setSecurityFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-	}
-
-	/**
-	 * This method registers the default namespaces.
-	 */
-	private static void registerDefaultNamespaces() {
-		registerNamespace("ds", XMLSignature.XMLNS);
-		registerNamespace("dsig", XMLSignature.XMLNS);
-		registerNamespace("xades", XAdESNamespaces.getXAdESDefaultNamespace()); // 1.3.2 by default
-		registerNamespace("xades141", XAdESNamespaces.XAdES141);
-		registerNamespace("xades122", XAdESNamespaces.XAdES122);
-		registerNamespace("xades111", XAdESNamespaces.XAdES111);
 	}
 	
 	/**

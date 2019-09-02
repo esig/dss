@@ -43,8 +43,8 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ReferenceValidation;
-import eu.europa.esig.dss.xades.XMLDSigAttribute;
-import eu.europa.esig.dss.xades.XMLDSigPaths;
+import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigPaths;
 
 /**
  * This class validates a ds:Manifest element against external files

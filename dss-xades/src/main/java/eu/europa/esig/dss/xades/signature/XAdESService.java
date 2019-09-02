@@ -27,6 +27,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -44,6 +45,7 @@ import eu.europa.esig.dss.xades.ProfileParameters.Operation;
 import eu.europa.esig.dss.xades.SantuarioInitializer;
 import eu.europa.esig.dss.xades.SignatureProfile;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.definition.DSSNamespaces;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 
 /**
@@ -53,6 +55,14 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 
 	static {
 		SantuarioInitializer.init();
+
+		DomUtils.registerNamespace(DSSNamespaces.XMLDSIG.getPrefix(), DSSNamespaces.XMLDSIG.getUri());
+
+		DomUtils.registerNamespace(DSSNamespaces.XADES_111.getPrefix(), DSSNamespaces.XADES_111.getUri());
+		DomUtils.registerNamespace(DSSNamespaces.XADES_122.getPrefix(), DSSNamespaces.XADES_122.getUri());
+		DomUtils.registerNamespace("xades", DSSNamespaces.XADES_132.getUri());
+		DomUtils.registerNamespace(DSSNamespaces.XADES_132.getPrefix(), DSSNamespaces.XADES_132.getUri());
+		DomUtils.registerNamespace(DSSNamespaces.XADES_141.getPrefix(), DSSNamespaces.XADES_141.getUri());
 	}
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESService.class);

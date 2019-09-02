@@ -17,6 +17,8 @@ import eu.europa.esig.xmldsig.jaxb.ObjectFactory;
 
 public final class XAdESUtils {
 
+	public static final String XADES_111_SCHEMA_LOCATION = "/xsd/XAdESv111.xsd";
+	public static final String XADES_122_SCHEMA_LOCATION = "/xsd/XAdESv122.xsd";
 	public static final String XADES_SCHEMA_LOCATION = "/xsd/XAdES.xsd";
 	public static final String XADES_141_SCHEMA_LOCATION = "/xsd/XAdESv141.xsd";
 	public static final String XADES_SCHEMA_LOCATION_EN_319_132 = "/xsd/XAdES01903v132-201601.xsd";
