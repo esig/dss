@@ -31,7 +31,6 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.validation.CertificateValidator;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
@@ -41,10 +40,6 @@ public class CertificateValidationTest {
 
 	@Test
 	public void getCertificateStatus() {
-
-		// See Trusted Lists loading
-		CertificateSource trustedCertSource = null;
-		CertificateSource adjunctCertSource = null;
 
 		// tag::demo[]
 

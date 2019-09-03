@@ -147,9 +147,8 @@ public class SignatureValidationContext implements ValidationContext {
 			validationCertificatePool = new CertificatePool();
 		}
 
-		
 		if (Utils.isCollectionNotEmpty(certificateVerifier.getTrustedCertSources())) {
-			for(CertificateSource source: certificateVerifier.getTrustedCertSources()) {
+			for (CertificateSource source : certificateVerifier.getTrustedCertSources()) {
 				validationCertificatePool.importCerts(source);
 			}
 		}
@@ -518,8 +517,11 @@ public class SignatureValidationContext implements ValidationContext {
 
 				// Online resources (OCSP and CRL if OCSP doesn't reply)
 				OCSPAndCRLCertificateVerifier onlineVerifier = null;
-				
-				onlineVerifier = instantiateWithTrustServices(trustedCertSources, trustAnchor);
+				if (Utils.isCollectionNotEmpty(trustedCertSources) && (trustAnchor != null)) {
+					onlineVerifier = instantiateWithTrustServices(trustAnchor);
+				} else {
+					onlineVerifier = new OCSPAndCRLCertificateVerifier(crlSource, ocspSource, validationCertificatePool);
+				}
 
 				final RevocationToken onlineRevocationToken = onlineVerifier.check(certToken);
 				// CRL can already exist in the signature
@@ -549,32 +551,48 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 		return null;
 	}
-
+	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private OCSPAndCRLCertificateVerifier instantiateWithTrustServices(List<CertificateSource> trustedCertSources, CertificateToken trustAnchor) {
-		
-		for(CertificateSource trustedSource : trustedCertSources) {
-			if (trustedSource instanceof CommonTrustedCertificateSource && (trustAnchor != null)) {
-				RevocationSource currentOCSPSource = null;
-				RevocationSource currentCRLSource = null;
-				CommonTrustedCertificateSource trustedCertSource = (CommonTrustedCertificateSource) trustedSource;
-				List<String> alternativeOCSPUrls = trustedCertSource.getAlternativeOCSPUrls(trustAnchor);
-				if (Utils.isCollectionNotEmpty(alternativeOCSPUrls) && ocspSource instanceof RevocationSourceAlternateUrlsSupport) {
-					currentOCSPSource = new AlternateUrlsSourceAdapter<OCSPToken>((RevocationSourceAlternateUrlsSupport) ocspSource, alternativeOCSPUrls);
-				} else {
-					currentOCSPSource = ocspSource;
-				}
+	private OCSPAndCRLCertificateVerifier instantiateWithTrustServices(CertificateToken trustAnchor) {
+		RevocationSource currentOCSPSource = null;
+		List<String> alternativeOCSPUrls = getAlternativeOCSPUrls(trustAnchor);
+		if (Utils.isCollectionNotEmpty(alternativeOCSPUrls) && ocspSource instanceof RevocationSourceAlternateUrlsSupport) {
+			currentOCSPSource = new AlternateUrlsSourceAdapter<OCSPToken>((RevocationSourceAlternateUrlsSupport) ocspSource, alternativeOCSPUrls);
+		} else {
+			currentOCSPSource = ocspSource;
+		}
 
-				List<String> alternativeCRLUrls = trustedCertSource.getAlternativeCRLUrls(trustAnchor);
-				if (Utils.isCollectionNotEmpty(alternativeCRLUrls) && crlSource instanceof RevocationSourceAlternateUrlsSupport) {
-					currentCRLSource = new AlternateUrlsSourceAdapter<CRLToken>((RevocationSourceAlternateUrlsSupport) crlSource, alternativeCRLUrls);
-				} else {
-					currentCRLSource = crlSource;
-				}
-				return new OCSPAndCRLCertificateVerifier(currentCRLSource, currentOCSPSource, validationCertificatePool);
+		RevocationSource currentCRLSource = null;
+		List<String> alternativeCRLUrls = getAlternativeCRLUrls(trustAnchor);
+		if (Utils.isCollectionNotEmpty(alternativeCRLUrls) && crlSource instanceof RevocationSourceAlternateUrlsSupport) {
+			currentCRLSource = new AlternateUrlsSourceAdapter<CRLToken>((RevocationSourceAlternateUrlsSupport) crlSource, alternativeCRLUrls);
+		} else {
+			currentCRLSource = crlSource;
+		}
+
+		return new OCSPAndCRLCertificateVerifier(currentCRLSource, currentOCSPSource, validationCertificatePool);
+	}
+
+	private List<String> getAlternativeOCSPUrls(CertificateToken trustAnchor) {
+		List<String> alternativeOCSPUrls = new ArrayList<String>();
+		for (CertificateSource certificateSource : trustedCertSources) {
+			if (certificateSource instanceof CommonTrustedCertificateSource) {
+				CommonTrustedCertificateSource trustedCertSource = (CommonTrustedCertificateSource) certificateSource;
+				alternativeOCSPUrls.addAll(trustedCertSource.getAlternativeOCSPUrls(trustAnchor));
 			}
 		}
-		return new OCSPAndCRLCertificateVerifier(crlSource, ocspSource, validationCertificatePool);
+		return alternativeOCSPUrls;
+	}
+
+	private List<String> getAlternativeCRLUrls(CertificateToken trustAnchor) {
+		List<String> alternativeCRLUrls = new ArrayList<String>();
+		for (CertificateSource certificateSource : trustedCertSources) {
+			if (certificateSource instanceof CommonTrustedCertificateSource) {
+				CommonTrustedCertificateSource trustedCertSource = (CommonTrustedCertificateSource) certificateSource;
+				alternativeCRLUrls.addAll(trustedCertSource.getAlternativeCRLUrls(trustAnchor));
+			}
+		}
+		return alternativeCRLUrls;
 	}
 
 	@Override
@@ -587,8 +605,6 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 		return true;
 	}
-	
-	
 	
 	private boolean checkRevocationPresentForCertificateChain(List<CertificateToken> certificates) {
 		return checkRevocationForCertificateChainAgainstBestSignatureTime(certificates, null);

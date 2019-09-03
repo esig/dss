@@ -59,7 +59,6 @@ public class XAdESLevelBWithMultipleTrustedCertificateSources extends PKIFactory
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private DSSDocument documentToSign;
 	
-	
 	private XAdESSignatureParameters signatureParameters;
 	private CertificateVerifier certificateVerifier;
 	private Indication expectedResult;
@@ -81,8 +80,7 @@ public class XAdESLevelBWithMultipleTrustedCertificateSources extends PKIFactory
 
 	@Test
 	public void validateWithValidTrustAnchorTest() throws IOException {
-		DSSDocument signedDocument;
-		signedDocument = sign();
+		DSSDocument signedDocument = sign();
 		certificateVerifier = getCertificateVerifierWithoutTrustSources();
 		CommonTrustedCertificateSource trusted = new CommonTrustedCertificateSource();
 		trusted.importAsTrusted(getBelgiumTrustAnchors());
@@ -90,13 +88,11 @@ public class XAdESLevelBWithMultipleTrustedCertificateSources extends PKIFactory
 		expectedResult = Indication.TOTAL_PASSED;
 		trustedStoreExpectedResult = true;
 		validate(signedDocument);
-		signedDocument.save("target/test-file.xml");
 	}
 	
 	@Test
 	public void validateWithValidTrustAnchorAndAdjunctTest() throws IOException {
-		DSSDocument signedDocument;
-		signedDocument = sign();
+		DSSDocument signedDocument = sign();
 		certificateVerifier = getCertificateVerifierWithoutTrustSources();
 		CommonTrustedCertificateSource trusted = new CommonTrustedCertificateSource();
 		trusted.importAsTrusted(getBelgiumTrustAnchors());
@@ -112,8 +108,7 @@ public class XAdESLevelBWithMultipleTrustedCertificateSources extends PKIFactory
 	
 	@Test
 	public void validateWithInvalidTrustAnchorTest() throws IOException {
-		DSSDocument signedDocument;
-		signedDocument = sign();
+		DSSDocument signedDocument = sign();
 		certificateVerifier = getCertificateVerifierWithoutTrustSources();
 		CommonTrustedCertificateSource trusted = new CommonTrustedCertificateSource();
 		trusted.importAsTrusted(getSHA3PKITrustAnchors());
@@ -125,8 +120,7 @@ public class XAdESLevelBWithMultipleTrustedCertificateSources extends PKIFactory
 	
 	@Test
 	public void validateWithBothTrustAnchorsTest() throws IOException {
-		DSSDocument signedDocument;
-		signedDocument = sign();
+		DSSDocument signedDocument = sign();
 		certificateVerifier = getCertificateVerifierWithoutTrustSources();
 
 		CommonTrustedCertificateSource trustedSource1 = new CommonTrustedCertificateSource();
@@ -154,8 +148,7 @@ public class XAdESLevelBWithMultipleTrustedCertificateSources extends PKIFactory
 
 	@Test
 	public void validateWithArrayOfTrustAnchorsTest() throws IOException {
-		DSSDocument signedDocument;
-		signedDocument = sign();
+		DSSDocument signedDocument = sign();
 		certificateVerifier = getCertificateVerifierWithoutTrustSources();
 		CommonTrustedCertificateSource trustedSource1 = new CommonTrustedCertificateSource();
 		trustedSource1.importAsTrusted(getSHA3PKITrustAnchors());
@@ -169,8 +162,7 @@ public class XAdESLevelBWithMultipleTrustedCertificateSources extends PKIFactory
 	
 	@Test
 	public void validateWithArrayOfDuplicateTrustAnchorsTest() throws IOException {
-		DSSDocument signedDocument;
-		signedDocument = sign();
+		DSSDocument signedDocument = sign();
 		certificateVerifier = getCertificateVerifierWithoutTrustSources();
 		CommonTrustedCertificateSource trustedSource1 = new CommonTrustedCertificateSource();
 		trustedSource1.importAsTrusted(getBelgiumTrustAnchors());
@@ -183,9 +175,7 @@ public class XAdESLevelBWithMultipleTrustedCertificateSources extends PKIFactory
 	private DSSDocument sign() throws IOException {
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
-		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
-
-		return signedDocument;
+		return service.signDocument(documentToSign, signatureParameters, signatureValue);
 	}
 	
 	private void validate(DSSDocument signedDocument) {
@@ -204,7 +194,6 @@ public class XAdESLevelBWithMultipleTrustedCertificateSources extends PKIFactory
 		verifySimpleReport(simpleReport);
 	}
 
-
 	private void verifyDiagnosticData(DiagnosticData diagnosticData) {
 		boolean result = false;
 		for (CertificateWrapper certificate : diagnosticData.getUsedCertificates()) {
@@ -217,7 +206,6 @@ public class XAdESLevelBWithMultipleTrustedCertificateSources extends PKIFactory
 		
 		assertEquals(trustedStoreExpectedResult, result);
 	}
-
 	
 	private void verifySimpleReport(SimpleReport simpleReport) {
 		assertNotNull(simpleReport);

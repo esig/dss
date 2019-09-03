@@ -27,6 +27,7 @@ import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.CertificateReorderer;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 
 /**
@@ -53,24 +54,29 @@ public class BaselineBCertificateSelector extends CertificateReorderer {
 		List<CertificateSource> trustedCertSources = certificateVerifier.getTrustedCertSources();
 
 		// if true, trust anchor certificates (and upper certificates) are not included in the signature
-		if (parameters.bLevel().isTrustAnchorBPPolicy() && trustedCertSources != null
-				&& !trustedCertSources.isEmpty()) {
+		if (parameters.bLevel().isTrustAnchorBPPolicy() && Utils.isCollectionNotEmpty(trustedCertSources)) {
 
 			List<CertificateToken> result = new LinkedList<CertificateToken>();
-			for (CertificateSource source : trustedCertSources) {
-				for (CertificateToken certificateToken : orderedCertificates) {
-					if (source.isTrusted(certificateToken)) {
-						// trust anchor and its parents are skipped
-						break;
-					}
-					result.add(certificateToken);
+			for (CertificateToken certificateToken : orderedCertificates) {
+				if (isTrusted(trustedCertSources, certificateToken)) {
+					break;
 				}
+				result.add(certificateToken);
 			}
 
 			return result;
 		} else {
 			return orderedCertificates;
 		}
+	}
+
+	private boolean isTrusted(List<CertificateSource> trustedCertSources, CertificateToken certificateToken) {
+		for (CertificateSource source : trustedCertSources) {
+			if (source.isTrusted(certificateToken)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

@@ -55,7 +55,7 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	 * This field contains the reference to multiple trusted certificate sources. These sources are fixed, it means that the same
 	 * sources are used for different validations.
 	 */
-	private List<CertificateSource> trustedCertSources;
+	private List<CertificateSource> trustedCertSources = new ArrayList<CertificateSource>();
 
 	/**
 	 * This field contains the reference to any certificate source, can contain the trust store, or the any intermediate
@@ -175,7 +175,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 		if (!simpleCreationOnly) {
 			dataLoader = new NativeHTTPDataLoader();
 		}
-		trustedCertSources = new ArrayList<CertificateSource>();
 	}
 
 	/**
@@ -230,15 +229,13 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	@Override
 	public void setTrustedCertSource(final CertificateSource trustedCertSource) {
-		if(trustedCertSource != null) {
-			this.trustedCertSources.add(trustedCertSource);
-		}
+		this.trustedCertSources.add(trustedCertSource);
 	}
 	
 	@Override
 	public void setTrustedCertSources(final CertificateSource... certSources) {
-		for(CertificateSource source : certSources) {
-			setTrustedCertSource(source);
+		for (CertificateSource source : certSources) {
+			this.trustedCertSources.add(source);
 		}
 	}
 
@@ -348,10 +345,8 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	@Override
 	public CertificatePool createValidationPool() {
 		final CertificatePool validationPool = new CertificatePool();
-		for(CertificateSource trustedSource : trustedCertSources) {
-			if (trustedSource != null) {
-				validationPool.importCerts(trustedSource);
-			}
+		for (CertificateSource trustedSource : trustedCertSources) {
+			validationPool.importCerts(trustedSource);
 		}
 		if (adjunctCertSource != null) {
 			validationPool.importCerts(adjunctCertSource);
