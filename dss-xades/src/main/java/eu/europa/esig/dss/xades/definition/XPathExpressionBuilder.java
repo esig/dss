@@ -4,12 +4,12 @@ import eu.europa.esig.dss.model.DSSException;
 
 public class XPathExpressionBuilder {
 
-	private final static String ALL = "//";
-	private final static String FROM_CURRENT_POSITION = "./";
-	private final static String ALL_FROM_CURRENT_POSITION = ".//";
-	private final static String COLON = ":";
-	private final static String SLASH = "/";
-	private final static String ATTRIBUTE = "@";
+	private static final String ALL_PATH = "//";
+	private static final String FROM_CURRENT_POSITION_PATH = "./";
+	private static final String ALL_FROM_CURRENT_POSITION_PATH = ".//";
+	private static final String COLON_PATH = ":";
+	private static final String SLASH_PATH = "/";
+	private static final String ATTRIBUTE_PATH = "@";
 
 	private boolean fromCurrentPosition = false;
 	private boolean all = false;
@@ -56,14 +56,14 @@ public class XPathExpressionBuilder {
 	}
 
 	public String build() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 
 		if (all && fromCurrentPosition) {
-			sb.append(ALL_FROM_CURRENT_POSITION);
+			sb.append(ALL_FROM_CURRENT_POSITION_PATH);
 		} else if (fromCurrentPosition) {
-			sb.append(FROM_CURRENT_POSITION);
+			sb.append(FROM_CURRENT_POSITION_PATH);
 		} else if (all) {
-			sb.append(ALL);
+			sb.append(ALL_PATH);
 		} else {
 			throw new DSSException("Unsupported operation");
 		}
@@ -72,7 +72,7 @@ public class XPathExpressionBuilder {
 		for (int i = 0; i < nbElements; i++) {
 			sb.append(getElement(elements[i]));
 			if (i < nbElements - 1) {
-				sb.append(SLASH);
+				sb.append(SLASH_PATH);
 			}
 		}
 
@@ -81,35 +81,35 @@ public class XPathExpressionBuilder {
 		}
 
 		if (attribute != null) {
-			sb.append(SLASH).append(getAttribute(attribute));
+			sb.append(SLASH_PATH).append(getAttribute(attribute));
 		}
 
 		return sb.toString();
 	}
 
-	private StringBuffer getElement(DSSElement element) {
-		StringBuffer sb = new StringBuffer();
+	private StringBuilder getElement(DSSElement element) {
+		StringBuilder sb = new StringBuilder();
 		DSSNamespace namespace = element.getNamespace();
 		if (namespace != null) {
 			sb.append(namespace.getPrefix());
-			sb.append(COLON);
+			sb.append(COLON_PATH);
 		}
 		sb.append(element.getTagName());
 		return sb;
 	}
 
 	// "//ds:Signature[not(parent::xades:CounterSignature)]"
-	private StringBuffer getNotParent(DSSElement currentNotParentOf) {
-		StringBuffer sb = new StringBuffer();
+	private StringBuilder getNotParent(DSSElement currentNotParentOf) {
+		StringBuilder sb = new StringBuilder();
 		sb.append("[not(parent::");
 		sb.append(getElement(currentNotParentOf));
 		sb.append(")]");
 		return sb;
 	}
 
-	private StringBuffer getAttribute(DSSAttribute currentAttribute) {
-		StringBuffer sb = new StringBuffer();
-		sb.append(ATTRIBUTE);
+	private StringBuilder getAttribute(DSSAttribute currentAttribute) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(ATTRIBUTE_PATH);
 		sb.append(currentAttribute.getAttributeName());
 		return sb;
 	}

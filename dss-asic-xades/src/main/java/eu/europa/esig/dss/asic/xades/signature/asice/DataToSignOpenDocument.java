@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.europa.esig.dss.asic.xades.signature.GetDataToSignASiCWithXAdESHelper;
-import eu.europa.esig.dss.asic.xades.signature.asice.AbstractDataToSignASiCEWithXAdES;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.utils.Utils;
 
