@@ -283,7 +283,9 @@ public class GoogleGuavaUtils implements IUtils {
 					if (file.isDirectory()) {
 						cleanDirectory(file);
 					} else if (file.isFile()) {
-						file.delete();
+						if (!file.delete()) {
+							throw new IOException("Unable to delete file " + file.getAbsolutePath());
+						}
 					}
 				}
 			}
