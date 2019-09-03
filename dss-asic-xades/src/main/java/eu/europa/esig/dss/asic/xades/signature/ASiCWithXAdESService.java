@@ -75,8 +75,8 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 	@Override
 	public ToBeSigned getDataToSign(List<DSSDocument> toSignDocuments, ASiCWithXAdESSignatureParameters parameters) {
 		GetDataToSignASiCWithXAdESHelper dataToSignHelper = ASiCWithXAdESDataToSignHelperBuilder.getGetDataToSignHelper(toSignDocuments, parameters);
-		XAdESSignatureParameters xadesParameters = getXAdESParameters(parameters, dataToSignHelper.getExistingSignature());
-		return getXAdESService().getDataToSign(dataToSignHelper.getToBeSigned(), xadesParameters);
+		XAdESSignatureParameters xadesParameters = getParameters(parameters, dataToSignHelper);
+		return getXAdESService().getDataToSign(dataToSignHelper.getSignedDocuments(), xadesParameters);
 	}
 
 	@Override
@@ -89,13 +89,15 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		List<DSSDocument> signatures = dataToSignHelper.getSignatures();
 		List<DSSDocument> manifestFiles = dataToSignHelper.getManifestFiles();
 		List<DSSDocument> signedDocuments = dataToSignHelper.getSignedDocuments();
-
-		XAdESSignatureParameters xadesParameters = getXAdESParameters(parameters, dataToSignHelper.getExistingSignature());
-		final DSSDocument newSignature = getXAdESService().signDocument(dataToSignHelper.getToBeSigned(), xadesParameters, signatureValue);
+				
+		DSSDocument rootContainer = dataToSignHelper.getRootDocument();
+		
+		XAdESSignatureParameters xadesParameters = getParameters(parameters, dataToSignHelper);
+		final DSSDocument newSignature = getXAdESService().signDocument(signedDocuments, xadesParameters, signatureValue);
 		String newSignatureFilename = dataToSignHelper.getSignatureFilename();
 		newSignature.setName(newSignatureFilename);
 
-		if (ASiCUtils.isASiCS(asicParameters)) {
+		if (ASiCUtils.isASiCS(asicParameters) || rootContainer != null) {
 			Iterator<DSSDocument> iterator = signatures.iterator();
 			while (iterator.hasNext()) {
 				if (Utils.areStringsEqual(newSignatureFilename, iterator.next().getName())) {
@@ -103,29 +105,32 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 				}
 			}
 		}
+		
 		signatures.add(newSignature);
 
-		final DSSDocument asicSignature = buildASiCContainer(signedDocuments, signatures, manifestFiles, asicParameters);
+		final DSSDocument asicSignature = buildASiCContainer(signedDocuments, signatures, manifestFiles, asicParameters, rootContainer);
 		asicSignature
-				.setName(getFinalFileName(asicSignature, SigningOperation.SIGN, parameters.getSignatureLevel(), parameters.aSiC().getContainerType()));
+				.setName(getFinalArchiveName(asicSignature, SigningOperation.SIGN, parameters.getSignatureLevel(), asicSignature.getMimeType()));
 		parameters.reinitDeterministicId();
 		return asicSignature;
 	}
 
 	@Override
 	public DSSDocument extendDocument(DSSDocument toExtendDocument, ASiCWithXAdESSignatureParameters parameters) {
-		if (!ASiCUtils.isASiCContainer(toExtendDocument) || !ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(toExtendDocument, ".xml")) {
+		if (!ASiCUtils.isZip(toExtendDocument) || !ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(toExtendDocument, ".xml")) {
 			throw new DSSException("Unsupported file type");
 		}
 
 		extractCurrentArchive(toExtendDocument);
 		List<DSSDocument> signatureDocuments = getEmbeddedSignatures();
-
 		List<DSSDocument> extendedDocuments = new ArrayList<DSSDocument>();
-
+			
+		boolean openDocument = ASiCUtils.isOpenDocument(getEmbeddedMimetype());
+		
 		for (DSSDocument signature : signatureDocuments) {
-			XAdESSignatureParameters xadesParameters = getXAdESParameters(parameters, null);
-			if (ASiCUtils.isOpenDocument(getEmbeddedMimetype())) {
+			
+			XAdESSignatureParameters xadesParameters = getXAdESParameters(parameters, null, openDocument);
+			if (openDocument) {
 				xadesParameters.setDetachedContents(OpenDocumentSupportUtils.getOpenDocumentCoverage(archiveContent));
 			} else {
 				xadesParameters.setDetachedContents(getEmbeddedSignedDocuments());
@@ -134,10 +139,9 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 			extendDocument.setName(signature.getName());
 			extendedDocuments.add(extendDocument);
 		}
-
 		DSSDocument extensionResult = mergeArchiveAndExtendedSignatures(toExtendDocument, extendedDocuments);
 		extensionResult.setName(
-				getFinalFileName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel(), parameters.aSiC().getContainerType()));
+				getFinalArchiveName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel(), toExtendDocument.getMimeType()));
 		return extensionResult;
 	}
 
@@ -151,21 +155,37 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		xadesService.setTspSource(tspSource);
 		return xadesService;
 	}
+	
+	private XAdESSignatureParameters getParameters(ASiCWithXAdESSignatureParameters parameters, GetDataToSignASiCWithXAdESHelper dataToSignHelper) {
+		boolean openDocument = dataToSignHelper.getRootDocument() != null;
+		return getXAdESParameters(parameters, dataToSignHelper.getExistingSignature(), openDocument);
+	}
 
-	private XAdESSignatureParameters getXAdESParameters(ASiCWithXAdESSignatureParameters parameters, DSSDocument existingXAdESSignatureASiCS) {
+	private XAdESSignatureParameters getXAdESParameters(ASiCWithXAdESSignatureParameters parameters, DSSDocument existingXAdESSignature, boolean openDocument) {
 		XAdESSignatureParameters xadesParameters = parameters;
 		xadesParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
 		Document rootDocument = null;
-		// If ASiC-S + already existing signature file, we re-use the same signature file
-		if (existingXAdESSignatureASiCS != null) {
-			rootDocument = DomUtils.buildDOM(existingXAdESSignatureASiCS);
+		// If ASiC-S OR OpenDocument + already existing signature file, we re-use the same signature file
+		if (existingXAdESSignature != null) {
+			rootDocument = DomUtils.buildDOM(existingXAdESSignature);
 		} else {
-			rootDocument = DomUtils.buildDOM();
-			final Element xadesSignatures = rootDocument.createElementNS(ASiCNamespace.ASIC_NS, ASiCNamespace.XADES_SIGNATURES);
-			rootDocument.appendChild(xadesSignatures);
+			rootDocument = buildDomRoot(openDocument);	
 		}
 		xadesParameters.setRootDocument(rootDocument);
 		return xadesParameters;
+	}
+	
+	private Document buildDomRoot(boolean openDocument) {
+		Document rootDocument = DomUtils.buildDOM();
+		Element xadesSignatures = null;
+		if (openDocument) {
+			xadesSignatures = rootDocument.createElementNS(ASiCNamespace.LIBREOFFICE_NS,
+					ASiCNamespace.LIBREOFFICE_SIGNATURES);
+		} else {
+			xadesSignatures = rootDocument.createElementNS(ASiCNamespace.ASIC_NS, ASiCNamespace.XADES_SIGNATURES);
+		}
+		rootDocument.appendChild(xadesSignatures);
+		return rootDocument;
 	}
 
 	@Override

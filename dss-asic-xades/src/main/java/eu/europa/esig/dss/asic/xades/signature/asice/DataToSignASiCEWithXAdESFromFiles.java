@@ -69,5 +69,11 @@ public class DataToSignASiCEWithXAdESFromFiles extends AbstractDataToSignASiCEWi
 		// new container
 		return new ArrayList<DSSDocument>();
 	}
+	
+	@Override
+	public DSSDocument getRootDocument() {
+		// No root container when using files
+		return null;
+	}
 
 }

@@ -59,7 +59,7 @@ public final class OpenDocumentSupportUtils {
 		docs.addAll(extractResult.getTimestampDocuments());
 		docs.addAll(extractResult.getUnsupportedDocuments());
 
-		List<DSSDocument> result = new ArrayList<>();
+		List<DSSDocument> result = new ArrayList<DSSDocument>();
 		for (DSSDocument doc : docs) {
 			if (!doc.getName().startsWith(EXTERNAL_DATA)) {
 				result.add(doc);

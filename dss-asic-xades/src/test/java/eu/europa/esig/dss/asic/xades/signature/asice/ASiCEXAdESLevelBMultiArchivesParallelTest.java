@@ -56,7 +56,7 @@ public class ASiCEXAdESLevelBMultiArchivesParallelTest extends PKIFactoryAccess 
 	@Test
 	public void test() throws Exception {
 		List<DSSDocument> documentToSigns = new ArrayList<DSSDocument>();
-		documentToSigns.add(new FileDocument("src/test/resources/signable/document.odt"));
+		documentToSigns.add(new FileDocument("src/test/resources/signable/open-document.odt"));
 		documentToSigns.add(new FileDocument("src/test/resources/signable/test.txt"));
 
 		ASiCWithXAdESSignatureParameters signatureParameters = new ASiCWithXAdESSignatureParameters();
@@ -71,7 +71,7 @@ public class ASiCEXAdESLevelBMultiArchivesParallelTest extends PKIFactoryAccess 
 		ToBeSigned dataToSign = service.getDataToSign(documentToSigns, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(documentToSigns, signatureParameters, signatureValue);
-
+		
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
@@ -88,7 +88,7 @@ public class ASiCEXAdESLevelBMultiArchivesParallelTest extends PKIFactoryAccess 
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 
 		Reports reports = validator.validateDocument();
-
+		
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		List<String> signatureIdList = diagnosticData.getSignatureIdList();
 		assertEquals(2, signatureIdList.size());

@@ -142,16 +142,16 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			cadesParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 		}
 
-		final DSSDocument asicSignature = buildASiCContainer(dataToSignHelper.getSignedDocuments(), signatures, manifests, asicParameters);
+		final DSSDocument asicSignature = buildASiCContainer(dataToSignHelper.getSignedDocuments(), signatures, manifests, asicParameters, null);
 		asicSignature
-				.setName(getFinalFileName(asicSignature, SigningOperation.SIGN, parameters.getSignatureLevel(), parameters.aSiC().getContainerType()));
+				.setName(getFinalArchiveName(asicSignature, SigningOperation.SIGN, parameters.getSignatureLevel(), asicSignature.getMimeType()));
 		parameters.reinitDeterministicId();
 		return asicSignature;
 	}
 
 	@Override
 	public DSSDocument extendDocument(DSSDocument toExtendDocument, ASiCWithCAdESSignatureParameters parameters) {
-		if (!ASiCUtils.isASiCContainer(toExtendDocument) || !ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(toExtendDocument, ".p7s")) {
+		if (!ASiCUtils.isZip(toExtendDocument) || !ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(toExtendDocument, ".p7s")) {
 			throw new DSSException("Unsupported file type");
 		}
 
@@ -187,7 +187,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 
 		DSSDocument extensionResult = mergeArchiveAndExtendedSignatures(toExtendDocument, extendedDocuments);
 		extensionResult.setName(
-				getFinalFileName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel(), parameters.aSiC().getContainerType()));
+				getFinalArchiveName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel(), toExtendDocument.getMimeType()));
 		return extensionResult;
 	}
 	

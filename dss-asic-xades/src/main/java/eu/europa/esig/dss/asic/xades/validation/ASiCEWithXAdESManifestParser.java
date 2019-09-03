@@ -35,6 +35,7 @@ import eu.europa.esig.dss.asic.xades.ManifestNamespace;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
 
@@ -87,11 +88,14 @@ public class ASiCEWithXAdESManifestParser {
 	
 	private static MimeType getMimeType(Element fileEntryElement) {
 		try {
-			return MimeType.fromMimeTypeString(fileEntryElement.getAttribute(ManifestNamespace.MEDIA_TYPE));
+			String mediaType = fileEntryElement.getAttribute(ManifestNamespace.MEDIA_TYPE);
+			if (Utils.isStringNotBlank(mediaType)) {
+				return MimeType.fromMimeTypeString(mediaType);
+			}
 		} catch (DSSException e) {
 			LOG.warn("Cannot extract MimeType for a reference. Reason : [{}]", e.getMessage());
-			return null;
 		}
+		return null;
 	}
 
 	private boolean isFolder(String fullpathValue) {

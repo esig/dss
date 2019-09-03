@@ -121,10 +121,8 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 		checkBLevelValid(diagnosticData);
 		checkTLevelAndValid(diagnosticData);
 
-		File fileToBeDeleted = new File(originalDocument.getAbsolutePath());
-		assertTrue(fileToBeDeleted.exists());
-		assertTrue("Cannot delete original document (IO error)", fileToBeDeleted.delete());
-		assertFalse(fileToBeDeleted.exists());
+		File fileToBeDeleted;
+		deleteOriginalFile(originalDocument);
 
 		fileToBeDeleted = new File(signedFilePath);
 		assertTrue(fileToBeDeleted.exists());
@@ -134,6 +132,13 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 		fileToBeDeleted = new File(extendedFilePath);
 		assertTrue(fileToBeDeleted.exists());
 		assertTrue("Cannot delete extended document (IO error)", fileToBeDeleted.delete());
+		assertFalse(fileToBeDeleted.exists());
+	}
+
+	protected void deleteOriginalFile(DSSDocument originalDocument) {
+		File fileToBeDeleted = new File(originalDocument.getAbsolutePath());
+		assertTrue(fileToBeDeleted.exists());
+		assertTrue("Cannot delete original document (IO error)", fileToBeDeleted.delete());
 		assertFalse(fileToBeDeleted.exists());
 	}
 

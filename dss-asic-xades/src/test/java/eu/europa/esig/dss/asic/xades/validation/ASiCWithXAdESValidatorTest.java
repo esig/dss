@@ -29,6 +29,8 @@ public class ASiCWithXAdESValidatorTest extends AbstractTestValidator {
 		documents.add(new FileDocument("src/test/resources/validation/multifiles-ok.asics"));
 		documents.add(new FileDocument("src/test/resources/validation/libreoffice.ods"));
 		documents.add(new FileDocument("src/test/resources/validation/libreoffice.odt"));
+		documents.add(new FileDocument("src/test/resources/validation/open-document-signed.odt"));
+		documents.add(new FileDocument("src/test/resources/validation/open-document-resigned.odt"));
 		return documents;
 	}
 

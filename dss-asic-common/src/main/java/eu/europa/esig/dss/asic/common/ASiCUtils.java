@@ -86,19 +86,22 @@ public final class ASiCUtils {
 	}
 
 	public static boolean isASiCMimeType(final MimeType asicMimeType) {
-		return MimeType.ASICS.equals(asicMimeType) || MimeType.ASICE.equals(asicMimeType) || MimeType.ODT.equals(asicMimeType)
-				|| MimeType.ODS.equals(asicMimeType);
+		return MimeType.ASICS.equals(asicMimeType) || MimeType.ASICE.equals(asicMimeType);
 	}
-
-	public static ASiCContainerType getASiCContainerType(final MimeType asicMimeType) {
-		if (MimeType.ASICS.equals(asicMimeType)) {
-			return ASiCContainerType.ASiC_S;
-		} else if (MimeType.ASICE.equals(asicMimeType) || MimeType.ODT.equals(asicMimeType) || MimeType.ODS.equals(asicMimeType)) {
-			return ASiCContainerType.ASiC_E;
-		} else {
-			throw new IllegalArgumentException("Not allowed mimetype " + asicMimeType);
-		}
+	
+	public static boolean isOpenDocumentMimeType(final MimeType mimeType) {
+		return MimeType.ODT.equals(mimeType) || MimeType.ODS.equals(mimeType) || MimeType.ODG.equals(mimeType) || MimeType.ODP.equals(mimeType);
 	}
+	
+    public static ASiCContainerType getASiCContainerType(final MimeType asicMimeType) {
+        if (MimeType.ASICS.equals(asicMimeType)) {
+            return ASiCContainerType.ASiC_S;
+        } else if (MimeType.ASICE.equals(asicMimeType) || isOpenDocumentMimeType(asicMimeType)) {
+            return ASiCContainerType.ASiC_E;
+        } else {
+            throw new IllegalArgumentException("Not allowed mimetype " + asicMimeType);
+        }
+    }
 
 	public static boolean isASiCE(final ASiCParameters asicParameters) {
 		return ASiCContainerType.ASiC_E.equals(asicParameters.getContainerType());
@@ -111,7 +114,8 @@ public final class ASiCUtils {
 	public static MimeType getMimeType(ASiCParameters asicParameters) {
 		return isASiCE(asicParameters) ? MimeType.ASICE : MimeType.ASICS;
 	}
-
+	
+	
 	public static boolean isArchiveContainsCorrectSignatureFileWithExtension(DSSDocument toSignDocument, String extension) {
 		List<String> filenames = getFileNames(toSignDocument);
 		for (String filename : filenames) {
@@ -124,12 +128,12 @@ public final class ASiCUtils {
 
 	public static boolean isArchive(List<DSSDocument> docs) {
 		if (Utils.collectionSize(docs) == 1) {
-			return isASiCContainer(docs.get(0));
+			return isZip(docs.get(0));
 		}
 		return false;
 	}
 
-	public static boolean isASiCContainer(DSSDocument dssDocument) {
+	public static boolean isZip(DSSDocument dssDocument) {
 		if (dssDocument == null) {
 			return false;
 		}
@@ -145,7 +149,7 @@ public final class ASiCUtils {
 
 		return (preamble[0] == 'P') && (preamble[1] == 'K');
 	}
-
+	
 	public static boolean isXAdES(final String entryName) {
 		return isSignature(entryName) && entryName.endsWith(".xml");
 	}
@@ -154,9 +158,12 @@ public final class ASiCUtils {
 		return isSignature(entryName) && (entryName.endsWith(".p7s"));
 	}
 
-	public static boolean isOpenDocument(final DSSDocument mimeTypeDocument) {
-		MimeType mimeType = ASiCUtils.getMimeType(mimeTypeDocument);
-		return MimeType.ODS == mimeType || MimeType.ODT == mimeType;
+	public static boolean isOpenDocument(final DSSDocument mimeTypeDoc) {
+		MimeType mimeType = getMimeType(mimeTypeDoc);
+		if (mimeTypeDoc != null) {
+			return isOpenDocumentMimeType(mimeType);
+		}
+		return false;
 	}
 
 	public static MimeType getMimeType(final DSSDocument mimeTypeDocument) {

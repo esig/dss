@@ -32,5 +32,8 @@ public interface GetDataToSignASiCWithXAdESHelper extends GetDataToSignHelper {
 
 	/* For parallel signature in ASiC-S */
 	DSSDocument getExistingSignature();
-
+	
+	/* Root container user for OpenDocument files */
+	DSSDocument getRootDocument();
+	
 }

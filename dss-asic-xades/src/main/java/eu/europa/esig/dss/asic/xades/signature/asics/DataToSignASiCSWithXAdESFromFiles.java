@@ -83,5 +83,11 @@ public class DataToSignASiCSWithXAdESFromFiles extends AbstractGetDataToSignASiC
 		// new container
 		return new ArrayList<DSSDocument>();
 	}
+	
+	@Override
+	public DSSDocument getRootDocument() {
+		// No root container when using files
+		return null;
+	}
 
 }
