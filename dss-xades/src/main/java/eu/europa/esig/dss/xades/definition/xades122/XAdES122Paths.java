@@ -2,7 +2,7 @@ package eu.europa.esig.dss.xades.definition.xades122;
 
 import eu.europa.esig.dss.xades.definition.AbstractPaths;
 import eu.europa.esig.dss.xades.definition.DSSNamespace;
-import eu.europa.esig.dss.xades.definition.DSSNamespaces;
+import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigElement;
 
@@ -10,7 +10,7 @@ public class XAdES122Paths extends AbstractPaths implements XAdESPaths {
 
 	@Override
 	public DSSNamespace getNamespace() {
-		return DSSNamespaces.XADES_122;
+		return XAdESNamespaces.XADES_122;
 	}
 
 	@Override
@@ -393,6 +393,11 @@ public class XAdES122Paths extends AbstractPaths implements XAdESPaths {
 	@Override
 	public String getCurrentRevocationValuesEncapsulatedCRLValue() {
 		return fromCurrentPosition(XAdES122Element.REVOCATION_VALUES, XAdES122Element.CRL_VALUES, XAdES122Element.ENCAPSULATED_CRL_VALUE);
+	}
+
+	@Override
+	public String getCurrentQualifyingPropertiesPath() {
+		return fromCurrentPosition(XAdES122Element.QUALIFYING_PROPERTIES);
 	}
 
 }

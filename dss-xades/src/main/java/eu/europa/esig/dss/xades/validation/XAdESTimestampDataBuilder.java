@@ -452,7 +452,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 		for (int ii = 0; ii < objects.getLength(); ii++) {
 
 			final Node node = objects.item(ii);
-			final Node qualifyingProperties = DomUtils.getElement(node, xadesPaths.getQualifyingPropertiesPath());
+			final Node qualifyingProperties = DomUtils.getElement(node, xadesPaths.getCurrentQualifyingPropertiesPath());
 			if (qualifyingProperties != null) {
 				continue;
 			}

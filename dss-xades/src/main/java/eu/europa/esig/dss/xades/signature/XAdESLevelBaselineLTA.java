@@ -36,7 +36,7 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.dss.xades.definition.DSSNamespaces;
+import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 
 /**
  * Holds level LTA aspects of XAdES
@@ -106,7 +106,7 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 	 */
 	private void incorporateTimestampValidationData(final ValidationContext validationContext, String indent) {
 
-		final Element timeStampValidationDataDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, DSSNamespaces.XADES_141.getUri(),
+		final Element timeStampValidationDataDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XADES_141.getUri(),
 				XADES141_TIME_STAMP_VALIDATION_DATA);
 
 		incorporateCertificateValues(timeStampValidationDataDom, validationContext, indent);

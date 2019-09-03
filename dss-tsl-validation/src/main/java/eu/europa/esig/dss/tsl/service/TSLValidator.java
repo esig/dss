@@ -38,7 +38,8 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.xades.XPathQueryHolder;
+import eu.europa.esig.dss.xades.definition.XAdESPaths;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 
 /**
@@ -76,11 +77,11 @@ public class TSLValidator implements Callable<TSLValidationResult> {
 		XMLDocumentValidator xmlDocumentValidator = new XMLDocumentValidator(trustedList);
 		xmlDocumentValidator.setCertificateVerifier(certificateVerifier);
 		xmlDocumentValidator.setValidationLevel(ValidationLevel.BASIC_SIGNATURES); // Timestamps,... are ignored
-		// To increase the security: the default {@code XPathQueryHolder} is
-		// used.
-		List<XPathQueryHolder> xPathQueryHolders = xmlDocumentValidator.getXPathQueryHolder();
-		xPathQueryHolders.clear();
-		xPathQueryHolders.add(new XPathQueryHolder());
+
+		// To increase the security: the default {@code XAdESPaths} is used.
+		List<XAdESPaths> xadesPathsHolders = xmlDocumentValidator.getXAdESPathsHolder();
+		xadesPathsHolders.clear();
+		xadesPathsHolders.add(new XAdES132Paths());
 
 		Reports reports = xmlDocumentValidator.validateDocument(ValidationPolicyFacade.newFacade().getTrustedListValidationPolicy());
 

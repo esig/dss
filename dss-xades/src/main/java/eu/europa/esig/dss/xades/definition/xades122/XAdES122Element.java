@@ -2,7 +2,7 @@ package eu.europa.esig.dss.xades.definition.xades122;
 
 import eu.europa.esig.dss.xades.definition.DSSElement;
 import eu.europa.esig.dss.xades.definition.DSSNamespace;
-import eu.europa.esig.dss.xades.definition.DSSNamespaces;
+import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 
 public enum XAdES122Element implements DSSElement {
 
@@ -199,7 +199,7 @@ public enum XAdES122Element implements DSSElement {
 
 	XAdES122Element(String tagName) {
 		this.tagName = tagName;
-		this.namespace = DSSNamespaces.XADES_122;
+		this.namespace = XAdESNamespaces.XADES_122;
 	}
 
 	@Override

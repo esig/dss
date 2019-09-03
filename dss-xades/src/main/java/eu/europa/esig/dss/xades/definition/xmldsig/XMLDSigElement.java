@@ -2,7 +2,7 @@ package eu.europa.esig.dss.xades.definition.xmldsig;
 
 import eu.europa.esig.dss.xades.definition.DSSElement;
 import eu.europa.esig.dss.xades.definition.DSSNamespace;
-import eu.europa.esig.dss.xades.definition.DSSNamespaces;
+import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 
 public enum XMLDSigElement implements DSSElement {
 
@@ -101,7 +101,7 @@ public enum XMLDSigElement implements DSSElement {
 
 	XMLDSigElement(String tagName) {
 		this.tagName = tagName;
-		this.namespace = DSSNamespaces.XMLDSIG;
+		this.namespace = XAdESNamespaces.XMLDSIG;
 	}
 
 	@Override

@@ -4,8 +4,9 @@ import eu.europa.esig.dss.model.DSSException;
 
 public class XPathExpressionBuilder {
 
-	private final static String FROM_CURRENT_POSITION = "./";
 	private final static String ALL = "//";
+	private final static String FROM_CURRENT_POSITION = "./";
+	private final static String ALL_FROM_CURRENT_POSITION = ".//";
 	private final static String COLON = ":";
 	private final static String SLASH = "/";
 	private final static String ATTRIBUTE = "@";
@@ -14,6 +15,7 @@ public class XPathExpressionBuilder {
 	private boolean all = false;
 	private DSSElement[] elements;
 	private DSSAttribute attribute;
+	private DSSElement notParentOf;
 
 	public XPathExpressionBuilder fromCurrentPosition() {
 		return fromCurrentPosition(true);
@@ -43,6 +45,11 @@ public class XPathExpressionBuilder {
 		return this;
 	}
 
+	public XPathExpressionBuilder notParentOf(DSSElement notParentOf) {
+		this.notParentOf = notParentOf;
+		return this;
+	}
+
 	public XPathExpressionBuilder attribute(DSSAttribute attribute) {
 		this.attribute = attribute;
 		return this;
@@ -51,12 +58,14 @@ public class XPathExpressionBuilder {
 	public String build() {
 		StringBuffer sb = new StringBuffer();
 
-		if (fromCurrentPosition) {
+		if (all && fromCurrentPosition) {
+			sb.append(ALL_FROM_CURRENT_POSITION);
+		} else if (fromCurrentPosition) {
 			sb.append(FROM_CURRENT_POSITION);
 		} else if (all) {
 			sb.append(ALL);
 		} else {
-			throw new DSSException("Not supported");
+			throw new DSSException("Unsupported operation");
 		}
 
 		int nbElements = elements.length;
@@ -65,6 +74,10 @@ public class XPathExpressionBuilder {
 			if (i < nbElements - 1) {
 				sb.append(SLASH);
 			}
+		}
+
+		if (notParentOf != null) {
+			sb.append(getNotParent(notParentOf));
 		}
 
 		if (attribute != null) {
@@ -85,10 +98,19 @@ public class XPathExpressionBuilder {
 		return sb;
 	}
 
-	private StringBuffer getAttribute(DSSAttribute attribute) {
+	// "//ds:Signature[not(parent::xades:CounterSignature)]"
+	private StringBuffer getNotParent(DSSElement currentNotParentOf) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("[not(parent::");
+		sb.append(getElement(currentNotParentOf));
+		sb.append(")]");
+		return sb;
+	}
+
+	private StringBuffer getAttribute(DSSAttribute currentAttribute) {
 		StringBuffer sb = new StringBuffer();
 		sb.append(ATTRIBUTE);
-		sb.append(attribute.getAttributeName());
+		sb.append(currentAttribute.getAttributeName());
 		return sb;
 	}
 

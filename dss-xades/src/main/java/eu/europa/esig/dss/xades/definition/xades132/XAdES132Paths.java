@@ -2,16 +2,20 @@ package eu.europa.esig.dss.xades.definition.xades132;
 
 import eu.europa.esig.dss.xades.definition.AbstractPaths;
 import eu.europa.esig.dss.xades.definition.DSSNamespace;
-import eu.europa.esig.dss.xades.definition.DSSNamespaces;
+import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigElement;
 
 public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 
+	// TODO find a proper way (namespace independent)
+	public static final String ALL_SIGNATURE_WITH_NO_COUNTERSIGNATURE_AS_PARENT_PATH = allNotParent(XMLDSigElement.SIGNATURE,
+			XAdES132Element.COUNTER_SIGNATURE);
+
 	@Override
 	public DSSNamespace getNamespace() {
-		return DSSNamespaces.XADES_132;
+		return XAdESNamespaces.XADES_132;
 	}
 
 	@Override
@@ -409,6 +413,11 @@ public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 	@Override
 	public String getCurrentRevocationValuesEncapsulatedCRLValue() {
 		return fromCurrentPosition(XAdES132Element.REVOCATION_VALUES, XAdES132Element.CRL_VALUES, XAdES132Element.ENCAPSULATED_CRL_VALUE);
+	}
+
+	@Override
+	public String getCurrentQualifyingPropertiesPath() {
+		return fromCurrentPosition(XAdES132Element.QUALIFYING_PROPERTIES);
 	}
 
 }

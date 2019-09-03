@@ -86,7 +86,7 @@ import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.SignerRole;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.SantuarioInitializer;
-import eu.europa.esig.dss.xades.definition.DSSNamespaces;
+import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
@@ -146,13 +146,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 		SantuarioInitializer.init();
 
-		DomUtils.registerNamespace(DSSNamespaces.XMLDSIG.getPrefix(), DSSNamespaces.XMLDSIG.getUri());
-
-		DomUtils.registerNamespace(DSSNamespaces.XADES_111.getPrefix(), DSSNamespaces.XADES_111.getUri());
-		DomUtils.registerNamespace(DSSNamespaces.XADES_122.getPrefix(), DSSNamespaces.XADES_122.getUri());
-		DomUtils.registerNamespace("xades", DSSNamespaces.XADES_132.getUri());
-		DomUtils.registerNamespace(DSSNamespaces.XADES_132.getPrefix(), DSSNamespaces.XADES_132.getUri());
-		DomUtils.registerNamespace(DSSNamespaces.XADES_141.getPrefix(), DSSNamespaces.XADES_141.getUri());
+		XAdESNamespaces.registerNamespaces();
 
 		/**
 		 * Adds the support of ECDSA_RIPEMD160 for XML signature. Used by AT. The BC provider must be previously added.
@@ -198,11 +192,12 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * The default constructor for XAdESSignature.
 	 *
 	 * @param signatureElement
-	 *            the signature DOM element
-	 * @param xPathQueryHolders
-	 *            List of {@code XPathQueryHolder} to use when handling signature
+	 *                          the signature DOM element
+	 * @param xadesPathsHolders
+	 *                          List of {@code XAdESPaths} to use when handling
+	 *                          signature
 	 * @param certPool
-	 *            the certificate pool (can be null)
+	 *                          the certificate pool (can be null)
 	 */
 	public XAdESSignature(final Element signatureElement, final List<XAdESPaths> xadesPathsHolders, final CertificatePool certPool) {
 		super(certPool);
@@ -253,7 +248,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	private void setXPathQueryHolder(final String namespaceURI) {
 		for (final XAdESPaths currentXAdESPaths : xadesPathsHolders) {
-			if (Utils.areStringsEqual(namespaceURI, currentXAdESPaths.getNamespace().getUri())) {
+			if (currentXAdESPaths.getNamespace().isSameUri(namespaceURI)) {
 				this.xadesPaths = currentXAdESPaths;
 			}
 		}

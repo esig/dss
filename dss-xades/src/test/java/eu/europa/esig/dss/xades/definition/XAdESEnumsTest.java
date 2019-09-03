@@ -40,32 +40,32 @@ public class XAdESEnumsTest {
 			Document xsdDom = DomUtils.buildDOM(is);
 			checkElementSynchronization(xsdDom, XAdES111Element.values());
 
-			assertEquals(DSSNamespaces.XADES_111, XAdES111Element.ANY.getNamespace());
-			assertEquals(DSSNamespaces.XADES_111.getUri(), XAdES111Element.ANY.getURI());
+			assertEquals(XAdESNamespaces.XADES_111, XAdES111Element.ANY.getNamespace());
+			assertEquals(XAdESNamespaces.XADES_111.getUri(), XAdES111Element.ANY.getURI());
 		}
 
 		try (InputStream is = XAdESUtils.class.getResourceAsStream(XAdESUtils.XADES_122_SCHEMA_LOCATION)) {
 			Document xsdDom = DomUtils.buildDOM(is);
 			checkElementSynchronization(xsdDom, XAdES122Element.values());
 
-			assertEquals(DSSNamespaces.XADES_122, XAdES122Element.ANY.getNamespace());
-			assertEquals(DSSNamespaces.XADES_122.getUri(), XAdES122Element.ANY.getURI());
+			assertEquals(XAdESNamespaces.XADES_122, XAdES122Element.ANY.getNamespace());
+			assertEquals(XAdESNamespaces.XADES_122.getUri(), XAdES122Element.ANY.getURI());
 		}
 
 		try (InputStream is = XAdESUtils.class.getResourceAsStream(XAdESUtils.XADES_SCHEMA_LOCATION_EN_319_132)) {
 			Document xsdDom = DomUtils.buildDOM(is);
 			checkElementSynchronization(xsdDom, XAdES132Element.values());
 
-			assertEquals(DSSNamespaces.XADES_132, XAdES132Element.ANY.getNamespace());
-			assertEquals(DSSNamespaces.XADES_132.getUri(), XAdES132Element.ANY.getURI());
+			assertEquals(XAdESNamespaces.XADES_132, XAdES132Element.ANY.getNamespace());
+			assertEquals(XAdESNamespaces.XADES_132.getUri(), XAdES132Element.ANY.getURI());
 		}
 
 		try (InputStream is = XAdESUtils.class.getResourceAsStream(XAdESUtils.XADES_141_SCHEMA_LOCATION_EN_319_132)) {
 			Document xsdDom = DomUtils.buildDOM(is);
 			checkElementSynchronization(xsdDom, XAdES141Element.values());
 
-			assertEquals(DSSNamespaces.XADES_141, XAdES141Element.ARCHIVE_TIMESTAMP.getNamespace());
-			assertEquals(DSSNamespaces.XADES_141.getUri(), XAdES141Element.ARCHIVE_TIMESTAMP.getURI());
+			assertEquals(XAdESNamespaces.XADES_141, XAdES141Element.ARCHIVE_TIMESTAMP.getNamespace());
+			assertEquals(XAdESNamespaces.XADES_141.getUri(), XAdES141Element.ARCHIVE_TIMESTAMP.getURI());
 		}
 	}
 

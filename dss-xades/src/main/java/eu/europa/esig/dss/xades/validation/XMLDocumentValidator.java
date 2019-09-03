@@ -36,7 +36,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureUtils;
-import eu.europa.esig.dss.xades.definition.DSSNamespaces;
+import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
 import eu.europa.esig.dss.xades.definition.xades122.XAdES122Paths;
@@ -63,13 +63,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	private List<AdvancedSignature> signatures;
 
 	static {
-		DomUtils.registerNamespace(DSSNamespaces.XMLDSIG.getPrefix(), DSSNamespaces.XMLDSIG.getUri());
-
-		DomUtils.registerNamespace(DSSNamespaces.XADES_111.getPrefix(), DSSNamespaces.XADES_111.getUri());
-		DomUtils.registerNamespace(DSSNamespaces.XADES_122.getPrefix(), DSSNamespaces.XADES_122.getUri());
-		DomUtils.registerNamespace("xades", DSSNamespaces.XADES_132.getUri());
-		DomUtils.registerNamespace(DSSNamespaces.XADES_132.getPrefix(), DSSNamespaces.XADES_132.getUri());
-		DomUtils.registerNamespace(DSSNamespaces.XADES_141.getPrefix(), DSSNamespaces.XADES_141.getUri());
+		XAdESNamespaces.registerNamespaces();
 	}
 
 	XMLDocumentValidator() {
@@ -107,7 +101,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 		}
 
 		signatures = new ArrayList<AdvancedSignature>();
-		final NodeList signatureNodeList = DomUtils.getNodeList(rootElement, "//ds:Signature[not(parent::xades:CounterSignature)]");
+		final NodeList signatureNodeList = DomUtils.getNodeList(rootElement, XAdES132Paths.ALL_SIGNATURE_WITH_NO_COUNTERSIGNATURE_AS_PARENT_PATH);
 		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
 
 			final Element signatureEl = (Element) signatureNodeList.item(ii);

@@ -2,7 +2,7 @@ package eu.europa.esig.dss.xades.definition.xades132;
 
 import eu.europa.esig.dss.xades.definition.DSSElement;
 import eu.europa.esig.dss.xades.definition.DSSNamespace;
-import eu.europa.esig.dss.xades.definition.DSSNamespaces;
+import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 
 public enum XAdES132Element implements DSSElement {
 
@@ -231,7 +231,7 @@ public enum XAdES132Element implements DSSElement {
 
 	XAdES132Element(String tagName) {
 		this.tagName = tagName;
-		this.namespace = DSSNamespaces.XADES_132;
+		this.namespace = XAdESNamespaces.XADES_132;
 	}
 
 	@Override
@@ -252,6 +252,15 @@ public enum XAdES132Element implements DSSElement {
 	@Override
 	public boolean isSameTagName(String value) {
 		return tagName.equals(value);
+	}
+
+	public static DSSElement fromTagName(String tagName) {
+		for (XAdES132Element element : XAdES132Element.values()) {
+			if (element.getTagName().equals(tagName)) {
+				return element;
+			}
+		}
+		return null;
 	}
 
 }

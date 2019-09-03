@@ -152,4 +152,6 @@ public interface XAdESPaths {
 
 	String getCurrentInclude();
 
+	String getCurrentQualifyingPropertiesPath();
+
 }

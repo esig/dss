@@ -60,9 +60,13 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.xades.definition.DSSNamespaces;
+import eu.europa.esig.dss.xades.definition.AbstractPaths;
+import eu.europa.esig.dss.xades.definition.DSSElement;
+import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.xades.signature.PrettyPrintTransformer;
 import eu.europa.esig.xades.XAdESUtils;
@@ -252,12 +256,14 @@ public final class DSSXMLUtils {
 			Element signature = (Element) signatures.item(i);
 			String signatureAttrIdValue = getIDIdentifier(signature);
 			if (Utils.isStringNotEmpty(signatureAttrIdValue) && signatureAttrIdValue.contains(signatureId)) {
-				Node unsignedSignatureProperties = DomUtils.getNode(signature, ".//" + "xades:UnsignedSignatureProperties");
+				Node unsignedSignatureProperties = DomUtils.getNode(signature,
+						XAdES132Paths.allFromCurrentPosition(XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES));
 				Node indentedSignature = getIndentedSignature(signature, noIndentObjectIds);
 				Node importedSignature = documentDom.importNode(indentedSignature, true);
 				signature.getParentNode().replaceChild(importedSignature, signature);
 				if (unsignedSignatureProperties != null) {
-					Node newUnsignedSignatureProperties = DomUtils.getNode(signature, ".//" + "xades:UnsignedSignatureProperties");
+					Node newUnsignedSignatureProperties = DomUtils.getNode(signature,
+							XAdES132Paths.allFromCurrentPosition(XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES));
 					newUnsignedSignatureProperties.getParentNode().replaceChild(unsignedSignatureProperties, newUnsignedSignatureProperties);
 				}
 			}
@@ -291,6 +297,16 @@ public final class DSSXMLUtils {
 	 */
 	public static Node getIndentedNode(final Node documentDom, final Node xmlNode) {
 		NodeList signatures = DomUtils.getNodeList(documentDom, XMLDSigPaths.ALL_SIGNATURES_PATH);
+
+		String pathAllFromCurrentPosition = null;
+		// TODO handle by namespace
+		DSSElement element = XAdES132Element.fromTagName(xmlNode.getLocalName());
+		if (element != null) {
+			pathAllFromCurrentPosition = AbstractPaths.allFromCurrentPosition(element);
+		} else {
+			pathAllFromCurrentPosition = ".//" + xmlNode.getNodeName();
+		}
+
 		for (int i = 0; i < signatures.getLength(); i++) {
 			Node signature = signatures.item(i);
 			NodeList candidateList;
@@ -298,7 +314,7 @@ public final class DSSXMLUtils {
 			if (idAttribute != null) {
 				candidateList = DomUtils.getNodeList(signature, ".//*" + DomUtils.getXPathByIdAttribute(idAttribute));
 			} else {
-				candidateList = DomUtils.getNodeList(signature, ".//" +  xmlNode.getNodeName());
+				candidateList = DomUtils.getNodeList(signature, pathAllFromCurrentPosition);
 			}
 			if (isNodeListContains(candidateList, xmlNode)) {
 				Node indentedSignature = getIndentedNode(signature);
@@ -306,7 +322,7 @@ public final class DSSXMLUtils {
 				if (idAttribute != null) {
 					indentedXmlNode = DomUtils.getNode(indentedSignature, ".//*" + DomUtils.getXPathByIdAttribute(idAttribute));
 				} else {
-					indentedXmlNode = DomUtils.getNode(indentedSignature, ".//" +  xmlNode.getNodeName());
+					indentedXmlNode = DomUtils.getNode(indentedSignature, pathAllFromCurrentPosition);
 				}
 				if (indentedXmlNode != null) {
 					return indentedXmlNode;
@@ -728,7 +744,7 @@ public final class DSSXMLUtils {
 
 		String digestAlgorithmUri = null;
 		String digestValueBase64 = null;
-		if (DSSNamespaces.XADES_111.getUri().equals(element.getNamespaceURI())) {
+		if (XAdESNamespaces.XADES_111.isSameUri(element.getNamespaceURI())) {
 			digestAlgorithmUri = DomUtils.getValue(element, XAdES111Paths.DIGEST_METHOD_ALGORITHM_PATH);
 			digestValueBase64 = DomUtils.getValue(element, XAdES111Paths.DIGEST_VALUE_PATH);
 		} else {

@@ -34,7 +34,7 @@ import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.dss.xades.definition.DSSNamespaces;
+import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
@@ -374,7 +374,7 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 
 	@Override
 	protected ArchiveTimestampType getArchiveTimestampType(XAdESAttribute unsignedAttribute) {
-		if (DSSNamespaces.XADES_141.getUri().equals(unsignedAttribute.getNamespace())) {
+		if (XAdESNamespaces.XADES_141.isSameUri(unsignedAttribute.getNamespace())) {
 			return ArchiveTimestampType.XAdES_141;
 		}
 		return ArchiveTimestampType.XAdES;

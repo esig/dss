@@ -18,4 +18,8 @@ public class DSSNamespace {
 		return prefix;
 	}
 
+	public boolean isSameUri(String paramUri) {
+		return this.uri.equals(paramUri);
+	}
+
 }
