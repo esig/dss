@@ -87,7 +87,7 @@ public class DiagnosticDataBuilderTest {
 		trustService.setTspTradeName("Test");
 		trustedCertSource.addCertificate(rootToken, Arrays.asList(trustService));
 
-		DiagnosticDataBuilder ddb = new DiagnosticDataBuilder().usedCertificates(usedCertificates).trustedCertificateSource(trustedCertSource);
+		DiagnosticDataBuilder ddb = new DiagnosticDataBuilder().usedCertificates(usedCertificates).trustedCertificateSources(Arrays.asList(trustedCertSource));
 		XmlDiagnosticData dd = ddb.build();
 
 		assertNotNull(dd);

@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.validation;
 
+import java.util.List;
+
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
@@ -67,12 +69,12 @@ public interface CertificateVerifier {
 	void setOcspSource(final OCSPSource ocspSource);
 
 	/**
-	 * Returns the trusted certificates source associated with this verifier. This
-	 * source is used to identify the trusted anchors.
+	 * Returns the trusted certificate sources associated with this verifier. These
+	 * sources are used to identify the trusted anchors.
 	 *
-	 * @return the certificate source which contains trusted certificates
-	 */
-	CertificateSource getTrustedCertSource();
+	 * @return the certificate sources which contain trusted certificates
+	 */	
+	List<CertificateSource> getTrustedCertSources();
 
 	/**
 	 * Sets the trusted certificates source.
@@ -81,6 +83,15 @@ public interface CertificateVerifier {
 	 *                   The certificates source with known trusted certificates
 	 */
 	void setTrustedCertSource(final CertificateSource certSource);
+	
+
+	/**
+	 * Sets multiple trusted certificates source.
+	 *
+	 * @param certSources
+	 *                   The certificate sources with known trusted certificates
+	 */
+	void setTrustedCertSources(final CertificateSource... certSources);
 
 	/**
 	 * Returns the adjunct certificates source associated with this verifier.

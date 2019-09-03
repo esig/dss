@@ -38,9 +38,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.CertificateReorderer;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.RevocationReason;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -104,8 +104,8 @@ public class SignatureValidationContext implements ValidationContext {
 	// OCSP from the signature.
 	private OCSPSource signatureOCSPSource;
 
-	private CertificateSource trustedCertSource;
-
+	private List<CertificateSource> trustedCertSources;
+	
 	/**
 	 * This variable set the behavior to follow for revocation retrieving in case of
 	 * untrusted certificate chains.
@@ -147,8 +147,10 @@ public class SignatureValidationContext implements ValidationContext {
 			validationCertificatePool = new CertificatePool();
 		}
 
-		if (certificateVerifier.getTrustedCertSource() != null) {
-			validationCertificatePool.importCerts(certificateVerifier.getTrustedCertSource());
+		if (Utils.isCollectionNotEmpty(certificateVerifier.getTrustedCertSources())) {
+			for (CertificateSource source : certificateVerifier.getTrustedCertSources()) {
+				validationCertificatePool.importCerts(source);
+			}
 		}
 		if (certificateVerifier.getAdjunctCertSource() != null) {
 			validationCertificatePool.importCerts(certificateVerifier.getAdjunctCertSource());
@@ -159,7 +161,7 @@ public class SignatureValidationContext implements ValidationContext {
 		this.dataLoader = certificateVerifier.getDataLoader();
 		this.signatureCRLSource = certificateVerifier.getSignatureCRLSource();
 		this.signatureOCSPSource = certificateVerifier.getSignatureOCSPSource();
-		this.trustedCertSource = certificateVerifier.getTrustedCertSource();
+		this.trustedCertSources = certificateVerifier.getTrustedCertSources();
 		this.checkRevocationForUntrustedChains = certificateVerifier.isCheckRevocationForUntrustedChains();
 	}
 
@@ -515,9 +517,8 @@ public class SignatureValidationContext implements ValidationContext {
 
 				// Online resources (OCSP and CRL if OCSP doesn't reply)
 				OCSPAndCRLCertificateVerifier onlineVerifier = null;
-
-				if (trustedCertSource instanceof CommonTrustedCertificateSource && (trustAnchor != null)) {
-					onlineVerifier = instantiateWithTrustServices((CommonTrustedCertificateSource) trustedCertSource, trustAnchor);
+				if (Utils.isCollectionNotEmpty(trustedCertSources) && (trustAnchor != null)) {
+					onlineVerifier = instantiateWithTrustServices(trustAnchor);
 				} else {
 					onlineVerifier = new OCSPAndCRLCertificateVerifier(crlSource, ocspSource, validationCertificatePool);
 				}
@@ -550,11 +551,11 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 		return null;
 	}
-
+	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private OCSPAndCRLCertificateVerifier instantiateWithTrustServices(CommonTrustedCertificateSource trustedCertSource, CertificateToken trustAnchor) {
+	private OCSPAndCRLCertificateVerifier instantiateWithTrustServices(CertificateToken trustAnchor) {
 		RevocationSource currentOCSPSource = null;
-		List<String> alternativeOCSPUrls = trustedCertSource.getAlternativeOCSPUrls(trustAnchor);
+		List<String> alternativeOCSPUrls = getAlternativeOCSPUrls(trustAnchor);
 		if (Utils.isCollectionNotEmpty(alternativeOCSPUrls) && ocspSource instanceof RevocationSourceAlternateUrlsSupport) {
 			currentOCSPSource = new AlternateUrlsSourceAdapter<OCSPToken>((RevocationSourceAlternateUrlsSupport) ocspSource, alternativeOCSPUrls);
 		} else {
@@ -562,7 +563,7 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 
 		RevocationSource currentCRLSource = null;
-		List<String> alternativeCRLUrls = trustedCertSource.getAlternativeCRLUrls(trustAnchor);
+		List<String> alternativeCRLUrls = getAlternativeCRLUrls(trustAnchor);
 		if (Utils.isCollectionNotEmpty(alternativeCRLUrls) && crlSource instanceof RevocationSourceAlternateUrlsSupport) {
 			currentCRLSource = new AlternateUrlsSourceAdapter<CRLToken>((RevocationSourceAlternateUrlsSupport) crlSource, alternativeCRLUrls);
 		} else {
@@ -570,6 +571,28 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 
 		return new OCSPAndCRLCertificateVerifier(currentCRLSource, currentOCSPSource, validationCertificatePool);
+	}
+
+	private List<String> getAlternativeOCSPUrls(CertificateToken trustAnchor) {
+		List<String> alternativeOCSPUrls = new ArrayList<String>();
+		for (CertificateSource certificateSource : trustedCertSources) {
+			if (certificateSource instanceof CommonTrustedCertificateSource) {
+				CommonTrustedCertificateSource trustedCertSource = (CommonTrustedCertificateSource) certificateSource;
+				alternativeOCSPUrls.addAll(trustedCertSource.getAlternativeOCSPUrls(trustAnchor));
+			}
+		}
+		return alternativeOCSPUrls;
+	}
+
+	private List<String> getAlternativeCRLUrls(CertificateToken trustAnchor) {
+		List<String> alternativeCRLUrls = new ArrayList<String>();
+		for (CertificateSource certificateSource : trustedCertSources) {
+			if (certificateSource instanceof CommonTrustedCertificateSource) {
+				CommonTrustedCertificateSource trustedCertSource = (CommonTrustedCertificateSource) certificateSource;
+				alternativeCRLUrls.addAll(trustedCertSource.getAlternativeCRLUrls(trustAnchor));
+			}
+		}
+		return alternativeCRLUrls;
 	}
 
 	@Override
@@ -582,8 +605,6 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 		return true;
 	}
-	
-	
 	
 	private boolean checkRevocationPresentForCertificateChain(List<CertificateToken> certificates) {
 		return checkRevocationForCertificateChainAgainstBestSignatureTime(certificates, null);

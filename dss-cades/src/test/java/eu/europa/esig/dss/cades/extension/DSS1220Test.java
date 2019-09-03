@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.cades.extension;
 
+import java.util.List;
+
 import org.junit.Test;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
@@ -79,8 +81,8 @@ public class DSS1220Test extends PKIFactoryAccess {
 
 		CertificateVerifier completeCertificateVerifier = getCompleteCertificateVerifier();
 
-		CertificateSource trustedCertSource = completeCertificateVerifier.getTrustedCertSource();
-		trustedCertSource.addCertificate(trustAnchor);
+		List<CertificateSource> trustedCertSources = completeCertificateVerifier.getTrustedCertSources();
+		trustedCertSources.get(0).addCertificate(trustAnchor);
 
 		CAdESService service = new CAdESService(completeCertificateVerifier);
 		service.setTspSource(getGoodTsa());

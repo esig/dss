@@ -79,7 +79,7 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 				.usedRevocations(svc.getProcessedRevocations()).includeRawCertificateTokens(certificateVerifier.isIncludeCertificateTokenValues())
 				.includeRawRevocationData(certificateVerifier.isIncludeCertificateRevocationValues())
 				.certificateSourceTypes(svc.getCertificateSourceTypes())
-				.trustedCertificateSource(certificateVerifier.getTrustedCertSource())
+				.trustedCertificateSources(certificateVerifier.getTrustedCertSources())
 				.validationDate(svc.getCurrentTime()).build();
 
 		CertificateProcessExecutor executor = provideProcessExecutorInstance();
