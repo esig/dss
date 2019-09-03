@@ -24,6 +24,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.crypto.dsig.XMLSignature;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -46,6 +48,7 @@ public class ASiCEWithCAdESManifestParser {
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCEWithCAdESManifestParser.class);
 
 	static {
+		DomUtils.registerNamespace("ds", XMLSignature.XMLNS);
 		DomUtils.registerNamespace("asic", ASiCNamespace.ASIC_NS);
 	}
 

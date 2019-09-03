@@ -20,14 +20,20 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.junit.Test;
 
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.reports.Reports;
 
 /**
  * Unit test added to fix issue : https://esig-dss.atlassian.net/browse/DSS-678
@@ -41,6 +47,20 @@ public class DTDInjectionTest {
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 
 		validator.validateDocument();
+	}
+
+	@Test
+	public void testSecurityDisabled() throws ParserConfigurationException {
+		DomUtils.disableFeature("http://apache.org/xml/features/disallow-doctype-decl");
+
+		SignedDocumentValidator validator = SignedDocumentValidator
+				.fromDocument(new FileDocument(new File("src/test/resources/validation/xades-with-dtd-injection.xml")));
+		validator.setCertificateVerifier(new CommonCertificateVerifier());
+
+		Reports reports = validator.validateDocument();
+		assertNotNull(reports);
+
+		DomUtils.enableFeature("http://apache.org/xml/features/disallow-doctype-decl");
 	}
 
 }

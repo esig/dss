@@ -44,6 +44,7 @@ import eu.europa.esig.dss.xades.ProfileParameters.Operation;
 import eu.europa.esig.dss.xades.SantuarioInitializer;
 import eu.europa.esig.dss.xades.SignatureProfile;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 
 /**
@@ -53,6 +54,8 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 
 	static {
 		SantuarioInitializer.init();
+
+		XAdESNamespaces.registerNamespaces();
 	}
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESService.class);

@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSException;
@@ -37,6 +36,7 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 
 /**
  * Holds level LTA aspects of XAdES
@@ -106,7 +106,7 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 	 */
 	private void incorporateTimestampValidationData(final ValidationContext validationContext, String indent) {
 
-		final Element timeStampValidationDataDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES141,
+		final Element timeStampValidationDataDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XADES_141.getUri(),
 				XADES141_TIME_STAMP_VALIDATION_DATA);
 
 		incorporateCertificateValues(timeStampValidationDataDom, validationContext, indent);

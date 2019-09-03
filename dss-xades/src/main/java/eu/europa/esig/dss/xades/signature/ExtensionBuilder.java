@@ -25,11 +25,11 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 
 public abstract class ExtensionBuilder extends XAdESBuilder {
@@ -80,22 +80,22 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 	 */
 	protected void ensureUnsignedProperties() {
 
-		final NodeList qualifyingPropertiesNodeList = DomUtils.getNodeList(currentSignatureDom, xPathQueryHolder.XPATH_QUALIFYING_PROPERTIES);
+		final NodeList qualifyingPropertiesNodeList = DomUtils.getNodeList(currentSignatureDom, xadesPaths.getQualifyingPropertiesPath());
 		if (qualifyingPropertiesNodeList.getLength() != 1) {
 			throw new DSSException("The signature does not contain QualifyingProperties element (or contains more than one)! Extension is not possible.");
 		}
 
 		qualifyingPropertiesDom = (Element) qualifyingPropertiesNodeList.item(0);
 
-		final NodeList unsignedPropertiesNodeList = DomUtils.getNodeList(currentSignatureDom, xPathQueryHolder.XPATH_UNSIGNED_PROPERTIES);
+		final NodeList unsignedPropertiesNodeList = DomUtils.getNodeList(currentSignatureDom, xadesPaths.getUnsignedPropertiesPath());
 		final int length = unsignedPropertiesNodeList.getLength();
 		if (length == 1) {
 			unsignedPropertiesDom = (Element) qualifyingPropertiesNodeList.item(0);
 		} else if (length == 0) {
-			unsignedPropertiesDom = DomUtils.addElement(documentDom, qualifyingPropertiesDom, XAdESNamespaces.getXAdESDefaultNamespace(), XADES_UNSIGNED_PROPERTIES);
+			unsignedPropertiesDom = DomUtils.addElement(documentDom, qualifyingPropertiesDom, XAdESNamespaces.XADES_132.getUri(), XADES_UNSIGNED_PROPERTIES);
 			if (params.isPrettyPrint()) {
 				qualifyingPropertiesDom = (Element) DSSXMLUtils.alignChildrenIndents(qualifyingPropertiesDom);
-				unsignedPropertiesDom = (Element) DomUtils.getNode(currentSignatureDom, xPathQueryHolder.XPATH_UNSIGNED_PROPERTIES);
+				unsignedPropertiesDom = (Element) DomUtils.getNode(currentSignatureDom, xadesPaths.getUnsignedPropertiesPath());
 			}
 		} else {
 			throw new DSSException("The signature contains more then one UnsignedProperties element! Extension is not possible.");
@@ -108,15 +108,15 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 	 * @throws DSSException
 	 */
 	protected void ensureUnsignedSignatureProperties() {
-		final NodeList unsignedSignaturePropertiesNodeList = DomUtils.getNodeList(currentSignatureDom, xPathQueryHolder.XPATH_UNSIGNED_SIGNATURE_PROPERTIES);
+		final NodeList unsignedSignaturePropertiesNodeList = DomUtils.getNodeList(currentSignatureDom, xadesPaths.getUnsignedSignaturePropertiesPath());
 		final int length = unsignedSignaturePropertiesNodeList.getLength();
 		if (length == 1) {
 			unsignedSignaturePropertiesDom = (Element) unsignedSignaturePropertiesNodeList.item(0);
 		} else if (length == 0) {
-			unsignedSignaturePropertiesDom = DomUtils.addElement(documentDom, unsignedPropertiesDom, XAdESNamespaces.getXAdESDefaultNamespace(), XADES_UNSIGNED_SIGNATURE_PROPERTIES);
+			unsignedSignaturePropertiesDom = DomUtils.addElement(documentDom, unsignedPropertiesDom, XAdESNamespaces.XADES_132.getUri(), XADES_UNSIGNED_SIGNATURE_PROPERTIES);
 			if (params.isPrettyPrint()) {
 				unsignedPropertiesDom = (Element) DSSXMLUtils.indentAndReplace(documentDom, unsignedPropertiesDom);
-				unsignedSignaturePropertiesDom = (Element) DomUtils.getNode(currentSignatureDom, xPathQueryHolder.XPATH_UNSIGNED_SIGNATURE_PROPERTIES);
+				unsignedSignaturePropertiesDom = (Element) DomUtils.getNode(currentSignatureDom, xadesPaths.getUnsignedSignaturePropertiesPath());
 			}
 		} else {
 			throw new DSSException("The signature contains more then one UnsignedSignatureProperties element! Extension is not possible.");
@@ -129,7 +129,7 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 	 * @throws DSSException
 	 */
 	protected void ensureSignedDataObjectProperties() {
-		final NodeList signedDataObjectPropertiesNodeList = DomUtils.getNodeList(currentSignatureDom, xPathQueryHolder.XPATH_SIGNED_DATA_OBJECT_PROPERTIES);
+		final NodeList signedDataObjectPropertiesNodeList = DomUtils.getNodeList(currentSignatureDom, xadesPaths.getSignedDataObjectPropertiesPath());
 		final int length = signedDataObjectPropertiesNodeList.getLength();
 		if (length == 1) {
 			signedDataObjectPropertiesDom = (Element) signedDataObjectPropertiesNodeList.item(0);
@@ -153,6 +153,7 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 		return nodeToIndent;
 	}
 	
+	@Override
 	protected void alignNodes() {
 		if (unsignedSignaturePropertiesDom != null) {
 			DSSXMLUtils.alignChildrenIndents(unsignedSignaturePropertiesDom);

@@ -78,7 +78,7 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.dss.xades.XPathQueryHolder;
+import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.validationreport.enums.ObjectType;
 import eu.europa.esig.validationreport.jaxb.POEProvisioningType;
 import eu.europa.esig.validationreport.jaxb.SASigPolicyIdentifierType;
@@ -137,9 +137,8 @@ public class XMLSignatureWrappingTest {
 		XmlSignatureDigestReference signatureDigestReference = signatureById.getSignatureDigestReference();
 		assertNotNull(signatureDigestReference);
 
-		XPathQueryHolder xPathQueryHolder = new XPathQueryHolder();
 		Document documentDom = DomUtils.buildDOM(document);
-		NodeList nodeList = DomUtils.getNodeList(documentDom.getDocumentElement(), xPathQueryHolder.XPATH__SIGNATURE);
+		NodeList nodeList = DomUtils.getNodeList(documentDom.getDocumentElement(), XMLDSigPaths.SIGNATURE_PATH);
 		Element signatureElement = (Element) nodeList.item(0);
 		byte[] canonicalizedSignatureElement = DSSXMLUtils.canonicalizeSubtree(signatureDigestReference.getCanonicalizationMethod(), signatureElement);
 		byte[] digest = DSSUtils.digest(signatureDigestReference.getDigestMethod(), canonicalizedSignatureElement);
@@ -372,9 +371,8 @@ public class XMLSignatureWrappingTest {
 		XmlSignatureDigestReference signatureDigestReference = signature.getSignatureDigestReference();
 		assertNotNull(signatureDigestReference);
 
-		XPathQueryHolder xPathQueryHolder = new XPathQueryHolder();
 		Document documentDom = DomUtils.buildDOM(document);
-		NodeList nodeList = DomUtils.getNodeList(documentDom, xPathQueryHolder.XPATH__SIGNATURE);
+		NodeList nodeList = DomUtils.getNodeList(documentDom, XMLDSigPaths.SIGNATURE_PATH);
 		assertEquals(1, nodeList.getLength());
 		Element signatureElement = (Element) nodeList.item(0);
 		byte[] canonicalizedSignatureElement = DSSXMLUtils.canonicalizeSubtree(signatureDigestReference.getCanonicalizationMethod(), signatureElement);

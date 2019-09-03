@@ -9,18 +9,20 @@ import org.w3c.dom.NodeList;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.validation.ISignatureAttribute;
 import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
-import eu.europa.esig.dss.xades.XPathQueryHolder;
+import eu.europa.esig.dss.xades.definition.XAdESPaths;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
+import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigPaths;
 
 public class XAdESAttribute implements ISignatureAttribute {
 	
 	private final Element element;
-	private final XPathQueryHolder xPathQueryHolder;
+	private final XAdESPaths xadesPaths;
 	
 	private String localName;
 	
-	XAdESAttribute(Element element, XPathQueryHolder xPathQueryHolder) {
+	XAdESAttribute(Element element, XAdESPaths xadesPaths) {
 		this.element = element;
-		this.xPathQueryHolder = xPathQueryHolder;
+		this.xadesPaths = xadesPaths;
 	}
 	
 	/**
@@ -63,11 +65,7 @@ public class XAdESAttribute implements ISignatureAttribute {
 	 * @return {@link String} timestamp canonicalization mathod
 	 */
 	public String getTimestampCanonicalizationMethod() {
-		final Element canonicalizationMethodElement = DomUtils.getElement(element, xPathQueryHolder.XPATH__CANONICALIZATION_METHOD);
-		if (canonicalizationMethodElement != null) {
-			return canonicalizationMethodElement.getAttribute(XPathQueryHolder.XMLE_ALGORITHM);
-		}
-		return null;
+		return DomUtils.getValue(element, XMLDSigPaths.CANONICALIZATION_ALGORITHM_PATH);
 	}
 	
 	/**
@@ -76,16 +74,19 @@ public class XAdESAttribute implements ISignatureAttribute {
 	 * @return list of {@link TimestampInclude}s in case of IndividualDataObjectsTimestamp, NULL otherwise
 	 */
 	public List<TimestampInclude> getTimestampIncludedReferences() {
-		final NodeList timestampIncludes = DomUtils.getNodeList(element, xPathQueryHolder.XPATH__INCLUDE);
-		if (timestampIncludes != null && timestampIncludes.getLength() > 0) {
-			List<TimestampInclude> includes = new ArrayList<TimestampInclude>();
-			for (int jj = 0; jj < timestampIncludes.getLength(); jj++) {
-				final Element include = (Element) timestampIncludes.item(jj);
-				final String uri = DomUtils.getId(include.getAttribute("URI"));
-				final String referencedData = include.getAttribute("referencedData");
-				includes.add(new TimestampInclude(uri, Boolean.parseBoolean(referencedData)));
+		String currentIncludePath = xadesPaths.getCurrentInclude();
+		if (currentIncludePath != null) {
+			final NodeList timestampIncludes = DomUtils.getNodeList(element, currentIncludePath);
+			if (timestampIncludes != null && timestampIncludes.getLength() > 0) {
+				List<TimestampInclude> includes = new ArrayList<TimestampInclude>();
+				for (int jj = 0; jj < timestampIncludes.getLength(); jj++) {
+					final Element include = (Element) timestampIncludes.item(jj);
+					final String uri = DomUtils.getId(include.getAttribute(XAdES132Attribute.URI.getAttributeName()));
+					final String referencedData = include.getAttribute(XAdES132Attribute.REFERENCED_DATA.getAttributeName());
+					includes.add(new TimestampInclude(uri, Boolean.parseBoolean(referencedData)));
+				}
+				return includes;
 			}
-			return includes;
 		}
 		return null;
 	}

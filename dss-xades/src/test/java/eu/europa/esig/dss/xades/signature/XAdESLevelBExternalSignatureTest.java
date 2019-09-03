@@ -43,6 +43,7 @@ import eu.europa.esig.dss.test.signature.ExternalXAdESSignatureResult;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigPaths;
 
 public class XAdESLevelBExternalSignatureTest extends AbstractXAdESTestSignature {
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESLevelBExternalSignatureTest.class);
@@ -168,7 +169,7 @@ public class XAdESLevelBExternalSignatureTest extends AbstractXAdESTestSignature
 		}
 
 		public byte[] getSerializedObject() {
-			Element objectDom = DomUtils.getElement(signatureDom, xPathQueryHolder.XPATH_OBJECT);
+			Element objectDom = DomUtils.getElement(signatureDom, XMLDSigPaths.OBJECT_PATH);
 			return DSSXMLUtils.serializeNode(objectDom);
 		}
 	}
