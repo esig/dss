@@ -99,7 +99,7 @@ import eu.europa.esig.validationreport.ValidationReportFacade;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
-public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
+public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CustomProcessExecutorTest.class);
 

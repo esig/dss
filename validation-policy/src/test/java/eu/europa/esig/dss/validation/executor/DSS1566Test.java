@@ -16,7 +16,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 
-public class DSS1566Test extends AbstractValidationExecutorTest {
+public class DSS1566Test extends AbstractTestValidationExecutor {
 	
 	@Test
 	public void test() throws Exception {

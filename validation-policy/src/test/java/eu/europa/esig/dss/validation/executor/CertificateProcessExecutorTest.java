@@ -54,7 +54,7 @@ import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSimpleCertificateRepor
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 
-public class CertificateProcessExecutorTest extends AbstractValidationExecutorTest {
+public class CertificateProcessExecutorTest extends AbstractTestValidationExecutor {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CertificateProcessExecutorTest.class);
 
