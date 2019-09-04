@@ -28,6 +28,8 @@ public final class XAdESUtils {
 	}
 
 	private static JAXBContext jc;
+	private static Schema schemaXAdES111;
+	private static Schema schemaXAdES122;
 	private static Schema schema;
 	private static Schema schemaETSIEN319132;
 
@@ -46,6 +48,20 @@ public final class XAdESUtils {
 		return schema;
 	}
 
+	public static Schema getSchemaXAdES111() throws SAXException {
+		if (schemaXAdES111 == null) {
+			schemaXAdES111 = getSchema(getXSDSourcesXAdES111());
+		}
+		return schemaXAdES111;
+	}
+
+	public static Schema getSchemaXAdES122() throws SAXException {
+		if (schemaXAdES122 == null) {
+			schemaXAdES122 = getSchema(getXSDSourcesXAdES122());
+		}
+		return schemaXAdES122;
+	}
+
 	public static Schema getSchemaETSI_EN_319_132() throws SAXException {
 		if (schemaETSIEN319132 == null) {
 			schemaETSIEN319132 = getSchema(getXSDSourcesETSI_EN_319_132());
@@ -56,6 +72,18 @@ public final class XAdESUtils {
 	private static Schema getSchema(List<Source> xsdSources) throws SAXException {
 		SchemaFactory sf = XmlDefinerUtils.getSecureSchemaFactory();
 		return sf.newSchema(xsdSources.toArray(new Source[xsdSources.size()]));
+	}
+
+	public static List<Source> getXSDSourcesXAdES111() {
+		List<Source> xsdSources = XmlDSigUtils.getXSDSources();
+		xsdSources.add(new StreamSource(XAdESUtils.class.getResourceAsStream(XADES_111_SCHEMA_LOCATION)));
+		return xsdSources;
+	}
+
+	public static List<Source> getXSDSourcesXAdES122() {
+		List<Source> xsdSources = XmlDSigUtils.getXSDSources();
+		xsdSources.add(new StreamSource(XAdESUtils.class.getResourceAsStream(XADES_122_SCHEMA_LOCATION)));
+		return xsdSources;
 	}
 
 	public static List<Source> getXSDSources() {

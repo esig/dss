@@ -2,6 +2,7 @@
 <xsd:schema targetNamespace="http://uri.etsi.org/01903/v1.1.1#" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://uri.etsi.org/01903/v1.1.1#" 
 xmlns:ds="http://www.w3.org/2000/09/xmldsig#" elementFormDefault="qualified">
 
+	<xsd:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="http://www.w3.org/TR/2002/REC-xmldsig-core-20020212/xmldsig-core-schema.xsd"/>
 
 <!-- Start auxiliary types definitions: AnyType, ObjectIdentifierType, 
 EncapsulatedPKIDataType and TimestampType-->
@@ -29,11 +30,11 @@ EncapsulatedPKIDataType and TimestampType-->
 		</xsd:sequence>
 	</xsd:complexType>
 	<xsd:complexType name="IdentifierType">
-		<xsd:complexContent>
+		<xsd:simpleContent>
 			<xsd:extension base="xsd:anyURI">
 				<xsd:attribute name="Qualifier" type="QualifierType" use="optional"/>
 			</xsd:extension>
-		</xsd:complexContent>
+		</xsd:simpleContent>
 	</xsd:complexType>
 	<xsd:simpleType name="QualifierType">
 		<xsd:restriction base="xsd:string">
@@ -53,11 +54,11 @@ EncapsulatedPKIDataType and TimestampType-->
 	
 	<xsd:element name="EncapsulatedPKIData" type="EncapsulatedPKIDataType"/>
 	<xsd:complexType name="EncapsulatedPKIDataType">
-		<xsd:complexContent>
+		<xsd:simpleContent>
 			<xsd:extension base="xsd:base64Binary">
 				<xsd:attribute name="Id" type="xsd:ID" use="optional"/>
 			</xsd:extension>
-		</xsd:complexContent>
+		</xsd:simpleContent>
 	</xsd:complexType>
 
 <!-- End EncapsulatedPKIDataType -->
