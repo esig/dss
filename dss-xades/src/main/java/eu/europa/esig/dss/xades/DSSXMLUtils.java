@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -568,6 +569,7 @@ public final class DSSXMLUtils {
 	public static void validateAgainstXSD(DSSDocument document) throws SAXException {
 		try (InputStream is = document.openStream()) {
 			final Validator validator = XAdESUtils.getSchemaETSI_EN_319_132().newValidator();
+			avoidXXE(validator);
 			validator.validate(new StreamSource(is));
 		} catch (IOException e) {
 			throw new DSSException("Unable to read document", e);
@@ -584,12 +586,26 @@ public final class DSSXMLUtils {
 	public static String validateAgainstXSD(final StreamSource streamSource) {
 		try {
 			final Validator validator = XAdESUtils.getSchemaETSI_EN_319_132().newValidator();
+			avoidXXE(validator);
 			validator.validate(streamSource);
 			return Utils.EMPTY_STRING;
 		} catch (Exception e) {
 			LOG.warn("Error during the XML schema validation!", e);
 			return e.getMessage();
 		}
+	}
+
+	/**
+	 * The method protects the validator against XXE
+	 * (https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html#validator)
+	 * 
+	 * @param validator
+	 *                  the validator to be configured against XXE
+	 * @throws SAXException
+	 */
+	public static void avoidXXE(Validator validator) throws SAXException {
+		validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+		validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
 	}
 
 	public static boolean isOid(String policyId) {
