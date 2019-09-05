@@ -27,8 +27,10 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateQualification;
 import eu.europa.esig.dss.validation.process.qualification.certificate.CertQualificationMatrix;
 import eu.europa.esig.dss.validation.process.qualification.certificate.QSCDStatus;
 import eu.europa.esig.dss.validation.process.qualification.certificate.QualifiedStatus;
@@ -39,8 +41,6 @@ import eu.europa.esig.dss.validation.process.qualification.certificate.checks.qu
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.qualified.QualificationStrategyFactory;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.type.TypeStrategy;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.type.TypeStrategyFactory;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
 public class UniqueServiceFilter implements TrustedServiceFilter {
 

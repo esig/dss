@@ -30,8 +30,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.trustedlist.enums.Assert;
 
 public class CompositeConditionTest {
 
@@ -55,7 +56,7 @@ public class CompositeConditionTest {
 
 	@Test
 	public void testAll() {
-		CompositeCondition condition = new CompositeCondition(MatchingCriteriaIndicator.all);
+		CompositeCondition condition = new CompositeCondition(Assert.ALL);
 		condition.addChild(new CertSubjectDNAttributeCondition(Arrays.asList(BCStyle.C.toString())));
 
 		LOG.info(condition.toString());
@@ -68,7 +69,7 @@ public class CompositeConditionTest {
 
 	@Test
 	public void testAtLeastOne() {
-		CompositeCondition condition = new CompositeCondition(MatchingCriteriaIndicator.atLeastOne);
+		CompositeCondition condition = new CompositeCondition(Assert.AT_LEAST_ONE);
 		condition.addChild(new CertSubjectDNAttributeCondition(Arrays.asList(BCStyle.C.toString())));
 
 		LOG.info(condition.toString());
@@ -81,7 +82,7 @@ public class CompositeConditionTest {
 
 	@Test
 	public void testNone() {
-		CompositeCondition condition = new CompositeCondition(MatchingCriteriaIndicator.none);
+		CompositeCondition condition = new CompositeCondition(Assert.NONE);
 		condition.addChild(new CertSubjectDNAttributeCondition(Arrays.asList(BCStyle.C.toString())));
 
 		LOG.info(condition.toString());
@@ -95,13 +96,13 @@ public class CompositeConditionTest {
 	@Test
 	public void testMultiComposites() {
 
-		CompositeCondition condition = new CompositeCondition(MatchingCriteriaIndicator.all);
+		CompositeCondition condition = new CompositeCondition(Assert.ALL);
 		condition.addChild(new CertSubjectDNAttributeCondition(Arrays.asList(BCStyle.C.toString())));
 
-		CompositeCondition subCondition = new CompositeCondition(MatchingCriteriaIndicator.all);
+		CompositeCondition subCondition = new CompositeCondition(Assert.ALL);
 		subCondition.addChild(new ExtendedKeyUsageCondition(Arrays.asList("1.3.6.1.5.5.7.3.9")));
 
-		CompositeCondition subSubCondition = new CompositeCondition(MatchingCriteriaIndicator.none);
+		CompositeCondition subSubCondition = new CompositeCondition(Assert.NONE);
 		subSubCondition.addChild(new ExtendedKeyUsageCondition(Arrays.asList("1.3.1")));
 
 		subCondition.addChild(subSubCondition);

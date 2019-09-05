@@ -23,32 +23,49 @@ package eu.europa.esig.dss.validation.executor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
+import java.io.File;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
+import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.ValidationPolicyFacade;
+import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.reports.SimpleReport;
-import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 
 public class DSS922Test {
 
 	@Test
-	public void signedDataNotFound() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/DSS-922/diag-data.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class);
+	public void dss922Test() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/DSS-922-diag-data.xml"));
 		assertNotNull(diagnosticData);
 
-		CustomProcessExecutor executor = new CustomProcessExecutor();
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(loadPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.TRY_LATER, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+	}
+	
+	@Test
+	public void testIgnoreRevocationFreshness() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/DSS-922-diag-data.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		ValidationPolicy policy = loadPolicy();
+		policy.getRevocationFreshnessConstraint().setLevel(Level.IGNORE);
+		executor.setValidationPolicy(policy);
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -57,17 +74,8 @@ public class DSS922Test {
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 	}
 
-	private EtsiValidationPolicy loadPolicy() throws Exception {
-		FileInputStream policyFis = new FileInputStream("src/test/resources/DSS-922/policy.xml");
-		ConstraintsParameters policyJaxB = getJAXBObjectFromString(policyFis, ConstraintsParameters.class);
-		assertNotNull(policyJaxB);
-		return new EtsiValidationPolicy(policyJaxB);
+	private ValidationPolicy loadPolicy() throws Exception {
+		return ValidationPolicyFacade.newFacade().getValidationPolicy(new File("src/test/resources/policy/DSS-922-policy.xml"));
 	}
 
-	@SuppressWarnings("unchecked")
-	private <T extends Object> T getJAXBObjectFromString(InputStream is, Class<T> clazz) throws Exception {
-		JAXBContext context = JAXBContext.newInstance(clazz.getPackage().getName());
-		Unmarshaller unmarshaller = context.createUnmarshaller();
-		return (T) unmarshaller.unmarshal(is);
-	}
 }

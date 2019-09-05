@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.consistency;
 
-import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 
 public interface TrustedServiceCondition {
 

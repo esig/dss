@@ -33,20 +33,20 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.EncryptionAlgorithm;
-import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.xades.DSSReference;
-import eu.europa.esig.dss.xades.DSSTransform;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.reference.Base64Transform;
+import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
+import eu.europa.esig.dss.xades.reference.DSSReference;
+import eu.europa.esig.dss.xades.reference.DSSTransform;
 
 /**
  * This class handles the specifics of the enveloping XML signature
@@ -82,26 +82,23 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 		reference.setDigestMethodAlgorithm(digestAlgorithm);
 
 		if (params.isManifestSignature()) {
-			reference.setType(HTTP_WWW_W3_ORG_2000_09_XMLDSIG_MANIFEST);
+			reference.setType(DSSXMLUtils.HTTP_WWW_W3_ORG_2000_09_XMLDSIG_MANIFEST);
 			Document manifestDoc = DomUtils.buildDOM(document);
 			Element manifestElement = manifestDoc.getDocumentElement();
 			reference.setUri("#" + manifestElement.getAttribute(ID));
-			DSSTransform xmlTransform = new DSSTransform();
-			xmlTransform.setAlgorithm(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
+			DSSTransform xmlTransform = new CanonicalizationTransform(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
 			reference.setTransforms(Arrays.asList(xmlTransform));
 		} else if (params.isEmbedXML()) {
-			reference.setType(HTTP_WWW_W3_ORG_2000_09_XMLDSIG_OBJECT);
+			reference.setType(DSSXMLUtils.HTTP_WWW_W3_ORG_2000_09_XMLDSIG_OBJECT);
 			reference.setUri("#" + OBJECT_ID_SUFFIX + suffix);
 
-			DSSTransform xmlTransform = new DSSTransform();
-			xmlTransform.setAlgorithm(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
+			DSSTransform xmlTransform = new CanonicalizationTransform(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
 			reference.setTransforms(Arrays.asList(xmlTransform));
 		} else {
-			reference.setType(HTTP_WWW_W3_ORG_2000_09_XMLDSIG_OBJECT);
+			reference.setType(DSSXMLUtils.HTTP_WWW_W3_ORG_2000_09_XMLDSIG_OBJECT);
 			reference.setUri("#" + OBJECT_ID_SUFFIX + suffix);
 
-			DSSTransform base64Transform = new DSSTransform();
-			base64Transform.setAlgorithm(CanonicalizationMethod.BASE64);
+			DSSTransform base64Transform = new Base64Transform();
 			reference.setTransforms(Arrays.asList(base64Transform));
 		}
 		return reference;

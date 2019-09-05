@@ -37,11 +37,11 @@ import java.util.Base64;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.SignatureAlgorithm;
-import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 
-public abstract class AbstractTestCRLUtils {
+public abstract class AbstractTestCRLUtils extends AbstractCRLParserTestUtils {
 
 	private static final CertificateFactory certificateFactory;
 
@@ -58,10 +58,34 @@ public abstract class AbstractTestCRLUtils {
 		try (InputStream is = AbstractTestCRLUtils.class.getResourceAsStream("/belgium2.crl");
 				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/belgiumrs2.crt")) {
 			CertificateToken certificateToken = loadCert(isCer);
-			CRLValidity validCRL = CRLUtils.isValidCRL(is, certificateToken);
+			CRLBinary crlBinary = new CRLBinary(toByteArray(is));
+			CRLValidity validCRL = CRLUtils.buildCRLValidity(crlBinary, certificateToken);
 			assertNotNull(validCRL);
 			assertNotNull(validCRL.getIssuerToken());
 			assertNotNull(validCRL.getSignatureAlgorithm());
+			assertNotNull(validCRL.getThisUpdate());
+			assertNotNull(validCRL.getNextUpdate());
+			assertTrue(validCRL.isIssuerX509PrincipalMatches());
+			assertTrue(validCRL.isSignatureIntact());
+			assertTrue(validCRL.isValid());
+			assertTrue(validCRL.isCrlSignKeyUsage());
+			assertFalse(validCRL.isUnknownCriticalExtension());
+			assertEquals(certificateToken, validCRL.getIssuerToken());
+			assertNull(validCRL.getSignatureInvalidityReason());
+			assertNull(validCRL.getUrl());
+		}
+	}
+	
+	@Test
+	public void testUA() throws Exception {
+		try (InputStream is = AbstractTestCRLUtils.class.getResourceAsStream("/CA-5358AA45-Full.crl");
+				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/CA-Justice-ECDSA-261217.cer")) {
+			CertificateToken certificateToken = loadCert(isCer);
+			CRLBinary crlBinary = new CRLBinary(toByteArray(is));
+			CRLValidity validCRL = CRLUtils.buildCRLValidity(crlBinary, certificateToken);
+			assertNotNull(validCRL);
+			assertNotNull(validCRL.getIssuerToken());
+			assertEquals(SignatureAlgorithm.ECDSA_SHA256,validCRL.getSignatureAlgorithm());
 			assertNotNull(validCRL.getThisUpdate());
 			assertNotNull(validCRL.getNextUpdate());
 			assertTrue(validCRL.isIssuerX509PrincipalMatches());
@@ -80,7 +104,8 @@ public abstract class AbstractTestCRLUtils {
 		try (InputStream is = AbstractTestCRLUtils.class.getResourceAsStream("/belgium2.pem.crl");
 				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/belgiumrs2.crt")) {
 			CertificateToken certificateToken = loadCert(isCer);
-			CRLValidity validCRL = CRLUtils.isValidCRL(is, certificateToken);
+			CRLBinary crlBinary = new CRLBinary(toByteArray(is));
+			CRLValidity validCRL = CRLUtils.buildCRLValidity(crlBinary, certificateToken);
 			assertNotNull(validCRL);
 			assertNotNull(validCRL.getSignatureAlgorithm());
 			assertNotNull(validCRL.getThisUpdate());
@@ -102,7 +127,8 @@ public abstract class AbstractTestCRLUtils {
 		try (InputStream is = AbstractTestCRLUtils.class.getResourceAsStream("/belgium2.crl");
 				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/citizen_ca.cer")) {
 			CertificateToken certificateToken = loadCert(isCer);
-			CRLValidity validCRL = CRLUtils.isValidCRL(is, certificateToken);
+			CRLBinary crlBinary = new CRLBinary(toByteArray(is));
+			CRLValidity validCRL = CRLUtils.buildCRLValidity(crlBinary, certificateToken);
 			assertNotNull(validCRL);
 			assertNull(validCRL.getIssuerToken());
 			assertNotNull(validCRL.getSignatureAlgorithm());
@@ -121,7 +147,8 @@ public abstract class AbstractTestCRLUtils {
 				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/citizen_ca.cer")) {
 
 			CertificateToken certificateToken = loadCert(isCer);
-			CRLValidity validCRL = CRLUtils.isValidCRL(is, certificateToken);
+			CRLBinary crlBinary = new CRLBinary(toByteArray(is));
+			CRLValidity validCRL = CRLUtils.buildCRLValidity(crlBinary, certificateToken);
 
 			assertEquals(SignatureAlgorithm.RSA_SHA1, validCRL.getSignatureAlgorithm());
 			assertNotNull(validCRL.getThisUpdate());
@@ -140,7 +167,8 @@ public abstract class AbstractTestCRLUtils {
 				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/citizen_ca.cer")) {
 
 			CertificateToken certificateToken = loadCert(isCer);
-			CRLValidity validCRL = CRLUtils.isValidCRL(is, certificateToken);
+			CRLBinary crlBinary = new CRLBinary(toByteArray(is));
+			CRLValidity validCRL = CRLUtils.buildCRLValidity(crlBinary, certificateToken);
 
 			assertEquals(SignatureAlgorithm.RSA_SHA256, validCRL.getSignatureAlgorithm());
 			assertNotNull(validCRL.getThisUpdate());
@@ -160,7 +188,8 @@ public abstract class AbstractTestCRLUtils {
 				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/citizen_ca.cer")) {
 
 			CertificateToken certificateToken = loadCert(isCer);
-			CRLValidity validCRL = CRLUtils.isValidCRL(is, certificateToken);
+			CRLBinary crlBinary = new CRLBinary(toByteArray(is));
+			CRLValidity validCRL = CRLUtils.buildCRLValidity(crlBinary, certificateToken);
 
 			assertEquals(SignatureAlgorithm.RSA_SHA256, validCRL.getSignatureAlgorithm());
 			assertNotNull(validCRL.getThisUpdate());
@@ -181,7 +210,8 @@ public abstract class AbstractTestCRLUtils {
 
 			CertificateToken certificateToken = loadCert(isCer);
 
-			CRLValidity validity = CRLUtils.isValidCRL(is, certificateToken);
+			CRLBinary crlBinary = new CRLBinary(toByteArray(is));
+			CRLValidity validity = CRLUtils.buildCRLValidity(crlBinary, certificateToken);
 
 			BigInteger serialNumber = new BigInteger("288350169419475868349393253038503091234");
 			X509CRLEntry entry = CRLUtils.getRevocationInfo(validity, serialNumber);
@@ -212,7 +242,8 @@ public abstract class AbstractTestCRLUtils {
 
 			CertificateToken certificateToken = loadCert(isCer);
 
-			CRLValidity validity = CRLUtils.isValidCRL(is, certificateToken);
+			CRLBinary crlBinary = new CRLBinary(toByteArray(is));
+			CRLValidity validity = CRLUtils.buildCRLValidity(crlBinary, certificateToken);
 			assertNotNull(validity);
 			assertNotNull(validity.getThisUpdate());
 			assertNotNull(validity.getNextUpdate());
@@ -227,7 +258,8 @@ public abstract class AbstractTestCRLUtils {
 
 			CertificateToken certificateToken = loadCert(isCer);
 
-			CRLUtils.isValidCRL(is, certificateToken);
+			CRLBinary crlBinary = new CRLBinary(toByteArray(is));
+			CRLUtils.buildCRLValidity(crlBinary, certificateToken);
 		}
 	}
 
@@ -239,7 +271,8 @@ public abstract class AbstractTestCRLUtils {
 
 			CertificateToken certificateToken = loadCert(isCer);
 
-			CRLValidity validity = CRLUtils.isValidCRL(is, certificateToken);
+			CRLBinary crlBinary = new CRLBinary(toByteArray(is));
+			CRLValidity validity = CRLUtils.buildCRLValidity(crlBinary, certificateToken);
 
 			assertEquals(SignatureAlgorithm.RSA_SHA256, validity.getSignatureAlgorithm());
 			assertNotNull(validity.getThisUpdate());
@@ -258,7 +291,8 @@ public abstract class AbstractTestCRLUtils {
 		try (InputStream is = AbstractTestCRLUtils.class.getResourceAsStream("/realts2019.crl");
 				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/realts2019.crt")) {
 			CertificateToken certificateToken = loadCert(isCer);
-			CRLValidity wrongIssuerCRL = CRLUtils.isValidCRL(is, certificateToken);
+			CRLBinary crlBinary = new CRLBinary(toByteArray(is));
+			CRLValidity wrongIssuerCRL = CRLUtils.buildCRLValidity(crlBinary, certificateToken);
 
 			assertNotNull(wrongIssuerCRL);
 			assertNull(wrongIssuerCRL.getIssuerToken());
@@ -278,7 +312,8 @@ public abstract class AbstractTestCRLUtils {
 
 			CertificateToken certificateToken = loadCert(isCer);
 
-			CRLValidity validity = CRLUtils.isValidCRL(is, certificateToken);
+			CRLBinary crlBinary = new CRLBinary(toByteArray(is));
+			CRLValidity validity = CRLUtils.buildCRLValidity(crlBinary, certificateToken);
 
 			assertEquals(SignatureAlgorithm.ECDSA_SHA512, validity.getSignatureAlgorithm());
 			assertNotNull(validity.getThisUpdate());
@@ -296,7 +331,8 @@ public abstract class AbstractTestCRLUtils {
 
 			CertificateToken certificateToken = loadCert(isCer);
 
-			CRLValidity validity = CRLUtils.isValidCRL(is, certificateToken);
+			CRLBinary crlBinary = new CRLBinary(toByteArray(is));
+			CRLValidity validity = CRLUtils.buildCRLValidity(crlBinary, certificateToken);
 
 			assertEquals(SignatureAlgorithm.ECDSA_SHA512, validity.getSignatureAlgorithm());
 			assertNotNull(validity.getThisUpdate());
@@ -307,14 +343,15 @@ public abstract class AbstractTestCRLUtils {
 		}
 	}
 
-	@Test(expected = DSSException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testPSSwithoutBouncyCastle() throws Exception {
 		try (InputStream is = AbstractTestCRLUtils.class.getResourceAsStream("/d-trust_root_ca_1_2017.crl");
 				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/D-TRUST_Root_CA_1_2017.crt")) {
 
 			CertificateToken certificateToken = loadCert(isCer);
 
-			CRLUtils.isValidCRL(is, certificateToken);
+			CRLBinary crlBinary = new CRLBinary(toByteArray(is));
+			CRLUtils.buildCRLValidity(crlBinary, certificateToken);
 		}
 	}
 
@@ -323,7 +360,8 @@ public abstract class AbstractTestCRLUtils {
 		try (InputStream is = new ByteArrayInputStream(new byte[] { 1, 2, 3 });
 				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/belgiumrs2.crt")) {
 			CertificateToken certificateToken = loadCert(isCer);
-			CRLUtils.isValidCRL(is, certificateToken);
+			CRLBinary crlBinary = new CRLBinary(toByteArray(is));
+			CRLUtils.buildCRLValidity(crlBinary, certificateToken);
 		}
 	}
 
@@ -335,7 +373,8 @@ public abstract class AbstractTestCRLUtils {
 		try (InputStream crlIS = new ByteArrayInputStream(Base64.getDecoder().decode(crlB64));
 				InputStream certIS = new ByteArrayInputStream(Base64.getDecoder().decode(certB64))) {
 			CertificateToken certificateToken = loadCert(certIS);
-			CRLValidity validCRL = CRLUtils.isValidCRL(crlIS, certificateToken);
+			CRLBinary crlBinary = new CRLBinary(toByteArray(crlIS));
+			CRLValidity validCRL = CRLUtils.buildCRLValidity(crlBinary, certificateToken);
 			assertNotNull(validCRL);
 			assertTrue(validCRL.isSignatureIntact());
 			assertTrue(validCRL.isValid());
@@ -351,7 +390,8 @@ public abstract class AbstractTestCRLUtils {
 		try (InputStream crlIS = new ByteArrayInputStream(Base64.getDecoder().decode(crlB64));
 				InputStream certIS = new ByteArrayInputStream(Base64.getDecoder().decode(certB64))) {
 			CertificateToken certificateToken = loadCert(certIS);
-			CRLValidity validCRL = CRLUtils.isValidCRL(crlIS, certificateToken);
+			CRLBinary crlBinary = new CRLBinary(toByteArray(crlIS));
+			CRLValidity validCRL = CRLUtils.buildCRLValidity(crlBinary, certificateToken);
 			assertNotNull(validCRL);
 			assertTrue(validCRL.isSignatureIntact());
 			assertTrue(validCRL.isValid());
@@ -367,7 +407,8 @@ public abstract class AbstractTestCRLUtils {
 		try (InputStream crlIS = new ByteArrayInputStream(Base64.getDecoder().decode(crlB64));
 				InputStream certIS = new ByteArrayInputStream(Base64.getDecoder().decode(certB64))) {
 			CertificateToken certificateToken = loadCert(certIS);
-			CRLValidity validCRL = CRLUtils.isValidCRL(crlIS, certificateToken);
+			CRLBinary crlBinary = new CRLBinary(toByteArray(crlIS));
+			CRLValidity validCRL = CRLUtils.buildCRLValidity(crlBinary, certificateToken);
 			assertNotNull(validCRL);
 			assertTrue(validCRL.isSignatureIntact());
 			assertTrue(validCRL.isValid());

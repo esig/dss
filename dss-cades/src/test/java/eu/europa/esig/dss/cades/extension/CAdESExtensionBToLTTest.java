@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.cades.extension;
 
-import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 
 public class CAdESExtensionBToLTTest extends AbstractTestCAdESExtension {
 

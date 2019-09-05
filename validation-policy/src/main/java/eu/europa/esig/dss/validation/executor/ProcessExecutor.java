@@ -22,8 +22,8 @@ package eu.europa.esig.dss.validation.executor;
 
 import java.util.Date;
 
-import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
+import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.reports.AbstractReports;
 
 /**
@@ -41,14 +41,13 @@ public interface ProcessExecutor<R extends AbstractReports> {
 	void setCurrentTime(Date currentDate);
 
 	/**
-	 * This method allows to set the
-	 * {@code eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData} that is used
-	 * during the validation process execution.
+	 * This method allows to set the {@code XmlDiagnosticData} that is used during
+	 * the validation process execution.
 	 *
 	 * @param diagnosticData
-	 *            the JAXB diagnostic data
+	 *                       the JAXB diagnostic data
 	 */
-	void setDiagnosticData(DiagnosticData diagnosticData);
+	void setDiagnosticData(XmlDiagnosticData diagnosticData);
 
 	/**
 	 * This method allows to set the validation policy that is used during the
@@ -60,15 +59,6 @@ public interface ProcessExecutor<R extends AbstractReports> {
 	void setValidationPolicy(ValidationPolicy validationPolicy);
 
 	ValidationPolicy getValidationPolicy();
-
-	/**
-	 * This method allows to set the validation level that is used during the
-	 * validation process execution.
-	 *
-	 * @param validationLevel
-	 *            the validation level.
-	 */
-	void setValidationLevel(ValidationLevel validationLevel);
 
 	/**
 	 * This method allows to run the validation process.

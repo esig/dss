@@ -22,19 +22,19 @@ package eu.europa.esig.dss.validation.process.vpfltvd.checks;
 
 import java.util.List;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlCV;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlISC;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessLongTermData;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class RevocationBasicBuildingBlocksCheck extends ChainItem<XmlValidationProcessLongTermData> {
 
@@ -56,41 +56,49 @@ public class RevocationBasicBuildingBlocksCheck extends ChainItem<XmlValidationP
 		// Format check is skipped
 
 		XmlISC isc = revocationBBB.getISC();
-		XmlConclusion iscConclusion = isc.getConclusion();
-		if (!isAllowed(iscConclusion)) {
-			indication = iscConclusion.getIndication();
-			subIndication = iscConclusion.getSubIndication();
-			errors = iscConclusion.getErrors();
-			return false;
+		if (isc != null) {
+			XmlConclusion iscConclusion = isc.getConclusion();
+			if (!isAllowed(iscConclusion)) {
+				indication = iscConclusion.getIndication();
+				subIndication = iscConclusion.getSubIndication();
+				errors = iscConclusion.getErrors();
+				return false;
+			}
 		}
 
 		// VCI is skipped
 
 		XmlCV cv = revocationBBB.getCV();
-		XmlConclusion cvConclusion = cv.getConclusion();
-		if (!isAllowed(cvConclusion)) {
-			indication = cvConclusion.getIndication();
-			subIndication = cvConclusion.getSubIndication();
-			errors = cvConclusion.getErrors();
-			return false;
+		if (cv != null) {
+			XmlConclusion cvConclusion = cv.getConclusion();
+			if (!isAllowed(cvConclusion)) {
+				indication = cvConclusion.getIndication();
+				subIndication = cvConclusion.getSubIndication();
+				errors = cvConclusion.getErrors();
+				return false;
+			}
 		}
 
 		XmlXCV xcv = revocationBBB.getXCV();
-		XmlConclusion xcvConclusion = xcv.getConclusion();
-		if (!isAllowed(xcvConclusion)) {
-			indication = xcvConclusion.getIndication();
-			subIndication = xcvConclusion.getSubIndication();
-			errors = xcvConclusion.getErrors();
-			return false;
+		if (xcv != null) {
+			XmlConclusion xcvConclusion = xcv.getConclusion();
+			if (!isAllowed(xcvConclusion)) {
+				indication = xcvConclusion.getIndication();
+				subIndication = xcvConclusion.getSubIndication();
+				errors = xcvConclusion.getErrors();
+				return false;
+			}
 		}
 
 		XmlSAV sav = revocationBBB.getSAV();
-		XmlConclusion savConclusion = sav.getConclusion();
-		if (!isAllowed(savConclusion)) {
-			indication = savConclusion.getIndication();
-			subIndication = savConclusion.getSubIndication();
-			errors = savConclusion.getErrors();
-			return false;
+		if (sav != null) {
+			XmlConclusion savConclusion = sav.getConclusion();
+			if (!isAllowed(savConclusion)) {
+				indication = savConclusion.getIndication();
+				subIndication = savConclusion.getSubIndication();
+				errors = savConclusion.getErrors();
+				return false;
+			}
 		}
 
 		return true;

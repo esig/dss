@@ -25,7 +25,7 @@ import java.util.concurrent.Callable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.client.http.DataLoader;
+import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.tsl.TSLLoaderResult;
 
 /**
@@ -55,7 +55,12 @@ public class TSLLoader implements Callable<TSLLoaderResult> {
 			byte[] byteArray = dataLoader.get(urlToLoad);
 			result.setContent(byteArray);
 		} catch (Exception e) {
-			LOG.warn("Unable to load '{}' : {}", urlToLoad, e.getMessage());
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("Unable to load '{}' : \n{}", urlToLoad, e.getMessage(), e);
+			} else {
+				LOG.warn("Unable to load '{}' : \n{}. \nThe full stackTrace of the error is available with debug mode enabled.", 
+						urlToLoad, e.getMessage());
+			}
 		}
 
 		return result;

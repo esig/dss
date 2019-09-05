@@ -1,0 +1,81 @@
+﻿<?xml version="1.0"?>
+<jaxb:bindings version="1.0"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd">
+
+	<jaxb:globalBindings>
+		<jaxb:serializable uid="1" />
+		
+	  	<jaxb:javaType name="java.util.Date" xmlType="xs:dateTime"
+	          parseMethod="eu.europa.esig.validationreport.parsers.DateParser.parse"
+	          printMethod="eu.europa.esig.validationreport.parsers.DateParser.print" />
+	</jaxb:globalBindings>
+	
+	<jaxb:bindings
+		schemaLocation="1910202xmlSchema.xsd" node="/xs:schema">
+		<jaxb:schemaBindings>
+			<jaxb:package name="eu.europa.esig.validationreport.jaxb" />
+		</jaxb:schemaBindings>
+		
+		<jaxb:bindings node="//xs:element[@name='MainIndication']">
+			<jaxb:javaType
+				name="eu.europa.esig.dss.enumerations.Indication"
+				parseMethod="eu.europa.esig.validationreport.parsers.UriBasedEnumParser.parseMainIndication"
+				printMethod="eu.europa.esig.validationreport.parsers.UriBasedEnumParser.print" />
+		</jaxb:bindings>
+		
+		
+		<jaxb:bindings node="//xs:element[@name='ObjectType']">
+			<jaxb:javaType
+				name="eu.europa.esig.validationreport.enums.ObjectType"
+				parseMethod="eu.europa.esig.validationreport.parsers.UriBasedEnumParser.parseObjectType"
+				printMethod="eu.europa.esig.validationreport.parsers.UriBasedEnumParser.print" />
+		</jaxb:bindings>
+		
+		
+		<jaxb:bindings node="//xs:element[@name='TypeOfProof']">
+			<jaxb:javaType
+				name="eu.europa.esig.validationreport.enums.TypeOfProof"
+				parseMethod="eu.europa.esig.validationreport.parsers.UriBasedEnumParser.parseTypeOfProof"
+				printMethod="eu.europa.esig.validationreport.parsers.UriBasedEnumParser.print" />
+		</jaxb:bindings>
+		
+		<jaxb:bindings node="//xs:element[@name='RevocationReason']">
+			<jaxb:javaType
+				name="eu.europa.esig.dss.enumerations.RevocationReason"
+				parseMethod="eu.europa.esig.validationreport.parsers.UriBasedEnumParser.parseRevocationReason"
+				printMethod="eu.europa.esig.validationreport.parsers.UriBasedEnumParser.print" />
+		</jaxb:bindings>
+		
+		<jaxb:bindings node="//xs:element[@name='SignatureValidationProcessID']">
+			<jaxb:javaType
+				name="eu.europa.esig.validationreport.enums.SignatureValidationProcessID"
+				parseMethod="eu.europa.esig.validationreport.parsers.UriBasedEnumParser.parseSignatureValidationProcessID"
+				printMethod="eu.europa.esig.validationreport.parsers.UriBasedEnumParser.print" />
+		</jaxb:bindings>
+		
+		<jaxb:bindings node="//xs:element[@name='SubIndication']">
+			<jaxb:javaType
+				name="eu.europa.esig.dss.enumerations.SubIndication"
+				parseMethod="eu.europa.esig.validationreport.parsers.UriBasedEnumParser.parseSubIndication"
+				printMethod="eu.europa.esig.validationreport.parsers.UriBasedEnumParser.print" />
+		</jaxb:bindings>
+		
+		<jaxb:bindings node="//xs:element[@name='Status']">
+			<jaxb:javaType
+				name="eu.europa.esig.validationreport.enums.ConstraintStatus"
+				parseMethod="eu.europa.esig.validationreport.parsers.UriBasedEnumParser.parseConstraintStatus"
+				printMethod="eu.europa.esig.validationreport.parsers.UriBasedEnumParser.print" />
+		</jaxb:bindings>
+    
+  		<jaxb:bindings node="//xs:element[@name='EndorsementType']">
+			<jaxb:javaType name="eu.europa.esig.dss.enumerations.EndorsementType" 
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.EndorsementTypeParser.parse" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.EndorsementTypeParser.print" />
+		</jaxb:bindings>
+
+	</jaxb:bindings>
+
+</jaxb:bindings>

@@ -23,6 +23,9 @@ package eu.europa.esig.dss.xades.requirements;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Iterator;
+
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
@@ -39,11 +42,11 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.CertificateToken;
 
 public abstract class AbstractRequirementChecks extends PKIFactoryAccess {
 
@@ -59,7 +62,33 @@ public abstract class AbstractRequirementChecks extends PKIFactoryAccess {
 
 		XPathFactory f = XPathFactory.newInstance();
 		xpath = f.newXPath();
-		xpath.setNamespaceContext(new XAdESNamespaceContext());
+		xpath.setNamespaceContext(new NamespaceContext() {
+
+			@Override
+			public String getNamespaceURI(String prefix) {
+				if ("xades".equals(prefix)) {
+					return "http://uri.etsi.org/01903/v1.3.2#";
+				} else if ("xades141".endsWith(prefix)) {
+					return "http://uri.etsi.org/01903/v1.4.1#";
+				} else if ("ds".equals(prefix)) {
+					return "http://www.w3.org/2000/09/xmldsig#";
+				}
+				// "http://uri.etsi.org/19132/v1.1.1#"
+				return null;
+			}
+
+			@Override
+			public String getPrefix(String namespaceURI) {
+				return null;
+			}
+
+			@Override
+			@SuppressWarnings({ "rawtypes" })
+			public Iterator getPrefixes(String namespaceURI) {
+				return null;
+			}
+			
+		});
 	}
 
 	@Before

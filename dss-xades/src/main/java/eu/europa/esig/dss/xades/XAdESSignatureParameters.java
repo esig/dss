@@ -25,9 +25,11 @@ import java.util.List;
 import org.w3c.dom.Document;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.SignatureForm;
-import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureForm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.xades.reference.Base64Transform;
+import eu.europa.esig.dss.xades.reference.DSSReference;
 
 public class XAdESSignatureParameters extends AbstractSignatureParameters {
 
@@ -43,6 +45,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 	/**
 	 * In case of ENVELOPING signature, this parameter allows to include the complete XML and not its base64 encoded
 	 * value
+	 * NOTE: not compatible with {@link Base64Transform}
 	 */
 	private boolean embedXML;
 

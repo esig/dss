@@ -20,13 +20,13 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.signature.SignatureExtension;
+import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 /**
  * PAdES Baseline LTA signature

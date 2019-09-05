@@ -23,7 +23,7 @@ package eu.europa.esig.dss.tsl;
 import java.util.Date;
 import java.util.List;
 
-import eu.europa.esig.dss.util.BaseTimeDependent;
+import eu.europa.esig.dss.spi.util.BaseTimeDependent;
 
 public class TSLServiceStatusAndInformationExtensions extends BaseTimeDependent {
 

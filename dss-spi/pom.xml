@@ -13,6 +13,10 @@
 	<name>DSS Service Provider Interface</name>
 	<description>DSS Service Provider Interface contains the contract interface shared between the applet and the server-side of DSS.</description>
 
+	<properties>
+		<module-name>jpms_dss_spi</module-name>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>

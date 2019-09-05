@@ -22,21 +22,24 @@ package eu.europa.esig.dss.validation.process.bbb.cv;
 
 import java.util.List;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlCV;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TokenProxy;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.policy.Context;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy;
+import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.AllFilesSignedCheck;
+import eu.europa.esig.dss.validation.process.bbb.cv.checks.ManifestEntryExistenceCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataExistenceCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataIntactCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.SignatureIntactCheck;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.TokenProxy;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 /**
  * 5.2.7 Cryptographic verification
@@ -52,6 +55,7 @@ public class CryptographicVerification extends Chain<XmlCV> {
 
 	public CryptographicVerification(DiagnosticData diagnosticData, TokenProxy token, Context context, ValidationPolicy validationPolicy) {
 		super(new XmlCV());
+		result.setTitle(BasicBuildingBlockDefinition.CRYPTOGRAPHIC_VERIFICATION.getTitle());
 
 		this.diagnosticData = diagnosticData;
 		this.token = token;
@@ -75,9 +79,9 @@ public class CryptographicVerification extends Chain<XmlCV> {
 		 */
 
 		List<XmlDigestMatcher> digestMatchers = token.getDigestMatchers();
+		
 		if (Utils.isCollectionNotEmpty(digestMatchers)) {
 			for (XmlDigestMatcher digestMatcher : digestMatchers) {
-
 				/*
 				 * 1) The building block shall obtain the signed data object(s) if not provided
 				 * in the inputs (e.g. by dereferencing an URI present in the signature). If the
@@ -90,13 +94,24 @@ public class CryptographicVerification extends Chain<XmlCV> {
 				} else {
 					item = item.setNextItem(referenceDataFound);
 				}
-
 				/*
 				 * 2) The SVA shall check the integrity of the signed data objects. In case of
 				 * failure, the building block shall return the indication FAILED with the
 				 * sub-indication HASH_FAILURE.
 				 */
 				item = item.setNextItem(referenceDataIntact(digestMatcher));
+			}
+		}
+
+
+		// If we are verifying a signature based on Manifest, check if at least one
+		// entry is validated
+		if (containsManifest(digestMatchers)) {
+			ChainItem<XmlCV> manifestEntryExistence = manifestEntryExistence(digestMatchers);
+			if (item == null) {
+				firstItem = item = manifestEntryExistence;
+			} else {
+				item = item.setNextItem(manifestEntryExistence);
 			}
 		}
 
@@ -122,6 +137,15 @@ public class CryptographicVerification extends Chain<XmlCV> {
 		}
 	}
 
+	private boolean containsManifest(List<XmlDigestMatcher> digestMatchers) {
+		for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
+			if (DigestMatcherType.MANIFEST.equals(xmlDigestMatcher.getType())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private ChainItem<XmlCV> referenceDataFound(XmlDigestMatcher digestMatcher) {
 		LevelConstraint constraint = validationPolicy.getReferenceDataExistenceConstraint(context);
 		return new ReferenceDataExistenceCheck(result, digestMatcher, constraint);
@@ -132,11 +156,15 @@ public class CryptographicVerification extends Chain<XmlCV> {
 		return new ReferenceDataIntactCheck(result, digestMatcher, constraint);
 	}
 
+	private ChainItem<XmlCV> manifestEntryExistence(List<XmlDigestMatcher> digestMatchers) {
+		LevelConstraint constraint = validationPolicy.getManifestEntryObjectExistenceConstraint(context);
+		return new ManifestEntryExistenceCheck(result, digestMatchers, constraint);
+	}
+
 	private ChainItem<XmlCV> signatureIntact() {
 		LevelConstraint constraint = validationPolicy.getSignatureIntactConstraint(context);
 		return new SignatureIntactCheck(result, token, constraint);
 	}
-
 
 	private ChainItem<XmlCV> allFilesSignedCheck() {
 		LevelConstraint constraint = validationPolicy.getAllFilesSignedConstraint();

@@ -25,8 +25,10 @@ import static java.util.Collections.unmodifiableList;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.tsl.Condition;
+import eu.europa.esig.trustedlist.enums.Assert;
 
 /**
  * Condition resulting of the matchingCriteriaIndicator of other Conditions
@@ -35,7 +37,7 @@ public class CompositeCondition extends Condition {
 
 	private static final long serialVersionUID = -3756905347291887068L;
 
-	private MatchingCriteriaIndicator matchingCriteriaIndicator;
+	private Assert matchingCriteriaIndicator;
 
 	/**
 	 * The list of child conditions
@@ -47,7 +49,7 @@ public class CompositeCondition extends Condition {
 	 * All conditions must match
 	 */
 	public CompositeCondition() {
-		this.matchingCriteriaIndicator = MatchingCriteriaIndicator.all;
+		this.matchingCriteriaIndicator = Assert.ALL;
 	}
 
 	/**
@@ -56,7 +58,7 @@ public class CompositeCondition extends Condition {
 	 * @param matchingCriteriaIndicator
 	 *            matching criteria indicator: atLeastOne, all, none
 	 */
-	public CompositeCondition(final MatchingCriteriaIndicator matchingCriteriaIndicator) {
+	public CompositeCondition(final Assert matchingCriteriaIndicator) {
 		this.matchingCriteriaIndicator = matchingCriteriaIndicator;
 	}
 
@@ -84,7 +86,7 @@ public class CompositeCondition extends Condition {
 	 *
 	 * @return matching criteria indicator: atLeastOne, all, none
 	 */
-	public MatchingCriteriaIndicator getMatchingCriteriaIndicator() {
+	public Assert getMatchingCriteriaIndicator() {
 		return matchingCriteriaIndicator;
 	}
 
@@ -98,21 +100,21 @@ public class CompositeCondition extends Condition {
 	@Override
 	public boolean check(final CertificateToken certificateToken) {
 		switch (matchingCriteriaIndicator) {
-		case all:
+		case ALL:
 			for (final Condition condition : children) {
 				if (!condition.check(certificateToken)) {
 					return false;
 				}
 			}
 			return true;
-		case atLeastOne:
+		case AT_LEAST_ONE:
 			for (final Condition condition : children) {
 				if (condition.check(certificateToken)) {
 					return true;
 				}
 			}
 			return false;
-		case none:
+		case NONE:
 			for (final Condition condition : children) {
 				if (condition.check(certificateToken)) {
 					return false;

@@ -39,7 +39,7 @@ public class EnforcedResolverFragment extends ResolverFragment {
 
 	@Override
 	public boolean engineCanResolveURI(ResourceResolverContext context) {
-		return super.engineCanResolveURI(context) && checkValueForXpathInjection(context.uriToResolve);
+		return checkValueForXpathInjection(context.uriToResolve) && super.engineCanResolveURI(context);
 	}
 
 	/**
@@ -53,7 +53,7 @@ public class EnforcedResolverFragment extends ResolverFragment {
 	 *         cannot be decoded
 	 */
 	public boolean checkValueForXpathInjection(String xpathString) {
-		if (Utils.isStringEmpty(xpathString)) {
+		if (Utils.isStringNotEmpty(xpathString)) {
 			try {
 				String decodedValue = URLDecoder.decode(xpathString, StandardCharsets.UTF_8.name());
 				for (char c : decodedValue.toCharArray()) {

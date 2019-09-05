@@ -24,9 +24,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.XAdESNamespaces;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
@@ -92,7 +92,7 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 		if (length == 1) {
 			unsignedPropertiesDom = (Element) qualifyingPropertiesNodeList.item(0);
 		} else if (length == 0) {
-			unsignedPropertiesDom = DomUtils.addElement(documentDom, qualifyingPropertiesDom, XAdESNamespaces.XAdES, XADES_UNSIGNED_PROPERTIES);
+			unsignedPropertiesDom = DomUtils.addElement(documentDom, qualifyingPropertiesDom, XAdESNamespaces.getXAdESDefaultNamespace(), XADES_UNSIGNED_PROPERTIES);
 			if (params.isPrettyPrint()) {
 				qualifyingPropertiesDom = (Element) DSSXMLUtils.alignChildrenIndents(qualifyingPropertiesDom);
 				unsignedPropertiesDom = (Element) DomUtils.getNode(currentSignatureDom, xPathQueryHolder.XPATH_UNSIGNED_PROPERTIES);
@@ -113,7 +113,7 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 		if (length == 1) {
 			unsignedSignaturePropertiesDom = (Element) unsignedSignaturePropertiesNodeList.item(0);
 		} else if (length == 0) {
-			unsignedSignaturePropertiesDom = DomUtils.addElement(documentDom, unsignedPropertiesDom, XAdESNamespaces.XAdES, XADES_UNSIGNED_SIGNATURE_PROPERTIES);
+			unsignedSignaturePropertiesDom = DomUtils.addElement(documentDom, unsignedPropertiesDom, XAdESNamespaces.getXAdESDefaultNamespace(), XADES_UNSIGNED_SIGNATURE_PROPERTIES);
 			if (params.isPrettyPrint()) {
 				unsignedPropertiesDom = (Element) DSSXMLUtils.indentAndReplace(documentDom, unsignedPropertiesDom);
 				unsignedSignaturePropertiesDom = (Element) DomUtils.getNode(currentSignatureDom, xPathQueryHolder.XPATH_UNSIGNED_SIGNATURE_PROPERTIES);

@@ -20,13 +20,12 @@
  */
 package eu.europa.esig.dss.validation;
 
-import eu.europa.esig.dss.client.http.DataLoader;
-import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.CertificateSource;
-import eu.europa.esig.dss.x509.revocation.crl.CRLSource;
-import eu.europa.esig.dss.x509.revocation.crl.ListCRLSource;
-import eu.europa.esig.dss.x509.revocation.ocsp.ListOCSPSource;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPSource;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.spi.client.http.DataLoader;
+import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
 
 /**
  * Provides information on the sources to be used in the validation process in
@@ -169,6 +168,18 @@ public interface CertificateVerifier {
 	boolean isExceptionOnMissingRevocationData();
 	
 	/**
+	 * This method allows to change the Digest Algorithm that will be used for tokens' digest calculation
+	 * @param digestAlgorithm {@link DigestAlgorithm} to use
+	 */
+	void setDefaultDigestAlgorithm(DigestAlgorithm digestAlgorithm);
+	
+	/**
+	 * This method returns a default Digest Algorithm what will be used for digest calculation
+	 * @return {@link DigestAlgorithm}
+	 */
+	DigestAlgorithm getDefaultDigestAlgorithm();
+	
+	/**
 	 * This method allows to change the behavior by including raw certificate tokens
 	 * in the diagnostic data report.
 	 * 
@@ -262,6 +273,25 @@ public interface CertificateVerifier {
 	 * @return true if an exception is thrown, false if a warning message is added
 	 */
 	boolean isExceptionOnRevokedCertificate();
+
+	/**
+	 * This method allows to change the behavior on revocation data issued after
+	 * a control time. (default : false)
+	 * 
+	 * @param exceptionOnNoRevocationAfterBestSignatureTime
+	 *                                           true if an exception is raised on
+	 *                                           no revocation data issued after the bestSignatureTime,
+	 *                                           false will only display a warning message
+	 */
+	void setExceptionOnNoRevocationAfterBestSignatureTime(boolean exceptionOnNoRevocationAfterBestSignatureTime);
+	
+	/**
+	 * This method returns true if an exception needs to be thrown in case if
+	 * no revocation data obtained with an issuance time after the bestSignatureTime
+	 * 
+	 * @return true if an exception is thrown, false if a warning message is added
+	 */
+	boolean isExceptionOnNoRevocationAfterBestSignatureTime();
 
 	
 	/**

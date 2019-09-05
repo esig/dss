@@ -26,16 +26,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.TimestampParameters;
 import eu.europa.esig.dss.XAdESNamespaces;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.TimestampParameters;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.validation.ValidationContext;
-import eu.europa.esig.dss.x509.TimestampType;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 
 /**
@@ -84,10 +84,19 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 
 	/**
 	 * This method removes the timestamp validation data of the last archive timestamp.
+	 * @return indent of the last {@code TimeStampValidationData} xml element, if present
 	 */
 	private String removeLastTimestampValidationData() {
 		final Element toRemove = xadesSignature.getLastTimestampValidationData();
-		return removeChild(unsignedSignaturePropertiesDom, toRemove);
+		if (toRemove != null) {
+			/* Certificate and revocation sources need to be reset because of 
+			 * the removing of timeStampValidationData element */
+			xadesSignature.resetCertificateSource();
+			xadesSignature.resetRevocationSources();
+			
+			return removeChild(unsignedSignaturePropertiesDom, toRemove);
+		}
+		return null;
 	}
 
 	/**
@@ -122,7 +131,7 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 	private void incorporateArchiveTimestamp() {
 		final TimestampParameters archiveTimestampParameters = params.getArchiveTimestampParameters();
 		final String canonicalizationMethod = archiveTimestampParameters.getCanonicalizationMethod();
-		final byte[] archiveTimestampData = xadesSignature.getArchiveTimestampData(null, canonicalizationMethod);
+		final byte[] archiveTimestampData = xadesSignature.getTimestampSource().getArchiveTimestampData(canonicalizationMethod);
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Data to be signed by the ArchiveTimestamp:");
 			LOG.trace(new String(archiveTimestampData));

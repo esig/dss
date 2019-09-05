@@ -30,12 +30,12 @@ import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.DefaultFontMapper;
 import com.lowagie.text.pdf.PdfSignatureAppearance;
 
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.DSSFont;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pdf.visible.FontUtils;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
@@ -53,7 +53,6 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 
 		String text = parameters.getTextParameters().getText();
 		
-
 		if (Utils.isStringNotBlank(signatureFieldId)) {
 			appearance.setVisibleSignature(signatureFieldId);
 		} else {
@@ -64,7 +63,7 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 			int height = parameters.getHeight();
 			if (width == 0 || height == 0) {
 				SignatureImageTextParameters textParameters = parameters.getTextParameters();
-				Dimension dimension = FontUtils.computeSize(textParameters.getFont(), text, textParameters.getMargin());
+				Dimension dimension = FontUtils.computeSize(textParameters.getFont(), text, textParameters.getPadding());
 				width = dimension.width;
 				height = dimension.height;
 			}
@@ -92,7 +91,7 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		} else {
 			try (InputStream iStream = dssFont.getInputStream()) {
 				byte[] fontBytes = DSSUtils.toByteArray(iStream);
-				baseFont = BaseFont.createFont(dssFont.getName(), BaseFont.WINANSI, BaseFont.EMBEDDED, true, fontBytes, null);
+				baseFont = BaseFont.createFont(dssFont.getName(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED, true, fontBytes, null);
 				baseFont.setSubset(false);
 			} catch (IOException e) {
 				throw new DSSException("The iText font cannot be initialized", e);

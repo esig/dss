@@ -39,5 +39,4 @@ public abstract class AbstractITextSignatureDrawer implements ITextSignatureDraw
 		this.appearance = appearance;
 	}
 
-
 }

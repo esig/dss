@@ -26,20 +26,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.SignatureValue;
-import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.extension.AbstractTestExtension;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
+import eu.europa.esig.dss.test.extension.AbstractTestExtension;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 public abstract class AbstractTestPAdESExtension extends AbstractTestExtension<PAdESSignatureParameters> {
-
 
 	@Override
 	protected TSPSource getUsedTSPSourceAtSignatureTime() {
@@ -77,6 +77,11 @@ public abstract class AbstractTestPAdESExtension extends AbstractTestExtension<P
 		ToBeSigned dataToSign = service.getDataToSign(doc, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		return service.signDocument(doc, signatureParameters, signatureValue);
+	}
+
+	@Override
+	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
+		checkTimestamps(diagnosticData);
 	}
 
 	@Override

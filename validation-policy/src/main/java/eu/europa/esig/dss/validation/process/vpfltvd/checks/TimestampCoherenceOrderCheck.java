@@ -23,15 +23,15 @@ package eu.europa.esig.dss.validation.process.vpfltvd.checks;
 import java.util.Date;
 import java.util.List;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessLongTermData;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
-import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
-import eu.europa.esig.dss.x509.TimestampType;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class TimestampCoherenceOrderCheck extends ChainItem<XmlValidationProcessLongTermData> {
 
@@ -48,16 +48,14 @@ public class TimestampCoherenceOrderCheck extends ChainItem<XmlValidationProcess
 			return true;
 		}
 
-		Date latestContent = getLatestTimestampProductionDate(timestamps, TimestampType.CONTENT_TIMESTAMP, TimestampType.ALL_DATA_OBJECTS_TIMESTAMP,
-				TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
+		Date latestContent = getLatestTimestampProductionDate(timestamps, TimestampType.getContentTimestampTypes());
 
 		Date earliestSignature = getEarliestTimestampProductionTime(timestamps, TimestampType.SIGNATURE_TIMESTAMP);
 		Date latestSignature = getLatestTimestampProductionDate(timestamps, TimestampType.SIGNATURE_TIMESTAMP);
 
-		Date earliestValidationData = getEarliestTimestampProductionTime(timestamps, TimestampType.VALIDATION_DATA_TIMESTAMP,
-				TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP);
-		Date latestValidationData = getLatestTimestampProductionDate(timestamps, TimestampType.VALIDATION_DATA_TIMESTAMP,
-				TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP);
+		TimestampType[] timestampTypesCoveringValidationData = TimestampType.getTimestampTypesCoveringValidationData();
+		Date earliestValidationData = getEarliestTimestampProductionTime(timestamps, timestampTypesCoveringValidationData);
+		Date latestValidationData = getLatestTimestampProductionDate(timestamps, timestampTypesCoveringValidationData);
 
 		Date earliestArchive = getEarliestTimestampProductionTime(timestamps, TimestampType.ARCHIVE_TIMESTAMP);
 
@@ -118,9 +116,9 @@ public class TimestampCoherenceOrderCheck extends ChainItem<XmlValidationProcess
 		return earliestProductionTime;
 	}
 
-	private boolean isInSelectedTypes(TimestampType[] allowedTypes, String type) {
+	private boolean isInSelectedTypes(TimestampType[] allowedTypes, TimestampType type) {
 		for (TimestampType timestampType : allowedTypes) {
-			if (timestampType.name().equals(type)) {
+			if (timestampType.equals(type)) {
 				return true;
 			}
 		}

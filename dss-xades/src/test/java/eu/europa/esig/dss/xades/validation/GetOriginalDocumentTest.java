@@ -21,6 +21,8 @@
 package eu.europa.esig.dss.xades.validation;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,24 +31,31 @@ import java.util.List;
 
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.signature.Reference;
-import org.apache.xml.security.transforms.Transforms;
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
-import eu.europa.esig.dss.SignatureValue;
-import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.xades.DSSReference;
-import eu.europa.esig.dss.xades.DSSTransform;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.reference.Base64Transform;
+import eu.europa.esig.dss.xades.reference.DSSReference;
+import eu.europa.esig.dss.xades.reference.DSSTransform;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
+import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
+import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
 public class GetOriginalDocumentTest extends PKIFactoryAccess {
 
@@ -68,7 +77,7 @@ public class GetOriginalDocumentTest extends PKIFactoryAccess {
 		final DSSDocument signedDocument = service.signDocument(document, signatureParameters, signatureValue);
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
 		List<DSSDocument> originals = validator.getOriginalDocuments(reports.getDiagnosticData().getFirstSignatureId());
@@ -111,7 +120,7 @@ public class GetOriginalDocumentTest extends PKIFactoryAccess {
 		final DSSDocument resignedDocument = service.signDocument(signedDocument, signatureParameters, signatureValue);
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(resignedDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
 		List<String> signatureIdList = reports.getDiagnosticData().getSignatureIdList();
@@ -152,7 +161,7 @@ public class GetOriginalDocumentTest extends PKIFactoryAccess {
 		DSSDocument signedDocument = service.signDocument(document, signatureParameters, signatureValue);
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
 		List<DSSDocument> results = validator.getOriginalDocuments(reports.getDiagnosticData().getFirstSignatureId());
@@ -185,7 +194,7 @@ public class GetOriginalDocumentTest extends PKIFactoryAccess {
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setDetachedContents(Arrays.asList(document));
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
 		List<DSSDocument> results = validator.getOriginalDocuments(reports.getDiagnosticData().getFirstSignatureId());
@@ -206,8 +215,7 @@ public class GetOriginalDocumentTest extends PKIFactoryAccess {
 		DSSDocument doc2 = new FileDocument("src/test/resources/sampleISO.xml");
 
 		List<DSSTransform> transforms = new ArrayList<DSSTransform>();
-		DSSTransform dssTransform = new DSSTransform();
-		dssTransform.setAlgorithm(Transforms.TRANSFORM_BASE64_DECODE);
+		Base64Transform dssTransform = new Base64Transform();
 		transforms.add(dssTransform);
 
 		DSSReference ref1 = new DSSReference();
@@ -244,7 +252,7 @@ public class GetOriginalDocumentTest extends PKIFactoryAccess {
 		DSSDocument signedDocument = service.signDocument(doc1, signatureParameters, value);
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
 		List<DSSDocument> results = validator.getOriginalDocuments(reports.getDiagnosticData().getFirstSignatureId());
@@ -261,6 +269,38 @@ public class GetOriginalDocumentTest extends PKIFactoryAccess {
 		firstDocument = new String(canon.canonicalize(DSSUtils.toByteArray(doc2)));
 		secondDocument = new String(canon.canonicalize(DSSUtils.toByteArray(orig2)));
 		assertEquals(firstDocument, secondDocument);
+		
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		assertNotNull(diagnosticData);
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		List<XmlSignatureScope> signerData = signature.getSignatureScopes();
+		assertNotNull(signerData);
+		assertEquals(2, signerData.size());
+		XmlDigestAlgoAndValue digestAlgoAndValueSignatureOne = signerData.get(0).getSignerData().getDigestAlgoAndValue();
+		assertNotNull(digestAlgoAndValueSignatureOne);
+		
+		DigestAlgorithm digestAlgorithm = digestAlgoAndValueSignatureOne.getDigestMethod();
+		assertEquals(doc1.getDigest(digestAlgorithm), orig1.getDigest(digestAlgorithm));
+		assertTrue(Arrays.equals(digestAlgoAndValueSignatureOne.getDigestValue(), 
+				DSSUtils.digest(digestAlgoAndValueSignatureOne.getDigestMethod(), orig1)));
+		XmlDigestAlgoAndValue digestAlgoAndValueSignatureTwo = signerData.get(1).getSignerData().getDigestAlgoAndValue();
+		assertNotNull(digestAlgoAndValueSignatureTwo);
+		assertTrue(Arrays.equals(digestAlgoAndValueSignatureTwo.getDigestValue(), 
+				DSSUtils.digest(digestAlgoAndValueSignatureTwo.getDigestMethod(), orig2)));
+		
+		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
+		
+		SignatureValidationReportType signatureValidationReport = etsiValidationReport.getSignatureValidationReport().get(0);
+		assertNotNull(signatureValidationReport);
+		List<SignersDocumentType> signersDocuments = signatureValidationReport.getSignersDocument();
+		assertNotNull(signersDocuments);
+		assertEquals(digestAlgoAndValueSignatureOne.getDigestMethod(),
+				DigestAlgorithm.forXML(signersDocuments.get(0).getDigestAlgAndValue().getDigestMethod().getAlgorithm()));
+		assertEquals(digestAlgoAndValueSignatureOne.getDigestValue(), signersDocuments.get(0).getDigestAlgAndValue().getDigestValue());
+		assertEquals(digestAlgoAndValueSignatureTwo.getDigestMethod(),
+				DigestAlgorithm.forXML(signersDocuments.get(1).getDigestAlgAndValue().getDigestMethod().getAlgorithm()));
+		assertEquals(digestAlgoAndValueSignatureTwo.getDigestValue(), signersDocuments.get(1).getDigestAlgAndValue().getDigestValue());
+		
 	}
 
 	@Override

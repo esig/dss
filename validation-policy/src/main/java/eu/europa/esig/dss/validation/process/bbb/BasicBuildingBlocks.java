@@ -23,21 +23,27 @@ package eu.europa.esig.dss.validation.process.bbb;
 import java.util.Date;
 import java.util.List;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlCV;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlFC;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlISC;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlVCI;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlVCI;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.diagnostic.TokenProxy;
+import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.policy.Context;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.process.bbb.cv.CryptographicVerification;
 import eu.europa.esig.dss.validation.process.bbb.fc.FormatChecking;
 import eu.europa.esig.dss.validation.process.bbb.isc.IdentificationOfTheSigningCertificate;
@@ -47,12 +53,6 @@ import eu.europa.esig.dss.validation.process.bbb.sav.SignatureAcceptanceValidati
 import eu.europa.esig.dss.validation.process.bbb.sav.TimestampAcceptanceValidation;
 import eu.europa.esig.dss.validation.process.bbb.vci.ValidationContextInitialization;
 import eu.europa.esig.dss.validation.process.bbb.xcv.X509CertificateValidation;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.TokenProxy;
 
 /**
  * 5.2 Basic building blocks
@@ -178,7 +178,7 @@ public class BasicBuildingBlocks {
 
 	private XmlISC executeIdentificationOfTheSigningCertificate() {
 		if (!Context.CERTIFICATE.equals(context)) {
-			IdentificationOfTheSigningCertificate isc = new IdentificationOfTheSigningCertificate(diagnosticData, token, context, policy);
+			IdentificationOfTheSigningCertificate isc = new IdentificationOfTheSigningCertificate(token, context, policy);
 			return isc.execute();
 		} else {
 			return null;
@@ -209,7 +209,7 @@ public class BasicBuildingBlocks {
 					certificate.getNotBefore(), context, policy);
 			return xcv.execute();
 		} else {
-			CertificateWrapper certificate = diagnosticData.getUsedCertificateById(token.getSigningCertificateId());
+			CertificateWrapper certificate = token.getSigningCertificate();
 			if (certificate != null) {
 				if (Context.SIGNATURE.equals(context) || Context.COUNTER_SIGNATURE.equals(context)) {
 					X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime,

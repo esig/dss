@@ -27,16 +27,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedObject;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlProofOfExistence;
+import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.TimestampedObjectType;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
-import eu.europa.esig.dss.x509.RevocationOrigin;
 
 /**
  * 5.6.2.3 POE extraction
@@ -59,105 +57,66 @@ import eu.europa.esig.dss.x509.RevocationOrigin;
  */
 public class POEExtraction {
 
-	private Map<String, List<Date>> poe = new HashMap<String, List<Date>>();
+	/**
+	 * Map of proofs of existence by token ids
+	 */
+	private Map<String, List<XmlProofOfExistence>> poe = new HashMap<String, List<XmlProofOfExistence>>();
 
-	public void init(DiagnosticData diagnosticData, Date currentTime) {
+	public void init(DiagnosticData diagnosticData, XmlProofOfExistence proofOfExistence) {
+
 		Set<SignatureWrapper> signatures = diagnosticData.getAllSignatures();
 		for (SignatureWrapper signature : signatures) {
-			addPOE(signature.getId(), currentTime);
+			addPOE(signature.getId(), proofOfExistence);
 		}
-		Set<TimestampWrapper> timestamps = diagnosticData.getAllTimestamps();
+		Set<TimestampWrapper> timestamps = diagnosticData.getTimestampSet();
 		for (TimestampWrapper timestamp : timestamps) {
-			addPOE(timestamp.getId(), currentTime);
+			addPOE(timestamp.getId(), proofOfExistence);
 		}
 		List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
 		for (CertificateWrapper certificate : usedCertificates) {
-			addPOE(certificate.getId(), currentTime);
-			Set<RevocationWrapper> revocations = certificate.getRevocationData();
+			addPOE(certificate.getId(), proofOfExistence);
+			List<CertificateRevocationWrapper> revocations = certificate.getCertificateRevocationData();
 			if (Utils.isCollectionNotEmpty(revocations)) {
-				for (RevocationWrapper revocation : revocations) {
-					if (RevocationOrigin.SIGNATURE.name().equals(revocation.getOrigin())) {
-						addPOE(revocation.getId(), currentTime);
-					}
+				for (CertificateRevocationWrapper revocation : revocations) {
+					addPOE(revocation.getId(), proofOfExistence);
 				}
 			}
 		}
 	}
+	
+	public void collectAllPOE(DiagnosticData diagnosticData) {
+		for (TimestampWrapper timestamp : diagnosticData.getTimestampSet()) {
+			extractPOE(timestamp);
+		}
+	}
 
-	public void extractPOE(TimestampWrapper timestamp, DiagnosticData diagnosticData) {
-
-		Date productionTime = timestamp.getProductionTime();
-
+	public void extractPOE(TimestampWrapper timestamp) {
 		List<XmlTimestampedObject> timestampedObjects = timestamp.getTimestampedObjects();
 		if (Utils.isCollectionNotEmpty(timestampedObjects)) {
+			XmlProofOfExistence poe = new XmlProofOfExistence();
+			poe.setTimestampId(timestamp.getId());
+			poe.setTime(timestamp.getProductionTime());
 
 			for (XmlTimestampedObject xmlTimestampedObject : timestampedObjects) {
-				if (Utils.isStringNotEmpty(xmlTimestampedObject.getId())) {
-					// SIGNATURES and TIMESTAMPS
-					addPOE(xmlTimestampedObject.getId(), productionTime);
-				} else if (TimestampedObjectType.CERTIFICATE == xmlTimestampedObject.getCategory()) {
-					String certificateId = getCertificateIdByDigest(xmlTimestampedObject.getDigestAlgoAndValue(), diagnosticData);
-					if (certificateId != null) {
-						addPOE(certificateId, productionTime);
-					}
-				} else if (TimestampedObjectType.REVOCATION == xmlTimestampedObject.getCategory()) {
-					String revocationId = getRevocationIdByDigest(xmlTimestampedObject.getDigestAlgoAndValue(), diagnosticData);
-					if (revocationId != null) {
-						addPOE(revocationId, productionTime);
-					}
-				}
+				addPOE(xmlTimestampedObject.getToken().getId(), poe);
 			}
-
 		}
 	}
 
-	private String getCertificateIdByDigest(XmlDigestAlgoAndValue digestAlgoValue, DiagnosticData diagnosticData) {
-		List<CertificateWrapper> certificates = diagnosticData.getUsedCertificates();
-		if (Utils.isCollectionNotEmpty(certificates)) {
-			for (CertificateWrapper certificate : certificates) {
-				List<XmlDigestAlgoAndValue> digestAlgAndValues = certificate.getDigestAlgoAndValues();
-				if (Utils.isCollectionNotEmpty(digestAlgAndValues)) {
-					for (XmlDigestAlgoAndValue certificateDigestAndValue : digestAlgAndValues) {
-						if (Utils.areStringsEqual(certificateDigestAndValue.getDigestMethod(), digestAlgoValue.getDigestMethod())
-								&& Utils.areStringsEqual(certificateDigestAndValue.getDigestValue(), digestAlgoValue.getDigestValue())) {
-							return certificate.getId();
-						}
-					}
-				}
+	private void addPOE(String tokenId, XmlProofOfExistence proofOfExistence) {
+		if (proofOfExistence != null) {
+			List<XmlProofOfExistence> poesById = poe.get(tokenId);
+			if (poesById == null) {
+				poesById = new ArrayList<XmlProofOfExistence>();
+				poe.put(tokenId, poesById);
 			}
+			poesById.add(proofOfExistence);
 		}
-		return null;
 	}
-
-	private String getRevocationIdByDigest(XmlDigestAlgoAndValue digestAlgoValue, DiagnosticData diagnosticData) {
-		List<CertificateWrapper> certificates = diagnosticData.getUsedCertificates();
-		if (Utils.isCollectionNotEmpty(certificates)) {
-			for (CertificateWrapper certificate : certificates) {
-				Set<RevocationWrapper> revocations = certificate.getRevocationData();
-				if (Utils.isCollectionNotEmpty(revocations)) {
-					for (RevocationWrapper revocationData : revocations) {
-						List<XmlDigestAlgoAndValue> digestAlgAndValues = revocationData.getDigestAlgoAndValues();
-						for (XmlDigestAlgoAndValue revocDigestAndValue : digestAlgAndValues) {
-							if (Utils.areStringsEqual(revocDigestAndValue.getDigestMethod(), digestAlgoValue.getDigestMethod())
-									&& Utils.areStringsEqual(revocDigestAndValue.getDigestValue(), digestAlgoValue.getDigestValue())) {
-								return revocationData.getId();
-							}
-						}
-					}
-				}
-			}
-		}
-		return null;
-	}
-
-	private void addPOE(String poeId, Date productionTime) {
-		if (productionTime != null) {
-			List<Date> datesById = poe.get(poeId);
-			if (datesById == null) {
-				datesById = new ArrayList<Date>();
-				poe.put(poeId, datesById);
-			}
-			datesById.add(productionTime);
+	
+	public void addSignaturePOE(SignatureWrapper signature, XmlProofOfExistence proofOfExistence) {
+		if (signature != null) {
+			addPOE(signature.getId(), proofOfExistence);
 		}
 	}
 
@@ -165,11 +124,11 @@ public class POEExtraction {
 	 * Returns true if there is a POE exists for a given id at (or before) the control time.
 	 * 
 	 */
-	public boolean isPOEExists(final String id, final Date controlTime) {
-		List<Date> dates = poe.get(id);
-		if (dates != null) {
-			for (Date date : dates) {
-				if (date.compareTo(controlTime) < 0) {
+	public boolean isPOEExists(final String tokenId, final Date controlTime) {
+		List<XmlProofOfExistence> poes = poe.get(tokenId);
+		if (poes != null) {
+			for (XmlProofOfExistence poe : poes) {
+				if (poe.getTime().compareTo(controlTime) < 0) {
 					return true;
 				}
 			}
@@ -177,21 +136,22 @@ public class POEExtraction {
 		return false;
 	}
 
-	public Date getLowestPOE(final String id, final Date controlTime) {
-		Date lowestDate = controlTime;
-		List<Date> dates = poe.get(id);
-		if (dates != null) {
-			for (Date date : dates) {
-				if (date.compareTo(controlTime) <= 0) {
-					if (lowestDate == controlTime) {
-						lowestDate = date;
-					} else if (lowestDate.after(date)) {
-						lowestDate = date;
-					}
+	public Date getLowestPOETime(final String tokenId, final Date controlTime) {
+		return getLowestPOE(tokenId, controlTime).getTime();
+	}
+
+	public XmlProofOfExistence getLowestPOE(final String tokenId, final Date controlTime) {
+		XmlProofOfExistence lowestPOE = new XmlProofOfExistence();
+		lowestPOE.setTime(controlTime);
+		List<XmlProofOfExistence> poes = poe.get(tokenId);
+		if (poes != null) {
+			for (XmlProofOfExistence poe : poes) {
+				if (poe.getTime().compareTo(lowestPOE.getTime()) <= 0) {
+					lowestPOE = poe;
 				}
 			}
 		}
-		return lowestDate;
+		return lowestPOE;
 	}
 
 }

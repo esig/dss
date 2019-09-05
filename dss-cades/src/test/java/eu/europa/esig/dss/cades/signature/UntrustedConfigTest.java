@@ -26,20 +26,20 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
-import eu.europa.esig.dss.SignatureValue;
-import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
-import eu.europa.esig.dss.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.reports.SimpleReport;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
 public class UntrustedConfigTest extends PKIFactoryAccess {
 
@@ -132,7 +132,7 @@ public class UntrustedConfigTest extends PKIFactoryAccess {
 		Reports reports = validator.validateDocument();
 
 		SimpleReport simpleReport = reports.getSimpleReport();
-		assertEquals(SignatureLevel.CAdES_BASELINE_T.toString(), simpleReport.getSignatureFormat(simpleReport.getFirstSignatureId()));
+		assertEquals(SignatureLevel.CAdES_BASELINE_T, simpleReport.getSignatureFormat(simpleReport.getFirstSignatureId()));
 	}
 
 	@Test
@@ -159,7 +159,7 @@ public class UntrustedConfigTest extends PKIFactoryAccess {
 		Reports reports = validator.validateDocument();
 
 		SimpleReport simpleReport = reports.getSimpleReport();
-		assertEquals(SignatureLevel.CAdES_BASELINE_LT.toString(), simpleReport.getSignatureFormat(simpleReport.getFirstSignatureId()));
+		assertEquals(SignatureLevel.CAdES_BASELINE_LT, simpleReport.getSignatureFormat(simpleReport.getFirstSignatureId()));
 	}
 
 	@Override

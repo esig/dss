@@ -26,13 +26,13 @@ import java.util.Set;
 
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pades.validation.PAdESCRLSource;
 import eu.europa.esig.dss.pades.validation.PAdESCertificateSource;
 import eu.europa.esig.dss.pades.validation.PAdESOCSPSource;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
-import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 
 public class DSSDictionaryCallback {
 
@@ -60,7 +60,7 @@ public class DSSDictionaryCallback {
 	}
 
 	public Map<Long, CertificateToken> getStoredCertificates() {
-		PAdESCertificateSource certSource = signature.getCertificateSource();
+		PAdESCertificateSource certSource = (PAdESCertificateSource) signature.getCertificateSource();
 		return certSource.getCertificateMap();
 	}
 

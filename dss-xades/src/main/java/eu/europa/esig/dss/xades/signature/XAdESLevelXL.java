@@ -22,8 +22,8 @@ package eu.europa.esig.dss.xades.signature;
 
 import org.w3c.dom.Element;
 
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ValidationContext;
 
@@ -59,7 +59,7 @@ public class XAdESLevelXL extends XAdESLevelX {
 		if (!xadesSignature.hasLTProfile() || SignatureLevel.XAdES_XL.equals(params.getSignatureLevel())) {
 
 			// Timestamps can already be loaded in memory (force reload)
-			xadesSignature.resetTimestamps();
+			xadesSignature.resetTimestampSource();
 
 			final ValidationContext valContext = xadesSignature.getSignatureValidationContext(certificateVerifier);
 
@@ -68,12 +68,6 @@ public class XAdESLevelXL extends XAdESLevelX {
 
 			incorporateCertificateValues(unsignedSignaturePropertiesDom, valContext, afterCertificateText);
 			incorporateRevocationValues(unsignedSignaturePropertiesDom, valContext, afterCertificateText);
-
-			/**
-			 * Certificate(s), revocation data where added, XAdES signature certificate source must be reset.
-			 */
-			xadesSignature.resetCertificateSource();
-			xadesSignature.resetRevocationSources();
 			
 			unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelXUnsignedProperties);
 		}

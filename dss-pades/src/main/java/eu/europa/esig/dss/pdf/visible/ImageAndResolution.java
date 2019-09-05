@@ -22,7 +22,7 @@ package eu.europa.esig.dss.pdf.visible;
 
 import java.io.InputStream;
 
-import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.model.DSSDocument;
 
 /**
  * An InputStream wrapper for an image, and its horizontal and vertical resolution

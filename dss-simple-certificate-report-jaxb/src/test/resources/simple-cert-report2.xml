@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<SimpleCertificateReport ValidationTime="2018-02-09T07:23:22" xmlns="http://dss.esig.europa.eu/validation/simple-certificate-report">
+    <Chain>
+        <ChainItem>
+            <id>C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19</id>
+            <subject>
+                <commonName>Time Stamping Authority</commonName>
+                <organizationName>Belgium Federal Government</organizationName>
+                <country>BE</country>
+            </subject>
+            <issuerId>C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</issuerId>
+            <notBefore>2013-10-23T11:00:00</notBefore>
+            <notAfter>2019-01-23T11:00:00</notAfter>
+            <keyUsages>
+                <keyUsage>nonRepudiation</keyUsage>
+                <keyUsage>digitalSignature</keyUsage>
+            </keyUsages>
+            <extendedKeyUsages>
+                <extendedKeyUsage>timeStamping</extendedKeyUsage>
+            </extendedKeyUsages>
+            <crlUrls>
+                <crlUrl>http://crl.pki.belgium.be/belgium2.crl</crlUrl>
+            </crlUrls>
+            <cpsUrls>
+                <cpsUrl>http://repository.pki.belgium.be</cpsUrl>
+            </cpsUrls>
+            <qualificationAtIssuance>N/A</qualificationAtIssuance>
+            <qualificationAtValidation>N/A</qualificationAtValidation>
+            <revocation>
+                <productionDate>2018-01-01T11:00:00</productionDate>
+            </revocation>
+            <Indication>INDETERMINATE</Indication>
+            <SubIndication>CRYPTO_CONSTRAINTS_FAILURE_NO_POE</SubIndication>
+        </ChainItem>
+        <ChainItem>
+            <id>C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</id>
+            <subject>
+                <commonName>Belgium Root CA2</commonName>
+                <country>BE</country>
+            </subject>
+            <notBefore>2007-10-04T10:00:00</notBefore>
+            <notAfter>2021-12-15T08:00:00</notAfter>
+            <keyUsages>
+                <keyUsage>keyCertSign</keyUsage>
+                <keyUsage>crlSign</keyUsage>
+            </keyUsages>
+            <cpsUrls>
+                <cpsUrl>http://repository.eid.belgium.be</cpsUrl>
+            </cpsUrls>
+            <revocation/>
+            <trustAnchors>
+                <trustAnchor>
+                    <countryCode>BE</countryCode>
+                    <trustServiceProvider>Certipost n.v./s.a.</trustServiceProvider>
+                    <trustServiceProviderRegistrationId>VATBE-0475396406</trustServiceProviderRegistrationId>
+                    <trustServiceName>CN=Belgium Root CA2, C=BE</trustServiceName>
+                </trustAnchor>
+            </trustAnchors>
+            <Indication>PASSED</Indication>
+        </ChainItem>
+    </Chain>
+</SimpleCertificateReport>

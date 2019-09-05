@@ -23,8 +23,8 @@ package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 import java.util.Collections;
 import java.util.Set;
 
+import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
 /**
  * This class is used to filter trusted services by country code(s).

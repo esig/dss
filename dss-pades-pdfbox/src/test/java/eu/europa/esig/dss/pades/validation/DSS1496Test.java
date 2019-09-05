@@ -29,27 +29,27 @@ import java.util.Map;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.client.crl.OnlineCRLSource;
-import eu.europa.esig.dss.client.http.DataLoader;
-import eu.europa.esig.dss.client.http.IgnoreDataLoader;
-import eu.europa.esig.dss.client.http.MemoryDataLoader;
-import eu.europa.esig.dss.client.ocsp.OnlineOCSPSource;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
-import eu.europa.esig.dss.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.service.crl.OnlineCRLSource;
+import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.client.http.DataLoader;
+import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
+import eu.europa.esig.dss.spi.client.http.MemoryDataLoader;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
+import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
-import eu.europa.esig.dss.x509.CertificateSource;
-import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
 
 public class DSS1496Test extends PKIFactoryAccess {
 
@@ -72,7 +72,7 @@ public class DSS1496Test extends PKIFactoryAccess {
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		// Not LTA, missing certs,...
-		assertEquals(SignatureLevel.PAdES_BASELINE_T.toString(), signatureWrapper.getSignatureFormat());
+		assertEquals(SignatureLevel.PAdES_BASELINE_T, signatureWrapper.getSignatureFormat());
 	}
 
 	@Test
@@ -88,7 +88,7 @@ public class DSS1496Test extends PKIFactoryAccess {
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		assertEquals(SignatureLevel.PAdES_BASELINE_LT.toString(), signatureWrapper.getSignatureFormat());
+		assertEquals(SignatureLevel.PAdES_BASELINE_LT, signatureWrapper.getSignatureFormat());
 
 		List<TimestampWrapper> timestampList = signatureWrapper.getTimestampList();
 		assertEquals(1, timestampList.size());

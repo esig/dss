@@ -32,15 +32,16 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.client.http.IgnoreDataLoader;
-import eu.europa.esig.dss.client.http.MemoryDataLoader;
+import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
+import eu.europa.esig.dss.spi.client.http.MemoryDataLoader;
+import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.CertificateSource;
-import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
-import eu.europa.esig.dss.x509.TimestampType;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 public class SignatureValidationContextTest {
 

@@ -17,8 +17,8 @@ import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.common.PDStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.font.PDTrueTypeFont;
-import org.apache.pdfbox.pdmodel.font.encoding.WinAnsiEncoding;
+import org.apache.pdfbox.pdmodel.font.PDType0Font;
+import org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace;
 import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
@@ -33,7 +33,7 @@ import org.apache.pdfbox.util.Matrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.DSSFont;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
@@ -60,7 +60,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	}
 	
 	/**
-	 * Method to initialize the specific for PdfBpx {@link PDFont}
+	 * Method to initialize the specific font for PdfBox {@link PDFont}
 	 */
 	private PDFont initFont() throws IOException {
 		DSSFont dssFont = parameters.getTextParameters().getFont();
@@ -68,7 +68,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 			return PdfBoxFontMapper.getPDFont(dssFont.getJavaFont());
 		} else {
 			try (InputStream is = dssFont.getInputStream()) {
-				return PDTrueTypeFont.load(document, is, WinAnsiEncoding.INSTANCE);
+				return PDType0Font.load(document, is);
 			}
 		}
 	}
@@ -195,15 +195,45 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 			try (InputStream is = image.openStream()) {
 	            cs.saveGraphicsState();
 	            float scaleFactor = parameters.getScaleFactor();
-	            cs.transform(Matrix.getScaleInstance(dimensionAndPosition.getxDpiRatio() * scaleFactor, 
-	            		dimensionAndPosition.getyDpiRatio() * scaleFactor));
+	            if (parameters.getImage() != null && parameters.getTextParameters() != null && scaleFactor != 1) {
+	            	cs.transform(Matrix.getScaleInstance(scaleFactor, scaleFactor));
+	            }
 	    		byte[] bytes = IOUtils.toByteArray(is);
 	    		PDImageXObject imageXObject = PDImageXObject.createFromByteArray(doc, bytes, image.getName());
+	    		
 	    		// divide to scale factor, because PdfBox due to the matrix transformation also changes position parameters of the image
-	        	cs.drawImage(imageXObject, dimensionAndPosition.getImageX() / scaleFactor, dimensionAndPosition.getImageY() / scaleFactor);
+	    		float xAxis = dimensionAndPosition.getImageX() / scaleFactor;
+	    		if (parameters.getTextParameters() != null)
+	    			xAxis *= dimensionAndPosition.getxDpiRatio();
+	    		float yAxis = dimensionAndPosition.getImageY() / scaleFactor;
+	    		if (parameters.getTextParameters() != null)
+	    			yAxis *= dimensionAndPosition.getyDpiRatio();
+	    		
+	    		float width = getWidth(dimensionAndPosition);
+	    		float height = getHeight(dimensionAndPosition);
+	    				
+		        cs.drawImage(imageXObject, xAxis, yAxis, width, height);
+				cs.transform(Matrix.getRotateInstance(((double) 360 - ImageRotationUtils.getRotation(parameters.getRotation())), width, height));
+	            
 	            cs.restoreGraphicsState();
 			}
     	}
+	}
+	
+	private float getWidth(SignatureFieldDimensionAndPosition dimensionAndPosition) {
+        float width = dimensionAndPosition.getImageWidth();
+        if (parameters.getTextParameters() != null) {
+        	width *= dimensionAndPosition.getxDpiRatio();
+        }
+        return width;
+	}
+	
+	private float getHeight(SignatureFieldDimensionAndPosition dimensionAndPosition) {
+        float height = dimensionAndPosition.getImageHeight();
+        if (parameters.getTextParameters() != null) {
+        	height *= dimensionAndPosition.getyDpiRatio();
+        }
+        return height;
 	}
 	
 	/**
@@ -246,11 +276,11 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
                 switch (textParameters.getSignerTextHorizontalAlignment()) {
 					case RIGHT:
 						offsetX = (dimensionAndPosition.getTextWidth() - stringWidth - 
-								textSizeWithDpi(textParameters.getMargin()*2, dimensionAndPosition.getxDpi())) - previousOffset;
+								textSizeWithDpi(textParameters.getPadding()*2, dimensionAndPosition.getxDpi())) - previousOffset;
 						break;
 					case CENTER:
 						offsetX = (dimensionAndPosition.getTextWidth() - stringWidth) / 2 - 
-								textSizeWithDpi(textParameters.getMargin(), dimensionAndPosition.getxDpi()) - previousOffset;
+								textSizeWithDpi(textParameters.getPadding(), dimensionAndPosition.getxDpi()) - previousOffset;
 						break;
 					default:
 						break;
@@ -269,8 +299,8 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 			SignatureFieldDimensionAndPosition dimensionAndPosition) throws IOException {
 		if (textParameters.getBackgroundColor() != null) {
 			PDRectangle rect = new PDRectangle(
-					dimensionAndPosition.getTextX() - textSizeWithDpi(textParameters.getMargin(), dimensionAndPosition.getxDpi()), 
-					dimensionAndPosition.getTextY() + textSizeWithDpi(textParameters.getMargin(), dimensionAndPosition.getyDpi()), 
+					dimensionAndPosition.getTextX() - textSizeWithDpi(textParameters.getPadding(), dimensionAndPosition.getxDpi()), 
+					dimensionAndPosition.getTextY() + textSizeWithDpi(textParameters.getPadding(), dimensionAndPosition.getyDpi()), 
 					dimensionAndPosition.getTextWidth(), 
 					dimensionAndPosition.getTextHeight()
 					);
@@ -279,7 +309,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	}
 	
 	private float textSizeWithDpi(float size, int dpi) {
-		return CommonDrawerUtils.toDpiAxisPoint(size / CommonDrawerUtils.getScaleFactor(dpi), dpi);
+		return CommonDrawerUtils.toDpiAxisPoint(size / CommonDrawerUtils.getTextScaleFactor(dpi), dpi);
 	}
 	
 	/**
@@ -295,7 +325,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 		// if alpha value is less then 255 (is transparent)
 		float alpha = color.getAlpha();
 		if (alpha < OPAQUE_VALUE) {
-			LOG.warn("Transparency detected and enabled (be careful not valid with PDF/A !)");
+			LOG.warn("Transparency detected and enabled (Be aware: not valid with PDF/A !)");
 			setAlpha(cs, alpha);
 		} 
 	}
@@ -327,6 +357,16 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 		pdRectangle.setUpperRightX(dimensionAndPosition.getBoxX() + dimensionAndPosition.getBoxWidth());
 		pdRectangle.setUpperRightY(pageRect.getHeight() - dimensionAndPosition.getBoxY());
 		return pdRectangle;
+	}
+
+	@Override
+	protected String getColorSpaceName(DSSDocument image) throws IOException {
+		try (InputStream is = image.openStream()) {
+			byte[] bytes = IOUtils.toByteArray(is);
+			PDImageXObject imageXObject = PDImageXObject.createFromByteArray(document, bytes, image.getName());
+			PDColorSpace colorSpace = imageXObject.getColorSpace();
+			return colorSpace.getName();
+		}
 	}
 
 }

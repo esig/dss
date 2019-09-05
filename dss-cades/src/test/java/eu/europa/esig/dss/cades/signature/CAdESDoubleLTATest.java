@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.cades.signature;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.nio.charset.StandardCharsets;
@@ -30,21 +31,23 @@ import java.util.Set;
 import org.bouncycastle.cms.CMSException;
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
-import eu.europa.esig.dss.SignatureValue;
-import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
-import eu.europa.esig.dss.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 
 public class CAdESDoubleLTATest extends PKIFactoryAccess {
 
@@ -74,7 +77,7 @@ public class CAdESDoubleLTATest extends PKIFactoryAccess {
 
 		DiagnosticData diagnosticData1 = reports.getDiagnosticData();
 
-		assertEquals(SignatureLevel.CAdES_BASELINE_LTA.toString(), diagnosticData1.getSignatureFormat(diagnosticData1.getFirstSignatureId()));
+		assertEquals(SignatureLevel.CAdES_BASELINE_LTA, diagnosticData1.getSignatureFormat(diagnosticData1.getFirstSignatureId()));
 
 		checkAllRevocationOnce(diagnosticData1);
 
@@ -123,8 +126,23 @@ public class CAdESDoubleLTATest extends PKIFactoryAccess {
 			if (certificateWrapper.isTrusted() || certificateWrapper.isSelfSigned() || certificateWrapper.isIdPkixOcspNoCheck()) {
 				continue;
 			}
-			int nbRevoc = certificateWrapper.getRevocationData().size();
+			int nbRevoc = certificateWrapper.getCertificateRevocationData().size();
 			assertEquals("Nb revoc for cert " + certificateWrapper.getCommonName() + " = " + nbRevoc, 1, nbRevoc);
+		}
+		
+		Set<TimestampWrapper> allTimestamps = diagnosticData.getTimestampSet();
+		assertTrue(Utils.isCollectionNotEmpty(allTimestamps));
+		
+		for (TimestampWrapper timestamp : allTimestamps) {
+			if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestamp.getType())) {
+				List<String> timestampedRevocationIds = timestamp.getTimestampedRevocationIds();
+				assertNotNull(timestampedRevocationIds);
+				assertEquals(2, timestampedRevocationIds.size());
+				for (String id : timestampedRevocationIds) {
+					RevocationWrapper revocation = diagnosticData.getRevocationById(id);
+					assertNotNull(revocation);
+				}
+			}
 		}
 	}
 

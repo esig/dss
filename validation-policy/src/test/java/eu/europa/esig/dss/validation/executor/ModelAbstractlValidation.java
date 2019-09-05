@@ -1,26 +1,13 @@
 package eu.europa.esig.dss.validation.executor;
 
-import java.io.InputStream;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateQualification;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
-import eu.europa.esig.jaxb.policy.Model;
+import eu.europa.esig.dss.enumerations.CertificateQualification;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.policy.jaxb.Model;
 
 /**
  * Implements basic test class for the model based certificate and signature
@@ -31,28 +18,6 @@ import eu.europa.esig.jaxb.policy.Model;
  */
 public class ModelAbstractlValidation {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ModelAbstractlValidation.class);
-
-	@SuppressWarnings("unchecked")
-	protected final <T extends Object> T getJAXBObjectFromString(InputStream is, Class<T> clazz, String xsd)
-			throws Exception {
-		try {
-			JAXBContext context = JAXBContext.newInstance(clazz.getPackage().getName());
-			Unmarshaller unmarshaller = context.createUnmarshaller();
-			if (Utils.isStringNotEmpty(xsd)) {
-				SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-				InputStream inputStream = this.getClass().getResourceAsStream(xsd);
-				Source source = new StreamSource(inputStream);
-				Schema schema = sf.newSchema(source);
-				unmarshaller.setSchema(schema);
-			}
-			return (T) unmarshaller.unmarshal(is);
-		} catch (Exception e) {
-			LOG.error("Unable to unmarshall", e);
-			throw e;
-		}
-	}
-
 	/**
 	 * Defines the list of involved diagnostic data, policy and their associated
 	 * main signature key.
@@ -61,12 +26,12 @@ public class ModelAbstractlValidation {
 	 * @version 1.0
 	 */
 	public enum TestData {
-		DATA_1("src/test/resources/diag_data_model_policy.xml", "src/test/resources/diag_data_model_1.xml",
-				"3967083A1B9CE00484905529E22C64BBF622EE356088D62371B8069A84FE47F7", 2), 
-		DATA_2("src/test/resources/diag_data_model_policy.xml", "src/test/resources/diag_data_model_2.xml",
-				"C01FC833D83EAF08F4031A1915A72BE6602A63587C5B65227D37461E35019532", 3),
-		DATA_3("src/test/resources/diag_data_model_policy.xml", "src/test/resources/diag_data_model_3.xml", 
-				"10065BCA3329FF0813FF6254448C6C9281F36C0630C71E9446F109FC1B5CDBCF", 4);
+		DATA_1("src/test/resources/policy/diag_data_model_policy.xml", "src/test/resources/diag_data_model_1.xml",
+				"C-3967083A1B9CE00484905529E22C64BBF622EE356088D62371B8069A84FE47F7", 2),
+		DATA_2("src/test/resources/policy/diag_data_model_policy.xml", "src/test/resources/diag_data_model_2.xml",
+				"C-C01FC833D83EAF08F4031A1915A72BE6602A63587C5B65227D37461E35019532", 3),
+		DATA_3("src/test/resources/policy/diag_data_model_policy.xml", "src/test/resources/diag_data_model_3.xml",
+				"C-10065BCA3329FF0813FF6254448C6C9281F36C0630C71E9446F109FC1B5CDBCF", 4);
 
 		private final String policy;
 		private final String diagData;

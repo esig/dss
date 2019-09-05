@@ -8,31 +8,32 @@
 		signer's certificate and certificates used to validate certificate validity status services - CRLs, OCSP, and time-stamps).
 	</PolicyDescription>
     </Policy>
-    <ValidationTime>2018-02-23T05:50:46</ValidationTime>
-    <DocumentName>testdocument.pdf</DocumentName>
+    <ValidationTime>2019-07-25T06:28:44</ValidationTime>
+    <DocumentName>sample-signed-xades-baseline-lta.xml</DocumentName>
     <ValidSignaturesCount>1</ValidSignaturesCount>
     <SignaturesCount>1</SignaturesCount>
-    <Signature Id="id-2056753e8b67ab9c96a6fe80ec9f619f8e9b4505b66b078c7a2b6e151edc2bbb" SignatureFormat="PAdES-BASE-LTA">
-        <SigningTime>2017-10-27T11:54:56</SigningTime>
-        <BestSignatureTime>2017-10-27T11:55:08</BestSignatureTime>
-        <SignedBy>E Van R (Signature)</SignedBy>
+    <Signature Id="S-F55073FB926640BC883BC1E6D8D262776621E3E8CCFB1C53485CB62EAD435C2F" SignatureFormat="XAdES-BASELINE-LTA">
+        <SigningTime>2019-07-25T06:28:24</SigningTime>
+        <BestSignatureTime>2019-07-25T06:28:27</BestSignatureTime>
+        <SignedBy>C-B9B8051A58645938F660EC1261B7534E2DC7422882D873B2876204BBA1078352</SignedBy>
         <CertificateChain>
             <Certificate>
-                <id>021EC5069EB8A903BD62B6769EDDFE439DFA90A720C9A362D5FE76B9C31D0302</id>
-                <qualifiedName>E Van R (Signature)</qualifiedName>
+                <id>C-B9B8051A58645938F660EC1261B7534E2DC7422882D873B2876204BBA1078352</id>
+                <qualifiedName>good-user</qualifiedName>
             </Certificate>
             <Certificate>
-                <id>80AC352930875BA0AFE7F70DD389130C8E1E7BEFFDC96477356AD2A9E003AD2B</id>
-                <qualifiedName>Citizen CA</qualifiedName>
+                <id>C-FE7DFD7173311743BAFD5D919292663470D94A18FCF4300BE49C80AF0C4180F3</id>
+                <qualifiedName>good-ca</qualifiedName>
             </Certificate>
             <Certificate>
-                <id>702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F</id>
-                <qualifiedName>Belgium Root CA4</qualifiedName>
+                <id>C-120E8DC626116B9D1456E98E8950961212CFA6A68B911CE2E78C76CF85868AB8</id>
+                <qualifiedName>root-ca</qualifiedName>
             </Certificate>
         </CertificateChain>
-        <SignatureLevel description="Qualified Electronic Signature">QESig</SignatureLevel>
+        <SignatureLevel description="Not applicable">N/A</SignatureLevel>
         <Indication>TOTAL_PASSED</Indication>
-        <SignatureScope name="PDF previous version #1" scope="PdfByteRangeSignatureScope">The document byte range: [0, 9258, 32602, 495939]</SignatureScope>
+        <Errors>The certificate path is not trusted!</Errors>
+        <SignatureScope name="o-id-87e10c3267a50d56de93241478704549-1" scope="PARTIAL">The XML element with ID 'o-id-87e10c3267a50d56de93241478704549-1' with transformations.</SignatureScope>
     </Signature>
 </SimpleReport>
 ----

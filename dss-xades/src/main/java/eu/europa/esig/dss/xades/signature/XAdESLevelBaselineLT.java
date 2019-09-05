@@ -22,8 +22,8 @@ package eu.europa.esig.dss.xades.signature;
 
 import org.w3c.dom.Element;
 
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.ValidationContext;
@@ -61,7 +61,7 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 		}
 
 		// Timestamps can already be loaded in memory (force reload)
-		xadesSignature.resetTimestamps();
+		xadesSignature.resetTimestampSource();
 
 		/**
 		 * In all cases the -LT level need to be regenerated.
@@ -72,15 +72,8 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 
 		String indent = removeOldCertificateValues();
 		removeOldRevocationValues();
-
 		incorporateCertificateValues(unsignedSignaturePropertiesDom, validationContext, indent);
 		incorporateRevocationValues(unsignedSignaturePropertiesDom, validationContext, indent);
-
-		/**
-		 * Certificate(s), revocation data where added, XAdES signature certificate source must be reset.
-		 */
-		xadesSignature.resetCertificateSource();
-		xadesSignature.resetRevocationSources();
 		
 		unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelTUnsignedProperties);
 	}
@@ -88,7 +81,7 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 	/**
 	 * This method checks the signature integrity and throws a {@code DSSException} if the signature is broken.
 	 *
-	 * @throws eu.europa.esig.dss.DSSException
+	 * @throws DSSException in case of the cryptographic signature verification fails
 	 */
 	protected void checkSignatureIntegrity() throws DSSException {
 		final SignatureCryptographicVerification signatureCryptographicVerification = xadesSignature.getSignatureCryptographicVerification();
@@ -106,6 +99,7 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 		final Element toRemove = xadesSignature.getCertificateValues();
 		if (toRemove != null) {
 			text = removeChild(unsignedSignaturePropertiesDom, toRemove);
+			/* Because the element was removed, the certificate source needs to be reset */
 			xadesSignature.resetCertificateSource();
 		}
 		return text;
@@ -118,6 +112,7 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 		final Element toRemove = xadesSignature.getRevocationValues();
 		if (toRemove != null) {
 			removeChild(unsignedSignaturePropertiesDom, toRemove);
+			/* Because the element was removed, the revocation sources need to be reset */
 			xadesSignature.resetRevocationSources();
 		}
 	}

@@ -26,25 +26,27 @@ import java.util.List;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertifiedRole;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerRole;
+import eu.europa.esig.dss.enumerations.EndorsementType;
+import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CertifiedRolesCheck;
-import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
-import eu.europa.esig.jaxb.policy.Level;
-import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 
 public class CertifiedRolesCheckTest {
 
 	@Test
 	public void certifiedRolesCheck() throws Exception {
-		XmlCertifiedRole xcr = new XmlCertifiedRole();
-		xcr.setCertifiedRole("Valid_Role");
+		XmlSignerRole xmlSignerRole = new XmlSignerRole();
+		xmlSignerRole.setRole("Valid_Role");
+		xmlSignerRole.setCategory(EndorsementType.CERTIFIED);
 
 		XmlSignature sig = new XmlSignature();
-		sig.getCertifiedRoles().add(xcr);
+		sig.getSignerRole().add(xmlSignerRole);
 
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
 		constraint.setLevel(Level.FAIL);
@@ -61,11 +63,12 @@ public class CertifiedRolesCheckTest {
 
 	@Test
 	public void notCertifiedRolesCheck() throws Exception {
-		XmlCertifiedRole xcr = new XmlCertifiedRole();
-		xcr.setCertifiedRole("Invalid_Role");
+		XmlSignerRole xmlSignerRole = new XmlSignerRole();
+		xmlSignerRole.setRole("Invalid_Role");
+		xmlSignerRole.setCategory(EndorsementType.CERTIFIED);
 
 		XmlSignature sig = new XmlSignature();
-		sig.getCertifiedRoles().add(xcr);
+		sig.getSignerRole().add(xmlSignerRole);
 
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
 		constraint.setLevel(Level.FAIL);

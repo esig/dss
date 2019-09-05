@@ -2,18 +2,19 @@ package eu.europa.esig.dss.validation.executor;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.util.List;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.reports.SimpleReport;
-import eu.europa.esig.jaxb.policy.Algo;
-import eu.europa.esig.jaxb.policy.BasicSignatureConstraints;
-import eu.europa.esig.jaxb.policy.CertificateConstraints;
-import eu.europa.esig.jaxb.policy.ConstraintsParameters;
-import eu.europa.esig.jaxb.policy.CryptographicConstraint;
-import eu.europa.esig.jaxb.policy.TimestampConstraints;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.policy.jaxb.Algo;
+import eu.europa.esig.dss.policy.jaxb.BasicSignatureConstraints;
+import eu.europa.esig.dss.policy.jaxb.CertificateConstraints;
+import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
+import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
+import eu.europa.esig.dss.policy.jaxb.TimestampConstraints;
+import eu.europa.esig.dss.simplereport.SimpleReport;
 
 public class DSS1541Test extends AbstractCryptographicConstraintsTest {
 	
@@ -21,7 +22,7 @@ public class DSS1541Test extends AbstractCryptographicConstraintsTest {
 	public void signingCertificateWrongCryptographicConstrainsTest() throws Exception {
 		
 		initializeExecutor("src/test/resources/universign.xml");
-		validationPolicyFile = "src/test/resources/policy/all-constraint-specified-policy.xml";
+		validationPolicyFile = new File("src/test/resources/policy/all-constraint-specified-policy.xml");
 		
 		SimpleReport simpleReport = null;
 		
@@ -47,7 +48,7 @@ public class DSS1541Test extends AbstractCryptographicConstraintsTest {
 	public void caCertificateWrongCryptographicConstrainsTest() throws Exception {
 		
 		initializeExecutor("src/test/resources/universign.xml");
-		validationPolicyFile = "src/test/resources/policy/all-constraint-specified-policy.xml";
+		validationPolicyFile = new File("src/test/resources/policy/all-constraint-specified-policy.xml");
 		
 		SimpleReport simpleReport = null;
 		
@@ -84,7 +85,7 @@ public class DSS1541Test extends AbstractCryptographicConstraintsTest {
 	public void timestampConstraintsTest() throws Exception {
 		
 		initializeExecutor("src/test/resources/passed_out_of_bounds_with_timestamps.xml");
-		validationPolicyFile = "src/test/resources/policy/all-constraint-specified-policy.xml";
+		validationPolicyFile = new File("src/test/resources/policy/all-constraint-specified-policy.xml");
 		
 		SimpleReport simpleReport = null;
 		
