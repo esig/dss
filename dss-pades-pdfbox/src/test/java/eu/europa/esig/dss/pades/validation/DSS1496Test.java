@@ -20,14 +20,14 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -96,7 +96,7 @@ public class DSS1496Test extends PKIFactoryAccess {
 		assertEquals(3, timestampWrapper.getCertificateChain().size());
 	}
 
-	@Ignore
+	@Disabled
 	public void testExtendLT() throws Exception {
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/doc-firmado-T.pdf"));
 

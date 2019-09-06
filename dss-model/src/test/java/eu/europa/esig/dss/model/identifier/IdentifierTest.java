@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.model.identifier;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IdentifierTest {
 
@@ -39,14 +39,14 @@ public class IdentifierTest {
 		MockIdentifier t3 = new MockIdentifier(bytes2);
 
 		assertEquals(t1, t2);
-		Assert.assertNotEquals(t1, t3);
+		assertNotEquals(t1, t3);
 
 		String id1 = t1.asXmlId();
 		String id2 = t2.asXmlId();
 		String id3 = t3.asXmlId();
 
 		assertEquals(id1, id2);
-		Assert.assertNotEquals(id2, id3);
+		assertNotEquals(id2, id3);
 	}
 
 	private class MockIdentifier extends Identifier {

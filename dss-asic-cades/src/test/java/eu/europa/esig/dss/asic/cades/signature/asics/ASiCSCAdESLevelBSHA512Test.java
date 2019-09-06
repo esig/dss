@@ -22,7 +22,7 @@ package eu.europa.esig.dss.asic.cades.signature.asics;
 
 import java.util.Date;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
@@ -40,7 +40,7 @@ public class ASiCSCAdESLevelBSHA512Test extends AbstractASiCSCAdESTestSignature 
 	private ASiCWithCAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
 

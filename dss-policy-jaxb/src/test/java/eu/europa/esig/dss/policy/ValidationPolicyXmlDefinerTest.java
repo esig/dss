@@ -1,12 +1,12 @@
 package eu.europa.esig.dss.policy;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 
 import javax.xml.bind.JAXBException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 public class ValidationPolicyXmlDefinerTest {

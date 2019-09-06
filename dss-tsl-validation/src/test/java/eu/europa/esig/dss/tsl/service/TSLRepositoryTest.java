@@ -20,26 +20,32 @@
  */
 package eu.europa.esig.dss.tsl.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import eu.europa.esig.dss.utils.Utils;
 
 public class TSLRepositoryTest {
 
-	@Rule
-	public TemporaryFolder folder = new TemporaryFolder();
+	@TempDir
+    Path folder;
 
 	@Test
 	public void clear() throws IOException {
-		File testFolder = folder.newFolder("test");
+		Path pathToFolder = folder.resolve("test");
+		File testFolder = new File(pathToFolder.toString());
+		testFolder.mkdir();
+		Utils.cleanDirectory(testFolder);
 		createFile(testFolder, "test1.xml");
 		
 		assertEquals(1, testFolder.listFiles().length);
@@ -51,11 +57,13 @@ public class TSLRepositoryTest {
 		assertTrue(testFolder.exists());
 	}
 
-	@Test(expected = FileNotFoundException.class)
+	@Test
 	public void clearFolderNotExist() throws IOException {
-		TSLRepository repo = new TSLRepository();
-		repo.setCacheDirectoryPath("wrong");
-		repo.clearRepository();
+		assertThrows(FileNotFoundException.class, () -> {
+			TSLRepository repo = new TSLRepository();
+			repo.setCacheDirectoryPath("wrong");
+			repo.clearRepository();
+		});
 	}
 
 	private void createFile(File folder, String name) throws IOException {

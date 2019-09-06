@@ -20,17 +20,17 @@
  */
 package eu.europa.esig.dss.pades.signature.visible;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import com.lowagie.text.pdf.PdfReader;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
@@ -46,7 +46,7 @@ public class PAdESLevelBCertificationTest extends AbstractPAdESTestSignature {
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdf-two-fields.pdf"));
 

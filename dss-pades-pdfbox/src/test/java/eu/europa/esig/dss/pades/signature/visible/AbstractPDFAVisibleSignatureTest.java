@@ -20,15 +20,15 @@
  */
 package eu.europa.esig.dss.pades.signature.visible;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.awt.Color;
 import java.io.IOException;
 import java.util.Date;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -60,7 +60,7 @@ public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess 
 	 */
 	protected abstract void setCustomFactory();
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		setCustomFactory();
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/not_signed_pdfa.pdf"));

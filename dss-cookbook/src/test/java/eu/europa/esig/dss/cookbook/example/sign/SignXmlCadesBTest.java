@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;

@@ -1,12 +1,12 @@
 package eu.europa.esig.dss.asic.xades.signature.asics;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
@@ -28,7 +28,7 @@ public class AsiCSXAdESLevelBMultiFilesWithoutNameTest extends AbstractPkiFactor
 	private ASiCWithXAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentToSigns = new ArrayList<DSSDocument>();
 	
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());

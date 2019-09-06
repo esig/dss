@@ -20,11 +20,13 @@
  */
 package eu.europa.esig.dss.service.tsp;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.bouncycastle.tsp.TimeStampToken;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
@@ -48,7 +50,7 @@ public class OnlineTSPSourceTest {
 		assertNotNull(timeStampResponse);
 	}
 
-	@Ignore("Content-type is required")
+	@Disabled("Content-type is required")
 	public void testWithCommonDataLoader() {
 		OnlineTSPSource tspSource = new OnlineTSPSource(TSA_URL);
 		tspSource.setDataLoader(new CommonsDataLoader());
@@ -69,7 +71,7 @@ public class OnlineTSPSourceTest {
 		assertNotNull(timeStampResponse);
 	}
 
-	@Ignore("Content-type is required")
+	@Disabled("Content-type is required")
 	public void testWithNativeHTTPDataLoader() {
 		OnlineTSPSource tspSource = new OnlineTSPSource(TSA_URL);
 		tspSource.setDataLoader(new NativeHTTPDataLoader());
@@ -90,14 +92,17 @@ public class OnlineTSPSourceTest {
 		assertNotNull(timeStampResponse);
 	}
 
-	@Test(expected = DSSException.class)
+	@Test
 	public void testNotTSA() {
-		OnlineTSPSource tspSource = new OnlineTSPSource();
-		tspSource.setDataLoader(new TimestampDataLoader());
-		tspSource.setTspServer("http://www.google.com");
+		Exception exception = assertThrows(DSSException.class, () -> {
+			OnlineTSPSource tspSource = new OnlineTSPSource();
+			tspSource.setDataLoader(new TimestampDataLoader());
+			tspSource.setTspServer("http://www.google.com");
 
-		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
-		tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);
+			byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
+			tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);
+		});
+		assertEquals("Unable to process POST call for url 'http://www.google.com'", exception.getMessage());
 	}
 
 }

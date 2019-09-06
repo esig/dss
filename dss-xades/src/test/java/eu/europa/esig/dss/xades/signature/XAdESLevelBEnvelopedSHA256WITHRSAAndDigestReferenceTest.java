@@ -21,10 +21,12 @@
 package eu.europa.esig.dss.xades.signature;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -72,6 +74,13 @@ public class XAdESLevelBEnvelopedSHA256WITHRSAAndDigestReferenceTest extends Abs
 		service = new XAdESService(getOfflineCertificateVerifier());
 	}
 
+	// Annotation JUnit 4
+	@Test
+	@Override
+	public void signAndVerify() throws IOException {
+		super.signAndVerify();
+	}
+	
 	@Override
 	protected String getSigningAlias() {
 		return GOOD_USER;

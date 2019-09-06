@@ -20,15 +20,19 @@
  */
 package eu.europa.esig.dss.pades;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.pdf.PdfObjFactory;
 
 public class PdfObjFactoryTest {
 
-	@Test(expected = ExceptionInInitializerError.class)
+	@Test
 	public void testFallback() {
-		PdfObjFactory.newPAdESSignatureService();
+		assertThrows(ExceptionInInitializerError.class, () -> {
+			PdfObjFactory.newPAdESSignatureService();
+		});
 	}
 
 }

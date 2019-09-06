@@ -20,13 +20,16 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import static org.junit.Assert.assertNotNull;
+
 
 import java.io.File;
-
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.model.DSSException;
@@ -40,13 +43,15 @@ import eu.europa.esig.dss.validation.reports.Reports;
  */
 public class DTDInjectionTest {
 
-	@Test(expected = DSSException.class)
+	@Test
 	public void test() {
-		SignedDocumentValidator validator = SignedDocumentValidator
-				.fromDocument(new FileDocument(new File("src/test/resources/validation/xades-with-dtd-injection.xml")));
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
-
-		validator.validateDocument();
+		Exception exception = assertThrows(DSSException.class, () -> {
+			SignedDocumentValidator validator = SignedDocumentValidator
+					.fromDocument(new FileDocument(new File("src/test/resources/validation/xades-with-dtd-injection.xml")));
+			validator.setCertificateVerifier(new CommonCertificateVerifier());
+			validator.validateDocument();
+		});
+		assertEquals("Document format not recognized/handled", exception.getMessage());
 	}
 
 	@Test

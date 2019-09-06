@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -41,7 +41,7 @@ public class XAdESLevelBDetachedNoFilenameTest extends AbstractXAdESTestSignatur
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 		// DSS-1334

@@ -1,9 +1,11 @@
 package eu.europa.esig.dss.model.x509;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
@@ -19,9 +21,11 @@ public class EncapsulatedTokenIdentifierTest {
 		assertTrue(encapsulatedTokenIdentifier.asXmlId().startsWith("C-"));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testWithNullValue() {
-		new EncapsulatedCertificateTokenIdentifier(null);
+		assertThrows(NullPointerException.class, () -> {
+			new EncapsulatedCertificateTokenIdentifier(null);
+		});
 	}
 
 }

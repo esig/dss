@@ -20,9 +20,10 @@
  */
 package eu.europa.esig.dss.model;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
@@ -33,9 +34,12 @@ public class DigestAlgorithmTest {
 		assertEquals(DigestAlgorithm.SHA256, DigestAlgorithm.forOID(DigestAlgorithm.SHA256.getOid()));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void forOidException() {
-		DigestAlgorithm.forOID("aaa");
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+			DigestAlgorithm.forOID("aaa");
+		});
+		assertEquals("Unsupported algorithm: aaa", exception.getMessage());
 	}
 
 	@Test
@@ -43,9 +47,12 @@ public class DigestAlgorithmTest {
 		assertEquals(DigestAlgorithm.SHA256, DigestAlgorithm.forXML(DigestAlgorithm.SHA256.getUri()));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void forXMLException() {
-		DigestAlgorithm.forXML("aaa");
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+			DigestAlgorithm.forXML("aaa");
+		});
+		assertEquals("Unsupported algorithm: aaa", exception.getMessage());
 	}
 
 	@Test
@@ -60,9 +67,12 @@ public class DigestAlgorithmTest {
 		}
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void forNameException() {
-		DigestAlgorithm.forName("aaa");
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+			DigestAlgorithm.forName("aaa");
+		});
+		assertEquals("Unsupported algorithm: aaa", exception.getMessage());
 	}
 
 	@Test

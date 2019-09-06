@@ -1,11 +1,11 @@
 package eu.europa.esig.dss.xades.signature.prettyprint;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -28,7 +28,7 @@ public class SignSignatureWithTimestampTest extends PKIFactoryAccess {
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-XAdES/ES/Signature-X-ES-103.xml");
 		signatureParameters = new XAdESSignatureParameters();

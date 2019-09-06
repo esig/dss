@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -49,7 +49,7 @@ public class XAdESLevelBEnvelopedWithReferencesWithoutTransformationsTest extend
 	private DSSDocument attachment1;
 	private DSSDocument attachment2;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 

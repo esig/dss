@@ -20,11 +20,13 @@
  */
 package eu.europa.esig.dss.pades;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTimeout;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static java.time.Duration.ofMillis;
 
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -56,7 +58,7 @@ import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.x509.DigestInfo;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.util.encoders.Hex;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,33 +84,35 @@ public class InfiniteLoopDSS621Test {
 
 	private static final String FILE_PATH = "/validation/pades-5-signatures-and-1-document-timestamp.pdf";
 
-	@Test(timeout = 5000)
+	@Test
 	public void testReadTimestamp1() throws Exception {
-		DSSDocument signDocument = new InMemoryDocument(getClass().getResourceAsStream(FILE_PATH));
-		final CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		certificateVerifier.setDataLoader(new IgnoreDataLoader()); // Error 404 on DER policy
+        assertTimeout(ofMillis(5000), () -> {
+        	DSSDocument signDocument = new InMemoryDocument(getClass().getResourceAsStream(FILE_PATH));
+    		final CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+    		certificateVerifier.setDataLoader(new IgnoreDataLoader()); // Error 404 on DER policy
 
-		final SignedDocumentValidator signedDocumentValidator = SignedDocumentValidator.fromDocument(signDocument);
-		signedDocumentValidator.setCertificateVerifier(certificateVerifier);
-		Reports reports = signedDocumentValidator.validateDocument();
+    		final SignedDocumentValidator signedDocumentValidator = SignedDocumentValidator.fromDocument(signDocument);
+    		signedDocumentValidator.setCertificateVerifier(certificateVerifier);
+    		Reports reports = signedDocumentValidator.validateDocument();
 
-		// reports.print();
+    		// reports.print();
 
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
+    		DiagnosticData diagnosticData = reports.getDiagnosticData();
+    		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 
-		assertEquals(5, signatures.size()); // 1 timestamp is not counted as signature
-		for (final SignatureWrapper signature : signatures) {
-			List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
-			for (XmlDigestMatcher digestMatcher : digestMatchers) {
-				assertTrue(digestMatcher.isDataFound());
-				assertTrue(digestMatcher.isDataIntact());
-			}
+    		assertEquals(5, signatures.size()); // 1 timestamp is not counted as signature
+    		for (final SignatureWrapper signature : signatures) {
+    			List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
+    			for (XmlDigestMatcher digestMatcher : digestMatchers) {
+    				assertTrue(digestMatcher.isDataFound());
+    				assertTrue(digestMatcher.isDataIntact());
+    			}
 
-			assertFalse(signature.isSignatureIntact());
-			assertFalse(signature.isSignatureValid());
-			assertTrue(Utils.isCollectionNotEmpty(signature.getTimestampList()));
-		}
+    			assertFalse(signature.isSignatureIntact());
+    			assertFalse(signature.isSignatureValid());
+    			assertTrue(Utils.isCollectionNotEmpty(signature.getTimestampList()));
+    		}
+        });
 	}
 
 	/**

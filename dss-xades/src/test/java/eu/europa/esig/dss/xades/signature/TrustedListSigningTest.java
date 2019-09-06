@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.ArrayList;
@@ -29,8 +32,7 @@ import java.util.List;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.junit.Assert;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -52,7 +54,7 @@ public class TrustedListSigningTest extends AbstractXAdESTestSignature {
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
@@ -102,19 +104,19 @@ public class TrustedListSigningTest extends AbstractXAdESTestSignature {
 			Document doc = dbf.newDocumentBuilder().parse(new ByteArrayInputStream(byteArray));
 
 			NodeList taglist = doc.getDocumentElement().getElementsByTagNameNS("http://www.w3.org/2000/09/xmldsig#", "Signature");
-			Assert.assertEquals(1, taglist.getLength());
+			assertEquals(1, taglist.getLength());
 
 			NodeList refList = ((Element) taglist.item(0)).getElementsByTagNameNS("http://www.w3.org/2000/09/xmldsig#", "Reference");
-			Assert.assertEquals(2, refList.getLength());
+			assertEquals(2, refList.getLength());
 
 			NodeList transormfList = ((Element) refList.item(0)).getElementsByTagNameNS("http://www.w3.org/2000/09/xmldsig#", "Transform");
-			Assert.assertEquals(2, transormfList.getLength());
+			assertEquals(2, transormfList.getLength());
 
-			Assert.assertEquals("http://www.w3.org/2000/09/xmldsig#enveloped-signature", ((Element) transormfList.item(0)).getAttribute("Algorithm"));
+			assertEquals("http://www.w3.org/2000/09/xmldsig#enveloped-signature", ((Element) transormfList.item(0)).getAttribute("Algorithm"));
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			Assert.fail();
+			fail();
 		}
 	}
 

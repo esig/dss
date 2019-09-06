@@ -3,7 +3,7 @@ package eu.europa.esig.dss.xades.signature;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -20,7 +20,7 @@ public class DetachedXmlMultiDocSignatureWithKeyInfoTest extends AbstractPkiFact
 	private XAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentToSigns;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSigns = Arrays.<DSSDocument> asList(new FileDocument("src/test/resources/sample.xml"),
 				new FileDocument("src/test/resources/sampleWithPlaceOfSignature.xml"));

@@ -20,16 +20,22 @@
  */
 package eu.europa.esig.dss.asic.cades;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 
 public class ASiCWithCAdESSignatureParametersTest {
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testIllegal() {
-		ASiCWithCAdESSignatureParameters params = new ASiCWithCAdESSignatureParameters();
-		params.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+			ASiCWithCAdESSignatureParameters params = new ASiCWithCAdESSignatureParameters();
+			params.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+		});
+		assertEquals("Only CAdES form is allowed !", exception.getMessage());
 	}
 
 }

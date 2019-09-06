@@ -1,9 +1,9 @@
 package eu.europa.esig.dss.asic.xades.signature.opendocument;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
@@ -40,7 +40,7 @@ public class OpenDocumentMultipleArchivesLevelTTest extends AbstractPkiFactoryTe
 	private ASiCWithXAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentsToSign = new ArrayList<DSSDocument>();
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentsToSign.add(new FileDocument(new File("src/test/resources/opendocument/open-document.odt")));
 		documentsToSign.add(new FileDocument(new File("src/test/resources/opendocument/open-document.ods")));

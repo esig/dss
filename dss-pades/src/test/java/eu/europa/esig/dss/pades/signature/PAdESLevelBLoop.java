@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -74,6 +75,13 @@ public class PAdESLevelBLoop extends AbstractPAdESTestSignature {
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 
 		service = new PAdESService(getCompleteCertificateVerifier());
+	}
+	
+	// Annotation JUnit 4
+	@Test
+	@Override
+	public void signAndVerify() throws IOException {
+		super.signAndVerify();
 	}
 
 	@Override

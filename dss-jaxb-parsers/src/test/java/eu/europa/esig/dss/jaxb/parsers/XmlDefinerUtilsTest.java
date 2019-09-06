@@ -1,10 +1,10 @@
 package eu.europa.esig.dss.jaxb.parsers;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import javax.xml.transform.TransformerConfigurationException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 public class XmlDefinerUtilsTest {

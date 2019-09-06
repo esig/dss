@@ -23,7 +23,7 @@ package eu.europa.esig.dss.xades.signature;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -43,7 +43,7 @@ public class XAdESLevelBEnvelopingWithReferencesWithoutTransformationsTest exten
 	private DSSDocument attachment1;
 	private DSSDocument attachment2;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new FileDocument("src/test/resources/sample.xml");
 

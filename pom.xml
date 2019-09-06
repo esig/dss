@@ -67,7 +67,10 @@
 		<jaxws-api.version>2.3.1</jaxws-api.version>
 		<activation.version>1.2.0</activation.version>
 
-		<junit.version>4.12</junit.version>
+		<junit.platform.version>1.5.1</junit.platform.version>
+		<junit.jupiter.version>5.5.1</junit.jupiter.version>
+		<junit.vintage.version>5.5.1</junit.vintage.version>
+		
 		<mockito.version>2.28.2</mockito.version>
 		<h2database.version>1.4.199</h2database.version>
 		<jackson.version>2.9.9</jackson.version>
@@ -919,10 +922,39 @@
 
 			<!-- Testing -->
 			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>${junit.version}</version>
+			    <groupId>org.junit.platform</groupId>
+			    <artifactId>junit-platform-launcher</artifactId>
+			    <version>${junit.platform.version}</version>
 			</dependency>
+			<dependency>
+			    <groupId>org.junit.jupiter</groupId>
+			    <artifactId>junit-jupiter-engine</artifactId>
+			    <version>${junit.jupiter.version}</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.junit.jupiter</groupId>
+			    <artifactId>junit-jupiter-params</artifactId>
+			    <version>${junit.jupiter.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+			    <artifactId>junit-jupiter-api</artifactId>
+			    <version>${junit.jupiter.version}</version>
+			</dependency>	
+			<!-- JUnit 4 compatibility -->
+			<dependency>
+			    <groupId>org.junit.vintage</groupId>
+			    <artifactId>junit-vintage-engine</artifactId>
+			    <version>${junit.vintage.version}</version>
+			</dependency>
+			<!-- JUnit Test Suite compatibility -->
+			<dependency>
+			    <groupId>org.junit.platform</groupId>
+			    <artifactId>junit-platform-runner</artifactId>
+			    <version>${junit.platform.version}</version>
+			</dependency>
+
+			
 			<dependency>
 				<groupId>org.mockito</groupId>
 				<artifactId>mockito-core</artifactId>

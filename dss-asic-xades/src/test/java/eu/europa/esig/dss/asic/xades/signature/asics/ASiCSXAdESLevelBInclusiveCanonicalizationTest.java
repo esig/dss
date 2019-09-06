@@ -24,7 +24,7 @@ import java.util.Date;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
@@ -40,7 +40,7 @@ public class ASiCSXAdESLevelBInclusiveCanonicalizationTest extends AbstractASiCS
 	private ASiCWithXAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
 

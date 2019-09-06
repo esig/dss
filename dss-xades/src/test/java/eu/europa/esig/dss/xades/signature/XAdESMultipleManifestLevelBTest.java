@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -42,7 +42,7 @@ public class XAdESMultipleManifestLevelBTest extends AbstractPkiFactoryTestMulti
 	private XAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentToSigns;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 
 		List<DSSDocument> documents = new ArrayList<DSSDocument>();

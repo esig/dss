@@ -24,7 +24,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Date;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -42,7 +42,7 @@ public class XAdESLevelBTest extends AbstractXAdESTestSignature {
 	private Date signingDate;
 	private TimestampToken contentTimestamp;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());

@@ -20,8 +20,10 @@
  */
 package eu.europa.esig.dss.service.http.commons;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,8 +31,8 @@ import java.io.OutputStream;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -47,7 +49,7 @@ public class SSLCommonDataLoaderTest {
 	private static final String CORRECT_KS_PATH = "target/ks.p12";
 	private static final String WRONG_KS_PATH = "target/wrong.p12";
 
-	@BeforeClass
+	@BeforeAll
 	public static void initKS() {
 		CertificateToken sslCert = DSSUtils.loadCertificateFromBase64EncodedString(SSL_CERT);
 
@@ -92,21 +94,24 @@ public class SSLCommonDataLoaderTest {
 		assertTrue(binaries.length > 0);
 	}
 
-	@Test(expected = DSSException.class)
+	@Test
 	// TODO check root cause SSLHandshakeException
 	public void testWrongTrustStore() throws GeneralSecurityException, IOException {
-		CommonsDataLoader dataLoader = new CommonsDataLoader();
-		dataLoader.setSslTruststorePath(WRONG_KS_PATH);
-		dataLoader.setSslTruststoreType(KS_TYPE);
-		dataLoader.setSslTruststorePassword("azert");
+		Exception exception = assertThrows(DSSException.class, () -> {
+			CommonsDataLoader dataLoader = new CommonsDataLoader();
+			dataLoader.setSslTruststorePath(WRONG_KS_PATH);
+			dataLoader.setSslTruststoreType(KS_TYPE);
+			dataLoader.setSslTruststorePassword("azert");
 
-		dataLoader.setSslKeystorePath(WRONG_KS_PATH);
-		dataLoader.setSslKeystoreType(KS_TYPE);
-		dataLoader.setSslKeystorePassword("azert");
+			dataLoader.setSslKeystorePath(WRONG_KS_PATH);
+			dataLoader.setSslKeystoreType(KS_TYPE);
+			dataLoader.setSslKeystorePassword("azert");
 
-		byte[] binaries = dataLoader.get(URL);
-		assertNotNull(binaries);
-		assertTrue(binaries.length > 0);
+			byte[] binaries = dataLoader.get(URL);
+			assertNotNull(binaries);
+			assertTrue(binaries.length > 0);
+		});
+		assertEquals("Unable to process GET call for url 'https://ec.europa.eu/cefdigital/eSignature'", exception.getMessage());
 	}
 
 }

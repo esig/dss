@@ -20,12 +20,14 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -83,6 +85,13 @@ public class CAdESLevelBWithDSATest extends AbstractCAdESTestSignature {
 		signatureParameters.setReferenceDigestAlgorithm(messageDigestAlgo);
 
 		service = new CAdESService(getOfflineCertificateVerifier());
+	}
+	
+	// Annotation JUnit 4
+	@Test
+	@Override
+	public void signAndVerify() throws IOException {
+		super.signAndVerify();
 	}
 
 	@Override

@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.pades.signature.visible;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -34,10 +36,9 @@ import java.util.Map;
 import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.PDFRenderer;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,7 +82,7 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 	 */
 	private Map<String, DSSDocument> signablePdfs = new HashMap<>();
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 
 		PdfObjFactory.setInstance(new PdfBoxDefaultObjectFactory());
@@ -166,7 +167,7 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	@Ignore("for generation and manual testing")
+	@Disabled("for generation and manual testing")
 	public void rotateTest() throws Exception {
 		SignatureImageParameters signatureImageParameters = createSignatureImageParameters();
 
@@ -178,7 +179,7 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	@Ignore("for generation and manual testing")
+	@Disabled("for generation and manual testing")
 	public void bigGeneratorTest() throws Exception {
 		SignatureImageParameters signatureImageParameters = createSignatureImageParameters();
 
@@ -205,7 +206,7 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	@Ignore("for pull request #71")
+	@Disabled("for pull request #71")
 	public void rotatePullRequest71Test() throws Exception {
 		Logger logger = LoggerFactory.getLogger(getClass());
 		/**
@@ -292,7 +293,7 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 
 	private void checkRotation(InputStream inputStream, int rotate) throws IOException {
 		try (PDDocument document = PDDocument.load(inputStream)) {
-			Assert.assertEquals(rotate, document.getPages().get(0).getRotation());
+			assertEquals(rotate, document.getPages().get(0).getRotation());
 		}
 	}
 

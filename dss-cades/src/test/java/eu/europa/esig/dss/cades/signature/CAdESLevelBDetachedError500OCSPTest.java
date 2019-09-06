@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -44,7 +44,7 @@ public class CAdESLevelBDetachedError500OCSPTest extends AbstractCAdESTestSignat
 	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new InMemoryDocument("Hello World".getBytes());
 

@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 import org.apache.xml.security.c14n.Canonicalizer;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -43,7 +43,7 @@ public class XAdESLevelBEnvelopedHtmlUTF8Test extends AbstractXAdESTestSignature
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getAlternateGoodTsa());

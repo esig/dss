@@ -47,10 +47,31 @@
 		    <groupId>com.h2database</groupId>
 		    <artifactId>h2</artifactId>
 		</dependency>
- 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
+
+		<dependency>
+		    <groupId>org.junit.platform</groupId>
+		    <artifactId>junit-platform-launcher</artifactId>
 		</dependency>
+		<dependency>
+		    <groupId>org.junit.jupiter</groupId>
+		    <artifactId>junit-jupiter-engine</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>org.junit.jupiter</groupId>
+		    <artifactId>junit-jupiter-params</artifactId>
+		</dependency>
+		<!-- JUnit 4 compatibility -->
+		<dependency>
+			<groupId>org.junit.vintage</groupId>
+			<artifactId>junit-vintage-engine</artifactId>
+		</dependency>
+		<!-- JUnit Test Suite compatibility -->
+		<dependency>
+		    <groupId>org.junit.platform</groupId>
+		    <artifactId>junit-platform-runner</artifactId>
+		</dependency>
+
+		
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>

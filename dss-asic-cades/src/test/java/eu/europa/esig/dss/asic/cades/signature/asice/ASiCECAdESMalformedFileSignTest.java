@@ -2,7 +2,7 @@ package eu.europa.esig.dss.asic.cades.signature.asice;
 
 import java.util.Date;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
@@ -18,7 +18,7 @@ public class ASiCECAdESMalformedFileSignTest extends AbstractASiCECAdESTestSigna
 	private ASiCWithCAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new FileDocument("src/test/resources/signable/éáéïú√határozat.pdf");
 

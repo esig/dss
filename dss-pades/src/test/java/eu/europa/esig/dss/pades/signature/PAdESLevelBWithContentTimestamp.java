@@ -22,7 +22,7 @@ package eu.europa.esig.dss.pades.signature;
 
 import java.util.Arrays;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -37,7 +37,7 @@ public class PAdESLevelBWithContentTimestamp extends AbstractPAdESTestSignature 
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		service = new PAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());

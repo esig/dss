@@ -20,16 +20,16 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Set;
 
 import org.bouncycastle.cms.CMSException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
@@ -127,7 +127,7 @@ public class CAdESDoubleLTATest extends PKIFactoryAccess {
 				continue;
 			}
 			int nbRevoc = certificateWrapper.getCertificateRevocationData().size();
-			assertEquals("Nb revoc for cert " + certificateWrapper.getCommonName() + " = " + nbRevoc, 1, nbRevoc);
+			assertEquals(1, nbRevoc, "Nb revoc for cert " + certificateWrapper.getCommonName() + " = " + nbRevoc);
 		}
 		
 		Set<TimestampWrapper> allTimestamps = diagnosticData.getTimestampSet();

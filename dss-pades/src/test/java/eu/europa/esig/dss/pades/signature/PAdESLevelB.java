@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -34,7 +34,7 @@ public class PAdESLevelB extends AbstractPAdESTestSignature {
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 
 		documentToSign = new InMemoryDocument(PAdESLevelB.class.getResourceAsStream("/sample.pdf"));

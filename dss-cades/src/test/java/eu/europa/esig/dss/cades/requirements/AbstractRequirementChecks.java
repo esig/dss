@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.cades.requirements;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -33,8 +33,8 @@ import org.bouncycastle.asn1.cms.SignedData;
 import org.bouncycastle.asn1.cms.SignerInfo;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.cert.X509CertificateHolder;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +51,7 @@ public abstract class AbstractRequirementChecks extends PKIFactoryAccess {
 	private SignedData signedData;
 	private SignerInfo signerInfo;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		DSSDocument signedDocument = getSignedDocument();
 

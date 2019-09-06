@@ -1,16 +1,16 @@
 package eu.europa.esig.dss.service.crl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.File;
 import java.sql.SQLException;
 
 import org.h2.jdbcx.JdbcDataSource;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -26,7 +26,7 @@ public class JdbcCacheCrlSourceTest {
 	
 //	private Server webServer;
 	
-	@Before
+	@BeforeEach
 	public void setUp() throws SQLException {		
 		// for testing purposes. DB view available on http://localhost:8082
 		// webServer = Server.createWebServer("-web","-webAllowOthers","-webPort","8082").start();
@@ -102,7 +102,7 @@ public class JdbcCacheCrlSourceTest {
 
 	}
 
-	@After
+	@AfterEach
 	public void cleanUp() throws SQLException {
 		crlSource.destroyTable();
 		dataSource.setUrl("jdbc:h2:mem:test;drop=true");

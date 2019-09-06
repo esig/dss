@@ -20,14 +20,14 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Calendar;
 import java.util.List;
 
 import javax.xml.bind.DatatypeConverter;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;

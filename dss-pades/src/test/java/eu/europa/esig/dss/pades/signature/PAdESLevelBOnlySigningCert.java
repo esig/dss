@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -38,7 +38,7 @@ public class PAdESLevelBOnlySigningCert extends AbstractPAdESTestSignature {
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 

@@ -32,8 +32,8 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -46,7 +46,7 @@ public class ASiCEWithCAdESManifestBuilderTest {
 
 	private static Validator validator;
 
-	@BeforeClass
+	@BeforeAll
 	public static void init() throws SAXException {
 		SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 		Schema schema = factory.newSchema(new StreamSource(new File("src/test/resources/en_31916201v010101.xsd")));

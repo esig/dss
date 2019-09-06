@@ -1,12 +1,12 @@
 package eu.europa.esig.dss.ws.signature.common;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 import java.util.Arrays;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -28,7 +28,7 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 	
 	private RemoteDocumentSignatureServiceImpl signatureService;
 	
-	@Before
+	@BeforeEach
 	public void init() {
 		signatureService = new RemoteDocumentSignatureServiceImpl();
 		signatureService.setXadesService(getXAdESService());

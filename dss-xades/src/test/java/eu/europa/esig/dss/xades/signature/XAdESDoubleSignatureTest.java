@@ -20,19 +20,16 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.RepeatedTest;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -48,19 +45,9 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
-@RunWith(Parameterized.class)
 public class XAdESDoubleSignatureTest extends PKIFactoryAccess {
 
-	// Run 10 times this test
-	@Parameters
-	public static List<Object[]> data() {
-		return Arrays.asList(new Object[10][0]);
-	}
-
-	public XAdESDoubleSignatureTest() {
-	}
-
-	@Test
+	@RepeatedTest(10)
 	public void testDoubleSignature() throws IOException {
 
 		DSSDocument toBeSigned = new FileDocument(new File("src/test/resources/sample.xml"));

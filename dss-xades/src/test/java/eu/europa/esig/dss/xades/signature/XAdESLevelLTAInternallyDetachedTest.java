@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.util.Arrays;
@@ -28,7 +28,7 @@ import java.util.List;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -51,7 +51,7 @@ public class XAdESLevelLTAInternallyDetachedTest extends AbstractXAdESTestSignat
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());

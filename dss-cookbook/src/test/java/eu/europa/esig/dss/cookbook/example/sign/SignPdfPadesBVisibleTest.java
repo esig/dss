@@ -22,7 +22,7 @@ package eu.europa.esig.dss.cookbook.example.sign;
 
 import java.awt.Color;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;

@@ -20,15 +20,19 @@
  */
 package eu.europa.esig.dss.utils;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import eu.europa.esig.dss.utils.Utils;
+import org.junit.jupiter.api.Test;
 
 public class UtilsTest {
 
-	@Test(expected = ExceptionInInitializerError.class)
+	@Test
 	public void testNoImplementationException() {
-		Utils.isStringBlank("test");
+		ExceptionInInitializerError exception = assertThrows(ExceptionInInitializerError.class, () -> {
+			Utils.isStringBlank("test");
+		});
+		assertEquals("No implementation found for IUtils in classpath, please choose between dss-utils-apache-commons or dss-utils-google-guava", exception.getMessage());
 	}
 
 }

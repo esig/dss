@@ -20,14 +20,14 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.asice;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.zip.ZipFile;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.io.TempDir;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -37,22 +37,23 @@ public class ASiCEXAdESSignatureFilenameTest extends ASiCEXAdESLevelBTest {
 
 	private DSSDocument documentToSign;
 
-	@Rule
-	public TemporaryFolder temporaryFolder = new TemporaryFolder();
+	@TempDir
+    Path temporaryFolder;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
 	}
 
 	@Override
 	public void signAndVerify() throws IOException {
-		String containerTemporaryPath = temporaryFolder.newFile().getPath();
+		Path pathToFolder = temporaryFolder;
+		String containerTemporaryPath = pathToFolder.toString();
 		getSignatureParameters().aSiC().setSignatureFileName("signatures2047.xml");
 		documentToSign = sign();
 		documentToSign.save(containerTemporaryPath);
 		ZipFile zip = new ZipFile(containerTemporaryPath);
-		assertNotNull("Signature file name is not correct", zip.getEntry("META-INF/signatures2047.xml"));
+		assertNotNull(zip.getEntry("META-INF/signatures2047.xml"), "Signature file name is not correct");
 		Utils.closeQuietly(zip);
 	}
 

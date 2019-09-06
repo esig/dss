@@ -20,10 +20,11 @@
  */
 package eu.europa.esig.dss.spi;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,11 +36,9 @@ import org.bouncycastle.cert.ocsp.CertificateID;
 import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.cert.ocsp.SingleResp;
 import org.bouncycastle.operator.DigestCalculator;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSRevocationUtils;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 public class DSSRevocationUtilsTest {
@@ -76,9 +75,9 @@ public class DSSRevocationUtilsTest {
 		assertFalse(DSSRevocationUtils.matches(certificateID, responses[0]));
 	}
 
-	@Test(expected = IOException.class)
+	@Test
 	public void testWrongOCSP() throws IOException {
-		DSSRevocationUtils.loadOCSPBase64Encoded("MIIHOgoBAK");
+		assertThrows(IOException.class, () ->DSSRevocationUtils.loadOCSPBase64Encoded("MIIHOgoBAK"));
 	}
 	
 	@Test

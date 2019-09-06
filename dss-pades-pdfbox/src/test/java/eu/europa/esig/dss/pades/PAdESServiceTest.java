@@ -20,16 +20,17 @@
  */
 package eu.europa.esig.dss.pades;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.utils.Utils;
@@ -77,20 +78,23 @@ public class PAdESServiceTest {
 		assertEquals(2, availableSignatureFields.size());
 	}
 
-	@Test(expected = DSSException.class)
+	@Test
 	public void testAddSignatureFieldPageNotFound() throws IOException {
-		DSSDocument document = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
-		assertTrue(Utils.isCollectionEmpty(padesService.getAvailableSignatureFields(document)));
+		Exception exception = assertThrows(DSSException.class, () -> {
+			DSSDocument document = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
+			assertTrue(Utils.isCollectionEmpty(padesService.getAvailableSignatureFields(document)));
 
-		SignatureFieldParameters parameters = new SignatureFieldParameters();
-		parameters.setPage(10);
-		parameters.setName("signature-test");
-		parameters.setOriginX(50);
-		parameters.setOriginY(50);
-		parameters.setWidth(200);
-		parameters.setHeight(200);
+			SignatureFieldParameters parameters = new SignatureFieldParameters();
+			parameters.setPage(10);
+			parameters.setName("signature-test");
+			parameters.setOriginX(50);
+			parameters.setOriginY(50);
+			parameters.setWidth(200);
+			parameters.setHeight(200);
 
-		padesService.addNewSignatureField(document, parameters);
+			padesService.addNewSignatureField(document, parameters);
+		});
+		assertEquals("Unable to add a new signature fields", exception.getMessage());
 	}
 
 }

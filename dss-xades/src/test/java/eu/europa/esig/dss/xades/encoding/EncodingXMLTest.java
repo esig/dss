@@ -20,9 +20,8 @@
  */
 package eu.europa.esig.dss.xades.encoding;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -34,7 +33,7 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.apache.xml.security.algorithms.implementations.SignatureECDSA;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.utils.Utils;
@@ -167,6 +166,6 @@ public class EncodingXMLTest {
 	private void assertCvcSignatureValid(String cvcSignatureInHex) {
 		byte[] signatureValue = DatatypeConverter.parseHexBinary(cvcSignatureInHex);
 		byte[] xmlDSigValue = DSSSignatureUtils.convertToXmlDSig(EncryptionAlgorithm.ECDSA, signatureValue);
-		assertThat(signatureValue, equalTo(xmlDSigValue));
+		assertArrayEquals(signatureValue, xmlDSigValue);
 	}
 }

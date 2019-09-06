@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.cookbook.example.snippets;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 import java.util.Arrays;
@@ -9,7 +9,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.transform.Templates;
 import javax.xml.validation.Schema;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.detailedreport.DetailedReportXmlDefiner;
