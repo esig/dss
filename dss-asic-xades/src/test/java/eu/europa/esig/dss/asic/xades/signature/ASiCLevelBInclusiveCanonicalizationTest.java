@@ -28,8 +28,8 @@ import java.util.Date;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
@@ -56,7 +56,7 @@ public class ASiCLevelBInclusiveCanonicalizationTest extends PKIFactoryAccess {
 	private DSSDocument zipArchive;
 	
 	
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		openDocument = new FileDocument(new File("src/test/resources/signable/open-document.odt"));
 		zipArchive = new FileDocument(new File("src/test/resources/signable/test.zip"));

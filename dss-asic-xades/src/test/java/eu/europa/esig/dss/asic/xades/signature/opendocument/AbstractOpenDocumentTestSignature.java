@@ -31,6 +31,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -63,6 +64,13 @@ public abstract class AbstractOpenDocumentTestSignature extends AbstractPkiFacto
 		}
 		return dataToRun;
 	}
+	
+	@Test
+	@Override
+	public void signAndVerify() throws IOException {
+		super.signAndVerify();
+	}
+	
 	
 	public AbstractOpenDocumentTestSignature(File fileToTest) {
 		this.fileToTest = new FileDocument(fileToTest);

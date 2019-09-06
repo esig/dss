@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
@@ -33,7 +33,7 @@ public class ZipExtractorTest extends PKIFactoryAccess{
 	private DSSDocument zipArchive;
 	
 	
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		openDocument = new FileDocument(new File("src/test/resources/signable/open-document.odt"));
 		zipArchive = new FileDocument(new File("src/test/resources/signable/test.zip"));

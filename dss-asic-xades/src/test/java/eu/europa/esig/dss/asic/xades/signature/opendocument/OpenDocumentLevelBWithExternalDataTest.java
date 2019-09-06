@@ -12,6 +12,7 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -62,6 +63,12 @@ public class OpenDocumentLevelBWithExternalDataTest extends AbstractOpenDocument
 
 		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
+	}
+	
+	@Test
+	@Override
+	public void signAndVerify() throws IOException {
+		super.signAndVerify();
 	}
 
 	@Override

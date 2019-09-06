@@ -12,12 +12,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Stream;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
@@ -40,30 +40,24 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
-@RunWith(Parameterized.class)
 public class OpenDocumentLevelBMultipleSignaturesTest extends PKIFactoryAccess {
 
 	private DSSDocument fileToTest;
 	private DocumentSignatureService<ASiCWithXAdESSignatureParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
 	
-	@Parameters(name = "Validation {index} : {0}")
-	public static Collection<Object[]> data() {
+	public static Stream<Arguments> data() {
 		File folder = new File("src/test/resources/opendocument");
 		Collection<File> listFiles = Utils.listFiles(folder,
 				new String[] { "odt", "ods", "odp", "odg" }, true);
-		Collection<Object[]> dataToRun = new ArrayList<Object[]>();
+		Collection<Arguments> dataToRun = new ArrayList<Arguments>();
 		for (File file : listFiles) {
-			dataToRun.add(new Object[] { file });
+			dataToRun.add(Arguments.of( file ));
 		}
-		return dataToRun;
+		return dataToRun.stream();
 	}
 	
-	public OpenDocumentLevelBMultipleSignaturesTest(File fileToTest) {
-		this.fileToTest = new FileDocument(fileToTest);
-	}
-	
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		signatureParameters = new ASiCWithXAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
@@ -76,9 +70,10 @@ public class OpenDocumentLevelBMultipleSignaturesTest extends PKIFactoryAccess {
 		service.setTspSource(getGoodTsa());
 	}
 	
-	@Test
-	public void test() throws Exception {
-		doubleSignature(fileToTest);
+	@ParameterizedTest(name = "Validation {index} : {0}")
+	@MethodSource("data")
+	public void test(File fileToTest) throws Exception {
+		doubleSignature(new FileDocument(fileToTest));
 	}
 	
 	public void doubleSignature(DSSDocument originalDocument) throws IOException {

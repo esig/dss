@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.asic.xades.extension;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.InputStream;
@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -65,6 +66,12 @@ public abstract class AbstractTestOpenDocumentExtension extends AbstractTestExte
 		return dataToRun;
 	}
 	
+	@Test
+	@Override
+	public void test() throws Exception {
+		super.test();
+	}
+
 	public AbstractTestOpenDocumentExtension(File file) {
 		this.fileToExtend = new FileDocument(file);
 	}

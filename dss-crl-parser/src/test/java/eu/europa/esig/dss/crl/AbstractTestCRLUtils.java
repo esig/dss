@@ -348,11 +348,7 @@ public abstract class AbstractTestCRLUtils extends AbstractCRLParserTestUtils {
 	public void testPSSwithoutBouncyCastle() throws Exception {
 		try (InputStream is = AbstractTestCRLUtils.class.getResourceAsStream("/d-trust_root_ca_1_2017.crl");
 			InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/D-TRUST_Root_CA_1_2017.crt")) {
-
-			CertificateToken certificateToken = loadCert(isCer);
-
-			CRLBinary crlBinary = new CRLBinary(toByteArray(is));
-			Exception exception = assertThrows(IllegalArgumentException.class, () -> CRLUtils.buildCRLValidity(crlBinary, certificateToken));
+			Exception exception = assertThrows(IllegalArgumentException.class, () -> loadCert(isCer));
 			assertEquals("Unable to initialize PSS", exception.getMessage());
 		}
 	}

@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
@@ -42,7 +42,7 @@ public class OpenDocumentMultipleArchivesLevelBTest extends AbstractPkiFactoryTe
 	private ASiCWithXAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentsToSign = new ArrayList<DSSDocument>();
 	
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());

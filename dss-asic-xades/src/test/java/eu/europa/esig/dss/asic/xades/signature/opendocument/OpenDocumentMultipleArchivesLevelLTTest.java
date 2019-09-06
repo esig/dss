@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
@@ -40,7 +40,7 @@ public class OpenDocumentMultipleArchivesLevelLTTest extends AbstractPkiFactoryT
 	private ASiCWithXAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentsToSign = new ArrayList<DSSDocument>();
 	
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentsToSign.add(new FileDocument(new File("src/test/resources/opendocument/open-document.odt")));
 		documentsToSign.add(new FileDocument(new File("src/test/resources/opendocument/open-document.ods")));
