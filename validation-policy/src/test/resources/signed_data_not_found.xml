@@ -8,7 +8,7 @@
 	        <ErrorMessage>The Reference for URI  has no XMLSignatureInput&lt;br/&gt;
 	Could not find a resolver for URI null and Base / XAdESSignature/Line number/1393</ErrorMessage>
 	        <DateTime>2014-10-14T14:51:00</DateTime>
-	        <SignatureFormat>XAdES_BASELINE_B</SignatureFormat>
+	        <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
 	        <DigestMatchers>
                 <DigestMatcher type="REFERENCE" name="#test">
                     <DigestMethod>SHA256</DigestMethod>
@@ -18,7 +18,7 @@
                 </DigestMatcher>
                 <DigestMatcher type="SIGNED_PROPERTIES">
                     <DigestMethod>SHA256</DigestMethod>
-                    <DigestValue>cfwwLPkuUbNIaaaaaL8DcfxtNE2fgUuZUTPuLg=</DigestValue>
+                    <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
@@ -30,28 +30,35 @@
 	            <SignatureIntact>false</SignatureIntact>
 	            <SignatureValid>false</SignatureValid>
 	        </BasicSignature>
-	        <SigningCertificate Id="725A763273585DD8DFA026EB2066F5667FFF6ED45F72052B3F9C2D3565DF6B5E">
+	        <SigningCertificate Certificate="C-725A763273585DD8DFA026EB2066F5667FFF6ED45F72052B3F9C2D3565DF6B5E">
 	            <AttributePresent>true</AttributePresent>
 	            <DigestValuePresent>true</DigestValuePresent>
 	            <DigestValueMatch>true</DigestValueMatch>
 	            <IssuerSerialMatch>true</IssuerSerialMatch>
 	        </SigningCertificate>
 	        <CertificateChain>
-	            <ChainItem Id="725A763273585DD8DFA026EB2066F5667FFF6ED45F72052B3F9C2D3565DF6B5E">
-	                <Source>SIGNATURE</Source>
-	            </ChainItem>
-	            <ChainItem Id="B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5">
-	                <Source>TRUSTED_LIST</Source>
-	            </ChainItem>
+	            <ChainItem Certificate="C-725A763273585DD8DFA026EB2066F5667FFF6ED45F72052B3F9C2D3565DF6B5E"/>
+	            <ChainItem Certificate="C-B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5"/>
 	        </CertificateChain>
 	        <ContentType>text/xml</ContentType>
+            <FoundCertificates/>
+            <FoundRevocations/>
+            <FoundTimestamps/>
 	        <SignatureScopes>
-	            <SignatureScope name="Full XML File" scope="FULL">The full XML file</SignatureScope>
+                <SignatureScope SignerData="D-4b52bc97f901d8e5f69b59580168b37071f935f2ac8b2287589c255729e518e7">
+                    <Scope>FULL</Scope>
+                    <Name>Full XML File</Name>
+                    <Description>The full XML file</Description>
+                </SignatureScope>
 	        </SignatureScopes>
+			<SignatureDigestReference>
+			    <DigestMethod>SHA256</DigestMethod>
+			    <DigestValue>0crVv0rU6dIPDf/xFamXmXy9F8hLtDxGi/PfKlhP7Pc=</DigestValue>
+			</SignatureDigestReference>
 	    </Signature>
     </Signatures>
     <UsedCertificates>
-        <Certificate Id="B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5">
+        <Certificate Id="C-B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5">
             <SubjectDistinguishedName Format="CANONICAL">cn=infocert firma qualificata 2,2.5.4.5=#130b3037393435323131303036,ou=certificatore accreditato,o=infocert spa,c=it</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=InfoCert Firma Qualificata 2,2.5.4.5=#130b3037393435323131303036,OU=Certificatore Accreditato,O=INFOCERT SPA,C=IT</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=infocert firma qualificata 2,2.5.4.5=#130b3037393435323131303036,ou=certificatore accreditato,o=infocert spa,c=it</IssuerDistinguishedName>
@@ -61,6 +68,9 @@
             <CountryName>IT</CountryName>
             <OrganizationName>INFOCERT SPA</OrganizationName>
             <OrganizationalUnit>Certificatore Accreditato</OrganizationalUnit>
+            <Sources>
+            	<Source>TRUSTED_LIST</Source>
+            </Sources>
             <NotAfter>2029-04-19T17:26:15</NotAfter>
             <NotBefore>2013-04-19T16:26:15</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -84,8 +94,12 @@
             <QCStatementIds />
             <QCTypes />
             <TrustedServiceProviders />
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>a081e834e87e412d264a4113bc05518f406371bf</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
-        <Certificate Id="725A763273585DD8DFA026EB2066F5667FFF6ED45F72052B3F9C2D3565DF6B5E">
+        <Certificate Id="C-725A763273585DD8DFA026EB2066F5667FFF6ED45F72052B3F9C2D3565DF6B5E">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.42=#0c054c55494749,2.5.4.4=#0c0552495a5a4f,2.5.4.5=#131349543a525a5a4c475536334830364535303643,2.5.4.46=#130e3230313431343938353033393236,cn=L G,o=infocert spa/07945211006,c=it</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">2.5.4.42=#0c054c55494749,2.5.4.4=#0c0552495a5a4f,2.5.4.5=#131349543a525a5a4c475536334830364535303643,2.5.4.46=#130e3230313431343938353033393236,CN=L G,O=INFOCERT SPA/07945211006,C=IT</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=infocert firma qualificata 2,2.5.4.5=#130b3037393435323131303036,ou=certificatore accreditato,o=infocert spa,c=it</IssuerDistinguishedName>
@@ -96,6 +110,9 @@
             <OrganizationName>INFOCERT SPA/07945211006</OrganizationName>
             <GivenName>L</GivenName>
             <Surname>R</Surname>
+            <Sources>
+            	<Source>SIGNATURE</Source>
+            </Sources>
             <NotAfter>2014-10-30T01:00:00</NotAfter>
             <NotBefore>2014-10-08T10:46:20</NotBefore>
             <PublicKeySize>1024</PublicKeySize>
@@ -110,11 +127,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5"/>
+            <SigningCertificate Certificate="C-B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5"/>
             <CertificateChain>
-                <ChainItem Id="B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -123,44 +138,25 @@
                 <certificatePolicy>1.3.76.24.1.1.2</certificatePolicy>
             </CertificatePolicies>
             <QCStatementIds>
-                <oid>0.4.0.1862.1.1</oid>
-                <oid>0.4.0.1862.1.4</oid>
-                <oid>0.4.0.1862.1.3</oid>
+                <qcStatementOid>0.4.0.1862.1.1</qcStatementOid>
+                <qcStatementOid>0.4.0.1862.1.4</qcStatementOid>
+                <qcStatementOid>0.4.0.1862.1.3</qcStatementOid>
             </QCStatementIds>
             <QCTypes />
             <TrustedServiceProviders />
 			<Revocations>
-	            <Revocation Id="0574F0CFD174789DDCB57C5F2EC6EC43DD341BF7789708E28E87AF9A2696CA56">
-	                <Origin>EXTERNAL</Origin>
-	                <Source>OCSPToken</Source>
-	                <SourceAddress>http://ocsp.sc.infocert.it/</SourceAddress>
-	                <Available>true</Available>
+	            <CertificateRevocation Revocation="R-0574F0CFD174789DDCB57C5F2EC6EC43DD341BF7789708E28E87AF9A2696CA56">
 	                <Status>false</Status>
 	                <Reason>cessationOfOperation</Reason>
-	                <ProductionDate>2016-05-04T15:03:54</ProductionDate>
-	                <ThisUpdate>2016-05-04T14:30:00</ThisUpdate>
-	                <NextUpdate>2016-05-04T21:03:54</NextUpdate>
 	                <RevocationDate>2014-10-15T15:12:23</RevocationDate>
-	                <BasicSignature>
-	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-	                    <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-	                    <SignatureIntact>true</SignatureIntact>
-	                    <SignatureValid>true</SignatureValid>
-	                </BasicSignature>
-	                <SigningCertificate Id="200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A"/>
-	                <CertificateChain>
-	                    <ChainItem Id="200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A">
-	                        <Source>OCSP_RESPONSE</Source>
-	                    </ChainItem>
-	                    <ChainItem Id="B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5">
-	                        <Source>TRUSTED_LIST</Source>
-	                    </ChainItem>
-	                </CertificateChain>
-	            </Revocation>
+	            </CertificateRevocation>
 	        </Revocations>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>4314c1cb8cb5b3f1a656f97f1571b3f19f456cfc</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
-        <Certificate Id="200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A">
+        <Certificate Id="C-200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A">
             <SubjectDistinguishedName Format="CANONICAL">cn=ocsp responder firma qualificata 2015_12 02,ou=certificatore accreditato,o=infocert spa,c=it</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=OCSP Responder Firma Qualificata 2015_12 02,OU=Certificatore Accreditato,O=InfoCert SpA,C=IT</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=infocert firma qualificata 2,2.5.4.5=#130b3037393435323131303036,ou=certificatore accreditato,o=infocert spa,c=it</IssuerDistinguishedName>
@@ -170,6 +166,9 @@
             <CountryName>IT</CountryName>
             <OrganizationName>InfoCert SpA</OrganizationName>
             <OrganizationalUnit>Certificatore Accreditato</OrganizationalUnit>
+            <Sources>
+            	<Source>OCSP_RESPONSE</Source>
+            </Sources>
             <NotAfter>2017-12-10T19:56:42</NotAfter>
             <NotBefore>2015-12-10T18:56:42</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -185,11 +184,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5"/>
+            <SigningCertificate Certificate="C-B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5"/>
             <CertificateChain>
-                <ChainItem Id="B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -197,6 +194,45 @@
             <QCStatementIds />
             <QCTypes />
             <TrustedServiceProviders />
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>1660928d64e907f5174e9d92cc31988b45981a04</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
     </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-0574F0CFD174789DDCB57C5F2EC6EC43DD341BF7789708E28E87AF9A2696CA56">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://ocsp.sc.infocert.it/</SourceAddress>
+            <ProductionDate>2016-05-04T15:03:54</ProductionDate>
+            <ThisUpdate>2016-05-04T14:30:00</ThisUpdate>
+            <NextUpdate>2016-05-04T21:03:54</NextUpdate>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A"/>
+                <ChainItem Certificate="C-B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>dcb02bc25939e99066b75a3ea05b80b48179b3aa</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    <OriginalDocuments>
+        <SignerData Id="D-4b52bc97f901d8e5f69b59580168b37071f935f2ac8b2287589c255729e518e7">
+            <ReferencedName>Full XML File</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>S1K8l/kB2OX2m1lYAWizcHH5NfKsiyKHWJwlVynlGOc=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
 </DiagnosticData>

@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.validation.process.bbb;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public abstract class AbstractValueCheckItem<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

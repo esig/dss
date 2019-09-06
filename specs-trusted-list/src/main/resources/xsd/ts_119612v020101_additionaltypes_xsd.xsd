@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--                  ****** NOTICE ******
+This document is part of ETSI TS 119 612. In the event that any
+part of this document in conflict with the text of TS 119 612 
+then that text shall prevail as the authoritative source
+-->
+<xsd:schema targetNamespace="http://uri.etsi.org/02231/v2/additionaltypes#" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tslx="http://uri.etsi.org/02231/v2/additionaltypes#" xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" xmlns:tsl="http://uri.etsi.org/02231/v2#" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xsd:import namespace="http://uri.etsi.org/02231/v2#" schemaLocation="http://uri.etsi.org/19612/v1.2.1/tsl.xsd"/>
+	<xsd:import namespace="http://uri.etsi.org/01903/v1.3.2#" schemaLocation="http://uri.etsi.org/01903/v1.3.2/XAdES.xsd"/>
+	<!-- -->
+	<!-- -->
+	<xsd:annotation><xsd:documentation>Specified in TS 119 612 v2.1.1 clause 5.3.13 Pointers to other TSLs</xsd:documentation></xsd:annotation>
+	<xsd:element name="MimeType" type="xsd:string"/>
+<xsd:annotation><xsd:documentation>X509CertificateLocation element was specified in TS 102 231 v3.1.2 clause B.4.3 The ServiceDigitalIdentityType. It is now deprecated and is not used</xsd:documentation></xsd:annotation>
+	<xsd:element name="X509CertificateLocation" type="tsl:NonEmptyURIType"/>
+<xsd:annotation><xsd:documentation>PublicKeyLocation element was specified in TS 102 231 v3.1.2 clause B.4.3 The ServiceDigitalIdentityType. It is now deprecated and is not used</xsd:documentation></xsd:annotation>
+	<xsd:element name="PublicKeyLocation" type="tsl:NonEmptyURIType"/>
+	<xsd:annotation><xsd:documentation>Specified in TS 119 612 v2.1.1 clause 5.5.9.2.2.3 OtherCriteria, bullet 1) ExtendedKeyUsage</xsd:documentation></xsd:annotation>
+	<xsd:element name="ExtendedKeyUsage" type="tslx:ExtendedKeyUsageType"/>
+	<xsd:complexType name="ExtendedKeyUsageType">
+		<xsd:sequence maxOccurs="unbounded">
+			<xsd:element name="KeyPurposeId" type="xades:ObjectIdentifierType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:annotation><xsd:documentation>Specified in TS 119 612 v2.1.1 clause 5.5.9.3 TakenOverBy Extension</xsd:documentation></xsd:annotation>
+	<xsd:element name="TakenOverBy" type="tslx:TakenOverByType"/>
+	<xsd:complexType name="TakenOverByType">
+		<xsd:sequence>
+			<xsd:element name="URI" type="tsl:NonEmptyMultiLangURIType"/>
+			<xsd:element name="TSPName" type="tsl:InternationalNamesType"/>
+			<xsd:element ref="tsl:SchemeOperatorName"/>
+			<xsd:element ref="tsl:SchemeTerritory"/>
+			<xsd:element name="OtherQualifier" type="tsl:AnyType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:annotation><xsd:documentation>Specified in TS 119 612 v2.1.1 clause 5.5.9.2.2.3 OtherCriteria, bullet 2) CertSubjectDNAttribute</xsd:documentation></xsd:annotation>
+	<xsd:element name="CertSubjectDNAttribute" type="tslx:CertSubjectDNAttributeType"/>
+	<xsd:complexType name="CertSubjectDNAttributeType">
+		<xsd:sequence maxOccurs="unbounded">
+			<xsd:element name="AttributeOID" type="xades:ObjectIdentifierType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>

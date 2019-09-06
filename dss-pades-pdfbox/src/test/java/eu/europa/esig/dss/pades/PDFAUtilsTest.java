@@ -25,7 +25,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 
 public class PDFAUtilsTest {
 

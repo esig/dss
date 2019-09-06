@@ -28,8 +28,8 @@ import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.util.BigIntegers;
 
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.model.DSSException;
 
 /**
  * This is the utility class to manipulate different signature types.

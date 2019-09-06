@@ -26,27 +26,27 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
-import javax.xml.crypto.dsig.Transform;
 
 import org.apache.xml.security.signature.Reference;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.Before;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.TimestampInclude;
-import eu.europa.esig.dss.validation.TimestampToken;
-import eu.europa.esig.dss.x509.TimestampType;
-import eu.europa.esig.dss.xades.DSSReference;
-import eu.europa.esig.dss.xades.DSSTransform;
+import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.reference.Base64Transform;
+import eu.europa.esig.dss.xades.reference.DSSReference;
+import eu.europa.esig.dss.xades.reference.DSSTransform;
 
 public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractXAdESTestSignature {
 
@@ -64,8 +64,7 @@ public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractXAdEST
 		String canonicalizationAlgo = CanonicalizationMethod.EXCLUSIVE;
 
 		List<DSSTransform> transforms = new ArrayList<DSSTransform>();
-		DSSTransform dssTransform = new DSSTransform();
-		dssTransform.setAlgorithm(Transform.BASE64);
+		Base64Transform dssTransform = new Base64Transform();
 		transforms.add(dssTransform);
 
 		List<DSSReference> references = new ArrayList<DSSReference>();

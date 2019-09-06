@@ -20,31 +20,38 @@
  */
 package eu.europa.esig.dss.pades.signature.visible;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.awt.Color;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignatureValue;
-import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
-import eu.europa.esig.dss.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
 public class PAdESSignatureField extends PKIFactoryAccess {
 
@@ -106,6 +113,137 @@ public class PAdESSignatureField extends PKIFactoryAccess {
 		DSSDocument doc3 = signAndValidate(doc2);
 		assertNotNull(doc3);
 	}
+	
+	@Test
+	public void testSignTwoFields() throws IOException {
+
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
+		
+		assertEquals(2, countStringOccurance(documentToSign, "startxref"));
+		assertEquals(2, countStringOccurance(documentToSign, "%%EOF"));
+		
+		// add first field
+		SignatureFieldParameters parameters = new SignatureFieldParameters();
+		parameters.setName("signature1");
+		parameters.setOriginX(10);
+		parameters.setOriginY(10);
+		parameters.setHeight(50);
+		parameters.setWidth(50);
+		DSSDocument withFirstField = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(withFirstField);
+		
+		assertEquals(3, countStringOccurance(withFirstField, "startxref"));
+		assertEquals(3, countStringOccurance(withFirstField, "%%EOF"));
+
+		// add second field
+		parameters = new SignatureFieldParameters();
+		parameters.setName("signature2");
+		parameters.setOriginX(100);
+		parameters.setOriginY(10);
+		parameters.setHeight(50);
+		parameters.setWidth(50);
+		DSSDocument secondField = service.addNewSignatureField(withFirstField, parameters);
+		assertNotNull(secondField);
+
+		assertEquals(4, countStringOccurance(secondField, "startxref"));
+		assertEquals(4, countStringOccurance(secondField, "%%EOF"));
+		
+		// sign first field
+		signatureParameters.setSignatureFieldId("signature1");
+		DSSDocument firstSigned = signAndValidate(secondField);
+		assertNotNull(firstSigned);
+		
+		assertEquals(5, countStringOccurance(firstSigned, "startxref"));
+		assertEquals(5, countStringOccurance(firstSigned, "%%EOF"));
+
+		// sign second field
+		signatureParameters.setSignatureFieldId("signature2");
+		DSSDocument secondSigned = signAndValidate(firstSigned);
+		assertNotNull(secondSigned);
+		
+		assertEquals(6, countStringOccurance(secondSigned, "startxref"));
+		assertEquals(6, countStringOccurance(secondSigned, "%%EOF"));
+		
+	}
+	
+	@Test
+	public void createAndSignConsequently() throws IOException {
+		
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
+
+		assertEquals(2, countStringOccurance(documentToSign, "startxref"));
+		assertEquals(2, countStringOccurance(documentToSign, "%%EOF"));
+		
+		// add field and sign
+		SignatureFieldParameters parameters = new SignatureFieldParameters();
+		parameters.setName("signature1");
+		parameters.setOriginX(10);
+		parameters.setOriginY(10);
+		parameters.setHeight(50);
+		parameters.setWidth(50);
+		DSSDocument withFirstField = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(withFirstField);
+
+		assertEquals(3, countStringOccurance(withFirstField, "startxref"));
+		assertEquals(3, countStringOccurance(withFirstField, "%%EOF"));
+
+		signatureParameters.setSignatureFieldId("signature1");
+		DSSDocument firstSigned = signAndValidate(withFirstField);
+		assertNotNull(firstSigned);
+
+		assertEquals(4, countStringOccurance(firstSigned, "startxref"));
+		assertEquals(4, countStringOccurance(firstSigned, "%%EOF"));
+		
+		// add a new field and second sign
+		parameters = new SignatureFieldParameters();
+		parameters.setName("signature2");
+		parameters.setOriginX(100);
+		parameters.setOriginY(10);
+		parameters.setHeight(50);
+		parameters.setWidth(50);
+		DSSDocument secondField = service.addNewSignatureField(firstSigned, parameters);
+		assertNotNull(secondField);
+
+		assertEquals(5, countStringOccurance(secondField, "startxref"));
+		assertEquals(5, countStringOccurance(secondField, "%%EOF"));
+
+		signatureParameters.setSignatureFieldId("signature2");
+		DSSDocument secondSigned = signAndValidate(secondField);
+		assertNotNull(secondSigned);
+
+		assertEquals(6, countStringOccurance(secondSigned, "startxref"));
+		assertEquals(6, countStringOccurance(secondSigned, "%%EOF"));
+
+	}
+	
+	@Test
+	public void createFieldInEmptyDocument() throws IOException {
+		
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/EmptyPage.pdf"));
+		
+		assertEquals(2, countStringOccurance(documentToSign, "startxref"));
+		assertEquals(2, countStringOccurance(documentToSign, "%%EOF"));
+		
+		SignatureFieldParameters parameters = new SignatureFieldParameters();
+		parameters.setName("signature1");
+		parameters.setOriginX(10);
+		parameters.setOriginY(10);
+		parameters.setHeight(50);
+		parameters.setWidth(50);
+		DSSDocument withFirstField = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(withFirstField);
+		
+		assertEquals(3, countStringOccurance(withFirstField, "startxref"));
+		assertEquals(3, countStringOccurance(withFirstField, "%%EOF"));
+
+		signatureParameters.setSignatureFieldId("signature1");
+		DSSDocument firstSigned = signAndValidate(withFirstField);
+		assertNotNull(firstSigned);
+		
+		assertEquals(4, countStringOccurance(firstSigned, "startxref"));
+		assertEquals(4, countStringOccurance(firstSigned, "%%EOF"));
+		
+	}
 
 	@Test(expected = DSSException.class)
 	public void testSignTwiceSameField() throws IOException {
@@ -133,16 +271,45 @@ public class PAdESSignatureField extends PKIFactoryAccess {
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 
-		signedDocument.save("target/test.pdf");
+		// signedDocument.save("target/test.pdf");
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		Reports reports = validator.validateDocument();
+		// reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
+
+		assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getSignatures()));
+		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
+			assertTrue(signature.isSignatureIntact());
+			assertTrue(signature.isSignatureValid());
+			assertTrue(Utils.isCollectionNotEmpty(signature.getDigestMatchers()));
+			for (XmlDigestMatcher digestMatcher : signature.getDigestMatchers()) {
+				assertTrue(digestMatcher.isDataFound());
+				assertTrue(digestMatcher.isDataIntact());
+			}
+		}
+		
 		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 
 		return signedDocument;
+	}
+	
+	private int countStringOccurance(DSSDocument document, String textToCheck) {
+		int counter = 0;
+		String line;
+		try (InputStream is = document.openStream(); InputStreamReader isr = new InputStreamReader(is);
+				BufferedReader br = new BufferedReader(isr)) {
+			while ((line = br.readLine()) != null) {
+				if (line.contains(textToCheck)) {
+					counter++;
+				}
+			}
+		} catch (Exception e) {
+			throw new DSSException(e);
+		}
+		return counter;
 	}
 
 	@Override

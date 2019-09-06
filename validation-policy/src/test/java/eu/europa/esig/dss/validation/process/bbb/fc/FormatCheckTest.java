@@ -26,25 +26,26 @@ import java.util.List;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlFC;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.FormatCheck;
-import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
-import eu.europa.esig.jaxb.policy.Level;
-import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 
 public class FormatCheckTest {
 
 	@Test
 	public void validFormat() throws Exception {
 		XmlSignature sig = new XmlSignature();
-		sig.setSignatureFormat("CAdES_BASELINE_B");
+		sig.setSignatureFormat(SignatureLevel.CAdES_BASELINE_B);
 
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
 		constraint.setLevel(Level.FAIL);
-		constraint.getId().add("CAdES_BASELINE_B");
+		constraint.getId().add("CAdES-BASELINE-B");
 
 		XmlFC result = new XmlFC();
 		FormatCheck fc = new FormatCheck(result, new SignatureWrapper(sig), constraint);
@@ -56,13 +57,13 @@ public class FormatCheckTest {
 	}
 
 	@Test
-	public void invalidFormat() throws Exception {
+	public void unknownFormat() throws Exception {
 		XmlSignature sig = new XmlSignature();
-		sig.setSignatureFormat("Invalid_format");
+		sig.setSignatureFormat(SignatureLevel.UNKNOWN);
 
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
 		constraint.setLevel(Level.FAIL);
-		constraint.getId().add("CAdES_BASELINE_B");
+		constraint.getId().add("CAdES-BASELINE-B");
 
 		XmlFC result = new XmlFC();
 		FormatCheck fc = new FormatCheck(result, new SignatureWrapper(sig), constraint);

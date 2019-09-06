@@ -22,12 +22,12 @@ package eu.europa.esig.dss.validation.process.qualification.certificate.checks.t
 
 import java.util.List;
 
+import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
 import eu.europa.esig.dss.validation.process.qualification.certificate.QualifiedStatus;
 import eu.europa.esig.dss.validation.process.qualification.certificate.Type;
 import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualification;
-import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
 class TypeByTL implements TypeStrategy {
 

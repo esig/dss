@@ -20,33 +20,28 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.isc.checks;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlISC;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.TokenProxy;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.validation.reports.wrapper.TokenProxy;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class SigningCertificateRecognitionCheck extends ChainItem<XmlISC> {
 
 	private final TokenProxy token;
-	private final DiagnosticData diagnosticData;
 
-	public SigningCertificateRecognitionCheck(XmlISC result, TokenProxy token, DiagnosticData diagnosticData, LevelConstraint constraint) {
+	public SigningCertificateRecognitionCheck(XmlISC result, TokenProxy token, LevelConstraint constraint) {
 		super(result, constraint);
 		this.token = token;
-		this.diagnosticData = diagnosticData;
 	}
 
 	@Override
 	protected boolean process() {
-		String signingCertificateId = token.getSigningCertificateId();
-		CertificateWrapper certificate = diagnosticData.getUsedCertificateByIdNullSafe(signingCertificateId);
-		return Utils.areStringsEqual(signingCertificateId, certificate.getId());
+		CertificateWrapper signingCertificate = token.getSigningCertificate();
+		return signingCertificate != null;
 	}
 
 	@Override

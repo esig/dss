@@ -25,10 +25,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.x509.CertificateSourceType;
-import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.RevocationToken;
+import eu.europa.esig.dss.enumerations.CertificateSourceType;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 /**
  * This interface allows the implementation of the validators for: certificates, timestamps and revocation data.
@@ -114,6 +115,16 @@ public interface ValidationContext {
 	 * @return true if all processed certificates are still valid
 	 */
 	boolean isAllCertificateValid();
+
+	/**
+	 * This method allows to verify if there is at least one revocation data present
+	 * after the earliest available timestamp token producing time
+	 * @param signingCertificate
+	 *            {@code CertificateToken} signing certificate of the signature to be checked
+	 * 
+	 * @return true if there is at least one revocation data issued after the earliest timestamp time
+	 */
+	boolean isAtLeastOneRevocationDataPresentAfterBestSignatureTime(CertificateToken signingCertificate);
 
 	/**
 	 * Returns a read only list of all certificates used in the process of the validation of all signatures from the

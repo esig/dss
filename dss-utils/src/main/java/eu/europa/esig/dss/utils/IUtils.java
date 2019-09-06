@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.Map;
 
 public interface IUtils {
 
@@ -72,6 +73,10 @@ public interface IUtils {
 
 	@SuppressWarnings("rawtypes")
 	boolean isCollectionNotEmpty(Collection collection);
+	
+	boolean isMapEmpty(Map<?,?> map);
+	
+	boolean isMapNotEmpty(Map<?,?> map);
 
 	@SuppressWarnings("rawtypes")
 	int collectionSize(Collection collection);
@@ -79,6 +84,8 @@ public interface IUtils {
 	String toHex(byte[] bytes);
 
 	byte[] fromHex(String hex);
+	
+	boolean isBase64Encoded(String base64String);
 
 	String toBase64(byte[] bytes);
 
@@ -91,6 +98,8 @@ public interface IUtils {
 	void copy(InputStream is, OutputStream os) throws IOException;
 
 	void write(byte[] content, OutputStream os) throws IOException;
+	
+	long getInputStreamSize(InputStream is) throws IOException;
 
 	void cleanDirectory(File directory) throws IOException;
 

@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.pseudo;
 
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 
 public class PseudoGermanyStrategy implements PseudoStrategy {
 

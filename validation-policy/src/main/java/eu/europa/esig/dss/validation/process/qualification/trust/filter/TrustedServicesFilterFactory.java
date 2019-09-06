@@ -23,7 +23,7 @@ package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 import java.util.Date;
 import java.util.Set;
 
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 
 public final class TrustedServicesFilterFactory {
 

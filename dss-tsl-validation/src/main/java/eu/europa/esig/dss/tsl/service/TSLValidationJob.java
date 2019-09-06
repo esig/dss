@@ -21,6 +21,8 @@
 package eu.europa.esig.dss.tsl.service;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -35,10 +37,12 @@ import java.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.client.http.DataLoader;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.client.http.DataLoader;
+import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
 import eu.europa.esig.dss.tsl.OtherTrustedList;
 import eu.europa.esig.dss.tsl.TSLLoaderResult;
 import eu.europa.esig.dss.tsl.TSLParserResult;
@@ -46,8 +50,6 @@ import eu.europa.esig.dss.tsl.TSLPointer;
 import eu.europa.esig.dss.tsl.TSLValidationModel;
 import eu.europa.esig.dss.tsl.TSLValidationResult;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.KeyStoreCertificateSource;
 
 /**
  * This class is job class which allows to launch TSL loading/parsing/validation. An instance of this class can be
@@ -63,13 +65,13 @@ public class TSLValidationJob {
 	private TSLRepository repository;
 	private String lotlCode;
 	private String lotlUrl;
-	private String lotlRootSchemeInfoUri;
 
 	/*
 	 * Official journal URL where the allowed certificates can be found. This URL is present in the LOTL
-	 * (SchemeInformationURI)
 	 */
 	private String ojUrl;
+	private String ojDomainName;
+	
 	private KeyStoreCertificateSource ojContentKeyStore;
 
 	private boolean checkLOTLSignature = true;
@@ -114,22 +116,33 @@ public class TSLValidationJob {
 	}
 
 	/**
-	 * This method allows to set the root URI for the LOTL HTML page (SchemeInformationURI)
+	 * This method allows to set the current used Official Journal URL (where the trusted certificates are listed)
 	 * 
-	 * @param lotlRootSchemeInfoUri
-	 */
-	public void setLotlRootSchemeInfoUri(String lotlRootSchemeInfoUri) {
-		this.lotlRootSchemeInfoUri = lotlRootSchemeInfoUri;
-	}
-
-	/**
-	 * This method allows to set the Official Journal URL (where the trusted certificates are listed)
-	 * 
-	 * @param ojUrl
+	 * @param ojurl
 	 *            the Official Journal URL
 	 */
-	public void setOjUrl(String ojUrl) {
-		this.ojUrl = ojUrl;
+	public void setOjUrl(String ojurl) {
+		this.ojUrl = ojurl;
+	}
+	
+	/**
+	 * Returns the OJ URL domain name
+	 * @return domain name {@link String}
+	 */
+	private String getOjDomainName() {
+		if (ojDomainName != null) {
+			return ojDomainName;
+		}
+		try {
+			URI uri = new URI(ojUrl);
+			ojDomainName = uri.getHost();
+			if (ojDomainName == null) {
+				ojDomainName = uri.getSchemeSpecificPart();
+			}
+			return ojDomainName;
+		} catch (URISyntaxException | NullPointerException e) {
+			throw new DSSException("Incorrect format of Official Journal URL [" + ojUrl + "] is provided", e);
+		}
 	}
 
 	public void setOjContentKeyStore(KeyStoreCertificateSource ojContentKeyStore) {
@@ -282,9 +295,14 @@ public class TSLValidationJob {
 				return;
 			}
 		}
-
-		if (!isLatestOjKeystore(parseResult)) {
-			LOG.warn("OJ keystore is out-dated !");
+		
+		if (ojUrl != null) {
+			String latestOjKeystore = getLatestOjKeystore(parseResult);
+			if (latestOjKeystore != null && !latestOjKeystore.equals(ojUrl)) {
+				LOG.warn("OJ keystore is outdated! Newer keystore can be found at the address: [{}]", latestOjKeystore);
+				ojUrl = latestOjKeystore;
+			}
+			repository.setActualOjUrl(ojUrl);
 		}
 
 		checkLOTLLocation(parseResult);
@@ -386,15 +404,21 @@ public class TSLValidationJob {
 	}
 
 	/**
-	 * This method checks if the OJ url is still correct. If not, the DSS keystore is outdated.
+	 * This method returns the OJ url if present in LOTL.
 	 * 
 	 * @param parseResult
 	 * 
-	 * @return
+	 * @return latest OJ Keystore URL
 	 */
-	private boolean isLatestOjKeystore(TSLParserResult parseResult) {
+	private String getLatestOjKeystore(TSLParserResult parseResult) {
 		List<String> englishSchemeInformationURIs = parseResult.getEnglishSchemeInformationURIs();
-		return englishSchemeInformationURIs.contains(ojUrl);
+		for (String url : englishSchemeInformationURIs) {
+			if (url.contains(getOjDomainName())) {
+				return url;
+			}
+		}
+		LOG.warn("Latest Official Journal Keystore is not found!");
+		return null;
 	}
 
 	private boolean isPivotLOTL(TSLParserResult parseResult) {
@@ -402,14 +426,21 @@ public class TSLValidationJob {
 	}
 
 	private List<String> getPivotUris(TSLParserResult parseResult) {
+		if (ojUrl == null) {
+			LOG.warn("Current Official Journal keystore URL is not defined. Cannot obtain pivots!");
+			return Collections.emptyList();
+		}
 		List<String> pivotUris = new LinkedList<String>();
 		LinkedList<String> englishSchemeInformationURIs = (LinkedList<String>) parseResult.getEnglishSchemeInformationURIs();
 		// Pivots order is current T, T-1, T-2,...
-		Iterator<String> itr = englishSchemeInformationURIs.descendingIterator();
+		Iterator<String> itr = englishSchemeInformationURIs.iterator();
 		while (itr.hasNext()) {
 			String uri = itr.next();
-			if (!Utils.areStringsEqual(ojUrl, uri) && !uri.startsWith(lotlRootSchemeInfoUri)) {
+			if (!uri.contains(getOjDomainName())) {
 				pivotUris.add(uri);
+			} else {
+				// if uri is OJ URL break the loop, because pivots are listed above
+				break;
 			}
 		}
 		return pivotUris;
@@ -436,7 +467,6 @@ public class TSLValidationJob {
 					} else {
 						countryModel = repository.getByCountry(loaderResult.getCountryCode());
 					}
-
 
 					if (countryModel.getFilepath() == null) {
 						LOG.warn("No file found for url '{}'", loaderResult.getUrl());

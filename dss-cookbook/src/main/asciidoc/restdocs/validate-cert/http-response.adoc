@@ -1,0 +1,214 @@
+[source,http,options="nowrap"]
+----
+HTTP/1.1 200 OK
+Date: Fri, 23 Aug 2019 06:08:46 GMT
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Server: ESIG-DSS
+Content-Type: application/json
+Transfer-Encoding: chunked
+Content-Length: 6315
+
+{
+  "diagnosticData" : {
+    "DocumentName" : null,
+    "ValidationDate" : "2019-08-23T06:08:46",
+    "ContainerInfo" : null,
+    "Signature" : null,
+    "Certificate" : [ {
+      "Id" : "C-02F3EBCA0163274253BC809D27498DD41BB0316D7E6B066960115DE155589D9C",
+      "SubjectDistinguishedName" : [ {
+        "value" : "o=dss-test,cn=signerfake",
+        "Format" : "CANONICAL"
+      }, {
+        "value" : "O=DSS-test,CN=SignerFake",
+        "Format" : "RFC2253"
+      } ],
+      "IssuerDistinguishedName" : [ {
+        "value" : "o=dss-test,cn=rootselfsignedfake",
+        "Format" : "CANONICAL"
+      }, {
+        "value" : "O=DSS-test,CN=RootSelfSignedFake",
+        "Format" : "RFC2253"
+      } ],
+      "SerialNumber" : 51497007561559,
+      "CommonName" : "SignerFake",
+      "Locality" : null,
+      "State" : null,
+      "CountryName" : null,
+      "OrganizationName" : "DSS-test",
+      "GivenName" : null,
+      "OrganizationalUnit" : null,
+      "Surname" : null,
+      "Pseudonym" : null,
+      "Email" : null,
+      "aiaUrl" : [ ],
+      "crlUrl" : [ ],
+      "ocspServerUrl" : [ ],
+      "Source" : [ "OTHER" ],
+      "NotAfter" : "2047-07-04T07:57:24",
+      "NotBefore" : "2017-06-08T11:26:01",
+      "PublicKeySize" : 2048,
+      "PublicKeyEncryptionAlgo" : "RSA",
+      "KeyUsage" : [ "keyCertSign", "crlSign" ],
+      "extendedKeyUsagesOid" : [ ],
+      "IdPkixOcspNoCheck" : false,
+      "BasicSignature" : {
+        "EncryptionAlgoUsedToSignThisToken" : "RSA",
+        "KeyLengthUsedToSignThisToken" : "?",
+        "DigestAlgoUsedToSignThisToken" : "SHA256",
+        "MaskGenerationFunctionUsedToSignThisToken" : null,
+        "SignatureIntact" : false,
+        "SignatureValid" : false
+      },
+      "SigningCertificate" : null,
+      "ChainItem" : [ ],
+      "Trusted" : false,
+      "SelfSigned" : false,
+      "certificatePolicy" : [ ],
+      "qcStatementOid" : [ ],
+      "qcTypeOid" : [ ],
+      "TrustedServiceProvider" : [ ],
+      "CertificateRevocation" : [ ],
+      "Base64Encoded" : null,
+      "DigestAlgoAndValue" : {
+        "DigestMethod" : "SHA256",
+        "DigestValue" : "AvPrygFjJ0JTvICdJ0mN1BuwMW1+awZpYBFd4VVYnZw="
+      }
+    } ],
+    "Revocation" : [ ],
+    "Timestamp" : null,
+    "OrphanToken" : null,
+    "SignerData" : null,
+    "TrustedList" : [ ],
+    "ListOfTrustedLists" : null
+  },
+  "simpleCertificateReport" : {
+    "ChainItem" : [ {
+      "id" : "C-02F3EBCA0163274253BC809D27498DD41BB0316D7E6B066960115DE155589D9C",
+      "subject" : {
+        "commonName" : "SignerFake",
+        "surname" : null,
+        "givenName" : null,
+        "pseudonym" : null,
+        "organizationName" : "DSS-test",
+        "organizationUnit" : null,
+        "email" : null,
+        "locality" : null,
+        "state" : null,
+        "country" : null
+      },
+      "issuerId" : null,
+      "notBefore" : "2017-06-08T11:26:01",
+      "notAfter" : "2047-07-04T07:57:24",
+      "keyUsage" : [ "keyCertSign", "crlSign" ],
+      "extendedKeyUsage" : null,
+      "ocspUrl" : null,
+      "crlUrl" : null,
+      "aiaUrl" : null,
+      "cpsUrl" : null,
+      "pdsUrl" : null,
+      "qualificationAtIssuance" : "N/A",
+      "qualificationAtValidation" : "N/A",
+      "revocation" : {
+        "productionDate" : null,
+        "revocationDate" : null,
+        "revocationReason" : null
+      },
+      "trustAnchor" : null,
+      "Indication" : "INDETERMINATE",
+      "SubIndication" : "NO_CERTIFICATE_CHAIN_FOUND"
+    } ],
+    "ValidationTime" : "2019-08-23T06:08:46"
+  },
+  "detailedReport" : {
+    "Signatures" : null,
+    "Certificate" : {
+      "ValidationCertificateQualification" : [ ],
+      "Constraint" : [ {
+        "Name" : {
+          "value" : "Is the result of the Basic Building Block acceptable?",
+          "NameId" : "BBB_ACCEPT"
+        },
+        "Status" : "WARNING",
+        "Error" : null,
+        "Warning" : {
+          "value" : "The result of the Basic Building Block is not acceptable!",
+          "NameId" : "BBB_ACCEPT_ANS"
+        },
+        "Info" : null,
+        "AdditionalInfo" : null,
+        "Id" : null
+      } ],
+      "Conclusion" : {
+        "Indication" : "INDETERMINATE",
+        "SubIndication" : null,
+        "Errors" : [ ],
+        "Warnings" : [ {
+          "value" : "The result of the Basic Building Block is not acceptable!",
+          "NameId" : "BBB_ACCEPT_ANS"
+        } ],
+        "Infos" : null
+      },
+      "Title" : "Certificate Qualification"
+    },
+    "BasicBuildingBlocks" : [ {
+      "FC" : null,
+      "ISC" : null,
+      "VCI" : null,
+      "XCV" : {
+        "SubXCV" : [ ],
+        "Constraint" : [ {
+          "Name" : {
+            "value" : "Can the certificate chain be built till the trust anchor?",
+            "NameId" : "BBB_XCV_CCCBB"
+          },
+          "Status" : "NOT OK",
+          "Error" : {
+            "value" : "The certificate chain is not trusted, there is no trusted anchor.",
+            "NameId" : "BBB_XCV_CCCBB_ANS"
+          },
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : null,
+          "Id" : null
+        } ],
+        "Conclusion" : {
+          "Indication" : "INDETERMINATE",
+          "SubIndication" : "NO_CERTIFICATE_CHAIN_FOUND",
+          "Errors" : [ {
+            "value" : "The certificate chain is not trusted, there is no trusted anchor.",
+            "NameId" : "BBB_XCV_CCCBB_ANS"
+          } ],
+          "Warnings" : null,
+          "Infos" : null
+        },
+        "Title" : "X509 Certificate Validation"
+      },
+      "CV" : null,
+      "SAV" : null,
+      "PSV" : null,
+      "PCV" : null,
+      "VTS" : null,
+      "CertificateChain" : null,
+      "Conclusion" : {
+        "Indication" : "INDETERMINATE",
+        "SubIndication" : "NO_CERTIFICATE_CHAIN_FOUND",
+        "Errors" : [ {
+          "value" : "The certificate chain is not trusted, there is no trusted anchor.",
+          "NameId" : "BBB_XCV_CCCBB_ANS"
+        } ],
+        "Warnings" : null,
+        "Infos" : null
+      },
+      "Id" : "C-02F3EBCA0163274253BC809D27498DD41BB0316D7E6B066960115DE155589D9C",
+      "Type" : "CERTIFICATE"
+    } ],
+    "TLAnalysis" : [ ]
+  }
+}
+----

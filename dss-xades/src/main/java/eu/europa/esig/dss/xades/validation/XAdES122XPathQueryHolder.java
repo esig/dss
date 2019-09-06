@@ -31,6 +31,7 @@ import eu.europa.esig.dss.xades.XPathQueryHolder;
  *
  *
  */
+@SuppressWarnings("serial")
 public class XAdES122XPathQueryHolder extends XPathQueryHolder {
 
 	public XAdES122XPathQueryHolder() {

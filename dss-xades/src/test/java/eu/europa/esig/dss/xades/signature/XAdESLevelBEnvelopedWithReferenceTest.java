@@ -23,6 +23,7 @@ package eu.europa.esig.dss.xades.signature;
 import java.io.File;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -34,24 +35,24 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.transforms.Transforms;
-import org.apache.xml.security.utils.Base64;
 import org.junit.Assert;
 import org.junit.Before;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.xades.DSSReference;
-import eu.europa.esig.dss.xades.DSSTransform;
 import eu.europa.esig.dss.xades.SantuarioInitializer;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
+import eu.europa.esig.dss.xades.reference.DSSReference;
+import eu.europa.esig.dss.xades.reference.DSSTransform;
 
 public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractXAdESTestSignature {
 
@@ -80,8 +81,7 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractXAdESTestSign
 		reference1.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
 		reference1.setUri("#data1");
 		List<DSSTransform> transforms1 = new ArrayList<DSSTransform>();
-		DSSTransform transform1 = new DSSTransform();
-		transform1.setAlgorithm(Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS);
+		CanonicalizationTransform transform1 = new CanonicalizationTransform(Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS);
 		transforms1.add(transform1);
 		reference1.setTransforms(transforms1);
 		dssReferences.add(reference1);
@@ -92,8 +92,7 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractXAdESTestSign
 		reference2.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
 		reference2.setUri("#data2");
 		List<DSSTransform> transforms2 = new ArrayList<DSSTransform>();
-		DSSTransform transform2 = new DSSTransform();
-		transform2.setAlgorithm(Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS);
+		CanonicalizationTransform transform2 = new CanonicalizationTransform(Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS);
 		transforms2.add(transform2);
 		reference2.setTransforms(transforms2);
 		dssReferences.add(reference2);
@@ -118,14 +117,16 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractXAdESTestSign
 			Canonicalizer c14n = Canonicalizer.getInstance("http://www.w3.org/2001/10/xml-exc-c14n#");
 			byte c14nBytes[] = c14n.canonicalizeSubtree(node);
 
-			Assert.assertEquals("AdGdZ+/VQVVvC9yzL4Yj8iRK33cQBiRW2UpKGMswdZQ=", Base64.encode(MessageDigest.getInstance("SHA-256").digest(c14nBytes)));
+			Assert.assertEquals("AdGdZ+/VQVVvC9yzL4Yj8iRK33cQBiRW2UpKGMswdZQ=",
+					Base64.getEncoder().encodeToString(MessageDigest.getInstance("SHA-256").digest(c14nBytes)));
 
 			node = (Node) xPath.evaluate("root/data[@id='data2']", doc, XPathConstants.NODE);
 
 			c14n = Canonicalizer.getInstance("http://www.w3.org/2001/10/xml-exc-c14n#");
 			c14nBytes = c14n.canonicalizeSubtree(node);
 
-			Assert.assertEquals("R69a3Im5463c09SuOrn9Sfly9h9LxVxSqg/0CVumJjA=", Base64.encode(MessageDigest.getInstance("SHA-256").digest(c14nBytes)));
+			Assert.assertEquals("R69a3Im5463c09SuOrn9Sfly9h9LxVxSqg/0CVumJjA=",
+					Base64.getEncoder().encodeToString(MessageDigest.getInstance("SHA-256").digest(c14nBytes)));
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
 		}

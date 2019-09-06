@@ -25,27 +25,28 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlCV;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlFC;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlISC;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlVCI;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessBasicSignatures;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlProofOfExistence;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlVCI;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicSignatures;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
-import eu.europa.esig.dss.x509.TimestampType;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationProcessBasicSignatures> {
 
@@ -65,10 +66,19 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 		this.diagnosticData = diagnosticData;
 		this.signatureBBB = signatureBBB;
 		this.bbbs = bbbs;
+		
+		result.setProofOfExistence(getCurrentTime());
+	}
+	
+	private XmlProofOfExistence getCurrentTime() {
+		XmlProofOfExistence proofOfExistence = new XmlProofOfExistence();
+		proofOfExistence.setTime(diagnosticData.getValidationDate());
+		return proofOfExistence;
 	}
 
 	@Override
 	protected boolean process() {
+		
 
 		/*
 		 * 1) Token signature validation: the building block shall perform the validation process for Basic Signatures
@@ -150,84 +160,90 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 		 * continue with step 5. 
 		 */
 		XmlXCV xcv = signatureBBB.getXCV();
-		XmlConclusion xcvConclusion = xcv.getConclusion();
-		XmlConclusion x509ValidationStatus = xcvConclusion;
-		if (Indication.INDETERMINATE.equals(xcvConclusion.getIndication()) && SubIndication.REVOKED_NO_POE.equals(xcvConclusion.getSubIndication())) {
-			SignatureWrapper currentSignature = diagnosticData.getSignatureById(signatureBBB.getId());
-			List<TimestampWrapper> contentTimestamps = currentSignature.getTimestampListByType(TimestampType.CONTENT_TIMESTAMP);
-			if (Utils.isCollectionNotEmpty(contentTimestamps)) {
-				boolean failed = false;
-				Date revocationDate = getRevocationDateForSigningCertificate(currentSignature);
-				for (TimestampWrapper timestamp : contentTimestamps) {
-					if (isValidTimestamp(timestamp)) {
-						Date tspProductionTime = timestamp.getProductionTime();
-						if (tspProductionTime.after(revocationDate)) {
-							failed = true;
-							break;
+		XmlConclusion x509ValidationStatus = null;
+		if (xcv != null) {
+			XmlConclusion xcvConclusion = x509ValidationStatus = xcv.getConclusion();
+			if (Indication.INDETERMINATE.equals(xcvConclusion.getIndication()) && SubIndication.REVOKED_NO_POE.equals(xcvConclusion.getSubIndication())) {
+				SignatureWrapper currentSignature = diagnosticData.getSignatureById(signatureBBB.getId());
+				List<TimestampWrapper> contentTimestamps = currentSignature.getTimestampListByType(TimestampType.CONTENT_TIMESTAMP);
+				if (Utils.isCollectionNotEmpty(contentTimestamps)) {
+					boolean failed = false;
+					Date revocationDate = getRevocationDateForSigningCertificate(currentSignature);
+					for (TimestampWrapper timestamp : contentTimestamps) {
+						if (isValidTimestamp(timestamp)) {
+							Date tspProductionTime = timestamp.getProductionTime();
+							if (tspProductionTime.after(revocationDate)) {
+								failed = true;
+								break;
+							}
 						}
+					}
+
+					if (failed) {
+						x509ValidationStatus.setIndication(Indication.FAILED);
+						x509ValidationStatus.setSubIndication(SubIndication.REVOKED);
+						errors.addAll(xcvConclusion.getErrors());
 					}
 				}
 
-				if (failed) {
-					x509ValidationStatus.setIndication(Indication.FAILED);
-					x509ValidationStatus.setSubIndication(SubIndication.REVOKED);
-					errors.addAll(xcvConclusion.getErrors());
-				}
+				x509ValidationStatus.setIndication(Indication.INDETERMINATE);
+				x509ValidationStatus.setSubIndication(SubIndication.REVOKED_NO_POE);
+				errors.addAll(xcvConclusion.getErrors());
+
 			}
-
-			x509ValidationStatus.setIndication(Indication.INDETERMINATE);
-			x509ValidationStatus.setSubIndication(SubIndication.REVOKED_NO_POE);
-			errors.addAll(xcvConclusion.getErrors());
-
-		} 
-		/*
-		 * If the signing certificate validation process returns the indication INDETERMINATE with the sub-indication
-		 * OUT_OF_BOUNDS_NO_POE and if the signature contains a content-time-stamp attribute, the Basic Signature
-		 * validation process shall perform the validation process for AdES time-stamps as defined in clause 5.4. If it
-		 * returns the indication PASSED and the generation time of the time-stamp token is after the expiration date of
-		 * the signing certificate, the Basic Signature validation process shall return the indication INDETERMINATE
-		 * with the sub-indication EXPIRED. Otherwise, the Basic
-		 * Signature validation process shall set X509_validation-status to INDETERMINATE with the sub-indication
-		 * OUT_OF_BOUNDS_NO_POE. The process shall continue with step 5. 
-		 */
-		else if (Indication.INDETERMINATE.equals(xcvConclusion.getIndication())
-				&& SubIndication.OUT_OF_BOUNDS_NO_POE.equals(xcvConclusion.getSubIndication())) {
-			SignatureWrapper currentSignature = diagnosticData.getSignatureById(signatureBBB.getId());
-			List<TimestampWrapper> contentTimestamps = currentSignature.getTimestampListByType(TimestampType.CONTENT_TIMESTAMP);
-			if (Utils.isCollectionNotEmpty(contentTimestamps)) {
-				boolean failed = false;
-				Date expirationDate = getExpirationDateForSigningCertificate(currentSignature);
-				for (TimestampWrapper timestamp : contentTimestamps) {
-					if (isValidTimestamp(timestamp)) {
-						Date tspProductionTime = timestamp.getProductionTime();
-						if (tspProductionTime.after(expirationDate)) {
-							failed = true;
-							break;
+			/*
+			 * If the signing certificate validation process returns the indication
+			 * INDETERMINATE with the sub-indication OUT_OF_BOUNDS_NO_POE and if the
+			 * signature contains a content-time-stamp attribute, the Basic Signature
+			 * validation process shall perform the validation process for AdES time-stamps
+			 * as defined in clause 5.4. If it returns the indication PASSED and the
+			 * generation time of the time-stamp token is after the expiration date of the
+			 * signing certificate, the Basic Signature validation process shall return the
+			 * indication INDETERMINATE with the sub-indication EXPIRED. Otherwise, the
+			 * Basic Signature validation process shall set X509_validation-status to
+			 * INDETERMINATE with the sub-indication OUT_OF_BOUNDS_NO_POE. The process shall
+			 * continue with step 5.
+			 */
+			else if (Indication.INDETERMINATE.equals(xcvConclusion.getIndication())
+					&& SubIndication.OUT_OF_BOUNDS_NO_POE.equals(xcvConclusion.getSubIndication())) {
+				SignatureWrapper currentSignature = diagnosticData.getSignatureById(signatureBBB.getId());
+				List<TimestampWrapper> contentTimestamps = currentSignature.getTimestampListByType(TimestampType.CONTENT_TIMESTAMP);
+				if (Utils.isCollectionNotEmpty(contentTimestamps)) {
+					boolean failed = false;
+					Date expirationDate = getExpirationDateForSigningCertificate(currentSignature);
+					for (TimestampWrapper timestamp : contentTimestamps) {
+						if (isValidTimestamp(timestamp)) {
+							Date tspProductionTime = timestamp.getProductionTime();
+							if (tspProductionTime.after(expirationDate)) {
+								failed = true;
+								break;
+							}
 						}
+					}
+
+					if (failed) {
+						x509ValidationStatus.setIndication(Indication.INDETERMINATE);
+						x509ValidationStatus.setSubIndication(SubIndication.EXPIRED);
+						errors.addAll(xcvConclusion.getErrors());
 					}
 				}
 
-				if (failed) {
-					x509ValidationStatus.setIndication(Indication.INDETERMINATE);
-					x509ValidationStatus.setSubIndication(SubIndication.EXPIRED);
-					errors.addAll(xcvConclusion.getErrors());
-				}
+				x509ValidationStatus.setIndication(Indication.INDETERMINATE);
+				x509ValidationStatus.setSubIndication(SubIndication.OUT_OF_BOUNDS_NO_POE);
+				errors.addAll(xcvConclusion.getErrors());
+
 			}
-
-			x509ValidationStatus.setIndication(Indication.INDETERMINATE);
-			x509ValidationStatus.setSubIndication(SubIndication.OUT_OF_BOUNDS_NO_POE);
-			errors.addAll(xcvConclusion.getErrors());
-
-		} 
-		/*
-		 * In all other cases, the Basic Signature validation process shall return the indication, sub-indication and
-		 * any associated information returned by the signing certificate validation process.
-		 */
-		else if (!Indication.PASSED.equals(xcvConclusion.getIndication())) {
-			indication = xcvConclusion.getIndication();
-			subIndication = xcvConclusion.getSubIndication();
-			errors.addAll(xcvConclusion.getErrors());
-			return false;
+			/*
+			 * In all other cases, the Basic Signature validation process shall return the
+			 * indication, sub-indication and any associated information returned by the
+			 * signing certificate validation process.
+			 */
+			else if (!Indication.PASSED.equals(xcvConclusion.getIndication())) {
+				indication = xcvConclusion.getIndication();
+				subIndication = xcvConclusion.getSubIndication();
+				errors.addAll(xcvConclusion.getErrors());
+				return false;
+			}
 		}
 
 		/*
@@ -251,7 +267,7 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 		XmlCV cv = signatureBBB.getCV();
 		XmlConclusion cvConclusion = cv.getConclusion();
 		if (Indication.PASSED.equals(cvConclusion.getIndication())) {
-			if (!Indication.PASSED.equals(x509ValidationStatus.getIndication())) {
+			if (x509ValidationStatus != null && !Indication.PASSED.equals(x509ValidationStatus.getIndication())) {
 				indication = x509ValidationStatus.getIndication();
 				subIndication = x509ValidationStatus.getSubIndication();
 				return false;
@@ -337,15 +353,15 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 	}
 
 	private Date getRevocationDateForSigningCertificate(SignatureWrapper currentSignature) {
-		CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(currentSignature.getSigningCertificateId());
-		if (signingCertificate != null && signingCertificate.getRevocationData() != null) {
-			return signingCertificate.getLatestRevocationData().getRevocationDate();
+		CertificateWrapper signingCertificate = currentSignature.getSigningCertificate();
+		if (signingCertificate != null && Utils.isCollectionNotEmpty(signingCertificate.getCertificateRevocationData())) {
+			return diagnosticData.getLatestRevocationDataForCertificate(signingCertificate).getRevocationDate();
 		}
 		return null;
 	}
 
 	private Date getExpirationDateForSigningCertificate(SignatureWrapper currentSignature) {
-		CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(currentSignature.getSigningCertificateId());
+		CertificateWrapper signingCertificate = currentSignature.getSigningCertificate();
 		if (signingCertificate != null) {
 			return signingCertificate.getNotAfter();
 		}

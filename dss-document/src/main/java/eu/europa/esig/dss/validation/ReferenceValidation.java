@@ -21,8 +21,11 @@
 package eu.europa.esig.dss.validation;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-import eu.europa.esig.dss.Digest;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.model.Digest;
 
 /**
  * This class is used to store individual reference validations.
@@ -34,7 +37,7 @@ import eu.europa.esig.dss.Digest;
  */
 public class ReferenceValidation implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1303869856995695436L;
 
 	private DigestMatcherType type;
 
@@ -42,11 +45,14 @@ public class ReferenceValidation implements Serializable {
 	private boolean found;
 	/* The pointed reference is intact */
 	private boolean intact;
-	/* The embed digest value */
+	/* The digest value embedded in reference element */
 	private Digest digest;
-
-	/* For XAdES : reference name/id */
+	/* Name of the reference */
 	private String name;
+	/* List of used transforms to compute digest of the reference */
+	protected List<String> transforms;
+	/* List of dependent {@code ReferenceValidation}s (used in case of manifest type for manifest entries) */
+	private List<ReferenceValidation> dependentReferenceValidations;
 
 	public DigestMatcherType getType() {
 		return type;
@@ -83,9 +89,34 @@ public class ReferenceValidation implements Serializable {
 	public String getName() {
 		return name;
 	}
-
+	
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	/**
+	 * Returns a list of dependent validations from {@code this}
+	 * Note: used to contain manifest entries
+	 * 
+	 * @return list of {@link ReferenceValidation}s
+	 */
+	public List<ReferenceValidation> getDependentValidations() {
+		if (dependentReferenceValidations == null) {
+			dependentReferenceValidations = new ArrayList<ReferenceValidation>();
+		}
+		return dependentReferenceValidations;
+	}
+
+	/**
+	 * Returns a list of transformations contained in the {@code reference}
+	 * @return list of transformation names
+	 */
+	public List<String> getTransformationNames() {
+		return transforms;
+	}
+	
+	public void setTransformationNames(List<String> transforms) {
+		this.transforms = transforms;
 	}
 
 }

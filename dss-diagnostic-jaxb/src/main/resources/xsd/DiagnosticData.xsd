@@ -3,39 +3,68 @@
 	elementFormDefault="qualified" targetNamespace="http://dss.esig.europa.eu/validation/diagnostic"
 	xmlns="http://dss.esig.europa.eu/validation/diagnostic" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 	
-	<xs:element name="DiagnosticData">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="DocumentName" type="xs:string" minOccurs="0" />
-				<xs:element name="ValidationDate" type="xs:dateTime" />
-				<xs:element name="ContainerInfo" type="ContainerInfo" minOccurs="0" />
-				<xs:element name="Signatures" minOccurs="0">
-					<xs:complexType>
-						<xs:sequence>
-							<xs:element name="Signature" type="Signature" minOccurs="0" maxOccurs="unbounded" />
-						</xs:sequence>
-					</xs:complexType>
-				</xs:element>
-				<xs:element name="UsedCertificates" minOccurs="0">
-					<xs:complexType>
-						<xs:sequence>
-							<xs:element name="Certificate" type="Certificate" minOccurs="0" maxOccurs="unbounded" />
-						</xs:sequence>
-					</xs:complexType>
-				</xs:element>
-				
-				<xs:element name="TrustedLists" minOccurs="0">
-					<xs:complexType>
-						<xs:sequence>
-							<xs:element name="TrustedList" type="TrustedList" minOccurs="0" maxOccurs="unbounded" />
-						</xs:sequence>
-					</xs:complexType>
-				</xs:element>
-				<xs:element name="ListOfTrustedLists" type="TrustedList" minOccurs="0" />
-				
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
+	<!-- Root element -->
+	<xs:element name="DiagnosticData" type="DiagnosticData"/>
+	
+	<xs:complexType name="DiagnosticData">
+		<xs:sequence>
+			<xs:element name="DocumentName" type="xs:string" minOccurs="0" />
+			<xs:element name="ValidationDate" type="xs:dateTime" />
+			<xs:element name="ContainerInfo" type="ContainerInfo" minOccurs="0" />
+			<xs:element name="Signatures" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Signature" type="Signature" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="UsedCertificates" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Certificate" type="Certificate" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="UsedRevocations" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Revocation" type="Revocation" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="UsedTimestamps" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Timestamp" type="Timestamp" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="OrphanTokens" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="OrphanToken" type="OrphanToken" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="OriginalDocuments" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="SignerData" type="SignerData" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="TrustedLists" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="TrustedList" type="TrustedList" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ListOfTrustedLists" type="TrustedList" minOccurs="0" />
+			
+		</xs:sequence>
+	</xs:complexType>
 	
 	<xs:complexType name="ContainerInfo">
 		<xs:sequence>
@@ -75,69 +104,100 @@
 			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
+	
+	<xs:complexType name="AbstractToken" abstract="true">
+		<xs:attribute name="Id" type="xs:ID" use="required" />
+	</xs:complexType>
 
 	<xs:complexType name="Signature">
-		<xs:sequence>
-			<xs:element name="SignatureFilename" type="xs:string" />
-			<xs:element name="ParentId" type="xs:string" minOccurs="0" />
-			<xs:element name="ErrorMessage" type="xs:string" minOccurs="0" />
-			<xs:element name="DateTime" type="xs:dateTime" minOccurs="0" />
-			<xs:element name="SignatureFormat" type="xs:string" />
-
-			<xs:element name="StructuralValidation"	type="StructuralValidation" minOccurs="0" />
-			
-			<xs:element name="DigestMatchers" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="DigestMatcher" type="DigestMatcher" minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			
-			<xs:element name="BasicSignature" type="BasicSignature" />
-			<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
-			<xs:element name="CertificateChain"	type="CertificateChain" minOccurs="0" />
-
-			<xs:element name="ContentType" type="xs:string" minOccurs="0" />
-			<xs:element name="ContentIdentifier" type="xs:string" minOccurs="0" />
-			<xs:element name="ContentHints" type="xs:string" minOccurs="0" />
-			<xs:element name="SignatureProductionPlace" type="SignatureProductionPlace" minOccurs="0" />
-			<xs:element name="CommitmentTypeIndication" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="Indication" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			<xs:element name="ClaimedRoles" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="ClaimedRoles" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			<xs:element name="CertifiedRoles" type="CertifiedRole" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="Policy" type="Policy" minOccurs="0" />
-			
-			<xs:element name="Timestamps" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="Timestamp" type="Timestamp" minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			
-			<xs:element name="SignatureScopes" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="SignatureScope" type="SignatureScope" minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			
-		</xs:sequence>
-		<xs:attribute name="Id" type="xs:string" use="required" />
-		<xs:attribute name="CounterSignature" type="xs:boolean" use="optional" />
+		<xs:complexContent>
+            <xs:extension base="AbstractToken">
+				<xs:sequence>
+					<xs:element name="DAIdentifier" type="xs:string" minOccurs="0" /> <!-- ID produced by a signer application -->
+					<xs:element name="SignatureFilename" type="xs:string" />
+					<xs:element name="ErrorMessage" type="xs:string" minOccurs="0" />
+					<xs:element name="DateTime" type="xs:dateTime" minOccurs="0" />
+					<xs:element name="SignatureFormat" type="SignatureFormat" />
+		
+					<xs:element name="StructuralValidation"	type="StructuralValidation" minOccurs="0" />
+					
+					<xs:element name="DigestMatchers" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="DigestMatcher" type="DigestMatcher" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					
+					<xs:element name="BasicSignature" type="BasicSignature" />
+					<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
+					<xs:element name="CertificateChain"	type="CertificateChain" minOccurs="0" />
+		
+					<xs:element name="ContentType" type="xs:string" minOccurs="0" />
+					<xs:element name="MimeType" type="xs:string" minOccurs="0" />
+					<xs:element name="ContentIdentifier" type="xs:string" minOccurs="0" />
+					<xs:element name="ContentHints" type="xs:string" minOccurs="0" />
+					<xs:element name="SignatureProductionPlace" type="SignatureProductionPlace" minOccurs="0" />
+					<xs:element name="CommitmentTypeIndication" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="Indication" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SignerRole" type="SignerRole" minOccurs="0" maxOccurs="unbounded" />
+					<xs:element name="Policy" type="Policy" minOccurs="0" />
+					<xs:element name="PDFSignatureDictionary" type="PDFSignatureDictionary" minOccurs="0" />
+					
+					<xs:element name="SignerDocumentRepresentations" minOccurs="0">
+						<xs:complexType>
+							<xs:attribute name="HashOnly" type="xs:boolean" use="required" />
+							<xs:attribute name="DocHashOnly" type="xs:boolean" use="required" />
+						</xs:complexType>
+					</xs:element>
+					
+					<xs:element name="FoundCertificates">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="RelatedCertificate" type="RelatedCertificate" minOccurs="0" maxOccurs="unbounded" />
+								<xs:element name="OrphanCertificate" type="OrphanCertificate" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					
+					<xs:element name="FoundRevocations">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="RelatedRevocation" type="RelatedRevocation" minOccurs="0" maxOccurs="unbounded" />
+								<xs:element name="OrphanRevocation" type="OrphanRevocation" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+								
+					<xs:element name="FoundTimestamps">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="FoundTimestamp" type="FoundTimestamp" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					
+					<xs:element name="SignatureScopes">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="SignatureScope" type="SignatureScope" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					
+					<xs:element name="SignatureDigestReference" type="SignatureDigestReference" />
+					<xs:element name="SignatureValue" type="xs:base64Binary" minOccurs="0" />
+					
+				</xs:sequence>
+				<xs:attribute name="CounterSignature" type="xs:boolean" use="optional" />
+				<xs:attribute name="Parent" type="xs:IDREF" use="optional" />
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 	
 	<xs:complexType name="SignatureProductionPlace">
@@ -156,6 +216,7 @@
 			<xs:element name="Url" type="xs:string" minOccurs="0" />
 			<xs:element name="Description" type="xs:string" minOccurs="0" />
 			<xs:element name="Notice" type="xs:string" minOccurs="0" />
+			<xs:element name="ZeroHash" type="xs:boolean" minOccurs="0" />
 			<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" minOccurs="0" />
 			<xs:element name="Asn1Processable" type="xs:boolean" minOccurs="0" />
 			<xs:element name="Identified" type="xs:boolean" minOccurs="0" />
@@ -165,115 +226,144 @@
 		</xs:sequence>
 	</xs:complexType>
 	
-	<xs:complexType name="Certificate">
+	<xs:complexType name="PDFSignatureDictionary">
 		<xs:sequence>
-			<xs:element name="SubjectDistinguishedName" type="DistinguishedName" maxOccurs="unbounded" />
-			<xs:element name="IssuerDistinguishedName" type="DistinguishedName" maxOccurs="unbounded" />
-			<xs:element name="SerialNumber" type="xs:integer" />
-			<xs:element name="CommonName" type="xs:string" minOccurs="0"/>
-			<xs:element name="Locality" type="xs:string" minOccurs="0"/>
-			<xs:element name="State" type="xs:string" minOccurs="0"/>
-			<xs:element name="CountryName" type="xs:string" minOccurs="0"/>
-			<xs:element name="OrganizationName" type="xs:string" minOccurs="0"/>
-			<xs:element name="GivenName" type="xs:string" minOccurs="0"/>
-			<xs:element name="OrganizationalUnit" type="xs:string" minOccurs="0"/>
-			<xs:element name="Surname" type="xs:string" minOccurs="0"/>
-			<xs:element name="Pseudonym" type="xs:string" minOccurs="0"/>
-			<xs:element name="Email" type="xs:string" minOccurs="0"/>
-			
-			<xs:element name="AuthorityInformationAccessUrls" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="Url" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
+			<xs:element name="SignatureFieldName" type="xs:string" minOccurs="0" />
+			<xs:element name="SignerName" type="xs:string" minOccurs="0" />
+			<xs:element name="Filter" type="xs:string" minOccurs="0" />
+			<xs:element name="SubFilter" type="xs:string" minOccurs="0" />
+			<xs:element name="ContactInfo" type="xs:string" minOccurs="0" />
+			<xs:element name="Reason" type="xs:string" minOccurs="0" />
+			<xs:element name="SignatureByteRange" minOccurs="0" >
+				<xs:simpleType>
+					<xs:list itemType="xs:integer"/>
+				</xs:simpleType>
 			</xs:element>
-			<xs:element name="CRLDistributionPoints" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="Url" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			<xs:element name="OCSPAccessUrls" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="Url" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			
-			<xs:element name="DigestAlgoAndValues" type="DigestAlgoAndValues" minOccurs="0" />
-			<xs:element name="NotAfter" type="xs:dateTime" />
-			<xs:element name="NotBefore" type="xs:dateTime" />
-			<xs:element name="PublicKeySize" type="xs:int" />
-			<xs:element name="PublicKeyEncryptionAlgo" type="xs:string" />
-
-			<xs:element name="KeyUsageBits" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="KeyUsage" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			<xs:element name="ExtendedKeyUsages" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="oid" type="OID" minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			
-			<xs:element name="IdPkixOcspNoCheck" type="xs:boolean" minOccurs="0" />
-
-			<xs:element name="BasicSignature" type="BasicSignature" />
-			<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
-			<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
-
-			<xs:element name="Trusted" type="xs:boolean" />
-			<xs:element name="SelfSigned" type="xs:boolean" />
-			
-			<xs:element name="CertificatePolicies" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="certificatePolicy" type="CertificatePolicy" minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			<xs:element name="QCStatementIds" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="oid" type="OID" minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			<xs:element name="QCTypes" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="oid" type="OID" minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-						
-			<xs:element name="TrustedServiceProviders">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="TrustedServiceProvider" type="TrustedServiceProvider" minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			
-			<xs:element name="Revocations" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="Revocation" type="Revocation" minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			
-			<xs:element name="Base64Encoded" type="xs:base64Binary" minOccurs="0" />
 		</xs:sequence>
-		<xs:attribute name="Id" type="xs:string" use="required" />
+	</xs:complexType>
+	
+	<xs:complexType name="Certificate">
+		<xs:complexContent>
+            <xs:extension base="AbstractToken">
+				<xs:sequence>
+					<xs:element name="SubjectDistinguishedName" type="DistinguishedName" maxOccurs="unbounded" />
+					<xs:element name="IssuerDistinguishedName" type="DistinguishedName" maxOccurs="unbounded" />
+					<xs:element name="SerialNumber" type="xs:integer" />
+					<xs:element name="CommonName" type="xs:string" minOccurs="0"/>
+					<xs:element name="Locality" type="xs:string" minOccurs="0"/>
+					<xs:element name="State" type="xs:string" minOccurs="0"/>
+					<xs:element name="CountryName" type="xs:string" minOccurs="0"/>
+					<xs:element name="OrganizationName" type="xs:string" minOccurs="0"/>
+					<xs:element name="GivenName" type="xs:string" minOccurs="0"/>
+					<xs:element name="OrganizationalUnit" type="xs:string" minOccurs="0"/>
+					<xs:element name="Surname" type="xs:string" minOccurs="0"/>
+					<xs:element name="Pseudonym" type="xs:string" minOccurs="0"/>
+					<xs:element name="Email" type="xs:string" minOccurs="0"/>
+					
+					<xs:element name="AuthorityInformationAccessUrls" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="aiaUrl" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="CRLDistributionPoints" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="crlUrl" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="OCSPAccessUrls" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="ocspServerUrl" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					
+					<xs:element name="Sources">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="Source" type="CertificateSourceType" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					
+					<xs:element name="NotAfter" type="xs:dateTime" />
+					<xs:element name="NotBefore" type="xs:dateTime" />
+					<xs:element name="PublicKeySize" type="xs:int" />
+					<xs:element name="PublicKeyEncryptionAlgo" type="xs:string" />
+		
+					<xs:element name="KeyUsageBits" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="KeyUsage" type="KeyUsage" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="ExtendedKeyUsages" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="extendedKeyUsagesOid" type="OID" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					
+					<xs:element name="IdPkixOcspNoCheck" type="xs:boolean" minOccurs="0" />
+		
+					<xs:element name="BasicSignature" type="BasicSignature" />
+					<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
+					<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
+		
+					<xs:element name="Trusted" type="xs:boolean" />
+					<xs:element name="SelfSigned" type="xs:boolean" />
+					
+					<xs:element name="CertificatePolicies" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="certificatePolicy" type="CertificatePolicy" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="QCStatementIds" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="qcStatementOid" type="OID" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="QCTypes" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="qcTypeOid" type="OID" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+								
+					<xs:element name="TrustedServiceProviders" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="TrustedServiceProvider" type="TrustedServiceProvider" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					
+					<xs:element name="Revocations" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="CertificateRevocation" type="CertificateRevocation" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					
+					<xs:choice>
+						<xs:element name="Base64Encoded" type="xs:base64Binary" />
+						<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" />
+					</xs:choice>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 	
 	<xs:complexType name="OID">
@@ -301,18 +391,59 @@
 	</xs:complexType>
 	
 	<xs:complexType name="SignatureScope">
-		<xs:simpleContent>
-			<xs:extension base="xs:string">
-				<xs:attribute name="name" type="xs:string" use="required" />
-				<xs:attribute name="scope" type="ScopeType" use="required" />
-			</xs:extension>
-		</xs:simpleContent>
+		<xs:sequence>
+			<xs:element name="Scope" type="ScopeType" />
+			<xs:element name="Name" type="xs:string" />
+			<xs:element name="Description" type="xs:string" />
+			<xs:element name="Transformations" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Transformation" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="SignerData" type="xs:IDREF" use="required" />
 	</xs:complexType>
+	
+	<xs:simpleType name="SignatureFormat" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="XML-NOT-ETSI" />
+			<xs:enumeration value="XAdES-C" />
+			<xs:enumeration value="XAdES-X" />
+			<xs:enumeration value="XAdES-XL" />
+			<xs:enumeration value="XAdES-A" />
+			<xs:enumeration value="XAdES-BASELINE-LTA" />
+			<xs:enumeration value="XAdES-BASELINE-LT" />
+			<xs:enumeration value="XAdES-BASELINE-T" />
+			<xs:enumeration value="XAdES-BASELINE-B" />
+			<xs:enumeration value="CMS-NOT-ETSI" />
+			<xs:enumeration value="CAdES-BASELINE-LTA" />
+			<xs:enumeration value="CAdES-BASELINE-LT" />
+			<xs:enumeration value="CAdES-BASELINE-T" />
+			<xs:enumeration value="CAdES-BASELINE-B" />
+			<xs:enumeration value="CAdES-101733-C" />
+			<xs:enumeration value="CAdES-101733-X" />
+			<xs:enumeration value="CAdES-101733-A" />
+			<xs:enumeration value="PDF-NOT-ETSI" />
+			<xs:enumeration value="PAdES-BASELINE-LTA" />
+			<xs:enumeration value="PAdES-BASELINE-LT" />
+			<xs:enumeration value="PAdES-BASELINE-T" />
+			<xs:enumeration value="PAdES-BASELINE-B" />
+			<xs:enumeration value="PKCS7-B" />
+			<xs:enumeration value="PKCS7-T" />
+			<xs:enumeration value="PKCS7-LT" />
+			<xs:enumeration value="PKCS7-LTA" />
+			<xs:enumeration value="UNKNOWN" />
+		</xs:restriction>
+	</xs:simpleType>
 	
 	<xs:simpleType name="ScopeType" final="restriction">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="FULL" />
 			<xs:enumeration value="PARTIAL" />
+			<xs:enumeration value="DIGEST" />
+			<xs:enumeration value="ARCHIVED" />
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -341,58 +472,55 @@
 			<xs:element name="DigestValueMatch" type="xs:boolean" minOccurs="0" />
 			<xs:element name="IssuerSerialMatch" type="xs:boolean" minOccurs="0" />
 		</xs:sequence>
-		<xs:attribute name="Id" type="xs:string" use="required" />
+		<xs:attribute name="Certificate" type="xs:IDREF" use="required" />
 	</xs:complexType>
 	
 	<xs:complexType name="TimestampedObjects">
 		<xs:sequence>
-			<xs:element name="TimestampedObject" type="TimestampedObject" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="TimestampedObject" type="TimestampedObject" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 	
 	<xs:complexType name="TimestampedObject">
-		<xs:sequence>
-			<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" minOccurs="0" maxOccurs="1" />
-		</xs:sequence>
-		<xs:attribute name="Id" type="xs:string" use="optional" />
+		<xs:sequence/>
+		<xs:attribute name="Token" type="xs:IDREF" use="required" />
 		<xs:attribute name="Category" type="TimestampedObjectType" use="required" />
 	</xs:complexType>
 	
 	<xs:simpleType name="TimestampedObjectType" final="restriction">
 		<xs:restriction base="xs:string">
-			<xs:enumeration value="CERTIFICATE" />
+			<xs:enumeration value="SIGNED_DATA" />
 			<xs:enumeration value="SIGNATURE" />
-			<xs:enumeration value="TIMESTAMP" />
+			<xs:enumeration value="CERTIFICATE" />
 			<xs:enumeration value="REVOCATION" />
+			<xs:enumeration value="TIMESTAMP" />
+			<xs:enumeration value="ORPHAN" />
 		</xs:restriction>
 	</xs:simpleType>
-	
+    
 	<xs:complexType name="CertificateChain">
 		<xs:sequence>
 			<xs:element name="ChainItem" minOccurs="0" maxOccurs="unbounded">
 				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="Source" type="xs:string" />
-					</xs:sequence>
-					<xs:attribute name="Id" type="xs:string" use="required" />
+					<xs:attribute name="Certificate" type="xs:IDREF" use="required" />
 				</xs:complexType>
 			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
 	
-	<xs:complexType name="CertifiedRole">
+	<xs:complexType name="SignerRole">
 		<xs:sequence>
-			<xs:element name="CertifiedRole" type="xs:string" />
-			<xs:element name="NotAfter" type="xs:dateTime" />
-			<xs:element name="NotBefore" type="xs:dateTime" />
+			<xs:element name="Role" type="xs:string" />
+			<xs:element name="NotAfter" type="xs:dateTime" minOccurs="0" />
+			<xs:element name="NotBefore" type="xs:dateTime" minOccurs="0" />
 		</xs:sequence>
-		<xs:attribute name="Category" type="xs:string" use="required" />
+		<xs:attribute name="Category" type="EndorsementType" use="required" />
 	</xs:complexType>
 	
 	<xs:complexType name="DigestAlgoAndValue">
 		<xs:sequence>
 			<xs:element name="DigestMethod" type="xs:string" minOccurs="0" /> <!-- Optional in case the digest cannot be retrieved -->
-			<xs:element name="DigestValue" type="xs:string" minOccurs="0"/>
+			<xs:element name="DigestValue" type="xs:base64Binary" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -409,6 +537,14 @@
 		</xs:complexContent>
 	</xs:complexType>
 	
+	<xs:simpleType name="EndorsementType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="certified" />
+			<xs:enumeration value="claimed" />
+			<xs:enumeration value="signed" />
+		</xs:restriction>
+	</xs:simpleType>
+	
 	<xs:simpleType name="DigestMatcherType" final="restriction">
 		<xs:restriction base="xs:string">
 			<!-- XAdES -->
@@ -418,57 +554,309 @@
 			<xs:enumeration value="MANIFEST" />
 			<xs:enumeration value="MANIFEST_ENTRY" />
 			<xs:enumeration value="SIGNED_PROPERTIES" />
+			<xs:enumeration value="XPOINTER" />
 			
 			<!-- CAdES -->
 			<xs:enumeration value="MESSAGE_DIGEST" />
+			<!-- Digest from decrypted content SignatureValue (CAdES/PAdES) -->
+			<xs:enumeration value="CONTENT_DIGEST" />
 			
 			<!-- TIMESTAMP -->
 			<xs:enumeration value="MESSAGE_IMPRINT" />
 		</xs:restriction>
 	</xs:simpleType>
 	
-	<xs:complexType name="Timestamp">
+	<xs:complexType name="SignatureDigestReference">
 		<xs:sequence>
-			<xs:element name="ProductionTime" type="xs:dateTime" />
-			<xs:element name="DigestMatcher" type="DigestMatcher" />
-			<xs:element name="BasicSignature" type="BasicSignature" />
-			<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
-			<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
-
-			<xs:element name="TimestampedObjects" type="TimestampedObjects" minOccurs="0" />
-
-			<xs:element name="Base64Encoded" type="xs:base64Binary" minOccurs="0" />
+			<xs:element name="CanonicalizationMethod" type="xs:string" minOccurs="0" /> <!-- Used in XAdES only -->
+			<xs:element name="DigestMethod" type="xs:string" />
+			<xs:element name="DigestValue" type="xs:base64Binary" />
 		</xs:sequence>
-		<xs:attribute name="Id" type="xs:string" use="required" />
-		<xs:attribute name="Type" type="xs:string" use="required" />
 	</xs:complexType>
 	
-	<xs:complexType name="Revocation">
+	<xs:complexType name="FoundCertificate" abstract="true">
 		<xs:sequence>
-			<xs:element name="Origin" type="xs:string" />
-			<xs:element name="Source" type="xs:string" />
-			<xs:element name="SourceAddress" type="xs:string" minOccurs="0" />
-			<xs:element name="Available" type="xs:boolean" minOccurs="0" />
-			<xs:element name="Status" type="xs:boolean" />
-			<xs:element name="Reason" type="xs:string" minOccurs="0" />
-			<xs:element name="ProductionDate" type="xs:dateTime" minOccurs="0" /> <!-- Can be null in case of no SUCCESSFUL response of OCSP -->
-			<xs:element name="ThisUpdate" type="xs:dateTime" minOccurs="0" />
-			<xs:element name="NextUpdate" type="xs:dateTime" minOccurs="0" />
-			<xs:element name="RevocationDate" type="xs:dateTime" minOccurs="0" />
-			<xs:element name="ExpiredCertsOnCRL" type="xs:dateTime" minOccurs="0" /> <!-- CRL -->
-			<xs:element name="ArchiveCutOff" type="xs:dateTime" minOccurs="0" /> <!-- OCSP -->
-			<xs:element name="CertHashExtensionPresent" type="xs:boolean" minOccurs="0" /> <!-- OCSP -->
-			<xs:element name="CertHashExtensionMatch" type="xs:boolean" minOccurs="0" /> <!-- OCSP -->
-
-			<xs:element name="DigestAlgoAndValues" type="DigestAlgoAndValues" minOccurs="0" />
-			
-			<xs:element name="BasicSignature" type="BasicSignature" minOccurs="0" /> <!-- Can be null in case of no SUCCESSFUL response of OCSP -->
-			<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
-			<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
-			
-			<xs:element name="Base64Encoded" type="xs:base64Binary" minOccurs="0" />
+			<xs:element name="Origin" type="CertificateOriginType" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="CertificateRef" type="CertificateRef" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
-		<xs:attribute name="Id" type="xs:string" use="required" />
+	</xs:complexType>
+	
+	<xs:complexType name="RelatedCertificate">
+		<xs:complexContent>
+            <xs:extension base="FoundCertificate">
+				<xs:attribute name="Certificate" type="xs:IDREF" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="OrphanCertificate">
+		<xs:complexContent>
+            <xs:extension base="FoundCertificate">
+            	<xs:attribute name="Token" type="xs:IDREF" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="CertificateRef">
+		<xs:sequence>
+			<xs:element name="Origin" type="CertificateRefOriginType" />
+			<xs:element name="IssuerSerial" type="xs:base64Binary" minOccurs="0" />
+			<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="CertificateSourceType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="TRUSTED_STORE" />
+			<xs:enumeration value="TRUSTED_LIST" />
+			<xs:enumeration value="SIGNATURE" />
+			<xs:enumeration value="OCSP_RESPONSE" />
+			<xs:enumeration value="OTHER" />
+			<xs:enumeration value="AIA" />
+			<xs:enumeration value="TIMESTAMP" />
+			<xs:enumeration value="UNKNOWN" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="CertificateOriginType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="KEY_INFO" />
+			<xs:enumeration value="CERTIFICATE_VALUES" />
+			<xs:enumeration value="ATTR_AUTORITIES_CERT_VALUES" />
+			<xs:enumeration value="TIMESTAMP_VALIDATION_DATA" />
+			<xs:enumeration value="DSS_DICTIONARY" />
+			<xs:enumeration value="VRI_DICTIONARY" />
+			<xs:enumeration value="TIMESTAMP_CERTIFICATE_VALUES" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="CertificateRefOriginType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="SIGNING_CERTIFICATE" />
+			<xs:enumeration value="COMPLETE_CERTIFICATE_REFS" />
+			<xs:enumeration value="ATTRIBUTE_CERTIFICATE_REFS" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="FoundTimestamp">
+		<xs:attribute name="Timestamp" type="xs:IDREF" use="required" />
+		<xs:attribute name="Location" type="TimestampLocation" use="optional" />
+	</xs:complexType>
+	
+	<xs:complexType name="Timestamp">
+		<xs:complexContent>
+            <xs:extension base="AbstractToken">
+				<xs:sequence>
+					<xs:element name="ArchiveTimestampType" type="ArchiveTimestampType" minOccurs="0" />
+					<xs:element name="ProductionTime" type="xs:dateTime" />
+					<xs:element name="DigestMatcher" type="DigestMatcher" />
+					<xs:element name="BasicSignature" type="BasicSignature" />
+					<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
+					<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
+		
+					<xs:element name="TimestampedObjects" type="TimestampedObjects" minOccurs="0" />
+		
+					<xs:choice>
+						<xs:element name="Base64Encoded" type="xs:base64Binary" />
+						<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" />
+					</xs:choice>
+				</xs:sequence>
+				<xs:attribute name="Type" type="TimestampType" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:simpleType name="TimestampType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CONTENT_TIMESTAMP" />
+			<xs:enumeration value="ALL_DATA_OBJECTS_TIMESTAMP" />
+			<xs:enumeration value="INDIVIDUAL_DATA_OBJECTS_TIMESTAMP" />
+			<xs:enumeration value="SIGNATURE_TIMESTAMP" />
+			<xs:enumeration value="VALIDATION_DATA_REFSONLY_TIMESTAMP" />
+			<xs:enumeration value="VALIDATION_DATA_TIMESTAMP" />
+			<xs:enumeration value="ARCHIVE_TIMESTAMP" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="TimestampLocation" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="XAdES" />
+			<xs:enumeration value="CAdES" />
+			<xs:enumeration value="DOC_TIMESTAMP" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="ArchiveTimestampType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="XAdES" />
+			<xs:enumeration value="XAdES_141" />
+			<xs:enumeration value="CAdES" />
+			<xs:enumeration value="CAdES_V2" />
+			<xs:enumeration value="CAdES_V3" />
+			<xs:enumeration value="CAdES_DETACHED" />
+			<xs:enumeration value="PAdES" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="CertificateRevocation">
+		<xs:sequence>
+			<xs:element name="Status" type="xs:boolean" />
+			<xs:element name="Reason" type="RevocationReason" minOccurs="0" />
+			<xs:element name="RevocationDate" type="xs:dateTime" minOccurs="0" />
+		</xs:sequence>
+		<xs:attribute name="Revocation" type="xs:IDREF" use="required" />
+	</xs:complexType>
+	
+	<xs:simpleType name="RevocationReason" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="unspecified" />
+			<xs:enumeration value="keyCompromise" />
+			<xs:enumeration value="cACompromise" />
+			<xs:enumeration value="affiliationChanged" />
+			<xs:enumeration value="superseded" />
+			<xs:enumeration value="cessationOfOperation" />
+			<xs:enumeration value="certificateHold" />
+			<xs:enumeration value="removeFromCRL" />
+			<xs:enumeration value="privilegeWithdrawn" />
+			<xs:enumeration value="aACompromise" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="KeyUsage" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="digitalSignature" />
+			<xs:enumeration value="nonRepudiation" />
+			<xs:enumeration value="keyEncipherment" />
+			<xs:enumeration value="dataEncipherment" />
+			<xs:enumeration value="keyAgreement" />
+			<xs:enumeration value="keyCertSign" />
+			<xs:enumeration value="crlSign" />
+			<xs:enumeration value="encipherOnly" />
+			<xs:enumeration value="decipherOnly" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="Revocation">
+		<xs:complexContent>
+            <xs:extension base="AbstractToken">
+				<xs:sequence>
+					<xs:element name="Origin" type="RevocationOriginType" />
+					<xs:element name="Type" type="RevocationType" />
+					<xs:element name="SourceAddress" type="xs:string" minOccurs="0" />
+					<xs:element name="ProductionDate" type="xs:dateTime" minOccurs="0" /> <!-- Can be null in case of no SUCCESSFUL response of OCSP -->
+					<xs:element name="ThisUpdate" type="xs:dateTime" minOccurs="0" />
+					<xs:element name="NextUpdate" type="xs:dateTime" minOccurs="0" />
+					<xs:element name="ExpiredCertsOnCRL" type="xs:dateTime" minOccurs="0" /> <!-- CRL -->
+					<xs:element name="ArchiveCutOff" type="xs:dateTime" minOccurs="0" /> <!-- OCSP -->
+					<xs:element name="CertHashExtensionPresent" type="xs:boolean" minOccurs="0" /> <!-- OCSP -->
+					<xs:element name="CertHashExtensionMatch" type="xs:boolean" minOccurs="0" /> <!-- OCSP -->
+					<xs:element name="BasicSignature" type="BasicSignature" minOccurs="0" /> <!-- Can be null in case of no SUCCESSFUL response of OCSP -->
+					<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
+					<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
+					<xs:choice>
+						<xs:element name="Base64Encoded" type="xs:base64Binary" />
+						<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" />
+					</xs:choice>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="FoundRevocation" abstract="true">
+		<xs:sequence>
+			<xs:element name="Type" type="RevocationType" />
+			<xs:element name="Origin" type="RevocationOriginType" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="RevocationRef" type="RevocationRef" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="RelatedRevocation">
+		<xs:complexContent>
+            <xs:extension base="FoundRevocation">
+            	<xs:attribute name="Revocation" type="xs:IDREF" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="OrphanRevocation">
+		<xs:complexContent>
+            <xs:extension base="FoundRevocation">
+            	<xs:attribute name="Token" type="xs:IDREF" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="RevocationRef">
+		<xs:sequence>
+			<xs:element name="Origin" type="RevocationRefOriginType" maxOccurs="unbounded" />
+			<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" minOccurs="0" />
+			<xs:element name="ProducedAt" type="xs:dateTime" minOccurs="0" /> <!-- OCSP -->
+			<xs:choice minOccurs="0"> <!-- OCSP -->
+				<xs:element name="ResponderIdName" type="xs:string" /> <!-- OCSP -->
+				<xs:element name="ResponderIdKey" type="xs:base64Binary" /> <!-- OCSP -->
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="RevocationType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CRL" />
+			<xs:enumeration value="OCSP" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="RevocationOriginType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="REVOCATION_VALUES" />
+			<xs:enumeration value="ATTRIBUTE_REVOCATION_VALUES" />
+			<xs:enumeration value="TIMESTAMP_VALIDATION_DATA" />
+			<xs:enumeration value="DSS_DICTIONARY" />
+			<xs:enumeration value="VRI_DICTIONARY" />
+			<xs:enumeration value="TIMESTAMP_REVOCATION_VALUES" />
+			<xs:enumeration value="SIGNATURE" />
+			<xs:enumeration value="EXTERNAL" />
+			<xs:enumeration value="CACHED" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="RevocationRefOriginType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="COMPLETE_REVOCATION_REFS" />
+			<xs:enumeration value="ATTRIBUTE_REVOCATION_REFS" />
+			<xs:enumeration value="TIMESTAMP_REVOCATION_REFS" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="OrphanToken">
+		<xs:complexContent>
+            <xs:extension base="AbstractToken">
+				<xs:sequence>
+					<xs:element name="Type" type="OrphanTokenType" />
+					<xs:choice>
+						<xs:element name="Base64Encoded" type="xs:base64Binary" />
+						<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" />
+					</xs:choice>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:simpleType name="OrphanTokenType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CERTIFICATE" />
+			<xs:enumeration value="REVOCATION" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="SignerData">
+		<xs:complexContent>
+            <xs:extension base="AbstractToken">
+				<xs:sequence>
+					<xs:element name="ReferencedName" type="xs:string" minOccurs="0" />
+					<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 	
 	<xs:complexType name="TrustedList">
@@ -487,7 +875,7 @@
 	<xs:complexType name="TrustedServiceProvider">
 		<xs:sequence>
 			<xs:element name="TSPName" type="xs:string" />
-			<xs:element name="TSPRegistrationIdentifier" type="xs:string" minOccurs="0" />
+			<xs:element name="TSPRegistrationIdentifier" type="xs:string" />
 			<xs:element name="CountryCode" type="xs:string" />
 			
 			<xs:element name="TrustedServices">
@@ -502,7 +890,6 @@
 	
 	<xs:complexType name="TrustedService">
 		<xs:sequence>
-			<xs:element name="ServiceDigitalIdentifier" type="xs:string" />
 			<xs:element name="ServiceName" type="xs:string" />
 			<xs:element name="ServiceType" type="xs:string" />
 			<xs:element name="Status" type="xs:string" />
@@ -520,7 +907,7 @@
 			<xs:element name="AdditionalServiceInfoUris" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="URI" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="additionalServiceInfoUri" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -528,19 +915,20 @@
 			<xs:element name="ServiceSupplyPoints" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="URI" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="serviceSupplyPoint" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
 			
 			<xs:element name="expiredCertsRevocationInfo" type="xs:dateTime" minOccurs="0" />
 		</xs:sequence>
+		<xs:attribute name="ServiceDigitalIdentifier" type="xs:IDREF" use="required" />
 	</xs:complexType>
 	
 	<xs:complexType name="DigestAlgoAndValues">
-		<xs:sequence>
-			<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" minOccurs="0" maxOccurs="unbounded" />
-		</xs:sequence>
-	</xs:complexType>
+        <xs:sequence>
+            <xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
 	
 </xs:schema>

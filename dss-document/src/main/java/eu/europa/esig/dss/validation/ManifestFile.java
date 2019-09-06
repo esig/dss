@@ -20,20 +20,24 @@
  */
 package eu.europa.esig.dss.validation;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
 
 public class ManifestFile {
 
-	private String filename;
+	private DSSDocument document;
 	private String signatureFilename;
-	private List<String> entries;
-
-	public String getFilename() {
-		return filename;
+	private List<ManifestEntry> entries;
+	
+	public void setDocument(DSSDocument document) {
+		this.document = document;
 	}
 
-	public void setFilename(String filename) {
-		this.filename = filename;
+	public String getFilename() {
+		return document.getName();
 	}
 
 	public String getSignatureFilename() {
@@ -43,12 +47,19 @@ public class ManifestFile {
 	public void setSignatureFilename(String signatureFilename) {
 		this.signatureFilename = signatureFilename;
 	}
+	
+	public String getDigestBase64String(DigestAlgorithm digestAlgorithm) {
+		return document.getDigest(digestAlgorithm);
+	}
 
-	public List<String> getEntries() {
+	public List<ManifestEntry> getEntries() {
+		if (entries == null) {
+			entries = new ArrayList<ManifestEntry>();
+		}
 		return entries;
 	}
 
-	public void setEntries(List<String> entries) {
+	public void setEntries(List<ManifestEntry> entries) {
 		this.entries = entries;
 	}
 

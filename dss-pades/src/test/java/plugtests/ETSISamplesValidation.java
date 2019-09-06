@@ -20,35 +20,43 @@
  */
 package plugtests;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.client.http.IgnoreDataLoader;
+import eu.europa.esig.dss.detailedreport.DetailedReport;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
+import eu.europa.esig.dss.test.signature.UnmarshallingTester;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.reports.SimpleReport;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
+import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
+import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
 /**
  * This test is only to ensure that we don't have exception with valid? files
  */
 @RunWith(Parameterized.class)
 public class ETSISamplesValidation {
-
 
 	@Parameters(name = "Validation {index} : {0}")
 	public static Collection<Object[]> data() throws IOException {
@@ -81,19 +89,49 @@ public class ETSISamplesValidation {
 		certificateVerifier.setDataLoader(new IgnoreDataLoader());
 		validator.setCertificateVerifier(certificateVerifier);
 
-		Reports validateDocument = validator.validateDocument();
-		assertNotNull(validateDocument);
+		Reports reports = validator.validateDocument();
+		assertNotNull(reports);
 
-		DiagnosticData diagnosticData = validateDocument.getDiagnosticData();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertNotNull(diagnosticData);
 
-		SimpleReport simpleReport = validateDocument.getSimpleReport();
+		SimpleReport simpleReport = reports.getSimpleReport();
 		assertNotNull(simpleReport);
 
-		DetailedReport detailedReport = validateDocument.getDetailedReport();
+		DetailedReport detailedReport = reports.getDetailedReport();
 		assertNotNull(detailedReport);
 
-		// validateDocument.print();
+		List<AdvancedSignature> signatures = validator.getSignatures();
+		for (AdvancedSignature advancedSignature : signatures) {
+			assertNotNull(advancedSignature);
+			SignatureCertificateSource certificateSource = advancedSignature.getCertificateSource();
+			assertNotNull(certificateSource);
+
+			assertNotNull(certificateSource.getKeyInfoCertificates());
+			assertNotNull(certificateSource.getSigningCertificateValues());
+			assertTrue(certificateSource.getCertificateValues().isEmpty());
+			assertTrue(certificateSource.getAttributeCertificateRefs().isEmpty());
+			assertTrue(certificateSource.getTimeStampValidationDataCertValues().isEmpty());
+			assertNotNull(certificateSource.getDSSDictionaryCertValues());
+			assertNotNull(certificateSource.getVRIDictionaryCertValues());
+
+			assertNotNull(advancedSignature.getCRLSource());
+			assertNotNull(advancedSignature.getOCSPSource());
+		}
+		
+		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
+		assertNotNull(etsiValidationReport);
+		List<SignatureValidationReportType> signatureValidationReports = etsiValidationReport.getSignatureValidationReport();
+		if (!diagnosticData.getSignatures().isEmpty()) {
+			assertEquals(diagnosticData.getSignatures().size(), signatureValidationReports.size());
+			for (SignatureValidationReportType signatureValidationReport : signatureValidationReports) {
+				List<SignersDocumentType> signersDocuments = signatureValidationReport.getSignersDocument();
+				assertNotNull(signersDocuments);
+				assertEquals(1, signersDocuments.size());
+			}
+		}
+		UnmarshallingTester.unmarshallXmlReports(reports);
 	}
+
 
 }

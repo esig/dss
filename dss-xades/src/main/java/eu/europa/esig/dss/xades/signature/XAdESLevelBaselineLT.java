@@ -20,22 +20,13 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.util.List;
-
 import org.w3c.dom.Element;
 
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.XAdESNamespaces;
-import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.ValidationContext;
-import eu.europa.esig.dss.x509.RevocationToken;
-import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
 
 /**
  * LT profile of XAdES signature
@@ -63,13 +54,14 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 
 		assertExtendSignatureToLTPossible();
 		super.extendSignatureTag();
+		Element levelTUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
 
 		if (xadesSignature.hasLTAProfile()) {
 			return;
 		}
 
 		// Timestamps can already be loaded in memory (force reload)
-		xadesSignature.resetTimestamps();
+		xadesSignature.resetTimestampSource();
 
 		/**
 		 * In all cases the -LT level need to be regenerated.
@@ -78,23 +70,18 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 
 		final ValidationContext validationContext = xadesSignature.getSignatureValidationContext(certificateVerifier);
 
-		removeOldCertificateValues();
+		String indent = removeOldCertificateValues();
 		removeOldRevocationValues();
-
-		incorporateCertificateValues(unsignedSignaturePropertiesDom, validationContext);
-		incorporateRevocationValues(unsignedSignaturePropertiesDom, validationContext);
-
-		/**
-		 * Certificate(s), revocation data where added, XAdES signature certificate source must be reset.
-		 */
-		xadesSignature.resetCertificateSource();
-		xadesSignature.resetRevocationSources();
+		incorporateCertificateValues(unsignedSignaturePropertiesDom, validationContext, indent);
+		incorporateRevocationValues(unsignedSignaturePropertiesDom, validationContext, indent);
+		
+		unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelTUnsignedProperties);
 	}
 
 	/**
 	 * This method checks the signature integrity and throws a {@code DSSException} if the signature is broken.
 	 *
-	 * @throws eu.europa.esig.dss.DSSException
+	 * @throws DSSException in case of the cryptographic signature verification fails
 	 */
 	protected void checkSignatureIntegrity() throws DSSException {
 		final SignatureCryptographicVerification signatureCryptographicVerification = xadesSignature.getSignatureCryptographicVerification();
@@ -105,110 +92,28 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 	}
 
 	/**
+	 * This method removes old certificates values from the unsigned signature properties element.
+	 */
+	private String removeOldCertificateValues() {
+		String text = null;
+		final Element toRemove = xadesSignature.getCertificateValues();
+		if (toRemove != null) {
+			text = removeChild(unsignedSignaturePropertiesDom, toRemove);
+			/* Because the element was removed, the certificate source needs to be reset */
+			xadesSignature.resetCertificateSource();
+		}
+		return text;
+	}
+
+	/**
 	 * This method removes old revocation values from the unsigned signature properties element.
 	 */
 	private void removeOldRevocationValues() {
 		final Element toRemove = xadesSignature.getRevocationValues();
 		if (toRemove != null) {
-			unsignedSignaturePropertiesDom.removeChild(toRemove);
+			removeChild(unsignedSignaturePropertiesDom, toRemove);
+			/* Because the element was removed, the revocation sources need to be reset */
 			xadesSignature.resetRevocationSources();
-		}
-	}
-
-	/**
-	 * This method removes old certificates values from the unsigned signature properties element.
-	 */
-	private void removeOldCertificateValues() {
-		final Element toRemove = xadesSignature.getCertificateValues();
-		if (toRemove != null) {
-			unsignedSignaturePropertiesDom.removeChild(toRemove);
-			xadesSignature.resetCertificateSource();
-		}
-	}
-
-	/**
-	 * This method incorporates revocation values.
-	 * 
-	 * <pre>
-	 * 	{@code
-	 * 		<xades:RevocationValues>
-	 * 	}
-	 * </pre>
-	 *
-	 * @param parentDom
-	 *            the parent element
-	 * @param validationContext
-	 *            the validation context with the revocation data
-	 */
-	protected void incorporateRevocationValues(final Element parentDom, final ValidationContext validationContext) {
-		final DefaultAdvancedSignature.RevocationDataForInclusion revocationsForInclusion = xadesSignature.getRevocationDataForInclusion(validationContext);
-		if (!revocationsForInclusion.isEmpty()) {
-
-			final Element revocationValuesDom = DomUtils.addElement(documentDom, parentDom, XAdESNamespaces.XAdES, "xades:RevocationValues");
-
-			incorporateCrlTokens(revocationValuesDom, revocationsForInclusion.crlTokens);
-			incorporateOcspTokens(revocationValuesDom, revocationsForInclusion.ocspTokens);
-		}
-	}
-
-	/**
-	 * This method incorporates the CRLValues :
-	 * 
-	 * <pre>
-	 * 	{@code
-	 * 		<xades:CRLValues>
-	 * 			<xades:EncapsulatedCRLValue>...</xades:EncapsulatedCRLValue>
-	 * 			...
-	 * 		</xades:CRLValues>
-	 * 	}
-	 * </pre>
-	 * 
-	 * @param parentDom
-	 *            the parent element
-	 * @param crlTokens
-	 *            the list of CRL Tokens to be added
-	 */
-	private void incorporateCrlTokens(final Element parentDom, final List<CRLToken> crlTokens) {
-		if (crlTokens.isEmpty()) {
-			return;
-		}
-		final Element crlValuesDom = DomUtils.addElement(documentDom, parentDom, XAdESNamespaces.XAdES, "xades:CRLValues");
-
-		for (final RevocationToken revocationToken : crlTokens) {
-			final byte[] encodedCRL = revocationToken.getEncoded();
-			final String base64EncodedCRL = Utils.toBase64(encodedCRL);
-			DomUtils.addTextElement(documentDom, crlValuesDom, XAdESNamespaces.XAdES, "xades:EncapsulatedCRLValue", base64EncodedCRL);
-		}
-	}
-
-	/**
-	 * This method incorporates the OCSP responses :
-	 * 
-	 * <pre>
-	 * 	{@code
-	 * 		<xades:OCSPValues>
-	 * 			<xades:EncapsulatedOCSPValue>...</xades:EncapsulatedOCSPValue>
-	 * 			...
-	 * 		</xades:OCSPValues>
-	 * 	}
-	 * </pre>
-	 * 
-	 * @param parentDom
-	 *            the parent element
-	 * @param ocspTokens
-	 *            the list of OCSP Tokens to be added
-	 */
-	private void incorporateOcspTokens(Element parentDom, final List<OCSPToken> ocspTokens) {
-		if (ocspTokens.isEmpty()) {
-			return;
-		}
-		final Element ocspValuesDom = DomUtils.addElement(documentDom, parentDom, XAdESNamespaces.XAdES, "xades:OCSPValues");
-
-		for (final RevocationToken revocationToken : ocspTokens) {
-
-			final byte[] encodedOCSP = revocationToken.getEncoded();
-			final String base64EncodedOCSP = Utils.toBase64(encodedOCSP);
-			DomUtils.addTextElement(documentDom, ocspValuesDom, XAdESNamespaces.XAdES, "xades:EncapsulatedOCSPValue", base64EncodedOCSP);
 		}
 	}
 

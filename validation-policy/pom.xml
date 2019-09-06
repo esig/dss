@@ -7,11 +7,42 @@
 	</parent>
 	<artifactId>validation-policy</artifactId>
 
+	<properties>
+		<module-name>jpms_dss_validation_policy</module-name>
+	</properties>
+	
 	<dependencies>
 		<dependency>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>dss-utils</artifactId>
+        </dependency>
+		
+		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-reports</artifactId>
+			<artifactId>dss-policy-jaxb</artifactId>
 		</dependency>
+	
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-diagnostic-jaxb</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-simple-report-jaxb</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-simple-certificate-report-jaxb</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-detailed-report-jaxb</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>specs-validation-report</artifactId>
+		</dependency>
+		
 		<dependency>
 		  <groupId>org.slf4j</groupId>
 		  <artifactId>slf4j-api</artifactId>
@@ -20,6 +51,11 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.module</groupId>
+			<artifactId>jackson-module-jaxb-annotations</artifactId>
 			<scope>test</scope>
 		</dependency>
  		<dependency>

@@ -11,6 +11,10 @@
 	<name>DSS CRL Parser API</name>
 	<description>DSS CRL Parser API contains an interface which allows to validate a CRL and extract revocation data.</description>
 
+	<properties>
+		<module-name>jpms_dss_crl_parser</module-name>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>

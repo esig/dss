@@ -4,7 +4,7 @@ import java.awt.Font;
 
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.model.DSSException;
 
 public class PdfBoxFontMapper {
 	

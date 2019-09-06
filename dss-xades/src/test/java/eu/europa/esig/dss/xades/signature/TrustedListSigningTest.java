@@ -35,14 +35,16 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.xades.DSSReference;
-import eu.europa.esig.dss.xades.DSSTransform;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
+import eu.europa.esig.dss.xades.reference.DSSReference;
+import eu.europa.esig.dss.xades.reference.DSSTransform;
+import eu.europa.esig.dss.xades.reference.EnvelopedSignatureTransform;
 
 public class TrustedListSigningTest extends AbstractXAdESTestSignature {
 
@@ -73,12 +75,10 @@ public class TrustedListSigningTest extends AbstractXAdESTestSignature {
 
 		final List<DSSTransform> transforms = new ArrayList<DSSTransform>();
 
-		DSSTransform dssTransform = new DSSTransform();
-		dssTransform.setAlgorithm(CanonicalizationMethod.ENVELOPED);
-		transforms.add(dssTransform);
+		EnvelopedSignatureTransform signatureTransform = new EnvelopedSignatureTransform();
+		transforms.add(signatureTransform);
 
-		dssTransform = new DSSTransform();
-		dssTransform.setAlgorithm(CanonicalizationMethod.EXCLUSIVE);
+		CanonicalizationTransform dssTransform = new CanonicalizationTransform(CanonicalizationMethod.EXCLUSIVE);
 		transforms.add(dssTransform);
 
 		dssReference.setTransforms(transforms);

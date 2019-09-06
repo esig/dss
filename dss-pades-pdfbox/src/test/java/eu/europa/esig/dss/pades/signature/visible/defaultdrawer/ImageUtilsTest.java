@@ -20,13 +20,13 @@
  */
 package eu.europa.esig.dss.pades.signature.visible.defaultdrawer;
 
-import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
-import eu.europa.esig.dss.pdf.pdfbox.visible.ImageUtils;
 import eu.europa.esig.dss.pdf.pdfbox.visible.defaultdrawer.DefaultDrawerImageUtils;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
+import eu.europa.esig.dss.pdf.visible.ImageUtils;
 
 import org.junit.Assert;
 import org.junit.Test;

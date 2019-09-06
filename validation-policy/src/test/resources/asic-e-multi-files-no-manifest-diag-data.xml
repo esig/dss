@@ -35,69 +35,41 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="4FAB29027727E58E4518ED0B6AE554D055F05B3D9197E0D16B20028D227D1A9F">
+            <SigningCertificate Certificate="C-4FAB29027727E58E4518ED0B6AE554D055F05B3D9197E0D16B20028D227D1A9F">
                 <AttributePresent>true</AttributePresent>
                 <DigestValuePresent>true</DigestValuePresent>
                 <DigestValueMatch>true</DigestValueMatch>
                 <IssuerSerialMatch>true</IssuerSerialMatch>
             </SigningCertificate>
             <CertificateChain>
-                <ChainItem Id="4FAB29027727E58E4518ED0B6AE554D055F05B3D9197E0D16B20028D227D1A9F">
-                    <Source>SIGNATURE</Source>
-                </ChainItem>
-                <ChainItem Id="293D0BA3A31E5D82A8E3FAE12709932FFDDA44423E0F733FB01EF123E73EB4DA">
-                    <Source>SIGNATURE</Source>
-                </ChainItem>
-                <ChainItem Id="702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-4FAB29027727E58E4518ED0B6AE554D055F05B3D9197E0D16B20028D227D1A9F"/>
+                <ChainItem Certificate="C-293D0BA3A31E5D82A8E3FAE12709932FFDDA44423E0F733FB01EF123E73EB4DA"/>
+                <ChainItem Certificate="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F"/>
             </CertificateChain>
             <ContentType>1.2.840.113549.1.7.1</ContentType>
             <CommitmentTypeIndication/>
-            <ClaimedRoles/>
-            <Timestamps>
-                <Timestamp Id="C70546FC1FEF916D9C13DA3167831B08D694147BA16EABBE5E07507909FA13BE" Type="SIGNATURE_TIMESTAMP">
-                    <ProductionTime>2017-09-26T08:07:34</ProductionTime>
-					<DigestMatcher type="MESSAGE_IMPRINT">
-			              <DigestMethod>SHA256</DigestMethod>
-			              <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
-			              <DataFound>true</DataFound>
-			              <DataIntact>true</DataIntact>
-			        </DigestMatcher>
-                    <BasicSignature>
-                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-                        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-                        <SignatureIntact>true</SignatureIntact>
-                        <SignatureValid>true</SignatureValid>
-                    </BasicSignature>
-                    <SigningCertificate Id="EE3C22E06087BFEC213709AD3E7F2DDA9CE9D19CE238DCA81A6433E9070A9FBE"/>
-                    <CertificateChain>
-                        <ChainItem Id="EE3C22E06087BFEC213709AD3E7F2DDA9CE9D19CE238DCA81A6433E9070A9FBE">
-                            <Source>TIMESTAMP</Source>
-                        </ChainItem>
-                        <ChainItem Id="702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
-                            <Source>TRUSTED_LIST</Source>
-                        </ChainItem>
-                    </CertificateChain>
-                    <TimestampedObjects>
-                        <TimestampedObject Category="SIGNATURE" Id="id-3dec1e67bd5b5992bf719606039df7fb"/>
-                        <TimestampedObject Category="CERTIFICATE">
-                            <DigestAlgoAndValue>
-                                <DigestMethod>SHA256</DigestMethod>
-                                <DigestValue>T6spAncn5Y5FGO0LauVU0FXwWz2Rl+DRayACjSJ9Gp8=</DigestValue>
-                            </DigestAlgoAndValue>
-                        </TimestampedObject>
-                    </TimestampedObjects>
-                </Timestamp>
-            </Timestamps>
+            
+            <FoundCertificates/>
+            <FoundRevocations/>
+			<FoundTimestamps>
+				<FoundTimestamp Timestamp="T-C70546FC1FEF916D9C13DA3167831B08D694147BA16EABBE5E07507909FA13BE"/>
+			</FoundTimestamps>
+           
             <SignatureScopes>
-                <SignatureScope name="Full document" scope="FULL">Full document</SignatureScope>
+                <SignatureScope SignerData="D-8fa2874a722c336027fb3b524e2d339e7095865baa20a6c76e43660d1aaf1a6c">
+                    <Scope>FULL</Scope>
+                    <Name>Full document</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
             </SignatureScopes>
+			<SignatureDigestReference>
+			    <DigestMethod>SHA256</DigestMethod>
+			    <DigestValue>J/2CHaHg4msJexZyfue45aduLVM6qziw4v4zEY+wiqY=</DigestValue>
+			</SignatureDigestReference>
         </Signature>
     </Signatures>
     <UsedCertificates>
-        <Certificate Id="4FAB29027727E58E4518ED0B6AE554D055F05B3D9197E0D16B20028D227D1A9F">
+        <Certificate Id="C-4FAB29027727E58E4518ED0B6AE554D055F05B3D9197E0D16B20028D227D1A9F">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#130b3837303132373330373338,2.5.4.42=#130d506965727269636b205061636f,2.5.4.4=#130d56616e64656e62726f75636b65,cn=P V (signature),c=be</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">2.5.4.5=#130b3837303132373330373338,2.5.4.42=#130d506965727269636b205061636f,2.5.4.4=#130d56616e64656e62726f75636b65,CN=P V (Signature),C=BE</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">2.5.4.5=#1306323031363331,cn=citizen ca,c=be</IssuerDistinguishedName>
@@ -108,20 +80,17 @@
             <GivenName>P P</GivenName>
             <Surname>V</Surname>
             <AuthorityInformationAccessUrls>
-                <Url>http://certs.eid.belgium.be/belgiumrs4.crt</Url>
+                <aiaUrl>http://certs.eid.belgium.be/belgiumrs4.crt</aiaUrl>
             </AuthorityInformationAccessUrls>
             <CRLDistributionPoints>
-                <Url>http://crl.eid.belgium.be/eidc201631.crl</Url>
+                <crlUrl>http://crl.eid.belgium.be/eidc201631.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls>
-                <Url>http://ocsp.eid.belgium.be/2</Url>
+                <ocspServerUrl>http://ocsp.eid.belgium.be/2</ocspServerUrl>
             </OCSPAccessUrls>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA256</DigestMethod>
-                    <DigestValue>T6spAncn5Y5FGO0LauVU0FXwWz2Rl+DRayACjSJ9Gp8=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
+            <Sources>
+            	<Source>SIGNATURE</Source>
+            </Sources>
             <NotAfter>2027-01-21T23:59:59</NotAfter>
             <NotBefore>2017-01-25T22:12:12</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -137,14 +106,10 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="293D0BA3A31E5D82A8E3FAE12709932FFDDA44423E0F733FB01EF123E73EB4DA"/>
+            <SigningCertificate Certificate="C-293D0BA3A31E5D82A8E3FAE12709932FFDDA44423E0F733FB01EF123E73EB4DA"/>
             <CertificateChain>
-                <ChainItem Id="293D0BA3A31E5D82A8E3FAE12709932FFDDA44423E0F733FB01EF123E73EB4DA">
-                    <Source>SIGNATURE</Source>
-                </ChainItem>
-                <ChainItem Id="702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-293D0BA3A31E5D82A8E3FAE12709932FFDDA44423E0F733FB01EF123E73EB4DA"/>
+                <ChainItem Certificate="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -152,17 +117,17 @@
                 <certificatePolicy>2.16.56.12.1.1.2.1</certificatePolicy>
             </CertificatePolicies>
             <QCStatementIds>
-                <oid Description="qc-compliance">0.4.0.1862.1.1</oid>
-                <oid Description="qc-sscd">0.4.0.1862.1.4</oid>
+                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
+                <qcStatementOid Description="qc-sscd">0.4.0.1862.1.4</qcStatementOid>
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>Certipost n.v./s.a.</TSPName>
+                    <TSPRegistrationIdentifier>VATDE-2034822604</TSPRegistrationIdentifier>
                     <CountryCode>BE</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-							<ServiceDigitalIdentifier>702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
                    			<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -171,52 +136,24 @@
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDStatusAsInCert</Qualifier>
                             </CapturedQualifiers>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations>
-                <Revocation Id="4fab29027727e58e4518ed0b6ae554d055f05b3d9197e0d16b20028d227d1a9f52300f610d3c9374b0531d8a5e1206c4677cb24661703794464ad7e20765d974">
-                    <Origin>EXTERNAL</Origin>
-                    <Source>OCSPToken</Source>
-                    <SourceAddress>http://ocsp.eid.belgium.be/2</SourceAddress>
-                    <Available>true</Available>
+                <CertificateRevocation Revocation="R-4fab29027727e58e4518ed0b6ae554d055f05b3d9197e0d16b20028d227d1a9f52300f610d3c9374b0531d8a5e1206c4677cb24661703794464ad7e20765d974">
                     <Status>true</Status>
-                    <ProductionDate>2017-09-26T08:07:45</ProductionDate>
-                    <ThisUpdate>2017-09-26T08:07:45</ThisUpdate>
-                    <NextUpdate>2017-09-26T08:08:45</NextUpdate>
-                    <DigestAlgoAndValues>
-                        <DigestAlgoAndValue>
-                            <DigestMethod>SHA256</DigestMethod>
-                            <DigestValue>UjAPYQ08k3SwUx2KXhIGxGd8skZhcDeURkrX4gdl2XQ=</DigestValue>
-                        </DigestAlgoAndValue>
-                    </DigestAlgoAndValues>
-                    <BasicSignature>
-                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-                        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-                        <SignatureIntact>true</SignatureIntact>
-                        <SignatureValid>true</SignatureValid>
-                    </BasicSignature>
-                    <SigningCertificate Id="827D5794C2E16B837350551291FB81527C7C282DBBD1668DDF4559C87CD58275"/>
-                    <CertificateChain>
-                        <ChainItem Id="827D5794C2E16B837350551291FB81527C7C282DBBD1668DDF4559C87CD58275">
-                            <Source>OCSP_RESPONSE</Source>
-                        </ChainItem>
-                        <ChainItem Id="293D0BA3A31E5D82A8E3FAE12709932FFDDA44423E0F733FB01EF123E73EB4DA">
-                            <Source>SIGNATURE</Source>
-                        </ChainItem>
-                        <ChainItem Id="702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
-                            <Source>TRUSTED_LIST</Source>
-                        </ChainItem>
-                    </CertificateChain>
-                </Revocation>
+                </CertificateRevocation>
             </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>T6spAncn5Y5FGO0LauVU0FXwWz2Rl+DRayACjSJ9Gp8=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
-        <Certificate Id="827D5794C2E16B837350551291FB81527C7C282DBBD1668DDF4559C87CD58275">
+        <Certificate Id="C-827D5794C2E16B837350551291FB81527C7C282DBBD1668DDF4559C87CD58275">
             <SubjectDistinguishedName Format="CANONICAL">c=be,cn=belgium ocsp responder</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">C=BE,CN=Belgium OCSP Responder</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">2.5.4.5=#1306323031363331,cn=citizen ca,c=be</IssuerDistinguishedName>
@@ -227,12 +164,9 @@
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints/>
             <OCSPAccessUrls/>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA256</DigestMethod>
-                    <DigestValue>gn1XlMLha4NzUFUSkfuBUnx8KC270WaN30VZyHzVgnU=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
+            <Sources>
+            	<Source>OCSP_RESPONSE</Source>
+            </Sources>
             <NotAfter>2018-01-29T11:00:00</NotAfter>
             <NotBefore>2016-12-10T11:00:00</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -248,14 +182,10 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="293D0BA3A31E5D82A8E3FAE12709932FFDDA44423E0F733FB01EF123E73EB4DA"/>
+            <SigningCertificate Certificate="C-293D0BA3A31E5D82A8E3FAE12709932FFDDA44423E0F733FB01EF123E73EB4DA"/>
             <CertificateChain>
-                <ChainItem Id="293D0BA3A31E5D82A8E3FAE12709932FFDDA44423E0F733FB01EF123E73EB4DA">
-                    <Source>SIGNATURE</Source>
-                </ChainItem>
-                <ChainItem Id="702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-293D0BA3A31E5D82A8E3FAE12709932FFDDA44423E0F733FB01EF123E73EB4DA"/>
+                <ChainItem Certificate="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -265,25 +195,29 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>Certipost n.v./s.a.</TSPName>
+                    <TSPRegistrationIdentifier>VATDE-2034822604</TSPRegistrationIdentifier>
                     <CountryCode>BE</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-							<ServiceDigitalIdentifier>702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
                    			<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-07-01T00:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>gn1XlMLha4NzUFUSkfuBUnx8KC270WaN30VZyHzVgnU=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
-        <Certificate Id="293D0BA3A31E5D82A8E3FAE12709932FFDDA44423E0F733FB01EF123E73EB4DA">
+        <Certificate Id="C-293D0BA3A31E5D82A8E3FAE12709932FFDDA44423E0F733FB01EF123E73EB4DA">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#1306323031363331,cn=citizen ca,c=be</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">2.5.4.5=#1306323031363331,CN=Citizen CA,C=BE</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=belgium root ca4,c=be</IssuerDistinguishedName>
@@ -293,15 +227,12 @@
             <CountryName>BE</CountryName>
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints>
-                <Url>http://crl.eid.belgium.be/belgium4.crl</Url>
+                <crlUrl>http://crl.eid.belgium.be/belgium4.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA256</DigestMethod>
-                    <DigestValue>KT0Lo6MeXYKo4/rhJwmTL/3aREI+D3M/sB7xI+c+tNo=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
+            <Sources>
+            	<Source>SIGNATURE</Source>
+            </Sources>
             <NotAfter>2027-07-25T10:00:00</NotAfter>
             <NotBefore>2015-11-25T10:00:00</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
@@ -318,11 +249,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F"/>
+            <SigningCertificate Certificate="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F"/>
             <CertificateChain>
-                <ChainItem Id="702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -334,66 +263,43 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>Certipost n.v./s.a.</TSPName>
+                    <TSPRegistrationIdentifier>VATDE-2034822604</TSPRegistrationIdentifier>
                     <CountryCode>BE</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-							<ServiceDigitalIdentifier>702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
                    			<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-07-01T00:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
-                        <TrustedService>
-							<ServiceDigitalIdentifier>702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
                    			<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
                             <StartDate>2013-06-26T12:00:00</StartDate>
                             <EndDate>2016-07-01T00:00:00</EndDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations>
-                <Revocation Id="293d0ba3a31e5d82a8e3fae12709932ffdda44423e0f733fb01ef123e73eb4dae7a38824e892663bfaa50ba2edf0f5bfb5437dbeb73af1c9fec79b6ce77df88d">
-                    <Origin>EXTERNAL</Origin>
-                    <Source>CRLToken</Source>
-                    <SourceAddress>http://crl.eid.belgium.be/belgium4.crl</SourceAddress>
-                    <Available>true</Available>
+                <CertificateRevocation Revocation="R-293d0ba3a31e5d82a8e3fae12709932ffdda44423e0f733fb01ef123e73eb4dae7a38824e892663bfaa50ba2edf0f5bfb5437dbeb73af1c9fec79b6ce77df88d">
                     <Status>true</Status>
-                    <ProductionDate>2017-07-01T11:00:00</ProductionDate>
-                    <ThisUpdate>2017-07-01T11:00:00</ThisUpdate>
-                    <NextUpdate>2018-01-31T11:00:00</NextUpdate>
-                    <DigestAlgoAndValues>
-                        <DigestAlgoAndValue>
-                            <DigestMethod>SHA256</DigestMethod>
-                            <DigestValue>56OIJOiSZjv6pQui7fD1v7VDfb63OvHJ/sebbOd9+I0=</DigestValue>
-                        </DigestAlgoAndValue>
-                    </DigestAlgoAndValues>
-                    <BasicSignature>
-                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-                        <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
-                        <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
-                        <SignatureIntact>true</SignatureIntact>
-                        <SignatureValid>true</SignatureValid>
-                    </BasicSignature>
-                    <SigningCertificate Id="702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F"/>
-                    <CertificateChain>
-                        <ChainItem Id="702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
-                            <Source>TRUSTED_LIST</Source>
-                        </ChainItem>
-                    </CertificateChain>
-                </Revocation>
+                </CertificateRevocation>
             </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>KT0Lo6MeXYKo4/rhJwmTL/3aREI+D3M/sB7xI+c+tNo=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
-        <Certificate Id="EE3C22E06087BFEC213709AD3E7F2DDA9CE9D19CE238DCA81A6433E9070A9FBE">
+        <Certificate Id="C-EE3C22E06087BFEC213709AD3E7F2DDA9CE9D19CE238DCA81A6433E9070A9FBE">
             <SubjectDistinguishedName Format="CANONICAL">cn=time stamping authority,o=belgium federal government,2.5.4.5=#130432303137,c=be</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=Time Stamping Authority,O=Belgium Federal Government,2.5.4.5=#130432303137,C=BE</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=belgium root ca4,c=be</IssuerDistinguishedName>
@@ -404,15 +310,12 @@
             <OrganizationName>Belgium Federal Government</OrganizationName>
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints>
-                <Url>http://crl.pki.belgium.be/belgium4.crl</Url>
+                <crlUrl>http://crl.pki.belgium.be/belgium4.crl</crlUrl>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA256</DigestMethod>
-                    <DigestValue>7jwi4GCHv+whNwmtPn8t2pzp0ZziONyoGmQz6QcKn74=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
+            <Sources>
+            	<Source>TIMESTAMP</Source>
+            </Sources>
             <NotAfter>2022-02-28T10:00:00</NotAfter>
             <NotBefore>2016-11-28T10:00:00</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -429,11 +332,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F"/>
+            <SigningCertificate Certificate="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F"/>
             <CertificateChain>
-                <ChainItem Id="702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -445,55 +346,33 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>Certipost n.v./s.a.</TSPName>
+                    <TSPRegistrationIdentifier>VATDE-2034822604</TSPRegistrationIdentifier>
                     <CountryCode>BE</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-							<ServiceDigitalIdentifier>702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
                    			<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-07-01T00:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations>
-                <Revocation Id="ee3c22e06087bfec213709ad3e7f2dda9ce9d19ce238dca81a6433e9070a9fbee7a38824e892663bfaa50ba2edf0f5bfb5437dbeb73af1c9fec79b6ce77df88d">
-                    <Origin>EXTERNAL</Origin>
-                    <Source>CRLToken</Source>
-                    <SourceAddress>http://crl.pki.belgium.be/belgium4.crl</SourceAddress>
-                    <Available>true</Available>
+                <CertificateRevocation Revocation="R-ee3c22e06087bfec213709ad3e7f2dda9ce9d19ce238dca81a6433e9070a9fbee7a38824e892663bfaa50ba2edf0f5bfb5437dbeb73af1c9fec79b6ce77df88d">
                     <Status>true</Status>
-                    <ProductionDate>2017-07-01T11:00:00</ProductionDate>
-                    <ThisUpdate>2017-07-01T11:00:00</ThisUpdate>
-                    <NextUpdate>2018-01-31T11:00:00</NextUpdate>
-                    <DigestAlgoAndValues>
-                        <DigestAlgoAndValue>
-                            <DigestMethod>SHA256</DigestMethod>
-                            <DigestValue>56OIJOiSZjv6pQui7fD1v7VDfb63OvHJ/sebbOd9+I0=</DigestValue>
-                        </DigestAlgoAndValue>
-                    </DigestAlgoAndValues>
-                    <BasicSignature>
-                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-                        <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
-                        <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
-                        <SignatureIntact>true</SignatureIntact>
-                        <SignatureValid>true</SignatureValid>
-                    </BasicSignature>
-                    <SigningCertificate Id="702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F"/>
-                    <CertificateChain>
-                        <ChainItem Id="702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
-                            <Source>TRUSTED_LIST</Source>
-                        </ChainItem>
-                    </CertificateChain>
-                </Revocation>
+                </CertificateRevocation>
             </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>7jwi4GCHv+whNwmtPn8t2pzp0ZziONyoGmQz6QcKn74=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
-        <Certificate Id="702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
+        <Certificate Id="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
             <SubjectDistinguishedName Format="CANONICAL">cn=belgium root ca4,c=be</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=Belgium Root CA4,C=BE</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=belgium root ca4,c=be</IssuerDistinguishedName>
@@ -504,12 +383,9 @@
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints/>
             <OCSPAccessUrls/>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA256</DigestMethod>
-                    <DigestValue>cC3VwaCTzwqdcfrdm/mnxYV9iftztxboZyKLPCvrlo8=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
+            <Sources>
+            	<Source>TRUSTED_LIST</Source>
+            </Sources>
             <NotAfter>2032-10-22T12:00:00</NotAfter>
             <NotBefore>2013-06-26T12:00:00</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
@@ -537,36 +413,152 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>Certipost n.v./s.a.</TSPName>
+                    <TSPRegistrationIdentifier>VATDE-2034822604</TSPRegistrationIdentifier>
                     <CountryCode>BE</CountryCode>
                     <TrustedServices>
-                        <TrustedService>
-							<ServiceDigitalIdentifier>702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
                    			<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-07-01T00:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</URI>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</additionalServiceInfoUri>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
-                        <TrustedService>
-							<ServiceDigitalIdentifier>702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F</ServiceDigitalIdentifier>
+                        <TrustedService ServiceDigitalIdentifier="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
                    			<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
                             <StartDate>2013-06-26T12:00:00</StartDate>
                             <EndDate>2016-07-01T00:00:00</EndDate>
                             <AdditionalServiceInfoUris>
-                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</URI>
+                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</additionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>cC3VwaCTzwqdcfrdm/mnxYV9iftztxboZyKLPCvrlo8=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
     </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-4fab29027727e58e4518ed0b6ae554d055f05b3d9197e0d16b20028d227d1a9f52300f610d3c9374b0531d8a5e1206c4677cb24661703794464ad7e20765d974">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://ocsp.eid.belgium.be/2</SourceAddress>
+            <ProductionDate>2017-09-26T08:07:45</ProductionDate>
+            <ThisUpdate>2017-09-26T08:07:45</ThisUpdate>
+            <NextUpdate>2017-09-26T08:08:45</NextUpdate>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-827D5794C2E16B837350551291FB81527C7C282DBBD1668DDF4559C87CD58275"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-827D5794C2E16B837350551291FB81527C7C282DBBD1668DDF4559C87CD58275"/>
+                <ChainItem Certificate="C-293D0BA3A31E5D82A8E3FAE12709932FFDDA44423E0F733FB01EF123E73EB4DA"/>
+                <ChainItem Certificate="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>UjAPYQ08k3SwUx2KXhIGxGd8skZhcDeURkrX4gdl2XQ=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-293d0ba3a31e5d82a8e3fae12709932ffdda44423e0f733fb01ef123e73eb4dae7a38824e892663bfaa50ba2edf0f5bfb5437dbeb73af1c9fec79b6ce77df88d">
+            <Origin>EXTERNAL</Origin>
+            <Type>CRL</Type>
+            <SourceAddress>http://crl.eid.belgium.be/belgium4.crl</SourceAddress>
+            <ProductionDate>2017-07-01T11:00:00</ProductionDate>
+            <ThisUpdate>2017-07-01T11:00:00</ThisUpdate>
+            <NextUpdate>2018-01-31T11:00:00</NextUpdate>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>56OIJOiSZjv6pQui7fD1v7VDfb63OvHJ/sebbOd9+I0=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-ee3c22e06087bfec213709ad3e7f2dda9ce9d19ce238dca81a6433e9070a9fbee7a38824e892663bfaa50ba2edf0f5bfb5437dbeb73af1c9fec79b6ce77df88d">
+            <Origin>EXTERNAL</Origin>
+            <Type>CRL</Type>
+            <SourceAddress>http://crl.pki.belgium.be/belgium4.crl</SourceAddress>
+            <ProductionDate>2017-07-01T11:00:00</ProductionDate>
+            <ThisUpdate>2017-07-01T11:00:00</ThisUpdate>
+            <NextUpdate>2018-01-31T11:00:00</NextUpdate>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>56OIJOiSZjv6pQui7fD1v7VDfb63OvHJ/sebbOd9+I0=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+     <UsedTimestamps>
+           <Timestamp Id="T-C70546FC1FEF916D9C13DA3167831B08D694147BA16EABBE5E07507909FA13BE" Type="SIGNATURE_TIMESTAMP">
+               <ProductionTime>2017-09-26T08:07:34</ProductionTime>
+<DigestMatcher type="MESSAGE_IMPRINT">
+            <DigestMethod>SHA256</DigestMethod>
+            <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
+            <DataFound>true</DataFound>
+            <DataIntact>true</DataIntact>
+      </DigestMatcher>
+               <BasicSignature>
+                   <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                   <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                   <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                   <SignatureIntact>true</SignatureIntact>
+                   <SignatureValid>true</SignatureValid>
+               </BasicSignature>
+               <SigningCertificate Certificate="C-EE3C22E06087BFEC213709AD3E7F2DDA9CE9D19CE238DCA81A6433E9070A9FBE"/>
+               <CertificateChain>
+                   <ChainItem Certificate="C-EE3C22E06087BFEC213709AD3E7F2DDA9CE9D19CE238DCA81A6433E9070A9FBE"/>
+                   <ChainItem Certificate="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F"/>
+               </CertificateChain>
+		      <TimestampedObjects>
+			       	<TimestampedObject Category="SIGNATURE" Token="id-3dec1e67bd5b5992bf719606039df7fb" />
+			       	<TimestampedObject Category="CERTIFICATE" Token="C-EE3C22E06087BFEC213709AD3E7F2DDA9CE9D19CE238DCA81A6433E9070A9FBE" />
+		      </TimestampedObjects>
+	            <DigestAlgoAndValue>
+	            	<DigestMethod>SHA1</DigestMethod>
+	            	<DigestValue>mivzVaPfRvolGM1022OBq5hqkK0=</DigestValue>
+	            </DigestAlgoAndValue>
+           </Timestamp>
+       </UsedTimestamps>
+    <OriginalDocuments>
+        <SignerData Id="D-8fa2874a722c336027fb3b524e2d339e7095865baa20a6c76e43660d1aaf1a6c">
+            <ReferencedName>Full document</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>j6KHSnIsM2An+ztSTi0znnCVhluqIKbHbkNmDRqvGmw=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
     <TrustedLists>
         <TrustedList>
             <CountryCode>BE</CountryCode>

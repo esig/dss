@@ -34,13 +34,13 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.client.http.DataLoader;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.x509.CertificateToken;
 
 public class MultiThreadsCertificateValidatorTest {
 
@@ -49,12 +49,12 @@ public class MultiThreadsCertificateValidatorTest {
 	@Test
 	public void test() {
 
-		ExecutorService executor = Executors.newFixedThreadPool(50);
+		ExecutorService executor = Executors.newFixedThreadPool(20);
 
 		List<Future<CertificateReports>> futures = new ArrayList<Future<CertificateReports>>();
 
-		for (int i = 0; i < 1000; i++) {
-			futures.add(executor.submit(new TestConcurrent(DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt")))));
+		for (int i = 0; i < 100; i++) {
+			futures.add(executor.submit(new TestConcurrent(DSSUtils.loadCertificate(new File("src/test/resources/certificates/ec.europa.eu.crt")))));
 		}
 
 		for (Future<CertificateReports> future : futures) {

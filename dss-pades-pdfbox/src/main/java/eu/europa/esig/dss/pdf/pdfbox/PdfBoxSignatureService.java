@@ -26,10 +26,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,6 +41,7 @@ import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSObject;
 import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
@@ -56,12 +55,13 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.pades.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
@@ -75,15 +75,13 @@ import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSigDict;
 import eu.europa.esig.dss.pdf.PdfSignatureInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
-import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfoComparator;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawer;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawerFactory;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.Token;
-import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
 
 public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
@@ -138,7 +136,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	private byte[] signDocumentAndReturnDigest(final PAdESSignatureParameters parameters, final byte[] signatureBytes, final OutputStream fileOutputStream,
 			final PDDocument pdDocument, final DigestAlgorithm digestAlgorithm) {
 
-		final MessageDigest digest = digestAlgorithm.getMessageDigest();
+		final MessageDigest digest = DSSUtils.getMessageDigest(digestAlgorithm);
 		SignatureInterface signatureInterface = new SignatureInterface() {
 
 			@Override
@@ -222,6 +220,24 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		return signature;
 	}
 
+	private PDSignature findExistingSignature(PDDocument doc, String sigFieldName) {
+		PDAcroForm acroForm = doc.getDocumentCatalog().getAcroForm();
+		if (acroForm != null) {
+			PDSignatureField signatureField = (PDSignatureField) acroForm.getField(sigFieldName);
+			if (signatureField != null) {
+				PDSignature signature = signatureField.getSignature();
+				if (signature == null) {
+					signature = new PDSignature();
+					signatureField.getCOSObject().setItem(COSName.V, signature);
+					return signature;
+				} else {
+					throw new DSSException("The signature field '" + sigFieldName + "' can not be signed since its already signed.");
+				}
+			}
+		}
+		throw new DSSException("The signature field '" + sigFieldName + "' does not exist.");
+	}
+
 	private boolean containsFilledSignature(PDDocument pdDocument) {
 		try {
 			List<PDSignature> signatures = pdDocument.getSignatureDictionaries();
@@ -279,24 +295,6 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		permsDict.setNeedToBeUpdated(true);
 	}
 
-	private PDSignature findExistingSignature(PDDocument doc, String sigFieldName) {
-		PDAcroForm acroForm = doc.getDocumentCatalog().getAcroForm();
-		if (acroForm != null) {
-			PDSignatureField signatureField = (PDSignatureField) acroForm.getField(sigFieldName);
-			if (signatureField != null) {
-				PDSignature signature = signatureField.getSignature();
-				if (signature == null) {
-					signature = new PDSignature();
-					signatureField.getCOSObject().setItem(COSName.V, signature);
-					return signature;
-				} else {
-					throw new DSSException("The signature field '" + sigFieldName + "' can not be signed since its already signed.");
-				}
-			}
-		}
-		throw new DSSException("The signature field '" + sigFieldName + "' does not exist.");
-	}
-
 	public void saveDocumentIncrementally(PAdESSignatureParameters parameters, OutputStream outputStream, PDDocument pdDocument) throws DSSException {
 		try {
 			// the document needs to have an ID, if not a ID based on the current system
@@ -316,65 +314,54 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		List<PdfSignatureOrDocTimestampInfo> signatures = new ArrayList<PdfSignatureOrDocTimestampInfo>();
 		try (InputStream is = document.openStream(); PDDocument doc = PDDocument.load(is)) {
 
-			byte[] originalBytes = DSSUtils.toByteArray(document);
-			int originalBytesLength = originalBytes.length;
+			final PdfDssDict dssDictionary = getDSSDictionary(doc);
 
-			PdfDssDict dssDictionary = getDSSDictionary(doc);
+			List<PDSignatureField> pdSignatureFields = doc.getSignatureFields();
 
-			List<PDSignature> pdSignatures = doc.getSignatureDictionaries();
+			if (Utils.isCollectionNotEmpty(pdSignatureFields)) {
+				LOG.debug("{} signature(s) found", pdSignatureFields.size());
 
-			if (Utils.isCollectionNotEmpty(pdSignatures)) {
-				LOG.debug("{} signature(s) found", pdSignatures.size());
-
-				for (PDSignature signature : pdSignatures) {
+				for (PDSignatureField signatureField : pdSignatureFields) {
+					PDSignature signature = signatureField.getSignature();
+					if (signature == null) {
+						LOG.warn("Signature field with name '{}' does not contain a signature", signatureField.getPartialName());
+						continue;
+					}
 					try {
 						PdfDict dictionary = new PdfBoxDict(signature.getCOSObject(), doc);
-						PdfSigDict signatureDictionary = new PdfSigDict(dictionary);
+						PdfSigDict signatureDictionary = new PdfSigDict(dictionary, signatureField.getPartialName());
 						final int[] byteRange = signatureDictionary.getByteRange();
 
 						validateByteRange(byteRange);
 
 						final byte[] cms = signatureDictionary.getContents();
-
-						byte[] cmsWithByteRange = signature.getContents(originalBytes);
-
-						if (!Arrays.equals(cmsWithByteRange, cms)) {
-							LOG.warn("The byte range doesn't match found /Content value!");
+						byte[] signedContent = new byte[] {};
+						if (!isContentValueEqualsByteRangeExtraction(document, byteRange, cms, signature.getName())) {
+							LOG.warn("Signature '{}' is skipped. SIWA detected !", signatureField.getPartialName());
+						} else {
+							signedContent = getSignedContent(document, byteRange);
 						}
 
-						String subFilter = signatureDictionary.getSubFilter();
-						if (Utils.isStringEmpty(subFilter) || Utils.isArrayEmpty(cms)) {
-							LOG.warn("Wrong signature with empty subfilter or cms.");
-							continue;
-						}
-
-						byte[] signedContent = signature.getSignedContent(originalBytes);
-
-						// /ByteRange [0 575649 632483 10206]
-						int beforeSignatureLength = byteRange[1] - byteRange[0];
-						int expectedCMSLength = byteRange[2] - byteRange[1];
-						int afterSignatureLength = byteRange[3];
-						int totalCoveredByByteRange = beforeSignatureLength + expectedCMSLength + afterSignatureLength;
-
-						boolean coverAllOriginalBytes = (originalBytesLength == totalCoveredByByteRange);
+						boolean coverAllOriginalBytes = isSignatureCoversWholeDocument(document, byteRange);
 
 						PdfSignatureOrDocTimestampInfo signatureInfo = null;
+						final String subFilter = signatureDictionary.getSubFilter();
 						if (PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER.equals(subFilter)) {
-							boolean isArchiveTimestamp = false;
+
+							PdfDssDict timestampedDssDictionary = null;
 
 							// LT or LTA
 							if (dssDictionary != null) {
 								// check is DSS dictionary already exist
-								if (isDSSDictionaryPresentInPreviousRevision(getOriginalBytes(byteRange, signedContent))) {
-									isArchiveTimestamp = true;
-								}
+								timestampedDssDictionary = getDSSDictionaryPresentInRevision(getOriginalBytes(byteRange, signedContent));
 							}
 
-							signatureInfo = new PdfDocTimestampInfo(validationCertPool, signatureDictionary, dssDictionary, cms, signedContent,
-									coverAllOriginalBytes, isArchiveTimestamp);
+							signatureInfo = new PdfDocTimestampInfo(validationCertPool, signatureDictionary, timestampedDssDictionary, cms, signedContent,
+									coverAllOriginalBytes);
 						} else {
 							signatureInfo = new PdfSignatureInfo(validationCertPool, signatureDictionary, dssDictionary, cms, signedContent,
 									coverAllOriginalBytes);
+							
 						}
 
 						if (signatureInfo != null) {
@@ -384,7 +371,6 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 						LOG.error("Unable to parse signature '" + signature.getName() + "' : ", e);
 					}
 				}
-				Collections.sort(signatures, new PdfSignatureOrDocTimestampInfoComparator());
 				linkSignatures(signatures);
 			}
 		} catch (Exception e) {
@@ -393,13 +379,29 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 		return signatures;
 	}
+	
+	private boolean isSignatureCoversWholeDocument(DSSDocument document, int[] byteRange) {
+		try (InputStream is = document.openStream()) {
+			long originalBytesLength = Utils.getInputStreamSize(is);
+			// /ByteRange [0 575649 632483 10206]
+			long beforeSignatureLength = (long)byteRange[1] - byteRange[0];
+			long expectedCMSLength = (long)byteRange[2] - byteRange[1] - byteRange[0];
+			long afterSignatureLength = byteRange[3];
+			long totalCoveredByByteRange = beforeSignatureLength + expectedCMSLength + afterSignatureLength;
 
-	private boolean isDSSDictionaryPresentInPreviousRevision(byte[] originalBytes) {
+			return (originalBytesLength == totalCoveredByByteRange);
+		} catch (IOException e) {
+			LOG.warn("Cannot determine the original file size for the document. Reason : {}", e.getMessage());
+			return false;
+		}
+	}
+
+	private PdfDssDict getDSSDictionaryPresentInRevision(byte[] originalBytes) {
 		try (PDDocument doc = PDDocument.load(originalBytes)) {
-			return getDSSDictionary(doc) != null;
+			return getDSSDictionary(doc);
 		} catch (Exception e) {
 			LOG.warn("Cannot check in previous revisions if DSS dictionary already exist : " + e.getMessage(), e);
-			return false;
+			return null;
 		}
 	}
 
@@ -464,11 +466,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			}
 
 			// We can't use CMSSignedData, the pdSignature content is trimmed (000000)
-			PdfSignatureInfo pdfSignatureInfo = callback.getSignature().getPdfSignatureInfo();
-			final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, pdfSignatureInfo.getContent());
-			String hexHash = Utils.toHex(digest).toUpperCase();
-
-			vriDictionary.setItem(hexHash, sigVriDictionary);
+			String vriKey = callback.getSignature().getVRIKey();
+			vriDictionary.setItem(vriKey, sigVriDictionary);
 		}
 		dss.setItem(PAdESConstants.VRI_DICTIONARY_NAME, vriDictionary);
 
@@ -508,20 +507,23 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 					}
 					array.add(stream);
 				} else {
-					List<COSObject> objects = pdDocument.getDocument().getObjects();
-					COSObject foundCosObject = null;
-					for (COSObject cosObject : objects) {
-						if (cosObject.getObjectNumber() == objectNumber) {
-							foundCosObject = cosObject;
-							break;
-						}
-					}
+					COSObject foundCosObject = getByObjectNumber(pdDocument, objectNumber);
 					array.add(foundCosObject);
 				}
 				currentObjIds.add(digest);
 			}
 		}
 		return array;
+	}
+
+	private COSObject getByObjectNumber(PDDocument pdDocument, Long objectNumber) {
+		List<COSObject> objects = pdDocument.getDocument().getObjects();
+		for (COSObject cosObject : objects) {
+			if (cosObject.getObjectNumber() == objectNumber) {
+				return cosObject;
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -544,14 +546,19 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	@Override
 	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters) {
 		DSSDocument newPdfDoc = null;
-		try (InputStream is = document.openStream(); PDDocument pdfDoc = PDDocument.load(is)) {
+		try (InputStream is = document.openStream(); PDDocument pdfDoc = PDDocument.load(is);
+				ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			
 			PDPage page = pdfDoc.getPage(parameters.getPage());
+			
+			PDDocumentCatalog catalog = pdfDoc.getDocumentCatalog();
+	        catalog.getCOSObject().setNeedToBeUpdated(true);
 
-			PDAcroForm acroForm = pdfDoc.getDocumentCatalog().getAcroForm();
+			PDAcroForm acroForm = catalog.getAcroForm();
 			if (acroForm == null) {
 				acroForm = new PDAcroForm(pdfDoc);
-				pdfDoc.getDocumentCatalog().setAcroForm(acroForm);
-
+				catalog.setAcroForm(acroForm);
+				
 				// Set default appearance
 				PDResources resources = new PDResources();
 				resources.put(COSName.getPDFName("Helv"), PDType1Font.HELVETICA);
@@ -563,16 +570,23 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			if (Utils.isStringNotBlank(parameters.getName())) {
 				signatureField.setPartialName(parameters.getName());
 			}
+			
 			PDAnnotationWidget widget = signatureField.getWidgets().get(0);
 			PDRectangle rect = new PDRectangle(parameters.getOriginX(), parameters.getOriginY(), parameters.getWidth(), parameters.getHeight());
 			widget.setRectangle(rect);
 			widget.setPage(page);
 			page.getAnnotations().add(widget);
+			
 			acroForm.getFields().add(signatureField);
 
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			pdfDoc.save(baos);
+			acroForm.getCOSObject().setNeedToBeUpdated(true);
+			signatureField.getCOSObject().setNeedToBeUpdated(true);
+			page.getCOSObject().setNeedToBeUpdated(true);
+			
+			pdfDoc.saveIncremental(baos);
+			
 			newPdfDoc = new InMemoryDocument(baos.toByteArray(), "new-document.pdf", MimeType.PDF);
+			
 		} catch (Exception e) {
 			throw new DSSException("Unable to add a new signature fields", e);
 		}

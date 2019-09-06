@@ -28,9 +28,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
 
 /**
  * This class builds a ds:Manifest element
@@ -100,7 +100,7 @@ public class ManifestBuilder {
 			referenceDom.setAttribute(XAdESBuilder.URI, document.getName());
 
 			Element digestMethodDom = DomUtils.addElement(documentDom, referenceDom, XMLSignature.XMLNS, XAdESBuilder.DS_DIGEST_METHOD);
-			digestMethodDom.setAttribute(XAdESBuilder.ALGORITHM, digestAlgorithm.getXmlId());
+			digestMethodDom.setAttribute(XAdESBuilder.ALGORITHM, digestAlgorithm.getUri());
 
 			Element digestValueDom = DomUtils.addElement(documentDom, referenceDom, XMLSignature.XMLNS, XAdESBuilder.DS_DIGEST_VALUE);
 			Text textNode = documentDom.createTextNode(document.getDigest(digestAlgorithm));

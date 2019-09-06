@@ -20,14 +20,17 @@
  */
 package eu.europa.esig.dss.pdf;
 
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.enumerations.TimestampLocation;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
-import eu.europa.esig.dss.validation.TimestampToken;
-import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.TimestampType;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 /**
  * Signature timestamp representation
@@ -39,30 +42,31 @@ public class PdfDocTimestampInfo extends PdfCMSInfo implements PdfSignatureOrDoc
 
 	private final TimestampToken timestampToken;
 
-	private final byte[] content;
-
 	/**
+	 * Default constructor to create PdfDocTimestampInfo
+	 * 
 	 * @param validationCertPool
-	 * @param dssDictionary
-	 *            the DSS dictionary
+	 *                                 the certificate pool
+	 * @param signatureDictionary
+	 *                                 the signature dictionary
+	 * @param timestampedDssDictionary
+	 *                                 the covered DSS dictionary
 	 * @param cms
-	 *            the CMS (CAdES) bytes
+	 *                                 the CMS (CAdES) bytes
+	 * @param signedContent
+	 *                                 the signed data
 	 * @param coverCompleteRevision
-	 *            true if the signature covers all bytes
-	 * @param isArchiveTimestamp
-	 *            true if the timestamp is an archive timestamp
+	 *                                 true if the signature covers all bytes
 	 */
 	public PdfDocTimestampInfo(CertificatePool validationCertPool, PdfSigDict signatureDictionary,
-			PdfDssDict dssDictionary, byte[] cms, byte[] signedContent, boolean coverCompleteRevision,
-			boolean isArchiveTimestamp) {
-		super(signatureDictionary, dssDictionary, cms, signedContent, coverCompleteRevision);
+			PdfDssDict timestampedDssDictionary, byte[] cms, byte[] signedContent, boolean coverCompleteRevision) {
+		super(signatureDictionary, timestampedDssDictionary, cms, signedContent, coverCompleteRevision);
 		try {
 			TimestampType timestampType = TimestampType.SIGNATURE_TIMESTAMP;
-			if (isArchiveTimestamp) {
+			if (timestampedDssDictionary != null) {
 				timestampType = TimestampType.ARCHIVE_TIMESTAMP;
 			}
-			timestampToken = new TimestampToken(cms, timestampType, validationCertPool);
-			content = cms;
+			timestampToken = new TimestampToken(cms, timestampType, validationCertPool, TimestampLocation.DOC_TIMESTAMP);
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Created PdfDocTimestampInfo {} : {}", timestampType, uniqueId());
 			}
@@ -89,13 +93,13 @@ public class PdfDocTimestampInfo extends PdfCMSInfo implements PdfSignatureOrDoc
 		return true;
 	}
 
-	public TimestampToken getTimestampToken() {
-		return timestampToken;
+	@Override
+	public Date getSigningDate() {
+		return timestampToken.getGenerationTime();
 	}
 
-	@Override
-	public byte[] getContent() {
-		return content;
+	public TimestampToken getTimestampToken() {
+		return timestampToken;
 	}
 
 }

@@ -25,14 +25,14 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlTLAnalysis;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
-import eu.europa.esig.jaxb.policy.ValueConstraint;
 
 public class TLVersionCheck extends ChainItem<XmlTLAnalysis> {
 

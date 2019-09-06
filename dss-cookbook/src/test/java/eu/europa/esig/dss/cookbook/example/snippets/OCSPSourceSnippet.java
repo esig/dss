@@ -4,12 +4,12 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import eu.europa.esig.dss.client.ocsp.JdbcCacheOCSPSource;
-import eu.europa.esig.dss.client.ocsp.OnlineOCSPSource;
-import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.RevocationToken;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPSource;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.service.ocsp.JdbcCacheOCSPSource;
+import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 
 public class OCSPSourceSnippet {
 
@@ -31,7 +31,7 @@ public class OCSPSourceSnippet {
 		JdbcCacheOCSPSource cacheOCSPSource = new JdbcCacheOCSPSource();
 		cacheOCSPSource.setDataSource(dataSource);
 		cacheOCSPSource.setProxySource(onlineOCSPSource);
-		Long threeMinutes = (long) (1000 * 60 * 3);
+		Long threeMinutes = (long) (60 * 3);
 		cacheOCSPSource.setDefaultNextUpdateDelay(threeMinutes); // default nextUpdateDelay (if not defined in the revocation data)
 		cacheOCSPSource.initTable();
 		RevocationToken ocspRevocationToken = cacheOCSPSource.getRevocationToken(certificateToken, certificateToken);

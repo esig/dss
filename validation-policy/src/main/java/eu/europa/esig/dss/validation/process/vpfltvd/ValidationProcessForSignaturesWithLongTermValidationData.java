@@ -29,23 +29,30 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessLongTermData;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlProofOfExistence;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
+import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.policy.SubContext;
+import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.policy.Context;
-import eu.europa.esig.dss.validation.policy.SubContext;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;
 import eu.europa.esig.dss.validation.process.bbb.sav.SignatureAcceptanceValidation;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SignatureAcceptanceValidationResultCheck;
@@ -53,16 +60,11 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChec
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationFreshnessCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.AcceptableBasicSignatureValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeNotBeforeCertificateIssuanceCheck;
+import eu.europa.esig.dss.validation.process.vpfltvd.checks.RevocationBasicBuildingBlocksCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.RevocationDateAfterBestSignatureTimeCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.SigningTimeAttributePresentCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampCoherenceOrderCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampDelayCheck;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
-import eu.europa.esig.dss.x509.TimestampType;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 /**
  * 5.5 Validation process for Signatures with Time and Signatures with Long-Term Validation Data
@@ -72,10 +74,10 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	private static final Logger LOG = LoggerFactory.getLogger(ValidationProcessForSignaturesWithLongTermValidationData.class);
 
 	private final XmlConstraintsConclusion basicSignatureValidation;
-	private final List<XmlValidationProcessTimestamps> timestampValidations;
 
 	private final DiagnosticData diagnosticData;
 	private final SignatureWrapper currentSignature;
+	private final Map<String, XmlBasicBuildingBlocks> bbbs;
 
 	private final ValidationPolicy policy;
 	private final Date currentDate;
@@ -83,12 +85,13 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	public ValidationProcessForSignaturesWithLongTermValidationData(XmlSignature signatureAnalysis, DiagnosticData diagnosticData,
 			SignatureWrapper currentSignature, Map<String, XmlBasicBuildingBlocks> bbbs, ValidationPolicy policy, Date currentDate) {
 		super(new XmlValidationProcessLongTermData());
+		result.setTitle(ValidationProcessDefinition.VPFLTVD.getTitle());
 
 		this.basicSignatureValidation = signatureAnalysis.getValidationProcessBasicSignatures();
-		this.timestampValidations = signatureAnalysis.getValidationProcessTimestamps();
 
 		this.diagnosticData = diagnosticData;
 		this.currentSignature = currentSignature;
+		this.bbbs = bbbs;
 
 		this.policy = policy;
 		this.currentDate = currentDate;
@@ -108,7 +111,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 * NOTE 1: Best-signature-time is an internal variable for the algorithm denoting the earliest time when it can
 		 * be proven that a signature has existed.
 		 */
-		Date bestSignatureTime = currentDate;
+		XmlProofOfExistence bestSignatureTime = getCurrentTime();
 
 		/*
 		 * 2) Signature validation: the process shall perform the validation process for Basic Signatures as per
@@ -123,6 +126,18 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 * validation process for Basic Signatures.
 		 */
 		ChainItem<XmlValidationProcessLongTermData> item = firstItem = isAcceptableBasicSignatureValidation();
+
+		Set<CertificateRevocationWrapper> certificateRevocationData = getLinkedCertificateRevocationData();
+		if (Utils.isCollectionNotEmpty(certificateRevocationData)) {
+			for (CertificateRevocationWrapper certificateRevocation : certificateRevocationData) {
+				XmlBasicBuildingBlocks revocationBBB = bbbs.get(certificateRevocation.getId());
+				if (revocationBBB != null) {
+					item = item.setNextItem(revocationBasicBuildingBlocksValid(revocationBBB));
+				} else {
+					LOG.warn("No BBB found for revocation : {}", certificateRevocation.getId());
+				}
+			}
+		}
 
 		/*
 		 * 3) Signature time-stamp validation:
@@ -143,8 +158,8 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 			 */
 			for (TimestampWrapper timestampWrapper : allowedTimestamps) {
 				Date productionTime = timestampWrapper.getProductionTime();
-				if (productionTime.before(bestSignatureTime)) {
-					bestSignatureTime = productionTime;
+				if (productionTime.before(bestSignatureTime.getTime())) {
+					bestSignatureTime = getProofOfExistence(timestampWrapper);
 				}
 			}
 		}
@@ -158,7 +173,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		XmlConclusion bsConclusion = basicSignatureValidation.getConclusion();
 		if (Indication.INDETERMINATE.equals(bsConclusion.getIndication()) && 
 				(SubIndication.REVOKED_NO_POE.equals(bsConclusion.getSubIndication()) || SubIndication.REVOKED_CA_NO_POE.equals(bsConclusion.getSubIndication()))) {
-			item = revocationDateAfterBestSignatureDateValidation(item, bestSignatureTime, bsConclusion.getSubIndication());
+			item = revocationDateAfterBestSignatureDateValidation(item, bestSignatureTime.getTime(), bsConclusion.getSubIndication());
 		}
 
 		/*
@@ -169,7 +184,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 * OUT_OF_BOUNDS_NO_POE.
 		 */
 		if (Indication.INDETERMINATE.equals(bsConclusion.getIndication()) && SubIndication.OUT_OF_BOUNDS_NO_POE.equals(bsConclusion.getSubIndication())) {
-			item = item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(bestSignatureTime));
+			item = item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(bestSignatureTime.getTime()));
 		}
 
 		/*
@@ -183,10 +198,10 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 				&& SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(bsConclusion.getSubIndication())) {
 			
 			// check validity of Cryptographic Constraints for the Signature
-			item = item.setNextItem(algorithmReliableAtBestSignatureTime(bestSignatureTime));
+			item = item.setNextItem(algorithmReliableAtBestSignatureTime(bestSignatureTime.getTime()));
 
 			// check validity of Cryptographic Constraints for the Signing Certificate and CA Certificates
-			item = certificatesChainReliableAtBestSignatureTime(item, bestSignatureTime);
+			item = certificatesChainReliableAtBestSignatureTime(item, bestSignatureTime.getTime());
 			
 		}
 
@@ -222,7 +237,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 				 * process shall go to the next step. Otherwise, the process shall return the indication INDETERMINATE with the
 				 * sub-indication SIG_CONSTRAINTS_FAILURE.
 				 */
-				item = item.setNextItem(timestampDelay(bestSignatureTime));
+				item = item.setNextItem(timestampDelay(bestSignatureTime.getTime()));
 			}
 		}
 		
@@ -236,7 +251,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 */
 		if (Indication.INDETERMINATE.equals(bsConclusion.getIndication())
 				&& SubIndication.TRY_LATER.equals(bsConclusion.getSubIndication())) {
-			item = item.setNextItem(revocationIsFresh(bestSignatureTime, currentContext));
+			item = item.setNextItem(revocationIsFresh(bestSignatureTime.getTime(), currentContext));
 		}
 		
 		/*
@@ -252,7 +267,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 * the SVA shall return the indication and sub-indication returned by the Signature Acceptance Validation
 		 * Process. 
 		 */
-		item = item.setNextItem(signatureIsAcceptable(bestSignatureTime, currentContext));
+		item = item.setNextItem(signatureIsAcceptable(bestSignatureTime.getTime(), currentContext));
 		
 		/*
 		 * 9) Data extraction: the process shall return the success indication PASSED, the certificate chain obtained in step 2
@@ -263,30 +278,65 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 * time-stamp token. 
 		 */
 
-		result.setBestSignatureTime(bestSignatureTime);
+		result.setProofOfExistence(bestSignatureTime);
+	}
+
+	private Set<CertificateRevocationWrapper> getLinkedCertificateRevocationData() {
+		Set<CertificateRevocationWrapper> result = new HashSet<CertificateRevocationWrapper>();
+		extractRevocationDataFromCertificateChain(result, currentSignature.getCertificateChain());
+		List<TimestampWrapper> timestampList = currentSignature.getTimestampList();
+		for (TimestampWrapper timestamp : timestampList) {
+			extractRevocationDataFromCertificateChain(result, timestamp.getCertificateChain());
+		}
+		return result;
+	}
+
+	private void extractRevocationDataFromCertificateChain(Set<CertificateRevocationWrapper> result, List<CertificateWrapper> certificateChain) {
+		for (CertificateWrapper certificate : certificateChain) {
+			if (certificate != null && Utils.isCollectionNotEmpty(certificate.getCertificateRevocationData())) {
+				result.addAll(certificate.getCertificateRevocationData());
+			}
+		}
+	}
+
+	private ChainItem<XmlValidationProcessLongTermData> revocationBasicBuildingBlocksValid(XmlBasicBuildingBlocks revocationBBB) {
+		return new RevocationBasicBuildingBlocksCheck(result, revocationBBB, getFailLevelConstraint());
+	}
+
+	private XmlProofOfExistence getCurrentTime() {
+		XmlProofOfExistence xpoe = new XmlProofOfExistence();
+		xpoe.setTime(currentDate);
+		return xpoe;
+	}
+
+	private XmlProofOfExistence getProofOfExistence(TimestampWrapper timestampWrapper) {
+		XmlProofOfExistence xpoe = new XmlProofOfExistence();
+		xpoe.setTime(timestampWrapper.getProductionTime());
+		xpoe.setTimestampId(timestampWrapper.getId());
+		return xpoe;
 	}
 
 	private Set<TimestampWrapper> filterValidSignatureTimestamps(List<TimestampWrapper> allTimestamps) {
 		Set<TimestampWrapper> result = new HashSet<TimestampWrapper>();
 		for (TimestampWrapper timestampWrapper : allTimestamps) {
-			if (!TimestampType.SIGNATURE_TIMESTAMP.name().equals(timestampWrapper.getType())) {
+			if (!TimestampType.SIGNATURE_TIMESTAMP.equals(timestampWrapper.getType())) {
 				break;
 			}
-			boolean foundValidationTSP = false;
-			for (XmlValidationProcessTimestamps timestampValidation : timestampValidations) {
-				List<XmlConstraint> constraints = timestampValidation.getConstraint();
-				for (XmlConstraint tspValidation : constraints) {
-					if (Utils.areStringsEqual(timestampWrapper.getId(), tspValidation.getId())) {
-						foundValidationTSP = true;
-						// PVA : if OK message imprint is validated in SVA of timestamp (depending of constraint.xml)
-						if (XmlStatus.OK.equals(tspValidation.getStatus())) {
-							result.add(timestampWrapper);
-							break;
-						}
+
+			XmlBasicBuildingBlocks bbbTST = bbbs.get(timestampWrapper.getId());
+			if (bbbTST != null) {
+				// PVA : if OK message imprint is validated in SVA of timestamp (depending of
+				// constraint.xml)
+				XmlCV cv = bbbTST.getCV();
+				if (cv != null) {
+					XmlConclusion conclusion = cv.getConclusion();
+					if (Indication.PASSED.equals(conclusion.getIndication())) {
+						result.add(timestampWrapper);
 					}
+				} else {
+					LOG.warn("Cryptographic validation (CV) for timestamp is required !");
 				}
-			}
-			if (!foundValidationTSP) {
+			} else {
 				LOG.warn("Cannot find tsp validation info for tsp {}", timestampWrapper.getId());
 			}
 		}
@@ -298,8 +348,9 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	}
 	
 	private ChainItem<XmlValidationProcessLongTermData> revocationIsFresh(Date bestSignatureTime, Context currentContext) {
-		CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(currentSignature.getSigningCertificateId());
-		RevocationFreshnessChecker rfc = new RevocationFreshnessChecker(signingCertificate.getLatestRevocationData(), bestSignatureTime, 
+		CertificateWrapper signingCertificate = currentSignature.getSigningCertificate();
+		CertificateRevocationWrapper certificateRevocation = diagnosticData.getLatestRevocationDataForCertificate(signingCertificate);
+		RevocationFreshnessChecker rfc = new RevocationFreshnessChecker(certificateRevocation, bestSignatureTime, 
 				currentContext, SubContext.SIGNING_CERT, policy);
 		return checkRevocationFreshnessCheckerResult(rfc.execute(), currentContext, SubContext.SIGNING_CERT);
 	}
@@ -317,24 +368,25 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	private ChainItem<XmlValidationProcessLongTermData> revocationDateAfterBestSignatureDateValidation(
 			ChainItem<XmlValidationProcessLongTermData> item, Date bestSignatureTime, SubIndication subIndication) {
 		LevelConstraint constraint = policy.getRevocationTimeAgainstBestSignatureTime();
-		List<String> certificateChainIds = currentSignature.getCertificateChainIds();
-		for (String certificateId : certificateChainIds) {
+		List<CertificateWrapper> certificateChain = currentSignature.getCertificateChain();
+		for (CertificateWrapper chainItem : certificateChain) {
 			SubContext subContext = SubContext.CA_CERTIFICATE;
-			if (certificateId.equals(currentSignature.getSigningCertificateId())) {
+			if (chainItem.getId().equals(currentSignature.getSigningCertificate().getId())) {
 				subContext = SubContext.SIGNING_CERT;
 			}
 			// separate cases to check based on the returned subIndication
 			if ((SubContext.SIGNING_CERT.equals(subContext) && SubIndication.REVOKED_NO_POE.equals(subIndication)) ||
 					SubContext.CA_CERTIFICATE.equals(subContext) && SubIndication.REVOKED_CA_NO_POE.equals(subIndication)) {
-				CertificateWrapper certificate = diagnosticData.getUsedCertificateById(certificateId);
-				item = item.setNextItem(new RevocationDateAfterBestSignatureTimeCheck(result, certificate, bestSignatureTime, constraint, subContext));
+				CertificateRevocationWrapper certificateRevocation = diagnosticData.getLatestRevocationDataForCertificate(chainItem);
+				item = item.setNextItem(new RevocationDateAfterBestSignatureTimeCheck(result, certificateRevocation, 
+						bestSignatureTime, constraint, subContext));
 			}
 		}
 		return item;
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> bestSignatureTimeNotBeforeCertificateIssuance(Date bestSignatureTime) {
-		CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(currentSignature.getSigningCertificateId());
+		CertificateWrapper signingCertificate = currentSignature.getSigningCertificate();
 		return new BestSignatureTimeNotBeforeCertificateIssuanceCheck(result, bestSignatureTime, signingCertificate,
 				policy.getBestSignatureTimeBeforeIssuanceDateOfSigningCertificateConstraint());
 	}
@@ -368,11 +420,10 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	 * @return last established {@link ChainItem}
 	 */
 	private ChainItem<XmlValidationProcessLongTermData> certificatesChainReliableAtBestSignatureTime(ChainItem<XmlValidationProcessLongTermData> item, Date bestSignatureTime) {
-		List<String> certificateChainIds = currentSignature.getCertificateChainIds();
-		for (String certificateChainId : certificateChainIds) {
+		List<CertificateWrapper> certificateChain = currentSignature.getCertificateChain();
+		for (CertificateWrapper certificate : certificateChain) {
 			ChainItem<XmlValidationProcessLongTermData> cryptoCheck = null;
-			CertificateWrapper certificate = diagnosticData.getUsedCertificateById(certificateChainId);
-			if (certificateChainId.equals(currentSignature.getSigningCertificateId())) {
+			if (certificate.getId().equals(currentSignature.getSigningCertificate().getId())) {
 				cryptoCheck = new CryptographicCheck<XmlValidationProcessLongTermData>(result, certificate, bestSignatureTime, 
 						policy.getCertificateCryptographicConstraint(Context.SIGNATURE, SubContext.SIGNING_CERT));
 			} else {

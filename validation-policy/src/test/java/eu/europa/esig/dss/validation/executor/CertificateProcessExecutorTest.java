@@ -24,59 +24,64 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.File;
 import java.util.List;
 
-import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlCertificate;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationCertificateQualification;
-import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.jaxb.simplecertificatereport.SimpleCertificateReport;
-import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlChainItem;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
+
+import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCertificate;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
+import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
+import eu.europa.esig.dss.enumerations.CertificateQualification;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.RevocationReason;
+import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReportFacade;
+import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlChainItem;
+import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSimpleCertificateReport;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateQualification;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 
 public class CertificateProcessExecutorTest extends AbstractValidationExecutorTest {
 
+	private static final Logger LOG = LoggerFactory.getLogger(CertificateProcessExecutorTest.class);
+
 	@Test
 	public void deRevoked() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/de_revoked.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/de_revoked.xml"));
 		assertNotNull(diagnosticData);
 
-		String certificateId = "0E9B5C373AFEC1CED5723FCD9231F793BB330FFBF2B94BB8698301C90405B9BF";
+		String certificateId = "C-0E9B5C373AFEC1CED5723FCD9231F793BB330FFBF2B94BB8698301C90405B9BF";
 
-		CertificateProcessExecutor executor = new CertificateProcessExecutor();
+		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
 		executor.setCertificateId(certificateId);
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
+		checkReports(reports);
 
-		DetailedReport detailedReportJaxb = reports.getDetailedReportJaxb();
+		XmlDetailedReport detailedReportJaxb = reports.getDetailedReportJaxb();
 		assertNotNull(detailedReportJaxb);
 		assertNotNull(detailedReportJaxb.getCertificate());
 		assertEquals(2, detailedReportJaxb.getTLAnalysis().size());
 		assertEquals(1, detailedReportJaxb.getBasicBuildingBlocks().size());
 		assertEquals(0, detailedReportJaxb.getSignatures().size());
 
-		eu.europa.esig.dss.validation.reports.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertNotNull(simpleReport);
 		List<String> certificateIds = simpleReport.getCertificateIds();
 		assertEquals(2, certificateIds.size());
@@ -92,11 +97,11 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 		assertEquals(SubIndication.OUT_OF_BOUNDS_NO_POE, simpleReport.getCertificateSubIndication(certificateId));
 		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getCertificateCrlUrls(certificateId)));
 		assertNotNull(simpleReport.getCertificateRevocationDate(certificateId));
-		assertEquals("unspecified", simpleReport.getCertificateRevocationReason(certificateId));
+		assertEquals(RevocationReason.UNSPECIFIED, simpleReport.getCertificateRevocationReason(certificateId));
 		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getCertificateCrlUrls(certificateId)));
 		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getTrustAnchorVATNumbers()));
 
-		SimpleCertificateReport simpleReportJaxb = reports.getSimpleReportJaxb();
+		XmlSimpleCertificateReport simpleReportJaxb = reports.getSimpleReportJaxb();
 		assertNotNull(simpleReportJaxb);
 		assertNotNull(simpleReportJaxb.getChain());
 		assertEquals(2, simpleReportJaxb.getChain().size());
@@ -116,28 +121,28 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 
 	@Test
 	public void beTSA() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/be_tsa.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/be_tsa.xml"));
 		assertNotNull(diagnosticData);
 
-		String certificateId = "D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19";
+		String certificateId = "C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19";
 
-		CertificateProcessExecutor executor = new CertificateProcessExecutor();
+		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
 		executor.setCertificateId(certificateId);
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
+		checkReports(reports);
 
-		DetailedReport detailedReportJaxb = reports.getDetailedReportJaxb();
+		XmlDetailedReport detailedReportJaxb = reports.getDetailedReportJaxb();
 		assertNotNull(detailedReportJaxb);
 		assertNotNull(detailedReportJaxb.getCertificate());
 		assertEquals(2, detailedReportJaxb.getTLAnalysis().size());
 		assertEquals(1, detailedReportJaxb.getBasicBuildingBlocks().size());
 		assertEquals(0, detailedReportJaxb.getSignatures().size());
 
-		SimpleCertificateReport simpleReportJaxb = reports.getSimpleReportJaxb();
+		XmlSimpleCertificateReport simpleReportJaxb = reports.getSimpleReportJaxb();
 		assertNotNull(simpleReportJaxb);
 		assertNotNull(simpleReportJaxb.getChain());
 		assertEquals(2, simpleReportJaxb.getChain().size());
@@ -157,28 +162,28 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 
 	@Test
 	public void dkNoChain() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/dk_no_chain.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/dk_no_chain.xml"));
 		assertNotNull(diagnosticData);
 
-		String certificateId = "3ECBC4648AA3BCB671976F53D7516F774DB1C886FAB81FE5469462181187DB8D";
+		String certificateId = "C-3ECBC4648AA3BCB671976F53D7516F774DB1C886FAB81FE5469462181187DB8D";
 
-		CertificateProcessExecutor executor = new CertificateProcessExecutor();
+		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
 		executor.setCertificateId(certificateId);
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
+		checkReports(reports);
 
-		DetailedReport detailedReportJaxb = reports.getDetailedReportJaxb();
+		XmlDetailedReport detailedReportJaxb = reports.getDetailedReportJaxb();
 		assertNotNull(detailedReportJaxb);
 		assertNotNull(detailedReportJaxb.getCertificate());
 		assertEquals(0, detailedReportJaxb.getTLAnalysis().size());
 		assertEquals(1, detailedReportJaxb.getBasicBuildingBlocks().size());
 		assertEquals(0, detailedReportJaxb.getSignatures().size());
 
-		SimpleCertificateReport simpleReportJaxb = reports.getSimpleReportJaxb();
+		XmlSimpleCertificateReport simpleReportJaxb = reports.getSimpleReportJaxb();
 		assertNotNull(simpleReportJaxb);
 		assertNotNull(simpleReportJaxb.getChain());
 		assertEquals(1, simpleReportJaxb.getChain().size());
@@ -193,66 +198,63 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 
 	@Test
 	public void inconsistentTrustService() throws Exception {
-
-		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/inconsistent-state.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/inconsistent-state.xml"));
 		assertNotNull(diagnosticData);
 
-		String certificateId = "A1E2D4CA9C521332369FA3224F0B7282AD2596E8A7416CBC0DF087E05D8F5502";
+		String certificateId = "C-A1E2D4CA9C521332369FA3224F0B7282AD2596E8A7416CBC0DF087E05D8F5502";
 
-		CertificateProcessExecutor executor = new CertificateProcessExecutor();
+		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
 		executor.setCertificateId(certificateId);
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
+		checkReports(reports);
 
-		eu.europa.esig.dss.validation.reports.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtCertificateIssuance());
 		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtValidationTime());
 	}
 
 	@Test
 	public void invalidTL() throws Exception {
-
-		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/invalid-tl.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/invalid-tl.xml"));
 		assertNotNull(diagnosticData);
 
-		String certificateId = "86CA5DDDDCB6CA73C77511DFF3C94961BD675CA15111810103942CA7D96DCE1B";
+		String certificateId = "C-86CA5DDDDCB6CA73C77511DFF3C94961BD675CA15111810103942CA7D96DCE1B";
 
-		CertificateProcessExecutor executor = new CertificateProcessExecutor();
+		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
 		executor.setCertificateId(certificateId);
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
+		checkReports(reports);
 
-		eu.europa.esig.dss.validation.reports.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtCertificateIssuance());
 		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtValidationTime());
 	}
 
 	@Test
 	public void expiredTL() throws Exception {
-
-		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/expired-tl.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/expired-tl.xml"));
 		assertNotNull(diagnosticData);
 
-		String certificateId = "86CA5DDDDCB6CA73C77511DFF3C94961BD675CA15111810103942CA7D96DCE1B";
+		String certificateId = "C-86CA5DDDDCB6CA73C77511DFF3C94961BD675CA15111810103942CA7D96DCE1B";
 
-		CertificateProcessExecutor executor = new CertificateProcessExecutor();
+		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
 		executor.setCertificateId(certificateId);
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
+		checkReports(reports);
 
-		eu.europa.esig.dss.validation.reports.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG_QSCD,
 				simpleReport.getQualificationAtCertificateIssuance());
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG_QSCD, simpleReport.getQualificationAtValidationTime());
@@ -260,86 +262,84 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 
 	@Test
 	public void wsaQC() throws Exception {
-
-		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/cert_WSAQC.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/cert_WSAQC.xml"));
 		assertNotNull(diagnosticData);
 
-		String certificateId = "24A830ADC0D077255FD14A607513D398CDB278A53A3DBAB79AC4ADE6A66EEAA6";
+		String certificateId = "C-24A830ADC0D077255FD14A607513D398CDB278A53A3DBAB79AC4ADE6A66EEAA6";
 
-		CertificateProcessExecutor executor = new CertificateProcessExecutor();
+		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
 		executor.setCertificateId(certificateId);
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
+		checkReports(reports);
 
-		eu.europa.esig.dss.validation.reports.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.QCERT_FOR_WSA, simpleReport.getQualificationAtCertificateIssuance());
 		assertEquals(CertificateQualification.QCERT_FOR_WSA, simpleReport.getQualificationAtValidationTime());
 	}
 
 	@Test
 	public void overruleNotQualified() throws Exception {
-
-		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/overrule-NotQualified-tl.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/overrule-NotQualified-tl.xml"));
 		assertNotNull(diagnosticData);
 
-		String certificateId = "86CA5DDDDCB6CA73C77511DFF3C94961BD675CA15111810103942CA7D96DCE1B";
+		String certificateId = "C-86CA5DDDDCB6CA73C77511DFF3C94961BD675CA15111810103942CA7D96DCE1B";
 
-		CertificateProcessExecutor executor = new CertificateProcessExecutor();
+		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
 		executor.setCertificateId(certificateId);
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
+		checkReports(reports);
 
-		eu.europa.esig.dss.validation.reports.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtCertificateIssuance());
 		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtValidationTime());
 	}
 
 	@Test
 	public void overruleNoQSCD() throws Exception {
-
-		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/overrule-NoQSCD-tl.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/overrule-NoQSCD-tl.xml"));
 		assertNotNull(diagnosticData);
 
-		String certificateId = "86CA5DDDDCB6CA73C77511DFF3C94961BD675CA15111810103942CA7D96DCE1B";
+		String certificateId = "C-86CA5DDDDCB6CA73C77511DFF3C94961BD675CA15111810103942CA7D96DCE1B";
 
-		CertificateProcessExecutor executor = new CertificateProcessExecutor();
+		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
 		executor.setCertificateId(certificateId);
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
-		eu.europa.esig.dss.validation.reports.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		checkReports(reports);
+		
+		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG, simpleReport.getQualificationAtCertificateIssuance());
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG, simpleReport.getQualificationAtValidationTime());
 	}
 
 	@Test
 	public void overruleQSCD() throws Exception {
-
-		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/overrule-QSCD-tl.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/overrule-QSCD-tl.xml"));
 		assertNotNull(diagnosticData);
 
-		String certificateId = "86CA5DDDDCB6CA73C77511DFF3C94961BD675CA15111810103942CA7D96DCE1B";
+		String certificateId = "C-86CA5DDDDCB6CA73C77511DFF3C94961BD675CA15111810103942CA7D96DCE1B";
 
-		CertificateProcessExecutor executor = new CertificateProcessExecutor();
+		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
 		executor.setCertificateId(certificateId);
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
-		eu.europa.esig.dss.validation.reports.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		checkReports(reports);
+		
+		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG_QSCD,
 				simpleReport.getQualificationAtCertificateIssuance());
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG_QSCD, simpleReport.getQualificationAtValidationTime());
@@ -347,21 +347,21 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 
 	@Test
 	public void overruleQualified() throws Exception {
-
-		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/overrule-Qualified-tl.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/overrule-Qualified-tl.xml"));
 		assertNotNull(diagnosticData);
 
-		String certificateId = "86CA5DDDDCB6CA73C77511DFF3C94961BD675CA15111810103942CA7D96DCE1B";
+		String certificateId = "C-86CA5DDDDCB6CA73C77511DFF3C94961BD675CA15111810103942CA7D96DCE1B";
 
-		CertificateProcessExecutor executor = new CertificateProcessExecutor();
+		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
 		executor.setCertificateId(certificateId);
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
-		eu.europa.esig.dss.validation.reports.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		checkReports(reports);
+		
+		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG_QSCD,
 				simpleReport.getQualificationAtCertificateIssuance());
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG_QSCD, simpleReport.getQualificationAtValidationTime());
@@ -369,21 +369,21 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 
 	@Test
 	public void multipleSDI() throws Exception {
-
-		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/multiple-sdi.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/multiple-sdi.xml"));
 		assertNotNull(diagnosticData);
 
-		String certificateId = "C011F11E98AEFF48798AD5874A7A7F0C8192ADD1AB6D37825FE42C2F9F5847EB";
+		String certificateId = "C-C011F11E98AEFF48798AD5874A7A7F0C8192ADD1AB6D37825FE42C2F9F5847EB";
 
-		CertificateProcessExecutor executor = new CertificateProcessExecutor();
+		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
 		executor.setCertificateId(certificateId);
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
-		eu.europa.esig.dss.validation.reports.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		checkReports(reports);
+		
+		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG,
 				simpleReport.getQualificationAtCertificateIssuance());
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG, simpleReport.getQualificationAtValidationTime());
@@ -391,41 +391,42 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 
 	@Test
 	public void withdrawn() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/withdrawn.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/withdrawn.xml"));
 		assertNotNull(diagnosticData);
 
-		String certificateId = "18D60FFCE5904ED1E2B3DE04A7BA48BF7F904A34D6988962B964843649A33456";
+		String certificateId = "C-18D60FFCE5904ED1E2B3DE04A7BA48BF7F904A34D6988962B964843649A33456";
 
-		CertificateProcessExecutor executor = new CertificateProcessExecutor();
+		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
 		executor.setCertificateId(certificateId);
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
-		eu.europa.esig.dss.validation.reports.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		checkReports(reports);
+		
+		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtCertificateIssuance());
 		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtValidationTime());
 	}
 
 	@Test
 	public void twoSDIdiffentResults() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/2-sdi-different-results.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/2-sdi-different-results.xml"));
 		assertNotNull(diagnosticData);
 
-		String certificateId = "E4A94773CF7B28C2BDF25015BE6716E501E73AB82BF0A9788D0DF8AD14D6876D";
+		String certificateId = "C-E4A94773CF7B28C2BDF25015BE6716E501E73AB82BF0A9788D0DF8AD14D6876D";
 
-		CertificateProcessExecutor executor = new CertificateProcessExecutor();
+		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
 		executor.setCertificateId(certificateId);
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
+		checkReports(reports);
 
-		DetailedReport detailedReportJaxb = reports.getDetailedReportJaxb();
+		XmlDetailedReport detailedReportJaxb = reports.getDetailedReportJaxb();
 		XmlCertificate certificate = detailedReportJaxb.getCertificate();
 		List<XmlValidationCertificateQualification> validationCertificateQualification = certificate.getValidationCertificateQualification();
 		for (XmlValidationCertificateQualification xmlValidationCertificateQualification : validationCertificateQualification) {
@@ -435,36 +436,145 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 
 	@Test
 	public void trustAnchor() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/trust-anchor.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/trust-anchor.xml"));
 		assertNotNull(diagnosticData);
 
-		String certificateId = "702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F";
+		String certificateId = "C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F";
 
-		CertificateProcessExecutor executor = new CertificateProcessExecutor();
+		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
 		executor.setCertificateId(certificateId);
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
-		eu.europa.esig.dss.validation.reports.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		checkReports(reports);
+		
+		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.NA, simpleReport.getQualificationAtCertificateIssuance());
 		assertEquals(CertificateQualification.NA, simpleReport.getQualificationAtValidationTime());
 	}
 	
-	@SuppressWarnings("unchecked")
-	private <T extends Object> T getJAXBObjectFromString(InputStream is, Class<T> clazz, String xsd) throws Exception {
-		JAXBContext context = JAXBContext.newInstance(clazz.getPackage().getName());
-		Unmarshaller unmarshaller = context.createUnmarshaller();
-		if (Utils.isStringNotEmpty(xsd)) {
-			SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			InputStream inputStream = this.getClass().getResourceAsStream(xsd);
-			Source source = new StreamSource(inputStream);
-			Schema schema = sf.newSchema(source);
-			unmarshaller.setSchema(schema);
-		}
-		return (T) unmarshaller.unmarshal(is);
+	@Test(expected = NullPointerException.class)
+	public void certificateIdIsMissingTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/trust-anchor.xml"));
+		assertNotNull(diagnosticData);
+		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+		executor.execute();
+	}
+	
+	private void checkReports(CertificateReports reports) {
+		assertNotNull(reports);
+		assertNotNull(reports.getDiagnosticData());
+		assertNotNull(reports.getDiagnosticDataJaxb());
+		assertNotNull(reports.getDetailedReport());
+		assertNotNull(reports.getDetailedReportJaxb());
+		assertNotNull(reports.getSimpleReport());
+		assertNotNull(reports.getSimpleReportJaxb());
+		
+		unmarshallXmlReports(reports);
 	}
 
+	private void unmarshallXmlReports(CertificateReports reports) {
+		
+		unmarshallDiagnosticData(reports);
+		unmarshallDetailedReport(reports);
+		unmarshallSimpleReport(reports);
+		
+		mapDiagnosticData(reports);
+		mapDetailedReport(reports);
+		mapSimpleReport(reports);
+		
+	}
+
+	private void unmarshallDiagnosticData(CertificateReports reports) {
+		try {
+			String xmlDiagnosticData = reports.getXmlDiagnosticData();
+			assertTrue(Utils.isStringNotBlank(xmlDiagnosticData));
+//			LOG.info(xmlDiagnosticData);
+			assertNotNull(DiagnosticDataFacade.newFacade().unmarshall(xmlDiagnosticData));
+		} catch (Exception e) {
+			LOG.error("Unable to unmarshall the Diagnostic data : " + e.getMessage(), e);
+			fail(e.getMessage());
+		}
+	}
+
+	private void mapDiagnosticData(CertificateReports reports) {
+		ObjectMapper om = getObjectMapper();
+
+		try {
+			String json = om.writeValueAsString(reports.getDiagnosticDataJaxb());
+			assertNotNull(json);
+//			LOG.info(json);
+			XmlDiagnosticData diagnosticDataObject = om.readValue(json, XmlDiagnosticData.class);
+			assertNotNull(diagnosticDataObject);
+		} catch (Exception e) {
+			LOG.error("Unable to map the Diagnostic data : " + e.getMessage(), e);
+			fail(e.getMessage());
+		}
+	}
+
+	private void unmarshallDetailedReport(CertificateReports reports) {
+		try {
+			String xmlDetailedReport = reports.getXmlDetailedReport();
+			assertTrue(Utils.isStringNotBlank(xmlDetailedReport));
+//			LOG.info(xmlDetailedReport);
+			assertNotNull(DetailedReportFacade.newFacade().unmarshall(xmlDetailedReport));
+		} catch (Exception e) {
+			LOG.error("Unable to unmarshall the Detailed Report : " + e.getMessage(), e);
+			fail(e.getMessage());
+		}
+	}
+
+	private void mapDetailedReport(CertificateReports reports) {
+		ObjectMapper om = getObjectMapper();
+		try {
+			String json = om.writeValueAsString(reports.getDetailedReportJaxb());
+			assertNotNull(json);
+//			LOG.info(json);
+			XmlDetailedReport detailedReportObject = om.readValue(json, XmlDetailedReport.class);
+			assertNotNull(detailedReportObject);
+		} catch (Exception e) {
+			LOG.error("Unable to map the Detailed Report : " + e.getMessage(), e);
+			fail(e.getMessage());
+		}
+	}
+
+	private void unmarshallSimpleReport(CertificateReports reports) {
+		try {
+			String xmlSimpleReport = reports.getXmlSimpleReport();
+			assertTrue(Utils.isStringNotBlank(xmlSimpleReport));
+//			LOG.info(xmlSimpleReport);
+			assertNotNull(SimpleCertificateReportFacade.newFacade().unmarshall(xmlSimpleReport));
+		} catch (Exception e) {
+			LOG.error("Unable to unmarshall the Simple Report : " + e.getMessage(), e);
+			fail(e.getMessage());
+		}
+	}
+
+	private void mapSimpleReport(CertificateReports reports) {
+		ObjectMapper om = getObjectMapper();
+		try {
+			String json = om.writeValueAsString(reports.getSimpleReportJaxb());
+			assertNotNull(json);
+//			LOG.info(json);
+			XmlSimpleCertificateReport simpleReportObject = om.readValue(json, XmlSimpleCertificateReport.class);
+			assertNotNull(simpleReportObject);
+		} catch (Exception e) {
+			LOG.error("Unable to map the Simple Report : " + e.getMessage(), e);
+			fail(e.getMessage());
+		}
+	}
+
+	private static ObjectMapper getObjectMapper() {
+		ObjectMapper om = new ObjectMapper();
+		JaxbAnnotationIntrospector jai = new JaxbAnnotationIntrospector(TypeFactory.defaultInstance());
+		om.setAnnotationIntrospector(jai);
+		om.enable(SerializationFeature.INDENT_OUTPUT);
+		return om;
+	}
+	
 }

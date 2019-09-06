@@ -33,20 +33,20 @@ import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
-import eu.europa.esig.dss.SignatureValue;
-import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CMSUtils;
-import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.signature.ExternalSignatureResult;
-import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
+import eu.europa.esig.dss.test.signature.ExternalSignatureResult;
 
 public class CAdESLevelBExternalSignatureTest extends AbstractPkiFactoryTestDocumentSignatureService<CAdESSignatureParameters> {
 	private static final String HELLO_WORLD = "Hello World";

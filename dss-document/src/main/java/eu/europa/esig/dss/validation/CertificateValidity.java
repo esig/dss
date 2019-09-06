@@ -23,7 +23,7 @@ package eu.europa.esig.dss.validation;
 import java.io.Serializable;
 import java.security.PublicKey;
 
-import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 
 /**
  * This class stores the information about the validity of the signing certificate.

@@ -23,14 +23,14 @@ package eu.europa.esig.dss.validation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.client.http.DataLoader;
-import eu.europa.esig.dss.client.http.NativeHTTPDataLoader;
-import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.CertificateSource;
-import eu.europa.esig.dss.x509.revocation.crl.CRLSource;
-import eu.europa.esig.dss.x509.revocation.crl.ListCRLSource;
-import eu.europa.esig.dss.x509.revocation.ocsp.ListOCSPSource;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPSource;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.spi.client.http.DataLoader;
+import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
+import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
 
 /**
  * This class provides the different sources used to verify the status of a certificate using the trust model. There are
@@ -98,6 +98,13 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	 * : false
 	 */
 	private boolean exceptionOnUncoveredPOE = false;
+	
+	/**
+	 * This variable set the default Digest Algorithm what will be used for calculation
+	 * of digests for validation tokns and signed data
+	 * Default: SHA256
+	 */
+	private DigestAlgorithm defaultDigestAlgorithm = DigestAlgorithm.SHA256;
 
 	/**
 	 * This variable set the behavior to include raw certificate tokens into the
@@ -130,6 +137,13 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	 * message. Default : true
 	 */
 	private boolean exceptionOnInvalidTimestamp = true;
+
+	/**
+	 * This variable set the behavior to follow in case of no revocation data issued
+	 * after the bestSignatureTime (augmentation process). 
+	 * True : throw an exception / False : add a warning message. Default : false
+	 */
+	private boolean exceptionOnNoRevocationAfterBestSignatureTime = false;
 
 	/**
 	 * This variable set the behavior to follow for revocation retrieving in case of
@@ -222,6 +236,9 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	@Override
 	public void setAdjunctCertSource(final CertificateSource adjunctCertSource) {
+		if (adjunctCertSource instanceof CommonTrustedCertificateSource) {
+			LOG.warn("Adjunct certificate source shouldn't be trusted. This source contains missing intermediate certificates");
+		}
 		this.adjunctCertSource = adjunctCertSource;
 	}
 
@@ -270,6 +287,7 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 		return exceptionOnUncoveredPOE;
 	}
 
+	@Override
 	public void setExceptionOnUncoveredPOE(boolean exceptionOnUncoveredPOE) {
 		this.exceptionOnUncoveredPOE = exceptionOnUncoveredPOE;
 	}
@@ -295,6 +313,16 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	@Override
+	public void setExceptionOnNoRevocationAfterBestSignatureTime(boolean exceptionOnNoRevocationAfterBestSignatureTime) {
+		this.exceptionOnNoRevocationAfterBestSignatureTime = exceptionOnNoRevocationAfterBestSignatureTime;
+	}
+
+	@Override
+	public boolean isExceptionOnNoRevocationAfterBestSignatureTime() {
+		return exceptionOnNoRevocationAfterBestSignatureTime;
+	}
+
+	@Override
 	public boolean isCheckRevocationForUntrustedChains() {
 		return checkRevocationForUntrustedChains;
 	}
@@ -314,6 +342,16 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 			validationPool.importCerts(adjunctCertSource);
 		}
 		return validationPool;
+	}
+
+	@Override
+	public void setDefaultDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
+		this.defaultDigestAlgorithm = digestAlgorithm;
+	}
+	
+	@Override
+	public DigestAlgorithm getDefaultDigestAlgorithm() {
+		return defaultDigestAlgorithm;
 	}
 
 	@Override

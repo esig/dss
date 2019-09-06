@@ -1,5 +1,5 @@
 <xsd:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
-           xmlns:tns="http://dss.esig.europa.eu/validation/policy"
+           xmlns="http://dss.esig.europa.eu/validation/policy"
            targetNamespace="http://dss.esig.europa.eu/validation/policy"
            xmlns:xsd="http://www.w3.org/2001/XMLSchema">
            
@@ -8,103 +8,103 @@
 		<xsd:documentation>A validation policy is a combination checks for the signature, timestamp, certificate and/or revocation data. These checks or rules can be configured with different levels of criticality and allows to continue/interupt the validation process.</xsd:documentation>
 		<xsd:documentation>The ETSI EN 319 102-1 takes a validation policy as parameter.</xsd:documentation>
 	</xsd:annotation>
+         
+	<xsd:element name="ConstraintsParameters" type="ConstraintsParameters" />
            
-	<xsd:element name="ConstraintsParameters">
+	<xsd:complexType name="ConstraintsParameters">
 		<xsd:annotation>
 			<xsd:documentation>Root element for the DSS validation policy : that allows to customize the validation process : add/remove a check and set its criticality.</xsd:documentation>
 		</xsd:annotation>
-		<xsd:complexType>
-			<xsd:sequence>
-				<xsd:element name="Description" type="xsd:string">
-					<xsd:annotation>
-						<xsd:documentation>The validation policy description</xsd:documentation>
-					</xsd:annotation>
-				</xsd:element>
-				<xsd:element name="ContainerConstraints" type="tns:ContainerConstraints" minOccurs="0">
-					<xsd:annotation>
-						<xsd:documentation>ASiC specific constraints</xsd:documentation>
-					</xsd:annotation>
-				</xsd:element>
-				<xsd:element name="SignatureConstraints" type="tns:SignatureConstraints" minOccurs="0">
-					<xsd:annotation>
-						<xsd:documentation>Constraints on the signature (signed/unsigned properties, coverage,...)</xsd:documentation>
-					</xsd:annotation>
-				</xsd:element>
-				<xsd:element name="CounterSignatureConstraints" type="tns:SignatureConstraints" minOccurs="0">
-					<xsd:annotation>
-						<xsd:documentation>Constraints related to the counter-signatures</xsd:documentation>
-					</xsd:annotation>
-				</xsd:element>
-				<xsd:element name="Timestamp" type="tns:TimestampConstraints" minOccurs="0">
-					<xsd:annotation>
-						<xsd:documentation>Constraints on the timestamps</xsd:documentation>
-					</xsd:annotation>
-				</xsd:element>
-				<xsd:element name="Revocation" type="tns:RevocationConstraints" minOccurs="0">
-					<xsd:annotation>
-						<xsd:documentation>Constraints related to the revocation data</xsd:documentation>
-					</xsd:annotation>
-				</xsd:element>
-				<xsd:element name="Cryptographic" type="tns:CryptographicConstraint" minOccurs="0">
-					<xsd:annotation>
-						<xsd:documentation>Global constraints about cryptograhic usage (encryption, digest, key length, algorithm deprecation,...). If no specific constraints is added in Signature/Timestamp/... elements, this configuration will be used.</xsd:documentation>
-					</xsd:annotation>
-				</xsd:element>
-				<xsd:element name="Model" type="tns:ModelConstraint" minOccurs="0">
-					<xsd:annotation>
-						<xsd:documentation>Checks / Defines the validation model shell, chain or hybrid</xsd:documentation>
-					</xsd:annotation>
-				</xsd:element>
-				<xsd:element name="eIDAS" type="tns:eIDAS" minOccurs="0">
-					<xsd:annotation>
-						<xsd:documentation>Constraints related to the European context (trusted list validity,...)</xsd:documentation>
-					</xsd:annotation>
-				</xsd:element>
-			</xsd:sequence>
-			<xsd:attribute type="xsd:string" name="Name">
+		<xsd:sequence>
+			<xsd:element name="Description" type="xsd:string">
 				<xsd:annotation>
-					<xsd:documentation>The policy name</xsd:documentation>
+					<xsd:documentation>The validation policy description</xsd:documentation>
 				</xsd:annotation>
-			</xsd:attribute>
-		</xsd:complexType>
-	</xsd:element>
+			</xsd:element>
+			<xsd:element name="ContainerConstraints" type="ContainerConstraints" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>ASiC specific constraints</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="SignatureConstraints" type="SignatureConstraints" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Constraints on the signature (signed/unsigned properties, coverage,...)</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="CounterSignatureConstraints" type="SignatureConstraints" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Constraints related to the counter-signatures</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Timestamp" type="TimestampConstraints" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Constraints on the timestamps</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Revocation" type="RevocationConstraints" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Constraints related to the revocation data</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Cryptographic" type="CryptographicConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Global constraints about cryptograhic usage (encryption, digest, key length, algorithm deprecation,...). If no specific constraints is added in Signature/Timestamp/... elements, this configuration will be used.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Model" type="ModelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks / Defines the validation model shell, chain or hybrid</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="eIDAS" type="eIDAS" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Constraints related to the European context (trusted list validity,...)</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute type="xsd:string" name="Name">
+			<xsd:annotation>
+				<xsd:documentation>The policy name</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
 
 	<xsd:complexType name="ContainerConstraints">
 		<xsd:annotation>
 			<xsd:documentation>ASiC specific constraints</xsd:documentation>
 		</xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="AcceptableContainerTypes" type="tns:MultiValuesConstraint" minOccurs="0">
+			<xsd:element name="AcceptableContainerTypes" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the returned container type is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="ZipCommentPresent" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="ZipCommentPresent" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the zip comment is present</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="AcceptableZipComment" type="tns:MultiValuesConstraint" minOccurs="0">
+			<xsd:element name="AcceptableZipComment" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the returned zip comment is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="MimeTypeFilePresent" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="MimeTypeFilePresent" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the mimetype file is present</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="AcceptableMimeTypeFileContent" type="tns:MultiValuesConstraint" minOccurs="0">
+			<xsd:element name="AcceptableMimeTypeFileContent" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the mimetype content is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="ManifestFilePresent" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="ManifestFilePresent" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if one or more manifest file is present (ASiC-E) or none is present (ASiC-S)</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="AllFilesSigned" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="AllFilesSigned" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks in all present files in the container are covered by the signature</xsd:documentation>
 				</xsd:annotation>
@@ -117,47 +117,47 @@
 			<xsd:documentation>Group of constraints for the signature(s) (signed/unsigned properties, coverage,...)</xsd:documentation>
 		</xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="StructuralValidation" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="StructuralValidation" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks the structural content (mainly XAdES against its XML Schema)</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="AcceptablePolicies" type="tns:MultiValuesConstraint" minOccurs="0">
+			<xsd:element name="AcceptablePolicies" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if used signature policy is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="PolicyAvailable" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="PolicyAvailable" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks the availability of the signature policy (PDF resource,...)</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="PolicyHashMatch" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="PolicyHashMatch" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks the hash value for the given signature policy</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="AcceptableFormats" type="tns:MultiValuesConstraint" minOccurs="0">
+			<xsd:element name="AcceptableFormats" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if signature format (XAdES-BASELINE-B,...) is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="FullScope" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="FullScope" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the signature cover the complete document</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="BasicSignatureConstraints" type="tns:BasicSignatureConstraints" minOccurs="0">
+			<xsd:element name="BasicSignatureConstraints" type="BasicSignatureConstraints" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Group of common checks</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="SignedAttributes" type="tns:SignedAttributesConstraints" minOccurs="0">
+			<xsd:element name="SignedAttributes" type="SignedAttributesConstraints" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Group of checks on the signed attributes/properties</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="UnsignedAttributes" type="tns:UnsignedAttributesConstraints" minOccurs="0">
+			<xsd:element name="UnsignedAttributes" type="UnsignedAttributesConstraints" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Group of checks on the unsigned attributes/properties</xsd:documentation>
 				</xsd:annotation>
@@ -170,67 +170,72 @@
 			<xsd:documentation>Group of constraints on the signed attributes/properties</xsd:documentation>
 		</xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="SigningCertificatePresent" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="SigningCertificatePresent" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks the presence of the signingCertificate (V1/V2) attribute</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="CertDigestPresent" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="CertDigestPresent" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks the presence of the signing certificate digest</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="CertDigestMatch" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="CertDigestMatch" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the signing certificate digest match with the found signer</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="IssuerSerialMatch" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="IssuerSerialMatch" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the serial number of the issuer certificate match</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="SigningTime" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="SigningTime" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks the presence of the signing-time attribute</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="ContentType" type="tns:ValueConstraint" minOccurs="0">
+			<xsd:element name="ContentType" type="ValueConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the content-type attribute (CAdES) has the expected value</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="ContentHints" type="tns:ValueConstraint" minOccurs="0">
+			<xsd:element name="ContentHints" type="ValueConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the content-hints attribute (CAdES) has the expected value</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="ContentIdentifier" type="tns:ValueConstraint" minOccurs="0">
+			<xsd:element name="ContentIdentifier" type="ValueConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the content-identifier attribute (CAdES) has the expected value</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="CommitmentTypeIndication" type="tns:MultiValuesConstraint" minOccurs="0">
+			<xsd:element name="MessageDigestOrSignedPropertiesPresent" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks the presence of message-digest attribute (CAdES) or SignedProperties (XAdES)</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="CommitmentTypeIndication" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if CommitmentTypeIndication is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="SignerLocation" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="SignerLocation" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks the presence of the production/localization attribute</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="ClaimedRoles" type="tns:MultiValuesConstraint" minOccurs="0">
+			<xsd:element name="ClaimedRoles" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if claimed role is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="CertifiedRoles" type="tns:MultiValuesConstraint" minOccurs="0">
+			<xsd:element name="CertifiedRoles" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if certified role is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="ContentTimeStamp" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="ContentTimeStamp" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks the presence of a content-timestamp attribute</xsd:documentation>
 				</xsd:annotation>
@@ -243,7 +248,7 @@
 			<xsd:documentation>Group of constraints on the unsigned attributes/properties</xsd:documentation>
 		</xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="CounterSignature" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="CounterSignature" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks the presence of a counter-signature attribute</xsd:documentation>
 				</xsd:annotation>
@@ -256,27 +261,27 @@
 			<xsd:documentation>Group of constraints on the timestamps</xsd:documentation>
 		</xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="TimestampDelay" type="tns:TimeConstraint" minOccurs="0">
+			<xsd:element name="TimestampDelay" type="TimeConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks the delay between the best-signature-time and the claimed signing time</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="RevocationTimeAgainstBestSignatureTime" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="RevocationTimeAgainstBestSignatureTime" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the revocation date is after the best-signature-time</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="BestSignatureTimeBeforeIssuanceDateOfSigningCertificate" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="BestSignatureTimeBeforeIssuanceDateOfSigningCertificate" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the best-signature-time is not before the creation of the signing certificate</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="Coherence" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="Coherence" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks the timestamps ordering (archival timestamp is not before a content-timestamp,...)</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="BasicSignatureConstraints" type="tns:BasicSignatureConstraints" minOccurs="0">
+			<xsd:element name="BasicSignatureConstraints" type="BasicSignatureConstraints" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Group of common checks on this token signature</xsd:documentation>
 				</xsd:annotation>
@@ -289,14 +294,14 @@
 			<xsd:documentation>Group of constraints on the revocation data</xsd:documentation>
 		</xsd:annotation>
   		<xsd:complexContent>
-			<xsd:extension base="tns:LevelConstraint">
+			<xsd:extension base="LevelConstraint">
 				<xsd:sequence>
-					<xsd:element name="RevocationFreshness" type="tns:TimeConstraint" minOccurs="0">
+					<xsd:element name="RevocationFreshness" type="TimeConstraint" minOccurs="0">
 						<xsd:annotation>
 							<xsd:documentation>Checks the freshness of the revocation data, the policy can expect a recent revocation data</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-					<xsd:element name="BasicSignatureConstraints" type="tns:BasicSignatureConstraints" minOccurs="0">
+					<xsd:element name="BasicSignatureConstraints" type="BasicSignatureConstraints" minOccurs="0">
 						<xsd:annotation>
 							<xsd:documentation>Group of common checks on this token signature</xsd:documentation>
 						</xsd:annotation>
@@ -311,52 +316,57 @@
 			<xsd:documentation>Group of common checks for any kind of signed token (signature, timestamp or revocation data)</xsd:documentation>
 		</xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="ReferenceDataExistence" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="ReferenceDataExistence" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks the existence of the signed data</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="ReferenceDataIntact" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="ReferenceDataIntact" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the embedded digest match the signed data</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="SignatureIntact" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="ManifestEntryObjectExistence" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the manifest entry was provided for the validation</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="SignatureIntact" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the signature is based on the found public key</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="SignatureValid" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="SignatureValid" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the signature is intact and the reference is found and intact</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="ProspectiveCertificateChain" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="ProspectiveCertificateChain" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate chain is trusted</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="TrustedServiceTypeIdentifier" type="tns:MultiValuesConstraint" minOccurs="0">
+			<xsd:element name="TrustedServiceTypeIdentifier" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the related trust service type identifier is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="TrustedServiceStatus" type="tns:MultiValuesConstraint" minOccurs="0">
+			<xsd:element name="TrustedServiceStatus" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the related trust service status is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="SigningCertificate" type="tns:CertificateConstraints" minOccurs="0">
+			<xsd:element name="SigningCertificate" type="CertificateConstraints" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Group of checks to operate on the signing certificate</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="CACertificate" type="tns:CertificateConstraints" minOccurs="0">
+			<xsd:element name="CACertificate" type="CertificateConstraints" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Group of checks to operate on the CA certificate(s)</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="Cryptographic" type="tns:CryptographicConstraint" minOccurs="0">
+			<xsd:element name="Cryptographic" type="CryptographicConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Group of cryptographic checks to operate on the current signed token</xsd:documentation>
 				</xsd:annotation>
@@ -369,152 +379,157 @@
 			<xsd:documentation>Group of checks related to a certificate</xsd:documentation>
 		</xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="Recognition" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="Recognition" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the signing certificate is known</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="Signature" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="Signature" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate is well signed</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="NotExpired" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="NotExpired" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate is not expired</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="AuthorityInfoAccessPresent" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="AuthorityInfoAccessPresent" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks the presence of the AIA (issuer) in the certificate</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="RevocationInfoAccessPresent" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="RevocationInfoAccessPresent" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks the presence of the CRL distribution points or AIA (OCSP) in the certificate</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="RevocationDataAvailable" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="RevocationDataAvailable" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if a revocation data is found in the signature or externally for this certificate</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="RevocationDataNextUpdatePresent" type="tns:LevelConstraint" minOccurs="0" >
+			<xsd:element name="RevocationDataNextUpdatePresent" type="LevelConstraint" minOccurs="0" >
 				<xsd:annotation>
 					<xsd:documentation>Checks the presence of the NextUpdate value in the revocation data</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="RevocationDataFreshness" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="RevocationDataFreshness" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks the revocation data freshness is concluant</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="RevocationCertHashMatch" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="RevocationCertHashMatch" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks the certHash presence (OCSP only) and if the hash match the certificate</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="KeyUsage" type="tns:MultiValuesConstraint" minOccurs="0">
+			<xsd:element name="KeyUsage" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate's key usages are in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="Surname" type="tns:MultiValuesConstraint" minOccurs="0">
+			<xsd:element name="ExtendedKeyUsage" type="MultiValuesConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the certificate's extended key usages are in the acceptable values list</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Surname" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate's surname is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="GivenName" type="tns:MultiValuesConstraint" minOccurs="0">
+			<xsd:element name="GivenName" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate's given name is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="CommonName" type="tns:MultiValuesConstraint" minOccurs="0">
+			<xsd:element name="CommonName" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate's common name is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="Pseudonym" type="tns:MultiValuesConstraint" minOccurs="0">
+			<xsd:element name="Pseudonym" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate's pseudonym is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="OrganizationUnit" type="tns:MultiValuesConstraint" minOccurs="0">
+			<xsd:element name="OrganizationUnit" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate's organization unit is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="OrganizationName" type="tns:MultiValuesConstraint" minOccurs="0">
+			<xsd:element name="OrganizationName" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate's organization name is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="Country" type="tns:MultiValuesConstraint" minOccurs="0">
+			<xsd:element name="Country" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate's country is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="SerialNumberPresent" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="SerialNumberPresent" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks the presence of the serial number for the current certificate</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="NotRevoked" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="NotRevoked" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate is not revoked (with a revocation date and status different than certificateHold)</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="NotOnHold" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="NotOnHold" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate is not with a status certificateHold</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="SelfSigned" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="SelfSigned" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate is a self-signed certificate</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="NotSelfSigned" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="NotSelfSigned" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate is NOT a self-signed certificate</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="PolicyIds" type="tns:MultiValuesConstraint" minOccurs="0">
+			<xsd:element name="PolicyIds" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate policy id is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="QCStatementIds" type="tns:MultiValuesConstraint" minOccurs="0">
+			<xsd:element name="QCStatementIds" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate qc statement is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="Qualification" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="Qualification" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate is declared as qualified (no TL overrule)</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="SupportedByQSCD" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="SupportedByQSCD" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate is declared as QSCD (no TL overrule)</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="IssuedToNaturalPerson" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="IssuedToNaturalPerson" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate is issued for a natural person (no TL overrule)</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="IssuedToLegalPerson" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="IssuedToLegalPerson" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate is issued for a legal person (no TL overrule)</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="UsePseudonym" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="UsePseudonym" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate use a pseudonym</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="Cryptographic" type="tns:CryptographicConstraint" minOccurs="0">
+			<xsd:element name="Cryptographic" type="CryptographicConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Group of cryptographic checks to operate on the certificate</xsd:documentation>
 				</xsd:annotation>
@@ -527,24 +542,24 @@
 			<xsd:documentation>Group of constraints related to cryptographic usage</xsd:documentation>
 		</xsd:annotation>
   		<xsd:complexContent>
-			<xsd:extension base="tns:LevelConstraint">
+			<xsd:extension base="LevelConstraint">
 				<xsd:sequence>
-					<xsd:element name="AcceptableEncryptionAlgo" type="tns:ListAlgo" minOccurs="0">
+					<xsd:element name="AcceptableEncryptionAlgo" type="ListAlgo" minOccurs="0">
 						<xsd:annotation>
 							<xsd:documentation>Checks if the encryption algorithm is in the allowed values</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-					<xsd:element name="MiniPublicKeySize" type="tns:ListAlgo" minOccurs="0">
+					<xsd:element name="MiniPublicKeySize" type="ListAlgo" minOccurs="0">
 						<xsd:annotation>
 							<xsd:documentation>Checks if the key length for the encryption is acceptable</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-					<xsd:element name="AcceptableDigestAlgo" type="tns:ListAlgo" minOccurs="0">
+					<xsd:element name="AcceptableDigestAlgo" type="ListAlgo" minOccurs="0">
 						<xsd:annotation>
 							<xsd:documentation>Checks if the digest algorithm is in the allowed values</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-					<xsd:element name="AlgoExpirationDate" type="tns:AlgoExpirationDate" minOccurs="0">
+					<xsd:element name="AlgoExpirationDate" type="AlgoExpirationDate" minOccurs="0">
 						<xsd:annotation>
 							<xsd:documentation>Checks if the used algorithm is still acceptable based on an expiration date</xsd:documentation>
 						</xsd:annotation>
@@ -560,27 +575,27 @@
 			<xsd:documentation>Group of checks related to Trusted Lists</xsd:documentation>
 		</xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="TLFreshness" type="tns:TimeConstraint" minOccurs="0">
+			<xsd:element name="TLFreshness" type="TimeConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks the Trusted List freshness to ensure the validation uses an up-to-date version</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="TLNotExpired" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="TLNotExpired" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the Trusted List is not expired (NextUpdate)</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="TLWellSigned" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="TLWellSigned" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the signature of the Trusted List is valid</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="TLVersion" type="tns:ValueConstraint" minOccurs="0">
+			<xsd:element name="TLVersion" type="ValueConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the version (TSLVersionIdentifier) of the Trusted List is equals to the given value</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="TLConsistency" type="tns:LevelConstraint" minOccurs="0">
+			<xsd:element name="TLConsistency" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the Trusted List is consistent and haven't any incoherence which could influence the validation result</xsd:documentation>
 				</xsd:annotation>
@@ -593,7 +608,7 @@
 			<xsd:documentation>List of algorithms</xsd:documentation>
 		</xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="Algo" type="tns:Algo" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="Algo" type="Algo" minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -602,7 +617,7 @@
 			<xsd:documentation>List of algorithms with their expiration date</xsd:documentation>
 		</xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="Algo" type="tns:Algo" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="Algo" type="Algo" minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
 		<xsd:attribute name="Format" type="xsd:string" use="optional">
 			<xsd:annotation>
@@ -632,7 +647,7 @@
 		<xsd:annotation>
 			<xsd:documentation>Boolean check : follows the specified level behavior in case of failure</xsd:documentation>
 		</xsd:annotation>
-		<xsd:attribute type="tns:level" name="Level">
+		<xsd:attribute type="level" name="Level">
 			<xsd:annotation>
 				<xsd:documentation>The level of criticality</xsd:documentation>
 			</xsd:annotation>
@@ -644,7 +659,7 @@
 			<xsd:documentation>Multi-values check : follows the specified level behavior if the checked element is not present in the list. '*' can be used and means any value.</xsd:documentation>
 		</xsd:annotation>
   		<xsd:complexContent>
-			<xsd:extension base="tns:LevelConstraint">
+			<xsd:extension base="LevelConstraint">
 				<xsd:sequence>
 					<xsd:element type="xsd:string" name="Id" maxOccurs="unbounded" minOccurs="0" />
 				</xsd:sequence>
@@ -657,7 +672,7 @@
 			<xsd:documentation>Value check : follows the specified level behavior if the checked element is not equals to the specified value</xsd:documentation>
 		</xsd:annotation>
   		<xsd:complexContent>
-			<xsd:extension base="tns:LevelConstraint">
+			<xsd:extension base="LevelConstraint">
 				<xsd:attribute type="xsd:string" name="value" />
 			</xsd:extension>
   		</xsd:complexContent>
@@ -668,8 +683,8 @@
 			<xsd:documentation>Time based check : follows the specified level behavior if the checked element is over the time limit</xsd:documentation>
 		</xsd:annotation>
   		<xsd:complexContent>
-			<xsd:extension base="tns:LevelConstraint">
-				<xsd:attribute type="tns:TimeUnit" name="Unit"/>
+			<xsd:extension base="LevelConstraint">
+				<xsd:attribute type="TimeUnit" name="Unit"/>
 				<xsd:attribute type="xsd:int" name="Value" />
 			</xsd:extension>
   		</xsd:complexContent>
@@ -717,7 +732,7 @@
 		<xsd:annotation>
 			<xsd:documentation>Boolean check : follows the specified validation model</xsd:documentation>
 		</xsd:annotation>
-		<xsd:attribute type="tns:Model" name="Value">
+		<xsd:attribute type="Model" name="Value">
 			<xsd:annotation>
 				<xsd:documentation>The validation model</xsd:documentation>
 			</xsd:annotation>

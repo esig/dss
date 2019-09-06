@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks.type;
 
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.validation.process.qualification.certificate.Type;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.QCTypeIdentifiers;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 
 class TypeByCertificatePostEIDAS implements TypeStrategy {
 

@@ -30,17 +30,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
-import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
-import eu.europa.esig.dss.SignatureValue;
-import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.signature.ExternalXAdESSignatureResult;
+import eu.europa.esig.dss.test.signature.ExternalXAdESSignatureResult;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
@@ -162,7 +162,7 @@ public class XAdESLevelBExternalSignatureTest extends AbstractXAdESTestSignature
 			params.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 			params.setSignedPropertiesCanonicalizationMethod(CanonicalizationMethod.EXCLUSIVE);
 			params.setSignedInfoCanonicalizationMethod(CanonicalizationMethod.EXCLUSIVE);
-			params.getBLevelParams().setSigningDate(signingDate);
+			params.bLevel().setSigningDate(signingDate);
 			params.setSigningCertificate(signingCertificate);
 			return super.build();
 		}

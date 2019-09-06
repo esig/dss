@@ -20,15 +20,14 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks;
 
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationCertificateQualification;
-import eu.europa.esig.dss.validation.ValidationTime;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
-import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.enumerations.ValidationTime;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.process.qualification.certificate.QualifiedStatus;
-import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class QualifiedCheck extends ChainItem<XmlValidationCertificateQualification> {
 
@@ -57,7 +56,7 @@ public class QualifiedCheck extends ChainItem<XmlValidationCertificateQualificat
 		case VALIDATION_TIME:
 			return MessageTag.QUAL_QC_AT_VT;
 		default:
-			throw new DSSException("Unsupported time " + validationTime);
+			throw new IllegalArgumentException("Unsupported time " + validationTime);
 		}
 	}
 
@@ -71,7 +70,7 @@ public class QualifiedCheck extends ChainItem<XmlValidationCertificateQualificat
 		case VALIDATION_TIME:
 			return MessageTag.QUAL_QC_AT_VT_ANS;
 		default:
-			throw new DSSException("Unsupported time " + validationTime);
+			throw new IllegalArgumentException("Unsupported time " + validationTime);
 		}
 	}
 

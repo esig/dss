@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.xades;
 
+import org.apache.xml.security.Init;
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.algorithms.SignatureAlgorithm;
 import org.apache.xml.security.c14n.Canonicalizer;
@@ -53,6 +54,10 @@ public class SantuarioInitializer {
 	 * @return true if the library is already initialized.
 	 */
 	public static final synchronized boolean isInitialized() {
+		if (Init.isInitialized()) {
+			LOG.info("Santuario is already initialized with its default configuration");
+			return true;
+		}
 		return SantuarioInitializer.alreadyInitialized;
 	}
 
@@ -61,7 +66,7 @@ public class SantuarioInitializer {
 	 *
 	 */
 	public static synchronized void init() {
-		if (alreadyInitialized) {
+		if (isInitialized()) {
 			return;
 		}
 

@@ -1,0 +1,3 @@
+<ConstraintsParameters Name="Core-Validation" xmlns="http://dss.esig.europa.eu/validation/policy">
+	<Description>This policy allows to check the core validity of the signature.</Description>
+</ConstraintsParameters>
