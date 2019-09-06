@@ -1,11 +1,11 @@
 package eu.europa.esig.dss.validation.executor;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.policy.jaxb.Algo;

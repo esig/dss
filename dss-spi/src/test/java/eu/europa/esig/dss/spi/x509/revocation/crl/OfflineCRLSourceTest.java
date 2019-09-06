@@ -1,16 +1,15 @@
 package eu.europa.esig.dss.spi.x509.revocation.crl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
-import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.utils.Utils;
 
 public class OfflineCRLSourceTest {
@@ -45,10 +44,10 @@ public class OfflineCRLSourceTest {
 
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void npe() {
 		MockOfflineCRLSource mocrls = new MockOfflineCRLSource();
-		mocrls.getRevocationToken(null, null);
+		assertThrows(NullPointerException.class, () -> mocrls.getRevocationToken(null, null));
 	}
 
 	private class MockOfflineCRLSource extends OfflineCRLSource {

@@ -20,16 +20,17 @@
  */
 package eu.europa.esig.dss.xades;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.StringReader;
 
 import javax.xml.transform.stream.StreamSource;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -55,9 +56,12 @@ public class DSSXMLUtilsTest {
 		DSSXMLUtils.validateAgainstXSD(new FileDocument("src/test/resources/valid-xades-structure.xml"));
 	}
 
-	@Test(expected = SAXException.class)
+	@Test
 	public void validateAgainstXSDInvalid() throws SAXException {
-		DSSXMLUtils.validateAgainstXSD(new FileDocument("src/test/resources/invalid-xades-structure.xml"));
+		Exception exception = assertThrows(SAXException.class, () -> {
+			DSSXMLUtils.validateAgainstXSD(new FileDocument("src/test/resources/invalid-xades-structure.xml"));
+		});
+		assertEquals("cvc-complex-type.2.4.a: Invalid content was found starting with element '{\"http://uri.etsi.org/01903/v1.3.2#\":IssuerSerial}'. One of '{\"http://uri.etsi.org/01903/v1.3.2#\":IssuerSerialV2}' is expected.", exception.getMessage());
 	}
 
 	@Test

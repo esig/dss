@@ -20,39 +20,30 @@
  */
 package eu.europa.esig.dss.model;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
-@RunWith(Parameterized.class)
 public class DigestAlgorithmParameterizedTest {
 
-	private final DigestAlgorithm digestAlgo;
-
-	@Parameters(name = "Digest {index} : {0}")
-	public static Collection<DigestAlgorithm> data() {
+	private static Collection<DigestAlgorithm> data() {
 		// digest algorithms which are supported by the JVM
 		// other algorithms require BC,...
 		return Arrays.asList(DigestAlgorithm.SHA1, DigestAlgorithm.SHA256, DigestAlgorithm.SHA384, DigestAlgorithm.SHA512, DigestAlgorithm.MD2,
 				DigestAlgorithm.MD5);
 	}
 
-	public DigestAlgorithmParameterizedTest(DigestAlgorithm digestAlgo) {
-		this.digestAlgo = digestAlgo;
-	}
-
-	@Test
-	public void getMessageDigest() throws NoSuchAlgorithmException {
+	@ParameterizedTest(name = "Digest {index} : {0}")
+	@MethodSource("data")
+	public void getMessageDigest(DigestAlgorithm digestAlgo) throws NoSuchAlgorithmException {
 		MessageDigest md = digestAlgo.getMessageDigest();
 		assertNotNull(md);
 		assertNotNull(md.digest(new byte[] { 1, 2, 3 }));

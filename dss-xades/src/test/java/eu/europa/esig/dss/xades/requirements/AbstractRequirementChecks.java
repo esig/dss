@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.xades.requirements;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Iterator;
 
@@ -34,9 +34,9 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -55,7 +55,7 @@ public abstract class AbstractRequirementChecks extends PKIFactoryAccess {
 
 	protected Document document;
 
-	@BeforeClass
+	@BeforeAll
 	public static void initClass() {
 		dbf = DocumentBuilderFactory.newInstance();
 		dbf.setNamespaceAware(true);
@@ -91,7 +91,7 @@ public abstract class AbstractRequirementChecks extends PKIFactoryAccess {
 		});
 	}
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		DSSDocument signedDocument = getSignedDocument();
 		signedDocument.save("target/requirement-check.xml");

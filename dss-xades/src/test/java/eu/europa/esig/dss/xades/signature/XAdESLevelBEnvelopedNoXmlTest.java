@@ -20,12 +20,15 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -41,7 +44,7 @@ public class XAdESLevelBEnvelopedNoXmlTest extends AbstractXAdESTestSignature {
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.txt"));
 
@@ -61,9 +64,12 @@ public class XAdESLevelBEnvelopedNoXmlTest extends AbstractXAdESTestSignature {
 	}
 
 	@Override
-	@Test(expected = DSSException.class)
+	@Test
 	public void signAndVerify() throws IOException {
-		super.signAndVerify(); // enveloped signature only works on XML files
+		Exception exception = assertThrows(DSSException.class, () -> {
+			super.signAndVerify(); // enveloped signature only works on XML files
+		});
+		assertEquals("Unable to parse content (XML expected)", exception.getMessage());
 	}
 
 	@Override

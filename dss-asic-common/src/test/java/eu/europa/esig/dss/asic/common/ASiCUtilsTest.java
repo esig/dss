@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.asic.common;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.MimeType;
 
@@ -39,11 +39,14 @@ public class ASiCUtilsTest {
 		assertEquals(ASiCContainerType.ASiC_E, ASiCUtils.getASiCContainerType(MimeType.ASICE));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void getWrongASiCContainerType() {
-		MimeType mt = new MimeType();
-		mt.setMimeTypeString("application/wrong");
-		ASiCUtils.getASiCContainerType(mt);
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+			MimeType mt = new MimeType();
+			mt.setMimeTypeString("application/wrong");
+			ASiCUtils.getASiCContainerType(mt);
+		});
+        assertEquals("Not allowed mimetype 'application/wrong'", exception.getMessage());
 	}
 
 }

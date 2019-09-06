@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -46,7 +46,7 @@ public class XAdESManifestLevelBWithValidationTest extends AbstractXAdESTestSign
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 
 		List<DSSDocument> documents = new ArrayList<DSSDocument>();

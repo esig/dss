@@ -20,19 +20,19 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
@@ -41,6 +41,7 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -48,49 +49,67 @@ import eu.europa.esig.dss.validation.reports.Reports;
 
 public class DSS1444Test {
 
-	@Test(expected = IOException.class)
+	@Test
 	public void test() throws IOException {
-		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted.pdf")) {
-			PDDocument.load(is);
-		}
+		Exception exception = assertThrows(IOException.class, () -> {
+			try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted.pdf")) {
+				PDDocument.load(is);
+			}
+		});
+		assertEquals("Page tree root must be a dictionary", exception.getMessage());
 	}
 
-	@Test(expected = DSSException.class)
+	@Test
 	public void testValidation() throws IOException {
-		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted.pdf")) {
-			PDFDocumentValidator val = new PDFDocumentValidator(new InMemoryDocument(is));
-			val.getSignatures();
-		}
+		Exception exception = assertThrows(DSSException.class, () -> {
+			try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted.pdf")) {
+				PDFDocumentValidator val = new PDFDocumentValidator(new InMemoryDocument(is));
+				val.getSignatures();
+			}
+		});
+		assertEquals("Cannot analyze signatures : Page tree root must be a dictionary", exception.getMessage());
 	}
 
-	@Test(expected = IOException.class)
+	@Test
 	public void test2() throws IOException {
-		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted2.pdf")) {
-			PDDocument.load(is);
-		}
+		Exception exception = assertThrows(IOException.class, () -> {
+			try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted2.pdf")) {
+				PDDocument.load(is);
+			}
+		});
+		assertEquals("Page tree root must be a dictionary", exception.getMessage());
 	}
 
-	@Test(expected = DSSException.class)
+	@Test
 	public void test2Validation() throws IOException {
-		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted2.pdf")) {
-			PDFDocumentValidator val = new PDFDocumentValidator(new InMemoryDocument(is));
-			val.getSignatures();
-		}
+		Exception exception = assertThrows(DSSException.class, () -> {
+			try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted2.pdf")) {
+				PDFDocumentValidator val = new PDFDocumentValidator(new InMemoryDocument(is));
+				val.getSignatures();
+			}
+		});
+		assertEquals("Cannot analyze signatures : Page tree root must be a dictionary", exception.getMessage());
 	}
 
-	@Test(expected = IOException.class)
+	@Test
 	public void test3() throws IOException {
-		try (InputStream is = getClass().getResourceAsStream("/small-red.jpg")) {
-			PDDocument.load(is);
-		}
+		Exception exception = assertThrows(IOException.class, () -> {
+			try (InputStream is = getClass().getResourceAsStream("/small-red.jpg")) {
+				PDDocument.load(is);
+			}
+		});
+		assertEquals("Error: End-of-File, expected line", exception.getMessage());
 	}
 
-	@Test(expected = DSSException.class)
+	@Test
 	public void test3bis() throws IOException {
-		try (InputStream is = getClass().getResourceAsStream("/small-red.jpg")) {
-			PDFDocumentValidator val = new PDFDocumentValidator(new InMemoryDocument(is));
-			val.getSignatures();
-		}
+		Exception exception = assertThrows(DSSException.class, () -> {
+			try (InputStream is = getClass().getResourceAsStream("/small-red.jpg")) {
+				PDFDocumentValidator val = new PDFDocumentValidator(new InMemoryDocument(is));
+				val.getSignatures();
+			}
+		});
+		assertEquals("Cannot analyze signatures : Error: End-of-File, expected line", exception.getMessage());
 	}
 
 	@Test

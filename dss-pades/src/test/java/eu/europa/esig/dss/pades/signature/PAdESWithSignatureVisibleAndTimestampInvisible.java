@@ -23,7 +23,7 @@ package eu.europa.esig.dss.pades.signature;
 import java.awt.Color;
 import java.util.Date;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -40,7 +40,7 @@ public class PAdESWithSignatureVisibleAndTimestampInvisible extends AbstractPAdE
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 

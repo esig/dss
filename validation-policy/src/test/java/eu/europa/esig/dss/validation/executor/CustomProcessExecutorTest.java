@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.validation.executor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +30,16 @@ import java.util.List;
 
 import javax.xml.bind.JAXB;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
+
+
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1691,50 +1693,62 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void diagDataNotNull() throws Exception {
-		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
-		executor.setDiagnosticData(null);
-		executor.setValidationPolicy(loadPolicyNoRevoc());
-		executor.setCurrentTime(new Date());
-		executor.execute();
+		Exception exception = assertThrows(NullPointerException.class, () -> {
+			DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+			executor.setDiagnosticData(null);
+			executor.setValidationPolicy(loadPolicyNoRevoc());
+			executor.setCurrentTime(new Date());
+			executor.execute();
+		});
+		assertEquals("The diagnostic data is missing", exception.getMessage());
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void validationPolicyNotNull() throws Exception {
-		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/DSS-1330-diag-data.xml"));
+		Exception exception = assertThrows(NullPointerException.class, () -> {
+			XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/DSS-1330-diag-data.xml"));
 
-		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
-		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(null);
-		executor.setCurrentTime(new Date());
+			DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+			executor.setDiagnosticData(diagnosticData);
+			executor.setValidationPolicy(null);
+			executor.setCurrentTime(new Date());
 
-		executor.execute();
+			executor.execute();
+		});
+		assertEquals("The validation policy is missing", exception.getMessage());
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void currentDateNotNull() throws Exception {
-		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/DSS-1330-diag-data.xml"));
+		Exception exception = assertThrows(NullPointerException.class, () -> {
+			XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/DSS-1330-diag-data.xml"));
 
-		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
-		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicyNoRevoc());
-		executor.setCurrentTime(null);
+			DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+			executor.setDiagnosticData(diagnosticData);
+			executor.setValidationPolicy(loadPolicyNoRevoc());
+			executor.setCurrentTime(null);
 
-		executor.execute();
+			executor.execute();
+		});
+		assertEquals("The current time is missing", exception.getMessage());
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void validationLevelNotNull() throws Exception {
-		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/DSS-1330-diag-data.xml"));
+		Exception exception = assertThrows(NullPointerException.class, () -> {
+			XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/DSS-1330-diag-data.xml"));
 
-		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
-		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicyNoRevoc());
-		executor.setCurrentTime(new Date());
-		executor.setValidationLevel(null);
+			DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+			executor.setDiagnosticData(diagnosticData);
+			executor.setValidationPolicy(loadPolicyNoRevoc());
+			executor.setCurrentTime(new Date());
+			executor.setValidationLevel(null);
 
-		executor.execute();
+			executor.execute();
+		});
+		assertEquals("The validation level is missing", exception.getMessage());
 	}
 
 	private void checkReports(Reports reports) throws Exception {

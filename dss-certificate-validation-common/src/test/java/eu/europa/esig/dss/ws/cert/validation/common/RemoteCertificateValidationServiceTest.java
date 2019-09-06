@@ -1,7 +1,8 @@
 package eu.europa.esig.dss.ws.cert.validation.common;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.Arrays;
@@ -9,8 +10,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
@@ -28,7 +29,7 @@ public class RemoteCertificateValidationServiceTest {
 	
 	private RemoteCertificateValidationService validationService;
 	
-	@Before
+	@BeforeEach
 	public void init() {
 		validationService = new RemoteCertificateValidationService();
 		CommonCertificateVerifier verifier = new CommonCertificateVerifier();
@@ -55,9 +56,9 @@ public class RemoteCertificateValidationServiceTest {
 		validateReports(reportsDTO);
 	}
 	
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testWithNoCertificateProvided() {
-		validationService.validateCertificate(null, null, null);
+		assertThrows(NullPointerException.class, () -> validationService.validateCertificate(null, null, null));
 	}
 	
 	protected CertificateToValidateDTO getCompleteCertificateToValidateDTO() {

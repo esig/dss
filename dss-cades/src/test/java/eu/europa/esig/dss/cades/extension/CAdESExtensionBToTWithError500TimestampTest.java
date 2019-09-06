@@ -20,7 +20,9 @@
  */
 package eu.europa.esig.dss.cades.extension;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSException;
@@ -44,9 +46,11 @@ public class CAdESExtensionBToTWithError500TimestampTest extends AbstractTestCAd
 	}
 
 	@Override
-	@Test(expected = DSSException.class)
+	@Test
 	public void test() throws Exception {
-		super.test();
+		assertThrows(DSSException.class, () -> {
+			super.test();
+		});
 	}
 
 }

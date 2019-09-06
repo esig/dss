@@ -1,15 +1,14 @@
 package eu.europa.esig.dss.xades.extension;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.RepeatedTest;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -24,22 +23,10 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
-@RunWith(Parameterized.class)
 public class XAdESExtensionWithContentTimestampTest extends PKIFactoryAccess {
-
-	// Run 10 times this test
-	@Parameters
-	public static List<Object[]> data() {
-		return Arrays.asList(new Object[10][0]);
-	}
-
-	public XAdESExtensionWithContentTimestampTest() {
-	}
-
 	
-	@Test(expected = DSSException.class)
+	@RepeatedTest(10)
 	public void test() throws Exception {
-		
 		DSSDocument documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 		
 		Date oneDayBefore = getDateWithHoursDifference(-24);
@@ -69,7 +56,8 @@ public class XAdESExtensionWithContentTimestampTest extends PKIFactoryAccess {
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 		
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
-		service.extendDocument(signedDocument, signatureParameters);
+		Exception exception = assertThrows(DSSException.class, () -> service.extendDocument(signedDocument, signatureParameters));
+		assertEquals("Revocation data thisUpdate time is after the bestSignatureTime", exception.getMessage());
 		
 	}
 	

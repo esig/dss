@@ -27,7 +27,7 @@ import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.DERSet;
 import org.bouncycastle.asn1.DLSet;
 import org.bouncycastle.asn1.cms.AttributeTable;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +52,7 @@ public class PAdESLevelBExternalSignature extends AbstractPAdESTestSignature {
 	private DSSDocument documentToSign;
 	private Date signingDate;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new InMemoryDocument(PAdESLevelBExternalSignature.class.getResourceAsStream("/sample.pdf"));
 

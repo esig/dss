@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 import org.bouncycastle.tsp.TimeStampToken;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -44,7 +44,7 @@ public class CAdESLevelBWithTwoContentTimestampsTest extends AbstractCAdESTestSi
 	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new InMemoryDocument("Hello World".getBytes());
 

@@ -20,9 +20,10 @@
  */
 package eu.europa.esig.dss.model;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 
@@ -33,9 +34,12 @@ public class EncryptionAlgorithmTest {
 		assertEquals(EncryptionAlgorithm.RSA, EncryptionAlgorithm.forName(EncryptionAlgorithm.RSA.getName()));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void forNameException() {
-		EncryptionAlgorithm.forName("aaa");
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+			EncryptionAlgorithm.forName("aaa");
+		});
+		assertEquals("Unsupported algorithm: aaa", exception.getMessage());
 	}
 
 	@Test
@@ -54,9 +58,12 @@ public class EncryptionAlgorithmTest {
 		assertEquals(EncryptionAlgorithm.RSA, EncryptionAlgorithm.forOID(EncryptionAlgorithm.RSA.getOid()));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void forOIDException() {
-		EncryptionAlgorithm.forOID("aaa");
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+			EncryptionAlgorithm.forOID("aaa");
+		});
+		assertEquals("Unsupported algorithm: aaa", exception.getMessage());
 	}
 
 }

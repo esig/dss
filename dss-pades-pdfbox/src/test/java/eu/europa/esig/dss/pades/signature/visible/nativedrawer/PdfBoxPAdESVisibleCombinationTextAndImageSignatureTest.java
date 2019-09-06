@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.pades.signature.visible.nativedrawer;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.pades.signature.visible.PAdESVisibleCombinationTextAndImageSignature;
 import eu.europa.esig.dss.pdf.PdfObjFactory;
@@ -28,7 +28,7 @@ import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
 
 public class PdfBoxPAdESVisibleCombinationTextAndImageSignatureTest extends PAdESVisibleCombinationTextAndImageSignature {
 	
-	@Before
+	@BeforeEach
 	@Override
 	public void init() throws Exception {
 		PdfObjFactory.setInstance(new PdfBoxNativeObjectFactory());

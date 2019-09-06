@@ -20,11 +20,13 @@
  */
 package eu.europa.esig.dss.test.signature;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -45,7 +47,6 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -304,7 +305,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 				}
 
 				if (!MimeType.PDF.equals(original.getMimeType())) {
-					assertTrue("Unable to retrieve the original document " + original.getName(), found);
+					assertTrue(found, "Unable to retrieve the original document " + original.getName());
 				} else if (!found) {
 					byte[] originalByteArray = DSSUtils.toByteArray(original);
 					DSSDocument retrieved = retrievedOriginalDocuments.get(0);
@@ -949,7 +950,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		for (SignatureWrapper signatureWrapper : allSignatures) {
 			List<XmlFoundCertificate> allFoundCertificates = signatureWrapper.getAllFoundCertificates();
 			for (XmlFoundCertificate foundCert : allFoundCertificates) {
-				assertEquals("Duplicate complete certificate in " + foundCert.getOrigins(), 1, foundCert.getOrigins().size());
+				assertEquals(1, foundCert.getOrigins().size(), "Duplicate complete certificate in " + foundCert.getOrigins());
 			}
 		}
 	}
@@ -959,7 +960,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		for (SignatureWrapper signatureWrapper : allSignatures) {
 			List<XmlRelatedRevocation> allFoundRevocations = signatureWrapper.getRelatedRevocations();
 			for (XmlRelatedRevocation foundRevocation : allFoundRevocations) {
-				assertEquals("Duplicate complete revocation data in " + foundRevocation.getOrigins(), 1, foundRevocation.getOrigins().size());
+				assertEquals(1, foundRevocation.getOrigins().size(), "Duplicate complete revocation data in " + foundRevocation.getOrigins());
 			}
 		}
 	}

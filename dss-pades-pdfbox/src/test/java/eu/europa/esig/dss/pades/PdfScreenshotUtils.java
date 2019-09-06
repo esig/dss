@@ -1,6 +1,8 @@
 package eu.europa.esig.dss.pades;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -10,7 +12,6 @@ import java.io.InputStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.rendering.PDFRenderer;
-import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,7 +100,7 @@ public class PdfScreenshotUtils {
 		PDPageTree samplePageTree = document1.getPages();
 		PDPageTree checkPageTree = document2.getPages();
 
-		Assert.assertEquals(checkPageTree.getCount(), samplePageTree.getCount());
+		assertEquals(checkPageTree.getCount(), samplePageTree.getCount());
 
 		PDFRenderer sampleRenderer = new PDFRenderer(document1);
 		PDFRenderer checkRenderer = new PDFRenderer(document2);
@@ -123,10 +124,10 @@ public class PdfScreenshotUtils {
 			int checkWidth = checkImage.getWidth();
 			int checkHeight = checkImage.getHeight();
 			if (width == 0 || height == 0 || checkWidth == 0 || checkHeight == 0) {
-				Assert.fail(String.format("invalid image size: sample(%dx%d) vs check(%dx%d)", width, height, checkWidth, checkHeight));
+				fail(String.format("invalid image size: sample(%dx%d) vs check(%dx%d)", width, height, checkWidth, checkHeight));
 			}
 			if (width != checkWidth || height != checkHeight) {
-				Assert.fail(String.format("images size not equal: sample(%dx%d) vs check(%dx%d)", width, height, checkWidth, checkHeight));
+				fail(String.format("images size not equal: sample(%dx%d) vs check(%dx%d)", width, height, checkWidth, checkHeight));
 			}
 
 			int matchingPixels = 0;

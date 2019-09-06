@@ -1,12 +1,13 @@
 package eu.europa.esig.dss.xades.extension;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -31,7 +32,7 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 	private String signingAlias;
 	private XAdESSignatureParameters signatureParameters;
 	
-	@Before
+	@BeforeEach
 	public void init() {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 		certificateVerifier = getCompleteCertificateVerifier();
@@ -61,20 +62,21 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 		
 	}
 	
-	@Test(expected = DSSException.class)
+	@Test
 	public void throwExceptionTest() {
-		
-		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
-		
-		certificateVerifier.setExceptionOnNoRevocationAfterBestSignatureTime(true);
-		XAdESService service = new XAdESService(certificateVerifier);
-        service.setTspSource(getGoodTsa());
+		Exception exception = assertThrows(DSSException.class, () -> {
+			signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
+			
+			certificateVerifier.setExceptionOnNoRevocationAfterBestSignatureTime(true);
+			XAdESService service = new XAdESService(certificateVerifier);
+	        service.setTspSource(getGoodTsa());
 
-		DSSDocument signedDocument = sign(service, documentToSign);
-		
-		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
-		service.extendDocument(signedDocument, signatureParameters);
-		
+			DSSDocument signedDocument = sign(service, documentToSign);
+			
+			signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
+			service.extendDocument(signedDocument, signatureParameters);
+		});
+		assertEquals("Revocation data thisUpdate time is after the bestSignatureTime", exception.getMessage());
 	}
 	
 	@Test

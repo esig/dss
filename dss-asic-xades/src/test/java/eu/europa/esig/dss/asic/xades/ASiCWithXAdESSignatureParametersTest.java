@@ -20,17 +20,22 @@
  */
 package eu.europa.esig.dss.asic.xades;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
+import org.junit.jupiter.api.Test;
+
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 
 public class ASiCWithXAdESSignatureParametersTest {
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void test() {
-		ASiCWithXAdESSignatureParameters params = new ASiCWithXAdESSignatureParameters();
-		params.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+			ASiCWithXAdESSignatureParameters params = new ASiCWithXAdESSignatureParameters();
+			params.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
+		});
+		assertEquals("Only XAdES form is allowed !", exception.getMessage());
 	}
 
 }

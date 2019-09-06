@@ -20,9 +20,10 @@
  */
 package eu.europa.esig.dss.pades.signature.visible;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.awt.Color;
 import java.io.BufferedReader;
@@ -31,8 +32,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Date;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -58,7 +59,7 @@ public class PAdESSignatureField extends PKIFactoryAccess {
 	private PAdESService service;
 	private PAdESSignatureParameters signatureParameters;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 
 		signatureParameters = new PAdESSignatureParameters();
@@ -245,25 +246,28 @@ public class PAdESSignatureField extends PKIFactoryAccess {
 		
 	}
 
-	@Test(expected = DSSException.class)
+	@Test
 	public void testSignTwiceSameField() throws IOException {
+		assertThrows(DSSException.class, () -> {
+			signatureParameters.setSignatureFieldId("Signature1");
 
-		signatureParameters.setSignatureFieldId("Signature1");
+			DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
+			DSSDocument doc = signAndValidate(documentToSign);
+			assertNotNull(doc);
 
-		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
-		DSSDocument doc = signAndValidate(documentToSign);
-		assertNotNull(doc);
-
-		signAndValidate(doc);
+			signAndValidate(doc);		
+		});
 	}
 
-	@Test(expected = DSSException.class)
+	@Test
 	public void testFieldNotFound() throws IOException {
+		assertThrows(DSSException.class, () -> {
+			signatureParameters.setSignatureFieldId("not-found");
 
-		signatureParameters.setSignatureFieldId("not-found");
+			DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
+			signAndValidate(documentToSign);
+		});
 
-		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
-		signAndValidate(documentToSign);
 	}
 
 	private DSSDocument signAndValidate(DSSDocument documentToSign) throws IOException {

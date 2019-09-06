@@ -1,15 +1,15 @@
 package eu.europa.esig.dss.xades.extension;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
@@ -42,7 +42,7 @@ public abstract class AbstractXAdESConsecutiveExtension<SP extends AbstractSigna
 	protected abstract SignatureLevel getThirdSignSignatureLevel();
 	protected abstract SignatureLevel getFourthSignSignatureLevel();
 	
-	@Before
+	@BeforeEach
 	public void init() {
 		signatureLevel = SignatureLevel.XAdES_BASELINE_B;
 		

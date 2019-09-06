@@ -1,12 +1,12 @@
 package eu.europa.esig.dss.pades;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -21,7 +21,7 @@ public class PdfSignatureServiceTest {
 	
 	private MockPdfSignatureSignature mockPDFSignatureSignature;
 	
-	@Before
+	@BeforeEach
 	public void init() {
 		mockPDFSignatureSignature = new MockPdfSignatureSignature(false, null);
 	}

@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.cookbook.example.sources;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 
 import org.bouncycastle.tsp.TimeStampToken;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.service.http.commons.TimestampDataLoader;

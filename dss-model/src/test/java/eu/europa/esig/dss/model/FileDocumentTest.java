@@ -20,27 +20,33 @@
  */
 package eu.europa.esig.dss.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
 public class FileDocumentTest {
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testNull() {
-		new FileDocument((String) null);
+		assertThrows(NullPointerException.class, () -> {
+			new FileDocument((String) null);
+		});
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testNull2() {
-		new FileDocument((File) null);
+		Exception exception = assertThrows(NullPointerException.class, () -> {
+			new FileDocument((File) null);
+		});
+		assertEquals("File cannot be null", exception.getMessage());
 	}
 
 	@Test

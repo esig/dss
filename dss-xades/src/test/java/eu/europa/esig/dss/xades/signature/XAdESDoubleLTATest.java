@@ -1,14 +1,14 @@
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
@@ -91,8 +91,8 @@ public class XAdESDoubleLTATest extends PKIFactoryAccess {
         
         List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
         for (CertificateWrapper certificate : usedCertificates) {
-        	assertTrue("Certificate with id : [" + certificate.getId() + "] does not have a revocation data!", 
-        			certificate.isRevocationDataAvailable() || certificate.isTrusted() || certificate.isSelfSigned());
+        	assertTrue(certificate.isRevocationDataAvailable() || certificate.isTrusted() || certificate.isSelfSigned(), 
+        			"Certificate with id : [" + certificate.getId() + "] does not have a revocation data!");
         }
         
 	}

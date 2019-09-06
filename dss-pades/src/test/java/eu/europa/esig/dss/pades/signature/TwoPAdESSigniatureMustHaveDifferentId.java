@@ -20,12 +20,14 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -74,8 +76,8 @@ public class TwoPAdESSigniatureMustHaveDifferentId extends PKIFactoryAccess {
 
 		List<String> signatureIdList = reports.getSimpleReport().getSignatureIdList();
 
-		Assert.assertEquals(2, new HashSet<String>(reports.getSimpleReport().getSignatureIdList()).size());
-		Assert.assertNotEquals(signatureIdList.get(0), signatureIdList.get(1));
+		assertEquals(2, new HashSet<String>(reports.getSimpleReport().getSignatureIdList()).size());
+		assertNotEquals(signatureIdList.get(0), signatureIdList.get(1));
 
 	}
 

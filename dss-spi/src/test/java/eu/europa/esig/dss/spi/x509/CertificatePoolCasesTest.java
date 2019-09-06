@@ -1,13 +1,16 @@
 package eu.europa.esig.dss.spi.x509;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTimeout;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import static java.time.Duration.ofMillis;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -98,21 +101,23 @@ public class CertificatePoolCasesTest {
 		assertEquals(2, certPool.getBySki(DSSASN1Utils.computeSkiFromCert(c1)).size());
 	}
 
-	@Test(timeout = 3000)
+	@Test
 	public void extractTLSKeystore() throws IOException {
-		KeyStoreCertificateSource kscs = new KeyStoreCertificateSource(new File("src/test/resources/extract-tls.p12"),
-				"PKCS12", "ks-password");
-
-		CertificatePool certPool = new CertificatePool();
-
-		for (CertificateToken cert : kscs.getCertificates()) {
-			for (int i = 0; i < 10; i++) {
-				certPool.getInstance(cert, CertificateSourceType.OTHER);
+		assertTimeout(ofMillis(3000), () -> {
+			KeyStoreCertificateSource kscs = new KeyStoreCertificateSource(new File("src/test/resources/extract-tls.p12"),
+					"PKCS12", "ks-password");
+	
+			CertificatePool certPool = new CertificatePool();
+	
+			for (CertificateToken cert : kscs.getCertificates()) {
+				for (int i = 0; i < 10; i++) {
+					certPool.getInstance(cert, CertificateSourceType.OTHER);
+				}
 			}
-		}
-
-		assertEquals(2438, certPool.getNumberOfCertificates());
-		assertEquals(2338, certPool.getNumberOfEntities());
+	
+			assertEquals(2438, certPool.getNumberOfCertificates());
+			assertEquals(2338, certPool.getNumberOfEntities());
+		});
 	}
 
 }

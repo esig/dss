@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
@@ -170,11 +171,13 @@ public class ApacheCommonsUtils implements IUtils {
 
 	@Override
 	public String toHex(byte[] bytes) {
+		Objects.requireNonNull(bytes, "Bytes cannot be null");
 		return Hex.encodeHexString(bytes);
 	}
 
 	@Override
 	public byte[] fromHex(String hex) {
+		Objects.requireNonNull(hex, "Hex cannot be null");
 		try {
 			return Hex.decodeHex(hex.toCharArray());
 		} catch (DecoderException e) {

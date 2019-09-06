@@ -20,9 +20,10 @@
  */
 package eu.europa.esig.dss.model;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 
@@ -45,9 +46,12 @@ public class SignatureAlgorithmTest {
 		}
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void forXMLException() {
-		SignatureAlgorithm.forXML("aaa");
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+			SignatureAlgorithm.forXML("aaa");
+		});
+		assertEquals("Unsupported algorithm: aaa", exception.getMessage());
 	}
 
 	@Test
@@ -60,9 +64,12 @@ public class SignatureAlgorithmTest {
 		assertEquals(SignatureAlgorithm.RSA_SHA512, SignatureAlgorithm.forOID("1.2.840.113549.1.1.13"));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void forOidException() {
-		SignatureAlgorithm.forOID("1.2.3");
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+			SignatureAlgorithm.forOID("1.2.3");
+		});
+		assertEquals("Unsupported algorithm: 1.2.3", exception.getMessage());
 	}
 
 }

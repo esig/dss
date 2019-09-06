@@ -29,6 +29,7 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.security.Signature;
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -118,6 +120,13 @@ public class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
 		signatureParameters.setSignedInfoCanonicalizationMethod(canonicalizationSignedInfo);
 
 		service = new XAdESService(getOfflineCertificateVerifier());
+	}
+	
+	// Annotation JUnit 4
+	@Test
+	@Override
+	public void signAndVerify() throws IOException {
+		super.signAndVerify();
 	}
 
 	@Override

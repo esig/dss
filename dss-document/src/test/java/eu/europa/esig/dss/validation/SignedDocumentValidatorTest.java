@@ -20,16 +20,22 @@
  */
 package eu.europa.esig.dss.validation;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 
 public class SignedDocumentValidatorTest {
 
-	@Test(expected = DSSException.class)
+	@Test
 	public void testNoDepencency() {
-		SignedDocumentValidator.fromDocument(new FileDocument("src/test/resources/sample.xml"));
+		Exception exception = assertThrows(DSSException.class, () -> {
+			SignedDocumentValidator.fromDocument(new FileDocument("src/test/resources/sample.xml"));
+		});
+		assertEquals("Document format not recognized/handled", exception.getMessage());
 	}
 
 }

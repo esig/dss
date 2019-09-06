@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.simplecertificatereport;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 
@@ -8,7 +8,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.transform.Templates;
 import javax.xml.transform.TransformerConfigurationException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReportXmlDefiner;

@@ -20,10 +20,12 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.io.IOException;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -38,7 +40,7 @@ public class PAdESLevelImpossibleLTException extends AbstractPAdESTestSignature 
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 
@@ -52,9 +54,11 @@ public class PAdESLevelImpossibleLTException extends AbstractPAdESTestSignature 
 	}
 
 	@Override
-	@Test(expected = DSSException.class)
+	@Test
 	public void signAndVerify() throws IOException {
-		super.signAndVerify(); // unable to extend to LT (no online CRL/OCSP)
+		assertThrows(DSSException.class, () -> {
+			super.signAndVerify(); // unable to extend to LT (no online CRL/OCSP)
+		});
 	}
 
 	@Override

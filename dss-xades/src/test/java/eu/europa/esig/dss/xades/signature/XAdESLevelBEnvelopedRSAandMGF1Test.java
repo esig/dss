@@ -21,11 +21,13 @@
 package eu.europa.esig.dss.xades.signature;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -72,6 +74,13 @@ public class XAdESLevelBEnvelopedRSAandMGF1Test extends AbstractXAdESTestSignatu
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 
 		service = new XAdESService(getOfflineCertificateVerifier());
+	}
+	
+	// Annotation JUnit 4
+	@Test
+	@Override
+	public void signAndVerify() throws IOException {
+		super.signAndVerify();
 	}
 
 	@Override

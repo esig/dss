@@ -1,9 +1,9 @@
 package eu.europa.esig.dss.service.ocsp;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.File;
 import java.sql.SQLException;
@@ -11,9 +11,9 @@ import java.util.Date;
 
 import org.apache.commons.codec.binary.Hex;
 import org.h2.jdbcx.JdbcDataSource;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +34,7 @@ public class JdbcCacheOcspSourceTest {
 	private OCSPToken storedRevocationToken = null;
 	private Date requestTime = null;
 	
-	@Before
+	@BeforeEach
 	public void setUp() throws SQLException {
 		dataSource.setUrl("jdbc:h2:mem:test;create=true;DB_CLOSE_DELAY=-1");
 		ocspSource.setDataSource(dataSource);
@@ -122,7 +122,7 @@ public class JdbcCacheOcspSourceTest {
 		}
 	}
 	
-	@After
+	@AfterEach
 	public void cleanUp() throws SQLException {
 		ocspSource.destroyTable();
 		dataSource.setUrl("jdbc:h2:mem:test;drop=true");

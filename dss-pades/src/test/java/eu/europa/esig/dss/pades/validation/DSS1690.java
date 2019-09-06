@@ -1,13 +1,11 @@
 package eu.europa.esig.dss.pades.validation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.RepeatedTest;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -18,18 +16,9 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.reports.Reports;
 
-@RunWith(Parameterized.class)
 public class DSS1690 {
 
-	@Parameterized.Parameters
-	public static Object[][] data() {
-		return new Object[100][0];
-	}
-
-	public DSS1690() {
-	}
-
-	@Test
+	@RepeatedTest(100)
 	public void validateArchiveTimestampsOrder() {
 
 		String firstTimestampId = "T-32902C8337E0351C4AA33052A3E1DA9232D204C4839BB52879DF7183678CEE61";
@@ -42,9 +31,9 @@ public class DSS1690 {
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		TimestampWrapper firstATST = diagnosticData.getTimestampById(firstTimestampId);
-		assertNotNull("Timestamp " + firstTimestampId + " not found", firstATST);
+		assertNotNull(firstATST, "Timestamp " + firstTimestampId + " not found");
 		List<String> timestampedTimestampsIds = firstATST.getTimestampedTimestampIds();
-		assertEquals("First timestamp can't cover the second one", 0, timestampedTimestampsIds.size());
+		assertEquals(0, timestampedTimestampsIds.size(), "First timestamp can't cover the second one");
 	}
 
 	protected CertificateVerifier getOfflineCertificateVerifier() {

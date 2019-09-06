@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.pades.signature.visible;
 
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.platform.suite.api.SelectClasses;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
-@RunWith(Suite.class)
-@SuiteClasses(value = { PAdESSignatureField.class, PAdESVisibleSignature.class, PAdESFieldLevelB.class, PAdESWithSignatureAndTimestampVisible.class,
+@RunWith(JUnitPlatform.class)
+@SelectClasses(value = { PAdESSignatureField.class, PAdESVisibleSignature.class, PAdESFieldLevelB.class, PAdESWithSignatureAndTimestampVisible.class,
 		PAdESWithSignatureInvisibleAndTimestampVisible.class, PAdESVisibleSignatureWithJavaFont.class, PAdESNonLatinCharactersSignature.class,
 		PAdESVisibleZoomRotation.class, PAdESVisibleSignWithSignatureField.class })
 public class PAdESVisibleSignatureSuite {

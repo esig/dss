@@ -20,19 +20,20 @@
  */
 package eu.europa.esig.dss.service.http.commons;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashMap;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import eu.europa.esig.dss.spi.client.http.MemoryDataLoader;
 
@@ -40,24 +41,27 @@ public class FileCacheDataLoaderTest {
 
 	static final String URL_TO_LOAD = "https://ec.europa.eu/tools/lotl/eu-lotl.xml";
 
-	@Rule
-	public TemporaryFolder testFolder = new TemporaryFolder();
+	@TempDir
+	Path testFolder;
 
 	private FileCacheDataLoader dataLoader;
 	private File cacheDirectory;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
-		cacheDirectory = testFolder.newFolder("dss-file-cache");
+		Path pathToFile = testFolder.resolve("dss-file-cache");
+		cacheDirectory = pathToFile.toFile();
 		dataLoader = new FileCacheDataLoader();
 		dataLoader.setDataLoader(new CommonsDataLoader());
 		dataLoader.setFileCacheDirectory(cacheDirectory);
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testNotDefineSubDataLoader() {
-		FileCacheDataLoader fcdl = new FileCacheDataLoader();
-		fcdl.get(URL_TO_LOAD);
+		assertThrows(NullPointerException.class, () -> {
+			FileCacheDataLoader fcdl = new FileCacheDataLoader();
+			fcdl.get(URL_TO_LOAD);
+		});
 	}
 
 	@Test
@@ -88,8 +92,8 @@ public class FileCacheDataLoaderTest {
 
 	@Test
 	public void testNotNetworkProtocol() throws IOException {
-		cacheDirectory = testFolder.newFolder();
-
+		Path pathToFolder = testFolder.resolve("");
+		cacheDirectory = pathToFolder.toFile();
 		FileCacheDataLoader specificDataLoader = new FileCacheDataLoader();
 		specificDataLoader.setDataLoader(new MemoryDataLoader(new HashMap<String, byte[]>()));
 		specificDataLoader.setFileCacheDirectory(cacheDirectory);

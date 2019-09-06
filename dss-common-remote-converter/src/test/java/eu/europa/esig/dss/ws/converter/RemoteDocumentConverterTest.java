@@ -1,11 +1,12 @@
 package eu.europa.esig.dss.ws.converter;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -64,10 +65,12 @@ public class RemoteDocumentConverterTest {
 		assertEquals(remoteDocument.getName(), dssDocument.getName());
 	}
 	
-	@Test(expected = DSSException.class)
+	@Test
 	public void emptyDigestDocumentToRemoteDocumentTest() {
 		DSSDocument dssDocument = new DigestDocument();
-		RemoteDocumentConverter.toRemoteDocument(dssDocument);
+		assertThrows(DSSException.class, () -> RemoteDocumentConverter.toRemoteDocument(dssDocument));
+
+		
 	}
 	
 	@Test

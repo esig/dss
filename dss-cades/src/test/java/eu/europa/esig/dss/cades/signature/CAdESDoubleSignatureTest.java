@@ -20,19 +20,14 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.RepeatedTest;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -51,25 +46,19 @@ import eu.europa.esig.dss.validation.reports.Reports;
  * @author axel.abinet
  *
  */
-@RunWith(Parameterized.class)
 public class CAdESDoubleSignatureTest extends PKIFactoryAccess {
 	
 	private static Date date;
 	
 	private static String firstSignatureId;
 	private static String secondSignatureId;
-
-	@Parameters
-	public static List<Object[]> data() {
-		return Arrays.asList(new Object[10][0]);
-	}
 	
-	@BeforeClass
+	@BeforeAll
 	public static void init() {
 		date = new Date();
 	}
 
-	@Test
+	@RepeatedTest(10)
 	public void test() throws Exception {
 		DSSDocument documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
 

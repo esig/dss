@@ -20,18 +20,18 @@
  */
 package eu.europa.esig.dss.tsl.service;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.util.TimeDependentValues;
@@ -42,18 +42,16 @@ import eu.europa.esig.dss.tsl.TSLServiceProvider;
 import eu.europa.esig.dss.tsl.TSLServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.utils.Utils;
 
-@RunWith(Parameterized.class)
 public class TSLSParserTest {
 
-	@Parameters(name = "TSL to parse {index} : {0}")
-	public static Collection<Object[]> data() {
+	public static Stream<Arguments> data() {
 		File folder = new File("src/test/resources/tsls");
 		Collection<File> listFiles = Utils.listFiles(folder, new String[] { "xml" }, true);
-		Collection<Object[]> dataToRun = new ArrayList<Object[]>();
+		Collection<Arguments> dataToRun = new ArrayList<Arguments>();
 		for (File file : listFiles) {
-			dataToRun.add(new Object[] { file });
+			dataToRun.add(Arguments.of( file ));
 		}
-		return dataToRun;
+		return dataToRun.stream();
 	}
 
 	private static final List<String> countriesWithoutTSP;
@@ -66,14 +64,9 @@ public class TSLSParserTest {
 		countriesWithoutTSP.add("UK");
 	}
 
-	private File fileToTest;
-
-	public TSLSParserTest(File fileToTest) {
-		this.fileToTest = fileToTest;
-	}
-
-	@Test
-	public void parseTSL() throws Exception {
+	@ParameterizedTest(name = "TSL to parse {index} : {0}")
+	@MethodSource("data")
+	public void parseTSL(File fileToTest) throws Exception {
 		TSLParser parser = new TSLParser(new FileDocument(fileToTest.getAbsolutePath()));
 		TSLParserResult result = parser.call();
 		assertNotNull(result);

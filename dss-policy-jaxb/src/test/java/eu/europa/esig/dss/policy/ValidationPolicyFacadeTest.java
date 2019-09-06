@@ -1,7 +1,8 @@
 package eu.europa.esig.dss.policy;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,7 +12,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.UnmarshalException;
 import javax.xml.stream.XMLStreamException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.policy.jaxb.Algo;
@@ -85,34 +86,34 @@ public class ValidationPolicyFacadeTest {
 		assertEquals(0, revocationFreshness.getValue().intValue());
 	}
 
-	@Test(expected = UnmarshalException.class)
+	@Test
 	public void testInvalid() throws Exception {
-		ValidationPolicyFacade.newFacade().unmarshall(new File("src/test/resources/invalid-policy.xml"));
+		assertThrows(UnmarshalException.class, () -> ValidationPolicyFacade.newFacade().unmarshall(new File("src/test/resources/invalid-policy.xml")));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void unmarshallNullIS() throws Exception {
-		ValidationPolicyFacade.newFacade().unmarshall((InputStream) null);
+		assertThrows(NullPointerException.class, () -> ValidationPolicyFacade.newFacade().unmarshall((InputStream) null));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void unmarshallNullFile() throws Exception {
-		ValidationPolicyFacade.newFacade().unmarshall((File) null);
+		assertThrows(NullPointerException.class, () -> ValidationPolicyFacade.newFacade().unmarshall((File) null));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void unmarshallNullString() throws Exception {
-		ValidationPolicyFacade.newFacade().unmarshall((String) null);
+		assertThrows(NullPointerException.class, () -> ValidationPolicyFacade.newFacade().unmarshall((String) null));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void marshallNull() throws Exception {
-		ValidationPolicyFacade.newFacade().marshall(null);
+		assertThrows(NullPointerException.class, () -> ValidationPolicyFacade.newFacade().marshall(null));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void marshallNull2() throws Exception {
-		ValidationPolicyFacade.newFacade().marshall(null, null);
+		assertThrows(NullPointerException.class, () -> ValidationPolicyFacade.newFacade().marshall(null, null));
 	}
 
 }

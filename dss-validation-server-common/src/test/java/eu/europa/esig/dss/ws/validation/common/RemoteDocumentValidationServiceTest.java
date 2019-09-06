@@ -1,15 +1,15 @@
 package eu.europa.esig.dss.ws.validation.common;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -30,7 +30,7 @@ public class RemoteDocumentValidationServiceTest {
 	
 	RemoteDocumentValidationService validationService;
 	
-	@Before
+	@BeforeEach
 	public void init() {
 		validationService = new RemoteDocumentValidationService();
 		validationService.setVerifier(new CommonCertificateVerifier());

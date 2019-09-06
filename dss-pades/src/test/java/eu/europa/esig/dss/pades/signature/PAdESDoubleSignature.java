@@ -20,18 +20,15 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.RepeatedTest;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -48,18 +45,9 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
-@RunWith(Parameterized.class)
 public class PAdESDoubleSignature extends PKIFactoryAccess {
 
-	@Parameters
-	public static List<Object[]> data() {
-		return Arrays.asList(new Object[10][0]);
-	}
-
-	public PAdESDoubleSignature() {
-	}
-
-	@Test
+	@RepeatedTest(10)
 	public void testDoubleSignature() throws Exception {
 
 		DSSDocument toBeSigned = new InMemoryDocument(PAdESDoubleSignature.class.getResourceAsStream("/sample.pdf"));
@@ -139,7 +127,7 @@ public class PAdESDoubleSignature extends PKIFactoryAccess {
 				continue;
 			}
 			int nbRevoc = certificateWrapper.getCertificateRevocationData().size();
-			assertEquals("Nb revoc for cert " + certificateWrapper.getCommonName() + " = " + nbRevoc, 1, nbRevoc);
+			assertEquals(1, nbRevoc, "Nb revoc for cert " + certificateWrapper.getCommonName() + " = " + nbRevoc);
 		}
 	}
 

@@ -20,16 +20,16 @@
  */
 package eu.europa.esig.dss.test.extension;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
@@ -123,17 +123,17 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 
 		File fileToBeDeleted = new File(originalDocument.getAbsolutePath());
 		assertTrue(fileToBeDeleted.exists());
-		assertTrue("Cannot delete original document (IO error)", fileToBeDeleted.delete());
+		assertTrue(fileToBeDeleted.delete(), "Cannot delete original document (IO error)");
 		assertFalse(fileToBeDeleted.exists());
 
 		fileToBeDeleted = new File(signedFilePath);
 		assertTrue(fileToBeDeleted.exists());
-		assertTrue("Cannot delete signed document (IO error)", fileToBeDeleted.delete());
+		assertTrue(fileToBeDeleted.delete(), "Cannot delete signed document (IO error)");
 		assertFalse(fileToBeDeleted.exists());
 
 		fileToBeDeleted = new File(extendedFilePath);
 		assertTrue(fileToBeDeleted.exists());
-		assertTrue("Cannot delete extended document (IO error)", fileToBeDeleted.delete());
+		assertTrue(fileToBeDeleted.delete(), "Cannot delete extended document (IO error)");
 		assertFalse(fileToBeDeleted.exists());
 	}
 
@@ -164,7 +164,7 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 		for (SignatureWrapper signatureWrapper : allSignatures) {
 			List<XmlFoundCertificate> allFoundCertificates = signatureWrapper.getAllFoundCertificates();
 			for (XmlFoundCertificate foundCert : allFoundCertificates) {
-				assertEquals("Duplicate certificate in " + foundCert.getOrigins(), 1, foundCert.getOrigins().size());
+				assertEquals(1, foundCert.getOrigins().size(), "Duplicate certificate in " + foundCert.getOrigins());
 			}
 		}
 	}
@@ -174,7 +174,7 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 		for (SignatureWrapper signatureWrapper : allSignatures) {
 			List<XmlFoundRevocation> allFoundRevocations = signatureWrapper.getAllFoundRevocations();
 			for (XmlFoundRevocation foundRevocation : allFoundRevocations) {
-				assertEquals("Duplicate revocation data in " + foundRevocation.getOrigins(), 1, foundRevocation.getOrigins().size());
+				assertEquals(1, foundRevocation.getOrigins().size(), "Duplicate revocation data in " + foundRevocation.getOrigins());
 			}
 		}
 	}

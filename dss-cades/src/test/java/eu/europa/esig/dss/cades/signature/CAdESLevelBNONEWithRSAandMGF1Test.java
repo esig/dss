@@ -20,10 +20,12 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -82,6 +84,13 @@ public class CAdESLevelBNONEWithRSAandMGF1Test extends AbstractCAdESTestSignatur
 		signatureParameters.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
 
 		service = new CAdESService(getOfflineCertificateVerifier());
+	}
+	
+	// Annotation JUnit 4
+	@Test
+	@Override
+	public void signAndVerify() throws IOException {
+		super.signAndVerify();
 	}
 
 	@Override

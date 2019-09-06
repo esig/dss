@@ -96,7 +96,7 @@ public final class ASiCUtils {
 		} else if (MimeType.ASICE.equals(asicMimeType) || MimeType.ODT.equals(asicMimeType) || MimeType.ODS.equals(asicMimeType)) {
 			return ASiCContainerType.ASiC_E;
 		} else {
-			throw new IllegalArgumentException("Not allowed mimetype " + asicMimeType);
+			throw new IllegalArgumentException("Not allowed mimetype '" + asicMimeType.getMimeTypeString() + "'");
 		}
 	}
 
