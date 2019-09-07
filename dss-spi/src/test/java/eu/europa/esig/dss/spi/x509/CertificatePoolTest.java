@@ -40,8 +40,6 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
-import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 
 public class CertificatePoolTest {

@@ -32,9 +32,6 @@ import java.util.Iterator;
 
 import org.junit.jupiter.api.Test;
 
-import eu.europa.esig.dss.spi.util.BaseTimeDependent;
-import eu.europa.esig.dss.spi.util.MutableTimeDependentValues;
-import eu.europa.esig.dss.spi.util.TimeDependentValues;
 
 public class TimeDependentTest {
 

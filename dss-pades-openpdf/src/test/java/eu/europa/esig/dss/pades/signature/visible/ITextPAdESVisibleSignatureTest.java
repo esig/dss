@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature.visible;
 
-import eu.europa.esig.dss.pades.signature.visible.PAdESVisibleSignatureSuite;
 
 public class ITextPAdESVisibleSignatureTest extends PAdESVisibleSignatureSuite {
 

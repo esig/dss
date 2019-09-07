@@ -1,5 +1,5 @@
 /**
-\ * DSS - Digital Signature Services
+ * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
  * 
  * This file is part of the "DSS - Digital Signature Services" project.
