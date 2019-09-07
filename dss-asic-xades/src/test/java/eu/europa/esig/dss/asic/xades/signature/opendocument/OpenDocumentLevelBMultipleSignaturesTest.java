@@ -30,7 +30,6 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
@@ -45,18 +44,17 @@ public class OpenDocumentLevelBMultipleSignaturesTest extends PKIFactoryAccess {
 	private DSSDocument fileToTest;
 	private DocumentSignatureService<ASiCWithXAdESSignatureParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
-	
+
 	public static Stream<Arguments> data() {
 		File folder = new File("src/test/resources/opendocument");
-		Collection<File> listFiles = Utils.listFiles(folder,
-				new String[] { "odt", "ods", "odp", "odg" }, true);
+		Collection<File> listFiles = Utils.listFiles(folder, new String[] { "odt", "ods", "odp", "odg" }, true);
 		Collection<Arguments> dataToRun = new ArrayList<Arguments>();
 		for (File file : listFiles) {
-			dataToRun.add(Arguments.of( file ));
+			dataToRun.add(Arguments.of(file));
 		}
 		return dataToRun.stream();
 	}
-	
+
 	@BeforeEach
 	public void init() throws Exception {
 		signatureParameters = new ASiCWithXAdESSignatureParameters();
@@ -69,23 +67,23 @@ public class OpenDocumentLevelBMultipleSignaturesTest extends PKIFactoryAccess {
 		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 	}
-	
+
 	@ParameterizedTest(name = "Validation {index} : {0}")
 	@MethodSource("data")
 	public void test(File fileToTest) throws Exception {
 		doubleSignature(new FileDocument(fileToTest));
 	}
-	
+
 	public void doubleSignature(DSSDocument originalDocument) throws IOException {
 
 		DSSDocument signedDocument = getSignedDocument(originalDocument);
 		DSSDocument resignedDocument = getSignedDocument(signedDocument);
-		
+
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(resignedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 
 		Reports reports = validator.validateDocument();
-		
+
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		List<String> signatureIdList = diagnosticData.getSignatureIdList();
 		assertEquals(2, signatureIdList.size());
@@ -115,16 +113,16 @@ public class OpenDocumentLevelBMultipleSignaturesTest extends PKIFactoryAccess {
 
 		byte[] mimeTypeContent = DSSUtils.toByteArray(mimeTypeDocument);
 		try {
-			assertEquals(getMimeType().getMimeTypeString(), new String(mimeTypeContent, "UTF-8"));
+			assertEquals(originalDocument.getMimeType().getMimeTypeString(), new String(mimeTypeContent, "UTF-8"));
 		} catch (UnsupportedEncodingException e) {
 			fail(e.getMessage());
 		}
 
 	}
-	
+
 	private DSSDocument getSignedDocument(DSSDocument originalDocument) {
 		DSSDocument documentToSign = originalDocument;
-		
+
 		ASiCWithXAdESSignatureParameters signatureParameters = new ASiCWithXAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
@@ -133,20 +131,17 @@ public class OpenDocumentLevelBMultipleSignaturesTest extends PKIFactoryAccess {
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 
 		ASiCWithXAdESService service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
-		
+
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
-		
+
 		return signedDocument;
 	}
-	
+
 	@Override
 	protected String getSigningAlias() {
 		return GOOD_USER;
 	}
-	
-	private MimeType getMimeType() {
-		return fileToTest.getMimeType();
-	}
+
 }

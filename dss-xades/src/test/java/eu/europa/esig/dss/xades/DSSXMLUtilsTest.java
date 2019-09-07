@@ -58,10 +58,9 @@ public class DSSXMLUtilsTest {
 
 	@Test
 	public void validateAgainstXSDInvalid() throws SAXException {
-		Exception exception = assertThrows(SAXException.class, () -> {
+		assertThrows(SAXException.class, () -> {
 			DSSXMLUtils.validateAgainstXSD(new FileDocument("src/test/resources/invalid-xades-structure.xml"));
 		});
-		assertEquals("cvc-complex-type.2.4.a: Invalid content was found starting with element '{\"http://uri.etsi.org/01903/v1.3.2#\":IssuerSerial}'. One of '{\"http://uri.etsi.org/01903/v1.3.2#\":IssuerSerialV2}' is expected.", exception.getMessage());
 	}
 
 	@Test

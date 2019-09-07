@@ -88,20 +88,20 @@ public final class ASiCUtils {
 	public static boolean isASiCMimeType(final MimeType asicMimeType) {
 		return MimeType.ASICS.equals(asicMimeType) || MimeType.ASICE.equals(asicMimeType);
 	}
-	
+
 	public static boolean isOpenDocumentMimeType(final MimeType mimeType) {
 		return MimeType.ODT.equals(mimeType) || MimeType.ODS.equals(mimeType) || MimeType.ODG.equals(mimeType) || MimeType.ODP.equals(mimeType);
 	}
-	
-    public static ASiCContainerType getASiCContainerType(final MimeType asicMimeType) {
-        if (MimeType.ASICS.equals(asicMimeType)) {
-            return ASiCContainerType.ASiC_S;
-        } else if (MimeType.ASICE.equals(asicMimeType) || isOpenDocumentMimeType(asicMimeType)) {
-            return ASiCContainerType.ASiC_E;
-        } else {
-            throw new IllegalArgumentException("Not allowed mimetype " + asicMimeType);
-        }
-    }
+
+	public static ASiCContainerType getASiCContainerType(final MimeType asicMimeType) {
+		if (MimeType.ASICS.equals(asicMimeType)) {
+			return ASiCContainerType.ASiC_S;
+		} else if (MimeType.ASICE.equals(asicMimeType) || isOpenDocumentMimeType(asicMimeType)) {
+			return ASiCContainerType.ASiC_E;
+		} else {
+			throw new IllegalArgumentException("Not allowed mimetype '" + asicMimeType.getMimeTypeString() + "'");
+		}
+	}
 
 	public static boolean isASiCE(final ASiCParameters asicParameters) {
 		return ASiCContainerType.ASiC_E.equals(asicParameters.getContainerType());
