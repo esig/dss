@@ -20,8 +20,10 @@
  */
 package eu.europa.esig.dss.ws.converter;
 
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.ws.dto.DigestDTO;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 
@@ -53,6 +55,21 @@ public class DTOConverter {
 			return new SignatureValueDTO(signatureValue.getAlgorithm(), signatureValue.getValue());
 		}
 		return null;
+	}
+	
+	public static Digest toDigest(DigestDTO digestDTO) {
+		if (digestDTO == null) {
+			return null;
+		}
+		return new Digest(digestDTO.getAlgorithm(), digestDTO.getValue());
+	}
+	
+	public static DigestDTO toDigestDTO(Digest digest) {
+		if (digest == null) {
+			return null;
+		}
+		return new DigestDTO(digest.getAlgorithm(), digest.getValue());
+		
 	}
 
 }

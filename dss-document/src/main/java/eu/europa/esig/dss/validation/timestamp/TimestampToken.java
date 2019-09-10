@@ -53,6 +53,7 @@ import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -120,15 +121,31 @@ public class TimestampToken extends Token {
 			throws TSPException, IOException, CMSException {
 		this(binaries, type, new CertificatePool());
 	}
+	
+	public TimestampToken(final TimestampBinary binaries, final TimestampType type) 
+			throws TSPException, IOException, CMSException {
+		this(binaries.getEncoded(), type);
+	}
 
 	public TimestampToken(final byte[] binaries, final TimestampType type, final CertificatePool certPool) 
 			throws TSPException, IOException, CMSException {
 		this(binaries, type, certPool, null);
 	}
+	
+	public TimestampToken(final TimestampBinary binaries, final TimestampType type, final CertificatePool certPool) 
+			throws TSPException, IOException, CMSException {
+		this(binaries.getEncoded(), type, certPool);
+	}
 
 	public TimestampToken(final byte[] binaries, final TimestampType type, final CertificatePool certPool, 
 			final TimestampLocation timeStampLocation) throws TSPException, IOException, CMSException {
 		this(binaries, type, certPool, new ArrayList<TimestampedReference>(), timeStampLocation);
+	}
+	
+	public TimestampToken(final TimestampBinary binaries, final TimestampType type, final CertificatePool certPool, 
+			final TimestampLocation timeStampLocation) 
+			throws TSPException, IOException, CMSException {
+		this(binaries.getEncoded(), type, certPool, timeStampLocation);
 	}
 
 	public TimestampToken(final byte[] binaries, final TimestampType type, final CertificatePool certPool, 
@@ -136,6 +153,12 @@ public class TimestampToken extends Token {
 		this(new CMSSignedData(binaries), type, certPool, timestampedReferences, timeStampLocation);
 	}
 
+	public TimestampToken(final TimestampBinary binaries, final TimestampType type, final CertificatePool certPool, 
+			final List<TimestampedReference> timestampedReferences, final TimestampLocation timeStampLocation) 
+			throws TSPException, IOException, CMSException {
+		this(binaries.getEncoded(), type, certPool, timestampedReferences, timeStampLocation);
+	}
+	
 	public TimestampToken(final CMSSignedData cms, final TimestampType type, final CertificatePool certPool) 
 			throws TSPException, IOException {
 		this(cms, type, certPool, null);

@@ -23,18 +23,20 @@ package eu.europa.esig.dss.service.tsp;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.service.SecureRandomNonceSource;
 import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.service.http.commons.TimestampDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
+import eu.europa.esig.dss.utils.Utils;
 
 public class OnlineTSPSourceTest {
 
@@ -46,8 +48,9 @@ public class OnlineTSPSourceTest {
 		tspSource.setDataLoader(new TimestampDataLoader());
 
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
-		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);
+		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);
 		assertNotNull(timeStampResponse);
+		assertTrue(Utils.isArrayNotEmpty(timeStampResponse.getEncoded()));
 	}
 
 	@Disabled("Content-type is required")
@@ -56,8 +59,9 @@ public class OnlineTSPSourceTest {
 		tspSource.setDataLoader(new CommonsDataLoader());
 
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
-		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);
+		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);
 		assertNotNull(timeStampResponse);
+		assertTrue(Utils.isArrayNotEmpty(timeStampResponse.getEncoded()));
 	}
 
 	@Test
@@ -67,8 +71,9 @@ public class OnlineTSPSourceTest {
 		tspSource.setDataLoader(new TimestampDataLoader()); // content-type is different
 
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA512, "Hello world".getBytes());
-		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA512, digest);
+		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA512, digest);
 		assertNotNull(timeStampResponse);
+		assertTrue(Utils.isArrayNotEmpty(timeStampResponse.getEncoded()));
 	}
 
 	@Disabled("Content-type is required")
@@ -77,8 +82,9 @@ public class OnlineTSPSourceTest {
 		tspSource.setDataLoader(new NativeHTTPDataLoader());
 
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
-		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);
+		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);
 		assertNotNull(timeStampResponse);
+		assertTrue(Utils.isArrayNotEmpty(timeStampResponse.getEncoded()));
 	}
 
 	@Test
@@ -88,8 +94,9 @@ public class OnlineTSPSourceTest {
 		tspSource.setNonceSource(new SecureRandomNonceSource());
 
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
-		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);
+		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);
 		assertNotNull(timeStampResponse);
+		assertTrue(Utils.isArrayNotEmpty(timeStampResponse.getEncoded()));
 	}
 
 	@Test

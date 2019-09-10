@@ -22,10 +22,9 @@ package eu.europa.esig.dss.spi.x509.tsp;
 
 import java.io.Serializable;
 
-import org.bouncycastle.tsp.TimeStampToken;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.TimestampBinary;
 
 /**
  * Abstraction of a Time Stamping authority which delivers RFC 3161 Time Stamp Responses containing tokens, from Time
@@ -41,10 +40,10 @@ public interface TSPSource extends Serializable {
 	 *            the used digest algorithm
 	 * @param digest
 	 *            the computed digest to be timestamped
-	 * @return a signed timestamp token
+	 * @return {@link TimestampBinary} binary of a signed timestamp token
 	 * @throws DSSException
 	 *             if any error occurred
 	 */
-	TimeStampToken getTimeStampResponse(final DigestAlgorithm digestAlgorithm, final byte[] digest) throws DSSException;
+	TimestampBinary getTimeStampResponse(final DigestAlgorithm digestAlgorithm, final byte[] digest) throws DSSException;
 
 }

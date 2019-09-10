@@ -20,10 +20,12 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 import org.bouncycastle.cms.CMSAbsentContent;
+import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSProcessableByteArray;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataGenerator;
@@ -31,7 +33,7 @@ import org.bouncycastle.cms.CMSTypedData;
 import org.bouncycastle.cms.SignerInfoGeneratorBuilder;
 import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
-import org.bouncycastle.tsp.TimeStampToken;
+import org.bouncycastle.tsp.TSPException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,6 +50,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
@@ -87,8 +90,12 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 			throw new DSSException("A TSPSource is required !");
 		}
 		DigestAlgorithm digestAlgorithm = parameters.getContentTimestampParameters().getDigestAlgorithm();
-		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, Utils.fromBase64(toSignDocument.getDigest(digestAlgorithm)));
-		return new TimestampToken(timeStampResponse, TimestampType.CONTENT_TIMESTAMP);
+		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, Utils.fromBase64(toSignDocument.getDigest(digestAlgorithm)));
+		try {
+			return new TimestampToken(timeStampResponse, TimestampType.CONTENT_TIMESTAMP);
+		} catch (TSPException | IOException | CMSException e) {
+			throw new DSSException("Cannot create a content TimestampToken", e);
+		}
 	}
 
 	@Override

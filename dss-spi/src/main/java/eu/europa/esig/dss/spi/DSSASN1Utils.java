@@ -110,6 +110,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.CertificatePolicy;
 import eu.europa.esig.dss.utils.Utils;
@@ -274,6 +275,22 @@ public final class DSSASN1Utils {
 			deros.close();
 			return baos.toByteArray();
 		} catch (IOException e) {
+			throw new DSSException("Unable to encode to DER", e);
+		}
+	}
+
+	/**
+	 * Returns the ASN.1 encoded representation of {@code TimestampBinary}.
+	 *
+	 * @param timestampBinary
+	 *             the {@link TimestampBinary} to be encoded
+	 * @return the DER encoded timestampBinary
+	 */
+	public static byte[] getDEREncoded(final TimestampBinary timestampBinary) {
+		try {
+			CMSSignedData cmsSignedData = new CMSSignedData(timestampBinary.getEncoded());
+			return getDEREncoded(cmsSignedData);
+		} catch (CMSException e) {
 			throw new DSSException("Unable to encode to DER", e);
 		}
 	}

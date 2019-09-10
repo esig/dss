@@ -34,7 +34,9 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.service.NonceSource;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
@@ -45,6 +47,8 @@ import eu.europa.esig.dss.utils.Utils;
  *
  */
 public class OnlineTSPSource implements TSPSource {
+
+	private static final long serialVersionUID = 2327302822894625162L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(OnlineTSPSource.class);
 
@@ -126,7 +130,7 @@ public class OnlineTSPSource implements TSPSource {
 	}
 
 	@Override
-	public TimeStampToken getTimeStampResponse(final DigestAlgorithm digestAlgorithm, final byte[] digest) throws DSSException {
+	public TimestampBinary getTimeStampResponse(final DigestAlgorithm digestAlgorithm, final byte[] digest) throws DSSException {
 		try {
 			if (LOG.isTraceEnabled()) {
 				LOG.trace("Timestamp digest algorithm: {}", digestAlgorithm.getName());
@@ -179,8 +183,7 @@ public class OnlineTSPSource implements TSPSource {
 			} else {
 				throw new DSSException("No retrieved timestamp token (TSP Status : " + statusString + " / " + failInfo + ")");
 			}
-
-			return timeStampToken;
+			return new TimestampBinary(DSSASN1Utils.getDEREncoded(timeStampToken));
 		} catch (TSPException e) {
 			throw new DSSException("Invalid TSP response", e);
 		} catch (IOException e) {

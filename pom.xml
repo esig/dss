@@ -154,9 +154,14 @@
     	<module>dss-certificate-validation-soap-client</module>
     	<module>dss-certificate-validation-rest</module>
     	<module>dss-certificate-validation-soap</module>
+    	<module>dss-timestamp-dto</module>
+    	<module>dss-timestamp-remote</module>
+    	<module>dss-timestamp-remote-rest-client</module>
+    	<module>dss-timestamp-remote-soap-client</module>
+    	<module>dss-timestamp-remote-rest</module>
+    	<module>dss-timestamp-remote-soap</module>
 		
 		<module>dss-cookbook</module>
-
   </modules>
 
 	<build>
@@ -748,6 +753,36 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-server-signing-soap</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-timestamp-dto</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-timestamp-remote</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-timestamp-remote-rest-client</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-timestamp-remote-soap-client</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-timestamp-remote-rest</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-timestamp-remote-soap</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

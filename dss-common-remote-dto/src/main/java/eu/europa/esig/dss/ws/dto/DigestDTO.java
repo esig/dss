@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.ws.server.signing.dto;
+package eu.europa.esig.dss.ws.dto;
 
 import java.io.Serializable;
 import java.math.BigInteger;
@@ -40,14 +40,6 @@ public class DigestDTO implements Serializable {
 	public DigestDTO(DigestAlgorithm algorithm, byte[] value) {
 		this.algorithm = algorithm;
 		this.value = value;
-	}
-
-	public String getHexValue() {
-		String hex = new BigInteger(1, value).toString(16);
-		if (hex.length() % 2 == 1) {
-			hex = "0" + hex;
-		}
-		return hex.toUpperCase(Locale.ENGLISH);
 	}
 
 	/**
@@ -78,6 +70,14 @@ public class DigestDTO implements Serializable {
 	 */
 	public void setValue(byte[] value) {
 		this.value = value;
+	}
+
+	protected String hexValue() {
+		String hex = new BigInteger(1, value).toString(16);
+		if (hex.length() % 2 == 1) {
+			hex = "0" + hex;
+		}
+		return hex.toUpperCase(Locale.ENGLISH);
 	}
 
 	@Override
@@ -112,7 +112,7 @@ public class DigestDTO implements Serializable {
 	
 	@Override
 	public String toString() {
-		return algorithm.getName() + ":" + getHexValue();
+		return algorithm.getName() + ":" + hexValue();
 	}
 	
 }

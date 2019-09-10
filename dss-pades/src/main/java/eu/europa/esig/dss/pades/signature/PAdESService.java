@@ -20,13 +20,15 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
+import java.io.IOException;
 import java.util.List;
 
+import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSProcessableByteArray;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataGenerator;
 import org.bouncycastle.cms.SignerInfoGeneratorBuilder;
-import org.bouncycastle.tsp.TimeStampToken;
+import org.bouncycastle.tsp.TSPException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +42,7 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
@@ -96,9 +99,12 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		final PDFSignatureService pdfSignatureService = PdfObjFactory.newPAdESSignatureService();
 		final DigestAlgorithm digestAlgorithm = parameters.getContentTimestampParameters().getDigestAlgorithm();
 		final byte[] messageDigest = pdfSignatureService.digest(toSignDocument, parameters, digestAlgorithm);
-		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, messageDigest);
-		final TimestampToken token = new TimestampToken(timeStampResponse, TimestampType.CONTENT_TIMESTAMP);
-		return token;
+		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, messageDigest);
+		try {
+			return new TimestampToken(timeStampResponse, TimestampType.CONTENT_TIMESTAMP);
+		} catch (TSPException | IOException | CMSException e) {
+			throw new DSSException("Cannot obtain the content timestamp", e);
+		}
 	}
 
 	@Override

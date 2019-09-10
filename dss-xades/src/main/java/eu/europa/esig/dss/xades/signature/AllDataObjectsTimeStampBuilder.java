@@ -25,12 +25,14 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bouncycastle.tsp.TimeStampToken;
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.tsp.TSPException;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
@@ -82,14 +84,16 @@ public class AllDataObjectsTimeStampBuilder {
 		}
 
 		byte[] digestToTimestamp = DSSUtils.digest(timestampParameters.getDigestAlgorithm(), dataToBeDigested);
-		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(timestampParameters.getDigestAlgorithm(), digestToTimestamp);
-		TimestampToken token = new TimestampToken(timeStampResponse, TimestampType.ALL_DATA_OBJECTS_TIMESTAMP);
-
-		if (canonicalizationUsed) {
-			token.setCanonicalizationMethod(timestampParameters.getCanonicalizationMethod());
+		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(timestampParameters.getDigestAlgorithm(), digestToTimestamp);
+		try {
+			TimestampToken token = new TimestampToken(timeStampResponse, TimestampType.ALL_DATA_OBJECTS_TIMESTAMP);
+			if (canonicalizationUsed) {
+				token.setCanonicalizationMethod(timestampParameters.getCanonicalizationMethod());
+			}
+			return token;
+		} catch (TSPException | IOException | CMSException e) {
+			throw new DSSException("Cannot build an AllDataObjectsTimestamp", e);
 		}
-
-		return token;
 	}
 
 }

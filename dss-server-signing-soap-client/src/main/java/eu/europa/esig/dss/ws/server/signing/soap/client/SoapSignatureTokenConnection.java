@@ -30,9 +30,9 @@ import javax.jws.WebService;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.ws.dto.DigestDTO;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
-import eu.europa.esig.dss.ws.server.signing.dto.DigestDTO;
 import eu.europa.esig.dss.ws.server.signing.dto.RemoteKeyEntry;
 
 @WebService(targetNamespace = "http://server-signing.dss.esig.europa.eu/")

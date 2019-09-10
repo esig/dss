@@ -24,10 +24,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 
-import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.service.http.commons.TimestampDataLoader;
 import eu.europa.esig.dss.service.tsp.OnlineTSPSource;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -49,12 +49,12 @@ public class OnlineTSPSourceTest {
 		final DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA256;
 		final byte[] toDigest = "Hello world".getBytes("UTF-8");
 		final byte[] digestValue = DSSUtils.digest(digestAlgorithm, toDigest);
-		final TimeStampToken tsr = tspSource.getTimeStampResponse(digestAlgorithm, digestValue);
+		final TimestampBinary tsBinary = tspSource.getTimeStampResponse(digestAlgorithm, digestValue);
 
-		System.out.println(DSSUtils.toHex(tsr.getEncoded()));
+		System.out.println(DSSUtils.toHex(tsBinary.getEncoded()));
 
 		// end::demo[]
 
-		assertNotNull(tsr);
+		assertNotNull(tsBinary);
 	}
 }
