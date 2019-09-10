@@ -1,7 +1,6 @@
 package eu.europa.esig.dss.ws.signature.common;
 
 import java.io.IOException;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -11,6 +10,7 @@ import org.bouncycastle.tsp.TSPException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -28,7 +28,7 @@ public class TimestampTokenConverter {
 				if (timestampDTO != null && Utils.isArrayNotEmpty(timestampDTO.getBinaries())) {
 					try {
 						timestampTokens.add(toTimestampToken(timestampDTO));
-					} catch (RemoteException e) {
+					} catch (DSSException e) {
 						LOG.warn(e.getMessage());
 					}
 				}
@@ -37,7 +37,7 @@ public class TimestampTokenConverter {
 		return timestampTokens;
 	}
 	
-	public static TimestampToken toTimestampToken(TimestampDTO timestampDTO) throws RemoteException {
+	public static TimestampToken toTimestampToken(TimestampDTO timestampDTO) throws DSSException {
 		Objects.requireNonNull(timestampDTO, "TimestampDTO cannot be null!");
 		Objects.requireNonNull(timestampDTO.getBinaries(), "TimestampDTO binaries cannot be null!");
 		Objects.requireNonNull(timestampDTO.getType(), "TimestampDTO type cannot be null!");
@@ -49,8 +49,16 @@ public class TimestampTokenConverter {
 			}
 			return timestampToken;
 		} catch (TSPException | IOException | CMSException e) {
-			throw new RemoteException(String.format("Cannot convert a TimestampDTO to TimestampToken class, reason : {}", e.getMessage()));
+			throw new DSSException(String.format("Cannot convert a TimestampDTO to TimestampToken class, reason : {}", e.getMessage()));
 		}
+	}
+	
+	public static TimestampDTO toTimestampDTO(TimestampToken timestampToken) {
+		Objects.requireNonNull(timestampToken, "TimestampToken cannot be null!");
+		TimestampDTO timestampDTO = new TimestampDTO(timestampToken.getEncoded(), timestampToken.getTimeStampType());
+		timestampDTO.setCanonicalizationMethod(timestampToken.getCanonicalizationMethod());
+		timestampDTO.setIncludes(toTimestampIncludeDTOs(timestampToken.getTimestampIncludes()));
+		return timestampDTO;
 	}
 	
 	private static List<TimestampInclude> toTimestampIncludes(List<TimestampIncludeDTO> timestampIncludeDTOs) {
@@ -63,6 +71,18 @@ public class TimestampTokenConverter {
 			}
 		}
 		return timestampIncludes;
+	}
+	
+	private static List<TimestampIncludeDTO> toTimestampIncludeDTOs(List<TimestampInclude> timestampIncludes) {
+		List<TimestampIncludeDTO> timestampIncludeDTOs = new ArrayList<TimestampIncludeDTO>();
+		if (Utils.isCollectionNotEmpty(timestampIncludes)) {
+			for (TimestampInclude timestampInclude : timestampIncludes) {
+				if (timestampInclude != null) {
+					timestampIncludeDTOs.add(new TimestampIncludeDTO(timestampInclude.getURI(), timestampInclude.isReferencedData()));
+				}
+			}
+		}
+		return timestampIncludeDTOs;
 	}
 
 }
