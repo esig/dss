@@ -50,7 +50,7 @@ public class OnlineTSPSourceTest {
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
 		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);
 		assertNotNull(timeStampResponse);
-		assertTrue(Utils.isArrayNotEmpty(timeStampResponse.getEncoded()));
+		assertTrue(Utils.isArrayNotEmpty(timeStampResponse.getBytes()));
 	}
 
 	@Disabled("Content-type is required")
@@ -61,7 +61,7 @@ public class OnlineTSPSourceTest {
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
 		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);
 		assertNotNull(timeStampResponse);
-		assertTrue(Utils.isArrayNotEmpty(timeStampResponse.getEncoded()));
+		assertTrue(Utils.isArrayNotEmpty(timeStampResponse.getBytes()));
 	}
 
 	@Test
@@ -73,7 +73,7 @@ public class OnlineTSPSourceTest {
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA512, "Hello world".getBytes());
 		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA512, digest);
 		assertNotNull(timeStampResponse);
-		assertTrue(Utils.isArrayNotEmpty(timeStampResponse.getEncoded()));
+		assertTrue(Utils.isArrayNotEmpty(timeStampResponse.getBytes()));
 	}
 
 	@Disabled("Content-type is required")
@@ -84,7 +84,7 @@ public class OnlineTSPSourceTest {
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
 		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);
 		assertNotNull(timeStampResponse);
-		assertTrue(Utils.isArrayNotEmpty(timeStampResponse.getEncoded()));
+		assertTrue(Utils.isArrayNotEmpty(timeStampResponse.getBytes()));
 	}
 
 	@Test
@@ -96,7 +96,7 @@ public class OnlineTSPSourceTest {
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
 		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);
 		assertNotNull(timeStampResponse);
-		assertTrue(Utils.isArrayNotEmpty(timeStampResponse.getEncoded()));
+		assertTrue(Utils.isArrayNotEmpty(timeStampResponse.getBytes()));
 	}
 
 	@Test

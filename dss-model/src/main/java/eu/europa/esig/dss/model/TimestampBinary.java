@@ -6,14 +6,14 @@ package eu.europa.esig.dss.model;
  */
 public class TimestampBinary {
 	
-	private final byte[] binary;
+	private final byte[] bytes;
 	
-	public TimestampBinary(final byte[] binary) {
-		this.binary = binary;
+	public TimestampBinary(final byte[] bytes) {
+		this.bytes = bytes;
 	}
 	
-	public byte[] getEncoded() {
-		return binary;
+	public byte[] getBytes() {
+		return bytes;
 	}
 
 }

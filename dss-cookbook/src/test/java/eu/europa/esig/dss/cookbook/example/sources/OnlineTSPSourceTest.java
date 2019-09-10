@@ -55,7 +55,7 @@ public class OnlineTSPSourceTest {
 		final byte[] digestValue = DSSUtils.digest(digestAlgorithm, toDigest);
 		final TimestampBinary tsBinary = tspSource.getTimeStampResponse(digestAlgorithm, digestValue);
 
-		LOG.info(DSSUtils.toHex(tsBinary.getEncoded()));
+		LOG.info(DSSUtils.toHex(tsBinary.getBytes()));
 
 		// end::demo[]
 

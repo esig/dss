@@ -124,7 +124,7 @@ public class TimestampToken extends Token {
 	
 	public TimestampToken(final TimestampBinary binaries, final TimestampType type) 
 			throws TSPException, IOException, CMSException {
-		this(binaries.getEncoded(), type);
+		this(binaries.getBytes(), type);
 	}
 
 	public TimestampToken(final byte[] binaries, final TimestampType type, final CertificatePool certPool) 
@@ -134,7 +134,7 @@ public class TimestampToken extends Token {
 	
 	public TimestampToken(final TimestampBinary binaries, final TimestampType type, final CertificatePool certPool) 
 			throws TSPException, IOException, CMSException {
-		this(binaries.getEncoded(), type, certPool);
+		this(binaries.getBytes(), type, certPool);
 	}
 
 	public TimestampToken(final byte[] binaries, final TimestampType type, final CertificatePool certPool, 
@@ -145,7 +145,7 @@ public class TimestampToken extends Token {
 	public TimestampToken(final TimestampBinary binaries, final TimestampType type, final CertificatePool certPool, 
 			final TimestampLocation timeStampLocation) 
 			throws TSPException, IOException, CMSException {
-		this(binaries.getEncoded(), type, certPool, timeStampLocation);
+		this(binaries.getBytes(), type, certPool, timeStampLocation);
 	}
 
 	public TimestampToken(final byte[] binaries, final TimestampType type, final CertificatePool certPool, 
@@ -156,7 +156,7 @@ public class TimestampToken extends Token {
 	public TimestampToken(final TimestampBinary binaries, final TimestampType type, final CertificatePool certPool, 
 			final List<TimestampedReference> timestampedReferences, final TimestampLocation timeStampLocation) 
 			throws TSPException, IOException, CMSException {
-		this(binaries.getEncoded(), type, certPool, timestampedReferences, timeStampLocation);
+		this(binaries.getBytes(), type, certPool, timestampedReferences, timeStampLocation);
 	}
 	
 	public TimestampToken(final CMSSignedData cms, final TimestampType type, final CertificatePool certPool) 

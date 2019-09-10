@@ -287,10 +287,20 @@ public final class DSSASN1Utils {
 	 * @return the DER encoded timestampBinary
 	 */
 	public static byte[] getDEREncoded(final TimestampBinary timestampBinary) {
+		return getDEREncoded(timestampBinary.getBytes());
+	}
+
+	/**
+	 * Returns the ASN.1 encoded representation of {@code byte} array.
+	 *
+	 * @param bytes
+	 *             the binary array to encode
+	 * @return the DER encoded bytes
+	 */
+	public static byte[] getDEREncoded(final byte[] bytes) {
 		try {
-			CMSSignedData cmsSignedData = new CMSSignedData(timestampBinary.getEncoded());
-			return getDEREncoded(cmsSignedData);
-		} catch (CMSException e) {
+			return getDEREncoded(ASN1Primitive.fromByteArray(bytes));
+		} catch (IOException e) {
 			throw new DSSException("Unable to encode to DER", e);
 		}
 	}

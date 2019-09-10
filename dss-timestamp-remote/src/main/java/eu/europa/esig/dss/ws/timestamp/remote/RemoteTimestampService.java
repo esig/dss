@@ -28,7 +28,7 @@ public class RemoteTimestampService {
 		Objects.requireNonNull(digestAlgorithm, "digestAlgorithm must be not null!");
 		Objects.requireNonNull(value, "value must be not null!");
 		TimestampBinary timestampBinary = tspSource.getTimeStampResponse(digestAlgorithm, value);
-		if (timestampBinary != null && Utils.isArrayNotEmpty(timestampBinary.getEncoded())) {
+		if (timestampBinary != null && Utils.isArrayNotEmpty(timestampBinary.getBytes())) {
 			LOG.info("Timestamp is obtained.");
 			return toTimestampResponseDTO(timestampBinary);
 		}
@@ -37,7 +37,7 @@ public class RemoteTimestampService {
 	
 	private TimestampResponseDTO toTimestampResponseDTO(TimestampBinary timestampBinary) {
 		TimestampResponseDTO timestampDTO = new TimestampResponseDTO();
-		timestampDTO.setBinaries(timestampBinary.getEncoded());
+		timestampDTO.setBinaries(timestampBinary.getBytes());
 		return timestampDTO;
 	}
 

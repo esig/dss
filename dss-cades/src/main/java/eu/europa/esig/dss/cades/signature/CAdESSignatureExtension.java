@@ -243,7 +243,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 			}
 
 			final TimestampBinary timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, timestampDigest);
-			CMSSignedData cmsSignedDataTimeStampToken = new CMSSignedData(timeStampToken.getEncoded());
+			CMSSignedData cmsSignedDataTimeStampToken = new CMSSignedData(timeStampToken.getBytes());
 
 			// TODO (27/08/2014): attributesForTimestampToken cannot be null: to be modified
 			if (attributesForTimestampToken != null) {

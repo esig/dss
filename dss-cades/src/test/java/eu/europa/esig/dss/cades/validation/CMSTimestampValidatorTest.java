@@ -44,7 +44,7 @@ public class CMSTimestampValidatorTest extends PKIFactoryAccess {
 		byte[] data = new byte[] { 1, 2, 3 };
 		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, DSSUtils.digest(DigestAlgorithm.SHA256, data));
 
-		CMSTimestampValidator validator = new CMSTimestampValidator(new InMemoryDocument(timeStampResponse.getEncoded()));
+		CMSTimestampValidator validator = new CMSTimestampValidator(new InMemoryDocument(timeStampResponse.getBytes()));
 		validator.setTimestampedData(new InMemoryDocument(data));
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 
