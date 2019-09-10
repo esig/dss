@@ -25,6 +25,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.TimestampBinary;
@@ -36,6 +38,8 @@ import eu.europa.esig.dss.spi.DSSUtils;
  * How to initialize online TSP source.
  */
 public class OnlineTSPSourceTest {
+
+	private static final Logger LOG = LoggerFactory.getLogger(OnlineTSPSourceTest.class);
 
 	@Test
 	public void test() throws IOException {
@@ -51,7 +55,7 @@ public class OnlineTSPSourceTest {
 		final byte[] digestValue = DSSUtils.digest(digestAlgorithm, toDigest);
 		final TimestampBinary tsBinary = tspSource.getTimeStampResponse(digestAlgorithm, digestValue);
 
-		System.out.println(DSSUtils.toHex(tsBinary.getEncoded()));
+		LOG.info(DSSUtils.toHex(tsBinary.getEncoded()));
 
 		// end::demo[]
 

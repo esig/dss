@@ -6,9 +6,9 @@ package eu.europa.esig.dss.model;
  */
 public class TimestampBinary {
 	
-	private byte[] binary;
+	private final byte[] binary;
 	
-	public TimestampBinary(byte[] binary) {
+	public TimestampBinary(final byte[] binary) {
 		this.binary = binary;
 	}
 	

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.tsp.TSPException;
@@ -36,7 +37,10 @@ public class TimestampTokenConverter {
 		return timestampTokens;
 	}
 	
-	private static TimestampToken toTimestampToken(TimestampDTO timestampDTO) throws RemoteException {
+	public static TimestampToken toTimestampToken(TimestampDTO timestampDTO) throws RemoteException {
+		Objects.requireNonNull(timestampDTO, "TimestampDTO cannot be null!");
+		Objects.requireNonNull(timestampDTO.getBinaries(), "TimestampDTO binaries cannot be null!");
+		Objects.requireNonNull(timestampDTO.getType(), "TimestampDTO type cannot be null!");
 		try {
 			TimestampToken timestampToken = new TimestampToken(timestampDTO.getBinaries(), timestampDTO.getType());
 			timestampToken.setCanonicalizationMethod(timestampDTO.getCanonicalizationMethod());

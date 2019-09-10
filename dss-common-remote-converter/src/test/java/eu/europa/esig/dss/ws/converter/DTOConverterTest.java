@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.ws.converter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -28,10 +29,13 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.ws.dto.DigestDTO;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 
@@ -100,6 +104,24 @@ public class DTOConverterTest {
 	public void toSignatureValueNullTest() {
 		SignatureValue signatureValue = DTOConverter.toSignatureValue(null);
 		assertNull(signatureValue);
+	}
+	
+	@Test
+	public void toDigestTest() {
+		DigestDTO digestDTO = new DigestDTO(DigestAlgorithm.SHA1, Utils.fromHex("22BDD97143DF6B39A65AFAD2AF6BD8BF20CD4F7B"));
+		Digest digest = DTOConverter.toDigest(digestDTO);
+		assertNotNull(digest);
+		assertEquals(digest.getAlgorithm(), digestDTO.getAlgorithm());
+		assertTrue(Arrays.equals(digest.getValue(), digestDTO.getValue()));
+	}
+	
+	@Test
+	public void toDigestDTOTest() {
+		Digest digest = new Digest(DigestAlgorithm.SHA1, Utils.fromHex("22BDD97143DF6B39A65AFAD2AF6BD8BF20CD4F7B"));
+		DigestDTO digestDTO = DTOConverter.toDigestDTO(digest);
+		assertNotNull(digestDTO);
+		assertEquals(digest.getAlgorithm(), digestDTO.getAlgorithm());
+		assertTrue(Arrays.equals(digest.getValue(), digestDTO.getValue()));
 	}
 
 }

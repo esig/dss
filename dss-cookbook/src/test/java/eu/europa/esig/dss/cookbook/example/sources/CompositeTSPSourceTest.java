@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.TimestampBinary;
@@ -40,6 +42,8 @@ import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
  * How to configure a Composite TSP Source.
  */
 public class CompositeTSPSourceTest {
+
+	private static final Logger LOG = LoggerFactory.getLogger(CompositeTSPSourceTest.class);
 
 	@Test
 	public void test() throws IOException {
@@ -70,7 +74,7 @@ public class CompositeTSPSourceTest {
 		// If none of them succeed, a DSSException is thrown.
 		final TimestampBinary tsBinary = tspSource.getTimeStampResponse(digestAlgorithm, digestValue);
 
-		System.out.println(DSSUtils.toHex(tsBinary.getEncoded()));
+		LOG.info(DSSUtils.toHex(tsBinary.getEncoded()));
 
 		// end::demo[]
 
