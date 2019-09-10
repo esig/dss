@@ -256,6 +256,14 @@ dss-certificate-validation-soap-client:: Client for the SOAP certificate-validat
 dss-certificate-validation-rest:: REST webservice to validate a certificate.
 dss-certificate-validation-soap:: SOAP webservice to validate a certificate.
 
+'''
+dss-timestamp-dto:: Data Transfer Objects used for timestamp creation.
+dss-timestamp-remote-common:: Common classes between dss-timestamp-remote-rest and dss-timestamp-remote-soap.
+dss-timestamp-remote-rest-client:: Client for the REST timestamp webservice.
+dss-timestamp-remote-soap-client:: Client for the SOAP timestamp webservice.
+dss-timestamp-remote-rest:: REST webservice to create a timestamp.
+dss-timestamp-remote-soap:: SOAP webservice to create a timestamp.
+
 ==== Other modules
 
 dss-test:: Mocks and util classes for unit tests.
@@ -1479,9 +1487,11 @@ DSS offers some REST and SOAP web services. The documentation will covers the RE
 
 The different webservices are : 
 
- * Signature webservices (dss-soap / dss-rest and their clients) : they expose methods to allow signing or extending a signature from a client.
+ * Signature webservices (dss-signature-soap / dss-signature-rest and their clients) : they expose methods to allow signing or extending a signature from a client.
  * Server-signing webservice (dss-server-signing-soap / dss-server-signing-rest and their clients) : they expose method to retrieve keys from a server (PKCS#11, PKCS#12, HSM,...) and to sign the digest on the server side.
- * Validation webservices (dss-validation-soap / dss-validation-rest and their client) : they expose methods to allow signature validation, with an optional detached file and an optional validation policy.
+ * Signature validation webservices (dss-validation-soap / dss-validation-rest and their clients) : they expose methods to allow signature validation, with an optional detached file and an optional validation policy.
+ * Certificate validation webservices (dss-certificate-validation-soap / dss-certificate-validation-rest and their clients) : they expose methods to allow certificate validation, with an optional provided certificate chain and custom validation time.
+ * Timestamp webservices (dss-timestamp-remote-soap / dss-timestamp-remote-rest and their clients) : they expose methos to allow remote timestamp creation, by providing digest value to be timestamped and a digest algorithm, used for the digets calculation.
  
 The data structure in webservices is similar in REST and SOAP.
 
@@ -1598,3 +1608,15 @@ include::restdocs/validate-cert/http-request.adoc[]
 
 .Response
 include::restdocs/validate-cert/http-response.adoc[]
+
+=== REST remote timestamp service
+
+==== Get Timestamp Response
+
+This service allows the remote timestamp creation. The method takes as an input the digest to be timestamped and digest algorithm that has been used for the digest value computation. The output of the method is the generated timestamp's binaries.
+
+.Request
+include::restdocs/get-timestamp-response/http-request.adoc[]
+
+.Response
+include::restdocs/get-timestamp-response/http-response.adoc[]
