@@ -22,7 +22,6 @@ package eu.europa.esig.dss.cades.signature;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Date;
 import java.util.List;
@@ -40,11 +39,10 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
-import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
-public class CAdESLevelTTest extends AbstractCAdESTestSignature {
+public class CAdESLevelTSHA1MessageImprintTest extends AbstractCAdESTestSignature {
 
 	private DocumentSignatureService<CAdESSignatureParameters> service;
 	private CAdESSignatureParameters signatureParameters;
@@ -60,6 +58,8 @@ public class CAdESLevelTTest extends AbstractCAdESTestSignature {
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_T);
+		TimestampParameters signatureTimestampParameters = new TimestampParameters(DigestAlgorithm.SHA1);
+		signatureParameters.setSignatureTimestampParameters(signatureTimestampParameters);
 
 		service = new CAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
@@ -82,16 +82,7 @@ public class CAdESLevelTTest extends AbstractCAdESTestSignature {
 
 	@Override
 	protected String getSigningAlias() {
-		return GOOD_USER_WITH_PSEUDO;
-	}
-
-	@Override
-	protected void verifyETSIValidationReport(ValidationReportType etsiValidationReportJaxb) {
-		super.verifyETSIValidationReport(etsiValidationReportJaxb);
-
-		for (SignatureValidationReportType signatureValidationReport : etsiValidationReportJaxb.getSignatureValidationReport()) {
-			assertTrue(signatureValidationReport.getSignerInformation().isPseudonym());
-		}
+		return GOOD_USER;
 	}
 
 	@Override
@@ -107,7 +98,7 @@ public class CAdESLevelTTest extends AbstractCAdESTestSignature {
 
 		XmlDigestMatcher xmlDigestMatcher = digestMatchers.get(0);
 		assertEquals(DigestMatcherType.MESSAGE_IMPRINT, xmlDigestMatcher.getType());
-		assertEquals(signatureParameters.getSignatureTimestampParameters().getDigestAlgorithm(), xmlDigestMatcher.getDigestMethod());
+		assertEquals(DigestAlgorithm.SHA1, xmlDigestMatcher.getDigestMethod());
 
 		assertEquals(DigestAlgorithm.SHA256, timestampWrapper.getDigestAlgorithm());
 		assertEquals(EncryptionAlgorithm.RSA, timestampWrapper.getEncryptionAlgorithm());
