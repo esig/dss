@@ -268,11 +268,20 @@ public class TimestampToken extends Token {
 			if (isValidTimestamp(signerInformationVerifier) || isValidCMSSignedData(signerInformationVerifier)) {
 				signatureValid = true;
 				this.tsaX500Principal = candidate.getSubjectX500Principal();
-				final String algorithm = candidate.getPublicKey().getAlgorithm();
-				final EncryptionAlgorithm encryptionAlgorithm = EncryptionAlgorithm.forName(algorithm);
-				final AlgorithmIdentifier hashAlgorithm = timeStamp.getTimeStampInfo().getHashAlgorithm();
-				final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(hashAlgorithm.getAlgorithm().getId());
-				signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
+				SignerInformation signerInformation = timeStamp.toCMSSignedData().getSignerInfos()
+						.get(timeStamp.getSID());
+				
+				if (SignatureAlgorithm.RSA_SSA_PSS_SHA1_MGF1.getOid().equals(signerInformation.getEncryptionAlgOID())) {
+					signatureAlgorithm = SignatureAlgorithm.forOidAndParams(signerInformation.getEncryptionAlgOID(),
+							signerInformation.getEncryptionAlgParams());
+				} else {
+					EncryptionAlgorithm encryptionAlgorithm = EncryptionAlgorithm
+							.forName(candidate.getPublicKey().getAlgorithm());
+					final AlgorithmIdentifier hashAlgorithm = timeStamp.getTimeStampInfo().getHashAlgorithm();
+					final DigestAlgorithm digestAlgorithm = DigestAlgorithm
+							.forOID(hashAlgorithm.getAlgorithm().getId());
+					signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
+				}
 			} else {
 				signatureValid = false;
 			}
