@@ -20,13 +20,14 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.Before;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -51,7 +52,7 @@ public class XAdESWithPSSTest extends AbstractXAdESTestSignature {
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@BeforeEach
+	@Before
 	public void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 

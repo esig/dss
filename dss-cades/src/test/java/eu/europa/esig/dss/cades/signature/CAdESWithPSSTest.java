@@ -20,12 +20,13 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 import java.util.Set;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.Before;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
@@ -51,7 +52,7 @@ public class CAdESWithPSSTest extends AbstractCAdESTestSignature {
 	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@BeforeEach
+	@Before
 	public void init() throws Exception {
 		documentToSign = new InMemoryDocument(HELLO_WORLD.getBytes());
 
