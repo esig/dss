@@ -127,6 +127,7 @@
 		<module>dss-asic-xades</module>
 		<module>dss-asic-cades</module>
 		<module>dss-tsl-validation</module>
+		<module>dss-tsl-validation2</module>
 		
     	<module>dss-common-remote-dto</module>
     	<module>dss-common-remote-converter</module>
@@ -162,7 +163,7 @@
     	<module>dss-timestamp-remote-soap</module>
 		
 		<module>dss-cookbook</module>
-  </modules>
+	</modules>
 
 	<build>
 		<plugins>
@@ -788,6 +789,11 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-tsl-validation</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-tsl-validation2</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
