@@ -42,7 +42,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
-public class PAdESWithPSSTest extends AbstractPAdESTestSignature {
+public class PAdESWithPSS extends AbstractPAdESTestSignature {
 
 	private DocumentSignatureService<PAdESSignatureParameters> service;
 	private PAdESSignatureParameters signatureParameters;
