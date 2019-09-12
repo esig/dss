@@ -166,10 +166,9 @@ public class CAdESTimestampDataBuilder implements TimestampDataBuilder {
 
 		final Attribute atsHashIndexAttribute = timestampExtractor.getVerifiedAtsHashIndex(signerInformation, timestampToken);
 
-		final DigestAlgorithm signedDataDigestAlgorithm = timestampToken.getSignedDataDigestAlgo();
-		byte[] originalDocumentDigest = DSSUtils.digest(signedDataDigestAlgorithm, getOriginalDocument());
-		byte[] archiveTimestampData = timestampExtractor.getArchiveTimestampDataV3(signerInformation, atsHashIndexAttribute, originalDocumentDigest);
-		return archiveTimestampData;
+		final DigestAlgorithm messageImprintDigestAlgorithm = timestampToken.getMessageImprint().getAlgorithm();
+		byte[] originalDocumentDigest = DSSUtils.digest(messageImprintDigestAlgorithm, getOriginalDocument());
+		return timestampExtractor.getArchiveTimestampDataV3(signerInformation, atsHashIndexAttribute, originalDocumentDigest);
 	}
 	
 	/**

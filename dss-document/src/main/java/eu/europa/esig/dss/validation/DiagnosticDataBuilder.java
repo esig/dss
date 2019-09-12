@@ -1317,9 +1317,11 @@ public class DiagnosticDataBuilder {
 	private XmlDigestMatcher getXmlDigestMatcher(TimestampToken timestampToken) {
 		XmlDigestMatcher digestMatcher = new XmlDigestMatcher();
 		digestMatcher.setType(DigestMatcherType.MESSAGE_IMPRINT);
-		DigestAlgorithm digestAlgo = timestampToken.getSignedDataDigestAlgo();
-		digestMatcher.setDigestMethod(digestAlgo);
-		digestMatcher.setDigestValue(timestampToken.getMessageImprintDigest());
+		Digest messageImprint = timestampToken.getMessageImprint();
+		if (messageImprint != null) {
+			digestMatcher.setDigestMethod(messageImprint.getAlgorithm());
+			digestMatcher.setDigestValue(messageImprint.getValue());
+		}
 		digestMatcher.setDataFound(timestampToken.isMessageImprintDataFound());
 		digestMatcher.setDataIntact(timestampToken.isMessageImprintDataIntact());
 		return digestMatcher;

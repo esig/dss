@@ -42,7 +42,6 @@ import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
 import org.bouncycastle.operator.OperatorException;
 import org.bouncycastle.tsp.TSPException;
 import org.bouncycastle.tsp.TimeStampToken;
-import org.bouncycastle.tsp.TimeStampTokenInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +52,7 @@ import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
@@ -85,6 +85,8 @@ public class TimestampToken extends Token {
 	private final List<TimestampedReference> timestampedReferences;
 
 	private boolean processed = false;
+
+	private Digest messageImprint;
 
 	private boolean messageImprintData;
 
@@ -364,16 +366,13 @@ public class TimestampToken extends Token {
 
 		if (messageImprintData) {
 			try {
-				final TimeStampTokenInfo timeStampInfo = timeStamp.getTimeStampInfo();
-				final ASN1ObjectIdentifier hashAlgorithm = timeStampInfo.getMessageImprintAlgOID();
-				final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(hashAlgorithm.getId());
-
-				final byte[] computedDigest = DSSUtils.digest(digestAlgorithm, data);
-				final byte[] timestampDigest = timeStampInfo.getMessageImprintDigest();
-				messageImprintIntact = Arrays.equals(computedDigest, timestampDigest);
+				Digest currentMessageImprint = getMessageImprint();
+				final byte[] computedDigest = DSSUtils.digest(currentMessageImprint.getAlgorithm(), data);
+				messageImprintIntact = Arrays.equals(computedDigest, currentMessageImprint.getValue());
 				if (!messageImprintIntact && !suppressMatchWarnings) {
-					LOG.warn("Computed digest ({}) on the extracted data from the document : {}", digestAlgorithm, Utils.toHex(computedDigest));
-					LOG.warn("Digest present in TimestampToken: {}", Utils.toHex(timestampDigest));
+					LOG.warn("Computed digest ({}) on the extracted data from the document : {}", currentMessageImprint.getAlgorithm(),
+							Utils.toHex(computedDigest));
+					LOG.warn("Digest present in TimestampToken: {}", Utils.toHex(currentMessageImprint.getValue()));
 					LOG.warn("Digest in TimestampToken matches digest of extracted data from document: {}", messageImprintIntact);
 				}
 			} catch (DSSException e) {
@@ -423,23 +422,18 @@ public class TimestampToken extends Token {
 	}
 
 	/**
-	 * Retrieves the {@code DigestAlgorithm} used to generate the digest value to
-	 * timestamp.
-	 *
-	 * @return {@code DigestAlgorithm}
+	 * This method returns the embedded message-imprint value
+	 * 
+	 * @return a Digest DTO with the algorithm and the value
 	 */
-	public DigestAlgorithm getSignedDataDigestAlgo() {
-		final ASN1ObjectIdentifier oid = timeStamp.getTimeStampInfo().getMessageImprintAlgOID();
-		return DigestAlgorithm.forOID(oid.getId());
-	}
-
-	/**
-	 * Retrieves the message-imprint digest value.
-	 *
-	 * @return the byte array with the message-imprint digest value
-	 */
-	public byte[] getMessageImprintDigest() {
-		return timeStamp.getTimeStampInfo().getMessageImprintDigest();
+	public Digest getMessageImprint() {
+		if (messageImprint == null) {
+			ASN1ObjectIdentifier oid = timeStamp.getTimeStampInfo().getMessageImprintAlgOID();
+			DigestAlgorithm messageImprintDigestAlgo = DigestAlgorithm.forOID(oid.getId());
+			byte[] messageImprintDigestValue = timeStamp.getTimeStampInfo().getMessageImprintDigest();
+			messageImprint = new Digest(messageImprintDigestAlgo, messageImprintDigestValue);
+		}
+		return messageImprint;
 	}
 
 	/**
