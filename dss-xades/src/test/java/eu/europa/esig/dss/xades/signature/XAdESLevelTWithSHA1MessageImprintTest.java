@@ -18,18 +18,19 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.cades.signature;
+package eu.europa.esig.dss.xades.signature;
+
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 
 import org.junit.Before;
 
-import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
@@ -39,59 +40,52 @@ import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
-import eu.europa.esig.validationreport.jaxb.ValidationReportType;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
-public class CAdESLevelTTest extends AbstractCAdESTestSignature {
+public class XAdESLevelTWithSHA1MessageImprintTest extends AbstractXAdESTestSignature {
 
-	private DocumentSignatureService<CAdESSignatureParameters> service;
-	private CAdESSignatureParameters signatureParameters;
+	private DocumentSignatureService<XAdESSignatureParameters> service;
+	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new InMemoryDocument("Hello World".getBytes());
+		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
-		signatureParameters = new CAdESSignatureParameters();
+		signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_T);
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
+		TimestampParameters signatureTimestampParameters = new TimestampParameters(DigestAlgorithm.SHA1);
+		signatureParameters.setSignatureTimestampParameters(signatureTimestampParameters);
 
-		service = new CAdESService(getCompleteCertificateVerifier());
+		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 	}
 
 	@Override
-	protected DocumentSignatureService<CAdESSignatureParameters> getService() {
+	protected String getSigningAlias() {
+		return GOOD_USER;
+	}
+
+	@Override
+	protected DocumentSignatureService<XAdESSignatureParameters> getService() {
 		return service;
 	}
 
 	@Override
-	protected CAdESSignatureParameters getSignatureParameters() {
+	protected XAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
 	}
 
 	@Override
 	protected DSSDocument getDocumentToSign() {
 		return documentToSign;
-	}
-
-	@Override
-	protected String getSigningAlias() {
-		return GOOD_USER_WITH_PSEUDO;
-	}
-
-	@Override
-	protected void verifyETSIValidationReport(ValidationReportType etsiValidationReportJaxb) {
-		super.verifyETSIValidationReport(etsiValidationReportJaxb);
-
-		for (SignatureValidationReportType signatureValidationReport : etsiValidationReportJaxb.getSignatureValidationReport()) {
-			assertTrue(signatureValidationReport.getSignerInformation().isPseudonym());
-		}
 	}
 
 	@Override
@@ -102,12 +96,10 @@ public class CAdESLevelTTest extends AbstractCAdESTestSignature {
 		assertEquals(1, timestampList.size());
 		TimestampWrapper timestampWrapper = timestampList.get(0);
 
-		List<XmlDigestMatcher> digestMatchers = timestampWrapper.getDigestMatchers();
-		assertEquals(1, digestMatchers.size());
-
-		XmlDigestMatcher xmlDigestMatcher = digestMatchers.get(0);
+		XmlDigestMatcher xmlDigestMatcher = timestampWrapper.getMessageImprint();
+		assertNotNull(xmlDigestMatcher);
 		assertEquals(DigestMatcherType.MESSAGE_IMPRINT, xmlDigestMatcher.getType());
-		assertEquals(signatureParameters.getSignatureTimestampParameters().getDigestAlgorithm(), xmlDigestMatcher.getDigestMethod());
+		assertEquals(DigestAlgorithm.SHA1, xmlDigestMatcher.getDigestMethod());
 
 		assertEquals(DigestAlgorithm.SHA256, timestampWrapper.getDigestAlgorithm());
 		assertEquals(EncryptionAlgorithm.RSA, timestampWrapper.getEncryptionAlgorithm());

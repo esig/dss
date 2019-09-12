@@ -466,7 +466,7 @@ public final class DSSXMLUtils {
 	 * @return array of bytes
 	 */
 	public static byte[] canonicalizeOrSerializeSubtree(final String canonicalizationMethod, final Node node) {
-		if (canonicalizationMethod == null) {
+		if (Utils.isStringEmpty(canonicalizationMethod)) {
 			return serializeNode(node);
 		} else {
 			return canonicalizeSubtree(canonicalizationMethod, node);
