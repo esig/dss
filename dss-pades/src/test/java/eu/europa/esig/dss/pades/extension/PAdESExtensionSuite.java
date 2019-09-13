@@ -27,8 +27,9 @@ import org.junit.runner.RunWith;
 @RunWith(JUnitPlatform.class)
 @SelectClasses(value = { PAdESExtensionBToLT.class, PAdESExtensionBToLTA.class, PAdESExtensionBToT.class, PAdESExtensionBToTWithCompositeTSA.class,
 		PAdESExtensionBToTWithError500Timestamp.class, PAdESExtensionBToTWithFailTimestamp.class, PAdESExtensionLTAToLTA.class, PAdESExtensionLTToLTA.class,
-		PAdESExtensionLTToLTAWithError500Timestamp.class, PAdESExtensionLTToLTAWithFailTimestamp.class, PAdESExtensionToLT.class,
-		PAdESExtensionTToLTA.class, DSS1523.class })
+		PAdESExtensionLTToLTAWithError500Timestamp.class, PAdESExtensionLTToLTAWithFailTimestamp.class, PAdESExtensionTToLT.class,
+		PAdESExtensionTToLTA.class, DSS1523.class, PAdESExtensionTToLTWithSelfSigned.class, PAdESExtensionTToLTAWithSelfSigned.class,
+		PAdESExtensionLTToLTAWithSelfSigned.class})
 public class PAdESExtensionSuite {
 
 }

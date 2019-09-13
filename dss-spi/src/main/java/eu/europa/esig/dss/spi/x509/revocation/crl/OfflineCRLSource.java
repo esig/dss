@@ -196,9 +196,13 @@ public abstract class OfflineCRLSource implements CRLSource {
 	public Collection<CRLBinary> getCRLBinaryList() {
 		return Collections.unmodifiableCollection(crlBinaryOriginsMap.keySet());
 	}
-	
+
+	/**
+	 * Checks if the CRL Source is empty or not (crlBinaryOriginsMap)
+	 * @return TRUE if the source is empty, FALSE otherwise
+	 */
 	public boolean isEmpty() {
-		return Utils.isMapNotEmpty(crlBinaryOriginsMap);
+		return Utils.isMapEmpty(crlBinaryOriginsMap);
 	}
 	
 	protected void storeCRLToken(final CRLBinary crlBinary, final CRLToken crlToken) {

@@ -286,6 +286,9 @@ public abstract class AbstractUtilsTest {
 		map.put("c", true);
 		assertFalse(Utils.isMapEmpty(map));
 		assertEquals(3, map.size());
+		
+		map.clear();
+		assertTrue(Utils.isMapEmpty(map));
 	}
 	
 	@Test
@@ -299,6 +302,9 @@ public abstract class AbstractUtilsTest {
 		map.put("c", true);
 		assertTrue(Utils.isMapNotEmpty(map));
 		assertEquals(3, map.size());
+		
+		map.clear();
+		assertFalse(Utils.isMapNotEmpty(map));
 	}
 
 	@Test
