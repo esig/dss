@@ -61,7 +61,7 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 	}
 
 	protected boolean encryptionAlgorithmIsReliable(EncryptionAlgorithm encryptionAlgo) {
-		String algoToFind = encryptionAlgo == null ? "" : encryptionAlgo.name();
+		String algoToFind = encryptionAlgo == null ? Utils.EMPTY_STRING : encryptionAlgo.getName();
 		List<String> supportedEncryptionAlgorithms = constraintWrapper.getSupportedEncryptionAlgorithms();
 		if (Utils.isCollectionNotEmpty(supportedEncryptionAlgorithms)) {
 			if (!isIn(algoToFind, supportedEncryptionAlgorithms)) {
@@ -74,7 +74,7 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 	}
 
 	protected boolean digestAlgorithmIsReliable(DigestAlgorithm digestAlgo) {
-		String algoToFind = digestAlgo == null ? "" : digestAlgo.getName();
+		String algoToFind = digestAlgo == null ? Utils.EMPTY_STRING : digestAlgo.getName();
 		List<String> supportedDigestAlgorithms = constraintWrapper.getSupportedDigestAlgorithms();
 		if (Utils.isCollectionNotEmpty(supportedDigestAlgorithms)) {
 			if (!isIn(algoToFind, supportedDigestAlgorithms)) {
@@ -87,7 +87,7 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 	}
 
 	protected boolean publicKeySizeIsAcceptable(EncryptionAlgorithm encryptionAlgo, String keyLengthUsedToSignThisToken) {
-		String algoToFind = encryptionAlgo == null ? "" : encryptionAlgo.name();
+		String algoToFind = encryptionAlgo == null ? Utils.EMPTY_STRING : encryptionAlgo.getName();
 		Map<String, Integer> minimumKeySizes = constraintWrapper.getMinimumKeySizes();
 		if (Utils.isMapNotEmpty(minimumKeySizes)) {
 			String keySize = keyLengthUsedToSignThisToken;
@@ -107,7 +107,7 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 	}
 
 	protected boolean digestAlgorithmIsValidOnValidationDate(DigestAlgorithm digestAlgo) {
-		String algoToFind = digestAlgo == null ? "" : digestAlgo.getName();
+		String algoToFind = digestAlgo == null ? Utils.EMPTY_STRING : digestAlgo.getName();
 		Map<String, Date> expirationDates = constraintWrapper.getExpirationTimes();
 		if (Utils.isMapNotEmpty(expirationDates)) {
 			Date expirationDate = expirationDates.get(algoToFind);
@@ -126,7 +126,7 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 	}
 
 	protected boolean encryptionAlgorithmIsValidOnValidationDate(EncryptionAlgorithm encryptionAlgo, String keyLengthUsedToSignThisToken) {
-		String algoToFind = encryptionAlgo == null ? "" : encryptionAlgo.name() + keyLengthUsedToSignThisToken;
+		String algoToFind = encryptionAlgo == null ? Utils.EMPTY_STRING : encryptionAlgo.getName() + keyLengthUsedToSignThisToken;
 		Map<String, Date> expirationDates = constraintWrapper.getExpirationTimes();
 		if (Utils.isMapNotEmpty(expirationDates)) {
 			Date expirationDate = expirationDates.get(algoToFind);
