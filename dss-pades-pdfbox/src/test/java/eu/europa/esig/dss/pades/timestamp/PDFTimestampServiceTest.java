@@ -49,7 +49,7 @@ public class PDFTimestampServiceTest extends PKIFactoryAccess {
 
 		// The following parameters MUST be ignored (ETSI EN 319 142-1 V1.1.1, section 5.4.3)
 		parameters.setLocation("LOCATION");
-		parameters.setSignatureName("TEST TIMESTAMP");
+		parameters.setSignerName("TEST TIMESTAMP");
 		parameters.setReason("REASON");
 		parameters.setContactInfo("CONTACT INFO");
 

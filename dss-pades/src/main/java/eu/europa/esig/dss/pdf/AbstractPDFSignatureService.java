@@ -120,8 +120,8 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 
 	protected String getSignatureName(PAdESSignatureParameters parameters) {
-		if (parameters.getSignatureName() != null) {
-			return parameters.getSignatureName();
+		if (parameters.getSignerName() != null) {
+			return parameters.getSignerName();
 		} else {
 
 			CertificateToken token = parameters.getSigningCertificate();

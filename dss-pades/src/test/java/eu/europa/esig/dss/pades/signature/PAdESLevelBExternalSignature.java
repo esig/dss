@@ -60,7 +60,7 @@ public class PAdESLevelBExternalSignature extends AbstractPAdESTestSignature {
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 		signatureParameters.setGenerateTBSWithoutCertificate(true);
-		signatureParameters.setSignatureName(GOOD_USER);
+		signatureParameters.setSignerName(GOOD_USER);
 
 		signingDate = new Date();
 		signatureParameters.bLevel().setSigningDate(signingDate);
@@ -95,7 +95,7 @@ public class PAdESLevelBExternalSignature extends AbstractPAdESTestSignature {
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignedData(externalSignatureResult.getSignedData());
-		signatureParameters.setSignatureName(GOOD_USER);
+		signatureParameters.setSignerName(GOOD_USER);
 
 		// Sign document using signature value created by external process.
 		return service.signDocument(toBeSigned, signatureParameters, externalSignatureResult.getSignatureValue());

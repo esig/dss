@@ -190,10 +190,10 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 
 	@Override
 	protected void validateETSISAName(SANameType nameType) {
-		String signatureName = getSignatureParameters().getSignatureName();
+		String signerName = getSignatureParameters().getSignerName();
 		// if null, DSS generates the signature name
-		if (signatureName != null) {
-			assertEquals(signatureName, nameType.getNameElement());
+		if (signerName != null) {
+			assertEquals(signerName, nameType.getNameElement());
 		}
 	}
 
