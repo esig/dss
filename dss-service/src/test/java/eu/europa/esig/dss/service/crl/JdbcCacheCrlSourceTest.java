@@ -21,8 +21,10 @@
 package eu.europa.esig.dss.service.crl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.sql.SQLException;
@@ -52,7 +54,9 @@ public class JdbcCacheCrlSourceTest {
 		// webServer = Server.createWebServer("-web","-webAllowOthers","-webPort","8082").start();
 		dataSource.setUrl("jdbc:h2:mem:test;create=true;DB_CLOSE_DELAY=-1");
 		crlSource.setDataSource(dataSource);
+		assertFalse(crlSource.isTableExists());
 		crlSource.initTable();
+		assertTrue(crlSource.isTableExists());
 	}
 	
 	@Test
@@ -125,7 +129,7 @@ public class JdbcCacheCrlSourceTest {
 	@AfterEach
 	public void cleanUp() throws SQLException {
 		crlSource.destroyTable();
-		dataSource.setUrl("jdbc:h2:mem:test;drop=true");
+		assertFalse(crlSource.isTableExists());
 		// uncomment if webserver is active
 		//webServer.stop();
 		//webServer.shutdown();

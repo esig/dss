@@ -21,9 +21,11 @@
 package eu.europa.esig.dss.service.ocsp;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.sql.SQLException;
@@ -58,7 +60,9 @@ public class JdbcCacheOcspSourceTest {
 	public void setUp() throws SQLException {
 		dataSource.setUrl("jdbc:h2:mem:test;create=true;DB_CLOSE_DELAY=-1");
 		ocspSource.setDataSource(dataSource);
+		assertFalse(ocspSource.isTableExists());
 		ocspSource.initTable();
+		assertTrue(ocspSource.isTableExists());
 	}
 	
 	@Test
@@ -145,7 +149,7 @@ public class JdbcCacheOcspSourceTest {
 	@AfterEach
 	public void cleanUp() throws SQLException {
 		ocspSource.destroyTable();
-		dataSource.setUrl("jdbc:h2:mem:test;drop=true");
+		assertFalse(ocspSource.isTableExists());
 	}
 	
 }
