@@ -820,7 +820,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						// continue, exception will be catched later
 					}
 					
-					final String uri = validation.getUri();
+					final String uri = validation.getUriOrEmpty();
 					
 					boolean noDuplicateIdFound = XMLUtils.protectAgainstWrappingAttack(santuarioSignature.getDocument(), DomUtils.getId(uri));
 					boolean isElementReference = DomUtils.isElementReference(uri);
@@ -918,8 +918,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private Node getSignedPropertiesById(String uri) {
-		String signedPropertiesById = xPathQueryHolder.XPATH_SIGNED_PROPERTIES + DomUtils.getXPathByIdAttribute(uri);
-		return DomUtils.getNode(signatureElement, signedPropertiesById);
+		if (Utils.isStringNotBlank(uri)) {
+			String signedPropertiesById = xPathQueryHolder.XPATH_SIGNED_PROPERTIES + DomUtils.getXPathByIdAttribute(uri);
+			return DomUtils.getNode(signatureElement, signedPropertiesById);
+		}
+		return null;
 	}
 
 	private boolean findObjectById(String uri) {
@@ -927,13 +930,19 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	public Node getObjectById(String uri) {
-		String objectById = XPathQueryHolder.XPATH_OBJECT + DomUtils.getXPathByIdAttribute(uri);
-		return DomUtils.getNode(signatureElement, objectById);
+		if (Utils.isStringNotBlank(uri)) {
+			String objectById = XPathQueryHolder.XPATH_OBJECT + DomUtils.getXPathByIdAttribute(uri);
+			return DomUtils.getNode(signatureElement, objectById);
+		}
+		return null;
 	}
 
 	public Node getManifestById(String uri) {
-		String manifestById = XPathQueryHolder.XPATH_MANIFEST + DomUtils.getXPathByIdAttribute(uri);
-		return DomUtils.getNode(signatureElement, manifestById);
+		if (Utils.isStringNotBlank(uri)) {
+			String manifestById = XPathQueryHolder.XPATH_MANIFEST + DomUtils.getXPathByIdAttribute(uri);
+			return DomUtils.getNode(signatureElement, manifestById);
+		}
+		return null;
 	}
 
 	private ReferenceValidation notFound(DigestMatcherType type) {

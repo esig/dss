@@ -42,6 +42,7 @@ import javax.xml.xpath.XPathExpressionException;
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.exceptions.XMLSecurityRuntimeException;
 import org.apache.xml.security.signature.Reference;
 import org.apache.xml.security.signature.ReferenceNotInitializedException;
 import org.apache.xml.security.transforms.Transforms;
@@ -73,6 +74,7 @@ public final class DSSXMLUtils {
 	private static final Logger LOG = LoggerFactory.getLogger(DSSXMLUtils.class);
 
 	public static final String ID_ATTRIBUTE_NAME = "id";
+	public static final String URI_ATTRIBUTE_NAME = "uri";
 
 	private static final Set<String> transforms;
 
@@ -504,12 +506,22 @@ public final class DSSXMLUtils {
 	 * @return the ID attribute value or null
 	 */
 	public static String getIDIdentifier(final Node node) {
+		return getAttribute(node, ID_ATTRIBUTE_NAME);
+	}
+	
+	/**
+	 * Returns attribute value for the given attribute name if exist, otherwise returns NULL
+	 * @param node {@link Node} to get attribute value from
+	 * @param attributeName {@link String} name of the attribute to get value for
+	 * @return {@link String} value of the attribute
+	 */
+	public static String getAttribute(final Node node, final String attributeName) {
 		final NamedNodeMap attributes = node.getAttributes();
 		for (int jj = 0; jj < attributes.getLength(); jj++) {
 			final Node item = attributes.item(jj);
 			final String localName = item.getLocalName() != null ? item.getLocalName() : item.getNodeName();
 			if (localName != null) {
-				if (Utils.areStringsEqualIgnoreCase(ID_ATTRIBUTE_NAME, localName)) {
+				if (Utils.areStringsEqualIgnoreCase(attributeName, localName)) {
 					return item.getTextContent();
 				}
 			}
@@ -685,7 +697,7 @@ public final class DSSXMLUtils {
 				}
 			}
 			
-		} catch (XMLSecurityException e) {
+		} catch (XMLSecurityException | XMLSecurityRuntimeException e) {
 			// if exception occurs during the transformations
 			LOG.warn("Signature reference with id [{}] is corrupted or has an invalid format. "
 					+ "Original data cannot be obtained. Reason: [{}]", reference.getId(), e.getMessage());
