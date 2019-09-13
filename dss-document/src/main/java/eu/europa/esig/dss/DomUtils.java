@@ -67,6 +67,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
 
 public final class DomUtils {
 
@@ -592,7 +593,7 @@ public final class DomUtils {
 	 * @return TRUE if {@code uri} is starts from "#", FALSE otherwise
 	 */
 	private static boolean startsFromHash(String uri) {
-		return uri.startsWith("#");
+		return Utils.isStringNotBlank(uri) && uri.startsWith("#");
 	}
 	
 	/**

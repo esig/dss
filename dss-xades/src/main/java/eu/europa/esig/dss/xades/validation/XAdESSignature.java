@@ -824,7 +824,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						// continue, exception will be catched later
 					}
 					
-					final String uri = validation.getUri();
+					final String uri = validation.getUriOrEmpty();
 					
 					boolean noDuplicateIdFound = XMLUtils.protectAgainstWrappingAttack(santuarioSignature.getDocument(), DomUtils.getId(uri));
 					boolean isElementReference = DomUtils.isElementReference(uri);
@@ -922,8 +922,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private Node getSignedPropertiesById(String uri) {
-		String signedPropertiesById = xadesPaths.getSignedPropertiesPath() + DomUtils.getXPathByIdAttribute(uri);
-		return DomUtils.getNode(signatureElement, signedPropertiesById);
+		if (Utils.isStringNotBlank(uri)) {
+			String signedPropertiesById = xadesPaths.getSignedPropertiesPath() + DomUtils.getXPathByIdAttribute(uri);
+			return DomUtils.getNode(signatureElement, signedPropertiesById);
+		}
+		return null;
 	}
 
 	private boolean findObjectById(String uri) {
@@ -931,13 +934,19 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	public Node getObjectById(String uri) {
-		String objectById = XMLDSigPaths.OBJECT_PATH + DomUtils.getXPathByIdAttribute(uri);
-		return DomUtils.getNode(signatureElement, objectById);
+		if (Utils.isStringNotBlank(uri)) {
+			String objectById = XMLDSigPaths.OBJECT_PATH + DomUtils.getXPathByIdAttribute(uri);
+			return DomUtils.getNode(signatureElement, objectById);
+		}
+		return null;
 	}
 
 	public Node getManifestById(String uri) {
-		String manifestById = XMLDSigPaths.MANIFEST_PATH + DomUtils.getXPathByIdAttribute(uri);
-		return DomUtils.getNode(signatureElement, manifestById);
+		if (Utils.isStringNotBlank(uri)) {
+			String manifestById = XMLDSigPaths.MANIFEST_PATH + DomUtils.getXPathByIdAttribute(uri);
+			return DomUtils.getNode(signatureElement, manifestById);
+		}
+		return null;
 	}
 
 	private ReferenceValidation notFound(DigestMatcherType type) {

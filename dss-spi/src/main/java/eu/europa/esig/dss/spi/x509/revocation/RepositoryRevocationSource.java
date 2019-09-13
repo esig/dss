@@ -241,7 +241,7 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 		final T newToken = proxiedSource.getRevocationToken(certificateToken, issuerCertificateToken);
 		if ((newToken != null) && newToken.isValid()) {
 			if (!keys.contains(newToken.getRevocationTokenKey())) {
-				LOG.info("Revocation token for certificate '{}' is added in the cache", certificateToken.getDSSIdAsString());
+				LOG.info("Revocation token for certificate '{}' is added into the cache", certificateToken.getDSSIdAsString());
 				insertRevocation(newToken);
 			} else {
 				LOG.info("Revocation token for certificate '{}' is updated in the cache", certificateToken.getDSSIdAsString());

@@ -75,7 +75,7 @@ public class XAdESReferenceValidation extends ReferenceValidation {
 	public XAdESReferenceValidation(Reference reference) {
 		this.reference = reference;
 		this.id = reference.getId();
-		this.uri = reference.getURI();
+		this.uri = extractUri(reference);
 	}
 	
 	public String getId() {
@@ -84,6 +84,25 @@ public class XAdESReferenceValidation extends ReferenceValidation {
 	
 	public String getUri() {
 		return uri;
+	}
+	
+	/**
+	 * Returns the reference URI or EMPTY_STRING if null
+	 * @return {@link String} uri
+	 */
+	public String getUriOrEmpty() {
+		return uri != null ? uri : Utils.EMPTY_STRING; // defensive code
+	}
+	
+	/* Method is used due to Apache Santuario Signature does return empty instead of null result */
+	private String extractUri(Reference reference) {
+		if (reference != null) {
+			Element element = reference.getElement();
+			if (element != null) {
+				return DSSXMLUtils.getAttribute(element, DSSXMLUtils.URI_ATTRIBUTE_NAME);
+			}
+		}
+		return null;
 	}
 	
 	/**
