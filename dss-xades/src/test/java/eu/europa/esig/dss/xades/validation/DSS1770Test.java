@@ -1,8 +1,10 @@
 package eu.europa.esig.dss.xades.validation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,7 +14,9 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
@@ -43,6 +47,18 @@ public class DSS1770Test {
 		XmlSignatureScope xmlSignatureScope = signatureScopes.get(0);
 		assertEquals(SignatureScopeType.FULL, xmlSignatureScope.getScope());
 		assertEquals("Full XML File", xmlSignatureScope.getName());
+	
+		List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
+		assertEquals(3, digestMatchers.size());
+		boolean refRootFound = false;
+		for (XmlDigestMatcher digestMatcher : digestMatchers) {
+			if (DigestMatcherType.REFERENCE.equals(digestMatcher.getType())) {
+				assertTrue(digestMatcher.isDataFound());
+				assertTrue(digestMatcher.isDataIntact());
+				refRootFound = true;
+			}
+		}
+		assertTrue(refRootFound);
 	}
 	
 	@Test
@@ -75,6 +91,18 @@ public class DSS1770Test {
 		}
 		assertEquals(1, fullScopeCounter);
 		assertEquals(2, partialScopeCounter);
+	
+		List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
+		assertEquals(4, digestMatchers.size());
+		boolean refRootFound = false;
+		for (XmlDigestMatcher digestMatcher : digestMatchers) {
+			if ("REF-ROOT".equals(digestMatcher.getName())) {
+				assertTrue(digestMatcher.isDataFound());
+				assertTrue(digestMatcher.isDataIntact());
+				refRootFound = true;
+			}
+		}
+		assertTrue(refRootFound);
 	}
 	
 	@Test
@@ -108,6 +136,18 @@ public class DSS1770Test {
 		}
 		assertEquals(1, fullScopeCounter);
 		assertEquals(2, partialScopeCounter);
+	
+		List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
+		assertEquals(4, digestMatchers.size());
+		boolean refRootFound = false;
+		for (XmlDigestMatcher digestMatcher : digestMatchers) {
+			if ("REF-ROOT".equals(digestMatcher.getName())) {
+				assertTrue(digestMatcher.isDataFound());
+				assertTrue(digestMatcher.isDataIntact());
+				refRootFound = true;
+			}
+		}
+		assertTrue(refRootFound);
 	}
 	
 	@Test
@@ -143,6 +183,18 @@ public class DSS1770Test {
 		}
 		assertEquals(1, fullScopeCounter);
 		assertEquals(2, partialScopeCounter);
+	
+		List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
+		assertEquals(4, digestMatchers.size());
+		boolean refRootFound = false;
+		for (XmlDigestMatcher digestMatcher : digestMatchers) {
+			if ("REF-ROOT".equals(digestMatcher.getName())) {
+				assertTrue(digestMatcher.isDataFound());
+				assertTrue(digestMatcher.isDataIntact());
+				refRootFound = true;
+			}
+		}
+		assertTrue(refRootFound);
 	}
 	
 	@Test
@@ -174,6 +226,18 @@ public class DSS1770Test {
 		}
 		assertEquals(0, fullScopeCounter);
 		assertEquals(2, partialScopeCounter);
+		
+		List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
+		assertEquals(4, digestMatchers.size());
+		boolean refRootFound = false;
+		for (XmlDigestMatcher digestMatcher : digestMatchers) {
+			if ("REF-ROOT".equals(digestMatcher.getName())) {
+				assertFalse(digestMatcher.isDataFound());
+				assertFalse(digestMatcher.isDataIntact());
+				refRootFound = true;
+			}
+		}
+		assertTrue(refRootFound);
 	}
 	
 	@Test
@@ -208,6 +272,18 @@ public class DSS1770Test {
 		}
 		assertEquals(1, fullScopeCounter);
 		assertEquals(2, partialScopeCounter);
+	
+		List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
+		assertEquals(4, digestMatchers.size());
+		boolean refRootFound = false;
+		for (XmlDigestMatcher digestMatcher : digestMatchers) {
+			if ("REF-ROOT".equals(digestMatcher.getName())) {
+				assertTrue(digestMatcher.isDataFound());
+				assertFalse(digestMatcher.isDataIntact());
+				refRootFound = true;
+			}
+		}
+		assertTrue(refRootFound);
 	}
 	
 	@Test
@@ -243,6 +319,18 @@ public class DSS1770Test {
 		}
 		assertEquals(0, fullScopeCounter);
 		assertEquals(2, partialScopeCounter);
+	
+		List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
+		assertEquals(4, digestMatchers.size());
+		boolean refRootFound = false;
+		for (XmlDigestMatcher digestMatcher : digestMatchers) {
+			if ("REF-ROOT".equals(digestMatcher.getName())) {
+				assertFalse(digestMatcher.isDataFound());
+				assertFalse(digestMatcher.isDataIntact());
+				refRootFound = true;
+			}
+		}
+		assertTrue(refRootFound);
 	}
 	
 	@Test
@@ -276,7 +364,18 @@ public class DSS1770Test {
 		}
 		assertEquals(1, fullScopeCounter);
 		assertEquals(2, partialScopeCounter);
-	}
 	
+		List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
+		assertEquals(4, digestMatchers.size());
+		boolean refRootFound = false;
+		for (XmlDigestMatcher digestMatcher : digestMatchers) {
+			if ("REF-ROOT".equals(digestMatcher.getName())) {
+				assertTrue(digestMatcher.isDataFound());
+				assertFalse(digestMatcher.isDataIntact());
+				refRootFound = true;
+			}
+		}
+		assertTrue(refRootFound);
+	}
 
 }
