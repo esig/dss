@@ -20,31 +20,33 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
-import java.util.Date;
+import static org.junit.Assert.assertEquals;
+
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.DigestMatcherType;
-import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
-import eu.europa.esig.validationreport.jaxb.ValidationReportType;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.reports.Reports;
 
-public class CAdESLevelTTest extends AbstractCAdESTestSignature {
+public class CAdESWithPSSTest extends AbstractCAdESTestSignature {
+
+	private static final String HELLO_WORLD = "Hello World";
 
 	private DocumentSignatureService<CAdESSignatureParameters> service;
 	private CAdESSignatureParameters signatureParameters;
@@ -52,17 +54,50 @@ public class CAdESLevelTTest extends AbstractCAdESTestSignature {
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new InMemoryDocument("Hello World".getBytes());
+		documentToSign = new InMemoryDocument(HELLO_WORLD.getBytes());
 
 		signatureParameters = new CAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_T);
+		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
+		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
+		signatureParameters.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
 
 		service = new CAdESService(getCompleteCertificateVerifier());
-		service.setTspSource(getGoodTsa());
+		service.setTspSource(getPSSGoodTsa());
+	}
+	
+	@Override
+	protected void onDocumentSigned(byte[] byteArray) {
+		InMemoryDocument doc = new InMemoryDocument(byteArray);
+
+		SignedDocumentValidator validator = getValidator(doc);
+
+		Reports reports = validator.validateDocument();
+
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		verifyDiagnosticData(diagnosticData);
+		
+		Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
+		for(SignatureWrapper wrapper: allSignatures) {
+			assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
+		}
+		
+		List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
+		for(CertificateWrapper wrapper: usedCertificates) {
+			assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
+		}
+		
+		Set<RevocationWrapper> allRevocationData = diagnosticData.getAllRevocationData();
+		for(RevocationWrapper wrapper : allRevocationData) {
+			assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
+		}
+		
+		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+		for(TimestampWrapper wrapper : timestampList) {
+			assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
+		}
 	}
 
 	@Override
@@ -82,36 +117,7 @@ public class CAdESLevelTTest extends AbstractCAdESTestSignature {
 
 	@Override
 	protected String getSigningAlias() {
-		return GOOD_USER_WITH_PSEUDO;
-	}
-
-	@Override
-	protected void verifyETSIValidationReport(ValidationReportType etsiValidationReportJaxb) {
-		super.verifyETSIValidationReport(etsiValidationReportJaxb);
-
-		for (SignatureValidationReportType signatureValidationReport : etsiValidationReportJaxb.getSignatureValidationReport()) {
-			assertTrue(signatureValidationReport.getSignerInformation().isPseudonym());
-		}
-	}
-
-	@Override
-	protected void checkTimestamps(DiagnosticData diagnosticData) {
-		super.checkTimestamps(diagnosticData);
-
-		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
-		assertEquals(1, timestampList.size());
-		TimestampWrapper timestampWrapper = timestampList.get(0);
-
-		List<XmlDigestMatcher> digestMatchers = timestampWrapper.getDigestMatchers();
-		assertEquals(1, digestMatchers.size());
-
-		XmlDigestMatcher xmlDigestMatcher = digestMatchers.get(0);
-		assertEquals(DigestMatcherType.MESSAGE_IMPRINT, xmlDigestMatcher.getType());
-		assertEquals(signatureParameters.getSignatureTimestampParameters().getDigestAlgorithm(), xmlDigestMatcher.getDigestMethod());
-
-		assertEquals(DigestAlgorithm.SHA256, timestampWrapper.getDigestAlgorithm());
-		assertEquals(EncryptionAlgorithm.RSA, timestampWrapper.getEncryptionAlgorithm());
-		assertNull(timestampWrapper.getMaskGenerationFunction());
+		return PSS_GOOD_USER;
 	}
 
 }

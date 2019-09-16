@@ -393,7 +393,7 @@
 	<xs:complexType name="SignatureScope">
 		<xs:sequence>
 			<xs:element name="Scope" type="ScopeType" />
-			<xs:element name="Name" type="xs:string" />
+			<xs:element name="Name" type="xs:string" minOccurs="0" />
 			<xs:element name="Description" type="xs:string" />
 			<xs:element name="Transformations" minOccurs="0">
 				<xs:complexType>

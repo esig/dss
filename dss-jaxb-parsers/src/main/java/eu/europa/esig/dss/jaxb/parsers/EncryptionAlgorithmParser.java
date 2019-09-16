@@ -9,14 +9,14 @@ public final class EncryptionAlgorithmParser {
 
 	public static EncryptionAlgorithm parse(String v) {
 		if (v != null) {
-			return EncryptionAlgorithm.valueOf(v);
+			return EncryptionAlgorithm.forName(v);
 		}
 		return null;
 	}
 
 	public static String print(EncryptionAlgorithm v) {
 		if (v != null) {
-			return v.name();
+			return v.getName();
 		}
 		return null;
 	}
