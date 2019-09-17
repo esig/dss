@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.tsl.predicates.othertslpointer;
+package eu.europa.esig.dss.tsl.function;
 
 import java.io.Serializable;
 import java.util.HashMap;

@@ -1,15 +1,19 @@
-package eu.europa.esig.dss.tsl.predicates.othertslpointer;
+package eu.europa.esig.dss.tsl.function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.FileInputStream;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.tsl.dto.OtherTSLPointerDTO;
 import eu.europa.esig.trustedlist.TrustedListFacade;
 import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointersType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TrustStatusListType;
@@ -38,6 +42,19 @@ public class OtherTLSLPointerPredicatesTest {
 
 			assertEquals(3, pointersToOtherTSL.getOtherTSLPointer().stream()
 					.filter(new SchemeTerritoryOtherTSLPointer(new HashSet<String>(Arrays.asList("BG", "CY")))).count());
+
+			List<OtherTSLPointerDTO> result = pointersToOtherTSL.getOtherTSLPointer().stream()
+					.filter(new SchemeTerritoryOtherTSLPointer(new HashSet<String>(Arrays.asList("BG", "CY")))).map(new OtherTSLPointerConverter())
+					.collect(Collectors.toUnmodifiableList());
+
+			assertEquals(3, result.size());
+			for (OtherTSLPointerDTO otherTSLPointerDTO : result) {
+				assertNotNull(otherTSLPointerDTO);
+				assertNotNull(otherTSLPointerDTO.getLocation());
+				assertNotNull(otherTSLPointerDTO.getCertificates());
+				assertFalse(otherTSLPointerDTO.getCertificates().isEmpty());
+			}
+
 		}
 	}
 
