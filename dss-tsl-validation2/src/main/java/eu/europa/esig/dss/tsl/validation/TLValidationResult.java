@@ -1,0 +1,92 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+package eu.europa.esig.dss.tsl.validation;
+
+import java.util.Date;
+
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+
+/**
+ * This class is a DTO result for TLValidatorTask.
+ */
+public class TLValidationResult {
+
+	private final Indication indication;
+	private final SubIndication subIndication;
+	private final Date signingTime;
+	private final CertificateToken signingCertificate;
+	private final String errorMessage;
+
+	public TLValidationResult(Indication indication, SubIndication subIndication, Date signingTime, CertificateToken signingCertificate) {
+		this.indication = indication;
+		this.subIndication = subIndication;
+		this.signingTime = signingTime;
+		this.signingCertificate = signingCertificate;
+		this.errorMessage = null;
+	}
+
+	public TLValidationResult(String errorMessage) {
+		this.indication = null;
+		this.subIndication = null;
+		this.signingTime = null;
+		this.signingCertificate = null;
+		this.errorMessage = errorMessage;
+	}
+
+	public Indication getIndication() {
+		return indication;
+	}
+
+	public SubIndication getSubIndication() {
+		return subIndication;
+	}
+
+	public Date getSigningTime() {
+		return signingTime;
+	}
+
+	public CertificateToken getSigningCertificate() {
+		return signingCertificate;
+	}
+
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+	public boolean isComplete() {
+		return indication != null;
+	}
+
+	public boolean isValid() {
+		return Indication.TOTAL_PASSED.equals(indication);
+	}
+
+	public boolean isIndeterminate() {
+		return Indication.INDETERMINATE.equals(indication);
+	}
+
+	public boolean isInvalid() {
+		return Indication.TOTAL_FAILED.equals(indication);
+	}
+
+}
