@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.tsl.download;
 
+import java.util.function.Supplier;
+
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 
 import org.slf4j.Logger;
@@ -11,10 +13,9 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
-import eu.europa.esig.dss.tsl.Task;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 
-public class XmlDownloadTask implements Task<XmlDownloadResult> {
+public class XmlDownloadTask implements Supplier<XmlDownloadResult> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XmlDownloadTask.class);
 
@@ -27,7 +28,7 @@ public class XmlDownloadTask implements Task<XmlDownloadResult> {
 	}
 
 	@Override
-	public XmlDownloadResult execute() {
+	public XmlDownloadResult get() {
 		try {
 			final byte[] content = dataLoader.get(url);
 			final Document dom = DomUtils.buildDOM(content);

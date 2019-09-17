@@ -22,6 +22,7 @@ package eu.europa.esig.dss.tsl.validation;
 
 import java.util.Date;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +40,6 @@ import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
-import eu.europa.esig.dss.tsl.Task;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
@@ -52,7 +52,7 @@ import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 /**
  * This class allows to validate TL or LOTL.
  */
-public class TLValidatorTask implements Task<TLValidationResult> {
+public class TLValidatorTask implements Supplier<TLValidationResult> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TLValidatorTask.class);
 
@@ -73,7 +73,7 @@ public class TLValidatorTask implements Task<TLValidationResult> {
 	}
 
 	@Override
-	public TLValidationResult execute() {
+	public TLValidationResult get() {
 		try {
 			Reports reports = validateTL();
 			return fillResult(reports);

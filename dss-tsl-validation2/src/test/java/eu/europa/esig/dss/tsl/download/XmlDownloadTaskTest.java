@@ -29,7 +29,7 @@ public class XmlDownloadTaskTest {
 		DataLoader dataLoader = new MemoryDataLoader(dataMap);
 		for (String url : dataMap.keySet()) {
 			XmlDownloadTask task = new XmlDownloadTask(dataLoader, url);
-			assertNull(task.execute());
+			assertNull(task.get());
 		}
 	}
 
@@ -50,7 +50,7 @@ public class XmlDownloadTaskTest {
 		XmlDownloadResult first = null;
 		for (String url : dataMap.keySet()) {
 			XmlDownloadTask task = new XmlDownloadTask(dataLoader, url);
-			XmlDownloadResult downloadResult = task.execute();
+			XmlDownloadResult downloadResult = task.get();
 			assertNotNull(downloadResult);
 			assertNotNull(downloadResult.getContent());
 			assertNotNull(downloadResult.getDigest());
@@ -66,7 +66,7 @@ public class XmlDownloadTaskTest {
 
 		dataMap.put("sample-diff", DSSUtils.toByteArray(new FileDocument(new File("src/test/resources/sample-diff.xml"))));
 		XmlDownloadTask task = new XmlDownloadTask(new MemoryDataLoader(dataMap), "sample-diff");
-		XmlDownloadResult downloadResultDiff = task.execute();
+		XmlDownloadResult downloadResultDiff = task.get();
 		assertNotNull(downloadResultDiff);
 		assertNotNull(downloadResultDiff.getDigest());
 		assertNotEquals(first.getDigest(), downloadResultDiff.getDigest());
