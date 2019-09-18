@@ -9,8 +9,8 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.tsl.download.XmlDownloadResult;
 import eu.europa.esig.dss.tsl.function.LOTLSigningCertificatesAnnouncementSchemeInformationURI;
-import eu.europa.esig.dss.tsl.function.OtherTSLPointerConverter;
 import eu.europa.esig.dss.tsl.function.PivotSchemeInformationURI;
+import eu.europa.esig.dss.tsl.function.converter.OtherTSLPointerConverter;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.trustedlist.jaxb.tsl.NonEmptyMultiLangURIListType;

@@ -36,8 +36,9 @@ public class TrustServiceProvider {
 	private Map<String, List<String>> names;
 	private Map<String, List<String>> tradeNames;
 	private List<String> registrationIdentifiers;
-	private String postalAddress;
-	private String electronicAddress;
+	private Map<String, String> postalAddresses;
+	private Map<String, List<String>> electronicAddresses;
+	private Map<String, String> information;
 	private List<TrustService> services;
 
 	public Map<String, List<String>> getNames() {
@@ -64,20 +65,28 @@ public class TrustServiceProvider {
 		this.registrationIdentifiers = registrationIdentifiers;
 	}
 
-	public String getPostalAddress() {
-		return postalAddress;
+	public Map<String, String> getPostalAddresses() {
+		return postalAddresses;
 	}
 
-	public void setPostalAddress(String postalAddress) {
-		this.postalAddress = postalAddress;
+	public void setPostalAddresses(Map<String, String> postalAddresses) {
+		this.postalAddresses = postalAddresses;
 	}
 
-	public String getElectronicAddress() {
-		return electronicAddress;
+	public Map<String, List<String>> getElectronicAddresses() {
+		return electronicAddresses;
 	}
 
-	public void setElectronicAddress(String electronicAddress) {
-		this.electronicAddress = electronicAddress;
+	public void setElectronicAddresses(Map<String, List<String>> electronicAddresses) {
+		this.electronicAddresses = electronicAddresses;
+	}
+
+	public Map<String, String> getInformation() {
+		return information;
+	}
+
+	public void setInformation(Map<String, String> information) {
+		this.information = information;
 	}
 
 	public List<TrustService> getServices() {
