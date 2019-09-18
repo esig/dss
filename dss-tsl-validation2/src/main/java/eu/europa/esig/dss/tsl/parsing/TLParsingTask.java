@@ -47,13 +47,8 @@ public class TLParsingTask extends AbstractParsingTask implements Supplier<TLPar
 
 	private void parseTrustServiceProviderList(TLParsingResult result, TrustServiceProviderListType trustServiceProviderList) {
 		if (trustServiceProviderList != null && Utils.isCollectionNotEmpty(trustServiceProviderList.getTrustServiceProvider())) {
-
 			List<TSPType> filteredTrustServiceProviders = filter(trustServiceProviderList.getTrustServiceProvider());
-
-			if (Utils.isCollectionNotEmpty(filteredTrustServiceProviders)) {
-				result.setTrustServiceProviders(
-						filteredTrustServiceProviders.stream().map(new TrustServiceProviderConverter()).collect(Collectors.toList()));
-			}
+			result.setTrustServiceProviders(filteredTrustServiceProviders.stream().map(new TrustServiceProviderConverter()).collect(Collectors.toList()));
 		}
 	}
 
@@ -63,14 +58,14 @@ public class TLParsingTask extends AbstractParsingTask implements Supplier<TLPar
 
 		// 1. Filter the TSP with the predicate
 		if (tlSource.getTrustServiceProviderPredicate() != null) {
-			filteredTSP = trustServiceProviders.stream().filter(tlSource.getTrustServiceProviderPredicate()).collect(Collectors.toList());
+			filteredTSP = filteredTSP.stream().filter(tlSource.getTrustServiceProviderPredicate()).collect(Collectors.toList());
 		}
 
 		// 2. Foreach TSP, filter the trust services with the predicate
 		if (tlSource.getTrustServicePredicate() != null) {
 			for (TSPType tspType : filteredTSP) {
 				TSPServicesListType tspServices = tspType.getTSPServices();
-				if (tspServices != null && Utils.isCollectionEmpty(tspServices.getTSPService())) {
+				if (tspServices != null && Utils.isCollectionNotEmpty(tspServices.getTSPService())) {
 					List<TSPServiceType> filteredTrustServices = tspServices.getTSPService().stream().filter(tlSource.getTrustServicePredicate())
 							.collect(Collectors.toList());
 					TSPServicesListType newTspServices = new TSPServicesListType();

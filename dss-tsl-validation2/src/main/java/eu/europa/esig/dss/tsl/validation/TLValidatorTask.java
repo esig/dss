@@ -107,6 +107,11 @@ public class TLValidatorTask implements Supplier<TLValidationResult> {
 
 	private TLValidationResult fillResult(Reports reports) {
 		SimpleReport simpleReport = reports.getSimpleReport();
+		if (simpleReport.getSignaturesCount() != 1) {
+			LOG.warn("Number of signature must be equals to 1 (currently : {})", simpleReport.getSignaturesCount());
+			return new TLValidationResult(Indication.TOTAL_FAILED, null, null, null);
+		}
+
 		Indication indication = simpleReport.getIndication(simpleReport.getFirstSignatureId());
 		SubIndication subIndication = simpleReport.getSubIndication(simpleReport.getFirstSignatureId());
 

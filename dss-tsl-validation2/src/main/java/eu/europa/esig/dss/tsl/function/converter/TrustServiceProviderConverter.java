@@ -141,7 +141,7 @@ public class TrustServiceProviderConverter implements Function<TSPType, TrustSer
 
 	private void extractTrustServices(TrustServiceProvider tsp, TSPServicesListType tspServicesList) {
 		if (tspServicesList != null && Utils.isCollectionNotEmpty(tspServicesList.getTSPService())) {
-			tsp.setServices(tspServicesList.getTSPService().stream().map(new TrustServiceConverter()).collect(Collectors.toUnmodifiableList()));
+			tsp.setServices(tspServicesList.getTSPService().stream().map(new TrustServiceConverter()).collect(Collectors.toList()));
 		} else {
 			tsp.setServices(Collections.emptyList());
 		}

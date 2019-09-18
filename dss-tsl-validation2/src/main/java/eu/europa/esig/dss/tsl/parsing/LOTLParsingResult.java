@@ -1,8 +1,11 @@
 package eu.europa.esig.dss.tsl.parsing;
 
+import java.util.Collections;
 import java.util.List;
 
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.tsl.dto.OtherTSLPointerDTO;
+import eu.europa.esig.dss.utils.Utils;
 
 public class LOTLParsingResult extends CommonParsingResult {
 
@@ -42,6 +45,14 @@ public class LOTLParsingResult extends CommonParsingResult {
 
 	public void setPivotURLs(List<String> pivotURLs) {
 		this.pivotURLs = pivotURLs;
+	}
+
+	public List<CertificateToken> getLOTLAnnouncedSigningCertificates() {
+		List<OtherTSLPointerDTO> currentLOTLPointers = getLotlPointers();
+		if (Utils.isCollectionNotEmpty(currentLOTLPointers)) {
+			return currentLOTLPointers.get(0).getCertificates();
+		}
+		return Collections.emptyList();
 	}
 
 }
