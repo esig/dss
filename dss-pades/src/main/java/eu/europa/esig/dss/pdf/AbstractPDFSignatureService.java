@@ -25,7 +25,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -116,23 +115,6 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 			return parameters.getTimestampImageParameters();
 		} else {
 			return parameters.getSignatureImageParameters();
-		}
-	}
-
-	protected String getSignatureName(PAdESSignatureParameters parameters) {
-		if (parameters.getSignerName() != null) {
-			return parameters.getSignerName();
-		} else {
-
-			CertificateToken token = parameters.getSigningCertificate();
-			Date date = parameters.bLevel().getSigningDate();
-			String encodedDate = Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHA1, Long.toString(date.getTime()).getBytes()));
-
-			if (token == null) {
-				return "Unknown signer " + encodedDate;
-			} else {
-				return DSSASN1Utils.getHumanReadableName(token) + " " + encodedDate;
-			}
 		}
 	}
 

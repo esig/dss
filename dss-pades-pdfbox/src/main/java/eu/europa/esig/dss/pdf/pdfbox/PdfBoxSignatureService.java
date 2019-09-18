@@ -188,7 +188,9 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 		if (COSName.SIG.equals(currentType)) {
 
-			signature.setName(getSignatureName(parameters));
+			if (Utils.isStringNotEmpty(parameters.getSignerName())) {
+				signature.setName(parameters.getSignerName());
+			}
 
 			if (Utils.isStringNotEmpty(parameters.getContactInfo())) {
 				signature.setContactInfo(parameters.getContactInfo());

@@ -39,6 +39,7 @@ import org.bouncycastle.asn1.cms.SignedData;
 import org.bouncycastle.asn1.cms.SignerInfo;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -73,6 +74,7 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 		PAdESSignature padesSig = (PAdESSignature) signatures.get(0);
 
 		PdfSignatureInfo pdfSignatureInfo = padesSig.getPdfSignatureInfo();
+		assertEquals(getSignatureParameters().getSignerName(), pdfSignatureInfo.getSignerName());
 		assertEquals(getSignatureParameters().getSignatureFilter(), pdfSignatureInfo.getFilter());
 		assertEquals(getSignatureParameters().getSignatureSubFilter(), pdfSignatureInfo.getSubFilter());
 		assertEquals(getSignatureParameters().getReason(), pdfSignatureInfo.getReason());
@@ -109,6 +111,19 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 	@Override
 	protected List<DSSDocument> getOriginalDocuments() {
 		return Collections.singletonList(getDocumentToSign());
+	}
+	
+	@Override
+	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
+		super.verifyDiagnosticData(diagnosticData);
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		// verify PDFInfo
+		assertEquals(getSignatureParameters().getSignerName(), signature.getSignerName());
+		assertEquals(getSignatureParameters().getSignatureFilter(), signature.getFilter());
+		assertEquals(getSignatureParameters().getSignatureSubFilter(), signature.getSubFilter());
+		assertEquals(getSignatureParameters().getReason(), signature.getReason());
+		assertEquals(getSignatureParameters().getContactInfo(), signature.getContactInfo());
+		assertEquals(getSignatureParameters().getLocation(), signature.getCountryName());
 	}
 
 	protected void checkSignedAttributesOrder(PAdESSignature padesSig) {
@@ -191,10 +206,7 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 	@Override
 	protected void validateETSISAName(SANameType nameType) {
 		String signerName = getSignatureParameters().getSignerName();
-		// if null, DSS generates the signature name
-		if (signerName != null) {
-			assertEquals(signerName, nameType.getNameElement());
-		}
+		assertEquals(signerName, nameType.getNameElement());
 	}
 
 	@Override

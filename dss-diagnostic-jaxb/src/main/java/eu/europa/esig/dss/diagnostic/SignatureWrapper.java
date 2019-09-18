@@ -190,23 +190,38 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 
 	public String getAddress() {
-		return signature.getSignatureProductionPlace().getAddress();
+		if (isSignatureProductionPlacePresent()) {
+			return signature.getSignatureProductionPlace().getAddress();
+		}
+		return null;
 	}
 
 	public String getCity() {
-		return signature.getSignatureProductionPlace().getCity();
+		if (isSignatureProductionPlacePresent()) {
+			return signature.getSignatureProductionPlace().getCity();
+		}
+		return null;
 	}
 
 	public String getCountryName() {
-		return signature.getSignatureProductionPlace().getCountryName();
+		if (isSignatureProductionPlacePresent()) {
+			return signature.getSignatureProductionPlace().getCountryName();
+		}
+		return null;
 	}
 
 	public String getPostalCode() {
-		return signature.getSignatureProductionPlace().getPostalCode();
+		if (isSignatureProductionPlacePresent()) {
+			return signature.getSignatureProductionPlace().getPostalCode();
+		}
+		return null;
 	}
 
 	public String getStateOrProvince() {
-		return signature.getSignatureProductionPlace().getStateOrProvince();
+		if (isSignatureProductionPlacePresent()) {
+			return signature.getSignatureProductionPlace().getStateOrProvince();
+		}
+		return null;
 	}
 
 	public SignatureLevel getSignatureFormat() {
