@@ -46,7 +46,7 @@ public class OtherTLSLPointerPredicatesTest {
 
 			List<OtherTSLPointerDTO> result = pointersToOtherTSL.getOtherTSLPointer().stream()
 					.filter(new SchemeTerritoryOtherTSLPointer(new HashSet<String>(Arrays.asList("BG", "CY")))).map(new OtherTSLPointerConverter())
-					.collect(Collectors.toUnmodifiableList());
+					.collect(Collectors.toList());
 
 			assertEquals(3, result.size());
 			for (OtherTSLPointerDTO otherTSLPointerDTO : result) {

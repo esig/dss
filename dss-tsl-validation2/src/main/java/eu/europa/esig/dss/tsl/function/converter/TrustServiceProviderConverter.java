@@ -37,9 +37,10 @@ public class TrustServiceProviderConverter implements Function<TSPType, TrustSer
 	}
 
 	private void extractTSPInfo(TrustServiceProvider tsp, TSPInformationType tspInformation) {
-		tsp.setNames(convert(tspInformation.getTSPName()));
+		InternationalNamesTypeConverter converter = new InternationalNamesTypeConverter();
+		tsp.setNames(converter.apply(tspInformation.getTSPName()));
+		tsp.setTradeNames(converter.apply(tspInformation.getTSPTradeName()));
 
-		tsp.setTradeNames(convert(tspInformation.getTSPTradeName()));
 		tsp.setRegistrationIdentifiers(extractRegistrationIdentifiers(tspInformation.getTSPTradeName()));
 
 		AddressType tspAddress = tspInformation.getTSPAddress();
@@ -49,16 +50,6 @@ public class TrustServiceProviderConverter implements Function<TSPType, TrustSer
 		}
 
 		tsp.setInformation(extractInformationURI(tspInformation.getTSPInformationURI()));
-	}
-
-	private Map<String, List<String>> convert(InternationalNamesType internationalNamesType) {
-		Map<String, List<String>> result = new HashMap<String, List<String>>();
-		if (internationalNamesType != null && Utils.isCollectionNotEmpty(internationalNamesType.getName())) {
-			for (MultiLangNormStringType multiLangNormString : internationalNamesType.getName()) {
-				addEntry(result, multiLangNormString.getLang(), multiLangNormString.getValue());
-			}
-		}
-		return result;
 	}
 
 	private List<String> extractRegistrationIdentifiers(InternationalNamesType internationalNamesType) {

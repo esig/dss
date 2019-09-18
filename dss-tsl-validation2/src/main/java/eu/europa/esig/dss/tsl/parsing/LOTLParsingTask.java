@@ -60,9 +60,9 @@ public class LOTLParsingTask extends AbstractParsingTask implements Supplier<LOT
 
 			OtherTSLPointerConverter converter = new OtherTSLPointerConverter();
 
-			result.setLotlPointers(otherTSLPointers.stream().filter(lotlSource.getLotlPredicate()).map(converter).collect(Collectors.toUnmodifiableList()));
+			result.setLotlPointers(otherTSLPointers.stream().filter(lotlSource.getLotlPredicate()).map(converter).collect(Collectors.toList()));
 
-			result.setTlPointers(otherTSLPointers.stream().filter(lotlSource.getTlPredicate()).map(converter).collect(Collectors.toUnmodifiableList()));
+			result.setTlPointers(otherTSLPointers.stream().filter(lotlSource.getTlPredicate()).map(converter).collect(Collectors.toList()));
 		}
 	}
 
@@ -78,7 +78,7 @@ public class LOTLParsingTask extends AbstractParsingTask implements Supplier<LOT
 		LOTLSigningCertificatesAnnouncementSchemeInformationURI signingCertificatesAnnouncementPredicate = lotlSource.getSigningCertificatesAnnouncementPredicate();
 		if (signingCertificatesAnnouncementPredicate != null) {
 			List<String> uris = schemeInformationURI.getURI().stream().filter(signingCertificatesAnnouncementPredicate).map(t -> t.getValue())
-					.collect(Collectors.toUnmodifiableList());
+					.collect(Collectors.toList());
 			if (Utils.isCollectionNotEmpty(uris)) {
 				if (uris.size() > 1) {
 					LOG.warn("More than 1 LOTLSigningCertificatesAnnouncement URI found (returns the first entry) : {}", uris);
@@ -91,7 +91,7 @@ public class LOTLParsingTask extends AbstractParsingTask implements Supplier<LOT
 	private void extractPivotURLs(LOTLParsingResult result, NonEmptyMultiLangURIListType schemeInformationURI) {
 		if (lotlSource.isPivotSupport()) {
 			List<String> uris = schemeInformationURI.getURI().stream().filter(new PivotSchemeInformationURI()).map(t -> t.getValue())
-					.collect(Collectors.toUnmodifiableList());
+					.collect(Collectors.toList());
 			result.setPivotURLs(uris);
 		}
 	}

@@ -52,7 +52,7 @@ public class TLParsingTask extends AbstractParsingTask implements Supplier<TLPar
 
 			if (Utils.isCollectionNotEmpty(filteredTrustServiceProviders)) {
 				result.setTrustServiceProviders(
-						filteredTrustServiceProviders.stream().map(new TrustServiceProviderConverter()).collect(Collectors.toUnmodifiableList()));
+						filteredTrustServiceProviders.stream().map(new TrustServiceProviderConverter()).collect(Collectors.toList()));
 			}
 		}
 	}
