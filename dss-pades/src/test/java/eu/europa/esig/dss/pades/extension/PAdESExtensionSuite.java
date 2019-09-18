@@ -29,7 +29,8 @@ import org.junit.runner.RunWith;
 		PAdESExtensionBToTWithError500Timestamp.class, PAdESExtensionBToTWithFailTimestamp.class, PAdESExtensionLTAToLTA.class, PAdESExtensionLTToLTA.class,
 		PAdESExtensionLTToLTAWithError500Timestamp.class, PAdESExtensionLTToLTAWithFailTimestamp.class, PAdESExtensionTToLT.class,
 		PAdESExtensionTToLTA.class, DSS1523.class, PAdESExtensionTToLTWithSelfSigned.class, PAdESExtensionTToLTAWithSelfSigned.class,
-		PAdESExtensionLTToLTAWithSelfSigned.class})
+		PAdESExtensionLTToLTAWithSelfSigned.class, PAdESExtensionBToLTASelfSignedTSA.class, PAdESExtensionTToLTSelfSignedTSA.class, 
+		PAdESExtensionTToLTASelfSignedTSA.class, PAdESExtensionLTToLTASelfSignedTSA.class, PAdESExtensionAllSelfSignedCerts.class })
 public class PAdESExtensionSuite {
 
 }

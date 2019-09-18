@@ -449,6 +449,12 @@ public interface AdvancedSignature extends Serializable {
 	 *         B,T,LT,LTA
 	 */
 	SignatureLevel[] getSignatureLevels();
+	
+	/**
+	 * Checks if all certificate chains present in the signature are self-signed
+	 * @return TRUE if all certificates are self-signed, false otherwise
+	 */
+	boolean areAllSelfSignedCertificates();
 
 	void prepareTimestamps(ValidationContext validationContext);
 

@@ -92,6 +92,7 @@ public abstract class PKIFactoryAccess {
 	private static final String REVOKED_TSA = "revoked-tsa";
 	private static final String EE_GOOD_TSA = "ee-good-tsa";
 	private static final String GOOD_TSA_CROSS_CERTIF = "cc-good-tsa-crossed";
+	private static final String SELF_SIGNED_TSA = "self-signed-tsa";
 
 	/* Produces timestamp with a fail status */
 	private static final String FAIL_GOOD_TSA = "fail/good-tsa";
@@ -282,6 +283,10 @@ public abstract class PKIFactoryAccess {
 
 	protected TSPSource getGoodTsaCrossCertification() {
 		return getOnlineTSPSource(GOOD_TSA_CROSS_CERTIF);
+	}
+	
+	protected TSPSource getSelfSignedTsa() {
+		return getOnlineTSPSource(SELF_SIGNED_TSA);
 	}
 
 	private OnlineTSPSource getOnlineTSPSource(String tsaName) {

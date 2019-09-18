@@ -319,7 +319,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	private void checkAllTimestampCoveredByRevocationData(final CertificateVerifier certificateVerifier, final ValidationContext validationContext) {
 		if (!validationContext.isAllPOECoveredByRevocationData()) {
-			String message = "A POE is not covered by an usable revocation data";
+			String message = "A POE is not covered by a usable revocation data";
 			if (certificateVerifier.isExceptionOnUncoveredPOE()) {
 				throw new DSSException(message);
 			} else {
@@ -765,18 +765,23 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 			return false;
 		}
 
-		if (!isAllCertChainsHaveRevocationData(certificateChains)) {
+		if (!areAllCertChainsHaveRevocationData(certificateChains)) {
 			return false;
 		}
 
-		if (isAllSelfSignedCertificates(certificateChains) && (emptyCRLs && emptyOCSPs)) {
+		if (areAllSelfSignedCertificates(certificateChains) && (emptyCRLs && emptyOCSPs)) {
 			return false;
 		}
 
 		return true;
 	}
+	
+	@Override
+	public boolean areAllSelfSignedCertificates() {
+		return areAllSelfSignedCertificates(getCertificateMapWithinSignatureAndTimestamps(false));
+	}
 
-	private boolean isAllSelfSignedCertificates(Map<String, List<CertificateToken>> certificateChains) {
+	private boolean areAllSelfSignedCertificates(Map<String, List<CertificateToken>> certificateChains) {
 		for (Entry<String, List<CertificateToken>> entryCertChain : certificateChains.entrySet()) {
 			List<CertificateToken> chain = entryCertChain.getValue();
 			if (Utils.collectionSize(chain) == 1) {
@@ -791,7 +796,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return true;
 	}
 
-	private boolean isAllCertChainsHaveRevocationData(Map<String, List<CertificateToken>> certificateChains) {
+	private boolean areAllCertChainsHaveRevocationData(Map<String, List<CertificateToken>> certificateChains) {
 		CertificateStatusVerifier certificateStatusVerifier = new OCSPAndCRLCertificateVerifier(getCompleteCRLSource(), getCompleteOCSPSource(), certPool);
 
 		for (Entry<String, List<CertificateToken>> entryCertChain : certificateChains.entrySet()) {

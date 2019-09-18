@@ -25,8 +25,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
@@ -88,7 +88,9 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 		List<DSSDictionaryCallback> callbacks = new LinkedList<DSSDictionaryCallback>();
 		for (final AdvancedSignature signature : signatures) {
 			if (signature instanceof PAdESSignature) {
-				callbacks.add(validate((PAdESSignature) signature));
+				PAdESSignature padesSignature = (PAdESSignature) signature;
+				assertExtendSignaturePossible(padesSignature);
+				callbacks.add(validate(padesSignature));
 			}
 		}
 
@@ -101,6 +103,12 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 		List<TimestampToken> signatureTimestamps = signature.getSignatureTimestamps();
 		List<TimestampToken> archiveTimestamps = signature.getArchiveTimestamps();
 		return Utils.isCollectionEmpty(signatureTimestamps) && Utils.isCollectionEmpty(archiveTimestamps);
+	}
+	
+	private void assertExtendSignaturePossible(PAdESSignature padesSignature) throws DSSException {
+		if (padesSignature.areAllSelfSignedCertificates()) {
+			throw new DSSException("Cannot extend the signature. The signature contains only self-signed certificate chains!");
+		}
 	}
 
 	protected DSSDictionaryCallback validate(PAdESSignature signature) {

@@ -51,17 +51,18 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 	 */
 	@Override
 	protected void extendSignatureTag() throws DSSException {
-
-		assertExtendSignatureToLTPossible();
+		
 		super.extendSignatureTag();
-		Element levelTUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
-
+		
 		if (xadesSignature.hasLTAProfile()) {
 			return;
 		}
 
 		// Timestamps can already be loaded in memory (force reload)
 		xadesSignature.resetTimestampSource();
+
+		assertExtendSignatureToLTPossible();
+		Element levelTUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
 
 		/**
 		 * In all cases the -LT level need to be regenerated.
@@ -123,8 +124,10 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 	private void assertExtendSignatureToLTPossible() {
 		final SignatureLevel signatureLevel = params.getSignatureLevel();
 		if (SignatureLevel.XAdES_BASELINE_LT.equals(signatureLevel) && xadesSignature.hasLTAProfile()) {
-			final String exceptionMessage = "Cannot extend signature. The signedData is already extended with [%s].";
+			final String exceptionMessage = "Cannot extend the signature. The signedData is already extended with [%s]!";
 			throw new DSSException(String.format(exceptionMessage, "XAdES LTA"));
+		} else if (xadesSignature.areAllSelfSignedCertificates()) {
+			throw new DSSException("Cannot extend the signature. The signature contains only self-signed certificate chains!");
 		}
 	}
 

@@ -32,7 +32,7 @@ import org.junit.runner.RunWith;
 		PAdESLevelImpossibleLTException.class, PAdESLevelLT.class, PAdESLevelLTA.class, PAdESLevelLTWrongAIA.class, PAdESLevelT.class,
 		PAdESLTACheckTimeStampedTimestampID.class, PAdESLTACheckTimeStampID.class, PDFOverrideFilters.class, TwoPAdESSigniatureMustHaveDifferentId.class,
 		PAdESLevelBHuge.class, InvisibleSignatureFieldSign.class, PAdESSpaceEOF.class, PAdESDoubleLTAValidationData.class, PAdESNoDuplicateValidationData.class,
-		BuildKnownObjects.class, PAdESWithPSS.class,  PAdESWithSHA3.class, PAdESLevelTWithSHA1MessageImprint.class })
+		BuildKnownObjects.class, PAdESWithPSS.class,  PAdESWithSHA3.class, PAdESLevelTWithSHA1MessageImprint.class, PAdESAllSelfSignedCerts.class })
 public class PAdESSignatureSuite {
 
 }

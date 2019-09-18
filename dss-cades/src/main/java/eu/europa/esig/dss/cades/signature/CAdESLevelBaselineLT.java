@@ -30,6 +30,7 @@ import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 
@@ -53,13 +54,18 @@ public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
 	@Override
 	protected SignerInformation extendCMSSignature(CMSSignedData cmsSignedData, SignerInformation signerInformation, CAdESSignatureParameters parameters)
 			throws DSSException {
-
 		// add a LT level or replace an existing LT level
-		CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation, certificateVerifier.createValidationPool());
+		CertificatePool validationPool = certificateVerifier.createValidationPool();
+		CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation, validationPool);
 		cadesSignature.setDetachedContents(parameters.getDetachedContents());
+
+		// add T level if needed
 		if (!cadesSignature.isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_T)) {
 			signerInformation = cadesProfileT.extendCMSSignature(cmsSignedData, signerInformation, parameters);
+			cadesSignature = new CAdESSignature(cmsSignedData, signerInformation, validationPool);
 		}
+		// check if the resulted signature can be extended
+		assertExtendSignaturePossible(cadesSignature);
 
 		return signerInformation;
 	}
@@ -69,6 +75,12 @@ public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
 		final CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
 		cmsSignedData = cmsSignedDataBuilder.extendCMSSignedData(cmsSignedData, signerInformation, detachedContents);
 		return cmsSignedData;
+	}
+	
+	private void assertExtendSignaturePossible(CAdESSignature cadesSignature) throws DSSException {
+		if (cadesSignature.areAllSelfSignedCertificates()) {
+			throw new DSSException("Cannot extend the signature. The signature contains only self-signed certificate chains!");
+		}
 	}
 
 }
