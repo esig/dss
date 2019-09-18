@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.tsl.parsing;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -49,6 +50,8 @@ public class TLParsingTask extends AbstractParsingTask implements Supplier<TLPar
 		if (trustServiceProviderList != null && Utils.isCollectionNotEmpty(trustServiceProviderList.getTrustServiceProvider())) {
 			List<TSPType> filteredTrustServiceProviders = filter(trustServiceProviderList.getTrustServiceProvider());
 			result.setTrustServiceProviders(filteredTrustServiceProviders.stream().map(new TrustServiceProviderConverter()).collect(Collectors.toList()));
+		} else {
+			result.setTrustServiceProviders(Collections.emptyList());
 		}
 	}
 

@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.util.TimeDependentValues;
 import eu.europa.esig.dss.tsl.download.XmlDownloadResult;
 import eu.europa.esig.dss.tsl.dto.TrustService;
@@ -26,18 +28,34 @@ import eu.europa.esig.trustedlist.jaxb.tsl.TSPType;
 
 public class TLParsingTaskTest {
 
-	private static XmlDownloadResult TL;
+	private static XmlDownloadResult IE_TL;
+	private static XmlDownloadResult SK_TL;
+
+	private static XmlDownloadResult LOTL;
+	private static XmlDownloadResult LOTL_NOT_PARSEABLE;
 
 	@BeforeAll
 	public static void init() throws IOException {
 		try (FileInputStream fis = new FileInputStream("src/test/resources/ie-tl.xml")) {
-			TL = new XmlDownloadResult("bla", Utils.toByteArray(fis), null);
+			IE_TL = new XmlDownloadResult("bla", Utils.toByteArray(fis), null);
+		}
+
+		try (FileInputStream fis = new FileInputStream("src/test/resources/sk-tl.xml")) {
+			SK_TL = new XmlDownloadResult("bla", Utils.toByteArray(fis), null);
+		}
+
+		try (FileInputStream fis = new FileInputStream("src/test/resources/eu-lotl.xml")) {
+			LOTL = new XmlDownloadResult("bla", Utils.toByteArray(fis), null);
+		}
+
+		try (FileInputStream fis = new FileInputStream("src/test/resources/eu-lotl-not-parseable.xml")) {
+			LOTL_NOT_PARSEABLE = new XmlDownloadResult("bla", Utils.toByteArray(fis), null);
 		}
 	}
 
 	@Test
-	public void testDefault() {
-		TLParsingTask task = new TLParsingTask(new TLSource(), TL);
+	public void testIEDefault() {
+		TLParsingTask task = new TLParsingTask(new TLSource(), IE_TL);
 		TLParsingResult result = task.get();
 		assertNotNull(result);
 		assertEquals(5, result.getVersion());
@@ -61,6 +79,59 @@ public class TLParsingTaskTest {
 
 		TrustServiceProvider trustPro = trustServiceProviders.get(2);
 		assertEquals(2, trustPro.getServices().size());
+	}
+
+	@Test
+	public void testSKDefault() {
+		TLParsingTask task = new TLParsingTask(new TLSource(), SK_TL);
+		TLParsingResult result = task.get();
+		assertNotNull(result);
+		assertEquals(5, result.getVersion());
+		assertEquals(59, result.getSequenceNumber());
+		assertNotNull(result.getIssueDate());
+		assertNotNull(result.getNextUpdateDate());
+		assertEquals("SK", result.getTerritory());
+		assertNotNull(result.getDistributionPoints());
+
+		List<TrustServiceProvider> trustServiceProviders = result.getTrustServiceProviders();
+		assertNotNull(trustServiceProviders);
+		assertEquals(6, trustServiceProviders.size());
+
+		checkTSPs(trustServiceProviders);
+
+		TrustServiceProvider nsa = trustServiceProviders.get(0);
+		assertEquals(27, nsa.getServices().size());
+
+		TrustServiceProvider disig = trustServiceProviders.get(1);
+		assertEquals(56, disig.getServices().size());
+
+		TrustServiceProvider mil = trustServiceProviders.get(2);
+		assertEquals(8, mil.getServices().size());
+	}
+
+	@Test
+	public void testLOTL() {
+		TLParsingTask task = new TLParsingTask(new TLSource(), LOTL);
+		TLParsingResult result = task.get();
+		assertNotNull(result);
+		assertNotNull(result);
+		assertNotNull(result.getIssueDate());
+		assertNotNull(result.getNextUpdateDate());
+		assertEquals(5, result.getVersion());
+		assertEquals(248, result.getSequenceNumber());
+		assertEquals("EU", result.getTerritory());
+		assertNotNull(result.getDistributionPoints());
+
+		List<TrustServiceProvider> trustServiceProviders = result.getTrustServiceProviders();
+		assertNotNull(trustServiceProviders);
+		assertEquals(0, trustServiceProviders.size());
+	}
+
+	@Test
+	public void notParseable() {
+		TLParsingTask task = new TLParsingTask(new TLSource(), LOTL_NOT_PARSEABLE);
+		DSSException exception = assertThrows(DSSException.class, () -> task.get());
+		assertEquals("Unable to parse binaries", exception.getMessage());
 	}
 
 	private void checkTSPs(List<TrustServiceProvider> trustServiceProviders) {
@@ -122,7 +193,7 @@ public class TLParsingTaskTest {
 			}
 		});
 
-		TLParsingTask task = new TLParsingTask(tlSource, TL);
+		TLParsingTask task = new TLParsingTask(tlSource, IE_TL);
 		TLParsingResult result = task.get();
 		assertNotNull(result);
 		assertEquals(0, result.getTrustServiceProviders().size());
@@ -140,7 +211,7 @@ public class TLParsingTaskTest {
 
 		});
 
-		TLParsingTask task = new TLParsingTask(tlSource, TL);
+		TLParsingTask task = new TLParsingTask(tlSource, IE_TL);
 		TLParsingResult result = task.get();
 		assertNotNull(result);
 		assertEquals(0, result.getTrustServiceProviders().size());
