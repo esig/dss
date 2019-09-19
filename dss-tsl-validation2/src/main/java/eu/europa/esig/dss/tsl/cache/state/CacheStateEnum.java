@@ -13,8 +13,8 @@ public enum CacheStateEnum implements CacheState {
 		}
 
 		@Override
-		public void error(CacheContext cacheContext, String message) {
-			cacheContext.error(message);
+		public void error(CacheContext cacheContext, CachedException exception) {
+			cacheContext.error(exception);
 		}
 
 	},
@@ -62,9 +62,9 @@ public enum CacheStateEnum implements CacheState {
 		public void toBeDeleted(CacheContext cacheContext) {
 			cacheContext.state(TO_BE_DELETED);
 		}
-		
+
 	},
-	
+
 	/**
 	 * The cache content needs to be deleted
 	 */
@@ -91,9 +91,9 @@ public enum CacheStateEnum implements CacheState {
 	public void toBeDeleted(CacheContext cacheContext) {
 		throw new IllegalStateException(String.format(NOT_ALLOWED_TRANSITION, cacheContext.getCurrentState(), TO_BE_DELETED));
 	}
-	
+
 	@Override
-	public void error(CacheContext cacheContext, String message) {
+	public void error(CacheContext cacheContext, CachedException exception) {
 		throw new IllegalStateException("Cannot store error");
 	}
 

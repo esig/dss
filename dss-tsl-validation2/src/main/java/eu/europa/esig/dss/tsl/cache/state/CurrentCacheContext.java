@@ -11,9 +11,7 @@ public class CurrentCacheContext implements CacheContext {
 
 	private CacheState state;
 	private Date date;
-
-	private Date errorDate;
-	private String errorMessage;
+	private CachedException exception;
 
 	public CurrentCacheContext() {
 		state(CacheStateEnum.REFRESH_NEEDED);
@@ -34,16 +32,14 @@ public class CurrentCacheContext implements CacheContext {
 		LOG.trace("State transition from '{}' to '{}'", state, newState);
 		state = newState;
 		date = new Date();
-		errorDate = null;
-		errorMessage = null;
+		exception = null;
 	}
 
 	@Override
-	public void error(String error) {
+	public void error(CachedException cachedException) {
 		LOG.trace("State transition from '{}' to '{}'", state, CacheStateEnum.ERROR);
 		state = CacheStateEnum.ERROR;
-		errorMessage = error;
-		errorDate = new Date();
+		exception = cachedException;
 	}
 
 	@Override
@@ -77,13 +73,8 @@ public class CurrentCacheContext implements CacheContext {
 	}
 
 	@Override
-	public String getErrorMessage() {
-		return errorMessage;
-	}
-
-	@Override
-	public Date getErrorDate() {
-		return errorDate;
+	public CachedException getException() {
+		return exception;
 	}
 
 }

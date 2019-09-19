@@ -40,13 +40,13 @@ public interface CacheState {
 	void toBeDeleted(CacheContext cacheContext);
 
 	/**
-	 * The cache entry is marked in error state with a specific message
+	 * The cache entry is marked in error state with the related exception
 	 * 
 	 * @param cacheContext
 	 *                     the current cache context
-	 * @param message
-	 *                     the error message
+	 * @param exception
+	 *                     the wrapped met exception
 	 */
-	void error(CacheContext cacheContext, String message);
+	void error(CacheContext cacheContext, CachedException exception);
 
 }

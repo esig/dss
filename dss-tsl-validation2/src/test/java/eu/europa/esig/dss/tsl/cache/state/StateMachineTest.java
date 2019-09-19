@@ -73,10 +73,14 @@ public class StateMachineTest {
 		assertEquals(7, cachedEntry.getCachedObject());
 
 		cachedEntry.sync();
-		
+
 		cachedEntry.refreshNeeded();
-		cachedEntry.error("Unable to parse");
+		cachedEntry.error(new CachedException(new IllegalArgumentException("Unable to parse")));
 		assertNotNull(cachedEntry.getLastSuccessDate());
+
+		assertTrue(cachedEntry.isError());
+		assertNotNull(cachedEntry.getException());
+		assertNotNull(cachedEntry.getCachedObject()); // TODO correct ?
 
 		cachedEntry.toBeDeleted();
 		assertEquals(CacheStateEnum.TO_BE_DELETED, cachedEntry.getCurrentState());

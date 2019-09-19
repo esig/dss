@@ -3,14 +3,14 @@ package eu.europa.esig.dss.tsl.cache.state;
 import java.util.Date;
 
 public interface CacheContext {
-	
+
 	/**
 	 * Returns the current state in the cache
 	 * 
 	 * @return the Cache state
 	 */
 	CacheState getCurrentState();
-	
+
 	/**
 	 * Returns the date of the last success state change
 	 * 
@@ -52,19 +52,26 @@ public interface CacheContext {
 	 * @return TRUE if a refresh is required
 	 */
 	boolean isRefreshNeeded();
-	
-	boolean isError();
-
-	String getErrorMessage();
-
-	Date getErrorDate();
 
 	/**
-	 * Store the error status / message
+	 * Returns TRUE if the cache is in a error status
 	 * 
-	 * @param error
-	 *              the message
+	 * @return TRUE if an exception is stored
 	 */
-	void error(String error);
+	boolean isError();
+
+	/**
+	 * Store the exception for its occurrence time
+	 * 
+	 * @param exception an instance of {@link CachedException}
+	 */
+	void error(CachedException exception);
+
+	/**
+	 * Returns the met exception
+	 * 
+	 * @return an object with the exception and its occurrence time
+	 */
+	CachedException getException();
 
 }

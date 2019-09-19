@@ -7,7 +7,7 @@ public class CachedEntry<O extends Object> {
 
 	private final CacheContext cacheContext = new CurrentCacheContext();
 	private O cachedObject;
-	
+
 	public CachedEntry() {
 	}
 
@@ -33,6 +33,11 @@ public class CachedEntry<O extends Object> {
 		cachedObject = newCachedObject;
 	}
 
+	public void error(CachedException exception) {
+		cacheContext.error(exception);
+		// TODO cachedObject = null ?
+	}
+
 	public void refreshNeeded() {
 		cacheContext.refreshNeeded();
 	}
@@ -49,8 +54,12 @@ public class CachedEntry<O extends Object> {
 		return cacheContext.isRefreshNeeded();
 	}
 
-	public void error(String message) {
-		cacheContext.error(message);
+	public boolean isError() {
+		return cacheContext.isError();
+	}
+
+	public CachedException getException() {
+		return cacheContext.getException();
 	}
 
 }
