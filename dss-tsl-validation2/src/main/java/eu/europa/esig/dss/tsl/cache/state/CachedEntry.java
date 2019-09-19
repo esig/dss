@@ -19,8 +19,8 @@ public class CachedEntry<O extends Object> {
 		return cacheContext.getCurrentState();
 	}
 
-	public Date getCurrentStateDate() {
-		return cacheContext.getCurrentStateDate();
+	public Date getLastSuccessDate() {
+		return cacheContext.getLastSuccessDate();
 	}
 
 	public O getCachedObject() {
@@ -33,8 +33,8 @@ public class CachedEntry<O extends Object> {
 		cachedObject = newCachedObject;
 	}
 
-	public void expire() {
-		cacheContext.expire();
+	public void refreshNeeded() {
+		cacheContext.refreshNeeded();
 	}
 
 	public void sync() {
@@ -47,6 +47,10 @@ public class CachedEntry<O extends Object> {
 
 	public boolean isRefreshNeeded() {
 		return cacheContext.isRefreshNeeded();
+	}
+
+	public void error(String message) {
+		cacheContext.error(message);
 	}
 
 }

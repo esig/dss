@@ -12,11 +12,11 @@ public interface CacheContext {
 	CacheState getCurrentState();
 	
 	/**
-	 * Returns the date of the last transition
+	 * Returns the date of the last success state change
 	 * 
 	 * @return the last date when the state has been changed
 	 */
-	Date getCurrentStateDate();
+	Date getLastSuccessDate();
 
 	/**
 	 * This method operates a state change
@@ -37,9 +37,9 @@ public interface CacheContext {
 	void sync();
 
 	/**
-	 * Set the context as EXPIRED
+	 * Set the context as REFRESH_NEEDED
 	 */
-	void expire();
+	void refreshNeeded();
 
 	/**
 	 * Set the context as TO_BE_DELETED
@@ -52,5 +52,19 @@ public interface CacheContext {
 	 * @return TRUE if a refresh is required
 	 */
 	boolean isRefreshNeeded();
+	
+	boolean isError();
+
+	String getErrorMessage();
+
+	Date getErrorDate();
+
+	/**
+	 * Store the error status / message
+	 * 
+	 * @param error
+	 *              the message
+	 */
+	void error(String error);
 
 }

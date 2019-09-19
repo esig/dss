@@ -23,11 +23,11 @@ public class TLAnalysisCacheAccess {
 	}
 
 	public void expireParsing() {
-		parsingCache.expire(key);
+		parsingCache.refreshNeeded(key);
 	}
 
 	public void expireValidation() {
-		validationCache.expire(key);
+		validationCache.refreshNeeded(key);
 	}
 
 }

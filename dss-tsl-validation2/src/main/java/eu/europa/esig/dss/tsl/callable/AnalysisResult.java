@@ -1,14 +1,14 @@
 package eu.europa.esig.dss.tsl.callable;
 
 import eu.europa.esig.dss.tsl.download.XmlDownloadResult;
-import eu.europa.esig.dss.tsl.parsing.TLParsingResult;
+import eu.europa.esig.dss.tsl.parsing.AbstractParsingResult;
 import eu.europa.esig.dss.tsl.validation.TLValidationResult;
 
 public class AnalysisResult {
 
 	private XmlDownloadResult downloadResult;
 
-	private TLParsingResult parsingResult;
+	private AbstractParsingResult parsingResult;
 
 	private TLValidationResult validationResult;
 
@@ -20,11 +20,11 @@ public class AnalysisResult {
 		this.downloadResult = downloadResult;
 	}
 
-	public TLParsingResult getParsingResult() {
+	public AbstractParsingResult getParsingResult() {
 		return parsingResult;
 	}
 
-	public void setParsingResult(TLParsingResult parsingResult) {
+	public void setParsingResult(AbstractParsingResult parsingResult) {
 		this.parsingResult = parsingResult;
 	}
 

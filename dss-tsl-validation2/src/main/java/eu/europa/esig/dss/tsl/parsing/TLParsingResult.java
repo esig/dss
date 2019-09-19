@@ -4,7 +4,7 @@ import java.util.List;
 
 import eu.europa.esig.dss.tsl.dto.TrustServiceProvider;
 
-public class TLParsingResult extends CommonParsingResult {
+public class TLParsingResult extends AbstractParsingResult {
 
 	private List<TrustServiceProvider> trustServiceProviders;
 

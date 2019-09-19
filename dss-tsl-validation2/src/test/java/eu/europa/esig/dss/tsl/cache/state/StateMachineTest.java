@@ -17,20 +17,20 @@ public class StateMachineTest {
 	@Test
 	public void testEmpty() {
 		CachedEntry<Integer> cachedEntry = new CachedEntry<Integer>();
-		Date emptyStateDate = cachedEntry.getCurrentStateDate();
+		Date emptyStateDate = cachedEntry.getLastSuccessDate();
 		assertNotNull(emptyStateDate);
 		assertNull(cachedEntry.getCachedObject());
-		assertEquals(CacheStates.EMPTY, cachedEntry.getCurrentState());
+		assertEquals(CacheStateEnum.REFRESH_NEEDED, cachedEntry.getCurrentState());
 		assertTrue(cachedEntry.isRefreshNeeded());
 
 		IllegalStateException e = assertThrows(IllegalStateException.class, () -> cachedEntry.sync());
-		assertEquals("Transition from 'EMPTY' to 'SYNCHRONIZED' is not allowed", e.getMessage());
+		assertEquals("Transition from 'REFRESH_NEEDED' to 'SYNCHRONIZED' is not allowed", e.getMessage());
 
 		assertThrows(IllegalStateException.class, () -> cachedEntry.toBeDeleted());
-		assertThrows(IllegalStateException.class, () -> cachedEntry.expire());
+		assertThrows(IllegalStateException.class, () -> cachedEntry.refreshNeeded());
 
-		assertEquals(CacheStates.EMPTY, cachedEntry.getCurrentState());
-		assertEquals(emptyStateDate, cachedEntry.getCurrentStateDate());
+		assertEquals(CacheStateEnum.REFRESH_NEEDED, cachedEntry.getCurrentState());
+		assertEquals(emptyStateDate, cachedEntry.getLastSuccessDate());
 
 		assertThrows(NullPointerException.class, () -> cachedEntry.update(null));
 
@@ -41,52 +41,56 @@ public class StateMachineTest {
 		// cannot update twice
 		assertThrows(IllegalStateException.class, () -> cachedEntry.update(7));
 
-		assertEquals(CacheStates.DESYNCHRONIZED, cachedEntry.getCurrentState());
-		Date desynchonizedStateDate = cachedEntry.getCurrentStateDate();
+		assertEquals(CacheStateEnum.DESYNCHRONIZED, cachedEntry.getCurrentState());
+		Date desynchonizedStateDate = cachedEntry.getLastSuccessDate();
 		assertNotEquals(emptyStateDate, desynchonizedStateDate);
 		assertEquals(5, cachedEntry.getCachedObject());
 
 		assertThrows(IllegalStateException.class, () -> cachedEntry.toBeDeleted());
-		assertThrows(IllegalStateException.class, () -> cachedEntry.expire());
+		assertThrows(IllegalStateException.class, () -> cachedEntry.refreshNeeded());
 
 		cachedEntry.sync();
 
-		assertEquals(CacheStates.SYNCHRONIZED, cachedEntry.getCurrentState());
-		assertNotEquals(desynchonizedStateDate, cachedEntry.getCurrentStateDate());
+		assertEquals(CacheStateEnum.SYNCHRONIZED, cachedEntry.getCurrentState());
+		assertNotEquals(desynchonizedStateDate, cachedEntry.getLastSuccessDate());
 
 		// must be expired first
 		assertThrows(IllegalStateException.class, () -> cachedEntry.update(7));
 		assertEquals(5, cachedEntry.getCachedObject());
 
-		cachedEntry.expire();
+		cachedEntry.refreshNeeded();
 
 		assertTrue(cachedEntry.isRefreshNeeded());
 
-		assertEquals(CacheStates.EXPIRED, cachedEntry.getCurrentState());
+		assertEquals(CacheStateEnum.REFRESH_NEEDED, cachedEntry.getCurrentState());
 
 		cachedEntry.update(7);
 
 		assertFalse(cachedEntry.isRefreshNeeded());
 
-		assertEquals(CacheStates.DESYNCHRONIZED, cachedEntry.getCurrentState());
-		assertNotEquals(desynchonizedStateDate, cachedEntry.getCurrentStateDate());
+		assertEquals(CacheStateEnum.DESYNCHRONIZED, cachedEntry.getCurrentState());
+		assertNotEquals(desynchonizedStateDate, cachedEntry.getLastSuccessDate());
 		assertEquals(7, cachedEntry.getCachedObject());
 
 		cachedEntry.sync();
 		
+		cachedEntry.refreshNeeded();
+		cachedEntry.error("Unable to parse");
+		assertNotNull(cachedEntry.getLastSuccessDate());
+
 		cachedEntry.toBeDeleted();
-		assertEquals(CacheStates.TO_BE_DELETED, cachedEntry.getCurrentState());
+		assertEquals(CacheStateEnum.TO_BE_DELETED, cachedEntry.getCurrentState());
 		assertThrows(IllegalStateException.class, () -> cachedEntry.sync());
 		assertThrows(IllegalStateException.class, () -> cachedEntry.toBeDeleted());
-		assertThrows(IllegalStateException.class, () -> cachedEntry.expire());
+		assertThrows(IllegalStateException.class, () -> cachedEntry.refreshNeeded());
 	}
 
 	@Test
 	public void testDesynchro() {
 		CachedEntry<Integer> cachedEntry = new CachedEntry<Integer>(8);
-		assertEquals(CacheStates.DESYNCHRONIZED, cachedEntry.getCurrentState());
+		assertEquals(CacheStateEnum.DESYNCHRONIZED, cachedEntry.getCurrentState());
 		assertEquals(8, cachedEntry.getCachedObject());
-		assertNotNull(cachedEntry.getCurrentStateDate());
+		assertNotNull(cachedEntry.getLastSuccessDate());
 	}
 
 }

@@ -3,7 +3,7 @@ package eu.europa.esig.dss.tsl.parsing;
 import java.util.Date;
 import java.util.List;
 
-public abstract class CommonParsingResult {
+public abstract class AbstractParsingResult {
 
 	private int sequenceNumber;
 	private int version;
