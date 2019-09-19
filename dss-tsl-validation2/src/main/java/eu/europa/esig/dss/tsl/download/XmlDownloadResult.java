@@ -1,6 +1,8 @@
 package eu.europa.esig.dss.tsl.download;
 
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.InMemoryDocument;
 
 public class XmlDownloadResult {
 
@@ -21,6 +23,10 @@ public class XmlDownloadResult {
 
 	public byte[] getContent() {
 		return content;
+	}
+
+	public DSSDocument getDSSDocument() {
+		return new InMemoryDocument(content);
 	}
 
 	public Digest getDigest() {

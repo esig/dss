@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.tsl.download.XmlDownloadResult;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.tsl.function.LOTLSigningCertificatesAnnouncementSchemeInformationURI;
 import eu.europa.esig.dss.tsl.function.PivotSchemeInformationURI;
 import eu.europa.esig.dss.tsl.function.converter.OtherTSLPointerConverter;
@@ -25,8 +25,8 @@ public class LOTLParsingTask extends AbstractParsingTask implements Supplier<LOT
 
 	private final LOTLSource lotlSource;
 
-	public LOTLParsingTask(LOTLSource lotlSource, XmlDownloadResult downloadResult) {
-		super(downloadResult);
+	public LOTLParsingTask(LOTLSource lotlSource, DSSDocument document) {
+		super(document);
 		this.lotlSource = lotlSource;
 	}
 

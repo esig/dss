@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
@@ -14,46 +13,33 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.tsl.download.XmlDownloadResult;
 import eu.europa.esig.dss.tsl.dto.OtherTSLPointerDTO;
 import eu.europa.esig.dss.tsl.function.OfficialJournalSchemeInformationURI;
 import eu.europa.esig.dss.tsl.function.SchemeTerritoryOtherTSLPointer;
 import eu.europa.esig.dss.tsl.function.XMLOtherTSLPointer;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
-import eu.europa.esig.dss.utils.Utils;
 
 public class LOTLParsingTaskTest {
 
-	private static XmlDownloadResult LOTL;
-	private static XmlDownloadResult LOTL_NO_SIG;
-	private static XmlDownloadResult LOTL_NOT_PARSEABLE;
-	private static XmlDownloadResult LOTL_PIVOT;
+	private static DSSDocument LOTL;
+	private static DSSDocument LOTL_NO_SIG;
+	private static DSSDocument LOTL_NOT_PARSEABLE;
+	private static DSSDocument LOTL_PIVOT;
 
-	private static XmlDownloadResult TL;
+	private static DSSDocument TL;
 
 	@BeforeAll
 	public static void init() throws IOException {
-		try (FileInputStream fis = new FileInputStream("src/test/resources/eu-lotl.xml")) {
-			LOTL = new XmlDownloadResult("bla", Utils.toByteArray(fis), null);
-		}
+		LOTL = new FileDocument("src/test/resources/eu-lotl.xml");
+		LOTL_NO_SIG = new FileDocument("src/test/resources/eu-lotl-no-sig.xml");
+		LOTL_NOT_PARSEABLE = new FileDocument("src/test/resources/eu-lotl-not-parseable.xml");
+		LOTL_PIVOT = new FileDocument("src/test/resources/eu-lotl-pivot.xml");
 
-		try (FileInputStream fis = new FileInputStream("src/test/resources/eu-lotl-no-sig.xml")) {
-			LOTL_NO_SIG = new XmlDownloadResult("bla", Utils.toByteArray(fis), null);
-		}
-
-		try (FileInputStream fis = new FileInputStream("src/test/resources/eu-lotl-not-parseable.xml")) {
-			LOTL_NOT_PARSEABLE = new XmlDownloadResult("bla", Utils.toByteArray(fis), null);
-		}
-
-		try (FileInputStream fis = new FileInputStream("src/test/resources/eu-lotl-pivot.xml")) {
-			LOTL_PIVOT = new XmlDownloadResult("bla", Utils.toByteArray(fis), null);
-		}
-
-		try (FileInputStream fis = new FileInputStream("src/test/resources/ie-tl.xml")) {
-			TL = new XmlDownloadResult("bla", Utils.toByteArray(fis), null);
-		}
+		TL = new FileDocument("src/test/resources/ie-tl.xml");
 	}
 
 	@Test

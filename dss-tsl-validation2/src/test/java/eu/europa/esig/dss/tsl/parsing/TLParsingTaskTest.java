@@ -6,51 +6,40 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.util.TimeDependentValues;
-import eu.europa.esig.dss.tsl.download.XmlDownloadResult;
 import eu.europa.esig.dss.tsl.dto.TrustService;
 import eu.europa.esig.dss.tsl.dto.TrustServiceProvider;
 import eu.europa.esig.dss.tsl.dto.TrustServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.tsl.function.TrustServicePredicate;
 import eu.europa.esig.dss.tsl.function.TrustServiceProviderPredicate;
 import eu.europa.esig.dss.tsl.source.TLSource;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPServiceType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPType;
 
 public class TLParsingTaskTest {
 
-	private static XmlDownloadResult IE_TL;
-	private static XmlDownloadResult SK_TL;
+	private static DSSDocument IE_TL;
+	private static DSSDocument SK_TL;
 
-	private static XmlDownloadResult LOTL;
-	private static XmlDownloadResult LOTL_NOT_PARSEABLE;
+	private static DSSDocument LOTL;
+	private static DSSDocument LOTL_NOT_PARSEABLE;
 
 	@BeforeAll
 	public static void init() throws IOException {
-		try (FileInputStream fis = new FileInputStream("src/test/resources/ie-tl.xml")) {
-			IE_TL = new XmlDownloadResult("bla", Utils.toByteArray(fis), null);
-		}
+		IE_TL = new FileDocument("src/test/resources/ie-tl.xml");
+		SK_TL = new FileDocument("src/test/resources/sk-tl.xml");
 
-		try (FileInputStream fis = new FileInputStream("src/test/resources/sk-tl.xml")) {
-			SK_TL = new XmlDownloadResult("bla", Utils.toByteArray(fis), null);
-		}
-
-		try (FileInputStream fis = new FileInputStream("src/test/resources/eu-lotl.xml")) {
-			LOTL = new XmlDownloadResult("bla", Utils.toByteArray(fis), null);
-		}
-
-		try (FileInputStream fis = new FileInputStream("src/test/resources/eu-lotl-not-parseable.xml")) {
-			LOTL_NOT_PARSEABLE = new XmlDownloadResult("bla", Utils.toByteArray(fis), null);
-		}
+		LOTL = new FileDocument("src/test/resources/eu-lotl.xml");
+		LOTL_NOT_PARSEABLE = new FileDocument("src/test/resources/eu-lotl-not-parseable.xml");
 	}
 
 	@Test

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import eu.europa.esig.dss.tsl.download.XmlDownloadResult;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.tsl.function.NonEmptyTrustService;
 import eu.europa.esig.dss.tsl.function.converter.TrustServiceProviderConverter;
 import eu.europa.esig.dss.tsl.source.TLSource;
@@ -21,8 +21,8 @@ public class TLParsingTask extends AbstractParsingTask implements Supplier<TLPar
 
 	private final TLSource tlSource;
 
-	public TLParsingTask(TLSource tlSource, XmlDownloadResult downloadResult) {
-		super(downloadResult);
+	public TLParsingTask(TLSource tlSource, DSSDocument document) {
+		super(document);
 		this.tlSource = tlSource;
 	}
 

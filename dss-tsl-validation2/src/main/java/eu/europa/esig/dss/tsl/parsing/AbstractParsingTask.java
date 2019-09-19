@@ -1,14 +1,14 @@
 package eu.europa.esig.dss.tsl.parsing;
 
-import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.tsl.download.XmlDownloadResult;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.trustedlist.TrustedListFacade;
 import eu.europa.esig.trustedlist.jaxb.tsl.NextUpdateType;
@@ -18,15 +18,15 @@ import eu.europa.esig.trustedlist.jaxb.tsl.TrustStatusListType;
 
 public abstract class AbstractParsingTask {
 
-	private final XmlDownloadResult downloadResult;
+	private final DSSDocument document;
 
-	protected AbstractParsingTask(XmlDownloadResult downloadResult) {
-		this.downloadResult = downloadResult;
+	protected AbstractParsingTask(DSSDocument document) {
+		this.document = document;
 	}
 
 	protected TrustStatusListType getJAXBObject() {
-		try (ByteArrayInputStream bais = new ByteArrayInputStream(downloadResult.getContent())) {
-			return TrustedListFacade.newFacade().unmarshall(bais);
+		try (InputStream is = document.openStream()) {
+			return TrustedListFacade.newFacade().unmarshall(is);
 		} catch (Exception e) {
 			throw new DSSException("Unable to parse binaries", e);
 		}
