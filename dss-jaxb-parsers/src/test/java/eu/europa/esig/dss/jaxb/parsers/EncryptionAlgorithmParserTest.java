@@ -1,11 +1,9 @@
 package eu.europa.esig.dss.jaxb.parsers;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 
@@ -31,11 +29,9 @@ public class EncryptionAlgorithmParserTest {
 		assertNotNull(EncryptionAlgorithmParser.parse("PLAIN_ECDSA"));
 	}
 	
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void unsupportedAlgorithmTest() {
-		assertThrows(IllegalArgumentException.class, () -> {
-			assertNull(EncryptionAlgorithmParser.parse("bla"));
-		});
+		EncryptionAlgorithmParser.parse("bla");
 	}
 
 }
