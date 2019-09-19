@@ -387,20 +387,24 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 		final CandidatesForSigningCertificate candidates = getCandidatesForSigningCertificate();
 		final List<CertificateRef> potentialSigningCertificates = getCertificateSource().getSigningCertificateValues();
+		
+		if (Utils.isCollectionNotEmpty(potentialSigningCertificates)) {
+			// must contain only one reference
+			final CertificateRef signingCert = potentialSigningCertificates.get(0);
+			Digest certDigest = signingCert.getCertDigest();
+			IssuerSerialInfo issuerInfo = signingCert.getIssuerInfo();
 
-		final List<CertificateValidity> certificateValidityList = candidates.getCertificateValidityList();
-		for (final CertificateValidity certificateValidity : certificateValidityList) {
-			certificateValidity.setAttributePresent(Utils.isCollectionNotEmpty(potentialSigningCertificates));
-
-			final CertificateToken certificateToken = certificateValidity.getCertificateToken();
-			
-			if (Utils.isCollectionNotEmpty(potentialSigningCertificates)) {
-				// must contain only one reference
-				final CertificateRef signingCert = potentialSigningCertificates.get(0);
-
-				Digest certDigest = signingCert.getCertDigest();
+			final List<CertificateValidity> certificateValidityList = candidates.getCertificateValidityList();
+			for (final CertificateValidity certificateValidity : certificateValidityList) {
+				certificateValidity.setAttributePresent(signingCert != null);
+				certificateValidity.setDigestPresent(certDigest != null);
+	
+				final CertificateToken certificateToken = certificateValidity.getCertificateToken();
+				if (certificateToken == null) {
+					continue;
+				}
+	
 				if (certDigest != null) {
-					certificateValidity.setDigestPresent(true);
 					DigestAlgorithm digestAlgorithm = certDigest.getAlgorithm();
 					byte[] expectedDigest = certDigest.getValue();
 					byte[] currentDigest = certificateToken.getDigest(digestAlgorithm);
@@ -408,7 +412,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					certificateValidity.setDigestEqual(digestEqual);
 				}
 
-				IssuerSerialInfo issuerInfo = signingCert.getIssuerInfo();
 				if (issuerInfo != null) {
 					BigInteger serialNumber = issuerInfo.getSerialNumber();
 					X500Principal issuerName = issuerInfo.getIssuerName();
@@ -1038,10 +1041,17 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	protected List<CertificateValidity> getSigningCertificateValidityList(final PublicKey extractedPublicKey) {
 
 		candidatesForSigningCertificate = new CandidatesForSigningCertificate();
-		final CertificateValidity certificateValidity = new CertificateValidity(extractedPublicKey);
-		candidatesForSigningCertificate.add(certificateValidity);
-		final List<CertificateValidity> certificateValidityList = candidatesForSigningCertificate.getCertificateValidityList();
-		return certificateValidityList;
+		// try to find out the signing certificate token by provided public key
+		List<CertificateToken> certsWithExtractedPublicKey = certPool.get(extractedPublicKey);
+		if (Utils.isCollectionNotEmpty(certsWithExtractedPublicKey)) {
+			for (CertificateToken certificateToken : certsWithExtractedPublicKey) {
+				candidatesForSigningCertificate.add(new CertificateValidity(certificateToken));
+			}
+		} else {
+			// process public key only if no certificates found
+			candidatesForSigningCertificate.add(new CertificateValidity(extractedPublicKey));
+		}
+		return candidatesForSigningCertificate.getCertificateValidityList();
 	}
 
 	/**
