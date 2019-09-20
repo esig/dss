@@ -7,7 +7,7 @@ public class CachedEntry<O extends Object> {
 
 	private final CacheContext cacheContext = new CurrentCacheContext();
 	private O cachedObject;
-	
+
 	public CachedEntry() {
 	}
 
@@ -19,8 +19,8 @@ public class CachedEntry<O extends Object> {
 		return cacheContext.getCurrentState();
 	}
 
-	public Date getCurrentStateDate() {
-		return cacheContext.getCurrentStateDate();
+	public Date getLastSuccessDate() {
+		return cacheContext.getLastSuccessDate();
 	}
 
 	public O getCachedObject() {
@@ -33,8 +33,13 @@ public class CachedEntry<O extends Object> {
 		cachedObject = newCachedObject;
 	}
 
-	public void expire() {
-		cacheContext.expire();
+	public void error(CachedException exception) {
+		cacheContext.error(exception);
+		// TODO cachedObject = null ?
+	}
+
+	public void refreshNeeded() {
+		cacheContext.refreshNeeded();
 	}
 
 	public void sync() {
@@ -51,6 +56,14 @@ public class CachedEntry<O extends Object> {
 	
 	public boolean isEmpty() {
 		return cacheContext == null;
+	}
+
+	public boolean isError() {
+		return cacheContext.isError();
+	}
+
+	public CachedException getException() {
+		return cacheContext.getException();
 	}
 
 }

@@ -3,20 +3,20 @@ package eu.europa.esig.dss.tsl.cache.state;
 import java.util.Date;
 
 public interface CacheContext {
-	
+
 	/**
 	 * Returns the current state in the cache
 	 * 
 	 * @return the Cache state
 	 */
 	CacheState getCurrentState();
-	
+
 	/**
-	 * Returns the date of the last transition
+	 * Returns the date of the last success state change
 	 * 
 	 * @return the last date when the state has been changed
 	 */
-	Date getCurrentStateDate();
+	Date getLastSuccessDate();
 
 	/**
 	 * This method operates a state change
@@ -37,9 +37,9 @@ public interface CacheContext {
 	void sync();
 
 	/**
-	 * Set the context as EXPIRED
+	 * Set the context as REFRESH_NEEDED
 	 */
-	void expire();
+	void refreshNeeded();
 
 	/**
 	 * Set the context as TO_BE_DELETED
@@ -52,5 +52,26 @@ public interface CacheContext {
 	 * @return TRUE if a refresh is required
 	 */
 	boolean isRefreshNeeded();
+
+	/**
+	 * Returns TRUE if the cache is in a error status
+	 * 
+	 * @return TRUE if an exception is stored
+	 */
+	boolean isError();
+
+	/**
+	 * Store the exception for its occurrence time
+	 * 
+	 * @param exception an instance of {@link CachedException}
+	 */
+	void error(CachedException exception);
+
+	/**
+	 * Returns the met exception
+	 * 
+	 * @return an object with the exception and its occurrence time
+	 */
+	CachedException getException();
 
 }

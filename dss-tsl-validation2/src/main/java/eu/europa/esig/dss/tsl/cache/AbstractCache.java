@@ -61,7 +61,7 @@ public abstract class AbstractCache<R extends CachedResult> {
 	public void expire(CacheKey cacheKey) {
 		LOG.trace("Update state to EXPIRED for an entry with the key [{}]...", cacheKey);
 		CachedEntry<R> cachedEntry = cachedEntriesMap.get(cacheKey);
-		cachedEntry.expire();
+		cachedEntry.isRefreshNeeded();
 	}
 	
 	/**
@@ -88,7 +88,7 @@ public abstract class AbstractCache<R extends CachedResult> {
 		LOG.trace("Removing value for the key [{}] from cache...", cacheKey);
 		CachedEntry<R> removedEntry = cachedEntriesMap.remove(cacheKey);
 		LOG.debug("The cachedEntry with the key [{}], type [{}], creation time [{}] and status [{}], has been REMOVED from the cache.", 
-				cacheKey, getCacheType(), removedEntry.getCurrentStateDate(), removedEntry.getCurrentState());
+				cacheKey, getCacheType(), removedEntry.getLastSuccessDate(), removedEntry.getCurrentState());
 	}
 	
 	/**
@@ -156,7 +156,7 @@ public abstract class AbstractCache<R extends CachedResult> {
 		LOG.trace("Extracting the update date for the key [{}]...", cacheKey);
 		CachedEntry<R> cacheWrapper = cachedEntriesMap.get(cacheKey);
 		if (cacheWrapper != null) {
-			Date updateDate = cacheWrapper.getCurrentStateDate();
+			Date updateDate = cacheWrapper.getLastSuccessDate();
 			LOG.trace("Returns the update date [{}] for the key [{}]", updateDate, cacheKey);
 			return updateDate;
 		}

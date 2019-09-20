@@ -32,7 +32,7 @@ public abstract class AbstractParsingTask {
 		}
 	}
 
-	protected void commonParseSchemeInformation(CommonParsingResult result, TSLSchemeInformationType schemeInformation) {
+	protected void commonParseSchemeInformation(AbstractParsingResult result, TSLSchemeInformationType schemeInformation) {
 
 		extractSequenceNumber(result, schemeInformation);
 		extractTerritory(result, schemeInformation);
@@ -43,29 +43,29 @@ public abstract class AbstractParsingTask {
 
 	}
 
-	private void extractSequenceNumber(CommonParsingResult result, TSLSchemeInformationType schemeInformation) {
+	private void extractSequenceNumber(AbstractParsingResult result, TSLSchemeInformationType schemeInformation) {
 		BigInteger tslSequenceNumber = schemeInformation.getTSLSequenceNumber();
 		if (tslSequenceNumber != null) {
 			result.setSequenceNumber(tslSequenceNumber.intValue());
 		}
 	}
 
-	private void extractTerritory(CommonParsingResult result, TSLSchemeInformationType schemeInformation) {
+	private void extractTerritory(AbstractParsingResult result, TSLSchemeInformationType schemeInformation) {
 		result.setTerritory(schemeInformation.getSchemeTerritory());
 	}
 
-	private void extractVersion(CommonParsingResult result, TSLSchemeInformationType schemeInformation) {
+	private void extractVersion(AbstractParsingResult result, TSLSchemeInformationType schemeInformation) {
 		BigInteger tslVersionIdentifier = schemeInformation.getTSLVersionIdentifier();
 		if (tslVersionIdentifier != null) {
 			result.setVersion(tslVersionIdentifier.intValue());
 		}
 	}
 
-	private void extractIssueDate(CommonParsingResult result, TSLSchemeInformationType schemeInformation) {
+	private void extractIssueDate(AbstractParsingResult result, TSLSchemeInformationType schemeInformation) {
 		result.setIssueDate(convertToDate(schemeInformation.getListIssueDateTime()));
 	}
 
-	private void extractNextUpdateDate(CommonParsingResult result, TSLSchemeInformationType schemeInformation) {
+	private void extractNextUpdateDate(AbstractParsingResult result, TSLSchemeInformationType schemeInformation) {
 		NextUpdateType nextUpdate = schemeInformation.getNextUpdate();
 		if (nextUpdate != null) {
 			result.setNextUpdateDate(convertToDate(nextUpdate.getDateTime()));
@@ -82,7 +82,7 @@ public abstract class AbstractParsingTask {
 		return null;
 	}
 
-	private void extractDistributionPoints(CommonParsingResult result, TSLSchemeInformationType schemeInformation) {
+	private void extractDistributionPoints(AbstractParsingResult result, TSLSchemeInformationType schemeInformation) {
 		NonEmptyURIListType distributionPoints = schemeInformation.getDistributionPoints();
 		if (distributionPoints != null && Utils.isCollectionNotEmpty(distributionPoints.getURI())) {
 			result.setDistributionPoints(distributionPoints.getURI());

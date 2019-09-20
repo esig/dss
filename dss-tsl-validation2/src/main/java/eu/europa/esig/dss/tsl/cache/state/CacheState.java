@@ -24,12 +24,12 @@ public interface CacheState {
 	void desync(CacheContext cacheContext);
 
 	/**
-	 * The cache entry is marked as Expired
+	 * The cache entry needs to be refreshed
 	 * 
 	 * @param cacheContext
 	 *                     the current cache context
 	 */
-	void expire(CacheContext cacheContext);
+	void refreshNeeded(CacheContext cacheContext);
 
 	/**
 	 * The cache entry is marked as to be deleted
@@ -38,5 +38,15 @@ public interface CacheState {
 	 *                     the current cache context
 	 */
 	void toBeDeleted(CacheContext cacheContext);
+
+	/**
+	 * The cache entry is marked in error state with the related exception
+	 * 
+	 * @param cacheContext
+	 *                     the current cache context
+	 * @param exception
+	 *                     the wrapped met exception
+	 */
+	void error(CacheContext cacheContext, CachedException exception);
 
 }

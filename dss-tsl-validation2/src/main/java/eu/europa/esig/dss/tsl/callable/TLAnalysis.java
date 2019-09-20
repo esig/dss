@@ -4,7 +4,6 @@ import java.util.concurrent.Callable;
 
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.tsl.cache.TLAnalysisCacheAccess;
-import eu.europa.esig.dss.tsl.cache.state.CachedEntry;
 import eu.europa.esig.dss.tsl.download.XmlDownloadResult;
 import eu.europa.esig.dss.tsl.download.XmlDownloadTask;
 import eu.europa.esig.dss.tsl.parsing.TLParsingTask;
@@ -28,36 +27,41 @@ public class TLAnalysis implements Callable<AnalysisResult> {
 
 		AnalysisResult result = new AnalysisResult();
 
-		CachedEntry<XmlDownloadResult> cachedDownloadResult = cacheAccess.getCachedDownloadResult();
-
-		XmlDownloadTask downloadTask = new XmlDownloadTask(dataLoader, source.getUrl());
-		XmlDownloadResult newXMLDownloadResult = downloadTask.get();
-		if (newXMLDownloadResult != null) {
-
-			if (isChangeDetected(cachedDownloadResult, newXMLDownloadResult)) {
+		XmlDownloadResult downloadResult = null;
+		try {
+			XmlDownloadTask downloadTask = new XmlDownloadTask(dataLoader, source.getUrl());
+			downloadResult = downloadTask.get();
+			if (cacheAccess.isUpToDate(downloadResult)) {
 				cacheAccess.expireParsing();
 				cacheAccess.expireValidation();
-				result.setDownloadResult(newXMLDownloadResult);
+				result.setDownloadResult(downloadResult);
 			}
+		} catch (Exception e) {
+			result.setDownloadException(e);
+			return result;
+		}
 
-			// True if EMPTY / EXPIRED by TL/LOTL
-			if (cacheAccess.isParsingRefreshNeeded()) {
-				TLParsingTask parsingTask = new TLParsingTask(source, newXMLDownloadResult.getDSSDocument());
-				result.setParsingResult(parsingTask.get()); // TODO handle exception
+		// True if EMPTY / EXPIRED by TL/LOTL
+		if (cacheAccess.isParsingRefreshNeeded()) {
+			try {
+				TLParsingTask parsingTask = new TLParsingTask(source, downloadResult.getDSSDocument());
+				result.setParsingResult(parsingTask.get());
+			} catch (Exception e) {
+				result.setParsingException(e);
 			}
+		}
 
-			// True if EMPTY / EXPIRED by TL/LOTL
-			if (cacheAccess.isValidationRefreshNeeded()) {
-				TLValidatorTask validationTask = new TLValidatorTask(newXMLDownloadResult.getDSSDocument(), source.getCertificateSource().getCertificates());
-				result.setValidationResult(validationTask.get()); // TODO handle exception
+		// True if EMPTY / EXPIRED by TL/LOTL
+		if (cacheAccess.isValidationRefreshNeeded()) {
+			try {
+				TLValidatorTask validationTask = new TLValidatorTask(downloadResult.getDSSDocument(), source.getCertificateSource().getCertificates());
+				result.setValidationResult(validationTask.get());
+			} catch (Exception e) {
+				result.setValidationException(e);
 			}
 		}
 
 		return result;
-	}
-
-	private boolean isChangeDetected(XmlDownloadResult cachedDownloadResult, XmlDownloadResult newXMLDownloadResult) {
-		return !newXMLDownloadResult.getDigest().equals(cachedDownloadResult.getDigest());
 	}
 
 }

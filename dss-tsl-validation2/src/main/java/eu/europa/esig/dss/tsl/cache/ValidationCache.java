@@ -4,13 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.tsl.cache.state.CachedEntry;
-import eu.europa.esig.dss.tsl.validation.CommonValidationResult;
+import eu.europa.esig.dss.tsl.validation.AbstractValidationResult;
 
 /**
  * This class stores validation information for processed files
  *
  */
-public class ValidationCache extends AbstractCache<CommonValidationResult> {
+public class ValidationCache extends AbstractCache<AbstractValidationResult> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ValidationCache.class);
 	
@@ -21,9 +21,9 @@ public class ValidationCache extends AbstractCache<CommonValidationResult> {
 	 */
 	public boolean isSignatureValid(CacheKey cacheKey) {
 		LOG.trace("Extracting the validation result for the cache key [{}]...", cacheKey);
-		CachedEntry<CommonValidationResult> validationResultEntry = get(cacheKey);
+		CachedEntry<AbstractValidationResult> validationResultEntry = get(cacheKey);
 		if (validationResultEntry != null) {
-			CommonValidationResult validationResult = validationResultEntry.getCachedObject();
+			AbstractValidationResult validationResult = validationResultEntry.getCachedObject();
 			boolean isSignatureValid = validationResult.isValid();
 			LOG.trace("Is the signature for a cached file with key [{}] valid? : {}", cacheKey, isSignatureValid);
 			return isSignatureValid;

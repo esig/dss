@@ -1,15 +1,20 @@
 package eu.europa.esig.dss.tsl.cache.state;
 
-public enum CacheStates implements CacheState {
+public enum CacheStateEnum implements CacheState {
 
 	/**
-	 * Nothing is stored in the cache
+	 * Nothing / Expired content is stored in the cache
 	 */
-	EMPTY {
+	REFRESH_NEEDED {
 
 		@Override
 		public void desync(CacheContext cacheContext) {
 			cacheContext.state(DESYNCHRONIZED);
+		}
+
+		@Override
+		public void error(CacheContext cacheContext, CachedException exception) {
+			cacheContext.error(exception);
 		}
 
 	},
@@ -32,8 +37,8 @@ public enum CacheStates implements CacheState {
 	SYNCHRONIZED {
 
 		@Override
-		public void expire(CacheContext cacheContext) {
-			cacheContext.state(EXPIRED);
+		public void refreshNeeded(CacheContext cacheContext) {
+			cacheContext.state(REFRESH_NEEDED);
 		}
 
 		@Override
@@ -44,13 +49,18 @@ public enum CacheStates implements CacheState {
 	},
 
 	/**
-	 * The cache content is expired
+	 * The data cannot be downloaded / parsed / validated
 	 */
-	EXPIRED {
+	ERROR {
 
 		@Override
-		public void desync(CacheContext cacheContext) {
-			cacheContext.state(DESYNCHRONIZED);
+		public void refreshNeeded(CacheContext cacheContext) {
+			cacheContext.state(REFRESH_NEEDED);
+		}
+
+		@Override
+		public void toBeDeleted(CacheContext cacheContext) {
+			cacheContext.state(TO_BE_DELETED);
 		}
 
 	},
@@ -73,13 +83,18 @@ public enum CacheStates implements CacheState {
 	}
 
 	@Override
-	public void expire(CacheContext cacheContext) {
-		throw new IllegalStateException(String.format(NOT_ALLOWED_TRANSITION, cacheContext.getCurrentState(), EXPIRED));
+	public void refreshNeeded(CacheContext cacheContext) {
+		throw new IllegalStateException(String.format(NOT_ALLOWED_TRANSITION, cacheContext.getCurrentState(), REFRESH_NEEDED));
 	}
 
 	@Override
 	public void toBeDeleted(CacheContext cacheContext) {
 		throw new IllegalStateException(String.format(NOT_ALLOWED_TRANSITION, cacheContext.getCurrentState(), TO_BE_DELETED));
+	}
+
+	@Override
+	public void error(CacheContext cacheContext, CachedException exception) {
+		throw new IllegalStateException("Cannot store error");
 	}
 
 }

@@ -24,6 +24,10 @@ public class TLAnalysisCacheAccess {
 	public CachedEntry<XmlDownloadResult> getCachedDownloadResult() {
 		return fileCache.get(key);
 	}
+	
+	public boolean isUpToDate(XmlDownloadResult xmlDownloadResult) {
+		return fileCache.isUpToDate(key, xmlDownloadResult);
+	} 
 
 	public boolean isParsingRefreshNeeded() {
 		return parsingCache.isRefreshNeeded(key);
@@ -34,11 +38,11 @@ public class TLAnalysisCacheAccess {
 	}
 
 	public void expireParsing() {
-		parsingCache.expire(key);
+		parsingCache.isRefreshNeeded(key);
 	}
 
 	public void expireValidation() {
-		validationCache.expire(key);
+		validationCache.isRefreshNeeded(key);
 	}
 
 }

@@ -5,7 +5,7 @@ import java.util.List;
 
 import eu.europa.esig.dss.tsl.cache.CachedResult;
 
-public abstract class CommonParsingResult implements CachedResult {
+public abstract class AbstractParsingResult implements CachedResult {
 
 	private int sequenceNumber;
 	private int version;

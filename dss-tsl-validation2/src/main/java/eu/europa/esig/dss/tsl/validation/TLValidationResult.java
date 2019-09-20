@@ -29,7 +29,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 /**
  * This class is a DTO result for TLValidatorTask.
  */
-public class TLValidationResult extends CommonValidationResult {
+public class TLValidationResult extends AbstractValidationResult {
 
 	public TLValidationResult(Indication indication, SubIndication subIndication, Date signingTime, CertificateToken signingCertificate) {
 		super(indication, subIndication, signingTime, signingCertificate);

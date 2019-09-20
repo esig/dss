@@ -7,7 +7,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.tsl.cache.CachedResult;
 
-public abstract class CommonValidationResult implements CachedResult {
+public abstract class AbstractValidationResult implements CachedResult {
 	
 	private final Indication indication;
 	private final SubIndication subIndication;
@@ -15,7 +15,7 @@ public abstract class CommonValidationResult implements CachedResult {
 	private final CertificateToken signingCertificate;
 	private final String errorMessage;
 
-	CommonValidationResult(Indication indication, SubIndication subIndication, Date signingTime, CertificateToken signingCertificate) {
+	AbstractValidationResult(Indication indication, SubIndication subIndication, Date signingTime, CertificateToken signingCertificate) {
 		this.indication = indication;
 		this.subIndication = subIndication;
 		this.signingTime = signingTime;
@@ -23,7 +23,7 @@ public abstract class CommonValidationResult implements CachedResult {
 		this.errorMessage = null;
 	}
 
-	CommonValidationResult(String errorMessage) {
+	AbstractValidationResult(String errorMessage) {
 		this.indication = null;
 		this.subIndication = null;
 		this.signingTime = null;

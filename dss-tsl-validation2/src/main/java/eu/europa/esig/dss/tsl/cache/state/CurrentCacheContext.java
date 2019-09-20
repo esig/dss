@@ -11,9 +11,10 @@ public class CurrentCacheContext implements CacheContext {
 
 	private CacheState state;
 	private Date date;
+	private CachedException exception;
 
 	public CurrentCacheContext() {
-		state(CacheStates.EMPTY);
+		state(CacheStateEnum.REFRESH_NEEDED);
 	}
 
 	@Override
@@ -22,7 +23,7 @@ public class CurrentCacheContext implements CacheContext {
 	}
 
 	@Override
-	public Date getCurrentStateDate() {
+	public Date getLastSuccessDate() {
 		return date;
 	}
 
@@ -31,6 +32,14 @@ public class CurrentCacheContext implements CacheContext {
 		LOG.trace("State transition from '{}' to '{}'", state, newState);
 		state = newState;
 		date = new Date();
+		exception = null;
+	}
+
+	@Override
+	public void error(CachedException cachedException) {
+		LOG.trace("State transition from '{}' to '{}'", state, CacheStateEnum.ERROR);
+		state = CacheStateEnum.ERROR;
+		exception = cachedException;
 	}
 
 	@Override
@@ -44,8 +53,8 @@ public class CurrentCacheContext implements CacheContext {
 	}
 
 	@Override
-	public void expire() {
-		state.expire(this);
+	public void refreshNeeded() {
+		state.refreshNeeded(this);
 	}
 
 	@Override
@@ -55,7 +64,17 @@ public class CurrentCacheContext implements CacheContext {
 
 	@Override
 	public boolean isRefreshNeeded() {
-		return CacheStates.EMPTY == state || CacheStates.EXPIRED == state;
+		return CacheStateEnum.REFRESH_NEEDED == state;
+	}
+
+	@Override
+	public boolean isError() {
+		return CacheStateEnum.ERROR == state;
+	}
+
+	@Override
+	public CachedException getException() {
+		return exception;
 	}
 
 }

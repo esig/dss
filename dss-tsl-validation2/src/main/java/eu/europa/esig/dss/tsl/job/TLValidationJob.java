@@ -59,6 +59,9 @@ public class TLValidationJob {
 		if (listOfTrustedListSources != null) {
 			executeLOTLSourcesAnalysis(Arrays.asList(listOfTrustedListSources), dataLoader);
 
+			// Check LOTLs consistency
+			// Exception on duplicate TL URL
+
 			// extract TLSources from cached LOTLs
 		}
 

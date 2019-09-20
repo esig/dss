@@ -7,7 +7,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.tsl.dto.OtherTSLPointerDTO;
 import eu.europa.esig.dss.utils.Utils;
 
-public class LOTLParsingResult extends CommonParsingResult {
+public class LOTLParsingResult extends AbstractParsingResult {
 
 	private List<OtherTSLPointerDTO> lotlPointers;
 	private List<OtherTSLPointerDTO> tlPointers;
