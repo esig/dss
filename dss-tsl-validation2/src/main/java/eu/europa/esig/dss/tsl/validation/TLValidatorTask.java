@@ -52,7 +52,7 @@ import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 /**
  * This class allows to validate TL or LOTL.
  */
-public class TLValidatorTask implements Supplier<TLValidationResult> {
+public class TLValidatorTask implements Supplier<ValidationResult> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TLValidatorTask.class);
 
@@ -73,7 +73,7 @@ public class TLValidatorTask implements Supplier<TLValidationResult> {
 	}
 
 	@Override
-	public TLValidationResult get() {
+	public ValidationResult get() {
 		Reports reports = validateTL();
 		return fillResult(reports);
 	}
@@ -96,11 +96,11 @@ public class TLValidatorTask implements Supplier<TLValidationResult> {
 		return xmlDocumentValidator.validateDocument(getTrustedListValidationPolicy());
 	}
 
-	private TLValidationResult fillResult(Reports reports) {
+	private ValidationResult fillResult(Reports reports) {
 		SimpleReport simpleReport = reports.getSimpleReport();
 		if (simpleReport.getSignaturesCount() != 1) {
 			LOG.warn("Number of signature must be equals to 1 (currently : {})", simpleReport.getSignaturesCount());
-			return new TLValidationResult(Indication.TOTAL_FAILED, null, null, null);
+			return new ValidationResult(Indication.TOTAL_FAILED, null, null, null);
 		}
 
 		Indication indication = simpleReport.getIndication(simpleReport.getFirstSignatureId());
@@ -115,7 +115,7 @@ public class TLValidatorTask implements Supplier<TLValidationResult> {
 			signingCertificate = DSSUtils.loadCertificate(signingCertificateWrapper.getBinaries());
 		}
 
-		return new TLValidationResult(indication, subIndication, signingTime, signingCertificate);
+		return new ValidationResult(indication, subIndication, signingTime, signingCertificate);
 	}
 
 	private CommonTrustedCertificateSource buildTrustedCertificateSource(List<CertificateToken> potentialSigners) {

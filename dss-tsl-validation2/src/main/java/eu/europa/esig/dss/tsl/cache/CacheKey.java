@@ -11,26 +11,19 @@ public class CacheKey {
 	private static final Logger LOG = LoggerFactory.getLogger(CacheKey.class);
 	
 	/**
-	 * Country code of the entry
-	 */
-	private String countryCode;
-	
-	/**
 	 * Key of the entry
 	 */
-	private String key;
+	private final String key;
 	
 	/**
 	 * The default constructor of CacheKey
-	 * @param countryCode {@link String} country code of the entry
-	 * @param fileUrl {@link String} url string of the related file entry
+	 * @param url {@link String} url string of the related file entry
 	 */
-	public CacheKey(final String countryCode, final String fileUrl) {
-		this.countryCode = countryCode;
-		this.key = decodeString(fileUrl);
+	public CacheKey(final String url) {
+		this.key = decodeString(url);
 	}
 	
-	private String decodeString(String url) {
+	private String decodeString(final String url) {
 		String decodedUrl = url;
 		try {
 			decodedUrl = URLDecoder.decode(url, "UTF-8");
@@ -38,14 +31,6 @@ public class CacheKey {
 			LOG.debug("Cannot decode url [{}]. Reason : {}", url, e.getMessage());
 		}
 		return decodedUrl.replaceAll("\\W", "_");
-	}
-	
-	/**
-	 * Returns country code of the entry
-	 * @return {@link String} country code
-	 */
-	public String getCountryCode() {
-		return countryCode;
 	}
 	
 	/**
@@ -58,7 +43,7 @@ public class CacheKey {
 	
 	@Override
 	public String toString() {
-		return String.format("CacheKey for country [%s] with the key [%s]", countryCode, key);
+		return String.format("CacheKey with the key [%s]", key);
 	}
 	
 	@Override
@@ -70,11 +55,6 @@ public class CacheKey {
 			return false;
 		}
 		CacheKey k = (CacheKey) obj;
-		if (countryCode == null && k.countryCode != null) {
-			return false;
-		} else if (!countryCode.equals(k.countryCode)) {
-			return false;
-		}
 		return key.equals(k.key);
 	}
 
@@ -82,7 +62,6 @@ public class CacheKey {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((countryCode == null) ? 0 : countryCode.hashCode());
 		result = prime * result + ((key == null) ? 0 : key.hashCode());
 		return result;
 	}

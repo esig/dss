@@ -2,7 +2,7 @@ package eu.europa.esig.dss.tsl.callable;
 
 import eu.europa.esig.dss.tsl.download.XmlDownloadResult;
 import eu.europa.esig.dss.tsl.parsing.AbstractParsingResult;
-import eu.europa.esig.dss.tsl.validation.TLValidationResult;
+import eu.europa.esig.dss.tsl.validation.ValidationResult;
 
 public class AnalysisResult {
 
@@ -12,7 +12,7 @@ public class AnalysisResult {
 	private AbstractParsingResult parsingResult;
 	private Exception parsingException;
 
-	private TLValidationResult validationResult;
+	private ValidationResult validationResult;
 	private Exception validationException;
 
 	public XmlDownloadResult getDownloadResult() {
@@ -47,11 +47,11 @@ public class AnalysisResult {
 		this.parsingException = parsingException;
 	}
 
-	public TLValidationResult getValidationResult() {
+	public ValidationResult getValidationResult() {
 		return validationResult;
 	}
 
-	public void setValidationResult(TLValidationResult validationResult) {
+	public void setValidationResult(ValidationResult validationResult) {
 		this.validationResult = validationResult;
 	}
 

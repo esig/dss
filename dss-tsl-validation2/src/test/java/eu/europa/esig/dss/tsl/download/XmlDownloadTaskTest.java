@@ -53,7 +53,7 @@ public class XmlDownloadTaskTest {
 			XmlDownloadTask task = new XmlDownloadTask(dataLoader, url);
 			XmlDownloadResult downloadResult = task.get();
 			assertNotNull(downloadResult);
-			assertNotNull(downloadResult.getContent());
+			assertNotNull(downloadResult.getDSSDocument());
 			assertNotNull(downloadResult.getDigest());
 			assertNotNull(downloadResult.getDigest().getAlgorithm());
 			assertNotNull(downloadResult.getDigest().getValue());

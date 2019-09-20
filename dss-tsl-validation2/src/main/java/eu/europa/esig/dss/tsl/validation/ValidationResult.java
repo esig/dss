@@ -7,28 +7,18 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.tsl.cache.CachedResult;
 
-public abstract class AbstractValidationResult implements CachedResult {
+public class ValidationResult implements CachedResult {
 	
 	private final Indication indication;
 	private final SubIndication subIndication;
 	private final Date signingTime;
 	private final CertificateToken signingCertificate;
-	private final String errorMessage;
 
-	AbstractValidationResult(Indication indication, SubIndication subIndication, Date signingTime, CertificateToken signingCertificate) {
+	ValidationResult(Indication indication, SubIndication subIndication, Date signingTime, CertificateToken signingCertificate) {
 		this.indication = indication;
 		this.subIndication = subIndication;
 		this.signingTime = signingTime;
 		this.signingCertificate = signingCertificate;
-		this.errorMessage = null;
-	}
-
-	AbstractValidationResult(String errorMessage) {
-		this.indication = null;
-		this.subIndication = null;
-		this.signingTime = null;
-		this.signingCertificate = null;
-		this.errorMessage = errorMessage;
 	}
 
 	public Indication getIndication() {
@@ -45,14 +35,6 @@ public abstract class AbstractValidationResult implements CachedResult {
 
 	public CertificateToken getSigningCertificate() {
 		return signingCertificate;
-	}
-
-	public String getErrorMessage() {
-		return errorMessage;
-	}
-
-	public boolean isComplete() {
-		return indication != null;
 	}
 
 	public boolean isValid() {

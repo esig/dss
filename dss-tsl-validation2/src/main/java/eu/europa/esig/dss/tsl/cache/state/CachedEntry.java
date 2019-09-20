@@ -3,15 +3,17 @@ package eu.europa.esig.dss.tsl.cache.state;
 import java.util.Date;
 import java.util.Objects;
 
-public class CachedEntry<O extends Object> {
+import eu.europa.esig.dss.tsl.cache.CachedResult;
+
+public class CachedEntry<R extends CachedResult> {
 
 	private final CacheContext cacheContext = new CurrentCacheContext();
-	private O cachedObject;
+	private R cachedResult;
 
 	public CachedEntry() {
 	}
 
-	public CachedEntry(O cachedObject) {
+	public CachedEntry(R cachedObject) {
 		update(cachedObject);
 	}
 
@@ -23,22 +25,22 @@ public class CachedEntry<O extends Object> {
 		return cacheContext.getLastSuccessDate();
 	}
 
-	public O getCachedObject() {
-		return cachedObject;
+	public R getCachedResult() {
+		return cachedResult;
 	}
 
-	public void update(O newCachedObject) {
-		Objects.requireNonNull(newCachedObject, "Cached object cannot be overrided with a null value");
+	public void update(R newCachedResult) {
+		Objects.requireNonNull(newCachedResult, "Cached result cannot be overrided with a null value");
 		cacheContext.desync(); // if transition is not allowed, cached object is not updated
-		cachedObject = newCachedObject;
+		cachedResult = newCachedResult;
 	}
 
 	public void error(CachedException exception) {
 		cacheContext.error(exception);
-		// TODO cachedObject = null ?
+		cachedResult = null; // reset in case of error
 	}
 
-	public void refreshNeeded() {
+	public void expire() {
 		cacheContext.refreshNeeded();
 	}
 

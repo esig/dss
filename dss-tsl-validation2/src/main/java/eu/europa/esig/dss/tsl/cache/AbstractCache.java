@@ -50,7 +50,7 @@ public abstract class AbstractCache<R extends CachedResult> {
 	 */
 	public void update(CacheKey cacheKey, R result) {
 		LOG.trace("Update result for the key [{}]...", cacheKey);
-		CachedEntry<R> cachedEntry = cachedEntriesMap.get(cacheKey);
+		CachedEntry<R> cachedEntry = get(cacheKey);
 		cachedEntry.update(result);
 	}
 	
@@ -60,8 +60,8 @@ public abstract class AbstractCache<R extends CachedResult> {
 	 */
 	public void expire(CacheKey cacheKey) {
 		LOG.trace("Update state to EXPIRED for an entry with the key [{}]...", cacheKey);
-		CachedEntry<R> cachedEntry = cachedEntriesMap.get(cacheKey);
-		cachedEntry.isRefreshNeeded();
+		CachedEntry<R> cachedEntry = get(cacheKey);
+		cachedEntry.expire();
 	}
 	
 	/**
@@ -87,8 +87,12 @@ public abstract class AbstractCache<R extends CachedResult> {
 	public void remove(CacheKey cacheKey) {
 		LOG.trace("Removing value for the key [{}] from cache...", cacheKey);
 		CachedEntry<R> removedEntry = cachedEntriesMap.remove(cacheKey);
-		LOG.debug("The cachedEntry with the key [{}], type [{}], creation time [{}] and status [{}], has been REMOVED from the cache.", 
-				cacheKey, getCacheType(), removedEntry.getLastSuccessDate(), removedEntry.getCurrentState());
+		if (removedEntry != null) {
+			LOG.debug("The cachedEntry with the key [{}], type [{}], creation time [{}] and status [{}], has been REMOVED from the cache.",
+					cacheKey, getCacheType(), removedEntry.getLastSuccessDate(), removedEntry.getCurrentState());
+		} else {
+			LOG.debug("Cannot remove the value for key [{}]. Object does not exist!", cacheKey);
+		}
 	}
 	
 	/**
@@ -114,7 +118,7 @@ public abstract class AbstractCache<R extends CachedResult> {
 	 */
 	public void setSync(CacheKey cacheKey) {
 		LOG.trace("Update state to SYNCHRONIZED for an entry with the key [{}]...", cacheKey);
-		CachedEntry<R> cachedEntry = cachedEntriesMap.get(cacheKey);
+		CachedEntry<R> cachedEntry = get(cacheKey);
 		cachedEntry.sync();
 	}
 
@@ -141,7 +145,7 @@ public abstract class AbstractCache<R extends CachedResult> {
 	 */
 	public boolean isRefreshNeeded(CacheKey cacheKey) {
 		LOG.trace("Checking if the update is required for an entry with the key [{}]...", cacheKey);
-		CachedEntry<R> cachedEntry = cachedEntriesMap.get(cacheKey);
+		CachedEntry<R> cachedEntry = get(cacheKey);
 		boolean refreshNeeded = cachedEntry.isRefreshNeeded();
 		LOG.trace("Is update required for the entry with key [{}] ? {}", cacheKey, refreshNeeded);
 		return refreshNeeded;
@@ -154,7 +158,7 @@ public abstract class AbstractCache<R extends CachedResult> {
 	 */
 	public Date getUpdateDate(CacheKey cacheKey) {
 		LOG.trace("Extracting the update date for the key [{}]...", cacheKey);
-		CachedEntry<R> cacheWrapper = cachedEntriesMap.get(cacheKey);
+		CachedEntry<R> cacheWrapper = get(cacheKey);
 		if (cacheWrapper != null) {
 			Date updateDate = cacheWrapper.getLastSuccessDate();
 			LOG.trace("Returns the update date [{}] for the key [{}]", updateDate, cacheKey);

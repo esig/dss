@@ -2,19 +2,18 @@ package eu.europa.esig.dss.tsl.download;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.tsl.cache.CachedResult;
 
 public class XmlDownloadResult implements CachedResult {
 
-	private final String url;
-	private final byte[] content;
-	private final Digest digest;
+	private final String url; // TODO: needed ?
+	private final DSSDocument dssDocument;
+	private final Digest digest; // digest of a canonicalized document
 	// TODO init from CACHE / ONLINE
 
-	public XmlDownloadResult(String url, byte[] content, Digest digest) {
+	public XmlDownloadResult(String url, DSSDocument dssDocument, Digest digest) {
 		this.url = url;
-		this.content = content;
+		this.dssDocument = dssDocument;
 		this.digest = digest;
 	}
 
@@ -22,12 +21,8 @@ public class XmlDownloadResult implements CachedResult {
 		return url;
 	}
 
-	public byte[] getContent() {
-		return content;
-	}
-
 	public DSSDocument getDSSDocument() {
-		return new InMemoryDocument(content);
+		return dssDocument;
 	}
 
 	public Digest getDigest() {
