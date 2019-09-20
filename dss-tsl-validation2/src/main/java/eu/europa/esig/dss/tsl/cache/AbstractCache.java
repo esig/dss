@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.tsl.cache.state.CachedEntry;
+import eu.europa.esig.dss.tsl.cache.state.CachedException;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
@@ -168,6 +169,12 @@ public abstract class AbstractCache<R extends CachedResult> {
 		return null;
 	}
 	
+	public void error(CacheKey cacheKey, Exception e) {
+		LOG.trace("Update state to ERROR for an entry with the key [{}]...", cacheKey);
+		CachedEntry<R> cacheWrapper = get(cacheKey);
+		cacheWrapper.error(new CachedException(e));
+	}
+
 	/**
 	 * Returns a type of current Cache
 	 * @return {@link CacheType}

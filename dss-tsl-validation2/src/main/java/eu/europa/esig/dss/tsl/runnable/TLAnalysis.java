@@ -1,6 +1,4 @@
-package eu.europa.esig.dss.tsl.callable;
-
-import java.util.concurrent.Callable;
+package eu.europa.esig.dss.tsl.runnable;
 
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.tsl.cache.TLAnalysisCacheAccess;
@@ -10,7 +8,7 @@ import eu.europa.esig.dss.tsl.parsing.TLParsingTask;
 import eu.europa.esig.dss.tsl.source.TLSource;
 import eu.europa.esig.dss.tsl.validation.TLValidatorTask;
 
-public class TLAnalysis implements Callable<AnalysisResult> {
+public class TLAnalysis implements Runnable {
 
 	private final TLSource source;
 	private final TLAnalysisCacheAccess cacheAccess;
@@ -23,9 +21,7 @@ public class TLAnalysis implements Callable<AnalysisResult> {
 	}
 
 	@Override
-	public AnalysisResult call() throws Exception {
-
-		AnalysisResult result = new AnalysisResult();
+	public void run() {
 
 		XmlDownloadResult downloadResult = null;
 		try {
@@ -34,20 +30,20 @@ public class TLAnalysis implements Callable<AnalysisResult> {
 			if (!cacheAccess.isUpToDate(downloadResult)) {
 				cacheAccess.expireParsing();
 				cacheAccess.expireValidation();
-				result.setDownloadResult(downloadResult);
+				cacheAccess.update(downloadResult);
 			}
 		} catch (Exception e) {
-			result.setDownloadException(e);
-			return result;
+			cacheAccess.downloadError(e);
+			return;
 		}
 
 		// True if EMPTY / EXPIRED by TL/LOTL
 		if (cacheAccess.isParsingRefreshNeeded()) {
 			try {
 				TLParsingTask parsingTask = new TLParsingTask(source, downloadResult.getDSSDocument());
-				result.setParsingResult(parsingTask.get());
+				cacheAccess.update(parsingTask.get());
 			} catch (Exception e) {
-				result.setParsingException(e);
+				cacheAccess.parsingError(e);
 			}
 		}
 
@@ -55,13 +51,13 @@ public class TLAnalysis implements Callable<AnalysisResult> {
 		if (cacheAccess.isValidationRefreshNeeded()) {
 			try {
 				TLValidatorTask validationTask = new TLValidatorTask(downloadResult.getDSSDocument(), source.getCertificateSource().getCertificates());
-				result.setValidationResult(validationTask.get());
+				cacheAccess.update(validationTask.get());
 			} catch (Exception e) {
-				result.setValidationException(e);
+				cacheAccess.validationError(e);
 			}
 		}
 
-		return result;
 	}
+
 
 }

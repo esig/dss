@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.tsl.source;
 
 import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.tsl.cache.CacheKey;
 import eu.europa.esig.dss.tsl.function.TrustServicePredicate;
 import eu.europa.esig.dss.tsl.function.TrustServiceProviderPredicate;
 
@@ -60,6 +61,10 @@ public class TLSource {
 
 	public void setTrustServicePredicate(TrustServicePredicate trustServicePredicate) {
 		this.trustServicePredicate = trustServicePredicate;
+	}
+
+	public CacheKey getCacheKey() {
+		return new CacheKey(url);
 	}
 
 }
