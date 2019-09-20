@@ -48,5 +48,9 @@ public class CachedEntry<O extends Object> {
 	public boolean isRefreshNeeded() {
 		return cacheContext.isRefreshNeeded();
 	}
+	
+	public boolean isEmpty() {
+		return cacheContext == null;
+	}
 
 }

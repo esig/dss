@@ -1,17 +1,28 @@
 package eu.europa.esig.dss.tsl.cache;
 
+import eu.europa.esig.dss.tsl.cache.state.CachedEntry;
 import eu.europa.esig.dss.tsl.download.XmlDownloadResult;
 
 public class TLAnalysisCacheAccess {
 
-	private final String key;
+	/* Key of the CacheEntry */
+	private final CacheKey key;
 
-	private FileCache fileCache;
-	private ExtractionCache parsingCache;
-	private ValidationCache validationCache;
+	/* Global Cache */
+	private final DownloadCache fileCache;
+	private final ParsingCache parsingCache;
+	private final ValidationCache validationCache;
+	
+	public TLAnalysisCacheAccess(final CacheKey key, final DownloadCache fileCache, final ParsingCache parsingCache,
+			final ValidationCache validationCache) {
+		this.key = key;
+		this.fileCache = fileCache;
+		this.parsingCache = parsingCache;
+		this.validationCache = validationCache;
+	}
 
-	public XmlDownloadResult getCachedDownloadResult() {
-		return fileCache.getCachedResult(key);
+	public CachedEntry<XmlDownloadResult> getCachedDownloadResult() {
+		return fileCache.get(key);
 	}
 
 	public boolean isParsingRefreshNeeded() {

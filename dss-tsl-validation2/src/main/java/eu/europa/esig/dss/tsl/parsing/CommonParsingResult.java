@@ -3,7 +3,9 @@ package eu.europa.esig.dss.tsl.parsing;
 import java.util.Date;
 import java.util.List;
 
-public abstract class CommonParsingResult {
+import eu.europa.esig.dss.tsl.cache.CachedResult;
+
+public abstract class CommonParsingResult implements CachedResult {
 
 	private int sequenceNumber;
 	private int version;

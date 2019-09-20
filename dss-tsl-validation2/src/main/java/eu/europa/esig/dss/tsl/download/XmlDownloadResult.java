@@ -3,8 +3,9 @@ package eu.europa.esig.dss.tsl.download;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.tsl.cache.CachedResult;
 
-public class XmlDownloadResult {
+public class XmlDownloadResult implements CachedResult {
 
 	private final String url;
 	private final byte[] content;

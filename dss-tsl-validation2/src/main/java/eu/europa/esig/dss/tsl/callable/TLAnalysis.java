@@ -4,6 +4,7 @@ import java.util.concurrent.Callable;
 
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.tsl.cache.TLAnalysisCacheAccess;
+import eu.europa.esig.dss.tsl.cache.state.CachedEntry;
 import eu.europa.esig.dss.tsl.download.XmlDownloadResult;
 import eu.europa.esig.dss.tsl.download.XmlDownloadTask;
 import eu.europa.esig.dss.tsl.parsing.TLParsingTask;
@@ -27,7 +28,7 @@ public class TLAnalysis implements Callable<AnalysisResult> {
 
 		AnalysisResult result = new AnalysisResult();
 
-		XmlDownloadResult cachedDownloadResult = cacheAccess.getCachedDownloadResult();
+		CachedEntry<XmlDownloadResult> cachedDownloadResult = cacheAccess.getCachedDownloadResult();
 
 		XmlDownloadTask downloadTask = new XmlDownloadTask(dataLoader, source.getUrl());
 		XmlDownloadResult newXMLDownloadResult = downloadTask.get();

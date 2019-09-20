@@ -2,14 +2,13 @@ package eu.europa.esig.dss.tsl.cache;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.tsl.cache.result.CachedResult;
-import eu.europa.esig.dss.tsl.cache.result.CachedResultWrapper;
+import eu.europa.esig.dss.tsl.cache.state.CachedEntry;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
@@ -22,46 +21,142 @@ public abstract class AbstractCache<R extends CachedResult> {
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractCache.class);
 	
 	/**
-	 * Map between {@code String} CACHE_KEY and the related result wrapper {@code CachedResultWrapper<Result>}
+	 * Map between {@code CacheKey} and the related result wrapper {@code CachedEntry<CachedResult>}
 	 */
-	protected Map<String, CachedResultWrapper<R>> cachedResultsMap = new HashMap<String, CachedResultWrapper<R>>();
+	private Map<CacheKey, CachedEntry<R>> cachedEntriesMap = new ConcurrentHashMap<CacheKey, CachedEntry<R>>();
 	
 	/**
-	 * Returns the CachedResult for the related {@code cacheKey}. Returns NULL if no result is assigned to the key
-	 * @param cacheKey {@link String} 
-	 * @return {@link CachedResult}
+	 * Returns the CachedEntry<R> for the related {@code cacheKey}. Returns new empty entry if no result found for the key
+	 * @param cacheKey {@link CacheKey} 
+	 * @return {@link CachedEntry<R>}
 	 */
-	public R getCachedResult(String cacheKey) {
+	public CachedEntry<R> get(CacheKey cacheKey) {
 		LOG.trace("Extracting the result for key [{}]...", cacheKey);
-		CachedResultWrapper<R> cacheWrapper = cachedResultsMap.get(cacheKey);
+		CachedEntry<R> cacheWrapper = cachedEntriesMap.get(cacheKey);
 		if (cacheWrapper != null) {
 			LOG.trace("Return result for the key [{}]...", cacheKey);
-			return cacheWrapper.getResult();
+			return cacheWrapper;
 		}
-		LOG.trace("A result for key [{}] is not found in the cache. Return null.", cacheKey);
-		return null;
+		LOG.trace("A result for key [{}] is not found in the cache. Return empty object.", cacheKey);
+		CachedEntry<R> emptyEntry = new CachedEntry<R>();
+		cachedEntriesMap.put(cacheKey, emptyEntry);
+		return emptyEntry;
 	}
 	
 	/**
 	 * Updates in the cache the value for {@code cacheKey} with the given {@code result}
-	 * @param cacheKey {@link String} key to update value for
+	 * @param cacheKey {@link CacheKey} key to update value for
 	 * @param result {@link CachedResult} to store
 	 */
-	public void update(String cacheKey, R result) {
+	public void update(CacheKey cacheKey, R result) {
 		LOG.trace("Update result for the key [{}]...", cacheKey);
-		cachedResultsMap.put(cacheKey, new CachedResultWrapper<R>(result));
+		CachedEntry<R> cachedEntry = cachedEntriesMap.get(cacheKey);
+		cachedEntry.update(result);
+	}
+	
+	/**
+	 * Updates the state for a CachedEntry matching to the given key to EXPIRED
+	 * @param cacheKey {@link CacheKey} of a CachedEntry to update
+	 */
+	public void expire(CacheKey cacheKey) {
+		LOG.trace("Update state to EXPIRED for an entry with the key [{}]...", cacheKey);
+		CachedEntry<R> cachedEntry = cachedEntriesMap.get(cacheKey);
+		cachedEntry.expire();
+	}
+	
+	/**
+	 * Updates states for CachedEntries for entries with provided cacheKeys to EXPIRED
+	 * @param cacheKeys collection of {@link CacheKey}s to update entries for
+	 */
+	public void expire(Collection<CacheKey> cacheKeys) {
+		if (Utils.isCollectionNotEmpty(cacheKeys)) {
+			LOG.trace("Updating a collection of {} keys from the cache...", cacheKeys.size());
+			for (CacheKey cacheKey : cacheKeys) {
+				expire(cacheKey);
+			}
+			LOG.trace("{} keys were updated to the state EXPIRED in the cache.", cacheKeys.size());
+		} else {
+			LOG.trace("Empty collection of cache keys obtained.", cacheKeys);
+		}
+	}
+	
+	/**
+	 * Removes the requested entry with the given {@code cacheKey}
+	 * @param cacheKey {@link CacheKey} of the entry to be deleted from the cache
+	 */
+	public void remove(CacheKey cacheKey) {
+		LOG.trace("Removing value for the key [{}] from cache...", cacheKey);
+		CachedEntry<R> removedEntry = cachedEntriesMap.remove(cacheKey);
+		LOG.debug("The cachedEntry with the key [{}], type [{}], creation time [{}] and status [{}], has been REMOVED from the cache.", 
+				cacheKey, getCacheType(), removedEntry.getCurrentStateDate(), removedEntry.getCurrentState());
+	}
+	
+	/**
+	 * Removes a list of entries with the matching keys
+	 * @param cacheKeys
+	 * 				collection of {@link CacheKey}s to remove from the cache
+	 */
+	public void remove(Collection<CacheKey> cacheKeys) {
+		if (Utils.isCollectionNotEmpty(cacheKeys)) {
+			LOG.trace("Removing a collection of {} keys from the cache...", cacheKeys.size());
+			for (CacheKey cacheKey : cacheKeys) {
+				remove(cacheKey);
+			}
+			LOG.trace("{} keys were removed from the cache.", cacheKeys.size());
+		} else {
+			LOG.trace("Empty collection of cache keys obtained.", cacheKeys);
+		}
+	}
+	
+	/**
+	 * Updates the state for a CachedEntry matching to the given key to SYNCHRONIZED
+	 * @param cacheKey {@link CacheKey} of a CachedEntry to update
+	 */
+	public void setSync(CacheKey cacheKey) {
+		LOG.trace("Update state to SYNCHRONIZED for an entry with the key [{}]...", cacheKey);
+		CachedEntry<R> cachedEntry = cachedEntriesMap.get(cacheKey);
+		cachedEntry.sync();
+	}
+
+	/**
+	 * Updates states for CachedEntries for entries with provided cacheKeys to SYNCHRONIZED
+	 * @param cacheKeys collection of {@link CacheKey}s to update entries for
+	 */
+	public void setSync(Collection<CacheKey> cacheKeys) {
+		if (Utils.isCollectionNotEmpty(cacheKeys)) {
+			LOG.trace("Updating a collection of {} keys from the cache...", cacheKeys.size());
+			for (CacheKey cacheKey : cacheKeys) {
+				setSync(cacheKey);
+			}
+			LOG.trace("{} keys were updated to the state SYNCHRONIZED in the cache.", cacheKeys.size());
+		} else {
+			LOG.trace("Empty collection of cache keys obtained.", cacheKeys);
+		}
+	}
+	
+	/**
+	 * Checks if a CachedEntry for the given key is not up to date
+	 * @param cacheKey {@link CacheKey} of the CacheEntry to check
+	 * @return TRUE if update is required for the matching CachedKey, FALSE otherwise
+	 */
+	public boolean isRefreshNeeded(CacheKey cacheKey) {
+		LOG.trace("Checking if the update is required for an entry with the key [{}]...", cacheKey);
+		CachedEntry<R> cachedEntry = cachedEntriesMap.get(cacheKey);
+		boolean refreshNeeded = cachedEntry.isRefreshNeeded();
+		LOG.trace("Is update required for the entry with key [{}] ? {}", cacheKey, refreshNeeded);
+		return refreshNeeded;
 	}
 	
 	/**
 	 * Returns the update date for the given {@code cacheKey}. Returns NULL if the cache does not contain a value for the key
-	 * @param cacheKey {@link String} key to get update value for
+	 * @param cacheKey {@link CacheKey} to get update value for
 	 * @return update {@link Date}
 	 */
-	public Date getUpdateDate(String cacheKey) {
+	public Date getUpdateDate(CacheKey cacheKey) {
 		LOG.trace("Extracting the update date for the key [{}]...", cacheKey);
-		CachedResultWrapper<R> cacheWrapper = cachedResultsMap.get(cacheKey);
+		CachedEntry<R> cacheWrapper = cachedEntriesMap.get(cacheKey);
 		if (cacheWrapper != null) {
-			Date updateDate = cacheWrapper.getUpdateDate();
+			Date updateDate = cacheWrapper.getCurrentStateDate();
 			LOG.trace("Returns the update date [{}] for the key [{}]", updateDate, cacheKey);
 			return updateDate;
 		}
@@ -70,29 +165,9 @@ public abstract class AbstractCache<R extends CachedResult> {
 	}
 	
 	/**
-	 * Removes the requested entry with the given {@code cacheKey}
-	 * @param cacheKey {@link String} representing the key of the entry to be deleted from the cache
+	 * Returns a type of current Cache
+	 * @return {@link CacheType}
 	 */
-	public void remove(String cacheKey) {
-		LOG.trace("Removing value for the key [{}] from cache...", cacheKey);
-		cachedResultsMap.remove(cacheKey);
-	}
+	protected abstract CacheType getCacheType();
 	
-	/**
-	 * Removes a list of entries with the matching keys
-	 * @param cacheKeys
-	 * 				collection of {@link String} cache keys to remove from the cache
-	 */
-	public void remove(Collection<String> cacheKeys) {
-		if (Utils.isCollectionNotEmpty(cacheKeys)) {
-			LOG.trace("Removing a collection of {} keys from the cache...", cacheKeys.size());
-			for (String cacheKey : cacheKeys) {
-				remove(cacheKey);
-			}
-			LOG.trace("{} keys were removed from the cache.", cacheKeys.size());
-		} else {
-			LOG.trace("Empty collection of cache keys obtained.", cacheKeys);
-		}
-	}
-
 }
