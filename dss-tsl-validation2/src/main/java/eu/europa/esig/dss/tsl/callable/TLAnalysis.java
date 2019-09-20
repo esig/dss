@@ -31,7 +31,7 @@ public class TLAnalysis implements Callable<AnalysisResult> {
 		try {
 			XmlDownloadTask downloadTask = new XmlDownloadTask(dataLoader, source.getUrl());
 			downloadResult = downloadTask.get();
-			if (cacheAccess.isUpToDate(downloadResult)) {
+			if (!cacheAccess.isUpToDate(downloadResult)) {
 				cacheAccess.expireParsing();
 				cacheAccess.expireValidation();
 				result.setDownloadResult(downloadResult);

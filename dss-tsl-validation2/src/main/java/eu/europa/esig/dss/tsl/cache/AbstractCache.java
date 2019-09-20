@@ -134,7 +134,7 @@ public abstract class AbstractCache<R extends CachedResult> {
 			}
 			LOG.trace("{} keys were updated to the state SYNCHRONIZED in the cache.", cacheKeys.size());
 		} else {
-			LOG.trace("Empty collection of cache keys obtained.", cacheKeys);
+			LOG.trace("Empty collection of cache keys obtained.");
 		}
 	}
 	
