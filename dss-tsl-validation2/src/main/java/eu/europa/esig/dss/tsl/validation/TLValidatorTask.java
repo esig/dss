@@ -74,17 +74,8 @@ public class TLValidatorTask implements Supplier<TLValidationResult> {
 
 	@Override
 	public TLValidationResult get() {
-		try {
-			Reports reports = validateTL();
-			return fillResult(reports);
-		} catch (Exception e) {
-			LOG.error("Unable to validate the trusted list", e);
-			return errorResult(e);
-		}
-	}
-
-	private TLValidationResult errorResult(Exception e) {
-		return new TLValidationResult(e.getMessage());
+		Reports reports = validateTL();
+		return fillResult(reports);
 	}
 
 	private Reports validateTL() {

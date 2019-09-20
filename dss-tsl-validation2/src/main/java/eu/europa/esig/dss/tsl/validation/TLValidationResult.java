@@ -35,22 +35,12 @@ public class TLValidationResult {
 	private final SubIndication subIndication;
 	private final Date signingTime;
 	private final CertificateToken signingCertificate;
-	private final String errorMessage;
 
 	public TLValidationResult(Indication indication, SubIndication subIndication, Date signingTime, CertificateToken signingCertificate) {
 		this.indication = indication;
 		this.subIndication = subIndication;
 		this.signingTime = signingTime;
 		this.signingCertificate = signingCertificate;
-		this.errorMessage = null;
-	}
-
-	public TLValidationResult(String errorMessage) {
-		this.indication = null;
-		this.subIndication = null;
-		this.signingTime = null;
-		this.signingCertificate = null;
-		this.errorMessage = errorMessage;
 	}
 
 	public Indication getIndication() {
@@ -67,14 +57,6 @@ public class TLValidationResult {
 
 	public CertificateToken getSigningCertificate() {
 		return signingCertificate;
-	}
-
-	public String getErrorMessage() {
-		return errorMessage;
-	}
-
-	public boolean isComplete() {
-		return indication != null;
 	}
 
 	public boolean isValid() {

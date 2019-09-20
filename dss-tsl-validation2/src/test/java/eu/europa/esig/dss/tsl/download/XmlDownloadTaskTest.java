@@ -3,7 +3,7 @@ package eu.europa.esig.dss.tsl.download;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
 import java.util.HashMap;
@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
@@ -29,7 +30,7 @@ public class XmlDownloadTaskTest {
 		DataLoader dataLoader = new MemoryDataLoader(dataMap);
 		for (String url : dataMap.keySet()) {
 			XmlDownloadTask task = new XmlDownloadTask(dataLoader, url);
-			assertNull(task.get());
+			assertThrows(DSSException.class, () -> task.get());
 		}
 	}
 
