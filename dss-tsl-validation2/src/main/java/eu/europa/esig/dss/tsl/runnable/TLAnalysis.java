@@ -1,7 +1,10 @@
 package eu.europa.esig.dss.tsl.runnable;
 
+import java.util.concurrent.CountDownLatch;
+
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.service.http.commons.DSSFileLoader;
-import eu.europa.esig.dss.tsl.cache.TLAnalysisCacheAccess;
+import eu.europa.esig.dss.tsl.cache.CacheAccessByKey;
 import eu.europa.esig.dss.tsl.download.XmlDownloadResult;
 import eu.europa.esig.dss.tsl.download.XmlDownloadTask;
 import eu.europa.esig.dss.tsl.parsing.TLParsingTask;
@@ -11,53 +14,73 @@ import eu.europa.esig.dss.tsl.validation.TLValidatorTask;
 public class TLAnalysis implements Runnable {
 
 	private final TLSource source;
-	private final TLAnalysisCacheAccess cacheAccess;
+	private final CacheAccessByKey cacheAccess;
 	private final DSSFileLoader dssFileLoader;
+	private final CountDownLatch latch;
 
-	public TLAnalysis(TLSource source, TLAnalysisCacheAccess cacheAccess, DSSFileLoader dssFileLoader) {
+	public TLAnalysis(TLSource source, CacheAccessByKey cacheAccess, DSSFileLoader dssFileLoader, CountDownLatch latch) {
 		this.source = source;
 		this.cacheAccess = cacheAccess;
 		this.dssFileLoader = dssFileLoader;
+		this.latch = latch;
 	}
 
 	@Override
 	public void run() {
 
-		XmlDownloadResult downloadResult = null;
-		try {
-			XmlDownloadTask downloadTask = new XmlDownloadTask(dssFileLoader, source.getUrl());
-			downloadResult = downloadTask.get();
-			if (!cacheAccess.isUpToDate(downloadResult)) {
-				cacheAccess.expireParsing();
-				cacheAccess.expireValidation();
-				cacheAccess.update(downloadResult);
-			}
-		} catch (Exception e) {
-			cacheAccess.downloadError(e);
+		DSSDocument document = download();
+
+		if (document == null) {
+			latch.countDown();
 			return;
 		}
 
+		parsing(document);
+
+		validation(document);
+
+		latch.countDown();
+	}
+
+	private DSSDocument download() {
+		DSSDocument document = null;
+		try {
+			XmlDownloadTask downloadTask = new XmlDownloadTask(dssFileLoader, source.getUrl());
+			XmlDownloadResult downloadResult = downloadTask.get();
+			if (!cacheAccess.isUpToDate(downloadResult)) {
+				cacheAccess.update(downloadResult);
+				cacheAccess.expireParsing();
+				cacheAccess.expireValidation();
+			}
+			document = downloadResult.getDSSDocument();
+		} catch (Exception e) {
+			cacheAccess.downloadError(e);
+		}
+		return document;
+	}
+
+	private void parsing(DSSDocument document) {
 		// True if EMPTY / EXPIRED by TL/LOTL
 		if (cacheAccess.isParsingRefreshNeeded()) {
 			try {
-				TLParsingTask parsingTask = new TLParsingTask(source, downloadResult.getDSSDocument());
+				TLParsingTask parsingTask = new TLParsingTask(source, document);
 				cacheAccess.update(parsingTask.get());
 			} catch (Exception e) {
 				cacheAccess.parsingError(e);
 			}
 		}
+	}
 
+	private void validation(DSSDocument document) {
 		// True if EMPTY / EXPIRED by TL/LOTL
 		if (cacheAccess.isValidationRefreshNeeded()) {
 			try {
-				TLValidatorTask validationTask = new TLValidatorTask(downloadResult.getDSSDocument(), source.getCertificateSource().getCertificates());
+				TLValidatorTask validationTask = new TLValidatorTask(document, source.getCertificateSource().getCertificates());
 				cacheAccess.update(validationTask.get());
 			} catch (Exception e) {
 				cacheAccess.validationError(e);
 			}
 		}
-
 	}
-
 
 }

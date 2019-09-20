@@ -4,9 +4,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,9 +15,9 @@ import eu.europa.esig.dss.service.http.commons.DSSFileLoader;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
+import eu.europa.esig.dss.tsl.cache.CacheAccessByKey;
 import eu.europa.esig.dss.tsl.cache.DownloadCache;
 import eu.europa.esig.dss.tsl.cache.ParsingCache;
-import eu.europa.esig.dss.tsl.cache.TLAnalysisCacheAccess;
 import eu.europa.esig.dss.tsl.cache.ValidationCache;
 import eu.europa.esig.dss.tsl.runnable.TLAnalysis;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
@@ -52,7 +52,7 @@ public class TLValidationJob {
 	 * Array of zero, one or more List Of Trusted List (LOTL) sources.
 	 */
 	private LOTLSource[] listOfTrustedListSources;
-	
+
 	/**
 	 * File cache directory where the cache will be stored
 	 */
@@ -69,7 +69,7 @@ public class TLValidationJob {
 	public void setListOfTrustedListSources(LOTLSource... listOfTrustedListSources) {
 		this.listOfTrustedListSources = listOfTrustedListSources;
 	}
-	
+
 	public void setFileCacheDirectory(File fileCacheDirectory) {
 		this.fileCacheDirectory = fileCacheDirectory;
 	}
@@ -146,29 +146,27 @@ public class TLValidationJob {
 		// Analyse introduced changes for TLs + adapt cache for TLs (EXPIRED)
 	}
 
-	@SuppressWarnings("rawtypes")
 	private void executeTLSourcesAnalysis(List<TLSource> tlSources, DSSFileLoader dssFileLoader) {
-		LOG.info("Running TLAnalysis for {} TLSource(s)", tlSources.size());
+		int nbTLSources = tlSources.size();
+		if (nbTLSources == 0) {
+			LOG.info("No TL to be analyzed");
+			return;
+		}
 
-		List<Future> futures = new ArrayList<Future>();
+		LOG.info("Running TLAnalysis for {} TLSource(s)", nbTLSources);
+
+		CountDownLatch latch = new CountDownLatch(nbTLSources);
 		for (TLSource tlSource : tlSources) {
-			// Limited access to the caches
-			final TLAnalysisCacheAccess cacheAccess = new TLAnalysisCacheAccess(tlSource.getCacheKey(), downloadCache, parsingCache, validationCache);
-			futures.add(executorService.submit(new TLAnalysis(tlSource, cacheAccess, dssFileLoader)));
+			final CacheAccessByKey cacheAccess = new CacheAccessByKey(tlSource.getCacheKey(), downloadCache, parsingCache, validationCache);
+			executorService.submit(new TLAnalysis(tlSource, cacheAccess, dssFileLoader, latch));
 		}
 
-		int nbDone = 0;
-		for (Future future : futures) {
-			try {
-				if (future.get() == null) {
-					nbDone++;
-				}
-			} catch (Exception e) {
-				LOG.error("Unable to retrieve the thread result", e);
-			}
+		try {
+			latch.await();
+			LOG.info("TLAnalysis is DONE for {} TLSource(s)", nbTLSources);
+		} catch (InterruptedException e) {
+			LOG.error("Interruption in the TLAnalysis process", e);
 		}
-
-		LOG.info("TLAnalysis is DONE for {} TLSource(s) / {}", nbDone, tlSources.size());
 	}
 
 }

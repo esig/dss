@@ -4,7 +4,7 @@ import eu.europa.esig.dss.tsl.download.XmlDownloadResult;
 import eu.europa.esig.dss.tsl.parsing.TLParsingResult;
 import eu.europa.esig.dss.tsl.validation.ValidationResult;
 
-public class TLAnalysisCacheAccess {
+public class CacheAccessByKey {
 
 	/* Key of the CacheEntry */
 	private final CacheKey key;
@@ -14,7 +14,7 @@ public class TLAnalysisCacheAccess {
 	private final ParsingCache parsingCache;
 	private final ValidationCache validationCache;
 	
-	public TLAnalysisCacheAccess(final CacheKey key, final DownloadCache fileCache, final ParsingCache parsingCache,
+	public CacheAccessByKey(final CacheKey key, final DownloadCache fileCache, final ParsingCache parsingCache,
 			final ValidationCache validationCache) {
 		this.key = key;
 		this.fileCache = fileCache;
