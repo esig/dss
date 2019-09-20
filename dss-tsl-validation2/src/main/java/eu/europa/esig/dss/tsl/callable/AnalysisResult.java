@@ -7,10 +7,13 @@ import eu.europa.esig.dss.tsl.validation.TLValidationResult;
 public class AnalysisResult {
 
 	private XmlDownloadResult downloadResult;
+	private Exception downloadException;
 
 	private AbstractParsingResult parsingResult;
+	private Exception parsingException;
 
 	private TLValidationResult validationResult;
+	private Exception validationException;
 
 	public XmlDownloadResult getDownloadResult() {
 		return downloadResult;
@@ -18,6 +21,14 @@ public class AnalysisResult {
 
 	public void setDownloadResult(XmlDownloadResult downloadResult) {
 		this.downloadResult = downloadResult;
+	}
+
+	public Exception getDownloadException() {
+		return downloadException;
+	}
+
+	public void setDownloadException(Exception downloadException) {
+		this.downloadException = downloadException;
 	}
 
 	public AbstractParsingResult getParsingResult() {
@@ -28,12 +39,28 @@ public class AnalysisResult {
 		this.parsingResult = parsingResult;
 	}
 
+	public Exception getParsingException() {
+		return parsingException;
+	}
+
+	public void setParsingException(Exception parsingException) {
+		this.parsingException = parsingException;
+	}
+
 	public TLValidationResult getValidationResult() {
 		return validationResult;
 	}
 
 	public void setValidationResult(TLValidationResult validationResult) {
 		this.validationResult = validationResult;
+	}
+
+	public Exception getValidationException() {
+		return validationException;
+	}
+
+	public void setValidationException(Exception validationException) {
+		this.validationException = validationException;
 	}
 
 }
