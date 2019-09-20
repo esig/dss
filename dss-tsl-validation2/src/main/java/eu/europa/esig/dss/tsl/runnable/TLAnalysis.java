@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.tsl.runnable;
 
-import eu.europa.esig.dss.spi.client.http.DataLoader;
+import eu.europa.esig.dss.service.http.commons.DSSFileLoader;
 import eu.europa.esig.dss.tsl.cache.TLAnalysisCacheAccess;
 import eu.europa.esig.dss.tsl.download.XmlDownloadResult;
 import eu.europa.esig.dss.tsl.download.XmlDownloadTask;
@@ -12,12 +12,12 @@ public class TLAnalysis implements Runnable {
 
 	private final TLSource source;
 	private final TLAnalysisCacheAccess cacheAccess;
-	private final DataLoader dataLoader;
+	private final DSSFileLoader dssFileLoader;
 
-	public TLAnalysis(TLSource source, TLAnalysisCacheAccess cacheAccess, DataLoader dataLoader) {
+	public TLAnalysis(TLSource source, TLAnalysisCacheAccess cacheAccess, DSSFileLoader dssFileLoader) {
 		this.source = source;
 		this.cacheAccess = cacheAccess;
-		this.dataLoader = dataLoader;
+		this.dssFileLoader = dssFileLoader;
 	}
 
 	@Override
@@ -25,7 +25,7 @@ public class TLAnalysis implements Runnable {
 
 		XmlDownloadResult downloadResult = null;
 		try {
-			XmlDownloadTask downloadTask = new XmlDownloadTask(dataLoader, source.getUrl());
+			XmlDownloadTask downloadTask = new XmlDownloadTask(dssFileLoader, source.getUrl());
 			downloadResult = downloadTask.get();
 			if (!cacheAccess.isUpToDate(downloadResult)) {
 				cacheAccess.expireParsing();
