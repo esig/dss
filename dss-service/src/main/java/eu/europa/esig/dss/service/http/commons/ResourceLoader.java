@@ -44,18 +44,6 @@ public class ResourceLoader {
 	}
 
 	/**
-	 * This method replaces all special characters by an underscore
-	 * 
-	 * @param fileName
-	 *            the filename to normalize
-	 * @return the normalized filename
-	 */
-	public static String getNormalizedFileName(final String fileName) {
-		final String normalizedFileName = fileName.replaceAll("\\W", "_");
-		return normalizedFileName;
-	}
-
-	/**
 	 * This method converts the resource path to the absolute path in target folder.
 	 *
 	 * @param resourcePath

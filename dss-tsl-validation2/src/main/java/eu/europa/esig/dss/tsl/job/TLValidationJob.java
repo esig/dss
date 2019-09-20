@@ -1,10 +1,14 @@
 package eu.europa.esig.dss.tsl.job;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import eu.europa.esig.dss.service.http.commons.DSSFileLoader;
+import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
+import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
 
@@ -27,6 +31,11 @@ public class TLValidationJob {
 	 * Array of zero, one or more List Of Trusted List (LOTL) sources.
 	 */
 	private LOTLSource[] listOfTrustedListSources;
+	
+	/**
+	 * File cache directory where the cache will be stored
+	 */
+	private File fileCacheDirectory;
 
 	public void setOnlineDataLoader(DataLoader onlineDataLoader) {
 		this.onlineDataLoader = onlineDataLoader;
@@ -39,16 +48,32 @@ public class TLValidationJob {
 	public void setListOfTrustedListSources(LOTLSource... listOfTrustedListSources) {
 		this.listOfTrustedListSources = listOfTrustedListSources;
 	}
-
-	public void init() {
-//		refresh(cacheDataLoader);
+	
+	public void setFileCacheDirectory(File fileCacheDirectory) {
+		this.fileCacheDirectory = fileCacheDirectory;
 	}
 
-	public void refresh() {
-		refresh(onlineDataLoader);
+	public void offlineRefresh() {
+		FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();
+		if (fileCacheDirectory != null) {
+			fileCacheDataLoader.setFileCacheDirectory(fileCacheDirectory);
+		}
+		fileCacheDataLoader.setCacheExpirationTime(Long.MAX_VALUE);
+		fileCacheDataLoader.setDataLoader(new IgnoreDataLoader());
+		refresh(fileCacheDataLoader);
 	}
 
-	private void refresh(DataLoader dataLoader) {
+	public void onlineRefresh() {
+		FileCacheDataLoader fileDataLoaderNoCache = new FileCacheDataLoader();
+		if (fileCacheDirectory != null) {
+			fileDataLoaderNoCache.setFileCacheDirectory(fileCacheDirectory);
+		}
+		fileDataLoaderNoCache.setCacheExpirationTime(0);
+		fileDataLoaderNoCache.setDataLoader(onlineDataLoader);
+		refresh(fileDataLoaderNoCache);
+	}
+
+	private void refresh(DSSFileLoader dssFileLoader) {
 
 		List<TLSource> currentTLSources = new ArrayList<TLSource>();
 		if (trustedListSources != null) {
@@ -57,7 +82,7 @@ public class TLValidationJob {
 
 		// Execute all LOTLs
 		if (listOfTrustedListSources != null) {
-			executeLOTLSourcesAnalysis(Arrays.asList(listOfTrustedListSources), dataLoader);
+			executeLOTLSourcesAnalysis(Arrays.asList(listOfTrustedListSources), dssFileLoader);
 
 			// Check LOTLs consistency
 			// Exception on duplicate TL URL
@@ -66,7 +91,7 @@ public class TLValidationJob {
 		}
 
 		// And then, execute all TLs (manual configs + TLs from LOTLs)
-		executeTLSourcesAnalysis(currentTLSources, dataLoader);
+		executeTLSourcesAnalysis(currentTLSources, dssFileLoader);
 
 		// alerts()
 
@@ -75,7 +100,7 @@ public class TLValidationJob {
 		// cache cleaner (remove TO_BE_DELETED entries)
 	}
 
-	private void executeLOTLSourcesAnalysis(List<LOTLSource> lotlSources, DataLoader dataLoader) {
+	private void executeLOTLSourcesAnalysis(List<LOTLSource> lotlSources, DSSFileLoader dssFileLoader) {
 		// get cache contents
 
 		for (LOTLSource lotlSource : lotlSources) {
@@ -91,7 +116,7 @@ public class TLValidationJob {
 		// Analyse introduced changes for TLs + adapt cache for TLs (EXPIRED)
 	}
 
-	private void executeTLSourcesAnalysis(List<TLSource> tlSources, DataLoader dataLoader) {
+	private void executeTLSourcesAnalysis(List<TLSource> tlSources, DSSFileLoader dssFileLoader) {
 		// get cache contents
 
 		for (TLSource tlSource : tlSources) {

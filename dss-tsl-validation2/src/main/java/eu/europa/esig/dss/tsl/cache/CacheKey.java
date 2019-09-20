@@ -1,14 +1,8 @@
 package eu.europa.esig.dss.tsl.cache;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import eu.europa.esig.dss.spi.DSSUtils;
 
 public class CacheKey {
-
-	private static final Logger LOG = LoggerFactory.getLogger(CacheKey.class);
 	
 	/**
 	 * Key of the entry
@@ -20,17 +14,7 @@ public class CacheKey {
 	 * @param url {@link String} url string of the related file entry
 	 */
 	public CacheKey(final String url) {
-		this.key = decodeString(url);
-	}
-	
-	private String decodeString(final String url) {
-		String decodedUrl = url;
-		try {
-			decodedUrl = URLDecoder.decode(url, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			LOG.debug("Cannot decode url [{}]. Reason : {}", url, e.getMessage());
-		}
-		return decodedUrl.replaceAll("\\W", "_");
+		this.key = DSSUtils.getNormalizedString(url);
 	}
 	
 	/**

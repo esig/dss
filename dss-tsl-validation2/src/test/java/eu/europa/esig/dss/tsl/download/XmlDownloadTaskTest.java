@@ -13,8 +13,9 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.service.http.commons.DSSFileLoader;
+import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.client.http.MemoryDataLoader;
 
 public class XmlDownloadTaskTest {
@@ -22,12 +23,12 @@ public class XmlDownloadTaskTest {
 	@Test
 	public void nullResult() {
 		Map<String, byte[]> dataMap = new HashMap<String, byte[]>();
-
 		dataMap.put("null", null);
 		dataMap.put("empty-array", new byte[] {});
 		dataMap.put("0", new byte[] { 0 });
+		MemoryDataLoader memoryDataLoader = new MemoryDataLoader(dataMap);
 
-		DataLoader dataLoader = new MemoryDataLoader(dataMap);
+		DSSFileLoader dataLoader = new FileCacheDataLoader(memoryDataLoader);
 		for (String url : dataMap.keySet()) {
 			XmlDownloadTask task = new XmlDownloadTask(dataLoader, url);
 			assertThrows(DSSException.class, () -> task.get());
@@ -47,10 +48,12 @@ public class XmlDownloadTaskTest {
 
 		assertNotEquals(DSSUtils.getMD5Digest(sampleByteArray), DSSUtils.getMD5Digest(sampleWithBomByteArray));
 
-		DataLoader dataLoader = new MemoryDataLoader(dataMap);
+		MemoryDataLoader memoryDataLoader = new MemoryDataLoader(dataMap);
+		FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader(memoryDataLoader);
+		
 		XmlDownloadResult first = null;
 		for (String url : dataMap.keySet()) {
-			XmlDownloadTask task = new XmlDownloadTask(dataLoader, url);
+			XmlDownloadTask task = new XmlDownloadTask(fileCacheDataLoader, url);
 			XmlDownloadResult downloadResult = task.get();
 			assertNotNull(downloadResult);
 			assertNotNull(downloadResult.getDSSDocument());
@@ -66,7 +69,10 @@ public class XmlDownloadTaskTest {
 		}
 
 		dataMap.put("sample-diff", DSSUtils.toByteArray(new FileDocument(new File("src/test/resources/sample-diff.xml"))));
-		XmlDownloadTask task = new XmlDownloadTask(new MemoryDataLoader(dataMap), "sample-diff");
+		memoryDataLoader = new MemoryDataLoader(dataMap);
+		fileCacheDataLoader = new FileCacheDataLoader(memoryDataLoader);
+		
+		XmlDownloadTask task = new XmlDownloadTask(fileCacheDataLoader, "sample-diff");
 		XmlDownloadResult downloadResultDiff = task.get();
 		assertNotNull(downloadResultDiff);
 		assertNotNull(downloadResultDiff.getDigest());

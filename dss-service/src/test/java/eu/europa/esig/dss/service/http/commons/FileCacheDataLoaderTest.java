@@ -35,7 +35,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.MemoryDataLoader;
+import eu.europa.esig.dss.utils.Utils;
 
 public class FileCacheDataLoaderTest {
 
@@ -70,6 +73,7 @@ public class FileCacheDataLoaderTest {
 		waitOneSecond();
 		long newCacheCreationTime = getUrlAndReturnCacheCreationTime();
 		assertEquals(cacheCreationTime, newCacheCreationTime);
+		getDSSDocumentByUrl();
 	}
 
 	@Test
@@ -79,6 +83,7 @@ public class FileCacheDataLoaderTest {
 		waitOneSecond();
 		long newCacheCreationTime = getUrlAndReturnCacheCreationTime();
 		assertEquals(cacheCreationTime, newCacheCreationTime);
+		getDSSDocumentByUrl();
 	}
 
 	@Test
@@ -88,6 +93,7 @@ public class FileCacheDataLoaderTest {
 		waitOneSecond();
 		long newCacheCreationTime = getUrlAndReturnCacheCreationTime();
 		assertTrue(cacheCreationTime < newCacheCreationTime);
+		getDSSDocumentByUrl();
 	}
 
 	@Test
@@ -99,10 +105,22 @@ public class FileCacheDataLoaderTest {
 		specificDataLoader.setFileCacheDirectory(cacheDirectory);
 
 		assertNull(specificDataLoader.get("1.2.3.4.5"));
+		assertNull(specificDataLoader.getDocument("1.2.3.4.5"));
 		assertNull(specificDataLoader.post("1.2.3.4.5", new byte[] { 1, 2, 3 }));
+		specificDataLoader.createFile("1.2.3.4.5", new byte[] { 1, 2, 3 });
+		assertNotNull(specificDataLoader.get("1.2.3.4.5"));
+		assertNotNull(specificDataLoader.getDocument("1.2.3.4.5"));
 
 		specificDataLoader.setResourceLoader(new ResourceLoader(FileCacheDataLoaderTest.class));
 		assertNotNull(specificDataLoader.get("/logback.xml"));
+		assertNotNull(specificDataLoader.getDocument("/logback.xml"));
+	}
+	
+	@Test
+	public void testGetDSSDocument() {
+		DSSDocument dssDocument = getDSSDocumentByUrl();
+		assertNotNull(dssDocument.getAbsolutePath());
+		assertTrue(Utils.isArrayNotEmpty(DSSUtils.toByteArray(dssDocument)));
 	}
 
 	private long getUrlAndReturnCacheCreationTime() {
@@ -110,6 +128,12 @@ public class FileCacheDataLoaderTest {
 		assertTrue(bytesArray.length > 0);
 		File cachedFile = getCachedFile(cacheDirectory);
 		return cachedFile.lastModified();
+	}
+	
+	private DSSDocument getDSSDocumentByUrl() {
+		DSSDocument document = dataLoader.getDocument(URL_TO_LOAD);
+		assertNotNull(document);
+		return document;
 	}
 
 	private File getCachedFile(File cacheDirectory) {
