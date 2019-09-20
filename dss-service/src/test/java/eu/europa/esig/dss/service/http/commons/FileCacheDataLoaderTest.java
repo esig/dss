@@ -28,8 +28,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,6 +39,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.spi.client.http.MemoryDataLoader;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -121,6 +124,49 @@ public class FileCacheDataLoaderTest {
 		DSSDocument dssDocument = getDSSDocumentByUrl();
 		assertNotNull(dssDocument.getAbsolutePath());
 		assertTrue(Utils.isArrayNotEmpty(DSSUtils.toByteArray(dssDocument)));
+	}
+	
+	@Test
+	public void offlineDataLoaderTest() throws IOException {
+		File cacheDirectory = new File("target/cache");
+		cacheDirectory.mkdirs();
+		Files.walk(cacheDirectory.toPath()).map(Path::toFile).forEach(File::delete);
+		
+		Map<String, byte[]> dataMap = new HashMap<String, byte[]>();
+		dataMap.put("sample", "sample".getBytes());
+		dataMap.put("null", null);
+		dataMap.put("empty-array", new byte[] {});
+		dataMap.put("0", new byte[] { 0 });
+		dataMap.put("1.2.3.4.5", new byte[] { 1, 2, 3, 4, 5 });
+		MemoryDataLoader memoryDataLoader = new MemoryDataLoader(dataMap);
+		
+		FileCacheDataLoader offlineFileCacheDataLoader = new FileCacheDataLoader();
+		offlineFileCacheDataLoader.setCacheExpirationTime(Long.MAX_VALUE);
+		offlineFileCacheDataLoader.setDataLoader(new IgnoreDataLoader());
+		offlineFileCacheDataLoader.setFileCacheDirectory(cacheDirectory);
+		
+		assertNull(offlineFileCacheDataLoader.get("sample"));
+		assertNull(offlineFileCacheDataLoader.get("null"));
+		assertNull(offlineFileCacheDataLoader.get("empty-array"));
+		assertNull(offlineFileCacheDataLoader.get("0"));
+		assertNull(offlineFileCacheDataLoader.get("1.2.3.4.5"));
+		
+		FileCacheDataLoader onlineFileCacheDataLoader = new FileCacheDataLoader();
+		onlineFileCacheDataLoader.setCacheExpirationTime(0);
+		onlineFileCacheDataLoader.setDataLoader(memoryDataLoader);
+		onlineFileCacheDataLoader.setFileCacheDirectory(cacheDirectory);
+		
+		assertNotNull(onlineFileCacheDataLoader.get("sample"));
+		assertNull(onlineFileCacheDataLoader.get("null"));
+		assertNull(onlineFileCacheDataLoader.get("empty-array"));
+		assertNotNull(onlineFileCacheDataLoader.get("0"));
+		assertNotNull(onlineFileCacheDataLoader.get("1.2.3.4.5"));
+		
+		assertNotNull(offlineFileCacheDataLoader.get("sample"));
+		assertNull(offlineFileCacheDataLoader.get("null"));
+		assertNull(offlineFileCacheDataLoader.get("empty-array"));
+		assertNotNull(offlineFileCacheDataLoader.get("0"));
+		assertNotNull(offlineFileCacheDataLoader.get("1.2.3.4.5"));
 	}
 
 	private long getUrlAndReturnCacheCreationTime() {

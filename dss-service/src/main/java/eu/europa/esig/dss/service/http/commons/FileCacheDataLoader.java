@@ -209,7 +209,7 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 		if (resourcePath != null) {
 			final File fileResource = new File(resourcePath);
 			returnedBytes = DSSUtils.toByteArray(fileResource);
-		} else {
+		} else if (dataLoader != null) {
 			returnedBytes = dataLoader.get(urlString);
 		}
 		return returnedBytes;
@@ -306,7 +306,7 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 			return true;
 		}
 		long currentTime = new Date().getTime();
-		if (file.lastModified() + cacheExpirationTime < currentTime) {
+		if (currentTime - file.lastModified() > cacheExpirationTime) {
 			LOG.debug("Cache is expired");
 			return true;
 		}

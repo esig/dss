@@ -50,6 +50,7 @@ public class XmlDownloadTaskTest {
 
 		MemoryDataLoader memoryDataLoader = new MemoryDataLoader(dataMap);
 		FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader(memoryDataLoader);
+		fileCacheDataLoader.setCacheExpirationTime(0);
 		
 		XmlDownloadResult first = null;
 		for (String url : dataMap.keySet()) {
