@@ -1,12 +1,16 @@
 package eu.europa.esig.dss.tsl.runnable;
 
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.http.commons.DSSFileLoader;
 import eu.europa.esig.dss.tsl.cache.CacheAccessByKey;
 import eu.europa.esig.dss.tsl.download.XmlDownloadResult;
 import eu.europa.esig.dss.tsl.download.XmlDownloadTask;
+import eu.europa.esig.dss.tsl.parsing.AbstractParsingResult;
+import eu.europa.esig.dss.tsl.parsing.TLParsingResult;
 import eu.europa.esig.dss.tsl.parsing.TLParsingTask;
 import eu.europa.esig.dss.tsl.source.TLSource;
 import eu.europa.esig.dss.tsl.validation.TLValidatorTask;
@@ -28,20 +32,21 @@ public class TLAnalysis implements Runnable {
 	@Override
 	public void run() {
 
-		DSSDocument document = download();
+		DSSDocument document = download(source.getUrl());
 
 		if (document != null) {
 			parsing(document);
-			validation(document);
+
+			validation(document, source.getCertificateSource().getCertificates());
 		}
 
 		latch.countDown();
 	}
 
-	private DSSDocument download() {
+	private DSSDocument download(final String url) {
 		DSSDocument document = null;
 		try {
-			XmlDownloadTask downloadTask = new XmlDownloadTask(dssFileLoader, source.getUrl());
+			XmlDownloadTask downloadTask = new XmlDownloadTask(dssFileLoader, url);
 			XmlDownloadResult downloadResult = downloadTask.get();
 			if (!cacheAccess.isUpToDate(downloadResult)) {
 				cacheAccess.update(downloadResult);
@@ -55,23 +60,26 @@ public class TLAnalysis implements Runnable {
 		return document;
 	}
 
-	private void parsing(DSSDocument document) {
+	private AbstractParsingResult parsing(DSSDocument document) {
 		// True if EMPTY / EXPIRED by TL/LOTL
 		if (cacheAccess.isParsingRefreshNeeded()) {
 			try {
 				TLParsingTask parsingTask = new TLParsingTask(source, document);
-				cacheAccess.update(parsingTask.get());
+				final TLParsingResult tlParsingResult = parsingTask.get();
+				cacheAccess.update(tlParsingResult);
+				return tlParsingResult;
 			} catch (Exception e) {
 				cacheAccess.parsingError(e);
 			}
 		}
+		return null;
 	}
 
-	private void validation(DSSDocument document) {
+	private void validation(DSSDocument document, List<CertificateToken> trustedCertificates) {
 		// True if EMPTY / EXPIRED by TL/LOTL
 		if (cacheAccess.isValidationRefreshNeeded()) {
 			try {
-				TLValidatorTask validationTask = new TLValidatorTask(document, source.getCertificateSource().getCertificates());
+				TLValidatorTask validationTask = new TLValidatorTask(document, trustedCertificates);
 				cacheAccess.update(validationTask.get());
 			} catch (Exception e) {
 				cacheAccess.validationError(e);
