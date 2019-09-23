@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.tsl.source;
 
+import java.util.Objects;
+
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
 import eu.europa.esig.dss.tsl.function.TrustServicePredicate;
@@ -8,7 +10,7 @@ import eu.europa.esig.dss.tsl.function.TrustServiceProviderPredicate;
 public class TLSource {
 
 	/**
-	 * TL URL
+	 * URL
 	 */
 	private String url;
 
@@ -36,6 +38,7 @@ public class TLSource {
 	}
 
 	public void setUrl(String url) {
+		Objects.requireNonNull(url);
 		this.url = url;
 	}
 
@@ -44,6 +47,7 @@ public class TLSource {
 	}
 
 	public void setCertificateSource(CertificateSource certificateSource) {
+		Objects.requireNonNull(certificateSource);
 		this.certificateSource = certificateSource;
 	}
 

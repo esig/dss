@@ -30,14 +30,10 @@ public class TLAnalysis implements Runnable {
 
 		DSSDocument document = download();
 
-		if (document == null) {
-			latch.countDown();
-			return;
+		if (document != null) {
+			parsing(document);
+			validation(document);
 		}
-
-		parsing(document);
-
-		validation(document);
 
 		latch.countDown();
 	}
