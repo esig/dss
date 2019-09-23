@@ -77,4 +77,9 @@ public class CurrentCacheContext implements CacheContext {
 		return exception;
 	}
 
+	@Override
+	public boolean isToBeDeleted() {
+		return CacheStateEnum.TO_BE_DELETED == state;
+	}
+
 }

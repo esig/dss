@@ -1,9 +1,9 @@
 package eu.europa.esig.dss.tsl.job;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -12,10 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.service.http.commons.DSSFileLoader;
-import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
-import eu.europa.esig.dss.spi.client.http.DataLoader;
-import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.tsl.cache.CacheAccessByKey;
+import eu.europa.esig.dss.tsl.cache.CacheCleaner;
 import eu.europa.esig.dss.tsl.cache.DownloadCache;
 import eu.europa.esig.dss.tsl.cache.ParsingCache;
 import eu.europa.esig.dss.tsl.cache.ValidationCache;
@@ -36,12 +34,6 @@ public class TLValidationJob {
 	private ValidationCache validationCache = new ValidationCache();
 
 	/**
-	 * Configured DataLoader to retrieve online data (usually an instance of the
-	 * {@link CommonDaLoader} with the proxy,... configuration
-	 */
-	private DataLoader onlineDataLoader;
-
-	/**
 	 * Array of zero, one or more Trusted List (TL) sources.
 	 * 
 	 * These trusted lists are not referenced in a List Of Trusted Lists (LOTL)
@@ -52,15 +44,21 @@ public class TLValidationJob {
 	 * Array of zero, one or more List Of Trusted List (LOTL) sources.
 	 */
 	private LOTLSource[] listOfTrustedListSources;
+	
+	/**
+	 * The DSSFileLoader used for offline data loading from a local source
+	 */
+	private DSSFileLoader offlineLoader;
 
 	/**
-	 * File cache directory where the cache will be stored
+	 * The DSSFileLoader used for online data loading from a remote source
 	 */
-	private File fileCacheDirectory;
-
-	public void setOnlineDataLoader(DataLoader onlineDataLoader) {
-		this.onlineDataLoader = onlineDataLoader;
-	}
+	private DSSFileLoader onlineLoader;
+	
+	/**
+	 * Used to clean the cache
+	 */
+	private CacheCleaner cacheCleaner;
 
 	public void setTrustedListSources(TLSource... trustedListSources) {
 		this.trustedListSources = trustedListSources;
@@ -70,35 +68,53 @@ public class TLValidationJob {
 		this.listOfTrustedListSources = listOfTrustedListSources;
 	}
 
-	public void setFileCacheDirectory(File fileCacheDirectory) {
-		this.fileCacheDirectory = fileCacheDirectory;
-	}
-
 	public void setExecutorService(ExecutorService executorService) {
 		if (this.executorService != null && !this.executorService.isShutdown()) {
 			this.executorService.shutdownNow();
 		}
 		this.executorService = executorService;
 	}
-
-	public void offlineRefresh() {
-		FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();
-		if (fileCacheDirectory != null) {
-			fileCacheDataLoader.setFileCacheDirectory(fileCacheDirectory);
-		}
-		fileCacheDataLoader.setCacheExpirationTime(Long.MAX_VALUE);
-		fileCacheDataLoader.setDataLoader(new IgnoreDataLoader());
-		refresh(fileCacheDataLoader);
+	
+	/**
+	 * Sets the offline DSSFileLoader used for data loading from the local source
+	 * @param offlineLoader {@link DSSFileLoader}
+	 */
+	public void setOfflineDataLoader(DSSFileLoader offlineLoader) {
+		this.offlineLoader = offlineLoader;
 	}
 
+	/**
+	 * Sets the online DSSFileLoader used for data loading from a remote source
+	 * @param onlineLoader {@link DSSFileLoader}
+	 */
+	public void setOnlineDataLoader(DSSFileLoader onlineLoader) {
+		this.onlineLoader = onlineLoader;
+	}
+	
+	/**
+	 * Sets the cacheCleaner
+	 * @param cacheCleaner {@link CacheCleaner}
+	 */
+	public void setCacheCleaner(final CacheCleaner cacheCleaner) {
+		this.cacheCleaner = cacheCleaner;
+	}
+
+	/**
+	 * Used to execute the refresh in offline mode (no date from remote sources will be downloaded)
+	 * By default used on initialization
+	 */
+	public void offlineRefresh() {
+		Objects.requireNonNull(offlineLoader, "The offlineLoader must be defined!");
+		refresh(offlineLoader);
+	}
+
+	/**
+	 * Used to execute the refresh in online mode (all data will be updated from remote sources)
+	 * Used as default database update.
+	 */
 	public void onlineRefresh() {
-		FileCacheDataLoader fileDataLoaderNoCache = new FileCacheDataLoader();
-		if (fileCacheDirectory != null) {
-			fileDataLoaderNoCache.setFileCacheDirectory(fileCacheDirectory);
-		}
-		fileDataLoaderNoCache.setCacheExpirationTime(0);
-		fileDataLoaderNoCache.setDataLoader(onlineDataLoader);
-		refresh(fileDataLoaderNoCache);
+		Objects.requireNonNull(onlineLoader, "The onlineLoader must be defined!");
+		refresh(onlineLoader);
 	}
 
 	private void refresh(DSSFileLoader dssFileLoader) {
@@ -125,7 +141,7 @@ public class TLValidationJob {
 
 		// TLCerSource sync + cache sync if needed
 
-		// cache cleaner (remove TO_BE_DELETED entries)
+		executeTLSourcesClean(currentTLSources, dssFileLoader);
 	}
 
 	private void executeLOTLSourcesAnalysis(List<LOTLSource> lotlSources, DSSFileLoader dssFileLoader) {
@@ -167,6 +183,18 @@ public class TLValidationJob {
 		} catch (InterruptedException e) {
 			LOG.error("Interruption in the TLAnalysis process", e);
 		}
+	}
+	
+	private void executeTLSourcesClean(List<TLSource> tlSources, DSSFileLoader dssFileLoader) {
+		int nbTLSources = tlSources.size();
+		LOG.info("Running CacheClean for {} TLSource(s)", nbTLSources);
+		
+		for (TLSource tlSource : tlSources) {
+			final CacheAccessByKey cacheAccess = new CacheAccessByKey(tlSource.getCacheKey(), downloadCache, parsingCache, validationCache);
+			cacheCleaner.clean(cacheAccess);
+		}
+		
+		LOG.info("CacheClean is DONE for {} TLSource(s)", nbTLSources);
 	}
 
 }

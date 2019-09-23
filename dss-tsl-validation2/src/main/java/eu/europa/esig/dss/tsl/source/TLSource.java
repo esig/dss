@@ -32,6 +32,11 @@ public class TLSource {
 	 * Default : all trust services are selected
 	 */
 	private TrustServicePredicate trustServicePredicate;
+	
+	/**
+	 * The cached CacheKey value (the key is computed from url parameter)
+	 */
+	private CacheKey cacheKey;
 
 	public String getUrl() {
 		return url;
@@ -68,7 +73,10 @@ public class TLSource {
 	}
 
 	public CacheKey getCacheKey() {
-		return new CacheKey(url);
+		if (cacheKey == null) {
+			cacheKey = new CacheKey(url);
+		}
+		return cacheKey;
 	}
 
 }

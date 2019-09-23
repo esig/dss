@@ -51,13 +51,17 @@ public class CachedEntry<R extends CachedResult> {
 	public void toBeDeleted() {
 		cacheContext.toBeDeleted();
 	}
+	
+	public boolean isToBeDeleted() {
+		return cacheContext.isToBeDeleted();
+	}
 
 	public boolean isRefreshNeeded() {
 		return cacheContext.isRefreshNeeded();
 	}
 	
 	public boolean isEmpty() {
-		return cacheContext == null;
+		return cachedResult == null;
 	}
 
 	public boolean isError() {

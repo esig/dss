@@ -29,23 +29,28 @@ public class CacheKey {
 	public String toString() {
 		return String.format("CacheKey with the key [%s]", key);
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
+		if (this == obj)
 			return true;
-		}
-		if (!(obj instanceof CacheKey)) {
+		if (obj == null)
 			return false;
-		}
-		CacheKey k = (CacheKey) obj;
-		return key.equals(k.key);
+		if (getClass() != obj.getClass())
+			return false;
+		CacheKey other = (CacheKey) obj;
+		if (key == null) {
+			if (other.key != null)
+				return false;
+		} else if (!key.equals(other.key))
+			return false;
+		return true;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = super.hashCode();
+		int result = 1;
 		result = prime * result + ((key == null) ? 0 : key.hashCode());
 		return result;
 	}

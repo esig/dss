@@ -21,6 +21,14 @@ public class CacheAccessByKey {
 		this.parsingCache = parsingCache;
 		this.validationCache = validationCache;
 	}
+	
+	/**
+	 * Returns the CacheKey
+	 * @return {@link CacheKey}
+	 */
+	public CacheKey getCacheKey() {
+		return key;
+	}
 
 	public boolean isUpToDate(XmlDownloadResult xmlDownloadResult) {
 		return fileCache.isUpToDate(key, xmlDownloadResult);
@@ -64,6 +72,41 @@ public class CacheAccessByKey {
 
 	public void validationError(Exception e) {
 		validationCache.error(key, e);
+	}
+	
+	/**
+	 * Checks if the entry must be deleted from the file cache (download cache)
+	 * @return TRUE if the entry need to be deleted, FALSE otherwise
+	 */
+	public boolean isFileNeedToBeDeleted() {
+		return fileCache.isToBeDeleted(key);
+	}
+	
+	/**
+	 * Removes the entry from downloadCache if its value is TO_BE_DELETED
+	 */
+	public void deleteDownloadCacheIfNeeded() {
+		if (fileCache.isToBeDeleted(key)) {
+			fileCache.remove(key);
+		}
+	}
+	
+	/**
+	 * Removes the entry from parsingCache if its value is TO_BE_DELETED
+	 */
+	public void deleteParsingCacheIfNeeded() {
+		if (parsingCache.isToBeDeleted(key)) {
+			parsingCache.remove(key);
+		}
+	}
+	
+	/**
+	 * Removes the entry from parsingCache if its value is TO_BE_DELETED
+	 */
+	public void deleteValidationCacheIfNeeded() {
+		if (validationCache.isToBeDeleted(key)) {
+			validationCache.remove(key);
+		}
 	}
 
 }

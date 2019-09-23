@@ -73,5 +73,12 @@ public interface CacheContext {
 	 * @return an object with the exception and its occurrence time
 	 */
 	CachedException getException();
+	
+	/**
+	 * Returns TRUE if the cache is in TO_BE_DELETED status
+	 * 
+	 * @return TRUE if entry must be deleted
+	 */
+	boolean isToBeDeleted();
 
 }

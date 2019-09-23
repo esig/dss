@@ -89,10 +89,10 @@ public abstract class AbstractCache<R extends CachedResult> {
 		LOG.trace("Removing value for the key [{}] from cache...", cacheKey);
 		CachedEntry<R> removedEntry = cachedEntriesMap.remove(cacheKey);
 		if (removedEntry != null) {
-			LOG.debug("The cachedEntry with the key [{}], type [{}], creation time [{}] and status [{}], has been REMOVED from the cache.",
+			LOG.info("The cachedEntry with the key [{}], type [{}], creation time [{}] and status [{}], has been REMOVED from the cache.",
 					cacheKey, getCacheType(), removedEntry.getLastSuccessDate(), removedEntry.getCurrentState());
 		} else {
-			LOG.debug("Cannot remove the value for key [{}]. Object does not exist!", cacheKey);
+			LOG.warn("Cannot remove the value for key [{}]. Object does not exist!", cacheKey);
 		}
 	}
 	
@@ -117,7 +117,7 @@ public abstract class AbstractCache<R extends CachedResult> {
 	 * Updates the state for a CachedEntry matching to the given key to SYNCHRONIZED
 	 * @param cacheKey {@link CacheKey} of a CachedEntry to update
 	 */
-	public void setSync(CacheKey cacheKey) {
+	public void sync(CacheKey cacheKey) {
 		LOG.trace("Update state to SYNCHRONIZED for an entry with the key [{}]...", cacheKey);
 		CachedEntry<R> cachedEntry = get(cacheKey);
 		cachedEntry.sync();
@@ -127,11 +127,11 @@ public abstract class AbstractCache<R extends CachedResult> {
 	 * Updates states for CachedEntries for entries with provided cacheKeys to SYNCHRONIZED
 	 * @param cacheKeys collection of {@link CacheKey}s to update entries for
 	 */
-	public void setSync(Collection<CacheKey> cacheKeys) {
+	public void sync(Collection<CacheKey> cacheKeys) {
 		if (Utils.isCollectionNotEmpty(cacheKeys)) {
 			LOG.trace("Updating a collection of {} keys from the cache...", cacheKeys.size());
 			for (CacheKey cacheKey : cacheKeys) {
-				setSync(cacheKey);
+				sync(cacheKey);
 			}
 			LOG.trace("{} keys were updated to the state SYNCHRONIZED in the cache.", cacheKeys.size());
 		} else {
@@ -169,10 +169,38 @@ public abstract class AbstractCache<R extends CachedResult> {
 		return null;
 	}
 	
+	/**
+	 * Updates entry status to ERROR value
+	 * @param cacheKey {@link CacheKey} to update
+	 * @param e {@link Exception} the throwed exception
+	 */
 	public void error(CacheKey cacheKey, Exception e) {
 		LOG.trace("Update state to ERROR for an entry with the key [{}]...", cacheKey);
 		CachedEntry<R> cacheWrapper = get(cacheKey);
 		cacheWrapper.error(new CachedException(e));
+	}
+
+	/**
+	 * Updates entry status to TO_BE_DELETED value
+	 * @param cacheKey {@link CacheKey} to update
+	 */
+	public void toBeDeleted(CacheKey cacheKey) {
+		LOG.trace("Update state to TO_BE_DELETED for an entry with the key [{}]...", cacheKey);
+		CachedEntry<R> cacheWrapper = get(cacheKey);
+		cacheWrapper.toBeDeleted();
+	}
+	
+	/**
+	 * Checks if the requested cacheKey has TO_BE_DELETED value
+	 * @param cacheKey {@link CacheKey} to check
+	 * @return TRUE if the entry with the provided {@code cacheKey} has TO_BE_DELETED status, FALSE otherwise
+	 */
+	public boolean isToBeDeleted(CacheKey cacheKey) {
+		LOG.trace("Checking if the status TO_BE_DELETED for an entry with the key [{}]...", cacheKey);
+		CachedEntry<R> cachedEntry = get(cacheKey);
+		boolean toBeDeleted = cachedEntry.isToBeDeleted();
+		LOG.trace("Is TO_BE_DELETED status for the entry with key [{}] ? {}", cacheKey, toBeDeleted);
+		return toBeDeleted;
 	}
 
 	/**

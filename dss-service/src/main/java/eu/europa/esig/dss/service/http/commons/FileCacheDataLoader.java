@@ -196,6 +196,13 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 	public DSSDocument getDocument(String url) {
 		return getDocument(url, false);
 	}
+	
+	@Override
+	public boolean remove(String url) {
+		final String fileName = DSSUtils.getNormalizedString(url);
+		final File file = getCacheFile(fileName);
+		return file.delete();
+	}
 
 	protected boolean isNetworkProtocol(final String urlString) {
 		final String normalizedUrl = urlString.trim().toLowerCase();

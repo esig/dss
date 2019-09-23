@@ -14,7 +14,7 @@ public class ValidationResult implements CachedResult {
 	private final Date signingTime;
 	private final CertificateToken signingCertificate;
 
-	ValidationResult(Indication indication, SubIndication subIndication, Date signingTime, CertificateToken signingCertificate) {
+	public ValidationResult(Indication indication, SubIndication subIndication, Date signingTime, CertificateToken signingCertificate) {
 		this.indication = indication;
 		this.subIndication = subIndication;
 		this.signingTime = signingTime;
