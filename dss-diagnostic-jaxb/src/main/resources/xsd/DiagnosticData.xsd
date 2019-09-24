@@ -471,8 +471,9 @@
 			<xs:element name="DigestValuePresent" type="xs:boolean" minOccurs="0" />
 			<xs:element name="DigestValueMatch" type="xs:boolean" minOccurs="0" />
 			<xs:element name="IssuerSerialMatch" type="xs:boolean" minOccurs="0" />
+			<xs:element name="PublicKey" type="xs:base64Binary" minOccurs="0" />
 		</xs:sequence>
-		<xs:attribute name="Certificate" type="xs:IDREF" use="required" />
+		<xs:attribute name="Certificate" type="xs:IDREF" use="optional" />
 	</xs:complexType>
 	
 	<xs:complexType name="TimestampedObjects">

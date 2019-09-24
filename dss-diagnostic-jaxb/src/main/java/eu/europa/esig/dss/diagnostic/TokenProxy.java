@@ -53,6 +53,8 @@ public interface TokenProxy {
 
 	CertificateWrapper getSigningCertificate();
 
+	byte[] getSigningCertificatePublicKey();
+
 	List<CertificateWrapper> getCertificateChain();
 
 	boolean isTrustedChain();
