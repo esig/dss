@@ -2,7 +2,6 @@ package eu.europa.esig.dss.tsl.job;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -17,18 +16,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.http.commons.DSSFileLoader;
 import eu.europa.esig.dss.tsl.cache.CacheAccessByKey;
+import eu.europa.esig.dss.tsl.cache.CacheAccessFactory;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
-import eu.europa.esig.dss.tsl.cache.DownloadCache;
-import eu.europa.esig.dss.tsl.cache.ParsingCache;
-import eu.europa.esig.dss.tsl.cache.ValidationCache;
-import eu.europa.esig.dss.tsl.cache.state.CachedEntry;
-import eu.europa.esig.dss.tsl.dto.OtherTSLPointerDTO;
+import eu.europa.esig.dss.tsl.cache.ReadOnlyCacheAccess;
 import eu.europa.esig.dss.tsl.parsing.AbstractParsingResult;
-import eu.europa.esig.dss.tsl.parsing.LOTLParsingResult;
 import eu.europa.esig.dss.tsl.runnable.TLAnalysis;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
@@ -38,12 +32,6 @@ public class TLValidationJob {
 	private static final Logger LOG = LoggerFactory.getLogger(TLValidationJob.class);
 
 	private ExecutorService executorService = Executors.newCachedThreadPool();
-
-	private DownloadCache downloadCache = new DownloadCache();
-
-	private ParsingCache parsingCache = new ParsingCache();
-
-	private ValidationCache validationCache = new ValidationCache();
 
 	/**
 	 * Array of zero, one or more Trusted List (TL) sources.
@@ -145,7 +133,7 @@ public class TLValidationJob {
 			// Check LOTLs consistency
 
 			// extract TLSources from cached LOTLs
-			TLSourceBuilder tlSourceBuilder = new TLSourceBuilder(lotlList, parsingCache);
+			TLSourceBuilder tlSourceBuilder = new TLSourceBuilder(lotlList, extractParsingCache(lotlList));
 			currentTLSources.addAll(tlSourceBuilder.build());
 		}
 
@@ -162,7 +150,7 @@ public class TLValidationJob {
 	private void executeLOTLSourcesAnalysis(List<LOTLSource> lotlSources, DSSFileLoader dssFileLoader) {
 		checkNoDuplicateUrls(lotlSources);
 
-		Map<CacheKey, CachedEntry<AbstractParsingResult>> oldParsingValues = extractParsingCache(lotlSources);
+		Map<CacheKey, AbstractParsingResult> oldParsingValues = extractParsingCache(lotlSources);
 
 		for (LOTLSource lotlSource : lotlSources) {
 //			execute();
@@ -172,60 +160,16 @@ public class TLValidationJob {
 //			get();
 		}
 
-		Map<CacheKey, CachedEntry<AbstractParsingResult>> newParsingValues = extractParsingCache(lotlSources);
+		Map<CacheKey, AbstractParsingResult> newParsingValues = extractParsingCache(lotlSources);
 
-		// Analyse introduced changes for TLs + adapt cache for TLs (EXPIRED)
-		analyzeTLChanges(oldParsingValues, newParsingValues);
+		// Analyze introduced changes for TLs + adapt cache for TLs (EXPIRED)
+		LOTLChangeApplier lotlChangeApplier = new LOTLChangeApplier(oldParsingValues, newParsingValues);
+		lotlChangeApplier.analyzeAndApply();
 	}
 
-	private Map<CacheKey, CachedEntry<AbstractParsingResult>> extractParsingCache(List<LOTLSource> lotlSources) {
-		return lotlSources.stream().collect(Collectors.toMap(LOTLSource::getCacheKey, s -> parsingCache.get(s.getCacheKey())));
-	}
-
-	private void analyzeTLChanges(Map<CacheKey, CachedEntry<AbstractParsingResult>> oldParsingValues,
-			Map<CacheKey, CachedEntry<AbstractParsingResult>> newParsingValues) {
-
-		for (CacheKey lotlCacheKey : oldParsingValues.keySet()) {
-			Map<String, List<CertificateToken>> oldUrlCerts = getTLPointers(oldParsingValues.get(lotlCacheKey));
-			Map<String, List<CertificateToken>> newUrlCerts = getTLPointers(newParsingValues.get(lotlCacheKey));
-
-			detectUrlChanges(oldUrlCerts, newUrlCerts);
-			detectSigCertsChanges(oldUrlCerts, newUrlCerts);
-		}
-
-	}
-
-	private void detectUrlChanges(Map<String, List<CertificateToken>> oldUrlCerts, Map<String, List<CertificateToken>> newUrlCerts) {
-		for (String oldUrl : oldUrlCerts.keySet()) {
-			if (!newUrlCerts.containsKey(oldUrl)) {
-				LOG.info("Expired TL URL : {}", oldUrl);
-				CacheKey oldKey = new CacheKey(oldUrl);
-				downloadCache.toBeDeleted(oldKey);
-				parsingCache.toBeDeleted(oldKey);
-				validationCache.toBeDeleted(oldKey);
-			}
-		}
-	}
-
-	private void detectSigCertsChanges(Map<String, List<CertificateToken>> oldUrlCerts, Map<String, List<CertificateToken>> newUrlCerts) {
-		for (String newUrl : newUrlCerts.keySet()) {
-			List<CertificateToken> oldCerts = oldUrlCerts.get(newUrl);
-			List<CertificateToken> newCerts = newUrlCerts.get(newUrl);
-			if (oldCerts == null || !oldCerts.equals(newCerts)) {
-				LOG.info("Signing certificates change detected for TL URL : {}", newUrl);
-				CacheKey cacheKey = new CacheKey(newUrl);
-				validationCache.expire(cacheKey);
-			}
-		}
-	}
-
-	private Map<String, List<CertificateToken>> getTLPointers(CachedEntry<AbstractParsingResult> cachedEntry) {
-		if (cachedEntry != null && !cachedEntry.isEmpty()) {
-			LOTLParsingResult parsingResult = (LOTLParsingResult) cachedEntry.getCachedResult();
-			List<OtherTSLPointerDTO> tlPointers = parsingResult.getTlPointers();
-			return tlPointers.stream().collect(Collectors.toMap(OtherTSLPointerDTO::getLocation, s -> s.getCertificates()));
-		}
-		return Collections.emptyMap();
+	private Map<CacheKey, AbstractParsingResult> extractParsingCache(List<LOTLSource> lotlSources) {
+		final ReadOnlyCacheAccess readOnlyCacheAccess = CacheAccessFactory.getReadOnlyCacheAccess();
+		return lotlSources.stream().collect(Collectors.toMap(LOTLSource::getCacheKey, s -> readOnlyCacheAccess.getParsingResult(s.getCacheKey())));
 	}
 
 	private void executeTLSourcesAnalysis(List<TLSource> tlSources, DSSFileLoader dssFileLoader) {
@@ -241,7 +185,7 @@ public class TLValidationJob {
 
 		CountDownLatch latch = new CountDownLatch(nbTLSources);
 		for (TLSource tlSource : tlSources) {
-			final CacheAccessByKey cacheAccess = new CacheAccessByKey(tlSource.getCacheKey(), downloadCache, parsingCache, validationCache);
+			final CacheAccessByKey cacheAccess = CacheAccessFactory.getCacheAccess(tlSource.getCacheKey());
 			executorService.submit(new TLAnalysis(tlSource, cacheAccess, dssFileLoader, latch));
 		}
 
@@ -258,7 +202,7 @@ public class TLValidationJob {
 		LOG.info("Running CacheClean for {} TLSource(s)", nbTLSources);
 		
 		for (TLSource tlSource : tlSources) {
-			final CacheAccessByKey cacheAccess = new CacheAccessByKey(tlSource.getCacheKey(), downloadCache, parsingCache, validationCache);
+			final CacheAccessByKey cacheAccess = CacheAccessFactory.getCacheAccess(tlSource.getCacheKey());
 			cacheCleaner.clean(cacheAccess);
 		}
 		

@@ -109,4 +109,13 @@ public class CacheAccessByKey {
 		}
 	}
 
+	/**
+	 * Returns the cached parsing result
+	 * 
+	 * @return
+	 */
+	public AbstractParsingResult getParsingResult() {
+		return parsingCache.get(key).getCachedResult();
+	}
+
 }

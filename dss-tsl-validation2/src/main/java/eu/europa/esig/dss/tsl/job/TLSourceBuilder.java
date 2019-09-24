@@ -2,12 +2,12 @@ package eu.europa.esig.dss.tsl.job;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
-import eu.europa.esig.dss.tsl.cache.ParsingCache;
-import eu.europa.esig.dss.tsl.cache.state.CachedEntry;
+import eu.europa.esig.dss.tsl.cache.CacheKey;
 import eu.europa.esig.dss.tsl.dto.OtherTSLPointerDTO;
 import eu.europa.esig.dss.tsl.parsing.AbstractParsingResult;
 import eu.europa.esig.dss.tsl.parsing.LOTLParsingResult;
@@ -17,19 +17,18 @@ import eu.europa.esig.dss.tsl.source.TLSource;
 public class TLSourceBuilder {
 
 	private final List<LOTLSource> lotlList;
-	private final ParsingCache parsingCache;
+	private final Map<CacheKey, AbstractParsingResult> parsingResults;
 
-	public TLSourceBuilder(List<LOTLSource> lotlList, ParsingCache parsingCache) {
+	public TLSourceBuilder(List<LOTLSource> lotlList, Map<CacheKey, AbstractParsingResult> parsingResults) {
 		this.lotlList = lotlList;
-		this.parsingCache = parsingCache;
+		this.parsingResults = parsingResults;
 	}
 
 	public List<TLSource> build() {
 		List<TLSource> result = new ArrayList<TLSource>();
 		if (lotlList != null) {
 			for (LOTLSource lotlSource : lotlList) {
-				CachedEntry<AbstractParsingResult> cachedEntry = parsingCache.get(lotlSource.getCacheKey());
-				LOTLParsingResult cachedResult = (LOTLParsingResult) cachedEntry.getCachedResult();
+				LOTLParsingResult cachedResult = (LOTLParsingResult) parsingResults.get(lotlSource.getCacheKey());
 				List<OtherTSLPointerDTO> tlPointers = cachedResult.getTlPointers();
 				for (OtherTSLPointerDTO otherTSLPointerDTO : tlPointers) {
 					result.add(getTLSource(otherTSLPointerDTO, lotlSource));
