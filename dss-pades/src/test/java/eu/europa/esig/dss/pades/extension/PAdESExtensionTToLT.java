@@ -22,7 +22,7 @@ package eu.europa.esig.dss.pades.extension;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 
-public class PAdESExtensionToLT extends AbstractTestPAdESExtension {
+public class PAdESExtensionTToLT extends AbstractTestPAdESExtension {
 
 	@Override
 	protected SignatureLevel getOriginalSignatureLevel() {
