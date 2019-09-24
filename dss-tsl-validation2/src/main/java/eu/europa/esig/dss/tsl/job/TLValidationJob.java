@@ -138,11 +138,15 @@ public class TLValidationJob {
 
 		// Execute all LOTLs
 		if (listOfTrustedListSources != null) {
-			executeLOTLSourcesAnalysis(Arrays.asList(listOfTrustedListSources), dssFileLoader);
+			final List<LOTLSource> lotlList = Arrays.asList(listOfTrustedListSources);
+
+			executeLOTLSourcesAnalysis(lotlList, dssFileLoader);
 
 			// Check LOTLs consistency
 
 			// extract TLSources from cached LOTLs
+			TLSourceBuilder tlSourceBuilder = new TLSourceBuilder(lotlList, parsingCache);
+			currentTLSources.addAll(tlSourceBuilder.build());
 		}
 
 		// And then, execute all TLs (manual configs + TLs from LOTLs)
