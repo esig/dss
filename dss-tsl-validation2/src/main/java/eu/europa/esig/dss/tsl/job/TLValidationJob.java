@@ -2,21 +2,33 @@ package eu.europa.esig.dss.tsl.job;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.http.commons.DSSFileLoader;
 import eu.europa.esig.dss.tsl.cache.CacheAccessByKey;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
+import eu.europa.esig.dss.tsl.cache.CacheKey;
 import eu.europa.esig.dss.tsl.cache.DownloadCache;
 import eu.europa.esig.dss.tsl.cache.ParsingCache;
 import eu.europa.esig.dss.tsl.cache.ValidationCache;
+import eu.europa.esig.dss.tsl.cache.state.CachedEntry;
+import eu.europa.esig.dss.tsl.dto.OtherTSLPointerDTO;
+import eu.europa.esig.dss.tsl.parsing.AbstractParsingResult;
+import eu.europa.esig.dss.tsl.parsing.LOTLParsingResult;
 import eu.europa.esig.dss.tsl.runnable.TLAnalysis;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
@@ -129,7 +141,6 @@ public class TLValidationJob {
 			executeLOTLSourcesAnalysis(Arrays.asList(listOfTrustedListSources), dssFileLoader);
 
 			// Check LOTLs consistency
-			// Exception on duplicate TL URL
 
 			// extract TLSources from cached LOTLs
 		}
@@ -145,9 +156,9 @@ public class TLValidationJob {
 	}
 
 	private void executeLOTLSourcesAnalysis(List<LOTLSource> lotlSources, DSSFileLoader dssFileLoader) {
-		// get cache contents
+		checkNoDuplicateUrls(lotlSources);
 
-		// no duplicate URL
+		Map<CacheKey, CachedEntry<AbstractParsingResult>> oldParsingValues = extractParsingCache(lotlSources);
 
 		for (LOTLSource lotlSource : lotlSources) {
 //			execute();
@@ -157,9 +168,60 @@ public class TLValidationJob {
 //			get();
 		}
 
-		// update caches
+		Map<CacheKey, CachedEntry<AbstractParsingResult>> newParsingValues = extractParsingCache(lotlSources);
 
 		// Analyse introduced changes for TLs + adapt cache for TLs (EXPIRED)
+		analyzeTLChanges(oldParsingValues, newParsingValues);
+	}
+
+	private Map<CacheKey, CachedEntry<AbstractParsingResult>> extractParsingCache(List<LOTLSource> lotlSources) {
+		return lotlSources.stream().collect(Collectors.toMap(LOTLSource::getCacheKey, s -> parsingCache.get(s.getCacheKey())));
+	}
+
+	private void analyzeTLChanges(Map<CacheKey, CachedEntry<AbstractParsingResult>> oldParsingValues,
+			Map<CacheKey, CachedEntry<AbstractParsingResult>> newParsingValues) {
+
+		for (CacheKey lotlCacheKey : oldParsingValues.keySet()) {
+			Map<String, List<CertificateToken>> oldUrlCerts = getTLPointers(oldParsingValues.get(lotlCacheKey));
+			Map<String, List<CertificateToken>> newUrlCerts = getTLPointers(newParsingValues.get(lotlCacheKey));
+
+			detectUrlChanges(oldUrlCerts, newUrlCerts);
+			detectSigCertsChanges(oldUrlCerts, newUrlCerts);
+		}
+
+	}
+
+	private void detectUrlChanges(Map<String, List<CertificateToken>> oldUrlCerts, Map<String, List<CertificateToken>> newUrlCerts) {
+		for (String oldUrl : oldUrlCerts.keySet()) {
+			if (!newUrlCerts.containsKey(oldUrl)) {
+				LOG.info("Expired TL URL : {}", oldUrl);
+				CacheKey oldKey = new CacheKey(oldUrl);
+				downloadCache.toBeDeleted(oldKey);
+				parsingCache.toBeDeleted(oldKey);
+				validationCache.toBeDeleted(oldKey);
+			}
+		}
+	}
+
+	private void detectSigCertsChanges(Map<String, List<CertificateToken>> oldUrlCerts, Map<String, List<CertificateToken>> newUrlCerts) {
+		for (String newUrl : newUrlCerts.keySet()) {
+			List<CertificateToken> oldCerts = oldUrlCerts.get(newUrl);
+			List<CertificateToken> newCerts = newUrlCerts.get(newUrl);
+			if (oldCerts == null || !oldCerts.equals(newCerts)) {
+				LOG.info("Signing certificates change detected for TL URL : {}", newUrl);
+				CacheKey cacheKey = new CacheKey(newUrl);
+				validationCache.expire(cacheKey);
+			}
+		}
+	}
+
+	private Map<String, List<CertificateToken>> getTLPointers(CachedEntry<AbstractParsingResult> cachedEntry) {
+		if (cachedEntry != null && !cachedEntry.isEmpty()) {
+			LOTLParsingResult parsingResult = (LOTLParsingResult) cachedEntry.getCachedResult();
+			List<OtherTSLPointerDTO> tlPointers = parsingResult.getTlPointers();
+			return tlPointers.stream().collect(Collectors.toMap(OtherTSLPointerDTO::getLocation, s -> s.getCertificates()));
+		}
+		return Collections.emptyMap();
 	}
 
 	private void executeTLSourcesAnalysis(List<TLSource> tlSources, DSSFileLoader dssFileLoader) {
@@ -168,6 +230,8 @@ public class TLValidationJob {
 			LOG.info("No TL to be analyzed");
 			return;
 		}
+
+		checkNoDuplicateUrls(tlSources);
 
 		LOG.info("Running TLAnalysis for {} TLSource(s)", nbTLSources);
 
@@ -195,6 +259,20 @@ public class TLValidationJob {
 		}
 		
 		LOG.info("CacheClean is DONE for {} TLSource(s)", nbTLSources);
+	}
+
+	/**
+	 * Duplicate urls mean cache conflict.
+	 * 
+	 * @param sources
+	 *                a list of TLSource
+	 */
+	private void checkNoDuplicateUrls(List<? extends TLSource> sources) {
+		List<String> allUrls = sources.stream().map(s -> s.getUrl()).collect(Collectors.toList());
+		Set<String> uniqueUrls = new HashSet<String>(allUrls);
+		if (allUrls.size() > uniqueUrls.size()) {
+			throw new DSSException(String.format("Duplicate urls found : %s", allUrls));
+		}
 	}
 
 }

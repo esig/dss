@@ -1,24 +1,20 @@
 package eu.europa.esig.dss.tsl.runnable;
 
-import java.util.concurrent.CountDownLatch;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.service.http.commons.DSSFileLoader;
 import eu.europa.esig.dss.tsl.cache.CacheAccessByKey;
-import eu.europa.esig.dss.tsl.parsing.TLParsingTask;
-import eu.europa.esig.dss.tsl.source.TLSource;
+import eu.europa.esig.dss.tsl.parsing.LOTLParsingTask;
+import eu.europa.esig.dss.tsl.source.LOTLSource;
 
-public class TLAnalysis extends AbstractAnalysis implements Runnable {
+public class LOTLAnalysis extends AbstractAnalysis implements Runnable {
 
-	private final TLSource source;
+	private final LOTLSource source;
 	private final CacheAccessByKey cacheAccess;
-	private final CountDownLatch latch;
 
-	public TLAnalysis(TLSource source, CacheAccessByKey cacheAccess, DSSFileLoader dssFileLoader, CountDownLatch latch) {
+	public LOTLAnalysis(LOTLSource source, CacheAccessByKey cacheAccess, DSSFileLoader dssFileLoader) {
 		super(cacheAccess, dssFileLoader);
 		this.source = source;
 		this.cacheAccess = cacheAccess;
-		this.latch = latch;
 	}
 
 	@Override
@@ -27,19 +23,18 @@ public class TLAnalysis extends AbstractAnalysis implements Runnable {
 		DSSDocument document = download(source.getUrl());
 
 		if (document != null) {
-			trustedListParsing(document);
+			loltParsing(document);
 
 			validation(document, source.getCertificateSource().getCertificates());
 		}
 
-		latch.countDown();
 	}
 
-	private void trustedListParsing(DSSDocument document) {
+	private void loltParsing(DSSDocument document) {
 		// True if EMPTY / EXPIRED by TL/LOTL
 		if (cacheAccess.isParsingRefreshNeeded()) {
 			try {
-				TLParsingTask parsingTask = new TLParsingTask(source, document);
+				LOTLParsingTask parsingTask = new LOTLParsingTask(source, document);
 				cacheAccess.update(parsingTask.get());
 			} catch (Exception e) {
 				cacheAccess.parsingError(e);
