@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.tsl.cache;
 
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +23,7 @@ public class DownloadCache extends AbstractCache<XmlDownloadResult> {
 	 * @return {@link DSSDocument}
 	 */
 	public DSSDocument getFile(CacheKey cacheKey) {
-		LOG.trace("Extracting the file for key [{}]...", cacheKey);
+		LOG.trace("Extracting a file for the key [{}]...", cacheKey);
 		CachedEntry<XmlDownloadResult> cachedFileEntry = get(cacheKey);
 		if (cachedFileEntry != null && !cachedFileEntry.isEmpty()) {
 			XmlDownloadResult downloadResult = cachedFileEntry.getCachedResult();
@@ -47,11 +49,30 @@ public class DownloadCache extends AbstractCache<XmlDownloadResult> {
 			XmlDownloadResult cachedResult = cachedFileEntry.getCachedResult();
 			LOG.trace("Comparing digest of the stored file [{}] with the downloaded file [{}]", cachedResult.getDigest(), downloadedResult.getDigest());
 			boolean upToDate = cachedResult.getDigest().equals(downloadedResult.getDigest());
-			LOG.trace("Does file with key [{}] is up to date ? {}", cacheKey, upToDate);
+			LOG.trace("Is file with the key [{}] up to date ? {}", cacheKey, upToDate);
+			cachedResult.setLastSynchronizationDate(new Date());
 			return upToDate;
 		}
 		LOG.trace("The FileCache does not contain a file result for the key [{}]!", cacheKey);
 		return false;
+	}
+	
+	/**
+	 * Returns the last synchronization date when the cached file was checked against a remote file
+	 * @param cacheKey {@link CacheKey} of the cached entry to get last synchronization date for
+	 * @return {@link Date} last synchronization date
+	 */
+	public Date getLastSynchronizationDate(CacheKey cacheKey) {
+		LOG.trace("Extracting the last syncronization date for the key [{}]...", cacheKey);
+		CachedEntry<XmlDownloadResult> cachedFileEntry = get(cacheKey);
+		if (!cachedFileEntry.isEmpty()) {
+			XmlDownloadResult cachedResult = cachedFileEntry.getCachedResult();
+			Date date = cachedResult.getLastSynchronizationDate();
+			LOG.trace("The last syncronization date for a cached file with the key [{}] is [{}]", cacheKey, date);
+			return date;
+		}
+		LOG.trace("The FileCache does not contain a file result for the key [{}]!", cacheKey);
+		return null;
 	}
 
 	@Override

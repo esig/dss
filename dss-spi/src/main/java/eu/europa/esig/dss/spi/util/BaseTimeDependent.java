@@ -41,18 +41,10 @@ public class BaseTimeDependent implements TimeDependent {
 	public Date getStartDate() {
 		return startDate;
 	}
-
-	public void setStartDate( final Date d ) {
-		this.startDate = d;
-	}
 	
 	@Override
 	public Date getEndDate() {
 		return endDate;
-	}
-	
-	public void setEndDate( final Date d ) {
-		this.endDate = d;
 	}
 
 	@Override

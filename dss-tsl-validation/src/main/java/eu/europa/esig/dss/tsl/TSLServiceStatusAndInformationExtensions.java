@@ -34,6 +34,13 @@ public class TSLServiceStatusAndInformationExtensions extends BaseTimeDependent 
 	private List<String> additionalServiceInfoUris;
 	private List<String> serviceSupplyPoints;
 	private Date expiredCertsRevocationInfo;
+	
+	public TSLServiceStatusAndInformationExtensions() {
+	}
+	
+	public TSLServiceStatusAndInformationExtensions(final Date startDate, final Date endDate) {
+		super(startDate, endDate);
+	}
 
 	public String getName() {
 		return name;

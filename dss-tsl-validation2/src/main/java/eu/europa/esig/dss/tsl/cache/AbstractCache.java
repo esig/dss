@@ -8,6 +8,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.tsl.cache.state.CacheState;
+import eu.europa.esig.dss.tsl.cache.state.CacheStateEnum;
 import eu.europa.esig.dss.tsl.cache.state.CachedEntry;
 import eu.europa.esig.dss.tsl.cache.state.CachedException;
 import eu.europa.esig.dss.utils.Utils;
@@ -28,10 +30,10 @@ public abstract class AbstractCache<R extends CachedResult> {
 	
 	/**
 	 * Returns the CachedEntry<R> for the related {@code cacheKey}. Returns new empty entry if no result found for the key
-	 * @param cacheKey {@link CacheKey} 
+	 * @param cacheKey {@link CacheKey}
 	 * @return {@link CachedEntry<R>}
 	 */
-	public CachedEntry<R> get(CacheKey cacheKey) {
+	protected CachedEntry<R> get(CacheKey cacheKey) {
 		LOG.trace("Extracting the result for key [{}]...", cacheKey);
 		CachedEntry<R> cacheWrapper = cachedEntriesMap.get(cacheKey);
 		if (cacheWrapper != null) {
@@ -151,13 +153,26 @@ public abstract class AbstractCache<R extends CachedResult> {
 		LOG.trace("Is update required for the entry with key [{}] ? {}", cacheKey, refreshNeeded);
 		return refreshNeeded;
 	}
+
+	/**
+	 * Checks if a CachedEntry for the given key is empty (has no result)
+	 * @param cacheKey {@link CacheKey} of the CacheEntry to check
+	 * @return TRUE if the entry is empty, FALSE otherwise
+	 */
+	public boolean isEmpty(CacheKey cacheKey) {
+		LOG.trace("Checking if an entry with the key [{}] is empty", cacheKey);
+		CachedEntry<R> cachedEntry = get(cacheKey);
+		boolean isEmpty = cachedEntry.isEmpty();
+		LOG.trace("Is the entry with key [{}] empty ? {}", cacheKey, isEmpty);
+		return isEmpty;
+	}
 	
 	/**
 	 * Returns the update date for the given {@code cacheKey}. Returns NULL if the cache does not contain a value for the key
 	 * @param cacheKey {@link CacheKey} to get update value for
 	 * @return update {@link Date}
 	 */
-	public Date getUpdateDate(CacheKey cacheKey) {
+	public Date getLastSuccessDate(CacheKey cacheKey) {
 		LOG.trace("Extracting the update date for the key [{}]...", cacheKey);
 		CachedEntry<R> cacheWrapper = get(cacheKey);
 		if (cacheWrapper != null) {
@@ -201,6 +216,53 @@ public abstract class AbstractCache<R extends CachedResult> {
 		boolean toBeDeleted = cachedEntry.isToBeDeleted();
 		LOG.trace("Is TO_BE_DELETED status for the entry with key [{}] ? {}", cacheKey, toBeDeleted);
 		return toBeDeleted;
+	}
+	
+	/**
+	 * Returns a current state of entry by requested cacheKey
+	 * @param cacheKey {@link CacheKey} to get current state for
+	 * @return {@link CacheState}
+	 */
+	public CacheStateEnum getCurrentState(CacheKey cacheKey) {
+		LOG.trace("Extracting a state for the key [{}]...", cacheKey);
+		CachedEntry<R> cachedEntry = get(cacheKey);
+		CacheStateEnum currentState = cachedEntry.getCurrentState();
+		LOG.trace("Current state for an entry with key [{}] is [{}]", cacheKey, currentState);
+		return currentState;
+	}
+	
+	/**
+	 * Returns a cached exception message in case of error during a job for the current entry
+	 * @param cacheKey {@link CacheKey} of the entry to get exception message for
+	 * @return {@link String} exception message
+	 */
+	public String getCachedExceptionMessage(CacheKey cacheKey) {
+		LOG.trace("Extracting a cached exception message for the key [{}]...", cacheKey);
+		CachedEntry<R> cachedEntry = get(cacheKey);
+		String exceptionMessage = cachedEntry.getExceptionMessage();
+		if (exceptionMessage != null) {
+			LOG.trace("Obtained exception message for the key [{}]. Message : [{}]", cacheKey, exceptionMessage);
+		} else {
+			LOG.debug("The entry with the key [{}] does not contain an exception. Return null.", cacheKey);
+		}
+		return exceptionMessage;
+	}
+	
+	/**
+	 * Returns a cached exception stack trace in case of error during a job for the current entry
+	 * @param cacheKey {@link CacheKey} of the entry to get exception stack trace for
+	 * @return {@link String} exception stack trace
+	 */
+	public String getCachedExceptionStackTrace(CacheKey cacheKey) {
+		LOG.trace("Extracting a cached exception message for the key [{}]...", cacheKey);
+		CachedEntry<R> cachedEntry = get(cacheKey);
+		String exception = cachedEntry.getExceptionStackTrace();
+		if (exception != null) {
+			LOG.trace("Obtained exception stackTrace for the key [{}]. Message : [{}]", cacheKey, exception);
+		} else {
+			LOG.debug("The entry with the key [{}] does not contain an exception. Return null.", cacheKey);
+		}
+		return exception;
 	}
 
 	/**

@@ -3,11 +3,13 @@ package eu.europa.esig.dss.tsl.parsing;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.util.TimeDependentValues;
 import eu.europa.esig.dss.tsl.dto.TrustService;
 import eu.europa.esig.dss.tsl.dto.TrustServiceProvider;
@@ -22,11 +25,13 @@ import eu.europa.esig.dss.tsl.dto.TrustServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.tsl.function.TrustServicePredicate;
 import eu.europa.esig.dss.tsl.function.TrustServiceProviderPredicate;
 import eu.europa.esig.dss.tsl.source.TLSource;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPServiceType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPType;
 
 public class TLParsingTaskTest {
 
+	private static DSSDocument DE_TL;
 	private static DSSDocument IE_TL;
 	private static DSSDocument SK_TL;
 
@@ -35,6 +40,7 @@ public class TLParsingTaskTest {
 
 	@BeforeAll
 	public static void init() throws IOException {
+		DE_TL = new FileDocument("src/test/resources/de-tl.xml");
 		IE_TL = new FileDocument("src/test/resources/ie-tl.xml");
 		SK_TL = new FileDocument("src/test/resources/sk-tl.xml");
 
@@ -52,7 +58,7 @@ public class TLParsingTaskTest {
 		assertNotNull(result.getIssueDate());
 		assertNotNull(result.getNextUpdateDate());
 		assertEquals("IE", result.getTerritory());
-		assertNull(result.getDistributionPoints());
+		assertTrue(Utils.isCollectionEmpty(result.getDistributionPoints()));
 
 		List<TrustServiceProvider> trustServiceProviders = result.getTrustServiceProviders();
 		assertNotNull(trustServiceProviders);
@@ -204,6 +210,32 @@ public class TLParsingTaskTest {
 		TLParsingResult result = task.get();
 		assertNotNull(result);
 		assertEquals(0, result.getTrustServiceProviders().size());
+	}
+
+	@Test
+	public void countCertificatesDE() throws Exception {
+		TLParsingTask task = new TLParsingTask(new TLSource(), DE_TL);
+		TLParsingResult result = task.get();
+		
+		assertNotNull(result);
+		assertNotNull(result.getVersion());
+		assertNotNull(result.getSequenceNumber());
+		assertNotNull(result.getIssueDate());
+		assertNotNull(result.getNextUpdateDate());
+		assertEquals("DE", result.getTerritory());
+		assertTrue(Utils.isCollectionNotEmpty(result.getDistributionPoints()));
+
+		List<TrustServiceProvider> trustServiceProviders = result.getTrustServiceProviders();
+		assertNotNull(trustServiceProviders);
+	
+		Set<CertificateToken> certs = new HashSet<CertificateToken>();
+		for (TrustServiceProvider tslServiceProvider : trustServiceProviders) {
+			List<TrustService> services = tslServiceProvider.getServices();
+			for (TrustService tslService : services) {
+				certs.addAll(tslService.getCertificates());
+			}
+		}
+		assertEquals(413, certs.size());
 	}
 
 }

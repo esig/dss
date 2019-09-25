@@ -30,23 +30,44 @@ import eu.europa.esig.dss.spi.util.TimeDependentValues;
  */
 public class TrustService {
 
-	private List<CertificateToken> certificates;
-	private TimeDependentValues<TrustServiceStatusAndInformationExtensions> status;
+	private final List<CertificateToken> certificates;
+	private final TimeDependentValues<TrustServiceStatusAndInformationExtensions> status;
+	
+	public TrustService(final List<CertificateToken> certificates, final TimeDependentValues<TrustServiceStatusAndInformationExtensions> status) {
+		this.certificates = certificates;
+		this.status = status;
+	}
 
 	public List<CertificateToken> getCertificates() {
 		return certificates;
 	}
 
-	public void setCertificates(List<CertificateToken> certificates) {
-		this.certificates = certificates;
-	}
-
 	public TimeDependentValues<TrustServiceStatusAndInformationExtensions> getStatusAndInformationExtensions() {
 		return status;
 	}
+	
+	public static final class TrustServiceBuilder {
 
-	public void setStatusAndInformationExtensions(TimeDependentValues<TrustServiceStatusAndInformationExtensions> status) {
-		this.status = status;
+		private List<CertificateToken> certificates;
+		private TimeDependentValues<TrustServiceStatusAndInformationExtensions> status;
+		
+		public TrustServiceBuilder() {
+		}
+
+		public TrustServiceBuilder setCertificates(List<CertificateToken> certificates) {
+			this.certificates = certificates;
+			return this;
+		}
+
+		public TrustServiceBuilder setStatusAndInformationExtensions(TimeDependentValues<TrustServiceStatusAndInformationExtensions> status) {
+			this.status = status;
+			return this;
+		}
+		
+		public TrustService build() {
+			return new TrustService(certificates, status);
+		}
+		
 	}
 
 }

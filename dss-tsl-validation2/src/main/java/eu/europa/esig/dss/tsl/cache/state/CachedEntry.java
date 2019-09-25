@@ -17,7 +17,7 @@ public class CachedEntry<R extends CachedResult> {
 		update(cachedObject);
 	}
 
-	public CacheState getCurrentState() {
+	public CacheStateEnum getCurrentState() {
 		return cacheContext.getCurrentState();
 	}
 
@@ -68,8 +68,18 @@ public class CachedEntry<R extends CachedResult> {
 		return cacheContext.isError();
 	}
 
-	public CachedException getException() {
-		return cacheContext.getException();
+	public String getExceptionMessage() {
+		if (cacheContext.getException() != null) {
+			return cacheContext.getException().getExceptionMessage();
+		}
+		return null;
+	}
+
+	public String getExceptionStackTrace() {
+		if (cacheContext.getException() != null) {
+			return cacheContext.getException().getStackTrace();
+		}
+		return null;
 	}
 
 }

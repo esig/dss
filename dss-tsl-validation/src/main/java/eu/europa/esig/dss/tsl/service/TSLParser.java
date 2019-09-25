@@ -361,7 +361,8 @@ public class TSLParser implements Callable<TSLParserResult> {
 
 		TSPServiceInformationType serviceInfo = tslService.getServiceInformation();
 
-		TSLServiceStatusAndInformationExtensions status = new TSLServiceStatusAndInformationExtensions();
+		Date startDate = convertToDate(serviceInfo.getStatusStartingTime());
+		TSLServiceStatusAndInformationExtensions status = new TSLServiceStatusAndInformationExtensions(startDate, null);
 		status.setName(getEnglishOrFirst(serviceInfo.getServiceName()));
 		status.setType(serviceInfo.getServiceTypeIdentifier());
 		status.setStatus(serviceInfo.getServiceStatus());
@@ -369,22 +370,19 @@ public class TSLParser implements Callable<TSLParserResult> {
 
 		parseExtensionsList(serviceInfo.getServiceInformationExtensions(), status);
 
-		Date nextEndDate = convertToDate(serviceInfo.getStatusStartingTime());
-		status.setStartDate(nextEndDate);
 		statusHistoryList.addOldest(status);
 
+		Date endDate = null;
 		if (tslService.getServiceHistory() != null && Utils.isCollectionNotEmpty(tslService.getServiceHistory().getServiceHistoryInstance())) {
 			for (ServiceHistoryInstanceType serviceHistory : tslService.getServiceHistory().getServiceHistoryInstance()) {
-				TSLServiceStatusAndInformationExtensions statusHistory = new TSLServiceStatusAndInformationExtensions();
+				endDate = startDate;
+				startDate = convertToDate(serviceHistory.getStatusStartingTime());
+				TSLServiceStatusAndInformationExtensions statusHistory = new TSLServiceStatusAndInformationExtensions(startDate, endDate);
 				statusHistory.setName(getEnglishOrFirst(serviceHistory.getServiceName()));
 				statusHistory.setType(serviceHistory.getServiceTypeIdentifier());
 				statusHistory.setStatus(serviceHistory.getServiceStatus());
 
 				parseExtensionsList(serviceHistory.getServiceInformationExtensions(), statusHistory);
-
-				statusHistory.setEndDate(nextEndDate);
-				nextEndDate = convertToDate(serviceHistory.getStatusStartingTime());
-				statusHistory.setStartDate(nextEndDate);
 				statusHistoryList.addOldest(statusHistory);
 			}
 		}

@@ -61,7 +61,6 @@ public class XmlDownloadTaskTest {
 			assertNotNull(downloadResult.getDigest());
 			assertNotNull(downloadResult.getDigest().getAlgorithm());
 			assertNotNull(downloadResult.getDigest().getValue());
-			assertEquals(url, downloadResult.getUrl());
 			if (first == null) {
 				first = downloadResult;
 			} else {

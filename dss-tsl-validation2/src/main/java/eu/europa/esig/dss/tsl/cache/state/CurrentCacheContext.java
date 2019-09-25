@@ -18,8 +18,8 @@ public class CurrentCacheContext implements CacheContext {
 	}
 
 	@Override
-	public CacheState getCurrentState() {
-		return state;
+	public CacheStateEnum getCurrentState() {
+		return (CacheStateEnum) state;
 	}
 
 	@Override
@@ -30,9 +30,13 @@ public class CurrentCacheContext implements CacheContext {
 	@Override
 	public void state(CacheState newState) {
 		LOG.trace("State transition from '{}' to '{}'", state, newState);
-		state = newState;
-		date = new Date();
-		exception = null;
+		if (state == newState) {
+			LOG.trace("The newer state is the same. The CurrentCacheContext is not updated.");
+		} else {
+			state = newState;
+			date = new Date();
+			exception = null;
+		}
 	}
 
 	@Override

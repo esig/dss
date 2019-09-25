@@ -8,7 +8,9 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import eu.europa.esig.dss.tsl.dto.TrustService;
 import eu.europa.esig.dss.tsl.dto.TrustServiceProvider;
+import eu.europa.esig.dss.tsl.dto.builder.TrustServiceProviderBuilder;
 import eu.europa.esig.dss.tsl.function.OfficialRegistrationIdentifierPredicate;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.trustedlist.jaxb.tsl.AddressType;
@@ -27,29 +29,28 @@ public class TrustServiceProviderConverter implements Function<TSPType, TrustSer
 
 	@Override
 	public TrustServiceProvider apply(TSPType original) {
-		TrustServiceProvider tsp = new TrustServiceProvider();
+		TrustServiceProviderBuilder tspBuilder = new TrustServiceProviderBuilder();
 		
-		extractTSPInfo(tsp, original.getTSPInformation());
+		extractTSPInfo(tspBuilder, original.getTSPInformation());
+		tspBuilder.setServices(extractTrustServices(original.getTSPServices()));
 
-		extractTrustServices(tsp, original.getTSPServices());
-
-		return tsp;
+		return tspBuilder.build();
 	}
 
-	private void extractTSPInfo(TrustServiceProvider tsp, TSPInformationType tspInformation) {
+	private void extractTSPInfo(TrustServiceProviderBuilder tspBuilder, TSPInformationType tspInformation) {
 		InternationalNamesTypeConverter converter = new InternationalNamesTypeConverter();
-		tsp.setNames(converter.apply(tspInformation.getTSPName()));
-		tsp.setTradeNames(converter.apply(tspInformation.getTSPTradeName()));
+		tspBuilder.setNames(converter.apply(tspInformation.getTSPName()));
+		tspBuilder.setTradeNames(converter.apply(tspInformation.getTSPTradeName()));
 
-		tsp.setRegistrationIdentifiers(extractRegistrationIdentifiers(tspInformation.getTSPTradeName()));
+		tspBuilder.setRegistrationIdentifiers(extractRegistrationIdentifiers(tspInformation.getTSPTradeName()));
 
 		AddressType tspAddress = tspInformation.getTSPAddress();
 		if (tspAddress != null) {
-			tsp.setPostalAddresses(extractPostalAddress(tspAddress.getPostalAddresses()));
-			tsp.setElectronicAddresses(extractElectronicAddress(tspAddress.getElectronicAddress()));
+			tspBuilder.setPostalAddresses(extractPostalAddress(tspAddress.getPostalAddresses()));
+			tspBuilder.setElectronicAddresses(extractElectronicAddress(tspAddress.getElectronicAddress()));
 		}
 
-		tsp.setInformation(extractInformationURI(tspInformation.getTSPInformationURI()));
+		tspBuilder.setInformation(extractInformationURI(tspInformation.getTSPInformationURI()));
 	}
 
 	private List<String> extractRegistrationIdentifiers(InternationalNamesType internationalNamesType) {
@@ -139,11 +140,11 @@ public class TrustServiceProviderConverter implements Function<TSPType, TrustSer
 		resultsByLang.add(value);
 	}
 
-	private void extractTrustServices(TrustServiceProvider tsp, TSPServicesListType tspServicesList) {
+	private List<TrustService> extractTrustServices(TSPServicesListType tspServicesList) {
 		if (tspServicesList != null && Utils.isCollectionNotEmpty(tspServicesList.getTSPService())) {
-			tsp.setServices(tspServicesList.getTSPService().stream().map(new TrustServiceConverter()).collect(Collectors.toList()));
+			return tspServicesList.getTSPService().stream().map(new TrustServiceConverter()).collect(Collectors.toList());
 		} else {
-			tsp.setServices(Collections.emptyList());
+			return Collections.emptyList();
 		}
 	}
 

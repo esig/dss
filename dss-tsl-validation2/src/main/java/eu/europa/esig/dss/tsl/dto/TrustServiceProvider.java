@@ -23,6 +23,8 @@ package eu.europa.esig.dss.tsl.dto;
 import java.util.List;
 import java.util.Map;
 
+import eu.europa.esig.dss.tsl.dto.builder.TrustServiceProviderBuilder;
+
 /**
  * This class is a DTO representation for a trust service provider
  */
@@ -40,61 +42,46 @@ public class TrustServiceProvider {
 	private Map<String, List<String>> electronicAddresses;
 	private Map<String, String> information;
 	private List<TrustService> services;
+	
+	public TrustServiceProvider() {
+	}
+	
+	public TrustServiceProvider(TrustServiceProviderBuilder builder) {
+		this.names = builder.getNames();
+		this.tradeNames = builder.getTradeNames();
+		this.registrationIdentifiers = builder.getRegistrationIdentifiers();
+		this.postalAddresses = builder.getPostalAddresses();
+		this.electronicAddresses = builder.getElectronicAddresses();
+		this.information = builder.getInformation();
+		this.services = builder.getServices();
+	}
 
 	public Map<String, List<String>> getNames() {
 		return names;
-	}
-
-	public void setNames(Map<String, List<String>> names) {
-		this.names = names;
 	}
 
 	public Map<String, List<String>> getTradeNames() {
 		return tradeNames;
 	}
 
-	public void setTradeNames(Map<String, List<String>> tradeNames) {
-		this.tradeNames = tradeNames;
-	}
-
 	public List<String> getRegistrationIdentifiers() {
 		return registrationIdentifiers;
-	}
-
-	public void setRegistrationIdentifiers(List<String> registrationIdentifiers) {
-		this.registrationIdentifiers = registrationIdentifiers;
 	}
 
 	public Map<String, String> getPostalAddresses() {
 		return postalAddresses;
 	}
 
-	public void setPostalAddresses(Map<String, String> postalAddresses) {
-		this.postalAddresses = postalAddresses;
-	}
-
 	public Map<String, List<String>> getElectronicAddresses() {
 		return electronicAddresses;
-	}
-
-	public void setElectronicAddresses(Map<String, List<String>> electronicAddresses) {
-		this.electronicAddresses = electronicAddresses;
 	}
 
 	public Map<String, String> getInformation() {
 		return information;
 	}
 
-	public void setInformation(Map<String, String> information) {
-		this.information = information;
-	}
-
 	public List<TrustService> getServices() {
 		return services;
-	}
-
-	public void setServices(List<TrustService> services) {
-		this.services = services;
 	}
 
 }

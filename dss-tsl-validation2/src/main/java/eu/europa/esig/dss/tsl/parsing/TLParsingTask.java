@@ -49,7 +49,8 @@ public class TLParsingTask extends AbstractParsingTask implements Supplier<TLPar
 	private void parseTrustServiceProviderList(TLParsingResult result, TrustServiceProviderListType trustServiceProviderList) {
 		if (trustServiceProviderList != null && Utils.isCollectionNotEmpty(trustServiceProviderList.getTrustServiceProvider())) {
 			List<TSPType> filteredTrustServiceProviders = filter(trustServiceProviderList.getTrustServiceProvider());
-			result.setTrustServiceProviders(filteredTrustServiceProviders.stream().map(new TrustServiceProviderConverter()).collect(Collectors.toList()));
+			result.setTrustServiceProviders(Collections.unmodifiableList(
+					filteredTrustServiceProviders.stream().map(new TrustServiceProviderConverter()).collect(Collectors.toList())));
 		} else {
 			result.setTrustServiceProviders(Collections.emptyList());
 		}

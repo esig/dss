@@ -2,6 +2,7 @@ package eu.europa.esig.dss.tsl.parsing;
 
 import java.io.InputStream;
 import java.math.BigInteger;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -85,7 +86,9 @@ public abstract class AbstractParsingTask {
 	private void extractDistributionPoints(AbstractParsingResult result, TSLSchemeInformationType schemeInformation) {
 		NonEmptyURIListType distributionPoints = schemeInformation.getDistributionPoints();
 		if (distributionPoints != null && Utils.isCollectionNotEmpty(distributionPoints.getURI())) {
-			result.setDistributionPoints(distributionPoints.getURI());
+			result.setDistributionPoints(Collections.unmodifiableList(distributionPoints.getURI()));
+		} else {
+			result.setDistributionPoints(Collections.emptyList());
 		}
 	}
 

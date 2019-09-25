@@ -10,11 +10,15 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.tsl.Condition;
 import eu.europa.esig.dss.spi.util.MutableTimeDependentValues;
+import eu.europa.esig.dss.spi.util.TimeDependentValues;
 import eu.europa.esig.dss.tsl.dto.ConditionForQualifiers;
 import eu.europa.esig.dss.tsl.dto.TrustService;
+import eu.europa.esig.dss.tsl.dto.TrustService.TrustServiceBuilder;
 import eu.europa.esig.dss.tsl.dto.TrustServiceStatusAndInformationExtensions;
+import eu.europa.esig.dss.tsl.dto.TrustServiceStatusAndInformationExtensions.TrustServiceStatusAndInformationExtensionsBuilder;
 import eu.europa.esig.dss.tsl.dto.condition.CertSubjectDNAttributeCondition;
 import eu.europa.esig.dss.tsl.dto.condition.CompositeCondition;
 import eu.europa.esig.dss.tsl.dto.condition.ExtendedKeyUsageCondition;
@@ -49,64 +53,63 @@ public class TrustServiceConverter implements Function<TSPServiceType, TrustServ
 
 	@Override
 	public TrustService apply(TSPServiceType original) {
-		TrustService trustService = new TrustService();
-
-		extractCertificates(trustService, original.getServiceInformation());
-
-		extractStatusAndHistory(trustService, original);
-
-		return trustService;
+		TrustServiceBuilder trustServiceBuilder = new TrustService.TrustServiceBuilder();
+		return trustServiceBuilder
+				.setCertificates(extractCertificates(original.getServiceInformation()))
+				.setStatusAndInformationExtensions(extractStatusAndHistory(original))
+				.build();
 	}
 
-	private void extractCertificates(TrustService trustService, TSPServiceInformationType serviceInformation) {
+	private List<CertificateToken> extractCertificates(TSPServiceInformationType serviceInformation) {
 		DigitalIdentityListTypeConverter converter = new DigitalIdentityListTypeConverter();
 		DigitalIdentityListType serviceDigitalIdentityList = serviceInformation.getServiceDigitalIdentity();
-		trustService.setCertificates(Collections.unmodifiableList(converter.apply(serviceDigitalIdentityList)));
+		return Collections.unmodifiableList(converter.apply(serviceDigitalIdentityList));
 	}
 
-	private void extractStatusAndHistory(TrustService trustService, TSPServiceType original) {
+	private TimeDependentValues<TrustServiceStatusAndInformationExtensions> extractStatusAndHistory(TSPServiceType original) {
 		MutableTimeDependentValues<TrustServiceStatusAndInformationExtensions> statusHistoryList = new MutableTimeDependentValues<TrustServiceStatusAndInformationExtensions>();
 
 		TSPServiceInformationType serviceInfo = original.getServiceInformation();
 
 		InternationalNamesTypeConverter converter = new InternationalNamesTypeConverter();
 
-		TrustServiceStatusAndInformationExtensions status = new TrustServiceStatusAndInformationExtensions();
-		status.setNames(converter.apply(serviceInfo.getServiceName()));
-		status.setType(serviceInfo.getServiceTypeIdentifier());
-		status.setStatus(serviceInfo.getServiceStatus());
-		status.setServiceSupplyPoints(getServiceSupplyPoints(serviceInfo.getServiceSupplyPoints()));
+		TrustServiceStatusAndInformationExtensionsBuilder statusBuilder = new TrustServiceStatusAndInformationExtensions.TrustServiceStatusAndInformationExtensionsBuilder();
+		statusBuilder.setNames(converter.apply(serviceInfo.getServiceName()));
+		statusBuilder.setType(serviceInfo.getServiceTypeIdentifier());
+		statusBuilder.setStatus(serviceInfo.getServiceStatus());
+		statusBuilder.setServiceSupplyPoints(getServiceSupplyPoints(serviceInfo.getServiceSupplyPoints()));
 
-		parseExtensionsList(serviceInfo.getServiceInformationExtensions(), status);
+		parseExtensionsList(serviceInfo.getServiceInformationExtensions(), statusBuilder);
 
 		Date nextEndDate = convertToDate(serviceInfo.getStatusStartingTime());
-		status.setStartDate(nextEndDate);
-		statusHistoryList.addOldest(status);
+		statusBuilder.setStartDate(nextEndDate);
+		statusHistoryList.addOldest(statusBuilder.build());
 
 		if (original.getServiceHistory() != null && Utils.isCollectionNotEmpty(original.getServiceHistory().getServiceHistoryInstance())) {
 			for (ServiceHistoryInstanceType serviceHistory : original.getServiceHistory().getServiceHistoryInstance()) {
-				TrustServiceStatusAndInformationExtensions statusHistory = new TrustServiceStatusAndInformationExtensions();
-				statusHistory.setNames(converter.apply(serviceHistory.getServiceName()));
-				statusHistory.setType(serviceHistory.getServiceTypeIdentifier());
-				statusHistory.setStatus(serviceHistory.getServiceStatus());
+				TrustServiceStatusAndInformationExtensionsBuilder statusHistoryBuilder = 
+						new TrustServiceStatusAndInformationExtensions.TrustServiceStatusAndInformationExtensionsBuilder();
+				statusHistoryBuilder.setNames(converter.apply(serviceHistory.getServiceName()));
+				statusHistoryBuilder.setType(serviceHistory.getServiceTypeIdentifier());
+				statusHistoryBuilder.setStatus(serviceHistory.getServiceStatus());
 
-				parseExtensionsList(serviceHistory.getServiceInformationExtensions(), statusHistory);
+				parseExtensionsList(serviceHistory.getServiceInformationExtensions(), statusHistoryBuilder);
 
-				statusHistory.setEndDate(nextEndDate);
+				statusHistoryBuilder.setEndDate(nextEndDate);
 				nextEndDate = convertToDate(serviceHistory.getStatusStartingTime());
-				statusHistory.setStartDate(nextEndDate);
-				statusHistoryList.addOldest(statusHistory);
+				statusHistoryBuilder.setStartDate(nextEndDate);
+				statusHistoryList.addOldest(statusHistoryBuilder.build());
 			}
 		}
 
-		trustService.setStatusAndInformationExtensions(statusHistoryList);
+		return statusHistoryList;
 	}
 
-	private void parseExtensionsList(ExtensionsListType serviceInformationExtensions, TrustServiceStatusAndInformationExtensions status) {
+	private void parseExtensionsList(ExtensionsListType serviceInformationExtensions, TrustServiceStatusAndInformationExtensionsBuilder statusBuilder) {
 		if (serviceInformationExtensions != null) {
-			status.setConditionsForQualifiers(extractConditionsForQualifiers(serviceInformationExtensions.getExtension()));
-			status.setAdditionalServiceInfoUris(extractAdditionalServiceInfoUris(serviceInformationExtensions.getExtension()));
-			status.setExpiredCertsRevocationInfo(extractExpiredCertsRevocationInfo(serviceInformationExtensions.getExtension()));
+			statusBuilder.setConditionsForQualifiers(extractConditionsForQualifiers(serviceInformationExtensions.getExtension()));
+			statusBuilder.setAdditionalServiceInfoUris(extractAdditionalServiceInfoUris(serviceInformationExtensions.getExtension()));
+			statusBuilder.setExpiredCertsRevocationInfo(extractExpiredCertsRevocationInfo(serviceInformationExtensions.getExtension()));
 		}
 	}
 
@@ -127,7 +130,7 @@ public class TrustServiceConverter implements Function<TSPServiceType, TrustServ
 									List<String> qualifiers = extractQualifiers(qualificationElement);
 									Condition condition = getCondition(qualificationElement.getCriteriaList());
 									if (Utils.isCollectionNotEmpty(qualifiers) && (condition != null)) {
-										conditionsForQualifiers.add(new ConditionForQualifiers(condition, qualifiers));
+										conditionsForQualifiers.add(new ConditionForQualifiers(condition, Collections.unmodifiableList(qualifiers)));
 									}
 								}
 							}

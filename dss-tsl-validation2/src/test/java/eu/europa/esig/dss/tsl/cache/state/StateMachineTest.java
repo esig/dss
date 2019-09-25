@@ -29,7 +29,6 @@ public class StateMachineTest {
 		assertEquals("Transition from 'REFRESH_NEEDED' to 'SYNCHRONIZED' is not allowed", e.getMessage());
 
 		assertThrows(IllegalStateException.class, () -> cachedEntry.toBeDeleted());
-		assertThrows(IllegalStateException.class, () -> cachedEntry.expire());
 
 		assertEquals(CacheStateEnum.REFRESH_NEEDED, cachedEntry.getCurrentState());
 		assertEquals(emptyStateDate, cachedEntry.getLastSuccessDate());
@@ -49,7 +48,6 @@ public class StateMachineTest {
 		assertEquals(5, cachedEntry.getCachedResult().integer);
 
 		assertThrows(IllegalStateException.class, () -> cachedEntry.toBeDeleted());
-		assertThrows(IllegalStateException.class, () -> cachedEntry.expire());
 
 		cachedEntry.sync();
 
@@ -81,7 +79,8 @@ public class StateMachineTest {
 		assertNotNull(cachedEntry.getLastSuccessDate());
 
 		assertTrue(cachedEntry.isError());
-		assertNotNull(cachedEntry.getException());
+		assertNotNull(cachedEntry.getExceptionMessage());
+		assertNotNull(cachedEntry.getExceptionStackTrace());
 		assertNull(cachedEntry.getCachedResult());
 
 		cachedEntry.toBeDeleted();

@@ -20,7 +20,12 @@ import eu.europa.esig.dss.tsl.cache.ValidationCache;
 import eu.europa.esig.dss.tsl.runnable.TLAnalysis;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
+import eu.europa.esig.dss.tsl.summary.ValidationJobSummary;
 
+/**
+ * The main class performing the TL/LOTL download / parsing / validation tasks
+ *
+ */
 public class TLValidationJob {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TLValidationJob.class);
@@ -32,6 +37,11 @@ public class TLValidationJob {
 	private ParsingCache parsingCache = new ParsingCache();
 
 	private ValidationCache validationCache = new ValidationCache();
+	
+	/**
+	 * Info / summary for all processed LOTL/TLs
+	 */
+	private ValidationJobSummary validationJobSummary = new ValidationJobSummary(downloadCache, parsingCache, validationCache);
 
 	/**
 	 * Array of zero, one or more Trusted List (TL) sources.
@@ -98,6 +108,14 @@ public class TLValidationJob {
 	public void setCacheCleaner(final CacheCleaner cacheCleaner) {
 		this.cacheCleaner = cacheCleaner;
 	}
+	
+	/**
+	 * Returns info / summary for all processed LOTLs and TLs on a request time
+	 * @return {@link ValidationJobSummary}
+	 */
+	public ValidationJobSummary getSummary() {
+		return validationJobSummary;
+	}
 
 	/**
 	 * Used to execute the refresh in offline mode (no date from remote sources will be downloaded)
@@ -126,12 +144,15 @@ public class TLValidationJob {
 
 		// Execute all LOTLs
 		if (listOfTrustedListSources != null) {
-			executeLOTLSourcesAnalysis(Arrays.asList(listOfTrustedListSources), dssFileLoader);
+			List<LOTLSource> lotlSources = Arrays.asList(listOfTrustedListSources);
+			executeLOTLSourcesAnalysis(lotlSources, dssFileLoader);
 
 			// Check LOTLs consistency
 			// Exception on duplicate TL URL
 
 			// extract TLSources from cached LOTLs
+			
+			validationJobSummary.setLOTLSources(lotlSources);
 		}
 
 		// And then, execute all TLs (manual configs + TLs from LOTLs)
@@ -142,6 +163,8 @@ public class TLValidationJob {
 		// TLCerSource sync + cache sync if needed
 
 		executeTLSourcesClean(currentTLSources, dssFileLoader);
+		
+		validationJobSummary.setTLSources(currentTLSources);
 	}
 
 	private void executeLOTLSourcesAnalysis(List<LOTLSource> lotlSources, DSSFileLoader dssFileLoader) {

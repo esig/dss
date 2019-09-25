@@ -42,16 +42,8 @@ public class ConditionForQualifiers {
 		return qualifiers;
 	}
 
-	public void setQualifiers(List<String> qualifiers) {
-		this.qualifiers = qualifiers;
-	}
-
 	public Condition getCondition() {
 		return condition;
-	}
-
-	public void setCondition(Condition condition) {
-		this.condition = condition;
 	}
 
 }

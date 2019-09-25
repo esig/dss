@@ -9,7 +9,7 @@ public interface CacheContext {
 	 * 
 	 * @return the Cache state
 	 */
-	CacheState getCurrentState();
+	CacheStateEnum getCurrentState();
 
 	/**
 	 * Returns the date of the last success state change
@@ -77,7 +77,7 @@ public interface CacheContext {
 	/**
 	 * Returns TRUE if the cache is in TO_BE_DELETED status
 	 * 
-	 * @return TRUE if entry must be deleted
+	 * @return TRUE if the entry must be deleted
 	 */
 	boolean isToBeDeleted();
 

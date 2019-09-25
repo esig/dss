@@ -41,61 +41,112 @@ public class TrustServiceStatusAndInformationExtensions extends BaseTimeDependen
 	private List<String> additionalServiceInfoUris;
 	private List<String> serviceSupplyPoints;
 	private Date expiredCertsRevocationInfo;
+	
+	public TrustServiceStatusAndInformationExtensions(TrustServiceStatusAndInformationExtensionsBuilder builder) {
+		super(builder.startDate, builder.endDate);
+		this.names = builder.names;
+		this.type = builder.type;
+		this.status = builder.status;
+		this.conditionsForQualifiers = builder.conditionsForQualifiers;
+		this.additionalServiceInfoUris = builder.additionalServiceInfoUris;
+		this.serviceSupplyPoints = builder.serviceSupplyPoints;
+		this.expiredCertsRevocationInfo = builder.expiredCertsRevocationInfo;
+	}
 
 	public Map<String, List<String>> getNames() {
 		return names;
-	}
-
-	public void setNames(Map<String, List<String>> names) {
-		this.names = names;
 	}
 
 	public String getType() {
 		return type;
 	}
 
-	public void setType(String type) {
-		this.type = type;
-	}
-
 	public String getStatus() {
 		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
 	}
 
 	public List<ConditionForQualifiers> getConditionsForQualifiers() {
 		return conditionsForQualifiers;
 	}
 
-	public void setConditionsForQualifiers(List<ConditionForQualifiers> conditionsForQualifiers) {
-		this.conditionsForQualifiers = conditionsForQualifiers;
-	}
-
 	public List<String> getAdditionalServiceInfoUris() {
 		return additionalServiceInfoUris;
-	}
-
-	public void setAdditionalServiceInfoUris(List<String> additionalServiceInfoUris) {
-		this.additionalServiceInfoUris = additionalServiceInfoUris;
 	}
 
 	public List<String> getServiceSupplyPoints() {
 		return serviceSupplyPoints;
 	}
 
-	public void setServiceSupplyPoints(List<String> serviceSupplyPoints) {
-		this.serviceSupplyPoints = serviceSupplyPoints;
-	}
-
-	public void setExpiredCertsRevocationInfo(Date expiredCertsRevocationInfo) {
-		this.expiredCertsRevocationInfo = expiredCertsRevocationInfo;
-	}
-
 	public Date getExpiredCertsRevocationInfo() {
 		return expiredCertsRevocationInfo;
+	}
+	
+	public static final class TrustServiceStatusAndInformationExtensionsBuilder {
+		
+		private Map<String, List<String>> names;
+
+		private String type;
+		private String status;
+		private List<ConditionForQualifiers> conditionsForQualifiers;
+		private List<String> additionalServiceInfoUris;
+		private List<String> serviceSupplyPoints;
+		private Date expiredCertsRevocationInfo;
+
+		private Date startDate;
+		private Date endDate;
+		
+		public TrustServiceStatusAndInformationExtensionsBuilder() {
+		}
+		
+		public TrustServiceStatusAndInformationExtensions build() {
+			return new TrustServiceStatusAndInformationExtensions(this);
+		}
+
+		public TrustServiceStatusAndInformationExtensionsBuilder setNames(Map<String, List<String>> names) {
+			this.names = names;
+			return this;
+		}
+
+		public TrustServiceStatusAndInformationExtensionsBuilder setType(String type) {
+			this.type = type;
+			return this;
+		}
+		
+		public TrustServiceStatusAndInformationExtensionsBuilder setStatus(String status) {
+			this.status = status;
+			return this;
+		}
+
+		public TrustServiceStatusAndInformationExtensionsBuilder setConditionsForQualifiers(List<ConditionForQualifiers> conditionsForQualifiers) {
+			this.conditionsForQualifiers = conditionsForQualifiers;
+			return this;
+		}
+
+		public TrustServiceStatusAndInformationExtensionsBuilder setAdditionalServiceInfoUris(List<String> additionalServiceInfoUris) {
+			this.additionalServiceInfoUris = additionalServiceInfoUris;
+			return this;
+		}
+
+		public TrustServiceStatusAndInformationExtensionsBuilder setServiceSupplyPoints(List<String> serviceSupplyPoints) {
+			this.serviceSupplyPoints = serviceSupplyPoints;
+			return this;
+		}
+
+		public TrustServiceStatusAndInformationExtensionsBuilder setExpiredCertsRevocationInfo(Date expiredCertsRevocationInfo) {
+			this.expiredCertsRevocationInfo = expiredCertsRevocationInfo;
+			return this;
+		}
+
+		public TrustServiceStatusAndInformationExtensionsBuilder setStartDate(Date d) {
+			this.startDate = d;
+			return this;
+		}
+		
+		public TrustServiceStatusAndInformationExtensionsBuilder setEndDate(Date d) {
+			this.endDate = d;
+			return this;
+		}
+		
 	}
 
 }

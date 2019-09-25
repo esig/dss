@@ -13,6 +13,11 @@ public enum CacheStateEnum implements CacheState {
 		}
 
 		@Override
+		public void refreshNeeded(CacheContext cacheContext) {
+			cacheContext.state(REFRESH_NEEDED);
+		}
+
+		@Override
 		public void error(CacheContext cacheContext, CachedException exception) {
 			cacheContext.error(exception);
 		}
@@ -44,6 +49,11 @@ public enum CacheStateEnum implements CacheState {
 		@Override
 		public void toBeDeleted(CacheContext cacheContext) {
 			cacheContext.state(TO_BE_DELETED);
+		}
+
+		@Override
+		public void sync(CacheContext cacheContext) {
+			cacheContext.state(SYNCHRONIZED);
 		}
 
 	},

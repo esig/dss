@@ -78,9 +78,9 @@ public class CacheCleanerTest {
 		cacheCleaner = new CacheCleaner();
 		
 		downloadCache = new DownloadCache();
-		downloadCache.update(new CacheKey(SAMPLE_FILE_NAME), new XmlDownloadResult(SAMPLE_FILE_NAME, sampleDocument, 
+		downloadCache.update(new CacheKey(SAMPLE_FILE_NAME), new XmlDownloadResult(sampleDocument, 
 				new Digest(DigestAlgorithm.SHA1, DSSUtils.digest(DigestAlgorithm.SHA1, sampleDocument))));
-		downloadCache.update(new CacheKey(LOTL_FILE_NAME), new XmlDownloadResult(LOTL_FILE_NAME, lotlDocument, 
+		downloadCache.update(new CacheKey(LOTL_FILE_NAME), new XmlDownloadResult(lotlDocument, 
 				new Digest(DigestAlgorithm.SHA1, DSSUtils.digest(DigestAlgorithm.SHA1, lotlDocument))));
 		
 		parsingCache = new ParsingCache();
@@ -241,20 +241,14 @@ public class CacheCleanerTest {
 	}
 	
 	private void validateEntries(final CacheKey cacheKey, final boolean isEmpty, final boolean isRefreshNeeded) {
-		CachedEntry<XmlDownloadResult> downloadResult = downloadCache.get(cacheKey);
-		assertNotNull(downloadResult);
-		assertEquals(isEmpty, downloadResult.isEmpty());
-		assertEquals(isRefreshNeeded, downloadResult.isRefreshNeeded());
+		assertEquals(isEmpty, downloadCache.isEmpty(cacheKey));
+		assertEquals(isRefreshNeeded, downloadCache.isRefreshNeeded(cacheKey));
 		
-		CachedEntry<AbstractParsingResult> parsingResult = parsingCache.get(cacheKey);
-		assertNotNull(parsingResult);
-		assertEquals(isEmpty, parsingResult.isEmpty());
-		assertEquals(isRefreshNeeded, parsingResult.isRefreshNeeded());
+		assertEquals(isEmpty, parsingCache.isEmpty(cacheKey));
+		assertEquals(isRefreshNeeded, parsingCache.isRefreshNeeded(cacheKey));
 		
-		CachedEntry<ValidationResult> validationResult = validationCache.get(cacheKey);
-		assertNotNull(validationResult);
-		assertEquals(isEmpty, validationResult.isEmpty());
-		assertEquals(isRefreshNeeded, validationResult.isRefreshNeeded());
+		assertEquals(isEmpty, validationCache.isEmpty(cacheKey));
+		assertEquals(isRefreshNeeded, validationCache.isRefreshNeeded(cacheKey));
 	}
 	
 	@AfterEach
