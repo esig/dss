@@ -2,25 +2,34 @@ package eu.europa.esig.dss.tsl.job;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.service.http.commons.DSSFileLoader;
 import eu.europa.esig.dss.tsl.cache.CacheAccessByKey;
+import eu.europa.esig.dss.tsl.cache.CacheAccessFactory;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
-import eu.europa.esig.dss.tsl.cache.DownloadCache;
-import eu.europa.esig.dss.tsl.cache.ParsingCache;
-import eu.europa.esig.dss.tsl.cache.ValidationCache;
+import eu.europa.esig.dss.tsl.cache.CacheKey;
+import eu.europa.esig.dss.tsl.cache.ReadOnlyCacheAccess;
+import eu.europa.esig.dss.tsl.parsing.AbstractParsingResult;
+import eu.europa.esig.dss.tsl.runnable.LOTLAnalysis;
+import eu.europa.esig.dss.tsl.runnable.LOTLWithPivotsAnalysis;
 import eu.europa.esig.dss.tsl.runnable.TLAnalysis;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
 import eu.europa.esig.dss.tsl.summary.ValidationJobSummary;
+import eu.europa.esig.dss.utils.Utils;
 
 /**
  * The main class performing the TL/LOTL download / parsing / validation tasks
@@ -31,17 +40,6 @@ public class TLValidationJob {
 	private static final Logger LOG = LoggerFactory.getLogger(TLValidationJob.class);
 
 	private ExecutorService executorService = Executors.newCachedThreadPool();
-
-	private DownloadCache downloadCache = new DownloadCache();
-
-	private ParsingCache parsingCache = new ParsingCache();
-
-	private ValidationCache validationCache = new ValidationCache();
-	
-	/**
-	 * Info / summary for all processed LOTL/TLs
-	 */
-	private ValidationJobSummary validationJobSummary = new ValidationJobSummary(downloadCache, parsingCache, validationCache);
 
 	/**
 	 * Array of zero, one or more Trusted List (TL) sources.
@@ -110,11 +108,20 @@ public class TLValidationJob {
 	}
 	
 	/**
-	 * Returns info / summary for all processed LOTLs and TLs on a request time
+	 * Returns validation job summary for all processed LOTL / TLs
 	 * @return {@link ValidationJobSummary}
 	 */
 	public ValidationJobSummary getSummary() {
-		return validationJobSummary;
+		final List<TLSource> tlList = new ArrayList<TLSource>();
+		if (Utils.isArrayNotEmpty(trustedListSources)) {
+			tlList.addAll(Arrays.asList(trustedListSources));
+		}
+		final List<LOTLSource> lotlList = new ArrayList<LOTLSource>();
+		if (Utils.isArrayNotEmpty(listOfTrustedListSources)) {
+			lotlList.addAll(Arrays.asList(listOfTrustedListSources));
+			tlList.addAll(extractTlSources(lotlList));
+		}
+		return new ValidationJobSummary(tlList, lotlList);
 	}
 
 	/**
@@ -143,16 +150,16 @@ public class TLValidationJob {
 		}
 
 		// Execute all LOTLs
-		if (listOfTrustedListSources != null) {
-			List<LOTLSource> lotlSources = Arrays.asList(listOfTrustedListSources);
-			executeLOTLSourcesAnalysis(lotlSources, dssFileLoader);
+		if (Utils.isArrayNotEmpty(listOfTrustedListSources)) {
+			final List<LOTLSource> lotlList = Arrays.asList(listOfTrustedListSources);
+
+			executeLOTLSourcesAnalysis(lotlList, dssFileLoader);
 
 			// Check LOTLs consistency
-			// Exception on duplicate TL URL
 
 			// extract TLSources from cached LOTLs
 			
-			validationJobSummary.setLOTLSources(lotlSources);
+			currentTLSources.addAll(extractTlSources(lotlList));
 		}
 
 		// And then, execute all TLs (manual configs + TLs from LOTLs)
@@ -163,26 +170,49 @@ public class TLValidationJob {
 		// TLCerSource sync + cache sync if needed
 
 		executeTLSourcesClean(currentTLSources, dssFileLoader);
-		
-		validationJobSummary.setTLSources(currentTLSources);
 	}
 
 	private void executeLOTLSourcesAnalysis(List<LOTLSource> lotlSources, DSSFileLoader dssFileLoader) {
-		// get cache contents
+		checkNoDuplicateUrls(lotlSources);
 
-		// no duplicate URL
+		int nbLOTLSources = lotlSources.size();
 
+		LOG.info("Running analysis for {} LOTLSource(s)", nbLOTLSources);
+
+		Map<CacheKey, AbstractParsingResult> oldParsingValues = extractParsingCache(lotlSources);
+
+		CountDownLatch latch = new CountDownLatch(nbLOTLSources);
 		for (LOTLSource lotlSource : lotlSources) {
-//			execute();
+			final CacheAccessByKey cacheAccess = CacheAccessFactory.getCacheAccess(lotlSource.getCacheKey());
+			if (lotlSource.isPivotSupport()) {
+				executorService.submit(new LOTLWithPivotsAnalysis(lotlSource, cacheAccess, dssFileLoader, latch));
+			} else {
+				executorService.submit(new LOTLAnalysis(lotlSource, cacheAccess, dssFileLoader, latch));
+			}
 		}
 
-		for (LOTLSource lotlSource : lotlSources) {
-//			get();
+		try {
+			latch.await();
+			LOG.info("Analysis is DONE for {} LOTLSource(s)", nbLOTLSources);
+		} catch (InterruptedException e) {
+			LOG.error("Interruption in the LOTLSource process", e);
 		}
 
-		// update caches
+		Map<CacheKey, AbstractParsingResult> newParsingValues = extractParsingCache(lotlSources);
 
-		// Analyse introduced changes for TLs + adapt cache for TLs (EXPIRED)
+		// Analyze introduced changes for TLs + adapt cache for TLs (EXPIRED)
+		LOTLChangeApplier lotlChangeApplier = new LOTLChangeApplier(oldParsingValues, newParsingValues);
+		lotlChangeApplier.analyzeAndApply();
+	}
+	
+	private List<TLSource> extractTlSources(List<LOTLSource> lotlList) {
+		TLSourceBuilder tlSourceBuilder = new TLSourceBuilder(lotlList, extractParsingCache(lotlList));
+		return tlSourceBuilder.build();
+	}
+
+	private Map<CacheKey, AbstractParsingResult> extractParsingCache(List<LOTLSource> lotlSources) {
+		final ReadOnlyCacheAccess readOnlyCacheAccess = CacheAccessFactory.getReadOnlyCacheAccess();
+		return lotlSources.stream().collect(Collectors.toMap(LOTLSource::getCacheKey, s -> readOnlyCacheAccess.getParsingResult(s.getCacheKey())));
 	}
 
 	private void executeTLSourcesAnalysis(List<TLSource> tlSources, DSSFileLoader dssFileLoader) {
@@ -192,17 +222,19 @@ public class TLValidationJob {
 			return;
 		}
 
-		LOG.info("Running TLAnalysis for {} TLSource(s)", nbTLSources);
+		checkNoDuplicateUrls(tlSources);
+
+		LOG.info("Running analysis for {} TLSource(s)", nbTLSources);
 
 		CountDownLatch latch = new CountDownLatch(nbTLSources);
 		for (TLSource tlSource : tlSources) {
-			final CacheAccessByKey cacheAccess = new CacheAccessByKey(tlSource.getCacheKey(), downloadCache, parsingCache, validationCache);
+			final CacheAccessByKey cacheAccess = CacheAccessFactory.getCacheAccess(tlSource.getCacheKey());
 			executorService.submit(new TLAnalysis(tlSource, cacheAccess, dssFileLoader, latch));
 		}
 
 		try {
 			latch.await();
-			LOG.info("TLAnalysis is DONE for {} TLSource(s)", nbTLSources);
+			LOG.info("Analysis is DONE for {} TLSource(s)", nbTLSources);
 		} catch (InterruptedException e) {
 			LOG.error("Interruption in the TLAnalysis process", e);
 		}
@@ -213,11 +245,25 @@ public class TLValidationJob {
 		LOG.info("Running CacheClean for {} TLSource(s)", nbTLSources);
 		
 		for (TLSource tlSource : tlSources) {
-			final CacheAccessByKey cacheAccess = new CacheAccessByKey(tlSource.getCacheKey(), downloadCache, parsingCache, validationCache);
+			final CacheAccessByKey cacheAccess = CacheAccessFactory.getCacheAccess(tlSource.getCacheKey());
 			cacheCleaner.clean(cacheAccess);
 		}
 		
 		LOG.info("CacheClean is DONE for {} TLSource(s)", nbTLSources);
+	}
+
+	/**
+	 * Duplicate urls mean cache conflict.
+	 * 
+	 * @param sources
+	 *                a list of TLSource
+	 */
+	private void checkNoDuplicateUrls(List<? extends TLSource> sources) {
+		List<String> allUrls = sources.stream().map(s -> s.getUrl()).collect(Collectors.toList());
+		Set<String> uniqueUrls = new HashSet<String>(allUrls);
+		if (allUrls.size() > uniqueUrls.size()) {
+			throw new DSSException(String.format("Duplicate urls found : %s", allUrls));
+		}
 	}
 
 }

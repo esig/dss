@@ -3,9 +3,6 @@ package eu.europa.esig.dss.tsl.summary;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.europa.esig.dss.tsl.cache.DownloadCache;
-import eu.europa.esig.dss.tsl.cache.ParsingCache;
-import eu.europa.esig.dss.tsl.cache.ValidationCache;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -15,47 +12,22 @@ import eu.europa.esig.dss.utils.Utils;
  *
  */
 public class ValidationJobSummary {
-
-	private final DownloadCache downloadCache;
-	private final ParsingCache parsingCache;
-	private final ValidationCache validationCache;
 	
 	/**
 	 * List of TLSources to extract summary for
 	 */
-	private List<TLSource> tlSources;
+	private final List<TLSource> tlSources;
 	
 	/**
 	 * List of LOTLSource to extract summary for
 	 */
-	private List<LOTLSource> lotlSources;
+	private final List<LOTLSource> lotlSources;
 	
 	/**
 	 * The default constructor
-	 * @param downloadCache {@link DownloadCache}
-	 * @param parsingCache {@link ParsingCache}
-	 * @param validationCache {@link ValidationCache}
 	 */
-	public ValidationJobSummary(final DownloadCache downloadCache, final ParsingCache parsingCache, final ValidationCache validationCache) {
-		this.downloadCache = downloadCache;
-		this.parsingCache = parsingCache;
-		this.validationCache = validationCache;
-	}
-	
-	/**
-	 * Sets a list of {@code TLSource}s to get summary for
-	 * @param tlSources list of {@link TLSource}s
-	 */
-	public void setTLSources(List<TLSource> tlSources) {
+	public ValidationJobSummary(final List<TLSource> tlSources, final List<LOTLSource> lotlSources) {
 		this.tlSources = tlSources;
-	}
-
-	/**
-	 * Sets a list of {@code LOTLSource}s to get summary for
-	 * @param lotlSources list of {@link LOTLSource}s
-	 */
-	public void setLOTLSources(List<LOTLSource> lotlSources) {
-		// TODO: map between lotl and pivots ???
 		this.lotlSources = lotlSources;
 	}
 	
@@ -67,7 +39,7 @@ public class ValidationJobSummary {
 		List<TLInfo> tlInfos = new ArrayList<TLInfo>();
 		if (Utils.isCollectionNotEmpty(tlSources)) {
 			for (TLSource tlSource : tlSources) {
-				tlInfos.add(new TLInfo(tlSource.getCacheKey(), tlSource.getUrl(), downloadCache, parsingCache, validationCache));
+				tlInfos.add(new TLInfo(tlSource.getCacheKey(), tlSource.getUrl()));
 			}
 		}
 		return tlInfos;
@@ -81,7 +53,7 @@ public class ValidationJobSummary {
 		List<LOTLInfo> lotlInfos = new ArrayList<LOTLInfo>();
 		if (Utils.isCollectionNotEmpty(lotlSources)) {
 			for (LOTLSource lotlSource : lotlSources) {
-				lotlInfos.add(new LOTLInfo(lotlSource.getCacheKey(), lotlSource.getUrl(), downloadCache, parsingCache, validationCache));
+				lotlInfos.add(new LOTLInfo(lotlSource.getCacheKey(), lotlSource.getUrl()));
 			}
 		}
 		return lotlInfos;

@@ -6,6 +6,7 @@ import java.util.List;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.tsl.cache.CacheAccessFactory;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
 import eu.europa.esig.dss.tsl.cache.DownloadCache;
 import eu.europa.esig.dss.tsl.cache.ParsingCache;
@@ -24,10 +25,6 @@ public class TLInfo {
 	 */
 	protected final CacheKey cacheKey;
 	private final String url;
-
-	protected final DownloadCache downloadCache;
-	protected final ParsingCache parsingCache;
-	protected final ValidationCache validationCache;
 	
 	/**
 	 * The default constructor
@@ -35,12 +32,9 @@ public class TLInfo {
 	 * @param parsingCache {@link ParsingCache}
 	 * @param validationCache {@link ValidationCache}
 	 */
-	public TLInfo(final CacheKey cacheKey, final String url, final DownloadCache downloadCache, final ParsingCache parsingCache, final ValidationCache validationCache) {
+	public TLInfo(final CacheKey cacheKey, final String url) {
 		this.cacheKey = cacheKey;
 		this.url = url;
-		this.downloadCache = downloadCache;
-		this.parsingCache = parsingCache;
-		this.validationCache = validationCache;
 	}
 	
 	/**
@@ -48,7 +42,7 @@ public class TLInfo {
 	 * @return {@link CacheStateEnum}
 	 */
 	public CacheStateEnum getDownloadJobState() {
-		return downloadCache.getCurrentState(cacheKey);
+		return CacheAccessFactory.getDownloadCacheDataAccess().getCurrentState(cacheKey);
 	}
 	
 	/**
@@ -56,7 +50,7 @@ public class TLInfo {
 	 * @return {@link String} exception message
 	 */
 	public String getDownloadJobExceptionMessage() {
-		return downloadCache.getCachedExceptionMessage(cacheKey);
+		return CacheAccessFactory.getDownloadCacheDataAccess().getCachedExceptionMessage(cacheKey);
 	}
 	
 	/**
@@ -64,7 +58,7 @@ public class TLInfo {
 	 * @return {@link String} exception stack trace
 	 */
 	public String getDownloadJobExceptionStackTrace() {
-		return downloadCache.getCachedExceptionStackTrace(cacheKey);
+		return CacheAccessFactory.getDownloadCacheDataAccess().getCachedExceptionStackTrace(cacheKey);
 	}
 	
 	/**
@@ -80,7 +74,7 @@ public class TLInfo {
 	 * @return {@link Date} last loading date
 	 */
 	public Date getLastLoadingDate() {
-		return downloadCache.getLastSuccessDate(cacheKey);
+		return CacheAccessFactory.getDownloadCacheDataAccess().getLastSuccessDate(cacheKey);
 	}
 
 	/**
@@ -88,7 +82,7 @@ public class TLInfo {
 	 * @return {@link Date} last synchronization date
 	 */
 	public Date getLastFileSynchronizationDate() {
-		return downloadCache.getLastSynchronizationDate(cacheKey);
+		return CacheAccessFactory.getDownloadCacheDataAccess().getLastSynchronizationDate(cacheKey);
 	}
 	
 	/**
@@ -96,7 +90,7 @@ public class TLInfo {
 	 * @return {@link CacheStateEnum}
 	 */
 	public CacheStateEnum getParsingJobState() {
-		return parsingCache.getCurrentState(cacheKey);
+		return CacheAccessFactory.getParsingCacheDataAccess().getCurrentState(cacheKey);
 	}
 	
 	/**
@@ -104,7 +98,7 @@ public class TLInfo {
 	 * @return {@link String} exception message
 	 */
 	public String getParsingJobExceptionMessage() {
-		return parsingCache.getCachedExceptionMessage(cacheKey);
+		return CacheAccessFactory.getParsingCacheDataAccess().getCachedExceptionMessage(cacheKey);
 	}
 	
 	/**
@@ -112,7 +106,7 @@ public class TLInfo {
 	 * @return {@link String} exception stack trace
 	 */
 	public String getParsingJobExceptionStackTrace() {
-		return parsingCache.getCachedExceptionStackTrace(cacheKey);
+		return CacheAccessFactory.getParsingCacheDataAccess().getCachedExceptionStackTrace(cacheKey);
 	}
 
 	/**
@@ -120,7 +114,7 @@ public class TLInfo {
 	 * @return {@link Integer} sequence number
 	 */
 	public Integer getSequenceNumber() {
-		return parsingCache.getSequenceNumber(cacheKey);
+		return CacheAccessFactory.getParsingCacheDataAccess().getSequenceNumber(cacheKey);
 	}
 
 	/**
@@ -128,7 +122,7 @@ public class TLInfo {
 	 * @return {@link Integer} version
 	 */
 	public Integer getTLVersion() {
-		return parsingCache.getVersion(cacheKey);
+		return CacheAccessFactory.getParsingCacheDataAccess().getVersion(cacheKey);
 	}
 
 	/**
@@ -136,7 +130,7 @@ public class TLInfo {
 	 * @return {@link String} territory
 	 */
 	public String getTerritory() {
-		return parsingCache.getTerritory(cacheKey);
+		return CacheAccessFactory.getParsingCacheDataAccess().getTerritory(cacheKey);
 	}
 
 	/**
@@ -144,7 +138,7 @@ public class TLInfo {
 	 * @return {@link Date} issue date
 	 */
 	public Date getIssueDate() {
-		return parsingCache.getIssueDate(cacheKey);
+		return CacheAccessFactory.getParsingCacheDataAccess().getIssueDate(cacheKey);
 	}
 
 	/**
@@ -152,7 +146,7 @@ public class TLInfo {
 	 * @return {@link Date} next update date
 	 */
 	public Date getNextUpdateDate() {
-		return parsingCache.getNextUpdateDate(cacheKey);
+		return CacheAccessFactory.getParsingCacheDataAccess().getNextUpdateDate(cacheKey);
 	}
 
 	/**
@@ -160,7 +154,7 @@ public class TLInfo {
 	 * @return list of {@link String} distribution points
 	 */
 	public List<String> getDistributionPoints() {
-		return parsingCache.getDistributionPoints(cacheKey);
+		return CacheAccessFactory.getParsingCacheDataAccess().getDistributionPoints(cacheKey);
 	}
 
 	/**
@@ -168,7 +162,7 @@ public class TLInfo {
 	 * @return list of {@link TrustServiceProvider}s
 	 */
 	public List<TrustServiceProvider> getTrustServiceProviders() {
-		return parsingCache.getTrustServiceProviders(cacheKey);
+		return CacheAccessFactory.getParsingCacheDataAccess().getTrustServiceProviders(cacheKey);
 	}
 	
 	/**
@@ -176,7 +170,7 @@ public class TLInfo {
 	 * @return {@link CacheStateEnum}
 	 */
 	public CacheStateEnum getValidationJobState() {
-		return validationCache.getCurrentState(cacheKey);
+		return CacheAccessFactory.getValidationCacheDataAccess().getCurrentState(cacheKey);
 	}
 	
 	/**
@@ -184,7 +178,7 @@ public class TLInfo {
 	 * @return {@link String} exception message
 	 */
 	public String getValidationJobExceptionMessage() {
-		return validationCache.getCachedExceptionMessage(cacheKey);
+		return CacheAccessFactory.getValidationCacheDataAccess().getCachedExceptionMessage(cacheKey);
 	}
 	
 	/**
@@ -192,7 +186,7 @@ public class TLInfo {
 	 * @return {@link String} exception stack trace
 	 */
 	public String getValidationJobExceptionStackTrace() {
-		return validationCache.getCachedExceptionStackTrace(cacheKey);
+		return CacheAccessFactory.getValidationCacheDataAccess().getCachedExceptionStackTrace(cacheKey);
 	}
 	
 	/**
@@ -200,7 +194,7 @@ public class TLInfo {
 	 * @return {@link Indication} of validation
 	 */
 	public Indication getValidationIndication() {
-		return validationCache.getIndication(cacheKey);
+		return CacheAccessFactory.getValidationCacheDataAccess().getIndication(cacheKey);
 	}
 	
 	/**
@@ -208,7 +202,7 @@ public class TLInfo {
 	 * @return {@link SubIndication} of validation
 	 */
 	public SubIndication getValidationSubIndication() {
-		return validationCache.getSubIndication(cacheKey);
+		return CacheAccessFactory.getValidationCacheDataAccess().getSubIndication(cacheKey);
 	}
 	
 	/**
@@ -216,7 +210,7 @@ public class TLInfo {
 	 * @return {@link Date} signing time
 	 */
 	public Date getTLSigningTime() {
-		return validationCache.getSigningTime(cacheKey);
+		return CacheAccessFactory.getValidationCacheDataAccess().getSigningTime(cacheKey);
 	}
 	
 	/**
@@ -224,7 +218,7 @@ public class TLInfo {
 	 * @return {@link CertificateToken} signing certificate
 	 */
 	public CertificateToken getTLSigningCertificate() {
-		return validationCache.getSigningCertificate(cacheKey);
+		return CacheAccessFactory.getValidationCacheDataAccess().getSigningCertificate(cacheKey);
 	}
 
 }

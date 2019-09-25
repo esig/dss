@@ -1,7 +1,7 @@
 package eu.europa.esig.dss.tsl.cache;
 
 import eu.europa.esig.dss.tsl.download.XmlDownloadResult;
-import eu.europa.esig.dss.tsl.parsing.TLParsingResult;
+import eu.europa.esig.dss.tsl.parsing.AbstractParsingResult;
 import eu.europa.esig.dss.tsl.validation.ValidationResult;
 
 public class CacheAccessByKey {
@@ -46,8 +46,8 @@ public class CacheAccessByKey {
 		return parsingCache.isRefreshNeeded(key);
 	}
 
-	public void update(TLParsingResult tlParsingResult) {
-		parsingCache.update(key, tlParsingResult);
+	public void update(AbstractParsingResult parsingResult) {
+		parsingCache.update(key, parsingResult);
 	}
 
 	public void expireParsing() {
@@ -107,6 +107,15 @@ public class CacheAccessByKey {
 		if (validationCache.isToBeDeleted(key)) {
 			validationCache.remove(key);
 		}
+	}
+
+	/**
+	 * Returns the cached parsing result
+	 * 
+	 * @return
+	 */
+	public AbstractParsingResult getParsingResult() {
+		return parsingCache.get(key).getCachedResult();
 	}
 
 }
