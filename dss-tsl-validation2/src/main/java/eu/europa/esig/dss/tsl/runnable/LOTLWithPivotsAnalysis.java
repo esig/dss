@@ -125,12 +125,13 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 
 		Map<String, Future<PivotProcessingResult>> futures = new HashMap<String, Future<PivotProcessingResult>>();
 		for (String pivotUrl : pivotURLs) {
+			CacheAccessByKey pivotCacheAccess = CacheAccessFactory.getCacheAccess(new CacheKey(pivotUrl));
 			LOTLSource pivotSource = new LOTLSource();
 			pivotSource.setUrl(pivotUrl);
 			pivotSource.setLotlPredicate(source.getLotlPredicate());
 			pivotSource.setTlPredicate(source.getTlPredicate());
 			pivotSource.setPivotSupport(source.isPivotSupport());
-			futures.put(pivotUrl, executorService.submit(new PivotProcessing(pivotSource, cacheAccess, dssFileLoader)));
+			futures.put(pivotUrl, executorService.submit(new PivotProcessing(pivotSource, pivotCacheAccess, dssFileLoader)));
 		}
 
 		Map<String, PivotProcessingResult> processingResults = new HashMap<String, PivotProcessingResult>();
