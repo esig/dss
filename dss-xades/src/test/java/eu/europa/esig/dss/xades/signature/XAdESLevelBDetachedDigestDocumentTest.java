@@ -170,7 +170,7 @@ public class XAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 
 	private XAdESSignatureParameters getExtendParams() {
 		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
-		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
 		signatureParameters.setDetachedContents(Arrays.asList(getDigestDocument()));
 		return signatureParameters;
 	}

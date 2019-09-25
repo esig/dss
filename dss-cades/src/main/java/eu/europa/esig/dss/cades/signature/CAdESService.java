@@ -115,7 +115,7 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 				signerInfoGeneratorBuilder, originalCmsSignedData);
 
 		final DSSDocument toSignData = getToSignData(toSignDocument, parameters, originalCmsSignedData);
-		final CMSTypedData content = getContentToBeSign(toSignData);
+		final CMSTypedData content = CMSUtils.getContentToBeSign(toSignData);
 		final boolean encapsulate = !SignaturePackaging.DETACHED.equals(packaging);
 		CMSUtils.generateCMSSignedData(cmsSignedDataGenerator, content, encapsulate);
 		final byte[] bytes = customContentSigner.getOutputStream().toByteArray();
@@ -143,7 +143,7 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 				signerInfoGeneratorBuilder, originalCmsSignedData);
 
 		final DSSDocument toSignData = getToSignData(toSignDocument, parameters, originalCmsSignedData);
-		final CMSTypedData content = getContentToBeSign(toSignData);
+		final CMSTypedData content = CMSUtils.getContentToBeSign(toSignData);
 
 		final boolean encapsulate = !SignaturePackaging.DETACHED.equals(packaging);
 		final CMSSignedData cmsSignedData = CMSUtils.generateCMSSignedData(cmsSignedDataGenerator, content, encapsulate);
@@ -168,16 +168,6 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 			return new PrecomputedDigestCalculatorProvider((DigestDocument) toSignDocument);
 		}
 		return new BcDigestCalculatorProvider();
-	}
-
-	private CMSTypedData getContentToBeSign(final DSSDocument toSignData) {
-		CMSTypedData content = null;
-		if (toSignData instanceof DigestDocument) {
-			content = new CMSAbsentContent();
-		} else {
-			content = new CMSProcessableByteArray(DSSUtils.toByteArray(toSignData));
-		}
-		return content;
 	}
 
 	@Override
