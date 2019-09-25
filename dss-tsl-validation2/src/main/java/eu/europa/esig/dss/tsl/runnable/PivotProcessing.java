@@ -34,6 +34,7 @@ public class PivotProcessing extends AbstractAnalysis implements Callable<PivotP
 			return new PivotProcessingResult(pivot, getLOTLAnnouncedSigningCertificates());
 		}
 		
+		return null;
 	}
 
 	private List<CertificateToken> getLOTLAnnouncedSigningCertificates() {
