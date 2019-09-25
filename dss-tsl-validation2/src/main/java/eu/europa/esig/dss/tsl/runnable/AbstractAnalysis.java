@@ -8,6 +8,8 @@ import eu.europa.esig.dss.service.http.commons.DSSFileLoader;
 import eu.europa.esig.dss.tsl.cache.CacheAccessByKey;
 import eu.europa.esig.dss.tsl.download.XmlDownloadResult;
 import eu.europa.esig.dss.tsl.download.XmlDownloadTask;
+import eu.europa.esig.dss.tsl.parsing.LOTLParsingTask;
+import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.validation.TLValidatorTask;
 
 public abstract class AbstractAnalysis {
@@ -36,6 +38,18 @@ public abstract class AbstractAnalysis {
 			cacheAccess.downloadError(e);
 		}
 		return document;
+	}
+
+	protected void lotlParsing(LOTLSource source, DSSDocument document) {
+		// True if EMPTY / EXPIRED by TL/LOTL
+		if (cacheAccess.isParsingRefreshNeeded()) {
+			try {
+				LOTLParsingTask parsingTask = new LOTLParsingTask(source, document);
+				cacheAccess.update(parsingTask.get());
+			} catch (Exception e) {
+				cacheAccess.parsingError(e);
+			}
+		}
 	}
 
 	protected void validation(DSSDocument document, List<CertificateToken> trustedCertificates) {

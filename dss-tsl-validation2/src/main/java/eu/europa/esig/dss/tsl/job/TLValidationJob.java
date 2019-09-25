@@ -23,9 +23,12 @@ import eu.europa.esig.dss.tsl.cache.CacheCleaner;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
 import eu.europa.esig.dss.tsl.cache.ReadOnlyCacheAccess;
 import eu.europa.esig.dss.tsl.parsing.AbstractParsingResult;
+import eu.europa.esig.dss.tsl.runnable.LOTLAnalysis;
+import eu.europa.esig.dss.tsl.runnable.LOTLWithPivotsAnalysis;
 import eu.europa.esig.dss.tsl.runnable.TLAnalysis;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
+import eu.europa.esig.dss.utils.Utils;
 
 public class TLValidationJob {
 
@@ -125,7 +128,7 @@ public class TLValidationJob {
 		}
 
 		// Execute all LOTLs
-		if (listOfTrustedListSources != null) {
+		if (Utils.isArrayNotEmpty(listOfTrustedListSources)) {
 			final List<LOTLSource> lotlList = Arrays.asList(listOfTrustedListSources);
 
 			executeLOTLSourcesAnalysis(lotlList, dssFileLoader);
@@ -150,14 +153,27 @@ public class TLValidationJob {
 	private void executeLOTLSourcesAnalysis(List<LOTLSource> lotlSources, DSSFileLoader dssFileLoader) {
 		checkNoDuplicateUrls(lotlSources);
 
+		int nbLOTLSources = lotlSources.size();
+
+		LOG.info("Running analysis for {} LOTLSource(s)", nbLOTLSources);
+
 		Map<CacheKey, AbstractParsingResult> oldParsingValues = extractParsingCache(lotlSources);
 
+		CountDownLatch latch = new CountDownLatch(nbLOTLSources);
 		for (LOTLSource lotlSource : lotlSources) {
-//			execute();
+			final CacheAccessByKey cacheAccess = CacheAccessFactory.getCacheAccess(lotlSource.getCacheKey());
+			if (lotlSource.isPivotSupport()) {
+				executorService.submit(new LOTLWithPivotsAnalysis(lotlSource, cacheAccess, dssFileLoader, latch));
+			} else {
+				executorService.submit(new LOTLAnalysis(lotlSource, cacheAccess, dssFileLoader, latch));
+			}
 		}
 
-		for (LOTLSource lotlSource : lotlSources) {
-//			get();
+		try {
+			latch.await();
+			LOG.info("Analysis is DONE for {} LOTLSource(s)", nbLOTLSources);
+		} catch (InterruptedException e) {
+			LOG.error("Interruption in the LOTLSource process", e);
 		}
 
 		Map<CacheKey, AbstractParsingResult> newParsingValues = extractParsingCache(lotlSources);
@@ -181,7 +197,7 @@ public class TLValidationJob {
 
 		checkNoDuplicateUrls(tlSources);
 
-		LOG.info("Running TLAnalysis for {} TLSource(s)", nbTLSources);
+		LOG.info("Running analysis for {} TLSource(s)", nbTLSources);
 
 		CountDownLatch latch = new CountDownLatch(nbTLSources);
 		for (TLSource tlSource : tlSources) {
@@ -191,7 +207,7 @@ public class TLValidationJob {
 
 		try {
 			latch.await();
-			LOG.info("TLAnalysis is DONE for {} TLSource(s)", nbTLSources);
+			LOG.info("Analysis is DONE for {} TLSource(s)", nbTLSources);
 		} catch (InterruptedException e) {
 			LOG.error("Interruption in the TLAnalysis process", e);
 		}
