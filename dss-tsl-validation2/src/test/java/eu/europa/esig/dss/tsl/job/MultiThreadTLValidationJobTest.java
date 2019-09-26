@@ -4,8 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +18,8 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -48,8 +48,8 @@ public class MultiThreadTLValidationJobTest {
 	@BeforeAll
 	public static void init() throws IOException {
 		
-		Map<String, byte[]> urlMap = new HashMap<String, byte[]>();
-		urlMap.put(CZ_URL, Files.readAllBytes(Paths.get("src/test/resources/lotlCache/CZ.xml")));
+		Map<String, DSSDocument> urlMap = new HashMap<String, DSSDocument>();
+		urlMap.put(CZ_URL, new FileDocument("src/test/resources/lotlCache/CZ.xml"));
 
 		File cacheDirectory = new File("target/cache");
 		
@@ -58,7 +58,7 @@ public class MultiThreadTLValidationJobTest {
 		offlineFileLoader.setDataLoader(new MockDataLoader(urlMap));
 		offlineFileLoader.setFileCacheDirectory(cacheDirectory);
 		
-		Map<String, byte[]> onlineMap = new HashMap<String, byte[]>();
+		Map<String, DSSDocument> onlineMap = new HashMap<String, DSSDocument>();
 		onlineMap.putAll(urlMap);
 		
 		onlineFileLoader = new FileCacheDataLoader();

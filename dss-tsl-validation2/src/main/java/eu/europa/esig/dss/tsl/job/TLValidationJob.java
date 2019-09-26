@@ -242,7 +242,10 @@ public class TLValidationJob {
 	}
 	
 	private void executeTLSourcesClean(List<TLSource> tlSources, DSSFileLoader dssFileLoader) {
-		Objects.requireNonNull(cacheCleaner, "Cache cleaner must be defined!");
+		if (cacheCleaner == null) {
+			LOG.debug("Cache cleaner is not defined");
+			return;
+		}
 		
 		int nbTLSources = tlSources.size();
 		LOG.info("Running CacheClean for {} TLSource(s)", nbTLSources);
