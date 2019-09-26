@@ -237,12 +237,13 @@ public class TransitionTest {
 
 	private void checkSummary(ValidationJobSummary summary, CacheStateEnum download, CacheStateEnum parsing, CacheStateEnum validation) {
 		assertNotNull(summary);
-		List<TLInfo> tlInfos = summary.getTLInfos();
+		List<TLInfo> tlInfos = summary.getOrphanTLInfos();
 		assertEquals(1, tlInfos.size());
+		assertEquals(1, summary.getNumberOfProcessedTLs());
 		TLInfo tlInfo = tlInfos.get(0);
-		assertEquals(download, tlInfo.getDownloadJobState());
-		assertEquals(parsing, tlInfo.getParsingJobState());
-		assertEquals(validation, tlInfo.getValidationJobState());
+		assertEquals(download, tlInfo.getDownloadCacheInfo().getCacheState());
+		assertEquals(parsing, tlInfo.getParsingCacheInfo().getCacheState());
+		assertEquals(validation, tlInfo.getValidationCacheInfo().getCacheState());
 	}
 
 }

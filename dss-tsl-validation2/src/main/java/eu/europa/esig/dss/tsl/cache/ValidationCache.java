@@ -88,7 +88,11 @@ public class ValidationCache extends AbstractCache<ValidationResult> {
 		if (!cachedEntry.isEmpty()) {
 			ValidationResult cachedResult = cachedEntry.getCachedResult();
 			CertificateToken certificateToken = cachedResult.getSigningCertificate();
-			LOG.trace("The signing certificate for a file with the key [{}] is [{}]", cacheKey, certificateToken.getDSSIdAsString());
+			if (certificateToken != null) {
+				LOG.trace("The signing certificate for a file with the key [{}] is [{}]", cacheKey, certificateToken.getDSSIdAsString());
+			} else {
+				LOG.debug("The signing certificate for a file with the key [{}] is not found! Return null.", cacheKey);
+			}
 			return certificateToken;
 		}
 		LOG.debug("The ValidationCache does not contain a validation result for the key [{}]!", cacheKey);
