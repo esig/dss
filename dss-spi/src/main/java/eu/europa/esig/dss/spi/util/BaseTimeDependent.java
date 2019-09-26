@@ -24,6 +24,8 @@ import java.util.Date;
 
 public class BaseTimeDependent implements TimeDependent {
 
+	private static final long serialVersionUID = -6972849560865304279L;
+	
 	private Date startDate;
 	private Date endDate;
 	

@@ -2,6 +2,7 @@ package eu.europa.esig.dss.tsl.cache;
 
 import java.util.Date;
 
+import eu.europa.esig.dss.tsl.cache.dto.AbstractCacheDTO;
 import eu.europa.esig.dss.tsl.cache.state.CacheStateEnum;
 
 public class AbstractCacheDataAccess<C extends AbstractCache<?>> {
@@ -19,19 +20,28 @@ public class AbstractCacheDataAccess<C extends AbstractCache<?>> {
 		return cacheKey;
 	}
 	
-	public CacheStateEnum getCurrentState() {
+	public AbstractCacheDTO getCacheDTO() {
+		AbstractCacheDTO abstractCacheDTO = new AbstractCacheDTO();
+		abstractCacheDTO.setCacheState(getCurrentState());
+		abstractCacheDTO.setLastSuccessDate(getLastSuccessDate());
+		abstractCacheDTO.setExceptionMessage(getCachedExceptionMessage());
+		abstractCacheDTO.setExceptionStackTrace(getCachedExceptionStackTrace());
+		return abstractCacheDTO;
+	}
+	
+	private CacheStateEnum getCurrentState() {
 		return cache.getCurrentState(getCacheKey());
 	}
 	
-	public Date getLastSuccessDate() {
+	private Date getLastSuccessDate() {
 		return cache.getLastSuccessDate(getCacheKey());
 	}
 	
-	public String getCachedExceptionMessage() {
+	private String getCachedExceptionMessage() {
 		return cache.getCachedExceptionMessage(getCacheKey());
 	}
 	
-	public String getCachedExceptionStackTrace() {
+	private String getCachedExceptionStackTrace() {
 		return cache.getCachedExceptionStackTrace(getCacheKey());
 	}
 

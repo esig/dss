@@ -20,36 +20,22 @@ public class ValidationJobSummary {
 	private final CacheAccessFactory cacheAccessFactory;
 	
 	/**
-	 * List of TLSources to extract summary for
+	 * List of TLSources not linked to any LOTL (manually provided)
 	 */
-	private final List<TLSource> tlSources;
+	private final List<TLSource> orphanTLSources;
 	
 	/**
-	 * List of LOTLSource to extract summary for
+	 * A list of LOTLs with a relationship between their TLs and pivots
 	 */
-	private final List<LOTLSource> lotlSources;
+	private final List<LinkedLOTL> linkedLOTLs;
 	
 	/**
 	 * The default constructor
 	 */
-	public ValidationJobSummary(final CacheAccessFactory cacheAccessFactory, final List<TLSource> tlSources, final List<LOTLSource> lotlSources) {
+	public ValidationJobSummary(final CacheAccessFactory cacheAccessFactory, final List<TLSource> orphanTLSources, final List<LinkedLOTL> linkedLOTLs) {
 		this.cacheAccessFactory = cacheAccessFactory;
-		this.tlSources = tlSources;
-		this.lotlSources = lotlSources;
-	}
-	
-	/**
-	 * Returns a list of TLInfos for all processed TLs
-	 * @return list of {@link TLInfo}s
-	 */
-	public List<TLInfo> getTLInfos() {
-		List<TLInfo> tlInfos = new ArrayList<TLInfo>();
-		if (Utils.isCollectionNotEmpty(tlSources)) {
-			for (TLSource tlSource : tlSources) {
-				tlInfos.add(new TLInfo(cacheAccessFactory.getCacheAccess(tlSource.getCacheKey()), tlSource.getUrl()));
-			}
-		}
-		return tlInfos;
+		this.orphanTLSources = orphanTLSources;
+		this.linkedLOTLs = linkedLOTLs;
 	}
 
 	/**
@@ -58,12 +44,43 @@ public class ValidationJobSummary {
 	 */
 	public List<LOTLInfo> getLOTLInfos() {
 		List<LOTLInfo> lotlInfos = new ArrayList<LOTLInfo>();
-		if (Utils.isCollectionNotEmpty(lotlSources)) {
-			for (LOTLSource lotlSource : lotlSources) {
-				lotlInfos.add(new LOTLInfo(cacheAccessFactory.getCacheAccess(lotlSource.getCacheKey()), lotlSource.getUrl()));
+		if (Utils.isCollectionNotEmpty(linkedLOTLs)) {
+			for (LinkedLOTL lotl : linkedLOTLs) {
+				LOTLInfo lotlInfo = new LOTLInfo(cacheAccessFactory.getCacheAccess(lotl.getLotlSource().getCacheKey()), lotl.getLotlSource().getUrl());
+				lotlInfo.setTlInfos(getTLInfos(lotl.getTlSources()));
+				lotlInfo.setPivotInfos(getPivotInfos(lotl.getPivots()));
+				lotlInfos.add(lotlInfo);
 			}
 		}
 		return lotlInfos;
+	}
+	
+	private List<PivotInfo> getPivotInfos(List<LOTLSource> pivotSources) {
+		List<PivotInfo> pivotInfos = new ArrayList<PivotInfo>();
+		if (Utils.isCollectionNotEmpty(pivotSources)) {
+			for (TLSource pivot : pivotSources) {
+				pivotInfos.add(new PivotInfo(cacheAccessFactory.getCacheAccess(pivot.getCacheKey()), pivot.getUrl()));
+			}
+		}
+		return pivotInfos;
+	}
+	
+	/**
+	 * Returns a list of TLInfos for orphan TLs
+	 * @return list of {@link TLInfo}s
+	 */
+	public List<TLInfo> getOrphanTLInfos() {
+		return getTLInfos(orphanTLSources);
+	}
+	
+	private List<TLInfo> getTLInfos(List<TLSource> tlSources) {
+		List<TLInfo> tlInfos = new ArrayList<TLInfo>();
+		if (Utils.isCollectionNotEmpty(tlSources)) {
+			for (TLSource tlSource : tlSources) {
+				tlInfos.add(new TLInfo(cacheAccessFactory.getCacheAccess(tlSource.getCacheKey()), tlSource.getUrl()));
+			}
+		}
+		return tlInfos;
 	}
 	
 	/**
@@ -71,10 +88,16 @@ public class ValidationJobSummary {
 	 * @return {@code int} number of processed TLs
 	 */
 	public int getNumberOfProcessedTLs() {
-		if (Utils.isCollectionNotEmpty(tlSources)) {
-			return tlSources.size();
+		int amount = 0;
+		if (Utils.isCollectionNotEmpty(orphanTLSources)) {
+			amount += orphanTLSources.size();
 		}
-		return 0;
+		if (Utils.isCollectionNotEmpty(linkedLOTLs)) {
+			for (LinkedLOTL lotl : linkedLOTLs) {
+				amount += lotl.getTlSources().size();
+			}
+		}
+		return amount;
 	}
 	
 	/**
@@ -82,8 +105,8 @@ public class ValidationJobSummary {
 	 * @return {@code int} number of processed LOTLs
 	 */
 	public int getNumberOfProcessedLOTLs() {
-		if (Utils.isCollectionNotEmpty(lotlSources)) {
-			return lotlSources.size();
+		if (Utils.isCollectionNotEmpty(linkedLOTLs)) {
+			return linkedLOTLs.size();
 		}
 		return 0;
 	}

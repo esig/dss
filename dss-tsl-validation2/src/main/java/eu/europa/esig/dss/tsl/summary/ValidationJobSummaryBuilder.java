@@ -3,19 +3,16 @@ package eu.europa.esig.dss.tsl.summary;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.tsl.cache.CacheAccessFactory;
-import eu.europa.esig.dss.tsl.cache.CacheKey;
 import eu.europa.esig.dss.tsl.cache.ReadOnlyCacheAccess;
-import eu.europa.esig.dss.tsl.job.TLSourceBuilder;
-import eu.europa.esig.dss.tsl.parsing.AbstractParsingResult;
+import eu.europa.esig.dss.tsl.dto.OtherTSLPointerDTO;
+import eu.europa.esig.dss.tsl.parsing.LOTLParsingResult;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
-import eu.europa.esig.dss.tsl.utils.TLValidationUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 public class ValidationJobSummaryBuilder {
@@ -44,20 +41,59 @@ public class ValidationJobSummaryBuilder {
 	}
 	
 	public ValidationJobSummary build() {
+		int tlAmount = 0;
+				
 		final List<TLSource> tlList = new ArrayList<TLSource>();
 		if (Utils.isArrayNotEmpty(tlSources)) {
 			tlList.addAll(Arrays.asList(tlSources));
+			tlAmount += tlSources.length;
 		}
-		final List<LOTLSource> lotlList = new ArrayList<LOTLSource>();
+		
+		final List<LinkedLOTL> lotlList = new ArrayList<LinkedLOTL>();
 		if (Utils.isArrayNotEmpty(lotlSources)) {
-			lotlList.addAll(Arrays.asList(lotlSources));
 			final ReadOnlyCacheAccess readOnlyCacheAccess = cacheAccessFactory.getReadOnlyCacheAccess();
-			Map<CacheKey, AbstractParsingResult> parsingResultMap = readOnlyCacheAccess.getParsingResultMap(TLValidationUtils.getCacheKeyList(lotlList));
-			TLSourceBuilder tlSourceBuilder = new TLSourceBuilder(lotlList, parsingResultMap);
-			tlList.addAll(tlSourceBuilder.build());
+			for (LOTLSource lotl : lotlSources) {
+				
+				LOTLParsingResult lotlParsingResult = (LOTLParsingResult) readOnlyCacheAccess.getParsingResult(lotl.getCacheKey());
+				List<TLSource> lotlTLSources = extractTLSources(lotlParsingResult);
+				tlAmount += lotlTLSources.size();
+				
+				LinkedLOTL linkedLOTL;
+				if (lotl.isPivotSupport()) {
+					List<LOTLSource> pivotSources = extractPivotSources(lotlParsingResult);
+					linkedLOTL = new LinkedLOTL(lotl, lotlTLSources, pivotSources);
+				} else {
+					linkedLOTL = new LinkedLOTL(lotl, lotlTLSources);
+				}
+				lotlList.add(linkedLOTL);
+				
+			}
 		}
-		LOG.info("Building a validation job summary for {} LOTLs and {} TLs...", lotlList.size(), tlList.size());
+		
+		LOG.info("Building a validation job summary for {} LOTLs and {} TLs...", lotlList.size(), tlAmount);
 		return new ValidationJobSummary(cacheAccessFactory, tlList, lotlList);
+	}
+	
+	private List<TLSource> extractTLSources(LOTLParsingResult lotlParsingResult) {
+		List<TLSource> result = new ArrayList<TLSource>();
+		List<OtherTSLPointerDTO> tlPointers = lotlParsingResult.getTlPointers();
+		for (OtherTSLPointerDTO otherTSLPointerDTO : tlPointers) {
+			TLSource tlSource = new TLSource();
+			tlSource.setUrl(otherTSLPointerDTO.getLocation());
+			result.add(tlSource);
+		}
+		return result;
+	}
+	
+	private List<LOTLSource> extractPivotSources(LOTLParsingResult lotlParsingResult) {
+		List<LOTLSource> result = new ArrayList<LOTLSource>();
+		List<String> pivotUrls = lotlParsingResult.getPivotURLs();
+		for (String pivotUrl : pivotUrls) {
+			LOTLSource pivotSource = new LOTLSource();
+			pivotSource.setUrl(pivotUrl);
+			result.add(pivotSource);
+		}
+		return result;
 	}
 
 }

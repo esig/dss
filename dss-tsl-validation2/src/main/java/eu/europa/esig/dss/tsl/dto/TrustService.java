@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.tsl.dto;
 
+import java.io.Serializable;
 import java.util.List;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -28,8 +29,10 @@ import eu.europa.esig.dss.spi.util.TimeDependentValues;
 /**
  * This class is a DTO representation for a TSL service
  */
-public class TrustService {
+public class TrustService implements Serializable {
 
+	private static final long serialVersionUID = -7162121430380199621L;
+	
 	private final List<CertificateToken> certificates;
 	private final TimeDependentValues<TrustServiceStatusAndInformationExtensions> status;
 	

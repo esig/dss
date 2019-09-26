@@ -141,41 +141,41 @@ public class TLValidationJobTest {
 		assertEquals(0, summary.getNumberOfProcessedLOTLs());
 		assertEquals(1, summary.getNumberOfProcessedTLs());
 		
-		List<TLInfo> tlInfos = summary.getTLInfos();
+		List<TLInfo> tlInfos = summary.getOrphanTLInfos();
 		assertEquals(1, tlInfos.size());
 		
 		TLInfo czTL = tlInfos.get(0);
-		assertNotNull(czTL.getLastLoadingDate());
-		assertFalse(czTL.getLastFileSynchronizationDate().after(czTL.getLastLoadingDate()));
+		assertNotNull(czTL.getDownloadCacheInfo().getLastLoadingDate());
+		assertFalse(czTL.getDownloadCacheInfo().getLastSynchronizationDate().after(czTL.getDownloadCacheInfo().getLastLoadingDate()));
 		
 		// TODO: synchronization is not implemented yet
 //		assertEquals(CacheStateEnum.SYNCHRONIZED, czTL.getDownloadJobState());
 //		assertEquals(CacheStateEnum.SYNCHRONIZED, czTL.getParsingJobState());
 //		assertEquals(CacheStateEnum.SYNCHRONIZED, czTL.getValidationJobState());
 		
-		assertNull(czTL.getDownloadJobExceptionMessage());
-		assertNull(czTL.getDownloadJobExceptionStackTrace());
-		assertNull(czTL.getParsingJobExceptionMessage());
-		assertNull(czTL.getParsingJobExceptionStackTrace());
-		assertNull(czTL.getValidationJobExceptionMessage());
-		assertNull(czTL.getValidationJobExceptionStackTrace());
+		assertNull(czTL.getDownloadCacheInfo().getExceptionMessage());
+		assertNull(czTL.getDownloadCacheInfo().getExceptionStackTrace());
+		assertNull(czTL.getParsingCacheInfo().getExceptionMessage());
+		assertNull(czTL.getParsingCacheInfo().getExceptionStackTrace());
+		assertNull(czTL.getValidationCacheInfo().getExceptionMessage());
+		assertNull(czTL.getValidationCacheInfo().getExceptionStackTrace());
 		
 		assertNotNull(czTL.getUrl());
 		
-		assertNotNull(czTL.getSequenceNumber());
-		assertNotNull(czTL.getTLVersion());
-		assertEquals("CZ", czTL.getTerritory());
-		assertNotNull(czTL.getIssueDate());
-		assertNotNull(czTL.getNextUpdateDate());
-		assertTrue(czTL.getIssueDate().before(czTL.getNextUpdateDate()));
-		assertNotNull(czTL.getDistributionPoints());
-		assertNotNull(czTL.getTrustServiceProviders());
+		assertNotNull(czTL.getParsingCacheInfo().getSequenceNumber());
+		assertNotNull(czTL.getParsingCacheInfo().getVersion());
+		assertEquals("CZ", czTL.getParsingCacheInfo().getTerritory());
+		assertNotNull(czTL.getParsingCacheInfo().getIssueDate());
+		assertNotNull(czTL.getParsingCacheInfo().getNextUpdateDate());
+		assertTrue(czTL.getParsingCacheInfo().getIssueDate().before(czTL.getParsingCacheInfo().getNextUpdateDate()));
+		assertNotNull(czTL.getParsingCacheInfo().getDistributionPoints());
+		assertNotNull(czTL.getParsingCacheInfo().getTrustServiceProviders());
 		
-		assertEquals(Indication.TOTAL_PASSED, czTL.getValidationIndication());
-		assertNull(czTL.getValidationSubIndication());
-		assertNotNull(czTL.getTLSigningTime());
-		assertNotNull(czTL.getTLSigningCertificate());
-		assertEquals(czSigningCertificate, czTL.getTLSigningCertificate());
+		assertEquals(Indication.TOTAL_PASSED, czTL.getValidationCacheInfo().getIndication());
+		assertNull(czTL.getValidationCacheInfo().getSubIndication());
+		assertNotNull(czTL.getValidationCacheInfo().getSigningTime());
+		assertNotNull(czTL.getValidationCacheInfo().getSigningCertificate());
+		assertEquals(czSigningCertificate, czTL.getValidationCacheInfo().getSigningCertificate());
 		
 	}
 	

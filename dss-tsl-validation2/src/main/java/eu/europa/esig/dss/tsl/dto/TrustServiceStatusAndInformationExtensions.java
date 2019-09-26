@@ -28,6 +28,8 @@ import eu.europa.esig.dss.spi.util.BaseTimeDependent;
 
 public class TrustServiceStatusAndInformationExtensions extends BaseTimeDependent {
 
+	private static final long serialVersionUID = 7869738443424437560L;
+
 	/**
 	 * Key = lang
 	 * 

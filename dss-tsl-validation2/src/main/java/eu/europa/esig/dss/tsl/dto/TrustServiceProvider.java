@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.tsl.dto;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -28,8 +29,10 @@ import eu.europa.esig.dss.tsl.dto.builder.TrustServiceProviderBuilder;
 /**
  * This class is a DTO representation for a trust service provider
  */
-public class TrustServiceProvider {
+public class TrustServiceProvider implements Serializable {
 
+	private static final long serialVersionUID = -2690449134555769275L;
+	
 	/**
 	 * Key = lang
 	 * 

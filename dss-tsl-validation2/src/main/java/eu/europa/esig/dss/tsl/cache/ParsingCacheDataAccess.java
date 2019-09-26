@@ -3,6 +3,7 @@ package eu.europa.esig.dss.tsl.cache;
 import java.util.Date;
 import java.util.List;
 
+import eu.europa.esig.dss.tsl.cache.dto.ParsingCacheDTO;
 import eu.europa.esig.dss.tsl.dto.OtherTSLPointerDTO;
 import eu.europa.esig.dss.tsl.dto.TrustServiceProvider;
 
@@ -12,39 +13,54 @@ public class ParsingCacheDataAccess extends AbstractCacheDataAccess<ParsingCache
 		super(parsingCache, cacheKey);
 	}
 	
-	public Integer getSequenceNumber() {
+	@Override
+	public ParsingCacheDTO getCacheDTO() {
+		ParsingCacheDTO parsingCacheDTO = new ParsingCacheDTO(super.getCacheDTO());
+		parsingCacheDTO.setSequenceNumber(getSequenceNumber());
+		parsingCacheDTO.setVersion(getVersion());
+		parsingCacheDTO.setTerritory(getTerritory());
+		parsingCacheDTO.setIssueDate(getIssueDate());
+		parsingCacheDTO.setNextUpdateDate(getNextUpdateDate());
+		parsingCacheDTO.setDistributionPoints(getDistributionPoints());
+		parsingCacheDTO.setTrustServiceProviders(getTrustServiceProviders());
+		parsingCacheDTO.setLotlOtherPointers(getLOTLOtherPointers());
+		parsingCacheDTO.setPivotUrls(getPivotUrls());
+		return parsingCacheDTO;
+	}
+	
+	private Integer getSequenceNumber() {
 		return cache.getSequenceNumber(getCacheKey());
 	}
 	
-	public Integer getVersion() {
+	private Integer getVersion() {
 		return cache.getVersion(getCacheKey());
 	}
 	
-	public String getTerritory() {
+	private String getTerritory() {
 		return cache.getTerritory(getCacheKey());
 	}
 	
-	public Date getIssueDate() {
+	private Date getIssueDate() {
 		return cache.getIssueDate(getCacheKey());
 	}
 	
-	public Date getNextUpdateDate() {
+	private Date getNextUpdateDate() {
 		return cache.getNextUpdateDate(getCacheKey());
 	}
 	
-	public List<String> getDistributionPoints() {
+	private List<String> getDistributionPoints() {
 		return cache.getDistributionPoints(getCacheKey());
 	}
 	
-	public List<TrustServiceProvider> getTrustServiceProviders() {
+	private List<TrustServiceProvider> getTrustServiceProviders() {
 		return cache.getTrustServiceProviders(getCacheKey());
 	}
 	
-	public List<OtherTSLPointerDTO> getLOTLOtherPointers() {
+	private List<OtherTSLPointerDTO> getLOTLOtherPointers() {
 		return cache.getLOTLOtherPointers(getCacheKey());
 	}
 	
-	public List<String> getPivotUrls() {
+	private List<String> getPivotUrls() {
 		return cache.getPivotUrls(getCacheKey());
 	}
 

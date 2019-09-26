@@ -3,35 +3,73 @@ package eu.europa.esig.dss.tsl.summary;
 import java.util.List;
 
 import eu.europa.esig.dss.tsl.cache.CacheAccessByKey;
-import eu.europa.esig.dss.tsl.dto.OtherTSLPointerDTO;
-import eu.europa.esig.dss.tsl.dto.TrustServiceProvider;
 
 public class LOTLInfo extends TLInfo {
+	
+	private static final long serialVersionUID = -8969562861281744320L;
 
+	/**
+	 * List of summary for TLs found inside the current LOTL
+	 */
+	private List<TLInfo> tlInfos;
+
+	/**
+	 * List of summary for pivots found inside the current LOTL
+	 */
+	private List<PivotInfo> pivotInfos;
+	
+	/**
+	 * TRUE when the current source is a pivot, FALSE when LOTL
+	 */
+	protected boolean isPivot;
+
+	/**
+	 * The default constructor
+	 * @param cacheAccessByKey {@link CacheAccessByKey} a related cache access object
+	 * @param url {@link String} address used to extract the entry
+	 */
 	public LOTLInfo(final CacheAccessByKey cacheAccessByKey, final String url) {
 		super(cacheAccessByKey, url);
 	}
 	
-	@Override
-	public List<TrustServiceProvider> getTrustServiceProviders() {
-		// not applicable for LOTL
-		return null;
+	/**
+	 * Returns a list of {@code TLInfo}s summary for TL found in the LOTL
+	 * @return list of {@link TLInfo}s
+	 */
+	public List<TLInfo> getTLInfos() {
+		return tlInfos;
 	}
 	
 	/**
-	 * Returns a list of LOTL {@link OtherTSLPointerDTO}s
-	 * @return list of {@link OtherTSLPointerDTO}s
+	 * Sets a list of {@code TLInfo}s summary for TL found in the LOTL
+	 * @param tlInfos list of {@link TLInfo}s
 	 */
-	public List<OtherTSLPointerDTO> getLOTLOtherPointers() {
-		return cacheAccessByKey.getParsingCacheDataAccess().getLOTLOtherPointers();
+	public void setTlInfos(List<TLInfo> tlInfos) {
+		this.tlInfos = tlInfos;
+	}
+
+	/**
+	 * Returns a list of {@code PivotInfo}s summary for pivots found in the LOTL
+	 * @return list of {@link PivotInfo}s
+	 */
+	public List<PivotInfo> getPivotInfos() {
+		return pivotInfos;
+	}
+
+	/**
+	 * Sets a list of {@code PivotInfo}s summary for pivots found in the LOTL
+	 * @param pivotInfos list of {@link PivotInfo}s
+	 */
+	public void setPivotInfos(List<PivotInfo> pivotInfos) {
+		this.pivotInfos = pivotInfos;
 	}
 	
 	/**
-	 * Returns a list of containing in the LOTL pivot urls
-	 * @return list of {@link String} pivot urls
+	 * Checks if the current entry is a pivot info
+	 * @return TRUE if it is a pivot, FALSE when it is a LOTL
 	 */
-	public List<String> getPivotUrls() {
-		return cacheAccessByKey.getParsingCacheDataAccess().getPivotUrls();
+	public boolean isPivot() {
+		return isPivot;
 	}
 
 }
