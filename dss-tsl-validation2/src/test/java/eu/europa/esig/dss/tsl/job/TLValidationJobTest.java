@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +20,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -41,7 +42,7 @@ public class TLValidationJobTest {
 	private static FileCacheDataLoader offlineFileLoader;
 	private static FileCacheDataLoader onlineFileLoader;
 	
-	private static Map<String, byte[]> urlMap;
+	private static Map<String, DSSDocument> urlMap;
 	
 	private static File cacheDirectory;
 	
@@ -51,39 +52,44 @@ public class TLValidationJobTest {
 	
 	@BeforeAll
 	public static void initBeforeAll() throws IOException {
-		urlMap = new HashMap<String, byte[]>();
-		urlMap.put("https://www.signatur.rtr.at/currenttl.xml", Files.readAllBytes(Paths.get("src/test/resources/lotlCache/AT.xml")));
-		urlMap.put("https://tsl.belgium.be/tsl-be.xml", Files.readAllBytes(Paths.get("src/test/resources/lotlCache/BE.xml")));
-		urlMap.put("https://crc.bg/files/_en/TSL_BG.xml", Files.readAllBytes(Paths.get("src/test/resources/lotlCache/BG.xml")));
-		urlMap.put("http://www.mcw.gov.cy/mcw/dec/dec.nsf/all/B28C11BBFDBAC045C2257E0D002937E9/$file/TSL-CY-sign.xml", Files.readAllBytes(Paths.get("src/test/resources/lotlCache/CY.xml")));
-		urlMap.put(CZ_URL, Files.readAllBytes(Paths.get("src/test/resources/lotlCache/CZ.xml")));
-		urlMap.put("https://www.nrca-ds.de/st/TSL-XML.xml", Files.readAllBytes(Paths.get("src/test/resources/lotlCache/DE.xml")));
-		urlMap.put("https://www.digst.dk/TSLDKxml", Files.readAllBytes(Paths.get("src/test/resources/lotlCache/DK.xml")));
-		urlMap.put("https://sr.riik.ee/tsl/estonian-tsl.xml", Files.readAllBytes(Paths.get("src/test/resources/lotlCache/ES.xml"))); // wrong country code
-		urlMap.put("https://www.eett.gr/tsl/EL-TSL.xml", Files.readAllBytes(Paths.get("src/test/resources/lotlCache/EL.xml")));
-		urlMap.put("https://sede.minetur.gob.es/Prestadores/TSL/TSL.xml", Files.readAllBytes(Paths.get("src/test/resources/lotlCache/ES.xml")));
-		urlMap.put("https://dp.trustedlist.fi/fi-tl.xml", Files.readAllBytes(Paths.get("src/test/resources/lotlCache/FI.xml")));
-		urlMap.put("http://www.ssi.gouv.fr/eidas/TL-FR.xml", Files.readAllBytes(Paths.get("src/test/resources/lotlCache/FR.xml")));
-		urlMap.put("https://www.mingo.hr/TLS/TSL-HR.xml", Files.readAllBytes(Paths.get("src/test/resources/lotlCache/HR.xml")));
-		urlMap.put("http://www.nmhh.hu/tl/pub/HU_TL.xml", Files.readAllBytes(Paths.get("src/test/resources/lotlCache/HU.xml")));
-		urlMap.put("http://files.dcenr.gov.ie/rh/Irelandtslsigned.xml", Files.readAllBytes(Paths.get("src/test/resources/lotlCache/IE.xml")));
-		urlMap.put("http://www.neytendastofa.is/library/Files/TSl/tsl.xml", Files.readAllBytes(Paths.get("src/test/resources/lotlCache/IS.xml")));
-		urlMap.put("https://eidas.agid.gov.it/TL/TSL-IT.xml", Files.readAllBytes(Paths.get("src/test/resources/lotlCache/IT.xml")));
-		urlMap.put("https://www.llv.li/files/ak/xml-llv-ak-tsl.xml", Files.readAllBytes(Paths.get("src/test/resources/lotlCache/LI.xml")));
-		urlMap.put("https://elektroninisparasas.lt/LT-TSL.xml", Files.readAllBytes(Paths.get("src/test/resources/lotlCache/LT.xml")));
-		urlMap.put("https://portail-qualite.public.lu/content/dam/qualite/fr/publications/confiance-numerique/liste-confiance-nationale/tsl-xml/tsl.xml", Files.readAllBytes(Paths.get("src/test/resources/lotlCache/LU.xml")));
-		urlMap.put("https://trustlist.gov.lv/tsl/latvian-tsl.xml", Files.readAllBytes(Paths.get("src/test/resources/lotlCache/LV.xml")));
-		urlMap.put("https://www.mca.org.mt/tsl/MT_TSL.xml", Files.readAllBytes(Paths.get("src/test/resources/lotlCache/MT.xml")));
-		urlMap.put("https://www.agentschaptelecom.nl/binaries/agentschap-telecom/documenten/publicaties/2018/januari/01/digitale-statuslijst-van-vertrouwensdiensten/current-tsl.xml", Files.readAllBytes(Paths.get("src/test/resources/lotlCache/NL.xml")));
-		urlMap.put("https://tl-norway.no/TSL/NO_TSL.XML", Files.readAllBytes(Paths.get("src/test/resources/lotlCache/NO.xml")));
-		urlMap.put("https://www.nccert.pl/tsl/PL_TSL.xml", Files.readAllBytes(Paths.get("src/test/resources/lotlCache/PL.xml")));
-		urlMap.put("https://www.gns.gov.pt/media/1894/TSLPT.xml", Files.readAllBytes(Paths.get("src/test/resources/lotlCache/PT.xml")));
+		urlMap = new HashMap<String, DSSDocument>();
+		urlMap.put("https://www.signatur.rtr.at/currenttl.xml", new FileDocument("src/test/resources/lotlCache/AT.xml"));
+		urlMap.put("https://tsl.belgium.be/tsl-be.xml", new FileDocument("src/test/resources/lotlCache/BE.xml"));
+		urlMap.put("https://crc.bg/files/_en/TSL_BG.xml", new FileDocument("src/test/resources/lotlCache/BG.xml"));
+		urlMap.put("http://www.mcw.gov.cy/mcw/dec/dec.nsf/all/B28C11BBFDBAC045C2257E0D002937E9/$file/TSL-CY-sign.xml",
+				new FileDocument("src/test/resources/lotlCache/CY.xml"));
+		urlMap.put(CZ_URL, new FileDocument("src/test/resources/lotlCache/CZ.xml"));
+		urlMap.put("https://www.nrca-ds.de/st/TSL-XML.xml", new FileDocument("src/test/resources/lotlCache/DE.xml"));
+		urlMap.put("https://www.digst.dk/TSLDKxml", new FileDocument("src/test/resources/lotlCache/DK.xml"));
+		urlMap.put("https://sr.riik.ee/tsl/estonian-tsl.xml", new FileDocument("src/test/resources/lotlCache/ES.xml")); // wrong country code
+		urlMap.put("https://www.eett.gr/tsl/EL-TSL.xml", new FileDocument("src/test/resources/lotlCache/EL.xml"));
+		urlMap.put("https://sede.minetur.gob.es/Prestadores/TSL/TSL.xml", new FileDocument("src/test/resources/lotlCache/ES.xml"));
+		urlMap.put("https://dp.trustedlist.fi/fi-tl.xml", new FileDocument("src/test/resources/lotlCache/FI.xml"));
+		urlMap.put("http://www.ssi.gouv.fr/eidas/TL-FR.xml", new FileDocument("src/test/resources/lotlCache/FR.xml"));
+		urlMap.put("https://www.mingo.hr/TLS/TSL-HR.xml", new FileDocument("src/test/resources/lotlCache/HR.xml"));
+		urlMap.put("http://www.nmhh.hu/tl/pub/HU_TL.xml", new FileDocument("src/test/resources/lotlCache/HU.xml"));
+		urlMap.put("http://files.dcenr.gov.ie/rh/Irelandtslsigned.xml", new FileDocument("src/test/resources/lotlCache/IE.xml"));
+		urlMap.put("http://www.neytendastofa.is/library/Files/TSl/tsl.xml", new FileDocument("src/test/resources/lotlCache/IS.xml"));
+		urlMap.put("https://eidas.agid.gov.it/TL/TSL-IT.xml", new FileDocument("src/test/resources/lotlCache/IT.xml"));
+		urlMap.put("https://www.llv.li/files/ak/xml-llv-ak-tsl.xml", new FileDocument("src/test/resources/lotlCache/LI.xml"));
+		urlMap.put("https://elektroninisparasas.lt/LT-TSL.xml", new FileDocument("src/test/resources/lotlCache/LT.xml"));
+		urlMap.put("https://portail-qualite.public.lu/content/dam/qualite/fr/publications/confiance-numerique/liste-confiance-nationale/tsl-xml/tsl.xml",
+				new FileDocument("src/test/resources/lotlCache/LU.xml"));
+		urlMap.put("https://trustlist.gov.lv/tsl/latvian-tsl.xml", new FileDocument("src/test/resources/lotlCache/LV.xml"));
+		urlMap.put("https://www.mca.org.mt/tsl/MT_TSL.xml", new FileDocument("src/test/resources/lotlCache/MT.xml"));
+		urlMap.put(
+				"https://www.agentschaptelecom.nl/binaries/agentschap-telecom/documenten/publicaties/2018/januari/01/digitale-statuslijst-van-vertrouwensdiensten/current-tsl.xml",
+				new FileDocument("src/test/resources/lotlCache/NL.xml"));
+		urlMap.put("https://tl-norway.no/TSL/NO_TSL.XML", new FileDocument("src/test/resources/lotlCache/NO.xml"));
+		urlMap.put("https://www.nccert.pl/tsl/PL_TSL.xml", new FileDocument("src/test/resources/lotlCache/PL.xml"));
+		urlMap.put("https://www.gns.gov.pt/media/1894/TSLPT.xml", new FileDocument("src/test/resources/lotlCache/PT.xml"));
 		// RO is missed
-		urlMap.put("https://trustedlist.pts.se/SE-TL.xml", Files.readAllBytes(Paths.get("src/test/resources/lotlCache/SE.xml")));
-		urlMap.put("http://www.mju.gov.si/fileadmin/mju.gov.si/pageuploads/DID/Informacijska_druzba/eIDAS/SI_TL.xml", Files.readAllBytes(Paths.get("src/test/resources/lotlCache/SI.xml")));
-		urlMap.put("http://tl.nbu.gov.sk/kca/tsl/tsl.xml", Files.readAllBytes(Paths.get("src/test/resources/lotlCache/SK.xml")));
-		urlMap.put("https://www.tscheme.org/UK_TSL/TSL-UKsigned.xml", Files.readAllBytes(Paths.get("src/test/resources/lotlCache/UK.xml")));
-		urlMap.put("https://www.tscheme.org/UK_TSL/TSL-UKsigned.xml", Files.readAllBytes(Paths.get("src/test/resources/lotlCache/UK.xml")));
+		urlMap.put("https://trustedlist.pts.se/SE-TL.xml", new FileDocument("src/test/resources/lotlCache/SE.xml"));
+		urlMap.put("http://www.mju.gov.si/fileadmin/mju.gov.si/pageuploads/DID/Informacijska_druzba/eIDAS/SI_TL.xml",
+				new FileDocument("src/test/resources/lotlCache/SI.xml"));
+		urlMap.put("http://tl.nbu.gov.sk/kca/tsl/tsl.xml", new FileDocument("src/test/resources/lotlCache/SK.xml"));
+		urlMap.put("https://www.tscheme.org/UK_TSL/TSL-UKsigned.xml", new FileDocument("src/test/resources/lotlCache/UK.xml"));
+		urlMap.put("https://www.tscheme.org/UK_TSL/TSL-UKsigned.xml", new FileDocument("src/test/resources/lotlCache/UK.xml"));
 		
 		cacheDirectory = new File("target/cache");
 		
@@ -92,7 +98,7 @@ public class TLValidationJobTest {
 		offlineFileLoader.setDataLoader(new MockDataLoader(urlMap));
 		offlineFileLoader.setFileCacheDirectory(cacheDirectory);
 		
-		Map<String, byte[]> onlineMap = new HashMap<String, byte[]>();
+		Map<String, DSSDocument> onlineMap = new HashMap<String, DSSDocument>();
 		onlineMap.putAll(urlMap);
 		
 		onlineFileLoader = new FileCacheDataLoader();
