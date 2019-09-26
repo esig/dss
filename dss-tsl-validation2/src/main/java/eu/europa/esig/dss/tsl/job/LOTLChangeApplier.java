@@ -11,9 +11,9 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
 import eu.europa.esig.dss.tsl.cache.TLChangesCacheAccess;
+import eu.europa.esig.dss.tsl.cache.dto.ParsingCacheDTO;
 import eu.europa.esig.dss.tsl.dto.OtherTSLPointerDTO;
-import eu.europa.esig.dss.tsl.parsing.AbstractParsingResult;
-import eu.europa.esig.dss.tsl.parsing.LOTLParsingResult;
+import eu.europa.esig.dss.utils.Utils;
 
 public class LOTLChangeApplier {
 
@@ -21,11 +21,11 @@ public class LOTLChangeApplier {
 
 	private final TLChangesCacheAccess cacheAccess;
 
-	private final Map<CacheKey, AbstractParsingResult> oldValues;
-	private final Map<CacheKey, AbstractParsingResult> newValues;
+	private final Map<CacheKey, ParsingCacheDTO> oldValues;
+	private final Map<CacheKey, ParsingCacheDTO> newValues;
 
 	public LOTLChangeApplier(final TLChangesCacheAccess cacheAccess, 
-			final Map<CacheKey, AbstractParsingResult> oldValues, final Map<CacheKey, AbstractParsingResult> newValues) {
+			final Map<CacheKey, ParsingCacheDTO> oldValues, final Map<CacheKey, ParsingCacheDTO> newValues) {
 		this.cacheAccess = cacheAccess;
 		this.oldValues = oldValues;
 		this.newValues = newValues;
@@ -41,11 +41,10 @@ public class LOTLChangeApplier {
 		}
 	}
 
-	private Map<String, List<CertificateToken>> getTLPointers(AbstractParsingResult parsingResult) {
-		if (parsingResult instanceof LOTLParsingResult) {
-			LOTLParsingResult lotlParsingResult = (LOTLParsingResult) parsingResult;
-			List<OtherTSLPointerDTO> tlPointers = lotlParsingResult.getTlPointers();
-			return tlPointers.stream().collect(Collectors.toMap(OtherTSLPointerDTO::getLocation, s -> s.getCertificates()));
+	private Map<String, List<CertificateToken>> getTLPointers(ParsingCacheDTO parsingResult) {
+		List<OtherTSLPointerDTO> tlOtherPointers = parsingResult.getTlOtherPointers();
+		if (Utils.isCollectionNotEmpty(tlOtherPointers)) {
+			return tlOtherPointers.stream().collect(Collectors.toMap(OtherTSLPointerDTO::getLocation, s -> s.getCertificates()));
 		}
 		return Collections.emptyMap();
 	}

@@ -1,5 +1,8 @@
 package eu.europa.esig.dss.tsl.cache;
 
+import eu.europa.esig.dss.tsl.cache.dto.DownloadCacheDTO;
+import eu.europa.esig.dss.tsl.cache.dto.ParsingCacheDTO;
+import eu.europa.esig.dss.tsl.cache.dto.ValidationCacheDTO;
 import eu.europa.esig.dss.tsl.download.XmlDownloadResult;
 import eu.europa.esig.dss.tsl.parsing.AbstractParsingResult;
 import eu.europa.esig.dss.tsl.validation.ValidationResult;
@@ -15,9 +18,6 @@ public class CacheAccessByKey {
 	private final ValidationCache validationCache;
 	
 	private ReadOnlyCacheAccess readOnlyCacheAccess;
-	private DownloadCacheDataAccess downloadCacheDataAccess;
-	private ParsingCacheDataAccess parsingCacheDataAccess;
-	private ValidationCacheDataAccess validationCacheDataAccess;
 	
 	public CacheAccessByKey(final CacheKey key, final DownloadCache fileCache, final ParsingCache parsingCache,
 			final ValidationCache validationCache) {
@@ -122,63 +122,30 @@ public class CacheAccessByKey {
 	}
 
 	/**
-	 * Returns the cached download result
+	 * Returns the cached read-only download result DTO
 	 * 
-	 * @return {@link XmlDownloadResult}
+	 * @return {@link DownloadCacheDTO}
 	 */
-	public XmlDownloadResult getDownloadResult() {
-		return getReadOnlyCacheAccess().getDownloadResult(key);
+	public DownloadCacheDTO getDownloadReadOnlyResult() {
+		return getReadOnlyCacheAccess().getDownloadCacheDTO(key);
 	}
 
 	/**
-	 * Returns the cached parsing result
+	 * Returns the cached read-only parsing result DTO
 	 * 
-	 * @return {@link AbstractParsingResult}
+	 * @return {@link ParsingCacheDTO}
 	 */
-	public AbstractParsingResult getParsingResult() {
-		return getReadOnlyCacheAccess().getParsingResult(key);
+	public ParsingCacheDTO getParsingReadOnlyResult() {
+		return getReadOnlyCacheAccess().getParsingCacheDTO(key);
 	}
 
 	/**
-	 * Returns the cached validation result
+	 * Returns the cached read-only validation result DTO
 	 * 
-	 * @return {@link ValidationResult}
+	 * @return {@link ValidationCacheDTO}
 	 */
-	public ValidationResult getValidationResult() {
-		return getReadOnlyCacheAccess().getValidationResult(key);
-	}
-	
-	/**
-	 * Returns an accessor to download cache data
-	 * @return {@link DownloadCacheDataAccess}
-	 */
-	public DownloadCacheDataAccess getDownloadCacheDataAccess() {
-		if (downloadCacheDataAccess == null) {
-			downloadCacheDataAccess = new DownloadCacheDataAccess(fileCache, key);
-		}
-		return downloadCacheDataAccess;
-	}
-
-	/**
-	 * Returns an accessor to parsing cache data
-	 * @return {@link ParsingCacheDataAccess}
-	 */
-	public ParsingCacheDataAccess getParsingCacheDataAccess() {
-		if (parsingCacheDataAccess == null) {
-			parsingCacheDataAccess = new ParsingCacheDataAccess(parsingCache, key);
-		}
-		return parsingCacheDataAccess;
-	}
-
-	/**
-	 * Returns an accessor to validation cache data
-	 * @return {@link ValidationCacheDataAccess}
-	 */
-	public ValidationCacheDataAccess getValidationCacheDataAccess() {
-		if (validationCacheDataAccess == null) {
-			validationCacheDataAccess = new ValidationCacheDataAccess(validationCache, key);
-		}
-		return validationCacheDataAccess;
+	public ValidationCacheDTO getValidationReadOnlyResult() {
+		return getReadOnlyCacheAccess().getValidationCacheDTO(key);
 	}
 
 }

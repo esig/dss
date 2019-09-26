@@ -3,8 +3,10 @@ package eu.europa.esig.dss.tsl.cache.dto;
 import java.util.Date;
 import java.util.List;
 
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.tsl.dto.OtherTSLPointerDTO;
 import eu.europa.esig.dss.tsl.dto.TrustServiceProvider;
+import eu.europa.esig.dss.tsl.utils.TLValidationUtils;
 
 public class ParsingCacheDTO extends AbstractCacheDTO {
 	
@@ -18,6 +20,7 @@ public class ParsingCacheDTO extends AbstractCacheDTO {
 	private List<String> distributionPoints;
 	private List<TrustServiceProvider> trustServiceProviders;
 	private List<OtherTSLPointerDTO> lotlOtherPointers;
+	private List<OtherTSLPointerDTO> tlOtherPointers;
 	private List<String> pivotUrls;
 
 	public ParsingCacheDTO() {}
@@ -90,12 +93,24 @@ public class ParsingCacheDTO extends AbstractCacheDTO {
 		this.lotlOtherPointers = lotlOtherPointers;
 	}
 	
+	public List<OtherTSLPointerDTO> getTlOtherPointers() {
+		return tlOtherPointers;
+	}
+	
+	public void setTlOtherPointers(List<OtherTSLPointerDTO> tlOtherPointers) {
+		this.tlOtherPointers = tlOtherPointers;
+	}
+	
 	public List<String> getPivotUrls() {
 		return pivotUrls;
 	}
 
 	public void setPivotUrls(List<String> pivotUrls) {
 		this.pivotUrls = pivotUrls;
+	}
+
+	public List<CertificateToken> getLOTLAnnouncedSigningCertificates() {
+		return TLValidationUtils.getLOTLAnnouncedSigningCertificates(getLotlOtherPointers());
 	}
 
 }

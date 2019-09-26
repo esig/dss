@@ -14,6 +14,8 @@ public class AbstractCacheDTO implements Serializable {
 	private String exceptionMessage;
 	private String exceptionStackTrace;
 	
+	private boolean resultExist;
+
 	public AbstractCacheDTO() {}
 	
 	public AbstractCacheDTO(AbstractCacheDTO cacheDTO) {
@@ -55,6 +57,12 @@ public class AbstractCacheDTO implements Serializable {
 		this.exceptionStackTrace = exceptionStackTrace;
 	}
 	
-	
+	public boolean isResultExist() {
+		return resultExist;
+	}
+
+	public void setResultExist(boolean resultExist) {
+		this.resultExist = resultExist;
+	}
 
 }

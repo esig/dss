@@ -155,7 +155,7 @@ public class TLValidationJobTest {
 		assertEquals(0, summary.getNumberOfProcessedLOTLs());
 		assertEquals(1, summary.getNumberOfProcessedTLs());
 		
-		List<TLInfo> tlInfos = summary.getOrphanTLInfos();
+		List<TLInfo> tlInfos = summary.getOtherTLInfos();
 		assertEquals(1, tlInfos.size());
 		
 		TLInfo czTL = tlInfos.get(0);

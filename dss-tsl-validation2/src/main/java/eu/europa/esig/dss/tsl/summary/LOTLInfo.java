@@ -17,11 +17,6 @@ public class LOTLInfo extends TLInfo {
 	 * List of summary for pivots found inside the current LOTL
 	 */
 	private List<PivotInfo> pivotInfos;
-	
-	/**
-	 * TRUE when the current source is a pivot, FALSE when LOTL
-	 */
-	protected boolean isPivot;
 
 	/**
 	 * The default constructor
@@ -69,7 +64,7 @@ public class LOTLInfo extends TLInfo {
 	 * @return TRUE if it is a pivot, FALSE when it is a LOTL
 	 */
 	public boolean isPivot() {
-		return isPivot;
+		return false;
 	}
 
 }

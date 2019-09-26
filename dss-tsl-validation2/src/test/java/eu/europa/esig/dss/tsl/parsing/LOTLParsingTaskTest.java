@@ -22,6 +22,7 @@ import eu.europa.esig.dss.tsl.function.OfficialJournalSchemeInformationURI;
 import eu.europa.esig.dss.tsl.function.SchemeTerritoryOtherTSLPointer;
 import eu.europa.esig.dss.tsl.function.XMLOtherTSLPointer;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
+import eu.europa.esig.dss.tsl.utils.TLValidationUtils;
 
 public class LOTLParsingTaskTest {
 
@@ -61,7 +62,7 @@ public class LOTLParsingTaskTest {
 		checkOtherPointers(result.getTlPointers());
 		assertEquals("EU", result.getTerritory());
 
-		assertEquals(8, result.getLOTLAnnouncedSigningCertificates().size());
+		assertEquals(8, TLValidationUtils.getLOTLAnnouncedSigningCertificates(result.getLotlPointers()).size());
 
 		assertNotNull(result.getDistributionPoints());
 		assertEquals(1, result.getDistributionPoints().size());
@@ -222,7 +223,7 @@ public class LOTLParsingTaskTest {
 		checkOtherPointers(result.getTlPointers());
 		assertEquals("IE", result.getTerritory());
 
-		assertEquals(8, result.getLOTLAnnouncedSigningCertificates().size());
+		assertEquals(8, TLValidationUtils.getLOTLAnnouncedSigningCertificates(result.getLotlPointers()).size());
 	}
 
 	@Test

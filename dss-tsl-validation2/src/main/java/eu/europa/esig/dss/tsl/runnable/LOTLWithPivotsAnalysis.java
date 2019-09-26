@@ -23,9 +23,9 @@ import eu.europa.esig.dss.tsl.cache.CacheAccessByKey;
 import eu.europa.esig.dss.tsl.cache.CacheAccessFactory;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
 import eu.europa.esig.dss.tsl.cache.ReadOnlyCacheAccess;
-import eu.europa.esig.dss.tsl.parsing.LOTLParsingResult;
+import eu.europa.esig.dss.tsl.cache.dto.ParsingCacheDTO;
+import eu.europa.esig.dss.tsl.cache.dto.ValidationCacheDTO;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
-import eu.europa.esig.dss.tsl.validation.ValidationResult;
 import eu.europa.esig.dss.utils.Utils;
 
 public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable {
@@ -67,9 +67,9 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 
 		List<CertificateToken> currentLOTLSigners = new ArrayList<CertificateToken>();
 
-		LOTLParsingResult currentLOTLParsing = (LOTLParsingResult) getCacheAccessByKey().getParsingResult();
+		ParsingCacheDTO currentLOTLParsing = getCacheAccessByKey().getParsingReadOnlyResult();
 		if (currentLOTLParsing != null) {
-			List<String> pivotURLs = currentLOTLParsing.getPivotURLs();
+			List<String> pivotURLs = currentLOTLParsing.getPivotUrls();
 			if (Utils.isCollectionEmpty(pivotURLs)) {
 				LOG.trace("No pivot LOTL found");
 				currentLOTLSigners.addAll(initialSigCerts);
@@ -108,7 +108,7 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 			if (pivotProcessingResult != null) {
 				validation(pivotProcessingResult.getPivot(), currentSigCerts);
 
-				ValidationResult validationResult = readOnlyCacheAccess.getValidationResult(cacheKey);
+				ValidationCacheDTO validationResult = readOnlyCacheAccess.getValidationCacheDTO(cacheKey);
 				if (validationResult != null && validationResult.isValid()) {
 					currentSigCerts = pivotProcessingResult.getLotlSigCerts();
 				} else {

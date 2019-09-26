@@ -9,8 +9,8 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.tsl.cache.CacheAccessFactory;
 import eu.europa.esig.dss.tsl.cache.ReadOnlyCacheAccess;
+import eu.europa.esig.dss.tsl.cache.dto.ParsingCacheDTO;
 import eu.europa.esig.dss.tsl.dto.OtherTSLPointerDTO;
-import eu.europa.esig.dss.tsl.parsing.LOTLParsingResult;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -54,7 +54,7 @@ public class ValidationJobSummaryBuilder {
 			final ReadOnlyCacheAccess readOnlyCacheAccess = cacheAccessFactory.getReadOnlyCacheAccess();
 			for (LOTLSource lotl : lotlSources) {
 				
-				LOTLParsingResult lotlParsingResult = (LOTLParsingResult) readOnlyCacheAccess.getParsingResult(lotl.getCacheKey());
+				ParsingCacheDTO lotlParsingResult = readOnlyCacheAccess.getParsingCacheDTO(lotl.getCacheKey());
 				List<TLSource> lotlTLSources = extractTLSources(lotlParsingResult);
 				tlAmount += lotlTLSources.size();
 				
@@ -74,9 +74,9 @@ public class ValidationJobSummaryBuilder {
 		return new ValidationJobSummary(cacheAccessFactory, tlList, lotlList);
 	}
 	
-	private List<TLSource> extractTLSources(LOTLParsingResult lotlParsingResult) {
+	private List<TLSource> extractTLSources(ParsingCacheDTO lotlParsingResult) {
 		List<TLSource> result = new ArrayList<TLSource>();
-		List<OtherTSLPointerDTO> tlPointers = lotlParsingResult.getTlPointers();
+		List<OtherTSLPointerDTO> tlPointers = lotlParsingResult.getTlOtherPointers();
 		for (OtherTSLPointerDTO otherTSLPointerDTO : tlPointers) {
 			TLSource tlSource = new TLSource();
 			tlSource.setUrl(otherTSLPointerDTO.getLocation());
@@ -85,9 +85,9 @@ public class ValidationJobSummaryBuilder {
 		return result;
 	}
 	
-	private List<LOTLSource> extractPivotSources(LOTLParsingResult lotlParsingResult) {
+	private List<LOTLSource> extractPivotSources(ParsingCacheDTO lotlParsingResult) {
 		List<LOTLSource> result = new ArrayList<LOTLSource>();
-		List<String> pivotUrls = lotlParsingResult.getPivotURLs();
+		List<String> pivotUrls = lotlParsingResult.getPivotUrls();
 		for (String pivotUrl : pivotUrls) {
 			LOTLSource pivotSource = new LOTLSource();
 			pivotSource.setUrl(pivotUrl);

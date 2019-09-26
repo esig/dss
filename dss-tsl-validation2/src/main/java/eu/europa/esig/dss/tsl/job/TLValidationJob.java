@@ -22,7 +22,7 @@ import eu.europa.esig.dss.tsl.cache.CacheAccessFactory;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
 import eu.europa.esig.dss.tsl.cache.ReadOnlyCacheAccess;
-import eu.europa.esig.dss.tsl.parsing.AbstractParsingResult;
+import eu.europa.esig.dss.tsl.cache.dto.ParsingCacheDTO;
 import eu.europa.esig.dss.tsl.runnable.LOTLAnalysis;
 import eu.europa.esig.dss.tsl.runnable.LOTLWithPivotsAnalysis;
 import eu.europa.esig.dss.tsl.runnable.TLAnalysis;
@@ -30,7 +30,6 @@ import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
 import eu.europa.esig.dss.tsl.summary.ValidationJobSummary;
 import eu.europa.esig.dss.tsl.summary.ValidationJobSummaryBuilder;
-import eu.europa.esig.dss.tsl.utils.TLValidationUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
@@ -180,7 +179,7 @@ public class TLValidationJob {
 
 		LOG.info("Running analysis for {} LOTLSource(s)", nbLOTLSources);
 
-		Map<CacheKey, AbstractParsingResult> oldParsingValues = extractParsingCache(lotlSources);
+		Map<CacheKey, ParsingCacheDTO> oldParsingValues = extractParsingCache(lotlSources);
 
 		CountDownLatch latch = new CountDownLatch(nbLOTLSources);
 		for (LOTLSource lotlSource : lotlSources) {
@@ -199,7 +198,7 @@ public class TLValidationJob {
 			LOG.error("Interruption in the LOTLSource process", e);
 		}
 
-		Map<CacheKey, AbstractParsingResult> newParsingValues = extractParsingCache(lotlSources);
+		Map<CacheKey, ParsingCacheDTO> newParsingValues = extractParsingCache(lotlSources);
 
 		// Analyze introduced changes for TLs + adapt cache for TLs (EXPIRED)
 		final LOTLChangeApplier lotlChangeApplier = new LOTLChangeApplier(cacheAccessFactory.getTLChangesCacheAccess(), oldParsingValues, newParsingValues);
@@ -210,11 +209,11 @@ public class TLValidationJob {
 		TLSourceBuilder tlSourceBuilder = new TLSourceBuilder(lotlList, extractParsingCache(lotlList));
 		return tlSourceBuilder.build();
 	}
-
-	private Map<CacheKey, AbstractParsingResult> extractParsingCache(List<LOTLSource> lotlSources) {
-		final ReadOnlyCacheAccess readOnlyCacheAccess = cacheAccessFactory.getReadOnlyCacheAccess();
-		return readOnlyCacheAccess.getParsingResultMap(TLValidationUtils.getCacheKeyList(lotlSources));
-	}
+	
+    private Map<CacheKey, ParsingCacheDTO> extractParsingCache(List<LOTLSource> lotlSources) {
+        final ReadOnlyCacheAccess readOnlyCacheAccess = cacheAccessFactory.getReadOnlyCacheAccess();
+        return lotlSources.stream().collect(Collectors.toMap(LOTLSource::getCacheKey, s -> readOnlyCacheAccess.getParsingCacheDTO(s.getCacheKey())));
+    }
 
 	private void executeTLSourcesAnalysis(List<TLSource> tlSources, DSSFileLoader dssFileLoader) {
 		int nbTLSources = tlSources.size();

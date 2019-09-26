@@ -56,24 +56,6 @@ public class DownloadCache extends AbstractCache<XmlDownloadResult> {
 		LOG.trace("The FileCache does not contain a file result for the key [{}]!", cacheKey);
 		return false;
 	}
-	
-	/**
-	 * Returns the last synchronization date when the cached file was checked against a remote file
-	 * @param cacheKey {@link CacheKey} of the cached entry to get last synchronization date for
-	 * @return {@link Date} last synchronization date
-	 */
-	public Date getLastSynchronizationDate(CacheKey cacheKey) {
-		LOG.trace("Extracting the last syncronization date for the key [{}]...", cacheKey);
-		CachedEntry<XmlDownloadResult> cachedFileEntry = get(cacheKey);
-		if (!cachedFileEntry.isEmpty()) {
-			XmlDownloadResult cachedResult = cachedFileEntry.getCachedResult();
-			Date date = cachedResult.getLastSynchronizationDate();
-			LOG.trace("The last syncronization date for a cached file with the key [{}] is [{}]", cacheKey, date);
-			return date;
-		}
-		LOG.trace("The FileCache does not contain a file result for the key [{}]!", cacheKey);
-		return null;
-	}
 
 	@Override
 	protected CacheType getCacheType() {

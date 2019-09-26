@@ -8,18 +8,17 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
+import eu.europa.esig.dss.tsl.cache.dto.ParsingCacheDTO;
 import eu.europa.esig.dss.tsl.dto.OtherTSLPointerDTO;
-import eu.europa.esig.dss.tsl.parsing.AbstractParsingResult;
-import eu.europa.esig.dss.tsl.parsing.LOTLParsingResult;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
 
 public class TLSourceBuilder {
 
 	private final List<LOTLSource> lotlList;
-	private final Map<CacheKey, AbstractParsingResult> parsingResults;
+	private final Map<CacheKey, ParsingCacheDTO> parsingResults;
 
-	public TLSourceBuilder(List<LOTLSource> lotlList, Map<CacheKey, AbstractParsingResult> parsingResults) {
+	public TLSourceBuilder(List<LOTLSource> lotlList, Map<CacheKey, ParsingCacheDTO> parsingResults) {
 		this.lotlList = lotlList;
 		this.parsingResults = parsingResults;
 	}
@@ -28,8 +27,8 @@ public class TLSourceBuilder {
 		List<TLSource> result = new ArrayList<TLSource>();
 		if (lotlList != null) {
 			for (LOTLSource lotlSource : lotlList) {
-				LOTLParsingResult cachedResult = (LOTLParsingResult) parsingResults.get(lotlSource.getCacheKey());
-				List<OtherTSLPointerDTO> tlPointers = cachedResult.getTlPointers();
+				ParsingCacheDTO cachedResult = parsingResults.get(lotlSource.getCacheKey());
+				List<OtherTSLPointerDTO> tlPointers = cachedResult.getTlOtherPointers();
 				for (OtherTSLPointerDTO otherTSLPointerDTO : tlPointers) {
 					result.add(getTLSource(otherTSLPointerDTO, lotlSource));
 				}

@@ -1,12 +1,10 @@
 package eu.europa.esig.dss.tsl.validation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collections;
 import java.util.List;
@@ -62,9 +60,6 @@ public class TLValidatorTaskTest {
 		assertNotNull(result);
 		assertEquals(Indication.INDETERMINATE, result.getIndication());
 		assertEquals(SubIndication.NO_CERTIFICATE_CHAIN_FOUND, result.getSubIndication());
-		assertFalse(result.isInvalid());
-		assertTrue(result.isIndeterminate());
-		assertFalse(result.isValid());
 		assertNotNull(result.getSigningTime());
 		assertNotNull(result.getSigningCertificate());
 	}
@@ -80,9 +75,6 @@ public class TLValidatorTaskTest {
 		assertNotNull(result);
 		assertEquals(Indication.TOTAL_FAILED, result.getIndication());
 		assertEquals(SubIndication.HASH_FAILURE, result.getSubIndication());
-		assertTrue(result.isInvalid());
-		assertFalse(result.isIndeterminate());
-		assertFalse(result.isValid());
 		assertNotNull(result.getSigningTime());
 		assertNotNull(result.getSigningCertificate());
 		assertEquals(potentialSigner, result.getSigningCertificate());
@@ -99,9 +91,6 @@ public class TLValidatorTaskTest {
 		assertNotNull(result);
 		assertEquals(Indication.TOTAL_FAILED, result.getIndication());
 		assertNull(result.getSubIndication());
-		assertTrue(result.isInvalid());
-		assertFalse(result.isIndeterminate());
-		assertFalse(result.isValid());
 		assertNull(result.getSigningTime());
 		assertNull(result.getSigningCertificate());
 	}

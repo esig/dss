@@ -31,9 +31,9 @@ public class TLInfo implements Serializable {
 	 * @param url {@link String} address used to extract the entry
 	 */
 	public TLInfo(final CacheAccessByKey cacheAccessByKey, final String url) {
-		this.downloadCacheInfo = cacheAccessByKey.getDownloadCacheDataAccess().getCacheDTO();
-		this.parsingCacheInfo = cacheAccessByKey.getParsingCacheDataAccess().getCacheDTO();
-		this.validationCacheInfo = cacheAccessByKey.getValidationCacheDataAccess().getCacheDTO();
+		this.downloadCacheInfo = cacheAccessByKey.getDownloadReadOnlyResult();
+		this.parsingCacheInfo = cacheAccessByKey.getParsingReadOnlyResult();
+		this.validationCacheInfo = cacheAccessByKey.getValidationReadOnlyResult();
 		this.url = url;
 	}
 	

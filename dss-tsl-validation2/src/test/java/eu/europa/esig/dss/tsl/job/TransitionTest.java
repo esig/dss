@@ -237,7 +237,7 @@ public class TransitionTest {
 
 	private void checkSummary(ValidationJobSummary summary, CacheStateEnum download, CacheStateEnum parsing, CacheStateEnum validation) {
 		assertNotNull(summary);
-		List<TLInfo> tlInfos = summary.getOrphanTLInfos();
+		List<TLInfo> tlInfos = summary.getOtherTLInfos();
 		assertEquals(1, tlInfos.size());
 		assertEquals(1, summary.getNumberOfProcessedTLs());
 		TLInfo tlInfo = tlInfos.get(0);

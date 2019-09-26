@@ -44,16 +44,4 @@ public class ValidationResult implements CachedResult {
 		return signingCertificate;
 	}
 
-	public boolean isValid() {
-		return Indication.TOTAL_PASSED.equals(indication);
-	}
-
-	public boolean isIndeterminate() {
-		return Indication.INDETERMINATE.equals(indication);
-	}
-
-	public boolean isInvalid() {
-		return Indication.TOTAL_FAILED.equals(indication);
-	}
-
 }

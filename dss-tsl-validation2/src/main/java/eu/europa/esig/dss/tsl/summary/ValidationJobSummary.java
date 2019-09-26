@@ -22,7 +22,7 @@ public class ValidationJobSummary {
 	/**
 	 * List of TLSources not linked to any LOTL (manually provided)
 	 */
-	private final List<TLSource> orphanTLSources;
+	private final List<TLSource> otherTLSources;
 	
 	/**
 	 * A list of LOTLs with a relationship between their TLs and pivots
@@ -32,9 +32,9 @@ public class ValidationJobSummary {
 	/**
 	 * The default constructor
 	 */
-	public ValidationJobSummary(final CacheAccessFactory cacheAccessFactory, final List<TLSource> orphanTLSources, final List<LinkedLOTL> linkedLOTLs) {
+	public ValidationJobSummary(final CacheAccessFactory cacheAccessFactory, final List<TLSource> otherTLSources, final List<LinkedLOTL> linkedLOTLs) {
 		this.cacheAccessFactory = cacheAccessFactory;
-		this.orphanTLSources = orphanTLSources;
+		this.otherTLSources = otherTLSources;
 		this.linkedLOTLs = linkedLOTLs;
 	}
 
@@ -66,11 +66,11 @@ public class ValidationJobSummary {
 	}
 	
 	/**
-	 * Returns a list of TLInfos for orphan TLs
+	 * Returns a list of TLInfos for other TLs
 	 * @return list of {@link TLInfo}s
 	 */
-	public List<TLInfo> getOrphanTLInfos() {
-		return getTLInfos(orphanTLSources);
+	public List<TLInfo> getOtherTLInfos() {
+		return getTLInfos(otherTLSources);
 	}
 	
 	private List<TLInfo> getTLInfos(List<TLSource> tlSources) {
@@ -89,8 +89,8 @@ public class ValidationJobSummary {
 	 */
 	public int getNumberOfProcessedTLs() {
 		int amount = 0;
-		if (Utils.isCollectionNotEmpty(orphanTLSources)) {
-			amount += orphanTLSources.size();
+		if (Utils.isCollectionNotEmpty(otherTLSources)) {
+			amount += otherTLSources.size();
 		}
 		if (Utils.isCollectionNotEmpty(linkedLOTLs)) {
 			for (LinkedLOTL lotl : linkedLOTLs) {

@@ -8,7 +8,11 @@ public class PivotInfo extends LOTLInfo {
 
 	public PivotInfo(CacheAccessByKey cacheAccessByKey, String url) {
 		super(cacheAccessByKey, url);
-		this.isPivot = true;
+	}
+	
+	@Override
+	public boolean isPivot() {
+		return true;
 	}
 
 }

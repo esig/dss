@@ -8,7 +8,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.http.commons.DSSFileLoader;
 import eu.europa.esig.dss.tsl.cache.CacheAccessByKey;
-import eu.europa.esig.dss.tsl.parsing.LOTLParsingResult;
+import eu.europa.esig.dss.tsl.cache.dto.ParsingCacheDTO;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 
 public class PivotProcessing extends AbstractAnalysis implements Callable<PivotProcessingResult> {
@@ -39,7 +39,7 @@ public class PivotProcessing extends AbstractAnalysis implements Callable<PivotP
 
 	private List<CertificateToken> getLOTLAnnouncedSigningCertificates() {
 		List<CertificateToken> lotlSigCerts = Collections.emptyList();
-		LOTLParsingResult parsingResult = (LOTLParsingResult) cacheAccess.getParsingResult();
+		ParsingCacheDTO parsingResult = cacheAccess.getParsingReadOnlyResult();
 		if (parsingResult != null) {
 			lotlSigCerts = parsingResult.getLOTLAnnouncedSigningCertificates();
 		}
