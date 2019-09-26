@@ -20,6 +20,39 @@
  */
 package eu.europa.esig.dss.pades.extension;
 
-public class ITextPAdESExtensionTest extends PAdESExtensionSuite {
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.runner.RunWith;
+
+import eu.europa.esig.dss.pades.extension.suite.DSS1523Test;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionAllSelfSignedCertsTest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToLTTest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToLTATest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToLTASelfSignedTSATest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToTTest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToTWithCompositeTSATest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToTWithError500TimestampTest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToTWithFailTimestampTest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTAToLTATest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTToLTATest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTToLTASelfSignedTSATest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTToLTAWithError500TimestampTest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTToLTAWithFailTimestampTest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTToLTAWithSelfSignedTest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTTest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTATest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTASelfSignedTSATest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTAWithSelfSignedTest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTSelfSignedTSATest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTWithSelfSignedTest;
+
+@RunWith(JUnitPlatform.class)
+@SelectClasses({ PAdESExtensionBToLTTest.class, PAdESExtensionBToLTATest.class, PAdESExtensionBToTTest.class, PAdESExtensionBToTWithCompositeTSATest.class,
+		PAdESExtensionBToTWithError500TimestampTest.class, PAdESExtensionBToTWithFailTimestampTest.class, PAdESExtensionLTAToLTATest.class, PAdESExtensionLTToLTATest.class,
+		PAdESExtensionLTToLTAWithError500TimestampTest.class, PAdESExtensionLTToLTAWithFailTimestampTest.class, PAdESExtensionTToLTTest.class, PAdESExtensionTToLTATest.class,
+		DSS1523Test.class, PAdESExtensionTToLTWithSelfSignedTest.class, PAdESExtensionTToLTAWithSelfSignedTest.class, PAdESExtensionLTToLTAWithSelfSignedTest.class,
+		PAdESExtensionBToLTASelfSignedTSATest.class, PAdESExtensionTToLTSelfSignedTSATest.class, PAdESExtensionTToLTASelfSignedTSATest.class,
+		PAdESExtensionLTToLTASelfSignedTSATest.class, PAdESExtensionAllSelfSignedCertsTest.class })
+public class ITextPAdESExtensionTest {
 
 }

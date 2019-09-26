@@ -22,11 +22,11 @@ package eu.europa.esig.dss.pades.signature.visible.nativedrawer;
 
 import org.junit.jupiter.api.BeforeEach;
 
-import eu.europa.esig.dss.pades.signature.visible.PAdESVisibleCombinationTextAndImageSignature;
+import eu.europa.esig.dss.pades.signature.visible.suite.PAdESVisibleCombinationTextAndImageSignatureTest;
 import eu.europa.esig.dss.pdf.PdfObjFactory;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
 
-public class PdfBoxPAdESVisibleCombinationTextAndImageSignatureTest extends PAdESVisibleCombinationTextAndImageSignature {
+public class PdfBoxPAdESVisibleCombinationTextAndImageSignatureTest extends PAdESVisibleCombinationTextAndImageSignatureTest {
 	
 	@BeforeEach
 	@Override

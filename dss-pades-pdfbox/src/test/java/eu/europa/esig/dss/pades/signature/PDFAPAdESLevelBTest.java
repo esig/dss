@@ -31,6 +31,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PDFAUtils;
+import eu.europa.esig.dss.pades.signature.suite.AbstractPAdESTestSignature;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
 public class PDFAPAdESLevelBTest extends AbstractPAdESTestSignature {
