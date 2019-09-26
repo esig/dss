@@ -22,6 +22,7 @@ package eu.europa.esig.dss.tsl.validation;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import org.slf4j.Logger;
@@ -39,8 +40,8 @@ import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
@@ -57,19 +58,20 @@ public class TLValidatorTask implements Supplier<ValidationResult> {
 	private static final Logger LOG = LoggerFactory.getLogger(TLValidatorTask.class);
 
 	private final DSSDocument trustedList;
-	private final List<CertificateToken> potentialSigners;
+	private final CertificateSource certificateSource;
 
 	/**
 	 * Constructor used to instantiate a validator for a trusted list
 	 *
-	 * @param trustedList
-	 *                         the DSSDocument with a trusted list
-	 * @param potentialSigners
-	 *                         the list of certificates allowed to sign this TL
+	 * @param trustedList       the DSSDocument with a trusted list
+	 * @param certificateSource a certificate source with the allowed certificates
+	 *                          to sign this TL
 	 */
-	public TLValidatorTask(DSSDocument trustedList, List<CertificateToken> potentialSigners) {
+	public TLValidatorTask(DSSDocument trustedList, CertificateSource certificateSource) {
+		Objects.requireNonNull(trustedList, "The document is null");
+		Objects.requireNonNull(certificateSource, "The certificate source is null");
 		this.trustedList = trustedList;
-		this.potentialSigners = potentialSigners;
+		this.certificateSource = certificateSource;
 	}
 
 	@Override
@@ -81,7 +83,7 @@ public class TLValidatorTask implements Supplier<ValidationResult> {
 	private Reports validateTL() {
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier(true);
 		certificateVerifier.setIncludeCertificateTokenValues(true);
-		certificateVerifier.setTrustedCertSource(buildTrustedCertificateSource(potentialSigners));
+		certificateVerifier.setTrustedCertSource(buildTrustedCertificateSource(certificateSource));
 
 		XMLDocumentValidator xmlDocumentValidator = new XMLDocumentValidator(trustedList);
 		xmlDocumentValidator.setCertificateVerifier(certificateVerifier);
@@ -118,13 +120,9 @@ public class TLValidatorTask implements Supplier<ValidationResult> {
 		return new ValidationResult(indication, subIndication, signingTime, signingCertificate);
 	}
 
-	private CommonTrustedCertificateSource buildTrustedCertificateSource(List<CertificateToken> potentialSigners) {
+	private CommonTrustedCertificateSource buildTrustedCertificateSource(CertificateSource certificateSource) {
 		CommonTrustedCertificateSource commonTrustedCertificateSource = new CommonTrustedCertificateSource();
-		if (Utils.isCollectionNotEmpty(potentialSigners)) {
-			for (CertificateToken potentialSigner : potentialSigners) {
-				commonTrustedCertificateSource.addCertificate(potentialSigner);
-			}
-		}
+		commonTrustedCertificateSource.importAsTrusted(certificateSource);
 		return commonTrustedCertificateSource;
 	}
 

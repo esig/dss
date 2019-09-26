@@ -34,11 +34,11 @@ public class TLAnalysis extends AbstractAnalysis implements Runnable {
 		if (document != null) {
 			trustedListParsing(document);
 
-			validation(document, source.getCertificateSource().getCertificates());
+			validation(document, source.getCertificateSource());
 		}
-		
+
 		latch.countDown();
-		
+
 	}
 
 	private void trustedListParsing(DSSDocument document) {
@@ -46,7 +46,7 @@ public class TLAnalysis extends AbstractAnalysis implements Runnable {
 		if (cacheAccess.isParsingRefreshNeeded()) {
 			try {
 				LOG.info("Parsing a file received from url [{}]...", source.getUrl());
-				TLParsingTask parsingTask = new TLParsingTask(source, document);
+				TLParsingTask parsingTask = new TLParsingTask(document, source);
 				cacheAccess.update(parsingTask.get());
 			} catch (Exception e) {
 				LOG.error("An error occurred on parsing a file from url [{}]. Reason : {}", source.getUrl(), e.getMessage());

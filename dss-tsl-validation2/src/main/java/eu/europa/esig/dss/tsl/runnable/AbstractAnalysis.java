@@ -1,10 +1,8 @@
 package eu.europa.esig.dss.tsl.runnable;
 
-import java.util.List;
-
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.http.commons.DSSFileLoader;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.tsl.cache.CacheAccessByKey;
 import eu.europa.esig.dss.tsl.download.XmlDownloadResult;
 import eu.europa.esig.dss.tsl.download.XmlDownloadTask;
@@ -21,7 +19,7 @@ public abstract class AbstractAnalysis {
 		this.cacheAccess = cacheAccess;
 		this.dssFileLoader = dssFileLoader;
 	}
-	
+
 	protected final CacheAccessByKey getCacheAccessByKey() {
 		return cacheAccess;
 	}
@@ -44,11 +42,11 @@ public abstract class AbstractAnalysis {
 		return document;
 	}
 
-	protected void lotlParsing(LOTLSource source, DSSDocument document) {
+	protected void lotlParsing(DSSDocument document, LOTLSource source) {
 		// True if EMPTY / EXPIRED by TL/LOTL
 		if (cacheAccess.isParsingRefreshNeeded()) {
 			try {
-				LOTLParsingTask parsingTask = new LOTLParsingTask(source, document);
+				LOTLParsingTask parsingTask = new LOTLParsingTask(document, source);
 				cacheAccess.update(parsingTask.get());
 			} catch (Exception e) {
 				cacheAccess.parsingError(e);
@@ -56,11 +54,11 @@ public abstract class AbstractAnalysis {
 		}
 	}
 
-	protected void validation(DSSDocument document, List<CertificateToken> trustedCertificates) {
+	protected void validation(DSSDocument document, CertificateSource certificateSource) {
 		// True if EMPTY / EXPIRED by TL/LOTL
 		if (cacheAccess.isValidationRefreshNeeded()) {
 			try {
-				TLValidatorTask validationTask = new TLValidatorTask(document, trustedCertificates);
+				TLValidatorTask validationTask = new TLValidatorTask(document, certificateSource);
 				cacheAccess.update(validationTask.get());
 			} catch (Exception e) {
 				cacheAccess.validationError(e);

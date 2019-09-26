@@ -24,9 +24,9 @@ public class LOTLAnalysis extends AbstractAnalysis implements Runnable {
 		DSSDocument document = download(source.getUrl());
 
 		if (document != null) {
-			lotlParsing(source, document);
+			lotlParsing(document, source);
 
-			validation(document, source.getCertificateSource().getCertificates());
+			validation(document, source.getCertificateSource());
 		}
 
 		latch.countDown();

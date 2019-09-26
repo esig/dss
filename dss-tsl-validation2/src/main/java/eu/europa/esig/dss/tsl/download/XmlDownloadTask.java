@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.tsl.download;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
@@ -21,6 +22,8 @@ public class XmlDownloadTask implements Supplier<XmlDownloadResult> {
 	private final String url;
 
 	public XmlDownloadTask(DSSFileLoader dssFileLoader, String url) {
+		Objects.requireNonNull(dssFileLoader, "The DSSFileLoader is null");
+		Objects.requireNonNull(url, "The url is null");
 		this.dssFileLoader = dssFileLoader;
 		this.url = url;
 	}

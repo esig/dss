@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Objects;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
@@ -22,6 +23,7 @@ public abstract class AbstractParsingTask {
 	private final DSSDocument document;
 
 	protected AbstractParsingTask(DSSDocument document) {
+		Objects.requireNonNull(document, "The document is null");
 		this.document = document;
 	}
 

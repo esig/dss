@@ -50,7 +50,7 @@ public class TLParsingTaskTest {
 
 	@Test
 	public void testIEDefault() {
-		TLParsingTask task = new TLParsingTask(new TLSource(), IE_TL);
+		TLParsingTask task = new TLParsingTask(IE_TL, new TLSource());
 		TLParsingResult result = task.get();
 		assertNotNull(result);
 		assertEquals(5, result.getVersion());
@@ -63,7 +63,7 @@ public class TLParsingTaskTest {
 		List<TrustServiceProvider> trustServiceProviders = result.getTrustServiceProviders();
 		assertNotNull(trustServiceProviders);
 		assertEquals(3, trustServiceProviders.size());
-		
+
 		checkTSPs(trustServiceProviders);
 
 		TrustServiceProvider postTrust = trustServiceProviders.get(0);
@@ -78,7 +78,7 @@ public class TLParsingTaskTest {
 
 	@Test
 	public void testSKDefault() {
-		TLParsingTask task = new TLParsingTask(new TLSource(), SK_TL);
+		TLParsingTask task = new TLParsingTask(SK_TL, new TLSource());
 		TLParsingResult result = task.get();
 		assertNotNull(result);
 		assertEquals(5, result.getVersion());
@@ -106,7 +106,7 @@ public class TLParsingTaskTest {
 
 	@Test
 	public void testLOTL() {
-		TLParsingTask task = new TLParsingTask(new TLSource(), LOTL);
+		TLParsingTask task = new TLParsingTask(LOTL, new TLSource());
 		TLParsingResult result = task.get();
 		assertNotNull(result);
 		assertNotNull(result);
@@ -124,7 +124,7 @@ public class TLParsingTaskTest {
 
 	@Test
 	public void notParseable() {
-		TLParsingTask task = new TLParsingTask(new TLSource(), LOTL_NOT_PARSEABLE);
+		TLParsingTask task = new TLParsingTask(LOTL_NOT_PARSEABLE, new TLSource());
 		DSSException exception = assertThrows(DSSException.class, () -> task.get());
 		assertEquals("Unable to parse binaries", exception.getMessage());
 	}
@@ -152,7 +152,7 @@ public class TLParsingTaskTest {
 
 			assertNotNull(tsp.getServices());
 			assertFalse(tsp.getServices().isEmpty());
-			
+
 			checkServices(tsp.getServices());
 		}
 	}
@@ -188,7 +188,7 @@ public class TLParsingTaskTest {
 			}
 		});
 
-		TLParsingTask task = new TLParsingTask(tlSource, IE_TL);
+		TLParsingTask task = new TLParsingTask(IE_TL, tlSource);
 		TLParsingResult result = task.get();
 		assertNotNull(result);
 		assertEquals(0, result.getTrustServiceProviders().size());
@@ -206,7 +206,7 @@ public class TLParsingTaskTest {
 
 		});
 
-		TLParsingTask task = new TLParsingTask(tlSource, IE_TL);
+		TLParsingTask task = new TLParsingTask(IE_TL, tlSource);
 		TLParsingResult result = task.get();
 		assertNotNull(result);
 		assertEquals(0, result.getTrustServiceProviders().size());
@@ -214,9 +214,9 @@ public class TLParsingTaskTest {
 
 	@Test
 	public void countCertificatesDE() throws Exception {
-		TLParsingTask task = new TLParsingTask(new TLSource(), DE_TL);
+		TLParsingTask task = new TLParsingTask(DE_TL, new TLSource());
 		TLParsingResult result = task.get();
-		
+
 		assertNotNull(result);
 		assertNotNull(result.getVersion());
 		assertNotNull(result.getSequenceNumber());
@@ -227,7 +227,7 @@ public class TLParsingTaskTest {
 
 		List<TrustServiceProvider> trustServiceProviders = result.getTrustServiceProviders();
 		assertNotNull(trustServiceProviders);
-	
+
 		Set<CertificateToken> certs = new HashSet<CertificateToken>();
 		for (TrustServiceProvider tslServiceProvider : trustServiceProviders) {
 			List<TrustService> services = tslServiceProvider.getServices();

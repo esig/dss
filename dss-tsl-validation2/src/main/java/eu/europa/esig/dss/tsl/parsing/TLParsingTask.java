@@ -2,6 +2,7 @@ package eu.europa.esig.dss.tsl.parsing;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -21,8 +22,9 @@ public class TLParsingTask extends AbstractParsingTask implements Supplier<TLPar
 
 	private final TLSource tlSource;
 
-	public TLParsingTask(TLSource tlSource, DSSDocument document) {
+	public TLParsingTask(DSSDocument document, TLSource tlSource) {
 		super(document);
+		Objects.requireNonNull(tlSource, "The TLSource is null");
 		this.tlSource = tlSource;
 	}
 

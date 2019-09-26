@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
@@ -23,6 +24,9 @@ import eu.europa.esig.dss.tsl.summary.TLInfo;
 import eu.europa.esig.dss.tsl.summary.ValidationJobSummary;
 
 public class TransitionTest {
+
+	@TempDir
+	File cacheDirectory;
 
 	private DSSDocument CZ = new FileDocument("src/test/resources/lotlCache/CZ.xml");
 	private DSSDocument CZ_NULL = null;
@@ -39,6 +43,26 @@ public class TransitionTest {
 
 		TLValidationJob job = new TLValidationJob();
 		job.setTrustedListSources(getTLSource(url));
+		job.setOnlineDataLoader(getOnlineDataLoader(CZ_NULL, url));
+
+		job.onlineRefresh();
+
+		checkSummary(job.getSummary(), CacheStateEnum.ERROR, CacheStateEnum.REFRESH_NEEDED, CacheStateEnum.REFRESH_NEEDED);
+
+		job.onlineRefresh();
+
+		checkSummary(job.getSummary(), CacheStateEnum.ERROR, CacheStateEnum.REFRESH_NEEDED, CacheStateEnum.REFRESH_NEEDED);
+	}
+
+	@Test
+	public void nullDocNullCertSource() {
+
+		String url = "null-doc";
+
+		TLValidationJob job = new TLValidationJob();
+		TLSource tlSource = new TLSource();
+		tlSource.setUrl(url);
+		job.setTrustedListSources(tlSource);
 		job.setOnlineDataLoader(getOnlineDataLoader(CZ_NULL, url));
 
 		job.onlineRefresh();
@@ -231,7 +255,7 @@ public class TransitionTest {
 		Map<String, DSSDocument> onlineMap = new HashMap<String, DSSDocument>();
 		onlineMap.put(url, doc);
 		onlineFileLoader.setDataLoader(new MockDataLoader(onlineMap));
-		onlineFileLoader.setFileCacheDirectory(new File("target/cz-cache"));
+		onlineFileLoader.setFileCacheDirectory(cacheDirectory);
 		return onlineFileLoader;
 	}
 

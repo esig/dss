@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.tsl.parsing;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -25,8 +26,9 @@ public class LOTLParsingTask extends AbstractParsingTask implements Supplier<LOT
 
 	private final LOTLSource lotlSource;
 
-	public LOTLParsingTask(LOTLSource lotlSource, DSSDocument document) {
+	public LOTLParsingTask(DSSDocument document, LOTLSource lotlSource) {
 		super(document);
+		Objects.requireNonNull(lotlSource, "The LOTLSource is null");
 		this.lotlSource = lotlSource;
 	}
 

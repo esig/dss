@@ -24,16 +24,16 @@ public class PivotProcessing extends AbstractAnalysis implements Callable<PivotP
 
 	@Override
 	public PivotProcessingResult call() throws Exception {
-		
+
 		DSSDocument pivot = download(source.getUrl());
-		
+
 		if (pivot != null) {
-			
-			lotlParsing(source, pivot);
-			
+
+			lotlParsing(pivot, source);
+
 			return new PivotProcessingResult(pivot, getLOTLAnnouncedSigningCertificates());
 		}
-		
+
 		return null;
 	}
 

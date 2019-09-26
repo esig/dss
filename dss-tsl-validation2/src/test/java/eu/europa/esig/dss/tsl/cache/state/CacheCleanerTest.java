@@ -1,10 +1,9 @@
 package eu.europa.esig.dss.tsl.cache.state;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +33,6 @@ import eu.europa.esig.dss.tsl.cache.DownloadCache;
 import eu.europa.esig.dss.tsl.cache.ParsingCache;
 import eu.europa.esig.dss.tsl.cache.ValidationCache;
 import eu.europa.esig.dss.tsl.download.XmlDownloadResult;
-import eu.europa.esig.dss.tsl.parsing.AbstractParsingResult;
 import eu.europa.esig.dss.tsl.parsing.LOTLParsingResult;
 import eu.europa.esig.dss.tsl.parsing.TLParsingResult;
 import eu.europa.esig.dss.tsl.validation.ValidationResult;

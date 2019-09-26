@@ -1,6 +1,5 @@
 package eu.europa.esig.dss.tsl.runnable;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +18,8 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.http.commons.DSSFileLoader;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.tsl.cache.CacheAccessByKey;
 import eu.europa.esig.dss.tsl.cache.CacheAccessFactory;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
@@ -26,6 +27,7 @@ import eu.europa.esig.dss.tsl.cache.ReadOnlyCacheAccess;
 import eu.europa.esig.dss.tsl.cache.dto.ParsingCacheDTO;
 import eu.europa.esig.dss.tsl.cache.dto.ValidationCacheDTO;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
+import eu.europa.esig.dss.tsl.validation.TLValidatorTask;
 import eu.europa.esig.dss.utils.Utils;
 
 public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable {
@@ -33,13 +35,13 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 	private static final Logger LOG = LoggerFactory.getLogger(LOTLWithPivotsAnalysis.class);
 
 	private final CacheAccessFactory cacheAccessFactory;
-	
+
 	private final LOTLSource source;
 	private final DSSFileLoader dssFileLoader;
 	private final CountDownLatch latch;
 
-	public LOTLWithPivotsAnalysis(final CacheAccessFactory cacheAccessFactory, final LOTLSource source, 
-			final DSSFileLoader dssFileLoader, final CountDownLatch latch) {
+	public LOTLWithPivotsAnalysis(final CacheAccessFactory cacheAccessFactory, final LOTLSource source, final DSSFileLoader dssFileLoader,
+			final CountDownLatch latch) {
 		super(cacheAccessFactory.getCacheAccess(source.getCacheKey()), dssFileLoader);
 		this.cacheAccessFactory = cacheAccessFactory;
 		this.source = source;
@@ -54,37 +56,37 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 
 		if (document != null) {
 
-			lotlParsing(source, document);
+			lotlParsing(document, source);
 
-			validation(document, getCurrentLOTLSigCertificates());
+			validation(document, getCurrentCertificateSource());
 		}
 
 		latch.countDown();
 	}
 
-	private List<CertificateToken> getCurrentLOTLSigCertificates() {
-		final List<CertificateToken> initialSigCerts = source.getCertificateSource().getCertificates();
+	private CertificateSource getCurrentCertificateSource() {
+		final CertificateSource initialCertificateSource = source.getCertificateSource();
 
-		List<CertificateToken> currentLOTLSigners = new ArrayList<CertificateToken>();
+		CertificateSource currentCertificateSource = null;
 
 		ParsingCacheDTO currentLOTLParsing = getCacheAccessByKey().getParsingReadOnlyResult();
 		if (currentLOTLParsing != null) {
 			List<String> pivotURLs = currentLOTLParsing.getPivotUrls();
 			if (Utils.isCollectionEmpty(pivotURLs)) {
 				LOG.trace("No pivot LOTL found");
-				currentLOTLSigners.addAll(initialSigCerts);
+				currentCertificateSource = initialCertificateSource;
 			} else {
-				currentLOTLSigners.addAll(getCurrentLOTLSigCertificatesFromPivots(initialSigCerts, pivotURLs));
+				currentCertificateSource = getCurrentCertificateSourceFromPivots(initialCertificateSource, pivotURLs);
 			}
 		} else {
 			LOG.warn("Unable to retrieve the parsing result for the current LOTL (allowed signing certificates set from the configuration)");
-			currentLOTLSigners.addAll(initialSigCerts);
+			currentCertificateSource = initialCertificateSource;
 		}
 
-		return currentLOTLSigners;
+		return currentCertificateSource;
 	}
 
-	private List<CertificateToken> getCurrentLOTLSigCertificatesFromPivots(List<CertificateToken> initialSigCerts, List<String> pivotURLs) {
+	private CertificateSource getCurrentCertificateSourceFromPivots(CertificateSource initialCertificateSource, List<String> pivotURLs) {
 
 		/*-
 		* current 																						-> Signed with pivot 226 certificates
@@ -100,17 +102,18 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 
 		Collections.reverse(pivotURLs); // -> 172, 191,..
 
-		List<CertificateToken> currentSigCerts = new ArrayList<CertificateToken>(initialSigCerts);
+		CertificateSource currentCertificateSource = initialCertificateSource;
 		for (String pivotUrl : pivotURLs) {
 			CacheKey cacheKey = new CacheKey(pivotUrl);
 
 			PivotProcessingResult pivotProcessingResult = processingResults.get(pivotUrl);
 			if (pivotProcessingResult != null) {
-				validation(pivotProcessingResult.getPivot(), currentSigCerts);
+				CacheAccessByKey pivotCacheAccess = cacheAccessFactory.getCacheAccess(cacheKey);
+				validationPivot(pivotCacheAccess, pivotProcessingResult.getPivot(), currentCertificateSource);
 
 				ValidationCacheDTO validationResult = readOnlyCacheAccess.getValidationCacheDTO(cacheKey);
 				if (validationResult != null && validationResult.isValid()) {
-					currentSigCerts = pivotProcessingResult.getLotlSigCerts();
+					currentCertificateSource = buildNewCertificateSource(pivotProcessingResult.getLotlSigCerts());
 				} else {
 					LOG.warn(String.format("Pivot '%s' cannot be validated", pivotUrl));
 				}
@@ -119,7 +122,29 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 			}
 		}
 
-		return currentSigCerts;
+		return currentCertificateSource;
+	}
+
+	private CertificateSource buildNewCertificateSource(List<CertificateToken> certs) {
+		CertificateSource certificateSource = new CommonCertificateSource();
+		if (Utils.isCollectionNotEmpty(certs)) {
+			for (CertificateToken certificateToken : certs) {
+				certificateSource.addCertificate(certificateToken);
+			}
+		}
+		return certificateSource;
+	}
+
+	private void validationPivot(CacheAccessByKey pivotCacheAccess, DSSDocument document, CertificateSource certificateSource) {
+		// True if EMPTY / EXPIRED by TL/LOTL
+		if (pivotCacheAccess.isValidationRefreshNeeded()) {
+			try {
+				TLValidatorTask validationTask = new TLValidatorTask(document, certificateSource);
+				pivotCacheAccess.update(validationTask.get());
+			} catch (Exception e) {
+				pivotCacheAccess.validationError(e);
+			}
+		}
 	}
 
 	private Map<String, PivotProcessingResult> downloadAndParseAllPivots(List<String> pivotURLs) {
