@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.tsl.parsing;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,6 +15,23 @@ public class LOTLParsingResult extends AbstractParsingResult {
 
 	private String signingCertificateAnnouncementURL;
 	private List<String> pivotURLs;
+	
+	public LOTLParsingResult() {
+	}
+	
+	public LOTLParsingResult(LOTLParsingResult parsingResult) {
+		super(parsingResult);
+		if (parsingResult.lotlPointers != null) {
+			this.lotlPointers = new ArrayList<OtherTSLPointerDTO>(parsingResult.lotlPointers);
+		}
+		if (parsingResult.tlPointers != null) {
+			this.tlPointers = new ArrayList<OtherTSLPointerDTO>(parsingResult.tlPointers);
+		}
+		this.signingCertificateAnnouncementURL = parsingResult.signingCertificateAnnouncementURL;
+		if (parsingResult.pivotURLs != null) {
+			this.pivotURLs = new ArrayList<String>(parsingResult.pivotURLs);
+		}
+	}
 
 	public List<OtherTSLPointerDTO> getLotlPointers() {
 		return lotlPointers;

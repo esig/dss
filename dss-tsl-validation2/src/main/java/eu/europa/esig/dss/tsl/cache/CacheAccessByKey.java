@@ -14,6 +14,11 @@ public class CacheAccessByKey {
 	private final ParsingCache parsingCache;
 	private final ValidationCache validationCache;
 	
+	private ReadOnlyCacheAccess readOnlyCacheAccess;
+	private DownloadCacheDataAccess downloadCacheDataAccess;
+	private ParsingCacheDataAccess parsingCacheDataAccess;
+	private ValidationCacheDataAccess validationCacheDataAccess;
+	
 	public CacheAccessByKey(final CacheKey key, final DownloadCache fileCache, final ParsingCache parsingCache,
 			final ValidationCache validationCache) {
 		this.key = key;
@@ -108,14 +113,72 @@ public class CacheAccessByKey {
 			validationCache.remove(key);
 		}
 	}
+	
+	private ReadOnlyCacheAccess getReadOnlyCacheAccess() {
+		if (readOnlyCacheAccess == null) {
+			readOnlyCacheAccess = new ReadOnlyCacheAccess(fileCache, parsingCache, validationCache);
+		}
+		return readOnlyCacheAccess;
+	}
+
+	/**
+	 * Returns the cached download result
+	 * 
+	 * @return {@link XmlDownloadResult}
+	 */
+	public XmlDownloadResult getDownloadResult() {
+		return getReadOnlyCacheAccess().getDownloadResult(key);
+	}
 
 	/**
 	 * Returns the cached parsing result
 	 * 
-	 * @return
+	 * @return {@link AbstractParsingResult}
 	 */
 	public AbstractParsingResult getParsingResult() {
-		return parsingCache.get(key).getCachedResult();
+		return getReadOnlyCacheAccess().getParsingResult(key);
+	}
+
+	/**
+	 * Returns the cached validation result
+	 * 
+	 * @return {@link ValidationResult}
+	 */
+	public ValidationResult getValidationResult() {
+		return getReadOnlyCacheAccess().getValidationResult(key);
+	}
+	
+	/**
+	 * Returns an accessor to download cache data
+	 * @return {@link DownloadCacheDataAccess}
+	 */
+	public DownloadCacheDataAccess getDownloadCacheDataAccess() {
+		if (downloadCacheDataAccess == null) {
+			downloadCacheDataAccess = new DownloadCacheDataAccess(fileCache, key);
+		}
+		return downloadCacheDataAccess;
+	}
+
+	/**
+	 * Returns an accessor to parsing cache data
+	 * @return {@link ParsingCacheDataAccess}
+	 */
+	public ParsingCacheDataAccess getParsingCacheDataAccess() {
+		if (parsingCacheDataAccess == null) {
+			parsingCacheDataAccess = new ParsingCacheDataAccess(parsingCache, key);
+		}
+		return parsingCacheDataAccess;
+	}
+
+	/**
+	 * Returns an accessor to validation cache data
+	 * @return {@link ValidationCacheDataAccess}
+	 */
+	public ValidationCacheDataAccess getValidationCacheDataAccess() {
+		if (validationCacheDataAccess == null) {
+			validationCacheDataAccess = new ValidationCacheDataAccess(validationCache, key);
+		}
+		return validationCacheDataAccess;
 	}
 
 }

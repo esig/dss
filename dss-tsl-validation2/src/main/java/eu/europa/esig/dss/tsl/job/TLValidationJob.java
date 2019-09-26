@@ -29,6 +29,8 @@ import eu.europa.esig.dss.tsl.runnable.TLAnalysis;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
 import eu.europa.esig.dss.tsl.summary.ValidationJobSummary;
+import eu.europa.esig.dss.tsl.summary.ValidationJobSummaryBuilder;
+import eu.europa.esig.dss.tsl.utils.TLValidationUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
@@ -40,6 +42,11 @@ public class TLValidationJob {
 	private static final Logger LOG = LoggerFactory.getLogger(TLValidationJob.class);
 
 	private ExecutorService executorService = Executors.newCachedThreadPool();
+	
+	/**
+	 * Contains all caches for the current validation job
+	 */
+	private CacheAccessFactory cacheAccessFactory = new CacheAccessFactory();
 
 	/**
 	 * Array of zero, one or more Trusted List (TL) sources.
@@ -111,25 +118,18 @@ public class TLValidationJob {
 	 * Returns validation job summary for all processed LOTL / TLs
 	 * @return {@link ValidationJobSummary}
 	 */
-	public ValidationJobSummary getSummary() {
-		final List<TLSource> tlList = new ArrayList<TLSource>();
-		if (Utils.isArrayNotEmpty(trustedListSources)) {
-			tlList.addAll(Arrays.asList(trustedListSources));
-		}
-		final List<LOTLSource> lotlList = new ArrayList<LOTLSource>();
-		if (Utils.isArrayNotEmpty(listOfTrustedListSources)) {
-			lotlList.addAll(Arrays.asList(listOfTrustedListSources));
-			tlList.addAll(extractTlSources(lotlList));
-		}
-		return new ValidationJobSummary(tlList, lotlList);
+	public synchronized ValidationJobSummary getSummary() {
+		return new ValidationJobSummaryBuilder(cacheAccessFactory, trustedListSources, listOfTrustedListSources)
+				.build();
 	}
 
 	/**
 	 * Used to execute the refresh in offline mode (no date from remote sources will be downloaded)
 	 * By default used on initialization
 	 */
-	public void offlineRefresh() {
+	public synchronized void offlineRefresh() {
 		Objects.requireNonNull(offlineLoader, "The offlineLoader must be defined!");
+		LOG.info("Offline refresh is running...");
 		refresh(offlineLoader);
 	}
 
@@ -137,8 +137,9 @@ public class TLValidationJob {
 	 * Used to execute the refresh in online mode (all data will be updated from remote sources)
 	 * Used as default database update.
 	 */
-	public void onlineRefresh() {
+	public synchronized void onlineRefresh() {
 		Objects.requireNonNull(onlineLoader, "The onlineLoader must be defined!");
+		LOG.info("Online refresh is running...");
 		refresh(onlineLoader);
 	}
 
@@ -183,9 +184,9 @@ public class TLValidationJob {
 
 		CountDownLatch latch = new CountDownLatch(nbLOTLSources);
 		for (LOTLSource lotlSource : lotlSources) {
-			final CacheAccessByKey cacheAccess = CacheAccessFactory.getCacheAccess(lotlSource.getCacheKey());
+			final CacheAccessByKey cacheAccess = cacheAccessFactory.getCacheAccess(lotlSource.getCacheKey());
 			if (lotlSource.isPivotSupport()) {
-				executorService.submit(new LOTLWithPivotsAnalysis(lotlSource, cacheAccess, dssFileLoader, latch));
+				executorService.submit(new LOTLWithPivotsAnalysis(cacheAccessFactory, lotlSource, dssFileLoader, latch));
 			} else {
 				executorService.submit(new LOTLAnalysis(lotlSource, cacheAccess, dssFileLoader, latch));
 			}
@@ -201,7 +202,7 @@ public class TLValidationJob {
 		Map<CacheKey, AbstractParsingResult> newParsingValues = extractParsingCache(lotlSources);
 
 		// Analyze introduced changes for TLs + adapt cache for TLs (EXPIRED)
-		LOTLChangeApplier lotlChangeApplier = new LOTLChangeApplier(oldParsingValues, newParsingValues);
+		final LOTLChangeApplier lotlChangeApplier = new LOTLChangeApplier(cacheAccessFactory.getTLChangesCacheAccess(), oldParsingValues, newParsingValues);
 		lotlChangeApplier.analyzeAndApply();
 	}
 	
@@ -211,8 +212,8 @@ public class TLValidationJob {
 	}
 
 	private Map<CacheKey, AbstractParsingResult> extractParsingCache(List<LOTLSource> lotlSources) {
-		final ReadOnlyCacheAccess readOnlyCacheAccess = CacheAccessFactory.getReadOnlyCacheAccess();
-		return lotlSources.stream().collect(Collectors.toMap(LOTLSource::getCacheKey, s -> readOnlyCacheAccess.getParsingResult(s.getCacheKey())));
+		final ReadOnlyCacheAccess readOnlyCacheAccess = cacheAccessFactory.getReadOnlyCacheAccess();
+		return readOnlyCacheAccess.getParsingResultMap(TLValidationUtils.getCacheKeyList(lotlSources));
 	}
 
 	private void executeTLSourcesAnalysis(List<TLSource> tlSources, DSSFileLoader dssFileLoader) {
@@ -228,7 +229,7 @@ public class TLValidationJob {
 
 		CountDownLatch latch = new CountDownLatch(nbTLSources);
 		for (TLSource tlSource : tlSources) {
-			final CacheAccessByKey cacheAccess = CacheAccessFactory.getCacheAccess(tlSource.getCacheKey());
+			final CacheAccessByKey cacheAccess = cacheAccessFactory.getCacheAccess(tlSource.getCacheKey());
 			executorService.submit(new TLAnalysis(tlSource, cacheAccess, dssFileLoader, latch));
 		}
 
@@ -241,11 +242,13 @@ public class TLValidationJob {
 	}
 	
 	private void executeTLSourcesClean(List<TLSource> tlSources, DSSFileLoader dssFileLoader) {
+		Objects.requireNonNull(cacheCleaner, "Cache cleaner must be defined!");
+		
 		int nbTLSources = tlSources.size();
 		LOG.info("Running CacheClean for {} TLSource(s)", nbTLSources);
 		
 		for (TLSource tlSource : tlSources) {
-			final CacheAccessByKey cacheAccess = CacheAccessFactory.getCacheAccess(tlSource.getCacheKey());
+			final CacheAccessByKey cacheAccess = cacheAccessFactory.getCacheAccess(tlSource.getCacheKey());
 			cacheCleaner.clean(cacheAccess);
 		}
 		

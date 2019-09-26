@@ -3,6 +3,7 @@ package eu.europa.esig.dss.tsl.summary;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.europa.esig.dss.tsl.cache.CacheAccessFactory;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -12,6 +13,11 @@ import eu.europa.esig.dss.utils.Utils;
  *
  */
 public class ValidationJobSummary {
+	
+	/**
+	 * A factory to access the cache of the current Validation Job
+	 */
+	private final CacheAccessFactory cacheAccessFactory;
 	
 	/**
 	 * List of TLSources to extract summary for
@@ -26,7 +32,8 @@ public class ValidationJobSummary {
 	/**
 	 * The default constructor
 	 */
-	public ValidationJobSummary(final List<TLSource> tlSources, final List<LOTLSource> lotlSources) {
+	public ValidationJobSummary(final CacheAccessFactory cacheAccessFactory, final List<TLSource> tlSources, final List<LOTLSource> lotlSources) {
+		this.cacheAccessFactory = cacheAccessFactory;
 		this.tlSources = tlSources;
 		this.lotlSources = lotlSources;
 	}
@@ -39,7 +46,7 @@ public class ValidationJobSummary {
 		List<TLInfo> tlInfos = new ArrayList<TLInfo>();
 		if (Utils.isCollectionNotEmpty(tlSources)) {
 			for (TLSource tlSource : tlSources) {
-				tlInfos.add(new TLInfo(tlSource.getCacheKey(), tlSource.getUrl()));
+				tlInfos.add(new TLInfo(cacheAccessFactory.getCacheAccess(tlSource.getCacheKey()), tlSource.getUrl()));
 			}
 		}
 		return tlInfos;
@@ -53,7 +60,7 @@ public class ValidationJobSummary {
 		List<LOTLInfo> lotlInfos = new ArrayList<LOTLInfo>();
 		if (Utils.isCollectionNotEmpty(lotlSources)) {
 			for (LOTLSource lotlSource : lotlSources) {
-				lotlInfos.add(new LOTLInfo(lotlSource.getCacheKey(), lotlSource.getUrl()));
+				lotlInfos.add(new LOTLInfo(cacheAccessFactory.getCacheAccess(lotlSource.getCacheKey()), lotlSource.getUrl()));
 			}
 		}
 		return lotlInfos;

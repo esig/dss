@@ -32,15 +32,17 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 
 	private static final Logger LOG = LoggerFactory.getLogger(LOTLWithPivotsAnalysis.class);
 
+	private final CacheAccessFactory cacheAccessFactory;
+	
 	private final LOTLSource source;
-	private final CacheAccessByKey cacheAccess;
 	private final DSSFileLoader dssFileLoader;
 	private final CountDownLatch latch;
 
-	public LOTLWithPivotsAnalysis(LOTLSource source, CacheAccessByKey cacheAccess, DSSFileLoader dssFileLoader, CountDownLatch latch) {
-		super(cacheAccess, dssFileLoader);
+	public LOTLWithPivotsAnalysis(final CacheAccessFactory cacheAccessFactory, final LOTLSource source, 
+			final DSSFileLoader dssFileLoader, final CountDownLatch latch) {
+		super(cacheAccessFactory.getCacheAccess(source.getCacheKey()), dssFileLoader);
+		this.cacheAccessFactory = cacheAccessFactory;
 		this.source = source;
-		this.cacheAccess = cacheAccess;
 		this.dssFileLoader = dssFileLoader;
 		this.latch = latch;
 	}
@@ -65,7 +67,7 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 
 		List<CertificateToken> currentLOTLSigners = new ArrayList<CertificateToken>();
 
-		LOTLParsingResult currentLOTLParsing = (LOTLParsingResult) cacheAccess.getParsingResult();
+		LOTLParsingResult currentLOTLParsing = (LOTLParsingResult) getCacheAccessByKey().getParsingResult();
 		if (currentLOTLParsing != null) {
 			List<String> pivotURLs = currentLOTLParsing.getPivotURLs();
 			if (Utils.isCollectionEmpty(pivotURLs)) {
@@ -94,7 +96,7 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 
 		Map<String, PivotProcessingResult> processingResults = downloadAndParseAllPivots(pivotURLs);
 
-		ReadOnlyCacheAccess readOnlyCacheAccess = CacheAccessFactory.getReadOnlyCacheAccess();
+		ReadOnlyCacheAccess readOnlyCacheAccess = cacheAccessFactory.getReadOnlyCacheAccess();
 
 		Collections.reverse(pivotURLs); // -> 172, 191,..
 
@@ -125,7 +127,7 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 
 		Map<String, Future<PivotProcessingResult>> futures = new HashMap<String, Future<PivotProcessingResult>>();
 		for (String pivotUrl : pivotURLs) {
-			CacheAccessByKey pivotCacheAccess = CacheAccessFactory.getCacheAccess(new CacheKey(pivotUrl));
+			CacheAccessByKey pivotCacheAccess = cacheAccessFactory.getCacheAccess(new CacheKey(pivotUrl));
 			LOTLSource pivotSource = new LOTLSource();
 			pivotSource.setUrl(pivotUrl);
 			pivotSource.setLotlPredicate(source.getLotlPredicate());

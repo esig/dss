@@ -8,24 +8,31 @@ public class AbstractCacheDataAccess<C extends AbstractCache<?>> {
 	
 	protected final C cache;
 	
-	protected AbstractCacheDataAccess(C cache) {
+	private final CacheKey cacheKey;
+	
+	protected AbstractCacheDataAccess(final C cache, final CacheKey cacheKey) {
 		this.cache = cache;
+		this.cacheKey = cacheKey;
 	}
 	
-	public CacheStateEnum getCurrentState(CacheKey cacheKey) {
-		return cache.getCurrentState(cacheKey);
+	protected final CacheKey getCacheKey() {
+		return cacheKey;
 	}
 	
-	public Date getLastSuccessDate(CacheKey cacheKey) {
-		return cache.getLastSuccessDate(cacheKey);
+	public CacheStateEnum getCurrentState() {
+		return cache.getCurrentState(getCacheKey());
 	}
 	
-	public String getCachedExceptionMessage(CacheKey cacheKey) {
-		return cache.getCachedExceptionMessage(cacheKey);
+	public Date getLastSuccessDate() {
+		return cache.getLastSuccessDate(getCacheKey());
 	}
 	
-	public String getCachedExceptionStackTrace(CacheKey cacheKey) {
-		return cache.getCachedExceptionStackTrace(cacheKey);
+	public String getCachedExceptionMessage() {
+		return cache.getCachedExceptionMessage(getCacheKey());
+	}
+	
+	public String getCachedExceptionStackTrace() {
+		return cache.getCachedExceptionStackTrace(getCacheKey());
 	}
 
 }

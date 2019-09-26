@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.tsl.cache.CacheAccessFactory;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
 import eu.europa.esig.dss.tsl.cache.TLChangesCacheAccess;
 import eu.europa.esig.dss.tsl.dto.OtherTSLPointerDTO;
@@ -20,12 +19,14 @@ public class LOTLChangeApplier {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LOTLChangeApplier.class);
 
-	private final TLChangesCacheAccess cacheAccess = CacheAccessFactory.getTLChangesCacheAccess();
+	private final TLChangesCacheAccess cacheAccess;
 
 	private final Map<CacheKey, AbstractParsingResult> oldValues;
 	private final Map<CacheKey, AbstractParsingResult> newValues;
 
-	public LOTLChangeApplier(Map<CacheKey, AbstractParsingResult> oldValues, Map<CacheKey, AbstractParsingResult> newValues) {
+	public LOTLChangeApplier(final TLChangesCacheAccess cacheAccess, 
+			final Map<CacheKey, AbstractParsingResult> oldValues, final Map<CacheKey, AbstractParsingResult> newValues) {
+		this.cacheAccess = cacheAccess;
 		this.oldValues = oldValues;
 		this.newValues = newValues;
 	}

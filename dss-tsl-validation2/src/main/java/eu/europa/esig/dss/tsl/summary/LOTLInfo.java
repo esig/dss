@@ -2,15 +2,14 @@ package eu.europa.esig.dss.tsl.summary;
 
 import java.util.List;
 
-import eu.europa.esig.dss.tsl.cache.CacheAccessFactory;
-import eu.europa.esig.dss.tsl.cache.CacheKey;
+import eu.europa.esig.dss.tsl.cache.CacheAccessByKey;
 import eu.europa.esig.dss.tsl.dto.OtherTSLPointerDTO;
 import eu.europa.esig.dss.tsl.dto.TrustServiceProvider;
 
 public class LOTLInfo extends TLInfo {
 
-	public LOTLInfo(final CacheKey cacheKey, final String url) {
-		super(cacheKey, url);
+	public LOTLInfo(final CacheAccessByKey cacheAccessByKey, final String url) {
+		super(cacheAccessByKey, url);
 	}
 	
 	@Override
@@ -24,7 +23,7 @@ public class LOTLInfo extends TLInfo {
 	 * @return list of {@link OtherTSLPointerDTO}s
 	 */
 	public List<OtherTSLPointerDTO> getLOTLOtherPointers() {
-		return CacheAccessFactory.getParsingCacheDataAccess().getLOTLOtherPointers(cacheKey);
+		return cacheAccessByKey.getParsingCacheDataAccess().getLOTLOtherPointers();
 	}
 	
 	/**
@@ -32,7 +31,7 @@ public class LOTLInfo extends TLInfo {
 	 * @return list of {@link String} pivot urls
 	 */
 	public List<String> getPivotUrls() {
-		return CacheAccessFactory.getParsingCacheDataAccess().getPivotUrls(cacheKey);
+		return cacheAccessByKey.getParsingCacheDataAccess().getPivotUrls();
 	}
 
 }

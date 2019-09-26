@@ -1,37 +1,28 @@
 package eu.europa.esig.dss.tsl.cache;
 
 public final class CacheAccessFactory {
-
-	private CacheAccessFactory() {
-	}
-
+	
 	/* Global Cache */
-	private static final DownloadCache DOWNLOAD_CACHE = new DownloadCache();
-	private static final ParsingCache PARSING_CACHE = new ParsingCache();
-	private static final ValidationCache VALIDATION_CACHE = new ValidationCache();
+	private final DownloadCache downloadCache;
+	private final ParsingCache parsingCache;
+	private final ValidationCache validationCache;
 
-	public static CacheAccessByKey getCacheAccess(CacheKey key) {
-		return new CacheAccessByKey(key, DOWNLOAD_CACHE, PARSING_CACHE, VALIDATION_CACHE);
-	}
-
-	public static TLChangesCacheAccess getTLChangesCacheAccess() {
-		return new TLChangesCacheAccess(DOWNLOAD_CACHE, PARSING_CACHE, VALIDATION_CACHE);
+	public CacheAccessFactory() {
+		downloadCache = new DownloadCache();
+		parsingCache = new ParsingCache();
+		validationCache = new ValidationCache();
 	}
 
-	public static ReadOnlyCacheAccess getReadOnlyCacheAccess() {
-		return new ReadOnlyCacheAccess(DOWNLOAD_CACHE, PARSING_CACHE, VALIDATION_CACHE);
+	public CacheAccessByKey getCacheAccess(CacheKey key) {
+		return new CacheAccessByKey(key, downloadCache, parsingCache, validationCache);
 	}
-	
-	public static DownloadCacheDataAccess getDownloadCacheDataAccess() {
-		return new DownloadCacheDataAccess(DOWNLOAD_CACHE);
+
+	public TLChangesCacheAccess getTLChangesCacheAccess() {
+		return new TLChangesCacheAccess(downloadCache, parsingCache, validationCache);
 	}
-	
-	public static ParsingCacheDataAccess getParsingCacheDataAccess() {
-		return new ParsingCacheDataAccess(PARSING_CACHE);
-	}
-	
-	public static ValidationCacheDataAccess getValidationCacheDataAccess() {
-		return new ValidationCacheDataAccess(VALIDATION_CACHE);
+
+	public ReadOnlyCacheAccess getReadOnlyCacheAccess() {
+		return new ReadOnlyCacheAccess(downloadCache, parsingCache, validationCache);
 	}
 
 }

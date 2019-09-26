@@ -17,9 +17,13 @@ public abstract class AbstractAnalysis {
 	private final CacheAccessByKey cacheAccess;
 	private final DSSFileLoader dssFileLoader;
 
-	protected AbstractAnalysis(CacheAccessByKey cacheAccess, DSSFileLoader dssFileLoader) {
+	protected AbstractAnalysis(final CacheAccessByKey cacheAccess, final DSSFileLoader dssFileLoader) {
 		this.cacheAccess = cacheAccess;
 		this.dssFileLoader = dssFileLoader;
+	}
+	
+	protected final CacheAccessByKey getCacheAccessByKey() {
+		return cacheAccess;
 	}
 
 	protected DSSDocument download(final String url) {

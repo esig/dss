@@ -8,24 +8,24 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 
 public class ValidationCacheDataAccess extends AbstractCacheDataAccess<ValidationCache> {
 	
-	public ValidationCacheDataAccess(ValidationCache validationCache) {
-		super(validationCache);
+	public ValidationCacheDataAccess(final ValidationCache validationCache, final CacheKey cacheKey) {
+		super(validationCache, cacheKey);
 	}
 	
-	public Indication getIndication(CacheKey cacheKey) {
-		return cache.getIndication(cacheKey);
+	public Indication getIndication() {
+		return cache.getIndication(getCacheKey());
 	}
 	
-	public SubIndication getSubIndication(CacheKey cacheKey) {
-		return cache.getSubIndication(cacheKey);
+	public SubIndication getSubIndication() {
+		return cache.getSubIndication(getCacheKey());
 	}
 	
-	public Date getSigningTime(CacheKey cacheKey) {
-		return cache.getSigningTime(cacheKey);
+	public Date getSigningTime() {
+		return cache.getSigningTime(getCacheKey());
 	}
 	
-	public CertificateToken getSigningCertificate(CacheKey cacheKey) {
-		return cache.getSigningCertificate(cacheKey);
+	public CertificateToken getSigningCertificate() {
+		return cache.getSigningCertificate(getCacheKey());
 	}
 
 }

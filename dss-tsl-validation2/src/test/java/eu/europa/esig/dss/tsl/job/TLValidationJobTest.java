@@ -24,7 +24,6 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
 import eu.europa.esig.dss.tsl.function.TrustServicePredicate;
@@ -185,47 +184,6 @@ public class TLValidationJobTest {
 		File cacheDirectory = new File("target/cache");
 		cacheDirectory.mkdirs();
 		Files.walk(cacheDirectory.toPath()).map(Path::toFile).forEach(File::delete);
-	}
-	
-	private static class MockDataLoader implements DataLoader {
-
-		private static final long serialVersionUID = 4624853984865942793L;
-		
-		private Map<String, byte[]> dataMap = new HashMap<String, byte[]>();
-		
-		MockDataLoader(Map<String, byte[]> dataMap) {
-			this.dataMap = dataMap;
-		}
-
-		@Override
-		public byte[] get(String url) {
-			return dataMap.get(url);
-		}
-
-		@Override
-		public DataAndUrl get(List<String> urlStrings) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public byte[] get(String url, boolean refresh) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public byte[] post(String url, byte[] content) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public void setContentType(String contentType) {
-			// TODO Auto-generated method stub
-			
-		}
-		
 	}
 
 }
