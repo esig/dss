@@ -64,6 +64,11 @@ public enum CacheStateEnum implements CacheState {
 	ERROR {
 
 		@Override
+		public void desync(CacheContext cacheContext) {
+			cacheContext.state(DESYNCHRONIZED);
+		}
+
+		@Override
 		public void refreshNeeded(CacheContext cacheContext) {
 			cacheContext.state(REFRESH_NEEDED);
 		}
