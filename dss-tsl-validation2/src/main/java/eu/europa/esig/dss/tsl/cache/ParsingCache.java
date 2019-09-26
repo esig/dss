@@ -152,7 +152,7 @@ public class ParsingCache extends AbstractCache<AbstractParsingResult> {
 				LOG.trace("The [{}] trustServiceProviders obtained for the key [{}]", trustServiceProviders.size(), cacheKey);
 				return trustServiceProviders;
 			}
-			LOG.warn("Cannot extract trustServiceProviders for an entry with a key [{}]. The parsed file is a LOTL. Return null.");
+			LOG.debug("Cannot extract trustServiceProviders for an entry with a key [{}]. The parsed file is a LOTL. Return null.");
 		}
 		LOG.debug("The ParsingCache does not contain a parsing result for the key [{}]!", cacheKey);
 		return null;
@@ -175,7 +175,7 @@ public class ParsingCache extends AbstractCache<AbstractParsingResult> {
 				LOG.trace("The otherTSLPointers of a LOTL with the key [{}] are [{}]", cacheKey, otherTSLPointers);
 				return otherTSLPointers;
 			}
-			LOG.warn("Cannot extract otherTSLPointers for an entry with a key [{}]. The parsed file is a TL. Return null.");
+			LOG.debug("Cannot extract otherTSLPointers for an entry with a key [{}]. The parsed file is a TL. Return null.");
 		}
 		LOG.debug("The ParsingCache does not contain a parsing result for the key [{}]!", cacheKey);
 		return null;
@@ -198,7 +198,7 @@ public class ParsingCache extends AbstractCache<AbstractParsingResult> {
 				LOG.trace("The pivotUrls of a LOTL with the key [{}] are [{}]", cacheKey, pivotUrls);
 				return pivotUrls;
 			}
-			LOG.warn("Cannot extract pivotUrls for an entry with a key [{}]. The parsed file is a TL. Return null.");
+			LOG.debug("Cannot extract pivotUrls for an entry with a key [{}]. The parsed file is a TL. Return null.");
 		}
 		LOG.debug("The ParsingCache does not contain a parsing result for the key [{}]!", cacheKey);
 		return null;

@@ -5,11 +5,13 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,8 +27,14 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.util.TimeDependentValues;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
+import eu.europa.esig.dss.tsl.dto.ConditionForQualifiers;
+import eu.europa.esig.dss.tsl.dto.TrustService;
+import eu.europa.esig.dss.tsl.dto.TrustServiceProvider;
+import eu.europa.esig.dss.tsl.dto.TrustServiceStatusAndInformationExtensions;
+import eu.europa.esig.dss.tsl.dto.condition.CompositeCondition;
 import eu.europa.esig.dss.tsl.function.TrustServicePredicate;
 import eu.europa.esig.dss.tsl.function.TrustServiceProviderPredicate;
 import eu.europa.esig.dss.tsl.source.TLSource;
@@ -175,7 +183,31 @@ public class TLValidationJobTest {
 		assertNotNull(czTL.getParsingCacheInfo().getNextUpdateDate());
 		assertTrue(czTL.getParsingCacheInfo().getIssueDate().before(czTL.getParsingCacheInfo().getNextUpdateDate()));
 		assertNotNull(czTL.getParsingCacheInfo().getDistributionPoints());
+		assertThrows(UnsupportedOperationException.class, () -> czTL.getParsingCacheInfo().getDistributionPoints().add(new String()));
 		assertNotNull(czTL.getParsingCacheInfo().getTrustServiceProviders());
+		assertEquals(6, czTL.getParsingCacheInfo().getTrustServiceProviders().size());
+		assertThrows(UnsupportedOperationException.class, () -> czTL.getParsingCacheInfo().getTrustServiceProviders().add(new TrustServiceProvider()));
+		assertEquals(6, czTL.getParsingCacheInfo().getTrustServiceProviders().size());
+		
+		TrustServiceProvider trustServiceProvider = czTL.getParsingCacheInfo().getTrustServiceProviders().get(0);
+		assertThrows(UnsupportedOperationException.class, () -> trustServiceProvider.getElectronicAddresses().put(new String(), new ArrayList<String>()));
+		assertThrows(UnsupportedOperationException.class, () -> trustServiceProvider.getNames().put(new String(), new ArrayList<String>()));
+		assertThrows(UnsupportedOperationException.class, () -> trustServiceProvider.getTradeNames().put(new String(), new ArrayList<String>()));
+		assertThrows(UnsupportedOperationException.class, () -> trustServiceProvider.getInformation().put(new String(), new String()));
+		assertThrows(UnsupportedOperationException.class, () -> trustServiceProvider.getPostalAddresses().put(new String(), new String()));
+		assertThrows(UnsupportedOperationException.class, () -> trustServiceProvider.getRegistrationIdentifiers().add(new String()));
+		assertThrows(UnsupportedOperationException.class, () -> trustServiceProvider.getServices().add(trustServiceProvider.getServices().get(0)));
+		
+		TrustService trustService = trustServiceProvider.getServices().get(0);
+		assertThrows(UnsupportedOperationException.class, () -> trustService.getCertificates().add(czSigningCertificate));
+		
+		TimeDependentValues<TrustServiceStatusAndInformationExtensions> timeDependentValues = trustService.getStatusAndInformationExtensions();
+		TrustServiceStatusAndInformationExtensions latest = timeDependentValues.getLatest();
+		assertThrows(UnsupportedOperationException.class, () -> latest.getAdditionalServiceInfoUris().add(new String()));
+		assertThrows(UnsupportedOperationException.class, () -> latest.getConditionsForQualifiers()
+				.add(new ConditionForQualifiers(new CompositeCondition(), new ArrayList<String>())));
+		assertThrows(UnsupportedOperationException.class, () -> latest.getNames().put(new String(), new ArrayList<String>()));
+		assertThrows(UnsupportedOperationException.class, () -> latest.getServiceSupplyPoints().add(new String()));
 		
 		assertEquals(Indication.TOTAL_PASSED, czTL.getValidationCacheInfo().getIndication());
 		assertNull(czTL.getValidationCacheInfo().getSubIndication());
