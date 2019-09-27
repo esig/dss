@@ -15,9 +15,9 @@ public class ReadOnlyCacheAccess {
 	private static final Logger LOG = LoggerFactory.getLogger(ReadOnlyCacheAccess.class);
 
 	/* Global Cache */
-	private final DownloadCache fileCache;
-	private final ParsingCache parsingCache;
-	private final ValidationCache validationCache;
+	protected final DownloadCache fileCache;
+	protected final ParsingCache parsingCache;
+	protected final ValidationCache validationCache;
 
 	public ReadOnlyCacheAccess(final DownloadCache fileCache, final ParsingCache parsingCache, final ValidationCache validationCache) {
 		this.fileCache = fileCache;
@@ -44,10 +44,6 @@ public class ReadOnlyCacheAccess {
 		LOG.trace("Extracting a parsing cache for an entry with the key [{}]", key);
 		return new ParsingCacheDTOBuilder(parsingCache.get(key)).build();
 	}
-	
-//	public Map<CacheKey, AbstractParsingResult> getParsingResultMap(List<CacheKey> keys) {
-//		return keys.stream().collect(Collectors.toMap(key -> key, key -> getParsingResult(key)));
-//	}
 	
 	/**
 	 * Returns download cache DTO result

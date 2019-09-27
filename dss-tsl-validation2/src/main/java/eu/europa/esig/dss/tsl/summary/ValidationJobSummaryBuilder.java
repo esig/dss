@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.spi.tsl.dto.OtherTSLPointer;
-import eu.europa.esig.dss.tsl.cache.CacheAccessFactory;
 import eu.europa.esig.dss.tsl.cache.ReadOnlyCacheAccess;
 import eu.europa.esig.dss.tsl.dto.ParsingCacheDTO;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
@@ -20,9 +19,9 @@ public class ValidationJobSummaryBuilder {
 	private static final Logger LOG = LoggerFactory.getLogger(ValidationJobSummaryBuilder.class);
 	
 	/**
-	 * A factory to access the cache of the current Validation Job
+	 * A read-only access for the cache of the current Validation Job
 	 */
-	private final CacheAccessFactory cacheAccessFactory;
+	private final ReadOnlyCacheAccess readOnlyCacheAccess;
 	
 	/**
 	 * List of TLSources to extract summary for
@@ -34,8 +33,8 @@ public class ValidationJobSummaryBuilder {
 	 */
 	private final LOTLSource[] lotlSources;
 	
-	public ValidationJobSummaryBuilder(final CacheAccessFactory cacheAccessFactory, final TLSource[] tlSources, final LOTLSource[] lotlSources) {
-		this.cacheAccessFactory = cacheAccessFactory;
+	public ValidationJobSummaryBuilder(final ReadOnlyCacheAccess readOnlyCacheAccess, final TLSource[] tlSources, final LOTLSource[] lotlSources) {
+		this.readOnlyCacheAccess = readOnlyCacheAccess;
 		this.tlSources = tlSources;
 		this.lotlSources = lotlSources;
 	}
@@ -51,9 +50,8 @@ public class ValidationJobSummaryBuilder {
 		
 		final List<LinkedLOTL> lotlList = new ArrayList<LinkedLOTL>();
 		if (Utils.isArrayNotEmpty(lotlSources)) {
-			final ReadOnlyCacheAccess readOnlyCacheAccess = cacheAccessFactory.getReadOnlyCacheAccess();
+			
 			for (LOTLSource lotl : lotlSources) {
-				
 				ParsingCacheDTO lotlParsingResult = readOnlyCacheAccess.getParsingCacheDTO(lotl.getCacheKey());
 				List<TLSource> lotlTLSources = extractTLSources(lotlParsingResult);
 				tlAmount += lotlTLSources.size();
@@ -71,15 +69,14 @@ public class ValidationJobSummaryBuilder {
 		}
 		
 		LOG.info("Building a validation job summary for {} LOTLs and {} TLs...", lotlList.size(), tlAmount);
-		return new ValidationJobSummary(cacheAccessFactory, tlList, lotlList);
+		return new ValidationJobSummary(readOnlyCacheAccess, tlList, lotlList);
 	}
 	
 	private List<TLSource> extractTLSources(ParsingCacheDTO lotlParsingResult) {
 		List<TLSource> result = new ArrayList<TLSource>();
 		List<OtherTSLPointer> tlPointers = lotlParsingResult.getTlOtherPointers();
 		for (OtherTSLPointer otherTSLPointerDTO : tlPointers) {
-			TLSource tlSource = new TLSource();
-			tlSource.setUrl(otherTSLPointerDTO.getLocation());
+			TLSource tlSource = new TLSource(otherTSLPointerDTO.getLocation());
 			result.add(tlSource);
 		}
 		return result;
@@ -89,8 +86,7 @@ public class ValidationJobSummaryBuilder {
 		List<LOTLSource> result = new ArrayList<LOTLSource>();
 		List<String> pivotUrls = lotlParsingResult.getPivotUrls();
 		for (String pivotUrl : pivotUrls) {
-			LOTLSource pivotSource = new LOTLSource();
-			pivotSource.setUrl(pivotUrl);
+			LOTLSource pivotSource = new LOTLSource(pivotUrl);
 			result.add(pivotSource);
 		}
 		return result;

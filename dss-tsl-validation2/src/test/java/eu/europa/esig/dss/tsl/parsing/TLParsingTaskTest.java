@@ -50,7 +50,7 @@ public class TLParsingTaskTest {
 
 	@Test
 	public void testIEDefault() {
-		TLParsingTask task = new TLParsingTask(IE_TL, new TLSource());
+		TLParsingTask task = new TLParsingTask(IE_TL, new TLSource("IE"));
 		TLParsingResult result = task.get();
 		assertNotNull(result);
 		assertEquals(5, result.getVersion());
@@ -78,7 +78,7 @@ public class TLParsingTaskTest {
 
 	@Test
 	public void testSKDefault() {
-		TLParsingTask task = new TLParsingTask(SK_TL, new TLSource());
+		TLParsingTask task = new TLParsingTask(SK_TL, new TLSource("IE"));
 		TLParsingResult result = task.get();
 		assertNotNull(result);
 		assertEquals(5, result.getVersion());
@@ -106,7 +106,7 @@ public class TLParsingTaskTest {
 
 	@Test
 	public void testLOTL() {
-		TLParsingTask task = new TLParsingTask(LOTL, new TLSource());
+		TLParsingTask task = new TLParsingTask(LOTL, new TLSource("IE"));
 		TLParsingResult result = task.get();
 		assertNotNull(result);
 		assertNotNull(result);
@@ -124,7 +124,7 @@ public class TLParsingTaskTest {
 
 	@Test
 	public void notParseable() {
-		TLParsingTask task = new TLParsingTask(LOTL_NOT_PARSEABLE, new TLSource());
+		TLParsingTask task = new TLParsingTask(LOTL_NOT_PARSEABLE, new TLSource("IE"));
 		DSSException exception = assertThrows(DSSException.class, () -> task.get());
 		assertEquals("Unable to parse binaries", exception.getMessage());
 	}
@@ -179,7 +179,7 @@ public class TLParsingTaskTest {
 
 	@Test
 	public void testFilterAllTrustServiceProviders() {
-		TLSource tlSource = new TLSource();
+		TLSource tlSource = new TLSource("IE");
 		tlSource.setTrustServiceProviderPredicate(new TrustServiceProviderPredicate() {
 
 			@Override
@@ -196,7 +196,7 @@ public class TLParsingTaskTest {
 
 	@Test
 	public void testFilterAllTrustServices() {
-		TLSource tlSource = new TLSource();
+		TLSource tlSource = new TLSource("IE");
 		tlSource.setTrustServicePredicate(new TrustServicePredicate() {
 
 			@Override
@@ -214,7 +214,7 @@ public class TLParsingTaskTest {
 
 	@Test
 	public void countCertificatesDE() throws Exception {
-		TLParsingTask task = new TLParsingTask(DE_TL, new TLSource());
+		TLParsingTask task = new TLParsingTask(DE_TL, new TLSource("IE"));
 		TLParsingResult result = task.get();
 
 		assertNotNull(result);

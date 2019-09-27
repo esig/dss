@@ -23,6 +23,7 @@ public class AbstractCacheDTO implements InfoRecord {
 		this.lastSuccessDate = cacheDTO.lastSuccessDate;
 		this.exceptionMessage = cacheDTO.exceptionMessage;
 		this.exceptionStackTrace = cacheDTO.exceptionStackTrace;
+		this.resultExist = cacheDTO.resultExist;
 	}
 	
 	public CacheStateEnum getCacheState() {

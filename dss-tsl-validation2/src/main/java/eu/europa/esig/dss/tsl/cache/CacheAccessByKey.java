@@ -7,24 +7,15 @@ import eu.europa.esig.dss.tsl.dto.ValidationCacheDTO;
 import eu.europa.esig.dss.tsl.parsing.AbstractParsingResult;
 import eu.europa.esig.dss.tsl.validation.ValidationResult;
 
-public class CacheAccessByKey {
+public class CacheAccessByKey extends ReadOnlyCacheAccess {
 
 	/* Key of the CacheEntry */
 	private final CacheKey key;
-
-	/* Global Cache */
-	private final DownloadCache fileCache;
-	private final ParsingCache parsingCache;
-	private final ValidationCache validationCache;
-	
-	private ReadOnlyCacheAccess readOnlyCacheAccess;
 	
 	public CacheAccessByKey(final CacheKey key, final DownloadCache fileCache, final ParsingCache parsingCache,
 			final ValidationCache validationCache) {
+		super(fileCache, parsingCache, validationCache);
 		this.key = key;
-		this.fileCache = fileCache;
-		this.parsingCache = parsingCache;
-		this.validationCache = validationCache;
 	}
 	
 	/**
@@ -113,13 +104,6 @@ public class CacheAccessByKey {
 			validationCache.remove(key);
 		}
 	}
-	
-	private ReadOnlyCacheAccess getReadOnlyCacheAccess() {
-		if (readOnlyCacheAccess == null) {
-			readOnlyCacheAccess = new ReadOnlyCacheAccess(fileCache, parsingCache, validationCache);
-		}
-		return readOnlyCacheAccess;
-	}
 
 	/**
 	 * Returns the cached read-only download result DTO
@@ -127,7 +111,7 @@ public class CacheAccessByKey {
 	 * @return {@link DownloadCacheDTO}
 	 */
 	public DownloadCacheDTO getDownloadReadOnlyResult() {
-		return getReadOnlyCacheAccess().getDownloadCacheDTO(key);
+		return getDownloadCacheDTO(key);
 	}
 
 	/**
@@ -136,7 +120,7 @@ public class CacheAccessByKey {
 	 * @return {@link ParsingCacheDTO}
 	 */
 	public ParsingCacheDTO getParsingReadOnlyResult() {
-		return getReadOnlyCacheAccess().getParsingCacheDTO(key);
+		return getParsingCacheDTO(key);
 	}
 
 	/**
@@ -145,7 +129,7 @@ public class CacheAccessByKey {
 	 * @return {@link ValidationCacheDTO}
 	 */
 	public ValidationCacheDTO getValidationReadOnlyResult() {
-		return getReadOnlyCacheAccess().getValidationCacheDTO(key);
+		return getValidationCacheDTO(key);
 	}
 
 }

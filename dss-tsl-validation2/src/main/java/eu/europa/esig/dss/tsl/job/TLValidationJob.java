@@ -118,7 +118,7 @@ public class TLValidationJob {
 	 * @return {@link ValidationJobSummary}
 	 */
 	public synchronized ValidationJobSummary getSummary() {
-		return new ValidationJobSummaryBuilder(cacheAccessFactory, trustedListSources, listOfTrustedListSources)
+		return new ValidationJobSummaryBuilder(cacheAccessFactory.getReadOnlyCacheAccess(), trustedListSources, listOfTrustedListSources)
 				.build();
 	}
 
@@ -146,7 +146,7 @@ public class TLValidationJob {
 
 		List<TLSource> currentTLSources = new ArrayList<TLSource>();
 		if (trustedListSources != null) {
-			currentTLSources = Arrays.asList(trustedListSources);
+			currentTLSources.addAll(Arrays.asList(trustedListSources));
 		}
 
 		// Execute all LOTLs
@@ -211,7 +211,7 @@ public class TLValidationJob {
 	}
 	
     private Map<CacheKey, ParsingCacheDTO> extractParsingCache(List<LOTLSource> lotlSources) {
-        final ReadOnlyCacheAccess readOnlyCacheAccess = cacheAccessFactory.getReadOnlyCacheAccess();
+        final ReadOnlyCacheAccess readOnlyCacheAccess = cacheAccessFactory .getReadOnlyCacheAccess();
         return lotlSources.stream().collect(Collectors.toMap(LOTLSource::getCacheKey, s -> readOnlyCacheAccess.getParsingCacheDTO(s.getCacheKey())));
     }
 

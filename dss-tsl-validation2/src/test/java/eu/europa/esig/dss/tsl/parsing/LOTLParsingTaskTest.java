@@ -45,7 +45,7 @@ public class LOTLParsingTaskTest {
 
 	@Test
 	public void parseLOTLDefault() {
-		LOTLParsingTask task = new LOTLParsingTask(LOTL, new LOTLSource());
+		LOTLParsingTask task = new LOTLParsingTask(LOTL, new LOTLSource("EU"));
 		LOTLParsingResult result = task.get();
 		assertNotNull(result);
 		assertNotNull(result.getIssueDate());
@@ -70,7 +70,7 @@ public class LOTLParsingTaskTest {
 
 	@Test
 	public void parseLOTLNoSig() {
-		LOTLParsingTask task = new LOTLParsingTask(LOTL_NO_SIG, new LOTLSource());
+		LOTLParsingTask task = new LOTLParsingTask(LOTL_NO_SIG, new LOTLSource("EU"));
 		LOTLParsingResult result = task.get();
 		assertNotNull(result);
 		assertNotNull(result.getIssueDate());
@@ -106,7 +106,7 @@ public class LOTLParsingTaskTest {
 	@Test
 	public void parseLOTLPivotSupport() {
 
-		LOTLSource lotlSource = new LOTLSource();
+		LOTLSource lotlSource = new LOTLSource("EU");
 		lotlSource.setPivotSupport(true);
 
 		LOTLParsingTask task = new LOTLParsingTask(LOTL, lotlSource);
@@ -129,7 +129,7 @@ public class LOTLParsingTaskTest {
 	@Test
 	public void parseLOTLPivotSupportAndSigningCertAnnouncement() {
 
-		LOTLSource lotlSource = new LOTLSource();
+		LOTLSource lotlSource = new LOTLSource("EU");
 		lotlSource.setPivotSupport(true);
 		lotlSource.setSigningCertificatesAnnouncementPredicate(new OfficialJournalSchemeInformationURI("https://eur-lex.europa.eu/legal-content/blabla"));
 
@@ -153,7 +153,7 @@ public class LOTLParsingTaskTest {
 
 	@Test
 	public void parseLOTLOnlyBEandPTPointers() {
-		LOTLSource lotlSource = new LOTLSource();
+		LOTLSource lotlSource = new LOTLSource("EU");
 
 		Set<String> countries = new HashSet<String>();
 		countries.add("BE");
@@ -185,7 +185,7 @@ public class LOTLParsingTaskTest {
 	@Test
 	public void parsePivotLOTLDefault() {
 		// not pivot support
-		LOTLParsingTask task = new LOTLParsingTask(LOTL_PIVOT, new LOTLSource());
+		LOTLParsingTask task = new LOTLParsingTask(LOTL_PIVOT, new LOTLSource("EU"));
 		LOTLParsingResult result = task.get();
 		assertNotNull(result);
 		assertNotNull(result.getIssueDate());
@@ -206,7 +206,7 @@ public class LOTLParsingTaskTest {
 	@Test
 	public void parseTL() {
 		// Should not fail
-		LOTLParsingTask task = new LOTLParsingTask(TL, new LOTLSource());
+		LOTLParsingTask task = new LOTLParsingTask(TL, new LOTLSource("EU"));
 		LOTLParsingResult result = task.get();
 		assertNotNull(result);
 		assertNotNull(result.getIssueDate());
@@ -229,7 +229,7 @@ public class LOTLParsingTaskTest {
 	@Test
 	public void parsePivotLOTLWithPivotSupport() {
 
-		LOTLSource lotlSource = new LOTLSource();
+		LOTLSource lotlSource = new LOTLSource("EU");
 		lotlSource.setPivotSupport(true);
 
 		LOTLParsingTask task = new LOTLParsingTask(LOTL_PIVOT, lotlSource);
@@ -259,7 +259,7 @@ public class LOTLParsingTaskTest {
 
 	@Test
 	public void notParseable() {
-		LOTLParsingTask task = new LOTLParsingTask(LOTL_NOT_PARSEABLE, new LOTLSource());
+		LOTLParsingTask task = new LOTLParsingTask(LOTL_NOT_PARSEABLE, new LOTLSource("EU"));
 		DSSException exception = assertThrows(DSSException.class, () -> task.get());
 		assertEquals("Unable to parse binaries", exception.getMessage());
 	}

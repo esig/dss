@@ -38,8 +38,7 @@ public class TLSourceBuilder {
 	}
 
 	private TLSource getTLSource(OtherTSLPointer otherTSLPointerDTO, LOTLSource lotlSource) {
-		TLSource tlSource = new TLSource();
-		tlSource.setUrl(otherTSLPointerDTO.getLocation());
+		TLSource tlSource = new TLSource(otherTSLPointerDTO.getLocation());
 		tlSource.setCertificateSource(getCertificateSource(otherTSLPointerDTO.getCertificates()));
 		tlSource.setTrustServiceProviderPredicate(lotlSource.getTrustServiceProviderPredicate());
 		tlSource.setTrustServicePredicate(lotlSource.getTrustServicePredicate());
