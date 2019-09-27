@@ -42,7 +42,8 @@ public abstract class AbstractAnalysis {
 			}
 			document = downloadResult.getDSSDocument();
 		} catch (Exception e) {
-			LOG.error("Cannot download the XML from URL '{}' : {}", url, e.getMessage());
+			// wrapped exception
+			LOG.error(e.getMessage());
 			cacheAccess.downloadError(e);
 		}
 		return document;

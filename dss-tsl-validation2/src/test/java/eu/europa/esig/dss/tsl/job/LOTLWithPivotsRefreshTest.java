@@ -51,6 +51,28 @@ public class LOTLWithPivotsRefreshTest {
 	}
 
 	@Test
+	public void testMissingPivots() {
+
+		FileCacheDataLoader offlineFileLoader = getOfflineFileLoader(missingUrlMap());
+
+		TLValidationJob job = new TLValidationJob();
+		job.setListOfTrustedListSources(getLOTLSource());
+		job.setOfflineDataLoader(offlineFileLoader);
+
+		job.offlineRefresh();
+
+		ValidationJobSummary summary = job.getSummary();
+		assertNotNull(summary);
+		assertEquals(1, summary.getNumberOfProcessedLOTLs());
+		List<LOTLInfo> lotlInfos = summary.getLOTLInfos();
+		assertEquals(1, lotlInfos.size());
+		LOTLInfo lotlInfo = lotlInfos.get(0);
+
+		ValidationCacheDTO validationCacheInfo = lotlInfo.getValidationCacheInfo();
+		assertEquals(Indication.INDETERMINATE, validationCacheInfo.getIndication());
+	}
+
+	@Test
 	public void testMissingCert() {
 
 		FileCacheDataLoader offlineFileLoader = getOfflineFileLoader(correctUrlMap());
@@ -68,6 +90,34 @@ public class LOTLWithPivotsRefreshTest {
 		job.offlineRefresh();
 
 		checks(job, Indication.INDETERMINATE);
+	}
+
+	@Test
+	public void testNoCertSource() {
+
+		FileCacheDataLoader offlineFileLoader = getOfflineFileLoader(correctUrlMap());
+
+		TLValidationJob job = new TLValidationJob();
+
+		LOTLSource lotlSource = new LOTLSource();
+		lotlSource.setUrl("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-247-mp.xml");
+		lotlSource.setPivotSupport(true);
+		job.setListOfTrustedListSources(lotlSource);
+		job.setOfflineDataLoader(offlineFileLoader);
+
+		job.offlineRefresh();
+
+		ValidationJobSummary summary = job.getSummary();
+		assertNotNull(summary);
+		assertEquals(1, summary.getNumberOfProcessedLOTLs());
+		List<LOTLInfo> lotlInfos = summary.getLOTLInfos();
+		assertEquals(1, lotlInfos.size());
+		LOTLInfo lotlInfo = lotlInfos.get(0);
+
+		ValidationCacheDTO validationCacheInfo = lotlInfo.getValidationCacheInfo();
+		assertEquals(CacheStateEnum.ERROR, validationCacheInfo.getCacheState());
+		assertEquals("The certificate source is null", validationCacheInfo.getExceptionMessage());
+		assertNotNull(validationCacheInfo.getExceptionStackTrace());
 	}
 
 	@Test
@@ -109,6 +159,19 @@ public class LOTLWithPivotsRefreshTest {
 				new FileDocument("src/test/resources/lotlCache/tl_pivot_226_mp.xml"));
 		urlMap.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-191-mp.xml",
 				new FileDocument("src/test/resources/lotlCache/tl_pivot_191_mp.xml"));
+		urlMap.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-172-mp.xml",
+				new FileDocument("src/test/resources/lotlCache/tl_pivot_172_mp.xml"));
+		return urlMap;
+	}
+
+	private Map<String, DSSDocument> missingUrlMap() {
+		Map<String, DSSDocument> urlMap = new HashMap<String, DSSDocument>();
+		urlMap.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-247-mp.xml",
+				new FileDocument("src/test/resources/lotlCache/tl_pivot_247_mp.xml"));
+		urlMap.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-226-mp.xml",
+				null);
+		urlMap.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-191-mp.xml",
+				null);
 		urlMap.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-172-mp.xml",
 				new FileDocument("src/test/resources/lotlCache/tl_pivot_172_mp.xml"));
 		return urlMap;

@@ -84,6 +84,7 @@ public class TLValidatorTask implements Supplier<ValidationResult> {
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier(true);
 		certificateVerifier.setIncludeCertificateTokenValues(true);
 		certificateVerifier.setTrustedCertSource(buildTrustedCertificateSource(certificateSource));
+//		certificateVerifier.setDataLoader(new IgnoreDataLoader()); // Don't need to collect from AIA,...
 
 		XMLDocumentValidator xmlDocumentValidator = new XMLDocumentValidator(trustedList);
 		xmlDocumentValidator.setCertificateVerifier(certificateVerifier);
