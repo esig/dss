@@ -22,6 +22,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -30,6 +31,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.util.TimeDependentValues;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
+import eu.europa.esig.dss.tsl.cache.state.CacheStateEnum;
 import eu.europa.esig.dss.tsl.dto.ConditionForQualifiers;
 import eu.europa.esig.dss.tsl.dto.TrustService;
 import eu.europa.esig.dss.tsl.dto.TrustServiceProvider;
@@ -117,11 +119,6 @@ public class TLValidationJobTest {
 		cacheCleaner = new CacheCleaner();
 		cacheCleaner.setDSSFileLoader(offlineFileLoader);
 		cacheCleaner.setCleanFileSystem(true);
-		
-		tlValidationJob = new TLValidationJob();
-		tlValidationJob.setOfflineDataLoader(offlineFileLoader);
-		tlValidationJob.setOnlineDataLoader(onlineFileLoader);
-		tlValidationJob.setCacheCleaner(cacheCleaner);
 	}
 	
 	@BeforeEach
@@ -144,13 +141,12 @@ public class TLValidationJobTest {
 				return true;
 			}
 		});
-		tlValidationJob.setTrustedListSources(czSource);
 	}
 	
 	@Test
 	public void test() {
-		tlValidationJob.offlineRefresh();
-		ValidationJobSummary summary = tlValidationJob.getSummary();
+		updateTLUrl("src/test/resources/lotlCache/CZ.xml");
+		ValidationJobSummary summary = getTLValidationJob().getSummary();
 		
 		assertEquals(0, summary.getNumberOfProcessedLOTLs());
 		assertEquals(1, summary.getNumberOfProcessedTLs());
@@ -214,7 +210,74 @@ public class TLValidationJobTest {
 		assertNotNull(czTL.getValidationCacheInfo().getSigningTime());
 		assertNotNull(czTL.getValidationCacheInfo().getSigningCertificate());
 		assertEquals(czSigningCertificate, czTL.getValidationCacheInfo().getSigningCertificate());
+	}
+	
+	@Test
+	public void brokenSigTest() {
+		updateTLUrl("src/test/resources/lotlCache/CZ_broken-sig.xml");
 		
+		ValidationJobSummary summary = getTLValidationJob().getSummary();
+		
+		assertEquals(0, summary.getNumberOfProcessedLOTLs());
+		assertEquals(1, summary.getNumberOfProcessedTLs());
+		
+		List<TLInfo> tlInfos = summary.getOtherTLInfos();
+		assertEquals(1, tlInfos.size());
+		
+		TLInfo czTL = tlInfos.get(0);
+		
+		assertNull(czTL.getDownloadCacheInfo().getExceptionMessage());
+		assertNull(czTL.getDownloadCacheInfo().getExceptionStackTrace());
+		assertNull(czTL.getParsingCacheInfo().getExceptionMessage());
+		assertNull(czTL.getParsingCacheInfo().getExceptionStackTrace());
+		assertNull(czTL.getValidationCacheInfo().getExceptionMessage());
+		assertNull(czTL.getValidationCacheInfo().getExceptionStackTrace());
+		
+		assertEquals(Indication.TOTAL_FAILED, czTL.getValidationCacheInfo().getIndication());
+		assertEquals(SubIndication.HASH_FAILURE, czTL.getValidationCacheInfo().getSubIndication());
+		assertNotNull(czTL.getValidationCacheInfo().getSigningTime());
+		assertNotNull(czTL.getValidationCacheInfo().getSigningCertificate());
+		assertEquals(czSigningCertificate, czTL.getValidationCacheInfo().getSigningCertificate());
+	}
+	
+	@Test
+	public void tlEmptyTest() {
+		updateTLUrl("src/test/resources/lotlCache/CZ_empty.xml");
+		
+		ValidationJobSummary summary = getTLValidationJob().getSummary();
+		
+		assertEquals(0, summary.getNumberOfProcessedLOTLs());
+		assertEquals(1, summary.getNumberOfProcessedTLs());
+		
+		List<TLInfo> tlInfos = summary.getOtherTLInfos();
+		assertEquals(1, tlInfos.size());
+		
+		TLInfo czTL = tlInfos.get(0);
+
+		assertFalse(czTL.getDownloadCacheInfo().isResultExist());
+		assertEquals(CacheStateEnum.ERROR, czTL.getDownloadCacheInfo().getCacheState());
+		assertNotNull(czTL.getDownloadCacheInfo().getExceptionMessage());
+		assertNotNull(czTL.getDownloadCacheInfo().getExceptionStackTrace());
+		assertFalse(czTL.getParsingCacheInfo().isResultExist());
+		assertNull(czTL.getParsingCacheInfo().getExceptionMessage());
+		assertNull(czTL.getParsingCacheInfo().getExceptionStackTrace());
+		assertFalse(czTL.getValidationCacheInfo().isResultExist());
+		assertNull(czTL.getValidationCacheInfo().getExceptionMessage());
+		assertNull(czTL.getValidationCacheInfo().getExceptionStackTrace());
+	}
+	
+	private TLValidationJob getTLValidationJob() {
+		tlValidationJob = new TLValidationJob();
+		tlValidationJob.setOfflineDataLoader(offlineFileLoader);
+		tlValidationJob.setOnlineDataLoader(onlineFileLoader);
+		tlValidationJob.setCacheCleaner(cacheCleaner);
+		tlValidationJob.setTrustedListSources(czSource);
+		tlValidationJob.offlineRefresh();
+		return tlValidationJob;
+	}
+	
+	private void updateTLUrl(String url) {
+		urlMap.put(CZ_URL, new FileDocument(url));
 	}
 	
 	@AfterEach
