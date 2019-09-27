@@ -9,9 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.tsl.dto.OtherTSLPointer;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
 import eu.europa.esig.dss.tsl.cache.TLChangesCacheAccess;
-import eu.europa.esig.dss.tsl.dto.OtherTSLPointerDTO;
 import eu.europa.esig.dss.tsl.dto.ParsingCacheDTO;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -42,9 +42,9 @@ public class LOTLChangeApplier {
 	}
 
 	private Map<String, List<CertificateToken>> getTLPointers(ParsingCacheDTO parsingResult) {
-		List<OtherTSLPointerDTO> tlOtherPointers = parsingResult.getTlOtherPointers();
+		List<OtherTSLPointer> tlOtherPointers = parsingResult.getTlOtherPointers();
 		if (Utils.isCollectionNotEmpty(tlOtherPointers)) {
-			return tlOtherPointers.stream().collect(Collectors.toMap(OtherTSLPointerDTO::getLocation, s -> s.getCertificates()));
+			return tlOtherPointers.stream().collect(Collectors.toMap(OtherTSLPointer::getLocation, s -> s.getCertificates()));
 		}
 		return Collections.emptyMap();
 	}

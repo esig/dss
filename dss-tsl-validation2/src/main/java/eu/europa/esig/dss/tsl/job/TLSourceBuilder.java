@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.tsl.dto.OtherTSLPointer;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
-import eu.europa.esig.dss.tsl.dto.OtherTSLPointerDTO;
 import eu.europa.esig.dss.tsl.dto.ParsingCacheDTO;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
@@ -28,8 +28,8 @@ public class TLSourceBuilder {
 		if (lotlList != null) {
 			for (LOTLSource lotlSource : lotlList) {
 				ParsingCacheDTO cachedResult = parsingResults.get(lotlSource.getCacheKey());
-				List<OtherTSLPointerDTO> tlPointers = cachedResult.getTlOtherPointers();
-				for (OtherTSLPointerDTO otherTSLPointerDTO : tlPointers) {
+				List<OtherTSLPointer> tlPointers = cachedResult.getTlOtherPointers();
+				for (OtherTSLPointer otherTSLPointerDTO : tlPointers) {
 					result.add(getTLSource(otherTSLPointerDTO, lotlSource));
 				}
 			}
@@ -37,7 +37,7 @@ public class TLSourceBuilder {
 		return result;
 	}
 
-	private TLSource getTLSource(OtherTSLPointerDTO otherTSLPointerDTO, LOTLSource lotlSource) {
+	private TLSource getTLSource(OtherTSLPointer otherTSLPointerDTO, LOTLSource lotlSource) {
 		TLSource tlSource = new TLSource();
 		tlSource.setUrl(otherTSLPointerDTO.getLocation());
 		tlSource.setCertificateSource(getCertificateSource(otherTSLPointerDTO.getCertificates()));

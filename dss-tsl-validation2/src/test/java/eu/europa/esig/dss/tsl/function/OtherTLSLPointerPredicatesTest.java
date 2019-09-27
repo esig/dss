@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
-import eu.europa.esig.dss.tsl.dto.OtherTSLPointerDTO;
+import eu.europa.esig.dss.spi.tsl.dto.OtherTSLPointer;
 import eu.europa.esig.dss.tsl.function.converter.OtherTSLPointerConverter;
 import eu.europa.esig.trustedlist.TrustedListFacade;
 import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointersType;
@@ -44,12 +44,12 @@ public class OtherTLSLPointerPredicatesTest {
 			assertEquals(3, pointersToOtherTSL.getOtherTSLPointer().stream()
 					.filter(new SchemeTerritoryOtherTSLPointer(new HashSet<String>(Arrays.asList("BG", "CY")))).count());
 
-			List<OtherTSLPointerDTO> result = pointersToOtherTSL.getOtherTSLPointer().stream()
+			List<OtherTSLPointer> result = pointersToOtherTSL.getOtherTSLPointer().stream()
 					.filter(new SchemeTerritoryOtherTSLPointer(new HashSet<String>(Arrays.asList("BG", "CY")))).map(new OtherTSLPointerConverter())
 					.collect(Collectors.toList());
 
 			assertEquals(3, result.size());
-			for (OtherTSLPointerDTO otherTSLPointerDTO : result) {
+			for (OtherTSLPointer otherTSLPointerDTO : result) {
 				assertNotNull(otherTSLPointerDTO);
 				assertNotNull(otherTSLPointerDTO.getLocation());
 				assertNotNull(otherTSLPointerDTO.getCertificates());

@@ -2,7 +2,9 @@ package eu.europa.esig.dss.tsl.dto;
 
 import java.util.Date;
 
-public class DownloadCacheDTO extends AbstractCacheDTO {
+import eu.europa.esig.dss.spi.tsl.dto.info.DownloadInfoRecord;
+
+public class DownloadCacheDTO extends AbstractCacheDTO implements DownloadInfoRecord {
 
 	private static final long serialVersionUID = 514589372769360786L;
 	
@@ -14,6 +16,7 @@ public class DownloadCacheDTO extends AbstractCacheDTO {
 		super(cacheDTO);
 	}
 	
+	@Override
 	public Date getLastSynchronizationDate() {
 		return lastSynchronizationDate;
 	}
@@ -26,6 +29,7 @@ public class DownloadCacheDTO extends AbstractCacheDTO {
 	 * getLastSuccessDate()
 	 * @return {@link Date}
 	 */
+	@Override
 	public Date getLastLoadingDate() {
 		return getLastSuccessDate();
 	}

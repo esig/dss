@@ -7,9 +7,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.spi.tsl.dto.OtherTSLPointer;
 import eu.europa.esig.dss.tsl.cache.CacheAccessFactory;
 import eu.europa.esig.dss.tsl.cache.ReadOnlyCacheAccess;
-import eu.europa.esig.dss.tsl.dto.OtherTSLPointerDTO;
 import eu.europa.esig.dss.tsl.dto.ParsingCacheDTO;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
@@ -76,8 +76,8 @@ public class ValidationJobSummaryBuilder {
 	
 	private List<TLSource> extractTLSources(ParsingCacheDTO lotlParsingResult) {
 		List<TLSource> result = new ArrayList<TLSource>();
-		List<OtherTSLPointerDTO> tlPointers = lotlParsingResult.getTlOtherPointers();
-		for (OtherTSLPointerDTO otherTSLPointerDTO : tlPointers) {
+		List<OtherTSLPointer> tlPointers = lotlParsingResult.getTlOtherPointers();
+		for (OtherTSLPointer otherTSLPointerDTO : tlPointers) {
 			TLSource tlSource = new TLSource();
 			tlSource.setUrl(otherTSLPointerDTO.getLocation());
 			result.add(tlSource);

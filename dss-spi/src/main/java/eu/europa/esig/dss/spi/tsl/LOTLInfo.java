@@ -1,8 +1,10 @@
-package eu.europa.esig.dss.tsl.summary;
+package eu.europa.esig.dss.spi.tsl;
 
 import java.util.List;
 
-import eu.europa.esig.dss.tsl.cache.CacheAccessByKey;
+import eu.europa.esig.dss.spi.tsl.dto.info.DownloadInfoRecord;
+import eu.europa.esig.dss.spi.tsl.dto.info.ParsingInfoRecord;
+import eu.europa.esig.dss.spi.tsl.dto.info.ValidationInfoRecord;
 
 public class LOTLInfo extends TLInfo {
 	
@@ -20,11 +22,14 @@ public class LOTLInfo extends TLInfo {
 
 	/**
 	 * The default constructor
-	 * @param cacheAccessByKey {@link CacheAccessByKey} a related cache access object
+	 * @param downloadCacheInfo {@link DownloadInfoRecord} a download cache result
+	 * @param parsingCacheInfo {@link ParsingInfoRecord} a parsing cache result
+	 * @param validationCacheInfo {@link ValidationInfoRecord} a validation cache result
 	 * @param url {@link String} address used to extract the entry
 	 */
-	public LOTLInfo(final CacheAccessByKey cacheAccessByKey, final String url) {
-		super(cacheAccessByKey, url);
+	public LOTLInfo(final DownloadInfoRecord downloadCacheInfo, final ParsingInfoRecord parsingCacheInfo, 
+			final ValidationInfoRecord validationCacheInfo, final String url) {
+		super(downloadCacheInfo, parsingCacheInfo, validationCacheInfo, url);
 	}
 	
 	/**

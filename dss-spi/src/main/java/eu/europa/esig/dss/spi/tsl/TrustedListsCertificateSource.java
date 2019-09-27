@@ -44,8 +44,10 @@ import eu.europa.esig.dss.utils.Utils;
 public class TrustedListsCertificateSource extends CommonTrustedCertificateSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TrustedListsCertificateSource.class);
+	
+	private List<LOTLInfo> lotlInfos;
 
-	private Map<String, TLInfo> tlInfos = new HashMap<String, TLInfo>();
+	private List<TLInfo> otherTLInfos;
 
 	private Map<String, List<ServiceInfo>> trustServicesByEntity = new HashMap<String, List<ServiceInfo>>();
 
@@ -56,14 +58,51 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		super();
 	}
 
+	public void reinit() {
+		trustServicesByEntity = new HashMap<String, List<ServiceInfo>>();
+	}
+
+	public List<TLInfo> getOtherTLInfos() {
+		return otherTLInfos;
+	}
+	
+	public void setOtherTlInfos(List<TLInfo> tlInfos) {
+		this.otherTLInfos = tlInfos;
+	}
+
+	public List<LOTLInfo> getLotlInfos() {
+		return lotlInfos;
+	}
+	
+	public void setLOTLInfos(List<LOTLInfo> lotlInfos) {
+		this.lotlInfos = lotlInfos;
+	}
+
+	public TLInfo getTlInfo(String countryCode) {
+		TLInfo tlInfo = getTlInfoByCountryCode(otherTLInfos, countryCode);
+		if (tlInfo == null) {
+			for (LOTLInfo lotlInfo : lotlInfos) {
+				tlInfo = getTlInfoByCountryCode(lotlInfo.getTLInfos(), countryCode);
+				if (tlInfo != null) {
+					break;
+				}
+			}
+		}
+		return tlInfo;
+	}
+
+	private TLInfo getTlInfoByCountryCode(List<TLInfo> tlInfos, String countryCode) {
+		for (TLInfo tlInfo : tlInfos) {
+			if (tlInfo.getParsingCacheInfo().isResultExist() && countryCode.equals(tlInfo.getParsingCacheInfo().getTerritory())) {
+				return tlInfo;
+			}
+		}
+		return null;
+	}
+
 	@Override
 	public CertificateSourceType getCertificateSourceType() {
 		return CertificateSourceType.TRUSTED_LIST;
-	}
-
-	public void reinit() {
-		tlInfos = new HashMap<String, TLInfo>();
-		trustServicesByEntity = new HashMap<String, List<ServiceInfo>>();
 	}
 
 	public void addCertificate(CertificateToken certificate, List<ServiceInfo> serviceInfos) {
@@ -98,27 +137,6 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	@Override
 	public CertificateToken addCertificate(CertificateToken certificate) {
 		throw new UnsupportedOperationException("Cannot directly add certificate to a TrustedListsCertificateSource");
-	}
-
-	public void updateTlInfo(String countryCode, TLInfo info) {
-		tlInfos.put(countryCode, info);
-	}
-
-	public TLInfo getTlInfo(String countryCode) {
-		return tlInfos.get(countryCode);
-	}
-
-	public TLInfo getLotlInfo() {
-		for (TLInfo tlInfo : tlInfos.values()) {
-			if (tlInfo.isLotl()) {
-				return tlInfo;
-			}
-		}
-		return null;
-	}
-
-	public Map<String, TLInfo> getSummary() {
-		return tlInfos;
 	}
 
 	@Override

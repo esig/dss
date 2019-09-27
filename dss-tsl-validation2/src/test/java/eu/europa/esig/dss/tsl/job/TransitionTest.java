@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.tsl.job;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -12,15 +14,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.service.http.commons.DSSFileLoader;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.tsl.TLInfo;
+import eu.europa.esig.dss.spi.tsl.dto.info.InfoRecord;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.tsl.cache.state.CacheStateEnum;
 import eu.europa.esig.dss.tsl.source.TLSource;
-import eu.europa.esig.dss.tsl.summary.TLInfo;
 import eu.europa.esig.dss.tsl.summary.ValidationJobSummary;
 
 public class TransitionTest {
@@ -265,9 +269,52 @@ public class TransitionTest {
 		assertEquals(1, tlInfos.size());
 		assertEquals(1, summary.getNumberOfProcessedTLs());
 		TLInfo tlInfo = tlInfos.get(0);
-		assertEquals(download, tlInfo.getDownloadCacheInfo().getCacheState());
-		assertEquals(parsing, tlInfo.getParsingCacheInfo().getCacheState());
-		assertEquals(validation, tlInfo.getValidationCacheInfo().getCacheState());
+		
+		checkCacheStateEnum(download, tlInfo.getDownloadCacheInfo());
+		checkCacheStateEnum(parsing, tlInfo.getParsingCacheInfo());
+		checkCacheStateEnum(validation, tlInfo.getValidationCacheInfo());
+	}
+	
+	private void checkCacheStateEnum(CacheStateEnum cacheState, InfoRecord cacheInfo) {
+		switch (cacheState) {
+			case REFRESH_NEEDED:
+				assertTrue(cacheInfo.isRefreshNeeded());
+				assertFalse(cacheInfo.isDesynchronized());
+				assertFalse(cacheInfo.isSynchronized());
+				assertFalse(cacheInfo.isError());
+				assertFalse(cacheInfo.isToBeDeleted());
+				break;
+			case DESYNCHRONIZED:
+				assertFalse(cacheInfo.isRefreshNeeded());
+				assertTrue(cacheInfo.isDesynchronized());
+				assertFalse(cacheInfo.isSynchronized());
+				assertFalse(cacheInfo.isError());
+				assertFalse(cacheInfo.isToBeDeleted());
+				break;
+			case SYNCHRONIZED:
+				assertFalse(cacheInfo.isRefreshNeeded());
+				assertFalse(cacheInfo.isDesynchronized());
+				assertTrue(cacheInfo.isSynchronized());
+				assertFalse(cacheInfo.isError());
+				assertFalse(cacheInfo.isToBeDeleted());
+				break;
+			case ERROR:
+				assertFalse(cacheInfo.isRefreshNeeded());
+				assertFalse(cacheInfo.isDesynchronized());
+				assertFalse(cacheInfo.isSynchronized());
+				assertTrue(cacheInfo.isError());
+				assertFalse(cacheInfo.isToBeDeleted());
+				break;
+			case TO_BE_DELETED:
+				assertFalse(cacheInfo.isRefreshNeeded());
+				assertFalse(cacheInfo.isDesynchronized());
+				assertFalse(cacheInfo.isSynchronized());
+				assertFalse(cacheInfo.isError());
+				assertTrue(cacheInfo.isToBeDeleted());
+				break;
+			default:
+				throw new DSSException("Illegal state.");
+		}
 	}
 
 }

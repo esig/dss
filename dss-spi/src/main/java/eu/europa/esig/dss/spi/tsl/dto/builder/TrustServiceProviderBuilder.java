@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.tsl.dto.builder;
+package eu.europa.esig.dss.spi.tsl.dto.builder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,12 +7,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import eu.europa.esig.dss.spi.tsl.dto.TrustService;
+import eu.europa.esig.dss.spi.tsl.dto.TrustServiceProvider;
+import eu.europa.esig.dss.spi.tsl.dto.TrustServiceStatusAndInformationExtensions;
+import eu.europa.esig.dss.spi.tsl.dto.TrustService.TrustServiceBuilder;
+import eu.europa.esig.dss.spi.tsl.dto.TrustServiceStatusAndInformationExtensions.TrustServiceStatusAndInformationExtensionsBuilder;
 import eu.europa.esig.dss.spi.util.TimeDependentValues;
-import eu.europa.esig.dss.tsl.dto.TrustService;
-import eu.europa.esig.dss.tsl.dto.TrustService.TrustServiceBuilder;
-import eu.europa.esig.dss.tsl.dto.TrustServiceProvider;
-import eu.europa.esig.dss.tsl.dto.TrustServiceStatusAndInformationExtensions;
-import eu.europa.esig.dss.tsl.dto.TrustServiceStatusAndInformationExtensions.TrustServiceStatusAndInformationExtensionsBuilder;
 import eu.europa.esig.dss.utils.Utils;
 
 public class TrustServiceProviderBuilder {

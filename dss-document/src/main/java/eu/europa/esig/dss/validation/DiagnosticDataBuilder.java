@@ -103,6 +103,7 @@ import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.tsl.Condition;
+import eu.europa.esig.dss.spi.tsl.LOTLInfo;
 import eu.europa.esig.dss.spi.tsl.ServiceInfo;
 import eu.europa.esig.dss.spi.tsl.ServiceInfoStatus;
 import eu.europa.esig.dss.spi.tsl.TLInfo;
@@ -350,9 +351,9 @@ public class DiagnosticDataBuilder {
 				Collection<XmlTrustedList> xmlTrustedLists = buildXmlTrustedLists(tlCS);
 				diagnosticData.getTrustedLists().addAll(xmlTrustedLists);
 
-				TLInfo lotlInfo = tlCS.getLotlInfo();
-				if (Utils.isCollectionNotEmpty(xmlTrustedLists) && lotlInfo != null) {
-					diagnosticData.setListOfTrustedLists(getXmlTrustedList("LOTL", lotlInfo));
+				List<LOTLInfo> lotlInfos = tlCS.getLotlInfos();
+				if (Utils.isCollectionNotEmpty(xmlTrustedLists) && Utils.isCollectionNotEmpty(lotlInfos)) {
+					diagnosticData.setListOfTrustedLists(getXmlTrustedList("LOTL", lotlInfos.get(0))); // TODO: list of LOTLs ???
 				}
 
 				for (XmlCertificate xmlCert : diagnosticData.getUsedCertificates()) {
@@ -479,14 +480,14 @@ public class DiagnosticDataBuilder {
 	private XmlTrustedList getXmlTrustedList(String countryCode, TLInfo tlInfo) {
 		if (tlInfo != null) {
 			XmlTrustedList result = new XmlTrustedList();
-			result.setCountryCode(tlInfo.getCountryCode());
+			result.setCountryCode(tlInfo.getParsingCacheInfo().getTerritory());
 			result.setUrl(tlInfo.getUrl());
-			result.setIssueDate(tlInfo.getIssueDate());
-			result.setNextUpdate(tlInfo.getNextUpdate());
-			result.setLastLoading(tlInfo.getLastLoading());
-			result.setSequenceNumber(tlInfo.getSequenceNumber());
-			result.setVersion(tlInfo.getVersion());
-			result.setWellSigned(tlInfo.isWellSigned());
+			result.setIssueDate(tlInfo.getParsingCacheInfo().getIssueDate());
+			result.setNextUpdate(tlInfo.getParsingCacheInfo().getNextUpdateDate());
+			result.setLastLoading(tlInfo.getDownloadCacheInfo().getLastLoadingDate());
+			result.setSequenceNumber(tlInfo.getParsingCacheInfo().getSequenceNumber());
+			result.setVersion(tlInfo.getParsingCacheInfo().getVersion());
+			result.setWellSigned(tlInfo.getValidationCacheInfo().isValid());
 			return result;
 		} else {
 			LOG.warn("Not info found for country {}", countryCode);

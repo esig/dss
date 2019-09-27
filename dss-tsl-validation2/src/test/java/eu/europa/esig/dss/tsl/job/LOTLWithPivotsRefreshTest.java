@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.tsl.job;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -16,15 +17,14 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.tsl.LOTLInfo;
+import eu.europa.esig.dss.spi.tsl.PivotInfo;
+import eu.europa.esig.dss.spi.tsl.dto.info.DownloadInfoRecord;
+import eu.europa.esig.dss.spi.tsl.dto.info.ParsingInfoRecord;
+import eu.europa.esig.dss.spi.tsl.dto.info.ValidationInfoRecord;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
-import eu.europa.esig.dss.tsl.cache.state.CacheStateEnum;
-import eu.europa.esig.dss.tsl.dto.DownloadCacheDTO;
-import eu.europa.esig.dss.tsl.dto.ParsingCacheDTO;
-import eu.europa.esig.dss.tsl.dto.ValidationCacheDTO;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
-import eu.europa.esig.dss.tsl.summary.LOTLInfo;
-import eu.europa.esig.dss.tsl.summary.PivotInfo;
 import eu.europa.esig.dss.tsl.summary.ValidationJobSummary;
 
 public class LOTLWithPivotsRefreshTest {
@@ -68,8 +68,9 @@ public class LOTLWithPivotsRefreshTest {
 		assertEquals(1, lotlInfos.size());
 		LOTLInfo lotlInfo = lotlInfos.get(0);
 
-		ValidationCacheDTO validationCacheInfo = lotlInfo.getValidationCacheInfo();
+		ValidationInfoRecord validationCacheInfo = lotlInfo.getValidationCacheInfo();
 		assertEquals(Indication.INDETERMINATE, validationCacheInfo.getIndication());
+		assertTrue(validationCacheInfo.isIndeterminate());
 	}
 
 	@Test
@@ -114,8 +115,8 @@ public class LOTLWithPivotsRefreshTest {
 		assertEquals(1, lotlInfos.size());
 		LOTLInfo lotlInfo = lotlInfos.get(0);
 
-		ValidationCacheDTO validationCacheInfo = lotlInfo.getValidationCacheInfo();
-		assertEquals(CacheStateEnum.ERROR, validationCacheInfo.getCacheState());
+		ValidationInfoRecord validationCacheInfo = lotlInfo.getValidationCacheInfo();
+		assertTrue(validationCacheInfo.isError());
 		assertEquals("The certificate source is null", validationCacheInfo.getExceptionMessage());
 		assertNotNull(validationCacheInfo.getExceptionStackTrace());
 	}
@@ -184,16 +185,16 @@ public class LOTLWithPivotsRefreshTest {
 		List<LOTLInfo> lotlInfos = summary.getLOTLInfos();
 		assertEquals(1, lotlInfos.size());
 		LOTLInfo lotlInfo = lotlInfos.get(0);
-		DownloadCacheDTO downloadCacheInfo = lotlInfo.getDownloadCacheInfo();
+		DownloadInfoRecord downloadCacheInfo = lotlInfo.getDownloadCacheInfo();
 		assertNotNull(downloadCacheInfo);
 		assertNotNull(downloadCacheInfo.getLastSuccessDate());
-		assertEquals(CacheStateEnum.DESYNCHRONIZED, downloadCacheInfo.getCacheState());
-		ParsingCacheDTO parsingCacheInfo = lotlInfo.getParsingCacheInfo();
+		assertTrue(downloadCacheInfo.isDesynchronized());
+		ParsingInfoRecord parsingCacheInfo = lotlInfo.getParsingCacheInfo();
 		assertNotNull(parsingCacheInfo);
-		assertEquals(CacheStateEnum.DESYNCHRONIZED, parsingCacheInfo.getCacheState());
-		ValidationCacheDTO validationCacheInfo = lotlInfo.getValidationCacheInfo();
+		assertTrue(parsingCacheInfo.isDesynchronized());
+		ValidationInfoRecord validationCacheInfo = lotlInfo.getValidationCacheInfo();
 		assertNotNull(validationCacheInfo);
-		assertEquals(CacheStateEnum.DESYNCHRONIZED, validationCacheInfo.getCacheState());
+		assertTrue(validationCacheInfo.isDesynchronized());
 
 		// LOTL
 		assertEquals(expectedIndication, validationCacheInfo.getIndication());
@@ -204,8 +205,8 @@ public class LOTLWithPivotsRefreshTest {
 		assertEquals(4, pivotInfos.size());
 
 		for (PivotInfo pivotInfo : pivotInfos) {
-			ValidationCacheDTO pivotValidationCacheInfo = pivotInfo.getValidationCacheInfo();
-			assertEquals(CacheStateEnum.DESYNCHRONIZED, pivotValidationCacheInfo.getCacheState());
+			ValidationInfoRecord pivotValidationCacheInfo = pivotInfo.getValidationCacheInfo();
+			assertTrue(pivotValidationCacheInfo.isDesynchronized());
 			assertEquals(expectedIndication, pivotValidationCacheInfo.getIndication());
 			assertNotNull(pivotValidationCacheInfo.getSigningCertificate());
 			assertNotNull(pivotValidationCacheInfo.getSigningTime());

@@ -4,9 +4,12 @@ import java.util.Date;
 import java.util.List;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.tsl.dto.OtherTSLPointer;
+import eu.europa.esig.dss.spi.tsl.dto.TrustServiceProvider;
+import eu.europa.esig.dss.spi.tsl.dto.info.ParsingInfoRecord;
 import eu.europa.esig.dss.tsl.utils.TLValidationUtils;
 
-public class ParsingCacheDTO extends AbstractCacheDTO {
+public class ParsingCacheDTO extends AbstractCacheDTO implements ParsingInfoRecord {
 	
 	private static final long serialVersionUID = 5464908480606825440L;
 	
@@ -17,8 +20,8 @@ public class ParsingCacheDTO extends AbstractCacheDTO {
 	private Date nextUpdateDate;
 	private List<String> distributionPoints;
 	private List<TrustServiceProvider> trustServiceProviders;
-	private List<OtherTSLPointerDTO> lotlOtherPointers;
-	private List<OtherTSLPointerDTO> tlOtherPointers;
+	private List<OtherTSLPointer> lotlOtherPointers;
+	private List<OtherTSLPointer> tlOtherPointers;
 	private List<String> pivotUrls;
 	private String signingCertificateAnnouncementUrl;
 
@@ -27,7 +30,8 @@ public class ParsingCacheDTO extends AbstractCacheDTO {
 	public ParsingCacheDTO(AbstractCacheDTO cacheDTO) {
 		super(cacheDTO);
 	}
-	
+
+	@Override
 	public Integer getSequenceNumber() {
 		return sequenceNumber;
 	}
@@ -35,7 +39,8 @@ public class ParsingCacheDTO extends AbstractCacheDTO {
 	public void setSequenceNumber(Integer sequenceNumber) {
 		this.sequenceNumber = sequenceNumber;
 	}
-	
+
+	@Override
 	public Integer getVersion() {
 		return version;
 	}
@@ -43,7 +48,8 @@ public class ParsingCacheDTO extends AbstractCacheDTO {
 	public void setVersion(Integer version) {
 		this.version = version;
 	}
-	
+
+	@Override
 	public String getTerritory() {
 		return territory;
 	}
@@ -51,7 +57,8 @@ public class ParsingCacheDTO extends AbstractCacheDTO {
 	public void setTerritory(String territory) {
 		this.territory = territory;
 	}
-	
+
+	@Override
 	public Date getIssueDate() {
 		return issueDate;
 	}
@@ -59,7 +66,8 @@ public class ParsingCacheDTO extends AbstractCacheDTO {
 	public void setIssueDate(Date issueDate) {
 		this.issueDate = issueDate;
 	}
-	
+
+	@Override
 	public Date getNextUpdateDate() {
 		return nextUpdateDate;
 	}
@@ -67,7 +75,8 @@ public class ParsingCacheDTO extends AbstractCacheDTO {
 	public void setNextUpdateDate(Date nextUpdateDate) {
 		this.nextUpdateDate = nextUpdateDate;
 	}
-	
+
+	@Override
 	public List<String> getDistributionPoints() {
 		return distributionPoints;
 	}
@@ -75,7 +84,8 @@ public class ParsingCacheDTO extends AbstractCacheDTO {
 	public void setDistributionPoints(List<String> distributionPoints) {
 		this.distributionPoints = distributionPoints;
 	}
-	
+
+	@Override
 	public List<TrustServiceProvider> getTrustServiceProviders() {
 		return trustServiceProviders;
 	}
@@ -83,23 +93,26 @@ public class ParsingCacheDTO extends AbstractCacheDTO {
 	public void setTrustServiceProviders(List<TrustServiceProvider> trustServiceProviders) {
 		this.trustServiceProviders = trustServiceProviders;
 	}
-	
-	public List<OtherTSLPointerDTO> getLotlOtherPointers() {
+
+	@Override
+	public List<OtherTSLPointer> getLotlOtherPointers() {
 		return lotlOtherPointers;
 	}
 	
-	public void setLotlOtherPointers(List<OtherTSLPointerDTO> lotlOtherPointers) {
+	public void setLotlOtherPointers(List<OtherTSLPointer> lotlOtherPointers) {
 		this.lotlOtherPointers = lotlOtherPointers;
 	}
-	
-	public List<OtherTSLPointerDTO> getTlOtherPointers() {
+
+	@Override
+	public List<OtherTSLPointer> getTlOtherPointers() {
 		return tlOtherPointers;
 	}
 	
-	public void setTlOtherPointers(List<OtherTSLPointerDTO> tlOtherPointers) {
+	public void setTlOtherPointers(List<OtherTSLPointer> tlOtherPointers) {
 		this.tlOtherPointers = tlOtherPointers;
 	}
-	
+
+	@Override
 	public List<String> getPivotUrls() {
 		return pivotUrls;
 	}
@@ -108,6 +121,7 @@ public class ParsingCacheDTO extends AbstractCacheDTO {
 		this.pivotUrls = pivotUrls;
 	}
 
+	@Override
 	public String getSigningCertificateAnnouncementUrl() {
 		return signingCertificateAnnouncementUrl;
 	}
@@ -116,6 +130,7 @@ public class ParsingCacheDTO extends AbstractCacheDTO {
 		this.signingCertificateAnnouncementUrl = signingCertificateAnnouncementUrl;
 	}
 
+	@Override
 	public List<CertificateToken> getLOTLAnnouncedSigningCertificates() {
 		return TLValidationUtils.getLOTLAnnouncedSigningCertificates(getLotlOtherPointers());
 	}

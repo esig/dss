@@ -7,10 +7,10 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.spi.tsl.dto.OtherTSLPointer;
+import eu.europa.esig.dss.spi.tsl.dto.TrustServiceProvider;
 import eu.europa.esig.dss.tsl.cache.state.CachedEntry;
-import eu.europa.esig.dss.tsl.dto.OtherTSLPointerDTO;
 import eu.europa.esig.dss.tsl.dto.ParsingCacheDTO;
-import eu.europa.esig.dss.tsl.dto.TrustServiceProvider;
 import eu.europa.esig.dss.tsl.parsing.AbstractParsingResult;
 import eu.europa.esig.dss.tsl.parsing.LOTLParsingResult;
 import eu.europa.esig.dss.tsl.parsing.TLParsingResult;
@@ -82,7 +82,7 @@ public class ParsingCacheDTOBuilder extends AbstractCacheDTOBuilder<AbstractPars
 		return Collections.emptyList();
 	}
 	
-	private List<OtherTSLPointerDTO> getLOTLOtherPointers() {
+	private List<OtherTSLPointer> getLOTLOtherPointers() {
 		AbstractParsingResult result = getResult();
 		if (result instanceof LOTLParsingResult) {
 			return ((LOTLParsingResult) getResult()).getLotlPointers();
@@ -91,7 +91,7 @@ public class ParsingCacheDTOBuilder extends AbstractCacheDTOBuilder<AbstractPars
 		return Collections.emptyList();
 	}
 	
-	private List<OtherTSLPointerDTO> getTLOtherPointers() {
+	private List<OtherTSLPointer> getTLOtherPointers() {
 		AbstractParsingResult result = getResult();
 		if (result instanceof LOTLParsingResult) {
 			return ((LOTLParsingResult) getResult()).getTlPointers();

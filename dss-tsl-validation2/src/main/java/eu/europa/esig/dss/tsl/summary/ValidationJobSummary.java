@@ -3,6 +3,10 @@ package eu.europa.esig.dss.tsl.summary;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.europa.esig.dss.spi.tsl.LOTLInfo;
+import eu.europa.esig.dss.spi.tsl.PivotInfo;
+import eu.europa.esig.dss.spi.tsl.TLInfo;
+import eu.europa.esig.dss.tsl.cache.CacheAccessByKey;
 import eu.europa.esig.dss.tsl.cache.CacheAccessFactory;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
@@ -46,7 +50,7 @@ public class ValidationJobSummary {
 		List<LOTLInfo> lotlInfos = new ArrayList<LOTLInfo>();
 		if (Utils.isCollectionNotEmpty(linkedLOTLs)) {
 			for (LinkedLOTL lotl : linkedLOTLs) {
-				LOTLInfo lotlInfo = new LOTLInfo(cacheAccessFactory.getCacheAccess(lotl.getLotlSource().getCacheKey()), lotl.getLotlSource().getUrl());
+				LOTLInfo lotlInfo = buildLOTLInfo(lotl.getLotlSource());
 				lotlInfo.setTlInfos(getTLInfos(lotl.getTlSources()));
 				lotlInfo.setPivotInfos(getPivotInfos(lotl.getPivots()));
 				lotlInfos.add(lotlInfo);
@@ -55,14 +59,26 @@ public class ValidationJobSummary {
 		return lotlInfos;
 	}
 	
+	private LOTLInfo buildLOTLInfo(LOTLSource lotlSource) {
+		CacheAccessByKey cacheAccess = cacheAccessFactory.getCacheAccess(lotlSource.getCacheKey());
+		return new LOTLInfo(cacheAccess.getDownloadReadOnlyResult(), cacheAccess.getParsingReadOnlyResult(), 
+				cacheAccess.getValidationReadOnlyResult(), lotlSource.getUrl());
+	}
+	
 	private List<PivotInfo> getPivotInfos(List<LOTLSource> pivotSources) {
 		List<PivotInfo> pivotInfos = new ArrayList<PivotInfo>();
 		if (Utils.isCollectionNotEmpty(pivotSources)) {
-			for (TLSource pivot : pivotSources) {
-				pivotInfos.add(new PivotInfo(cacheAccessFactory.getCacheAccess(pivot.getCacheKey()), pivot.getUrl()));
+			for (LOTLSource pivot : pivotSources) {
+				pivotInfos.add(buildPivotInfo(pivot));
 			}
 		}
 		return pivotInfos;
+	}
+	
+	private PivotInfo buildPivotInfo(LOTLSource pivotSource) {
+		CacheAccessByKey cacheAccess = cacheAccessFactory.getCacheAccess(pivotSource.getCacheKey());
+		return new PivotInfo(cacheAccess.getDownloadReadOnlyResult(), cacheAccess.getParsingReadOnlyResult(), 
+				cacheAccess.getValidationReadOnlyResult(), pivotSource.getUrl());
 	}
 	
 	/**
@@ -77,10 +93,16 @@ public class ValidationJobSummary {
 		List<TLInfo> tlInfos = new ArrayList<TLInfo>();
 		if (Utils.isCollectionNotEmpty(tlSources)) {
 			for (TLSource tlSource : tlSources) {
-				tlInfos.add(new TLInfo(cacheAccessFactory.getCacheAccess(tlSource.getCacheKey()), tlSource.getUrl()));
+				tlInfos.add(buildPivotInfo(tlSource));
 			}
 		}
 		return tlInfos;
+	}
+	
+	private TLInfo buildPivotInfo(TLSource tlSource) {
+		CacheAccessByKey cacheAccess = cacheAccessFactory.getCacheAccess(tlSource.getCacheKey());
+		return new TLInfo(cacheAccess.getDownloadReadOnlyResult(), cacheAccess.getParsingReadOnlyResult(), 
+				cacheAccess.getValidationReadOnlyResult(), tlSource.getUrl());
 	}
 	
 	/**

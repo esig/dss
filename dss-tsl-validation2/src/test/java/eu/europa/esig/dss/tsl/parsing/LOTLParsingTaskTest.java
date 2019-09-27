@@ -17,7 +17,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.tsl.dto.OtherTSLPointerDTO;
+import eu.europa.esig.dss.spi.tsl.dto.OtherTSLPointer;
 import eu.europa.esig.dss.tsl.function.OfficialJournalSchemeInformationURI;
 import eu.europa.esig.dss.tsl.function.SchemeTerritoryOtherTSLPointer;
 import eu.europa.esig.dss.tsl.function.XMLOtherTSLPointer;
@@ -91,8 +91,8 @@ public class LOTLParsingTaskTest {
 		assertEquals(1, result.getDistributionPoints().size());
 	}
 
-	private void checkOtherPointers(List<OtherTSLPointerDTO> lotlPointers) {
-		for (OtherTSLPointerDTO otherTSLPointerDTO : lotlPointers) {
+	private void checkOtherPointers(List<OtherTSLPointer> lotlPointers) {
+		for (OtherTSLPointer otherTSLPointerDTO : lotlPointers) {
 			assertNotNull(otherTSLPointerDTO);
 			assertNotNull(otherTSLPointerDTO.getLocation());
 			List<CertificateToken> certificates = otherTSLPointerDTO.getCertificates();
@@ -175,7 +175,7 @@ public class LOTLParsingTaskTest {
 
 		assertEquals(1, result.getLotlPointers().size());
 		checkOtherPointers(result.getLotlPointers());
-		List<OtherTSLPointerDTO> tlPointers = result.getTlPointers();
+		List<OtherTSLPointer> tlPointers = result.getTlPointers();
 		assertEquals(2, tlPointers.size());
 		checkOtherPointers(tlPointers);
 

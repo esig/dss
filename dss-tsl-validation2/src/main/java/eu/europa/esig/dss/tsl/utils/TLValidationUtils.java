@@ -4,12 +4,12 @@ import java.util.Collections;
 import java.util.List;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.tsl.dto.OtherTSLPointerDTO;
+import eu.europa.esig.dss.spi.tsl.dto.OtherTSLPointer;
 import eu.europa.esig.dss.utils.Utils;
 
 public final class TLValidationUtils {
 	
-	public static List<CertificateToken> getLOTLAnnouncedSigningCertificates(List<OtherTSLPointerDTO> loltPointers) {
+	public static List<CertificateToken> getLOTLAnnouncedSigningCertificates(List<OtherTSLPointer> loltPointers) {
 		if (Utils.isCollectionNotEmpty(loltPointers)) {
 			return loltPointers.get(0).getCertificates();
 		}

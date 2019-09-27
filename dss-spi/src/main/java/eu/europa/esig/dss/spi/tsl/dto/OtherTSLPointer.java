@@ -1,18 +1,18 @@
-package eu.europa.esig.dss.tsl.dto;
+package eu.europa.esig.dss.spi.tsl.dto;
 
 import java.io.Serializable;
 import java.util.List;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
 
-public class OtherTSLPointerDTO implements Serializable {
+public class OtherTSLPointer implements Serializable {
 
 	private static final long serialVersionUID = 3015076999802292662L;
 	
 	private final String location;
 	private final List<CertificateToken> certificates;
 
-	public OtherTSLPointerDTO(String location, List<CertificateToken> certificates) {
+	public OtherTSLPointer(String location, List<CertificateToken> certificates) {
 		this.location = location;
 		this.certificates = certificates;
 	}

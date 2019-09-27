@@ -6,17 +6,17 @@ import java.util.List;
 import java.util.function.Function;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.tsl.dto.OtherTSLPointerDTO;
+import eu.europa.esig.dss.spi.tsl.dto.OtherTSLPointer;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.trustedlist.jaxb.tsl.DigitalIdentityListType;
 import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointerType;
 import eu.europa.esig.trustedlist.jaxb.tsl.ServiceDigitalIdentityListType;
 
-public class OtherTSLPointerConverter implements Function<OtherTSLPointerType, OtherTSLPointerDTO> {
+public class OtherTSLPointerConverter implements Function<OtherTSLPointerType, OtherTSLPointer> {
 
 	@Override
-	public OtherTSLPointerDTO apply(OtherTSLPointerType original) {
-		return new OtherTSLPointerDTO(original.getTSLLocation(), Collections.unmodifiableList(getCertificates(original.getServiceDigitalIdentities())));
+	public OtherTSLPointer apply(OtherTSLPointerType original) {
+		return new OtherTSLPointer(original.getTSLLocation(), Collections.unmodifiableList(getCertificates(original.getServiceDigitalIdentities())));
 	}
 
 	private List<CertificateToken> getCertificates(ServiceDigitalIdentityListType serviceDigitalIdentities) {

@@ -3,7 +3,7 @@ package eu.europa.esig.dss.tsl.parsing;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.europa.esig.dss.tsl.dto.TrustServiceProvider;
+import eu.europa.esig.dss.spi.tsl.dto.TrustServiceProvider;
 
 public class TLParsingResult extends AbstractParsingResult {
 

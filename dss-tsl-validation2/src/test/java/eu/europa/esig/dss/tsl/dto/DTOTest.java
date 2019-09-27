@@ -18,10 +18,15 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.tsl.dto.ConditionForQualifiers;
+import eu.europa.esig.dss.spi.tsl.dto.OtherTSLPointer;
+import eu.europa.esig.dss.spi.tsl.dto.TrustService;
+import eu.europa.esig.dss.spi.tsl.dto.TrustServiceProvider;
+import eu.europa.esig.dss.spi.tsl.dto.TrustServiceStatusAndInformationExtensions;
+import eu.europa.esig.dss.spi.tsl.dto.TrustService.TrustServiceBuilder;
+import eu.europa.esig.dss.spi.tsl.dto.TrustServiceStatusAndInformationExtensions.TrustServiceStatusAndInformationExtensionsBuilder;
+import eu.europa.esig.dss.spi.tsl.dto.builder.TrustServiceProviderBuilder;
 import eu.europa.esig.dss.spi.util.TimeDependentValues;
-import eu.europa.esig.dss.tsl.dto.TrustService.TrustServiceBuilder;
-import eu.europa.esig.dss.tsl.dto.TrustServiceStatusAndInformationExtensions.TrustServiceStatusAndInformationExtensionsBuilder;
-import eu.europa.esig.dss.tsl.dto.builder.TrustServiceProviderBuilder;
 import eu.europa.esig.dss.tsl.dto.condition.CompositeCondition;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.trustedlist.enums.Assert;
@@ -49,7 +54,7 @@ public class DTOTest {
 	
 	@Test
 	public void otherTSLPointerDTOTest() {
-		OtherTSLPointerDTO otherTSLPointerDTO = new OtherTSLPointerDTO("CZ", Arrays.asList(cert));
+		OtherTSLPointer otherTSLPointerDTO = new OtherTSLPointer("CZ", Arrays.asList(cert));
 		assertEquals("CZ", otherTSLPointerDTO.getLocation());
 		assertEquals(1, otherTSLPointerDTO.getCertificates().size());
 		assertEquals(cert, otherTSLPointerDTO.getCertificates().get(0));

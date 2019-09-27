@@ -17,7 +17,7 @@ import eu.europa.esig.dss.tsl.cache.CachedResult;
 public class StateMachineTest {
 
 	@Test
-	public void testEmpty() {
+	public void testEmpty() throws Exception {
 		CachedEntry<MockCachedResult> cachedEntry = new CachedEntry<MockCachedResult>();
 		Date emptyStateDate = cachedEntry.getLastSuccessDate();
 		assertNotNull(emptyStateDate);
@@ -49,6 +49,7 @@ public class StateMachineTest {
 
 		assertThrows(IllegalStateException.class, () -> cachedEntry.toBeDeleted());
 
+		Thread.sleep(1);
 		cachedEntry.sync();
 
 		assertEquals(CacheStateEnum.SYNCHRONIZED, cachedEntry.getCurrentState());

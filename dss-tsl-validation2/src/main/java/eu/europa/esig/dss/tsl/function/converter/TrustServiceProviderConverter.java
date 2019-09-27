@@ -8,9 +8,9 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import eu.europa.esig.dss.tsl.dto.TrustService;
-import eu.europa.esig.dss.tsl.dto.TrustServiceProvider;
-import eu.europa.esig.dss.tsl.dto.builder.TrustServiceProviderBuilder;
+import eu.europa.esig.dss.spi.tsl.dto.TrustService;
+import eu.europa.esig.dss.spi.tsl.dto.TrustServiceProvider;
+import eu.europa.esig.dss.spi.tsl.dto.builder.TrustServiceProviderBuilder;
 import eu.europa.esig.dss.tsl.function.OfficialRegistrationIdentifierPredicate;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.trustedlist.jaxb.tsl.AddressType;

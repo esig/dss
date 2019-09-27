@@ -2,6 +2,7 @@ package eu.europa.esig.dss.tsl.job;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.HashMap;
@@ -16,15 +17,14 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.tsl.LOTLInfo;
+import eu.europa.esig.dss.spi.tsl.PivotInfo;
+import eu.europa.esig.dss.spi.tsl.dto.info.DownloadInfoRecord;
+import eu.europa.esig.dss.spi.tsl.dto.info.ParsingInfoRecord;
+import eu.europa.esig.dss.spi.tsl.dto.info.ValidationInfoRecord;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
-import eu.europa.esig.dss.tsl.cache.state.CacheStateEnum;
-import eu.europa.esig.dss.tsl.dto.DownloadCacheDTO;
-import eu.europa.esig.dss.tsl.dto.ParsingCacheDTO;
-import eu.europa.esig.dss.tsl.dto.ValidationCacheDTO;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
-import eu.europa.esig.dss.tsl.summary.LOTLInfo;
-import eu.europa.esig.dss.tsl.summary.PivotInfo;
 import eu.europa.esig.dss.tsl.summary.ValidationJobSummary;
 
 public class LOTLRefreshTest {
@@ -109,7 +109,7 @@ public class LOTLRefreshTest {
 
 		ValidationJobSummary summary = job.getSummary();
 		LOTLInfo lotlInfo = summary.getLOTLInfos().get(0);
-		assertEquals(CacheStateEnum.ERROR, lotlInfo.getValidationCacheInfo().getCacheState());
+		assertTrue(lotlInfo.getValidationCacheInfo().isError());
 	}
 
 	private FileCacheDataLoader getOfflineFileLoader(Map<String, DSSDocument> urlMap) {
@@ -133,20 +133,20 @@ public class LOTLRefreshTest {
 		List<LOTLInfo> lotlInfos = summary.getLOTLInfos();
 		assertEquals(1, lotlInfos.size());
 		LOTLInfo lotlInfo = lotlInfos.get(0);
-		DownloadCacheDTO downloadCacheInfo = lotlInfo.getDownloadCacheInfo();
+		DownloadInfoRecord downloadCacheInfo = lotlInfo.getDownloadCacheInfo();
 		assertNotNull(downloadCacheInfo);
 		assertNotNull(downloadCacheInfo.getLastSuccessDate());
-		assertEquals(CacheStateEnum.DESYNCHRONIZED, downloadCacheInfo.getCacheState());
-		ParsingCacheDTO parsingCacheInfo = lotlInfo.getParsingCacheInfo();
+		assertTrue(downloadCacheInfo.isDesynchronized());
+		ParsingInfoRecord parsingCacheInfo = lotlInfo.getParsingCacheInfo();
 		assertNotNull(parsingCacheInfo);
-		assertEquals(CacheStateEnum.DESYNCHRONIZED, parsingCacheInfo.getCacheState());
+		assertTrue(parsingCacheInfo.isDesynchronized());
 
 		assertEquals(5, parsingCacheInfo.getVersion());
 		assertEquals(248, parsingCacheInfo.getSequenceNumber());
 
-		ValidationCacheDTO validationCacheInfo = lotlInfo.getValidationCacheInfo();
+		ValidationInfoRecord validationCacheInfo = lotlInfo.getValidationCacheInfo();
 		assertNotNull(validationCacheInfo);
-		assertEquals(CacheStateEnum.DESYNCHRONIZED, validationCacheInfo.getCacheState());
+		assertTrue(validationCacheInfo.isDesynchronized());
 
 		// LOTL
 		assertEquals(expectedIndication, validationCacheInfo.getIndication());
