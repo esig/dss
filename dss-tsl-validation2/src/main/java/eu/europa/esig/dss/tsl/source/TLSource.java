@@ -37,13 +37,16 @@ public class TLSource {
 	 * The cached CacheKey value (the key is computed from url parameter)
 	 */
 	private CacheKey cacheKey;
+	
+	public TLSource() {
+	}
 
 	public String getUrl() {
 		return url;
 	}
-
+	
 	public void setUrl(String url) {
-		Objects.requireNonNull(url);
+		Objects.requireNonNull(url, "URL cannot be null.");
 		this.url = url;
 	}
 

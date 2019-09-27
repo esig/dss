@@ -226,7 +226,7 @@ public class TransitionTest {
 
 		job.onlineRefresh();
 
-		checkSummary(job.getSummary(), CacheStateEnum.DESYNCHRONIZED, CacheStateEnum.DESYNCHRONIZED, CacheStateEnum.DESYNCHRONIZED);
+		checkSummary(job.getSummary(), CacheStateEnum.DESYNCHRONIZED, CacheStateEnum.DESYNCHRONIZED, CacheStateEnum.ERROR);
 	}
 
 	@Test

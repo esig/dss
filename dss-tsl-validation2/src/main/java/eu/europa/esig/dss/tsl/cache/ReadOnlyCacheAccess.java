@@ -45,10 +45,6 @@ public class ReadOnlyCacheAccess {
 		return new ParsingCacheDTOBuilder(parsingCache.get(key)).build();
 	}
 	
-//	public Map<CacheKey, AbstractParsingResult> getParsingResultMap(List<CacheKey> keys) {
-//		return keys.stream().collect(Collectors.toMap(key -> key, key -> getParsingResult(key)));
-//	}
-	
 	/**
 	 * Returns download cache DTO result
 	 * @param key {@link CacheKey} to extract download result for

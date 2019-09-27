@@ -1,30 +1,14 @@
 package eu.europa.esig.dss.tsl.cache;
 
 import eu.europa.esig.dss.tsl.download.XmlDownloadResult;
-import eu.europa.esig.dss.tsl.dto.DownloadCacheDTO;
-import eu.europa.esig.dss.tsl.dto.ParsingCacheDTO;
-import eu.europa.esig.dss.tsl.dto.ValidationCacheDTO;
 import eu.europa.esig.dss.tsl.parsing.AbstractParsingResult;
 import eu.europa.esig.dss.tsl.validation.ValidationResult;
 
-public class CacheAccessByKey {
-
-	/* Key of the CacheEntry */
-	private final CacheKey key;
-
-	/* Global Cache */
-	private final DownloadCache fileCache;
-	private final ParsingCache parsingCache;
-	private final ValidationCache validationCache;
-	
-	private ReadOnlyCacheAccess readOnlyCacheAccess;
+public class CacheAccessByKey extends ReadOnlyCacheByKey {
 	
 	public CacheAccessByKey(final CacheKey key, final DownloadCache fileCache, final ParsingCache parsingCache,
 			final ValidationCache validationCache) {
-		this.key = key;
-		this.fileCache = fileCache;
-		this.parsingCache = parsingCache;
-		this.validationCache = validationCache;
+		super(key, fileCache, parsingCache, validationCache);
 	}
 	
 	/**
@@ -112,40 +96,6 @@ public class CacheAccessByKey {
 		if (validationCache.isToBeDeleted(key)) {
 			validationCache.remove(key);
 		}
-	}
-	
-	private ReadOnlyCacheAccess getReadOnlyCacheAccess() {
-		if (readOnlyCacheAccess == null) {
-			readOnlyCacheAccess = new ReadOnlyCacheAccess(fileCache, parsingCache, validationCache);
-		}
-		return readOnlyCacheAccess;
-	}
-
-	/**
-	 * Returns the cached read-only download result DTO
-	 * 
-	 * @return {@link DownloadCacheDTO}
-	 */
-	public DownloadCacheDTO getDownloadReadOnlyResult() {
-		return getReadOnlyCacheAccess().getDownloadCacheDTO(key);
-	}
-
-	/**
-	 * Returns the cached read-only parsing result DTO
-	 * 
-	 * @return {@link ParsingCacheDTO}
-	 */
-	public ParsingCacheDTO getParsingReadOnlyResult() {
-		return getReadOnlyCacheAccess().getParsingCacheDTO(key);
-	}
-
-	/**
-	 * Returns the cached read-only validation result DTO
-	 * 
-	 * @return {@link ValidationCacheDTO}
-	 */
-	public ValidationCacheDTO getValidationReadOnlyResult() {
-		return getReadOnlyCacheAccess().getValidationCacheDTO(key);
 	}
 
 }

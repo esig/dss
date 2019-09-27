@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.tsl.cache;
 
+import java.util.Objects;
+
 import eu.europa.esig.dss.spi.DSSUtils;
 
 public class CacheKey {
@@ -14,6 +16,7 @@ public class CacheKey {
 	 * @param url {@link String} url string of the related file entry
 	 */
 	public CacheKey(final String url) {
+		Objects.requireNonNull(url, "URL cannot be null.");
 		this.key = DSSUtils.getNormalizedString(url);
 	}
 	
