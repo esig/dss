@@ -100,7 +100,8 @@ public class LOTLWithPivotsRefreshTest {
 
 		TLValidationJob job = new TLValidationJob();
 
-		LOTLSource lotlSource = new LOTLSource("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-247-mp.xml");
+		LOTLSource lotlSource = new LOTLSource();
+		lotlSource.setUrl("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-247-mp.xml");
 		lotlSource.setPivotSupport(true);
 		job.setListOfTrustedListSources(lotlSource);
 		job.setOfflineDataLoader(offlineFileLoader);
@@ -213,7 +214,8 @@ public class LOTLWithPivotsRefreshTest {
 	}
 
 	private LOTLSource getLOTLSource() {
-		LOTLSource lotl = new LOTLSource("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-247-mp.xml");
+		LOTLSource lotl = new LOTLSource();
+		lotl.setUrl("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-247-mp.xml");
 		lotl.setPivotSupport(true);
 		CertificateSource certificateSource = new CommonCertificateSource();
 		certificateSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(

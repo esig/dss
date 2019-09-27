@@ -15,9 +15,9 @@ public class ReadOnlyCacheAccess {
 	private static final Logger LOG = LoggerFactory.getLogger(ReadOnlyCacheAccess.class);
 
 	/* Global Cache */
-	protected final DownloadCache fileCache;
-	protected final ParsingCache parsingCache;
-	protected final ValidationCache validationCache;
+	private final DownloadCache fileCache;
+	private final ParsingCache parsingCache;
+	private final ValidationCache validationCache;
 
 	public ReadOnlyCacheAccess(final DownloadCache fileCache, final ParsingCache parsingCache, final ValidationCache validationCache) {
 		this.fileCache = fileCache;

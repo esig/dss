@@ -12,7 +12,7 @@ public class TLSource {
 	/**
 	 * URL
 	 */
-	private final String url;
+	private String url;
 
 	/**
 	 * Signing certificates for the current TL
@@ -38,13 +38,16 @@ public class TLSource {
 	 */
 	private CacheKey cacheKey;
 	
-	public TLSource(String url) {
-		Objects.requireNonNull(url, "URL cannot be null.");
-		this.url = url;
+	public TLSource() {
 	}
 
 	public String getUrl() {
 		return url;
+	}
+	
+	public void setUrl(String url) {
+		Objects.requireNonNull(url, "URL cannot be null.");
+		this.url = url;
 	}
 
 	public CertificateSource getCertificateSource() {

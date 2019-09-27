@@ -35,8 +35,7 @@ public class LOTLSource extends TLSource {
 	 */
 	private LOTLSigningCertificatesAnnouncementSchemeInformationURI signingCertificatesAnnouncementPredicate;
 
-	public LOTLSource(String url) {
-		super(url);
+	public LOTLSource() {
 	}
 
 	public boolean isPivotSupport() {

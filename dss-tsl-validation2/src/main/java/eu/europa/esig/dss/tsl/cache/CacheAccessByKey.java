@@ -1,21 +1,14 @@
 package eu.europa.esig.dss.tsl.cache;
 
 import eu.europa.esig.dss.tsl.download.XmlDownloadResult;
-import eu.europa.esig.dss.tsl.dto.DownloadCacheDTO;
-import eu.europa.esig.dss.tsl.dto.ParsingCacheDTO;
-import eu.europa.esig.dss.tsl.dto.ValidationCacheDTO;
 import eu.europa.esig.dss.tsl.parsing.AbstractParsingResult;
 import eu.europa.esig.dss.tsl.validation.ValidationResult;
 
-public class CacheAccessByKey extends ReadOnlyCacheAccess {
-
-	/* Key of the CacheEntry */
-	private final CacheKey key;
+public class CacheAccessByKey extends ReadOnlyCacheByKey {
 	
 	public CacheAccessByKey(final CacheKey key, final DownloadCache fileCache, final ParsingCache parsingCache,
 			final ValidationCache validationCache) {
-		super(fileCache, parsingCache, validationCache);
-		this.key = key;
+		super(key, fileCache, parsingCache, validationCache);
 	}
 	
 	/**
@@ -103,33 +96,6 @@ public class CacheAccessByKey extends ReadOnlyCacheAccess {
 		if (validationCache.isToBeDeleted(key)) {
 			validationCache.remove(key);
 		}
-	}
-
-	/**
-	 * Returns the cached read-only download result DTO
-	 * 
-	 * @return {@link DownloadCacheDTO}
-	 */
-	public DownloadCacheDTO getDownloadReadOnlyResult() {
-		return getDownloadCacheDTO(key);
-	}
-
-	/**
-	 * Returns the cached read-only parsing result DTO
-	 * 
-	 * @return {@link ParsingCacheDTO}
-	 */
-	public ParsingCacheDTO getParsingReadOnlyResult() {
-		return getParsingCacheDTO(key);
-	}
-
-	/**
-	 * Returns the cached read-only validation result DTO
-	 * 
-	 * @return {@link ValidationCacheDTO}
-	 */
-	public ValidationCacheDTO getValidationReadOnlyResult() {
-		return getValidationCacheDTO(key);
 	}
 
 }

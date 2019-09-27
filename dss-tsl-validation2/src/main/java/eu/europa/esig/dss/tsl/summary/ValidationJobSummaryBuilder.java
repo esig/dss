@@ -76,7 +76,8 @@ public class ValidationJobSummaryBuilder {
 		List<TLSource> result = new ArrayList<TLSource>();
 		List<OtherTSLPointer> tlPointers = lotlParsingResult.getTlOtherPointers();
 		for (OtherTSLPointer otherTSLPointerDTO : tlPointers) {
-			TLSource tlSource = new TLSource(otherTSLPointerDTO.getLocation());
+			TLSource tlSource = new TLSource();
+			tlSource.setUrl(otherTSLPointerDTO.getLocation());
 			result.add(tlSource);
 		}
 		return result;
@@ -86,7 +87,8 @@ public class ValidationJobSummaryBuilder {
 		List<LOTLSource> result = new ArrayList<LOTLSource>();
 		List<String> pivotUrls = lotlParsingResult.getPivotUrls();
 		for (String pivotUrl : pivotUrls) {
-			LOTLSource pivotSource = new LOTLSource(pivotUrl);
+			LOTLSource pivotSource = new LOTLSource();
+			pivotSource.setUrl(pivotUrl);
 			result.add(pivotSource);
 		}
 		return result;

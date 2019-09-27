@@ -25,9 +25,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -54,8 +51,6 @@ import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
  * This class allows to validate TL or LOTL.
  */
 public class TLValidatorTask implements Supplier<ValidationResult> {
-
-	private static final Logger LOG = LoggerFactory.getLogger(TLValidatorTask.class);
 
 	private final DSSDocument trustedList;
 	private final CertificateSource certificateSource;
@@ -102,8 +97,7 @@ public class TLValidatorTask implements Supplier<ValidationResult> {
 	private ValidationResult fillResult(Reports reports) {
 		SimpleReport simpleReport = reports.getSimpleReport();
 		if (simpleReport.getSignaturesCount() != 1) {
-			LOG.warn("Number of signature must be equals to 1 (currently : {})", simpleReport.getSignaturesCount());
-			return new ValidationResult(Indication.TOTAL_FAILED, null, null, null);
+			throw new DSSException(String.format("Number of signatures must be equal to 1 (currently : %s)", simpleReport.getSignaturesCount()));
 		}
 
 		Indication indication = simpleReport.getIndication(simpleReport.getFirstSignatureId());
