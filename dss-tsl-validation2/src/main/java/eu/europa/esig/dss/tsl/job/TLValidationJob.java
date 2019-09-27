@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.service.http.commons.DSSFileLoader;
+import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.tsl.cache.CacheAccessByKey;
 import eu.europa.esig.dss.tsl.cache.CacheAccessFactory;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
@@ -30,6 +31,7 @@ import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
 import eu.europa.esig.dss.tsl.summary.ValidationJobSummary;
 import eu.europa.esig.dss.tsl.summary.ValidationJobSummaryBuilder;
+import eu.europa.esig.dss.tsl.sync.TrustedListCertificateSourceSynchronizer;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
@@ -74,6 +76,11 @@ public class TLValidationJob {
 	 */
 	private CacheCleaner cacheCleaner;
 
+	/**
+	 * The certificate source to be synchronized
+	 */
+	private TrustedListsCertificateSource trustedListCertificateSource;
+
 	public void setTrustedListSources(TLSource... trustedListSources) {
 		this.trustedListSources = trustedListSources;
 	}
@@ -113,6 +120,17 @@ public class TLValidationJob {
 		this.cacheCleaner = cacheCleaner;
 	}
 	
+	/**
+	 * Sets the TrustedListsCertificateSource to be filled with the job
+	 * 
+	 * @param trustedListCertificateSource
+	 *                                     the TrustedListsCertificateSource to fill
+	 *                                     with the job results
+	 */
+	public void setTrustedListCertificateSource(TrustedListsCertificateSource trustedListCertificateSource) {
+		this.trustedListCertificateSource = trustedListCertificateSource;
+	}
+
 	/**
 	 * Returns validation job summary for all processed LOTL / TLs
 	 * @return {@link ValidationJobSummary}
@@ -158,16 +176,19 @@ public class TLValidationJob {
 			// Check LOTLs consistency
 
 			// extract TLSources from cached LOTLs
-			
 			currentTLSources.addAll(extractTlSources(lotlList));
 		}
 
 		// And then, execute all TLs (manual configs + TLs from LOTLs)
 		executeTLSourcesAnalysis(currentTLSources, dssFileLoader);
 
+		// Compute summary
+		ValidationJobSummary summaryBeforeSync = getSummary();
+
 		// alerts()
 
 		// TLCerSource sync + cache sync if needed
+		synchronizeTLCertificateSource(summaryBeforeSync);
 
 		executeTLSourcesClean(currentTLSources, dssFileLoader);
 	}
@@ -240,6 +261,17 @@ public class TLValidationJob {
 		}
 	}
 	
+	private void synchronizeTLCertificateSource(ValidationJobSummary summaryBeforeSync) {
+		if (trustedListCertificateSource == null) {
+			LOG.warn("No TrustedListCertificateSource to be synchronized");
+			return;
+		}
+
+		TrustedListCertificateSourceSynchronizer synchronizer = new TrustedListCertificateSourceSynchronizer(summaryBeforeSync, trustedListCertificateSource,
+				cacheAccessFactory.getSynchronizerCacheAccess());
+		synchronizer.sync();
+	}
+
 	private void executeTLSourcesClean(List<TLSource> tlSources, DSSFileLoader dssFileLoader) {
 		if (cacheCleaner == null) {
 			LOG.debug("Cache cleaner is not defined");

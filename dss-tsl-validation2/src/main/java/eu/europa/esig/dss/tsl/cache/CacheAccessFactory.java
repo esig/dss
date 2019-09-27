@@ -25,4 +25,8 @@ public final class CacheAccessFactory {
 		return new ReadOnlyCacheAccess(downloadCache, parsingCache, validationCache);
 	}
 
+	public SynchronizerCacheAccess getSynchronizerCacheAccess() {
+		return new SynchronizerCacheAccess(downloadCache, parsingCache, validationCache);
+	}
+
 }
