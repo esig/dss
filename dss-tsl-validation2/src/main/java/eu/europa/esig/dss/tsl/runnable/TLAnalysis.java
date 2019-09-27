@@ -45,11 +45,11 @@ public class TLAnalysis extends AbstractAnalysis implements Runnable {
 		// True if EMPTY / EXPIRED by TL/LOTL
 		if (cacheAccess.isParsingRefreshNeeded()) {
 			try {
-				LOG.info("Parsing a file received from url [{}]...", source.getUrl());
+				LOG.debug("Parsing TL with cache key '{}'...", source.getCacheKey().getKey());
 				TLParsingTask parsingTask = new TLParsingTask(document, source);
 				cacheAccess.update(parsingTask.get());
 			} catch (Exception e) {
-				LOG.error("An error occurred on parsing a file from url [{}]. Reason : {}", source.getUrl(), e.getMessage());
+				LOG.error("Cannot parse the TL with the cache key '{}' : {}", source.getCacheKey().getKey(), e.getMessage());
 				cacheAccess.parsingError(e);
 			}
 		}

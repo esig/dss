@@ -139,9 +139,11 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 		// True if EMPTY / EXPIRED by TL/LOTL
 		if (pivotCacheAccess.isValidationRefreshNeeded()) {
 			try {
+				LOG.debug("Validating the pivot LOTL with cache key '{}'...", pivotCacheAccess.getCacheKey().getKey());
 				TLValidatorTask validationTask = new TLValidatorTask(document, certificateSource);
 				pivotCacheAccess.update(validationTask.get());
 			} catch (Exception e) {
+				LOG.error("Cannot validate the pivot LOTL with the cache key '{}' : {}", pivotCacheAccess.getCacheKey().getKey(), e.getMessage());
 				pivotCacheAccess.validationError(e);
 			}
 		}
