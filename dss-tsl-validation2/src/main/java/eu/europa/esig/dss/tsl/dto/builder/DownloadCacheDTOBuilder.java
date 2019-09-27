@@ -1,10 +1,10 @@
-package eu.europa.esig.dss.tsl.cache;
+package eu.europa.esig.dss.tsl.dto.builder;
 
 import java.util.Date;
 
-import eu.europa.esig.dss.tsl.cache.dto.DownloadCacheDTO;
 import eu.europa.esig.dss.tsl.cache.state.CachedEntry;
 import eu.europa.esig.dss.tsl.download.XmlDownloadResult;
+import eu.europa.esig.dss.tsl.dto.DownloadCacheDTO;
 
 public class DownloadCacheDTOBuilder extends AbstractCacheDTOBuilder<XmlDownloadResult> {
 	

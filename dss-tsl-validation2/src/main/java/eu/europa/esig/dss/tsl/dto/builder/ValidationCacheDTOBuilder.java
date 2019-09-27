@@ -1,12 +1,12 @@
-package eu.europa.esig.dss.tsl.cache;
+package eu.europa.esig.dss.tsl.dto.builder;
 
 import java.util.Date;
 
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.tsl.cache.dto.ValidationCacheDTO;
 import eu.europa.esig.dss.tsl.cache.state.CachedEntry;
+import eu.europa.esig.dss.tsl.dto.ValidationCacheDTO;
 import eu.europa.esig.dss.tsl.validation.ValidationResult;
 
 public class ValidationCacheDTOBuilder extends AbstractCacheDTOBuilder<ValidationResult> {

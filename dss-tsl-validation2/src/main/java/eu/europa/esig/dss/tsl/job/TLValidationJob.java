@@ -22,7 +22,7 @@ import eu.europa.esig.dss.tsl.cache.CacheAccessFactory;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
 import eu.europa.esig.dss.tsl.cache.ReadOnlyCacheAccess;
-import eu.europa.esig.dss.tsl.cache.dto.ParsingCacheDTO;
+import eu.europa.esig.dss.tsl.dto.ParsingCacheDTO;
 import eu.europa.esig.dss.tsl.runnable.LOTLAnalysis;
 import eu.europa.esig.dss.tsl.runnable.LOTLWithPivotsAnalysis;
 import eu.europa.esig.dss.tsl.runnable.TLAnalysis;

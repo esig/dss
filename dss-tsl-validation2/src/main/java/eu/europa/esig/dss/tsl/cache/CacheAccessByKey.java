@@ -1,9 +1,9 @@
 package eu.europa.esig.dss.tsl.cache;
 
-import eu.europa.esig.dss.tsl.cache.dto.DownloadCacheDTO;
-import eu.europa.esig.dss.tsl.cache.dto.ParsingCacheDTO;
-import eu.europa.esig.dss.tsl.cache.dto.ValidationCacheDTO;
 import eu.europa.esig.dss.tsl.download.XmlDownloadResult;
+import eu.europa.esig.dss.tsl.dto.DownloadCacheDTO;
+import eu.europa.esig.dss.tsl.dto.ParsingCacheDTO;
+import eu.europa.esig.dss.tsl.dto.ValidationCacheDTO;
 import eu.europa.esig.dss.tsl.parsing.AbstractParsingResult;
 import eu.europa.esig.dss.tsl.validation.ValidationResult;
 

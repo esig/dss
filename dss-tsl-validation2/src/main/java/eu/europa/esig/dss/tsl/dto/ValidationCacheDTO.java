@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.tsl.cache.dto;
+package eu.europa.esig.dss.tsl.dto;
 
 import java.util.Date;
 

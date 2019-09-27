@@ -3,9 +3,12 @@ package eu.europa.esig.dss.tsl.cache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.tsl.cache.dto.DownloadCacheDTO;
-import eu.europa.esig.dss.tsl.cache.dto.ParsingCacheDTO;
-import eu.europa.esig.dss.tsl.cache.dto.ValidationCacheDTO;
+import eu.europa.esig.dss.tsl.dto.DownloadCacheDTO;
+import eu.europa.esig.dss.tsl.dto.ParsingCacheDTO;
+import eu.europa.esig.dss.tsl.dto.ValidationCacheDTO;
+import eu.europa.esig.dss.tsl.dto.builder.DownloadCacheDTOBuilder;
+import eu.europa.esig.dss.tsl.dto.builder.ParsingCacheDTOBuilder;
+import eu.europa.esig.dss.tsl.dto.builder.ValidationCacheDTOBuilder;
 
 public class ReadOnlyCacheAccess {
 

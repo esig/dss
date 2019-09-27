@@ -1,13 +1,14 @@
-package eu.europa.esig.dss.tsl.cache;
+package eu.europa.esig.dss.tsl.dto.builder;
 
 import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.tsl.cache.dto.AbstractCacheDTO;
+import eu.europa.esig.dss.tsl.cache.CachedResult;
 import eu.europa.esig.dss.tsl.cache.state.CacheStateEnum;
 import eu.europa.esig.dss.tsl.cache.state.CachedEntry;
+import eu.europa.esig.dss.tsl.dto.AbstractCacheDTO;
 
 public abstract class AbstractCacheDTOBuilder<R extends CachedResult> {
 

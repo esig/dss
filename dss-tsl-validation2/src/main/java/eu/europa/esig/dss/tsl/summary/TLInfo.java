@@ -3,9 +3,9 @@ package eu.europa.esig.dss.tsl.summary;
 import java.io.Serializable;
 
 import eu.europa.esig.dss.tsl.cache.CacheAccessByKey;
-import eu.europa.esig.dss.tsl.cache.dto.DownloadCacheDTO;
-import eu.europa.esig.dss.tsl.cache.dto.ParsingCacheDTO;
-import eu.europa.esig.dss.tsl.cache.dto.ValidationCacheDTO;
+import eu.europa.esig.dss.tsl.dto.DownloadCacheDTO;
+import eu.europa.esig.dss.tsl.dto.ParsingCacheDTO;
+import eu.europa.esig.dss.tsl.dto.ValidationCacheDTO;
 
 /**
  * Computes summary for a single Trusted List processing result

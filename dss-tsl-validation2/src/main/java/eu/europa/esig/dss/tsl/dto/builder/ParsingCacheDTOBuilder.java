@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.tsl.cache;
+package eu.europa.esig.dss.tsl.dto.builder;
 
 import java.util.Collections;
 import java.util.Date;
@@ -7,9 +7,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.tsl.cache.dto.ParsingCacheDTO;
 import eu.europa.esig.dss.tsl.cache.state.CachedEntry;
 import eu.europa.esig.dss.tsl.dto.OtherTSLPointerDTO;
+import eu.europa.esig.dss.tsl.dto.ParsingCacheDTO;
 import eu.europa.esig.dss.tsl.dto.TrustServiceProvider;
 import eu.europa.esig.dss.tsl.parsing.AbstractParsingResult;
 import eu.europa.esig.dss.tsl.parsing.LOTLParsingResult;
@@ -33,12 +33,20 @@ public class ParsingCacheDTOBuilder extends AbstractCacheDTOBuilder<AbstractPars
 			parsingCacheDTO.setIssueDate(getIssueDate());
 			parsingCacheDTO.setNextUpdateDate(getNextUpdateDate());
 			parsingCacheDTO.setDistributionPoints(getDistributionPoints());
-			parsingCacheDTO.setTrustServiceProviders(getTrustServiceProviders());
-			parsingCacheDTO.setLotlOtherPointers(getLOTLOtherPointers());
-			parsingCacheDTO.setTlOtherPointers(getTLOtherPointers());
-			parsingCacheDTO.setPivotUrls(getPivotUrls());
+			if (isLOTL()) {
+				parsingCacheDTO.setLotlOtherPointers(getLOTLOtherPointers());
+				parsingCacheDTO.setTlOtherPointers(getTLOtherPointers());
+				parsingCacheDTO.setPivotUrls(getPivotUrls());
+				parsingCacheDTO.setSigningCertificateAnnouncementUrl(getSigningCertificateAnnouncementUrl());
+			} else {
+				parsingCacheDTO.setTrustServiceProviders(getTrustServiceProviders());
+			}
 		}
 		return parsingCacheDTO;
+	}
+	
+	private boolean isLOTL() {
+		return getResult() instanceof LOTLParsingResult;
 	}
 	
 	private Integer getSequenceNumber() {
@@ -99,6 +107,15 @@ public class ParsingCacheDTOBuilder extends AbstractCacheDTOBuilder<AbstractPars
 		}
 		LOG.debug("Cannot extract Pivot URLs for the entry. The parsed file is not a LOTL. Return empty list.");
 		return Collections.emptyList();
+	}
+	
+	private String getSigningCertificateAnnouncementUrl() {
+		AbstractParsingResult result = getResult();
+		if (result instanceof LOTLParsingResult) {
+			return ((LOTLParsingResult) getResult()).getSigningCertificateAnnouncementURL();
+		}
+		LOG.debug("Cannot extract Pivot URLs for the entry. The parsed file is not a LOTL. Return empty list.");
+		return null;
 	}
 
 }
