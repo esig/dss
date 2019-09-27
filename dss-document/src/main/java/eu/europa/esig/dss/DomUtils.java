@@ -243,6 +243,7 @@ public final class DomUtils {
 	 * @return a new {@link org.w3c.dom.Document} from {@link eu.europa.esig.dss.model.DSSDocument}
 	 */
 	public static Document buildDOM(final DSSDocument dssDocument) {
+		Objects.requireNonNull(dssDocument, "The document is null");
 		return buildDOM(dssDocument.openStream());
 	}
 

@@ -32,9 +32,6 @@ public class XmlDownloadTask implements Supplier<XmlDownloadResult> {
 	public XmlDownloadResult get() {
 		try {
 			final DSSDocument dssDocument = dssFileLoader.getDocument(url);
-			if (dssDocument == null) {
-				throw new DSSException(String.format("Cannot extract file content from url [%s]", url));
-			}
 			final Document dom = DomUtils.buildDOM(dssDocument);
 			final byte[] canonicalizedContent = DSSXMLUtils.canonicalizeOrSerializeSubtree(CanonicalizationMethod.EXCLUSIVE, dom);
 			return new XmlDownloadResult(dssDocument, new Digest(DigestAlgorithm.SHA256, DSSUtils.digest(DigestAlgorithm.SHA256, canonicalizedContent)));
