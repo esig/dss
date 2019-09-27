@@ -112,13 +112,17 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 				validationPivot(pivotCacheAccess, pivotProcessingResult.getPivot(), currentCertificateSource);
 
 				ValidationCacheDTO validationResult = readOnlyCacheAccess.getValidationCacheDTO(cacheKey);
-				if (validationResult != null && validationResult.isValid()) {
-					currentCertificateSource = buildNewCertificateSource(pivotProcessingResult.getLotlSigCerts());
+				if (validationResult != null) {
+					if (validationResult.isValid()) {
+						currentCertificateSource = buildNewCertificateSource(pivotProcessingResult.getLotlSigCerts());
+					} else {
+						LOG.warn("Pivot LOTL '{}' is not valid ({}/{})", pivotUrl, validationResult.getIndication(), validationResult.getSubIndication());
+					}
 				} else {
-					LOG.warn(String.format("Pivot '%s' cannot be validated", pivotUrl));
+					LOG.warn("No validation result found for Pivot LOTL '{}'", pivotUrl);
 				}
 			} else {
-				LOG.warn(String.format("Empty processing result for pivot '%s'", pivotUrl));
+				LOG.warn("No processing result for Pivot LOTL '{}'", pivotUrl);
 			}
 		}
 
@@ -139,11 +143,11 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 		// True if EMPTY / EXPIRED by TL/LOTL
 		if (pivotCacheAccess.isValidationRefreshNeeded()) {
 			try {
-				LOG.debug("Validating the pivot LOTL with cache key '{}'...", pivotCacheAccess.getCacheKey().getKey());
+				LOG.debug("Validating the Pivot LOTL with cache key '{}'...", pivotCacheAccess.getCacheKey().getKey());
 				TLValidatorTask validationTask = new TLValidatorTask(document, certificateSource);
 				pivotCacheAccess.update(validationTask.get());
 			} catch (Exception e) {
-				LOG.error("Cannot validate the pivot LOTL with the cache key '{}' : {}", pivotCacheAccess.getCacheKey().getKey(), e.getMessage());
+				LOG.error("Cannot validate the Pivot LOTL with the cache key '{}' : {}", pivotCacheAccess.getCacheKey().getKey(), e.getMessage());
 				pivotCacheAccess.validationError(e);
 			}
 		}

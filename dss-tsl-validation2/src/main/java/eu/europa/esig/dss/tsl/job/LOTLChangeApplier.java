@@ -52,7 +52,7 @@ public class LOTLChangeApplier {
 	private void detectUrlChanges(Map<String, List<CertificateToken>> oldUrlCerts, Map<String, List<CertificateToken>> newUrlCerts) {
 		for (String oldUrl : oldUrlCerts.keySet()) {
 			if (!newUrlCerts.containsKey(oldUrl)) {
-				LOG.info("Expired TL URL : {}", oldUrl);
+				LOG.info("Expired TL with URL '{}'", oldUrl);
 				cacheAccess.toBeDeleted(new CacheKey(oldUrl));
 			}
 		}
@@ -63,7 +63,7 @@ public class LOTLChangeApplier {
 			List<CertificateToken> oldCerts = oldUrlCerts.get(newUrl);
 			List<CertificateToken> newCerts = newUrlCerts.get(newUrl);
 			if (oldCerts == null || !oldCerts.equals(newCerts)) {
-				LOG.info("Signing certificates change detected for TL URL : {}", newUrl);
+				LOG.info("Signing certificates change detected for TL with URL '{}'", newUrl);
 				cacheAccess.expireSignatureValidation(new CacheKey(newUrl));
 			}
 		}

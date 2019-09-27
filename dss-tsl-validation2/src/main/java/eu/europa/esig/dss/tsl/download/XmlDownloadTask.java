@@ -36,7 +36,7 @@ public class XmlDownloadTask implements Supplier<XmlDownloadResult> {
 			final byte[] canonicalizedContent = DSSXMLUtils.canonicalizeOrSerializeSubtree(CanonicalizationMethod.EXCLUSIVE, dom);
 			return new XmlDownloadResult(dssDocument, new Digest(DigestAlgorithm.SHA256, DSSUtils.digest(DigestAlgorithm.SHA256, canonicalizedContent)));
 		} catch (Exception e) {
-			throw new DSSException(String.format("Unable to retieve the content for url '%s'. Reason : '%s'", url, e.getMessage()), e);
+			throw new DSSException(String.format("Unable to retrieve the content for url '%s'. Reason : '%s'", url, e.getMessage()), e);
 		}
 	}
 
