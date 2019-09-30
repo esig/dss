@@ -129,7 +129,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		if (addASiCArchiveManifest) {
 			String timestampFilename = getArchiveTimestampFilename(timestamps);
 			ASiCEWithCAdESArchiveManifestBuilder builder = new ASiCEWithCAdESArchiveManifestBuilder(signatures, timestamps, dataToSignHelper.getSignedDocuments(),
-					manifests, parameters.getArchiveTimestampParameters().getDigestAlgorithm(), timestampFilename);
+					manifests, null, parameters.getArchiveTimestampParameters().getDigestAlgorithm(), timestampFilename);
 
 			DSSDocument archiveManfest = DomUtils.createDssDocumentFromDomDocument(builder.build(), getArchiveManifestFilename(archiveManifests));
 			signatures.add(archiveManfest);
@@ -231,6 +231,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		String timestampFilename = getArchiveTimestampFilename(timestamps);
 		
 		DSSDocument lastTimestamp = getLastTimestamp(timestamps);
+		DSSDocument lastArchiveManifest = null;
 		if (lastTimestamp != null) {
 			DSSDocument extendedArchiveTimestamp = extendArchiveTimestamp(lastTimestamp, parameters.getDetachedContents());
 			// a newer version of the timestamp must be created
@@ -241,7 +242,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 				// current ArchiveManifest must be renamed if exists
 				if (DEFAULT_ARCHIVE_MANIFEST_FILENAME.equals(manifest.getName())) {
 					manifest.setName(getArchiveManifestFilename(archiveManifests));
-					extendedDocuments.add(manifest);
+					lastArchiveManifest = manifest;
 				} else {
 					// all other present manifests must be included to the computing list as well
 					manifests.add(manifest);
@@ -250,10 +251,13 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		}
 		
 		ASiCEWithCAdESArchiveManifestBuilder builder = new ASiCEWithCAdESArchiveManifestBuilder(extendedDocuments, timestamps, 
-				signedDocuments, manifests, parameters.getArchiveTimestampParameters().getDigestAlgorithm(), timestampFilename);
+				signedDocuments, manifests, lastArchiveManifest, parameters.getArchiveTimestampParameters().getDigestAlgorithm(), timestampFilename);
 
 		DSSDocument archiveManfest = DomUtils.createDssDocumentFromDomDocument(builder.build(), DEFAULT_ARCHIVE_MANIFEST_FILENAME);
 		extendedDocuments.add(archiveManfest);
+		if (lastArchiveManifest != null) {
+			extendedDocuments.add(lastArchiveManifest);
+		}
 
 		DigestAlgorithm digestAlgorithm = parameters.getArchiveTimestampParameters().getDigestAlgorithm();
 		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, DSSUtils.digest(digestAlgorithm, archiveManfest));

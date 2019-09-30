@@ -33,10 +33,13 @@ public final class ASiCNamespace {
 	public static final String SIG_REFERENCE_URI = "asic:SigReference/@URI";
 	public static final String DATA_OBJECT_REFERENCE = "asic:DataObjectReference";
 	public static final String DATA_OBJECT_REFERENCE_MIMETYPE = "MimeType";
+	public static final String DATA_OBJECT_REFERENCE_ROOTFILE = "Rootfile";
 	public static final String DATA_OBJECT_REFERENCE_URI = "URI";
 	public static final String DIGEST_METHOD = "ds:DigestMethod";
 	public static final String DIGEST_METHOD_ALGORITHM = "Algorithm";
 	public static final String DIGEST_VALUE = "ds:DigestValue";
+	
+	public static final String DATA_OBJECT_REFERENCE_ROOTFILE_VALUE_TRUE = "true";
 
 	public static final String LIBREOFFICE_SIGNATURES = "document-signatures";
 	public static final String LIBREOFFICE_NS = "urn:oasis:names:tc:opendocument:xmlns:digitalsignature:1.0";

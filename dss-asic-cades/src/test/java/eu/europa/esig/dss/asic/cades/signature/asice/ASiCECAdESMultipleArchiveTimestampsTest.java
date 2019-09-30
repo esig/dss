@@ -20,8 +20,10 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asice;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -79,7 +81,7 @@ public class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(documentToSigns, signatureParameters, signatureValue);
 
-		signedDocument.save("target/signed.asice");
+		// signedDocument.save("target/signed.asice");
 
 		service.setTspSource(getAlternateGoodTsa());
 
@@ -87,10 +89,15 @@ public class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
 		extendParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 		extendParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 		DSSDocument extendDocument = service.extendDocument(signedDocument, extendParameters);
+		
+		// extendDocument.save("target/extended.asice");
+		
+		DSSDocument doubleExtendedDocument = service.extendDocument(extendDocument, extendParameters);
+		
+		// doubleExtendedDocument.save("target/doubleExtendedDocument.asice");
+		
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doubleExtendedDocument);
 
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(extendDocument);
-
-		extendDocument.save("target/extended.asice");
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 
 		Reports reports = validator.validateDocument();
@@ -101,7 +108,7 @@ public class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
 
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		List<TimestampWrapper> timestampList = signatureWrapper.getTimestampList();
-		assertEquals(3, timestampList.size());
+		assertEquals(4, timestampList.size());
 
 		for (TimestampWrapper timestampWrapper : timestampList) {
 			assertTrue(timestampWrapper.isSignatureValid());
@@ -109,7 +116,7 @@ public class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
 			assertTrue(timestampWrapper.isMessageImprintDataIntact());
 		}
 
-		AbstractASiCContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(extendDocument);
+		AbstractASiCContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(doubleExtendedDocument);
 		ASiCExtractResult result = extractor.extract();
 
 		assertEquals(0, result.getUnsupportedDocuments().size());
@@ -129,9 +136,6 @@ public class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
 		assertTrue(manifestFilename.startsWith("META-INF/ASiCManifest"));
 		assertTrue(manifestFilename.endsWith(".xml"));
 
-		List<DSSDocument> archiveManifestDocuments = result.getArchiveManifestDocuments();
-		assertEquals(2, archiveManifestDocuments.size());
-
 		List<DSSDocument> signedDocuments = result.getSignedDocuments();
 		assertEquals(2, signedDocuments.size());
 
@@ -139,22 +143,39 @@ public class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
 		assertNotNull(linkedManifest);
 		ManifestFile linkedManifestFile = ASiCEWithCAdESManifestParser.getManifestFile(linkedManifest);
 		assertNotNull(linkedManifestFile);
+		assertFalse(linkedManifestFile.isArchiveManifest());
+		
 		ASiCEWithCAdESManifestValidator linkedManifestFileValidator = new ASiCEWithCAdESManifestValidator(linkedManifestFile, signedDocuments);
 		List<ManifestEntry> linkedManifestFileEntries = linkedManifestFileValidator.validateEntries();
 		validateEntries(linkedManifestFileEntries);
 
-		String lastCreatedArchiveManifestName = null;
+		List<DSSDocument> archiveManifestDocuments = result.getArchiveManifestDocuments();
+		assertEquals(3, archiveManifestDocuments.size());
+
+		ManifestFile lastCreatedArchiveManifestFile = null;
 		for (DSSDocument timestamp : timestamps) {
 			linkedManifest = ASiCEWithCAdESManifestParser.getLinkedManifest(archiveManifestDocuments, timestamp.getName());
 			assertNotNull(linkedManifest);
-			ManifestFile archiveManifestFile = ASiCEWithCAdESManifestParser.getManifestFile(linkedManifest);
-			assertNotNull(archiveManifestFile);
-			lastCreatedArchiveManifestName = archiveManifestFile.getFilename();
-			ASiCEWithCAdESManifestValidator archiveManifestValidator = new ASiCEWithCAdESManifestValidator(archiveManifestFile, result.getTimestampedDocuments(timestamp));
+			lastCreatedArchiveManifestFile = ASiCEWithCAdESManifestParser.getManifestFile(linkedManifest);
+			assertNotNull(lastCreatedArchiveManifestFile);
+			assertTrue(lastCreatedArchiveManifestFile.isArchiveManifest());
+			ASiCEWithCAdESManifestValidator archiveManifestValidator = 
+					new ASiCEWithCAdESManifestValidator(lastCreatedArchiveManifestFile, result.getTimestampedDocuments(timestamp));
 			List<ManifestEntry> archiveManifestEntries = archiveManifestValidator.validateEntries();
 			validateEntries(archiveManifestEntries);
+			
+			ManifestEntry rootfile = getRootfile(lastCreatedArchiveManifestFile);
+			if ("META-INF/ASiCArchiveManifest1.xml".equals(lastCreatedArchiveManifestFile.getFilename())) {
+				assertNull(rootfile); // first created ArchiveManifest does not contain a "Rootfile" element
+			} else {
+				assertNotNull(rootfile);
+			}
 		}
-		assertEquals("META-INF/ASiCArchiveManifest.xml", lastCreatedArchiveManifestName);
+		assertNotNull(lastCreatedArchiveManifestFile);
+		assertEquals("META-INF/ASiCArchiveManifest.xml", lastCreatedArchiveManifestFile.getFilename());
+		
+		ManifestEntry rootfile = getRootfile(lastCreatedArchiveManifestFile);
+		assertEquals("META-INF/ASiCArchiveManifest2.xml", rootfile.getFileName());
 
 		DSSDocument mimeTypeDocument = result.getMimeTypeDocument();
 
@@ -165,6 +186,19 @@ public class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
 			fail(e.getMessage());
 		}
 
+	}
+	
+	private ManifestEntry getRootfile(ManifestFile manifestFile) {
+		int rootfiles = 0;
+		ManifestEntry rootfile = null; 
+		for (ManifestEntry entry : manifestFile.getEntries()) {
+			if (entry.isRootfile()) {
+				rootfile = entry;
+				rootfiles++;
+			}
+		}
+		assertTrue(rootfiles < 2); // 0 or 1 is allowed
+		return rootfile;
 	}
 	
 	private void validateEntries(List<ManifestEntry> entries) {

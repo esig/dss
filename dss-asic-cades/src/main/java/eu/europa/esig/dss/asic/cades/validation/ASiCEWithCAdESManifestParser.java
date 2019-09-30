@@ -34,6 +34,7 @@ import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.common.ASiCNamespace;
+import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -66,6 +67,7 @@ public class ASiCEWithCAdESManifestParser {
 		manifest.setDocument(manifestDocument);
 		manifest.setSignatureFilename(getLinkedSignatureName(root));
 		manifest.setEntries(parseManifestEntries(root));
+		manifest.setArchiveManifest(ASiCUtils.isArchiveManifest(manifestDocument.getName()));
 		return manifest;
 	}
 	
@@ -151,6 +153,11 @@ public class ASiCEWithCAdESManifestParser {
 				byte[] digestValueBinary = getDigestValue(dataObjectReference);
 				if (digestAlgorithm != null && digestValueBinary != null) {
 					entry.setDigest(new Digest(digestAlgorithm, digestValueBinary));
+				}
+				
+				String attribute = dataObjectReference.getAttribute(ASiCNamespace.DATA_OBJECT_REFERENCE_ROOTFILE);
+				if (attribute != null && ASiCNamespace.DATA_OBJECT_REFERENCE_ROOTFILE_VALUE_TRUE.equals(attribute.toLowerCase())) {
+					entry.setRootfile(true);
 				}
 				
 				entries.add(entry);

@@ -62,15 +62,17 @@ public class ASiCEWithCAdESArchiveManifestBuilder extends AbstractManifestBuilde
 	private final List<DSSDocument> timestamps;
 	private final List<DSSDocument> documents;
 	private final List<DSSDocument> manifests;
+	private final DSSDocument lastArchiveManifest; // "root" archive manifest
 	private final DigestAlgorithm digestAlgorithm;
 	private final String timestampUri;
 
-	public ASiCEWithCAdESArchiveManifestBuilder(List<DSSDocument> signatures, List<DSSDocument> timestamps, 
-			List<DSSDocument> documents, List<DSSDocument> manifests, DigestAlgorithm digestAlgorithm, String timestampUri) {
+	public ASiCEWithCAdESArchiveManifestBuilder(List<DSSDocument> signatures, List<DSSDocument> timestamps, List<DSSDocument> documents, 
+			List<DSSDocument> manifests, DSSDocument lastArchiveManifets, DigestAlgorithm digestAlgorithm, String timestampUri) {
 		this.signatures = signatures;
 		this.timestamps = timestamps;
 		this.documents = documents;
 		this.manifests = manifests;
+		this.lastArchiveManifest = lastArchiveManifets;
 		this.digestAlgorithm = digestAlgorithm;
 		this.timestampUri = timestampUri;
 	}
@@ -81,6 +83,10 @@ public class ASiCEWithCAdESArchiveManifestBuilder extends AbstractManifestBuilde
 		documentDom.appendChild(asicManifestDom);
 
 		addSigReference(documentDom, asicManifestDom, timestampUri, MimeType.TST);
+		
+		if (lastArchiveManifest != null) {
+			addDataObjectReferenceForRootArchiveManifest(documentDom, asicManifestDom, lastArchiveManifest, digestAlgorithm);
+		}
 
 		for (DSSDocument signature : signatures) {
 			addDataObjectReference(documentDom, asicManifestDom, signature, digestAlgorithm);
@@ -99,6 +105,13 @@ public class ASiCEWithCAdESArchiveManifestBuilder extends AbstractManifestBuilde
 		}
 
 		return documentDom;
+	}
+	
+	private Element addDataObjectReferenceForRootArchiveManifest(final Document documentDom, final Element asicManifestDom, 
+			DSSDocument document, DigestAlgorithm digestAlgorithm) {
+		Element dataObjectReferenceElement = addDataObjectReference(documentDom, asicManifestDom, document, digestAlgorithm);
+		dataObjectReferenceElement.setAttribute(ASiCNamespace.DATA_OBJECT_REFERENCE_ROOTFILE, ASiCNamespace.DATA_OBJECT_REFERENCE_ROOTFILE_VALUE_TRUE);
+		return dataObjectReferenceElement;
 	}
 
 }

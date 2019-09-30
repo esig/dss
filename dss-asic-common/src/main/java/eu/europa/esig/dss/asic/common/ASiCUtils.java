@@ -252,6 +252,10 @@ public final class ASiCUtils {
 		return false;
 	}
 	
+	public static boolean isArchiveManifest(String fileName) {
+		return fileName.contains("ASiCArchiveManifest") && fileName.endsWith(".xml");
+	}
+	
 	/**
 	 * Reads and copies InputStream in a secure way, depending on the provided container size
 	 * This method allows to detect "ZipBombing" (large files inside a zip container)
