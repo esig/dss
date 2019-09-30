@@ -83,10 +83,6 @@ public class ASiCEWithCAdESArchiveManifestBuilder extends AbstractManifestBuilde
 		documentDom.appendChild(asicManifestDom);
 
 		addSigReference(documentDom, asicManifestDom, timestampUri, MimeType.TST);
-		
-		if (lastArchiveManifest != null) {
-			addDataObjectReferenceForRootArchiveManifest(documentDom, asicManifestDom, lastArchiveManifest, digestAlgorithm);
-		}
 
 		for (DSSDocument signature : signatures) {
 			addDataObjectReference(documentDom, asicManifestDom, signature, digestAlgorithm);
@@ -98,6 +94,10 @@ public class ASiCEWithCAdESArchiveManifestBuilder extends AbstractManifestBuilde
 
 		for (DSSDocument manifest : manifests) {
 			addDataObjectReference(documentDom, asicManifestDom, manifest, digestAlgorithm);
+		}
+		
+		if (lastArchiveManifest != null) {
+			addDataObjectReferenceForRootArchiveManifest(documentDom, asicManifestDom, lastArchiveManifest, digestAlgorithm);
 		}
 
 		for (DSSDocument document : documents) {
