@@ -668,6 +668,8 @@ public class ETSIValidationReportBuilder {
 				}
 				if (isTrustAnchor) {
 					trustAnchor = currentVORef;
+					// Stops with the first found trust anchor
+					break;
 				}
 			} else {
 				certificateChainType.getIntermediateCertificate().add(currentVORef);
