@@ -1,6 +1,5 @@
 package eu.europa.esig.dss.tsl.parsing;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -18,17 +17,6 @@ public abstract class AbstractParsingResult implements CachedResult {
 	AbstractParsingResult() {
 	}
 	
-	AbstractParsingResult(AbstractParsingResult parsingResult) {
-		this.sequenceNumber = parsingResult.sequenceNumber;
-		this.version = parsingResult.version;
-		this.territory = parsingResult.territory;
-		this.issueDate = parsingResult.issueDate;
-		this.nextUpdateDate = parsingResult.nextUpdateDate;
-		if (parsingResult.distributionPoints != null) {
-			this.distributionPoints = new ArrayList<String>(parsingResult.distributionPoints);
-		}
-	}
-
 	public int getSequenceNumber() {
 		return sequenceNumber;
 	}

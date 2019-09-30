@@ -21,13 +21,6 @@ public class ValidationResult implements CachedResult {
 		this.signingCertificate = signingCertificate;
 	}
 	
-	public ValidationResult(ValidationResult validationResult) {
-		this.indication = validationResult.indication;
-		this.subIndication = validationResult.subIndication;
-		this.signingTime = validationResult.signingTime;
-		this.signingCertificate = validationResult.signingCertificate;
-	}
-
 	public Indication getIndication() {
 		return indication;
 	}
