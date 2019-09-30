@@ -140,7 +140,7 @@
             <SignatureQualityInformation>urn:cef:dss:signatureQualification:notApplicable</SignatureQualityInformation>
         </SignatureQuality>
         <SignatureValidationProcess>
-            <SignatureValidationProcessID>urn::etsi:019102:validationprocess:LTA</SignatureValidationProcessID>
+            <SignatureValidationProcessID>urn:etsi:019102:validationprocess:LTA</SignatureValidationProcessID>
         </SignatureValidationProcess>
         <SignatureValidationStatus>
             <MainIndication>urn:etsi:019102:mainindication:total-passed</MainIndication>
