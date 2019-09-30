@@ -39,7 +39,9 @@ public class CacheCleaner {
 
 	/**
 	 * Setter for cleanMemory property
-	 * @param cleanFileSystem - if TRUE, removes TO_BE_DELETED entries from in memory maps
+	 * 
+	 * @param cleanMemory
+	 *                    if TRUE, removes TO_BE_DELETED entries from in memory maps
 	 */
 	public void setCleanMemory(final boolean cleanMemory) {
 		this.cleanMemory = cleanMemory;
@@ -47,7 +49,10 @@ public class CacheCleaner {
 	
 	/**
 	 * Setter for cleanFileSystem property
-	 * @param cleanFileSystem - if TRUE, removes TO_BE_DELETED entries from file system
+	 * 
+	 * @param cleanFileSystem
+	 *                        if TRUE, removes TO_BE_DELETED entries from file
+	 *                        system
 	 */
 	public void setCleanFileSystem(final boolean cleanFileSystem) {
 		this.cleanFileSystem = cleanFileSystem;

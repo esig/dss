@@ -29,9 +29,9 @@ public abstract class AbstractCache<R extends CachedResult> {
 	private Map<CacheKey, CachedEntry<R>> cachedEntriesMap = new ConcurrentHashMap<CacheKey, CachedEntry<R>>();
 	
 	/**
-	 * Returns the CachedEntry<R> for the related {@code cacheKey}. Returns new empty entry if no result found for the key
+	 * Returns the CachedEntry for the related {@code cacheKey}. Returns new empty entry if no result found for the key
 	 * @param cacheKey {@link CacheKey}
-	 * @return {@link CachedEntry<R>}
+	 * @return {@link CachedEntry}
 	 */
 	protected CachedEntry<R> get(CacheKey cacheKey) {
 		LOG.trace("Extracting the result for key [{}]...", cacheKey);

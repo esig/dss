@@ -24,6 +24,12 @@ public class ValidationJobSummary {
 	
 	/**
 	 * The default constructor
+	 * 
+	 * @param lotlInfos
+	 *                     a list of LOTL info
+	 * @param otherTLInfos
+	 *                     a list of other trusted lists which are not linked to the
+	 *                     LOTLs
 	 */
 	public ValidationJobSummary(final List<LOTLInfo> lotlInfos, final List<TLInfo> otherTLInfos) {
 		this.lotlInfos = lotlInfos;
