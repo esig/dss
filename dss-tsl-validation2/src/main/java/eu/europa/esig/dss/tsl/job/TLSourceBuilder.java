@@ -28,9 +28,11 @@ public class TLSourceBuilder {
 		if (lotlList != null) {
 			for (LOTLSource lotlSource : lotlList) {
 				ParsingCacheDTO cachedResult = parsingResults.get(lotlSource.getCacheKey());
-				List<OtherTSLPointer> tlPointers = cachedResult.getTlOtherPointers();
-				for (OtherTSLPointer otherTSLPointerDTO : tlPointers) {
-					result.add(getTLSource(otherTSLPointerDTO, lotlSource));
+				if (cachedResult != null && cachedResult.isResultExist()) {
+					List<OtherTSLPointer> tlPointers = cachedResult.getTlOtherPointers();
+					for (OtherTSLPointer otherTSLPointerDTO : tlPointers) {
+						result.add(getTLSource(otherTSLPointerDTO, lotlSource));
+					}
 				}
 			}
 		}

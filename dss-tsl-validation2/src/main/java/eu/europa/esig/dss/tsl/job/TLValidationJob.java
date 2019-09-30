@@ -232,7 +232,7 @@ public class TLValidationJob {
 	}
 	
     private Map<CacheKey, ParsingCacheDTO> extractParsingCache(List<LOTLSource> lotlSources) {
-        final ReadOnlyCacheAccess readOnlyCacheAccess = cacheAccessFactory .getReadOnlyCacheAccess();
+        final ReadOnlyCacheAccess readOnlyCacheAccess = cacheAccessFactory.getReadOnlyCacheAccess();
         return lotlSources.stream().collect(Collectors.toMap(LOTLSource::getCacheKey, s -> readOnlyCacheAccess.getParsingCacheDTO(s.getCacheKey())));
     }
 

@@ -74,22 +74,26 @@ public class ValidationJobSummaryBuilder {
 	
 	private List<TLSource> extractTLSources(ParsingCacheDTO lotlParsingResult) {
 		List<TLSource> result = new ArrayList<TLSource>();
-		List<OtherTSLPointer> tlPointers = lotlParsingResult.getTlOtherPointers();
-		for (OtherTSLPointer otherTSLPointerDTO : tlPointers) {
-			TLSource tlSource = new TLSource();
-			tlSource.setUrl(otherTSLPointerDTO.getLocation());
-			result.add(tlSource);
+		if (lotlParsingResult != null && lotlParsingResult.isResultExist()) {
+			List<OtherTSLPointer> tlPointers = lotlParsingResult.getTlOtherPointers();
+			for (OtherTSLPointer otherTSLPointerDTO : tlPointers) {
+				TLSource tlSource = new TLSource();
+				tlSource.setUrl(otherTSLPointerDTO.getLocation());
+				result.add(tlSource);
+			}
 		}
 		return result;
 	}
 	
 	private List<LOTLSource> extractPivotSources(ParsingCacheDTO lotlParsingResult) {
 		List<LOTLSource> result = new ArrayList<LOTLSource>();
-		List<String> pivotUrls = lotlParsingResult.getPivotUrls();
-		for (String pivotUrl : pivotUrls) {
-			LOTLSource pivotSource = new LOTLSource();
-			pivotSource.setUrl(pivotUrl);
-			result.add(pivotSource);
+		if (lotlParsingResult != null && lotlParsingResult.isResultExist()) {
+			List<String> pivotUrls = lotlParsingResult.getPivotUrls();
+			for (String pivotUrl : pivotUrls) {
+				LOTLSource pivotSource = new LOTLSource();
+				pivotSource.setUrl(pivotUrl);
+				result.add(pivotSource);
+			}
 		}
 		return result;
 	}

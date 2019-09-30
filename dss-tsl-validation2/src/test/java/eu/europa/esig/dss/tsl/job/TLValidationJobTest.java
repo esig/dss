@@ -31,6 +31,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.tsl.LOTLInfo;
+import eu.europa.esig.dss.spi.tsl.PivotInfo;
 import eu.europa.esig.dss.spi.tsl.TLInfo;
 import eu.europa.esig.dss.spi.tsl.dto.ConditionForQualifiers;
 import eu.europa.esig.dss.spi.tsl.dto.TrustService;
@@ -38,6 +39,7 @@ import eu.europa.esig.dss.spi.tsl.dto.TrustServiceProvider;
 import eu.europa.esig.dss.spi.tsl.dto.TrustServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.spi.util.TimeDependentValues;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
+import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
 import eu.europa.esig.dss.tsl.dto.condition.CompositeCondition;
 import eu.europa.esig.dss.tsl.function.TrustServicePredicate;
@@ -61,16 +63,75 @@ public class TLValidationJobTest {
 	
 	private static final String LOTL_URL = "https://ec.europa.eu/tools/lotl/eu-lotl.xml";
 	private LOTLSource lotlSource;
-	private CertificateToken lotlSigningCertificate;
+	private static CertificateToken lotlSigningCertificate;
+	
+	private static CertificateToken pivotSigningCertificate;
 	
 	private static final String CZ_URL = "https://tsl.gov.cz/publ/TSL_CZ.xtsl";
 	private TLSource czSource;
-	private CertificateToken czSigningCertificate;
+	private static CertificateToken czSigningCertificate;
 	
 	@BeforeAll
 	public static void initBeforeAll() throws IOException {
 		urlMap = new HashMap<String, DSSDocument>();
 		
+		cacheDirectory = new File("target/cache");
+		
+		offlineFileLoader = new FileCacheDataLoader();
+		offlineFileLoader.setCacheExpirationTime(Long.MAX_VALUE);
+		offlineFileLoader.setDataLoader(new MockDataLoader(urlMap));
+		offlineFileLoader.setFileCacheDirectory(cacheDirectory);
+		
+		Map<String, DSSDocument> onlineMap = new HashMap<String, DSSDocument>();
+		onlineMap.putAll(urlMap);
+		
+		onlineFileLoader = new FileCacheDataLoader();
+		onlineFileLoader.setCacheExpirationTime(0);
+		onlineFileLoader.setDataLoader(new MockDataLoader(onlineMap));
+		onlineFileLoader.setFileCacheDirectory(cacheDirectory);
+		
+		cacheCleaner = new CacheCleaner();
+		cacheCleaner.setDSSFileLoader(offlineFileLoader);
+		cacheCleaner.setCleanFileSystem(true);
+		
+		lotlSigningCertificate = DSSUtils.loadCertificateFromBase64EncodedString("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");
+		pivotSigningCertificate = DSSUtils.loadCertificateFromBase64EncodedString("MIID/DCCAuSgAwIBAgIQEAAAAAAAWgS4SGkJJUcHdzANBgkqhkiG9w0BAQUFADAzMQswCQYDVQQGEwJCRTETMBEGA1UEAxMKQ2l0aXplbiBDQTEPMA0GA1UEBRMGMjAxMzA2MB4XDTEzMDcxNzE3NDQwOFoXDTE4MDcxMzIzNTk1OVowbjELMAkGA1UEBhMCQkUxITAfBgNVBAMTGFBpZXJyZSBEYW1hcyAoU2lnbmF0dXJlKTEOMAwGA1UEBBMFRGFtYXMxFjAUBgNVBCoMDVBpZXJyZSBBbmRyw6kxFDASBgNVBAUTCzYwMDIxMjExOTE5MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCMv+7DvhzLwG3prirUDGaYRS2+jBZtN2cYXuloKSqAc5Q58FEmk0gsZRF+/4dkt8hgCvbBcpmG6FcvTfNxQbxPX88yYwpBYsWnJ3aD5P4QrN2+fZxwxfXxRRcX+t30IBpr+WYFv/GhJhoFo0LWUehC4eyvnMfP4J/MR4TGlQRrcwIDAQABo4IBUzCCAU8wHwYDVR0jBBgwFoAUww/Dck0/3rI43jkuR2RQ//KP88cwbgYIKwYBBQUHAQEEYjBgMDYGCCsGAQUFBzAChipodHRwOi8vY2VydHMuZWlkLmJlbGdpdW0uYmUvYmVsZ2l1bXJzMi5jcnQwJgYIKwYBBQUHMAGGGmh0dHA6Ly9vY3NwLmVpZC5iZWxnaXVtLmJlMEQGA1UdIAQ9MDswOQYHYDgJAQECATAuMCwGCCsGAQUFBwIBFiBodHRwOi8vcmVwb3NpdG9yeS5laWQuYmVsZ2l1bS5iZTA5BgNVHR8EMjAwMC6gLKAqhihodHRwOi8vY3JsLmVpZC5iZWxnaXVtLmJlL2VpZGMyMDEzMDYuY3JsMA4GA1UdDwEB/wQEAwIGQDARBglghkgBhvhCAQEEBAMCBSAwGAYIKwYBBQUHAQMEDDAKMAgGBgQAjkYBATANBgkqhkiG9w0BAQUFAAOCAQEAEE3KGmLX5XXqArQwIZQmQEE6orKSu3a1z8ey1txsZC4rMk1vpvC6MtsfDaU4N6ooprhcM/WAlcIGOPCNhvxV+xcY7gUBwa6myiClnK0CMSiGYHqWcJG8ns13B9f0+5PJqsoziPoksXb2A9VXkr5aEdEmBYLjh7wG7GwAuDgDT0v87qtphN02/MAlJcNqT3JUUAotD7yfEybmK245jKo+pTYeCHGh7r1HzVWhbUDcQ/e1PpQXjVqBmr4k1ACtuu4H19t6K1P5kf7ta5JFEJPFgy3Hxt6YqzoY07WTVEpS4gJqtleIdX1Fhse7jq83ltcCzlfysBRqY/okUzipo1rbQw==");
+		czSigningCertificate = DSSUtils.loadCertificateFromBase64EncodedString("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");
+		
+	}
+	
+	@BeforeEach
+	public void init() {
+		populateMap();
+		
+		czSource = new TLSource();
+		czSource.setUrl(CZ_URL);
+		CommonTrustedCertificateSource trustedCertificateSource = new CommonTrustedCertificateSource();
+		trustedCertificateSource.addCertificate(czSigningCertificate);
+		czSource.setCertificateSource(trustedCertificateSource);
+		czSource.setTrustServicePredicate(new TrustServicePredicate() {
+			@Override
+			public boolean test(TSPServiceType t) {
+				return true;
+			}
+		});
+		czSource.setTrustServiceProviderPredicate(new TrustServiceProviderPredicate() {
+			@Override
+			public boolean test(TSPType t) {
+				return true;
+			}
+		});
+		
+
+		lotlSource = new LOTLSource();
+		lotlSource.setUrl(LOTL_URL);
+		trustedCertificateSource = new CommonTrustedCertificateSource();
+		trustedCertificateSource.addCertificate(lotlSigningCertificate);
+		lotlSource.setCertificateSource(trustedCertificateSource);
+		lotlSource.setPivotSupport(true);
+	}
+	
+	private void populateMap() {
 		urlMap.put(LOTL_URL, new FileDocument("src/test/resources/lotlCache/eu-lotl_original.xml"));
 		
 		urlMap.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-247-mp.xml", 
@@ -119,56 +180,6 @@ public class TLValidationJobTest {
 		urlMap.put("http://tl.nbu.gov.sk/kca/tsl/tsl.xml", new FileDocument("src/test/resources/lotlCache/SK.xml"));
 		urlMap.put("https://www.tscheme.org/UK_TSL/TSL-UKsigned.xml", new FileDocument("src/test/resources/lotlCache/UK.xml"));
 		urlMap.put("https://www.tscheme.org/UK_TSL/TSL-UKsigned.xml", new FileDocument("src/test/resources/lotlCache/UK.xml"));
-		
-		cacheDirectory = new File("target/cache");
-		
-		offlineFileLoader = new FileCacheDataLoader();
-		offlineFileLoader.setCacheExpirationTime(Long.MAX_VALUE);
-		offlineFileLoader.setDataLoader(new MockDataLoader(urlMap));
-		offlineFileLoader.setFileCacheDirectory(cacheDirectory);
-		
-		Map<String, DSSDocument> onlineMap = new HashMap<String, DSSDocument>();
-		onlineMap.putAll(urlMap);
-		
-		onlineFileLoader = new FileCacheDataLoader();
-		onlineFileLoader.setCacheExpirationTime(0);
-		onlineFileLoader.setDataLoader(new MockDataLoader(onlineMap));
-		onlineFileLoader.setFileCacheDirectory(cacheDirectory);
-		
-		cacheCleaner = new CacheCleaner();
-		cacheCleaner.setDSSFileLoader(offlineFileLoader);
-		cacheCleaner.setCleanFileSystem(true);
-	}
-	
-	@BeforeEach
-	public void init() {
-		czSource = new TLSource();
-		czSource.setUrl(CZ_URL);
-		CommonTrustedCertificateSource trustedCertificateSource = new CommonTrustedCertificateSource();
-		czSigningCertificate = DSSUtils.loadCertificateFromBase64EncodedString("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");
-		trustedCertificateSource.addCertificate(czSigningCertificate);
-		czSource.setCertificateSource(trustedCertificateSource);
-		czSource.setTrustServicePredicate(new TrustServicePredicate() {
-			@Override
-			public boolean test(TSPServiceType t) {
-				return true;
-			}
-		});
-		czSource.setTrustServiceProviderPredicate(new TrustServiceProviderPredicate() {
-			@Override
-			public boolean test(TSPType t) {
-				return true;
-			}
-		});
-		
-
-		lotlSource = new LOTLSource();
-		lotlSource.setUrl(LOTL_URL);
-		trustedCertificateSource = new CommonTrustedCertificateSource();
-		lotlSigningCertificate = DSSUtils.loadCertificateFromBase64EncodedString("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");
-		trustedCertificateSource.addCertificate(lotlSigningCertificate);
-		lotlSource.setCertificateSource(trustedCertificateSource);
-		lotlSource.setPivotSupport(true);
 	}
 	
 	@Test
@@ -443,7 +454,587 @@ public class TLValidationJobTest {
 		
 		assertNull(czTL.getValidationCacheInfo().getIndication());
 		assertNull(czTL.getValidationCacheInfo().getSubIndication());
+	}
+	
+	@Test
+	public void tlNoSignaturesTest() {
+		updateTLUrl("src/test/resources/lotlCache/CZ_no-sig.xml");
 		
+		ValidationJobSummary summary = getTLValidationJob().getSummary();
+		
+		assertEquals(0, summary.getNumberOfProcessedLOTLs());
+		assertEquals(1, summary.getNumberOfProcessedTLs());
+		
+		List<TLInfo> tlInfos = summary.getOtherTLInfos();
+		assertEquals(1, tlInfos.size());
+		
+		TLInfo czTL = tlInfos.get(0);
+
+		assertTrue(czTL.getDownloadCacheInfo().isResultExist());
+		assertNull(czTL.getDownloadCacheInfo().getExceptionMessage());
+		assertNull(czTL.getDownloadCacheInfo().getExceptionStackTrace());
+		assertTrue(czTL.getParsingCacheInfo().isResultExist());
+		assertNull(czTL.getParsingCacheInfo().getExceptionMessage());
+		assertNull(czTL.getParsingCacheInfo().getExceptionStackTrace());
+		assertFalse(czTL.getValidationCacheInfo().isResultExist());
+		assertNotNull(czTL.getValidationCacheInfo().getExceptionMessage());
+		assertEquals("Number of signatures must be equal to 1 (currently : 0)", czTL.getValidationCacheInfo().getExceptionMessage());
+		assertNotNull(czTL.getValidationCacheInfo().getExceptionStackTrace());
+		
+		assertNull(czTL.getValidationCacheInfo().getIndication());
+		assertNull(czTL.getValidationCacheInfo().getSubIndication());
+	}
+	
+	@Test
+	public void tlPdfTest() {
+		updateTLUrl("src/test/resources/lotlCache/CZ.pdf");
+		
+		ValidationJobSummary summary = getTLValidationJob().getSummary();
+		List<TLInfo> tlInfos = summary.getOtherTLInfos();
+		TLInfo czTL = tlInfos.get(0);
+		
+		assertFalse(czTL.getDownloadCacheInfo().isResultExist());
+		assertNotNull(czTL.getDownloadCacheInfo().getExceptionMessage());
+		assertNotNull(czTL.getDownloadCacheInfo().getExceptionStackTrace());
+		assertFalse(czTL.getParsingCacheInfo().isResultExist());
+		assertNull(czTL.getParsingCacheInfo().getExceptionMessage());
+		assertNull(czTL.getParsingCacheInfo().getExceptionStackTrace());
+		assertFalse(czTL.getValidationCacheInfo().isResultExist());
+		assertNull(czTL.getValidationCacheInfo().getExceptionMessage());
+		assertNull(czTL.getValidationCacheInfo().getExceptionStackTrace());
+	}
+	
+	@Test
+	public void lotlBrokenSigTest() {
+		updateLOTLUrl("src/test/resources/lotlCache/eu-lotl_broken-sig.xml");
+		
+		ValidationJobSummary summary = getLOTLValidationJob().getSummary();
+		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
+		LOTLInfo lotlInfo = tlInfos.get(0);
+		
+		assertTrue(lotlInfo.getDownloadCacheInfo().isResultExist());
+		assertNull(lotlInfo.getDownloadCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getDownloadCacheInfo().getExceptionStackTrace());
+		assertTrue(lotlInfo.getParsingCacheInfo().isResultExist());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionStackTrace());
+		assertTrue(lotlInfo.getValidationCacheInfo().isResultExist());
+		assertNull(lotlInfo.getValidationCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getValidationCacheInfo().getExceptionStackTrace());
+		
+		assertEquals(Indication.TOTAL_FAILED, lotlInfo.getValidationCacheInfo().getIndication());
+		assertEquals(SubIndication.HASH_FAILURE, lotlInfo.getValidationCacheInfo().getSubIndication());
+		assertNotNull(lotlInfo.getValidationCacheInfo().getSigningTime());
+		assertNotNull(lotlInfo.getValidationCacheInfo().getSigningCertificate());
+	}
+	
+	@Test
+	public void lotlNotParsableTest() {
+		updateLOTLUrl("src/test/resources/lotlCache/eu-lotl_not-parsable.xml");
+		
+		ValidationJobSummary summary = getLOTLValidationJob().getSummary();
+		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
+		LOTLInfo lotlInfo = tlInfos.get(0);
+		
+		assertEquals(0, lotlInfo.getTLInfos().size());
+		
+		assertFalse(lotlInfo.getDownloadCacheInfo().isResultExist());
+		assertNotNull(lotlInfo.getDownloadCacheInfo().getExceptionMessage());
+		assertNotNull(lotlInfo.getDownloadCacheInfo().getExceptionStackTrace());
+		assertFalse(lotlInfo.getParsingCacheInfo().isResultExist());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionStackTrace());
+		assertFalse(lotlInfo.getValidationCacheInfo().isResultExist());
+		assertNull(lotlInfo.getValidationCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getValidationCacheInfo().getExceptionStackTrace());
+	}
+	
+	@Test
+	public void lotlNonCompliantTest() {
+		updateLOTLUrl("src/test/resources/lotlCache/eu-lotl_non-compliant.xml");
+		
+		ValidationJobSummary summary = getLOTLValidationJob().getSummary();
+		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
+		LOTLInfo lotlInfo = tlInfos.get(0);
+		
+		assertEquals(0, lotlInfo.getTLInfos().size());
+		
+		assertTrue(lotlInfo.getDownloadCacheInfo().isResultExist());
+		assertNull(lotlInfo.getDownloadCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getDownloadCacheInfo().getExceptionStackTrace());
+		assertFalse(lotlInfo.getParsingCacheInfo().isResultExist());
+		assertNotNull(lotlInfo.getParsingCacheInfo().getExceptionMessage());
+		assertNotNull(lotlInfo.getParsingCacheInfo().getExceptionStackTrace());
+		assertTrue(lotlInfo.getValidationCacheInfo().isResultExist());
+		assertNull(lotlInfo.getValidationCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getValidationCacheInfo().getExceptionStackTrace());
+	}
+	
+	@Test
+	public void lotlXmlDeclarationRemovedTest() {
+		updateLOTLUrl("src/test/resources/lotlCache/eu-lotl_xml-directive-removed.xml");
+		
+		ValidationJobSummary summary = getLOTLValidationJob().getSummary();
+		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
+		LOTLInfo lotlInfo = tlInfos.get(0);
+		
+		assertEquals(31, lotlInfo.getTLInfos().size());
+
+		assertTrue(lotlInfo.getDownloadCacheInfo().isResultExist());
+		assertNull(lotlInfo.getDownloadCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getDownloadCacheInfo().getExceptionStackTrace());
+		assertTrue(lotlInfo.getParsingCacheInfo().isResultExist());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionStackTrace());
+		assertTrue(lotlInfo.getValidationCacheInfo().isResultExist());
+		assertNull(lotlInfo.getValidationCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getValidationCacheInfo().getExceptionStackTrace());
+		
+		assertEquals(Indication.TOTAL_PASSED, lotlInfo.getValidationCacheInfo().getIndication());
+		assertNull(lotlInfo.getValidationCacheInfo().getSubIndication());
+		assertNotNull(lotlInfo.getValidationCacheInfo().getSigningTime());
+		assertNotNull(lotlInfo.getValidationCacheInfo().getSigningCertificate());
+	}
+	
+	@Test
+	public void pivotTest() {
+		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp.xml");
+		
+		ValidationJobSummary summary = getLOTLValidationJob().getSummary();
+		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
+		LOTLInfo lotlInfo = tlInfos.get(0);
+		
+		assertEquals(4, lotlInfo.getPivotInfos().size());
+		assertEquals(31, lotlInfo.getTLInfos().size());
+		
+		for (PivotInfo pivotInfo : lotlInfo.getPivotInfos()) {
+			assertTrue(pivotInfo.getDownloadCacheInfo().isResultExist());
+			assertNull(pivotInfo.getDownloadCacheInfo().getExceptionMessage());
+			assertNull(pivotInfo.getDownloadCacheInfo().getExceptionStackTrace());
+			assertTrue(pivotInfo.getParsingCacheInfo().isResultExist());
+			assertNull(pivotInfo.getParsingCacheInfo().getExceptionMessage());
+			assertNull(pivotInfo.getParsingCacheInfo().getExceptionStackTrace());
+			assertTrue(pivotInfo.getValidationCacheInfo().isResultExist());
+			assertNull(pivotInfo.getValidationCacheInfo().getExceptionMessage());
+			assertNull(pivotInfo.getValidationCacheInfo().getExceptionStackTrace());
+			
+			assertEquals(Indication.TOTAL_PASSED, pivotInfo.getValidationCacheInfo().getIndication());
+			assertNull(pivotInfo.getValidationCacheInfo().getSubIndication());
+			assertNotNull(pivotInfo.getValidationCacheInfo().getSigningTime());
+			assertNotNull(pivotInfo.getValidationCacheInfo().getSigningCertificate());
+		}
+	}
+	
+	@Test
+	public void pivotBrokenSigTest() {
+		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp_broken-sig.xml");
+		
+		ValidationJobSummary summary = getLOTLValidationJob().getSummary();
+		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
+		LOTLInfo lotlInfo = tlInfos.get(0);
+		
+		assertEquals(4, lotlInfo.getPivotInfos().size());
+		assertEquals(31, lotlInfo.getTLInfos().size());
+		
+		assertTrue(lotlInfo.getDownloadCacheInfo().isResultExist());
+		assertNull(lotlInfo.getDownloadCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getDownloadCacheInfo().getExceptionStackTrace());
+		assertTrue(lotlInfo.getParsingCacheInfo().isResultExist());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionStackTrace());
+		assertTrue(lotlInfo.getValidationCacheInfo().isResultExist());
+		assertNull(lotlInfo.getValidationCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getValidationCacheInfo().getExceptionStackTrace());
+		
+		assertEquals(Indication.TOTAL_FAILED, lotlInfo.getValidationCacheInfo().getIndication());
+		assertEquals(SubIndication.HASH_FAILURE, lotlInfo.getValidationCacheInfo().getSubIndication());
+		assertNotNull(lotlInfo.getValidationCacheInfo().getSigningTime());
+		assertNotNull(lotlInfo.getValidationCacheInfo().getSigningCertificate());
+		
+		PivotInfo pivotInfo = lotlInfo.getPivotInfos().get(3);
+		
+		assertTrue(pivotInfo.getDownloadCacheInfo().isResultExist());
+		assertNull(pivotInfo.getDownloadCacheInfo().getExceptionMessage());
+		assertNull(pivotInfo.getDownloadCacheInfo().getExceptionStackTrace());
+		assertTrue(pivotInfo.getParsingCacheInfo().isResultExist());
+		assertNull(pivotInfo.getParsingCacheInfo().getExceptionMessage());
+		assertNull(pivotInfo.getParsingCacheInfo().getExceptionStackTrace());
+		assertTrue(pivotInfo.getValidationCacheInfo().isResultExist());
+		assertNull(pivotInfo.getValidationCacheInfo().getExceptionMessage());
+		assertNull(pivotInfo.getValidationCacheInfo().getExceptionStackTrace());
+		
+		assertEquals(Indication.TOTAL_FAILED, pivotInfo.getValidationCacheInfo().getIndication());
+		assertEquals(SubIndication.HASH_FAILURE, pivotInfo.getValidationCacheInfo().getSubIndication());
+		assertNotNull(pivotInfo.getValidationCacheInfo().getSigningTime());
+		assertNotNull(pivotInfo.getValidationCacheInfo().getSigningCertificate());
+	}
+	
+	@Test
+	public void intermediatePivotBrokenSigTest() {
+		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp.xml");
+		
+		urlMap.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-191-mp.xml", 
+				new FileDocument("src/test/resources/lotlCache/tl_pivot_191_mp_broken-sig.xml"));
+		
+		ValidationJobSummary summary = getLOTLValidationJob().getSummary();
+		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
+		LOTLInfo lotlInfo = tlInfos.get(0);
+		
+		assertEquals(4, lotlInfo.getPivotInfos().size());
+		assertEquals(31, lotlInfo.getTLInfos().size());
+		
+		assertTrue(lotlInfo.getDownloadCacheInfo().isResultExist());
+		assertNull(lotlInfo.getDownloadCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getDownloadCacheInfo().getExceptionStackTrace());
+		assertTrue(lotlInfo.getParsingCacheInfo().isResultExist());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionStackTrace());
+		assertTrue(lotlInfo.getValidationCacheInfo().isResultExist());
+		assertNull(lotlInfo.getValidationCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getValidationCacheInfo().getExceptionStackTrace());
+		
+		assertEquals(Indication.INDETERMINATE, lotlInfo.getValidationCacheInfo().getIndication());
+		assertEquals(SubIndication.NO_CERTIFICATE_CHAIN_FOUND, lotlInfo.getValidationCacheInfo().getSubIndication());
+		assertNotNull(lotlInfo.getValidationCacheInfo().getSigningTime());
+		assertNotNull(lotlInfo.getValidationCacheInfo().getSigningCertificate());
+		
+		PivotInfo brokenPivotInfo = lotlInfo.getPivotInfos().get(1);
+		
+		assertTrue(brokenPivotInfo.getDownloadCacheInfo().isResultExist());
+		assertNull(brokenPivotInfo.getDownloadCacheInfo().getExceptionMessage());
+		assertNull(brokenPivotInfo.getDownloadCacheInfo().getExceptionStackTrace());
+		assertTrue(brokenPivotInfo.getParsingCacheInfo().isResultExist());
+		assertNull(brokenPivotInfo.getParsingCacheInfo().getExceptionMessage());
+		assertNull(brokenPivotInfo.getParsingCacheInfo().getExceptionStackTrace());
+		assertTrue(brokenPivotInfo.getValidationCacheInfo().isResultExist());
+		assertNull(brokenPivotInfo.getValidationCacheInfo().getExceptionMessage());
+		assertNull(brokenPivotInfo.getValidationCacheInfo().getExceptionStackTrace());
+		
+		assertEquals(Indication.TOTAL_FAILED, brokenPivotInfo.getValidationCacheInfo().getIndication());
+		assertEquals(SubIndication.HASH_FAILURE, brokenPivotInfo.getValidationCacheInfo().getSubIndication());
+		assertNotNull(brokenPivotInfo.getValidationCacheInfo().getSigningTime());
+		assertNotNull(brokenPivotInfo.getValidationCacheInfo().getSigningCertificate());
+		
+		PivotInfo firstpivotInfo = lotlInfo.getPivotInfos().get(0);
+		
+		assertTrue(firstpivotInfo.getDownloadCacheInfo().isResultExist());
+		assertNull(firstpivotInfo.getDownloadCacheInfo().getExceptionMessage());
+		assertNull(firstpivotInfo.getDownloadCacheInfo().getExceptionStackTrace());
+		assertTrue(firstpivotInfo.getParsingCacheInfo().isResultExist());
+		assertNull(firstpivotInfo.getParsingCacheInfo().getExceptionMessage());
+		assertNull(firstpivotInfo.getParsingCacheInfo().getExceptionStackTrace());
+		assertTrue(firstpivotInfo.getValidationCacheInfo().isResultExist());
+		assertNull(firstpivotInfo.getValidationCacheInfo().getExceptionMessage());
+		assertNull(firstpivotInfo.getValidationCacheInfo().getExceptionStackTrace());
+		
+		assertEquals(Indication.TOTAL_PASSED, firstpivotInfo.getValidationCacheInfo().getIndication());
+		assertNull(firstpivotInfo.getValidationCacheInfo().getSubIndication());
+		assertNotNull(firstpivotInfo.getValidationCacheInfo().getSigningTime());
+		assertNotNull(firstpivotInfo.getValidationCacheInfo().getSigningCertificate());
+	}
+	
+	@Test
+	public void missingPivotTest() {
+		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp_missing-pivot.xml");
+		
+		ValidationJobSummary summary = getLOTLValidationJob().getSummary();
+		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
+		LOTLInfo lotlInfo = tlInfos.get(0);
+		
+		assertEquals(4, lotlInfo.getPivotInfos().size());
+		
+		PivotInfo missingPivotInfo = lotlInfo.getPivotInfos().get(2);
+		assertFalse(missingPivotInfo.getDownloadCacheInfo().isResultExist());
+		assertNotNull(missingPivotInfo.getDownloadCacheInfo().getExceptionMessage());
+		assertNotNull(missingPivotInfo.getDownloadCacheInfo().getExceptionStackTrace());
+		assertFalse(missingPivotInfo.getParsingCacheInfo().isResultExist());
+		assertNull(missingPivotInfo.getParsingCacheInfo().getExceptionMessage());
+		assertNull(missingPivotInfo.getParsingCacheInfo().getExceptionStackTrace());
+		assertFalse(missingPivotInfo.getValidationCacheInfo().isResultExist());
+		assertNull(missingPivotInfo.getValidationCacheInfo().getExceptionMessage());
+		assertNull(missingPivotInfo.getValidationCacheInfo().getExceptionStackTrace());
+		
+		assertTrue(lotlInfo.getDownloadCacheInfo().isResultExist());
+		assertNull(lotlInfo.getDownloadCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getDownloadCacheInfo().getExceptionStackTrace());
+		assertTrue(lotlInfo.getParsingCacheInfo().isResultExist());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionStackTrace());
+		assertTrue(lotlInfo.getValidationCacheInfo().isResultExist());
+		assertNull(lotlInfo.getValidationCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getValidationCacheInfo().getExceptionStackTrace());
+
+		assertEquals(Indication.TOTAL_FAILED, lotlInfo.getValidationCacheInfo().getIndication());
+		assertEquals(SubIndication.HASH_FAILURE, lotlInfo.getValidationCacheInfo().getSubIndication());
+		assertNotNull(lotlInfo.getValidationCacheInfo().getSigningTime());
+		assertNotNull(lotlInfo.getValidationCacheInfo().getSigningCertificate());
+	}
+	
+	@Test
+	public void pivotNoSigTest() {
+		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp_no-sig.xml");
+		
+		ValidationJobSummary summary = getLOTLValidationJob().getSummary();
+		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
+		LOTLInfo lotlInfo = tlInfos.get(0);
+		
+		assertEquals(4, lotlInfo.getPivotInfos().size());
+		
+		PivotInfo pivotInfo = lotlInfo.getPivotInfos().get(3);
+		assertTrue(pivotInfo.getDownloadCacheInfo().isResultExist());
+		assertNull(pivotInfo.getDownloadCacheInfo().getExceptionMessage());
+		assertNull(pivotInfo.getDownloadCacheInfo().getExceptionStackTrace());
+		assertTrue(pivotInfo.getParsingCacheInfo().isResultExist());
+		assertNull(pivotInfo.getParsingCacheInfo().getExceptionMessage());
+		assertNull(pivotInfo.getParsingCacheInfo().getExceptionStackTrace());
+		assertFalse(pivotInfo.getValidationCacheInfo().isResultExist());
+		assertNotNull(pivotInfo.getValidationCacheInfo().getExceptionMessage());
+		assertNotNull(pivotInfo.getValidationCacheInfo().getExceptionStackTrace());
+	}
+	
+	@Test
+	public void intermediatePivotNoSigTest() {
+		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp.xml");
+		
+		urlMap.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-191-mp.xml", 
+				new FileDocument("src/test/resources/lotlCache/tl_pivot_191_mp_no-sig.xml"));
+		
+		ValidationJobSummary summary = getLOTLValidationJob().getSummary();
+		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
+		LOTLInfo lotlInfo = tlInfos.get(0);
+		
+		assertEquals(4, lotlInfo.getPivotInfos().size());
+		
+		assertTrue(lotlInfo.getDownloadCacheInfo().isResultExist());
+		assertNull(lotlInfo.getDownloadCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getDownloadCacheInfo().getExceptionStackTrace());
+		assertTrue(lotlInfo.getParsingCacheInfo().isResultExist());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionStackTrace());
+		assertTrue(lotlInfo.getValidationCacheInfo().isResultExist());
+		assertNull(lotlInfo.getValidationCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getValidationCacheInfo().getExceptionStackTrace());
+		
+		assertEquals(Indication.INDETERMINATE, lotlInfo.getValidationCacheInfo().getIndication());
+		assertEquals(SubIndication.NO_CERTIFICATE_CHAIN_FOUND, lotlInfo.getValidationCacheInfo().getSubIndication());
+		assertNotNull(lotlInfo.getValidationCacheInfo().getSigningTime());
+		assertNotNull(lotlInfo.getValidationCacheInfo().getSigningCertificate());
+		
+		PivotInfo pivotNoSigInfo = lotlInfo.getPivotInfos().get(1);
+		assertTrue(pivotNoSigInfo.getDownloadCacheInfo().isResultExist());
+		assertNull(pivotNoSigInfo.getDownloadCacheInfo().getExceptionMessage());
+		assertNull(pivotNoSigInfo.getDownloadCacheInfo().getExceptionStackTrace());
+		assertTrue(pivotNoSigInfo.getParsingCacheInfo().isResultExist());
+		assertNull(pivotNoSigInfo.getParsingCacheInfo().getExceptionMessage());
+		assertNull(pivotNoSigInfo.getParsingCacheInfo().getExceptionStackTrace());
+		assertFalse(pivotNoSigInfo.getValidationCacheInfo().isResultExist());
+		assertNotNull(pivotNoSigInfo.getValidationCacheInfo().getExceptionMessage());
+		assertNotNull(pivotNoSigInfo.getValidationCacheInfo().getExceptionStackTrace());
+		
+		PivotInfo firstpivotInfo = lotlInfo.getPivotInfos().get(0);
+		
+		assertTrue(firstpivotInfo.getDownloadCacheInfo().isResultExist());
+		assertNull(firstpivotInfo.getDownloadCacheInfo().getExceptionMessage());
+		assertNull(firstpivotInfo.getDownloadCacheInfo().getExceptionStackTrace());
+		assertTrue(firstpivotInfo.getParsingCacheInfo().isResultExist());
+		assertNull(firstpivotInfo.getParsingCacheInfo().getExceptionMessage());
+		assertNull(firstpivotInfo.getParsingCacheInfo().getExceptionStackTrace());
+		assertTrue(firstpivotInfo.getValidationCacheInfo().isResultExist());
+		assertNull(firstpivotInfo.getValidationCacheInfo().getExceptionMessage());
+		assertNull(firstpivotInfo.getValidationCacheInfo().getExceptionStackTrace());
+		
+		assertEquals(Indication.TOTAL_PASSED, firstpivotInfo.getValidationCacheInfo().getIndication());
+		assertNull(firstpivotInfo.getValidationCacheInfo().getSubIndication());
+		assertNotNull(firstpivotInfo.getValidationCacheInfo().getSigningTime());
+		assertNotNull(firstpivotInfo.getValidationCacheInfo().getSigningCertificate());
+	}
+	
+	@Test
+	public void pivotNotParsableTest() {
+		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp_not-parsable.xml");
+		
+		ValidationJobSummary summary = getLOTLValidationJob().getSummary();
+		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
+		LOTLInfo lotlInfo = tlInfos.get(0);
+		
+		assertEquals(0, lotlInfo.getPivotInfos().size());
+
+		assertFalse(lotlInfo.getDownloadCacheInfo().isResultExist());
+		assertNotNull(lotlInfo.getDownloadCacheInfo().getExceptionMessage());
+		assertNotNull(lotlInfo.getDownloadCacheInfo().getExceptionStackTrace());
+		assertFalse(lotlInfo.getParsingCacheInfo().isResultExist());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionStackTrace());
+		assertFalse(lotlInfo.getValidationCacheInfo().isResultExist());
+		assertNull(lotlInfo.getValidationCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getValidationCacheInfo().getExceptionStackTrace());
+	}
+	
+	@Test
+	public void intermediatePivotNotParsableTest() {
+		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp.xml");
+		
+		urlMap.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-191-mp.xml", 
+				new FileDocument("src/test/resources/lotlCache/tl_pivot_191_mp_not-parsable.xml"));
+		
+		ValidationJobSummary summary = getLOTLValidationJob().getSummary();
+		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
+		LOTLInfo lotlInfo = tlInfos.get(0);
+		
+		assertEquals(4, lotlInfo.getPivotInfos().size());
+		
+		assertTrue(lotlInfo.getDownloadCacheInfo().isResultExist());
+		assertNull(lotlInfo.getDownloadCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getDownloadCacheInfo().getExceptionStackTrace());
+		assertTrue(lotlInfo.getParsingCacheInfo().isResultExist());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionStackTrace());
+		assertTrue(lotlInfo.getValidationCacheInfo().isResultExist());
+		assertNull(lotlInfo.getValidationCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getValidationCacheInfo().getExceptionStackTrace());
+		
+		assertEquals(Indication.INDETERMINATE, lotlInfo.getValidationCacheInfo().getIndication());
+		assertEquals(SubIndication.NO_CERTIFICATE_CHAIN_FOUND, lotlInfo.getValidationCacheInfo().getSubIndication());
+		assertNotNull(lotlInfo.getValidationCacheInfo().getSigningTime());
+		assertNotNull(lotlInfo.getValidationCacheInfo().getSigningCertificate());
+		
+		PivotInfo pivotNoSigInfo = lotlInfo.getPivotInfos().get(1);
+		assertFalse(pivotNoSigInfo.getDownloadCacheInfo().isResultExist());
+		assertNotNull(pivotNoSigInfo.getDownloadCacheInfo().getExceptionMessage());
+		assertNotNull(pivotNoSigInfo.getDownloadCacheInfo().getExceptionStackTrace());
+		assertFalse(pivotNoSigInfo.getParsingCacheInfo().isResultExist());
+		assertNull(pivotNoSigInfo.getParsingCacheInfo().getExceptionMessage());
+		assertNull(pivotNoSigInfo.getParsingCacheInfo().getExceptionStackTrace());
+		assertFalse(pivotNoSigInfo.getValidationCacheInfo().isResultExist());
+		assertNull(pivotNoSigInfo.getValidationCacheInfo().getExceptionMessage());
+		assertNull(pivotNoSigInfo.getValidationCacheInfo().getExceptionStackTrace());
+		
+		PivotInfo firstpivotInfo = lotlInfo.getPivotInfos().get(0);
+		
+		assertTrue(firstpivotInfo.getDownloadCacheInfo().isResultExist());
+		assertNull(firstpivotInfo.getDownloadCacheInfo().getExceptionMessage());
+		assertNull(firstpivotInfo.getDownloadCacheInfo().getExceptionStackTrace());
+		assertTrue(firstpivotInfo.getParsingCacheInfo().isResultExist());
+		assertNull(firstpivotInfo.getParsingCacheInfo().getExceptionMessage());
+		assertNull(firstpivotInfo.getParsingCacheInfo().getExceptionStackTrace());
+		assertTrue(firstpivotInfo.getValidationCacheInfo().isResultExist());
+		assertNull(firstpivotInfo.getValidationCacheInfo().getExceptionMessage());
+		assertNull(firstpivotInfo.getValidationCacheInfo().getExceptionStackTrace());
+		
+		assertEquals(Indication.TOTAL_PASSED, firstpivotInfo.getValidationCacheInfo().getIndication());
+		assertNull(firstpivotInfo.getValidationCacheInfo().getSubIndication());
+		assertNotNull(firstpivotInfo.getValidationCacheInfo().getSigningTime());
+		assertNotNull(firstpivotInfo.getValidationCacheInfo().getSigningCertificate());
+	}
+	
+	@Test
+	public void pivotUTF8WithBomTest() {
+		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp_with-bom.xml");
+		
+		ValidationJobSummary summary = getLOTLValidationJob().getSummary();
+		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
+		LOTLInfo lotlInfo = tlInfos.get(0);
+		
+		assertEquals(4, lotlInfo.getPivotInfos().size());
+		
+		for (PivotInfo pivotInfo : lotlInfo.getPivotInfos()) {
+			assertTrue(pivotInfo.getDownloadCacheInfo().isResultExist());
+			assertNull(pivotInfo.getDownloadCacheInfo().getExceptionMessage());
+			assertNull(pivotInfo.getDownloadCacheInfo().getExceptionStackTrace());
+			assertTrue(pivotInfo.getParsingCacheInfo().isResultExist());
+			assertNull(pivotInfo.getParsingCacheInfo().getExceptionMessage());
+			assertNull(pivotInfo.getParsingCacheInfo().getExceptionStackTrace());
+			assertTrue(pivotInfo.getValidationCacheInfo().isResultExist());
+			assertNull(pivotInfo.getValidationCacheInfo().getExceptionMessage());
+			assertNull(pivotInfo.getValidationCacheInfo().getExceptionStackTrace());
+			
+			assertEquals(Indication.TOTAL_PASSED, pivotInfo.getValidationCacheInfo().getIndication());
+			assertNull(pivotInfo.getValidationCacheInfo().getSubIndication());
+			assertNotNull(pivotInfo.getValidationCacheInfo().getSigningTime());
+			assertNotNull(pivotInfo.getValidationCacheInfo().getSigningCertificate());
+		}
+	}
+	
+	@Test
+	public void pivotWithSpacesTest() {
+		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp_with-spaces.xml");
+		
+		ValidationJobSummary summary = getLOTLValidationJob().getSummary();
+		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
+		LOTLInfo lotlInfo = tlInfos.get(0);
+		
+		assertEquals(4, lotlInfo.getPivotInfos().size());
+		
+		for (PivotInfo pivotInfo : lotlInfo.getPivotInfos()) {
+			assertTrue(pivotInfo.getDownloadCacheInfo().isResultExist());
+			assertNull(pivotInfo.getDownloadCacheInfo().getExceptionMessage());
+			assertNull(pivotInfo.getDownloadCacheInfo().getExceptionStackTrace());
+			assertTrue(pivotInfo.getParsingCacheInfo().isResultExist());
+			assertNull(pivotInfo.getParsingCacheInfo().getExceptionMessage());
+			assertNull(pivotInfo.getParsingCacheInfo().getExceptionStackTrace());
+			assertTrue(pivotInfo.getValidationCacheInfo().isResultExist());
+			assertNull(pivotInfo.getValidationCacheInfo().getExceptionMessage());
+			assertNull(pivotInfo.getValidationCacheInfo().getExceptionStackTrace());
+			
+			assertEquals(Indication.TOTAL_PASSED, pivotInfo.getValidationCacheInfo().getIndication());
+			assertNull(pivotInfo.getValidationCacheInfo().getSubIndication());
+			assertNotNull(pivotInfo.getValidationCacheInfo().getSigningTime());
+			assertNotNull(pivotInfo.getValidationCacheInfo().getSigningCertificate());
+		}
+	}
+	
+	@Test
+	public void wrongPivotKeystoreTest() throws IOException {
+		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp_with-spaces.xml");
+		lotlSource.setCertificateSource(new KeyStoreCertificateSource(new File("src/test/resources/keystore_corrupted.p12"), "PKCS12", "dss-password"));
+		
+		ValidationJobSummary summary = getLOTLValidationJob().getSummary();
+		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
+		LOTLInfo lotlInfo = tlInfos.get(0);
+		
+		assertEquals(4, lotlInfo.getPivotInfos().size());
+		
+		for (PivotInfo pivotInfo : lotlInfo.getPivotInfos()) {
+			assertTrue(pivotInfo.getDownloadCacheInfo().isResultExist());
+			assertNull(pivotInfo.getDownloadCacheInfo().getExceptionMessage());
+			assertNull(pivotInfo.getDownloadCacheInfo().getExceptionStackTrace());
+			assertTrue(pivotInfo.getParsingCacheInfo().isResultExist());
+			assertNull(pivotInfo.getParsingCacheInfo().getExceptionMessage());
+			assertNull(pivotInfo.getParsingCacheInfo().getExceptionStackTrace());
+			assertTrue(pivotInfo.getValidationCacheInfo().isResultExist());
+			assertNull(pivotInfo.getValidationCacheInfo().getExceptionMessage());
+			assertNull(pivotInfo.getValidationCacheInfo().getExceptionStackTrace());
+			
+			assertEquals(Indication.INDETERMINATE, pivotInfo.getValidationCacheInfo().getIndication());
+			assertEquals(SubIndication.NO_CERTIFICATE_CHAIN_FOUND, pivotInfo.getValidationCacheInfo().getSubIndication());
+			assertNotNull(pivotInfo.getValidationCacheInfo().getSigningTime());
+			assertNotNull(pivotInfo.getValidationCacheInfo().getSigningCertificate());
+		}
+	}
+	
+	@Test
+	public void lotlCorruptedKeystoreTest() throws IOException {
+		updateLOTLUrl("src/test/resources/lotlCache/eu-lotl_original.xml");
+		lotlSource.setCertificateSource(new KeyStoreCertificateSource(new File("src/test/resources/keystore_corrupted.p12"), "PKCS12", "dss-password"));
+		
+		ValidationJobSummary summary = getLOTLValidationJob().getSummary();
+		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
+		LOTLInfo lotlInfo = tlInfos.get(0);
+
+		assertTrue(lotlInfo.getDownloadCacheInfo().isResultExist());
+		assertNull(lotlInfo.getDownloadCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getDownloadCacheInfo().getExceptionStackTrace());
+		assertTrue(lotlInfo.getParsingCacheInfo().isResultExist());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionStackTrace());
+		assertTrue(lotlInfo.getValidationCacheInfo().isResultExist());
+		assertNull(lotlInfo.getValidationCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getValidationCacheInfo().getExceptionStackTrace());
+
+		assertEquals(Indication.INDETERMINATE, lotlInfo.getValidationCacheInfo().getIndication());
+		assertEquals(SubIndication.NO_CERTIFICATE_CHAIN_FOUND, lotlInfo.getValidationCacheInfo().getSubIndication());
+		assertNotNull(lotlInfo.getValidationCacheInfo().getSigningTime());
+		assertNotNull(lotlInfo.getValidationCacheInfo().getSigningCertificate());
 	}
 	
 	private TLValidationJob getTLValidationJob() {
@@ -468,6 +1059,20 @@ public class TLValidationJobTest {
 	
 	private void updateTLUrl(String url) {
 		urlMap.put(CZ_URL, new FileDocument(url));
+	}
+	
+	private void updateLOTLUrl(String url) {
+		urlMap.put(LOTL_URL, new FileDocument(url));
+	}
+	
+	private void updatePivotUrl(String url) {
+		CommonTrustedCertificateSource trustedCertificateSource = new CommonTrustedCertificateSource();
+		trustedCertificateSource.addCertificate(pivotSigningCertificate);
+		lotlSource.setCertificateSource(trustedCertificateSource);
+
+		urlMap.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-247-mp.xml", 
+				new FileDocument(url));
+		updateLOTLUrl(url);
 	}
 	
 	@AfterEach
