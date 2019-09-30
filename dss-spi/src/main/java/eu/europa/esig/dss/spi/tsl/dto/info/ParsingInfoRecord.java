@@ -9,28 +9,28 @@ import eu.europa.esig.dss.spi.tsl.dto.TrustServiceProvider;
 
 public interface ParsingInfoRecord extends InfoRecord {
 	
-	public Integer getSequenceNumber();
+	Integer getSequenceNumber();
 	
-	public Integer getVersion();
+	Integer getVersion();
 	
-	public String getTerritory();
+	String getTerritory();
 	
-	public Date getIssueDate();
+	Date getIssueDate();
 	
-	public Date getNextUpdateDate();
+	Date getNextUpdateDate();
 	
-	public List<String> getDistributionPoints();
+	List<String> getDistributionPoints();
 	
-	public List<TrustServiceProvider> getTrustServiceProviders();
+	List<TrustServiceProvider> getTrustServiceProviders();
 	
-	public List<OtherTSLPointer> getLotlOtherPointers();
+	List<OtherTSLPointer> getLotlOtherPointers();
 	
-	public List<OtherTSLPointer> getTlOtherPointers();
+	List<OtherTSLPointer> getTlOtherPointers();
 	
-	public List<String> getPivotUrls();
+	List<String> getPivotUrls();
 	
-	public String getSigningCertificateAnnouncementUrl();
+	String getSigningCertificateAnnouncementUrl();
 	
-	public List<CertificateToken> getLOTLAnnouncedSigningCertificates();
+	List<CertificateToken> getLOTLAnnouncedSigningCertificates();
 
 }

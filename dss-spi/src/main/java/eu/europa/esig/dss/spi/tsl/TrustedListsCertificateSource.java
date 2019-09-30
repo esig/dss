@@ -45,9 +45,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 
 	private static final Logger LOG = LoggerFactory.getLogger(TrustedListsCertificateSource.class);
 	
-	private List<LOTLInfo> lotlInfos;
-
-	private List<TLInfo> otherTLInfos;
+	private TLValidationJobSummary summary;
 
 	private Map<String, List<ServiceInfo>> trustServicesByEntity = new HashMap<String, List<ServiceInfo>>();
 
@@ -61,43 +59,13 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	public void reinit() {
 		trustServicesByEntity = new HashMap<String, List<ServiceInfo>>();
 	}
-
-	public List<TLInfo> getOtherTLInfos() {
-		return otherTLInfos;
-	}
 	
-	public void setOtherTlInfos(List<TLInfo> tlInfos) {
-		this.otherTLInfos = tlInfos;
+	public TLValidationJobSummary getSummary() {
+		return summary;
 	}
 
-	public List<LOTLInfo> getLotlInfos() {
-		return lotlInfos;
-	}
-	
-	public void setLOTLInfos(List<LOTLInfo> lotlInfos) {
-		this.lotlInfos = lotlInfos;
-	}
-
-	public TLInfo getTlInfo(String countryCode) {
-		TLInfo tlInfo = getTlInfoByCountryCode(otherTLInfos, countryCode);
-		if (tlInfo == null) {
-			for (LOTLInfo lotlInfo : lotlInfos) {
-				tlInfo = getTlInfoByCountryCode(lotlInfo.getTLInfos(), countryCode);
-				if (tlInfo != null) {
-					break;
-				}
-			}
-		}
-		return tlInfo;
-	}
-
-	private TLInfo getTlInfoByCountryCode(List<TLInfo> tlInfos, String countryCode) {
-		for (TLInfo tlInfo : tlInfos) {
-			if (tlInfo.getParsingCacheInfo().isResultExist() && countryCode.equals(tlInfo.getParsingCacheInfo().getTerritory())) {
-				return tlInfo;
-			}
-		}
-		return null;
+	public void setSummary(TLValidationJobSummary summary) {
+		this.summary = summary;
 	}
 
 	@Override

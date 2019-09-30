@@ -33,6 +33,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.tsl.LOTLInfo;
 import eu.europa.esig.dss.spi.tsl.PivotInfo;
 import eu.europa.esig.dss.spi.tsl.TLInfo;
+import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.spi.tsl.dto.ConditionForQualifiers;
 import eu.europa.esig.dss.spi.tsl.dto.TrustService;
 import eu.europa.esig.dss.spi.tsl.dto.TrustServiceProvider;
@@ -46,7 +47,6 @@ import eu.europa.esig.dss.tsl.function.TrustServicePredicate;
 import eu.europa.esig.dss.tsl.function.TrustServiceProviderPredicate;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
-import eu.europa.esig.dss.tsl.summary.ValidationJobSummary;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPServiceType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPType;
 
@@ -187,7 +187,7 @@ public class TLValidationJobTest {
 		updateTLUrl("src/test/resources/lotlCache/CZ.xml");
 
 		TLValidationJob validationJob = getTLValidationJob();
-		ValidationJobSummary summary = validationJob.getSummary();
+		TLValidationJobSummary summary = validationJob.getSummary();
 		
 		assertEquals(0, summary.getNumberOfProcessedLOTLs());
 		assertEquals(1, summary.getNumberOfProcessedTLs());
@@ -270,7 +270,7 @@ public class TLValidationJobTest {
 	public void lotlTest() {
 		TLValidationJob validationJob = getLOTLValidationJob();
 		
-		ValidationJobSummary summary = validationJob.getSummary();
+		TLValidationJobSummary summary = validationJob.getSummary();
 		
 		assertEquals(1, summary.getNumberOfProcessedLOTLs());
 		assertEquals(31, summary.getNumberOfProcessedTLs());
@@ -322,7 +322,7 @@ public class TLValidationJobTest {
 	public void brokenSigTest() {
 		updateTLUrl("src/test/resources/lotlCache/CZ_broken-sig.xml");
 		
-		ValidationJobSummary summary = getTLValidationJob().getSummary();
+		TLValidationJobSummary summary = getTLValidationJob().getSummary();
 		
 		assertEquals(0, summary.getNumberOfProcessedLOTLs());
 		assertEquals(1, summary.getNumberOfProcessedTLs());
@@ -350,7 +350,7 @@ public class TLValidationJobTest {
 	public void tlEmptyTest() {
 		updateTLUrl("src/test/resources/lotlCache/CZ_empty.xml");
 		
-		ValidationJobSummary summary = getTLValidationJob().getSummary();
+		TLValidationJobSummary summary = getTLValidationJob().getSummary();
 		
 		assertEquals(0, summary.getNumberOfProcessedLOTLs());
 		assertEquals(1, summary.getNumberOfProcessedTLs());
@@ -376,7 +376,7 @@ public class TLValidationJobTest {
 	public void tlNotParsableTest() {
 		updateTLUrl("src/test/resources/lotlCache/CZ_not-parsable.xml");
 		
-		ValidationJobSummary summary = getTLValidationJob().getSummary();
+		TLValidationJobSummary summary = getTLValidationJob().getSummary();
 		
 		assertEquals(0, summary.getNumberOfProcessedLOTLs());
 		assertEquals(1, summary.getNumberOfProcessedTLs());
@@ -402,7 +402,7 @@ public class TLValidationJobTest {
 	public void tlNotCompliantTest() {
 		updateTLUrl("src/test/resources/lotlCache/CZ_not-compliant.xml");
 		
-		ValidationJobSummary summary = getTLValidationJob().getSummary();
+		TLValidationJobSummary summary = getTLValidationJob().getSummary();
 		
 		assertEquals(0, summary.getNumberOfProcessedLOTLs());
 		assertEquals(1, summary.getNumberOfProcessedTLs());
@@ -431,7 +431,7 @@ public class TLValidationJobTest {
 	public void tlTwoSignaturesTest() {
 		updateTLUrl("src/test/resources/lotlCache/CZ_two-sigs.xml");
 		
-		ValidationJobSummary summary = getTLValidationJob().getSummary();
+		TLValidationJobSummary summary = getTLValidationJob().getSummary();
 		
 		assertEquals(0, summary.getNumberOfProcessedLOTLs());
 		assertEquals(1, summary.getNumberOfProcessedTLs());
@@ -460,7 +460,7 @@ public class TLValidationJobTest {
 	public void tlNoSignaturesTest() {
 		updateTLUrl("src/test/resources/lotlCache/CZ_no-sig.xml");
 		
-		ValidationJobSummary summary = getTLValidationJob().getSummary();
+		TLValidationJobSummary summary = getTLValidationJob().getSummary();
 		
 		assertEquals(0, summary.getNumberOfProcessedLOTLs());
 		assertEquals(1, summary.getNumberOfProcessedTLs());
@@ -489,7 +489,7 @@ public class TLValidationJobTest {
 	public void tlPdfTest() {
 		updateTLUrl("src/test/resources/lotlCache/CZ.pdf");
 		
-		ValidationJobSummary summary = getTLValidationJob().getSummary();
+		TLValidationJobSummary summary = getTLValidationJob().getSummary();
 		List<TLInfo> tlInfos = summary.getOtherTLInfos();
 		TLInfo czTL = tlInfos.get(0);
 		
@@ -508,7 +508,7 @@ public class TLValidationJobTest {
 	public void lotlBrokenSigTest() {
 		updateLOTLUrl("src/test/resources/lotlCache/eu-lotl_broken-sig.xml");
 		
-		ValidationJobSummary summary = getLOTLValidationJob().getSummary();
+		TLValidationJobSummary summary = getLOTLValidationJob().getSummary();
 		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
 		LOTLInfo lotlInfo = tlInfos.get(0);
 		
@@ -532,7 +532,7 @@ public class TLValidationJobTest {
 	public void lotlNotParsableTest() {
 		updateLOTLUrl("src/test/resources/lotlCache/eu-lotl_not-parsable.xml");
 		
-		ValidationJobSummary summary = getLOTLValidationJob().getSummary();
+		TLValidationJobSummary summary = getLOTLValidationJob().getSummary();
 		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
 		LOTLInfo lotlInfo = tlInfos.get(0);
 		
@@ -553,7 +553,7 @@ public class TLValidationJobTest {
 	public void lotlNonCompliantTest() {
 		updateLOTLUrl("src/test/resources/lotlCache/eu-lotl_non-compliant.xml");
 		
-		ValidationJobSummary summary = getLOTLValidationJob().getSummary();
+		TLValidationJobSummary summary = getLOTLValidationJob().getSummary();
 		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
 		LOTLInfo lotlInfo = tlInfos.get(0);
 		
@@ -574,7 +574,7 @@ public class TLValidationJobTest {
 	public void lotlXmlDeclarationRemovedTest() {
 		updateLOTLUrl("src/test/resources/lotlCache/eu-lotl_xml-directive-removed.xml");
 		
-		ValidationJobSummary summary = getLOTLValidationJob().getSummary();
+		TLValidationJobSummary summary = getLOTLValidationJob().getSummary();
 		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
 		LOTLInfo lotlInfo = tlInfos.get(0);
 		
@@ -600,7 +600,7 @@ public class TLValidationJobTest {
 	public void pivotTest() {
 		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp.xml");
 		
-		ValidationJobSummary summary = getLOTLValidationJob().getSummary();
+		TLValidationJobSummary summary = getLOTLValidationJob().getSummary();
 		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
 		LOTLInfo lotlInfo = tlInfos.get(0);
 		
@@ -629,7 +629,7 @@ public class TLValidationJobTest {
 	public void pivotBrokenSigTest() {
 		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp_broken-sig.xml");
 		
-		ValidationJobSummary summary = getLOTLValidationJob().getSummary();
+		TLValidationJobSummary summary = getLOTLValidationJob().getSummary();
 		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
 		LOTLInfo lotlInfo = tlInfos.get(0);
 		
@@ -676,7 +676,7 @@ public class TLValidationJobTest {
 		urlMap.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-191-mp.xml", 
 				new FileDocument("src/test/resources/lotlCache/tl_pivot_191_mp_broken-sig.xml"));
 		
-		ValidationJobSummary summary = getLOTLValidationJob().getSummary();
+		TLValidationJobSummary summary = getLOTLValidationJob().getSummary();
 		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
 		LOTLInfo lotlInfo = tlInfos.get(0);
 		
@@ -737,7 +737,7 @@ public class TLValidationJobTest {
 	public void missingPivotTest() {
 		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp_missing-pivot.xml");
 		
-		ValidationJobSummary summary = getLOTLValidationJob().getSummary();
+		TLValidationJobSummary summary = getLOTLValidationJob().getSummary();
 		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
 		LOTLInfo lotlInfo = tlInfos.get(0);
 		
@@ -774,7 +774,7 @@ public class TLValidationJobTest {
 	public void pivotNoSigTest() {
 		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp_no-sig.xml");
 		
-		ValidationJobSummary summary = getLOTLValidationJob().getSummary();
+		TLValidationJobSummary summary = getLOTLValidationJob().getSummary();
 		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
 		LOTLInfo lotlInfo = tlInfos.get(0);
 		
@@ -799,7 +799,7 @@ public class TLValidationJobTest {
 		urlMap.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-191-mp.xml", 
 				new FileDocument("src/test/resources/lotlCache/tl_pivot_191_mp_no-sig.xml"));
 		
-		ValidationJobSummary summary = getLOTLValidationJob().getSummary();
+		TLValidationJobSummary summary = getLOTLValidationJob().getSummary();
 		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
 		LOTLInfo lotlInfo = tlInfos.get(0);
 		
@@ -853,7 +853,7 @@ public class TLValidationJobTest {
 	public void pivotNotParsableTest() {
 		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp_not-parsable.xml");
 		
-		ValidationJobSummary summary = getLOTLValidationJob().getSummary();
+		TLValidationJobSummary summary = getLOTLValidationJob().getSummary();
 		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
 		LOTLInfo lotlInfo = tlInfos.get(0);
 		
@@ -877,7 +877,7 @@ public class TLValidationJobTest {
 		urlMap.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-191-mp.xml", 
 				new FileDocument("src/test/resources/lotlCache/tl_pivot_191_mp_not-parsable.xml"));
 		
-		ValidationJobSummary summary = getLOTLValidationJob().getSummary();
+		TLValidationJobSummary summary = getLOTLValidationJob().getSummary();
 		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
 		LOTLInfo lotlInfo = tlInfos.get(0);
 		
@@ -931,7 +931,7 @@ public class TLValidationJobTest {
 	public void pivotUTF8WithBomTest() {
 		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp_with-bom.xml");
 		
-		ValidationJobSummary summary = getLOTLValidationJob().getSummary();
+		TLValidationJobSummary summary = getLOTLValidationJob().getSummary();
 		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
 		LOTLInfo lotlInfo = tlInfos.get(0);
 		
@@ -959,7 +959,7 @@ public class TLValidationJobTest {
 	public void pivotWithSpacesTest() {
 		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp_with-spaces.xml");
 		
-		ValidationJobSummary summary = getLOTLValidationJob().getSummary();
+		TLValidationJobSummary summary = getLOTLValidationJob().getSummary();
 		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
 		LOTLInfo lotlInfo = tlInfos.get(0);
 		
@@ -988,7 +988,7 @@ public class TLValidationJobTest {
 		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp_with-spaces.xml");
 		lotlSource.setCertificateSource(new KeyStoreCertificateSource(new File("src/test/resources/keystore_corrupted.p12"), "PKCS12", "dss-password"));
 		
-		ValidationJobSummary summary = getLOTLValidationJob().getSummary();
+		TLValidationJobSummary summary = getLOTLValidationJob().getSummary();
 		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
 		LOTLInfo lotlInfo = tlInfos.get(0);
 		
@@ -1017,7 +1017,7 @@ public class TLValidationJobTest {
 		updateLOTLUrl("src/test/resources/lotlCache/eu-lotl_original.xml");
 		lotlSource.setCertificateSource(new KeyStoreCertificateSource(new File("src/test/resources/keystore_corrupted.p12"), "PKCS12", "dss-password"));
 		
-		ValidationJobSummary summary = getLOTLValidationJob().getSummary();
+		TLValidationJobSummary summary = getLOTLValidationJob().getSummary();
 		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
 		LOTLInfo lotlInfo = tlInfos.get(0);
 

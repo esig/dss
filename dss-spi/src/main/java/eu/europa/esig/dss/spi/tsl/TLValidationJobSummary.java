@@ -1,16 +1,14 @@
-package eu.europa.esig.dss.tsl.summary;
+package eu.europa.esig.dss.spi.tsl;
 
 import java.util.List;
 
-import eu.europa.esig.dss.spi.tsl.LOTLInfo;
-import eu.europa.esig.dss.spi.tsl.TLInfo;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
  * Computes summary for TLValidationJob
  *
  */
-public class ValidationJobSummary {
+public class TLValidationJobSummary {
 	
 	/**
 	 * A list of LOTLs with a relationship between their TLs and pivots
@@ -31,7 +29,7 @@ public class ValidationJobSummary {
 	 *                     a list of other trusted lists which are not linked to the
 	 *                     LOTLs
 	 */
-	public ValidationJobSummary(final List<LOTLInfo> lotlInfos, final List<TLInfo> otherTLInfos) {
+	public TLValidationJobSummary(final List<LOTLInfo> lotlInfos, final List<TLInfo> otherTLInfos) {
 		this.lotlInfos = lotlInfos;
 		this.otherTLInfos = otherTLInfos;
 	}

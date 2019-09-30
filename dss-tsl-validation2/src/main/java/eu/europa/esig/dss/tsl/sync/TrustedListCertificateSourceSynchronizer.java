@@ -6,18 +6,18 @@ import eu.europa.esig.dss.spi.tsl.LOTLInfo;
 import eu.europa.esig.dss.spi.tsl.PivotInfo;
 import eu.europa.esig.dss.spi.tsl.TLInfo;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.spi.tsl.dto.info.ParsingInfoRecord;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
 import eu.europa.esig.dss.tsl.cache.SynchronizerCacheAccess;
-import eu.europa.esig.dss.tsl.summary.ValidationJobSummary;
 
 public class TrustedListCertificateSourceSynchronizer {
 
-	private final ValidationJobSummary originalSummary;
+	private final TLValidationJobSummary originalSummary;
 	private final TrustedListsCertificateSource certificateSource;
 	private final SynchronizerCacheAccess cacheAccess;
 
-	public TrustedListCertificateSourceSynchronizer(ValidationJobSummary originalSummary, TrustedListsCertificateSource certificateSource,
+	public TrustedListCertificateSourceSynchronizer(TLValidationJobSummary originalSummary, TrustedListsCertificateSource certificateSource,
 			SynchronizerCacheAccess cacheAccess) {
 		this.originalSummary = originalSummary;
 		this.certificateSource = certificateSource;

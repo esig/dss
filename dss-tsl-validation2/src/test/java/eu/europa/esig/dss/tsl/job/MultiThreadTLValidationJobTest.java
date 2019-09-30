@@ -23,12 +23,12 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
 import eu.europa.esig.dss.tsl.function.TrustServicePredicate;
 import eu.europa.esig.dss.tsl.function.TrustServiceProviderPredicate;
 import eu.europa.esig.dss.tsl.source.TLSource;
-import eu.europa.esig.dss.tsl.summary.ValidationJobSummary;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPServiceType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPType;
 
@@ -102,7 +102,7 @@ public class MultiThreadTLValidationJobTest {
 
 		ExecutorService executor = Executors.newFixedThreadPool(40);
 
-		List<Future<ValidationJobSummary>> futuresValidationResult = new ArrayList<Future<ValidationJobSummary>>();
+		List<Future<TLValidationJobSummary>> futuresValidationResult = new ArrayList<Future<TLValidationJobSummary>>();
 		List<Future<?>> futuresOfflineRefresh = new ArrayList<Future<?>>();
 		List<Future<?>> futuresOnlineRefresh = new ArrayList<Future<?>>();
 
@@ -112,8 +112,8 @@ public class MultiThreadTLValidationJobTest {
 			futuresOnlineRefresh.add(executor.submit(new OnlineRefreshConcurrent()));
 		}
 
-		for (Future<ValidationJobSummary> future : futuresValidationResult) {
-			ValidationJobSummary jobSummary = null;
+		for (Future<TLValidationJobSummary> future : futuresValidationResult) {
+			TLValidationJobSummary jobSummary = null;
 			try {
 				jobSummary = future.get();
 			} catch (Exception e) {
@@ -126,11 +126,11 @@ public class MultiThreadTLValidationJobTest {
 
 	}
 	
-	class ValidationJobSummeryConcurrent implements Callable<ValidationJobSummary> {
+	class ValidationJobSummeryConcurrent implements Callable<TLValidationJobSummary> {
 		ValidationJobSummeryConcurrent() {
 		}
 		@Override
-		public ValidationJobSummary call() throws Exception {
+		public TLValidationJobSummary call() throws Exception {
 			return tlValidationJob.getSummary();
 		}
 	}

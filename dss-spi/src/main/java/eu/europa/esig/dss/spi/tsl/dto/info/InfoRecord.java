@@ -5,22 +5,22 @@ import java.util.Date;
 
 public interface InfoRecord extends Serializable {
 	
-	public boolean isRefreshNeeded();
+	boolean isRefreshNeeded();
 	
-	public boolean isDesynchronized();
+	boolean isDesynchronized();
 	
-	public boolean isSynchronized();
+	boolean isSynchronized();
 	
-	public boolean isError();
+	boolean isError();
 	
-	public boolean isToBeDeleted();
+	boolean isToBeDeleted();
 	
-	public Date getLastSuccessDate();
+	Date getLastSuccessDate();
 	
-	public String getExceptionMessage();
+	String getExceptionMessage();
 	
-	public String getExceptionStackTrace();
+	String getExceptionStackTrace();
 	
-	public boolean isResultExist();
+	boolean isResultExist();
 
 }

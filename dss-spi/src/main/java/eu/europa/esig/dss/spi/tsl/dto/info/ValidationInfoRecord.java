@@ -8,18 +8,18 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 
 public interface ValidationInfoRecord extends InfoRecord {
 	
-	public Indication getIndication();
+	Indication getIndication();
 	
-	public SubIndication getSubIndication();
+	SubIndication getSubIndication();
 	
-	public Date getSigningTime();
+	Date getSigningTime();
 	
-	public CertificateToken getSigningCertificate();
+	CertificateToken getSigningCertificate();
 	
-	public boolean isValid();
+	boolean isValid();
 	
-	public boolean isIndeterminate();
+	boolean isIndeterminate();
 	
-	public boolean isInvalid();
+	boolean isInvalid();
 
 }

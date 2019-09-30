@@ -7,6 +7,7 @@ import java.util.List;
 import eu.europa.esig.dss.spi.tsl.LOTLInfo;
 import eu.europa.esig.dss.spi.tsl.PivotInfo;
 import eu.europa.esig.dss.spi.tsl.TLInfo;
+import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.spi.tsl.dto.OtherTSLPointer;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
 import eu.europa.esig.dss.tsl.cache.ReadOnlyCacheAccess;
@@ -38,7 +39,7 @@ public class ValidationJobSummaryBuilder {
 		this.lotlSources = lotlSources;
 	}
 
-	public ValidationJobSummary build() {
+	public TLValidationJobSummary build() {
 
 		final List<TLInfo> otherTLInfos = new ArrayList<TLInfo>();
 		if (Utils.isArrayNotEmpty(tlSources)) {
@@ -77,7 +78,7 @@ public class ValidationJobSummaryBuilder {
 			}
 		}
 
-		return new ValidationJobSummary(lotlList, otherTLInfos);
+		return new TLValidationJobSummary(lotlList, otherTLInfos);
 	}
 
 	private LOTLInfo buildLOTLInfo(LOTLSource lotlSource) {

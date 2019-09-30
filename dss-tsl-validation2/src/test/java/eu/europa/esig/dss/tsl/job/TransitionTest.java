@@ -20,12 +20,12 @@ import eu.europa.esig.dss.service.http.commons.DSSFileLoader;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.tsl.TLInfo;
+import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.spi.tsl.dto.info.InfoRecord;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.tsl.cache.state.CacheStateEnum;
 import eu.europa.esig.dss.tsl.source.TLSource;
-import eu.europa.esig.dss.tsl.summary.ValidationJobSummary;
 
 public class TransitionTest {
 
@@ -263,7 +263,7 @@ public class TransitionTest {
 		return onlineFileLoader;
 	}
 
-	private void checkSummary(ValidationJobSummary summary, CacheStateEnum download, CacheStateEnum parsing, CacheStateEnum validation) {
+	private void checkSummary(TLValidationJobSummary summary, CacheStateEnum download, CacheStateEnum parsing, CacheStateEnum validation) {
 		assertNotNull(summary);
 		List<TLInfo> tlInfos = summary.getOtherTLInfos();
 		assertEquals(1, tlInfos.size());

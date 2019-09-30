@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.service.http.commons.DSSFileLoader;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.tsl.cache.CacheAccessByKey;
 import eu.europa.esig.dss.tsl.cache.CacheAccessFactory;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
@@ -29,7 +30,6 @@ import eu.europa.esig.dss.tsl.runnable.LOTLWithPivotsAnalysis;
 import eu.europa.esig.dss.tsl.runnable.TLAnalysis;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
-import eu.europa.esig.dss.tsl.summary.ValidationJobSummary;
 import eu.europa.esig.dss.tsl.summary.ValidationJobSummaryBuilder;
 import eu.europa.esig.dss.tsl.sync.TrustedListCertificateSourceSynchronizer;
 import eu.europa.esig.dss.utils.Utils;
@@ -133,9 +133,9 @@ public class TLValidationJob {
 
 	/**
 	 * Returns validation job summary for all processed LOTL / TLs
-	 * @return {@link ValidationJobSummary}
+	 * @return {@link TLValidationJobSummary}
 	 */
-	public synchronized ValidationJobSummary getSummary() {
+	public synchronized TLValidationJobSummary getSummary() {
 		return new ValidationJobSummaryBuilder(cacheAccessFactory.getReadOnlyCacheAccess(), trustedListSources, listOfTrustedListSources)
 				.build();
 	}
@@ -183,7 +183,7 @@ public class TLValidationJob {
 		executeTLSourcesAnalysis(currentTLSources, dssFileLoader);
 
 		// Compute summary
-		ValidationJobSummary summaryBeforeSync = getSummary();
+		TLValidationJobSummary summaryBeforeSync = getSummary();
 
 		// alerts()
 
@@ -261,7 +261,7 @@ public class TLValidationJob {
 		}
 	}
 	
-	private void synchronizeTLCertificateSource(ValidationJobSummary summaryBeforeSync) {
+	private void synchronizeTLCertificateSource(TLValidationJobSummary summaryBeforeSync) {
 		if (trustedListCertificateSource == null) {
 			LOG.warn("No TrustedListCertificateSource to be synchronized");
 			return;

@@ -19,13 +19,13 @@ import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.tsl.LOTLInfo;
 import eu.europa.esig.dss.spi.tsl.PivotInfo;
+import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.spi.tsl.dto.info.DownloadInfoRecord;
 import eu.europa.esig.dss.spi.tsl.dto.info.ParsingInfoRecord;
 import eu.europa.esig.dss.spi.tsl.dto.info.ValidationInfoRecord;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
-import eu.europa.esig.dss.tsl.summary.ValidationJobSummary;
 
 public class LOTLRefreshTest {
 
@@ -107,7 +107,7 @@ public class LOTLRefreshTest {
 
 		job.offlineRefresh();
 
-		ValidationJobSummary summary = job.getSummary();
+		TLValidationJobSummary summary = job.getSummary();
 		LOTLInfo lotlInfo = summary.getLOTLInfos().get(0);
 		assertTrue(lotlInfo.getValidationCacheInfo().isError());
 	}
@@ -127,7 +127,7 @@ public class LOTLRefreshTest {
 	}
 
 	private void checks(TLValidationJob job, Indication expectedIndication) {
-		ValidationJobSummary summary = job.getSummary();
+		TLValidationJobSummary summary = job.getSummary();
 		assertNotNull(summary);
 		assertEquals(1, summary.getNumberOfProcessedLOTLs());
 		List<LOTLInfo> lotlInfos = summary.getLOTLInfos();
