@@ -1,26 +1,28 @@
 package eu.europa.esig.dss.tsl.runnable;
 
-import java.util.List;
-
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
 
+/**
+ * This class contains the pivot and its introduced signing certificates for the
+ * LOTL or the next pivot
+ */
 public class PivotProcessingResult {
 
 	private final DSSDocument pivot;
-	private final List<CertificateToken> lotlSigCerts;
+	private final CertificateSource certificateSource;
 
-	public PivotProcessingResult(DSSDocument pivot, List<CertificateToken> lotlSigCerts) {
+	public PivotProcessingResult(DSSDocument pivot, CertificateSource certificateSource) {
 		this.pivot = pivot;
-		this.lotlSigCerts = lotlSigCerts;
+		this.certificateSource = certificateSource;
 	}
 
 	public DSSDocument getPivot() {
 		return pivot;
 	}
 
-	public List<CertificateToken> getLotlSigCerts() {
-		return lotlSigCerts;
+	public CertificateSource getCertificateSource() {
+		return certificateSource;
 	}
 
 }

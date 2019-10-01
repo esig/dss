@@ -16,10 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.http.commons.DSSFileLoader;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
-import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
 import eu.europa.esig.dss.tsl.cache.access.CacheAccessByKey;
 import eu.europa.esig.dss.tsl.cache.access.CacheAccessFactory;
@@ -114,7 +112,7 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 				ValidationCacheDTO validationResult = readOnlyCacheAccess.getValidationCacheDTO(cacheKey);
 				if (validationResult != null) {
 					if (validationResult.isValid()) {
-						currentCertificateSource = buildNewCertificateSource(pivotProcessingResult.getLotlSigCerts());
+						currentCertificateSource = pivotProcessingResult.getCertificateSource();
 					} else {
 						LOG.warn("Pivot LOTL '{}' is not valid ({}/{})", pivotUrl, validationResult.getIndication(), validationResult.getSubIndication());
 					}
@@ -127,16 +125,6 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 		}
 
 		return currentCertificateSource;
-	}
-
-	private CertificateSource buildNewCertificateSource(List<CertificateToken> certs) {
-		CertificateSource certificateSource = new CommonCertificateSource();
-		if (Utils.isCollectionNotEmpty(certs)) {
-			for (CertificateToken certificateToken : certs) {
-				certificateSource.addCertificate(certificateToken);
-			}
-		}
-		return certificateSource;
 	}
 
 	private void validationPivot(CacheAccessByKey pivotCacheAccess, DSSDocument document, CertificateSource certificateSource) {

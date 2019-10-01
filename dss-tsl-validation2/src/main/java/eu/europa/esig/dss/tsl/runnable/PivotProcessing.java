@@ -1,12 +1,12 @@
 package eu.europa.esig.dss.tsl.runnable;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.http.commons.DSSFileLoader;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.tsl.cache.access.CacheAccessByKey;
 import eu.europa.esig.dss.tsl.dto.ParsingCacheDTO;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
@@ -31,19 +31,21 @@ public class PivotProcessing extends AbstractAnalysis implements Callable<PivotP
 
 			lotlParsing(pivot, source);
 
-			return new PivotProcessingResult(pivot, getLOTLAnnouncedSigningCertificates());
+			return new PivotProcessingResult(pivot, getLOTLAnnouncedCertificateSource());
 		}
 
 		return null;
 	}
 
-	private List<CertificateToken> getLOTLAnnouncedSigningCertificates() {
-		List<CertificateToken> lotlSigCerts = Collections.emptyList();
+	private CertificateSource getLOTLAnnouncedCertificateSource() {
+		CertificateSource certificateSource = new CommonCertificateSource();
 		ParsingCacheDTO parsingResult = cacheAccess.getParsingReadOnlyResult();
 		if (parsingResult != null) {
-			lotlSigCerts = parsingResult.getLOTLAnnouncedSigningCertificates();
+			for (CertificateToken certificateToken : parsingResult.getLOTLAnnouncedSigningCertificates()) {
+				certificateSource.addCertificate(certificateToken);
+			}
 		}
-		return lotlSigCerts;
+		return certificateSource;
 	}
 
 }
