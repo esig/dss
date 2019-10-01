@@ -20,38 +20,36 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asice;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.XMLConstants;
 import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import eu.europa.esig.asic.manifest.ASiCManifestUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 
-@Disabled("Missing XSD for validation")
 public class ASiCEWithCAdESManifestBuilderTest {
 
 	private static Validator validator;
 
-	public static void init() throws SAXException {
-		SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		Schema schema = factory.newSchema(new StreamSource(new File("src/test/resources/en_31916201v010101.xsd")));
+	@BeforeEach
+	public void init() throws SAXException {
+		Schema schema = ASiCManifestUtils.getSchemaASiCManifest121();
 		validator = schema.newValidator();
 	}
 
+	@Test
 	public void testManifestAgainstXSD() throws SAXException, IOException {
 		List<DSSDocument> documents = new ArrayList<DSSDocument>();
 		documents.add(new InMemoryDocument(new byte[] { 1, 2, 3 }, "test.bin"));
@@ -62,6 +60,7 @@ public class ASiCEWithCAdESManifestBuilderTest {
 		validator.validate(new DOMSource(build));
 	}
 
+	@Test
 	public void testArchiveManifestAgainstXSD() throws SAXException, IOException {
 		List<DSSDocument> signatures = new ArrayList<DSSDocument>();
 		signatures.add(new InMemoryDocument(new byte[] { 1, 2, 3 }, "test.p7s", MimeType.PKCS7));
