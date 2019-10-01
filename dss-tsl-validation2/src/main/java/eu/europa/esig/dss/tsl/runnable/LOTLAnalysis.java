@@ -4,7 +4,7 @@ import java.util.concurrent.CountDownLatch;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.service.http.commons.DSSFileLoader;
-import eu.europa.esig.dss.tsl.cache.CacheAccessByKey;
+import eu.europa.esig.dss.tsl.cache.access.CacheAccessByKey;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 
 public class LOTLAnalysis extends AbstractAnalysis implements Runnable {

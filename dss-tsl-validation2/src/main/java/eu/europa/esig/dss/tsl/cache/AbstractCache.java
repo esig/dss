@@ -33,7 +33,7 @@ public abstract class AbstractCache<R extends CachedResult> {
 	 * @param cacheKey {@link CacheKey}
 	 * @return {@link CachedEntry}
 	 */
-	protected CachedEntry<R> get(CacheKey cacheKey) {
+	public CachedEntry<R> get(CacheKey cacheKey) {
 		LOG.trace("Extracting the result for key [{}]...", cacheKey);
 		CachedEntry<R> cacheWrapper = cachedEntriesMap.get(cacheKey);
 		if (cacheWrapper != null) {
@@ -152,6 +152,19 @@ public abstract class AbstractCache<R extends CachedResult> {
 		boolean refreshNeeded = cachedEntry.isRefreshNeeded();
 		LOG.trace("Is update required for the entry with key [{}] ? {}", cacheKey, refreshNeeded);
 		return refreshNeeded;
+	}
+	
+	/**
+	 * Checks if a CachedEntry for the given key is not up to date
+	 * @param cacheKey {@link CacheKey} of the CacheEntry to check
+	 * @return TRUE if update is required for the matching CachedKey, FALSE otherwise
+	 */
+	public boolean isDesync(CacheKey cacheKey) {
+		LOG.trace("Checking if the cache entry is desynchronized with the key [{}]...", cacheKey);
+		CachedEntry<R> cachedEntry = get(cacheKey);
+		boolean desync = cachedEntry.isDesync();
+		LOG.trace("Is cache entry desynchronized with key [{}] ? {}", cacheKey, desync);
+		return desync;
 	}
 
 	/**

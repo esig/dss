@@ -30,7 +30,22 @@ public class TrustServiceProviderBuilder {
 	 */
 	public TrustServiceProviderBuilder() {
 	}
-	
+
+	/**
+	 * Copy the original object
+	 * 
+	 * @param original the original trust service provider
+	 */
+	public TrustServiceProviderBuilder(TrustServiceProvider original) {
+		this.names = original.getNames();
+		this.tradeNames = original.getTradeNames();
+		this.registrationIdentifiers = original.getRegistrationIdentifiers();
+		this.postalAddresses = original.getPostalAddresses();
+		this.electronicAddresses = original.getElectronicAddresses();
+		this.information = original.getInformation();
+		this.services = original.getServices();
+	}
+
 	public TrustServiceProvider build() {
 		return new TrustServiceProvider(this);
 	}

@@ -86,4 +86,9 @@ public class CurrentCacheContext implements CacheContext {
 		return CacheStateEnum.TO_BE_DELETED == state;
 	}
 
+	@Override
+	public boolean isDesync() {
+		return CacheStateEnum.DESYNCHRONIZED == state;
+	}
+
 }

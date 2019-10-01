@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.service.http.commons.DSSFileLoader;
+import eu.europa.esig.dss.tsl.cache.access.CacheAccessByKey;
 
 /**
  * The class is used to clean outdated cache entries

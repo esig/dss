@@ -20,6 +20,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.tsl.LOTLInfo;
 import eu.europa.esig.dss.spi.tsl.PivotInfo;
 import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
+import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.tsl.dto.info.DownloadInfoRecord;
 import eu.europa.esig.dss.spi.tsl.dto.info.ParsingInfoRecord;
 import eu.europa.esig.dss.spi.tsl.dto.info.ValidationInfoRecord;
@@ -40,6 +41,7 @@ public class LOTLRefreshTest {
 		TLValidationJob job = new TLValidationJob();
 		job.setListOfTrustedListSources(getLOTLSource());
 		job.setOfflineDataLoader(offlineFileLoader);
+		job.setTrustedListCertificateSource(new TrustedListsCertificateSource());
 
 		job.offlineRefresh();
 
@@ -60,6 +62,7 @@ public class LOTLRefreshTest {
 		lotlSource.setCertificateSource(new CommonCertificateSource());
 		job.setListOfTrustedListSources(lotlSource);
 		job.setOfflineDataLoader(offlineFileLoader);
+		job.setTrustedListCertificateSource(new TrustedListsCertificateSource());
 
 		job.offlineRefresh();
 
@@ -83,6 +86,7 @@ public class LOTLRefreshTest {
 		lotlSource.setCertificateSource(certificateSource);
 		job.setListOfTrustedListSources(lotlSource);
 		job.setOfflineDataLoader(offlineFileLoader);
+		job.setTrustedListCertificateSource(new TrustedListsCertificateSource());
 
 		job.offlineRefresh();
 
@@ -104,6 +108,7 @@ public class LOTLRefreshTest {
 		lotl.setUrl("EU");
 		job.setListOfTrustedListSources(lotl);
 		job.setOfflineDataLoader(offlineFileLoader);
+		job.setTrustedListCertificateSource(new TrustedListsCertificateSource());
 
 		job.offlineRefresh();
 
@@ -136,17 +141,17 @@ public class LOTLRefreshTest {
 		DownloadInfoRecord downloadCacheInfo = lotlInfo.getDownloadCacheInfo();
 		assertNotNull(downloadCacheInfo);
 		assertNotNull(downloadCacheInfo.getLastSuccessDate());
-		assertTrue(downloadCacheInfo.isDesynchronized());
+		assertTrue(downloadCacheInfo.isSynchronized());
 		ParsingInfoRecord parsingCacheInfo = lotlInfo.getParsingCacheInfo();
 		assertNotNull(parsingCacheInfo);
-		assertTrue(parsingCacheInfo.isDesynchronized());
+		assertTrue(parsingCacheInfo.isSynchronized());
 
 		assertEquals(5, parsingCacheInfo.getVersion());
 		assertEquals(248, parsingCacheInfo.getSequenceNumber());
 
 		ValidationInfoRecord validationCacheInfo = lotlInfo.getValidationCacheInfo();
 		assertNotNull(validationCacheInfo);
-		assertTrue(validationCacheInfo.isDesynchronized());
+		assertTrue(validationCacheInfo.isSynchronized());
 
 		// LOTL
 		assertEquals(expectedIndication, validationCacheInfo.getIndication());

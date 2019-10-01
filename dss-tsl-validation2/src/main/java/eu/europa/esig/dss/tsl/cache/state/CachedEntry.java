@@ -56,6 +56,10 @@ public class CachedEntry<R extends CachedResult> {
 		return cacheContext.isToBeDeleted();
 	}
 
+	public boolean isDesync() {
+		return cacheContext.isDesync();
+	}
+
 	public boolean isRefreshNeeded() {
 		return cacheContext.isRefreshNeeded();
 	}

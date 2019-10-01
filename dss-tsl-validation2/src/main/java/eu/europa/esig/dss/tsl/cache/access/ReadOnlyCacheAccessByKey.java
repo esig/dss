@@ -1,28 +1,32 @@
-package eu.europa.esig.dss.tsl.cache;
+package eu.europa.esig.dss.tsl.cache.access;
 
+import eu.europa.esig.dss.tsl.cache.CacheKey;
+import eu.europa.esig.dss.tsl.cache.DownloadCache;
+import eu.europa.esig.dss.tsl.cache.ParsingCache;
+import eu.europa.esig.dss.tsl.cache.ValidationCache;
 import eu.europa.esig.dss.tsl.dto.DownloadCacheDTO;
 import eu.europa.esig.dss.tsl.dto.ParsingCacheDTO;
 import eu.europa.esig.dss.tsl.dto.ValidationCacheDTO;
 
-public class ReadOnlyCacheByKey {
+public class ReadOnlyCacheAccessByKey {
 
 	/* Key of the CacheEntry */
 	protected final CacheKey key;
 
 	/* Global Cache */
-	protected final DownloadCache fileCache;
+	protected final DownloadCache downloadCache;
 	protected final ParsingCache parsingCache;
 	protected final ValidationCache validationCache;
-	
+
 	private final ReadOnlyCacheAccess readOnlyCacheAccess;
 
-	public ReadOnlyCacheByKey(final CacheKey key, final DownloadCache fileCache, 
-			final ParsingCache parsingCache, final ValidationCache validationCache) {
+	public ReadOnlyCacheAccessByKey(final CacheKey key, final DownloadCache downloadCache, final ParsingCache parsingCache,
+			final ValidationCache validationCache) {
 		this.key = key;
-		this.fileCache = fileCache;
+		this.downloadCache = downloadCache;
 		this.parsingCache = parsingCache;
 		this.validationCache = validationCache;
-		this.readOnlyCacheAccess = new ReadOnlyCacheAccess(fileCache, parsingCache, validationCache);
+		this.readOnlyCacheAccess = new ReadOnlyCacheAccess(downloadCache, parsingCache, validationCache);
 	}
 
 	/**

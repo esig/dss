@@ -21,19 +21,17 @@
 package eu.europa.esig.dss.spi.tsl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.tsl.dto.TrustServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -44,10 +42,10 @@ import eu.europa.esig.dss.utils.Utils;
 public class TrustedListsCertificateSource extends CommonTrustedCertificateSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TrustedListsCertificateSource.class);
-	
+
 	private TLValidationJobSummary summary;
 
-	private Map<String, List<ServiceInfo>> trustServicesByEntity = new HashMap<String, List<ServiceInfo>>();
+	private Map<String, List<TrustProperties>> trustServicesByEntity = new HashMap<String, List<TrustProperties>>();
 
 	/**
 	 * The default constructor.
@@ -57,9 +55,9 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	}
 
 	public void reinit() {
-		trustServicesByEntity = new HashMap<String, List<ServiceInfo>>();
+		trustServicesByEntity = new HashMap<String, List<TrustProperties>>();
 	}
-	
+
 	public TLValidationJobSummary getSummary() {
 		return summary;
 	}
@@ -73,33 +71,26 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		return CertificateSourceType.TRUSTED_LIST;
 	}
 
-	public void addCertificate(CertificateToken certificate, List<ServiceInfo> serviceInfos) {
+	public void addCertificate(CertificateToken certificate, TrustProperties trustProperties) {
 		certificate = super.addCertificate(certificate);
 
-		String entityKey = certificate.getEntityKey();
+		final String entityKey = certificate.getEntityKey();
 
 		synchronized (trustServicesByEntity) {
-
-			if (trustServicesByEntity.containsKey(entityKey)) {
-				List<ServiceInfo> storedServiceInfos = trustServicesByEntity.get(entityKey);
-				if (!Arrays.equals(serviceInfos.toArray(new ServiceInfo[serviceInfos.size()]),
-						storedServiceInfos.toArray(new ServiceInfo[storedServiceInfos.size()]))) {
-					storedServiceInfos.addAll(serviceInfos);
-				}
-			} else {
-				trustServicesByEntity.put(entityKey, serviceInfos);
+			List<TrustProperties> list = trustServicesByEntity.get(entityKey);
+			if (list == null) {
+				list = new ArrayList<TrustProperties>();
+				trustServicesByEntity.put(entityKey, list);
 			}
-
+			list.add(trustProperties);
 		}
-
 	}
 
 	/**
 	 * This method is not applicable for this kind of certificate source. You should
 	 * use {@link #addCertificate(CertificateToken, List)}
 	 *
-	 * @param certificate
-	 *                    the certificate you have to trust
+	 * @param certificate the certificate you have to trust
 	 * @return the corresponding certificate token
 	 */
 	@Override
@@ -108,12 +99,12 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	}
 
 	@Override
-	public Set<ServiceInfo> getTrustServices(CertificateToken token) {
-		List<ServiceInfo> trustServicesForToken = trustServicesByEntity.get(token.getEntityKey());
-		if (trustServicesForToken != null) {
-			return new HashSet<ServiceInfo>(trustServicesForToken);
+	public List<TrustProperties> getTrustServices(CertificateToken token) {
+		List<TrustProperties> currentTrustProperties = trustServicesByEntity.get(token.getEntityKey());
+		if (currentTrustProperties != null) {
+			return currentTrustProperties;
 		} else {
-			return Collections.emptySet();
+			return Collections.emptyList();
 		}
 	}
 
@@ -129,10 +120,10 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 
 	private List<String> getServiceSupplyPoints(CertificateToken trustAnchor, String... keywords) {
 		List<String> urls = new ArrayList<String>();
-		Set<ServiceInfo> trustServices = getTrustServices(trustAnchor);
-		for (ServiceInfo serviceInfo : trustServices) {
-			for (ServiceInfoStatus serviceInfoStatus : serviceInfo.getStatus()) {
-				List<String> serviceSupplyPoints = serviceInfoStatus.getServiceSupplyPoints();
+		List<TrustProperties> trustPropertiesList = getTrustServices(trustAnchor);
+		for (TrustProperties trustProperties : trustPropertiesList) {
+			for (TrustServiceStatusAndInformationExtensions statusAndInfo : trustProperties.getTrustService()) {
+				List<String> serviceSupplyPoints = statusAndInfo.getServiceSupplyPoints();
 				if (Utils.isCollectionNotEmpty(serviceSupplyPoints)) {
 					for (String serviceSupplyPoint : serviceSupplyPoints) {
 						for (String keyword : keywords) {
@@ -145,7 +136,6 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 				}
 			}
 		}
-
 		return urls;
 	}
 

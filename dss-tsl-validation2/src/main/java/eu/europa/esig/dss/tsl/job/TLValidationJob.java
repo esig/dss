@@ -19,11 +19,11 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.service.http.commons.DSSFileLoader;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
-import eu.europa.esig.dss.tsl.cache.CacheAccessByKey;
-import eu.europa.esig.dss.tsl.cache.CacheAccessFactory;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
-import eu.europa.esig.dss.tsl.cache.ReadOnlyCacheAccess;
+import eu.europa.esig.dss.tsl.cache.access.CacheAccessByKey;
+import eu.europa.esig.dss.tsl.cache.access.CacheAccessFactory;
+import eu.europa.esig.dss.tsl.cache.access.ReadOnlyCacheAccess;
 import eu.europa.esig.dss.tsl.dto.ParsingCacheDTO;
 import eu.europa.esig.dss.tsl.runnable.LOTLAnalysis;
 import eu.europa.esig.dss.tsl.runnable.LOTLWithPivotsAnalysis;
@@ -182,13 +182,10 @@ public class TLValidationJob {
 		// And then, execute all TLs (manual configs + TLs from LOTLs)
 		executeTLSourcesAnalysis(currentTLSources, dssFileLoader);
 
-		// Compute summary
-		TLValidationJobSummary summaryBeforeSync = getSummary();
-
 		// alerts()
 
 		// TLCerSource sync + cache sync if needed
-		synchronizeTLCertificateSource(summaryBeforeSync);
+		synchronizeTLCertificateSource();
 
 		executeTLSourcesClean(currentTLSources, dssFileLoader);
 	}
@@ -260,15 +257,15 @@ public class TLValidationJob {
 			LOG.error("Interruption in the TLAnalysis process", e);
 		}
 	}
-	
-	private void synchronizeTLCertificateSource(TLValidationJobSummary summaryBeforeSync) {
+
+	private void synchronizeTLCertificateSource() {
 		if (trustedListCertificateSource == null) {
 			LOG.warn("No TrustedListCertificateSource to be synchronized");
 			return;
 		}
 
-		TrustedListCertificateSourceSynchronizer synchronizer = new TrustedListCertificateSourceSynchronizer(summaryBeforeSync, trustedListCertificateSource,
-				cacheAccessFactory.getSynchronizerCacheAccess());
+		TrustedListCertificateSourceSynchronizer synchronizer = new TrustedListCertificateSourceSynchronizer(trustedListSources, listOfTrustedListSources,
+				trustedListCertificateSource, cacheAccessFactory.getSynchronizerCacheAccess());
 		synchronizer.sync();
 	}
 

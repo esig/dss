@@ -10,7 +10,7 @@ import eu.europa.esig.dss.spi.tsl.TLInfo;
 import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.spi.tsl.dto.OtherTSLPointer;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
-import eu.europa.esig.dss.tsl.cache.ReadOnlyCacheAccess;
+import eu.europa.esig.dss.tsl.cache.access.ReadOnlyCacheAccess;
 import eu.europa.esig.dss.tsl.dto.ParsingCacheDTO;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;

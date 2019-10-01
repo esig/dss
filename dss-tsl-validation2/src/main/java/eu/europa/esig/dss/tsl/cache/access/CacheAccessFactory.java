@@ -1,4 +1,9 @@
-package eu.europa.esig.dss.tsl.cache;
+package eu.europa.esig.dss.tsl.cache.access;
+
+import eu.europa.esig.dss.tsl.cache.CacheKey;
+import eu.europa.esig.dss.tsl.cache.DownloadCache;
+import eu.europa.esig.dss.tsl.cache.ParsingCache;
+import eu.europa.esig.dss.tsl.cache.ValidationCache;
 
 public final class CacheAccessFactory {
 	

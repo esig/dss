@@ -81,4 +81,11 @@ public interface CacheContext {
 	 */
 	boolean isToBeDeleted();
 
+	/**
+	 * Returns TRUE if the cache is in DESYNC status
+	 * 
+	 * @return TRUE if the entry is desynchronized
+	 */
+	boolean isDesync();
+
 }

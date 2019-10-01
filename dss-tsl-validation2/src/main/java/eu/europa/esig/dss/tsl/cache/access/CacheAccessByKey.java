@@ -1,14 +1,18 @@
-package eu.europa.esig.dss.tsl.cache;
+package eu.europa.esig.dss.tsl.cache.access;
 
+import eu.europa.esig.dss.tsl.cache.CacheKey;
+import eu.europa.esig.dss.tsl.cache.DownloadCache;
+import eu.europa.esig.dss.tsl.cache.ParsingCache;
+import eu.europa.esig.dss.tsl.cache.ValidationCache;
 import eu.europa.esig.dss.tsl.download.XmlDownloadResult;
 import eu.europa.esig.dss.tsl.parsing.AbstractParsingResult;
 import eu.europa.esig.dss.tsl.validation.ValidationResult;
 
-public class CacheAccessByKey extends ReadOnlyCacheByKey {
+public class CacheAccessByKey extends ReadOnlyCacheAccessByKey {
 	
-	public CacheAccessByKey(final CacheKey key, final DownloadCache fileCache, final ParsingCache parsingCache,
+	public CacheAccessByKey(final CacheKey key, final DownloadCache downloadCache, final ParsingCache parsingCache,
 			final ValidationCache validationCache) {
-		super(key, fileCache, parsingCache, validationCache);
+		super(key, downloadCache, parsingCache, validationCache);
 	}
 	
 	/**
@@ -20,15 +24,15 @@ public class CacheAccessByKey extends ReadOnlyCacheByKey {
 	}
 
 	public boolean isUpToDate(XmlDownloadResult xmlDownloadResult) {
-		return fileCache.isUpToDate(key, xmlDownloadResult);
+		return downloadCache.isUpToDate(key, xmlDownloadResult);
 	} 
 
 	public void update(XmlDownloadResult result) {
-		fileCache.update(key, result);
+		downloadCache.update(key, result);
 	}
 
 	public void downloadError(Exception e) {
-		fileCache.error(key, e);
+		downloadCache.error(key, e);
 	}
 
 	public boolean isParsingRefreshNeeded() {
@@ -68,15 +72,15 @@ public class CacheAccessByKey extends ReadOnlyCacheByKey {
 	 * @return TRUE if the entry need to be deleted, FALSE otherwise
 	 */
 	public boolean isFileNeedToBeDeleted() {
-		return fileCache.isToBeDeleted(key);
+		return downloadCache.isToBeDeleted(key);
 	}
 	
 	/**
 	 * Removes the entry from downloadCache if its value is TO_BE_DELETED
 	 */
 	public void deleteDownloadCacheIfNeeded() {
-		if (fileCache.isToBeDeleted(key)) {
-			fileCache.remove(key);
+		if (downloadCache.isToBeDeleted(key)) {
+			downloadCache.remove(key);
 		}
 	}
 	

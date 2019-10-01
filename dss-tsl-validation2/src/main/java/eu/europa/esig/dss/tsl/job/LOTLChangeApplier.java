@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.tsl.dto.OtherTSLPointer;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
-import eu.europa.esig.dss.tsl.cache.TLChangesCacheAccess;
+import eu.europa.esig.dss.tsl.cache.access.TLChangesCacheAccess;
 import eu.europa.esig.dss.tsl.dto.ParsingCacheDTO;
 import eu.europa.esig.dss.utils.Utils;
 
