@@ -112,10 +112,10 @@ public abstract class AbstractOpenDocumentTestSignature extends AbstractPkiFacto
 		extractor = new ASiCWithXAdESContainerExtractor(signedDocument);
 		ASiCExtractResult extractSigned = extractor.extract();
 		
-		List<String> fileNames = getSignedFilesNames(extractSigned.getSignedDocuments());		
-		List<String> fileDigests = getSignedFilesDigests(extractSigned.getSignedDocuments());
+		List<String> fileNames = getSignedFilesNames(extractSigned.getOriginalDocuments());		
+		List<String> fileDigests = getSignedFilesDigests(extractSigned.getOriginalDocuments());
 
-		for(DSSDocument doc : extractOriginal.getSignedDocuments()) {
+		for(DSSDocument doc : extractOriginal.getOriginalDocuments()) {
 			assertThat(fileNames, hasItems(doc.getName()));
 			assertThat(fileDigests, hasItems(doc.getDigest(DigestAlgorithm.SHA256)));
 		}	

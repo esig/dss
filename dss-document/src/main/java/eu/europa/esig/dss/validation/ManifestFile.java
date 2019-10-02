@@ -28,9 +28,19 @@ import eu.europa.esig.dss.model.DSSDocument;
 
 public class ManifestFile {
 
+	/* The DSSDocument represented by the ManifestFile */
 	private DSSDocument document;
+	
+	/* The name of a signature or timestamp associated to the ManifestFile */
 	private String signatureFilename;
+	
+	/* List of entries present in the document */ 
 	private List<ManifestEntry> entries;
+	
+	/* TRUE if the ManifestFile is associated with a timestamp object, FALSE otherwise */
+	private boolean timestampManifest;
+
+	/* TRUE if it is an ASiCArchiveManifest file, FALSE otherwise */
 	private boolean archiveManifest;
 
 	public void setDocument(DSSDocument document) {
@@ -62,6 +72,14 @@ public class ManifestFile {
 
 	public void setEntries(List<ManifestEntry> entries) {
 		this.entries = entries;
+	}
+	
+	public boolean isTimestampManifest() {
+		return timestampManifest;
+	}
+
+	public void setTimestampManifest(boolean timestampManifest) {
+		this.timestampManifest = timestampManifest;
 	}
 	
 	public boolean isArchiveManifest() {

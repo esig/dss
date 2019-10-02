@@ -124,7 +124,7 @@ public class OpenDocumentMultipleTimestampsTest extends PKIFactoryAccess {
 		assertTrue(manifestFilename.startsWith("META-INF/manifest"));
 		assertTrue(manifestFilename.endsWith(".xml"));
 
-		List<DSSDocument> signedDocuments = result.getSignedDocuments();
+		List<DSSDocument> signedDocuments = result.getOriginalDocuments();
 		assertEquals(2, signedDocuments.size());
 
 		DSSDocument mimeTypeDocument = result.getMimeTypeDocument();

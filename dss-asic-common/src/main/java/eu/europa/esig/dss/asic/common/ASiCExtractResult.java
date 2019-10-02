@@ -30,12 +30,13 @@ public class ASiCExtractResult {
 
 	private String zipComment;
 	private DSSDocument mimeTypeDocument;
+	private List<DSSDocument> allDocuments = new ArrayList<DSSDocument>();
+	private List<DSSDocument> originalDocuments = new ArrayList<DSSDocument>();
 	private List<DSSDocument> signatureDocuments = new ArrayList<DSSDocument>();
 	private List<DSSDocument> manifestDocuments = new ArrayList<DSSDocument>();
 	private List<ManifestFile> manifestFiles = new ArrayList<ManifestFile>();
 	private List<DSSDocument> archiveManifestDocuments = new ArrayList<DSSDocument>(); // ASiC with CAdES
 	private List<DSSDocument> timestampDocuments = new ArrayList<DSSDocument>(); // ASiC with CAdES
-	private List<DSSDocument> signedDocuments = new ArrayList<DSSDocument>();
 	private List<DSSDocument> unsupportedDocuments = new ArrayList<DSSDocument>();
 	private List<DSSDocument> containerDocuments = new ArrayList<DSSDocument>(); // for ASiC signatures
 	private DSSDocument rootContainer; // For OpenDocument
@@ -96,12 +97,20 @@ public class ASiCExtractResult {
 		this.timestampDocuments = timestampDocuments;
 	}
 
-	public List<DSSDocument> getSignedDocuments() {
-		return signedDocuments;
+	public List<DSSDocument> getAllDocuments() {
+		return allDocuments;
 	}
 
-	public void setSignedDocuments(List<DSSDocument> signedDocuments) {
-		this.signedDocuments = signedDocuments;
+	public void setAllDocuments(List<DSSDocument> allDocuments) {
+		this.allDocuments = allDocuments;
+	}
+
+	public List<DSSDocument> getOriginalDocuments() {
+		return originalDocuments;
+	}
+
+	public void setOriginalDocuments(List<DSSDocument> originalDocuments) {
+		this.originalDocuments = originalDocuments;
 	}
 
 	public List<DSSDocument> getUnsupportedDocuments() {
@@ -127,6 +136,18 @@ public class ASiCExtractResult {
 	public void setRootContainer(DSSDocument rootContainer) {
 		this.rootContainer = rootContainer;
 	}
+	
+	/**
+	 * Returns a list of all found manifest documents
+	 * 
+	 * @return list of {@link DSSDocument}s
+	 */
+	public List<DSSDocument> getAllManifestDocuments() {
+		List<DSSDocument> allManifestsList = new ArrayList<DSSDocument>();
+		allManifestsList.addAll(getManifestDocuments());
+		allManifestsList.addAll(getArchiveManifestDocuments());
+		return allManifestsList;
+	}
 
 	/**
 	 * Returns list of documents covered by the {@code timestamp}
@@ -135,10 +156,11 @@ public class ASiCExtractResult {
 	 */
 	public List<DSSDocument> getTimestampedDocuments(DSSDocument timestamp) {
 		List<DSSDocument> timestampedDocuments = new ArrayList<DSSDocument>();
-		timestampedDocuments.addAll(getSignedDocuments());
+		timestampedDocuments.addAll(getOriginalDocuments());
 		timestampedDocuments.addAll(getManifestDocuments());
 		timestampedDocuments.addAll(getSignatureDocuments());
 		timestampedDocuments.addAll(getArchiveManifestDocuments());
+		timestampedDocuments.add(getMimeTypeDocument());
 		for (DSSDocument timestampDocument : getTimestampDocuments()) {
 			if (timestampDocument.getName().compareTo(timestamp.getName()) < 0) {
 				timestampedDocuments.add(timestampDocument);

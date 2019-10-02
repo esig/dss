@@ -103,7 +103,7 @@ public class ASiCSXAdESMultiFilesLevelBTest extends AbstractPkiFactoryTestMultip
 		List<DSSDocument> manifestDocuments = extract.getManifestDocuments();
 		assertEquals(0, manifestDocuments.size());
 
-		List<DSSDocument> signedDocuments = extract.getSignedDocuments();
+		List<DSSDocument> signedDocuments = extract.getOriginalDocuments();
 		assertEquals(1, signedDocuments.size()); // package.zip
 
 		DSSDocument mimeTypeDocument = extract.getMimeTypeDocument();

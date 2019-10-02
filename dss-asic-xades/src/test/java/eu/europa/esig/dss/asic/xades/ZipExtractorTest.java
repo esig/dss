@@ -75,8 +75,8 @@ public class ZipExtractorTest extends PKIFactoryAccess{
 		assertNotNull(extract.getRootContainer());
 
 		assertNotNull(extract.getSignatureDocuments());
-		assertNotNull(extract.getSignedDocuments());
-		assertEquals(12, extract.getSignedDocuments().size());
+		assertNotNull(extract.getOriginalDocuments());
+		assertEquals(12, extract.getOriginalDocuments().size());
 	}
 	
 	@Test
@@ -96,8 +96,8 @@ public class ZipExtractorTest extends PKIFactoryAccess{
 
 		assertNotNull(extract.getSignatureDocuments());
 		assertEquals(0, extract.getSignatureDocuments().size());
-		assertNotNull(extract.getSignedDocuments());
-		assertEquals(1, extract.getSignedDocuments().size());
+		assertNotNull(extract.getOriginalDocuments());
+		assertEquals(1, extract.getOriginalDocuments().size());
 	}
 	
 	@Test
@@ -122,10 +122,10 @@ public class ZipExtractorTest extends PKIFactoryAccess{
 		
 		assertNotNull(extract.getSignatureDocuments());
 		assertEquals(1, extract.getSignatureDocuments().size());
-		assertNotNull(extract.getSignedDocuments());
-		assertEquals(1, extract.getSignedDocuments().size());
+		assertNotNull(extract.getOriginalDocuments());
+		assertEquals(1, extract.getOriginalDocuments().size());
 		
-		assertEquals("test.zip", extract.getSignedDocuments().get(0).getName());		
+		assertEquals("test.zip", extract.getOriginalDocuments().get(0).getName());		
 	}
 	
 	@Test
@@ -150,8 +150,8 @@ public class ZipExtractorTest extends PKIFactoryAccess{
 		
 		assertNotNull(extract.getSignatureDocuments());
 		assertEquals(1, extract.getSignatureDocuments().size());
-		assertNotNull(extract.getSignedDocuments());
-		assertEquals(12, extract.getSignedDocuments().size());
+		assertNotNull(extract.getOriginalDocuments());
+		assertEquals(12, extract.getOriginalDocuments().size());
 		
 		checkDocuments(openDocument, document);
 	}
@@ -191,12 +191,12 @@ public class ZipExtractorTest extends PKIFactoryAccess{
 		assertEquals(0, extractOriginal.getSignatureDocuments().size());
 		assertEquals(1, extractSigned.getSignatureDocuments().size());
 		
-		assertEquals(extractOriginal.getSignedDocuments().size(), extractSigned.getSignedDocuments().size());
+		assertEquals(extractOriginal.getOriginalDocuments().size(), extractSigned.getOriginalDocuments().size());
 		
-		List<String> fileNames = getSignedFilesNames(extractSigned.getSignedDocuments());		
-		List<String> fileDigests = getSignedFilesDigests(extractSigned.getSignedDocuments());
+		List<String> fileNames = getSignedFilesNames(extractSigned.getOriginalDocuments());		
+		List<String> fileDigests = getSignedFilesDigests(extractSigned.getOriginalDocuments());
 
-		for(DSSDocument doc : extractOriginal.getSignedDocuments()) {
+		for(DSSDocument doc : extractOriginal.getOriginalDocuments()) {
 			assertThat(fileNames, hasItems(doc.getName()));
 			assertThat(fileDigests, hasItems(doc.getDigest(DigestAlgorithm.SHA256)));
 		}	

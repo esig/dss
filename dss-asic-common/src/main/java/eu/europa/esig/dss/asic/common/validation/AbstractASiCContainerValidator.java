@@ -70,9 +70,9 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 		AbstractASiCContainerExtractor extractor = getArchiveExtractor();
 		extractResult = extractor.extract();
 		containerType = ASiCUtils.getContainerType(document, extractResult.getMimeTypeDocument(), extractResult.getZipComment(),
-				extractResult.getSignedDocuments());
+				extractResult.getOriginalDocuments());
 		if (ASiCContainerType.ASiC_S.equals(containerType)) {
-			extractResult.setContainerDocuments(getArchiveDocuments(extractResult.getSignedDocuments()));
+			extractResult.setContainerDocuments(getArchiveDocuments(extractResult.getOriginalDocuments()));
 		} else if (ASiCContainerType.ASiC_E.equals(containerType)) {
 			extractResult.setManifestFiles(getManifestFilesDecriptions());
 		}
@@ -125,10 +125,10 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 			containerInfo.setMimeTypeFilePresent(false);
 		}
 
-		List<DSSDocument> signedDocuments = extractResult.getSignedDocuments();
-		if (Utils.isCollectionNotEmpty(signedDocuments)) {
+		List<DSSDocument> originalSignedDocuments = extractResult.getOriginalDocuments();
+		if (Utils.isCollectionNotEmpty(originalSignedDocuments)) {
 			List<String> signedDocumentFilenames = new ArrayList<String>();
-			for (DSSDocument dssDocument : signedDocuments) {
+			for (DSSDocument dssDocument : originalSignedDocuments) {
 				signedDocumentFilenames.add(dssDocument.getName());
 			}
 			containerInfo.setSignedDocumentFilenames(signedDocumentFilenames);
@@ -168,8 +168,12 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 		return extractResult.getSignatureDocuments();
 	}
 
-	protected List<DSSDocument> getSignedDocuments() {
-		return extractResult.getSignedDocuments();
+	protected List<DSSDocument> getOriginalDocuments() {
+		return extractResult.getOriginalDocuments();
+	}
+
+	protected List<DSSDocument> getAllDocuments() {
+		return extractResult.getAllDocuments();
 	}
 
 	protected List<DSSDocument> getManifestDocuments() {
@@ -190,6 +194,10 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 
 	protected List<DSSDocument> getArchiveManifestDocuments() {
 		return extractResult.getArchiveManifestDocuments();
+	}
+	
+	protected List<DSSDocument> getAllManifestDocuments() {
+		return extractResult.getAllManifestDocuments();
 	}
 	
 	protected List<DSSDocument> getArchiveDocuments() {

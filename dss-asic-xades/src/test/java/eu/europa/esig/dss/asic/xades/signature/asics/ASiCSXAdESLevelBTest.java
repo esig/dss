@@ -90,7 +90,7 @@ public class ASiCSXAdESLevelBTest extends AbstractASiCSXAdESTestSignature {
 		List<DSSDocument> manifestDocuments = extract.getManifestDocuments();
 		assertEquals(0, manifestDocuments.size());
 
-		List<DSSDocument> signedDocuments = extract.getSignedDocuments();
+		List<DSSDocument> signedDocuments = extract.getOriginalDocuments();
 		assertEquals(1, signedDocuments.size());
 		assertEquals("test.text", signedDocuments.get(0).getName());
 

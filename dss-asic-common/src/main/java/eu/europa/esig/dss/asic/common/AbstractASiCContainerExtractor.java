@@ -87,24 +87,28 @@ public abstract class AbstractASiCContainerExtractor {
 		while ((entry = ASiCUtils.getNextValidEntry(asicInputStream)) != null) {
 			String entryName = entry.getName();
 			
+			DSSDocument currentDocument = ASiCUtils.getCurrentDocument(entryName, asicInputStream, containerSize);
 			if (isMetaInfFolder(entryName)) {
 				if (isAllowedSignature(entryName)) {
-					result.getSignatureDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream, containerSize));
+					result.getSignatureDocuments().add(currentDocument);
 				} else if (isAllowedManifest(entryName)) {
-					result.getManifestDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream, containerSize));
+					result.getManifestDocuments().add(currentDocument);
 				} else if (isAllowedArchiveManifest(entryName)) {
-					result.getArchiveManifestDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream, containerSize));
+					result.getArchiveManifestDocuments().add(currentDocument);
 				} else if (isAllowedTimestamp(entryName)) {
-					result.getTimestampDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream, containerSize));
+					result.getTimestampDocuments().add(currentDocument);
 				} else if (!isFolder(entryName)) {
-					result.getUnsupportedDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream, containerSize));
+					result.getUnsupportedDocuments().add(currentDocument);
 				}
-			} else if (!isFolder(entryName)) {
+			} else if (!isFolder(entryName)) { 
 				if (isMimetype(entryName)) {
-					result.setMimeTypeDocument(ASiCUtils.getCurrentDocument(entryName, asicInputStream, containerSize));
+					result.setMimeTypeDocument(currentDocument);
 				} else {
-					result.getSignedDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream, containerSize));
+					result.getOriginalDocuments().add(currentDocument);
 				}
+			}
+			if (!isFolder(entryName)) {
+				result.getAllDocuments().add(currentDocument);
 			}
 		}
 		

@@ -158,10 +158,10 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		extractCurrentArchive(toExtendDocument);
 		
 		List<DSSDocument> signatureDocuments = getEmbeddedSignatures();
-		List<DSSDocument> signedDocuments = getEmbeddedSignedDocuments();
+		List<DSSDocument> originalSignedDocuments = getEmbeddedOriginalDocuments();
 		DSSDocument mimetype = getEmbeddedMimetype();
 
-		ASiCContainerType containerType = ASiCUtils.getContainerType(toExtendDocument, mimetype, null, signedDocuments);
+		ASiCContainerType containerType = ASiCUtils.getContainerType(toExtendDocument, mimetype, null, originalSignedDocuments);
 		if (containerType == null) {
 			throw new DSSException("Unable to determine container type");
 		}
@@ -194,7 +194,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	private DSSDocument extendSignatureDocument(DSSDocument signature, CAdESSignatureParameters cadesParameters, ASiCContainerType containerType) {
 
 		List<DSSDocument> manifests = getEmbeddedManifests();
-		List<DSSDocument> signedDocuments = getEmbeddedSignedDocuments();
+		List<DSSDocument> originalSignedDocuments = getEmbeddedOriginalDocuments();
 
 		if (ASiCContainerType.ASiC_E == containerType) {
 			DSSDocument linkedManifest = ASiCEWithCAdESManifestParser.getLinkedManifest(manifests, signature.getName());
@@ -212,7 +212,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			
 		} else {
 			String originalName = signature.getName();
-			cadesParameters.setDetachedContents(signedDocuments);
+			cadesParameters.setDetachedContents(originalSignedDocuments);
 
 			DSSDocument extendDocument = getCAdESService().extendDocument(signature, cadesParameters);
 			extendDocument.setName(originalName);
@@ -226,7 +226,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		List<DSSDocument> archiveManifests = getEmbeddedArchiveManifests();
 		List<DSSDocument> timestamps = getEmbeddedTimestamps();
 		List<DSSDocument> manifests = getEmbeddedManifests();
-		List<DSSDocument> signedDocuments = getEmbeddedSignedDocuments();
+		List<DSSDocument> originalSignedDocuments = getEmbeddedOriginalDocuments();
 		
 		String timestampFilename = getArchiveTimestampFilename(timestamps);
 		
@@ -251,7 +251,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		}
 		
 		ASiCEWithCAdESArchiveManifestBuilder builder = new ASiCEWithCAdESArchiveManifestBuilder(extendedDocuments, timestamps, 
-				signedDocuments, manifests, lastArchiveManifest, parameters.getArchiveTimestampParameters().getDigestAlgorithm(), timestampFilename);
+				originalSignedDocuments, manifests, lastArchiveManifest, parameters.getArchiveTimestampParameters().getDigestAlgorithm(), timestampFilename);
 
 		DSSDocument archiveManfest = DomUtils.createDssDocumentFromDomDocument(builder.build(), DEFAULT_ARCHIVE_MANIFEST_FILENAME);
 		extendedDocuments.add(archiveManfest);

@@ -107,7 +107,7 @@ public class ASiCEXAdESMultiFilesLevelBTest extends AbstractPkiFactoryTestMultip
 		assertNotNull(description.getSignatureFilename());
 		assertTrue(Utils.isCollectionNotEmpty(description.getEntries()));
 
-		List<DSSDocument> signedDocuments = extract.getSignedDocuments();
+		List<DSSDocument> signedDocuments = extract.getOriginalDocuments();
 		assertEquals(2, signedDocuments.size());
 
 		DSSDocument mimeTypeDocument = extract.getMimeTypeDocument();
