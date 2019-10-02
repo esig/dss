@@ -344,7 +344,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	private void checkRevocationThisUpdateIsAfterBestSignatureTime(final CertificateVerifier certificateVerifier, final ValidationContext validationContext) {
 		if (!validationContext.isAtLeastOneRevocationDataPresentAfterBestSignatureTime(getSigningCertificateToken())) {
-			String message = "No revocation data with thisUpdate time after the bestSignatureTime";
+			String message = "No revocation data found with thisUpdate time after the bestSignatureTime";
 			if (certificateVerifier.isExceptionOnNoRevocationAfterBestSignatureTime()) {
 				throw new DSSException(message);
 			} else {

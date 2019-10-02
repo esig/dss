@@ -96,7 +96,7 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 			signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
 			service.extendDocument(signedDocument, signatureParameters);
 		});
-		assertEquals("Revocation data thisUpdate time is after the bestSignatureTime", exception.getMessage());
+		assertEquals("No revocation data found with thisUpdate time after the bestSignatureTime", exception.getMessage());
 	}
 	
 	@Test

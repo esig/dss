@@ -77,7 +77,7 @@ public class XAdESExtensionWithContentTimestampTest extends PKIFactoryAccess {
 		
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
 		Exception exception = assertThrows(DSSException.class, () -> service.extendDocument(signedDocument, signatureParameters));
-		assertEquals("Revocation data thisUpdate time is after the bestSignatureTime", exception.getMessage());
+		assertEquals("No revocation data found with thisUpdate time after the bestSignatureTime", exception.getMessage());
 		
 	}
 	
