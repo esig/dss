@@ -59,6 +59,7 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 
 /**
  * During the validation of a signature, the software retrieves different X509 artifacts like Certificate, CRL and OCSP
@@ -87,7 +88,9 @@ public class SignatureValidationContext implements ValidationContext {
 
 	private final Map<Token, Boolean> tokensToProcess = new HashMap<Token, Boolean>();
 
-	private final Map<CertificateToken, Date> lastUsageDates = new HashMap<CertificateToken, Date>();
+	private final Map<CertificateToken, Date> lastTimestampCertChainDates = new HashMap<CertificateToken, Date>();
+
+	private final Map<String, Date> bestSignatureTimes = new HashMap<String, Date>();
 	
 	/* The map contains all the certificate chains that has been used into the signature. Links the signing certificate and its chain. */
 	private Map<CertificateToken, List<CertificateToken>> orderedCertificateChains;
@@ -184,11 +187,26 @@ public class SignatureValidationContext implements ValidationContext {
 	private Token getNotYetVerifiedToken() {
 		synchronized (tokensToProcess) {
 			for (final Entry<Token, Boolean> entry : tokensToProcess.entrySet()) {
-
 				if (entry.getValue() == null) {
-
 					entry.setValue(true);
 					return entry.getKey();
+				}
+			}
+			return null;
+		}
+	}
+
+	/**
+	 * This method returns a timestamp token to verify. If there is no more tokens to verify null is returned.
+	 *
+	 * @return token to verify or null
+	 */
+	private TimestampToken getNotYetVerifiedTimestamp() {
+		synchronized (tokensToProcess) {
+			for (final Entry<Token, Boolean> entry : tokensToProcess.entrySet()) {
+				if (entry.getValue() == null && entry.getKey() instanceof TimestampToken) {
+					entry.setValue(true);
+					return (TimestampToken) entry.getKey();
 				}
 			}
 			return null;
@@ -438,11 +456,17 @@ public class SignatureValidationContext implements ValidationContext {
 		Date usageDate = timestampToken.getCreationDate();
 		for (CertificateToken cert : tsaCertificateChain) {
 			if (isSelfSignedOrTrusted(cert)) {
-				return;
+				break;
 			}
-			Date lastUsage = lastUsageDates.get(cert);
+			Date lastUsage = lastTimestampCertChainDates.get(cert);
 			if (lastUsage == null || lastUsage.before(usageDate)) {
-				lastUsageDates.put(cert, usageDate);
+				lastTimestampCertChainDates.put(cert, usageDate);
+			}
+		}
+		for (TimestampedReference timestampedReference : timestampToken.getTimestampedReferences()) {
+			Date bestSignatureTime = bestSignatureTimes.get(timestampedReference.getObjectId());
+			if (bestSignatureTime == null || usageDate.before(bestSignatureTime)) {
+				bestSignatureTimes.put(timestampedReference.getObjectId(), usageDate);
 			}
 		}
 	}
@@ -459,17 +483,23 @@ public class SignatureValidationContext implements ValidationContext {
 
 	@Override
 	public void validate() throws DSSException {
+		TimestampToken timestampToken = getNotYetVerifiedTimestamp();
+		while (timestampToken != null) {
+			getCertChain(timestampToken);
+			registerUsageDate(timestampToken);
+			timestampToken = getNotYetVerifiedTimestamp();
+			
+		}
+		
 		Token token = getNotYetVerifiedToken();
 		while (token != null) {
-
 			List<Token> certChain = getCertChain(token);
 			if (token instanceof CertificateToken) {
 				final List<RevocationToken> revocationTokens = getRevocationData((CertificateToken) token, certChain);
 				addRevocationTokensForVerification(revocationTokens);
-			} else if (token instanceof TimestampToken) {
-				registerUsageDate((TimestampToken) token);
 			}
 			token = getNotYetVerifiedToken();
+			
 		}
 	}
 
@@ -660,7 +690,7 @@ public class SignatureValidationContext implements ValidationContext {
 
 	@Override
 	public boolean isAllPOECoveredByRevocationData() {
-		for (Entry<CertificateToken, Date> entry : lastUsageDates.entrySet()) {
+		for (Entry<CertificateToken, Date> entry : lastTimestampCertChainDates.entrySet()) {
 			Date lastUsage = entry.getValue();
 			CertificateToken token = entry.getKey();
 			if (!isRevocationDataNotRequired(token)) {
@@ -729,11 +759,14 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	private boolean isRevocationDataRefreshNeeded(CertificateToken certToken, List<RevocationToken> revocations) {
-		Date lastUsageDate = lastUsageDates.get(certToken);
-		if (lastUsageDate != null) {
+		Date refreshNeededAfterTime = lastTimestampCertChainDates.get(certToken); // get last usage dates for the same timestamp certificate chain
+		if (refreshNeededAfterTime == null) {
+			refreshNeededAfterTime = bestSignatureTimes.get(certToken.getDSSIdAsString()); // the best signature time for other tokens (i.e. B-level and revocation data)
+		}
+		if (refreshNeededAfterTime != null) {
 			boolean foundUpdatedRevocationData = false;
 			for (RevocationToken revocationToken : revocations) {
-				if ((lastUsageDate.compareTo(revocationToken.getProductionDate()) < 0) && (RevocationReason.CERTIFICATE_HOLD != revocationToken.getReason())) {
+				if ((refreshNeededAfterTime.before(revocationToken.getProductionDate())) && (RevocationReason.CERTIFICATE_HOLD != revocationToken.getReason())) {
 					foundUpdatedRevocationData = true;
 					break;
 				}
@@ -752,7 +785,7 @@ public class SignatureValidationContext implements ValidationContext {
 		for (Map.Entry<CertificateToken, List<CertificateToken>> entry : orderedCertificateChains.entrySet()) {
 			CertificateToken firstChainCertificate = entry.getKey();
 			Date bestSignatureTime = firstChainCertificate.equals(signingCertificate) ? 
-					getEarliestTimestampTime() : lastUsageDates.get(firstChainCertificate);
+					getEarliestTimestampTime() : lastTimestampCertChainDates.get(firstChainCertificate);
 			if (!checkRevocationForCertificateChainAgainstBestSignatureTime(entry.getValue(), bestSignatureTime)) {
 				return false;
 			}
