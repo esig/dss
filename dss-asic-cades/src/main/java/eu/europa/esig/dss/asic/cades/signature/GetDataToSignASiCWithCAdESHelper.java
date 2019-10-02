@@ -32,5 +32,11 @@ public interface GetDataToSignASiCWithCAdESHelper extends GetDataToSignHelper {
 
 	/* In case of parallel ASiC-S signature, we need the detached content */
 	List<DSSDocument> getDetachedContents();
+	
+	/* List of Archive Manifest files (ASiC-E) */
+	List<DSSDocument> getArchiveManifestFiles();
+	
+	/* List of detached timestamps (ASiC-E) */
+	List<DSSDocument> getTimestamps();
 
 }

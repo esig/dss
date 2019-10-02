@@ -89,5 +89,18 @@ public class ManifestFile {
 	public void setArchiveManifest(boolean archiveManifest) {
 		this.archiveManifest = archiveManifest;
 	}
+	
+	/**
+	 * Returns a {@link ManifestEntry} with argument Rootfile="true"
+	 * @return {@link ManifestEntry} if the rootfile is found, FALSE otherwise
+	 */
+	public ManifestEntry getRootFile() {
+		for (ManifestEntry entry : getEntries()) {
+			if (entry.isRootfile()) {
+				return entry;
+			}
+		}
+		return null;
+	}
 
 }

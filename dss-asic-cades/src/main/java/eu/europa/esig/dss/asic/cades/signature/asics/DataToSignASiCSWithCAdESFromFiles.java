@@ -84,4 +84,16 @@ public class DataToSignASiCSWithCAdESFromFiles extends AbstractGetDataToSignASiC
 		return new ArrayList<DSSDocument>();
 	}
 
+	@Override
+	public List<DSSDocument> getArchiveManifestFiles() {
+		// not supported
+		return Collections.emptyList();
+	}
+
+	@Override
+	public List<DSSDocument> getTimestamps() {
+		// not supported
+		return Collections.emptyList();
+	}
+
 }

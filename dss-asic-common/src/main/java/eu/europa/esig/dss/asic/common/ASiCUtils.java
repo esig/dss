@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -47,6 +48,7 @@ public final class ASiCUtils {
 	public static final String MIME_TYPE_COMMENT = MIME_TYPE + "=";
 	public static final String META_INF_FOLDER = "META-INF/";
 	public static final String PACKAGE_ZIP = "package.zip";
+	public static final String XML_EXTENSION = ".xml";
 
     /**
      * Minimum file size to be analized on zip bombing
@@ -356,6 +358,39 @@ public final class ASiCUtils {
 		} catch (IOException e) {
 			throw new DSSException("Unable to close entry", e);
 		}
+	}
+	
+	/**
+	 * Generates an unique name for a new ASiC-E Manifest file, avoiding any name collision
+	 * @param expectedManifestName {@link String} defines the expected name of the file without extension (e.g. "ASiCmanifest")
+	 * @param existingManifests list of existing {@link DSSDocument} manifests of the type present in the container
+	 * @return {@link String} new manifest name
+	 */
+	public static String getNextASiCEManifestName(final String expectedManifestName, final List<DSSDocument> existingManifests) {
+		List<String> manifestNames = getDSSDocumentNames(existingManifests);
+		
+		String manifestName = null;
+		for (int i = 0; i < existingManifests.size() + 1; i++) {
+			String suffix = i == 0 ? Utils.EMPTY_STRING : String.valueOf(i);
+			manifestName = META_INF_FOLDER + expectedManifestName + suffix + XML_EXTENSION;
+			if (isValidName(manifestName, manifestNames)) {
+				break;
+			}
+		}
+		return manifestName;
+	}
+	
+	/**
+	 * Returns a list of document names
+	 * @param documents list of {@link DSSDocument}s to get file names
+	 * @return list of {@link String} document names
+	 */
+	public static List<String> getDSSDocumentNames(List<DSSDocument> documents) {
+		return documents.stream().map(DSSDocument::getName).collect(Collectors.toList());
+	}
+	
+	private static boolean isValidName(final String name, final List<String> notValidNames) {
+		return !notValidNames.contains(name);
 	}
 
 }

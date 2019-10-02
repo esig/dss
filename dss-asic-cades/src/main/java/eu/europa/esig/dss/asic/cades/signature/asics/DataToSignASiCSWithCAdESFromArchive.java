@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 
 import eu.europa.esig.dss.asic.cades.signature.GetDataToSignASiCWithCAdESHelper;
+import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -35,9 +36,9 @@ public class DataToSignASiCSWithCAdESFromArchive extends AbstractGetDataToSignAS
 	private final List<DSSDocument> embeddedSignedFiles;
 	private final ASiCParameters asicParameters;
 
-	public DataToSignASiCSWithCAdESFromArchive(List<DSSDocument> embeddedSignatures, List<DSSDocument> embeddedSignedFiles, ASiCParameters asicParameters) {
-		this.embeddedSignatures = embeddedSignatures;
-		this.embeddedSignedFiles = embeddedSignedFiles;
+	public DataToSignASiCSWithCAdESFromArchive(final ASiCExtractResult result, final ASiCParameters asicParameters) {
+		this.embeddedSignatures = result.getSignatureDocuments();
+		this.embeddedSignedFiles = result.getOriginalDocuments();
 		this.asicParameters = asicParameters;
 	}
 
@@ -78,6 +79,18 @@ public class DataToSignASiCSWithCAdESFromArchive extends AbstractGetDataToSignAS
 	@Override
 	public List<DSSDocument> getSignatures() {
 		return embeddedSignatures;
+	}
+
+	@Override
+	public List<DSSDocument> getArchiveManifestFiles() {
+		// not supported
+		return Collections.emptyList();
+	}
+
+	@Override
+	public List<DSSDocument> getTimestamps() {
+		// not supported
+		return Collections.emptyList();
 	}
 
 }
