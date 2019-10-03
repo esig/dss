@@ -75,11 +75,7 @@ final class DERUtil {
 	 * 
 	 * Copied from
 	 * https://github.com/bcgit/bc-java/blob/r1rv63/core/src/main/java/org/bouncycastle/asn1/ASN1InputStream.java
-	 *
-	 * @param s
-	 * @param tag
-	 * @return
-	 * @throws IOException
+	 * 
 	 */
 	public static int readTagNumber(InputStream s, int tag) throws IOException {
 		int tagNo = tag & 0x1f;

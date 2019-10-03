@@ -523,9 +523,9 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			if (size > 0) {
 				commitmentType = new CommitmentType();
 				for (int ii = 0; ii < size; ii++) {
-					if (attrValues.getObjectAt(ii) instanceof DERSequence) {
-						final DERSequence derSequence = (DERSequence) attrValues.getObjectAt(ii);
-						final CommitmentTypeIndication commitmentTypeIndication = CommitmentTypeIndication.getInstance(derSequence);
+					if (attrValues.getObjectAt(ii) instanceof ASN1Sequence) {
+						final ASN1Sequence sequence = (ASN1Sequence) attrValues.getObjectAt(ii);
+						final CommitmentTypeIndication commitmentTypeIndication = CommitmentTypeIndication.getInstance(sequence);
 						final ASN1ObjectIdentifier commitmentTypeId = commitmentTypeIndication.getCommitmentTypeId();
 						commitmentType.addIdentifier(commitmentTypeId.getId());
 					} else {
