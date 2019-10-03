@@ -52,7 +52,7 @@ public class ASiCManifestUtilsTest {
 		JAXBContext jc = ASiCManifestUtils.getJAXBContext();
 		assertNotNull(jc);
 
-		Schema schema = ASiCManifestUtils.getSchemaASiCManifest121();
+		Schema schema = ASiCManifestUtils.getSchemaASiCManifest();
 		assertNotNull(schema);
 
 		Unmarshaller unmarshaller = jc.createUnmarshaller();
@@ -81,7 +81,7 @@ public class ASiCManifestUtilsTest {
 		JAXBContext jc = ASiCManifestUtils.getJAXBContext();
 		assertNotNull(jc);
 
-		Schema schema = ASiCManifestUtils.getSchemaASiCManifest121();
+		Schema schema = ASiCManifestUtils.getSchemaASiCManifest();
 		assertNotNull(schema);
 		
 		Unmarshaller unmarshaller = jc.createUnmarshaller();
@@ -93,9 +93,9 @@ public class ASiCManifestUtilsTest {
 	}
 
 	@Test
-	public void getSchemaASiCManifest121() throws SAXException {
-		assertNotNull(ASiCManifestUtils.getSchemaASiCManifest121());
+	public void getSchemaASiCManifest() throws SAXException {
+		assertNotNull(ASiCManifestUtils.getSchemaASiCManifest());
 		// cached
-		assertNotNull(ASiCManifestUtils.getSchemaASiCManifest121());
+		assertNotNull(ASiCManifestUtils.getSchemaASiCManifest());
 	}
 }

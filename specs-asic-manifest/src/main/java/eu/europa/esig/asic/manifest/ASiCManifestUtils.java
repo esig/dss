@@ -52,7 +52,7 @@ public final class ASiCManifestUtils {
 		return jc;
 	}
 
-	public static Schema getSchemaASiCManifest121() throws SAXException {
+	public static Schema getSchemaASiCManifest() throws SAXException {
 		if (schema == null) {
 			schema = getSchema(getXSDSources());
 		}
