@@ -50,6 +50,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -670,7 +671,9 @@ public final class DSSUtils {
 	 */
 	public static X500Principal getX500PrincipalOrNull(final String x500PrincipalString) {
 		try {
-			return new X500Principal(x500PrincipalString);
+			Map<String, String> keywords = new HashMap<String, String>();
+			keywords.put("ORGANIZATIONIDENTIFIER", "2.5.4.97");
+			return new X500Principal(x500PrincipalString, keywords);
 		} catch (Exception e) {
 			LOG.warn(e.getMessage());
 			return null;
