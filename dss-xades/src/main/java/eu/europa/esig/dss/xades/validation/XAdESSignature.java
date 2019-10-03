@@ -59,6 +59,7 @@ import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
@@ -969,11 +970,24 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			// Secure validation disabled to support all signature algos
 			santuarioSignature = new XMLSignature(signatureElement, "", false);
 			if (Utils.isCollectionNotEmpty(detachedContents)) {
-				santuarioSignature.addResourceResolver(new DetachedSignatureResolver(detachedContents, getSignatureAlgorithm().getDigestAlgorithm()));
+				initDetachedSignatureResolvers(detachedContents);
 			}
 			return santuarioSignature;
 		} catch (XMLSecurityException e) {
 			throw new DSSException("Unable to initialize santuario XMLSignature", e);
+		}
+	}
+
+	private void initDetachedSignatureResolvers(List<DSSDocument> detachedContents) {
+		List<Reference> currentReferences = getReferences();
+		for (Reference reference : currentReferences) {
+			try {
+				DigestAlgorithm digestAlgorithm = DigestAlgorithm.forXML(reference.getMessageDigestAlgorithm().getAlgorithmURI());
+				santuarioSignature
+						.addResourceResolver(new DetachedSignatureResolver(detachedContents, digestAlgorithm));
+			} catch (XMLSignatureException e) {
+				LOG.warn("Unable to retrieve reference digest algorithm {}", reference.getId(), e);
+			}
 		}
 	}
 
