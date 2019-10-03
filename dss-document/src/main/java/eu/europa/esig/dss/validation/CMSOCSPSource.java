@@ -32,7 +32,6 @@ import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
-import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.cms.CMSObjectIdentifiers;
@@ -204,8 +203,8 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 		final Store otherRevocationInfo = cmsSignedData.getOtherRevocationInfo(CMSObjectIdentifiers.id_ri_ocsp_response);
 		final Collection otherRevocationInfoMatches = otherRevocationInfo.getMatches(null);
 		for (final Object object : otherRevocationInfoMatches) {
-			if (object instanceof DERSequence) {
-				final DERSequence otherRevocationInfoMatch = (DERSequence) object;
+			if (object instanceof ASN1Sequence) {
+				final ASN1Sequence otherRevocationInfoMatch = (ASN1Sequence) object;
 				final BasicOCSPResp basicOCSPResp;
 				if (otherRevocationInfoMatch.size() == 4) {
 					basicOCSPResp = DSSRevocationUtils.getBasicOcspResp(otherRevocationInfoMatch);
@@ -219,8 +218,7 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 					signedDataOCSPIdentifiers.add(ocspResponseIdentifier);
 				}
 			} else {
-				LOG.warn("Unsupported object type for id_ri_ocsp_response (SHALL be DER encoding) : {}",
-						object.getClass().getSimpleName());
+				LOG.warn("Unsupported object type for id_ri_ocsp_response (SHALL be an ASN1Sequence) : {}", object.getClass().getSimpleName());
 			}
 		}
 	}
@@ -229,8 +227,8 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 		final Store otherRevocationInfo = cmsSignedData.getOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
 		final Collection otherRevocationInfoMatches = otherRevocationInfo.getMatches(null);
 		for (final Object object : otherRevocationInfoMatches) {
-			if (object instanceof DERSequence) {
-				final DERSequence otherRevocationInfoMatch = (DERSequence) object;
+			if (object instanceof ASN1Sequence) {
+				final ASN1Sequence otherRevocationInfoMatch = (ASN1Sequence) object;
 				final BasicOCSPResp basicOCSPResp = DSSRevocationUtils.getBasicOcspResp(otherRevocationInfoMatch);
 				OCSPResponseBinary ocspResponseIdentifier = addBasicOcspResp(basicOCSPResp, getRevocationValuesOrigin());
 				if (ocspResponseIdentifier != null) {
@@ -238,8 +236,7 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 					signedDataOCSPIdentifiers.add(ocspResponseIdentifier);
 				}
 			} else {
-				LOG.warn("Unsupported object type for id_pkix_ocsp_basic (SHALL be DER encoding) : {}",
-						object.getClass().getSimpleName());
+				LOG.warn("Unsupported object type for id_pkix_ocsp_basic (SHALL be an ASN1Sequence) : {}", object.getClass().getSimpleName());
 			}
 		}
 	}
