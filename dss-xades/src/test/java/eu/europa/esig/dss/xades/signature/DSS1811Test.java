@@ -33,10 +33,12 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -51,7 +53,7 @@ public class DSS1811Test extends PKIFactoryAccess {
 	private static final DigestAlgorithm USED_DIGEST = DigestAlgorithm.SHA512;
 
 	@Test
-	public void testWithCompleteDocument() {
+	public void testWithCompleteDocument() throws IOException {
 		XAdESService service = getService();
 		XAdESSignatureParameters params = getParams();
 		DSSDocument completeDocument = getCompleteDocument();
@@ -61,6 +63,8 @@ public class DSS1811Test extends PKIFactoryAccess {
 		ToBeSigned toBeSigned = service.getDataToSign(completeDocument, params);
 		SignatureValue signatureValue = getToken().sign(toBeSigned, params.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDoc = service.signDocument(completeDocument, params, signatureValue);
+
+		signedDoc.save("target/bla.xml");
 
 		validate(signedDoc, completeDocument);
 		validate(signedDoc, getDigestDocument());
@@ -110,11 +114,61 @@ public class DSS1811Test extends PKIFactoryAccess {
 		validate(extendDocument, digestDocument);
 	}
 
+	@Test
+	public void alteredDigestAlgo() {
+		// Changed digest algo for signed info
+		DSSDocument signedDoc = new FileDocument("src/test/resources/validation/dss1811-multi-algo.xml");
+
+		Reports reports = getReports(signedDoc, getDigestDocument());
+
+		DiagnosticData diagData = reports.getDiagnosticData();
+		SignatureWrapper signatureWrapper = diagData.getSignatureById(diagData.getFirstSignatureId());
+		assertFalse(signatureWrapper.isBLevelTechnicallyValid());
+		for (XmlDigestMatcher digestMatcher : signatureWrapper.getDigestMatchers()) {
+			if (DigestMatcherType.REFERENCE == digestMatcher.getType()) {
+				assertTrue(digestMatcher.isDataFound());
+				assertTrue(digestMatcher.isDataIntact());
+			} else {
+				assertTrue(digestMatcher.isDataFound());
+				assertFalse(digestMatcher.isDataIntact());
+			}
+		}
+
+		reports = getReports(signedDoc, getCompleteDocument());
+
+		diagData = reports.getDiagnosticData();
+		signatureWrapper = diagData.getSignatureById(diagData.getFirstSignatureId());
+		assertFalse(signatureWrapper.isBLevelTechnicallyValid());
+		for (XmlDigestMatcher digestMatcher : signatureWrapper.getDigestMatchers()) {
+			if (DigestMatcherType.REFERENCE == digestMatcher.getType()) {
+				assertTrue(digestMatcher.isDataFound());
+				assertTrue(digestMatcher.isDataIntact());
+			} else {
+				assertTrue(digestMatcher.isDataFound());
+				assertFalse(digestMatcher.isDataIntact());
+			}
+		}
+				
+
+		reports = getReports(signedDoc, getDigestDocumentWrongDigestAlgo());
+		
+		diagData = reports.getDiagnosticData();
+		signatureWrapper = diagData.getSignatureById(diagData.getFirstSignatureId());
+		assertFalse(signatureWrapper.isBLevelTechnicallyValid());
+		for (XmlDigestMatcher digestMatcher : signatureWrapper.getDigestMatchers()) {
+			if (DigestMatcherType.REFERENCE == digestMatcher.getType()) {
+				assertFalse(digestMatcher.isDataFound());
+				assertFalse(digestMatcher.isDataIntact());
+			} else {
+				assertTrue(digestMatcher.isDataFound());
+				assertFalse(digestMatcher.isDataIntact());
+			}
+		}
+
+	}
+
 	private void validate(DSSDocument signedDocument, DSSDocument original) {
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
-		validator.setDetachedContents(Arrays.asList(original));
-		Reports reports = validator.validateDocument();
+		Reports reports = getReports(signedDocument, original);
 
 		DiagnosticData diagData = reports.getDiagnosticData();
 		SignatureWrapper signatureWrapper = diagData.getSignatureById(diagData.getFirstSignatureId());
@@ -126,13 +180,17 @@ public class DSS1811Test extends PKIFactoryAccess {
 	}
 
 	private void validateWrong(DSSDocument signedDocument) {
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
-		validator.setDetachedContents(Arrays.asList(getWrongDocument()));
-		Reports reports = validator.validateDocument();
+		Reports reports = getReports(signedDocument, getWrongDocument());
 
 		DiagnosticData diagData = reports.getDiagnosticData();
 		assertFalse(diagData.isBLevelTechnicallyValid(diagData.getFirstSignatureId()));
+	}
+
+	private Reports getReports(DSSDocument signedDocument, DSSDocument detached) {
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
+		validator.setDetachedContents(Arrays.asList(detached));
+		return validator.validateDocument();
 	}
 
 	private XAdESService getService() {
@@ -168,6 +226,11 @@ public class DSS1811Test extends PKIFactoryAccess {
 
 	private DSSDocument getDigestDocument() {
 		DigestDocument digestDocument = new DigestDocument(USED_DIGEST, getCompleteDocument().getDigest(USED_DIGEST));
+		return digestDocument;
+	}
+	
+	private DSSDocument getDigestDocumentWrongDigestAlgo() {
+		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA1, getCompleteDocument().getDigest(DigestAlgorithm.SHA1));
 		return digestDocument;
 	}
 
