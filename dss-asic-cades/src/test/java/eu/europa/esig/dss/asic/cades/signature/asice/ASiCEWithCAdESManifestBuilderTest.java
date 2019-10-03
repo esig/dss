@@ -45,7 +45,7 @@ public class ASiCEWithCAdESManifestBuilderTest {
 
 	@BeforeEach
 	public void init() throws SAXException {
-		Schema schema = ASiCManifestUtils.getSchemaASiCManifest121();
+		Schema schema = ASiCManifestUtils.getSchemaASiCManifest();
 		validator = schema.newValidator();
 	}
 
