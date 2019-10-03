@@ -20,37 +20,20 @@
  */
 package eu.europa.esig.dss.crl.stream.impl;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Method;
 
 import org.bouncycastle.asn1.ASN1InputStream;
+import org.bouncycastle.asn1.ASN1Primitive;
 
 /**
  * This class is used to access to static methods of ASN1InputStream
  */
 final class DERUtil {
-
-	private static Method READ_LENGTH;
-	private static Method READ_TAG_NUMBER;
-
-	static {
-		try {
-			READ_LENGTH = ASN1InputStream.class.getDeclaredMethod("readLength", InputStream.class, int.class);
-			READ_LENGTH.setAccessible(true);
-		} catch (NoSuchMethodException | SecurityException e) {
-			throw new RuntimeException("Unable to access to ASN1InputStream.readLength method", e);
-		}
-
-		try {
-			READ_TAG_NUMBER = ASN1InputStream.class.getDeclaredMethod("readTagNumber", InputStream.class, int.class);
-			READ_TAG_NUMBER.setAccessible(true);
-		} catch (NoSuchMethodException | SecurityException e) {
-			throw new RuntimeException("Unable to access to ASN1InputStream.readTagNumber method", e);
-		}
-
-	}
+	
+	private static ASN1InputStreamDSS asn1Stream;
 
 	private DERUtil() {
 	}
@@ -60,19 +43,8 @@ final class DERUtil {
 	}
 
 	public static int readLength(InputStream s) throws IOException {
-		try {
-			return (int) READ_LENGTH.invoke(null, s, Integer.MAX_VALUE);
-		} catch (ReflectiveOperationException e) {
-			throw new RuntimeException("Unable to call to ASN1InputStream.readLength method", e);
-		}
-	}
-
-	public static int readTagNumber(InputStream s, int tag) throws IOException {
-		try {
-			return (int) READ_TAG_NUMBER.invoke(null, s, tag);
-		} catch (ReflectiveOperationException e) {
-			throw new RuntimeException("Unable to call to ASN1InputStream.readTagNumber method", e);
-		}
+		asn1Stream = new ASN1InputStreamDSS(s, Integer.MAX_VALUE);
+		return asn1Stream.readLength();
 	}
 
 	/**
@@ -103,4 +75,76 @@ final class DERUtil {
 		}
 	}
 
+	/**
+	 * 
+	 * Copied from https://github.com/bcgit/bc-java/blob/r1rv63/core/src/main/java/org/bouncycastle/asn1/ASN1InputStream.java
+	 *
+	 * @param s
+	 * @param tag
+	 * @return
+	 * @throws IOException
+	 */
+	public static int readTagNumber(InputStream s, int tag) throws IOException {
+        int tagNo = tag & 0x1f;
+
+        //
+        // with tagged object tag number is bottom 5 bits, or stored at the start of the content
+        //
+        if (tagNo == 0x1f)
+        {
+            tagNo = 0;
+
+            int b = s.read();
+
+            // X.690-0207 8.1.2.4.2
+            // "c) bits 7 to 1 of the first subsequent octet shall not all be zero."
+            if ((b & 0x7f) == 0) // Note: -1 will pass
+            {
+                throw new IOException("corrupted stream - invalid high tag number found");
+            }
+
+            while ((b >= 0) && ((b & 0x80) != 0))
+            {
+                tagNo |= (b & 0x7f);
+                tagNo <<= 7;
+                b = s.read();
+            }
+
+            if (b < 0)
+            {
+                throw new EOFException("EOF found inside tag value.");
+            }
+            
+            tagNo |= (b & 0x7f);
+        }
+        
+        return tagNo;
+    }
+		
+}
+
+class ASN1InputStreamDSS extends ASN1InputStream {
+	public ASN1InputStreamDSS(InputStream input, int limit) {
+		super(input, limit);
+	}
+
+	@Override
+	protected int readLength() throws IOException {
+		return super.readLength();
+	}
+
+	@Override
+	protected void readFully(byte[] bytes) throws IOException {
+		super.readFully(bytes);
+	}
+
+	@Override
+	protected ASN1Primitive buildObject(int tag, int tagNo, int length) throws IOException {
+		return super.buildObject(tag, tagNo, length);
+	}
+
+	@Override
+	public ASN1Primitive readObject() throws IOException {
+		return super.readObject();
+	}
 }
