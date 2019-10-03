@@ -48,7 +48,6 @@ import org.bouncycastle.asn1.ASN1String;
 import org.bouncycastle.asn1.ASN1UTCTime;
 import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.DEROctetString;
-import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.DERUTF8String;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
@@ -607,12 +606,17 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 						final ASN1Encodable objectAt = attributes.getObjectAt(ii);
 						final org.bouncycastle.asn1.x509.Attribute attribute = org.bouncycastle.asn1.x509.Attribute.getInstance(objectAt);
 						final ASN1Set attrValues1 = attribute.getAttrValues();
-						DERSequence derSequence = (DERSequence) attrValues1.getObjectAt(0);
-						RoleSyntax roleSyntax = RoleSyntax.getInstance(derSequence);
-						SignerRole certifiedRole = new SignerRole(roleSyntax.getRoleNameAsString(), EndorsementType.CERTIFIED);
-						certifiedRole.setNotBefore(DSSASN1Utils.toDate(attrCertValidityPeriod.getNotBeforeTime()));
-						certifiedRole.setNotAfter(DSSASN1Utils.toDate(attrCertValidityPeriod.getNotAfterTime()));
-						roles.add(certifiedRole);
+						ASN1Encodable firstItem = attrValues1.getObjectAt(0);
+						if (firstItem instanceof ASN1Sequence) {
+							ASN1Sequence sequence = (ASN1Sequence) firstItem;
+							RoleSyntax roleSyntax = RoleSyntax.getInstance(sequence);
+							SignerRole certifiedRole = new SignerRole(roleSyntax.getRoleNameAsString(), EndorsementType.CERTIFIED);
+							certifiedRole.setNotBefore(DSSASN1Utils.toDate(attrCertValidityPeriod.getNotBeforeTime()));
+							certifiedRole.setNotAfter(DSSASN1Utils.toDate(attrCertValidityPeriod.getNotAfterTime()));
+							roles.add(certifiedRole);
+						} else {
+							LOG.warn("Unsupported type for RoleSyntax : {}", firstItem == null ? null : firstItem.getClass().getSimpleName());
+						}
 					}
 				}
 			}
