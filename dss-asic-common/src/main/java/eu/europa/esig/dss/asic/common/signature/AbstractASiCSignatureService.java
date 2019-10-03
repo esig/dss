@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -53,7 +54,6 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 
 	private static final long serialVersionUID = 243114076381526665L;
 
-	private static final String ZIP_ENTRY_DETACHED_FILE = "detached-file";
 	private static final String ZIP_ENTRY_MIMETYPE = "mimetype";
 
 	protected ASiCExtractResult archiveContent = new ASiCExtractResult();
@@ -71,6 +71,7 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 
 	@Override
 	public ToBeSigned getDataToSign(DSSDocument toSignDocument, SP parameters) {
+		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
 		return getDataToSign(Arrays.asList(toSignDocument), parameters);
 	}
 
@@ -191,7 +192,7 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 		for (DSSDocument detachedDocument : detachedDocuments) {
 			try (InputStream is = detachedDocument.openStream()) {
 				final String detachedDocumentName = detachedDocument.getName();
-				final String name = detachedDocumentName != null ? detachedDocumentName : ZIP_ENTRY_DETACHED_FILE;
+				final String name = detachedDocumentName != null ? detachedDocumentName : ASiCUtils.ZIP_ENTRY_DETACHED_FILE;
 				final ZipEntry entryDocument = new ZipEntry(name);
 
 				zos.setLevel(ZipEntry.DEFLATED);

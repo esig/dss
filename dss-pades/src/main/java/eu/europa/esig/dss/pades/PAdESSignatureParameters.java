@@ -20,12 +20,18 @@
  */
 package eu.europa.esig.dss.pades;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 
 public class PAdESSignatureParameters extends CAdESSignatureParameters {
+
+	private static final Logger LOG = LoggerFactory.getLogger(PAdESSignatureParameters.class);
 
 	private static final long serialVersionUID = -1632557456487796227L;
 
@@ -151,6 +157,11 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 
 	public void setSignatureImageParameters(SignatureImageParameters signatureImageParameters) {
 		this.signatureImageParameters = signatureImageParameters;
+	}
+	
+	@Override
+	public void setSignaturePackaging(final SignaturePackaging signaturePackaging) {
+		LOG.warn("Cannot set a SignaturePackaging for PAdES signature. Only ENVELOPED packaging is allowed!");
 	}
 
 	public String getTimestampFilter() {

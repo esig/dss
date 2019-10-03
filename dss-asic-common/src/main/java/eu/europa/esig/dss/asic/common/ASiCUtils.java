@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -47,6 +48,7 @@ public final class ASiCUtils {
 	public static final String MIME_TYPE_COMMENT = MIME_TYPE + "=";
 	public static final String META_INF_FOLDER = "META-INF/";
 	public static final String PACKAGE_ZIP = "package.zip";
+	public static final String ZIP_ENTRY_DETACHED_FILE = "detached-file";
 
     /**
      * Minimum file size to be analized on zip bombing
@@ -104,10 +106,12 @@ public final class ASiCUtils {
 	}
 
 	public static boolean isASiCE(final ASiCParameters asicParameters) {
+		Objects.requireNonNull(asicParameters.getContainerType(), "ASiCContainerType must be defined!");
 		return ASiCContainerType.ASiC_E.equals(asicParameters.getContainerType());
 	}
 
 	public static boolean isASiCS(final ASiCParameters asicParameters) {
+		Objects.requireNonNull(asicParameters.getContainerType(), "ASiCContainerType must be defined!");
 		return ASiCContainerType.ASiC_S.equals(asicParameters.getContainerType());
 	}
 

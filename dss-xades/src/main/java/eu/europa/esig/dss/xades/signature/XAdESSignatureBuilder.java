@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
@@ -134,18 +135,19 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 */
 	public static XAdESSignatureBuilder getSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument document,
 			final CertificateVerifier certificateVerifier) {
-
+		Objects.requireNonNull(params.getSignaturePackaging(), "Cannot create a SignatureBuilder. SignaturePackaging is not defined!");
+		
 		switch (params.getSignaturePackaging()) {
-		case ENVELOPED:
-			return new EnvelopedSignatureBuilder(params, document, certificateVerifier);
-		case ENVELOPING:
-			return new EnvelopingSignatureBuilder(params, document, certificateVerifier);
-		case DETACHED:
-			return new DetachedSignatureBuilder(params, document, certificateVerifier);
-		case INTERNALLY_DETACHED:
-			return new InternallyDetachedSignatureBuilder(params, document, certificateVerifier);
-		default:
-			throw new DSSException("Unsupported packaging " + params.getSignaturePackaging());
+			case ENVELOPED:
+				return new EnvelopedSignatureBuilder(params, document, certificateVerifier);
+			case ENVELOPING:
+				return new EnvelopingSignatureBuilder(params, document, certificateVerifier);
+			case DETACHED:
+				return new DetachedSignatureBuilder(params, document, certificateVerifier);
+			case INTERNALLY_DETACHED:
+				return new InternallyDetachedSignatureBuilder(params, document, certificateVerifier);
+			default:
+				throw new DSSException("Unsupported packaging " + params.getSignaturePackaging());
 		}
 	}
 
@@ -228,7 +230,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		 * We create <ds:Reference> segment only now, because we need first to define the SignedProperties segment to
 		 * calculate the digest of references.
 		 */
-		if (params.getSignedData() == null) {
+		if (Utils.isArrayEmpty(params.getSignedData())) {
 			incorporateReferences();
 			incorporateReferenceSignedProperties();
 			incorporateReferenceKeyInfo();
@@ -330,7 +332,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * </pre>
 	 */
 	public void incorporateSignedInfo() {
-		if (params.getSignedData() != null) {
+		if (Utils.isArrayNotEmpty(params.getSignedData())) {
 			LOG.debug("Using explict SignedInfo from parameter");
 			signedInfoDom = DomUtils.buildDOM(params.getSignedData()).getDocumentElement();
 			signedInfoDom = (Element) documentDom.importNode(signedInfoDom, true);
@@ -509,7 +511,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 *
 	 */
 	protected void incorporateObject() {
-		if (params.getSignedAdESObject() != null) {
+		if (Utils.isArrayNotEmpty(params.getSignedAdESObject())) {
 			LOG.debug("Incorporating signed XAdES Object from parameter");
 			Node signedObjectDom = DomUtils.buildDOM(params.getSignedAdESObject()).getDocumentElement();
 			signedObjectDom = documentDom.importNode(signedObjectDom, true);

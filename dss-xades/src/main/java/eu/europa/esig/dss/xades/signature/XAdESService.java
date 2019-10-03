@@ -23,6 +23,7 @@ package eu.europa.esig.dss.xades.signature;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,6 +90,9 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 
 	@Override
 	public ToBeSigned getDataToSign(final DSSDocument toSignDocument, final XAdESSignatureParameters parameters) throws DSSException {
+		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
+		
 		assertSigningDateInCertificateValidityRange(parameters);
 		final XAdESLevelBaselineB levelBaselineB = new XAdESLevelBaselineB(certificateVerifier);
 		final byte[] dataToSign = levelBaselineB.getDataToSign(toSignDocument, parameters);
@@ -125,9 +129,11 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 	@Override
 	public DSSDocument signDocument(final DSSDocument toSignDocument, final XAdESSignatureParameters parameters, SignatureValue signatureValue)
 			throws DSSException {
-		if (parameters.getSignatureLevel() == null) {
-			throw new NullPointerException();
-		}
+		Objects.requireNonNull(toSignDocument, "toSignDocument is not defined!");
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
+		Objects.requireNonNull(parameters.getSignatureLevel(), "SignatureLevel must be defined!");
+		Objects.requireNonNull(signatureValue, "SignatureValue cannot be null!");
+		
 		assertSigningDateInCertificateValidityRange(parameters);
 		parameters.getContext().setOperationKind(Operation.SIGNING);
 		SignatureProfile profile;
@@ -172,6 +178,10 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 
 	@Override
 	public DSSDocument extendDocument(final DSSDocument toExtendDocument, final XAdESSignatureParameters parameters) throws DSSException {
+		Objects.requireNonNull(toExtendDocument, "toExtendDocument is not defined!");
+		Objects.requireNonNull(parameters, "Cannot extend the signature. SignatureParameters are not defined!");
+		Objects.requireNonNull(parameters.getSignatureLevel(), "SignatureLevel must be defined!");
+		
 		parameters.getContext().setOperationKind(Operation.EXTENDING);
 		final SignatureExtension<XAdESSignatureParameters> extension = getExtensionProfile(parameters);
 		if (extension != null) {

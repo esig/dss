@@ -237,14 +237,15 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			PdfSignatureAppearance sap = stp.getSignatureAppearance();
 
 			byte[] pk = signatureValue;
-
 			int csize = parameters.getSignatureSize();
+			if (csize < pk.length) {
+				throw new DSSException(String.format("The signature size [%s] is too small for the signature value with a length [%s]", csize, pk.length));
+			}
+			
 			byte[] outc = new byte[csize];
-
-			PdfDictionary dic = new PdfDictionary();
-
 			System.arraycopy(pk, 0, outc, 0, pk.length);
 
+			PdfDictionary dic = new PdfDictionary();
 			dic.put(PdfName.CONTENTS, new PdfString(outc).setHexWriting(true));
 			sap.close(dic);
 

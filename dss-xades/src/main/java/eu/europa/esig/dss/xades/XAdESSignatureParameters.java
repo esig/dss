@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.xades;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.w3c.dom.Document;
 
@@ -119,6 +120,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 	 * @param signingCertificateDigestMethod
 	 */
 	public void setSigningCertificateDigestMethod(final DigestAlgorithm signingCertificateDigestMethod) {
+		Objects.requireNonNull(signingCertificateDigestMethod, "SigningCertificateDigestMethod cannot be null!");
 		this.signingCertificateDigestMethod = signingCertificateDigestMethod;
 	}
 

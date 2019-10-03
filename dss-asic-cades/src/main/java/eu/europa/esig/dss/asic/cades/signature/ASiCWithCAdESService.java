@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import org.bouncycastle.cms.CMSSignedData;
 import org.slf4j.Logger;
@@ -83,6 +84,10 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 
 	@Override
 	public ToBeSigned getDataToSign(List<DSSDocument> toSignDocuments, ASiCWithCAdESSignatureParameters parameters) {
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
+		if (Utils.isCollectionEmpty(toSignDocuments)) {
+			throw new DSSException("List of documents to sign cannot be empty!");
+		}
 		GetDataToSignASiCWithCAdESHelper dataToSignHelper = ASiCWithCAdESDataToSignHelperBuilder.getGetDataToSignHelper(toSignDocuments, parameters);
 		CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters);
 		cadesParameters.setDetachedContents(dataToSignHelper.getDetachedContents());
@@ -91,6 +96,13 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 
 	@Override
 	public DSSDocument signDocument(List<DSSDocument> toSignDocuments, ASiCWithCAdESSignatureParameters parameters, SignatureValue signatureValue) {
+		Objects.requireNonNull(toSignDocuments, "toSignDocument cannot be null!");
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
+		Objects.requireNonNull(signatureValue, "SignatureValue cannot be null!");
+		if (Utils.isCollectionEmpty(toSignDocuments)) {
+			throw new DSSException("List of documents to sign cannot be empty!");
+		}
+		
 		final ASiCParameters asicParameters = parameters.aSiC();
 		assertSigningDateInCertificateValidityRange(parameters);
 
@@ -151,6 +163,9 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 
 	@Override
 	public DSSDocument extendDocument(DSSDocument toExtendDocument, ASiCWithCAdESSignatureParameters parameters) {
+		Objects.requireNonNull(toExtendDocument, "toExtendDocument is not defined!");
+		Objects.requireNonNull(parameters, "Cannot extend the signature. SignatureParameters are not defined!");
+		
 		if (!ASiCUtils.isZip(toExtendDocument) || !ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(toExtendDocument, ".p7s")) {
 			throw new DSSException("Unsupported file type");
 		}

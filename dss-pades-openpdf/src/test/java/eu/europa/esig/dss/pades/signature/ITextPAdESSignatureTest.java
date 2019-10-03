@@ -52,6 +52,7 @@ import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTWrongAIATest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelTTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelTWithSHA1MessageImprintTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESNoDuplicateValidationDataTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESServiceTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESSpaceEOFTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESWithPSSTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESWithSHA3Test;
@@ -66,7 +67,7 @@ import eu.europa.esig.dss.pades.signature.suite.TwoPAdESSigniatureMustHaveDiffer
 		PAdESLevelLTATest.class, PAdESLevelLTWrongAIATest.class, PAdESLevelTTest.class, PAdESLTACheckTimeStampedTimestampIDTest.class, PAdESLTACheckTimeStampIDTest.class,
 		PDFOverrideFiltersTest.class, TwoPAdESSigniatureMustHaveDifferentIdTest.class, PAdESLevelBHugeTest.class, InvisibleSignatureFieldSignTest.class, PAdESSpaceEOFTest.class,
 		PAdESDoubleLTAValidationDataTest.class, PAdESNoDuplicateValidationDataTest.class, PAdESWithPSSTest.class, PAdESWithSHA3Test.class,
-		PAdESLevelTWithSHA1MessageImprintTest.class, PAdESAllSelfSignedCertsTest.class })
+		PAdESLevelTWithSHA1MessageImprintTest.class, PAdESAllSelfSignedCertsTest.class, PAdESServiceTest.class })
 public class ITextPAdESSignatureTest {
 
 }

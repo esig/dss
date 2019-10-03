@@ -109,7 +109,7 @@ public class CAdESLevelBaselineB {
 	}
 
 	public AttributeTable getSignedAttributes(final CAdESSignatureParameters parameters) {
-		if (parameters.getSignedData() != null) {
+		if (Utils.isArrayNotEmpty(parameters.getSignedData())) {
 			LOG.debug("Using explict SignedAttributes from parameter");
 			return CMSUtils.getAttributesFromByteArray(parameters.getSignedData());
 		}
