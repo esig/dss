@@ -26,14 +26,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.bouncycastle.asn1.ASN1InputStream;
-import org.bouncycastle.asn1.ASN1Primitive;
 
 /**
  * This class is used to access to static methods of ASN1InputStream
  */
 final class DERUtil {
-	
-	private static ASN1InputStreamDSS asn1Stream;
 
 	private DERUtil() {
 	}
@@ -43,17 +40,16 @@ final class DERUtil {
 	}
 
 	public static int readLength(InputStream s) throws IOException {
-		asn1Stream = new ASN1InputStreamDSS(s, Integer.MAX_VALUE);
-		return asn1Stream.readLength();
+		try (ASN1InputStreamDSS dssIS = new ASN1InputStreamDSS(s, Integer.MAX_VALUE)) {
+			return dssIS.readLength();
+		}
 	}
 
 	/**
 	 * Adaptation from org.bouncycastle.asn1.ASN1OutputStream.writeLength(int)
 	 * 
-	 * @param os
-	 *            the output stream
-	 * @param length
-	 *            the length to add
+	 * @param os     the output stream
+	 * @param length the length to add
 	 * @throws IOException
 	 */
 	public static void writeLength(OutputStream os, int length) throws IOException {
@@ -77,7 +73,8 @@ final class DERUtil {
 
 	/**
 	 * 
-	 * Copied from https://github.com/bcgit/bc-java/blob/r1rv63/core/src/main/java/org/bouncycastle/asn1/ASN1InputStream.java
+	 * Copied from
+	 * https://github.com/bcgit/bc-java/blob/r1rv63/core/src/main/java/org/bouncycastle/asn1/ASN1InputStream.java
 	 *
 	 * @param s
 	 * @param tag
@@ -85,66 +82,56 @@ final class DERUtil {
 	 * @throws IOException
 	 */
 	public static int readTagNumber(InputStream s, int tag) throws IOException {
-        int tagNo = tag & 0x1f;
+		int tagNo = tag & 0x1f;
 
-        //
-        // with tagged object tag number is bottom 5 bits, or stored at the start of the content
-        //
-        if (tagNo == 0x1f)
-        {
-            tagNo = 0;
+		//
+		// with tagged object tag number is bottom 5 bits, or stored at the start of the
+		// content
+		//
+		if (tagNo == 0x1f) {
+			tagNo = 0;
 
-            int b = s.read();
+			int b = s.read();
 
-            // X.690-0207 8.1.2.4.2
-            // "c) bits 7 to 1 of the first subsequent octet shall not all be zero."
-            if ((b & 0x7f) == 0) // Note: -1 will pass
-            {
-                throw new IOException("corrupted stream - invalid high tag number found");
-            }
+			// X.690-0207 8.1.2.4.2
+			// "c) bits 7 to 1 of the first subsequent octet shall not all be zero."
+			if ((b & 0x7f) == 0) // Note: -1 will pass
+			{
+				throw new IOException("corrupted stream - invalid high tag number found");
+			}
 
-            while ((b >= 0) && ((b & 0x80) != 0))
-            {
-                tagNo |= (b & 0x7f);
-                tagNo <<= 7;
-                b = s.read();
-            }
+			while ((b >= 0) && ((b & 0x80) != 0)) {
+				tagNo |= (b & 0x7f);
+				tagNo <<= 7;
+				b = s.read();
+			}
 
-            if (b < 0)
-            {
-                throw new EOFException("EOF found inside tag value.");
-            }
-            
-            tagNo |= (b & 0x7f);
-        }
-        
-        return tagNo;
-    }
+			if (b < 0) {
+				throw new EOFException("EOF found inside tag value.");
+			}
+
+			tagNo |= (b & 0x7f);
+		}
+
+		return tagNo;
+	}
+
+	private static class ASN1InputStreamDSS extends ASN1InputStream {
 		
-}
+		public ASN1InputStreamDSS(InputStream input, int limit) {
+			super(input, limit);
+		}
+		
+		@Override
+		protected int readLength() throws IOException {
+			return super.readLength();
+		}
 
-class ASN1InputStreamDSS extends ASN1InputStream {
-	public ASN1InputStreamDSS(InputStream input, int limit) {
-		super(input, limit);
+		@Override
+		public void close() throws IOException {
+			// not our job
+		}
+
 	}
 
-	@Override
-	protected int readLength() throws IOException {
-		return super.readLength();
-	}
-
-	@Override
-	protected void readFully(byte[] bytes) throws IOException {
-		super.readFully(bytes);
-	}
-
-	@Override
-	protected ASN1Primitive buildObject(int tag, int tagNo, int length) throws IOException {
-		return super.buildObject(tag, tagNo, length);
-	}
-
-	@Override
-	public ASN1Primitive readObject() throws IOException {
-		return super.readObject();
-	}
 }
