@@ -75,6 +75,7 @@ import eu.europa.esig.dss.xades.definition.xades122.XAdES122Paths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
+import org.w3c.dom.Node;
 
 /**
  * -T profile of XAdES signature
@@ -134,6 +135,11 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 
 			currentSignatureDom = (Element) signatureNodeList.item(ii);
 			final String currentSignatureId = currentSignatureDom.getAttribute(XMLDSigAttribute.ID.getAttributeName());
+
+			if (isAlreadyInDSObject(currentSignatureDom)){
+				continue;
+			}
+
 			if ((signatureId != null) && !signatureId.equals(currentSignatureId)) {
 
 				continue;
@@ -533,5 +539,16 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	private boolean isOldGeneration(SignatureLevel signatureLevel) {
 		return SignatureLevel.XAdES_X.equals(signatureLevel) || SignatureLevel.XAdES_XL.equals(signatureLevel) || SignatureLevel.XAdES_A.equals(signatureLevel);
 	}
-
+	
+	private boolean isAlreadyInDSObject(Node el){
+		Node parent = el;
+		String dsObject = XMLDSigElement.OBJECT.getNamespace().getPrefix() + ":" + XMLDSigElement.OBJECT.getTagName();
+		while (parent.getParentNode() != null) {
+			parent = parent.getParentNode();
+			if (parent.getNodeName().equals(dsObject)) {
+				return true;
+			}	   
+		}
+		return false;
+	}	
 }
