@@ -309,11 +309,15 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		signatureDom.setAttribute(ID, deterministicId);
 
 		final Node parentNodeOfSignature = getParentNodeOfSignature();
-		parentNodeOfSignature.appendChild(signatureDom);
+		incorporateSignatureDom(parentNodeOfSignature);
 	}
 
 	protected Node getParentNodeOfSignature() {
 		return documentDom;
+	}
+
+	protected void incorporateSignatureDom(Node parentNodeOfSignature) {
+		parentNodeOfSignature.appendChild(signatureDom);
 	}
 
 	/**

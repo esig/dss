@@ -32,6 +32,18 @@ import eu.europa.esig.dss.xades.reference.Base64Transform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 
 public class XAdESSignatureParameters extends AbstractSignatureParameters {
+    
+	public enum XPathElementPlacement {
+
+		/**
+		 * Insert signature after the element referenced by XPath
+		 */
+		XPathAfter,
+		/**
+		 * Insert signature as first child of element referenced by XPath
+		 */
+		XPathFirstChildOf,
+	}
 
 	private ProfileParameters context;
 
@@ -96,6 +108,8 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 	private String signedPropertiesCanonicalizationMethod;
 
 	private String xPathLocationString;
+
+	private XPathElementPlacement xPathElementPlacement;
 	
 	/**
 	 * If true, prints each signature's tag to a new line with a relevant indent
@@ -220,6 +234,21 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 	public void setXPathLocationString(String xPathLocationString) {
 		this.xPathLocationString = xPathLocationString;
 	}
+
+	public XPathElementPlacement getXPathElementPlacement() {
+                return xPathElementPlacement;
+        }
+
+	/**
+	 * Defines the area where the signature will be added (XAdES Enveloped) 
+	 * in relation to the element referenced by the XPath
+	 *
+	 * @param xPathElementPlacement
+	 *            the xpath location of the signature
+	 */
+        public void setXPathElementPlacement(XPathElementPlacement xPathElementPlacement) {
+                this.xPathElementPlacement = xPathElementPlacement;
+        }
 
 	public Document getRootDocument() {
 		return rootDocument;
