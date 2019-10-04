@@ -595,6 +595,16 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		}
 		return signatureProductionPlace;
 	}
+	
+	public List<String> getSignedAssertions() {
+		NodeList nodeList = DomUtils.getNodeList(signatureElement, xadesPaths.getSignedAssertionPath());
+
+		List<String> result = new ArrayList<>();
+		for (int ii = 0; ii < nodeList.getLength(); ii++) {
+			result.add(nodeList.item(ii).getTextContent());
+		}
+		return result;
+	}
 
 	@Override
 	public List<SignerRole> getClaimedSignerRoles() {

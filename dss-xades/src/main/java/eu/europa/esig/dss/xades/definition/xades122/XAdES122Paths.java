@@ -427,4 +427,9 @@ public class XAdES122Paths extends AbstractPaths implements XAdESPaths {
 		return XAdES122Utils.getInstance();
 	}
 
+	@Override
+	public String getSignedAssertionPath() {
+		return null;
+	}
+
 }
