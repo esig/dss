@@ -76,11 +76,10 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		assertEquals(Indication.TOTAL_PASSED, result);
 		
 		result = defaultConstraintAlgorithmExpirationDateIsNotDefined(ALGORITHM_RSA2048);
-		assertEquals(Indication.INDETERMINATE, result);
+		assertEquals(Indication.TOTAL_PASSED, result);
 
 		result = defaultConstraintSetLevelForPreviousValidationPolicy(Level.WARN);
 		assertEquals(Indication.TOTAL_PASSED, result);
-		checkErrorMessagePresence(MessageTag.ASCCM_ANS_4);
 		
 		result = defaultConstraintAlgorithmExpirationDateIsNotDefined(ALGORITHM_RSA4096); // some other algorithm is expired
 		assertEquals(Indication.TOTAL_PASSED, result);
@@ -178,7 +177,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		assertEquals(Indication.TOTAL_PASSED, result);
 		
 		result = signatureConstraintAlgorithmExpirationDateIsNotDefined(ALGORITHM_RSA2048);
-		assertEquals(Indication.INDETERMINATE, result);
+		assertEquals(Indication.TOTAL_PASSED, result);
 		
 		result = signatureConstraintAlgorithmExpirationDateIsNotDefined(ALGORITHM_RSA4096); // some other algorithm is changed
 		assertEquals(Indication.TOTAL_PASSED, result);
@@ -313,7 +312,60 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		detailedReport = createDetailedReport();
 		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
+	}
+	
+	@Test
+	public void invalidIntermediateGreaterValue() throws Exception {
+		initializeExecutor("src/test/resources/diag_data_intermediate_algo_valid.xml");
+		validationPolicyFile = new File("src/test/resources/policy/all-constraint-specified-policy.xml");
 		
+		Indication result = null;
+		DetailedReport detailedReport = null;
+		
+		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA2048, "2018-01-01");
+		assertEquals(Indication.INDETERMINATE, result);
+		detailedReport = createDetailedReport();
+		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, true);
+		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
+
+		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA2048, "2019-01-01");
+		assertEquals(Indication.TOTAL_PASSED, result);
+	}
+	
+	@Test
+	public void invalidIntermediateLowerValue() throws Exception {
+		initializeExecutor("src/test/resources/diag_data_intermediate_algo_invalid.xml");
+		validationPolicyFile = new File("src/test/resources/policy/all-constraint-specified-policy.xml");
+		
+		Indication result = null;
+		DetailedReport detailedReport = null;
+		
+		result = signatureConstraintAlgorithmExpired("RSA1536", "2018-01-01");
+		assertEquals(Indication.INDETERMINATE, result);
+		detailedReport = createDetailedReport();
+		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, true);
+		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
+		
+		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA2048, "2019-01-01");
+		assertEquals(Indication.TOTAL_PASSED, result);
+	}
+	
+	@Test
+	public void algorithmHighestThanTheGreatestOne() throws Exception {
+		initializeExecutor("src/test/resources/diag_data_inexisting_algo_date.xml");
+		validationPolicyFile = new File("src/test/resources/policy/all-constraint-specified-policy.xml");
+		
+		Indication result = null;
+		DetailedReport detailedReport = null;
+		
+		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA4096, "2018-01-01");
+		assertEquals(Indication.INDETERMINATE, result);
+		detailedReport = createDetailedReport();
+		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, true);
+		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
+		
+		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA4096, "2019-01-01");
+		assertEquals(Indication.TOTAL_PASSED, result);
 	}
 	
 	@Test

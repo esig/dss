@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.TreeMap;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -129,8 +130,8 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 		String algoToFind = encryptionAlgo == null ? Utils.EMPTY_STRING : encryptionAlgo.getName() + keyLengthUsedToSignThisToken;
 		Map<String, Date> expirationDates = constraintWrapper.getExpirationTimes();
 		if (Utils.isMapNotEmpty(expirationDates)) {
-			Date expirationDate = expirationDates.get(algoToFind);
-			if (expirationDate == null) {
+			Date expirationDate = getAlgorithmExpirationDate(encryptionAlgo.getName(), keyLengthUsedToSignThisToken, expirationDates);
+			if(expirationDate == null) {
 				errorMessage = MessageTag.ASCCM_ANS_4;
 				failedAlgorithm = algoToFind;
 				return false;
@@ -143,7 +144,38 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 		}
 		return true;
 	}
+	
+	private Date getAlgorithmExpirationDate(String algoName, String keyLength, Map<String, Date> expirationDates) {
+		String algoToFind = algoName+keyLength;
+		Date expirationDate = expirationDates.get(algoToFind);
+		if(expirationDate == null) {
+			Long closestAlgorithm = getClosestAlgorithm(expirationDates, algoName, keyLength);
+			String closestAlgo = algoName +  String.valueOf(closestAlgorithm);
+			expirationDate = expirationDates.get(closestAlgo);
+		}
+		return expirationDate;
+	}
+	
+	private TreeMap<Long, String> getEncryptionAlgoTree(Map<String, Date> expirationDates, String algoName) {
+		TreeMap<Long, String> algoTree = new TreeMap<Long, String>();
+		 for (Map.Entry<String,Date> entry : expirationDates.entrySet()) {
+			 if(entry.getKey().contains(algoName)) {
+				 if(!entry.getKey().replace(algoName, "").isEmpty())
+					 algoTree.put(Long.parseLong(entry.getKey().replace(algoName, "")), entry.getKey());
+			 }
+		 }
+		 return algoTree;
+	}
 
+	private Long getClosestAlgorithm(Map<String, Date> expirationDates, String algoName, String keyLength) {
+		final Long length = Long.parseLong(keyLength);
+		TreeMap<Long, String> algoTree = getEncryptionAlgoTree(expirationDates, algoName);
+		Map.Entry<Long, String> low = algoTree.floorEntry(length);
+		if(low == null)
+			return null;
+		return low.getKey();
+	}
+	
 	private boolean isIn(String algoToFind, List<String> algos) {
 		return algos.contains(algoToFind);
 	}
