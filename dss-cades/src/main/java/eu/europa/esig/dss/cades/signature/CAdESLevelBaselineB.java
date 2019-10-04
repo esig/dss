@@ -64,6 +64,8 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.SignedAssertion;
+import eu.europa.esig.dss.cades.SignedAssertions;
 import eu.europa.esig.dss.cades.SignerAttributeV2;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -166,6 +168,22 @@ public class CAdESLevelBaselineB {
 						new DERSet(new SignerAttributeV2(claimedAttributes.toArray(new org.bouncycastle.asn1.x509.Attribute[claimedAttributes.size()]))));
 			}
 			signedAttributes.add(signerAttributes);
+			return;
+		}
+		
+		final List<String> signedAssertions = parameters.bLevel().getSignedAssertions();
+		if (signedAssertions != null && parameters.isEn319122()) {
+			List<SignedAssertion> assertionsToAdd = new ArrayList<>();
+			for (final String signedAssertion : signedAssertions) {
+			    SignedAssertion sa = new SignedAssertion(signedAssertion);
+			    assertionsToAdd.add(sa);  
+			}
+
+			if(!assertionsToAdd.isEmpty()) {
+			   org.bouncycastle.asn1.cms.Attribute signerAttributes = new org.bouncycastle.asn1.cms.Attribute(OID.id_aa_ets_signerAttrV2,
+						new DERSet(new SignerAttributeV2(new SignedAssertions(assertionsToAdd))));
+			   signedAttributes.add(signerAttributes);
+			}
 		}
 	}
 
