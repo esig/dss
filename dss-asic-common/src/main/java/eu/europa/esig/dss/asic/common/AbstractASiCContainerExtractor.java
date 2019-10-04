@@ -81,7 +81,7 @@ public abstract class AbstractASiCContainerExtractor {
 		return result;
 	}
 
-	private ASiCExtractResult zipParsing(long containerSize, ZipInputStream asicInputStream ) throws IOException {
+	private ASiCExtractResult zipParsing(long containerSize, ZipInputStream asicInputStream) throws IOException {
 		ASiCExtractResult result = new ASiCExtractResult();
 		ZipEntry entry;
 		while ((entry = ASiCUtils.getNextValidEntry(asicInputStream)) != null) {
@@ -105,6 +105,9 @@ public abstract class AbstractASiCContainerExtractor {
 					result.setMimeTypeDocument(currentDocument);
 				} else {
 					result.getOriginalDocuments().add(currentDocument);
+					if (ASiCUtils.isASiCSArchive(currentDocument)) {
+						result.setContainerDocuments(ASiCUtils.getPackageZipContent(currentDocument));
+					}
 				}
 			}
 			if (!isFolder(entryName)) {

@@ -20,13 +20,9 @@
  */
 package eu.europa.esig.dss.asic.common.validation;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
@@ -52,6 +48,8 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	protected ASiCExtractResult extractResult;
 
 	private ASiCContainerType containerType;
+	
+	private List<ManifestFile> manifestFiles;
 
 	/**
 	 * Default constructor used with reflexion (see SignedDocumentValidator)
@@ -73,8 +71,6 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 				extractResult.getOriginalDocuments());
 		if (ASiCContainerType.ASiC_S.equals(containerType)) {
 			extractResult.setContainerDocuments(getArchiveDocuments(extractResult.getOriginalDocuments()));
-		} else if (ASiCContainerType.ASiC_E.equals(containerType)) {
-			extractResult.setManifestFiles(getManifestFilesDecriptions());
 		}
 	}
 
@@ -179,10 +175,6 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	protected List<DSSDocument> getManifestDocuments() {
 		return extractResult.getManifestDocuments();
 	}
-	
-	protected List<ManifestFile> getManifestFiles() {
-		return extractResult.getManifestFiles();
-	}
 
 	protected List<DSSDocument> getTimestampDocuments() {
 		return extractResult.getTimestampDocuments();
@@ -208,11 +200,18 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 		return extractResult.getMimeTypeDocument();
 	}
 	
+	protected List<ManifestFile> getManifestFiles() {
+		if (manifestFiles == null) {
+			manifestFiles = getManifestFilesDecriptions();
+		}
+		return manifestFiles;
+	}
+	
 	private List<DSSDocument> getArchiveDocuments(List<DSSDocument> foundDocuments) {
 		List<DSSDocument> archiveDocuments = new ArrayList<DSSDocument>();
 		for (DSSDocument document : foundDocuments) {
-			if (isASiCSArchive(document)) {
-				archiveDocuments.addAll(getPackageZipContent(document));
+			if (ASiCUtils.isASiCSArchive(document)) {
+				archiveDocuments.addAll(ASiCUtils.getPackageZipContent(document));
 				break; // only one "package.zip" is possible
 			}
 		}
@@ -225,28 +224,10 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 		}
 		DSSDocument uniqueDoc = retrievedDocs.get(0);
 		List<DSSDocument> result = new ArrayList<DSSDocument>();
-		if (isASiCSArchive(uniqueDoc)) {
-			result.addAll(getPackageZipContent(uniqueDoc));
+		if (ASiCUtils.isASiCSArchive(uniqueDoc)) {
+			result.addAll(ASiCUtils.getPackageZipContent(uniqueDoc));
 		} else {
 			result.add(uniqueDoc);
-		}
-		return result;
-	}
-	
-	private boolean isASiCSArchive(DSSDocument document) {
-		return Utils.areStringsEqual(ASiCUtils.PACKAGE_ZIP, document.getName());
-	}
-
-	private List<DSSDocument> getPackageZipContent(DSSDocument packageZip) {
-		List<DSSDocument> result = new ArrayList<DSSDocument>();
-		long containerSize = DSSUtils.getFileByteSize(packageZip);
-		try (InputStream is = packageZip.openStream(); ZipInputStream packageZipInputStream = new ZipInputStream(is)) {
-			ZipEntry entry;
-			while ((entry = ASiCUtils.getNextValidEntry(packageZipInputStream)) != null) {
-				result.add(ASiCUtils.getCurrentDocument(entry.getName(), packageZipInputStream, containerSize));
-			}
-		} catch (IOException e) {
-			throw new DSSException("Unable to extract package.zip", e);
 		}
 		return result;
 	}

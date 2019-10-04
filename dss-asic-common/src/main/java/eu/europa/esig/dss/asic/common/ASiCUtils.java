@@ -38,6 +38,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 public final class ASiCUtils {
@@ -391,6 +392,34 @@ public final class ASiCUtils {
 	
 	private static boolean isValidName(final String name, final List<String> notValidNames) {
 		return !notValidNames.contains(name);
+	}
+	
+	/**
+	 * Checks if the current document an ASiC-E ZIP specific archive
+	 * @param document {@link DSSDocument} to check
+	 * @return TRUE if the document if a "package.zip" archive, FALSE otherwise
+	 */
+	public static boolean isASiCSArchive(DSSDocument document) {
+		return Utils.areStringsEqual(PACKAGE_ZIP, document.getName());
+	}
+
+	/**
+	 * Returns a content of the packageZip container
+	 * @param packageZip {@link DSSDocument} ZIP container to get entries from
+	 * @return list of {@link DSSDocument}s
+	 */
+	public static List<DSSDocument> getPackageZipContent(DSSDocument packageZip) {
+		List<DSSDocument> result = new ArrayList<DSSDocument>();
+		long containerSize = DSSUtils.getFileByteSize(packageZip);
+		try (InputStream is = packageZip.openStream(); ZipInputStream packageZipInputStream = new ZipInputStream(is)) {
+			ZipEntry entry;
+			while ((entry = ASiCUtils.getNextValidEntry(packageZipInputStream)) != null) {
+				result.add(ASiCUtils.getCurrentDocument(entry.getName(), packageZipInputStream, containerSize));
+			}
+		} catch (IOException e) {
+			throw new DSSException("Unable to extract package.zip", e);
+		}
+		return result;
 	}
 
 }

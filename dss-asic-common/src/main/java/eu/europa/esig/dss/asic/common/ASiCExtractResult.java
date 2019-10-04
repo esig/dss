@@ -31,14 +31,13 @@ public class ASiCExtractResult {
 	private String zipComment;
 	private DSSDocument mimeTypeDocument;
 	private List<DSSDocument> allDocuments = new ArrayList<DSSDocument>();
-	private List<DSSDocument> originalDocuments = new ArrayList<DSSDocument>();
+	private List<DSSDocument> originalDocuments = new ArrayList<DSSDocument>(); // signed documents
 	private List<DSSDocument> signatureDocuments = new ArrayList<DSSDocument>();
 	private List<DSSDocument> manifestDocuments = new ArrayList<DSSDocument>();
-	private List<ManifestFile> manifestFiles = new ArrayList<ManifestFile>();
 	private List<DSSDocument> archiveManifestDocuments = new ArrayList<DSSDocument>(); // ASiC with CAdES
 	private List<DSSDocument> timestampDocuments = new ArrayList<DSSDocument>(); // ASiC with CAdES
 	private List<DSSDocument> unsupportedDocuments = new ArrayList<DSSDocument>();
-	private List<DSSDocument> containerDocuments = new ArrayList<DSSDocument>(); // for ASiC signatures
+	private List<DSSDocument> containerDocuments = new ArrayList<DSSDocument>(); // List of documents inside a ZIP container (for ASiC-S signatures)
 	private DSSDocument rootContainer; // For OpenDocument
 
 	public String getZipComment() {
@@ -71,14 +70,6 @@ public class ASiCExtractResult {
 
 	public void setManifestDocuments(List<DSSDocument> manifestDocuments) {
 		this.manifestDocuments = manifestDocuments;
-	}
-	
-	public List<ManifestFile> getManifestFiles() {
-		return manifestFiles;
-	}
-	
-	public void setManifestFiles(List<ManifestFile> manifestFiles) {
-		this.manifestFiles = manifestFiles;
 	}
 
 	public List<DSSDocument> getArchiveManifestDocuments() {
