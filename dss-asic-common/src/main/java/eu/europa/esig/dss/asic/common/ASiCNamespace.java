@@ -41,9 +41,6 @@ public final class ASiCNamespace {
 	
 	public static final String DATA_OBJECT_REFERENCE_ROOTFILE_VALUE_TRUE = "true";
 
-	public static final String LIBREOFFICE_SIGNATURES = "document-signatures";
-	public static final String LIBREOFFICE_NS = "urn:oasis:names:tc:opendocument:xmlns:digitalsignature:1.0";
-
 	private ASiCNamespace() {
 	}
 	
