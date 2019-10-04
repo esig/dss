@@ -912,21 +912,8 @@ public class DiagnosticData {
 	 * 
 	 * @return the JAXB model of the LOTL
 	 */
-	public XmlTrustedList getListOfTrustedLists() {
+	public List<XmlTrustedList> getListOfTrustedLists() {
 		return wrapped.getListOfTrustedLists();
-	}
-
-	/**
-	 * This method returns the LOTL country code
-	 * 
-	 * @return the country code of the used LOTL
-	 */
-	public String getLOTLCountryCode() {
-		XmlTrustedList listOfTrustedLists = wrapped.getListOfTrustedLists();
-		if (listOfTrustedLists != null) {
-			return listOfTrustedLists.getCountryCode();
-		}
-		return null;
 	}
 
 	public Date getValidationDate() {

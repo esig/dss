@@ -78,4 +78,51 @@ public class TLValidationJobSummary {
 		return 0;
 	}
 	
+	/**
+	 * Returns a TLInfo object by URL
+	 * 
+	 * @param url
+	 *            the url of the searched TL
+	 * @return a TLInfo or null
+	 */
+	public TLInfo getTLInfoByURL(String url) {
+		if (Utils.isCollectionNotEmpty(otherTLInfos)) {
+			for (TLInfo tlInfo : otherTLInfos) {
+				if (Utils.areStringsEqual(url, tlInfo.getUrl())) {
+					return tlInfo;
+				}
+			}
+		}
+
+		if (Utils.isCollectionNotEmpty(lotlInfos)) {
+			for (LOTLInfo lotlInfo : lotlInfos) {
+				for (TLInfo tlInfo : lotlInfo.getTLInfos()) {
+					if (Utils.areStringsEqual(url, tlInfo.getUrl())) {
+						return tlInfo;
+					}
+				}
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns a LOTLInfo object by URL
+	 * 
+	 * @param url
+	 *            the url of the searched LOTL
+	 * @return a LOTLInfo or null
+	 */
+	public LOTLInfo getLOTLInfoByURL(String url) {
+		if (Utils.isCollectionNotEmpty(lotlInfos)) {
+			for (LOTLInfo lotlInfo : lotlInfos) {
+				if (Utils.areStringsEqual(url, lotlInfo.getUrl())) {
+					return lotlInfo;
+				}
+			}
+		}
+		return null;
+	}
+
 }

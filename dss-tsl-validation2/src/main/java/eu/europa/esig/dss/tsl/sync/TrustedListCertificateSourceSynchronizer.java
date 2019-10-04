@@ -97,12 +97,12 @@ public class TrustedListCertificateSourceSynchronizer {
 	private void synchronizeCertificates(TLValidationJobSummary summary) {
 		certificateSource.reinit();
 		for (LOTLInfo lotlInfo : summary.getLOTLInfos()) {
-			addCertificatesFromTLs(lotlInfo.getTLInfos());
+			addCertificatesFromTLs(lotlInfo.getTLInfos(), lotlInfo);
 		}
-		addCertificatesFromTLs(summary.getOtherTLInfos());
+		addCertificatesFromTLs(summary.getOtherTLInfos(), null);
 	}
 
-	private void addCertificatesFromTLs(List<TLInfo> tlInfos) {
+	private void addCertificatesFromTLs(List<TLInfo> tlInfos, LOTLInfo relatedLOTL) {
 		for (TLInfo tlInfo : tlInfos) {
 			String tlUrl = tlInfo.getUrl();
 			ParsingInfoRecord parsingCacheInfo = tlInfo.getParsingCacheInfo();
@@ -118,7 +118,12 @@ public class TrustedListCertificateSourceSynchronizer {
 							.getStatusAndInformationExtensions();
 
 					for (CertificateToken certificate : trustService.getCertificates()) {
+						if (relatedLOTL == null) {
 						certificateSource.addCertificate(certificate, new TrustProperties(tlUrl, detached, statusAndInformationExtensions));
+						} else {
+							certificateSource.addCertificate(certificate,
+									new TrustProperties(relatedLOTL.getUrl(), tlUrl, detached, statusAndInformationExtensions));
+						}
 					}
 				}
 			}

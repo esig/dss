@@ -82,15 +82,19 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 				list = new ArrayList<TrustProperties>();
 				trustServicesByEntity.put(entityKey, list);
 			}
-			list.add(trustProperties);
+
+			if (!list.contains(trustProperties)) {
+				list.add(trustProperties);
+			}
 		}
 	}
 
 	/**
 	 * This method is not applicable for this kind of certificate source. You should
-	 * use {@link #addCertificate(CertificateToken, List)}
+	 * use {@link #addCertificate(CertificateToken, TrustProperties)}
 	 *
-	 * @param certificate the certificate you have to trust
+	 * @param certificate
+	 *                    the certificate you have to trust
 	 * @return the corresponding certificate token
 	 */
 	@Override
