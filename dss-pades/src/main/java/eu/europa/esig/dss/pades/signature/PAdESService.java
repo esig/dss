@@ -22,6 +22,7 @@ package eu.europa.esig.dss.pades.signature;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSProcessableByteArray;
@@ -80,17 +81,18 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	}
 
 	private SignatureExtension<PAdESSignatureParameters> getExtensionProfile(SignatureLevel signatureLevel) {
+		Objects.requireNonNull(signatureLevel, "SignatureLevel must be defined!");
 		switch (signatureLevel) {
-		case PAdES_BASELINE_B:
-			return null;
-		case PAdES_BASELINE_T:
-			return new PAdESLevelBaselineT(tspSource);
-		case PAdES_BASELINE_LT:
-			return new PAdESLevelBaselineLT(tspSource, certificateVerifier);
-		case PAdES_BASELINE_LTA:
-			return new PAdESLevelBaselineLTA(tspSource, certificateVerifier);
-		default:
-			throw new IllegalArgumentException("Signature format '" + signatureLevel + "' not supported");
+			case PAdES_BASELINE_B:
+				return null;
+			case PAdES_BASELINE_T:
+				return new PAdESLevelBaselineT(tspSource);
+			case PAdES_BASELINE_LT:
+				return new PAdESLevelBaselineLT(tspSource, certificateVerifier);
+			case PAdES_BASELINE_LTA:
+				return new PAdESLevelBaselineLTA(tspSource, certificateVerifier);
+			default:
+				throw new IllegalArgumentException("Signature format '" + signatureLevel + "' not supported");
 		}
 	}
 
@@ -109,6 +111,8 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 
 	@Override
 	public ToBeSigned getDataToSign(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters) throws DSSException {
+		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 
 		assertSigningDateInCertificateValidityRange(parameters);
 
@@ -138,6 +142,8 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	@Override
 	public DSSDocument signDocument(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters, final SignatureValue signatureValue)
 			throws DSSException {
+		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 
 		assertSigningDateInCertificateValidityRange(parameters);
 
@@ -160,6 +166,9 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	protected byte[] generateCMSSignedData(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters, final SignatureValue signatureValue) {
 		final SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
 		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
+		Objects.requireNonNull(signatureAlgorithm, "SignatureAlgorithm cannot be null!");
+		Objects.requireNonNull(signatureLevel, "SignatureLevel must be defined!");
+		
 		final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId(), signatureValue.getValue());
 
 		final byte[] messageDigest = computeDocumentDigest(toSignDocument, parameters);
@@ -181,14 +190,20 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	}
 
 	@Override
-	public DSSDocument extendDocument(DSSDocument original, PAdESSignatureParameters parameters) throws DSSException {
+	public DSSDocument extendDocument(final DSSDocument toExtendDocument, final PAdESSignatureParameters parameters) throws DSSException {
+		Objects.requireNonNull(toExtendDocument, "toExtendDocument is not defined!");
+		Objects.requireNonNull(parameters, "Cannot extend the signature. SignatureParameters are not defined!");
+		if (SignatureLevel.PAdES_BASELINE_B.equals(parameters.getSignatureLevel())) {
+			throw new IllegalArgumentException("Cannot extend to PAdES_BASELINE_B");
+		}
+		
 		final SignatureExtension<PAdESSignatureParameters> extension = getExtensionProfile(parameters.getSignatureLevel());
 		if (extension != null) {
-			DSSDocument extended = extension.extendSignatures(original, parameters);
-			extended.setName(getFinalFileName(original, SigningOperation.EXTEND, parameters.getSignatureLevel()));
+			DSSDocument extended = extension.extendSignatures(toExtendDocument, parameters);
+			extended.setName(getFinalFileName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel()));
 			return extended;
 		}
-		return original;
+		return toExtendDocument;
 	}
 
 	/**

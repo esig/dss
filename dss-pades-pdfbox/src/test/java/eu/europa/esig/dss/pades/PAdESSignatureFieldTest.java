@@ -36,7 +36,7 @@ import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
-public class PAdESServiceTest {
+public class PAdESSignatureFieldTest {
 
 	private PAdESService padesService = new PAdESService(new CommonCertificateVerifier());
 

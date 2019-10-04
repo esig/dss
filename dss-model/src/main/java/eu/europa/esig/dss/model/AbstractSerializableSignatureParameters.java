@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
@@ -198,6 +199,7 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	 *            the digest algorithm to set
 	 */
 	public void setDigestAlgorithm(final DigestAlgorithm digestAlgorithm) {
+		Objects.requireNonNull(digestAlgorithm, "DigestAlgorithm cannot be null!");
 		this.digestAlgorithm = digestAlgorithm;
 		if ((this.digestAlgorithm != null) && (this.encryptionAlgorithm != null)) {
 			signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm, this.maskGenerationFunction);

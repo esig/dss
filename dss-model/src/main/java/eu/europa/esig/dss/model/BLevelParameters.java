@@ -23,6 +23,7 @@ package eu.europa.esig.dss.model;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @SuppressWarnings("serial")
 public class BLevelParameters implements Serializable {
@@ -109,6 +110,7 @@ public class BLevelParameters implements Serializable {
 	 *            the signing date
 	 */
 	public void setSigningDate(final Date signingDate) {
+		Objects.requireNonNull(signingDate, "SigningDate cannot be null!");
 		this.signingDate = signingDate;
 	}
 

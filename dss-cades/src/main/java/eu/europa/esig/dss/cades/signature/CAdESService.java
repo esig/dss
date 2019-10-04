@@ -23,10 +23,9 @@ package eu.europa.esig.dss.cades.signature;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
-import org.bouncycastle.cms.CMSAbsentContent;
 import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.cms.CMSProcessableByteArray;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataGenerator;
 import org.bouncycastle.cms.CMSTypedData;
@@ -100,6 +99,9 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 
 	@Override
 	public ToBeSigned getDataToSign(final DSSDocument toSignDocument, final CAdESSignatureParameters parameters) throws DSSException {
+		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
+		
 		assertSigningDateInCertificateValidityRange(parameters);
 		final SignaturePackaging packaging = parameters.getSignaturePackaging();
 		assertSignaturePackaging(packaging);
@@ -125,6 +127,9 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 	@Override
 	public DSSDocument signDocument(final DSSDocument toSignDocument, final CAdESSignatureParameters parameters, SignatureValue signatureValue)
 			throws DSSException {
+		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
+		Objects.requireNonNull(signatureValue, "SignatureValue cannot be null!");
 
 		assertSigningDateInCertificateValidityRange(parameters);
 		final SignaturePackaging packaging = parameters.getSignaturePackaging();
@@ -172,6 +177,8 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 
 	@Override
 	public DSSDocument extendDocument(final DSSDocument toExtendDocument, final CAdESSignatureParameters parameters) {
+		Objects.requireNonNull(toExtendDocument, "toExtendDocument is not defined!");
+		Objects.requireNonNull(parameters, "Cannot extend the signature. SignatureParameters are not defined!");
 		// false: All signature are extended
 		final SignatureExtension<CAdESSignatureParameters> extension = getExtensionProfile(parameters, false);
 		final DSSDocument dssDocument = extension.extendSignatures(toExtendDocument, parameters);
@@ -232,15 +239,16 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 	 */
 	private SignatureExtension<CAdESSignatureParameters> getExtensionProfile(final CAdESSignatureParameters parameters, final boolean onlyLastCMSSignature) {
 		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
+		Objects.requireNonNull(signatureLevel, "SignatureLevel must be defined!");
 		switch (signatureLevel) {
-		case CAdES_BASELINE_T:
-			return new CAdESLevelBaselineT(tspSource, onlyLastCMSSignature);
-		case CAdES_BASELINE_LT:
-			return new CAdESLevelBaselineLT(tspSource, certificateVerifier, onlyLastCMSSignature);
-		case CAdES_BASELINE_LTA:
-			return new CAdESLevelBaselineLTA(tspSource, certificateVerifier, onlyLastCMSSignature);
-		default:
-			throw new DSSException("Unsupported signature format " + signatureLevel);
+			case CAdES_BASELINE_T:
+				return new CAdESLevelBaselineT(tspSource, onlyLastCMSSignature);
+			case CAdES_BASELINE_LT:
+				return new CAdESLevelBaselineLT(tspSource, certificateVerifier, onlyLastCMSSignature);
+			case CAdES_BASELINE_LTA:
+				return new CAdESLevelBaselineLTA(tspSource, certificateVerifier, onlyLastCMSSignature);
+			default:
+				throw new DSSException("Unsupported signature format : " + signatureLevel);
 		}
 	}
 
