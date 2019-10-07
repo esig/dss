@@ -808,7 +808,10 @@ public class DiagnosticDataBuilder {
 		if (signingCertificateToken != null) {
 			xmlSignCertType.setCertificate(xmlCerts.get(signingCertificateToken.getDSSIdAsString()));
 		} else if (certificateValidity.getPublicKey() != null) {
-			xmlSignCertType = getXmlSigningCertificate(certificateValidity.getPublicKey());
+			XmlSigningCertificate xmlSignCert = getXmlSigningCertificate(certificateValidity.getPublicKey());
+			if (xmlSignCert != null) {
+				xmlSignCertType = xmlSignCert;
+			}
 		}
 		xmlSignCertType.setAttributePresent(certificateValidity.isAttributePresent());
 		xmlSignCertType.setDigestValuePresent(certificateValidity.isDigestPresent());
