@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusionWithProofOfExistence;
@@ -57,13 +58,11 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 	private final Date bestSignatureTime;
 	private final CertificateWrapper signingCertificate;
 	private final List<XmlTLAnalysis> tlAnalysis;
-	private final String lotlCountryCode;
 
 	private CertificateQualification qualificationAtSigningTime;
 
 	public SignatureQualificationBlock(String signatureId, XmlConstraintsConclusionWithProofOfExistence etsi319102validation,
-			CertificateWrapper signingCertificate,
-			List<XmlTLAnalysis> tlAnalysis, String lotlCountryCode) {
+			CertificateWrapper signingCertificate, List<XmlTLAnalysis> tlAnalysis) {
 		super(new XmlValidationSignatureQualification());
 		result.setTitle(ValidationProcessDefinition.SIG_QUALIFICATION.getTitle());
 		result.setId(signatureId);
@@ -72,7 +71,6 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 		this.bestSignatureTime = etsi319102validation.getProofOfExistence().getTime();
 		this.signingCertificate = signingCertificate;
 		this.tlAnalysis = tlAnalysis;
-		this.lotlCountryCode = lotlCountryCode;
 	}
 
 	@Override
@@ -84,29 +82,31 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 
 		if (signingCertificate != null && signingCertificate.hasTrustedServices()) {
 
-			XmlTLAnalysis lotlAnalysis = getTlAnalysis(lotlCountryCode);
-			if (lotlAnalysis != null) {
-				item = item.setNextItem(isAcceptableTL(lotlAnalysis));
+			List<TrustedServiceWrapper> originalTSPs = signingCertificate.getTrustedServices();
+			Set<String> trustedListUrls = originalTSPs.stream().map(t -> t.getTlUrl()).collect(Collectors.toSet());
+			Set<String> listOfTrustedListUrls = originalTSPs.stream().map(t -> t.getLotlUrl()).collect(Collectors.toSet());
+
+			for (String lotlURL : listOfTrustedListUrls) {
+				XmlTLAnalysis lotlAnalysis = getTlAnalysis(lotlURL);
+				if (lotlAnalysis != null) {
+					item = item.setNextItem(isAcceptableTL(lotlAnalysis));
+				}
 			}
 
-			Set<String> acceptableCountries = new HashSet<String>();
-
-			List<TrustedServiceWrapper> originalTSPs = signingCertificate.getTrustedServices();
-			Set<String> countryCodes = getCountryCodes(originalTSPs);
-			for (String countryCode : countryCodes) {
-				XmlTLAnalysis currentTL = getTlAnalysis(countryCode);
+			Set<String> acceptableUrls = new HashSet<String>();
+			for (String tlURL : trustedListUrls) {
+				XmlTLAnalysis currentTL = getTlAnalysis(tlURL);
 				if (currentTL != null) {
-					AcceptableTrustedListCheck<XmlValidationSignatureQualification> acceptableTL = isAcceptableTL(
-							currentTL);
+					AcceptableTrustedListCheck<XmlValidationSignatureQualification> acceptableTL = isAcceptableTL(currentTL);
 					item = item.setNextItem(acceptableTL);
 					if (acceptableTL.process()) {
-						acceptableCountries.add(countryCode);
+						acceptableUrls.add(tlURL);
 					}
 				}
 			}
 
 			// 1. filter by service for CAQC
-			TrustedServiceFilter filter = TrustedServicesFilterFactory.createFilterByCountries(acceptableCountries);
+			TrustedServiceFilter filter = TrustedServicesFilterFactory.createFilterByUrls(acceptableUrls);
 			List<TrustedServiceWrapper> acceptableServices = filter.filter(originalTSPs);
 
 			filter = TrustedServicesFilterFactory.createFilterByCaQc();

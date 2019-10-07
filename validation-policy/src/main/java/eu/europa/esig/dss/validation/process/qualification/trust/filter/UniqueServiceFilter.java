@@ -76,7 +76,7 @@ public class UniqueServiceFilter implements TrustedServiceFilter {
 				CertificateQualification certQualification = CertQualificationMatrix.getCertQualification(qualifiedStatus, type, qscdStatus);
 
 				if (!qualificationResults.containsKey(certQualification)) {
-					qualificationResults.put(certQualification, trustService.getServiceName());
+					qualificationResults.put(certQualification, trustService.getServiceNames().get(0));
 				}
 			}
 

@@ -141,12 +141,12 @@
             </QCTypes>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
-                    <TSPName>The Czech Post, s.p.</TSPName>
-                    <TSPRegistrationIdentifier>VATCZ-47114983</TSPRegistrationIdentifier>
+                    <TSPNames><TSPName lang="en">The Czech Post, s.p.</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATCZ-47114983</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>CZ</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-5AA48CC28850A892740CA6DEAA50B97E65DC90857BE9E6EDA7A348EAE26C934F">
-                            <ServiceName>(105) PostSignum TSA - TSU 1</ServiceName>
+                            <ServiceNames><ServiceName lang="en">(105) PostSignum TSA - TSU 1</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2018-06-19T22:00:00</StartDate>
@@ -154,12 +154,12 @@
                     </TrustedServices>
                 </TrustedServiceProvider>
                 <TrustedServiceProvider>
-                    <TSPName>The Czech Post, s.p.</TSPName>
-                    <TSPRegistrationIdentifier>VATCZ-47114983</TSPRegistrationIdentifier>
+                    <TSPNames><TSPName lang="en">The Czech Post, s.p.</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATCZ-47114983</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>CZ</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02">
-                            <ServiceName>(57) PostSignum - issuing qualified certificates</ServiceName>
+                            <ServiceNames><ServiceName lang="en">(57) PostSignum - issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2017-08-30T22:00:00</StartDate>
@@ -284,12 +284,12 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
-                    <TSPName>First certification authority, a.s.</TSPName>
-                    <TSPRegistrationIdentifier>VATCZ-26439395</TSPRegistrationIdentifier>
+                    <TSPNames><TSPName lang="en">First certification authority, a.s.</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATCZ-26439395</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>CZ</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A">
-                            <ServiceName>(78) I.CA - issuing qualified certificates</ServiceName>
+                            <ServiceNames><ServiceName lang="en">(78) I.CA - issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2017-08-16T12:15:00</StartDate>
@@ -299,7 +299,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A">
-                            <ServiceName>(78) I.CA - issuing qualified certificates</ServiceName>
+                            <ServiceNames><ServiceName lang="en">(78) I.CA - issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -309,7 +309,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A">
-                            <ServiceName>(78) I.CA - issuing qualified certificates</ServiceName>
+                            <ServiceNames><ServiceName lang="en">(78) I.CA - issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
                             <StartDate>2016-06-15T05:55:00</StartDate>
@@ -377,12 +377,12 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
-                    <TSPName>The Czech Post, s.p.</TSPName>
-                    <TSPRegistrationIdentifier>VATCZ-47114983</TSPRegistrationIdentifier>
+                    <TSPNames><TSPName lang="en">The Czech Post, s.p.</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATCZ-47114983</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>CZ</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02">
-                            <ServiceName>(57) PostSignum - issuing qualified certificates</ServiceName>
+                            <ServiceNames><ServiceName lang="en">(57) PostSignum - issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2017-08-30T22:00:00</StartDate>
@@ -393,7 +393,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02">
-                            <ServiceName>(57) PostSignum - issuing qualified certificates</ServiceName>
+                            <ServiceNames><ServiceName lang="en">(57) PostSignum - issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -403,7 +403,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02">
-                            <ServiceName>(57) PostSignum - issuing qualified certificates</ServiceName>
+                            <ServiceNames><ServiceName lang="en">(57) PostSignum - issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
                             <StartDate>2014-03-26T08:01:32</StartDate>
@@ -475,12 +475,12 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
-                    <TSPName>First certification authority, a.s.</TSPName>
-                    <TSPRegistrationIdentifier>VATCZ-26439395</TSPRegistrationIdentifier>
+                    <TSPNames><TSPName lang="en">First certification authority, a.s.</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATCZ-26439395</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>CZ</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A">
-                            <ServiceName>(78) I.CA - issuing qualified certificates</ServiceName>
+                            <ServiceNames><ServiceName lang="en">(78) I.CA - issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2017-08-16T12:15:00</StartDate>
@@ -661,7 +661,7 @@
             <WellSigned>true</WellSigned>
         </TrustedList>
     </TrustedLists>
-    <ListOfTrustedLists>
+    <ListOfTrustedLists><TrustedList>
         <CountryCode>EU</CountryCode>
         <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
         <SequenceNumber>236</SequenceNumber>
@@ -670,5 +670,5 @@
         <IssueDate>2019-03-20T14:00:00</IssueDate>
         <NextUpdate>2019-09-20T00:00:00</NextUpdate>
         <WellSigned>true</WellSigned>
-    </ListOfTrustedLists>
+    </TrustedList></ListOfTrustedLists>
 </DiagnosticData>

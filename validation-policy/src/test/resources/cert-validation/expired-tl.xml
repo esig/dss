@@ -42,12 +42,12 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
-                    <TSPName>TSP-21.1 Name</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-202046328</TSPRegistrationIdentifier>
+                    <TSPNames><TSPName lang="en">TSP-21.1 Name</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202046328</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>LU</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-296DE5A6000420CF108CA7421056E514A8919D12E819B9FEA178C675342F80FF">
-                            <ServiceName>TS-21.1.1 Name</ServiceName>
+                            <ServiceNames><ServiceName lang="en">TS-21.1.1 Name</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -116,12 +116,12 @@
             </QCTypes>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
-                    <TSPName>TSP-21.1 Name</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-202046328</TSPRegistrationIdentifier>
+                    <TSPNames><TSPName lang="en">TSP-21.1 Name</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202046328</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>LU</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-296DE5A6000420CF108CA7421056E514A8919D12E819B9FEA178C675342F80FF">
-                            <ServiceName>TS-21.1.1 Name</ServiceName>
+                            <ServiceNames><ServiceName lang="en">TS-21.1.1 Name</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -177,7 +177,7 @@
             <WellSigned>true</WellSigned>
         </TrustedList>
     </TrustedLists>
-    <ListOfTrustedLists>
+    <ListOfTrustedLists><TrustedList>
         <CountryCode>EU</CountryCode>
         <Url>http://localhost:8080/qes-validation-web/tl/LOTL-2.xml</Url>
         <SequenceNumber>1</SequenceNumber>
@@ -186,5 +186,5 @@
         <IssueDate>2018-06-24T14:37:39</IssueDate>
         <NextUpdate>2018-07-26T14:37:39</NextUpdate>
         <WellSigned>true</WellSigned>
-    </ListOfTrustedLists>
+    </TrustedList></ListOfTrustedLists>
 </DiagnosticData>

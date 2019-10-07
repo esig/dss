@@ -120,12 +120,12 @@
             </QCTypes>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
-                    <TSPName>TSP-5.1 Name</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-204806223</TSPRegistrationIdentifier>
+                    <TSPNames><TSPName lang="en">TSP-5.1 Name</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-204806223</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>IT</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-53763FCFD428B9878B97E4C1B9DE17E431842E2AF43B5A51BEEBE5B53F360619">
-                            <ServiceName>TS-5.1.5 Name</ServiceName>
+                            <ServiceNames><ServiceName lang="en">TS-5.1.5 Name</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -185,12 +185,12 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
-                    <TSPName>TSP-5.1 Name</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-204806223</TSPRegistrationIdentifier>
+                    <TSPNames><TSPName lang="en">TSP-5.1 Name</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-204806223</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>IT</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-53763FCFD428B9878B97E4C1B9DE17E431842E2AF43B5A51BEEBE5B53F360619">
-                            <ServiceName>TS-5.1.5 Name</ServiceName>
+                            <ServiceNames><ServiceName lang="en">TS-5.1.5 Name</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -251,7 +251,7 @@
             <WellSigned>true</WellSigned>
         </TrustedList>
     </TrustedLists>
-    <ListOfTrustedLists>
+    <ListOfTrustedLists><TrustedList>
         <CountryCode>EU</CountryCode>
         <Url>http://localhost:8080/qes-validation-web/tl/LOTL-3.xml</Url>
         <SequenceNumber>1</SequenceNumber>
@@ -260,5 +260,5 @@
         <IssueDate>2018-07-04T13:17:57</IssueDate>
         <NextUpdate>2018-08-05T13:17:57</NextUpdate>
         <WellSigned>true</WellSigned>
-    </ListOfTrustedLists>
+    </TrustedList></ListOfTrustedLists>
 </DiagnosticData>

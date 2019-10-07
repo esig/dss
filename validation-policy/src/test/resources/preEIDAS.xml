@@ -107,12 +107,12 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
-                    <TSPName>The Czech Post, s.p.</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-208026243</TSPRegistrationIdentifier>
+                    <TSPNames><TSPName lang="en">The Czech Post, s.p.</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-208026243</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>CZ</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-3AE4F4DE5F3E2070A11845BDFE6DCA6E412BB7E4ED84FD4F1B7B496CADFF2CAC">
-		                    <ServiceName>(21) PostSignum - issuing qualified certificates</ServiceName>
+		                    <ServiceNames><ServiceName lang="en">(21) PostSignum - issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-07-01T02:00:00</StartDate>
@@ -124,7 +124,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-3AE4F4DE5F3E2070A11845BDFE6DCA6E412BB7E4ED84FD4F1B7B496CADFF2CAC">
-		                    <ServiceName>(21) PostSignum - issuing qualified certificates</ServiceName>
+		                    <ServiceNames><ServiceName lang="en">(21) PostSignum - issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
                             <StartDate>2010-01-19T12:31:20</StartDate>
@@ -196,12 +196,12 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
-                    <TSPName>The Czech Post, s.p.</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-208026243</TSPRegistrationIdentifier>
+                    <TSPNames><TSPName lang="en">The Czech Post, s.p.</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-208026243</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>CZ</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-3AE4F4DE5F3E2070A11845BDFE6DCA6E412BB7E4ED84FD4F1B7B496CADFF2CAC">
-                    		<ServiceName>(21) PostSignum - issuing qualified certificates</ServiceName>
+                    		<ServiceNames><ServiceName lang="en">(21) PostSignum - issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-07-01T02:00:00</StartDate>
@@ -210,7 +210,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-3AE4F4DE5F3E2070A11845BDFE6DCA6E412BB7E4ED84FD4F1B7B496CADFF2CAC">
-                        	<ServiceName>(21) PostSignum - issuing qualified certificates</ServiceName>
+                        	<ServiceNames><ServiceName lang="en">(21) PostSignum - issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
                             <StartDate>2010-01-19T12:31:20</StartDate>
@@ -321,7 +321,7 @@
             <WellSigned>true</WellSigned>
         </TrustedList>
     </TrustedLists>
-    <ListOfTrustedLists>
+    <ListOfTrustedLists><TrustedList>
         <CountryCode>EU</CountryCode>
         <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
         <SequenceNumber>160</SequenceNumber>
@@ -330,5 +330,5 @@
         <IssueDate>2017-01-23T12:00:00</IssueDate>
         <NextUpdate>2017-07-23T02:00:00</NextUpdate>
         <WellSigned>true</WellSigned>
-    </ListOfTrustedLists>
+    </TrustedList></ListOfTrustedLists>
 </DiagnosticData>

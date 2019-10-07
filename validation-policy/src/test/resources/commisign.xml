@@ -104,12 +104,14 @@
          <QCTypes/>
          <TrustedServiceProviders>
             <TrustedServiceProvider>
-               <TSPName>C - European Commission Certification Authority</TSPName>
-               <TSPRegistrationIdentifier>NTRBE-0949.383.342 </TSPRegistrationIdentifier>
+               <LOTLUrl>https://hide.eu/esig/TrustedList/EC_R/TSL.xml</LOTLUrl>
+				<TLUrl>https://hide.eu/esig/TrustedList/EC_R/TSL.xml</TLUrl>
+				<TSPNames><TSPName lang="en">C - European Commission Certification Authority</TSPName></TSPNames>
+               <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>NTRBE-0949.383.342 </TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                <CountryCode>EC</CountryCode>
                <TrustedServices>
                   <TrustedService ServiceDigitalIdentifier="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
-                     <ServiceName>C - 2</ServiceName>
+                     <ServiceNames><ServiceName lang="en">C - 2</ServiceName></ServiceNames>
                      <ServiceType>https://webgate.ec.europa.eu/esig/TrustedList/TrstSvc/ScvType/CA/EC/Internal</ServiceType>
                      <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                      <StartDate>2016-10-03T22:00:00</StartDate>
@@ -165,12 +167,14 @@
          <QCTypes/>
          <TrustedServiceProviders>
             <TrustedServiceProvider>
-               <TSPName>C - European Commission Certification Authority</TSPName>
-               <TSPRegistrationIdentifier>NTRBE-0949.383.342 </TSPRegistrationIdentifier>
+               <LOTLUrl>https://hide.eu/esig/TrustedList/EC_R/TSL.xml</LOTLUrl>
+				<TLUrl>https://hide.eu/esig/TrustedList/EC_R/TSL.xml</TLUrl>
+				<TSPNames><TSPName lang="en">C - European Commission Certification Authority</TSPName></TSPNames>
+               <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>NTRBE-0949.383.342 </TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                <CountryCode>EC</CountryCode>
                <TrustedServices>
                   <TrustedService ServiceDigitalIdentifier="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
-                     <ServiceName>C - 2</ServiceName>
+                     <ServiceNames><ServiceName lang="en">C - 2</ServiceName></ServiceNames>
                      <ServiceType>https://webgate.ec.europa.eu/esig/TrustedList/TrstSvc/ScvType/CA/EC/Internal</ServiceType>
                      <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                      <StartDate>2016-10-03T22:00:00</StartDate>
@@ -281,12 +285,14 @@
          <QCTypes/>
          <TrustedServiceProviders>
             <TrustedServiceProvider>
-               <TSPName>C - European Commission Certification Authority</TSPName>
-               <TSPRegistrationIdentifier>NTRBE-0949.383.342 </TSPRegistrationIdentifier>
+               <LOTLUrl>https://hide.eu/esig/TrustedList/EC_R/TSL.xml</LOTLUrl>
+				<TLUrl>https://hide.eu/esig/TrustedList/EC_R/TSL.xml</TLUrl>
+				<TSPNames><TSPName lang="en">C - European Commission Certification Authority</TSPName></TSPNames>
+               <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>NTRBE-0949.383.342 </TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                <CountryCode>EC</CountryCode>
                <TrustedServices>
                   <TrustedService ServiceDigitalIdentifier="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
-                     <ServiceName>C - 2</ServiceName>
+                     <ServiceNames><ServiceName lang="en">C - 2</ServiceName></ServiceNames>
                      <ServiceType>https://webgate.ec.europa.eu/esig/TrustedList/TrstSvc/ScvType/CA/EC/Internal</ServiceType>
                      <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                      <StartDate>2016-10-03T22:00:00</StartDate>
@@ -354,7 +360,7 @@
          <WellSigned>true</WellSigned>
       </TrustedList>
    </TrustedLists>
-   <ListOfTrustedLists>
+   <ListOfTrustedLists><TrustedList>
       <CountryCode>EC</CountryCode>
       <Url>https://hide.eu/esig/TrustedList/EC_R/TSL.xml</Url>
       <SequenceNumber>3</SequenceNumber>
@@ -363,5 +369,5 @@
       <IssueDate>2017-06-27T09:00:00</IssueDate>
       <NextUpdate>2017-12-26T09:00:00</NextUpdate>
       <WellSigned>true</WellSigned>
-   </ListOfTrustedLists>
+   </TrustedList></ListOfTrustedLists>
 </DiagnosticData>

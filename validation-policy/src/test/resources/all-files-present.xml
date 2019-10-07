@@ -163,12 +163,14 @@
             </QCTypes>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
-                    <TSPName>SK ID Solutions AS</TSPName>
-                    <TSPRegistrationIdentifier>VATEE-100687640</TSPRegistrationIdentifier>
+	                <LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>https://sr.riik.ee/tsl/estonian-tsl.xml</TLUrl>
+                    <TSPNames><TSPName lang="en">SK ID Solutions AS</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATEE-100687640</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>EE</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F">
-                            <ServiceName>ESTEID qualified certificates for electronic signatures (ESTEID-SK 2015)</ServiceName>
+                            <ServiceNames><ServiceName lang="en">ESTEID qualified certificates for electronic signatures (ESTEID-SK 2015)</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2018-11-02T14:00:00</StartDate>
@@ -239,12 +241,14 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
-                    <TSPName>SK ID Solutions AS</TSPName>
-                    <TSPRegistrationIdentifier>VATEE-100687640</TSPRegistrationIdentifier>
+	                <LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>https://sr.riik.ee/tsl/estonian-tsl.xml</TLUrl>
+                    <TSPNames><TSPName lang="en">SK ID Solutions AS</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATEE-100687640</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>EE</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F">
-                            <ServiceName>ESTEID qualified certificates for electronic signatures (ESTEID-SK 2015)</ServiceName>
+                            <ServiceNames><ServiceName lang="en">ESTEID qualified certificates for electronic signatures (ESTEID-SK 2015)</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2018-11-02T14:00:00</StartDate>
@@ -256,7 +260,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F">
-                            <ServiceName>ESTEID-SK 2015 qualified certificates for electronic signatures</ServiceName>
+                            <ServiceNames><ServiceName lang="en">ESTEID-SK 2015 qualified certificates for electronic signatures</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -333,12 +337,14 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
-                    <TSPName>SK ID Solutions AS</TSPName>
-                    <TSPRegistrationIdentifier>VATEE-100687640</TSPRegistrationIdentifier>
+	                <LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>https://sr.riik.ee/tsl/estonian-tsl.xml</TLUrl>
+                    <TSPNames><TSPName lang="en">SK ID Solutions AS</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATEE-100687640</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>EE</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F">
-                            <ServiceName>ESTEID qualified certificates for electronic signatures (ESTEID-SK 2015)</ServiceName>
+                            <ServiceNames><ServiceName lang="en">ESTEID qualified certificates for electronic signatures (ESTEID-SK 2015)</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2018-11-02T14:00:00</StartDate>
@@ -350,7 +356,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F">
-                            <ServiceName>ESTEID-SK 2015 qualified certificates for electronic signatures</ServiceName>
+                            <ServiceNames><ServiceName lang="en">ESTEID-SK 2015 qualified certificates for electronic signatures</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -360,7 +366,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F">
-                            <ServiceName>ESTEID-SK 2015: Qualified certificates for Estonian ID-card, the residence permit card, the digital identity card, the digital identity card in form of the Mobile-ID</ServiceName>
+                            <ServiceNames><ServiceName lang="en">ESTEID-SK 2015: Qualified certificates for Estonian ID-card, the residence permit card, the digital identity card, the digital identity card in form of the Mobile-ID</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
                             <StartDate>2015-12-17T12:38:00</StartDate>
@@ -437,7 +443,7 @@
             <WellSigned>true</WellSigned>
         </TrustedList>
     </TrustedLists>
-    <ListOfTrustedLists>
+    <ListOfTrustedLists><TrustedList>
         <CountryCode>EU</CountryCode>
         <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
         <SequenceNumber>224</SequenceNumber>
@@ -446,5 +452,5 @@
         <IssueDate>2018-11-26T15:00:00</IssueDate>
         <NextUpdate>2019-05-26T00:00:00</NextUpdate>
         <WellSigned>true</WellSigned>
-    </ListOfTrustedLists>
+    </TrustedList></ListOfTrustedLists>
 </DiagnosticData>

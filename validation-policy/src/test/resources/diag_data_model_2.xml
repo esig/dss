@@ -105,12 +105,12 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
-                    <TSPName>OpenLimit Test-CA</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier>
+                    <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>OL</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
-                            <ServiceName>OpenLimit CryptoModule 2019 XCA CHAIN ROOT 1</ServiceName>
+                            <ServiceNames><ServiceName lang="en">OpenLimit CryptoModule 2019 XCA CHAIN ROOT 1</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-13T13:30:00</StartDate>
@@ -119,7 +119,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
-                            <ServiceName>OpenLimit CryptoModule 2019 XCA CHAIN ROOT</ServiceName>
+                            <ServiceNames><ServiceName lang="en">OpenLimit CryptoModule 2019 XCA CHAIN ROOT</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-13T13:30:00</StartDate>
@@ -183,12 +183,12 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
-                    <TSPName>OpenLimit Test-CA</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier>
+                    <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>OL</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
-                            <ServiceName>OpenLimit CryptoModule 2019 XCA CHAIN ROOT 1</ServiceName>
+                            <ServiceNames><ServiceName lang="en">OpenLimit CryptoModule 2019 XCA CHAIN ROOT 1</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-13T13:30:00</StartDate>
@@ -198,7 +198,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
-                            <ServiceName>OpenLimit CryptoModule 2019 XCA CHAIN ROOT</ServiceName>
+                            <ServiceNames><ServiceName lang="en">OpenLimit CryptoModule 2019 XCA CHAIN ROOT</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-13T13:30:00</StartDate>
@@ -267,12 +267,12 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
-                    <TSPName>OpenLimit Test-CA</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier>
+                    <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>OL</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
-                            <ServiceName>OpenLimit CryptoModule 2019 XCA CHAIN ROOT 1</ServiceName>
+                            <ServiceNames><ServiceName lang="en">OpenLimit CryptoModule 2019 XCA CHAIN ROOT 1</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-13T13:30:00</StartDate>
@@ -281,7 +281,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
-                            <ServiceName>OpenLimit CryptoModule 2019 XCA CHAIN ROOT</ServiceName>
+                            <ServiceNames><ServiceName lang="en">OpenLimit CryptoModule 2019 XCA CHAIN ROOT</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-13T13:30:00</StartDate>
@@ -351,12 +351,12 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
-                    <TSPName>OpenLimit Test-CA</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier>
+                    <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>OL</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
-                            <ServiceName>OpenLimit CryptoModule 2019 XCA CHAIN ROOT 1</ServiceName>
+                            <ServiceNames><ServiceName lang="en">OpenLimit CryptoModule 2019 XCA CHAIN ROOT 1</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-13T13:30:00</StartDate>
@@ -365,7 +365,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
-                            <ServiceName>OpenLimit CryptoModule 2019 XCA CHAIN ROOT</ServiceName>
+                            <ServiceNames><ServiceName lang="en">OpenLimit CryptoModule 2019 XCA CHAIN ROOT</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-13T13:30:00</StartDate>

@@ -25,9 +25,11 @@ import java.util.List;
 
 public class TrustedServiceWrapper {
 
-	private String tspName;
+	private String tlUrl;
+	private String lotlUrl;
+	private List<String> tspNames;
 	private CertificateWrapper serviceDigitalIdentifier;
-	private String serviceName;
+	private List<String> serviceNames;
 	private String countryCode;
 	private String status;
 	private String type;
@@ -36,12 +38,28 @@ public class TrustedServiceWrapper {
 	private List<String> capturedQualifiers;
 	private List<String> additionalServiceInfos;
 
-	public String getTspName() {
-		return tspName;
+	public String getTlUrl() {
+		return tlUrl;
 	}
 
-	public void setTspName(String tspName) {
-		this.tspName = tspName;
+	public void setTlUrl(String tlUrl) {
+		this.tlUrl = tlUrl;
+	}
+
+	public String getLotlUrl() {
+		return lotlUrl;
+	}
+
+	public void setLotlUrl(String lotlUrl) {
+		this.lotlUrl = lotlUrl;
+	}
+
+	public List<String> getTspNames() {
+		return tspNames;
+	}
+
+	public void setTspNames(List<String> tspNames) {
+		this.tspNames = tspNames;
 	}
 
 	public CertificateWrapper getServiceDigitalIdentifier() {
@@ -52,12 +70,12 @@ public class TrustedServiceWrapper {
 		this.serviceDigitalIdentifier = serviceDigitalIdentifier;
 	}
 
-	public String getServiceName() {
-		return serviceName;
+	public List<String> getServiceNames() {
+		return serviceNames;
 	}
 
-	public void setServiceName(String serviceName) {
-		this.serviceName = serviceName;
+	public void setServiceNames(List<String> serviceNames) {
+		this.serviceNames = serviceNames;
 	}
 
 	public String getCountryCode() {

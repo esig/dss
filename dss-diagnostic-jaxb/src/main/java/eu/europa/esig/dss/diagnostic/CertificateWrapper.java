@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
@@ -35,6 +36,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDistinguishedName;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlLangAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedService;
@@ -206,13 +208,16 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		List<XmlTrustedServiceProvider> tsps = certificate.getTrustedServiceProviders();
 		if (tsps != null) {
 			for (XmlTrustedServiceProvider tsp : tsps) {
+				List<String> tspNames = getValues(tsp.getTSPNames());
 				List<XmlTrustedService> trustedServices = tsp.getTrustedServices();
 				if (trustedServices != null) {
 					for (XmlTrustedService trustedService : trustedServices) {
 						TrustedServiceWrapper wrapper = new TrustedServiceWrapper();
-						wrapper.setTspName(tsp.getTSPName());
+						wrapper.setTlUrl(tsp.getTLUrl());
+						wrapper.setLotlUrl(tsp.getLOTLUrl());
+						wrapper.setTspNames(tspNames);
 						wrapper.setServiceDigitalIdentifier(new CertificateWrapper(trustedService.getServiceDigitalIdentifier()));
-						wrapper.setServiceName(trustedService.getServiceName());
+						wrapper.setServiceNames(getValues(trustedService.getServiceNames()));
 						wrapper.setCountryCode(tsp.getCountryCode());
 						wrapper.setStatus(trustedService.getStatus());
 						wrapper.setType(trustedService.getServiceType());
@@ -226,6 +231,10 @@ public class CertificateWrapper extends AbstractTokenProxy {
 			}
 		}
 		return result;
+	}
+
+	private List<String> getValues(List<XmlLangAndValue> langAndValues) {
+		return langAndValues.stream().map(t -> t.getValue()).collect(Collectors.toList());
 	}
 
 	public String getCertificateDN() {

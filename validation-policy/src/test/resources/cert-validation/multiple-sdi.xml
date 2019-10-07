@@ -42,12 +42,12 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
-                    <TSPName>TSP-4.2 Name</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-203204628</TSPRegistrationIdentifier>
+                    <TSPNames><TSPName lang="en">TSP-4.2 Name</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-203204628</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>FR</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-083B05E17DDB9E83B08F3E1D0EDD4CD01915A8213AE76689205FC36C473E417B">
-                            <ServiceName>TS-4.2.2 Name</ServiceName>
+                            <ServiceNames><ServiceName lang="en">TS-4.2.2 Name</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -56,7 +56,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-083B05E17DDB9E83B08F3E1D0EDD4CD01915A8213AE76689205FC36C473E417B">
-                            <ServiceName>TS-4.2.3 Name</ServiceName>
+                            <ServiceNames><ServiceName lang="en">TS-4.2.3 Name</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -125,12 +125,12 @@
             </QCTypes>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
-                    <TSPName>TSP-4.2 Name</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-203204628</TSPRegistrationIdentifier>
+                    <TSPNames><TSPName lang="en">TSP-4.2 Name</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-203204628</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>FR</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-083B05E17DDB9E83B08F3E1D0EDD4CD01915A8213AE76689205FC36C473E417B">
-                            <ServiceName>TS-4.2.2 Name</ServiceName>
+                            <ServiceNames><ServiceName lang="en">TS-4.2.2 Name</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -142,7 +142,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-083B05E17DDB9E83B08F3E1D0EDD4CD01915A8213AE76689205FC36C473E417B">
-                            <ServiceName>TS-4.2.3 Name</ServiceName>
+                            <ServiceNames><ServiceName lang="en">TS-4.2.3 Name</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -198,7 +198,7 @@
             <WellSigned>true</WellSigned>
         </TrustedList>
     </TrustedLists>
-    <ListOfTrustedLists>
+    <ListOfTrustedLists><TrustedList>
         <CountryCode>EU</CountryCode>
         <Url>http://localhost:8080/qes-validation-web/tl/LOTL-3.xml</Url>
         <SequenceNumber>1</SequenceNumber>
@@ -207,5 +207,5 @@
         <IssueDate>2018-06-26T09:49:13</IssueDate>
         <NextUpdate>2018-07-28T09:49:13</NextUpdate>
         <WellSigned>true</WellSigned>
-    </ListOfTrustedLists>
+    </TrustedList></ListOfTrustedLists>
 </DiagnosticData>

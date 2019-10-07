@@ -49,12 +49,12 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
-                    <TSPName>f a</TSPName>
-                    <TSPRegistrationIdentifier>VATHR-11111111111</TSPRegistrationIdentifier>
+                    <TSPNames><TSPName lang="en">f a</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATHR-11111111111</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>HR</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B">
-                            <ServiceName>f RDC 2015 Digital Certificate Registry - QC</ServiceName>
+                            <ServiceNames><ServiceName lang="en">f RDC 2015 Digital Certificate Registry - QC</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -64,14 +64,14 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B">
-                            <ServiceName>f RDC 2015 Digital Certificate Registry - QC</ServiceName>
+                            <ServiceNames><ServiceName lang="en">f RDC 2015 Digital Certificate Registry - QC</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
                             <StartDate>2015-12-06T23:00:00</StartDate>
                             <EndDate>2016-06-30T22:00:00</EndDate>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B">
-                            <ServiceName>f RDC 2015 Digital Certificate Registry - NQC</ServiceName>
+                            <ServiceNames><ServiceName lang="en">f RDC 2015 Digital Certificate Registry - NQC</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -80,7 +80,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B">
-                            <ServiceName>f RDC 2015 Digital Certificate Registry - NQC</ServiceName>
+                            <ServiceNames><ServiceName lang="en">f RDC 2015 Digital Certificate Registry - NQC</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
                             <StartDate>2015-12-06T23:00:00</StartDate>
@@ -146,12 +146,12 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
-                    <TSPName>f a</TSPName>
-                    <TSPRegistrationIdentifier>VATHR-11111111111</TSPRegistrationIdentifier>
+                    <TSPNames><TSPName lang="en">f a</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATHR-11111111111</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>HR</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B">
-                            <ServiceName>f RDC 2015 Digital Certificate Registry - QC</ServiceName>
+                            <ServiceNames><ServiceName lang="en">f RDC 2015 Digital Certificate Registry - QC</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -167,7 +167,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B">
-                            <ServiceName>f RDC 2015 Digital Certificate Registry - NQC</ServiceName>
+                            <ServiceNames><ServiceName lang="en">f RDC 2015 Digital Certificate Registry - NQC</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -241,12 +241,12 @@
             </QCTypes>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
-                    <TSPName>f a</TSPName>
-                    <TSPRegistrationIdentifier>VATHR-11111111111</TSPRegistrationIdentifier>
+                    <TSPNames><TSPName lang="en">f a</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATHR-11111111111</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>HR</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B">
-                            <ServiceName>f RDC 2015 Digital Certificate Registry - QC</ServiceName>
+                            <ServiceNames><ServiceName lang="en">f RDC 2015 Digital Certificate Registry - QC</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -262,7 +262,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B">
-                            <ServiceName>f RDC 2015 Digital Certificate Registry - NQC</ServiceName>
+                            <ServiceNames><ServiceName lang="en">f RDC 2015 Digital Certificate Registry - NQC</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -319,7 +319,7 @@
             <WellSigned>true</WellSigned>
         </TrustedList>
     </TrustedLists>
-    <ListOfTrustedLists>
+    <ListOfTrustedLists><TrustedList>
         <CountryCode>EU</CountryCode>
         <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
         <SequenceNumber>210</SequenceNumber>
@@ -328,5 +328,5 @@
         <IssueDate>2018-05-30T06:00:00</IssueDate>
         <NextUpdate>2018-11-30T00:00:00</NextUpdate>
         <WellSigned>true</WellSigned>
-    </ListOfTrustedLists>
+    </TrustedList></ListOfTrustedLists>
 </DiagnosticData>

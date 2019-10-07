@@ -876,8 +876,20 @@
 		<xs:sequence>
 			<xs:element name="LOTLUrl" type="xs:string" minOccurs="0" />
 			<xs:element name="TLUrl" type="xs:string" />
-			<xs:element name="TSPName" type="xs:string" />
-			<xs:element name="TSPRegistrationIdentifier" type="xs:string" />
+			<xs:element name="TSPNames">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="TSPName" type="LangAndValue" minOccurs="1" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="TSPRegistrationIdentifiers">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="TSPRegistrationIdentifier" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
 			<xs:element name="CountryCode" type="xs:string" />
 			
 			<xs:element name="TrustedServices">
@@ -892,7 +904,13 @@
 	
 	<xs:complexType name="TrustedService">
 		<xs:sequence>
-			<xs:element name="ServiceName" type="xs:string" />
+			<xs:element name="ServiceNames">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="ServiceName" type="LangAndValue" minOccurs="1" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
 			<xs:element name="ServiceType" type="xs:string" />
 			<xs:element name="Status" type="xs:string" />
 			<xs:element name="StartDate" type="xs:dateTime" />
@@ -932,5 +950,13 @@
             <xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
+    
+    <xs:complexType name="LangAndValue">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="lang" type="xs:string" use="required" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
 	
 </xs:schema>

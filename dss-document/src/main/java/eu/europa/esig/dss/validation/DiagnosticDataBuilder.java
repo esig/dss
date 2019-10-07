@@ -58,6 +58,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDistinguishedName;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundCertificates;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundRevocations;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundTimestamp;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlLangAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlManifestFile;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificate;
@@ -1701,9 +1702,25 @@ public class DiagnosticDataBuilder {
 		result.setLOTLUrl(trustProperties.getLotlUrl());
 		result.setTLUrl(trustProperties.getTlUrl());
 		TrustServiceProvider tsp = trustProperties.getTrustServiceProvider();
-		result.setTSPName(tsp.getNames());
-		result.setTSPRegistrationIdentifier(tsp.getRegistrationIdentifiers());
+		result.setTSPNames(getLangAndValues(tsp.getNames()));
+		result.setTSPRegistrationIdentifiers(tsp.getRegistrationIdentifiers());
 		return result;
+	}
+
+	private List<XmlLangAndValue> getLangAndValues(Map<String, List<String>> map) {
+		if (Utils.isMapNotEmpty(map)) {
+			List<XmlLangAndValue> result = new ArrayList<XmlLangAndValue>();
+			for (Entry<String, List<String>> entry : map.entrySet()) {
+				for (String value : entry.getValue()) {
+					XmlLangAndValue langAndValue = new XmlLangAndValue();
+					langAndValue.setLang(entry.getKey());
+					langAndValue.setValue(value);
+					result.add(langAndValue);
+				}
+			}
+			return result;
+		}
+		return null;
 	}
 
 	private Map<CertificateToken, List<TrustProperties>> getRelatedTrustServices(CertificateToken certToken) {
@@ -1740,7 +1757,7 @@ public class DiagnosticDataBuilder {
 					XmlTrustedService trustedService = new XmlTrustedService();
 
 					trustedService.setServiceDigitalIdentifier(xmlCerts.get(trustedCert.getDSSIdAsString()));
-					trustedService.setServiceName(serviceInfoStatus.getNames());
+					trustedService.setServiceNames(getLangAndValues(serviceInfoStatus.getNames()));
 					trustedService.setServiceType(serviceInfoStatus.getType());
 					trustedService.setStatus(serviceInfoStatus.getStatus());
 					trustedService.setStartDate(serviceInfoStatus.getStartDate());

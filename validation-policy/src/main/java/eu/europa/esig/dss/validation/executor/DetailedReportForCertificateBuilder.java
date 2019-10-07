@@ -55,7 +55,7 @@ public class DetailedReportForCertificateBuilder extends AbstractDetailedReportB
 		XmlBasicBuildingBlocks basicBuildingBlocks = bbbs.get(certificate.getId());
 
 		CertificateQualificationBlock cqb = new CertificateQualificationBlock(basicBuildingBlocks.getConclusion(), currentTime, certificate,
-				detailedReport.getTLAnalysis(), diagnosticData.getLOTLCountryCode());
+				detailedReport.getTLAnalysis());
 		detailedReport.setCertificate(cqb.execute());
 
 		return detailedReport;

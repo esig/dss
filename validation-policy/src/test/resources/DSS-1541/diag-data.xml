@@ -369,12 +369,12 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
-                    <TSPName>NISZ National Infocommunications Services Company Limited by Shares</TSPName>
-                    <TSPRegistrationIdentifier>VATHU-10585560</TSPRegistrationIdentifier>
+                    <TSPNames><TSPName lang="en">NISZ National Infocommunications Services Company Limited by Shares</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATHU-10585560</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>HU</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888">
-                            <ServiceName>Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/deprecatedatnationallevel</Status>
                             <StartDate>2017-06-30T22:00:00</StartDate>
@@ -387,7 +387,7 @@
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888">
-                            <ServiceName>Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -398,7 +398,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888">
-                            <ServiceName>Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2017-06-30T22:00:00</StartDate>
@@ -411,7 +411,7 @@
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888">
-                            <ServiceName>Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2017-06-16T22:00:00</StartDate>
@@ -422,7 +422,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888">
-                            <ServiceName>Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -432,14 +432,14 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888">
-                            <ServiceName>Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
                             <StartDate>2014-01-22T09:24:19</StartDate>
                             <EndDate>2016-06-30T22:00:00</EndDate>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888">
-                            <ServiceName>Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2017-06-28T22:00:00</StartDate>
@@ -448,7 +448,7 @@
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888">
-                            <ServiceName>Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/TSS-AdESQCandQES</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/deprecatedatnationallevel</Status>
                             <StartDate>2017-06-28T22:00:00</StartDate>
@@ -460,7 +460,7 @@
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888">
-                            <ServiceName>Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/TSS-AdESQCandQES</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -594,12 +594,12 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
-                    <TSPName>Microsec Micro Software Engineering &amp; Consulting Private Company Limited by Shares</TSPName>
-                    <TSPRegistrationIdentifier>VATHU-23584497</TSPRegistrationIdentifier>
+                    <TSPNames><TSPName lang="en">Microsec Micro Software Engineering &amp; Consulting Private Company Limited by Shares</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATHU-23584497</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>HU</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-54D0947A37D535619E6A77C69F4F795563F43B2A59DEC08FEA34C363E5FE6F59">
-                            <ServiceName>Qualified KET e-Szigno CA 2009</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Qualified KET e-Szigno CA 2009</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -613,7 +613,7 @@
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-54D0947A37D535619E6A77C69F4F795563F43B2A59DEC08FEA34C363E5FE6F59">
-                            <ServiceName>Qualified KET e-Szigno CA 2009</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Qualified KET e-Szigno CA 2009</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
                             <StartDate>2010-12-17T10:19:34</StartDate>
@@ -759,12 +759,12 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
-                    <TSPName>Microsec Micro Software Engineering &amp; Consulting Private Company Limited by Shares</TSPName>
-                    <TSPRegistrationIdentifier>VATHU-23584497</TSPRegistrationIdentifier>
+                    <TSPNames><TSPName lang="en">Microsec Micro Software Engineering &amp; Consulting Private Company Limited by Shares</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATHU-23584497</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>HU</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-54D0947A37D535619E6A77C69F4F795563F43B2A59DEC08FEA34C363E5FE6F59">
-                            <ServiceName>Qualified KET e-Szigno CA 2009</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Qualified KET e-Szigno CA 2009</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -777,7 +777,7 @@
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-54D0947A37D535619E6A77C69F4F795563F43B2A59DEC08FEA34C363E5FE6F59">
-                            <ServiceName>Qualified KET e-Szigno CA 2009</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Qualified KET e-Szigno CA 2009</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
                             <StartDate>2010-12-17T10:19:34</StartDate>
@@ -912,12 +912,12 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
-                    <TSPName>NISZ National Infocommunications Services Company Limited by Shares</TSPName>
-                    <TSPRegistrationIdentifier>VATHU-10585560</TSPRegistrationIdentifier>
+                    <TSPNames><TSPName lang="en">NISZ National Infocommunications Services Company Limited by Shares</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATHU-10585560</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>HU</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888">
-                            <ServiceName>Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/deprecatedatnationallevel</Status>
                             <StartDate>2017-06-30T22:00:00</StartDate>
@@ -930,7 +930,7 @@
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888">
-                            <ServiceName>Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -941,7 +941,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888">
-                            <ServiceName>Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2017-06-30T22:00:00</StartDate>
@@ -954,7 +954,7 @@
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888">
-                            <ServiceName>Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2017-06-16T22:00:00</StartDate>
@@ -965,7 +965,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888">
-                            <ServiceName>Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -975,14 +975,14 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888">
-                            <ServiceName>Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
                             <StartDate>2014-01-22T09:24:19</StartDate>
                             <EndDate>2016-06-30T22:00:00</EndDate>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888">
-                            <ServiceName>Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2017-06-28T22:00:00</StartDate>
@@ -991,7 +991,7 @@
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888">
-                            <ServiceName>Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/TSS-AdESQCandQES</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/deprecatedatnationallevel</Status>
                             <StartDate>2017-06-28T22:00:00</StartDate>
@@ -1003,7 +1003,7 @@
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888">
-                            <ServiceName>Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/TSS-AdESQCandQES</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -1186,12 +1186,12 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
-                    <TSPName>NISZ National Infocommunications Services Company Limited by Shares</TSPName>
-                    <TSPRegistrationIdentifier>VATHU-10585560</TSPRegistrationIdentifier>
+                    <TSPNames><TSPName lang="en">NISZ National Infocommunications Services Company Limited by Shares</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATHU-10585560</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>HU</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888">
-                            <ServiceName>Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/deprecatedatnationallevel</Status>
                             <StartDate>2017-06-30T22:00:00</StartDate>
@@ -1204,7 +1204,7 @@
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888">
-                            <ServiceName>Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -1215,7 +1215,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888">
-                            <ServiceName>Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2017-06-30T22:00:00</StartDate>
@@ -1228,7 +1228,7 @@
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888">
-                            <ServiceName>Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2017-06-16T22:00:00</StartDate>
@@ -1239,7 +1239,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888">
-                            <ServiceName>Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -1249,14 +1249,14 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888">
-                            <ServiceName>Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
                             <StartDate>2014-01-22T09:24:19</StartDate>
                             <EndDate>2016-06-30T22:00:00</EndDate>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888">
-                            <ServiceName>Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2017-06-28T22:00:00</StartDate>
@@ -1265,7 +1265,7 @@
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888">
-                            <ServiceName>Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/TSS-AdESQCandQES</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/deprecatedatnationallevel</Status>
                             <StartDate>2017-06-28T22:00:00</StartDate>
@@ -1277,7 +1277,7 @@
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888">
-                            <ServiceName>Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Minősített Tanúsítványkiadó v2 - GOV CA</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/TSS-AdESQCandQES</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -1289,12 +1289,12 @@
                     </TrustedServices>
                 </TrustedServiceProvider>
                 <TrustedServiceProvider>
-                    <TSPName>NISZ National Infocommunications Services Company Limited by Shares</TSPName>
-                    <TSPRegistrationIdentifier>VATHU-10585560</TSPRegistrationIdentifier>
+                    <TSPNames><TSPName lang="en">NISZ National Infocommunications Services Company Limited by Shares</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATHU-10585560</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>HU</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-63B45C03C2863E3F872257E550D52333D2B8EBC855B61B9354FDACCB2E048FE0">
-                            <ServiceName>Qualified Time Stamp Service TSS 2014 01</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Qualified Time Stamp Service TSS 2014 01</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -1303,7 +1303,7 @@
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-63B45C03C2863E3F872257E550D52333D2B8EBC855B61B9354FDACCB2E048FE0">
-                            <ServiceName>Qualified Time Stamp Service TSS 2014 01</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Qualified Time Stamp Service TSS 2014 01</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
                             <StartDate>2014-01-28T09:50:20</StartDate>
@@ -1378,12 +1378,12 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
-                    <TSPName>Microsec Micro Software Engineering &amp; Consulting Private Company Limited by Shares</TSPName>
-                    <TSPRegistrationIdentifier>VATHU-23584497</TSPRegistrationIdentifier>
+                    <TSPNames><TSPName lang="en">Microsec Micro Software Engineering &amp; Consulting Private Company Limited by Shares</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATHU-23584497</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>HU</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-54D0947A37D535619E6A77C69F4F795563F43B2A59DEC08FEA34C363E5FE6F59">
-                            <ServiceName>Qualified KET e-Szigno CA 2009</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Qualified KET e-Szigno CA 2009</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -1396,7 +1396,7 @@
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-54D0947A37D535619E6A77C69F4F795563F43B2A59DEC08FEA34C363E5FE6F59">
-                            <ServiceName>Qualified KET e-Szigno CA 2009</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Qualified KET e-Szigno CA 2009</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
                             <StartDate>2010-12-17T10:19:34</StartDate>
@@ -1472,12 +1472,12 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
-                    <TSPName>Microsec Micro Software Engineering &amp; Consulting Private Company Limited by Shares</TSPName>
-                    <TSPRegistrationIdentifier>VATHU-23584497</TSPRegistrationIdentifier>
+                    <TSPNames><TSPName lang="en">Microsec Micro Software Engineering &amp; Consulting Private Company Limited by Shares</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATHU-23584497</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>HU</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-5545519684DE6C87875326D985DF0334575B74BB18E9D2603D459AC889BA1991">
-                            <ServiceName>Qualified e-Szigno TSA 2014 03</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Qualified e-Szigno TSA 2014 03</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-12-20T23:00:00</StartDate>
@@ -1487,14 +1487,14 @@
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-5545519684DE6C87875326D985DF0334575B74BB18E9D2603D459AC889BA1991">
-                            <ServiceName>Qualified e-Szigno TSA 2014 03</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Qualified e-Szigno TSA 2014 03</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <EndDate>2016-12-20T23:00:00</EndDate>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-5545519684DE6C87875326D985DF0334575B74BB18E9D2603D459AC889BA1991">
-                            <ServiceName>Qualified e-Szigno TSA 2014 03</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Qualified e-Szigno TSA 2014 03</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
                             <StartDate>2014-02-07T18:00:00</StartDate>
@@ -1519,7 +1519,7 @@
             <WellSigned>true</WellSigned>
         </TrustedList>
     </TrustedLists>
-    <ListOfTrustedLists>
+    <ListOfTrustedLists><TrustedList>
         <CountryCode>EU</CountryCode>
         <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
         <SequenceNumber>228</SequenceNumber>
@@ -1528,5 +1528,5 @@
         <IssueDate>2019-01-09T07:40:00</IssueDate>
         <NextUpdate>2019-07-08T00:00:00</NextUpdate>
         <WellSigned>true</WellSigned>
-    </ListOfTrustedLists>
+    </TrustedList></ListOfTrustedLists>
 </DiagnosticData>
