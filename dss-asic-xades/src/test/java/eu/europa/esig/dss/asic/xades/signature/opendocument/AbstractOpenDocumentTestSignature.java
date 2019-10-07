@@ -20,9 +20,8 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.opendocument;
 
-import static org.hamcrest.CoreMatchers.hasItems;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -116,8 +115,8 @@ public abstract class AbstractOpenDocumentTestSignature extends AbstractPkiFacto
 		List<String> fileDigests = getSignedFilesDigests(extractSigned.getSignedDocuments());
 
 		for(DSSDocument doc : extractOriginal.getSignedDocuments()) {
-			assertThat(fileNames, hasItems(doc.getName()));
-			assertThat(fileDigests, hasItems(doc.getDigest(DigestAlgorithm.SHA256)));
+			assertTrue(fileNames.contains(doc.getName()));
+			assertTrue(fileDigests.contains(doc.getDigest(DigestAlgorithm.SHA256)));
 		}	
 		
 		verifySignatureFileName(extractSigned.getSignatureDocuments());

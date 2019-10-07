@@ -67,6 +67,7 @@ public class ASiCEWithCAdESManifestParser {
 		manifest.setDocument(manifestDocument);
 		manifest.setSignatureFilename(getLinkedSignatureName(root));
 		manifest.setEntries(parseManifestEntries(root));
+		manifest.setTimestampManifest(isTimestampAssociatedManifest(root));
 		manifest.setArchiveManifest(ASiCUtils.isArchiveManifest(manifestDocument.getName()));
 		return manifest;
 	}
@@ -104,9 +105,9 @@ public class ASiCEWithCAdESManifestParser {
 		return DomUtils.getValue(root, ASiCNamespace.SIG_REFERENCE_URI);
 	}
 	
-	private static MimeType getMimeType(Element dataObjectReference) {
+	private static MimeType getMimeType(Element element) {
 		try {
-			return MimeType.fromMimeTypeString(dataObjectReference.getAttribute(ASiCNamespace.DATA_OBJECT_REFERENCE_MIMETYPE));
+			return MimeType.fromMimeTypeString(element.getAttribute(ASiCNamespace.MIMETYPE_ATTRIBUTE));
 		} catch (DSSException e) {
 			LOG.warn("Cannot extract MimeType for a reference. Reason : [{}]", e.getMessage());
 			return null;
@@ -135,6 +136,15 @@ public class ASiCEWithCAdESManifestParser {
 			}
 		}
 		return null;
+	}
+	
+	private static boolean isTimestampAssociatedManifest(Element root) {
+		Element sigReference = DomUtils.getElement(root, ASiCNamespace.SIG_REFERENCE);
+		if (sigReference != null) {
+			MimeType mimeType = getMimeType(sigReference);
+			return mimeType != null && MimeType.TST == mimeType;
+		}
+		return false;
 	}
 
 	private static List<ManifestEntry> parseManifestEntries(Element root) {

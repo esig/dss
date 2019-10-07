@@ -38,7 +38,7 @@ public abstract class AbstractManifestBuilder {
 	protected void addSigReference(final Document documentDom, final Element asicManifestDom, String uri, MimeType mimeType) {
 		final Element sigReferenceDom = DomUtils.addElement(documentDom, asicManifestDom, ASiCNamespace.ASIC_NS, ASiCNamespace.SIG_REFERENCE);
 		sigReferenceDom.setAttribute(ASiCNamespace.DATA_OBJECT_REFERENCE_URI, uri);
-		sigReferenceDom.setAttribute(ASiCNamespace.DATA_OBJECT_REFERENCE_MIMETYPE, mimeType.getMimeTypeString());
+		sigReferenceDom.setAttribute(ASiCNamespace.MIMETYPE_ATTRIBUTE, mimeType.getMimeTypeString());
 	}
 
 	protected Element addDataObjectReference(final Document documentDom, final Element asicManifestDom, DSSDocument document, DigestAlgorithm digestAlgorithm) {
@@ -49,7 +49,7 @@ public abstract class AbstractManifestBuilder {
 
 		MimeType mimeType = document.getMimeType();
 		if (mimeType != null) {
-			dataObjectReferenceDom.setAttribute(ASiCNamespace.DATA_OBJECT_REFERENCE_MIMETYPE, mimeType.getMimeTypeString());
+			dataObjectReferenceDom.setAttribute(ASiCNamespace.MIMETYPE_ATTRIBUTE, mimeType.getMimeTypeString());
 		}
 
 		final Element digestMethodDom = DomUtils.addElement(documentDom, dataObjectReferenceDom, XMLSignature.XMLNS, ASiCNamespace.DIGEST_METHOD);

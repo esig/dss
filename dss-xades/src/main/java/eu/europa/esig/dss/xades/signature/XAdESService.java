@@ -153,8 +153,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 			}
 			final DSSDocument dssExtendedDocument = extension.extendSignatures(signedDoc, parameters);
 			// The deterministic id is reset between two consecutive signing operations. It prevents having two
-			// signatures with the same Id within the
-			// same document.
+			// signatures with the same Id within the same document.
 			parameters.reinitDeterministicId();
 			dssExtendedDocument.setName(getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
 			return dssExtendedDocument;

@@ -67,9 +67,10 @@ public class CAdESDoubleSignatureTest extends PKIFactoryAccess {
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
+		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 
-		CAdESService service = new CAdESService(getOfflineCertificateVerifier());
+		CAdESService service = new CAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getGoodTsa());
 
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
@@ -79,9 +80,10 @@ public class CAdESDoubleSignatureTest extends PKIFactoryAccess {
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
+		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 
-		service = new CAdESService(getOfflineCertificateVerifier());
+		service = new CAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getGoodTsa());
 
 		dataToSign = service.getDataToSign(signedDocument, signatureParameters);
 		signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
@@ -99,6 +101,8 @@ public class CAdESDoubleSignatureTest extends PKIFactoryAccess {
 		for (String id : diagnosticData.getSignatureIdList()) {
 			assertTrue(diagnosticData.isBLevelTechnicallyValid(id));
 		}
+		
+		assertEquals(4, diagnosticData.getTimestampList().size());
 		
 		SignatureWrapper signatureOne = diagnosticData.getSignatures().get(0);
 		SignatureWrapper signatureTwo = diagnosticData.getSignatures().get(1);

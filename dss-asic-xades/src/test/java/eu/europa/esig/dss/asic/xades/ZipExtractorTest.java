@@ -20,10 +20,11 @@
  */
 package eu.europa.esig.dss.asic.xades;
 
-import static org.hamcrest.CoreMatchers.hasItems;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -46,8 +47,9 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.utils.Utils;
 
-public class ZipExtractorTest extends PKIFactoryAccess{
+public class ZipExtractorTest extends PKIFactoryAccess {
 	
 	private DSSDocument openDocument;
 	private DSSDocument zipArchive;
@@ -66,16 +68,15 @@ public class ZipExtractorTest extends PKIFactoryAccess{
 		
 		assertNotNull(extract);
 		
-		assertNotNull(extract.getManifestFiles());
-		assertNotNull(extract.getManifestDocuments());
+		assertTrue(Utils.isCollectionNotEmpty(extract.getManifestDocuments()));
 		assertEquals(1, extract.getManifestDocuments().size());
 
-		assertNotNull(extract.getContainerDocuments());
+		assertFalse(Utils.isCollectionNotEmpty(extract.getContainerDocuments()));
 		assertNotNull(extract.getMimeTypeDocument());
 		assertNotNull(extract.getRootContainer());
 
-		assertNotNull(extract.getSignatureDocuments());
-		assertNotNull(extract.getSignedDocuments());
+		assertFalse(Utils.isCollectionNotEmpty(extract.getSignatureDocuments()));
+		assertTrue(Utils.isCollectionNotEmpty(extract.getSignedDocuments()));
 		assertEquals(12, extract.getSignedDocuments().size());
 	}
 	
@@ -86,17 +87,16 @@ public class ZipExtractorTest extends PKIFactoryAccess{
 		
 		assertNotNull(extract);
 		
-		assertNotNull(extract.getManifestFiles());
-		assertNotNull(extract.getManifestDocuments());
+		assertFalse(Utils.isCollectionNotEmpty(extract.getManifestDocuments()));
 		assertEquals(0, extract.getManifestDocuments().size());
 
-		assertNotNull(extract.getContainerDocuments());
-		assertEquals(null, extract.getMimeTypeDocument());
+		assertFalse(Utils.isCollectionNotEmpty(extract.getContainerDocuments()));
+		assertNull(extract.getMimeTypeDocument());
 		assertNotNull(extract.getRootContainer());
 
-		assertNotNull(extract.getSignatureDocuments());
+		assertFalse(Utils.isCollectionNotEmpty(extract.getSignatureDocuments()));
 		assertEquals(0, extract.getSignatureDocuments().size());
-		assertNotNull(extract.getSignedDocuments());
+		assertTrue(Utils.isCollectionNotEmpty(extract.getSignedDocuments()));
 		assertEquals(1, extract.getSignedDocuments().size());
 	}
 	
@@ -108,11 +108,10 @@ public class ZipExtractorTest extends PKIFactoryAccess{
 		
 		assertNotNull(extract);
 		
-		assertNotNull(extract.getManifestFiles());
-		assertNotNull(extract.getManifestDocuments());
+		assertTrue(Utils.isCollectionNotEmpty(extract.getManifestDocuments()));
 		assertEquals(1, extract.getManifestDocuments().size());
 
-		assertNotNull(extract.getContainerDocuments());
+		assertFalse(Utils.isCollectionNotEmpty(extract.getContainerDocuments()));
 	
 		assertNotNull(extract.getMimeTypeDocument());
 		MimeType mimeType = ASiCUtils.getMimeType(extract.getMimeTypeDocument());
@@ -120,9 +119,9 @@ public class ZipExtractorTest extends PKIFactoryAccess{
 		
 		assertNotNull(extract.getRootContainer());
 		
-		assertNotNull(extract.getSignatureDocuments());
+		assertTrue(Utils.isCollectionNotEmpty(extract.getSignatureDocuments()));
 		assertEquals(1, extract.getSignatureDocuments().size());
-		assertNotNull(extract.getSignedDocuments());
+		assertTrue(Utils.isCollectionNotEmpty(extract.getSignedDocuments()));
 		assertEquals(1, extract.getSignedDocuments().size());
 		
 		assertEquals("test.zip", extract.getSignedDocuments().get(0).getName());		
@@ -136,11 +135,10 @@ public class ZipExtractorTest extends PKIFactoryAccess{
 		
 		assertNotNull(extract);
 		
-		assertNotNull(extract.getManifestFiles());
-		assertNotNull(extract.getManifestDocuments());
+		assertTrue(Utils.isCollectionNotEmpty(extract.getManifestDocuments()));
 		assertEquals(1, extract.getManifestDocuments().size());
 
-		assertNotNull(extract.getContainerDocuments());
+		assertFalse(Utils.isCollectionNotEmpty(extract.getContainerDocuments()));
 	
 		assertNotNull(extract.getMimeTypeDocument());
 		MimeType mimeType = ASiCUtils.getMimeType(extract.getMimeTypeDocument());
@@ -148,9 +146,9 @@ public class ZipExtractorTest extends PKIFactoryAccess{
 		
 		assertNotNull(extract.getRootContainer());
 		
-		assertNotNull(extract.getSignatureDocuments());
+		assertTrue(Utils.isCollectionNotEmpty(extract.getSignatureDocuments()));
 		assertEquals(1, extract.getSignatureDocuments().size());
-		assertNotNull(extract.getSignedDocuments());
+		assertTrue(Utils.isCollectionNotEmpty(extract.getSignedDocuments()));
 		assertEquals(12, extract.getSignedDocuments().size());
 		
 		checkDocuments(openDocument, document);
@@ -196,15 +194,15 @@ public class ZipExtractorTest extends PKIFactoryAccess{
 		List<String> fileNames = getSignedFilesNames(extractSigned.getSignedDocuments());		
 		List<String> fileDigests = getSignedFilesDigests(extractSigned.getSignedDocuments());
 
-		for(DSSDocument doc : extractOriginal.getSignedDocuments()) {
-			assertThat(fileNames, hasItems(doc.getName()));
-			assertThat(fileDigests, hasItems(doc.getDigest(DigestAlgorithm.SHA256)));
+		for (DSSDocument doc : extractOriginal.getSignedDocuments()) {
+			assertTrue(fileNames.contains(doc.getName()));
+			assertTrue(fileDigests.contains(doc.getDigest(DigestAlgorithm.SHA256)));
 		}	
 	}
 	
 	private List<String> getSignedFilesNames(List<DSSDocument> files) {
 		List<String> fileNames = new ArrayList<String>();
-		for(DSSDocument doc: files) {
+		for (DSSDocument doc: files) {
 			fileNames.add(doc.getName());
 		}
 		return fileNames;
@@ -212,7 +210,7 @@ public class ZipExtractorTest extends PKIFactoryAccess{
 	
 	private List<String> getSignedFilesDigests(List<DSSDocument> files) {
 		List<String> fileDigests = new ArrayList<String>();
-		for(DSSDocument doc: files) {
+		for (DSSDocument doc: files) {
 			fileDigests.add(doc.getDigest(DigestAlgorithm.SHA256));
 		}
 		return fileDigests;

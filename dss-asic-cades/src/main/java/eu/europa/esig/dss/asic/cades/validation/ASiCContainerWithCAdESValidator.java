@@ -97,7 +97,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 		List<DSSDocument> archiveContents = super.getArchiveDocuments();
 		// in case of Manifest file (ASiC-E CAdES signature) add signed documents
 		if (Utils.isCollectionNotEmpty(getManifestDocuments())) {
-			for (DSSDocument document : getSignedDocuments()) {
+			for (DSSDocument document : getAllDocuments()) {
 				if (!archiveContents.contains(document)) {
 					archiveContents.add(document);
 				}
@@ -169,7 +169,8 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	private List<ASiCEWithCAdESTimestampValidator> getTimestampValidators() {
 		List<ASiCEWithCAdESTimestampValidator> timestampValidators = new ArrayList<ASiCEWithCAdESTimestampValidator>();
 		for (final DSSDocument timestamp : getTimestampDocuments()) {
-			DSSDocument archiveManifest = ASiCEWithCAdESManifestParser.getLinkedManifest(getArchiveManifestDocuments(), timestamp.getName());
+			// timestamp's manifest can be a simple ASiCManifest as well as ASiCArchiveManifest file
+			DSSDocument archiveManifest = ASiCEWithCAdESManifestParser.getLinkedManifest(getAllManifestDocuments(), timestamp.getName());
 			if (archiveManifest != null) {
 				ManifestFile manifestContent = ASiCEWithCAdESManifestParser.getManifestFile(archiveManifest);
 				ASiCEWithCAdESTimestampValidator timestampValidator = new ASiCEWithCAdESTimestampValidator(timestamp, TimestampType.ARCHIVE_TIMESTAMP,
@@ -187,7 +188,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	private List<DSSDocument> getSignedDocuments(DSSDocument signature) {
 		ASiCContainerType type = getContainerType();
 		if (ASiCContainerType.ASiC_S.equals(type)) {
-			return getSignedDocuments(); // Collection size should be equals 1
+			return getSignedDocuments(); // Collection size should be equal 1
 		} else if (ASiCContainerType.ASiC_E.equals(type)) {
 			// the manifest file is signed
 			// we need first to check the manifest file and its digests
@@ -199,7 +200,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 			}
 		} else {
 			LOG.warn("Unknown asic container type (returns all signed documents)");
-			return getSignedDocuments();
+			return getAllDocuments();
 		}
 	}
 
@@ -210,7 +211,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 		for (DSSDocument manifestDocument : manifestDocuments) {
 			ManifestFile manifestFile = ASiCEWithCAdESManifestParser.getManifestFile(manifestDocument);
 			if (manifestFile != null) {
-				ASiCEWithCAdESManifestValidator asiceWithCAdESManifestValidator = new ASiCEWithCAdESManifestValidator(manifestFile, getSignedDocuments());
+				ASiCEWithCAdESManifestValidator asiceWithCAdESManifestValidator = new ASiCEWithCAdESManifestValidator(manifestFile, getAllDocuments());
 				asiceWithCAdESManifestValidator.validateEntries();
 				descriptions.add(manifestFile);
 			}
@@ -221,7 +222,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 			ManifestFile manifestFile = ASiCEWithCAdESManifestParser.getManifestFile(manifestDocument);
 			if (manifestFile != null) {
 				manifestFile.setArchiveManifest(true);
-				ASiCEWithCAdESManifestValidator asiceWithCAdESManifestValidator = new ASiCEWithCAdESManifestValidator(manifestFile, getSignedDocuments());
+				ASiCEWithCAdESManifestValidator asiceWithCAdESManifestValidator = new ASiCEWithCAdESManifestValidator(manifestFile, getAllDocuments());
 				asiceWithCAdESManifestValidator.validateEntries();
 				descriptions.add(manifestFile);
 			}
@@ -253,7 +254,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 			}
 			ManifestFile manifestFile = ASiCEWithCAdESManifestParser.getManifestFile(linkedManifest);
 			List<ManifestEntry> entries = manifestFile.getEntries();
-			List<DSSDocument> signedDocuments = getSignedDocuments();
+			List<DSSDocument> signedDocuments = getAllDocuments();
 			
 			List<DSSDocument> result = new ArrayList<DSSDocument>();
 			for (ManifestEntry entry : entries) {

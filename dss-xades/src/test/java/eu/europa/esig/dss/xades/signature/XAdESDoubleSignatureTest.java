@@ -53,9 +53,10 @@ public class XAdESDoubleSignatureTest extends PKIFactoryAccess {
 		DSSDocument toBeSigned = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getGoodTsa());
 
 		XAdESSignatureParameters params = new XAdESSignatureParameters();
-		params.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+		params.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
 		params.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		params.setSigningCertificate(getSigningCert());
 
@@ -64,14 +65,14 @@ public class XAdESDoubleSignatureTest extends PKIFactoryAccess {
 		DSSDocument signedDocument = service.signDocument(toBeSigned, params, signatureValue);
 
 		params = new XAdESSignatureParameters();
-		params.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+		params.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
 		params.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		params.setSigningCertificate(getSigningCert());
 
 		dataToSign = service.getDataToSign(signedDocument, params);
 		signatureValue = getToken().sign(dataToSign, params.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument doubleSignedDocument = service.signDocument(signedDocument, params, signatureValue);
-//		doubleSignedDocument.save("target/" + "doubleSignedTest.xml");
+		// doubleSignedDocument.save("target/" + "doubleSignedTest.xml");
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doubleSignedDocument);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
@@ -84,6 +85,8 @@ public class XAdESDoubleSignatureTest extends PKIFactoryAccess {
 		for (String signatureId : signatureIdList) {
 			assertTrue(diagnosticData.isBLevelTechnicallyValid(signatureId));
 		}
+		
+		assertEquals(4, diagnosticData.getTimestampList().size());
 
 		assertFalse(DSSXMLUtils.isDuplicateIdsDetected(doubleSignedDocument));
 		

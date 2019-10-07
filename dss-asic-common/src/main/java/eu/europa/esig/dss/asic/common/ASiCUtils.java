@@ -27,6 +27,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -38,6 +39,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 public final class ASiCUtils {
@@ -49,6 +51,7 @@ public final class ASiCUtils {
 	public static final String META_INF_FOLDER = "META-INF/";
 	public static final String PACKAGE_ZIP = "package.zip";
 	public static final String ZIP_ENTRY_DETACHED_FILE = "detached-file";
+	public static final String XML_EXTENSION = ".xml";
 
     /**
      * Minimum file size to be analized on zip bombing
@@ -360,6 +363,67 @@ public final class ASiCUtils {
 		} catch (IOException e) {
 			throw new DSSException("Unable to close entry", e);
 		}
+	}
+	
+	/**
+	 * Generates an unique name for a new ASiC-E Manifest file, avoiding any name collision
+	 * @param expectedManifestName {@link String} defines the expected name of the file without extension (e.g. "ASiCmanifest")
+	 * @param existingManifests list of existing {@link DSSDocument} manifests of the type present in the container
+	 * @return {@link String} new manifest name
+	 */
+	public static String getNextASiCEManifestName(final String expectedManifestName, final List<DSSDocument> existingManifests) {
+		List<String> manifestNames = getDSSDocumentNames(existingManifests);
+		
+		String manifestName = null;
+		for (int i = 0; i < existingManifests.size() + 1; i++) {
+			String suffix = i == 0 ? Utils.EMPTY_STRING : String.valueOf(i);
+			manifestName = META_INF_FOLDER + expectedManifestName + suffix + XML_EXTENSION;
+			if (isValidName(manifestName, manifestNames)) {
+				break;
+			}
+		}
+		return manifestName;
+	}
+	
+	/**
+	 * Returns a list of document names
+	 * @param documents list of {@link DSSDocument}s to get file names
+	 * @return list of {@link String} document names
+	 */
+	public static List<String> getDSSDocumentNames(List<DSSDocument> documents) {
+		return documents.stream().map(DSSDocument::getName).collect(Collectors.toList());
+	}
+	
+	private static boolean isValidName(final String name, final List<String> notValidNames) {
+		return !notValidNames.contains(name);
+	}
+	
+	/**
+	 * Checks if the current document an ASiC-E ZIP specific archive
+	 * @param document {@link DSSDocument} to check
+	 * @return TRUE if the document if a "package.zip" archive, FALSE otherwise
+	 */
+	public static boolean isASiCSArchive(DSSDocument document) {
+		return Utils.areStringsEqual(PACKAGE_ZIP, document.getName());
+	}
+
+	/**
+	 * Returns a content of the packageZip container
+	 * @param packageZip {@link DSSDocument} ZIP container to get entries from
+	 * @return list of {@link DSSDocument}s
+	 */
+	public static List<DSSDocument> getPackageZipContent(DSSDocument packageZip) {
+		List<DSSDocument> result = new ArrayList<DSSDocument>();
+		long containerSize = DSSUtils.getFileByteSize(packageZip);
+		try (InputStream is = packageZip.openStream(); ZipInputStream packageZipInputStream = new ZipInputStream(is)) {
+			ZipEntry entry;
+			while ((entry = ASiCUtils.getNextValidEntry(packageZipInputStream)) != null) {
+				result.add(ASiCUtils.getCurrentDocument(entry.getName(), packageZipInputStream, containerSize));
+			}
+		} catch (IOException e) {
+			throw new DSSException("Unable to extract package.zip", e);
+		}
+		return result;
 	}
 
 }

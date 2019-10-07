@@ -51,12 +51,11 @@ public class ASiCWithCAdESDataToSignHelperBuilder {
 			}
 
 			ASiCWithCAdESContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(archiveDoc);
-			ASiCExtractResult extract = extractor.extract();
+			ASiCExtractResult result = extractor.extract();
 			if (asice) {
-				return new DataToSignASiCEWithCAdESFromArchive(extract.getSignedDocuments(), extract.getSignatureDocuments(), extract.getManifestDocuments(),
-						parameters);
+				return new DataToSignASiCEWithCAdESFromArchive(result, parameters);
 			} else {
-				return new DataToSignASiCSWithCAdESFromArchive(extract.getSignatureDocuments(), extract.getSignedDocuments(), parameters.aSiC());
+				return new DataToSignASiCSWithCAdESFromArchive(result, parameters.aSiC());
 			}
 		} else {
 			if (asice) {

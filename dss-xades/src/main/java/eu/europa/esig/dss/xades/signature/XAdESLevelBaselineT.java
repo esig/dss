@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.xades.signature;
 
 import static eu.europa.esig.dss.enumerations.SignatureLevel.XAdES_BASELINE_T;
-import static eu.europa.esig.dss.enumerations.SignaturePackaging.ENVELOPED;
 import static eu.europa.esig.dss.xades.ProfileParameters.Operation.SIGNING;
 import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
 
@@ -41,7 +40,6 @@ import org.w3c.dom.NodeList;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -119,12 +117,12 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		// In the case of the enveloped signature we have a specific treatment:<br>
 		// we will just extend the signature that is being created (during creation process)
 		String signatureId = null;
-		final SignaturePackaging signaturePackaging = params.getSignaturePackaging();
+		
 		final Operation operationKind = context.getOperationKind();
-		if (SIGNING.equals(operationKind) && ENVELOPED.equals(signaturePackaging)) {
-
+		if (SIGNING.equals(operationKind)) {
 			signatureId = params.getDeterministicId();
 		}
+		
 		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
 
 			currentSignatureDom = (Element) signatureNodeList.item(ii);
