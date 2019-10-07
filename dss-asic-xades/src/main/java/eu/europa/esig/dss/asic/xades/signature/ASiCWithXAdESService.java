@@ -133,7 +133,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 			if (openDocument) {
 				xadesParameters.setDetachedContents(OpenDocumentSupportUtils.getOpenDocumentCoverage(archiveContent));
 			} else {
-				xadesParameters.setDetachedContents(getEmbeddedOriginalDocuments());
+				xadesParameters.setDetachedContents(getEmbeddedSignedDocuments());
 			}
 			DSSDocument extendDocument = getXAdESService().extendDocument(signature, xadesParameters);
 			extendDocument.setName(signature.getName());

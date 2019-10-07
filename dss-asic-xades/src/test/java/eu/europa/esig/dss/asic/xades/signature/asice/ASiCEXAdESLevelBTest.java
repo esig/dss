@@ -91,7 +91,7 @@ public class ASiCEXAdESLevelBTest extends AbstractASiCEXAdESTestSignature {
 		assertEquals(1, manifestDocuments.size());
 		assertEquals("META-INF/manifest.xml", manifestDocuments.get(0).getName());
 
-		List<DSSDocument> signedDocuments = extract.getOriginalDocuments();
+		List<DSSDocument> signedDocuments = extract.getSignedDocuments();
 		assertEquals(1, signedDocuments.size());
 		assertEquals("test.text", signedDocuments.get(0).getName());
 

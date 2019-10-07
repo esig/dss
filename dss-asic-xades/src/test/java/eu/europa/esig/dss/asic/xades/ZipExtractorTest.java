@@ -20,13 +20,11 @@
  */
 package eu.europa.esig.dss.asic.xades;
 
-import static org.hamcrest.CoreMatchers.hasItems;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -51,7 +49,7 @@ import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 
-public class ZipExtractorTest extends PKIFactoryAccess{
+public class ZipExtractorTest extends PKIFactoryAccess {
 	
 	private DSSDocument openDocument;
 	private DSSDocument zipArchive;
@@ -78,8 +76,8 @@ public class ZipExtractorTest extends PKIFactoryAccess{
 		assertNotNull(extract.getRootContainer());
 
 		assertFalse(Utils.isCollectionNotEmpty(extract.getSignatureDocuments()));
-		assertTrue(Utils.isCollectionNotEmpty(extract.getOriginalDocuments()));
-		assertEquals(12, extract.getOriginalDocuments().size());
+		assertTrue(Utils.isCollectionNotEmpty(extract.getSignedDocuments()));
+		assertEquals(12, extract.getSignedDocuments().size());
 	}
 	
 	@Test
@@ -98,8 +96,8 @@ public class ZipExtractorTest extends PKIFactoryAccess{
 
 		assertFalse(Utils.isCollectionNotEmpty(extract.getSignatureDocuments()));
 		assertEquals(0, extract.getSignatureDocuments().size());
-		assertTrue(Utils.isCollectionNotEmpty(extract.getOriginalDocuments()));
-		assertEquals(1, extract.getOriginalDocuments().size());
+		assertTrue(Utils.isCollectionNotEmpty(extract.getSignedDocuments()));
+		assertEquals(1, extract.getSignedDocuments().size());
 	}
 	
 	@Test
@@ -123,10 +121,10 @@ public class ZipExtractorTest extends PKIFactoryAccess{
 		
 		assertTrue(Utils.isCollectionNotEmpty(extract.getSignatureDocuments()));
 		assertEquals(1, extract.getSignatureDocuments().size());
-		assertTrue(Utils.isCollectionNotEmpty(extract.getOriginalDocuments()));
-		assertEquals(1, extract.getOriginalDocuments().size());
+		assertTrue(Utils.isCollectionNotEmpty(extract.getSignedDocuments()));
+		assertEquals(1, extract.getSignedDocuments().size());
 		
-		assertEquals("test.zip", extract.getOriginalDocuments().get(0).getName());		
+		assertEquals("test.zip", extract.getSignedDocuments().get(0).getName());		
 	}
 	
 	@Test
@@ -150,8 +148,8 @@ public class ZipExtractorTest extends PKIFactoryAccess{
 		
 		assertTrue(Utils.isCollectionNotEmpty(extract.getSignatureDocuments()));
 		assertEquals(1, extract.getSignatureDocuments().size());
-		assertTrue(Utils.isCollectionNotEmpty(extract.getOriginalDocuments()));
-		assertEquals(12, extract.getOriginalDocuments().size());
+		assertTrue(Utils.isCollectionNotEmpty(extract.getSignedDocuments()));
+		assertEquals(12, extract.getSignedDocuments().size());
 		
 		checkDocuments(openDocument, document);
 	}
@@ -191,20 +189,20 @@ public class ZipExtractorTest extends PKIFactoryAccess{
 		assertEquals(0, extractOriginal.getSignatureDocuments().size());
 		assertEquals(1, extractSigned.getSignatureDocuments().size());
 		
-		assertEquals(extractOriginal.getOriginalDocuments().size(), extractSigned.getOriginalDocuments().size());
+		assertEquals(extractOriginal.getSignedDocuments().size(), extractSigned.getSignedDocuments().size());
 		
-		List<String> fileNames = getSignedFilesNames(extractSigned.getOriginalDocuments());		
-		List<String> fileDigests = getSignedFilesDigests(extractSigned.getOriginalDocuments());
+		List<String> fileNames = getSignedFilesNames(extractSigned.getSignedDocuments());		
+		List<String> fileDigests = getSignedFilesDigests(extractSigned.getSignedDocuments());
 
-		for(DSSDocument doc : extractOriginal.getOriginalDocuments()) {
-			assertThat(fileNames, hasItems(doc.getName()));
-			assertThat(fileDigests, hasItems(doc.getDigest(DigestAlgorithm.SHA256)));
+		for (DSSDocument doc : extractOriginal.getSignedDocuments()) {
+			assertTrue(fileNames.contains(doc.getName()));
+			assertTrue(fileDigests.contains(doc.getDigest(DigestAlgorithm.SHA256)));
 		}	
 	}
 	
 	private List<String> getSignedFilesNames(List<DSSDocument> files) {
 		List<String> fileNames = new ArrayList<String>();
-		for(DSSDocument doc: files) {
+		for (DSSDocument doc: files) {
 			fileNames.add(doc.getName());
 		}
 		return fileNames;
@@ -212,7 +210,7 @@ public class ZipExtractorTest extends PKIFactoryAccess{
 	
 	private List<String> getSignedFilesDigests(List<DSSDocument> files) {
 		List<String> fileDigests = new ArrayList<String>();
-		for(DSSDocument doc: files) {
+		for (DSSDocument doc: files) {
 			fileDigests.add(doc.getDigest(DigestAlgorithm.SHA256));
 		}
 		return fileDigests;

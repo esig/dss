@@ -24,14 +24,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.validation.ManifestFile;
 
 public class ASiCExtractResult {
 
 	private String zipComment;
 	private DSSDocument mimeTypeDocument;
 	private List<DSSDocument> allDocuments = new ArrayList<DSSDocument>();
-	private List<DSSDocument> originalDocuments = new ArrayList<DSSDocument>(); // signed documents
+	private List<DSSDocument> signedDocuments = new ArrayList<DSSDocument>(); // originally signed documents
 	private List<DSSDocument> signatureDocuments = new ArrayList<DSSDocument>();
 	private List<DSSDocument> manifestDocuments = new ArrayList<DSSDocument>();
 	private List<DSSDocument> archiveManifestDocuments = new ArrayList<DSSDocument>(); // ASiC with CAdES
@@ -96,12 +95,12 @@ public class ASiCExtractResult {
 		this.allDocuments = allDocuments;
 	}
 
-	public List<DSSDocument> getOriginalDocuments() {
-		return originalDocuments;
+	public List<DSSDocument> getSignedDocuments() {
+		return signedDocuments;
 	}
 
-	public void setOriginalDocuments(List<DSSDocument> originalDocuments) {
-		this.originalDocuments = originalDocuments;
+	public void setSignedDocuments(List<DSSDocument> signedDocuments) {
+		this.signedDocuments = signedDocuments;
 	}
 
 	public List<DSSDocument> getUnsupportedDocuments() {
@@ -147,7 +146,7 @@ public class ASiCExtractResult {
 	 */
 	public List<DSSDocument> getTimestampedDocuments(DSSDocument timestamp) {
 		List<DSSDocument> timestampedDocuments = new ArrayList<DSSDocument>();
-		timestampedDocuments.addAll(getOriginalDocuments());
+		timestampedDocuments.addAll(getSignedDocuments());
 		timestampedDocuments.addAll(getManifestDocuments());
 		timestampedDocuments.addAll(getSignatureDocuments());
 		timestampedDocuments.addAll(getArchiveManifestDocuments());

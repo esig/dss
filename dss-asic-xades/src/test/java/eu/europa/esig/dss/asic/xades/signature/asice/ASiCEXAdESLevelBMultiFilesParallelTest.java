@@ -112,7 +112,7 @@ public class ASiCEXAdESLevelBMultiFilesParallelTest extends PKIFactoryAccess {
 		assertEquals(1, manifestDocuments.size());
 		assertEquals("META-INF/manifest.xml", manifestDocuments.get(0).getName());
 
-		List<DSSDocument> signedDocuments = result.getOriginalDocuments();
+		List<DSSDocument> signedDocuments = result.getSignedDocuments();
 		assertEquals(2, signedDocuments.size());
 
 		DSSDocument mimeTypeDocument = result.getMimeTypeDocument();

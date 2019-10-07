@@ -96,7 +96,7 @@ public class ASiCECAdESLevelBTest extends AbstractASiCECAdESTestSignature {
 		assertTrue(manifestFilename.startsWith("META-INF/ASiCManifest"));
 		assertTrue(manifestFilename.endsWith(".xml"));
 
-		List<DSSDocument> signedDocuments = extract.getOriginalDocuments();
+		List<DSSDocument> signedDocuments = extract.getSignedDocuments();
 		assertEquals(1, signedDocuments.size());
 		assertEquals("test.text", signedDocuments.get(0).getName());
 

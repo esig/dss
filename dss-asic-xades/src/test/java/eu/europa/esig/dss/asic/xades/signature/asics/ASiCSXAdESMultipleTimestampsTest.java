@@ -110,7 +110,7 @@ public class ASiCSXAdESMultipleTimestampsTest extends PKIFactoryAccess {
 		List<DSSDocument> manifestDocuments = result.getManifestDocuments();
 		assertEquals(0, manifestDocuments.size());
 
-		List<DSSDocument> signedDocuments = result.getOriginalDocuments();
+		List<DSSDocument> signedDocuments = result.getSignedDocuments();
 		assertEquals(1, signedDocuments.size());
 
 		DSSDocument mimeTypeDocument = result.getMimeTypeDocument();

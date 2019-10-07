@@ -102,7 +102,7 @@ public class OpenDocumentMultipleArchivesLevelLTTest extends AbstractPkiFactoryT
 		assertNotNull(description.getSignatureFilename());
 		assertTrue(Utils.isCollectionNotEmpty(description.getEntries()));
 
-		List<DSSDocument> signedDocuments = extract.getOriginalDocuments();
+		List<DSSDocument> signedDocuments = extract.getSignedDocuments();
 		assertEquals(2, signedDocuments.size());
 
 		DSSDocument mimeTypeDocument = extract.getMimeTypeDocument();

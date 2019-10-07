@@ -188,7 +188,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	private List<DSSDocument> getSignedDocuments(DSSDocument signature) {
 		ASiCContainerType type = getContainerType();
 		if (ASiCContainerType.ASiC_S.equals(type)) {
-			return getOriginalDocuments(); // Collection size should be equal 1
+			return getSignedDocuments(); // Collection size should be equal 1
 		} else if (ASiCContainerType.ASiC_E.equals(type)) {
 			// the manifest file is signed
 			// we need first to check the manifest file and its digests

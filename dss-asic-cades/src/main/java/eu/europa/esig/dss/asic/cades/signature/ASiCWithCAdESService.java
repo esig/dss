@@ -165,7 +165,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		extractCurrentArchive(toExtendDocument);
 		
 		List<DSSDocument> signatureDocuments = getEmbeddedSignatures();
-		List<DSSDocument> originalSignedDocuments = getEmbeddedOriginalDocuments();
+		List<DSSDocument> originalSignedDocuments = getEmbeddedSignedDocuments();
 		DSSDocument mimetype = getEmbeddedMimetype();
 
 		ASiCContainerType containerType = ASiCUtils.getContainerType(toExtendDocument, mimetype, null, originalSignedDocuments);
@@ -189,7 +189,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 
 		if (addASiCArchiveManifest) {
 			extendWithArchiveManifest(getEmbeddedArchiveManifests(), getEmbeddedManifests(), getEmbeddedTimestamps(), 
-					getEmbeddedOriginalDocuments(), extendedDocuments, parameters);
+					getEmbeddedSignedDocuments(), extendedDocuments, parameters);
 			cadesParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 		}
 
@@ -202,7 +202,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	private DSSDocument extendSignatureDocument(DSSDocument signature, CAdESSignatureParameters cadesParameters, ASiCContainerType containerType) {
 
 		List<DSSDocument> manifests = getEmbeddedManifests();
-		List<DSSDocument> originalSignedDocuments = getEmbeddedOriginalDocuments();
+		List<DSSDocument> originalSignedDocuments = getEmbeddedSignedDocuments();
 
 		if (ASiCContainerType.ASiC_E == containerType) {
 			DSSDocument linkedManifest = ASiCEWithCAdESManifestParser.getLinkedManifest(manifests, signature.getName());

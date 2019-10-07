@@ -55,7 +55,7 @@ public class ASiCWithXAdESDataToSignHelperBuilder {
 			
 			boolean openDocument = ASiCUtils.isOpenDocument(extract.getMimeTypeDocument());
 			if (openDocument) {
-				return new DataToSignOpenDocument(extract.getOriginalDocuments(),
+				return new DataToSignOpenDocument(extract.getSignedDocuments(),
 						extract.getSignatureDocuments(), extract.getManifestDocuments(), extract.getMimeTypeDocument(), extract.getRootContainer());
 			} else if (signedAsic) {
 				if (!ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(archiveDoc, ".xml")) {
@@ -63,11 +63,11 @@ public class ASiCWithXAdESDataToSignHelperBuilder {
 				}
 
 				if (asice) {
-					return new DataToSignASiCEWithXAdESFromArchive(extract.getOriginalDocuments(),
+					return new DataToSignASiCEWithXAdESFromArchive(extract.getSignedDocuments(),
 							extract.getSignatureDocuments(), extract.getManifestDocuments(), parameters.aSiC());
 				} else {
 					return new DataToSignASiCSWithXAdESFromArchive(extract.getSignatureDocuments(),
-							extract.getOriginalDocuments(), parameters.aSiC());
+							extract.getSignedDocuments(), parameters.aSiC());
 				}
 			} else {
 				return fromFiles(documents, parameters, bLevel, asice);

@@ -123,7 +123,7 @@ public class ASiCEXAdESMultipleTimestampsTest extends PKIFactoryAccess {
 		assertTrue(manifestFilename.startsWith("META-INF/manifest"));
 		assertTrue(manifestFilename.endsWith(".xml"));
 
-		List<DSSDocument> signedDocuments = result.getOriginalDocuments();
+		List<DSSDocument> signedDocuments = result.getSignedDocuments();
 		assertEquals(2, signedDocuments.size());
 
 		DSSDocument mimeTypeDocument = result.getMimeTypeDocument();

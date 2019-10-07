@@ -75,6 +75,7 @@ public class OpenDocumentMultipleArchivesLevelLTATest extends AbstractPkiFactory
 		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 	}
+	
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
 		InMemoryDocument doc = new InMemoryDocument(byteArray);
@@ -102,7 +103,7 @@ public class OpenDocumentMultipleArchivesLevelLTATest extends AbstractPkiFactory
 		assertNotNull(description.getSignatureFilename());
 		assertTrue(Utils.isCollectionNotEmpty(description.getEntries()));
 
-		List<DSSDocument> signedDocuments = extract.getOriginalDocuments();
+		List<DSSDocument> signedDocuments = extract.getSignedDocuments();
 		assertEquals(2, signedDocuments.size());
 
 		DSSDocument mimeTypeDocument = extract.getMimeTypeDocument();

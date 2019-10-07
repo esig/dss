@@ -40,9 +40,9 @@ public class ASiCECAdESSignLTALevelTest extends PKIFactoryAccess {
 	@Test
 	public void test() throws IOException {
 		
-		List<DSSDocument> documentToSigns = new ArrayList<DSSDocument>();
-		documentToSigns.add(new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT));
-		documentToSigns.add(new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeType.TEXT));
+		List<DSSDocument> documentsToSign = new ArrayList<DSSDocument>();
+		documentsToSign.add(new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT));
+		documentsToSign.add(new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeType.TEXT));
 
 		ASiCWithCAdESSignatureParameters signatureParameters = new ASiCWithCAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
@@ -54,9 +54,9 @@ public class ASiCECAdESSignLTALevelTest extends PKIFactoryAccess {
 		ASiCWithCAdESService service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 
-		ToBeSigned dataToSign = service.getDataToSign(documentToSigns, signatureParameters);
+		ToBeSigned dataToSign = service.getDataToSign(documentsToSign, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
-		DSSDocument signedDocument = service.signDocument(documentToSigns, signatureParameters, signatureValue);
+		DSSDocument signedDocument = service.signDocument(documentsToSign, signatureParameters, signatureValue);
 		
 		DiagnosticData diagnosticData = validateDocument(signedDocument);
 		
@@ -92,7 +92,7 @@ public class ASiCECAdESSignLTALevelTest extends PKIFactoryAccess {
         assertEquals(0, result.getContainerDocuments().size());
         assertEquals(2, result.getManifestDocuments().size());
         assertNotNull(result.getMimeTypeDocument());
-        assertEquals(2, result.getOriginalDocuments().size());
+        assertEquals(2, result.getSignedDocuments().size());
         assertNotNull(result.getRootContainer());
         assertEquals(2, result.getSignatureDocuments().size());
         assertEquals(2, result.getTimestampDocuments().size());

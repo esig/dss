@@ -82,7 +82,7 @@ public class ASiCSCAdESLevelBWithODTFileTest extends AbstractASiCSCAdESTestSigna
 		List<DSSDocument> manifestDocuments = extract.getManifestDocuments();
 		assertEquals(0, manifestDocuments.size());
 
-		List<DSSDocument> signedDocuments = extract.getOriginalDocuments();
+		List<DSSDocument> signedDocuments = extract.getSignedDocuments();
 		assertEquals(1, signedDocuments.size());
 		assertEquals("document.odt", signedDocuments.get(0).getName());
 

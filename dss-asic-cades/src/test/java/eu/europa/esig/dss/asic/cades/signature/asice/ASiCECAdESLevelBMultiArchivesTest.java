@@ -88,7 +88,7 @@ public class ASiCECAdESLevelBMultiArchivesTest extends AbstractPkiFactoryTestMul
 		assertTrue(manifestFilename.startsWith("META-INF/ASiCManifest"));
 		assertTrue(manifestFilename.endsWith(".xml"));
 
-		List<DSSDocument> signedDocuments = extract.getOriginalDocuments();
+		List<DSSDocument> signedDocuments = extract.getSignedDocuments();
 		assertEquals(2, signedDocuments.size());
 
 		DSSDocument mimeTypeDocument = extract.getMimeTypeDocument();

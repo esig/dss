@@ -1,10 +1,10 @@
 package eu.europa.esig.dss.asic.cades.validation;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.List;
 
@@ -105,7 +105,7 @@ public class DSS1792Test extends PKIFactoryAccess {
         	}
         }
         
-        assertEquals(2, result.getOriginalDocuments().size());
+        assertEquals(2, result.getSignedDocuments().size());
 		
 	}
 

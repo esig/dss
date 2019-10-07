@@ -104,7 +104,7 @@ public abstract class AbstractASiCContainerExtractor {
 				if (isMimetype(entryName)) {
 					result.setMimeTypeDocument(currentDocument);
 				} else {
-					result.getOriginalDocuments().add(currentDocument);
+					result.getSignedDocuments().add(currentDocument);
 					if (ASiCUtils.isASiCSArchive(currentDocument)) {
 						result.setContainerDocuments(ASiCUtils.getPackageZipContent(currentDocument));
 					}

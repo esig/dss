@@ -38,7 +38,7 @@ public class DataToSignASiCSWithCAdESFromArchive extends AbstractGetDataToSignAS
 
 	public DataToSignASiCSWithCAdESFromArchive(final ASiCExtractResult result, final ASiCParameters asicParameters) {
 		this.embeddedSignatures = result.getSignatureDocuments();
-		this.embeddedSignedFiles = result.getOriginalDocuments();
+		this.embeddedSignedFiles = result.getSignedDocuments();
 		this.asicParameters = asicParameters;
 	}
 

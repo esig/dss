@@ -102,8 +102,8 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 		return archiveContent.getTimestampDocuments();
 	}
 
-	protected List<DSSDocument> getEmbeddedOriginalDocuments() {
-		return archiveContent.getOriginalDocuments();
+	protected List<DSSDocument> getEmbeddedSignedDocuments() {
+		return archiveContent.getSignedDocuments();
 	}
 
 	protected DSSDocument getEmbeddedMimetype() {

@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.xades.encoding;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.security.KeyPair;
@@ -166,6 +165,6 @@ public class EncodingXMLTest {
 	private void assertCvcSignatureValid(String cvcSignatureInHex) {
 		byte[] signatureValue = DatatypeConverter.parseHexBinary(cvcSignatureInHex);
 		byte[] xmlDSigValue = DSSSignatureUtils.convertToXmlDSig(EncryptionAlgorithm.ECDSA, signatureValue);
-		assertArrayEquals(signatureValue, xmlDSigValue);
+		assertTrue(Arrays.equals(signatureValue, xmlDSigValue));
 	}
 }

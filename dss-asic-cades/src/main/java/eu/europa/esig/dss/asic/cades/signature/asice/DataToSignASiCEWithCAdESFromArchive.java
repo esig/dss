@@ -41,7 +41,7 @@ public class DataToSignASiCEWithCAdESFromArchive extends AbstractDataToSignASiCE
 	private DSSDocument toBeSigned;
 
 	public DataToSignASiCEWithCAdESFromArchive(final ASiCExtractResult extractionResult, final ASiCWithCAdESSignatureParameters parameters) {
-		this.signedDocuments = extractionResult.getOriginalDocuments();
+		this.signedDocuments = extractionResult.getSignedDocuments();
 		this.existingSignatures = extractionResult.getSignatureDocuments();
 		this.existingManifests = extractionResult.getManifestDocuments();
 		this.existingArchiveManifests = extractionResult.getArchiveManifestDocuments();
