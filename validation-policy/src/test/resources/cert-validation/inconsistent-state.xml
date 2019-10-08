@@ -49,6 +49,8 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+                    <LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>https://www.mingo.hr/TLS/TSL-HR.xml</TLUrl>
                     <TSPNames><TSPName lang="en">f a</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATHR-11111111111</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>HR</CountryCode>
@@ -146,6 +148,8 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+                	<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>https://www.mingo.hr/TLS/TSL-HR.xml</TLUrl>
                     <TSPNames><TSPName lang="en">f a</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATHR-11111111111</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>HR</CountryCode>
@@ -241,6 +245,8 @@
             </QCTypes>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+                	<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>https://www.mingo.hr/TLS/TSL-HR.xml</TLUrl>
                     <TSPNames><TSPName lang="en">f a</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATHR-11111111111</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>HR</CountryCode>
@@ -318,15 +324,15 @@
             <NextUpdate>2018-08-22T00:00:00</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
+	    <TrustedList LOTL="true">
+	        <CountryCode>EU</CountryCode>
+	        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
+	        <SequenceNumber>210</SequenceNumber>
+	        <Version>5</Version>
+	        <LastLoading>2018-06-01T10:33:44</LastLoading>
+	        <IssueDate>2018-05-30T06:00:00</IssueDate>
+	        <NextUpdate>2018-11-30T00:00:00</NextUpdate>
+	        <WellSigned>true</WellSigned>
+	    </TrustedList>
     </TrustedLists>
-    <ListOfTrustedLists><TrustedList>
-        <CountryCode>EU</CountryCode>
-        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
-        <SequenceNumber>210</SequenceNumber>
-        <Version>5</Version>
-        <LastLoading>2018-06-01T10:33:44</LastLoading>
-        <IssueDate>2018-05-30T06:00:00</IssueDate>
-        <NextUpdate>2018-11-30T00:00:00</NextUpdate>
-        <WellSigned>true</WellSigned>
-    </TrustedList></ListOfTrustedLists>
 </DiagnosticData>

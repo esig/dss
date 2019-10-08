@@ -44,6 +44,8 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+					<LOTLUrl>http://localhost:8080/qes-validation-web/tl/LOTL-3.xml</LOTLUrl>
+					<TLUrl>http://localhost:8080/qes-validation-web/tl/TL-5.xml</TLUrl>
                     <TSPNames><TSPName lang="en">TSP-5.3 Name</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-200438262</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>IT</CountryCode>
@@ -128,6 +130,8 @@
             </QCTypes>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+					<LOTLUrl>http://localhost:8080/qes-validation-web/tl/LOTL-3.xml</LOTLUrl>
+					<TLUrl>http://localhost:8080/qes-validation-web/tl/TL-5.xml</TLUrl>
                     <TSPNames><TSPName lang="en">TSP-5.3 Name</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-200438262</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>IT</CountryCode>
@@ -204,15 +208,15 @@
             <NextUpdate>2019-01-02T00:00:00</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
+	    <TrustedList LOTL="true">
+	        <CountryCode>EU</CountryCode>
+	        <Url>http://46.101.246.130:8080/esig-validation-tests/tl/LOTL-3.xml</Url>
+	        <SequenceNumber>1</SequenceNumber>
+	        <Version>5</Version>
+	        <LastLoading>2018-12-07T12:12:31</LastLoading>
+	        <IssueDate>2018-12-01T00:00:00</IssueDate>
+	        <NextUpdate>2019-01-02T00:00:00</NextUpdate>
+	        <WellSigned>true</WellSigned>
+	    </TrustedList>
     </TrustedLists>
-    <ListOfTrustedLists><TrustedList>
-        <CountryCode>EU</CountryCode>
-        <Url>http://46.101.246.130:8080/esig-validation-tests/tl/LOTL-3.xml</Url>
-        <SequenceNumber>1</SequenceNumber>
-        <Version>5</Version>
-        <LastLoading>2018-12-07T12:12:31</LastLoading>
-        <IssueDate>2018-12-01T00:00:00</IssueDate>
-        <NextUpdate>2019-01-02T00:00:00</NextUpdate>
-        <WellSigned>true</WellSigned>
-    </TrustedList></ListOfTrustedLists>
 </DiagnosticData>

@@ -359,15 +359,15 @@
          <NextUpdate>2017-12-26T09:00:00</NextUpdate>
          <WellSigned>true</WellSigned>
       </TrustedList>
+	   <TrustedList LOTL="true">
+	      <CountryCode>EC</CountryCode>
+	      <Url>https://hide.eu/esig/TrustedList/EC_R/TSL.xml</Url>
+	      <SequenceNumber>3</SequenceNumber>
+	      <Version>5</Version>
+	      <LastLoading>2018-07-10T15:22:32</LastLoading>
+	      <IssueDate>2017-06-27T09:00:00</IssueDate>
+	      <NextUpdate>2017-12-26T09:00:00</NextUpdate>
+	      <WellSigned>true</WellSigned>
+	   </TrustedList>
    </TrustedLists>
-   <ListOfTrustedLists><TrustedList>
-      <CountryCode>EC</CountryCode>
-      <Url>https://hide.eu/esig/TrustedList/EC_R/TSL.xml</Url>
-      <SequenceNumber>3</SequenceNumber>
-      <Version>5</Version>
-      <LastLoading>2018-07-10T15:22:32</LastLoading>
-      <IssueDate>2017-06-27T09:00:00</IssueDate>
-      <NextUpdate>2017-12-26T09:00:00</NextUpdate>
-      <WellSigned>true</WellSigned>
-   </TrustedList></ListOfTrustedLists>
 </DiagnosticData>

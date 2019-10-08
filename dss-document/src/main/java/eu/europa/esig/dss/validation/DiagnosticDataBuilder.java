@@ -357,7 +357,6 @@ public class DiagnosticDataBuilder {
 				TrustedListsCertificateSource tlCS = (TrustedListsCertificateSource) trustedSource;
 
 				diagnosticData.getTrustedLists().addAll(buildXmlTrustedLists(tlCS));
-				diagnosticData.getListOfTrustedLists().addAll(buildXmlListOfTrustedLists(tlCS));
 
 				for (XmlCertificate xmlCert : diagnosticData.getUsedCertificates()) {
 					xmlCert.setTrustedServiceProviders(getXmlTrustedServiceProviders(getCertificateToken(xmlCert.getId())));
@@ -460,30 +459,27 @@ public class DiagnosticDataBuilder {
 		return builtTimestamps;
 	}
 
-	private Collection<XmlTrustedList> buildXmlListOfTrustedLists(TrustedListsCertificateSource tlCS) {
-		List<XmlTrustedList> listOfTrustedLists = new ArrayList<XmlTrustedList>();
-		Set<String> lotlUrls = getLOTLUrls(tlCS);
-		if (Utils.isCollectionNotEmpty(lotlUrls)) {
-			TLValidationJobSummary summary = tlCS.getSummary();
-			for (String url : lotlUrls) {
-				LOTLInfo lotlInfo = summary.getLOTLInfoByURL(url);
-				if (lotlInfo != null) {
-					listOfTrustedLists.add(getXmlTrustedList(lotlInfo));
-				}
-			}
-		}
-		return listOfTrustedLists;
-	}
-
 	private Collection<XmlTrustedList> buildXmlTrustedLists(TrustedListsCertificateSource tlCS) {
 		List<XmlTrustedList> trustedLists = new ArrayList<XmlTrustedList>();
-		Set<String> tlUrls = getTLUrls(tlCS);
-		if (Utils.isCollectionNotEmpty(tlUrls)) {
-			TLValidationJobSummary summary = tlCS.getSummary();
-			for (String url : tlUrls) {
-				TLInfo tlInfo = summary.getTLInfoByURL(url);
-				if (tlInfo != null) {
-					trustedLists.add(getXmlTrustedList(tlInfo));
+		TLValidationJobSummary summary = tlCS.getSummary();
+		if (summary != null) {
+			Set<String> tlUrls = getTLUrls(tlCS);
+			if (Utils.isCollectionNotEmpty(tlUrls)) {
+				for (String url : tlUrls) {
+					TLInfo tlInfo = summary.getTLInfoByURL(url);
+					if (tlInfo != null) {
+						trustedLists.add(getXmlTrustedList(tlInfo));
+					}
+				}
+			}
+
+			Set<String> lotlUrls = getLOTLUrls(tlCS);
+			if (Utils.isCollectionNotEmpty(lotlUrls)) {
+				for (String url : lotlUrls) {
+					LOTLInfo lotlInfo = summary.getLOTLInfoByURL(url);
+					if (lotlInfo != null) {
+						trustedLists.add(getXmlTrustedList(lotlInfo));
+					}
 				}
 			}
 		}
@@ -517,6 +513,9 @@ public class DiagnosticDataBuilder {
 
 	private XmlTrustedList getXmlTrustedList(TLInfo tlInfo) {
 		XmlTrustedList result = new XmlTrustedList();
+		if (tlInfo instanceof LOTLInfo) {
+			result.setLOTL(true);
+		}
 		result.setUrl(tlInfo.getUrl());
 		ParsingInfoRecord parsingCacheInfo = tlInfo.getParsingCacheInfo();
 		if (parsingCacheInfo != null) {
@@ -1815,10 +1814,12 @@ public class DiagnosticDataBuilder {
 		LOG.trace("--> GET_QUALIFIERS()");
 		List<String> list = new ArrayList<String>();
 		final List<ConditionForQualifiers> conditionsForQualifiers = serviceInfoStatus.getConditionsForQualifiers();
-		for (ConditionForQualifiers conditionForQualifiers : conditionsForQualifiers) {
-			Condition condition = conditionForQualifiers.getCondition();
-			if (condition.check(certificateToken)) {
-				list.addAll(conditionForQualifiers.getQualifiers());
+		if (Utils.isCollectionNotEmpty(conditionsForQualifiers)) {
+			for (ConditionForQualifiers conditionForQualifiers : conditionsForQualifiers) {
+				Condition condition = conditionForQualifiers.getCondition();
+				if (condition.check(certificateToken)) {
+					list.addAll(conditionForQualifiers.getQualifiers());
+				}
 			}
 		}
 		return list;

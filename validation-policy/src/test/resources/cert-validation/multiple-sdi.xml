@@ -42,6 +42,8 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+                	<LOTLUrl>http://localhost:8080/qes-validation-web/tl/LOTL-3.xml</LOTLUrl>
+					<TLUrl>http://localhost:8080/qes-validation-web/tl/TL-4.xml</TLUrl>
                     <TSPNames><TSPName lang="en">TSP-4.2 Name</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-203204628</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>FR</CountryCode>
@@ -125,7 +127,9 @@
             </QCTypes>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
-                    <TSPNames><TSPName lang="en">TSP-4.2 Name</TSPName></TSPNames>
+                    <LOTLUrl>http://localhost:8080/qes-validation-web/tl/LOTL-3.xml</LOTLUrl>
+					<TLUrl>http://localhost:8080/qes-validation-web/tl/TL-4.xml</TLUrl>
+					<TSPNames><TSPName lang="en">TSP-4.2 Name</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-203204628</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>FR</CountryCode>
                     <TrustedServices>
@@ -197,15 +201,15 @@
             <NextUpdate>2018-07-28T09:49:13</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
+	    <TrustedList LOTL="true">
+	        <CountryCode>EU</CountryCode>
+	        <Url>http://localhost:8080/qes-validation-web/tl/LOTL-3.xml</Url>
+	        <SequenceNumber>1</SequenceNumber>
+	        <Version>5</Version>
+	        <LastLoading>2018-06-27T11:14:42</LastLoading>
+	        <IssueDate>2018-06-26T09:49:13</IssueDate>
+	        <NextUpdate>2018-07-28T09:49:13</NextUpdate>
+	        <WellSigned>true</WellSigned>
+	    </TrustedList>
     </TrustedLists>
-    <ListOfTrustedLists><TrustedList>
-        <CountryCode>EU</CountryCode>
-        <Url>http://localhost:8080/qes-validation-web/tl/LOTL-3.xml</Url>
-        <SequenceNumber>1</SequenceNumber>
-        <Version>5</Version>
-        <LastLoading>2018-06-27T11:14:42</LastLoading>
-        <IssueDate>2018-06-26T09:49:13</IssueDate>
-        <NextUpdate>2018-07-28T09:49:13</NextUpdate>
-        <WellSigned>true</WellSigned>
-    </TrustedList></ListOfTrustedLists>
 </DiagnosticData>

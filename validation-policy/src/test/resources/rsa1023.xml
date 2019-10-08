@@ -101,6 +101,8 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+                	<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>https://tsl.belgium.be/tsl-be.xml</TLUrl>
                     <TSPNames><TSPName lang="en">Certipost n.v./s.a.</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2034482260</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>BE</CountryCode>
@@ -179,6 +181,8 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+                	<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>https://tsl.belgium.be/tsl-be.xml</TLUrl>
                     <TSPNames><TSPName lang="en">Certipost n.v./s.a.</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2034482260</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>BE</CountryCode>
@@ -266,6 +270,8 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+                	<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>https://tsl.belgium.be/tsl-be.xml</TLUrl>
                     <TSPNames><TSPName lang="en">Certipost n.v./s.a.</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2034482260</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>BE</CountryCode>
@@ -337,6 +343,8 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+                	<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>https://tsl.belgium.be/tsl-be.xml</TLUrl>
                     <TSPNames><TSPName lang="en">Certipost n.v./s.a.</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2034482260</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>BE</CountryCode>
@@ -410,7 +418,6 @@
                 <DigestMethod>SHA1</DigestMethod>
                 <DigestValue>pSlc7F0Vvy7RyaFRHzX1qUZcb5E=</DigestValue>
             </DigestAlgoAndValue>
-
         </Revocation>
     </UsedRevocations>
     <OriginalDocuments>
@@ -433,15 +440,15 @@
             <NextUpdate>2017-08-13T00:00:00</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
+	    <TrustedList LOTL="true">
+	        <CountryCode>EU</CountryCode>
+	        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
+	        <SequenceNumber>165</SequenceNumber>
+	        <Version>5</Version>
+	        <LastLoading>2017-03-20T12:25:30</LastLoading>
+	        <IssueDate>2017-03-14T05:00:00</IssueDate>
+	        <NextUpdate>2017-09-13T00:00:00</NextUpdate>
+	        <WellSigned>true</WellSigned>
+	    </TrustedList>
     </TrustedLists>
-    <ListOfTrustedLists><TrustedList>
-        <CountryCode>EU</CountryCode>
-        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
-        <SequenceNumber>165</SequenceNumber>
-        <Version>5</Version>
-        <LastLoading>2017-03-20T12:25:30</LastLoading>
-        <IssueDate>2017-03-14T05:00:00</IssueDate>
-        <NextUpdate>2017-09-13T00:00:00</NextUpdate>
-        <WellSigned>true</WellSigned>
-    </TrustedList></ListOfTrustedLists>
 </DiagnosticData>

@@ -146,6 +146,8 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+                	<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>http://www.ssi.gouv.fr/eidas/TL-FR.xml</TLUrl>
                     <TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-203462028</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>FR</CountryCode>
@@ -240,6 +242,8 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+                	<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>http://www.ssi.gouv.fr/eidas/TL-FR.xml</TLUrl>
                     <TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-203462028</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>FR</CountryCode>
@@ -323,6 +327,8 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+                	<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>http://www.ssi.gouv.fr/eidas/TL-FR.xml</TLUrl>
                     <TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-203462028</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>FR</CountryCode>
@@ -412,6 +418,8 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+                	<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>http://www.ssi.gouv.fr/eidas/TL-FR.xml</TLUrl>
                 	<TSPNames><TSPName lang="en">Universign</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-203462028</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>FR</CountryCode>
@@ -497,6 +505,8 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+                	<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>http://www.ssi.gouv.fr/eidas/TL-FR.xml</TLUrl>
                     <TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2034482260</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>FR</CountryCode>
@@ -564,6 +574,8 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+                	<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>http://www.ssi.gouv.fr/eidas/TL-FR.xml</TLUrl>
                     <TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2034482260</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>FR</CountryCode>
@@ -642,6 +654,8 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+                	<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>http://www.ssi.gouv.fr/eidas/TL-FR.xml</TLUrl>
                     <TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2034482260</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>FR</CountryCode>
@@ -708,6 +722,8 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+                	<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>http://www.ssi.gouv.fr/eidas/TL-FR.xml</TLUrl>		
                     <TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2034482260</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>FR</CountryCode>
@@ -919,15 +935,15 @@
             <NextUpdate>2018-07-30T00:00:00</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
+	    <TrustedList LOTL="true">
+	        <CountryCode>EU</CountryCode>
+	        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
+	        <SequenceNumber>198</SequenceNumber>
+	        <Version>5</Version>
+	        <LastLoading>2018-02-06T09:20:23</LastLoading>
+	        <IssueDate>2018-02-01T13:00:00</IssueDate>
+	        <NextUpdate>2018-07-31T00:00:00</NextUpdate>
+	        <WellSigned>true</WellSigned>
+	    </TrustedList>
     </TrustedLists>
-    <ListOfTrustedLists><TrustedList>
-        <CountryCode>EU</CountryCode>
-        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
-        <SequenceNumber>198</SequenceNumber>
-        <Version>5</Version>
-        <LastLoading>2018-02-06T09:20:23</LastLoading>
-        <IssueDate>2018-02-01T13:00:00</IssueDate>
-        <NextUpdate>2018-07-31T00:00:00</NextUpdate>
-        <WellSigned>true</WellSigned>
-    </TrustedList></ListOfTrustedLists>
 </DiagnosticData>

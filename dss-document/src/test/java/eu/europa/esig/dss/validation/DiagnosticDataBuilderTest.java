@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,8 +36,12 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.tsl.ServiceInfo;
+import eu.europa.esig.dss.spi.tsl.TrustProperties;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.spi.tsl.dto.TrustServiceProvider;
+import eu.europa.esig.dss.spi.tsl.dto.TrustServiceStatusAndInformationExtensions;
+import eu.europa.esig.dss.spi.tsl.dto.TrustServiceStatusAndInformationExtensions.TrustServiceStatusAndInformationExtensionsBuilder;
+import eu.europa.esig.dss.spi.util.TimeDependentValues;
 import eu.europa.esig.dss.utils.Utils;
 
 public class DiagnosticDataBuilderTest {
@@ -102,10 +107,17 @@ public class DiagnosticDataBuilderTest {
 		Set<CertificateToken> usedCertificates = new HashSet<CertificateToken>(Arrays.asList(sigCert, ocspCert, caToken, rootToken));
 
 		TrustedListsCertificateSource trustedCertSource = new TrustedListsCertificateSource();
-		ServiceInfo trustService = new ServiceInfo();
-		trustService.setTlCountryCode("BE");
-		trustService.setTspTradeName("Test");
-		trustedCertSource.addCertificate(rootToken, Arrays.asList(trustService));
+		TrustServiceProvider trustServiceProvider = new TrustServiceProvider();
+		TrustServiceStatusAndInformationExtensionsBuilder builder = new TrustServiceStatusAndInformationExtensionsBuilder();
+		builder.setStatus("bla");
+		builder.setType("bla");
+		builder.setStartDate(new Date());
+		TrustServiceStatusAndInformationExtensions serviceStatus = new TrustServiceStatusAndInformationExtensions(builder);
+		Iterable<TrustServiceStatusAndInformationExtensions> srcList = Arrays.<TrustServiceStatusAndInformationExtensions>asList(serviceStatus);
+		TimeDependentValues<TrustServiceStatusAndInformationExtensions> status = new TimeDependentValues<TrustServiceStatusAndInformationExtensions>(
+				srcList);
+		TrustProperties trustService = new TrustProperties("aaaa", "bbb", trustServiceProvider, status);
+		trustedCertSource.addCertificate(rootToken, trustService);
 
 		DiagnosticDataBuilder ddb = new DiagnosticDataBuilder().usedCertificates(usedCertificates).trustedCertificateSources(Arrays.asList(trustedCertSource));
 		XmlDiagnosticData dd = ddb.build();

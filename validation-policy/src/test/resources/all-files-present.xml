@@ -442,15 +442,15 @@
             <NextUpdate>2019-05-09T12:00:00</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
+	    <TrustedList LOTL="true">
+	        <CountryCode>EU</CountryCode>
+	        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
+	        <SequenceNumber>224</SequenceNumber>
+	        <Version>5</Version>
+	        <LastLoading>2018-11-28T11:54:13</LastLoading>
+	        <IssueDate>2018-11-26T15:00:00</IssueDate>
+	        <NextUpdate>2019-05-26T00:00:00</NextUpdate>
+	        <WellSigned>true</WellSigned>
+	    </TrustedList>
     </TrustedLists>
-    <ListOfTrustedLists><TrustedList>
-        <CountryCode>EU</CountryCode>
-        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
-        <SequenceNumber>224</SequenceNumber>
-        <Version>5</Version>
-        <LastLoading>2018-11-28T11:54:13</LastLoading>
-        <IssueDate>2018-11-26T15:00:00</IssueDate>
-        <NextUpdate>2019-05-26T00:00:00</NextUpdate>
-        <WellSigned>true</WellSigned>
-    </TrustedList></ListOfTrustedLists>
 </DiagnosticData>

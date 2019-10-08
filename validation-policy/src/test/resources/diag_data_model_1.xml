@@ -117,7 +117,7 @@
             		<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
             		<TLUrl>https://www.nrca-ds.de/st/TSL-XML.xml</TLUrl>
                     <TSPNames>
-                    	<TSPName lang="en">D-Trust GmbH</TSPName></TSPNames>
+                    	<TSPName lang="en">D-Trust GmbH</TSPName>
                     </TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>DE</CountryCode>
@@ -264,7 +264,7 @@
             		<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
             		<TLUrl>https://www.nrca-ds.de/st/TSL-XML.xml</TLUrl>
                     <TSPNames>
-                    	<TSPName lang="en">D-Trust GmbH</TSPName></TSPNames>
+                    	<TSPName lang="en">D-Trust GmbH</TSPName>
                     </TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>DE</CountryCode>
@@ -338,7 +338,7 @@
             		<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
             		<TLUrl>https://www.nrca-ds.de/st/TSL-XML.xml</TLUrl>
                     <TSPNames>
-                    	<TSPName lang="en">D-Trust GmbH</TSPName></TSPNames>
+                    	<TSPName lang="en">D-Trust GmbH</TSPName>
                     </TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>DE</CountryCode>
@@ -415,7 +415,7 @@
             		<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
             		<TLUrl>https://www.nrca-ds.de/st/TSL-XML.xml</TLUrl>
                     <TSPNames>
-                    	<TSPName lang="en">D-Trust GmbH</TSPName></TSPNames>
+                    	<TSPName lang="en">D-Trust GmbH</TSPName>
                     </TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>DE</CountryCode>
@@ -540,7 +540,7 @@
             		<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
             		<TLUrl>https://www.nrca-ds.de/st/TSL-XML.xml</TLUrl>
                     <TSPNames>
-                    	<TSPName lang="en">D-Trust GmbH</TSPName></TSPNames>
+                    	<TSPName lang="en">D-Trust GmbH</TSPName>
                     </TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>DE</CountryCode>
@@ -634,7 +634,7 @@
             		<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
             		<TLUrl>https://www.nrca-ds.de/st/TSL-XML.xml</TLUrl>
                     <TSPNames>
-                    	<TSPName lang="en">D-Trust GmbH</TSPName></TSPNames>
+                    	<TSPName lang="en">D-Trust GmbH</TSPName>
                     </TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>DE</CountryCode>
@@ -721,9 +721,7 @@
             <NextUpdate>2019-07-14T00:00:00</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
-    </TrustedLists>
-    <ListOfTrustedLists><TrustedList>
-        <TrustedList>
+    	<TrustedList LOTL="true">
 	        <CountryCode>EU</CountryCode>
 	        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
 	        <SequenceNumber>228</SequenceNumber>
@@ -732,6 +730,6 @@
 	        <IssueDate>2019-01-09T07:40:00</IssueDate>
 	        <NextUpdate>2019-07-08T00:00:00</NextUpdate>
 	        <WellSigned>true</WellSigned>
-        </TrustedList>
-    </TrustedList></ListOfTrustedLists>
+	    </TrustedList>
+    </TrustedLists>
 </DiagnosticData>

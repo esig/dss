@@ -1518,15 +1518,15 @@
             <NextUpdate>2019-06-22T09:00:00</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
+	    <TrustedList LOTL="true">
+	        <CountryCode>EU</CountryCode>
+	        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
+	        <SequenceNumber>228</SequenceNumber>
+	        <Version>5</Version>
+	        <LastLoading>2019-01-18T16:51:17</LastLoading>
+	        <IssueDate>2019-01-09T07:40:00</IssueDate>
+	        <NextUpdate>2019-07-08T00:00:00</NextUpdate>
+	        <WellSigned>true</WellSigned>
+	    </TrustedList>
     </TrustedLists>
-    <ListOfTrustedLists><TrustedList>
-        <CountryCode>EU</CountryCode>
-        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
-        <SequenceNumber>228</SequenceNumber>
-        <Version>5</Version>
-        <LastLoading>2019-01-18T16:51:17</LastLoading>
-        <IssueDate>2019-01-09T07:40:00</IssueDate>
-        <NextUpdate>2019-07-08T00:00:00</NextUpdate>
-        <WellSigned>true</WellSigned>
-    </TrustedList></ListOfTrustedLists>
 </DiagnosticData>

@@ -157,21 +157,13 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 		}
 	}
 
-	private XmlTLAnalysis getTlAnalysis(String countryCode) {
+	private XmlTLAnalysis getTlAnalysis(String url) {
 		for (XmlTLAnalysis xmlTLAnalysis : tlAnalysis) {
-			if (Utils.areStringsEqual(countryCode, xmlTLAnalysis.getCountryCode())) {
+			if (Utils.areStringsEqual(url, xmlTLAnalysis.getURL())) {
 				return xmlTLAnalysis;
 			}
 		}
 		return null;
-	}
-
-	private Set<String> getCountryCodes(List<TrustedServiceWrapper> trustServices) {
-		Set<String> countryCodes = new HashSet<String>();
-		for (TrustedServiceWrapper trustedServiceWrapper : trustServices) {
-			countryCodes.add(trustedServiceWrapper.getCountryCode());
-		}
-		return countryCodes;
 	}
 
 	@Override
