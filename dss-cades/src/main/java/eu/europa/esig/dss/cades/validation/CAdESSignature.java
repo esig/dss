@@ -590,7 +590,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			throw new DSSException("Error when dealing with CommitmentTypeIndication!", e);
 		}
 	}
-	
+
+	@Override
 	public List<String> getSignedAssertions() {
 		List<String> result = new ArrayList<>();
 		final SignerAttributeV2 signerAttrV2 = getSignerAttributeV2();

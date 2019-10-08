@@ -595,7 +595,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		}
 		return signatureProductionPlace;
 	}
-	
+
+	@Override
 	public List<String> getSignedAssertions() {
 		NodeList nodeList = DomUtils.getNodeList(signatureElement, xadesPaths.getSignedAssertionPath());
 
