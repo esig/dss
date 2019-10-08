@@ -38,14 +38,19 @@ import eu.europa.esig.dss.validation.process.MessageTag;
 public class CryptographicCheck<T extends XmlConstraintsConclusion> extends AbstractCryptographicCheck<T> {
 
 	private final TokenProxy token;
+	private final CryptographicConstraint constraint;
 	
 	public CryptographicCheck(T result, TokenProxy token, Date currentTime, CryptographicConstraint constraint) {
 		super(result, currentTime, constraint);
+		this.constraint = constraint;
 		this.token = token;
 	}
 
 	@Override
 	protected boolean process() {
+		
+		// Check if there are any expiration dates
+		boolean expirationCheckRequired = isExpirationDateAvailable(constraint); 
 		
 		// Check encryption algorithm
 		if (!encryptionAlgorithmIsReliable(token.getEncryptionAlgorithm()))
@@ -56,20 +61,21 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Abst
 			return false;
 		
 		// Check digest algorithm expiration date
-		if (!digestAlgorithmIsValidOnValidationDate(token.getDigestAlgorithm()))
-			return false;
+		if (expirationCheckRequired) {
+			if (!digestAlgorithmIsValidOnValidationDate(token.getDigestAlgorithm()))
+				return false;
+		}
 		
 		// Check key size
 		if(!isPublicKeySizeKnown(token.getKeyLengthUsedToSignThisToken()))
 			return false;
 		
-		// Check public key size
-		if (!publicKeySizeIsAcceptable(token.getEncryptionAlgorithm(), token.getKeyLengthUsedToSignThisToken()))
-			return false;
-		
 		// Check encryption algorithm expiration date
-		if (!encryptionAlgorithmIsValidOnValidationDate(token.getEncryptionAlgorithm(), token.getKeyLengthUsedToSignThisToken()))
-			return false;
+		if (expirationCheckRequired) {
+			if (!encryptionAlgorithmIsValidOnValidationDate(token.getEncryptionAlgorithm(),
+					token.getKeyLengthUsedToSignThisToken()))
+				return false;
+		}
 		
 		return true;
 		

@@ -24,15 +24,14 @@ import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.TimeZone;
-import java.util.TreeMap;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.policy.jaxb.AlgoExpirationDate;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
@@ -87,93 +86,37 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 		return true;
 	}
 
-	protected boolean publicKeySizeIsAcceptable(EncryptionAlgorithm encryptionAlgo, String keyLengthUsedToSignThisToken) {
-		String algoToFind = encryptionAlgo == null ? Utils.EMPTY_STRING : encryptionAlgo.getName();
-		Map<String, Integer> minimumKeySizes = constraintWrapper.getMinimumKeySizes();
-		if (Utils.isMapNotEmpty(minimumKeySizes)) {
-			String keySize = keyLengthUsedToSignThisToken;
-			int tokenKeySize = 0;
-			if (Utils.isStringDigits(keySize)) {
-				tokenKeySize = Integer.parseInt(keySize);
-			}
-
-			Integer expectedMinimumKeySize = minimumKeySizes.get(algoToFind);
-			if (tokenKeySize < expectedMinimumKeySize) {
-				errorMessage = MessageTag.ASCCM_ANS_3;
-				failedAlgorithm = algoToFind + keyLengthUsedToSignThisToken;
-				return false;
-			}
-		}
-		return true;
-	}
-
 	protected boolean digestAlgorithmIsValidOnValidationDate(DigestAlgorithm digestAlgo) {
 		String algoToFind = digestAlgo == null ? Utils.EMPTY_STRING : digestAlgo.getName();
-		Map<String, Date> expirationDates = constraintWrapper.getExpirationTimes();
-		if (Utils.isMapNotEmpty(expirationDates)) {
-			Date expirationDate = expirationDates.get(algoToFind);
-			if (expirationDate == null) {
-				errorMessage = MessageTag.ASCCM_ANS_4;
-				failedAlgorithm = algoToFind;
-				return false;
-			}
-			if (expirationDate.before(validationDate)) {
-				errorMessage = MessageTag.ASCCM_ANS_5;
-				failedAlgorithm = algoToFind;
-				return false;
-			}
-		}
-		return true;
-	}
-
-	protected boolean encryptionAlgorithmIsValidOnValidationDate(EncryptionAlgorithm encryptionAlgo, String keyLengthUsedToSignThisToken) {
-		String algoToFind = encryptionAlgo == null ? Utils.EMPTY_STRING : encryptionAlgo.getName() + keyLengthUsedToSignThisToken;
-		Map<String, Date> expirationDates = constraintWrapper.getExpirationTimes();
-		if (Utils.isMapNotEmpty(expirationDates)) {
-			Date expirationDate = getAlgorithmExpirationDate(encryptionAlgo.getName(), keyLengthUsedToSignThisToken, expirationDates);
-			if(expirationDate == null) {
-				errorMessage = MessageTag.ASCCM_ANS_4;
-				failedAlgorithm = algoToFind;
-				return false;
-			}
-			if (expirationDate.before(validationDate)) {
-				errorMessage = MessageTag.ASCCM_ANS_5;
-				failedAlgorithm = algoToFind;
-				return false;
-			}
-		}
-		return true;
-	}
-	
-	private Date getAlgorithmExpirationDate(String algoName, String keyLength, Map<String, Date> expirationDates) {
-		String algoToFind = algoName+keyLength;
-		Date expirationDate = expirationDates.get(algoToFind);
+		Date expirationDate = constraintWrapper.getDigestAlgorithmExpirationDate(algoToFind);
 		if(expirationDate == null) {
-			Long closestAlgorithm = getClosestAlgorithm(expirationDates, algoName, keyLength);
-			String closestAlgo = algoName +  String.valueOf(closestAlgorithm);
-			expirationDate = expirationDates.get(closestAlgo);
+			errorMessage = MessageTag.ASCCM_ANS_4;
+			failedAlgorithm = algoToFind;
+			return false;
 		}
-		return expirationDate;
+		if (expirationDate.before(validationDate)) {
+			errorMessage = MessageTag.ASCCM_ANS_5;
+			failedAlgorithm = algoToFind;
+			return false;
+		}
+		return true;
 	}
 	
-	private TreeMap<Long, String> getEncryptionAlgoTree(Map<String, Date> expirationDates, String algoName) {
-		TreeMap<Long, String> algoTree = new TreeMap<Long, String>();
-		 for (Map.Entry<String,Date> entry : expirationDates.entrySet()) {
-			 if(entry.getKey().contains(algoName)) {
-				 if(!entry.getKey().replace(algoName, "").isEmpty())
-					 algoTree.put(Long.parseLong(entry.getKey().replace(algoName, "")), entry.getKey());
-			 }
-		 }
-		 return algoTree;
-	}
-
-	private Long getClosestAlgorithm(Map<String, Date> expirationDates, String algoName, String keyLength) {
-		final Long length = Long.parseLong(keyLength);
-		TreeMap<Long, String> algoTree = getEncryptionAlgoTree(expirationDates, algoName);
-		Map.Entry<Long, String> low = algoTree.floorEntry(length);
-		if(low == null)
-			return null;
-		return low.getKey();
+	protected boolean encryptionAlgorithmIsValidOnValidationDate(EncryptionAlgorithm encryptionAlgo, String keyLengthUsedToSignThisToken) {
+		String algoToFind = "Algo " + encryptionAlgo == null ? "?" : encryptionAlgo.getName() + "Key Size : "+ keyLengthUsedToSignThisToken;
+		Integer keyLength = Integer.parseInt(keyLengthUsedToSignThisToken);
+		Date expirationDate = constraintWrapper.getExpirationDate(encryptionAlgo.getName(), keyLength);
+		if(expirationDate == null) {
+			errorMessage = MessageTag.ASCCM_ANS_4;
+			failedAlgorithm = algoToFind;
+			return false;
+		}
+		if (expirationDate.before(validationDate)) {
+			errorMessage = MessageTag.ASCCM_ANS_5;
+			failedAlgorithm = algoToFind;
+			return false;
+		}
+		return true;
 	}
 	
 	private boolean isIn(String algoToFind, List<String> algos) {
@@ -216,5 +159,13 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 		}
 		return MessageFormat.format(addInfo, params);
 	}
+	
+	protected boolean isExpirationDateAvailable(CryptographicConstraint constraint) {
+		AlgoExpirationDate algoExpirationDate = constraint.getAlgoExpirationDate();
+		if(algoExpirationDate != null && !algoExpirationDate.getAlgo().isEmpty())
+			return true;
+		return false;
+	}
+	
 
 }
