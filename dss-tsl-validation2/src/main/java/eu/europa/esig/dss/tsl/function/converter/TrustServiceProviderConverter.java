@@ -26,6 +26,13 @@ import eu.europa.esig.trustedlist.jaxb.tsl.TSPServicesListType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPType;
 
 public class TrustServiceProviderConverter implements Function<TSPType, TrustServiceProvider> {
+	
+	private String territory;
+	
+	public TrustServiceProviderConverter setTerritory(String territory) {
+		this.territory = territory;
+		return this;
+	}
 
 	@Override
 	public TrustServiceProvider apply(TSPType original) {
@@ -39,6 +46,7 @@ public class TrustServiceProviderConverter implements Function<TSPType, TrustSer
 
 	private void extractTSPInfo(TrustServiceProviderBuilder tspBuilder, TSPInformationType tspInformation) {
 		InternationalNamesTypeConverter converter = new InternationalNamesTypeConverter();
+		tspBuilder.setTerritory(territory);
 		tspBuilder.setNames(converter.apply(tspInformation.getTSPName()));
 		tspBuilder.setTradeNames(converter.apply(tspInformation.getTSPTradeName()));
 

@@ -45,17 +45,13 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 
 	private TLValidationJobSummary summary;
 
-	private Map<String, List<TrustProperties>> trustServicesByEntity = new HashMap<String, List<TrustProperties>>();
+	private Map<String, List<TrustProperties>> trustPropertiesByEntity;
 
 	/**
 	 * The default constructor.
 	 */
 	public TrustedListsCertificateSource() {
 		super();
-	}
-
-	public void reinit() {
-		trustServicesByEntity = new HashMap<String, List<TrustProperties>>();
 	}
 
 	public TLValidationJobSummary getSummary() {
@@ -71,27 +67,9 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		return CertificateSourceType.TRUSTED_LIST;
 	}
 
-	public void addCertificate(CertificateToken certificate, TrustProperties trustProperties) {
-		certificate = super.addCertificate(certificate);
-
-		final String entityKey = certificate.getEntityKey();
-
-		synchronized (trustServicesByEntity) {
-			List<TrustProperties> list = trustServicesByEntity.get(entityKey);
-			if (list == null) {
-				list = new ArrayList<TrustProperties>();
-				trustServicesByEntity.put(entityKey, list);
-			}
-
-			if (!list.contains(trustProperties)) {
-				list.add(trustProperties);
-			}
-		}
-	}
-
 	/**
 	 * This method is not applicable for this kind of certificate source. You should
-	 * use {@link #addCertificate(CertificateToken, TrustProperties)}
+	 * use {@link #setTrustPropertiesByEntityMap(Map<String, List<TrustProperties>>)}
 	 *
 	 * @param certificate
 	 *                    the certificate you have to trust
@@ -102,9 +80,36 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		throw new UnsupportedOperationException("Cannot directly add certificate to a TrustedListsCertificateSource");
 	}
 
+	/**
+	 * The method allows to fill the CertificateSource
+	 * @param trustPropertiesByCerts map between {@link CertificateToken}s and a list of {@link TrustProperties}
+	 */
+	public synchronized void setTrustPropertiesByCertificates(final Map<CertificateToken, List<TrustProperties>> trustPropertiesByCerts) {
+		this.trustPropertiesByEntity = new HashMap<String, List<TrustProperties>>(); // reinit the map
+		trustPropertiesByCerts.forEach((certificateToken, trustPropertiesList) -> {
+			addCertificate(certificateToken, trustPropertiesList);
+		});
+	}
+	
+	private void addCertificate(CertificateToken certificateToken, List<TrustProperties> trustPropertiesList) {
+		super.addCertificate(certificateToken);
+		
+		String entityKey = certificateToken.getEntityKey();
+		List<TrustProperties> list = trustPropertiesByEntity.get(entityKey);
+		if (list == null) {
+			list = new ArrayList<TrustProperties>();
+			trustPropertiesByEntity.put(entityKey, list);
+		}
+		for (TrustProperties trustProperties : trustPropertiesList) {
+			if (!list.contains(trustProperties)) {
+				list.add(trustProperties);
+			}
+		}
+	}
+
 	@Override
-	public List<TrustProperties> getTrustServices(CertificateToken token) {
-		List<TrustProperties> currentTrustProperties = trustServicesByEntity.get(token.getEntityKey());
+	public synchronized List<TrustProperties> getTrustServices(CertificateToken token) {
+		List<TrustProperties> currentTrustProperties = trustPropertiesByEntity.get(token.getEntityKey());
 		if (currentTrustProperties != null) {
 			return currentTrustProperties;
 		} else {
@@ -144,7 +149,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	}
 
 	public int getNumberOfTrustedPublicKeys() {
-		return trustServicesByEntity.size();
+		return trustPropertiesByEntity.size();
 	}
 
 }

@@ -1,7 +1,10 @@
 package eu.europa.esig.dss.tsl.sync;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,38 +98,50 @@ public class TrustedListCertificateSourceSynchronizer {
 	}
 
 	private void synchronizeCertificates(TLValidationJobSummary summary) {
-		certificateSource.reinit();
+		final Map<CertificateToken, List<TrustProperties>> trustPropertiesByCerts = new WeakHashMap<CertificateToken, List<TrustProperties>>();
 		for (LOTLInfo lotlInfo : summary.getLOTLInfos()) {
-			addCertificatesFromTLs(lotlInfo.getTLInfos(), lotlInfo);
+			addCertificatesFromTLs(trustPropertiesByCerts, lotlInfo.getTLInfos(), lotlInfo);
 		}
-		addCertificatesFromTLs(summary.getOtherTLInfos(), null);
+		addCertificatesFromTLs(trustPropertiesByCerts, summary.getOtherTLInfos(), null);
+		certificateSource.setTrustPropertiesByCertificates(trustPropertiesByCerts);
 	}
 
-	private void addCertificatesFromTLs(List<TLInfo> tlInfos, LOTLInfo relatedLOTL) {
-		for (TLInfo tlInfo : tlInfos) {
-			String tlUrl = tlInfo.getUrl();
+	private void addCertificatesFromTLs(final Map<CertificateToken, List<TrustProperties>> trustPropertiesByCerts, 
+			final List<TLInfo> tlInfos, final LOTLInfo relatedLOTL) {
+		
+		for (final TLInfo tlInfo : tlInfos) {
 			ParsingInfoRecord parsingCacheInfo = tlInfo.getParsingCacheInfo();
 			if (parsingCacheInfo.isError()) {
 				continue;
 			}
-			List<TrustServiceProvider> trustServiceProviders = parsingCacheInfo.getTrustServiceProviders();
+			
+			final List<TrustServiceProvider> trustServiceProviders = parsingCacheInfo.getTrustServiceProviders();
 			for (TrustServiceProvider original : trustServiceProviders) {
 				TrustServiceProvider detached = getDetached(original);
+				
 				for (TrustService trustService : original.getServices()) {
-
 					TimeDependentValues<TrustServiceStatusAndInformationExtensions> statusAndInformationExtensions = trustService
 							.getStatusAndInformationExtensions();
+					TrustProperties trustProperties = getTrustProperties(relatedLOTL, tlInfo.getUrl(), detached,
+							statusAndInformationExtensions);
 
 					for (CertificateToken certificate : trustService.getCertificates()) {
-						if (relatedLOTL == null) {
-						certificateSource.addCertificate(certificate, new TrustProperties(tlUrl, detached, statusAndInformationExtensions));
-						} else {
-							certificateSource.addCertificate(certificate,
-									new TrustProperties(relatedLOTL.getUrl(), tlUrl, detached, statusAndInformationExtensions));
-						}
+						addCertificate(trustPropertiesByCerts, certificate, trustProperties);
 					}
 				}
 			}
+		}
+	}
+	
+	private void addCertificate(Map<CertificateToken, List<TrustProperties>> trustPropertiesByCerts, 
+			CertificateToken certificate, TrustProperties trustProperties) {
+		List<TrustProperties> list = trustPropertiesByCerts.get(certificate);
+		if (list == null) {
+			list = new ArrayList<TrustProperties>();
+			trustPropertiesByCerts.put(certificate, list);
+		}
+		if (!list.contains(trustProperties)) {
+			list.add(trustProperties);
 		}
 	}
 
@@ -156,6 +171,15 @@ public class TrustedListCertificateSourceSynchronizer {
 		for (TLInfo tlInfo : tlInfos) {
 			cacheAccess.sync(new CacheKey(tlInfo.getUrl()));
 		}
+	}
+
+	private TrustProperties getTrustProperties(LOTLInfo relatedLOTL, String tlUrl, TrustServiceProvider detached,
+			TimeDependentValues<TrustServiceStatusAndInformationExtensions> statusAndInformationExtensions) {
+		String url = tlUrl;
+		if (relatedLOTL != null) {
+			url = relatedLOTL.getUrl();
+		}
+		return new TrustProperties(url, detached, statusAndInformationExtensions);
 	}
 
 }

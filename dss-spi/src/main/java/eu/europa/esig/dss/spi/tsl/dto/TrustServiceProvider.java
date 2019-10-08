@@ -45,7 +45,8 @@ public class TrustServiceProvider implements Serializable {
 	private Map<String, List<String>> electronicAddresses;
 	private Map<String, String> information;
 	private List<TrustService> services;
-	
+	private String territory;
+
 	public TrustServiceProvider() {
 	}
 	
@@ -57,6 +58,7 @@ public class TrustServiceProvider implements Serializable {
 		this.electronicAddresses = builder.getElectronicAddresses();
 		this.information = builder.getInformation();
 		this.services = builder.getServices();
+		this.territory = builder.getTerritory();
 	}
 
 	public Map<String, List<String>> getNames() {
@@ -85,6 +87,10 @@ public class TrustServiceProvider implements Serializable {
 
 	public List<TrustService> getServices() {
 		return services;
+	}
+	
+	public String getTerritory() {
+		return territory;
 	}
 
 }

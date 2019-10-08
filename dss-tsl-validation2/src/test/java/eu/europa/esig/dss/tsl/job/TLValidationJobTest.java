@@ -34,6 +34,7 @@ import eu.europa.esig.dss.spi.tsl.LOTLInfo;
 import eu.europa.esig.dss.spi.tsl.PivotInfo;
 import eu.europa.esig.dss.spi.tsl.TLInfo;
 import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
+import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.tsl.dto.ConditionForQualifiers;
 import eu.europa.esig.dss.spi.tsl.dto.TrustService;
 import eu.europa.esig.dss.spi.tsl.dto.TrustServiceProvider;
@@ -199,10 +200,9 @@ public class TLValidationJobTest {
 		assertNotNull(czTL.getDownloadCacheInfo().getLastLoadingDate());
 		assertFalse(czTL.getDownloadCacheInfo().getLastSynchronizationDate().after(czTL.getDownloadCacheInfo().getLastLoadingDate()));
 		
-		// TODO: synchronization is not implemented yet
-//		assertEquals(CacheStateEnum.SYNCHRONIZED, czTL.getDownloadJobState());
-//		assertEquals(CacheStateEnum.SYNCHRONIZED, czTL.getParsingJobState());
-//		assertEquals(CacheStateEnum.SYNCHRONIZED, czTL.getValidationJobState());
+		assertTrue(czTL.getDownloadCacheInfo().isSynchronized());
+		assertTrue(czTL.getParsingCacheInfo().isSynchronized());
+		assertTrue(czTL.getValidationCacheInfo().isSynchronized());
 		
 		assertNull(czTL.getDownloadCacheInfo().getExceptionMessage());
 		assertNull(czTL.getDownloadCacheInfo().getExceptionStackTrace());
@@ -251,6 +251,35 @@ public class TLValidationJobTest {
 		assertNotNull(czTL.getValidationCacheInfo().getSigningTime());
 		assertNotNull(czTL.getValidationCacheInfo().getSigningCertificate());
 		assertEquals(czSigningCertificate, czTL.getValidationCacheInfo().getSigningCertificate());
+	}
+	
+	@Test
+	public void noTrustedListCertificateSourceTest() {
+		updateTLUrl("src/test/resources/lotlCache/CZ.xml");
+		
+		tlValidationJob = new TLValidationJob();
+		tlValidationJob.setOfflineDataLoader(offlineFileLoader);
+		tlValidationJob.setOnlineDataLoader(onlineFileLoader);
+		tlValidationJob.setCacheCleaner(cacheCleaner);
+		tlValidationJob.setTrustedListSources(czSource);
+		tlValidationJob.offlineRefresh();
+		
+		TLValidationJobSummary summary = tlValidationJob.getSummary();
+		
+		assertEquals(0, summary.getNumberOfProcessedLOTLs());
+		assertEquals(1, summary.getNumberOfProcessedTLs());
+		
+		List<TLInfo> tlInfos = summary.getOtherTLInfos();
+		assertEquals(1, tlInfos.size());
+		
+		TLInfo czTL = tlInfos.get(0);
+		assertNotNull(czTL.getDownloadCacheInfo().getLastLoadingDate());
+		assertFalse(czTL.getDownloadCacheInfo().getLastSynchronizationDate().after(czTL.getDownloadCacheInfo().getLastLoadingDate()));
+		
+		// no TrustedListCertificateSource is present
+		assertTrue(czTL.getDownloadCacheInfo().isDesynchronized());
+		assertTrue(czTL.getParsingCacheInfo().isDesynchronized());
+		assertTrue(czTL.getValidationCacheInfo().isDesynchronized());
 	}
 	
 	@Test
@@ -1043,6 +1072,7 @@ public class TLValidationJobTest {
 		tlValidationJob.setOnlineDataLoader(onlineFileLoader);
 		tlValidationJob.setCacheCleaner(cacheCleaner);
 		tlValidationJob.setTrustedListSources(czSource);
+		tlValidationJob.setTrustedListCertificateSource(new TrustedListsCertificateSource());
 		tlValidationJob.offlineRefresh();
 		return tlValidationJob;
 	}

@@ -54,8 +54,20 @@
 				</xs:complexType>
 			</xs:element>
 			
-			<xs:element name="TrustedLists" type="ListOfTrustedLists" minOccurs="0" />
-			<xs:element name="ListOfTrustedLists" type="ListOfTrustedLists" minOccurs="0" />
+			<xs:element name="TrustedLists" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="TrustedList" type="TrustedList" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ListOfTrustedLists" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="ListOfTrustedLists" type="TrustedList" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
 			
 		</xs:sequence>
 	</xs:complexType>
@@ -853,15 +865,9 @@
 		</xs:complexContent>
 	</xs:complexType>
 	
-	<xs:complexType name="ListOfTrustedLists">
-		<xs:sequence>
-			<xs:element name="TrustedList" type="TrustedList" maxOccurs="unbounded" />
-		</xs:sequence>
-	</xs:complexType>
-	
 	<xs:complexType name="TrustedList">
 		<xs:sequence>
-			<xs:element name="CountryCode" type="xs:string" />
+			<xs:element name="CountryCode" type="xs:string" minOccurs="0" />
 			<xs:element name="Url" type="xs:string" />	
 			<xs:element name="SequenceNumber" type="xs:int" minOccurs="0" />
 			<xs:element name="Version" type="xs:int" minOccurs="0" />
@@ -874,6 +880,7 @@
 	
 	<xs:complexType name="TrustedServiceProvider">
 		<xs:sequence>
+			<xs:element name="CountryCode" type="xs:string" />
 			<xs:element name="LOTLUrl" type="xs:string" minOccurs="0" />
 			<xs:element name="TLUrl" type="xs:string" />
 			<xs:element name="TSPNames">
@@ -890,7 +897,6 @@
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
-			<xs:element name="CountryCode" type="xs:string" />
 			
 			<xs:element name="TrustedServices">
 				<xs:complexType>

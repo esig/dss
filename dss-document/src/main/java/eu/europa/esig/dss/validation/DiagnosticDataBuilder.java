@@ -356,8 +356,14 @@ public class DiagnosticDataBuilder {
 			if (trustedSource instanceof TrustedListsCertificateSource) {
 				TrustedListsCertificateSource tlCS = (TrustedListsCertificateSource) trustedSource;
 
-				diagnosticData.getTrustedLists().addAll(buildXmlTrustedLists(tlCS));
-				diagnosticData.getListOfTrustedLists().addAll(buildXmlListOfTrustedLists(tlCS));
+				List<XmlTrustedList> xmlTrustedLists = buildXmlTrustedLists(tlCS);
+				if (Utils.isCollectionNotEmpty(xmlTrustedLists)) {
+					diagnosticData.setTrustedLists(xmlTrustedLists); 
+				}
+				List<XmlTrustedList> xmlListOfTrustedLists = buildXmlListOfTrustedLists(tlCS);
+				if (Utils.isCollectionNotEmpty(xmlListOfTrustedLists)) {
+					diagnosticData.setListOfTrustedLists(xmlListOfTrustedLists);
+				}
 
 				for (XmlCertificate xmlCert : diagnosticData.getUsedCertificates()) {
 					xmlCert.setTrustedServiceProviders(getXmlTrustedServiceProviders(getCertificateToken(xmlCert.getId())));
@@ -460,31 +466,39 @@ public class DiagnosticDataBuilder {
 		return builtTimestamps;
 	}
 
-	private Collection<XmlTrustedList> buildXmlListOfTrustedLists(TrustedListsCertificateSource tlCS) {
+	private List<XmlTrustedList> buildXmlListOfTrustedLists(TrustedListsCertificateSource tlCS) {
 		List<XmlTrustedList> listOfTrustedLists = new ArrayList<XmlTrustedList>();
 		Set<String> lotlUrls = getLOTLUrls(tlCS);
 		if (Utils.isCollectionNotEmpty(lotlUrls)) {
 			TLValidationJobSummary summary = tlCS.getSummary();
-			for (String url : lotlUrls) {
-				LOTLInfo lotlInfo = summary.getLOTLInfoByURL(url);
-				if (lotlInfo != null) {
-					listOfTrustedLists.add(getXmlTrustedList(lotlInfo));
+			if (summary != null) {
+				for (String url : lotlUrls) {
+					LOTLInfo lotlInfo = summary.getLOTLInfoByURL(url);
+					if (lotlInfo != null) {
+						listOfTrustedLists.add(getXmlTrustedList(lotlInfo));
+					}
 				}
+			} else {
+				LOG.warn("The TrustedListsCertificateSource does not contain TLValidationJobSummary. TLValidationJob is not performed!");
 			}
 		}
 		return listOfTrustedLists;
 	}
 
-	private Collection<XmlTrustedList> buildXmlTrustedLists(TrustedListsCertificateSource tlCS) {
+	private List<XmlTrustedList> buildXmlTrustedLists(TrustedListsCertificateSource tlCS) {
 		List<XmlTrustedList> trustedLists = new ArrayList<XmlTrustedList>();
 		Set<String> tlUrls = getTLUrls(tlCS);
 		if (Utils.isCollectionNotEmpty(tlUrls)) {
 			TLValidationJobSummary summary = tlCS.getSummary();
-			for (String url : tlUrls) {
-				TLInfo tlInfo = summary.getTLInfoByURL(url);
-				if (tlInfo != null) {
-					trustedLists.add(getXmlTrustedList(tlInfo));
+			if (summary != null) {
+				for (String url : tlUrls) {
+					TLInfo tlInfo = summary.getTLInfoByURL(url);
+					if (tlInfo != null) {
+						trustedLists.add(getXmlTrustedList(tlInfo));
+					}
 				}
+			} else {
+				LOG.warn("The TrustedListsCertificateSource does not contain TLValidationJobSummary. TLValidationJob is not performed!");
 			}
 		}
 		return trustedLists;
@@ -1702,6 +1716,7 @@ public class DiagnosticDataBuilder {
 		result.setLOTLUrl(trustProperties.getLotlUrl());
 		result.setTLUrl(trustProperties.getTlUrl());
 		TrustServiceProvider tsp = trustProperties.getTrustServiceProvider();
+		result.setCountryCode(tsp.getTerritory());
 		result.setTSPNames(getLangAndValues(tsp.getNames()));
 		result.setTSPRegistrationIdentifiers(tsp.getRegistrationIdentifiers());
 		return result;
@@ -1726,7 +1741,7 @@ public class DiagnosticDataBuilder {
 	private Map<CertificateToken, List<TrustProperties>> getRelatedTrustServices(CertificateToken certToken) {
 		Map<CertificateToken, List<TrustProperties>> result = new HashMap<CertificateToken, List<TrustProperties>>();
 		Set<CertificateToken> processedTokens = new HashSet<CertificateToken>();
-		for(CertificateSource trustedSource: trustedCertSources) {
+		for (CertificateSource trustedSource : trustedCertSources) {
 			if (trustedSource instanceof TrustedListsCertificateSource) {
 				TrustedListsCertificateSource trustedCertSource = (TrustedListsCertificateSource) trustedSource;
 				while (certToken != null) {

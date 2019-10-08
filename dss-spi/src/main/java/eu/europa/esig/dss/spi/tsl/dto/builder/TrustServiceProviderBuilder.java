@@ -24,7 +24,8 @@ public class TrustServiceProviderBuilder {
 	private Map<String, List<String>> electronicAddresses;
 	private Map<String, String> information;
 	private List<TrustService> services;
-	
+	private String territory;
+
 	/**
 	 * Default constructor
 	 */
@@ -44,6 +45,7 @@ public class TrustServiceProviderBuilder {
 		this.electronicAddresses = original.getElectronicAddresses();
 		this.information = original.getInformation();
 		this.services = original.getServices();
+		this.territory = original.getTerritory();
 	}
 
 	public TrustServiceProvider build() {
@@ -109,6 +111,15 @@ public class TrustServiceProviderBuilder {
 
 	public TrustServiceProviderBuilder setServices(List<TrustService> services) {
 		this.services = services;
+		return this;
+	}
+	
+	public String getTerritory() {
+		return territory;
+	}
+
+	public TrustServiceProviderBuilder setTerritory(String territory) {
+		this.territory = territory;
 		return this;
 	}
 	

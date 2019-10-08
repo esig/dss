@@ -12,7 +12,7 @@ public class TrustProperties {
 	private final TimeDependentValues<TrustServiceStatusAndInformationExtensions> trustService;
 
 	/**
-	 * Constructor for extracted information from an "independant" trusted list
+	 * Constructor for extracted information from an "independent" trusted list
 	 * 
 	 * @param tlUrl
 	 *                             the TL URL

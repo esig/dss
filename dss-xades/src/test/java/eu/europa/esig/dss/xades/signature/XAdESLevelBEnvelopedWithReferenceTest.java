@@ -159,6 +159,7 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractXAdESTestSign
 	}
 
 	private static final class Name implements NamespaceContext {
+		
 		@Override
 		public Iterator getPrefixes(String namespaceURI) {
 			// TODO Auto-generated method stub
@@ -183,5 +184,6 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractXAdESTestSign
 			// "http://uri.etsi.org/19132/v1.1.1#"
 			return null;
 		}
+		
 	}
 }

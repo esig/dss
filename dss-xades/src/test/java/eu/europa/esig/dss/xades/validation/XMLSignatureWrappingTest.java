@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.xml.bind.JAXBElement;
@@ -71,8 +72,10 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
-import eu.europa.esig.dss.spi.tsl.ServiceInfo;
+import eu.europa.esig.dss.spi.tsl.TrustProperties;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.spi.tsl.dto.TrustServiceProvider;
+import eu.europa.esig.dss.spi.util.TimeDependentValues;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -762,7 +765,11 @@ public class XMLSignatureWrappingTest {
 	private void checkForTrustedCertificateRoot(SignedDocumentValidator validator, CommonCertificateVerifier certificateVerifier, CertificateToken rootToken) {
 
 		TrustedListsCertificateSource trustedListsCertificateSource = new TrustedListsCertificateSource();
-		trustedListsCertificateSource.addCertificate(rootToken, Arrays.asList(new ServiceInfo()));
+
+		HashMap<CertificateToken, List<TrustProperties>> hashMap = new HashMap<CertificateToken, List<TrustProperties>>();
+		TrustProperties trustProperties = new TrustProperties("BE.xml", new TrustServiceProvider(), new TimeDependentValues<>());
+		hashMap.put(rootToken, Arrays.asList(trustProperties));
+		trustedListsCertificateSource.setTrustPropertiesByCertificates(hashMap);
 
 		certificateVerifier.setTrustedCertSource(trustedListsCertificateSource);
 		validator.setCertificateVerifier(certificateVerifier);

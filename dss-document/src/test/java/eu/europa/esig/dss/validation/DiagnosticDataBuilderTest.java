@@ -24,7 +24,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,8 +37,13 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.tsl.ServiceInfo;
+import eu.europa.esig.dss.spi.tsl.LOTLInfo;
+import eu.europa.esig.dss.spi.tsl.TLInfo;
+import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
+import eu.europa.esig.dss.spi.tsl.TrustProperties;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.spi.tsl.dto.TrustServiceProvider;
+import eu.europa.esig.dss.spi.util.TimeDependentValues;
 import eu.europa.esig.dss.utils.Utils;
 
 public class DiagnosticDataBuilderTest {
@@ -102,10 +109,11 @@ public class DiagnosticDataBuilderTest {
 		Set<CertificateToken> usedCertificates = new HashSet<CertificateToken>(Arrays.asList(sigCert, ocspCert, caToken, rootToken));
 
 		TrustedListsCertificateSource trustedCertSource = new TrustedListsCertificateSource();
-		ServiceInfo trustService = new ServiceInfo();
-		trustService.setTlCountryCode("BE");
-		trustService.setTspTradeName("Test");
-		trustedCertSource.addCertificate(rootToken, Arrays.asList(trustService));
+		trustedCertSource.setSummary(new TLValidationJobSummary(new ArrayList<LOTLInfo>(), new ArrayList<TLInfo>()));
+		TrustProperties trustProperties = new TrustProperties("BE.xml", new TrustServiceProvider(), new TimeDependentValues<>());
+		HashMap<CertificateToken, List<TrustProperties>> hashMap = new HashMap<CertificateToken, List<TrustProperties>>();
+		hashMap.put(rootToken, Arrays.asList(trustProperties));
+		trustedCertSource.setTrustPropertiesByCertificates(hashMap);
 
 		DiagnosticDataBuilder ddb = new DiagnosticDataBuilder().usedCertificates(usedCertificates).trustedCertificateSources(Arrays.asList(trustedCertSource));
 		XmlDiagnosticData dd = ddb.build();
