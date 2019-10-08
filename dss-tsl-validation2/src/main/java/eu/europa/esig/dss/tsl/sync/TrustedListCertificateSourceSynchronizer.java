@@ -124,7 +124,7 @@ public class TrustedListCertificateSourceSynchronizer {
 					for (TrustService trustService : original.getServices()) {
 						TimeDependentValues<TrustServiceStatusAndInformationExtensions> statusAndInformationExtensions = trustService
 								.getStatusAndInformationExtensions();
-						TrustProperties trustProperties = getTrustProperties(relatedLOTL, tlInfo.getUrl(), detached,
+						TrustProperties trustProperties = getTrustProperties(relatedLOTL, tlInfo, detached,
 								statusAndInformationExtensions);
 
 						for (CertificateToken certificate : trustService.getCertificates()) {
@@ -179,13 +179,12 @@ public class TrustedListCertificateSourceSynchronizer {
 		}
 	}
 
-	private TrustProperties getTrustProperties(LOTLInfo relatedLOTL, String tlUrl, TrustServiceProvider detached,
+	private TrustProperties getTrustProperties(LOTLInfo relatedLOTL, TLInfo tlInfo, TrustServiceProvider detached,
 			TimeDependentValues<TrustServiceStatusAndInformationExtensions> statusAndInformationExtensions) {
-		String url = tlUrl;
-		if (relatedLOTL != null) {
-			url = relatedLOTL.getUrl();
+		if (relatedLOTL == null) {
+			return new TrustProperties(tlInfo.getIdentifier(), detached, statusAndInformationExtensions);
 		}
-		return new TrustProperties(url, detached, statusAndInformationExtensions);
+		return new TrustProperties(relatedLOTL.getIdentifier(), tlInfo.getIdentifier(), detached, statusAndInformationExtensions);
 	}
 
 }

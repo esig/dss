@@ -248,6 +248,16 @@
             <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate" />
         </jaxb:property>
     </jaxb:bindings>
+    <jaxb:bindings node="//xs:complexType[@name='TrustedServiceProvider']//xs:attribute[@name='TL']">
+        <jaxb:property>
+            <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList" />
+        </jaxb:property>
+    </jaxb:bindings>
+    <jaxb:bindings node="//xs:complexType[@name='TrustedServiceProvider']//xs:attribute[@name='LOTL']">
+        <jaxb:property>
+            <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList" />
+        </jaxb:property>
+    </jaxb:bindings>
 
   </jaxb:bindings>
   

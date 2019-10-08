@@ -1,30 +1,31 @@
 package eu.europa.esig.dss.spi.tsl;
 
+import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.spi.tsl.dto.TrustServiceProvider;
 import eu.europa.esig.dss.spi.tsl.dto.TrustServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.spi.util.TimeDependentValues;
 
 public class TrustProperties {
 
-	private final String lotlUrl;
-	private final String tlUrl;
+	private final Identifier lotlId;
+	private final Identifier tlId;
 	private final TrustServiceProvider trustServiceProvider;
 	private final TimeDependentValues<TrustServiceStatusAndInformationExtensions> trustService;
 
 	/**
 	 * Constructor for extracted information from an "independent" trusted list
 	 * 
-	 * @param tlUrl
-	 *                             the TL URL
+	 * @param tlId
+	 *                             the TL identifier
 	 * @param trustServiceProvider
 	 *                             the trust service provider information
 	 * @param trustService
 	 *                             the current trust service
 	 */
-	public TrustProperties(String tlUrl, TrustServiceProvider trustServiceProvider,
+	public TrustProperties(Identifier tlId, TrustServiceProvider trustServiceProvider,
 			TimeDependentValues<TrustServiceStatusAndInformationExtensions> trustService) {
-		this.lotlUrl = null;
-		this.tlUrl = tlUrl;
+		this.lotlId = null;
+		this.tlId = tlId;
 		this.trustServiceProvider = trustServiceProvider;
 		this.trustService = trustService;
 	}
@@ -33,29 +34,29 @@ public class TrustProperties {
 	 * Constructor for extracted information from trusted list which is linked to a
 	 * LOTL
 	 * 
-	 * @param lotlUrl
-	 *                             the LOTL Url
-	 * @param tlUrl
-	 *                             the TL URL
+	 * @param lotlId
+	 *                             the LOTL identifier
+	 * @param tlId
+	 *                             the TL identifier
 	 * @param trustServiceProvider
 	 *                             the trust service provider information
 	 * @param trustService
 	 *                             the current trust service
 	 */
-	public TrustProperties(String lotlUrl, String tlUrl, TrustServiceProvider trustServiceProvider,
+	public TrustProperties(Identifier lotlId, Identifier tlId, TrustServiceProvider trustServiceProvider,
 			TimeDependentValues<TrustServiceStatusAndInformationExtensions> trustService) {
-		this.lotlUrl = lotlUrl;
-		this.tlUrl = tlUrl;
+		this.lotlId = lotlId;
+		this.tlId = tlId;
 		this.trustServiceProvider = trustServiceProvider;
 		this.trustService = trustService;
 	}
 
-	public String getLotlUrl() {
-		return lotlUrl;
+	public Identifier getLOTLIdentifier() {
+		return lotlId;
 	}
 
-	public String getTlUrl() {
-		return tlUrl;
+	public Identifier getTLIdentifier() {
+		return tlId;
 	}
 
 	public TrustServiceProvider getTrustServiceProvider() {

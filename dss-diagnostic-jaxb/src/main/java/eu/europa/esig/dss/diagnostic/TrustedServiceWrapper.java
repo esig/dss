@@ -23,10 +23,12 @@ package eu.europa.esig.dss.diagnostic;
 import java.util.Date;
 import java.util.List;
 
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
+
 public class TrustedServiceWrapper {
 
-	private String tlUrl;
-	private String lotlUrl;
+	private XmlTrustedList trustedList;
+	private XmlTrustedList lotl;
 	private List<String> tspNames;
 	private CertificateWrapper serviceDigitalIdentifier;
 	private List<String> serviceNames;
@@ -38,20 +40,20 @@ public class TrustedServiceWrapper {
 	private List<String> capturedQualifiers;
 	private List<String> additionalServiceInfos;
 
-	public String getTlUrl() {
-		return tlUrl;
+	public XmlTrustedList getTrustedList() {
+		return trustedList;
 	}
 
-	public void setTlUrl(String tlUrl) {
-		this.tlUrl = tlUrl;
+	public void setTrustedList(XmlTrustedList trustedList) {
+		this.trustedList = trustedList;
 	}
 
-	public String getLotlUrl() {
-		return lotlUrl;
+	public XmlTrustedList getListOfTrustedLists() {
+		return lotl;
 	}
 
-	public void setLotlUrl(String lotlUrl) {
-		this.lotlUrl = lotlUrl;
+	public void setListOfTrustedLists(XmlTrustedList lotl) {
+		this.lotl = lotl;
 	}
 
 	public List<String> getTspNames() {

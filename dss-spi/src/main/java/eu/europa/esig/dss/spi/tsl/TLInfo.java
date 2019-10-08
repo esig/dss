@@ -2,9 +2,11 @@ package eu.europa.esig.dss.spi.tsl;
 
 import java.io.Serializable;
 
+import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.spi.tsl.dto.info.DownloadInfoRecord;
 import eu.europa.esig.dss.spi.tsl.dto.info.ParsingInfoRecord;
 import eu.europa.esig.dss.spi.tsl.dto.info.ValidationInfoRecord;
+import eu.europa.esig.dss.spi.tsl.identifier.TrustedListIdentifier;
 
 /**
  * Computes summary for a single Trusted List processing result
@@ -69,6 +71,14 @@ public class TLInfo implements Serializable {
 	 */
 	public String getUrl() {
 		return url;
+	}
+	
+	/**
+	 * Returns the TL id
+	 * @return {@link String} id
+	 */
+	public Identifier getIdentifier() {
+		return new TrustedListIdentifier(this);
 	}
 
 }

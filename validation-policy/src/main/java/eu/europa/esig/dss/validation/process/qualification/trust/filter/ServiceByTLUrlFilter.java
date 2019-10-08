@@ -45,7 +45,7 @@ public class ServiceByTLUrlFilter extends AbstractTrustedServiceFilter {
 	@Override
 	boolean isAcceptable(TrustedServiceWrapper service) {
 		for (String url : tlUrls) {
-			if (Utils.areStringsEqualIgnoreCase(url, service.getTlUrl())) {
+			if (Utils.areStringsEqualIgnoreCase(url, service.getTrustedList().getUrl())) {
 				return true;
 			}
 		}

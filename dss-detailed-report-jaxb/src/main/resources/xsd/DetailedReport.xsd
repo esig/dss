@@ -59,7 +59,7 @@
 	<xs:complexType name="TLAnalysis">
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusion">
-				<xs:attribute name="CountryCode" type="xs:string" use="required" />
+				<xs:attribute name="CountryCode" type="xs:string" use="optional" /> <!-- can be null in case of parsing task failure -->
 				<xs:attribute name="URL" type="xs:string" use="required" />
 			</xs:extension>
 		</xs:complexContent>

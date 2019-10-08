@@ -869,28 +869,26 @@
 			<xs:element name="NextUpdate" type="xs:dateTime" minOccurs="0" />
 			<xs:element name="WellSigned" type="xs:boolean" />
 		</xs:sequence>
+		<xs:attribute name="Id" type="xs:ID" use="required" />
 		<xs:attribute name="LOTL" type="xs:boolean" default="false" use="optional" />
 	</xs:complexType>
 	
 	<xs:complexType name="TrustedServiceProvider">
 		<xs:sequence>
-			<xs:element name="LOTLUrl" type="xs:string" minOccurs="0" />
-			<xs:element name="TLUrl" type="xs:string" />
 			<xs:element name="TSPNames">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="TSPName" type="LangAndValue" minOccurs="1" maxOccurs="unbounded" />
+						<xs:element name="TSPName" type="LangAndValue" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
 			<xs:element name="TSPRegistrationIdentifiers">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="TSPRegistrationIdentifier" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
+						<xs:element name="TSPRegistrationIdentifier" type="xs:string" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
-			<xs:element name="CountryCode" type="xs:string" />
 			
 			<xs:element name="TrustedServices">
 				<xs:complexType>
@@ -900,6 +898,8 @@
 				</xs:complexType>
 			</xs:element>
 		</xs:sequence>
+		<xs:attribute name="TL" type="xs:IDREF" use="required" />
+		<xs:attribute name="LOTL" type="xs:IDREF" use="optional" />
 	</xs:complexType>
 	
 	<xs:complexType name="TrustedService">
@@ -907,7 +907,7 @@
 			<xs:element name="ServiceNames">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="ServiceName" type="LangAndValue" minOccurs="1" maxOccurs="unbounded" />
+						<xs:element name="ServiceName" type="LangAndValue" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>

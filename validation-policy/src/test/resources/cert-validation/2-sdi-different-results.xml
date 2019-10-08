@@ -43,12 +43,9 @@
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-					<LOTLUrl>http://localhost:8080/qes-validation-web/tl/LOTL-3.xml</LOTLUrl>
-					<TLUrl>http://localhost:8080/qes-validation-web/tl/TL-5.xml</TLUrl>
+                <TrustedServiceProvider TL="TL-DDB04A2C92BCE7C39A7611EA814F5CC1C6425BD6A5D979A57CBF58B14436FD5D" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">TSP-5.3 Name</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-200438262</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <CountryCode>IT</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-D63E106FC51D93A2A04C36C66BC951B1C774AFC9A50CEBFC43836AE63C60B02A">
                             <ServiceNames><ServiceName lang="en">TS-5.3.3 Name - A</ServiceName></ServiceNames>
@@ -129,12 +126,9 @@
                 <qcTypeOid Description="qc-type-esign">0.4.0.1862.1.6.1</qcTypeOid>
             </QCTypes>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-					<LOTLUrl>http://localhost:8080/qes-validation-web/tl/LOTL-3.xml</LOTLUrl>
-					<TLUrl>http://localhost:8080/qes-validation-web/tl/TL-5.xml</TLUrl>
+                <TrustedServiceProvider TL="TL-DDB04A2C92BCE7C39A7611EA814F5CC1C6425BD6A5D979A57CBF58B14436FD5D" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">TSP-5.3 Name</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-200438262</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <CountryCode>IT</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-D63E106FC51D93A2A04C36C66BC951B1C774AFC9A50CEBFC43836AE63C60B02A">
                             <ServiceNames><ServiceName lang="en">TS-5.3.3 Name - A</ServiceName></ServiceNames>
@@ -198,7 +192,7 @@
         </Revocation>
     </UsedRevocations>
     <TrustedLists>
-        <TrustedList>
+        <TrustedList Id="TL-DDB04A2C92BCE7C39A7611EA814F5CC1C6425BD6A5D979A57CBF58B14436FD5D">
             <CountryCode>IT</CountryCode>
             <Url>http://46.101.246.130:8080/esig-validation-tests/tl/TL-5.xml</Url>
             <SequenceNumber>1</SequenceNumber>
@@ -208,7 +202,7 @@
             <NextUpdate>2019-01-02T00:00:00</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
-	    <TrustedList LOTL="true">
+    	<TrustedList Id="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E" LOTL="true">
 	        <CountryCode>EU</CountryCode>
 	        <Url>http://46.101.246.130:8080/esig-validation-tests/tl/LOTL-3.xml</Url>
 	        <SequenceNumber>1</SequenceNumber>

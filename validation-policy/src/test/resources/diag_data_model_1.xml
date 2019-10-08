@@ -113,14 +113,11 @@
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-            		<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
-            		<TLUrl>https://www.nrca-ds.de/st/TSL-XML.xml</TLUrl>
+                <TrustedServiceProvider TL="TL-C876A5D23654549B5B16B869E1368AFF6EB2E5ECD13F05C489E23F6A919A2164" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames>
                     	<TSPName lang="en">D-Trust GmbH</TSPName>
                     </TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <CountryCode>DE</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-DE5AE81F11D1B93516A65E6BBEFC07C17D9EEF01B66E1330CB0424D7AC2FD569">
                             <ServiceNames><ServiceName lang="en">D-TRUST Qualified Root CA 3 2014:PN</ServiceName></ServiceNames>
@@ -260,14 +257,11 @@
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-            		<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
-            		<TLUrl>https://www.nrca-ds.de/st/TSL-XML.xml</TLUrl>
+                <TrustedServiceProvider TL="TL-C876A5D23654549B5B16B869E1368AFF6EB2E5ECD13F05C489E23F6A919A2164" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames>
                     	<TSPName lang="en">D-Trust GmbH</TSPName>
                     </TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <CountryCode>DE</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-454A164B9236CF9C380DF9959F751DED503F91BE3EC646C7042CBB0E1E17A7D5">
                             <ServiceNames><ServiceName lang="en">D-TRUST qualified Signature ID card</ServiceName></ServiceNames>
@@ -334,14 +328,11 @@
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-            		<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
-            		<TLUrl>https://www.nrca-ds.de/st/TSL-XML.xml</TLUrl>
+                <TrustedServiceProvider TL="TL-C876A5D23654549B5B16B869E1368AFF6EB2E5ECD13F05C489E23F6A919A2164" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames>
                     	<TSPName lang="en">D-Trust GmbH</TSPName>
                     </TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <CountryCode>DE</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-454A164B9236CF9C380DF9959F751DED503F91BE3EC646C7042CBB0E1E17A7D5">
                             <ServiceNames><ServiceName lang="en">D-TRUST qualified Signature ID card</ServiceName></ServiceNames>
@@ -411,14 +402,11 @@
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-            		<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
-            		<TLUrl>https://www.nrca-ds.de/st/TSL-XML.xml</TLUrl>
+                <TrustedServiceProvider TL="TL-C876A5D23654549B5B16B869E1368AFF6EB2E5ECD13F05C489E23F6A919A2164" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames>
                     	<TSPName lang="en">D-Trust GmbH</TSPName>
                     </TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <CountryCode>DE</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-5454A5036E584DDA98B55AE89C34BA27571302F176C3034DAE254C34363AE8F3">
                             <ServiceNames><ServiceName lang="en">D-TRUST Qualified Root CA 3 2014:PN</ServiceName></ServiceNames>
@@ -536,14 +524,11 @@
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-            		<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
-            		<TLUrl>https://www.nrca-ds.de/st/TSL-XML.xml</TLUrl>
+                <TrustedServiceProvider TL="TL-C876A5D23654549B5B16B869E1368AFF6EB2E5ECD13F05C489E23F6A919A2164" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames>
                     	<TSPName lang="en">D-Trust GmbH</TSPName>
                     </TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <CountryCode>DE</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-5454A5036E584DDA98B55AE89C34BA27571302F176C3034DAE254C34363AE8F3">
                             <ServiceNames><ServiceName lang="en">D-TRUST Qualified Root CA 3 2014:PN</ServiceName></ServiceNames>
@@ -630,14 +615,11 @@
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-            		<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
-            		<TLUrl>https://www.nrca-ds.de/st/TSL-XML.xml</TLUrl>
+                <TrustedServiceProvider TL="TL-C876A5D23654549B5B16B869E1368AFF6EB2E5ECD13F05C489E23F6A919A2164" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames>
                     	<TSPName lang="en">D-Trust GmbH</TSPName>
                     </TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <CountryCode>DE</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-454A164B9236CF9C380DF9959F751DED503F91BE3EC646C7042CBB0E1E17A7D5">
                             <ServiceNames><ServiceName lang="en">D-TRUST qualified Signature ID card</ServiceName></ServiceNames>
@@ -711,7 +693,7 @@
         </SignerData>
     </OriginalDocuments>
     <TrustedLists>
-        <TrustedList>
+        <TrustedList Id="TL-C876A5D23654549B5B16B869E1368AFF6EB2E5ECD13F05C489E23F6A919A2164">
             <CountryCode>DE</CountryCode>
             <Url>https://www.nrca-ds.de/st/TSL-XML.xml</Url>
             <SequenceNumber>69</SequenceNumber>
@@ -721,7 +703,7 @@
             <NextUpdate>2019-07-14T00:00:00</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
-    	<TrustedList LOTL="true">
+    	<TrustedList Id="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E" LOTL="true">
 	        <CountryCode>EU</CountryCode>
 	        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
 	        <SequenceNumber>228</SequenceNumber>

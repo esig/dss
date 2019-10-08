@@ -110,7 +110,7 @@ public class SimpleReportForCertificateBuilder {
 				Set<String> uniqueServiceNames = getUniqueServiceNames(trustedServices);
 				for (String serviceName : uniqueServiceNames) {
 					XmlTrustAnchor trustAnchor = new XmlTrustAnchor();
-					trustAnchor.setCountryCode(xmlTrustedServiceProvider.getCountryCode());
+					trustAnchor.setCountryCode(xmlTrustedServiceProvider.getTL().getCountryCode());
 					trustAnchor.setTrustServiceProvider(getFirst(xmlTrustedServiceProvider.getTSPNames()));
 					trustAnchor.setTrustServiceProviderRegistrationId(xmlTrustedServiceProvider.getTSPRegistrationIdentifiers().get(0));
 					trustAnchor.setTrustServiceName(serviceName);

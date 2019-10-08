@@ -122,7 +122,10 @@ public class DiagnosticDataBuilderTest {
 		Iterable<TrustServiceStatusAndInformationExtensions> srcList = Arrays.<TrustServiceStatusAndInformationExtensions>asList(serviceStatus);
 		TimeDependentValues<TrustServiceStatusAndInformationExtensions> status = new TimeDependentValues<TrustServiceStatusAndInformationExtensions>(
 				srcList);
-		TrustProperties trustProperties = new TrustProperties("aaaa", "bbb", trustServiceProvider, status);
+
+		LOTLInfo lotlInfo = new LOTLInfo(null, null, null, "aaaa");
+		TLInfo tlInfo = new TLInfo(null, null, null, "bbb");
+		TrustProperties trustProperties = new TrustProperties(lotlInfo.getIdentifier(), tlInfo.getIdentifier(), trustServiceProvider, status);
 		
 		HashMap<CertificateToken, List<TrustProperties>> hashMap = new HashMap<CertificateToken, List<TrustProperties>>();
 		hashMap.put(rootToken, Arrays.asList(trustProperties));

@@ -83,8 +83,10 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 		if (signingCertificate != null && signingCertificate.hasTrustedServices()) {
 
 			List<TrustedServiceWrapper> originalTSPs = signingCertificate.getTrustedServices();
-			Set<String> trustedListUrls = originalTSPs.stream().map(t -> t.getTlUrl()).collect(Collectors.toSet());
-			Set<String> listOfTrustedListUrls = originalTSPs.stream().map(t -> t.getLotlUrl()).collect(Collectors.toSet());
+			Set<String> trustedListUrls = originalTSPs.stream().filter(t -> t.getTrustedList() != null)
+					.map(t -> t.getTrustedList().getUrl()).collect(Collectors.toSet());
+			Set<String> listOfTrustedListUrls = originalTSPs.stream().filter(t -> t.getListOfTrustedLists() != null)
+					.map(t -> t.getListOfTrustedLists().getUrl()).collect(Collectors.toSet());
 
 			for (String lotlURL : listOfTrustedListUrls) {
 				XmlTLAnalysis lotlAnalysis = getTlAnalysis(lotlURL);

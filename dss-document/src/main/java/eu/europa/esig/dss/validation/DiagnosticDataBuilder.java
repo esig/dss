@@ -99,6 +99,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
+import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -160,6 +161,7 @@ public class DiagnosticDataBuilder {
 	private Map<String, XmlTimestamp> xmlTimestamps = new HashMap<String, XmlTimestamp>();
 	private Map<String, XmlSignerData> xmlSignedData = new HashMap<String, XmlSignerData>();
 	private Map<String, XmlOrphanToken> xmlOrphanTokens = new HashMap<String, XmlOrphanToken>();
+	private Map<String, XmlTrustedList> xmlTrustedLists = new HashMap<String, XmlTrustedList>();
 
 	// A map between {@link CertificateToken}'s id and its certificate refs
 	private Map<String, List<CertificateRef>> certificateRefsMap = new HashMap<String, List<CertificateRef>>();
@@ -465,57 +467,55 @@ public class DiagnosticDataBuilder {
 		TLValidationJobSummary summary = tlCS.getSummary();
 		if (summary != null) {
 			
-			Set<String> tlUrls = getTLUrls(tlCS);
-			if (Utils.isCollectionNotEmpty(tlUrls)) {
-				for (String url : tlUrls) {
-					TLInfo tlInfo = summary.getTLInfoByURL(url);
+			Set<Identifier> tlIdentifiers = getTLIdentifiers(tlCS);
+			if (Utils.isCollectionNotEmpty(tlIdentifiers)) {
+				for (Identifier id : tlIdentifiers) {
+					TLInfo tlInfo = summary.getTLInfoById(id);
 					if (tlInfo != null) {
 						trustedLists.add(getXmlTrustedList(tlInfo));
 					}
 				}
-			} else {
-				LOG.warn("The TrustedListsCertificateSource does not contain TLValidationJobSummary. TLValidationJob is not performed!");
 			}
 
-			Set<String> lotlUrls = getLOTLUrls(tlCS);
-			if (Utils.isCollectionNotEmpty(lotlUrls)) {
-				for (String url : lotlUrls) {
-					LOTLInfo lotlInfo = summary.getLOTLInfoByURL(url);
+			Set<Identifier> lotlIdentifiers = getLOTLIdentifiers(tlCS);
+			if (Utils.isCollectionNotEmpty(lotlIdentifiers)) {
+				for (Identifier id : lotlIdentifiers) {
+					LOTLInfo lotlInfo = summary.getLOTLInfoById(id);
 					if (lotlInfo != null) {
 						trustedLists.add(getXmlTrustedList(lotlInfo));
 					}
 				}
-			} else {
-				LOG.warn("The TrustedListsCertificateSource does not contain TLValidationJobSummary. TLValidationJob is not performed!");
 			}
 			
+		} else {
+			LOG.warn("The TrustedListsCertificateSource does not contain TLValidationJobSummary. TLValidationJob is not performed!");
 		}
 		return trustedLists;
 	}
 
-	private Set<String> getTLUrls(TrustedListsCertificateSource tlCS) {
-		Set<String> tlUrls = new HashSet<String>();
+	private Set<Identifier> getTLIdentifiers(TrustedListsCertificateSource tlCS) {
+		Set<Identifier> tlIdentifiers = new HashSet<Identifier>();
 		for (CertificateToken certificateToken : usedCertificates) {
 			List<TrustProperties> trustServices = tlCS.getTrustServices(certificateToken);
 			for (TrustProperties trustProperties : trustServices) {
-				tlUrls.add(trustProperties.getTlUrl());
+				tlIdentifiers.add(trustProperties.getTLIdentifier());
 			}
 		}
-		return tlUrls;
+		return tlIdentifiers;
 	}
 
-	private Set<String> getLOTLUrls(TrustedListsCertificateSource tlCS) {
-		Set<String> lotlUrls = new HashSet<String>();
+	private Set<Identifier> getLOTLIdentifiers(TrustedListsCertificateSource tlCS) {
+		Set<Identifier> lotlIdentifiers = new HashSet<Identifier>();
 		for (CertificateToken certificateToken : usedCertificates) {
 			List<TrustProperties> trustServices = tlCS.getTrustServices(certificateToken);
 			for (TrustProperties trustProperties : trustServices) {
-				String lotlUrl = trustProperties.getLotlUrl();
+				Identifier lotlUrl = trustProperties.getLOTLIdentifier();
 				if (lotlUrl != null) {
-					lotlUrls.add(lotlUrl);
+					lotlIdentifiers.add(lotlUrl);
 				}
 			}
 		}
-		return lotlUrls;
+		return lotlIdentifiers;
 	}
 
 	private XmlTrustedList getXmlTrustedList(TLInfo tlInfo) {
@@ -523,6 +523,7 @@ public class DiagnosticDataBuilder {
 		if (tlInfo instanceof LOTLInfo) {
 			result.setLOTL(true);
 		}
+		result.setId(tlInfo.getIdentifier().asXmlId());
 		result.setUrl(tlInfo.getUrl());
 		ParsingInfoRecord parsingCacheInfo = tlInfo.getParsingCacheInfo();
 		if (parsingCacheInfo != null) {
@@ -540,6 +541,7 @@ public class DiagnosticDataBuilder {
 		if (validationCacheInfo != null) {
 			result.setWellSigned(validationCacheInfo.isValid());
 		}
+		xmlTrustedLists.put(tlInfo.getIdentifier().asXmlId(), result);
 		return result;
 	}
 
@@ -1705,10 +1707,13 @@ public class DiagnosticDataBuilder {
 
 	private XmlTrustedServiceProvider buildXmlTrustedServiceProvider(TrustProperties trustProperties) {
 		XmlTrustedServiceProvider result = new XmlTrustedServiceProvider();
-		result.setLOTLUrl(trustProperties.getLotlUrl());
-		result.setTLUrl(trustProperties.getTlUrl());
+		if (trustProperties.getLOTLIdentifier() != null) {
+			result.setLOTL(xmlTrustedLists.get(trustProperties.getLOTLIdentifier().asXmlId()));
+		}
+		if (trustProperties.getTLIdentifier() != null) {
+			result.setTL(xmlTrustedLists.get(trustProperties.getTLIdentifier().asXmlId()));
+		}
 		TrustServiceProvider tsp = trustProperties.getTrustServiceProvider();
-		result.setCountryCode(tsp.getTerritory());
 		result.setTSPNames(getLangAndValues(tsp.getNames()));
 		result.setTSPRegistrationIdentifiers(tsp.getRegistrationIdentifiers());
 		return result;

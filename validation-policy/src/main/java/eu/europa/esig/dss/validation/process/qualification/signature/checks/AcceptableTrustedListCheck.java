@@ -36,7 +36,7 @@ public class AcceptableTrustedListCheck<T extends XmlConstraintsConclusion> exte
 	private final XmlTLAnalysis tlAnalysis;
 
 	public AcceptableTrustedListCheck(T result, XmlTLAnalysis tlAnalysis, LevelConstraint constraint) {
-		super(result, constraint, tlAnalysis.getCountryCode());
+		super(result, constraint, tlAnalysis.getURL());
 
 		this.tlAnalysis = tlAnalysis;
 	}
@@ -58,7 +58,7 @@ public class AcceptableTrustedListCheck<T extends XmlConstraintsConclusion> exte
 
 	@Override
 	protected String getAdditionalInfo() {
-		Object[] params = new Object[] { tlAnalysis.getCountryCode() };
+		Object[] params = new Object[] { tlAnalysis.getURL() };
 		return MessageFormat.format(AdditionalInfo.TRUSTED_LIST, params);
 	}
 

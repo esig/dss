@@ -72,6 +72,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
+import eu.europa.esig.dss.spi.tsl.TLInfo;
 import eu.europa.esig.dss.spi.tsl.TrustProperties;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.tsl.dto.TrustServiceProvider;
@@ -767,7 +768,9 @@ public class XMLSignatureWrappingTest {
 		TrustedListsCertificateSource trustedListsCertificateSource = new TrustedListsCertificateSource();
 
 		HashMap<CertificateToken, List<TrustProperties>> hashMap = new HashMap<CertificateToken, List<TrustProperties>>();
-		TrustProperties trustProperties = new TrustProperties("BE.xml", new TrustServiceProvider(), new TimeDependentValues<>());
+		
+		TLInfo tlInfo = new TLInfo(null, null, null, "BE.xml");
+		TrustProperties trustProperties = new TrustProperties(tlInfo.getIdentifier(), new TrustServiceProvider(), new TimeDependentValues<>());
 		hashMap.put(rootToken, Arrays.asList(trustProperties));
 		trustedListsCertificateSource.setTrustPropertiesByCertificates(hashMap);
 

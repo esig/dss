@@ -2,6 +2,7 @@ package eu.europa.esig.dss.spi.tsl;
 
 import java.util.List;
 
+import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
@@ -79,16 +80,16 @@ public class TLValidationJobSummary {
 	}
 	
 	/**
-	 * Returns a TLInfo object by URL
+	 * Returns a TLInfo object by Identifier
 	 * 
-	 * @param url
-	 *            the url of the searched TL
+	 * @param identifier
+	 *            the Identifier of the searched TL
 	 * @return a TLInfo or null
 	 */
-	public TLInfo getTLInfoByURL(String url) {
+	public TLInfo getTLInfoById(Identifier identifier) {
 		if (Utils.isCollectionNotEmpty(otherTLInfos)) {
 			for (TLInfo tlInfo : otherTLInfos) {
-				if (Utils.areStringsEqual(url, tlInfo.getUrl())) {
+				if (identifier.equals(tlInfo.getIdentifier())) {
 					return tlInfo;
 				}
 			}
@@ -97,7 +98,7 @@ public class TLValidationJobSummary {
 		if (Utils.isCollectionNotEmpty(lotlInfos)) {
 			for (LOTLInfo lotlInfo : lotlInfos) {
 				for (TLInfo tlInfo : lotlInfo.getTLInfos()) {
-					if (Utils.areStringsEqual(url, tlInfo.getUrl())) {
+					if (identifier.equals(tlInfo.getIdentifier())) {
 						return tlInfo;
 					}
 				}
@@ -108,16 +109,16 @@ public class TLValidationJobSummary {
 	}
 
 	/**
-	 * Returns a LOTLInfo object by URL
+	 * Returns a LOTLInfo object by Identifier
 	 * 
-	 * @param url
-	 *            the url of the searched LOTL
+	 * @param identifier
+	 *            the Identifier of the searched LOTL
 	 * @return a LOTLInfo or null
 	 */
-	public LOTLInfo getLOTLInfoByURL(String url) {
+	public LOTLInfo getLOTLInfoById(Identifier identifier) {
 		if (Utils.isCollectionNotEmpty(lotlInfos)) {
 			for (LOTLInfo lotlInfo : lotlInfos) {
-				if (Utils.areStringsEqual(url, lotlInfo.getUrl())) {
+				if (identifier.equals(lotlInfo.getIdentifier())) {
 					return lotlInfo;
 				}
 			}

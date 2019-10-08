@@ -109,11 +109,9 @@
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                	<TLUrl>http://www.openlimit.ol/TSL-OL.xml</TLUrl>
+                <TrustedServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
                     <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <CountryCode>OL</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-B2A1ED94EDFD732D0EA08218B5899A8DDBE209C1FA8B3E29D5506799C44AEA6B">
                             <ServiceNames><ServiceName lang="en">OpenLimit CryptoModule 2019 XCA ROOT 3</ServiceName></ServiceNames>
@@ -184,11 +182,9 @@
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                	<TLUrl>http://www.openlimit.ol/TSL-OL.xml</TLUrl>
+                <TrustedServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
                     <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <CountryCode>OL</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-D823D1CB01C995262DAF465BEEDC1E170CA8568E8E28480E87369FB78AD53708">
                             <ServiceNames><ServiceName lang="en">OpenLimit CryptoModule 2019 XCA ROOT 1</ServiceName></ServiceNames>
@@ -259,11 +255,9 @@
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                	<TLUrl>http://www.openlimit.ol/TSL-OL.xml</TLUrl>
+                <TrustedServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
                     <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <CountryCode>OL</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-D823D1CB01C995262DAF465BEEDC1E170CA8568E8E28480E87369FB78AD53708">
                             <ServiceNames><ServiceName lang="en">OpenLimit CryptoModule 2019 XCA ROOT 1</ServiceName></ServiceNames>
@@ -337,11 +331,9 @@
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                	<TLUrl>http://www.openlimit.ol/TSL-OL.xml</TLUrl>
+                <TrustedServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
                     <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <CountryCode>OL</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-D823D1CB01C995262DAF465BEEDC1E170CA8568E8E28480E87369FB78AD53708">
                             <ServiceNames><ServiceName lang="en">OpenLimit CryptoModule 2019 XCA ROOT 1</ServiceName></ServiceNames>
@@ -411,11 +403,9 @@
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                	<TLUrl>http://www.openlimit.ol/TSL-OL.xml</TLUrl>
+                <TrustedServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
                     <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <CountryCode>OL</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-B2A1ED94EDFD732D0EA08218B5899A8DDBE209C1FA8B3E29D5506799C44AEA6B">
                             <ServiceNames><ServiceName lang="en">OpenLimit CryptoModule 2019 XCA ROOT 3</ServiceName></ServiceNames>
@@ -486,11 +476,9 @@
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                	<TLUrl>http://www.openlimit.ol/TSL-OL.xml</TLUrl>
+                <TrustedServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
                     <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <CountryCode>OL</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-D823D1CB01C995262DAF465BEEDC1E170CA8568E8E28480E87369FB78AD53708">
                             <ServiceNames><ServiceName lang="en">OpenLimit CryptoModule 2019 XCA ROOT 1</ServiceName></ServiceNames>
@@ -605,7 +593,7 @@
         </SignerData>
     </OriginalDocuments>
     <TrustedLists>
-        <TrustedList>
+        <TrustedList Id="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
             <CountryCode>OL</CountryCode>
             <Url>http://www.openlimit.ol/TSL-OL.xml</Url>
             <SequenceNumber>13</SequenceNumber>

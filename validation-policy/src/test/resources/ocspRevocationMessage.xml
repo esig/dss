@@ -175,12 +175,9 @@
                 <qcTypeOid Description="qc-type-esign">0.4.0.1862.1.6.1</qcTypeOid>
             </QCTypes>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                	<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
-					<TLUrl>https://comunicatii.gov.ro/trustedlist.xml</TLUrl>
+                <TrustedServiceProvider TL="TL-1AD6AD77C99C8AD96E3D2950A8896C20D8AEA90680636AAF38C70CB3189F5ED5" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">CERTSIGN S.A.</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATRO-18288250</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <CountryCode>RO</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-C670C79BF277AF7E7B34A6AA4FA304441833C6BD01A70A7E9B7A2D94C1C1F926">
                             <ServiceNames><ServiceName lang="en">certSIGN Qualified CA</ServiceName></ServiceNames>
@@ -254,12 +251,9 @@
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                	<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
-					<TLUrl>https://comunicatii.gov.ro/trustedlist.xml</TLUrl>
+                <TrustedServiceProvider TL="TL-1AD6AD77C99C8AD96E3D2950A8896C20D8AEA90680636AAF38C70CB3189F5ED5" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">CERTSIGN S.A.</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATRO-18288250</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <CountryCode>RO</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-C670C79BF277AF7E7B34A6AA4FA304441833C6BD01A70A7E9B7A2D94C1C1F926">
                             <ServiceNames><ServiceName lang="en">certSIGN Qualified CA</ServiceName></ServiceNames>
@@ -311,7 +305,7 @@
         </SignerData>
     </OriginalDocuments>
     <TrustedLists>
-        <TrustedList>
+        <TrustedList Id="TL-1AD6AD77C99C8AD96E3D2950A8896C20D8AEA90680636AAF38C70CB3189F5ED5">
             <CountryCode>RO</CountryCode>
             <Url>https://comunicatii.gov.ro/trustedlist.xml</Url>
             <SequenceNumber>37</SequenceNumber>
@@ -321,7 +315,7 @@
             <NextUpdate>2020-01-10T00:00:00</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
-	    <TrustedList LOTL="true">
+    	<TrustedList Id="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E" LOTL="true">
 	        <CountryCode>EU</CountryCode>
 	        <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
 	        <SequenceNumber>247</SequenceNumber>

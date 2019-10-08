@@ -24,9 +24,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
@@ -213,12 +211,11 @@ public class CertificateWrapper extends AbstractTokenProxy {
 				if (trustedServices != null) {
 					for (XmlTrustedService trustedService : trustedServices) {
 						TrustedServiceWrapper wrapper = new TrustedServiceWrapper();
-						wrapper.setTlUrl(tsp.getTLUrl());
-						wrapper.setLotlUrl(tsp.getLOTLUrl());
+						wrapper.setTrustedList(tsp.getTL());
+						wrapper.setListOfTrustedLists(tsp.getLOTL());
 						wrapper.setTspNames(tspNames);
 						wrapper.setServiceDigitalIdentifier(new CertificateWrapper(trustedService.getServiceDigitalIdentifier()));
 						wrapper.setServiceNames(getValues(trustedService.getServiceNames()));
-						wrapper.setCountryCode(tsp.getCountryCode());
 						wrapper.setStatus(trustedService.getStatus());
 						wrapper.setType(trustedService.getServiceType());
 						wrapper.setStartDate(trustedService.getStartDate());
@@ -305,15 +302,6 @@ public class CertificateWrapper extends AbstractTokenProxy {
 			}
 		}
 		return result;
-	}
-
-	public Set<String> getTrustedListCountryCodes() {
-		Set<String> countryCodes = new HashSet<String>();
-		List<XmlTrustedServiceProvider> trustedServiceProviders = certificate.getTrustedServiceProviders();
-		for (XmlTrustedServiceProvider tsp : trustedServiceProviders) {
-			countryCodes.add(tsp.getCountryCode());
-		}
-		return countryCodes;
 	}
 
 	@Override

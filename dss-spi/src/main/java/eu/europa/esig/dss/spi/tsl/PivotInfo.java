@@ -1,8 +1,10 @@
 package eu.europa.esig.dss.spi.tsl;
 
+import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.spi.tsl.dto.info.DownloadInfoRecord;
 import eu.europa.esig.dss.spi.tsl.dto.info.ParsingInfoRecord;
 import eu.europa.esig.dss.spi.tsl.dto.info.ValidationInfoRecord;
+import eu.europa.esig.dss.spi.tsl.identifier.PivotIdentifier;
 
 public class PivotInfo extends LOTLInfo {
 
@@ -23,6 +25,11 @@ public class PivotInfo extends LOTLInfo {
 	@Override
 	public boolean isPivot() {
 		return true;
+	}
+	
+	@Override
+	public Identifier getIdentifier() {
+		return new PivotIdentifier(this);
 	}
 
 }

@@ -2,9 +2,11 @@ package eu.europa.esig.dss.spi.tsl;
 
 import java.util.List;
 
+import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.spi.tsl.dto.info.DownloadInfoRecord;
 import eu.europa.esig.dss.spi.tsl.dto.info.ParsingInfoRecord;
 import eu.europa.esig.dss.spi.tsl.dto.info.ValidationInfoRecord;
+import eu.europa.esig.dss.spi.tsl.identifier.LOTLIdentifier;
 
 public class LOTLInfo extends TLInfo {
 	
@@ -70,6 +72,11 @@ public class LOTLInfo extends TLInfo {
 	 */
 	public boolean isPivot() {
 		return false;
+	}
+	
+	@Override
+	public Identifier getIdentifier() {
+		return new LOTLIdentifier(this);
 	}
 
 }

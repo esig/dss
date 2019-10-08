@@ -104,11 +104,9 @@
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                	<TLUrl>http://www.openlimit.ol/TSL-OL.xml</TLUrl>
+                <TrustedServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
                     <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <CountryCode>OL</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
                             <ServiceNames><ServiceName lang="en">OpenLimit CryptoModule 2019 XCA CHAIN ROOT 1</ServiceName></ServiceNames>
@@ -183,11 +181,9 @@
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                	<TLUrl>http://www.openlimit.ol/TSL-OL.xml</TLUrl>
+                <TrustedServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
                     <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <CountryCode>OL</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
                             <ServiceNames><ServiceName lang="en">OpenLimit CryptoModule 2019 XCA CHAIN ROOT 1</ServiceName></ServiceNames>
@@ -268,11 +264,9 @@
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                	<TLUrl>http://www.openlimit.ol/TSL-OL.xml</TLUrl>
+                <TrustedServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
                     <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <CountryCode>OL</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
                             <ServiceNames><ServiceName lang="en">OpenLimit CryptoModule 2019 XCA CHAIN ROOT 1</ServiceName></ServiceNames>
@@ -353,11 +347,9 @@
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                	<TLUrl>http://www.openlimit.ol/TSL-OL.xml</TLUrl>
+                <TrustedServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
                     <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <CountryCode>OL</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
                             <ServiceNames><ServiceName lang="en">OpenLimit CryptoModule 2019 XCA CHAIN ROOT 1</ServiceName></ServiceNames>
@@ -460,7 +452,7 @@
         </SignerData>
     </OriginalDocuments>
     <TrustedLists>
-        <TrustedList>
+        <TrustedList Id="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
             <CountryCode>OL</CountryCode>
             <Url>http://www.openlimit.ol/TSL-OL.xml</Url>
             <SequenceNumber>12</SequenceNumber>

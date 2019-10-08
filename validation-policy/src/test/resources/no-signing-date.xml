@@ -105,12 +105,9 @@
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                	<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
-					<TLUrl>https://www.acm.nl/download/bestand/current-tsl.xml</TLUrl>
+                <TrustedServiceProvider TL="TL-2C9AB8299BAAD72CD5970EDC7F9D5AB766527E8EF65FB8447451A2E28637AD15" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">QuoVadis Trustlink B.V.</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-280226043</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <CountryCode>NL</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E">
 		                    <ServiceNames><ServiceName lang="en">QuoVadis EU Issuing Certification Authority G3</ServiceName></ServiceNames>
@@ -180,12 +177,9 @@
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                	<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
-					<TLUrl>https://www.acm.nl/download/bestand/current-tsl.xml</TLUrl>
+                <TrustedServiceProvider TL="TL-2C9AB8299BAAD72CD5970EDC7F9D5AB766527E8EF65FB8447451A2E28637AD15" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">QuoVadis Trustlink B.V.</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-280226043</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <CountryCode>NL</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E">
 		                    <ServiceNames><ServiceName lang="en">QuoVadis EU Issuing Certification Authority G3</ServiceName></ServiceNames>
@@ -261,12 +255,9 @@
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                	<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
-					<TLUrl>https://www.acm.nl/download/bestand/current-tsl.xml</TLUrl>
+                <TrustedServiceProvider TL="TL-2C9AB8299BAAD72CD5970EDC7F9D5AB766527E8EF65FB8447451A2E28637AD15" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">QuoVadis Trustlink B.V.</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-280226043</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <CountryCode>NL</CountryCode>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E">
 		                    <ServiceNames><ServiceName lang="en">QuoVadis EU Issuing Certification Authority G3</ServiceName></ServiceNames>
@@ -328,7 +319,7 @@
         </SignerData>
     </OriginalDocuments>
     <TrustedLists>
-        <TrustedList>
+        <TrustedList Id="TL-2C9AB8299BAAD72CD5970EDC7F9D5AB766527E8EF65FB8447451A2E28637AD15">
             <CountryCode>NL</CountryCode>
             <Url>https://www.acm.nl/download/bestand/current-tsl.xml</Url>
             <SequenceNumber>28</SequenceNumber>
@@ -338,7 +329,7 @@
             <NextUpdate>2017-06-12T08:00:00</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
-	    <TrustedList LOTL="true">
+    	<TrustedList Id="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E" LOTL="true">
 	        <CountryCode>EU</CountryCode>
 	        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
 	        <SequenceNumber>164</SequenceNumber>
