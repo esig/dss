@@ -110,6 +110,7 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+                	<TLUrl>http://www.openlimit.ol/TSL-OL.xml</TLUrl>
                     <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>OL</CountryCode>
@@ -184,6 +185,7 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+                	<TLUrl>http://www.openlimit.ol/TSL-OL.xml</TLUrl>
                     <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>OL</CountryCode>
@@ -258,6 +260,7 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+                	<TLUrl>http://www.openlimit.ol/TSL-OL.xml</TLUrl>
                     <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>OL</CountryCode>
@@ -335,6 +338,7 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+                	<TLUrl>http://www.openlimit.ol/TSL-OL.xml</TLUrl>
                     <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>OL</CountryCode>
@@ -408,6 +412,7 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+                	<TLUrl>http://www.openlimit.ol/TSL-OL.xml</TLUrl>
                     <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>OL</CountryCode>
@@ -482,6 +487,7 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+                	<TLUrl>http://www.openlimit.ol/TSL-OL.xml</TLUrl>
                     <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>OL</CountryCode>

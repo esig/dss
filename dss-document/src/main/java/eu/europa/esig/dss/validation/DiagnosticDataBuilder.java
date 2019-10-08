@@ -356,14 +356,7 @@ public class DiagnosticDataBuilder {
 			if (trustedSource instanceof TrustedListsCertificateSource) {
 				TrustedListsCertificateSource tlCS = (TrustedListsCertificateSource) trustedSource;
 
-				List<XmlTrustedList> xmlTrustedLists = buildXmlTrustedLists(tlCS);
-				if (Utils.isCollectionNotEmpty(xmlTrustedLists)) {
-					diagnosticData.setTrustedLists(xmlTrustedLists); 
-				}
-				List<XmlTrustedList> xmlListOfTrustedLists = buildXmlListOfTrustedLists(tlCS);
-				if (Utils.isCollectionNotEmpty(xmlListOfTrustedLists)) {
-					diagnosticData.setListOfTrustedLists(xmlListOfTrustedLists);
-				}
+				diagnosticData.getTrustedLists().addAll(buildXmlTrustedLists(tlCS));
 
 				for (XmlCertificate xmlCert : diagnosticData.getUsedCertificates()) {
 					xmlCert.setTrustedServiceProviders(getXmlTrustedServiceProviders(getCertificateToken(xmlCert.getId())));
@@ -466,31 +459,14 @@ public class DiagnosticDataBuilder {
 		return builtTimestamps;
 	}
 
-	private List<XmlTrustedList> buildXmlListOfTrustedLists(TrustedListsCertificateSource tlCS) {
-		List<XmlTrustedList> listOfTrustedLists = new ArrayList<XmlTrustedList>();
-		Set<String> lotlUrls = getLOTLUrls(tlCS);
-		if (Utils.isCollectionNotEmpty(lotlUrls)) {
-			TLValidationJobSummary summary = tlCS.getSummary();
-			if (summary != null) {
-				for (String url : lotlUrls) {
-					LOTLInfo lotlInfo = summary.getLOTLInfoByURL(url);
-					if (lotlInfo != null) {
-						listOfTrustedLists.add(getXmlTrustedList(lotlInfo));
-					}
-				}
-			} else {
-				LOG.warn("The TrustedListsCertificateSource does not contain TLValidationJobSummary. TLValidationJob is not performed!");
-			}
-		}
-		return listOfTrustedLists;
-	}
-
-	private List<XmlTrustedList> buildXmlTrustedLists(TrustedListsCertificateSource tlCS) {
+	private Collection<XmlTrustedList> buildXmlTrustedLists(TrustedListsCertificateSource tlCS) {
 		List<XmlTrustedList> trustedLists = new ArrayList<XmlTrustedList>();
-		Set<String> tlUrls = getTLUrls(tlCS);
-		if (Utils.isCollectionNotEmpty(tlUrls)) {
-			TLValidationJobSummary summary = tlCS.getSummary();
-			if (summary != null) {
+		
+		TLValidationJobSummary summary = tlCS.getSummary();
+		if (summary != null) {
+			
+			Set<String> tlUrls = getTLUrls(tlCS);
+			if (Utils.isCollectionNotEmpty(tlUrls)) {
 				for (String url : tlUrls) {
 					TLInfo tlInfo = summary.getTLInfoByURL(url);
 					if (tlInfo != null) {
@@ -500,6 +476,19 @@ public class DiagnosticDataBuilder {
 			} else {
 				LOG.warn("The TrustedListsCertificateSource does not contain TLValidationJobSummary. TLValidationJob is not performed!");
 			}
+
+			Set<String> lotlUrls = getLOTLUrls(tlCS);
+			if (Utils.isCollectionNotEmpty(lotlUrls)) {
+				for (String url : lotlUrls) {
+					LOTLInfo lotlInfo = summary.getLOTLInfoByURL(url);
+					if (lotlInfo != null) {
+						trustedLists.add(getXmlTrustedList(lotlInfo));
+					}
+				}
+			} else {
+				LOG.warn("The TrustedListsCertificateSource does not contain TLValidationJobSummary. TLValidationJob is not performed!");
+			}
+			
 		}
 		return trustedLists;
 	}
@@ -531,6 +520,9 @@ public class DiagnosticDataBuilder {
 
 	private XmlTrustedList getXmlTrustedList(TLInfo tlInfo) {
 		XmlTrustedList result = new XmlTrustedList();
+		if (tlInfo instanceof LOTLInfo) {
+			result.setLOTL(true);
+		}
 		result.setUrl(tlInfo.getUrl());
 		ParsingInfoRecord parsingCacheInfo = tlInfo.getParsingCacheInfo();
 		if (parsingCacheInfo != null) {
@@ -1830,10 +1822,12 @@ public class DiagnosticDataBuilder {
 		LOG.trace("--> GET_QUALIFIERS()");
 		List<String> list = new ArrayList<String>();
 		final List<ConditionForQualifiers> conditionsForQualifiers = serviceInfoStatus.getConditionsForQualifiers();
-		for (ConditionForQualifiers conditionForQualifiers : conditionsForQualifiers) {
-			Condition condition = conditionForQualifiers.getCondition();
-			if (condition.check(certificateToken)) {
-				list.addAll(conditionForQualifiers.getQualifiers());
+		if (Utils.isCollectionNotEmpty(conditionsForQualifiers)) {
+			for (ConditionForQualifiers conditionForQualifiers : conditionsForQualifiers) {
+				Condition condition = conditionForQualifiers.getCondition();
+				if (condition.check(certificateToken)) {
+					list.addAll(conditionForQualifiers.getQualifiers());
+				}
 			}
 		}
 		return list;

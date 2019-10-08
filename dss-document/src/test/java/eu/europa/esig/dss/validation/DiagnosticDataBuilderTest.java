@@ -26,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -43,6 +44,8 @@ import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.spi.tsl.TrustProperties;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.tsl.dto.TrustServiceProvider;
+import eu.europa.esig.dss.spi.tsl.dto.TrustServiceStatusAndInformationExtensions;
+import eu.europa.esig.dss.spi.tsl.dto.TrustServiceStatusAndInformationExtensions.TrustServiceStatusAndInformationExtensionsBuilder;
 import eu.europa.esig.dss.spi.util.TimeDependentValues;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -110,7 +113,17 @@ public class DiagnosticDataBuilderTest {
 
 		TrustedListsCertificateSource trustedCertSource = new TrustedListsCertificateSource();
 		trustedCertSource.setSummary(new TLValidationJobSummary(new ArrayList<LOTLInfo>(), new ArrayList<TLInfo>()));
-		TrustProperties trustProperties = new TrustProperties("BE.xml", new TrustServiceProvider(), new TimeDependentValues<>());
+		TrustServiceProvider trustServiceProvider = new TrustServiceProvider();
+		TrustServiceStatusAndInformationExtensionsBuilder builder = new TrustServiceStatusAndInformationExtensionsBuilder();
+		builder.setStatus("bla");
+		builder.setType("bla");
+		builder.setStartDate(new Date());
+		TrustServiceStatusAndInformationExtensions serviceStatus = new TrustServiceStatusAndInformationExtensions(builder);
+		Iterable<TrustServiceStatusAndInformationExtensions> srcList = Arrays.<TrustServiceStatusAndInformationExtensions>asList(serviceStatus);
+		TimeDependentValues<TrustServiceStatusAndInformationExtensions> status = new TimeDependentValues<TrustServiceStatusAndInformationExtensions>(
+				srcList);
+		TrustProperties trustProperties = new TrustProperties("aaaa", "bbb", trustServiceProvider, status);
+		
 		HashMap<CertificateToken, List<TrustProperties>> hashMap = new HashMap<CertificateToken, List<TrustProperties>>();
 		hashMap.put(rootToken, Arrays.asList(trustProperties));
 		trustedCertSource.setTrustPropertiesByCertificates(hashMap);

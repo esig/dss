@@ -61,7 +61,7 @@ public class UniqueServiceFilter implements TrustedServiceFilter {
 		} else if (Utils.isCollectionNotEmpty(trustServices)) {
 			LOG.info("More than one selected trust services");
 
-			EnumMap<CertificateQualification, String> qualificationResults = new EnumMap<CertificateQualification, String>(
+			EnumMap<CertificateQualification, List<String>> qualificationResults = new EnumMap<CertificateQualification, List<String>>(
 					CertificateQualification.class);
 			for (TrustedServiceWrapper trustService : trustServices) {
 				QualificationStrategy qcStrategy = QualificationStrategyFactory.createQualificationFromCertAndTL(endEntityCert, trustService);
@@ -76,7 +76,7 @@ public class UniqueServiceFilter implements TrustedServiceFilter {
 				CertificateQualification certQualification = CertQualificationMatrix.getCertQualification(qualifiedStatus, type, qscdStatus);
 
 				if (!qualificationResults.containsKey(certQualification)) {
-					qualificationResults.put(certQualification, trustService.getServiceNames().get(0));
+					qualificationResults.put(certQualification, trustService.getServiceNames());
 				}
 			}
 

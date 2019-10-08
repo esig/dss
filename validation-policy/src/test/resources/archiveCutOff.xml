@@ -1069,16 +1069,16 @@
 			<NextUpdate>2018-07-30T00:00:00</NextUpdate>
 			<WellSigned>true</WellSigned>
 		</TrustedList>
+		<TrustedList LOTL="true">
+			<CountryCode>EU</CountryCode>
+			<Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml
+			</Url>
+			<SequenceNumber>200</SequenceNumber>
+			<Version>5</Version>
+			<LastLoading>2018-02-20T10:03:56</LastLoading>
+			<IssueDate>2018-02-19T13:00:00</IssueDate>
+			<NextUpdate>2018-08-19T00:00:00</NextUpdate>
+			<WellSigned>true</WellSigned>
+		</TrustedList>
 	</TrustedLists>
-	<ListOfTrustedLists><TrustedList>
-		<CountryCode>EU</CountryCode>
-		<Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml
-		</Url>
-		<SequenceNumber>200</SequenceNumber>
-		<Version>5</Version>
-		<LastLoading>2018-02-20T10:03:56</LastLoading>
-		<IssueDate>2018-02-19T13:00:00</IssueDate>
-		<NextUpdate>2018-08-19T00:00:00</NextUpdate>
-		<WellSigned>true</WellSigned>
-	</TrustedList></ListOfTrustedLists>
 </DiagnosticData>

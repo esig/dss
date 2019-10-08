@@ -187,6 +187,8 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+					<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>https://tsl.belgium.be/tsl-be.xml</TLUrl>
                     <TSPNames><TSPName lang="en">Certipost n.v./s.a.</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATBE-0475396406</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>BE</CountryCode>
@@ -291,6 +293,8 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+					<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>https://tsl.belgium.be/tsl-be.xml</TLUrl>
                     <TSPNames><TSPName lang="en">Certipost n.v./s.a.</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATBE-0475396406</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>BE</CountryCode>
@@ -433,6 +437,8 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+					<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>http://www.ssi.gouv.fr/eidas/TL-FR.xml</TLUrl>	
                     <TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATFR-46439129164</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>FR</CountryCode>
@@ -506,6 +512,8 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+					<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>https://tsl.belgium.be/tsl-be.xml</TLUrl>
                     <TSPNames><TSPName lang="en">Certipost n.v./s.a.</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATBE-0475396406</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>BE</CountryCode>
@@ -599,6 +607,8 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+					<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>http://www.ssi.gouv.fr/eidas/TL-FR.xml</TLUrl>	
                     <TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATFR-46439129164</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>FR</CountryCode>
@@ -687,6 +697,8 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+					<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>http://www.ssi.gouv.fr/eidas/TL-FR.xml</TLUrl>	
                     <TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATFR-46439129164</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>FR</CountryCode>
@@ -770,6 +782,8 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+					<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>http://www.ssi.gouv.fr/eidas/TL-FR.xml</TLUrl>	
                     <TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATFR-46439129164</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>FR</CountryCode>
@@ -858,6 +872,8 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+					<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>https://tsl.belgium.be/tsl-be.xml</TLUrl>
                     <TSPNames><TSPName lang="en">Certipost n.v./s.a.</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATBE-0475396406</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>BE</CountryCode>
@@ -1156,15 +1172,15 @@
             <NextUpdate>2019-12-25T00:00:00</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
+	    <TrustedList LOTL="true">
+	        <CountryCode>EU</CountryCode>
+	        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
+	        <SequenceNumber>242</SequenceNumber>
+	        <Version>5</Version>
+	        <LastLoading>2019-06-28T11:51:07</LastLoading>
+	        <IssueDate>2019-06-27T06:00:00</IssueDate>
+	        <NextUpdate>2019-12-27T00:00:00</NextUpdate>
+	        <WellSigned>false</WellSigned>
+	    </TrustedList>
     </TrustedLists>
-    <ListOfTrustedLists><TrustedList>
-        <CountryCode>EU</CountryCode>
-        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
-        <SequenceNumber>242</SequenceNumber>
-        <Version>5</Version>
-        <LastLoading>2019-06-28T11:51:07</LastLoading>
-        <IssueDate>2019-06-27T06:00:00</IssueDate>
-        <NextUpdate>2019-12-27T00:00:00</NextUpdate>
-        <WellSigned>false</WellSigned>
-    </TrustedList></ListOfTrustedLists>
 </DiagnosticData>

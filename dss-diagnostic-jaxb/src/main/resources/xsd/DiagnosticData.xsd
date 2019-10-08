@@ -61,13 +61,6 @@
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
-			<xs:element name="ListOfTrustedLists" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="ListOfTrustedLists" type="TrustedList" minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
 			
 		</xs:sequence>
 	</xs:complexType>
@@ -876,11 +869,11 @@
 			<xs:element name="NextUpdate" type="xs:dateTime" minOccurs="0" />
 			<xs:element name="WellSigned" type="xs:boolean" />
 		</xs:sequence>
+		<xs:attribute name="LOTL" type="xs:boolean" default="false" use="optional" />
 	</xs:complexType>
 	
 	<xs:complexType name="TrustedServiceProvider">
 		<xs:sequence>
-			<xs:element name="CountryCode" type="xs:string" />
 			<xs:element name="LOTLUrl" type="xs:string" minOccurs="0" />
 			<xs:element name="TLUrl" type="xs:string" />
 			<xs:element name="TSPNames">
@@ -897,6 +890,7 @@
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
+			<xs:element name="CountryCode" type="xs:string" />
 			
 			<xs:element name="TrustedServices">
 				<xs:complexType>

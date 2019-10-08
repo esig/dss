@@ -39,7 +39,6 @@
             </CertificateChain>
             <ContentType>1.2.840.113549.1.7.1</ContentType>
             <CommitmentTypeIndication/>
-            
             <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
             <FoundCertificates>
                 <RelatedCertificate Certificate="C-D90B40132306D1094608B1B9A2F6A9E23B45FE121FEF514A1C9DF70A815AD95C">
@@ -205,6 +204,8 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+					<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>http://www.ssi.gouv.fr/eidas/TL-FR.xml</TLUrl>
                     <TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATFR-46439129164</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>FR</CountryCode>
@@ -298,6 +299,8 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+					<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>https://tsl.belgium.be/tsl-be.xml</TLUrl>
                     <TSPNames><TSPName lang="en">QuoVadis Trustlink BVBA</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATBE-0537698318</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>BE</CountryCode>
@@ -402,6 +405,8 @@
             </QCTypes>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+					<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>https://tsl.belgium.be/tsl-be.xml</TLUrl>
                     <TSPNames><TSPName lang="en">QuoVadis Trustlink BVBA</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATBE-0537698318</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>BE</CountryCode>
@@ -480,6 +485,8 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+					<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>http://www.ssi.gouv.fr/eidas/TL-FR.xml</TLUrl>
                     <TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATFR-46439129164</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>FR</CountryCode>
@@ -712,15 +719,15 @@
             <NextUpdate>2019-11-09T00:00:00</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
+	    <TrustedList LOTL="true">
+	        <CountryCode>EU</CountryCode>
+	        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
+	        <SequenceNumber>241</SequenceNumber>
+	        <Version>5</Version>
+	        <LastLoading>2019-06-03T13:58:02</LastLoading>
+	        <IssueDate>2019-05-28T06:00:00</IssueDate>
+	        <NextUpdate>2019-11-28T00:00:00</NextUpdate>
+	        <WellSigned>true</WellSigned>
+	    </TrustedList>
     </TrustedLists>
-    <ListOfTrustedLists><TrustedList>
-        <CountryCode>EU</CountryCode>
-        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
-        <SequenceNumber>241</SequenceNumber>
-        <Version>5</Version>
-        <LastLoading>2019-06-03T13:58:02</LastLoading>
-        <IssueDate>2019-05-28T06:00:00</IssueDate>
-        <NextUpdate>2019-11-28T00:00:00</NextUpdate>
-        <WellSigned>true</WellSigned>
-    </TrustedList></ListOfTrustedLists>
 </DiagnosticData>

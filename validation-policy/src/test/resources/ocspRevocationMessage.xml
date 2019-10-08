@@ -176,6 +176,8 @@
             </QCTypes>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+                	<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>https://comunicatii.gov.ro/trustedlist.xml</TLUrl>
                     <TSPNames><TSPName lang="en">CERTSIGN S.A.</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATRO-18288250</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>RO</CountryCode>
@@ -253,6 +255,8 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+                	<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>https://comunicatii.gov.ro/trustedlist.xml</TLUrl>
                     <TSPNames><TSPName lang="en">CERTSIGN S.A.</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATRO-18288250</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>RO</CountryCode>
@@ -317,15 +321,15 @@
             <NextUpdate>2020-01-10T00:00:00</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
+	    <TrustedList LOTL="true">
+	        <CountryCode>EU</CountryCode>
+	        <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
+	        <SequenceNumber>247</SequenceNumber>
+	        <Version>5</Version>
+	        <LastLoading>2019-08-13T13:22:19</LastLoading>
+	        <IssueDate>2019-08-13T06:00:00</IssueDate>
+	        <NextUpdate>2020-02-13T00:00:00</NextUpdate>
+	        <WellSigned>true</WellSigned>
+	    </TrustedList>
     </TrustedLists>
-    <ListOfTrustedLists><TrustedList>
-        <CountryCode>EU</CountryCode>
-        <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
-        <SequenceNumber>247</SequenceNumber>
-        <Version>5</Version>
-        <LastLoading>2019-08-13T13:22:19</LastLoading>
-        <IssueDate>2019-08-13T06:00:00</IssueDate>
-        <NextUpdate>2020-02-13T00:00:00</NextUpdate>
-        <WellSigned>true</WellSigned>
-    </TrustedList></ListOfTrustedLists>
 </DiagnosticData>

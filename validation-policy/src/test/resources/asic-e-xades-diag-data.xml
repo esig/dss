@@ -482,15 +482,15 @@
             <NextUpdate>2018-01-02T00:00:00</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
+	    <TrustedList LOTL="true">
+	        <CountryCode>EU</CountryCode>
+	        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
+	        <SequenceNumber>172</SequenceNumber>
+	        <Version>5</Version>
+	        <LastLoading>2017-09-26T07:56:16</LastLoading>
+	        <IssueDate>2017-05-16T04:00:00</IssueDate>
+	        <NextUpdate>2017-11-15T00:00:00</NextUpdate>
+	        <WellSigned>true</WellSigned>
+	    </TrustedList>
     </TrustedLists>
-    <ListOfTrustedLists><TrustedList>
-        <CountryCode>EU</CountryCode>
-        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
-        <SequenceNumber>172</SequenceNumber>
-        <Version>5</Version>
-        <LastLoading>2017-09-26T07:56:16</LastLoading>
-        <IssueDate>2017-05-16T04:00:00</IssueDate>
-        <NextUpdate>2017-11-15T00:00:00</NextUpdate>
-        <WellSigned>true</WellSigned>
-    </TrustedList></ListOfTrustedLists>
 </DiagnosticData>

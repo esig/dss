@@ -42,6 +42,8 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+                    <LOTLUrl>http://localhost:8080/qes-validation-web/tl/LOTL-2.xml</LOTLUrl>
+					<TLUrl>http://localhost:8080/qes-validation-web/tl/TL-21.xml</TLUrl>
                     <TSPNames><TSPName lang="en">TSP-21.1 Name</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>LU</CountryCode>
@@ -116,6 +118,8 @@
             </QCTypes>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+                    <LOTLUrl>http://localhost:8080/qes-validation-web/tl/LOTL-2.xml</LOTLUrl>
+					<TLUrl>http://localhost:8080/qes-validation-web/tl/TL-21.xml</TLUrl>
                     <TSPNames><TSPName lang="en">TSP-21.1 Name</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>LU</CountryCode>
@@ -178,15 +182,15 @@
             <NextUpdate>2018-07-26T14:37:39</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
+	    <TrustedList LOTL="true">
+	        <CountryCode>EU</CountryCode>
+	        <Url>http://localhost:8080/qes-validation-web/tl/LOTL-2.xml</Url>
+	        <SequenceNumber>1</SequenceNumber>
+	        <Version>5</Version>
+	        <LastLoading>2018-06-25T14:45:31</LastLoading>
+	        <IssueDate>2018-06-24T14:37:39</IssueDate>
+	        <NextUpdate>2018-07-26T14:37:39</NextUpdate>
+	        <WellSigned>true</WellSigned>
+	    </TrustedList>
     </TrustedLists>
-    <ListOfTrustedLists><TrustedList>
-        <CountryCode>EU</CountryCode>
-        <Url>http://localhost:8080/qes-validation-web/tl/LOTL-2.xml</Url>
-        <SequenceNumber>1</SequenceNumber>
-        <Version>5</Version>
-        <LastLoading>2018-06-25T14:45:31</LastLoading>
-        <IssueDate>2018-06-24T14:37:39</IssueDate>
-        <NextUpdate>2018-07-26T14:37:39</NextUpdate>
-        <WellSigned>true</WellSigned>
-    </TrustedList></ListOfTrustedLists>
 </DiagnosticData>

@@ -141,6 +141,8 @@
             </QCTypes>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+                	<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>https://tsl.gov.cz/publ/TSL_CZ.xtsl</TLUrl>
                     <TSPNames><TSPName lang="en">The Czech Post, s.p.</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATCZ-47114983</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>CZ</CountryCode>
@@ -154,6 +156,8 @@
                     </TrustedServices>
                 </TrustedServiceProvider>
                 <TrustedServiceProvider>
+                	<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>https://tsl.gov.cz/publ/TSL_CZ.xtsl</TLUrl>
                     <TSPNames><TSPName lang="en">The Czech Post, s.p.</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATCZ-47114983</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>CZ</CountryCode>
@@ -284,6 +288,8 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+                	<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>https://tsl.gov.cz/publ/TSL_CZ.xtsl</TLUrl>
                     <TSPNames><TSPName lang="en">First certification authority, a.s.</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATCZ-26439395</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>CZ</CountryCode>
@@ -377,6 +383,8 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+                	<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>https://tsl.gov.cz/publ/TSL_CZ.xtsl</TLUrl>
                     <TSPNames><TSPName lang="en">The Czech Post, s.p.</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATCZ-47114983</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>CZ</CountryCode>
@@ -475,6 +483,8 @@
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
+                	<LOTLUrl>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</LOTLUrl>
+					<TLUrl>https://tsl.gov.cz/publ/TSL_CZ.xtsl</TLUrl>
                     <TSPNames><TSPName lang="en">First certification authority, a.s.</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATCZ-26439395</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <CountryCode>CZ</CountryCode>
@@ -660,15 +670,15 @@
             <NextUpdate>2019-07-24T00:00:00</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
+	    <TrustedList LOTL="true">
+	        <CountryCode>EU</CountryCode>
+	        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
+	        <SequenceNumber>236</SequenceNumber>
+	        <Version>5</Version>
+	        <LastLoading>2019-03-21T07:32:31</LastLoading>
+	        <IssueDate>2019-03-20T14:00:00</IssueDate>
+	        <NextUpdate>2019-09-20T00:00:00</NextUpdate>
+	        <WellSigned>true</WellSigned>
+	    </TrustedList>
     </TrustedLists>
-    <ListOfTrustedLists><TrustedList>
-        <CountryCode>EU</CountryCode>
-        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
-        <SequenceNumber>236</SequenceNumber>
-        <Version>5</Version>
-        <LastLoading>2019-03-21T07:32:31</LastLoading>
-        <IssueDate>2019-03-20T14:00:00</IssueDate>
-        <NextUpdate>2019-09-20T00:00:00</NextUpdate>
-        <WellSigned>true</WellSigned>
-    </TrustedList></ListOfTrustedLists>
 </DiagnosticData>
