@@ -58,7 +58,22 @@ public class CryptographicConstraintWrapper {
 	public List<String> getSupportedDigestAlgorithms() {
 		return extract(constraint.getAcceptableDigestAlgo());
 	}
-	
+
+	public Map<String, Integer> getMinimumKeySizes() {
+		Map<String, Integer> result = new HashMap<String, Integer>();
+		ListAlgo miniPublicKeySize = constraint.getMiniPublicKeySize();
+		if (miniPublicKeySize != null && Utils.isCollectionNotEmpty(miniPublicKeySize.getAlgo())) {
+			for (Algo algo : miniPublicKeySize.getAlgo()) {
+				Integer size = algo.getSize();
+				if (size != null) {
+					result.put(algo.getValue(), size);
+				} else {
+					result.put(algo.getValue(), 0);
+				}
+			}
+		}
+		return result;
+	}
 	
 	public Date getExpirationDate(String algoToSearch, Integer keyLength) {
 		TreeMap<Integer, Date> dates = new TreeMap<Integer, Date>();

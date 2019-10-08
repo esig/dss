@@ -39,7 +39,7 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Abst
 
 	private final TokenProxy token;
 	private final CryptographicConstraint constraint;
-	
+
 	public CryptographicCheck(T result, TokenProxy token, Date currentTime, CryptographicConstraint constraint) {
 		super(result, currentTime, constraint);
 		this.constraint = constraint;
@@ -48,37 +48,42 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Abst
 
 	@Override
 	protected boolean process() {
-		
+
 		// Check if there are any expiration dates
-		boolean expirationCheckRequired = isExpirationDateAvailable(constraint); 
-		
+		boolean expirationCheckRequired = isExpirationDateAvailable(constraint);
+
 		// Check encryption algorithm
 		if (!encryptionAlgorithmIsReliable(token.getEncryptionAlgorithm()))
 			return false;
-		
+
 		// Check digest algorithm
 		if (!digestAlgorithmIsReliable(token.getDigestAlgorithm()))
 			return false;
-		
+
 		// Check digest algorithm expiration date
 		if (expirationCheckRequired) {
-			if (!digestAlgorithmIsValidOnValidationDate(token.getDigestAlgorithm()))
+			if (!digestAlgorithmIsValidOnValidationDate(token.getDigestAlgorithm())) {
 				return false;
+			}
 		}
-		
+
 		// Check key size
-		if(!isPublicKeySizeKnown(token.getKeyLengthUsedToSignThisToken()))
+		if (!isPublicKeySizeKnown(token.getKeyLengthUsedToSignThisToken()))
 			return false;
-		
+
+		// Check public key size
+		if (!publicKeySizeIsAcceptable(token.getEncryptionAlgorithm(), token.getKeyLengthUsedToSignThisToken()))
+			return false;
+
 		// Check encryption algorithm expiration date
 		if (expirationCheckRequired) {
-			if (!encryptionAlgorithmIsValidOnValidationDate(token.getEncryptionAlgorithm(),
-					token.getKeyLengthUsedToSignThisToken()))
+			if (!encryptionAlgorithmIsValidOnValidationDate(token.getEncryptionAlgorithm(), token.getKeyLengthUsedToSignThisToken())) {
 				return false;
+			}
 		}
-		
+
 		return true;
-		
+
 	}
 
 	@Override

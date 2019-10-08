@@ -120,10 +120,11 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		checkErrorMessageAbsence(MessageTag.ASCCM_ANS_1);
 		
 		result = defaultConstraintLargeMiniPublicKeySize(ALGORITHM_RSA);
-		assertEquals(Indication.TOTAL_PASSED, result);
+		assertEquals(Indication.INDETERMINATE, result);
 
 		result = defaultConstraintSetLevelForPreviousValidationPolicy(Level.WARN);
 		assertEquals(Indication.TOTAL_PASSED, result);
+		checkErrorMessagePresence(MessageTag.ASCCM_ANS_3);
 		
 		result = defaultConstraintLargeMiniPublicKeySize(ALGORITHM_DSA); // some other algorithm is changed
 		assertEquals(Indication.TOTAL_PASSED, result);
@@ -193,7 +194,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		assertEquals(Indication.TOTAL_PASSED, result);
 		
 		result = signatureConstraintLargeMiniPublicKeySize(ALGORITHM_RSA);
-		assertEquals(Indication.TOTAL_PASSED, result);
+		assertEquals(Indication.INDETERMINATE, result);
 		
 		result = signatureConstraintLargeMiniPublicKeySize(ALGORITHM_DSA); // some other algorithm is changed
 		assertEquals(Indication.TOTAL_PASSED, result);
