@@ -44,6 +44,8 @@ import eu.europa.esig.dss.utils.Utils;
  */
 public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 
+	private static final long serialVersionUID = 1028849693098211169L;
+
 	private static final Logger LOG = LoggerFactory.getLogger(FileCacheDataLoader.class);
 
 	private File fileCacheDirectory = new File(System.getProperty("java.io.tmpdir"));

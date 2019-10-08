@@ -27,6 +27,7 @@ import eu.europa.esig.dss.tsl.cache.access.SynchronizerCacheAccess;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
 import eu.europa.esig.dss.tsl.summary.ValidationJobSummaryBuilder;
+import eu.europa.esig.dss.utils.Utils;
 
 public class TrustedListCertificateSourceSynchronizer {
 
@@ -116,19 +117,24 @@ public class TrustedListCertificateSourceSynchronizer {
 			}
 			
 			final List<TrustServiceProvider> trustServiceProviders = parsingCacheInfo.getTrustServiceProviders();
-			for (TrustServiceProvider original : trustServiceProviders) {
-				TrustServiceProvider detached = getDetached(original);
-				
-				for (TrustService trustService : original.getServices()) {
-					TimeDependentValues<TrustServiceStatusAndInformationExtensions> statusAndInformationExtensions = trustService
-							.getStatusAndInformationExtensions();
-					TrustProperties trustProperties = getTrustProperties(relatedLOTL, tlInfo.getUrl(), detached,
-							statusAndInformationExtensions);
+			if (Utils.isCollectionNotEmpty(trustServiceProviders)) {
+				for (TrustServiceProvider original : trustServiceProviders) {
+					TrustServiceProvider detached = getDetached(original);
+					
+					for (TrustService trustService : original.getServices()) {
+						TimeDependentValues<TrustServiceStatusAndInformationExtensions> statusAndInformationExtensions = trustService
+								.getStatusAndInformationExtensions();
+						TrustProperties trustProperties = getTrustProperties(relatedLOTL, tlInfo.getUrl(), detached,
+								statusAndInformationExtensions);
 
-					for (CertificateToken certificate : trustService.getCertificates()) {
-						addCertificate(trustPropertiesByCerts, certificate, trustProperties);
+						for (CertificateToken certificate : trustService.getCertificates()) {
+							addCertificate(trustPropertiesByCerts, certificate, trustProperties);
+						}
 					}
 				}
+			} else {
+				LOG.warn("The TLInfo with url [{}] does not have defined TrustServiceProviders. Qualification level verification is not possible!", 
+						tlInfo.getUrl());
 			}
 		}
 	}
