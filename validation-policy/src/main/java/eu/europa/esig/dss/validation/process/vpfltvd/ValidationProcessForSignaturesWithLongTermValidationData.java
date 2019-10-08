@@ -201,7 +201,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 			item = item.setNextItem(algorithmReliableAtBestSignatureTime(bestSignatureTime.getTime()));
 
 			// check validity of Cryptographic Constraints for the Signing Certificate and CA Certificates
-			item = certificatesChainReliableAtBestSignatureTime(item, bestSignatureTime.getTime());
+			item = item.setNextItem(certificatesChainReliableAtBestSignatureTime(item, bestSignatureTime.getTime()));
 			
 		}
 

@@ -12,6 +12,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.policy.jaxb.AlgoExpirationDate;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
@@ -19,19 +20,19 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
 
 public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
-	
+
 	private final CryptographicConstraintWrapper constraintWrapper;
 	protected final Date validationDate;
 
 	protected String failedAlgorithm = null;
 	protected MessageTag errorMessage = MessageTag.EMPTY;
-		
+
 	protected AbstractCryptographicCheck(T result, Date currentTime, CryptographicConstraint constraint) {
 		super(result, constraint);
 		this.validationDate = currentTime;
 		this.constraintWrapper = new CryptographicConstraintWrapper(constraint);
 	}
-	
+
 	protected boolean isPublicKeySizeKnown(String keyLengthUsedToSignThisToken) {
 		if (!Utils.isStringDigits(keyLengthUsedToSignThisToken)) {
 			errorMessage = MessageTag.ASCCM_ANS_6;
@@ -88,38 +89,33 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 
 	protected boolean digestAlgorithmIsValidOnValidationDate(DigestAlgorithm digestAlgo) {
 		String algoToFind = digestAlgo == null ? Utils.EMPTY_STRING : digestAlgo.getName();
-		Map<String, Date> expirationDates = constraintWrapper.getExpirationTimes();
-		if (Utils.isMapNotEmpty(expirationDates)) {
-			Date expirationDate = expirationDates.get(algoToFind);
-			if (expirationDate == null) {
-				errorMessage = MessageTag.ASCCM_ANS_4;
-				failedAlgorithm = algoToFind;
-				return false;
-			}
-			if (expirationDate.before(validationDate)) {
-				errorMessage = MessageTag.ASCCM_ANS_5;
-				failedAlgorithm = algoToFind;
-				return false;
-			}
+		Date expirationDate = constraintWrapper.getDigestAlgorithmExpirationDate(algoToFind);
+		if (expirationDate == null) {
+			errorMessage = MessageTag.ASCCM_ANS_4;
+			failedAlgorithm = algoToFind;
+			return false;
+		}
+		if (expirationDate.before(validationDate)) {
+			errorMessage = MessageTag.ASCCM_ANS_5;
+			failedAlgorithm = algoToFind;
+			return false;
 		}
 		return true;
 	}
 
 	protected boolean encryptionAlgorithmIsValidOnValidationDate(EncryptionAlgorithm encryptionAlgo, String keyLengthUsedToSignThisToken) {
-		String algoToFind = encryptionAlgo == null ? Utils.EMPTY_STRING : encryptionAlgo.getName() + keyLengthUsedToSignThisToken;
-		Map<String, Date> expirationDates = constraintWrapper.getExpirationTimes();
-		if (Utils.isMapNotEmpty(expirationDates)) {
-			Date expirationDate = expirationDates.get(algoToFind);
-			if (expirationDate == null) {
-				errorMessage = MessageTag.ASCCM_ANS_4;
-				failedAlgorithm = algoToFind;
-				return false;
-			}
-			if (expirationDate.before(validationDate)) {
-				errorMessage = MessageTag.ASCCM_ANS_5;
-				failedAlgorithm = algoToFind;
-				return false;
-			}
+		String algoToFind = "Algo " + encryptionAlgo == null ? "?" : encryptionAlgo.getName() + " / Key Size : " + keyLengthUsedToSignThisToken;
+		Integer keyLength = Integer.parseInt(keyLengthUsedToSignThisToken);
+		Date expirationDate = constraintWrapper.getExpirationDate(encryptionAlgo.getName(), keyLength);
+		if (expirationDate == null) {
+			errorMessage = MessageTag.ASCCM_ANS_4;
+			failedAlgorithm = algoToFind;
+			return false;
+		}
+		if (expirationDate.before(validationDate)) {
+			errorMessage = MessageTag.ASCCM_ANS_5;
+			failedAlgorithm = algoToFind;
+			return false;
 		}
 		return true;
 	}
@@ -163,6 +159,13 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 			params = new Object[] { dateTime };
 		}
 		return MessageFormat.format(addInfo, params);
+	}
+
+	protected boolean isExpirationDateAvailable(CryptographicConstraint constraint) {
+		AlgoExpirationDate algoExpirationDate = constraint.getAlgoExpirationDate();
+		if (algoExpirationDate != null && !algoExpirationDate.getAlgo().isEmpty())
+			return true;
+		return false;
 	}
 
 }

@@ -629,7 +629,7 @@
 	<xsd:complexType name="Algo">
 		<xsd:simpleContent>
 			<xsd:extension base="xsd:string">
-				<xsd:attribute type="xsd:string" name="Size" use="optional">
+				<xsd:attribute type="xsd:int" name="Size" use="optional">
 					<xsd:annotation>
 						<xsd:documentation>The minimal key length</xsd:documentation>
 					</xsd:annotation>
