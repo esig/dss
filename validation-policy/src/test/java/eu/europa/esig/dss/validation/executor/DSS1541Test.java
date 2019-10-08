@@ -54,13 +54,13 @@ public class DSS1541Test extends AbstractCryptographicConstraintsTest {
 		CertificateConstraints signingCertificateConstraints = getSigningCertificateConstraints(constraintsParameters);
 		CryptographicConstraint signingCertCryptographicConstraint = signingCertificateConstraints.getCryptographic();
 		List<Algo> listEncryptionAlgo = signingCertCryptographicConstraint.getAcceptableEncryptionAlgo().getAlgo();
-		removeAlgorithm(listEncryptionAlgo, ALGORITHM_RSA);
+		removeAlgo(listEncryptionAlgo, ALGORITHM_RSA, 0);
 		
 		signingCertificateConstraints.setCryptographic(signingCertCryptographicConstraint);
 		setSigningCertificateConstraints(constraintsParameters, signingCertCryptographicConstraint);
 		setValidationPolicy(constraintsParameters);
 		simpleReport = createSimpleReport();
-		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		
 	}
 	
@@ -81,7 +81,7 @@ public class DSS1541Test extends AbstractCryptographicConstraintsTest {
 
 		// force past validation, but with a valid timestamp on the RSA algorithm expiration date 
 		CryptographicConstraint sigCryptographicConstraint = getSignatureCryptographicConstraint(constraintsParameters);
-		setAlgoExpirationDate(sigCryptographicConstraint, ALGORITHM_SHA256, "2018-01-01");
+		setAlgoExpDate(sigCryptographicConstraint, ALGORITHM_SHA256, 0, "2018-01-01");
 		setSignatureCryptographicConstraint(constraintsParameters, sigCryptographicConstraint);
 		setValidationPolicy(constraintsParameters);
 		simpleReport = createSimpleReport();
@@ -92,7 +92,7 @@ public class DSS1541Test extends AbstractCryptographicConstraintsTest {
 		CertificateConstraints caCertificateConstraints = getCACertificateConstraints(constraintsParameters);
 		CryptographicConstraint caCertCryptographicConstraint = caCertificateConstraints.getCryptographic();
 		List<Algo> listEncryptionAlgo = caCertCryptographicConstraint.getAcceptableEncryptionAlgo().getAlgo();
-		removeAlgorithm(listEncryptionAlgo, ALGORITHM_RSA);
+		removeAlgo(listEncryptionAlgo, ALGORITHM_RSA, 0);
 		caCertificateConstraints.setCryptographic(caCertCryptographicConstraint);
 		setCACertificateConstraints(constraintsParameters, caCertCryptographicConstraint);
 		setValidationPolicy(constraintsParameters);
@@ -120,9 +120,9 @@ public class DSS1541Test extends AbstractCryptographicConstraintsTest {
 		CryptographicConstraint cryptographicConstraint = signCertConstraints.getCryptographic();
 		
 		List<Algo> listEncryptionAlgo = cryptographicConstraint.getAcceptableEncryptionAlgo().getAlgo();
-		removeAlgorithm(listEncryptionAlgo, ALGORITHM_RSA);
+		removeAlgo(listEncryptionAlgo, ALGORITHM_RSA, 0);
 		List<Algo> listHashAlgo = cryptographicConstraint.getAcceptableDigestAlgo().getAlgo();
-		removeAlgorithm(listHashAlgo, ALGORITHM_SHA256);
+		removeAlgo(listHashAlgo, ALGORITHM_SHA256, 0);
 		
 		signCertConstraints.setCryptographic(cryptographicConstraint);
 		basicSignatureConstraints.setSigningCertificate(signCertConstraints);
