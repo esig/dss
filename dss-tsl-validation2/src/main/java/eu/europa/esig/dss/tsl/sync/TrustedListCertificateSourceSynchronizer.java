@@ -112,29 +112,25 @@ public class TrustedListCertificateSourceSynchronizer {
 		
 		for (final TLInfo tlInfo : tlInfos) {
 			ParsingInfoRecord parsingCacheInfo = tlInfo.getParsingCacheInfo();
-			if (parsingCacheInfo.isError()) {
-				continue;
-			}
-			
-			final List<TrustServiceProvider> trustServiceProviders = parsingCacheInfo.getTrustServiceProviders();
-			if (Utils.isCollectionNotEmpty(trustServiceProviders)) {
-				for (TrustServiceProvider original : trustServiceProviders) {
-					TrustServiceProvider detached = getDetached(original);
-					
-					for (TrustService trustService : original.getServices()) {
-						TimeDependentValues<TrustServiceStatusAndInformationExtensions> statusAndInformationExtensions = trustService
-								.getStatusAndInformationExtensions();
-						TrustProperties trustProperties = getTrustProperties(relatedLOTL, tlInfo, detached,
-								statusAndInformationExtensions);
+			if (!parsingCacheInfo.isResultExist()) {
+				LOG.warn("No Parsing result for TLInfo with url [{}]", tlInfo.getUrl());
+			} else {
+				final List<TrustServiceProvider> trustServiceProviders = parsingCacheInfo.getTrustServiceProviders();
+				if (Utils.isCollectionNotEmpty(trustServiceProviders)) {
+					for (TrustServiceProvider original : trustServiceProviders) {
+						TrustServiceProvider detached = getDetached(original);
 
-						for (CertificateToken certificate : trustService.getCertificates()) {
-							addCertificate(trustPropertiesByCerts, certificate, trustProperties);
+						for (TrustService trustService : original.getServices()) {
+							TimeDependentValues<TrustServiceStatusAndInformationExtensions> statusAndInformationExtensions = trustService
+									.getStatusAndInformationExtensions();
+							TrustProperties trustProperties = getTrustProperties(relatedLOTL, tlInfo, detached, statusAndInformationExtensions);
+
+							for (CertificateToken certificate : trustService.getCertificates()) {
+								addCertificate(trustPropertiesByCerts, certificate, trustProperties);
+							}
 						}
 					}
 				}
-			} else {
-				LOG.warn("The TLInfo with url [{}] does not have defined TrustServiceProviders. Qualification level verification is not possible!", 
-						tlInfo.getUrl());
 			}
 		}
 	}
@@ -154,8 +150,7 @@ public class TrustedListCertificateSourceSynchronizer {
 	private TrustServiceProvider getDetached(TrustServiceProvider original) {
 		TrustServiceProviderBuilder builder = new TrustServiceProviderBuilder(original);
 		builder.setServices(Collections.emptyList());
-		TrustServiceProvider detached = builder.build();
-		return detached;
+		return builder.build();
 	}
 
 	private void syncCache(TLValidationJobSummary summary) {

@@ -17,7 +17,7 @@ public class SynchronizerCacheAccess extends ReadOnlyCacheAccess {
 	}
 
 	public void sync(CacheKey key) {
-		LOG.info("Sync all caches for key {}", key.getKey());
+		LOG.debug("Synchronize all desynchronized caches for key {}", key.getKey());
 
 		if (downloadCache.isDesync(key)) {
 			downloadCache.sync(key);

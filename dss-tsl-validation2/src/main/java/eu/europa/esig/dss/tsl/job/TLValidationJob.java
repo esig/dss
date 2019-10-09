@@ -148,6 +148,7 @@ public class TLValidationJob {
 		Objects.requireNonNull(offlineLoader, "The offlineLoader must be defined!");
 		LOG.info("Offline refresh is running...");
 		refresh(offlineLoader);
+		LOG.info("Offline refresh is DONE.");
 	}
 
 	/**
@@ -158,6 +159,7 @@ public class TLValidationJob {
 		Objects.requireNonNull(onlineLoader, "The onlineLoader must be defined!");
 		LOG.info("Online refresh is running...");
 		refresh(onlineLoader);
+		LOG.info("Online refresh is DONE.");
 	}
 
 	private void refresh(DSSFileLoader dssFileLoader) {

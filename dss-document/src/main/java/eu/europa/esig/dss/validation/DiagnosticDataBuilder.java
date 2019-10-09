@@ -535,7 +535,7 @@ public class DiagnosticDataBuilder {
 		}
 		DownloadInfoRecord downloadCacheInfo = tlInfo.getDownloadCacheInfo();
 		if (downloadCacheInfo != null) {
-			result.setLastLoading(downloadCacheInfo.getLastLoadingDate());
+			result.setLastLoading(downloadCacheInfo.getLastSynchronizationDate());
 		}
 		ValidationInfoRecord validationCacheInfo = tlInfo.getValidationCacheInfo();
 		if (validationCacheInfo != null) {
