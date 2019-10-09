@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.spi.tsl.dto;
+package eu.europa.esig.dss.spi.tsl;
 
 import java.io.Serializable;
 import java.util.List;

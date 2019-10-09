@@ -17,8 +17,8 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.service.http.commons.DSSFileLoader;
-import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
+import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
 import eu.europa.esig.dss.tsl.cache.access.CacheAccessByKey;

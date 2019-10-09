@@ -2,7 +2,7 @@ package eu.europa.esig.dss.tsl.dto;
 
 import java.util.Date;
 
-import eu.europa.esig.dss.spi.tsl.dto.info.DownloadInfoRecord;
+import eu.europa.esig.dss.spi.tsl.DownloadInfoRecord;
 
 public class DownloadCacheDTO extends AbstractCacheDTO implements DownloadInfoRecord {
 

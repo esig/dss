@@ -6,17 +6,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -46,14 +43,14 @@ public class CacheCleanerTest {
 	private ParsingCache parsingCache;
 	private ValidationCache validationCache;
 	
-	private File cacheDirectory;
+	@TempDir
+	File cacheDirectory;
 	
 	private static final String SAMPLE_FILE_NAME = "sample";
 	private static final String LOTL_FILE_NAME = "eu-lotl";
 	
 	@BeforeEach
 	public void init() {
-		cacheDirectory = new File("target/cache");
 		
 		DSSDocument sampleDocument = new InMemoryDocument(SAMPLE_FILE_NAME.getBytes());
 		DSSDocument lotlDocument = new InMemoryDocument(LOTL_FILE_NAME.getBytes());
@@ -249,11 +246,4 @@ public class CacheCleanerTest {
 		assertEquals(isRefreshNeeded, validationCache.isRefreshNeeded(cacheKey));
 	}
 	
-	@AfterEach
-	public void clean() throws IOException {
-		File cacheDirectory = new File("target/cache");
-		cacheDirectory.mkdirs();
-		Files.walk(cacheDirectory.toPath()).map(Path::toFile).forEach(File::delete);
-	}
-
 }

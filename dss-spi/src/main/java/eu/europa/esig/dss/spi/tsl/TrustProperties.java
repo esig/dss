@@ -1,8 +1,6 @@
 package eu.europa.esig.dss.spi.tsl;
 
 import eu.europa.esig.dss.model.identifier.Identifier;
-import eu.europa.esig.dss.spi.tsl.dto.TrustServiceProvider;
-import eu.europa.esig.dss.spi.tsl.dto.TrustServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.spi.util.TimeDependentValues;
 
 public class TrustProperties {

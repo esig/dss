@@ -3,9 +3,6 @@ package eu.europa.esig.dss.spi.tsl;
 import java.io.Serializable;
 
 import eu.europa.esig.dss.model.identifier.Identifier;
-import eu.europa.esig.dss.spi.tsl.dto.info.DownloadInfoRecord;
-import eu.europa.esig.dss.spi.tsl.dto.info.ParsingInfoRecord;
-import eu.europa.esig.dss.spi.tsl.dto.info.ValidationInfoRecord;
 import eu.europa.esig.dss.spi.tsl.identifier.TrustedListIdentifier;
 
 /**

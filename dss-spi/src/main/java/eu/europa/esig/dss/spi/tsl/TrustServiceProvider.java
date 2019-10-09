@@ -18,13 +18,13 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.spi.tsl.dto;
+package eu.europa.esig.dss.spi.tsl;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import eu.europa.esig.dss.spi.tsl.dto.builder.TrustServiceProviderBuilder;
+import eu.europa.esig.dss.spi.tsl.builder.TrustServiceProviderBuilder;
 
 /**
  * This class is a DTO representation for a trust service provider

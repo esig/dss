@@ -5,7 +5,7 @@ import java.util.Date;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.tsl.dto.info.ValidationInfoRecord;
+import eu.europa.esig.dss.spi.tsl.ValidationInfoRecord;
 
 public class ValidationCacheDTO extends AbstractCacheDTO implements ValidationInfoRecord {
 

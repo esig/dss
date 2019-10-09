@@ -2,7 +2,7 @@ package eu.europa.esig.dss.tsl.dto;
 
 import java.util.Date;
 
-import eu.europa.esig.dss.spi.tsl.dto.info.InfoRecord;
+import eu.europa.esig.dss.spi.tsl.InfoRecord;
 import eu.europa.esig.dss.tsl.cache.state.CacheStateEnum;
 
 public class AbstractCacheDTO implements InfoRecord {

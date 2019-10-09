@@ -1,11 +1,9 @@
-package eu.europa.esig.dss.spi.tsl.dto.info;
+package eu.europa.esig.dss.spi.tsl;
 
 import java.util.Date;
 import java.util.List;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.tsl.dto.OtherTSLPointer;
-import eu.europa.esig.dss.spi.tsl.dto.TrustServiceProvider;
 
 public interface ParsingInfoRecord extends InfoRecord {
 	

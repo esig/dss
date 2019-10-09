@@ -2,7 +2,7 @@ package eu.europa.esig.dss.tsl.parsing;
 
 import java.util.List;
 
-import eu.europa.esig.dss.spi.tsl.dto.OtherTSLPointer;
+import eu.europa.esig.dss.spi.tsl.OtherTSLPointer;
 
 public class LOTLParsingResult extends AbstractParsingResult {
 

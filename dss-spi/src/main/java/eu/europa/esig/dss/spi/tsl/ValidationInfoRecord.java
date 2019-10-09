@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.spi.tsl.dto.info;
+package eu.europa.esig.dss.spi.tsl;
 
 import java.util.Date;
 

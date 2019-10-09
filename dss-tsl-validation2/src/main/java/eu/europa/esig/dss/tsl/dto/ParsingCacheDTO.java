@@ -4,9 +4,9 @@ import java.util.Date;
 import java.util.List;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.tsl.dto.OtherTSLPointer;
-import eu.europa.esig.dss.spi.tsl.dto.TrustServiceProvider;
-import eu.europa.esig.dss.spi.tsl.dto.info.ParsingInfoRecord;
+import eu.europa.esig.dss.spi.tsl.OtherTSLPointer;
+import eu.europa.esig.dss.spi.tsl.ParsingInfoRecord;
+import eu.europa.esig.dss.spi.tsl.TrustServiceProvider;
 import eu.europa.esig.dss.tsl.utils.TLValidationUtils;
 
 public class ParsingCacheDTO extends AbstractCacheDTO implements ParsingInfoRecord {

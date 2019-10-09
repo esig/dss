@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
-import eu.europa.esig.dss.spi.tsl.dto.OtherTSLPointer;
+import eu.europa.esig.dss.spi.tsl.OtherTSLPointer;
 import eu.europa.esig.dss.tsl.function.converter.OtherTSLPointerConverter;
 import eu.europa.esig.trustedlist.TrustedListFacade;
 import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointersType;

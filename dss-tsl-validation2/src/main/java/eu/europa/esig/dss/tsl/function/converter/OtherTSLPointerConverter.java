@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.tsl.dto.OtherTSLPointer;
+import eu.europa.esig.dss.spi.tsl.OtherTSLPointer;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.trustedlist.jaxb.tsl.DigitalIdentityListType;
 import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointerType;
