@@ -74,7 +74,7 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 			Integer expectedMinimumKeySize = minimumKeySizes.get(algoToFind);
 			if (tokenKeySize < expectedMinimumKeySize) {
 				errorMessage = MessageTag.ASCCM_ANS_3;
-				failedAlgorithm = algoToFind + keyLengthUsedToSignThisToken;
+				failedAlgorithm = getEncryptionDetails(encryptionAlgo, keyLengthUsedToSignThisToken);
 				return false;
 			}
 		}
@@ -124,20 +124,32 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 	}
 
 	protected boolean encryptionAlgorithmIsValidOnValidationDate(EncryptionAlgorithm encryptionAlgo, String keyLengthUsedToSignThisToken) {
-		String algoToFind = "Algo " + encryptionAlgo == null ? "?" : encryptionAlgo.getName() + " / Key Size : " + keyLengthUsedToSignThisToken;
 		Integer keyLength = Integer.parseInt(keyLengthUsedToSignThisToken);
 		Date expirationDate = constraintWrapper.getExpirationDate(encryptionAlgo.getName(), keyLength);
 		if (expirationDate == null) {
 			errorMessage = MessageTag.ASCCM_ANS_4;
-			failedAlgorithm = algoToFind;
+			failedAlgorithm = getEncryptionDetails(encryptionAlgo, keyLengthUsedToSignThisToken);
 			return false;
 		}
 		if (expirationDate.before(validationDate)) {
 			errorMessage = MessageTag.ASCCM_ANS_5;
-			failedAlgorithm = algoToFind;
+			failedAlgorithm = getEncryptionDetails(encryptionAlgo, keyLengthUsedToSignThisToken);
 			return false;
 		}
 		return true;
+	}
+
+	private String getEncryptionDetails(EncryptionAlgorithm encryptionAlgo, String keyLengthUsedToSignThisToken) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Algo : ");
+		if (encryptionAlgo == null) {
+			sb.append("?");
+		} else {
+			sb.append(encryptionAlgo.getName());
+		}
+		sb.append(" / Key Size : ");
+		sb.append(keyLengthUsedToSignThisToken);
+		return sb.toString();
 	}
 
 	private boolean isIn(String algoToFind, List<String> algos) {
@@ -183,9 +195,7 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 
 	protected boolean isExpirationDateAvailable(CryptographicConstraint constraint) {
 		AlgoExpirationDate algoExpirationDate = constraint.getAlgoExpirationDate();
-		if (algoExpirationDate != null && !algoExpirationDate.getAlgo().isEmpty())
-			return true;
-		return false;
+		return (algoExpirationDate != null && Utils.isCollectionNotEmpty(algoExpirationDate.getAlgo()));
 	}
 
 }
