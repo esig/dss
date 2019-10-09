@@ -22,6 +22,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.tsl.InfoRecord;
 import eu.europa.esig.dss.spi.tsl.TLInfo;
 import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
+import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.tsl.cache.state.CacheStateEnum;
@@ -84,17 +85,16 @@ public class TransitionTest {
 		String url = "null-to-valid-doc";
 
 		TLValidationJob job = new TLValidationJob();
+		job.setTrustedListCertificateSource(new TrustedListsCertificateSource());
 		job.setTrustedListSources(getTLSource(url));
+
 		job.setOnlineDataLoader(getOnlineDataLoader(CZ_NULL, url));
-
 		job.onlineRefresh();
-
 		checkSummary(job.getSummary(), CacheStateEnum.ERROR, CacheStateEnum.REFRESH_NEEDED, CacheStateEnum.REFRESH_NEEDED);
 
 		job.setOnlineDataLoader(getOnlineDataLoader(CZ, url));
 		job.onlineRefresh();
-
-		checkSummary(job.getSummary(), CacheStateEnum.DESYNCHRONIZED, CacheStateEnum.DESYNCHRONIZED, CacheStateEnum.DESYNCHRONIZED);
+		checkSummary(job.getSummary(), CacheStateEnum.SYNCHRONIZED, CacheStateEnum.SYNCHRONIZED, CacheStateEnum.SYNCHRONIZED);
 	}
 
 	@Test
@@ -103,18 +103,21 @@ public class TransitionTest {
 		String url = "valid-to-null-doc";
 
 		TLValidationJob job = new TLValidationJob();
+		job.setTrustedListCertificateSource(new TrustedListsCertificateSource());
 		job.setTrustedListSources(getTLSource(url));
+
 		job.setOnlineDataLoader(getOnlineDataLoader(CZ, url));
-
 		job.onlineRefresh();
-
-		checkSummary(job.getSummary(), CacheStateEnum.DESYNCHRONIZED, CacheStateEnum.DESYNCHRONIZED, CacheStateEnum.DESYNCHRONIZED);
+		checkSummary(job.getSummary(), CacheStateEnum.SYNCHRONIZED, CacheStateEnum.SYNCHRONIZED, CacheStateEnum.SYNCHRONIZED);
 
 		job.setOnlineDataLoader(getOnlineDataLoader(CZ_NULL, url));
 		job.onlineRefresh();
-
 		// valid parsing and signature are still present
-		checkSummary(job.getSummary(), CacheStateEnum.ERROR, CacheStateEnum.DESYNCHRONIZED, CacheStateEnum.DESYNCHRONIZED);
+		checkSummary(job.getSummary(), CacheStateEnum.ERROR, CacheStateEnum.SYNCHRONIZED, CacheStateEnum.SYNCHRONIZED);
+
+		job.setOnlineDataLoader(getOnlineDataLoader(CZ, url));
+		job.onlineRefresh();
+		checkSummary(job.getSummary(), CacheStateEnum.SYNCHRONIZED, CacheStateEnum.SYNCHRONIZED, CacheStateEnum.SYNCHRONIZED);
 	}
 
 	@Test
@@ -123,17 +126,43 @@ public class TransitionTest {
 		String url = "valid-to-null-doc";
 
 		TLValidationJob job = new TLValidationJob();
+		job.setTrustedListCertificateSource(new TrustedListsCertificateSource());
 		job.setTrustedListSources(getTLSource(url));
+
 		job.setOnlineDataLoader(getOnlineDataLoader(CZ, url));
-
 		job.onlineRefresh();
+		checkSummary(job.getSummary(), CacheStateEnum.SYNCHRONIZED, CacheStateEnum.SYNCHRONIZED, CacheStateEnum.SYNCHRONIZED);
 
-		checkSummary(job.getSummary(), CacheStateEnum.DESYNCHRONIZED, CacheStateEnum.DESYNCHRONIZED, CacheStateEnum.DESYNCHRONIZED);
-		// TODO sync first
-		// job.setOnlineDataLoader(getOnlineDataLoader(CZ_NOT_COMPLIANT, url));
-		// job.onlineRefresh();
-		// checkSummary(job.getSummary(), CacheStateEnum.DESYNCHRONIZED,
-		// CacheStateEnum.ERROR, CacheStateEnum.DESYNCHRONIZED);
+		job.setOnlineDataLoader(getOnlineDataLoader(CZ_NOT_COMPLIANT, url));
+		job.onlineRefresh();
+		checkSummary(job.getSummary(), CacheStateEnum.SYNCHRONIZED, CacheStateEnum.ERROR, CacheStateEnum.SYNCHRONIZED);
+
+		job.setOnlineDataLoader(getOnlineDataLoader(CZ, url));
+		job.onlineRefresh();
+		checkSummary(job.getSummary(), CacheStateEnum.SYNCHRONIZED, CacheStateEnum.SYNCHRONIZED, CacheStateEnum.SYNCHRONIZED);
+	}
+
+	@Test
+	public void validToNotConform() {
+
+		String url = "valid-to-null-doc";
+
+		TLValidationJob job = new TLValidationJob();
+		job.setTrustedListCertificateSource(new TrustedListsCertificateSource());
+		job.setTrustedListSources(getTLSource(url));
+
+		job.setOnlineDataLoader(getOnlineDataLoader(CZ, url));
+		job.onlineRefresh();
+		checkSummary(job.getSummary(), CacheStateEnum.SYNCHRONIZED, CacheStateEnum.SYNCHRONIZED, CacheStateEnum.SYNCHRONIZED);
+
+		job.setOnlineDataLoader(getOnlineDataLoader(CZ_NOT_CONFORM, url));
+		job.onlineRefresh();
+		// Change not detected
+		checkSummary(job.getSummary(), CacheStateEnum.ERROR, CacheStateEnum.SYNCHRONIZED, CacheStateEnum.SYNCHRONIZED);
+
+		job.setOnlineDataLoader(getOnlineDataLoader(CZ, url));
+		job.onlineRefresh();
+		checkSummary(job.getSummary(), CacheStateEnum.SYNCHRONIZED, CacheStateEnum.SYNCHRONIZED, CacheStateEnum.SYNCHRONIZED);
 	}
 
 	@Test
@@ -142,6 +171,7 @@ public class TransitionTest {
 		String url = "null-to-valid-doc";
 
 		TLValidationJob job = new TLValidationJob();
+		job.setTrustedListCertificateSource(new TrustedListsCertificateSource());
 		job.setTrustedListSources(getTLSource(url));
 
 		job.setOnlineDataLoader(getOnlineDataLoader(CZ_NULL, url));
@@ -150,13 +180,11 @@ public class TransitionTest {
 
 		job.setOnlineDataLoader(getOnlineDataLoader(CZ_NOT_COMPLIANT, url));
 		job.onlineRefresh();
-		checkSummary(job.getSummary(), CacheStateEnum.DESYNCHRONIZED, CacheStateEnum.ERROR, CacheStateEnum.DESYNCHRONIZED);
+		checkSummary(job.getSummary(), CacheStateEnum.SYNCHRONIZED, CacheStateEnum.ERROR, CacheStateEnum.SYNCHRONIZED);
 
-		// TODO sync first
-		// job.setOnlineDataLoader(getOnlineDataLoader(CZ, url));
-		// job.onlineRefresh();
-		// checkSummary(job.getSummary(), CacheStateEnum.DESYNCHRONIZED,
-		// CacheStateEnum.DESYNCHRONIZED, CacheStateEnum.DESYNCHRONIZED);
+		job.setOnlineDataLoader(getOnlineDataLoader(CZ, url));
+		job.onlineRefresh();
+		checkSummary(job.getSummary(), CacheStateEnum.SYNCHRONIZED, CacheStateEnum.SYNCHRONIZED, CacheStateEnum.SYNCHRONIZED);
 	}
 
 	@Test
