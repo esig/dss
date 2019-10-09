@@ -11,10 +11,12 @@ public class PivotProcessingResult {
 
 	private final DSSDocument pivot;
 	private final CertificateSource certificateSource;
+	private final String lotlLocation;
 
-	public PivotProcessingResult(DSSDocument pivot, CertificateSource certificateSource) {
+	public PivotProcessingResult(DSSDocument pivot, CertificateSource certificateSource, String lotlLocation) {
 		this.pivot = pivot;
 		this.certificateSource = certificateSource;
+		this.lotlLocation = lotlLocation;
 	}
 
 	public DSSDocument getPivot() {
@@ -23,6 +25,10 @@ public class PivotProcessingResult {
 
 	public CertificateSource getCertificateSource() {
 		return certificateSource;
+	}
+
+	public String getLotlLocation() {
+		return lotlLocation;
 	}
 
 }

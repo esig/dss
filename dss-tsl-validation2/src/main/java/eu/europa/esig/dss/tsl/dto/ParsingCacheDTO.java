@@ -3,11 +3,9 @@ package eu.europa.esig.dss.tsl.dto;
 import java.util.Date;
 import java.util.List;
 
-import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.tsl.OtherTSLPointer;
 import eu.europa.esig.dss.spi.tsl.ParsingInfoRecord;
 import eu.europa.esig.dss.spi.tsl.TrustServiceProvider;
-import eu.europa.esig.dss.tsl.utils.TLValidationUtils;
 
 public class ParsingCacheDTO extends AbstractCacheDTO implements ParsingInfoRecord {
 	
@@ -128,11 +126,6 @@ public class ParsingCacheDTO extends AbstractCacheDTO implements ParsingInfoReco
 
 	public void setSigningCertificateAnnouncementUrl(String signingCertificateAnnouncementUrl) {
 		this.signingCertificateAnnouncementUrl = signingCertificateAnnouncementUrl;
-	}
-
-	@Override
-	public List<CertificateToken> getLOTLAnnouncedSigningCertificates() {
-		return TLValidationUtils.getLOTLAnnouncedSigningCertificates(getLotlOtherPointers());
 	}
 
 }
