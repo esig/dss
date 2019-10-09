@@ -6,7 +6,7 @@ import eu.europa.esig.dss.tsl.cache.ParsingCache;
 import eu.europa.esig.dss.tsl.cache.ValidationCache;
 
 public final class CacheAccessFactory {
-	
+
 	/* Global Cache */
 	private final DownloadCache downloadCache;
 	private final ParsingCache parsingCache;
@@ -32,6 +32,10 @@ public final class CacheAccessFactory {
 
 	public SynchronizerCacheAccess getSynchronizerCacheAccess() {
 		return new SynchronizerCacheAccess(downloadCache, parsingCache, validationCache);
+	}
+
+	public DebugCacheAccess getDebugCacheAccess() {
+		return new DebugCacheAccess(downloadCache, parsingCache, validationCache);
 	}
 
 }

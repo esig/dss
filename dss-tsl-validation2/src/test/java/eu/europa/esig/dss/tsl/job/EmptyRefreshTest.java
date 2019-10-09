@@ -17,6 +17,7 @@ public class EmptyRefreshTest {
 		assertThrows(NullPointerException.class, () -> job.onlineRefresh());
 
 		job.setOfflineDataLoader(new FileCacheDataLoader());
+		job.setDebug(true);
 
 		job.offlineRefresh();
 	}

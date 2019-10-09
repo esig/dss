@@ -43,6 +43,8 @@ public class LOTLRefreshTest {
 		job.setOfflineDataLoader(offlineFileLoader);
 		job.setTrustedListCertificateSource(new TrustedListsCertificateSource());
 
+		job.setDebug(true);
+
 		job.offlineRefresh();
 
 		checks(job, Indication.TOTAL_PASSED);

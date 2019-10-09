@@ -8,18 +8,18 @@ import eu.europa.esig.dss.tsl.cache.ValidationCache;
 public class TLChangesCacheAccess {
 
 	/* Global Cache */
-	private final DownloadCache fileCache;
+	private final DownloadCache downloadCache;
 	private final ParsingCache parsingCache;
 	private final ValidationCache validationCache;
 
-	public TLChangesCacheAccess(final DownloadCache fileCache, final ParsingCache parsingCache, final ValidationCache validationCache) {
-		this.fileCache = fileCache;
+	public TLChangesCacheAccess(final DownloadCache downloadCache, final ParsingCache parsingCache, final ValidationCache validationCache) {
+		this.downloadCache = downloadCache;
 		this.parsingCache = parsingCache;
 		this.validationCache = validationCache;
 	}
 
 	public void toBeDeleted(CacheKey cacheKey) {
-		fileCache.toBeDeleted(cacheKey);
+		downloadCache.toBeDeleted(cacheKey);
 		parsingCache.toBeDeleted(cacheKey);
 		validationCache.toBeDeleted(cacheKey);
 	}

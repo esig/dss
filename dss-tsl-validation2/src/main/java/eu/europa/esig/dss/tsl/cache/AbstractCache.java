@@ -1,8 +1,10 @@
 package eu.europa.esig.dss.tsl.cache;
 
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
@@ -280,8 +282,40 @@ public abstract class AbstractCache<R extends CachedResult> {
 
 	/**
 	 * Returns a type of current Cache
+	 * 
 	 * @return {@link CacheType}
 	 */
 	protected abstract CacheType getCacheType();
-	
+
+	public String dump() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("Cache ");
+		sb.append(getCacheType());
+		if (Utils.isMapEmpty(cachedEntriesMap)) {
+			sb.append(" : EMPTY");
+		} else {
+			sb.append(" : (nb entries : ");
+			sb.append(cachedEntriesMap.size());
+			sb.append(")\n");
+			for (Entry<CacheKey, CachedEntry<R>> mapEntry : cachedEntriesMap.entrySet()) {
+				CacheKey key = mapEntry.getKey();
+				CachedEntry<R> value = mapEntry.getValue();
+
+				String currentKey = key.getKey();
+				CacheStateEnum currentState = value.getCurrentState();
+				String date = "?";
+				Date lastSuccessDate = value.getLastSuccessDate();
+				if (lastSuccessDate != null) {
+					date = sdf.format(lastSuccessDate);
+				}
+
+				sb.append(String.format("%-70.70s -> %-25.25s @ %.20s", currentKey, currentState, date));
+				sb.append("\n");
+			}
+		}
+		return sb.toString();
+	}
+
 }
