@@ -126,7 +126,7 @@
 		<module>dss-asic-common</module>
 		<module>dss-asic-xades</module>
 		<module>dss-asic-cades</module>
-		<module>dss-tsl-validation2</module>
+		<module>dss-tsl-validation</module>
 		
     	<module>dss-common-remote-dto</module>
     	<module>dss-common-remote-converter</module>
@@ -787,7 +787,7 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-tsl-validation2</artifactId>
+				<artifactId>dss-tsl-validation</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
