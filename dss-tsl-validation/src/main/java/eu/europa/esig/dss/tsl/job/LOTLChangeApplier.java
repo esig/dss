@@ -53,7 +53,7 @@ public class LOTLChangeApplier {
 	private void detectUrlChanges(Map<String, List<CertificateToken>> oldUrlCerts, Map<String, List<CertificateToken>> newUrlCerts) {
 		for (String oldUrl : oldUrlCerts.keySet()) {
 			if (!newUrlCerts.containsKey(oldUrl)) {
-				LOG.info("Expired TL with URL '{}'", oldUrl);
+				LOG.info("TL with URL '{}' is not used anymore (replaced URL in the LOTL)", oldUrl);
 				cacheAccess.toBeDeleted(new CacheKey(oldUrl));
 			}
 		}
