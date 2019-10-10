@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
@@ -28,6 +29,15 @@ public abstract class AbstractCache<R extends CachedResult> {
 	 */
 	private Map<CacheKey, CachedEntry<R>> cachedEntriesMap = new ConcurrentHashMap<CacheKey, CachedEntry<R>>();
 	
+	/**
+	 * Returns all current keys
+	 * 
+	 * @return a set with all current keys
+	 */
+	public Set<CacheKey> getKeys() {
+		return cachedEntriesMap.keySet();
+	}
+
 	/**
 	 * Returns the CachedEntry for the related {@code cacheKey}. Returns new empty entry if no result found for the key
 	 * @param cacheKey {@link CacheKey}

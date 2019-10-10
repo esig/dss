@@ -1,5 +1,8 @@
 package eu.europa.esig.dss.tsl.cache.access;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,6 +63,19 @@ public class ReadOnlyCacheAccess {
 	public ValidationCacheDTO getValidationCacheDTO(final CacheKey key) {
 		LOG.trace("Extracting a validation cache for an entry with the key [{}]", key);
 		return new ValidationCacheDTOBuilder(validationCache.get(key)).build();
+	}
+
+	/**
+	 * This method returns all found keys in any cache
+	 * 
+	 * @return a set of cache keys
+	 */
+	public Set<CacheKey> getAllCacheKeys() {
+		Set<CacheKey> keys = new HashSet<CacheKey>();
+		keys.addAll(downloadCache.getKeys());
+		keys.addAll(parsingCache.getKeys());
+		keys.addAll(validationCache.getKeys());
+		return keys;
 	}
 
 }

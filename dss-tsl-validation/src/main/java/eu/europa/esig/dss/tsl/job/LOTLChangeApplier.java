@@ -64,7 +64,7 @@ public class LOTLChangeApplier {
 			String newUrl = newEntry.getKey();
 			List<CertificateToken> oldCerts = oldUrlCerts.get(newUrl);
 			List<CertificateToken> newCerts = newEntry.getValue();
-			if (oldCerts == null || !oldCerts.equals(newCerts)) {
+			if (oldCerts != null && !oldCerts.equals(newCerts)) {
 				LOG.info("Signing certificates change detected for TL with URL '{}'", newUrl);
 				cacheAccess.expireSignatureValidation(new CacheKey(newUrl));
 			}

@@ -211,7 +211,7 @@ public class TLValidationJob {
 		// TLCerSource sync + cache sync if needed
 		synchronizeTLCertificateSource();
 
-		executeTLSourcesClean(currentTLSources);
+		executeCacheCleaner();
 
 		if (debug) {
 			LOG.info("Dump after synchronization");
@@ -300,21 +300,19 @@ public class TLValidationJob {
 		synchronizer.sync();
 	}
 
-	private void executeTLSourcesClean(List<TLSource> tlSources) {
+	private void executeCacheCleaner() {
 		if (cacheCleaner == null) {
 			LOG.debug("Cache cleaner is not defined");
 			return;
 		}
-		
-		int nbTLSources = tlSources.size();
-		LOG.info("Running CacheClean for {} TLSource(s)", nbTLSources);
-		
-		for (TLSource tlSource : tlSources) {
-			final CacheAccessByKey cacheAccess = cacheAccessFactory.getCacheAccess(tlSource.getCacheKey());
+
+		LOG.info("Running CacheCleaner");
+		Set<CacheKey> cacheKeys = cacheAccessFactory.getReadOnlyCacheAccess().getAllCacheKeys();
+		for (CacheKey cacheKey : cacheKeys) {
+			final CacheAccessByKey cacheAccess = cacheAccessFactory.getCacheAccess(cacheKey);
 			cacheCleaner.clean(cacheAccess);
 		}
-		
-		LOG.info("CacheClean is DONE for {} TLSource(s)", nbTLSources);
+		LOG.info("CacheCleaner process is DONE");
 	}
 
 	/**
