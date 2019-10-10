@@ -82,8 +82,8 @@ public class TLValidationJob {
 	private TrustedListsCertificateSource trustedListCertificateSource;
 
 	/**
-	 * This property allows to print the cache content after the refresh call
-	 * (default : false)
+	 * This property allows to print the cache content before and after the
+	 * synchronization (default : false)
 	 */
 	private boolean debug = false;
 
@@ -138,9 +138,11 @@ public class TLValidationJob {
 	}
 
 	/**
-	 * Sets the debug mode (print the cache contents after the refresh call)
+	 * Sets the debug mode (print the cache contents before and after the
+	 * synchronization)
 	 * 
-	 * @param debug TRUE to enable the debug mode (default = false)
+	 * @param debug
+	 *              TRUE to enable the debug mode (default = false)
 	 */
 	public void setDebug(boolean debug) {
 		this.debug = debug;
@@ -200,6 +202,10 @@ public class TLValidationJob {
 		executeTLSourcesAnalysis(currentTLSources, dssFileLoader);
 
 		// alerts()
+
+		if (debug) {
+			cacheAccessFactory.getDebugCacheAccess().dump();
+		}
 
 		// TLCerSource sync + cache sync if needed
 		synchronizeTLCertificateSource();
