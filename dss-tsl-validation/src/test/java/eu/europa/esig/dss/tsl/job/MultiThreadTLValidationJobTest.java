@@ -106,7 +106,7 @@ public class MultiThreadTLValidationJobTest {
 		List<Future<?>> futuresOfflineRefresh = new ArrayList<Future<?>>();
 		List<Future<?>> futuresOnlineRefresh = new ArrayList<Future<?>>();
 
-		for (int i = 0; i < 500; i++) {
+		for (int i = 0; i < 100; i++) {
 			futuresValidationResult.add(executor.submit(new ValidationJobSummeryConcurrent()));
 			futuresOfflineRefresh.add(executor.submit(new OfflineRefreshConcurrent()));
 			futuresOnlineRefresh.add(executor.submit(new OnlineRefreshConcurrent()));

@@ -20,7 +20,8 @@
  */
 package eu.europa.esig.dss.tsl.dto.condition;
 
-import static java.util.Objects.requireNonNull;
+
+import java.util.Objects;
 
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -45,7 +46,7 @@ public class KeyUsageCondition extends Condition {
 	 *            the required value of the key usage bit
 	 */
 	public KeyUsageCondition(final KeyUsageBit bit, final boolean value) {
-        requireNonNull(bit, "key usage");
+		Objects.requireNonNull(bit, "key usage");
 		this.bit = bit;
 		this.value = value;
 	}

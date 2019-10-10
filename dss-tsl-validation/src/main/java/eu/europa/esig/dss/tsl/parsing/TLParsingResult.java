@@ -9,6 +9,7 @@ public class TLParsingResult extends AbstractParsingResult {
 	private List<TrustServiceProvider> trustServiceProviders;
 	
 	public TLParsingResult() {
+		super();
 	}
 	
 	public List<TrustServiceProvider> getTrustServiceProviders() {

@@ -3,6 +3,7 @@ package eu.europa.esig.dss.tsl.job;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -32,9 +33,9 @@ public class LOTLChangeApplier {
 	}
 
 	public void analyzeAndApply() {
-		for (CacheKey lotlCacheKey : oldValues.keySet()) {
-			Map<String, List<CertificateToken>> oldUrlCerts = getTLPointers(oldValues.get(lotlCacheKey));
-			Map<String, List<CertificateToken>> newUrlCerts = getTLPointers(newValues.get(lotlCacheKey));
+		for (Entry<CacheKey, ParsingCacheDTO> oldEntry : oldValues.entrySet()) {
+			Map<String, List<CertificateToken>> oldUrlCerts = getTLPointers(oldEntry.getValue());
+			Map<String, List<CertificateToken>> newUrlCerts = getTLPointers(newValues.get(oldEntry.getKey()));
 
 			detectUrlChanges(oldUrlCerts, newUrlCerts);
 			detectSigCertsChanges(oldUrlCerts, newUrlCerts);
@@ -59,9 +60,10 @@ public class LOTLChangeApplier {
 	}
 
 	private void detectSigCertsChanges(Map<String, List<CertificateToken>> oldUrlCerts, Map<String, List<CertificateToken>> newUrlCerts) {
-		for (String newUrl : newUrlCerts.keySet()) {
+		for (Entry<String, List<CertificateToken>> newEntry : newUrlCerts.entrySet()) {
+			String newUrl = newEntry.getKey();
 			List<CertificateToken> oldCerts = oldUrlCerts.get(newUrl);
-			List<CertificateToken> newCerts = newUrlCerts.get(newUrl);
+			List<CertificateToken> newCerts = newEntry.getValue();
 			if (oldCerts == null || !oldCerts.equals(newCerts)) {
 				LOG.info("Signing certificates change detected for TL with URL '{}'", newUrl);
 				cacheAccess.expireSignatureValidation(new CacheKey(newUrl));

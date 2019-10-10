@@ -211,7 +211,7 @@ public class TLValidationJob {
 		// TLCerSource sync + cache sync if needed
 		synchronizeTLCertificateSource();
 
-		executeTLSourcesClean(currentTLSources, dssFileLoader);
+		executeTLSourcesClean(currentTLSources);
 
 		if (debug) {
 			LOG.info("Dump after synchronization");
@@ -243,6 +243,7 @@ public class TLValidationJob {
 			LOG.info("Analysis is DONE for {} LOTLSource(s)", nbLOTLSources);
 		} catch (InterruptedException e) {
 			LOG.error("Interruption in the LOTLSource process", e);
+			Thread.currentThread().interrupt();
 		}
 
 		Map<CacheKey, ParsingCacheDTO> newParsingValues = extractParsingCache(lotlSources);
@@ -284,6 +285,7 @@ public class TLValidationJob {
 			LOG.info("Analysis is DONE for {} TLSource(s)", nbTLSources);
 		} catch (InterruptedException e) {
 			LOG.error("Interruption in the TLAnalysis process", e);
+			Thread.currentThread().interrupt();
 		}
 	}
 
@@ -298,7 +300,7 @@ public class TLValidationJob {
 		synchronizer.sync();
 	}
 
-	private void executeTLSourcesClean(List<TLSource> tlSources, DSSFileLoader dssFileLoader) {
+	private void executeTLSourcesClean(List<TLSource> tlSources) {
 		if (cacheCleaner == null) {
 			LOG.debug("Cache cleaner is not defined");
 			return;

@@ -21,12 +21,6 @@ public class XmlDownloadResult implements CachedResult {
 		this.lastSynchronizationDate = new Date();
 	}
 	
-	public XmlDownloadResult(XmlDownloadResult xmlDownloadResult) {
-		this.dssDocument = xmlDownloadResult.dssDocument;
-		this.digest = xmlDownloadResult.digest;
-		this.lastSynchronizationDate = xmlDownloadResult.lastSynchronizationDate;
-	}
-
 	public DSSDocument getDSSDocument() {
 		return dssDocument;
 	}

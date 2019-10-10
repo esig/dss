@@ -3,6 +3,7 @@ package eu.europa.esig.dss.tsl.job;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
@@ -94,7 +95,23 @@ public class TransitionTest {
 
 		job.setOnlineDataLoader(getOnlineDataLoader(CZ, url));
 		job.onlineRefresh();
+		TLValidationJobSummary summarySuccess = job.getSummary();
 		checkSummary(job.getSummary(), CacheStateEnum.SYNCHRONIZED, CacheStateEnum.SYNCHRONIZED, CacheStateEnum.SYNCHRONIZED);
+
+		job.setOnlineDataLoader(getOnlineDataLoader(CZ_NULL, url));
+		job.onlineRefresh();
+		TLValidationJobSummary summaryFail = job.getSummary();
+		checkSummary(summaryFail, CacheStateEnum.ERROR, CacheStateEnum.SYNCHRONIZED, CacheStateEnum.SYNCHRONIZED);
+
+		TLInfo successTlInfo = summarySuccess.getOtherTLInfos().get(0);
+		TLInfo failTlInfo = summaryFail.getOtherTLInfos().get(0);
+
+		assertEquals(successTlInfo.getDownloadCacheInfo().getLastSuccessDate(), failTlInfo.getDownloadCacheInfo().getLastSuccessDate());
+		assertNotEquals(successTlInfo.getDownloadCacheInfo().getLastSynchronizationDate(), failTlInfo.getDownloadCacheInfo().getLastSynchronizationDate());
+		assertNotEquals(successTlInfo.getDownloadCacheInfo().getExceptionMessage(), failTlInfo.getDownloadCacheInfo().getExceptionMessage());
+
+		assertEquals(successTlInfo.getParsingCacheInfo().getLastSuccessDate(), failTlInfo.getParsingCacheInfo().getLastSuccessDate());
+		assertEquals(successTlInfo.getValidationCacheInfo().getLastSuccessDate(), failTlInfo.getValidationCacheInfo().getLastSuccessDate());
 	}
 
 	@Test

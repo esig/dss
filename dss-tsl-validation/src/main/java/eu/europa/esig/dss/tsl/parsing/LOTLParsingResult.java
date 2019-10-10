@@ -13,6 +13,7 @@ public class LOTLParsingResult extends AbstractParsingResult {
 	private List<String> pivotURLs;
 	
 	public LOTLParsingResult() {
+		super();
 	}
 	
 	public List<OtherTSLPointer> getLotlPointers() {

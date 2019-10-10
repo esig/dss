@@ -1,7 +1,6 @@
 package eu.europa.esig.dss.tsl.cache;
 
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -10,7 +9,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.tsl.cache.state.CacheState;
 import eu.europa.esig.dss.tsl.cache.state.CacheStateEnum;
 import eu.europa.esig.dss.tsl.cache.state.CachedEntry;
 import eu.europa.esig.dss.tsl.cache.state.CachedException;
@@ -70,22 +68,6 @@ public abstract class AbstractCache<R extends CachedResult> {
 	}
 	
 	/**
-	 * Updates states for CachedEntries for entries with provided cacheKeys to EXPIRED
-	 * @param cacheKeys collection of {@link CacheKey}s to update entries for
-	 */
-	public void expire(Collection<CacheKey> cacheKeys) {
-		if (Utils.isCollectionNotEmpty(cacheKeys)) {
-			LOG.trace("Updating a collection of {} keys from the cache...", cacheKeys.size());
-			for (CacheKey cacheKey : cacheKeys) {
-				expire(cacheKey);
-			}
-			LOG.trace("{} keys were updated to the state EXPIRED in the cache.", cacheKeys.size());
-		} else {
-			LOG.trace("Empty collection of cache keys obtained.", cacheKeys);
-		}
-	}
-	
-	/**
 	 * Removes the requested entry with the given {@code cacheKey}
 	 * @param cacheKey {@link CacheKey} of the entry to be deleted from the cache
 	 */
@@ -101,23 +83,6 @@ public abstract class AbstractCache<R extends CachedResult> {
 	}
 	
 	/**
-	 * Removes a list of entries with the matching keys
-	 * @param cacheKeys
-	 * 				collection of {@link CacheKey}s to remove from the cache
-	 */
-	public void remove(Collection<CacheKey> cacheKeys) {
-		if (Utils.isCollectionNotEmpty(cacheKeys)) {
-			LOG.trace("Removing a collection of {} keys from the cache...", cacheKeys.size());
-			for (CacheKey cacheKey : cacheKeys) {
-				remove(cacheKey);
-			}
-			LOG.trace("{} keys were removed from the cache.", cacheKeys.size());
-		} else {
-			LOG.trace("Empty collection of cache keys obtained.", cacheKeys);
-		}
-	}
-	
-	/**
 	 * Updates the state for a CachedEntry matching to the given key to SYNCHRONIZED
 	 * @param cacheKey {@link CacheKey} of a CachedEntry to update
 	 */
@@ -127,22 +92,6 @@ public abstract class AbstractCache<R extends CachedResult> {
 		cachedEntry.sync();
 	}
 
-	/**
-	 * Updates states for CachedEntries for entries with provided cacheKeys to SYNCHRONIZED
-	 * @param cacheKeys collection of {@link CacheKey}s to update entries for
-	 */
-	public void sync(Collection<CacheKey> cacheKeys) {
-		if (Utils.isCollectionNotEmpty(cacheKeys)) {
-			LOG.trace("Updating a collection of {} keys from the cache...", cacheKeys.size());
-			for (CacheKey cacheKey : cacheKeys) {
-				sync(cacheKey);
-			}
-			LOG.trace("{} keys were updated to the state SYNCHRONIZED in the cache.", cacheKeys.size());
-		} else {
-			LOG.trace("Empty collection of cache keys obtained.");
-		}
-	}
-	
 	/**
 	 * Checks if a CachedEntry for the given key is not up to date
 	 * @param cacheKey {@link CacheKey} of the CacheEntry to check
@@ -183,23 +132,6 @@ public abstract class AbstractCache<R extends CachedResult> {
 	}
 	
 	/**
-	 * Returns the update date for the given {@code cacheKey}. Returns NULL if the cache does not contain a value for the key
-	 * @param cacheKey {@link CacheKey} to get update value for
-	 * @return update {@link Date}
-	 */
-	public Date getLastSuccessDate(CacheKey cacheKey) {
-		LOG.trace("Extracting the update date for the key [{}]...", cacheKey);
-		CachedEntry<R> cacheWrapper = get(cacheKey);
-		if (cacheWrapper != null) {
-			Date updateDate = cacheWrapper.getLastSuccessDate();
-			LOG.trace("Returns the update date [{}] for the key [{}]", updateDate, cacheKey);
-			return updateDate;
-		}
-		LOG.trace("The result for the key [{}] is not stored in the cache. Return null.", cacheKey);
-		return null;
-	}
-	
-	/**
 	 * Updates entry status to ERROR value
 	 * @param cacheKey {@link CacheKey} to update
 	 * @param e {@link Exception} the throwed exception
@@ -233,53 +165,6 @@ public abstract class AbstractCache<R extends CachedResult> {
 		return toBeDeleted;
 	}
 	
-	/**
-	 * Returns a current state of entry by requested cacheKey
-	 * @param cacheKey {@link CacheKey} to get current state for
-	 * @return {@link CacheState}
-	 */
-	public CacheStateEnum getCurrentState(CacheKey cacheKey) {
-		LOG.trace("Extracting a state for the key [{}]...", cacheKey);
-		CachedEntry<R> cachedEntry = get(cacheKey);
-		CacheStateEnum currentState = cachedEntry.getCurrentState();
-		LOG.trace("Current state for an entry with key [{}] is [{}]", cacheKey, currentState);
-		return currentState;
-	}
-	
-	/**
-	 * Returns a cached exception message in case of error during a job for the current entry
-	 * @param cacheKey {@link CacheKey} of the entry to get exception message for
-	 * @return {@link String} exception message
-	 */
-	public String getCachedExceptionMessage(CacheKey cacheKey) {
-		LOG.trace("Extracting a cached exception message for the key [{}]...", cacheKey);
-		CachedEntry<R> cachedEntry = get(cacheKey);
-		String exceptionMessage = cachedEntry.getExceptionMessage();
-		if (exceptionMessage != null) {
-			LOG.trace("Obtained exception message for the key [{}]. Message : [{}]", cacheKey, exceptionMessage);
-		} else {
-			LOG.debug("The entry with the key [{}] does not contain an exception. Return null.", cacheKey);
-		}
-		return exceptionMessage;
-	}
-	
-	/**
-	 * Returns a cached exception stack trace in case of error during a job for the current entry
-	 * @param cacheKey {@link CacheKey} of the entry to get exception stack trace for
-	 * @return {@link String} exception stack trace
-	 */
-	public String getCachedExceptionStackTrace(CacheKey cacheKey) {
-		LOG.trace("Extracting a cached exception message for the key [{}]...", cacheKey);
-		CachedEntry<R> cachedEntry = get(cacheKey);
-		String exception = cachedEntry.getExceptionStackTrace();
-		if (exception != null) {
-			LOG.trace("Obtained exception stackTrace for the key [{}]. Message : [{}]", cacheKey, exception);
-		} else {
-			LOG.debug("The entry with the key [{}] does not contain an exception. Return null.", cacheKey);
-		}
-		return exception;
-	}
-
 	/**
 	 * Returns a type of current Cache
 	 * 

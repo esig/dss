@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.tsl.dto.condition;
 
 import java.util.List;
+import java.util.Objects;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -47,9 +48,7 @@ public class PolicyIdCondition extends Condition {
 	 *            the policy oid to check
 	 */
 	public PolicyIdCondition(final String policyId) {
-		if (policyId == null) {
-			throw new NullPointerException("policyId");
-		}
+		Objects.requireNonNull(policyId, "Policy Id must be defined");
 		this.policyOid = policyId;
 	}
 
@@ -64,9 +63,8 @@ public class PolicyIdCondition extends Condition {
 
 	@Override
 	public boolean check(final CertificateToken certificateToken) {
-		if (certificateToken == null) {
-			throw new NullPointerException();
-		}
+		Objects.requireNonNull(certificateToken, "Certificate cannot be null");
+
 		/**
 		 * Certificate policies identifier: 2.5.29.32 (IETF RFC 3280)<br>
 		 * Gets all certificate's policies

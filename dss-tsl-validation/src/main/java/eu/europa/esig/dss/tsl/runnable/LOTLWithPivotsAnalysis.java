@@ -177,6 +177,7 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 			}
 		} catch (InterruptedException e) {
 			shutdownNowAndAwaitTermination(executorService);
+			Thread.currentThread().interrupt();
 		}
 	}
 
@@ -188,6 +189,7 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 			}
 		} catch (InterruptedException e) {
 			LOG.warn("Unable to interrupt the service executor", e);
+			Thread.currentThread().interrupt();
 		}
 	}
 

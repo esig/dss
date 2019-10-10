@@ -14,9 +14,6 @@ public abstract class AbstractParsingResult implements CachedResult {
 	private Date nextUpdateDate;
 	private List<String> distributionPoints;
 	
-	AbstractParsingResult() {
-	}
-	
 	public int getSequenceNumber() {
 		return sequenceNumber;
 	}
