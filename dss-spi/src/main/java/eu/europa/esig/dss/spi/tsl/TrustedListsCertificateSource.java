@@ -68,7 +68,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 
 	/**
 	 * This method is not applicable for this kind of certificate source. You should
-	 * use {@link #setTrustPropertiesByEntityMap(Map<String, List<TrustProperties>>)}
+	 * use {@link #setTrustPropertiesByCertificates}
 	 *
 	 * @param certificate
 	 *                    the certificate you have to trust
