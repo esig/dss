@@ -13,6 +13,8 @@ public class ManifestEntry {
 	private boolean dataFound;
 	private boolean dataIntact;
 	
+	private boolean rootfile;
+
 	public String getFileName() {
 		return filename;
 	}
@@ -51,6 +53,14 @@ public class ManifestEntry {
 	
 	public void setIntact(boolean intact) {
 		this.dataIntact = intact;
+	}
+	
+	public boolean isRootfile() {
+		return rootfile;
+	}
+
+	public void setRootfile(boolean rootfile) {
+		this.rootfile = rootfile;
 	}
 
 }

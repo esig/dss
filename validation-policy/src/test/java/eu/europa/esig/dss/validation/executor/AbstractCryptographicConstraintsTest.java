@@ -32,8 +32,6 @@ public abstract class AbstractCryptographicConstraintsTest extends AbstractValid
 
 	protected static final String ALGORITHM_DSA = "DSA";
 	protected static final String ALGORITHM_RSA = "RSA";
-	protected static final String ALGORITHM_RSA2048 = "RSA2048";
-	protected static final String ALGORITHM_RSA4096 = "RSA4096";
 	protected static final String ALGORITHM_SHA1 = "SHA1";
 	protected static final String ALGORITHM_SHA256 = "SHA256";
 	
@@ -144,7 +142,38 @@ public abstract class AbstractCryptographicConstraintsTest extends AbstractValid
 		return reports.getDetailedReport();
 	}
 	
-	protected void setAlgoExpirationDate(CryptographicConstraint cryptographicConstraint, String algorithmName, String expirationDate) {
+	protected void setAlgoExpDate(CryptographicConstraint defaultCryptographicConstraint, String algorithm, Integer keySize, String date) {
+		if(keySize == 0) {
+			setDigestAlgoExpirationDate(defaultCryptographicConstraint, algorithm, date);
+
+		}else {
+			setAlgoExpirationDate(defaultCryptographicConstraint, algorithm, date, keySize);
+
+		}
+	}
+	
+	private void setAlgoExpirationDate(CryptographicConstraint cryptographicConstraint, String algorithmName, String expirationDate, Integer keySize) {
+		
+		AlgoExpirationDate algoExpirationDate = cryptographicConstraint.getAlgoExpirationDate();
+		List<Algo> algorithms = algoExpirationDate.getAlgo();
+		boolean listContainsAlgorithms = false;
+		for (Algo algorithm : algorithms) {
+			if (algorithm.getValue().equals(algorithmName) && algorithm.getSize().equals(keySize)) {
+				algorithm.setDate(expirationDate);
+				listContainsAlgorithms = true;
+			}
+		}
+		if (!listContainsAlgorithms) {
+			Algo algo = new Algo();
+			algo.setValue(algorithmName);
+			algo.setDate(expirationDate);
+			algo.setSize(keySize);
+			algorithms.add(algo);
+		}
+		
+	}
+	
+	private void setDigestAlgoExpirationDate(CryptographicConstraint cryptographicConstraint, String algorithmName, String expirationDate) {
 		
 		AlgoExpirationDate algoExpirationDate = cryptographicConstraint.getAlgoExpirationDate();
 		List<Algo> algorithms = algoExpirationDate.getAlgo();
@@ -164,7 +193,17 @@ public abstract class AbstractCryptographicConstraintsTest extends AbstractValid
 		
 	}
 	
-	protected void removeAlgorithm(List<Algo> algorithms, String algorithmName) {
+	protected void removeAlgo(List<Algo> algorithms, String algorithm, Integer keySize) {
+		if(keySize == 0) {
+			removeDigestAlgorithm(algorithms, algorithm);
+
+		}else {
+			removeEncryptionAlgorithm(algorithms, algorithm, keySize);
+
+		}
+	}
+	
+	private void removeDigestAlgorithm(List<Algo> algorithms, String algorithmName) {
 		Iterator<Algo> iterator = algorithms.iterator();
 		while(iterator.hasNext()) {
 			Algo algo = iterator.next();
@@ -174,10 +213,20 @@ public abstract class AbstractCryptographicConstraintsTest extends AbstractValid
 		}
 	}
 	
-	protected void setAlgorithmSize(List<Algo> algorithms, String algorithm, String size) {
+	private void removeEncryptionAlgorithm(List<Algo> algorithms, String algorithmName, Integer keySize) {
+		Iterator<Algo> iterator = algorithms.iterator();
+		while(iterator.hasNext()) {
+			Algo algo = iterator.next();
+			if (algo.getValue().equals(algorithmName) && algo.getSize().equals(keySize)) {
+				iterator.remove();
+			}
+		}
+	}
+	
+	protected void setAlgorithmSize(List<Algo> algorithms, String algorithm, Integer size) {
 		for (Algo algo : algorithms) {
 			if (algo.getValue().equals(algorithm)) {
-				algo.setSize(BIT_SIZE_4096);
+				algo.setSize(4096);
 				return;
 			}
 		}

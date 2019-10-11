@@ -33,7 +33,7 @@ public class ValidationPolicyFacadeTest {
 		assertNotNull(algo);
 		String algoName = algo.getValue();
 		assertEquals("DSA", algoName);
-		assertEquals("128", algo.getSize());
+		assertEquals(128, algo.getSize().longValue());
 
 		String marshall = ValidationPolicyFacade.newFacade().marshall(constraintsParameters);
 		assertNotNull(marshall);

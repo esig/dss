@@ -31,7 +31,8 @@ public class ManifestFile {
 	private DSSDocument document;
 	private String signatureFilename;
 	private List<ManifestEntry> entries;
-	
+	private boolean archiveManifest;
+
 	public void setDocument(DSSDocument document) {
 		this.document = document;
 	}
@@ -61,6 +62,14 @@ public class ManifestFile {
 
 	public void setEntries(List<ManifestEntry> entries) {
 		this.entries = entries;
+	}
+	
+	public boolean isArchiveManifest() {
+		return archiveManifest;
+	}
+
+	public void setArchiveManifest(boolean archiveManifest) {
+		this.archiveManifest = archiveManifest;
 	}
 
 }
