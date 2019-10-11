@@ -24,6 +24,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +49,8 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 	private static final long serialVersionUID = 1028849693098211169L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(FileCacheDataLoader.class);
+
+	private static final String DATA_LOADER_NOT_CONFIGURED = "The DataLoader is not configured";
 
 	private File fileCacheDirectory = new File(System.getProperty("java.io.tmpdir"));
 
@@ -160,6 +163,8 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 	}
 	
 	private DSSDocument getDocument(final String url, final boolean refresh) {
+		Objects.requireNonNull(dataLoader, DATA_LOADER_NOT_CONFIGURED);
+
 		if ((toBeLoaded != null) && !toBeLoaded.contains(url)) {
 			return null;
 		}
@@ -213,6 +218,7 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 	}
 
 	private byte[] getLocalFileContent(final String urlString) {
+		Objects.requireNonNull(dataLoader, DATA_LOADER_NOT_CONFIGURED);
 		byte[] returnedBytes = null;
 		// TODO usage ??
 		final String resourcePath = resourceLoader.getAbsoluteResourceFolder(urlString.trim());
@@ -271,6 +277,7 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 
 	@Override
 	public byte[] post(final String urlString, final byte[] content) throws DSSException {
+		Objects.requireNonNull(dataLoader, DATA_LOADER_NOT_CONFIGURED);
 
 		final String fileName = DSSUtils.getNormalizedString(urlString);
 
@@ -352,6 +359,7 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 
 	@Override
 	public void setContentType(String contentType) {
+		Objects.requireNonNull(dataLoader, DATA_LOADER_NOT_CONFIGURED);
 		dataLoader.setContentType(contentType);
 	}
 	
