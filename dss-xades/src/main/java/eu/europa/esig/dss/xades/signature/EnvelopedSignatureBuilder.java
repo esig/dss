@@ -83,6 +83,37 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 		}
 		return documentDom.getDocumentElement();
 	}
+	
+	@Override
+	protected void incorporateSignatureDom(Node parentNodeOfSignature) {
+	    if (params.getXPathElementPlacement() == null || Utils.isStringEmpty(params.getXPathLocationString())) {
+		parentNodeOfSignature.appendChild(signatureDom);
+		return;
+	    }
+
+	    switch (params.getXPathElementPlacement()) {
+		    case XPathAfter:
+			    // root element referenced by XPath
+			    if (parentNodeOfSignature.isEqualNode(documentDom.getDocumentElement())) { 
+				    // append signature at end of document
+				    parentNodeOfSignature.appendChild(signatureDom);
+				    
+			    } else {
+				    // insert signature before next sibling or as last child
+				    // if no sibling exists
+				    Node parent = parentNodeOfSignature.getParentNode();
+				    parent.insertBefore(signatureDom, parentNodeOfSignature.getNextSibling());
+			    }
+
+			    break;
+		    case XPathFirstChildOf:
+			    parentNodeOfSignature.insertBefore(signatureDom, parentNodeOfSignature.getFirstChild());
+			    break;
+		    default:
+			    parentNodeOfSignature.appendChild(signatureDom);
+			    break;
+	    }
+	}
 
 	@Override
 	protected DSSReference createReference(DSSDocument document, int referenceIndex) {
