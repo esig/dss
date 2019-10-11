@@ -24,6 +24,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +44,8 @@ import eu.europa.esig.dss.utils.Utils;
 public class FileCacheDataLoader implements DataLoader {
 
 	private static final Logger LOG = LoggerFactory.getLogger(FileCacheDataLoader.class);
+
+	private static final String DATA_LOADER_NOT_CONFIGURED = "The DataLoader is not configured";
 
 	private File fileCacheDirectory = new File(System.getProperty("java.io.tmpdir"));
 
@@ -142,6 +145,7 @@ public class FileCacheDataLoader implements DataLoader {
 
 	@Override
 	public byte[] get(final String url, final boolean refresh) {
+		Objects.requireNonNull(dataLoader, DATA_LOADER_NOT_CONFIGURED);
 
 		if ((toBeLoaded != null) && !toBeLoaded.contains(url)) {
 			return null;
@@ -166,6 +170,7 @@ public class FileCacheDataLoader implements DataLoader {
 		if (!isNetworkProtocol(url)) {
 			bytes = getLocalFileContent(url);
 		} else {
+
 			bytes = dataLoader.get(url);
 		}
 
@@ -245,6 +250,7 @@ public class FileCacheDataLoader implements DataLoader {
 
 	@Override
 	public byte[] post(final String urlString, final byte[] content) throws DSSException {
+		Objects.requireNonNull(dataLoader, DATA_LOADER_NOT_CONFIGURED);
 
 		final String fileName = ResourceLoader.getNormalizedFileName(urlString);
 
@@ -326,6 +332,7 @@ public class FileCacheDataLoader implements DataLoader {
 
 	@Override
 	public void setContentType(String contentType) {
+		Objects.requireNonNull(dataLoader, DATA_LOADER_NOT_CONFIGURED);
 		dataLoader.setContentType(contentType);
 	}
 }

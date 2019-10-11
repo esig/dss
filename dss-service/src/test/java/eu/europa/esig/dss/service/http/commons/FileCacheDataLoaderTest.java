@@ -28,7 +28,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.HashMap;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -42,15 +41,12 @@ public class FileCacheDataLoaderTest {
 	static final String URL_TO_LOAD = "https://ec.europa.eu/tools/lotl/eu-lotl.xml";
 
 	@TempDir
-	Path testFolder;
+	File cacheDirectory;
 
 	private FileCacheDataLoader dataLoader;
-	private File cacheDirectory;
 
 	@BeforeEach
 	public void setUp() throws Exception {
-		Path pathToFile = testFolder.resolve("dss-file-cache");
-		cacheDirectory = pathToFile.toFile();
 		dataLoader = new FileCacheDataLoader();
 		dataLoader.setDataLoader(new CommonsDataLoader());
 		dataLoader.setFileCacheDirectory(cacheDirectory);
@@ -92,8 +88,6 @@ public class FileCacheDataLoaderTest {
 
 	@Test
 	public void testNotNetworkProtocol() throws IOException {
-		Path pathToFolder = testFolder.resolve("");
-		cacheDirectory = pathToFolder.toFile();
 		FileCacheDataLoader specificDataLoader = new FileCacheDataLoader();
 		specificDataLoader.setDataLoader(new MemoryDataLoader(new HashMap<String, byte[]>()));
 		specificDataLoader.setFileCacheDirectory(cacheDirectory);
