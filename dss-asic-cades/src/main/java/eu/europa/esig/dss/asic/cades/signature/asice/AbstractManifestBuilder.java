@@ -40,7 +40,7 @@ public abstract class AbstractManifestBuilder {
 		sigReferenceDom.setAttribute(ASiCNamespace.DATA_OBJECT_REFERENCE_MIMETYPE, mimeType.getMimeTypeString());
 	}
 
-	protected void addDataObjectReference(final Document documentDom, final Element asicManifestDom, DSSDocument document, DigestAlgorithm digestAlgorithm) {
+	protected Element addDataObjectReference(final Document documentDom, final Element asicManifestDom, DSSDocument document, DigestAlgorithm digestAlgorithm) {
 		final Element dataObjectReferenceDom = DomUtils.addElement(documentDom, asicManifestDom, ASiCNamespace.ASIC_NS, ASiCNamespace.DATA_OBJECT_REFERENCE);
 		dataObjectReferenceDom.setAttribute(ASiCNamespace.DATA_OBJECT_REFERENCE_URI, document.getName());
 
@@ -55,6 +55,8 @@ public abstract class AbstractManifestBuilder {
 		final Element digestValueDom = DomUtils.addElement(documentDom, dataObjectReferenceDom, XMLSignature.XMLNS, ASiCNamespace.DIGEST_VALUE);
 		final Text textNode = documentDom.createTextNode(document.getDigest(digestAlgorithm));
 		digestValueDom.appendChild(textNode);
+		
+		return dataObjectReferenceDom;
 	}
 
 }

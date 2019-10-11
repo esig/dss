@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,18 +44,66 @@ public class CryptographicConstraintWrapper {
 		ListAlgo miniPublicKeySize = constraint.getMiniPublicKeySize();
 		if (miniPublicKeySize != null && Utils.isCollectionNotEmpty(miniPublicKeySize.getAlgo())) {
 			for (Algo algo : miniPublicKeySize.getAlgo()) {
-				String encryptionAlgo = algo.getValue();
-				String miniKeySize = algo.getSize();
-				if (Utils.isStringDigits(miniKeySize)) {
-					result.put(encryptionAlgo, Integer.valueOf(miniKeySize));
+				Integer size = algo.getSize();
+				if (size != null) {
+					result.put(algo.getValue(), size);
 				} else {
-					result.put(encryptionAlgo, 0);
+					result.put(algo.getValue(), 0);
 				}
 			}
 		}
 		return result;
 	}
+	
+	public Date getExpirationDate(String algoToSearch, Integer keyLength) {
+		TreeMap<Integer, Date> dates = new TreeMap<Integer, Date>();
+		AlgoExpirationDate expirations = constraint.getAlgoExpirationDate();
+		if(expirations == null) 
+			return null;
+		SimpleDateFormat dateFormat = new SimpleDateFormat(Utils.isStringEmpty(expirations.getFormat()) ? DEFAULT_DATE_FORMAT : expirations.getFormat());
+		
+		for (Algo algo : expirations.getAlgo()) {
+			if(algo.getValue().equals(algoToSearch)) {
+				String expirationDate = algo.getDate();
+				try {
+					dates.put(algo.getSize(), dateFormat.parse(expirationDate));
+				} catch (ParseException e) {
+					LOG.warn("Unable to parse '{}' with format '{}'", expirationDate, dateFormat);
+				}
+			}
+		}
+		if(dates == null || dates.isEmpty()) {
+			return null;
+		}
+		
+		Entry<Integer, Date> floorEntry = dates.floorEntry(keyLength);
+		
+		if(floorEntry == null)
+			return null;
+		
+		return floorEntry.getValue();
+	}
 
+	public Date getDigestAlgorithmExpirationDate(String digestAlgoToSearch) {
+		AlgoExpirationDate expirations = constraint.getAlgoExpirationDate();
+		if(expirations == null)
+			return null;
+		SimpleDateFormat dateFormat = new SimpleDateFormat(Utils.isStringEmpty(expirations.getFormat()) ? DEFAULT_DATE_FORMAT : expirations.getFormat());
+
+		for (Algo algo : expirations.getAlgo()) {
+			if(algo.getValue().equals(digestAlgoToSearch)) {
+				String expirationDate = algo.getDate();
+				try {
+					return dateFormat.parse(expirationDate);
+				} catch (ParseException e) {
+					LOG.warn("Unable to parse '{}' with format '{}'", expirationDate, dateFormat);
+				}
+			}
+		}
+		
+		return null;
+	}
+	
 	public Map<String, Date> getExpirationTimes() {
 		Map<String, Date> result = new HashMap<String, Date>();
 		AlgoExpirationDate expirations = constraint.getAlgoExpirationDate();
@@ -70,7 +120,7 @@ public class CryptographicConstraintWrapper {
 			}
 		}
 		return result;
-	}
+	}	
 
 	private List<String> extract(ListAlgo listAlgo) {
 		List<String> result = new ArrayList<String>();
