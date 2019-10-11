@@ -20,26 +20,22 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.DomUtils;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.util.Date;
 
-import org.junit.Before;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 public class XAdESLevelBEnvelopedWithXPathPlacementAfterRootNodeTest extends AbstractXAdESTestSignature {
 
@@ -48,7 +44,7 @@ public class XAdESLevelBEnvelopedWithXPathPlacementAfterRootNodeTest extends Abs
 	private DSSDocument documentToSign;
 	private final String XPATH = "/*";
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
@@ -71,7 +67,7 @@ public class XAdESLevelBEnvelopedWithXPathPlacementAfterRootNodeTest extends Abs
 		super.onDocumentSigned(byteArray);
 		Document dom = DomUtils.buildDOM(byteArray);
 		Element referencedElement = DomUtils.getElement(dom.getDocumentElement(), XPATH);
-		assertTrue(referencedElement.getLastChild()!= null);
+		assertTrue(referencedElement.getLastChild() != null);
 		assertTrue("ds:Signature".equals(referencedElement.getLastChild().getNodeName()));
 	}
 

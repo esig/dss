@@ -20,22 +20,22 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.DomUtils;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.util.Date;
 
-import org.junit.Before;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 public class XAdESLevelBEnvelopedWithXPathPlacementNoneTest extends AbstractXAdESTestSignature {
 
@@ -44,7 +44,7 @@ public class XAdESLevelBEnvelopedWithXPathPlacementNoneTest extends AbstractXAdE
 	private DSSDocument documentToSign;
 	private final String XPATH = "//*[local-name() = 'tr']";
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
