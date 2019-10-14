@@ -14,7 +14,7 @@ public class MockDataLoader implements DataLoader {
 	
 	private Map<String, DSSDocument> dataMap = new HashMap<String, DSSDocument>();
 	
-	MockDataLoader(Map<String, DSSDocument> dataMap) {
+	public MockDataLoader(Map<String, DSSDocument> dataMap) {
 		this.dataMap = dataMap;
 	}
 
