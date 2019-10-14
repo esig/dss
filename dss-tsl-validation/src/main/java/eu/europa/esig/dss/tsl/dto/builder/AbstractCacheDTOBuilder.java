@@ -26,6 +26,7 @@ public abstract class AbstractCacheDTOBuilder<R extends CachedResult> {
 		abstractCacheDTO.setLastSuccessDate(getLastSuccessDate());
 		abstractCacheDTO.setExceptionMessage(getCachedExceptionMessage());
 		abstractCacheDTO.setExceptionStackTrace(getCachedExceptionStackTrace());
+		abstractCacheDTO.setExceptionTime(getCachedExceptionTime());
 		abstractCacheDTO.setResultExist(isResultExist());
 		return abstractCacheDTO;
 	}
@@ -58,6 +59,10 @@ public abstract class AbstractCacheDTOBuilder<R extends CachedResult> {
 	
 	private String getCachedExceptionStackTrace() {
 		return cachedEntry.getExceptionStackTrace();
+	}
+	
+	private Date getCachedExceptionTime() {
+		return cachedEntry.getExceptionTime();
 	}
 
 }

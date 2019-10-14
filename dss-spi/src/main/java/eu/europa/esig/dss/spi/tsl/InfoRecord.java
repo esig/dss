@@ -15,11 +15,15 @@ public interface InfoRecord extends Serializable {
 	
 	boolean isToBeDeleted();
 	
+	String getStatusName();
+	
 	Date getLastSuccessDate();
 	
 	String getExceptionMessage();
 	
 	String getExceptionStackTrace();
+	
+	Date getExceptionTime();
 	
 	boolean isResultExist();
 

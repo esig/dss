@@ -13,6 +13,7 @@ public class AbstractCacheDTO implements InfoRecord {
 	private Date lastSuccessDate;
 	private String exceptionMessage;
 	private String exceptionStackTrace;
+	private Date exceptionTime;
 	
 	private boolean resultExist;
 
@@ -23,6 +24,7 @@ public class AbstractCacheDTO implements InfoRecord {
 		this.lastSuccessDate = cacheDTO.lastSuccessDate;
 		this.exceptionMessage = cacheDTO.exceptionMessage;
 		this.exceptionStackTrace = cacheDTO.exceptionStackTrace;
+		this.exceptionTime = cacheDTO.exceptionTime;
 		this.resultExist = cacheDTO.resultExist;
 	}
 	
@@ -60,6 +62,15 @@ public class AbstractCacheDTO implements InfoRecord {
 	public void setExceptionStackTrace(String exceptionStackTrace) {
 		this.exceptionStackTrace = exceptionStackTrace;
 	}
+	
+	@Override
+	public Date getExceptionTime() {
+		return exceptionTime;
+	}
+	
+	public void setExceptionTime(Date exceptionTime) {
+		this.exceptionTime = exceptionTime;
+	}
 
 	@Override
 	public boolean isResultExist() {
@@ -93,6 +104,11 @@ public class AbstractCacheDTO implements InfoRecord {
 	@Override
 	public boolean isToBeDeleted() {
 		return CacheStateEnum.TO_BE_DELETED == cacheState;
+	}
+
+	@Override
+	public String getStatusName() {
+		return cacheState.name();
 	}
 
 }

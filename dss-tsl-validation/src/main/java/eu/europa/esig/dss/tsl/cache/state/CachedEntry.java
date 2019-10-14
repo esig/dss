@@ -85,5 +85,12 @@ public class CachedEntry<R extends CachedResult> {
 		}
 		return null;
 	}
+	
+	public Date getExceptionTime() {
+		if (cacheContext.getException() != null) {
+			return cacheContext.getException().getDate();
+		}
+		return null;
+	}
 
 }

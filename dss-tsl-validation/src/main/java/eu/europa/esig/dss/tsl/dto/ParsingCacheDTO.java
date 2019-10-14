@@ -5,7 +5,9 @@ import java.util.List;
 
 import eu.europa.esig.dss.spi.tsl.OtherTSLPointer;
 import eu.europa.esig.dss.spi.tsl.ParsingInfoRecord;
+import eu.europa.esig.dss.spi.tsl.TrustService;
 import eu.europa.esig.dss.spi.tsl.TrustServiceProvider;
+import eu.europa.esig.dss.utils.Utils;
 
 public class ParsingCacheDTO extends AbstractCacheDTO implements ParsingInfoRecord {
 	
@@ -126,6 +128,38 @@ public class ParsingCacheDTO extends AbstractCacheDTO implements ParsingInfoReco
 
 	public void setSigningCertificateAnnouncementUrl(String signingCertificateAnnouncementUrl) {
 		this.signingCertificateAnnouncementUrl = signingCertificateAnnouncementUrl;
+	}
+
+	@Override
+	public int getTSPNumber() {
+		if (Utils.isCollectionNotEmpty(trustServiceProviders)) {
+			return trustServiceProviders.size();
+		}
+		return 0;
+	}
+
+	@Override
+	public int getTSNumber() {
+		int tsNumber = 0;
+		if (Utils.isCollectionNotEmpty(trustServiceProviders)) {
+			for (TrustServiceProvider tsp : trustServiceProviders) {
+				tsNumber += tsp.getServices().size();
+			}
+		}
+		return tsNumber;
+	}
+
+	@Override
+	public int getCertNumber() {
+		int certNumber = 0;
+		if (Utils.isCollectionNotEmpty(trustServiceProviders)) {
+			for (TrustServiceProvider tsp : trustServiceProviders) {
+				for (TrustService trustService : tsp.getServices()) {
+					certNumber += trustService.getCertificates().size();
+				}
+			}
+		}
+		return certNumber;
 	}
 
 }

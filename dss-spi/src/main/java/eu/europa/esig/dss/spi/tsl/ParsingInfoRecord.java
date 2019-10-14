@@ -3,6 +3,8 @@ package eu.europa.esig.dss.spi.tsl;
 import java.util.Date;
 import java.util.List;
 
+import eu.europa.esig.dss.model.x509.CertificateToken;
+
 public interface ParsingInfoRecord extends InfoRecord {
 	
 	Integer getSequenceNumber();
@@ -26,5 +28,23 @@ public interface ParsingInfoRecord extends InfoRecord {
 	List<String> getPivotUrls();
 	
 	String getSigningCertificateAnnouncementUrl();
+	
+	/**
+	 * Returns a number of all {@code TrustServiceProvider}s present in the TL
+	 * @return TSP number
+	 */
+	int getTSPNumber();
+	
+	/**
+	 * Returns a number of all {@code TrustService}s present in the TL
+	 * @return TS number
+	 */
+	int getTSNumber();
+	
+	/**
+	 * Returns a number of all {@code CertificateToken}s present in the TL
+	 * @return number of certificates
+	 */
+	int getCertNumber();
 	
 }
