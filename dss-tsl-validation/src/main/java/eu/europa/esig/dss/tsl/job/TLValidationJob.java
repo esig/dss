@@ -19,6 +19,8 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.tsl.alerts.Alert;
+import eu.europa.esig.dss.tsl.alerts.Alerter;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
 import eu.europa.esig.dss.tsl.cache.access.CacheAccessByKey;
@@ -86,6 +88,11 @@ public class TLValidationJob {
 	 * synchronization (default : false)
 	 */
 	private boolean debug = false;
+	
+	/**
+     * List of all alerts
+     */
+    private List<Alert<?>> alerts;
 
 	public void setTrustedListSources(TLSource... trustedListSources) {
 		this.trustedListSources = trustedListSources;
@@ -147,6 +154,14 @@ public class TLValidationJob {
 	public void setDebug(boolean debug) {
 		this.debug = debug;
 	}
+	
+	/**
+	 * Sets the alerts to be checked
+	 * @param alerts
+	 */
+	public void setAlerts(List<Alert<?>> alerts) {
+	    this.alerts = alerts;
+	}
 
 	/**
 	 * Returns validation job summary for all processed LOTL / TLs
@@ -202,6 +217,11 @@ public class TLValidationJob {
 		executeTLSourcesAnalysis(currentTLSources, dssFileLoader);
 
 		// alerts()
+        if(alerts != null && !alerts.isEmpty()) {
+            TLValidationJobSummary jobSummary = getSummary();
+            Alerter alerter = new Alerter(jobSummary, alerts);
+            alerter.detectChanges();
+        }
 
 		if (debug) {
 			LOG.info("Dump before synchronization");
