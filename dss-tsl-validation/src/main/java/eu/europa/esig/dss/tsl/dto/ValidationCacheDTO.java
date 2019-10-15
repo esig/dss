@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.tsl.dto;
 
 import java.util.Date;
+import java.util.List;
 
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -15,6 +16,7 @@ public class ValidationCacheDTO extends AbstractCacheDTO implements ValidationIn
 	private SubIndication subIndication;
 	private Date signingTime;
 	private CertificateToken signingCertificate;
+	private List<CertificateToken> potentialSigners;
 
 	public ValidationCacheDTO() {}
 	
@@ -56,6 +58,15 @@ public class ValidationCacheDTO extends AbstractCacheDTO implements ValidationIn
 
 	public void setSigningCertificate(CertificateToken signingCertificate) {
 		this.signingCertificate = signingCertificate;
+	}
+
+	@Override
+	public List<CertificateToken> getPotentialSigners() {
+		return potentialSigners;
+	}
+
+	public void setPotentialSigners(List<CertificateToken> potentialSigners) {
+		this.potentialSigners = potentialSigners;
 	}
 
 	@Override
