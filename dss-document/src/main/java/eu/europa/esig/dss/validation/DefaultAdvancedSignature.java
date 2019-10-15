@@ -279,6 +279,9 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		
 		validationContext.initialize(certificateVerifier);
 
+		if (providedSigningCertificateToken != null) {
+			validationContext.addCertificateTokenForVerification(providedSigningCertificateToken);
+		}
 		final List<CertificateToken> certificates = getCertificates();
 		for (final CertificateToken certificate : certificates) {
 			validationContext.addCertificateTokenForVerification(certificate);

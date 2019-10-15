@@ -22,6 +22,7 @@ package eu.europa.esig.dss.validation;
 
 import java.io.Serializable;
 import java.security.PublicKey;
+import java.util.Objects;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
 
@@ -30,6 +31,8 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
  */
 public class CertificateValidity implements Serializable {
 
+	private static final long serialVersionUID = -8840096915238342503L;
+	
 	/**
 	 * This field is used when only the public key is available (non AdES signature)
 	 */
@@ -51,6 +54,7 @@ public class CertificateValidity implements Serializable {
 	 *            the candidate for the signing certificate
 	 */
 	public CertificateValidity(final CertificateToken certificateToken) {
+		Objects.requireNonNull(certificateToken, "CertificateToken cannot be null!");
 		this.certificateToken = certificateToken;
 	}
 
@@ -63,6 +67,7 @@ public class CertificateValidity implements Serializable {
 	 *            the {@code PublicKey} associated to the signing certificate.
 	 */
 	public CertificateValidity(final PublicKey publicKey) {
+		Objects.requireNonNull(publicKey, "PublicKey cannot be null!");
 		this.publicKey = publicKey;
 	}
 

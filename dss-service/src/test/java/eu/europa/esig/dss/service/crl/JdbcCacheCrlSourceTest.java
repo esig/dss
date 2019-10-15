@@ -1,8 +1,10 @@
 package eu.europa.esig.dss.service.crl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.sql.SQLException;
@@ -32,7 +34,9 @@ public class JdbcCacheCrlSourceTest {
 		// webServer = Server.createWebServer("-web","-webAllowOthers","-webPort","8082").start();
 		dataSource.setUrl("jdbc:h2:mem:test;create=true;DB_CLOSE_DELAY=-1");
 		crlSource.setDataSource(dataSource);
+		assertFalse(crlSource.isTableExists());
 		crlSource.initTable();
+		assertTrue(crlSource.isTableExists());
 	}
 	
 	@Test
@@ -105,7 +109,7 @@ public class JdbcCacheCrlSourceTest {
 	@After
 	public void cleanUp() throws SQLException {
 		crlSource.destroyTable();
-		dataSource.setUrl("jdbc:h2:mem:test;drop=true");
+		assertFalse(crlSource.isTableExists());
 		// uncomment if webserver is active
 		//webServer.stop();
 		//webServer.shutdown();

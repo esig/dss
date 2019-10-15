@@ -121,6 +121,10 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 		return Collections.unmodifiableCollection(ocspResponsesList);
 	}
 	
+	/**
+	 * Checks if the OCSP Source is empty or not (ocspResponseOriginsMap)
+	 * @return TRUE if the source is empty, FALSE otherwise
+	 */
 	public boolean isEmpty() {
 		if (Utils.isMapEmpty(ocspResponseOriginsMap)) {
 			appendContainedOCSPResponses();

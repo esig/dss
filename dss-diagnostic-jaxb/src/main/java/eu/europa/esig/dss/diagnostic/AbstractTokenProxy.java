@@ -137,8 +137,17 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	@Override
 	public CertificateWrapper getSigningCertificate() {
 		XmlSigningCertificate currentSigningCertificate = getCurrentSigningCertificate();
-		if (currentSigningCertificate != null) {
+		if (currentSigningCertificate != null && currentSigningCertificate.getCertificate() != null) {
 			return new CertificateWrapper(currentSigningCertificate.getCertificate());
+		}
+		return null;
+	}
+	
+	@Override
+	public byte[] getSigningCertificatePublicKey() {
+		XmlSigningCertificate currentSigningCertificate = getCurrentSigningCertificate();
+		if (currentSigningCertificate != null) {
+			return currentSigningCertificate.getPublicKey();
 		}
 		return null;
 	}

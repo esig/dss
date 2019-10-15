@@ -470,6 +470,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator, Proc
 	 *            validators for: certificates, timestamps and revocation data.
 	 */
 	private void prepareCertificatesAndTimestamps(final List<AdvancedSignature> allSignatureList, final ValidationContext validationContext) {
+		if (providedSigningCertificateToken != null) {
+			validationContext.addCertificateTokenForVerification(providedSigningCertificateToken);
+		}
 		for (final AdvancedSignature signature : allSignatureList) {
 			final List<CertificateToken> candidates = signature.getCertificates();
 			for (final CertificateToken certificateToken : candidates) {

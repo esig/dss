@@ -42,10 +42,12 @@ import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaCertStore;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.bouncycastle.cms.CMSAbsentContent;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSProcessableByteArray;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataGenerator;
+import org.bouncycastle.cms.CMSTypedData;
 import org.bouncycastle.cms.DefaultSignedAttributeTableGenerator;
 import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInfoGenerator;
@@ -59,9 +61,11 @@ import org.bouncycastle.util.CollectionStore;
 import org.bouncycastle.util.Store;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.BaselineBCertificateSelector;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -276,7 +280,7 @@ public class CMSSignedDataBuilder {
 			if (!encapsulate) {
 				// CAdES can only sign one document
 				final DSSDocument doc = detachedContents.get(0);
-				final CMSProcessableByteArray content = new CMSProcessableByteArray(DSSUtils.toByteArray(doc));
+				final CMSTypedData content = CMSUtils.getContentToBeSign(doc);
 				cmsSignedData = cmsSignedDataGenerator.generate(content, encapsulate);
 			} else {
 				cmsSignedData = cmsSignedDataGenerator.generate(cmsSignedData.getSignedContent(), encapsulate);

@@ -220,6 +220,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 		for (DSSDocument manifestDocument : archiveManifestDocuments) {
 			ManifestFile manifestFile = ASiCEWithCAdESManifestParser.getManifestFile(manifestDocument);
 			if (manifestFile != null) {
+				manifestFile.setArchiveManifest(true);
 				ASiCEWithCAdESManifestValidator asiceWithCAdESManifestValidator = new ASiCEWithCAdESManifestValidator(manifestFile, getSignedDocuments());
 				asiceWithCAdESManifestValidator.validateEntries();
 				descriptions.add(manifestFile);
