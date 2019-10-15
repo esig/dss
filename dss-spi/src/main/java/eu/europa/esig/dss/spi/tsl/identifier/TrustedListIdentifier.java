@@ -1,14 +1,13 @@
 package eu.europa.esig.dss.spi.tsl.identifier;
 
-import eu.europa.esig.dss.model.identifier.MultipleDigestIdentifier;
 import eu.europa.esig.dss.spi.tsl.TLInfo;
 
-public class TrustedListIdentifier extends MultipleDigestIdentifier {
+public class TrustedListIdentifier extends AbstractTLIdentifier {
 
 	private static final long serialVersionUID = -527724241662081489L;
 
 	public TrustedListIdentifier(TLInfo tlInfo) {
-		super(tlInfo.getUrl().getBytes());
+		super(tlInfo);
 	}
 	
 	@Override

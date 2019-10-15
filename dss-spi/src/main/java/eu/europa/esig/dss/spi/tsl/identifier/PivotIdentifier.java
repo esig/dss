@@ -2,7 +2,7 @@ package eu.europa.esig.dss.spi.tsl.identifier;
 
 import eu.europa.esig.dss.spi.tsl.PivotInfo;
 
-public class PivotIdentifier extends LOTLIdentifier {
+public class PivotIdentifier extends AbstractTLIdentifier {
 
 	private static final long serialVersionUID = 1005934627070196126L;
 
