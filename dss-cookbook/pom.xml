@@ -80,7 +80,7 @@
 		                    <dependency>
 		                        <groupId>org.asciidoctor</groupId>
 		                        <artifactId>asciidoctorj-pdf</artifactId>
-		                        <version>1.5.0-beta.2</version>
+		                        <version>1.5.0-beta.5</version>
 		                    </dependency>
 						</dependencies>
 						<executions>
