@@ -21,23 +21,23 @@ public class PivotProcessing extends AbstractAnalysis implements Callable<PivotP
 
 	private static final Logger LOG = LoggerFactory.getLogger(PivotProcessing.class);
 
-	private final LOTLSource source;
+	private final LOTLSource pivotSource;
 	private final CacheAccessByKey cacheAccess;
 
 	public PivotProcessing(LOTLSource source, CacheAccessByKey cacheAccess, DSSFileLoader dssFileLoader) {
 		super(cacheAccess, dssFileLoader);
-		this.source = source;
+		this.pivotSource = source;
 		this.cacheAccess = cacheAccess;
 	}
 
 	@Override
 	public PivotProcessingResult call() throws Exception {
 
-		DSSDocument pivot = download(source.getUrl());
+		DSSDocument pivot = download(pivotSource.getUrl());
 
 		if (pivot != null) {
 
-			lotlParsing(pivot, source);
+			lotlParsing(pivot, pivotSource);
 
 			ParsingCacheDTO parsingResult = cacheAccess.getParsingReadOnlyResult();
 			if (parsingResult != null) {

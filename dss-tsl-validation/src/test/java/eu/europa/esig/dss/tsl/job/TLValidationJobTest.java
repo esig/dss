@@ -30,6 +30,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.tsl.CertificatePivotStatus;
 import eu.europa.esig.dss.spi.tsl.ConditionForQualifiers;
 import eu.europa.esig.dss.spi.tsl.LOTLInfo;
 import eu.europa.esig.dss.spi.tsl.PivotInfo;
@@ -48,6 +49,7 @@ import eu.europa.esig.dss.tsl.function.TrustServicePredicate;
 import eu.europa.esig.dss.tsl.function.TrustServiceProviderPredicate;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPServiceType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPType;
 
@@ -309,6 +311,13 @@ public class TLValidationJobTest {
 		
 		List<LOTLInfo> lotlInfos = summary.getLOTLInfos();
 		assertEquals(1, lotlInfos.size());
+		List<CertificateToken> potentialSigners = lotlInfos.get(0).getValidationCacheInfo().getPotentialSigners();
+		assertTrue(Utils.isCollectionNotEmpty(potentialSigners));
+		List<CertificateToken> keyStoreCertificates = lotlSource.getCertificateSource().getCertificates();
+		assertEquals(keyStoreCertificates.size(), potentialSigners.size());
+		for (CertificateToken certificate : potentialSigners) {
+			assertTrue(keyStoreCertificates.contains(certificate));
+		}
 		
 		List<TLInfo> tlInfos = lotlInfos.get(0).getTLInfos();
 			assertEquals(31, tlInfos.size());
@@ -321,6 +330,7 @@ public class TLValidationJobTest {
 				assertNull(tlInfo.getParsingCacheInfo().getExceptionStackTrace());
 				assertNull(tlInfo.getValidationCacheInfo().getExceptionMessage());
 				assertNull(tlInfo.getValidationCacheInfo().getExceptionStackTrace());
+				assertTrue(Utils.isCollectionNotEmpty(tlInfo.getValidationCacheInfo().getPotentialSigners()));
 			}
 		}
 		
@@ -651,7 +661,33 @@ public class TLValidationJobTest {
 			assertNull(pivotInfo.getValidationCacheInfo().getSubIndication());
 			assertNotNull(pivotInfo.getValidationCacheInfo().getSigningTime());
 			assertNotNull(pivotInfo.getValidationCacheInfo().getSigningCertificate());
+			
+			assertTrue(Utils.isMapNotEmpty(pivotInfo.getCertificateStatusMap()));
 		}
+		
+		PivotInfo firstPivotInfo = lotlInfo.getPivotInfos().get(0);
+		Map<CertificateToken, CertificatePivotStatus> certificateStatusMap = firstPivotInfo.getCertificateStatusMap();
+		assertEquals(4, certificateStatusMap.size());
+		int addedCerts = 0;
+		int staticCerts = 0;
+		int removedCerts = 0;
+		for (CertificatePivotStatus certificatePivotStatus : certificateStatusMap.values()) {
+			switch (certificatePivotStatus) {
+				case ADDED:
+					addedCerts++;
+					break;
+				case NOT_CHANGED:
+					staticCerts++;
+					break;
+				case REMOVED:
+					removedCerts++;
+					break;
+			}
+		}
+		assertEquals(3, addedCerts);
+		assertEquals(1, staticCerts);
+		assertEquals(0, removedCerts);
+		
 	}
 	
 	@Test

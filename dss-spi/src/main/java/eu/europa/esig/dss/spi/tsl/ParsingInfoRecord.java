@@ -3,8 +3,6 @@ package eu.europa.esig.dss.spi.tsl;
 import java.util.Date;
 import java.util.List;
 
-import eu.europa.esig.dss.model.x509.CertificateToken;
-
 public interface ParsingInfoRecord extends InfoRecord {
 	
 	Integer getSequenceNumber();
