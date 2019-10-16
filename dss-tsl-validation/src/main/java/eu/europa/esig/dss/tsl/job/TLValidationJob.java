@@ -33,6 +33,8 @@ import eu.europa.esig.dss.tsl.runnable.TLAnalysis;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
 import eu.europa.esig.dss.tsl.summary.ValidationJobSummaryBuilder;
+import eu.europa.esig.dss.tsl.sync.AcceptAllStrategy;
+import eu.europa.esig.dss.tsl.sync.SynchronizationStrategy;
 import eu.europa.esig.dss.tsl.sync.TrustedListCertificateSourceSynchronizer;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -82,6 +84,13 @@ public class TLValidationJob {
 	 * The certificate source to be synchronized
 	 */
 	private TrustedListsCertificateSource trustedListCertificateSource;
+
+	/**
+	 * The strategy to follow to synchronize the certificates.
+	 * 
+	 * Default : all trusted lists and LOTLs are synchronized
+	 */
+	private SynchronizationStrategy synchronizationStrategy = new AcceptAllStrategy();
 
 	/**
 	 * This property allows to print the cache content before and after the
@@ -142,6 +151,18 @@ public class TLValidationJob {
 	 */
 	public void setTrustedListCertificateSource(TrustedListsCertificateSource trustedListCertificateSource) {
 		this.trustedListCertificateSource = trustedListCertificateSource;
+	}
+
+	/**
+	 * Sets the strategy to follow for the certificate synchronization
+	 * 
+	 * @param synchronizationStrategy
+	 *                                the different options for the certificate
+	 *                                synchronization
+	 */
+	public void setSynchronizationStrategy(SynchronizationStrategy synchronizationStrategy) {
+		Objects.requireNonNull(synchronizationStrategy, "The SynchronizationStrategy cannot be null");
+		this.synchronizationStrategy = synchronizationStrategy;
 	}
 
 	/**
@@ -316,7 +337,7 @@ public class TLValidationJob {
 		}
 
 		TrustedListCertificateSourceSynchronizer synchronizer = new TrustedListCertificateSourceSynchronizer(trustedListSources, listOfTrustedListSources,
-				trustedListCertificateSource, cacheAccessFactory.getSynchronizerCacheAccess());
+				trustedListCertificateSource, synchronizationStrategy, cacheAccessFactory.getSynchronizerCacheAccess());
 		synchronizer.sync();
 	}
 
