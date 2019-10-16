@@ -16,6 +16,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.tsl.LOTLInfo;
@@ -26,6 +27,7 @@ import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
+import eu.europa.esig.dss.tsl.sync.SynchronizationStrategy;
 
 public class LOTLChangesTest {
 
@@ -43,13 +45,28 @@ public class LOTLChangesTest {
 		TLValidationJob job = new TLValidationJob();
 		job.setListOfTrustedListSources(getLOTLSource());
 		job.setOfflineDataLoader(offlineFileLoader);
-		job.setTrustedListCertificateSource(new TrustedListsCertificateSource());
+		TrustedListsCertificateSource trustedListCertificateSource = new TrustedListsCertificateSource();
+		job.setTrustedListCertificateSource(trustedListCertificateSource);
 
 		CacheCleaner cacheCleaner = new CacheCleaner();
 		cacheCleaner.setCleanFileSystem(true);
 		cacheCleaner.setCleanMemory(true);
 		cacheCleaner.setDSSFileLoader(offlineFileLoader);
 		job.setCacheCleaner(cacheCleaner);
+
+		SynchronizationStrategy rejectAll = new SynchronizationStrategy() {
+
+			@Override
+			public boolean canBeSynchronized(LOTLInfo listOfTrustedList) {
+				return false;
+			}
+
+			@Override
+			public boolean canBeSynchronized(TLInfo trustedList) {
+				return false;
+			}
+		};
+		job.setSynchronizationStrategy(rejectAll);
 
 //		job.setDebug(true);
 
@@ -87,6 +104,9 @@ public class LOTLChangesTest {
 		assertNotEquals(firstSigningTime, france.getValidationCacheInfo().getSigningTime());
 		assertNotEquals(firstIssueDate, france.getParsingCacheInfo().getIssueDate());
 
+		// validate rejectAll
+		List<CertificateToken> certificates = trustedListCertificateSource.getCertificates();
+		assertEquals(0, certificates.size());
 	}
 
 	private TLInfo getFrance(List<TLInfo> tlInfos) {
