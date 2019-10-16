@@ -83,8 +83,8 @@ public class CacheCleanerTest {
 		parsingCache.update(new CacheKey(LOTL_FILE_NAME), new LOTLParsingResult());
 		
 		validationCache = new ValidationCache();
-		validationCache.update(new CacheKey(SAMPLE_FILE_NAME), new ValidationResult(Indication.PASSED, null, new Date(), null));
-		validationCache.update(new CacheKey(LOTL_FILE_NAME), new ValidationResult(Indication.PASSED, null, new Date(), null));
+		validationCache.update(new CacheKey(SAMPLE_FILE_NAME), new ValidationResult(Indication.PASSED, null, new Date(), null, null));
+		validationCache.update(new CacheKey(LOTL_FILE_NAME), new ValidationResult(Indication.PASSED, null, new Date(), null, null));
 	}
 	
 	@Test
