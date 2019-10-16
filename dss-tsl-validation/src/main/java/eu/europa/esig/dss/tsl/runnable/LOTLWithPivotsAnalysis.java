@@ -159,7 +159,10 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 		for (Entry<String, Future<PivotProcessingResult>> entry : futures.entrySet()) {
 			try {
 				processingResults.put(entry.getKey(), entry.getValue().get());
-			} catch (InterruptedException | ExecutionException e) {
+			} catch (InterruptedException e) {
+				LOG.error(String.format("Unable to retrieve the PivotProcessingResult for url '%s'", entry.getKey()), e);
+				Thread.currentThread().interrupt();
+			} catch (ExecutionException e) {
 				LOG.error(String.format("Unable to retrieve the PivotProcessingResult for url '%s'", entry.getKey()), e);
 			}
 		}
