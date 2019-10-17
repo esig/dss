@@ -112,7 +112,7 @@ public class TLValidatorTask implements Supplier<ValidationResult> {
 			signingCertificate = DSSUtils.loadCertificate(signingCertificateWrapper.getBinaries());
 		}
 
-		return new ValidationResult(indication, subIndication, signingTime, signingCertificate);
+		return new ValidationResult(indication, subIndication, signingTime, signingCertificate, certificateSource);
 	}
 
 	private CommonTrustedCertificateSource buildTrustedCertificateSource(CertificateSource certificateSource) {

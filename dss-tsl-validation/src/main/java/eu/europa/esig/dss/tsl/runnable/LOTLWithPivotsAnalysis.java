@@ -2,6 +2,7 @@ package eu.europa.esig.dss.tsl.runnable;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -34,7 +35,7 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 
 	private final CacheAccessFactory cacheAccessFactory;
 
-	private final LOTLSource source;
+	private final LOTLSource lotlSource;
 	private final DSSFileLoader dssFileLoader;
 	private final CountDownLatch latch;
 
@@ -42,7 +43,7 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 			final CountDownLatch latch) {
 		super(cacheAccessFactory.getCacheAccess(source.getCacheKey()), dssFileLoader);
 		this.cacheAccessFactory = cacheAccessFactory;
-		this.source = source;
+		this.lotlSource = source;
 		this.dssFileLoader = dssFileLoader;
 		this.latch = latch;
 	}
@@ -50,11 +51,11 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 	@Override
 	public void run() {
 
-		DSSDocument document = download(source.getUrl());
+		DSSDocument document = download(lotlSource.getUrl());
 
 		if (document != null) {
 
-			lotlParsing(document, source);
+			lotlParsing(document, lotlSource);
 
 			validation(document, getCurrentCertificateSource());
 		}
@@ -63,7 +64,7 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 	}
 
 	private CertificateSource getCurrentCertificateSource() {
-		final CertificateSource initialCertificateSource = source.getCertificateSource();
+		final CertificateSource initialCertificateSource = lotlSource.getCertificateSource();
 
 		CertificateSource currentCertificateSource = null;
 
@@ -98,10 +99,11 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 
 		ReadOnlyCacheAccess readOnlyCacheAccess = cacheAccessFactory.getReadOnlyCacheAccess();
 
-		Collections.reverse(pivotURLs); // -> 172, 191,..
+		List<String> pivotUrlsReversed = new LinkedList<String>(pivotURLs);
+		Collections.reverse(pivotUrlsReversed); // -> 172, 191,..
 
 		CertificateSource currentCertificateSource = initialCertificateSource;
-		for (String pivotUrl : pivotURLs) {
+		for (String pivotUrl : pivotUrlsReversed) {
 			CacheKey cacheKey = new CacheKey(pivotUrl);
 
 			PivotProcessingResult pivotProcessingResult = processingResults.get(pivotUrl);
@@ -149,9 +151,9 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 			CacheAccessByKey pivotCacheAccess = cacheAccessFactory.getCacheAccess(new CacheKey(pivotUrl));
 			LOTLSource pivotSource = new LOTLSource();
 			pivotSource.setUrl(pivotUrl);
-			pivotSource.setLotlPredicate(source.getLotlPredicate());
-			pivotSource.setTlPredicate(source.getTlPredicate());
-			pivotSource.setPivotSupport(source.isPivotSupport());
+			pivotSource.setLotlPredicate(lotlSource.getLotlPredicate());
+			pivotSource.setTlPredicate(lotlSource.getTlPredicate());
+			pivotSource.setPivotSupport(lotlSource.isPivotSupport());
 			futures.put(pivotUrl, executorService.submit(new PivotProcessing(pivotSource, pivotCacheAccess, dssFileLoader)));
 		}
 

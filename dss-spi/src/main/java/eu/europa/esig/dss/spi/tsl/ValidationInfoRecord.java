@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.spi.tsl;
 
 import java.util.Date;
+import java.util.List;
 
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -15,6 +16,8 @@ public interface ValidationInfoRecord extends InfoRecord {
 	Date getSigningTime();
 	
 	CertificateToken getSigningCertificate();
+	
+	List<CertificateToken> getPotentialSigners();
 	
 	boolean isValid();
 	
