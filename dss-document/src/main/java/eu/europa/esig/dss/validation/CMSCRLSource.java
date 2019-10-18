@@ -81,6 +81,15 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 		this.unsignedAttributes = unsignedAttributes;
 		extract();
 	}
+
+	/**
+	 * Returns SignedData {@link RevocationOrigin}
+	 * 
+	 * @return {@link RevocationOrigin}
+	 */
+	protected RevocationOrigin getCMSSignedDataRevocationOrigin() {
+		return RevocationOrigin.CMS_SIGNED_DATA;
+	}
 	
 	/**
 	 * Returns revocation-values {@link RevocationOrigin}
@@ -200,7 +209,7 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 		final Store<X509CRLHolder> crLs = cmsSignedData.getCRLs();
 		final Collection<X509CRLHolder> collection = crLs.getMatches(null);
 		for (final X509CRLHolder x509CRLHolder : collection) {
-			signedDataCRLIdentifiers.add(addX509CRLHolder(x509CRLHolder, getRevocationValuesOrigin()));
+			signedDataCRLIdentifiers.add(addX509CRLHolder(x509CRLHolder, getCMSSignedDataRevocationOrigin()));
 		}
 	}
 

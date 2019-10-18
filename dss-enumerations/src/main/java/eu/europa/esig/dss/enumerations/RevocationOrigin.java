@@ -23,7 +23,19 @@ package eu.europa.esig.dss.enumerations;
 public enum RevocationOrigin {
 
 	/**
-	 * The revocation data was embedded in the signature 'revocation-values' attribute (used in CAdES and XAdES)
+	 * The revocation data was embedded in the CMS SignedData itself (used in CAdES)
+	 */
+	CMS_SIGNED_DATA(true),
+
+	/**
+	 * The revocation data was embedded in the TimeStampToken.SignedData (used in
+	 * CAdES)
+	 */
+	TIMESTAMP_SIGNED_DATA(true),
+
+	/**
+	 * The revocation data was embedded in the signature 'revocation-values'
+	 * attribute (used in CAdES and XAdES)
 	 */
 	REVOCATION_VALUES(true),
 

@@ -807,7 +807,9 @@
 	</xs:simpleType>
 	
 	<xs:simpleType name="RevocationOriginType" final="restriction">
-		<xs:restriction base="xs:string">
+		<xs:restriction base="xs:string">            
+			<xs:enumeration value="CMS_SIGNED_DATA" />
+			<xs:enumeration value="TIMESTAMP_SIGNED_DATA" />
 			<xs:enumeration value="REVOCATION_VALUES" />
 			<xs:enumeration value="ATTRIBUTE_REVOCATION_VALUES" />
 			<xs:enumeration value="TIMESTAMP_VALIDATION_DATA" />

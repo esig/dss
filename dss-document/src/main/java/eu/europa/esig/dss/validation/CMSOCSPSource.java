@@ -87,7 +87,17 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 	}
 	
 	/**
+	 * Returns SignedData {@link RevocationOrigin}
+	 * 
+	 * @return {@link RevocationOrigin}
+	 */
+	protected RevocationOrigin getCMSSignedDataRevocationOrigin() {
+		return RevocationOrigin.CMS_SIGNED_DATA;
+	}
+
+	/**
 	 * Returns revocation-values {@link RevocationOrigin}
+	 * 
 	 * @return {@link RevocationOrigin}
 	 */
 	protected RevocationOrigin getRevocationValuesOrigin() {
@@ -212,7 +222,7 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 					final OCSPResp ocspResp = DSSRevocationUtils.getOcspResp(otherRevocationInfoMatch);
 					basicOCSPResp = DSSRevocationUtils.fromRespToBasic(ocspResp);
 				}
-				OCSPResponseBinary ocspResponseIdentifier = addBasicOcspResp(basicOCSPResp, getRevocationValuesOrigin());
+				OCSPResponseBinary ocspResponseIdentifier = addBasicOcspResp(basicOCSPResp, getCMSSignedDataRevocationOrigin());
 				if (ocspResponseIdentifier != null) {
 					ocspResponseIdentifier.setAsn1ObjectIdentifier(CMSObjectIdentifiers.id_ri_ocsp_response);
 					signedDataOCSPIdentifiers.add(ocspResponseIdentifier);
@@ -230,7 +240,7 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 			if (object instanceof ASN1Sequence) {
 				final ASN1Sequence otherRevocationInfoMatch = (ASN1Sequence) object;
 				final BasicOCSPResp basicOCSPResp = DSSRevocationUtils.getBasicOcspResp(otherRevocationInfoMatch);
-				OCSPResponseBinary ocspResponseIdentifier = addBasicOcspResp(basicOCSPResp, getRevocationValuesOrigin());
+				OCSPResponseBinary ocspResponseIdentifier = addBasicOcspResp(basicOCSPResp, getCMSSignedDataRevocationOrigin());
 				if (ocspResponseIdentifier != null) {
 					ocspResponseIdentifier.setAsn1ObjectIdentifier(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
 					signedDataOCSPIdentifiers.add(ocspResponseIdentifier);

@@ -30,10 +30,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
@@ -44,7 +44,9 @@ import eu.europa.esig.dss.utils.Utils;
 public abstract class SignatureCRLSource extends OfflineCRLSource implements SignatureRevocationSource<CRLToken> {
 	
 	private Map<CRLBinary, List<CRLToken>> crlTokenMap = new HashMap<CRLBinary, List<CRLToken>>();
-	
+
+	private List<CRLToken> cmsSignedDataCRLs = new ArrayList<CRLToken>();
+	private List<CRLToken> timestampSignedDataCRLs = new ArrayList<CRLToken>();
 	private List<CRLToken> revocationValuesCRLs = new ArrayList<CRLToken>();
 	private List<CRLToken> attributeRevocationValuesCRLs = new ArrayList<CRLToken>();
 	private List<CRLToken> timestampValidationDataCRLs = new ArrayList<CRLToken>();
@@ -60,6 +62,16 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	 * Map that links {@link CRLToken}s with related {@link CRLRef}s
 	 */
 	private transient Map<CRLToken, Set<CRLRef>> revocationRefsMap;
+
+	@Override
+	public List<CRLToken> getCMSSignedDataRevocationTokens() {
+		return cmsSignedDataCRLs;
+	}
+
+	@Override
+	public List<CRLToken> getTimestampSignedDataRevocationTokens() {
+		return timestampSignedDataCRLs;
+	}
 
 	@Override
 	public List<CRLToken> getRevocationValuesTokens() {
@@ -119,6 +131,8 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	 */
 	public List<CRLToken> getAllCRLTokens() {
 		List<CRLToken> crlTokens = new ArrayList<CRLToken>();
+		crlTokens.addAll(getCMSSignedDataRevocationTokens());
+		crlTokens.addAll(getTimestampSignedDataRevocationTokens());
 		crlTokens.addAll(getRevocationValuesTokens());
 		crlTokens.addAll(getAttributeRevocationValuesTokens());
 		crlTokens.addAll(getTimestampValidationDataTokens());
@@ -169,6 +183,12 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	
 	private void addToRelevantList(CRLToken crlToken, RevocationOrigin origin) {
 		switch (origin) {
+		case CMS_SIGNED_DATA:
+			cmsSignedDataCRLs.add(crlToken);
+			break;
+		case TIMESTAMP_SIGNED_DATA:
+			timestampSignedDataCRLs.add(crlToken);
+			break;
 		case REVOCATION_VALUES:
 			revocationValuesCRLs.add(crlToken);
 			break;

@@ -36,7 +36,12 @@ public class TimestampCRLSource extends CMSCRLSource {
 	TimestampCRLSource(TimeStampToken timeStampToken) {
 		super(timeStampToken.toCMSSignedData(), timeStampToken.getUnsignedAttributes());
 	}
-	
+
+	@Override
+	protected RevocationOrigin getCMSSignedDataRevocationOrigin() {
+		return RevocationOrigin.TIMESTAMP_SIGNED_DATA;
+	}
+
 	@Override
 	protected RevocationOrigin getRevocationValuesOrigin() {
 		return RevocationOrigin.TIMESTAMP_REVOCATION_VALUES;

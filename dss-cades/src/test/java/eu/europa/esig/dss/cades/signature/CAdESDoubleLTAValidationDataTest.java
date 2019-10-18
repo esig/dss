@@ -181,7 +181,7 @@ public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 		
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertNotNull(signature);
-		assertEquals(1, signature.getRevocationIdsByOrigin(RevocationOrigin.TIMESTAMP_REVOCATION_VALUES).size());
+		assertEquals(1, signature.getRevocationIdsByOrigin(RevocationOrigin.TIMESTAMP_SIGNED_DATA).size());
 		
 		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
 		List<ValidationObjectType> validationObjects = etsiValidationReportJaxb.getSignatureValidationObjects().getValidationObject();

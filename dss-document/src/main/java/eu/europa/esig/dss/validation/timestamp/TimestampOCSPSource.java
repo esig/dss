@@ -38,6 +38,11 @@ public class TimestampOCSPSource extends CMSOCSPSource {
 	}
 	
 	@Override
+	protected RevocationOrigin getCMSSignedDataRevocationOrigin() {
+		return RevocationOrigin.TIMESTAMP_SIGNED_DATA;
+	}
+
+	@Override
 	protected RevocationOrigin getRevocationValuesOrigin() {
 		return RevocationOrigin.TIMESTAMP_REVOCATION_VALUES;
 	}

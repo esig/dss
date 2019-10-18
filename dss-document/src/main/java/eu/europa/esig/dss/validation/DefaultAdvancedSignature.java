@@ -33,13 +33,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.CertificateReorderer;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
@@ -855,6 +855,22 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		allRevocations.addAll(getCompleteCRLSource().getAllCRLTokens());
 		allRevocations.addAll(getCompleteOCSPSource().getAllOCSPTokens());
 		return allRevocations;
+	}
+
+	@Override
+	public List<RevocationToken> getCMSSignedDataRevocationTokens() {
+		List<RevocationToken> revocationTokens = new ArrayList<RevocationToken>();
+		revocationTokens.addAll(getCRLSource().getCMSSignedDataRevocationTokens());
+		revocationTokens.addAll(getOCSPSource().getCMSSignedDataRevocationTokens());
+		return revocationTokens;
+	}
+
+	@Override
+	public List<RevocationToken> getTimestampSignedDataRevocationTokens() {
+		List<RevocationToken> revocationTokens = new ArrayList<RevocationToken>();
+		revocationTokens.addAll(getCRLSource().getTimestampSignedDataRevocationTokens());
+		revocationTokens.addAll(getOCSPSource().getTimestampSignedDataRevocationTokens());
+		return revocationTokens;
 	}
 
 	@Override
