@@ -6,7 +6,7 @@ public class LogLOTLLocationChangeAlert extends AbstractLOTLLogAlert {
 
 	@Override
 	public void alert(LOTLInfo currentInfo) {
-		LOG.warn("The LOTL : " + currentInfo.getUrl() + " has changed.");
+		LOG.warn("The LOTL Location has changed - new location : {}", currentInfo.getUrl());
 	}
 
 }

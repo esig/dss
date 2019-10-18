@@ -6,7 +6,7 @@ public class LogExpirationAlert extends AbstractTLLogAlert {
 
 	@Override
 	public void alert(TLInfo currentInfo) {
-		LOG.warn("The " + currentInfo.getParsingCacheInfo().getTerritory() + " TL has expired. Last update : " + currentInfo.getParsingCacheInfo().getNextUpdateDate());
+		LOG.warn("The " + currentInfo.getUrl() + " TL has expired. Last update : " + currentInfo.getParsingCacheInfo().getNextUpdateDate());
 	}
 
 	

@@ -33,4 +33,7 @@ public class OfficialJournalSchemeInformationURI extends LOTLSigningCertificates
 		}
 	}
 
+	public String getOfficialJournalURL() {
+		return this.officialJournalURL;
+	}
 }

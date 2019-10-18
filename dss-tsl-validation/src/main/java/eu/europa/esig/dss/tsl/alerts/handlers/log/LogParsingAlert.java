@@ -6,7 +6,7 @@ public class LogParsingAlert extends AbstractTLLogAlert {
 
 	@Override
 	public void alert(TLInfo currentInfo) {
-		LOG.warn("There was an error while parsing a TL : {}", currentInfo.getParsingCacheInfo().getTerritory());
+		LOG.warn("There was an error while parsing a TL : {}", currentInfo.getUrl());
 	}
 
 	

@@ -1,13 +1,11 @@
 package eu.europa.esig.dss.tsl.alerts;
 
-import eu.europa.esig.dss.spi.tsl.TLInfo;
-
-class CallbackAlertHandler implements AlertHandler<TLInfo> {
+class CallbackAlertHandler<T> implements AlertHandler<T> {
 	
 	private boolean called = false;
 
 	@Override
-	public void alert(TLInfo currentInfo) {
+	public void alert(T currentInfo) {
 		called = true;
 	}
 
