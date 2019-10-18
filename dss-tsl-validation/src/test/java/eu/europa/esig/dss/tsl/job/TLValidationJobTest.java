@@ -663,6 +663,7 @@ public class TLValidationJobTest {
 			assertNotNull(pivotInfo.getValidationCacheInfo().getSigningCertificate());
 			
 			assertTrue(Utils.isMapNotEmpty(pivotInfo.getCertificateStatusMap()));
+			assertNotNull(pivotInfo.getLOTLLocation());
 		}
 		
 		PivotInfo firstPivotInfo = lotlInfo.getPivotInfos().get(0);

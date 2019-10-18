@@ -22,6 +22,7 @@ import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
 import eu.europa.esig.dss.tsl.cache.access.ReadOnlyCacheAccess;
 import eu.europa.esig.dss.tsl.dto.ParsingCacheDTO;
+import eu.europa.esig.dss.tsl.parsing.ParsingUtils;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -85,10 +86,13 @@ public class ValidationJobSummaryBuilder {
 					
 					List<LOTLSource> pivotSources = extractPivotSources(lotlParsingResult);
 					for (LOTLSource pivotSource : pivotSources) {
+						
 						List<CertificateToken> pivotCertificateTokens = getPivotCertificateTokens(pivotSource);
 						Map<CertificateToken, CertificatePivotStatus> certificateChangesMap = getCertificateChangesMap(
 								pivotCertificateTokens, currentCertificates);
-						pivotInfos.add(buildPivotInfo(pivotSource, certificateChangesMap));
+						String associatedLOTLLocation = getAssociatedLOTLLocation(pivotSource);
+						pivotInfos.add(buildPivotInfo(pivotSource, certificateChangesMap, associatedLOTLLocation));
+						
 						currentCertificates = pivotCertificateTokens;
 						if (LOG.isDebugEnabled()) {
 							LOG.debug("Pivot [{}] certificate source [Amount : {}] : {}", pivotSource.getUrl(), currentCertificates.size(), currentCertificates);
@@ -120,10 +124,11 @@ public class ValidationJobSummaryBuilder {
 				readOnlyCacheAccess.getValidationCacheDTO(cacheKey), tlSource.getUrl());
 	}
 
-	private PivotInfo buildPivotInfo(LOTLSource pivotSource, Map<CertificateToken, CertificatePivotStatus> certificateChangesMap) {
+	private PivotInfo buildPivotInfo(LOTLSource pivotSource, Map<CertificateToken, CertificatePivotStatus> certificateChangesMap, 
+			String associatedLOTLLocation) {
 		CacheKey cacheKey = pivotSource.getCacheKey();
 		return new PivotInfo(readOnlyCacheAccess.getDownloadCacheDTO(cacheKey), readOnlyCacheAccess.getParsingCacheDTO(cacheKey),
-				readOnlyCacheAccess.getValidationCacheDTO(cacheKey), pivotSource.getUrl(), certificateChangesMap);
+				readOnlyCacheAccess.getValidationCacheDTO(cacheKey), pivotSource.getUrl(), certificateChangesMap, associatedLOTLLocation);
 	}
 
 	private List<TLSource> extractTLSources(ParsingCacheDTO lotlParsingResult) {
@@ -204,6 +209,17 @@ public class ValidationJobSummaryBuilder {
 		}
 		
 		return certificateChangesMap;
+	}
+	
+	private String getAssociatedLOTLLocation(final LOTLSource pivotSource) {
+		CacheKey cacheKey = pivotSource.getCacheKey();
+		ParsingCacheDTO parsingCacheDTO = readOnlyCacheAccess.getParsingCacheDTO(cacheKey);
+		
+		OtherTSLPointer xmllotlPointer = ParsingUtils.getXMLLOTLPointer(parsingCacheDTO);
+		if (xmllotlPointer != null) {
+			return xmllotlPointer.getLocation();
+		}
+		return null;
 	}
 
 }

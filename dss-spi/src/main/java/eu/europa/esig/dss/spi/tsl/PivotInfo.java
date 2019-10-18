@@ -11,7 +11,11 @@ public class PivotInfo extends LOTLInfo {
 
 	private static final long serialVersionUID = 1724138551018429654L;
 	
+	/* Map between certificates and their change statuses in the current Pivot */
 	private Map<CertificateToken, CertificatePivotStatus> certificateStatusMap = new HashMap<CertificateToken, CertificatePivotStatus>();
+	
+	/* associated XML LOTL Location */
+	private String lotlLocation;
 
 	/**
 	 * The default constructor
@@ -21,11 +25,14 @@ public class PivotInfo extends LOTLInfo {
 	 * @param url {@link String} address used to extract the entry
 	 * @param certificates map between {@link CertificateToken} and {@link CertificatePivotStatus}
 	 * 					map between certificates and their statuses in the current pivot
+	 * @param lotlLocation {@link String} the associated with the pivot LOTL location
 	 */
 	public PivotInfo(final DownloadInfoRecord downloadCacheInfo, final ParsingInfoRecord parsingCacheInfo, 
-			final ValidationInfoRecord validationCacheInfo, final String url, final Map<CertificateToken, CertificatePivotStatus> certificates) {
+			final ValidationInfoRecord validationCacheInfo, final String url, final Map<CertificateToken, CertificatePivotStatus> certificates,
+			final String lotlLocation) {
 		super(downloadCacheInfo, parsingCacheInfo, validationCacheInfo, url);
 		this.certificateStatusMap = certificates;
+		this.lotlLocation = lotlLocation;
 	}
 	
 	/**
@@ -34,6 +41,14 @@ public class PivotInfo extends LOTLInfo {
 	 */
 	public Map<CertificateToken, CertificatePivotStatus> getCertificateStatusMap() {
 		return certificateStatusMap;
+	}
+	
+	/**
+	 * Returns the associated with the pivot LOTL Location url
+	 * @return {@link String} LOTL location url
+	 */
+	public String getLOTLLocation() {
+		return lotlLocation;
 	}
 	
 	@Override
