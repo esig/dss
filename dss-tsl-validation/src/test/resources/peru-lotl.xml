@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><TrustServiceStatusList xmlns="http://uri.etsi.org/02231/v2#" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" xmlns:ns3="http://uri.etsi.org/01903/v1.3.2#" xmlns:ns4="http://uri.etsi.org/02231/v2/additionaltypes#" xmlns:ns5="http://uri.etsi.org/TrstSvc/SvcInfoExt/eSigDir-1999-93-EC-TrustedList/#" xmlns:ns6="http://uri.etsi.org/01903/v1.4.1#" Id="ID0001" TSLTag="http://uri.etsi.org/19612/TSLTag">
+    <SchemeInformation>
+        <TSLVersionIdentifier>1</TSLVersionIdentifier>
+        <TSLSequenceNumber>1</TSLSequenceNumber>
+        <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists</TSLType>
+        <SchemeOperatorName>
+            <Name xml:lang="en">Peruanian LOTL</Name>
+        </SchemeOperatorName>
+        <SchemeOperatorAddress>
+            <PostalAddresses>
+                <PostalAddress xml:lang="en">
+                    <StreetAddress>Rue de la Loi/Wetstraat 200</StreetAddress>
+                    <Locality>Peru</Locality>
+                    <PostalCode>1049</PostalCode>
+                    <CountryName>PE</CountryName>
+                </PostalAddress>
+            </PostalAddresses>
+            <ElectronicAddress>
+                <URI xml:lang="en">mailto:EC-TL-Service@ec.europa.eu</URI>
+                <URI xml:lang="en">https://ec.europa.eu/digital-agenda/en/eu-trusted-lists-certification-service-providers</URI>
+            </ElectronicAddress>
+        </SchemeOperatorAddress>
+        <SchemeName>
+            <Name xml:lang="en">EU:List containing the information notified by Member States pursuant to Article 4(1) and Article 4(2) of Commission Implementing Decision (EU) 2015/1505 of 8 September 2015 laying down technical specifications and formats relating to trusted lists pursuant to Article 22(5) of Regulation (EU) No 910/2014 of the European Parliament and of the Council on electronic identification and trust services for electronic transactions in the internal market, published by the Commission in accordance with Article 4(3) of Commission Implementing Decision (EU) 2015/1505.</Name>
+        </SchemeName>
+        <SchemeInformationURI>
+            <URI xml:lang="en">https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2019.276.01.0001.01.ENG</URI>
+            <URI xml:lang="en">https://ec.europa.eu/tools/lotl/eu-lotl-legalnotice.html#en</URI>
+        </SchemeInformationURI>
+        <StatusDeterminationApproach>http://uri.etsi.org/TrstSvc/TrustedList/StatusDetn/EUlistofthelists</StatusDeterminationApproach>
+        <SchemeTypeCommunityRules>
+            <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/EUlistofthelists</URI>
+        </SchemeTypeCommunityRules>
+        <SchemeTerritory>EU</SchemeTerritory>
+        <PolicyOrLegalNotice>
+            <TSLLegalNotice xml:lang="en">In accordance with Art. 4(3) of Commission Implementing Decision (EU) 2015/1505 of 8 September 2015 laying down technical specifications and formats relating to trusted lists pursuant to Article 22(5) of Regulation (EU) No 910/2014 of the European Parliament and of the Council on electronic identification and trust services for electronic transactions in the internal market, the present list contains the information notified by Member States pursuant to Art. 4(1) and Art. 4(2) of Commission Implementing Decision (EU) 2015/1505.
+The European Commission maintains this website as an interoperability tool designed to facilitate the practical use of national Trusted Lists. Our goal is to keep this information timely and accurate. If errors are brought to our attention, we will try to correct them. However, the Commission accepts no responsibility or liability whatsoever with regard to the content of national Trusted Lists which lies exclusively with the Member States.
+It is our goal to minimise disruption caused by technical errors. However, some data or information on our site may have been created or structured in files or formats that are not error-free and we cannot guarantee that our service will not be interrupted or otherwise affected by such problems. The European Commission accepts no responsibility with regard to such problems incurred as a result of using this site or any linked external sites.
+This disclaimer is not intended to limit the liability of the European Commission in contravention of any requirements laid down in applicable national law nor to exclude its liability for matters which may not be excluded under that law.</TSLLegalNotice>
+        </PolicyOrLegalNotice>
+        <HistoricalInformationPeriod>65535</HistoricalInformationPeriod>
+        <PointersToOtherTSL>
+            <OtherTSLPointer>
+                <ServiceDigitalIdentities>
+                    <ServiceDigitalIdentity>
+                        <DigitalId>
+                            <X509Certificate>MIIELDCCAhSgAwIBAgIBAjANBgkqhkiG9w0BAQsFADBRMSEwHwYDVQQDExhJTkRFQ09QSSBBQUMgUkFJWiBTSEEyNTYxDDAKBgNVBAsTA0NGRTERMA8GA1UEChMISU5ERUNPUEkxCzAJBgNVBAYTAlBFMB4XDTE3MDQyMDIxNTMzNloXDTIwMDQyMDIxNTMzNlowTjEeMBwGA1UEAxMVVFNMIFN1c2NyaXB0b3IgU0hBMjU2MQwwCgYDVQQLEwNDRkUxETAPBgNVBAoTCElOREVDT1BJMQswCQYDVQQGEwJQRTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL0tVx8VXgQFih1IPtnvBl9UO9EnctN3zuWwEultjc5ig/rC01oAuWf8Kp271BLEMsnFJD9w+tdPrW2bxu7V7AgDsq0httwwqEmBA950/cOyaaJkQ5b04eqvIWlU7D3NrGbudeI1DHI3h3Q/h4xo1xWdag/UmqfBBs6xSO7P7E2bdn7M2D+8ZqY4JV9YchphHdT9RSGNHgVSCUjN1bg67Cs593Rc6haCgSWeDaeWnaEXlzyqgaSINbTf6+reDItHqKa78gZU6JqlPRAPs1rdnQGPLVJTdfKduF9ZbzcmctqtENeG5yFR4wcBf/1ngxlIRXnNHQE/RRYX5iB0ZL9fosMCAwCrhaMSMBAwDgYDVR0PAQH/BAQDAgCAMA0GCSqGSIb3DQEBCwUAA4ICAQCMcAgkvdBGkN2qECnwyq/p7gZbKKJ5eKnsmSnQ2xYJ7UfTnFwSG5PlLeD2erVLCLlM8wzp1Iea43PDhSP8aH0QOPsxgtiPlUT0l1khG9RYSpw1EatLHlRPACCvZRNvQ9nSSBwG3qG7jzTUGU6WvSifvfN/d5lwzA/skulvOk6nmYvaOq1FOToJIy01WaGcX0yV8C/d1qmDzm77asrtRoSQA6depQ63OPbuGSVDqpHjiAZmr8HiSH3vBpcm66kjPKAnESmE0M5s6zjHpLa1RvYBYTY5luKAQdim1wIMDmI+vf+u7gQkZzqG0+TJos2o7j3AOuyn9gOuhV7NQZPUV/EKoLRolRqZg31q/XhptoEX61RXV8ggyEHKQG12xRa2RBOwEqLWX76H6AwBG/DqZWiWkSrftFfwPnxsmvxwMzNLw3EV1DXfHxruoy12MPKlbmMtVGkh0G3Mf8b3iUOPShenAQFg2FzUrZg0oXUZIJfg6JtgoHy3l8QffCpYfP088cEdvdWWkAN4L34BfojRCjqcDsMyx+9GMv4ODlDPijIwrpGtHkbmk0Rrti8rhzdeAFVOBcvWRYkW3esHvXhf5D3zokjYUiUnQyVBLS3t5zwOir14t82qC/KK6b53p01Fp3Jc3Mrt1Gzrr7wx/IDeQDBfHuj47pWwUuwEuJR64Lo+4w==</X509Certificate>
+                        </DigitalId>
+                    </ServiceDigitalIdentity>
+                </ServiceDigitalIdentities>
+                <TSLLocation>https://iofe.indecopi.gob.pe/TSL/tsl-pe.xml</TSLLocation>
+                <AdditionalInformation>
+                    <OtherInformation>
+                        <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</TSLType>
+                    </OtherInformation>
+                    <OtherInformation>
+                        <SchemeTerritory>PE</SchemeTerritory>
+                    </OtherInformation>
+                    <OtherInformation>
+                        <ns4:MimeType>application/vnd.etsi.tsl+xml</ns4:MimeType>
+                    </OtherInformation>
+                    <OtherInformation>
+                        <SchemeOperatorName>
+                            <Name xml:lang="en">Peru</Name>
+                        </SchemeOperatorName>
+                    </OtherInformation>
+                    <OtherInformation>
+                        <SchemeTypeCommunityRules>
+                            <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/AT</URI>
+                        </SchemeTypeCommunityRules>
+                    </OtherInformation>
+                </AdditionalInformation>
+            </OtherTSLPointer>
+        </PointersToOtherTSL>
+        <ListIssueDateTime>2019-09-04T08:00:00Z</ListIssueDateTime>
+        <NextUpdate>
+            <dateTime>2024-03-04T00:00:00Z</dateTime>
+        </NextUpdate>
+        <DistributionPoints>
+            <URI>https://dss.nowina.lu/peru-lotl</URI>
+        </DistributionPoints>
+    </SchemeInformation>
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="id-78bfb79edea38bfbe5c0cc1e5733fdc4"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><ds:Reference Id="xml_ref_id" URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>LtcYsKwvK5VVI4HTpr/BPR9coqJ+Gfjg6AkFecVP5/I=</ds:DigestValue></ds:Reference><ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#xades-id-78bfb79edea38bfbe5c0cc1e5733fdc4"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>dLecxomFxamGivc+qP9SPJ/hvxJR9ohN3a5v4MRs6fc=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue Id="value-id-78bfb79edea38bfbe5c0cc1e5733fdc4">gO41vy+3B8RjUtA9cJcBOygdyqQkXZ/u9XGJ9qdhxRylJ3fro+oAWgYM5LxU3HPYyXDkN8D0i83bJMNUEdHfB7T4EiOVExXxJDf1fdC5t50xvhJllViJznEjBFqZmNtmHnW0DE/pP46qlW7tPMkTHstWyABXIdbK00KYXizIyX0XRg9BmXGJfwI28FmWzRjd/cakytBZ/EDvTLCoCPgd9xskFBeI8PWru9z6HqyAgSSLtpwiJX6QsbLF3qFQLr7GL/IKx9+Z4GMM2sam89D87C7+siudxIvSeaLiR0L4RWRCdTrgxy4wZ5O6jKUsuOfd5ROPsSSVVVkNTJOu0v1ZVA==</ds:SignatureValue><ds:KeyInfo><ds:X509Data><ds:X509Certificate>MIID1DCCArygAwIBAgIBCjANBgkqhkiG9w0BAQsFADBNMRAwDgYDVQQDDAdnb29kLWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwHhcNMTgxMTAzMTQwMTQ1WhcNMjAwOTAzMTMwMTQ1WjBPMRIwEAYDVQQDDAlnb29kLXVzZXIxGTAXBgNVBAoMEE5vd2luYSBTb2x1dGlvbnMxETAPBgNVBAsMCFBLSS1URVNUMQswCQYDVQQGEwJMVTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAJUaxGSiphwE9S6HhgqQoB9+Qd3Eo4DmLwb0STKzwGOZSftc8ZL8B2QKrbVK6n7DemiQwFOSLwucZ8EU72k3986BAPk9T4W9cImcaamJXWL6pV3MnVIstVfvtESu4LKBQ6L3mXKPt9bKOsf+/dv/HculOniVd4XseCOuuM8VGNQxbYVvsIPkcEZeV8FmBSuc4346xO0631Bx+alhaabN9ohrKmsk7BsUGfBcNJBVaQTCU8XjaikyoTn0MjH19FdpjGK8XxW32552UF7LTECrr/RWwWXIw148QCdbo8fKDdBFg6DVkcLRBmfTIaqyaVZRgmlpDJHQtCNvXcHs/9e5qicCAwEAAaOBvDCBuTAOBgNVHQ8BAf8EBAMCBkAwgYcGCCsGAQUFBwEBBHsweTA5BggrBgEFBQcwAYYtaHR0cDovL2Rzcy5ub3dpbmEubHUvcGtpLWZhY3Rvcnkvb2NzcC9nb29kLWNhMDwGCCsGAQUFBzAChjBodHRwOi8vZHNzLm5vd2luYS5sdS9wa2ktZmFjdG9yeS9jcnQvZ29vZC1jYS5jcnQwHQYDVR0OBBYEFEHXHSVSUuMrfR+7NtQbkKiHDSNFMA0GCSqGSIb3DQEBCwUAA4IBAQCKTKAq52NR4hBooe6QLFSoIT3i0Qcdo83XHzqcoirqR6cmI2JeOrArTcc4D79fVvXViX0zfqerODX7CEZamaV5cRW2WoZV+9ffOrZZbyjPKq4c9laRw2ogTPNwL73DU5N6dWrZ+OXfu8ueNCvOdUmVvB6/bs102hENynGDIVUdEEpVKxTmuxYNEEqqPEluRVXvr7+XcTH6hGxH754okBdfCIso3n2Xxl9CNmNkM3VUNzZ9GbUj1lKgkyBFultLscLy0BUBctql4fuD+yr022gUdGEviEzA/zSjDa8uGUx7gIbHgRHrtzYTvNelB0aweyoENRtIly0Q9PkXRsPNHCKl</ds:X509Certificate><ds:X509Certificate>MIID6jCCAtKgAwIBAgIBBDANBgkqhkiG9w0BAQsFADBNMRAwDgYDVQQDDAdyb290LWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwHhcNMTgxMTAzMTQwMTQ0WhcNMjAwOTAzMTMwMTQ0WjBNMRAwDgYDVQQDDAdnb29kLWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDM51PXCX9sG4fNRUQrEZmUaqUW3LLCw5efjeSPV117ocrYAizqfA7s+zzbODnwDV3KhDJI1PTkmBjoIN2ebhFsmO/d1Xhkzsg2nErsorxhpMFKtD+nKd9YpF8dHROB0cIytX1kyHFBiCJZ46k45LEcdr+18oCVzdU0KHQfndEgTL+pPkOdCzlIyfHoJ0Ro8XxCzVuWYdV1A2zkipfyetsSmg5q516ePdUUyTaQHp6h5ZDW7MOBdR3bcLa3d3jJsXWKBCePm7MZ/fGV9eP0uLSAs73LSx5xppy5CqZ2ZwFl0XqkEXuT5zTxVZAGJAklfOsBGwomSH9uZQ9TovD/hVXJAgMBAAGjgdQwgdEwDgYDVR0PAQH/BAQDAgEGMEEGA1UdHwQ6MDgwNqA0oDKGMGh0dHA6Ly9kc3Mubm93aW5hLmx1L3BraS1mYWN0b3J5L2NybC9yb290LWNhLmNybDBMBggrBgEFBQcBAQRAMD4wPAYIKwYBBQUHMAKGMGh0dHA6Ly9kc3Mubm93aW5hLmx1L3BraS1mYWN0b3J5L2NydC9yb290LWNhLmNydDAdBgNVHQ4EFgQUGEwiJqVy0A2+lE226WogWTQPKpwwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAHew54iJf+fMMj/2GzewB2LzBzLY0R3x30V3tnFLQTP5x4/wSnHrzm6/AYXSgc6fBlTCHBiK3KAk3DYcq8vv7wVXokDLis6QbXGjL4GkXycVB/otKXbnV0SFfiN9uYU11t164XDk/w9hGiCx4OwOXa3jZdn0QXc+TEhgh49juXPm53MpOC+rQmCD89/GANyMI/3hYe4Al9lVRFijVS2iN88OJhR4pb4iSZO+ZlWsKS5tTj6BHFHBXI1C0tUg9S7LaaHS0g0k1vNzMa/ap99bsBkfDUJxzNDaL2z+ebqZkglsZMKbp8nOmgYhAoHepoHMffZizR1Lha5S4dk+ONlVnlQ==</ds:X509Certificate></ds:X509Data></ds:KeyInfo><ds:Object><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="#id-78bfb79edea38bfbe5c0cc1e5733fdc4"><xades:SignedProperties Id="xades-id-78bfb79edea38bfbe5c0cc1e5733fdc4"><xades:SignedSignatureProperties><xades:SigningTime>2019-10-18T12:16:11Z</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"/><ds:DigestValue>DLdxfrOYShSYze//qa+gE7tPVs4ZkIN2D3VYUMla/ReoNpxA/uroryOpzKJ2CDwkc6fmsZ+B1R3LV2lUgxOp+A==</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=good-ca</ds:X509IssuerName><ds:X509SerialNumber>10</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#xml_ref_id"><xades:MimeType>text/xml</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></ds:Object></ds:Signature></TrustServiceStatusList>

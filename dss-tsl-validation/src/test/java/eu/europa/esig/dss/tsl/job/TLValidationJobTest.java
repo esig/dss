@@ -41,6 +41,7 @@ import eu.europa.esig.dss.spi.tsl.TrustServiceProvider;
 import eu.europa.esig.dss.spi.tsl.TrustServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.util.TimeDependentValues;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
@@ -183,6 +184,10 @@ public class TLValidationJobTest {
 		urlMap.put("http://tl.nbu.gov.sk/kca/tsl/tsl.xml", new FileDocument("src/test/resources/lotlCache/SK.xml"));
 		urlMap.put("https://www.tscheme.org/UK_TSL/TSL-UKsigned.xml", new FileDocument("src/test/resources/lotlCache/UK.xml"));
 		urlMap.put("https://www.tscheme.org/UK_TSL/TSL-UKsigned.xml", new FileDocument("src/test/resources/lotlCache/UK.xml"));
+		
+		// Dummy Peruvian TL and good-user signed LOTL for testing
+		urlMap.put("http://dss.nowina.lu/peru-lotl", new FileDocument("src/test/resources/peru-lotl.xml"));
+		urlMap.put("https://iofe.indecopi.gob.pe/TSL/tsl-pe.xml", new FileDocument("src/test/resources/tsl-pe.xml"));
 	}
 	
 	@Test
@@ -1103,6 +1108,67 @@ public class TLValidationJobTest {
 		assertNotNull(lotlInfo.getValidationCacheInfo().getSigningCertificate());
 	}
 	
+	@Test
+	public void peruvianTSLTest() {
+		LOTLSource peruvianLotlSource = getPeruvianLotlSource();
+		
+		tlValidationJob = new TLValidationJob();
+		tlValidationJob.setOfflineDataLoader(offlineFileLoader);
+		tlValidationJob.setListOfTrustedListSources(peruvianLotlSource);
+		tlValidationJob.offlineRefresh();
+		
+		TLValidationJobSummary summary = tlValidationJob.getSummary();
+		List<LOTLInfo> lotlInfos = summary.getLOTLInfos();
+		
+		assertEquals(1, lotlInfos.size());
+		LOTLInfo peruvianLOTL = lotlInfos.get(0);
+		assertTrue(peruvianLOTL.getDownloadCacheInfo().isResultExist());
+		assertFalse(peruvianLOTL.getDownloadCacheInfo().isError());
+		assertTrue(peruvianLOTL.getParsingCacheInfo().isResultExist());
+		assertFalse(peruvianLOTL.getParsingCacheInfo().isError());
+		assertTrue(peruvianLOTL.getValidationCacheInfo().isResultExist());
+		assertFalse(peruvianLOTL.getValidationCacheInfo().isError());
+		assertEquals(Indication.TOTAL_PASSED, peruvianLOTL.getValidationCacheInfo().getIndication());
+		
+		assertEquals(1, peruvianLOTL.getTLInfos().size());
+		TLInfo peruvianTL = peruvianLOTL.getTLInfos().get(0);
+		assertTrue(peruvianTL.getDownloadCacheInfo().isResultExist());
+		assertFalse(peruvianTL.getDownloadCacheInfo().isError());
+		assertFalse(peruvianTL.getParsingCacheInfo().isResultExist());
+		assertTrue(peruvianTL.getParsingCacheInfo().isError());
+		assertTrue(peruvianTL.getValidationCacheInfo().isResultExist());
+		assertFalse(peruvianTL.getValidationCacheInfo().isError());
+		assertEquals(Indication.TOTAL_PASSED, peruvianTL.getValidationCacheInfo().getIndication());
+	}
+	
+	@Test
+	public void twoLOTLTest() {
+		LOTLSource peruvianLotlSource = getPeruvianLotlSource();
+		
+		tlValidationJob = new TLValidationJob();
+		tlValidationJob.setOfflineDataLoader(offlineFileLoader);
+		tlValidationJob.setListOfTrustedListSources(lotlSource, peruvianLotlSource);
+		tlValidationJob.offlineRefresh();
+		
+		TLValidationJobSummary summary = tlValidationJob.getSummary();
+		List<LOTLInfo> lotlInfos = summary.getLOTLInfos();
+		assertEquals(2, lotlInfos.size());
+		for (LOTLInfo lotlInfo : lotlInfos) {
+			if (LOTL_URL.equals(lotlInfo.getUrl())) {
+				assertEquals(31, lotlInfo.getTLInfos().size());
+			} else {
+				assertEquals(1, lotlInfo.getTLInfos().size());
+			}
+			assertTrue(lotlInfo.getDownloadCacheInfo().isResultExist());
+			assertFalse(lotlInfo.getDownloadCacheInfo().isError());
+			assertTrue(lotlInfo.getParsingCacheInfo().isResultExist());
+			assertFalse(lotlInfo.getParsingCacheInfo().isError());
+			assertTrue(lotlInfo.getValidationCacheInfo().isResultExist());
+			assertFalse(lotlInfo.getValidationCacheInfo().isError());
+		}
+		
+	}
+	
 	private TLValidationJob getTLValidationJob() {
 		tlValidationJob = new TLValidationJob();
 		tlValidationJob.setOfflineDataLoader(offlineFileLoader);
@@ -1122,6 +1188,15 @@ public class TLValidationJobTest {
 		tlValidationJob.setListOfTrustedListSources(lotlSource);
 		tlValidationJob.offlineRefresh();
 		return tlValidationJob;
+	}
+	
+	private LOTLSource getPeruvianLotlSource() {
+		LOTLSource peruvianLotlSource = new LOTLSource();
+		peruvianLotlSource.setUrl("http://dss.nowina.lu/peru-lotl");
+		CertificateSource trustedCertificateSource = new CommonTrustedCertificateSource();
+		trustedCertificateSource.addCertificate(DSSUtils.loadCertificate(new File("src/test/resources/pe-signing-cert.cer")));
+		peruvianLotlSource.setCertificateSource(trustedCertificateSource);
+		return peruvianLotlSource;
 	}
 	
 	private void updateTLUrl(String url) {
