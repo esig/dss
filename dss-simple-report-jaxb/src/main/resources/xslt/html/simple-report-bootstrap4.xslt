@@ -100,7 +100,7 @@
 							</xsl:when>
 						</xsl:choose>
 			
-						<xsl:text> </xsl:text>
+						<xsl:text></xsl:text>
 						<xsl:value-of select="dss:Indication" />
 					</dd>
 				</dl>   
@@ -121,7 +121,7 @@
 				            <xsl:for-each select="dss:CertificateChain/dss:Certificate">
 				            	<xsl:variable name="index" select="position()"/>
 				        		<dd>
-			        				<span><xsl:attribute name="class"> glyphicon glyphicon-link</xsl:attribute></span>
+			        				<span><xsl:attribute name="class">glyphicon glyphicon-link</xsl:attribute></span>
 				        			<xsl:choose>
 				        				<xsl:when test="$index = 1">
 				        					<b> <xsl:value-of select="dss:qualifiedName" /></b>

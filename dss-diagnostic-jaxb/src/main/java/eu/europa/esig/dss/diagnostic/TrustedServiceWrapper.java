@@ -23,11 +23,15 @@ package eu.europa.esig.dss.diagnostic;
 import java.util.Date;
 import java.util.List;
 
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
+
 public class TrustedServiceWrapper {
 
-	private String tspName;
+	private XmlTrustedList trustedList;
+	private XmlTrustedList lotl;
+	private List<String> tspNames;
 	private CertificateWrapper serviceDigitalIdentifier;
-	private String serviceName;
+	private List<String> serviceNames;
 	private String countryCode;
 	private String status;
 	private String type;
@@ -36,12 +40,28 @@ public class TrustedServiceWrapper {
 	private List<String> capturedQualifiers;
 	private List<String> additionalServiceInfos;
 
-	public String getTspName() {
-		return tspName;
+	public XmlTrustedList getTrustedList() {
+		return trustedList;
 	}
 
-	public void setTspName(String tspName) {
-		this.tspName = tspName;
+	public void setTrustedList(XmlTrustedList trustedList) {
+		this.trustedList = trustedList;
+	}
+
+	public XmlTrustedList getListOfTrustedLists() {
+		return lotl;
+	}
+
+	public void setListOfTrustedLists(XmlTrustedList lotl) {
+		this.lotl = lotl;
+	}
+
+	public List<String> getTspNames() {
+		return tspNames;
+	}
+
+	public void setTspNames(List<String> tspNames) {
+		this.tspNames = tspNames;
 	}
 
 	public CertificateWrapper getServiceDigitalIdentifier() {
@@ -52,12 +72,12 @@ public class TrustedServiceWrapper {
 		this.serviceDigitalIdentifier = serviceDigitalIdentifier;
 	}
 
-	public String getServiceName() {
-		return serviceName;
+	public List<String> getServiceNames() {
+		return serviceNames;
 	}
 
-	public void setServiceName(String serviceName) {
-		this.serviceName = serviceName;
+	public void setServiceNames(List<String> serviceNames) {
+		this.serviceNames = serviceNames;
 	}
 
 	public String getCountryCode() {

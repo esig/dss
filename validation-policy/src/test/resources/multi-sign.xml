@@ -313,13 +313,12 @@
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                    <TSPName>Polish Security Printing Works</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-226080243</TSPRegistrationIdentifier>
-                    <CountryCode>PL</CountryCode>
+                <TrustedServiceProvider TL="TL-B1FD94CECADE070554A93C3AC56FC591B535B75BFFD69B882E3FAF1CAEF89E3C" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+                    <TSPNames><TSPName lang="en">Polish Security Printing Works</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-226080243</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86">
-                    		<ServiceName>Certification authority issuing qualified certificates</ServiceName>
+                    		<ServiceNames><ServiceName lang="en">Certification authority issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-07-01T00:00:00</StartDate>
@@ -331,7 +330,7 @@
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86">
-                            <ServiceName>Certification authority issuing qualified certificates</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Certification authority issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
                             <StartDate>2015-05-08T07:01:06</StartDate>
@@ -433,13 +432,12 @@
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                    <TSPName>Polish Security Printing Works</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-226080243</TSPRegistrationIdentifier>
-                    <CountryCode>PL</CountryCode>
+                <TrustedServiceProvider TL="TL-B1FD94CECADE070554A93C3AC56FC591B535B75BFFD69B882E3FAF1CAEF89E3C" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+                    <TSPNames><TSPName lang="en">Polish Security Printing Works</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-226080243</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86">
-                        	<ServiceName>Certification authority issuing qualified certificates</ServiceName>
+                        	<ServiceNames><ServiceName lang="en">Certification authority issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-07-01T00:00:00</StartDate>
@@ -456,7 +454,7 @@
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86">
-                        	<ServiceName>Certification authority issuing qualified certificates</ServiceName>
+                        	<ServiceNames><ServiceName lang="en">Certification authority issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
                             <StartDate>2015-05-08T07:01:06</StartDate>
@@ -534,7 +532,7 @@
         </SignerData>
     </OriginalDocuments>
     <TrustedLists>
-        <TrustedList>
+        <TrustedList Id="TL-B1FD94CECADE070554A93C3AC56FC591B535B75BFFD69B882E3FAF1CAEF89E3C">
             <CountryCode>PL</CountryCode>
             <Url>https://www.nccert.pl/tsl/PL_TSL.xml</Url>
             <SequenceNumber>87</SequenceNumber>
@@ -544,15 +542,15 @@
             <NextUpdate>2018-01-27T00:00:00</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
+    	<TrustedList Id="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E" LOTL="true">
+	        <CountryCode>EU</CountryCode>
+	        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
+	        <SequenceNumber>172</SequenceNumber>
+	        <Version>5</Version>
+	        <LastLoading>2017-08-04T05:39:13</LastLoading>
+	        <IssueDate>2017-05-16T04:00:00</IssueDate>
+	        <NextUpdate>2017-11-15T00:00:00</NextUpdate>
+	        <WellSigned>true</WellSigned>
+	    </TrustedList>
     </TrustedLists>
-    <ListOfTrustedLists>
-        <CountryCode>EU</CountryCode>
-        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
-        <SequenceNumber>172</SequenceNumber>
-        <Version>5</Version>
-        <LastLoading>2017-08-04T05:39:13</LastLoading>
-        <IssueDate>2017-05-16T04:00:00</IssueDate>
-        <NextUpdate>2017-11-15T00:00:00</NextUpdate>
-        <WellSigned>true</WellSigned>
-    </ListOfTrustedLists>
 </DiagnosticData>

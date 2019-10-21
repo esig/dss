@@ -904,7 +904,14 @@ public class DiagnosticData {
 	 * @return the JAXB model of the used trusted lists
 	 */
 	public List<XmlTrustedList> getTrustedLists() {
-		return wrapped.getTrustedLists();
+		List<XmlTrustedList> result = new ArrayList<XmlTrustedList>();
+		List<XmlTrustedList> trustedLists = wrapped.getTrustedLists();
+		for (XmlTrustedList xmlTrustedList : trustedLists) {
+			if (!xmlTrustedList.isLOTL()) {
+				result.add(xmlTrustedList);
+			}
+		}
+		return result;
 	}
 
 	/**
@@ -912,21 +919,15 @@ public class DiagnosticData {
 	 * 
 	 * @return the JAXB model of the LOTL
 	 */
-	public XmlTrustedList getListOfTrustedLists() {
-		return wrapped.getListOfTrustedLists();
-	}
-
-	/**
-	 * This method returns the LOTL country code
-	 * 
-	 * @return the country code of the used LOTL
-	 */
-	public String getLOTLCountryCode() {
-		XmlTrustedList listOfTrustedLists = wrapped.getListOfTrustedLists();
-		if (listOfTrustedLists != null) {
-			return listOfTrustedLists.getCountryCode();
+	public List<XmlTrustedList> getListOfTrustedLists() {
+		List<XmlTrustedList> result = new ArrayList<XmlTrustedList>();
+		List<XmlTrustedList> trustedLists = wrapped.getTrustedLists();
+		for (XmlTrustedList xmlTrustedList : trustedLists) {
+			if (xmlTrustedList.isLOTL()) {
+				result.add(xmlTrustedList);
+			}
 		}
-		return null;
+		return result;
 	}
 
 	public Date getValidationDate() {

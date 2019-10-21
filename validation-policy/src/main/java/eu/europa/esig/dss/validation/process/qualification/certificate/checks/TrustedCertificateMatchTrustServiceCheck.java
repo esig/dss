@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -72,7 +73,10 @@ public class TrustedCertificateMatchTrustServiceCheck extends ChainItem<XmlValid
 
 		List<String> candidates = Arrays.asList(trustedCert.getOrganizationName(), trustedCert.getCommonName(), trustedCert.getOrganizationalUnit(),
 				trustedCert.getCertificateDN());
-		List<String> possibleMatchers = Arrays.asList(trustService.getTspName(), trustService.getServiceName());
+
+		List<String> possibleMatchers = new ArrayList<String>();
+		possibleMatchers.addAll(trustService.getTspNames());
+		possibleMatchers.addAll(trustService.getServiceNames());
 
 		for (String candidate : candidates) {
 			if (Utils.isStringBlank(candidate)) {

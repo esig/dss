@@ -181,5 +181,4 @@
             </DigestAlgoAndValue>
         </SignerData>
     </OriginalDocuments>
-    <TrustedLists/>
 </DiagnosticData>

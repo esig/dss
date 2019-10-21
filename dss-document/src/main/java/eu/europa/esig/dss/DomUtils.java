@@ -33,6 +33,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.xml.XMLConstants;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -231,6 +232,7 @@ public final class DomUtils {
 	 * @return a new {@link org.w3c.dom.Document} with the bytes content
 	 */
 	public static Document buildDOM(final byte[] bytes) {
+		Objects.requireNonNull(bytes, "bytes is required");
 		return buildDOM(new ByteArrayInputStream(bytes));
 	}
 
@@ -242,6 +244,7 @@ public final class DomUtils {
 	 * @return a new {@link org.w3c.dom.Document} from {@link eu.europa.esig.dss.model.DSSDocument}
 	 */
 	public static Document buildDOM(final DSSDocument dssDocument) {
+		Objects.requireNonNull(dssDocument, "The document is null");
 		return buildDOM(dssDocument.openStream());
 	}
 

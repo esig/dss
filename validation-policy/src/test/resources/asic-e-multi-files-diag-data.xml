@@ -142,13 +142,12 @@
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                    <TSPName>Certipost n.v./s.a.</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-2034482260</TSPRegistrationIdentifier>
-                    <CountryCode>BE</CountryCode>
+                <TrustedServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+                    <TSPNames><TSPName lang="en">Certipost n.v./s.a.</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2034482260</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
-                    		<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
+                    		<ServiceNames><ServiceName lang="en">CN=Belgium Root CA4, C=BE</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-07-01T00:00:00</StartDate>
@@ -213,13 +212,12 @@
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                    <TSPName>Certipost n.v./s.a.</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-2034482260</TSPRegistrationIdentifier>
-                    <CountryCode>BE</CountryCode>
+                <TrustedServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+                    <TSPNames><TSPName lang="en">Certipost n.v./s.a.</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2034482260</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
-                    		<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
+                    		<ServiceNames><ServiceName lang="en">CN=Belgium Root CA4, C=BE</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-07-01T00:00:00</StartDate>
@@ -281,13 +279,12 @@
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                    <TSPName>Certipost n.v./s.a.</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-2034482260</TSPRegistrationIdentifier>
-                    <CountryCode>BE</CountryCode>
+                <TrustedServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+                    <TSPNames><TSPName lang="en">Certipost n.v./s.a.</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2034482260</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
-                    		<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
+                    		<ServiceNames><ServiceName lang="en">CN=Belgium Root CA4, C=BE</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-07-01T00:00:00</StartDate>
@@ -297,7 +294,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
-                    		<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
+                    		<ServiceNames><ServiceName lang="en">CN=Belgium Root CA4, C=BE</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
                             <StartDate>2013-06-26T12:00:00</StartDate>
@@ -364,13 +361,12 @@
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                    <TSPName>Certipost n.v./s.a.</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-2034482260</TSPRegistrationIdentifier>
-                    <CountryCode>BE</CountryCode>
+                <TrustedServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+                    <TSPNames><TSPName lang="en">Certipost n.v./s.a.</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2034482260</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
-                    		<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
+                    		<ServiceNames><ServiceName lang="en">CN=Belgium Root CA4, C=BE</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-07-01T00:00:00</StartDate>
@@ -431,13 +427,12 @@
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                    <TSPName>Certipost n.v./s.a.</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-2034482260</TSPRegistrationIdentifier>
-                    <CountryCode>BE</CountryCode>
+                <TrustedServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+                    <TSPNames><TSPName lang="en">Certipost n.v./s.a.</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2034482260</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
-                    		<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
+                    		<ServiceNames><ServiceName lang="en">CN=Belgium Root CA4, C=BE</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-07-01T00:00:00</StartDate>
@@ -447,7 +442,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
-                    		<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
+                    		<ServiceNames><ServiceName lang="en">CN=Belgium Root CA4, C=BE</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
                             <StartDate>2013-06-26T12:00:00</StartDate>
@@ -594,7 +589,7 @@
         </SignerData>
     </OriginalDocuments>
     <TrustedLists>
-        <TrustedList>
+        <TrustedList Id="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9">
             <CountryCode>BE</CountryCode>
             <Url>https://tsl.belgium.be/tsl-be.xml</Url>
             <SequenceNumber>32</SequenceNumber>
@@ -604,15 +599,15 @@
             <NextUpdate>2018-01-02T00:00:00</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
+    	<TrustedList Id="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E" LOTL="true">
+	        <CountryCode>EU</CountryCode>
+	        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
+	        <SequenceNumber>172</SequenceNumber>
+	        <Version>5</Version>
+	        <LastLoading>2017-09-26T07:56:16</LastLoading>
+	        <IssueDate>2017-05-16T04:00:00</IssueDate>
+	        <NextUpdate>2017-11-15T00:00:00</NextUpdate>
+	        <WellSigned>true</WellSigned>
+	    </TrustedList>
     </TrustedLists>
-    <ListOfTrustedLists>
-        <CountryCode>EU</CountryCode>
-        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
-        <SequenceNumber>172</SequenceNumber>
-        <Version>5</Version>
-        <LastLoading>2017-09-26T07:56:16</LastLoading>
-        <IssueDate>2017-05-16T04:00:00</IssueDate>
-        <NextUpdate>2017-11-15T00:00:00</NextUpdate>
-        <WellSigned>true</WellSigned>
-    </ListOfTrustedLists>
 </DiagnosticData>

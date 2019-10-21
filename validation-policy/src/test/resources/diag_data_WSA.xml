@@ -103,13 +103,12 @@
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                    <TSPName>TSP-5.1 Name</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-204620328</TSPRegistrationIdentifier>
-                    <CountryCode>IT</CountryCode>
+                <TrustedServiceProvider TL="TL-DDB04A2C92BCE7C39A7611EA814F5CC1C6425BD6A5D979A57CBF58B14436FD5D" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+                    <TSPNames><TSPName lang="en">TSP-5.1 Name</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-204620328</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-754629916B5EB3642FAA544FBCB105795A67AA1BAB84763EC839EF6EAE5CE998">
-                            <ServiceName>TS-5.1.2 Name</ServiceName>
+                            <ServiceNames><ServiceName lang="en">TS-5.1.2 Name</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -177,13 +176,12 @@
                 <qcTypeOid Description="qc-type-web">0.4.0.1862.1.6.3</qcTypeOid>
             </QCTypes>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                    <TSPName>TSP-5.1 Name</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-204620328</TSPRegistrationIdentifier>
-                    <CountryCode>IT</CountryCode>
+                <TrustedServiceProvider TL="TL-DDB04A2C92BCE7C39A7611EA814F5CC1C6425BD6A5D979A57CBF58B14436FD5D" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+                    <TSPNames><TSPName lang="en">TSP-5.1 Name</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-204620328</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-754629916B5EB3642FAA544FBCB105795A67AA1BAB84763EC839EF6EAE5CE998">
-                            <ServiceName>TS-5.1.2 Name</ServiceName>
+                            <ServiceNames><ServiceName lang="en">TS-5.1.2 Name</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -237,7 +235,7 @@
         </SignerData>
     </OriginalDocuments>
     <TrustedLists>
-        <TrustedList>
+        <TrustedList Id="TL-DDB04A2C92BCE7C39A7611EA814F5CC1C6425BD6A5D979A57CBF58B14436FD5D">
             <CountryCode>IT</CountryCode>
             <Url>http://localhost:8080/qes-validation-web/tl/TL-5.xml</Url>
             <SequenceNumber>1</SequenceNumber>
@@ -247,15 +245,15 @@
             <NextUpdate>2018-08-05T13:17:57</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
+    	<TrustedList Id="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E" LOTL="true">
+	        <CountryCode>EU</CountryCode>
+	        <Url>http://localhost:8080/qes-validation-web/tl/LOTL-3.xml</Url>
+	        <SequenceNumber>1</SequenceNumber>
+	        <Version>5</Version>
+	        <LastLoading>2018-07-05T13:28:08</LastLoading>
+	        <IssueDate>2018-07-04T13:17:57</IssueDate>
+	        <NextUpdate>2018-08-05T13:17:57</NextUpdate>
+	        <WellSigned>true</WellSigned>
+	    </TrustedList>
     </TrustedLists>
-    <ListOfTrustedLists>
-        <CountryCode>EU</CountryCode>
-        <Url>http://localhost:8080/qes-validation-web/tl/LOTL-3.xml</Url>
-        <SequenceNumber>1</SequenceNumber>
-        <Version>5</Version>
-        <LastLoading>2018-07-05T13:28:08</LastLoading>
-        <IssueDate>2018-07-04T13:17:57</IssueDate>
-        <NextUpdate>2018-08-05T13:17:57</NextUpdate>
-        <WellSigned>true</WellSigned>
-    </ListOfTrustedLists>
 </DiagnosticData>

@@ -39,7 +39,6 @@
             </CertificateChain>
             <ContentType>1.2.840.113549.1.7.1</ContentType>
             <CommitmentTypeIndication/>
-            
             <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
             <FoundCertificates>
                 <RelatedCertificate Certificate="C-D90B40132306D1094608B1B9A2F6A9E23B45FE121FEF514A1C9DF70A815AD95C">
@@ -204,33 +203,32 @@
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                    <TSPName>Cryptolog International</TSPName>
-                    <TSPRegistrationIdentifier>VATFR-46439129164</TSPRegistrationIdentifier>
-                    <CountryCode>FR</CountryCode>
+                <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+                    <TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATFR-46439129164</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-                            <ServiceName>Universign Time Stamping 2015</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Universign Time Stamping 2015</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2019-04-03T00:00:00</StartDate>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-                            <ServiceName>Universign Time Stamping 2015</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Universign Time Stamping 2015</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-12-01T01:00:00</StartDate>
                             <EndDate>2019-04-03T00:00:00</EndDate>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-                            <ServiceName>Universign Time Stamping 2015</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Universign Time Stamping 2015</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <EndDate>2016-12-01T01:00:00</EndDate>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-                            <ServiceName>Universign Time Stamping 2015</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Universign Time Stamping 2015</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
                             <StartDate>2015-04-13T22:00:00</StartDate>
@@ -297,13 +295,12 @@
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                    <TSPName>QuoVadis Trustlink BVBA</TSPName>
-                    <TSPRegistrationIdentifier>VATBE-0537698318</TSPRegistrationIdentifier>
-                    <CountryCode>BE</CountryCode>
+                <TrustedServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+                    <TSPNames><TSPName lang="en">QuoVadis Trustlink BVBA</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATBE-0537698318</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-D90B40132306D1094608B1B9A2F6A9E23B45FE121FEF514A1C9DF70A815AD95C">
-                            <ServiceName>QuoVadis BE PKI Certification Authority G2</ServiceName>
+                            <ServiceNames><ServiceName lang="en">QuoVadis BE PKI Certification Authority G2</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2018-02-08T00:00:00</StartDate>
@@ -313,7 +310,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-D90B40132306D1094608B1B9A2F6A9E23B45FE121FEF514A1C9DF70A815AD95C">
-                            <ServiceName>QuoVadis BE PKI Certification Authority G2</ServiceName>
+                            <ServiceNames><ServiceName lang="en">QuoVadis BE PKI Certification Authority G2</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -323,7 +320,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-D90B40132306D1094608B1B9A2F6A9E23B45FE121FEF514A1C9DF70A815AD95C">
-                            <ServiceName>QuoVadis BE PKI Certification Authority G2</ServiceName>
+                            <ServiceNames><ServiceName lang="en">QuoVadis BE PKI Certification Authority G2</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
                             <StartDate>2016-06-13T00:00:00</StartDate>
@@ -401,13 +398,12 @@
                 <qcTypeOid Description="qc-type-eseal">0.4.0.1862.1.6.2</qcTypeOid>
             </QCTypes>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                    <TSPName>QuoVadis Trustlink BVBA</TSPName>
-                    <TSPRegistrationIdentifier>VATBE-0537698318</TSPRegistrationIdentifier>
-                    <CountryCode>BE</CountryCode>
+                <TrustedServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+                    <TSPNames><TSPName lang="en">QuoVadis Trustlink BVBA</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATBE-0537698318</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-D90B40132306D1094608B1B9A2F6A9E23B45FE121FEF514A1C9DF70A815AD95C">
-                            <ServiceName>QuoVadis BE PKI Certification Authority G2</ServiceName>
+                            <ServiceNames><ServiceName lang="en">QuoVadis BE PKI Certification Authority G2</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2018-02-08T00:00:00</StartDate>
@@ -479,19 +475,18 @@
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders>
-                <TrustedServiceProvider>
-                    <TSPName>Cryptolog International</TSPName>
-                    <TSPRegistrationIdentifier>VATFR-46439129164</TSPRegistrationIdentifier>
-                    <CountryCode>FR</CountryCode>
+                <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+                    <TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATFR-46439129164</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
                     <TrustedServices>
                         <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-                            <ServiceName>Universign Time Stamping 2015</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Universign Time Stamping 2015</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2019-04-03T00:00:00</StartDate>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-                            <ServiceName>Universign Time Stamping 2015</ServiceName>
+                            <ServiceNames><ServiceName lang="en">Universign Time Stamping 2015</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-12-01T01:00:00</StartDate>
@@ -692,7 +687,7 @@
         </SignerData>
     </OriginalDocuments>
     <TrustedLists>
-        <TrustedList>
+        <TrustedList Id="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9">
             <CountryCode>BE</CountryCode>
             <Url>https://tsl.belgium.be/tsl-be.xml</Url>
             <SequenceNumber>42</SequenceNumber>
@@ -702,7 +697,7 @@
             <NextUpdate>2019-09-07T00:00:00</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
-        <TrustedList>
+        <TrustedList Id="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F">
             <CountryCode>FR</CountryCode>
             <Url>http://www.ssi.gouv.fr/eidas/TL-FR.xml</Url>
             <SequenceNumber>51</SequenceNumber>
@@ -712,15 +707,15 @@
             <NextUpdate>2019-11-09T00:00:00</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
+    	<TrustedList Id="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E" LOTL="true">
+	        <CountryCode>EU</CountryCode>
+	        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
+	        <SequenceNumber>241</SequenceNumber>
+	        <Version>5</Version>
+	        <LastLoading>2019-06-03T13:58:02</LastLoading>
+	        <IssueDate>2019-05-28T06:00:00</IssueDate>
+	        <NextUpdate>2019-11-28T00:00:00</NextUpdate>
+	        <WellSigned>true</WellSigned>
+	    </TrustedList>
     </TrustedLists>
-    <ListOfTrustedLists>
-        <CountryCode>EU</CountryCode>
-        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
-        <SequenceNumber>241</SequenceNumber>
-        <Version>5</Version>
-        <LastLoading>2019-06-03T13:58:02</LastLoading>
-        <IssueDate>2019-05-28T06:00:00</IssueDate>
-        <NextUpdate>2019-11-28T00:00:00</NextUpdate>
-        <WellSigned>true</WellSigned>
-    </ListOfTrustedLists>
 </DiagnosticData>

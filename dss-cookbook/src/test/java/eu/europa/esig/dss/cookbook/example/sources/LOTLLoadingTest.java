@@ -22,16 +22,18 @@ package eu.europa.esig.dss.cookbook.example.sources;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.HashMap;
 
 import org.junit.jupiter.api.Test;
 
-import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
+import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
+import eu.europa.esig.dss.spi.client.http.MemoryDataLoader;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
-import eu.europa.esig.dss.tsl.OtherTrustedList;
-import eu.europa.esig.dss.tsl.service.TSLRepository;
-import eu.europa.esig.dss.tsl.service.TSLValidationJob;
+import eu.europa.esig.dss.tsl.job.TLValidationJob;
+import eu.europa.esig.dss.tsl.source.LOTLSource;
+import eu.europa.esig.dss.tsl.source.TLSource;
 
 public class LOTLLoadingTest {
 
@@ -40,57 +42,47 @@ public class LOTLLoadingTest {
 
 		// tag::demo[]
 
-		TSLRepository tslRepository = new TSLRepository();
-
 		TrustedListsCertificateSource certificateSource = new TrustedListsCertificateSource();
-		tslRepository.setTrustedListsCertificateSource(certificateSource);
-
-		TSLValidationJob job = new TSLValidationJob();
-		job.setDataLoader(new CommonsDataLoader());
-		job.setCheckLOTLSignature(true);
-		job.setCheckTSLSignatures(true);
-		job.setLotlUrl("https://ec.europa.eu/tools/lotl/eu-lotl.xml");
-		job.setLotlCode("EU");
-
-		// Defines a URL where the keystore certificates were obtained from
-		// This information is needed to be able to filter the LOTL pivots
-		job.setOjUrl("https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2019.276.01.0001.01.ENG");
 
 		// The keystore contains certificates referenced in the Official Journal Link (OJ URL)
 		KeyStoreCertificateSource keyStoreCertificateSource = new KeyStoreCertificateSource(new File("src/main/resources/keystore.p12"), "PKCS12",
 				"dss-password");
-		job.setOjContentKeyStore(keyStoreCertificateSource);
-
-		job.setRepository(tslRepository);
-
-		job.refresh();
+		
+		LOTLSource lotlSource = new LOTLSource();
+		lotlSource.setUrl("https://ec.europa.eu/tools/lotl/eu-lotl.xml");
+		lotlSource.setCertificateSource(keyStoreCertificateSource);
+		lotlSource.setPivotSupport(true);
+		
+		FileCacheDataLoader offlineFileLoader = new FileCacheDataLoader(new MemoryDataLoader(new HashMap<String, byte[]>()));
+		
+		TLValidationJob validationJob = new TLValidationJob();
+		validationJob.setTrustedListCertificateSource(certificateSource);
+		validationJob.setOfflineDataLoader(offlineFileLoader);
+		validationJob.setListOfTrustedListSources(lotlSource);
+		validationJob.offlineRefresh();
 
 		// end::demo[]
 
 	}
 
+	@Test
 	public void additionalTL() {
 
 		// tag::additionalTL[]
 
-		TSLValidationJob job = new TSLValidationJob();
+		TLValidationJob validationJob = new TLValidationJob();
 		// ...
 
 		// Configuration to load the peruvian trusted list.
-		// DSS requires the country code, the URL and allowed signing certificates
-		OtherTrustedList peru = new OtherTrustedList();
-		peru.setCountryCode("PE");
+		// DSS requires the URL and allowed signing certificates
+		TLSource peru = new TLSource();
 		peru.setUrl("https://iofe.indecopi.gob.pe/TSL/tsl-pe.xml");
-		peru.setTrustStore(getTrustStore());
+		peru.setCertificateSource(new CommonCertificateSource());
 
-		job.setOtherTrustedLists(Arrays.asList(peru));
+		validationJob.setTrustedListSources(peru);
 
 		// end::additionalTL[]
 
-	}
-
-	private KeyStoreCertificateSource getTrustStore() {
-		return null;
 	}
 
 }

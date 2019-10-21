@@ -627,6 +627,24 @@ public final class DSSUtils {
 	}
 
 	/**
+	 * This method replaces all special characters by an underscore
+	 * 
+	 * @param str
+	 *            the string / filename / url to normalize
+	 * @return the normalized {@link String}
+	 */
+	public static String getNormalizedString(final String str) {
+		String normalizedStr = str;
+		try {
+			normalizedStr = URLDecoder.decode(str, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			LOG.debug("Cannot decode fileName [{}]. Reason : {}", str, e.getMessage());
+		}
+		normalizedStr = normalizedStr.replaceAll("\\W", "_");
+		return normalizedStr;
+	}
+
+	/**
 	 * Return a unique id for a date and the certificateToken id.
 	 *
 	 * @param signingTime
