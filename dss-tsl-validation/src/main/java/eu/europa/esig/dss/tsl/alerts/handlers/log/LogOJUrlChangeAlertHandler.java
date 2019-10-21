@@ -1,8 +1,14 @@
 package eu.europa.esig.dss.tsl.alerts.handlers.log;
 
-import eu.europa.esig.dss.spi.tsl.LOTLInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class LogOJUrlChangeAlert extends AbstractLOTLLogAlert {
+import eu.europa.esig.dss.spi.tsl.LOTLInfo;
+import eu.europa.esig.dss.tsl.alerts.handlers.AlertHandler;
+
+public class LogOJUrlChangeAlertHandler implements AlertHandler<LOTLInfo> {
+
+	private static final Logger LOG = LoggerFactory.getLogger(LogOJUrlChangeAlertHandler.class);
 
 	@Override
 	public void alert(LOTLInfo currentInfo) {

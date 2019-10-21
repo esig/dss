@@ -33,12 +33,6 @@ public class CacheCleaner {
 	private DSSFileLoader dssFileLoader;
 	
 	/**
-	 * Default constructor
-	 */
-	public CacheCleaner() {
-	}
-
-	/**
 	 * Setter for cleanMemory property
 	 * 
 	 * @param cleanMemory

@@ -7,10 +7,12 @@ import eu.europa.esig.dss.spi.tsl.PivotInfo;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.utils.Utils;
 
-public class LOTLLocationChangeDetection extends AbstractLOTLDetection {
+public class LOTLLocationChangeDetection implements Detection<LOTLInfo> {
+
+	private final LOTLSource lotlSource;
 
 	public LOTLLocationChangeDetection(LOTLSource lotlSource) {
-		super(lotlSource);
+		this.lotlSource = lotlSource;
 	}
 
 	@Override

@@ -1,6 +1,8 @@
 package eu.europa.esig.dss.tsl.alerts;
 
 import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
+import eu.europa.esig.dss.tsl.alerts.detections.Detection;
+import eu.europa.esig.dss.tsl.alerts.handlers.AlertHandler;
 
 public abstract class Alert<T> {
 
@@ -12,14 +14,6 @@ public abstract class Alert<T> {
 		this.handler = handler;
 	}
 
-	public Detection<T> getDetection() {
-		return detection;
-	}
-
-	public AlertHandler<T> getHandler() {
-		return handler;
-	}
-
-	public abstract void detectChanges(TLValidationJobSummary jobSummary); 
+	public abstract void detectAndAlert(TLValidationJobSummary jobSummary); 
 	
 }

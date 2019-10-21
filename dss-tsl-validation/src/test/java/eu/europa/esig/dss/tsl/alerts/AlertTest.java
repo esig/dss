@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,15 +19,24 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
+import eu.europa.esig.dss.spi.tsl.LOTLInfo;
+import eu.europa.esig.dss.spi.tsl.TLInfo;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.tsl.alerts.detections.LOTLLocationChangeDetection;
-import eu.europa.esig.dss.tsl.alerts.detections.OJUrlDetectionChange;
+import eu.europa.esig.dss.tsl.alerts.detections.OJUrlChangeDetection;
 import eu.europa.esig.dss.tsl.alerts.detections.TLExpirationDetection;
 import eu.europa.esig.dss.tsl.alerts.detections.TLParsingErrorDetection;
-import eu.europa.esig.dss.tsl.alerts.detections.TLSigningErrorDetection;
+import eu.europa.esig.dss.tsl.alerts.detections.TLSignatureErrorDetection;
+import eu.europa.esig.dss.tsl.alerts.handlers.AlertHandler;
+import eu.europa.esig.dss.tsl.alerts.handlers.CompositeAlertHandler;
+import eu.europa.esig.dss.tsl.alerts.handlers.log.LogLOTLLocationChangeAlertHandler;
+import eu.europa.esig.dss.tsl.alerts.handlers.log.LogOJUrlChangeAlertHandler;
+import eu.europa.esig.dss.tsl.alerts.handlers.log.LogTLExpirationAlertHandler;
+import eu.europa.esig.dss.tsl.alerts.handlers.log.LogTLParsingErrorAlertHandler;
+import eu.europa.esig.dss.tsl.alerts.handlers.log.LogTLSignatureErrorAlertHandler;
 import eu.europa.esig.dss.tsl.function.OfficialJournalSchemeInformationURI;
 import eu.europa.esig.dss.tsl.job.MockDataLoader;
 import eu.europa.esig.dss.tsl.job.TLValidationJob;
@@ -61,9 +71,10 @@ public class AlertTest {
 		job.setOnlineDataLoader(getOnlineDataLoader(CZ_BROKEN_SIG, url));
 
 		List<Alert<?>> alerts = new ArrayList<Alert<?>>();
-		TLSigningErrorDetection signingDetection = new TLSigningErrorDetection();
+		TLSignatureErrorDetection signingDetection = new TLSignatureErrorDetection();
 
-		CallbackAlertHandler handler = new CallbackAlertHandler();
+		CallbackAlertHandler callback = new CallbackAlertHandler();
+		AlertHandler<TLInfo> handler = new CompositeAlertHandler<TLInfo>(Arrays.asList(callback, new LogTLSignatureErrorAlertHandler()));
 
 		TLAlert alert = new TLAlert(signingDetection, handler);
 		alerts.add(alert);
@@ -71,7 +82,7 @@ public class AlertTest {
 
 		job.onlineRefresh();
 
-		assertTrue(handler.isCalled());
+		assertTrue(callback.isCalled());
 	}
 
 	@Test
@@ -84,9 +95,10 @@ public class AlertTest {
 		job.setOnlineDataLoader(getOnlineDataLoader(CZ, url));
 
 		List<Alert<?>> alerts = new ArrayList<Alert<?>>();
-		TLSigningErrorDetection signingDetection = new TLSigningErrorDetection();
+		TLSignatureErrorDetection signingDetection = new TLSignatureErrorDetection();
 
-		CallbackAlertHandler handler = new CallbackAlertHandler();
+		CallbackAlertHandler callback = new CallbackAlertHandler();
+		AlertHandler<TLInfo> handler = new CompositeAlertHandler<TLInfo>(Arrays.asList(callback, new LogTLSignatureErrorAlertHandler()));
 
 		TLAlert alert = new TLAlert(signingDetection, handler);
 		alerts.add(alert);
@@ -94,7 +106,7 @@ public class AlertTest {
 
 		job.onlineRefresh();
 
-		assertFalse(handler.isCalled());
+		assertFalse(callback.isCalled());
 	}
 
 	@Test
@@ -108,7 +120,8 @@ public class AlertTest {
 		List<Alert<?>> alerts = new ArrayList<Alert<?>>();
 		TLParsingErrorDetection signingDetection = new TLParsingErrorDetection();
 
-		CallbackAlertHandler handler = new CallbackAlertHandler();
+		CallbackAlertHandler callback = new CallbackAlertHandler();
+		AlertHandler<TLInfo> handler = new CompositeAlertHandler<TLInfo>(Arrays.asList(callback, new LogTLParsingErrorAlertHandler()));
 
 		TLAlert alert = new TLAlert(signingDetection, handler);
 		alerts.add(alert);
@@ -116,7 +129,7 @@ public class AlertTest {
 
 		job.onlineRefresh();
 
-		assertTrue(handler.isCalled());
+		assertTrue(callback.isCalled());
 	}
 
 	@Test
@@ -130,7 +143,8 @@ public class AlertTest {
 		List<Alert<?>> alerts = new ArrayList<Alert<?>>();
 		TLExpirationDetection expirationDetection = new TLExpirationDetection();
 
-		CallbackAlertHandler handler = new CallbackAlertHandler();
+		CallbackAlertHandler callback = new CallbackAlertHandler();
+		AlertHandler<TLInfo> handler = new CompositeAlertHandler<TLInfo>(Arrays.asList(callback, new LogTLExpirationAlertHandler()));
 
 		TLAlert alert = new TLAlert(expirationDetection, handler);
 		alerts.add(alert);
@@ -138,7 +152,7 @@ public class AlertTest {
 
 		job.onlineRefresh();
 
-		assertTrue(handler.isCalled());
+		assertTrue(callback.isCalled());
 	}
 
 	@Test
@@ -163,9 +177,10 @@ public class AlertTest {
 		job.setListOfTrustedListSources(lotlSource);
 
 		List<Alert<?>> alerts = new ArrayList<Alert<?>>();
-		OJUrlDetectionChange ojUrlDetection = new OJUrlDetectionChange(lotlSource);
+		OJUrlChangeDetection ojUrlDetection = new OJUrlChangeDetection(lotlSource);
 
-		CallbackAlertHandler handler = new CallbackAlertHandler();
+		CallbackAlertHandler callback = new CallbackAlertHandler();
+		AlertHandler<LOTLInfo> handler = new CompositeAlertHandler<LOTLInfo>(Arrays.asList(callback, new LogOJUrlChangeAlertHandler()));
 
 		LOTLAlert alert = new LOTLAlert(ojUrlDetection, handler);
 		alerts.add(alert);
@@ -173,7 +188,7 @@ public class AlertTest {
 
 		job.onlineRefresh();
 
-		assertTrue(handler.isCalled());
+		assertTrue(callback.isCalled());
 	}
 
 	@Test
@@ -196,7 +211,8 @@ public class AlertTest {
 		List<Alert<?>> alerts = new ArrayList<Alert<?>>();
 		LOTLLocationChangeDetection lotlLocationDetection = new LOTLLocationChangeDetection(lotlSource);
 
-		CallbackAlertHandler handler = new CallbackAlertHandler();
+		CallbackAlertHandler callback = new CallbackAlertHandler();
+		AlertHandler<LOTLInfo> handler = new CompositeAlertHandler<LOTLInfo>(Arrays.asList(callback, new LogLOTLLocationChangeAlertHandler()));
 
 		LOTLAlert alert = new LOTLAlert(lotlLocationDetection, handler);
 		alerts.add(alert);
@@ -204,7 +220,7 @@ public class AlertTest {
 
 		job.onlineRefresh();
 
-		assertTrue(handler.isCalled());
+		assertTrue(callback.isCalled());
 
 	}
 

@@ -10,7 +10,6 @@ public class XmlDownloadResult implements CachedResult {
 
 	private final DSSDocument dssDocument;
 	private final Digest digest; // digest of a canonicalized document
-	// TODO init from CACHE / ONLINE
 	
 	/* The date when the cached file the last time was checked against a file from remote source */
 	private Date lastSynchronizationDate;

@@ -7,10 +7,12 @@ import eu.europa.esig.dss.tsl.function.OfficialJournalSchemeInformationURI;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.utils.Utils;
 
-public class OJUrlDetectionChange extends AbstractLOTLDetection {
+public class OJUrlChangeDetection implements Detection<LOTLInfo> {
 
-	public OJUrlDetectionChange(LOTLSource lotlSource) {
-		super(lotlSource);
+	private final LOTLSource lotlSource;
+
+	public OJUrlChangeDetection(LOTLSource lotlSource) {
+		this.lotlSource = lotlSource;
 	}
 
 	@Override

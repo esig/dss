@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.tsl.alerts;
+package eu.europa.esig.dss.tsl.alerts.detections;
 
 public interface Detection<T> {
 

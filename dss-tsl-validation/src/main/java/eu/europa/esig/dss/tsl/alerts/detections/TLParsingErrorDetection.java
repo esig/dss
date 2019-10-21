@@ -3,7 +3,7 @@ package eu.europa.esig.dss.tsl.alerts.detections;
 import eu.europa.esig.dss.spi.tsl.ParsingInfoRecord;
 import eu.europa.esig.dss.spi.tsl.TLInfo;
 
-public class TLParsingErrorDetection extends AbstractTLDetection {
+public class TLParsingErrorDetection implements Detection<TLInfo> {
 	
 	@Override
 	public boolean detect(TLInfo info) {

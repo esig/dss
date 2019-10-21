@@ -38,9 +38,6 @@ public class TLSource {
 	 */
 	private CacheKey cacheKey;
 	
-	public TLSource() {
-	}
-
 	public String getUrl() {
 		return url;
 	}

@@ -5,6 +5,8 @@ import java.util.List;
 import eu.europa.esig.dss.spi.tsl.LOTLInfo;
 import eu.europa.esig.dss.spi.tsl.TLInfo;
 import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
+import eu.europa.esig.dss.tsl.alerts.detections.Detection;
+import eu.europa.esig.dss.tsl.alerts.handlers.AlertHandler;
 
 public class TLAlert extends Alert<TLInfo> {
 
@@ -13,7 +15,7 @@ public class TLAlert extends Alert<TLInfo> {
 	}
 
 	@Override
-	public void detectChanges(TLValidationJobSummary jobSummary) {
+	public void detectAndAlert(TLValidationJobSummary jobSummary) {
 		List<LOTLInfo> lotlInfos = jobSummary.getLOTLInfos();
 		for (LOTLInfo lotlInfo : lotlInfos) {
 			detectOnTrustedLists(lotlInfo.getTLInfos());

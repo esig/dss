@@ -4,7 +4,7 @@ import eu.europa.esig.dss.spi.tsl.DownloadInfoRecord;
 import eu.europa.esig.dss.spi.tsl.TLInfo;
 import eu.europa.esig.dss.spi.tsl.ValidationInfoRecord;
 
-public class TLSigningErrorDetection extends AbstractTLDetection {
+public class TLSignatureErrorDetection implements Detection<TLInfo> {
 
 	@Override
 	public boolean detect(TLInfo info) {
