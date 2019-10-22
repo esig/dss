@@ -775,11 +775,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				return;
 			}
 			boolean detachedSignature = CMSUtils.isDetachedSignature(cmsSignedData);
-			final SignerInformation signerInformationToCheck;
+			SignerInformation signerInformationToCheck = null;
 			if (detachedSignature) {
 				if (Utils.isCollectionEmpty(detachedContents)) {
 					candidatesForSigningCertificate.setTheCertificateValidity(bestCandidate);
 					signatureCryptographicVerification.setErrorMessage("Detached file not found!");
+					getReferenceValidations(signerInformationToCheck);
 					return;
 				}
 				signerInformationToCheck = recreateSignerInformation();
@@ -836,72 +837,72 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	public List<ReferenceValidation> getReferenceValidations(SignerInformation signerInformationToCheck) {
 		if (referenceValidations == null) {
 			referenceValidations = new ArrayList<ReferenceValidation>();
-			ReferenceValidation validation = new ReferenceValidation();
-			validation.setType(DigestMatcherType.MESSAGE_DIGEST);
 
 			DSSDocument originalDocument = null;
 			try {
 				originalDocument = getOriginalDocument();
 			} catch (DSSException e) {
-				validation.setFound(false);
+				LOG.warn("Original document not found");
 			}
 
-			Set<DigestAlgorithm> messageDigestAlgorithms = getMessageDigestAlgorithms();
-			byte[] expectedMessageDigestValue = getMessageDigestValue();
-			
-			if (originalDocument != null) {
-					
-				if (Utils.isArrayNotEmpty(expectedMessageDigestValue)) {
-					Digest messageDigest = new Digest();
-					messageDigest.setValue(expectedMessageDigestValue);
-					
-					validation.setFound(true);
-					
-					if (Utils.isCollectionNotEmpty(messageDigestAlgorithms)) {
-
-						// try to match with found digest algorithm(s)
-						for (DigestAlgorithm digestAlgorithm : messageDigestAlgorithms) {
-							String base64Digest = originalDocument.getDigest(digestAlgorithm);
-							if (Arrays.equals(expectedMessageDigestValue, Utils.fromBase64(base64Digest))) {
-								messageDigest.setAlgorithm(digestAlgorithm);
-								validation.setIntact(true);
-								break;
-							}
-						}
-						
-						// add digest algorithm if message digest does not much
-						if (messageDigest.getAlgorithm() == null && messageDigestAlgorithms.size() == 1) {
-							messageDigest.setAlgorithm(messageDigestAlgorithms.iterator().next());
-						}
-						validation.setDigest(messageDigest);
-						
-					} else {
-						LOG.warn("Message DigestAlgorithms not found in SignedData! Reference validation is not possible.");
-						
-					}
-					
-					// get references to documents contained in the manifest file (for ASiC-E container)
-					if (validation.isFound()) {
-						validation.getDependentValidations().addAll(getManifestEntryValidation(originalDocument, messageDigest));
-					}
-					
-				} else {
-					LOG.warn("message-digest is not present in SignedData!");
-					if (signerInformationToCheck != null) {
-						LOG.warn("Extracting digests from content SignatureValue...");
-						validation = getContentReferenceValidation(originalDocument, signerInformationToCheck);
-					}
-					
-				}
+			ReferenceValidation validation = null;
+			final byte[] messageDigestValue = getMessageDigestValue();
+			if (messageDigestValue == null) {
+				LOG.warn("message-digest is not present in SignedData! Extracting digests from content SignatureValue...");
+				validation = getContentReferenceValidation(originalDocument, signerInformationToCheck);
 			} else {
-				LOG.warn("The original document is not found or cannot be extracted. Reference validation is not possible.");
 				
+				validation = new ReferenceValidation();
+				validation.setType(DigestMatcherType.MESSAGE_DIGEST);
+				
+				Digest messageDigest = new Digest();
+				messageDigest.setValue(messageDigestValue);
+				validation.setDigest(messageDigest);
+				
+				Set<DigestAlgorithm> messageDigestAlgorithms = getMessageDigestAlgorithms();
+				
+				if (Utils.collectionSize(messageDigestAlgorithms) == 1) {
+					messageDigest.setAlgorithm(messageDigestAlgorithms.iterator().next());
+				}
+
+				if (originalDocument != null) {
+
+					validation.setFound(true);
+
+					validation.setIntact(verifyDigestAlgorithm(originalDocument, messageDigestAlgorithms, messageDigest));
+
+					// get references to documents contained in the manifest file (for ASiC-E
+					// container)
+					validation.getDependentValidations()
+							.addAll(getManifestEntryValidation(originalDocument, messageDigest));
+
+				} else {
+					LOG.warn("The original document is not found or cannot be extracted. Reference validation is not possible.");
+				}
 			}
-			
+
 			referenceValidations.add(validation);
 
 		}
 		return referenceValidations;
+	}
+
+	private boolean verifyDigestAlgorithm(DSSDocument originalDocument, Set<DigestAlgorithm> messageDigestAlgorithms,
+			Digest messageDigest) {
+		if (Utils.isCollectionNotEmpty(messageDigestAlgorithms)) {
+			// try to match with found digest algorithm(s)
+			for (DigestAlgorithm digestAlgorithm : messageDigestAlgorithms) {
+				String base64Digest = originalDocument.getDigest(digestAlgorithm);
+				if (Arrays.equals(messageDigest.getValue(), Utils.fromBase64(base64Digest))) {
+					messageDigest.setAlgorithm(digestAlgorithm);
+					return true;
+				}
+			}
+		} else {
+			LOG.warn("Message DigestAlgorithms not found in SignedData! Reference validation is not possible.");
+		}
+
+		return false;
 	}
 	
 	private List<ReferenceValidation> getManifestEntryValidation(final DSSDocument originalDocument, final Digest messageDigest) {
@@ -942,7 +943,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public List<ReferenceValidation> getReferenceValidations() {
-		return getReferenceValidations(null);
+		checkSignatureIntegrity();
+		return referenceValidations;
 	}
 	
 	private ReferenceValidation getContentReferenceValidation(DSSDocument originalDocument, SignerInformation signerInformation) {
@@ -1029,7 +1031,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			String oid = algorithmIdentifier.getAlgorithm().getId();
 			DigestAlgorithm digestAlgorithm = getDigestAlgorithmForOID(oid);
 			if (digestAlgorithm != null) {
-				result.add(DigestAlgorithm.forOID(oid));
+				result.add(digestAlgorithm);
 			}
 		}
 		return result;

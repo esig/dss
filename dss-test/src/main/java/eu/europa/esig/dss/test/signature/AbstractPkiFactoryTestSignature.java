@@ -405,7 +405,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		if (toBeCanonicalized) {
 			try {
 				// we canonicalize to ignore the header (which is not covered by the signature)
-				Canonicalizer c14n = Canonicalizer.getInstance(CanonicalizationMethod.INCLUSIVE);
+				Canonicalizer c14n = Canonicalizer.getInstance(getCanonicalizationMethod());
 				byteArray = c14n.canonicalize(byteArray);
 			} catch (XMLSecurityException | ParserConfigurationException | IOException | SAXException e) {
 				// Not always able to canonicalize (more than one file can be covered (XML +
@@ -414,6 +414,11 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		}
 		// LOG.info("Bytes : {}", new String(byteArray));
 		return Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, byteArray));
+	}
+	
+	protected String getCanonicalizationMethod() {
+		// Inclusive by default
+		return CanonicalizationMethod.INCLUSIVE;
 	}
 
 	protected abstract List<DSSDocument> getOriginalDocuments();

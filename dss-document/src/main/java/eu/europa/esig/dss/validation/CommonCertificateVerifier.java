@@ -32,8 +32,11 @@ import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 
 /**
  * This class provides the different sources used to verify the status of a certificate using the trust model. There are
@@ -66,12 +69,12 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	/**
 	 * This field contains the reference to the {@code OCSPSource}.
 	 */
-	private OCSPSource ocspSource;
+	private RevocationSource<OCSPToken> ocspSource;
 
 	/**
 	 * This field contains the reference to the {@code CRLSource}.
 	 */
-	private CRLSource crlSource;
+	private RevocationSource<CRLToken> crlSource;
 
 	/**
 	 * The data loader used to access AIA certificate source.
@@ -208,22 +211,22 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	@Override
-	public OCSPSource getOcspSource() {
+	public RevocationSource<OCSPToken> getOcspSource() {
 		return ocspSource;
 	}
 
 	@Override
-	public CRLSource getCrlSource() {
+	public RevocationSource<CRLToken> getCrlSource() {
 		return crlSource;
 	}
 
 	@Override
-	public void setCrlSource(final CRLSource crlSource) {
+	public void setCrlSource(final RevocationSource<CRLToken> crlSource) {
 		this.crlSource = crlSource;
 	}
 
 	@Override
-	public void setOcspSource(final OCSPSource ocspSource) {
+	public void setOcspSource(final RevocationSource<OCSPToken> ocspSource) {
 		this.ocspSource = ocspSource;
 	}
 

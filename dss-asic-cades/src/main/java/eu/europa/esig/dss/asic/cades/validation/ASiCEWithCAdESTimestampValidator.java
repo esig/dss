@@ -20,28 +20,38 @@
  */
 package eu.europa.esig.dss.asic.cades.validation;
 
-import java.util.List;
-
 import eu.europa.esig.dss.cades.validation.CMSTimestampValidator;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
-import eu.europa.esig.dss.validation.ManifestEntry;
+import eu.europa.esig.dss.validation.ManifestFile;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 public class ASiCEWithCAdESTimestampValidator extends CMSTimestampValidator {
 
-	/* Extracted filenames from ASiCArchiveManifest */
-	private final List<ManifestEntry> coveredFiles;
+	/* ASiCArchiveManifest */
+	private final ManifestFile manifestFile;
 
-	public ASiCEWithCAdESTimestampValidator(DSSDocument timestamp, TimestampType type, List<ManifestEntry> coveredFiles, 
+	public ASiCEWithCAdESTimestampValidator(DSSDocument timestamp, TimestampType type, ManifestFile manifestFile, 
 			CertificatePool certificatePool) {
 		super(timestamp, type);
-		this.coveredFiles = coveredFiles;
+		this.manifestFile = manifestFile;
 		this.validationCertPool = certificatePool;
 	}
 
-	public List<ManifestEntry> getCoveredFilenames() {
-		return coveredFiles;
+	/**
+	 * Returns the covered {@code ManifestFile}
+	 * @return {@link ManifestFile}
+	 */
+	public ManifestFile getCoveredManifest() {
+		return manifestFile;
+	}
+	
+	@Override
+	public TimestampToken getTimestamp() {
+		TimestampToken timestamp = super.getTimestamp();
+		timestamp.setManifestFile(getCoveredManifest());
+		return timestamp;
 	}
 
 }

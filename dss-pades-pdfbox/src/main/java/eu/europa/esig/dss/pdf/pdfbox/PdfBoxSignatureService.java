@@ -316,7 +316,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		List<PdfSignatureOrDocTimestampInfo> signatures = new ArrayList<PdfSignatureOrDocTimestampInfo>();
 		try (InputStream is = document.openStream(); PDDocument doc = PDDocument.load(is)) {
 
-			final PdfDssDict dssDictionary = getDSSDictionary(doc);
+			final PdfDssDict dssDictionary = PdfBoxUtils.getDSSDictionary(doc);
 
 			List<PDSignatureField> pdSignatureFields = doc.getSignatureFields();
 
@@ -400,16 +400,11 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 	private PdfDssDict getDSSDictionaryPresentInRevision(byte[] originalBytes) {
 		try (PDDocument doc = PDDocument.load(originalBytes)) {
-			return getDSSDictionary(doc);
+			return PdfBoxUtils.getDSSDictionary(doc);
 		} catch (Exception e) {
 			LOG.warn("Cannot check in previous revisions if DSS dictionary already exist : " + e.getMessage(), e);
 			return null;
 		}
-	}
-
-	private PdfDssDict getDSSDictionary(PDDocument doc) {
-		PdfDict catalog = new PdfBoxDict(doc.getDocumentCatalog().getCOSObject(), doc);
-		return PdfDssDict.extract(catalog);
 	}
 
 	@Override

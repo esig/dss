@@ -1356,7 +1356,7 @@ public class DiagnosticDataBuilder {
 		xmlTimestampToken.setType(timestampToken.getTimeStampType());
 		xmlTimestampToken.setArchiveTimestampType(timestampToken.getArchiveTimestampType()); // property is defined only for archival timestamps
 		xmlTimestampToken.setProductionTime(timestampToken.getGenerationTime());
-		xmlTimestampToken.setDigestMatcher(getXmlDigestMatcher(timestampToken));
+		xmlTimestampToken.getDigestMatchers().addAll(getXmlDigestMatchers(timestampToken));
 		xmlTimestampToken.setBasicSignature(getXmlBasicSignature(timestampToken));
 
 		xmlTimestampToken.setSigningCertificate(getXmlSigningCertificate(timestampToken.getPublicKeyOfTheSigner()));
@@ -1372,8 +1372,15 @@ public class DiagnosticDataBuilder {
 
 		return xmlTimestampToken;
 	}
+	
+	private List<XmlDigestMatcher> getXmlDigestMatchers(TimestampToken timestampToken) {
+		List<XmlDigestMatcher> digestMatchers = new ArrayList<XmlDigestMatcher>();
+		digestMatchers.add(getImprintDigestMatcher(timestampToken));
+		digestMatchers.addAll(getManifestEntriesDigestMatchers(timestampToken.getManifestFile()));
+		return digestMatchers;
+	}
 
-	private XmlDigestMatcher getXmlDigestMatcher(TimestampToken timestampToken) {
+	private XmlDigestMatcher getImprintDigestMatcher(TimestampToken timestampToken) {
 		XmlDigestMatcher digestMatcher = new XmlDigestMatcher();
 		digestMatcher.setType(DigestMatcherType.MESSAGE_IMPRINT);
 		Digest messageImprint = timestampToken.getMessageImprint();
@@ -1383,7 +1390,32 @@ public class DiagnosticDataBuilder {
 		}
 		digestMatcher.setDataFound(timestampToken.isMessageImprintDataFound());
 		digestMatcher.setDataIntact(timestampToken.isMessageImprintDataIntact());
+		ManifestFile manifestFile = timestampToken.getManifestFile();
+		if (manifestFile != null) {
+			digestMatcher.setName(manifestFile.getFilename());
+		}
 		return digestMatcher;
+	}
+	
+	private List<XmlDigestMatcher> getManifestEntriesDigestMatchers(ManifestFile manifestFile) {
+		List<XmlDigestMatcher> digestMatchers = new ArrayList<XmlDigestMatcher>();
+		if (manifestFile != null && Utils.isCollectionNotEmpty(manifestFile.getEntries())) {
+			for (ManifestEntry entry : manifestFile.getEntries()) {
+				XmlDigestMatcher digestMatcher = new XmlDigestMatcher();
+				digestMatcher.setType(DigestMatcherType.MANIFEST_ENTRY);
+				Digest digest = entry.getDigest();
+				if (digest != null) {
+					digestMatcher.setDigestMethod(digest.getAlgorithm());
+					digestMatcher.setDigestValue(digest.getValue());
+				}
+				digestMatcher.setDataFound(entry.isFound());
+				digestMatcher.setDataIntact(entry.isIntact());
+				digestMatcher.setName(entry.getFileName());
+				
+				digestMatchers.add(digestMatcher);
+			}
+		}
+		return digestMatchers;
 	}
 
 	private List<XmlTimestampedObject> getXmlTimestampedObjects(TimestampToken timestampToken) {

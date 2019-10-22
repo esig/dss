@@ -185,6 +185,9 @@
   	<jaxb:bindings node="//xs:complexType[@name='RevocationRef']//xs:element[@name='Origin']">
 		<jaxb:property name="Origins" />
 	</jaxb:bindings>
+  	<jaxb:bindings node="//xs:complexType[@name='Timestamp']//xs:element[@name='DigestMatcher']">
+		<jaxb:property name="DigestMatchers" />
+	</jaxb:bindings>
 		
  	<jaxb:bindings node="//xs:complexType[@name='Signature']//xs:attribute[@name='Parent']">
         <jaxb:property>

@@ -62,6 +62,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateRef;
+import eu.europa.esig.dss.validation.ManifestFile;
 
 /**
  * SignedToken containing a TimeStamp.
@@ -91,6 +92,9 @@ public class TimestampToken extends Token {
 	private boolean messageImprintData;
 
 	private Boolean messageImprintIntact = null;
+	
+	/* In case of ASiC-E CAdES */
+	private ManifestFile manifestFile;
 	
 	private TimestampLocation timeStampLocation;
 
@@ -453,6 +457,27 @@ public class TimestampToken extends Token {
 			throw new DSSException("Invoke matchData(byte[] data) method before!");
 		}
 		return messageImprintIntact;
+	}
+
+	/**
+	 * This method returns the covered manifest file
+	 * NOTE: applicable only for ASiC-E CAdES
+	 * 
+	 * @return {@link ManifestFile}
+	 */
+	public ManifestFile getManifestFile() {
+		return manifestFile;
+	}
+
+	/**
+	 * Sets the manifest file covered by the current timestamp
+	 * NOTE: applicable only for ASiC-E CAdES
+	 * 
+	 * @param manifestFile 
+	 * 					{@link ManifestFile}
+	 */
+	public void setManifestFile(ManifestFile manifestFile) {
+		this.manifestFile = manifestFile;
 	}
 
 	/**
