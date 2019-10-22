@@ -96,10 +96,10 @@ public class SignatureValidationContext implements ValidationContext {
 	private Map<CertificateToken, List<CertificateToken>> orderedCertificateChains;
 
 	// External OCSP source.
-	private OCSPSource ocspSource;
+	private RevocationSource<OCSPToken> ocspSource;
 
 	// External CRL source.
-	private CRLSource crlSource;
+	private RevocationSource<CRLToken> crlSource;
 
 	// CRLs from the signature.
 	private CRLSource signatureCRLSource;
