@@ -238,11 +238,11 @@ public class TLValidationJob {
 		executeTLSourcesAnalysis(currentTLSources, dssFileLoader);
 
 		// alerts()
-        if(alerts != null && !alerts.isEmpty()) {
-            TLValidationJobSummary jobSummary = getSummary();
-            Alerter alerter = new Alerter(jobSummary, alerts);
-            alerter.detectChanges();
-        }
+		if (Utils.isCollectionNotEmpty(alerts)) {
+			TLValidationJobSummary jobSummary = getSummary();
+			Alerter alerter = new Alerter(jobSummary, alerts);
+			alerter.detectChanges();
+		}
 
 		if (debug) {
 			LOG.info("Dump before synchronization");
