@@ -126,7 +126,7 @@ public class TLParsingTaskTest {
 	public void notParseable() {
 		TLParsingTask task = new TLParsingTask(LOTL_NOT_PARSEABLE, new TLSource());
 		DSSException exception = assertThrows(DSSException.class, () -> task.get());
-		assertEquals("Unable to parse binaries", exception.getMessage());
+		assertTrue(exception.getMessage().contains("Unable to parse binaries"));
 	}
 
 	private void checkTSPs(List<TrustServiceProvider> trustServiceProviders) {

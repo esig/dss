@@ -49,7 +49,7 @@ public class TimestampTokenConverter {
 			}
 			return timestampToken;
 		} catch (TSPException | IOException | CMSException e) {
-			throw new DSSException(String.format("Cannot convert a TimestampDTO to TimestampToken class, reason : {}", e.getMessage()));
+			throw new DSSException(String.format("Cannot convert a TimestampDTO to TimestampToken class, reason : '%s'", e.getMessage()), e);
 		}
 	}
 	

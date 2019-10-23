@@ -24,7 +24,7 @@ public class CachedException {
 	}
 	
 	public String getExceptionMessage() {
-		return exception.getLocalizedMessage();
+		return exception.getMessage();
 	}
 	
 	public String getStackTrace() {

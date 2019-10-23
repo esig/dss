@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.service.tsp;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -109,7 +108,7 @@ public class OnlineTSPSourceTest {
 			byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
 			tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);
 		});
-		assertEquals("Unable to process POST call for url 'http://www.google.com'", exception.getMessage());
+		assertTrue(exception.getMessage().contains("Unable to process POST call for url [http://www.google.com]"));
 	}
 
 }

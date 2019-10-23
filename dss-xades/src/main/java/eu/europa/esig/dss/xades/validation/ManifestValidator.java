@@ -227,7 +227,7 @@ public class ManifestValidator {
 			}
 			return xmlSignatureInput.getBytes();
 		} catch (Exception e) {
-			throw new DSSException("An error occurred during applying of transformations. Transforms cannot be performed!");
+			throw new DSSException("An error occurred during applying of transformations. Transforms cannot be performed!", e);
 		}
 	}
 

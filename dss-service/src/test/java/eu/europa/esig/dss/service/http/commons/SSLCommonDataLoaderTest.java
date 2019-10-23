@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.service.http.commons;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -111,7 +110,7 @@ public class SSLCommonDataLoaderTest {
 			assertNotNull(binaries);
 			assertTrue(binaries.length > 0);
 		});
-		assertEquals("Unable to process GET call for url 'https://ec.europa.eu/cefdigital/eSignature'", exception.getMessage());
+		assertTrue(exception.getMessage().contains("Unable to process GET call for url [https://ec.europa.eu/cefdigital/eSignature]"));
 	}
 
 }

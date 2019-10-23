@@ -605,7 +605,7 @@ public final class DSSUtils {
 		try (InputStream is = dssDocument.openStream()) {
 			return Utils.getInputStreamSize(is);
 		} catch (IOException e) {
-			throw new DSSException(String.format("Cannot read the document with name [%s]", dssDocument.getName()));
+			throw new DSSException(String.format("Cannot read the document with name [%s]", dssDocument.getName()), e);
 		}
 	}
 
@@ -861,7 +861,7 @@ public final class DSSUtils {
 			}
 			return skipped;
 		} catch (IOException e) {
-			throw new DSSException("Cannot read the InputStream!");
+			throw new DSSException("Cannot read the InputStream!", e);
 		}
 	}
 
@@ -917,7 +917,7 @@ public final class DSSUtils {
 			}
 			return read;
 		} catch (IOException e) {
-			throw new DSSException("Cannot read the InputStream!");
+			throw new DSSException("Cannot read the InputStream!", e);
 		}
 	}
 

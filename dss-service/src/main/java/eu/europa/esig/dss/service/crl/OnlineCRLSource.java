@@ -170,7 +170,7 @@ public class OnlineCRLSource implements CRLSource, RevocationSourceAlternateUrls
 		try {
 			return dataLoader.get(downloadUrls);
 		} catch (DSSException e) {
-			LOG.warn("Unable to download CRL from URLs {}", downloadUrls, e);
+			LOG.warn("Unable to download CRL from URLs [{}]. Reason : [{}]", downloadUrls, e.getMessage(), e);
 			return null;
 		}
 	}

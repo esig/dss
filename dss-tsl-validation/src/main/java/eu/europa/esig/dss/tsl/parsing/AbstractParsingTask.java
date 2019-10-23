@@ -31,7 +31,12 @@ public abstract class AbstractParsingTask {
 		try (InputStream is = document.openStream()) {
 			return TrustedListFacade.newFacade().unmarshall(is);
 		} catch (Exception e) {
-			throw new DSSException("Unable to parse binaries", e);
+			String message = "Unable to parse binaries. Reason : '%s'";
+			// get complete error message in case if the message string is not defined directly
+			if (e.getMessage() == null && e.getCause() != null) {
+				throw new DSSException(String.format(message, e.getCause().getMessage()), e);
+			}
+			throw new DSSException(String.format(message, e.getMessage()), e);
 		}
 	}
 

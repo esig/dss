@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.tsl.parsing;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -264,7 +265,7 @@ public class LOTLParsingTaskTest {
 	public void notParseable() {
 		LOTLParsingTask task = new LOTLParsingTask(LOTL_NOT_PARSEABLE, new LOTLSource());
 		DSSException exception = assertThrows(DSSException.class, () -> task.get());
-		assertEquals("Unable to parse binaries", exception.getMessage());
+		assertTrue(exception.getMessage().contains("Unable to parse binaries"));
 	}
 
 }

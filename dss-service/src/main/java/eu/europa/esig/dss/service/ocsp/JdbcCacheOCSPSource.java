@@ -185,7 +185,7 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSPToken> impleme
 			c.commit();
 			LOG.debug("OCSP token with key '{}' successfully inserted in DB", token.getRevocationTokenKey());
 		} catch (final Exception e) {
-			LOG.error("Unable to insert OCSP in the DB. Cause: " + e.getLocalizedMessage(), e);
+			LOG.error("Unable to insert OCSP in the DB. Cause: '{}'", e.getMessage(), e);
 			rollback(c);
 		} finally {
 			closeQuietly(c, s, null);
@@ -219,7 +219,7 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSPToken> impleme
 			c.commit();
 			LOG.debug("OCSP token with key '{}' successfully updated in DB", token.getRevocationTokenKey());
 		} catch (final Exception e) {
-			LOG.error("Unable to update OCSP in the DB. Cause: " + e.getLocalizedMessage(), e);
+			LOG.error("Unable to update OCSP in the DB. Cause: '{}'", e.getMessage(), e);
 			rollback(c);
 		} finally {
 			closeQuietly(c, s, null);

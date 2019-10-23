@@ -22,7 +22,6 @@ package eu.europa.esig.dss.service.http.commons;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -30,6 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,7 +38,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.client.http.DataLoader.DataAndUrl;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.spi.client.http.MemoryDataLoader;
 import eu.europa.esig.dss.utils.Utils;
@@ -102,9 +104,9 @@ public class FileCacheDataLoaderTest {
 		specificDataLoader.setDataLoader(new MemoryDataLoader(new HashMap<String, byte[]>()));
 		specificDataLoader.setFileCacheDirectory(cacheDirectory);
 
-		assertNull(specificDataLoader.get("1.2.3.4.5"));
-		assertNull(specificDataLoader.getDocument("1.2.3.4.5"));
-		assertNull(specificDataLoader.post("1.2.3.4.5", new byte[] { 1, 2, 3 }));
+		assertThrows(DSSException.class, () -> specificDataLoader.get("1.2.3.4.5"));
+		assertThrows(DSSException.class, () -> specificDataLoader.getDocument("1.2.3.4.5"));
+		assertThrows(DSSException.class, () -> specificDataLoader.post("1.2.3.4.5", new byte[] { 1, 2, 3 }));
 		specificDataLoader.createFile("1.2.3.4.5", new byte[] { 1, 2, 3 });
 		assertNotNull(specificDataLoader.get("1.2.3.4.5"));
 		assertNotNull(specificDataLoader.getDocument("1.2.3.4.5"));
@@ -140,11 +142,20 @@ public class FileCacheDataLoaderTest {
 		offlineFileCacheDataLoader.setDataLoader(new IgnoreDataLoader());
 		offlineFileCacheDataLoader.setFileCacheDirectory(cacheDirectory);
 		
-		assertNull(offlineFileCacheDataLoader.get("sample"));
-		assertNull(offlineFileCacheDataLoader.get("null"));
-		assertNull(offlineFileCacheDataLoader.get("empty-array"));
-		assertNull(offlineFileCacheDataLoader.get("0"));
-		assertNull(offlineFileCacheDataLoader.get("1.2.3.4.5"));
+		DSSException multipleException = assertThrows(DSSException.class, () -> {
+			offlineFileCacheDataLoader.get(Arrays.asList("sample", "null", "empty-array", "0", "1.2.3.4.5"));
+		});
+		assertTrue(multipleException.getMessage().contains("sample"));
+		assertTrue(multipleException.getMessage().contains("null"));
+		assertTrue(multipleException.getMessage().contains("empty-array"));
+		assertTrue(multipleException.getMessage().contains("0"));
+		assertTrue(multipleException.getMessage().contains("1.2.3.4.5"));
+		
+		assertThrows(DSSException.class, () -> offlineFileCacheDataLoader.get("sample"));
+		assertThrows(DSSException.class, () -> offlineFileCacheDataLoader.get("null"));
+		assertThrows(DSSException.class, () -> offlineFileCacheDataLoader.get("empty-array"));
+		assertThrows(DSSException.class, () -> offlineFileCacheDataLoader.get("0"));
+		assertThrows(DSSException.class, () -> offlineFileCacheDataLoader.get("1.2.3.4.5"));
 		
 		FileCacheDataLoader onlineFileCacheDataLoader = new FileCacheDataLoader();
 		onlineFileCacheDataLoader.setCacheExpirationTime(0);
@@ -152,16 +163,21 @@ public class FileCacheDataLoaderTest {
 		onlineFileCacheDataLoader.setFileCacheDirectory(cacheDirectory);
 		
 		assertNotNull(onlineFileCacheDataLoader.get("sample"));
-		assertNull(onlineFileCacheDataLoader.get("null"));
-		assertNull(onlineFileCacheDataLoader.get("empty-array"));
+		assertThrows(DSSException.class, () -> onlineFileCacheDataLoader.get("null"));
+		assertThrows(DSSException.class, () -> onlineFileCacheDataLoader.get("empty-array"));
 		assertNotNull(onlineFileCacheDataLoader.get("0"));
 		assertNotNull(onlineFileCacheDataLoader.get("1.2.3.4.5"));
 		
 		assertNotNull(offlineFileCacheDataLoader.get("sample"));
-		assertNull(offlineFileCacheDataLoader.get("null"));
-		assertNull(offlineFileCacheDataLoader.get("empty-array"));
+		assertThrows(DSSException.class, () -> offlineFileCacheDataLoader.get("null"));
+		assertThrows(DSSException.class, () -> offlineFileCacheDataLoader.get("empty-array"));
 		assertNotNull(offlineFileCacheDataLoader.get("0"));
 		assertNotNull(offlineFileCacheDataLoader.get("1.2.3.4.5"));
+		
+		DataAndUrl dataAndUrl = offlineFileCacheDataLoader.get(Arrays.asList("sample", "null", "empty-array", "0", "1.2.3.4.5"));
+		assertNotNull(dataAndUrl);
+		assertEquals("sample", dataAndUrl.getUrlString());
+		assertNotNull(dataAndUrl.getData());
 	}
 
 	private long getUrlAndReturnCacheCreationTime() {

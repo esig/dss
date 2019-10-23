@@ -20,24 +20,35 @@
  */
 package eu.europa.esig.dss.service.http.commons;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.client.http.DataLoader.DataAndUrl;
 import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
+import eu.europa.esig.dss.spi.exception.DSSDataLoaderMultipleException;
+import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import eu.europa.esig.dss.utils.Utils;
 
 public class CommonsDataLoaderTest {
 
 	private static final String URL_TO_LOAD = "http://certs.eid.belgium.be/belgiumrs2.crt";
 
-	private CommonsDataLoader dataLoader = new CommonsDataLoader();
+	private CommonsDataLoader dataLoader;
+	
+	@BeforeEach
+	public void init() {
+		dataLoader = new CommonsDataLoader();
+	}
 
 	@Test
 	public void testGet() {
@@ -88,14 +99,77 @@ public class CommonsDataLoaderTest {
 	
 	@Test
 	public void dss1583WarningTest() {
-		String url = "ldap://pks-ldap.telesec.de/o=T-Systems International GmbH,c=de%2";
-		assertFalse(Utils.isArrayNotEmpty(dataLoader.get(url)));
-		url = "ldap://pks-ldap.telesec.de/o=T-Syste%ms International GmbH,c=de";
-		assertFalse(Utils.isArrayNotEmpty(dataLoader.get(url)));
-		url = "ldap://pks-ldap.telesec.de/o=T-SystemsInternational GmbH,c=de";
-		assertFalse(Utils.isArrayNotEmpty(dataLoader.get(url)));
-		url = "ldap://pks-ldap.telesec.de/o=T-Systems International GmbH,c=de?certificate";
-		assertFalse(Utils.isArrayNotEmpty(dataLoader.get(url)));
+		assertThrows(DSSException.class, () -> {
+			String url = "ldap://pks-ldap.telesec.de/o=T-Systems International GmbH,c=de%2";
+			dataLoader.get(url);
+		});
+		assertThrows(DSSException.class, () -> {
+			String url = "ldap://pks-ldap.telesec.de/o=T-Syste%ms International GmbH,c=de";
+			dataLoader.get(url);
+		});
+		assertThrows(DSSException.class, () -> {
+			String url = "ldap://pks-ldap.telesec.de/o=T-SystemsInternational GmbH,c=de";
+			dataLoader.get(url);
+		});
+		assertThrows(DSSException.class, () -> {
+			String url = "ldap://pks-ldap.telesec.de/o=T-Systems International GmbH,c=de?certificate";
+			dataLoader.get(url);
+		});
+	}
+	
+	@Test
+	public void timeoutTest() {
+		DSSExternalResourceException exception = assertThrows(DSSExternalResourceException.class, () -> {
+			dataLoader.setTimeoutConnection(1);
+			dataLoader.get(URL_TO_LOAD);
+		});
+		assertTrue(exception.getMessage().startsWith("Unable to process GET call for url [" + URL_TO_LOAD + "]"));
+		assertTrue(exception.getMessage().contains("connect timed out"));
+
+		dataLoader.setTimeoutConnection(6000);
+		exception = assertThrows(DSSExternalResourceException.class, () -> {
+			dataLoader.setTimeoutSocket(1);
+			dataLoader.get(URL_TO_LOAD);
+		});
+		assertTrue(exception.getMessage().startsWith("Unable to process GET call for url [" + URL_TO_LOAD + "]"));
+		assertTrue(exception.getMessage().contains("Read timed out"));
+	}
+	
+	@Test
+	public void resourceDoesNotExistTest() {
+		DSSExternalResourceException exception = assertThrows(DSSExternalResourceException.class, () -> {
+			dataLoader.setTimeoutConnection(1);
+			dataLoader.get("http://wrong.url");
+		});
+		assertTrue(exception.getMessage().startsWith("Unable to process GET call for url [http://wrong.url]"));
+	}
+	
+	@Test
+	public void multipleDataLoadTest() {
+		byte[] firstUrlData = dataLoader.get(URL_TO_LOAD);
+		DataAndUrl dataAndUrl = dataLoader.get(Arrays.asList(URL_TO_LOAD, 
+				"http://ncrl.ssc.lt/class3nqc/cacrl.crl", "http://www.ssc.lt/cacert/ssc_class3nqc.crt"));
+		assertEquals(URL_TO_LOAD, dataAndUrl.getUrlString());
+		assertTrue(Arrays.equals(firstUrlData, dataAndUrl.getData()));
+		
+		dataAndUrl = dataLoader.get(Arrays.asList("http://wrong.url", "does_not_exist", URL_TO_LOAD));
+		assertEquals(URL_TO_LOAD, dataAndUrl.getUrlString());
+		assertTrue(Arrays.equals(firstUrlData, dataAndUrl.getData()));
+		
+	}
+	
+	@Test
+	public void multipleDataLoaderExceptionTest() {
+		dataLoader.setTimeoutConnection(1);
+		
+		DSSDataLoaderMultipleException exception = assertThrows(DSSDataLoaderMultipleException.class, () -> {
+			dataLoader.get(Arrays.asList("http://wrong.url", "does_not_exist", URL_TO_LOAD));
+		});
+		assertTrue(exception.getMessage().contains("http://wrong.url"));
+		assertTrue(exception.getMessage().contains("does_not_exist"));
+		assertTrue(exception.getMessage().contains("Host name may not be null"));
+		assertTrue(exception.getMessage().contains(URL_TO_LOAD));
+		assertTrue(exception.getMessage().contains("timed out"));
 	}
 
 }
