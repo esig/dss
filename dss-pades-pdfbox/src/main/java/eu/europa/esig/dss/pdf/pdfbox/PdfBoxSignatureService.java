@@ -157,14 +157,19 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 			SignatureImageParameters imageParameters = getImageParameters(parameters);
 			if (imageParameters != null && signatureDrawerFactory != null) {
-				PdfBoxSignatureDrawer signatureDrawer = (PdfBoxSignatureDrawer) signatureDrawerFactory.getSignatureDrawer(imageParameters);
+				PdfBoxSignatureDrawer signatureDrawer = (PdfBoxSignatureDrawer) signatureDrawerFactory
+						.getSignatureDrawer(imageParameters);
 				signatureDrawer.init(imageParameters, pdDocument, options);
 				signatureDrawer.draw();
+			} else {
+				PdfBoxInvisibleSignatureOptionsPreparator signaturePreparator = new PdfBoxInvisibleSignatureOptionsPreparator();
+				signaturePreparator.prepare(options);
 			}
-
+			
 			pdDocument.addSignature(pdSignature, signatureInterface, options);
-
+			
 			saveDocumentIncrementally(parameters, fileOutputStream, pdDocument);
+			
 			return digest.digest();
 		} catch (IOException e) {
 			throw new DSSException(e);
@@ -185,6 +190,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		signature.setFilter(COSName.getPDFName(getFilter(parameters)));
 		// sub-filter for basic and PAdES Part 2 signatures
 		signature.setSubFilter(COSName.getPDFName(getSubFilter(parameters)));
+		
 
 		if (COSName.SIG.equals(currentType)) {
 
