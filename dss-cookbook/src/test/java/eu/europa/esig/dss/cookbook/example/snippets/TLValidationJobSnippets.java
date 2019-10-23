@@ -12,10 +12,14 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
+import eu.europa.esig.dss.spi.tsl.DownloadInfoRecord;
 import eu.europa.esig.dss.spi.tsl.LOTLInfo;
+import eu.europa.esig.dss.spi.tsl.ParsingInfoRecord;
 import eu.europa.esig.dss.spi.tsl.PivotInfo;
 import eu.europa.esig.dss.spi.tsl.TLInfo;
+import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.spi.tsl.ValidationInfoRecord;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
@@ -86,9 +90,6 @@ public class TLValidationJobSnippets {
 		TLValidationJob validationJob = new TLValidationJob();
 		validationJob.setTrustedListSources(boliviaTLSource(), costaRicaTLSource());
 		validationJob.setListOfTrustedListSources(europeanLOTLSource(), unitedStatesLOTLSource());
-
-		validationJob.setOfflineDataLoader(offlineLoader());
-		validationJob.setOnlineDataLoader(onlineLoader());
 		// end::job-config-sources[]
 	}
 
@@ -245,6 +246,48 @@ public class TLValidationJobSnippets {
 		return tlSource;
 	}
 	// end::french-tl-source[]
+
+	public void summary() {
+		// tag::tl-summary[]
+
+		TrustedListsCertificateSource trustedListCertificateSource = new TrustedListsCertificateSource();
+
+		TLValidationJob job = new TLValidationJob();
+		job.setTrustedListCertificateSource(trustedListCertificateSource);
+
+		// ... config & refresh ...
+
+		// A cache content summary can be computed on request
+		TLValidationJobSummary summary = job.getSummary();
+
+		// All information about processed LOTLSources
+		List<LOTLInfo> lotlInfos = summary.getLOTLInfos();
+		LOTLInfo lotlInfo = lotlInfos.get(0);
+		// All data about the download (last occurrence, cache status, error,...)
+		DownloadInfoRecord downloadCacheInfo = lotlInfo.getDownloadCacheInfo();
+
+		// All data about the parsing (date, extracted data, cache status,...)
+		ParsingInfoRecord parsingCacheInfo = lotlInfo.getParsingCacheInfo();
+
+		// All data about the signature validation (signing certificate, validation
+		// result, cache status,...)
+		ValidationInfoRecord validationCacheInfo = lotlInfo.getValidationCacheInfo();
+
+		// All information about processed TLSources (which are not linked to a
+		// LOTLSource)
+		List<TLInfo> otherTLInfos = summary.getOtherTLInfos();
+
+		// or the last update can be collected from the TrustedListsCertificateSource
+		TLValidationJobSummary lastSynchronizedSummary = trustedListCertificateSource.getSummary();
+
+		// end::tl-summary[]
+
+		downloadCacheInfo.getLastSuccessDate();
+		parsingCacheInfo.getLastSuccessDate();
+		validationCacheInfo.getLastSuccessDate();
+		lastSynchronizedSummary.getLOTLInfos();
+
+	}
 
 	private TLSource costaRicaTLSource() {
 		return null;
