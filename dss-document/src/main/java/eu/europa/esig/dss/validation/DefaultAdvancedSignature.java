@@ -382,15 +382,28 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 * @return set of certificates not yet present within the signature
 	 */
 	public Set<CertificateToken> getCertificatesForInclusion(final ValidationContext validationContext) {
-
 		final Set<CertificateToken> certificates = new HashSet<CertificateToken>();
 		final List<CertificateToken> certWithinSignatures = getCertificateListWithinSignatureAndTimestamps();
+		
+		// avoid adding of cross-certificates to the list
+		final List<String> publicKeys = getEntityIdentifierList(certWithinSignatures);
 		for (final CertificateToken certificateToken : validationContext.getProcessedCertificates()) {
-			if (!certWithinSignatures.contains(certificateToken)) {
+			if (!publicKeys.contains(certificateToken.getEntityKey())) {
 				certificates.add(certificateToken);
+			} else {
+				LOG.info("Certificate Token with id : [{}] has not been added for inclusion. "
+						+ "The same public key is already present!", certificateToken.getDSSIdAsString());
 			}
 		}
 		return certificates;
+	}
+	
+	private List<String> getEntityIdentifierList(List<CertificateToken> certificateTokens) {
+		final List<String> entityIdentifiers = new ArrayList<String>();
+		for (CertificateToken certificateToken : certificateTokens) {
+			entityIdentifiers.add(certificateToken.getEntityKey());
+		}
+		return entityIdentifiers;
 	}
 	
 	@Override
