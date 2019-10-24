@@ -73,8 +73,7 @@
 		
 		<mockito.version>2.28.2</mockito.version>
 		<h2database.version>1.4.199</h2database.version>
-		<jackson.version>2.9.9</jackson.version>
-		<jackson-databind.version>2.9.9.3</jackson-databind.version>  <!-- Upgrade against vulnerability -->
+		<jackson.version>2.10.0</jackson.version>
 		
 	    <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 	    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
@@ -1011,13 +1010,6 @@
 				<artifactId>jackson-module-jaxb-annotations</artifactId>
 				<version>${jackson.version}</version>
 			</dependency>
-			<dependency>
-			    <groupId>com.fasterxml.jackson.core</groupId>
-			    <artifactId>jackson-databind</artifactId>
-			    <version>${jackson-databind.version}</version>
-			</dependency>
-						
-						
 		</dependencies>
 	</dependencyManagement>
 
