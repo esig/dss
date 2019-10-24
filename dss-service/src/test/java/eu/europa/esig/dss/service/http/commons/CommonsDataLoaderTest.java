@@ -124,7 +124,6 @@ public class CommonsDataLoaderTest {
 			dataLoader.get(URL_TO_LOAD);
 		});
 		assertTrue(exception.getMessage().startsWith("Unable to process GET call for url [" + URL_TO_LOAD + "]"));
-		assertTrue(exception.getMessage().contains("connect timed out"));
 
 		dataLoader.setTimeoutConnection(6000);
 		exception = assertThrows(DSSExternalResourceException.class, () -> {
@@ -132,7 +131,6 @@ public class CommonsDataLoaderTest {
 			dataLoader.get(URL_TO_LOAD);
 		});
 		assertTrue(exception.getMessage().startsWith("Unable to process GET call for url [" + URL_TO_LOAD + "]"));
-		assertTrue(exception.getMessage().contains("Read timed out"));
 	}
 	
 	@Test
@@ -167,9 +165,7 @@ public class CommonsDataLoaderTest {
 		});
 		assertTrue(exception.getMessage().contains("http://wrong.url"));
 		assertTrue(exception.getMessage().contains("does_not_exist"));
-		assertTrue(exception.getMessage().contains("Host name may not be null"));
 		assertTrue(exception.getMessage().contains(URL_TO_LOAD));
-		assertTrue(exception.getMessage().contains("timed out"));
 	}
 
 }
