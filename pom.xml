@@ -67,9 +67,9 @@
 		<jaxws-api.version>2.3.1</jaxws-api.version>
 		<activation.version>1.2.0</activation.version>
 
-		<junit.platform.version>1.5.1</junit.platform.version>
-		<junit.jupiter.version>5.5.1</junit.jupiter.version>
-		<junit.vintage.version>5.5.1</junit.vintage.version>
+		<junit.platform.version>1.5.2</junit.platform.version>
+		<junit.jupiter.version>5.5.2</junit.jupiter.version>
+		<junit.vintage.version>5.5.2</junit.vintage.version>
 		
 		<mockito.version>2.28.2</mockito.version>
 		<h2database.version>1.4.199</h2database.version>
