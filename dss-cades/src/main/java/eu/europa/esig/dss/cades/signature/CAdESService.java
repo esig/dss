@@ -221,13 +221,12 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 	 * @return the original toSignDocument or null
 	 */
 	private DSSDocument getSignedContent(final CMSSignedData cmsSignedData) {
-		if (cmsSignedData != null) {
-			final CMSTypedData signedContent = cmsSignedData.getSignedContent();
-			final byte[] documentBytes = (signedContent != null) ? (byte[]) signedContent.getContent() : null;
-			final InMemoryDocument inMemoryDocument = new InMemoryDocument(documentBytes);
-			return inMemoryDocument;
+		final CMSTypedData signedContent = cmsSignedData.getSignedContent();
+		if (signedContent == null) {
+			throw new DSSException("Unknown SignedContent");
 		}
-		return null;
+		final byte[] documentBytes = (byte[]) signedContent.getContent();
+		return new InMemoryDocument(documentBytes);
 	}
 
 	/**

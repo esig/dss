@@ -24,6 +24,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Base64;
+import java.util.Objects;
 
 /**
  * In memory representation of a document
@@ -56,9 +57,7 @@ public class InMemoryDocument extends CommonDocument {
 	 *            the file name if the data originates from a file
 	 */
 	public InMemoryDocument(final byte[] bytes, final String name) {
-		this.bytes = bytes;
-		this.name = name;
-		this.mimeType = MimeType.fromFileName(name);
+		this(bytes, name, MimeType.fromFileName(name));
 	}
 
 	/**
@@ -72,6 +71,7 @@ public class InMemoryDocument extends CommonDocument {
 	 *            the mime type of the file if the data originates from a file
 	 */
 	public InMemoryDocument(final byte[] bytes, final String name, final MimeType mimeType) {
+		Objects.requireNonNull(bytes, "Bytes cannot be null");
 		this.bytes = bytes;
 		this.name = name;
 		this.mimeType = mimeType;

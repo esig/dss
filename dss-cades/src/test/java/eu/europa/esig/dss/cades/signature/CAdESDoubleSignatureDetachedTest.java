@@ -22,6 +22,7 @@ package eu.europa.esig.dss.cades.signature;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
@@ -38,6 +39,7 @@ import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -107,6 +109,31 @@ public class CAdESDoubleSignatureDetachedTest extends PKIFactoryAccess {
 			assertEquals(DigestAlgorithm.SHA256, xmlDigestMatcher.getDigestMethod());
 			assertArrayEquals(expectedDigest, xmlDigestMatcher.getDigestValue());
 		}
+
+		user = EE_GOOD_USER;
+		signatureParameters = new CAdESSignatureParameters();
+		signatureParameters.setSigningCertificate(getSigningCert());
+		signatureParameters.setCertificateChain(getCertificateChain());
+		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
+		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
+
+		// explicit missing file
+		// signatureParameters.setDetachedContents(Arrays.asList(documentToSign));
+
+		final CAdESService service2 = new CAdESService(getOfflineCertificateVerifier());
+		final CAdESSignatureParameters params2 = signatureParameters;
+		SignatureValue signatureValue2 = signatureValue;
+
+		DSSException e = assertThrows(DSSException.class, () -> {
+			service2.getDataToSign(signedDocument, params2);
+		});
+		assertEquals("Unknown SignedContent", e.getMessage());
+
+		e = assertThrows(DSSException.class, () -> {
+			service2.signDocument(signedDocument, params2, signatureValue2);
+		});
+		assertEquals("Unknown SignedContent", e.getMessage());
+
 	}
 
 	@Override

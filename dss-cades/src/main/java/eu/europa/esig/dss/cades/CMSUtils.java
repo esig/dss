@@ -28,6 +28,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1InputStream;
@@ -290,6 +291,7 @@ public final class CMSUtils {
 	}
 	
 	public static CMSTypedData getContentToBeSign(final DSSDocument toSignData) {
+		Objects.requireNonNull(toSignData, "Document to be signed is missing");
 		CMSTypedData content = null;
 		if (toSignData instanceof DigestDocument) {
 			content = new CMSAbsentContent();
