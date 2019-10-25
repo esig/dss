@@ -545,13 +545,13 @@ public class DiagnosticDataBuilder {
 
 		final CandidatesForSigningCertificate candidatesForSigningCertificate = signature.getCandidatesForSigningCertificate();
 		final CertificateValidity theCertificateValidity = candidatesForSigningCertificate.getTheCertificateValidity();
-		CertificateToken signingCertificateToken = null;
+		PublicKey signingCertificatePublicKey = null;
 		if (theCertificateValidity != null) {
 			xmlSignature.setSigningCertificate(getXmlSigningCertificate(theCertificateValidity));
-			signingCertificateToken = theCertificateValidity.getCertificateToken();
-			xmlSignature.setCertificateChain(getXmlForCertificateChain(signingCertificateToken.getPublicKey()));
+			signingCertificatePublicKey = theCertificateValidity.getPublicKey();
+			xmlSignature.setCertificateChain(getXmlForCertificateChain(signingCertificatePublicKey));
 		}
-		xmlSignature.setBasicSignature(getXmlBasicSignature(signature, signingCertificateToken));
+		xmlSignature.setBasicSignature(getXmlBasicSignature(signature, signingCertificatePublicKey));
 		xmlSignature.setDigestMatchers(getXmlDigestMatchers(signature));
 
 		xmlSignature.setPolicy(getXmlPolicy(signature));
@@ -759,13 +759,16 @@ public class DiagnosticDataBuilder {
 	 * @return
 	 */
 	private XmlSigningCertificate getXmlSigningCertificate(final PublicKey certPubKey) {
+		final XmlSigningCertificate xmlSignCertType = new XmlSigningCertificate();
 		final CertificateToken certificateByPubKey = getCertificateByPubKey(certPubKey);
 		if (certificateByPubKey != null) {
-			final XmlSigningCertificate xmlSignCertType = new XmlSigningCertificate();
 			xmlSignCertType.setCertificate(xmlCerts.get(certificateByPubKey.getDSSIdAsString()));
-			return xmlSignCertType;
+		} else if (certPubKey != null) {
+			xmlSignCertType.setPublicKey(certPubKey.getEncoded());
+		} else {
+			return null;
 		}
-		return null;
+		return xmlSignCertType;
 	}
 
 	private CertificateToken getCertificateByPubKey(final PublicKey certPubKey) {
@@ -789,16 +792,18 @@ public class DiagnosticDataBuilder {
 		return null;
 	}
 
-	private XmlSigningCertificate getXmlSigningCertificate(CertificateValidity theCertificateValidity) {
+	private XmlSigningCertificate getXmlSigningCertificate(CertificateValidity certificateValidity) {
 		XmlSigningCertificate xmlSignCertType = new XmlSigningCertificate();
-		CertificateToken signingCertificateToken = theCertificateValidity.getCertificateToken();
+		CertificateToken signingCertificateToken = certificateValidity.getCertificateToken();
 		if (signingCertificateToken != null) {
 			xmlSignCertType.setCertificate(xmlCerts.get(signingCertificateToken.getDSSIdAsString()));
+		} else if (certificateValidity.getPublicKey() != null) {
+			xmlSignCertType = getXmlSigningCertificate(certificateValidity.getPublicKey());
 		}
-		xmlSignCertType.setAttributePresent(theCertificateValidity.isAttributePresent());
-		xmlSignCertType.setDigestValuePresent(theCertificateValidity.isDigestPresent());
-		xmlSignCertType.setDigestValueMatch(theCertificateValidity.isDigestEqual());
-		final boolean issuerSerialMatch = theCertificateValidity.isSerialNumberEqual() && theCertificateValidity.isDistinguishedNameEqual();
+		xmlSignCertType.setAttributePresent(certificateValidity.isAttributePresent());
+		xmlSignCertType.setDigestValuePresent(certificateValidity.isDigestPresent());
+		xmlSignCertType.setDigestValueMatch(certificateValidity.isDigestEqual());
+		final boolean issuerSerialMatch = certificateValidity.isSerialNumberEqual() && certificateValidity.isDistinguishedNameEqual();
 		xmlSignCertType.setIssuerSerialMatch(issuerSerialMatch);
 		return xmlSignCertType;
 	}
@@ -1421,11 +1426,11 @@ public class DiagnosticDataBuilder {
 		return xmlBasicSignatureType;
 	}
 
-	private XmlBasicSignature getXmlBasicSignature(AdvancedSignature signature, CertificateToken signingCertificateToken) {
+	private XmlBasicSignature getXmlBasicSignature(AdvancedSignature signature, PublicKey signingCertificatePublicKey) {
 		XmlBasicSignature xmlBasicSignature = new XmlBasicSignature();
 		xmlBasicSignature.setEncryptionAlgoUsedToSignThisToken(signature.getEncryptionAlgorithm());
 
-		final int keyLength = signingCertificateToken == null ? 0 : DSSPKUtils.getPublicKeySize(signingCertificateToken.getPublicKey());
+		final int keyLength = signingCertificatePublicKey == null ? 0 : DSSPKUtils.getPublicKeySize(signingCertificatePublicKey);
 		xmlBasicSignature.setKeyLengthUsedToSignThisToken(String.valueOf(keyLength));
 		xmlBasicSignature.setDigestAlgoUsedToSignThisToken(signature.getDigestAlgorithm());
 		xmlBasicSignature.setMaskGenerationFunctionUsedToSignThisToken(signature.getMaskGenerationFunction());

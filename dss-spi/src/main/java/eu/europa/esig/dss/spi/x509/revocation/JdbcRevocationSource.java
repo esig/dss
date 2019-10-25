@@ -122,7 +122,7 @@ public abstract class JdbcRevocationSource<T extends RevocationToken> extends Re
 	 */
 	public void initTable() throws SQLException {
 		/* Create the table if it doesn't exist. */
-		if (!tableExists()) {
+		if (!isTableExists()) {
 			LOG.debug("Table does not exist. Creating a new table...");
 			createTable();
 			LOG.info("Table was created.");
@@ -147,15 +147,14 @@ public abstract class JdbcRevocationSource<T extends RevocationToken> extends Re
 		}
 	}
 
-	private boolean tableExists() {
+	public boolean isTableExists() {
 		Connection c = null;
 		Statement s = null;
 		boolean tableExists;
 		try {
 			c = dataSource.getConnection();
 			s = c.createStatement();
-			s.execute(getTableExistenceQuery());
-			tableExists = true;
+			tableExists = s.execute(getTableExistenceQuery());
 		} catch (final SQLException e) {
 			tableExists = false;
 		} finally {
@@ -170,7 +169,7 @@ public abstract class JdbcRevocationSource<T extends RevocationToken> extends Re
 	 */
 	public void destroyTable() throws SQLException {
 		/* Drop the table if it exists. */
-		if (tableExists()) {
+		if (isTableExists()) {
 			LOG.debug("Table exists. Removing the table...");
 			dropTable();
 			LOG.info("Table was destroyed.");
@@ -186,6 +185,7 @@ public abstract class JdbcRevocationSource<T extends RevocationToken> extends Re
 			c = dataSource.getConnection();
 			s = c.createStatement();
 			s.execute(getDeleteTableQuery());
+			c.commit();
 		} catch (SQLException e) {
 			rollback(c);
 			throw e;
@@ -221,15 +221,53 @@ public abstract class JdbcRevocationSource<T extends RevocationToken> extends Re
 	 *            the ResultSet
 	 */
 	protected void closeQuietly(final Connection c, final Statement s, final ResultSet rs) {
+		closeQuietly(rs);
+		closeQuietly(s);
+		closeQuietly(c);
+	}
+
+	/**
+	 *  Close the connection without throwing the exception
+	 *  
+	 * @param c
+	 * 			the connection
+	 */
+	private void closeQuietly(final Connection c) {
 		try {
-			if (rs != null) {
-				rs.close();
+			if (c != null) {
+				c.close();
 			}
+		} catch (final SQLException e) {
+			// purposely empty
+		}
+	}
+
+	/**
+	 *  Close the statement without throwing the exception
+	 *  
+	 * @param s
+	 * 			the statement
+	 */
+	private void closeQuietly(final Statement s) {
+		try {
 			if (s != null) {
 				s.close();
 			}
-			if (c != null) {
-				c.close();
+		} catch (final SQLException e) {
+			// purposely empty
+		}
+	}
+
+	/**
+	 *  Close the ResultSet without throwing the exception
+	 *  
+	 * @param rs
+	 * 			the ResultSet
+	 */
+	private void closeQuietly(final ResultSet rs) {
+		try {
+			if (rs != null) {
+				rs.close();
 			}
 		} catch (final SQLException e) {
 			// purposely empty

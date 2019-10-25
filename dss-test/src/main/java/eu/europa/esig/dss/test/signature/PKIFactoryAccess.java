@@ -85,6 +85,7 @@ public abstract class PKIFactoryAccess {
 
 	private static final String TSA_ROOT_PATH = "/tsa/";
 	private static final String GOOD_TSA = "good-tsa";
+	private static final String PSS_GOOD_TSA = "pss-good-tsa";
 	private static final String REVOKED_TSA = "revoked-tsa";
 	private static final String EE_GOOD_TSA = "ee-good-tsa";
 	private static final String GOOD_TSA_CROSS_CERTIF = "cc-good-tsa-crossed";
@@ -99,12 +100,14 @@ public abstract class PKIFactoryAccess {
 	private static final String TRUSTSTORE_TYPE = "JKS";
 
 	protected static final String GOOD_USER = "good-user";
+	protected static final String PSS_GOOD_USER = "pss-good-user";
 	protected static final String UNTRUSTED_USER = "untrusted-user";
 	protected static final String GOOD_USER_WRONG_AIA = "good-user-wrong-aia";
 	protected static final String GOOD_USER_OCSP_ERROR_500 = "good-user-ocsp-error-500";
 	protected static final String GOOD_USER_OCSP_FAIL = "good-user-ocsp-fail";
 	protected static final String GOOD_USER_CROSS_CERTIF = "cc-good-user-crossed";
 	protected static final String GOOD_USER_WITH_PSEUDO = "good-user-with-pseudo";
+	protected static final String GOOD_USER_WITH_CRL_AND_OCSP = "good-user-crl-ocsp";
 	protected static final String REVOKED_USER = "revoked-user";
 	protected static final String EXPIRED_USER = "expired-user";
 	protected static final String DSA_USER = "good-dsa-user";
@@ -234,6 +237,10 @@ public abstract class PKIFactoryAccess {
 		return getOnlineTSPSource(GOOD_TSA);
 	}
 
+	protected TSPSource getPSSGoodTsa() {
+		return getOnlineTSPSource(PSS_GOOD_TSA);
+	}
+	
 	protected TSPSource getRevokedTsa() {
 		return getOnlineTSPSource(REVOKED_TSA);
 	}

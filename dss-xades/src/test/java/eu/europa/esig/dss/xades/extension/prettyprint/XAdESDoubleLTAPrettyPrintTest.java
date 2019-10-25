@@ -28,7 +28,6 @@ public class XAdESDoubleLTAPrettyPrintTest extends AbstractTestXAdESExtension {
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		return service.signDocument(doc, signatureParameters, signatureValue);
 	}
-	
 
 	@Override
 	protected XAdESSignatureParameters getExtensionParameters() {
