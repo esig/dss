@@ -78,4 +78,12 @@ public class OID {
 	 */
 	public static final ASN1ObjectIdentifier id_at_role = new ASN1ObjectIdentifier("2.5.4.72");
 
+	/**
+	 * Defined as adbe-revocationInfoArchival {adbe(1.2.840.113583) acrobat(1)
+	 * security(1) 8} in "PDF Reference, fifth edition: Adobe® Portable Document
+	 * Format, Version 1.6" Adobe Systems Incorporated, 2004.
+	 */
+	public static final ASN1ObjectIdentifier adbe_revocationInfoArchival = new ASN1ObjectIdentifier(
+			"1.2.840.113583.1.1.8");
+
 }

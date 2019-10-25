@@ -818,6 +818,7 @@
 			<xs:enumeration value="SIGNATURE" />
 			<xs:enumeration value="EXTERNAL" />
 			<xs:enumeration value="CACHED" />
+			<xs:enumeration value="ADBE_REVOCATION_INFO_ARCHIVAL" />
 		</xs:restriction>
 	</xs:simpleType>
 	

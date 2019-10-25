@@ -53,6 +53,7 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	private List<CRLToken> dssDictionaryCRLs = new ArrayList<CRLToken>();
 	private List<CRLToken> vriDictionaryCRLs = new ArrayList<CRLToken>();
 	private List<CRLToken> timestampRevocationValuesCRLs = new ArrayList<CRLToken>();
+	private List<CRLToken> adbeRevocationValuesCRLs = new ArrayList<CRLToken>();
 	
 	private List<CRLRef> crlRefs = new ArrayList<CRLRef>();
 	
@@ -102,6 +103,11 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	public List<CRLToken> getVRIDictionaryTokens() {
 		return vriDictionaryCRLs;
 	}
+	
+	@Override
+	public List<CRLToken> getADBERevocationValuesTokens() {
+		return adbeRevocationValuesCRLs;
+	}
 
 	public List<CRLRef> getCompleteRevocationRefs() {
 		return getCRLRefsByOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS);
@@ -139,6 +145,7 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 		crlTokens.addAll(getDSSDictionaryTokens());
 		crlTokens.addAll(getVRIDictionaryTokens());
 		crlTokens.addAll(getTimestampRevocationValuesTokens());
+		crlTokens.addAll(getADBERevocationValuesTokens());
 		return crlTokens;
 	}
 
@@ -206,6 +213,9 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 			break;
 		case TIMESTAMP_REVOCATION_VALUES:
 			timestampRevocationValuesCRLs.add(crlToken);
+			break;
+		case ADBE_REVOCATION_INFO_ARCHIVAL:
+			adbeRevocationValuesCRLs.add(crlToken);
 			break;
 		default:
 			throw new DSSException(

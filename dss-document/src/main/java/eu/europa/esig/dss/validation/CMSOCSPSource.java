@@ -44,6 +44,7 @@ import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.util.Store;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,8 +78,8 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 	 *
 	 * @param cms
 	 *            {@link CMSSignedData}
-	 * @param unsignedAttributes
-	 *            {@link AttributeTable} unsignedAttributes
+	 * @param signerInformation
+	 *            {@link SignerInformation} signerInformation
 	 */
 	protected CMSOCSPSource(final CMSSignedData cms, final AttributeTable unsignedAttributes) {
 		this.cmsSignedData = cms;
@@ -183,25 +184,6 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 			collectRevocationRefs(unsignedAttributes, attributeRevocationRefsOid, getAttributeRevocationRefsOrigin());
 
 		}
-
-		/* TODO (pades): Read revocation data from from unsigned attribute  1.2.840.113583.1.1.8
-          In the PKCS #7 object of a digital signature in a PDF file, identifies a signed attribute
-          that "can include all the revocation information that is necessary to carry out revocation
-          checks for the signer's certificate and its issuer certificates."
-          Defined as adbe-revocationInfoArchival { adbe(1.2.840.113583) acrobat(1) security(1) 8 } in "PDF Reference, 
-          fifth edition: Adobe® Portable Document Format, Version 1.6" Adobe Systems Incorporated, 2004.
-          http://partners.adobe.com/public/developer/en/pdf/PDFReference16.pdf page 698
-
-          RevocationInfoArchival ::= SEQUENCE {
-            crl [0] EXPLICIT SEQUENCE of CRLs, OPTIONAL
-            ocsp [1] EXPLICIT SEQUENCE of OCSP Responses, OPTIONAL
-            otherRevInfo [2] EXPLICIT SEQUENCE of OtherRevInfo, OPTIONAL
-          }
-          OtherRevInfo ::= SEQUENCE {
-            Type OBJECT IDENTIFIER
-            Value OCTET STRING
-          }
-		 */
 	}
 
 	private void collectFromSignedData() {
@@ -251,11 +233,12 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 		}
 	}
 	
-	private void collectRevocationValues(AttributeTable unsignedAttributes, ASN1ObjectIdentifier revocacationValuesAttribute, RevocationOrigin origin) {
-		final Attribute attribute = unsignedAttributes.get(revocacationValuesAttribute);
-		if (attribute != null) {
-			final ASN1Set attrValues = attribute.getAttrValues();
-			final ASN1Encodable attValue = attrValues.getObjectAt(0);
+	private void collectRevocationValues(AttributeTable attributes, ASN1ObjectIdentifier revocationValueAttributes,
+			RevocationOrigin origin) {
+
+		final ASN1Encodable attValue = DSSASN1Utils.getAsn1Encodable(attributes, revocationValueAttributes);
+		if (attValue !=null) {
+	
 			RevocationValues revocationValues = DSSASN1Utils.getRevocationValues(attValue);
 			if (revocationValues != null) {
 				for (final BasicOCSPResponse basicOCSPResponse : revocationValues.getOcspVals()) {
@@ -268,7 +251,7 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 			 * other revocation values (OtherRevVals) are outside the scope of the present
 			 * document. The definition of the syntax of the other form of revocation
 			 * information is as identified by OtherRevRefType."
-			 */
+		 */
 		}
 	}
 	

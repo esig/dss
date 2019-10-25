@@ -104,5 +104,14 @@ public interface SignatureRevocationSource<T extends RevocationToken> {
 	 * @return list of {@link RevocationToken}s
 	 */
 	List<T> getTimestampRevocationValuesTokens();
+	
+	/**
+	 * Retrieves the list of all {@link RevocationToken}s present in the ADBE element
+	 * 
+	 * NOTE: Applicable only for PAdES revocation source
+	 * 
+	 * @return list of {@link RevocationToken}s
+	 */
+	List<T> getADBERevocationValuesTokens();
 
 }

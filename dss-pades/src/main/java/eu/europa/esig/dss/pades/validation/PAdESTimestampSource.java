@@ -23,6 +23,8 @@ package eu.europa.esig.dss.pades.validation;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bouncycastle.cms.SignerInformation;
+
 import eu.europa.esig.dss.cades.validation.CAdESAttribute;
 import eu.europa.esig.dss.cades.validation.CAdESTimestampSource;
 import eu.europa.esig.dss.crl.CRLBinary;
@@ -110,7 +112,7 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 
 					addReferences(references, createReferencesForCertificates(cmsContentCertificates));
 					addReferencesForCertificates(references, padesCertificateSource);
-					addReferencesFromRevocationData(references, coveredDSSDictionary);
+					addReferencesFromRevocationData(references, timestampInfo);
 					
 					// references embedded to timestamp's content are covered by outer timestamps
 					cmsContentCertificates.addAll(getCMSContentReferences(padesCertificateSource));
@@ -157,8 +159,9 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 	 * 
 	 * @param references
 	 */
-	private void addReferencesFromRevocationData(List<TimestampedReference> references, final PdfDssDict dssDictionary) {
-		PAdESCRLSource padesCRLSource = new PAdESCRLSource(dssDictionary);
+	private void addReferencesFromRevocationData(List<TimestampedReference> references, final PdfDocTimestampInfo timestampInfo) {
+		SignerInformation signerInformation = timestampInfo.getTimestampToken().getSignerInformation();
+		PAdESCRLSource padesCRLSource = new PAdESCRLSource(timestampInfo.getDssDictionary(), null, signerInformation.getSignedAttributes());
 		for (CRLBinary crlIdentifier : padesCRLSource.getCRLBinaryList()) {
 			if (padesCRLSource.getRevocationOrigins(crlIdentifier).contains(RevocationOrigin.DSS_DICTIONARY) || 
 					padesCRLSource.getRevocationOrigins(crlIdentifier).contains(RevocationOrigin.VRI_DICTIONARY)) {
@@ -167,7 +170,7 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 		}
 		crlSource.addAll(padesCRLSource);
 		
-		PAdESOCSPSource padesOCSPSource = new PAdESOCSPSource(dssDictionary);
+		PAdESOCSPSource padesOCSPSource = new PAdESOCSPSource(timestampInfo.getDssDictionary(), null, signerInformation.getSignedAttributes());
 		for (OCSPResponseBinary ocspIdentifier : padesOCSPSource.getOCSPResponsesList()) {
 			if (padesOCSPSource.getRevocationOrigins(ocspIdentifier).contains(RevocationOrigin.DSS_DICTIONARY) || 
 					padesOCSPSource.getRevocationOrigins(ocspIdentifier).contains(RevocationOrigin.VRI_DICTIONARY)) {
