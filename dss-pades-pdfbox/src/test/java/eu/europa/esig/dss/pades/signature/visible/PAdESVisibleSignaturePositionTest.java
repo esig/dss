@@ -53,9 +53,7 @@ import eu.europa.esig.dss.pades.PdfScreenshotUtils;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
-import eu.europa.esig.dss.pdf.PdfObjFactory;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDefaultObjectFactory;
-import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 
 public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
@@ -72,7 +70,7 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 	 */
 	private static final int CHECK_RESOLUTION = 1;
 
-	private DocumentSignatureService<PAdESSignatureParameters> service;
+	private PAdESService service;
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument signitureImage;
 	/**
@@ -85,13 +83,13 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 	@BeforeEach
 	public void init() throws Exception {
 
-		PdfObjFactory.setInstance(new PdfBoxDefaultObjectFactory());
 		signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 
 		service = new PAdESService(getCompleteCertificateVerifier());
+		service.setPdfObjFactory(new PdfBoxDefaultObjectFactory());
 
 		signitureImage = new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/signature.png"));
 

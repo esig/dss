@@ -301,7 +301,7 @@ DSS permits to override the visible signature generation with these interfaces :
  * eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory (selects the SignatureDrawer depending on the SignatureImageParameters content)
  * eu.europa.esig.dss.pdf.visible.SignatureDrawer
 
-A new instance of the IPdfObjFactory can be created with its own SignatureDrawerFactory and injected in the PdfObjFactory.setInstance(IPdfObjFactory).
+A new instance of the IPdfObjFactory can be created with its own SignatureDrawerFactory and injected in the padesService.setPdfObjFactory(IPdfObjFactory). By default, DSS uses an instance of ServiceLoaderPdfObjFactory. This instance checks for any registered implementation in the classpath with the ServiceLoader (potentially a service from dss-pades-pdfbox, dss-pades-openpdf or your own(s)).
 
 ==== DSS PDFBox
 

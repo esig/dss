@@ -32,8 +32,8 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
+import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
-import eu.europa.esig.dss.pdf.PdfObjFactory;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -50,10 +50,12 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 
 	private final CertificateVerifier certificateVerifier;
 	private final TSPSource tspSource;
+	private final IPdfObjFactory pdfObjectFactory;
 
-	PAdESLevelBaselineLT(final TSPSource tspSource, final CertificateVerifier certificateVerifier) {
+	PAdESLevelBaselineLT(final TSPSource tspSource, final CertificateVerifier certificateVerifier, final IPdfObjFactory pdfObjectFactory) {
 		this.certificateVerifier = certificateVerifier;
 		this.tspSource = tspSource;
+		this.pdfObjectFactory = pdfObjectFactory;
 	}
 
 	/**
@@ -72,7 +74,7 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 		List<AdvancedSignature> signatures = pdfDocumentValidator.getSignatures();
 		for (final AdvancedSignature signature : signatures) {
 			if (isRequireDocumentTimestamp(signature)) {
-				final PAdESLevelBaselineT padesLevelBaselineT = new PAdESLevelBaselineT(tspSource);
+				final PAdESLevelBaselineT padesLevelBaselineT = new PAdESLevelBaselineT(tspSource, pdfObjectFactory);
 				document = padesLevelBaselineT.extendSignatures(document, parameters);
 
 				pdfDocumentValidator = new PDFDocumentValidator(document);
@@ -94,7 +96,7 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 			}
 		}
 
-		final PDFSignatureService signatureService = PdfObjFactory.newPAdESSignatureService();
+		final PDFSignatureService signatureService = pdfObjectFactory.newPAdESSignatureService();
 		return signatureService.addDssDictionary(document, callbacks);
 
 	}

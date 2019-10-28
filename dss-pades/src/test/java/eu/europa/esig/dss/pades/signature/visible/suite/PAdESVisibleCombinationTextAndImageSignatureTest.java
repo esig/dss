@@ -42,14 +42,14 @@ import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters.SignerTextPosition;
 import eu.europa.esig.dss.pades.signature.PAdESService;
-import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class PAdESVisibleCombinationTextAndImageSignatureTest extends PKIFactoryAccess {
 
-	private DocumentSignatureService<PAdESSignatureParameters> service;
+	protected PAdESService service;
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
@@ -64,6 +64,13 @@ public class PAdESVisibleCombinationTextAndImageSignatureTest extends PKIFactory
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 
 		service = new PAdESService(getCompleteCertificateVerifier());
+		setCustomFactory();
+	}
+
+	/**
+	 * Set a custom instance of {@link IPdfObjFactory}
+	 */
+	protected void setCustomFactory() {
 	}
 
 	@Test

@@ -20,19 +20,15 @@
  */
 package eu.europa.esig.dss.pades.signature.visible.nativedrawer;
 
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.pades.signature.visible.suite.PAdESVisibleSignatureWithJavaFontTest;
-import eu.europa.esig.dss.pdf.PdfObjFactory;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
 
 public class PdfBoxNativeDrawerPAdESTextVisibleSignatureTest extends PAdESVisibleSignatureWithJavaFontTest {
-	
-	@BeforeEach
+
 	@Override
-	public void init() throws Exception {
-		super.init();
-		PdfObjFactory.setInstance(new PdfBoxNativeObjectFactory());
+	protected void setCustomFactory() {
+		service.setPdfObjFactory(new PdfBoxNativeObjectFactory());
 	}
+
 
 }

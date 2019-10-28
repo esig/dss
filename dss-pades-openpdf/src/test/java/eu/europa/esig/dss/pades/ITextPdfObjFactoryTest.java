@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PDFTimestampService;
-import eu.europa.esig.dss.pdf.PdfObjFactory;
+import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.pdf.openpdf.ITextDefaultPdfObjFactory;
 
 public class ITextPdfObjFactoryTest {
@@ -38,25 +38,29 @@ public class ITextPdfObjFactoryTest {
 
 	@Test
 	public void testSystemProperty() {
-		PDFSignatureService signatureService = PdfObjFactory.newPAdESSignatureService();
+		IPdfObjFactory ipof = new ServiceLoaderPdfObjFactory();
+
+		PDFSignatureService signatureService = ipof.newPAdESSignatureService();
 		assertNotNull(signatureService);
 		assertEquals(ITEXT_SIGNATURE_SERVICE, signatureService.getClass().getSimpleName());
-		PDFTimestampService timestampService = PdfObjFactory.newTimestampSignatureService();
+		PDFTimestampService timestampService = ipof.newTimestampSignatureService();
 		assertNotNull(timestampService);
 		assertEquals(ITEXT_SIGNATURE_SERVICE, timestampService.getClass().getSimpleName());
 	}
 
 	@Test
 	public void testRuntimeChange() {
-		PdfObjFactory.setInstance(new EmptyPdfObjectFactory());
-		PDFSignatureService signatureService = PdfObjFactory.newPAdESSignatureService();
+
+		IPdfObjFactory ipof = new EmptyPdfObjectFactory();
+
+		PDFSignatureService signatureService = ipof.newPAdESSignatureService();
 		assertNull(signatureService);
-		PDFTimestampService timestampService = PdfObjFactory.newTimestampSignatureService();
+		PDFTimestampService timestampService = ipof.newTimestampSignatureService();
 		assertNull(timestampService);
 
-		PdfObjFactory.setInstance(new ITextDefaultPdfObjFactory());
+		ipof = new ITextDefaultPdfObjFactory();
 
-		signatureService = PdfObjFactory.newPAdESSignatureService();
+		signatureService = ipof.newPAdESSignatureService();
 		assertNotNull(signatureService);
 		assertEquals(ITEXT_SIGNATURE_SERVICE, signatureService.getClass().getSimpleName());
 	}

@@ -50,18 +50,16 @@ import eu.europa.esig.dss.pades.SignatureImageParameters.VisualSignatureAlignmen
 import eu.europa.esig.dss.pades.SignatureImageParameters.VisualSignatureRotation;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters.SignerTextHorizontalAlignment;
-import eu.europa.esig.dss.pades.SignatureImageTextParameters.SignerTextVerticalAlignment;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters.SignerTextPosition;
+import eu.europa.esig.dss.pades.SignatureImageTextParameters.SignerTextVerticalAlignment;
 import eu.europa.esig.dss.pades.signature.PAdESService;
-import eu.europa.esig.dss.pdf.PdfObjFactory;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDefaultObjectFactory;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
-import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 
 public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 
-	private DocumentSignatureService<PAdESSignatureParameters> service;
+	private PAdESService service;
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 	
@@ -593,9 +591,9 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 
 		signatureParameters.setSignatureImageParameters(imageParameters);
 		
-		PdfObjFactory.setInstance(new PdfBoxDefaultObjectFactory());
+		service.setPdfObjFactory(new PdfBoxDefaultObjectFactory());
 		DSSDocument defaultDrawerPdf = sign("default");
-		PdfObjFactory.setInstance(new PdfBoxNativeObjectFactory());
+		service.setPdfObjFactory(new PdfBoxNativeObjectFactory());
 		DSSDocument nativeDrawerPdf = sign("native");
 		compareAnnotations(defaultDrawerPdf, nativeDrawerPdf);
 	}
@@ -606,18 +604,18 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 	}
 	
 	private void drawAndCompareVisually() throws IOException {
-		PdfObjFactory.setInstance(new PdfBoxDefaultObjectFactory());
+		service.setPdfObjFactory(new PdfBoxDefaultObjectFactory());
 		DSSDocument defaultDrawerPdf = sign("default");
-		PdfObjFactory.setInstance(new PdfBoxNativeObjectFactory());
+		service.setPdfObjFactory(new PdfBoxNativeObjectFactory());
 		DSSDocument nativeDrawerPdf = sign("native");
 		compareVisualSimilarity(defaultDrawerPdf, nativeDrawerPdf);
 		compareAnnotations(defaultDrawerPdf, nativeDrawerPdf);
 	}
 	
 	private void drawAndCompareExplicitly() throws IOException {
-		PdfObjFactory.setInstance(new PdfBoxDefaultObjectFactory());
+		service.setPdfObjFactory(new PdfBoxDefaultObjectFactory());
 		DSSDocument defaultDrawerPdf = sign("default");
-		PdfObjFactory.setInstance(new PdfBoxNativeObjectFactory());
+		service.setPdfObjFactory(new PdfBoxNativeObjectFactory());
 		DSSDocument nativeDrawerPdf = sign("native");
 		compareAnnotations(defaultDrawerPdf, nativeDrawerPdf);
 		compareVisualSimilarity(defaultDrawerPdf, nativeDrawerPdf);
