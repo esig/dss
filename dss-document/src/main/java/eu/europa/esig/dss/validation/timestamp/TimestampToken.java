@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation.timestamp;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -78,10 +79,10 @@ public class TimestampToken extends Token {
 	private final TimestampType timeStampType;
 
 	private final TimestampCertificateSource certificateSource;
-	
-	private final TimestampCRLSource crlSource;
-	
-	private final TimestampOCSPSource ocspSource;
+
+	private TimestampCRLSource crlSource;
+
+	private TimestampOCSPSource ocspSource;
 
 	private final List<TimestampedReference> timestampedReferences;
 
@@ -207,8 +208,7 @@ public class TimestampToken extends Token {
 	 */
 	public TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final CertificatePool certPool, 
 			final List<TimestampedReference> timestampedReferences, final TimestampLocation timeStampLocation) {
-		this(timeStamp, type, new TimestampCertificateSource(timeStamp, certPool), new TimestampCRLSource(timeStamp), 
-				new TimestampOCSPSource(timeStamp), timestampedReferences, timeStampLocation);
+		this(timeStamp, type, new TimestampCertificateSource(timeStamp, certPool),  timestampedReferences, timeStampLocation);
 	}
 
 	/**
@@ -218,18 +218,16 @@ public class TimestampToken extends Token {
 	 */
 	public TimestampToken(TimestampToken timestampToken) {
 		this(timestampToken.timeStamp, timestampToken.timeStampType, timestampToken.certificateSource, 
-				timestampToken.crlSource, timestampToken.ocspSource, new ArrayList<TimestampedReference>(timestampToken.timestampedReferences), 
+				new ArrayList<TimestampedReference>(timestampToken.timestampedReferences), 
 				timestampToken.timeStampLocation);
 	}
 	
 	TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final TimestampCertificateSource certificateSource, 
-			 final TimestampCRLSource crlSource, final TimestampOCSPSource ocspSource, final List<TimestampedReference> timestampedReferences,
+			 final List<TimestampedReference> timestampedReferences,
 			 final TimestampLocation timeStampLocation) {
 		this.timeStamp = timeStamp;
 		this.timeStampType = type;
 		this.certificateSource = certificateSource;
-		this.crlSource = crlSource;
-		this.ocspSource = ocspSource;
 		this.timestampedReferences = timestampedReferences;
 		if (timeStampLocation != null) {
 			this.timeStampLocation = timeStampLocation;
@@ -251,6 +249,9 @@ public class TimestampToken extends Token {
 	 * @return {@link TimestampCRLSource}
 	 */
 	public TimestampCRLSource getCRLSource() {
+		if (crlSource == null) {
+			crlSource = new TimestampCRLSource(this); 
+		}
 		return crlSource;
 	}
 
@@ -259,6 +260,9 @@ public class TimestampToken extends Token {
 	 * @return {@link TimestampOCSPSource}
 	 */
 	public TimestampOCSPSource getOCSPSource() {
+		if (ocspSource == null) {
+			ocspSource = new TimestampOCSPSource(this);
+		}
 		return ocspSource;
 	}
 	
@@ -563,6 +567,10 @@ public class TimestampToken extends Token {
 		return timeStamp.getUnsignedAttributes();
 	}
 
+	public TimeStampToken getTimeStamp() {
+		return timeStamp;
+	}
+	
 	/**
 	 * Used only with XAdES timestamps.
 	 *
@@ -620,6 +628,11 @@ public class TimestampToken extends Token {
 
 	public SignerId getSignerId() {
 		return timeStamp.getSID();
+	}
+
+	public SignerInformation getSignerInformation() {
+		Collection<SignerInformation> signers = timeStamp.toCMSSignedData().getSignerInfos().getSigners();
+		return (SignerInformation) signers.iterator().next();
 	}
 
 	@Override

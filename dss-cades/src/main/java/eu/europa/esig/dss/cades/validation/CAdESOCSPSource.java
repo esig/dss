@@ -31,5 +31,4 @@ public class CAdESOCSPSource extends CMSOCSPSource {
 	CAdESOCSPSource(CMSSignedData cms, AttributeTable unsignedAttributes) {
 		super(cms, unsignedAttributes);
 	}
-
 }

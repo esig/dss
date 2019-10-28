@@ -195,13 +195,14 @@ public class DiagnosticDataCompleteTest extends PKIFactoryAccess {
 		assertNotNull(signatures);
 		
 		SignatureWrapper signature = signatures.get(0);
-		assertEquals(1, signature.getAllFoundRevocations().size());
+		assertEquals(2, signature.getAllFoundRevocations().size());
 		assertEquals(0, signature.getRevocationIdsByType(RevocationType.CRL).size());
-		assertEquals(1, signature.getRevocationIdsByType(RevocationType.OCSP).size());
+		assertEquals(2, signature.getRevocationIdsByType(RevocationType.OCSP).size());
 		assertEquals(0, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.REVOCATION_VALUES).size());
 		assertEquals(0, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.TIMESTAMP_VALIDATION_DATA).size());
 		assertEquals(1, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.DSS_DICTIONARY).size());
 		assertEquals(1, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.VRI_DICTIONARY).size());
+		assertEquals(1, signature.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL).size());
 		
 		List<TimestampWrapper> timestamps = signature.getTimestampList();
 		assertNotNull(timestamps);

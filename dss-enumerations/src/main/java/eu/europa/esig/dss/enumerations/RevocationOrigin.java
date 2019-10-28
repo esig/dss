@@ -65,6 +65,11 @@ public enum RevocationOrigin {
 	TIMESTAMP_REVOCATION_VALUES(true),
 
 	/**
+	 * The revocation data was obtained from the ADBE attribute
+	 */
+	ADBE_REVOCATION_INFO_ARCHIVAL(true),
+	
+	/**
 	 * The revocation data was embedded to Signature (all internal cases)
 	 */
 	SIGNATURE(true),

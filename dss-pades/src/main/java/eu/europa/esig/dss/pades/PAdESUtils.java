@@ -27,16 +27,23 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
-import eu.europa.esig.dss.model.DSSException;
+import org.bouncycastle.asn1.ASN1Encodable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
+import eu.europa.esig.dss.pades.validation.RevocationInfoArchival;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 public final class PAdESUtils {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(PAdESUtils.class);
 	
 	/**
 	 * Returns original signed content for the {@code padesSignature}
@@ -114,6 +121,25 @@ public final class PAdESUtils {
 		} catch (IOException e) {
 			throw new DSSException("Unable to retrieve the last revision", e);
 		}
+	}
+	
+
+	/**
+	 * Returns {@link RevocationInfoArchival} from the given encodable
+	 * 
+	 * @param encodable
+	 *                  the encoded data to be parsed
+	 * @return an instance of RevocationValues or null if the parsing failled
+	 */
+	public static RevocationInfoArchival getRevocationInfoArchivals(ASN1Encodable encodable) {
+		if (encodable != null) {
+			try {
+				return RevocationInfoArchival.getInstance(encodable);
+			} catch (Exception e) {
+				LOG.warn("Unable to parse RevocationInfoArchival", e);
+			}
+		}
+		return null;
 	}
 
 }

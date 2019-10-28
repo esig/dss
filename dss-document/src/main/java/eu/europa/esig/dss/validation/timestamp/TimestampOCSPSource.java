@@ -33,8 +33,8 @@ import eu.europa.esig.dss.validation.CMSOCSPSource;
 @SuppressWarnings("serial")
 public class TimestampOCSPSource extends CMSOCSPSource {
 
-	TimestampOCSPSource(TimeStampToken timeStampToken) {
-		super(timeStampToken.toCMSSignedData(), timeStampToken.getUnsignedAttributes());
+	TimestampOCSPSource(TimestampToken timeStampToken) {
+		super(timeStampToken.getTimeStamp().toCMSSignedData(), timeStampToken.getUnsignedAttributes());
 	}
 	
 	@Override

@@ -55,6 +55,7 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	private final List<OCSPToken> dssDictionaryOCSPs = new ArrayList<OCSPToken>();
 	private final List<OCSPToken> vriDictionaryOCSPs = new ArrayList<OCSPToken>();
 	private final List<OCSPToken> timestampRevocationValuesOCSPs = new ArrayList<OCSPToken>();
+	private final List<OCSPToken> adbeRevocationValuesOCSPs = new ArrayList<OCSPToken>();
 	
 	private List<OCSPRef> ocspRefs = new ArrayList<OCSPRef>();
 	
@@ -104,6 +105,11 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	public List<OCSPToken> getTimestampRevocationValuesTokens() {
 		return timestampRevocationValuesOCSPs;
 	}
+	
+	@Override
+	public List<OCSPToken> getADBERevocationValuesTokens() {
+		return adbeRevocationValuesOCSPs;
+	}
 
 	public List<OCSPRef> getCompleteRevocationRefs() {
 		return getOCSPRefsByOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS);
@@ -141,6 +147,7 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 		ocspTokens.addAll(getDSSDictionaryTokens());
 		ocspTokens.addAll(getVRIDictionaryTokens());
 		ocspTokens.addAll(getTimestampRevocationValuesTokens());
+		ocspTokens.addAll(getADBERevocationValuesTokens());
 		return ocspTokens;
 	}
 
@@ -199,6 +206,9 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 					break;
 				case TIMESTAMP_REVOCATION_VALUES:
 					timestampRevocationValuesOCSPs.add(ocspToken);
+					break;
+				case ADBE_REVOCATION_INFO_ARCHIVAL:
+					adbeRevocationValuesOCSPs.add(ocspToken);
 					break;
 				default:
 					throw new DSSException(

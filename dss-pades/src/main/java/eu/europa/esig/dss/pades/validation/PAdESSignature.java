@@ -31,13 +31,13 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -105,7 +105,7 @@ public class PAdESSignature extends CAdESSignature {
 	@Override
 	public SignatureCRLSource getCRLSource() {
 		if (signatureCRLSource == null) {
-			signatureCRLSource = new PAdESCRLSource(dssDictionary, getVRIKey());
+			signatureCRLSource = new PAdESCRLSource(dssDictionary, getVRIKey(), getSignerInformation().getSignedAttributes());
 		}
 		return signatureCRLSource;
 	}
@@ -113,7 +113,7 @@ public class PAdESSignature extends CAdESSignature {
 	@Override
 	public SignatureOCSPSource getOCSPSource() {
 		if (signatureOCSPSource == null) {
-			signatureOCSPSource = new PAdESOCSPSource(dssDictionary, getVRIKey());
+			signatureOCSPSource = new PAdESOCSPSource(dssDictionary, getVRIKey(), getSignerInformation().getSignedAttributes());
 		}
 		return signatureOCSPSource;
 	}
@@ -265,7 +265,7 @@ public class PAdESSignature extends CAdESSignature {
 			dataForLevelPresent = hasLTAProfile() && hasLTProfile() && hasPKCS7SubFilter();
 			break;
 		case PAdES_BASELINE_LT:
-			dataForLevelPresent = hasLTProfile() && (hasTProfile() || hasLTAProfile()) && hasCAdESDetachedSubFilter();
+			dataForLevelPresent = hasLTProfile() && hasDSSDictionary() && (hasTProfile() || hasLTAProfile()) && hasCAdESDetachedSubFilter();
 			break;
 		case PKCS7_LT:
 			dataForLevelPresent = hasLTProfile() && (hasTProfile() || hasLTAProfile()) && hasPKCS7SubFilter();
@@ -287,6 +287,10 @@ public class PAdESSignature extends CAdESSignature {
 		}
 		LOG.debug("Level {} found on document {} = {}", signatureLevel, document.getName(), dataForLevelPresent);
 		return dataForLevelPresent;
+	}
+	
+	private boolean hasDSSDictionary() {
+		return dssDictionary != null;
 	}
 
 	private boolean hasCAdESDetachedSubFilter() {
