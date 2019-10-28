@@ -114,6 +114,7 @@ public class InMemoryDocument extends CommonDocument {
 	}
 
 	private static byte[] toByteArray(InputStream inputStream) {
+		Objects.requireNonNull(inputStream, "The InputStream is null");
 		try (InputStream is = inputStream; ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			int nRead;
 			byte[] data = new byte[2048];
@@ -128,6 +129,7 @@ public class InMemoryDocument extends CommonDocument {
 
 	@Override
 	public InputStream openStream() {
+		Objects.requireNonNull(bytes, "Bytes are null");
 		return new ByteArrayInputStream(bytes);
 	}
 
