@@ -28,7 +28,7 @@ import eu.europa.esig.dss.validation.CMSOCSPSource;
 @SuppressWarnings("serial")
 public class CAdESOCSPSource extends CMSOCSPSource {
 
-	public CAdESOCSPSource(CMSSignedData cms, AttributeTable unsignedAttributes) {
+	CAdESOCSPSource(CMSSignedData cms, AttributeTable unsignedAttributes) {
 		super(cms, unsignedAttributes);
 	}
 }

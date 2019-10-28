@@ -265,7 +265,7 @@ public class PAdESSignature extends CAdESSignature {
 			dataForLevelPresent = hasLTAProfile() && hasLTProfile() && hasPKCS7SubFilter();
 			break;
 		case PAdES_BASELINE_LT:
-			dataForLevelPresent = hasLTProfile() && (hasTProfile() || hasLTAProfile()) && hasCAdESDetachedSubFilter();
+			dataForLevelPresent = hasLTProfile() && hasDSSDictionary() && (hasTProfile() || hasLTAProfile()) && hasCAdESDetachedSubFilter();
 			break;
 		case PKCS7_LT:
 			dataForLevelPresent = hasLTProfile() && (hasTProfile() || hasLTAProfile()) && hasPKCS7SubFilter();
@@ -287,6 +287,10 @@ public class PAdESSignature extends CAdESSignature {
 		}
 		LOG.debug("Level {} found on document {} = {}", signatureLevel, document.getName(), dataForLevelPresent);
 		return dataForLevelPresent;
+	}
+	
+	private boolean hasDSSDictionary() {
+		return dssDictionary != null;
 	}
 
 	private boolean hasCAdESDetachedSubFilter() {

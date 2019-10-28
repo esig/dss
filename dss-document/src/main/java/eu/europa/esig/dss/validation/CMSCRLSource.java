@@ -40,7 +40,6 @@ import org.bouncycastle.asn1.esf.RevocationValues;
 import org.bouncycastle.asn1.x509.CertificateList;
 import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.util.Store;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +72,7 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 	 * The default constructor for CMSCRLSource.
 	 *
 	 * @param cmsSignedData      {@link CMSSignedData}
-	 * @param signerInformation {@link SignerInformation} signerInformation
+	 * @param unsignedAttributes {@link AttributeTable} unsignedAttributes
 	 */
 	public CMSCRLSource(final CMSSignedData cmsSignedData, final AttributeTable unsignedAttributes) {
 		this.cmsSignedData = cmsSignedData;
@@ -127,7 +126,7 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 		return signedDataCRLIdentifiers;
 	}
 
-	protected void extract() {
+	private void extract() {
 
 		// Adds CRLs contained in SignedData
 		collectFromSignedData();
@@ -178,7 +177,7 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 
 	}
 
-	protected void collectFromSignedData() {
+	private void collectFromSignedData() {
 		final Store<X509CRLHolder> crLs = cmsSignedData.getCRLs();
 		final Collection<X509CRLHolder> collection = crLs.getMatches(null);
 		for (final X509CRLHolder x509CRLHolder : collection) {
@@ -186,7 +185,7 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 		}
 	}
 
-	protected void collectRevocationValues(AttributeTable attributes, ASN1ObjectIdentifier revocationValuesAttribute, RevocationOrigin origin) {
+	private void collectRevocationValues(AttributeTable attributes, ASN1ObjectIdentifier revocationValuesAttribute, RevocationOrigin origin) {
 		final ASN1Encodable attValue = DSSASN1Utils.getAsn1Encodable(attributes, revocationValuesAttribute);
 		RevocationValues revValues = DSSASN1Utils.getRevocationValues(attValue);
 		if (revValues != null) {
@@ -212,7 +211,7 @@ public abstract class CMSCRLSource extends SignatureCRLSource {
 		}
 	}
 
-	protected void collectRevocationRefs(ASN1ObjectIdentifier revocationRefsAttribute, RevocationRefOrigin origin) {
+	private void collectRevocationRefs(ASN1ObjectIdentifier revocationRefsAttribute, RevocationRefOrigin origin) {
 		try {
 			final ASN1Encodable attrValue = DSSASN1Utils.getAsn1Encodable(unsignedAttributes, revocationRefsAttribute);
 			if (attrValue != null) {

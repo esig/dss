@@ -44,7 +44,6 @@ import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.util.Store;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,8 +77,8 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 	 *
 	 * @param cms
 	 *            {@link CMSSignedData}
-	 * @param signerInformation
-	 *            {@link SignerInformation} signerInformation
+	 * @param unsignedAttributes
+	 *            {@link AttributeTable} unsignedAttributes
 	 */
 	protected CMSOCSPSource(final CMSSignedData cms, final AttributeTable unsignedAttributes) {
 		this.cmsSignedData = cms;
