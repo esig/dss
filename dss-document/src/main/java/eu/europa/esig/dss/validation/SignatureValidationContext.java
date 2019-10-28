@@ -493,6 +493,7 @@ public class SignatureValidationContext implements ValidationContext {
 		
 		Token token = getNotYetVerifiedToken();
 		while (token != null) {
+			// extract the certificate chain and add missing tokens for verification
 			List<Token> certChain = getCertChain(token);
 			if (token instanceof CertificateToken) {
 				final List<RevocationToken> revocationTokens = getRevocationData((CertificateToken) token, certChain);
@@ -558,10 +559,13 @@ public class SignatureValidationContext implements ValidationContext {
 				if (onlineRevocationToken != null && !revocations.contains(onlineRevocationToken)) {
 					revocations.add(onlineRevocationToken);
 				}
+				
 			} else {
 				LOG.warn("External revocation check is skipped for untrusted certificate : {}", certToken.getDSSIdAsString());
+				
 			}
 		}
+		
 		if (revocations.isEmpty()) {
 			LOG.warn("No revocation found for certificate {}", certToken.getDSSIdAsString());
 		}

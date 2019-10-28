@@ -30,9 +30,11 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
+import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -42,6 +44,7 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
+import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -82,7 +85,6 @@ public class PAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 		
 		List<TimestampWrapper> timestamps = diagnosticData.getTimestampList();
 		assertEquals(1, timestamps.size());
-		assertEquals(3, timestamps.get(0).getTimestampedObjects().size());
 		assertEquals(0, timestamps.get(0).getTimestampedRevocationIds().size());
 		
 
@@ -113,10 +115,8 @@ public class PAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 		
 		timestamps = diagnosticData.getTimestampList();
 		assertEquals(2, timestamps.size());
-		assertEquals(3, timestamps.get(0).getTimestampedObjects().size());
 		assertEquals(0, timestamps.get(0).getTimestampedRevocationIds().size());
 		
-		assertEquals(11, timestamps.get(1).getTimestampedObjects().size());
 		assertEquals(2, timestamps.get(1).getTimestampedRevocationIds().size());
 		
 		
@@ -137,6 +137,9 @@ public class PAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 		
 		assertEquals(2, advancedSignature.getCRLSource().getCRLBinaryList().size());
 		assertEquals(1, advancedSignature.getOCSPSource().getOCSPResponsesList().size());
+		
+        SimpleReport simpleReport = reports.getSimpleReport();
+        assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		
 		diagnosticData = reports.getDiagnosticData();
 		
@@ -159,15 +162,12 @@ public class PAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 		assertEquals(2, archiveTimestampCounter);
 		
 		TimestampWrapper timestampWrapper = timestamps.get(0);
-		assertEquals(3, timestampWrapper.getTimestampedObjects().size());
 		assertEquals(0, timestampWrapper.getTimestampedRevocationIds().size());
 		
 		timestampWrapper = timestamps.get(1);
-		assertEquals(11, timestampWrapper.getTimestampedObjects().size());
 		assertEquals(2, timestampWrapper.getTimestampedRevocationIds().size());
 		
 		timestampWrapper = timestamps.get(2);
-		assertEquals(18, timestampWrapper.getTimestampedObjects().size());
 		assertEquals(3, timestampWrapper.getTimestampedRevocationIds().size());
 		
 		List<String> revocationIdsDoubleLtaLevel = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId()).getRevocationIds();
@@ -181,6 +181,24 @@ public class PAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 		assertEquals(3, signature.getRevocationIdsByOrigin(RevocationOrigin.DSS_DICTIONARY).size());
 		assertEquals(3, signature.getRevocationIdsByOrigin(RevocationOrigin.VRI_DICTIONARY).size());
 		
+        assertContainsAllRevocationData(signature.getCertificateChain());
+        for (TimestampWrapper timestamp : timestamps) {
+        	assertContainsAllRevocationData(timestamp.getCertificateChain());
+        }
+        for (RevocationWrapper revocation : diagnosticData.getAllRevocationData()) {
+        	assertContainsAllRevocationData(revocation.getCertificateChain());
+        }
+		
+	}
+	
+	private void assertContainsAllRevocationData(List<CertificateWrapper> certificateChain) {
+        for (CertificateWrapper certificate : certificateChain) {
+        	if (certificate.isTrusted()) {
+        		break;
+        	}
+        	assertTrue(certificate.isRevocationDataAvailable() || certificate.isSelfSigned(), 
+        			"Certificate with id : [" + certificate.getId() + "] does not have a revocation data!");
+        }
 	}
 
 	@Override

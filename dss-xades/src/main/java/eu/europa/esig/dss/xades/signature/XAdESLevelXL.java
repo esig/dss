@@ -20,11 +20,17 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import java.util.Set;
+
 import org.w3c.dom.Element;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.DefaultAdvancedSignature.ValidationDataForInclusion;
 import eu.europa.esig.dss.validation.ValidationContext;
 
 /**
@@ -61,13 +67,19 @@ public class XAdESLevelXL extends XAdESLevelX {
 			// Timestamps can already be loaded in memory (force reload)
 			xadesSignature.resetTimestampSource();
 
-			final ValidationContext valContext = xadesSignature.getSignatureValidationContext(certificateVerifier);
+			final ValidationContext validationContext = xadesSignature.getSignatureValidationContext(certificateVerifier);
 
 			String afterCertificateText = removeOldCertificateValues();
 			removeOldRevocationValues();
-
-			incorporateCertificateValues(unsignedSignaturePropertiesDom, valContext, afterCertificateText);
-			incorporateRevocationValues(unsignedSignaturePropertiesDom, valContext, afterCertificateText);
+			
+			ValidationDataForInclusion validationDataForInclusion = xadesSignature.getValidationDataForInclusion(validationContext);
+			
+			Set<CertificateToken> certificateValuesToAdd = filterCertificateTokensPresentIntoSignature(validationDataForInclusion.certificateTokens);
+			Set<CRLToken> crlsToAdd = filterCRLsPresentIntoSignature(validationDataForInclusion.crlTokens);
+			Set<OCSPToken> ocspsToAdd = filterOCSPsPresentIntoSignature(validationDataForInclusion.ocspTokens);
+			
+			incorporateCertificateValues(unsignedSignaturePropertiesDom, certificateValuesToAdd, afterCertificateText);
+			incorporateRevocationValues(unsignedSignaturePropertiesDom, crlsToAdd, ocspsToAdd, afterCertificateText);
 			
 			unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelXUnsignedProperties);
 		}
