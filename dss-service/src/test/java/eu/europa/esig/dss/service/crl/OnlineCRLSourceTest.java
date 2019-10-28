@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.io.File;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -30,10 +29,11 @@ public class OnlineCRLSourceTest {
 	private static CertificateToken rootCa;
 	
 	@BeforeAll
-	public static void init() {		
-		goodUser = DSSUtils.loadCertificate(new File("src/test/resources/good-user.crt"));
-		goodCa = DSSUtils.loadCertificate(new File("src/test/resources/good-ca.crt"));
-		rootCa = DSSUtils.loadCertificate(new File("src/test/resources/root-ca.crt"));
+	public static void init() {
+		dataLoader = new CommonsDataLoader();
+		goodUser = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/good-user.crt"));
+		goodCa = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/good-ca.crt"));
+		rootCa = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/root-ca.crt"));
 	}
 	
 	@BeforeEach
