@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.test.signature;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -33,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.io.StringWriter;
+import java.security.Principal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -80,6 +82,7 @@ import eu.europa.esig.dss.model.SignerLocation;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.SimpleReportFacade;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.token.KSPrivateKeyEntry;
 import eu.europa.esig.dss.utils.Utils;
@@ -472,6 +475,10 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 				assertNotNull(simpleReport.getSubIndication(sigId));
 			}
 			assertNotNull(simpleReport.getSignatureQualification(sigId));
+			
+			CertificateToken certificate = getSigningCert();			
+			String name = DSSASN1Utils.getHumanReadableName(certificate);
+			assertEquals(name, simpleReport.getSignedBy(sigId));
 		}
 		assertNotNull(simpleReport.getValidationTime());
 	}
