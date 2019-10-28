@@ -24,7 +24,6 @@ import static eu.europa.esig.dss.enumerations.SignatureLevel.XAdES_BASELINE_T;
 import static eu.europa.esig.dss.xades.ProfileParameters.Operation.SIGNING;
 import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -38,6 +37,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -51,11 +51,12 @@ import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
-import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.ProfileParameters;
 import eu.europa.esig.dss.xades.ProfileParameters.Operation;
@@ -209,34 +210,41 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 *
 	 * @param parentDom
 	 *            the parent element
-	 * @param validationContext
-	 *            the validation context with all certificates
+	 * @param certificatesToBeAdded
+	 *            a collection of {@link CertificateToken}s to be added into the signature values element
+	 * @return {@link Element} incorporated signature values element
 	 */
-	protected Element incorporateCertificateValues(final Element parentDom, final ValidationContext validationContext) {
-
+	protected Element incorporateCertificateValues(final Element parentDom, final Collection<CertificateToken> certificatesToBeAdded) {
 		Element certificateValuesDom = null;
-		final Set<CertificateToken> toIncludeCertificates = xadesSignature.getCertificatesForInclusion(validationContext);
-		if (!toIncludeCertificates.isEmpty()) {
-
-			// Filter to avoid duplicate entries
-			Set<CertificateToken> certificatesToBeAdded = new HashSet<CertificateToken>();
-			List<CertificateToken> signatureCertificates = xadesSignature.getCertificateSource().getCertificates();
-			for (CertificateToken certificateToken : toIncludeCertificates) {
-				if (!signatureCertificates.contains(certificateToken)) {
-					certificatesToBeAdded.add(certificateToken);
-				}
+		if (Utils.isCollectionNotEmpty(certificatesToBeAdded)) {
+			certificateValuesDom = DomUtils.addElement(documentDom, parentDom, XAdESNamespaces.XADES_132.getUri(), XADES_CERTIFICATE_VALUES);
+			for (final CertificateToken certificateToken : certificatesToBeAdded) {
+				final String base64EncodeCertificate = Utils.toBase64(certificateToken.getEncoded());
+				DomUtils.addTextElement(documentDom, certificateValuesDom, XAdESNamespaces.XADES_132.getUri(), XADES_ENCAPSULATED_X509_CERTIFICATE, base64EncodeCertificate);
 			}
-			
-			if (!certificatesToBeAdded.isEmpty()) {
-				certificateValuesDom = DomUtils.addElement(documentDom, parentDom, XAdESNamespaces.XADES_132.getUri(), XADES_CERTIFICATE_VALUES);
-				for (final CertificateToken certificateToken : certificatesToBeAdded) {
-					final String base64EncodeCertificate = Utils.toBase64(certificateToken.getEncoded());
-					DomUtils.addTextElement(documentDom, certificateValuesDom, XAdESNamespaces.XADES_132.getUri(), XADES_ENCAPSULATED_X509_CERTIFICATE, base64EncodeCertificate);
-				}
-			}
-
 		}
 		return certificateValuesDom;
+	}
+	
+	/**
+	 * The method returns a set of certificate tokens excluding entries present into the signature
+	 * @param certificateTokens a collection of {@link CertificateToken}s obtained from the validation process
+	 * @return set of {@link CertificateToken}s with no duplicates
+	 */
+	protected Set<CertificateToken> filterCertificateTokensPresentIntoSignature(Collection<CertificateToken> certificateTokens) {
+		List<CertificateToken> certificatesInSignature = xadesSignature.getCertificateSource().getCertificates();
+		return filterNewCertificateValues(certificateTokens, certificatesInSignature);
+	}
+	
+	private Set<CertificateToken> filterNewCertificateValues(Collection<CertificateToken> certificatesForInclusion,
+			Collection<CertificateToken> certificatesFromSignature) {
+		Set<CertificateToken> certificatesToBeAdded = new HashSet<CertificateToken>();
+		for (CertificateToken certificateToken : certificatesForInclusion) {
+			if (!certificatesFromSignature.contains(certificateToken)) {
+				certificatesToBeAdded.add(certificateToken);
+			}
+		}
+		return certificatesToBeAdded;
 	}
 
 	/**
@@ -250,33 +258,47 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 *
 	 * @param parentDom
 	 *            the parent element
-	 * @param validationContext
-	 *            the validation context with the revocation data
+	 * @param crlsToAdd
+	 *            a collection of {@link CRLToken}s to be added into the signature
+	 * @param ocspsToAdd
+	 *            a collection of {@link OCSPToken}s to be added into the signature
+	 * @return {@link Element} incorporated revocation values element
 	 */
-	protected Element incorporateRevocationValues(final Element parentDom, final ValidationContext validationContext) {
+	protected Element incorporateRevocationValues(final Element parentDom, final Collection<CRLToken> crlsToAdd, final Collection<OCSPToken> ocspsToAdd) {
 		Element revocationValuesDom = null;
-		final DefaultAdvancedSignature.RevocationDataForInclusion revocationsForInclusion = xadesSignature.getRevocationDataForInclusion(validationContext);
-		if (!revocationsForInclusion.isEmpty()) {
-
-			// Filter to avoid duplicate entries
-			List<RevocationToken> crlsToBeAdded = filterDuplicateRevocations(revocationsForInclusion.crlTokens,
-					xadesSignature.getCRLSource().getCRLBinaryList());
-			List<RevocationToken> ocspToBeAdded = filterDuplicateRevocations(revocationsForInclusion.ocspTokens,
-					xadesSignature.getOCSPSource().getOCSPResponsesList());
-
-			if (Utils.isCollectionNotEmpty(crlsToBeAdded) || Utils.isCollectionNotEmpty(ocspToBeAdded)) {
-				revocationValuesDom = DomUtils.addElement(documentDom, parentDom, XAdESNamespaces.XADES_132.getUri(), XADES_REVOCATION_VALUES);
-				incorporateCrlTokens(revocationValuesDom, crlsToBeAdded);
-				incorporateOcspTokens(revocationValuesDom, ocspToBeAdded);
-			}
+		
+		if (Utils.isCollectionNotEmpty(crlsToAdd) || Utils.isCollectionNotEmpty(ocspsToAdd)) {
+			revocationValuesDom = DomUtils.addElement(documentDom, parentDom, XAdESNamespaces.XADES_132.getUri(), XADES_REVOCATION_VALUES);
+			incorporateCrlTokens(revocationValuesDom, crlsToAdd);
+			incorporateOcspTokens(revocationValuesDom, ocspsToAdd);
 		}
 		return revocationValuesDom;
 	}
 
-	private List<RevocationToken> filterDuplicateRevocations(List<? extends RevocationToken> revocationTokens,
+	/**
+	 * The method returns a set of CRLs excluding duplicate entries from provided lists
+	 * @param crlTokens a collection of {@link CRLToken}s obtained from the validation process
+	 * @return set of {@link CRLToken}s with no duplicates
+	 */
+	protected Set<CRLToken> filterCRLsPresentIntoSignature(Collection<CRLToken> crlTokens) {
+		Collection<CRLBinary> signatureCRLBinaryList = xadesSignature.getCRLSource().getCRLBinaryList();
+		return filterNewRevocations(crlTokens, signatureCRLBinaryList);
+	}
+
+	/**
+	 * The method returns a set of OCSPs excluding duplicate entries from provided lists
+	 * @param ocspTokens a collection of {@link OCSPToken}s obtained from the validation process
+	 * @return set of {@link OCSPToken}s with no duplicates
+	 */
+	protected Set<OCSPToken> filterOCSPsPresentIntoSignature(Collection<OCSPToken> ocspTokens) {
+		Collection<OCSPResponseBinary> signatureOCSPResponseList = xadesSignature.getOCSPSource().getOCSPResponsesList();
+		return filterNewRevocations(ocspTokens, signatureOCSPResponseList);
+	}
+	
+	private <R extends RevocationToken> Set<R> filterNewRevocations(Collection<R> revocationTokens,
 			Collection<? extends EncapsulatedRevocationTokenIdentifier> revocationBinaryList) {
-		List<RevocationToken> revocationTokensToBeAdded = new ArrayList<RevocationToken>();
-		for (RevocationToken revocationToken : revocationTokens) {
+		Set<R> revocationTokensToBeAdded = new HashSet<R>();
+		for (R revocationToken : revocationTokens) {
 			boolean found = false;
 			for (EncapsulatedRevocationTokenIdentifier revocationBinary : revocationBinaryList) {
 				if (Arrays.equals(revocationToken.getEncoded(), revocationBinary.getBinaries())) {
@@ -306,9 +328,9 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 * @param parentDom
 	 *            the parent element
 	 * @param crlTokens
-	 *            the list of CRL Tokens to be added
+	 *            a collection of CRL Tokens to be added
 	 */
-	private void incorporateCrlTokens(final Element parentDom, final List<RevocationToken> crlTokens) {
+	private void incorporateCrlTokens(final Element parentDom, final Collection<CRLToken> crlTokens) {
 		if (crlTokens.isEmpty()) {
 			return;
 		}
@@ -336,9 +358,9 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 * @param parentDom
 	 *            the parent element
 	 * @param ocspTokens
-	 *            the list of OCSP Tokens to be added
+	 *            a collection of OCSP Tokens to be added
 	 */
-	private void incorporateOcspTokens(Element parentDom, final List<RevocationToken> ocspTokens) {
+	private void incorporateOcspTokens(Element parentDom, final Collection<OCSPToken> ocspTokens) {
 		if (ocspTokens.isEmpty()) {
 			return;
 		}
@@ -365,13 +387,13 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 *
 	 * @param parentDom
 	 *            the parent element
-	 * @param validationContext
-	 *            the validation context with all certificates
+	 * @param certificatesToBeAdded
+	 *            the certificates to be added into the signature
 	 * @param indent
 	 *            {@link String} to add between elements (if not NULL)
 	 */
-	protected void incorporateCertificateValues(final Element parentDom, final ValidationContext validationContext, String indent) {
-		Element certificatesDom = incorporateCertificateValues(parentDom, validationContext);
+	protected void incorporateCertificateValues(final Element parentDom, final Collection<CertificateToken> certificatesToBeAdded, String indent) {
+		Element certificatesDom = incorporateCertificateValues(parentDom, certificatesToBeAdded);
 		if (certificatesDom != null && indent != null) {
 			DomUtils.setTextNode(documentDom, unsignedSignaturePropertiesDom, indent);
 			DSSXMLUtils.indentAndReplace(documentDom, certificatesDom);
@@ -390,13 +412,16 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 *
 	 * @param parentDom
 	 *            the parent element
-	 * @param validationContext
-	 *            the validation context with the revocation data
+	 * @param crlsToAdd
+	 *            a collection of {@link CRLToken}s to be added into the signature
+	 * @param ocspsToAdd
+	 *            a collection of {@link OCSPToken}s to be added into the signature
 	 * @param indent
 	 *            {@link String} to add between elements (if not NULL)
 	 */
-	protected void incorporateRevocationValues(final Element parentDom, final ValidationContext validationContext, String indent) {
-		Element revocationDom = incorporateRevocationValues(parentDom, validationContext);
+	protected void incorporateRevocationValues(final Element parentDom, final Collection<CRLToken> crlsToAdd, 
+			final Collection<OCSPToken> ocspsToAdd, String indent) {
+		Element revocationDom = incorporateRevocationValues(parentDom, crlsToAdd, ocspsToAdd);
 		if (revocationDom != null && indent != null) {
 			DomUtils.setTextNode(documentDom, unsignedSignaturePropertiesDom, indent);
 			DSSXMLUtils.indentAndReplace(documentDom, revocationDom);

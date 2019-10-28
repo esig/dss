@@ -33,6 +33,8 @@ import org.junit.jupiter.api.Test;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -109,12 +111,25 @@ public class XAdESDoubleLTATest extends PKIFactoryAccess {
         }
         assertEquals(2, archiveTimestampCounter);
         
-        List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
-        for (CertificateWrapper certificate : usedCertificates) {
-        	assertTrue(certificate.isRevocationDataAvailable() || certificate.isTrusted() || certificate.isSelfSigned(), 
-        			"Certificate with id : [" + certificate.getId() + "] does not have a revocation data!");
+        SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+        assertContainsAllRevocationData(signature.getCertificateChain());
+        for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
+        	assertContainsAllRevocationData(timestamp.getCertificateChain());
+        }
+        for (RevocationWrapper revocation : diagnosticData.getAllRevocationData()) {
+        	assertContainsAllRevocationData(revocation.getCertificateChain());
         }
         
+	}
+	
+	private void assertContainsAllRevocationData(List<CertificateWrapper> certificateChain) {
+        for (CertificateWrapper certificate : certificateChain) {
+        	if (certificate.isTrusted()) {
+        		break;
+        	}
+        	assertTrue(certificate.isRevocationDataAvailable() || certificate.isSelfSigned(), 
+        			"Certificate with id : [" + certificate.getId() + "] does not have a revocation data!");
+        }
 	}
 
 	@Override

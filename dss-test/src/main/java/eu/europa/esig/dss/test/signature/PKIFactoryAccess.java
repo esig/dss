@@ -324,6 +324,12 @@ public abstract class PKIFactoryAccess {
 		String keystoreUrl = PKI_FACTORY_HOST + CERT_ROOT_PATH + certificateId + CERT_EXTENSION;
 		return DSSUtils.loadCertificate(dataLoader.get(keystoreUrl));
 	}
+	
+	protected CertificateToken getCertificateByPrimaryKey(String issuerName, long serialNumber) {
+		DataLoader dataLoader = getFileCacheDataLoader();
+		String keystoreUrl = PKI_FACTORY_HOST + CERT_ROOT_PATH + issuerName + "/" + serialNumber + CERT_EXTENSION;
+		return DSSUtils.loadCertificate(dataLoader.get(keystoreUrl));
+	}
 
 	// Allows to configure a proxy
 	protected ProxyConfig getProxyConfig() {

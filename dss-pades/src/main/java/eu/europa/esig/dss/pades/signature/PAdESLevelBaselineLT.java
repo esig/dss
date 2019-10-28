@@ -39,7 +39,7 @@ import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
+import eu.europa.esig.dss.validation.DefaultAdvancedSignature.ValidationDataForInclusion;
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
@@ -113,19 +113,19 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 
 	protected DSSDictionaryCallback validate(PAdESSignature signature) {
 
-		ValidationContext validationContext = signature.getSignatureValidationContext(certificateVerifier);
-
-		DefaultAdvancedSignature.RevocationDataForInclusion revocationsForInclusionInProfileLT = signature.getRevocationDataForInclusion(validationContext);
-
+		final ValidationContext validationContext = signature.getSignatureValidationContext(certificateVerifier);
+		final ValidationDataForInclusion validationDataForInclusion = signature.getValidationDataForInclusion(validationContext);
+		
 		DSSDictionaryCallback validationCallback = new DSSDictionaryCallback();
 		validationCallback.setSignature(signature);
-		validationCallback.setCrls(revocationsForInclusionInProfileLT.crlTokens);
-		validationCallback.setOcsps(revocationsForInclusionInProfileLT.ocspTokens);
 
-		Set<CertificateToken> certificatesForInclusion = signature.getCertificatesForInclusion(validationContext);
+		Set<CertificateToken> certificatesForInclusion = validationDataForInclusion.certificateTokens;
 		certificatesForInclusion.addAll(signature.getCertificateListWithinSignatureAndTimestamps());
 		// DSS dictionary includes current certs + discovered with AIA,...
 		validationCallback.setCertificates(certificatesForInclusion);
+
+		validationCallback.setCrls(validationDataForInclusion.crlTokens);
+		validationCallback.setOcsps(validationDataForInclusion.ocspTokens);
 
 		return validationCallback;
 	}

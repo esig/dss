@@ -20,11 +20,17 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import java.util.Set;
+
 import org.w3c.dom.Element;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.DefaultAdvancedSignature.ValidationDataForInclusion;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.ValidationContext;
 
@@ -69,12 +75,20 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 		 */
 		checkSignatureIntegrity();
 
+		// must be executed before data removing
 		final ValidationContext validationContext = xadesSignature.getSignatureValidationContext(certificateVerifier);
 
 		String indent = removeOldCertificateValues();
 		removeOldRevocationValues();
-		incorporateCertificateValues(unsignedSignaturePropertiesDom, validationContext, indent);
-		incorporateRevocationValues(unsignedSignaturePropertiesDom, validationContext, indent);
+		
+		ValidationDataForInclusion validationDataForInclusion = xadesSignature.getValidationDataForInclusion(validationContext);
+
+		Set<CertificateToken> certificateValuesToAdd = filterCertificateTokensPresentIntoSignature(validationDataForInclusion.certificateTokens);
+		Set<CRLToken> crlsToAdd = filterCRLsPresentIntoSignature(validationDataForInclusion.crlTokens);
+		Set<OCSPToken> ocspsToAdd = filterOCSPsPresentIntoSignature(validationDataForInclusion.ocspTokens);
+		
+		incorporateCertificateValues(unsignedSignaturePropertiesDom, certificateValuesToAdd, indent);
+		incorporateRevocationValues(unsignedSignaturePropertiesDom, crlsToAdd, ocspsToAdd, indent);
 		
 		unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelTUnsignedProperties);
 	}

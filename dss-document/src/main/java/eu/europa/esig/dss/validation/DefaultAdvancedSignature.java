@@ -22,6 +22,7 @@ package eu.europa.esig.dss.validation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -371,39 +372,44 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public List<CertificateToken> getTimestampSourceCertificates() {
 		return getTimestampSource().getCertificates();
 	}
+	
+	/**
+	 * This method returns all validation data to be included into the signature
+	 * @param validationContext {@link ValidationContext} contained all extracted data during the validation
+	 * @return {@link ValidationDataForInclusion} all validation data to be included to the signature excluding duplicates and cross-certificates
+	 */
+	public ValidationDataForInclusion getValidationDataForInclusion(final ValidationContext validationContext) {
+		Set<CertificateToken> certificatesForInclusion = getCertificatesForInclusion(validationContext);
+		List<CRLToken> crlsForInclusion = getCRLsForInclusion(validationContext.getProcessedRevocations(), certificatesForInclusion);
+		List<OCSPToken> ocspsForInclusion = getOCSPsForInclusion(validationContext.getProcessedRevocations(), certificatesForInclusion);
+		
+		return new ValidationDataForInclusion(certificatesForInclusion, crlsForInclusion, ocspsForInclusion);
+	}
 
 	/**
-	 * This method returns all certificates used during the validation process. If a certificate is already present
-	 * within the signature then it is ignored.
+	 * This method returns all certificates used during the validation process. If a certificate's public key is
+	 * already present within the signature then it is ignored.
 	 *
 	 * @param validationContext
 	 *            validation context containing all information about the validation process of the signing certificate
 	 *            and time-stamps
-	 * @return set of certificates not yet present within the signature
+	 * @return set of certificates which public keys not yet present within the signature
 	 */
-	public Set<CertificateToken> getCertificatesForInclusion(final ValidationContext validationContext) {
-		final Set<CertificateToken> certificates = new HashSet<CertificateToken>();
+	private Set<CertificateToken> getCertificatesForInclusion(final ValidationContext validationContext) {
 		final List<CertificateToken> certWithinSignatures = getCertificateListWithinSignatureAndTimestamps();
-		
+
+		final Set<CertificateToken> certificatesForInclusion = new HashSet<CertificateToken>(certWithinSignatures);
 		// avoid adding of cross-certificates to the list
 		final List<String> publicKeys = getEntityIdentifierList(certWithinSignatures);
 		for (final CertificateToken certificateToken : validationContext.getProcessedCertificates()) {
 			if (!publicKeys.contains(certificateToken.getEntityKey())) {
-				certificates.add(certificateToken);
+				certificatesForInclusion.add(certificateToken);
 			} else {
-				LOG.info("Certificate Token with id : [{}] has not been added for inclusion. "
+				LOG.debug("Certificate Token with id : [{}] has not been added for inclusion. "
 						+ "The same public key is already present!", certificateToken.getDSSIdAsString());
 			}
 		}
-		return certificates;
-	}
-	
-	private List<String> getEntityIdentifierList(List<CertificateToken> certificateTokens) {
-		final List<String> entityIdentifiers = new ArrayList<String>();
-		for (CertificateToken certificateToken : certificateTokens) {
-			entityIdentifiers.add(certificateToken.getEntityKey());
-		}
-		return entityIdentifiers;
+		return certificatesForInclusion;
 	}
 	
 	@Override
@@ -438,34 +444,83 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 		return certificateMap;
 	}
+	
+	private List<String> getEntityIdentifierList(List<CertificateToken> certificateTokens) {
+		final List<String> entityIdentifiers = new ArrayList<String>();
+		for (CertificateToken certificateToken : certificateTokens) {
+			entityIdentifiers.add(certificateToken.getEntityKey());
+		}
+		return entityIdentifiers;
+	}
 
 	/**
-	 * This method returns revocation values (ocsp and crl) that will be included in the LT profile.
+	 * This method returns CRLs that will be included in the LT profile.
 	 *
-	 * @param validationContext
-	 *            {@code ValidationContext} contains all the revocation data retrieved during the validation process.
-	 * @return {@code RevocationDataForInclusion}
+	 * @param processedRevocations
+	 *            {@link RevocationToken} contains all the revocation data retrieved during the validation process
+	 * @param certificatesToBeIncluded
+	 *            {@link CertificateToken} contains all the certificate tokens to be included to the signature
+	 * @return list of {@link CRLToken}s to be included to the signature
 	 */
-	public RevocationDataForInclusion getRevocationDataForInclusion(final ValidationContext validationContext) {
-		final Set<RevocationToken> revocationTokens = validationContext.getProcessedRevocations();
+	private List<CRLToken> getCRLsForInclusion(final Set<RevocationToken> processedRevocations, 
+			final Set<CertificateToken> certificatesToBeIncluded) {
+		
 		final List<CRLToken> crlTokens = new ArrayList<CRLToken>();
-		final List<OCSPToken> ocspTokens = new ArrayList<OCSPToken>();
 		final List<TokenIdentifier> revocationIds = new ArrayList<TokenIdentifier>();
-		for (final RevocationToken revocationToken : revocationTokens) {
-			if (!revocationIds.contains(revocationToken.getDSSId())) {
+		
+		for (final RevocationToken revocationToken : processedRevocations) {
+			if (!revocationIds.contains(revocationToken.getDSSId()) && isAtLeastOneCertificateCovered(revocationToken, certificatesToBeIncluded)) {
 				revocationIds.add(revocationToken.getDSSId());
 				if (revocationToken instanceof CRLToken) {
 					final CRLToken crlToken = (CRLToken) revocationToken;
 					crlTokens.add(crlToken);
-				} else if (revocationToken instanceof OCSPToken) {
-					final OCSPToken ocspToken = (OCSPToken) revocationToken;
-					ocspTokens.add(ocspToken);
-				} else {
-					throw new DSSException("Unknown type for revocationToken: " + revocationToken.getClass().getName());
 				}
 			}
 		}
-		return new RevocationDataForInclusion(crlTokens, ocspTokens);
+		return crlTokens;
+	}
+
+	/**
+	 * This method returns OCSPs that will be included in the LT profile.
+	 *
+	 * @param processedRevocations
+	 *            {@link RevocationToken} contains all the revocation data retrieved during the validation process
+	 * @param certificatesToBeIncluded
+	 *            {@link CertificateToken} contains all the certificate tokens to be included to the signature
+	 * @return list of {@link OCSPToken}s to be included to the signature
+	 */
+	private List<OCSPToken> getOCSPsForInclusion(final Set<RevocationToken> processedRevocations, 
+			final Set<CertificateToken> certificatesToBeIncluded) {
+		
+		final List<OCSPToken> ocspTokens = new ArrayList<OCSPToken>();
+		final List<TokenIdentifier> revocationIds = new ArrayList<TokenIdentifier>();
+		
+		for (final RevocationToken revocationToken : processedRevocations) {
+			if (!revocationIds.contains(revocationToken.getDSSId()) && isAtLeastOneCertificateCovered(revocationToken, certificatesToBeIncluded)) {
+				revocationIds.add(revocationToken.getDSSId());
+				if (revocationToken instanceof OCSPToken) {
+					final OCSPToken ocspToken = (OCSPToken) revocationToken;
+					ocspTokens.add(ocspToken);
+				}
+			}
+		}
+		return ocspTokens;
+	}
+	
+	/**
+	 * The method allows to avoid adding of revocation data for certificates that had been removed from the inclusion
+	 */
+	private boolean isAtLeastOneCertificateCovered(RevocationToken revocationToken, 
+			final Collection<CertificateToken> certificateTokens) {
+		String relatedCertificateID = revocationToken.getRelatedCertificateID();
+		if (Utils.isStringNotEmpty(relatedCertificateID)) {
+			for (CertificateToken certificateToken : certificateTokens) {
+				if (certificateToken.getDSSIdAsString().equals(relatedCertificateID)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	@Override
@@ -486,21 +541,19 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return signatureCryptographicVerification;
 	}
 
-	public static class RevocationDataForInclusion {
+	public static class ValidationDataForInclusion {
 
+		public final Set<CertificateToken> certificateTokens;
 		public final List<CRLToken> crlTokens;
 		public final List<OCSPToken> ocspTokens;
 
-		public RevocationDataForInclusion(final List<CRLToken> crlTokens, final List<OCSPToken> ocspTokens) {
-
+		public ValidationDataForInclusion(final Set<CertificateToken> certificateTokens, 
+				final List<CRLToken> crlTokens, final List<OCSPToken> ocspTokens) {
+			this.certificateTokens = certificateTokens;
 			this.crlTokens = crlTokens;
 			this.ocspTokens = ocspTokens;
 		}
-
-		public boolean isEmpty() {
-
-			return crlTokens.isEmpty() && ocspTokens.isEmpty();
-		}
+		
 	}
 	
 	@Override
