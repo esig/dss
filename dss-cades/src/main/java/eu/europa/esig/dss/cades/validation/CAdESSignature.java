@@ -1005,16 +1005,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 	
 	private CertificateValidity getTheBestCandidate() {
-		if (providedSigningCertificateToken == null) {
-			// To determine the signing certificate it is necessary to browse
-			// through all candidates found before.
-			candidatesForSigningCertificate = getCandidatesForSigningCertificate();
-		} else {
+		candidatesForSigningCertificate = getCandidatesForSigningCertificate();
 
-			candidatesForSigningCertificate = new CandidatesForSigningCertificate();
-			final CertificateValidity certificateValidity = new CertificateValidity(providedSigningCertificateToken);
-			candidatesForSigningCertificate.add(certificateValidity);
+		if (providedSigningCertificateToken != null) {
+			candidatesForSigningCertificate.add(new CertificateValidity(providedSigningCertificateToken));
 		}
+
 		return candidatesForSigningCertificate.getTheBestCandidate();
 	}
 

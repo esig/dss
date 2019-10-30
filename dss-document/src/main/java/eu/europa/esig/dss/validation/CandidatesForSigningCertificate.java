@@ -51,6 +51,15 @@ public class CandidatesForSigningCertificate implements Serializable {
 	}
 
 	/**
+	 * This method tests if any candidate is known
+	 * 
+	 * @return true is no candidate is known
+	 */
+	public boolean isEmpty() {
+		return certificateValidityList.isEmpty();
+	}
+
+	/**
 	 * @return the list of candidates for the signing certificate.
 	 */
 	public List<CertificateToken> getSigningCertificateTokenList() {

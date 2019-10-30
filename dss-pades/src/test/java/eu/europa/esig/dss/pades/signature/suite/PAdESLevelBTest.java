@@ -28,6 +28,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 public class PAdESLevelBTest extends AbstractPAdESTestSignature {
 
@@ -49,6 +50,15 @@ public class PAdESLevelBTest extends AbstractPAdESTestSignature {
 		signatureParameters.setContactInfo("Jira");
 
 		service = new PAdESService(getCompleteCertificateVerifier());
+	}
+
+	@Override
+	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
+		SignedDocumentValidator validator = super.getValidator(signedDocument);
+		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		// test with wrong provided certificate
+		validator.defineSigningCertificate(getCertificate(ECDSA_USER));
+		return validator;
 	}
 
 	@Override

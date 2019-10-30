@@ -370,16 +370,16 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		candidatesForSigningCertificate = new CandidatesForSigningCertificate();
 		/**
 		 * 5.1.4.1 XAdES processing<br>
-		 * <i>Candidates for the signing certificate extracted from ds:KeyInfo element</i> shall be checked against all
-		 * references present in the
-		 * ds:SigningCertificate property, if present, since one of these references shall be a reference to the signing
-		 * certificate.
+		 * <i>Candidates for the signing certificate extracted from ds:KeyInfo
+		 * element</i> shall be checked against all references present in the
+		 * ds:SigningCertificate property, if present, since one of these references
+		 * shall be a reference to the signing certificate.
 		 */
 		final SignatureCertificateSource certSource = getCertificateSource();
 		for (final CertificateToken certificateToken : certSource.getKeyInfoCertificates()) {
-			final CertificateValidity certificateValidity = new CertificateValidity(certificateToken);
-			candidatesForSigningCertificate.add(certificateValidity);
+			candidatesForSigningCertificate.add(new CertificateValidity(certificateToken));
 		}
+
 		return candidatesForSigningCertificate;
 	}
 
@@ -720,8 +720,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			final XMLSignature santuarioSignature = getSantuarioSignature();
 
 			boolean coreValidity = false;
-			final List<CertificateValidity> certificateValidityList = getSigningCertificateValidityList(santuarioSignature, signatureCryptographicVerification,
-					providedSigningCertificateToken);
+			final List<CertificateValidity> certificateValidityList = getAllCandidates(santuarioSignature, signatureCryptographicVerification);
 			LOG.debug("Determining signing certificate from certificate candidates list");
 			final List<String> preliminaryErrorMessages = new ArrayList<String>();
 			int certificateNumber = 0;
@@ -736,13 +735,13 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						candidatesForSigningCertificate.setTheCertificateValidity(certificateValidity);
 						break;
 					} else {
-						// upon returning false, santuarioSignature (class XMLSignature) will log "Signature
+						// upon returning false, santuarioSignature (class XMLSignature) will log
+						// "Signature
 						// verification failed." with WARN level.
 						preliminaryErrorMessages.add(errorMessagePrefix + "Signature verification failed");
 					}
 				} catch (XMLSignatureException e) {
-					LOG.debug("Exception while probing candidate certificate as signing certificate: {}",
-							e.getMessage());
+					LOG.debug("Exception while probing candidate certificate as signing certificate: {}", e.getMessage());
 					preliminaryErrorMessages.add(errorMessagePrefix + e.getMessage());
 				}
 				certificateNumber++;
@@ -996,76 +995,68 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	/**
-	 * This method returns a {@code List} of {@code SigningCertificateValidity} base on the certificates extracted from
-	 * the signature or on the
-	 * {@code providedSigningCertificateToken}. The field {@code candidatesForSigningCertificate} is instantiated in
-	 * case where the signing certificated is
-	 * provided.
+	 * This method returns a {@code List} of {@code CertificateValidity} base on the
+	 * certificates extracted from the signature or on the
+	 * {@code providedSigningCertificateToken}. The field
+	 * {@code candidatesForSigningCertificate} is instantiated in case where the
+	 * signing certificated is provided.
 	 *
 	 * @param santuarioSignature
-	 *            The object created tro validate the signature
+	 *                           The object created to validate the signature
 	 * @param scv
-	 *            {@code SignatureCryptographicVerification} containing information on the signature validation
-	 * @param providedSigningCertificate
-	 *            provided signing certificate: {@code CertificateToken} @return
-	 * @return the {@code List} of the {@code SigningCertificateValidity}
-	 * @throws KeyResolverException
+	 *                           {@code SignatureCryptographicVerification}
+	 *                           containing information on the signature validation
+	 * @return the {@code List} of the {@code CertificateValidity}
 	 */
-	private List<CertificateValidity> getSigningCertificateValidityList(final XMLSignature santuarioSignature, SignatureCryptographicVerification scv,
-			final CertificateToken providedSigningCertificate) throws KeyResolverException {
+	private List<CertificateValidity> getAllCandidates(final XMLSignature santuarioSignature, SignatureCryptographicVerification scv) {
 
-		List<CertificateValidity> certificateValidityList;
-		if (providedSigningCertificate == null) {
+		// To determine the signing certificate it is necessary to browse
+		// through all candidates extracted from the signature.
+		final CandidatesForSigningCertificate candidates = getCandidatesForSigningCertificate();
 
-			// To determine the signing certificate it is necessary to browse
-			// through all candidates extracted from the signature.
-			final CandidatesForSigningCertificate candidates = getCandidatesForSigningCertificate();
-			certificateValidityList = candidates.getCertificateValidityList();
-			if (certificateValidityList.isEmpty()) {
-
-				// The public key can also be extracted from the signature.
-				final KeyInfo extractedKeyInfo = santuarioSignature.getKeyInfo();
-				final PublicKey publicKey;
-				if ((extractedKeyInfo == null) || ((publicKey = extractedKeyInfo.getPublicKey()) == null)) {
-
-					scv.setErrorMessage("There is no signing certificate within the signature.");
-					return certificateValidityList;
-				}
-				certificateValidityList = getSigningCertificateValidityList(publicKey);
+		if (candidates.isEmpty()) {
+			checkWithEmbeddedPublicKey(candidates, santuarioSignature);
+			if (candidates.isEmpty()) {
+				scv.setErrorMessage("There is no signing certificate within the signature.");
 			}
-		} else {
-
-			candidatesForSigningCertificate = new CandidatesForSigningCertificate();
-			final CertificateValidity certificateValidity = new CertificateValidity(providedSigningCertificate);
-			candidatesForSigningCertificate.add(certificateValidity);
-			certificateValidityList = candidatesForSigningCertificate.getCertificateValidityList();
 		}
-		return certificateValidityList;
+
+		if (providedSigningCertificateToken != null) {
+			candidates.add(new CertificateValidity(providedSigningCertificateToken));
+		}
+
+		return candidates.getCertificateValidityList();
 	}
 
 	/**
-	 * This method returns a {@code List} of {@code SigningCertificateValidity} base on the provided
-	 * {@code providedSigningCertificateToken}. The field
-	 * {@code candidatesForSigningCertificate} is instantiated.
+	 * This method extracts the public key and adds new instances of
+	 * CertificateValidity for the found PublicKey.
 	 *
-	 * @param extractedPublicKey
-	 *            provided public key: {@code PublicKey}
-	 * @return
+	 * @param santuarioSignature
+	 *                           the santuario signature
 	 */
-	protected List<CertificateValidity> getSigningCertificateValidityList(final PublicKey extractedPublicKey) {
+	private void checkWithEmbeddedPublicKey(final CandidatesForSigningCertificate candidates, final XMLSignature santuarioSignature) {
+		final KeyInfo extractedKeyInfo = santuarioSignature.getKeyInfo();
+		if (extractedKeyInfo != null) {
+			try {
+				final PublicKey publicKey = extractedKeyInfo.getPublicKey();
+				if (publicKey != null) {
 
-		candidatesForSigningCertificate = new CandidatesForSigningCertificate();
-		// try to find out the signing certificate token by provided public key
-		List<CertificateToken> certsWithExtractedPublicKey = certPool.get(extractedPublicKey);
-		if (Utils.isCollectionNotEmpty(certsWithExtractedPublicKey)) {
-			for (CertificateToken certificateToken : certsWithExtractedPublicKey) {
-				candidatesForSigningCertificate.add(new CertificateValidity(certificateToken));
+					// try to find out the signing certificate token by provided public key
+					List<CertificateToken> certsWithExtractedPublicKey = certPool.get(publicKey);
+					if (Utils.isCollectionNotEmpty(certsWithExtractedPublicKey)) {
+						for (CertificateToken certificateToken : certsWithExtractedPublicKey) {
+							candidates.add(new CertificateValidity(certificateToken));
+						}
+					} else {
+						// process public key only if no certificates found
+						candidates.add(new CertificateValidity(publicKey));
+					}
+				}
+			} catch (KeyResolverException e) {
+				LOG.warn("Unable to extract the public key", e);
 			}
-		} else {
-			// process public key only if no certificates found
-			candidatesForSigningCertificate.add(new CertificateValidity(extractedPublicKey));
 		}
-		return candidatesForSigningCertificate.getCertificateValidityList();
 	}
 
 	/**
