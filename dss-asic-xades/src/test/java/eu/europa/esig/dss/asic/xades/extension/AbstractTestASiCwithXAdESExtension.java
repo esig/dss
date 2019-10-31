@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.asic.xades.extension;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -35,6 +37,8 @@ import java.util.zip.ZipInputStream;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -89,11 +93,25 @@ public abstract class AbstractTestASiCwithXAdESExtension extends AbstractTestExt
 	protected ASiCWithXAdESSignatureParameters getExtensionParameters() {
 		ASiCWithXAdESSignatureParameters extensionParameters = new ASiCWithXAdESSignatureParameters();
 		extensionParameters.setSignatureLevel(getFinalSignatureLevel());
-		extensionParameters.aSiC().setContainerType(getContainerType());
+		extensionParameters.aSiC().setContainerType(getFinalContainerType());
 		return extensionParameters;
 	}
 
 	protected abstract ASiCContainerType getContainerType();
+
+	protected ASiCContainerType getFinalContainerType() {
+		return getContainerType();
+	}
+
+	@Override
+	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
+		super.verifyDiagnosticData(diagnosticData);
+
+		XmlContainerInfo containerInfo = diagnosticData.getContainerInfo();
+		assertNotNull(containerInfo);
+
+		assertEquals(getContainerType().getReadable(), containerInfo.getContainerType());
+	}
 
 	@Override
 	protected DocumentSignatureService<ASiCWithXAdESSignatureParameters> getSignatureServiceToExtend() {
