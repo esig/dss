@@ -31,6 +31,7 @@ import eu.europa.esig.dss.asic.xades.signature.asice.DataToSignASiCEWithXAdESFro
 import eu.europa.esig.dss.asic.xades.signature.asice.DataToSignOpenDocument;
 import eu.europa.esig.dss.asic.xades.signature.asics.DataToSignASiCSWithXAdESFromArchive;
 import eu.europa.esig.dss.asic.xades.signature.asics.DataToSignASiCSWithXAdESFromFiles;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.BLevelParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 
@@ -62,13 +63,20 @@ public class ASiCWithXAdESDataToSignHelperBuilder {
 					throw new UnsupportedOperationException("Container type doesn't match");
 				}
 
-				if (asice) {
+				ASiCContainerType currentContainerType = ASiCUtils.getContainerType(archiveDoc, extract.getMimeTypeDocument(), extract.getZipComment(),
+						extract.getSignedDocuments());
+
+				if (asice && ASiCContainerType.ASiC_E.equals(currentContainerType)) {
 					return new DataToSignASiCEWithXAdESFromArchive(extract.getSignedDocuments(),
 							extract.getSignatureDocuments(), extract.getManifestDocuments(), parameters.aSiC());
-				} else {
+				} else if (!asice && ASiCContainerType.ASiC_S.equals(currentContainerType)) {
 					return new DataToSignASiCSWithXAdESFromArchive(extract.getSignatureDocuments(),
 							extract.getSignedDocuments(), parameters.aSiC());
+				} else {
+					throw new UnsupportedOperationException(
+							String.format("Original container type '%s' vs parameter : '%s'", currentContainerType, parameters.aSiC().getContainerType()));
 				}
+
 			} else {
 				return fromFiles(documents, parameters, bLevel, asice);
 			}
