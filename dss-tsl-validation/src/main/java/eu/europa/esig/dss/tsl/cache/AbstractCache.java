@@ -140,16 +140,28 @@ public abstract class AbstractCache<R extends CachedResult> {
 		LOG.trace("Is the entry with key [{}] empty ? {}", cacheKey, isEmpty);
 		return isEmpty;
 	}
-	
+
 	/**
 	 * Updates entry status to ERROR value
-	 * @param cacheKey {@link CacheKey} to update
-	 * @param e {@link Exception} the throwed exception
+	 * 
+	 * @param cacheKey
+	 *            {@link CacheKey} to update
+	 * @param e
+	 *            {@link Exception} the thrown exception
 	 */
 	public void error(CacheKey cacheKey, Exception e) {
-		LOG.trace("Update state to ERROR for an entry with the key [{}]...", cacheKey);
+		LOG.trace("Updating state to ERROR for an entry with the key [{}]...", cacheKey);
 		CachedEntry<R> cacheWrapper = get(cacheKey);
-		cacheWrapper.error(new CachedException(e));
+		CachedException wrappedException = new CachedException(e);
+		if (isNewError(cacheWrapper, wrappedException)) {
+			cacheWrapper.error(wrappedException);
+		} else {
+			LOG.trace("Update is skipped, ERROR is already recorded for an entry with the key [{}]...", cacheKey);
+		}
+	}
+
+	private boolean isNewError(CachedEntry<R> cacheWrapper, CachedException wrappedException) {
+		return !cacheWrapper.isError() || !Utils.areStringsEqual(cacheWrapper.getExceptionStackTrace(), wrappedException.getStackTrace());
 	}
 
 	/**

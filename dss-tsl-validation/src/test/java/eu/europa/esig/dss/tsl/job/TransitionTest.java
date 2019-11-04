@@ -1,10 +1,11 @@
 package eu.europa.esig.dss.tsl.job;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.HashMap;
@@ -43,7 +44,7 @@ public class TransitionTest {
 	private DSSDocument CZ_NOT_COMPLIANT = new FileDocument("src/test/resources/lotlCache/CZ_not-compliant.xml");
 
 	@Test
-	public void nullDoc() {
+	public void nullDoc() throws InterruptedException {
 
 		String url = "null-doc";
 
@@ -53,11 +54,23 @@ public class TransitionTest {
 
 		job.onlineRefresh();
 
-		checkSummary(job.getSummary(), CacheStateEnum.ERROR, CacheStateEnum.REFRESH_NEEDED, CacheStateEnum.REFRESH_NEEDED);
+		TLValidationJobSummary firstSummary = job.getSummary();
+		TLInfo firstCZ = firstSummary.getOtherTLInfos().get(0);
+		assertNull(firstCZ.getDownloadCacheInfo().getLastSynchronizationDate());
+		checkSummary(firstSummary, CacheStateEnum.ERROR, CacheStateEnum.REFRESH_NEEDED, CacheStateEnum.REFRESH_NEEDED);
+
+		Thread.sleep(1);
 
 		job.onlineRefresh();
 
-		checkSummary(job.getSummary(), CacheStateEnum.ERROR, CacheStateEnum.REFRESH_NEEDED, CacheStateEnum.REFRESH_NEEDED);
+		TLValidationJobSummary secondSummary = job.getSummary();
+		TLInfo secondCZ = secondSummary.getOtherTLInfos().get(0);
+		assertNull(secondCZ.getDownloadCacheInfo().getLastSynchronizationDate());
+		checkSummary(secondSummary, CacheStateEnum.ERROR, CacheStateEnum.REFRESH_NEEDED, CacheStateEnum.REFRESH_NEEDED);
+
+		// Keep the first error time
+		assertEquals(firstCZ.getDownloadCacheInfo().getExceptionTime(), secondCZ.getDownloadCacheInfo().getExceptionTime());
+		assertEquals(firstCZ.getDownloadCacheInfo().getExceptionMessage(), secondCZ.getDownloadCacheInfo().getExceptionMessage());
 	}
 
 	@Test
