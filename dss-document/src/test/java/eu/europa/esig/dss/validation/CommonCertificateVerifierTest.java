@@ -22,13 +22,17 @@ package eu.europa.esig.dss.validation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
+import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 
 public class CommonCertificateVerifierTest {
 
@@ -42,8 +46,62 @@ public class CommonCertificateVerifierTest {
 	public void testEmptyCertSources() {
 		CommonCertificateVerifier ccv = new CommonCertificateVerifier();
 		ccv.setAdjunctCertSource(new CommonCertificateSource());
-		ccv.setTrustedCertSource(new CommonCertificateSource());
+		ccv.setTrustedCertSource(new CommonTrustedCertificateSource());
 		assertNotNull(ccv.createValidationPool());
+	}
+	
+	@Test
+	public void testMultipleCertSources() {
+		CommonCertificateVerifier ccv = new CommonCertificateVerifier();
+		ccv.setTrustedCertSource(new TrustedListsCertificateSource());
+		ccv.setTrustedCertSource(new CommonTrustedCertificateSource());
+		assertNotNull(ccv.createValidationPool());
+		
+		ccv = new CommonCertificateVerifier();
+		ccv.setTrustedCertSources(new CommonTrustedCertificateSource(), new TrustedListsCertificateSource());
+		assertNotNull(ccv.createValidationPool());
+	}
+	
+	@Test
+	public void testNotTrustedCertificateSource() {
+		CommonCertificateVerifier ccv = new CommonCertificateVerifier();
+		Exception exception = assertThrows(DSSException.class, () -> {
+			ccv.setTrustedCertSource(new CommonCertificateSource());
+		});
+		assertEquals("The certificateSource with type [OTHER] is not allowed in the trustedCertSources. Please, "
+				+ "use CertificateSource with a type TRUSTED_STORE or TRUSTED_LIST.", exception.getMessage());
+		
+		exception = assertThrows(DSSException.class, () -> {
+			ccv.setTrustedCertSources(new CommonTrustedCertificateSource(), new CommonCertificateSource());
+		});
+		assertEquals("The certificateSource with type [OTHER] is not allowed in the trustedCertSources. Please, "
+				+ "use CertificateSource with a type TRUSTED_STORE or TRUSTED_LIST.", exception.getMessage());
+	}
+	
+	@Test
+	public void testReflection() {
+		CommonCertificateVerifier ccv = new CommonCertificateVerifier();
+		ccv.setTrustedCertSource(new CommonTrustedCertificateSource());
+		assertThrows(UnsupportedOperationException.class, () -> {
+			ccv.getTrustedCertSources().add(new CommonCertificateSource());
+		});
+		
+		assertThrows(UnsupportedOperationException.class, () -> {
+			ccv.getTrustedCertSources().clear();
+		});
+	}
+	
+	@Test
+	public void testClearTrustedCertSources() {
+		CommonCertificateVerifier ccv = new CommonCertificateVerifier();
+		ccv.setTrustedCertSource(new CommonTrustedCertificateSource());
+		assertEquals(1, ccv.getTrustedCertSources().size());
+		
+		ccv.clearTrustedCertSources();
+		assertEquals(0, ccv.getTrustedCertSources().size());
+		
+		ccv.setTrustedCertSources(new CommonTrustedCertificateSource(), new TrustedListsCertificateSource());
+		assertEquals(2, ccv.getTrustedCertSources().size());
 	}
 
 	@Test
@@ -72,7 +130,7 @@ public class CommonCertificateVerifierTest {
 		adjunctCertSource.addCertificate(c1);
 		ccv.setAdjunctCertSource(adjunctCertSource);
 
-		CommonCertificateSource trustedCertSource = new CommonCertificateSource();
+		CommonCertificateSource trustedCertSource = new CommonTrustedCertificateSource();
 		trustedCertSource.addCertificate(c1);
 		ccv.setTrustedCertSource(trustedCertSource);
 

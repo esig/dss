@@ -21,12 +21,15 @@
 package eu.europa.esig.dss.validation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
@@ -41,8 +44,7 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 /**
  * This class provides the different sources used to verify the status of a certificate using the trust model. There are
  * four different types of sources to be defined:<br>
- * -
- * Trusted certificates source;<br>
+ * - Trusted certificates source;<br>
  * - Adjunct certificates source (not trusted);<br>
  * - OCSP source;<br>
  * - CRL source.<br>
@@ -107,7 +109,7 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	
 	/**
 	 * This variable set the default Digest Algorithm what will be used for calculation
-	 * of digests for validation tokns and signed data
+	 * of digests for validation tokens and signed data
 	 * Default: SHA256
 	 */
 	private DigestAlgorithm defaultDigestAlgorithm = DigestAlgorithm.SHA256;
@@ -207,7 +209,7 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	@Override
 	public List<CertificateSource> getTrustedCertSources() {
-		return trustedCertSources;
+		return Collections.unmodifiableList(trustedCertSources);
 	}
 
 	@Override
@@ -232,14 +234,27 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	@Override
 	public void setTrustedCertSource(final CertificateSource trustedCertSource) {
-		this.trustedCertSources.add(trustedCertSource);
+		if (CertificateSourceType.TRUSTED_STORE.equals(trustedCertSource.getCertificateSourceType()) ||
+				CertificateSourceType.TRUSTED_LIST.equals(trustedCertSource.getCertificateSourceType())) {
+			this.trustedCertSources.add(trustedCertSource);
+		} else {
+			throw new DSSException(String.format("The certificateSource with type [%s] is not allowed in the trustedCertSources. Please, "
+					+ "use CertificateSource with a type TRUSTED_STORE or TRUSTED_LIST.", trustedCertSource.getCertificateSourceType()));
+		}
 	}
 	
 	@Override
 	public void setTrustedCertSources(final CertificateSource... certSources) {
 		for (CertificateSource source : certSources) {
-			this.trustedCertSources.add(source);
+			setTrustedCertSource(source);
 		}
+	}
+	
+	/**
+	 * This methods clears the list of defined trusted certificate sources
+	 */
+	public void clearTrustedCertSources() {
+		trustedCertSources.clear();
 	}
 
 	@Override

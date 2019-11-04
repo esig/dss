@@ -35,7 +35,7 @@ import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -67,8 +67,8 @@ public class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         CommonTrustedCertificateSource commonTrustedCertificateSource = new CommonTrustedCertificateSource();
         commonTrustedCertificateSource.importAsTrusted(trustedListsCertificateSource);
         
-        CertificateVerifier customCertificateVerifier = getCompleteCertificateVerifier();
-        customCertificateVerifier.getTrustedCertSources().clear();
+        CommonCertificateVerifier customCertificateVerifier = (CommonCertificateVerifier) getCompleteCertificateVerifier();
+        customCertificateVerifier.clearTrustedCertSources();
         customCertificateVerifier.setTrustedCertSource(commonTrustedCertificateSource);
 		
         XAdESService service = new XAdESService(customCertificateVerifier);

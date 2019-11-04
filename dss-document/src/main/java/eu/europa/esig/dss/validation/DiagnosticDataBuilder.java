@@ -119,7 +119,6 @@ import eu.europa.esig.dss.spi.tsl.ValidationInfoRecord;
 import eu.europa.esig.dss.spi.util.TimeDependentValues;
 import eu.europa.esig.dss.spi.x509.CertificatePolicy;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
-import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
@@ -146,7 +145,7 @@ public class DiagnosticDataBuilder {
 	private Set<CertificateToken> usedCertificates;
 	private Map<CertificateToken, Set<CertificateSourceType>> certificateSourceTypes;
 	private Set<RevocationToken> usedRevocations;
-	private List<CommonTrustedCertificateSource> trustedCertSources = new ArrayList<CommonTrustedCertificateSource>();
+	private List<CertificateSource> trustedCertSources = new ArrayList<CertificateSource>();
 	private Date validationDate;
 
 	private boolean includeRawCertificateTokens = false;
@@ -303,9 +302,12 @@ public class DiagnosticDataBuilder {
 	 * @return the builder
 	 */
 	public DiagnosticDataBuilder trustedCertificateSources(List<CertificateSource> trustedCertSources) {
-		for(CertificateSource trustedSource: trustedCertSources) {
-			if (trustedSource instanceof CommonTrustedCertificateSource) {
-				this.trustedCertSources.add((CommonTrustedCertificateSource) trustedSource);
+		for (CertificateSource trustedSource : trustedCertSources) {
+			if (CertificateSourceType.TRUSTED_STORE.equals(trustedSource.getCertificateSourceType()) || 
+					CertificateSourceType.TRUSTED_LIST.equals(trustedSource.getCertificateSourceType())) {
+				this.trustedCertSources.add(trustedSource);
+			} else {
+				throw new DSSException("Trusted CertificateSource must be of type TRUSTED_STORE or TRUSTED_LIST!");
 			}
 		}
 		return this;
@@ -797,9 +799,9 @@ public class DiagnosticDataBuilder {
 	}
 
 	private boolean isTrusted(CertificateToken cert) {
-		if(Utils.isCollectionNotEmpty(trustedCertSources)) {
-			for(CertificateSource trustedSource: trustedCertSources) {
-				if(trustedSource.isTrusted(cert))
+		if (Utils.isCollectionNotEmpty(trustedCertSources)) {
+			for (CertificateSource trustedSource : trustedCertSources) {
+				if (trustedSource.isTrusted(cert))
 					return true;
 			}
 		}
