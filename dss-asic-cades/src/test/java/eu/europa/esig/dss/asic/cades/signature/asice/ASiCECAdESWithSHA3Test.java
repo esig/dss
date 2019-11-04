@@ -44,7 +44,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
-public class ASiCSCAdESWithSHA3Test extends AbstractASiCECAdESTestSignature {
+public class ASiCECAdESWithSHA3Test extends AbstractASiCECAdESTestSignature {
 
 	private DocumentSignatureService<ASiCWithCAdESSignatureParameters> service;
 	private ASiCWithCAdESSignatureParameters signatureParameters;

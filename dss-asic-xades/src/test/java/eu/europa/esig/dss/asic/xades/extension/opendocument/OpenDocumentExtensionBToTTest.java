@@ -46,6 +46,5 @@ public class OpenDocumentExtensionBToTTest extends AbstractTestOpenDocumentExten
 	protected ASiCContainerType getContainerType() {
 		return ASiCContainerType.ASiC_E;
 	}
-	
 
 }
