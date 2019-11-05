@@ -312,6 +312,9 @@ public abstract class SignatureCertificateSource extends CommonCertificateSource
 	}
 
 	protected IssuerSerialInfo getIssuerInfo(IssuerSerial issuerAndSerial) {
+		if (issuerAndSerial == null) {
+			return null;
+		}
 		try {
 			IssuerSerialInfo issuerInfo = new IssuerSerialInfo();
 			GeneralNames gnames = issuerAndSerial.getIssuer();
