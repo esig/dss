@@ -36,6 +36,7 @@ import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
@@ -94,7 +95,7 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 			String digestAlgoToFind = token.getDigestAlgorithm() == null ? "" : token.getDigestAlgorithm().getName();
 			notAfter = expirationDates.get(digestAlgoToFind);
 			String encryptionAlgoToFind = token.getEncryptionAlgorithm() == null ? "" : token.getEncryptionAlgorithm().name();
-			int keySize = token.getKeyLengthUsedToSignThisToken() == null ? 0 : Integer.parseInt(token.getKeyLengthUsedToSignThisToken());
+			int keySize = Utils.isStringDigits(token.getKeyLengthUsedToSignThisToken()) ? Integer.parseInt(token.getKeyLengthUsedToSignThisToken()) : 0;
 			Date expirationEncryption = wrapper.getExpirationDate(encryptionAlgoToFind, keySize);
 			if (notAfter == null || (expirationEncryption != null && notAfter.after(expirationEncryption))) {
 				notAfter = expirationEncryption;
