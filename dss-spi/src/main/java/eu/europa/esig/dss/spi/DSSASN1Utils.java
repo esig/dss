@@ -750,6 +750,10 @@ public final class DSSASN1Utils {
 
 		try {
 			ASN1Sequence asn1Sequence = DSSASN1Utils.getAsn1SequenceFromDerOctetString(authInfoAccessExtensionValue);
+			if (asn1Sequence == null || asn1Sequence.size() == 0) {
+				LOG.warn("Empty ASN1Sequence for AuthorityInformationAccess");
+				return locationsUrls;
+			}
 			AuthorityInformationAccess authorityInformationAccess = AuthorityInformationAccess.getInstance(asn1Sequence);
 			AccessDescription[] accessDescriptions = authorityInformationAccess.getAccessDescriptions();
 			for (AccessDescription accessDescription : accessDescriptions) {
