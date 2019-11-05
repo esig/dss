@@ -88,6 +88,7 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.validationreport.jaxb.CryptoInformationType;
 import eu.europa.esig.validationreport.jaxb.POEType;
 import eu.europa.esig.validationreport.jaxb.SACertIDListType;
 import eu.europa.esig.validationreport.jaxb.SACertIDType;
@@ -111,6 +112,7 @@ import eu.europa.esig.validationreport.jaxb.SignatureAttributesType;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.SignerInformationType;
+import eu.europa.esig.validationreport.jaxb.ValidationReportDataType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
 import eu.europa.esig.validationreport.jaxb.ValidationTimeInfoType;
@@ -784,6 +786,18 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 			ValidationStatusType signatureValidationStatus = signatureValidationReport.getSignatureValidationStatus();
 			assertNotNull(signatureValidationStatus);
 			assertNotNull(signatureValidationStatus.getMainIndication());
+
+			List<ValidationReportDataType> associatedValidationReportData = signatureValidationStatus.getAssociatedValidationReportData();
+			if (Utils.isCollectionNotEmpty(associatedValidationReportData)) {
+				for (ValidationReportDataType validationReportDataType : associatedValidationReportData) {
+					CryptoInformationType cryptoInformation = validationReportDataType.getCryptoInformation();
+					if (cryptoInformation != null && !cryptoInformation.isSecureAlgorithm()) {
+						Date expired = cryptoInformation.getNotAfter();
+						assertNotNull(expired);
+						assertTrue(expired.before(validationTimeInfo.getValidationTime()));
+					}
+				}
+			}
 
 			SignatureAttributesType signatureAttributes = signatureValidationReport.getSignatureAttributes();
 			validateETSISignatureAttributes(signatureAttributes);

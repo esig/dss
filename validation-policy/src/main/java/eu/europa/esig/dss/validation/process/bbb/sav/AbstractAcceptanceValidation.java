@@ -94,7 +94,8 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 			String digestAlgoToFind = token.getDigestAlgorithm() == null ? "" : token.getDigestAlgorithm().getName();
 			notAfter = expirationDates.get(digestAlgoToFind);
 			String encryptionAlgoToFind = token.getEncryptionAlgorithm() == null ? "" : token.getEncryptionAlgorithm().name();
-			Date expirationEncryption = expirationDates.get(encryptionAlgoToFind + token.getKeyLengthUsedToSignThisToken());
+			int keySize = token.getKeyLengthUsedToSignThisToken() == null ? 0 : Integer.parseInt(token.getKeyLengthUsedToSignThisToken());
+			Date expirationEncryption = wrapper.getExpirationDate(encryptionAlgoToFind, keySize);
 			if (notAfter == null || (expirationEncryption != null && notAfter.after(expirationEncryption))) {
 				notAfter = expirationEncryption;
 			}
