@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation.executor;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -370,7 +371,7 @@ public class ETSIValidationReportBuilder {
 			addRevocationData(validationObjectListType, revocationData, poeExtraction);
 		}
 		
-		for (XmlOrphanRevocation orphanRevocation : diagnosticData.getAllOrphanRevocations()) {
+		for (XmlOrphanRevocation orphanRevocation : excludeDuplicateIds(diagnosticData.getAllOrphanRevocations())) {
 			addOrphanRevocation(validationObjectListType, orphanRevocation, poeExtraction);
 		}
 
@@ -512,6 +513,18 @@ public class ETSIValidationReportBuilder {
 		validationObject.setPOE(getPOE(revocationData.getId(), poeExtraction));
 		validationObject.setValidationReport(getValidationReport(revocationData));
 		validationObjectListType.getValidationObject().add(validationObject);
+	}
+	
+	private List<XmlOrphanRevocation> excludeDuplicateIds(List<XmlOrphanRevocation> orphanRevocations) {
+		List<XmlOrphanRevocation> uniqueIdOrphanRevocations = new ArrayList<XmlOrphanRevocation>();
+		List<String> addedOrphanRevocationIds = new ArrayList<String>();
+		for (XmlOrphanRevocation orphanRevocation : orphanRevocations) {
+			if (orphanRevocation.getToken() != null && !addedOrphanRevocationIds.contains(orphanRevocation.getToken().getId())) {
+				uniqueIdOrphanRevocations.add(orphanRevocation);
+				addedOrphanRevocationIds.add(orphanRevocation.getToken().getId());
+			}
+		}
+		return uniqueIdOrphanRevocations;
 	}
 
 	private void addOrphanRevocation(ValidationObjectListType validationObjectListType, XmlOrphanRevocation orphanRevocation, POEExtraction poeExtraction) {

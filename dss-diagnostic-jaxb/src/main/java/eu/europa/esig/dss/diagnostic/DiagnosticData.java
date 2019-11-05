@@ -637,6 +637,7 @@ public class DiagnosticData {
 	
 	/**
 	 * Returns a list of all found {@link XmlOrphanRevocation}s
+	 * NOTE: can return instances with duplicate ids (some signatures can have different origins for revocation data)
 	 * @return list of {@link XmlOrphanRevocation}s
 	 */
 	public List<XmlOrphanRevocation> getAllOrphanRevocations() {
