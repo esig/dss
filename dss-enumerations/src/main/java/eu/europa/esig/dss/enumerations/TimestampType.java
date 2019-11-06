@@ -99,18 +99,4 @@ public enum TimestampType {
 		return contentTimestamps.toArray(new TimestampType[contentTimestamps.size()]);
 	}
 
-	/**
-	 * Returns an array of all available timestamps covering Validation Data
-	 * @return array of {@link TimestampType}s that cover Validation Data
-	 */
-	public static TimestampType[] getTimestampTypesCoveringValidationData() {
-		List<TimestampType> contentTimestamps = new ArrayList<TimestampType>();
-		for (TimestampType timestampType : values()) {
-			if (timestampType.coversValidationData()) {
-				contentTimestamps.add(timestampType);
-			}
-		}
-		return contentTimestamps.toArray(new TimestampType[contentTimestamps.size()]);
-	}
-
 }
