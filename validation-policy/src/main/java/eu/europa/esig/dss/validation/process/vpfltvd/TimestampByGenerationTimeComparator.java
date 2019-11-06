@@ -18,18 +18,20 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.timestamp;
+package eu.europa.esig.dss.validation.process.vpfltvd;
 
 import java.io.Serializable;
 import java.util.Comparator;
 
-public class TimestampByGenerationTimeComparator implements Comparator<TimestampToken>, Serializable {
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+
+public class TimestampByGenerationTimeComparator implements Comparator<TimestampWrapper>, Serializable {
 
 	private static final long serialVersionUID = -9130280943645913494L;
 
 	@Override
-	public int compare(TimestampToken t1, TimestampToken t2) {
-		return t1.getGenerationTime().compareTo(t2.getGenerationTime());
+	public int compare(TimestampWrapper t1, TimestampWrapper t2) {
+		return t1.getProductionTime().compareTo(t2.getProductionTime());
 	}
 
 }

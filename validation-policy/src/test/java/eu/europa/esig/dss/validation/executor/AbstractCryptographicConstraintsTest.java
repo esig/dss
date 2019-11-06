@@ -31,7 +31,6 @@ import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.policy.jaxb.Algo;
 import eu.europa.esig.dss.policy.jaxb.AlgoExpirationDate;
 import eu.europa.esig.dss.policy.jaxb.BasicSignatureConstraints;
@@ -71,7 +70,7 @@ public abstract class AbstractCryptographicConstraintsTest extends AbstractTestV
 	}
 
 	protected ConstraintsParameters loadConstraintsParameters() throws Exception {
-		ConstraintsParameters constraintsParameters = ValidationPolicyFacade.newFacade().unmarshall(validationPolicyFile);
+		ConstraintsParameters constraintsParameters = getConstraintsParameters(validationPolicyFile);
 		this.constraintsParameters = constraintsParameters;
 		return constraintsParameters;
 	}

@@ -24,6 +24,7 @@ import java.io.File;
 
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
+import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 
 public abstract class AbstractTestValidationExecutor {
 	
@@ -33,6 +34,10 @@ public abstract class AbstractTestValidationExecutor {
 
 	protected ValidationPolicy loadDefaultPolicy() throws Exception {
 		return ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+	}
+	
+	protected ConstraintsParameters getConstraintsParameters(File file) throws Exception {
+		return ValidationPolicyFacade.newFacade().unmarshall(file);
 	}
 
 }
