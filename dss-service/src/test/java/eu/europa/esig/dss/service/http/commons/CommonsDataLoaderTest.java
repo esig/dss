@@ -29,6 +29,8 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -40,6 +42,8 @@ import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import eu.europa.esig.dss.utils.Utils;
 
 public class CommonsDataLoaderTest {
+
+	private static final Logger LOG = LoggerFactory.getLogger(CommonsDataLoaderTest.class);
 
 	private static final String URL_TO_LOAD = "http://certs.eid.belgium.be/belgiumrs2.crt";
 
@@ -66,35 +70,43 @@ public class CommonsDataLoaderTest {
 	@Test
 	public void ldapTest1() {
 		String url = "ldap://x500.gov.si/ou=sigen-ca,o=state-institutions,c=si?certificateRevocationList?base";
-		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(url)));
+		getDataAndAssertNotNull(url);
 	}
 
 	@Test
 	public void ldapTest2() {
 		String url = "ldap://postarca.posta.si/ou=POSTArCA,o=POSTA,c=SI?certificateRevocationList";
-		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(url)));
+		getDataAndAssertNotNull(url);
 	}
 
 	@Test
 	public void ldapTest3() {
 		String url = "ldap://acldap.nlb.si/o=ACNLB,c=SI?certificateRevocationList";
-		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(url)));
+		getDataAndAssertNotNull(url);
 	}
 	
 	@Test
 	public void dss1583test() {
 		String url = "ldap://pks-ldap.telesec.de/o=T-Systems International GmbH,c=de";
-		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(url)));
+		getDataAndAssertNotNull(url);
 		url = "ldap://pks-ldap.telesec.de/o=T-Systems%20International%20GmbH,c=de";
-		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(url)));
+		getDataAndAssertNotNull(url);
 		url = "ldap://pks-ldap.telesec.de/o=T-Systems International%20GmbH,c=de";
-		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(url)));
+		getDataAndAssertNotNull(url);
 		url = "ldap://pks-ldap.telesec.de/o=T-Systems International%20GmbH%20,%20c=de%20";
-		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(url)));
+		getDataAndAssertNotNull(url);
 		url = "ldap://pks-ldap.telesec.de/o=T-Systems International%20GmbH , c=de";
-		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(url)));
+		getDataAndAssertNotNull(url);
 		url = "ldap://pks-ldap.telesec.de/o=T-Systems International GmbH,c=de?certificateRevocationList?base";
-		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(url)));
+		getDataAndAssertNotNull(url);
+	}
+	
+	private void getDataAndAssertNotNull(String url) {
+		try {
+			assertTrue(Utils.isArrayNotEmpty(dataLoader.get(url)));
+		} catch (DSSExternalResourceException e) {
+			LOG.error("Failed to obtain data from an external source. Reason : [{}]", e.getMessage());
+		}
 	}
 	
 	@Test
