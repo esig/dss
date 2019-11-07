@@ -306,19 +306,19 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 				signatureTimestamps.add(timestampToken);
 				
 			} else if (isCompleteCertificateRef(unsignedAttribute)) {
-				encapsulatedReferences.addAll(getTimestampedCertificateRefs(unsignedAttribute));
+				addReferences(encapsulatedReferences, getTimestampedCertificateRefs(unsignedAttribute));
 				continue;
 				
 			} else if (isAttributeCertificateRef(unsignedAttribute)) {
-				encapsulatedReferences.addAll(getTimestampedCertificateRefs(unsignedAttribute));
+				addReferences(encapsulatedReferences, getTimestampedCertificateRefs(unsignedAttribute));
 				continue;
 				
 			} else if (isCompleteRevocationRef(unsignedAttribute)) {
-				encapsulatedReferences.addAll(getTimestampedRevocationRefs(unsignedAttribute));
+				addReferences(encapsulatedReferences, getTimestampedRevocationRefs(unsignedAttribute));
 				continue;
 				
 			} else if (isAttributeRevocationRef(unsignedAttribute)) {
-				encapsulatedReferences.addAll(getTimestampedRevocationRefs(unsignedAttribute));
+				addReferences(encapsulatedReferences, getTimestampedRevocationRefs(unsignedAttribute));
 				continue;
 				
 			} else if (isRefsOnlyTimestamp(unsignedAttribute)) {
@@ -340,11 +340,11 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 				sigAndRefsTimestamps.add(timestampToken);
 				
 			} else if (isCertificateValues(unsignedAttribute)) {
-				encapsulatedReferences.addAll(getTimestampedCertificateValues(unsignedAttribute));
+				addReferences(encapsulatedReferences, getTimestampedCertificateValues(unsignedAttribute));
 				continue;
 				
 			} else if (isRevocationValues(unsignedAttribute)) {
-				encapsulatedReferences.addAll(getTimestampedRevocationValues(unsignedAttribute));
+				addReferences(encapsulatedReferences, getTimestampedRevocationValues(unsignedAttribute));
 				continue;
 				
 			} else if (isArchiveTimestamp(unsignedAttribute)) {
@@ -362,7 +362,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 				archiveTimestamps.add(timestampToken);
 				
 			} else if (isTimeStampValidationData(unsignedAttribute)) {
-				encapsulatedReferences.addAll(getTimestampValidationData(unsignedAttribute));
+				addReferences(encapsulatedReferences, getTimestampValidationData(unsignedAttribute));
 				continue;
 				
 			} else {

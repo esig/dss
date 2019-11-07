@@ -246,7 +246,7 @@ public class XAdESTimestampSource extends AbstractTimestampSource<XAdESAttribute
 			if (isContentTimestampedReference(reference, includes)) {
 				for (SignatureScope signatureScope : signatureScopes) {
 					if (Utils.endsWithIgnoreCase(reference.getURI(), signatureScope.getName())) {
-						timestampReferences.add(new TimestampedReference(signatureScope.getDSSIdAsString(), TimestampedObjectType.SIGNED_DATA));
+						addReference(timestampReferences, new TimestampedReference(signatureScope.getDSSIdAsString(), TimestampedObjectType.SIGNED_DATA));
 					}
 				}
 			}
