@@ -40,8 +40,9 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
 public class PdfBoxInvisibleSignatureOptionsPreparator {
 
 	public void prepare(SignatureOptions signatureOptions) throws IOException {
-		ByteArrayInputStream bais = null;
-		try (PDDocument doc = new PDDocument()) {
+
+		try (PDDocument doc = new PDDocument(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			
 			PDAcroForm acroForm = new PDAcroForm(doc);
 			doc.getDocumentCatalog().setAcroForm(acroForm);
 			PDSignatureField signatureField = new PDSignatureField(acroForm);
@@ -63,14 +64,14 @@ public class PdfBoxInvisibleSignatureOptionsPreparator {
 			appearance.setNormalAppearance(appearanceStream);
 			widget.setAppearance(appearance);
 
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			doc.save(baos);
-			bais = new ByteArrayInputStream(baos.toByteArray());
+			
+			try (ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray())) {
+				signatureOptions.setVisualSignature(bais);
+				signatureOptions.setPage(0);
+			}
 
 		}
-		signatureOptions.setVisualSignature(bais);
-		bais.close();
-		signatureOptions.setPage(0);
 	}
 
 	private PDRectangle createEmptyRectangle() {

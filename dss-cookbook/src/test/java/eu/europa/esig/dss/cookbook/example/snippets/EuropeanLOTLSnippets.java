@@ -113,7 +113,7 @@ public class EuropeanLOTLSnippets {
 		cacheCleaner.setCleanMemory(true);
 		cacheCleaner.setCleanFileSystem(true);
 		cacheCleaner.setDSSFileLoader(offlineLoader());
-		return null;
+		return cacheCleaner;
 	}
 
 	// Optionally : alerting.
