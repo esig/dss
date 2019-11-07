@@ -34,7 +34,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
-public class ASiCEXAdESLevelLTAWithKeyInfoTest extends AbstractASiCEXAdESTestSignature {
+public class ASiCXAdESLevelLTAWithKeyInfoTest extends AbstractASiCEXAdESTestSignature {
 
 	private DocumentSignatureService<ASiCWithXAdESSignatureParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;

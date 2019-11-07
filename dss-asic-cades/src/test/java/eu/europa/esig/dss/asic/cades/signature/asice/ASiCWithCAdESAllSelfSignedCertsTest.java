@@ -20,7 +20,7 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 
-public class ASiCEWithCAdESAllSelfSignedCertsTest extends PKIFactoryAccess {
+public class ASiCWithCAdESAllSelfSignedCertsTest extends PKIFactoryAccess {
 	
 	private DSSDocument documentToSign;
 	private ASiCWithCAdESSignatureParameters parameters;
