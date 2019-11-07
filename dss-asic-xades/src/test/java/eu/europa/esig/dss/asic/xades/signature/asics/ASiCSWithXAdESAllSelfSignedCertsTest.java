@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.asic.xades.signature.asice;
+package eu.europa.esig.dss.asic.xades.signature.asics;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -20,7 +20,7 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 
-public class ASiCWithXAdESAllSelfSignedCertsTest extends PKIFactoryAccess {
+public class ASiCSWithXAdESAllSelfSignedCertsTest extends PKIFactoryAccess {
 	
 	private DSSDocument documentToSign;
 	private ASiCWithXAdESSignatureParameters parameters;
@@ -35,7 +35,7 @@ public class ASiCWithXAdESAllSelfSignedCertsTest extends PKIFactoryAccess {
 		parameters.setSigningCertificate(getSigningCert());
 		parameters.setCertificateChain(getCertificateChain());
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
-		parameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
+		parameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
 
         service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getSelfSignedTsa());
