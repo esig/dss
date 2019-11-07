@@ -95,9 +95,8 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	
 	@Override
 	public void draw() throws IOException {
-		ByteArrayInputStream bais = null;
-		try (PDDocument doc = new PDDocument())
-        {
+		try (PDDocument doc = new PDDocument(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			
 			PDPage originalPage = document.getPage(parameters.getPage() - 1);
 			SignatureFieldDimensionAndPositionBuilder dimensionAndPositionBuilder = new SignatureFieldDimensionAndPositionBuilder(parameters, originalPage);
 			SignatureFieldDimensionAndPosition dimensionAndPosition = dimensionAndPositionBuilder.build();
@@ -139,14 +138,15 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
             	setImage(cs, doc, dimensionAndPosition, parameters.getImage());
             }
             
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
             doc.save(baos);
-            bais = new ByteArrayInputStream(baos.toByteArray());
+            
+            try (ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray()))
+            {
+        		signatureOptions.setVisualSignature(bais);
+        		signatureOptions.setPage(parameters.getPage() - 1);
+            }
             
         }
-		signatureOptions.setVisualSignature(bais);
-		bais.close();
-		signatureOptions.setPage(parameters.getPage() - 1);
 	}
 	
 	private void rotateSignature(PDPageContentStream cs, PDPage page, PDRectangle rectangle) throws IOException {
