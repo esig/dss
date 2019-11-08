@@ -21,6 +21,8 @@
 package eu.europa.esig.dss.spi;
 
 import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndex;
+import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndexV2;
+import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndexV3;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -1075,15 +1077,27 @@ public final class DSSASN1Utils {
 	}
 
 	/**
-	 * Returns ats-hash-index table from timestamp's unsigned properties
+	 * Returns ats-hash-index table, with a related version present in from timestamp's unsigned properties
 	 * 
 	 * @param timestampUnsignedAttributes {@link AttributeTable} unsigned properties of the timestamp
-	 * @return the content of SignedAttribute: ATS-hash-index unsigned attribute {itu-t(0) identified-organization(4)
-	 *         etsi(0) electronic-signature-standard(1733) attributes(2) 5}
+	 * @return the content of SignedAttribute: ATS-hash-index unsigned attribute with a present version
 	 */
 	public static ASN1Sequence getAtsHashIndex(AttributeTable timestampUnsignedAttributes) {
-		if (timestampUnsignedAttributes != null) {
-			final Attribute atsHashIndexAttribute = timestampUnsignedAttributes.get(id_aa_ATSHashIndex);
+		ASN1ObjectIdentifier atsHashIndexVersionIdentifier = getAtsHashIndexVersionIdentifier(timestampUnsignedAttributes);
+		return getAtsHashIndexByVersion(timestampUnsignedAttributes, atsHashIndexVersionIdentifier);
+	}
+
+	/**
+	 * Returns ats-hash-index table, with a specified version present in from timestamp's unsigned properties
+	 * 
+	 * @param timestampUnsignedAttributes {@link AttributeTable} unsigned properties of the timestamp
+	 * @param atsHashIndexVersionIdentifier {@link ASN1ObjectIdentifier} identifier of ats-hash-index table to get
+	 * @return the content of SignedAttribute: ATS-hash-index unsigned attribute with a requested version if present
+	 */
+	public static ASN1Sequence getAtsHashIndexByVersion(AttributeTable timestampUnsignedAttributes, 
+			ASN1ObjectIdentifier atsHashIndexVersionIdentifier) {
+		if (timestampUnsignedAttributes != null && atsHashIndexVersionIdentifier != null) {
+			final Attribute atsHashIndexAttribute = timestampUnsignedAttributes.get(atsHashIndexVersionIdentifier);
 			if (atsHashIndexAttribute != null) {
 				final ASN1Set attrValues = atsHashIndexAttribute.getAttrValues();
 				if (attrValues != null && attrValues.size() > 0) {
@@ -1092,6 +1106,59 @@ public final class DSSASN1Utils {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Returns {@code ASN1ObjectIdentifier} of the found AtsHashIndex
+	 * @param timestampUnsignedAttributes {@link AttributeTable} of the timestamp's unsignedAttributes
+	 * @return {@link ASN1ObjectIdentifier} of the AtsHashIndex element version
+	 */
+	public static ASN1ObjectIdentifier getAtsHashIndexVersionIdentifier(AttributeTable timestampUnsignedAttributes) {
+		if (timestampUnsignedAttributes != null) {
+			Attributes attributes = timestampUnsignedAttributes.toASN1Structure();
+			for (Attribute attribute : attributes.getAttributes()) {
+				ASN1ObjectIdentifier attrType = attribute.getAttrType();
+				if (id_aa_ATSHashIndex.equals(attrType) || id_aa_ATSHashIndexV2.equals(attrType) || id_aa_ATSHashIndexV3.equals(attrType)) {
+					LOG.debug("Unsigned attribute of type [{}] found in the timestamp.", attrType);
+					return attrType;
+				}
+			}
+			LOG.warn("The timestamp unsignedAttributes does not contain ATSHashIndex!");
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns octets from the given attribute by defined atsh-hash-index type
+	 * @param attribute {@link Attribute} to get byte array from
+	 * @param atsHashIndexVersionIdentifier {@link ASN1ObjectIdentifier} to specify rules
+	 * @return byte array
+	 */
+	public static List<byte[]> getOctetStringForAtsHashIndex(Attribute attribute, ASN1ObjectIdentifier atsHashIndexVersionIdentifier) {
+		
+		List<byte[]> octets = new ArrayList<byte[]>();
+		/*
+		 *  id_aa_ATSHashIndexV3 (EN 319 122-1 v1.1.1) -> Each one shall contain the hash
+		 *  value of the octets resulting from concatenating the Attribute.attrType field and one of the instances of
+		 *  AttributeValue within the Attribute.attrValues within the unsignedAttrs field. One concatenation
+		 *  operation shall be performed as indicated above, and the hash value of the obtained result included in
+		 *  unsignedAttrsHashIndex
+		 */
+		if (id_aa_ATSHashIndexV3.equals(atsHashIndexVersionIdentifier)) {
+			byte[] attrType = getDEREncoded(attribute.getAttrType());
+			for (ASN1Encodable asn1Encodable : attribute.getAttrValues().toArray()) {
+				octets.add(DSSUtils.concatenate(attrType, getDEREncoded(asn1Encodable)));
+			}
+		} else {
+			/*
+			 * id_aa_ATSHashIndex (TS 101 733 v2.2.1) and id_aa_ATSHashIndexV2 (EN 319 122-1 v1.0.0) ->
+			 * The field unsignedAttrsHashIndex shall be a sequence of octet strings. Each one shall contain the hash value of
+			 * one instance of Attribute within the unsignedAttrs field of the SignerInfo.
+			 */
+			octets.add(getDEREncoded(attribute));
+		}
+		
+		return octets;
 	}
 	
 	/**
