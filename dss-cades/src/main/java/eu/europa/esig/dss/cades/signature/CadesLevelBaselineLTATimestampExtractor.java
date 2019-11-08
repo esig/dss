@@ -20,7 +20,9 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndex;
+import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndexV2;
+import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndexV3;
+
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certValues;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationValues;
 
@@ -135,7 +137,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		final ASN1Sequence certificatesHashIndex = getCertificatesHashIndex();
 		final ASN1Sequence crLsHashIndex = getCRLsHashIndex();
 		final ASN1Sequence unsignedAttributesHashIndex = getUnsignedAttributesHashIndex(signerInformation);
-		return getComposedAtsHashIndex(algorithmIdentifier, certificatesHashIndex, crLsHashIndex, unsignedAttributesHashIndex);
+		return getComposedAtsHashIndex(algorithmIdentifier, certificatesHashIndex, crLsHashIndex, unsignedAttributesHashIndex, id_aa_ATSHashIndexV3);
 	}
 
 	/**
@@ -146,25 +148,40 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 * @return
 	 */
 	public Attribute getVerifiedAtsHashIndex(SignerInformation signerInformation, TimestampToken timestampToken) {
-		ASN1Sequence atsHashIndex = DSSASN1Utils.getAtsHashIndex(timestampToken.getUnsignedAttributes());
+		final AttributeTable unsignedAttributes = timestampToken.getUnsignedAttributes();
+		ASN1ObjectIdentifier atsHashIndexVersionIdentifier = DSSASN1Utils.getAtsHashIndexVersionIdentifier(unsignedAttributes);
+		ASN1Sequence atsHashIndex = DSSASN1Utils.getAtsHashIndexByVersion(unsignedAttributes, atsHashIndexVersionIdentifier);
+		
 		final AlgorithmIdentifier derObjectAlgorithmIdentifier = getAlgorithmIdentifier(atsHashIndex);
 		final ASN1Sequence certificatesHashIndex = getVerifiedCertificatesHashIndex(atsHashIndex);
 		final ASN1Sequence crLsHashIndex = getVerifiedCRLsHashIndex(atsHashIndex);
-		final ASN1Sequence verifiedAttributesHashIndex = getVerifiedUnsignedAttributesHashIndex(signerInformation, atsHashIndex);
-		return getComposedAtsHashIndex(derObjectAlgorithmIdentifier, certificatesHashIndex, crLsHashIndex, verifiedAttributesHashIndex);
+		final ASN1Sequence verifiedAttributesHashIndex = getVerifiedUnsignedAttributesHashIndex(signerInformation, atsHashIndex, 
+				atsHashIndexVersionIdentifier);
+		return getComposedAtsHashIndex(derObjectAlgorithmIdentifier, certificatesHashIndex, crLsHashIndex, 
+				verifiedAttributesHashIndex, atsHashIndexVersionIdentifier);
 	}
 
 	private Attribute getComposedAtsHashIndex(AlgorithmIdentifier algorithmIdentifiers, ASN1Sequence certificatesHashIndex, ASN1Sequence crLsHashIndex,
-			ASN1Sequence unsignedAttributesHashIndex) {
+			ASN1Sequence unsignedAttributesHashIndex, ASN1ObjectIdentifier atsHashIndexVersionIdentifier) {
 		final ASN1EncodableVector vector = new ASN1EncodableVector();
 		if (algorithmIdentifiers != null) {
 			vector.add(algorithmIdentifiers);
+		} else if (id_aa_ATSHashIndexV2.equals(atsHashIndexVersionIdentifier) || id_aa_ATSHashIndexV3.equals(atsHashIndexVersionIdentifier)) {
+			// for id_aa_ATSHashIndexV2 and id_aa_ATSHashIndexV3, the algorithmIdentifier is required
+			AlgorithmIdentifier sha256AlgorithmIdentifier = new AlgorithmIdentifier(new ASN1ObjectIdentifier(DigestAlgorithm.SHA256.getOid()));
+			vector.add(sha256AlgorithmIdentifier);
 		}
-		vector.add(certificatesHashIndex);
-		vector.add(crLsHashIndex);
-		vector.add(unsignedAttributesHashIndex);
+		if (certificatesHashIndex != null) {
+			vector.add(certificatesHashIndex);
+		}
+		if (crLsHashIndex != null) {
+			vector.add(crLsHashIndex);
+		}
+		if (unsignedAttributesHashIndex != null) {
+			vector.add(unsignedAttributesHashIndex);
+		}
 		final ASN1Sequence derSequence = new DERSequence(vector);
-		return new Attribute(id_aa_ATSHashIndex, new DERSet(derSequence));
+		return new Attribute(atsHashIndexVersionIdentifier, new DERSet(derSequence));
 	}
 
 	/**
@@ -223,7 +240,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 			}
 		}
 		if (!certHashesList.isEmpty()) {
-			LOG.error("{} attribute hash in Cert Hashes have not been found in document attributes: {}", certHashesList.size(), certHashesList);
+			LOG.error("{} attribute(s) hash in Cert Hashes has not been found in document attributes: {}", certHashesList.size(), certHashesList);
 			// return a empty DERSequence to screw up the hash
 			return new DERSequence();
 		}
@@ -300,7 +317,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		}
 
 		if (!crlHashesList.isEmpty()) {
-			LOG.error("{} attribute hash in CRL Hashes have not been found in document attributes: {}", crlHashesList.size(), crlHashesList);
+			LOG.error("{} attribute(s) hash in CRL Hashes has not been found in document attributes: {}", crlHashesList.size(), crlHashesList);
 			// return a empty DERSequence to screw up the hash
 			return new DERSequence();
 		}
@@ -341,8 +358,10 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		for (int i = 0; i < asn1EncodableVector.size(); i++) {
 			final Attribute attribute = (Attribute) asn1EncodableVector.get(i);
 			if (!excludedAttributesFromAtsHashIndex.contains(attribute.getAttrType())) {
-				final DEROctetString derOctetStringDigest = getAttributeDerOctetStringHash(attribute);
-				unsignedAttributesHashIndex.add(derOctetStringDigest);
+				List<DEROctetString> attributeDerOctetStringHashes = getAttributeDerOctetStringHashes(attribute, id_aa_ATSHashIndexV3);
+				for (DEROctetString derOctetStringDigest : attributeDerOctetStringHashes) {
+					unsignedAttributesHashIndex.add(derOctetStringDigest);
+				}
 			}
 		}
 		return new DERSequence(unsignedAttributesHashIndex);
@@ -370,7 +389,8 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private ASN1Sequence getVerifiedUnsignedAttributesHashIndex(SignerInformation signerInformation, final ASN1Sequence timestampHashIndex) {
+	private ASN1Sequence getVerifiedUnsignedAttributesHashIndex(SignerInformation signerInformation, final ASN1Sequence timestampHashIndex, 
+			ASN1ObjectIdentifier atsHashIndexVersionIdentifier) {
 		
 		final ASN1Sequence unsignedAttributesHashes = DSSASN1Utils.getUnsignedAttributesHashIndex(timestampHashIndex);
 		
@@ -382,17 +402,19 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		final ASN1EncodableVector asn1EncodableVector = unsignedAttributes.toASN1EncodableVector();
 		for (int i = 0; i < asn1EncodableVector.size(); i++) {
 			final Attribute attribute = (Attribute) asn1EncodableVector.get(i);
-			final DEROctetString derOctetStringDigest = getAttributeDerOctetStringHash(attribute);
-			final ASN1ObjectIdentifier attrType = attribute.getAttrType();
-			if (timestampUnsignedAttributesHashesList.remove(derOctetStringDigest)) {
-				// attribute present in signature and in timestamp
-				LOG.debug("Attribute {} present in timestamp", attrType.getId());
-			} else {
-				LOG.debug("Attribute {} not present in timestamp", attrType.getId());
+			List<DEROctetString> attributeDerOctetStringHashes = getAttributeDerOctetStringHashes(attribute, atsHashIndexVersionIdentifier);
+			for (DEROctetString derOctetStringDigest : attributeDerOctetStringHashes) {
+				final ASN1ObjectIdentifier attrType = attribute.getAttrType();
+				if (timestampUnsignedAttributesHashesList.remove(derOctetStringDigest)) {
+					// attribute present in signature and in timestamp
+					LOG.debug("Attribute {} present in timestamp", attrType.getId());
+				} else {
+					LOG.debug("Attribute {} not present in timestamp", attrType.getId());
+				}
 			}
 		}
 		if (!timestampUnsignedAttributesHashesList.isEmpty()) {
-			LOG.error("{} attribute hash in Timestamp have not been found in document attributes: {}", timestampUnsignedAttributesHashesList.size(),
+			LOG.error("{} attribute(s) hash in Timestamp has not been found in document attributes: {}", timestampUnsignedAttributesHashesList.size(),
 					timestampUnsignedAttributesHashesList);
 			// return a empty DERSequence to screw up the hash
 			return new DERSequence();
@@ -401,11 +423,20 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		return unsignedAttributesHashes;
 	}
 
-	private DEROctetString getAttributeDerOctetStringHash(Attribute attribute) {
-
-		final byte[] attributeEncoded = DSSASN1Utils.getDEREncoded(attribute);
-		final byte[] digest = DSSUtils.digest(hashIndexDigestAlgorithm, attributeEncoded);
-		return new DEROctetString(digest);
+	private List<DEROctetString> getAttributeDerOctetStringHashes(Attribute attribute, ASN1ObjectIdentifier atsHashIndexVersionIdentifier) {
+		List<byte[]> octets = DSSASN1Utils.getOctetStringForAtsHashIndex(attribute, atsHashIndexVersionIdentifier);
+		if (Utils.isCollectionNotEmpty(octets)) {
+			List<DEROctetString> derOctetStrings = new ArrayList<DEROctetString>();
+			for (byte[] bytes : octets) {
+				final byte[] digest = DSSUtils.digest(hashIndexDigestAlgorithm, bytes);
+				derOctetStrings.add(new DEROctetString(digest));
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("Digest string [{}] has been added to the hash table", Utils.toHex(digest));
+				}
+			}
+			return derOctetStrings;
+		}
+		return Collections.emptyList();
 	}
 
 	/**
