@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndex;
+import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndexV3;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -176,7 +179,8 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 		final DigestAlgorithm timestampDigestAlgorithm = parameters.getSignatureTimestampParameters().getDigestAlgorithm();
 		byte[] originalDocumentDigest = Utils.fromBase64(cadesSignature.getOriginalDocument().getDigest(timestampDigestAlgorithm));
 
-		final Attribute atsHashIndexAttribute = timestampExtractor.getAtsHashIndex(signerInformation, timestampDigestAlgorithm);
+		ASN1ObjectIdentifier atsHashIndexTableIdentifier = getAtsHashIndexTableIdentifier(parameters);
+		final Attribute atsHashIndexAttribute = timestampExtractor.getAtsHashIndex(signerInformation, timestampDigestAlgorithm, atsHashIndexTableIdentifier);
 
 		final byte[] encodedToTimestamp = timestampExtractor.getArchiveTimestampDataV3(signerInformation, atsHashIndexAttribute, originalDocumentDigest);
 
@@ -184,6 +188,14 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 				atsHashIndexAttribute);
 
 		return unsignedAttributes.add(OID.id_aa_ets_archiveTimestampV3, timeStampAttributeValue);
+	}
+	
+	private ASN1ObjectIdentifier getAtsHashIndexTableIdentifier(CAdESSignatureParameters signatureParameters) {
+		if (!signatureParameters.isEn319122()) {
+			return id_aa_ATSHashIndex;
+		} else {
+			return id_aa_ATSHashIndexV3;
+		}
 	}
 
 }

@@ -127,17 +127,21 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 * certificatesHashIndex SEQUENCE OF OCTET STRING,
 	 * crlsHashIndex SEQUENCE OF OCTET STRING,
 	 *
-	 * @param signerInformation
-	 * @return
+	 * @param signerInformation {@link SignerInformation}
+	 * @param hashIndexDigestAlgorithm {@link DigestAlgorithm}
+	 * @param atsHashIndexVersionIdentifier {@link ASN1ObjectIdentifier} version of ats-hash-index to create
+	 * @return {@link Attribute} ats-hash-index
 	 */
-	public Attribute getAtsHashIndex(SignerInformation signerInformation, DigestAlgorithm hashIndexDigestAlgorithm) {
+	public Attribute getAtsHashIndex(SignerInformation signerInformation, DigestAlgorithm hashIndexDigestAlgorithm, 
+			ASN1ObjectIdentifier atsHashIndexVersionIdentifier) {
 
 		this.hashIndexDigestAlgorithm = hashIndexDigestAlgorithm;
 		final AlgorithmIdentifier algorithmIdentifier = getHashIndexDigestAlgorithmIdentifier();
 		final ASN1Sequence certificatesHashIndex = getCertificatesHashIndex();
 		final ASN1Sequence crLsHashIndex = getCRLsHashIndex();
-		final ASN1Sequence unsignedAttributesHashIndex = getUnsignedAttributesHashIndex(signerInformation);
-		return getComposedAtsHashIndex(algorithmIdentifier, certificatesHashIndex, crLsHashIndex, unsignedAttributesHashIndex, id_aa_ATSHashIndexV3);
+		final ASN1Sequence unsignedAttributesHashIndex = getUnsignedAttributesHashIndex(signerInformation, atsHashIndexVersionIdentifier);
+		return getComposedAtsHashIndex(algorithmIdentifier, certificatesHashIndex, crLsHashIndex, 
+				unsignedAttributesHashIndex, atsHashIndexVersionIdentifier);
 	}
 
 	/**
@@ -347,10 +351,11 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 * Attribute, as present at the time when the corresponding archive time-stamp is requested, shall be included in
 	 * unsignedAttrsHashIndex. No other hash values shall be included in this field.
 	 *
-	 * @param signerInformation
+	 * @param signerInformation {@link SignerInformation}
+	 * @param atsHashIndexVersionIdentifier {@link ASN1ObjectIdentifier} of the ats-hash-index table version to create
 	 * @return
 	 */
-	private ASN1Sequence getUnsignedAttributesHashIndex(SignerInformation signerInformation) {
+	private ASN1Sequence getUnsignedAttributesHashIndex(SignerInformation signerInformation, ASN1ObjectIdentifier atsHashIndexVersionIdentifier) {
 
 		final ASN1EncodableVector unsignedAttributesHashIndex = new ASN1EncodableVector();
 		AttributeTable unsignedAttributes = signerInformation.getUnsignedAttributes();
@@ -358,7 +363,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		for (int i = 0; i < asn1EncodableVector.size(); i++) {
 			final Attribute attribute = (Attribute) asn1EncodableVector.get(i);
 			if (!excludedAttributesFromAtsHashIndex.contains(attribute.getAttrType())) {
-				List<DEROctetString> attributeDerOctetStringHashes = getAttributeDerOctetStringHashes(attribute, id_aa_ATSHashIndexV3);
+				List<DEROctetString> attributeDerOctetStringHashes = getAttributeDerOctetStringHashes(attribute, atsHashIndexVersionIdentifier);
 				for (DEROctetString derOctetStringDigest : attributeDerOctetStringHashes) {
 					unsignedAttributesHashIndex.add(derOctetStringDigest);
 				}
