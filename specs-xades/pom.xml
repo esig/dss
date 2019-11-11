@@ -55,6 +55,8 @@
 				<configuration>
 					<schemaDirectory>src/main/resources/xsd</schemaDirectory>
 					<schemaIncludes>
+						<schemaInclude>XAdESv111.xsd</schemaInclude>
+						<schemaInclude>XAdESv122.xsd</schemaInclude>
 						<schemaInclude>XAdESv141.xsd</schemaInclude>
 					</schemaIncludes>
 					<catalog>src/main/resources/xsd/catalog.cat</catalog>

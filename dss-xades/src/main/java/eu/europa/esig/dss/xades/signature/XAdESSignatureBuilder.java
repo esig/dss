@@ -203,6 +203,8 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 *             if an error occurred
 	 */
 	public byte[] build() throws DSSException {
+		
+		xadesPaths = getCurrentXAdESPaths();
 
 		documentDom = buildRootDocumentDom();
 

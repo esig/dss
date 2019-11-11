@@ -52,7 +52,9 @@ import eu.europa.esig.dss.xades.definition.XAdESElement;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades111.XAdES111Element;
+import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
 import eu.europa.esig.dss.xades.definition.xades122.XAdES122Element;
+import eu.europa.esig.dss.xades.definition.xades122.XAdES122Paths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigAttribute;
@@ -74,7 +76,7 @@ public abstract class XAdESBuilder {
 	 * This variable holds the {@code XAdESPaths} which contains all constants and
 	 * queries needed to cope with the default signature schema.
 	 */
-	protected XAdESPaths xadesPaths = new XAdES132Paths();
+	protected XAdESPaths xadesPaths;
 
 	/*
 	 * This variable is a reference to the set of parameters relating to the structure and process of the creation or
@@ -101,7 +103,7 @@ public abstract class XAdESBuilder {
 	public XAdESBuilder(final CertificateVerifier certificateVerifier) {
 		this.certificateVerifier = certificateVerifier;
 	}
-
+	
 	/**
 	 * This method creates the ds:DigestMethod DOM object
 	 * 
@@ -208,7 +210,12 @@ public abstract class XAdESBuilder {
 	 *            the token to be digested
 	 */
 	protected void incorporateDigestValue(final Element parentDom, final DigestAlgorithm digestAlgorithm, final Token token) {
-		final Element digestValueDom = DomUtils.createElementNS(documentDom, params.getXmldsigNamespace(), XMLDSigElement.DIGEST_VALUE);
+		Element digestValueDom = null;
+		if (XAdESNamespaces.XADES_111.isSameUri(params.getXadesNamespace().getUri())) {
+			digestValueDom = DomUtils.createElementNS(documentDom, params.getXadesNamespace(), XAdES111Element.DIGEST_VALUE);
+		} else {
+			digestValueDom = DomUtils.createElementNS(documentDom, params.getXmldsigNamespace(), XMLDSigElement.DIGEST_VALUE);
+		}
 		final String base64EncodedDigestBytes = Utils.toBase64(token.getDigest(digestAlgorithm));
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Digest value {} --> {}", parentDom.getNodeName(), base64EncodedDigestBytes);
@@ -264,9 +271,16 @@ public abstract class XAdESBuilder {
 
 		final Element certDigestDom = DomUtils.addElement(documentDom, certDom, params.getXadesNamespace(), getCurrentXAdESElements().getElementCertDigest());
 
-		final DigestAlgorithm signingCertificateDigestMethod = params.getSigningCertificateDigestMethod();		
-		incorporateDigestMethod(certDigestDom, signingCertificateDigestMethod);
-
+		final DigestAlgorithm signingCertificateDigestMethod = params.getSigningCertificateDigestMethod();
+	
+		Element digestMethodDom = null;
+		if (XAdESNamespaces.XADES_111.isSameUri(params.getXadesNamespace().getUri())) {
+			digestMethodDom = DomUtils.addElement(documentDom, certDigestDom, params.getXadesNamespace(), XAdES111Element.DIGEST_METHOD);
+		} else {
+			digestMethodDom = DomUtils.addElement(documentDom, certDigestDom, params.getXmldsigNamespace(), XMLDSigElement.DIGEST_METHOD);
+		}
+		digestMethodDom.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName(), signingCertificateDigestMethod.getUri());
+		
 		incorporateDigestValue(certDigestDom, signingCertificateDigestMethod, certificate);
 		return certDom;
 	}
@@ -342,4 +356,16 @@ public abstract class XAdESBuilder {
 		throw new DSSException("Unsupported URI : " + params.getXadesNamespace().getUri());
 	}
 
+	protected XAdESPaths getCurrentXAdESPaths() {
+		if (Utils.areStringsEqual(XAdESNamespaces.XADES_132.getUri(), params.getXadesNamespace().getUri())) {
+			return new XAdES132Paths();
+		} else if (Utils.areStringsEqual(XAdESNamespaces.XADES_122.getUri(), params.getXadesNamespace().getUri())) {
+			return new XAdES122Paths();
+		} else if (Utils.areStringsEqual(XAdESNamespaces.XADES_111.getUri(), params.getXadesNamespace().getUri())) {
+			return new XAdES111Paths();
+		} else {
+			throw new DSSException("Unsupported URI : " + params.getXadesNamespace().getUri());
+		}
+	}
+	
 }

@@ -62,7 +62,6 @@ import eu.europa.esig.dss.xades.ProfileParameters;
 import eu.europa.esig.dss.xades.ProfileParameters.Operation;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigElement;
@@ -135,7 +134,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 
 				continue;
 			}
-			xadesSignature = new XAdESSignature(currentSignatureDom, Arrays.asList(new XAdES132Paths()), certificateVerifier.createValidationPool());
+			xadesSignature = new XAdESSignature(currentSignatureDom, Arrays.asList(getCurrentXAdESPaths()), certificateVerifier.createValidationPool());
 			xadesSignature.setDetachedContents(params.getDetachedContents());
 			extendSignatureTag();
 		}
@@ -153,6 +152,8 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	protected void extendSignatureTag() throws DSSException {
 
 		assertExtendSignatureToTPossible();
+		
+		xadesPaths = xadesSignature.getXAdESPaths();
 
 		// We ensure that all XML segments needed for the construction of the extension -T are present.
 		// If a segment does not exist then it is created.
@@ -480,8 +481,10 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		final String base64EncodedTimeStampToken = Utils.toBase64(DSSASN1Utils.getDEREncoded(timeStampToken));
 
 		final String timestampId = UUID.randomUUID().toString();
-		timeStampDom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), "TS-" + timestampId);
-
+		if (!XAdESNamespaces.XADES_111.isSameUri(params.getXadesNamespace().getUri()) ) {
+			timeStampDom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), "TS-" + timestampId);
+		}
+		
 		// <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
 		incorporateC14nMethod(timeStampDom, timestampC14nMethod);
 
