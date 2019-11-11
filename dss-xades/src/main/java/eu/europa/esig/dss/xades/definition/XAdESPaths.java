@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.xades.definition;
 
+import eu.europa.esig.dss.DSSNamespace;
+
 public interface XAdESPaths {
 
 	DSSNamespace getNamespace();

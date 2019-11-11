@@ -20,22 +20,26 @@
  */
 package eu.europa.esig.dss.xades.reference;
 
-import javax.xml.crypto.dsig.XMLSignature;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import eu.europa.esig.dss.DSSNamespace;
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
+import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigElement;
 
 public abstract class AbstractTransform implements DSSTransform {
 
-	public static final String ALGORITHM_ATTRIBUTE_NAME = "Algorithm";
-	public static final String DS_TRANSFORM = "ds:Transform";
-	
 	protected final String algorithm;
-	protected String namespace = XMLSignature.XMLNS;
+	protected DSSNamespace namespace = XAdESNamespaces.XMLDSIG;
 	
 	public AbstractTransform(String algorithm) {
+		this.algorithm = algorithm;
+	}
+	
+	public AbstractTransform(DSSNamespace xmlDSigNamespace, String algorithm) {
+		this.namespace = xmlDSigNamespace;
 		this.algorithm = algorithm;
 	}
 	
@@ -45,14 +49,14 @@ public abstract class AbstractTransform implements DSSTransform {
 	}
 	
 	@Override
-	public void setNamespace(String namespace) {
+	public void setNamespace(DSSNamespace namespace) {
 		this.namespace = namespace;
 	}
 	
 	@Override
 	public Element createTransform(Document document, Element parentNode) {
-		final Element transformDom = DomUtils.addElement(document, parentNode, namespace, DS_TRANSFORM);
-		transformDom.setAttribute(ALGORITHM_ATTRIBUTE_NAME, algorithm);
+		final Element transformDom = DomUtils.addElement(document, parentNode, namespace, XMLDSigElement.TRANSFORM);
+		transformDom.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName(), algorithm);
 		return transformDom;
 	}
 	

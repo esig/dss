@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.xades.definition;
 
+import eu.europa.esig.dss.DSSAttribute;
+import eu.europa.esig.dss.DSSElement;
+import eu.europa.esig.dss.DSSNamespace;
 import eu.europa.esig.dss.model.DSSException;
 
 public class XPathExpressionBuilder {

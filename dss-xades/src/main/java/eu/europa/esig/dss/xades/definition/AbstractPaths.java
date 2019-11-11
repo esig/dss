@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.xades.definition;
 
+import eu.europa.esig.dss.DSSAttribute;
+import eu.europa.esig.dss.DSSElement;
+
 public abstract class AbstractPaths {
 
 	public static final String all(DSSElement element) {

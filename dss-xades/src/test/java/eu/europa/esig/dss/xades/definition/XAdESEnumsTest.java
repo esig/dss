@@ -31,6 +31,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import eu.europa.esig.dss.DSSAttribute;
+import eu.europa.esig.dss.DSSElement;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.xades.definition.xades111.XAdES111Attribute;
 import eu.europa.esig.dss.xades.definition.xades111.XAdES111Element;

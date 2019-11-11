@@ -22,6 +22,7 @@ package eu.europa.esig.dss.xades.definition;
 
 import javax.xml.crypto.dsig.XMLSignature;
 
+import eu.europa.esig.dss.DSSNamespace;
 import eu.europa.esig.dss.DomUtils;
 
 public class XAdESNamespaces {

@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.xades.definition.xmldsig;
 
-import eu.europa.esig.dss.xades.definition.DSSElement;
-import eu.europa.esig.dss.xades.definition.DSSNamespace;
+import eu.europa.esig.dss.DSSElement;
+import eu.europa.esig.dss.DSSNamespace;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 
 public enum XMLDSigElement implements DSSElement {

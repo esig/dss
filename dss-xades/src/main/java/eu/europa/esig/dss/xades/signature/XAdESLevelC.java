@@ -43,7 +43,6 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.ResponderId;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ValidationContext;
-import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 
 /**
  * Contains XAdES-C profile aspects
@@ -99,7 +98,7 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 			return;
 		}
 
-		final Element crlRefsDom = DomUtils.addElement(documentDom, completeRevocationRefsDom, XAdESNamespaces.XADES_132.getUri(), XADES_CRL_REFS);
+		final Element crlRefsDom = DomUtils.addElement(documentDom, completeRevocationRefsDom, params.getXadesNamespace(), getCurrentXAdESElements().getElementCRLRefs());
 
 		for (final RevocationToken revocationToken : processedRevocationTokens) {
 
@@ -107,24 +106,24 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 
 				final CRLToken crl = ((CRLToken) revocationToken);
 
-				final Element crlRefDom = DomUtils.addElement(documentDom, crlRefsDom, XAdESNamespaces.XADES_132.getUri(), XADES_CRL_REF);
+				final Element crlRefDom = DomUtils.addElement(documentDom, crlRefsDom, params.getXadesNamespace(), getCurrentXAdESElements().getElementCRLRef());
 
-				final Element digestAlgAndValueDom = DomUtils.addElement(documentDom, crlRefDom, XAdESNamespaces.XADES_132.getUri(), XADES_DIGEST_ALG_AND_VALUE);
+				final Element digestAlgAndValueDom = DomUtils.addElement(documentDom, crlRefDom, params.getXadesNamespace(), getCurrentXAdESElements().getElementDigestAlgAndValue());
 				// TODO: to be added as field to eu.europa.esig.dss.AbstractSignatureParameters.
 				DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA1;
 				incorporateDigestMethod(digestAlgAndValueDom, digestAlgorithm);
 
 				incorporateDigestValue(digestAlgAndValueDom, digestAlgorithm, revocationToken);
 
-				final Element crlIdentifierDom = DomUtils.addElement(documentDom, crlRefDom, XAdESNamespaces.XADES_132.getUri(), XADES_CRL_IDENTIFIER);
+				final Element crlIdentifierDom = DomUtils.addElement(documentDom, crlRefDom, params.getXadesNamespace(), getCurrentXAdESElements().getElementCRLIdentifier());
 				// crlIdentifierDom.setAttribute("URI",".crl");
 				final String issuerX500PrincipalName = crl.getIssuerX500Principal().getName();
-				DomUtils.addTextElement(documentDom, crlIdentifierDom, XAdESNamespaces.XADES_132.getUri(), XADES_ISSUER, issuerX500PrincipalName);
+				DomUtils.addTextElement(documentDom, crlIdentifierDom, params.getXadesNamespace(), getCurrentXAdESElements().getElementIssuer(), issuerX500PrincipalName);
 
 				final Date thisUpdate = crl.getThisUpdate();
 				XMLGregorianCalendar xmlGregorianCalendar = DomUtils.createXMLGregorianCalendar(thisUpdate);
 				final String thisUpdateAsXmlFormat = xmlGregorianCalendar.toXMLFormat();
-				DomUtils.addTextElement(documentDom, crlIdentifierDom, XAdESNamespaces.XADES_132.getUri(), XADES_ISSUER_TIME, thisUpdateAsXmlFormat);
+				DomUtils.addTextElement(documentDom, crlIdentifierDom, params.getXadesNamespace(),getCurrentXAdESElements().getElementIssueTime(), thisUpdateAsXmlFormat);
 
 				// DSSXMLUtils.addTextElement(documentDom, crlRefDom, XAdESNamespaces.XAdES, "xades:Number", ???);
 			}
@@ -175,7 +174,7 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 			return;
 		}
 
-		final Element ocspRefsDom = DomUtils.addElement(documentDom, completeRevocationRefsDom, XAdESNamespaces.XADES_132.getUri(), XADES_OCSP_REFS);
+		final Element ocspRefsDom = DomUtils.addElement(documentDom, completeRevocationRefsDom, params.getXadesNamespace(), getCurrentXAdESElements().getElementOCSPRefs());
 
 		for (RevocationToken revocationToken : processedRevocationTokens) {
 
@@ -184,33 +183,33 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 				BasicOCSPResp basicOcspResp = ((OCSPToken) revocationToken).getBasicOCSPResp();
 				if (basicOcspResp != null) {
 
-					final Element ocspRefDom = DomUtils.addElement(documentDom, ocspRefsDom, XAdESNamespaces.XADES_132.getUri(), XADES_OCSP_REF);
+					final Element ocspRefDom = DomUtils.addElement(documentDom, ocspRefsDom, params.getXadesNamespace(), getCurrentXAdESElements().getElementOCSPRef());
 
 					final Element ocspIdentifierDom = DomUtils.addElement(documentDom, ocspRefDom, 
-							XAdESNamespaces.XADES_132.getUri(), XADES_OCSP_IDENTIFIER);
+							params.getXadesNamespace(), getCurrentXAdESElements().getElementOCSPIdentifier());
 					final Element responderIDDom = DomUtils.addElement(documentDom, ocspIdentifierDom, 
-							XAdESNamespaces.XADES_132.getUri(), XADES_OCSP_RESPONDER_ID);
+							params.getXadesNamespace(), getCurrentXAdESElements().getElementResponderID());
 
 					final RespID respID = basicOcspResp.getResponderId();
 					final ResponderId responderId = DSSRevocationUtils.getDSSResponderId(respID);
 					
 					if (Utils.isStringNotEmpty(responderId.getName())) {
-						DomUtils.addTextElement(documentDom, responderIDDom, XAdESNamespaces.XADES_132.getUri(), 
-								XADES_BY_NAME, responderId.getName());
+						DomUtils.addTextElement(documentDom, responderIDDom, params.getXadesNamespace(), 
+								getCurrentXAdESElements().getElementByName(), responderId.getName());
 					} else {
 						final String base64EncodedKeyHashOctetStringBytes = Utils.toBase64(responderId.getKey());
-						DomUtils.addTextElement(documentDom, responderIDDom, XAdESNamespaces.XADES_132.getUri(), 
-								XADES_BY_KEY, base64EncodedKeyHashOctetStringBytes);
+						DomUtils.addTextElement(documentDom, responderIDDom, params.getXadesNamespace(), 
+								getCurrentXAdESElements().getElementByKey(), base64EncodedKeyHashOctetStringBytes);
 					}
 
 					final Date producedAt = basicOcspResp.getProducedAt();
 					final XMLGregorianCalendar xmlGregorianCalendar = DomUtils.createXMLGregorianCalendar(producedAt);
 					final String producedAtXmlEncoded = xmlGregorianCalendar.toXMLFormat();
-					DomUtils.addTextElement(documentDom, ocspIdentifierDom, XAdESNamespaces.XADES_132.getUri(), 
-							XADES_PRODUCED_AT, producedAtXmlEncoded);
+					DomUtils.addTextElement(documentDom, ocspIdentifierDom, params.getXadesNamespace(), 
+							getCurrentXAdESElements().getElementProducedAt(), producedAtXmlEncoded);
 
 					final Element digestAlgAndValueDom = DomUtils.addElement(documentDom, ocspRefDom, 
-							XAdESNamespaces.XADES_132.getUri(), XADES_DIGEST_ALG_AND_VALUE);
+							params.getXadesNamespace(), getCurrentXAdESElements().getElementDigestAlgAndValue());
 					// TODO: to be added as field to eu.europa.esig.dss.AbstractSignatureParameters.
 					DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA1;
 					incorporateDigestMethod(digestAlgAndValueDom, digestAlgorithm);
@@ -259,10 +258,10 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 			removeChild(unsignedSignaturePropertiesDom, toRemove);
 
 			final Element completeCertificateRefsDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, 
-					XAdESNamespaces.XADES_132.getUri(), XADES_COMPLETE_CERTIFICATE_REFS);
+					params.getXadesNamespace(), getCurrentXAdESElements().getElementCompleteCertificateRefs());
 
 			final Element certRefsDom = DomUtils.addElement(documentDom, completeCertificateRefsDom, 
-					XAdESNamespaces.XADES_132.getUri(), XADES_CERT_REFS);
+					params.getXadesNamespace(), getCurrentXAdESElements().getElementCertRefs());
 
 			final CertificateToken certificateToken = xadesSignature.getSigningCertificateToken();
 			final Set<CertificateToken> processedCertificateTokens = validationContext.getProcessedCertificates();
@@ -277,7 +276,7 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 
 			// <xades:CompleteRevocationRefs>
 			final Element completeRevocationRefsDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, 
-					XAdESNamespaces.XADES_132.getUri(), XADES_COMPLETE_REVOCATION_REFS);
+					params.getXadesNamespace(), getCurrentXAdESElements().getElementCompleteRevocationRefs());
 			incorporateCRLRefs(completeRevocationRefsDom, validationContext.getProcessedRevocations());
 			incorporateOCSPRefs(completeRevocationRefsDom, validationContext.getProcessedRevocations());
 			

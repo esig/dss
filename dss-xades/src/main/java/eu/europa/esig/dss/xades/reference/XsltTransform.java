@@ -24,12 +24,14 @@ import org.apache.xml.security.transforms.Transforms;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import eu.europa.esig.dss.DSSNamespace;
+
 public class XsltTransform extends ComplexTransform {
 	
 	private final Document content;
 
-	public XsltTransform(Document content) {
-		super(Transforms.TRANSFORM_XSLT);
+	public XsltTransform(DSSNamespace xmlDSigNamespace, Document content) {
+		super(xmlDSigNamespace, Transforms.TRANSFORM_XSLT);
 		this.content = content;
 	}
 	

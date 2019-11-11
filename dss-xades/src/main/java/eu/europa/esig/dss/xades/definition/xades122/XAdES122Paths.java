@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.xades.definition.xades122;
 
+import eu.europa.esig.dss.DSSNamespace;
 import eu.europa.esig.dss.xades.definition.AbstractPaths;
-import eu.europa.esig.dss.xades.definition.DSSNamespace;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigElement;

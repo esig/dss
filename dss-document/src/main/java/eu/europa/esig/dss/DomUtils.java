@@ -294,6 +294,7 @@ public final class DomUtils {
 	 * @param name
 	 *            element name
 	 * @return added element
+	 * @deprecated
 	 */
 	public static Element addElement(final Document document, final Element parentDom, final String namespace, final String name) {
 		final Element dom = document.createElementNS(namespace, name);
@@ -301,6 +302,26 @@ public final class DomUtils {
 		return dom;
 	}
 
+	/**
+	 * This method creates and adds a new XML {@code Element}
+	 *
+	 * @param document
+	 *            root document
+	 * @param parentDom
+	 *            parent node
+	 * @param namespace
+	 *            namespace definition
+	 * @param elemnt
+	 *            the type of elementelement name
+	 * @return added element
+	 */
+	public static Element addElement(final Document document, final Element parentDom, final DSSNamespace namespace, final DSSElement element) {
+		final Element dom = createElementNS(document, namespace, element);
+		parentDom.appendChild(dom);
+		return dom;
+	}
+
+	
 	/**
 	 * This method creates a new instance of XPathExpression with the given xpath
 	 * expression
@@ -415,9 +436,33 @@ public final class DomUtils {
 	 * @param value
 	 *            element text node value
 	 * @return added element
+	 * @deprecated
 	 */
 	public static Element addTextElement(final Document document, final Element parentDom, final String namespace, final String name, final String value) {
 		final Element dom = document.createElementNS(namespace, name);
+		parentDom.appendChild(dom);
+		final Text valueNode = document.createTextNode(value);
+		dom.appendChild(valueNode);
+		return dom;
+	}
+	
+	/**
+	 * This method creates and adds a new XML {@code Element} with text value
+	 *
+	 * @param document
+	 *            root document
+	 * @param parentDom
+	 *            parent node
+	 * @param namespace
+	 *            namespace
+	 * @param element
+	 *            element type
+	 * @param value
+	 *            element text node value
+	 * @return added element
+	 */
+	public static Element addTextElement(final Document document, final Element parentDom, final DSSNamespace namespace, final DSSElement element, final String value) {
+		final Element dom = createElementNS(document, namespace, element);
 		parentDom.appendChild(dom);
 		final Text valueNode = document.createTextNode(value);
 		dom.appendChild(valueNode);
@@ -634,6 +679,21 @@ public final class DomUtils {
 			return false;
 		}
 		return true;
+	}
+
+	public static Element createElementNS(Document documentDom, DSSNamespace namespace, DSSElement element) {
+		StringBuffer elementSB = new StringBuffer();
+		elementSB.append(namespace.getPrefix());
+		elementSB.append(':');
+		elementSB.append(element.getTagName());
+		return documentDom.createElementNS(namespace.getUri(), elementSB.toString());
+	}
+
+	public static void addNamespaceAttribute(Element element, DSSNamespace namespace) {
+		StringBuffer namespaceAttribute = new StringBuffer();
+		namespaceAttribute.append("xmlns:");
+		namespaceAttribute.append(namespace.getPrefix());
+		element.setAttribute(namespaceAttribute.toString(), namespace.getUri());
 	}
 
 }

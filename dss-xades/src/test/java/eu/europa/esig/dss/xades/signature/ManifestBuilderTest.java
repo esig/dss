@@ -38,6 +38,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigElement;
 
 public class ManifestBuilderTest {
 
@@ -58,7 +59,7 @@ public class ManifestBuilderTest {
 
 		try (InputStream is = document.openStream()) {
 			String xmlContent = new String(Utils.toByteArray(is), "UTF-8");
-			assertTrue(xmlContent.contains(XAdESBuilder.DS_MANIFEST));
+			assertTrue(xmlContent.contains(XMLDSigElement.MANIFEST.getTagName()));
 			assertTrue(xmlContent.contains(file1.getName()));
 			assertTrue(xmlContent.contains(file1.getDigest(DigestAlgorithm.SHA512)));
 			LOG.info(xmlContent);

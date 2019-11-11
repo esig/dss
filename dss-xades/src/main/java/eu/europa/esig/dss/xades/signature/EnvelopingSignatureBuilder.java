@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
-import javax.xml.crypto.dsig.XMLSignature;
 
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.w3c.dom.Document;
@@ -42,6 +41,8 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.xades.reference.Base64Transform;
 import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
@@ -85,20 +86,20 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 			reference.setType(XMLDSigPaths.MANIFEST_TYPE);
 			Document manifestDoc = DomUtils.buildDOM(document);
 			Element manifestElement = manifestDoc.getDocumentElement();
-			reference.setUri("#" + manifestElement.getAttribute(ID));
-			DSSTransform xmlTransform = new CanonicalizationTransform(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
+			reference.setUri("#" + manifestElement.getAttribute(XMLDSigAttribute.ID.getAttributeName()));
+			DSSTransform xmlTransform = new CanonicalizationTransform(params.getXmldsigNamespace(), Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
 			reference.setTransforms(Arrays.asList(xmlTransform));
 		} else if (params.isEmbedXML()) {
 			reference.setType(XMLDSigPaths.OBJECT_TYPE);
 			reference.setUri("#" + OBJECT_ID_SUFFIX + suffix);
 
-			DSSTransform xmlTransform = new CanonicalizationTransform(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
+			DSSTransform xmlTransform = new CanonicalizationTransform(params.getXmldsigNamespace(), Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
 			reference.setTransforms(Arrays.asList(xmlTransform));
 		} else {
 			reference.setType(XMLDSigPaths.OBJECT_TYPE);
 			reference.setUri("#" + OBJECT_ID_SUFFIX + suffix);
 
-			DSSTransform base64Transform = new Base64Transform();
+			DSSTransform base64Transform = new Base64Transform(params.getXmldsigNamespace());
 			reference.setTransforms(Arrays.asList(base64Transform));
 		}
 		return reference;
@@ -136,17 +137,17 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 				Document doc = DomUtils.buildDOM(reference.getContents());
 				Element root = doc.getDocumentElement();
 				NodeList referencesNodes = root.getChildNodes();
-				String idAttribute = root.getAttribute(ID);
+				String idAttribute = root.getAttribute(XMLDSigAttribute.ID.getAttributeName());
 
 				// rebuild manifest element to avoid namespace duplication
-				final Element manifestDom = documentDom.createElementNS(XMLSignature.XMLNS, DS_MANIFEST);
-				manifestDom.setAttribute(ID, idAttribute);
+				final Element manifestDom = DomUtils.createElementNS(documentDom, params.getXmldsigNamespace(), XMLDSigElement.MANIFEST);	
+				manifestDom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), idAttribute);
 				for (int i = 0; i < referencesNodes.getLength(); i++) {
 					Node copyNode = documentDom.importNode(referencesNodes.item(i), true);
 					manifestDom.appendChild(copyNode);
 				}
 
-				final Element dom = documentDom.createElementNS(XMLSignature.XMLNS, DS_OBJECT);
+				final Element dom = DomUtils.createElementNS(documentDom, params.getXmldsigNamespace(), XMLDSigElement.OBJECT);
 				dom.appendChild(manifestDom);
 				signatureDom.appendChild(dom);
 			} else if (params.isEmbedXML()) {
@@ -154,16 +155,16 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 				Element root = doc.getDocumentElement();
 				Node adopted = documentDom.adoptNode(root);
 
-				final Element dom = documentDom.createElementNS(XMLSignature.XMLNS, DS_OBJECT);
+				final Element dom = DomUtils.createElementNS(documentDom, params.getXmldsigNamespace(), XMLDSigElement.OBJECT);
 				final String id = reference.getUri().substring(1);
-				dom.setAttribute(ID, id);
+				dom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), id);
 				dom.appendChild(adopted);
 				signatureDom.appendChild(dom);
 			} else {
 				final String base64EncodedOriginalDocument = Utils.toBase64(DSSUtils.toByteArray(reference.getContents()));
-				final Element objectDom = DomUtils.addTextElement(documentDom, signatureDom, XMLSignature.XMLNS, DS_OBJECT, base64EncodedOriginalDocument);
+				final Element objectDom = DomUtils.addTextElement(documentDom, signatureDom, params.getXmldsigNamespace(), XMLDSigElement.OBJECT, base64EncodedOriginalDocument);
 				final String id = reference.getUri().substring(1);
-				objectDom.setAttribute(ID, id);
+				objectDom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), id);
 			}
 		}
 		return createXmlDocument();

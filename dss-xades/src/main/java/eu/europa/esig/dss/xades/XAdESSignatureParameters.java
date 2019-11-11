@@ -26,9 +26,11 @@ import java.util.Objects;
 import org.w3c.dom.Document;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
+import eu.europa.esig.dss.DSSNamespace;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.reference.Base64Transform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 
@@ -116,6 +118,10 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 	 * If true, prints each signature's tag to a new line with a relevant indent
 	 */
 	private boolean prettyPrint = false;
+
+	private DSSNamespace xmldsigNamespace = XAdESNamespaces.XMLDSIG;
+	
+	private DSSNamespace xadesNamespace = new DSSNamespace(XAdESNamespaces.XADES_132.getUri(), "xades");
 
 	@Override
 	public void setSignatureLevel(SignatureLevel signatureLevel) {
@@ -315,4 +321,20 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 		this.prettyPrint = prettyPrint;
 	}
 
+	public DSSNamespace getXmldsigNamespace() {
+		return xmldsigNamespace;
+	}
+
+	public void setXmldsigNamespace(DSSNamespace xmldsigNamespace) {
+		this.xmldsigNamespace = xmldsigNamespace;
+	}
+
+	public DSSNamespace getXadesNamespace() {
+		return xadesNamespace;
+	}
+
+	public void setXadesNamespace(DSSNamespace xadesNamespace) {
+		this.xadesNamespace = xadesNamespace;
+	}
+	
 }

@@ -18,16 +18,28 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.xades.definition;
+package eu.europa.esig.dss;
 
-public interface DSSElement {
+public class DSSNamespace {
 
-	String getTagName();
+	private final String uri;
+	private final String prefix;
 
-	DSSNamespace getNamespace();
+	public DSSNamespace(String uri, String prefix) {
+		this.uri = uri;
+		this.prefix = prefix;
+	}
 
-	String getURI();
+	public String getUri() {
+		return uri;
+	}
 
-	boolean isSameTagName(String value);
+	public String getPrefix() {
+		return prefix;
+	}
+
+	public boolean isSameUri(String paramUri) {
+		return this.uri.equals(paramUri);
+	}
 
 }

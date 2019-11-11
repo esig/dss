@@ -24,6 +24,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import eu.europa.esig.dss.DSSNamespace;
+
 public interface DSSTransform {
 	
 	/**
@@ -34,9 +36,9 @@ public interface DSSTransform {
 	
 	/**
 	 * Specifies a namespace for the transformation elements
-	 * @param namespace {@link String} uri
+	 * @param namespace {@link DSSNamespace} uri
 	 */
-	void setNamespace(String namespace);
+	void setNamespace(DSSNamespace namespace);
 	
 	/**
 	 * Performs transformation on the given {@code node} and returns resulting bytes

@@ -31,22 +31,23 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import eu.europa.esig.dss.DSSNamespace;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.xades.signature.XAdESSignatureBuilder;
+import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigElement;
 
 public abstract class ComplexTransform extends AbstractTransform {
 	
 	private Transform transformObject; // internal object, used to build the Transformation
 
-	public ComplexTransform(String algorithm) {
-		super(algorithm);
+	public ComplexTransform(DSSNamespace xmlDSigNamespace, String algorithm) {
+		super(xmlDSigNamespace, algorithm);
 	}
 	
 	private void buildTransformObject() {
 		try {
 			final Document document = DomUtils.buildDOM();
-			final Element transformsDom = document.createElementNS(namespace, XAdESSignatureBuilder.DS_TRANSFORMS);
+			final Element transformsDom = DomUtils.createElementNS(document, namespace, XMLDSigElement.TRANSFORMS);
 			document.appendChild(transformsDom);
 			createTransform(document, transformsDom);
 			final NodeList childNodes = transformsDom.getFirstChild().getChildNodes();
