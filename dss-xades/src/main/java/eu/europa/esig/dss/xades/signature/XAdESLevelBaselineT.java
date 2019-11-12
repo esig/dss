@@ -62,6 +62,8 @@ import eu.europa.esig.dss.xades.ProfileParameters;
 import eu.europa.esig.dss.xades.ProfileParameters.Operation;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
+import eu.europa.esig.dss.xades.definition.xades111.XAdES111Attribute;
+import eu.europa.esig.dss.xades.definition.xades111.XAdES111Element;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigElement;
@@ -483,15 +485,33 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		final String timestampId = UUID.randomUUID().toString();
 		if (!XAdESNamespaces.XADES_111.isSameUri(params.getXadesNamespace().getUri()) ) {
 			timeStampDom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), "TS-" + timestampId);
+			// <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+			incorporateC14nMethod(timeStampDom, timestampC14nMethod);
+		} else {
+			incorporateHashDataInfo(timeStampDom, timestampC14nMethod);
 		}
-		
-		// <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
-		incorporateC14nMethod(timeStampDom, timestampC14nMethod);
 
 		// <xades:EncapsulatedTimeStamp Id="time-stamp-token-6a150419-caab-4615-9a0b-6e239596643a">MIAGCSqGSIb3DQEH
 		final Element encapsulatedTimeStampDom = DomUtils.addElement(documentDom, timeStampDom, params.getXadesNamespace(), getCurrentXAdESElements().getElementEncapsulatedTimeStamp());
 		encapsulatedTimeStampDom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), "ETS-" + timestampId);
 		DomUtils.setTextNode(documentDom, encapsulatedTimeStampDom, base64EncodedTimeStampToken);
+	}
+
+	/**
+	 * <HashDataInfo URI="AI-NDS-HGI-32019423">
+	 * 	<Transforms xmlns="http://www.w3.org/2000/09/xmldsig#">
+	 * 		<Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"></Transform>
+	 *	</Transforms>
+	 * </HashDataInfo>
+	 * @param timeStampDom
+	 * @param timestampC14nMethod
+	 */
+	private void incorporateHashDataInfo(Element timeStampDom, String timestampC14nMethod) {
+		Element hashDataInfoDom = DomUtils.addElement(documentDom, timeStampDom, params.getXadesNamespace(), XAdES111Element.HASH_DATA_INFO);
+		hashDataInfoDom.setAttribute(XAdES111Attribute.URI.getAttributeName(), "#" + xadesSignature.getId());
+		Element transformsDom = DomUtils.addElement(documentDom, hashDataInfoDom, params.getXadesNamespace(), XAdES111Element.TRANSFORMS);
+		Element transformDom = DomUtils.addElement(documentDom, transformsDom, params.getXmldsigNamespace(), XMLDSigElement.TRANSFORM);
+		transformDom.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName(), timestampC14nMethod);
 	}
 
 	private boolean isOldGeneration(SignatureLevel signatureLevel) {
