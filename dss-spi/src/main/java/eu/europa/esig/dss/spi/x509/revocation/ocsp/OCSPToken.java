@@ -48,6 +48,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -214,22 +215,22 @@ public class OCSPToken extends RevocationToken {
 	}
 
 	@Override
-	protected boolean checkIsSignedBy(final CertificateToken candidate) {
+	protected SignatureValidity checkIsSignedBy(final CertificateToken candidate) {
 		if (basicOCSPResp == null) {
-			return false;
+			return SignatureValidity.INVALID;
 		}
 		try {
 			signatureInvalidityReason = "";
 			JcaContentVerifierProviderBuilder jcaContentVerifierProviderBuilder = new JcaContentVerifierProviderBuilder();
 			jcaContentVerifierProviderBuilder.setProvider(DSSSecurityProvider.getSecurityProvider());
 			ContentVerifierProvider contentVerifierProvider = jcaContentVerifierProviderBuilder.build(candidate.getPublicKey());
-			signatureValid = basicOCSPResp.isSignatureValid(contentVerifierProvider);
+			signatureValidity = SignatureValidity.get(basicOCSPResp.isSignatureValid(contentVerifierProvider));
 		} catch (Exception e) {
 			LOG.error("An error occurred during in attempt to check signature owner : ", e);
 			signatureInvalidityReason = e.getClass().getSimpleName() + " - " + e.getMessage();
-			signatureValid = false;
+			signatureValidity = SignatureValidity.INVALID;
 		}
-		return signatureValid;
+		return signatureValidity;
 	}
 
 	public OCSPRespStatus getResponseStatus() {
@@ -279,7 +280,7 @@ public class OCSPToken extends RevocationToken {
 	 */
 	@Override
 	public boolean isValid() {
-		return signatureValid;
+		return SignatureValidity.VALID == signatureValidity;
 	}
 
 	@Override

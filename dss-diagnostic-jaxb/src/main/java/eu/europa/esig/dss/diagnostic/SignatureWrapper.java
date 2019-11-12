@@ -257,7 +257,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 
 	public boolean isBLevelTechnicallyValid() {
-		return (signature.getBasicSignature() != null) && signature.getBasicSignature().isSignatureValid();
+		return isSignatureValid();
 	}
 
 	public boolean isThereXLevel() {

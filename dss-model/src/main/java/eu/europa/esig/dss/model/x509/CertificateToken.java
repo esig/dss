@@ -41,6 +41,7 @@ import javax.security.auth.x500.X500Principal;
 
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.identifier.EntityIdentifier;
 
@@ -208,11 +209,14 @@ public class CertificateToken extends Token {
 				try {
 					x509Certificate.verify(x509Certificate.getPublicKey());
 					selfSigned = true;
-					signatureValid = true;
+					signatureValidity = SignatureValidity.VALID;
 				} catch (Exception e) {
 					selfSigned = false;
 				}
 			}
+		}
+		if (selfSigned) {
+			signatureValidity = SignatureValidity.VALID;
 		}
 		return selfSigned;
 	}
@@ -299,12 +303,12 @@ public class CertificateToken extends Token {
 	}
 
 	@Override
-	protected boolean checkIsSignedBy(final CertificateToken candidate) {
-		signatureValid = false;
+	protected SignatureValidity checkIsSignedBy(final CertificateToken candidate) {
+		signatureValidity = SignatureValidity.INVALID;
 		signatureInvalidityReason = "";
 		try {
 			x509Certificate.verify(candidate.getPublicKey());
-			signatureValid = true;
+			signatureValidity = SignatureValidity.VALID;
 		} catch (InvalidKeyException e) {
 			signatureInvalidityReason = "InvalidKeyException - on incorrect key.";
 		} catch (CertificateException e) {
@@ -316,7 +320,7 @@ public class CertificateToken extends Token {
 		} catch (NoSuchProviderException e) { // if there's no default provider.
 			throw new DSSException(e);
 		}
-		return signatureValid;
+		return signatureValidity;
 	}
 
 	/**

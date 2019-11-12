@@ -34,6 +34,7 @@ import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.crl.CRLValidity;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.RevocationType;
+import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -90,7 +91,7 @@ public class CRLToken extends RevocationToken {
 			this.publicKeyOfTheSigner = issuerToken.getPublicKey();
 		}
 
-		this.signatureValid = crlValidity.isSignatureIntact();
+		this.signatureValidity = SignatureValidity.get(crlValidity.isSignatureIntact());
 		this.signatureInvalidityReason = crlValidity.getSignatureInvalidityReason();
 	}
 
@@ -127,7 +128,7 @@ public class CRLToken extends RevocationToken {
 	}
 
 	@Override
-	protected boolean checkIsSignedBy(final CertificateToken token) {
+	protected SignatureValidity checkIsSignedBy(final CertificateToken token) {
 		throw new UnsupportedOperationException(this.getClass().getName());
 	}
 

@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.spi.x509;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -27,6 +28,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -41,6 +43,9 @@ public class CommonTrustedCertificateSourceTest {
 
 		List<CertificateToken> certificates = ctcs.getCertificates();
 		assertTrue(Utils.isCollectionNotEmpty(certificates));
+		for (CertificateToken certificateToken : certificates) {
+			assertEquals(SignatureValidity.NOT_EVALUATED, certificateToken.getSignatureValidity());
+		}
 	}
 
 }

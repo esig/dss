@@ -61,13 +61,21 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	@Override
 	public boolean isSignatureIntact() {
 		XmlBasicSignature basicSignature = getCurrentBasicSignature();
-		return (basicSignature != null) && basicSignature.isSignatureIntact();
+		if (basicSignature != null) {
+			Boolean signatureIntact = basicSignature.isSignatureIntact();
+			return signatureIntact != null && signatureIntact;
+		}
+		return false;
 	}
 
 	@Override
 	public boolean isSignatureValid() {
 		XmlBasicSignature basicSignature = getCurrentBasicSignature();
-		return (basicSignature != null) && basicSignature.isSignatureValid();
+		if (basicSignature != null) {
+			Boolean signatureValid = basicSignature.isSignatureValid();
+			return signatureValid != null && signatureValid;
+		}
+		return false;
 	}
 
 	@Override
