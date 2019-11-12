@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.xades.reference;
 
+import java.util.Objects;
+
 import org.apache.xml.security.transforms.Transforms;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -30,13 +32,15 @@ public class XsltTransform extends ComplexTransform {
 
 	public XsltTransform(Document content) {
 		super(Transforms.TRANSFORM_XSLT);
+		Objects.requireNonNull(content, "The content cannot be null!");
 		this.content = content;
 	}
 	
 	@Override
 	public Element createTransform(Document document, Element parentNode) {
 		final Element transform = super.createTransform(document, parentNode);
-		final Element contextDocumentElement = content.getDocumentElement();
+		final Document clonedNode = (Document) content.cloneNode(true);
+		final Element contextDocumentElement = clonedNode.getDocumentElement();
 		document.adoptNode(contextDocumentElement);
 		return (Element) transform.appendChild(contextDocumentElement);
 	}

@@ -824,6 +824,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					try {
 						found = reference.getContentsBeforeTransformation() != null;
 					} catch (ReferenceNotInitializedException e) {
+						if (LOG.isDebugEnabled()) {
+							LOG.debug(String.format("Cannot get the pointed bytes by a reference with uri='%s'. Reason : [%s]", 
+									reference.getURI(), e.getMessage()));
+						}
 						// continue, exception will be catched later
 					}
 					

@@ -28,6 +28,7 @@ import org.apache.xml.security.signature.XMLSignatureException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -73,9 +74,13 @@ public final class XAdESSignatureUtils {
 		if (reference.typeIsReferenceToObject()) {
 			List<Element> signatureObjects = signature.getSignatureObjects();
 			for (Element sigObject : signatureObjects) {
+				Node referencedObject = sigObject;
 				String objectId = sigObject.getAttribute("Id");
 				if (Utils.endsWithIgnoreCase(reference.getURI(), objectId)) {
-					byte[] bytes = DSSXMLUtils.getNodeBytes(sigObject);
+					if (reference.typeIsReferenceToObject() && sigObject.hasChildNodes()) {
+						referencedObject = sigObject.getFirstChild();
+					}
+					byte[] bytes = DSSXMLUtils.getNodeBytes(referencedObject);
 					if (bytes != null) {
 						return new InMemoryDocument(bytes, objectId);
 					}

@@ -25,6 +25,7 @@ import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -251,11 +252,11 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * Verifies a compatibility of defined signature parameters and reference transformations
 	 */
 	private void checkReferencesValidity() {
+		String referenceWrongMessage = "Reference setting is not correct! ";
 		for (DSSReference reference : params.getReferences()) {
 			List<DSSTransform> transforms = reference.getTransforms();
 			if (Utils.isCollectionNotEmpty(transforms)) {
 				boolean incorrectUsageOfEnvelopedSignature = false;
-				String referenceWrongMessage = "Reference setting is not correct! ";
 				for (DSSTransform transform : transforms) {
 					switch (transform.getAlgorithm()) {
 					case Transforms.TRANSFORM_BASE64_DECODE:
@@ -279,18 +280,28 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 					case Transforms.TRANSFORM_C14N_OMIT_COMMENTS:
 					case Transforms.TRANSFORM_C14N_WITH_COMMENTS:
 						// enveloped signature must follow up by a canonicalization
-						if (incorrectUsageOfEnvelopedSignature) {
-							incorrectUsageOfEnvelopedSignature = false;
-						}
+						incorrectUsageOfEnvelopedSignature = false;
 						break;
 					default:
 						// do nothing
 						break;
 					}
+					
 				}
 				if (incorrectUsageOfEnvelopedSignature) {
 					throw new DSSException(referenceWrongMessage + "Enveloped Signature Transform must be followed up by a Canonicalization Transform.");
 				}
+				
+			} else {
+				String uri = reference.getUri();
+				if (Utils.isStringBlank(uri) || DomUtils.isElementReference(uri)) {
+					LOG.warn("A reference with id='{}' and uri='{}' points to an XML Node, while no transforms are defines! "
+							+ "The configuration can lead to an unexpected result!", reference.getId(), uri);
+				}
+				if (SignaturePackaging.ENVELOPED.equals(params.getSignaturePackaging()) && Utils.isStringBlank(uri)) {
+					throw new DSSException(referenceWrongMessage + "Enveloped signature must have an enveloped transformation!");
+				}
+				
 			}
 		}
 	}
@@ -1166,12 +1177,24 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 	protected byte[] applyTransformations(DSSDocument dssDocument, final List<DSSTransform> transforms, Node nodeToTransform) {
 		byte[] transformedReferenceBytes = null;
-		for (final DSSTransform transform : transforms) {
+		Iterator<DSSTransform> iterator = transforms.iterator();
+		while (iterator.hasNext()) {
+			DSSTransform transform = iterator.next();
 			if (nodeToTransform == null) {
 				nodeToTransform = DomUtils.buildDOM(dssDocument);
 			}
 			transformedReferenceBytes = transform.getBytesAfterTranformation(nodeToTransform);
-			nodeToTransform = DomUtils.buildDOM(transformedReferenceBytes);
+			if (iterator.hasNext()) {
+				try {
+					nodeToTransform = DomUtils.buildDOM(transformedReferenceBytes);
+				} catch (DSSException e) {
+					new DSSException(String.format("Cannot build all transformations! Reason : [%s]", e.getMessage()), e);
+				}
+			}
+		}
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Reference bytes after transforms: ");
+			LOG.debug(new String(transformedReferenceBytes));
 		}
 		return transformedReferenceBytes;
 	}

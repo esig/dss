@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.xades.reference;
 
+import java.util.Objects;
+
 import org.apache.xml.security.transforms.Transforms;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -34,6 +36,7 @@ public class XPathTransform extends ComplexTransform {
 	
 	protected XPathTransform(String algorithm, String xPathExpression) {
 		super(algorithm);
+		Objects.requireNonNull(xPathExpression, "xPathExpression cannot be null!");
 		this.xPathExpression = xPathExpression;
 	}
 

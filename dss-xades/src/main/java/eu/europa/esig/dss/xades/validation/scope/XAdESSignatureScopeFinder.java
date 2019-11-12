@@ -78,8 +78,9 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 				
 			} else if (xadesReferenceValidation.isFound() && DigestMatcherType.OBJECT.equals(xadesReferenceValidation.getType())) {
 				Node objectById = xadesSignature.getObjectById(uri);
-				if (objectById != null) {
-					result.add(new XmlElementSignatureScope(xmlIdOfSignedElement, transformations, getDigest(DSSXMLUtils.getNodeBytes(objectById))));
+				if (objectById != null && objectById.hasChildNodes()) {
+					Node referencedObject = objectById.getFirstChild();
+					result.add(new XmlElementSignatureScope(xmlIdOfSignedElement, transformations, getDigest(DSSXMLUtils.getNodeBytes(referencedObject))));
 				}
 				
 			} else if (xadesReferenceValidation.isFound() && DigestMatcherType.MANIFEST.equals(xadesReferenceValidation.getType())) {

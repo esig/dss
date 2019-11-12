@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.xades.reference;
 
+import java.util.Objects;
+
 import org.apache.xml.security.transforms.Transforms;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -35,6 +37,7 @@ public class XPath2FilterTransform extends XPathTransform {
 
 	public XPath2FilterTransform(String xPathExpression, String filter) {
 		super(Transforms.TRANSFORM_XPATH2FILTER, xPathExpression);
+		Objects.requireNonNull(filter, "filter cannot be null!");
 		this.filter = filter;
 	}
 	
