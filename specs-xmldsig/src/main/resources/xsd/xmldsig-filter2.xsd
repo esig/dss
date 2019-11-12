@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Commented DOCTYPE to avoid dtd downloads -->
+<!--
+<!DOCTYPE schema
+     PUBLIC "-//W3C//DTD XMLSchema 200102//EN" "http://www.w3.org/2001/XMLSchema.dtd"
+    [
+      <!ATTLIST schema
+        xmlns:xf CDATA #FIXED 'http://www.w3.org/2002/04/xmldsig-filter2'>
+      <!ENTITY xf 'http://www.w3.org/2002/04/xmldsig-filter2'>
+      <!ENTITY % p ''>
+      <!ENTITY % s ''>
+     ]>
+ -->
+ 
+   <schema xmlns="http://www.w3.org/2001/XMLSchema"
+           xmlns:xf="http://www.w3.org/2002/04/xmldsig-filter2"
+           targetNamespace="http://www.w3.org/2002/04/xmldsig-filter2"
+           version="0.1" elementFormDefault="qualified">
+
+   <element name="XPath"
+            type="xf:XPathType"/>
+
+<complexType name="XPathType">
+    <simpleContent>
+      <extension base="string">
+        <attribute name="Filter">
+           <simpleType>
+             <restriction base="string">
+               <enumeration value="intersect"/>
+               <enumeration value="subtract"/>
+               <enumeration value="union"/>
+             </restriction>
+           </simpleType>
+        </attribute>
+      </extension>
+    </simpleContent>
+  </complexType>
+
+
+   </schema>

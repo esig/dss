@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.xades.reference;
 
+import eu.europa.esig.dss.DSSNamespace;
+import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
+
 public final class XPath2FilterEnvelopedSignatureTransform extends XPath2FilterTransform {
 	
 	private static final String SUBTRACT_FILTER = "subtract";
@@ -27,7 +30,11 @@ public final class XPath2FilterEnvelopedSignatureTransform extends XPath2FilterT
 	private static final String DESCENDANT_SIGNATURE = "/descendant::ds:Signature";
 
 	public XPath2FilterEnvelopedSignatureTransform() {
-		super(DESCENDANT_SIGNATURE, SUBTRACT_FILTER);
+		super(XAdESNamespaces.XMLDSIG, DESCENDANT_SIGNATURE, SUBTRACT_FILTER);
+	}
+	
+	public XPath2FilterEnvelopedSignatureTransform(DSSNamespace xmlDSigNamespace) {
+		super(xmlDSigNamespace, DESCENDANT_SIGNATURE, SUBTRACT_FILTER);
 	}
 
 }

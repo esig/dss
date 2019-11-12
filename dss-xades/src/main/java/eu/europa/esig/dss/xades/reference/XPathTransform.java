@@ -26,19 +26,24 @@ import org.w3c.dom.Element;
 
 import eu.europa.esig.dss.DSSNamespace;
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigElement;
 
 public class XPathTransform extends ComplexTransform {
 	
 	protected final String xPathExpression;
+
+	public XPathTransform( String xPathExpression) {
+		this(XAdESNamespaces.XMLDSIG, Transforms.TRANSFORM_XPATH, xPathExpression);
+	}
+	
+	public XPathTransform(DSSNamespace xmlDSigNamespace, String xPathExpression) {
+		this(xmlDSigNamespace, Transforms.TRANSFORM_XPATH, xPathExpression);
+	}
 	
 	protected XPathTransform(DSSNamespace xmlDSigNamespace, String algorithm, String xPathExpression) {
 		super(xmlDSigNamespace, algorithm);
 		this.xPathExpression = xPathExpression;
-	}
-
-	public XPathTransform(DSSNamespace xmlDSigNamespace, String xPathExpression) {
-		this(xmlDSigNamespace, Transforms.TRANSFORM_XPATH, xPathExpression);
 	}
 	
 	@Override

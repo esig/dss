@@ -28,6 +28,7 @@ import eu.europa.esig.dss.DomUtils;
 public class XAdESNamespaces {
 
 	public static final DSSNamespace XMLDSIG = new DSSNamespace(XMLSignature.XMLNS, "ds");
+	public static final DSSNamespace XMLDSIG_FILTER2 = new DSSNamespace("http://www.w3.org/2002/06/xmldsig-filter2", "dsig-filter2");
 
 	public static final DSSNamespace XADES_111 = new DSSNamespace("http://uri.etsi.org/01903/v1.1.1#", "xades111");
 	public static final DSSNamespace XADES_122 = new DSSNamespace("http://uri.etsi.org/01903/v1.2.2#", "xades122");

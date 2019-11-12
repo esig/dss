@@ -99,7 +99,25 @@ public class XAdES111ValidationTest extends PKIFactoryAccess {
 		assertTrue(signatureById.isSigningCertificateIdentified());
 		assertFalse(signatureById.isSignatureProductionPlacePresent());
 	}
+	
+	@Test
+	public void testAT_QES() {
+		DSSDocument doc = new FileDocument("src/test/resources/validation/qes-xades111-filter2.xml");
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 
+		Reports reports = validator.validateDocument();
+
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		List<XmlDigestMatcher> digestMatchers = signatureById.getDigestMatchers();
+		assertEquals(2, digestMatchers.size());
+		assertTrue(signatureById.isSignatureIntact());
+		assertTrue(signatureById.isSignatureValid());
+		assertTrue(signatureById.isSigningCertificateIdentified());
+		assertFalse(signatureById.isSignatureProductionPlacePresent());
+	}
+	
 	@Override
 	protected String getSigningAlias() {
 		return null;

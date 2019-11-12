@@ -39,6 +39,7 @@ public final class XmlDSigUtils {
 
 	public static final String XML_SCHEMA_LOCATION = "/xsd/xml.xsd";
 	public static final String XMLDSIG_SCHEMA_LOCATION = "/xsd/xmldsig-core-schema.xsd";
+	public static final String XMLDSIG_FILTER2_SCHEMA_LOCATION = "/xsd/xmldsig-filter2.xsd";
 
 	private XmlDSigUtils() {
 	}
@@ -66,6 +67,7 @@ public final class XmlDSigUtils {
 		List<Source> xsdSources = new ArrayList<Source>();
 		xsdSources.add(new StreamSource(XmlDSigUtils.class.getResourceAsStream(XML_SCHEMA_LOCATION)));
 		xsdSources.add(new StreamSource(XmlDSigUtils.class.getResourceAsStream(XMLDSIG_SCHEMA_LOCATION)));
+		xsdSources.add(new StreamSource(XmlDSigUtils.class.getResourceAsStream(XMLDSIG_FILTER2_SCHEMA_LOCATION)));
 		return xsdSources;
 	}
 
