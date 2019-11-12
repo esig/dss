@@ -643,6 +643,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		}
 		return null;
 	}
+	
+	public String getSignatureValueId() {
+		return DomUtils.getValue(signatureElement, XMLDSigPaths.SIGNATURE_VALUE_ID_PATH);
+	}
 
 	/**
 	 * This method returns the list of ds:Object elements for the current signature element.

@@ -64,6 +64,8 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.definition.xades111.XAdES111Attribute;
 import eu.europa.esig.dss.xades.definition.xades111.XAdES111Element;
+import eu.europa.esig.dss.xades.definition.xades122.XAdES122Attribute;
+import eu.europa.esig.dss.xades.definition.xades122.XAdES122Element;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigElement;
@@ -448,6 +450,11 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 */
 	protected void createXAdESTimeStampType(final TimestampType timestampType, final String timestampC14nMethod, final byte[] digestValue) throws DSSException {
 
+		if ((XAdESNamespaces.XADES_111.isSameUri(params.getXadesNamespace().getUri())
+				|| XAdESNamespaces.XADES_122.isSameUri(params.getXadesNamespace().getUri())) && TimestampType.SIGNATURE_TIMESTAMP != timestampType) {
+			throw new DSSException("Signature Timestamp creation is only supported for XAdES 1.1.1 and 1.2.2");
+		}		
+		
 		Element timeStampDom = null;
 		final TimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
 		DigestAlgorithm timestampDigestAlgorithm = signatureTimestampParameters.getDigestAlgorithm();
@@ -481,16 +488,20 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		}
 		final TimestampBinary timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, digestValue);
 		final String base64EncodedTimeStampToken = Utils.toBase64(DSSASN1Utils.getDEREncoded(timeStampToken));
+		
+		if (XAdESNamespaces.XADES_122.isSameUri(params.getXadesNamespace().getUri())) {
+			incorporateXAdES122Include(timeStampDom);
+		}
 
 		final String timestampId = UUID.randomUUID().toString();
-		if (!XAdESNamespaces.XADES_111.isSameUri(params.getXadesNamespace().getUri()) ) {
+		if (!XAdESNamespaces.XADES_111.isSameUri(params.getXadesNamespace().getUri())) {
 			timeStampDom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), "TS-" + timestampId);
 			// <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
 			incorporateC14nMethod(timeStampDom, timestampC14nMethod);
 		} else {
 			incorporateHashDataInfo(timeStampDom, timestampC14nMethod);
 		}
-
+		
 		// <xades:EncapsulatedTimeStamp Id="time-stamp-token-6a150419-caab-4615-9a0b-6e239596643a">MIAGCSqGSIb3DQEH
 		final Element encapsulatedTimeStampDom = DomUtils.addElement(documentDom, timeStampDom, params.getXadesNamespace(), getCurrentXAdESElements().getElementEncapsulatedTimeStamp());
 		encapsulatedTimeStampDom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), "ETS-" + timestampId);
@@ -508,10 +519,15 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 */
 	private void incorporateHashDataInfo(Element timeStampDom, String timestampC14nMethod) {
 		Element hashDataInfoDom = DomUtils.addElement(documentDom, timeStampDom, params.getXadesNamespace(), XAdES111Element.HASH_DATA_INFO);
-		hashDataInfoDom.setAttribute(XAdES111Attribute.URI.getAttributeName(), "#" + xadesSignature.getId());
+		hashDataInfoDom.setAttribute(XAdES111Attribute.URI.getAttributeName(), '#' + xadesSignature.getId());
 		Element transformsDom = DomUtils.addElement(documentDom, hashDataInfoDom, params.getXadesNamespace(), XAdES111Element.TRANSFORMS);
 		Element transformDom = DomUtils.addElement(documentDom, transformsDom, params.getXmldsigNamespace(), XMLDSigElement.TRANSFORM);
 		transformDom.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName(), timestampC14nMethod);
+	}
+
+	private void incorporateXAdES122Include(Element timeStampDom) {
+		Element includeDom = DomUtils.addElement(documentDom, timeStampDom, params.getXadesNamespace(), XAdES122Element.INCLUDE);
+		includeDom.setAttribute(XAdES122Attribute.URI.getAttributeName(), '#' + xadesSignature.getSignatureValueId());
 	}
 
 	private boolean isOldGeneration(SignatureLevel signatureLevel) {
