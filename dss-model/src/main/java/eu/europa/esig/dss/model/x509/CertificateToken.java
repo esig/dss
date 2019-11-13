@@ -214,8 +214,7 @@ public class CertificateToken extends Token {
 					selfSigned = false;
 				}
 			}
-		}
-		if (selfSigned) {
+		} else if (selfSigned) {
 			signatureValidity = SignatureValidity.VALID;
 		}
 		return selfSigned;
