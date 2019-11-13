@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.validationreport;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -28,14 +29,16 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.jaxb.parsers.XmlDefinerUtils;
 import eu.europa.esig.trustedlist.TrustedListUtils;
 import eu.europa.esig.validationreport.jaxb.ObjectFactory;
+import eu.europa.esig.xmldsig.AbstractUtils;
 
-public final class ValidationReportUtils {
+public final class ValidationReportUtils extends AbstractUtils {
 
 	public static final String VALIDATION_REPORT_SCHEMA_LOCATION = "/xsd/1910202xmlSchema.xsd";
 
@@ -67,6 +70,12 @@ public final class ValidationReportUtils {
 		List<Source> xsdSources = TrustedListUtils.getXSDSources();
 		xsdSources.add(new StreamSource(ValidationReportUtils.class.getResourceAsStream(VALIDATION_REPORT_SCHEMA_LOCATION)));
 		return xsdSources;
+	}
+	
+	public static Validator getSchemaValidator(Source... sources) throws SAXException {
+		List<Source> currentXSDSources = getXSDSources();
+		currentXSDSources.addAll(Arrays.asList(sources));
+		return getValidator(currentXSDSources);
 	}
 
 }

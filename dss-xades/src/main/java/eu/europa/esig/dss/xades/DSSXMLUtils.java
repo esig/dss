@@ -606,6 +606,30 @@ public final class DSSXMLUtils {
 			return e.getMessage();
 		}
 	}
+	
+	
+	public static void validateAgainstXSD(DSSDocument document, Source... sources) throws SAXException {
+		try (InputStream is = document.openStream()) {
+			final Validator validator = XAdESUtils.getSchemaValidator(sources);
+			avoidXXE(validator);
+			validator.validate(new StreamSource(is));
+		} catch (IOException e) {
+			throw new DSSException("Unable to read document", e);
+		}
+	}
+	
+	public static String validateAgainstXSD(final StreamSource streamSource, Source... sources) {
+		try {
+			final Validator validator = XAdESUtils.getSchemaValidator(sources);
+			avoidXXE(validator);
+			validator.validate(streamSource);
+			return Utils.EMPTY_STRING;
+		} catch (Exception e) {
+			LOG.warn("Error during the XML schema validation!", e);
+			return e.getMessage();
+		}
+	}
+
 
 	/**
 	 * The method protects the validator against XXE

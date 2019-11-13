@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.xades;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -27,15 +28,15 @@ import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 
 import org.xml.sax.SAXException;
 
-import eu.europa.esig.dss.jaxb.parsers.XmlDefinerUtils;
+import eu.europa.esig.xmldsig.AbstractUtils;
 import eu.europa.esig.xmldsig.XmlDSigUtils;
 import eu.europa.esig.xmldsig.jaxb.ObjectFactory;
 
-public final class XAdESUtils {
+public final class XAdESUtils extends AbstractUtils {
 
 	public static final String XADES_111_SCHEMA_LOCATION = "/xsd/XAdESv111.xsd";
 	public static final String XADES_122_SCHEMA_LOCATION = "/xsd/XAdESv122.xsd";
@@ -47,10 +48,8 @@ public final class XAdESUtils {
 	private XAdESUtils() {
 	}
 
-	private static JAXBContext jc;
 	private static Schema schemaXAdES111;
 	private static Schema schemaXAdES122;
-	private static Schema schema;
 	private static Schema schemaETSIEN319132;
 
 	public static JAXBContext getJAXBContext() throws JAXBException {
@@ -88,10 +87,12 @@ public final class XAdESUtils {
 		}
 		return schemaETSIEN319132;
 	}
-
-	private static Schema getSchema(List<Source> xsdSources) throws SAXException {
-		SchemaFactory sf = XmlDefinerUtils.getSecureSchemaFactory();
-		return sf.newSchema(xsdSources.toArray(new Source[xsdSources.size()]));
+	
+	public static List<Source> getXSDSources() {
+		List<Source> xsdSources = XmlDSigUtils.getXSDSources();
+		xsdSources.add(new StreamSource(XAdESUtils.class.getResourceAsStream(XADES_SCHEMA_LOCATION)));
+		xsdSources.add(new StreamSource(XAdESUtils.class.getResourceAsStream(XADES_141_SCHEMA_LOCATION)));
+		return xsdSources;
 	}
 
 	public static List<Source> getXSDSourcesXAdES111() {
@@ -106,18 +107,19 @@ public final class XAdESUtils {
 		return xsdSources;
 	}
 
-	public static List<Source> getXSDSources() {
-		List<Source> xsdSources = XmlDSigUtils.getXSDSources();
-		xsdSources.add(new StreamSource(XAdESUtils.class.getResourceAsStream(XADES_SCHEMA_LOCATION)));
-		xsdSources.add(new StreamSource(XAdESUtils.class.getResourceAsStream(XADES_141_SCHEMA_LOCATION)));
-		return xsdSources;
-	}
-
 	public static List<Source> getXSDSourcesETSI_EN_319_132() {
 		List<Source> xsdSources = XmlDSigUtils.getXSDSources();
 		xsdSources.add(new StreamSource(XAdESUtils.class.getResourceAsStream(XADES_SCHEMA_LOCATION_EN_319_132)));
 		xsdSources.add(new StreamSource(XAdESUtils.class.getResourceAsStream(XADES_141_SCHEMA_LOCATION_EN_319_132)));
 		return xsdSources;
 	}
-
+	
+	public static Validator getSchemaValidator(Source... sources) throws SAXException {
+		List<Source> currentXSDSources = getXSDSourcesETSI_EN_319_132();
+		for (Source source : sources) {
+			currentXSDSources.add(source);
+		}
+		return getValidator(currentXSDSources);
+	}
+	
 }

@@ -21,6 +21,7 @@
 package eu.europa.esig.xmldsig;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -29,22 +30,20 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.jaxb.parsers.XmlDefinerUtils;
 import eu.europa.esig.xmldsig.jaxb.ObjectFactory;
 
-public final class XmlDSigUtils {
+public final class XmlDSigUtils extends AbstractUtils {
 
 	public static final String XML_SCHEMA_LOCATION = "/xsd/xml.xsd";
 	public static final String XMLDSIG_SCHEMA_LOCATION = "/xsd/xmldsig-core-schema.xsd";
 
 	private XmlDSigUtils() {
 	}
-
-	private static JAXBContext jc;
-	private static Schema schema;
 
 	public static JAXBContext getJAXBContext() throws JAXBException {
 		if (jc == null) {
@@ -69,4 +68,9 @@ public final class XmlDSigUtils {
 		return xsdSources;
 	}
 
+	public static Validator getSchemaValidator(Source... sources) throws SAXException {
+		List<Source> currentXSDSources = getXSDSources();
+		currentXSDSources.addAll(Arrays.asList(sources));
+		return getValidator(currentXSDSources);
+	}
 }

@@ -62,6 +62,19 @@ public class DSSXMLUtilsTest {
 			DSSXMLUtils.validateAgainstXSD(new FileDocument("src/test/resources/invalid-xades-structure.xml"));
 		});
 	}
+	
+	@Test
+	public void validateAgainstXSDWithExternalSourceMissing() throws SAXException {
+		assertThrows(SAXException.class, () -> {
+			DSSXMLUtils.validateAgainstXSD(new FileDocument("src/test/resources/ASiCManifest.xml"), new StreamSource[0]);
+		});
+	}
+	
+	@Test
+	public void validateAgainstXSDWithExternalSourceOK() throws SAXException {
+		StreamSource streamSource = new StreamSource(DSSXMLUtilsTest.class.getResourceAsStream("/ExternalXSDForAsic.xsd"));
+		DSSXMLUtils.validateAgainstXSD(new FileDocument("src/test/resources/ASiCManifest.xml"), streamSource);
+	}
 
 	@Test
 	public void validateAgainstXSDvalidMessage() {

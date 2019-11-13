@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.trustedlist;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -28,14 +29,16 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.jaxb.parsers.XmlDefinerUtils;
 import eu.europa.esig.trustedlist.jaxb.tsl.ObjectFactory;
 import eu.europa.esig.xades.XAdESUtils;
+import eu.europa.esig.xmldsig.AbstractUtils;
 
-public final class TrustedListUtils {
+public final class TrustedListUtils extends AbstractUtils {
 
 	public static final String TRUSTED_LIST_SCHEMA_LOCATION = "/xsd/ts_119612v020101_xsd.xsd";
 	public static final String TRUSTED_LIST_SIE_SCHEMA_LOCATION = "/xsd/ts_119612v020101_sie_xsd.xsd";
@@ -44,8 +47,6 @@ public final class TrustedListUtils {
 	private TrustedListUtils() {
 	}
 
-	private static JAXBContext jc;
-	private static Schema schema;
 	public static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
 
 	public static JAXBContext getJAXBContext() throws JAXBException {
@@ -72,6 +73,12 @@ public final class TrustedListUtils {
 		xsdSources.add(new StreamSource(TrustedListUtils.class.getResourceAsStream(TRUSTED_LIST_SIE_SCHEMA_LOCATION)));
 		xsdSources.add(new StreamSource(TrustedListUtils.class.getResourceAsStream(TRUSTED_LIST_ADDITIONALTYPES_SCHEMA_LOCATION)));
 		return xsdSources;
+	}
+	
+	public static Validator getSchemaValidator(Source... sources) throws SAXException {
+		List<Source> currentXSDSources = getXSDSources();
+		currentXSDSources.addAll(Arrays.asList(sources));
+		return getValidator(currentXSDSources);
 	}
 
 }
