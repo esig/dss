@@ -1324,16 +1324,25 @@ public class DiagnosticDataBuilder {
 
 			validator.validate();
 			xmlPolicy.setAsn1Processable(validator.isAsn1Processable());
-			xmlPolicy.setDigestAlgorithmsEqual(validator.isDigestAlgorithmsEqual());
+			if (!signaturePolicy.isZeroHash()) {
+				xmlPolicy.setDigestAlgorithmsEqual(validator.isDigestAlgorithmsEqual());
+			}
 			xmlPolicy.setIdentified(validator.isIdentified());
 			xmlPolicy.setStatus(validator.isStatus());
-			xmlPolicy.setProcessingError(validator.getProcessingErrors());
+			if (Utils.isStringNotBlank(validator.getProcessingErrors())) {
+				xmlPolicy.setProcessingError(validator.getProcessingErrors());
+			}
 		} catch (Exception e) {
 			// When any error (communication) we just set the status to false
 			xmlPolicy.setStatus(false);
 			xmlPolicy.setProcessingError(e.getMessage());
 			// Do nothing
-			LOG.warn(e.getMessage(), e);
+			String errorMessage = "An error occurred during validation a signature policy with id '{}'. Reason : [{}]";
+			if (LOG.isDebugEnabled()) {
+				LOG.error(errorMessage, signaturePolicy.getIdentifier(), e.getMessage(), e);
+			} else {
+				LOG.error(errorMessage, signaturePolicy.getIdentifier(), e.getMessage());
+			}
 		}
 		return xmlPolicy;
 	}
