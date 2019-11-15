@@ -20,14 +20,29 @@
  */
 package eu.europa.esig.dss.jaxb.parsers;
 
+import java.util.List;
+
 import javax.xml.XMLConstants;
+import javax.xml.transform.Source;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.xml.sax.SAXException;
 
 public final class XmlDefinerUtils {
+	
+	/**
+	 * Returns a Schema for a list of defined xsdSources
+	 * @param xsdSources a list of {@link Source}s
+	 * @return {@link Schema}
+	 * @throws SAXException in case of exception
+	 */
+	public static Schema getSchema(List<Source> xsdSources) throws SAXException {
+		SchemaFactory sf = XmlDefinerUtils.getSecureSchemaFactory();
+		return sf.newSchema(xsdSources.toArray(new Source[xsdSources.size()]));
+	}
 
 	public static SchemaFactory getSecureSchemaFactory() throws SAXException {
 		SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);

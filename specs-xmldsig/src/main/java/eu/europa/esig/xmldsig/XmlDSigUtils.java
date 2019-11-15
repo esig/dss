@@ -21,7 +21,6 @@
 package eu.europa.esig.xmldsig;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -29,48 +28,54 @@ import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
 
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.jaxb.parsers.XmlDefinerUtils;
 import eu.europa.esig.xmldsig.jaxb.ObjectFactory;
 
-public final class XmlDSigUtils extends AbstractUtils {
+public final class XmlDSigUtils extends XSDAbstractUtils {
 
 	public static final String XML_SCHEMA_LOCATION = "/xsd/xml.xsd";
 	public static final String XMLDSIG_SCHEMA_LOCATION = "/xsd/xmldsig-core-schema.xsd";
+	
+	private static XmlDSigUtils xmlDSigUtils;
+
+	protected static JAXBContext jc;
+	protected static Schema schema;
 
 	private XmlDSigUtils() {
 	}
+	
+	public static XmlDSigUtils newInstance() {
+		if (xmlDSigUtils == null) {
+			xmlDSigUtils = new XmlDSigUtils();
+		}
+		 return xmlDSigUtils;
+	}
 
-	public static JAXBContext getJAXBContext() throws JAXBException {
+	@Override
+	public JAXBContext getJAXBContext() throws JAXBException {
 		if (jc == null) {
 			jc = JAXBContext.newInstance(ObjectFactory.class);
 		}
 		return jc;
 	}
 
-	public static Schema getSchema() throws SAXException {
+	@Override
+	public Schema getSchema() throws SAXException {
 		if (schema == null) {
-			SchemaFactory sf = XmlDefinerUtils.getSecureSchemaFactory();
-			List<Source> xsdSources = getXSDSources();
-			schema = sf.newSchema(xsdSources.toArray(new Source[xsdSources.size()]));
+			schema = XmlDefinerUtils.getSchema(getXSDSources());
 		}
 		return schema;
 	}
 
-	public static List<Source> getXSDSources() {
+	@Override
+	public List<Source> getXSDSources() {
 		List<Source> xsdSources = new ArrayList<Source>();
 		xsdSources.add(new StreamSource(XmlDSigUtils.class.getResourceAsStream(XML_SCHEMA_LOCATION)));
 		xsdSources.add(new StreamSource(XmlDSigUtils.class.getResourceAsStream(XMLDSIG_SCHEMA_LOCATION)));
 		return xsdSources;
 	}
 
-	public static Validator getSchemaValidator(Source... sources) throws SAXException {
-		List<Source> currentXSDSources = getXSDSources();
-		currentXSDSources.addAll(Arrays.asList(sources));
-		return getValidator(currentXSDSources);
-	}
 }

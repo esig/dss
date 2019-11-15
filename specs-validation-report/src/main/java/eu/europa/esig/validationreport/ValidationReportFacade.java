@@ -33,6 +33,8 @@ import eu.europa.esig.dss.jaxb.parsers.AbstractJaxbFacade;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
 public class ValidationReportFacade extends AbstractJaxbFacade<ValidationReportType> {
+	
+	private static final ValidationReportUtils validationReportUtils = ValidationReportUtils.newInstance();
 
 	public static ValidationReportFacade newFacade() {
 		return new ValidationReportFacade();
@@ -40,12 +42,12 @@ public class ValidationReportFacade extends AbstractJaxbFacade<ValidationReportT
 
 	@Override
 	protected JAXBContext getJAXBContext() throws JAXBException {
-		return ValidationReportUtils.getJAXBContext();
+		return validationReportUtils.getJAXBContext();
 	}
 
 	@Override
 	protected Schema getSchema() throws IOException, SAXException {
-		return ValidationReportUtils.getSchema();
+		return validationReportUtils.getSchema();
 	}
 
 	@Override

@@ -27,14 +27,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.xml.XMLConstants;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Validator;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
@@ -71,7 +69,7 @@ import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.xades.signature.PrettyPrintTransformer;
-import eu.europa.esig.xades.XAdESUtils;
+import eu.europa.esig.xades.XAdES319132Utils;
 
 /**
  * Utility class that contains some XML related method.
@@ -90,10 +88,11 @@ public final class DSSXMLUtils {
 	
 	private static final String TRANSFORMATION_EXCLUDE_SIGNATURE = "not(ancestor-or-self::ds:Signature)";
 	private static final String TRANSFORMATION_XPATH_NODE_NAME = "XPath";
+	
+	private static final XAdES319132Utils xadesUtils;
 
 
 	static {
-
 		SantuarioInitializer.init();
 
 		transforms = new HashSet<String>();
@@ -101,6 +100,8 @@ public final class DSSXMLUtils {
 
 		canonicalizers = new HashSet<String>();
 		registerDefaultCanonicalizers();
+		
+		xadesUtils = XAdES319132Utils.newInstance();
 	}
 
 	/**
@@ -579,12 +580,14 @@ public final class DSSXMLUtils {
 	 *             if the document content is not valid
 	 */
 	public static void validateAgainstXSD(DSSDocument document) throws SAXException {
+		String exceptionMessage = "Unable to read document. Reason : [%s]";
 		try (InputStream is = document.openStream()) {
-			final Validator validator = XAdESUtils.getSchemaETSI_EN_319_132().newValidator();
-			avoidXXE(validator);
-			validator.validate(new StreamSource(is));
+			String resultMessage = xadesUtils.validateAgainstXSD(new StreamSource(is));
+			if (Utils.isStringNotEmpty(resultMessage)) {
+				throw new DSSException(String.format(exceptionMessage, resultMessage));
+			}
 		} catch (IOException e) {
-			throw new DSSException("Unable to read document", e);
+			throw new DSSException(String.format(exceptionMessage, e.getMessage()), e);
 		}
 	}
 
@@ -596,52 +599,7 @@ public final class DSSXMLUtils {
 	 * @return null if the XSD validates the XML, error message otherwise
 	 */
 	public static String validateAgainstXSD(final StreamSource streamSource) {
-		try {
-			final Validator validator = XAdESUtils.getSchemaETSI_EN_319_132().newValidator();
-			avoidXXE(validator);
-			validator.validate(streamSource);
-			return Utils.EMPTY_STRING;
-		} catch (Exception e) {
-			LOG.warn("Error during the XML schema validation!", e);
-			return e.getMessage();
-		}
-	}
-	
-	
-	public static void validateAgainstXSD(DSSDocument document, Source... sources) throws SAXException {
-		try (InputStream is = document.openStream()) {
-			final Validator validator = XAdESUtils.getSchemaValidator(sources);
-			avoidXXE(validator);
-			validator.validate(new StreamSource(is));
-		} catch (IOException e) {
-			throw new DSSException("Unable to read document", e);
-		}
-	}
-	
-	public static String validateAgainstXSD(final StreamSource streamSource, Source... sources) {
-		try {
-			final Validator validator = XAdESUtils.getSchemaValidator(sources);
-			avoidXXE(validator);
-			validator.validate(streamSource);
-			return Utils.EMPTY_STRING;
-		} catch (Exception e) {
-			LOG.warn("Error during the XML schema validation!", e);
-			return e.getMessage();
-		}
-	}
-
-
-	/**
-	 * The method protects the validator against XXE
-	 * (https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html#validator)
-	 * 
-	 * @param validator
-	 *                  the validator to be configured against XXE
-	 * @throws SAXException
-	 */
-	public static void avoidXXE(Validator validator) throws SAXException {
-		validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-		validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+		return xadesUtils.validateAgainstXSD(streamSource);
 	}
 
 	public static boolean isOid(String policyId) {

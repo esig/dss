@@ -36,12 +36,20 @@ import javax.xml.validation.Schema;
 
 import javax.xml.bind.UnmarshalException;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.xmldsig.jaxb.SignatureType;
 
 public class ASiCManifestUtilsTest {
+	
+	private static ASiCManifestUtils asicManifestUtils;
+	
+	@BeforeAll
+	public static void init() {
+		asicManifestUtils = ASiCManifestUtils.newInstance();
+	}
 
 	@Test
 	@SuppressWarnings("unchecked")
@@ -49,10 +57,10 @@ public class ASiCManifestUtilsTest {
 
 		File xmldsigFile = new File("src/test/resources/ASiCManifest.xml");
 
-		JAXBContext jc = ASiCManifestUtils.getJAXBContext();
+		JAXBContext jc = asicManifestUtils.getJAXBContext();
 		assertNotNull(jc);
 
-		Schema schema = ASiCManifestUtils.getSchemaASiCManifest();
+		Schema schema = asicManifestUtils.getSchema();
 		assertNotNull(schema);
 
 		Unmarshaller unmarshaller = jc.createUnmarshaller();
@@ -78,10 +86,10 @@ public class ASiCManifestUtilsTest {
 
 		File xmldsigFile = new File("src/test/resources/ASiCManifestInvalid.xml");
 
-		JAXBContext jc = ASiCManifestUtils.getJAXBContext();
+		JAXBContext jc = asicManifestUtils.getJAXBContext();
 		assertNotNull(jc);
 
-		Schema schema = ASiCManifestUtils.getSchemaASiCManifest();
+		Schema schema = asicManifestUtils.getSchema();
 		assertNotNull(schema);
 		
 		Unmarshaller unmarshaller = jc.createUnmarshaller();
@@ -94,8 +102,8 @@ public class ASiCManifestUtilsTest {
 
 	@Test
 	public void getSchemaASiCManifest() throws SAXException {
-		assertNotNull(ASiCManifestUtils.getSchemaASiCManifest());
+		assertNotNull(asicManifestUtils.getSchema());
 		// cached
-		assertNotNull(ASiCManifestUtils.getSchemaASiCManifest());
+		assertNotNull(asicManifestUtils.getSchema());
 	}
 }

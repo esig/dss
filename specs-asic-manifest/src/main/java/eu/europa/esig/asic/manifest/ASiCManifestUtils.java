@@ -27,45 +27,54 @@ import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.jaxb.parsers.XmlDefinerUtils;
+import eu.europa.esig.xmldsig.XSDAbstractUtils;
 import eu.europa.esig.xmldsig.XmlDSigUtils;
 import eu.europa.esig.xmldsig.jaxb.ObjectFactory;
 
-public final class ASiCManifestUtils {
+public final class ASiCManifestUtils extends XSDAbstractUtils {
 	
-	public static final String ASIC_MANIFEST = "/xsd/en_31916201v010101.xsd"; 
+	public static final String ASIC_MANIFEST = "/xsd/en_31916201v010101.xsd";
 	
+	private static final XmlDSigUtils xmlDSigUtils = XmlDSigUtils.newInstance();
+	
+	private static ASiCManifestUtils asicManifestUtils;
+
 	private ASiCManifestUtils() {
+	}
+	
+	public static ASiCManifestUtils newInstance() {
+		if (asicManifestUtils == null) {
+			asicManifestUtils = new ASiCManifestUtils();
+		}
+		return asicManifestUtils;
 	}
 
 	private static JAXBContext jc;
 	private static Schema schema;
 
-	public static JAXBContext getJAXBContext() throws JAXBException {
+	@Override
+	public JAXBContext getJAXBContext() throws JAXBException {
 		if (jc == null) {
 			jc = JAXBContext.newInstance(ObjectFactory.class, eu.europa.esig.asic.manifest.jaxb.ObjectFactory.class);
 		}
 		return jc;
 	}
 
-	public static Schema getSchemaASiCManifest() throws SAXException {
+	@Override
+	public Schema getSchema() throws SAXException {
 		if (schema == null) {
-			schema = getSchema(getXSDSources());
+			schema = XmlDefinerUtils.getSchema(getXSDSources());
 		}
 		return schema;
 	}
 
-	private static Schema getSchema(List<Source> xsdSources) throws SAXException {
-		SchemaFactory sf = XmlDefinerUtils.getSecureSchemaFactory();
-		return sf.newSchema(xsdSources.toArray(new Source[xsdSources.size()]));
-	}
-
-	public static List<Source> getXSDSources() {
-		List<Source> xsdSources = XmlDSigUtils.getXSDSources();
+	@Override
+	public List<Source> getXSDSources() {
+		List<Source> xsdSources = xmlDSigUtils.getXSDSources();
 		xsdSources.add(new StreamSource(ASiCManifestUtils.class.getResourceAsStream(ASIC_MANIFEST)));
 		return xsdSources;
 	}

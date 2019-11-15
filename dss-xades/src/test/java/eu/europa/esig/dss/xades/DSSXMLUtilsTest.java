@@ -26,10 +26,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 
 import javax.xml.transform.stream.StreamSource;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -37,10 +40,20 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.xades.XAdES319132Utils;
 
 public class DSSXMLUtilsTest {
+	
+	private static XAdES319132Utils xadesUtils;
+	
+	@BeforeAll
+	public static void init() {
+		xadesUtils = XAdES319132Utils.newInstance();
+	}
 
 	@Test
 	public void isOid() {
@@ -58,22 +71,37 @@ public class DSSXMLUtilsTest {
 
 	@Test
 	public void validateAgainstXSDInvalid() throws SAXException {
-		assertThrows(SAXException.class, () -> {
+		DSSException exception = assertThrows(DSSException.class, () -> {
 			DSSXMLUtils.validateAgainstXSD(new FileDocument("src/test/resources/invalid-xades-structure.xml"));
 		});
+		assertTrue(exception.getMessage().contains("Unable to read document"));
 	}
 	
 	@Test
-	public void validateAgainstXSDWithExternalSourceMissing() throws SAXException {
-		assertThrows(SAXException.class, () -> {
-			DSSXMLUtils.validateAgainstXSD(new FileDocument("src/test/resources/ASiCManifest.xml"), new StreamSource[0]);
+	public void validateAgainstXSDWithInternalSource() throws SAXException {
+		DSSException exception = assertThrows(DSSException.class, () -> {
+			DSSXMLUtils.validateAgainstXSD(new FileDocument("src/test/resources/ASiCManifest.xml"));
 		});
+		assertTrue(exception.getMessage().contains("Unable to read document"));
 	}
 	
 	@Test
-	public void validateAgainstXSDWithExternalSourceOK() throws SAXException {
+	public void validateAgainstXSDWithExternalSourceMissing() throws SAXException, IOException {
+		DSSDocument document = new FileDocument("src/test/resources/ASiCManifest.xml");
+		try (InputStream is = document.openStream()) {
+			String exceptionMessage = xadesUtils.validateAgainstXSD(new StreamSource(is), new StreamSource[0]);
+			assertFalse(Utils.isStringEmpty(exceptionMessage));
+		}
+	}
+	
+	@Test
+	public void validateAgainstXSDWithExternalSourceOK() throws SAXException, IOException {
 		StreamSource streamSource = new StreamSource(DSSXMLUtilsTest.class.getResourceAsStream("/ExternalXSDForAsic.xsd"));
-		DSSXMLUtils.validateAgainstXSD(new FileDocument("src/test/resources/ASiCManifest.xml"), streamSource);
+		DSSDocument document = new FileDocument("src/test/resources/ASiCManifest.xml");
+		try (InputStream is = document.openStream()) {
+			String exceptionMessage = xadesUtils.validateAgainstXSD(new StreamSource(is), streamSource);
+			assertTrue(Utils.isStringEmpty(exceptionMessage));
+		}
 	}
 
 	@Test

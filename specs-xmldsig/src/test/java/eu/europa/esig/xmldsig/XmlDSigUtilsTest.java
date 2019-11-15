@@ -33,12 +33,20 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.validation.Schema;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.xmldsig.jaxb.SignatureType;
 
 public class XmlDSigUtilsTest {
+	
+	private static XmlDSigUtils xmlDSigUtils;
+	
+	@BeforeAll
+	public static void init() {
+		xmlDSigUtils = XmlDSigUtils.newInstance();
+	}
 
 	@Test
 	@SuppressWarnings("unchecked")
@@ -46,10 +54,10 @@ public class XmlDSigUtilsTest {
 
 		File xmldsigFile = new File("src/test/resources/XmlAliceSig.xml");
 
-		JAXBContext jc = XmlDSigUtils.getJAXBContext();
+		JAXBContext jc = xmlDSigUtils.getJAXBContext();
 		assertNotNull(jc);
 
-		Schema schema = XmlDSigUtils.getSchema();
+		Schema schema = xmlDSigUtils.getSchema();
 		assertNotNull(schema);
 
 		Unmarshaller unmarshaller = jc.createUnmarshaller();
@@ -72,16 +80,16 @@ public class XmlDSigUtilsTest {
 
 	@Test
 	public void getJAXBContext() throws JAXBException {
-		assertNotNull(XmlDSigUtils.getJAXBContext());
+		assertNotNull(xmlDSigUtils.getJAXBContext());
 		// cached
-		assertNotNull(XmlDSigUtils.getJAXBContext());
+		assertNotNull(xmlDSigUtils.getJAXBContext());
 	}
 
 	@Test
 	public void getSchema() throws SAXException {
-		assertNotNull(XmlDSigUtils.getSchema());
+		assertNotNull(xmlDSigUtils.getSchema());
 		// cached
-		assertNotNull(XmlDSigUtils.getSchema());
+		assertNotNull(xmlDSigUtils.getSchema());
 	}
 
 }

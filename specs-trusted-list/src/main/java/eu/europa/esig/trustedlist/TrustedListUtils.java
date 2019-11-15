@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.trustedlist;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -28,31 +27,41 @@ import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
 
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.jaxb.parsers.XmlDefinerUtils;
 import eu.europa.esig.trustedlist.jaxb.tsl.ObjectFactory;
 import eu.europa.esig.xades.XAdESUtils;
-import eu.europa.esig.xmldsig.AbstractUtils;
+import eu.europa.esig.xmldsig.XSDAbstractUtils;
 
-public final class TrustedListUtils extends AbstractUtils {
+public final class TrustedListUtils extends XSDAbstractUtils {
 
 	public static final String TRUSTED_LIST_SCHEMA_LOCATION = "/xsd/ts_119612v020101_xsd.xsd";
 	public static final String TRUSTED_LIST_SIE_SCHEMA_LOCATION = "/xsd/ts_119612v020101_sie_xsd.xsd";
 	public static final String TRUSTED_LIST_ADDITIONALTYPES_SCHEMA_LOCATION = "/xsd/ts_119612v020101_additionaltypes_xsd.xsd";
 
-	private TrustedListUtils() {
-	}
-
 	public static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
 	
-	protected static JAXBContext jc;
-	protected static Schema schema;
+	private static JAXBContext jc;
+	private static Schema schema;
+	
+	private static final XAdESUtils xadesUtils = XAdESUtils.newInstance();
+	
+	private static TrustedListUtils trustedListUtils;
 
-	public static JAXBContext getJAXBContext() throws JAXBException {
+	private TrustedListUtils() {
+	}
+	
+	public static TrustedListUtils newInstance() {
+		if (trustedListUtils == null) {
+			trustedListUtils = new TrustedListUtils();
+		}
+		return trustedListUtils;
+	}
+
+	@Override
+	public JAXBContext getJAXBContext() throws JAXBException {
 		if (jc == null) {
 			jc = JAXBContext.newInstance(eu.europa.esig.xmldsig.jaxb.ObjectFactory.class, eu.europa.esig.xades.jaxb.xades132.ObjectFactory.class,
 					eu.europa.esig.xades.jaxb.xades141.ObjectFactory.class, ObjectFactory.class, eu.europa.esig.trustedlist.jaxb.tslx.ObjectFactory.class,
@@ -61,27 +70,21 @@ public final class TrustedListUtils extends AbstractUtils {
 		return jc;
 	}
 
-	public static Schema getSchema() throws SAXException {
+	@Override
+	public Schema getSchema() throws SAXException {
 		if (schema == null) {
-			SchemaFactory sf = XmlDefinerUtils.getSecureSchemaFactory();
-			List<Source> xsdSources = getXSDSources();
-			schema = sf.newSchema(xsdSources.toArray(new Source[xsdSources.size()]));
+			schema = XmlDefinerUtils.getSchema(getXSDSources());
 		}
 		return schema;
 	}
 
-	public static List<Source> getXSDSources() {
-		List<Source> xsdSources = XAdESUtils.getXSDSources();
+	@Override
+	public List<Source> getXSDSources() {
+		List<Source> xsdSources = xadesUtils.getXSDSources();
 		xsdSources.add(new StreamSource(TrustedListUtils.class.getResourceAsStream(TRUSTED_LIST_SCHEMA_LOCATION)));
 		xsdSources.add(new StreamSource(TrustedListUtils.class.getResourceAsStream(TRUSTED_LIST_SIE_SCHEMA_LOCATION)));
 		xsdSources.add(new StreamSource(TrustedListUtils.class.getResourceAsStream(TRUSTED_LIST_ADDITIONALTYPES_SCHEMA_LOCATION)));
 		return xsdSources;
-	}
-	
-	public static Validator getSchemaValidator(Source... sources) throws SAXException {
-		List<Source> currentXSDSources = getXSDSources();
-		currentXSDSources.addAll(Arrays.asList(sources));
-		return getValidator(currentXSDSources);
 	}
 
 }
