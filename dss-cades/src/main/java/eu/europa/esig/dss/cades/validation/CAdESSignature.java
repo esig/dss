@@ -409,10 +409,17 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private boolean isZeroHash(byte[] hashValue) {
-		// The hashValue within the sigPolicyHash may be set to zero to indicate that
+		// The hashValue within the sigPolicyHash may be set to zero or be empty to indicate that
 		// the policy hash value is not known.
-		return (hashValue != null) && (((hashValue.length == 1) && (hashValue[0] == '0'))
-				|| ((hashValue.length == 1) && (hashValue[0] == 0x00)) || (hashValue.length == 0));
+		return isZeroHashEmpty(hashValue) || doesZeroHashContainSigneZeroByte(hashValue);
+	}
+	
+	private boolean isZeroHashEmpty(byte[] hashValue) {
+		return (hashValue != null) && (hashValue.length == 0);
+	}
+	
+	private boolean doesZeroHashContainSigneZeroByte(byte[] hashValue) {
+		return (hashValue != null) && (hashValue.length == 1) && ((hashValue[0] == '0') || (hashValue[0] == 0x00));
 	}
 
 	@Override

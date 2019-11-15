@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.security.MessageDigest;
 import java.util.Date;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -42,6 +43,7 @@ import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -105,6 +107,28 @@ public class CAdESLevelBWithZeroPolicyTest extends PKIFactoryAccess {
 	@Test
 	public void zeroPolicyWithOtherValuesTest() throws Exception {
 		signaturePolicy.setDigestValue("00".getBytes());		
+		signatureParameters.bLevel().setSignaturePolicy(signaturePolicy);
+		signer();
+		testSignatureFalseZeroPolicy();
+	}
+	
+	@Test
+	public void zeroPolicyWithHashedZeroTest() throws Exception {
+	    byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, new byte[] {'0'});
+		signaturePolicy.setDigestValue(digest);		
+		signatureParameters.bLevel().setSignaturePolicy(signaturePolicy);
+		signer();
+		testSignatureFalseZeroPolicy();
+	}
+	
+	@Test
+	public void zeroPolicyWithHashedArrayOfZerosTest() throws Exception {
+		signaturePolicy.setDigestValue(new byte[] {
+				'0', '0', '0', '0', '0', '0', '0', '0', '0', '0', 
+				'0', '0', '0', '0', '0', '0', '0', '0', '0', '0',
+				'0', '0', '0', '0', '0', '0', '0', '0', '0', '0',
+				'0', '0', '0', '0', '0', '0', '0', '0', '0', '0'
+		});		
 		signatureParameters.bLevel().setSignaturePolicy(signaturePolicy);
 		signer();
 		testSignatureFalseZeroPolicy();
