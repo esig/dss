@@ -1090,16 +1090,21 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			return null;
 		}
 		final ASN1Encodable asn1Encodable = contentHintAttribute.getAttrValues().getObjectAt(0);
-		final ContentHints contentHints = ContentHints.getInstance(asn1Encodable);
 		String contentHint = null;
-		if (contentHints != null) {
-			// content-type is mandatory
-			contentHint = contentHints.getContentType().toString();
-			// content-description is optional
-			if (contentHints.getContentDescription() != null) {
-				contentHint += " [" + contentHints.getContentDescription().toString() + "]";
+		try {
+			final ContentHints contentHints = ContentHints.getInstance(asn1Encodable);
+			if (contentHints != null) {
+				// content-type is mandatory
+				contentHint = contentHints.getContentType().toString();
+				// content-description is optional
+				if (contentHints.getContentDescription() != null) {
+					contentHint += " [" + contentHints.getContentDescription().toString() + "]";
+				}
 			}
+		}catch (Exception e) {
+			LOG.warn("Unable to parse ContentHints - wrong format", e);
 		}
+
 		return contentHint;
 	}
 
