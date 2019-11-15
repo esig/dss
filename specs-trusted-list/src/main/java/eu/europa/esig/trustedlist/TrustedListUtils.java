@@ -48,6 +48,9 @@ public final class TrustedListUtils extends AbstractUtils {
 	}
 
 	public static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
+	
+	protected static JAXBContext jc;
+	protected static Schema schema;
 
 	public static JAXBContext getJAXBContext() throws JAXBException {
 		if (jc == null) {

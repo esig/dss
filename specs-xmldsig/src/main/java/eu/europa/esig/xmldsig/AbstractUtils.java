@@ -1,6 +1,5 @@
 package eu.europa.esig.xmldsig;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.XMLConstants;

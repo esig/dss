@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.xades;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;

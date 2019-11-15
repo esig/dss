@@ -47,8 +47,8 @@ public final class ValidationReportUtils extends AbstractUtils {
 
 	public static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
 
-	private static JAXBContext jc;
-	private static Schema schema;
+	protected static JAXBContext jc;
+	protected static Schema schema;
 
 	public static JAXBContext getJAXBContext() throws JAXBException {
 		if (jc == null) {
