@@ -2,7 +2,6 @@ package eu.europa.esig.xmldsig;
 
 import java.util.List;
 
-import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.transform.Source;
 import javax.xml.validation.Schema;
@@ -23,9 +22,6 @@ public abstract class AbstractUtils {
 
 	public static Schema getSchema(List<Source> xsdSources) throws SAXException {
 		SchemaFactory sf = XmlDefinerUtils.getSecureSchemaFactory();
-		sf.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-		sf.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-		sf.setProperty(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 		return sf.newSchema(xsdSources.toArray(new Source[xsdSources.size()]));
 	}
 	
@@ -34,9 +30,6 @@ public abstract class AbstractUtils {
 			schema = getSchema(sources);
 		}
 		Validator validator = schema.newValidator();
-		validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-		validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-		validator.setProperty(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 		return validator;
 	}
 	
