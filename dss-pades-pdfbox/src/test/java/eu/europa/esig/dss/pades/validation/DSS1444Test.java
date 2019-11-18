@@ -166,7 +166,7 @@ public class DSS1444Test {
 		{
 		  if( "ASCCM_ANS_1".equals( xmlNames.get( i ).getNameId() ) )
 		  {
-		    assertTrue("The encryption algorithm not authorised!".equals( xmlNames.get(i).getValue() ) );
+		    assertEquals("The encryption algorithm is not authorised!", xmlNames.get(i).getValue());
 		    return;
 		  }
 		}
