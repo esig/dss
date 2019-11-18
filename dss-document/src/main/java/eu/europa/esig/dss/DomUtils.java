@@ -311,8 +311,8 @@ public final class DomUtils {
 	 *            parent node
 	 * @param namespace
 	 *            namespace definition
-	 * @param elemnt
-	 *            the type of elementelement name
+	 * @param element
+	 *            the type of element name
 	 * @return added element
 	 */
 	public static Element addElement(final Document document, final Element parentDom, final DSSNamespace namespace, final DSSElement element) {
