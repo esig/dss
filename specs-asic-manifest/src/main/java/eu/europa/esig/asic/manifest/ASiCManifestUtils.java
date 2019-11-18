@@ -37,9 +37,9 @@ import eu.europa.esig.xmldsig.jaxb.ObjectFactory;
 
 public final class ASiCManifestUtils extends XSDAbstractUtils {
 	
-	public static final String ASIC_MANIFEST = "/xsd/en_31916201v010101.xsd";
-	
 	private static final XmlDSigUtils xmlDSigUtils = XmlDSigUtils.newInstance();
+	
+	public static final String ASIC_MANIFEST = "/xsd/en_31916201v010101.xsd";
 	
 	private static ASiCManifestUtils asicManifestUtils;
 

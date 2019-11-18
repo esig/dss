@@ -7,7 +7,6 @@ import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.Validator;
 
@@ -38,6 +37,12 @@ public abstract class XSDAbstractUtils {
 	public abstract Schema getSchema() throws SAXException;
 	
 	/**
+	 * Returns a list of module-specific XSD {@code Source}s
+	 * @return list of XSD {@link Source}s
+	 */
+	public abstract List<Source> getXSDSources();
+	
+	/**
 	 * Returns a Schema with custom sources
 	 * @param sources an array of custom {@link Source}s
 	 * @return {@link Schema}
@@ -54,13 +59,13 @@ public abstract class XSDAbstractUtils {
 	/**
 	 * This method allows to validate an XML against the module-default XSD schema.
 	 *
-	 * @param streamSource
-	 *            {@code InputStream} XML to validate
+	 * @param xmlSource
+	 *            {@code Source} XML to validate
 	 * @return null if the XSD validates the XML, error message otherwise
 	 */
-	public String validateAgainstXSD(final StreamSource streamSource) {
+	public String validateAgainstXSD(final Source xmlSource) {
 		try {
-			return validate(getSchema(), streamSource);
+			return validate(getSchema(), xmlSource);
 		} catch (Exception e) {
 			LOG.warn("Error during the XML schema validation!", e);
 			return e.getMessage();
@@ -70,25 +75,25 @@ public abstract class XSDAbstractUtils {
 	/**
 	 * This method allows to validate an XML against the module-default XSD schema plus custom sources.
 	 *
-	 * @param streamSource
-	 *            {@code InputStream} XML to validate
+	 * @param xmlSource
+	 *            {@code Source} XML to validate
 	 * @param sources
-	 *            {@code Source}s to validate against
+	 *            {@code Source}s to validate against (custom schemas)
 	 * @return null if the XSD validates the XML, error message otherwise
 	 */
-	public String validateAgainstXSD(final StreamSource streamSource, Source... sources) {
+	public String validateAgainstXSD(final Source xmlSource, Source... sources) {
 		try {
-			return validate(getSchema(sources), streamSource);
+			return validate(getSchema(sources), xmlSource);
 		} catch (Exception e) {
 			LOG.warn("Error during the XML schema validation!", e);
 			return e.getMessage();
 		}
 	}
 	
-	private String validate(final Schema schema, final StreamSource streamSource) throws Exception {
+	private String validate(final Schema schema, final Source xmlSource) throws Exception {
 		Validator validator = schema.newValidator();
 		avoidXXE(validator);
-		validator.validate(streamSource);
+		validator.validate(xmlSource);
 		return EMPTY_STRING;
 	}
 
@@ -104,11 +109,5 @@ public abstract class XSDAbstractUtils {
 		validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
 		validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
 	}
-	
-	/**
-	 * Returns a list of module-specific XSD {@code Source}s
-	 * @return list of XSD {@link Source}s
-	 */
-	public abstract List<Source> getXSDSources();
 
 }

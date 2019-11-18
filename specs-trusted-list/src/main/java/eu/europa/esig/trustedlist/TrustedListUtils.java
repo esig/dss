@@ -37,16 +37,16 @@ import eu.europa.esig.xmldsig.XSDAbstractUtils;
 
 public final class TrustedListUtils extends XSDAbstractUtils {
 
+	private static final XAdESUtils xadesUtils = XAdESUtils.newInstance();
+	
+	public static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
+
 	public static final String TRUSTED_LIST_SCHEMA_LOCATION = "/xsd/ts_119612v020101_xsd.xsd";
 	public static final String TRUSTED_LIST_SIE_SCHEMA_LOCATION = "/xsd/ts_119612v020101_sie_xsd.xsd";
 	public static final String TRUSTED_LIST_ADDITIONALTYPES_SCHEMA_LOCATION = "/xsd/ts_119612v020101_additionaltypes_xsd.xsd";
-
-	public static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
 	
 	private static JAXBContext jc;
 	private static Schema schema;
-	
-	private static final XAdESUtils xadesUtils = XAdESUtils.newInstance();
 	
 	private static TrustedListUtils trustedListUtils;
 

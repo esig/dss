@@ -38,11 +38,11 @@ public final class XmlDSigUtils extends XSDAbstractUtils {
 
 	public static final String XML_SCHEMA_LOCATION = "/xsd/xml.xsd";
 	public static final String XMLDSIG_SCHEMA_LOCATION = "/xsd/xmldsig-core-schema.xsd";
-	
-	private static XmlDSigUtils xmlDSigUtils;
 
 	protected static JAXBContext jc;
 	protected static Schema schema;
+	
+	private static XmlDSigUtils xmlDSigUtils;
 
 	private XmlDSigUtils() {
 	}

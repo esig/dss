@@ -22,6 +22,8 @@ package eu.europa.esig.xades;
 
 import java.util.List;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
@@ -29,11 +31,18 @@ import javax.xml.validation.Schema;
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.jaxb.parsers.XmlDefinerUtils;
+import eu.europa.esig.xmldsig.XSDAbstractUtils;
+import eu.europa.esig.xmldsig.XmlDSigUtils;
+import eu.europa.esig.xmldsig.jaxb.ObjectFactory;
 
-public final class XAdESUtils extends XAdESAbstractUtils {
+public final class XAdESUtils extends XSDAbstractUtils {
+	
+	private static final XmlDSigUtils xmlDSigUtils = XmlDSigUtils.newInstance();
 
+	public static final String XADES_SCHEMA_LOCATION = "/xsd/XAdES.xsd";
 	public static final String XADES_141_SCHEMA_LOCATION = "/xsd/XAdESv141.xsd";
 
+	private static JAXBContext jc;
 	private static Schema schema;
 	
 	private static XAdESUtils xadesUtils;
@@ -46,6 +55,15 @@ public final class XAdESUtils extends XAdESAbstractUtils {
 			xadesUtils = new XAdESUtils();
 		}
 		return xadesUtils;
+	}
+
+	@Override
+	public JAXBContext getJAXBContext() throws JAXBException {
+		if (jc == null) {
+			jc = JAXBContext.newInstance(ObjectFactory.class, eu.europa.esig.xades.jaxb.xades132.ObjectFactory.class,
+					eu.europa.esig.xades.jaxb.xades141.ObjectFactory.class);
+		}
+		return jc;
 	}
 
 	@Override
