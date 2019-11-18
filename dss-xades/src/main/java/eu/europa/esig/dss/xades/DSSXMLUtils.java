@@ -653,18 +653,17 @@ public final class DSSXMLUtils {
 	 * @return byte array
 	 */
 	public static byte[] getNodeBytes(Node node) {
-		Node firstChild = node.getFirstChild();
-		if (firstChild.getNodeType() == Node.ELEMENT_NODE) {
-			byte[] bytes = DSSXMLUtils.serializeNode(firstChild);
+		if (node.getNodeType() == Node.ELEMENT_NODE) {
+			byte[] bytes = serializeNode(node);
 			String str = new String(bytes);
 			// TODO: better
 			// remove <?xml version="1.0" encoding="UTF-8"?>
 			str = str.substring(str.indexOf("?>") + 2);
 			return str.getBytes();
-		} else if (firstChild.getNodeType() == Node.TEXT_NODE) {
-			String textContent = firstChild.getTextContent();
+		} else if (node.getNodeType() == Node.TEXT_NODE) {
+			String textContent = node.getTextContent();
 			if (Utils.isBase64Encoded(textContent)) {
-				return Utils.fromBase64(firstChild.getTextContent());
+				return Utils.fromBase64(node.getTextContent());
 			} else {
 				return textContent.getBytes();
 			}

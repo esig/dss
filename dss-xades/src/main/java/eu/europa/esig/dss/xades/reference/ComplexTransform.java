@@ -70,7 +70,8 @@ public abstract class ComplexTransform extends AbstractTransform {
 			final XMLSignatureInput xmlSignatureInputOut = transformObject.performTransform(xmlSignatureInput);
 			return xmlSignatureInputOut.getBytes();
 		} catch (IOException | XMLSecurityException e) {
-			throw new DSSException(String.format("Cannot process transformation [%s] on the given DOM object", algorithm), e);
+			throw new DSSException(String.format("Cannot process transformation [%s] on the given DOM object. Reason : [%s]", 
+					algorithm, e.getMessage()), e);
 		}
 	}
 

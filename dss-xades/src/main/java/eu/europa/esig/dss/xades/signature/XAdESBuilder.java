@@ -25,7 +25,6 @@ import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 import javax.xml.crypto.dsig.XMLSignature;
