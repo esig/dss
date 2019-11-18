@@ -34,7 +34,7 @@ import eu.europa.esig.dss.validation.reports.Reports;
 public class DSS1871Test {
 
 	@Test
-	public void testSigWithoutAttached() {
+	public void testSigWithWrongContentHints() {
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/wrongContentHints.p7m");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
