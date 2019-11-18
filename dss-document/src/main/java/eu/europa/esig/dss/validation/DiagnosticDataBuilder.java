@@ -94,6 +94,7 @@ import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
+import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -1529,9 +1530,12 @@ public class DiagnosticDataBuilder {
 		}
 		xmlBasicSignatureType.setKeyLengthUsedToSignThisToken(DSSPKUtils.getPublicKeySize(token));
 
-		final boolean signatureValid = token.isSignatureValid();
-		xmlBasicSignatureType.setSignatureIntact(signatureValid);
-		xmlBasicSignatureType.setSignatureValid(signatureValid);
+		SignatureValidity signatureValidity = token.getSignatureValidity();
+		if (SignatureValidity.NOT_EVALUATED != signatureValidity) {
+			final boolean signatureValid = SignatureValidity.VALID == token.getSignatureValidity();
+			xmlBasicSignatureType.setSignatureIntact(signatureValid);
+			xmlBasicSignatureType.setSignatureValid(signatureValid);
+		}
 		return xmlBasicSignatureType;
 	}
 

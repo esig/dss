@@ -50,6 +50,7 @@ import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSException;
@@ -266,8 +267,22 @@ public class TimestampToken extends Token {
 		return ocspSource;
 	}
 	
+	/**
+	 * Indicates if the token's signature is intact. 
+	 * The method isSignedBy(CertificateToken) must be called to set this flag.
+	 * Note: return false if the check isSignedBy() was not performed or
+	 * the signer's public key does not much.
+	 * In order to check if the validation has been performed, use 
+	 * the method getSignatureValidity() that returns a three-state value.
+	 *
+	 * @return true if the signature is valid (== SignatureValidity.VALID)
+	 */
+	public boolean isSignatureValid() {
+		return SignatureValidity.VALID == signatureValidity;
+	}
+	
 	@Override
-	protected boolean checkIsSignedBy(final CertificateToken candidate) {
+	protected SignatureValidity checkIsSignedBy(final CertificateToken candidate) {
 
 		final X509CertificateHolder x509CertificateHolder = DSSASN1Utils.getX509CertificateHolder(candidate);
 		if (timeStamp.getSID().match(x509CertificateHolder)) {
@@ -276,7 +291,7 @@ public class TimestampToken extends Token {
 			// Try firstly to validate as a Timestamp and if that fails try to validate the
 			// timestamp as a CMSSignedData
 			if (isValidTimestamp(signerInformationVerifier) || isValidCMSSignedData(signerInformationVerifier)) {
-				signatureValid = true;
+				signatureValidity = SignatureValidity.VALID;
 				this.tsaX500Principal = candidate.getSubjectX500Principal();
 				SignerInformation signerInformation = timeStamp.toCMSSignedData().getSignerInfos().get(timeStamp.getSID());
 
@@ -290,12 +305,12 @@ public class TimestampToken extends Token {
 					signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
 				}
 			} else {
-				signatureValid = false;
+				signatureValidity = SignatureValidity.INVALID;
 			}
 
-			return signatureValid;
+			return signatureValidity;
 		}
-		return false;
+		return SignatureValidity.INVALID;
 	}
 
 	private boolean isValidTimestamp(SignerInformationVerifier signerInformationVerifier) {
@@ -597,7 +612,7 @@ public class TimestampToken extends Token {
 			out.append(indentStr).append("TimestampToken[signedBy=").append(getIssuerX500Principal());
 			out.append(", generated: ").append(DSSUtils.formatInternal(timeStamp.getTimeStampInfo().getGenTime()));
 			out.append(" / ").append(timeStampType).append('\n');
-			if (signatureValid) {
+			if (isSignatureValid()) {
 
 				indentStr += "\t";
 				out.append(indentStr).append("Timestamp's signature validity: VALID").append('\n');

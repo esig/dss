@@ -420,7 +420,7 @@ public class DiagnosticData {
 	public boolean isValidCertificate(final String dssCertificateId) {
 		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
 		
-		final boolean signatureValid = (certificate.getCurrentBasicSignature() != null) && certificate.getCurrentBasicSignature().isSignatureValid();
+		final boolean signatureValid = certificate.isSignatureValid();
 		CertificateRevocationWrapper latestRevocationData = getLatestRevocationDataForCertificate(certificate) ;
 		final boolean revocationValid = (latestRevocationData != null) && latestRevocationData.isStatus();
 		final boolean trusted = certificate.isTrusted();

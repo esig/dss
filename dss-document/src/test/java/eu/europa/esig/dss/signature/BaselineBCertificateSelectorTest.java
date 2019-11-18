@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.signature;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
@@ -29,6 +28,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
+import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
@@ -121,7 +121,7 @@ public class BaselineBCertificateSelectorTest {
 		assertEquals(c1, certificates.get(0));
 
 		for (CertificateToken certificateToken : certificates) {
-			assertTrue(certificateToken.isSignatureValid());
+			assertEquals(SignatureValidity.VALID, certificateToken.getSignatureValidity());
 		}
 	}
 
