@@ -372,6 +372,19 @@ public abstract class XAdESBuilder {
 		}
 		return xadesNamespace;
 	}
+
+	/**
+	 * This method returns the current used XAdES 1.4.1 namespace. Try to determine from the signature, from the parameters or the default value
+	 */
+	protected DSSNamespace getXades141Namespace() {
+		DSSNamespace xades141Namespace = params.getXades141Namespace();
+		if (xades141Namespace == null) {
+			LOG.warn("Current XAdES 1.4.1 namespace not found in the parameters (use the default XAdES 1.4.1)");
+			xades141Namespace = XAdESNamespaces.XADES_141;
+
+		}
+		return xades141Namespace;
+	}
 	
 	protected XAdESElement getCurrentXAdESElements() {
 		String xadesURI = getXadesNamespace().getUri();

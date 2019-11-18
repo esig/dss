@@ -30,6 +30,7 @@ import eu.europa.esig.dss.DSSNamespace;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.reference.Base64Transform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
@@ -119,10 +120,21 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 	 */
 	private boolean prettyPrint = false;
 
+	/**
+	 * XMLDSig definition
+	 */
 	private DSSNamespace xmldsigNamespace = XAdESNamespaces.XMLDSIG;
 	
+	/**
+	 * XAdES 1.1.1, 1.2.2 or 1.3.2 definition
+	 */
 	private DSSNamespace xadesNamespace = new DSSNamespace(XAdESNamespaces.XADES_132.getUri(), "xades");
 
+	/**
+	 * XAdES 1.4.1 definition
+	 */
+	private DSSNamespace xades141Namespace = XAdESNamespaces.XADES_141;
+	
 	@Override
 	public void setSignatureLevel(SignatureLevel signatureLevel) {
 		if (signatureLevel == null || SignatureForm.XAdES != signatureLevel.getSignatureForm()) {
@@ -326,7 +338,13 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 	}
 
 	public void setXmldsigNamespace(DSSNamespace xmldsigNamespace) {
-		this.xmldsigNamespace = xmldsigNamespace;
+		Objects.requireNonNull(xmldsigNamespace);
+		String uri = xmldsigNamespace.getUri();
+		if (XAdESNamespaces.XMLDSIG.isSameUri(uri)) {
+			this.xmldsigNamespace = xmldsigNamespace;
+		} else {
+			throw new DSSException("Not accepted URI");
+		}
 	}
 
 	public DSSNamespace getXadesNamespace() {
@@ -334,7 +352,27 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 	}
 
 	public void setXadesNamespace(DSSNamespace xadesNamespace) {
-		this.xadesNamespace = xadesNamespace;
+		Objects.requireNonNull(xadesNamespace);
+		String uri = xadesNamespace.getUri();
+		if (XAdESNamespaces.XADES_111.isSameUri(uri) || XAdESNamespaces.XADES_122.isSameUri(uri) || XAdESNamespaces.XADES_132.isSameUri(uri)) {
+			this.xadesNamespace = xadesNamespace;
+		} else {
+			throw new DSSException("Not accepted URI");
+		}
+	}
+
+	public DSSNamespace getXades141Namespace() {
+		return xades141Namespace;
+	}
+
+	public void setXades141Namespace(DSSNamespace xades141Namespace) {
+		Objects.requireNonNull(xades141Namespace);
+		String uri = xades141Namespace.getUri();
+		if (XAdESNamespaces.XADES_141.isSameUri(uri)) {
+			this.xades141Namespace = xades141Namespace;
+		} else {
+			throw new DSSException("Not accepted URI");
+		}
 	}
 	
 }

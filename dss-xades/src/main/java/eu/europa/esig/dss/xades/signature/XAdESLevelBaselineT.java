@@ -466,7 +466,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		case VALIDATION_DATA_TIMESTAMP:
 			// <xades:SigAndRefsTimeStamp Id="time-stamp-a762ab0e-e05c-4cc8-a804-cf2c4ffb5516">
 			if (params.isEn319132() && !isOldGeneration(params.getSignatureLevel())) {
-				timeStampDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XADES_141, XAdES141Element.SIG_AND_REFS_TIMESTAMP_V2);
+				timeStampDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, getXades141Namespace(), XAdES141Element.SIG_AND_REFS_TIMESTAMP_V2);
 			} else {
 				timeStampDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, getXadesNamespace(), getCurrentXAdESElements().getElementSigAndRefsTimeStamp());
 			}
