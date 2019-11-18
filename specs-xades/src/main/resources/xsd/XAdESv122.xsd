@@ -2,8 +2,7 @@
 <xsd:schema targetNamespace="http://uri.etsi.org/01903/v1.2.2#" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://uri.etsi.org/01903/v1.2.2#" 
 xmlns:ds="http://www.w3.org/2000/09/xmldsig#" elementFormDefault="qualified">
 
-	<xsd:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="http://www.w3.org/TR/2002/
-REC-xmldsig-core-20020212/xmldsig-core-schema.xsd"/>
+	<xsd:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="http://www.w3.org/TR/2002/REC-xmldsig-core-20020212/xmldsig-core-schema.xsd"/>
 
 <!-- Start auxiliary types definitions: AnyType, ObjectIdentifierType, 
 EncapsulatedPKIDataType and TimestampType-->
