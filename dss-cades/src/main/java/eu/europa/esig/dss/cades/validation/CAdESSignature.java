@@ -1102,7 +1102,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				}
 			}
 		}catch (Exception e) {
-			LOG.warn("Unable to parse ContentHints - ", Utils.toBase64(DSSASN1Utils.getDEREncoded(asn1Encodable)), e);
+			LOG.warn("Unable to parse ContentHints - {}", Utils.toBase64(DSSASN1Utils.getDEREncoded(asn1Encodable)), e);
 		}
 
 		return contentHint;
