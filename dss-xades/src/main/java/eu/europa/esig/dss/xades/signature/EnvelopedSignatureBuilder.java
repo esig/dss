@@ -132,11 +132,11 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 		final List<DSSTransform> dssTransformList = new ArrayList<DSSTransform>();
 
 		// For parallel signatures
-		XPathEnvelopedSignatureTransform xPathTransform = new XPathEnvelopedSignatureTransform(params.getXmldsigNamespace());
+		XPathEnvelopedSignatureTransform xPathTransform = new XPathEnvelopedSignatureTransform(getXmldsigNamespace());
 		dssTransformList.add(xPathTransform);
 
 		// Canonicalization is the last operation, its better to operate the canonicalization on the smaller document
-		CanonicalizationTransform canonicalizationTransform = new CanonicalizationTransform(params.getXmldsigNamespace(), CanonicalizationMethod.EXCLUSIVE);
+		CanonicalizationTransform canonicalizationTransform = new CanonicalizationTransform(getXmldsigNamespace(), CanonicalizationMethod.EXCLUSIVE);
 		dssTransformList.add(canonicalizationTransform);
 
 		dssReference.setTransforms(dssTransformList);

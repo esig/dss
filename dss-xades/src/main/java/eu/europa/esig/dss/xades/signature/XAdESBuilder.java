@@ -33,6 +33,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
+import eu.europa.esig.dss.DSSNamespace;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -119,7 +120,7 @@ public abstract class XAdESBuilder {
 	 *            the digest algorithm xml identifier
 	 */
 	protected void incorporateDigestMethod(final Element parentDom, final DigestAlgorithm digestAlgorithm) {
-		final Element digestMethodDom = DomUtils.addElement(documentDom, parentDom, params.getXmldsigNamespace(), XMLDSigElement.DIGEST_METHOD);
+		final Element digestMethodDom = DomUtils.addElement(documentDom, parentDom, getXmldsigNamespace(), XMLDSigElement.DIGEST_METHOD);
 		digestMethodDom.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName() , digestAlgorithm.getUri());
 	}
 
@@ -144,7 +145,7 @@ public abstract class XAdESBuilder {
 	protected void incorporateDigestValue(final Element parentDom, DSSReference dssReference, final DigestAlgorithm digestAlgorithm,
 			final DSSDocument originalDocument) {
 
-		final Element digestValueDom = DomUtils.createElementNS(documentDom, params.getXmldsigNamespace(), XMLDSigElement.DIGEST_VALUE);
+		final Element digestValueDom = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.DIGEST_VALUE);
 
 		String base64EncodedDigestBytes = null;
 		if (params.isManifestSignature()) {
@@ -160,8 +161,8 @@ public abstract class XAdESBuilder {
 			Element root = doc.getDocumentElement();
 
 			Document doc2 = DomUtils.buildDOM();
-			final Element dom = DomUtils.createElementNS(doc2, params.getXmldsigNamespace(), XMLDSigElement.OBJECT);
-			final Element dom2 = DomUtils.createElementNS(doc2, params.getXmldsigNamespace(), XMLDSigElement.OBJECT);
+			final Element dom = DomUtils.createElementNS(doc2, getXmldsigNamespace(), XMLDSigElement.OBJECT);
+			final Element dom2 = DomUtils.createElementNS(doc2, getXmldsigNamespace(), XMLDSigElement.OBJECT);
 			doc2.appendChild(dom2);
 			dom2.appendChild(dom);
 			dom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), dssReference.getUri().substring(1));
@@ -211,10 +212,10 @@ public abstract class XAdESBuilder {
 	 */
 	protected void incorporateDigestValue(final Element parentDom, final DigestAlgorithm digestAlgorithm, final Token token) {
 		Element digestValueDom = null;
-		if (XAdESNamespaces.XADES_111.isSameUri(params.getXadesNamespace().getUri())) {
-			digestValueDom = DomUtils.createElementNS(documentDom, params.getXadesNamespace(), XAdES111Element.DIGEST_VALUE);
+		if (XAdESNamespaces.XADES_111.isSameUri(getXadesNamespace().getUri())) {
+			digestValueDom = DomUtils.createElementNS(documentDom, getXadesNamespace(), XAdES111Element.DIGEST_VALUE);
 		} else {
-			digestValueDom = DomUtils.createElementNS(documentDom, params.getXmldsigNamespace(), XMLDSigElement.DIGEST_VALUE);
+			digestValueDom = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.DIGEST_VALUE);
 		}
 		final String base64EncodedDigestBytes = Utils.toBase64(token.getDigest(digestAlgorithm));
 		if (LOG.isTraceEnabled()) {
@@ -267,17 +268,17 @@ public abstract class XAdESBuilder {
 	 *            the certificate to be added
 	 */
 	protected Element incorporateCert(final Element parentDom, final CertificateToken certificate) {
-		final Element certDom = DomUtils.addElement(documentDom, parentDom, params.getXadesNamespace(), getCurrentXAdESElements().getElementCert());
+		final Element certDom = DomUtils.addElement(documentDom, parentDom, getXadesNamespace(), getCurrentXAdESElements().getElementCert());
 
-		final Element certDigestDom = DomUtils.addElement(documentDom, certDom, params.getXadesNamespace(), getCurrentXAdESElements().getElementCertDigest());
+		final Element certDigestDom = DomUtils.addElement(documentDom, certDom, getXadesNamespace(), getCurrentXAdESElements().getElementCertDigest());
 
 		final DigestAlgorithm signingCertificateDigestMethod = params.getSigningCertificateDigestMethod();
 	
 		Element digestMethodDom = null;
-		if (XAdESNamespaces.XADES_111.isSameUri(params.getXadesNamespace().getUri())) {
-			digestMethodDom = DomUtils.addElement(documentDom, certDigestDom, params.getXadesNamespace(), XAdES111Element.DIGEST_METHOD);
+		if (XAdESNamespaces.XADES_111.isSameUri(getXadesNamespace().getUri())) {
+			digestMethodDom = DomUtils.addElement(documentDom, certDigestDom, getXadesNamespace(), XAdES111Element.DIGEST_METHOD);
 		} else {
-			digestMethodDom = DomUtils.addElement(documentDom, certDigestDom, params.getXmldsigNamespace(), XMLDSigElement.DIGEST_METHOD);
+			digestMethodDom = DomUtils.addElement(documentDom, certDigestDom, getXmldsigNamespace(), XMLDSigElement.DIGEST_METHOD);
 		}
 		digestMethodDom.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName(), signingCertificateDigestMethod.getUri());
 		
@@ -286,14 +287,14 @@ public abstract class XAdESBuilder {
 	}
 
 	protected void incorporateIssuerV1(final Element parentDom, final CertificateToken certificate) {
-		final Element issuerSerialDom = DomUtils.addElement(documentDom, parentDom, params.getXadesNamespace(), getCurrentXAdESElements().getElementIssuerSerial());
+		final Element issuerSerialDom = DomUtils.addElement(documentDom, parentDom, getXadesNamespace(), getCurrentXAdESElements().getElementIssuerSerial());
 
-		final Element x509IssuerNameDom = DomUtils.addElement(documentDom, issuerSerialDom, params.getXmldsigNamespace(), XMLDSigElement.X509_ISSUER_NAME);
+		final Element x509IssuerNameDom = DomUtils.addElement(documentDom, issuerSerialDom, getXmldsigNamespace(), XMLDSigElement.X509_ISSUER_NAME);
 				
 		final String issuerX500PrincipalName = certificate.getIssuerX500Principal().getName();
 		DomUtils.setTextNode(documentDom, x509IssuerNameDom, issuerX500PrincipalName);
 
-		final Element x509SerialNumberDom = DomUtils.addElement(documentDom, issuerSerialDom, params.getXmldsigNamespace(), XMLDSigElement.X509_SERIAL_NUMBER);
+		final Element x509SerialNumberDom = DomUtils.addElement(documentDom, issuerSerialDom, getXmldsigNamespace(), XMLDSigElement.X509_SERIAL_NUMBER);
 		
 		final BigInteger serialNumber = certificate.getSerialNumber();
 		final String serialNumberString = serialNumber.toString();
@@ -301,7 +302,7 @@ public abstract class XAdESBuilder {
 	}
 
 	protected void incorporateIssuerV2(final Element parentDom, final CertificateToken certificate) {
-		final Element issuerSerialDom = DomUtils.addElement(documentDom, parentDom, params.getXadesNamespace(), getCurrentXAdESElements().getElementIssuerSerialV2());
+		final Element issuerSerialDom = DomUtils.addElement(documentDom, parentDom, getXadesNamespace(), getCurrentXAdESElements().getElementIssuerSerialV2());
 
 		IssuerSerial issuerSerial = DSSASN1Utils.getIssuerSerial(certificate);
 		String issuerBase64 = Utils.toBase64(DSSASN1Utils.getDEREncoded(issuerSerial));
@@ -345,26 +346,55 @@ public abstract class XAdESBuilder {
 	
 	protected abstract void alignNodes();
 	
+
+	/**
+	 * This method returns the current used XMLDSig namespace. Try to determine from the signature, from the parameters or the default value
+	 */
+	protected DSSNamespace getXmldsigNamespace() {
+		DSSNamespace xmldsigNamespace = params.getXmldsigNamespace();
+		if (xmldsigNamespace == null) {
+			LOG.warn("Current XMLDSig namespace not found in the parameters (use the default XMLDSig)");
+			xmldsigNamespace = XAdESNamespaces.XMLDSIG;
+
+		}
+		return xmldsigNamespace;
+	}
+
+	/**
+	 * This method returns the current used XAdES namespace. Try to determine from the signature, from the parameters or the default value
+	 */
+	protected DSSNamespace getXadesNamespace() {
+		DSSNamespace xadesNamespace = params.getXadesNamespace();
+		if (xadesNamespace == null) {
+			LOG.warn("Current XAdES namespace not found in the parameters (use the default XAdES 1.3.2)");
+			xadesNamespace = XAdESNamespaces.XADES_132;
+
+		}
+		return xadesNamespace;
+	}
+	
 	protected XAdESElement getCurrentXAdESElements() {
-		if (XAdESNamespaces.XADES_132.getUri().equals(params.getXadesNamespace().getUri())) {
+		String xadesURI = getXadesNamespace().getUri();
+		if (XAdESNamespaces.XADES_132.getUri().equals(xadesURI)) {
 			return XAdES132Element.values()[0];
-		} else if (XAdESNamespaces.XADES_122.getUri().equals(params.getXadesNamespace().getUri())) {
+		} else if (XAdESNamespaces.XADES_122.getUri().equals(xadesURI)) {
 			return XAdES122Element.values()[0];
-		} else if (XAdESNamespaces.XADES_111.getUri().equals(params.getXadesNamespace().getUri())) {
+		} else if (XAdESNamespaces.XADES_111.getUri().equals(xadesURI)) {
 			return XAdES111Element.values()[0];
 		}
-		throw new DSSException("Unsupported URI : " + params.getXadesNamespace().getUri());
+		throw new DSSException("Unsupported URI : " + xadesURI);
 	}
 
 	protected XAdESPaths getCurrentXAdESPaths() {
-		if (Utils.areStringsEqual(XAdESNamespaces.XADES_132.getUri(), params.getXadesNamespace().getUri())) {
+		String xadesURI = getXadesNamespace().getUri();
+		if (Utils.areStringsEqual(XAdESNamespaces.XADES_132.getUri(), xadesURI)) {
 			return new XAdES132Paths();
-		} else if (Utils.areStringsEqual(XAdESNamespaces.XADES_122.getUri(), params.getXadesNamespace().getUri())) {
+		} else if (Utils.areStringsEqual(XAdESNamespaces.XADES_122.getUri(), xadesURI)) {
 			return new XAdES122Paths();
-		} else if (Utils.areStringsEqual(XAdESNamespaces.XADES_111.getUri(), params.getXadesNamespace().getUri())) {
+		} else if (Utils.areStringsEqual(XAdESNamespaces.XADES_111.getUri(), xadesURI)) {
 			return new XAdES111Paths();
 		} else {
-			throw new DSSException("Unsupported URI : " + params.getXadesNamespace().getUri());
+			throw new DSSException("Unsupported URI : " + xadesURI);
 		}
 	}
 	

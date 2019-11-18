@@ -50,6 +50,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import eu.europa.esig.dss.DSSNamespace;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
@@ -126,6 +127,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 */
 	private final List<XAdESPaths> xadesPathsHolders;
 
+	private DSSNamespace xmldSigNamespace;
+	
+	private DSSNamespace xadesNamespace;
+	
 	private XAdESPaths xadesPaths;
 
 	private final Element signatureElement;
@@ -217,13 +222,14 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		recursiveNamespaceBrowser(signatureElement);
 
 		if (xadesPaths == null) {
-			LOG.warn("There is no suitable XAdESPaths to manage the signature. The default one will be used.");
+			LOG.warn("There is no suitable XAdESPaths / XAdESNamespace to manage the signature. The default ones will be used.");
 			xadesPaths = new XAdES132Paths();
+			xadesNamespace = XAdESNamespaces.XADES_132;
 		}
 	}
 
 	/**
-	 * This method sets the namespace which will determinate the {@code XPathQueryHolder} to use. The content of the
+	 * This method sets the namespace which will determinate the {@code XAdESPaths} to use. The content of the
 	 * Transform element is ignored.
 	 *
 	 * @param element
@@ -232,14 +238,15 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		for (int ii = 0; ii < element.getChildNodes().getLength(); ii++) {
 			final Node node = element.getChildNodes().item(ii);
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
+				final String prefix = node.getPrefix();
 				final Element childElement = (Element) node;
 				final String namespaceURI = childElement.getNamespaceURI();
 				final String localName = childElement.getLocalName();
 				if (XMLDSigElement.TRANSFORM.isSameTagName(localName) && XMLDSigElement.TRANSFORM.getURI().equals(namespaceURI)) {
+					xmldSigNamespace = new DSSNamespace(namespaceURI, prefix);
 					continue;
 				} else if (XAdES132Element.QUALIFYING_PROPERTIES.isSameTagName(localName)) {
-
-					setXPathQueryHolder(namespaceURI);
+					setXAdESPathAndNamespace(prefix, namespaceURI);
 					return;
 				}
 				recursiveNamespaceBrowser(childElement);
@@ -247,16 +254,25 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		}
 	}
 
-	private void setXPathQueryHolder(final String namespaceURI) {
+	private void setXAdESPathAndNamespace(final String prefix, final String namespaceURI) {
 		for (final XAdESPaths currentXAdESPaths : xadesPathsHolders) {
 			if (currentXAdESPaths.getNamespace().isSameUri(namespaceURI)) {
 				this.xadesPaths = currentXAdESPaths;
+				this.xadesNamespace = new DSSNamespace(namespaceURI, prefix);
 			}
 		}
 	}
 
 	public XAdESPaths getXAdESPaths() {
 		return xadesPaths;
+	}
+	
+	public DSSNamespace getXmldSigNamespace() {
+		return xmldSigNamespace;
+	}
+
+	public DSSNamespace getXadesNamespace() {
+		return xadesNamespace;
 	}
 
 	/**
