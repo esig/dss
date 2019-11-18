@@ -42,6 +42,9 @@ import eu.europa.esig.dss.xades.definition.xades141.XAdES141Attribute;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigElement;
+import eu.europa.esig.xades.XAdES111Utils;
+import eu.europa.esig.xades.XAdES122Utils;
+import eu.europa.esig.xades.XAdES319132Utils;
 import eu.europa.esig.xades.XAdESUtils;
 import eu.europa.esig.xmldsig.XmlDSigUtils;
 
@@ -56,7 +59,7 @@ public class XAdESEnumsTest {
 			checkElementSynchronization(xsdDom, XMLDSigElement.values());
 		}
 
-		try (InputStream is = XAdESUtils.class.getResourceAsStream(XAdESUtils.XADES_111_SCHEMA_LOCATION)) {
+		try (InputStream is = XAdESUtils.class.getResourceAsStream(XAdES111Utils.XADES_111_SCHEMA_LOCATION)) {
 			Document xsdDom = DomUtils.buildDOM(is);
 			checkElementSynchronization(xsdDom, XAdES111Element.values());
 
@@ -64,7 +67,7 @@ public class XAdESEnumsTest {
 			assertEquals(XAdESNamespaces.XADES_111.getUri(), XAdES111Element.ANY.getURI());
 		}
 
-		try (InputStream is = XAdESUtils.class.getResourceAsStream(XAdESUtils.XADES_122_SCHEMA_LOCATION)) {
+		try (InputStream is = XAdESUtils.class.getResourceAsStream(XAdES122Utils.XADES_122_SCHEMA_LOCATION)) {
 			Document xsdDom = DomUtils.buildDOM(is);
 			checkElementSynchronization(xsdDom, XAdES122Element.values());
 
@@ -72,7 +75,7 @@ public class XAdESEnumsTest {
 			assertEquals(XAdESNamespaces.XADES_122.getUri(), XAdES122Element.ANY.getURI());
 		}
 
-		try (InputStream is = XAdESUtils.class.getResourceAsStream(XAdESUtils.XADES_SCHEMA_LOCATION_EN_319_132)) {
+		try (InputStream is = XAdESUtils.class.getResourceAsStream(XAdES319132Utils.XADES_SCHEMA_LOCATION_EN_319_132)) {
 			Document xsdDom = DomUtils.buildDOM(is);
 			checkElementSynchronization(xsdDom, XAdES132Element.values());
 
@@ -80,7 +83,7 @@ public class XAdESEnumsTest {
 			assertEquals(XAdESNamespaces.XADES_132.getUri(), XAdES132Element.ANY.getURI());
 		}
 
-		try (InputStream is = XAdESUtils.class.getResourceAsStream(XAdESUtils.XADES_141_SCHEMA_LOCATION_EN_319_132)) {
+		try (InputStream is = XAdESUtils.class.getResourceAsStream(XAdES319132Utils.XADES_141_SCHEMA_LOCATION_EN_319_132)) {
 			Document xsdDom = DomUtils.buildDOM(is);
 			checkElementSynchronization(xsdDom, XAdES141Element.values());
 
@@ -98,22 +101,22 @@ public class XAdESEnumsTest {
 			checkAttributesSynchronization(xsdDom, XMLDSigAttribute.values());
 		}
 
-		try (InputStream is = XAdESUtils.class.getResourceAsStream(XAdESUtils.XADES_111_SCHEMA_LOCATION)) {
+		try (InputStream is = XAdESUtils.class.getResourceAsStream(XAdES111Utils.XADES_111_SCHEMA_LOCATION)) {
 			Document xsdDom = DomUtils.buildDOM(is);
 			checkAttributesSynchronization(xsdDom, XAdES111Attribute.values());
 		}
 
-		try (InputStream is = XAdESUtils.class.getResourceAsStream(XAdESUtils.XADES_122_SCHEMA_LOCATION)) {
+		try (InputStream is = XAdESUtils.class.getResourceAsStream(XAdES122Utils.XADES_122_SCHEMA_LOCATION)) {
 			Document xsdDom = DomUtils.buildDOM(is);
 			checkAttributesSynchronization(xsdDom, XAdES122Attribute.values());
 		}
 
-		try (InputStream is = XAdESUtils.class.getResourceAsStream(XAdESUtils.XADES_SCHEMA_LOCATION_EN_319_132)) {
+		try (InputStream is = XAdESUtils.class.getResourceAsStream(XAdES319132Utils.XADES_SCHEMA_LOCATION_EN_319_132)) {
 			Document xsdDom = DomUtils.buildDOM(is);
 			checkAttributesSynchronization(xsdDom, XAdES132Attribute.values());
 		}
 
-		try (InputStream is = XAdESUtils.class.getResourceAsStream(XAdESUtils.XADES_141_SCHEMA_LOCATION_EN_319_132)) {
+		try (InputStream is = XAdESUtils.class.getResourceAsStream(XAdES319132Utils.XADES_141_SCHEMA_LOCATION_EN_319_132)) {
 			Document xsdDom = DomUtils.buildDOM(is);
 			checkAttributesSynchronization(xsdDom, XAdES141Attribute.values());
 		}

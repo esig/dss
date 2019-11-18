@@ -65,6 +65,8 @@ public class TrustedListSigningTest extends AbstractXAdESTestSignature {
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
+	
+	private static TrustedListUtils trustedListUtils = TrustedListUtils.newInstance();
 
 	@BeforeEach
 	public void init() throws Exception {
@@ -142,8 +144,8 @@ public class TrustedListSigningTest extends AbstractXAdESTestSignature {
 
 	@SuppressWarnings("unchecked")
 	private void unmarshallingTester(Document doc) throws JAXBException, SAXException {
-		JAXBContext jc = TrustedListUtils.getJAXBContext();
-		Schema schema = TrustedListUtils.getSchema();
+		JAXBContext jc = trustedListUtils.getJAXBContext();
+		Schema schema = trustedListUtils.getSchema();
 		Unmarshaller unmarshaller = jc.createUnmarshaller();
 		unmarshaller.setSchema(schema);
 

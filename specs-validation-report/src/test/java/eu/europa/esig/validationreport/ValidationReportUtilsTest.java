@@ -24,23 +24,31 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import javax.xml.bind.JAXBException;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 public class ValidationReportUtilsTest {
+	
+	private static ValidationReportUtils validationReportUtils;
+	
+	@BeforeAll
+	public static void init() {
+		validationReportUtils = ValidationReportUtils.newInstance();
+	}
 
 	@Test
 	public void getJAXBContext() throws JAXBException {
-		assertNotNull(ValidationReportUtils.getJAXBContext());
+		assertNotNull(validationReportUtils.getJAXBContext());
 		// cached
-		assertNotNull(ValidationReportUtils.getJAXBContext());
+		assertNotNull(validationReportUtils.getJAXBContext());
 	}
 
 	@Test
 	public void getSchema() throws SAXException {
-		assertNotNull(ValidationReportUtils.getSchema());
+		assertNotNull(validationReportUtils.getSchema());
 		// cached
-		assertNotNull(ValidationReportUtils.getSchema());
+		assertNotNull(validationReportUtils.getSchema());
 	}
 
 }

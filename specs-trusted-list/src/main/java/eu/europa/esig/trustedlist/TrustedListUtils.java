@@ -27,28 +27,41 @@ import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.jaxb.parsers.XmlDefinerUtils;
 import eu.europa.esig.trustedlist.jaxb.tsl.ObjectFactory;
 import eu.europa.esig.xades.XAdESUtils;
+import eu.europa.esig.xmldsig.XSDAbstractUtils;
 
-public final class TrustedListUtils {
+public final class TrustedListUtils extends XSDAbstractUtils {
+
+	private static final XAdESUtils xadesUtils = XAdESUtils.newInstance();
+	
+	public static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
 
 	public static final String TRUSTED_LIST_SCHEMA_LOCATION = "/xsd/ts_119612v020101_xsd.xsd";
 	public static final String TRUSTED_LIST_SIE_SCHEMA_LOCATION = "/xsd/ts_119612v020101_sie_xsd.xsd";
 	public static final String TRUSTED_LIST_ADDITIONALTYPES_SCHEMA_LOCATION = "/xsd/ts_119612v020101_additionaltypes_xsd.xsd";
+	
+	private static JAXBContext jc;
+	private static Schema schema;
+	
+	private static TrustedListUtils trustedListUtils;
 
 	private TrustedListUtils() {
 	}
+	
+	public static TrustedListUtils newInstance() {
+		if (trustedListUtils == null) {
+			trustedListUtils = new TrustedListUtils();
+		}
+		return trustedListUtils;
+	}
 
-	private static JAXBContext jc;
-	private static Schema schema;
-	public static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
-
-	public static JAXBContext getJAXBContext() throws JAXBException {
+	@Override
+	public JAXBContext getJAXBContext() throws JAXBException {
 		if (jc == null) {
 			jc = JAXBContext.newInstance(eu.europa.esig.xmldsig.jaxb.ObjectFactory.class, eu.europa.esig.xades.jaxb.xades132.ObjectFactory.class,
 					eu.europa.esig.xades.jaxb.xades141.ObjectFactory.class, ObjectFactory.class, eu.europa.esig.trustedlist.jaxb.tslx.ObjectFactory.class,
@@ -57,17 +70,17 @@ public final class TrustedListUtils {
 		return jc;
 	}
 
-	public static Schema getSchema() throws SAXException {
+	@Override
+	public Schema getSchema() throws SAXException {
 		if (schema == null) {
-			SchemaFactory sf = XmlDefinerUtils.getSecureSchemaFactory();
-			List<Source> xsdSources = getXSDSources();
-			schema = sf.newSchema(xsdSources.toArray(new Source[xsdSources.size()]));
+			schema = XmlDefinerUtils.getSchema(getXSDSources());
 		}
 		return schema;
 	}
 
-	public static List<Source> getXSDSources() {
-		List<Source> xsdSources = XAdESUtils.getXSDSources();
+	@Override
+	public List<Source> getXSDSources() {
+		List<Source> xsdSources = xadesUtils.getXSDSources();
 		xsdSources.add(new StreamSource(TrustedListUtils.class.getResourceAsStream(TRUSTED_LIST_SCHEMA_LOCATION)));
 		xsdSources.add(new StreamSource(TrustedListUtils.class.getResourceAsStream(TRUSTED_LIST_SIE_SCHEMA_LOCATION)));
 		xsdSources.add(new StreamSource(TrustedListUtils.class.getResourceAsStream(TRUSTED_LIST_ADDITIONALTYPES_SCHEMA_LOCATION)));

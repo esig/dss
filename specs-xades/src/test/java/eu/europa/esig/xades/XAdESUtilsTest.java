@@ -33,12 +33,26 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.validation.Schema;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.xmldsig.jaxb.SignatureType;
 
 public class XAdESUtilsTest {
+	
+	private static XAdESUtils xadesUtils;
+	private static XAdES111Utils xades111Utils;
+	private static XAdES122Utils xades122Utils;
+	private static XAdES319132Utils xades319132Utils;
+	
+	@BeforeAll
+	public static void init() {
+		xadesUtils = XAdESUtils.newInstance();
+		xades111Utils = XAdES111Utils.newInstance();
+		xades122Utils = XAdES122Utils.newInstance();
+		xades319132Utils = XAdES319132Utils.newInstance();
+	}
 
 	@Test
 	@SuppressWarnings("unchecked")
@@ -46,10 +60,10 @@ public class XAdESUtilsTest {
 
 		File xmldsigFile = new File("src/test/resources/xades-lta.xml");
 
-		JAXBContext jc = XAdESUtils.getJAXBContext();
+		JAXBContext jc = xadesUtils.getJAXBContext();
 		assertNotNull(jc);
 
-		Schema schema = XAdESUtils.getSchema();
+		Schema schema = xadesUtils.getSchema();
 		assertNotNull(schema);
 
 		Unmarshaller unmarshaller = jc.createUnmarshaller();
@@ -72,30 +86,30 @@ public class XAdESUtilsTest {
 
 	@Test
 	public void getSchema() throws SAXException {
-		assertNotNull(XAdESUtils.getSchema());
+		assertNotNull(xadesUtils.getSchema());
 		// cached
-		assertNotNull(XAdESUtils.getSchema());
+		assertNotNull(xadesUtils.getSchema());
 	}
 
 	@Test
 	public void getSchemaETSI_EN_319_132() throws SAXException {
-		assertNotNull(XAdESUtils.getSchemaETSI_EN_319_132());
+		assertNotNull(xades319132Utils.getSchema());
 		// cached
-		assertNotNull(XAdESUtils.getSchemaETSI_EN_319_132());
+		assertNotNull(xades319132Utils.getSchema());
 	}
 
 	@Test
 	public void getSchemaXAdES111() throws SAXException {
-		assertNotNull(XAdESUtils.getSchemaXAdES111());
+		assertNotNull(xades111Utils.getSchema());
 		// cached
-		assertNotNull(XAdESUtils.getSchemaXAdES111());
+		assertNotNull(xades111Utils.getSchema());
 	}
 
 	@Test
 	public void getSchemaXAdES122() throws SAXException {
-		assertNotNull(XAdESUtils.getSchemaXAdES122());
+		assertNotNull(xades122Utils.getSchema());
 		// cached
-		assertNotNull(XAdESUtils.getSchemaXAdES122());
+		assertNotNull(xades122Utils.getSchema());
 	}
 
 }

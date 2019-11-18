@@ -27,8 +27,6 @@ import java.io.File;
 import java.util.Date;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -42,8 +40,6 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 public class XAdESLevelBWithPolicyTest extends AbstractXAdESTestSignature {
-
-	private static final Logger logger = LoggerFactory.getLogger(XAdESLevelBWithPolicyTest.class);
 
 	private static final String HTTP_SPURI_TEST = "http://spuri.test";
 	private static final String SIGNATURE_POLICY_ID = "1.2.3.4.5.6";
@@ -80,7 +76,6 @@ public class XAdESLevelBWithPolicyTest extends AbstractXAdESTestSignature {
 	protected void onDocumentSigned(byte[] byteArray) {
 		super.onDocumentSigned(byteArray);
 		String xmlContent = new String(byteArray);
-		logger.info(xmlContent);
 		assertTrue(xmlContent.contains("description"));
 		assertTrue(xmlContent.contains(":SigPolicyQualifiers>"));
 		assertTrue(xmlContent.contains(":SigPolicyQualifier>"));

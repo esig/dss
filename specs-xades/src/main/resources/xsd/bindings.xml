@@ -9,6 +9,18 @@
 		<jaxb:serializable uid="1" />
 	</jaxb:globalBindings>
 
+	<jaxb:bindings schemaLocation="XAdESv111.xsd" node="/xs:schema">
+		<jaxb:schemaBindings>
+			<jaxb:package name="eu.europa.esig.xades.jaxb.xades111" />
+		</jaxb:schemaBindings>
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="XAdESv122.xsd" node="/xs:schema">
+		<jaxb:schemaBindings>
+			<jaxb:package name="eu.europa.esig.xades.jaxb.xades122" />
+		</jaxb:schemaBindings>
+	</jaxb:bindings>
+
 	<jaxb:bindings schemaLocation="XAdESv141.xsd" node="/xs:schema">
 		<jaxb:schemaBindings>
 			<jaxb:package name="eu.europa.esig.xades.jaxb.xades141" />
