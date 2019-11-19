@@ -26,9 +26,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.asic.xades.ManifestAttribute;
-import eu.europa.esig.dss.asic.xades.ManifestElement;
-import eu.europa.esig.dss.asic.xades.ManifestNamespace;
+import eu.europa.esig.dss.asic.xades.definition.ManifestAttribute;
+import eu.europa.esig.dss.asic.xades.definition.ManifestElement;
+import eu.europa.esig.dss.asic.xades.definition.ManifestNamespace;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.MimeType;
 

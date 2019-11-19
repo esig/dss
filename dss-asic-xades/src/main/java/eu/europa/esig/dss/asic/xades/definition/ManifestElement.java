@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.asic.xades;
+package eu.europa.esig.dss.asic.xades.definition;
 
 import eu.europa.esig.dss.definition.DSSElement;
 import eu.europa.esig.dss.definition.DSSNamespace;
