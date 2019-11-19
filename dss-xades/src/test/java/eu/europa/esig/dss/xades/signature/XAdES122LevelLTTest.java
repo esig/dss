@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.xades.signature;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
@@ -28,20 +29,19 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Validator;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
-import eu.europa.esig.xades.XAdESUtils;
+import eu.europa.esig.xades.XAdES122Utils;
 
 public class XAdES122LevelLTTest extends AbstractXAdESTestSignature {
 
@@ -69,10 +69,10 @@ public class XAdES122LevelLTTest extends AbstractXAdESTestSignature {
 	protected void onDocumentSigned(byte[] byteArray) {
 		
 		try (InputStream is = new ByteArrayInputStream(byteArray)) {
-			Validator newValidator = XAdESUtils.getSchemaXAdES122().newValidator();
-			newValidator.validate(new StreamSource(is));
-		} catch (SAXException | IOException e) {
-			fail("Unable to validate against the XSD : " + e.getMessage());
+			String exceptionMessage = XAdES122Utils.newInstance().validateAgainstXSD(new StreamSource(is));
+			assertTrue(Utils.isStringEmpty(exceptionMessage), "Unable to validate against the XSD : " + exceptionMessage);
+		} catch (IOException e) {
+			fail("Unable to read the signed document : " + e.getMessage());
 		}
 
 		// Check for duplicate ids
