@@ -26,12 +26,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
-import eu.europa.esig.dss.DSSNamespace;
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.definition.DSSNamespace;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigAttribute;
-import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigElement;
 
 /**
  * This class builds a ds:Manifest element

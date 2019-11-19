@@ -26,7 +26,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.asic.common.ASiCNamespace;
+import eu.europa.esig.dss.asic.common.definition.ASiCAttribute;
+import eu.europa.esig.dss.asic.common.definition.ASiCElement;
+import eu.europa.esig.dss.asic.common.definition.ASiCNamespace;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.MimeType;
@@ -79,7 +81,7 @@ public class ASiCEWithCAdESArchiveManifestBuilder extends AbstractManifestBuilde
 
 	public Document build() {
 		final Document documentDom = DomUtils.buildDOM();
-		final Element asicManifestDom = documentDom.createElementNS(ASiCNamespace.ASIC_NS, ASiCNamespace.ASIC_MANIFEST);
+		final Element asicManifestDom = DomUtils.createElementNS(documentDom, ASiCNamespace.NS, ASiCElement.ASIC_MANIFEST);
 		documentDom.appendChild(asicManifestDom);
 
 		addSigReference(documentDom, asicManifestDom, timestampUri, MimeType.TST);
@@ -110,7 +112,7 @@ public class ASiCEWithCAdESArchiveManifestBuilder extends AbstractManifestBuilde
 	private Element addDataObjectReferenceForRootArchiveManifest(final Document documentDom, final Element asicManifestDom, 
 			DSSDocument document, DigestAlgorithm digestAlgorithm) {
 		Element dataObjectReferenceElement = addDataObjectReference(documentDom, asicManifestDom, document, digestAlgorithm);
-		dataObjectReferenceElement.setAttribute(ASiCNamespace.DATA_OBJECT_REFERENCE_ROOTFILE, ASiCNamespace.DATA_OBJECT_REFERENCE_ROOTFILE_VALUE_TRUE);
+		dataObjectReferenceElement.setAttribute(ASiCAttribute.ROOTFILE.getAttributeName(), "true");
 		return dataObjectReferenceElement;
 	}
 

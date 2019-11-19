@@ -22,7 +22,7 @@ package eu.europa.esig.dss.xades.signature;
 
 import org.junit.jupiter.api.BeforeEach;
 
-import eu.europa.esig.dss.DSSNamespace;
+import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;

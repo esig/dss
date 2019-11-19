@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.xades.definition.xades111;
 
-import eu.europa.esig.dss.DSSAttribute;
+import eu.europa.esig.dss.definition.DSSAttribute;
 
 public enum XAdES111Attribute implements DSSAttribute {
 

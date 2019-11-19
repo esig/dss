@@ -1,5 +1,7 @@
 module jpms_dss_document {
 	exports eu.europa.esig.dss;
+	exports eu.europa.esig.dss.definition;
+	exports eu.europa.esig.dss.definition.xmldsig;
 	exports eu.europa.esig.dss.signature;
 	exports eu.europa.esig.dss.validation;
 	exports eu.europa.esig.dss.validation.policy;

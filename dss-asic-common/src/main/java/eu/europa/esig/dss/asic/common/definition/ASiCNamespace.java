@@ -18,16 +18,22 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss;
+package eu.europa.esig.dss.asic.common.definition;
 
-public interface DSSElement {
+import eu.europa.esig.dss.definition.DSSNamespace;
 
-	String getTagName();
+/**
+ * This class contains constants for ASiC and its namespace.
+ *
+ */
+public final class ASiCNamespace {
 
-	DSSNamespace getNamespace();
+	public static final DSSNamespace NS = new DSSNamespace("http://uri.etsi.org/02918/v1.2.1#", "asic");
+	
+	public static final String LIBREOFFICE_SIGNATURES = "document-signatures";
+	public static final String LIBREOFFICE_NS = "urn:oasis:names:tc:opendocument:xmlns:digitalsignature:1.0";
 
-	String getURI();
-
-	boolean isSameTagName(String value);
-
+	private ASiCNamespace() {
+	}
+	
 }

@@ -24,9 +24,9 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
-import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigPaths;
 
 public class PathsTest {
 	

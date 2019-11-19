@@ -26,7 +26,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.asic.common.ASiCNamespace;
+import eu.europa.esig.dss.asic.common.definition.ASiCElement;
+import eu.europa.esig.dss.asic.common.definition.ASiCNamespace;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.MimeType;
@@ -65,7 +66,7 @@ public class ASiCEWithCAdESManifestBuilder extends AbstractManifestBuilder {
 
 	public Document build() {
 		final Document documentDom = DomUtils.buildDOM();
-		final Element asicManifestDom = documentDom.createElementNS(ASiCNamespace.ASIC_NS, ASiCNamespace.ASIC_MANIFEST);
+		final Element asicManifestDom = DomUtils.createElementNS(documentDom, ASiCNamespace.NS, ASiCElement.ASIC_MANIFEST);
 		documentDom.appendChild(asicManifestDom);
 
 		addSigReference(documentDom, asicManifestDom, signatureUri, MimeType.PKCS7);

@@ -18,36 +18,35 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.xades.reference;
+package eu.europa.esig.dss.definition.xmldsig;
 
-import org.apache.xml.security.transforms.Transforms;
-import org.w3c.dom.Node;
+import eu.europa.esig.dss.definition.DSSAttribute;
 
-import eu.europa.esig.dss.definition.DSSNamespace;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
+public enum XMLDSigAttribute implements DSSAttribute {
 
-/**
- * Transforms a reference content to its base64 representation
- * 
- * NOTE: Not compatible with:
- * - other transformations;
- * - isEmbed(true) parameter;
- * - Manifest signature;
- * - Enveloped signatures.
- */
-public class Base64Transform extends AbstractTransform {
+	ALGORITHM("Algorithm"),
 
-	public Base64Transform() {
-		super(Transforms.TRANSFORM_BASE64_DECODE);
-	}
+	ENCODING("Encoding"),
 
-	public Base64Transform(DSSNamespace xmlDSigNamespace) {
-		super(xmlDSigNamespace, Transforms.TRANSFORM_BASE64_DECODE);
+	ID("Id"),
+
+	MIME_TYPE("MimeType"),
+
+	TARGET("Target"),
+
+	TYPE("Type"),
+
+	URI("URI");
+
+	private final String attributeName;
+
+	XMLDSigAttribute(String attributeName) {
+		this.attributeName = attributeName;
 	}
 
 	@Override
-	public byte[] getBytesAfterTranformation(Node node) {
-		return DSSXMLUtils.serializeNode(node);
+	public String getAttributeName() {
+		return attributeName;
 	}
 
 }

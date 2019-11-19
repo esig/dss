@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.xades.reference;
 
-import eu.europa.esig.dss.DSSNamespace;
+import eu.europa.esig.dss.definition.DSSNamespace;
 
 public final class XPathEnvelopedSignatureTransform extends XPathTransform {
 

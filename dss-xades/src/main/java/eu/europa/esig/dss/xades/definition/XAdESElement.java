@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.xades.definition;
 
-import eu.europa.esig.dss.DSSElement;
+import eu.europa.esig.dss.definition.DSSElement;
 
 public interface XAdESElement extends DSSElement {
 

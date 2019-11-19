@@ -18,28 +18,16 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss;
+package eu.europa.esig.dss.definition;
 
-public class DSSNamespace {
+public interface DSSElement {
 
-	private final String uri;
-	private final String prefix;
+	String getTagName();
 
-	public DSSNamespace(String uri, String prefix) {
-		this.uri = uri;
-		this.prefix = prefix;
-	}
+	DSSNamespace getNamespace();
 
-	public String getUri() {
-		return uri;
-	}
+	String getURI();
 
-	public String getPrefix() {
-		return prefix;
-	}
-
-	public boolean isSameUri(String paramUri) {
-		return this.uri.equals(paramUri);
-	}
+	boolean isSameTagName(String value);
 
 }

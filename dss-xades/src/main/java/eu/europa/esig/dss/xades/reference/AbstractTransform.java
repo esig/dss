@@ -23,11 +23,11 @@ package eu.europa.esig.dss.xades.reference;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import eu.europa.esig.dss.DSSNamespace;
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.definition.DSSNamespace;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
-import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigAttribute;
-import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigElement;
 
 public abstract class AbstractTransform implements DSSTransform {
 

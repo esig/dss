@@ -31,6 +31,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.asic.xades.ManifestAttribute;
 import eu.europa.esig.dss.asic.xades.ManifestNamespace;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -44,7 +45,7 @@ public class ASiCEWithXAdESManifestParser {
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCEWithXAdESManifestParser.class);
 
 	static {
-		DomUtils.registerNamespace("manifest", ManifestNamespace.NS);
+		DomUtils.registerNamespace(ManifestNamespace.NS);
 	}
 
 	private final DSSDocument signatureDocument;
@@ -72,7 +73,7 @@ public class ASiCEWithXAdESManifestParser {
 				for (int i = 0; i < nodeList.getLength(); i++) {
 					ManifestEntry manifestEntry = new ManifestEntry();
 					Element fileEntryElement = (Element) nodeList.item(i);
-					String fullpathValue = fileEntryElement.getAttribute(ManifestNamespace.FULL_PATH);
+					String fullpathValue = fileEntryElement.getAttribute(ManifestAttribute.FULL_PATH.getAttributeName());
 					if (!isFolder(fullpathValue)) {
 						manifestEntry.setFileName(fullpathValue);
 						manifestEntry.setMimeType(getMimeType(fileEntryElement));
@@ -88,7 +89,7 @@ public class ASiCEWithXAdESManifestParser {
 	
 	private static MimeType getMimeType(Element fileEntryElement) {
 		try {
-			String mediaType = fileEntryElement.getAttribute(ManifestNamespace.MEDIA_TYPE);
+			String mediaType = fileEntryElement.getAttribute(ManifestAttribute.MEDIA_TYPE.getAttributeName());
 			if (Utils.isStringNotBlank(mediaType)) {
 				return MimeType.fromMimeTypeString(mediaType);
 			}

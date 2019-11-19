@@ -18,11 +18,10 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.xades.definition.xmldsig;
+package eu.europa.esig.dss.definition.xmldsig;
 
-import eu.europa.esig.dss.DSSElement;
-import eu.europa.esig.dss.DSSNamespace;
-import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
+import eu.europa.esig.dss.definition.DSSElement;
+import eu.europa.esig.dss.definition.DSSNamespace;
 
 public enum XMLDSigElement implements DSSElement {
 
@@ -121,7 +120,7 @@ public enum XMLDSigElement implements DSSElement {
 
 	XMLDSigElement(String tagName) {
 		this.tagName = tagName;
-		this.namespace = XAdESNamespaces.XMLDSIG;
+		this.namespace = XMLDSigNamespace.NS;
 	}
 
 	@Override

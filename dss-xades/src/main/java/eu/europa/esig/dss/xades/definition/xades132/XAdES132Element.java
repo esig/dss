@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.xades.definition.xades132;
 
-import eu.europa.esig.dss.DSSElement;
-import eu.europa.esig.dss.DSSNamespace;
+import eu.europa.esig.dss.definition.DSSElement;
+import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.xades.definition.XAdESElement;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 

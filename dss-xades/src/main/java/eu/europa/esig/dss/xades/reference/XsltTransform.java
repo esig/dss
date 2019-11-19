@@ -24,7 +24,7 @@ import org.apache.xml.security.transforms.Transforms;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import eu.europa.esig.dss.DSSNamespace;
+import eu.europa.esig.dss.definition.DSSNamespace;
 
 public class XsltTransform extends ComplexTransform {
 	

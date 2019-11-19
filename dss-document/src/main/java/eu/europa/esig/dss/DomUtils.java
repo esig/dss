@@ -63,6 +63,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
+import eu.europa.esig.dss.definition.DSSAttribute;
+import eu.europa.esig.dss.definition.DSSElement;
+import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -152,15 +155,13 @@ public final class DomUtils {
 	/**
 	 * This method allows to register a namespace and associated prefix. If the prefix exists already it is replaced.
 	 *
-	 * @param prefix
-	 *            namespace prefix
 	 * @param namespace
-	 *            namespace
+	 *            namespace object with the prefix and the URI
 	 * @return true if this map did not already contain the specified element
 	 */
-	public static boolean registerNamespace(final String prefix, final String namespace) {
-		final String put = namespaces.put(prefix, namespace);
-		namespacePrefixMapper.registerNamespace(prefix, namespace);
+	public static boolean registerNamespace(final DSSNamespace namespace) {
+		final String put = namespaces.put(namespace.getPrefix(), namespace.getUri());
+		namespacePrefixMapper.registerNamespace(namespace.getPrefix(), namespace.getUri());
 		return put == null;
 	}
 
@@ -283,23 +284,24 @@ public final class DomUtils {
 	}
 
 	/**
-	 * This method creates and adds a new XML {@code Element}
-	 *
-	 * @param document
-	 *            root document
-	 * @param parentDom
-	 *            parent node
+	 * This method adds an attribute with the namespace and the value
+	 * 
+	 * @param element
+	 *            the element where the attribute is needed
 	 * @param namespace
-	 *            namespace
-	 * @param name
-	 *            element name
-	 * @return added element
-	 * @deprecated
+	 *            the used namespace for the attribute
+	 * @param attribute
+	 *            the attribute the be added
+	 * @param value
+	 *            the value for the given attribute
 	 */
-	public static Element addElement(final Document document, final Element parentDom, final String namespace, final String name) {
-		final Element dom = document.createElementNS(namespace, name);
-		parentDom.appendChild(dom);
-		return dom;
+	public static void setAttributeNS(Element element, DSSNamespace namespace, DSSAttribute attribute, String value) {
+		StringBuffer sb = new StringBuffer();
+		sb.append(namespace.getPrefix());
+		sb.append(':');
+		sb.append(attribute.getAttributeName());
+
+		element.setAttributeNS(namespace.getUri(), sb.toString(), value);
 	}
 
 	/**
@@ -422,30 +424,6 @@ public final class DomUtils {
 		return (nodeList != null) && (nodeList.getLength() > 0);
 	}
 
-	/**
-	 * This method creates and adds a new XML {@code Element} with text value
-	 *
-	 * @param document
-	 *            root document
-	 * @param parentDom
-	 *            parent node
-	 * @param namespace
-	 *            namespace
-	 * @param name
-	 *            element name
-	 * @param value
-	 *            element text node value
-	 * @return added element
-	 * @deprecated
-	 */
-	public static Element addTextElement(final Document document, final Element parentDom, final String namespace, final String name, final String value) {
-		final Element dom = document.createElementNS(namespace, name);
-		parentDom.appendChild(dom);
-		final Text valueNode = document.createTextNode(value);
-		dom.appendChild(valueNode);
-		return dom;
-	}
-	
 	/**
 	 * This method creates and adds a new XML {@code Element} with text value
 	 *

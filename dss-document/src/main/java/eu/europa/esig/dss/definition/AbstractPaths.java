@@ -18,10 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.xades.definition;
-
-import eu.europa.esig.dss.DSSAttribute;
-import eu.europa.esig.dss.DSSElement;
+package eu.europa.esig.dss.definition;
 
 public abstract class AbstractPaths {
 

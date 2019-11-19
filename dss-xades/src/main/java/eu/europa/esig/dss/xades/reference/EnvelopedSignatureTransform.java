@@ -23,7 +23,7 @@ package eu.europa.esig.dss.xades.reference;
 import org.apache.xml.security.transforms.Transforms;
 import org.w3c.dom.Node;
 
-import eu.europa.esig.dss.DSSNamespace;
+import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 
