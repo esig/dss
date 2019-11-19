@@ -163,15 +163,14 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 	private DSSDocument buildASiCContainerType(List<DSSDocument> documentsToBeSigned, List<DSSDocument> signatures, 
 			List<DSSDocument> metaInfFolderDocuments, ASiCParameters asicParameters) {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); ZipOutputStream zos = new ZipOutputStream(baos)) {
+			storeMimetype(asicParameters, zos);
+			storeDocuments(signatures, zos);
+			storeSignedFiles(documentsToBeSigned, zos);
+			storeZipComment(asicParameters, zos);
+			
 			if (ASiCUtils.isASiCE(asicParameters)) {
 				storeDocuments(metaInfFolderDocuments, zos);
 			}
-
-			storeDocuments(signatures, zos);
-			storeSignedFiles(documentsToBeSigned, zos);
-			storeMimetype(asicParameters, zos);
-			storeZipComment(asicParameters, zos);
-
 			zos.finish();
 
 			return new InMemoryDocument(baos.toByteArray(), null, ASiCUtils.getMimeType(asicParameters));
