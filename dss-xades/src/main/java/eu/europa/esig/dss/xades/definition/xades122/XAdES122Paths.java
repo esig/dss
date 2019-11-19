@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.xades.definition.xades122;
 
-import eu.europa.esig.dss.xades.definition.AbstractPaths;
-import eu.europa.esig.dss.xades.definition.DSSNamespace;
+import eu.europa.esig.dss.definition.AbstractPaths;
+import eu.europa.esig.dss.definition.DSSNamespace;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
-import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigElement;
 
 public class XAdES122Paths extends AbstractPaths implements XAdESPaths {
 

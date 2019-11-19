@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.xades.definition.xades141;
 
-import eu.europa.esig.dss.xades.definition.DSSElement;
-import eu.europa.esig.dss.xades.definition.DSSNamespace;
+import eu.europa.esig.dss.definition.DSSElement;
+import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 
 public enum XAdES141Element implements DSSElement {

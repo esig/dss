@@ -18,24 +18,22 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.asic.xades;
+package eu.europa.esig.dss.asic.common.definition;
+
+import eu.europa.esig.dss.definition.DSSNamespace;
 
 /**
- * This class contains constants for Manifest and its namespace.
- * 
- * @see <a href="http://docs.oasis-open.org/office/v1.2/OpenDocument-v1.2-part3.pdf">Open Document Format for Office
- *      Applications (OpenDocument) Version 1.2;
- *      Part 3: Packages</a>
+ * This class contains constants for ASiC and its namespace.
+ *
  */
-public final class ManifestNamespace {
+public final class ASiCNamespace {
 
-	public static final String NS = "urn:oasis:names:tc:opendocument:xmlns:manifest:1.0";
-	public static final String MANIFEST = "manifest:manifest";
-	public static final String VERSION = "manifest:version";
-	public static final String FILE_ENTRY = "manifest:file-entry";
-	public static final String FULL_PATH = "manifest:full-path";
-	public static final String MEDIA_TYPE = "manifest:media-type";
+	public static final DSSNamespace NS = new DSSNamespace("http://uri.etsi.org/02918/v1.2.1#", "asic");
+	
+	public static final String LIBREOFFICE_SIGNATURES = "document-signatures";
+	public static final String LIBREOFFICE_NS = "urn:oasis:names:tc:opendocument:xmlns:digitalsignature:1.0";
 
-	private ManifestNamespace() {
+	private ASiCNamespace() {
 	}
+	
 }

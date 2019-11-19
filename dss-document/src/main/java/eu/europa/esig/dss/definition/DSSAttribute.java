@@ -18,35 +18,10 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.xades.definition.xmldsig;
+package eu.europa.esig.dss.definition;
 
-import eu.europa.esig.dss.xades.definition.DSSAttribute;
+public interface DSSAttribute {
 
-public enum XMLDSigAttribute implements DSSAttribute {
-
-	ALGORITHM("Algorithm"),
-
-	ENCODING("Encoding"),
-
-	ID("Id"),
-
-	MIME_TYPE("MimeType"),
-
-	TARGET("Target"),
-
-	TYPE("Type"),
-
-	URI("URI");
-
-	private final String attributeName;
-
-	XMLDSigAttribute(String attributeName) {
-		this.attributeName = attributeName;
-	}
-
-	@Override
-	public String getAttributeName() {
-		return attributeName;
-	}
+	String getAttributeName();
 
 }

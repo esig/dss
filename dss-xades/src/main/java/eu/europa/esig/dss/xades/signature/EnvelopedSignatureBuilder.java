@@ -31,6 +31,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -38,7 +39,6 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
@@ -132,11 +132,11 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 		final List<DSSTransform> dssTransformList = new ArrayList<DSSTransform>();
 
 		// For parallel signatures
-		XPathEnvelopedSignatureTransform xPathTransform = new XPathEnvelopedSignatureTransform();
+		XPathEnvelopedSignatureTransform xPathTransform = new XPathEnvelopedSignatureTransform(getXmldsigNamespace());
 		dssTransformList.add(xPathTransform);
 
 		// Canonicalization is the last operation, its better to operate the canonicalization on the smaller document
-		CanonicalizationTransform canonicalizationTransform = new CanonicalizationTransform(CanonicalizationMethod.EXCLUSIVE);
+		CanonicalizationTransform canonicalizationTransform = new CanonicalizationTransform(getXmldsigNamespace(), CanonicalizationMethod.EXCLUSIVE);
 		dssTransformList.add(canonicalizationTransform);
 
 		dssReference.setTransforms(dssTransformList);

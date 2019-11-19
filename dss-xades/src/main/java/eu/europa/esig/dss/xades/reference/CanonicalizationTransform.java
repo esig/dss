@@ -22,13 +22,19 @@ package eu.europa.esig.dss.xades.reference;
 
 import org.w3c.dom.Node;
 
+import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 
 public class CanonicalizationTransform extends AbstractTransform {
 
-	public CanonicalizationTransform(String canonicalizationAlgorithm) {
-		super(canonicalizationAlgorithm);
+	public CanonicalizationTransform( String canonicalizationAlgorithm) {
+		this(XAdESNamespaces.XMLDSIG, canonicalizationAlgorithm);
+	}
+
+	public CanonicalizationTransform(DSSNamespace xmlDSigNamespace, String canonicalizationAlgorithm) {
+		super(xmlDSigNamespace, canonicalizationAlgorithm);
 		if (!DSSXMLUtils.canCanonicalize(canonicalizationAlgorithm)) {
 			throw new DSSException(String.format("The provided canonicalization method [%s] is not supported!", canonicalizationAlgorithm));
 		}

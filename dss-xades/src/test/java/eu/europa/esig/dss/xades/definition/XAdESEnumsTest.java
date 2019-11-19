@@ -20,18 +20,23 @@
  */
 package eu.europa.esig.dss.xades.definition;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.InputStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.definition.DSSAttribute;
+import eu.europa.esig.dss.definition.DSSElement;
+import eu.europa.esig.dss.definition.DSSNamespace;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.xades.definition.xades111.XAdES111Attribute;
 import eu.europa.esig.dss.xades.definition.xades111.XAdES111Element;
 import eu.europa.esig.dss.xades.definition.xades122.XAdES122Attribute;
@@ -40,8 +45,6 @@ import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Attribute;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
-import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigAttribute;
-import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.xades.XAdES111Utils;
 import eu.europa.esig.xades.XAdES122Utils;
 import eu.europa.esig.xades.XAdES319132Utils;
@@ -49,10 +52,12 @@ import eu.europa.esig.xades.XAdESUtils;
 import eu.europa.esig.xmldsig.XmlDSigUtils;
 
 public class XAdESEnumsTest {
+	
+	public static final DSSNamespace XSD_NS = new DSSNamespace("http://www.w3.org/2001/XMLSchema", "xsd");
 
 	@Test
 	public void getAllEments() throws Exception {
-		DomUtils.registerNamespace("xsd", "http://www.w3.org/2001/XMLSchema");
+		DomUtils.registerNamespace(XSD_NS);
 
 		try (InputStream is = XAdESUtils.class.getResourceAsStream(XmlDSigUtils.XMLDSIG_SCHEMA_LOCATION)) {
 			Document xsdDom = DomUtils.buildDOM(is);
@@ -94,7 +99,7 @@ public class XAdESEnumsTest {
 
 	@Test
 	public void getAllAttributes() throws Exception {
-		DomUtils.registerNamespace("xsd", "http://www.w3.org/2001/XMLSchema");
+		DomUtils.registerNamespace(XSD_NS);
 
 		try (InputStream is = XAdESUtils.class.getResourceAsStream(XmlDSigUtils.XMLDSIG_SCHEMA_LOCATION)) {
 			Document xsdDom = DomUtils.buildDOM(is);
@@ -123,6 +128,7 @@ public class XAdESEnumsTest {
 
 	}
 
+
 	private void checkElementSynchronization(Document xsdDom, DSSElement[] elements) {
 		NodeList nodeList = DomUtils.getNodeList(xsdDom, "//xsd:element");
 		assertTrue(nodeList.getLength() > 0);
@@ -139,14 +145,14 @@ public class XAdESEnumsTest {
 							break;
 						}
 					}
-					assertTrue("Element [" + tagName + "] not found in enum", found);
+					assertTrue(found, "Element [" + tagName + "] not found in enum");
 				}
 			}
 		}
 
 		for (DSSElement dssElement : elements) {
 			NodeList nodeListByTagName = DomUtils.getNodeList(xsdDom, "//xsd:element[@name=\"" + dssElement.getTagName() + "\"]");
-			assertTrue("Element [" + dssElement.getTagName() + "] not found in XSD", nodeListByTagName.getLength() > 0);
+			assertTrue(nodeListByTagName.getLength() > 0, "Element [" + dssElement.getTagName() + "] not found in XSD");
 		}
 	}
 
@@ -167,15 +173,16 @@ public class XAdESEnumsTest {
 							break;
 						}
 					}
-					assertTrue("Attribute [" + attributeName + "] not found in the Enum", found);
+					assertTrue(found, "Attribute [" + attributeName + "] not found in the Enum");
 				}
 			}
 		}
 
 		for (DSSAttribute dssAttribute : attributes) {
 			NodeList nodeListByTagName = DomUtils.getNodeList(xsdDom, "//xsd:attribute[@name=\"" + dssAttribute.getAttributeName() + "\"]");
-			assertTrue("Attribute [" + dssAttribute.getAttributeName() + "] not found in XSD", nodeListByTagName.getLength() > 0);
+			assertTrue(nodeListByTagName.getLength() > 0, "Attribute [" + dssAttribute.getAttributeName() + "] not found in XSD");
 		}
 	}
+
 
 }

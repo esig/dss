@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -43,7 +44,6 @@ import eu.europa.esig.dss.test.signature.ExternalXAdESSignatureResult;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigPaths;
 
 public class XAdESLevelBExternalSignatureTest extends AbstractXAdESTestSignature {
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESLevelBExternalSignatureTest.class);

@@ -16,6 +16,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.definition.XPathExpressionBuilder;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -39,7 +40,6 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.definition.XPathExpressionBuilder;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 
 /**

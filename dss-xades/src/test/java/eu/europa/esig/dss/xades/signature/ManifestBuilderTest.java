@@ -33,6 +33,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
@@ -58,7 +59,7 @@ public class ManifestBuilderTest {
 
 		try (InputStream is = document.openStream()) {
 			String xmlContent = new String(Utils.toByteArray(is), "UTF-8");
-			assertTrue(xmlContent.contains(XAdESBuilder.DS_MANIFEST));
+			assertTrue(xmlContent.contains(XMLDSigElement.MANIFEST.getTagName()));
 			assertTrue(xmlContent.contains(file1.getName()));
 			assertTrue(xmlContent.contains(file1.getDigest(DigestAlgorithm.SHA512)));
 			LOG.info(xmlContent);

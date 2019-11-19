@@ -63,6 +63,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
+import eu.europa.esig.dss.definition.DSSAttribute;
+import eu.europa.esig.dss.definition.DSSElement;
+import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -152,15 +155,13 @@ public final class DomUtils {
 	/**
 	 * This method allows to register a namespace and associated prefix. If the prefix exists already it is replaced.
 	 *
-	 * @param prefix
-	 *            namespace prefix
 	 * @param namespace
-	 *            namespace
+	 *            namespace object with the prefix and the URI
 	 * @return true if this map did not already contain the specified element
 	 */
-	public static boolean registerNamespace(final String prefix, final String namespace) {
-		final String put = namespaces.put(prefix, namespace);
-		namespacePrefixMapper.registerNamespace(prefix, namespace);
+	public static boolean registerNamespace(final DSSNamespace namespace) {
+		final String put = namespaces.put(namespace.getPrefix(), namespace.getUri());
+		namespacePrefixMapper.registerNamespace(namespace.getPrefix(), namespace.getUri());
 		return put == null;
 	}
 
@@ -283,6 +284,27 @@ public final class DomUtils {
 	}
 
 	/**
+	 * This method adds an attribute with the namespace and the value
+	 * 
+	 * @param element
+	 *            the element where the attribute is needed
+	 * @param namespace
+	 *            the used namespace for the attribute
+	 * @param attribute
+	 *            the attribute the be added
+	 * @param value
+	 *            the value for the given attribute
+	 */
+	public static void setAttributeNS(Element element, DSSNamespace namespace, DSSAttribute attribute, String value) {
+		StringBuffer sb = new StringBuffer();
+		sb.append(namespace.getPrefix());
+		sb.append(':');
+		sb.append(attribute.getAttributeName());
+
+		element.setAttributeNS(namespace.getUri(), sb.toString(), value);
+	}
+
+	/**
 	 * This method creates and adds a new XML {@code Element}
 	 *
 	 * @param document
@@ -290,17 +312,18 @@ public final class DomUtils {
 	 * @param parentDom
 	 *            parent node
 	 * @param namespace
-	 *            namespace
-	 * @param name
-	 *            element name
+	 *            namespace definition
+	 * @param element
+	 *            the type of element name
 	 * @return added element
 	 */
-	public static Element addElement(final Document document, final Element parentDom, final String namespace, final String name) {
-		final Element dom = document.createElementNS(namespace, name);
+	public static Element addElement(final Document document, final Element parentDom, final DSSNamespace namespace, final DSSElement element) {
+		final Element dom = createElementNS(document, namespace, element);
 		parentDom.appendChild(dom);
 		return dom;
 	}
 
+	
 	/**
 	 * This method creates a new instance of XPathExpression with the given xpath
 	 * expression
@@ -410,14 +433,14 @@ public final class DomUtils {
 	 *            parent node
 	 * @param namespace
 	 *            namespace
-	 * @param name
-	 *            element name
+	 * @param element
+	 *            element type
 	 * @param value
 	 *            element text node value
 	 * @return added element
 	 */
-	public static Element addTextElement(final Document document, final Element parentDom, final String namespace, final String name, final String value) {
-		final Element dom = document.createElementNS(namespace, name);
+	public static Element addTextElement(final Document document, final Element parentDom, final DSSNamespace namespace, final DSSElement element, final String value) {
+		final Element dom = createElementNS(document, namespace, element);
 		parentDom.appendChild(dom);
 		final Text valueNode = document.createTextNode(value);
 		dom.appendChild(valueNode);
@@ -634,6 +657,21 @@ public final class DomUtils {
 			return false;
 		}
 		return true;
+	}
+
+	public static Element createElementNS(Document documentDom, DSSNamespace namespace, DSSElement element) {
+		StringBuffer elementSB = new StringBuffer();
+		elementSB.append(namespace.getPrefix());
+		elementSB.append(':');
+		elementSB.append(element.getTagName());
+		return documentDom.createElementNS(namespace.getUri(), elementSB.toString());
+	}
+
+	public static void addNamespaceAttribute(Element element, DSSNamespace namespace) {
+		StringBuffer namespaceAttribute = new StringBuffer();
+		namespaceAttribute.append("xmlns:");
+		namespaceAttribute.append(namespace.getPrefix());
+		element.setAttribute(namespaceAttribute.toString(), namespace.getUri());
 	}
 
 }

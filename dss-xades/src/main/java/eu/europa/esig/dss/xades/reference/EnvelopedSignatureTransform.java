@@ -23,7 +23,9 @@ package eu.europa.esig.dss.xades.reference;
 import org.apache.xml.security.transforms.Transforms;
 import org.w3c.dom.Node;
 
+import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 
 /**
  * Used for Enveloped Signature
@@ -32,7 +34,11 @@ import eu.europa.esig.dss.xades.DSSXMLUtils;
 public class EnvelopedSignatureTransform extends AbstractTransform {
 
 	public EnvelopedSignatureTransform() {
-		super(Transforms.TRANSFORM_ENVELOPED_SIGNATURE);
+		super(XAdESNamespaces.XMLDSIG, Transforms.TRANSFORM_ENVELOPED_SIGNATURE);
+	}
+
+	public EnvelopedSignatureTransform(DSSNamespace xmlDSigNamespace) {
+		super(xmlDSigNamespace, Transforms.TRANSFORM_ENVELOPED_SIGNATURE);
 	}
 
 	@Override

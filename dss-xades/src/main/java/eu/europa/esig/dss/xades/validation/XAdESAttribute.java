@@ -23,17 +23,24 @@ package eu.europa.esig.dss.xades.validation;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ISignatureAttribute;
 import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
+import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
-import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigPaths;
 
 public class XAdESAttribute implements ISignatureAttribute {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(XAdESAttribute.class);
 	
 	private final Element element;
 	private final XAdESPaths xadesPaths;
@@ -82,10 +89,20 @@ public class XAdESAttribute implements ISignatureAttribute {
 
 	/**
 	 * Returns TimeStamp Canonicalization Method
-	 * @return {@link String} timestamp canonicalization mathod
+	 * @return {@link String} timestamp canonicalization method
 	 */
 	public String getTimestampCanonicalizationMethod() {
-		return DomUtils.getValue(element, XMLDSigPaths.CANONICALIZATION_ALGORITHM_PATH);
+		String canonicalizationMethod = DomUtils.getValue(element, XMLDSigPaths.CANONICALIZATION_ALGORITHM_PATH);
+		if (Utils.isStringEmpty(canonicalizationMethod)) {
+			NodeList nodeList = DomUtils.getNodeList(element, XAdES111Paths.HASH_DATA_INFO_TRANSFORM_PATH);
+			if (nodeList != null && nodeList.getLength() == 1) {
+				Element transform = (Element) nodeList.item(0);
+				canonicalizationMethod = transform.getAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName());
+			} else {
+				LOG.warn("Unable to retrieve the canonicalization algorithm");
+			}
+		}
+		return canonicalizationMethod;
 	}
 	
 	/**

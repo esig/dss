@@ -26,12 +26,19 @@ import org.apache.xml.security.transforms.Transforms;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import eu.europa.esig.dss.definition.DSSNamespace;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigNamespace;
+
 public class XsltTransform extends ComplexTransform {
 	
 	private final Document content;
 
 	public XsltTransform(Document content) {
-		super(Transforms.TRANSFORM_XSLT);
+		this(XMLDSigNamespace.NS, content);
+	}
+	
+	public XsltTransform(DSSNamespace xmlDSigNamespace, Document content) {
+		super(xmlDSigNamespace, Transforms.TRANSFORM_XSLT);
 		Objects.requireNonNull(content, "The content cannot be null!");
 		this.content = content;
 	}

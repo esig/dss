@@ -35,6 +35,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -43,8 +45,6 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ReferenceValidation;
-import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigAttribute;
-import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigPaths;
 
 /**
  * This class validates a ds:Manifest element against external files

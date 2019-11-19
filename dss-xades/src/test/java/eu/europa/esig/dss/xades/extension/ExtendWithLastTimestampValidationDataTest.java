@@ -33,6 +33,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -50,7 +51,6 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
-import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
 public class ExtendWithLastTimestampValidationDataTest extends PKIFactoryAccess {

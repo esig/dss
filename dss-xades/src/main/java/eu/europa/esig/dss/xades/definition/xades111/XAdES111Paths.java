@@ -20,18 +20,20 @@
  */
 package eu.europa.esig.dss.xades.definition.xades111;
 
-import eu.europa.esig.dss.xades.definition.AbstractPaths;
-import eu.europa.esig.dss.xades.definition.DSSNamespace;
+import eu.europa.esig.dss.definition.AbstractPaths;
+import eu.europa.esig.dss.definition.DSSNamespace;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
-import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigAttribute;
-import eu.europa.esig.dss.xades.definition.xmldsig.XMLDSigElement;
 
 public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 
 	public static final String DIGEST_METHOD_ALGORITHM_PATH = fromCurrentPosition(XAdES111Element.DIGEST_METHOD, XMLDSigAttribute.ALGORITHM);
 
 	public static final String DIGEST_VALUE_PATH = fromCurrentPosition(XAdES111Element.DIGEST_VALUE);
+	
+	public static final String HASH_DATA_INFO_TRANSFORM_PATH = fromCurrentPosition(XAdES111Element.HASH_DATA_INFO, XAdES111Element.TRANSFORMS, XMLDSigElement.TRANSFORM);
 
 	@Override
 	public DSSNamespace getNamespace() {
