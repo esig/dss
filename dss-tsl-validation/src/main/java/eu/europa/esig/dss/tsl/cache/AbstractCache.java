@@ -85,8 +85,8 @@ public abstract class AbstractCache<R extends CachedResult> {
 		LOG.trace("Removing value for the key [{}] from cache...", cacheKey);
 		CachedEntry<R> removedEntry = cachedEntriesMap.remove(cacheKey);
 		if (removedEntry != null) {
-			LOG.info("The cachedEntry with the key [{}], type [{}], creation time [{}] and status [{}], has been REMOVED from the cache.",
-					cacheKey, getCacheType(), removedEntry.getLastSuccessDate(), removedEntry.getCurrentState());
+			LOG.info("The cachedEntry with the key [{}], type [{}], last state transition time [{}] and status [{}], has been REMOVED from the cache.",
+					cacheKey, getCacheType(), removedEntry.getLastStateTransitionTime(), removedEntry.getCurrentState());
 		} else {
 			LOG.warn("Cannot remove the value for key [{}]. Object does not exist!", cacheKey);
 		}
@@ -213,9 +213,9 @@ public abstract class AbstractCache<R extends CachedResult> {
 				String currentKey = key.getKey();
 				CacheStateEnum currentState = value.getCurrentState();
 				String date = "?";
-				Date lastSuccessDate = value.getLastSuccessDate();
-				if (lastSuccessDate != null) {
-					date = sdf.format(lastSuccessDate);
+				Date lastStateTransitionTime = value.getLastStateTransitionTime();
+				if (lastStateTransitionTime != null) {
+					date = sdf.format(lastStateTransitionTime);
 				}
 
 				sb.append(String.format("%-70.70s -> %-25.25s @ %.20s", currentKey, currentState, date));

@@ -21,8 +21,8 @@ public class CachedEntry<R extends CachedResult> {
 		return cacheContext.getCurrentState();
 	}
 
-	public Date getLastSuccessDate() {
-		return cacheContext.getLastSuccessDate();
+	public Date getLastStateTransitionTime() {
+		return cacheContext.getLastStateTransitionTime();
 	}
 
 	public R getCachedResult() {
@@ -86,7 +86,7 @@ public class CachedEntry<R extends CachedResult> {
 		return null;
 	}
 	
-	public Date getExceptionTime() {
+	public Date getExceptionLastOccurrenceTime() {
 		if (cacheContext.getException() != null) {
 			return cacheContext.getException().getDate();
 		}

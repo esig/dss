@@ -204,8 +204,8 @@ public class TLValidationJobTest {
 		assertEquals(1, tlInfos.size());
 		
 		TLInfo czTL = tlInfos.get(0);
-		assertNotNull(czTL.getDownloadCacheInfo().getLastLoadingDate());
-		assertFalse(czTL.getDownloadCacheInfo().getLastSynchronizationDate().after(czTL.getDownloadCacheInfo().getLastLoadingDate()));
+		assertNotNull(czTL.getDownloadCacheInfo().getLastStateTransitionTime());
+		assertFalse(czTL.getDownloadCacheInfo().getLastSuccessDownloadTime().after(czTL.getDownloadCacheInfo().getLastStateTransitionTime()));
 		
 		assertTrue(czTL.getDownloadCacheInfo().isSynchronized());
 		assertTrue(czTL.getParsingCacheInfo().isSynchronized());
@@ -280,8 +280,8 @@ public class TLValidationJobTest {
 		assertEquals(1, tlInfos.size());
 		
 		TLInfo czTL = tlInfos.get(0);
-		assertNotNull(czTL.getDownloadCacheInfo().getLastLoadingDate());
-		assertFalse(czTL.getDownloadCacheInfo().getLastSynchronizationDate().after(czTL.getDownloadCacheInfo().getLastLoadingDate()));
+		assertNotNull(czTL.getDownloadCacheInfo().getLastStateTransitionTime());
+		assertFalse(czTL.getDownloadCacheInfo().getLastSuccessDownloadTime().after(czTL.getDownloadCacheInfo().getLastStateTransitionTime()));
 		
 		// no TrustedListCertificateSource is present
 		assertTrue(czTL.getDownloadCacheInfo().isDesynchronized());

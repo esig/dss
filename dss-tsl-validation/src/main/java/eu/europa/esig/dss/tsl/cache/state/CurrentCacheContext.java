@@ -10,7 +10,7 @@ public class CurrentCacheContext implements CacheContext {
 	private static final Logger LOG = LoggerFactory.getLogger(CurrentCacheContext.class);
 
 	private CacheState state;
-	private Date date;
+	private Date lastStateTransitionTime;
 	private CachedException exception;
 
 	public CurrentCacheContext() {
@@ -23,8 +23,8 @@ public class CurrentCacheContext implements CacheContext {
 	}
 
 	@Override
-	public Date getLastSuccessDate() {
-		return date;
+	public Date getLastStateTransitionTime() {
+		return lastStateTransitionTime;
 	}
 
 	@Override
@@ -34,7 +34,7 @@ public class CurrentCacheContext implements CacheContext {
 			LOG.trace("The newer state is the same. The CurrentCacheContext is not updated.");
 		} else {
 			state = newState;
-			date = new Date();
+			lastStateTransitionTime = new Date();
 			exception = null;
 		}
 	}

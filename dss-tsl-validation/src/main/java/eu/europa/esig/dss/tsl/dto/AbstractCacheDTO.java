@@ -10,10 +10,10 @@ public class AbstractCacheDTO implements InfoRecord {
 	private static final long serialVersionUID = -8787039602635778771L;
 	
 	private CacheStateEnum cacheState;
-	private Date lastSuccessDate;
+	private Date lastStateTransitionTime;
 	private String exceptionMessage;
 	private String exceptionStackTrace;
-	private Date exceptionTime;
+	private Date exceptionLastOccurrenceTime;
 	
 	private boolean resultExist;
 
@@ -21,10 +21,10 @@ public class AbstractCacheDTO implements InfoRecord {
 	
 	public AbstractCacheDTO(AbstractCacheDTO cacheDTO) {
 		this.cacheState = cacheDTO.cacheState;
-		this.lastSuccessDate = cacheDTO.lastSuccessDate;
+		this.lastStateTransitionTime = cacheDTO.lastStateTransitionTime;
 		this.exceptionMessage = cacheDTO.exceptionMessage;
 		this.exceptionStackTrace = cacheDTO.exceptionStackTrace;
-		this.exceptionTime = cacheDTO.exceptionTime;
+		this.exceptionLastOccurrenceTime = cacheDTO.exceptionLastOccurrenceTime;
 		this.resultExist = cacheDTO.resultExist;
 	}
 	
@@ -37,12 +37,12 @@ public class AbstractCacheDTO implements InfoRecord {
 	}
 
 	@Override
-	public Date getLastSuccessDate() {
-		return lastSuccessDate;
+	public Date getLastStateTransitionTime() {
+		return lastStateTransitionTime;
 	}
 	
-	public void setLastSuccessDate(Date lastSuccessDate) {
-		this.lastSuccessDate = lastSuccessDate;
+	public void setLastStateTransitionTime(Date lastStateTransitionTime) {
+		this.lastStateTransitionTime = lastStateTransitionTime;
 	}
 
 	@Override
@@ -64,12 +64,12 @@ public class AbstractCacheDTO implements InfoRecord {
 	}
 	
 	@Override
-	public Date getExceptionTime() {
-		return exceptionTime;
+	public Date getExceptionLastOccurrenceTime() {
+		return exceptionLastOccurrenceTime;
 	}
 	
-	public void setExceptionTime(Date exceptionTime) {
-		this.exceptionTime = exceptionTime;
+	public void setExceptionLastOccurrenceTime(Date exceptionLastOccurrenceTime) {
+		this.exceptionLastOccurrenceTime = exceptionLastOccurrenceTime;
 	}
 
 	@Override

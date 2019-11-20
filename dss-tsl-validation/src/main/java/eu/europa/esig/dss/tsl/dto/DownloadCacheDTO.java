@@ -8,7 +8,7 @@ public class DownloadCacheDTO extends AbstractCacheDTO implements DownloadInfoRe
 
 	private static final long serialVersionUID = 514589372769360786L;
 	
-	private Date lastSynchronizationDate;
+	private Date lastSuccessDownloadTime;
 
 	public DownloadCacheDTO() {}
 	
@@ -17,21 +17,24 @@ public class DownloadCacheDTO extends AbstractCacheDTO implements DownloadInfoRe
 	}
 	
 	@Override
-	public Date getLastSynchronizationDate() {
-		return lastSynchronizationDate;
+	public Date getLastSuccessDownloadTime() {
+		return lastSuccessDownloadTime;
 	}
 
-	public void setLastSynchronizationDate(Date lastSynchronizationDate) {
-		this.lastSynchronizationDate = lastSynchronizationDate;
+	public void setLastSuccessDownloadTime(Date lastSuccessDownloadTime) {
+		this.lastSuccessDownloadTime = lastSuccessDownloadTime;
 	}
-	
-	/**
-	 * getLastSuccessDate()
-	 * @return {@link Date}
-	 */
+
 	@Override
-	public Date getLastLoadingDate() {
-		return getLastSuccessDate();
+	public Date getLastDownloadAttemptTime() {
+		return latestDate(latestDate(lastSuccessDownloadTime, getLastStateTransitionTime()), getExceptionLastOccurrenceTime());
 	}
 
+	/**
+	 * Compare two dates
+	 * @return the latest of the two dates
+	 */
+	public static Date latestDate(Date a, Date b) {
+	    return a == null ? b : (b == null ? a : (a.after(b) ? a : b));
+	}
 }

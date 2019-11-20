@@ -16,13 +16,13 @@ public class DownloadCacheDTOBuilder extends AbstractCacheDTOBuilder<XmlDownload
 	public DownloadCacheDTO build() {
 		DownloadCacheDTO downloadCacheDTO = new DownloadCacheDTO(super.build());
 		if (isResultExist()) {
-			downloadCacheDTO.setLastSynchronizationDate(getLastSynchronizationDate());
+			downloadCacheDTO.setLastSuccessDownloadTime(getLastSuccessDownloadTimeDate());
 		}
 		return downloadCacheDTO;
 	}
 	
-	private Date getLastSynchronizationDate() {
-		return getResult().getLastSynchronizationDate();
+	private Date getLastSuccessDownloadTimeDate() {
+		return getResult().getLastSuccessDownloadTime();
 	}
 
 }

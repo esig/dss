@@ -56,7 +56,7 @@ public class TransitionTest {
 
 		TLValidationJobSummary firstSummary = job.getSummary();
 		TLInfo firstCZ = firstSummary.getOtherTLInfos().get(0);
-		assertNull(firstCZ.getDownloadCacheInfo().getLastSynchronizationDate());
+		assertNull(firstCZ.getDownloadCacheInfo().getLastSuccessDownloadTime());
 		checkSummary(firstSummary, CacheStateEnum.ERROR, CacheStateEnum.REFRESH_NEEDED, CacheStateEnum.REFRESH_NEEDED);
 
 		Thread.sleep(1);
@@ -65,11 +65,11 @@ public class TransitionTest {
 
 		TLValidationJobSummary secondSummary = job.getSummary();
 		TLInfo secondCZ = secondSummary.getOtherTLInfos().get(0);
-		assertNull(secondCZ.getDownloadCacheInfo().getLastSynchronizationDate());
+		assertNull(secondCZ.getDownloadCacheInfo().getLastSuccessDownloadTime());
 		checkSummary(secondSummary, CacheStateEnum.ERROR, CacheStateEnum.REFRESH_NEEDED, CacheStateEnum.REFRESH_NEEDED);
 
 		// Keep the first error time
-		assertEquals(firstCZ.getDownloadCacheInfo().getExceptionTime(), secondCZ.getDownloadCacheInfo().getExceptionTime());
+		assertEquals(firstCZ.getDownloadCacheInfo().getExceptionLastOccurrenceTime(), secondCZ.getDownloadCacheInfo().getExceptionLastOccurrenceTime());
 		assertEquals(firstCZ.getDownloadCacheInfo().getExceptionMessage(), secondCZ.getDownloadCacheInfo().getExceptionMessage());
 	}
 
@@ -119,12 +119,57 @@ public class TransitionTest {
 		TLInfo successTlInfo = summarySuccess.getOtherTLInfos().get(0);
 		TLInfo failTlInfo = summaryFail.getOtherTLInfos().get(0);
 
-		assertEquals(successTlInfo.getDownloadCacheInfo().getLastSuccessDate(), failTlInfo.getDownloadCacheInfo().getLastSuccessDate());
-		assertNotEquals(successTlInfo.getDownloadCacheInfo().getLastSynchronizationDate(), failTlInfo.getDownloadCacheInfo().getLastSynchronizationDate());
+		assertEquals(successTlInfo.getDownloadCacheInfo().getLastStateTransitionTime(), failTlInfo.getDownloadCacheInfo().getLastStateTransitionTime());
+		assertNotEquals(successTlInfo.getDownloadCacheInfo().getLastSuccessDownloadTime(), failTlInfo.getDownloadCacheInfo().getLastSuccessDownloadTime());
 		assertNotEquals(successTlInfo.getDownloadCacheInfo().getExceptionMessage(), failTlInfo.getDownloadCacheInfo().getExceptionMessage());
 
-		assertEquals(successTlInfo.getParsingCacheInfo().getLastSuccessDate(), failTlInfo.getParsingCacheInfo().getLastSuccessDate());
-		assertEquals(successTlInfo.getValidationCacheInfo().getLastSuccessDate(), failTlInfo.getValidationCacheInfo().getLastSuccessDate());
+		assertEquals(successTlInfo.getParsingCacheInfo().getLastStateTransitionTime(), failTlInfo.getParsingCacheInfo().getLastStateTransitionTime());
+		assertEquals(successTlInfo.getValidationCacheInfo().getLastStateTransitionTime(), failTlInfo.getValidationCacheInfo().getLastStateTransitionTime());
+
+	}
+	
+	@Test
+	public void lastDownloadAttempTest() {
+		String url = "null-to-valid-doc";
+
+		TLValidationJob job = new TLValidationJob();
+		job.setTrustedListCertificateSource(new TrustedListsCertificateSource());
+		job.setTrustedListSources(getTLSource(url));
+		
+		job.setOnlineDataLoader(getOnlineDataLoader(CZ_NULL, url));
+		job.onlineRefresh();
+		checkSummary(job.getSummary(), CacheStateEnum.ERROR, CacheStateEnum.REFRESH_NEEDED, CacheStateEnum.REFRESH_NEEDED);
+		
+		TLValidationJobSummary summary = job.getSummary();
+		TLInfo tlInfo = summary.getOtherTLInfos().get(0);
+		
+		assertNull(tlInfo.getDownloadCacheInfo().getLastSuccessDownloadTime());
+		assertNotNull(tlInfo.getDownloadCacheInfo().getLastStateTransitionTime());
+		assertNotNull(tlInfo.getDownloadCacheInfo().getExceptionLastOccurrenceTime());
+		assertEquals(tlInfo.getDownloadCacheInfo().getExceptionLastOccurrenceTime(), tlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
+		
+		job.setOnlineDataLoader(getOnlineDataLoader(CZ, url));
+		job.onlineRefresh();
+		checkSummary(job.getSummary(), CacheStateEnum.SYNCHRONIZED, CacheStateEnum.SYNCHRONIZED, CacheStateEnum.SYNCHRONIZED);
+		summary = job.getSummary();
+		tlInfo = summary.getOtherTLInfos().get(0);
+		
+		assertNull(tlInfo.getDownloadCacheInfo().getExceptionLastOccurrenceTime());
+		assertNotNull(tlInfo.getDownloadCacheInfo().getLastStateTransitionTime());
+		assertNotNull(tlInfo.getDownloadCacheInfo().getLastSuccessDownloadTime());
+		assertEquals(tlInfo.getDownloadCacheInfo().getLastStateTransitionTime(), tlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
+
+		job.setOnlineDataLoader(getOnlineDataLoader(CZ_NULL, url));
+		job.onlineRefresh();
+		checkSummary(job.getSummary(), CacheStateEnum.ERROR, CacheStateEnum.SYNCHRONIZED, CacheStateEnum.SYNCHRONIZED);
+		summary = job.getSummary();
+		tlInfo = summary.getOtherTLInfos().get(0);
+
+		assertNull(tlInfo.getDownloadCacheInfo().getLastSuccessDownloadTime());
+		assertNotNull(tlInfo.getDownloadCacheInfo().getLastStateTransitionTime());
+		assertNotNull(tlInfo.getDownloadCacheInfo().getExceptionLastOccurrenceTime());
+		assertEquals(tlInfo.getDownloadCacheInfo().getExceptionLastOccurrenceTime(), tlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
+
 	}
 
 	@Test
