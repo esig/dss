@@ -146,6 +146,7 @@ public class DiagnosticDataBuilder {
 	private Set<CertificateToken> usedCertificates;
 	private Map<CertificateToken, Set<CertificateSourceType>> certificateSourceTypes;
 	private Set<RevocationToken> usedRevocations;
+	private List<TimestampToken> externalTimestamps;
 	private List<CertificateSource> trustedCertSources = new ArrayList<CertificateSource>();
 	private Date validationDate;
 
@@ -237,6 +238,11 @@ public class DiagnosticDataBuilder {
 	 */
 	public DiagnosticDataBuilder usedRevocations(Set<RevocationToken> usedRevocations) {
 		this.usedRevocations = usedRevocations;
+		return this;
+	}
+	
+	public DiagnosticDataBuilder setExternalTimestamps(List<TimestampToken> timestampTokens) {
+		this.externalTimestamps = timestampTokens;
 		return this;
 	}
 
@@ -351,6 +357,14 @@ public class DiagnosticDataBuilder {
 			
 			Collection<XmlTimestamp> XmlTimestamps = buildXmlTimestamps(signatures);
 			diagnosticData.getUsedTimestamps().addAll(XmlTimestamps);
+		}
+		
+		if (Utils.isCollectionNotEmpty(externalTimestamps)) {
+			List<XmlTimestamp> builtTimestamps = new ArrayList<XmlTimestamp>(); 
+			for (XmlTimestamp xmlTimestamp : getXmlTimestamps(externalTimestamps)) {
+				addXmlTimestampToList(builtTimestamps, xmlTimestamp);
+			}
+			diagnosticData.getUsedTimestamps().addAll(builtTimestamps);
 		}
 		
 		if (Utils.isMapNotEmpty(xmlOrphanTokens)) {

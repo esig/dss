@@ -103,6 +103,7 @@
 		<module>dss-detailed-report-jaxb</module>
 		<module>dss-simple-report-jaxb</module>
 		<module>dss-simple-certificate-report-jaxb</module>
+		<module>dss-simple-timestamp-report-jaxb</module>
 	
 		<module>dss-utils</module>
 		<module>dss-utils-apache-commons</module>
@@ -162,7 +163,7 @@
     	<module>dss-timestamp-remote-soap</module>
 		
 		<module>dss-cookbook</module>
-	</modules>
+  </modules>
 
 	<build>
 		<plugins>
@@ -828,6 +829,11 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-simple-certificate-report-jaxb</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-simple-timestamp-report-jaxb</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

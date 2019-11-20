@@ -18,26 +18,18 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.executor;
+package eu.europa.esig.dss.validation.executor.certificate;
 
-import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.executor.ProcessExecutor;
+import eu.europa.esig.dss.validation.reports.CertificateReports;
 
-public interface SignatureProcessExecutor extends ProcessExecutor<Reports> {
-
-	/**
-	 * This method allows to set the validation level that is used during the
-	 * validation process execution.
-	 *
-	 * @param validationLevel
-	 *            the validation level.
-	 */
-	void setValidationLevel(ValidationLevel validationLevel);
+public interface CertificateProcessExecutor extends ProcessExecutor<CertificateReports> {
 	
 	/**
-	 * Specifies if the ETSI Validation Report must be created
+	 * Allows to specify the target certificate present in the Diagnostic Data to be verified
 	 * 
-	 * @param enableEtsiValidationReport
+	 * @param certificateId {@link String} id of the certificate to be verified
 	 */
-	void setEnableEtsiValidationReport(boolean enableEtsiValidationReport);
+	void setCertificateId(String certificateId);
 
 }

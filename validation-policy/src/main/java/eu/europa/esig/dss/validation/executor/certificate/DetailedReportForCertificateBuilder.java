@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.executor;
+package eu.europa.esig.dss.validation.executor.certificate;
 
 import java.util.Collections;
 import java.util.Date;
@@ -31,6 +31,7 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.validation.executor.AbstractDetailedReportBuilder;
 import eu.europa.esig.dss.validation.process.qualification.certificate.CertificateQualificationBlock;
 
 public class DetailedReportForCertificateBuilder extends AbstractDetailedReportBuilder {

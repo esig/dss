@@ -174,10 +174,9 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 			if (archiveManifest != null) {
 				ManifestFile validatedManifestFile = getValidatedManifestFile(archiveManifest);
 				if (validatedManifestFile != null) {
-					ASiCEWithCAdESTimestampValidator timestampValidator = new ASiCEWithCAdESTimestampValidator(timestamp, 
+					ASiCEWithCAdESTimestampValidator timestampValidator = new ASiCEWithCAdESTimestampValidator(timestamp, archiveManifest, 
 							TimestampType.ARCHIVE_TIMESTAMP, validatedManifestFile, validationCertPool);
 					timestampValidator.setCertificateVerifier(certificateVerifier);
-					timestampValidator.setTimestampedData(archiveManifest);
 					timestampValidators.add(timestampValidator);
 				} else {
 					LOG.warn("A linked manifest is not found for a timestamp with name [{}]!", archiveManifest.getName());

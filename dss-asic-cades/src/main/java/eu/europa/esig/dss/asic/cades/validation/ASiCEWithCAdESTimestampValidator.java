@@ -20,22 +20,30 @@
  */
 package eu.europa.esig.dss.asic.cades.validation;
 
-import eu.europa.esig.dss.cades.validation.CMSTimestampValidator;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampValidator;
 
-public class ASiCEWithCAdESTimestampValidator extends CMSTimestampValidator {
+public class ASiCEWithCAdESTimestampValidator extends TimestampValidator {
 
 	/* ASiCArchiveManifest */
 	private final ManifestFile manifestFile;
 
-	public ASiCEWithCAdESTimestampValidator(DSSDocument timestamp, TimestampType type, ManifestFile manifestFile, 
-			CertificatePool certificatePool) {
-		super(timestamp, type);
-		this.manifestFile = manifestFile;
+	/**
+	 * Default constructor for ASiCE CAdES timestamp validator
+	 * @param timestamp {@link DSSDocument} the timestamp document file
+	 * @param timestampedData {@link DSSDocument} the timestampedData (ASiCManifest)
+	 * @param type {@link TimestampType} type of the timestamp
+	 * @param validatedManifestFile a validated {@link ManifestFile}
+	 * @param certificatePool {@link CertificatePool}
+	 */
+	public ASiCEWithCAdESTimestampValidator(DSSDocument timestamp, DSSDocument timestampedData, TimestampType type, 
+			ManifestFile validatedManifestFile, CertificatePool certificatePool) {
+		super(timestamp, timestampedData, type);
+		this.manifestFile = validatedManifestFile;
 		this.validationCertPool = certificatePool;
 	}
 
