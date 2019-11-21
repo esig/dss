@@ -42,7 +42,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class DSS1683Test extends PKIFactoryAccess {
@@ -51,7 +51,7 @@ public class DSS1683Test extends PKIFactoryAccess {
 	public void test() {
 		
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/DSS-1683.pdf"));
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		

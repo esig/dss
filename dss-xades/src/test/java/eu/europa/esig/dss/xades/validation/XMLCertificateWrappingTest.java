@@ -37,7 +37,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class XMLCertificateWrappingTest extends PKIFactoryAccess {
@@ -45,7 +45,7 @@ public class XMLCertificateWrappingTest extends PKIFactoryAccess {
 	@Test
 	public void certificateSourcesTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-XAdES/HU_POL/Signature-X-HU_POL-3.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		// reports.print();
@@ -61,7 +61,7 @@ public class XMLCertificateWrappingTest extends PKIFactoryAccess {
 	@Test
 	public void certificateMultipleSourcesTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-XAdES/CZ_SEF/Signature-X-CZ_SEF-5.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		// reports.print();

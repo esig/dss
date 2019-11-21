@@ -48,7 +48,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 @RunWith(Parameterized.class)
@@ -100,7 +100,7 @@ public class OpenDocumentLevelBWithExternalDataTest extends AbstractOpenDocument
 		DSSDocument signedDocument = new InMemoryDocument(byteArray);
 		signedDocument = removeExternalDataFilesFromContainer(signedDocument);
 
-		SignedDocumentValidator validator = getValidator(signedDocument);
+		DefaultDocumentValidator validator = getValidator(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		verifyDiagnosticData(reports.getDiagnosticData());

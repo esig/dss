@@ -48,7 +48,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.enums.ObjectType;
 import eu.europa.esig.validationreport.jaxb.ValidationObjectListType;
@@ -62,7 +62,7 @@ public class DSS874Test {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/dss874/sellosFNMT-XAdES_A.xml");
 		File policyDocument = new File("src/test/resources/validation/dss874/policy.pdf");
 
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		SignaturePolicyProvider signaturePolicyProvider = new SignaturePolicyProvider();
 		Map<String, DSSDocument> signaturePoliciesById = new HashMap<String, DSSDocument>();

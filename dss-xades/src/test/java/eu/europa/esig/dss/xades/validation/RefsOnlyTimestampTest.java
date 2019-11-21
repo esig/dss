@@ -16,7 +16,7 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class RefsOnlyTimestampTest {
@@ -25,7 +25,7 @@ public class RefsOnlyTimestampTest {
 	public void test() {
 		// the timestamp is broken in the file
 		DSSDocument doc = new FileDocument("src/test/resources/validation/signing-cert-multiple-refs-sig.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
 		validator.setCertificateVerifier(commonCertificateVerifier);
 		

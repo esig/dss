@@ -37,11 +37,11 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.ContainerInfo;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.ManifestFile;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
-public abstract class AbstractASiCContainerValidator extends SignedDocumentValidator {
+public abstract class AbstractASiCContainerValidator extends DefaultDocumentValidator {
 
 	protected List<DocumentValidator> validators;
 
@@ -52,7 +52,7 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	private List<ManifestFile> manifestFiles;
 
 	/**
-	 * Default constructor used with reflexion (see SignedDocumentValidator)
+	 * Default constructor used with reflexion (see DefaultDocumentValidator)
 	 */
 	private AbstractASiCContainerValidator() {
 		super(null);

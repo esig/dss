@@ -22,7 +22,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class DSS1770Test {
@@ -30,7 +30,7 @@ public class DSS1770Test {
 	@Test
 	public void test() {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/dss1770/dss1770.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		
 		Reports reports = validator.validateDocument();
@@ -64,7 +64,7 @@ public class DSS1770Test {
 	@Test
 	public void rootAndRefsCoveredEnvelopedSigTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/dss1770/dss1770rootAndRefs.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		
 		Reports reports = validator.validateDocument();
@@ -108,7 +108,7 @@ public class DSS1770Test {
 	@Test
 	public void detachedContentTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/dss1770/dss1770rootAndRefs.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		validator.setDetachedContents(Arrays.asList(new FileDocument("src/test/resources/sample.png")));
 		
@@ -153,7 +153,7 @@ public class DSS1770Test {
 	@Test
 	public void detachedContentWithEmptyNameTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/dss1770/dss1770rootAndRefs.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		FileDocument fileDocument = new FileDocument("src/test/resources/sample.png");
 		fileDocument.setName("");
@@ -200,7 +200,7 @@ public class DSS1770Test {
 	@Test
 	public void refUriRemovedTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/dss1770/dss1770refUriRemoved.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		
 		Reports reports = validator.validateDocument();
@@ -243,7 +243,7 @@ public class DSS1770Test {
 	@Test
 	public void nullUriWithDetachedContentTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/dss1770/dss1770refUriRemoved.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		FileDocument detachedDocument = new FileDocument("src/test/resources/sample.png");
 		validator.setDetachedContents(Arrays.asList(detachedDocument));
@@ -289,7 +289,7 @@ public class DSS1770Test {
 	@Test
 	public void nullUriWithMultipleDetachedContentTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/dss1770/dss1770refUriRemoved.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		List<DSSDocument> detachedDocuments = new ArrayList<DSSDocument>();
 		detachedDocuments.add(new FileDocument("src/test/resources/sample.png"));
@@ -336,7 +336,7 @@ public class DSS1770Test {
 	@Test
 	public void nullUriWithDetachedContentNullNameTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/dss1770/dss1770refUriRemoved.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		validator.setDetachedContents(Arrays.asList(new InMemoryDocument(new byte[] {1, 2, 3})));
 		

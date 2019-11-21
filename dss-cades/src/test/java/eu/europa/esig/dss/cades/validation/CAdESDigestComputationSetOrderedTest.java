@@ -28,7 +28,7 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 /**
@@ -40,7 +40,7 @@ public class CAdESDigestComputationSetOrderedTest {
 	@Test
 	public void testFile1() {
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-667/BER_reordered_prova.txt.p7m");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
@@ -54,7 +54,7 @@ public class CAdESDigestComputationSetOrderedTest {
 	@Test
 	public void testFile2() {
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-667/DER_reordered_prova.txt.p7m");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 

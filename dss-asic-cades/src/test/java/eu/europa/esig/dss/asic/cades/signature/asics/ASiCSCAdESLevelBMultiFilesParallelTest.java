@@ -55,7 +55,7 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class ASiCSCAdESLevelBMultiFilesParallelTest extends PKIFactoryAccess {
@@ -81,7 +81,7 @@ public class ASiCSCAdESLevelBMultiFilesParallelTest extends PKIFactoryAccess {
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(documentToSigns, signatureParameters, signatureValue);
 		
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 
 		Reports reports = validator.validateDocument();
@@ -101,7 +101,7 @@ public class ASiCSCAdESLevelBMultiFilesParallelTest extends PKIFactoryAccess {
 		signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument resignedDocument = service.signDocument(signedDocument, signatureParameters, signatureValue);
 
-		validator = SignedDocumentValidator.fromDocument(resignedDocument);
+		validator = DefaultDocumentValidator.fromDocument(resignedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 
 		reports = validator.validateDocument();

@@ -46,7 +46,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class XMLRevocationWrappingTest extends PKIFactoryAccess {
@@ -54,7 +54,7 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 	@Test
 	public void revocationOriginTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-XAdES/HU_POL/Signature-X-HU_POL-3.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		// reports.print();
@@ -99,7 +99,7 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 	@Test
 	public void revocationOriginThreeSignaturesTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-XAdES/HR_FIN/Signature-X-HR_FIN-1.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
@@ -152,7 +152,7 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 	@Test
 	public void revocationReferencesTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-XAdES/ES/Signature-X-ES-100.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		// reports.print();
@@ -182,7 +182,7 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 	@Test
 	public void ocspWrongRefTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-XAdES/BG/Signature-X-BG-1.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		// reports.print();
@@ -201,7 +201,7 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 	@Test
 	public void ocspRefWithByKeyResponderIdTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-XAdES/UK_ELD/Signature-X-UK_ELD-4.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		// reports.print();

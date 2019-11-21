@@ -32,7 +32,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestMultipleDocumentsSignatureService;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 public class DetachedXmlMultiDocSignatureWithKeyInfoTest extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<XAdESSignatureParameters> {
@@ -54,8 +54,8 @@ public class DetachedXmlMultiDocSignatureWithKeyInfoTest extends AbstractPkiFact
 	}
 
 	@Override
-	protected SignedDocumentValidator getValidator(final DSSDocument signedDocument) {
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
+	protected DefaultDocumentValidator getValidator(final DSSDocument signedDocument) {
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(signedDocument);
 		validator.setDetachedContents(documentToSigns);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		validator.setSignaturePolicyProvider(getSignaturePolicyProvider());

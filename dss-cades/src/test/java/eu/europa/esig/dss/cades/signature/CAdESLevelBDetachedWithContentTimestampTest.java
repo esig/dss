@@ -33,7 +33,7 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 public class CAdESLevelBDetachedWithContentTimestampTest extends AbstractCAdESTestSignature {
@@ -61,8 +61,8 @@ public class CAdESLevelBDetachedWithContentTimestampTest extends AbstractCAdESTe
 	}
 
 	@Override
-	protected SignedDocumentValidator getValidator(final DSSDocument signedDocument) {
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
+	protected DefaultDocumentValidator getValidator(final DSSDocument signedDocument) {
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
 		detachedContents.add(documentToSign);

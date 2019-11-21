@@ -35,14 +35,14 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class PdfPkcs7Test {
 
 	@Test
 	public void test() throws Exception {
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(new InMemoryDocument(getClass().getResourceAsStream("/validation/pkcs7.pdf")));
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(new InMemoryDocument(getClass().getResourceAsStream("/validation/pkcs7.pdf")));
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 

@@ -46,7 +46,7 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.validationreport.jaxb.POEProvisioningType;
@@ -76,7 +76,7 @@ public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 		SignatureValue signatureValue = getToken().sign(dataToSign, params.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument ltLevelDoc = service.signDocument(doc, params, signatureValue);
 
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(ltLevelDoc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(ltLevelDoc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		AdvancedSignature advancedSignature = signatures.get(0);
@@ -106,7 +106,7 @@ public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 		
 		// ltaDoc.save("target/ltaDoc.pkcs7");
 
-		validator = SignedDocumentValidator.fromDocument(ltaDoc);
+		validator = DefaultDocumentValidator.fromDocument(ltaDoc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		reports = validator.validateDocument();
 		
@@ -136,7 +136,7 @@ public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 		
 		// doubleLtaDoc.save("target/doubleLtaDoc.pkcs7");
 
-		validator = SignedDocumentValidator.fromDocument(doubleLtaDoc);
+		validator = DefaultDocumentValidator.fromDocument(doubleLtaDoc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		reports = validator.validateDocument();
 		

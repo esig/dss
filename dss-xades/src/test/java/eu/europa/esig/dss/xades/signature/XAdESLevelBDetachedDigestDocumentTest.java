@@ -44,7 +44,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
@@ -132,7 +132,7 @@ public class XAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 	}
 
 	private DiagnosticData validate(DSSDocument signedDocument, DSSDocument original) {
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		validator.setDetachedContents(Arrays.asList(original));
 		Reports reports = validator.validateDocument();
@@ -143,7 +143,7 @@ public class XAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 	}
 
 	private void validateWrong(DSSDocument signedDocument) {
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		validator.setDetachedContents(Arrays.asList(getWrongDocument()));
 		Reports reports = validator.validateDocument();

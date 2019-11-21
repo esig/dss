@@ -52,7 +52,7 @@ import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
@@ -87,7 +87,7 @@ public class OpenDocumentMultipleTimestampsTest extends PKIFactoryAccess {
 		extendParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 		DSSDocument extendDocument = service.extendDocument(signedDocument, extendParameters);
 
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(extendDocument);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(extendDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 
 		Reports reports = validator.validateDocument();

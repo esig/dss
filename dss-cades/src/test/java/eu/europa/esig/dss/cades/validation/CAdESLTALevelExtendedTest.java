@@ -44,7 +44,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class CAdESLTALevelExtendedTest {
@@ -52,7 +52,7 @@ public class CAdESLTALevelExtendedTest {
 	@Test
 	public void dss1469test() {
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-1469/cadesLTAwithATv2.sig");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		DSSDocument detachedContent = new FileDocument("src/test/resources/validation/dss-1469/screenshot2.png");
 		validator.setDetachedContents(Arrays.asList(detachedContent));
@@ -90,7 +90,7 @@ public class CAdESLTALevelExtendedTest {
 	@Test
 	public void dss1469testExpired() {
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-1469/cadesLTAwithATv2expired.p7s");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);
@@ -129,7 +129,7 @@ public class CAdESLTALevelExtendedTest {
 	@Test
 	public void dss1670test() {
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-1670/signatureExtendedTwoLTA.p7s");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		DSSDocument detachedContent = new FileDocument("src/test/resources/validation/dss-1670/screenshot.png");
 		validator.setDetachedContents(Arrays.asList(detachedContent));

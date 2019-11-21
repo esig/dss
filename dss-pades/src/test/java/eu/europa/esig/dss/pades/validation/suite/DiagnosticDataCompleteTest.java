@@ -49,7 +49,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.enums.ObjectType;
 import eu.europa.esig.validationreport.jaxb.POEProvisioningType;
@@ -63,7 +63,7 @@ public class DiagnosticDataCompleteTest extends PKIFactoryAccess {
 	public void pdfSignatureDictionaryTest() {
 		
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/AD-RB.pdf"));
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		// reports.print();
@@ -84,7 +84,7 @@ public class DiagnosticDataCompleteTest extends PKIFactoryAccess {
 	@Test
 	public void revocationOriginTest() {
 		DSSDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/plugtest/esig2014/ESIG-PAdES/HU_POL/Signature-P-HU_POL-3.pdf"));
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports report = validator.validateDocument();
 		// report.print();
@@ -105,7 +105,7 @@ public class DiagnosticDataCompleteTest extends PKIFactoryAccess {
 	@Test
 	public void multiSignedDocRevocationRefTest() throws Exception {
 		DSSDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/plugtest/esig2014/ESIG-PAdES/SK/Signature-P-SK-6.pdf"));
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports report = validator.validateDocument();
 		// report.print();
@@ -186,7 +186,7 @@ public class DiagnosticDataCompleteTest extends PKIFactoryAccess {
 	@Test
 	public void dssAndVriTest() {
 		DSSDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/plugtest/esig2014/ESIG-PAdES/BG_BOR/Signature-P-BG_BOR-2.pdf"));
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports report = validator.validateDocument();
 		// report.print();
@@ -215,7 +215,7 @@ public class DiagnosticDataCompleteTest extends PKIFactoryAccess {
 	@Test
 	public void fiveSignaturesOWithSingleTimestampTest() {
 		DSSDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/validation/pades-5-signatures-and-1-document-timestamp.pdf"));
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports report = validator.validateDocument();
 		// System.out.println(report.getXmlDiagnosticData().replaceAll("[\\p{Cntrl}&&[^\r\n\t]]", ""));
@@ -240,7 +240,7 @@ public class DiagnosticDataCompleteTest extends PKIFactoryAccess {
 	@Test
 	public void signatureDigestReferenceTest() throws IOException {
 		DSSDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/validation/pdf-signed-original.pdf"));
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports report = validator.validateDocument();
 		
@@ -264,7 +264,7 @@ public class DiagnosticDataCompleteTest extends PKIFactoryAccess {
 	@Test
 	public void SignatureDigestReferencePresenceTest() throws IOException {
 		DSSDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/validation/PAdES-LTA.pdf"));
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports report = validator.validateDocument();
 		

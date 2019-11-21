@@ -38,12 +38,12 @@ import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 
 /**
  * Validation of PDF document.
  */
-public class PDFDocumentValidator extends SignedDocumentValidator {
+public class PDFDocumentValidator extends DefaultDocumentValidator {
 	
 	private static final byte[] pdfPreamble = new byte[] { '%', 'P', 'D', 'F', '-' };
 

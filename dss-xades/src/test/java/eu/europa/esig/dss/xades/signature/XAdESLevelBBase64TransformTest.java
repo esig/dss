@@ -52,7 +52,7 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.reference.Base64Transform;
@@ -283,7 +283,7 @@ public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 	}
 	
 	private DiagnosticData validate(DSSDocument signedDocument, XAdESSignatureParameters signatureParameters) {
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();

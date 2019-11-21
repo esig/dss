@@ -46,7 +46,7 @@ import eu.europa.esig.dss.test.signature.UnmarshallingTester;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
@@ -78,7 +78,7 @@ public class ETSISamplesValidation {
 	@ParameterizedTest(name = "Validation {index}")
 	@MethodSource("data")
 	public void testValidate(DSSDocument doc) {
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setDataLoader(new IgnoreDataLoader());

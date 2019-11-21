@@ -35,7 +35,7 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class CAdESDoubleLTATest extends PKIFactoryAccess {
@@ -44,7 +44,7 @@ public class CAdESDoubleLTATest extends PKIFactoryAccess {
 	public void test() {
 
 		DSSDocument document = new FileDocument("src/test/resources/validation/CAdESDoubleLTA.p7m");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(document);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();

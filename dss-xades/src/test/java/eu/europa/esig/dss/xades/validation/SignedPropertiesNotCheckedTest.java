@@ -42,7 +42,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 /**
@@ -57,7 +57,7 @@ public class SignedPropertiesNotCheckedTest {
 	@Test
 	public void testWithSignedProperties() {
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-signed.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		validator.validateDocument();
 
@@ -99,7 +99,7 @@ public class SignedPropertiesNotCheckedTest {
 	public void testNoSignedProperties() {
 		DSSDocument dssDocument = new FileDocument(
 				"src/test/resources/validation/dss-signed-altered-signedPropsRemoved.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
@@ -142,7 +142,7 @@ public class SignedPropertiesNotCheckedTest {
 	@Test
 	public void testNoRef() {
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-signed-altered-refRemoved.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 

@@ -29,7 +29,7 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class ASiCEWithZipCommentTest {
@@ -38,7 +38,7 @@ public class ASiCEWithZipCommentTest {
 	public void test() {
 		DSSDocument asicContainer = new FileDocument("src/test/resources/validation/test-zip-comment.asice");
 
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(asicContainer);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(asicContainer);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);

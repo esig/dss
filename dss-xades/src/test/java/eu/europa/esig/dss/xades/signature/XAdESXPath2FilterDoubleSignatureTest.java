@@ -40,7 +40,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -78,7 +78,7 @@ public class XAdESXPath2FilterDoubleSignatureTest extends PKIFactoryAccess {
 		DSSDocument doubleSignedDocument = service.signDocument(signedDocument, params, signatureValue);
 		doubleSignedDocument.save("target/" + "doubleSignedTest.xml");
 
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doubleSignedDocument);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doubleSignedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 
 		Reports reports = validator.validateDocument();

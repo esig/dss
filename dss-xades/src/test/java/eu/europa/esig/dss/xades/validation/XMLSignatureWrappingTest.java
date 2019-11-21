@@ -80,7 +80,7 @@ import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.util.TimeDependentValues;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.validationreport.enums.ObjectType;
@@ -100,7 +100,7 @@ public class XMLSignatureWrappingTest {
 
 	@Test
 	public void testEnvelopedFakeSignedProperties() {
-		SignedDocumentValidator validator = SignedDocumentValidator
+		DefaultDocumentValidator validator = DefaultDocumentValidator
 				.fromDocument(new FileDocument(new File("src/test/resources/validation/xsw/XSW-enveloped-fake-signedProperties.xml")));
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
@@ -125,7 +125,7 @@ public class XMLSignatureWrappingTest {
 	public void testEnvelopedOriginal() {
 		
 		FileDocument document = new FileDocument(new File("src/test/resources/validation/xsw/original.xml"));
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(document);
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setDataLoader(new IgnoreDataLoader());
@@ -155,7 +155,7 @@ public class XMLSignatureWrappingTest {
 
 	@Test
 	public void testEnvelopedFakeContent() {
-		SignedDocumentValidator validator = SignedDocumentValidator
+		DefaultDocumentValidator validator = DefaultDocumentValidator
 				.fromDocument(new FileDocument(new File("src/test/resources/validation/xsw/XSW-enveloped-fake-content.xml")));
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
@@ -175,7 +175,7 @@ public class XMLSignatureWrappingTest {
 
 	@Test
 	public void testCY() {
-		SignedDocumentValidator validator = SignedDocumentValidator
+		DefaultDocumentValidator validator = DefaultDocumentValidator
 				.fromDocument(new FileDocument(new File("src/test/resources/validation/xsw/TSL-CY-sign.xml")));
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
@@ -195,7 +195,7 @@ public class XMLSignatureWrappingTest {
 
 	@Test
 	public void testNoId() {
-		SignedDocumentValidator validator = SignedDocumentValidator
+		DefaultDocumentValidator validator = DefaultDocumentValidator
 				.fromDocument(new FileDocument(new File("src/test/resources/validation/xsw/TSL-noID.xml")));
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
@@ -215,7 +215,7 @@ public class XMLSignatureWrappingTest {
 
 	@Test
 	public void testEnvelopedFakeContentMisplaced() {
-		SignedDocumentValidator validator = SignedDocumentValidator
+		DefaultDocumentValidator validator = DefaultDocumentValidator
 				.fromDocument(new FileDocument(new File("src/test/resources/validation/xsw/XSW-enveloped-fake-content-misplaced.xml")));
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
@@ -236,7 +236,7 @@ public class XMLSignatureWrappingTest {
 
 	@Test
 	public void testEnvelopedFakeContentTwoSameIds() {
-		SignedDocumentValidator validator = SignedDocumentValidator
+		DefaultDocumentValidator validator = DefaultDocumentValidator
 				.fromDocument(new FileDocument(new File("src/test/resources/validation/xsw/XSW-enveloped-fake-content-two-same-id.xml")));
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
@@ -259,7 +259,7 @@ public class XMLSignatureWrappingTest {
 
 	@Test
 	public void testEnvelopingFakeObject() {
-		SignedDocumentValidator validator = SignedDocumentValidator
+		DefaultDocumentValidator validator = DefaultDocumentValidator
 				.fromDocument(new FileDocument(new File("src/test/resources/validation/xsw/XSW-enveloping-fake-object.xml")));
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
@@ -282,7 +282,7 @@ public class XMLSignatureWrappingTest {
 
 	@Test
 	public void testEnvelopingFakeManifest() {
-		SignedDocumentValidator validator = SignedDocumentValidator
+		DefaultDocumentValidator validator = DefaultDocumentValidator
 				.fromDocument(new FileDocument(new File("src/test/resources/validation/xsw/XSW-enveloping-fake-manifest.xml")));
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
@@ -305,7 +305,7 @@ public class XMLSignatureWrappingTest {
 	
 	@Test
 	public void signaturePolicyIdentifierTest() {
-		SignedDocumentValidator validator = SignedDocumentValidator
+		DefaultDocumentValidator validator = DefaultDocumentValidator
 				.fromDocument(new FileDocument(new File("src/test/resources/validation/valid-xades.xml")));
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
@@ -344,7 +344,7 @@ public class XMLSignatureWrappingTest {
 	public void signatureIdentifierTest() {
 		
 		FileDocument document = new FileDocument(new File("src/test/resources/validation/valid-xades.xml"));
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(document);
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setDataLoader(new IgnoreDataLoader());
@@ -390,7 +390,7 @@ public class XMLSignatureWrappingTest {
 	
 	@Test
 	public void noSignedDataSignatureTest() {
-		SignedDocumentValidator validator = SignedDocumentValidator
+		DefaultDocumentValidator validator = DefaultDocumentValidator
 				.fromDocument(new FileDocument(new File("src/test/resources/validation/dss-signed-altered-signedPropsRemoved.xml")));
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
@@ -424,7 +424,7 @@ public class XMLSignatureWrappingTest {
 	
 	@Test
 	public void signatureScopeTest() {
-		SignedDocumentValidator validator = SignedDocumentValidator
+		DefaultDocumentValidator validator = DefaultDocumentValidator
 				.fromDocument(new FileDocument(new File("src/test/resources/validation/valid-xades.xml")));
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
@@ -479,7 +479,7 @@ public class XMLSignatureWrappingTest {
 	
 	@Test
 	public void xadesManifestSignatureScopeTest() throws Exception {
-		SignedDocumentValidator validator = SignedDocumentValidator
+		DefaultDocumentValidator validator = DefaultDocumentValidator
 				.fromDocument(new FileDocument(new File("src/test/resources/plugtest/esig2014/ESIG-XAdES/CZ_SEF/Signature-X-CZ_SEF-4.xml")));
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
@@ -527,7 +527,7 @@ public class XMLSignatureWrappingTest {
 	
 	@Test
 	public void xadesXLevelTest() {
-		SignedDocumentValidator validator = SignedDocumentValidator
+		DefaultDocumentValidator validator = DefaultDocumentValidator
 				.fromDocument(new FileDocument(new File("src/test/resources/validation/xades-x-level.xml")));
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
@@ -573,7 +573,7 @@ public class XMLSignatureWrappingTest {
 	
 	@Test
 	public void validationDataRefsWithValues() {
-		SignedDocumentValidator validator = SignedDocumentValidator
+		DefaultDocumentValidator validator = DefaultDocumentValidator
 				.fromDocument(new FileDocument(new File("src/test/resources/plugtest/esig2014/ESIG-XAdES/RO_TRA/Signature-X-RO_TRA-15.xml")));
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
@@ -705,7 +705,7 @@ public class XMLSignatureWrappingTest {
 	
 	@Test
 	public void certificateRefToOCSPResponceCertificateTest() {
-		SignedDocumentValidator validator = SignedDocumentValidator
+		DefaultDocumentValidator validator = DefaultDocumentValidator
 				.fromDocument(new FileDocument(new File("src/test/resources/plugtest/esig2014/ESIG-XAdES/RO_TRA/Signature-X-RO_TRA-4.xml")));
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
@@ -763,7 +763,7 @@ public class XMLSignatureWrappingTest {
 	/**
 	 * Test added to ensure passing in case of trusted certificates/roots due to reorder of Basic Signature Validation according to EN 319 102-1 v1.1.1
 	 */
-	private void checkForTrustedCertificateRoot(SignedDocumentValidator validator, CommonCertificateVerifier certificateVerifier, CertificateToken rootToken) {
+	private void checkForTrustedCertificateRoot(DefaultDocumentValidator validator, CommonCertificateVerifier certificateVerifier, CertificateToken rootToken) {
 
 		TrustedListsCertificateSource trustedListsCertificateSource = new TrustedListsCertificateSource();
 

@@ -34,7 +34,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class ASiCENoMimetypeTest {
@@ -43,7 +43,7 @@ public class ASiCENoMimetypeTest {
 	public void test() {
 		DSSDocument asicContainer = new FileDocument("src/test/resources/validation/onefile-no-mimetype.asice");
 
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(asicContainer);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(asicContainer);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);

@@ -2,6 +2,7 @@ package eu.europa.esig.dss.validation.executor.timestamp;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
@@ -11,16 +12,14 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.AbstractDetailedReportBuilder;
 import eu.europa.esig.dss.validation.process.vpftsp.ValidationProcessForTimeStamps;
 
 public class DetailedReportForTimestampBuilder extends AbstractDetailedReportBuilder {
-	
-	private final String timestampId;
 
-	public DetailedReportForTimestampBuilder(DiagnosticData diagnosticData, ValidationPolicy policy, Date currentTime, String timestampId) {
+	public DetailedReportForTimestampBuilder(DiagnosticData diagnosticData, ValidationPolicy policy, Date currentTime) {
 		super(diagnosticData, policy, currentTime);
-		this.timestampId = timestampId;
 	}
 
 	XmlDetailedReport build() {
@@ -29,11 +28,13 @@ public class DetailedReportForTimestampBuilder extends AbstractDetailedReportBui
 
 		Map<String, XmlBasicBuildingBlocks> bbbs = executeAllBasicBuildingBlocks();
 		detailedReport.getBasicBuildingBlocks().addAll(bbbs.values());
+		
+		// TODO : long-term validation
 
 		XmlSignature signatureAnalysis = new XmlSignature();
 		
-		TimestampWrapper timestamp = diagnosticData.getTimestampById(timestampId);
-		executeTimestampsValidation(signatureAnalysis, bbbs, timestamp);
+		List<TimestampWrapper> timestamps = diagnosticData.getTimestampList();
+		executeTimestampsValidation(signatureAnalysis, bbbs, timestamps);
 		
 		// TODO : timestamp qualification
 		
@@ -49,9 +50,14 @@ public class DetailedReportForTimestampBuilder extends AbstractDetailedReportBui
 		return bbbs;
 	}
 	
-	private void executeTimestampsValidation(XmlSignature signatureAnalysis, Map<String, XmlBasicBuildingBlocks> bbbs, TimestampWrapper timestamp) {
-		ValidationProcessForTimeStamps vpftsp = new ValidationProcessForTimeStamps(timestamp, bbbs);
-		signatureAnalysis.getValidationProcessTimestamps().add(vpftsp.execute());
+	private void executeTimestampsValidation(XmlSignature signatureAnalysis, 
+			Map<String, XmlBasicBuildingBlocks> bbbs, List<TimestampWrapper> timestamps) {
+		if (Utils.isCollectionNotEmpty(timestamps)) {
+			for (TimestampWrapper timestamp : timestamps) {
+				ValidationProcessForTimeStamps vpftsp = new ValidationProcessForTimeStamps(timestamp, bbbs);
+				signatureAnalysis.getValidationProcessTimestamps().add(vpftsp.execute());
+			}
+		}
 	}
 
 }

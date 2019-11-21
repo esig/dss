@@ -37,14 +37,14 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PdfScreenshotUtils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 
 public class DetectionModificationAfterSignTest {
 
 	@Test
 	public void testWithModification() throws IOException {
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/modified_after_signature.pdf"));
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 
 		List<AdvancedSignature> signatures = validator.getSignatures();

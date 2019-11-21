@@ -1382,6 +1382,7 @@ public class DiagnosticDataBuilder {
 		xmlTimestampToken.setType(timestampToken.getTimeStampType());
 		xmlTimestampToken.setArchiveTimestampType(timestampToken.getArchiveTimestampType()); // property is defined only for archival timestamps
 		xmlTimestampToken.setProductionTime(timestampToken.getGenerationTime());
+		xmlTimestampToken.setTimestampFilename(timestampToken.getFileName());
 		xmlTimestampToken.getDigestMatchers().addAll(getXmlDigestMatchers(timestampToken));
 		xmlTimestampToken.setBasicSignature(getXmlBasicSignature(timestampToken));
 

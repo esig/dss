@@ -25,12 +25,12 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
-import eu.europa.esig.dss.simpletimestampreport.SimpleTimestampReport;
+import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ManifestFile;
-import eu.europa.esig.dss.validation.reports.TimestampReports;
+import eu.europa.esig.dss.validation.reports.Reports;
 
 public class ASiCEWithCAdESTimestampValidatorTest extends PKIFactoryAccess {
 	
@@ -77,7 +77,7 @@ public class ASiCEWithCAdESTimestampValidatorTest extends PKIFactoryAccess {
 				archiveTimestamp, archiveManifest, TimestampType.ARCHIVE_TIMESTAMP, manifestFile, certificateVerifier.createValidationPool());
 		asiceWithCAdESTimestampValidator.setCertificateVerifier(certificateVerifier);
 		
-		TimestampReports reports = asiceWithCAdESTimestampValidator.validate();
+		Reports reports = asiceWithCAdESTimestampValidator.validate();
 
 		assertNotNull(reports);
 		assertNotNull(reports.getDiagnosticDataJaxb());
@@ -102,17 +102,17 @@ public class ASiCEWithCAdESTimestampValidatorTest extends PKIFactoryAccess {
 		assertTrue(Utils.isCollectionEmpty(timestampBBB.getConclusion().getWarnings()));
 		assertTrue(Utils.isCollectionEmpty(timestampBBB.getConclusion().getInfos()));
 		
-		SimpleTimestampReport simpleReport = reports.getSimpleReport();
-		assertNotNull(simpleReport.getTimestamp());
-		assertNotNull(simpleReport.getTimestampId());
-		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getCertificateChain()));
-		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getCertificateChainIds()));
-		assertNotNull(simpleReport.getProducedBy());
-		assertNotNull(simpleReport.getProductionTime());
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getTimestampIdList()));
+		assertNotNull(simpleReport.getFirstTimestampId());
+		assertNotNull(simpleReport.getCertificateChain(timestampId));
+		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getCertificateChain(timestampId).getCertificate()));
+		assertNotNull(simpleReport.getProducedBy(timestampId));
+		assertNotNull(simpleReport.getProductionTime(timestampId));
 		assertNotNull(simpleReport.getValidationTime());
-		assertTrue(Utils.isCollectionEmpty(simpleReport.getErrors()));
-		assertTrue(Utils.isCollectionEmpty(simpleReport.getWarnings()));
-		assertTrue(Utils.isCollectionEmpty(simpleReport.getInfos()));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getErrors(timestampId)));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getWarnings(timestampId)));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getInfo(timestampId)));
 		
 	}
 

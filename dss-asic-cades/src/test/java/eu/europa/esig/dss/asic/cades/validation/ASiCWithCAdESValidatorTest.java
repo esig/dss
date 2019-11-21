@@ -26,17 +26,17 @@ import java.util.List;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.test.validation.AbstractTestValidator;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 
 public class ASiCWithCAdESValidatorTest extends AbstractTestValidator {
 
 	@Override
-	protected SignedDocumentValidator initEmptyValidator() {
+	protected DefaultDocumentValidator initEmptyValidator() {
 		return new ASiCContainerWithCAdESValidator();
 	}
 
 	@Override
-	protected SignedDocumentValidator initValidator(DSSDocument document) {
+	protected DefaultDocumentValidator initValidator(DSSDocument document) {
 		return new ASiCContainerWithCAdESValidator(document);
 	}
 

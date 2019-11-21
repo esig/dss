@@ -45,7 +45,7 @@ import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.test.signature.UnmarshallingTester;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess {
@@ -129,7 +129,7 @@ public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess 
 
 		assertEquals(expectedValidPDFA, PDFAUtils.validatePDFAStructure(signedDocument));
 
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		Reports reports = validator.validateDocument();
 

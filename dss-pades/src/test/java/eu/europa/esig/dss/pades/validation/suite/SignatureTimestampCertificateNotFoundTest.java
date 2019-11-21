@@ -33,14 +33,14 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class SignatureTimestampCertificateNotFoundTest {
 
 	@Test
 	public void test() throws Exception {
-		SignedDocumentValidator validator = SignedDocumentValidator
+		DefaultDocumentValidator validator = DefaultDocumentValidator
 				.fromDocument(new InMemoryDocument(getClass().getResourceAsStream("/validation/TestToSignPDFSHA256_TST_SIG_NOT_FOUND.pdf")));
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setIncludeTimestampTokenValues(true);

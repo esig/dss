@@ -32,11 +32,11 @@ import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificate;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificateChain;
-import eu.europa.esig.dss.simplereport.jaxb.XmlPolicy;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignature;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignatureLevel;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
+import eu.europa.esig.dss.simplereport.jaxb.XmlValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
@@ -83,10 +83,10 @@ public class SimpleReportBuilder {
 	}
 
 	private void addPolicyNode(XmlSimpleReport report) {
-		XmlPolicy xmlpolicy = new XmlPolicy();
+		XmlValidationPolicy xmlpolicy = new XmlValidationPolicy();
 		xmlpolicy.setPolicyName(policy.getPolicyName());
 		xmlpolicy.setPolicyDescription(policy.getPolicyDescription());
-		report.setPolicy(xmlpolicy);
+		report.setValidationPolicy(xmlpolicy);
 	}
 
 	private void addValidationTime(XmlSimpleReport report) {
@@ -175,7 +175,7 @@ public class SimpleReportBuilder {
 		}
 		xmlSignature.setCertificateChain(xmlCertificateChain);
 
-		simpleReport.getSignature().add(xmlSignature);
+		simpleReport.getSignatureOrTimestamp().add(xmlSignature);
 	}
 
 	private void addBestSignatureTime(SignatureWrapper signature, XmlSignature xmlSignature) {

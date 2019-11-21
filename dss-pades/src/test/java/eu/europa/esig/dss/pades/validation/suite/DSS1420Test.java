@@ -38,7 +38,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class DSS1420Test {
@@ -46,7 +46,7 @@ public class DSS1420Test {
 	@Test
 	public void testSHA3_0() {
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/dss-1420/PAdES-BpB-att-SHA256-SHA3_256withRSA.pdf"));
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
@@ -73,7 +73,7 @@ public class DSS1420Test {
 	@Test
 	public void testSHA3_1() {
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/dss-1420/PAdES-BpB-att-SHA256-SHA3_224withRSA.pdf"));
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 

@@ -28,14 +28,14 @@ import org.junit.jupiter.api.Test;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class PadesWrongDigestAlgoTest {
 
 	@Test
 	public void test() throws Exception {
-		SignedDocumentValidator validator = SignedDocumentValidator
+		DefaultDocumentValidator validator = DefaultDocumentValidator
 				.fromDocument(new InMemoryDocument(getClass().getResourceAsStream("/validation/wrong-digest-algo.pdf")));
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 

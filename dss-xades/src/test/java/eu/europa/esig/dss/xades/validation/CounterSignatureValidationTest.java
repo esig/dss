@@ -36,7 +36,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.SACounterSignatureType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
@@ -50,7 +50,7 @@ public class CounterSignatureValidationTest {
 
 		DSSDocument doc = new FileDocument("src/test/resources/validation/TEST_S1a_C1a_InTL_VALID.xml");
 
-		SignedDocumentValidator sdv = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator sdv = DefaultDocumentValidator.fromDocument(doc);
 		sdv.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = sdv.validateDocument();
 

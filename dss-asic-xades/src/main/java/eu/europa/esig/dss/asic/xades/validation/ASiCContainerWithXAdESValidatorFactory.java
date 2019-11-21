@@ -22,7 +22,7 @@ package eu.europa.esig.dss.asic.xades.validation;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.validation.DocumentValidatorFactory;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 
 public class ASiCContainerWithXAdESValidatorFactory implements DocumentValidatorFactory {
 
@@ -33,7 +33,7 @@ public class ASiCContainerWithXAdESValidatorFactory implements DocumentValidator
 	}
 
 	@Override
-	public SignedDocumentValidator create(DSSDocument document) {
+	public DefaultDocumentValidator create(DSSDocument document) {
 		return new ASiCContainerWithXAdESValidator(document);
 	}
 

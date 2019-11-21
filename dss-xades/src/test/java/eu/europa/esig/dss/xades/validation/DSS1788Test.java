@@ -21,7 +21,7 @@ import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class DSS1788Test {
@@ -29,7 +29,7 @@ public class DSS1788Test {
 	@Test
 	public void testOriginal() {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/dss1788/dss1788-original.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		
 		Reports reports = validator.validateDocument();
@@ -56,7 +56,7 @@ public class DSS1788Test {
 	@Test
 	public void testWithPublicKey() {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/dss1788/XAdESPublicKeyInKeyInfo.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		
 		Reports reports = validator.validateDocument();
@@ -83,7 +83,7 @@ public class DSS1788Test {
 	@Test
 	public void testNoCertProvided() {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/dss1788/dss1788-noCertProvided.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		
 		Reports reports = validator.validateDocument();
@@ -112,7 +112,7 @@ public class DSS1788Test {
 	@Test
 	public void testCertProvidedIntoValidation() {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/dss1788/dss1788-noCertProvided.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		validator.defineSigningCertificate(DSSUtils.loadCertificate(new File("src/test/resources/validation/dss1788/signCert.cer")));
 		

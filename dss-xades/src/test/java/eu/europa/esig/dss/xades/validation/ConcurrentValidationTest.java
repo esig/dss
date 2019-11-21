@@ -38,7 +38,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 
 /**
  * Test DSS with multi threads
@@ -85,10 +85,10 @@ public class ConcurrentValidationTest {
 		@Override
 		public Boolean call() throws Exception {
 			DSSDocument doc = new FileDocument("src/test/resources/dss-817-test.xml");
-			SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+			DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 			validator.setCertificateVerifier(certificateVerifier);
 
-			return new Boolean(validator.validateDocument() != null);
+			return validator.validateDocument() != null;
 		}
 
 	}

@@ -33,7 +33,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class ASN1PolicyTest extends PKIFactoryAccess {
@@ -41,7 +41,7 @@ public class ASN1PolicyTest extends PKIFactoryAccess {
 	@Test
 	public void testAR() throws Exception {
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/AD-RB.pdf"));
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
 		SignaturePolicyProvider signaturePolicyProvider = new SignaturePolicyProvider();
 		Map<String, DSSDocument> signaturePoliciesByUrl = new HashMap<String, DSSDocument>();
 		signaturePoliciesByUrl.put("http://politicas.icpbrasil.gov.br/PA_PAdES_AD_RB_v1_0.der",

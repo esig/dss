@@ -14,8 +14,8 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.simpletimestampreport.SimpleTimestampReportFacade;
-import eu.europa.esig.dss.validation.reports.TimestampReports;
+import eu.europa.esig.dss.simplereport.SimpleReportFacade;
+import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.timestamp.TimestampValidator;
 
 public class TimestampValidatorTest {
@@ -28,7 +28,9 @@ public class TimestampValidatorTest {
 		TimestampValidator timestampValidator = new TimestampValidator(timestamp, timestampedContent, TimestampType.CONTENT_TIMESTAMP);
 		timestampValidator.setCertificateVerifier(new CommonCertificateVerifier());
 		
-		TimestampReports reports = timestampValidator.validate();
+		Reports reports = timestampValidator.validate();
+		
+		reports.print();
 
 		assertNotNull(reports);
 		assertNotNull(reports.getDiagnosticDataJaxb());
@@ -38,8 +40,8 @@ public class TimestampValidatorTest {
 		assertNotNull(reports.getSimpleReportJaxb());
 		assertNotNull(reports.getXmlSimpleReport());
 
-		SimpleTimestampReportFacade simpleTimestampReportFacade = SimpleTimestampReportFacade.newFacade();
-		String marshalled = simpleTimestampReportFacade.marshall(reports.getSimpleReportJaxb(), true);
+		SimpleReportFacade simpleReportFacade = SimpleReportFacade.newFacade();
+		String marshalled = simpleReportFacade.marshall(reports.getSimpleReportJaxb(), true);
 		assertNotNull(marshalled);
 		
 		DiagnosticData diagnosticData = reports.getDiagnosticData();

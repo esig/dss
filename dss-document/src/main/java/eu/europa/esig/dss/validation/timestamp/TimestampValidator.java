@@ -41,27 +41,27 @@ import eu.europa.esig.dss.validation.DiagnosticDataBuilder;
 import eu.europa.esig.dss.validation.ProcessExecutorProvider;
 import eu.europa.esig.dss.validation.SignatureValidationContext;
 import eu.europa.esig.dss.validation.ValidationContext;
+import eu.europa.esig.dss.validation.executor.SignatureAndTimestampProcessExecutor;
 import eu.europa.esig.dss.validation.executor.timestamp.DefaultTimestampProcessExecutor;
-import eu.europa.esig.dss.validation.executor.timestamp.TimestampProcessExecutor;
-import eu.europa.esig.dss.validation.reports.TimestampReports;
+import eu.europa.esig.dss.validation.reports.Reports;
 
-public class TimestampValidator implements ProcessExecutorProvider<TimestampProcessExecutor> {
+public class TimestampValidator implements ProcessExecutorProvider<SignatureAndTimestampProcessExecutor> {
 
 	private Date validationTime = new Date();
 	private CertificateVerifier certificateVerifier;
-	private TimestampProcessExecutor processExecutor;
+	private SignatureAndTimestampProcessExecutor processExecutor;
 	protected CertificatePool validationCertPool;
 	
-	private final DSSDocument timestamp;
+	private final DSSDocument timestampFile;
 	private final DSSDocument timestampedData;
 	private final TimestampType timestampType;
 	
-	public TimestampValidator(final DSSDocument timestamp, final DSSDocument timestampedData) {
-		this(timestamp, timestampedData, null);
+	public TimestampValidator(final DSSDocument timestampFile, final DSSDocument timestampedData) {
+		this(timestampFile, timestampedData, null);
 	}
 	
-	public TimestampValidator(final DSSDocument timestamp, final DSSDocument timestampedData, final TimestampType timestampType) {
-		this.timestamp = timestamp;
+	public TimestampValidator(final DSSDocument timestampFile, final DSSDocument timestampedData, final TimestampType timestampType) {
+		this.timestampFile = timestampFile;
 		this.timestampedData = timestampedData;
 		this.timestampType = timestampType;
 	}
@@ -80,11 +80,11 @@ public class TimestampValidator implements ProcessExecutorProvider<TimestampProc
 	}
 
 	@Override
-	public void setProcessExecutor(TimestampProcessExecutor processExecutor) {
+	public void setProcessExecutor(SignatureAndTimestampProcessExecutor processExecutor) {
 		this.processExecutor = processExecutor;
 	}
 
-	private TimestampProcessExecutor provideProcessExecutorInstance() {
+	private SignatureAndTimestampProcessExecutor provideProcessExecutorInstance() {
 		if (processExecutor == null) {
 			processExecutor = new DefaultTimestampProcessExecutor();
 		}
@@ -107,10 +107,11 @@ public class TimestampValidator implements ProcessExecutorProvider<TimestampProc
 	protected TimestampToken getTimestamp() {
 		TimestampToken timestampToken;
 		try {
-			timestampToken = new TimestampToken(DSSUtils.toCMSSignedData(timestamp), timestampType, validationCertPool);
+			timestampToken = new TimestampToken(DSSUtils.toCMSSignedData(timestampFile), timestampType, validationCertPool);
 		} catch (TSPException | IOException e) {
 			throw new DSSException("Unable to parse timestamp", e);
 		}
+		timestampToken.setFileName(timestampFile.getName());
 		timestampToken.matchData(DSSUtils.toByteArray(timestampedData));
 		return timestampToken;
 	}
@@ -119,7 +120,7 @@ public class TimestampValidator implements ProcessExecutorProvider<TimestampProc
 	 * Validates the timestamp with a default validation policy
 	 * @return {@link TimestampReports}
 	 */
-	public TimestampReports validate() {
+	public Reports validate() {
 		ValidationPolicy defaultPolicy = null;
 		try {
 			defaultPolicy = ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
@@ -134,7 +135,7 @@ public class TimestampValidator implements ProcessExecutorProvider<TimestampProc
 	 * @param validationPolicy a custom {@link ValidationPolicy} to validate the timestamp with
 	 * @return {@link TimestampReports}
 	 */
-	public TimestampReports validate(final ValidationPolicy validationPolicy) {
+	public Reports validate(final ValidationPolicy validationPolicy) {
 		Objects.requireNonNull(certificateVerifier, "CertificateVerifier must be set");
 		
 		final ValidationContext validationContext = new SignatureValidationContext(validationCertPool);
@@ -150,7 +151,7 @@ public class TimestampValidator implements ProcessExecutorProvider<TimestampProc
 		validationContext.initialize(certificateVerifier);
 		validationContext.validate();
 		
-		final XmlDiagnosticData diagnosticData = new DiagnosticDataBuilder().document(timestamp)
+		final XmlDiagnosticData diagnosticData = new DiagnosticDataBuilder().document(timestampFile)
 				.usedCertificates(validationContext.getProcessedCertificates()).usedRevocations(validationContext.getProcessedRevocations())
 				.setExternalTimestamps(Arrays.asList(timestampToken))
 				.setDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm())
@@ -161,10 +162,9 @@ public class TimestampValidator implements ProcessExecutorProvider<TimestampProc
 				.trustedCertificateSources(certificateVerifier.getTrustedCertSources())
 				.validationDate(validationTime).build();
 		
-		TimestampProcessExecutor executor = provideProcessExecutorInstance();
+		SignatureAndTimestampProcessExecutor executor = provideProcessExecutorInstance();
 		executor.setValidationPolicy(validationPolicy);
 		executor.setDiagnosticData(diagnosticData);
-		executor.setTimestampId(timestampToken.getDSSIdAsString());
 		executor.setCurrentTime(validationTime);
 		
 		return executor.execute();

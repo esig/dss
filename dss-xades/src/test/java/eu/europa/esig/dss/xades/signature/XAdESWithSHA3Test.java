@@ -39,7 +39,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
@@ -67,7 +67,7 @@ public class XAdESWithSHA3Test extends AbstractXAdESTestSignature {
 	protected void onDocumentSigned(byte[] byteArray) {
 		InMemoryDocument doc = new InMemoryDocument(byteArray);
 
-		SignedDocumentValidator validator = getValidator(doc);
+		DefaultDocumentValidator validator = getValidator(doc);
 
 		Reports reports = validator.validateDocument();
 

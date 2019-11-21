@@ -135,11 +135,11 @@ public class ModelCustomValidationTest extends ModelAbstractlValidation {
 		XmlSimpleReport simpleReport = reports.getSimpleReportJaxb();
 		assertNotNull(simpleReport);
 		assertTrue(1 == simpleReport.getSignaturesCount());
-		assertNotNull(simpleReport.getSignature().get(0));
-		assertEquals(testCase.getExpectedCertResult("ind"), simpleReport.getSignature().get(0).getIndication());
+		assertNotNull(simpleReport.getSignatureOrTimestamp().get(0));
+		assertEquals(testCase.getExpectedCertResult("ind"), simpleReport.getSignatureOrTimestamp().get(0).getIndication());
 		
 		if (testCase.getExpectedCertResult("sub") != null) {
-			assertEquals(testCase.getExpectedCertResult("sub"), simpleReport.getSignature().get(0).getSubIndication());
+			assertEquals(testCase.getExpectedCertResult("sub"), simpleReport.getSignatureOrTimestamp().get(0).getSubIndication());
 		}
 	}
 }

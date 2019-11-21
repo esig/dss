@@ -39,14 +39,14 @@ import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class XPointerValidationTest {
 
 	@Test
 	public void test() {
-		SignedDocumentValidator sdv = SignedDocumentValidator.fromDocument(new FileDocument("src/test/resources/validation/10963_signed.xml"));
+		DefaultDocumentValidator sdv = DefaultDocumentValidator.fromDocument(new FileDocument("src/test/resources/validation/10963_signed.xml"));
 		sdv.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = sdv.validateDocument();
 		assertNotNull(reports);

@@ -52,8 +52,8 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.reports.Reports;
 
@@ -79,7 +79,7 @@ public class DKCertificateTest {
 
 	@Test
 	public void dkPreviousSigCert() throws Exception {
-		SignedDocumentValidator val = SignedDocumentValidator.fromDocument(DOC);
+		DefaultDocumentValidator val = DefaultDocumentValidator.fromDocument(DOC);
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		CommonTrustedCertificateSource certSource = new CommonTrustedCertificateSource();
 		certSource.addCertificate(PREVIOUS_SIG_CERT);
@@ -95,7 +95,7 @@ public class DKCertificateTest {
 
 	@Test
 	public void dkTestOther() throws Exception {
-		SignedDocumentValidator val = SignedDocumentValidator.fromDocument(DOC);
+		DefaultDocumentValidator val = DefaultDocumentValidator.fromDocument(DOC);
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		CommonTrustedCertificateSource certSource = new CommonTrustedCertificateSource();
 		certSource.addCertificate(WRONG);
@@ -111,7 +111,7 @@ public class DKCertificateTest {
 
 	@Test
 	public void dkExpectedSigCert() throws Exception {
-		SignedDocumentValidator val = SignedDocumentValidator.fromDocument(DOC);
+		DefaultDocumentValidator val = DefaultDocumentValidator.fromDocument(DOC);
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		CommonTrustedCertificateSource certSource = new CommonTrustedCertificateSource();
 		certSource.addCertificate(EXPECTED_SIG_CERT);

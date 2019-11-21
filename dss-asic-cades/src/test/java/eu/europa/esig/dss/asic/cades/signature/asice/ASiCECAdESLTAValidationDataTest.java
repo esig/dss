@@ -39,7 +39,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 // see DSS-1805
@@ -93,7 +93,7 @@ public class ASiCECAdESLTAValidationDataTest extends PKIFactoryAccess {
 		DSSDocument extendedDocument = service.extendDocument(signedDocument, extendParameters);
 		// extendedDocument.save("target/extendedDocument.asice");
 		
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(extendedDocument);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(extendedDocument);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		
 		Reports reports = validator.validateDocument();

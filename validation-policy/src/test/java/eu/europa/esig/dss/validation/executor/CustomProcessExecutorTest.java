@@ -20,6 +20,14 @@
  */
 package eu.europa.esig.dss.validation.executor;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -29,14 +37,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.JAXB;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -91,7 +91,7 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.SignatureConstraints;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.SimpleReportFacade;
-import eu.europa.esig.dss.simplereport.jaxb.XmlSignature;
+import eu.europa.esig.dss.simplereport.jaxb.XmlCertificateChain;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
@@ -287,7 +287,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 				SignatureQualification.forURI(signatureValidationReport.getSignatureQuality().getSignatureQualityInformation().get(0)));
 		
 		Date timestampProductionDate = diagnosticData.getSignatures().get(0).getFoundTimestamps().get(0).getTimestamp().getProductionTime();
-		Date bestSignatureTime = simpleReport.getJaxbModel().getSignature().get(0).getBestSignatureTime();
+		Date bestSignatureTime = simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId());
 		assertEquals(timestampProductionDate, bestSignatureTime);
 		
 		List<String> errors = simpleReport.getErrors(simpleReport.getFirstSignatureId());
@@ -398,7 +398,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(SignatureQualification.INDETERMINATE_QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 		
 		Date timestampProductionDate = diagnosticData.getSignatures().get(0).getFoundTimestamps().get(0).getTimestamp().getProductionTime();
-		Date bestSignatureTime = simpleReport.getJaxbModel().getSignature().get(0).getBestSignatureTime();
+		Date bestSignatureTime = simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId());
 		assertEquals(timestampProductionDate, bestSignatureTime);
 		
 		List<String> errors = simpleReport.getErrors(simpleReport.getFirstSignatureId());
@@ -426,7 +426,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(SignatureQualification.INDETERMINATE_QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 		
 		Date timestampProductionDate = diagnosticData.getSignatures().get(0).getFoundTimestamps().get(0).getTimestamp().getProductionTime();
-		Date bestSignatureTime = simpleReport.getJaxbModel().getSignature().get(0).getBestSignatureTime();
+		Date bestSignatureTime = simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId());
 		assertEquals(timestampProductionDate, bestSignatureTime);
 		
 		List<String> errors = simpleReport.getErrors(simpleReport.getFirstSignatureId());
@@ -1141,9 +1141,10 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(1, simpleReport.getJaxbModel().getSignaturesCount());
-		XmlSignature xmlSignature = simpleReport.getJaxbModel().getSignature().get(0);
-		assertTrue(!xmlSignature.getCertificateChain().getCertificate().isEmpty());
-		assertEquals(3, xmlSignature.getCertificateChain().getCertificate().size());
+		XmlCertificateChain certificateChain = simpleReport.getCertificateChain(simpleReport.getFirstSignatureId());
+		assertNotNull(certificateChain);
+		assertTrue(Utils.isCollectionNotEmpty(certificateChain.getCertificate()));
+		assertEquals(3, certificateChain.getCertificate().size());
 		ByteArrayOutputStream s = new ByteArrayOutputStream();
 		JAXB.marshal(simpleReport.getJaxbModel(), s);
 
@@ -1165,9 +1166,9 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(1, simpleReport.getJaxbModel().getSignaturesCount());
-		XmlSignature xmlSignature = simpleReport.getJaxbModel().getSignature().get(0);
-		assertNotNull(xmlSignature.getCertificateChain());
-		assertTrue(Utils.isCollectionEmpty(xmlSignature.getCertificateChain().getCertificate()));
+		XmlCertificateChain certificateChain = simpleReport.getCertificateChain(simpleReport.getFirstSignatureId());
+		assertNotNull(certificateChain);
+		assertTrue(Utils.isCollectionEmpty(certificateChain.getCertificate()));
 
 		validateBestSigningTimes(reports);
 		checkReports(reports);

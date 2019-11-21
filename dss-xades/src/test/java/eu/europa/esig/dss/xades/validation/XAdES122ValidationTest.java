@@ -33,7 +33,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class XAdES122ValidationTest extends PKIFactoryAccess {
@@ -41,7 +41,7 @@ public class XAdES122ValidationTest extends PKIFactoryAccess {
 	@Test
 	public void test() {
 		DSSDocument doc = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-XAdES/FR_NOT/Signature-X-FR_NOT-3.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 
 		Reports reports = validator.validateDocument();

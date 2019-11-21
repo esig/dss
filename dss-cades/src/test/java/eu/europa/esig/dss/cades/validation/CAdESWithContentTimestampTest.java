@@ -44,7 +44,7 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class CAdESWithContentTimestampTest {
@@ -77,7 +77,7 @@ public class CAdESWithContentTimestampTest {
 		}
 		assertTrue(found);
 
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(new FileDocument(file));
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(new FileDocument(file));
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 
 		Reports reports = validator.validateDocument();

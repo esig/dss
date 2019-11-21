@@ -39,7 +39,7 @@ import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 /**
@@ -86,7 +86,7 @@ public class ValidateSignedXmlXadesBTest {
 
 		// We create an instance of DocumentValidator
 		// It will automatically select the supported validator from the classpath
-		SignedDocumentValidator documentValidator = SignedDocumentValidator.fromDocument(document);
+		DefaultDocumentValidator documentValidator = DefaultDocumentValidator.fromDocument(document);
 
 		// We add the certificate verifier (which allows to verify and trust certificates)
 		documentValidator.setCertificateVerifier(cv);

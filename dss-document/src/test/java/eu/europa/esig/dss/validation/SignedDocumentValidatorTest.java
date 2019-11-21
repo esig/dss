@@ -33,7 +33,7 @@ public class SignedDocumentValidatorTest {
 	@Test
 	public void testNoDepencency() {
 		Exception exception = assertThrows(DSSException.class, () -> {
-			SignedDocumentValidator.fromDocument(new FileDocument("src/test/resources/sample.xml"));
+			DefaultDocumentValidator.fromDocument(new FileDocument("src/test/resources/sample.xml"));
 		});
 		assertEquals("Document format not recognized/handled", exception.getMessage());
 	}

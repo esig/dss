@@ -17,7 +17,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.test.signature.UnmarshallingTester;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class XMLDSigOnlyValidationTest {
@@ -25,7 +25,7 @@ public class XMLDSigOnlyValidationTest {
 	@Test
 	public void test() {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/xmldsig-only.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
 		validator.setCertificateVerifier(commonCertificateVerifier);
 

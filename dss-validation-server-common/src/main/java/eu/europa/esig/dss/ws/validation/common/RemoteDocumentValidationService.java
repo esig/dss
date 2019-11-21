@@ -33,7 +33,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.DocumentValidator;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.ws.converter.RemoteDocumentConverter;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
@@ -90,7 +90,7 @@ public class RemoteDocumentValidationService {
 
 	private DocumentValidator initValidator(RemoteDocument signedFile, List<RemoteDocument> originalFiles) {
 		DSSDocument signedDocument = RemoteDocumentConverter.toDSSDocument(signedFile);
-		SignedDocumentValidator signedDocValidator = SignedDocumentValidator.fromDocument(signedDocument);
+		DefaultDocumentValidator signedDocValidator = DefaultDocumentValidator.fromDocument(signedDocument);
 		signedDocValidator.setCertificateVerifier(verifier);
 		if (Utils.isCollectionNotEmpty(originalFiles)) {
 			signedDocValidator.setDetachedContents(RemoteDocumentConverter.toDSSDocuments(originalFiles));

@@ -37,7 +37,7 @@ import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
@@ -78,7 +78,7 @@ public class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
         DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
         
-        SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
+        DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(signedDocument);
         validator.setCertificateVerifier(customCertificateVerifier);
         validator.setDetachedContents(Arrays.asList(documentToSign));
         Reports reports = validator.validateDocument();
@@ -112,7 +112,7 @@ public class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         DSSDocument doubleLTADoc = service.extendDocument(signedDocument, extendParameters);
         // doubleLTADoc.save("target/doubleLTA.xml");
         
-        validator = SignedDocumentValidator.fromDocument(doubleLTADoc);
+        validator = DefaultDocumentValidator.fromDocument(doubleLTADoc);
         validator.setCertificateVerifier(getOfflineCertificateVerifier());
         validator.setDetachedContents(Arrays.asList(documentToSign));
         reports = validator.validateDocument();

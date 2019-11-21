@@ -37,14 +37,14 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 
 /**
  * Validation of CMS document
  *
  */
-public class CMSDocumentValidator extends SignedDocumentValidator {
+public class CMSDocumentValidator extends DefaultDocumentValidator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CMSDocumentValidator.class);
 

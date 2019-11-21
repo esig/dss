@@ -40,7 +40,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class PAdESWithPSSTest extends AbstractPAdESTestSignature {
@@ -68,7 +68,7 @@ public class PAdESWithPSSTest extends AbstractPAdESTestSignature {
 	protected void onDocumentSigned(byte[] byteArray) {
 		InMemoryDocument doc = new InMemoryDocument(byteArray);
 
-		SignedDocumentValidator validator = getValidator(doc);
+		DefaultDocumentValidator validator = getValidator(doc);
 
 		Reports reports = validator.validateDocument();
 

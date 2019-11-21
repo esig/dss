@@ -56,7 +56,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class OpenDocumentLevelBMultipleSignaturesTest extends PKIFactoryAccess {
@@ -99,7 +99,7 @@ public class OpenDocumentLevelBMultipleSignaturesTest extends PKIFactoryAccess {
 		DSSDocument signedDocument = getSignedDocument(originalDocument);
 		DSSDocument resignedDocument = getSignedDocument(signedDocument);
 
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(resignedDocument);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(resignedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 
 		Reports reports = validator.validateDocument();

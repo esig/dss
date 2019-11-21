@@ -647,6 +647,7 @@
 		<xs:complexContent>
             <xs:extension base="AbstractToken">
 				<xs:sequence>
+					<xs:element name="TimestampFilename" type="xs:string" minOccurs="0" /> <!-- In case of detached timestamps -->
 					<xs:element name="ArchiveTimestampType" type="ArchiveTimestampType" minOccurs="0" />
 					<xs:element name="ProductionTime" type="xs:dateTime" />
 					<xs:element name="DigestMatcher" type="DigestMatcher" maxOccurs="unbounded" />

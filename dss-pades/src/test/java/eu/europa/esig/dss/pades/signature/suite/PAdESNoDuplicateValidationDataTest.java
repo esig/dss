@@ -46,7 +46,7 @@ import eu.europa.esig.dss.pades.validation.PAdESOCSPSource;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 
 public class PAdESNoDuplicateValidationDataTest extends PKIFactoryAccess {
 	
@@ -68,7 +68,7 @@ public class PAdESNoDuplicateValidationDataTest extends PKIFactoryAccess {
 		
 		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
 		
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(commonCertificateVerifier);
 		
 		Collection<Long> crlKeys = getCRLKeys(validator);
@@ -92,7 +92,7 @@ public class PAdESNoDuplicateValidationDataTest extends PKIFactoryAccess {
 		
 	}
 	
-	private Collection<Long> getCRLKeys(SignedDocumentValidator validator) {
+	private Collection<Long> getCRLKeys(DefaultDocumentValidator validator) {
 		Collection<Long> crls = new ArrayList<Long>();
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		for (AdvancedSignature signature : signatures) {
@@ -102,7 +102,7 @@ public class PAdESNoDuplicateValidationDataTest extends PKIFactoryAccess {
 		return crls;
 	}
 	
-	private Collection<Long> getOCSPKeys(SignedDocumentValidator validator) {
+	private Collection<Long> getOCSPKeys(DefaultDocumentValidator validator) {
 		Collection<Long> ocsps = new ArrayList<Long>();
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		for (AdvancedSignature signature : signatures) {
@@ -112,7 +112,7 @@ public class PAdESNoDuplicateValidationDataTest extends PKIFactoryAccess {
 		return ocsps;
 	}
 	
-	private Collection<Long> getCertKeys(SignedDocumentValidator validator) {
+	private Collection<Long> getCertKeys(DefaultDocumentValidator validator) {
 		Collection<Long> certs = new ArrayList<Long>();
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		for (AdvancedSignature signature : signatures) {
@@ -123,7 +123,7 @@ public class PAdESNoDuplicateValidationDataTest extends PKIFactoryAccess {
 	}
 	
 	private void checkValidationData(DSSDocument document, Collection<Long> crls, Collection<Long> ocsps, Collection<Long> certs) {
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(document);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		for (AdvancedSignature signature : signatures) {

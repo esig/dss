@@ -34,7 +34,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureUtils;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
@@ -47,7 +47,7 @@ import eu.europa.esig.dss.xades.validation.scope.XAdESSignatureScopeFinder;
  * Validator of XML Signed document
  *
  */
-public class XMLDocumentValidator extends SignedDocumentValidator {
+public class XMLDocumentValidator extends DefaultDocumentValidator {
 
 	private static final byte[] xmlPreamble = new byte[] { '<' };
 	private static final byte[] xmlWithBomPreample = new byte[] { -17, -69, -65, '<' }; // UTF-8 with BOM

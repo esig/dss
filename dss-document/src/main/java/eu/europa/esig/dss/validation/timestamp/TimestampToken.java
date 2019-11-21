@@ -95,6 +95,11 @@ public class TimestampToken extends Token {
 
 	private Boolean messageImprintIntact = null;
 	
+	/**
+	 * In case a detached timestamp
+	 */
+	private String fileName;
+	
 	/* In case of ASiC-E CAdES */
 	private ManifestFile manifestFile;
 	
@@ -476,6 +481,25 @@ public class TimestampToken extends Token {
 			throw new DSSException("Invoke matchData(byte[] data) method before!");
 		}
 		return messageImprintIntact;
+	}
+	
+	/**
+	 * This method returns the file name of a detached timestamp
+	 * 
+	 * @return {@link String}
+	 */
+	public String getFileName() {
+		return fileName;
+	}
+
+	/**
+	 * Sets the filename of a detached timestamp
+	 * 
+	 * @param fileName 
+	 * 					{@link String}
+	 */
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 
 	/**

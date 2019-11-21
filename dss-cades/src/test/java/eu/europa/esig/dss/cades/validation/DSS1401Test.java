@@ -36,7 +36,7 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class DSS1401Test {
@@ -44,7 +44,7 @@ public class DSS1401Test {
 	@Test
 	public void testFile1() {
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-1401/sig_with_atsv2.p7s");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
@@ -66,7 +66,7 @@ public class DSS1401Test {
 	public void testFile2() {
 		DSSDocument dssDocument = new FileDocument(
 				"src/test/resources/validation/dss-916/test.txt.signed_Certipost-2048.detached.old.p7s");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		validator.setDetachedContents(
 				Arrays.<DSSDocument>asList(new FileDocument("src/test/resources/validation/dss-916/test.txt")));
@@ -89,7 +89,7 @@ public class DSS1401Test {
 	public void testFile3() {
 		DSSDocument dssDocument = new FileDocument(
 				"src/test/resources/validation/dss-916/test.txt.signed.qes.attached.p7s");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
@@ -110,7 +110,7 @@ public class DSS1401Test {
 	public void testFile4() {
 		DSSDocument dssDocument = new FileDocument(
 				"src/test/resources/validation/dss-916/test.txt.signed.qes.detached.p7s");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		validator.setDetachedContents(
 				Arrays.<DSSDocument>asList(new FileDocument("src/test/resources/validation/dss-916/test.txt")));
@@ -133,7 +133,7 @@ public class DSS1401Test {
 	public void testFile5() {
 		DSSDocument dssDocument = new FileDocument(
 				"src/test/resources/validation/dss-1344/screenshot.png.signed_qes_detached.p7s");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		validator.setDetachedContents(
 				Arrays.<DSSDocument>asList(new FileDocument("src/test/resources/validation/dss-1344/screenshot.png")));

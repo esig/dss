@@ -22,7 +22,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class DSS1809Test extends PKIFactoryAccess {
@@ -32,7 +32,7 @@ public class DSS1809Test extends PKIFactoryAccess {
 	@Test
 	public void test() {
 		
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(document);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		
 		Reports reports = validator.validateDocument();

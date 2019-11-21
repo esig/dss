@@ -36,7 +36,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 
 public class DSS1376GetOriginalDocTest {
 
@@ -47,7 +47,7 @@ public class DSS1376GetOriginalDocTest {
 
 	@Test
 	public void getTestOriginSig() throws IOException {
-		SignedDocumentValidator sdv = SignedDocumentValidator.fromDocument(rev_n);
+		DefaultDocumentValidator sdv = DefaultDocumentValidator.fromDocument(rev_n);
 		sdv.setCertificateVerifier(new CommonCertificateVerifier());
 		List<AdvancedSignature> signatures = sdv.getSignatures();
 		assertEquals(2, signatures.size());

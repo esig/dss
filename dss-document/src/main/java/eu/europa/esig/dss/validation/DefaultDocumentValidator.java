@@ -47,23 +47,23 @@ import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.validation.executor.SignatureAndTimestampProcessExecutor;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
-import eu.europa.esig.dss.validation.executor.signature.SignatureProcessExecutor;
 import eu.europa.esig.dss.validation.executor.signature.ValidationLevel;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 
 /**
- * Validate the signed document. The content of the document is determined
+ * Validates a signed/timestamped document. The content of the document is determined
  * automatically. It can be: XML, CAdES(p7m), PDF or ASiC(zip).
  * SignatureScopeFinder can be set using the appropriate setter (ex.
  * setCadesSignatureScopeFinder). By default, this class will use the default
  * SignatureScopeFinder as defined by
  * eu.europa.esig.dss.validation.scope.SignatureScopeFinderFactory
  */
-public abstract class SignedDocumentValidator implements DocumentValidator, ProcessExecutorProvider<SignatureProcessExecutor> {
+public abstract class DefaultDocumentValidator implements DocumentValidator, ProcessExecutorProvider<SignatureAndTimestampProcessExecutor> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SignedDocumentValidator.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DefaultDocumentValidator.class);
 
 	static {
 		Security.addProvider(DSSSecurityProvider.getSecurityProvider());
@@ -72,7 +72,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator, Proc
 	/**
 	 * This variable can hold a specific {@code SignatureProcessExecutor}
 	 */
-	protected SignatureProcessExecutor processExecutor = null;
+	protected SignatureAndTimestampProcessExecutor processExecutor = null;
 
 	/**
 	 * This is the pool of certificates used in the validation process. The
@@ -122,7 +122,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator, Proc
 	// Produces the ETSI Validation Report by default
 	private boolean enableEtsiValidationReport = true;
 
-	protected SignedDocumentValidator(SignatureScopeFinder signatureScopeFinder) {
+	protected DefaultDocumentValidator(SignatureScopeFinder signatureScopeFinder) {
 		this.signatureScopeFinder = signatureScopeFinder;
 	}
 	
@@ -141,7 +141,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator, Proc
 	 * @return returns the specific instance of SignedDocumentValidator in terms
 	 *         of the document type
 	 */
-	public static SignedDocumentValidator fromDocument(final DSSDocument dssDocument) {
+	public static DefaultDocumentValidator fromDocument(final DSSDocument dssDocument) {
 		Objects.requireNonNull(dssDocument, "DSSDocument is null");
 		ServiceLoader<DocumentValidatorFactory> serviceLoaders = ServiceLoader.load(DocumentValidatorFactory.class);
 		for (DocumentValidatorFactory factory : serviceLoaders) {
@@ -373,14 +373,13 @@ public abstract class SignedDocumentValidator implements DocumentValidator, Proc
 		return null;
 	}
 
-	protected Reports processValidationPolicy(XmlDiagnosticData diagnosticData, ValidationPolicy validationPolicy) {
-		final SignatureProcessExecutor executor = provideProcessExecutorInstance();
+	protected final Reports processValidationPolicy(XmlDiagnosticData diagnosticData, ValidationPolicy validationPolicy) {
+		final SignatureAndTimestampProcessExecutor executor = provideProcessExecutorInstance();
 		executor.setValidationPolicy(validationPolicy);
 		executor.setValidationLevel(validationLevel);
 		executor.setDiagnosticData(diagnosticData);
 		executor.setEnableEtsiValidationReport(enableEtsiValidationReport);
-		final Reports reports = executor.execute();
-		return reports;
+		return executor.execute();
 	}
 
 	@Override
@@ -396,7 +395,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator, Proc
 	}
 
 	@Override
-	public void setProcessExecutor(final SignatureProcessExecutor processExecutor) {
+	public void setProcessExecutor(final SignatureAndTimestampProcessExecutor processExecutor) {
 		this.processExecutor = processExecutor;
 	}
 
@@ -406,7 +405,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator, Proc
 	 *
 	 * @return {@code SignatureProcessExecutor}
 	 */
-	public SignatureProcessExecutor provideProcessExecutorInstance() {
+	public SignatureAndTimestampProcessExecutor provideProcessExecutorInstance() {
 		if (processExecutor == null) {
 			processExecutor = new DefaultSignatureProcessExecutor();
 		}

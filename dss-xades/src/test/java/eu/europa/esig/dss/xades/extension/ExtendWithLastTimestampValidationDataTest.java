@@ -46,7 +46,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
@@ -98,7 +98,7 @@ public class ExtendWithLastTimestampValidationDataTest extends PKIFactoryAccess 
 		DSSDocument ltaWithTSValidationData = DomUtils.createDssDocumentFromDomDocument(extendedDocDom, "LTAWithTimeStampValidationData.xml");
 		// ltaWithTSValidationData.save("target/" + ltaWithTSValidationData.getName());
 
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(ltaWithTSValidationData);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(ltaWithTSValidationData);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		
@@ -114,7 +114,7 @@ public class ExtendWithLastTimestampValidationDataTest extends PKIFactoryAccess 
 		DSSDocument newExtendedDocument = service.extendDocument(ltaWithTSValidationData, parameters);
 		// newExtendedDocument.save("target/result.xml");
 
-		validator = SignedDocumentValidator.fromDocument(newExtendedDocument);
+		validator = DefaultDocumentValidator.fromDocument(newExtendedDocument);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		reports = validator.validateDocument();
 		

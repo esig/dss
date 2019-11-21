@@ -36,7 +36,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.test.signature.UnmarshallingTester;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class XAdES111ValidationTest extends PKIFactoryAccess {
@@ -44,7 +44,7 @@ public class XAdES111ValidationTest extends PKIFactoryAccess {
 	@Test
 	public void test() {
 		DSSDocument doc = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-XAdES/AT/Signature-X-AT-1.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 
 		Reports reports = validator.validateDocument();
@@ -66,7 +66,7 @@ public class XAdES111ValidationTest extends PKIFactoryAccess {
 	@Test
 	public void testEE() {
 		DSSDocument doc = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-XAdES/EE/Signature-X-EE-3.ddoc");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 
 		Reports reports = validator.validateDocument();
@@ -85,7 +85,7 @@ public class XAdES111ValidationTest extends PKIFactoryAccess {
 	@Test
 	public void testPT() {
 		DSSDocument doc = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-XAdES/PT/Signature-X-PT-4.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 
 		Reports reports = validator.validateDocument();
@@ -103,7 +103,7 @@ public class XAdES111ValidationTest extends PKIFactoryAccess {
 	@Test
 	public void testAT_QES() {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/qes-xades111-filter2.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 
 		Reports reports = validator.validateDocument();

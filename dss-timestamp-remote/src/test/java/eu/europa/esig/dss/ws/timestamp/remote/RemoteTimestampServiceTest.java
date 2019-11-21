@@ -28,7 +28,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.ws.timestamp.dto.TimestampResponseDTO;
@@ -82,7 +82,7 @@ public class RemoteTimestampServiceTest extends PKIFactoryAccess {
 				signatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 		
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(signedDocument);
 		CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
 		certificateVerifier.setIncludeTimestampTokenValues(true);
 		validator.setCertificateVerifier(certificateVerifier);

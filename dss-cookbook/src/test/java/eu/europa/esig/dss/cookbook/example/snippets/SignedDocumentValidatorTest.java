@@ -41,7 +41,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.executor.signature.ValidationLevel;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -58,7 +58,7 @@ public class SignedDocumentValidatorTest {
 		
 		// The method allows instantiation of a related validator for a provided document 
 		// independently on its format (the target dss module must be added as dependency)
-		SignedDocumentValidator documentValidator = SignedDocumentValidator.fromDocument(document);
+		DefaultDocumentValidator documentValidator = DefaultDocumentValidator.fromDocument(document);
 		
 		// Allows specifying a custom certificate verifier (online or offline)
 		documentValidator.setCertificateVerifier(new CommonCertificateVerifier());

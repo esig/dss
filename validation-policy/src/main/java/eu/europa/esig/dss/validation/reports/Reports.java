@@ -141,8 +141,12 @@ public class Reports extends AbstractReports {
 		System.out.println("----------------Simple report-------------------");
 		System.out.println(getXmlSimpleReport());
 		System.out.println("----------------ETSI validation report-------------------");
-		System.out.println(getXmlValidationReport());
-		System.out.println("------------------------------------------------");
+		if (etsiValidationReport != null) {
+			System.out.println(getXmlValidationReport());
+		} else {
+			System.out.println("---------- ETSI validation report is disabled -----------");
+		}
+		System.out.println("---------------------------------------------------------");
 	}
 
 }

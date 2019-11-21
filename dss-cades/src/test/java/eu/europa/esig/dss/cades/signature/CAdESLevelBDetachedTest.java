@@ -31,7 +31,7 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 
 public class CAdESLevelBDetachedTest extends AbstractCAdESTestSignature {
 
@@ -54,8 +54,8 @@ public class CAdESLevelBDetachedTest extends AbstractCAdESTestSignature {
 	}
 
 	@Override
-	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
+	protected DefaultDocumentValidator getValidator(DSSDocument signedDocument) {
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		// test with wrong provided certificate
 		validator.defineSigningCertificate(getCertificate(ECDSA_USER));

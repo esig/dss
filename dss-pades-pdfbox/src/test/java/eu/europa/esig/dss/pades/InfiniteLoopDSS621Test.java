@@ -75,7 +75,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class InfiniteLoopDSS621Test {
@@ -91,7 +91,7 @@ public class InfiniteLoopDSS621Test {
     		final CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
     		certificateVerifier.setDataLoader(new IgnoreDataLoader()); // Error 404 on DER policy
 
-    		final SignedDocumentValidator signedDocumentValidator = SignedDocumentValidator.fromDocument(signDocument);
+    		final DefaultDocumentValidator signedDocumentValidator = DefaultDocumentValidator.fromDocument(signDocument);
     		signedDocumentValidator.setCertificateVerifier(certificateVerifier);
     		Reports reports = signedDocumentValidator.validateDocument();
 

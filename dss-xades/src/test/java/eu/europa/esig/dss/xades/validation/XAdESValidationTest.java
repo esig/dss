@@ -31,7 +31,7 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class XAdESValidationTest {
@@ -54,7 +54,7 @@ public class XAdESValidationTest {
 	}
 
 	private SignatureWrapper openXadesSignature(String documentPath) {
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(new FileDocument(new File(documentPath)));
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(new FileDocument(new File(documentPath)));
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setDataLoader(new IgnoreDataLoader());
 		validator.setCertificateVerifier(certificateVerifier);

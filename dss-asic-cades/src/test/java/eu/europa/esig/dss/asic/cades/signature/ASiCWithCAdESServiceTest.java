@@ -29,7 +29,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.DefaultDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class ASiCWithCAdESServiceTest extends PKIFactoryAccess {
@@ -169,7 +169,7 @@ public class ASiCWithCAdESServiceTest extends PKIFactoryAccess {
 	}
 	
 	private void validate(DSSDocument documentToValidate) {
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(documentToValidate);
+		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(documentToValidate);
         validator.setCertificateVerifier(getCompleteCertificateVerifier());
         Reports reports = validator.validateDocument();
         // reports.print();

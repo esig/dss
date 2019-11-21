@@ -26,51 +26,19 @@ import java.util.Objects;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
-import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
+import eu.europa.esig.dss.validation.executor.AbstractDocumentProcessExecutor;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
-public class DefaultSignatureProcessExecutor implements SignatureProcessExecutor {
-
-	private Date currentTime = new Date();
-	private ValidationLevel validationLevel = ValidationLevel.ARCHIVAL_DATA;
-	private boolean enableEtsiValidationReport = true;
-	private XmlDiagnosticData jaxbDiagnosticData;
-	private ValidationPolicy policy;
-
-	@Override
-	public void setCurrentTime(Date currentTime) {
-		this.currentTime = currentTime;
-	}
-
-	@Override
-	public void setDiagnosticData(XmlDiagnosticData diagnosticData) {
-		this.jaxbDiagnosticData = diagnosticData;
-	}
-
-	@Override
-	public void setValidationPolicy(ValidationPolicy policy) {
-		this.policy = policy;
-	}
-
-	@Override
-	public void setValidationLevel(ValidationLevel validationLevel) {
-		this.validationLevel = validationLevel;
-	}
-
-	@Override
-	public void setEnableEtsiValidationReport(boolean enableEtsiValidationReport) {
-		this.enableEtsiValidationReport = enableEtsiValidationReport;
-	}
+public class DefaultSignatureProcessExecutor extends AbstractDocumentProcessExecutor {
 
 	@Override
 	public Reports execute() {
-
+		final Date currentTime = getCurrentTime();
+		Objects.requireNonNull(currentTime, "The current time is missing");
 		Objects.requireNonNull(jaxbDiagnosticData, "The diagnostic data is missing");
 		Objects.requireNonNull(policy, "The validation policy is missing");
-		Objects.requireNonNull(currentTime, "The current time is missing");
 		Objects.requireNonNull(validationLevel, "The validation level is missing");
 
 		DiagnosticData diagnosticData = new DiagnosticData(jaxbDiagnosticData);
@@ -91,16 +59,6 @@ public class DefaultSignatureProcessExecutor implements SignatureProcessExecutor
 		}
 
 		return new Reports(jaxbDiagnosticData, jaxbDetailedReport, simpleReport, validationReport);
-	}
-
-	@Override
-	public Date getCurrentTime() {
-		return currentTime;
-	}
-
-	@Override
-	public ValidationPolicy getValidationPolicy() {
-		return policy;
 	}
 
 }
