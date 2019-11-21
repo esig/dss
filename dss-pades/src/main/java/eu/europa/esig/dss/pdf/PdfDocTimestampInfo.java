@@ -25,10 +25,11 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
@@ -84,7 +85,8 @@ public class PdfDocTimestampInfo extends PdfCMSInfo implements PdfSignatureOrDoc
 		if (getSignedDocumentBytes() != null) {
 			signatureCryptographicVerification.setReferenceDataFound(true);
 		}
-		signatureCryptographicVerification.setReferenceDataIntact(timestampToken.matchData(getSignedDocumentBytes()));
+		byte[] signedDocumentContent = getSignedDocumentBytes();
+		signatureCryptographicVerification.setReferenceDataIntact(timestampToken.matchData(new InMemoryDocument(signedDocumentContent)));
 		signatureCryptographicVerification.setSignatureIntact(timestampToken.isSignatureValid());
 	}
 

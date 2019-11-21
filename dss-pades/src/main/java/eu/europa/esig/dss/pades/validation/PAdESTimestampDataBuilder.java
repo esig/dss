@@ -26,6 +26,7 @@ import java.util.List;
 import org.bouncycastle.cms.SignerInformation;
 
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.cades.validation.CAdESTimestampDataBuilder;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pdf.PdfDocTimestampInfo;
@@ -49,13 +50,13 @@ public class PAdESTimestampDataBuilder extends CAdESTimestampDataBuilder {
 	}
 
 	@Override
-	public byte[] getSignatureTimestampData(final TimestampToken timestampToken) {
+	public DSSDocument getSignatureTimestampData(final TimestampToken timestampToken) {
 		for (final PdfSignatureOrDocTimestampInfo signatureInfo : pdfSignatureInfo.getOuterSignatures()) {
 			if (signatureInfo instanceof PdfDocTimestampInfo) {
 				PdfDocTimestampInfo pdfTimestampInfo = (PdfDocTimestampInfo) signatureInfo;
 				if (pdfTimestampInfo.getTimestampToken().equals(timestampToken)) {
 					final byte[] signedDocumentBytes = pdfTimestampInfo.getSignedDocumentBytes();
-					return signedDocumentBytes;
+					return new InMemoryDocument(signedDocumentBytes);
 				}
 			}
 		}
@@ -66,25 +67,25 @@ public class PAdESTimestampDataBuilder extends CAdESTimestampDataBuilder {
 	}
 
 	@Override
-	public byte[] getTimestampX1Data(final TimestampToken timestampToken) {
+	public DSSDocument getTimestampX1Data(final TimestampToken timestampToken) {
 		/* Not applicable for PAdES */
 		return null;
 	}
 
 	@Override
-	public byte[] getTimestampX2Data(final TimestampToken timestampToken) {
+	public DSSDocument getTimestampX2Data(final TimestampToken timestampToken) {
 		/* Not applicable for PAdES */
 		return null;
 	}
 
 	@Override
-	public byte[] getArchiveTimestampData(TimestampToken timestampToken) {
+	public DSSDocument getArchiveTimestampData(TimestampToken timestampToken) {
 		for (final PdfSignatureOrDocTimestampInfo signatureInfo : pdfSignatureInfo.getOuterSignatures()) {
 			if (signatureInfo instanceof PdfDocTimestampInfo) {
 				PdfDocTimestampInfo pdfTimestampInfo = (PdfDocTimestampInfo) signatureInfo;
 				if (pdfTimestampInfo.getTimestampToken().equals(timestampToken)) {
 					final byte[] signedDocumentBytes = pdfTimestampInfo.getSignedDocumentBytes();
-					return signedDocumentBytes;
+					return new InMemoryDocument(signedDocumentBytes);
 				}
 			}
 		}

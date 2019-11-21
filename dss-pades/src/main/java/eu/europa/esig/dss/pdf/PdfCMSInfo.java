@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -46,7 +47,7 @@ public abstract class PdfCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	/**
 	 * The original signed pdf document
 	 */
-	private final byte[] signedBytes;
+	private final byte[] signedContent;
 
 	private final boolean coverAllOriginalBytes;
 	private boolean verified;
@@ -63,7 +64,7 @@ public abstract class PdfCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	 * @param cms
 	 *                              the signature binary
 	 * @param signedContent
-	 *                              the signed content
+	 *                              {@link DSSDocument} the signed content
 	 * @param coverAllOriginalBytes
 	 *                              true if the signature covers all original bytes
 	 */
@@ -71,7 +72,7 @@ public abstract class PdfCMSInfo implements PdfSignatureOrDocTimestampInfo {
 		this.cms = cms;
 		this.signatureDictionary = signatureDictionary;
 		this.dssDictionary = dssDictionary;
-		this.signedBytes = signedContent;
+		this.signedContent = signedContent;
 		this.coverAllOriginalBytes = coverAllOriginalBytes;
 	}
 
@@ -79,7 +80,9 @@ public abstract class PdfCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	public void checkIntegrity() {
 		if (!verified) {
 			checkIntegrityOnce();
-			LOG.debug("Verify embedded CAdES Signature on signedBytes size {}.", signedBytes.length);
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("Verify embedded CAdES Signature on signedBytes size {}.", signedContent.length);
+			}
 			verified = true;
 		}
 	}
@@ -91,7 +94,7 @@ public abstract class PdfCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	 */
 	@Override
 	public byte[] getSignedDocumentBytes() {
-		return signedBytes;
+		return signedContent;
 	}
 
 	@Override

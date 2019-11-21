@@ -59,7 +59,7 @@ public interface PdfSignatureOrDocTimestampInfo {
 	CMSSignedData getCMSSignedData();
 
 	/**
-	 * @return the byte of what is signed (without signature, but with the placeholder)
+	 * @return a byte array representing the DTBS (without a signature, but with the placeholder)
 	 */
 	byte[] getSignedDocumentBytes();
 

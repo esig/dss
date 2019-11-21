@@ -112,7 +112,7 @@ public class TimestampValidator implements ProcessExecutorProvider<SignatureAndT
 			throw new DSSException("Unable to parse timestamp", e);
 		}
 		timestampToken.setFileName(timestampFile.getName());
-		timestampToken.matchData(DSSUtils.toByteArray(timestampedData));
+		timestampToken.matchData(timestampedData);
 		return timestampToken;
 	}
 

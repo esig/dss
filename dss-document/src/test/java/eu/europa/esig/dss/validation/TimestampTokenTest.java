@@ -43,6 +43,7 @@ import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
@@ -100,11 +101,11 @@ public class TimestampTokenTest {
 
 			assertFalse(token.matchData(null));
 
-			assertFalse(token.matchData(new byte[] { 1, 2, 3 }));
+			assertFalse(token.matchData(new InMemoryDocument(new byte[] { 1, 2, 3 })));
 			assertTrue(token.isMessageImprintDataFound());
 			assertFalse(token.isMessageImprintDataIntact());
 
-			assertTrue(token.matchData(Utils.fromBase64(TIMETAMPED_DATA_B64)));
+			assertTrue(token.matchData(new InMemoryDocument(TIMETAMPED_DATA_B64.getBytes())));
 			assertTrue(token.isMessageImprintDataFound());
 			assertTrue(token.isMessageImprintDataIntact());
 
@@ -129,7 +130,7 @@ public class TimestampTokenTest {
 			}
 		}
 		assertTrue(timestampToken.isSignatureValid());
-		assertTrue(timestampToken.matchData("Hello world".getBytes()));
+		assertTrue(timestampToken.matchData(new InMemoryDocument("Hello world".getBytes())));
 	}
 
 	@Test
@@ -140,7 +141,7 @@ public class TimestampTokenTest {
 		assertNotNull(timestampToken);
 		assertFalse(Utils.isCollectionNotEmpty(timestampToken.getCertificates()));
 		assertFalse(timestampToken.isSignatureValid());
-		assertTrue(timestampToken.matchData("Hello world".getBytes()));
+		assertTrue(timestampToken.matchData(new InMemoryDocument("Hello world".getBytes())));
 	}
 
 	@Test
@@ -151,7 +152,7 @@ public class TimestampTokenTest {
 		assertNotNull(timestampToken);
 		assertTrue(Utils.isCollectionEmpty(timestampToken.getCertificates()));
 		assertFalse(timestampToken.isSignatureValid());
-		assertTrue(timestampToken.matchData("Hello world".getBytes()));
+		assertTrue(timestampToken.matchData(new InMemoryDocument("Hello world".getBytes())));
 
 		CertificatePool certPool = new CertificatePool();
 		String base64TsuCert = "MIIEFTCCAv2gAwIBAgIQTqz7bCP8W45UBZa7tztTTDANBgkqhkiG9w0BAQsFADB9MQswCQYDVQQGEwJFRTEiMCAGA1UECgwZQVMgU2VydGlmaXRzZWVyaW1pc2tlc2t1czEwMC4GA1UEAwwnVEVTVCBvZiBFRSBDZXJ0aWZpY2F0aW9uIENlbnRyZSBSb290IENBMRgwFgYJKoZIhvcNAQkBFglwa2lAc2suZWUwHhcNMTQwOTAyMTAwNjUxWhcNMjQwOTAyMTAwNjUxWjBdMQswCQYDVQQGEwJFRTEiMCAGA1UECgwZQVMgU2VydGlmaXRzZWVyaW1pc2tlc2t1czEMMAoGA1UECwwDVFNBMRwwGgYDVQQDDBNERU1PIG9mIFNLIFRTQSAyMDE0MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAysgrVnVPxH8jNgCsJw0y+7fmmBDTM/tNB+xielnP9KcuQ+nyTgNu1JMpnry7Rh4ndr54rPLXNGVdb/vsgsi8B558DisPVUn3Rur3/8XQ+BCkhTQIg1cSmyCsWxJgeaQKJi6WGVaQWB2he35aVhL5F6ae/gzXT3sGGwnWujZkY9o5RapGV15+/b7Uv+7jWYFAxcD6ba5jI00RY/gmsWwKb226Rnz/pXKDBfuN3ox7y5/lZf5+MyIcVe1qJe7VAJGpJFjNq+BEEdvfqvJ1PiGQEDJAPhRqahVjBSzqZhJQoL3HI42NRCFwarvdnZYoCPxjeYpAynTHgNR7kKGX1iQ8OQIDAQABo4GwMIGtMA4GA1UdDwEB/wQEAwIGwDAWBgNVHSUBAf8EDDAKBggrBgEFBQcDCDAdBgNVHQ4EFgQUJwScZQxzlzySVqZXviXpKZDV5NwwHwYDVR0jBBgwFoAUtTQKnaUvEMXnIQ6+xLFlRxsDdv4wQwYDVR0fBDwwOjA4oDagNIYyaHR0cHM6Ly93d3cuc2suZWUvcmVwb3NpdG9yeS9jcmxzL3Rlc3RfZWVjY3JjYS5jcmwwDQYJKoZIhvcNAQELBQADggEBAIq02SVKwP1UolKjqAQe7SVY/Kgi++G2kqAd40UmMqa94GTu91LFZR5TvdoyZjjnQ2ioXh5CV2lflUy/lUrZMDpqEe7IbjZW5+b9n5aBvXYJgDua9SYjMOrcy3siytqq8UbNgh79ubYgWhHhJSnLWK5YJ+5vQjTpOMdRsLp/D+FhTUa6mP0UDY+U82/tFufkd9HW4zbalUWhQgnNYI3oo0CsZ0HExuynOOZmM1Bf8PzD6etlLSKkYB+mB77Omqgflzz+Jjyh45o+305MRzHDFeJZx7WxC+XTNWQ0ZFTFfc0ozxxzUWUlfNfpWyQh3+4LbeSQRWrNkbNRfCpYotyM6AY=";

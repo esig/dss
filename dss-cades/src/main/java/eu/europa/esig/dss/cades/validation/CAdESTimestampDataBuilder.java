@@ -56,6 +56,8 @@ import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.EmptyInMemoryDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -86,17 +88,18 @@ public class CAdESTimestampDataBuilder implements TimestampDataBuilder {
 	}
 	
 	@Override
-	public byte[] getContentTimestampData(TimestampToken timestampToken) {
-		return DSSUtils.toByteArray(getOriginalDocument());
+	public DSSDocument getContentTimestampData(TimestampToken timestampToken) {
+		return getOriginalDocument();
 	}
 
 	@Override
-	public byte[] getSignatureTimestampData(TimestampToken timestampToken) {
-		return signerInformation.getSignature();
+	public DSSDocument getSignatureTimestampData(TimestampToken timestampToken) {
+		byte[] signature = signerInformation.getSignature();
+		return new InMemoryDocument(signature);
 	}
 
 	@Override
-	public byte[] getTimestampX1Data(TimestampToken timestampToken) {
+	public DSSDocument getTimestampX1Data(TimestampToken timestampToken) {
 		try (ByteArrayOutputStream data = new ByteArrayOutputStream()) {
 			data.write(signerInformation.getSignature());
 			// We don't include the outer SEQUENCE, only the attrType and
@@ -108,15 +111,21 @@ public class CAdESTimestampDataBuilder implements TimestampDataBuilder {
 				data.write(DSSASN1Utils.getDEREncoded(attribute.getAttrValues()));
 			}
 			// Method is common to Type 1 and Type 2
-			data.write(getTimestampX2Data(timestampToken));
-			return data.toByteArray();
+			data.write(getTimestampX2DataBytes(timestampToken));
+			byte[] byteArray = data.toByteArray();
+			return new InMemoryDocument(byteArray);
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
 	}
 
 	@Override
-	public byte[] getTimestampX2Data(final TimestampToken timestampToken) {
+	public DSSDocument getTimestampX2Data(final TimestampToken timestampToken) {
+		byte[] timestampX2DataBytes = getTimestampX2DataBytes(timestampToken);
+		return new InMemoryDocument(timestampX2DataBytes);
+	}
+	
+	private byte[] getTimestampX2DataBytes(final TimestampToken timestampToken) {
 		try (ByteArrayOutputStream data = new ByteArrayOutputStream()) {
 			// Those are common to Type 1 and Type 2
 			final Attribute certAttribute = CMSUtils.getUnsignedAttribute(signerInformation, id_aa_ets_certificateRefs);
@@ -137,10 +146,10 @@ public class CAdESTimestampDataBuilder implements TimestampDataBuilder {
 	}
 
 	@Override
-	public byte[] getArchiveTimestampData(final TimestampToken timestampToken) throws DSSException {
+	public DSSDocument getArchiveTimestampData(final TimestampToken timestampToken) throws DSSException {
 
 		final ArchiveTimestampType archiveTimestampType = timestampToken.getArchiveTimestampType();
-		byte[] archiveTimestampData;
+		DSSDocument archiveTimestampData;
 		switch (archiveTimestampType) {
 		case CAdES_V2:
 			/**
@@ -162,13 +171,15 @@ public class CAdESTimestampDataBuilder implements TimestampDataBuilder {
 		return archiveTimestampData;
 	}
 
-	private byte[] getArchiveTimestampDataV3(final TimestampToken timestampToken) throws DSSException {
+	private DSSDocument getArchiveTimestampDataV3(final TimestampToken timestampToken) throws DSSException {
 
 		final Attribute atsHashIndexAttribute = timestampExtractor.getVerifiedAtsHashIndex(signerInformation, timestampToken);
 
         final DigestAlgorithm messageImprintDigestAlgorithm = timestampToken.getMessageImprint().getAlgorithm();
         byte[] originalDocumentDigest = getOriginalDocumentDigest(messageImprintDigestAlgorithm);
-        return timestampExtractor.getArchiveTimestampDataV3(signerInformation, atsHashIndexAttribute, originalDocumentDigest);
+        byte[] archiveTimestampDataV3 = timestampExtractor.getArchiveTimestampDataV3(signerInformation, atsHashIndexAttribute, originalDocumentDigest);
+        
+        return new InMemoryDocument(archiveTimestampDataV3);
 	}
 	
 	private byte[] getOriginalDocumentDigest(DigestAlgorithm algo) {
@@ -198,7 +209,7 @@ public class CAdESTimestampDataBuilder implements TimestampDataBuilder {
 	 * @return
 	 * @throws DSSException
 	 */
-	private byte[] getArchiveTimestampDataV2(TimestampToken timestampToken, boolean includeUnsignedAttrsTagAndLength) throws DSSException {
+	private DSSDocument getArchiveTimestampDataV2(TimestampToken timestampToken, boolean includeUnsignedAttrsTagAndLength) throws DSSException {
 
 		try (ByteArrayOutputStream data = new ByteArrayOutputStream()) {
 
@@ -228,14 +239,13 @@ public class CAdESTimestampDataBuilder implements TimestampDataBuilder {
 			data.write(signerInfoBytes);
 
 			final byte[] result = data.toByteArray();
-			return result;
-
+			return new InMemoryDocument(result);
 		} catch (IOException e) {
 			throw new DSSException(e);
 		} catch (Exception e) {
 			// When error in computing or in format the algorithm just continues.
 			LOG.warn("When error in computing or in format the algorithm just continue...", e);
-			return DSSUtils.EMPTY_BYTE_ARRAY;
+			return new EmptyInMemoryDocument();
 		}
 	}
 	

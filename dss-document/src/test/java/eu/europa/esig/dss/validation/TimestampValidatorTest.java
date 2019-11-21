@@ -10,11 +10,15 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.simplereport.SimpleReportFacade;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.timestamp.TimestampValidator;
 
@@ -24,14 +28,27 @@ public class TimestampValidatorTest {
 	public void testWithAttached() throws Exception {
 		DSSDocument timestamp = new FileDocument("src/test/resources/d-trust.tsr");
 		DSSDocument timestampedContent = new InMemoryDocument("Test123".getBytes());
-		
 		TimestampValidator timestampValidator = new TimestampValidator(timestamp, timestampedContent, TimestampType.CONTENT_TIMESTAMP);
 		timestampValidator.setCertificateVerifier(new CommonCertificateVerifier());
 		
+		validate(timestampValidator);
+	}
+	
+	@Test
+	public void testWithDigestDocument() throws Exception {
+		DSSDocument timestamp = new FileDocument("src/test/resources/d-trust.tsr");
+		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA256, 
+				Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, "Test123".getBytes())));
+		TimestampValidator timestampValidator = new TimestampValidator(timestamp, digestDocument, TimestampType.CONTENT_TIMESTAMP);
+		timestampValidator.setCertificateVerifier(new CommonCertificateVerifier());
+		
+		validate(timestampValidator);
+	}
+	
+	private void validate(TimestampValidator timestampValidator) throws Exception {
+		
 		Reports reports = timestampValidator.validate();
 		
-		reports.print();
-
 		assertNotNull(reports);
 		assertNotNull(reports.getDiagnosticDataJaxb());
 		assertNotNull(reports.getXmlDiagnosticData());
@@ -51,7 +68,6 @@ public class TimestampValidatorTest {
 		
 		assertTrue(timestampWrapper.isMessageImprintDataFound());
 		assertTrue(timestampWrapper.isMessageImprintDataIntact());
-		
 	}
 
 }
