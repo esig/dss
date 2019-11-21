@@ -27,7 +27,7 @@ public class DownloadCacheDTO extends AbstractCacheDTO implements DownloadInfoRe
 
 	@Override
 	public Date getLastDownloadAttemptTime() {
-		return latestDate(latestDate(lastSuccessDownloadTime, getLastStateTransitionTime()), getExceptionLastOccurrenceTime());
+		return latestDate(latestDate(lastSuccessDownloadTime, getLastStateTransitionTime()), getExceptionFirstOccurrenceTime());
 	}
 
 	/**

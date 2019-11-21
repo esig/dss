@@ -86,7 +86,7 @@ public class CachedEntry<R extends CachedResult> {
 		return null;
 	}
 	
-	public Date getExceptionLastOccurrenceTime() {
+	public Date getExceptionFirstOccurrenceTime() {
 		if (cacheContext.getException() != null) {
 			return cacheContext.getException().getDate();
 		}

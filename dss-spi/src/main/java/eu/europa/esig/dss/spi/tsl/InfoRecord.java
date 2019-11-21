@@ -23,7 +23,7 @@ public interface InfoRecord extends Serializable {
 	
 	String getExceptionStackTrace();
 	
-	Date getExceptionLastOccurrenceTime();
+	Date getExceptionFirstOccurrenceTime();
 	
 	boolean isResultExist();
 

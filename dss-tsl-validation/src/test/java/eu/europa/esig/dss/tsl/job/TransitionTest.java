@@ -69,7 +69,7 @@ public class TransitionTest {
 		checkSummary(secondSummary, CacheStateEnum.ERROR, CacheStateEnum.REFRESH_NEEDED, CacheStateEnum.REFRESH_NEEDED);
 
 		// Keep the first error time
-		assertEquals(firstCZ.getDownloadCacheInfo().getExceptionLastOccurrenceTime(), secondCZ.getDownloadCacheInfo().getExceptionLastOccurrenceTime());
+		assertEquals(firstCZ.getDownloadCacheInfo().getExceptionFirstOccurrenceTime(), secondCZ.getDownloadCacheInfo().getExceptionFirstOccurrenceTime());
 		assertEquals(firstCZ.getDownloadCacheInfo().getExceptionMessage(), secondCZ.getDownloadCacheInfo().getExceptionMessage());
 	}
 
@@ -145,8 +145,8 @@ public class TransitionTest {
 		
 		assertNull(tlInfo.getDownloadCacheInfo().getLastSuccessDownloadTime());
 		assertNotNull(tlInfo.getDownloadCacheInfo().getLastStateTransitionTime());
-		assertNotNull(tlInfo.getDownloadCacheInfo().getExceptionLastOccurrenceTime());
-		assertEquals(tlInfo.getDownloadCacheInfo().getExceptionLastOccurrenceTime(), tlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
+		assertNotNull(tlInfo.getDownloadCacheInfo().getExceptionFirstOccurrenceTime());
+		assertEquals(tlInfo.getDownloadCacheInfo().getExceptionFirstOccurrenceTime(), tlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
 		
 		job.setOnlineDataLoader(getOnlineDataLoader(CZ, url));
 		job.onlineRefresh();
@@ -154,7 +154,7 @@ public class TransitionTest {
 		summary = job.getSummary();
 		tlInfo = summary.getOtherTLInfos().get(0);
 		
-		assertNull(tlInfo.getDownloadCacheInfo().getExceptionLastOccurrenceTime());
+		assertNull(tlInfo.getDownloadCacheInfo().getExceptionFirstOccurrenceTime());
 		assertNotNull(tlInfo.getDownloadCacheInfo().getLastStateTransitionTime());
 		assertNotNull(tlInfo.getDownloadCacheInfo().getLastSuccessDownloadTime());
 		assertEquals(tlInfo.getDownloadCacheInfo().getLastStateTransitionTime(), tlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
@@ -167,8 +167,8 @@ public class TransitionTest {
 
 		assertNull(tlInfo.getDownloadCacheInfo().getLastSuccessDownloadTime());
 		assertNotNull(tlInfo.getDownloadCacheInfo().getLastStateTransitionTime());
-		assertNotNull(tlInfo.getDownloadCacheInfo().getExceptionLastOccurrenceTime());
-		assertEquals(tlInfo.getDownloadCacheInfo().getExceptionLastOccurrenceTime(), tlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
+		assertNotNull(tlInfo.getDownloadCacheInfo().getExceptionFirstOccurrenceTime());
+		assertEquals(tlInfo.getDownloadCacheInfo().getExceptionFirstOccurrenceTime(), tlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
 
 	}
 

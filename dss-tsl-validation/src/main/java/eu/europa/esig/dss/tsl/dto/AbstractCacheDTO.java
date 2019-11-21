@@ -13,7 +13,7 @@ public class AbstractCacheDTO implements InfoRecord {
 	private Date lastStateTransitionTime;
 	private String exceptionMessage;
 	private String exceptionStackTrace;
-	private Date exceptionLastOccurrenceTime;
+	private Date exceptionFirstOccurrenceTime;
 	
 	private boolean resultExist;
 
@@ -24,7 +24,7 @@ public class AbstractCacheDTO implements InfoRecord {
 		this.lastStateTransitionTime = cacheDTO.lastStateTransitionTime;
 		this.exceptionMessage = cacheDTO.exceptionMessage;
 		this.exceptionStackTrace = cacheDTO.exceptionStackTrace;
-		this.exceptionLastOccurrenceTime = cacheDTO.exceptionLastOccurrenceTime;
+		this.exceptionFirstOccurrenceTime = cacheDTO.exceptionFirstOccurrenceTime;
 		this.resultExist = cacheDTO.resultExist;
 	}
 	
@@ -64,12 +64,12 @@ public class AbstractCacheDTO implements InfoRecord {
 	}
 	
 	@Override
-	public Date getExceptionLastOccurrenceTime() {
-		return exceptionLastOccurrenceTime;
+	public Date getExceptionFirstOccurrenceTime() {
+		return exceptionFirstOccurrenceTime;
 	}
 	
-	public void setExceptionLastOccurrenceTime(Date exceptionLastOccurrenceTime) {
-		this.exceptionLastOccurrenceTime = exceptionLastOccurrenceTime;
+	public void setExceptionFirstOccurrenceTime(Date exceptionFirstOccurrenceTime) {
+		this.exceptionFirstOccurrenceTime = exceptionFirstOccurrenceTime;
 	}
 
 	@Override
