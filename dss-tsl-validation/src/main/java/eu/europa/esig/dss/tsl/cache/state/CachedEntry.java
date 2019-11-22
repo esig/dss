@@ -46,8 +46,8 @@ public class CachedEntry<R extends CachedResult> {
 			cacheContext.error(exception);
 			cachedResult = null; // reset in case of error
 		} else {
-			cacheContext.errorUpdateDate(cacheContext.getException());
-			LOG.trace("Update is skipped, ERROR is already recorded (Error last occurrence updated)");
+			LOG.trace("The ERROR is already recorded.");
+			cacheContext.errorUpdateDate(exception);
 		}
 	}
 	

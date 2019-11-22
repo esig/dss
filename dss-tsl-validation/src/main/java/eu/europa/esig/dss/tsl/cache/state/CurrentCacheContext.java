@@ -47,9 +47,9 @@ public class CurrentCacheContext implements CacheContext {
 	}
 	
 	@Override
-	public void errorUpdateDate(CachedException exception) {
-		LOG.trace("Exception last occurrence updated '{}'", new Date());
-		exception.setLastOccurrenceDate(new Date());
+	public void errorUpdateDate(CachedException updatedException) {
+		LOG.trace("Exception last occurrence updated '{}'", updatedException.getDate());
+		exception.setLastOccurrenceDate(updatedException.getDate());
 	}
 
 	@Override

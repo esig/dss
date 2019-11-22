@@ -70,9 +70,9 @@ public interface CacheContext {
 	/**
 	 * Store the last occurrence of this exception
 	 * 
-	 * @param exception an instance of {@link CachedException}
+	 * @param updatedException an instance of {@link CachedException}
 	 */
-	void errorUpdateDate(CachedException exception);
+	void errorUpdateDate(CachedException updatedException);
 	
 	/**
 	 * Returns the met exception
