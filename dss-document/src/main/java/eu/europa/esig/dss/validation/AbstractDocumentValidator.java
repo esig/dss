@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import org.slf4j.Logger;
@@ -14,16 +16,18 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
-import eu.europa.esig.dss.validation.executor.SignatureProcessExecutor;
-import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.executor.DocumentProcessExecutor;
 import eu.europa.esig.dss.validation.executor.signature.ValidationLevel;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 public abstract class AbstractDocumentValidator implements DocumentValidator {
 
@@ -48,9 +52,9 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 	protected CertificateVerifier certificateVerifier;
 
 	/**
-	 * This variable can hold a specific {@code SignatureProcessExecutor}
+	 * This variable can hold a specific {@code DocumentProcessExecutor}
 	 */
-	protected SignatureProcessExecutor processExecutor = null;
+	protected DocumentProcessExecutor processExecutor = null;
 
 	/**
 	 * This is the pool of certificates used in the validation process. The
@@ -84,7 +88,7 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 	}
 
 	@Override
-	public void setProcessExecutor(final SignatureProcessExecutor processExecutor) {
+	public void setProcessExecutor(final DocumentProcessExecutor processExecutor) {
 		this.processExecutor = processExecutor;
 	}
 
@@ -94,7 +98,7 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 	 *
 	 * @return {@code SignatureProcessExecutor}
 	 */
-	protected SignatureProcessExecutor provideProcessExecutorInstance() {
+	protected DocumentProcessExecutor provideProcessExecutorInstance() {
 		if (processExecutor == null) {
 			processExecutor = getDefaultProcessExecutor();
 		}
@@ -108,10 +112,6 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 	@Override
 	public void setValidationTime(Date validationTime) {
 		this.validationTime = validationTime;
-	}
-	
-	protected SignatureProcessExecutor getDefaultProcessExecutor() {
-		return new DefaultSignatureProcessExecutor();
 	}
 
 	@Override
@@ -230,7 +230,14 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 	 * @return {@link DiagnosticData}
 	 */
 	protected DiagnosticDataBuilder prepareDiagnosticDataBuilder(final ValidationContext validationContext, final ValidationPolicy validationPolicy) {
-		return new DiagnosticDataBuilder().document(document)
+		List<AdvancedSignature> allSignatures = prepareSignatureValidationContext(validationContext, validationPolicy);
+		List<TimestampToken> timestampTokens = Collections.emptyList();
+		if (Utils.isCollectionEmpty(allSignatures)) {
+			// in case if no signatures found, process the timestamp only validation
+			timestampTokens = prepareTimestampValidationContext(validationContext, validationPolicy);
+		}
+		
+		return new DiagnosticDataBuilder().document(document).foundSignatures(allSignatures).setExternalTimestamps(timestampTokens)
 				.usedCertificates(validationContext.getProcessedCertificates()).usedRevocations(validationContext.getProcessedRevocations())
 				.setDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm())
 				.includeRawCertificateTokens(certificateVerifier.isIncludeCertificateTokenValues())
@@ -239,6 +246,63 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 				.certificateSourceTypes(validationContext.getCertificateSourceTypes())
 				.trustedCertificateSources(certificateVerifier.getTrustedCertSources())
 				.validationDate(validationContext.getCurrentTime());
+	}
+	
+	/**
+	 * Prepares the {@code validationContext} for signature validation process and returns a list of signatures to validate
+	 * 
+	 * @param validationContext {@link ValidationContext}
+	 * @param validationPolicy {@link ValidationPolicy}
+	 * @return list of {@link AdvancedSignature}s
+	 */
+	protected List<AdvancedSignature> prepareSignatureValidationContext(final ValidationContext validationContext, final ValidationPolicy validationPolicy) {
+		// not implemented by default
+		// see {@code DefaultDocumentValidator}
+		return Collections.emptyList();
+	}
+	
+	/**
+	 * Prepares the {@code validationContext} for a timestamp validation process
+	 * 
+	 * @param validationContext {@link ValidationContext}
+	 * @param validationPolicy {@link ValidationPolicy}
+	 * @return a list of {@link TimestampToken}s to be validated
+	 */
+	protected List<TimestampToken> prepareTimestampValidationContext(final ValidationContext validationContext, final ValidationPolicy validationPolicy) {
+		List<TimestampToken> timestampTokens = getTimestamps();
+		for (TimestampToken timestampToken : timestampTokens) {
+			validationContext.addTimestampTokenForVerification(timestampToken);
+			CertificateToken issuer = validationCertPool.getIssuer(timestampToken);
+			if (issuer != null) {
+				validationContext.addCertificateTokenForVerification(issuer);
+			}
+		}
+		
+		validateContext(validationContext);
+		
+		return timestampTokens;
+	}
+	
+	/**
+	 * Process the validation
+	 * 
+	 * @param validationContext {@link ValidationContext} to process
+	 */
+	protected void validateContext(final ValidationContext validationContext) {
+		validationContext.setCurrentTime(validationTime);
+		validationContext.initialize(certificateVerifier);
+		validationContext.validate();
+	}
+	
+	/**
+	 * Returns a list of {@link TimestampToken}s to be validated
+	 * 
+	 * @return a list of {@link TimestampToken}s
+	 */
+	protected List<TimestampToken> getTimestamps() {
+		// not implemented by default
+		// required in implementations of {@code TimestampToken}
+		return Collections.emptyList();
 	}
 
 	/**
@@ -249,7 +313,7 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 	 * @return validation {@link Reports}
 	 */
 	protected final Reports processValidationPolicy(XmlDiagnosticData diagnosticData, ValidationPolicy validationPolicy) {
-		final SignatureProcessExecutor executor = provideProcessExecutorInstance();
+		final DocumentProcessExecutor executor = provideProcessExecutorInstance();
 		executor.setValidationPolicy(validationPolicy);
 		executor.setValidationLevel(validationLevel);
 		executor.setDiagnosticData(diagnosticData);

@@ -4,9 +4,10 @@ import java.util.List;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.executor.SignatureProcessExecutor;
 
-public interface SignatureValidator extends ProcessExecutorProvider<SignatureProcessExecutor> {
+public interface SignatureValidator extends DocumentValidator {
 
 	/**
 	 * Retrieves the signatures found in the document
@@ -53,6 +54,13 @@ public interface SignatureValidator extends ProcessExecutorProvider<SignaturePro
 	 * @param signaturePolicyProvider
 	 */
 	void setSignaturePolicyProvider(SignaturePolicyProvider signaturePolicyProvider);
+	
+	/**
+	 * Returns a default implementation of a process executor for signature validation
+	 * 
+	 * @return {@link SignatureProcessExecutor}
+	 */
+	SignatureProcessExecutor getDefaultProcessExecutor();
 
 	/**
 	 * This method returns the signed document(s) without their signature(s)
@@ -73,9 +81,10 @@ public interface SignatureValidator extends ProcessExecutorProvider<SignaturePro
 	/**
 	 * Prepares and fills {@code validationContext} for the signature validation
 	 * @param validationContext {@link ValidationContext} to prepare
+	 * @param validationPolicy {@link ValidationPolicy} to process
 	 * @return list of {@link AdvancedSignature}s to be validated
 	 */
-	List<AdvancedSignature> prepareSignatureValidationContext(final ValidationContext validationContext);
+	List<AdvancedSignature> prepareSignatureValidationContext(final ValidationContext validationContext, final ValidationPolicy validationPolicy);
 
 	/**
 	 * This method process the signature validation on the given {@code allSignatureList}
@@ -85,8 +94,8 @@ public interface SignatureValidator extends ProcessExecutorProvider<SignaturePro
 	 * @param structuralValidation specifies if structure of the signature must be validated
 	 * @return list of validated {@link AdvancedSignature}s
 	 */
-	List<AdvancedSignature> processSignaturesValidation(ValidationContext validationContext, 
-			List<AdvancedSignature> allSignatureList, boolean structuralValidation);
+	List<AdvancedSignature> processSignaturesValidation(final ValidationContext validationContext, 
+			final List<AdvancedSignature> allSignatureList, boolean structuralValidation);
 
 
 }

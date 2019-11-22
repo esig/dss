@@ -140,21 +140,45 @@ public abstract class DefaultDocumentValidator extends AbstractDocumentValidator
 	public void setManifestFiles(List<ManifestFile> manifestFiles) {
 		this.manifestFiles = manifestFiles;
 	}
-	
-	protected DiagnosticDataBuilder prepareDiagnosticDataBuilder(final ValidationContext validationContext, final ValidationPolicy validationPolicy) {
-		ensureSignaturePolicyDetectorInitialized();
 
-		boolean structuralValidation = isRequireStructuralValidation(validationPolicy);
+	/**
+	 * This method allows to retrieve the container information (ASiC Container)
+	 * 
+	 * @return the container information
+	 */
+	protected ContainerInfo getContainerInfo() {
+		// not implemented by default
+		// see ASiC Container Validator
+		return null;
+	}
 
-		List<AdvancedSignature> allSignatureList = prepareSignatureValidationContext(validationContext);
-		allSignatureList = processSignaturesValidation(validationContext, allSignatureList, structuralValidation);
-		
-		return super.prepareDiagnosticDataBuilder(validationContext, validationPolicy)
-				.foundSignatures(allSignatureList).containerInfo(getContainerInfo());
+	@Override
+	public void setSignaturePolicyProvider(SignaturePolicyProvider signaturePolicyProvider) {
+		this.signaturePolicyProvider = signaturePolicyProvider;
+	}
+
+	private void ensureSignaturePolicyDetectorInitialized() {
+		if (signaturePolicyProvider == null) {
+			signaturePolicyProvider = new SignaturePolicyProvider();
+			signaturePolicyProvider.setDataLoader(certificateVerifier.getDataLoader());
+		}
 	}
 	
 	@Override
-	public List<AdvancedSignature> prepareSignatureValidationContext(final ValidationContext validationContext) {
+	public SignatureProcessExecutor getDefaultProcessExecutor() {
+		return new DefaultSignatureProcessExecutor();
+	}
+	
+	@Override
+	protected DiagnosticDataBuilder prepareDiagnosticDataBuilder(final ValidationContext validationContext, final ValidationPolicy validationPolicy) {		
+		return super.prepareDiagnosticDataBuilder(validationContext, validationPolicy).containerInfo(getContainerInfo());
+	}
+	
+	@Override
+	public List<AdvancedSignature> prepareSignatureValidationContext(final ValidationContext validationContext, final ValidationPolicy validationPolicy) {
+		ensureSignaturePolicyDetectorInitialized();
+		boolean structuralValidation = isRequireStructuralValidation(validationPolicy);
+		
 		final List<AdvancedSignature> allSignatureList = getAllSignatures();
 		// The list of all signing certificates is created to allow a parallel
 		// validation.
@@ -166,12 +190,12 @@ public abstract class DefaultDocumentValidator extends AbstractDocumentValidator
 				signature.findSignatureScope(signatureScopeFinder);
 			}
 		}
-		prepareCertificatesAndTimestamps(allSignatureList, validationContext);
 		
-		return allSignatureList;
+		prepareCertificatesAndTimestamps(allSignatureList, validationContext);
+
+		return processSignaturesValidation(validationContext, allSignatureList, structuralValidation);
 	}
 
-	@Override
 	public List<AdvancedSignature> processSignaturesValidation(final ValidationContext validationContext, 
 			final List<AdvancedSignature> allSignatureList, boolean structuralValidation) {
 		
@@ -180,10 +204,8 @@ public abstract class DefaultDocumentValidator extends AbstractDocumentValidator
 
 		final ListOCSPSource signatureOCSPSource = getSignatureOcspSource(allSignatureList);
 		certificateVerifier.setSignatureOCSPSource(signatureOCSPSource);
-
-		validationContext.setCurrentTime(provideProcessExecutorInstance().getCurrentTime());
-		validationContext.initialize(certificateVerifier);
-		validationContext.validate();
+		
+		validateContext(validationContext);
 
 		for (final AdvancedSignature signature : allSignatureList) {
 			signature.checkSigningCertificate();
@@ -198,44 +220,6 @@ public abstract class DefaultDocumentValidator extends AbstractDocumentValidator
 		}
 		
 		return allSignatureList;
-	}
-
-	/**
-	 * This method allows to retrieve the container information (ASiC Container)
-	 * 
-	 * @return the container information
-	 */
-	protected ContainerInfo getContainerInfo() {
-		return null;
-	}
-
-	@Override
-	public void setSignaturePolicyProvider(SignaturePolicyProvider signaturePolicyProvider) {
-		this.signaturePolicyProvider = signaturePolicyProvider;
-	}
-
-	protected void ensureSignaturePolicyDetectorInitialized() {
-		if (signaturePolicyProvider == null) {
-			signaturePolicyProvider = new SignaturePolicyProvider();
-			signaturePolicyProvider.setDataLoader(certificateVerifier.getDataLoader());
-		}
-	}
-
-	/**
-	 * This method returns the process executor. If the instance of this class
-	 * is not yet instantiated then the new instance is created.
-	 *
-	 * @return {@code SignatureProcessExecutor}
-	 */
-	public SignatureProcessExecutor provideProcessExecutorInstance() {
-		if (processExecutor == null) {
-			processExecutor = getDefaultProcessExecutor();
-		}
-		return processExecutor;
-	}
-	
-	protected SignatureProcessExecutor getDefaultProcessExecutor() {
-		return new DefaultSignatureProcessExecutor();
 	}
 
 	/**
@@ -307,7 +291,7 @@ public abstract class DefaultDocumentValidator extends AbstractDocumentValidator
 		}
 	}
 
-	private boolean isRequireStructuralValidation(ValidationPolicy validationPolicy) {
+	protected boolean isRequireStructuralValidation(ValidationPolicy validationPolicy) {
 		return ((validationPolicy != null) && (validationPolicy.getStructuralValidationConstraint(Context.SIGNATURE) != null));
 	}
 

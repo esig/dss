@@ -31,6 +31,7 @@ import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -81,17 +82,22 @@ public abstract class AbstractASiCContainerValidator extends DefaultDocumentVali
 	}
 
 	@Override
-	public List<AdvancedSignature> prepareSignatureValidationContext(final ValidationContext validationContext) {
+	public List<AdvancedSignature> prepareSignatureValidationContext(final ValidationContext validationContext, final ValidationPolicy validationPolicy) {
+		
 		List<AdvancedSignature> allSignatures = new ArrayList<AdvancedSignature>();
 		List<SignatureValidator> currentValidators = getValidators();
 		for (SignatureValidator signatureValidator : currentValidators) { // CAdES / XAdES
-			allSignatures.addAll(signatureValidator.prepareSignatureValidationContext(validationContext));
+			allSignatures.addAll(signatureValidator.prepareSignatureValidationContext(validationContext, validationPolicy));
 		}
+
+		// add external timestamps to the validation
 		List<TimestampToken> externalTimestamps = attachExternalTimestamps(allSignatures);
 		for (TimestampToken timestamp : externalTimestamps) {
 			addTimestampTokenForVerification(validationContext, timestamp);
 		}
-		return allSignatures;
+
+		boolean structuralValidation = isRequireStructuralValidation(validationPolicy);
+		return processSignaturesValidation(validationContext, allSignatures, structuralValidation);
 	}
 	
 	private void addTimestampTokenForVerification(final ValidationContext validationContext, final TimestampToken timestamp) {

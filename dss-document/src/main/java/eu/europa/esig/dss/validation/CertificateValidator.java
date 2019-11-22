@@ -97,9 +97,14 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 
 	public CertificateProcessExecutor provideProcessExecutorInstance() {
 		if (processExecutor == null) {
-			processExecutor = new DefaultCertificateProcessExecutor();
+			processExecutor = getDefaultProcessExecutor();
 		}
 		return processExecutor;
+	}
+
+	@Override
+	public CertificateProcessExecutor getDefaultProcessExecutor() {
+		return new DefaultCertificateProcessExecutor();
 	}
 
 }

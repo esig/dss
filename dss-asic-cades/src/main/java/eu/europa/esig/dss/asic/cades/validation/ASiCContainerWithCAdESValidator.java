@@ -38,19 +38,20 @@ import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.SignatureValidator;
+import eu.europa.esig.dss.validation.executor.timestamp.SignatureAndTimestampProcessExecutor;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampValidator;
 
 /**
  * This class is an implementation to validate ASiC containers with CAdES signature(s)
  * 
  */
-public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValidator {
+public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValidator implements TimestampValidator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCContainerWithCAdESValidator.class);
 
@@ -71,6 +72,11 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	@Override
 	protected AbstractASiCContainerExtractor getArchiveExtractor() {
 		return new ASiCWithCAdESContainerExtractor(document);
+	}
+	
+	@Override
+	public SignatureAndTimestampProcessExecutor getDefaultProcessExecutor() {
+		return new SignatureAndTimestampProcessExecutor();
 	}
 
 	@Override
@@ -128,7 +134,6 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	private TimestampToken getExternalTimestamp(ASiCEWithCAdESTimestampValidator tspValidator, List<AdvancedSignature> allSignatures) {
 		
 		TimestampToken timestamp = tspValidator.getTimestamp();
-		findTimestampTokenSigner(timestamp);
 
 		ManifestFile coveredManifest = tspValidator.getCoveredManifest();
 		if (coveredManifest != null && timestamp.isSignatureValid()) {
@@ -156,14 +161,14 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 		return null;
 	}
 	
-	private void findTimestampTokenSigner(TimestampToken timestamp) {
-		// TODO temp fix
-		List<CertificateToken> certificates = timestamp.getCertificates();
-		for (CertificateToken candidate : certificates) {
-			if (timestamp.isSignedBy(candidate)) {
-				break;
-			}
+	@Override
+	public List<TimestampToken> getTimestamps() {
+		List<ASiCEWithCAdESTimestampValidator> timestampValidators = getTimestampValidators();
+		List<TimestampToken> timestamps = new ArrayList<TimestampToken>();
+		for (TimestampValidator timestampValidator : timestampValidators) {
+			timestamps.addAll(timestampValidator.getTimestamps());
 		}
+		return timestamps;
 	}
 
 	private List<ASiCEWithCAdESTimestampValidator> getTimestampValidators() {

@@ -105,7 +105,7 @@ public class TimestampTokenTest {
 			assertTrue(token.isMessageImprintDataFound());
 			assertFalse(token.isMessageImprintDataIntact());
 
-			assertTrue(token.matchData(new InMemoryDocument(TIMETAMPED_DATA_B64.getBytes())));
+			assertTrue(token.matchData(new InMemoryDocument(Utils.fromBase64(TIMETAMPED_DATA_B64))));
 			assertTrue(token.isMessageImprintDataFound());
 			assertTrue(token.isMessageImprintDataIntact());
 

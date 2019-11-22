@@ -56,7 +56,6 @@ import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.EmptyInMemoryDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -245,7 +244,7 @@ public class CAdESTimestampDataBuilder implements TimestampDataBuilder {
 		} catch (Exception e) {
 			// When error in computing or in format the algorithm just continues.
 			LOG.warn("When error in computing or in format the algorithm just continue...", e);
-			return new EmptyInMemoryDocument();
+			return null;
 		}
 	}
 	

@@ -15,7 +15,7 @@ import eu.europa.esig.dss.validation.reports.Reports;
  * SimpleReport, DetailedReport and ETSI Validation report
  *
  */
-public class SignatureAndTimestampProcessExecutor extends DefaultSignatureProcessExecutor {
+public class SignatureAndTimestampProcessExecutor extends DefaultSignatureProcessExecutor implements TimestampProcessExecutor {
 
 	@Override
 	protected Reports buildReports(final DiagnosticData diagnosticData, final Date validationTime) {

@@ -20,8 +20,11 @@
  */
 package eu.europa.esig.dss.asic.cades.validation;
 
+import java.util.List;
+
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -59,7 +62,18 @@ public class ASiCEWithCAdESTimestampValidator extends SingleTimestampValidator {
 	public TimestampToken getTimestamp() {
 		TimestampToken timestamp = super.getTimestamp();
 		timestamp.setManifestFile(getCoveredManifest());
+		findTimestampTokenSigner(timestamp);
 		return timestamp;
+	}
+	
+	private void findTimestampTokenSigner(TimestampToken timestamp) {
+		// TODO temp fix
+		List<CertificateToken> certificates = timestamp.getCertificates();
+		for (CertificateToken candidate : certificates) {
+			if (timestamp.isSignedBy(candidate)) {
+				break;
+			}
+		}
 	}
 
 }

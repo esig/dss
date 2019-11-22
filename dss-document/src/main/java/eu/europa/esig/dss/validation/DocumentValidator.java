@@ -27,7 +27,7 @@ import java.util.Date;
 
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
-import eu.europa.esig.dss.validation.executor.SignatureProcessExecutor;
+import eu.europa.esig.dss.validation.executor.DocumentProcessExecutor;
 import eu.europa.esig.dss.validation.executor.signature.ValidationLevel;
 import eu.europa.esig.dss.validation.reports.Reports;
 
@@ -35,7 +35,7 @@ import eu.europa.esig.dss.validation.reports.Reports;
  * This is the interface to be used when implementing different signature validators.
  *
  */
-public interface DocumentValidator {
+public interface DocumentValidator extends ProcessExecutorProvider<DocumentProcessExecutor> {
 	
 	/**
 	 * Provides a {@code CertificateVerifier} to be used during the validation process.
@@ -44,13 +44,6 @@ public interface DocumentValidator {
 	 *            {@code CertificateVerifier}
 	 */
 	void setCertificateVerifier(final CertificateVerifier certVerifier);
-	
-	/**
-	 * Provides a Process Executor to execute the validation process
-	 * 
-	 * @param processExecutor
-	 */
-	void setProcessExecutor(final SignatureProcessExecutor processExecutor);
 	
 	/**
 	 * Allows to define a custom validation time

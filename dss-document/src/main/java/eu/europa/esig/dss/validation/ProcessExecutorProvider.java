@@ -31,4 +31,11 @@ public interface ProcessExecutorProvider<PE extends ProcessExecutor<?>> {
 	 */
 	void setProcessExecutor(PE processExecutor);
 	
+	/**
+	 * Returns a default for a validator process executor
+	 * 
+	 * @return Process Executor
+	 */
+	PE getDefaultProcessExecutor();
+	
 }

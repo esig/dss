@@ -41,7 +41,6 @@ import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.EmptyInMemoryDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampDataBuilder;
@@ -71,7 +70,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 	public DSSDocument getContentTimestampData(final TimestampToken timestampToken) {
 		final TimestampType timeStampType = timestampToken.getTimeStampType();
 		if (!timeStampType.isContentTimestamp()) {
-			return new EmptyInMemoryDocument();
+			return null;
 		}
 
 		if (!checkTimestampTokenIncludes(timestampToken)) {
@@ -97,9 +96,13 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 			}
 			return new InMemoryDocument(byteArray);
 		} catch (IOException | XMLSecurityException e) {
-			LOG.warn("Unable to extract IndividualDataObjectsTimestampData/AllDataObjectsTimestampData", e);
+			if (LOG.isDebugEnabled()) {
+				LOG.warn("Unable to extract IndividualDataObjectsTimestampData/AllDataObjectsTimestampData. Reason : {}", e.getMessage(), e);
+			} else {
+				LOG.warn("Unable to extract IndividualDataObjectsTimestampData/AllDataObjectsTimestampData. Reason : {}", e.getMessage());
+			}
 		}
-		return new EmptyInMemoryDocument();
+		return null;
 
 	}
 	

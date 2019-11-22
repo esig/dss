@@ -24,7 +24,7 @@
 			<xs:element name="SignaturesCount" type="xs:int" />
 			<xs:element name="ContainerType" type="xs:string" minOccurs="0" />
 			
-			<xs:choice maxOccurs="unbounded">
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
 				<xs:element name="Signature" type="Signature" />
 				<xs:element name="Timestamp" type="Timestamp" />
 			</xs:choice>

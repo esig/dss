@@ -35,8 +35,8 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.AbstractDocumentValidator;
 import eu.europa.esig.dss.validation.DiagnosticDataBuilder;
 import eu.europa.esig.dss.validation.ValidationContext;
-import eu.europa.esig.dss.validation.executor.SignatureProcessExecutor;
 import eu.europa.esig.dss.validation.executor.timestamp.SignatureAndTimestampProcessExecutor;
+import eu.europa.esig.dss.validation.executor.timestamp.TimestampProcessExecutor;
 
 public class SingleTimestampValidator extends AbstractDocumentValidator implements TimestampValidator {
 
@@ -54,7 +54,7 @@ public class SingleTimestampValidator extends AbstractDocumentValidator implemen
 	}
 	
 	@Override
-	protected SignatureProcessExecutor getDefaultProcessExecutor() {
+	public TimestampProcessExecutor getDefaultProcessExecutor() {
 		return new SignatureAndTimestampProcessExecutor();
 	}
 	
