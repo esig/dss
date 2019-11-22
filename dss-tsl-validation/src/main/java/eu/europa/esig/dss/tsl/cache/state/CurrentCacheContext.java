@@ -45,6 +45,12 @@ public class CurrentCacheContext implements CacheContext {
 		state = CacheStateEnum.ERROR;
 		exception = cachedException;
 	}
+	
+	@Override
+	public void errorUpdateDate(CachedException exception) {
+		LOG.trace("Exception last occurrence updated '{}'", new Date());
+		exception.setLastOccurrenceDate(new Date());
+	}
 
 	@Override
 	public void desync() {

@@ -68,6 +68,13 @@ public interface CacheContext {
 	void error(CachedException exception);
 
 	/**
+	 * Store the last occurrence of this exception
+	 * 
+	 * @param exception an instance of {@link CachedException}
+	 */
+	void errorUpdateDate(CachedException exception);
+	
+	/**
 	 * Returns the met exception
 	 * 
 	 * @return an object with the exception and its occurrence time

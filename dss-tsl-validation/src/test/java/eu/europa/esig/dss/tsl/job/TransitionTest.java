@@ -145,8 +145,8 @@ public class TransitionTest {
 		
 		assertNull(tlInfo.getDownloadCacheInfo().getLastSuccessDownloadTime());
 		assertNotNull(tlInfo.getDownloadCacheInfo().getLastStateTransitionTime());
-		assertNotNull(tlInfo.getDownloadCacheInfo().getExceptionFirstOccurrenceTime());
-		assertEquals(tlInfo.getDownloadCacheInfo().getExceptionFirstOccurrenceTime(), tlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
+		assertNotNull(tlInfo.getDownloadCacheInfo().getExceptionLastOccurrenceTime());
+		assertEquals(tlInfo.getDownloadCacheInfo().getExceptionLastOccurrenceTime(), tlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
 		
 		job.setOnlineDataLoader(getOnlineDataLoader(CZ, url));
 		job.onlineRefresh();
@@ -154,7 +154,7 @@ public class TransitionTest {
 		summary = job.getSummary();
 		tlInfo = summary.getOtherTLInfos().get(0);
 		
-		assertNull(tlInfo.getDownloadCacheInfo().getExceptionFirstOccurrenceTime());
+		assertNull(tlInfo.getDownloadCacheInfo().getExceptionLastOccurrenceTime());
 		assertNotNull(tlInfo.getDownloadCacheInfo().getLastStateTransitionTime());
 		assertNotNull(tlInfo.getDownloadCacheInfo().getLastSuccessDownloadTime());
 		assertEquals(tlInfo.getDownloadCacheInfo().getLastStateTransitionTime(), tlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
@@ -167,8 +167,8 @@ public class TransitionTest {
 
 		assertNull(tlInfo.getDownloadCacheInfo().getLastSuccessDownloadTime());
 		assertNotNull(tlInfo.getDownloadCacheInfo().getLastStateTransitionTime());
-		assertNotNull(tlInfo.getDownloadCacheInfo().getExceptionFirstOccurrenceTime());
-		assertEquals(tlInfo.getDownloadCacheInfo().getExceptionFirstOccurrenceTime(), tlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
+		assertNotNull(tlInfo.getDownloadCacheInfo().getExceptionLastOccurrenceTime());
+		assertEquals(tlInfo.getDownloadCacheInfo().getExceptionLastOccurrenceTime(), tlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
 
 	}
 

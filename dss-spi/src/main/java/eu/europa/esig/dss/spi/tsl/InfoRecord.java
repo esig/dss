@@ -25,6 +25,8 @@ public interface InfoRecord extends Serializable {
 	
 	Date getExceptionFirstOccurrenceTime();
 	
+	Date getExceptionLastOccurrenceTime();
+	
 	boolean isResultExist();
 
 }

@@ -1,6 +1,9 @@
 package eu.europa.esig.dss.tsl.dto;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 import eu.europa.esig.dss.spi.tsl.DownloadInfoRecord;
 
@@ -27,14 +30,14 @@ public class DownloadCacheDTO extends AbstractCacheDTO implements DownloadInfoRe
 
 	@Override
 	public Date getLastDownloadAttemptTime() {
-		return latestDate(latestDate(lastSuccessDownloadTime, getLastStateTransitionTime()), getExceptionFirstOccurrenceTime());
+		List<Date> dates = new ArrayList<Date>();
+		dates.add(lastSuccessDownloadTime);
+		dates.add(getExceptionLastOccurrenceTime());
+		dates.add(getLastStateTransitionTime());
+		return compareDates(dates);
 	}
-
-	/**
-	 * Compare two dates
-	 * @return the latest of the two dates
-	 */
-	public static Date latestDate(Date a, Date b) {
-	    return a == null ? b : (b == null ? a : (a.after(b) ? a : b));
+	
+	private Date compareDates(List<Date> dates) {
+		return dates.stream().filter(Objects::nonNull).max(Date::compareTo).get();		
 	}
 }

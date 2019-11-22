@@ -3,9 +3,15 @@ package eu.europa.esig.dss.tsl.cache.state;
 import java.util.Date;
 import java.util.Objects;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import eu.europa.esig.dss.tsl.cache.CachedResult;
+import eu.europa.esig.dss.utils.Utils;
 
 public class CachedEntry<R extends CachedResult> {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(CachedEntry.class);
 
 	private final CacheContext cacheContext = new CurrentCacheContext();
 	private R cachedResult;
@@ -36,10 +42,19 @@ public class CachedEntry<R extends CachedResult> {
 	}
 
 	public void error(CachedException exception) {
-		cacheContext.error(exception);
-		cachedResult = null; // reset in case of error
+		if (isNewError(exception)) {
+			cacheContext.error(exception);
+			cachedResult = null; // reset in case of error
+		} else {
+			cacheContext.errorUpdateDate(cacheContext.getException());
+			LOG.trace("Update is skipped, ERROR is already recorded (Error last occurrence updated)");
+		}
 	}
-
+	
+	private boolean isNewError(CachedException wrappedException) {
+		return !isError() || !Utils.areStringsEqual(getExceptionStackTrace(), wrappedException.getStackTrace());
+	}
+	
 	public void expire() {
 		cacheContext.refreshNeeded();
 	}
@@ -93,4 +108,10 @@ public class CachedEntry<R extends CachedResult> {
 		return null;
 	}
 
+	public Date getExceptionLastOccurrenceTime() {
+		if (cacheContext.getException() != null) {
+			return cacheContext.getException().getLastOccurrenceDate();
+		}
+		return null;
+	}
 }
