@@ -3,7 +3,7 @@ package eu.europa.esig.dss.validation.executor;
 import eu.europa.esig.dss.validation.executor.signature.ValidationLevel;
 import eu.europa.esig.dss.validation.reports.Reports;
 
-public interface SignatureAndTimestampProcessExecutor extends ProcessExecutor<Reports> {
+public interface SignatureProcessExecutor extends ProcessExecutor<Reports> {
 
 	/**
 	 * This method allows to set the validation level that is used during the

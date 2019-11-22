@@ -35,15 +35,15 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.ContainerInfo;
-import eu.europa.esig.dss.validation.DocumentValidator;
-import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.ManifestFile;
+import eu.europa.esig.dss.validation.SignatureValidator;
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 public abstract class AbstractASiCContainerValidator extends DefaultDocumentValidator {
 
-	protected List<DocumentValidator> validators;
+	protected List<SignatureValidator> validators;
 
 	protected ASiCExtractResult extractResult;
 
@@ -83,9 +83,9 @@ public abstract class AbstractASiCContainerValidator extends DefaultDocumentVali
 	@Override
 	public List<AdvancedSignature> prepareSignatureValidationContext(final ValidationContext validationContext) {
 		List<AdvancedSignature> allSignatures = new ArrayList<AdvancedSignature>();
-		List<DocumentValidator> currentValidators = getValidators();
-		for (DocumentValidator documentValidator : currentValidators) { // CAdES / XAdES
-			allSignatures.addAll(documentValidator.prepareSignatureValidationContext(validationContext));
+		List<SignatureValidator> currentValidators = getValidators();
+		for (SignatureValidator signatureValidator : currentValidators) { // CAdES / XAdES
+			allSignatures.addAll(signatureValidator.prepareSignatureValidationContext(validationContext));
 		}
 		List<TimestampToken> externalTimestamps = attachExternalTimestamps(allSignatures);
 		for (TimestampToken timestamp : externalTimestamps) {
@@ -150,15 +150,15 @@ public abstract class AbstractASiCContainerValidator extends DefaultDocumentVali
 	@Override
 	public List<AdvancedSignature> getSignatures() {
 		List<AdvancedSignature> allSignatures = new ArrayList<AdvancedSignature>();
-		List<DocumentValidator> currentValidators = getValidators();
-		for (DocumentValidator documentValidator : currentValidators) {
-			allSignatures.addAll(documentValidator.getSignatures());
+		List<SignatureValidator> currentValidators = getValidators();
+		for (SignatureValidator signatureValidator : currentValidators) {
+			allSignatures.addAll(signatureValidator.getSignatures());
 		}
 
 		return allSignatures;
 	}
 
-	protected abstract List<DocumentValidator> getValidators();
+	protected abstract List<SignatureValidator> getValidators();
 
 	protected List<DSSDocument> getSignatureDocuments() {
 		return extractResult.getSignatureDocuments();

@@ -77,7 +77,7 @@ public class ASiCEWithCAdESTimestampValidatorTest extends PKIFactoryAccess {
 				archiveTimestamp, archiveManifest, TimestampType.ARCHIVE_TIMESTAMP, manifestFile, certificateVerifier.createValidationPool());
 		asiceWithCAdESTimestampValidator.setCertificateVerifier(certificateVerifier);
 		
-		Reports reports = asiceWithCAdESTimestampValidator.validate();
+		Reports reports = asiceWithCAdESTimestampValidator.validateDocument();
 
 		assertNotNull(reports);
 		assertNotNull(reports.getDiagnosticDataJaxb());

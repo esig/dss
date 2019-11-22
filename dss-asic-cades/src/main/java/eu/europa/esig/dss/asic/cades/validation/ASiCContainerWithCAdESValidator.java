@@ -41,9 +41,9 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
+import eu.europa.esig.dss.validation.SignatureValidator;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 /**
@@ -74,9 +74,9 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	}
 
 	@Override
-	protected List<DocumentValidator> getValidators() {
+	protected List<SignatureValidator> getValidators() {
 		if (validators == null) {
-			validators = new ArrayList<DocumentValidator>();
+			validators = new ArrayList<SignatureValidator>();
 			for (final DSSDocument signature : getSignatureDocuments()) {
 				CMSDocumentForASiCValidator cadesValidator = new CMSDocumentForASiCValidator(signature);
 				cadesValidator.setCertificateVerifier(certificateVerifier);

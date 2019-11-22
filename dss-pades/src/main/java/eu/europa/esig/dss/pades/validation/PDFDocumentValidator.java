@@ -39,6 +39,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.executor.timestamp.SignatureAndTimestampProcessExecutor;
 
 /**
  * Validation of PDF document.
@@ -64,6 +65,11 @@ public class PDFDocumentValidator extends DefaultDocumentValidator {
 	@Override
 	public boolean isSupported(DSSDocument dssDocument) {
 		return DSSUtils.compareFirstBytes(dssDocument, pdfPreamble);
+	}
+	
+	@Override
+	protected SignatureAndTimestampProcessExecutor getDefaultProcessExecutor() {
+		return new SignatureAndTimestampProcessExecutor();
 	}
 
 	/**

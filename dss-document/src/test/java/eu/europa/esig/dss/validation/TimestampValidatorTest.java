@@ -20,7 +20,7 @@ import eu.europa.esig.dss.simplereport.SimpleReportFacade;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.timestamp.TimestampValidator;
+import eu.europa.esig.dss.validation.timestamp.SingleTimestampValidator;
 
 public class TimestampValidatorTest {
 	
@@ -28,7 +28,7 @@ public class TimestampValidatorTest {
 	public void testWithAttached() throws Exception {
 		DSSDocument timestamp = new FileDocument("src/test/resources/d-trust.tsr");
 		DSSDocument timestampedContent = new InMemoryDocument("Test123".getBytes());
-		TimestampValidator timestampValidator = new TimestampValidator(timestamp, timestampedContent, TimestampType.CONTENT_TIMESTAMP);
+		SingleTimestampValidator timestampValidator = new SingleTimestampValidator(timestamp, timestampedContent, TimestampType.CONTENT_TIMESTAMP);
 		timestampValidator.setCertificateVerifier(new CommonCertificateVerifier());
 		
 		validate(timestampValidator);
@@ -39,15 +39,15 @@ public class TimestampValidatorTest {
 		DSSDocument timestamp = new FileDocument("src/test/resources/d-trust.tsr");
 		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA256, 
 				Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, "Test123".getBytes())));
-		TimestampValidator timestampValidator = new TimestampValidator(timestamp, digestDocument, TimestampType.CONTENT_TIMESTAMP);
+		SingleTimestampValidator timestampValidator = new SingleTimestampValidator(timestamp, digestDocument, TimestampType.CONTENT_TIMESTAMP);
 		timestampValidator.setCertificateVerifier(new CommonCertificateVerifier());
 		
 		validate(timestampValidator);
 	}
 	
-	private void validate(TimestampValidator timestampValidator) throws Exception {
+	private void validate(SingleTimestampValidator timestampValidator) throws Exception {
 		
-		Reports reports = timestampValidator.validate();
+		Reports reports = timestampValidator.validateDocument();
 		
 		assertNotNull(reports);
 		assertNotNull(reports.getDiagnosticDataJaxb());

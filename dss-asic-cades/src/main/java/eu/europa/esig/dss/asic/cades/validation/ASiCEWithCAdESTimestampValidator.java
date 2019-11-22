@@ -25,9 +25,9 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import eu.europa.esig.dss.validation.timestamp.TimestampValidator;
+import eu.europa.esig.dss.validation.timestamp.SingleTimestampValidator;
 
-public class ASiCEWithCAdESTimestampValidator extends TimestampValidator {
+public class ASiCEWithCAdESTimestampValidator extends SingleTimestampValidator {
 
 	/* ASiCArchiveManifest */
 	private final ManifestFile manifestFile;

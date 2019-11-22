@@ -20,10 +20,6 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,24 +29,16 @@ import java.util.ServiceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.ValidationPolicyFacade;
-import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.spi.DSSSecurityProvider;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
-import eu.europa.esig.dss.validation.executor.SignatureAndTimestampProcessExecutor;
+import eu.europa.esig.dss.validation.executor.SignatureProcessExecutor;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
-import eu.europa.esig.dss.validation.executor.signature.ValidationLevel;
-import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 
 /**
@@ -61,30 +49,13 @@ import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
  * SignatureScopeFinder as defined by
  * eu.europa.esig.dss.validation.scope.SignatureScopeFinderFactory
  */
-public abstract class DefaultDocumentValidator implements DocumentValidator, ProcessExecutorProvider<SignatureAndTimestampProcessExecutor> {
+public abstract class DefaultDocumentValidator extends AbstractDocumentValidator implements SignatureValidator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultDocumentValidator.class);
 
 	static {
 		Security.addProvider(DSSSecurityProvider.getSecurityProvider());
 	}
-
-	/**
-	 * This variable can hold a specific {@code SignatureProcessExecutor}
-	 */
-	protected SignatureAndTimestampProcessExecutor processExecutor = null;
-
-	/**
-	 * This is the pool of certificates used in the validation process. The
-	 * pools present in the certificate verifier are merged and added to this
-	 * pool.
-	 */
-	protected CertificatePool validationCertPool = null;
-
-	/**
-	 * The document to be validated (with the signature(s))
-	 */
-	protected DSSDocument document;
 
 	/**
 	 * In case of a detached signature this {@code List} contains the signed
@@ -104,23 +75,9 @@ public abstract class DefaultDocumentValidator implements DocumentValidator, Pro
 
 	protected CertificateToken providedSigningCertificateToken = null;
 
-	/**
-	 * The reference to the certificate verifier. The current DSS implementation
-	 * proposes {@link eu.europa.esig.dss.validation.CommonCertificateVerifier}.
-	 * This verifier encapsulates the references to different sources used in
-	 * the signature validation process.
-	 */
-	protected CertificateVerifier certificateVerifier;
-
 	protected final SignatureScopeFinder signatureScopeFinder;
 
 	protected SignaturePolicyProvider signaturePolicyProvider;
-
-	// Default configuration with the highest level
-	private ValidationLevel validationLevel = ValidationLevel.ARCHIVAL_DATA;
-	
-	// Produces the ETSI Validation Report by default
-	private boolean enableEtsiValidationReport = true;
 
 	protected DefaultDocumentValidator(SignatureScopeFinder signatureScopeFinder) {
 		this.signatureScopeFinder = signatureScopeFinder;
@@ -169,24 +126,6 @@ public abstract class DefaultDocumentValidator implements DocumentValidator, Pro
 		providedSigningCertificateToken = validationCertPool.getInstance(token, CertificateSourceType.OTHER);
 	}
 
-	/**
-	 * To carry out the validation process of the signature(s) some external
-	 * sources of certificates and of revocation data can be needed. The
-	 * certificate verifier is used to pass these values. Note that once this
-	 * setter is called any change in the content of the
-	 * <code>CommonTrustedCertificateSource</code> or in adjunct certificate
-	 * source is not taken into account.
-	 *
-	 * @param certificateVerifier
-	 */
-	@Override
-	public void setCertificateVerifier(final CertificateVerifier certificateVerifier) {
-		this.certificateVerifier = certificateVerifier;
-		if (validationCertPool == null) {
-			validationCertPool = certificateVerifier.createValidationPool();
-		}
-	}
-
 	@Override
 	public void setDetachedContents(final List<DSSDocument> detachedContents) {
 		this.detachedContents = detachedContents;
@@ -201,120 +140,17 @@ public abstract class DefaultDocumentValidator implements DocumentValidator, Pro
 	public void setManifestFiles(List<ManifestFile> manifestFiles) {
 		this.manifestFiles = manifestFiles;
 	}
-
-	@Override
-	public void setValidationLevel(ValidationLevel validationLevel) {
-		this.validationLevel = validationLevel;
-	}
 	
-	@Override
-	public void setEnableEtsiValidationReport(boolean enableEtsiValidationReport) {
-		this.enableEtsiValidationReport = enableEtsiValidationReport;
-	}
-
-	@Override
-	public Reports validateDocument() {
-		return validateDocument((InputStream) null);
-	}
-
-	@Override
-	public Reports validateDocument(final URL validationPolicyURL) {
-		if (validationPolicyURL == null) {
-			return validateDocument((InputStream) null);
-		}
-		try {
-			return validateDocument(validationPolicyURL.openStream());
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	@Override
-	public Reports validateDocument(final String policyResourcePath) {
-		if (policyResourcePath == null) {
-			return validateDocument((InputStream) null);
-		}
-		return validateDocument(getClass().getResourceAsStream(policyResourcePath));
-	}
-
-	@Override
-	public Reports validateDocument(final File policyFile) {
-		if ((policyFile == null) || !policyFile.exists()) {
-			return validateDocument((InputStream) null);
-		}
-		final InputStream inputStream = DSSUtils.toByteArrayInputStream(policyFile);
-		return validateDocument(inputStream);
-	}
-
-	/**
-	 * Validates the document and all its signatures. The policyDataStream
-	 * contains the constraint file. If null or empty the default file is used.
-	 *
-	 * @param policyDataStream
-	 *            the {@code InputStream} with the validation policy
-	 * @return the validation reports
-	 */
-	@Override
-	public Reports validateDocument(final InputStream policyDataStream) {
-		ValidationPolicy validationPolicy = null;
-		try {
-			validationPolicy = ValidationPolicyFacade.newFacade().getValidationPolicy(policyDataStream);
-		} catch (Exception e) {
-			throw new DSSException("Unable to load the policy", e);
-		}
-		return validateDocument(validationPolicy);
-	}
-
-	/**
-	 * Validates the document and all its signatures. The
-	 * {@code validationPolicyDom} contains the constraint file. If null or
-	 * empty the default file is used.
-	 *
-	 * @param validationPolicyJaxb
-	 *            the {@code ConstraintsParameters} to use in the validation process
-	 * @return the validation reports
-	 */
-	@Override
-	public Reports validateDocument(final ConstraintsParameters validationPolicyJaxb) {
-		final ValidationPolicy validationPolicy = new EtsiValidationPolicy(validationPolicyJaxb);
-		return validateDocument(validationPolicy);
-	}
-
-	/**
-	 * Validates the document and all its signatures. The
-	 * {@code validationPolicyDom} contains the constraint file. If null or
-	 * empty the default file is used.
-	 *
-	 * @param validationPolicy
-	 *            the {@code ValidationPolicy} to use in the validation process
-	 * @return the validation reports
-	 */
-	@Override
-	public Reports validateDocument(final ValidationPolicy validationPolicy) {
-		LOG.info("Document validation...");
-		Objects.requireNonNull(certificateVerifier, "CertificateVerifier is not defined");
-		Objects.requireNonNull(document, "Document is not provided to the validator");
-
+	protected DiagnosticDataBuilder prepareDiagnosticDataBuilder(final ValidationContext validationContext, final ValidationPolicy validationPolicy) {
 		ensureSignaturePolicyDetectorInitialized();
 
 		boolean structuralValidation = isRequireStructuralValidation(validationPolicy);
-		final ValidationContext validationContext = new SignatureValidationContext(validationCertPool);
 
 		List<AdvancedSignature> allSignatureList = prepareSignatureValidationContext(validationContext);
 		allSignatureList = processSignaturesValidation(validationContext, allSignatureList, structuralValidation);
-
-		final XmlDiagnosticData diagnosticData = new DiagnosticDataBuilder().document(document).containerInfo(getContainerInfo())
-				.foundSignatures(allSignatureList)
-				.usedCertificates(validationContext.getProcessedCertificates()).usedRevocations(validationContext.getProcessedRevocations())
-				.setDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm())
-				.includeRawCertificateTokens(certificateVerifier.isIncludeCertificateTokenValues())
-				.includeRawRevocationData(certificateVerifier.isIncludeCertificateRevocationValues())
-				.includeRawTimestampTokens(certificateVerifier.isIncludeTimestampTokenValues())
-				.certificateSourceTypes(validationContext.getCertificateSourceTypes())
-				.trustedCertificateSources(certificateVerifier.getTrustedCertSources())
-				.validationDate(validationContext.getCurrentTime()).build();
-
-		return processValidationPolicy(diagnosticData, validationPolicy);
+		
+		return super.prepareDiagnosticDataBuilder(validationContext, validationPolicy)
+				.foundSignatures(allSignatureList).containerInfo(getContainerInfo());
 	}
 	
 	@Override
@@ -373,15 +209,6 @@ public abstract class DefaultDocumentValidator implements DocumentValidator, Pro
 		return null;
 	}
 
-	protected final Reports processValidationPolicy(XmlDiagnosticData diagnosticData, ValidationPolicy validationPolicy) {
-		final SignatureAndTimestampProcessExecutor executor = provideProcessExecutorInstance();
-		executor.setValidationPolicy(validationPolicy);
-		executor.setValidationLevel(validationLevel);
-		executor.setDiagnosticData(diagnosticData);
-		executor.setEnableEtsiValidationReport(enableEtsiValidationReport);
-		return executor.execute();
-	}
-
 	@Override
 	public void setSignaturePolicyProvider(SignaturePolicyProvider signaturePolicyProvider) {
 		this.signaturePolicyProvider = signaturePolicyProvider;
@@ -394,22 +221,21 @@ public abstract class DefaultDocumentValidator implements DocumentValidator, Pro
 		}
 	}
 
-	@Override
-	public void setProcessExecutor(final SignatureAndTimestampProcessExecutor processExecutor) {
-		this.processExecutor = processExecutor;
-	}
-
 	/**
 	 * This method returns the process executor. If the instance of this class
 	 * is not yet instantiated then the new instance is created.
 	 *
 	 * @return {@code SignatureProcessExecutor}
 	 */
-	public SignatureAndTimestampProcessExecutor provideProcessExecutorInstance() {
+	public SignatureProcessExecutor provideProcessExecutorInstance() {
 		if (processExecutor == null) {
-			processExecutor = new DefaultSignatureProcessExecutor();
+			processExecutor = getDefaultProcessExecutor();
 		}
 		return processExecutor;
+	}
+	
+	protected SignatureProcessExecutor getDefaultProcessExecutor() {
+		return new DefaultSignatureProcessExecutor();
 	}
 
 	/**

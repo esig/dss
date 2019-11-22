@@ -37,7 +37,7 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
  * Signature timestamp representation
  * This class is only used in case of Document Timestamp (not signature-timestamp from CAdES/CMS)
  */
-public class PdfDocTimestampInfo extends PdfCMSInfo implements PdfSignatureOrDocTimestampInfo {
+public class PdfDocTimestampInfo extends PdfCMSInfo {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PdfDocTimestampInfo.class);
 

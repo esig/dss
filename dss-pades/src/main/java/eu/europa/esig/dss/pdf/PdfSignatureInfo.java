@@ -30,7 +30,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 
-public class PdfSignatureInfo extends PdfCMSInfo implements PdfSignatureOrDocTimestampInfo {
+public class PdfSignatureInfo extends PdfCMSInfo {
 
 	private final CAdESSignature cades;
 
