@@ -281,6 +281,15 @@ public class RemoteSignatureParameters implements Serializable {
 	public EncryptionAlgorithm getEncryptionAlgorithm() {
 		return encryptionAlgorithm;
 	}
+	
+	/**
+	 * Get the mask generation function
+	 * 
+	 * @return the mask generation function.
+	 */
+	public MaskGenerationFunction getMaskGenerationFunction() {
+		return maskGenerationFunction;
+	}
 
 	/**
 	 * Gets the signature algorithm.
