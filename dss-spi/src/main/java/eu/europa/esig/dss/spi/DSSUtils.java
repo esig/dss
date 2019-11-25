@@ -36,6 +36,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -918,6 +919,37 @@ public final class DSSUtils {
 			return read;
 		} catch (IOException e) {
 			throw new DSSException("Cannot read the InputStream!", e);
+		}
+	}
+	
+	/**
+	 * This method encodes an URI to be compliant with the RFC 3986 (see DSS-1475 for details)
+	 * @param fileURI the uri to be encoded
+	 * @return the encoded result
+	 */
+	public static String encodeURI(String fileURI) {
+		StringBuilder sb = new StringBuilder();
+		String uriDelimiter = "";
+		final String[] uriParts = fileURI.split("/");
+		for (String part : uriParts) {
+			sb.append(uriDelimiter );
+			sb.append(encodePartURI(part));
+			uriDelimiter = "/";
+		}
+		return sb.toString();
+	}
+	
+	/**
+	 * This method encodes a partial URI to be compliant with the RFC 3986 (see DSS-1475 for details)
+	 * @param uriPart the partial uri to be encoded
+	 * @return the encoded result
+	 */
+	private static String encodePartURI(String uriPart) {
+		try {
+			return URLEncoder.encode(uriPart, "UTF-8").replace("+", "%20");
+		} catch (Exception e) {
+			LOG.warn("Unable to encode uri '{}' : {}", uriPart, e.getMessage());
+			return uriPart;
 		}
 	}
 

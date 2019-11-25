@@ -42,6 +42,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
@@ -84,7 +85,7 @@ public class ASiCEWithCAdESManifestParser {
 		for (DSSDocument manifest : manifestDocuments) {
 			Element manifestRoot = getManifestRootElement(manifest);
 			if (manifestRoot != null) {
-				String linkedSignatureName = getLinkedSignatureName(manifestRoot);
+				String linkedSignatureName = DSSUtils.decodeUrl(getLinkedSignatureName(manifestRoot));
 				if (signatureName.equals(linkedSignatureName)) {
 					return manifest;
 				}
@@ -157,7 +158,7 @@ public class ASiCEWithCAdESManifestParser {
 			for (int i = 0; i < dataObjectReferences.getLength(); i++) {
 				ManifestEntry entry = new ManifestEntry();
 				Element dataObjectReference = (Element) dataObjectReferences.item(i);
-				entry.setFileName(dataObjectReference.getAttribute(ASiCAttribute.URI.getAttributeName()));
+				entry.setFileName(DSSUtils.decodeUrl(dataObjectReference.getAttribute(ASiCAttribute.URI.getAttributeName())));
 				entry.setMimeType(getMimeType(dataObjectReference));
 
 				DigestAlgorithm digestAlgorithm = getDigestAlgorithm(dataObjectReference);

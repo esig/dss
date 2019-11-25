@@ -35,12 +35,13 @@ import eu.europa.esig.dss.definition.xmldsig.XMLDSigNamespace;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.spi.DSSUtils;
 
 public abstract class AbstractManifestBuilder {
 
 	protected void addSigReference(final Document documentDom, final Element asicManifestDom, String uri, MimeType mimeType) {
 		final Element sigReferenceDom = DomUtils.addElement(documentDom, asicManifestDom, ASiCNamespace.NS, ASiCElement.SIG_REFERENCE);
-		sigReferenceDom.setAttribute(ASiCAttribute.URI.getAttributeName(), uri);
+		sigReferenceDom.setAttribute(ASiCAttribute.URI.getAttributeName(), DSSUtils.encodeURI(uri));
 		sigReferenceDom.setAttribute(ASiCAttribute.MIME_TYPE.getAttributeName(), mimeType.getMimeTypeString());
 	}
 
@@ -48,7 +49,7 @@ public abstract class AbstractManifestBuilder {
 		final Element dataObjectReferenceDom = DomUtils.addElement(documentDom, asicManifestDom, ASiCNamespace.NS, ASiCElement.DATA_OBJECT_REFERENCE);
 		
 		final String name = document.getName() != null ? document.getName() : ASiCUtils.ZIP_ENTRY_DETACHED_FILE;
-		dataObjectReferenceDom.setAttribute(ASiCAttribute.URI.getAttributeName(), name);
+		dataObjectReferenceDom.setAttribute(ASiCAttribute.URI.getAttributeName(), DSSUtils.encodeURI(name));
 
 		MimeType mimeType = document.getMimeType();
 		if (mimeType != null) {

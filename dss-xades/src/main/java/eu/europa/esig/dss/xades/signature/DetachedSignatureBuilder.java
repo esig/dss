@@ -20,16 +20,13 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.net.URLEncoder;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -39,8 +36,6 @@ import eu.europa.esig.dss.xades.reference.DSSReference;
  * This class handles the specifics of the detached XML signature.
  */
 class DetachedSignatureBuilder extends XAdESSignatureBuilder {
-
-	private static final Logger LOG = LoggerFactory.getLogger(DetachedSignatureBuilder.class);
 
 	/**
 	 * The default constructor for DetachedSignatureBuilder.<br>
@@ -79,15 +74,7 @@ class DetachedSignatureBuilder extends XAdESSignatureBuilder {
 		final DSSReference reference = new DSSReference();
 		reference.setId(REFERENCE_ID_SUFFIX + deterministicId + "-" + referenceIndex);
 		if (Utils.isStringNotEmpty(document.getName())) {
-			final String fileURI = document.getName();
-			StringBuilder sb = new StringBuilder();
-		    String uriDelimiter = "";
-			final String[] uriParts = fileURI.split("/");
-			for(String part: uriParts) {
-				sb.append(uriDelimiter + encodeURI(part));
-				uriDelimiter = "/";
-			}
-			reference.setUri(sb.toString());
+			reference.setUri(DSSUtils.encodeURI(document.getName()));
 		}
 		reference.setContents(document);
 		DigestAlgorithm digestAlgorithm = getReferenceDigestAlgorithmOrDefault(params);
@@ -95,16 +82,6 @@ class DetachedSignatureBuilder extends XAdESSignatureBuilder {
 		return reference;
 	}
 	
-	private String encodeURI(String uriPart) {
-		// MUST comply RFC 3986 (see DSS-1475 for details)
-		try {
-			return URLEncoder.encode(uriPart, "UTF-8").replace("+", "%20");
-		} catch (Exception e) {
-			LOG.warn("Unable to encode uri '{}' : {}", uriPart, e.getMessage());
-			return uriPart;
-		}
-	}
-
 	@Override
 	protected DSSDocument transformReference(final DSSReference reference) {
 		return reference.getContents();
