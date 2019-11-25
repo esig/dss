@@ -761,19 +761,27 @@ public final class DSSXMLUtils {
 			digestValueBase64 = DomUtils.getValue(element, XMLDSigPaths.DIGEST_VALUE_PATH);
 		}
 
-		if (Utils.isStringEmpty(digestAlgorithmUri) || Utils.isStringEmpty(digestValueBase64)) {
-			LOG.warn("Unable to parse the digest/value");
-			return null;
-		}
+		return new Digest(getDigestAlgorithm(digestAlgorithmUri), getDigestValue(digestValueBase64));
+	}
 
-		try {
-			final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forXML(digestAlgorithmUri);
-			final byte[] digestValue = Utils.fromBase64(digestValueBase64);
-			return new Digest(digestAlgorithm, digestValue);
-		} catch (DSSException e) {
-			LOG.warn("Digest object cannot be built. Reason: {}", e.getMessage());
-			return null;
+	private static byte[] getDigestValue(String digestValueBase64) {
+		byte[] result = null;
+		if (Utils.isStringNotEmpty(digestValueBase64)) {
+			result = Utils.fromBase64(digestValueBase64);
 		}
+		return result;
+	}
+
+	private static DigestAlgorithm getDigestAlgorithm(String digestAlgorithmUri) {
+		DigestAlgorithm result = null;
+		if (Utils.isStringNotEmpty(digestAlgorithmUri)) {
+			try {
+				result = DigestAlgorithm.forXML(digestAlgorithmUri);
+			} catch (IllegalArgumentException e) {
+				LOG.warn("Unable to retrieve the used digest algorithm", e);
+			}
+		}
+		return result;
 	}
 
 	/**
