@@ -152,8 +152,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		documentsToStore.addAll(signatures);
 		excludeExtendedDocuments(documentsToStore, extendedDocuments);
 		final DSSDocument asicSignature = buildASiCContainer(dataToSignHelper.getSignedDocuments(), extendedDocuments, documentsToStore, asicParameters, null);
-		asicSignature
-				.setName(getFinalArchiveName(asicSignature, SigningOperation.SIGN, parameters.getSignatureLevel(), asicSignature.getMimeType()));
+		asicSignature.setName(getFinalArchiveName(asicSignature, SigningOperation.SIGN, parameters.getSignatureLevel(), asicSignature.getMimeType()));
 		parameters.reinitDeterministicId();
 		return asicSignature;
 	}
@@ -174,7 +173,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		Objects.requireNonNull(toExtendDocument, "toExtendDocument is not defined!");
 		Objects.requireNonNull(parameters, "Cannot extend the signature. SignatureParameters are not defined!");
 		
-		if (!ASiCUtils.isZip(toExtendDocument) || !ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(toExtendDocument, ".p7s")) {
+		if (!isExtensionSupported(toExtendDocument, parameters)) {
 			throw new DSSException("Unsupported file type");
 		}
 
@@ -199,7 +198,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		}
 
 		for (DSSDocument signature : signatureDocuments) {
-			// not to extend the signature itself when extending CAdES-E LTA
+			// not to extend the signature itself when extending ASiC-E CAdES LTA
 			if (!addASiCEArchiveManifest || !isCoveredByArchiveManifest(signature)) {
 				DSSDocument extendedSignature = extendSignatureDocument(signature, cadesParameters, containerType);
 				extendedDocuments.add(extendedSignature);
@@ -218,6 +217,16 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		extensionResult.setName(
 				getFinalArchiveName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel(), toExtendDocument.getMimeType()));
 		return extensionResult;
+	}
+	
+	private boolean isExtensionSupported(DSSDocument toExtendDocument, ASiCWithCAdESSignatureParameters parameters) {
+		// ASiC-E CAdES supports timestamping without a signature (LTA-level only)
+		// Explicetly skip ASiC XAdES signatures
+		return ASiCUtils.isZip(toExtendDocument) && 
+				( ASiCContainerType.ASiC_E.equals(parameters.aSiC().getContainerType()) && 
+						SignatureLevel.CAdES_BASELINE_LTA.equals(parameters.getSignatureLevel())
+				|| ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(toExtendDocument, getExpectedSignatureExtension()) )
+				&& !ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(toExtendDocument, "xml");
 	}
 	
 	private boolean isCoveredByArchiveManifest(DSSDocument signature) {

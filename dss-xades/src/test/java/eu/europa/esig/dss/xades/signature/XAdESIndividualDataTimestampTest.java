@@ -107,12 +107,10 @@ public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 
 		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(result);
 		DefaultSignatureProcessExecutor processExecutor = new DefaultSignatureProcessExecutor();
-		processExecutor.setCurrentTime(currentTime);
+		validator.setValidationTime(currentTime);
 		validator.setProcessExecutor(processExecutor);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		Reports reports = validator.validateDocument();
-
-//		reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertEquals(1, Utils.collectionSize(diagnosticData.getSignatureIdList()));

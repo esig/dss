@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import org.slf4j.Logger;
@@ -14,6 +16,8 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -27,7 +31,9 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.DocumentProcessExecutor;
 import eu.europa.esig.dss.validation.executor.signature.ValidationLevel;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 
 public abstract class AbstractDocumentValidator implements DocumentValidator {
 
@@ -103,6 +109,15 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 			processExecutor = getDefaultProcessExecutor();
 		}
 		return processExecutor;
+	}
+	
+	/**
+	 * Returns a default digest algorithm defined for a digest calculation
+	 * 
+	 * @return {@link DigestAlgorithm}
+	 */
+	protected DigestAlgorithm getDefaultDigestAlgorithm() {
+		return certificateVerifier.getDefaultDigestAlgorithm();
 	}
 	
 	/**
@@ -231,14 +246,16 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 	 */
 	protected DiagnosticDataBuilder prepareDiagnosticDataBuilder(final ValidationContext validationContext, final ValidationPolicy validationPolicy) {
 		List<AdvancedSignature> allSignatures = prepareSignatureValidationContext(validationContext, validationPolicy);
-		List<TimestampToken> timestampTokens = Collections.emptyList();
+		Map<TimestampToken, List<SignatureScope>> timestamps = Collections.emptyMap();
 		if (Utils.isCollectionEmpty(allSignatures)) {
 			// in case if no signatures found, process the timestamp only validation
-			timestampTokens = prepareTimestampValidationContext(validationContext, validationPolicy);
+			timestamps = prepareTimestampValidationContext(validationContext, validationPolicy);
 		}
 		
-		return new DiagnosticDataBuilder().document(document).foundSignatures(allSignatures).setExternalTimestamps(timestampTokens)
+		return new DiagnosticDataBuilder().document(document).foundSignatures(allSignatures)
+				.setExternalTimestamps(new ArrayList<TimestampToken>(timestamps.keySet()))
 				.usedCertificates(validationContext.getProcessedCertificates()).usedRevocations(validationContext.getProcessedRevocations())
+				.signatureScope(getSignatureScope(allSignatures, timestamps))
 				.setDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm())
 				.includeRawCertificateTokens(certificateVerifier.isIncludeCertificateTokenValues())
 				.includeRawRevocationData(certificateVerifier.isIncludeCertificateRevocationValues())
@@ -266,21 +283,23 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 	 * 
 	 * @param validationContext {@link ValidationContext}
 	 * @param validationPolicy {@link ValidationPolicy}
-	 * @return a list of {@link TimestampToken}s to be validated
+	 * @return a map of {@link TimestampToken}s to be validated and their {@link SignatureScope}s
 	 */
-	protected List<TimestampToken> prepareTimestampValidationContext(final ValidationContext validationContext, final ValidationPolicy validationPolicy) {
-		List<TimestampToken> timestampTokens = getTimestamps();
-		for (TimestampToken timestampToken : timestampTokens) {
+	protected Map<TimestampToken, List<SignatureScope>> prepareTimestampValidationContext(
+			final ValidationContext validationContext, final ValidationPolicy validationPolicy) {
+		
+		Map<TimestampToken, List<SignatureScope>> timestamps = getTimestamps();
+		setTimestamedReferences(timestamps);
+		for (TimestampToken timestampToken : timestamps.keySet()) {
 			validationContext.addTimestampTokenForVerification(timestampToken);
 			CertificateToken issuer = validationCertPool.getIssuer(timestampToken);
 			if (issuer != null) {
 				validationContext.addCertificateTokenForVerification(issuer);
 			}
 		}
-		
 		validateContext(validationContext);
 		
-		return timestampTokens;
+		return timestamps;
 	}
 	
 	/**
@@ -295,14 +314,52 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 	}
 	
 	/**
-	 * Returns a list of {@link TimestampToken}s to be validated
+	 * Returns a map between {@code TimestampToken}s to be validated and their {@code SignatureScope}s
 	 * 
-	 * @return a list of {@link TimestampToken}s
+	 * @return a map between {@link TimestampToken}s and {@link SignatureScope}s
 	 */
-	protected List<TimestampToken> getTimestamps() {
+	protected Map<TimestampToken, List<SignatureScope>> getTimestamps() {
 		// not implemented by default
-		// required in implementations of {@code TimestampToken}
-		return Collections.emptyList();
+		// requires an implementation of {@code TimestampValidator}
+		return Collections.emptyMap();
+	}
+	
+	/**
+	 * Sets the timestamped references based on the given signature scope
+	 * 
+	 * @param timestamps a map of {@link TimestampToken}s and a {@link SignatureScope} list
+	 */
+	protected void setTimestamedReferences(Map<TimestampToken, List<SignatureScope>> timestamps) {
+		if (Utils.isMapNotEmpty(timestamps)) {
+			for (Map.Entry<TimestampToken, List<SignatureScope>> entry : timestamps.entrySet()) {
+				TimestampToken timestampToken = entry.getKey();
+				for (SignatureScope scope : entry.getValue()) {
+					timestampToken.getTimestampedReferences().add(
+							new TimestampedReference(scope.getDSSIdAsString(), TimestampedObjectType.SIGNED_DATA));
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Build a list of {@code SignatureScope} to add to Diagnostic Data
+	 * 
+	 * @param signatures a list of {@link AdvancedSignature}s (in case if present)
+	 * @param timestamps a map of {@link TimestampToken}s with SignatureScopes (in case of timestamp only validation)
+	 * @return a list of {@link SignatureScope}s
+	 */
+	protected List<SignatureScope> getSignatureScope(List<AdvancedSignature> signatures, Map<TimestampToken, List<SignatureScope>> timestamps) {
+		List<SignatureScope> signatureScopes = new ArrayList<SignatureScope>();
+		if (Utils.isCollectionNotEmpty(signatures)) {
+			for (AdvancedSignature signature : signatures) {
+				signatureScopes.addAll(signature.getSignatureScopes());
+			}
+		} else if (Utils.isMapNotEmpty(timestamps)) {
+			for (List<SignatureScope> signatureScope : timestamps.values()) {
+				signatureScopes.addAll(signatureScope);
+			}
+		}
+		return signatureScopes;
 	}
 
 	/**

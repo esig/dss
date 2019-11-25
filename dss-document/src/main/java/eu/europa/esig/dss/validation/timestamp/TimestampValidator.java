@@ -1,18 +1,20 @@
 package eu.europa.esig.dss.validation.timestamp;
 
 import java.util.List;
+import java.util.Map;
 
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.executor.timestamp.TimestampProcessExecutor;
+import eu.europa.esig.dss.validation.scope.SignatureScope;
 
 public interface TimestampValidator extends DocumentValidator {
 	
 	/**
-	 * Returns a list of detached timestamps
+	 * Returns a map of detached timestamps and their signatureScopes
 	 * 
-	 * @return a list of {@link TimestampToken}s
+	 * @return a map between {@link TimestampToken}s and lists of {@link SignatureScope}s
 	 */
-	List<TimestampToken> getTimestamps();
+	Map<TimestampToken, List<SignatureScope>> getTimestamps();
 	
 	/**
 	 * Returns a default implementation of a process executor for timestamp validation

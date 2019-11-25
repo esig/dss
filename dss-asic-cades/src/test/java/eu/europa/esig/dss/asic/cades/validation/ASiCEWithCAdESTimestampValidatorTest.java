@@ -31,6 +31,9 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
+import eu.europa.esig.validationreport.jaxb.ValidationReportType;
+import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
 
 public class ASiCEWithCAdESTimestampValidatorTest extends PKIFactoryAccess {
 	
@@ -74,7 +77,8 @@ public class ASiCEWithCAdESTimestampValidatorTest extends PKIFactoryAccess {
 		CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();
 		
 		ASiCEWithCAdESTimestampValidator asiceWithCAdESTimestampValidator = new ASiCEWithCAdESTimestampValidator(
-				archiveTimestamp, archiveManifest, TimestampType.ARCHIVE_TIMESTAMP, manifestFile, certificateVerifier.createValidationPool());
+				archiveTimestamp, archiveManifest, TimestampType.ARCHIVE_TIMESTAMP, 
+				manifestFile, documentsToSign, certificateVerifier.createValidationPool());
 		asiceWithCAdESTimestampValidator.setCertificateVerifier(certificateVerifier);
 		
 		Reports reports = asiceWithCAdESTimestampValidator.validateDocument();
@@ -86,6 +90,7 @@ public class ASiCEWithCAdESTimestampValidatorTest extends PKIFactoryAccess {
 		assertNotNull(reports.getXmlDetailedReport());
 		assertNotNull(reports.getSimpleReportJaxb());
 		assertNotNull(reports.getXmlSimpleReport());
+		assertNotNull(reports.getEtsiValidationReportJaxb());
 		
 		DetailedReport detailedReport = reports.getDetailedReport();
 		List<String> timestampIds = detailedReport.getTimestampIds();
@@ -113,6 +118,16 @@ public class ASiCEWithCAdESTimestampValidatorTest extends PKIFactoryAccess {
 		assertTrue(Utils.isCollectionEmpty(simpleReport.getErrors(timestampId)));
 		assertTrue(Utils.isCollectionEmpty(simpleReport.getWarnings(timestampId)));
 		assertTrue(Utils.isCollectionEmpty(simpleReport.getInfo(timestampId)));
+		
+		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
+		
+		List<SignatureValidationReportType> signatureValidationReports = etsiValidationReport.getSignatureValidationReport();
+		assertNotNull(signatureValidationReports);
+		assertEquals(1, signatureValidationReports.size());
+		SignatureValidationReportType signatureValidationReport = signatureValidationReports.get(0);
+		ValidationStatusType signatureValidationStatus = signatureValidationReport.getSignatureValidationStatus();
+		assertNotNull(signatureValidationStatus);
+		assertEquals(Indication.NO_SIGNATURE_FOUND, signatureValidationStatus.getMainIndication());
 		
 	}
 

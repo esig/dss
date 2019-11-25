@@ -20,20 +20,30 @@
  */
 package eu.europa.esig.dss.asic.cades.validation;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.validation.scope.FullSignatureScope;
+import eu.europa.esig.dss.validation.scope.ManifestSignatureScope;
+import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.timestamp.SingleTimestampValidator;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 public class ASiCEWithCAdESTimestampValidator extends SingleTimestampValidator {
 
 	/* ASiCArchiveManifest */
 	private final ManifestFile manifestFile;
+	/* A list of original documents present in the container */
+	private final List<DSSDocument> originalDocuments;
 
 	/**
 	 * Default constructor for ASiCE CAdES timestamp validator
@@ -41,12 +51,15 @@ public class ASiCEWithCAdESTimestampValidator extends SingleTimestampValidator {
 	 * @param timestampedData {@link DSSDocument} the timestampedData (ASiCManifest)
 	 * @param type {@link TimestampType} type of the timestamp
 	 * @param validatedManifestFile a validated {@link ManifestFile}
+	 * @param originalDocuments a list of original {@link DSSDocument}s present into the container
 	 * @param certificatePool {@link CertificatePool}
 	 */
 	public ASiCEWithCAdESTimestampValidator(DSSDocument timestamp, DSSDocument timestampedData, TimestampType type, 
-			ManifestFile validatedManifestFile, CertificatePool certificatePool) {
+			ManifestFile validatedManifestFile, List<DSSDocument> originalDocuments, CertificatePool certificatePool) {
 		super(timestamp, timestampedData, type);
+		Objects.requireNonNull(validatedManifestFile, "The vaidated ManifestFile must be defined!");
 		this.manifestFile = validatedManifestFile;
+		this.originalDocuments = originalDocuments;
 		this.validationCertPool = certificatePool;
 	}
 
@@ -62,8 +75,25 @@ public class ASiCEWithCAdESTimestampValidator extends SingleTimestampValidator {
 	public TimestampToken getTimestamp() {
 		TimestampToken timestamp = super.getTimestamp();
 		timestamp.setManifestFile(getCoveredManifest());
+		timestamp.setArchiveTimestampType(ArchiveTimestampType.CAdES_DETACHED);
 		findTimestampTokenSigner(timestamp);
 		return timestamp;
+	}
+	
+	@Override
+	protected List<SignatureScope> getTimestampSignatureScope() {
+		List<SignatureScope> result = new ArrayList<SignatureScope>();
+		result.add(new ManifestSignatureScope(manifestFile.getFilename(), getDigest(timestampedData)));
+		if (Utils.isCollectionNotEmpty(originalDocuments)) {
+	    	for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
+	    		for (DSSDocument document : originalDocuments) {
+	    			if (manifestEntry.getFileName().equals(document.getName())) {
+	    				result.add(new FullSignatureScope(manifestEntry.getFileName(), getDigest(document)));
+	    			}
+	    		}
+	    	}
+		}
+    	return result;
 	}
 	
 	private void findTimestampTokenSigner(TimestampToken timestamp) {

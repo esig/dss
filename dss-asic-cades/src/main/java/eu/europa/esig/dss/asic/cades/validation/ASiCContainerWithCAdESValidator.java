@@ -23,7 +23,9 @@ package eu.europa.esig.dss.asic.cades.validation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +46,7 @@ import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.SignatureValidator;
 import eu.europa.esig.dss.validation.executor.timestamp.SignatureAndTimestampProcessExecutor;
+import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampValidator;
 
@@ -162,11 +165,11 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	}
 	
 	@Override
-	public List<TimestampToken> getTimestamps() {
+	public Map<TimestampToken, List<SignatureScope>> getTimestamps() {
 		List<ASiCEWithCAdESTimestampValidator> timestampValidators = getTimestampValidators();
-		List<TimestampToken> timestamps = new ArrayList<TimestampToken>();
+		Map<TimestampToken, List<SignatureScope>> timestamps = new LinkedHashMap<TimestampToken, List<SignatureScope>>();
 		for (TimestampValidator timestampValidator : timestampValidators) {
-			timestamps.addAll(timestampValidator.getTimestamps());
+			timestamps.putAll(timestampValidator.getTimestamps());
 		}
 		return timestamps;
 	}
@@ -180,7 +183,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 				ManifestFile validatedManifestFile = getValidatedManifestFile(archiveManifest);
 				if (validatedManifestFile != null) {
 					ASiCEWithCAdESTimestampValidator timestampValidator = new ASiCEWithCAdESTimestampValidator(timestamp, archiveManifest, 
-							TimestampType.ARCHIVE_TIMESTAMP, validatedManifestFile, validationCertPool);
+							getTimestampType(validatedManifestFile), validatedManifestFile, getAllDocuments(), validationCertPool);
 					timestampValidator.setCertificateVerifier(certificateVerifier);
 					timestampValidators.add(timestampValidator);
 				} else {
@@ -204,6 +207,23 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 			}
 		}
 		return null;
+	}
+	
+	private TimestampType getTimestampType(ManifestFile manifestFile) {
+		return coversSignature(manifestFile) ? TimestampType.ARCHIVE_TIMESTAMP : TimestampType.CONTENT_TIMESTAMP;
+	}
+
+	/**
+	 * Checks if the manifestFile covers a signature
+	 * @return TRUE if manifest entries contain a signature, FALSE otherwise
+	 */
+	private boolean coversSignature(ManifestFile manifestFile) {
+		for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
+			if (ASiCUtils.isSignature(manifestEntry.getFileName())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private List<DSSDocument> getSignedDocuments(DSSDocument signature) {

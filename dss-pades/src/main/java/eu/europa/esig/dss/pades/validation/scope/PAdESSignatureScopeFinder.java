@@ -20,48 +20,48 @@
  */
 package eu.europa.esig.dss.pades.validation.scope;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
-import eu.europa.esig.dss.pdf.PdfSignatureInfo;
+import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.scope.AbstractSignatureScopeFinder;
 import eu.europa.esig.dss.validation.scope.FullSignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 
 /**
+ * The classes finds a signer data for a PAdESSignature / PdfSignatureOrDocTimestampInfo instance
  *
  */
 public class PAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<PAdESSignature> {
 
 	@Override
 	public List<SignatureScope> findSignatureScope(final PAdESSignature pAdESSignature) {
-
-		List<SignatureScope> result = new ArrayList<SignatureScope>();
-		final PdfSignatureInfo pdfSignature = pAdESSignature.getPdfSignatureInfo();
-		if (pdfSignature.isCoverAllOriginalBytes()) {
-			result.add(new FullSignatureScope("Full PDF", getOriginalPdfDigest(pAdESSignature)));
-		} else if (pAdESSignature.hasOuterSignatures()) {
-			final int outerSignatureSize = pdfSignature.getOuterSignatures().size();
-			result.add(new PdfByteRangeSignatureScope("PDF previous version #" + outerSignatureSize, pdfSignature.getSignatureByteRange(), 
-					getOriginalPdfDigest(pAdESSignature)));
+		return Arrays.asList(findSignatureScope(pAdESSignature.getPdfSignatureInfo()));
+	}
+	
+	public SignatureScope findSignatureScope(final PdfSignatureOrDocTimestampInfo pdfInfo) {
+			
+		if (pdfInfo.isCoverAllOriginalBytes()) {
+			return new FullSignatureScope("Full PDF", getOriginalPdfDigest(pdfInfo));
+		} else if (Utils.isCollectionNotEmpty(pdfInfo.getOuterSignatures())) {
+			return new PdfByteRangeSignatureScope("PDF previous version #" + pdfInfo.getOuterSignatures().size(), 
+					pdfInfo.getSignatureByteRange(), getOriginalPdfDigest(pdfInfo));
 		} else {
-			result.add(new PdfByteRangeSignatureScope("Partial PDF", pdfSignature.getSignatureByteRange(), 
-					getOriginalPdfDigest(pAdESSignature)));
+			return new PdfByteRangeSignatureScope("Partial PDF", pdfInfo.getSignatureByteRange(), 
+					getOriginalPdfDigest(pdfInfo));
 		}
-		return result;
 	}
 	
-	private Digest getOriginalPdfDigest(PAdESSignature padesSignature) {
-		return getDigest(getOriginalPdfBytes(padesSignature));
-	}
-	
-	private byte[] getOriginalPdfBytes(PAdESSignature padesSignature) {
-		InMemoryDocument originalPDF = PAdESUtils.getOriginalPDF(padesSignature);
-		return originalPDF.getBytes();
+	private Digest getOriginalPdfDigest(final PdfSignatureOrDocTimestampInfo pdfInfo) {
+		DSSDocument originalDocument = PAdESUtils.getOriginalPDF(pdfInfo);
+		return new Digest(getDefaultDigestAlgorithm(), 
+				DSSUtils.digest(getDefaultDigestAlgorithm(), originalDocument));
 	}
 	
 }

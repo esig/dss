@@ -22,32 +22,39 @@ package eu.europa.esig.dss.validation.timestamp;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import org.bouncycastle.tsp.TSPException;
 
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AbstractDocumentValidator;
-import eu.europa.esig.dss.validation.DiagnosticDataBuilder;
-import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.validation.executor.timestamp.SignatureAndTimestampProcessExecutor;
 import eu.europa.esig.dss.validation.executor.timestamp.TimestampProcessExecutor;
+import eu.europa.esig.dss.validation.scope.DigestSignatureScope;
+import eu.europa.esig.dss.validation.scope.FullSignatureScope;
+import eu.europa.esig.dss.validation.scope.SignatureScope;
 
 public class SingleTimestampValidator extends AbstractDocumentValidator implements TimestampValidator {
 
-	private final DSSDocument timestampedData;
-	private final TimestampType timestampType;
+	protected final DSSDocument timestampedData;
+	protected final TimestampType timestampType;
 	
 	public SingleTimestampValidator(final DSSDocument timestampFile, final DSSDocument timestampedData) {
 		this(timestampFile, timestampedData, null);
 	}
 	
 	public SingleTimestampValidator(final DSSDocument timestampFile, final DSSDocument timestampedData, final TimestampType timestampType) {
+		Objects.requireNonNull(timestampFile, "The timestampFile must be defined!");
+		Objects.requireNonNull(timestampedData, "The timestampedData must be defined!");
 		this.document = timestampFile;
 		this.timestampedData = timestampedData;
 		this.timestampType = timestampType;
@@ -59,8 +66,29 @@ public class SingleTimestampValidator extends AbstractDocumentValidator implemen
 	}
 	
 	@Override
-	public List<TimestampToken> getTimestamps() {
-		return Arrays.asList(getTimestamp());
+	public Map<TimestampToken, List<SignatureScope>> getTimestamps() {
+		Map<TimestampToken, List<SignatureScope>> timestamps = new HashMap<TimestampToken, List<SignatureScope>>();
+		timestamps.put(getTimestamp(), getTimestampSignatureScope());
+		return timestamps;
+	}
+	
+	/**
+	 * Returns a list of timestamp signature scopes (timestamped data)
+	 * 
+	 * @return a list of {@link SignatureScope}s
+	 */
+	protected List<SignatureScope> getTimestampSignatureScope() {
+		SignatureScope signatureScope = null;
+		if (timestampedData instanceof DigestDocument) {
+			signatureScope = new DigestSignatureScope("Digest document", ((DigestDocument)timestampedData).getExistingDigest());
+		} else {
+			signatureScope = new FullSignatureScope("Full document", getDigest(timestampedData));
+		}
+		return Arrays.asList(signatureScope);
+	}
+	
+	protected Digest getDigest(DSSDocument dssDocument) {
+		return new Digest(getDefaultDigestAlgorithm(), Utils.fromBase64(dssDocument.getDigest(getDefaultDigestAlgorithm())));
 	}
 	
 	/**
@@ -78,24 +106,6 @@ public class SingleTimestampValidator extends AbstractDocumentValidator implemen
 		timestampToken.setFileName(document.getName());
 		timestampToken.matchData(timestampedData);
 		return timestampToken;
-	}
-	
-	@Override
-	protected DiagnosticDataBuilder prepareDiagnosticDataBuilder(final ValidationContext validationContext, final ValidationPolicy validationPolicy) {
-		
-		List<TimestampToken> timestampTokens = getTimestamps();
-		for (TimestampToken timestampToken : timestampTokens) {
-			validationContext.addTimestampTokenForVerification(timestampToken);
-			CertificateToken issuer = validationCertPool.getIssuer(timestampToken);
-			if (issuer != null) {
-				validationContext.addCertificateTokenForVerification(issuer);
-			}
-		}
-		
-		validationContext.initialize(certificateVerifier);
-		validationContext.validate();
-		
-		return super.prepareDiagnosticDataBuilder(validationContext, validationPolicy).setExternalTimestamps(timestampTokens);
 	}
 
 }

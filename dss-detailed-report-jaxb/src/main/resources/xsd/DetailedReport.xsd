@@ -24,7 +24,7 @@
 			<xs:element name="ValidationProcessArchivalData" type="ValidationProcessArchivalData" minOccurs="0" />
 			<xs:element name="ValidationSignatureQualification" type="ValidationSignatureQualification" minOccurs="0" />
 		</xs:sequence>
-		<xs:attribute name="Id" type="xs:string" use="required" />
+		<xs:attribute name="Id" type="xs:string" use="optional" /> <!-- Optional in case of timestamp only validation -->
 		<xs:attribute name="CounterSignature" type="xs:boolean" use="optional" />
 	</xs:complexType>
 	

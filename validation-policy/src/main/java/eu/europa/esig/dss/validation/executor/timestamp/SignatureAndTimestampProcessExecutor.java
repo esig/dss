@@ -8,7 +8,9 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
+import eu.europa.esig.dss.validation.executor.signature.ETSIValidationReportBuilder;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
 /**
  * This class executes a signature or/and timestamp validation process and produces
@@ -28,15 +30,22 @@ public class SignatureAndTimestampProcessExecutor extends DefaultSignatureProces
 	
 	private Reports buildTimestampOnlyReports(final DiagnosticData diagnosticData, final Date validationTime) {
 		DetailedReportForTimestampBuilder detailedReportBuilder = new DetailedReportForTimestampBuilder(diagnosticData, policy, validationTime);
-		XmlDetailedReport detailedReport = detailedReportBuilder.build();
+		XmlDetailedReport jaxbDetailedReport = detailedReportBuilder.build();
+
+		DetailedReport detailedReportWrapper = new DetailedReport(jaxbDetailedReport);
 
 		SimpleReportForTimestampBuilder simpleReportBuilder = new SimpleReportForTimestampBuilder(diagnosticData,
-				new DetailedReport(detailedReport), validationTime, policy);
+				new DetailedReport(jaxbDetailedReport), validationTime, policy);
 		XmlSimpleReport simpleReport = simpleReportBuilder.build();
-		
-		// TODO : etsi validation report
 
-		return new Reports(jaxbDiagnosticData, detailedReport, simpleReport, null);
+		ValidationReportType validationReport = null;
+		if (enableEtsiValidationReport) {
+			ETSIValidationReportBuilder etsiValidationReportBuilder = new ETSIValidationReportBuilder(getCurrentTime(), diagnosticData,
+					detailedReportWrapper);
+			validationReport = etsiValidationReportBuilder.build();
+		}
+
+		return new Reports(jaxbDiagnosticData, jaxbDetailedReport, simpleReport, validationReport);
 	}
 
 }

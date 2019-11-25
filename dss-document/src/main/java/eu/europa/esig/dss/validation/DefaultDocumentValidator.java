@@ -184,7 +184,7 @@ public abstract class DefaultDocumentValidator extends AbstractDocumentValidator
 		// validation.
 		
 		// Signature Scope must be processed before in order to properly initialize content timestamps
-		setSignedScopeFinderDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm());
+		setSignedScopeFinderDefaultDigestAlgorithm(getDefaultDigestAlgorithm());
 		for (final AdvancedSignature signature : allSignatureList) {
 			if (signatureScopeFinder != null) {
 				signature.findSignatureScope(signatureScopeFinder);
