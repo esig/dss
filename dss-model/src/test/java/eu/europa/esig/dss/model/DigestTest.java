@@ -23,6 +23,9 @@ package eu.europa.esig.dss.model;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -83,6 +86,15 @@ public class DigestTest {
 		assertEquals(d1,d2);
 		assertEquals(d1.hashCode(),d2.hashCode());
 
+	}
+	
+	@Test
+	public void nullValues() {
+		Digest digest = new Digest();
+		assertNull(digest.getAlgorithm());
+		assertNull(digest.getValue());
+		assertThrows(NullPointerException.class, () -> digest.getHexValue());
+		assertNotNull(digest.toString());
 	}
 
 	@Test
