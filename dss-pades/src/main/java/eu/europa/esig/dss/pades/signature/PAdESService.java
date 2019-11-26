@@ -113,7 +113,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	public TimestampToken getContentTimestamp(DSSDocument toSignDocument, PAdESSignatureParameters parameters) {
 		final PDFSignatureService pdfSignatureService = pdfObjFactory.newPAdESSignatureService();
 		final DigestAlgorithm digestAlgorithm = parameters.getContentTimestampParameters().getDigestAlgorithm();
-		final byte[] messageDigest = pdfSignatureService.digest(toSignDocument, parameters, digestAlgorithm);
+		final byte[] messageDigest = pdfSignatureService.digest(toSignDocument, parameters);
 		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, messageDigest);
 		try {
 			return new TimestampToken(timeStampResponse, TimestampType.CONTENT_TIMESTAMP);
@@ -149,7 +149,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 
 	protected byte[] computeDocumentDigest(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters) {
 		final PDFSignatureService pdfSignatureService = pdfObjFactory.newPAdESSignatureService();
-		return pdfSignatureService.digest(toSignDocument, parameters, parameters.getDigestAlgorithm());
+		return pdfSignatureService.digest(toSignDocument, parameters);
 	}
 
 	@Override
@@ -164,7 +164,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		final byte[] encodedData = generateCMSSignedData(toSignDocument, parameters, signatureValue);
 
 		final PDFSignatureService pdfSignatureService = pdfObjFactory.newPAdESSignatureService();
-		DSSDocument signature = pdfSignatureService.sign(toSignDocument, encodedData, parameters, parameters.getDigestAlgorithm());
+		DSSDocument signature = pdfSignatureService.sign(toSignDocument, encodedData, parameters);
 
 		final SignatureExtension<PAdESSignatureParameters> extension = getExtensionProfile(signatureLevel);
 		if ((signatureLevel != SignatureLevel.PAdES_BASELINE_B) && (signatureLevel != SignatureLevel.PAdES_BASELINE_T) && (extension != null)) {

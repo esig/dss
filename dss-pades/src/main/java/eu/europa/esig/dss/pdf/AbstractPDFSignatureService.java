@@ -55,26 +55,30 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractPDFSignatureService.class);
 
-	protected final boolean timestamp;
+	protected final PDFServiceMode serviceMode;
 	protected final SignatureDrawerFactory signatureDrawerFactory;
 
 	/**
 	 * Constructor for the PDFSignatureService
 	 * 
-	 * @param timestamp
-	 *                               if true, the instance is used to generate
-	 *                               DocumentTypestamp if false, it is used to
-	 *                               generate a signature layer
+	 * @param serviceMode
+	 *                               current instance is used to generate
+	 *                               DocumentTypestamp or Signature signature layer
 	 * @param signatureDrawerFactory
 	 *                               the factory of {@code SignatureDrawer}
 	 */
-	protected AbstractPDFSignatureService(boolean timestamp, SignatureDrawerFactory signatureDrawerFactory) {
-		this.timestamp = timestamp;
+	protected AbstractPDFSignatureService(PDFServiceMode serviceMode, SignatureDrawerFactory signatureDrawerFactory) {
+		this.serviceMode = serviceMode;
 		this.signatureDrawerFactory = signatureDrawerFactory;
 	}
 
+	protected boolean isDocumentTimestampLayer() {
+		// CONTENT_TIMESTAMP is part of the signature
+		return PDFServiceMode.SIGNATURE_TIMESTAMP == serviceMode || PDFServiceMode.ARCHIVE_TIMESTAMP == serviceMode;
+	}
+
 	protected String getType() {
-		if (timestamp) {
+		if (isDocumentTimestampLayer()) {
 			return PAdESConstants.TIMESTAMP_TYPE;
 		} else {
 			return PAdESConstants.SIGNATURE_TYPE;
@@ -82,7 +86,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 
 	protected String getFilter(PAdESSignatureParameters parameters) {
-		if (timestamp) {
+		if (isDocumentTimestampLayer()) {
 			if (Utils.isStringNotEmpty(parameters.getTimestampFilter())) {
 				return parameters.getTimestampFilter();
 			}
@@ -97,7 +101,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 
 	protected String getSubFilter(PAdESSignatureParameters parameters) {
-		if (timestamp) {
+		if (isDocumentTimestampLayer()) {
 			if (Utils.isStringNotEmpty(parameters.getTimestampSubFilter())) {
 				return parameters.getTimestampSubFilter();
 			}
@@ -111,20 +115,43 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 
 	protected SignatureImageParameters getImageParameters(PAdESSignatureParameters parameters) {
-		if (timestamp) {
+		if (isDocumentTimestampLayer()) {
 			return parameters.getTimestampImageParameters();
 		} else {
 			return parameters.getSignatureImageParameters();
 		}
 	}
 
+	protected DigestAlgorithm getCurrentDigestAlgorithm(PAdESSignatureParameters parameters) {
+		switch (serviceMode) {
+		case CONTENT_TIMESTAMP:
+			return parameters.getContentTimestampParameters().getDigestAlgorithm();
+		case SIGNATURE:
+			return parameters.getDigestAlgorithm();
+		case SIGNATURE_TIMESTAMP:
+			return parameters.getSignatureTimestampParameters().getDigestAlgorithm();
+		case ARCHIVE_TIMESTAMP:
+			return parameters.getArchiveTimestampParameters().getDigestAlgorithm();
+		default:
+			throw new DSSException("Unsupported service mode : " + serviceMode);
+		}
+	}
+
+	protected int getCurrentSignatureSize(PAdESSignatureParameters parameters) {
+		if (isDocumentTimestampLayer()) {
+			return parameters.getTimestampSize();
+		} else {
+			return parameters.getSignatureSize();
+		}
+	}
+
 	@Override
 	public DSSDocument timestamp(DSSDocument document, PAdESSignatureParameters parameters, TSPSource tspSource) {
 		final DigestAlgorithm timestampDigestAlgorithm = parameters.getSignatureTimestampParameters().getDigestAlgorithm();
-		final byte[] digest = digest(document, parameters, timestampDigestAlgorithm);
+		final byte[] digest = digest(document, parameters);
 		final TimestampBinary timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, digest);
 		final byte[] encoded = DSSASN1Utils.getDEREncoded(timeStampToken);
-		return sign(document, encoded, parameters, timestampDigestAlgorithm);
+		return sign(document, encoded, parameters);
 	}
 
 	@Override

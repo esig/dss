@@ -22,8 +22,12 @@ package eu.europa.esig.dss.pdf;
 
 public interface IPdfObjFactory {
 
+	PDFSignatureService newContentTimestampService();
+	
 	PDFSignatureService newPAdESSignatureService();
+	
+	PDFSignatureService newSignatureTimestampService();
 
-	PDFTimestampService newTimestampSignatureService();
+	PDFSignatureService newArchiveTimestampService();
 
 }

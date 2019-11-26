@@ -41,6 +41,8 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 	private String signatureFieldId;
 
 	private int signatureSize = 9472; // default value in pdfbox
+	
+	private int timestampSize = 9472; 
 
 	/**
 	 * This attribute allows to override the used Filter for a Signature.
@@ -218,6 +220,17 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 	 */
 	public void setSignatureSize(int signatureSize) {
 		this.signatureSize = signatureSize;
+	}
+
+	public int getTimestampSize() {
+		return timestampSize;
+	}
+
+	/**
+	 * This setter allows to reserve more than the default size for a timestamp (9472bytes)
+	 */
+	public void setTimestampSize(int timestampSize) {
+		this.timestampSize = timestampSize;
 	}
 
 	public CertificationPermission getPermission() {
