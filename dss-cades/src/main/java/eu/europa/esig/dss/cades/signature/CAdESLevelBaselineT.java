@@ -62,7 +62,7 @@ public class CAdESLevelBaselineT extends CAdESSignatureExtension {
 	/**
 	 * @param cadesSignature
 	 */
-	protected void assertExtendSignaturePossible(CAdESSignature cadesSignature) throws DSSException {
+	private void assertExtendSignaturePossible(CAdESSignature cadesSignature) throws DSSException {
 		final String exceptionMessage = "Cannot extend signature. The signedData is already extended with [%s].";
 		if (cadesSignature.isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_LTA)) {
 			throw new DSSException(String.format(exceptionMessage, "CAdES LTA"));

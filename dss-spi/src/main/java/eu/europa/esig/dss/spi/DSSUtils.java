@@ -36,6 +36,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -50,6 +51,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -604,7 +606,7 @@ public final class DSSUtils {
 		try (InputStream is = dssDocument.openStream()) {
 			return Utils.getInputStreamSize(is);
 		} catch (IOException e) {
-			throw new DSSException(String.format("Cannot read the document with name [%s]", dssDocument.getName()));
+			throw new DSSException(String.format("Cannot read the document with name [%s]", dssDocument.getName()), e);
 		}
 	}
 
@@ -623,6 +625,24 @@ public final class DSSUtils {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
+	}
+
+	/**
+	 * This method replaces all special characters by an underscore
+	 * 
+	 * @param str
+	 *            the string / filename / url to normalize
+	 * @return the normalized {@link String}
+	 */
+	public static String getNormalizedString(final String str) {
+		String normalizedStr = str;
+		try {
+			normalizedStr = URLDecoder.decode(str, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			LOG.debug("Cannot decode fileName [{}]. Reason : {}", str, e.getMessage());
+		}
+		normalizedStr = normalizedStr.replaceAll("\\W", "_");
+		return normalizedStr;
 	}
 
 	/**
@@ -670,7 +690,9 @@ public final class DSSUtils {
 	 */
 	public static X500Principal getX500PrincipalOrNull(final String x500PrincipalString) {
 		try {
-			return new X500Principal(x500PrincipalString);
+			Map<String, String> keywords = new HashMap<String, String>();
+			keywords.put("ORGANIZATIONIDENTIFIER", "2.5.4.97");
+			return new X500Principal(x500PrincipalString, keywords);
 		} catch (Exception e) {
 			LOG.warn(e.getMessage());
 			return null;
@@ -840,7 +862,7 @@ public final class DSSUtils {
 			}
 			return skipped;
 		} catch (IOException e) {
-			throw new DSSException("Cannot read the InputStream!");
+			throw new DSSException("Cannot read the InputStream!", e);
 		}
 	}
 
@@ -896,7 +918,38 @@ public final class DSSUtils {
 			}
 			return read;
 		} catch (IOException e) {
-			throw new DSSException("Cannot read the InputStream!");
+			throw new DSSException("Cannot read the InputStream!", e);
+		}
+	}
+	
+	/**
+	 * This method encodes an URI to be compliant with the RFC 3986 (see DSS-1475 for details)
+	 * @param fileURI the uri to be encoded
+	 * @return the encoded result
+	 */
+	public static String encodeURI(String fileURI) {
+		StringBuilder sb = new StringBuilder();
+		String uriDelimiter = "";
+		final String[] uriParts = fileURI.split("/");
+		for (String part : uriParts) {
+			sb.append(uriDelimiter );
+			sb.append(encodePartURI(part));
+			uriDelimiter = "/";
+		}
+		return sb.toString();
+	}
+	
+	/**
+	 * This method encodes a partial URI to be compliant with the RFC 3986 (see DSS-1475 for details)
+	 * @param uriPart the partial uri to be encoded
+	 * @return the encoded result
+	 */
+	private static String encodePartURI(String uriPart) {
+		try {
+			return URLEncoder.encode(uriPart, "UTF-8").replace("+", "%20");
+		} catch (Exception e) {
+			LOG.warn("Unable to encode uri '{}' : {}", uriPart, e.getMessage());
+			return uriPart;
 		}
 	}
 

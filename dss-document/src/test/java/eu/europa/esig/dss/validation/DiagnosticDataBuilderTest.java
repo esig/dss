@@ -1,22 +1,52 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.validation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.tsl.ServiceInfo;
+import eu.europa.esig.dss.spi.tsl.LOTLInfo;
+import eu.europa.esig.dss.spi.tsl.TLInfo;
+import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
+import eu.europa.esig.dss.spi.tsl.TrustProperties;
+import eu.europa.esig.dss.spi.tsl.TrustServiceProvider;
+import eu.europa.esig.dss.spi.tsl.TrustServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.spi.tsl.TrustServiceStatusAndInformationExtensions.TrustServiceStatusAndInformationExtensionsBuilder;
+import eu.europa.esig.dss.spi.util.TimeDependentValues;
 import eu.europa.esig.dss.utils.Utils;
 
 public class DiagnosticDataBuilderTest {
@@ -82,12 +112,26 @@ public class DiagnosticDataBuilderTest {
 		Set<CertificateToken> usedCertificates = new HashSet<CertificateToken>(Arrays.asList(sigCert, ocspCert, caToken, rootToken));
 
 		TrustedListsCertificateSource trustedCertSource = new TrustedListsCertificateSource();
-		ServiceInfo trustService = new ServiceInfo();
-		trustService.setTlCountryCode("BE");
-		trustService.setTspTradeName("Test");
-		trustedCertSource.addCertificate(rootToken, Arrays.asList(trustService));
+		trustedCertSource.setSummary(new TLValidationJobSummary(new ArrayList<LOTLInfo>(), new ArrayList<TLInfo>()));
+		TrustServiceProvider trustServiceProvider = new TrustServiceProvider();
+		TrustServiceStatusAndInformationExtensionsBuilder builder = new TrustServiceStatusAndInformationExtensionsBuilder();
+		builder.setStatus("bla");
+		builder.setType("bla");
+		builder.setStartDate(new Date());
+		TrustServiceStatusAndInformationExtensions serviceStatus = new TrustServiceStatusAndInformationExtensions(builder);
+		Iterable<TrustServiceStatusAndInformationExtensions> srcList = Arrays.<TrustServiceStatusAndInformationExtensions>asList(serviceStatus);
+		TimeDependentValues<TrustServiceStatusAndInformationExtensions> status = new TimeDependentValues<TrustServiceStatusAndInformationExtensions>(
+				srcList);
 
-		DiagnosticDataBuilder ddb = new DiagnosticDataBuilder().usedCertificates(usedCertificates).trustedCertificateSource(trustedCertSource);
+		LOTLInfo lotlInfo = new LOTLInfo(null, null, null, "aaaa");
+		TLInfo tlInfo = new TLInfo(null, null, null, "bbb");
+		TrustProperties trustProperties = new TrustProperties(lotlInfo.getIdentifier(), tlInfo.getIdentifier(), trustServiceProvider, status);
+		
+		HashMap<CertificateToken, List<TrustProperties>> hashMap = new HashMap<CertificateToken, List<TrustProperties>>();
+		hashMap.put(rootToken, Arrays.asList(trustProperties));
+		trustedCertSource.setTrustPropertiesByCertificates(hashMap);
+
+		DiagnosticDataBuilder ddb = new DiagnosticDataBuilder().usedCertificates(usedCertificates).trustedCertificateSources(Arrays.asList(trustedCertSource));
 		XmlDiagnosticData dd = ddb.build();
 
 		assertNotNull(dd);

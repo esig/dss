@@ -1,7 +1,29 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.pades.validation;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.bouncycastle.cms.SignerInformation;
 
 import eu.europa.esig.dss.cades.validation.CAdESAttribute;
 import eu.europa.esig.dss.cades.validation.CAdESTimestampSource;
@@ -90,7 +112,7 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 
 					addReferences(references, createReferencesForCertificates(cmsContentCertificates));
 					addReferencesForCertificates(references, padesCertificateSource);
-					addReferencesFromRevocationData(references, coveredDSSDictionary);
+					addReferencesFromRevocationData(references, timestampInfo);
 					
 					// references embedded to timestamp's content are covered by outer timestamps
 					cmsContentCertificates.addAll(getCMSContentReferences(padesCertificateSource));
@@ -137,8 +159,9 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 	 * 
 	 * @param references
 	 */
-	private void addReferencesFromRevocationData(List<TimestampedReference> references, final PdfDssDict dssDictionary) {
-		PAdESCRLSource padesCRLSource = new PAdESCRLSource(dssDictionary);
+	private void addReferencesFromRevocationData(List<TimestampedReference> references, final PdfDocTimestampInfo timestampInfo) {
+		SignerInformation signerInformation = timestampInfo.getTimestampToken().getSignerInformation();
+		PAdESCRLSource padesCRLSource = new PAdESCRLSource(timestampInfo.getDssDictionary(), null, signerInformation.getSignedAttributes());
 		for (CRLBinary crlIdentifier : padesCRLSource.getCRLBinaryList()) {
 			if (padesCRLSource.getRevocationOrigins(crlIdentifier).contains(RevocationOrigin.DSS_DICTIONARY) || 
 					padesCRLSource.getRevocationOrigins(crlIdentifier).contains(RevocationOrigin.VRI_DICTIONARY)) {
@@ -147,7 +170,7 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 		}
 		crlSource.addAll(padesCRLSource);
 		
-		PAdESOCSPSource padesOCSPSource = new PAdESOCSPSource(dssDictionary);
+		PAdESOCSPSource padesOCSPSource = new PAdESOCSPSource(timestampInfo.getDssDictionary(), null, signerInformation.getSignedAttributes());
 		for (OCSPResponseBinary ocspIdentifier : padesOCSPSource.getOCSPResponsesList()) {
 			if (padesOCSPSource.getRevocationOrigins(ocspIdentifier).contains(RevocationOrigin.DSS_DICTIONARY) || 
 					padesOCSPSource.getRevocationOrigins(ocspIdentifier).contains(RevocationOrigin.VRI_DICTIONARY)) {

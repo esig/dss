@@ -35,6 +35,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -43,7 +45,6 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ReferenceValidation;
-import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 /**
  * This class validates a ds:Manifest element against external files
@@ -69,18 +70,14 @@ public class ManifestValidator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ManifestValidator.class);
 	
-	private static final String ALGORITHM_ATTRIBUTE = "Algorithm";
-
 	private final Element signatureElement;
 	private final Node manifestNode;
 	private final List<DSSDocument> detachedContents;
-	private final XPathQueryHolder xPathQueryHolder;
 
-	ManifestValidator(Element signatureElement, Node manifestNode, List<DSSDocument> detachedContents, XPathQueryHolder xPathQueryHolder) {
+	ManifestValidator(Element signatureElement, Node manifestNode, List<DSSDocument> detachedContents) {
 		this.signatureElement = signatureElement;
 		this.manifestNode = manifestNode;
 		this.detachedContents = detachedContents;
-		this.xPathQueryHolder = xPathQueryHolder;
 	}
 
 	List<ReferenceValidation> validate() {
@@ -89,7 +86,7 @@ public class ManifestValidator {
 
 		List<ReferenceValidation> result = new ArrayList<ReferenceValidation>();
 
-		NodeList nodeList = DomUtils.getNodeList(manifestNode, "./ds:Reference");
+		NodeList nodeList = DomUtils.getNodeList(manifestNode, XMLDSigPaths.REFERENCE_PATH);
 		if (nodeList != null && nodeList.getLength() > 0) {
 			for (int i = 0; i < nodeList.getLength(); i++) {
 
@@ -109,11 +106,11 @@ public class ManifestValidator {
 	
 	private List<String> getTransformNames(Element refNode) {
 		List<String> transfromNames = new ArrayList<String>();
-		NodeList nodeList = DomUtils.getNodeList(refNode, xPathQueryHolder.XPATH__DS_TRANSFORM);
+		NodeList nodeList = DomUtils.getNodeList(refNode, XMLDSigPaths.TRANSFORMS_TRANSFORM_PATH);
 		if (nodeList != null && nodeList.getLength() > 0) {
 			for (int ii = 0; ii < nodeList.getLength(); ii++) {
 				Element transformElement = (Element) nodeList.item(ii);
-				String algorithm = transformElement.getAttribute(ALGORITHM_ATTRIBUTE);
+				String algorithm = transformElement.getAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName());
 				if (Utils.isStringNotBlank(algorithm)) {
 					transfromNames.add(algorithm);
 				}
@@ -159,9 +156,9 @@ public class ManifestValidator {
 
 	private Digest getReferenceDigest(Element refNode) {
 		try {
-			String digestAlgoUri = DomUtils.getValue(refNode, xPathQueryHolder.XPATH__DIGEST_METHOD_ALGORITHM);
+			String digestAlgoUri = DomUtils.getValue(refNode, XMLDSigPaths.DIGEST_METHOD_ALGORITHM_PATH);
 			DigestAlgorithm digestAlgorithm = DigestAlgorithm.forXML(digestAlgoUri);
-			String digestValueB64 = DomUtils.getValue(refNode, xPathQueryHolder.XPATH__DIGEST_VALUE);
+			String digestValueB64 = DomUtils.getValue(refNode, XMLDSigPaths.DIGEST_VALUE_PATH);
 			return new Digest(digestAlgorithm, Utils.fromBase64(digestValueB64));
 		} catch (Exception e) {
 			LOG.warn("Unable to extract the digest combination : {}", e.getMessage());
@@ -230,7 +227,7 @@ public class ManifestValidator {
 			}
 			return xmlSignatureInput.getBytes();
 		} catch (Exception e) {
-			throw new DSSException("An error occurred during applying of transformations. Transforms cannot be performed!");
+			throw new DSSException("An error occurred during applying of transformations. Transforms cannot be performed!", e);
 		}
 	}
 

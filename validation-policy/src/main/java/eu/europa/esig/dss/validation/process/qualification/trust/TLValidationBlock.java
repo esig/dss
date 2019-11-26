@@ -47,6 +47,7 @@ public class TLValidationBlock extends Chain<XmlTLAnalysis> {
 
 		result.setTitle(ValidationProcessDefinition.TL.getTitle() + " " + currentTL.getCountryCode());
 		result.setCountryCode(currentTL.getCountryCode());
+		result.setURL(currentTL.getUrl());
 
 		this.currentTL = currentTL;
 		this.currentTime = currentTime;

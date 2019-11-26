@@ -20,15 +20,22 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
@@ -41,7 +48,7 @@ public class XAdESLevelBDetachedNoFilenameTest extends AbstractXAdESTestSignatur
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 		// DSS-1334
@@ -72,6 +79,20 @@ public class XAdESLevelBDetachedNoFilenameTest extends AbstractXAdESTestSignatur
 		detachedContents.add(documentToSign);
 		validator.setDetachedContents(detachedContents);
 		return validator;
+	}
+	
+	@Override
+	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
+		super.verifyDiagnosticData(diagnosticData);
+		
+		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
+		assertEquals(1, signatures.size());
+		SignatureWrapper signatureWrapper = signatures.get(0);
+		List<XmlSignatureScope> signatureScopes = signatureWrapper.getSignatureScopes();
+		assertEquals(1, signatureScopes.size());
+		XmlSignatureScope xmlSignatureScope = signatureScopes.get(0);
+		assertEquals(SignatureScopeType.FULL, xmlSignatureScope.getScope());
+		assertNull(xmlSignatureScope.getName());
 	}
 
 	@Override

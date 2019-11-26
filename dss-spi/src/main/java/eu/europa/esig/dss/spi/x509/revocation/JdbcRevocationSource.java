@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.spi.x509.revocation;
 
 import java.sql.Connection;
@@ -122,7 +142,7 @@ public abstract class JdbcRevocationSource<T extends RevocationToken> extends Re
 	 */
 	public void initTable() throws SQLException {
 		/* Create the table if it doesn't exist. */
-		if (!tableExists()) {
+		if (!isTableExists()) {
 			LOG.debug("Table does not exist. Creating a new table...");
 			createTable();
 			LOG.info("Table was created.");
@@ -147,15 +167,14 @@ public abstract class JdbcRevocationSource<T extends RevocationToken> extends Re
 		}
 	}
 
-	private boolean tableExists() {
+	public boolean isTableExists() {
 		Connection c = null;
 		Statement s = null;
 		boolean tableExists;
 		try {
 			c = dataSource.getConnection();
 			s = c.createStatement();
-			s.execute(getTableExistenceQuery());
-			tableExists = true;
+			tableExists = s.execute(getTableExistenceQuery());
 		} catch (final SQLException e) {
 			tableExists = false;
 		} finally {
@@ -170,7 +189,7 @@ public abstract class JdbcRevocationSource<T extends RevocationToken> extends Re
 	 */
 	public void destroyTable() throws SQLException {
 		/* Drop the table if it exists. */
-		if (tableExists()) {
+		if (isTableExists()) {
 			LOG.debug("Table exists. Removing the table...");
 			dropTable();
 			LOG.info("Table was destroyed.");
@@ -186,6 +205,7 @@ public abstract class JdbcRevocationSource<T extends RevocationToken> extends Re
 			c = dataSource.getConnection();
 			s = c.createStatement();
 			s.execute(getDeleteTableQuery());
+			c.commit();
 		} catch (SQLException e) {
 			rollback(c);
 			throw e;
@@ -221,15 +241,53 @@ public abstract class JdbcRevocationSource<T extends RevocationToken> extends Re
 	 *            the ResultSet
 	 */
 	protected void closeQuietly(final Connection c, final Statement s, final ResultSet rs) {
+		closeQuietly(rs);
+		closeQuietly(s);
+		closeQuietly(c);
+	}
+
+	/**
+	 *  Close the connection without throwing the exception
+	 *  
+	 * @param c
+	 * 			the connection
+	 */
+	private void closeQuietly(final Connection c) {
 		try {
-			if (rs != null) {
-				rs.close();
+			if (c != null) {
+				c.close();
 			}
+		} catch (final SQLException e) {
+			// purposely empty
+		}
+	}
+
+	/**
+	 *  Close the statement without throwing the exception
+	 *  
+	 * @param s
+	 * 			the statement
+	 */
+	private void closeQuietly(final Statement s) {
+		try {
 			if (s != null) {
 				s.close();
 			}
-			if (c != null) {
-				c.close();
+		} catch (final SQLException e) {
+			// purposely empty
+		}
+	}
+
+	/**
+	 *  Close the ResultSet without throwing the exception
+	 *  
+	 * @param rs
+	 * 			the ResultSet
+	 */
+	private void closeQuietly(final ResultSet rs) {
+		try {
+			if (rs != null) {
+				rs.close();
 			}
 		} catch (final SQLException e) {
 			// purposely empty

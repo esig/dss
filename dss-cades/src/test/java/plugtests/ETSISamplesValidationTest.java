@@ -20,23 +20,26 @@
  */
 package plugtests;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
@@ -51,33 +54,32 @@ import eu.europa.esig.dss.validation.reports.Reports;
 /**
  * This test is only to ensure that we don't have exception with valid? files
  */
-@RunWith(Parameterized.class)
 public class ETSISamplesValidationTest {
 
-	@Parameters(name = "Validation {index} : {0}")
-	public static Collection<Object[]> data() {
+	private static final List<String> DETACHED_SIGNATURES = Arrays.asList("Signature-C-SK-20.p7s", "Signature-C-SK-59.p7s");
+
+	public static Stream<Arguments> data() {
 		File folder = new File("src/test/resources/plugtest");
 		Collection<File> listFiles = Utils.listFiles(folder, new String[] { "p7", "p7b", "p7m", "p7s", "pkcs7", "csig" }, true);
-		Collection<Object[]> dataToRun = new ArrayList<Object[]>();
+		Collection<Arguments> dataToRun = new ArrayList<Arguments>();
 		for (File file : listFiles) {
-			dataToRun.add(new Object[] { file });
+			dataToRun.add(Arguments.of( file ));
 		}
-		return dataToRun;
+		return dataToRun.stream();
 	}
 
-	private File fileToTest;
-
-	public ETSISamplesValidationTest(File fileToTest) {
-		this.fileToTest = fileToTest;
-	}
-
-	@Test
-	public void testValidate() {
+	@ParameterizedTest(name = "Validation {index} : {0}")
+	@MethodSource("data")
+	public void testValidate(File fileToTest) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(new FileDocument(fileToTest));
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setIncludeCertificateTokenValues(true);
 		certificateVerifier.setDataLoader(new IgnoreDataLoader());
 		validator.setCertificateVerifier(certificateVerifier);
+
+		if (DETACHED_SIGNATURES.contains(fileToTest.getName())) {
+			validator.setDetachedContents(Arrays.asList(new InMemoryDocument("Hello world".getBytes(StandardCharsets.UTF_8))));
+		}
 
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);

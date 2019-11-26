@@ -20,11 +20,12 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
+import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PDFTimestampService;
 import eu.europa.esig.dss.pdf.pdfbox.visible.defaultdrawer.PdfBoxDefaultSignatureDrawerFactory;
 
-public class PdfBoxDefaultObjectFactory implements PdfBoxObjectFactory {
+public class PdfBoxDefaultObjectFactory implements IPdfObjFactory {
 
 	@Override
 	public PDFSignatureService newPAdESSignatureService() {

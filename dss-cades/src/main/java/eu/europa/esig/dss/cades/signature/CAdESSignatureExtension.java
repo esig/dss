@@ -36,7 +36,6 @@ import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
-import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,6 +46,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -242,8 +242,8 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 				LOG.debug("Digested ({}) message to timestamp is {}", timestampDigestAlgorithm, Utils.toHex(timestampDigest));
 			}
 
-			final TimeStampToken timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, timestampDigest);
-			CMSSignedData cmsSignedDataTimeStampToken = timeStampToken.toCMSSignedData();
+			final TimestampBinary timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, timestampDigest);
+			CMSSignedData cmsSignedDataTimeStampToken = new CMSSignedData(timeStampToken.getBytes());
 
 			// TODO (27/08/2014): attributesForTimestampToken cannot be null: to be modified
 			if (attributesForTimestampToken != null) {
@@ -267,8 +267,8 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 			}
 			final byte[] newTimeStampTokenBytes = cmsSignedDataTimeStampToken.getEncoded();
 			return DSSASN1Utils.toASN1Primitive(newTimeStampTokenBytes);
-		} catch (IOException e) {
-			throw new DSSException(e);
+		} catch (IOException | CMSException e) {
+			throw new DSSException("Cannot obtain timestamp attribute value.", e);
 		}
 
 	}

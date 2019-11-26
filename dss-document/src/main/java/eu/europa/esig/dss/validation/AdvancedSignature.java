@@ -449,6 +449,12 @@ public interface AdvancedSignature extends Serializable {
 	 *         B,T,LT,LTA
 	 */
 	SignatureLevel[] getSignatureLevels();
+	
+	/**
+	 * Checks if all certificate chains present in the signature are self-signed
+	 * @return TRUE if all certificates are self-signed, false otherwise
+	 */
+	boolean areAllSelfSignedCertificates();
 
 	void prepareTimestamps(ValidationContext validationContext);
 
@@ -526,10 +532,32 @@ public interface AdvancedSignature extends Serializable {
 	 * @return list of {@link RevocationToken}s
 	 */
 	Set<RevocationToken> getAllRevocationTokens();
+
+	/**
+	 * Retrieves the list of all {@code RevocationToken}s present in the CMS
+	 * SignedData
+	 * 
+	 * NOTE: Applicable only for CAdES revocation sources
+	 * 
+	 * @return list of {@link RevocationToken}s
+	 */
+	List<RevocationToken> getCMSSignedDataRevocationTokens();
 	
 	/**
-	 * Retrieves the list of all {@code RevocationToken}s present in 'RevocationValues' element
-	 * NOTE: Applicable only for CAdES and XAdES revocation sources
+	 * Retrieves the list of all {@code RevocationToken}s present in the Timestamp
+	 * token SignedData
+	 * 
+	 * NOTE: Applicable only for CAdES revocation sources
+	 * 
+	 * @return list of {@link RevocationToken}s
+	 */
+	List<RevocationToken> getTimestampSignedDataRevocationTokens();
+
+	/**
+	 * Retrieves the list of all {@code RevocationToken}s present in
+	 * 'RevocationValues' element NOTE: Applicable only for CAdES and XAdES
+	 * revocation sources
+	 * 
 	 * @return list of {@link RevocationToken}s
 	 */
 	List<RevocationToken> getRevocationValuesTokens();

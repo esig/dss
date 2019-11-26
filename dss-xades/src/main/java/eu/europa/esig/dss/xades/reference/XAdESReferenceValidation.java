@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.xades.reference;
 
 import java.util.ArrayList;
@@ -55,7 +75,7 @@ public class XAdESReferenceValidation extends ReferenceValidation {
 	public XAdESReferenceValidation(Reference reference) {
 		this.reference = reference;
 		this.id = reference.getId();
-		this.uri = reference.getURI();
+		this.uri = extractUri(reference);
 	}
 	
 	public String getId() {
@@ -64,6 +84,25 @@ public class XAdESReferenceValidation extends ReferenceValidation {
 	
 	public String getUri() {
 		return uri;
+	}
+	
+	/**
+	 * Returns the reference URI or EMPTY_STRING if null
+	 * @return {@link String} uri
+	 */
+	public String getUriOrEmpty() {
+		return uri != null ? uri : Utils.EMPTY_STRING; // defensive code
+	}
+	
+	/* Method is used due to Apache Santuario Signature does return empty instead of null result */
+	private String extractUri(Reference reference) {
+		if (reference != null) {
+			Element element = reference.getElement();
+			if (element != null) {
+				return DSSXMLUtils.getAttribute(element, DSSXMLUtils.URI_ATTRIBUTE_NAME);
+			}
+		}
+		return null;
 	}
 	
 	/**

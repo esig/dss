@@ -24,11 +24,11 @@ import java.security.Security;
 import java.util.Date;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
-import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
@@ -72,7 +72,13 @@ public abstract class AbstractSignatureService<SP extends AbstractSignatureParam
 	 *            set of driving signing parameters
 	 */
 	protected void assertSigningDateInCertificateValidityRange(final SP parameters) {
-		if (parameters.isSignWithExpiredCertificate() || (parameters.getSigningCertificate() == null && parameters.isGenerateTBSWithoutCertificate())) {
+		if (parameters.getSigningCertificate() == null) {
+			if (parameters.isGenerateTBSWithoutCertificate()) {
+				return;
+			} else {
+				throw new DSSException("Signing Certificate is not defined!");
+			}
+		} else if (parameters.isSignWithExpiredCertificate()) {
 			return;
 		}
 		final CertificateToken signingCertificate = parameters.getSigningCertificate();
@@ -85,11 +91,11 @@ public abstract class AbstractSignatureService<SP extends AbstractSignatureParam
 		}
 	}
 
-	protected String getFinalFileName(DSSDocument originalFile, SigningOperation operation, SignatureLevel level, ASiCContainerType containerType) {
+	protected String getFinalArchiveName(DSSDocument originalFile, SigningOperation operation, SignatureLevel level, MimeType containerMimeType) {
 		StringBuilder finalName = new StringBuilder();
 
 		String originalName = null;
-		if (containerType != null) {
+		if (containerMimeType != null) {
 			originalName = "container";
 		} else {
 			originalName = originalFile.getName();
@@ -115,18 +121,9 @@ public abstract class AbstractSignatureService<SP extends AbstractSignatureParam
 
 		finalName.append(Utils.lowerCase(level.name().replaceAll("_", "-")));
 		finalName.append('.');
-
-		if (containerType != null) {
-			switch (containerType) {
-			case ASiC_S:
-				finalName.append("asics");
-				break;
-			case ASiC_E:
-				finalName.append("asice");
-				break;
-			default:
-				break;
-			}
+		
+		if (containerMimeType != null) {
+			finalName.append(MimeType.getExtension(containerMimeType));
 		} else {
 			SignatureForm signatureForm = level.getSignatureForm();
 			switch (signatureForm) {
@@ -148,7 +145,7 @@ public abstract class AbstractSignatureService<SP extends AbstractSignatureParam
 	}
 
 	protected String getFinalFileName(DSSDocument originalFile, SigningOperation operation, SignatureLevel level) {
-		return getFinalFileName(originalFile, operation, level, null);
+		return getFinalArchiveName(originalFile, operation, level, null);
 	}
 
 }

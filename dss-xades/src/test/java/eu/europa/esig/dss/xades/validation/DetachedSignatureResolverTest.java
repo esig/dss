@@ -20,9 +20,11 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -31,7 +33,7 @@ import java.util.Collections;
 
 import org.apache.xml.security.utils.resolver.ResourceResolverContext;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Attr;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -47,32 +49,38 @@ public class DetachedSignatureResolverTest {
 		SantuarioInitializer.init();
 	}
 
-	@Test(expected = ResourceResolverException.class)
+	@Test
 	public void nullAttribute() throws ResourceResolverException {
-		DetachedSignatureResolver resolver = new DetachedSignatureResolver(Collections.<DSSDocument>emptyList(), DigestAlgorithm.SHA256);
+		Exception exception = assertThrows(ResourceResolverException.class, () -> {
+			DetachedSignatureResolver resolver = new DetachedSignatureResolver(Collections.<DSSDocument>emptyList(), DigestAlgorithm.SHA256);
 
-		Attr attr = null;
+			Attr attr = null;
 
-		// Empty
-		ResourceResolverContext context = new ResourceResolverContext(attr, null, false);
-		assertTrue(resolver.engineCanResolveURI(context));
+			// Empty
+			ResourceResolverContext context = new ResourceResolverContext(attr, null, false);
+			assertTrue(resolver.engineCanResolveURI(context));
 
-		// will throw ResourceResolverException
-		resolver.engineResolveURI(context);
+			// will throw ResourceResolverException
+			resolver.engineResolveURI(context);
+		});
+		assertEquals("Unable to find document (detached signature)", exception.getMessage());
 	}
 
-	@Test(expected = ResourceResolverException.class)
+	@Test
 	public void nullListAndNullAttribute() throws ResourceResolverException {
-		DetachedSignatureResolver resolver = new DetachedSignatureResolver(null, DigestAlgorithm.SHA256);
+		Exception exception = assertThrows(ResourceResolverException.class, () -> {
+			DetachedSignatureResolver resolver = new DetachedSignatureResolver(null, DigestAlgorithm.SHA256);
 
-		Attr attr = null;
+			Attr attr = null;
 
-		// Empty
-		ResourceResolverContext context = new ResourceResolverContext(attr, null, false);
-		assertTrue(resolver.engineCanResolveURI(context));
+			// Empty
+			ResourceResolverContext context = new ResourceResolverContext(attr, null, false);
+			assertTrue(resolver.engineCanResolveURI(context));
 
-		// will throw ResourceResolverException
-		resolver.engineResolveURI(context);
+			// will throw ResourceResolverException
+			resolver.engineResolveURI(context);
+		});
+		assertEquals("Unable to find document (detached signature)", exception.getMessage());
 	}
 
 	@Test
@@ -88,33 +96,39 @@ public class DetachedSignatureResolverTest {
 		assertNotNull(resolver.engineResolveURI(context));
 	}
 
-	@Test(expected = ResourceResolverException.class)
+	@Test
 	public void nullAttributeTwoDocs() throws ResourceResolverException {
-		DetachedSignatureResolver resolver = new DetachedSignatureResolver(
-				Arrays.<DSSDocument> asList(new InMemoryDocument(new byte[] { 1, 2, 3 }), new InMemoryDocument(new byte[] { 2, 3 })), DigestAlgorithm.SHA256);
+		Exception exception = assertThrows(ResourceResolverException.class, () -> {
+			DetachedSignatureResolver resolver = new DetachedSignatureResolver(
+					Arrays.<DSSDocument> asList(new InMemoryDocument(new byte[] { 1, 2, 3 }), new InMemoryDocument(new byte[] { 2, 3 })), DigestAlgorithm.SHA256);
 
-		Attr attr = null;
+			Attr attr = null;
 
-		ResourceResolverContext context = new ResourceResolverContext(attr, null, false);
-		assertTrue(resolver.engineCanResolveURI(context));
+			ResourceResolverContext context = new ResourceResolverContext(attr, null, false);
+			assertTrue(resolver.engineCanResolveURI(context));
 
-		// 2 docs + no name -> exception
-		resolver.engineResolveURI(context);
+			// 2 docs + no name -> exception
+			resolver.engineResolveURI(context);
+		});
+		assertEquals("Unable to find document (detached signature)", exception.getMessage());
 	}
 
-	@Test(expected = ResourceResolverException.class)
+	@Test
 	public void emptyAttribute() throws ResourceResolverException {
-		DetachedSignatureResolver resolver = new DetachedSignatureResolver(Collections.<DSSDocument>emptyList(), DigestAlgorithm.SHA256);
+		Exception exception = assertThrows(ResourceResolverException.class, () -> {
+			DetachedSignatureResolver resolver = new DetachedSignatureResolver(Collections.<DSSDocument>emptyList(), DigestAlgorithm.SHA256);
 
-		Attr attr = mock(Attr.class);
+			Attr attr = mock(Attr.class);
 
-		// Empty
-		when(attr.getNodeValue()).thenReturn("");
-		ResourceResolverContext context = new ResourceResolverContext(attr, null, false);
-		assertFalse(resolver.engineCanResolveURI(context));
+			// Empty
+			when(attr.getNodeValue()).thenReturn("");
+			ResourceResolverContext context = new ResourceResolverContext(attr, null, false);
+			assertFalse(resolver.engineCanResolveURI(context));
 
-		// will throw ResourceResolverException
-		resolver.engineResolveURI(context);
+			// will throw ResourceResolverException
+			resolver.engineResolveURI(context);
+		});
+		assertEquals("Unable to find document (detached signature)", exception.getMessage());
 	}
 
 	@Test
@@ -128,36 +142,42 @@ public class DetachedSignatureResolverTest {
 		assertFalse(resolver.engineCanResolveURI(context));
 	}
 
-	@Test(expected = ResourceResolverException.class)
+	@Test
 	public void documentNameWithEmptyList() throws ResourceResolverException {
-		DetachedSignatureResolver resolver = new DetachedSignatureResolver(Collections.<DSSDocument>emptyList(), DigestAlgorithm.SHA256);
+		Exception exception = assertThrows(ResourceResolverException.class, () -> {
+			DetachedSignatureResolver resolver = new DetachedSignatureResolver(Collections.<DSSDocument>emptyList(), DigestAlgorithm.SHA256);
 
-		Attr attr = mock(Attr.class);
+			Attr attr = mock(Attr.class);
 
-		// document name + no document in the list
-		when(attr.getNodeValue()).thenReturn("sample.xml");
-		ResourceResolverContext context = new ResourceResolverContext(attr, null, false);
-		assertTrue(resolver.engineCanResolveURI(context));
+			// document name + no document in the list
+			when(attr.getNodeValue()).thenReturn("sample.xml");
+			ResourceResolverContext context = new ResourceResolverContext(attr, null, false);
+			assertTrue(resolver.engineCanResolveURI(context));
 
-		// will throw ResourceResolverException
-		resolver.engineResolveURI(context);
+			// will throw ResourceResolverException
+			resolver.engineResolveURI(context);
+		});
+		assertEquals("Unable to find document (detached signature)", exception.getMessage());
 	}
 
-	@Test(expected = ResourceResolverException.class)
+	@Test
 	public void engineCanResolveURIWithWrongDocumentNameInList() throws ResourceResolverException {
-		DetachedSignatureResolver resolver = new DetachedSignatureResolver(
-				Arrays.<DSSDocument>asList(new InMemoryDocument(new byte[] { 1, 2, 3 }, "toto.xml", MimeType.XML)),
-				DigestAlgorithm.SHA256);
+		Exception exception = assertThrows(ResourceResolverException.class, () -> {
+			DetachedSignatureResolver resolver = new DetachedSignatureResolver(
+					Arrays.<DSSDocument>asList(new InMemoryDocument(new byte[] { 1, 2, 3 }, "toto.xml", MimeType.XML)),
+					DigestAlgorithm.SHA256);
 
-		Attr attr = mock(Attr.class);
+			Attr attr = mock(Attr.class);
 
-		// document name + wrong document in the list
-		when(attr.getNodeValue()).thenReturn("sample.xml");
-		ResourceResolverContext context = new ResourceResolverContext(attr, null, false);
-		assertTrue(resolver.engineCanResolveURI(context));
+			// document name + wrong document in the list
+			when(attr.getNodeValue()).thenReturn("sample.xml");
+			ResourceResolverContext context = new ResourceResolverContext(attr, null, false);
+			assertTrue(resolver.engineCanResolveURI(context));
 
-		// doc not found -> exception
-		resolver.engineResolveURI(context);
+			// doc not found -> exception
+			resolver.engineResolveURI(context);
+		});
+		assertEquals("Unable to find document 'sample.xml' (detached signature)", exception.getMessage());
 	}
 
 	@Test

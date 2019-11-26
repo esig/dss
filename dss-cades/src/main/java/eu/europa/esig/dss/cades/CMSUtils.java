@@ -28,6 +28,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1InputStream;
@@ -44,6 +45,7 @@ import org.bouncycastle.asn1.ess.ESSCertIDv2;
 import org.bouncycastle.asn1.ess.SigningCertificate;
 import org.bouncycastle.asn1.ess.SigningCertificateV2;
 import org.bouncycastle.asn1.x509.IssuerSerial;
+import org.bouncycastle.cms.CMSAbsentContent;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSProcessableByteArray;
 import org.bouncycastle.cms.CMSSignedData;
@@ -56,9 +58,11 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 public final class CMSUtils {
@@ -277,13 +281,24 @@ public final class CMSUtils {
 		if (cmsSignedData != null) {
 			signedContent = cmsSignedData.getSignedContent();
 		}
-		if (signedContent != null) {
+		if (signedContent != null && !(signedContent instanceof CMSAbsentContent)) {
 			return new InMemoryDocument(CMSUtils.getSignedContent(signedContent));
 		} else if (Utils.collectionSize(detachedDocuments) == 1) {
 			return detachedDocuments.get(0);
 		} else {
 			throw new DSSException("Only enveloping and detached signatures are supported");
 		}
+	}
+	
+	public static CMSTypedData getContentToBeSign(final DSSDocument toSignData) {
+		Objects.requireNonNull(toSignData, "Document to be signed is missing");
+		CMSTypedData content = null;
+		if (toSignData instanceof DigestDocument) {
+			content = new CMSAbsentContent();
+		} else {
+			content = new CMSProcessableByteArray(DSSUtils.toByteArray(toSignData));
+		}
+		return content;
 	}
 
 }

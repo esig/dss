@@ -98,9 +98,13 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		parameters.setDetachedContents(RemoteDocumentConverter.toDSSDocuments(remoteParameters.getDetachedContents()));
 		parameters.setDigestAlgorithm(remoteParameters.getDigestAlgorithm());
 		parameters.setEncryptionAlgorithm(remoteParameters.getEncryptionAlgorithm());
+		parameters.setMaskGenerationFunction(remoteParameters.getMaskGenerationFunction());
 		parameters.setReferenceDigestAlgorithm(remoteParameters.getReferenceDigestAlgorithm());
 		parameters.setSignatureLevel(remoteParameters.getSignatureLevel());
 		parameters.setSignaturePackaging(remoteParameters.getSignaturePackaging());
+		if (remoteParameters.getContentTimestamps() != null) {
+			parameters.setContentTimestamps(TimestampTokenConverter.toTimestampTokens(remoteParameters.getContentTimestamps()));
+		}
 		parameters.setSignatureTimestampParameters(toTimestampParameters(remoteParameters.getSignatureTimestampParameters()));
 		parameters.setArchiveTimestampParameters(toTimestampParameters(remoteParameters.getArchiveTimestampParameters()));
 		parameters.setContentTimestampParameters(toTimestampParameters(remoteParameters.getContentTimestampParameters()));

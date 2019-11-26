@@ -50,6 +50,10 @@ public final class TrustedServicesFilterFactory {
 		return new ServiceByCountryFilter(countryCodes);
 	}
 
+	public static TrustedServiceFilter createFilterByUrls(Set<String> urls) {
+		return new ServiceByTLUrlFilter(urls);
+	}
+
 	public static TrustedServiceFilter createUniqueServiceFilter(CertificateWrapper endEntityCertificate) {
 		return new UniqueServiceFilter(endEntityCertificate);
 	}

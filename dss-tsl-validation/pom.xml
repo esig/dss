@@ -3,12 +3,12 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.5.RC1</version>
+		<version>5.6-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>dss-tsl-validation</artifactId>
 	<name>DSS TSL Validation</name>
-	<description>TSL validation business</description>
+	<description>LOTL/TL loading, parsing and validation business</description>
 
 	<properties>
 		<module-name>jpms_dss_tsl_validation</module-name>
@@ -19,6 +19,7 @@
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>specs-trusted-list</artifactId>
 		</dependency>
+		
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-xades</artifactId>
@@ -27,11 +28,6 @@
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-service</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

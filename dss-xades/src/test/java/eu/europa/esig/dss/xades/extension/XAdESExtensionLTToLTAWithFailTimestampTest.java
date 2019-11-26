@@ -20,7 +20,10 @@
  */
 package eu.europa.esig.dss.xades.extension;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSException;
@@ -44,9 +47,12 @@ public class XAdESExtensionLTToLTAWithFailTimestampTest extends AbstractTestXAdE
 	}
 
 	@Override
-	@Test(expected = DSSException.class)
+	@Test
 	public void test() throws Exception {
-		super.test();
+		Exception exception = assertThrows(DSSException.class, () -> {
+			super.test();
+		});
+		assertEquals("No retrieved timestamp token (TSP Status : Error for testing / PKIFailureInfo: 0x40000000)", exception.getMessage());
 	}
 
 }

@@ -63,14 +63,13 @@ public abstract class AbstractDetailedReportBuilder {
 
 	protected List<XmlTLAnalysis> executeAllTlAnalysis(DiagnosticData diagnosticData, ValidationPolicy policy, Date currentTime) {
 		List<XmlTLAnalysis> result = new ArrayList<XmlTLAnalysis>();
-		XmlTrustedList listOfTrustedLists = diagnosticData.getListOfTrustedLists();
-		if (listOfTrustedLists != null) {
-			TLValidationBlock tlValidation = new TLValidationBlock(listOfTrustedLists, currentTime, policy);
-			result.add(tlValidation.execute());
-		}
+		result.addAll(validateTL(policy, currentTime, diagnosticData.getListOfTrustedLists()));
+		result.addAll(validateTL(policy, currentTime, diagnosticData.getTrustedLists()));
+		return result;
+	}
 
-		// Validate used trusted lists
-		List<XmlTrustedList> trustedLists = diagnosticData.getTrustedLists();
+	private List<XmlTLAnalysis> validateTL(ValidationPolicy policy, Date currentTime, List<XmlTrustedList> trustedLists) {
+		List<XmlTLAnalysis> result = new ArrayList<XmlTLAnalysis>();
 		if (Utils.isCollectionNotEmpty(trustedLists)) {
 			for (XmlTrustedList xmlTrustedList : trustedLists) {
 				TLValidationBlock tlValidation = new TLValidationBlock(xmlTrustedList, currentTime, policy);

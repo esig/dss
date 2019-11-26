@@ -106,7 +106,7 @@ public class ServiceConsistencyCheck extends ChainItem<XmlValidationCertificateQ
 	@Override
 	protected String getAdditionalInfo() {
 		if (trustedService != null) {
-			Object[] params = new Object[] { trustedService.getServiceName() };
+			Object[] params = new Object[] { trustedService.getServiceNames().get(0) };
 			return MessageFormat.format(AdditionalInfo.TRUST_SERVICE_NAME, params);
 		}
 		return null;

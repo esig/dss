@@ -20,7 +20,9 @@
  */
 package eu.europa.esig.dss.validation;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,7 +30,7 @@ import java.io.IOException;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.TransformerException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
@@ -66,24 +68,33 @@ public class CertificateValidatorTest {
 		assertNotNull(detailedReportFacade.generateHtmlReport(reports.getDetailedReportJaxb()));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testCertNull() {
-		CertificateValidator.fromCertificate(null);
+		NullPointerException exception = assertThrows(NullPointerException.class, () -> {
+			CertificateValidator.fromCertificate(null);
+		});
+		assertEquals("The certificate is missing", exception.getMessage());
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testPolicyNull() {
-		CertificateValidator cv = CertificateValidator.fromCertificate(DSSUtils.loadCertificate(new File("src/test/resources/certificates/CZ.cer")));
-		cv.setCertificateVerifier(new CommonCertificateVerifier());
-		cv.validate(null);
+		NullPointerException exception = assertThrows(NullPointerException.class, () -> {
+			CertificateValidator cv = CertificateValidator.fromCertificate(DSSUtils.loadCertificate(new File("src/test/resources/certificates/CZ.cer")));
+			cv.setCertificateVerifier(new CommonCertificateVerifier());
+			cv.validate(null);
+		});
+		assertEquals("The validation policy is missing", exception.getMessage());
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testDateNull() {
-		CertificateValidator cv = CertificateValidator.fromCertificate(DSSUtils.loadCertificate(new File("src/test/resources/certificates/CZ.cer")));
-		cv.setCertificateVerifier(new CommonCertificateVerifier());
-		cv.setValidationTime(null);
-		cv.validate();
+		NullPointerException exception = assertThrows(NullPointerException.class, () -> {
+			CertificateValidator cv = CertificateValidator.fromCertificate(DSSUtils.loadCertificate(new File("src/test/resources/certificates/CZ.cer")));
+			cv.setCertificateVerifier(new CommonCertificateVerifier());
+			cv.setValidationTime(null);
+			cv.validate();
+		});
+		assertEquals(null, exception.getMessage());
 	}
 
 }

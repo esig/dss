@@ -33,7 +33,6 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Validator;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
@@ -41,6 +40,7 @@ import javax.xml.xpath.XPathExpressionException;
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.exceptions.XMLSecurityRuntimeException;
 import org.apache.xml.security.signature.Reference;
 import org.apache.xml.security.signature.ReferenceNotInitializedException;
 import org.apache.xml.security.transforms.Transforms;
@@ -55,13 +55,21 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.definition.AbstractPaths;
+import eu.europa.esig.dss.definition.DSSElement;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
+import eu.europa.esig.dss.xades.definition.XAdESPaths;
+import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.dss.xades.signature.PrettyPrintTransformer;
-import eu.europa.esig.xades.XAdESUtils;
+import eu.europa.esig.xades.XAdES319132Utils;
 
 /**
  * Utility class that contains some XML related method.
@@ -72,6 +80,7 @@ public final class DSSXMLUtils {
 	private static final Logger LOG = LoggerFactory.getLogger(DSSXMLUtils.class);
 
 	public static final String ID_ATTRIBUTE_NAME = "id";
+	public static final String URI_ATTRIBUTE_NAME = "uri";
 
 	private static final Set<String> transforms;
 
@@ -79,12 +88,11 @@ public final class DSSXMLUtils {
 	
 	private static final String TRANSFORMATION_EXCLUDE_SIGNATURE = "not(ancestor-or-self::ds:Signature)";
 	private static final String TRANSFORMATION_XPATH_NODE_NAME = "XPath";
+	
+	private static final XAdES319132Utils xadesUtils;
 
-	public static final String HTTP_WWW_W3_ORG_2000_09_XMLDSIG_OBJECT = "http://www.w3.org/2000/09/xmldsig#Object";
-	public static final String HTTP_WWW_W3_ORG_2000_09_XMLDSIG_MANIFEST = "http://www.w3.org/2000/09/xmldsig#Manifest";
 
 	static {
-
 		SantuarioInitializer.init();
 
 		transforms = new HashSet<String>();
@@ -92,6 +100,8 @@ public final class DSSXMLUtils {
 
 		canonicalizers = new HashSet<String>();
 		registerDefaultCanonicalizers();
+		
+		xadesUtils = XAdES319132Utils.newInstance();
 	}
 
 	/**
@@ -245,17 +255,19 @@ public final class DSSXMLUtils {
 	}
 	
 	public static Document getDocWithIndentedSignatures(final Document documentDom, String signatureId, List<String> noIndentObjectIds) {
-		NodeList signatures = DomUtils.getNodeList(documentDom, "//" + XPathQueryHolder.ELEMENT_SIGNATURE);
+		NodeList signatures = DomUtils.getNodeList(documentDom, XMLDSigPaths.ALL_SIGNATURES_PATH);
 		for (int i = 0; i < signatures.getLength(); i++) {
 			Element signature = (Element) signatures.item(i);
 			String signatureAttrIdValue = getIDIdentifier(signature);
 			if (Utils.isStringNotEmpty(signatureAttrIdValue) && signatureAttrIdValue.contains(signatureId)) {
-				Node unsignedSignatureProperties = DomUtils.getNode(signature, ".//" + "xades:UnsignedSignatureProperties");
+				Node unsignedSignatureProperties = DomUtils.getNode(signature,
+						XAdES132Paths.allFromCurrentPosition(XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES));
 				Node indentedSignature = getIndentedSignature(signature, noIndentObjectIds);
 				Node importedSignature = documentDom.importNode(indentedSignature, true);
 				signature.getParentNode().replaceChild(importedSignature, signature);
 				if (unsignedSignatureProperties != null) {
-					Node newUnsignedSignatureProperties = DomUtils.getNode(signature, ".//" + "xades:UnsignedSignatureProperties");
+					Node newUnsignedSignatureProperties = DomUtils.getNode(signature,
+							XAdES132Paths.allFromCurrentPosition(XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES));
 					newUnsignedSignatureProperties.getParentNode().replaceChild(unsignedSignatureProperties, newUnsignedSignatureProperties);
 				}
 			}
@@ -288,7 +300,17 @@ public final class DSSXMLUtils {
 	 * @return an indented {@link Node} xmlNode
 	 */
 	public static Node getIndentedNode(final Node documentDom, final Node xmlNode) {
-		NodeList signatures = DomUtils.getNodeList(documentDom, "//" + XPathQueryHolder.ELEMENT_SIGNATURE);
+		NodeList signatures = DomUtils.getNodeList(documentDom, XMLDSigPaths.ALL_SIGNATURES_PATH);
+
+		String pathAllFromCurrentPosition = null;
+		// TODO handle by namespace
+		DSSElement element = XAdES132Element.fromTagName(xmlNode.getLocalName());
+		if (element != null) {
+			pathAllFromCurrentPosition = AbstractPaths.allFromCurrentPosition(element);
+		} else {
+			pathAllFromCurrentPosition = ".//" + xmlNode.getNodeName();
+		}
+
 		for (int i = 0; i < signatures.getLength(); i++) {
 			Node signature = signatures.item(i);
 			NodeList candidateList;
@@ -296,7 +318,7 @@ public final class DSSXMLUtils {
 			if (idAttribute != null) {
 				candidateList = DomUtils.getNodeList(signature, ".//*" + DomUtils.getXPathByIdAttribute(idAttribute));
 			} else {
-				candidateList = DomUtils.getNodeList(signature, ".//" +  xmlNode.getNodeName());
+				candidateList = DomUtils.getNodeList(signature, pathAllFromCurrentPosition);
 			}
 			if (isNodeListContains(candidateList, xmlNode)) {
 				Node indentedSignature = getIndentedNode(signature);
@@ -304,7 +326,7 @@ public final class DSSXMLUtils {
 				if (idAttribute != null) {
 					indentedXmlNode = DomUtils.getNode(indentedSignature, ".//*" + DomUtils.getXPathByIdAttribute(idAttribute));
 				} else {
-					indentedXmlNode = DomUtils.getNode(indentedSignature, ".//" +  xmlNode.getNodeName());
+					indentedXmlNode = DomUtils.getNode(indentedSignature, pathAllFromCurrentPosition);
 				}
 				if (indentedXmlNode != null) {
 					return indentedXmlNode;
@@ -465,7 +487,7 @@ public final class DSSXMLUtils {
 	 * @return array of bytes
 	 */
 	public static byte[] canonicalizeOrSerializeSubtree(final String canonicalizationMethod, final Node node) {
-		if (canonicalizationMethod == null) {
+		if (Utils.isStringEmpty(canonicalizationMethod)) {
 			return serializeNode(node);
 		} else {
 			return canonicalizeSubtree(canonicalizationMethod, node);
@@ -503,12 +525,22 @@ public final class DSSXMLUtils {
 	 * @return the ID attribute value or null
 	 */
 	public static String getIDIdentifier(final Node node) {
+		return getAttribute(node, ID_ATTRIBUTE_NAME);
+	}
+	
+	/**
+	 * Returns attribute value for the given attribute name if exist, otherwise returns NULL
+	 * @param node {@link Node} to get attribute value from
+	 * @param attributeName {@link String} name of the attribute to get value for
+	 * @return {@link String} value of the attribute
+	 */
+	public static String getAttribute(final Node node, final String attributeName) {
 		final NamedNodeMap attributes = node.getAttributes();
 		for (int jj = 0; jj < attributes.getLength(); jj++) {
 			final Node item = attributes.item(jj);
 			final String localName = item.getLocalName() != null ? item.getLocalName() : item.getNodeName();
 			if (localName != null) {
-				if (Utils.areStringsEqualIgnoreCase(ID_ATTRIBUTE_NAME, localName)) {
+				if (Utils.areStringsEqualIgnoreCase(attributeName, localName)) {
 					return item.getTextContent();
 				}
 			}
@@ -548,11 +580,14 @@ public final class DSSXMLUtils {
 	 *             if the document content is not valid
 	 */
 	public static void validateAgainstXSD(DSSDocument document) throws SAXException {
+		String exceptionMessage = "Unable to read document. Reason : [%s]";
 		try (InputStream is = document.openStream()) {
-			final Validator validator = XAdESUtils.getSchemaETSI_EN_319_132().newValidator();
-			validator.validate(new StreamSource(is));
+			String resultMessage = xadesUtils.validateAgainstXSD(new StreamSource(is));
+			if (Utils.isStringNotEmpty(resultMessage)) {
+				throw new DSSException(String.format(exceptionMessage, resultMessage));
+			}
 		} catch (IOException e) {
-			throw new DSSException("Unable to read document", e);
+			throw new DSSException(String.format(exceptionMessage, e.getMessage()), e);
 		}
 	}
 
@@ -564,14 +599,7 @@ public final class DSSXMLUtils {
 	 * @return null if the XSD validates the XML, error message otherwise
 	 */
 	public static String validateAgainstXSD(final StreamSource streamSource) {
-		try {
-			final Validator validator = XAdESUtils.getSchemaETSI_EN_319_132().newValidator();
-			validator.validate(streamSource);
-			return Utils.EMPTY_STRING;
-		} catch (Exception e) {
-			LOG.warn("Error during the XML schema validation!", e);
-			return e.getMessage();
-		}
+		return xadesUtils.validateAgainstXSD(streamSource);
 	}
 
 	public static boolean isOid(String policyId) {
@@ -625,18 +653,17 @@ public final class DSSXMLUtils {
 	 * @return byte array
 	 */
 	public static byte[] getNodeBytes(Node node) {
-		Node firstChild = node.getFirstChild();
-		if (firstChild.getNodeType() == Node.ELEMENT_NODE) {
-			byte[] bytes = DSSXMLUtils.serializeNode(firstChild);
+		if (node.getNodeType() == Node.ELEMENT_NODE) {
+			byte[] bytes = serializeNode(node);
 			String str = new String(bytes);
 			// TODO: better
 			// remove <?xml version="1.0" encoding="UTF-8"?>
 			str = str.substring(str.indexOf("?>") + 2);
 			return str.getBytes();
-		} else if (firstChild.getNodeType() == Node.TEXT_NODE) {
-			String textContent = firstChild.getTextContent();
+		} else if (node.getNodeType() == Node.TEXT_NODE) {
+			String textContent = node.getTextContent();
 			if (Utils.isBase64Encoded(textContent)) {
-				return Utils.fromBase64(firstChild.getTextContent());
+				return Utils.fromBase64(node.getTextContent());
 			} else {
 				return textContent.getBytes();
 			}
@@ -669,7 +696,7 @@ public final class DSSXMLUtils {
 				}
 			}
 			
-		} catch (XMLSecurityException e) {
+		} catch (XMLSecurityException | XMLSecurityRuntimeException e) {
 			// if exception occurs during the transformations
 			LOG.warn("Signature reference with id [{}] is corrupted or has an invalid format. "
 					+ "Original data cannot be obtained. Reason: [{}]", reference.getId(), e.getMessage());
@@ -712,54 +739,49 @@ public final class DSSXMLUtils {
 	}
 
 	/**
-	 * Returns {@link Digest} found in the given {@code element}
-	 * @param element {@link Element} to get digest from
-	 * @return {@link Digest}
+	 * This method extracts the Digest algorithm and value from an element of type
+	 * DigestAlgAndValueType
+	 * 
+	 * @param element
+	 *                an Element of type DigestAlgAndValueType
+	 * @return an instance of Digest
 	 */
-	public static Digest getCertDigest(Element element, XPathQueryHolder xPathQueryHolder) {
-		final Element certDigestElement = DomUtils.getElement(element, xPathQueryHolder.XPATH__CERT_DIGEST);
-		if (certDigestElement == null) {
+	public static Digest getDigestAndValue(Element element) {
+		if (element == null) {
 			return null;
 		}
-		
-		final Element digestMethodElement = DomUtils.getElement(certDigestElement, xPathQueryHolder.XPATH__DIGEST_METHOD);
-		final Element digestValueElement = DomUtils.getElement(element, xPathQueryHolder.XPATH__CERT_DIGEST_DIGEST_VALUE);
-		if (digestMethodElement == null || digestValueElement == null) {
-			return null;
+
+		String digestAlgorithmUri = null;
+		String digestValueBase64 = null;
+		if (XAdESNamespaces.XADES_111.isSameUri(element.getNamespaceURI())) {
+			digestAlgorithmUri = DomUtils.getValue(element, XAdES111Paths.DIGEST_METHOD_ALGORITHM_PATH);
+			digestValueBase64 = DomUtils.getValue(element, XAdES111Paths.DIGEST_VALUE_PATH);
+		} else {
+			digestAlgorithmUri = DomUtils.getValue(element, XMLDSigPaths.DIGEST_METHOD_ALGORITHM_PATH);
+			digestValueBase64 = DomUtils.getValue(element, XMLDSigPaths.DIGEST_VALUE_PATH);
 		}
-		
-		final byte[] digestValue = Utils.fromBase64(digestValueElement.getTextContent());
-		
-		try {
-			final String xmlAlgorithmName = digestMethodElement.getAttribute(XPathQueryHolder.XMLE_ALGORITHM);
-			final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forXML(xmlAlgorithmName);
-			return new Digest(digestAlgorithm, digestValue);
-		} catch (DSSException e) {
-			LOG.warn("CertRef DigestMethod is not supported. Reason: {}", e.getMessage());
-			return null;
-		}
-		
+
+		return new Digest(getDigestAlgorithm(digestAlgorithmUri), getDigestValue(digestValueBase64));
 	}
-	
-	/**
-	 * Returns {@link Digest} found in the given {@code revocationRefNode}
-	 * @param revocationRefNode {@link Element} to get digest from
-	 * @param xPathQueryHolder {@link XPathQueryHolder}
-	 * @return {@link Digest}
-	 */
-	public static Digest getRevocationDigest(Element revocationRefNode, final XPathQueryHolder xPathQueryHolder) {
-		final Element digestAlgorithmEl = DomUtils.getElement(revocationRefNode, xPathQueryHolder.XPATH__DAAV_DIGEST_METHOD);
-		final Element digestValueEl = DomUtils.getElement(revocationRefNode, xPathQueryHolder.XPATH__DAAV_DIGEST_VALUE);
-		
-		DigestAlgorithm digestAlgo = null;
-		byte[] digestValue = null;
-		if (digestAlgorithmEl != null && digestValueEl != null) {
-			final String xmlName = digestAlgorithmEl.getAttribute(XPathQueryHolder.XMLE_ALGORITHM);
-			digestAlgo = DigestAlgorithm.forXML(xmlName);
-			digestValue = Utils.fromBase64(digestValueEl.getTextContent());
-			return new Digest(digestAlgo, digestValue);
+
+	private static byte[] getDigestValue(String digestValueBase64) {
+		byte[] result = null;
+		if (Utils.isStringNotEmpty(digestValueBase64)) {
+			result = Utils.fromBase64(digestValueBase64);
 		}
-		return null;
+		return result;
+	}
+
+	private static DigestAlgorithm getDigestAlgorithm(String digestAlgorithmUri) {
+		DigestAlgorithm result = null;
+		if (Utils.isStringNotEmpty(digestAlgorithmUri)) {
+			try {
+				result = DigestAlgorithm.forXML(digestAlgorithmUri);
+			} catch (IllegalArgumentException e) {
+				LOG.warn("Unable to retrieve the used digest algorithm", e);
+			}
+		}
+		return result;
 	}
 
 	/**
@@ -767,8 +789,8 @@ public final class DSSXMLUtils {
 	 * @param reference {@link Reference} to check
 	 * @return TRUE if the reference refers to the SignedProperties, FALSE otherwise
 	 */
-	public static boolean isSignedProperties(final Reference reference, final XPathQueryHolder xPathQueryHolder) {
-		return xPathQueryHolder.XADES_SIGNED_PROPERTIES.equals(reference.getType());
+	public static boolean isSignedProperties(final Reference reference, final XAdESPaths xadesPaths) {
+		return xadesPaths.getSignedPropertiesUri().equals(reference.getType());
 	}
 
 	/**
@@ -776,8 +798,8 @@ public final class DSSXMLUtils {
 	 * @param reference {@link Reference} to check
 	 * @return TRUE if the reference refers to the CounterSignature, FALSE otherwise
 	 */
-	public static boolean isCounerSignature(final Reference reference, final XPathQueryHolder xPathQueryHolder) {
-		return xPathQueryHolder.XADES_COUNTERSIGNED_SIGNATURE.equals(reference.getType());
+	public static boolean isCounterSignature(final Reference reference, final XAdESPaths xadesPaths) {
+		return xadesPaths.getCounterSignatureUri().equals(reference.getType());
 	}
 	
 	/**
@@ -789,10 +811,10 @@ public final class DSSXMLUtils {
 	 *                  the {@link Element} signature the given reference belongs to
 	 * @return TRUE if the reference is a KeyInfo reference, FALSE otherwise
 	 */
-	public static boolean isKeyInfoReference(final Reference reference, final Element signature, final XPathQueryHolder xPathQueryHolder) {
+	public static boolean isKeyInfoReference(final Reference reference, final Element signature) {
 		String uri = reference.getURI();
 		uri = DomUtils.getId(uri);
-		Element element = DomUtils.getElement(signature, "./" + xPathQueryHolder.XPATH_KEY_INFO + DomUtils.getXPathByIdAttribute(uri));
+		Element element = DomUtils.getElement(signature, XMLDSigPaths.KEY_INFO_PATH + DomUtils.getXPathByIdAttribute(uri));
 		if (element != null) {
 			return true;
 		}
@@ -805,7 +827,7 @@ public final class DSSXMLUtils {
 	 * @return TRUE if the provided {@code referenceType} is an Object type, FALSE otherwise
 	 */
 	public static boolean isObjectReferenceType(String referenceType) {
-		return HTTP_WWW_W3_ORG_2000_09_XMLDSIG_OBJECT.equals(referenceType);
+		return XMLDSigPaths.OBJECT_TYPE.equals(referenceType);
 	}
 	
 	/**
@@ -814,7 +836,7 @@ public final class DSSXMLUtils {
 	 * @return TRUE if the provided {@code referenceType} is an Manifest type, FALSE otherwise
 	 */
 	public static boolean isManifestReferenceType(String referenceType) {
-		return HTTP_WWW_W3_ORG_2000_09_XMLDSIG_MANIFEST.equals(referenceType);
+		return XMLDSigPaths.MANIFEST_TYPE.equals(referenceType);
 	}
 
 }

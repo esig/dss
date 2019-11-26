@@ -20,11 +20,12 @@
  */
 package eu.europa.esig.dss.crl.stream.impl;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -33,7 +34,7 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.cert.X509CRLEntry;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.utils.Utils;
 
@@ -41,11 +42,14 @@ public class CRLParserTest {
 
 	private CRLParser parser = new CRLParser();
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void illegalArgumenException() throws IOException {
-		try (InputStream fis = new FileInputStream("pom.xml")) {
-			parser.retrieveInfo(fis);
-		}
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+			try (InputStream fis = new FileInputStream("pom.xml")) {
+				parser.retrieveInfo(fis);
+			}
+		});
+		assertEquals("The InputStream MUST support mark/reset methods !", exception.getMessage());
 	}
 
 	@Test

@@ -157,13 +157,12 @@
 			</QCStatementIds>
 			<QCTypes />
 			<TrustedServiceProviders>
-				<TrustedServiceProvider>
-					<TSPName>Cryptolog International</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-2048226043</TSPRegistrationIdentifier>
-					<CountryCode>FR</CountryCode>
+                <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+					<TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2048226043</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
 					<TrustedServices>
 						<TrustedService ServiceDigitalIdentifier="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC">
-							<ServiceName>Universign CA hardware</ServiceName>
+							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
 							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC
 							</ServiceType>
 							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted
@@ -178,7 +177,7 @@
 							</AdditionalServiceInfoUris>
 						</TrustedService>
 						<TrustedService ServiceDigitalIdentifier="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC">
-							<ServiceName>Universign CA hardware</ServiceName>
+							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
 							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC
 							</ServiceType>
 							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited
@@ -255,13 +254,12 @@
 			<QCStatementIds />
 			<QCTypes />
 			<TrustedServiceProviders>
-				<TrustedServiceProvider>
-					<TSPName>Cryptolog International</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-2048226043</TSPRegistrationIdentifier>
-					<CountryCode>FR</CountryCode>
+                <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+					<TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2048226043</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
 					<TrustedServices>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-							<ServiceName>Universign CA hardware</ServiceName>
+							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
 							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC
 							</ServiceType>
 							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel
@@ -269,7 +267,7 @@
 							<StartDate>2016-07-01T00:00:00</StartDate>
 						</TrustedService>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-							<ServiceName>Universign CA hardware</ServiceName>
+							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
 							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC
 							</ServiceType>
 							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited
@@ -278,7 +276,7 @@
 							<EndDate>2016-07-01T00:00:00</EndDate>
 						</TrustedService>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-							<ServiceName>Universign CA hardware</ServiceName>
+							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
 							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST
 							</ServiceType>
 							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted
@@ -286,7 +284,7 @@
 							<StartDate>2016-12-01T01:00:00</StartDate>
 						</TrustedService>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-							<ServiceName>Universign CA hardware</ServiceName>
+							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
 							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST
 							</ServiceType>
 							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn
@@ -295,7 +293,7 @@
 							<EndDate>2016-12-01T01:00:00</EndDate>
 						</TrustedService>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-							<ServiceName>Universign CA hardware</ServiceName>
+							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
 							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST
 							</ServiceType>
 							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited
@@ -363,13 +361,12 @@
 			<QCStatementIds />
 			<QCTypes />
 			<TrustedServiceProviders>
-				<TrustedServiceProvider>
-					<TSPName>Cryptolog International</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-2048226043</TSPRegistrationIdentifier>
-					<CountryCode>FR</CountryCode>
+                <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+					<TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2048226043</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
 					<TrustedServices>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-							<ServiceName>Universign CA hardware</ServiceName>
+							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
 							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC
 							</ServiceType>
 							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel
@@ -377,7 +374,7 @@
 							<StartDate>2016-07-01T00:00:00</StartDate>
 						</TrustedService>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-							<ServiceName>Universign CA hardware</ServiceName>
+							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
 							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC
 							</ServiceType>
 							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited
@@ -386,7 +383,7 @@
 							<EndDate>2016-07-01T00:00:00</EndDate>
 						</TrustedService>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-							<ServiceName>Universign CA hardware</ServiceName>
+							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
 							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST
 							</ServiceType>
 							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted
@@ -394,7 +391,7 @@
 							<StartDate>2016-12-01T01:00:00</StartDate>
 						</TrustedService>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-							<ServiceName>Universign CA hardware</ServiceName>
+							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
 							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST
 							</ServiceType>
 							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn
@@ -403,7 +400,7 @@
 							<EndDate>2016-12-01T01:00:00</EndDate>
 						</TrustedService>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-							<ServiceName>Universign CA hardware</ServiceName>
+							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
 							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST
 							</ServiceType>
 							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited
@@ -473,13 +470,12 @@
 			<QCStatementIds />
 			<QCTypes />
 			<TrustedServiceProviders>
-				<TrustedServiceProvider>
-					<TSPName>Cryptolog International</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-2048226043</TSPRegistrationIdentifier>
-					<CountryCode>FR</CountryCode>
+                <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+					<TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2048226043</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
 					<TrustedServices>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-							<ServiceName>Universign CA hardware</ServiceName>
+							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
 							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC
 							</ServiceType>
 							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel
@@ -487,7 +483,7 @@
 							<StartDate>2016-07-01T00:00:00</StartDate>
 						</TrustedService>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-							<ServiceName>Universign CA hardware</ServiceName>
+							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
 							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC
 							</ServiceType>
 							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited
@@ -496,7 +492,7 @@
 							<EndDate>2016-07-01T00:00:00</EndDate>
 						</TrustedService>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-							<ServiceName>Universign CA hardware</ServiceName>
+							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
 							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST
 							</ServiceType>
 							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted
@@ -504,7 +500,7 @@
 							<StartDate>2016-12-01T01:00:00</StartDate>
 						</TrustedService>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-							<ServiceName>Universign CA hardware</ServiceName>
+							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
 							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST
 							</ServiceType>
 							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn
@@ -513,7 +509,7 @@
 							<EndDate>2016-12-01T01:00:00</EndDate>
 						</TrustedService>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-							<ServiceName>Universign CA hardware</ServiceName>
+							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
 							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST
 							</ServiceType>
 							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited
@@ -587,13 +583,12 @@
 			<QCStatementIds />
 			<QCTypes />
 			<TrustedServiceProviders>
-				<TrustedServiceProvider>
-					<TSPName>Cryptolog International</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-2048226043</TSPRegistrationIdentifier>
-					<CountryCode>FR</CountryCode>
+                <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+					<TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2048226043</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
 					<TrustedServices>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-							<ServiceName>Universign CA hardware</ServiceName>
+							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
 							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC
 							</ServiceType>
 							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted
@@ -610,7 +605,7 @@
 							</AdditionalServiceInfoUris>
 						</TrustedService>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-							<ServiceName>Universign CA hardware</ServiceName>
+							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
 							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC
 							</ServiceType>
 							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited
@@ -689,13 +684,12 @@
 			<QCStatementIds />
 			<QCTypes />
 			<TrustedServiceProviders>
-				<TrustedServiceProvider>
-					<TSPName>Cryptolog International</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-2048226043</TSPRegistrationIdentifier>
-					<CountryCode>FR</CountryCode>
+                <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+					<TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2048226043</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
 					<TrustedServices>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-							<ServiceName>Universign CA hardware</ServiceName>
+							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
 							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC
 							</ServiceType>
 							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted
@@ -757,13 +751,12 @@
 			<QCStatementIds />
 			<QCTypes />
 			<TrustedServiceProviders>
-				<TrustedServiceProvider>
-					<TSPName>Cryptolog International</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-2048226043</TSPRegistrationIdentifier>
-					<CountryCode>FR</CountryCode>
+                <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+					<TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2048226043</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
 					<TrustedServices>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-							<ServiceName>Universign CA hardware</ServiceName>
+							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
 							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC
 							</ServiceType>
 							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel
@@ -771,7 +764,7 @@
 							<StartDate>2016-07-01T00:00:00</StartDate>
 						</TrustedService>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-							<ServiceName>Universign CA hardware</ServiceName>
+							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
 							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC
 							</ServiceType>
 							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited
@@ -836,13 +829,12 @@
 			<QCStatementIds />
 			<QCTypes />
 			<TrustedServiceProviders>
-				<TrustedServiceProvider>
-					<TSPName>Cryptolog International</TSPName>
-                    <TSPRegistrationIdentifier>VATDE-2048226043</TSPRegistrationIdentifier>
-					<CountryCode>FR</CountryCode>
+                <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+					<TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2048226043</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
 					<TrustedServices>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-							<ServiceName>Universign CA hardware</ServiceName>
+							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
 							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
 							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
 							<StartDate>2016-07-01T00:00:00</StartDate>
@@ -851,7 +843,7 @@
 							</AdditionalServiceInfoUris>
 						</TrustedService>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-							<ServiceName>Universign CA hardware</ServiceName>
+							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
 							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
 							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
 							<StartDate>2012-06-14T22:00:00</StartDate>
@@ -1043,7 +1035,7 @@
         </SignerData>
     </OriginalDocuments>
 	<TrustedLists>
-		<TrustedList>
+        <TrustedList Id="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F">
 			<CountryCode>FR</CountryCode>
 			<Url>http://www.ssi.gouv.fr/eidas/TL-FR.xml</Url>
 			<SequenceNumber>39</SequenceNumber>
@@ -1053,16 +1045,16 @@
 			<NextUpdate>2018-07-30T00:00:00</NextUpdate>
 			<WellSigned>true</WellSigned>
 		</TrustedList>
+	    <TrustedList Id="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E" LOTL="true">
+			<CountryCode>EU</CountryCode>
+			<Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml
+			</Url>
+			<SequenceNumber>200</SequenceNumber>
+			<Version>5</Version>
+			<LastLoading>2018-02-20T10:03:56</LastLoading>
+			<IssueDate>2018-02-19T13:00:00</IssueDate>
+			<NextUpdate>2018-08-19T00:00:00</NextUpdate>
+			<WellSigned>true</WellSigned>
+		</TrustedList>
 	</TrustedLists>
-	<ListOfTrustedLists>
-		<CountryCode>EU</CountryCode>
-		<Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml
-		</Url>
-		<SequenceNumber>200</SequenceNumber>
-		<Version>5</Version>
-		<LastLoading>2018-02-20T10:03:56</LastLoading>
-		<IssueDate>2018-02-19T13:00:00</IssueDate>
-		<NextUpdate>2018-08-19T00:00:00</NextUpdate>
-		<WellSigned>true</WellSigned>
-	</ListOfTrustedLists>
 </DiagnosticData>

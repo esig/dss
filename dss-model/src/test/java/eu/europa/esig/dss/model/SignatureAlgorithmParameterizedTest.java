@@ -20,41 +20,26 @@
  */
 package eu.europa.esig.dss.model;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Arrays;
-import java.util.Collection;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 
-@RunWith(Parameterized.class)
 public class SignatureAlgorithmParameterizedTest {
 
-	private final SignatureAlgorithm signatureAlgo;
-
-	@Parameters(name = "SignatureAlgorithm {index} : {0}")
-	public static Collection<SignatureAlgorithm> data() {
-		return Arrays.asList(SignatureAlgorithm.values());
-	}
-
-	public SignatureAlgorithmParameterizedTest(SignatureAlgorithm signatureAlgo) {
-		this.signatureAlgo = signatureAlgo;
-	}
-
-	@Test
-	public void test() {
+	@ParameterizedTest(name = "SignatureAlgorithm {index} : {0}")
+	@EnumSource(SignatureAlgorithm.class)
+	public void test(SignatureAlgorithm signatureAlgo) {
 		SignatureAlgorithm retrieved = SignatureAlgorithm.getAlgorithm(signatureAlgo.getEncryptionAlgorithm(), signatureAlgo.getDigestAlgorithm(),
 				signatureAlgo.getMaskGenerationFunction());
 		assertEquals(signatureAlgo, retrieved);
 	}
 
-	@Test
-	public void forJAVA() {
+	@ParameterizedTest(name = "SignatureAlgorithm {index} : {0}")
+	@EnumSource(SignatureAlgorithm.class)
+	public void forJAVA(SignatureAlgorithm signatureAlgo) {
 		assertEquals(signatureAlgo, SignatureAlgorithm.forJAVA(signatureAlgo.getJCEId()));
 	}
 

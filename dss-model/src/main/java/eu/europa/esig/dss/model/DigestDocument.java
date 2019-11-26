@@ -101,12 +101,12 @@ public class DigestDocument extends CommonDocument {
 
 	@Override
 	public InputStream openStream() {
-		throw new DSSException("Digest document");
+		throw new DSSException("Not possible with Digest document");
 	}
 
 	@Override
 	public void save(String filePath) throws IOException {
-		throw new DSSException("Digest document");
+		throw new DSSException("Not possible with Digest document");
 	}
 
 }

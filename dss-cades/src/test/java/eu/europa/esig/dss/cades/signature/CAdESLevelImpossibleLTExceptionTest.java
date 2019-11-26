@@ -20,10 +20,13 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.io.IOException;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -39,7 +42,7 @@ public class CAdESLevelImpossibleLTExceptionTest extends AbstractCAdESTestSignat
 	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new InMemoryDocument("Hello World".getBytes());
 
@@ -54,9 +57,12 @@ public class CAdESLevelImpossibleLTExceptionTest extends AbstractCAdESTestSignat
 	}
 
 	@Override
-	@Test(expected = DSSException.class)
+	@Test
 	public void signAndVerify() throws IOException {
-		super.signAndVerify(); // unable to extend to LT (no online CRL/OCSP)
+		Exception exception = assertThrows(DSSException.class, () -> {
+			super.signAndVerify(); // unable to extend to LT (no online CRL/OCSP)
+		});
+		assertEquals("Revocation data is missing", exception.getMessage());
 	}
 
 	@Override

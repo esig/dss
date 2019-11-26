@@ -22,11 +22,10 @@ package eu.europa.esig.dss.spi.x509;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.tsl.ServiceInfo;
+import eu.europa.esig.dss.spi.tsl.TrustProperties;
 
 /**
  * This class represents the simple list of trusted certificates.
@@ -57,8 +56,8 @@ public class CommonTrustedCertificateSource extends CommonCertificateSource {
 		}
 	}
 
-	public Set<ServiceInfo> getTrustServices(CertificateToken trustAnchor) {
-		return Collections.emptySet();
+	public List<TrustProperties> getTrustServices(CertificateToken token) {
+		return Collections.emptyList();
 	}
 
 	public List<String> getAlternativeOCSPUrls(CertificateToken trustAnchor) {

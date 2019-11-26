@@ -20,15 +20,13 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.Date;
 
-import org.junit.Before;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -43,8 +41,6 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 public class XAdESLevelBWithPolicyTest extends AbstractXAdESTestSignature {
 
-	private static final Logger logger = LoggerFactory.getLogger(XAdESLevelBWithPolicyTest.class);
-
 	private static final String HTTP_SPURI_TEST = "http://spuri.test";
 	private static final String SIGNATURE_POLICY_ID = "1.2.3.4.5.6";
 	private static final String SIGNATURE_POLICY_DESCRIPTION = "Test description";
@@ -53,7 +49,7 @@ public class XAdESLevelBWithPolicyTest extends AbstractXAdESTestSignature {
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
@@ -80,7 +76,6 @@ public class XAdESLevelBWithPolicyTest extends AbstractXAdESTestSignature {
 	protected void onDocumentSigned(byte[] byteArray) {
 		super.onDocumentSigned(byteArray);
 		String xmlContent = new String(byteArray);
-		logger.info(xmlContent);
 		assertTrue(xmlContent.contains("description"));
 		assertTrue(xmlContent.contains(":SigPolicyQualifiers>"));
 		assertTrue(xmlContent.contains(":SigPolicyQualifier>"));

@@ -20,16 +20,13 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.net.URLEncoder;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -39,8 +36,6 @@ import eu.europa.esig.dss.xades.reference.DSSReference;
  * This class handles the specifics of the detached XML signature.
  */
 class DetachedSignatureBuilder extends XAdESSignatureBuilder {
-
-	private static final Logger LOG = LoggerFactory.getLogger(DetachedSignatureBuilder.class);
 
 	/**
 	 * The default constructor for DetachedSignatureBuilder.<br>
@@ -79,21 +74,14 @@ class DetachedSignatureBuilder extends XAdESSignatureBuilder {
 		final DSSReference reference = new DSSReference();
 		reference.setId(REFERENCE_ID_SUFFIX + deterministicId + "-" + referenceIndex);
 		if (Utils.isStringNotEmpty(document.getName())) {
-			final String fileURI = document.getName();
-			try {
-				// MUST comply RFC 3896 (see DSS-1475 for details)
-				reference.setUri(URLEncoder.encode(fileURI, "UTF-8").replace("+", "%20"));
-			} catch (Exception e) {
-				LOG.warn("Unable to encode uri '{}' : {}", fileURI, e.getMessage());
-				reference.setUri(fileURI);
-			}
+			reference.setUri(DSSUtils.encodeURI(document.getName()));
 		}
 		reference.setContents(document);
 		DigestAlgorithm digestAlgorithm = getReferenceDigestAlgorithmOrDefault(params);
 		reference.setDigestMethodAlgorithm(digestAlgorithm);
 		return reference;
 	}
-
+	
 	@Override
 	protected DSSDocument transformReference(final DSSReference reference) {
 		return reference.getContents();

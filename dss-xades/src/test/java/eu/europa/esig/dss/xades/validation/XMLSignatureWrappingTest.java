@@ -20,24 +20,26 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.xml.bind.JAXBElement;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -71,14 +73,16 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
-import eu.europa.esig.dss.spi.tsl.ServiceInfo;
+import eu.europa.esig.dss.spi.tsl.TLInfo;
+import eu.europa.esig.dss.spi.tsl.TrustProperties;
+import eu.europa.esig.dss.spi.tsl.TrustServiceProvider;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.spi.util.TimeDependentValues;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.dss.xades.XPathQueryHolder;
 import eu.europa.esig.validationreport.enums.ObjectType;
 import eu.europa.esig.validationreport.jaxb.POEProvisioningType;
 import eu.europa.esig.validationreport.jaxb.SASigPolicyIdentifierType;
@@ -137,9 +141,8 @@ public class XMLSignatureWrappingTest {
 		XmlSignatureDigestReference signatureDigestReference = signatureById.getSignatureDigestReference();
 		assertNotNull(signatureDigestReference);
 
-		XPathQueryHolder xPathQueryHolder = new XPathQueryHolder();
 		Document documentDom = DomUtils.buildDOM(document);
-		NodeList nodeList = DomUtils.getNodeList(documentDom.getDocumentElement(), xPathQueryHolder.XPATH__SIGNATURE);
+		NodeList nodeList = DomUtils.getNodeList(documentDom.getDocumentElement(), XMLDSigPaths.SIGNATURE_PATH);
 		Element signatureElement = (Element) nodeList.item(0);
 		byte[] canonicalizedSignatureElement = DSSXMLUtils.canonicalizeSubtree(signatureDigestReference.getCanonicalizationMethod(), signatureElement);
 		byte[] digest = DSSUtils.digest(signatureDigestReference.getDigestMethod(), canonicalizedSignatureElement);
@@ -372,9 +375,8 @@ public class XMLSignatureWrappingTest {
 		XmlSignatureDigestReference signatureDigestReference = signature.getSignatureDigestReference();
 		assertNotNull(signatureDigestReference);
 
-		XPathQueryHolder xPathQueryHolder = new XPathQueryHolder();
 		Document documentDom = DomUtils.buildDOM(document);
-		NodeList nodeList = DomUtils.getNodeList(documentDom, xPathQueryHolder.XPATH__SIGNATURE);
+		NodeList nodeList = DomUtils.getNodeList(documentDom, XMLDSigPaths.SIGNATURE_PATH);
 		assertEquals(1, nodeList.getLength());
 		Element signatureElement = (Element) nodeList.item(0);
 		byte[] canonicalizedSignatureElement = DSSXMLUtils.canonicalizeSubtree(signatureDigestReference.getCanonicalizationMethod(), signatureElement);
@@ -764,7 +766,13 @@ public class XMLSignatureWrappingTest {
 	private void checkForTrustedCertificateRoot(SignedDocumentValidator validator, CommonCertificateVerifier certificateVerifier, CertificateToken rootToken) {
 
 		TrustedListsCertificateSource trustedListsCertificateSource = new TrustedListsCertificateSource();
-		trustedListsCertificateSource.addCertificate(rootToken, Arrays.asList(new ServiceInfo()));
+
+		HashMap<CertificateToken, List<TrustProperties>> hashMap = new HashMap<CertificateToken, List<TrustProperties>>();
+		
+		TLInfo tlInfo = new TLInfo(null, null, null, "BE.xml");
+		TrustProperties trustProperties = new TrustProperties(tlInfo.getIdentifier(), new TrustServiceProvider(), new TimeDependentValues<>());
+		hashMap.put(rootToken, Arrays.asList(trustProperties));
+		trustedListsCertificateSource.setTrustPropertiesByCertificates(hashMap);
 
 		certificateVerifier.setTrustedCertSource(trustedListsCertificateSource);
 		validator.setCertificateVerifier(certificateVerifier);

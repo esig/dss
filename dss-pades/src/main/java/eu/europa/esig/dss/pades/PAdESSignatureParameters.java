@@ -20,12 +20,18 @@
  */
 package eu.europa.esig.dss.pades;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 
 public class PAdESSignatureParameters extends CAdESSignatureParameters {
+
+	private static final Logger LOG = LoggerFactory.getLogger(PAdESSignatureParameters.class);
 
 	private static final long serialVersionUID = -1632557456487796227L;
 
@@ -51,10 +57,10 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 	private String signatureSubFilter = PAdESConstants.SIGNATURE_DEFAULT_SUBFILTER;
 
 	/**
-	 * This attribute allows to explicitly specify the name for a Signature.
+	 * This attribute allows to explicitly specify the SignerName (name for the Signature).
 	 * The person or authority signing the document.
 	 */
-	private String signatureName;
+	private String signerName;
 
 	/**
 	 * This attribute is used to create visible signature in PAdES form
@@ -137,12 +143,12 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 		this.signatureSubFilter = signatureSubFilter;
 	}
 
-	public String getSignatureName() {
-		return signatureName;
+	public String getSignerName() {
+		return signerName;
 	}
 
-	public void setSignatureName(final String signatureName) {
-		this.signatureName = signatureName;
+	public void setSignerName(final String signerName) {
+		this.signerName = signerName;
 	}
 
 	public SignatureImageParameters getSignatureImageParameters() {
@@ -151,6 +157,11 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 
 	public void setSignatureImageParameters(SignatureImageParameters signatureImageParameters) {
 		this.signatureImageParameters = signatureImageParameters;
+	}
+	
+	@Override
+	public void setSignaturePackaging(final SignaturePackaging signaturePackaging) {
+		LOG.warn("Cannot set a SignaturePackaging for PAdES signature. Only ENVELOPED packaging is allowed!");
 	}
 
 	public String getTimestampFilter() {

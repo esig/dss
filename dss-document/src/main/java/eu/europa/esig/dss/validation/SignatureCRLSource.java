@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.validation;
 
 import java.util.ArrayList;
@@ -10,10 +30,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
@@ -24,13 +44,16 @@ import eu.europa.esig.dss.utils.Utils;
 public abstract class SignatureCRLSource extends OfflineCRLSource implements SignatureRevocationSource<CRLToken> {
 	
 	private Map<CRLBinary, List<CRLToken>> crlTokenMap = new HashMap<CRLBinary, List<CRLToken>>();
-	
+
+	private List<CRLToken> cmsSignedDataCRLs = new ArrayList<CRLToken>();
+	private List<CRLToken> timestampSignedDataCRLs = new ArrayList<CRLToken>();
 	private List<CRLToken> revocationValuesCRLs = new ArrayList<CRLToken>();
 	private List<CRLToken> attributeRevocationValuesCRLs = new ArrayList<CRLToken>();
 	private List<CRLToken> timestampValidationDataCRLs = new ArrayList<CRLToken>();
 	private List<CRLToken> dssDictionaryCRLs = new ArrayList<CRLToken>();
 	private List<CRLToken> vriDictionaryCRLs = new ArrayList<CRLToken>();
 	private List<CRLToken> timestampRevocationValuesCRLs = new ArrayList<CRLToken>();
+	private List<CRLToken> adbeRevocationValuesCRLs = new ArrayList<CRLToken>();
 	
 	private List<CRLRef> crlRefs = new ArrayList<CRLRef>();
 	
@@ -40,6 +63,16 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	 * Map that links {@link CRLToken}s with related {@link CRLRef}s
 	 */
 	private transient Map<CRLToken, Set<CRLRef>> revocationRefsMap;
+
+	@Override
+	public List<CRLToken> getCMSSignedDataRevocationTokens() {
+		return cmsSignedDataCRLs;
+	}
+
+	@Override
+	public List<CRLToken> getTimestampSignedDataRevocationTokens() {
+		return timestampSignedDataCRLs;
+	}
 
 	@Override
 	public List<CRLToken> getRevocationValuesTokens() {
@@ -70,6 +103,11 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	public List<CRLToken> getVRIDictionaryTokens() {
 		return vriDictionaryCRLs;
 	}
+	
+	@Override
+	public List<CRLToken> getADBERevocationValuesTokens() {
+		return adbeRevocationValuesCRLs;
+	}
 
 	public List<CRLRef> getCompleteRevocationRefs() {
 		return getCRLRefsByOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS);
@@ -99,12 +137,15 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	 */
 	public List<CRLToken> getAllCRLTokens() {
 		List<CRLToken> crlTokens = new ArrayList<CRLToken>();
+		crlTokens.addAll(getCMSSignedDataRevocationTokens());
+		crlTokens.addAll(getTimestampSignedDataRevocationTokens());
 		crlTokens.addAll(getRevocationValuesTokens());
 		crlTokens.addAll(getAttributeRevocationValuesTokens());
 		crlTokens.addAll(getTimestampValidationDataTokens());
 		crlTokens.addAll(getDSSDictionaryTokens());
 		crlTokens.addAll(getVRIDictionaryTokens());
 		crlTokens.addAll(getTimestampRevocationValuesTokens());
+		crlTokens.addAll(getADBERevocationValuesTokens());
 		return crlTokens;
 	}
 
@@ -149,6 +190,12 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	
 	private void addToRelevantList(CRLToken crlToken, RevocationOrigin origin) {
 		switch (origin) {
+		case CMS_SIGNED_DATA:
+			cmsSignedDataCRLs.add(crlToken);
+			break;
+		case TIMESTAMP_SIGNED_DATA:
+			timestampSignedDataCRLs.add(crlToken);
+			break;
 		case REVOCATION_VALUES:
 			revocationValuesCRLs.add(crlToken);
 			break;
@@ -166,6 +213,9 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 			break;
 		case TIMESTAMP_REVOCATION_VALUES:
 			timestampRevocationValuesCRLs.add(crlToken);
+			break;
+		case ADBE_REVOCATION_INFO_ARCHIVAL:
+			adbeRevocationValuesCRLs.add(crlToken);
 			break;
 		default:
 			throw new DSSException(

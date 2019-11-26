@@ -18,7 +18,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 package eu.europa.esig.dss.xades.signature;
 
 import static org.junit.Assert.assertEquals;
@@ -29,6 +28,7 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.security.Signature;
 import java.util.ArrayList;
@@ -40,6 +40,7 @@ import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -49,6 +50,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -58,6 +61,8 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 
 @RunWith(Parameterized.class)
 public class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
@@ -119,6 +124,13 @@ public class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
 
 		service = new XAdESService(getOfflineCertificateVerifier());
 	}
+	
+	// Annotation JUnit 4
+	@Test
+	@Override
+	public void signAndVerify() throws IOException {
+		super.signAndVerify();
+	}
 
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
@@ -134,7 +146,7 @@ public class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
 
 			//------------------------------------ SIGNED INFO -----------------------------------------------------
 			// Signed info extraction
-			NodeList signedInfoNodeList = DomUtils.getNodeList(doc, "//ds:SignedInfo");
+			NodeList signedInfoNodeList = DomUtils.getNodeList(doc, XMLDSigPaths.all(XMLDSigElement.SIGNED_INFO));
 			assertNotNull(signedInfoNodeList);
 			assertEquals(1, signedInfoNodeList.getLength());
 			
@@ -179,7 +191,7 @@ public class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
 			originalFilByteArray = canonicalizer.canonicalize(fileContent);
 		}else {
 			// Original File base64 extraction + Verification
-			NodeList originalFileNodeList = DomUtils.getNodeList(doc, "//ds:Object");
+			NodeList originalFileNodeList = DomUtils.getNodeList(doc, XMLDSigPaths.all(XMLDSigElement.OBJECT));
 			assertNotNull(originalFileNodeList);
 			assertEquals(2, originalFileNodeList.getLength());
 			
@@ -211,7 +223,7 @@ public class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
 	private void checkKeyInfo(Document doc) throws InvalidCanonicalizerException, CanonicalizationException {
 		//------------------------------------ KEY INFO -----------------------------------------------------
 		// Key info extraction + Verification
-		NodeList keyInfoNodeList = DomUtils.getNodeList(doc, "//ds:KeyInfo");
+		NodeList keyInfoNodeList = DomUtils.getNodeList(doc, XMLDSigPaths.all(XMLDSigElement.KEY_INFO));
 		assertNotNull(keyInfoNodeList);
 		assertEquals(1, keyInfoNodeList.getLength());
 		
@@ -241,7 +253,7 @@ public class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
 		//------------------------------------ SIGNED PROPERTIES -----------------------------------------------------
 		try {
 			// Signed properties extraction + verification
-			NodeList signedPropertiesNodeList = DomUtils.getNodeList(doc, "//xades:SignedProperties");
+			NodeList signedPropertiesNodeList = DomUtils.getNodeList(doc, XAdES132Paths.all(XAdES132Element.SIGNED_PROPERTIES));
 			assertNotNull(signedPropertiesNodeList);
 			assertEquals(1, signedPropertiesNodeList.getLength());
 			

@@ -420,7 +420,7 @@ public class DiagnosticData {
 	public boolean isValidCertificate(final String dssCertificateId) {
 		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
 		
-		final boolean signatureValid = (certificate.getCurrentBasicSignature() != null) && certificate.getCurrentBasicSignature().isSignatureValid();
+		final boolean signatureValid = certificate.isSignatureValid();
 		CertificateRevocationWrapper latestRevocationData = getLatestRevocationDataForCertificate(certificate) ;
 		final boolean revocationValid = (latestRevocationData != null) && latestRevocationData.isStatus();
 		final boolean trusted = certificate.isTrusted();
@@ -637,6 +637,7 @@ public class DiagnosticData {
 	
 	/**
 	 * Returns a list of all found {@link XmlOrphanRevocation}s
+	 * NOTE: can return instances with duplicate ids (some signatures can have different origins for revocation data)
 	 * @return list of {@link XmlOrphanRevocation}s
 	 */
 	public List<XmlOrphanRevocation> getAllOrphanRevocations() {
@@ -904,7 +905,14 @@ public class DiagnosticData {
 	 * @return the JAXB model of the used trusted lists
 	 */
 	public List<XmlTrustedList> getTrustedLists() {
-		return wrapped.getTrustedLists();
+		List<XmlTrustedList> result = new ArrayList<XmlTrustedList>();
+		List<XmlTrustedList> trustedLists = wrapped.getTrustedLists();
+		for (XmlTrustedList xmlTrustedList : trustedLists) {
+			if (!xmlTrustedList.isLOTL()) {
+				result.add(xmlTrustedList);
+			}
+		}
+		return result;
 	}
 
 	/**
@@ -912,21 +920,15 @@ public class DiagnosticData {
 	 * 
 	 * @return the JAXB model of the LOTL
 	 */
-	public XmlTrustedList getListOfTrustedLists() {
-		return wrapped.getListOfTrustedLists();
-	}
-
-	/**
-	 * This method returns the LOTL country code
-	 * 
-	 * @return the country code of the used LOTL
-	 */
-	public String getLOTLCountryCode() {
-		XmlTrustedList listOfTrustedLists = wrapped.getListOfTrustedLists();
-		if (listOfTrustedLists != null) {
-			return listOfTrustedLists.getCountryCode();
+	public List<XmlTrustedList> getListOfTrustedLists() {
+		List<XmlTrustedList> result = new ArrayList<XmlTrustedList>();
+		List<XmlTrustedList> trustedLists = wrapped.getTrustedLists();
+		for (XmlTrustedList xmlTrustedList : trustedLists) {
+			if (xmlTrustedList.isLOTL()) {
+				result.add(xmlTrustedList);
+			}
 		}
-		return null;
+		return result;
 	}
 
 	public Date getValidationDate() {

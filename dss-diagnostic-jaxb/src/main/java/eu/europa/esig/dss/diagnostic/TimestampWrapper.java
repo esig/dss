@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.diagnostic;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -34,6 +33,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.OrphanTokenType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
@@ -79,7 +79,12 @@ public class TimestampWrapper extends AbstractTokenProxy {
 	}
 
 	public XmlDigestMatcher getMessageImprint() {
-		return timestamp.getDigestMatcher();
+		for (XmlDigestMatcher digestMatcher : getDigestMatchers()) {
+			if (DigestMatcherType.MESSAGE_IMPRINT.equals(digestMatcher.getType())) {
+				return digestMatcher;
+			}
+		}
+		return null;
 	}
 
 	public boolean isMessageImprintDataFound() {
@@ -92,7 +97,7 @@ public class TimestampWrapper extends AbstractTokenProxy {
 
 	@Override
 	public List<XmlDigestMatcher> getDigestMatchers() {
-		return Collections.singletonList(getMessageImprint());
+		return timestamp.getDigestMatchers();
 	}
 
 	/**

@@ -20,14 +20,13 @@
  */
 package eu.europa.esig.dss.spi;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -40,8 +39,10 @@ import java.security.cert.X509Certificate;
 import java.util.Collection;
 import java.util.Date;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import javax.security.auth.x500.X500Principal;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +50,6 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -59,7 +59,7 @@ public class DSSUtilsTest {
 
 	private static CertificateToken certificateWithAIA;
 
-	@BeforeClass
+	@BeforeAll
 	public static void init() {
 		certificateWithAIA = DSSUtils.loadCertificate(new File("src/test/resources/TSP_Certificate_2014.crt"));
 		assertNotNull(certificateWithAIA);
@@ -162,9 +162,9 @@ public class DSSUtilsTest {
 		// assertNotNull(certificate3);
 	}
 
-	@Test(expected = DSSException.class)
+	@Test
 	public void loadCertificateDoesNotThrowNullPointerExceptionWhenProvidedNonCertificateFile() throws Exception {
-		DSSUtils.loadCertificate(new ByteArrayInputStream("test".getBytes("UTF-8")));
+		assertThrows(DSSException.class, () -> DSSUtils.loadCertificate(new ByteArrayInputStream("test".getBytes("UTF-8"))));
 	}
 
 	@Test
@@ -255,8 +255,8 @@ public class DSSUtilsTest {
 
 		Thread.sleep(1);
 		String deterministicId3 = DSSUtils.getDeterministicId(new Date(), certificateWithAIA.getDSSId());
-
-		assertThat(deterministicId2, not(equalTo(deterministicId3)));
+		
+		assertNotEquals(deterministicId2, deterministicId3);
 	}
 
 	@Test
@@ -299,6 +299,17 @@ public class DSSUtilsTest {
 		assertTrue(token.isSelfSigned());
 		assertTrue(token.isSignedBy(token));
 		assertEquals(SignatureAlgorithm.RSA_SSA_PSS_SHA256_MGF1, token.getSignatureAlgorithm());
+	}
+
+	@Test
+	public void x500PrincipalAreEquals() {
+		String issuerName1 = "CN=ESTEID-SK 2015,organizationIdentifier=NTREE-10747013,O=AS Sertifitseerimiskeskus,C=EE";
+		String issuerName2 = "CN=ESTEID-SK 2015,2.5.4.97=#0C0E4E545245452D3130373437303133,O=AS Sertifitseerimiskeskus,C=EE";
+		X500Principal x500Principal1 = DSSUtils.getX500PrincipalOrNull(issuerName1);
+		assertNotNull(x500Principal1);
+		X500Principal x500Principal2 = DSSUtils.getX500PrincipalOrNull(issuerName2);
+		assertNotNull(x500Principal2);
+		assertTrue(DSSUtils.x500PrincipalAreEquals(x500Principal1, x500Principal2));
 	}
 
 }

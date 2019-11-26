@@ -20,14 +20,14 @@
  */
 package eu.europa.esig.dss.spi.client.http;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
 
 public class NativeHTTPDataLoaderTest {
 
@@ -52,19 +52,17 @@ public class NativeHTTPDataLoaderTest {
 		assertNotNull(certificate);
 	}
 
-	@Test(expected=DSSException.class)
+	@Test
 	public void testGetBiggerThanMaxSize() {
 		NativeHTTPDataLoader dataLoader = new NativeHTTPDataLoader();
 		dataLoader.setMaxInputSize(1);
-		
-		dataLoader.get(FILE_URL_TO_LOAD);
+		assertThrows(DSSException.class, () -> dataLoader.get(FILE_URL_TO_LOAD));
 	}
 
-	@Test(expected=DSSException.class)
+	@Test
 	public void testGetTimeout() {
 		NativeHTTPDataLoader dataLoader = new NativeHTTPDataLoader();
 		dataLoader.setTimeout(1);
-		
-		dataLoader.get(HTTP_URL_TO_LOAD);
+		assertThrows(DSSException.class, () -> dataLoader.get(HTTP_URL_TO_LOAD));
 	}
 }

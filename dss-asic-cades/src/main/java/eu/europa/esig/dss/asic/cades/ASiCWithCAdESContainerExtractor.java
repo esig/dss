@@ -37,7 +37,7 @@ public class ASiCWithCAdESContainerExtractor extends AbstractASiCContainerExtrac
 
 	@Override
 	protected boolean isAllowedArchiveManifest(String entryName) {
-		return entryName.startsWith(ASiCUtils.META_INF_FOLDER) && entryName.contains("ASiCArchiveManifest") && entryName.endsWith(".xml");
+		return entryName.startsWith(ASiCUtils.META_INF_FOLDER) && ASiCUtils.isArchiveManifest(entryName);
 	}
 
 	@Override

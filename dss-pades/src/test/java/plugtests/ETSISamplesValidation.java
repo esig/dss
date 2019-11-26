@@ -20,9 +20,9 @@
  */
 package plugtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,11 +30,11 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -55,34 +55,29 @@ import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 /**
  * This test is only to ensure that we don't have exception with valid? files
  */
-@RunWith(Parameterized.class)
 public class ETSISamplesValidation {
 
-	@Parameters(name = "Validation {index} : {0}")
-	public static Collection<Object[]> data() throws IOException {
+	public static Stream<Arguments> data() throws IOException {
 
 		// We use this file because File.listFiles() doesn't work from another jar
 		String listFiles = "/plugtest/plugtest_files.txt";
 
-		Collection<Object[]> dataToRun = new ArrayList<Object[]>();
-		try (BufferedReader br = new BufferedReader(new InputStreamReader(ETSISamplesValidation.class.getResourceAsStream(listFiles)))) {
+		Collection<Arguments> dataToRun = new ArrayList<Arguments>();
+		try (BufferedReader br = new BufferedReader(
+				new InputStreamReader(ETSISamplesValidation.class.getResourceAsStream(listFiles)))) {
 			String filepath;
 			while ((filepath = br.readLine()) != null) {
-				dataToRun.add(new Object[] { new InMemoryDocument(ETSISamplesValidation.class.getResourceAsStream(filepath)) });
+				dataToRun.add(
+						Arguments.of(new InMemoryDocument(ETSISamplesValidation.class.getResourceAsStream(filepath))));
 			}
 
 		}
-		return dataToRun;
+		return dataToRun.stream();
 	}
 
-	private DSSDocument doc;
-
-	public ETSISamplesValidation(DSSDocument doc) {
-		this.doc = doc;
-	}
-
-	@Test
-	public void testValidate() {
+	@ParameterizedTest(name = "Validation {index}")
+	@MethodSource("data")
+	public void testValidate(DSSDocument doc) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
@@ -118,10 +113,11 @@ public class ETSISamplesValidation {
 			assertNotNull(advancedSignature.getCRLSource());
 			assertNotNull(advancedSignature.getOCSPSource());
 		}
-		
+
 		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
 		assertNotNull(etsiValidationReport);
-		List<SignatureValidationReportType> signatureValidationReports = etsiValidationReport.getSignatureValidationReport();
+		List<SignatureValidationReportType> signatureValidationReports = etsiValidationReport
+				.getSignatureValidationReport();
 		if (!diagnosticData.getSignatures().isEmpty()) {
 			assertEquals(diagnosticData.getSignatures().size(), signatureValidationReports.size());
 			for (SignatureValidationReportType signatureValidationReport : signatureValidationReports) {
@@ -132,6 +128,5 @@ public class ETSISamplesValidation {
 		}
 		UnmarshallingTester.unmarshallXmlReports(reports);
 	}
-
 
 }

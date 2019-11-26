@@ -20,14 +20,13 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asice;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
@@ -98,7 +97,7 @@ public class ASiCECAdESLevelBSignFourTimeTest extends PKIFactoryAccess {
 		signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		resignedDocument = service.signDocument(resignedDocument, signatureParameters, signatureValue);
 
-		resignedDocument.save("target/resigned.asice");
+		// resignedDocument.save("target/resigned.asice");
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(resignedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
@@ -110,7 +109,7 @@ public class ASiCECAdESLevelBSignFourTimeTest extends PKIFactoryAccess {
 		assertEquals(4, signatureIdList.size());
 		for (String sigId : signatureIdList) {
 			assertTrue(diagnosticData.isBLevelTechnicallyValid(sigId));
-			assertNotEquals(Indication.FAILED, reports.getSimpleReport().getIndication(sigId));
+			assertEquals(Indication.TOTAL_PASSED, reports.getSimpleReport().getIndication(sigId));
 		}
 
 	}

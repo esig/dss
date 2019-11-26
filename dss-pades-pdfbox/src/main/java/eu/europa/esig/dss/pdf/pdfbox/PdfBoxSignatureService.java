@@ -157,14 +157,19 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 			SignatureImageParameters imageParameters = getImageParameters(parameters);
 			if (imageParameters != null && signatureDrawerFactory != null) {
-				PdfBoxSignatureDrawer signatureDrawer = (PdfBoxSignatureDrawer) signatureDrawerFactory.getSignatureDrawer(imageParameters);
+				PdfBoxSignatureDrawer signatureDrawer = (PdfBoxSignatureDrawer) signatureDrawerFactory
+						.getSignatureDrawer(imageParameters);
 				signatureDrawer.init(imageParameters, pdDocument, options);
 				signatureDrawer.draw();
+			} else {
+				PdfBoxInvisibleSignatureOptionsPreparator signaturePreparator = new PdfBoxInvisibleSignatureOptionsPreparator();
+				signaturePreparator.prepare(options);
 			}
-
+			
 			pdDocument.addSignature(pdSignature, signatureInterface, options);
-
+			
 			saveDocumentIncrementally(parameters, fileOutputStream, pdDocument);
+			
 			return digest.digest();
 		} catch (IOException e) {
 			throw new DSSException(e);
@@ -185,10 +190,13 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		signature.setFilter(COSName.getPDFName(getFilter(parameters)));
 		// sub-filter for basic and PAdES Part 2 signatures
 		signature.setSubFilter(COSName.getPDFName(getSubFilter(parameters)));
+		
 
 		if (COSName.SIG.equals(currentType)) {
 
-			signature.setName(getSignatureName(parameters));
+			if (Utils.isStringNotEmpty(parameters.getSignerName())) {
+				signature.setName(parameters.getSignerName());
+			}
 
 			if (Utils.isStringNotEmpty(parameters.getContactInfo())) {
 				signature.setContactInfo(parameters.getContactInfo());
@@ -314,7 +322,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		List<PdfSignatureOrDocTimestampInfo> signatures = new ArrayList<PdfSignatureOrDocTimestampInfo>();
 		try (InputStream is = document.openStream(); PDDocument doc = PDDocument.load(is)) {
 
-			final PdfDssDict dssDictionary = getDSSDictionary(doc);
+			final PdfDssDict dssDictionary = PdfBoxUtils.getDSSDictionary(doc);
 
 			List<PDSignatureField> pdSignatureFields = doc.getSignatureFields();
 
@@ -398,16 +406,11 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 	private PdfDssDict getDSSDictionaryPresentInRevision(byte[] originalBytes) {
 		try (PDDocument doc = PDDocument.load(originalBytes)) {
-			return getDSSDictionary(doc);
+			return PdfBoxUtils.getDSSDictionary(doc);
 		} catch (Exception e) {
 			LOG.warn("Cannot check in previous revisions if DSS dictionary already exist : " + e.getMessage(), e);
 			return null;
 		}
-	}
-
-	private PdfDssDict getDSSDictionary(PDDocument doc) {
-		PdfDict catalog = new PdfBoxDict(doc.getDocumentCatalog().getCOSObject(), doc);
-		return PdfDssDict.extract(catalog);
 	}
 
 	@Override

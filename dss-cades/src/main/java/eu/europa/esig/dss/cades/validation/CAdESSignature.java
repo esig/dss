@@ -48,7 +48,6 @@ import org.bouncycastle.asn1.ASN1String;
 import org.bouncycastle.asn1.ASN1UTCTime;
 import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.DEROctetString;
-import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.DERUTF8String;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
@@ -233,7 +232,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	public SignatureCRLSource getCRLSource() {
 		if (signatureCRLSource == null) {
 			try {
-				signatureCRLSource = new CAdESCRLSource(cmsSignedData, CMSUtils.getUnsignedAttributes(signerInformation));
+				signatureCRLSource = new CAdESCRLSource(cmsSignedData, signerInformation.getUnsignedAttributes());
 			} catch (Exception e) {
 				// When error in computing or in format of the algorithm: just
 				// continues (will try to get online information)
@@ -246,7 +245,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public SignatureOCSPSource getOCSPSource() {
 		if (signatureOCSPSource == null) {
-			signatureOCSPSource = new CAdESOCSPSource(cmsSignedData, CMSUtils.getUnsignedAttributes(signerInformation));
+			signatureOCSPSource = new CAdESOCSPSource(cmsSignedData, signerInformation.getUnsignedAttributes());
 		}
 		return signatureOCSPSource;
 	}
@@ -410,9 +409,17 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private boolean isZeroHash(byte[] hashValue) {
-		// The hashValue within the sigPolicyHash may be set to zero to indicate that
+		// The hashValue within the sigPolicyHash may be set to zero or be empty to indicate that
 		// the policy hash value is not known.
-		return (hashValue != null) && (hashValue.length == 1) && (hashValue[0] == 0);
+		return isZeroHashEmpty(hashValue) || doesZeroHashContainSigneZeroByte(hashValue);
+	}
+	
+	private boolean isZeroHashEmpty(byte[] hashValue) {
+		return (hashValue != null) && (hashValue.length == 0);
+	}
+	
+	private boolean doesZeroHashContainSigneZeroByte(byte[] hashValue) {
+		return (hashValue != null) && (hashValue.length == 1) && ((hashValue[0] == '0') || (hashValue[0] == 0x00));
 	}
 
 	@Override
@@ -523,9 +530,9 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			if (size > 0) {
 				commitmentType = new CommitmentType();
 				for (int ii = 0; ii < size; ii++) {
-					if (attrValues.getObjectAt(ii) instanceof DERSequence) {
-						final DERSequence derSequence = (DERSequence) attrValues.getObjectAt(ii);
-						final CommitmentTypeIndication commitmentTypeIndication = CommitmentTypeIndication.getInstance(derSequence);
+					if (attrValues.getObjectAt(ii) instanceof ASN1Sequence) {
+						final ASN1Sequence sequence = (ASN1Sequence) attrValues.getObjectAt(ii);
+						final CommitmentTypeIndication commitmentTypeIndication = CommitmentTypeIndication.getInstance(sequence);
 						final ASN1ObjectIdentifier commitmentTypeId = commitmentTypeIndication.getCommitmentTypeId();
 						commitmentType.addIdentifier(commitmentTypeId.getId());
 					} else {
@@ -607,12 +614,17 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 						final ASN1Encodable objectAt = attributes.getObjectAt(ii);
 						final org.bouncycastle.asn1.x509.Attribute attribute = org.bouncycastle.asn1.x509.Attribute.getInstance(objectAt);
 						final ASN1Set attrValues1 = attribute.getAttrValues();
-						DERSequence derSequence = (DERSequence) attrValues1.getObjectAt(0);
-						RoleSyntax roleSyntax = RoleSyntax.getInstance(derSequence);
-						SignerRole certifiedRole = new SignerRole(roleSyntax.getRoleNameAsString(), EndorsementType.CERTIFIED);
-						certifiedRole.setNotBefore(DSSASN1Utils.toDate(attrCertValidityPeriod.getNotBeforeTime()));
-						certifiedRole.setNotAfter(DSSASN1Utils.toDate(attrCertValidityPeriod.getNotAfterTime()));
-						roles.add(certifiedRole);
+						ASN1Encodable firstItem = attrValues1.getObjectAt(0);
+						if (firstItem instanceof ASN1Sequence) {
+							ASN1Sequence sequence = (ASN1Sequence) firstItem;
+							RoleSyntax roleSyntax = RoleSyntax.getInstance(sequence);
+							SignerRole certifiedRole = new SignerRole(roleSyntax.getRoleNameAsString(), EndorsementType.CERTIFIED);
+							certifiedRole.setNotBefore(DSSASN1Utils.toDate(attrCertValidityPeriod.getNotBeforeTime()));
+							certifiedRole.setNotAfter(DSSASN1Utils.toDate(attrCertValidityPeriod.getNotAfterTime()));
+							roles.add(certifiedRole);
+						} else {
+							LOG.warn("Unsupported type for RoleSyntax : {}", firstItem == null ? null : firstItem.getClass().getSimpleName());
+						}
 					}
 				}
 			}
@@ -771,11 +783,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				return;
 			}
 			boolean detachedSignature = CMSUtils.isDetachedSignature(cmsSignedData);
-			final SignerInformation signerInformationToCheck;
+			SignerInformation signerInformationToCheck = null;
 			if (detachedSignature) {
 				if (Utils.isCollectionEmpty(detachedContents)) {
 					candidatesForSigningCertificate.setTheCertificateValidity(bestCandidate);
 					signatureCryptographicVerification.setErrorMessage("Detached file not found!");
+					getReferenceValidations(signerInformationToCheck);
 					return;
 				}
 				signerInformationToCheck = recreateSignerInformation();
@@ -832,72 +845,72 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	public List<ReferenceValidation> getReferenceValidations(SignerInformation signerInformationToCheck) {
 		if (referenceValidations == null) {
 			referenceValidations = new ArrayList<ReferenceValidation>();
-			ReferenceValidation validation = new ReferenceValidation();
-			validation.setType(DigestMatcherType.MESSAGE_DIGEST);
 
 			DSSDocument originalDocument = null;
 			try {
 				originalDocument = getOriginalDocument();
 			} catch (DSSException e) {
-				validation.setFound(false);
+				LOG.warn("Original document not found");
 			}
 
-			Set<DigestAlgorithm> messageDigestAlgorithms = getMessageDigestAlgorithms();
-			byte[] expectedMessageDigestValue = getMessageDigestValue();
-			
-			if (originalDocument != null) {
-					
-				if (Utils.isArrayNotEmpty(expectedMessageDigestValue)) {
-					Digest messageDigest = new Digest();
-					messageDigest.setValue(expectedMessageDigestValue);
-					
-					validation.setFound(true);
-					
-					if (Utils.isCollectionNotEmpty(messageDigestAlgorithms)) {
-
-						// try to match with found digest algorithm(s)
-						for (DigestAlgorithm digestAlgorithm : messageDigestAlgorithms) {
-							String base64Digest = originalDocument.getDigest(digestAlgorithm);
-							if (Arrays.equals(expectedMessageDigestValue, Utils.fromBase64(base64Digest))) {
-								messageDigest.setAlgorithm(digestAlgorithm);
-								validation.setIntact(true);
-								break;
-							}
-						}
-						
-						// add digest algorithm if message digest does not much
-						if (messageDigest.getAlgorithm() == null && messageDigestAlgorithms.size() == 1) {
-							messageDigest.setAlgorithm(messageDigestAlgorithms.iterator().next());
-						}
-						validation.setDigest(messageDigest);
-						
-					} else {
-						LOG.warn("Message DigestAlgorithms not found in SignedData! Reference validation is not possible.");
-						
-					}
-					
-					// get references to documents contained in the manifest file (for ASiC-E container)
-					if (validation.isFound()) {
-						validation.getDependentValidations().addAll(getManifestEntryValidation(originalDocument, messageDigest));
-					}
-					
-				} else {
-					LOG.warn("message-digest is not present in SignedData!");
-					if (signerInformationToCheck != null) {
-						LOG.warn("Extracting digests from content SignatureValue...");
-						validation = getContentReferenceValidation(originalDocument, signerInformationToCheck);
-					}
-					
-				}
+			ReferenceValidation validation = null;
+			final byte[] messageDigestValue = getMessageDigestValue();
+			if (messageDigestValue == null) {
+				LOG.warn("message-digest is not present in SignedData! Extracting digests from content SignatureValue...");
+				validation = getContentReferenceValidation(originalDocument, signerInformationToCheck);
 			} else {
-				LOG.warn("The original document is not found or cannot be extracted. Reference validation is not possible.");
 				
+				validation = new ReferenceValidation();
+				validation.setType(DigestMatcherType.MESSAGE_DIGEST);
+				
+				Digest messageDigest = new Digest();
+				messageDigest.setValue(messageDigestValue);
+				validation.setDigest(messageDigest);
+				
+				Set<DigestAlgorithm> messageDigestAlgorithms = getMessageDigestAlgorithms();
+				
+				if (Utils.collectionSize(messageDigestAlgorithms) == 1) {
+					messageDigest.setAlgorithm(messageDigestAlgorithms.iterator().next());
+				}
+
+				if (originalDocument != null) {
+
+					validation.setFound(true);
+
+					validation.setIntact(verifyDigestAlgorithm(originalDocument, messageDigestAlgorithms, messageDigest));
+
+					// get references to documents contained in the manifest file (for ASiC-E
+					// container)
+					validation.getDependentValidations()
+							.addAll(getManifestEntryValidation(originalDocument, messageDigest));
+
+				} else {
+					LOG.warn("The original document is not found or cannot be extracted. Reference validation is not possible.");
+				}
 			}
-			
+
 			referenceValidations.add(validation);
 
 		}
 		return referenceValidations;
+	}
+
+	private boolean verifyDigestAlgorithm(DSSDocument originalDocument, Set<DigestAlgorithm> messageDigestAlgorithms,
+			Digest messageDigest) {
+		if (Utils.isCollectionNotEmpty(messageDigestAlgorithms)) {
+			// try to match with found digest algorithm(s)
+			for (DigestAlgorithm digestAlgorithm : messageDigestAlgorithms) {
+				String base64Digest = originalDocument.getDigest(digestAlgorithm);
+				if (Arrays.equals(messageDigest.getValue(), Utils.fromBase64(base64Digest))) {
+					messageDigest.setAlgorithm(digestAlgorithm);
+					return true;
+				}
+			}
+		} else {
+			LOG.warn("Message DigestAlgorithms not found in SignedData! Reference validation is not possible.");
+		}
+
+		return false;
 	}
 	
 	private List<ReferenceValidation> getManifestEntryValidation(final DSSDocument originalDocument, final Digest messageDigest) {
@@ -938,7 +951,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public List<ReferenceValidation> getReferenceValidations() {
-		return getReferenceValidations(null);
+		checkSignatureIntegrity();
+		return referenceValidations;
 	}
 	
 	private ReferenceValidation getContentReferenceValidation(DSSDocument originalDocument, SignerInformation signerInformation) {
@@ -999,16 +1013,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 	
 	private CertificateValidity getTheBestCandidate() {
-		if (providedSigningCertificateToken == null) {
-			// To determine the signing certificate it is necessary to browse
-			// through all candidates found before.
-			candidatesForSigningCertificate = getCandidatesForSigningCertificate();
-		} else {
+		candidatesForSigningCertificate = getCandidatesForSigningCertificate();
 
-			candidatesForSigningCertificate = new CandidatesForSigningCertificate();
-			final CertificateValidity certificateValidity = new CertificateValidity(providedSigningCertificateToken);
-			candidatesForSigningCertificate.add(certificateValidity);
+		if (providedSigningCertificateToken != null) {
+			candidatesForSigningCertificate.add(new CertificateValidity(providedSigningCertificateToken));
 		}
+
 		return candidatesForSigningCertificate.getTheBestCandidate();
 	}
 
@@ -1025,7 +1035,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			String oid = algorithmIdentifier.getAlgorithm().getId();
 			DigestAlgorithm digestAlgorithm = getDigestAlgorithmForOID(oid);
 			if (digestAlgorithm != null) {
-				result.add(DigestAlgorithm.forOID(oid));
+				result.add(digestAlgorithm);
 			}
 		}
 		return result;
@@ -1088,16 +1098,21 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			return null;
 		}
 		final ASN1Encodable asn1Encodable = contentHintAttribute.getAttrValues().getObjectAt(0);
-		final ContentHints contentHints = ContentHints.getInstance(asn1Encodable);
 		String contentHint = null;
-		if (contentHints != null) {
-			// content-type is mandatory
-			contentHint = contentHints.getContentType().toString();
-			// content-description is optional
-			if (contentHints.getContentDescription() != null) {
-				contentHint += " [" + contentHints.getContentDescription().toString() + "]";
+		try {
+			final ContentHints contentHints = ContentHints.getInstance(asn1Encodable);
+			if (contentHints != null) {
+				// content-type is mandatory
+				contentHint = contentHints.getContentType().toString();
+				// content-description is optional
+				if (contentHints.getContentDescription() != null) {
+					contentHint += " [" + contentHints.getContentDescription().toString() + "]";
+				}
 			}
+		}catch (Exception e) {
+			LOG.warn("Unable to parse ContentHints - {}", Utils.toBase64(DSSASN1Utils.getDEREncoded(asn1Encodable)), e);
 		}
+
 		return contentHint;
 	}
 

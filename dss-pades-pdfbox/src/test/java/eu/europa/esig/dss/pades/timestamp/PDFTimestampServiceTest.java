@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.pades.timestamp;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,13 +29,14 @@ import java.util.List;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFTimestampService;
-import eu.europa.esig.dss.pdf.PdfObjFactory;
+import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 
 public class PDFTimestampServiceTest extends PKIFactoryAccess {
@@ -43,13 +44,15 @@ public class PDFTimestampServiceTest extends PKIFactoryAccess {
 	@Test
 	public void timestampAlone() throws IOException {
 
-		PDFTimestampService pdfTimestampService = PdfObjFactory.newTimestampSignatureService();
+		IPdfObjFactory ipof = new ServiceLoaderPdfObjFactory();
+
+		PDFTimestampService pdfTimestampService = ipof.newTimestampSignatureService();
 
 		PAdESSignatureParameters parameters = new PAdESSignatureParameters();
 
 		// The following parameters MUST be ignored (ETSI EN 319 142-1 V1.1.1, section 5.4.3)
 		parameters.setLocation("LOCATION");
-		parameters.setSignatureName("TEST TIMESTAMP");
+		parameters.setSignerName("TEST TIMESTAMP");
 		parameters.setReason("REASON");
 		parameters.setContactInfo("CONTACT INFO");
 

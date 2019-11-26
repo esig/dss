@@ -22,13 +22,14 @@ package eu.europa.esig.dss.xades.signature;
 
 import java.util.List;
 
-import javax.xml.crypto.dsig.XMLSignature;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.definition.DSSNamespace;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 
@@ -57,7 +58,8 @@ public class ManifestBuilder {
 	private final String manifestId;
 	private final DigestAlgorithm digestAlgorithm;
 	private final List<DSSDocument> documents;
-
+	private final DSSNamespace xmldsigNamespace;
+	
 	/**
 	 * Constructor for the builder (the Id of the Manifest tag will be equals to "manifest")
 	 * 
@@ -81,28 +83,48 @@ public class ManifestBuilder {
 	 *            the documents to include
 	 */
 	public ManifestBuilder(String manifestId, DigestAlgorithm digestAlgorithm, List<DSSDocument> documents) {
+		this(manifestId, digestAlgorithm, documents, new DSSNamespace("http://www.w3.org/2000/09/xmldsig#", "ds"));
+	}
+
+	/**
+	 * Constructor for the builder
+	 * 
+	 * @param manifestId
+	 *            the Id of the Manifest tag
+	 * @param digestAlgorithm
+	 *            the digest algorithm to be used
+	 * @param documents
+	 *            the documents to include
+	 * @param xmldsigNamespace 
+	 * 			the xmldsig namespace definition           
+	 */
+	public ManifestBuilder(String manifestId, DigestAlgorithm digestAlgorithm, List<DSSDocument> documents, DSSNamespace xmldsigNamespace) {
 		this.manifestId = manifestId;
 		this.digestAlgorithm = digestAlgorithm;
 		this.documents = documents;
+		this.xmldsigNamespace = xmldsigNamespace;
 	}
 
 	public DSSDocument build() {
 		Document documentDom = DomUtils.buildDOM();
 
-		Element manifestDom = documentDom.createElementNS(XMLSignature.XMLNS, XAdESBuilder.DS_MANIFEST);
-		manifestDom.setAttribute(XAdESBuilder.ID, manifestId);
+		Element manifestDom = DomUtils.createElementNS(documentDom, xmldsigNamespace, XMLDSigElement.MANIFEST);
+		manifestDom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), manifestId);
 
 		documentDom.appendChild(manifestDom);
 
 		for (DSSDocument document : documents) {
 
-			Element referenceDom = DomUtils.addElement(documentDom, manifestDom, XMLSignature.XMLNS, XAdESBuilder.DS_REFERENCE);
-			referenceDom.setAttribute(XAdESBuilder.URI, document.getName());
+			Element referenceDom = DomUtils.createElementNS(documentDom, xmldsigNamespace, XMLDSigElement.REFERENCE);
+			manifestDom.appendChild(referenceDom);
+			referenceDom.setAttribute(XMLDSigAttribute.URI.getAttributeName(), document.getName());
 
-			Element digestMethodDom = DomUtils.addElement(documentDom, referenceDom, XMLSignature.XMLNS, XAdESBuilder.DS_DIGEST_METHOD);
-			digestMethodDom.setAttribute(XAdESBuilder.ALGORITHM, digestAlgorithm.getUri());
+			Element digestMethodDom = DomUtils.createElementNS(documentDom, xmldsigNamespace, XMLDSigElement.DIGEST_METHOD);
+			referenceDom.appendChild(digestMethodDom);
+			digestMethodDom.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName(), digestAlgorithm.getUri());
 
-			Element digestValueDom = DomUtils.addElement(documentDom, referenceDom, XMLSignature.XMLNS, XAdESBuilder.DS_DIGEST_VALUE);
+			Element digestValueDom = DomUtils.createElementNS(documentDom, xmldsigNamespace, XMLDSigElement.DIGEST_VALUE);
+			referenceDom.appendChild(digestValueDom);
 			Text textNode = documentDom.createTextNode(document.getDigest(digestAlgorithm));
 			digestValueDom.appendChild(textNode);
 

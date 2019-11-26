@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer;
 
 import java.awt.Color;
@@ -75,9 +95,8 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	
 	@Override
 	public void draw() throws IOException {
-		ByteArrayInputStream bais = null;
-		try (PDDocument doc = new PDDocument())
-        {
+		try (PDDocument doc = new PDDocument(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			
 			PDPage originalPage = document.getPage(parameters.getPage() - 1);
 			SignatureFieldDimensionAndPositionBuilder dimensionAndPositionBuilder = new SignatureFieldDimensionAndPositionBuilder(parameters, originalPage);
 			SignatureFieldDimensionAndPosition dimensionAndPosition = dimensionAndPositionBuilder.build();
@@ -119,14 +138,15 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
             	setImage(cs, doc, dimensionAndPosition, parameters.getImage());
             }
             
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
             doc.save(baos);
-            bais = new ByteArrayInputStream(baos.toByteArray());
+            
+            try (ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray()))
+            {
+        		signatureOptions.setVisualSignature(bais);
+        		signatureOptions.setPage(parameters.getPage() - 1);
+            }
             
         }
-		signatureOptions.setVisualSignature(bais);
-		bais.close();
-		signatureOptions.setPage(parameters.getPage() - 1);
 	}
 	
 	private void rotateSignature(PDPageContentStream cs, PDPage page, PDRectangle rectangle) throws IOException {

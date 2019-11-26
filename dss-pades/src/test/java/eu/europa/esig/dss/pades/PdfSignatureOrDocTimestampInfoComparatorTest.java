@@ -20,7 +20,8 @@
  */
 package eu.europa.esig.dss.pades;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,8 +32,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.bouncycastle.cms.CMSSignedData;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pdf.PdfDssDict;
@@ -47,7 +48,7 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 	private MockPdfSignature mock1;
 	private MockPdfSignature mock2;
 
-	@Before
+	@BeforeEach
 	public void init() throws ParseException {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -125,14 +126,17 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 		assertEquals(mock0bis, listToSort.get(1));
 	}
 
-	@Test(expected = DSSException.class)
+	@Test
 	public void testStrange() {
-		List<PdfSignatureOrDocTimestampInfo> listToSort = new ArrayList<PdfSignatureOrDocTimestampInfo>();
+		Exception exception = assertThrows(DSSException.class, () -> {
+			List<PdfSignatureOrDocTimestampInfo> listToSort = new ArrayList<PdfSignatureOrDocTimestampInfo>();
 
-		listToSort.add(strange);
-		listToSort.add(mock0);
+			listToSort.add(strange);
+			listToSort.add(mock0);
 
-		Collections.sort(listToSort, new PdfSignatureOrDocTimestampInfoComparator());
+			Collections.sort(listToSort, new PdfSignatureOrDocTimestampInfoComparator());
+		});
+		assertEquals("Strange byte ranges ([0, 91747, 124517, 723] / [40000, 120000, 140000, 500])", exception.getMessage());
 	}
 
 	@Test

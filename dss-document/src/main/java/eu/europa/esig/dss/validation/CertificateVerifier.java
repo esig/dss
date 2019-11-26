@@ -20,12 +20,15 @@
  */
 package eu.europa.esig.dss.validation;
 
+import java.util.List;
+
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 
 /**
  * Provides information on the sources to be used in the validation process in
@@ -39,14 +42,14 @@ public interface CertificateVerifier {
 	 * @return the used OCSP source for external access (web, filesystem,
 	 *         cached,...)
 	 */
-	OCSPSource getOcspSource();
+	RevocationSource<OCSPToken> getOcspSource();
 
 	/**
 	 * Returns the CRL source associated with this verifier.
 	 *
 	 * @return the used CRL source for external access (web, filesystem, cached,...)
 	 */
-	CRLSource getCrlSource();
+	RevocationSource<CRLToken> getCrlSource();
 
 	/**
 	 * Defines the source of CRL used by this class
@@ -55,7 +58,7 @@ public interface CertificateVerifier {
 	 *                  the CRL source to set for external access (web, filesystem,
 	 *                  cached,...)
 	 */
-	void setCrlSource(final CRLSource crlSource);
+	void setCrlSource(final RevocationSource<CRLToken> crlSource);
 
 	/**
 	 * Defines the source of OCSP used by this class
@@ -64,15 +67,15 @@ public interface CertificateVerifier {
 	 *                   the OCSP source to set for external access (web,
 	 *                   filesystem, cached,...)
 	 */
-	void setOcspSource(final OCSPSource ocspSource);
+	void setOcspSource(final RevocationSource<OCSPToken> ocspSource);
 
 	/**
-	 * Returns the trusted certificates source associated with this verifier. This
-	 * source is used to identify the trusted anchors.
+	 * Returns the trusted certificate sources associated with this verifier. These
+	 * sources are used to identify the trusted anchors.
 	 *
-	 * @return the certificate source which contains trusted certificates
-	 */
-	CertificateSource getTrustedCertSource();
+	 * @return the certificate sources which contain trusted certificates
+	 */	
+	List<CertificateSource> getTrustedCertSources();
 
 	/**
 	 * Sets the trusted certificates source.
@@ -81,6 +84,15 @@ public interface CertificateVerifier {
 	 *                   The certificates source with known trusted certificates
 	 */
 	void setTrustedCertSource(final CertificateSource certSource);
+	
+
+	/**
+	 * Sets multiple trusted certificates source.
+	 *
+	 * @param certSources
+	 *                   The certificate sources with known trusted certificates
+	 */
+	void setTrustedCertSources(final CertificateSource... certSources);
 
 	/**
 	 * Returns the adjunct certificates source associated with this verifier.

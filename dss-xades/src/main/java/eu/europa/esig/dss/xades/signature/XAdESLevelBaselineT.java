@@ -20,34 +20,33 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static eu.europa.esig.dss.XAdESNamespaces.XAdES141;
 import static eu.europa.esig.dss.enumerations.SignatureLevel.XAdES_BASELINE_T;
-import static eu.europa.esig.dss.enumerations.SignaturePackaging.ENVELOPED;
 import static eu.europa.esig.dss.xades.ProfileParameters.Operation.SIGNING;
 import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
-import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.XAdESNamespaces;
+import eu.europa.esig.dss.crl.CRLBinary;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -55,16 +54,25 @@ import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
-import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.ProfileParameters;
 import eu.europa.esig.dss.xades.ProfileParameters.Operation;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.XPathQueryHolder;
+import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
+import eu.europa.esig.dss.xades.definition.xades111.XAdES111Attribute;
+import eu.europa.esig.dss.xades.definition.xades111.XAdES111Element;
+import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
+import eu.europa.esig.dss.xades.definition.xades122.XAdES122Attribute;
+import eu.europa.esig.dss.xades.definition.xades122.XAdES122Element;
+import eu.europa.esig.dss.xades.definition.xades122.XAdES122Paths;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
+import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 
 /**
@@ -91,20 +99,15 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	private void incorporateC14nMethod(final Element parentDom, final String signedInfoC14nMethod) {
 
 		// <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
-		final Element canonicalizationMethodDom = documentDom.createElementNS(XMLNS, DS_CANONICALIZATION_METHOD);
-		canonicalizationMethodDom.setAttribute(ALGORITHM, signedInfoC14nMethod);
+		final Element canonicalizationMethodDom = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.CANONICALIZATION_METHOD);
+		canonicalizationMethodDom.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName(), signedInfoC14nMethod);
 		parentDom.appendChild(canonicalizationMethodDom);
 	}
 
 	@Override
 	public DSSDocument extendSignatures(final DSSDocument dssDocument, final XAdESSignatureParameters params) throws DSSException {
-
-		if (dssDocument == null) {
-			throw new NullPointerException();
-		}
-		if (this.tspSource == null) {
-			throw new NullPointerException();
-		}
+		Objects.requireNonNull(dssDocument, "The document cannot be null");
+		Objects.requireNonNull(tspSource, "The TSPSource cannot be null");
 		this.params = params;
 		final ProfileParameters context = params.getContext();
 		if (LOG.isInfoEnabled()) {
@@ -120,21 +123,21 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		// In the case of the enveloped signature we have a specific treatment:<br>
 		// we will just extend the signature that is being created (during creation process)
 		String signatureId = null;
-		final SignaturePackaging signaturePackaging = params.getSignaturePackaging();
+		
 		final Operation operationKind = context.getOperationKind();
-		if (SIGNING.equals(operationKind) && ENVELOPED.equals(signaturePackaging)) {
-
+		if (SIGNING.equals(operationKind)) {
 			signatureId = params.getDeterministicId();
 		}
+		
 		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
 
 			currentSignatureDom = (Element) signatureNodeList.item(ii);
-			final String currentSignatureId = currentSignatureDom.getAttribute(ID);
+			final String currentSignatureId = currentSignatureDom.getAttribute(XMLDSigAttribute.ID.getAttributeName());
 			if ((signatureId != null) && !signatureId.equals(currentSignatureId)) {
 
 				continue;
 			}
-			xadesSignature = new XAdESSignature(currentSignatureDom, Arrays.asList(new XPathQueryHolder()), certificateVerifier.createValidationPool());
+			xadesSignature = new XAdESSignature(currentSignatureDom, Arrays.asList(new XAdES111Paths(), new XAdES122Paths(), new XAdES132Paths()), certificateVerifier.createValidationPool());
 			xadesSignature.setDetachedContents(params.getDetachedContents());
 			extendSignatureTag();
 		}
@@ -152,6 +155,8 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	protected void extendSignatureTag() throws DSSException {
 
 		assertExtendSignatureToTPossible();
+		
+		xadesPaths = xadesSignature.getXAdESPaths();
 
 		// We ensure that all XML segments needed for the construction of the extension -T are present.
 		// If a segment does not exist then it is created.
@@ -212,34 +217,41 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 *
 	 * @param parentDom
 	 *            the parent element
-	 * @param validationContext
-	 *            the validation context with all certificates
+	 * @param certificatesToBeAdded
+	 *            a collection of {@link CertificateToken}s to be added into the signature values element
+	 * @return {@link Element} incorporated signature values element
 	 */
-	protected Element incorporateCertificateValues(final Element parentDom, final ValidationContext validationContext) {
-
+	protected Element incorporateCertificateValues(final Element parentDom, final Collection<CertificateToken> certificatesToBeAdded) {
 		Element certificateValuesDom = null;
-		final Set<CertificateToken> toIncludeCertificates = xadesSignature.getCertificatesForInclusion(validationContext);
-		if (!toIncludeCertificates.isEmpty()) {
-
-			// Filter to avoid duplicate entries
-			Set<CertificateToken> certificatesToBeAdded = new HashSet<CertificateToken>();
-			List<CertificateToken> signatureCertificates = xadesSignature.getCertificateSource().getCertificates();
-			for (CertificateToken certificateToken : toIncludeCertificates) {
-				if (!signatureCertificates.contains(certificateToken)) {
-					certificatesToBeAdded.add(certificateToken);
-				}
+		if (Utils.isCollectionNotEmpty(certificatesToBeAdded)) {
+			certificateValuesDom = DomUtils.addElement(documentDom, parentDom, getXadesNamespace(), getCurrentXAdESElements().getElementCertificateValues());
+			for (final CertificateToken certificateToken : certificatesToBeAdded) {
+				final String base64EncodeCertificate = Utils.toBase64(certificateToken.getEncoded());
+				DomUtils.addTextElement(documentDom, certificateValuesDom, getXadesNamespace(), getCurrentXAdESElements().getElementEncapsulatedX509Certificate(), base64EncodeCertificate);
 			}
-			
-			if (!certificatesToBeAdded.isEmpty()) {
-				certificateValuesDom = DomUtils.addElement(documentDom, parentDom, XAdESNamespaces.getXAdESDefaultNamespace(), XADES_CERTIFICATE_VALUES);
-				for (final CertificateToken certificateToken : certificatesToBeAdded) {
-					final String base64EncodeCertificate = Utils.toBase64(certificateToken.getEncoded());
-					DomUtils.addTextElement(documentDom, certificateValuesDom, XAdESNamespaces.getXAdESDefaultNamespace(), XADES_ENCAPSULATED_X509_CERTIFICATE, base64EncodeCertificate);
-				}
-			}
-
 		}
 		return certificateValuesDom;
+	}
+	
+	/**
+	 * The method returns a set of certificate tokens excluding entries present into the signature
+	 * @param certificateTokens a collection of {@link CertificateToken}s obtained from the validation process
+	 * @return set of {@link CertificateToken}s with no duplicates
+	 */
+	protected Set<CertificateToken> filterCertificateTokensPresentIntoSignature(Collection<CertificateToken> certificateTokens) {
+		List<CertificateToken> certificatesInSignature = xadesSignature.getCertificateSource().getCertificates();
+		return filterNewCertificateValues(certificateTokens, certificatesInSignature);
+	}
+	
+	private Set<CertificateToken> filterNewCertificateValues(Collection<CertificateToken> certificatesForInclusion,
+			Collection<CertificateToken> certificatesFromSignature) {
+		Set<CertificateToken> certificatesToBeAdded = new HashSet<CertificateToken>();
+		for (CertificateToken certificateToken : certificatesForInclusion) {
+			if (!certificatesFromSignature.contains(certificateToken)) {
+				certificatesToBeAdded.add(certificateToken);
+			}
+		}
+		return certificatesToBeAdded;
 	}
 
 	/**
@@ -253,33 +265,47 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 *
 	 * @param parentDom
 	 *            the parent element
-	 * @param validationContext
-	 *            the validation context with the revocation data
+	 * @param crlsToAdd
+	 *            a collection of {@link CRLToken}s to be added into the signature
+	 * @param ocspsToAdd
+	 *            a collection of {@link OCSPToken}s to be added into the signature
+	 * @return {@link Element} incorporated revocation values element
 	 */
-	protected Element incorporateRevocationValues(final Element parentDom, final ValidationContext validationContext) {
+	protected Element incorporateRevocationValues(final Element parentDom, final Collection<CRLToken> crlsToAdd, final Collection<OCSPToken> ocspsToAdd) {
 		Element revocationValuesDom = null;
-		final DefaultAdvancedSignature.RevocationDataForInclusion revocationsForInclusion = xadesSignature.getRevocationDataForInclusion(validationContext);
-		if (!revocationsForInclusion.isEmpty()) {
-
-			// Filter to avoid duplicate entries
-			List<RevocationToken> crlsToBeAdded = filterDuplicateRevocations(revocationsForInclusion.crlTokens,
-					xadesSignature.getCRLSource().getCRLBinaryList());
-			List<RevocationToken> ocspToBeAdded = filterDuplicateRevocations(revocationsForInclusion.ocspTokens,
-					xadesSignature.getOCSPSource().getOCSPResponsesList());
-
-			if (Utils.isCollectionNotEmpty(crlsToBeAdded) || Utils.isCollectionNotEmpty(ocspToBeAdded)) {
-				revocationValuesDom = DomUtils.addElement(documentDom, parentDom, XAdESNamespaces.getXAdESDefaultNamespace(), XADES_REVOCATION_VALUES);
-				incorporateCrlTokens(revocationValuesDom, crlsToBeAdded);
-				incorporateOcspTokens(revocationValuesDom, ocspToBeAdded);
-			}
+		
+		if (Utils.isCollectionNotEmpty(crlsToAdd) || Utils.isCollectionNotEmpty(ocspsToAdd)) {
+			revocationValuesDom = DomUtils.addElement(documentDom, parentDom, getXadesNamespace(), getCurrentXAdESElements().getElementRevocationValues());
+			incorporateCrlTokens(revocationValuesDom, crlsToAdd);
+			incorporateOcspTokens(revocationValuesDom, ocspsToAdd);
 		}
 		return revocationValuesDom;
 	}
 
-	private List<RevocationToken> filterDuplicateRevocations(List<? extends RevocationToken> revocationTokens,
+	/**
+	 * The method returns a set of CRLs excluding duplicate entries from provided lists
+	 * @param crlTokens a collection of {@link CRLToken}s obtained from the validation process
+	 * @return set of {@link CRLToken}s with no duplicates
+	 */
+	protected Set<CRLToken> filterCRLsPresentIntoSignature(Collection<CRLToken> crlTokens) {
+		Collection<CRLBinary> signatureCRLBinaryList = xadesSignature.getCRLSource().getCRLBinaryList();
+		return filterNewRevocations(crlTokens, signatureCRLBinaryList);
+	}
+
+	/**
+	 * The method returns a set of OCSPs excluding duplicate entries from provided lists
+	 * @param ocspTokens a collection of {@link OCSPToken}s obtained from the validation process
+	 * @return set of {@link OCSPToken}s with no duplicates
+	 */
+	protected Set<OCSPToken> filterOCSPsPresentIntoSignature(Collection<OCSPToken> ocspTokens) {
+		Collection<OCSPResponseBinary> signatureOCSPResponseList = xadesSignature.getOCSPSource().getOCSPResponsesList();
+		return filterNewRevocations(ocspTokens, signatureOCSPResponseList);
+	}
+	
+	private <R extends RevocationToken> Set<R> filterNewRevocations(Collection<R> revocationTokens,
 			Collection<? extends EncapsulatedRevocationTokenIdentifier> revocationBinaryList) {
-		List<RevocationToken> revocationTokensToBeAdded = new ArrayList<RevocationToken>();
-		for (RevocationToken revocationToken : revocationTokens) {
+		Set<R> revocationTokensToBeAdded = new HashSet<R>();
+		for (R revocationToken : revocationTokens) {
 			boolean found = false;
 			for (EncapsulatedRevocationTokenIdentifier revocationBinary : revocationBinaryList) {
 				if (Arrays.equals(revocationToken.getEncoded(), revocationBinary.getBinaries())) {
@@ -309,18 +335,18 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 * @param parentDom
 	 *            the parent element
 	 * @param crlTokens
-	 *            the list of CRL Tokens to be added
+	 *            a collection of CRL Tokens to be added
 	 */
-	private void incorporateCrlTokens(final Element parentDom, final List<RevocationToken> crlTokens) {
+	private void incorporateCrlTokens(final Element parentDom, final Collection<CRLToken> crlTokens) {
 		if (crlTokens.isEmpty()) {
 			return;
 		}
-		final Element crlValuesDom = DomUtils.addElement(documentDom, parentDom, XAdESNamespaces.getXAdESDefaultNamespace(), "xades:CRLValues");
+		final Element crlValuesDom = DomUtils.addElement(documentDom, parentDom, getXadesNamespace(), getCurrentXAdESElements().getElementCRLValues());
 
 		for (final RevocationToken revocationToken : crlTokens) {
 			final byte[] encodedCRL = revocationToken.getEncoded();
 			final String base64EncodedCRL = Utils.toBase64(encodedCRL);
-			DomUtils.addTextElement(documentDom, crlValuesDom, XAdESNamespaces.getXAdESDefaultNamespace(), "xades:EncapsulatedCRLValue", base64EncodedCRL);
+			DomUtils.addTextElement(documentDom, crlValuesDom, getXadesNamespace(), getCurrentXAdESElements().getElementEncapsulatedCRLValue(), base64EncodedCRL);
 		}
 	}
 
@@ -339,18 +365,18 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 * @param parentDom
 	 *            the parent element
 	 * @param ocspTokens
-	 *            the list of OCSP Tokens to be added
+	 *            a collection of OCSP Tokens to be added
 	 */
-	private void incorporateOcspTokens(Element parentDom, final List<RevocationToken> ocspTokens) {
+	private void incorporateOcspTokens(Element parentDom, final Collection<OCSPToken> ocspTokens) {
 		if (ocspTokens.isEmpty()) {
 			return;
 		}
-		final Element ocspValuesDom = DomUtils.addElement(documentDom, parentDom, XAdESNamespaces.getXAdESDefaultNamespace(), "xades:OCSPValues");
+		final Element ocspValuesDom = DomUtils.addElement(documentDom, parentDom, getXadesNamespace(), getCurrentXAdESElements().getElementOCSPValues());
 
 		for (final RevocationToken revocationToken : ocspTokens) {
 			final byte[] encodedOCSP = revocationToken.getEncoded();
 			final String base64EncodedOCSP = Utils.toBase64(encodedOCSP);
-			DomUtils.addTextElement(documentDom, ocspValuesDom, XAdESNamespaces.getXAdESDefaultNamespace(), "xades:EncapsulatedOCSPValue", base64EncodedOCSP);
+			DomUtils.addTextElement(documentDom, ocspValuesDom, getXadesNamespace(), getCurrentXAdESElements().getElementEncapsulatedOCSPValue(), base64EncodedOCSP);
 		}
 	}
 	
@@ -368,13 +394,13 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 *
 	 * @param parentDom
 	 *            the parent element
-	 * @param validationContext
-	 *            the validation context with all certificates
+	 * @param certificatesToBeAdded
+	 *            the certificates to be added into the signature
 	 * @param indent
 	 *            {@link String} to add between elements (if not NULL)
 	 */
-	protected void incorporateCertificateValues(final Element parentDom, final ValidationContext validationContext, String indent) {
-		Element certificatesDom = incorporateCertificateValues(parentDom, validationContext);
+	protected void incorporateCertificateValues(final Element parentDom, final Collection<CertificateToken> certificatesToBeAdded, String indent) {
+		Element certificatesDom = incorporateCertificateValues(parentDom, certificatesToBeAdded);
 		if (certificatesDom != null && indent != null) {
 			DomUtils.setTextNode(documentDom, unsignedSignaturePropertiesDom, indent);
 			DSSXMLUtils.indentAndReplace(documentDom, certificatesDom);
@@ -393,13 +419,16 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 *
 	 * @param parentDom
 	 *            the parent element
-	 * @param validationContext
-	 *            the validation context with the revocation data
+	 * @param crlsToAdd
+	 *            a collection of {@link CRLToken}s to be added into the signature
+	 * @param ocspsToAdd
+	 *            a collection of {@link OCSPToken}s to be added into the signature
 	 * @param indent
 	 *            {@link String} to add between elements (if not NULL)
 	 */
-	protected void incorporateRevocationValues(final Element parentDom, final ValidationContext validationContext, String indent) {
-		Element revocationDom = incorporateRevocationValues(parentDom, validationContext);
+	protected void incorporateRevocationValues(final Element parentDom, final Collection<CRLToken> crlsToAdd, 
+			final Collection<OCSPToken> ocspsToAdd, String indent) {
+		Element revocationDom = incorporateRevocationValues(parentDom, crlsToAdd, ocspsToAdd);
 		if (revocationDom != null && indent != null) {
 			DomUtils.setTextNode(documentDom, unsignedSignaturePropertiesDom, indent);
 			DSSXMLUtils.indentAndReplace(documentDom, revocationDom);
@@ -420,6 +449,11 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 */
 	protected void createXAdESTimeStampType(final TimestampType timestampType, final String timestampC14nMethod, final byte[] digestValue) throws DSSException {
 
+		if ((XAdESNamespaces.XADES_111.isSameUri(getXadesNamespace().getUri())
+				|| XAdESNamespaces.XADES_122.isSameUri(getXadesNamespace().getUri())) && TimestampType.SIGNATURE_TIMESTAMP != timestampType) {
+			throw new DSSException("Signature Timestamp creation is only supported for XAdES 1.1.1 and 1.2.2");
+		}		
+		
 		Element timeStampDom = null;
 		final TimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
 		DigestAlgorithm timestampDigestAlgorithm = signatureTimestampParameters.getDigestAlgorithm();
@@ -427,19 +461,19 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 
 		case SIGNATURE_TIMESTAMP:
 			// <xades:SignatureTimeStamp Id="time-stamp-1dee38c4-8388-40d1-8880-9eeda853fe60">
-			timeStampDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.getXAdESDefaultNamespace(), XADES_SIGNATURE_TIME_STAMP);
+			timeStampDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, getXadesNamespace(), getCurrentXAdESElements().getElementSignatureTimeStamp());
 			break;
 		case VALIDATION_DATA_TIMESTAMP:
 			// <xades:SigAndRefsTimeStamp Id="time-stamp-a762ab0e-e05c-4cc8-a804-cf2c4ffb5516">
 			if (params.isEn319132() && !isOldGeneration(params.getSignatureLevel())) {
-				timeStampDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.getXAdESDefaultNamespace(), XADES_SIG_AND_REFS_TIME_STAMP_V2);
+				timeStampDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, getXades141Namespace(), XAdES141Element.SIG_AND_REFS_TIMESTAMP_V2);
 			} else {
-				timeStampDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.getXAdESDefaultNamespace(), XADES_SIG_AND_REFS_TIME_STAMP);
+				timeStampDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, getXadesNamespace(), getCurrentXAdESElements().getElementSigAndRefsTimeStamp());
 			}
 			break;
 		case ARCHIVE_TIMESTAMP:
 			// <xades141:ArchiveTimeStamp Id="time-stamp-a762ab0e-e05c-4cc8-a804-cf2c4ffb5516">
-			timeStampDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdES141, XADES141_ARCHIVE_TIME_STAMP);
+			timeStampDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XADES_141, XAdES141Element.ARCHIVE_TIMESTAMP);
 			timestampDigestAlgorithm = params.getArchiveTimestampParameters().getDigestAlgorithm();
 			break;
 		default:
@@ -451,19 +485,48 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 			LOG.debug("Timestamp generation: {} / {} / {}", timestampDigestAlgorithm.getName(), timestampC14nMethod,
 					Utils.toBase64(digestValue));
 		}
-		final TimeStampToken timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, digestValue);
+		final TimestampBinary timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, digestValue);
 		final String base64EncodedTimeStampToken = Utils.toBase64(DSSASN1Utils.getDEREncoded(timeStampToken));
+		
+		if (XAdESNamespaces.XADES_122.isSameUri(getXadesNamespace().getUri())) {
+			incorporateXAdES122Include(timeStampDom);
+		}
 
 		final String timestampId = UUID.randomUUID().toString();
-		timeStampDom.setAttribute(ID, "TS-" + timestampId);
-
-		// <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
-		incorporateC14nMethod(timeStampDom, timestampC14nMethod);
-
+		if (!XAdESNamespaces.XADES_111.isSameUri(getXadesNamespace().getUri())) {
+			timeStampDom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), "TS-" + timestampId);
+			// <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+			incorporateC14nMethod(timeStampDom, timestampC14nMethod);
+		} else {
+			incorporateHashDataInfo(timeStampDom, timestampC14nMethod);
+		}
+		
 		// <xades:EncapsulatedTimeStamp Id="time-stamp-token-6a150419-caab-4615-9a0b-6e239596643a">MIAGCSqGSIb3DQEH
-		final Element encapsulatedTimeStampDom = DomUtils.addElement(documentDom, timeStampDom, XAdESNamespaces.getXAdESDefaultNamespace(), XADES_ENCAPSULATED_TIME_STAMP);
-		encapsulatedTimeStampDom.setAttribute(ID, "ETS-" + timestampId);
+		final Element encapsulatedTimeStampDom = DomUtils.addElement(documentDom, timeStampDom, getXadesNamespace(), getCurrentXAdESElements().getElementEncapsulatedTimeStamp());
+		encapsulatedTimeStampDom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), "ETS-" + timestampId);
 		DomUtils.setTextNode(documentDom, encapsulatedTimeStampDom, base64EncodedTimeStampToken);
+	}
+
+	/**
+	 * <HashDataInfo URI="AI-NDS-HGI-32019423">
+	 * 	<Transforms xmlns="http://www.w3.org/2000/09/xmldsig#">
+	 * 		<Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"></Transform>
+	 *	</Transforms>
+	 * </HashDataInfo>
+	 * @param timeStampDom
+	 * @param timestampC14nMethod
+	 */
+	private void incorporateHashDataInfo(Element timeStampDom, String timestampC14nMethod) {
+		Element hashDataInfoDom = DomUtils.addElement(documentDom, timeStampDom, getXadesNamespace(), XAdES111Element.HASH_DATA_INFO);
+		hashDataInfoDom.setAttribute(XAdES111Attribute.URI.getAttributeName(), '#' + xadesSignature.getId());
+		Element transformsDom = DomUtils.addElement(documentDom, hashDataInfoDom, getXadesNamespace(), XAdES111Element.TRANSFORMS);
+		Element transformDom = DomUtils.addElement(documentDom, transformsDom, getXmldsigNamespace(), XMLDSigElement.TRANSFORM);
+		transformDom.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName(), timestampC14nMethod);
+	}
+
+	private void incorporateXAdES122Include(Element timeStampDom) {
+		Element includeDom = DomUtils.addElement(documentDom, timeStampDom, getXadesNamespace(), XAdES122Element.INCLUDE);
+		includeDom.setAttribute(XAdES122Attribute.URI.getAttributeName(), '#' + xadesSignature.getSignatureValueId());
 	}
 
 	private boolean isOldGeneration(SignatureLevel signatureLevel) {

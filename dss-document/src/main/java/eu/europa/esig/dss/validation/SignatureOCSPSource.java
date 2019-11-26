@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.validation;
 
 import java.util.ArrayList;
@@ -10,9 +30,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
@@ -26,13 +46,16 @@ import eu.europa.esig.dss.utils.Utils;
 public abstract class SignatureOCSPSource extends OfflineOCSPSource implements SignatureRevocationSource<OCSPToken> {
 	
 	private Map<OCSPResponseBinary, OCSPToken> ocspTokenMap = new HashMap<OCSPResponseBinary, OCSPToken>();
-	
+
+	private final List<OCSPToken> cmsSignedDataOCSPs = new ArrayList<OCSPToken>();
+	private final List<OCSPToken> timestampSignedDataOCSPs = new ArrayList<OCSPToken>();
 	private final List<OCSPToken> revocationValuesOCSPs = new ArrayList<OCSPToken>();
 	private final List<OCSPToken> attributeRevocationValuesOCSPs = new ArrayList<OCSPToken>();
 	private final List<OCSPToken> timestampValidationDataOCSPs = new ArrayList<OCSPToken>();
 	private final List<OCSPToken> dssDictionaryOCSPs = new ArrayList<OCSPToken>();
 	private final List<OCSPToken> vriDictionaryOCSPs = new ArrayList<OCSPToken>();
 	private final List<OCSPToken> timestampRevocationValuesOCSPs = new ArrayList<OCSPToken>();
+	private final List<OCSPToken> adbeRevocationValuesOCSPs = new ArrayList<OCSPToken>();
 	
 	private List<OCSPRef> ocspRefs = new ArrayList<OCSPRef>();
 	
@@ -42,6 +65,16 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	 * Map that links {@link OCSPToken}s with related {@link OCSPRef}s
 	 */
 	private Map<OCSPToken, Set<OCSPRef>> revocationRefsMap;
+
+	@Override
+	public List<OCSPToken> getCMSSignedDataRevocationTokens() {
+		return cmsSignedDataOCSPs;
+	}
+
+	@Override
+	public List<OCSPToken> getTimestampSignedDataRevocationTokens() {
+		return timestampSignedDataOCSPs;
+	}
 
 	@Override
 	public List<OCSPToken> getRevocationValuesTokens() {
@@ -72,6 +105,11 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	public List<OCSPToken> getTimestampRevocationValuesTokens() {
 		return timestampRevocationValuesOCSPs;
 	}
+	
+	@Override
+	public List<OCSPToken> getADBERevocationValuesTokens() {
+		return adbeRevocationValuesOCSPs;
+	}
 
 	public List<OCSPRef> getCompleteRevocationRefs() {
 		return getOCSPRefsByOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS);
@@ -101,12 +139,15 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	 */
 	public List<OCSPToken> getAllOCSPTokens() {
 		List<OCSPToken> ocspTokens = new ArrayList<OCSPToken>();
+		ocspTokens.addAll(getCMSSignedDataRevocationTokens());
+		ocspTokens.addAll(getTimestampSignedDataRevocationTokens());
 		ocspTokens.addAll(getRevocationValuesTokens());
 		ocspTokens.addAll(getAttributeRevocationValuesTokens());
 		ocspTokens.addAll(getTimestampValidationDataTokens());
 		ocspTokens.addAll(getDSSDictionaryTokens());
 		ocspTokens.addAll(getVRIDictionaryTokens());
 		ocspTokens.addAll(getTimestampRevocationValuesTokens());
+		ocspTokens.addAll(getADBERevocationValuesTokens());
 		return ocspTokens;
 	}
 
@@ -142,6 +183,12 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 			ocspTokenMap.put(ocspResponse, ocspToken);
 			for (RevocationOrigin origin : getRevocationOrigins(ocspResponse)) {
 				switch (origin) {
+				case CMS_SIGNED_DATA:
+					cmsSignedDataOCSPs.add(ocspToken);
+					break;
+				case TIMESTAMP_SIGNED_DATA:
+					timestampSignedDataOCSPs.add(ocspToken);
+					break;
 				case REVOCATION_VALUES:
 					revocationValuesOCSPs.add(ocspToken);
 					break;
@@ -159,6 +206,9 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 					break;
 				case TIMESTAMP_REVOCATION_VALUES:
 					timestampRevocationValuesOCSPs.add(ocspToken);
+					break;
+				case ADBE_REVOCATION_INFO_ARCHIVAL:
+					adbeRevocationValuesOCSPs.add(ocspToken);
 					break;
 				default:
 					throw new DSSException(

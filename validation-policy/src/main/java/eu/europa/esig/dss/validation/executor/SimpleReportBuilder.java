@@ -139,7 +139,7 @@ public class SimpleReportBuilder {
 
 		CertificateWrapper signingCertificate = signature.getSigningCertificate();
 		if (signingCertificate != null) {
-			xmlSignature.setSignedBy(signingCertificate.getId());
+			xmlSignature.setSignedBy(getReadableCertificateName(signingCertificate.getId()));
 		}
 
 		xmlSignature.getErrors().addAll(detailedReport.getErrors(signatureId));

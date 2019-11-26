@@ -1,6 +1,26 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.validation.executor;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 import java.util.Iterator;
@@ -11,7 +31,6 @@ import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.policy.jaxb.Algo;
 import eu.europa.esig.dss.policy.jaxb.AlgoExpirationDate;
 import eu.europa.esig.dss.policy.jaxb.BasicSignatureConstraints;
@@ -24,7 +43,7 @@ import eu.europa.esig.dss.policy.jaxb.TimestampConstraints;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.reports.Reports;
 
-public abstract class AbstractCryptographicConstraintsTest extends AbstractValidationExecutorTest {
+public abstract class AbstractCryptographicConstraintsTest extends AbstractTestValidationExecutor {
 
 	protected ConstraintsParameters constraintsParameters = null;
 	protected DefaultSignatureProcessExecutor executor = null;
@@ -32,8 +51,6 @@ public abstract class AbstractCryptographicConstraintsTest extends AbstractValid
 
 	protected static final String ALGORITHM_DSA = "DSA";
 	protected static final String ALGORITHM_RSA = "RSA";
-	protected static final String ALGORITHM_RSA2048 = "RSA2048";
-	protected static final String ALGORITHM_RSA4096 = "RSA4096";
 	protected static final String ALGORITHM_SHA1 = "SHA1";
 	protected static final String ALGORITHM_SHA256 = "SHA256";
 	
@@ -53,7 +70,7 @@ public abstract class AbstractCryptographicConstraintsTest extends AbstractValid
 	}
 
 	protected ConstraintsParameters loadConstraintsParameters() throws Exception {
-		ConstraintsParameters constraintsParameters = ValidationPolicyFacade.newFacade().unmarshall(validationPolicyFile);
+		ConstraintsParameters constraintsParameters = getConstraintsParameters(validationPolicyFile);
 		this.constraintsParameters = constraintsParameters;
 		return constraintsParameters;
 	}
@@ -144,7 +161,38 @@ public abstract class AbstractCryptographicConstraintsTest extends AbstractValid
 		return reports.getDetailedReport();
 	}
 	
-	protected void setAlgoExpirationDate(CryptographicConstraint cryptographicConstraint, String algorithmName, String expirationDate) {
+	protected void setAlgoExpDate(CryptographicConstraint defaultCryptographicConstraint, String algorithm, Integer keySize, String date) {
+		if(keySize == 0) {
+			setDigestAlgoExpirationDate(defaultCryptographicConstraint, algorithm, date);
+
+		}else {
+			setAlgoExpirationDate(defaultCryptographicConstraint, algorithm, date, keySize);
+
+		}
+	}
+	
+	private void setAlgoExpirationDate(CryptographicConstraint cryptographicConstraint, String algorithmName, String expirationDate, Integer keySize) {
+		
+		AlgoExpirationDate algoExpirationDate = cryptographicConstraint.getAlgoExpirationDate();
+		List<Algo> algorithms = algoExpirationDate.getAlgo();
+		boolean listContainsAlgorithms = false;
+		for (Algo algorithm : algorithms) {
+			if (algorithm.getValue().equals(algorithmName) && algorithm.getSize().equals(keySize)) {
+				algorithm.setDate(expirationDate);
+				listContainsAlgorithms = true;
+			}
+		}
+		if (!listContainsAlgorithms) {
+			Algo algo = new Algo();
+			algo.setValue(algorithmName);
+			algo.setDate(expirationDate);
+			algo.setSize(keySize);
+			algorithms.add(algo);
+		}
+		
+	}
+	
+	private void setDigestAlgoExpirationDate(CryptographicConstraint cryptographicConstraint, String algorithmName, String expirationDate) {
 		
 		AlgoExpirationDate algoExpirationDate = cryptographicConstraint.getAlgoExpirationDate();
 		List<Algo> algorithms = algoExpirationDate.getAlgo();
@@ -164,7 +212,17 @@ public abstract class AbstractCryptographicConstraintsTest extends AbstractValid
 		
 	}
 	
-	protected void removeAlgorithm(List<Algo> algorithms, String algorithmName) {
+	protected void removeAlgo(List<Algo> algorithms, String algorithm, Integer keySize) {
+		if(keySize == 0) {
+			removeDigestAlgorithm(algorithms, algorithm);
+
+		}else {
+			removeEncryptionAlgorithm(algorithms, algorithm, keySize);
+
+		}
+	}
+	
+	private void removeDigestAlgorithm(List<Algo> algorithms, String algorithmName) {
 		Iterator<Algo> iterator = algorithms.iterator();
 		while(iterator.hasNext()) {
 			Algo algo = iterator.next();
@@ -174,10 +232,20 @@ public abstract class AbstractCryptographicConstraintsTest extends AbstractValid
 		}
 	}
 	
-	protected void setAlgorithmSize(List<Algo> algorithms, String algorithm, String size) {
+	private void removeEncryptionAlgorithm(List<Algo> algorithms, String algorithmName, Integer keySize) {
+		Iterator<Algo> iterator = algorithms.iterator();
+		while(iterator.hasNext()) {
+			Algo algo = iterator.next();
+			if (algo.getValue().equals(algorithmName) && algo.getSize().equals(keySize)) {
+				iterator.remove();
+			}
+		}
+	}
+	
+	protected void setAlgorithmSize(List<Algo> algorithms, String algorithm, Integer size) {
 		for (Algo algo : algorithms) {
 			if (algo.getValue().equals(algorithm)) {
-				algo.setSize(BIT_SIZE_4096);
+				algo.setSize(4096);
 				return;
 			}
 		}

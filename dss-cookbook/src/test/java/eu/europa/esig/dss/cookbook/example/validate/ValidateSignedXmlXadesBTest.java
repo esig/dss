@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.cookbook.example.validate;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -35,6 +35,8 @@ import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
+import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -49,8 +51,8 @@ public class ValidateSignedXmlXadesBTest {
 	public void validateXAdESBaselineB() throws Exception {
 
 		// See Trusted Lists loading
-		CertificateSource trustedCertSource = null;
-		CertificateSource adjunctCertSource = null;
+		CertificateSource keystoreCertSource = new KeyStoreCertificateSource(new File("src/test/resources/self-signed-tsa.p12"), "PKCS12", "ks-password");
+		CertificateSource adjunctCertSource = new KeyStoreCertificateSource(new File("src/test/resources/self-signed-tsa.p12"), "PKCS12", "ks-password");
 
 		// tag::demo[]
 
@@ -67,6 +69,11 @@ public class ValidateSignedXmlXadesBTest {
 
 		// Capability to download CRL
 		cv.setCrlSource(new OnlineCRLSource());
+		
+		// Create an instance of a trusted certificate source
+		CommonTrustedCertificateSource trustedCertSource = new CommonTrustedCertificateSource();
+		// import the keystore as trusted
+		trustedCertSource.importAsTrusted(keystoreCertSource);
 
 		// We now add trust anchors (trusted list, keystore,...)
 		cv.setTrustedCertSource(trustedCertSource);

@@ -20,6 +20,37 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-public class PdfBoxPAdESValidationSuiteTest extends PAdESValidationSuite {
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.runner.RunWith;
+
+import eu.europa.esig.dss.pades.validation.suite.ASN1PolicyTest;
+import eu.europa.esig.dss.pades.validation.suite.ArchiveTimestampCoverageTest;
+import eu.europa.esig.dss.pades.validation.suite.DSS1188Test;
+import eu.europa.esig.dss.pades.validation.suite.DSS1376GetOriginalDocTest;
+import eu.europa.esig.dss.pades.validation.suite.DSS1420Test;
+import eu.europa.esig.dss.pades.validation.suite.DSS1443Test;
+import eu.europa.esig.dss.pades.validation.suite.DSS1538Test;
+import eu.europa.esig.dss.pades.validation.suite.DSS1683Test;
+import eu.europa.esig.dss.pades.validation.suite.DSS1690Test;
+import eu.europa.esig.dss.pades.validation.suite.DSS1794Test;
+import eu.europa.esig.dss.pades.validation.suite.DSS818Test;
+import eu.europa.esig.dss.pades.validation.suite.DSS917Test;
+import eu.europa.esig.dss.pades.validation.suite.DiagnosticDataCompleteTest;
+import eu.europa.esig.dss.pades.validation.suite.EtsiValidationReportCompleteTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESCorruptedSigTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESNonLatinCharactersValidationTest;
+import eu.europa.esig.dss.pades.validation.suite.PadesWrongDigestAlgoTest;
+import eu.europa.esig.dss.pades.validation.suite.PdfPkcs7Test;
+import eu.europa.esig.dss.pades.validation.suite.PolicyZeroHashTest;
+import eu.europa.esig.dss.pades.validation.suite.SIWATest;
+import eu.europa.esig.dss.pades.validation.suite.SignatureTimestampCertificateNotFoundTest;
+
+@RunWith(JUnitPlatform.class)
+@SelectClasses({ ASN1PolicyTest.class, DSS1188Test.class, DSS1376GetOriginalDocTest.class, DSS1420Test.class, DSS818Test.class, DSS917Test.class, PadesWrongDigestAlgoTest.class,
+		PdfPkcs7Test.class, DSS1443Test.class, DSS1538Test.class, DSS1683Test.class, DSS1690Test.class, DiagnosticDataCompleteTest.class, EtsiValidationReportCompleteTest.class,
+		SignatureTimestampCertificateNotFoundTest.class, PAdESCorruptedSigTest.class, PAdESNonLatinCharactersValidationTest.class, ArchiveTimestampCoverageTest.class,
+		PolicyZeroHashTest.class, SIWATest.class, DSS1794Test.class })
+public class PdfBoxPAdESValidationSuiteTest {
 
 }

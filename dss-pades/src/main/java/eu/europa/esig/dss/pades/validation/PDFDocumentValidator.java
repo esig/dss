@@ -23,16 +23,18 @@ package eu.europa.esig.dss.pades.validation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.validation.scope.PAdESSignatureScopeFinder;
+import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
-import eu.europa.esig.dss.pdf.PdfObjFactory;
 import eu.europa.esig.dss.pdf.PdfSignatureInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureValidationCallback;
+import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -45,11 +47,10 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 	
 	private static final byte[] pdfPreamble = new byte[] { '%', 'P', 'D', 'F', '-' };
 
-	private final PDFSignatureService pdfSignatureService;
+	private IPdfObjFactory pdfObjectFactory = new ServiceLoaderPdfObjFactory();
 
 	PDFDocumentValidator() {
 		super(null);
-		pdfSignatureService = null;
 	}
 
 	/**
@@ -58,7 +59,6 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 	public PDFDocumentValidator(final DSSDocument document) {
 		super(new PAdESSignatureScopeFinder());
 		this.document = document;
-		pdfSignatureService = PdfObjFactory.newPAdESSignatureService();
 	}
 
 	@Override
@@ -66,10 +66,22 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 		return DSSUtils.compareFirstBytes(dssDocument, pdfPreamble);
 	}
 
+	/**
+	 * Set the IPdfObjFactory. Allow to set the used implementation. Cannot be null.
+	 * 
+	 * @param pdfObjFactory
+	 *                      the implementation to be used.
+	 */
+	public void setPdfObjFactory(IPdfObjFactory pdfObjFactory) {
+		Objects.requireNonNull(pdfObjFactory, "PdfObjFactory is null");
+		this.pdfObjectFactory = pdfObjFactory;
+	}
+
 	@Override
 	public List<AdvancedSignature> getSignatures() {
 		final List<AdvancedSignature> signatures = new ArrayList<AdvancedSignature>();
 
+		PDFSignatureService pdfSignatureService = pdfObjectFactory.newPAdESSignatureService();
 		pdfSignatureService.validateSignatures(validationCertPool, document, new PdfSignatureValidationCallback() {
 
 			@Override

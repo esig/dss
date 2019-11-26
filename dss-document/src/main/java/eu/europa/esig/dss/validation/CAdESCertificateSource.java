@@ -178,9 +178,7 @@ public class CAdESCertificateSource extends CMSCertificateSource {
 			}
 
 			final IssuerSerial issuerSerial = essCertID.getIssuerSerial();
-			if (issuerSerial != null) {
-				certRef.setIssuerInfo(getIssuerInfo(issuerSerial));
-			}
+			certRef.setIssuerInfo(getIssuerInfo(issuerSerial));
 			certRef.setOrigin(location);
 
 			certificateRefs.add(certRef);
@@ -213,9 +211,7 @@ public class CAdESCertificateSource extends CMSCertificateSource {
 				LOG.debug("Found Certificate Hash in SigningCertificateV2 {} with algorithm {}", Utils.toHex(certHash), digestAlgorithm);
 			}
 			final IssuerSerial issuerSerial = essCertIDv2.getIssuerSerial();
-			if (issuerSerial != null) {
-				certRef.setIssuerInfo(getIssuerInfo(issuerSerial));
-			}
+			certRef.setIssuerInfo(getIssuerInfo(issuerSerial));
 			certRef.setOrigin(location);
 			certificateRefs.add(certRef);
 		}

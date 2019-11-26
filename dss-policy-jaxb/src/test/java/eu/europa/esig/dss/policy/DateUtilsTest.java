@@ -20,9 +20,10 @@
  */
 package eu.europa.esig.dss.policy;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DateUtilsTest {
 
@@ -31,9 +32,9 @@ public class DateUtilsTest {
 		assertNotNull(DateUtils.parseDate(DateUtils.DEFAULT_DATE_FORMAT, "2020-02-22"));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testException() {
-		DateUtils.parseDate(DateUtils.DEFAULT_DATE_FORMAT, "20-2020-02");
+		assertThrows(IllegalArgumentException.class, () -> DateUtils.parseDate(DateUtils.DEFAULT_DATE_FORMAT, "20-2020-02"));
 	}
 
 }

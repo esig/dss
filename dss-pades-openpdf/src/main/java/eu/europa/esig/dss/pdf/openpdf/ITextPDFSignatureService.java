@@ -125,16 +125,17 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		stp.setEnforcedModificationDate(cal);
 
 		if (PdfName.SIG.equals(type)) {
-
-			dic.put(PdfName.NAME, new PdfString(getSignatureName(parameters), PdfObject.TEXT_UNICODE));
-
-			if (parameters.getReason() != null) {
+ 
+			if (Utils.isStringNotEmpty(parameters.getSignerName())) {
+				dic.put(PdfName.NAME, new PdfString(parameters.getSignerName(), PdfObject.TEXT_UNICODE));
+			}
+			if (Utils.isStringNotEmpty(parameters.getReason())) {
 				dic.put(PdfName.REASON, new PdfString(parameters.getReason(), PdfObject.TEXT_UNICODE));
 			}
-			if (parameters.getLocation() != null) {
+			if (Utils.isStringNotEmpty(parameters.getLocation())) {
 				dic.put(PdfName.LOCATION, new PdfString(parameters.getLocation(), PdfObject.TEXT_UNICODE));
 			}
-			if (parameters.getContactInfo() != null) {
+			if (Utils.isStringNotEmpty(parameters.getContactInfo())) {
 				dic.put(PdfName.CONTACTINFO, new PdfString(parameters.getContactInfo(), PdfObject.TEXT_UNICODE));
 			}
 
@@ -236,14 +237,15 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			PdfSignatureAppearance sap = stp.getSignatureAppearance();
 
 			byte[] pk = signatureValue;
-
 			int csize = parameters.getSignatureSize();
+			if (csize < pk.length) {
+				throw new DSSException(String.format("The signature size [%s] is too small for the signature value with a length [%s]", csize, pk.length));
+			}
+			
 			byte[] outc = new byte[csize];
-
-			PdfDictionary dic = new PdfDictionary();
-
 			System.arraycopy(pk, 0, outc, 0, pk.length);
 
+			PdfDictionary dic = new PdfDictionary();
 			dic.put(PdfName.CONTENTS, new PdfString(outc).setHexWriting(true));
 			sap.close(dic);
 

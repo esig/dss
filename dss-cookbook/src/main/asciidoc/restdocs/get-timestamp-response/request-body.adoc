@@ -1,0 +1,7 @@
+[source,options="nowrap"]
+----
+{
+  "algorithm" : "SHA1",
+  "value" : "Ir3ZcUPfazmmWvrSr2vYvyDNT3s="
+}
+----

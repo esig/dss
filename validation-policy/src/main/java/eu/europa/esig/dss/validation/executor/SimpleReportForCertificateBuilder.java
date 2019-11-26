@@ -31,6 +31,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlLangAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedService;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedServiceProvider;
@@ -109,9 +110,9 @@ public class SimpleReportForCertificateBuilder {
 				Set<String> uniqueServiceNames = getUniqueServiceNames(trustedServices);
 				for (String serviceName : uniqueServiceNames) {
 					XmlTrustAnchor trustAnchor = new XmlTrustAnchor();
-					trustAnchor.setCountryCode(xmlTrustedServiceProvider.getCountryCode());
-					trustAnchor.setTrustServiceProvider(xmlTrustedServiceProvider.getTSPName());
-					trustAnchor.setTrustServiceProviderRegistrationId(xmlTrustedServiceProvider.getTSPRegistrationIdentifier());
+					trustAnchor.setCountryCode(xmlTrustedServiceProvider.getTL().getCountryCode());
+					trustAnchor.setTrustServiceProvider(getFirst(xmlTrustedServiceProvider.getTSPNames()));
+					trustAnchor.setTrustServiceProviderRegistrationId(xmlTrustedServiceProvider.getTSPRegistrationIdentifiers().get(0));
 					trustAnchor.setTrustServiceName(serviceName);
 					trustAnchors.add(trustAnchor);
 				}
@@ -126,6 +127,13 @@ public class SimpleReportForCertificateBuilder {
 		item.setSubIndication(conclusion.getSubIndication());
 
 		return item;
+	}
+
+	private String getFirst(List<XmlLangAndValue> langAndValues) {
+		if (Utils.isCollectionNotEmpty(langAndValues)) {
+			return langAndValues.get(0).getValue();
+		}
+		return null;
 	}
 
 	private List<XmlTrustedServiceProvider> filterByCertificateId(List<XmlTrustedServiceProvider> trustServiceProviders, String certificateId) {
@@ -164,7 +172,7 @@ public class SimpleReportForCertificateBuilder {
 	private Set<String> getUniqueServiceNames(List<XmlTrustedService> trustedServices) {
 		Set<String> result = new HashSet<String>();
 		for (XmlTrustedService xmlTrustedService : trustedServices) {
-			result.add(xmlTrustedService.getServiceName());
+			result.add(getFirst(xmlTrustedService.getServiceNames()));
 		}
 		return result;
 	}

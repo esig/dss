@@ -20,23 +20,20 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asice;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.XMLConstants;
 import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import eu.europa.esig.asic.manifest.ASiCManifestUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -46,10 +43,9 @@ public class ASiCEWithCAdESManifestBuilderTest {
 
 	private static Validator validator;
 
-	@BeforeClass
-	public static void init() throws SAXException {
-		SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		Schema schema = factory.newSchema(new StreamSource(new File("src/test/resources/en_31916201v010101.xsd")));
+	@BeforeEach
+	public void init() throws SAXException {
+		Schema schema = ASiCManifestUtils.newInstance().getSchema();
 		validator = schema.newValidator();
 	}
 
@@ -76,7 +72,7 @@ public class ASiCEWithCAdESManifestBuilderTest {
 		List<DSSDocument> manifests = new ArrayList<DSSDocument>();
 		documents.add(new InMemoryDocument(new byte[] { 1, 2, 3 }, "test.xml", MimeType.XML));
 		ASiCEWithCAdESArchiveManifestBuilder builder = new ASiCEWithCAdESArchiveManifestBuilder(signatures, timestamps, 
-				documents, manifests, DigestAlgorithm.SHA256, "timestamp.tst");
+				documents, manifests, null, DigestAlgorithm.SHA256, "timestamp.tst");
 		Document build = builder.build();
 
 		validator.validate(new DOMSource(build));

@@ -26,17 +26,16 @@ import java.util.List;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.token.AbstractKeyStoreTokenConnection;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.KSPrivateKeyEntry;
 import eu.europa.esig.dss.ws.converter.DTOConverter;
 import eu.europa.esig.dss.ws.converter.RemoteCertificateConverter;
+import eu.europa.esig.dss.ws.dto.DigestDTO;
 import eu.europa.esig.dss.ws.dto.RemoteCertificate;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
-import eu.europa.esig.dss.ws.server.signing.dto.DigestDTO;
 import eu.europa.esig.dss.ws.server.signing.dto.RemoteKeyEntry;
 
 public class RemoteSignatureTokenConnectionImpl implements RemoteSignatureTokenConnection {
@@ -82,7 +81,7 @@ public class RemoteSignatureTokenConnectionImpl implements RemoteSignatureTokenC
 	@Override
 	public SignatureValueDTO signDigest(DigestDTO digest, MaskGenerationFunction mgf, String alias) throws DSSException {
 		DSSPrivateKeyEntry key = token.getKey(alias);
-		return DTOConverter.toSignatureValueDTO(token.signDigest(convert(digest), mgf, key));
+		return DTOConverter.toSignatureValueDTO(token.signDigest(DTOConverter.toDigest(digest), mgf, key));
 	}
 
 	private RemoteKeyEntry convert(KSPrivateKeyEntry key) {
@@ -107,13 +106,6 @@ public class RemoteSignatureTokenConnectionImpl implements RemoteSignatureTokenC
 		}
 
 		return dto;
-	}
-	
-	private Digest convert(DigestDTO digestDTO) {
-		if (digestDTO == null) {
-			return null;
-		}
-		return new Digest(digestDTO.getAlgorithm(), digestDTO.getValue());
 	}
 
 }

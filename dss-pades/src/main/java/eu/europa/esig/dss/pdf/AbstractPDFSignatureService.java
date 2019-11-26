@@ -25,7 +25,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,13 +32,13 @@ import java.util.Map.Entry;
 
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPResp;
-import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
@@ -119,28 +118,11 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		}
 	}
 
-	protected String getSignatureName(PAdESSignatureParameters parameters) {
-		if (parameters.getSignatureName() != null) {
-			return parameters.getSignatureName();
-		} else {
-
-			CertificateToken token = parameters.getSigningCertificate();
-			Date date = parameters.bLevel().getSigningDate();
-			String encodedDate = Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHA1, Long.toString(date.getTime()).getBytes()));
-
-			if (token == null) {
-				return "Unknown signer " + encodedDate;
-			} else {
-				return DSSASN1Utils.getHumanReadableName(token) + " " + encodedDate;
-			}
-		}
-	}
-
 	@Override
 	public DSSDocument timestamp(DSSDocument document, PAdESSignatureParameters parameters, TSPSource tspSource) {
 		final DigestAlgorithm timestampDigestAlgorithm = parameters.getSignatureTimestampParameters().getDigestAlgorithm();
 		final byte[] digest = digest(document, parameters, timestampDigestAlgorithm);
-		final TimeStampToken timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, digest);
+		final TimestampBinary timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, digest);
 		final byte[] encoded = DSSASN1Utils.getDEREncoded(timeStampToken);
 		return sign(document, encoded, parameters, timestampDigestAlgorithm);
 	}

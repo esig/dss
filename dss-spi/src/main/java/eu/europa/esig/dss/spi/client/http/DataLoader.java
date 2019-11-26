@@ -23,9 +23,10 @@ package eu.europa.esig.dss.spi.client.http;
 import java.io.Serializable;
 import java.util.List;
 
+import eu.europa.esig.dss.model.DSSException;
+
 /**
  * Component that allows to retrieve the data using any protocol: HTTP, HTTPS, FTP, LDAP.
- *
  *
  */
 
@@ -67,8 +68,9 @@ public interface DataLoader extends Serializable {
 	 * @param url
 	 *            the url to access
 	 * @return {@code byte} array of obtained data or null
+	 * @throws DSSException in case of DataLoader error
 	 */
-	byte[] get(final String url);
+	byte[] get(final String url) throws DSSException;
 
 	/**
 	 * Execute a HTTP GET operation. This method is used when many URls are available to access the same resource. The
@@ -77,8 +79,9 @@ public interface DataLoader extends Serializable {
 	 * @param urlStrings
 	 *            {@code List} of {@code String}s representing the URLs to be used in sequential way to obtain the data.
 	 * @return {@code DataAndUrl} representing the array of obtained data and used url, or null
+	 * @throws DSSException in case of DataLoader error
 	 */
-	DataAndUrl get(final List<String> urlStrings);
+	DataAndUrl get(final List<String> urlStrings) throws DSSException;
 
 	/**
 	 * Execute a HTTP GET operation with indication concerning the mandatory nature of the operation.
@@ -88,8 +91,9 @@ public interface DataLoader extends Serializable {
 	 * @param refresh
 	 *            if true indicates that the cached data should be refreshed
 	 * @return {@code byte} array of obtained data or null
+	 * @throws DSSException in case of DataLoader error
 	 */
-	byte[] get(String url, boolean refresh);
+	byte[] get(String url, boolean refresh) throws DSSException;
 
 	/**
 	 * Executes a HTTP POST operation
@@ -99,8 +103,9 @@ public interface DataLoader extends Serializable {
 	 * @param content
 	 *            the content to post
 	 * @return {@code byte} array of obtained data
+	 * @throws DSSException in case of DataLoader error
 	 */
-	byte[] post(final String url, final byte[] content);
+	byte[] post(final String url, final byte[] content) throws DSSException;
 
 	/**
 	 * This allows to set the content type. Example: Content-Type "application/ocsp-request"

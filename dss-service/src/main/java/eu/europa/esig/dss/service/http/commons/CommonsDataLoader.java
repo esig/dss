@@ -92,6 +92,8 @@ import eu.europa.esig.dss.service.http.proxy.ProxyProperties;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.client.http.Protocol;
+import eu.europa.esig.dss.spi.exception.DSSDataLoaderMultipleException;
+import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
@@ -303,7 +305,7 @@ public class CommonsDataLoader implements DataLoader {
 	 *
 	 * @param httpClientBuilder
 	 * @param url
-	 * @return
+	 * @return {@link HttpClientBuilder}
 	 */
 	private HttpClientBuilder configCredentials(HttpClientBuilder httpClientBuilder, final String url) {
 
@@ -326,7 +328,7 @@ public class CommonsDataLoader implements DataLoader {
 	 * @param httpClientBuilder
 	 * @param credentialsProvider
 	 * @param url
-	 * @return
+	 * @return {@link HttpClientBuilder}
 	 */
 	private HttpClientBuilder configureProxy(HttpClientBuilder httpClientBuilder, CredentialsProvider credentialsProvider, String url) {
 		if (proxyConfig == null) {
@@ -392,7 +394,7 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	@Override
-	public byte[] get(final String urlString) {
+	public byte[] get(final String urlString) throws DSSException {
 
 		if (Protocol.isFileUrl(urlString)) {
 			return fileGet(urlString);
@@ -409,28 +411,27 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	@Override
-	public DataAndUrl get(final List<String> urlStrings) {
-		final int numberOfUrls = urlStrings.size();
-		int ii = 0;
-		for (final String urlString : urlStrings) {
+	public DataAndUrl get(final List<String> urlStrings) throws DSSException {
+		if (Utils.isCollectionEmpty(urlStrings)) {
+			throw new DSSException("Cannot process the GET call. List of URLs is empty!");
+		}
+
+		final Map<String, Throwable> exceptions = new HashMap<String, Throwable>(); // store map of exception thrown for urls
+		for (String urlString : urlStrings) {
+			LOG.debug("Processing a GET call to URL [{}]...", urlString);
 			try {
-				ii++;
 				final byte[] bytes = get(urlString);
-				if (bytes == null) {
+				if (Utils.isArrayEmpty(bytes)) {
+					LOG.debug("The retrieved content from URL [{}] is empty. Continue with other URLs...", urlString);
 					continue;
 				}
 				return new DataAndUrl(bytes, urlString);
 			} catch (Exception e) {
-				if (ii == numberOfUrls) {
-					if (e instanceof DSSException) {
-						throw (DSSException) e;
-					}
-					throw new DSSException(e);
-				}
-				LOG.warn("Impossible to obtain data using '{}' : {}", urlString, e.getMessage());
+				LOG.warn("Cannot obtain data using '{}' : {}", urlString, e.getMessage());
+				exceptions.put(urlString, e);
 			}
 		}
-		return null;
+		throw new DSSDataLoaderMultipleException(exceptions);
 	}
 
 	/**
@@ -442,9 +443,10 @@ public class CommonsDataLoader implements DataLoader {
 	 * @param refresh
 	 *            if true indicates that the cached data should be refreshed
 	 * @return {@code byte} array of obtained data
+	 * @throws DSSException in case of DataLoader error
 	 */
 	@Override
-	public byte[] get(final String url, final boolean refresh) {
+	public byte[] get(final String url, final boolean refresh) throws DSSException {
 		return get(url);
 	}
 
@@ -455,9 +457,10 @@ public class CommonsDataLoader implements DataLoader {
 	 * ldap://xadessrv.plugtests.net/CN=LevelBCAOK,OU=Plugtests_2015-2016,O=ETSI,C=FR?cACertificate;binary
 	 *
 	 * @param urlString
-	 * @return
+	 * @return byte array
+	 * @throws DSSException in case of DataLoader error
 	 */
-	protected byte[] ldapGet(String urlString) {
+	protected byte[] ldapGet(String urlString) throws DSSException {
 		
 		urlString = LdapURLUtils.encode(urlString);
 
@@ -479,37 +482,39 @@ public class CommonsDataLoader implements DataLoader {
 			final DirContext ctx = new InitialDirContext(env);
 			final Attributes attributes = ctx.getAttributes(Utils.EMPTY_STRING, new String[] { attributeName });
 			if ((attributes == null) || (attributes.size() < 1)) {
-				LOG.warn("Cannot download binaries from: {}, no attributes with name: {} returned", urlString, attributeName);
+				throw new DSSException(String.format("Cannot download binaries from: [%s], no attributes with name: [%s] returned", urlString, attributeName));
 			} else {
 				final Attribute attribute = attributes.getAll().next();
 				final byte[] ldapBytes = (byte[]) attribute.get();
 				if (Utils.isArrayNotEmpty(ldapBytes)) {
 					return ldapBytes;
 				}
+				throw new DSSException(String.format("The retrieved ldap content from url [%s] is empty", urlString));
 			}
+		} catch (DSSException e) {
+			throw e;
 		} catch (Exception e) {
-			LOG.warn(e.getMessage(), e);
+			throw new DSSExternalResourceException(String.format("Cannot get data from URL [%s]. Reason : [%s]", urlString, e.getMessage()), e);
 		}
-		return null;
 	}
 
 	/**
 	 * This method retrieves data using FTP protocol .
 	 *
-	 * @param urlString
-	 * @return
+	 * @param urlString {@link String} url to retrieve data from
+	 * @return byte array
+	 * @throws DSSException in case of file download error
 	 */
-	protected byte[] ftpGet(final String urlString) {
+	protected byte[] ftpGet(final String urlString) throws DSSException {
 		final URL url = getURL(urlString);
 		try (InputStream inputStream = url.openStream()) {
 			return DSSUtils.toByteArray(inputStream);
 		} catch (IOException e) {
-			LOG.warn("Unable to retrieve URL {} content : {}", urlString, e.getMessage());
+			throw new DSSExternalResourceException(String.format("Unable to retrieve file from URL %s. Reason : [%s]", urlString, e.getMessage()), e);
 		}
-		return null;
 	}
 
-	protected byte[] fileGet(final String urlString) {
+	protected byte[] fileGet(final String urlString) throws DSSException {
 		return ftpGet(urlString);
 	}
 
@@ -528,7 +533,7 @@ public class CommonsDataLoader implements DataLoader {
 	 *            to access
 	 * @return {@code byte} array of obtained data or null
 	 */
-	protected byte[] httpGet(final String url) {
+	protected byte[] httpGet(final String url) throws DSSException {
 
 		HttpGet httpRequest = null;
 		CloseableHttpResponse httpResponse = null;
@@ -547,7 +552,7 @@ public class CommonsDataLoader implements DataLoader {
 			return readHttpResponse(httpResponse);
 
 		} catch (URISyntaxException | IOException e) {
-			throw new DSSException("Unable to process GET call for url '" + url + "'", e);
+			throw new DSSExternalResourceException(String.format("Unable to process GET call for url [%s]. Reason : [%s]", url, e.getMessage()), e);
 		} finally {
 			try {
 				if (httpRequest != null) {
@@ -595,7 +600,7 @@ public class CommonsDataLoader implements DataLoader {
 
 			return readHttpResponse(httpResponse);
 		} catch (IOException e) {
-			throw new DSSException("Unable to process POST call for url '" + url + "'", e);
+			throw new DSSExternalResourceException(String.format("Unable to process POST call for url [%s]. Reason : [%s]", url, e.getMessage()) , e);
 		} finally {
 			try {
 				if (httpRequest != null) {

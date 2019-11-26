@@ -30,6 +30,7 @@ import eu.europa.esig.dss.asic.cades.signature.asics.DataToSignASiCSWithCAdESFro
 import eu.europa.esig.dss.asic.cades.signature.asics.DataToSignASiCSWithCAdESFromFiles;
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.BLevelParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 
@@ -51,13 +52,20 @@ public class ASiCWithCAdESDataToSignHelperBuilder {
 			}
 
 			ASiCWithCAdESContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(archiveDoc);
-			ASiCExtractResult extract = extractor.extract();
-			if (asice) {
-				return new DataToSignASiCEWithCAdESFromArchive(extract.getSignedDocuments(), extract.getSignatureDocuments(), extract.getManifestDocuments(),
-						parameters);
+			ASiCExtractResult result = extractor.extract();
+
+			ASiCContainerType currentContainerType = ASiCUtils.getContainerType(archiveDoc, result.getMimeTypeDocument(), result.getZipComment(),
+					result.getSignedDocuments());
+
+			if (asice && ASiCContainerType.ASiC_E.equals(currentContainerType)) {
+				return new DataToSignASiCEWithCAdESFromArchive(result, parameters);
+			} else if (!asice && ASiCContainerType.ASiC_S.equals(currentContainerType)) {
+				return new DataToSignASiCSWithCAdESFromArchive(result, parameters.aSiC());
 			} else {
-				return new DataToSignASiCSWithCAdESFromArchive(extract.getSignatureDocuments(), extract.getSignedDocuments(), parameters.aSiC());
+				throw new UnsupportedOperationException(
+						String.format("Original container type '%s' vs parameter : '%s'", currentContainerType, parameters.aSiC().getContainerType()));
 			}
+
 		} else {
 			if (asice) {
 				return new DataToSignASiCEWithCAdESFromFiles(documents, parameters);

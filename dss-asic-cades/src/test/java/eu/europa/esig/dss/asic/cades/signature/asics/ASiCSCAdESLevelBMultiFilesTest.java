@@ -20,14 +20,14 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asics;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
@@ -51,7 +51,7 @@ public class ASiCSCAdESLevelBMultiFilesTest extends AbstractPkiFactoryTestMultip
 	private ASiCWithCAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentToSigns = new ArrayList<DSSDocument>();
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());

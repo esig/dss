@@ -33,6 +33,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.ws.dto.RemoteCertificate;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
+import eu.europa.esig.dss.ws.dto.TimestampDTO;
 
 @SuppressWarnings("serial")
 public class RemoteSignatureParameters implements Serializable {
@@ -89,19 +90,24 @@ public class RemoteSignatureParameters implements Serializable {
 	 * The mask generation function
 	 */
 	private MaskGenerationFunction maskGenerationFunction = signatureAlgorithm.getMaskGenerationFunction();
+	
+	/**
+	 * This object represents the list of content timestamps to be added into the signature.
+	 */
+	private List<TimestampDTO> contentTimestamps;
 
 	/**
-	 * The object representing the parameters related to the content timestamp (Baseline-B)
+	 * The object represents the parameters related to the content timestamp (Baseline-B)
 	 */
 	private RemoteTimestampParameters contentTimestampParameters;
 
 	/**
-	 * The object representing the parameters related to the signature timestamp (Baseline-T)
+	 * The object represents the parameters related to the signature timestamp (Baseline-T)
 	 */
 	private RemoteTimestampParameters signatureTimestampParameters;
 
 	/**
-	 * The object representing the parameters related to the archive timestamp (Baseline-LTA)
+	 * The object represents the parameters related to the archive timestamp (Baseline-LTA)
 	 */
 	private RemoteTimestampParameters archiveTimestampParameters;
 
@@ -275,6 +281,15 @@ public class RemoteSignatureParameters implements Serializable {
 	public EncryptionAlgorithm getEncryptionAlgorithm() {
 		return encryptionAlgorithm;
 	}
+	
+	/**
+	 * Get the mask generation function
+	 * 
+	 * @return the mask generation function.
+	 */
+	public MaskGenerationFunction getMaskGenerationFunction() {
+		return maskGenerationFunction;
+	}
 
 	/**
 	 * Gets the signature algorithm.
@@ -283,6 +298,23 @@ public class RemoteSignatureParameters implements Serializable {
 	 */
 	public SignatureAlgorithm getSignatureAlgorithm() {
 		return signatureAlgorithm;
+	}
+	
+	/**
+	 * Gets a list of content timestamps
+	 * @return list of {@link TimestampDTO}s
+	 */
+	public List<TimestampDTO> getContentTimestamps() {
+		return contentTimestamps;
+	}
+	
+	/**
+	 * Sets a list of content timestamps to be added into the signature
+	 * @param contentTimestamps 
+	 * 			list of content {@link TimestampDTO}s to set
+	 */
+	public void setContentTimestamps(List<TimestampDTO> contentTimestamps) {
+		this.contentTimestamps = contentTimestamps;
 	}
 
 	/**

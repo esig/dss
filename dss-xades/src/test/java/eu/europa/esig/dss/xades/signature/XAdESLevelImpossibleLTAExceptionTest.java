@@ -20,11 +20,14 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -40,7 +43,7 @@ public class XAdESLevelImpossibleLTAExceptionTest extends AbstractXAdESTestSigna
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
@@ -54,9 +57,12 @@ public class XAdESLevelImpossibleLTAExceptionTest extends AbstractXAdESTestSigna
 	}
 
 	@Override
-	@Test(expected = DSSException.class)
+	@Test
 	public void signAndVerify() throws IOException {
-		super.signAndVerify(); // unable to extend to LT (no online CRL/OCSP)
+		Exception exception = assertThrows(DSSException.class, () -> {
+			super.signAndVerify(); // unable to extend to LT (no online CRL/OCSP)
+		});
+		assertEquals("Revocation data is missing", exception.getMessage());
 	}
 
 	@Override

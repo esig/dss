@@ -20,16 +20,17 @@
  */
 package eu.europa.esig.dss.validation.executor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.File;
 import java.util.List;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +55,7 @@ import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSimpleCertificateRepor
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 
-public class CertificateProcessExecutorTest extends AbstractValidationExecutorTest {
+public class CertificateProcessExecutorTest extends AbstractTestValidationExecutor {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CertificateProcessExecutorTest.class);
 
@@ -455,15 +456,18 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 		assertEquals(CertificateQualification.NA, simpleReport.getQualificationAtValidationTime());
 	}
 	
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void certificateIdIsMissingTest() throws Exception {
-		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/trust-anchor.xml"));
-		assertNotNull(diagnosticData);
-		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
-		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadDefaultPolicy());
-		executor.setCurrentTime(diagnosticData.getValidationDate());
-		executor.execute();
+		Exception exception = assertThrows(NullPointerException.class, () -> {
+			XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/trust-anchor.xml"));
+			assertNotNull(diagnosticData);
+			DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
+			executor.setDiagnosticData(diagnosticData);
+			executor.setValidationPolicy(loadDefaultPolicy());
+			executor.setCurrentTime(diagnosticData.getValidationDate());
+			executor.execute();
+		});
+		assertEquals("The certificate id is missing", exception.getMessage());
 	}
 	
 	private void checkReports(CertificateReports reports) {

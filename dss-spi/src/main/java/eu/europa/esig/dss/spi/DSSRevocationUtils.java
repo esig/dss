@@ -29,8 +29,8 @@ import java.util.List;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Primitive;
+import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DEROctetString;
-import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
@@ -78,38 +78,39 @@ public final class DSSRevocationUtils {
 	}
 
 	/**
-	 * This method allows to create a {@code BasicOCSPResp} from a {@code DERSequence}.
-	 * The value for response SHALL be the DER encoding of BasicOCSPResponse (RFC 2560).
+	 * This method allows to create a {@code BasicOCSPResp} from a
+	 * {@code ASN1Sequence}. The value for response SHALL be the DER encoding of
+	 * BasicOCSPResponse (RFC 2560).
 	 *
-	 * @param derSequence
-	 *            {@code DERSequence} to convert to {@code BasicOCSPResp}
+	 * @param asn1Sequence
+	 *                     {@code ASN1Sequence} to convert to {@code BasicOCSPResp}
 	 * @return {@code BasicOCSPResp}
 	 */
-	public static BasicOCSPResp getBasicOcspResp(final DERSequence derSequence) {
+	public static BasicOCSPResp getBasicOcspResp(final ASN1Sequence asn1Sequence) {
 		BasicOCSPResp basicOCSPResp = null;
 		try {
-			final BasicOCSPResponse basicOcspResponse = BasicOCSPResponse.getInstance(derSequence);
+			final BasicOCSPResponse basicOcspResponse = BasicOCSPResponse.getInstance(asn1Sequence);
 			basicOCSPResp = new BasicOCSPResp(basicOcspResponse);
 		} catch (Exception e) {
-			LOG.error("Impossible to create BasicOCSPResp from DERSequence!", e);
+			LOG.error("Impossible to create BasicOCSPResp from ASN1Sequence!", e);
 		}
 		return basicOCSPResp;
 	}
 
 	/**
-	 * This method allows to create a {@code OCSPResp} from a {@code DERSequence}.
+	 * This method allows to create a {@code OCSPResp} from a {@code ASN1Sequence}.
 	 *
-	 * @param derSequence
-	 *            {@code DERSequence} to convert to {@code OCSPResp}
+	 * @param asn1Sequence
+	 *                    {@code ASN1Sequence} to convert to {@code OCSPResp}
 	 * @return {@code OCSPResp}
 	 */
-	public static OCSPResp getOcspResp(final DERSequence derSequence) {
+	public static OCSPResp getOcspResp(final ASN1Sequence asn1Sequence) {
 		OCSPResp ocspResp = null;
 		try {
-			final OCSPResponse ocspResponse = OCSPResponse.getInstance(derSequence);
+			final OCSPResponse ocspResponse = OCSPResponse.getInstance(asn1Sequence);
 			ocspResp = new OCSPResp(ocspResponse);
 		} catch (Exception e) {
-			LOG.error("Impossible to create OCSPResp from DERSequence!", e);
+			LOG.error("Impossible to create OCSPResp from ASN1Sequence!", e);
 		}
 		return ocspResp;
 	}

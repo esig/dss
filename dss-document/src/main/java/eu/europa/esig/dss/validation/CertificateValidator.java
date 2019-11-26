@@ -23,8 +23,8 @@ package eu.europa.esig.dss.validation;
 import java.util.Date;
 import java.util.Objects;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
@@ -79,7 +79,7 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 				.usedRevocations(svc.getProcessedRevocations()).includeRawCertificateTokens(certificateVerifier.isIncludeCertificateTokenValues())
 				.includeRawRevocationData(certificateVerifier.isIncludeCertificateRevocationValues())
 				.certificateSourceTypes(svc.getCertificateSourceTypes())
-				.trustedCertificateSource(certificateVerifier.getTrustedCertSource())
+				.trustedCertificateSources(certificateVerifier.getTrustedCertSources())
 				.validationDate(svc.getCurrentTime()).build();
 
 		CertificateProcessExecutor executor = provideProcessExecutorInstance();

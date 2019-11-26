@@ -26,7 +26,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.asic.common.ASiCNamespace;
+import eu.europa.esig.dss.asic.common.definition.ASiCAttribute;
+import eu.europa.esig.dss.asic.common.definition.ASiCElement;
+import eu.europa.esig.dss.asic.common.definition.ASiCNamespace;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.MimeType;
@@ -62,22 +64,24 @@ public class ASiCEWithCAdESArchiveManifestBuilder extends AbstractManifestBuilde
 	private final List<DSSDocument> timestamps;
 	private final List<DSSDocument> documents;
 	private final List<DSSDocument> manifests;
+	private final DSSDocument lastArchiveManifest; // "root" archive manifest
 	private final DigestAlgorithm digestAlgorithm;
 	private final String timestampUri;
 
-	public ASiCEWithCAdESArchiveManifestBuilder(List<DSSDocument> signatures, List<DSSDocument> timestamps, 
-			List<DSSDocument> documents, List<DSSDocument> manifests, DigestAlgorithm digestAlgorithm, String timestampUri) {
+	public ASiCEWithCAdESArchiveManifestBuilder(List<DSSDocument> signatures, List<DSSDocument> timestamps, List<DSSDocument> documents, 
+			List<DSSDocument> manifests, DSSDocument lastArchiveManifets, DigestAlgorithm digestAlgorithm, String timestampUri) {
 		this.signatures = signatures;
 		this.timestamps = timestamps;
 		this.documents = documents;
 		this.manifests = manifests;
+		this.lastArchiveManifest = lastArchiveManifets;
 		this.digestAlgorithm = digestAlgorithm;
 		this.timestampUri = timestampUri;
 	}
 
 	public Document build() {
 		final Document documentDom = DomUtils.buildDOM();
-		final Element asicManifestDom = documentDom.createElementNS(ASiCNamespace.ASIC_NS, ASiCNamespace.ASIC_MANIFEST);
+		final Element asicManifestDom = DomUtils.createElementNS(documentDom, ASiCNamespace.NS, ASiCElement.ASIC_MANIFEST);
 		documentDom.appendChild(asicManifestDom);
 
 		addSigReference(documentDom, asicManifestDom, timestampUri, MimeType.TST);
@@ -93,12 +97,23 @@ public class ASiCEWithCAdESArchiveManifestBuilder extends AbstractManifestBuilde
 		for (DSSDocument manifest : manifests) {
 			addDataObjectReference(documentDom, asicManifestDom, manifest, digestAlgorithm);
 		}
+		
+		if (lastArchiveManifest != null) {
+			addDataObjectReferenceForRootArchiveManifest(documentDom, asicManifestDom, lastArchiveManifest, digestAlgorithm);
+		}
 
 		for (DSSDocument document : documents) {
 			addDataObjectReference(documentDom, asicManifestDom, document, digestAlgorithm);
 		}
 
 		return documentDom;
+	}
+	
+	private Element addDataObjectReferenceForRootArchiveManifest(final Document documentDom, final Element asicManifestDom, 
+			DSSDocument document, DigestAlgorithm digestAlgorithm) {
+		Element dataObjectReferenceElement = addDataObjectReference(documentDom, asicManifestDom, document, digestAlgorithm);
+		dataObjectReferenceElement.setAttribute(ASiCAttribute.ROOTFILE.getAttributeName(), "true");
+		return dataObjectReferenceElement;
 	}
 
 }

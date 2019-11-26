@@ -21,11 +21,8 @@
 package eu.europa.esig.dss.xades.validation.scope;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import org.apache.xml.security.signature.Reference;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -58,7 +55,6 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 	public List<SignatureScope> findSignatureScope(final XAdESSignature xadesSignature) {
 
 		final List<SignatureScope> result = new ArrayList<SignatureScope>();
-		boolean isEverythingCovered = isEverythingCovered(xadesSignature);
 		
 		List<ReferenceValidation> referenceValidations = xadesSignature.getReferenceValidations();
 		for (ReferenceValidation referenceValidation : referenceValidations) {
@@ -82,8 +78,9 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 				
 			} else if (xadesReferenceValidation.isFound() && DigestMatcherType.OBJECT.equals(xadesReferenceValidation.getType())) {
 				Node objectById = xadesSignature.getObjectById(uri);
-				if (objectById != null) {
-					result.add(new XmlElementSignatureScope(xmlIdOfSignedElement, transformations, getDigest(DSSXMLUtils.getNodeBytes(objectById))));
+				if (objectById != null && objectById.hasChildNodes()) {
+					Node referencedObject = objectById.getFirstChild();
+					result.add(new XmlElementSignatureScope(xmlIdOfSignedElement, transformations, getDigest(DSSXMLUtils.getNodeBytes(referencedObject))));
 				}
 				
 			} else if (xadesReferenceValidation.isFound() && DigestMatcherType.MANIFEST.equals(xadesReferenceValidation.getType())) {
@@ -103,15 +100,11 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 					}
 				}
 				
-			} else if (xadesReferenceValidation.isFound() && Utils.isStringBlank(uri)) {
+			} else if (xadesReferenceValidation.isFound() && Utils.EMPTY_STRING.equals(uri)) {
 				byte[] originalContentBytes = xadesReferenceValidation.getOriginalContentBytes();
 				if (originalContentBytes != null) {
 					// self contained document
-					if (isEverythingCovered) {
-						result.add(new XmlRootSignatureScope(transformations, getDigest(originalContentBytes)));
-					} else {
-						result.add(new XmlElementSignatureScope("", transformations, getDigest(originalContentBytes)));
-					}
+					result.add(new XmlRootSignatureScope(transformations, getDigest(originalContentBytes)));
 				}
 				
 			} else if (DomUtils.isElementReference(uri)) {
@@ -119,7 +112,7 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 						"//*" + DomUtils.getXPathByIdAttribute(uri));
 				if (nodeList != null && nodeList.getLength() == 1) {
 					Node signedElement = nodeList.item(0);
-					if (isEverythingCovered) {
+					if (isEverythingCovered(xadesSignature, xmlIdOfSignedElement)) {
 						result.add(new XmlRootSignatureScope(transformations, getDigest(DSSXMLUtils.getNodeBytes(signedElement))));
 					} else {
 						result.add(new XmlElementSignatureScope(xmlIdOfSignedElement, transformations, getDigest(DSSXMLUtils.getNodeBytes(signedElement))));
@@ -132,77 +125,65 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 				
 			}
 		}
-		// append detached documents with empty name
-		if (Utils.isCollectionNotEmpty(xadesSignature.getDetachedContents())) {
-			for (DSSDocument detachedDocument : xadesSignature.getDetachedContents()) {
-				// can be only a Digest Document
-				if (detachedDocument instanceof DigestDocument && Utils.isStringEmpty(detachedDocument.getName())) {
-					DigestDocument digestDocument = (DigestDocument) detachedDocument;
-					result.add(new DigestSignatureScope(null, digestDocument.getExistingDigest()));
-				}
-			}
-		}
 		return result;
 		
 	}
-	
-	private List<SignatureScope> getFromDetachedContent(final XAdESSignature xadesSignature, final List<String> transformations, final String uri) {
+
+	private List<SignatureScope> getFromDetachedContent(final XAdESSignature xadesSignature,
+			final List<String> transformations, final String uri) {
 		List<SignatureScope> detachedSignatureScopes = new ArrayList<SignatureScope>();
-		for (DSSDocument detachedDocument : xadesSignature.getDetachedContents()) {
-			
-			if (uri.equals(detachedDocument.getName())) {
+		List<DSSDocument> detachedContents = xadesSignature.getDetachedContents();
+		for (DSSDocument detachedDocument : detachedContents) {
+
+			String decodedUrl = uri != null ? DSSUtils.decodeUrl(uri) : uri;
+			// if only one detached file is provided, we assume that it is the target file,
+			// otherwise check by name
+			if (detachedContents.size() == 1 || 
+					uri != null && (uri.equals(detachedDocument.getName()) || decodedUrl.equals(detachedDocument.getName())) ) {
+				String fileName = detachedDocument.getName() != null ? detachedDocument.getName() : decodedUrl;
 				if (detachedDocument instanceof DigestDocument) {
 					DigestDocument digestDocument = (DigestDocument) detachedDocument;
-					detachedSignatureScopes.add(new DigestSignatureScope(DSSUtils.decodeUrl(uri), digestDocument.getExistingDigest()));
-					
+					detachedSignatureScopes.add(new DigestSignatureScope(fileName, digestDocument.getExistingDigest()));
+
 				} else if (Utils.isCollectionNotEmpty(transformations)) {
-					detachedSignatureScopes.add(new XmlFullSignatureScope(DSSUtils.decodeUrl(uri), transformations, getDigest(DSSUtils.toByteArray(detachedDocument))));
-					
+					detachedSignatureScopes.add(new XmlFullSignatureScope(fileName, transformations,
+							getDigest(DSSUtils.toByteArray(detachedDocument))));
+
 				} else if (isASiCSArchive(xadesSignature, detachedDocument)) {
-					detachedSignatureScopes.add(new ContainerSignatureScope(DSSUtils.decodeUrl(uri), getDigest(DSSUtils.toByteArray(detachedDocument))));
+					detachedSignatureScopes.add(
+							new ContainerSignatureScope(decodedUrl, getDigest(DSSUtils.toByteArray(detachedDocument))));
 					for (DSSDocument archivedDocument : xadesSignature.getContainerContents()) {
-						detachedSignatureScopes.add(new ContainerContentSignatureScope(DSSUtils.decodeUrl(archivedDocument.getName()), 
-								getDigest(DSSUtils.toByteArray(archivedDocument))));
+						detachedSignatureScopes.add(
+								new ContainerContentSignatureScope(DSSUtils.decodeUrl(archivedDocument.getName()),
+										getDigest(DSSUtils.toByteArray(archivedDocument))));
 					}
-					
+
 				} else {
-					detachedSignatureScopes.add(new FullSignatureScope(DSSUtils.decodeUrl(uri), getDigest(DSSUtils.toByteArray(detachedDocument))));
-					
+					detachedSignatureScopes
+							.add(new FullSignatureScope(fileName, getDigest(DSSUtils.toByteArray(detachedDocument))));
+
 				}
 			}
 		}
 		return detachedSignatureScopes;
 	}
 
-	public boolean isEverythingCovered(XAdESSignature signature) {
+	public boolean isEverythingCovered(XAdESSignature signature, String coveredObjectId) {
 		Element parent = signature.getSignatureElement().getOwnerDocument().getDocumentElement();
 		if (parent != null) {
-			if (isRelatedToUri(parent, getIds(signature))) {
+			if (isRelatedToUri(parent, coveredObjectId)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	private Set<String> getIds(XAdESSignature signature) {
-		List<Reference> references = signature.getReferences();
-		Set<String> result = new HashSet<String>();
-		for (Reference reference : references) {
-			if (!reference.typeIsReferenceToManifest() && !reference.typeIsReferenceToObject() && !DSSXMLUtils.isSignedProperties(reference, signature.getXPathQueryHolder())
-					&& !DomUtils.isXPointerQuery(reference.getURI())) {
-				result.add(DomUtils.getId(reference.getURI()));
-			}
-		}
-		return result;
-
-	}
-
-	private boolean isRelatedToUri(Node currentNode, Set<String> ids) {
+	private boolean isRelatedToUri(Node currentNode, String id) {
 		String idValue = DSSXMLUtils.getIDIdentifier(currentNode);
 		if (idValue == null) {
-			return Utils.collectionSize(ids) == 1 && Utils.isStringBlank(ids.iterator().next());
+			return Utils.isStringBlank(id);
 		} else {
-			return ids.contains(idValue) || ids.contains("");
+			return id.equals(idValue) || id.equals(Utils.EMPTY_STRING);
 		}
 	}
 

@@ -20,19 +20,14 @@
  */
 package eu.europa.esig.dss.pades.signature.visible.nativedrawer;
 
-import org.junit.Before;
-
-import eu.europa.esig.dss.pades.signature.visible.PAdESVisibleCombinationTextAndImageSignature;
-import eu.europa.esig.dss.pdf.PdfObjFactory;
+import eu.europa.esig.dss.pades.signature.visible.suite.PAdESVisibleCombinationTextAndImageSignatureTest;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
 
-public class PdfBoxPAdESVisibleCombinationTextAndImageSignatureTest extends PAdESVisibleCombinationTextAndImageSignature {
-	
-	@Before
+public class PdfBoxPAdESVisibleCombinationTextAndImageSignatureTest extends PAdESVisibleCombinationTextAndImageSignatureTest {
+
 	@Override
-	public void init() throws Exception {
-		PdfObjFactory.setInstance(new PdfBoxNativeObjectFactory());
-		super.init();
+	protected void setCustomFactory() {
+		service.setPdfObjFactory(new PdfBoxNativeObjectFactory());
 	}
 
 }

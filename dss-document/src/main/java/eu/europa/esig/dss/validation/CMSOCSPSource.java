@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.validation;
 
 import static eu.europa.esig.dss.spi.OID.attributeRevocationRefsOid;
@@ -12,7 +32,6 @@ import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
-import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.cms.CMSObjectIdentifiers;
@@ -68,7 +87,17 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 	}
 	
 	/**
+	 * Returns SignedData {@link RevocationOrigin}
+	 * 
+	 * @return {@link RevocationOrigin}
+	 */
+	protected RevocationOrigin getCMSSignedDataRevocationOrigin() {
+		return RevocationOrigin.CMS_SIGNED_DATA;
+	}
+
+	/**
 	 * Returns revocation-values {@link RevocationOrigin}
+	 * 
 	 * @return {@link RevocationOrigin}
 	 */
 	protected RevocationOrigin getRevocationValuesOrigin() {
@@ -154,25 +183,6 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 			collectRevocationRefs(unsignedAttributes, attributeRevocationRefsOid, getAttributeRevocationRefsOrigin());
 
 		}
-
-		/* TODO (pades): Read revocation data from from unsigned attribute  1.2.840.113583.1.1.8
-          In the PKCS #7 object of a digital signature in a PDF file, identifies a signed attribute
-          that "can include all the revocation information that is necessary to carry out revocation
-          checks for the signer's certificate and its issuer certificates."
-          Defined as adbe-revocationInfoArchival { adbe(1.2.840.113583) acrobat(1) security(1) 8 } in "PDF Reference, 
-          fifth edition: Adobe® Portable Document Format, Version 1.6" Adobe Systems Incorporated, 2004.
-          http://partners.adobe.com/public/developer/en/pdf/PDFReference16.pdf page 698
-
-          RevocationInfoArchival ::= SEQUENCE {
-            crl [0] EXPLICIT SEQUENCE of CRLs, OPTIONAL
-            ocsp [1] EXPLICIT SEQUENCE of OCSP Responses, OPTIONAL
-            otherRevInfo [2] EXPLICIT SEQUENCE of OtherRevInfo, OPTIONAL
-          }
-          OtherRevInfo ::= SEQUENCE {
-            Type OBJECT IDENTIFIER
-            Value OCTET STRING
-          }
-		 */
 	}
 
 	private void collectFromSignedData() {
@@ -184,8 +194,8 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 		final Store otherRevocationInfo = cmsSignedData.getOtherRevocationInfo(CMSObjectIdentifiers.id_ri_ocsp_response);
 		final Collection otherRevocationInfoMatches = otherRevocationInfo.getMatches(null);
 		for (final Object object : otherRevocationInfoMatches) {
-			if (object instanceof DERSequence) {
-				final DERSequence otherRevocationInfoMatch = (DERSequence) object;
+			if (object instanceof ASN1Sequence) {
+				final ASN1Sequence otherRevocationInfoMatch = (ASN1Sequence) object;
 				final BasicOCSPResp basicOCSPResp;
 				if (otherRevocationInfoMatch.size() == 4) {
 					basicOCSPResp = DSSRevocationUtils.getBasicOcspResp(otherRevocationInfoMatch);
@@ -193,14 +203,13 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 					final OCSPResp ocspResp = DSSRevocationUtils.getOcspResp(otherRevocationInfoMatch);
 					basicOCSPResp = DSSRevocationUtils.fromRespToBasic(ocspResp);
 				}
-				OCSPResponseBinary ocspResponseIdentifier = addBasicOcspResp(basicOCSPResp, getRevocationValuesOrigin());
+				OCSPResponseBinary ocspResponseIdentifier = addBasicOcspResp(basicOCSPResp, getCMSSignedDataRevocationOrigin());
 				if (ocspResponseIdentifier != null) {
 					ocspResponseIdentifier.setAsn1ObjectIdentifier(CMSObjectIdentifiers.id_ri_ocsp_response);
 					signedDataOCSPIdentifiers.add(ocspResponseIdentifier);
 				}
 			} else {
-				LOG.warn("Unsupported object type for id_ri_ocsp_response (SHALL be DER encoding) : {}",
-						object.getClass().getSimpleName());
+				LOG.warn("Unsupported object type for id_ri_ocsp_response (SHALL be an ASN1Sequence) : {}", object.getClass().getSimpleName());
 			}
 		}
 	}
@@ -209,26 +218,26 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 		final Store otherRevocationInfo = cmsSignedData.getOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
 		final Collection otherRevocationInfoMatches = otherRevocationInfo.getMatches(null);
 		for (final Object object : otherRevocationInfoMatches) {
-			if (object instanceof DERSequence) {
-				final DERSequence otherRevocationInfoMatch = (DERSequence) object;
+			if (object instanceof ASN1Sequence) {
+				final ASN1Sequence otherRevocationInfoMatch = (ASN1Sequence) object;
 				final BasicOCSPResp basicOCSPResp = DSSRevocationUtils.getBasicOcspResp(otherRevocationInfoMatch);
-				OCSPResponseBinary ocspResponseIdentifier = addBasicOcspResp(basicOCSPResp, getRevocationValuesOrigin());
+				OCSPResponseBinary ocspResponseIdentifier = addBasicOcspResp(basicOCSPResp, getCMSSignedDataRevocationOrigin());
 				if (ocspResponseIdentifier != null) {
 					ocspResponseIdentifier.setAsn1ObjectIdentifier(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
 					signedDataOCSPIdentifiers.add(ocspResponseIdentifier);
 				}
 			} else {
-				LOG.warn("Unsupported object type for id_pkix_ocsp_basic (SHALL be DER encoding) : {}",
-						object.getClass().getSimpleName());
+				LOG.warn("Unsupported object type for id_pkix_ocsp_basic (SHALL be an ASN1Sequence) : {}", object.getClass().getSimpleName());
 			}
 		}
 	}
 	
-	private void collectRevocationValues(AttributeTable unsignedAttributes, ASN1ObjectIdentifier revocacationValuesAttribute, RevocationOrigin origin) {
-		final Attribute attribute = unsignedAttributes.get(revocacationValuesAttribute);
-		if (attribute != null) {
-			final ASN1Set attrValues = attribute.getAttrValues();
-			final ASN1Encodable attValue = attrValues.getObjectAt(0);
+	private void collectRevocationValues(AttributeTable attributes, ASN1ObjectIdentifier revocationValueAttributes,
+			RevocationOrigin origin) {
+
+		final ASN1Encodable attValue = DSSASN1Utils.getAsn1Encodable(attributes, revocationValueAttributes);
+		if (attValue !=null) {
+	
 			RevocationValues revocationValues = DSSASN1Utils.getRevocationValues(attValue);
 			if (revocationValues != null) {
 				for (final BasicOCSPResponse basicOCSPResponse : revocationValues.getOcspVals()) {
@@ -241,7 +250,7 @@ public abstract class CMSOCSPSource extends SignatureOCSPSource {
 			 * other revocation values (OtherRevVals) are outside the scope of the present
 			 * document. The definition of the syntax of the other form of revocation
 			 * information is as identified by OtherRevRefType."
-			 */
+		 */
 		}
 	}
 	

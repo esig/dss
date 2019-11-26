@@ -1,21 +1,41 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.validation;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.stream.Stream;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.TransformerException;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -35,30 +55,23 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 
-@RunWith(Parameterized.class)
 public class CertificateUnmarshallingTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CertificateUnmarshallingTest.class);
 
-	@Parameters(name = "Validation {index} : {0}")
-	public static Collection<Object[]> data() {
+	public static Stream<Arguments> data() {
 		File folder = new File("src/test/resources/certificates");
 		Collection<File> listFiles = Utils.listFiles(folder, new String[] { "cer", "crt" }, true);
-		Collection<Object[]> dataToRun = new ArrayList<Object[]>();
+		Collection<Arguments> dataToRun = new ArrayList<Arguments>();
 		for (File file : listFiles) {
-			dataToRun.add(new Object[] { file });
+			dataToRun.add(Arguments.of(file));
 		}
-		return dataToRun;
+		return dataToRun.stream();
 	}
 
-	private File certToTest;
-
-	public CertificateUnmarshallingTest(File certToTest) {
-		this.certToTest = certToTest;
-	}
-	
-	@Test
-	public void test() throws JAXBException, IOException, SAXException, TransformerException {
+	@ParameterizedTest(name = "Validation {index} : {0}")
+	@MethodSource("data")
+	public void test(File certToTest) throws JAXBException, IOException, SAXException, TransformerException {
 		CertificateValidator cv = CertificateValidator.fromCertificate(DSSUtils.loadCertificate(certToTest));
 		cv.setCertificateVerifier(new CommonCertificateVerifier());
 

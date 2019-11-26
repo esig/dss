@@ -20,8 +20,24 @@
  */
 package eu.europa.esig.dss.pades.signature.visible;
 
-import eu.europa.esig.dss.pades.signature.visible.PAdESVisibleSignatureSuite;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.runner.RunWith;
 
-public class ITextPAdESVisibleSignatureTest extends PAdESVisibleSignatureSuite {
+import eu.europa.esig.dss.pades.signature.visible.suite.PAdESFieldLevelBTest;
+import eu.europa.esig.dss.pades.signature.visible.suite.PAdESNonLatinCharactersSignatureTest;
+import eu.europa.esig.dss.pades.signature.visible.suite.PAdESSignatureFieldTest;
+import eu.europa.esig.dss.pades.signature.visible.suite.PAdESVisibleSignWithSignatureFieldTest;
+import eu.europa.esig.dss.pades.signature.visible.suite.PAdESVisibleSignatureTest;
+import eu.europa.esig.dss.pades.signature.visible.suite.PAdESVisibleSignatureWithJavaFontTest;
+import eu.europa.esig.dss.pades.signature.visible.suite.PAdESVisibleZoomRotationTest;
+import eu.europa.esig.dss.pades.signature.visible.suite.PAdESWithSignatureAndTimestampVisibleTest;
+import eu.europa.esig.dss.pades.signature.visible.suite.PAdESWithSignatureInvisibleAndTimestampVisibleTest;
+
+@RunWith(JUnitPlatform.class)
+@SelectClasses(value = { PAdESSignatureFieldTest.class, PAdESVisibleSignatureTest.class, PAdESFieldLevelBTest.class, PAdESWithSignatureAndTimestampVisibleTest.class,
+		PAdESWithSignatureInvisibleAndTimestampVisibleTest.class, PAdESVisibleSignatureWithJavaFontTest.class, PAdESNonLatinCharactersSignatureTest.class,
+		PAdESVisibleZoomRotationTest.class, PAdESVisibleSignWithSignatureFieldTest.class })
+public class ITextPAdESVisibleSignatureTest {
 
 }

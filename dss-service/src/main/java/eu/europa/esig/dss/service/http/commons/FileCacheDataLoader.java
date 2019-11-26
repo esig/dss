@@ -23,16 +23,23 @@ package eu.europa.esig.dss.service.http.commons;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.client.http.Protocol;
+import eu.europa.esig.dss.spi.exception.DSSDataLoaderMultipleException;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
@@ -40,9 +47,13 @@ import eu.europa.esig.dss.utils.Utils;
  * {@code java.io.tmpdir}. The urls of the resources is transformed to the
  * file name by replacing the special characters by {@code _}
  */
-public class FileCacheDataLoader implements DataLoader {
+public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
+
+	private static final long serialVersionUID = 1028849693098211169L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(FileCacheDataLoader.class);
+
+	private static final String DATA_LOADER_NOT_CONFIGURED = "The DataLoader is not configured";
 
 	private File fileCacheDirectory = new File(System.getProperty("java.io.tmpdir"));
 
@@ -135,68 +146,93 @@ public class FileCacheDataLoader implements DataLoader {
 		}
 		if (Utils.isStringNotBlank(urlString)) {
 
-			final String normalizedFileName = ResourceLoader.getNormalizedFileName(urlString);
+			final String normalizedFileName = DSSUtils.getNormalizedString(urlString);
 			toIgnored.add(normalizedFileName);
 		}
 	}
 
 	@Override
-	public byte[] get(final String url, final boolean refresh) {
+	public byte[] get(final String url, final boolean refresh) throws DSSException {
+		DSSDocument document = getDocument(url, refresh);
+		return DSSUtils.toByteArray(document);
+	}
 
+	@Override
+	public byte[] get(final String url) throws DSSException {
+		return get(url, false);
+	}
+	
+	private DSSDocument getDocument(final String url, final boolean refresh) throws DSSException {
+		Objects.requireNonNull(dataLoader, DATA_LOADER_NOT_CONFIGURED);
+
+		// TODO: review
 		if ((toBeLoaded != null) && !toBeLoaded.contains(url)) {
-			return null;
+			throw new DSSException(String.format("The toBeLoaded list does not contain URL [%s]!", url));
 		}
-		final String fileName = ResourceLoader.getNormalizedFileName(url);
+		final String fileName = DSSUtils.getNormalizedString(url);
 		final File file = getCacheFile(fileName);
 		final boolean fileExists = file.exists();
 		final boolean isCacheExpired = isCacheExpired(file);
+		
 		if (fileExists && !refresh && !isCacheExpired) {
-
 			LOG.debug("Cached file was used");
-			final byte[] bytes = DSSUtils.toByteArray(file);
-			return bytes;
+			return new FileDocument(file);
+			
 		} else {
+			
 			if (!fileExists) {
 				LOG.debug("There is no cached file!");
 			} else {
 				LOG.debug("The refresh is forced!");
 			}
+			
 		}
+		
 		byte[] bytes = null;
 		if (!isNetworkProtocol(url)) {
 			bytes = getLocalFileContent(url);
+			
 		} else {
 			bytes = dataLoader.get(url);
+			
 		}
-
+		
 		if (Utils.isArrayNotEmpty(bytes)) {
-			final File out = getCacheFile(fileName);
-			DSSUtils.saveToFile(bytes, out);
-		}
-		return bytes;
+			final File out = createFile(fileName, bytes);
+			return new FileDocument(out);
+			
+		} 
+		throw new DSSException(String.format("Cannot retrieve data from url [%s]. Empty content is obtained!", url));
+		
 	}
 
-	private byte[] getLocalFileContent(final String urlString) {
-		byte[] returnedBytes = null;
+	@Override
+	public DSSDocument getDocument(String url) {
+		return getDocument(url, false);
+	}
+	
+	@Override
+	public boolean remove(String url) {
+		final String fileName = DSSUtils.getNormalizedString(url);
+		final File file = getCacheFile(fileName);
+		return file.delete();
+	}
+
+	protected boolean isNetworkProtocol(final String urlString) {
+		final String normalizedUrl = urlString.trim().toLowerCase();
+		return Protocol.isHttpUrl(normalizedUrl) || Protocol.isLdapUrl(normalizedUrl) || Protocol.isFtpUrl(normalizedUrl);
+	}
+
+	private byte[] getLocalFileContent(final String urlString) throws DSSException {
+		Objects.requireNonNull(dataLoader, DATA_LOADER_NOT_CONFIGURED);
 		// TODO usage ??
 		final String resourcePath = resourceLoader.getAbsoluteResourceFolder(urlString.trim());
 		if (resourcePath != null) {
 			final File fileResource = new File(resourcePath);
-			returnedBytes = DSSUtils.toByteArray(fileResource);
+			return DSSUtils.toByteArray(fileResource);
+		} else {
+			return dataLoader.get(urlString);
 		}
-		return returnedBytes;
-	}
-
-	@Override
-	public byte[] get(final String url) {
-
-		return get(url, false);
-	}
-
-	protected boolean isNetworkProtocol(final String urlString) {
-
-		final String normalizedUrl = urlString.trim().toLowerCase();
-		return Protocol.isHttpUrl(normalizedUrl) || Protocol.isLdapUrl(normalizedUrl) || Protocol.isFtpUrl(normalizedUrl);
 	}
 
 	private File getCacheFile(final String fileName) {
@@ -210,43 +246,43 @@ public class FileCacheDataLoader implements DataLoader {
 		final File file = new File(fileCacheDirectory, trimmedFileName);
 		return file;
 	}
+	
+    /**
+     * Allows to add a given array of {@code byte} as a cache file representing by the {@code urlString}.
+     *
+     * @param urlString
+     *            the URL to add to the cache
+     * @param bytes
+     *            the content of the cache file
+     */
+	public File createFile(final String urlString, final byte[] bytes) {
+		final String fileName = DSSUtils.getNormalizedString(urlString);
+		final File file = getCacheFile(fileName);
+		DSSUtils.saveToFile(bytes, file);
+		return file;
+	}
 
 	/**
 	 * Allows to load the file for a given file name from the cache folder.
 	 *
 	 * @return the content of the file or {@code null} if the file does not exist
+	 * @throws DSSException in case if the file does not exist in the cache
 	 */
-	public byte[] loadFileFromCache(final String urlString) {
-
-		final String fileName = ResourceLoader.getNormalizedFileName(urlString);
+	public byte[] loadFileFromCache(final String urlString) throws DSSException {
+		final String fileName = DSSUtils.getNormalizedString(urlString);
 		final File file = getCacheFile(fileName);
 		if (file.exists()) {
-
 			final byte[] bytes = DSSUtils.toByteArray(file);
 			return bytes;
 		}
-		return null;
-	}
-
-	/**
-	 * Allows to add a given array of {@code byte} as a cache file representing by the {@code urlString}.
-	 *
-	 * @param urlString
-	 *            the URL to add to the cache
-	 * @param bytes
-	 *            the content of the cache file
-	 */
-	public void saveBytesInCache(final String urlString, final byte[] bytes) {
-
-		final String fileName = ResourceLoader.getNormalizedFileName(urlString);
-		final File out = getCacheFile(fileName);
-		DSSUtils.saveToFile(bytes, out);
+		throw new DSSException(String.format("The file with URL [%s] does not exist in the cache!", urlString));
 	}
 
 	@Override
 	public byte[] post(final String urlString, final byte[] content) throws DSSException {
+		Objects.requireNonNull(dataLoader, DATA_LOADER_NOT_CONFIGURED);
 
-		final String fileName = ResourceLoader.getNormalizedFileName(urlString);
+		final String fileName = DSSUtils.getNormalizedString(urlString);
 
 		// The length for the InputStreamEntity is needed, because some receivers (on the other side) need this
 		// information.
@@ -273,13 +309,13 @@ public class FileCacheDataLoader implements DataLoader {
 		if (isNetworkProtocol(urlString)) {
 			returnedBytes = dataLoader.post(urlString, content);
 		}
-
+		
 		if (Utils.isArrayNotEmpty(returnedBytes)) {
 			final File cacheFile = getCacheFile(cacheFileName);
 			DSSUtils.saveToFile(returnedBytes, cacheFile);
+			return returnedBytes;
 		}
-
-		return returnedBytes;
+		throw new DSSException(String.format("Cannot retrieve data from URL [%s]", urlString));
 	}
 
 	private boolean isCacheExpired(File file) {
@@ -290,7 +326,7 @@ public class FileCacheDataLoader implements DataLoader {
 			return true;
 		}
 		long currentTime = new Date().getTime();
-		if (file.lastModified() + cacheExpirationTime < currentTime) {
+		if (currentTime - file.lastModified() > cacheExpirationTime) {
 			LOG.debug("Cache is expired");
 			return true;
 		}
@@ -299,33 +335,32 @@ public class FileCacheDataLoader implements DataLoader {
 
 	@Override
 	public DataAndUrl get(final List<String> urlStrings) {
-
-		final int numberOfUrls = urlStrings.size();
-		int ii = 0;
+		if (Utils.isCollectionEmpty(urlStrings)) {
+			throw new DSSException("Cannot process the GET call. List of URLs is empty!");
+		}
+		
+		final Map<String, Throwable> exceptions = new HashMap<String, Throwable>(); // store map of exception thrown for urls
 		for (final String urlString : urlStrings) {
+			LOG.debug("Processing a GET call to URL [{}]...", urlString);
 			try {
-
-				ii++;
 				final byte[] bytes = get(urlString);
-				if (bytes == null) {
+				if (Utils.isArrayEmpty(bytes)) {
+					LOG.debug("The retrieved content from URL [{}] is empty. Continue with other URLs...", urlString);
 					continue;
 				}
 				return new DataAndUrl(bytes, urlString);
 			} catch (Exception e) {
-				if (ii == numberOfUrls) {
-					if (e instanceof DSSException) {
-						throw (DSSException) e;
-					}
-					throw new DSSException(e);
-				}
-				LOG.warn("Impossible to obtain data using {}", urlString, e);
+				LOG.warn("Cannot obtain data using '{}' : {}", urlString, e.getMessage());
+				exceptions.put(urlString, e);
 			}
 		}
-		return null;
+		throw new DSSDataLoaderMultipleException(exceptions);
 	}
 
 	@Override
 	public void setContentType(String contentType) {
+		Objects.requireNonNull(dataLoader, DATA_LOADER_NOT_CONFIGURED);
 		dataLoader.setContentType(contentType);
 	}
+	
 }

@@ -20,14 +20,10 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
-import javax.xml.crypto.dsig.XMLSignature;
 
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.slf4j.Logger;
@@ -38,7 +34,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.XAdESNamespaces;
+import eu.europa.esig.dss.definition.DSSNamespace;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -53,7 +51,15 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.ProfileParameters.Operation;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.XPathQueryHolder;
+import eu.europa.esig.dss.xades.definition.XAdESElement;
+import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
+import eu.europa.esig.dss.xades.definition.XAdESPaths;
+import eu.europa.esig.dss.xades.definition.xades111.XAdES111Element;
+import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
+import eu.europa.esig.dss.xades.definition.xades122.XAdES122Element;
+import eu.europa.esig.dss.xades.definition.xades122.XAdES122Paths;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
@@ -62,117 +68,16 @@ public abstract class XAdESBuilder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESBuilder.class);
 
-	public static final String DS_CANONICALIZATION_METHOD = "ds:CanonicalizationMethod";
-	public static final String DS_DIGEST_METHOD = "ds:DigestMethod";
-	public static final String DS_DIGEST_VALUE = "ds:DigestValue";
-	public static final String DS_KEY_INFO = "ds:KeyInfo";
-	public static final String DS_OBJECT = "ds:Object";
-	public static final String DS_REFERENCE = "ds:Reference";
-	public static final String DS_SIGNATURE = "ds:Signature";
-	public static final String DS_SIGNATURE_METHOD = "ds:SignatureMethod";
-	public static final String DS_SIGNATURE_VALUE = "ds:SignatureValue";
-	public static final String DS_SIGNED_INFO = "ds:SignedInfo";
-	public static final String DS_TRANSFORM = "ds:Transform";
-	public static final String DS_TRANSFORMS = "ds:Transforms";
-	public static final String DS_X509_CERTIFICATE = "ds:X509Certificate";
-	public static final String DS_X509_DATA = "ds:X509Data";
-	public static final String DS_X509_SUBJECT_NAME = "ds:X509SubjectName";
-	public static final String DS_X509_ISSUER_NAME = "ds:X509IssuerName";
-	public static final String DS_X509_SERIAL_NUMBER = "ds:X509SerialNumber";
-	public static final String DS_XPATH = "ds:XPath";
-	public static final String DS_MANIFEST = "ds:Manifest";
-
-	public static final String XADES_ALL_DATA_OBJECTS_TIME_STAMP = "xades:AllDataObjectsTimeStamp";
-	public static final String XADES_ALL_SIGNED_DATA_OBJECTS = "xades:AllSignedDataObjects";
-	public static final String XADES_BY_KEY = "xades:ByKey";
-	public static final String XADES_BY_NAME = "xades:ByName";
-	public static final String XADES_COUNTER_SIGNATURE = "xades:CounterSignature";
-	public static final String XADES_CERT = "xades:Cert";
-	public static final String XADES_CERT_DIGEST = "xades:CertDigest";
-	public static final String XADES_CERT_REFS = "xades:CertRefs";
-	public static final String XADES_CERTIFICATE_VALUES = "xades:CertificateValues";
-	public static final String XADES_REVOCATION_VALUES = "xades:RevocationValues";
-	public static final String XADES_CERTIFIED_ROLES = "xades:CertifiedRoles";
-	public static final String XADES_CERTIFIED_ROLES_V2 = "xades:CertifiedRolesV2";
-	public static final String XADES_CERTIFIED_ROLE = "xades:CertifiedRole";
-	public static final String XADES_CITY = "xades:City";
-	public static final String XADES_CLAIMED_ROLES = "xades:ClaimedRoles";
-	public static final String XADES_CLAIMED_ROLE = "xades:ClaimedRole";
-	public static final String XADES_COMMITMENT_TYPE_ID = "xades:CommitmentTypeId";
-	public static final String XADES_COMMITMENT_TYPE_INDICATION = "xades:CommitmentTypeIndication";
-	public static final String XADES_COMPLETE_CERTIFICATE_REFS = "xades:CompleteCertificateRefs";
-	public static final String XADES_COMPLETE_REVOCATION_REFS = "xades:CompleteRevocationRefs";
-	public static final String XADES_COUNTRY_NAME = "xades:CountryName";
-	public static final String XADES_CRL_IDENTIFIER = "xades:CRLIdentifier";
-	public static final String XADES_CRL_REF = "xades:CRLRef";
-	public static final String XADES_CRL_REFS = "xades:CRLRefs";
-	public static final String XADES_DATA_OBJECT_FORMAT = "xades:DataObjectFormat";
-	public static final String XADES_DESCRIPTION = "xades:Description";
-	public static final String XADES_DIGEST_ALG_AND_VALUE = "xades:DigestAlgAndValue";
-	public static final String XADES_ENCAPSULATED_TIME_STAMP = "xades:EncapsulatedTimeStamp";
-	public static final String XADES_ENCAPSULATED_X509_CERTIFICATE = "xades:EncapsulatedX509Certificate";
-	public static final String XADES_IDENTIFIER = "xades:Identifier";
-	public static final String XADES_INCLUDE = "xades:Include";
-	public static final String XADES_INDIVIDUAL_DATA_OBJECTS_TIME_STAMP = "xades:IndividualDataObjectsTimeStamp";
-	public static final String XADES_ISSUER = "xades:Issuer";
-	public static final String XADES_ISSUER_SERIAL = "xades:IssuerSerial";
-	public static final String XADES_ISSUER_SERIAL_V2 = "xades:IssuerSerialV2";
-	public static final String XADES_ISSUER_TIME = "xades:IssueTime";
-	public static final String XADES_MIME_TYPE = "xades:MimeType";
-	public static final String XADES_OCSP_IDENTIFIER = "xades:OCSPIdentifier";
-	public static final String XADES_OCSP_REF = "xades:OCSPRef";
-	public static final String XADES_OCSP_REFS = "xades:OCSPRefs";
-	public static final String XADES_OCSP_RESPONDER_ID = "xades:ResponderID";
-	public static final String XADES_POSTAL_CODE = "xades:PostalCode";
-	public static final String XADES_PRODUCED_AT = "xades:ProducedAt";
-	public static final String XADES_QUALIFYING_PROPERTIES = "xades:QualifyingProperties";
-	public static final String XADES_SIG_AND_REFS_TIME_STAMP = "xades:SigAndRefsTimeStamp";
-	public static final String XADES_SIG_AND_REFS_TIME_STAMP_V2 = "xades:SigAndRefsTimeStampV2";
-	public static final String XADES_SIG_POLICY_HASH = "xades:SigPolicyHash";
-	public static final String XADES_SIG_POLICY_ID = "xades:SigPolicyId";
-	public static final String XADES_SIGNATURE_POLICY_ID = "xades:SignaturePolicyId";
-	public static final String XADES_SIGNATURE_POLICY_IDENTIFIER = "xades:SignaturePolicyIdentifier";
-	public static final String XADES_SIGNATURE_POLICY_IMPLIED = "xades:SignaturePolicyImplied";
-	public static final String XADES_SIGNATURE_POLICY_QUALIFIERS = "xades:SigPolicyQualifiers";
-	public static final String XADES_SIGNATURE_POLICY_QUALIFIER = "xades:SigPolicyQualifier";
-	public static final String XADES_SIGNATURE_PRODUCTION_PLACE = "xades:SignatureProductionPlace";
-	public static final String XADES_SIGNATURE_PRODUCTION_PLACE_V2 = "xades:SignatureProductionPlaceV2";
-	public static final String XADES_SIGNATURE_TIME_STAMP = "xades:SignatureTimeStamp";
-	public static final String XADES_SIGNED_DATA_OBJECT_PROPERTIES = "xades:SignedDataObjectProperties";
-	public static final String XADES_SIGNED_PROPERTIES = "xades:SignedProperties";
-	public static final String XADES_SIGNED_SIGNATURE_PROPERTIES = "xades:SignedSignatureProperties";
-	public static final String XADES_SIGNER_ROLE = "xades:SignerRole";
-	public static final String XADES_SIGNER_ROLE_V2 = "xades:SignerRoleV2";
-	public static final String XADES_SIGNING_TIME = "xades:SigningTime";
-	public static final String XADES_SPURI = "xades:SPURI";
-	public static final String XADES_STREET_ADDRESS = "xades:StreetAddress";
-	public static final String XADES_UNSIGNED_PROPERTIES = "xades:UnsignedProperties";
-	public static final String XADES_UNSIGNED_SIGNATURE_PROPERTIES = "xades:UnsignedSignatureProperties";
-	public static final String XADES_STATE_OR_PROVINCE = "xades:StateOrProvince";
-
-	public static final String XADES141_ARCHIVE_TIME_STAMP = "xades141:ArchiveTimeStamp";
-	public static final String XADES141_TIME_STAMP_VALIDATION_DATA = "xades141:TimeStampValidationData";
-
-	public static final String ALGORITHM = "Algorithm";
-	public static final String ID = "Id";
-	public static final String OBJECT_REFERENCE = "ObjectReference";
 	public static final String REFERENCED_DATA = "referencedData";
 	public static final String SIGNATURE = "Signature";
 	public static final String TARGET = "Target";
-	public static final String TYPE = "Type";
 	public static final String URI = "URI";
-	public static final String MIMETYPE = "MimeType";
-
-	public static final String QUALIFIER = "Qualifier";
-
-	public static final String XMLNS_DS = "xmlns:ds";
-	public static final String XMLNS_XADES = "xmlns:xades";
 
 	/**
-	 * This variable holds the {@code XPathQueryHolder} which contains all constants and queries needed to cope with the
-	 * default signature schema.
+	 * This variable holds the {@code XAdESPaths} which contains all constants and
+	 * queries needed to cope with the default signature schema.
 	 */
-	protected final XPathQueryHolder xPathQueryHolder = new XPathQueryHolder();
+	protected XAdESPaths xadesPaths;
 
 	/*
 	 * This variable is a reference to the set of parameters relating to the structure and process of the creation or
@@ -199,7 +104,7 @@ public abstract class XAdESBuilder {
 	public XAdESBuilder(final CertificateVerifier certificateVerifier) {
 		this.certificateVerifier = certificateVerifier;
 	}
-
+	
 	/**
 	 * This method creates the ds:DigestMethod DOM object
 	 * 
@@ -215,10 +120,8 @@ public abstract class XAdESBuilder {
 	 *            the digest algorithm xml identifier
 	 */
 	protected void incorporateDigestMethod(final Element parentDom, final DigestAlgorithm digestAlgorithm) {
-		final Element digestMethodDom = documentDom.createElementNS(XMLNS, DS_DIGEST_METHOD);
-		final String digestAlgorithmXmlId = digestAlgorithm.getUri();
-		digestMethodDom.setAttribute(ALGORITHM, digestAlgorithmXmlId);
-		parentDom.appendChild(digestMethodDom);
+		final Element digestMethodDom = DomUtils.addElement(documentDom, parentDom, getXmldsigNamespace(), XMLDSigElement.DIGEST_METHOD);
+		digestMethodDom.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName() , digestAlgorithm.getUri());
 	}
 
 	/**
@@ -242,7 +145,7 @@ public abstract class XAdESBuilder {
 	protected void incorporateDigestValue(final Element parentDom, DSSReference dssReference, final DigestAlgorithm digestAlgorithm,
 			final DSSDocument originalDocument) {
 
-		final Element digestValueDom = documentDom.createElementNS(XMLNS, DS_DIGEST_VALUE);
+		final Element digestValueDom = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.DIGEST_VALUE);
 
 		String base64EncodedDigestBytes = null;
 		if (params.isManifestSignature()) {
@@ -258,11 +161,11 @@ public abstract class XAdESBuilder {
 			Element root = doc.getDocumentElement();
 
 			Document doc2 = DomUtils.buildDOM();
-			final Element dom = doc2.createElementNS(XMLSignature.XMLNS, DS_OBJECT);
-			final Element dom2 = doc2.createElementNS(XMLSignature.XMLNS, DS_OBJECT);
+			final Element dom = DomUtils.createElementNS(doc2, getXmldsigNamespace(), XMLDSigElement.OBJECT);
+			final Element dom2 = DomUtils.createElementNS(doc2, getXmldsigNamespace(), XMLDSigElement.OBJECT);
 			doc2.appendChild(dom2);
 			dom2.appendChild(dom);
-			dom.setAttribute(ID, dssReference.getUri().substring(1));
+			dom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), dssReference.getUri().substring(1));
 
 			Node adopted = doc2.adoptNode(root);
 			dom.appendChild(adopted);
@@ -308,7 +211,12 @@ public abstract class XAdESBuilder {
 	 *            the token to be digested
 	 */
 	protected void incorporateDigestValue(final Element parentDom, final DigestAlgorithm digestAlgorithm, final Token token) {
-		final Element digestValueDom = documentDom.createElementNS(XMLNS, DS_DIGEST_VALUE);
+		Element digestValueDom = null;
+		if (XAdESNamespaces.XADES_111.isSameUri(getXadesNamespace().getUri())) {
+			digestValueDom = DomUtils.createElementNS(documentDom, getXadesNamespace(), XAdES111Element.DIGEST_VALUE);
+		} else {
+			digestValueDom = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.DIGEST_VALUE);
+		}
 		final String base64EncodedDigestBytes = Utils.toBase64(token.getDigest(digestAlgorithm));
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Digest value {} --> {}", parentDom.getNodeName(), base64EncodedDigestBytes);
@@ -360,32 +268,41 @@ public abstract class XAdESBuilder {
 	 *            the certificate to be added
 	 */
 	protected Element incorporateCert(final Element parentDom, final CertificateToken certificate) {
-		final Element certDom = DomUtils.addElement(documentDom, parentDom, XAdESNamespaces.getXAdESDefaultNamespace(), XADES_CERT);
+		final Element certDom = DomUtils.addElement(documentDom, parentDom, getXadesNamespace(), getCurrentXAdESElements().getElementCert());
 
-		final Element certDigestDom = DomUtils.addElement(documentDom, certDom, XAdESNamespaces.getXAdESDefaultNamespace(), XADES_CERT_DIGEST);
+		final Element certDigestDom = DomUtils.addElement(documentDom, certDom, getXadesNamespace(), getCurrentXAdESElements().getElementCertDigest());
 
 		final DigestAlgorithm signingCertificateDigestMethod = params.getSigningCertificateDigestMethod();
-		incorporateDigestMethod(certDigestDom, signingCertificateDigestMethod);
-
+	
+		Element digestMethodDom = null;
+		if (XAdESNamespaces.XADES_111.isSameUri(getXadesNamespace().getUri())) {
+			digestMethodDom = DomUtils.addElement(documentDom, certDigestDom, getXadesNamespace(), XAdES111Element.DIGEST_METHOD);
+		} else {
+			digestMethodDom = DomUtils.addElement(documentDom, certDigestDom, getXmldsigNamespace(), XMLDSigElement.DIGEST_METHOD);
+		}
+		digestMethodDom.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName(), signingCertificateDigestMethod.getUri());
+		
 		incorporateDigestValue(certDigestDom, signingCertificateDigestMethod, certificate);
 		return certDom;
 	}
 
 	protected void incorporateIssuerV1(final Element parentDom, final CertificateToken certificate) {
-		final Element issuerSerialDom = DomUtils.addElement(documentDom, parentDom, XAdESNamespaces.getXAdESDefaultNamespace(), XADES_ISSUER_SERIAL);
+		final Element issuerSerialDom = DomUtils.addElement(documentDom, parentDom, getXadesNamespace(), getCurrentXAdESElements().getElementIssuerSerial());
 
-		final Element x509IssuerNameDom = DomUtils.addElement(documentDom, issuerSerialDom, XMLNS, DS_X509_ISSUER_NAME);
+		final Element x509IssuerNameDom = DomUtils.addElement(documentDom, issuerSerialDom, getXmldsigNamespace(), XMLDSigElement.X509_ISSUER_NAME);
+				
 		final String issuerX500PrincipalName = certificate.getIssuerX500Principal().getName();
 		DomUtils.setTextNode(documentDom, x509IssuerNameDom, issuerX500PrincipalName);
 
-		final Element x509SerialNumberDom = DomUtils.addElement(documentDom, issuerSerialDom, XMLNS, DS_X509_SERIAL_NUMBER);
+		final Element x509SerialNumberDom = DomUtils.addElement(documentDom, issuerSerialDom, getXmldsigNamespace(), XMLDSigElement.X509_SERIAL_NUMBER);
+		
 		final BigInteger serialNumber = certificate.getSerialNumber();
 		final String serialNumberString = serialNumber.toString();
 		DomUtils.setTextNode(documentDom, x509SerialNumberDom, serialNumberString);
 	}
 
 	protected void incorporateIssuerV2(final Element parentDom, final CertificateToken certificate) {
-		final Element issuerSerialDom = DomUtils.addElement(documentDom, parentDom, XAdESNamespaces.getXAdESDefaultNamespace(), XADES_ISSUER_SERIAL_V2);
+		final Element issuerSerialDom = DomUtils.addElement(documentDom, parentDom, getXadesNamespace(), getCurrentXAdESElements().getElementIssuerSerialV2());
 
 		IssuerSerial issuerSerial = DSSASN1Utils.getIssuerSerial(certificate);
 		String issuerBase64 = Utils.toBase64(DSSASN1Utils.getDEREncoded(issuerSerial));
@@ -428,5 +345,70 @@ public abstract class XAdESBuilder {
 	}
 	
 	protected abstract void alignNodes();
+	
 
+	/**
+	 * This method returns the current used XMLDSig namespace. Try to determine from the signature, from the parameters or the default value
+	 */
+	protected DSSNamespace getXmldsigNamespace() {
+		DSSNamespace xmldsigNamespace = params.getXmldsigNamespace();
+		if (xmldsigNamespace == null) {
+			LOG.warn("Current XMLDSig namespace not found in the parameters (use the default XMLDSig)");
+			xmldsigNamespace = XAdESNamespaces.XMLDSIG;
+
+		}
+		return xmldsigNamespace;
+	}
+
+	/**
+	 * This method returns the current used XAdES namespace. Try to determine from the signature, from the parameters or the default value
+	 */
+	protected DSSNamespace getXadesNamespace() {
+		DSSNamespace xadesNamespace = params.getXadesNamespace();
+		if (xadesNamespace == null) {
+			LOG.warn("Current XAdES namespace not found in the parameters (use the default XAdES 1.3.2)");
+			xadesNamespace = XAdESNamespaces.XADES_132;
+
+		}
+		return xadesNamespace;
+	}
+
+	/**
+	 * This method returns the current used XAdES 1.4.1 namespace. Try to determine from the signature, from the parameters or the default value
+	 */
+	protected DSSNamespace getXades141Namespace() {
+		DSSNamespace xades141Namespace = params.getXades141Namespace();
+		if (xades141Namespace == null) {
+			LOG.warn("Current XAdES 1.4.1 namespace not found in the parameters (use the default XAdES 1.4.1)");
+			xades141Namespace = XAdESNamespaces.XADES_141;
+
+		}
+		return xades141Namespace;
+	}
+	
+	protected XAdESElement getCurrentXAdESElements() {
+		String xadesURI = getXadesNamespace().getUri();
+		if (XAdESNamespaces.XADES_132.getUri().equals(xadesURI)) {
+			return XAdES132Element.values()[0];
+		} else if (XAdESNamespaces.XADES_122.getUri().equals(xadesURI)) {
+			return XAdES122Element.values()[0];
+		} else if (XAdESNamespaces.XADES_111.getUri().equals(xadesURI)) {
+			return XAdES111Element.values()[0];
+		}
+		throw new DSSException("Unsupported URI : " + xadesURI);
+	}
+
+	protected XAdESPaths getCurrentXAdESPaths() {
+		String xadesURI = getXadesNamespace().getUri();
+		if (Utils.areStringsEqual(XAdESNamespaces.XADES_132.getUri(), xadesURI)) {
+			return new XAdES132Paths();
+		} else if (Utils.areStringsEqual(XAdESNamespaces.XADES_122.getUri(), xadesURI)) {
+			return new XAdES122Paths();
+		} else if (Utils.areStringsEqual(XAdESNamespaces.XADES_111.getUri(), xadesURI)) {
+			return new XAdES111Paths();
+		} else {
+			throw new DSSException("Unsupported URI : " + xadesURI);
+		}
+	}
+	
 }

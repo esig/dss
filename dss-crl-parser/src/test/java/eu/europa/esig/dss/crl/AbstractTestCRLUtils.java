@@ -20,11 +20,12 @@
  */
 package eu.europa.esig.dss.crl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -35,10 +36,10 @@ import java.security.cert.X509CRLEntry;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 
 public abstract class AbstractTestCRLUtils extends AbstractCRLParserTestUtils {
@@ -251,15 +252,15 @@ public abstract class AbstractTestCRLUtils extends AbstractCRLParserTestUtils {
 		}
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void notACRL() throws Exception {
 		try (InputStream is = new ByteArrayInputStream(new byte[] { 1, 2, 3 });
-				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/citizen_ca.cer")) {
+			InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/citizen_ca.cer")) {
 
 			CertificateToken certificateToken = loadCert(isCer);
-
+	
 			CRLBinary crlBinary = new CRLBinary(toByteArray(is));
-			CRLUtils.buildCRLValidity(crlBinary, certificateToken);
+			assertThrows(DSSException.class, () -> CRLUtils.buildCRLValidity(crlBinary, certificateToken));
 		}
 	}
 
@@ -343,25 +344,22 @@ public abstract class AbstractTestCRLUtils extends AbstractCRLParserTestUtils {
 		}
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testPSSwithoutBouncyCastle() throws Exception {
 		try (InputStream is = AbstractTestCRLUtils.class.getResourceAsStream("/d-trust_root_ca_1_2017.crl");
-				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/D-TRUST_Root_CA_1_2017.crt")) {
-
-			CertificateToken certificateToken = loadCert(isCer);
-
-			CRLBinary crlBinary = new CRLBinary(toByteArray(is));
-			CRLUtils.buildCRLValidity(crlBinary, certificateToken);
+			InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/D-TRUST_Root_CA_1_2017.crt")) {
+			Exception exception = assertThrows(IllegalArgumentException.class, () -> loadCert(isCer));
+			assertEquals("Unable to initialize PSS", exception.getMessage());
 		}
 	}
 
-	@Test(expected = DSSException.class)
+	@Test
 	public void incompleteCRL() throws Exception {
 		try (InputStream is = new ByteArrayInputStream(new byte[] { 1, 2, 3 });
-				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/belgiumrs2.crt")) {
+			InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/belgiumrs2.crt")) {
 			CertificateToken certificateToken = loadCert(isCer);
 			CRLBinary crlBinary = new CRLBinary(toByteArray(is));
-			CRLUtils.buildCRLValidity(crlBinary, certificateToken);
+			assertThrows(DSSException.class, () -> CRLUtils.buildCRLValidity(crlBinary, certificateToken));
 		}
 	}
 

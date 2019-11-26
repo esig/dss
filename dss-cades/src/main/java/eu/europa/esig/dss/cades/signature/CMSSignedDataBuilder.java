@@ -43,9 +43,9 @@ import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaCertStore;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.cms.CMSProcessableByteArray;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataGenerator;
+import org.bouncycastle.cms.CMSTypedData;
 import org.bouncycastle.cms.DefaultSignedAttributeTableGenerator;
 import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInfoGenerator;
@@ -59,6 +59,7 @@ import org.bouncycastle.util.CollectionStore;
 import org.bouncycastle.util.Store;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -69,7 +70,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
+import eu.europa.esig.dss.validation.DefaultAdvancedSignature.ValidationDataForInclusion;
 import eu.europa.esig.dss.validation.ValidationContext;
 
 /**
@@ -276,7 +277,7 @@ public class CMSSignedDataBuilder {
 			if (!encapsulate) {
 				// CAdES can only sign one document
 				final DSSDocument doc = detachedContents.get(0);
-				final CMSProcessableByteArray content = new CMSProcessableByteArray(DSSUtils.toByteArray(doc));
+				final CMSTypedData content = CMSUtils.getContentToBeSign(doc);
 				cmsSignedData = cmsSignedDataGenerator.generate(content, encapsulate);
 			} else {
 				cmsSignedData = cmsSignedDataGenerator.generate(cmsSignedData.getSignedContent(), encapsulate);
@@ -298,10 +299,12 @@ public class CMSSignedDataBuilder {
 	public CMSSignedData extendCMSSignedData(CMSSignedData cmsSignedData, SignerInformation signerInformation, List<DSSDocument> detachedContents) {
 		CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation, certificateVerifier.createValidationPool());
 		cadesSignature.setDetachedContents(detachedContents);
+		
 		final ValidationContext validationContext = cadesSignature.getSignatureValidationContext(certificateVerifier);
+		final ValidationDataForInclusion validationDataForInclusion = cadesSignature.getValidationDataForInclusion(validationContext);
 
 		Store<X509CertificateHolder> certificatesStore = cmsSignedData.getCertificates();
-		final Set<CertificateToken> certificates = cadesSignature.getCertificatesForInclusion(validationContext);
+		final Set<CertificateToken> certificates = validationDataForInclusion.certificateTokens;
 		final Collection<X509CertificateHolder> newCertificateStore = new HashSet<X509CertificateHolder>(certificatesStore.getMatches(null));
 		for (final CertificateToken certificateToken : certificates) {
 			final X509CertificateHolder x509CertificateHolder = DSSASN1Utils.getX509CertificateHolder(certificateToken);
@@ -311,8 +314,8 @@ public class CMSSignedDataBuilder {
 
 		Store<X509CRLHolder> crlsStore = cmsSignedData.getCRLs();
 		final Collection<X509CRLHolder> newCrlsStore = new HashSet<X509CRLHolder>(crlsStore.getMatches(null));
-		final DefaultAdvancedSignature.RevocationDataForInclusion revocationDataForInclusion = cadesSignature.getRevocationDataForInclusion(validationContext);
-		for (final CRLToken crlToken : revocationDataForInclusion.crlTokens) {
+		final List<CRLToken> crlTokens = validationDataForInclusion.crlTokens;
+		for (final CRLToken crlToken : crlTokens) {
 			final X509CRLHolder x509CRLHolder = getX509CrlHolder(crlToken);
 			newCrlsStore.add(x509CRLHolder);
 		}
@@ -320,7 +323,8 @@ public class CMSSignedDataBuilder {
 
 		Store otherRevocationInfoFormatStoreBasic = cmsSignedData.getOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
 		final Collection<ASN1Primitive> newOtherRevocationInfoFormatStore = new HashSet<ASN1Primitive>(otherRevocationInfoFormatStoreBasic.getMatches(null));
-		for (final OCSPToken ocspToken : revocationDataForInclusion.ocspTokens) {
+		final List<OCSPToken> ocspTokens = validationDataForInclusion.ocspTokens;
+		for (final OCSPToken ocspToken : ocspTokens) {
 			final BasicOCSPResp basicOCSPResp = ocspToken.getBasicOCSPResp();
 			if (basicOCSPResp != null) {
 				newOtherRevocationInfoFormatStore.add(DSSASN1Utils.toASN1Primitive(DSSASN1Utils.getEncoded(basicOCSPResp)));

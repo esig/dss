@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.spi.util;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -27,7 +28,7 @@ import java.util.Date;
  * 
  * @author jdvorak
  */
-public interface TimeDependent {
+public interface TimeDependent extends Serializable {
 
 	/**
 	 * The start of the validity period.

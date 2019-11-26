@@ -20,18 +20,19 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
-import org.bouncycastle.cms.CMSAbsentContent;
-import org.bouncycastle.cms.CMSProcessableByteArray;
+import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataGenerator;
 import org.bouncycastle.cms.CMSTypedData;
 import org.bouncycastle.cms.SignerInfoGeneratorBuilder;
 import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
-import org.bouncycastle.tsp.TimeStampToken;
+import org.bouncycastle.tsp.TSPException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,6 +49,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
@@ -87,12 +89,19 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 			throw new DSSException("A TSPSource is required !");
 		}
 		DigestAlgorithm digestAlgorithm = parameters.getContentTimestampParameters().getDigestAlgorithm();
-		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, Utils.fromBase64(toSignDocument.getDigest(digestAlgorithm)));
-		return new TimestampToken(timeStampResponse, TimestampType.CONTENT_TIMESTAMP);
+		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, Utils.fromBase64(toSignDocument.getDigest(digestAlgorithm)));
+		try {
+			return new TimestampToken(timeStampResponse, TimestampType.CONTENT_TIMESTAMP);
+		} catch (TSPException | IOException | CMSException e) {
+			throw new DSSException("Cannot create a content TimestampToken", e);
+		}
 	}
 
 	@Override
 	public ToBeSigned getDataToSign(final DSSDocument toSignDocument, final CAdESSignatureParameters parameters) throws DSSException {
+		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
+		
 		assertSigningDateInCertificateValidityRange(parameters);
 		final SignaturePackaging packaging = parameters.getSignaturePackaging();
 		assertSignaturePackaging(packaging);
@@ -108,7 +117,7 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 				signerInfoGeneratorBuilder, originalCmsSignedData);
 
 		final DSSDocument toSignData = getToSignData(toSignDocument, parameters, originalCmsSignedData);
-		final CMSTypedData content = getContentToBeSign(toSignData);
+		final CMSTypedData content = CMSUtils.getContentToBeSign(toSignData);
 		final boolean encapsulate = !SignaturePackaging.DETACHED.equals(packaging);
 		CMSUtils.generateCMSSignedData(cmsSignedDataGenerator, content, encapsulate);
 		final byte[] bytes = customContentSigner.getOutputStream().toByteArray();
@@ -118,6 +127,9 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 	@Override
 	public DSSDocument signDocument(final DSSDocument toSignDocument, final CAdESSignatureParameters parameters, SignatureValue signatureValue)
 			throws DSSException {
+		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
+		Objects.requireNonNull(signatureValue, "SignatureValue cannot be null!");
 
 		assertSigningDateInCertificateValidityRange(parameters);
 		final SignaturePackaging packaging = parameters.getSignaturePackaging();
@@ -136,7 +148,7 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 				signerInfoGeneratorBuilder, originalCmsSignedData);
 
 		final DSSDocument toSignData = getToSignData(toSignDocument, parameters, originalCmsSignedData);
-		final CMSTypedData content = getContentToBeSign(toSignData);
+		final CMSTypedData content = CMSUtils.getContentToBeSign(toSignData);
 
 		final boolean encapsulate = !SignaturePackaging.DETACHED.equals(packaging);
 		final CMSSignedData cmsSignedData = CMSUtils.generateCMSSignedData(cmsSignedDataGenerator, content, encapsulate);
@@ -163,18 +175,10 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 		return new BcDigestCalculatorProvider();
 	}
 
-	private CMSTypedData getContentToBeSign(final DSSDocument toSignData) {
-		CMSTypedData content = null;
-		if (toSignData instanceof DigestDocument) {
-			content = new CMSAbsentContent();
-		} else {
-			content = new CMSProcessableByteArray(DSSUtils.toByteArray(toSignData));
-		}
-		return content;
-	}
-
 	@Override
 	public DSSDocument extendDocument(final DSSDocument toExtendDocument, final CAdESSignatureParameters parameters) {
+		Objects.requireNonNull(toExtendDocument, "toExtendDocument is not defined!");
+		Objects.requireNonNull(parameters, "Cannot extend the signature. SignatureParameters are not defined!");
 		// false: All signature are extended
 		final SignatureExtension<CAdESSignatureParameters> extension = getExtensionProfile(parameters, false);
 		final DSSDocument dssDocument = extension.extendSignatures(toExtendDocument, parameters);
@@ -217,13 +221,12 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 	 * @return the original toSignDocument or null
 	 */
 	private DSSDocument getSignedContent(final CMSSignedData cmsSignedData) {
-		if (cmsSignedData != null) {
-			final CMSTypedData signedContent = cmsSignedData.getSignedContent();
-			final byte[] documentBytes = (signedContent != null) ? (byte[]) signedContent.getContent() : null;
-			final InMemoryDocument inMemoryDocument = new InMemoryDocument(documentBytes);
-			return inMemoryDocument;
+		final CMSTypedData signedContent = cmsSignedData.getSignedContent();
+		if (signedContent == null) {
+			throw new DSSException("Unknown SignedContent");
 		}
-		return null;
+		final byte[] documentBytes = (byte[]) signedContent.getContent();
+		return new InMemoryDocument(documentBytes);
 	}
 
 	/**
@@ -235,15 +238,16 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 	 */
 	private SignatureExtension<CAdESSignatureParameters> getExtensionProfile(final CAdESSignatureParameters parameters, final boolean onlyLastCMSSignature) {
 		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
+		Objects.requireNonNull(signatureLevel, "SignatureLevel must be defined!");
 		switch (signatureLevel) {
-		case CAdES_BASELINE_T:
-			return new CAdESLevelBaselineT(tspSource, onlyLastCMSSignature);
-		case CAdES_BASELINE_LT:
-			return new CAdESLevelBaselineLT(tspSource, certificateVerifier, onlyLastCMSSignature);
-		case CAdES_BASELINE_LTA:
-			return new CAdESLevelBaselineLTA(tspSource, certificateVerifier, onlyLastCMSSignature);
-		default:
-			throw new DSSException("Unsupported signature format " + signatureLevel);
+			case CAdES_BASELINE_T:
+				return new CAdESLevelBaselineT(tspSource, onlyLastCMSSignature);
+			case CAdES_BASELINE_LT:
+				return new CAdESLevelBaselineLT(tspSource, certificateVerifier, onlyLastCMSSignature);
+			case CAdES_BASELINE_LTA:
+				return new CAdESLevelBaselineLTA(tspSource, certificateVerifier, onlyLastCMSSignature);
+			default:
+				throw new DSSException("Unsupported signature format : " + signatureLevel);
 		}
 	}
 

@@ -25,12 +25,13 @@ import java.util.Date;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -50,7 +51,7 @@ public class XAdESLevelBExternalSignatureTest extends AbstractXAdESTestSignature
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
@@ -168,7 +169,7 @@ public class XAdESLevelBExternalSignatureTest extends AbstractXAdESTestSignature
 		}
 
 		public byte[] getSerializedObject() {
-			Element objectDom = DomUtils.getElement(signatureDom, xPathQueryHolder.XPATH_OBJECT);
+			Element objectDom = DomUtils.getElement(signatureDom, XMLDSigPaths.OBJECT_PATH);
 			return DSSXMLUtils.serializeNode(objectDom);
 		}
 	}

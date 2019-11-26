@@ -1,17 +1,41 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.ws.converter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.ws.dto.DigestDTO;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 
@@ -80,6 +104,24 @@ public class DTOConverterTest {
 	public void toSignatureValueNullTest() {
 		SignatureValue signatureValue = DTOConverter.toSignatureValue(null);
 		assertNull(signatureValue);
+	}
+	
+	@Test
+	public void toDigestTest() {
+		DigestDTO digestDTO = new DigestDTO(DigestAlgorithm.SHA1, Utils.fromHex("22BDD97143DF6B39A65AFAD2AF6BD8BF20CD4F7B"));
+		Digest digest = DTOConverter.toDigest(digestDTO);
+		assertNotNull(digest);
+		assertEquals(digest.getAlgorithm(), digestDTO.getAlgorithm());
+		assertTrue(Arrays.equals(digest.getValue(), digestDTO.getValue()));
+	}
+	
+	@Test
+	public void toDigestDTOTest() {
+		Digest digest = new Digest(DigestAlgorithm.SHA1, Utils.fromHex("22BDD97143DF6B39A65AFAD2AF6BD8BF20CD4F7B"));
+		DigestDTO digestDTO = DTOConverter.toDigestDTO(digest);
+		assertNotNull(digestDTO);
+		assertEquals(digest.getAlgorithm(), digestDTO.getAlgorithm());
+		assertTrue(Arrays.equals(digest.getValue(), digestDTO.getValue()));
 	}
 
 }
