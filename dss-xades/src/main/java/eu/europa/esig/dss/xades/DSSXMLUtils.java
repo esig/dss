@@ -761,7 +761,16 @@ public final class DSSXMLUtils {
 			digestValueBase64 = DomUtils.getValue(element, XMLDSigPaths.DIGEST_VALUE_PATH);
 		}
 
-		return new Digest(getDigestAlgorithm(digestAlgorithmUri), getDigestValue(digestValueBase64));
+		final DigestAlgorithm digestAlgorithm = getDigestAlgorithm(digestAlgorithmUri);
+		final byte[] digestValue = getDigestValue(digestValueBase64);
+
+		if (digestAlgorithm == null || digestValue == null) {
+			LOG.warn("Unable to read object DigestAlgAndValueType (XMLDSig or XAdES 1.1.1)");
+			return null;
+		} else {
+			return new Digest(digestAlgorithm, digestValue);
+		}
+
 	}
 
 	private static byte[] getDigestValue(String digestValueBase64) {
