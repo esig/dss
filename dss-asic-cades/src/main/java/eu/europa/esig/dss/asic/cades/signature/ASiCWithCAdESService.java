@@ -220,13 +220,8 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	}
 	
 	private boolean isExtensionSupported(DSSDocument toExtendDocument, ASiCWithCAdESSignatureParameters parameters) {
-		// ASiC-E CAdES supports timestamping without a signature (LTA-level only)
-		// Explicetly skip ASiC XAdES signatures
-		return ASiCUtils.isZip(toExtendDocument) && 
-				( ASiCContainerType.ASiC_E.equals(parameters.aSiC().getContainerType()) && 
-						SignatureLevel.CAdES_BASELINE_LTA.equals(parameters.getSignatureLevel())
-				|| ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(toExtendDocument, getExpectedSignatureExtension()) )
-				&& !ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(toExtendDocument, "xml");
+		// TODO : fix the condition for extension support
+		return ASiCUtils.isZip(toExtendDocument) && ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(toExtendDocument, getExpectedSignatureExtension());
 	}
 	
 	private boolean isCoveredByArchiveManifest(DSSDocument signature) {
