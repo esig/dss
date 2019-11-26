@@ -32,7 +32,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
@@ -51,7 +51,7 @@ public abstract class AbstractRemoteSignatureServiceTest extends PKIFactoryAcces
 	}
 	
 	protected void validate(DSSDocument doc, List<DSSDocument> detachedContents) {
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		validator.setDetachedContents(detachedContents);
 		

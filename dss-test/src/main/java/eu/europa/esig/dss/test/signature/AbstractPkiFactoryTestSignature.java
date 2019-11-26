@@ -86,7 +86,7 @@ import eu.europa.esig.dss.token.KSPrivateKeyEntry;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.CryptoInformationType;
 import eu.europa.esig.validationreport.jaxb.POEType;
@@ -149,7 +149,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 
 		checkMimeType(signedDocument);
 
-		DefaultDocumentValidator validator = getValidator(signedDocument);
+		SignedDocumentValidator validator = getValidator(signedDocument);
 
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		checkAdvancedSignatures(signatures);
@@ -290,7 +290,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		List<String> signatureIdList = diagnosticData.getSignatureIdList();
 		for (String signatureId : signatureIdList) {
 
-			DefaultDocumentValidator validator = getValidator(signedDocument);
+			SignedDocumentValidator validator = getValidator(signedDocument);
 			List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(signatureId);
 
 			assertTrue(Utils.isCollectionNotEmpty(retrievedOriginalDocuments));
@@ -533,8 +533,8 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		}
 	}
 
-	protected DefaultDocumentValidator getValidator(final DSSDocument signedDocument) {
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(signedDocument);
+	protected SignedDocumentValidator getValidator(final DSSDocument signedDocument) {
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		validator.setSignaturePolicyProvider(getSignaturePolicyProvider());
 		return validator;

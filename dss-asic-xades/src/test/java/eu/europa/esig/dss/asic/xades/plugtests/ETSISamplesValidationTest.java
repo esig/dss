@@ -47,7 +47,7 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 /**
@@ -69,7 +69,7 @@ public class ETSISamplesValidationTest {
 	@ParameterizedTest(name = "Validation {index} : {0}")
 	@MethodSource("data")
 	public void testValidate(File fileToTest) {
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(new FileDocument(fileToTest));
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(new FileDocument(fileToTest));
 
 		SignaturePolicyProvider signaturePolicyProvider = new SignaturePolicyProvider();
 		Map<String, DSSDocument> signaturePoliciesByUrl = new HashMap<String, DSSDocument>();

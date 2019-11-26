@@ -32,7 +32,7 @@ import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class DSS817Test {
@@ -40,7 +40,7 @@ public class DSS817Test {
 	@Test
 	public void test()  {
 		DSSDocument doc = new FileDocument("src/test/resources/dss-817-test.xml");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		
 		Reports reports = validator.validateDocument();

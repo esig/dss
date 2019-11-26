@@ -33,7 +33,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.test.validation.AbstractTestValidator;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 public class XMLDocumentValidatorTest extends AbstractTestValidator {
 
@@ -54,12 +54,12 @@ public class XMLDocumentValidatorTest extends AbstractTestValidator {
 	}
 
 	@Override
-	protected DefaultDocumentValidator initEmptyValidator() {
+	protected SignedDocumentValidator initEmptyValidator() {
 		return new XMLDocumentValidator();
 	}
 
 	@Override
-	protected DefaultDocumentValidator initValidator(DSSDocument document) {
+	protected SignedDocumentValidator initValidator(DSSDocument document) {
 		return new XMLDocumentValidator(document);
 	}
 

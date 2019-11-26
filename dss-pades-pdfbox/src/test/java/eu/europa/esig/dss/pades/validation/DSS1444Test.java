@@ -44,7 +44,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class DSS1444Test {
@@ -127,7 +127,7 @@ public class DSS1444Test {
 	@Test
 	public void test5() throws IOException {
 	  	DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/dss-PLAIN-ECDSA/TeleSec_PKS_eIDAS_QES_CA_1-baseline-b.pdf"));
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);
@@ -148,7 +148,7 @@ public class DSS1444Test {
 	@Test
 	public void test6() throws IOException {
 	  	DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/dss-PLAIN-ECDSA/TeleSec_PKS_eIDAS_QES_CA_1-baseline-b.pdf"));
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument(getClass().getResourceAsStream("/validation/dss-PLAIN-ECDSA/policy_without_PLAIN-ECDSA.xml"));
 		assertNotNull(reports);

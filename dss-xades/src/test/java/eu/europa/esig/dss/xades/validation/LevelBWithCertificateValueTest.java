@@ -30,14 +30,14 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class LevelBWithCertificateValueTest {
 
 	@Test
 	public void test() {
-		DefaultDocumentValidator validator = DefaultDocumentValidator
+		SignedDocumentValidator validator = SignedDocumentValidator
 				.fromDocument(new FileDocument("src/test/resources/validation/BaselineBWithCertificateValues.xml"));
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();

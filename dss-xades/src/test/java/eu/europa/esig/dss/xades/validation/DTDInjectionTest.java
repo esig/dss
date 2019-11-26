@@ -35,7 +35,7 @@ import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 /**
@@ -46,7 +46,7 @@ public class DTDInjectionTest {
 	@Test
 	public void test() {
 		Exception exception = assertThrows(DSSException.class, () -> {
-			DefaultDocumentValidator validator = DefaultDocumentValidator
+			SignedDocumentValidator validator = SignedDocumentValidator
 					.fromDocument(new FileDocument(new File("src/test/resources/validation/xades-with-dtd-injection.xml")));
 			validator.setCertificateVerifier(new CommonCertificateVerifier());
 			validator.validateDocument();
@@ -58,7 +58,7 @@ public class DTDInjectionTest {
 	public void testSecurityDisabled() throws ParserConfigurationException {
 		DomUtils.disableFeature("http://apache.org/xml/features/disallow-doctype-decl");
 
-		DefaultDocumentValidator validator = DefaultDocumentValidator
+		SignedDocumentValidator validator = SignedDocumentValidator
 				.fromDocument(new FileDocument(new File("src/test/resources/validation/xades-with-dtd-injection.xml")));
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 

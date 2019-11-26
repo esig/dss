@@ -37,7 +37,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 public class XAdESManifestLevelBWithValidationTest extends AbstractXAdESTestSignature {
@@ -69,8 +69,8 @@ public class XAdESManifestLevelBWithValidationTest extends AbstractXAdESTestSign
 	}
 
 	@Override
-	protected DefaultDocumentValidator getValidator(final DSSDocument signedDocument) {
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(signedDocument);
+	protected SignedDocumentValidator getValidator(final DSSDocument signedDocument) {
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 
 		List<DSSDocument> documents = new ArrayList<DSSDocument>();

@@ -39,7 +39,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
@@ -96,8 +96,8 @@ public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractXAdEST
 	}
 
 	@Override
-	protected DefaultDocumentValidator getValidator(final DSSDocument signedDocument) {
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(signedDocument);
+	protected SignedDocumentValidator getValidator(final DSSDocument signedDocument) {
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
 		detachedContents.add(documentToSign);

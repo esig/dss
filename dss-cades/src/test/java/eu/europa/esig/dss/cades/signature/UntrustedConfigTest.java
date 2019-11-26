@@ -39,7 +39,7 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class UntrustedConfigTest extends PKIFactoryAccess {
@@ -60,7 +60,7 @@ public class UntrustedConfigTest extends PKIFactoryAccess {
 		DSSDocument signedDocument = service.signDocument(documentToSign, params, signatureValue);
 		assertNotNull(signedDocument);
 
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(signedDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
@@ -128,7 +128,7 @@ public class UntrustedConfigTest extends PKIFactoryAccess {
 		DSSDocument signedDocument = service.signDocument(documentToSign, params, signatureValue);
 		assertNotNull(signedDocument);
 
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(signedDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
@@ -155,7 +155,7 @@ public class UntrustedConfigTest extends PKIFactoryAccess {
 		DSSDocument signedDocument = service.signDocument(documentToSign, params, signatureValue);
 		assertNotNull(signedDocument);
 
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(signedDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 

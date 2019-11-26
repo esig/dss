@@ -34,7 +34,7 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class DSS1188Test {
@@ -46,7 +46,7 @@ public class DSS1188Test {
 	@Test
 	public void testSigWithoutAttached() {
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-1188/Test.bin.sig");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
@@ -60,7 +60,7 @@ public class DSS1188Test {
 	@Test
 	public void testSigWithAttached() {
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-1188/Test.bin.sig");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
 		detachedContents.add(new FileDocument("src/test/resources/validation/dss-1188/Test.bin"));
 		validator.setDetachedContents(detachedContents);

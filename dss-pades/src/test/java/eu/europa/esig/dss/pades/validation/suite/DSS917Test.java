@@ -33,14 +33,14 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class DSS917Test {
 
 	@Test
 	public void test() throws Exception {
-		DefaultDocumentValidator validator = DefaultDocumentValidator
+		SignedDocumentValidator validator = SignedDocumentValidator
 				.fromDocument(new InMemoryDocument(getClass().getResourceAsStream("/validation/hello_signed_INCSAVE_signed_EDITED.pdf")));
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 
@@ -57,7 +57,7 @@ public class DSS917Test {
 
 	@Test
 	public void testCorrect() throws Exception {
-		DefaultDocumentValidator validator = DefaultDocumentValidator
+		SignedDocumentValidator validator = SignedDocumentValidator
 				.fromDocument(new InMemoryDocument(getClass().getResourceAsStream("/validation/hello_signed_INCSAVE_signed.pdf")));
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 

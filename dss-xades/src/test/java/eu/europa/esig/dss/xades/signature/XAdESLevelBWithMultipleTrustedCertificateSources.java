@@ -50,7 +50,7 @@ import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
@@ -179,7 +179,7 @@ public class XAdESLevelBWithMultipleTrustedCertificateSources extends PKIFactory
 	}
 	
 	private void validate(DSSDocument signedDocument) {
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(signedDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(certificateVerifier);
 		Reports reports = validator.validateDocument();
 		

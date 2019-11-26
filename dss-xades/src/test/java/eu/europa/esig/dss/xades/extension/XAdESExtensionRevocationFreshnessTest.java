@@ -40,7 +40,7 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
@@ -126,7 +126,7 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 	}
 	
 	private void validate(DSSDocument doc) {
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(certificateVerifier);
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);

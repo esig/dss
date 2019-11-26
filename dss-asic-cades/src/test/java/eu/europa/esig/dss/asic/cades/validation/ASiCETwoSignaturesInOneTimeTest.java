@@ -33,7 +33,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.test.signature.UnmarshallingTester;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class ASiCETwoSignaturesInOneTimeTest extends PKIFactoryAccess {
@@ -41,7 +41,7 @@ public class ASiCETwoSignaturesInOneTimeTest extends PKIFactoryAccess {
 	@Test
 	public void test() {
 		DSSDocument document = new FileDocument("src/test/resources/validation/twoSignaturesOneTimeOneSigner.asice");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(document);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		
 		Reports reports = validator.validateDocument();

@@ -56,7 +56,7 @@ import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
@@ -96,7 +96,7 @@ public class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
 		
 		// doubleExtendedDocument.save("target/doubleExtendedDocument.asice");
 		
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doubleExtendedDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doubleExtendedDocument);
 
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 

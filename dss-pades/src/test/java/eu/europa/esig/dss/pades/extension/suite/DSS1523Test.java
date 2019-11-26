@@ -46,7 +46,7 @@ import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 public class DSS1523Test extends PKIFactoryAccess {
 
@@ -54,7 +54,7 @@ public class DSS1523Test extends PKIFactoryAccess {
 	public void validation() {
 		// <</Type /DSS/Certs [20 0 R]/CRLs [21 0 R]/OCSPs [22 0 R]>>
 		DSSDocument doc = new InMemoryDocument(DSS1523Test.class.getResourceAsStream("/validation/PAdES-LTA.pdf"), "PAdES-LTA.pdf", MimeType.PDF);
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		assertEquals(1, signatures.size());
@@ -97,7 +97,7 @@ public class DSS1523Test extends PKIFactoryAccess {
 
 //		extendDocument.save("target/extended.pdf");
 
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(extendDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(extendDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		List<AdvancedSignature> signatures = validator.getSignatures();
 

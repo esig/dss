@@ -40,7 +40,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class PolicyZeroHashTest extends PKIFactoryAccess {
@@ -49,7 +49,7 @@ public class PolicyZeroHashTest extends PKIFactoryAccess {
 	public void test() throws JAXBException, IOException, SAXException {
 
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/TEST2_signed_with_zero_policy_hash.pdf"));
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 

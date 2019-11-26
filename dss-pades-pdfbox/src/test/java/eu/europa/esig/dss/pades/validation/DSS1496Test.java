@@ -48,7 +48,7 @@ import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class DSS1496Test extends PKIFactoryAccess {
@@ -61,7 +61,7 @@ public class DSS1496Test extends PKIFactoryAccess {
 	@Test
 	public void test() throws Exception {
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/doc-firmado.pdf"));
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setTrustedCertSource(getTrustedCertSource());
 		// Offline
@@ -78,7 +78,7 @@ public class DSS1496Test extends PKIFactoryAccess {
 	@Test
 	public void testLT() throws Exception {
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/doc-firmado-LT.pdf"));
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setTrustedCertSource(getTrustedCertSource());
 		// Offline

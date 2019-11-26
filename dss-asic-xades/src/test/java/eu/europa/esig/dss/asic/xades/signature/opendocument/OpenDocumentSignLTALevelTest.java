@@ -16,7 +16,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class OpenDocumentSignLTALevelTest extends OpenDocumentLevelLTASignatureTest {
@@ -39,7 +39,7 @@ public class OpenDocumentSignLTALevelTest extends OpenDocumentLevelLTASignatureT
 				getSignatureParameters().getMaskGenerationFunction(), getPrivateKeyEntry());
 		DSSDocument doubleSignedDocument = service.signDocument(signedDocument, signatureParameters, signatureValue);
 
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doubleSignedDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doubleSignedDocument);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 
 		Reports reports = validator.validateDocument();

@@ -43,7 +43,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 /**
@@ -56,7 +56,7 @@ public class ExtendToCAdESLtaTest extends PKIFactoryAccess {
 
 	@Test
 	public void testValidation() {
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(new FileDocument(SIGNED_DOC_PATH));
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(new FileDocument(SIGNED_DOC_PATH));
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
 		detachedContents.add(new FileDocument(DETACHED_DOC_PATH));

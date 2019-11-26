@@ -35,7 +35,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class DSS1135Test {
@@ -43,7 +43,7 @@ public class DSS1135Test {
 	@Test
 	public void test() {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/dss1135/factura_ejemplo2_32v1.xml");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		// certificateVerifier.setDataLoader(new CommonsDataLoader());
 		SignaturePolicyProvider signaturePolicyProvider = new SignaturePolicyProvider();

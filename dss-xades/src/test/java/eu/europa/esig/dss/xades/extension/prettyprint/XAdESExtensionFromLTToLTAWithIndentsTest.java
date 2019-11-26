@@ -50,7 +50,7 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
@@ -70,7 +70,7 @@ public class XAdESExtensionFromLTToLTAWithIndentsTest extends PKIFactoryAccess {
 		
 		DSSDocument signedWithIndents = addCustomIndents(signedDocument);
 
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(signedWithIndents);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedWithIndents);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		
 		Reports reports = validator.validateDocument();
@@ -140,7 +140,7 @@ public class XAdESExtensionFromLTToLTAWithIndentsTest extends PKIFactoryAccess {
 	}
 	
 	private void validateDocument(DSSDocument document) {
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(document);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);

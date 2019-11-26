@@ -32,13 +32,13 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 public class DefaultDocumentValidatorTest {
 
 	@Test
 	public void testXmlUTF8() {
-		DefaultDocumentValidator documentValidator = DefaultDocumentValidator.fromDocument(new FileDocument(new File("src/test/resources/sample.xml")));
+		SignedDocumentValidator documentValidator = SignedDocumentValidator.fromDocument(new FileDocument(new File("src/test/resources/sample.xml")));
 		assertTrue(documentValidator instanceof XMLDocumentValidator);
 	}
 
@@ -48,13 +48,13 @@ public class DefaultDocumentValidatorTest {
 		byte[] byteArray = Utils.toByteArray(fis);
 		Utils.closeQuietly(fis);
 		DSSDocument document = new InMemoryDocument(byteArray);
-		DefaultDocumentValidator documentValidator = DefaultDocumentValidator.fromDocument(document);
+		SignedDocumentValidator documentValidator = SignedDocumentValidator.fromDocument(document);
 		assertTrue(documentValidator instanceof XMLDocumentValidator);
 	}
 
 	@Test
 	public void testXmlISO() {
-		DefaultDocumentValidator documentValidator = DefaultDocumentValidator.fromDocument(new FileDocument(new File("src/test/resources/sampleISO.xml")));
+		SignedDocumentValidator documentValidator = SignedDocumentValidator.fromDocument(new FileDocument(new File("src/test/resources/sampleISO.xml")));
 		assertTrue(documentValidator instanceof XMLDocumentValidator);
 	}
 
@@ -64,7 +64,7 @@ public class DefaultDocumentValidatorTest {
 		byte[] byteArray = Utils.toByteArray(fis);
 		Utils.closeQuietly(fis);
 		DSSDocument document = new InMemoryDocument(byteArray);
-		DefaultDocumentValidator documentValidator = DefaultDocumentValidator.fromDocument(document);
+		SignedDocumentValidator documentValidator = SignedDocumentValidator.fromDocument(document);
 		assertTrue(documentValidator instanceof XMLDocumentValidator);
 	}
 }

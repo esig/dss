@@ -44,7 +44,7 @@ import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.executor.timestamp.SignatureAndTimestampProcessExecutor;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -53,7 +53,7 @@ import eu.europa.esig.dss.validation.timestamp.TimestampValidator;
 /**
  * Validation of PDF document.
  */
-public class PDFDocumentValidator extends DefaultDocumentValidator implements TimestampValidator {
+public class PDFDocumentValidator extends SignedDocumentValidator implements TimestampValidator {
 	
 	private static final byte[] pdfPreamble = new byte[] { '%', 'P', 'D', 'F', '-' };
 

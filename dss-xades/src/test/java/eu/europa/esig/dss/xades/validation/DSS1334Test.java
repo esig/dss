@@ -48,7 +48,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
@@ -70,7 +70,7 @@ public class DSS1334Test extends PKIFactoryAccess {
 	public void test1() {
 		DSSDocument doc = new FileDocument(
 				"src/test/resources/validation/dss1334/document-signed-xades-baseline-b--null-for-filename.xml");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setDetachedContents(Arrays.<DSSDocument>asList(new FileDocument(ORIGINAL_FILE)));
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
@@ -87,7 +87,7 @@ public class DSS1334Test extends PKIFactoryAccess {
 	@Test
 	public void testDSS1468() {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/dss1334/document-signed-xades-baseline-b--null-for-filename.xml");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		FileDocument fileDocument = new FileDocument(ORIGINAL_FILE);
 		fileDocument.setName(null);
 		validator.setDetachedContents(Arrays.<DSSDocument>asList(fileDocument));
@@ -124,7 +124,7 @@ public class DSS1334Test extends PKIFactoryAccess {
 	public void test2() {
 		DSSDocument doc = new FileDocument(
 				"src/test/resources/validation/dss1334/simple-test-signed-xades-baseline-b.xml");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setDetachedContents(Arrays.<DSSDocument>asList(new FileDocument(ORIGINAL_FILE)));
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
@@ -159,7 +159,7 @@ public class DSS1334Test extends PKIFactoryAccess {
 	}
 
 	private void assertCryptoValid(DSSDocument doc) {
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setDataLoader(new IgnoreDataLoader());
 		validator.setCertificateVerifier(certificateVerifier);
@@ -198,7 +198,7 @@ public class DSS1334Test extends PKIFactoryAccess {
 		String stringContent = new String(DSSUtils.toByteArray(signDocument), "UTF-8");
 		assertTrue(stringContent.contains("<ds:Reference Id=\"r-id-")); // no empty URI
 
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(signDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signDocument);
 		validator.setDetachedContents(Arrays.<DSSDocument>asList(new FileDocument(ORIGINAL_FILE)));
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();

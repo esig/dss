@@ -41,7 +41,7 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.reference.Base64Transform;
@@ -97,7 +97,7 @@ public class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 		DSSDocument result = service.signDocument(doc1, signatureParameters, value);
 		result.save("target/test.xml");
 
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(result);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(result);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		// reports.print();
@@ -133,7 +133,7 @@ public class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 		SignatureValue value = getToken().sign(toSign1, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument result = service.signDocument(docs, signatureParameters, value);
 
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(result);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(result);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		// reports.print();
@@ -169,7 +169,7 @@ public class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 		SignatureValue value = getToken().sign(toSign1, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument result = service.signDocument(docs, signatureParameters, value);
 
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(result);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(result);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		validator.setDetachedContents(docs);
 		Reports reports = validator.validateDocument();
@@ -205,7 +205,7 @@ public class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 		SignatureValue value = getToken().sign(toSign1, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument result = service.signDocument(doc1, signatureParameters, value);
 
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(result);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(result);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		Reports reports = validator.validateDocument();
 

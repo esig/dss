@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 /**
@@ -41,7 +41,7 @@ public class CAdESWithSpecialCharInFilenameTest {
 	@Test
 	public void testFile1() {
 		DSSDocument dssDocument = new FileDocument(FILE_TO_TEST);
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);
@@ -51,7 +51,7 @@ public class CAdESWithSpecialCharInFilenameTest {
 	@Test
 	public void testFile1SkipETSIVR() {
 		DSSDocument dssDocument = new FileDocument(FILE_TO_TEST);
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 		validator.setEnableEtsiValidationReport(false);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();

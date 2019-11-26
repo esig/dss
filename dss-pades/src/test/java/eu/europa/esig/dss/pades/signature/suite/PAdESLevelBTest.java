@@ -28,7 +28,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 public class PAdESLevelBTest extends AbstractPAdESTestSignature {
 
@@ -53,8 +53,8 @@ public class PAdESLevelBTest extends AbstractPAdESTestSignature {
 	}
 
 	@Override
-	protected DefaultDocumentValidator getValidator(DSSDocument signedDocument) {
-		DefaultDocumentValidator validator = super.getValidator(signedDocument);
+	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
+		SignedDocumentValidator validator = super.getValidator(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		// test with wrong provided certificate
 		validator.defineSigningCertificate(getCertificate(ECDSA_USER));

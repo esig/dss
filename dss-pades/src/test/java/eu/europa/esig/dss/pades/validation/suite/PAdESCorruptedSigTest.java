@@ -31,7 +31,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class PAdESCorruptedSigTest extends PKIFactoryAccess {
@@ -39,7 +39,7 @@ public class PAdESCorruptedSigTest extends PKIFactoryAccess {
 	@Test
 	public void originalPAdESTest() {
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/pdf-signed-original.pdf"));
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		
@@ -51,7 +51,7 @@ public class PAdESCorruptedSigTest extends PKIFactoryAccess {
 	@Test
 	public void corruptedPAdESTest() {
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/pdf-signed-corrupted.pdf"));
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		
@@ -63,7 +63,7 @@ public class PAdESCorruptedSigTest extends PKIFactoryAccess {
 	@Test
 	public void outOfByteRangePAdESTest() {
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/pdf-signed-out-of-byteRange.pdf"));
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		

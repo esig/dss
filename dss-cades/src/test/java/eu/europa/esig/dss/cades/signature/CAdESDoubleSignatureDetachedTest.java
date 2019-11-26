@@ -45,7 +45,7 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class CAdESDoubleSignatureDetachedTest extends PKIFactoryAccess {
@@ -85,7 +85,7 @@ public class CAdESDoubleSignatureDetachedTest extends PKIFactoryAccess {
 		signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument resignedDocument = service.signDocument(signedDocument, signatureParameters, signatureValue);
 
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(resignedDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(resignedDocument);
 		validator.setDetachedContents(Arrays.asList(documentToSign));
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 

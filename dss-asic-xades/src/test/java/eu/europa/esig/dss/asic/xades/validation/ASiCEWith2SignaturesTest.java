@@ -37,7 +37,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class ASiCEWith2SignaturesTest {
@@ -46,7 +46,7 @@ public class ASiCEWith2SignaturesTest {
 	public void test() {
 		DSSDocument asicContainer = new FileDocument("src/test/resources/ASiCEWith2Signatures.bdoc");
 
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(asicContainer);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(asicContainer);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		SignaturePolicyProvider signaturePolicyProvider = new SignaturePolicyProvider();
 		Map<String, DSSDocument> signaturePoliciesByUrl = new HashMap<String, DSSDocument>();

@@ -41,7 +41,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class DSS1636Test extends PKIFactoryAccess {
@@ -49,7 +49,7 @@ public class DSS1636Test extends PKIFactoryAccess {
 	@Test
 	public void dss1636WithContentTimestampTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/dss1636/detached_cts.xml");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 
 		Reports reports = validator.validateDocument();
@@ -84,7 +84,7 @@ public class DSS1636Test extends PKIFactoryAccess {
 	@Test
 	public void dss1636WithContentTimestampAndIncorrectDataTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/dss1636/detached_cts.xml");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setDetachedContents(Arrays.<DSSDocument>asList(new InMemoryDocument(new byte[] { 1, 2, 3 })));
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 
@@ -113,7 +113,7 @@ public class DSS1636Test extends PKIFactoryAccess {
 	@Test
 	public void dss1636WithoutContentTimestampTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/dss1636/detached_no_cts.xml");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		
 		Reports reports = validator.validateDocument();

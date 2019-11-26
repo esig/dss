@@ -40,7 +40,7 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class CAdESWithPSSTest extends AbstractCAdESTestSignature {
@@ -71,7 +71,7 @@ public class CAdESWithPSSTest extends AbstractCAdESTestSignature {
 	protected void onDocumentSigned(byte[] byteArray) {
 		InMemoryDocument doc = new InMemoryDocument(byteArray);
 
-		DefaultDocumentValidator validator = getValidator(doc);
+		SignedDocumentValidator validator = getValidator(doc);
 
 		Reports reports = validator.validateDocument();
 

@@ -37,7 +37,7 @@ import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class DSS1524Test {
@@ -45,7 +45,7 @@ public class DSS1524Test {
 	@Test
 	public void testWithWrongAttachment() {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/sig_bundle.signed_detached.xml");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setDetachedContents(Arrays.<DSSDocument>asList(new InMemoryDocument(new byte[] { 1, 2, 3 })));
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		
@@ -62,7 +62,7 @@ public class DSS1524Test {
 	@Test
 	public void testWithAttachment() {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/sig_bundle.signed_detached.xml");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 
 		DigestDocument digestDoc = new DigestDocument(DigestAlgorithm.SHA512, "kSi69weRFM3ehJVf/RZ6ASMoHUuY2g0toUYNFr68FU3nS5fT48NZK4W4Ks33zDOo+0GzIbOFMa7GRQ1r0gCXzg==");
 		validator.setDetachedContents(Arrays.<DSSDocument>asList(digestDoc));
@@ -86,7 +86,7 @@ public class DSS1524Test {
 	@Test
 	public void testNoAttachment() {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/sig_bundle.signed_detached.xml");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 
 		Reports reports = validator.validateDocument();

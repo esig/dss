@@ -20,7 +20,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
@@ -68,8 +68,8 @@ public class ProvidedSigningCertificateAndNoCertTest extends AbstractXAdESTestSi
 	}
 
 	@Override
-	protected DefaultDocumentValidator getValidator(DSSDocument signedDocument) {
-		DefaultDocumentValidator validator = super.getValidator(signedDocument);
+	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
+		SignedDocumentValidator validator = super.getValidator(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		validator.defineSigningCertificate(getSigningCert());
 		return validator;

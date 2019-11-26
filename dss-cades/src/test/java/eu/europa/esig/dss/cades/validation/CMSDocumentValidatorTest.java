@@ -38,7 +38,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.test.validation.AbstractTestValidator;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 public class CMSDocumentValidatorTest extends AbstractTestValidator {
 
@@ -67,12 +67,12 @@ public class CMSDocumentValidatorTest extends AbstractTestValidator {
 	}
 
 	@Override
-	protected DefaultDocumentValidator initEmptyValidator() {
+	protected SignedDocumentValidator initEmptyValidator() {
 		return new CMSDocumentValidator();
 	}
 
 	@Override
-	protected DefaultDocumentValidator initValidator(DSSDocument document) {
+	protected SignedDocumentValidator initValidator(DSSDocument document) {
 		return new CMSDocumentValidator(document);
 	}
 

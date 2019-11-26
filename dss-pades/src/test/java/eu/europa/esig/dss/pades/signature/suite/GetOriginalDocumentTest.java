@@ -47,7 +47,7 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class GetOriginalDocumentTest extends PKIFactoryAccess {
@@ -75,7 +75,7 @@ public class GetOriginalDocumentTest extends PKIFactoryAccess {
 		signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		final DSSDocument resignedDocument = service.signDocument(signedDocument, signatureParameters, signatureValue);
 
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(resignedDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(resignedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();

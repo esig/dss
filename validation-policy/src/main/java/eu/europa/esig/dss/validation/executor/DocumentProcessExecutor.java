@@ -1,6 +1,5 @@
 package eu.europa.esig.dss.validation.executor;
 
-import eu.europa.esig.dss.validation.executor.signature.ValidationLevel;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public interface DocumentProcessExecutor extends ProcessExecutor<Reports> {

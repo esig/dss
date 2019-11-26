@@ -28,7 +28,7 @@ import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class ASiCSCAdESSignLTALevelTest extends PKIFactoryAccess {
@@ -96,7 +96,7 @@ public class ASiCSCAdESSignLTALevelTest extends PKIFactoryAccess {
 	}
 	
 	private DiagnosticData validateDocument(DSSDocument document) {
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(document);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 
 		Reports reports = validator.validateDocument();

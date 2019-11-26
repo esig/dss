@@ -38,7 +38,7 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class TwoPAdESSigniatureMustHaveDifferentIdTest extends PKIFactoryAccess {
@@ -61,7 +61,7 @@ public class TwoPAdESSigniatureMustHaveDifferentIdTest extends PKIFactoryAccess 
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument firstSignedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(firstSignedDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(firstSignedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
@@ -71,7 +71,7 @@ public class TwoPAdESSigniatureMustHaveDifferentIdTest extends PKIFactoryAccess 
 		signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument secondSignedDocument = service.signDocument(firstSignedDocument, signatureParameters, signatureValue);
 
-		validator = DefaultDocumentValidator.fromDocument(secondSignedDocument);
+		validator = SignedDocumentValidator.fromDocument(secondSignedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		reports = validator.validateDocument();
 

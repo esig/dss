@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.xades.validation;
 
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.DocumentValidatorFactory;
 
 public class XMLDocumentValidatorFactory implements DocumentValidatorFactory {
@@ -33,7 +33,7 @@ public class XMLDocumentValidatorFactory implements DocumentValidatorFactory {
 	}
 
 	@Override
-	public DefaultDocumentValidator create(DSSDocument document) {
+	public SignedDocumentValidator create(DSSDocument document) {
 		return new XMLDocumentValidator(document);
 	}
 

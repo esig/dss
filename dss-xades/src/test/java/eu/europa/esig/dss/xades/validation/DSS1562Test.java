@@ -34,7 +34,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class DSS1562Test extends PKIFactoryAccess {
@@ -43,7 +43,7 @@ public class DSS1562Test extends PKIFactoryAccess {
 	public void test() {
 		
 		DSSDocument doc = new FileDocument("src/test/resources/validation/xades-detached-with-object-type-ref.xml");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		
 		DSSDocument detachedContent = new FileDocument("src/test/resources/sample.png");

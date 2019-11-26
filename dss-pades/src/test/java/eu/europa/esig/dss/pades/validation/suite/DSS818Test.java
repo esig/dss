@@ -42,7 +42,7 @@ import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 public class DSS818Test {
 
@@ -50,7 +50,7 @@ public class DSS818Test {
 
 	@Test
 	public void testCRY() throws Exception {
-		DefaultDocumentValidator validator = DefaultDocumentValidator
+		SignedDocumentValidator validator = SignedDocumentValidator
 				.fromDocument(new InMemoryDocument(getClass().getResourceAsStream("/validation/dss-818/Signature-P-DE_CRY-2 (HASH_FAILURE).pdf")));
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 
@@ -67,7 +67,7 @@ public class DSS818Test {
 
 	@Test
 	public void testADO() throws Exception {
-		DefaultDocumentValidator validator = DefaultDocumentValidator
+		SignedDocumentValidator validator = SignedDocumentValidator
 				.fromDocument(new InMemoryDocument(getClass().getResourceAsStream("/validation/dss-818/Signature-P-IT_ADO-1 (HASH_FAILURE) (ECDSA).pdf")));
 
 		List<AdvancedSignature> signatures = validator.getSignatures();
@@ -83,7 +83,7 @@ public class DSS818Test {
 
 	@Test
 	public void testSK() throws Exception {
-		DefaultDocumentValidator validator = DefaultDocumentValidator
+		SignedDocumentValidator validator = SignedDocumentValidator
 				.fromDocument(new InMemoryDocument(getClass().getResourceAsStream("/validation/dss-818/Signature-P-SK-1 (HASH_FAILURE).pdf")));
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 

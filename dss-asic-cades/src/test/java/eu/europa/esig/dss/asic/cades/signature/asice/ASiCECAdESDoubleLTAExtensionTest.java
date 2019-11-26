@@ -51,7 +51,7 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.ManifestFile;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class ASiCECAdESDoubleLTAExtensionTest extends PKIFactoryAccess {
@@ -90,7 +90,7 @@ public class ASiCECAdESDoubleLTAExtensionTest extends PKIFactoryAccess {
 		
 		// doubleLTADoc.save("target/doubleLTA.asice");
 		
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doubleLTADoc);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doubleLTADoc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		

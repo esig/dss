@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class ZipBombingTest {
@@ -37,7 +37,7 @@ public class ZipBombingTest {
 	@Test
 	public void zipBombing() {
 		FileDocument doc = new FileDocument("src/test/resources/validation/zip-bomb.asice");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);
@@ -46,7 +46,7 @@ public class ZipBombingTest {
 	@Test
 	public void zipBombingPackageZip() {
 		FileDocument doc = new FileDocument("src/test/resources/validation/zip-bomb-package-zip.asics");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);
@@ -55,7 +55,7 @@ public class ZipBombingTest {
 	@Test
 	public void zipBombingOneLevelAsice() {
 		FileDocument doc = new FileDocument("src/test/resources/validation/one-level-zip-bombing.asice");
-		Exception exception = assertThrows(DSSException.class, () -> DefaultDocumentValidator.fromDocument(doc));
+		Exception exception = assertThrows(DSSException.class, () -> SignedDocumentValidator.fromDocument(doc));
 		assertEquals("Document format not recognized/handled", exception.getMessage());
 	}
 
@@ -69,7 +69,7 @@ public class ZipBombingTest {
 	@Test
 	public void zipBombingOneLevelAsics() {
 		FileDocument doc = new FileDocument("src/test/resources/validation/zip-bomb-package-zip-1gb.asics");
-		Exception exception = assertThrows(DSSException.class, () -> DefaultDocumentValidator.fromDocument(doc));
+		Exception exception = assertThrows(DSSException.class, () -> SignedDocumentValidator.fromDocument(doc));
 		assertEquals("Document format not recognized/handled", exception.getMessage());
 	}
 
@@ -83,14 +83,14 @@ public class ZipBombingTest {
 	@Test
 	public void zipBombingTooManyFilesAsice() {
 		FileDocument doc = new FileDocument("src/test/resources/validation/container-too-many-files.asice");
-		Exception exception = assertThrows(DSSException.class, () -> DefaultDocumentValidator.fromDocument(doc));
+		Exception exception = assertThrows(DSSException.class, () -> SignedDocumentValidator.fromDocument(doc));
 		assertEquals("Document format not recognized/handled", exception.getMessage());
 	}
 
 	@Test
 	public void zipBombingTooManyFilesAsics() {
 		FileDocument doc = new FileDocument("src/test/resources/validation/container-too-many-files.asics");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);

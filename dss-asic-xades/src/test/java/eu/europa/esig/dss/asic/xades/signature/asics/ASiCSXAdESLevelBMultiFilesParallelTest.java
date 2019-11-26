@@ -51,7 +51,7 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class ASiCSXAdESLevelBMultiFilesParallelTest extends PKIFactoryAccess {
@@ -91,7 +91,7 @@ public class ASiCSXAdESLevelBMultiFilesParallelTest extends PKIFactoryAccess {
 
 		DSSDocument docToCheck = new FileDocument(new File("target/resigned.asics"));
 
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(docToCheck);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(docToCheck);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 
 		Reports reports = validator.validateDocument();

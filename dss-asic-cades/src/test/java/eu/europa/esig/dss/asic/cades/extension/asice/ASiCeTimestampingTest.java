@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
-import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESValidator;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -32,6 +31,7 @@ import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.DocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationObjectListType;
@@ -55,7 +55,7 @@ public class ASiCeTimestampingTest extends PKIFactoryAccess {
 		extendParams.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 		DSSDocument extendedDoc = service.extendDocument(doc, extendParams);
 		
-		DocumentValidator validator = new ASiCContainerWithCAdESValidator(extendedDoc);
+		DocumentValidator validator = SignedDocumentValidator.fromDocument(extendedDoc);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		

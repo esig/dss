@@ -35,14 +35,14 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public abstract class AbstractTestValidator {
 
-	protected abstract DefaultDocumentValidator initEmptyValidator();
+	protected abstract SignedDocumentValidator initEmptyValidator();
 
-	protected abstract DefaultDocumentValidator initValidator(DSSDocument document);
+	protected abstract SignedDocumentValidator initValidator(DSSDocument document);
 
 	protected abstract List<DSSDocument> getValidDocuments();
 
@@ -60,7 +60,7 @@ public abstract class AbstractTestValidator {
 	public void validateSignatures() {
 		List<DSSDocument> documents = getValidDocuments();
 		for (DSSDocument document : documents) {
-			DefaultDocumentValidator validator = initValidator(document);
+			SignedDocumentValidator validator = initValidator(document);
 			validate(validator, true);
 		}
 	}
@@ -69,7 +69,7 @@ public abstract class AbstractTestValidator {
 	public void validateFromDocument() {
 		List<DSSDocument> documents = getValidDocuments();
 		for (DSSDocument document : documents) {
-			DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(document);
+			SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
 			validate(validator, true);
 		}
 	}
@@ -77,7 +77,7 @@ public abstract class AbstractTestValidator {
 	@Test
 	public void binaryDocumentValidation() {
 		assertThrows(DSSException.class, () -> {
-			DefaultDocumentValidator validator = initValidator(getBinaryDocument());
+			SignedDocumentValidator validator = initValidator(getBinaryDocument());
 			validate(validator);
 		});
 	}
@@ -85,7 +85,7 @@ public abstract class AbstractTestValidator {
 	@Test
 	public void malformedDocumentValidation() {
 		assertThrows(DSSException.class, () -> {
-			DefaultDocumentValidator validator = initValidator(getMalformedDocument());
+			SignedDocumentValidator validator = initValidator(getMalformedDocument());
 			validate(validator);
 		});
 	}
@@ -93,7 +93,7 @@ public abstract class AbstractTestValidator {
 	@Test
 	public void otherDocumentTypeValidation() {
 		assertThrows(DSSException.class, () -> {
-			DefaultDocumentValidator validator = initValidator(getOtherTypeDocument());
+			SignedDocumentValidator validator = initValidator(getOtherTypeDocument());
 			validate(validator);
 		});
 	}
@@ -102,7 +102,7 @@ public abstract class AbstractTestValidator {
 	public void validateNoSignatureDocument() {
 		DSSDocument document = getNoSignatureDocument();
 		if (document != null) {
-			DefaultDocumentValidator validator = initValidator(document);
+			SignedDocumentValidator validator = initValidator(document);
 			validate(validator, false);
 		}
 	}
@@ -141,7 +141,7 @@ public abstract class AbstractTestValidator {
 	@Test
 	public void nullDocumentProvided() {
 		assertThrows(NullPointerException.class, () -> {
-			DefaultDocumentValidator validator = initValidator(null);
+			SignedDocumentValidator validator = initValidator(null);
 			validate(validator);
 		});
 	}
@@ -149,17 +149,17 @@ public abstract class AbstractTestValidator {
 	@Test
 	public void nullFromDocument() {
 		Exception exception = assertThrows(NullPointerException.class, () -> {
-			DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(null);
+			SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(null);
 			validate(validator);
 		});
 		assertEquals("DSSDocument is null", exception.getMessage());
 	}
 
-	protected void validate(DefaultDocumentValidator validator) {
+	protected void validate(SignedDocumentValidator validator) {
 		validate(validator, false);
 	}
 
-	protected void validate(DefaultDocumentValidator validator, boolean containsSignature) {
+	protected void validate(SignedDocumentValidator validator, boolean containsSignature) {
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);

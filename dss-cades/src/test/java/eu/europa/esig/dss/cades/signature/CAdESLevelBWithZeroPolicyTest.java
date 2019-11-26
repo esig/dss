@@ -45,7 +45,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class CAdESLevelBWithZeroPolicyTest extends PKIFactoryAccess {
@@ -141,7 +141,7 @@ public class CAdESLevelBWithZeroPolicyTest extends PKIFactoryAccess {
 	}
 	
 	public void testSignatureTrueZeroPolicy() {
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(signedDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		
 		Reports reports = validator.validateDocument();
@@ -157,7 +157,7 @@ public class CAdESLevelBWithZeroPolicyTest extends PKIFactoryAccess {
 	}
 	
 	public void testSignatureFalseZeroPolicy() {
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(signedDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		
 		Reports reports = validator.validateDocument();

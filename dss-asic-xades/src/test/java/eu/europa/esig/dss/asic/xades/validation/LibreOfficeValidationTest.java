@@ -39,7 +39,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class LibreOfficeValidationTest {
@@ -47,7 +47,7 @@ public class LibreOfficeValidationTest {
 	@Test
 	public void odt() {
 		FileDocument doc = new FileDocument("src/test/resources/validation/libreoffice.odt");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
@@ -66,7 +66,7 @@ public class LibreOfficeValidationTest {
 	public void odt6_2() {
 		// updated version
 		FileDocument doc = new FileDocument("src/test/resources/validation/sig-6_2.odt");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
@@ -83,7 +83,7 @@ public class LibreOfficeValidationTest {
 	@Test
 	public void ods() {
 		FileDocument doc = new FileDocument("src/test/resources/validation/libreoffice.ods");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 

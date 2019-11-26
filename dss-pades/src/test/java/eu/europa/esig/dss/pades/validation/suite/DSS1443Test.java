@@ -42,7 +42,7 @@ import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class DSS1443Test extends PKIFactoryAccess {
@@ -50,7 +50,7 @@ public class DSS1443Test extends PKIFactoryAccess {
 	@Test
 	public void testSigWithAttached() {
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/DSS-1443.pdf"));
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(getCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
@@ -64,7 +64,7 @@ public class DSS1443Test extends PKIFactoryAccess {
 		parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 		DSSDocument extendDocument = service.extendDocument(dssDocument, parameters);
 
-		validator = DefaultDocumentValidator.fromDocument(extendDocument);
+		validator = SignedDocumentValidator.fromDocument(extendDocument);
 		validator.setCertificateVerifier(getCertificateVerifier());
 		reports = validator.validateDocument();
 

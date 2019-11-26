@@ -46,7 +46,7 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class CAdESDoubleLTATest extends PKIFactoryAccess {
@@ -69,7 +69,7 @@ public class CAdESDoubleLTATest extends PKIFactoryAccess {
 		SignatureValue signatureValue = getToken().sign(dataToSign, params.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument ltaDoc = service.signDocument(doc, params, signatureValue);
 
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(ltaDoc);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(ltaDoc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
@@ -88,7 +88,7 @@ public class CAdESDoubleLTATest extends PKIFactoryAccess {
 		extendParams.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 		DSSDocument doubleLtaDoc = service.extendDocument(ltaDoc, extendParams);
 
-		validator = DefaultDocumentValidator.fromDocument(doubleLtaDoc);
+		validator = SignedDocumentValidator.fromDocument(doubleLtaDoc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		reports = validator.validateDocument();
 

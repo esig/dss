@@ -29,7 +29,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 public class RetrieveOriginalDocumentTest {
 
@@ -43,7 +43,7 @@ public class RetrieveOriginalDocumentTest {
 
 		// We create an instance of DocumentValidator. DSS automatically selects the validator depending of the
 		// signature file
-		DefaultDocumentValidator documentValidator = DefaultDocumentValidator.fromDocument(signedDocument);
+		SignedDocumentValidator documentValidator = SignedDocumentValidator.fromDocument(signedDocument);
 
 		// We set a certificate verifier. It handles the certificate pool, allows to check the certificate status,...
 		documentValidator.setCertificateVerifier(new CommonCertificateVerifier());

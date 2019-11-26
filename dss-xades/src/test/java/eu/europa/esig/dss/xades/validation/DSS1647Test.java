@@ -38,7 +38,7 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class DSS1647Test {
@@ -46,7 +46,7 @@ public class DSS1647Test {
 	@Test
 	public void test() {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/dss-1647_OJ_L_2018_109_FULL.xml");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
 		//commonCertificateVerifier.setIncludeCertificateRevocationValues(true);
 		validator.setCertificateVerifier(commonCertificateVerifier);

@@ -58,7 +58,7 @@ import eu.europa.esig.dss.spi.util.MutableTimeDependentValues;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.test.signature.UnmarshallingTester;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class XAdESLTATest {
@@ -66,7 +66,7 @@ public class XAdESLTATest {
 	@Test
 	public void test() {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/XAdESLTA.xml");
-		DefaultDocumentValidator sdv = DefaultDocumentValidator.fromDocument(doc);
+		SignedDocumentValidator sdv = SignedDocumentValidator.fromDocument(doc);
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		CommonTrustedCertificateSource trustedCertSource = new CommonTrustedCertificateSource();
 		trustedCertSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(
@@ -82,7 +82,7 @@ public class XAdESLTATest {
 	@SuppressWarnings("serial")
 	public void testWithTrustedService() throws JAXBException, IOException, SAXException {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/XAdESLTA.xml");
-		DefaultDocumentValidator sdv = DefaultDocumentValidator.fromDocument(doc);
+		SignedDocumentValidator sdv = SignedDocumentValidator.fromDocument(doc);
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		TrustedListsCertificateSource trustedCertSource = new TrustedListsCertificateSource();
 		

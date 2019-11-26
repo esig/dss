@@ -39,7 +39,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class DSS1419Test {
@@ -48,7 +48,7 @@ public class DSS1419Test {
 	public void testSHA3_0() {
 		// CAdES-BpB-att-SHA256-SHA3_256withRSA.p7m
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-1419/CAdES-BpB-att-SHA256-SHA3_256withRSA.p7m");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 
 		List<AdvancedSignature> signatures = validator.getSignatures();
@@ -77,7 +77,7 @@ public class DSS1419Test {
 	public void testSHA3_1() {
 		// CAdES-BpB-att-SHA256-SHA3_256withRSAandMGF1.p7m
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-1419/CAdES-BpB-att-SHA256-SHA3_256withRSAandMGF1.p7m");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 
 		List<AdvancedSignature> signatures = validator.getSignatures();
@@ -106,7 +106,7 @@ public class DSS1419Test {
 	public void testSHA3_2() {
 		// CAdES-BpB-att-SHA3_224-SHA256withRSA.p7m
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-1419/CAdES-BpB-att-SHA3_224-SHA256withRSA.p7m");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 
 		List<AdvancedSignature> signatures = validator.getSignatures();
@@ -135,7 +135,7 @@ public class DSS1419Test {
 	public void testSHA3_3() {
 		// CAdES-BpB-att-SHA3_256-SHA256withRSA.p7m
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-1419/CAdES-BpB-att-SHA3_256-SHA256withRSA.p7m");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 
 		List<AdvancedSignature> signatures = validator.getSignatures();
@@ -164,7 +164,7 @@ public class DSS1419Test {
 	public void testSHA3_4() {
 		// CAdES-BpB-att-SHA3_256-SHA3_256withRSA.p7m
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-1419/CAdES-BpB-att-SHA3_256-SHA3_256withRSA.p7m");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 
 		List<AdvancedSignature> signatures = validator.getSignatures();
@@ -192,7 +192,7 @@ public class DSS1419Test {
 	public void testSHA3_5() {
 		// CAdES-BpB-att-SHA3_384-SHA256withRSA.p7m
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-1419/CAdES-BpB-att-SHA3_384-SHA256withRSA.p7m");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 
 		List<AdvancedSignature> signatures = validator.getSignatures();
@@ -221,7 +221,7 @@ public class DSS1419Test {
 	public void testSHA3_6() {
 		// CAdES-BpB-att-SHA3_512-SHA256withRSA.p7m
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-1419/CAdES-BpB-att-SHA3_512-SHA256withRSA.p7m");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 
 		List<AdvancedSignature> signatures = validator.getSignatures();
@@ -249,7 +249,7 @@ public class DSS1419Test {
 	public void testSHA3_7() {
 		// CAdES-BpB-att-SHA256-SHA512withRSA.p7m
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-1419/CAdES-BpB-att-SHA256-SHA512withRSA.p7m");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 
 		List<AdvancedSignature> signatures = validator.getSignatures();
@@ -277,7 +277,7 @@ public class DSS1419Test {
 	public void testSHA3_8() {
 		// CAdES-BpB-att-SHA3_224-SHA3_224withRSA.p7m
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-1419/CAdES-BpB-att-SHA3_224-SHA3_224withRSA.p7m");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 
 		List<AdvancedSignature> signatures = validator.getSignatures();
@@ -305,7 +305,7 @@ public class DSS1419Test {
 	public void testSHA3_9() {
 		// CAdES-BpB-att-SHA3_512-SHA3_512withRSA.p7m
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-1419/CAdES-BpB-att-SHA3_512-SHA3_512withRSA.p7m");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(dssDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 
 		List<AdvancedSignature> signatures = validator.getSignatures();

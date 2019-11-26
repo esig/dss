@@ -33,7 +33,7 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class DSS1688Test {
@@ -41,7 +41,7 @@ public class DSS1688Test {
 	@Test
 	public void test() {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/dss1688/dss1688.xml");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		DSSDocument detachedDocument = new FileDocument("src/test/resources/validation/dss1688/dss1688-detached-content.xml");
 		validator.setDetachedContents(Arrays.asList(detachedDocument));
 		validator.setCertificateVerifier(new CommonCertificateVerifier());

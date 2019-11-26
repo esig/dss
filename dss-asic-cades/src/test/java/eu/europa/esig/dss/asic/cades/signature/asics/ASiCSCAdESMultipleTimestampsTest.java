@@ -48,7 +48,7 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class ASiCSCAdESMultipleTimestampsTest extends PKIFactoryAccess {
@@ -78,7 +78,7 @@ public class ASiCSCAdESMultipleTimestampsTest extends PKIFactoryAccess {
 		extendParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
 		DSSDocument extendDocument = service.extendDocument(signedDocument, extendParameters);
 
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(extendDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(extendDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 
 		Reports reports = validator.validateDocument();

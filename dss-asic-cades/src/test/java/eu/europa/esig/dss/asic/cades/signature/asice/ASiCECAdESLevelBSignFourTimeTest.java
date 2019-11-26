@@ -39,7 +39,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class ASiCECAdESLevelBSignFourTimeTest extends PKIFactoryAccess {
@@ -99,7 +99,7 @@ public class ASiCECAdESLevelBSignFourTimeTest extends PKIFactoryAccess {
 
 		// resignedDocument.save("target/resigned.asice");
 
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(resignedDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(resignedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 
 		Reports reports = validator.validateDocument();

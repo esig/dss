@@ -46,6 +46,6 @@ public interface DocumentValidatorFactory {
 	 *                 creation
 	 * @return an instance of {@link DocumentValidator} with the document
 	 */
-	DefaultDocumentValidator create(DSSDocument document);
+	SignedDocumentValidator create(DSSDocument document);
 
 }

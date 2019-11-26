@@ -50,7 +50,7 @@ import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.test.signature.UnmarshallingTester;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public abstract class AbstractTestExtension<SP extends AbstractSignatureParameters> extends PKIFactoryAccess {
@@ -78,7 +78,7 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 		String signedFilePath = "target/" + signedDocument.getName();
 		signedDocument.save(signedFilePath);
 
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(signedDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
@@ -105,7 +105,7 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 		assertNotNull(DSSUtils.toByteArray(extendedDocument));
 		assertNotNull(extendedDocument.getName());
 
-		validator = DefaultDocumentValidator.fromDocument(extendedDocument);
+		validator = SignedDocumentValidator.fromDocument(extendedDocument);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		reports = validator.validateDocument();
 

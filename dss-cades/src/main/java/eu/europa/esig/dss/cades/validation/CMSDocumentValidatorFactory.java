@@ -22,7 +22,7 @@ package eu.europa.esig.dss.cades.validation;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.validation.DocumentValidatorFactory;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 public class CMSDocumentValidatorFactory implements DocumentValidatorFactory {
 
@@ -33,7 +33,7 @@ public class CMSDocumentValidatorFactory implements DocumentValidatorFactory {
 	}
 
 	@Override
-	public DefaultDocumentValidator create(DSSDocument document) {
+	public SignedDocumentValidator create(DSSDocument document) {
 		return new CMSDocumentValidator(document);
 	}
 

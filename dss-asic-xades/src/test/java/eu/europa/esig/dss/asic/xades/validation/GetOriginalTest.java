@@ -41,7 +41,7 @@ import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class GetOriginalTest {
@@ -56,7 +56,7 @@ public class GetOriginalTest {
 	public void testMultifilesASICSOneToMuchFile() throws Exception {
 		FileDocument signedDoc = new FileDocument("src/test/resources/validation/multifiles-too-much-files.asics");
 
-		DefaultDocumentValidator sdv = DefaultDocumentValidator.fromDocument(signedDoc);
+		SignedDocumentValidator sdv = SignedDocumentValidator.fromDocument(signedDoc);
 		sdv.setCertificateVerifier(new CommonCertificateVerifier());
 		List<AdvancedSignature> signatures = sdv.getSignatures();
 		assertEquals(2, signatures.size());
@@ -91,7 +91,7 @@ public class GetOriginalTest {
 	public void testMultifilesASICEOneToMuchFile() {
 		FileDocument signedDoc = new FileDocument("src/test/resources/validation/multifiles-too-much-files.asice");
 
-		DefaultDocumentValidator sdv = DefaultDocumentValidator.fromDocument(signedDoc);
+		SignedDocumentValidator sdv = SignedDocumentValidator.fromDocument(signedDoc);
 		sdv.setCertificateVerifier(new CommonCertificateVerifier());
 		List<AdvancedSignature> signatures = sdv.getSignatures();
 		assertEquals(2, signatures.size());
@@ -129,7 +129,7 @@ public class GetOriginalTest {
 	public void testOnefileASICSOneToMuchFile() {
 		FileDocument signedDoc = new FileDocument("src/test/resources/validation/onefile-too-much-files.asics");
 
-		DefaultDocumentValidator sdv = DefaultDocumentValidator.fromDocument(signedDoc);
+		SignedDocumentValidator sdv = SignedDocumentValidator.fromDocument(signedDoc);
 		sdv.setCertificateVerifier(new CommonCertificateVerifier());
 		List<AdvancedSignature> signatures = sdv.getSignatures();
 		assertEquals(1, signatures.size());
@@ -154,7 +154,7 @@ public class GetOriginalTest {
 
 		FileDocument signedDoc = new FileDocument("src/test/resources/validation/onefile-too-much-files.asice");
 
-		DefaultDocumentValidator sdv = DefaultDocumentValidator.fromDocument(signedDoc);
+		SignedDocumentValidator sdv = SignedDocumentValidator.fromDocument(signedDoc);
 		sdv.setCertificateVerifier(new CommonCertificateVerifier());
 		List<AdvancedSignature> signatures = sdv.getSignatures();
 		assertEquals(1, signatures.size());
@@ -170,7 +170,7 @@ public class GetOriginalTest {
 	public void testMultifilesASICSWrongFile() {
 		FileDocument signedDoc = new FileDocument("src/test/resources/validation/multifiles-wrong-file.asics");
 
-		DefaultDocumentValidator sdv = DefaultDocumentValidator.fromDocument(signedDoc);
+		SignedDocumentValidator sdv = SignedDocumentValidator.fromDocument(signedDoc);
 		sdv.setCertificateVerifier(new CommonCertificateVerifier());
 		List<AdvancedSignature> signatures = sdv.getSignatures();
 		assertEquals(2, signatures.size());
@@ -185,7 +185,7 @@ public class GetOriginalTest {
 	public void testMultifilesASICEWrongFile() {
 		FileDocument signedDoc = new FileDocument("src/test/resources/validation/multifiles-wrong-file.asice");
 
-		DefaultDocumentValidator sdv = DefaultDocumentValidator.fromDocument(signedDoc);
+		SignedDocumentValidator sdv = SignedDocumentValidator.fromDocument(signedDoc);
 		sdv.setCertificateVerifier(new CommonCertificateVerifier());
 		List<AdvancedSignature> signatures = sdv.getSignatures();
 		assertEquals(2, signatures.size());
@@ -200,7 +200,7 @@ public class GetOriginalTest {
 	public void testOnefileASICSWrongFile() {
 		FileDocument signedDoc = new FileDocument("src/test/resources/validation/onefile-wrong-file.asics");
 
-		DefaultDocumentValidator sdv = DefaultDocumentValidator.fromDocument(signedDoc);
+		SignedDocumentValidator sdv = SignedDocumentValidator.fromDocument(signedDoc);
 		sdv.setCertificateVerifier(new CommonCertificateVerifier());
 		List<AdvancedSignature> signatures = sdv.getSignatures();
 		assertEquals(1, signatures.size());
@@ -215,7 +215,7 @@ public class GetOriginalTest {
 	public void testOnefileASICEWrongFile() {
 		FileDocument signedDoc = new FileDocument("src/test/resources/validation/onefile-wrong-file.asice");
 
-		DefaultDocumentValidator sdv = DefaultDocumentValidator.fromDocument(signedDoc);
+		SignedDocumentValidator sdv = SignedDocumentValidator.fromDocument(signedDoc);
 		sdv.setCertificateVerifier(new CommonCertificateVerifier());
 		List<AdvancedSignature> signatures = sdv.getSignatures();
 		assertEquals(1, signatures.size());

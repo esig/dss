@@ -45,7 +45,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class CAdESRevocationWrapperTest extends PKIFactoryAccess {
@@ -53,7 +53,7 @@ public class CAdESRevocationWrapperTest extends PKIFactoryAccess {
 	@Test
 	public void revocationValuesTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-CAdES/HU_POL/Signature-C-HU_POL-3.p7m");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports report = validator.validateDocument();
 		// report.print();
@@ -82,7 +82,7 @@ public class CAdESRevocationWrapperTest extends PKIFactoryAccess {
 	@Test
 	public void revocationCRLRefsTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/plugtest/cades/CAdES-A/Sample_Set_11/Signature-C-A-XL-1.p7m");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports report = validator.validateDocument();
 		// report.print();
@@ -104,7 +104,7 @@ public class CAdESRevocationWrapperTest extends PKIFactoryAccess {
 	@Test
 	public void revocationOCSPRefsTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/plugtest/cades/CAdES-Baseline_profile_LT/Sample_Set_15/Signature-CBp-LT-2.p7m");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports report = validator.validateDocument();
 		// report.print();
@@ -129,7 +129,7 @@ public class CAdESRevocationWrapperTest extends PKIFactoryAccess {
 	@Test
 	public void revocationRefsWithMultipleOrigins() {
 		DSSDocument doc = new FileDocument("src/test/resources/plugtest/cades/CAdES-X/Sample_Set_12/Signature-C-X-1.p7m");
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doc);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports report = validator.validateDocument();
 

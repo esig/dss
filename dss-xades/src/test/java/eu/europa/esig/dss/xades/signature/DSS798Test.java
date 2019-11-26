@@ -39,7 +39,7 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
@@ -100,7 +100,7 @@ public class DSS798Test extends PKIFactoryAccess {
 		parametersExtend.setDetachedContents(Arrays.asList(documentToSign));
 		DSSDocument extendedDocument = serviceExtend.extendDocument(signedDocument, parametersExtend);
 
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(extendedDocument);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(extendedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		validator.setDetachedContents(Arrays.asList(documentToSign));
 		Reports reports = validator.validateDocument();

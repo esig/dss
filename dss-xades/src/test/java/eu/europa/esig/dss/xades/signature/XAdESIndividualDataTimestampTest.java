@@ -47,7 +47,7 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
@@ -105,7 +105,7 @@ public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 		SignatureValue value = getToken().sign(toSign1, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument result = service.signDocument(docs, signatureParameters, value);
 
-		DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(result);
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(result);
 		DefaultSignatureProcessExecutor processExecutor = new DefaultSignatureProcessExecutor();
 		validator.setValidationTime(currentTime);
 		validator.setProcessExecutor(processExecutor);

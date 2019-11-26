@@ -47,7 +47,7 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
@@ -84,7 +84,7 @@ public class XAdESDoubleLTATest extends PKIFactoryAccess {
         
         // doubleLTADoc.save("target/doubleLTA.xml");
         
-        DefaultDocumentValidator validator = DefaultDocumentValidator.fromDocument(doubleLTADoc);
+        SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doubleLTADoc);
         validator.setCertificateVerifier(getOfflineCertificateVerifier());
         validator.setDetachedContents(Arrays.asList(documentToSign));
         Reports reports = validator.validateDocument();

@@ -32,7 +32,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.test.validation.AbstractTestValidator;
-import eu.europa.esig.dss.validation.DefaultDocumentValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 public class PDFDocumentValidatorCheckTest extends AbstractTestValidator {
 
@@ -51,12 +51,12 @@ public class PDFDocumentValidatorCheckTest extends AbstractTestValidator {
 	}
 
 	@Override
-	protected DefaultDocumentValidator initEmptyValidator() {
+	protected SignedDocumentValidator initEmptyValidator() {
 		return new PDFDocumentValidator();
 	}
 
 	@Override
-	protected DefaultDocumentValidator initValidator(DSSDocument document) {
+	protected SignedDocumentValidator initValidator(DSSDocument document) {
 		return new PDFDocumentValidator(document);
 	}
 

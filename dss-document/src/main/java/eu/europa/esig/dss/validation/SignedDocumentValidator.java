@@ -42,16 +42,16 @@ import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessE
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 
 /**
- * Validates a signed/timestamped document. The content of the document is determined
+ * Validates a signed document. The content of the document is determined
  * automatically. It can be: XML, CAdES(p7m), PDF or ASiC(zip).
  * SignatureScopeFinder can be set using the appropriate setter (ex.
  * setCadesSignatureScopeFinder). By default, this class will use the default
  * SignatureScopeFinder as defined by
  * eu.europa.esig.dss.validation.scope.SignatureScopeFinderFactory
  */
-public abstract class DefaultDocumentValidator extends AbstractDocumentValidator implements SignatureValidator {
+public abstract class SignedDocumentValidator extends AbstractDocumentValidator implements SignatureValidator {
 
-	private static final Logger LOG = LoggerFactory.getLogger(DefaultDocumentValidator.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SignedDocumentValidator.class);
 
 	static {
 		Security.addProvider(DSSSecurityProvider.getSecurityProvider());
@@ -79,7 +79,7 @@ public abstract class DefaultDocumentValidator extends AbstractDocumentValidator
 
 	protected SignaturePolicyProvider signaturePolicyProvider;
 
-	protected DefaultDocumentValidator(SignatureScopeFinder signatureScopeFinder) {
+	protected SignedDocumentValidator(SignatureScopeFinder signatureScopeFinder) {
 		this.signatureScopeFinder = signatureScopeFinder;
 	}
 	
@@ -98,7 +98,7 @@ public abstract class DefaultDocumentValidator extends AbstractDocumentValidator
 	 * @return returns the specific instance of SignedDocumentValidator in terms
 	 *         of the document type
 	 */
-	public static DefaultDocumentValidator fromDocument(final DSSDocument dssDocument) {
+	public static SignedDocumentValidator fromDocument(final DSSDocument dssDocument) {
 		Objects.requireNonNull(dssDocument, "DSSDocument is null");
 		ServiceLoader<DocumentValidatorFactory> serviceLoaders = ServiceLoader.load(DocumentValidatorFactory.class);
 		for (DocumentValidatorFactory factory : serviceLoaders) {
