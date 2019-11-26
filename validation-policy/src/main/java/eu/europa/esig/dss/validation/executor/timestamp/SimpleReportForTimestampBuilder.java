@@ -15,43 +15,21 @@ import eu.europa.esig.dss.simplereport.jaxb.XmlCertificate;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificateChain;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp;
+import eu.europa.esig.dss.simplereport.jaxb.XmlTimestampLevel;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestampQualification;
-import eu.europa.esig.dss.simplereport.jaxb.XmlValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.executor.AbstractSimpleReportBuilder;
 
-public class SimpleReportForTimestampBuilder {
-
-	private final DiagnosticData diagnosticData;
-	private final DetailedReport detailedReport;
-	private final Date currentTime;
-	private final ValidationPolicy policy;
-
+public class SimpleReportForTimestampBuilder extends AbstractSimpleReportBuilder {
+	
 	public SimpleReportForTimestampBuilder(DiagnosticData diagnosticData, DetailedReport detailedReport, Date currentTime, ValidationPolicy policy) {
-		this.diagnosticData = diagnosticData;
-		this.detailedReport = detailedReport;
-		this.currentTime = currentTime;
-		this.policy = policy;
+		super(currentTime, policy, diagnosticData, detailedReport);
 	}
 
 	public XmlSimpleReport build() {
-		XmlSimpleReport simpleReport = new XmlSimpleReport();
-		
-		addValidationTime(simpleReport);
-		addPolicyNode(simpleReport);
-		addTimestamps(simpleReport);
-		
-		return simpleReport;
-	}
-	
-	private void addValidationTime(XmlSimpleReport report) {
-		report.setValidationTime(currentTime);
-	}
-
-	private void addPolicyNode(XmlSimpleReport report) {
-		XmlValidationPolicy xmlpolicy = new XmlValidationPolicy();
-		xmlpolicy.setPolicyName(policy.getPolicyName());
-		xmlpolicy.setPolicyDescription(policy.getPolicyDescription());
-		report.setValidationPolicy(xmlpolicy);
+		XmlSimpleReport xmlSimpleReport = super.build();
+		addTimestamps(xmlSimpleReport);
+		return xmlSimpleReport;
 	}
 	
 	private void addTimestamps(XmlSimpleReport report) {
@@ -79,7 +57,10 @@ public class SimpleReportForTimestampBuilder {
 		xmlTimestamp.getInfos().addAll(toStrings(timestampBBB.getConclusion().getInfos()));
 		
 		// TODO : qualification
-		xmlTimestamp.setTimestampQualification(XmlTimestampQualification.N_A);
+		XmlTimestampLevel xmlTimestampLevel = new XmlTimestampLevel();
+		xmlTimestampLevel.setValue(XmlTimestampQualification.N_A);
+		xmlTimestampLevel.setDescription("Not applicable");
+		xmlTimestamp.setTimestampLevel(xmlTimestampLevel);
 		
 		return xmlTimestamp;
 	}

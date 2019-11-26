@@ -163,13 +163,22 @@ public class SimpleReport {
 	}
 	
 	/**
+	 * Returns a file name for the validated document
+	 * 
+	 * @return {@link String} document file name
+	 */
+	public String getDocumentFilename() {
+		return wrapped.getDocumentName();
+	}
+	
+	/**
 	 * Returns a file name for a given tokenId
 	 * 
 	 * @param tokenId 
 	 * 		  	  {@link String} id of a token to get its original filename
 	 * @return {@link String} file name
 	 */
-	public String getFilename(final String tokenId) {
+	public String getTokenFilename(final String tokenId) {
 		XmlToken token = getTokenById(tokenId);
 		if (token != null) {
 			return token.getFilename();
@@ -370,8 +379,8 @@ public class SimpleReport {
 	 */
 	public XmlTimestampQualification getTimestampQualification(final String timestampId) {
 		XmlTimestamp xmlTimestamp = getTimestampById(timestampId);
-		if (xmlTimestamp != null) {
-			return xmlTimestamp.getTimestampQualification();
+		if (xmlTimestamp != null && xmlTimestamp.getTimestampLevel() != null) {
+			return xmlTimestamp.getTimestampLevel().getValue();
 		}
 		return null;
 	}

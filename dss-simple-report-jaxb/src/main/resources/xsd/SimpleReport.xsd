@@ -77,7 +77,7 @@
 				<xs:sequence>
 					<xs:element name="ProductionTime" type="xs:dateTime" />
 					<xs:element name="ProducedBy" type="xs:string" minOccurs="0" />
-					<xs:element name="TimestampQualification" type="TimestampQualification" minOccurs="0" />
+					<xs:element name="TimestampLevel" type="TimestampLevel" minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -135,11 +135,11 @@
 	</xs:complexType>
 	
 	<xs:complexType name="SignatureLevel">
-	  <xs:simpleContent>
-	    <xs:extension base="SignatureQualification">
-	      <xs:attribute name="description" type="xs:string" />
-	    </xs:extension>
-	  </xs:simpleContent>
+	    <xs:simpleContent>
+		    <xs:extension base="SignatureQualification">
+		        <xs:attribute name="description" type="xs:string" />
+		    </xs:extension>
+	    </xs:simpleContent>
 	</xs:complexType>
 	
 	<xs:simpleType name="SignatureQualification" final="restriction">
@@ -204,6 +204,14 @@
 			<xs:enumeration value="UNKNOWN" />
 		</xs:restriction>
 	</xs:simpleType>
+	
+	<xs:complexType name="TimestampLevel">
+		<xs:simpleContent>
+			<xs:extension base="TimestampQualification">
+				<xs:attribute name="description" type="xs:string" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
 	
 	<xs:simpleType name="TimestampQualification" final="restriction">
 		<xs:restriction base="xs:string">

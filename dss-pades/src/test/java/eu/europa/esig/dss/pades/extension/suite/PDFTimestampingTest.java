@@ -50,6 +50,7 @@ public class PDFTimestampingTest extends PKIFactoryAccess {
 		
 		assertEquals(0, simpleReport.getSignaturesCount());
 		assertEquals(0, simpleReport.getSignatureIdList().size());
+		assertNotNull(simpleReport.getDocumentFilename());
 		
 		assertEquals(1, simpleReport.getTimestampIdList().size());
 		assertEquals(Indication.PASSED, simpleReport.getIndication(simpleReport.getFirstTimestampId()));
