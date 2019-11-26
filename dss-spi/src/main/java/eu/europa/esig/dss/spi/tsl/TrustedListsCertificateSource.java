@@ -44,7 +44,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 
 	private TLValidationJobSummary summary;
 
-	private Map<String, List<TrustProperties>> trustPropertiesByEntity;
+	private Map<String, List<TrustProperties>> trustPropertiesByEntity = new HashMap<String, List<TrustProperties>>();
 
 	/**
 	 * The default constructor.
