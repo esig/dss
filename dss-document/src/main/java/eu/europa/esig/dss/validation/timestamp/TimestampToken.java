@@ -22,7 +22,6 @@ package eu.europa.esig.dss.validation.timestamp;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -53,6 +52,7 @@ import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.TimestampBinary;
@@ -94,6 +94,11 @@ public class TimestampToken extends Token {
 	private boolean messageImprintData;
 
 	private Boolean messageImprintIntact = null;
+	
+	/**
+	 * In case a detached timestamp
+	 */
+	private String fileName;
 	
 	/* In case of ASiC-E CAdES */
 	private ManifestFile manifestFile;
@@ -359,12 +364,12 @@ public class TimestampToken extends Token {
 	/**
 	 * Checks if the {@code TimeStampToken} matches the signed data.
 	 *
-	 * @param data
-	 *            the array of {@code byte} representing the timestamped data
+	 * @param timestampedData
+	 * 			  a {@code DSSDocument} representing the timestamped data
 	 * @return true if the data is verified by the TimeStampToken
 	 */
-	public boolean matchData(final byte[] data) {
-		return matchData(data, false);
+	public boolean matchData(final DSSDocument timestampedData) {
+		return matchData(timestampedData, false);
 	}
 	
 	/**
@@ -375,27 +380,28 @@ public class TimestampToken extends Token {
 	 * calculation according to ETSI TS 101 733 v1.8.3. It is part of solution for the issue DSS-1401 
 	 * (https://ec.europa.eu/cefdigital/tracker/browse/DSS-1401)
 	 * 
-	 * @param data
-	 * 			  the array of {@code byte} representing the timestamped data
+	 * @param timestampedData
+	 * 			  a {@code DSSDocument} representing the timestamped data
 	 * @param suppressMatchWarnings
 	 * 			  if true the message imprint match warning logs are suppressed. 
 	 * @return true if the data is verified by the TimeStampToken
 	 */
-	public boolean matchData(final byte[] data, final boolean suppressMatchWarnings) {
+	public boolean matchData(final DSSDocument timestampedData, final boolean suppressMatchWarnings) {
 		processed = true;
 
-		messageImprintData = data != null;
+		messageImprintData = timestampedData != null;
 		messageImprintIntact = false;
 
 		if (messageImprintData) {
 			try {
 				Digest currentMessageImprint = getMessageImprint();
-				final byte[] computedDigest = DSSUtils.digest(currentMessageImprint.getAlgorithm(), data);
-				messageImprintIntact = Arrays.equals(computedDigest, currentMessageImprint.getValue());
+				String expectedBase64Digest = Utils.toBase64(currentMessageImprint.getValue());
+				String computedBase64Digest = timestampedData.getDigest(currentMessageImprint.getAlgorithm());
+				messageImprintIntact = Utils.areStringsEqual(expectedBase64Digest, computedBase64Digest);
 				if (!messageImprintIntact && !suppressMatchWarnings) {
 					LOG.warn("Computed digest ({}) on the extracted data from the document : {}", currentMessageImprint.getAlgorithm(),
-							Utils.toHex(computedDigest));
-					LOG.warn("Digest present in TimestampToken: {}", Utils.toHex(currentMessageImprint.getValue()));
+							computedBase64Digest);
+					LOG.warn("Digest present in TimestampToken: {}", expectedBase64Digest);
 					LOG.warn("Digest in TimestampToken matches digest of extracted data from document: {}", messageImprintIntact);
 				}
 			} catch (DSSException e) {
@@ -476,6 +482,25 @@ public class TimestampToken extends Token {
 			throw new DSSException("Invoke matchData(byte[] data) method before!");
 		}
 		return messageImprintIntact;
+	}
+	
+	/**
+	 * This method returns the file name of a detached timestamp
+	 * 
+	 * @return {@link String}
+	 */
+	public String getFileName() {
+		return fileName;
+	}
+
+	/**
+	 * Sets the filename of a detached timestamp
+	 * 
+	 * @param fileName 
+	 * 					{@link String}
+	 */
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 
 	/**

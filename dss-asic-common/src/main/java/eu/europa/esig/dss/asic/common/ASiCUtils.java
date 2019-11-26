@@ -46,12 +46,16 @@ public final class ASiCUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCUtils.class);
 
+	public static final String MANIFEST_FILENAME = "Manifest";
 	public static final String MIME_TYPE = "mimetype";
 	public static final String MIME_TYPE_COMMENT = MIME_TYPE + "=";
 	public static final String META_INF_FOLDER = "META-INF/";
 	public static final String PACKAGE_ZIP = "package.zip";
-	public static final String ZIP_ENTRY_DETACHED_FILE = "detached-file";
+	public static final String SIGNATURE_FILENAME = "signature";
+	public static final String TIMESTAMP_FILENAME = "timestamp";
+	public static final String TST_EXTENSION = ".tst";
 	public static final String XML_EXTENSION = ".xml";
+	public static final String ZIP_ENTRY_DETACHED_FILE = "detached-file";
 
     /**
      * Minimum file size to be analized on zip bombing
@@ -71,8 +75,24 @@ public final class ASiCUtils {
 	private ASiCUtils() {
 	}
 
+	/**
+	 * Verifies if the {@code entryName} represents a signature file name
+	 * 
+	 * @param entryName {@link String} name to check
+	 * @return TRUE if the entryName represents a signature file name, FALSE otherwise
+	 */
 	public static boolean isSignature(final String entryName) {
-		return entryName.startsWith(META_INF_FOLDER) && entryName.contains("signature") && !entryName.contains("Manifest");
+		return entryName.startsWith(META_INF_FOLDER) && entryName.contains(SIGNATURE_FILENAME) && !entryName.contains(MANIFEST_FILENAME);
+	}
+
+	/**
+	 * Verifies if the {@code entryName} represents a timestamp file name
+	 * 
+	 * @param entryName {@link String} name to check
+	 * @return TRUE if the entryName represents a timestamp file name, FALSE otherwise
+	 */
+	public static boolean isTimestamp(final String entryName) {
+		return entryName.startsWith(META_INF_FOLDER) && entryName.contains(TIMESTAMP_FILENAME) && entryName.endsWith(TST_EXTENSION);
 	}
 
 	public static String getMimeTypeString(final ASiCParameters asicParameters) {
@@ -122,11 +142,33 @@ public final class ASiCUtils {
 		return isASiCE(asicParameters) ? MimeType.ASICE : MimeType.ASICS;
 	}
 	
-	
-	public static boolean isArchiveContainsCorrectSignatureFileWithExtension(DSSDocument toSignDocument, String extension) {
-		List<String> filenames = getFileNames(toSignDocument);
+	/**
+	 * Checks if the container contains a signature with the expected {@code extension}
+	 * 
+	 * @param container {@link DSSDocument} representing an ASiC container
+	 * @param extension {@link String} signature file extension to find
+	 * @return TRUE if the container contains the expected signature file, FALSE otherwise
+	 */
+	public static boolean isArchiveContainsCorrectSignatureFileWithExtension(DSSDocument container, String extension) {
+		List<String> filenames = getFileNames(container);
 		for (String filename : filenames) {
 			if (isSignature(filename) && filename.endsWith(extension)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Checks if the container contains a timestamp
+	 * 
+	 * @param container {@link DSSDocument} representing an ASiC container
+	 * @return TRUE if the container contains the expected timestamp file, FALSE otherwise
+	 */
+	public static boolean isArchiveContainsCorrectTimestamp(DSSDocument container) {
+		List<String> filenames = getFileNames(container);
+		for (String filename : filenames) {
+			if (isTimestamp(filename)) {
 				return true;
 			}
 		}

@@ -162,7 +162,7 @@
     	<module>dss-timestamp-remote-soap</module>
 		
 		<module>dss-cookbook</module>
-	</modules>
+  </modules>
 
 	<build>
 		<plugins>

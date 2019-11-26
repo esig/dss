@@ -43,6 +43,14 @@
 					</fo:bookmark>
 				</xsl:for-each>
 				
+				<xsl:for-each select="//dss:Timestamp">
+					<xsl:variable name="index"><xsl:value-of select="count(preceding-sibling::dss:Timestamp) + 1" /></xsl:variable>
+					<fo:bookmark>
+						<xsl:attribute name="internal-destination">timestamp<xsl:value-of select="$index" /></xsl:attribute>
+						<fo:bookmark-title>Timestamp <xsl:value-of select="$index" /></fo:bookmark-title>
+					</fo:bookmark>
+				</xsl:for-each>
+				
 				<fo:bookmark>
 					<xsl:attribute name="internal-destination">docInfo</xsl:attribute>
 					<fo:bookmark-title>Document Information</fo:bookmark-title>
@@ -107,7 +115,7 @@
     <xsl:template match="dss:ValidationTime"/>
     <xsl:template match="dss:ContainerType"/>
     
-    <xsl:template match="dss:Policy">
+    <xsl:template match="dss:ValidationPolicy">
     	<fo:block>
     		<xsl:attribute name="id">policy</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -122,23 +130,37 @@
     	</fo:block>
     </xsl:template>
     
-    <xsl:template match="dss:Signature">
+    <xsl:template match="dss:Signature|dss:Timestamp">
+        <xsl:variable name="nodeName" select="name()" />
+        
     	<xsl:variable name="counter">
-    		<xsl:value-of select="count(preceding-sibling::dss:Signature) + 1" />
+    		<xsl:if test="$nodeName = 'Signature'">
+    			<xsl:value-of select="count(preceding-sibling::dss:Signature) + 1" />
+    		</xsl:if>
+    		<xsl:if test="$nodeName = 'Timestamp'">
+    			<xsl:value-of select="count(preceding-sibling::dss:Timestamp) + 1" />
+    		</xsl:if>
     	</xsl:variable>
     
         <xsl:variable name="indicationText" select="dss:Indication/text()"/>
-        <xsl:variable name="idSig" select="@Id" />
+        <xsl:variable name="idToken" select="@Id" />
         <xsl:variable name="indicationColor">
         	<xsl:choose>
 				<xsl:when test="$indicationText='TOTAL_PASSED'">green</xsl:when>
+				<xsl:when test="$indicationText='PASSED'">green</xsl:when>
 				<xsl:when test="$indicationText='INDETERMINATE'">orange</xsl:when>
+				<xsl:when test="$indicationText='FAILED'">red</xsl:when>
 				<xsl:when test="$indicationText='TOTAL_FAILED'">red</xsl:when>
 			</xsl:choose>
         </xsl:variable>
         
 		<fo:block>
-    		<xsl:attribute name="id">signature<xsl:value-of select="$counter" /></xsl:attribute>
+    		<xsl:if test="$nodeName = 'Signature'">
+    			<xsl:attribute name="id">signature<xsl:value-of select="$counter" /></xsl:attribute>
+    		</xsl:if>
+    		<xsl:if test="$nodeName = 'Timestamp'">
+    			<xsl:attribute name="id">timestamp<xsl:value-of select="$counter" /></xsl:attribute>
+    		</xsl:if>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
        		<xsl:attribute name="font-weight">bold</xsl:attribute>
        		<xsl:attribute name="margin-top">15px</xsl:attribute>
@@ -146,7 +168,15 @@
        		<xsl:attribute name="background-color"><xsl:value-of select="$indicationColor" /></xsl:attribute>
        		<xsl:attribute name="color">white</xsl:attribute>
        		<xsl:attribute name="padding">5px</xsl:attribute>
-       		Signature <xsl:value-of select="$idSig" />
+       		
+			<xsl:if test="$nodeName = 'Signature'">
+				Signature
+			</xsl:if>
+			<xsl:if test="$nodeName = 'Timestamp'">
+				Timestamp
+			</xsl:if>
+			
+       		<xsl:value-of select="$idToken" />
        	</fo:block>
 
 		<fo:table>
@@ -160,23 +190,51 @@
 			</fo:table-column>
 			<fo:table-body>
 			
-			    <xsl:apply-templates select="dss:Filename" />
+				<xsl:if test="dss:Filename">
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block>
+								<xsl:attribute name="padding-bottom">3px</xsl:attribute>
+								<xsl:attribute name="font-weight">bold</xsl:attribute>
+								<xsl:if test="$nodeName = 'Signature'">
+					            	Signature filename:
+								</xsl:if>
+								<xsl:if test="$nodeName = 'Timestamp'">
+					            	Timestamp filename:
+								</xsl:if>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block>
+								<xsl:attribute name="padding-bottom">3px</xsl:attribute>
+								<xsl:value-of select="dss:Filename" />
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</xsl:if>
 			
-				<fo:table-row>
-					<fo:table-cell>
-						<fo:block>
-							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
-       						<xsl:attribute name="font-weight">bold</xsl:attribute>
-							Signature Level : 
-						</fo:block>
-					</fo:table-cell>
-					<fo:table-cell>
-						<fo:block>
-							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
-							<xsl:value-of select="dss:SignatureLevel" />
-						</fo:block>
-					</fo:table-cell>
-				</fo:table-row>
+				<xsl:if test="dss:SignatureLevel | dss:TimestampLevel">
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block>
+								<xsl:attribute name="padding-bottom">3px</xsl:attribute>
+	       						<xsl:attribute name="font-weight">bold</xsl:attribute>
+								Qualification level : 
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block>
+								<xsl:attribute name="padding-bottom">3px</xsl:attribute>
+								<xsl:if test="dss:SignatureLevel">
+									<xsl:value-of select="dss:SignatureLevel" />
+								</xsl:if>
+								<xsl:if test="dss:TimestampLevel">
+									<xsl:value-of select="dss:TimestampLevel" />
+								</xsl:if>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</xsl:if>
 			
 				<fo:table-row>
 					<fo:table-cell>
@@ -201,21 +259,23 @@
 					</fo:table-cell>
 				</fo:table-row>
 				
-				<fo:table-row>
-					<fo:table-cell>
-						<fo:block>
-							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
-       						<xsl:attribute name="font-weight">bold</xsl:attribute>
-							Signature Format : 
-						</fo:block>
-					</fo:table-cell>
-					<fo:table-cell>
-						<fo:block>
-							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
-							<xsl:value-of select="@SignatureFormat" />
-						</fo:block>
-					</fo:table-cell>
-				</fo:table-row>
+				<xsl:if test="@SignatureFormat">
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block>
+								<xsl:attribute name="padding-bottom">3px</xsl:attribute>
+	       						<xsl:attribute name="font-weight">bold</xsl:attribute>
+								Signature Format : 
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block>
+								<xsl:attribute name="padding-bottom">3px</xsl:attribute>
+								<xsl:value-of select="@SignatureFormat" />
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</xsl:if>
 				
 				<fo:table-row>
 					<fo:table-cell>
@@ -246,70 +306,86 @@
 						<fo:block>
 							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
        						<xsl:attribute name="font-weight">bold</xsl:attribute>
-							On claimed time : 
+							<xsl:if test="$nodeName = 'Signature'">
+								On claimed time : 
+							</xsl:if>
+							<xsl:if test="$nodeName = 'Timestamp'">
+								Production time : 
+							</xsl:if>
 						</fo:block>
 					</fo:table-cell>
 					<fo:table-cell>
 						<fo:block>
 							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
-							<xsl:value-of select="dss:SigningTime"/>
+							<xsl:if test="$nodeName = 'Signature'">
+								<xsl:value-of select="dss:SigningTime"/>
+							</xsl:if>
+							<xsl:if test="$nodeName = 'Timestamp'">
+								<xsl:value-of select="dss:ProductionTime"/>
+							</xsl:if>
 						</fo:block>
 					</fo:table-cell>
 				</fo:table-row>
 				
-				<fo:table-row>
-					<fo:table-cell>
-						<fo:block>
-							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
-       						<xsl:attribute name="font-weight">bold</xsl:attribute>
-							Best signature time : 
-						</fo:block>
-					</fo:table-cell>
-					<fo:table-cell>
-						<fo:block>
-							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
-							<xsl:value-of select="dss:BestSignatureTime"/>
-						</fo:block>
-					</fo:table-cell>
-				</fo:table-row>
-				
-				<fo:table-row>
-					<fo:table-cell>
-						<fo:block>
-							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
-       						<xsl:attribute name="font-weight">bold</xsl:attribute>
-							Signature position : 
-						</fo:block>
-					</fo:table-cell>
-					<fo:table-cell>
-						<fo:block>
-							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
-							<xsl:value-of select="$counter" /> out of <xsl:value-of select="count(ancestor::*/dss:Signature)"/>
-						</fo:block>
-					</fo:table-cell>
-				</fo:table-row>
-			
-				<xsl:for-each select="dss:SignatureScope">
+				<xsl:if test="dss:BestSignatureTime">
 					<fo:table-row>
 						<fo:table-cell>
 							<fo:block>
 								<xsl:attribute name="padding-bottom">3px</xsl:attribute>
-       							<xsl:attribute name="font-weight">bold</xsl:attribute>
-								Signature scope:
+	       						<xsl:attribute name="font-weight">bold</xsl:attribute>
+								Best signature time : 
 							</fo:block>
 						</fo:table-cell>
 						<fo:table-cell>
 							<fo:block>
 								<xsl:attribute name="padding-bottom">3px</xsl:attribute>
-								<xsl:value-of select="@name" />	(<xsl:value-of select="@scope" />)
-							</fo:block>
-							<fo:block>
-								<xsl:attribute name="padding-bottom">3px</xsl:attribute>
-								<xsl:value-of select="." />
+								<xsl:value-of select="dss:BestSignatureTime"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
-				</xsl:for-each>
+				</xsl:if>
+				
+				<xsl:if test="$nodeName = 'Signature'">
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block>
+								<xsl:attribute name="padding-bottom">3px</xsl:attribute>
+	       						<xsl:attribute name="font-weight">bold</xsl:attribute>
+								Signature position : 
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block>
+								<xsl:attribute name="padding-bottom">3px</xsl:attribute>
+								<xsl:value-of select="$counter" /> out of <xsl:value-of select="count(ancestor::*/dss:Signature)"/>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</xsl:if>
+			
+				<xsl:if test="dss:SignatureScope">
+					<xsl:for-each select="dss:SignatureScope">
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block>
+									<xsl:attribute name="padding-bottom">3px</xsl:attribute>
+	       							<xsl:attribute name="font-weight">bold</xsl:attribute>
+									Signature scope:
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell>
+								<fo:block>
+									<xsl:attribute name="padding-bottom">3px</xsl:attribute>
+									<xsl:value-of select="@name" />	(<xsl:value-of select="@scope" />)
+								</fo:block>
+								<fo:block>
+									<xsl:attribute name="padding-bottom">3px</xsl:attribute>
+									<xsl:value-of select="." />
+								</fo:block>
+							</fo:table-cell>
+						</fo:table-row>
+					</xsl:for-each>
+				</xsl:if>
 				
 			</fo:table-body>	
 		</fo:table>
@@ -322,24 +398,6 @@
 			<xsl:attribute name="padding-bottom">3px</xsl:attribute>
 			<xsl:value-of select="." />
 		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="dss:Filename">
-		<fo:table-row>
-			<fo:table-cell>
-				<fo:block>
-					<xsl:attribute name="padding-bottom">3px</xsl:attribute>
-					<xsl:attribute name="font-weight">bold</xsl:attribute>
-					Signature Filename : 
-				</fo:block>
-			</fo:table-cell>
-			<fo:table-cell>
-				<fo:block>
-					<xsl:attribute name="padding-bottom">3px</xsl:attribute>
-					<xsl:value-of select="." />
-				</fo:block>
-			</fo:table-cell>
-		</fo:table-row>
 	</xsl:template>
     
     <xsl:template name="documentInformation">

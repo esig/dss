@@ -88,7 +88,7 @@ public class ConcurrentValidationTest {
 			SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 			validator.setCertificateVerifier(certificateVerifier);
 
-			return new Boolean(validator.validateDocument() != null);
+			return validator.validateDocument() != null;
 		}
 
 	}

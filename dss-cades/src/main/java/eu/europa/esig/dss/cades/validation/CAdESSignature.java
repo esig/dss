@@ -643,7 +643,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			try {
 				return SignerAttribute.getInstance(attrValue);
 			} catch (Exception e) {
-				LOG.warn("Unable to parse signerAttr " + Utils.toBase64(DSSASN1Utils.getDEREncoded(attrValue)) + "", e);
+				String warningMessage = "Unable to parse signerAttr - [{}]. Reason : {}";
+				if (LOG.isDebugEnabled()) {
+					LOG.warn(warningMessage, Utils.toBase64(DSSASN1Utils.getDEREncoded(attrValue)), e.getMessage(), e);
+				} else {
+					LOG.warn(warningMessage, Utils.toBase64(DSSASN1Utils.getDEREncoded(attrValue)), e.getMessage());
+				}
 			}
 		}
 		return null;
@@ -734,7 +739,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				return DigestAlgorithm.forOID(pssHashAlgo.getAlgorithm().getId());
 			}
 		} catch (IOException e) {
-			LOG.warn("Unable to analyze EncryptionAlgParams", e);
+			LOG.error("Unable to analyze EncryptionAlgParams", e);
 		}
 		return null;
 	}
@@ -1109,8 +1114,13 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 					contentHint += " [" + contentHints.getContentDescription().toString() + "]";
 				}
 			}
-		}catch (Exception e) {
-			LOG.warn("Unable to parse ContentHints - {}", Utils.toBase64(DSSASN1Utils.getDEREncoded(asn1Encodable)), e);
+		} catch (Exception e) {
+			String warningMessage = "Unable to parse ContentHints - [{}]. Reason : {}";
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(warningMessage, Utils.toBase64(DSSASN1Utils.getDEREncoded(asn1Encodable)), e.getMessage(), e);
+			} else {
+				LOG.warn(warningMessage, Utils.toBase64(DSSASN1Utils.getDEREncoded(asn1Encodable)), e.getMessage());
+			}
 		}
 
 		return contentHint;

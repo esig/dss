@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.executor;
+package eu.europa.esig.dss.validation.executor.signature;
 
 import java.util.Date;
 import java.util.Objects;
@@ -29,16 +29,23 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
+import eu.europa.esig.dss.validation.executor.SignatureProcessExecutor;
+import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
+/**
+ * This class executes a signature validation process and produces
+ * SimpleReport, DetailedReport and ETSI Validation report
+ *
+ */
 public class DefaultSignatureProcessExecutor implements SignatureProcessExecutor {
 
 	private Date currentTime = new Date();
-	private ValidationLevel validationLevel = ValidationLevel.ARCHIVAL_DATA;
-	private boolean enableEtsiValidationReport = true;
-	private XmlDiagnosticData jaxbDiagnosticData;
-	private ValidationPolicy policy;
+	protected ValidationLevel validationLevel = ValidationLevel.ARCHIVAL_DATA;
+	protected boolean enableEtsiValidationReport = true;
+	protected XmlDiagnosticData jaxbDiagnosticData;
+	protected ValidationPolicy policy;
 
 	@Override
 	public void setCurrentTime(Date currentTime) {
@@ -46,13 +53,13 @@ public class DefaultSignatureProcessExecutor implements SignatureProcessExecutor
 	}
 
 	@Override
-	public void setDiagnosticData(XmlDiagnosticData diagnosticData) {
-		this.jaxbDiagnosticData = diagnosticData;
+	public Date getCurrentTime() {
+		return currentTime;
 	}
 
 	@Override
-	public void setValidationPolicy(ValidationPolicy policy) {
-		this.policy = policy;
+	public void setDiagnosticData(XmlDiagnosticData diagnosticData) {
+		this.jaxbDiagnosticData = diagnosticData;
 	}
 
 	@Override
@@ -66,15 +73,35 @@ public class DefaultSignatureProcessExecutor implements SignatureProcessExecutor
 	}
 
 	@Override
-	public Reports execute() {
+	public void setValidationPolicy(ValidationPolicy policy) {
+		this.policy = policy;
+	}
 
+	@Override
+	public ValidationPolicy getValidationPolicy() {
+		return policy;
+	}
+	
+	@Override
+	public Reports execute() {
+		assertConfigurationValid();
+		DiagnosticData diagnosticData = getDiagnosticData();
+		return buildReports(diagnosticData, getCurrentTime());
+	}
+	
+	protected void assertConfigurationValid() {
 		Objects.requireNonNull(jaxbDiagnosticData, "The diagnostic data is missing");
 		Objects.requireNonNull(policy, "The validation policy is missing");
 		Objects.requireNonNull(currentTime, "The current time is missing");
 		Objects.requireNonNull(validationLevel, "The validation level is missing");
-
-		DiagnosticData diagnosticData = new DiagnosticData(jaxbDiagnosticData);
-
+	}
+	
+	protected DiagnosticData getDiagnosticData() {
+		return new DiagnosticData(jaxbDiagnosticData);
+	}
+	
+	protected Reports buildReports(final DiagnosticData diagnosticData, final Date validationTime) {
+		
 		DetailedReportBuilder detailedReportBuilder = new DetailedReportBuilder(currentTime, policy, validationLevel, diagnosticData);
 		XmlDetailedReport jaxbDetailedReport = detailedReportBuilder.build();
 
@@ -91,16 +118,6 @@ public class DefaultSignatureProcessExecutor implements SignatureProcessExecutor
 		}
 
 		return new Reports(jaxbDiagnosticData, jaxbDetailedReport, simpleReport, validationReport);
-	}
-
-	@Override
-	public Date getCurrentTime() {
-		return currentTime;
-	}
-
-	@Override
-	public ValidationPolicy getValidationPolicy() {
-		return policy;
 	}
 
 }

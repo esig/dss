@@ -278,6 +278,22 @@ public class DiagnosticData {
 	}
 
 	/**
+	 * This method returns the list of identifier of the all timestamps found during the validation.
+	 *
+	 * @return The list of identifier of the timestamps
+	 */
+	public List<String> getTimestampIdList() {
+		List<TimestampWrapper> timestampList = getTimestampList();
+		List<String> timestampIdList = new ArrayList<String>();
+		if (timestampList != null) {
+			for (TimestampWrapper timestampWrapper : timestampList) {
+				timestampIdList.add(timestampWrapper.getId());
+			}
+		}
+		return timestampIdList;
+	}
+
+	/**
 	 * This method returns the list of identifier of the timestamps related to the given signature.
 	 *
 	 * @param signatureId

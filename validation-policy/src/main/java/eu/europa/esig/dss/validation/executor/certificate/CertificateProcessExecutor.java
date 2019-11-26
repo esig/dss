@@ -18,14 +18,15 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.executor;
+package eu.europa.esig.dss.validation.executor.certificate;
 
+import eu.europa.esig.dss.validation.executor.ProcessExecutor;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 
 public interface CertificateProcessExecutor extends ProcessExecutor<CertificateReports> {
 	
 	/**
-	 * Allows to specify if of the target certificate present in the Diagnostic Data to be verified
+	 * Allows to specify the target certificate present in the Diagnostic Data to be verified
 	 * 
 	 * @param certificateId {@link String} id of the certificate to be verified
 	 */

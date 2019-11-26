@@ -94,6 +94,10 @@ public class TimestampWrapper extends AbstractTokenProxy {
 	public boolean isMessageImprintDataIntact() {
 		return getMessageImprint().isDataIntact();
 	}
+	
+	public String getFilename() {
+		return timestamp.getTimestampFilename();
+	}
 
 	@Override
 	public List<XmlDigestMatcher> getDigestMatchers() {

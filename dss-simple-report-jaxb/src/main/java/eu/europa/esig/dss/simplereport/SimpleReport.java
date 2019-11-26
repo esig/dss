@@ -29,8 +29,12 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.simplereport.jaxb.XmlCertificateChain;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignature;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
+import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp;
+import eu.europa.esig.dss.simplereport.jaxb.XmlTimestampQualification;
+import eu.europa.esig.dss.simplereport.jaxb.XmlToken;
 
 /**
  * A SimpleReport holder to fetch values from a JAXB SimpleReport.
@@ -53,45 +57,193 @@ public class SimpleReport {
 	}
 
 	/**
-	 * This method returns the indication obtained after the validation of the signature.
+	 * This method returns the indication obtained after the validation of a token.
 	 *
-	 * @param signatureId
-	 *            DSS unique identifier of the signature
-	 * @return the indication for the given signature Id
+	 * @param tokenId
+	 *            DSS unique identifier of the token
+	 * @return the indication for the given token Id
 	 */
-	public Indication getIndication(final String signatureId) {
-		XmlSignature signature = getSignatureById(signatureId);
-		if (signature != null) {
-			return signature.getIndication();
+	public Indication getIndication(final String tokenId) {
+		XmlToken token = getTokenById(tokenId);
+		if (token != null) {
+			return token.getIndication();
 		}
 		return null;
 	}
 
 	/**
-	 * This method returns the sub-indication obtained after the validation of the signature.
+	 * This method returns the sub-indication obtained after the validation of the token.
 	 *
-	 * @param signatureId
-	 *            DSS unique identifier of the signature
-	 * @return the sub-indication for the given signature Id
+	 * @param tokenId
+	 *            DSS unique identifier of the token
+	 * @return the sub-indication for the given token Id
 	 */
-	public SubIndication getSubIndication(final String signatureId) {
-		XmlSignature signature = getSignatureById(signatureId);
-		if (signature != null) {
-			return signature.getSubIndication();
+	public SubIndication getSubIndication(final String tokenId) {
+		XmlToken token = getTokenById(tokenId);
+		if (token != null) {
+			return token.getSubIndication();
 		}
 		return null;
 	}
 
 	/**
-	 * This method checks if the signature is valid (TOTAL_PASSED)
+	 * This method checks if a signature is valid (TOTAL_PASSED) or
+	 * timestamp validation PASSED
 	 * 
-	 * @param signatureId
-	 *            the signature id to test
-	 * @return true if the signature Indication element is equals to {@link Indication#TOTAL_PASSED}
+	 * @param tokenId
+	 *            a token id to get a result for
+	 * @return true if the signature Indication element is equals to {@link Indication#TOTAL_PASSED} or
+	 * 		   the timestamp Indication element is Equals to {@link Indication#PASSED}
 	 */
-	public boolean isSignatureValid(final String signatureId) {
-		final Indication indicationValue = getIndication(signatureId);
-		return Indication.TOTAL_PASSED.equals(indicationValue);
+	public boolean isValid(final String tokenId) {
+		final Indication indicationValue = getIndication(tokenId);
+		return Indication.TOTAL_PASSED.equals(indicationValue) || Indication.PASSED.equals(indicationValue);
+	}
+
+	/**
+	 * This method retrieves the signature ids
+	 * 
+	 * @return the {@code List} of signature id(s) contained in the simpleReport
+	 */
+	public List<String> getSignatureIdList() {
+		final List<String> signatureIdList = new ArrayList<String>();
+		List<XmlToken> tokens = wrapped.getSignatureOrTimestamp();
+		if (tokens != null) {
+			for (XmlToken token : tokens) {
+				if (token instanceof XmlSignature) {
+					signatureIdList.add(token.getId());
+				}
+			}
+		}
+		return signatureIdList;
+	}
+
+	/**
+	 * This method retrieves the timestamp ids
+	 * 
+	 * @return the {@code List} of timestamp id(s) contained in the simpleReport
+	 */
+	public List<String> getTimestampIdList() {
+		final List<String> timestampIdList = new ArrayList<String>();
+		List<XmlToken> tokens = wrapped.getSignatureOrTimestamp();
+		if (tokens != null) {
+			for (XmlToken token : tokens) {
+				if (token instanceof XmlTimestamp) {
+					timestampIdList.add(token.getId());
+				}
+			}
+		}
+		return timestampIdList;
+	}
+
+	/**
+	 * This method returns the first signature id.
+	 *
+	 * @return the first signature id
+	 */
+	public String getFirstSignatureId() {
+		final List<String> signatureIdList = getSignatureIdList();
+		if (signatureIdList.size() > 0) {
+			return signatureIdList.get(0);
+		}
+		return null;
+	}
+
+	/**
+	 * This method returns the first timestamp id.
+	 *
+	 * @return the first timestamp id
+	 */
+	public String getFirstTimestampId() {
+		final List<String> timestampIdList = getTimestampIdList();
+		if (timestampIdList.size() > 0) {
+			return timestampIdList.get(0);
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns a file name for the validated document
+	 * 
+	 * @return {@link String} document file name
+	 */
+	public String getDocumentFilename() {
+		return wrapped.getDocumentName();
+	}
+	
+	/**
+	 * Returns a file name for a given tokenId
+	 * 
+	 * @param tokenId 
+	 * 		  	  {@link String} id of a token to get its original filename
+	 * @return {@link String} file name
+	 */
+	public String getTokenFilename(final String tokenId) {
+		XmlToken token = getTokenById(tokenId);
+		if (token != null) {
+			return token.getFilename();
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns a certificate chain a given tokenId
+	 * 
+	 * @param tokenId 
+	 * 			  {@link String} id of a token to get its certificate chain
+	 * @return {@link XmlCertificateChain} for the token
+	 */
+	public XmlCertificateChain getCertificateChain(final String tokenId) {
+		XmlToken token = getTokenById(tokenId);
+		if (token != null) {
+			return token.getCertificateChain();
+		}
+		return null;
+	}
+
+	/**
+	 * This method retrieves the information for a given token by id
+	 * 
+	 * @param tokenId
+	 *            the token id
+	 * @return the linked information
+	 */
+	public List<String> getInfo(final String tokenId) {
+		XmlToken token = getTokenById(tokenId);
+		if (token != null) {
+			return token.getInfos();
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * This method retrieve the errors for a given token by id
+	 * 
+	 * @param tokenId
+	 *            the token id
+	 * @return the linked errors
+	 */
+	public List<String> getErrors(final String tokenId) {
+		XmlToken token = getTokenById(tokenId);
+		if (token != null) {
+			return token.getErrors();
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * This method retrieve the warnings for a given token by id
+	 * 
+	 * @param tokenId
+	 *            the token id
+	 * @return the linked warnings
+	 */
+	public List<String> getWarnings(final String tokenId) {
+		XmlToken token = getTokenById(tokenId);
+		if (token != null) {
+			return token.getWarnings();
+		}
+		return Collections.emptyList();
 	}
 
 	/**
@@ -111,80 +263,6 @@ public class SimpleReport {
 	}
 
 	/**
-	 * This method retrieves the signature ids
-	 * 
-	 * @return the {@code List} of signature id(s) contained in the simpleReport
-	 */
-	public List<String> getSignatureIdList() {
-		final List<String> signatureIdList = new ArrayList<String>();
-		List<XmlSignature> signatures = wrapped.getSignature();
-		if (signatures != null) {
-			for (XmlSignature xmlSignature : signatures) {
-				signatureIdList.add(xmlSignature.getId());
-			}
-		}
-		return signatureIdList;
-	}
-
-	/**
-	 * This method returns the first signature id.
-	 *
-	 * @return the first signature id
-	 */
-	public String getFirstSignatureId() {
-		final List<String> signatureIdList = getSignatureIdList();
-		if (signatureIdList.size() > 0) {
-			return signatureIdList.get(0);
-		}
-		return null;
-	}
-
-	/**
-	 * This method retrieve the information for a given signature id
-	 * 
-	 * @param signatureId
-	 *            the signature id
-	 * @return the linked information
-	 */
-	public List<String> getInfo(final String signatureId) {
-		XmlSignature signature = getSignatureById(signatureId);
-		if (signature != null) {
-			return signature.getInfos();
-		}
-		return Collections.emptyList();
-	}
-
-	/**
-	 * This method retrieve the errors for a given signature id
-	 * 
-	 * @param signatureId
-	 *            the signature id
-	 * @return the linked errors
-	 */
-	public List<String> getErrors(final String signatureId) {
-		XmlSignature signature = getSignatureById(signatureId);
-		if (signature != null) {
-			return signature.getErrors();
-		}
-		return Collections.emptyList();
-	}
-
-	/**
-	 * This method retrieve the warnings for a given signature id
-	 * 
-	 * @param signatureId
-	 *            the signature id
-	 * @return the linked warnings
-	 */
-	public List<String> getWarnings(final String signatureId) {
-		XmlSignature signature = getSignatureById(signatureId);
-		if (signature != null) {
-			return signature.getWarnings();
-		}
-		return Collections.emptyList();
-	}
-
-	/**
 	 * This method returns the signature format (XAdES_BASELINE_B...)
 	 *
 	 * @param signatureId
@@ -195,6 +273,21 @@ public class SimpleReport {
 		XmlSignature xmlSignature = getSignatureById(signatureId);
 		if (xmlSignature != null) {
 			return xmlSignature.getSignatureFormat();
+		}
+		return null;
+	}
+
+	/**
+	 * This method returns the best-signature-time
+	 *
+	 * @param signatureId
+	 *            the signature id
+	 * @return the best signing time
+	 */
+	public Date getBestSignatureTime(final String signatureId) {
+		XmlSignature xmlSignature = getSignatureById(signatureId);
+		if (xmlSignature != null) {
+			return xmlSignature.getBestSignatureTime();
 		}
 		return null;
 	}
@@ -215,7 +308,7 @@ public class SimpleReport {
 	}
 
 	/**
-	 * This method returns the signedBy
+	 * This method returns the signature's signer name
 	 *
 	 * @param signatureId
 	 *            the signature id
@@ -248,6 +341,70 @@ public class SimpleReport {
 	}
 
 	/**
+	 * This method returns the timestamp production time
+	 *
+	 * @param timestampId
+	 *            the timestamp id
+	 * @return the production time
+	 */
+	public Date getProductionTime(final String timestampId) {
+		XmlTimestamp xmlTimestamp = getTimestampById(timestampId);
+		if (xmlTimestamp != null) {
+			return xmlTimestamp.getProductionTime();
+		}
+		return null;
+	}
+
+	/**
+	 * This method returns the timestamp's producer name
+	 *
+	 * @param timestampId
+	 *            the timestamp id
+	 * @return a name of the timestamp's producer
+	 */
+	public String getProducedBy(final String timestampId) {
+		XmlTimestamp xmlTimestamp = getTimestampById(timestampId);
+		if (xmlTimestamp != null) {
+			return xmlTimestamp.getProducedBy();
+		}
+		return "";
+	}
+
+	/**
+	 * This method returns the timestamp's qualification
+	 *
+	 * @param timestampId
+	 *            the timestamp id
+	 * @return {@link XmlTimestampQualification} for a given timestamp
+	 */
+	public XmlTimestampQualification getTimestampQualification(final String timestampId) {
+		XmlTimestamp xmlTimestamp = getTimestampById(timestampId);
+		if (xmlTimestamp != null && xmlTimestamp.getTimestampLevel() != null) {
+			return xmlTimestamp.getTimestampLevel().getValue();
+		}
+		return null;
+	}
+
+	/**
+	 * This method returns a wrapper for the given token id
+	 * 
+	 * @param tokenId
+	 *            the token id
+	 * @return the wrapper for the given token id
+	 */
+	private XmlToken getTokenById(String tokenId) {
+		List<XmlToken> tokens = wrapped.getSignatureOrTimestamp();
+		if (tokens != null) {
+			for (XmlToken token : tokens) {
+				if (tokenId.equals(token.getId())) {
+					return token;
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * This method returns a wrapper for the given signature
 	 * 
 	 * @param signatureId
@@ -255,13 +412,24 @@ public class SimpleReport {
 	 * @return the wrapper for the given signature id
 	 */
 	private XmlSignature getSignatureById(String signatureId) {
-		List<XmlSignature> signatures = wrapped.getSignature();
-		if (signatures != null) {
-			for (XmlSignature xmlSignature : signatures) {
-				if (signatureId.equals(xmlSignature.getId())) {
-					return xmlSignature;
-				}
-			}
+		XmlToken token = getTokenById(signatureId);
+		if (token != null && token instanceof XmlSignature) {
+			return (XmlSignature) token;
+		}
+		return null;
+	}
+
+	/**
+	 * This method returns a wrapper for the given timestamp
+	 * 
+	 * @param timestampId
+	 *            the timestamp id
+	 * @return the wrapper for the given timestamp id
+	 */
+	private XmlTimestamp getTimestampById(String timestampId) {
+		XmlToken token = getTokenById(timestampId);
+		if (token != null && token instanceof XmlTimestamp) {
+			return (XmlTimestamp) token;
 		}
 		return null;
 	}

@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.executor;
+package eu.europa.esig.dss.validation.executor.signature;
 
 import java.util.Date;
 import java.util.List;
@@ -32,31 +32,23 @@ import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificate;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificateChain;
-import eu.europa.esig.dss.simplereport.jaxb.XmlPolicy;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignature;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignatureLevel;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.executor.AbstractSimpleReportBuilder;
 
 /**
  * This class builds a SimpleReport XmlDom from the diagnostic data and detailed validation report.
  */
-public class SimpleReportBuilder {
-
-	private final Date currentTime;
-	private final ValidationPolicy policy;
-	private final DiagnosticData diagnosticData;
-	private final DetailedReport detailedReport;
+public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 
 	private int totalSignatureCount = 0;
 	private int validSignatureCount = 0;
 
 	public SimpleReportBuilder(Date currentTime, ValidationPolicy policy, DiagnosticData diagnosticData, DetailedReport detailedReport) {
-		this.currentTime = currentTime;
-		this.policy = policy;
-		this.diagnosticData = diagnosticData;
-		this.detailedReport = detailedReport;
+		super(currentTime, policy, diagnosticData, detailedReport);
 	}
 
 	/**
@@ -65,40 +57,13 @@ public class SimpleReportBuilder {
 	 * @return the object representing {@code XmlSimpleReport}
 	 */
 	public XmlSimpleReport build() {
-
-		XmlSimpleReport simpleReport = new XmlSimpleReport();
-
-		addPolicyNode(simpleReport);
-		addValidationTime(simpleReport);
-		addDocumentName(simpleReport);
+		XmlSimpleReport simpleReport = super.build();
 
 		boolean containerInfoPresent = diagnosticData.isContainerInfoPresent();
-		if (containerInfoPresent) {
-			addContainerType(simpleReport);
-		}
 		addSignatures(simpleReport, containerInfoPresent);
 		addStatistics(simpleReport);
 
 		return simpleReport;
-	}
-
-	private void addPolicyNode(XmlSimpleReport report) {
-		XmlPolicy xmlpolicy = new XmlPolicy();
-		xmlpolicy.setPolicyName(policy.getPolicyName());
-		xmlpolicy.setPolicyDescription(policy.getPolicyDescription());
-		report.setPolicy(xmlpolicy);
-	}
-
-	private void addValidationTime(XmlSimpleReport report) {
-		report.setValidationTime(currentTime);
-	}
-
-	private void addDocumentName(XmlSimpleReport report) {
-		report.setDocumentName(diagnosticData.getDocumentName());
-	}
-
-	private void addContainerType(XmlSimpleReport simpleReport) {
-		simpleReport.setContainerType(diagnosticData.getContainerType());
 	}
 
 	private void addSignatures(XmlSimpleReport simpleReport, boolean container) {
@@ -175,7 +140,7 @@ public class SimpleReportBuilder {
 		}
 		xmlSignature.setCertificateChain(xmlCertificateChain);
 
-		simpleReport.getSignature().add(xmlSignature);
+		simpleReport.getSignatureOrTimestamp().add(xmlSignature);
 	}
 
 	private void addBestSignatureTime(SignatureWrapper signature, XmlSignature xmlSignature) {

@@ -32,8 +32,8 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.SignatureValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.ws.converter.RemoteDocumentConverter;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
@@ -51,7 +51,7 @@ public class RemoteDocumentValidationService {
 
 	public WSReportsDTO validateDocument(RemoteDocument signedFile, List<RemoteDocument> originalFiles, RemoteDocument policy) {
 		LOG.info("ValidateDocument in process...");
-		DocumentValidator validator = initValidator(signedFile, originalFiles);
+		SignatureValidator validator = initValidator(signedFile, originalFiles);
 
 		Reports reports = null;
 		if (policy == null) {
@@ -72,7 +72,7 @@ public class RemoteDocumentValidationService {
 
 	public List<RemoteDocument> getOriginalDocuments(RemoteDocument signedFile, List<RemoteDocument> originalFiles, String signatureId) {
 		LOG.info("GetOriginalDocuments in process...");
-		DocumentValidator validator = initValidator(signedFile, originalFiles);
+		SignatureValidator validator = initValidator(signedFile, originalFiles);
 
 		if (signatureId == null) {
 			List<AdvancedSignature> signatures = validator.getSignatures();
@@ -88,7 +88,7 @@ public class RemoteDocumentValidationService {
 		return remoteDocuments;
 	}
 
-	private DocumentValidator initValidator(RemoteDocument signedFile, List<RemoteDocument> originalFiles) {
+	private SignatureValidator initValidator(RemoteDocument signedFile, List<RemoteDocument> originalFiles) {
 		DSSDocument signedDocument = RemoteDocumentConverter.toDSSDocument(signedFile);
 		SignedDocumentValidator signedDocValidator = SignedDocumentValidator.fromDocument(signedDocument);
 		signedDocValidator.setCertificateVerifier(verifier);

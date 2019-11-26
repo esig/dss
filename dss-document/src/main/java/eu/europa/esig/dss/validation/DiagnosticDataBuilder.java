@@ -146,6 +146,8 @@ public class DiagnosticDataBuilder {
 	private Set<CertificateToken> usedCertificates;
 	private Map<CertificateToken, Set<CertificateSourceType>> certificateSourceTypes;
 	private Set<RevocationToken> usedRevocations;
+	private List<TimestampToken> externalTimestamps;
+	private List<SignatureScope> signatureScopes;
 	private List<CertificateSource> trustedCertSources = new ArrayList<CertificateSource>();
 	private Date validationDate;
 
@@ -237,6 +239,29 @@ public class DiagnosticDataBuilder {
 	 */
 	public DiagnosticDataBuilder usedRevocations(Set<RevocationToken> usedRevocations) {
 		this.usedRevocations = usedRevocations;
+		return this;
+	}
+	
+	/**
+	 * This method allows to set the external timestamps
+	 * NOTE: used in case of timestamp only validation
+	 * 
+	 * @param timestampTokens a list of validated {@link TimestampToken}s
+	 * @return the builder
+	 */
+	public DiagnosticDataBuilder setExternalTimestamps(List<TimestampToken> timestampTokens) {
+		this.externalTimestamps = timestampTokens;
+		return this;
+	}
+	
+	/**
+	 * This method allows to set a list of {@link SignatureScope}s
+	 * 
+	 * @param signatureScopes a list of {@link SignatureScope}s
+	 * @return this builder
+	 */
+	public DiagnosticDataBuilder signatureScope(List<SignatureScope> signatureScopes) {
+		this.signatureScopes = signatureScopes;
 		return this;
 	}
 
@@ -340,17 +365,25 @@ public class DiagnosticDataBuilder {
 
 		Collection<XmlRevocation> xmlRevocations = buildXmlRevocations();
 		diagnosticData.getUsedRevocations().addAll(xmlRevocations);
+		
+		// collect original signer documents
+		Collection<XmlSignerData> xmlSignerData = buildXmlSignerData();
+		diagnosticData.getOriginalDocuments().addAll(xmlSignerData);
 
 		if (Utils.isCollectionNotEmpty(signatures)) {
-			// collect original signer documents
-			Collection<XmlSignerData> xmlSignerData = buildXmlSignerData(signatures);
-			diagnosticData.getOriginalDocuments().addAll(xmlSignerData);
-			
 			Collection<XmlSignature> xmlSignatures = buildXmlSignatures(signatures);
 			diagnosticData.getSignatures().addAll(xmlSignatures);
 			
 			Collection<XmlTimestamp> XmlTimestamps = buildXmlTimestamps(signatures);
 			diagnosticData.getUsedTimestamps().addAll(XmlTimestamps);
+		}
+		
+		if (Utils.isCollectionNotEmpty(externalTimestamps)) {
+			List<XmlTimestamp> builtTimestamps = new ArrayList<XmlTimestamp>(); 
+			for (XmlTimestamp xmlTimestamp : getXmlTimestamps(externalTimestamps)) {
+				addXmlTimestampToList(builtTimestamps, xmlTimestamp);
+			}
+			diagnosticData.getUsedTimestamps().addAll(builtTimestamps);
 		}
 		
 		if (Utils.isMapNotEmpty(xmlOrphanTokens)) {
@@ -419,10 +452,10 @@ public class DiagnosticDataBuilder {
 		return xmlRevocations.values();
 	}
 	
-	private Collection<XmlSignerData> buildXmlSignerData(List<AdvancedSignature> signatures) {
+	private Collection<XmlSignerData> buildXmlSignerData() {
 		List<String> originalDocumentIds = new ArrayList<String>();
-		for (AdvancedSignature advancedSignature : signatures) {
-			for (SignatureScope signatureScope : advancedSignature.getSignatureScopes()) {
+		if (Utils.isCollectionNotEmpty(signatureScopes)) {
+			for (SignatureScope signatureScope : signatureScopes) {
 				if (!originalDocumentIds.contains(signatureScope.getDSSIdAsString())) {
 					XmlSignerData signedData = getXmlSignerData(signatureScope);
 					xmlSignedData.put(signatureScope.getDSSIdAsString(), signedData);
@@ -1368,6 +1401,7 @@ public class DiagnosticDataBuilder {
 		xmlTimestampToken.setType(timestampToken.getTimeStampType());
 		xmlTimestampToken.setArchiveTimestampType(timestampToken.getArchiveTimestampType()); // property is defined only for archival timestamps
 		xmlTimestampToken.setProductionTime(timestampToken.getGenerationTime());
+		xmlTimestampToken.setTimestampFilename(timestampToken.getFileName());
 		xmlTimestampToken.getDigestMatchers().addAll(getXmlDigestMatchers(timestampToken));
 		xmlTimestampToken.setBasicSignature(getXmlBasicSignature(timestampToken));
 

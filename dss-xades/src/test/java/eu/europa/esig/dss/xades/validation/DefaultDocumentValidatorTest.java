@@ -34,7 +34,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
-public class SignedDocumentValidatorForDocumentTest {
+public class DefaultDocumentValidatorTest {
 
 	@Test
 	public void testXmlUTF8() {

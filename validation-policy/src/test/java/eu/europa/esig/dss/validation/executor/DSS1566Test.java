@@ -34,6 +34,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport;
+import eu.europa.esig.dss.validation.executor.certificate.DefaultCertificateProcessExecutor;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 
 public class DSS1566Test extends AbstractTestValidationExecutor {

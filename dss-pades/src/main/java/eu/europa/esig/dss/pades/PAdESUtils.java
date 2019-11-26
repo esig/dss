@@ -38,6 +38,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.RevocationInfoArchival;
+import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -46,11 +47,11 @@ public final class PAdESUtils {
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESUtils.class);
 	
 	/**
-	 * Returns original signed content for the {@code padesSignature}
+	 * Returns the original signed content for the {@code padesSignature}
 	 * @param padesSignature {@link PAdESSignature}
 	 * @return {@link InMemoryDocument}
 	 */
-	public static InMemoryDocument getOriginalPDF(PAdESSignature padesSignature) {
+	public static InMemoryDocument getOriginalPDF(final PAdESSignature padesSignature) {
 		CAdESSignature cadesSignature = padesSignature.getCAdESSignature();
 		List<DSSDocument> cadesDetachedFile = cadesSignature.getDetachedContents();
 		if (Utils.collectionSize(cadesDetachedFile) == 1) {
@@ -62,6 +63,20 @@ public final class PAdESUtils {
 			return lastRevision;
 		}
 		return null;
+	}
+
+	/**
+	 * Returns the original signed content for the {@code pdfInfo}
+	 * @param pdfInfo {@link PdfSignatureOrDocTimestampInfo}
+	 * @return {@link InMemoryDocument}
+	 */
+	public static InMemoryDocument getOriginalPDF(final PdfSignatureOrDocTimestampInfo pdfInfo) {
+		byte[] signedDocumentBytes = pdfInfo.getSignedDocumentBytes();
+		int[] signatureByteRange = pdfInfo.getSignatureByteRange();
+		DSSDocument firstByteRangePart = DSSUtils.splitDocument(
+				new InMemoryDocument(signedDocumentBytes), signatureByteRange[0], signatureByteRange[1]);
+		InMemoryDocument lastRevision = retrieveLastPDFRevision(firstByteRangePart);
+		return lastRevision;
 	}
 
 	private static InMemoryDocument retrieveLastPDFRevision(DSSDocument firstByteRangePart) {

@@ -133,14 +133,14 @@ public class InfiniteLoopDSS621Test {
 				byte[] contents = pdSignature.getContents(pdfBytes);
 				byte[] signedContent = pdSignature.getSignedContent(pdfBytes);
 
-				logger.info("Byte range : " + Arrays.toString(pdSignature.getByteRange()));
+				logger.debug("Byte range : " + Arrays.toString(pdSignature.getByteRange()));
 
 				Utils.write(contents, new FileOutputStream("target/sig" + (idx++) + ".p7s"));
 
 				ASN1InputStream asn1sInput = new ASN1InputStream(contents);
 				ASN1Sequence asn1Seq = (ASN1Sequence) asn1sInput.readObject();
 
-				logger.info("SEQ : " + asn1Seq.toString());
+				logger.debug("SEQ : " + asn1Seq.toString());
 
 				ASN1ObjectIdentifier oid = ASN1ObjectIdentifier.getInstance(asn1Seq.getObjectAt(0));
 				assertEquals(PKCSObjectIdentifiers.signedData, oid);
@@ -151,27 +151,27 @@ public class InfiniteLoopDSS621Test {
 				ASN1ObjectIdentifier oidDigestAlgo = ASN1ObjectIdentifier
 						.getInstance(ASN1Sequence.getInstance(digestAlgorithmSet.getObjectAt(0)).getObjectAt(0));
 				DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(oidDigestAlgo.getId());
-				logger.info("DIGEST ALGO : " + digestAlgorithm);
+				logger.debug("DIGEST ALGO : " + digestAlgorithm);
 
 				ContentInfo encapContentInfo = signedData.getEncapContentInfo();
 				ASN1ObjectIdentifier contentTypeOID = encapContentInfo.getContentType();
-				logger.info("ENCAPSULATED CONTENT INFO TYPE : " + contentTypeOID);
+				logger.debug("ENCAPSULATED CONTENT INFO TYPE : " + contentTypeOID);
 
 				if (!PKCSObjectIdentifiers.id_ct_TSTInfo.equals(contentTypeOID)) { // If not timestamp
 					assertEquals(PKCSObjectIdentifiers.data, contentTypeOID);
 
 					ASN1Encodable content = encapContentInfo.getContent();
-					logger.info("ENCAPSULATED CONTENT INFO CONTENT : " + content);
+					logger.debug("ENCAPSULATED CONTENT INFO CONTENT : " + content);
 					assertNull(content);
 
 					List<X509Certificate> certificates = extractCertificates(signedData);
 
 					ASN1Set signerInfosAsn1 = signedData.getSignerInfos();
-					logger.info("SIGNER INFO ASN1 : " + signerInfosAsn1.toString());
+					logger.debug("SIGNER INFO ASN1 : " + signerInfosAsn1.toString());
 					SignerInfo signedInfo = SignerInfo.getInstance(ASN1Sequence.getInstance(signerInfosAsn1.getObjectAt(0)));
 
 					ASN1Set authenticatedAttributeSet = signedInfo.getAuthenticatedAttributes();
-					logger.info("AUTHENTICATED ATTR : " + authenticatedAttributeSet);
+					logger.debug("AUTHENTICATED ATTR : " + authenticatedAttributeSet);
 
 					Attribute attributeDigest = null;
 					for (int i = 0; i < authenticatedAttributeSet.size(); i++) {
@@ -186,19 +186,19 @@ public class InfiniteLoopDSS621Test {
 
 					ASN1OctetString asn1ObjString = ASN1OctetString.getInstance(attributeDigest.getAttrValues().getObjectAt(0));
 					String embeddedDigest = Utils.toBase64(asn1ObjString.getOctets());
-					logger.info("MESSAGE DIGEST : " + embeddedDigest);
+					logger.debug("MESSAGE DIGEST : " + embeddedDigest);
 
 					byte[] digestSignedContent = DSSUtils.digest(digestAlgorithm, signedContent);
 					String computedDigestSignedContentEncodeBase64 = Utils.toBase64(digestSignedContent);
-					logger.info("COMPUTED DIGEST SIGNED CONTENT BASE64 : " + computedDigestSignedContentEncodeBase64);
+					logger.debug("COMPUTED DIGEST SIGNED CONTENT BASE64 : " + computedDigestSignedContentEncodeBase64);
 					assertEquals(embeddedDigest, computedDigestSignedContentEncodeBase64);
 
 					SignerIdentifier sid = signedInfo.getSID();
-					logger.info("SIGNER IDENTIFIER : " + sid.getId());
+					logger.debug("SIGNER IDENTIFIER : " + sid.getId());
 
 					IssuerAndSerialNumber issuerAndSerialNumber = IssuerAndSerialNumber.getInstance(signedInfo.getSID());
 					ASN1Integer signerSerialNumber = issuerAndSerialNumber.getSerialNumber();
-					logger.info("ISSUER AND SN : " + issuerAndSerialNumber.getName() + " " + signerSerialNumber);
+					logger.debug("ISSUER AND SN : " + issuerAndSerialNumber.getName() + " " + signerSerialNumber);
 
 					BigInteger serial = issuerAndSerialNumber.getSerialNumber().getValue();
 					X509Certificate signerCertificate = null;
@@ -215,7 +215,7 @@ public class InfiniteLoopDSS621Test {
 					ASN1OctetString encryptedInfoOctedString = signedInfo.getEncryptedDigest();
 					String signatureValue = Hex.toHexString(encryptedInfoOctedString.getOctets());
 
-					logger.info("SIGNATURE VALUE : " + signatureValue);
+					logger.debug("SIGNATURE VALUE : " + signatureValue);
 
 					Cipher cipher = Cipher.getInstance(encryptionAlgorithm.getName());
 					cipher.init(Cipher.DECRYPT_MODE, signerCertificate);
@@ -224,18 +224,18 @@ public class InfiniteLoopDSS621Test {
 					ASN1InputStream inputDecrypted = new ASN1InputStream(decrypted);
 
 					ASN1Sequence seqDecrypt = (ASN1Sequence) inputDecrypted.readObject();
-					logger.info("DECRYPTED : " + seqDecrypt);
+					logger.debug("DECRYPTED : " + seqDecrypt);
 
 					DigestInfo digestInfo = new DigestInfo(seqDecrypt);
 					assertEquals(oidDigestAlgo, digestInfo.getAlgorithmId().getAlgorithm());
 
 					String decryptedDigestEncodeBase64 = Utils.toBase64(digestInfo.getDigest());
-					logger.info("DECRYPTED BASE64 : " + decryptedDigestEncodeBase64);
+					logger.debug("DECRYPTED BASE64 : " + decryptedDigestEncodeBase64);
 
 					byte[] encoded = authenticatedAttributeSet.getEncoded();
 					byte[] digest = DSSUtils.digest(digestAlgorithm, encoded);
 					String computedDigestFromSignatureEncodeBase64 = Utils.toBase64(digest);
-					logger.info("COMPUTED DIGEST FROM SIGNATURE BASE64 : " + computedDigestFromSignatureEncodeBase64);
+					logger.debug("COMPUTED DIGEST FROM SIGNATURE BASE64 : " + computedDigestFromSignatureEncodeBase64);
 
 					assertEquals(decryptedDigestEncodeBase64, computedDigestFromSignatureEncodeBase64);
 
@@ -251,7 +251,7 @@ public class InfiniteLoopDSS621Test {
 
 	private List<X509Certificate> extractCertificates(SignedData signedData) throws Exception {
 		ASN1Set certificates = signedData.getCertificates();
-		logger.info("CERTIFICATES (" + certificates.size() + ") : " + certificates);
+		logger.debug("CERTIFICATES (" + certificates.size() + ") : " + certificates);
 
 		List<X509Certificate> foundCertificates = new ArrayList<X509Certificate>();
 		for (int i = 0; i < certificates.size(); i++) {

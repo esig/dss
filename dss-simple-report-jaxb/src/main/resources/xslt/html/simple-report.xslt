@@ -18,7 +18,7 @@
     <xsl:template match="dss:ValidationTime"/>
     <xsl:template match="dss:ContainerType"/>
 
-    <xsl:template match="dss:Policy">
+    <xsl:template match="dss:ValidationPolicy">
 		<div>
     		<xsl:attribute name="class">panel panel-primary</xsl:attribute>
     		<div>
@@ -37,13 +37,16 @@
     	</div>
     </xsl:template>
 
-    <xsl:template match="dss:Signature">
+    <xsl:template match="dss:Signature|dss:Timestamp">
         <xsl:variable name="indicationText" select="dss:Indication/text()"/>
-        <xsl:variable name="idSig" select="@Id" />
+        <xsl:variable name="idToken" select="@Id" />
+        <xsl:variable name="nodeName" select="name()" />
         <xsl:variable name="indicationCssClass">
         	<xsl:choose>
 				<xsl:when test="$indicationText='TOTAL_PASSED'">success</xsl:when>
+				<xsl:when test="$indicationText='PASSED'">success</xsl:when>
 				<xsl:when test="$indicationText='INDETERMINATE'">warning</xsl:when>
+				<xsl:when test="$indicationText='FAILED'">danger</xsl:when>
 				<xsl:when test="$indicationText='TOTAL_FAILED'">danger</xsl:when>
 			</xsl:choose>
         </xsl:variable>
@@ -52,7 +55,7 @@
     		<xsl:attribute name="class">panel panel-<xsl:value-of select="$indicationCssClass" /></xsl:attribute>
     		<div>
     			<xsl:attribute name="class">panel-heading</xsl:attribute>
-	    		<xsl:attribute name="data-target">#collapseSig<xsl:value-of select="$idSig" /></xsl:attribute>
+	    		<xsl:attribute name="data-target">#collapseSig<xsl:value-of select="$idToken" /></xsl:attribute>
 		       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
 		       	
 		       	<xsl:if test="@CounterSignature = 'true'">
@@ -62,20 +65,71 @@
 		        	</span>
 				</xsl:if>
 		       	
-    			Signature <xsl:value-of select="$idSig" />
+				<xsl:if test="$nodeName = 'Signature'">
+					Signature
+				</xsl:if>
+				<xsl:if test="$nodeName = 'Timestamp'">
+					Timestamp
+				</xsl:if>
+		       	
+    			<xsl:value-of select="$idToken" />
 	        </div>
     		<div>
     			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
-				<xsl:attribute name="id">collapseSig<xsl:value-of select="$idSig" /></xsl:attribute>
+				<xsl:attribute name="id">collapseSig<xsl:value-of select="$idToken" /></xsl:attribute>
 				
-			    <xsl:apply-templates select="dss:Filename" />
-			    <xsl:apply-templates select="dss:SignatureLevel" />
+				<xsl:if test="dss:Filename">
+					<dl>
+			    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
+			    		
+						<xsl:if test="$nodeName = 'Signature'">
+			            	<dt>Signature filename:</dt>
+						</xsl:if>
+						<xsl:if test="$nodeName = 'Timestamp'">
+			            	<dt>Timestamp filename:</dt>
+						</xsl:if>
+			            <dd>
+							<xsl:value-of select="dss:Filename" />
+			        	</dd>
+			        </dl>
+				</xsl:if>
+				
+				<xsl:if test="dss:SignatureLevel | dss:TimestampLevel">
+					<dl>
+			    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
+			            <dt>Qualification:</dt>
+			            <dd>
+			            
+							<xsl:if test="dss:SignatureLevel">
+								<xsl:value-of select="dss:SignatureLevel" />
+							</xsl:if>
+							<xsl:if test="dss:TimestampLevel">
+								<xsl:value-of select="dss:TimestampLevel" />
+							</xsl:if>
+							<span>
+				    			<xsl:attribute name="class">glyphicon glyphicon-info-sign text-info</xsl:attribute>
+								<xsl:attribute name="style">margin-left : 10px</xsl:attribute>
+								<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
+								<xsl:attribute name="data-placement">right</xsl:attribute>
+								
+								<xsl:if test="dss:SignatureLevel">
+									<xsl:attribute name="title"><xsl:value-of select="dss:SignatureLevel/@description" /></xsl:attribute>
+								</xsl:if>
+								<xsl:if test="dss:TimestampLevel">
+									<xsl:attribute name="title"><xsl:value-of select="dss:TimestampLevel/@description" /></xsl:attribute>
+								</xsl:if>
+				    		</span>					
+			        	</dd>
+			        </dl>
+				</xsl:if>	
 
-		        <dl>
-		    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
-		            <dt>Signature format:</dt>
-		            <dd><xsl:value-of select="@SignatureFormat"/></dd>
-		        </dl>
+				<xsl:if test="@SignatureFormat">
+			        <dl>
+			    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
+			            <dt>Signature format:</dt>
+			            <dd><xsl:value-of select="@SignatureFormat"/></dd>
+			        </dl>
+		        </xsl:if>
 			
 				<dl>
 					<xsl:attribute name="class">dl-horizontal</xsl:attribute>
@@ -88,9 +142,19 @@
 									<xsl:attribute name="class">glyphicon glyphicon-ok-sign</xsl:attribute>
 								</span>
 							</xsl:when>
+							<xsl:when test="$indicationText='PASSED'">
+								<span>
+									<xsl:attribute name="class">glyphicon glyphicon-ok-sign</xsl:attribute>
+								</span>
+							</xsl:when>
 							<xsl:when test="$indicationText='INDETERMINATE'">
 								<span>
 									<xsl:attribute name="class">glyphicon glyphicon-question-sign</xsl:attribute>
+								</span>
+							</xsl:when>
+							<xsl:when test="$indicationText='FAILED'">
+								<span>
+									<xsl:attribute name="class">glyphicon glyphicon-remove-sign</xsl:attribute>
 								</span>
 							</xsl:when>
 							<xsl:when test="$indicationText='TOTAL_FAILED'">
@@ -139,74 +203,63 @@
 		        	</xsl:choose>
 	        	</dl>
 		        
-		        <dl>
-		    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
-		            <dt>On claimed time:</dt>
-		            <dd><xsl:value-of select="dss:SigningTime"/></dd>
-		        </dl>
-		        
-		        <dl>
-		    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
-		            <dt>Best signature time:</dt>
-		            <dd>
-		            	<xsl:value-of select="dss:BestSignatureTime"/>
-		            	<span>
-			    			<xsl:attribute name="class">glyphicon glyphicon-info-sign text-info</xsl:attribute>
-							<xsl:attribute name="style">margin-left : 10px</xsl:attribute>
-							<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
-							<xsl:attribute name="data-placement">right</xsl:attribute>
-							<xsl:attribute name="title">
-								Lowest time at which there exists a proof of existence for the signature 
-							</xsl:attribute>
-			    		</span>		
-		            </dd>
-		        </dl>
-		        
-		        <dl>
-		    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
-		            <dt>Signature position:</dt>
-		            <dd><xsl:value-of select="count(preceding-sibling::dss:Signature) + 1"/> out of <xsl:value-of select="count(ancestor::*/dss:Signature)"/></dd>
-		        </dl>
-		        
-		        <xsl:for-each select="dss:SignatureScope">
+				<xsl:if test="dss:SigningTime">
 			        <dl>
 			    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
-			            <dt>Signature scope:</dt>
-			            <dd><xsl:value-of select="@name"/> (<xsl:value-of select="@scope"/>)</dd>
-			            <dd><xsl:value-of select="."/></dd>
+			            <dt>On claimed time:</dt>
+			            <dd><xsl:value-of select="dss:SigningTime"/></dd>
 			        </dl>
-		        </xsl:for-each>
+		        </xsl:if>
+		        
+				<xsl:if test="dss:ProductionTime">
+			        <dl>
+			    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
+			            <dt>Production time:</dt>
+			            <dd><xsl:value-of select="dss:ProductionTime"/></dd>
+			        </dl>
+		        </xsl:if>
+		        
+				<xsl:if test="dss:BestSignatureTime">
+			        <dl>
+			    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
+			            <dt>Best signature time:</dt>
+			            <dd>
+			            	<xsl:value-of select="dss:BestSignatureTime"/>
+			            	<span>
+				    			<xsl:attribute name="class">glyphicon glyphicon-info-sign text-info</xsl:attribute>
+								<xsl:attribute name="style">margin-left : 10px</xsl:attribute>
+								<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
+								<xsl:attribute name="data-placement">right</xsl:attribute>
+								<xsl:attribute name="title">
+									Lowest time at which there exists a proof of existence for the signature 
+								</xsl:attribute>
+				    		</span>		
+			            </dd>
+			        </dl>
+		        </xsl:if>
+		        
+				<xsl:if test="$nodeName = 'Signature'">
+			        <dl>
+			    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
+			            <dt>Signature position:</dt>
+			            <dd><xsl:value-of select="count(preceding-sibling::dss:Signature) + 1"/> out of <xsl:value-of select="count(ancestor::*/dss:Signature)"/></dd>
+			        </dl>
+				</xsl:if>
+		        
+				<xsl:if test="dss:SignatureScope">
+			        <xsl:for-each select="dss:SignatureScope">
+				        <dl>
+				    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
+				            <dt>Signature scope:</dt>
+				            <dd><xsl:value-of select="@name"/> (<xsl:value-of select="@scope"/>)</dd>
+				            <dd><xsl:value-of select="."/></dd>
+				        </dl>
+			        </xsl:for-each>
+		        </xsl:if>
 		        
     		</div>
     	</div>
     </xsl:template>
-    
-	<xsl:template match="dss:SignatureLevel">
-		<dl>
-    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
-            <dt>Qualification:</dt>
-            <dd>
-				<xsl:value-of select="." />
-				<span>
-	    			<xsl:attribute name="class">glyphicon glyphicon-info-sign text-info</xsl:attribute>
-					<xsl:attribute name="style">margin-left : 10px</xsl:attribute>
-					<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
-					<xsl:attribute name="data-placement">right</xsl:attribute>
-					<xsl:attribute name="title"><xsl:value-of select="@description" /></xsl:attribute>
-	    		</span>					
-        	</dd>
-        </dl>
-	</xsl:template>
-	
-	<xsl:template match="dss:Filename">
-		<dl>
-    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
-            <dt>Signature filename:</dt>
-            <dd>
-					<xsl:value-of select="." />
-        	</dd>
-        </dl>
-	</xsl:template>
 
 	<xsl:template match="dss:SubIndication">
 		<xsl:param name="indicationClass" />

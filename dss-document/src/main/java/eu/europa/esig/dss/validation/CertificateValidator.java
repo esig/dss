@@ -28,8 +28,8 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
-import eu.europa.esig.dss.validation.executor.CertificateProcessExecutor;
-import eu.europa.esig.dss.validation.executor.DefaultCertificateProcessExecutor;
+import eu.europa.esig.dss.validation.executor.certificate.CertificateProcessExecutor;
+import eu.europa.esig.dss.validation.executor.certificate.DefaultCertificateProcessExecutor;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 
 public class CertificateValidator implements ProcessExecutorProvider<CertificateProcessExecutor> {
@@ -97,9 +97,14 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 
 	public CertificateProcessExecutor provideProcessExecutorInstance() {
 		if (processExecutor == null) {
-			processExecutor = new DefaultCertificateProcessExecutor();
+			processExecutor = getDefaultProcessExecutor();
 		}
 		return processExecutor;
+	}
+
+	@Override
+	public CertificateProcessExecutor getDefaultProcessExecutor() {
+		return new DefaultCertificateProcessExecutor();
 	}
 
 }

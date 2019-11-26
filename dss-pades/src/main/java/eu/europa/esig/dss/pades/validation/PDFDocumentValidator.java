@@ -21,10 +21,14 @@
 package eu.europa.esig.dss.pades.validation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -32,18 +36,24 @@ import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.validation.scope.PAdESSignatureScopeFinder;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
+import eu.europa.esig.dss.pdf.PdfDocTimestampInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureValidationCallback;
+import eu.europa.esig.dss.pdf.PdfTimestampValidationCallback;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.executor.timestamp.SignatureAndTimestampProcessExecutor;
+import eu.europa.esig.dss.validation.scope.SignatureScope;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampValidator;
 
 /**
  * Validation of PDF document.
  */
-public class PDFDocumentValidator extends SignedDocumentValidator {
+public class PDFDocumentValidator extends SignedDocumentValidator implements TimestampValidator {
 	
 	private static final byte[] pdfPreamble = new byte[] { '%', 'P', 'D', 'F', '-' };
 
@@ -64,6 +74,11 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 	@Override
 	public boolean isSupported(DSSDocument dssDocument) {
 		return DSSUtils.compareFirstBytes(dssDocument, pdfPreamble);
+	}
+	
+	@Override
+	public SignatureAndTimestampProcessExecutor getDefaultProcessExecutor() {
+		return new SignatureAndTimestampProcessExecutor();
 	}
 
 	/**
@@ -88,18 +103,54 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 			public void validate(final PdfSignatureInfo pdfSignatureInfo) {
 				try {
 					if (pdfSignatureInfo.getCades() != null) {
-
 						final PAdESSignature padesSignature = new PAdESSignature(document, pdfSignatureInfo, validationCertPool);
 						padesSignature.setSignatureFilename(document.getName());
 						padesSignature.setProvidedSigningCertificateToken(providedSigningCertificateToken);
 						signatures.add(padesSignature);
+						
 					}
 				} catch (Exception e) {
 					throw new DSSException(e);
+					
 				}
 			}
 		});
 		return signatures;
+	}
+
+	@Override
+	public Map<TimestampToken, List<SignatureScope>> getTimestamps() {
+		// use LinkedHashMap in order to keep the timestamp order
+		final Map<TimestampToken, List<SignatureScope>> timestamps = new LinkedHashMap<TimestampToken, List<SignatureScope>>();
+
+		PDFSignatureService pdfSignatureService = pdfObjectFactory.newPAdESSignatureService();
+		pdfSignatureService.validateSignatures(validationCertPool, document, new PdfTimestampValidationCallback() {
+			
+			@Override
+			public void validate(PdfDocTimestampInfo docTimestampInfo) {
+				
+				try {
+					if (docTimestampInfo.getCMSSignedData() != null) {
+						TimestampToken timestampToken = new TimestampToken(
+								docTimestampInfo.getCMSSignedData(), TimestampType.CONTENT_TIMESTAMP, validationCertPool);
+						timestampToken.setFileName(document.getName());
+						timestampToken.matchData(new InMemoryDocument(docTimestampInfo.getSignedDocumentBytes()));
+						
+						PAdESSignatureScopeFinder signatureScopeFinder = new PAdESSignatureScopeFinder();
+						signatureScopeFinder.setDefaultDigestAlgorithm(getDefaultDigestAlgorithm());
+						SignatureScope signatureScope = signatureScopeFinder.findSignatureScope(docTimestampInfo);
+						
+						timestamps.put(timestampToken, Arrays.asList(signatureScope));
+						
+					}
+				} catch (Exception e) {
+					throw new DSSException(e);
+					
+				}
+				
+			}
+		});
+		return timestamps;
 	}
 
 	@Override

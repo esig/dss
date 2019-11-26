@@ -278,7 +278,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 				validateByteRange(byteRange);
 
 				final byte[] cms = signatureDictionary.getContents();
-				byte[] signedContent = new byte[] {};
+				byte[] signedContent = DSSUtils.EMPTY_BYTE_ARRAY;
 				if (!isContentValueEqualsByteRangeExtraction(document, byteRange, cms, name)) {
 					LOG.warn("Signature '{}' is skipped. SIWA detected !", name);
 				} else {

@@ -10,57 +10,85 @@
 	
 	<xs:complexType name="SimpleReport">
 		<xs:sequence>
-			<xs:element name="Policy">
+			<xs:element name="ValidationPolicy">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element type="xs:string" name="PolicyName" minOccurs="0" />
-						<xs:element type="xs:string" name="PolicyDescription" minOccurs="0" />
+						<xs:element name="PolicyName" type="xs:string" minOccurs="0" />
+						<xs:element name="PolicyDescription" type="xs:string" minOccurs="0" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
-			<xs:element type="xs:dateTime" name="ValidationTime" />
-			<xs:element type="xs:string" name="DocumentName" />
-			<xs:element type="xs:int" name="ValidSignaturesCount" />
-			<xs:element type="xs:int" name="SignaturesCount" />
-			<xs:element type="xs:string" name="ContainerType" minOccurs="0" />
-			<xs:element name="Signature" maxOccurs="unbounded" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element type="xs:string" name="Filename" minOccurs="0" />
-						<xs:element type="xs:dateTime" name="SigningTime" minOccurs="0" />
-						<xs:element type="xs:dateTime" name="BestSignatureTime" minOccurs="0" />
-						<xs:element type="xs:string" name="SignedBy" minOccurs="0" />
-						<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
-						<xs:element type="SignatureLevel" name="SignatureLevel" minOccurs="0" />
-						<xs:element type="Indication" name="Indication" />
-						<xs:element type="SubIndication" name="SubIndication" minOccurs="0" />
-						<xs:element type="xs:string" name="Errors" minOccurs="0" maxOccurs="unbounded" />
-						<xs:element type="xs:string" name="Warnings" minOccurs="0" maxOccurs="unbounded" />
-						<xs:element type="xs:string" name="Infos" minOccurs="0" maxOccurs="unbounded" />
-						<xs:element name="SignatureScope" minOccurs="0" maxOccurs="unbounded">
-							<xs:complexType>
-								<xs:simpleContent>
-									<xs:extension base="xs:string">
-										<xs:attribute type="xs:string" name="name"/>
-										<xs:attribute type="xs:string" name="scope"/>
-									</xs:extension>
-								</xs:simpleContent>
-							</xs:complexType>
-						</xs:element>
-					</xs:sequence>
-					<xs:attribute type="xs:string" name="Id" use="required" />
-					<xs:attribute type="xs:boolean" name="CounterSignature" use="optional" />
-					<xs:attribute type="xs:string" name="ParentId" use="optional" />
-					<xs:attribute type="SignatureFormat" name="SignatureFormat" use="required" />
-				</xs:complexType>
-			</xs:element>
+			<xs:element name="ValidationTime" type="xs:dateTime" />
+			<xs:element name="DocumentName" type="xs:string" minOccurs="0" />
+			<xs:element name="ValidSignaturesCount" type="xs:int" />
+			<xs:element name="SignaturesCount" type="xs:int" />
+			<xs:element name="ContainerType" type="xs:string" minOccurs="0" />
+			
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="Signature" type="Signature" />
+				<xs:element name="Timestamp" type="Timestamp" />
+			</xs:choice>
+			
 		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="Token" abstract="true">
+		<xs:sequence>
+			<xs:element name="Filename" type="xs:string" minOccurs="0" />
+			<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
+			<xs:element name="Indication" type="Indication" />
+			<xs:element name="SubIndication" type="SubIndication" minOccurs="0" />
+			<xs:element name="Errors" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Warnings" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Infos" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="Id" type="xs:ID" use="required" />
+	</xs:complexType>
+	
+	<xs:complexType name="Signature">
+		<xs:complexContent>
+            <xs:extension base="Token">
+				<xs:sequence>
+					<xs:element name="SigningTime" type="xs:dateTime" minOccurs="0" />
+					<xs:element name="BestSignatureTime" type="xs:dateTime" />
+					<xs:element name="SignedBy" type="xs:string" minOccurs="0" />
+					<xs:element name="SignatureLevel" type="SignatureLevel" minOccurs="0" />
+					<xs:element name="SignatureScope" minOccurs="0" maxOccurs="unbounded">
+						<xs:complexType>
+							<xs:simpleContent>
+								<xs:extension base="xs:string">
+									<xs:attribute type="xs:string" name="name"/>
+									<xs:attribute type="xs:string" name="scope"/>
+								</xs:extension>
+							</xs:simpleContent>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="CounterSignature" type="xs:boolean" use="optional" />
+				<xs:attribute name="ParentId" type="xs:string" use="optional" />
+				<xs:attribute name="SignatureFormat" type="SignatureFormat" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="Timestamp">
+		<xs:complexContent>
+            <xs:extension base="Token">
+				<xs:sequence>
+					<xs:element name="ProductionTime" type="xs:dateTime" />
+					<xs:element name="ProducedBy" type="xs:string" minOccurs="0" />
+					<xs:element name="TimestampLevel" type="TimestampLevel" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 
 	<xs:simpleType name="Indication" final="restriction">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="TOTAL_PASSED" />
+			<xs:enumeration value="PASSED" />
 			<xs:enumeration value="INDETERMINATE" />
+			<xs:enumeration value="FAILED" />
 			<xs:enumeration value="TOTAL_FAILED" />
 		</xs:restriction>
 	</xs:simpleType>
@@ -93,12 +121,25 @@
 		</xs:restriction>
 	</xs:simpleType>
 	
+	<xs:complexType name="CertificateChain">
+		<xs:sequence>
+			<xs:element name="Certificate" type="Certificate" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="Certificate">
+		<xs:sequence>
+			<xs:element type="xs:string" name="id" />
+			<xs:element type="xs:string" name="qualifiedName" />
+		</xs:sequence>
+	</xs:complexType>
+	
 	<xs:complexType name="SignatureLevel">
-	  <xs:simpleContent>
-	    <xs:extension base="SignatureQualification">
-	      <xs:attribute name="description" type="xs:string" />
-	    </xs:extension>
-	  </xs:simpleContent>
+	    <xs:simpleContent>
+		    <xs:extension base="SignatureQualification">
+		        <xs:attribute name="description" type="xs:string" />
+		    </xs:extension>
+	    </xs:simpleContent>
 	</xs:complexType>
 	
 	<xs:simpleType name="SignatureQualification" final="restriction">
@@ -164,17 +205,19 @@
 		</xs:restriction>
 	</xs:simpleType>
 	
-	<xs:complexType name="CertificateChain">
-		<xs:sequence>
-			<xs:element name="Certificate" type="Certificate" minOccurs="0" maxOccurs="unbounded" />
-		</xs:sequence>
+	<xs:complexType name="TimestampLevel">
+		<xs:simpleContent>
+			<xs:extension base="TimestampQualification">
+				<xs:attribute name="description" type="xs:string" />
+			</xs:extension>
+		</xs:simpleContent>
 	</xs:complexType>
 	
-	<xs:complexType name="Certificate">
-		<xs:sequence>
-			<xs:element type="xs:string" name="id" />
-			<xs:element type="xs:string" name="qualifiedName" />
-		</xs:sequence>
-	</xs:complexType>
+	<xs:simpleType name="TimestampQualification" final="restriction">
+		<xs:restriction base="xs:string">
+			<!-- TODO : populate the list -->
+			<xs:enumeration value="N/A" />
+		</xs:restriction>
+	</xs:simpleType>
 	
 </xs:schema>

@@ -23,11 +23,6 @@ package eu.europa.esig.dss.pdf;
 /**
  * Use this callback to be called only for Signatures, not for Doc Timestamp
  *
- *
- *
- *
- *
- *
  */
 public abstract class PdfSignatureValidationCallback implements SignatureValidationCallback {
 
