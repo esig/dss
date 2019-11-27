@@ -4,8 +4,8 @@ import java.util.Date;
 
 public interface DownloadInfoRecord extends InfoRecord {
 	
-	Date getLastSynchronizationDate();
-	
-	Date getLastLoadingDate();
+	Date getLastSuccessDownloadTime();
+		
+	Date getLastDownloadAttemptTime();
 
 }

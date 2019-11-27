@@ -187,7 +187,7 @@ public class LOTLWithPivotsRefreshTest {
 		LOTLInfo lotlInfo = lotlInfos.get(0);
 		DownloadInfoRecord downloadCacheInfo = lotlInfo.getDownloadCacheInfo();
 		assertNotNull(downloadCacheInfo);
-		assertNotNull(downloadCacheInfo.getLastSuccessDate());
+		assertNotNull(downloadCacheInfo.getLastStateTransitionTime());
 		assertTrue(downloadCacheInfo.isDesynchronized());
 		ParsingInfoRecord parsingCacheInfo = lotlInfo.getParsingCacheInfo();
 		assertNotNull(parsingCacheInfo);

@@ -17,13 +17,15 @@ public interface InfoRecord extends Serializable {
 	
 	String getStatusName();
 	
-	Date getLastSuccessDate();
+	Date getLastStateTransitionTime();
 	
 	String getExceptionMessage();
 	
 	String getExceptionStackTrace();
 	
-	Date getExceptionTime();
+	Date getExceptionFirstOccurrenceTime();
+	
+	Date getExceptionLastOccurrenceTime();
 	
 	boolean isResultExist();
 

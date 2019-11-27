@@ -8,6 +8,7 @@ import java.util.Objects;
 public class CachedException {
 
 	private final Date date = new Date();
+	private Date lastOccurrenceDate = new Date();
 	private final Exception exception;
 
 	public CachedException(Exception exception) {
@@ -17,6 +18,14 @@ public class CachedException {
 
 	public Date getDate() {
 		return date;
+	}
+	
+	public Date getLastOccurrenceDate()  {
+		return lastOccurrenceDate;
+	}
+	
+	public void setLastOccurrenceDate(Date lastOccurrenceDate) {
+		this.lastOccurrenceDate = lastOccurrenceDate;
 	}
 
 	public Exception getException() {

@@ -282,9 +282,9 @@ public class TLValidationJobSnippets {
 
 		// end::tl-summary[]
 
-		downloadCacheInfo.getLastSuccessDate();
-		parsingCacheInfo.getLastSuccessDate();
-		validationCacheInfo.getLastSuccessDate();
+		downloadCacheInfo.getLastStateTransitionTime();
+		parsingCacheInfo.getLastStateTransitionTime();
+		validationCacheInfo.getLastStateTransitionTime();
 		lastSynchronizedSummary.getLOTLInfos();
 
 	}

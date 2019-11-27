@@ -1,6 +1,9 @@
 package eu.europa.esig.dss.tsl.dto;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 import eu.europa.esig.dss.spi.tsl.DownloadInfoRecord;
 
@@ -8,7 +11,7 @@ public class DownloadCacheDTO extends AbstractCacheDTO implements DownloadInfoRe
 
 	private static final long serialVersionUID = 514589372769360786L;
 	
-	private Date lastSynchronizationDate;
+	private Date lastSuccessDownloadTime;
 
 	public DownloadCacheDTO() {}
 	
@@ -17,21 +20,24 @@ public class DownloadCacheDTO extends AbstractCacheDTO implements DownloadInfoRe
 	}
 	
 	@Override
-	public Date getLastSynchronizationDate() {
-		return lastSynchronizationDate;
+	public Date getLastSuccessDownloadTime() {
+		return lastSuccessDownloadTime;
 	}
 
-	public void setLastSynchronizationDate(Date lastSynchronizationDate) {
-		this.lastSynchronizationDate = lastSynchronizationDate;
+	public void setLastSuccessDownloadTime(Date lastSuccessDownloadTime) {
+		this.lastSuccessDownloadTime = lastSuccessDownloadTime;
+	}
+
+	@Override
+	public Date getLastDownloadAttemptTime() {
+		List<Date> dates = new ArrayList<Date>();
+		dates.add(lastSuccessDownloadTime);
+		dates.add(getExceptionLastOccurrenceTime());
+		dates.add(getLastStateTransitionTime());
+		return compareDates(dates);
 	}
 	
-	/**
-	 * getLastSuccessDate()
-	 * @return {@link Date}
-	 */
-	@Override
-	public Date getLastLoadingDate() {
-		return getLastSuccessDate();
+	private Date compareDates(List<Date> dates) {
+		return dates.stream().filter(Objects::nonNull).max(Date::compareTo).get();		
 	}
-
 }
