@@ -28,8 +28,6 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.IMessageTag;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class PastTimestampValidation extends ChainItem<XmlValidationProcessArchivalData> {
 	
@@ -63,13 +61,13 @@ public class PastTimestampValidation extends ChainItem<XmlValidationProcessArchi
 	}
 
 	@Override
-	protected IMessageTag getMessageTag() {
-		return MessageTag.PSV_IPTVC;
+	protected String getMessageTag() {
+		return "PSV_IPTVC";
 	}
 
 	@Override
-	protected IMessageTag getErrorMessageTag() {
-		return MessageTag.PSV_IPTVC_ANS;
+	protected String getErrorMessageTag() {
+		return "PSV_IPTVC_ANS";
 	}
 
 	@Override

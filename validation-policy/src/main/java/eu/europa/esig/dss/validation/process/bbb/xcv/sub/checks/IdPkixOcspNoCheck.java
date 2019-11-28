@@ -25,7 +25,6 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class IdPkixOcspNoCheck extends ChainItem<XmlSubXCV> {
 
@@ -40,12 +39,12 @@ public class IdPkixOcspNoCheck extends ChainItem<XmlSubXCV> {
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.BBB_XCV_OCSP_NO_CHECK;
+	protected String getMessageTag() {
+		return "BBB_XCV_OCSP_NO_CHECK";
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
+	protected String getErrorMessageTag() {
 		return null;
 	}
 

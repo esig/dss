@@ -26,7 +26,6 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class CertificateSelfSignedCheck extends ChainItem<XmlSubXCV> {
 
@@ -44,13 +43,13 @@ public class CertificateSelfSignedCheck extends ChainItem<XmlSubXCV> {
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.BBB_XCV_ISSSC;
+	protected String getMessageTag() {
+		return "BBB_XCV_ISSSC";
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_XCV_ISSSC_ANS;
+	protected String getErrorMessageTag() {
+		return "BBB_XCV_ISSSC_ANS";
 	}
 
 	@Override

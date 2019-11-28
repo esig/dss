@@ -30,7 +30,6 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class AcceptableBasicSignatureValidationCheck extends ChainItem<XmlValidationProcessLongTermData> {
 
@@ -66,13 +65,13 @@ public class AcceptableBasicSignatureValidationCheck extends ChainItem<XmlValida
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.LTV_ABSV;
+	protected String getMessageTag() {
+		return "LTV_ABSV";
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.LTV_ABSV_ANS;
+	protected String getErrorMessageTag() {
+		return "LTV_ABSV_ANS";
 	}
 
 	@Override

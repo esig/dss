@@ -33,7 +33,6 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.PastSignatureValidation;
 
@@ -80,13 +79,13 @@ public class PastSignatureValidationCheck extends ChainItem<XmlValidationProcess
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.PSV_IPSVC;
+	protected String getMessageTag() {
+		return "PSV_IPSVC";
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.PSV_IPSVC_ANS;
+	protected String getErrorMessageTag() {
+		return "PSV_IPSVC_ANS";
 	}
 
 	@Override

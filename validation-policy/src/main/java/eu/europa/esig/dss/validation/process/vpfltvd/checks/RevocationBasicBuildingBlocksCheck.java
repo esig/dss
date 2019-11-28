@@ -34,7 +34,6 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class RevocationBasicBuildingBlocksCheck extends ChainItem<XmlValidationProcessLongTermData> {
 
@@ -113,13 +112,13 @@ public class RevocationBasicBuildingBlocksCheck extends ChainItem<XmlValidationP
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.ADEST_RORPIIC;
+	protected String getMessageTag() {
+		return "ADEST_RORPIIC";
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.ADEST_RORPIIC_ANS;
+	protected String getErrorMessageTag() {
+		return "ADEST_RORPIIC_ANS";
 	}
 
 	@Override

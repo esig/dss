@@ -27,7 +27,6 @@ import eu.europa.esig.dss.enumerations.SignaturePolicyType;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
 public class SignaturePolicyIdentifierCheck extends AbstractMultiValuesCheckItem<XmlVCI> {
@@ -57,13 +56,13 @@ public class SignaturePolicyIdentifierCheck extends AbstractMultiValuesCheckItem
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.BBB_VCI_ISPK;
+	protected String getMessageTag() {
+		return "BBB_VCI_ISPK";
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_VCI_ISPK_ANS_1;
+	protected String getErrorMessageTag() {
+		return "BBB_VCI_ISPK_ANS_1";
 	}
 
 	@Override

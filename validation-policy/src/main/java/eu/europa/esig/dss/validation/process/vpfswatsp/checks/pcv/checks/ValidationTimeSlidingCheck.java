@@ -26,7 +26,6 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class ValidationTimeSlidingCheck extends ChainItem<XmlPCV> {
 
@@ -44,13 +43,13 @@ public class ValidationTimeSlidingCheck extends ChainItem<XmlPCV> {
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.PCV_IVTSC;
+	protected String getMessageTag() {
+		return "PCV_IVTSC";
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.PCV_IVTSC_ANS;
+	protected String getErrorMessageTag() {
+		return "PCV_IVTSC_ANS";
 	}
 
 	@Override

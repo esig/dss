@@ -33,7 +33,6 @@ import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class RevocationDateAfterBestSignatureTimeCheck extends ChainItem<XmlValidationProcessLongTermData> {
 
@@ -66,13 +65,13 @@ public class RevocationDateAfterBestSignatureTimeCheck extends ChainItem<XmlVali
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.ADEST_IRTPTBST;
+	protected String getMessageTag() {
+		return "ADEST_IRTPTBST";
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.ADEST_IRTPTBST_ANS;
+	protected String getErrorMessageTag() {
+		return "ADEST_IRTPTBST_ANS";
 	}
 
 	@Override

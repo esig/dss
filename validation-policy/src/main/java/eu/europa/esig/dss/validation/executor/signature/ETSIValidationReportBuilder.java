@@ -77,7 +77,6 @@ import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
-import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.validationreport.enums.ConstraintStatus;
 import eu.europa.esig.validationreport.enums.ObjectType;
@@ -298,7 +297,7 @@ public class ETSIValidationReportBuilder {
 		if (signingCertificateXCV != null) {
 			List<XmlConstraint> constraints = signingCertificateXCV.getConstraint();
 			for (XmlConstraint xmlConstraint : constraints) {
-				if (MessageTag.BBB_XCV_PSEUDO_USE.name().equals(xmlConstraint.getName().getNameId())) {
+				if ("BBB_XCV_PSEUDO_USE".equals(xmlConstraint.getName().getNameId())) {
 					XmlStatus status = xmlConstraint.getStatus();
 					return status;
 				}

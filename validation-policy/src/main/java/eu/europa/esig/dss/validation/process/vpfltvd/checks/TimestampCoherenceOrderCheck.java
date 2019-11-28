@@ -37,7 +37,6 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.process.vpfltvd.TimestampByGenerationTimeComparator;
 
 public class TimestampCoherenceOrderCheck extends ChainItem<XmlValidationProcessLongTermData> {
@@ -172,13 +171,13 @@ public class TimestampCoherenceOrderCheck extends ChainItem<XmlValidationProcess
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.TSV_ASTPTCT;
+	protected String getMessageTag() {
+		return "TSV_ASTPTCT";
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.TSV_ASTPTCT_ANS;
+	protected String getErrorMessageTag() {
+		return "TSV_ASTPTCT_ANS";
 	}
 
 	@Override

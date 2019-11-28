@@ -31,7 +31,6 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class TimestampBasicBuildingBlocksCheck extends ChainItem<XmlValidationProcessTimestamps> {
 
@@ -97,13 +96,13 @@ public class TimestampBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.ADEST_ROTVPIIC;
+	protected String getMessageTag() {
+		return "ADEST_ROTVPIIC";
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.ADEST_ROTVPIIC_ANS;
+	protected String getErrorMessageTag() {
+		return "ADEST_ROTVPIIC_ANS";
 	}
 
 	@Override

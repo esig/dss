@@ -26,13 +26,12 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class AdESAcceptableCheck extends ChainItem<XmlValidationSignatureQualification> {
 
 	private final XmlConclusion etsi319102Conclusion;
 
-	private MessageTag error;
+	private String error;
 
 	public AdESAcceptableCheck(XmlValidationSignatureQualification result, XmlConclusion etsi319102Conclusion, LevelConstraint constraint) {
 		super(result, constraint);
@@ -45,9 +44,9 @@ public class AdESAcceptableCheck extends ChainItem<XmlValidationSignatureQualifi
 		boolean valid = isValidConclusion(etsi319102Conclusion);
 		if (!valid) {
 			if (isIndeterminateConclusion(etsi319102Conclusion)) {
-				error = MessageTag.QUAL_IS_ADES_IND;
+				error = "QUAL_IS_ADES_IND";
 			} else if (isInvalidConclusion(etsi319102Conclusion)) {
-				error = MessageTag.QUAL_IS_ADES_INV;
+				error = "QUAL_IS_ADES_INV";
 			}
 			return false;
 		}
@@ -55,12 +54,12 @@ public class AdESAcceptableCheck extends ChainItem<XmlValidationSignatureQualifi
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.QUAL_IS_ADES;
+	protected String getMessageTag() {
+		return "QUAL_IS_ADES";
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
+	protected String getErrorMessageTag() {
 		return error;
 	}
 

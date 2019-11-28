@@ -33,7 +33,6 @@ import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 
 public class POEExistsAtOrBeforeControlTimeCheck extends ChainItem<XmlVTS> {
@@ -67,18 +66,18 @@ public class POEExistsAtOrBeforeControlTimeCheck extends ChainItem<XmlVTS> {
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
+	protected String getMessageTag() {
 		if (TimestampedObjectType.CERTIFICATE.equals(referenceCategory)) {
-			return MessageTag.PSV_ITPOCOBCT;
+			return "PSV_ITPOCOBCT";
 		} else if (TimestampedObjectType.REVOCATION.equals(referenceCategory)) {
-			return MessageTag.PSV_ITPORDAOBCT;
+			return "PSV_ITPORDAOBCT";
 		}
 		throw new IllegalStateException("Problem VTS");
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.PSV_ITPOOBCT_ANS;
+	protected String getErrorMessageTag() {
+		return "PSV_ITPOOBCT_ANS";
 	}
 
 	@Override

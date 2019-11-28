@@ -26,7 +26,6 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class QSCDCertificateAtSigningTimeCheck extends ChainItem<XmlValidationSignatureQualification> {
 
@@ -45,13 +44,13 @@ public class QSCDCertificateAtSigningTimeCheck extends ChainItem<XmlValidationSi
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.QUAL_QSCD_AT_ST;
+	protected String getMessageTag() {
+		return "QUAL_QSCD_AT_ST";
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.QUAL_QSCD_AT_ST_ANS;
+	protected String getErrorMessageTag() {
+		return "QUAL_QSCD_AT_ST_ANS";
 	}
 
 	@Override

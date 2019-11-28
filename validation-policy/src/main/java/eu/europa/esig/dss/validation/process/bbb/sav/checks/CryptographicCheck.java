@@ -33,7 +33,6 @@ import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class CryptographicCheck<T extends XmlConstraintsConclusion> extends AbstractCryptographicCheck<T> {
 
@@ -87,13 +86,13 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Abst
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
+	protected String getMessageTag() {
 		if (token instanceof CertificateWrapper) {
-			return MessageTag.ACCCM;
+			return "ACCCM";
 		} else if (token instanceof RevocationWrapper) {
-			return MessageTag.ARCCM;
+			return "ARCCM";
 		} else if (token instanceof TimestampWrapper) {
-			return MessageTag.ATCCM;
+			return "ATCCM";
 		}
 		return super.getMessageTag();
 	}

@@ -21,12 +21,14 @@
 package eu.europa.esig.dss.validation.executor.signature;
 
 import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.validation.executor.SignatureProcessExecutor;
@@ -80,6 +82,12 @@ public class DefaultSignatureProcessExecutor implements SignatureProcessExecutor
 	@Override
 	public ValidationPolicy getValidationPolicy() {
 		return policy;
+	}
+
+	@Override
+	public void setLocale(Locale locale) {
+		I18nProvider i18nProvider = I18nProvider.getInstance();
+		i18nProvider.setLocale(locale);
 	}
 	
 	@Override

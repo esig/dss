@@ -26,7 +26,6 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class ZipCommentPresentCheck extends ChainItem<XmlFC> {
 
@@ -43,13 +42,13 @@ public class ZipCommentPresentCheck extends ChainItem<XmlFC> {
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.BBB_FC_ITZCP;
+	protected String getMessageTag() {
+		return "BBB_FC_ITZCP";
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_FC_ITZCP_ANS;
+	protected String getErrorMessageTag() {
+		return "BBB_FC_ITZCP_ANS";
 	}
 
 	@Override

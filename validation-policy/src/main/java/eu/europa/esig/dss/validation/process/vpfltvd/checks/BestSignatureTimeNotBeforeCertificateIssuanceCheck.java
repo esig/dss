@@ -32,7 +32,6 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 /*
  * If best-signature-time is before the issuance date of the signing certificate, the process shall return the
@@ -66,13 +65,13 @@ public class BestSignatureTimeNotBeforeCertificateIssuanceCheck extends ChainIte
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.TSV_IBSTAIDOSC;
+	protected String getMessageTag() {
+		return "TSV_IBSTAIDOSC";
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.TSV_IBSTAIDOSC_ANS;
+	protected String getErrorMessageTag() {
+		return "TSV_IBSTAIDOSC_ANS";
 	}
 
 	@Override

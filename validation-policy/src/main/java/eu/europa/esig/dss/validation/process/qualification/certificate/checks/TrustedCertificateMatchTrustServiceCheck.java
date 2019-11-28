@@ -32,12 +32,11 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class TrustedCertificateMatchTrustServiceCheck extends ChainItem<XmlValidationCertificateQualification> {
 
 	private final TrustedServiceWrapper trustService;
-	private MessageTag errorMessage = MessageTag.EMPTY;
+	private String errorMessage = "EMPTY";
 
 	public TrustedCertificateMatchTrustServiceCheck(XmlValidationCertificateQualification result, TrustedServiceWrapper trustService,
 			LevelConstraint constraint) {
@@ -51,18 +50,18 @@ public class TrustedCertificateMatchTrustServiceCheck extends ChainItem<XmlValid
 
 		CertificateWrapper trustedCert = trustService.getServiceDigitalIdentifier();
 		if (trustedCert == null) {
-			errorMessage = MessageTag.QUAL_IS_TRUST_CERT_MATCH_SERVICE_ANS0;
+			errorMessage = "QUAL_IS_TRUST_CERT_MATCH_SERVICE_ANS0";
 			return false;
 		}
 
 		String organizationName = trustedCert.getOrganizationName();
 		if (Utils.isStringBlank(organizationName)) {
-			errorMessage = MessageTag.QUAL_IS_TRUST_CERT_MATCH_SERVICE_ANS1;
+			errorMessage = "QUAL_IS_TRUST_CERT_MATCH_SERVICE_ANS1";
 			return false;
 		}
 
 		if (!isMatch(trustedCert)) {
-			errorMessage = MessageTag.QUAL_IS_TRUST_CERT_MATCH_SERVICE_ANS2;
+			errorMessage = "QUAL_IS_TRUST_CERT_MATCH_SERVICE_ANS2";
 			return false;
 		}
 
@@ -94,12 +93,12 @@ public class TrustedCertificateMatchTrustServiceCheck extends ChainItem<XmlValid
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.QUAL_IS_TRUST_CERT_MATCH_SERVICE;
+	protected String getMessageTag() {
+		return "QUAL_IS_TRUST_CERT_MATCH_SERVICE";
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
+	protected String getErrorMessageTag() {
 		return errorMessage;
 	}
 

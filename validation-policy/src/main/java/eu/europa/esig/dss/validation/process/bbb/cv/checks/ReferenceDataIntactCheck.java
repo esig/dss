@@ -27,7 +27,6 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class ReferenceDataIntactCheck extends ChainItem<XmlCV> {
 
@@ -44,13 +43,13 @@ public class ReferenceDataIntactCheck extends ChainItem<XmlCV> {
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.BBB_CV_IRDOI;
+	protected String getMessageTag() {
+		return "BBB_CV_IRDOI";
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_CV_IRDOI_ANS;
+	protected String getErrorMessageTag() {
+		return "BBB_CV_IRDOI_ANS";
 	}
 
 	@Override

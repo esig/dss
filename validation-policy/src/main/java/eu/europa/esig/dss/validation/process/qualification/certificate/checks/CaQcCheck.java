@@ -29,7 +29,6 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class CaQcCheck extends ChainItem<XmlValidationCertificateQualification> {
 
@@ -47,13 +46,13 @@ public class CaQcCheck extends ChainItem<XmlValidationCertificateQualification> 
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.QUAL_HAS_CAQC;
+	protected String getMessageTag() {
+		return "QUAL_HAS_CAQC";
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.QUAL_HAS_CAQC_ANS;
+	protected String getErrorMessageTag() {
+		return "QUAL_HAS_CAQC_ANS";
 	}
 
 	@Override

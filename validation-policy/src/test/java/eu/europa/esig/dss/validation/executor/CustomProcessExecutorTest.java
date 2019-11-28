@@ -80,6 +80,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
@@ -95,7 +96,6 @@ import eu.europa.esig.dss.simplereport.jaxb.XmlCertificateChain;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
-import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.ValidationReportFacade;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
@@ -104,6 +104,8 @@ import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CustomProcessExecutorTest.class);
+	
+	private static I18nProvider i18nProvider = I18nProvider.getInstance();
 
 	@Test
 	public void skipRevocationDataValidation() throws Exception {
@@ -476,8 +478,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 
 		List<String> warnings = simpleReport.getWarnings(simpleReport.getFirstSignatureId());
-		assertFalse(warnings.contains(MessageTag.BBB_CV_IAFS_ANS.getMessage()));
-		assertTrue(warnings.contains(MessageTag.BBB_ICS_AIDNASNE_ANS.getMessage()));
+		assertFalse(warnings.contains(i18nProvider.getMessage("BBB_CV_IAFS_ANS").getValue()));
+		assertTrue(warnings.contains(i18nProvider.getMessage("BBB_CV_IAFS_ANS").getValue()));
 
 		validateBestSigningTimes(reports);
 		checkReports(reports);
@@ -726,7 +728,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 
 		List<String> warnings = simpleReport.getWarnings(simpleReport.getFirstSignatureId());
-		assertFalse(warnings.contains(MessageTag.TSV_ASTPTCT_ANS.getMessage()));
+		assertFalse(warnings.contains(i18nProvider.getMessage("TSV_ASTPTCT_ANS").getValue()));
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicValidationIndication(simpleReport.getFirstSignatureId()));
@@ -763,7 +765,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 
 		// List<String> warnings = simpleReport.getWarnings(simpleReport.getFirstSignatureId());
-		// assertTrue(warnings.contains(MessageTag.TSV_ASTPTCT_ANS.getMessage()));
+		// assertTrue(warnings.contains(i18nProvider.getMessage(TSV_ASTPTCT_ANS.getMessage()));
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicValidationIndication(simpleReport.getFirstSignatureId()));
@@ -1059,7 +1061,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		XmlConstraint xmlConstraint = sav.getConstraint().get(0);
 		XmlName error = xmlConstraint.getError();
 		
-		assertEquals(MessageTag.ASCCM_ANS_6.getMessage(), error.getValue());
+		assertEquals(i18nProvider.getMessage("ASCCM_ANS_6").getValue(), error.getValue());
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
@@ -1516,7 +1518,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		
 		List<String> warnings = simpleReport.getWarnings(simpleReport.getFirstSignatureId());
 		assertEquals(1, warnings.size());
-		assertEquals(MessageTag.BBB_SAV_ISQPMDOSPP_ANS.getMessage(), warnings.get(0));
+		assertEquals(i18nProvider.getMessage("BBB_SAV_ISQPMDOSPP_ANS").getValue(), warnings.get(0));
 		
 		DetailedReport detailedReport = reports.getDetailedReport();
 		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());

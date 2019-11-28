@@ -25,7 +25,6 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
-import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.process.bbb.AbstractValueCheckItem;
 
 public class ContentHintsCheck extends AbstractValueCheckItem<XmlSAV> {
@@ -47,13 +46,13 @@ public class ContentHintsCheck extends AbstractValueCheckItem<XmlSAV> {
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.BBB_SAV_ISQPCHP;
+	protected String getMessageTag() {
+		return "BBB_SAV_ISQPCHP";
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_SAV_ISQPCHP_ANS;
+	protected String getErrorMessageTag() {
+		return "BBB_SAV_ISQPCHP_ANS";
 	}
 
 	@Override

@@ -29,7 +29,6 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class CertificateTypeCoverageCheck extends ChainItem<XmlValidationCertificateQualification> {
 
@@ -48,13 +47,13 @@ public class CertificateTypeCoverageCheck extends ChainItem<XmlValidationCertifi
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.QUAL_HAS_CERT_TYPE_COVERAGE;
+	protected String getMessageTag() {
+		return "QUAL_HAS_CERT_TYPE_COVERAGE";
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.QUAL_HAS_CERT_TYPE_COVERAGE_ANS;
+	protected String getErrorMessageTag() {
+		return "QUAL_HAS_CERT_TYPE_COVERAGE_ANS";
 	}
 
 	@Override

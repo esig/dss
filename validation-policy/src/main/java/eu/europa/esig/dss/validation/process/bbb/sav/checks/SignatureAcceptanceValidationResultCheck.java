@@ -29,8 +29,6 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.IMessageTag;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class SignatureAcceptanceValidationResultCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 	
@@ -47,13 +45,13 @@ public class SignatureAcceptanceValidationResultCheck<T extends XmlConstraintsCo
 	}
 
 	@Override
-	protected IMessageTag getMessageTag() {
-		return MessageTag.BBB_SAV_ISVA;
+	protected String getMessageTag() {
+		return "BBB_SAV_ISVA";
 	}
 
 	@Override
-	protected IMessageTag getErrorMessageTag() {
-		return MessageTag.BBB_SAV_ISVA_ANS;
+	protected String getErrorMessageTag() {
+		return "BBB_SAV_ISVA_ANS";
 	}
 
 	@Override

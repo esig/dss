@@ -28,7 +28,6 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class NextUpdateCheck extends ChainItem<XmlRFC> {
 
@@ -50,13 +49,13 @@ public class NextUpdateCheck extends ChainItem<XmlRFC> {
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.BBB_RFC_NUP;
+	protected String getMessageTag() {
+		return "BBB_RFC_NUP";
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_RFC_NUP_ANS;
+	protected String getErrorMessageTag() {
+		return "BBB_RFC_NUP_ANS";
 	}
 
 	@Override

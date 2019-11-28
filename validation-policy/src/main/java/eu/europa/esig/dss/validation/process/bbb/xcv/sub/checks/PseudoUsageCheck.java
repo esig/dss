@@ -30,7 +30,6 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.pseudo.JoinedPseudoStrategy;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.pseudo.PseudoStrategy;
 
@@ -63,13 +62,13 @@ public class PseudoUsageCheck extends ChainItem<XmlSubXCV> {
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.BBB_XCV_PSEUDO_USE;
+	protected String getMessageTag() {
+		return "BBB_XCV_PSEUDO_USE";
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_XCV_PSEUDO_USE_ANS;
+	protected String getErrorMessageTag() {
+		return "BBB_XCV_PSEUDO_USE_ANS";
 	}
 
 	@Override

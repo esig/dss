@@ -25,7 +25,6 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class POEExistsCheck extends ChainItem<XmlPSV> {
 
@@ -39,12 +38,12 @@ public class POEExistsCheck extends ChainItem<XmlPSV> {
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.PSV_ITPOSVAOBCT;
+	protected String getMessageTag() {
+		return "PSV_ITPOSVAOBCT";
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
+	protected String getErrorMessageTag() {
 		return null;
 	}
 

@@ -25,7 +25,6 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
-import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
 public class CommonNameCheck extends AbstractMultiValuesCheckItem<XmlSubXCV> {
@@ -44,13 +43,13 @@ public class CommonNameCheck extends AbstractMultiValuesCheckItem<XmlSubXCV> {
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.BBB_XCV_ISCGCOMMONN;
+	protected String getMessageTag() {
+		return "BBB_XCV_ISCGCOMMONN";
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_XCV_ISCGCOMMONN_ANS;
+	protected String getErrorMessageTag() {
+		return "BBB_XCV_ISCGCOMMONN_ANS";
 	}
 
 	@Override

@@ -35,7 +35,6 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class AllFilesSignedCheck extends ChainItem<XmlCV> {
 
@@ -118,13 +117,13 @@ public class AllFilesSignedCheck extends ChainItem<XmlCV> {
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.BBB_CV_IAFS;
+	protected String getMessageTag() {
+		return "BBB_CV_IAFS";
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_CV_IAFS_ANS;
+	protected String getErrorMessageTag() {
+		return "BBB_CV_IAFS_ANS";
 	}
 
 	@Override

@@ -29,8 +29,6 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.IMessageTag;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class ManifestEntryExistenceCheck extends ChainItem<XmlCV> {
 
@@ -52,13 +50,13 @@ public class ManifestEntryExistenceCheck extends ChainItem<XmlCV> {
 	}
 
 	@Override
-	protected IMessageTag getMessageTag() {
-		return MessageTag.BBB_CV_ISMEC;
+	protected String getMessageTag() {
+		return "BBB_CV_ISMEC";
 	}
 
 	@Override
-	protected IMessageTag getErrorMessageTag() {
-		return MessageTag.BBB_CV_ISMEC_ANS;
+	protected String getErrorMessageTag() {
+		return "BBB_CV_ISMEC_ANS";
 	}
 
 	@Override

@@ -32,7 +32,6 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public abstract class AbstractRevocationFreshCheck extends ChainItem<XmlRFC> {
 
@@ -77,13 +76,13 @@ public abstract class AbstractRevocationFreshCheck extends ChainItem<XmlRFC> {
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.BBB_RFC_IRIF;
+	protected String getMessageTag() {
+		return "BBB_RFC_IRIF";
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_RFC_IRIF_ANS;
+	protected String getErrorMessageTag() {
+		return "BBB_RFC_IRIF_ANS";
 	}
 
 	@Override

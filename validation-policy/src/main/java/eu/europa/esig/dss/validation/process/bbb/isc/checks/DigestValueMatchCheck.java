@@ -26,7 +26,6 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class DigestValueMatchCheck extends ChainItem<XmlISC> {
 
@@ -43,13 +42,13 @@ public class DigestValueMatchCheck extends ChainItem<XmlISC> {
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.BBB_ICS_ICDVV;
+	protected String getMessageTag() {
+		return "BBB_ICS_ICDVV";
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_ICS_ICDVV_ANS;
+	protected String getErrorMessageTag() {
+		return "BBB_ICS_ICDVV_ANS";
 	}
 
 	@Override

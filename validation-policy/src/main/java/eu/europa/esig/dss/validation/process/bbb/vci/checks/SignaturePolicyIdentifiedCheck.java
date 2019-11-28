@@ -26,7 +26,6 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class SignaturePolicyIdentifiedCheck extends ChainItem<XmlVCI> {
 
@@ -43,13 +42,13 @@ public class SignaturePolicyIdentifiedCheck extends ChainItem<XmlVCI> {
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.BBB_VCI_ISPA;
+	protected String getMessageTag() {
+		return "BBB_VCI_ISPA";
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_VCI_ISPA_ANS;
+	protected String getErrorMessageTag() {
+		return "BBB_VCI_ISPA_ANS";
 	}
 
 	@Override

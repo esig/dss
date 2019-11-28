@@ -26,7 +26,6 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class CertificateSignatureValidCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
@@ -43,13 +42,13 @@ public class CertificateSignatureValidCheck<T extends XmlConstraintsConclusion> 
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.BBB_XCV_ICSI;
+	protected String getMessageTag() {
+		return "BBB_XCV_ICSI";
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_XCV_ICSI_ANS;
+	protected String getErrorMessageTag() {
+		return "BBB_XCV_ICSI_ANS";
 	}
 
 	@Override

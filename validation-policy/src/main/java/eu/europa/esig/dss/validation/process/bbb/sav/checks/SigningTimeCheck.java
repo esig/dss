@@ -26,7 +26,6 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class SigningTimeCheck extends ChainItem<XmlSAV> {
 
@@ -43,13 +42,13 @@ public class SigningTimeCheck extends ChainItem<XmlSAV> {
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.BBB_SAV_ISQPSTP;
+	protected String getMessageTag() {
+		return "BBB_SAV_ISQPSTP";
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_SAV_ISQPSTP_ANS;
+	protected String getErrorMessageTag() {
+		return "BBB_SAV_ISQPSTP_ANS";
 	}
 
 	@Override

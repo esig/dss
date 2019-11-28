@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.validation.executor;
 
+import java.util.Locale;
+
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public interface DocumentProcessExecutor extends ProcessExecutor<Reports> {
@@ -19,5 +21,12 @@ public interface DocumentProcessExecutor extends ProcessExecutor<Reports> {
 	 * @param enableEtsiValidationReport
 	 */
 	void setEnableEtsiValidationReport(boolean enableEtsiValidationReport);
+	
+	/**
+	 * Allows to set a language setting for generated Reports
+	 * 
+	 * @param locale {@link Locale}
+	 */
+	void setLocale(Locale locale);
 
 }

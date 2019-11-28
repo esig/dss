@@ -33,6 +33,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nMessage;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
@@ -51,6 +53,8 @@ import eu.europa.esig.dss.utils.Utils;
 public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ChainItem.class);
+	
+	private static I18nProvider i18nProvider = I18nProvider.getInstance();
 
 	private ChainItem<T> nextItem;
 
@@ -132,9 +136,19 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 
 	protected abstract boolean process();
 
-	protected abstract IMessageTag getMessageTag();
+	/**
+	 * Returns an i18n key String of a message to get
+	 * 
+	 * @return {@link String} key
+	 */
+	protected abstract String getMessageTag();
 
-	protected abstract IMessageTag getErrorMessageTag();
+	/**
+	 * Returns an i18n key String of an error message to get
+	 * 
+	 * @return {@link String} key
+	 */
+	protected abstract String getErrorMessageTag();
 
 	protected List<XmlName> getPreviousErrors() {
 		return Collections.emptyList();
@@ -214,11 +228,12 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 		result.getConstraint().add(constraint);
 	}
 
-	private XmlName buildXmlName(IMessageTag messageTag) {
+	private XmlName buildXmlName(String messageKey) {
 		XmlName xmlName = new XmlName();
-		if (messageTag != null) {
-			xmlName.setNameId(messageTag.getId());
-			xmlName.setValue(messageTag.getMessage());
+		I18nMessage message = i18nProvider.getMessage(messageKey);
+		if (message != null) {
+			xmlName.setNameId(messageKey);
+			xmlName.setValue(message.getValue());
 		} else {
 			LOG.error("MessageTag is null");
 		}

@@ -24,7 +24,6 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
-import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
 public class ContainerTypeCheck extends AbstractMultiValuesCheckItem<XmlFC> {
@@ -42,13 +41,13 @@ public class ContainerTypeCheck extends AbstractMultiValuesCheckItem<XmlFC> {
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.BBB_FC_IECTF;
+	protected String getMessageTag() {
+		return "BBB_FC_IECTF";
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_FC_IECTF_ANS;
+	protected String getErrorMessageTag() {
+		return "BBB_FC_IECTF_ANS";
 	}
 
 	@Override

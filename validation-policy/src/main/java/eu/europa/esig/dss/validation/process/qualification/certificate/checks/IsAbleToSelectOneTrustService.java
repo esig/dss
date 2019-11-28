@@ -29,7 +29,6 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class IsAbleToSelectOneTrustService extends ChainItem<XmlValidationCertificateQualification> {
 
@@ -48,13 +47,13 @@ public class IsAbleToSelectOneTrustService extends ChainItem<XmlValidationCertif
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.QUAL_HAS_ONLY_ONE;
+	protected String getMessageTag() {
+		return "QUAL_HAS_ONLY_ONE";
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.QUAL_HAS_ONLY_ONE_ANS;
+	protected String getErrorMessageTag() {
+		return "QUAL_HAS_ONLY_ONE_ANS";
 	}
 
 	@Override

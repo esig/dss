@@ -27,7 +27,6 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class SerialNumberCheck extends ChainItem<XmlSubXCV> {
 
@@ -45,13 +44,13 @@ public class SerialNumberCheck extends ChainItem<XmlSubXCV> {
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.QUAL_UNIQUE_CERT;
+	protected String getMessageTag() {
+		return "QUAL_UNIQUE_CERT";
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.QUAL_UNIQUE_CERT_ANS;
+	protected String getErrorMessageTag() {
+		return "QUAL_UNIQUE_CERT_ANS";
 	}
 
 	@Override
