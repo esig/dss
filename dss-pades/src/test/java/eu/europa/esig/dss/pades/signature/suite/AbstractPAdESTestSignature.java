@@ -40,7 +40,9 @@ import org.bouncycastle.asn1.cms.SignerInfo;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
@@ -167,6 +169,21 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 	@Override
 	protected boolean isBaselineLTA() {
 		return SignatureLevel.PAdES_BASELINE_LTA.equals(getSignatureParameters().getSignatureLevel());
+	}
+	
+	@Override
+	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
+		assertNotNull(signatureScopes);
+		assertEquals(1, signatureScopes.size());
+		XmlSignatureScope xmlSignatureScope = signatureScopes.get(0);
+		SignatureLevel signatureLevel = getSignatureParameters().getSignatureLevel();
+		if (SignatureLevel.PAdES_BASELINE_B == signatureLevel || SignatureLevel.PAdES_BASELINE_T == signatureLevel) {
+			assertEquals(SignatureScopeType.FULL, xmlSignatureScope.getScope());
+		} else {
+			assertEquals(SignatureScopeType.PARTIAL, xmlSignatureScope.getScope());
+		}
 	}
 
 	@Override
