@@ -45,9 +45,9 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 	protected DSSDocument document;
 	
 	/**
-	 * The set validation time
+	 * A time to validate the document against
 	 */
-	private Date validationTime = new Date();
+	private Date validationTime;
 
 	/**
 	 * The reference to the certificate verifier. The current DSS implementation
@@ -127,6 +127,19 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 	@Override
 	public void setValidationTime(Date validationTime) {
 		this.validationTime = validationTime;
+	}
+	
+	/**
+	 * Returns validation time
+	 * In case if the validation time is not provided, initialize the current time value from the system
+	 * 
+	 * @return {@link Date} validation time
+	 */
+	protected Date getValidationTime() {
+		if (validationTime == null) {
+			validationTime = new Date();
+		}
+		return validationTime;
 	}
 
 	@Override
@@ -222,7 +235,6 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 		assertConfigurationValid();
 
 		final ValidationContext validationContext = new SignatureValidationContext(validationCertPool);
-		validationContext.setCurrentTime(validationTime);
 		
 		final XmlDiagnosticData diagnosticData = prepareDiagnosticDataBuilder(validationContext, validationPolicy).build();
 
@@ -262,7 +274,7 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 				.includeRawTimestampTokens(certificateVerifier.isIncludeTimestampTokenValues())
 				.certificateSourceTypes(validationContext.getCertificateSourceTypes())
 				.trustedCertificateSources(certificateVerifier.getTrustedCertSources())
-				.validationDate(validationContext.getCurrentTime());
+				.validationDate(getValidationTime());
 	}
 	
 	/**
@@ -308,7 +320,6 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 	 * @param validationContext {@link ValidationContext} to process
 	 */
 	protected void validateContext(final ValidationContext validationContext) {
-		validationContext.setCurrentTime(validationTime);
 		validationContext.initialize(certificateVerifier);
 		validationContext.validate();
 	}
@@ -375,7 +386,7 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 		executor.setValidationLevel(validationLevel);
 		executor.setDiagnosticData(diagnosticData);
 		executor.setEnableEtsiValidationReport(enableEtsiValidationReport);
-		executor.setCurrentTime(validationTime);
+		executor.setCurrentTime(getValidationTime());
 		return executor.execute();
 	}
 }

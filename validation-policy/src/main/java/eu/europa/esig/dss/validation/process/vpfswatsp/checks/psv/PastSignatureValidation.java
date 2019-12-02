@@ -148,7 +148,7 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		 */
 		if (Indication.INDETERMINATE.equals(currentTimeIndication) && SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(currentTimeSubIndication)) {
 			// check signature or timestamp itself
-			Date bestSignatureTime = poe.getLowestPOETime(token.getId(), controlTime);
+			Date bestSignatureTime = poe.getLowestPOETime(token.getId(), currentTime);
 			item = item.setNextItem(poeUsedAlgorithmInSecureTimeExistsForEachAlgorithmConcernedByFailure(token, bestSignatureTime, context));
 			
 			// check the certificate chain
@@ -161,10 +161,10 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 				if (certificate.getId().equals(signingCertificate.getId())) {
 					subContext = SubContext.SIGNING_CERT;
 				}
-				bestSignatureTime = poe.getLowestPOETime(certificate.getId(), controlTime);
+				bestSignatureTime = poe.getLowestPOETime(certificate.getId(), currentTime);
 				item = item.setNextItem(poeUsedAlgorithmInSecureTimeExistsForEachAlgorithmConcernedByFailure(certificate, bestSignatureTime, context, subContext));
 				// check related revocation data
-				List<CryptographicCheck<XmlPSV>> revocationCryptographicChecks = getRevocationCryptographicChecks(certificate.getCertificateRevocationData(), controlTime);
+				List<CryptographicCheck<XmlPSV>> revocationCryptographicChecks = getRevocationCryptographicChecks(certificate.getCertificateRevocationData(), currentTime);
 				item = item.setNextItem(certificateRevocationCryptographicCheck(revocationCryptographicChecks, certificate));
 			}
 			return;

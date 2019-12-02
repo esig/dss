@@ -94,6 +94,14 @@ public abstract class Chain<T extends XmlConstraintsConclusion> {
 	}
 
 	protected abstract void initChain();
+	
+	protected boolean isValid(XmlConstraintsConclusion constraintConclusion) {
+		return constraintConclusion != null && isValidConclusion(constraintConclusion.getConclusion());
+	}
+
+	protected boolean isValidConclusion(XmlConclusion conclusion) {
+		return conclusion != null && Indication.PASSED.equals(conclusion.getIndication());
+	}
 
 	// TODO uses validation policy
 	protected LevelConstraint getFailLevelConstraint() {
