@@ -106,14 +106,26 @@ public interface DocumentSignatureService<SP extends AbstractSerializableSignatu
 	void setTspSource(final TSPSource tspSource);
 
 	/**
-	 * This method allows to compute a content-timestamp (which is added in the signed properties)
+	 * This method allows to compute a content-timestamp (which is added in the
+	 * signed properties)
 	 * 
 	 * @param toSignDocument
-	 *            document to sign or the already existing signature
+	 *                       document to sign or the already existing signature
 	 * @param parameters
-	 *            set of the driving signing parameters
-	 * @return
+	 *                       set of the driving signing parameters
+	 * @return a timestamp token
 	 */
 	TimestampToken getContentTimestamp(final DSSDocument toSignDocument, final SP parameters);
+
+	/**
+	 * This method allows to add a timestamp to an unsigned document
+	 * 
+	 * @param toTimestampDocument
+	 *                            the document to be timestamped
+	 * @param parameters
+	 *                            set of the driving signing parameters
+	 * @return the timestamped document
+	 */
+	DSSDocument timestamp(final DSSDocument toTimestampDocument, final SP parameters);
 
 }

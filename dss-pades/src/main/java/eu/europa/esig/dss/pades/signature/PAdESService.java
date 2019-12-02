@@ -111,7 +111,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 
 	@Override
 	public TimestampToken getContentTimestamp(DSSDocument toSignDocument, PAdESSignatureParameters parameters) {
-		final PDFSignatureService pdfSignatureService = pdfObjFactory.newPAdESSignatureService();
+		final PDFSignatureService pdfSignatureService = pdfObjFactory.newContentTimestampService();
 		final DigestAlgorithm digestAlgorithm = parameters.getContentTimestampParameters().getDigestAlgorithm();
 		final byte[] messageDigest = pdfSignatureService.digest(toSignDocument, parameters);
 		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, messageDigest);
@@ -243,6 +243,12 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters) {
 		PDFSignatureService pdfSignatureService = pdfObjFactory.newPAdESSignatureService();
 		return pdfSignatureService.addNewSignatureField(document, parameters);
+	}
+
+	@Override
+	public DSSDocument timestamp(DSSDocument toTimestampDocument, PAdESSignatureParameters parameters) {
+		PAdESLevelBaselineT levelT = new PAdESLevelBaselineT(tspSource, pdfObjFactory);
+		return levelT.extendSignatures(toTimestampDocument, parameters);
 	}
 
 }

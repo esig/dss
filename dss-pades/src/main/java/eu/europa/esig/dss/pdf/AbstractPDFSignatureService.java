@@ -38,20 +38,17 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
-import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 
-public abstract class AbstractPDFSignatureService implements PDFSignatureService, PDFTimestampService {
+public abstract class AbstractPDFSignatureService implements PDFSignatureService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractPDFSignatureService.class);
 
@@ -143,15 +140,6 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		} else {
 			return parameters.getSignatureSize();
 		}
-	}
-
-	@Override
-	public DSSDocument timestamp(DSSDocument document, PAdESSignatureParameters parameters, TSPSource tspSource) {
-		final DigestAlgorithm timestampDigestAlgorithm = parameters.getSignatureTimestampParameters().getDigestAlgorithm();
-		final byte[] digest = digest(document, parameters);
-		final TimestampBinary timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, digest);
-		final byte[] encoded = DSSASN1Utils.getDEREncoded(timeStampToken);
-		return sign(document, encoded, parameters);
 	}
 
 	@Override
