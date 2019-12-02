@@ -28,7 +28,6 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
-import eu.europa.esig.dss.pdf.PDFTimestampService;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.pdf.openpdf.ITextDefaultPdfObjFactory;
 
@@ -43,7 +42,7 @@ public class ITextPdfObjFactoryTest {
 		PDFSignatureService signatureService = ipof.newPAdESSignatureService();
 		assertNotNull(signatureService);
 		assertEquals(ITEXT_SIGNATURE_SERVICE, signatureService.getClass().getSimpleName());
-		PDFTimestampService timestampService = ipof.newTimestampSignatureService();
+		PDFSignatureService timestampService = ipof.newSignatureTimestampService();
 		assertNotNull(timestampService);
 		assertEquals(ITEXT_SIGNATURE_SERVICE, timestampService.getClass().getSimpleName());
 	}
@@ -55,7 +54,7 @@ public class ITextPdfObjFactoryTest {
 
 		PDFSignatureService signatureService = ipof.newPAdESSignatureService();
 		assertNull(signatureService);
-		PDFTimestampService timestampService = ipof.newTimestampSignatureService();
+		PDFSignatureService timestampService = ipof.newSignatureTimestampService();
 		assertNull(timestampService);
 
 		ipof = new ITextDefaultPdfObjFactory();
@@ -73,9 +72,20 @@ public class ITextPdfObjFactoryTest {
 		}
 
 		@Override
-		public PDFTimestampService newTimestampSignatureService() {
+		public PDFSignatureService newContentTimestampService() {
 			return null;
 		}
+
+		@Override
+		public PDFSignatureService newSignatureTimestampService() {
+			return null;
+		}
+
+		@Override
+		public PDFSignatureService newArchiveTimestampService() {
+			return null;
+		}
+
 
 	}
 

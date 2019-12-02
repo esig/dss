@@ -37,37 +37,36 @@ import com.lowagie.text.pdf.PdfReader;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pdf.IPdfObjFactory;
-import eu.europa.esig.dss.pdf.PDFTimestampService;
-import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
+import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 
 public class PDFTimestampServiceTest extends PKIFactoryAccess {
 
 	@Test
 	public void timestampAlone() throws IOException {
-		IPdfObjFactory ipof = new ServiceLoaderPdfObjFactory();
-		PDFTimestampService pdfTimestampService = ipof.newTimestampSignatureService();
+		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getGoodTsa());
 
 		PAdESSignatureParameters parameters = new PAdESSignatureParameters();
 
-		// The following parameters MUST be ignored (ETSI EN 319 142-1 V1.1.1, section 5.4.3)
+		// The following parameters MUST be ignored (ETSI EN 319 142-1 V1.1.1, section
+		// 5.4.3)
 		parameters.setLocation("LOCATION");
 		parameters.setSignerName("TEST TIMESTAMP");
 		parameters.setReason("REASON");
 		parameters.setContactInfo("CONTACT INFO");
 
 		DSSDocument document = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
-		DSSDocument timestamped = pdfTimestampService.timestamp(document, parameters, getGoodTsa());
-		
+		DSSDocument timestamped = service.timestamp(document, parameters);
+
 		try (InputStream is = timestamped.openStream(); PdfReader reader = new PdfReader(is)) {
 			AcroFields af = reader.getAcroFields();
 
 			List<String> names = af.getSignatureNames();
 			assertEquals(1, names.size());
-			
+
 			String first = names.get(0);
-			
+
 			PdfDictionary signatureDictionary = af.getSignatureDictionary(first);
 			assertNull(signatureDictionary.get(PdfName.REASON));
 			assertNull(signatureDictionary.get(PdfName.NAME));

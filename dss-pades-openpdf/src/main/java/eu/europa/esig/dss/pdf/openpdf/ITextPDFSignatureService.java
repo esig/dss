@@ -50,9 +50,8 @@ import com.lowagie.text.pdf.PdfStream;
 import com.lowagie.text.pdf.PdfString;
 import com.lowagie.text.pdf.PdfWriter;
 
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -64,6 +63,7 @@ import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
 import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
 import eu.europa.esig.dss.pdf.PAdESConstants;
+import eu.europa.esig.dss.pdf.PDFServiceMode;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDocTimestampInfo;
 import eu.europa.esig.dss.pdf.PdfDssDict;
@@ -89,11 +89,13 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	/**
 	 * Constructor for the ITextPDFSignatureService
 	 * 
-	 * @param timestamp if true, the instance is used to generate DocumentTypestamp
-	 *                  if false, it is used to generate a signature layer
+	 * @param serviceMode
+	 *                               current instance is used to generate
+	 *                               DocumentTypestamp or Signature signature layer
+	 * 
 	 */
-	public ITextPDFSignatureService(boolean timestamp, ITextSignatureDrawerFactory signatureDrawerFactory) {
-		super(timestamp, signatureDrawerFactory);
+	public ITextPDFSignatureService(PDFServiceMode serviceMode, ITextSignatureDrawerFactory signatureDrawerFactory) {
+		super(serviceMode, signatureDrawerFactory);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -109,7 +111,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		sap.setAcro6Layers(true);
 
 		PdfDictionary dic = null;
-		if (!timestamp && Utils.isStringNotEmpty(parameters.getSignatureFieldId())) {
+		if (!isDocumentTimestampLayer() && Utils.isStringNotEmpty(parameters.getSignatureFieldId())) {
 			dic = findExistingSignature(reader, parameters.getSignatureFieldId());
 		} else {
 			dic = new PdfDictionary();
@@ -213,12 +215,11 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public byte[] digest(DSSDocument toSignDocument, PAdESSignatureParameters parameters,
-			DigestAlgorithm digestAlgorithm) {
+	public byte[] digest(DSSDocument toSignDocument, PAdESSignatureParameters parameters) {
 		try (InputStream is = toSignDocument.openStream(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			PdfStamper stp = prepareStamper(is, baos, parameters);
 			PdfSignatureAppearance sap = stp.getSignatureAppearance();
-			final byte[] digest = DSSUtils.digest(digestAlgorithm, sap.getRangeStream());
+			final byte[] digest = DSSUtils.digest(getCurrentDigestAlgorithm(parameters), sap.getRangeStream());
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Base64 messageDigest : {}", Utils.toBase64(digest));
 			}
@@ -229,15 +230,14 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public DSSDocument sign(DSSDocument toSignDocument, byte[] signatureValue, PAdESSignatureParameters parameters,
-			DigestAlgorithm digestAlgorithm) {
+	public DSSDocument sign(DSSDocument toSignDocument, byte[] signatureValue, PAdESSignatureParameters parameters) {
 
 		try (InputStream is = toSignDocument.openStream(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			PdfStamper stp = prepareStamper(is, baos, parameters);
 			PdfSignatureAppearance sap = stp.getSignatureAppearance();
 
 			byte[] pk = signatureValue;
-			int csize = parameters.getSignatureSize();
+			int csize = getCurrentSignatureSize(parameters);
 			if (csize < pk.length) {
 				throw new DSSException(String.format("The signature size [%s] is too small for the signature value with a length [%s]", csize, pk.length));
 			}
