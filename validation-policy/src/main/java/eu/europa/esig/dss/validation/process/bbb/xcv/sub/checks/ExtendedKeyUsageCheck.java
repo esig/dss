@@ -32,6 +32,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
 public class ExtendedKeyUsageCheck extends AbstractMultiValuesCheckItem<XmlSubXCV> {
@@ -62,13 +63,13 @@ public class ExtendedKeyUsageCheck extends AbstractMultiValuesCheckItem<XmlSubXC
 	}
 
 	@Override
-	protected String getMessageTag() {
-		return "BBB_XCV_ISCGEKU";
+	protected MessageTag getMessageTag() {
+		return MessageTag.BBB_XCV_ISCGEKU;
 	}
 
 	@Override
-	protected String getErrorMessageTag() {
-		return "BBB_XCV_ISCGEKU_ANS";
+	protected MessageTag getErrorMessageTag() {
+		return MessageTag.BBB_XCV_ISCGEKU_ANS;
 	}
 
 	@Override

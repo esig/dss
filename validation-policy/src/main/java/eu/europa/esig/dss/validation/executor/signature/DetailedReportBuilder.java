@@ -40,6 +40,7 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.executor.AbstractDetailedReportBuilder;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
@@ -55,8 +56,9 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 
 	private final ValidationLevel validationLevel;
 
-	public DetailedReportBuilder(Date currentTime, ValidationPolicy policy, ValidationLevel validationLevel, DiagnosticData diagnosticData) {
-		super(diagnosticData, policy, currentTime);
+	public DetailedReportBuilder(I18nProvider i18nProvider, Date currentTime, ValidationPolicy policy, 
+			ValidationLevel validationLevel, DiagnosticData diagnosticData) {
+		super(i18nProvider, currentTime, policy, diagnosticData);
 		this.validationLevel = validationLevel;
 	}
 

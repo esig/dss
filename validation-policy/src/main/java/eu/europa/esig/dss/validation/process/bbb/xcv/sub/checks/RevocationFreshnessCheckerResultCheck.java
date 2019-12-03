@@ -29,6 +29,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class RevocationFreshnessCheckerResultCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
@@ -45,13 +46,13 @@ public class RevocationFreshnessCheckerResultCheck<T extends XmlConstraintsConcl
 	}
 
 	@Override
-	protected String getMessageTag() {
-		return "BBB_XCV_RFC";
+	protected MessageTag getMessageTag() {
+		return MessageTag.BBB_XCV_RFC;
 	}
 
 	@Override
-	protected String getErrorMessageTag() {
-		return "BBB_XCV_RFC_ANS";
+	protected MessageTag getErrorMessageTag() {
+		return MessageTag.BBB_XCV_RFC_ANS;
 	}
 
 	@Override

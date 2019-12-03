@@ -30,6 +30,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.executor.AbstractDetailedReportBuilder;
 import eu.europa.esig.dss.validation.process.qualification.certificate.CertificateQualificationBlock;
@@ -38,8 +39,9 @@ public class DetailedReportForCertificateBuilder extends AbstractDetailedReportB
 
 	private final String certificateId;
 
-	public DetailedReportForCertificateBuilder(DiagnosticData diagnosticData, ValidationPolicy policy, Date currentTime, String certificateId) {
-		super(diagnosticData, policy, currentTime);
+	public DetailedReportForCertificateBuilder(I18nProvider i18nProvider, DiagnosticData diagnosticData, 
+			ValidationPolicy policy, Date currentTime, String certificateId) {
+		super(i18nProvider, currentTime, policy, diagnosticData);
 		this.certificateId = certificateId;
 	}
 

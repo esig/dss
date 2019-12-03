@@ -33,6 +33,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
 public class TrustedServiceTypeIdentifierCheck extends AbstractMultiValuesCheckItem<XmlXCV> {
@@ -84,23 +85,23 @@ public class TrustedServiceTypeIdentifierCheck extends AbstractMultiValuesCheckI
 	}
 
 	@Override
-	protected String getMessageTag() {
-		return "XCV_TSL_ETIP";
+	protected MessageTag getMessageTag() {
+		return MessageTag.XCV_TSL_ETIP;
 	}
 
 	@Override
-	protected String getErrorMessageTag() {
+	protected MessageTag getErrorMessageTag() {
 		switch (context) {
 		case SIGNATURE:
-			return "XCV_TSL_ETIP_SIG_ANS";
+			return MessageTag.XCV_TSL_ETIP_SIG_ANS;
 		case COUNTER_SIGNATURE:
-			return "XCV_TSL_ETIP_SIG_ANS";
+			return MessageTag.XCV_TSL_ETIP_SIG_ANS;
 		case TIMESTAMP:
-			return "XCV_TSL_ETIP_TSP_ANS";
+			return MessageTag.XCV_TSL_ETIP_TSP_ANS;
 		case REVOCATION:
-			return "XCV_TSL_ETIP_REV_ANS";
+			return MessageTag.XCV_TSL_ETIP_REV_ANS;
 		default:
-			return "XCV_TSL_ETIP_ANS";
+			return MessageTag.XCV_TSL_ETIP_ANS;
 		}
 	}
 

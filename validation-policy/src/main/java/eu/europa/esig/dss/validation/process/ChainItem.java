@@ -33,8 +33,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.i18n.I18nMessage;
 import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
@@ -53,12 +53,12 @@ import eu.europa.esig.dss.utils.Utils;
 public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ChainItem.class);
-	
-	private static I18nProvider i18nProvider = I18nProvider.getInstance();
 
 	private ChainItem<T> nextItem;
 
 	private T result;
+	
+	private final I18nProvider i18nProvider;
 
 	private final LevelConstraint constraint;
 
@@ -67,13 +67,16 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 	/**
 	 * Common constructor
 	 * 
+	 * @param i18nProvider
+	 *            the {@code I18nProvider} internationalization provider
 	 * @param result
 	 *            the {@code Chain} object parent of this object
 	 * @param constraint
 	 *            the {@code LevelConstraint} to follow to execute this ChainItem
 	 * 
 	 */
-	protected ChainItem(T result, LevelConstraint constraint) {
+	protected ChainItem(I18nProvider i18nProvider, T result, LevelConstraint constraint) {
+		this.i18nProvider = i18nProvider;
 		this.result = result;
 		this.constraint = constraint;
 	}
@@ -81,6 +84,8 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 	/**
 	 * Specific constructor for Basic Building Blocks validation
 	 * 
+	 * @param i18nProvider
+	 *            the {@code I18nProvider} internationalization provider
 	 * @param result
 	 *            the {@code Chain} object parent of this object
 	 * @param constraint
@@ -89,7 +94,8 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 	 *            the {@code XmlBasicBuildingBlocks}'s id
 	 * 
 	 */
-	protected ChainItem(T result, LevelConstraint constraint, String bbbId) {
+	protected ChainItem(I18nProvider i18nProvider, T result, LevelConstraint constraint, String bbbId) {
+		this.i18nProvider = i18nProvider;
 		this.result = result;
 		this.constraint = constraint;
 		this.bbbId = bbbId;
@@ -139,16 +145,16 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 	/**
 	 * Returns an i18n key String of a message to get
 	 * 
-	 * @return {@link String} key
+	 * @return {@link MessageTag} key
 	 */
-	protected abstract String getMessageTag();
+	protected abstract MessageTag getMessageTag();
 
 	/**
 	 * Returns an i18n key String of an error message to get
 	 * 
-	 * @return {@link String} key
+	 * @return {@link MessageTag} key
 	 */
-	protected abstract String getErrorMessageTag();
+	protected abstract MessageTag getErrorMessageTag();
 
 	protected List<XmlName> getPreviousErrors() {
 		return Collections.emptyList();
@@ -228,14 +234,14 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 		result.getConstraint().add(constraint);
 	}
 
-	private XmlName buildXmlName(String messageKey) {
+	private XmlName buildXmlName(MessageTag messageTag) {
 		XmlName xmlName = new XmlName();
-		I18nMessage message = i18nProvider.getMessage(messageKey);
+		String message = i18nProvider.getMessage(messageTag);
 		if (message != null) {
-			xmlName.setNameId(messageKey);
-			xmlName.setValue(message.getValue());
+			xmlName.setNameId(messageTag.getId());
+			xmlName.setValue(message);
 		} else {
-			LOG.error("MessageTag is null");
+			LOG.error("MessageTag [{}] is not defined an messages.properties!", messageTag);
 		}
 		return xmlName;
 	}

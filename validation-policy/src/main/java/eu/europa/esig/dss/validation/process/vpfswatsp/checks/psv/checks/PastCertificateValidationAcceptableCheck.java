@@ -26,6 +26,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class PastCertificateValidationAcceptableCheck extends ChainItem<XmlPSV> {
 
@@ -55,13 +56,13 @@ public class PastCertificateValidationAcceptableCheck extends ChainItem<XmlPSV> 
 	}
 
 	@Override
-	protected String getMessageTag() {
-		return "PSV_IPCVA";
+	protected MessageTag getMessageTag() {
+		return MessageTag.PSV_IPCVA;
 	}
 
 	@Override
-	protected String getErrorMessageTag() {
-		return "PSV_IPCVA_ANS";
+	protected MessageTag getErrorMessageTag() {
+		return MessageTag.PSV_IPCVA_ANS;
 	}
 
 	@Override

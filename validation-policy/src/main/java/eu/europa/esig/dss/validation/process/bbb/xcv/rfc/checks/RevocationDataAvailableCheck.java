@@ -26,6 +26,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class RevocationDataAvailableCheck extends ChainItem<XmlRFC> {
 
@@ -42,13 +43,13 @@ public class RevocationDataAvailableCheck extends ChainItem<XmlRFC> {
 	}
 
 	@Override
-	protected String getMessageTag() {
-		return "BBB_XCV_IRDPFC";
+	protected MessageTag getMessageTag() {
+		return MessageTag.BBB_XCV_IRDPFC;
 	}
 
 	@Override
-	protected String getErrorMessageTag() {
-		return "BBB_XCV_IRDPFC_ANS";
+	protected MessageTag getErrorMessageTag() {
+		return MessageTag.BBB_XCV_IRDPFC_ANS;
 	}
 
 	@Override

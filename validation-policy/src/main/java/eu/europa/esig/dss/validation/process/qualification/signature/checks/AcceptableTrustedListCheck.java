@@ -29,6 +29,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class AcceptableTrustedListCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
@@ -46,13 +47,13 @@ public class AcceptableTrustedListCheck<T extends XmlConstraintsConclusion> exte
 	}
 
 	@Override
-	protected String getMessageTag() {
-		return "QUAL_TRUSTED_LIST_ACCEPT";
+	protected MessageTag getMessageTag() {
+		return MessageTag.QUAL_TRUSTED_LIST_ACCEPT;
 	}
 
 	@Override
-	protected String getErrorMessageTag() {
-		return "QUAL_TRUSTED_LIST_ACCEPT_ANS";
+	protected MessageTag getErrorMessageTag() {
+		return MessageTag.QUAL_TRUSTED_LIST_ACCEPT_ANS;
 	}
 
 	@Override

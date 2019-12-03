@@ -29,13 +29,14 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.validation.process.qualification.trust.consistency.TrustedServiceChecker;
 
 public class ServiceConsistencyCheck extends ChainItem<XmlValidationCertificateQualification> {
 
 	private final TrustedServiceWrapper trustedService;
 
-	private String errorMessage;
+	private MessageTag errorMessage;
 
 	public ServiceConsistencyCheck(XmlValidationCertificateQualification result, TrustedServiceWrapper trustedService, LevelConstraint constraint) {
 		super(result, constraint);
@@ -48,43 +49,43 @@ public class ServiceConsistencyCheck extends ChainItem<XmlValidationCertificateQ
 
 		if (trustedService == null) {
 
-			errorMessage = "QUAL_TL_SERV_CONS_ANS0";
+			errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS0;
 			return false;
 
 		} else {
 
 			if (!TrustedServiceChecker.isQCStatementConsistent(trustedService)) {
-				errorMessage = "QUAL_TL_SERV_CONS_ANS1";
+				errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS1;
 				return false;
 			}
 
 			if (!TrustedServiceChecker.isLegalPersonConsistent(trustedService)) {
-				errorMessage = "QUAL_TL_SERV_CONS_ANS2";
+				errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS2;
 				return false;
 			}
 
 			if (!TrustedServiceChecker.isQSCDConsistent(trustedService)) {
-				errorMessage = "QUAL_TL_SERV_CONS_ANS3";
+				errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS3;
 				return false;
 			}
 
 			if (!TrustedServiceChecker.isQSCDStatusAsInCertConsistent(trustedService)) {
-				errorMessage = "QUAL_TL_SERV_CONS_ANS3A";
+				errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS3A;
 				return false;
 			}
 
 			if (!TrustedServiceChecker.isUsageConsistent(trustedService)) {
-				errorMessage = "QUAL_TL_SERV_CONS_ANS4";
+				errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS4;
 				return false;
 			}
 
 			if (!TrustedServiceChecker.isPreEIDASConsistent(trustedService)) {
-				errorMessage = "QUAL_TL_SERV_CONS_ANS5";
+				errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS5;
 				return false;
 			}
 
 			if (!TrustedServiceChecker.isQualifierAndAdditionalServiceInfoConsistent(trustedService)) {
-				errorMessage = "QUAL_TL_SERV_CONS_ANS6";
+				errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS6;
 				return false;
 			}
 
@@ -93,12 +94,12 @@ public class ServiceConsistencyCheck extends ChainItem<XmlValidationCertificateQ
 	}
 
 	@Override
-	protected String getMessageTag() {
-		return "QUAL_TL_SERV_CONS";
+	protected MessageTag getMessageTag() {
+		return MessageTag.QUAL_TL_SERV_CONS;
 	}
 
 	@Override
-	protected String getErrorMessageTag() {
+	protected MessageTag getErrorMessageTag() {
 		return errorMessage;
 	}
 

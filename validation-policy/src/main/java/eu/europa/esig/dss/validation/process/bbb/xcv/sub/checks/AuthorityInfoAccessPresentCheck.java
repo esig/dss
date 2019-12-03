@@ -27,6 +27,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class AuthorityInfoAccessPresentCheck extends ChainItem<XmlSubXCV> {
 
@@ -44,13 +45,13 @@ public class AuthorityInfoAccessPresentCheck extends ChainItem<XmlSubXCV> {
 	}
 
 	@Override
-	protected String getMessageTag() {
-		return "BBB_XCV_AIA_PRES";
+	protected MessageTag getMessageTag() {
+		return MessageTag.BBB_XCV_AIA_PRES;
 	}
 
 	@Override
-	protected String getErrorMessageTag() {
-		return "BBB_XCV_AIA_PRES_ANS";
+	protected MessageTag getErrorMessageTag() {
+		return MessageTag.BBB_XCV_AIA_PRES_ANS;
 	}
 
 	@Override

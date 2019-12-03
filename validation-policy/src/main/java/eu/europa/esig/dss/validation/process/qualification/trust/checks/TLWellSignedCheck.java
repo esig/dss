@@ -26,6 +26,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class TLWellSignedCheck extends ChainItem<XmlTLAnalysis> {
 
@@ -42,13 +43,13 @@ public class TLWellSignedCheck extends ChainItem<XmlTLAnalysis> {
 	}
 
 	@Override
-	protected String getMessageTag() {
-		return "QUAL_TL_WS";
+	protected MessageTag getMessageTag() {
+		return MessageTag.QUAL_TL_WS;
 	}
 
 	@Override
-	protected String getErrorMessageTag() {
-		return "QUAL_TL_WS_ANS";
+	protected MessageTag getErrorMessageTag() {
+		return MessageTag.QUAL_TL_WS_ANS;
 	}
 
 	@Override

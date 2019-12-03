@@ -11,6 +11,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.AbstractDetailedReportBuilder;
@@ -18,8 +19,8 @@ import eu.europa.esig.dss.validation.process.vpftsp.ValidationProcessForTimeStam
 
 public class DetailedReportForTimestampBuilder extends AbstractDetailedReportBuilder {
 
-	public DetailedReportForTimestampBuilder(DiagnosticData diagnosticData, ValidationPolicy policy, Date currentTime) {
-		super(diagnosticData, policy, currentTime);
+	public DetailedReportForTimestampBuilder(I18nProvider i18nProvider, DiagnosticData diagnosticData, ValidationPolicy policy, Date currentTime) {
+		super(i18nProvider, currentTime, policy, diagnosticData);
 	}
 
 	XmlDetailedReport build() {

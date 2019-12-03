@@ -33,6 +33,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class CertificateOnHoldCheck extends ChainItem<XmlSubXCV> {
 
@@ -68,13 +69,13 @@ public class CertificateOnHoldCheck extends ChainItem<XmlSubXCV> {
 	}
 
 	@Override
-	protected String getMessageTag() {
-		return "BBB_XCV_ISCOH";
+	protected MessageTag getMessageTag() {
+		return MessageTag.BBB_XCV_ISCOH;
 	}
 
 	@Override
-	protected String getErrorMessageTag() {
-		return "BBB_XCV_ISCOH_ANS";
+	protected MessageTag getErrorMessageTag() {
+		return MessageTag.BBB_XCV_ISCOH_ANS;
 	}
 
 	@Override

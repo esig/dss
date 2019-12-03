@@ -26,6 +26,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class SignerLocationCheck extends ChainItem<XmlSAV> {
 
@@ -42,13 +43,13 @@ public class SignerLocationCheck extends ChainItem<XmlSAV> {
 	}
 
 	@Override
-	protected String getMessageTag() {
-		return "BBB_SAV_ISQPSLP";
+	protected MessageTag getMessageTag() {
+		return MessageTag.BBB_SAV_ISQPSLP;
 	}
 
 	@Override
-	protected String getErrorMessageTag() {
-		return "BBB_SAV_ISQPSLP_ANS";
+	protected MessageTag getErrorMessageTag() {
+		return MessageTag.BBB_SAV_ISQPSLP_ANS;
 	}
 
 	@Override

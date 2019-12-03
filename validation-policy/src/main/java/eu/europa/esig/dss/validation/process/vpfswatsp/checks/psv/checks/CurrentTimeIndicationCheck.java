@@ -28,6 +28,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class CurrentTimeIndicationCheck extends ChainItem<XmlPSV> {
 
@@ -49,13 +50,13 @@ public class CurrentTimeIndicationCheck extends ChainItem<XmlPSV> {
 	}
 
 	@Override
-	protected String getMessageTag() {
-		return "PSV_IPCVC";
+	protected MessageTag getMessageTag() {
+		return MessageTag.PSV_IPCVC;
 	}
 
 	@Override
-	protected String getErrorMessageTag() {
-		return "PSV_IPCVC_ANS";
+	protected MessageTag getErrorMessageTag() {
+		return MessageTag.PSV_IPCVC_ANS;
 	}
 
 	@Override

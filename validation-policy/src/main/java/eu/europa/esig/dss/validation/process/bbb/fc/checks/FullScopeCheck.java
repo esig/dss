@@ -30,6 +30,8 @@ import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.IMessageTag;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class FullScopeCheck extends ChainItem<XmlFC> {
 
@@ -54,13 +56,13 @@ public class FullScopeCheck extends ChainItem<XmlFC> {
 	}
 
 	@Override
-	protected String getMessageTag() {
-		return "BBB_FC_ICFD";
+	protected IMessageTag getMessageTag() {
+		return MessageTag.BBB_FC_ICFD;
 	}
 
 	@Override
-	protected String getErrorMessageTag() {
-		return "BBB_FC_ICFD_ANS";
+	protected IMessageTag getErrorMessageTag() {
+		return MessageTag.BBB_FC_ICFD_ANS;
 	}
 
 	@Override

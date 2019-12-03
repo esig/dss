@@ -28,6 +28,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpirationCheck extends ChainItem<XmlPSV> {
 
@@ -48,13 +49,13 @@ public class BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpira
 	}
 
 	@Override
-	protected String getMessageTag() {
-		return "TSV_ISCNVABST";
+	protected MessageTag getMessageTag() {
+		return MessageTag.TSV_ISCNVABST;
 	}
 
 	@Override
-	protected String getErrorMessageTag() {
-		return "TSV_ISCNVABST_ANS";
+	protected MessageTag getErrorMessageTag() {
+		return MessageTag.TSV_ISCNVABST_ANS;
 	}
 
 	@Override

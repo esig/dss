@@ -27,13 +27,14 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class ManifestFilePresentCheck extends ChainItem<XmlFC> {
 
 	private final XmlContainerInfo containerInfo;
 
-	private String message;
-	private String error;
+	private MessageTag message;
+	private MessageTag error;
 
 	public ManifestFilePresentCheck(XmlFC result, XmlContainerInfo containerInfo, LevelConstraint constraint) {
 		super(result, constraint);
@@ -43,23 +44,23 @@ public class ManifestFilePresentCheck extends ChainItem<XmlFC> {
 	@Override
 	protected boolean process() {
 		if ("ASiC-S".equals(containerInfo.getContainerType())) { // ASiC-S no Manifest
-			message = "BBB_FC_IMFP_ASICS";
-			error = "BBB_FC_IMFP_ASICS_ANS";
+			message = MessageTag.BBB_FC_IMFP_ASICS;
+			error = MessageTag.BBB_FC_IMFP_ASICS_ANS;
 			return Utils.isCollectionEmpty(containerInfo.getManifestFiles());
 		} else { // ASiC-E one or more manifest
-			message = "BBB_FC_IMFP_ASICE";
-			error = "BBB_FC_IMFP_ASICE_ANS";
+			message = MessageTag.BBB_FC_IMFP_ASICE;
+			error = MessageTag.BBB_FC_IMFP_ASICE_ANS;
 			return Utils.isCollectionNotEmpty(containerInfo.getManifestFiles());
 		}
 	}
 
 	@Override
-	protected String getMessageTag() {
+	protected MessageTag getMessageTag() {
 		return message;
 	}
 
 	@Override
-	protected String getErrorMessageTag() {
+	protected MessageTag getErrorMessageTag() {
 		return error;
 	}
 

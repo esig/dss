@@ -10,33 +10,27 @@ import org.junit.jupiter.api.Test;
 
 public class I18nProviderTest {
 	
-	private static final String BBB_XCV_SUB = "BBB_XCV_SUB";
-	
 	@Test
 	public void test() {
 		
-		I18nProvider i18nProvider = I18nProvider.getInstance();
-		i18nProvider.setLocale(Locale.getDefault());
+		I18nProvider i18nProvider = new I18nProvider(Locale.getDefault());
 		
-		I18nMessage message = i18nProvider.getMessage(BBB_XCV_SUB);
+		String message = i18nProvider.getMessage(MessageTag.BBB_XCV_SUB);
 		assertNotNull(message);
-		assertEquals(BBB_XCV_SUB, message.getKey());
-		assertEquals("Is the certificate validation conclusive?", message.getValue());
+		assertEquals("Is the certificate validation conclusive?", message);
 		
-		message = i18nProvider.getMessage("DOES_NOT_EXIST");
+		message = i18nProvider.getMessage(null);
 		assertNull(message);
 		
-		i18nProvider.setLocale(Locale.FRANCE);
-		message = i18nProvider.getMessage(BBB_XCV_SUB);
+		i18nProvider = new I18nProvider(Locale.FRANCE);
+		message = i18nProvider.getMessage(MessageTag.BBB_XCV_SUB);
 		assertNotNull(message);
-		assertEquals(BBB_XCV_SUB, message.getKey());
-		assertEquals("La validation du certificat est-elle concluante?", message.getValue());
-		
-		i18nProvider.setLocale(Locale.GERMAN);
-		message = i18nProvider.getMessage(BBB_XCV_SUB);
+		assertEquals("La validation du certificat est-elle concluante?", message);
+
+		i18nProvider = new I18nProvider(Locale.GERMAN);
+		message = i18nProvider.getMessage(MessageTag.BBB_XCV_SUB);
 		assertNotNull(message);
-		assertEquals(BBB_XCV_SUB, message.getKey());
-		assertEquals("Is the certificate validation conclusive?", message.getValue());
+		assertEquals("Is the certificate validation conclusive?", message);
 		
 	}
 

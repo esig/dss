@@ -29,6 +29,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class CryptographicRevocationsCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 	
@@ -60,13 +61,13 @@ public class CryptographicRevocationsCheck<T extends XmlConstraintsConclusion> e
 	}
 
 	@Override
-	protected String getMessageTag() {
-		return "ACCCRM";
+	protected MessageTag getMessageTag() {
+		return MessageTag.ACCCRM;
 	}
 
 	@Override
-	protected String getErrorMessageTag() {
-		return "ACCCRM_ANS";
+	protected MessageTag getErrorMessageTag() {
+		return MessageTag.ACCCRM_ANS;
 	}
 
 	@Override

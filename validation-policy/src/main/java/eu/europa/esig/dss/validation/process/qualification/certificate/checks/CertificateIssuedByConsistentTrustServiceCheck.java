@@ -29,6 +29,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class CertificateIssuedByConsistentTrustServiceCheck extends ChainItem<XmlValidationCertificateQualification> {
 
@@ -47,13 +48,13 @@ public class CertificateIssuedByConsistentTrustServiceCheck extends ChainItem<Xm
 	}
 
 	@Override
-	protected String getMessageTag() {
-		return "QUAL_HAS_CONSISTENT";
+	protected MessageTag getMessageTag() {
+		return MessageTag.QUAL_HAS_CONSISTENT;
 	}
 
 	@Override
-	protected String getErrorMessageTag() {
-		return "QUAL_HAS_CONSISTENT_ANS";
+	protected MessageTag getErrorMessageTag() {
+		return MessageTag.QUAL_HAS_CONSISTENT_ANS;
 	}
 
 	@Override

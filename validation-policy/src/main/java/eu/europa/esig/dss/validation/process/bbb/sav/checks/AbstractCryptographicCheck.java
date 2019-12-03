@@ -37,6 +37,7 @@ import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
@@ -44,7 +45,7 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 	protected final Date validationDate;
 
 	protected String failedAlgorithm = null;
-	protected String errorMessage = "EMPTY";
+	protected MessageTag errorMessage = MessageTag.EMPTY;
 
 	protected AbstractCryptographicCheck(T result, Date currentTime, CryptographicConstraint constraint) {
 		super(result, constraint);
@@ -54,7 +55,7 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 
 	protected boolean isPublicKeySizeKnown(String keyLengthUsedToSignThisToken) {
 		if (!Utils.isStringDigits(keyLengthUsedToSignThisToken)) {
-			errorMessage = "ASCCM_ANS_6";
+			errorMessage = MessageTag.ASCCM_ANS_6;
 			return false;
 		}
 		return true;
@@ -72,7 +73,7 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 
 			Integer expectedMinimumKeySize = minimumKeySizes.get(algoToFind);
 			if (tokenKeySize < expectedMinimumKeySize) {
-				errorMessage = "ASCCM_ANS_3";
+				errorMessage = MessageTag.ASCCM_ANS_3;
 				failedAlgorithm = getEncryptionDetails(encryptionAlgo, keyLengthUsedToSignThisToken);
 				return false;
 			}
@@ -85,7 +86,7 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 		List<String> supportedEncryptionAlgorithms = constraintWrapper.getSupportedEncryptionAlgorithms();
 		if (Utils.isCollectionNotEmpty(supportedEncryptionAlgorithms)) {
 			if (!isIn(algoToFind, supportedEncryptionAlgorithms)) {
-				errorMessage = "ASCCM_ANS_1";
+				errorMessage = MessageTag.ASCCM_ANS_1;
 				failedAlgorithm = algoToFind;
 				return false;
 			}
@@ -98,7 +99,7 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 		List<String> supportedDigestAlgorithms = constraintWrapper.getSupportedDigestAlgorithms();
 		if (Utils.isCollectionNotEmpty(supportedDigestAlgorithms)) {
 			if (!isIn(algoToFind, supportedDigestAlgorithms)) {
-				errorMessage = "ASCCM_ANS_2";
+				errorMessage = MessageTag.ASCCM_ANS_2;
 				failedAlgorithm = algoToFind;
 				return false;
 			}
@@ -110,12 +111,12 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 		String algoToFind = digestAlgo == null ? Utils.EMPTY_STRING : digestAlgo.getName();
 		Date expirationDate = constraintWrapper.getDigestAlgorithmExpirationDate(algoToFind);
 		if (expirationDate == null) {
-			errorMessage = "ASCCM_ANS_4";
+			errorMessage = MessageTag.ASCCM_ANS_4;
 			failedAlgorithm = algoToFind;
 			return false;
 		}
 		if (expirationDate.before(validationDate)) {
-			errorMessage = "ASCCM_ANS_5";
+			errorMessage = MessageTag.ASCCM_ANS_5;
 			failedAlgorithm = algoToFind;
 			return false;
 		}
@@ -126,12 +127,12 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 		Integer keyLength = Integer.parseInt(keyLengthUsedToSignThisToken);
 		Date expirationDate = constraintWrapper.getExpirationDate(encryptionAlgo.getName(), keyLength);
 		if (expirationDate == null) {
-			errorMessage = "ASCCM_ANS_4";
+			errorMessage = MessageTag.ASCCM_ANS_4;
 			failedAlgorithm = getEncryptionDetails(encryptionAlgo, keyLengthUsedToSignThisToken);
 			return false;
 		}
 		if (expirationDate.before(validationDate)) {
-			errorMessage = "ASCCM_ANS_5";
+			errorMessage = MessageTag.ASCCM_ANS_5;
 			failedAlgorithm = getEncryptionDetails(encryptionAlgo, keyLengthUsedToSignThisToken);
 			return false;
 		}
@@ -156,12 +157,12 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 	}
 
 	@Override
-	protected String getMessageTag() {
-		return "ASCCM";
+	protected MessageTag getMessageTag() {
+		return MessageTag.ASCCM;
 	}
 
 	@Override
-	protected String getErrorMessageTag() {
+	protected MessageTag getErrorMessageTag() {
 		return errorMessage;
 	}
 

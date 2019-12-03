@@ -26,6 +26,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class DigestValuePresentCheck extends ChainItem<XmlISC> {
 
@@ -42,13 +43,13 @@ public class DigestValuePresentCheck extends ChainItem<XmlISC> {
 	}
 
 	@Override
-	protected String getMessageTag() {
-		return "BBB_ICS_ISACDP";
+	protected MessageTag getMessageTag() {
+		return MessageTag.BBB_ICS_ISACDP;
 	}
 
 	@Override
-	protected String getErrorMessageTag() {
-		return "BBB_ICS_ISACDP_ANS";
+	protected MessageTag getErrorMessageTag() {
+		return MessageTag.BBB_ICS_ISACDP_ANS;
 	}
 
 	@Override

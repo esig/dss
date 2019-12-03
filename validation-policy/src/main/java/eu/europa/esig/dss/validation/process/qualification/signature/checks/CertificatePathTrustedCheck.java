@@ -26,6 +26,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class CertificatePathTrustedCheck extends ChainItem<XmlValidationSignatureQualification> {
 
@@ -42,13 +43,13 @@ public class CertificatePathTrustedCheck extends ChainItem<XmlValidationSignatur
 	}
 
 	@Override
-	protected String getMessageTag() {
-		return "QUAL_TRUSTED_CERT_PATH";
+	protected MessageTag getMessageTag() {
+		return MessageTag.QUAL_TRUSTED_CERT_PATH;
 	}
 
 	@Override
-	protected String getErrorMessageTag() {
-		return "QUAL_TRUSTED_CERT_PATH_ANS";
+	protected MessageTag getErrorMessageTag() {
+		return MessageTag.QUAL_TRUSTED_CERT_PATH_ANS;
 	}
 
 	@Override

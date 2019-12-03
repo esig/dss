@@ -31,6 +31,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class MessageDigestOrSignedPropertiesCheck extends ChainItem<XmlSAV> {
 
@@ -58,13 +59,13 @@ public class MessageDigestOrSignedPropertiesCheck extends ChainItem<XmlSAV> {
 	}
 
 	@Override
-	protected String getMessageTag() {
-		return "BBB_SAV_ISQPMDOSPP";
+	protected MessageTag getMessageTag() {
+		return MessageTag.BBB_SAV_ISQPMDOSPP;
 	}
 
 	@Override
-	protected String getErrorMessageTag() {
-		return "BBB_SAV_ISQPMDOSPP_ANS";
+	protected MessageTag getErrorMessageTag() {
+		return MessageTag.BBB_SAV_ISQPMDOSPP_ANS;
 	}
 
 	@Override

@@ -46,6 +46,7 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationProcessBasicSignatures> {
 
@@ -368,13 +369,13 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 	}
 
 	@Override
-	protected String getMessageTag() {
-		return "ADEST_ROBVPIIC";
+	protected MessageTag getMessageTag() {
+		return MessageTag.ADEST_ROBVPIIC;
 	}
 
 	@Override
-	protected String getErrorMessageTag() {
-		return "ADEST_ROBVPIIC_ANS";
+	protected MessageTag getErrorMessageTag() {
+		return MessageTag.ADEST_ROBVPIIC_ANS;
 	}
 
 	@Override

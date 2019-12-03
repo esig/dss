@@ -26,6 +26,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class SigningCertificateAttributePresentCheck extends ChainItem<XmlISC> {
 
@@ -42,13 +43,13 @@ public class SigningCertificateAttributePresentCheck extends ChainItem<XmlISC> {
 	}
 
 	@Override
-	protected String getMessageTag() {
-		return "BBB_ICS_ISASCP";
+	protected MessageTag getMessageTag() {
+		return MessageTag.BBB_ICS_ISASCP;
 	}
 
 	@Override
-	protected String getErrorMessageTag() {
-		return "BBB_ICS_ISASCP_ANS";
+	protected MessageTag getErrorMessageTag() {
+		return MessageTag.BBB_ICS_ISASCP_ANS;
 	}
 
 	@Override

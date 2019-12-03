@@ -48,6 +48,7 @@ public class DefaultSignatureProcessExecutor implements SignatureProcessExecutor
 	protected boolean enableEtsiValidationReport = true;
 	protected XmlDiagnosticData jaxbDiagnosticData;
 	protected ValidationPolicy policy;
+	protected I18nProvider i18nProvider;
 
 	@Override
 	public void setCurrentTime(Date currentTime) {
@@ -86,8 +87,14 @@ public class DefaultSignatureProcessExecutor implements SignatureProcessExecutor
 
 	@Override
 	public void setLocale(Locale locale) {
-		I18nProvider i18nProvider = I18nProvider.getInstance();
-		i18nProvider.setLocale(locale);
+		i18nProvider = new I18nProvider(locale);
+	}
+	
+	protected I18nProvider getI18nProvider() {
+		if (i18nProvider == null) {
+			i18nProvider = new I18nProvider(Locale.getDefault());
+		}
+		return i18nProvider;
 	}
 	
 	@Override
@@ -110,7 +117,7 @@ public class DefaultSignatureProcessExecutor implements SignatureProcessExecutor
 	
 	protected Reports buildReports(final DiagnosticData diagnosticData, final Date validationTime) {
 		
-		DetailedReportBuilder detailedReportBuilder = new DetailedReportBuilder(currentTime, policy, validationLevel, diagnosticData);
+		DetailedReportBuilder detailedReportBuilder = new DetailedReportBuilder(i18nProvider, currentTime, policy, validationLevel, diagnosticData);
 		XmlDetailedReport jaxbDetailedReport = detailedReportBuilder.build();
 
 		DetailedReport detailedReportWrapper = new DetailedReport(jaxbDetailedReport);

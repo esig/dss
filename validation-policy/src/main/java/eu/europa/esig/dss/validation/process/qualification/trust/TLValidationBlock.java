@@ -24,6 +24,7 @@ import java.util.Date;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
@@ -42,8 +43,8 @@ public class TLValidationBlock extends Chain<XmlTLAnalysis> {
 	private final Date currentTime;
 	private final ValidationPolicy policy;
 
-	public TLValidationBlock(XmlTrustedList currentTL, Date currentTime, ValidationPolicy policy) {
-		super(new XmlTLAnalysis());
+	public TLValidationBlock(I18nProvider i18nProvider, XmlTrustedList currentTL, Date currentTime, ValidationPolicy policy) {
+		super(i18nProvider, new XmlTLAnalysis());
 
 		result.setTitle(ValidationProcessDefinition.TL.getTitle() + " " + currentTL.getCountryCode());
 		result.setCountryCode(currentTL.getCountryCode());

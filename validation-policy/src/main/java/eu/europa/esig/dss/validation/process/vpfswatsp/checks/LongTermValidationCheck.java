@@ -29,6 +29,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class LongTermValidationCheck extends ChainItem<XmlValidationProcessArchivalData> {
 
@@ -59,13 +60,13 @@ public class LongTermValidationCheck extends ChainItem<XmlValidationProcessArchi
 	}
 
 	@Override
-	protected String getMessageTag() {
-		return "ARCH_LTVV";
+	protected MessageTag getMessageTag() {
+		return MessageTag.ARCH_LTVV;
 	}
 
 	@Override
-	protected String getErrorMessageTag() {
-		return "ARCH_LTVV_ANS";
+	protected MessageTag getErrorMessageTag() {
+		return MessageTag.ARCH_LTVV_ANS;
 	}
 
 	@Override

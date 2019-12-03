@@ -13,45 +13,20 @@ public class I18nProvider {
 	private static final String MESSAGES = "Messages"; // defined a name of the target file
 	
 	// Use system locale as default
-	private ResourceBundle bundle = getResourceBundle(Locale.getDefault());
-	private Set<String> keySet;
+	private final ResourceBundle bundle;
 	
-	private static I18nProvider i18nProvider;
-	
-	private I18nProvider() {
-	}
+	// a set of possible keys
+	private final Set<String> keySet;
 	
 	/**
 	 * Returns an instance of {@code I18nProvider}
 	 * 
+	 * @param locale {@link Locale} language/location to use
 	 * @return {@link I18nProvider}
 	 */
-	public static I18nProvider getInstance() {
-		if (i18nProvider == null) {
-			i18nProvider = new I18nProvider();
-		}
-		return i18nProvider;
-	}
-	
-	/**
-	 * Allows to configure a language to be used in the validation reports
-	 * NOTE: if not set, the default value is used
-	 * 
-	 * @param locale {@link Locale}
-	 */
-	public void setLocale(Locale locale) {
-		bundle = getResourceBundle(locale);
-	}
-	
-	private ResourceBundle getResourceBundle(Locale locale) {
-		return ResourceBundle.getBundle(MESSAGES, locale);
-	}
-	
-	private Set<String> getKeySet() {
-		if (keySet == null) {
-			keySet = bundle.keySet();
-		}
-		return keySet;
+	public I18nProvider(Locale locale) {
+		this.bundle = ResourceBundle.getBundle(MESSAGES, locale);
+		this.keySet = bundle.keySet();
 	}
 	
 	/**
@@ -60,9 +35,9 @@ public class I18nProvider {
 	 * @param key {@link String} key of the message to get value for
 	 * @return {@link I18nMessage}
 	 */
-	public I18nMessage getMessage(String key) {
-		if (getKeySet().contains(key)) {
-			return new I18nMessage(key, bundle.getString(key));
+	public String getMessage(MessageTag messageTag) {
+		if (messageTag != null && keySet.contains(messageTag.getId())) {
+			return bundle.getString(messageTag.getId());
 		}
 		return null;
 	}

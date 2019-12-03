@@ -29,6 +29,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class CommitmentTypeIndicationsCheck extends ChainItem<XmlSAV> {
 
@@ -58,13 +59,13 @@ public class CommitmentTypeIndicationsCheck extends ChainItem<XmlSAV> {
 	}
 
 	@Override
-	protected String getMessageTag() {
-		return "BBB_SAV_ISQPXTIP";
+	protected MessageTag getMessageTag() {
+		return MessageTag.BBB_SAV_ISQPXTIP;
 	}
 
 	@Override
-	protected String getErrorMessageTag() {
-		return "BBB_SAV_ISQPXTIP_ANS";
+	protected MessageTag getErrorMessageTag() {
+		return MessageTag.BBB_SAV_ISQPXTIP_ANS;
 	}
 
 	@Override

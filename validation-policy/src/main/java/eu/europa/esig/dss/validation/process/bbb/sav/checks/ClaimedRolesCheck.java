@@ -27,6 +27,7 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
 public class ClaimedRolesCheck extends AbstractMultiValuesCheckItem<XmlSAV> {
@@ -45,13 +46,13 @@ public class ClaimedRolesCheck extends AbstractMultiValuesCheckItem<XmlSAV> {
 	}
 
 	@Override
-	protected String getMessageTag() {
-		return "BBB_SAV_ICRM";
+	protected MessageTag getMessageTag() {
+		return MessageTag.BBB_SAV_ICRM;
 	}
 
 	@Override
-	protected String getErrorMessageTag() {
-		return "BBB_SAV_ICRM_ANS";
+	protected MessageTag getErrorMessageTag() {
+		return MessageTag.BBB_SAV_ICRM_ANS;
 	}
 
 	@Override

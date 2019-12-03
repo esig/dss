@@ -33,6 +33,7 @@ import eu.europa.esig.dss.diagnostic.AbstractTokenProxy;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
 import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.bbb.BasicBuildingBlocks;
@@ -40,15 +41,16 @@ import eu.europa.esig.dss.validation.process.qualification.trust.TLValidationBlo
 
 public abstract class AbstractDetailedReportBuilder {
 
+	protected final I18nProvider i18nProvider;
 	protected final DiagnosticData diagnosticData;
 	protected final ValidationPolicy policy;
 	protected final Date currentTime;
 
-	protected AbstractDetailedReportBuilder(DiagnosticData diagnosticData, ValidationPolicy policy, Date currentTime) {
-		this.diagnosticData = diagnosticData;
-		this.policy = policy;
+	protected AbstractDetailedReportBuilder(I18nProvider i18nProvider, Date currentTime, ValidationPolicy policy, DiagnosticData diagnosticData) {
+		this.i18nProvider = i18nProvider;
 		this.currentTime = currentTime;
-
+		this.policy = policy;
+		this.diagnosticData = diagnosticData;
 	}
 
 	protected XmlDetailedReport init() {

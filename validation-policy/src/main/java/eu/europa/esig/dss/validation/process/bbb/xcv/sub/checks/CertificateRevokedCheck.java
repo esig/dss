@@ -34,6 +34,7 @@ import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class CertificateRevokedCheck extends ChainItem<XmlSubXCV> {
 
@@ -72,13 +73,13 @@ public class CertificateRevokedCheck extends ChainItem<XmlSubXCV> {
 	}
 
 	@Override
-	protected String getMessageTag() {
-		return "BBB_XCV_ISCR";
+	protected MessageTag getMessageTag() {
+		return MessageTag.BBB_XCV_ISCR;
 	}
 
 	@Override
-	protected String getErrorMessageTag() {
-		return "BBB_XCV_ISCR_ANS";
+	protected MessageTag getErrorMessageTag() {
+		return MessageTag.BBB_XCV_ISCR_ANS;
 	}
 
 	@Override

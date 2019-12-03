@@ -31,6 +31,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
 
 public class TLVersionCheck extends ChainItem<XmlTLAnalysis> {
@@ -68,13 +69,13 @@ public class TLVersionCheck extends ChainItem<XmlTLAnalysis> {
 	}
 
 	@Override
-	protected String getMessageTag() {
-		return "QUAL_TL_VERSION";
+	protected MessageTag getMessageTag() {
+		return MessageTag.QUAL_TL_VERSION;
 	}
 
 	@Override
-	protected String getErrorMessageTag() {
-		return "QUAL_TL_VERSION_ANS";
+	protected MessageTag getErrorMessageTag() {
+		return MessageTag.QUAL_TL_VERSION_ANS;
 	}
 
 	@Override

@@ -29,6 +29,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.RuleUtils;
 import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class TLFreshnessCheck extends ChainItem<XmlTLAnalysis> {
 
@@ -58,13 +59,13 @@ public class TLFreshnessCheck extends ChainItem<XmlTLAnalysis> {
 	}
 
 	@Override
-	protected String getMessageTag() {
-		return "QUAL_TL_FRESH";
+	protected MessageTag getMessageTag() {
+		return MessageTag.QUAL_TL_FRESH;
 	}
 
 	@Override
-	protected String getErrorMessageTag() {
-		return "QUAL_TL_FRESH_ANS";
+	protected MessageTag getErrorMessageTag() {
+		return MessageTag.QUAL_TL_FRESH_ANS;
 	}
 
 	@Override

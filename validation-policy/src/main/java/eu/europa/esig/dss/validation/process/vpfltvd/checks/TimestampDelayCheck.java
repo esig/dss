@@ -29,6 +29,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.RuleUtils;
 import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class TimestampDelayCheck extends ChainItem<XmlValidationProcessLongTermData> {
 
@@ -62,13 +63,13 @@ public class TimestampDelayCheck extends ChainItem<XmlValidationProcessLongTermD
 	}
 
 	@Override
-	protected String getMessageTag() {
-		return "ADEST_ISTPTDABST";
+	protected MessageTag getMessageTag() {
+		return MessageTag.ADEST_ISTPTDABST;
 	}
 
 	@Override
-	protected String getErrorMessageTag() {
-		return "ADEST_ISTPTDABST_ANS";
+	protected MessageTag getErrorMessageTag() {
+		return MessageTag.ADEST_ISTPTDABST_ANS;
 	}
 
 	@Override

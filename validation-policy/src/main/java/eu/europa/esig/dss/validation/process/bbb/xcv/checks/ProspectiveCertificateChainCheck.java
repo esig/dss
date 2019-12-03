@@ -27,6 +27,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class ProspectiveCertificateChainCheck extends ChainItem<XmlXCV> {
 
@@ -47,23 +48,23 @@ public class ProspectiveCertificateChainCheck extends ChainItem<XmlXCV> {
 	}
 
 	@Override
-	protected String getMessageTag() {
-		return "BBB_XCV_CCCBB";
+	protected MessageTag getMessageTag() {
+		return MessageTag.BBB_XCV_CCCBB;
 	}
 
 	@Override
-	protected String getErrorMessageTag() {
+	protected MessageTag getErrorMessageTag() {
 		switch (context) {
 		case SIGNATURE:
-			return "BBB_XCV_CCCBB_SIG_ANS";
+			return MessageTag.BBB_XCV_CCCBB_SIG_ANS;
 		case COUNTER_SIGNATURE:
-			return "BBB_XCV_CCCBB_SIG_ANS";
+			return MessageTag.BBB_XCV_CCCBB_SIG_ANS;
 		case TIMESTAMP:
-			return "BBB_XCV_CCCBB_TSP_ANS";
+			return MessageTag.BBB_XCV_CCCBB_TSP_ANS;
 		case REVOCATION:
-			return "BBB_XCV_CCCBB_REV_ANS";
+			return MessageTag.BBB_XCV_CCCBB_REV_ANS;
 		default:
-			return "BBB_XCV_CCCBB_ANS";
+			return MessageTag.BBB_XCV_CCCBB_ANS;
 		}
 	}
 

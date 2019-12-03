@@ -26,6 +26,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.ValidationTime;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.validation.process.qualification.certificate.Type;
 
 public class ForEsigCheck extends ChainItem<XmlValidationCertificateQualification> {
@@ -46,28 +47,28 @@ public class ForEsigCheck extends ChainItem<XmlValidationCertificateQualificatio
 	}
 
 	@Override
-	protected String getMessageTag() {
+	protected MessageTag getMessageTag() {
 		switch (validationTime) {
 		case BEST_SIGNATURE_TIME:
-			return "QUAL_FOR_SIGN_AT_ST";
+			return MessageTag.QUAL_FOR_SIGN_AT_ST;
 		case CERTIFICATE_ISSUANCE_TIME:
-			return "QUAL_FOR_SIGN_AT_CC";
+			return MessageTag.QUAL_FOR_SIGN_AT_CC;
 		case VALIDATION_TIME:
-			return "QUAL_FOR_SIGN_AT_VT";
+			return MessageTag.QUAL_FOR_SIGN_AT_VT;
 		default:
 			throw new IllegalArgumentException("Unsupported time " + validationTime);
 		}
 	}
 
 	@Override
-	protected String getErrorMessageTag() {
+	protected MessageTag getErrorMessageTag() {
 		switch (validationTime) {
 		case BEST_SIGNATURE_TIME:
-			return "QUAL_FOR_SIGN_AT_ST_ANS";
+			return MessageTag.QUAL_FOR_SIGN_AT_ST_ANS;
 		case CERTIFICATE_ISSUANCE_TIME:
-			return "QUAL_FOR_SIGN_AT_CC_ANS";
+			return MessageTag.QUAL_FOR_SIGN_AT_CC_ANS;
 		case VALIDATION_TIME:
-			return "QUAL_FOR_SIGN_AT_VT_ANS";
+			return MessageTag.QUAL_FOR_SIGN_AT_VT_ANS;
 		default:
 			throw new IllegalArgumentException("Unsupported time " + validationTime);
 		}
