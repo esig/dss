@@ -119,7 +119,7 @@ public class CAdESLevelBWithExpiredCertificateAndRevokedContentTimestampTest ext
 				SignatureValidationReportType validationReport = vo.getValidationReport();
 				ValidationStatusType signatureValidationStatus = validationReport.getSignatureValidationStatus();
 				assertEquals(Indication.INDETERMINATE, signatureValidationStatus.getMainIndication());
-				assertEquals(SubIndication.NO_POE, signatureValidationStatus.getSubIndication().get(0));
+				assertEquals(SubIndication.REVOKED_NO_POE, signatureValidationStatus.getSubIndication().get(0));
 
 				List<ValidationReportDataType> associatedValidationReportData = signatureValidationStatus.getAssociatedValidationReportData();
 				ValidationReportDataType validationReportDataType = associatedValidationReportData.get(0);

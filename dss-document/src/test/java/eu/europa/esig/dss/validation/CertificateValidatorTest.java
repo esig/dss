@@ -20,21 +20,22 @@
  */
 package eu.europa.esig.dss.validation;
 
-import static org.junit.Assert.assertNotNull;
-
-import java.io.File;
-import java.io.IOException;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.transform.TransformerException;
-
-import org.junit.Test;
-import org.xml.sax.SAXException;
-
 import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReportFacade;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
+import org.junit.Test;
+import org.xml.sax.SAXException;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.transform.TransformerException;
+import java.io.File;
+import java.io.IOException;
+import java.util.GregorianCalendar;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class CertificateValidatorTest {
 
@@ -78,12 +79,15 @@ public class CertificateValidatorTest {
 		cv.validate(null);
 	}
 
-	@Test(expected = NullPointerException.class)
-	public void testDateNull() {
+	@Test
+	public void testCustomDate() {
 		CertificateValidator cv = CertificateValidator.fromCertificate(DSSUtils.loadCertificate(new File("src/test/resources/certificates/CZ.cer")));
 		cv.setCertificateVerifier(new CommonCertificateVerifier());
-		cv.setValidationTime(null);
-		cv.validate();
+		GregorianCalendar gregorianCalendar = new GregorianCalendar(2019, 1, 1);
+		cv.setValidationTime(gregorianCalendar.getTime());
+		CertificateReports certificateReports = cv.validate();
+		DiagnosticData diagnosticData = certificateReports.getDiagnosticData();
+		assertEquals(gregorianCalendar.getTime(), diagnosticData.getValidationDate());
 	}
 
 }
