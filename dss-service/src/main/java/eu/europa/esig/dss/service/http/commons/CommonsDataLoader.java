@@ -552,7 +552,7 @@ public class CommonsDataLoader implements DataLoader {
 			return readHttpResponse(httpResponse);
 
 		} catch (URISyntaxException | IOException e) {
-			throw new DSSExternalResourceException(String.format("Unable to process GET call for url [%s]. Reason : [%s]", url, e.getMessage()), e);
+			throw new DSSExternalResourceException(String.format("Unable to process GET call for url [%s]. Reason : [%s]", url, DSSUtils.getExceptionMessage(e)), e);
 		} finally {
 			try {
 				if (httpRequest != null) {

@@ -953,5 +953,30 @@ public final class DSSUtils {
 			return uriPart;
 		}
 	}
+	
+	/**
+	 * Returns a message retrieved from an exception,
+	 * its cause message if the first is not defined,
+	 * or exception class name if non of them is specified
+	 * 
+	 * @param e {@link Exception} to get message for
+	 * @return {@link String} exception message
+	 */
+	public static String getExceptionMessage(Exception e) {
+		if (e == null) {
+			throw new DSSException("Cannot retrieve a message. The exception is null!");
+		}
+		
+		if (e.getMessage() != null) {
+			return e.getMessage();
+			
+		} else if (e.getCause() != null && e.getCause().getMessage() != null) {
+			return e.getCause().getMessage();
+			
+		} else {
+			return e.getClass().getName();
+			
+		}
+	}
 
 }
