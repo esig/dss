@@ -54,6 +54,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TimeZone;
 
@@ -364,11 +365,13 @@ public final class DSSUtils {
 	 * @return digested array of bytes
 	 */
 	public static byte[] digest(final DigestAlgorithm digestAlgorithm, final byte[] data) {
+		Objects.requireNonNull(data, "The data cannot be null");
 		final MessageDigest messageDigest = getMessageDigest(digestAlgorithm);
 		return messageDigest.digest(data);
 	}
 
 	public static MessageDigest getMessageDigest(DigestAlgorithm digestAlgorithm) {
+		Objects.requireNonNull(digestAlgorithm, "The DigestAlgorithm cannot be null");
 		try {
 			return digestAlgorithm.getMessageDigest();
 		} catch (NoSuchAlgorithmException e) {
