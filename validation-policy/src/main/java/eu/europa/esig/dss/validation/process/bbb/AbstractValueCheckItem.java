@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation.process.bbb;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
@@ -29,8 +30,8 @@ public abstract class AbstractValueCheckItem<T extends XmlConstraintsConclusion>
 
 	private static final String ALL_VALUE = "*";
 
-	protected AbstractValueCheckItem(T result, LevelConstraint constraint) {
-		super(result, constraint);
+	protected AbstractValueCheckItem(I18nProvider i18nProvider, T result, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint);
 	}
 
 	protected boolean processValueCheck(String value, String expected) {

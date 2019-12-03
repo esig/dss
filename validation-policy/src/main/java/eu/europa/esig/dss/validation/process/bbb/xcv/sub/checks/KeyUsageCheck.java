@@ -32,6 +32,7 @@ import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
@@ -39,8 +40,8 @@ public class KeyUsageCheck extends AbstractMultiValuesCheckItem<XmlSubXCV> {
 
 	private final CertificateWrapper certificate;
 
-	public KeyUsageCheck(XmlSubXCV result, CertificateWrapper certificate, MultiValuesConstraint constraint) {
-		super(result, constraint);
+	public KeyUsageCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateWrapper certificate, MultiValuesConstraint constraint) {
+		super(i18nProvider, result, constraint);
 		this.certificate = certificate;
 	}
 

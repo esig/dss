@@ -29,14 +29,15 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 
 public class AcceptableTrustedListCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
 	private final XmlTLAnalysis tlAnalysis;
 
-	public AcceptableTrustedListCheck(T result, XmlTLAnalysis tlAnalysis, LevelConstraint constraint) {
-		super(result, constraint, tlAnalysis.getURL());
+	public AcceptableTrustedListCheck(I18nProvider i18nProvider, T result, XmlTLAnalysis tlAnalysis, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint, tlAnalysis.getURL());
 
 		this.tlAnalysis = tlAnalysis;
 	}

@@ -41,6 +41,7 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
@@ -70,9 +71,9 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 
 	private final POEExtraction poe = new POEExtraction();
 
-	public ValidationProcessForSignaturesWithArchivalData(XmlSignature signatureAnalysis, SignatureWrapper signature, DiagnosticData diagnosticData,
-			Map<String, XmlBasicBuildingBlocks> bbbs, ValidationPolicy policy, Date currentTime) {
-		super(new XmlValidationProcessArchivalData());
+	public ValidationProcessForSignaturesWithArchivalData(I18nProvider i18nProvider, XmlSignature signatureAnalysis, SignatureWrapper signature, 
+			DiagnosticData diagnosticData, Map<String, XmlBasicBuildingBlocks> bbbs, ValidationPolicy policy, Date currentTime) {
+		super(i18nProvider, new XmlValidationProcessArchivalData());
 		result.setTitle(ValidationProcessDefinition.VPFSWATSP.getTitle());
 
 		this.validationProcessLongTermData = signatureAnalysis.getValidationProcessLongTermData();
@@ -175,7 +176,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 					 */
 					else if (shouldPerformPastSignatureValidationProcess(latestConclusion)) {
 						
-						PastSignatureValidation psv = new PastSignatureValidation(newestTimestamp, diagnosticData, bbbTsp, poe, currentTime, policy,
+						PastSignatureValidation psv = new PastSignatureValidation(i18nProvider, newestTimestamp, diagnosticData, bbbTsp, poe, currentTime, policy,
 								Context.TIMESTAMP);
 						XmlPSV psvResult = psv.execute();
 						bbbTsp.setPSV(psvResult);
@@ -281,12 +282,13 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	}
 	
 	private ChainItem<XmlValidationProcessArchivalData> pastTimestampValidation(TimestampWrapper timestamp, XmlBasicBuildingBlocks bbbTsp) {
-		return new PastTimestampValidation(result, bbbTsp.getPSV(), bbbTsp.getSAV(), timestamp, getWarnLevelConstraint());
+		return new PastTimestampValidation(i18nProvider, result, bbbTsp.getPSV(), bbbTsp.getSAV(), timestamp, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationProcessArchivalData> pastSignatureValidation(Context currentContext) {
 		XmlBasicBuildingBlocks bbbSig = bbbs.get(signature.getId());
-		return new PastSignatureValidationCheck(result, signature, diagnosticData, bbbSig, poe, currentTime, policy, currentContext, getFailLevelConstraint());
+		return new PastSignatureValidationCheck(i18nProvider, result, signature, diagnosticData, bbbSig, poe, currentTime, policy, 
+				currentContext, getFailLevelConstraint());
 	}
 
 	private XmlConstraintsConclusion getTimestampValidation(TimestampWrapper newestTimestamp) {
@@ -299,11 +301,11 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	}
 	
 	private DigestAlgorithmAcceptanceValidation timestampDigestAlgorithmValidation(TimestampWrapper newestTimestamp) {
-		return new MessageImprintDigestAlgorithmValidation(newestTimestamp.getProductionTime(), newestTimestamp, policy);
+		return new MessageImprintDigestAlgorithmValidation(i18nProvider, newestTimestamp.getProductionTime(), newestTimestamp, policy);
 	}
 
 	private ChainItem<XmlValidationProcessArchivalData> longTermValidation() {
-		return new LongTermValidationCheck(result, validationProcessLongTermData, getFailLevelConstraint());
+		return new LongTermValidationCheck(i18nProvider, result, validationProcessLongTermData, getFailLevelConstraint());
 	}
 
 	private boolean isValid(XmlConstraintsConclusion xmlConstraintConclusion) {
@@ -320,9 +322,9 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	}
 	
 	private ChainItem<XmlValidationProcessArchivalData> signatureIsAcceptable(Date bestSignatureTime, Context context) {
-		SignatureAcceptanceValidation sav = new SignatureAcceptanceValidation(diagnosticData, bestSignatureTime, signature, context, policy);
+		SignatureAcceptanceValidation sav = new SignatureAcceptanceValidation(i18nProvider, diagnosticData, bestSignatureTime, signature, context, policy);
 		XmlSAV savResult = sav.execute();
-		return new SignatureAcceptanceValidationResultCheck<XmlValidationProcessArchivalData>(result, savResult, getFailLevelConstraint());
+		return new SignatureAcceptanceValidationResultCheck<XmlValidationProcessArchivalData>(i18nProvider, result, savResult, getFailLevelConstraint());
 	}
 
 }

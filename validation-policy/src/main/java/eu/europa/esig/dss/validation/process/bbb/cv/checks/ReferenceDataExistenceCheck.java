@@ -27,14 +27,15 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 
 public class ReferenceDataExistenceCheck extends ChainItem<XmlCV> {
 
 	private final XmlDigestMatcher digestMatcher;
 
-	public ReferenceDataExistenceCheck(XmlCV result, XmlDigestMatcher digestMatcher, LevelConstraint constraint) {
-		super(result, constraint);
+	public ReferenceDataExistenceCheck(I18nProvider i18nProvider, XmlCV result, XmlDigestMatcher digestMatcher, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint);
 		this.digestMatcher = digestMatcher;
 	}
 

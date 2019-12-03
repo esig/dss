@@ -26,6 +26,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.ValidationTime;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.validation.process.qualification.certificate.QualifiedStatus;
 
@@ -34,8 +35,9 @@ public class QualifiedCheck extends ChainItem<XmlValidationCertificateQualificat
 	private final QualifiedStatus qualifiedStatus;
 	private final ValidationTime validationTime;
 
-	public QualifiedCheck(XmlValidationCertificateQualification result, QualifiedStatus qualifiedStatus, ValidationTime validationTime, LevelConstraint constraint) {
-		super(result, constraint);
+	public QualifiedCheck(I18nProvider i18nProvider, XmlValidationCertificateQualification result, QualifiedStatus qualifiedStatus, 
+			ValidationTime validationTime, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint);
 
 		this.qualifiedStatus = qualifiedStatus;
 		this.validationTime = validationTime;

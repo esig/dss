@@ -27,6 +27,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 
 public class ManifestFilePresentCheck extends ChainItem<XmlFC> {
@@ -36,8 +37,8 @@ public class ManifestFilePresentCheck extends ChainItem<XmlFC> {
 	private MessageTag message;
 	private MessageTag error;
 
-	public ManifestFilePresentCheck(XmlFC result, XmlContainerInfo containerInfo, LevelConstraint constraint) {
-		super(result, constraint);
+	public ManifestFilePresentCheck(I18nProvider i18nProvider, XmlFC result, XmlContainerInfo containerInfo, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint);
 		this.containerInfo = containerInfo;
 	}
 

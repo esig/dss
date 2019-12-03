@@ -27,17 +27,17 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.IMessageTag;
-import eu.europa.esig.dss.i18n.MessageTag;
 
 public class ManifestEntryExistenceCheck extends ChainItem<XmlCV> {
 
 	private final List<XmlDigestMatcher> digestMatchers;
 
-	public ManifestEntryExistenceCheck(XmlCV result, List<XmlDigestMatcher> digestMatchers, LevelConstraint constraint) {
-		super(result, constraint);
+	public ManifestEntryExistenceCheck(I18nProvider i18nProvider, XmlCV result, List<XmlDigestMatcher> digestMatchers, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint);
 		this.digestMatchers = digestMatchers;
 	}
 
@@ -52,12 +52,12 @@ public class ManifestEntryExistenceCheck extends ChainItem<XmlCV> {
 	}
 
 	@Override
-	protected IMessageTag getMessageTag() {
+	protected MessageTag getMessageTag() {
 		return MessageTag.BBB_CV_ISMEC;
 	}
 
 	@Override
-	protected IMessageTag getErrorMessageTag() {
+	protected MessageTag getErrorMessageTag() {
 		return MessageTag.BBB_CV_ISMEC_ANS;
 	}
 

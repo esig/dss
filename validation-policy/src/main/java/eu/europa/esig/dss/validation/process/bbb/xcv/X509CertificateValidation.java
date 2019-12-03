@@ -28,6 +28,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
@@ -58,14 +59,14 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 	private final Context context;
 	private final ValidationPolicy validationPolicy;
 
-	public X509CertificateValidation(DiagnosticData diagnosticData, CertificateWrapper currentCertificate, Date validationDate, Context context,
-			ValidationPolicy validationPolicy) {
-		this(diagnosticData, currentCertificate, validationDate, validationDate, context, validationPolicy);
+	public X509CertificateValidation(I18nProvider i18nProvider, DiagnosticData diagnosticData, CertificateWrapper currentCertificate, 
+			Date validationDate, Context context, ValidationPolicy validationPolicy) {
+		this(i18nProvider, diagnosticData, currentCertificate, validationDate, validationDate, context, validationPolicy);
 	}
 
-	public X509CertificateValidation(DiagnosticData diagnosticData, CertificateWrapper currentCertificate, Date validationDate, Date usageTime, Context context,
-			ValidationPolicy validationPolicy) {
-		super(new XmlXCV());
+	public X509CertificateValidation(I18nProvider i18nProvider, DiagnosticData diagnosticData, CertificateWrapper currentCertificate, 
+			Date validationDate, Date usageTime, Context context, ValidationPolicy validationPolicy) {
+		super(i18nProvider, new XmlXCV());
 		result.setTitle(BasicBuildingBlockDefinition.X509_CERTIFICATE_VALIDATION.getTitle());
 
 		this.diagnosticData = diagnosticData;
@@ -88,7 +89,7 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 			item = item.setNextItem(trustedServiceWithExpectedStatus());
 
-			SubX509CertificateValidation certificateValidation = new SubX509CertificateValidation(diagnosticData, currentCertificate, validationDate, 
+			SubX509CertificateValidation certificateValidation = new SubX509CertificateValidation(i18nProvider, diagnosticData, currentCertificate, validationDate, 
 					context, SubContext.SIGNING_CERT, validationPolicy);
 			XmlSubXCV subXCV = certificateValidation.execute();
 			result.getSubXCV().add(subXCV);
@@ -103,7 +104,7 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 			if (Utils.isCollectionNotEmpty(certificateChainList)) {
 				for (CertificateWrapper certificate : certificateChainList) {
 					if (!trustAnchorReached) {
-						certificateValidation = new SubX509CertificateValidation(diagnosticData, certificate, lastDate, 
+						certificateValidation = new SubX509CertificateValidation(i18nProvider, diagnosticData, certificate, lastDate, 
 								context, SubContext.CA_CERTIFICATE, validationPolicy);
 						subXCV = certificateValidation.execute();
 						result.getSubXCV().add(subXCV);
@@ -122,21 +123,21 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 	private ChainItem<XmlXCV> prospectiveCertificateChain() {
 		LevelConstraint constraint = validationPolicy.getProspectiveCertificateChainConstraint(context);
-		return new ProspectiveCertificateChainCheck(result, currentCertificate, context, constraint);
+		return new ProspectiveCertificateChainCheck(i18nProvider, result, currentCertificate, context, constraint);
 	}
 
 	private ChainItem<XmlXCV> trustedServiceWithExpectedTypeIdentifier() {
 		MultiValuesConstraint constraint = validationPolicy.getTrustedServiceTypeIdentifierConstraint(context);
-		return new TrustedServiceTypeIdentifierCheck(result, currentCertificate, usageTime, context, constraint);
+		return new TrustedServiceTypeIdentifierCheck(i18nProvider, result, currentCertificate, usageTime, context, constraint);
 	}
 
 	private ChainItem<XmlXCV> trustedServiceWithExpectedStatus() {
 		MultiValuesConstraint constraint = validationPolicy.getTrustedServiceStatusConstraint(context);
-		return new TrustedServiceStatusCheck(result, currentCertificate, usageTime, context, constraint);
+		return new TrustedServiceStatusCheck(i18nProvider, result, currentCertificate, usageTime, context, constraint);
 	}
 
 	private ChainItem<XmlXCV> checkSubXCVResult(XmlSubXCV subXCVresult) {
-		return new CheckSubXCVResult(result, subXCVresult, getFailLevelConstraint());
+		return new CheckSubXCVResult(i18nProvider, result, subXCVresult, getFailLevelConstraint());
 	}
 	
 }

@@ -29,6 +29,7 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.ValidationTime;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
@@ -61,14 +62,14 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 
 	private CertificateQualification certificateQualification = CertificateQualification.NA;
 
-	public CertQualificationAtTimeBlock(ValidationTime validationTime, CertificateWrapper signingCertificate,
+	public CertQualificationAtTimeBlock(I18nProvider i18nProvider, ValidationTime validationTime, CertificateWrapper signingCertificate,
 			List<TrustedServiceWrapper> caqcServices) {
-		this(validationTime, null, signingCertificate, caqcServices);
+		this(i18nProvider, validationTime, null, signingCertificate, caqcServices);
 	}
 
-	public CertQualificationAtTimeBlock(ValidationTime validationTime, Date date, CertificateWrapper signingCertificate,
+	public CertQualificationAtTimeBlock(I18nProvider i18nProvider, ValidationTime validationTime, Date date, CertificateWrapper signingCertificate,
 			List<TrustedServiceWrapper> caqcServices) {
-		super(new XmlValidationCertificateQualification());
+		super(i18nProvider, new XmlValidationCertificateQualification());
 		result.setTitle(ValidationProcessDefinition.CERT_QUALIFICATION.getTitle() + " @ " + validationTime);
 		result.setId(signingCertificate.getId());
 
@@ -163,45 +164,45 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> hasCaQc(List<TrustedServiceWrapper> caqcServicesAtTime) {
-		return new CaQcCheck(result, caqcServicesAtTime, getFailLevelConstraint());
+		return new CaQcCheck(i18nProvider, result, caqcServicesAtTime, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> hasGrantedStatus(List<TrustedServiceWrapper> caqcServicesAtTime) {
-		return new GrantedStatusCheck(result, caqcServicesAtTime, getFailLevelConstraint());
+		return new GrantedStatusCheck(i18nProvider, result, caqcServicesAtTime, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> hasCertificateTypeCoverage(
 			List<TrustedServiceWrapper> caqcServicesAtTime) {
-		return new CertificateTypeCoverageCheck(result, caqcServicesAtTime, getFailLevelConstraint());
+		return new CertificateTypeCoverageCheck(i18nProvider, result, caqcServicesAtTime, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> hasConsistentTrustService(
 			List<TrustedServiceWrapper> caqcServicesAtTime) {
-		return new CertificateIssuedByConsistentTrustServiceCheck(result, caqcServicesAtTime, getFailLevelConstraint());
+		return new CertificateIssuedByConsistentTrustServiceCheck(i18nProvider, result, caqcServicesAtTime, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> isAbleToSelectOneTrustService(List<TrustedServiceWrapper> caqcServicesAtTime) {
-		return new IsAbleToSelectOneTrustService(result, caqcServicesAtTime, getFailLevelConstraint());
+		return new IsAbleToSelectOneTrustService(i18nProvider, result, caqcServicesAtTime, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> serviceConsistency(TrustedServiceWrapper selectedTrustService) {
-		return new ServiceConsistencyCheck(result, selectedTrustService, getWarnLevelConstraint());
+		return new ServiceConsistencyCheck(i18nProvider, result, selectedTrustService, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> isTrustedCertificateMatchTrustService(TrustedServiceWrapper selectedTrustService) {
-		return new TrustedCertificateMatchTrustServiceCheck(result, selectedTrustService, getWarnLevelConstraint());
+		return new TrustedCertificateMatchTrustServiceCheck(i18nProvider, result, selectedTrustService, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> isQualified(QualifiedStatus qualifiedStatus) {
-		return new QualifiedCheck(result, qualifiedStatus, validationTime, getWarnLevelConstraint());
+		return new QualifiedCheck(i18nProvider, result, qualifiedStatus, validationTime, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> isForEsig(Type type) {
-		return new ForEsigCheck(result, type, validationTime, getWarnLevelConstraint());
+		return new ForEsigCheck(i18nProvider, result, type, validationTime, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> isQscd(QSCDStatus qscdStatus) {
-		return new QSCDCheck(result, qscdStatus, validationTime, getWarnLevelConstraint());
+		return new QSCDCheck(i18nProvider, result, qscdStatus, validationTime, getWarnLevelConstraint());
 	}
 
 }

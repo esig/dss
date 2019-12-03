@@ -34,9 +34,10 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.isc.checks.DigestValueMatchCheck;
 
-public class DigestValueMatchCheckTest {
+public class DigestValueMatchCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void digestValueMatchCheckTest() throws Exception {
@@ -50,7 +51,7 @@ public class DigestValueMatchCheckTest {
 		constraint.setLevel(Level.FAIL);
 
 		XmlISC result = new XmlISC();
-		DigestValueMatchCheck dvmc = new DigestValueMatchCheck(result, new SignatureWrapper(sig), constraint);
+		DigestValueMatchCheck dvmc = new DigestValueMatchCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
 		dvmc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -70,7 +71,7 @@ public class DigestValueMatchCheckTest {
 		constraint.setLevel(Level.FAIL);
 
 		XmlISC result = new XmlISC();
-		DigestValueMatchCheck dvmc = new DigestValueMatchCheck(result, new SignatureWrapper(sig), constraint);
+		DigestValueMatchCheck dvmc = new DigestValueMatchCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
 		dvmc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

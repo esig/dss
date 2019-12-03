@@ -34,9 +34,10 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlStructuralValidation;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.StructuralValidationCheck;
 
-public class StructuralValidationCheckTest {
+public class StructuralValidationCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void structuralValidationCheck() throws Exception {
@@ -50,7 +51,7 @@ public class StructuralValidationCheckTest {
 		constraint.setLevel(Level.FAIL);
 
 		XmlSAV result = new XmlSAV();
-		StructuralValidationCheck svc = new StructuralValidationCheck(result, new SignatureWrapper(sig), constraint);
+		StructuralValidationCheck svc = new StructuralValidationCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
 		svc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -70,7 +71,7 @@ public class StructuralValidationCheckTest {
 		constraint.setLevel(Level.FAIL);
 
 		XmlSAV result = new XmlSAV();
-		StructuralValidationCheck svc = new StructuralValidationCheck(result, new SignatureWrapper(sig), constraint);
+		StructuralValidationCheck svc = new StructuralValidationCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
 		svc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -86,7 +87,7 @@ public class StructuralValidationCheckTest {
 		constraint.setLevel(Level.FAIL);
 
 		XmlSAV result = new XmlSAV();
-		StructuralValidationCheck svc = new StructuralValidationCheck(result, new SignatureWrapper(sig), constraint);
+		StructuralValidationCheck svc = new StructuralValidationCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
 		svc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

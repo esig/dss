@@ -22,6 +22,7 @@ package eu.europa.esig.dss.validation.process;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +59,7 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 
 	private T result;
 	
-	private final I18nProvider i18nProvider;
+	protected final I18nProvider i18nProvider;
 
 	private final LevelConstraint constraint;
 
@@ -76,9 +77,7 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 	 * 
 	 */
 	protected ChainItem(I18nProvider i18nProvider, T result, LevelConstraint constraint) {
-		this.i18nProvider = i18nProvider;
-		this.result = result;
-		this.constraint = constraint;
+		this(i18nProvider, result, constraint, null);
 	}
 
 	/**
@@ -95,6 +94,7 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 	 * 
 	 */
 	protected ChainItem(I18nProvider i18nProvider, T result, LevelConstraint constraint, String bbbId) {
+		Objects.requireNonNull(i18nProvider, "i18nProvider must be defined!");
 		this.i18nProvider = i18nProvider;
 		this.result = result;
 		this.constraint = constraint;

@@ -32,6 +32,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 
 public class TrustedCertificateMatchTrustServiceCheck extends ChainItem<XmlValidationCertificateQualification> {
@@ -39,9 +40,9 @@ public class TrustedCertificateMatchTrustServiceCheck extends ChainItem<XmlValid
 	private final TrustedServiceWrapper trustService;
 	private MessageTag errorMessage = MessageTag.EMPTY;
 
-	public TrustedCertificateMatchTrustServiceCheck(XmlValidationCertificateQualification result, TrustedServiceWrapper trustService,
+	public TrustedCertificateMatchTrustServiceCheck(I18nProvider i18nProvider, XmlValidationCertificateQualification result, TrustedServiceWrapper trustService,
 			LevelConstraint constraint) {
-		super(result, constraint);
+		super(i18nProvider, result, constraint);
 
 		this.trustService = trustService;
 	}

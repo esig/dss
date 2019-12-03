@@ -25,6 +25,7 @@ import java.util.Date;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.validation.process.Chain;
@@ -38,8 +39,9 @@ public class DigestAlgorithmAcceptanceValidation extends Chain<XmlSAV> {
 	protected final Context context;
 	protected final ValidationPolicy validationPolicy;
 
-	public DigestAlgorithmAcceptanceValidation(Date currentTime, DigestAlgorithm digestAlgorithm, ValidationPolicy validationPolicy, Context context) {
-		super(new XmlSAV());
+	public DigestAlgorithmAcceptanceValidation(I18nProvider i18nProvider, Date currentTime, DigestAlgorithm digestAlgorithm, 
+			ValidationPolicy validationPolicy, Context context) {
+		super(i18nProvider, new XmlSAV());
 		this.digestAlgorithm = digestAlgorithm;
 		this.currentTime = currentTime;
 		this.validationPolicy = validationPolicy;
@@ -53,7 +55,7 @@ public class DigestAlgorithmAcceptanceValidation extends Chain<XmlSAV> {
 
 	protected ChainItem<XmlSAV> digestCryptographic() {
 		CryptographicConstraint constraint = validationPolicy.getSignatureCryptographicConstraint(context);
-		return new DigestCryptographicCheck(result, digestAlgorithm, currentTime, constraint);
+		return new DigestCryptographicCheck(i18nProvider, result, digestAlgorithm, currentTime, constraint);
 	}
 
 }

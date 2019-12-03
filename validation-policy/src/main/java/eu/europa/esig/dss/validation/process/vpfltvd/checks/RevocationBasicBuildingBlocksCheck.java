@@ -34,6 +34,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 
 public class RevocationBasicBuildingBlocksCheck extends ChainItem<XmlValidationProcessLongTermData> {
@@ -44,8 +45,9 @@ public class RevocationBasicBuildingBlocksCheck extends ChainItem<XmlValidationP
 	private SubIndication subIndication;
 	private List<XmlName> errors;
 
-	public RevocationBasicBuildingBlocksCheck(XmlValidationProcessLongTermData result, XmlBasicBuildingBlocks revocationBBB, LevelConstraint constraint) {
-		super(result, constraint, revocationBBB.getId());
+	public RevocationBasicBuildingBlocksCheck(I18nProvider i18nProvider, XmlValidationProcessLongTermData result, XmlBasicBuildingBlocks revocationBBB, 
+			LevelConstraint constraint) {
+		super(i18nProvider, result, constraint, revocationBBB.getId());
 
 		this.revocationBBB = revocationBBB;
 	}

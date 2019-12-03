@@ -33,9 +33,10 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.OrganizationUnitCheck;
 
-public class OrganizationUnitCheckTest {
+public class OrganizationUnitCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void organizationUnitCheck() throws Exception {
@@ -47,7 +48,7 @@ public class OrganizationUnitCheckTest {
 		xc.setOrganizationalUnit("Valid_Org");
 
 		XmlSubXCV result = new XmlSubXCV();
-		OrganizationUnitCheck ouc = new OrganizationUnitCheck(result, new CertificateWrapper(xc), constraint);
+		OrganizationUnitCheck ouc = new OrganizationUnitCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
 		ouc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -65,7 +66,7 @@ public class OrganizationUnitCheckTest {
 		xc.setOrganizationalUnit("Valid_Org");
 
 		XmlSubXCV result = new XmlSubXCV();
-		OrganizationUnitCheck ouc = new OrganizationUnitCheck(result, new CertificateWrapper(xc), constraint);
+		OrganizationUnitCheck ouc = new OrganizationUnitCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
 		ouc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

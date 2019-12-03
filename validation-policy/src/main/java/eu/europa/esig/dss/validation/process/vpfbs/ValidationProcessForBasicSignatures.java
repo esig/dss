@@ -26,6 +26,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicSignatures;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;
@@ -41,8 +42,9 @@ public class ValidationProcessForBasicSignatures extends Chain<XmlValidationProc
 
 	private final Map<String, XmlBasicBuildingBlocks> bbbs;
 
-	public ValidationProcessForBasicSignatures(DiagnosticData diagnosticData, SignatureWrapper signature, Map<String, XmlBasicBuildingBlocks> bbbs) {
-		super(new XmlValidationProcessBasicSignatures());
+	public ValidationProcessForBasicSignatures(I18nProvider i18nProvider, DiagnosticData diagnosticData, SignatureWrapper signature, 
+			Map<String, XmlBasicBuildingBlocks> bbbs) {
+		super(i18nProvider, new XmlValidationProcessBasicSignatures());
 		result.setTitle(ValidationProcessDefinition.VPBS.getTitle());
 
 		this.diagnosticData = diagnosticData;
@@ -56,7 +58,7 @@ public class ValidationProcessForBasicSignatures extends Chain<XmlValidationProc
 	}
 
 	private ChainItem<XmlValidationProcessBasicSignatures> basicBuildingBlocks() {
-		return new SignatureBasicBuildingBlocksCheck(result, diagnosticData, bbbs.get(signature.getId()), bbbs, getFailLevelConstraint());
+		return new SignatureBasicBuildingBlocksCheck(i18nProvider, result, diagnosticData, bbbs.get(signature.getId()), bbbs, getFailLevelConstraint());
 	}
 
 }

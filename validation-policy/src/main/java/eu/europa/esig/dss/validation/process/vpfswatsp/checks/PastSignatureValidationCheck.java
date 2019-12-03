@@ -33,6 +33,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.PastSignatureValidation;
@@ -50,9 +51,9 @@ public class PastSignatureValidationCheck extends ChainItem<XmlValidationProcess
 	private Indication indication;
 	private SubIndication subIndication;
 
-	public PastSignatureValidationCheck(XmlValidationProcessArchivalData result, SignatureWrapper signature, DiagnosticData diagnosticData,
+	public PastSignatureValidationCheck(I18nProvider i18nProvider, XmlValidationProcessArchivalData result, SignatureWrapper signature, DiagnosticData diagnosticData,
 			XmlBasicBuildingBlocks bbb, POEExtraction poe, Date currentTime, ValidationPolicy policy, Context context, LevelConstraint constraint) {
-		super(result, constraint);
+		super(i18nProvider, result, constraint);
 
 		this.signature = signature;
 		this.diagnosticData = diagnosticData;
@@ -65,7 +66,7 @@ public class PastSignatureValidationCheck extends ChainItem<XmlValidationProcess
 
 	@Override
 	protected boolean process() {
-		PastSignatureValidation psv = new PastSignatureValidation(signature, diagnosticData, bbb, poe, currentTime, policy, context);
+		PastSignatureValidation psv = new PastSignatureValidation(i18nProvider, signature, diagnosticData, bbb, poe, currentTime, policy, context);
 		XmlPSV psvResult = psv.execute();
 		bbb.setPSV(psvResult);
 		bbb.setConclusion(psvResult.getConclusion());

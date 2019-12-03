@@ -81,22 +81,22 @@ public class TLValidationBlock extends Chain<XmlTLAnalysis> {
 
 	private ChainItem<XmlTLAnalysis> tlFreshness() {
 		TimeConstraint constraint = policy.getTLFreshnessConstraint();
-		return new TLFreshnessCheck(result, currentTL, currentTime, constraint);
+		return new TLFreshnessCheck(i18nProvider, result, currentTL, currentTime, constraint);
 	}
 
 	private ChainItem<XmlTLAnalysis> tlNotExpired() {
 		LevelConstraint constraint = policy.getTLNotExpiredConstraint();
-		return new TLNotExpiredCheck(result, currentTL, currentTime, constraint);
+		return new TLNotExpiredCheck(i18nProvider, result, currentTL, currentTime, constraint);
 	}
 
 	private ChainItem<XmlTLAnalysis> tlVersion() {
 		ValueConstraint constraint = policy.getTLVersionConstraint();
-		return new TLVersionCheck(result, currentTL, currentTime, constraint);
+		return new TLVersionCheck(i18nProvider, result, currentTL, currentTime, constraint);
 	}
 
 	private ChainItem<XmlTLAnalysis> tlWellSigned() {
 		LevelConstraint constraint = policy.getTLWellSignedConstraint();
-		return new TLWellSignedCheck(result, currentTL, constraint);
+		return new TLWellSignedCheck(i18nProvider, result, currentTL, constraint);
 	}
 
 }

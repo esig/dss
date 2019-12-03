@@ -35,6 +35,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 
 public class AllFilesSignedCheck extends ChainItem<XmlCV> {
@@ -42,8 +43,8 @@ public class AllFilesSignedCheck extends ChainItem<XmlCV> {
 	private final SignatureWrapper signature;
 	private final XmlContainerInfo containerInfo;
 
-	public AllFilesSignedCheck(XmlCV result, SignatureWrapper signature, XmlContainerInfo containerInfo, LevelConstraint constraint) {
-		super(result, constraint);
+	public AllFilesSignedCheck(I18nProvider i18nProvider, XmlCV result, SignatureWrapper signature, XmlContainerInfo containerInfo, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint);
 		this.signature = signature;
 		this.containerInfo = containerInfo;
 	}

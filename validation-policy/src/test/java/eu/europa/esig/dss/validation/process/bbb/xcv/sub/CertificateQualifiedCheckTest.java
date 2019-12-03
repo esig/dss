@@ -38,9 +38,10 @@ import eu.europa.esig.dss.enumerations.CertificatePolicy;
 import eu.europa.esig.dss.enumerations.QCStatement;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQualifiedCheck;
 
-public class CertificateQualifiedCheckTest {
+public class CertificateQualifiedCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void certificateQualifiedCheckWithQCStatement() throws Exception {
@@ -56,7 +57,7 @@ public class CertificateQualifiedCheckTest {
 		xc.setQCStatementIds(qcStatementIds);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateQualifiedCheck cqc = new CertificateQualifiedCheck(result, new CertificateWrapper(xc), constraint);
+		CertificateQualifiedCheck cqc = new CertificateQualifiedCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
 		cqc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -77,7 +78,7 @@ public class CertificateQualifiedCheckTest {
 		xc.setCertificatePolicies(certPolicies);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateQualifiedCheck cqc = new CertificateQualifiedCheck(result, new CertificateWrapper(xc), constraint);
+		CertificateQualifiedCheck cqc = new CertificateQualifiedCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
 		cqc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -93,7 +94,7 @@ public class CertificateQualifiedCheckTest {
 		XmlCertificate xc = new XmlCertificate();
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateQualifiedCheck cqc = new CertificateQualifiedCheck(result, new CertificateWrapper(xc), constraint);
+		CertificateQualifiedCheck cqc = new CertificateQualifiedCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
 		cqc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

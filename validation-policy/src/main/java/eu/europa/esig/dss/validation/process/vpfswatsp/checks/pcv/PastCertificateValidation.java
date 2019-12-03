@@ -31,6 +31,7 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
@@ -58,9 +59,9 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 	private final Context context;
 	private Date controlTime;
 
-	public PastCertificateValidation(TokenProxy token, DiagnosticData diagnosticData, XmlBasicBuildingBlocks bbb, POEExtraction poe, Date currentTime,
-			ValidationPolicy policy, Context context) {
-		super(new XmlPCV());
+	public PastCertificateValidation(I18nProvider i18nProvider, TokenProxy token, DiagnosticData diagnosticData, XmlBasicBuildingBlocks bbb, 
+			POEExtraction poe, Date currentTime, ValidationPolicy policy, Context context) {
+		super(i18nProvider, new XmlPCV());
 		result.setTitle(BasicBuildingBlockDefinition.PAST_CERTIFICATE_VALIDATION.getTitle());
 
 		this.token = token;
@@ -194,26 +195,26 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 
 	private ChainItem<XmlPCV> prospectiveCertificateChain() {
 		LevelConstraint constraint = policy.getProspectiveCertificateChainConstraint(context);
-		return new ProspectiveCertificateChainCheck(result, token, constraint);
+		return new ProspectiveCertificateChainCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlPCV> certificateSignatureValid(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = policy.getCertificateSignatureConstraint(context, subContext);
-		return new CertificateSignatureValidCheck<XmlPCV>(result, certificate, constraint);
+		return new CertificateSignatureValidCheck<XmlPCV>(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlPCV> validationTimeSliding() {
-		ValidationTimeSliding validationTimeSliding = new ValidationTimeSliding(token, currentTime, context, poe, policy);
+		ValidationTimeSliding validationTimeSliding = new ValidationTimeSliding(i18nProvider, token, currentTime, context, poe, policy);
 		XmlVTS vts = validationTimeSliding.execute();
 		bbb.setVTS(vts);
 		controlTime = vts.getControlTime();
 
-		return new ValidationTimeSlidingCheck(result, vts, getFailLevelConstraint());
+		return new ValidationTimeSlidingCheck(i18nProvider, result, vts, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlPCV> cryptographicCheck(XmlPCV result, CertificateWrapper certificate, Date validationTime, SubContext subContext) {
 		CryptographicConstraint constraint = policy.getCertificateCryptographicConstraint(context, subContext);
-		return new CryptographicCheck<XmlPCV>(result, certificate, validationTime, constraint);
+		return new CryptographicCheck<XmlPCV>(i18nProvider, result, certificate, validationTime, constraint);
 	}
 
 	@Override

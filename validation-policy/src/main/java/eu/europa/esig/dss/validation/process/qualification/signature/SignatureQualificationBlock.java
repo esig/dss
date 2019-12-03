@@ -37,6 +37,7 @@ import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.ValidationTime;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
@@ -61,9 +62,9 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 
 	private CertificateQualification qualificationAtSigningTime;
 
-	public SignatureQualificationBlock(String signatureId, XmlConstraintsConclusionWithProofOfExistence etsi319102validation,
+	public SignatureQualificationBlock(I18nProvider i18nProvider, String signatureId, XmlConstraintsConclusionWithProofOfExistence etsi319102validation,
 			CertificateWrapper signingCertificate, List<XmlTLAnalysis> tlAnalysis) {
-		super(new XmlValidationSignatureQualification());
+		super(i18nProvider, new XmlValidationSignatureQualification());
 		result.setTitle(ValidationProcessDefinition.SIG_QUALIFICATION.getTitle());
 		result.setId(signatureId);
 
@@ -114,13 +115,13 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 			filter = TrustedServicesFilterFactory.createFilterByCaQc();
 			List<TrustedServiceWrapper> caqcServices = filter.filter(acceptableServices);
 
-			CertQualificationAtTimeBlock certQualAtIssuanceBlock = new CertQualificationAtTimeBlock(ValidationTime.CERTIFICATE_ISSUANCE_TIME,
+			CertQualificationAtTimeBlock certQualAtIssuanceBlock = new CertQualificationAtTimeBlock(i18nProvider, ValidationTime.CERTIFICATE_ISSUANCE_TIME,
 					signingCertificate, caqcServices);
 			XmlValidationCertificateQualification certQualAtIssuanceResult = certQualAtIssuanceBlock.execute();
 			result.getValidationCertificateQualification().add(certQualAtIssuanceResult);
 			CertificateQualification qualificationAtIssuance = certQualAtIssuanceResult.getCertificateQualification();
 
-			CertQualificationAtTimeBlock certQualAtSigningTimeBlock = new CertQualificationAtTimeBlock(ValidationTime.BEST_SIGNATURE_TIME, bestSignatureTime,
+			CertQualificationAtTimeBlock certQualAtSigningTimeBlock = new CertQualificationAtTimeBlock(i18nProvider, ValidationTime.BEST_SIGNATURE_TIME, bestSignatureTime,
 					signingCertificate, caqcServices);
 			XmlValidationCertificateQualification certQualAtSigningTimeResult = certQualAtSigningTimeBlock.execute();
 			result.getValidationCertificateQualification().add(certQualAtSigningTimeResult);
@@ -200,32 +201,32 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 	}
 
 	private ChainItem<XmlValidationSignatureQualification> certificatePathTrusted(CertificateWrapper signingCertificate) {
-		return new CertificatePathTrustedCheck(result, signingCertificate, getFailLevelConstraint());
+		return new CertificatePathTrustedCheck(i18nProvider, result, signingCertificate, getFailLevelConstraint());
 	}
 
 	private AcceptableTrustedListCheck<XmlValidationSignatureQualification> isAcceptableTL(
 			XmlTLAnalysis xmlTLAnalysis) {
-		return new AcceptableTrustedListCheck<XmlValidationSignatureQualification>(result, xmlTLAnalysis, getFailLevelConstraint());
+		return new AcceptableTrustedListCheck<XmlValidationSignatureQualification>(i18nProvider, result, xmlTLAnalysis, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationSignatureQualification> isAdES(XmlConclusion etsi319102Conclusion) {
-		return new AdESAcceptableCheck(result, etsi319102Conclusion, getWarnLevelConstraint());
+		return new AdESAcceptableCheck(i18nProvider, result, etsi319102Conclusion, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationSignatureQualification> qualifiedCertificateAtSigningTime(CertificateQualification qualificationAtSigningTime) {
-		return new QualifiedCertificateAtSigningTimeCheck(result, qualificationAtSigningTime, getWarnLevelConstraint());
+		return new QualifiedCertificateAtSigningTimeCheck(i18nProvider, result, qualificationAtSigningTime, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationSignatureQualification> foreSignatureAtSigningTime(CertificateQualification qualificationAtSigningTime) {
-		return new ForeSignatureAtSigningTimeCheck(result, qualificationAtSigningTime, getWarnLevelConstraint());
+		return new ForeSignatureAtSigningTimeCheck(i18nProvider, result, qualificationAtSigningTime, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationSignatureQualification> qualifiedCertificateAtIssuance(CertificateQualification qualificationAtIssuance) {
-		return new QualifiedCertificateAtCertificateIssuanceCheck(result, qualificationAtIssuance, getWarnLevelConstraint());
+		return new QualifiedCertificateAtCertificateIssuanceCheck(i18nProvider, result, qualificationAtIssuance, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationSignatureQualification> qscdAtSigningTime(CertificateQualification qualificationAtSigningTime) {
-		return new QSCDCertificateAtSigningTimeCheck(result, qualificationAtSigningTime, getWarnLevelConstraint());
+		return new QSCDCertificateAtSigningTimeCheck(i18nProvider, result, qualificationAtSigningTime, getWarnLevelConstraint());
 	}
 
 }

@@ -33,6 +33,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
@@ -44,8 +45,9 @@ public class TrustedServiceStatusCheck extends AbstractMultiValuesCheckItem<XmlX
 
 	private String serviceStatusStr;
 
-	public TrustedServiceStatusCheck(XmlXCV result, CertificateWrapper certificate, Date usageTime, Context context, MultiValuesConstraint constraint) {
-		super(result, constraint);
+	public TrustedServiceStatusCheck(I18nProvider i18nProvider, XmlXCV result, CertificateWrapper certificate, Date usageTime, 
+			Context context, MultiValuesConstraint constraint) {
+		super(i18nProvider, result, constraint);
 		this.certificate = certificate;
 		this.usageTime = usageTime;
 		this.context = context;

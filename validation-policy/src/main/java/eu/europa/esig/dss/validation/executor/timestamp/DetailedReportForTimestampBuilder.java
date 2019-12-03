@@ -55,7 +55,7 @@ public class DetailedReportForTimestampBuilder extends AbstractDetailedReportBui
 			Map<String, XmlBasicBuildingBlocks> bbbs, List<TimestampWrapper> timestamps) {
 		if (Utils.isCollectionNotEmpty(timestamps)) {
 			for (TimestampWrapper timestamp : timestamps) {
-				ValidationProcessForTimeStamps vpftsp = new ValidationProcessForTimeStamps(timestamp, bbbs);
+				ValidationProcessForTimeStamps vpftsp = new ValidationProcessForTimeStamps(i18nProvider, timestamp, bbbs);
 				signatureAnalysis.getValidationProcessTimestamps().add(vpftsp.execute());
 			}
 		}

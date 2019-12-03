@@ -74,7 +74,7 @@ public abstract class AbstractDetailedReportBuilder {
 		List<XmlTLAnalysis> result = new ArrayList<XmlTLAnalysis>();
 		if (Utils.isCollectionNotEmpty(trustedLists)) {
 			for (XmlTrustedList xmlTrustedList : trustedLists) {
-				TLValidationBlock tlValidation = new TLValidationBlock(xmlTrustedList, currentTime, policy);
+				TLValidationBlock tlValidation = new TLValidationBlock(i18nProvider, xmlTrustedList, currentTime, policy);
 				result.add(tlValidation.execute());
 			}
 		}
@@ -83,7 +83,7 @@ public abstract class AbstractDetailedReportBuilder {
 
 	protected void process(Collection<? extends AbstractTokenProxy> tokensToProcess, Context context, Map<String, XmlBasicBuildingBlocks> bbbs) {
 		for (AbstractTokenProxy token : tokensToProcess) {
-			BasicBuildingBlocks bbb = new BasicBuildingBlocks(diagnosticData, token, currentTime, policy, context);
+			BasicBuildingBlocks bbb = new BasicBuildingBlocks(i18nProvider, diagnosticData, token, currentTime, policy, context);
 			XmlBasicBuildingBlocks result = bbb.execute();
 			bbbs.put(token.getId(), result);
 		}

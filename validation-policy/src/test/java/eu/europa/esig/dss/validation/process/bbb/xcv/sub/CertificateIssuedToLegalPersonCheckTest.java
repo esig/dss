@@ -36,9 +36,10 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
 import eu.europa.esig.dss.enumerations.CertificatePolicy;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateIssuedToLegalPersonCheck;
 
-public class CertificateIssuedToLegalPersonCheckTest {
+public class CertificateIssuedToLegalPersonCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void certificateIssuedToLegalPersonWithPolicyIdentifierCheck() throws Exception {
@@ -54,7 +55,7 @@ public class CertificateIssuedToLegalPersonCheckTest {
 		xc.setCertificatePolicies(qualifiers);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateIssuedToLegalPersonCheck citlp = new CertificateIssuedToLegalPersonCheck(result, new CertificateWrapper(xc), constraint);
+		CertificateIssuedToLegalPersonCheck citlp = new CertificateIssuedToLegalPersonCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
 		citlp.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -76,7 +77,7 @@ public class CertificateIssuedToLegalPersonCheckTest {
 		xc.setCertificatePolicies(qualifiers);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateIssuedToLegalPersonCheck citlp = new CertificateIssuedToLegalPersonCheck(result, new CertificateWrapper(xc), constraint);
+		CertificateIssuedToLegalPersonCheck citlp = new CertificateIssuedToLegalPersonCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
 		citlp.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

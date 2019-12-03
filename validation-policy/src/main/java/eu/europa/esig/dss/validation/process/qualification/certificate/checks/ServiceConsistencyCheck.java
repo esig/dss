@@ -29,6 +29,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.validation.process.qualification.trust.consistency.TrustedServiceChecker;
 
@@ -38,8 +39,9 @@ public class ServiceConsistencyCheck extends ChainItem<XmlValidationCertificateQ
 
 	private MessageTag errorMessage;
 
-	public ServiceConsistencyCheck(XmlValidationCertificateQualification result, TrustedServiceWrapper trustedService, LevelConstraint constraint) {
-		super(result, constraint);
+	public ServiceConsistencyCheck(I18nProvider i18nProvider, XmlValidationCertificateQualification result, 
+			TrustedServiceWrapper trustedService, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint);
 
 		this.trustedService = trustedService;
 	}

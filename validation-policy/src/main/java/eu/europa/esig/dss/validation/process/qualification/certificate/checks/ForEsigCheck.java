@@ -26,6 +26,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.ValidationTime;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.validation.process.qualification.certificate.Type;
 
@@ -34,8 +35,9 @@ public class ForEsigCheck extends ChainItem<XmlValidationCertificateQualificatio
 	private final Type type;
 	private final ValidationTime validationTime;
 
-	public ForEsigCheck(XmlValidationCertificateQualification result, Type type, ValidationTime validationTime, LevelConstraint constraint) {
-		super(result, constraint);
+	public ForEsigCheck(I18nProvider i18nProvider, XmlValidationCertificateQualification result, Type type, 
+			ValidationTime validationTime, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint);
 
 		this.type = type;
 		this.validationTime = validationTime;

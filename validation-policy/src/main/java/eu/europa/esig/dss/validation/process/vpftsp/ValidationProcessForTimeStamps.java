@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamps;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;
@@ -43,8 +44,8 @@ public class ValidationProcessForTimeStamps extends Chain<XmlValidationProcessTi
 	private final TimestampWrapper timestamp;
 	private final Map<String, XmlBasicBuildingBlocks> bbbs;
 
-	public ValidationProcessForTimeStamps(TimestampWrapper timestamp, Map<String, XmlBasicBuildingBlocks> bbbs) {
-		super(new XmlValidationProcessTimestamps());
+	public ValidationProcessForTimeStamps(I18nProvider i18nProvider, TimestampWrapper timestamp, Map<String, XmlBasicBuildingBlocks> bbbs) {
+		super(i18nProvider, new XmlValidationProcessTimestamps());
 		result.setTitle(ValidationProcessDefinition.VPFTSP.getTitle());
 
 		this.timestamp = timestamp;
@@ -69,7 +70,7 @@ public class ValidationProcessForTimeStamps extends Chain<XmlValidationProcessTi
 	}
 
 	private ChainItem<XmlValidationProcessTimestamps> timestampBasicBuildingBlocksValid(XmlBasicBuildingBlocks timestampBBB) {
-		return new TimestampBasicBuildingBlocksCheck(result, timestampBBB, getFailLevelConstraint());
+		return new TimestampBasicBuildingBlocksCheck(i18nProvider, result, timestampBBB, getFailLevelConstraint());
 	}
 
 }

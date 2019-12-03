@@ -2,7 +2,7 @@ package eu.europa.esig.dss.i18n;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Locale;
 
@@ -13,22 +13,27 @@ public class I18nProviderTest {
 	@Test
 	public void test() {
 		
-		I18nProvider i18nProvider = new I18nProvider(Locale.getDefault());
+		final I18nProvider i18nProvider = new I18nProvider(Locale.ENGLISH);
 		
 		String message = i18nProvider.getMessage(MessageTag.BBB_XCV_SUB);
 		assertNotNull(message);
 		assertEquals("Is the certificate validation conclusive?", message);
 		
-		message = i18nProvider.getMessage(null);
-		assertNull(message);
+		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> { i18nProvider.getMessage(null); });
+		assertEquals("messageTag cannot be null!", exception.getMessage());
 		
-		i18nProvider = new I18nProvider(Locale.FRANCE);
-		message = i18nProvider.getMessage(MessageTag.BBB_XCV_SUB);
+		final I18nProvider i18nFranceProvider = new I18nProvider(Locale.FRANCE);
+		message = i18nFranceProvider.getMessage(MessageTag.BBB_XCV_SUB);
 		assertNotNull(message);
-		assertEquals("La validation du certificat est-elle concluante?", message);
+		assertEquals("Peut-on remonter jusqu'à une ancre de confiance ?", message);
+		
+		final I18nProvider i18nFrenchProvider = new I18nProvider(Locale.FRENCH);
+		message = i18nFrenchProvider.getMessage(MessageTag.BBB_XCV_SUB);
+		assertNotNull(message);
+		assertEquals("Peut-on remonter jusqu'à une ancre de confiance ?", message);
 
-		i18nProvider = new I18nProvider(Locale.GERMAN);
-		message = i18nProvider.getMessage(MessageTag.BBB_XCV_SUB);
+		final I18nProvider i18nGermanProvider = new I18nProvider(Locale.GERMAN);
+		message = i18nGermanProvider.getMessage(MessageTag.BBB_XCV_SUB);
 		assertNotNull(message);
 		assertEquals("Is the certificate validation conclusive?", message);
 		

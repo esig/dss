@@ -29,6 +29,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 
 public class LongTermValidationCheck extends ChainItem<XmlValidationProcessArchivalData> {
@@ -38,8 +39,9 @@ public class LongTermValidationCheck extends ChainItem<XmlValidationProcessArchi
 	private SubIndication ltvSubIndication;
 	private List<XmlName> ltvErrors;
 
-	public LongTermValidationCheck(XmlValidationProcessArchivalData result, XmlConstraintsConclusion longTermValidationResult, LevelConstraint constraint) {
-		super(result, constraint);
+	public LongTermValidationCheck(I18nProvider i18nProvider, XmlValidationProcessArchivalData result, 
+			XmlConstraintsConclusion longTermValidationResult, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint);
 
 		this.longTermValidationResult = longTermValidationResult;
 	}

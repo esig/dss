@@ -28,6 +28,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 
 public class CurrentTimeIndicationCheck extends ChainItem<XmlPSV> {
@@ -36,8 +37,9 @@ public class CurrentTimeIndicationCheck extends ChainItem<XmlPSV> {
 	private final SubIndication subIndication;
 	private final List<XmlName> errors;
 
-	public CurrentTimeIndicationCheck(XmlPSV result, Indication indication, SubIndication subIndication, List<XmlName> errors, LevelConstraint constraint) {
-		super(result, constraint);
+	public CurrentTimeIndicationCheck(I18nProvider i18nProvider, XmlPSV result, Indication indication, SubIndication subIndication, 
+			List<XmlName> errors, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint);
 
 		this.indication = indication;
 		this.subIndication = subIndication;

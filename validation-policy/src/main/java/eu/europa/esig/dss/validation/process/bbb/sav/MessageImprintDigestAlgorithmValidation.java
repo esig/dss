@@ -28,19 +28,20 @@ import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.DigestCryptographicCheck;
 
 public class MessageImprintDigestAlgorithmValidation extends DigestAlgorithmAcceptanceValidation {
 
-	public MessageImprintDigestAlgorithmValidation(Date currentTime, TimestampWrapper timestamp, ValidationPolicy validationPolicy) {
-		super(currentTime, timestamp.getMessageImprint().getDigestMethod(), validationPolicy, Context.TIMESTAMP);
+	public MessageImprintDigestAlgorithmValidation(I18nProvider i18nProvider, Date currentTime, TimestampWrapper timestamp, ValidationPolicy validationPolicy) {
+		super(i18nProvider, currentTime, timestamp.getMessageImprint().getDigestMethod(), validationPolicy, Context.TIMESTAMP);
 	}
 	
 	@Override
 	protected ChainItem<XmlSAV> digestCryptographic() {
 		CryptographicConstraint constraint = validationPolicy.getSignatureCryptographicConstraint(context);
-		return new DigestCryptographicCheck(result, digestAlgorithm, currentTime, constraint) {
+		return new DigestCryptographicCheck(i18nProvider, result, digestAlgorithm, currentTime, constraint) {
 			@Override
 			protected MessageTag getMessageTag() { return MessageTag.BBB_SAV_TSP_IMSDAV; }
 		};

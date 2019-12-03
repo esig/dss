@@ -33,6 +33,7 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.ValidationTime;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
@@ -48,9 +49,9 @@ public class CertificateQualificationBlock extends Chain<XmlCertificate> {
 	private final CertificateWrapper signingCertificate;
 	private final List<XmlTLAnalysis> tlAnalysis;
 
-	public CertificateQualificationBlock(XmlConclusion buildingBlocksConclusion, Date validationTime, CertificateWrapper signingCertificate,
+	public CertificateQualificationBlock(I18nProvider i18nProvider, XmlConclusion buildingBlocksConclusion, Date validationTime, CertificateWrapper signingCertificate,
 			List<XmlTLAnalysis> tlAnalysis) {
-		super(new XmlCertificate());
+		super(i18nProvider, new XmlCertificate());
 		result.setTitle(ValidationProcessDefinition.CERT_QUALIFICATION.getTitle());
 
 		this.buildingBlocksConclusion = buildingBlocksConclusion;
@@ -99,12 +100,12 @@ public class CertificateQualificationBlock extends Chain<XmlCertificate> {
 			filter = TrustedServicesFilterFactory.createFilterByCaQc();
 			List<TrustedServiceWrapper> caqcServices = filter.filter(acceptableServices);
 
-			CertQualificationAtTimeBlock certQualAtIssuanceBlock = new CertQualificationAtTimeBlock(ValidationTime.CERTIFICATE_ISSUANCE_TIME,
+			CertQualificationAtTimeBlock certQualAtIssuanceBlock = new CertQualificationAtTimeBlock(i18nProvider, ValidationTime.CERTIFICATE_ISSUANCE_TIME,
 					signingCertificate, caqcServices);
 			result.getValidationCertificateQualification().add(certQualAtIssuanceBlock.execute());
 
-			CertQualificationAtTimeBlock certQualAtSigningTimeBlock = new CertQualificationAtTimeBlock(ValidationTime.VALIDATION_TIME, validationTime,
-					signingCertificate, caqcServices);
+			CertQualificationAtTimeBlock certQualAtSigningTimeBlock = new CertQualificationAtTimeBlock(i18nProvider, ValidationTime.VALIDATION_TIME, 
+					validationTime, signingCertificate, caqcServices);
 			result.getValidationCertificateQualification().add(certQualAtSigningTimeBlock.execute());
 
 		}
@@ -139,11 +140,11 @@ public class CertificateQualificationBlock extends Chain<XmlCertificate> {
 	}
 
 	private AcceptableTrustedListCheck<XmlCertificate> isAcceptableTL(XmlTLAnalysis xmlTLAnalysis) {
-		return new AcceptableTrustedListCheck<XmlCertificate>(result, xmlTLAnalysis, getFailLevelConstraint());
+		return new AcceptableTrustedListCheck<XmlCertificate>(i18nProvider, result, xmlTLAnalysis, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlCertificate> isAcceptableBuildingBlockConclusion(XmlConclusion buildingBlocksConclusion) {
-		return new AcceptableBuildingBlockConclusionCheck(result, buildingBlocksConclusion, getWarnLevelConstraint());
+		return new AcceptableBuildingBlockConclusionCheck(i18nProvider, result, buildingBlocksConclusion, getWarnLevelConstraint());
 	}
 
 }

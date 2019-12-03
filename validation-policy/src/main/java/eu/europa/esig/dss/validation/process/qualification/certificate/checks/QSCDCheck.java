@@ -26,6 +26,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.ValidationTime;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.validation.process.qualification.certificate.QSCDStatus;
 
@@ -34,8 +35,9 @@ public class QSCDCheck extends ChainItem<XmlValidationCertificateQualification> 
 	private final QSCDStatus qscdStatus;
 	private final ValidationTime validationTime;
 
-	public QSCDCheck(XmlValidationCertificateQualification result, QSCDStatus qscdStatus, ValidationTime validationTime, LevelConstraint constraint) {
-		super(result, constraint);
+	public QSCDCheck(I18nProvider i18nProvider, XmlValidationCertificateQualification result, QSCDStatus qscdStatus, 
+			ValidationTime validationTime, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint);
 
 		this.qscdStatus = qscdStatus;
 		this.validationTime = validationTime;

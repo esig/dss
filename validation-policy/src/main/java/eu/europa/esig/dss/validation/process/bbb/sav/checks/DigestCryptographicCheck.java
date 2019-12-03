@@ -24,14 +24,15 @@ import java.util.Date;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 
 public class DigestCryptographicCheck extends AbstractCryptographicCheck<XmlSAV> {
 	
 	private final DigestAlgorithm digestAlgorithm;
 	
-	public DigestCryptographicCheck(XmlSAV result, DigestAlgorithm digestAlgorithm, Date currentTime, CryptographicConstraint constraint) {
-		super(result, currentTime, constraint);
+	public DigestCryptographicCheck(I18nProvider i18nProvider, XmlSAV result, DigestAlgorithm digestAlgorithm, Date currentTime, CryptographicConstraint constraint) {
+		super(i18nProvider, result, currentTime, constraint);
 		this.digestAlgorithm = digestAlgorithm;
 	}
 

@@ -26,14 +26,15 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 
 public class PastCertificateValidationAcceptableCheck extends ChainItem<XmlPSV> {
 
 	private final XmlPCV pcv;
 
-	public PastCertificateValidationAcceptableCheck(XmlPSV result, XmlPCV pcv, LevelConstraint constraint) {
-		super(result, constraint);
+	public PastCertificateValidationAcceptableCheck(I18nProvider i18nProvider, XmlPSV result, XmlPCV pcv, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint);
 
 		this.pcv = pcv;
 	}

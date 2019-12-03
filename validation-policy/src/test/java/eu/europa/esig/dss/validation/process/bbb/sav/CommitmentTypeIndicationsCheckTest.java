@@ -34,9 +34,10 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CommitmentTypeIndicationsCheck;
 
-public class CommitmentTypeIndicationsCheckTest {
+public class CommitmentTypeIndicationsCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void commitmentTypeIndicationsCheck() throws Exception {
@@ -54,7 +55,7 @@ public class CommitmentTypeIndicationsCheckTest {
 		constraint.getId().add("3");
 
 		XmlSAV result = new XmlSAV();
-		CommitmentTypeIndicationsCheck ctic = new CommitmentTypeIndicationsCheck(result, new SignatureWrapper(sig),
+		CommitmentTypeIndicationsCheck ctic = new CommitmentTypeIndicationsCheck(i18nProvider, result, new SignatureWrapper(sig),
 				constraint);
 		ctic.execute();
 
@@ -79,7 +80,7 @@ public class CommitmentTypeIndicationsCheckTest {
 		constraint.getId().add("3");
 
 		XmlSAV result = new XmlSAV();
-		CommitmentTypeIndicationsCheck ctic = new CommitmentTypeIndicationsCheck(result, new SignatureWrapper(sig),
+		CommitmentTypeIndicationsCheck ctic = new CommitmentTypeIndicationsCheck(i18nProvider, result, new SignatureWrapper(sig),
 				constraint);
 		ctic.execute();
 
@@ -99,7 +100,7 @@ public class CommitmentTypeIndicationsCheckTest {
 		constraint.getId().add("3");
 
 		XmlSAV result = new XmlSAV();
-		CommitmentTypeIndicationsCheck ctic = new CommitmentTypeIndicationsCheck(result, new SignatureWrapper(sig),
+		CommitmentTypeIndicationsCheck ctic = new CommitmentTypeIndicationsCheck(i18nProvider, result, new SignatureWrapper(sig),
 				constraint);
 		ctic.execute();
 

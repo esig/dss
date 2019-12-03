@@ -24,6 +24,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
@@ -31,8 +32,8 @@ public class ContainerTypeCheck extends AbstractMultiValuesCheckItem<XmlFC> {
 
 	private final String containerType;
 
-	public ContainerTypeCheck(XmlFC result, String containerType, MultiValuesConstraint constraint) {
-		super(result, constraint);
+	public ContainerTypeCheck(I18nProvider i18nProvider, XmlFC result, String containerType, MultiValuesConstraint constraint) {
+		super(i18nProvider, result, constraint);
 		this.containerType = containerType;
 	}
 

@@ -27,6 +27,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.CertificatePolicyIdentifiers;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.validation.process.QCStatementPolicyIdentifiers;
 
@@ -34,8 +35,8 @@ public class CertificateQualifiedCheck extends ChainItem<XmlSubXCV> {
 
 	private final CertificateWrapper certificate;
 
-	public CertificateQualifiedCheck(XmlSubXCV result, CertificateWrapper certificate, LevelConstraint constraint) {
-		super(result, constraint);
+	public CertificateQualifiedCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateWrapper certificate, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint);
 		this.certificate = certificate;
 	}
 

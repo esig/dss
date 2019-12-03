@@ -20,47 +20,17 @@
  */
 package eu.europa.esig.dss.validation.executor.certificate;
 
-import java.util.Date;
 import java.util.Objects;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
-import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSimpleCertificateReport;
+import eu.europa.esig.dss.validation.executor.AbstractProcessExecutor;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 
-public class DefaultCertificateProcessExecutor implements CertificateProcessExecutor {
+public class DefaultCertificateProcessExecutor extends AbstractProcessExecutor implements CertificateProcessExecutor {
 
-	private Date currentTime;
-	private ValidationPolicy policy;
-	private XmlDiagnosticData jaxbDiagnosticData;
 	private String certificateId;
-
-	@Override
-	public void setCurrentTime(Date currentTime) {
-		this.currentTime = currentTime;
-	}
-
-	@Override
-	public Date getCurrentTime() {
-		return currentTime;
-	}
-
-	@Override
-	public void setDiagnosticData(XmlDiagnosticData diagnosticData) {
-		this.jaxbDiagnosticData = diagnosticData;
-	}
-
-	@Override
-	public void setValidationPolicy(ValidationPolicy validationPolicy) {
-		this.policy = validationPolicy;
-	}
-
-	@Override
-	public ValidationPolicy getValidationPolicy() {
-		return policy;
-	}
 
 	@Override
 	public void setCertificateId(String certificateId) {
@@ -69,15 +39,13 @@ public class DefaultCertificateProcessExecutor implements CertificateProcessExec
 
 	@Override
 	public CertificateReports execute() {
-
-		Objects.requireNonNull(jaxbDiagnosticData, "The diagnostic data is missing");
-		Objects.requireNonNull(policy, "The validation policy is missing");
-		Objects.requireNonNull(currentTime, "The current time is missing");
+		assertConfigurationValid();
 		Objects.requireNonNull(certificateId, "The certificate id is missing");
 
 		DiagnosticData diagnosticData = new DiagnosticData(jaxbDiagnosticData);
 
-		DetailedReportForCertificateBuilder detailedReportBuilder = new DetailedReportForCertificateBuilder(diagnosticData, policy, currentTime, certificateId);
+		DetailedReportForCertificateBuilder detailedReportBuilder = new DetailedReportForCertificateBuilder(
+				getI18nProvider(), diagnosticData, policy, currentTime, certificateId);
 		XmlDetailedReport detailedReport = detailedReportBuilder.build();
 
 		SimpleReportForCertificateBuilder simpleReportBuilder = new SimpleReportForCertificateBuilder(diagnosticData,

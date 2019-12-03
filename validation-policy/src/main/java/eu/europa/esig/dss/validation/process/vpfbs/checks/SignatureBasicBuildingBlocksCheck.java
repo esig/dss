@@ -46,6 +46,7 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 
 public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationProcessBasicSignatures> {
@@ -59,9 +60,9 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 	private SubIndication subIndication;
 	private List<XmlName> errors = new ArrayList<XmlName>();
 
-	public SignatureBasicBuildingBlocksCheck(XmlValidationProcessBasicSignatures result, DiagnosticData diagnosticData, XmlBasicBuildingBlocks signatureBBB,
-			Map<String, XmlBasicBuildingBlocks> bbbs, LevelConstraint constraint) {
-		super(result, constraint, signatureBBB.getId());
+	public SignatureBasicBuildingBlocksCheck(I18nProvider i18nProvider, XmlValidationProcessBasicSignatures result, DiagnosticData diagnosticData, 
+			XmlBasicBuildingBlocks signatureBBB, Map<String, XmlBasicBuildingBlocks> bbbs, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint, signatureBBB.getId());
 
 		this.diagnosticData = diagnosticData;
 		this.signatureBBB = signatureBBB;

@@ -28,6 +28,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 
 public class BestSignatureTimeNotBeforeCertificateIssuanceCheck extends ChainItem<XmlPSV> {
@@ -35,9 +36,9 @@ public class BestSignatureTimeNotBeforeCertificateIssuanceCheck extends ChainIte
 	private final Date bestSignatureTime;
 	private final CertificateWrapper signingCertificate;
 
-	public BestSignatureTimeNotBeforeCertificateIssuanceCheck(XmlPSV result, Date bestSignatureTime, CertificateWrapper signingCertificate,
+	public BestSignatureTimeNotBeforeCertificateIssuanceCheck(I18nProvider i18nProvider, XmlPSV result, Date bestSignatureTime, CertificateWrapper signingCertificate,
 			LevelConstraint constraint) {
-		super(result, constraint);
+		super(i18nProvider, result, constraint);
 
 		this.bestSignatureTime = bestSignatureTime;
 		this.signingCertificate = signingCertificate;

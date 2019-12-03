@@ -25,7 +25,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.List;
+import java.util.Locale;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
@@ -35,8 +37,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.i18n.I18nMessage;
 import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.Algo;
 import eu.europa.esig.dss.policy.jaxb.AlgoExpirationDate;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
@@ -48,7 +50,12 @@ import eu.europa.esig.dss.validation.reports.Reports;
 
 public class CustomCryptographicConstraintsTest extends AbstractCryptographicConstraintsTest {
 	
-	private static I18nProvider i18nProvider = I18nProvider.getInstance();
+	private static I18nProvider i18nProvider;
+	
+	@BeforeAll
+	public static void init() {
+		i18nProvider = new I18nProvider(Locale.getDefault());
+	}
 
 	/**
 	 * Test for signature using SHA256 as the Digest algorithm and RSA 2048 as the Encryption Algorithm
@@ -66,14 +73,14 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		
 		result = defaultConstraintValidationDateIsBeforeExpirationDateTest(ALGORITHM_SHA256, 0);
 		assertEquals(Indication.TOTAL_PASSED, result);
-		checkErrorMessageAbsence("ASCCM_ANS_5");
+		checkErrorMessageAbsence(MessageTag.ASCCM_ANS_5);
 		
 		result = defaultConstraintAlgorithmExpiredTest(ALGORITHM_SHA256, 0);
 		assertEquals(Indication.INDETERMINATE, result);
 		
 		result = defaultConstraintSetLevelForPreviousValidationPolicy(Level.WARN);
 		assertEquals(Indication.TOTAL_PASSED, result);
-		checkErrorMessagePresence("ASCCM_ANS_5");
+		checkErrorMessagePresence(MessageTag.ASCCM_ANS_5);
 		
 		result = defaultConstraintAlgorithmExpiredTest(ALGORITHM_SHA1, 0); // some other algorithm is expired
 		assertEquals(Indication.TOTAL_PASSED, result);
@@ -86,7 +93,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		
 		result = defaultConstraintAlgorithmExpirationDateIsNotDefined(ALGORITHM_RSA, 4096); // some other algorithm is expired
 		assertEquals(Indication.TOTAL_PASSED, result);
-		checkErrorMessageAbsence("ASCCM_ANS_4");
+		checkErrorMessageAbsence(MessageTag.ASCCM_ANS_4);
 		
 		result = defaultConstraintAcceptableDigestAlgorithmIsNotDefined(ALGORITHM_SHA256, 0);
 		assertEquals(Indication.INDETERMINATE, result);
@@ -94,40 +101,40 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		revocationBasicBuildingBlock = detailedReport.getBasicBuildingBlockById(detailedReport.getRevocationIds().get(0));
 		assertEquals(Indication.INDETERMINATE, revocationBasicBuildingBlock.getSAV().getConclusion().getIndication());
 		assertEquals(Indication.INDETERMINATE, detailedReport.getTimestampValidationIndication(detailedReport.getTimestampIds().get(0)));
-		checkRevocationErrorPresence(detailedReport, "ASCCM_ANS_2", true);
-		checkTimestampErrorPresence(detailedReport, "ASCCM_ANS_2", true);
+		checkRevocationErrorPresence(detailedReport, MessageTag.ASCCM_ANS_2, true);
+		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_2, true);
 
 		result = defaultConstraintSetLevelForPreviousValidationPolicy(Level.WARN);
 		assertEquals(Indication.TOTAL_PASSED, result);
-		checkErrorMessagePresence("ASCCM_ANS_2");
+		checkErrorMessagePresence(MessageTag.ASCCM_ANS_2);
 		
 		result = defaultConstraintAcceptableDigestAlgorithmIsNotDefined(ALGORITHM_SHA1, 0); // some other algorithm is not defined
 		assertEquals(Indication.TOTAL_PASSED, result);
 		detailedReport = createDetailedReport();
-		checkErrorMessageAbsence(detailedReport, "ASCCM_ANS_2");
+		checkErrorMessageAbsence(detailedReport, MessageTag.ASCCM_ANS_2);
 		revocationBasicBuildingBlock = detailedReport.getBasicBuildingBlockById(detailedReport.getRevocationIds().get(0));
 		assertEquals(Indication.PASSED, revocationBasicBuildingBlock.getSAV().getConclusion().getIndication());
 		assertEquals(Indication.PASSED, detailedReport.getTimestampValidationIndication(detailedReport.getTimestampIds().get(0)));
-		checkRevocationErrorPresence(detailedReport, "ASCCM_ANS_2", false);
-		checkTimestampErrorPresence(detailedReport, "ASCCM_ANS_2", false);
+		checkRevocationErrorPresence(detailedReport, MessageTag.ASCCM_ANS_2, false);
+		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_2, false);
 		
 		result = defaultConstraintAcceptableEncryptionAlgorithmIsNotDefined(ALGORITHM_RSA, 0);
 		assertEquals(Indication.INDETERMINATE, result);
 
 		result = defaultConstraintSetLevelForPreviousValidationPolicy(Level.WARN);
 		assertEquals(Indication.TOTAL_PASSED, result);
-		checkErrorMessagePresence("ASCCM_ANS_1");
+		checkErrorMessagePresence(MessageTag.ASCCM_ANS_1);
 		
 		result = defaultConstraintAcceptableEncryptionAlgorithmIsNotDefined(ALGORITHM_DSA, 0); // some other algorithm is not defined
 		assertEquals(Indication.TOTAL_PASSED, result);
-		checkErrorMessageAbsence("ASCCM_ANS_1");
+		checkErrorMessageAbsence(MessageTag.ASCCM_ANS_1);
 		
 		result = defaultConstraintLargeMiniPublicKeySize(ALGORITHM_RSA);
 		assertEquals(Indication.INDETERMINATE, result);
 
 		result = defaultConstraintSetLevelForPreviousValidationPolicy(Level.WARN);
 		assertEquals(Indication.TOTAL_PASSED, result);
-		checkErrorMessagePresence("ASCCM_ANS_3");
+		checkErrorMessagePresence(MessageTag.ASCCM_ANS_3);
 		
 		result = defaultConstraintLargeMiniPublicKeySize(ALGORITHM_DSA); // some other algorithm is changed
 		assertEquals(Indication.TOTAL_PASSED, result);
@@ -205,7 +212,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		detailedReport = createDetailedReport();
 		XmlBasicBuildingBlocks revocationBasicBuildingBlock = detailedReport.getBasicBuildingBlockById(detailedReport.getRevocationIds().get(0));
 		assertEquals(Indication.PASSED, revocationBasicBuildingBlock.getSAV().getConclusion().getIndication());
-		checkErrorMessageAbsence(detailedReport, "ASCCM_ANS_2");
+		checkErrorMessageAbsence(detailedReport, MessageTag.ASCCM_ANS_2);
 		
 		result = revocationConstraintAcceptableEncryptionAlgorithmIsNotDefined(ALGORITHM_RSA, 0);
 		detailedReport = createDetailedReport();
@@ -219,8 +226,8 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		revocationBasicBuildingBlock = detailedReport.getBasicBuildingBlockById(detailedReport.getRevocationIds().get(0));
 		assertEquals(Indication.INDETERMINATE, revocationBasicBuildingBlock.getSAV().getConclusion().getIndication());
 		assertEquals(Indication.PASSED, detailedReport.getTimestampValidationIndication(detailedReport.getTimestampIds().get(0)));
-		checkRevocationErrorPresence(detailedReport, "ASCCM_ANS_2", true);
-		checkTimestampErrorPresence(detailedReport, "ASCCM_ANS_2", false);
+		checkRevocationErrorPresence(detailedReport, MessageTag.ASCCM_ANS_2, true);
+		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_2, false);
 		
 		// Timestamp tests
 		result = timestampConstraintAcceptableDigestAlgorithmIsNotDefined(ALGORITHM_SHA256, 0);
@@ -228,8 +235,8 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		revocationBasicBuildingBlock = detailedReport.getBasicBuildingBlockById(detailedReport.getRevocationIds().get(0));
 		assertEquals(Indication.PASSED, revocationBasicBuildingBlock.getSAV().getConclusion().getIndication());
 		assertEquals(Indication.INDETERMINATE, detailedReport.getTimestampValidationIndication(detailedReport.getTimestampIds().get(0)));
-		checkRevocationErrorPresence(detailedReport, "ASCCM_ANS_2", false);
-		checkTimestampErrorPresence(detailedReport, "ASCCM_ANS_2", true);
+		checkRevocationErrorPresence(detailedReport, MessageTag.ASCCM_ANS_2, false);
+		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_2, true);
 		
 	}
 	
@@ -270,50 +277,50 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_SHA256, "2020-01-01", 0);
 		assertEquals(Indication.TOTAL_PASSED, result);
 		detailedReport = createDetailedReport();
-		checkBasicSignatureErrorPresence(detailedReport, "ASCCM_ANS_5", false);
-		checkTimestampErrorPresence(detailedReport, "ASCCM_ANS_5", false);
+		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
+		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 		
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_SHA256, "2019-01-01", 0);
 		assertEquals(Indication.TOTAL_PASSED, result);
 		detailedReport = createDetailedReport();
-		checkBasicSignatureErrorPresence(detailedReport, "ASCCM_ANS_5", false);
-		checkTimestampErrorPresence(detailedReport, "ASCCM_ANS_5", false);
+		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
+		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 		
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_SHA256, "2018-01-01", 0);
 		assertEquals(Indication.INDETERMINATE, result);
 		detailedReport = createDetailedReport();
-		checkBasicSignatureErrorPresence(detailedReport, "ASCCM_ANS_5", true);
-		checkTimestampErrorPresence(detailedReport, "ASCCM_ANS_5", false);
+		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, true);
+		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 		
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_SHA1, "2018-01-01", 0);
 		assertEquals(Indication.TOTAL_PASSED, result);
 		detailedReport = createDetailedReport();
-		checkBasicSignatureErrorPresence(detailedReport, "ASCCM_ANS_5", false);
-		checkTimestampErrorPresence(detailedReport, "ASCCM_ANS_5", false);
+		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
+		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 		
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA, "2020-01-01", 0);
 		assertEquals(Indication.TOTAL_PASSED, result);
 		detailedReport = createDetailedReport();
-		checkBasicSignatureErrorPresence(detailedReport, "ASCCM_ANS_5", false);
-		checkTimestampErrorPresence(detailedReport, "ASCCM_ANS_5", false);
+		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
+		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 		
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA, "2019-01-01", 2048);
 		assertEquals(Indication.TOTAL_PASSED, result);
 		detailedReport = createDetailedReport();
-		checkBasicSignatureErrorPresence(detailedReport, "ASCCM_ANS_5", false);
-		checkTimestampErrorPresence(detailedReport, "ASCCM_ANS_5", false);
+		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
+		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 		
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA, "2018-01-01", 2048);
 		assertEquals(Indication.INDETERMINATE, result);
 		detailedReport = createDetailedReport();
-		checkBasicSignatureErrorPresence(detailedReport, "ASCCM_ANS_5", true);
-		checkTimestampErrorPresence(detailedReport, "ASCCM_ANS_5", false);
+		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, true);
+		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 		
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA, "2019-01-01", 2048);
 		assertEquals(Indication.TOTAL_PASSED, result);
 		detailedReport = createDetailedReport();
-		checkBasicSignatureErrorPresence(detailedReport, "ASCCM_ANS_5", false);
-		checkTimestampErrorPresence(detailedReport, "ASCCM_ANS_5", false);
+		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
+		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 	}
 	
 	@Test
@@ -327,8 +334,8 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA, "2018-01-01", 2048);
 		assertEquals(Indication.INDETERMINATE, result);
 		detailedReport = createDetailedReport();
-		checkBasicSignatureErrorPresence(detailedReport, "ASCCM_ANS_5", true);
-		checkTimestampErrorPresence(detailedReport, "ASCCM_ANS_5", false);
+		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, true);
+		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA, "2019-01-01", 2048);
 		assertEquals(Indication.TOTAL_PASSED, result);
@@ -345,8 +352,8 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		result = signatureConstraintAlgorithmExpired("RSA", "2018-01-01", 1536);
 		assertEquals(Indication.INDETERMINATE, result);
 		detailedReport = createDetailedReport();
-		checkBasicSignatureErrorPresence(detailedReport, "ASCCM_ANS_5", true);
-		checkTimestampErrorPresence(detailedReport, "ASCCM_ANS_5", false);
+		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, true);
+		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 		
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA, "2019-01-01", 2048);
 		assertEquals(Indication.TOTAL_PASSED, result);
@@ -363,8 +370,8 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA, "2018-01-01", 4096);
 		assertEquals(Indication.INDETERMINATE, result);
 		detailedReport = createDetailedReport();
-		checkBasicSignatureErrorPresence(detailedReport, "ASCCM_ANS_5", true);
-		checkTimestampErrorPresence(detailedReport, "ASCCM_ANS_5", false);
+		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, true);
+		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 		
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA, "2019-01-01", 4096);
 		assertEquals(Indication.TOTAL_PASSED, result);
@@ -582,50 +589,48 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		return simpleReport.getIndication(simpleReport.getFirstSignatureId());
 	}
 	
-
-	
-	private void checkErrorMessageAbsence(String messageKey) {
+	private void checkErrorMessageAbsence(MessageTag messageKey) {
 		Reports reports = createReports();
 		DetailedReport detailedReport = reports.getDetailedReport();
 		checkErrorMessageAbsence(detailedReport, messageKey);
 	}
 	
-	private void checkErrorMessageAbsence(DetailedReport detailedReport, String messageKey) {
-		assertTrue(!detailedReport.getWarnings(detailedReport.getFirstSignatureId()).contains(i18nProvider.getMessage(messageKey).getValue()));
-		assertTrue(!detailedReport.getErrors(detailedReport.getFirstSignatureId()).contains(i18nProvider.getMessage(messageKey).getValue()));
+	private void checkErrorMessageAbsence(DetailedReport detailedReport, MessageTag messageKey) {
+		assertTrue(!detailedReport.getWarnings(detailedReport.getFirstSignatureId()).contains(i18nProvider.getMessage(messageKey)));
+		assertTrue(!detailedReport.getErrors(detailedReport.getFirstSignatureId()).contains(i18nProvider.getMessage(messageKey)));
 	}
 	
-	private void checkErrorMessagePresence(String messageKey) {
+	private void checkErrorMessagePresence(MessageTag messageKey) {
 		Reports reports = createReports();
 		DetailedReport detailedReport = reports.getDetailedReport();
 		checkErrorMessagePresence(detailedReport, messageKey);
 	}
 
-	private void checkErrorMessagePresence(DetailedReport detailedReport, String messageKey) {
-		assertTrue(detailedReport.getWarnings(detailedReport.getFirstSignatureId()).contains(i18nProvider.getMessage(messageKey).getValue()));
-		assertTrue(detailedReport.getErrors(detailedReport.getFirstSignatureId()).contains(i18nProvider.getMessage(messageKey).getValue()));
+	private void checkErrorMessagePresence(DetailedReport detailedReport, MessageTag messageKey) {
+		assertTrue(detailedReport.getWarnings(detailedReport.getFirstSignatureId()).contains(i18nProvider.getMessage(messageKey)));
+		assertTrue(detailedReport.getErrors(detailedReport.getFirstSignatureId()).contains(i18nProvider.getMessage(messageKey)));
 	}
 	
-	private void checkBasicSignatureErrorPresence(DetailedReport detailedReport, String messageKey, boolean present) {
+	private void checkBasicSignatureErrorPresence(DetailedReport detailedReport, MessageTag messageKey, boolean present) {
 		List<XmlName> errors = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId()).getConclusion().getErrors();
 		assertTrue(!present ^ xmlListContainsMessage(errors, messageKey));
 	}
 	
-	private void checkRevocationErrorPresence(DetailedReport detailedReport, String messageKey, boolean present) {
+	private void checkRevocationErrorPresence(DetailedReport detailedReport, MessageTag messageKey, boolean present) {
 		List<XmlName> listErrors = detailedReport.getBasicBuildingBlockById(detailedReport.getRevocationIds().get(0)).getSAV().getConclusion().getErrors();
 		assertTrue(!present ^ xmlListContainsMessage(listErrors, messageKey));
 	}
 	
-	private void checkTimestampErrorPresence(DetailedReport detailedReport, String messageKey, boolean present) {
+	private void checkTimestampErrorPresence(DetailedReport detailedReport, MessageTag messageKey, boolean present) {
 		List<XmlName> listErrors = detailedReport.getBasicBuildingBlockById(detailedReport.getTimestampIds().get(0)).getSAV().getConclusion().getErrors();
 		assertTrue(!present ^ xmlListContainsMessage(listErrors, messageKey));
 	}
 	
-	private boolean xmlListContainsMessage(List<XmlName> list, String messageKey) {
-		I18nMessage message = i18nProvider.getMessage(messageKey);
+	private boolean xmlListContainsMessage(List<XmlName> list, MessageTag messageKey) {
+		String message = i18nProvider.getMessage(messageKey);
 		if (message != null) {
 			for (XmlName name : list) {
-				if (message.getValue().equals(name.getValue())) {
+				if (message.equals(name.getValue())) {
 					return true;
 				}
 			}
