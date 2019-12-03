@@ -576,9 +576,7 @@ public final class DSSUtils {
 	 * @return the content of the inputstream as byte array
 	 */
 	public static byte[] toByteArray(final InputStream inputStream) {
-		if (inputStream == null) {
-			throw new NullPointerException();
-		}
+		Objects.requireNonNull(inputStream, "The InputStream cannot be null");
 		try {
 			return Utils.toByteArray(inputStream);
 		} catch (IOException e) {
