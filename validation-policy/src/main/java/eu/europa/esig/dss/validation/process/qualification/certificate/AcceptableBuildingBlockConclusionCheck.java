@@ -26,14 +26,15 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class AcceptableBuildingBlockConclusionCheck extends ChainItem<XmlCertificate> {
 
 	private final XmlConclusion buildingBlockConclusion;
 
-	public AcceptableBuildingBlockConclusionCheck(XmlCertificate result, XmlConclusion buildingBlockConclusion, LevelConstraint constraint) {
-		super(result, constraint);
+	public AcceptableBuildingBlockConclusionCheck(I18nProvider i18nProvider, XmlCertificate result, XmlConclusion buildingBlockConclusion, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint);
 
 		this.buildingBlockConclusion = buildingBlockConclusion;
 	}

@@ -33,7 +33,8 @@ import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class RevocationDateAfterBestSignatureTimeCheck extends ChainItem<XmlValidationProcessLongTermData> {
 
@@ -41,9 +42,9 @@ public class RevocationDateAfterBestSignatureTimeCheck extends ChainItem<XmlVali
 	private final Date bestSignatureTime;
 	private final SubContext subContext;
 
-	public RevocationDateAfterBestSignatureTimeCheck(XmlValidationProcessLongTermData result, CertificateRevocationWrapper certificateRevocation, 
+	public RevocationDateAfterBestSignatureTimeCheck(I18nProvider i18nProvider, XmlValidationProcessLongTermData result, CertificateRevocationWrapper certificateRevocation, 
 			Date bestSignatureTime, LevelConstraint constraint, SubContext subContext) {
-		super(result, constraint);
+		super(i18nProvider, result, constraint);
 
 		this.certificateRevocation = certificateRevocation;
 		this.bestSignatureTime = bestSignatureTime;

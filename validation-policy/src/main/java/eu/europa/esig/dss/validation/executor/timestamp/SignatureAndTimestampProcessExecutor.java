@@ -29,7 +29,7 @@ public class SignatureAndTimestampProcessExecutor extends DefaultSignatureProces
 	}
 	
 	private Reports buildTimestampOnlyReports(final DiagnosticData diagnosticData, final Date validationTime) {
-		DetailedReportForTimestampBuilder detailedReportBuilder = new DetailedReportForTimestampBuilder(diagnosticData, policy, validationTime);
+		DetailedReportForTimestampBuilder detailedReportBuilder = new DetailedReportForTimestampBuilder(getI18nProvider(), diagnosticData, policy, validationTime);
 		XmlDetailedReport jaxbDetailedReport = detailedReportBuilder.build();
 
 		DetailedReport detailedReportWrapper = new DetailedReport(jaxbDetailedReport);

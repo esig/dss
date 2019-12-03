@@ -25,15 +25,16 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
-import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
 public class FormatCheck extends AbstractMultiValuesCheckItem<XmlFC> {
 
 	private final SignatureWrapper signature;
 
-	public FormatCheck(XmlFC result, SignatureWrapper signature, MultiValuesConstraint constraint) {
-		super(result, constraint);
+	public FormatCheck(I18nProvider i18nProvider, XmlFC result, SignatureWrapper signature, MultiValuesConstraint constraint) {
+		super(i18nProvider, result, constraint);
 
 		this.signature = signature;
 	}

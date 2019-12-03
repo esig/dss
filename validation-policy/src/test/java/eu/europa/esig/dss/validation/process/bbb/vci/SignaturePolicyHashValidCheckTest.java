@@ -34,9 +34,10 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.vci.checks.SignaturePolicyHashValidCheck;
 
-public class SignaturePolicyHashValidCheckTest {
+public class SignaturePolicyHashValidCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void signaturePolicyHashValidCheck() throws Exception {
@@ -50,7 +51,7 @@ public class SignaturePolicyHashValidCheckTest {
 		constraint.setLevel(Level.FAIL);
 
 		XmlVCI result = new XmlVCI();
-		SignaturePolicyHashValidCheck sphvc = new SignaturePolicyHashValidCheck(result, new SignatureWrapper(sig),
+		SignaturePolicyHashValidCheck sphvc = new SignaturePolicyHashValidCheck(i18nProvider, result, new SignatureWrapper(sig),
 				constraint);
 		sphvc.execute();
 
@@ -71,7 +72,7 @@ public class SignaturePolicyHashValidCheckTest {
 		constraint.setLevel(Level.FAIL);
 
 		XmlVCI result = new XmlVCI();
-		SignaturePolicyHashValidCheck sphvc = new SignaturePolicyHashValidCheck(result, new SignatureWrapper(sig),
+		SignaturePolicyHashValidCheck sphvc = new SignaturePolicyHashValidCheck(i18nProvider, result, new SignatureWrapper(sig),
 				constraint);
 		sphvc.execute();
 

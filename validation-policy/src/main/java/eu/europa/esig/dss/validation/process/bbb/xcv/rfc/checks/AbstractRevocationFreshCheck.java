@@ -32,15 +32,17 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public abstract class AbstractRevocationFreshCheck extends ChainItem<XmlRFC> {
 
 	protected final RevocationWrapper revocationData;
 	private final Date validationDate;
 
-	protected AbstractRevocationFreshCheck(XmlRFC result, RevocationWrapper revocationData, Date validationDate, LevelConstraint constraint) {
-		super(result, constraint);
+	protected AbstractRevocationFreshCheck(I18nProvider i18nProvider, XmlRFC result, RevocationWrapper revocationData, 
+			Date validationDate, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint);
 		this.revocationData = revocationData;
 		this.validationDate = validationDate;
 	}

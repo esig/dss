@@ -33,7 +33,8 @@ import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 
 public class POEExistsAtOrBeforeControlTimeCheck extends ChainItem<XmlVTS> {
@@ -43,9 +44,9 @@ public class POEExistsAtOrBeforeControlTimeCheck extends ChainItem<XmlVTS> {
 	private final Date controlTime;
 	private final POEExtraction poe;
 
-	public POEExistsAtOrBeforeControlTimeCheck(XmlVTS result, TokenProxy token, TimestampedObjectType referenceCategory, Date controlTime, POEExtraction poe,
-			LevelConstraint constraint) {
-		super(result, constraint);
+	public POEExistsAtOrBeforeControlTimeCheck(I18nProvider i18nProvider, XmlVTS result, TokenProxy token, TimestampedObjectType referenceCategory, 
+			Date controlTime, POEExtraction poe, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint);
 
 		this.token = token;
 		this.referenceCategory = referenceCategory;

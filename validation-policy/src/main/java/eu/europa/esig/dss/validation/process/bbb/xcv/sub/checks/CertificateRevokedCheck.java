@@ -34,7 +34,8 @@ import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class CertificateRevokedCheck extends ChainItem<XmlSubXCV> {
 
@@ -42,9 +43,9 @@ public class CertificateRevokedCheck extends ChainItem<XmlSubXCV> {
 	private final Date currentTime;
 	private final SubContext subContext;
 
-	public CertificateRevokedCheck(XmlSubXCV result, CertificateRevocationWrapper certificateRevocation, Date currentTime, 
-			LevelConstraint constraint, SubContext subContext) {
-		super(result, constraint);
+	public CertificateRevokedCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateRevocationWrapper certificateRevocation, 
+			Date currentTime, LevelConstraint constraint, SubContext subContext) {
+		super(i18nProvider, result, constraint);
 		this.certificateRevocation = certificateRevocation;
 		this.currentTime = currentTime;
 		this.subContext = subContext;

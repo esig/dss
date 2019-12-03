@@ -40,6 +40,7 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.executor.AbstractDetailedReportBuilder;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
@@ -55,8 +56,9 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 
 	private final ValidationLevel validationLevel;
 
-	public DetailedReportBuilder(Date currentTime, ValidationPolicy policy, ValidationLevel validationLevel, DiagnosticData diagnosticData) {
-		super(diagnosticData, policy, currentTime);
+	public DetailedReportBuilder(I18nProvider i18nProvider, Date currentTime, ValidationPolicy policy, 
+			ValidationLevel validationLevel, DiagnosticData diagnosticData) {
+		super(i18nProvider, currentTime, policy, diagnosticData);
 		this.validationLevel = validationLevel;
 	}
 
@@ -92,7 +94,7 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 				try {
 					CertificateWrapper signingCertificate = signature.getSigningCertificate();
 					if (signingCertificate != null) {
-						SignatureQualificationBlock qualificationBlock = new SignatureQualificationBlock(signature.getId(), validation, signingCertificate,
+						SignatureQualificationBlock qualificationBlock = new SignatureQualificationBlock(i18nProvider, signature.getId(), validation, signingCertificate,
 								detailedReport.getTLAnalysis());
 						signatureAnalysis.setValidationSignatureQualification(qualificationBlock.execute());
 					}
@@ -109,7 +111,7 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 
 	private XmlValidationProcessBasicSignatures executeBasicValidation(XmlSignature signatureAnalysis, SignatureWrapper signature,
 			Map<String, XmlBasicBuildingBlocks> bbbs) {
-		ValidationProcessForBasicSignatures vpfbs = new ValidationProcessForBasicSignatures(diagnosticData, signature, bbbs);
+		ValidationProcessForBasicSignatures vpfbs = new ValidationProcessForBasicSignatures(i18nProvider, diagnosticData, signature, bbbs);
 		XmlValidationProcessBasicSignatures bs = vpfbs.execute();
 		signatureAnalysis.setValidationProcessBasicSignatures(bs);
 		return bs;
@@ -118,15 +120,15 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 	private void executeTimestampsValidation(XmlSignature signatureAnalysis, SignatureWrapper signature, Map<String, XmlBasicBuildingBlocks> bbbs) {
 		List<TimestampWrapper> allTimestamps = signature.getTimestampList();
 		for (TimestampWrapper timestamp : allTimestamps) {
-			ValidationProcessForTimeStamps vpftsp = new ValidationProcessForTimeStamps(timestamp, bbbs);
+			ValidationProcessForTimeStamps vpftsp = new ValidationProcessForTimeStamps(i18nProvider, timestamp, bbbs);
 			signatureAnalysis.getValidationProcessTimestamps().add(vpftsp.execute());
 		}
 	}
 
 	private XmlValidationProcessLongTermData executeLongTermValidation(XmlSignature signatureAnalysis, SignatureWrapper signature,
 			Map<String, XmlBasicBuildingBlocks> bbbs) {
-		ValidationProcessForSignaturesWithLongTermValidationData vpfltvd = new ValidationProcessForSignaturesWithLongTermValidationData(signatureAnalysis,
-				diagnosticData, signature, bbbs, policy, currentTime);
+		ValidationProcessForSignaturesWithLongTermValidationData vpfltvd = new ValidationProcessForSignaturesWithLongTermValidationData(
+				i18nProvider, signatureAnalysis, diagnosticData, signature, bbbs, policy, currentTime);
 		XmlValidationProcessLongTermData vpfltvdResult = vpfltvd.execute();
 		signatureAnalysis.setValidationProcessLongTermData(vpfltvdResult);
 		return vpfltvdResult;
@@ -134,8 +136,8 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 
 	private XmlValidationProcessArchivalData executeArchiveValidation(XmlSignature signatureAnalysis, SignatureWrapper signature,
 			Map<String, XmlBasicBuildingBlocks> bbbs) {
-		ValidationProcessForSignaturesWithArchivalData vpfswad = new ValidationProcessForSignaturesWithArchivalData(signatureAnalysis, signature,
-				diagnosticData, bbbs, policy, currentTime);
+		ValidationProcessForSignaturesWithArchivalData vpfswad = new ValidationProcessForSignaturesWithArchivalData(i18nProvider, signatureAnalysis, 
+				signature, diagnosticData, bbbs, policy, currentTime);
 		XmlValidationProcessArchivalData vpfswadResult = vpfswad.execute();
 		signatureAnalysis.setValidationProcessArchivalData(vpfswadResult);
 		return vpfswadResult;

@@ -37,7 +37,8 @@ import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
@@ -47,8 +48,8 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 	protected String failedAlgorithm = null;
 	protected MessageTag errorMessage = MessageTag.EMPTY;
 
-	protected AbstractCryptographicCheck(T result, Date currentTime, CryptographicConstraint constraint) {
-		super(result, constraint);
+	protected AbstractCryptographicCheck(I18nProvider i18nProvider, T result, Date currentTime, CryptographicConstraint constraint) {
+		super(i18nProvider, result, constraint);
 		this.validationDate = currentTime;
 		this.constraintWrapper = new CryptographicConstraintWrapper(constraint);
 	}

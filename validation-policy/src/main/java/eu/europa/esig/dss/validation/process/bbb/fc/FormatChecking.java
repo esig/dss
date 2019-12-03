@@ -24,6 +24,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
@@ -54,8 +55,8 @@ public class FormatChecking extends Chain<XmlFC> {
 	private final Context context;
 	private final ValidationPolicy policy;
 
-	public FormatChecking(DiagnosticData diagnosticData, SignatureWrapper signature, Context context, ValidationPolicy policy) {
-		super(new XmlFC());
+	public FormatChecking(I18nProvider i18nProvider, DiagnosticData diagnosticData, SignatureWrapper signature, Context context, ValidationPolicy policy) {
+		super(i18nProvider, new XmlFC());
 		result.setTitle(BasicBuildingBlockDefinition.FORMAT_CHECKING.getTitle());
 
 		this.diagnosticData = diagnosticData;
@@ -88,42 +89,42 @@ public class FormatChecking extends Chain<XmlFC> {
 
 	private ChainItem<XmlFC> formatCheck() {
 		MultiValuesConstraint constraint = policy.getSignatureFormatConstraint(context);
-		return new FormatCheck(result, signature, constraint);
+		return new FormatCheck(i18nProvider, result, signature, constraint);
 	}
 
 	private ChainItem<XmlFC> fullScopeCheck() {
 		LevelConstraint constraint = policy.getFullScopeConstraint();
-		return new FullScopeCheck(result, signature, constraint);
+		return new FullScopeCheck(i18nProvider, result, signature, constraint);
 	}
 
 	private ChainItem<XmlFC> containerTypeCheck() {
 		MultiValuesConstraint constraint = policy.getAcceptedContainerTypesConstraint();
-		return new ContainerTypeCheck(result, diagnosticData.getContainerType(), constraint);
+		return new ContainerTypeCheck(i18nProvider, result, diagnosticData.getContainerType(), constraint);
 	}
 
 	private ChainItem<XmlFC> zipCommentPresentCheck() {
 		LevelConstraint constraint = policy.getZipCommentPresentConstraint();
-		return new ZipCommentPresentCheck(result, diagnosticData.getZipComment(), constraint);
+		return new ZipCommentPresentCheck(i18nProvider, result, diagnosticData.getZipComment(), constraint);
 	}
 
 	private ChainItem<XmlFC> acceptableZipCommentCheck() {
 		MultiValuesConstraint constraint = policy.getAcceptedZipCommentsConstraint();
-		return new AcceptableZipCommentCheck(result, diagnosticData.getZipComment(), constraint);
+		return new AcceptableZipCommentCheck(i18nProvider, result, diagnosticData.getZipComment(), constraint);
 	}
 
 	private ChainItem<XmlFC> mimetypeFilePresentCheck() {
 		LevelConstraint constraint = policy.getMimeTypeFilePresentConstraint();
-		return new MimeTypeFilePresentCheck(result, diagnosticData.isMimetypeFilePresent(), constraint);
+		return new MimeTypeFilePresentCheck(i18nProvider, result, diagnosticData.isMimetypeFilePresent(), constraint);
 	}
 
 	private ChainItem<XmlFC> mimetypeFileContentCheck() {
 		MultiValuesConstraint constraint = policy.getAcceptedMimeTypeContentsConstraint();
-		return new AcceptableMimetypeFileContentCheck(result, diagnosticData.getMimetypeFileContent(), constraint);
+		return new AcceptableMimetypeFileContentCheck(i18nProvider, result, diagnosticData.getMimetypeFileContent(), constraint);
 	}
 
 	private ChainItem<XmlFC> manifestFilePresentCheck() {
 		LevelConstraint constraint = policy.getManifestFilePresentConstraint();
-		return new ManifestFilePresentCheck(result, diagnosticData.getContainerInfo(), constraint);
+		return new ManifestFilePresentCheck(i18nProvider, result, diagnosticData.getContainerInfo(), constraint);
 	}
 
 }

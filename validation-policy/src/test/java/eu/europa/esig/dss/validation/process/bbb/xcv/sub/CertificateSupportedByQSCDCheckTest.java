@@ -34,9 +34,10 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSupportedByQSCDCheck;
 
-public class CertificateSupportedByQSCDCheckTest {
+public class CertificateSupportedByQSCDCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void certificateSupportedByQSCDCheck() throws Exception {
@@ -49,7 +50,7 @@ public class CertificateSupportedByQSCDCheckTest {
 		xc.getCertificatePolicies().add(oid);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateSupportedByQSCDCheck csbsc = new CertificateSupportedByQSCDCheck(result, new CertificateWrapper(xc), constraint);
+		CertificateSupportedByQSCDCheck csbsc = new CertificateSupportedByQSCDCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
 		csbsc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -69,7 +70,7 @@ public class CertificateSupportedByQSCDCheckTest {
 		xc.getCertificatePolicies().add(oid);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateSupportedByQSCDCheck csbsc = new CertificateSupportedByQSCDCheck(result, new CertificateWrapper(xc), constraint);
+		CertificateSupportedByQSCDCheck csbsc = new CertificateSupportedByQSCDCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
 		csbsc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

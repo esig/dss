@@ -31,7 +31,8 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
 
 public class TLVersionCheck extends ChainItem<XmlTLAnalysis> {
@@ -42,8 +43,8 @@ public class TLVersionCheck extends ChainItem<XmlTLAnalysis> {
 	private final Date currentTime;
 	private final ValueConstraint constraint;
 
-	public TLVersionCheck(XmlTLAnalysis result, XmlTrustedList currentTl, Date currentTime, ValueConstraint constraint) {
-		super(result, constraint);
+	public TLVersionCheck(I18nProvider i18nProvider, XmlTLAnalysis result, XmlTrustedList currentTl, Date currentTime, ValueConstraint constraint) {
+		super(i18nProvider, result, constraint);
 		this.currentTL = currentTl;
 		this.currentTime = currentTime;
 		this.constraint = constraint;

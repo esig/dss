@@ -29,15 +29,16 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class CommitmentTypeIndicationsCheck extends ChainItem<XmlSAV> {
 
 	private final SignatureWrapper signature;
 	private final MultiValuesConstraint constraint;
 
-	public CommitmentTypeIndicationsCheck(XmlSAV result, SignatureWrapper signature, MultiValuesConstraint constraint) {
-		super(result, constraint);
+	public CommitmentTypeIndicationsCheck(I18nProvider i18nProvider, XmlSAV result, SignatureWrapper signature, MultiValuesConstraint constraint) {
+		super(i18nProvider, result, constraint);
 		this.signature = signature;
 		this.constraint = constraint;
 	}

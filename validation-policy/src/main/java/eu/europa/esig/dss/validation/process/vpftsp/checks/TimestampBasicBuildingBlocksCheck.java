@@ -31,7 +31,8 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class TimestampBasicBuildingBlocksCheck extends ChainItem<XmlValidationProcessTimestamps> {
 
@@ -40,8 +41,8 @@ public class TimestampBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 	private Indication indication;
 	private SubIndication subIndication;
 
-	public TimestampBasicBuildingBlocksCheck(XmlValidationProcessTimestamps result, XmlBasicBuildingBlocks timestampBBB, LevelConstraint constraint) {
-		super(result, constraint, timestampBBB.getId());
+	public TimestampBasicBuildingBlocksCheck(I18nProvider i18nProvider, XmlValidationProcessTimestamps result, XmlBasicBuildingBlocks timestampBBB, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint, timestampBBB.getId());
 
 		this.timestampBBB = timestampBBB;
 	}

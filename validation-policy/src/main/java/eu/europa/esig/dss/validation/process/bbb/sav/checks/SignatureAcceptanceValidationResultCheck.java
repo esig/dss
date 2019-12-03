@@ -27,17 +27,17 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.IMessageTag;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class SignatureAcceptanceValidationResultCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 	
 	private final XmlSAV savResult;
 
-	public SignatureAcceptanceValidationResultCheck(T result, XmlSAV savResult, LevelConstraint constraint) {
-		super(result, constraint);
+	public SignatureAcceptanceValidationResultCheck(I18nProvider i18nProvider, T result, XmlSAV savResult, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint);
 		this.savResult = savResult;
 	}
 
@@ -47,12 +47,12 @@ public class SignatureAcceptanceValidationResultCheck<T extends XmlConstraintsCo
 	}
 
 	@Override
-	protected IMessageTag getMessageTag() {
+	protected MessageTag getMessageTag() {
 		return MessageTag.BBB_SAV_ISVA;
 	}
 
 	@Override
-	protected IMessageTag getErrorMessageTag() {
+	protected MessageTag getErrorMessageTag() {
 		return MessageTag.BBB_SAV_ISVA_ANS;
 	}
 

@@ -27,6 +27,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 
@@ -50,6 +51,11 @@ public abstract class Chain<T extends XmlConstraintsConclusion> {
 	 * The result object : a sub-class of {@code XmlConstraintsConclusion}
 	 */
 	protected final T result;
+	
+	/**
+	 * Internationalization provider
+	 */
+	protected final I18nProvider i18nProvider;
 
 	/**
 	 * The first item to execute the chain
@@ -62,7 +68,8 @@ public abstract class Chain<T extends XmlConstraintsConclusion> {
 	 * @param newInstance
 	 *            a new instance of the result object
 	 */
-	protected Chain(T newInstance) {
+	protected Chain(I18nProvider i18nProvider, T newInstance) {
+		this.i18nProvider = i18nProvider;
 		this.result = newInstance;
 	}
 

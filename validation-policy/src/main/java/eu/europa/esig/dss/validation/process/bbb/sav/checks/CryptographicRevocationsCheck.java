@@ -29,16 +29,17 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class CryptographicRevocationsCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 	
 	private final List<CryptographicCheck<XmlPSV>> revocationCryptographicChecks;
 	private final String certificateId;
 
-	public CryptographicRevocationsCheck(T result, List<CryptographicCheck<XmlPSV>> revocationCryptographicChecks, 
+	public CryptographicRevocationsCheck(I18nProvider i18nProvider, T result, List<CryptographicCheck<XmlPSV>> revocationCryptographicChecks, 
 			String certificateId) {
-		super(result, null);
+		super(i18nProvider, result, null);
 		this.revocationCryptographicChecks = revocationCryptographicChecks;
 		this.certificateId = certificateId;
 	}

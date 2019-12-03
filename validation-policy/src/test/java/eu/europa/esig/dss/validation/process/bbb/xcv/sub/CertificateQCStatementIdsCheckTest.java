@@ -35,9 +35,10 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQCStatementIdsCheck;
 
-public class CertificateQCStatementIdsCheckTest {
+public class CertificateQCStatementIdsCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void certificateQCStatementCheck() throws Exception {
@@ -54,7 +55,7 @@ public class CertificateQCStatementIdsCheckTest {
 		xc.setQCStatementIds(qcStatementIds);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateQCStatementIdsCheck cqcsic = new CertificateQCStatementIdsCheck(result, new CertificateWrapper(xc), constraint);
+		CertificateQCStatementIdsCheck cqcsic = new CertificateQCStatementIdsCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
 		cqcsic.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -77,7 +78,7 @@ public class CertificateQCStatementIdsCheckTest {
 		xc.setQCStatementIds(qcStatementIds);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateQCStatementIdsCheck cqcsic = new CertificateQCStatementIdsCheck(result, new CertificateWrapper(xc), constraint);
+		CertificateQCStatementIdsCheck cqcsic = new CertificateQCStatementIdsCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
 		cqcsic.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

@@ -34,6 +34,7 @@ import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
@@ -59,9 +60,9 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 
 	private Date controlTime;
 
-	public ValidationTimeSliding(TokenProxy token, Date currentTime, Context context, POEExtraction poe,
+	public ValidationTimeSliding(I18nProvider i18nProvider, TokenProxy token, Date currentTime, Context context, POEExtraction poe,
 			ValidationPolicy policy) {
-		super(new XmlVTS());
+		super(i18nProvider, new XmlVTS());
 		result.setTitle(BasicBuildingBlockDefinition.VALIDATION_TIME_SLIDING.getTitle());
 
 		this.token = token;
@@ -221,22 +222,22 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 
 	private boolean isFresh(RevocationWrapper revocationData, Date controlTime) {
 		// TODO SubContext ??
-		RevocationFreshnessChecker rfc = new RevocationFreshnessChecker(revocationData, controlTime, context, SubContext.SIGNING_CERT, policy);
+		RevocationFreshnessChecker rfc = new RevocationFreshnessChecker(i18nProvider, revocationData, controlTime, context, SubContext.SIGNING_CERT, policy);
 		XmlRFC execute = rfc.execute();
 		return execute != null && execute.getConclusion() != null && Indication.PASSED.equals(execute.getConclusion().getIndication());
 	}
 
 	private ChainItem<XmlVTS> satisfyingRevocationDataExists(RevocationWrapper revocationData) {
-		return new SatisfyingRevocationDataExistsCheck(result, revocationData, getFailLevelConstraint());
+		return new SatisfyingRevocationDataExistsCheck(i18nProvider, result, revocationData, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlVTS> poeExistsAtOrBeforeControlTime(TokenProxy token, TimestampedObjectType referenceCategory, Date controlTime) {
-		return new POEExistsAtOrBeforeControlTimeCheck(result, token, referenceCategory, controlTime, poe, getFailLevelConstraint());
+		return new POEExistsAtOrBeforeControlTimeCheck(i18nProvider, result, token, referenceCategory, controlTime, poe, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlVTS> cryptographicCheck(TokenProxy token, Date validationTime) {
 		CryptographicConstraint constraint = policy.getCertificateCryptographicConstraint(context, SubContext.SIGNING_CERT);
-		return new CryptographicCheck<XmlVTS>(result, token, validationTime, constraint);
+		return new CryptographicCheck<XmlVTS>(i18nProvider, result, token, validationTime, constraint);
 	}
 
 	private boolean isConsistant(CertificateWrapper certificate, RevocationWrapper revocationData) {

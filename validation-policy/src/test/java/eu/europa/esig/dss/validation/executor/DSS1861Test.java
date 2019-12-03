@@ -19,6 +19,7 @@ import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.policy.jaxb.Level;
@@ -27,7 +28,6 @@ import eu.europa.esig.dss.policy.jaxb.TimestampConstraints;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
-import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class DSS1861Test extends AbstractTestValidationExecutor {
@@ -72,7 +72,7 @@ public class DSS1861Test extends AbstractTestValidationExecutor {
 		
 		boolean timestampCoherenceOrderCheckFound = false;
 		for (XmlConstraint constraint : constraints) {
-			if (MessageTag.TSV_ASTPTCT.name().equals(constraint.getName().getNameId())) {
+			if (MessageTag.TSV_ASTPTCT.getId().equals(constraint.getName().getNameId())) {
 				timestampCoherenceOrderCheckFound = XmlStatus.OK.equals(constraint.getStatus());
 			}
 		}
@@ -105,7 +105,7 @@ public class DSS1861Test extends AbstractTestValidationExecutor {
 		
 		boolean timestampCoherenceOrderCheckFound = false;
 		for (XmlConstraint constraint : constraints) {
-			if (MessageTag.TSV_ASTPTCT.name().equals(constraint.getName().getNameId())) {
+			if (MessageTag.TSV_ASTPTCT.getId().equals(constraint.getName().getNameId())) {
 				timestampCoherenceOrderCheckFound = XmlStatus.NOT_OK.equals(constraint.getStatus());
 			}
 		}

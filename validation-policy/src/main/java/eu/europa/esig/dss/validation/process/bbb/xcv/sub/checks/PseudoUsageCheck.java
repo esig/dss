@@ -30,7 +30,8 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.pseudo.JoinedPseudoStrategy;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.pseudo.PseudoStrategy;
 
@@ -40,8 +41,8 @@ public class PseudoUsageCheck extends ChainItem<XmlSubXCV> {
 
 	private String pseudo;
 
-	public PseudoUsageCheck(XmlSubXCV result, CertificateWrapper certificate, LevelConstraint constraint) {
-		super(result, constraint);
+	public PseudoUsageCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateWrapper certificate, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint);
 
 		this.certificate = certificate;
 	}

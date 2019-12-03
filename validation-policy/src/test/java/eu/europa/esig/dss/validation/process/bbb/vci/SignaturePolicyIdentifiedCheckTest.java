@@ -34,9 +34,10 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.vci.checks.SignaturePolicyIdentifiedCheck;
 
-public class SignaturePolicyIdentifiedCheckTest {
+public class SignaturePolicyIdentifiedCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void signaturePolicyIdentifiedCheck() throws Exception {
@@ -50,7 +51,7 @@ public class SignaturePolicyIdentifiedCheckTest {
 		constraint.setLevel(Level.FAIL);
 
 		XmlVCI result = new XmlVCI();
-		SignaturePolicyIdentifiedCheck spic = new SignaturePolicyIdentifiedCheck(result, new SignatureWrapper(sig),
+		SignaturePolicyIdentifiedCheck spic = new SignaturePolicyIdentifiedCheck(i18nProvider, result, new SignatureWrapper(sig),
 				constraint);
 		spic.execute();
 
@@ -71,7 +72,7 @@ public class SignaturePolicyIdentifiedCheckTest {
 		constraint.setLevel(Level.FAIL);
 
 		XmlVCI result = new XmlVCI();
-		SignaturePolicyIdentifiedCheck spic = new SignaturePolicyIdentifiedCheck(result, new SignatureWrapper(sig),
+		SignaturePolicyIdentifiedCheck spic = new SignaturePolicyIdentifiedCheck(i18nProvider, result, new SignatureWrapper(sig),
 				constraint);
 		spic.execute();
 

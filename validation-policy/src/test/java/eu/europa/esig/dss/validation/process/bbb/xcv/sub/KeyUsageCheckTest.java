@@ -35,9 +35,10 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.KeyUsageCheck;
 
-public class KeyUsageCheckTest {
+public class KeyUsageCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void keyUsageCheck() throws Exception {
@@ -52,7 +53,7 @@ public class KeyUsageCheckTest {
 		xc.setKeyUsageBits(keyUsageBits);
 
 		XmlSubXCV result = new XmlSubXCV();
-		KeyUsageCheck kuc = new KeyUsageCheck(result, new CertificateWrapper(xc), constraint);
+		KeyUsageCheck kuc = new KeyUsageCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
 		kuc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -73,7 +74,7 @@ public class KeyUsageCheckTest {
 		xc.setKeyUsageBits(keyUsageBits);
 
 		XmlSubXCV result = new XmlSubXCV();
-		KeyUsageCheck kuc = new KeyUsageCheck(result, new CertificateWrapper(xc), constraint);
+		KeyUsageCheck kuc = new KeyUsageCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
 		kuc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

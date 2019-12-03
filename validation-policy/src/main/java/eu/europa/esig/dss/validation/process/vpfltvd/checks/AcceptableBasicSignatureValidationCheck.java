@@ -30,7 +30,8 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class AcceptableBasicSignatureValidationCheck extends ChainItem<XmlValidationProcessLongTermData> {
 
@@ -40,9 +41,9 @@ public class AcceptableBasicSignatureValidationCheck extends ChainItem<XmlValida
 	private SubIndication bbbSubIndication;
 	private List<XmlName> bbbErrors;
 
-	public AcceptableBasicSignatureValidationCheck(XmlValidationProcessLongTermData result, XmlConstraintsConclusion basicSignatureValidation,
-			LevelConstraint constraint) {
-		super(result, constraint);
+	public AcceptableBasicSignatureValidationCheck(I18nProvider i18nProvider, XmlValidationProcessLongTermData result, 
+			XmlConstraintsConclusion basicSignatureValidation, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint);
 
 		this.basicSignatureValidation = basicSignatureValidation;
 	}

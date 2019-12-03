@@ -42,6 +42,10 @@
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>specs-validation-report</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-i18n</artifactId>
+		</dependency>
 		
 		<dependency>
 		  <groupId>org.slf4j</groupId>
