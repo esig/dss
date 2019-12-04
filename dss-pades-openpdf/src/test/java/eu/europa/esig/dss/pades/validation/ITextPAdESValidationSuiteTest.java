@@ -39,6 +39,7 @@ import eu.europa.esig.dss.pades.validation.suite.DSS917Test;
 import eu.europa.esig.dss.pades.validation.suite.DiagnosticDataCompleteTest;
 import eu.europa.esig.dss.pades.validation.suite.EtsiValidationReportCompleteTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESCorruptedSigTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESMultipleFieldSignatureReferenceTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESNonLatinCharactersValidationTest;
 import eu.europa.esig.dss.pades.validation.suite.PadesWrongDigestAlgoTest;
 import eu.europa.esig.dss.pades.validation.suite.PdfPkcs7Test;
@@ -50,7 +51,8 @@ import eu.europa.esig.dss.pades.validation.suite.SignatureTimestampCertificateNo
 @SelectClasses({ ASN1PolicyTest.class, DSS1188Test.class, DSS1376GetOriginalDocTest.class, DSS1420Test.class, DSS818Test.class, DSS917Test.class,
 		PadesWrongDigestAlgoTest.class, PdfPkcs7Test.class, DSS1443Test.class, DSS1538Test.class, DSS1683Test.class, DSS1690Test.class,
 		DiagnosticDataCompleteTest.class, EtsiValidationReportCompleteTest.class, SignatureTimestampCertificateNotFoundTest.class, PAdESCorruptedSigTest.class,
-		PAdESNonLatinCharactersValidationTest.class, ArchiveTimestampCoverageTest.class, PolicyZeroHashTest.class, SIWATest.class, DSS1794Test.class })
+		PAdESNonLatinCharactersValidationTest.class, ArchiveTimestampCoverageTest.class, PolicyZeroHashTest.class, SIWATest.class, DSS1794Test.class,
+		PAdESMultipleFieldSignatureReferenceTest.class })
 public class ITextPAdESValidationSuiteTest {
 
 }

@@ -27,6 +27,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,9 +51,9 @@ import com.lowagie.text.pdf.PdfStream;
 import com.lowagie.text.pdf.PdfString;
 import com.lowagie.text.pdf.PdfWriter;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -262,30 +263,27 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		List<PdfSignatureOrDocTimestampInfo> result = new ArrayList<PdfSignatureOrDocTimestampInfo>();
 		try (InputStream is = document.openStream(); PdfReader reader = new PdfReader(is)) {
 			AcroFields af = reader.getAcroFields();
-			List<String> names = af.getSignedFieldNames();
 
 			final PdfDssDict dssDictionary = getDSSDictionary(reader);
+			
+			List<PdfSigDict> sigDictionaries = extractSigDictionaries(af);
 
-			LOG.info("{} signature(s)", names.size());
-			for (String name : names) {
-				LOG.info("Signature name: {}", name);
-				LOG.info("Document revision: {} of {}", af.getRevision(name), af.getTotalRevisions());
-
-				PdfDict dictionary = new ITextPdfDict(af.getSignatureDictionary(name));
-				PdfSigDict signatureDictionary = new PdfSigDict(dictionary, name);
+			for (PdfSigDict signatureDictionary : sigDictionaries) {
+				LOG.info("Signature field name: {}", signatureDictionary.getSigFieldNames());
+				
 				final int[] byteRange = signatureDictionary.getByteRange();
 
 				validateByteRange(byteRange);
 
 				final byte[] cms = signatureDictionary.getContents();
 				byte[] signedContent = DSSUtils.EMPTY_BYTE_ARRAY;
-				if (!isContentValueEqualsByteRangeExtraction(document, byteRange, cms, name)) {
-					LOG.warn("Signature '{}' is skipped. SIWA detected !", name);
+				if (!isContentValueEqualsByteRangeExtraction(document, byteRange, cms, signatureDictionary.getSignerName())) {
+					LOG.warn("Signature '{}' is skipped. SIWA detected !", signatureDictionary.getSignerName());
 				} else {
 					signedContent = getSignedContent(document, byteRange);
 				}
 
-				boolean signatureCoversWholeDocument = af.signatureCoversWholeDocument(name);
+				boolean signatureCoversWholeDocument = af.signatureCoversWholeDocument(signatureDictionary.getSigFieldNames().get(0));
 
 				final String subFilter = signatureDictionary.getSubFilter();
 				if (PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER.equals(subFilter)) {
@@ -313,6 +311,35 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			throw new DSSException("Cannot analyze signatures : " + e.getMessage(), e);
 		}
 		return result;
+	}
+	
+	private List<PdfSigDict> extractSigDictionaries(AcroFields acroFields) {
+		Map<Integer, PdfSigDict> pdfObjectDictMap = new LinkedHashMap<Integer, PdfSigDict>();
+		
+		Map<String, Item> allFields = acroFields.getAllFields();
+		List<String> names = acroFields.getSignedFieldNames();
+		LOG.info("{} signature field(s) found", names.size());
+		// TODO : sort the fields ?
+		
+		for (String name : names) {
+			PdfDictionary pdfField = allFields.get(name).getMerged(0);
+			int refNumber = pdfField.getAsIndirectObject(PdfName.V).getNumber();
+			PdfSigDict signature = pdfObjectDictMap.get(refNumber);
+			if (signature == null) {
+				PdfDict dictionary = new ITextPdfDict(pdfField.getAsDict(PdfName.V));
+				signature = new PdfSigDict(dictionary);
+				signature.addSigFieldName(name);
+				
+				pdfObjectDictMap.put(refNumber, signature);
+				
+			} else {
+				signature.addSigFieldName(name);
+				LOG.warn("More than one field refers to the same signature dictionary: {}!", signature.getSigFieldNames());
+				
+			}
+		}
+		
+		return new ArrayList<PdfSigDict>(pdfObjectDictMap.values());
 	}
 
 	private PdfDssDict getDSSDictionary(PdfReader reader) {

@@ -256,7 +256,7 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 		}
 		
 		@Override
-		public String getSigFieldName() {
+		public List<String> getSigFieldNames() {
 			return null;
 		}
 

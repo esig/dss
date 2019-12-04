@@ -467,7 +467,25 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return false;
 	}
 	
-	public String getSignatureFieldName() {
+	/**
+	 * Returns the first signature field name
+	 * 
+	 * @return {@link String} field name
+	 */
+	public String getFirstFieldName() {
+		XmlPDFSignatureDictionary pdfSignatureDictionary = signature.getPDFSignatureDictionary();
+		if (pdfSignatureDictionary != null) {
+			return pdfSignatureDictionary.getSignatureFieldName().get(0);
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns a list of signature field names, where the signature is referenced from
+	 * 
+	 * @return a list of {@link String} signature field names
+	 */
+	public List<String> getSignatureFieldNames() {
 		XmlPDFSignatureDictionary pdfSignatureDictionary = signature.getPDFSignatureDictionary();
 		if (pdfSignatureDictionary != null) {
 			return pdfSignatureDictionary.getSignatureFieldName();
