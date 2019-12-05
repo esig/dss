@@ -196,13 +196,13 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		return signedContentByteArray;
 	}
 	
-	protected boolean isContentValueEqualsByteRangeExtraction(DSSDocument document, int[] byteRange, byte[] cms, String signatureName) {
+	protected boolean isContentValueEqualsByteRangeExtraction(DSSDocument document, int[] byteRange, byte[] cms, List<String> signatureFieldNames) {
 		boolean match = false;
 		try {
 			byte[] cmsWithByteRange = getSignatureValue(document, byteRange);
 			match = Arrays.equals(cms, cmsWithByteRange);
 			if (!match) {
-				LOG.warn("Conflict between /Content and ByteRange for Signature '{}'.", signatureName);
+				LOG.warn("Conflict between /Content and ByteRange for Signature {}.", signatureFieldNames);
 			}
 		} catch (IOException | IllegalArgumentException e) {
 			String message = String.format("Unable to retrieve data from the ByteRange (%s to %s)", byteRange[0] + byteRange[1], byteRange[2]);

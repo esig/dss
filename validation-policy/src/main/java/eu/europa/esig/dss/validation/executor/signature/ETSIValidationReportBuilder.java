@@ -472,8 +472,8 @@ public class ETSIValidationReportBuilder {
 			signatureReference.setCanonicalizationMethod(signatureDigestReference.getCanonicalizationMethod());
 			signatureReference.setDigestMethod(signatureDigestReference.getDigestMethod().getUri());
 			signatureReference.setDigestValue(signatureDigestReference.getDigestValue());
-		} else if (signature.getSignatureFieldName() != null) {
-			signatureReference.setPAdESFieldName(signature.getSignatureFieldName());
+		} else if (signature.getFirstFieldName() != null) {
+			signatureReference.setPAdESFieldName(signature.getFirstFieldName());
 		}
 		return signatureReference;
 	}

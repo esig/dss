@@ -684,7 +684,7 @@ public interface AdvancedSignature extends Serializable {
 
 	// ------------------------ PDF Specifics for TS 119 102-2
 	
-	String getSignatureFieldName();
+	List<String> getSignatureFieldNames();
 
 	String getSignerName();
 

@@ -40,7 +40,12 @@ public interface PdfSignatureOrDocTimestampInfo {
 
 	void checkIntegrity();
 	
-	String getSigFieldName();
+	/**
+	 * Returns a list of signature field names
+	 * 
+	 * @return list of {@link String}s
+	 */
+	List<String> getSigFieldNames();
 
 	String getSignerName();
 

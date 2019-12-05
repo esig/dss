@@ -664,7 +664,7 @@ public class DiagnosticDataBuilder {
 		SignatureForm signatureForm = signature.getSignatureForm();
 		if (SignatureForm.PAdES == signatureForm || SignatureForm.PKCS7 == signatureForm) {
 			XmlPDFSignatureDictionary pdfSignatureDictionary = new XmlPDFSignatureDictionary();
-			pdfSignatureDictionary.setSignatureFieldName(emptyToNull(signature.getSignatureFieldName()));
+			pdfSignatureDictionary.getSignatureFieldName().addAll(signature.getSignatureFieldNames());
 			pdfSignatureDictionary.setSignerName(emptyToNull(signature.getSignerName()));
 			pdfSignatureDictionary.setFilter(emptyToNull(signature.getFilter()));
 			pdfSignatureDictionary.setSubFilter(emptyToNull(signature.getSubFilter()));
