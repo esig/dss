@@ -196,18 +196,20 @@ public class ETSIValidationReportBuilder {
 		return validationStatus;
 	}
 
-	private ValidationConstraintsEvaluationReportType getValidationConstraintsEvaluationReport(SignatureWrapper sigWrapper) {
+	private ValidationConstraintsEvaluationReportType getValidationConstraintsEvaluationReport(AbstractTokenProxy token) {
 		ValidationConstraintsEvaluationReportType validationConstraintsEvaluationReport = objectFactory.createValidationConstraintsEvaluationReportType();
-		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(sigWrapper.getId());
-		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.FORMAT_CHECKING, signatureBBB.getFC());
-		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.IDENTIFICATION_OF_THE_SIGNING_CERTIFICATE, signatureBBB.getISC());
-		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.VALIDATION_CONTEXT_INITIALIZATION, signatureBBB.getVCI());
-		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.CRYPTOGRAPHIC_VERIFICATION, signatureBBB.getCV());
-		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.SIGNATURE_ACCEPTANCE_VALIDATION, signatureBBB.getSAV());
-		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.X509_CERTIFICATE_VALIDATION, signatureBBB.getXCV());
-		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.PAST_SIGNATURE_VALIDATION, signatureBBB.getPSV());
-		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.PAST_CERTIFICATE_VALIDATION, signatureBBB.getPCV());
-		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.VALIDATION_TIME_SLIDING, signatureBBB.getVTS());
+		XmlBasicBuildingBlocks bbbResults = detailedReport.getBasicBuildingBlockById(token.getId());
+		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.FORMAT_CHECKING, bbbResults.getFC());
+		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.IDENTIFICATION_OF_THE_SIGNING_CERTIFICATE, bbbResults.getISC());
+		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.VALIDATION_CONTEXT_INITIALIZATION, bbbResults.getVCI());
+		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.CRYPTOGRAPHIC_VERIFICATION, bbbResults.getCV());
+		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.SIGNATURE_ACCEPTANCE_VALIDATION, bbbResults.getSAV());
+		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.X509_CERTIFICATE_VALIDATION, bbbResults.getXCV());
+		if (token instanceof SignatureWrapper) {
+			addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.PAST_SIGNATURE_VALIDATION, bbbResults.getPSV());
+			addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.PAST_CERTIFICATE_VALIDATION, bbbResults.getPCV());
+			addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.VALIDATION_TIME_SLIDING, bbbResults.getVTS());
+		}
 		return validationConstraintsEvaluationReport;
 	}
 
@@ -257,6 +259,7 @@ public class ETSIValidationReportBuilder {
 		SignatureValidationReportType signatureValidationReport = objectFactory.createSignatureValidationReportType();
 		signatureValidationReport.setSignerInformation(getSignerInformation(token));
 		signatureValidationReport.setSignatureValidationStatus(getValidationStatus(token));
+		signatureValidationReport.setValidationConstraintsEvaluationReport(getValidationConstraintsEvaluationReport(token));
 		return signatureValidationReport;
 	}
 
@@ -358,6 +361,10 @@ public class ETSIValidationReportBuilder {
 		POEExtraction poeExtraction = new POEExtraction();
 		poeExtraction.collectAllPOE(diagnosticData);
 
+		for (TimestampWrapper timestamp : diagnosticData.getTimestampSet()) {
+			addTimestamp(validationObjectListType, timestamp);
+		}
+
 		for (CertificateWrapper certificate : diagnosticData.getUsedCertificates()) {
 			addCertificate(validationObjectListType, certificate, poeExtraction);
 		}
@@ -374,10 +381,6 @@ public class ETSIValidationReportBuilder {
 			addOrphanRevocation(validationObjectListType, orphanRevocation, poeExtraction);
 		}
 
-		for (TimestampWrapper timestamp : diagnosticData.getTimestampSet()) {
-			addTimestamp(validationObjectListType, timestamp);
-		}
-		
 		for (XmlSignerData signedData : diagnosticData.getOriginalSignerDocuments()) {
 			addSignerData(validationObjectListType, signedData, poeExtraction);
 		}
