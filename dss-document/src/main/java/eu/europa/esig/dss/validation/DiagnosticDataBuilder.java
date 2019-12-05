@@ -103,6 +103,7 @@ import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
+import eu.europa.esig.dss.model.x509.TokenComparator;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.tsl.Condition;
@@ -407,11 +408,13 @@ public class DiagnosticDataBuilder {
 
 	private Collection<XmlCertificate> buildXmlCertificates() {
 		if (Utils.isCollectionNotEmpty(usedCertificates)) {
-			for (CertificateToken certificateToken : usedCertificates) {
+			List<CertificateToken> tokens = new ArrayList<CertificateToken>(usedCertificates);
+			Collections.sort(tokens, new TokenComparator());
+			for (CertificateToken certificateToken : tokens) {
 				XmlCertificate currentXmlCet = buildDetachedXmlCertificate(certificateToken);
 				xmlCerts.put(certificateToken.getDSSIdAsString(), currentXmlCet);
 			}
-			for (CertificateToken certificateToken : usedCertificates) {
+			for (CertificateToken certificateToken : tokens) {
 				XmlCertificate xmlCertificate = xmlCerts.get(certificateToken.getDSSIdAsString());
 				xmlCertificate.setSigningCertificate(getXmlSigningCertificate(certificateToken.getPublicKeyOfTheSigner()));
 				xmlCertificate.setCertificateChain(getXmlForCertificateChain(certificateToken.getPublicKeyOfTheSigner()));
@@ -422,7 +425,9 @@ public class DiagnosticDataBuilder {
 	
 	private Collection<XmlRevocation> buildXmlRevocations() {
 		if (Utils.isCollectionNotEmpty(usedRevocations)) {
-			for (RevocationToken revocationToken : usedRevocations) {
+			List<RevocationToken> tokens = new ArrayList<RevocationToken>(usedRevocations);
+			Collections.sort(tokens, new TokenComparator());
+			for (RevocationToken revocationToken : tokens) {
 				if (!xmlRevocations.containsKey(revocationToken.getDSSIdAsString())) {
 					XmlRevocation currentXmlRevocation = buildDetachedXmlRevocation(revocationToken);
 					currentXmlRevocation.setSigningCertificate(getXmlSigningCertificate(revocationToken.getPublicKeyOfTheSigner()));

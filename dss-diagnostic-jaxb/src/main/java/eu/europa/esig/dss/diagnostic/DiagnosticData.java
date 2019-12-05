@@ -23,6 +23,7 @@ package eu.europa.esig.dss.diagnostic;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -786,7 +787,7 @@ public class DiagnosticData {
 	 * @return a set of TimestampWrapper
 	 */
 	public Set<TimestampWrapper> getTimestampSet() {
-		return new HashSet<TimestampWrapper>(getTimestampList());
+		return new LinkedHashSet<TimestampWrapper>(getTimestampList());
 	}
 
 	/**
