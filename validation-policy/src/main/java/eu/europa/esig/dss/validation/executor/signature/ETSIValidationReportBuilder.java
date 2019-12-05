@@ -205,7 +205,7 @@ public class ETSIValidationReportBuilder {
 		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.CRYPTOGRAPHIC_VERIFICATION, bbbResults.getCV());
 		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.SIGNATURE_ACCEPTANCE_VALIDATION, bbbResults.getSAV());
 		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.X509_CERTIFICATE_VALIDATION, bbbResults.getXCV());
-		if (token instanceof SignatureWrapper) {
+		if (token instanceof SignatureWrapper || token instanceof TimestampWrapper) {
 			addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.PAST_SIGNATURE_VALIDATION, bbbResults.getPSV());
 			addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.PAST_CERTIFICATE_VALIDATION, bbbResults.getPCV());
 			addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.VALIDATION_TIME_SLIDING, bbbResults.getVTS());
