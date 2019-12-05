@@ -31,6 +31,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -323,69 +324,103 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		try (InputStream is = document.openStream(); PDDocument doc = PDDocument.load(is)) {
 
 			final PdfDssDict dssDictionary = PdfBoxUtils.getDSSDictionary(doc);
+			
+			List<PdfSigDict> sigDictionaries = extractSigDictionaries(doc);
 
-			List<PDSignatureField> pdSignatureFields = doc.getSignatureFields();
+			for (PdfSigDict signatureDictionary : sigDictionaries) {
+				try {
+					final int[] byteRange = signatureDictionary.getByteRange();
 
-			if (Utils.isCollectionNotEmpty(pdSignatureFields)) {
-				LOG.debug("{} signature(s) found", pdSignatureFields.size());
+					validateByteRange(byteRange);
 
-				for (PDSignatureField signatureField : pdSignatureFields) {
-					PDSignature signature = signatureField.getSignature();
-					if (signature == null) {
-						LOG.warn("Signature field with name '{}' does not contain a signature", signatureField.getPartialName());
-						continue;
+					final byte[] cms = signatureDictionary.getContents();
+					byte[] signedContent = new byte[] {};
+					if (!isContentValueEqualsByteRangeExtraction(document, byteRange, cms, signatureDictionary.getSigFieldNames())) {
+						LOG.warn("Signature {} is skipped. SIWA detected !", signatureDictionary.getSigFieldNames());
+					} else {
+						signedContent = getSignedContent(document, byteRange);
 					}
-					try {
-						PdfDict dictionary = new PdfBoxDict(signature.getCOSObject(), doc);
-						PdfSigDict signatureDictionary = new PdfSigDict(dictionary, signatureField.getPartialName());
-						final int[] byteRange = signatureDictionary.getByteRange();
 
-						validateByteRange(byteRange);
-
-						final byte[] cms = signatureDictionary.getContents();
-						byte[] signedContent = new byte[] {};
-						if (!isContentValueEqualsByteRangeExtraction(document, byteRange, cms, signature.getName())) {
-							LOG.warn("Signature '{}' is skipped. SIWA detected !", signatureField.getPartialName());
-						} else {
-							signedContent = getSignedContent(document, byteRange);
+					boolean coverAllOriginalBytes = isSignatureCoversWholeDocument(document, byteRange);
+					PdfSignatureOrDocTimestampInfo signatureInfo = null;
+					
+					final String subFilter = signatureDictionary.getSubFilter();
+					if (PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER.equals(subFilter)) {
+						
+						PdfDssDict timestampedDssDictionary = null;
+						
+						// LT or LTA
+						if (dssDictionary != null) {
+							// check is DSS dictionary already exist
+							timestampedDssDictionary = getDSSDictionaryPresentInRevision(getOriginalBytes(byteRange, signedContent));
 						}
-
-						boolean coverAllOriginalBytes = isSignatureCoversWholeDocument(document, byteRange);
-
-						PdfSignatureOrDocTimestampInfo signatureInfo = null;
-						final String subFilter = signatureDictionary.getSubFilter();
-						if (PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER.equals(subFilter)) {
-
-							PdfDssDict timestampedDssDictionary = null;
-
-							// LT or LTA
-							if (dssDictionary != null) {
-								// check is DSS dictionary already exist
-								timestampedDssDictionary = getDSSDictionaryPresentInRevision(getOriginalBytes(byteRange, signedContent));
-							}
-
-							signatureInfo = new PdfDocTimestampInfo(validationCertPool, signatureDictionary, timestampedDssDictionary, cms, signedContent,
-									coverAllOriginalBytes);
-						} else {
-							signatureInfo = new PdfSignatureInfo(validationCertPool, signatureDictionary, dssDictionary, cms, signedContent,
-									coverAllOriginalBytes);
-							
-						}
-
-						if (signatureInfo != null) {
-							signatures.add(signatureInfo);
-						}
-					} catch (Exception e) {
-						LOG.error("Unable to parse signature '" + signature.getName() + "' : ", e);
+						signatureInfo = new PdfDocTimestampInfo(validationCertPool, signatureDictionary, timestampedDssDictionary, cms, signedContent,
+								coverAllOriginalBytes);
+						
+					} else {
+						signatureInfo = new PdfSignatureInfo(validationCertPool, signatureDictionary, dssDictionary, cms, signedContent,
+								coverAllOriginalBytes);
 					}
+
+					if (signatureInfo != null) {
+						signatures.add(signatureInfo);
+					}
+					
+				} catch (Exception e) {
+					String errorMessage = "Unable to parse signature {} . Reason : {}";
+					if (LOG.isDebugEnabled()) {
+						LOG.error(errorMessage, signatureDictionary.getSigFieldNames(), e.getMessage(), e);
+					} else {
+						LOG.error(errorMessage, signatureDictionary.getSigFieldNames(), e.getMessage() );
+					}
+					
 				}
-				linkSignatures(signatures);
 			}
+			linkSignatures(signatures);
+			
 		} catch (Exception e) {
 			throw new DSSException("Cannot analyze signatures : " + e.getMessage(), e);
 		}
 
 		return signatures;
+	}
+	
+	private List<PdfSigDict> extractSigDictionaries(PDDocument doc) throws IOException {
+		Map<Long, PdfSigDict> pdfObjectDictMap = new LinkedHashMap<Long, PdfSigDict>();
+
+		List<PDSignatureField> pdSignatureFields = doc.getSignatureFields();
+		if (Utils.isCollectionNotEmpty(pdSignatureFields)) {
+			LOG.debug("{} signature(s) found", pdSignatureFields.size());
+			
+			for (PDSignatureField signatureField : pdSignatureFields) {
+				
+				String signatureFieldName = signatureField.getPartialName();
+
+				COSObject sigDictObject = signatureField.getCOSObject().getCOSObject(COSName.V);
+				if (sigDictObject == null || !(sigDictObject.getObject() instanceof COSDictionary)) {
+					LOG.warn("Signature field with name '{}' does not contain a signature", signatureFieldName);
+					continue;
+				}
+				
+				long sigDictNumber = sigDictObject.getObjectNumber();
+				PdfSigDict signature = pdfObjectDictMap.get(sigDictNumber);
+				if (signature == null) {					
+					PdfDict dictionary = new PdfBoxDict((COSDictionary)sigDictObject.getObject(), doc);
+					signature = new PdfSigDict(dictionary);
+					signature.addSigFieldName(signatureFieldName);
+					
+					pdfObjectDictMap.put(sigDictNumber, signature);
+					
+				} else {
+					signature.addSigFieldName(signatureFieldName);
+					LOG.warn("More than one field refers to the same signature dictionary: {}!", signature.getSigFieldNames());
+					
+				}
+				
+			}	
+		}
+		
+		return new ArrayList<PdfSigDict>(pdfObjectDictMap.values());
 	}
 	
 	private boolean isSignatureCoversWholeDocument(DSSDocument document, int[] byteRange) {

@@ -21,27 +21,28 @@
 package eu.europa.esig.dss.pdf;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import eu.europa.esig.dss.model.DSSException;
 
 public class PdfSigDict {
 
-	private PdfDict dictionary;
+	private final PdfDict dictionary;
 	
-	private String sigFieldName;
+	private List<String> sigFieldNames = new ArrayList<String>();
 
 	public PdfSigDict(PdfDict dictionary) {
 		this.dictionary = dictionary;
 	}
-
-	public PdfSigDict(PdfDict dictionary, String signatureName) {
-		this(dictionary);
-		this.sigFieldName = signatureName;
+	
+	public void addSigFieldName(String sigFieldName) {
+		sigFieldNames.add(sigFieldName);
 	}
 	
-	public String getSigFieldName() {
-		return sigFieldName;
+	public List<String> getSigFieldNames() {
+		return sigFieldNames;
 	}
 
 	public String getSignerName() {

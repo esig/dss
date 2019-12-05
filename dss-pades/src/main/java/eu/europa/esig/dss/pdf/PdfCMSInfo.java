@@ -127,8 +127,8 @@ public abstract class PdfCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	}
 	
 	@Override
-	public String getSigFieldName() {
-		return signatureDictionary.getSigFieldName();
+	public List<String> getSigFieldNames() {
+		return signatureDictionary.getSigFieldNames();
 	}
 
 	@Override
@@ -176,7 +176,7 @@ public abstract class PdfCMSInfo implements PdfSignatureOrDocTimestampInfo {
 		try {
 			cmsSignedData = new CMSSignedData(cms);
 		} catch (CMSException e) {
-			LOG.warn("Cannot create CMSSignedData object from byte array for signature with name [{}]", getSigFieldName());
+			LOG.warn("Cannot create CMSSignedData object from byte array for signature with name [{}]", getSigFieldNames());
 		}
 		return cmsSignedData;
 	}

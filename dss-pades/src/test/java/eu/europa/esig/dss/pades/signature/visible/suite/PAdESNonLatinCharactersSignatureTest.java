@@ -85,7 +85,7 @@ public class PAdESNonLatinCharactersSignatureTest extends AbstractPAdESTestSigna
 	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
 		super.verifyDiagnosticData(diagnosticData);
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		assertEquals("подпись1", signature.getSignatureFieldName());
+		assertEquals("подпись1", signature.getFirstFieldName());
 	}
 
 	@Override

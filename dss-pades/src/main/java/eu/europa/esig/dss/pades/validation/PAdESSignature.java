@@ -317,8 +317,8 @@ public class PAdESSignature extends CAdESSignature {
 	}
 	
 	@Override
-	public String getSignatureFieldName() {
-		return pdfSignatureInfo.getSigFieldName();
+	public List<String> getSignatureFieldNames() {
+		return pdfSignatureInfo.getSigFieldNames();
 	}
 
 	@Override
