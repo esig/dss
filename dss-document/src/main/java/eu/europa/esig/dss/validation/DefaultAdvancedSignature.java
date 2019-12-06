@@ -23,7 +23,6 @@ package eu.europa.esig.dss.validation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -1098,43 +1097,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 	
 	@Override
-	public List<String> getSignatureFieldNames() {
-		// Not applicable by default (PDF only)
-		return Collections.emptyList();
-	}
-
-	@Override
-	public String getSignerName() {
-		// Not applicable by default (PDF only)
-		return null;
-	}
-
-	@Override
-	public String getFilter() {
-		// Not applicable by default (PDF only)
-		return null;
-	}
-
-	@Override
-	public String getSubFilter() {
-		// Not applicable by default (PDF only)
-		return null;
-	}
-
-	@Override
-	public String getContactInfo() {
-		// Not applicable by default (PDF only)
-		return null;
-	}
-
-	@Override
-	public String getReason() {
-		// Not applicable by default (PDF only)
-		return null;
-	}
-
-	@Override
-	public int[] getSignatureByteRange() {
+	public PdfSignatureDictionary getPdfSignatureDictionary() {
 		// Not applicable by default (PDF only)
 		return null;
 	}

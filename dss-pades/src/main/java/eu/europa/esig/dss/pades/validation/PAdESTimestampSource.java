@@ -33,10 +33,10 @@ import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.pdf.PdfDocTimestampInfo;
+import eu.europa.esig.dss.pdf.PdfDocTimestampRevision;
 import eu.europa.esig.dss.pdf.PdfDssDict;
-import eu.europa.esig.dss.pdf.PdfSignatureInfo;
-import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
+import eu.europa.esig.dss.pdf.PdfSignatureRevision;
+import eu.europa.esig.dss.pdf.PdfRevision;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.utils.Utils;
@@ -46,11 +46,11 @@ import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 @SuppressWarnings("serial")
 public class PAdESTimestampSource extends CAdESTimestampSource {
 	
-	private transient final PdfSignatureInfo pdfSignatureInfo;
+	private transient final PdfSignatureRevision pdfSignatureRevision;
 	
 	public PAdESTimestampSource(final PAdESSignature signature, final CertificatePool certificatePool) {
 		super(signature, certificatePool);
-		this.pdfSignatureInfo = signature.getPdfSignatureInfo();
+		this.pdfSignatureRevision = signature.getPdfSignatureRevision();
 	}
 	
 	@Override
@@ -66,7 +66,7 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 
 	@Override
 	protected PAdESTimestampDataBuilder getTimestampDataBuilder() {
-		PAdESTimestampDataBuilder padesTimestampDataBuilder = new PAdESTimestampDataBuilder(pdfSignatureInfo, signerInformation, detachedDocuments);
+		PAdESTimestampDataBuilder padesTimestampDataBuilder = new PAdESTimestampDataBuilder(pdfSignatureRevision, signerInformation, detachedDocuments);
 		padesTimestampDataBuilder.setSignatureTimestamps(getSignatureTimestamps());
 		return padesTimestampDataBuilder;
 	}
@@ -81,11 +81,11 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 		// contains KeyInfo certificates embedded to the timestamp's content
 		final List<CertificateToken> cmsContentCertificates = new ArrayList<CertificateToken>();
 		
-		final List<PdfSignatureOrDocTimestampInfo> outerSignatures = pdfSignatureInfo.getOuterSignatures();
-		for (final PdfSignatureOrDocTimestampInfo outerSignature : outerSignatures) {
+		final List<PdfRevision> outerSignatures = pdfSignatureRevision.getOuterSignatures();
+		for (final PdfRevision outerSignature : outerSignatures) {
 			
-			if (outerSignature.isTimestamp() && (outerSignature instanceof PdfDocTimestampInfo)) {
-				final PdfDocTimestampInfo timestampInfo = (PdfDocTimestampInfo) outerSignature;
+			if (outerSignature.isTimestampRevision() && (outerSignature instanceof PdfDocTimestampRevision)) {
+				final PdfDocTimestampRevision timestampInfo = (PdfDocTimestampRevision) outerSignature;
 				// do not return this timestamp if it's an archive timestamp
 				// Timestamp needs to be cloned in order to avoid shared instances among sources
 				final TimestampToken timestampToken = new TimestampToken(timestampInfo.getTimestampToken());
@@ -159,7 +159,7 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 	 * 
 	 * @param references
 	 */
-	private void addReferencesFromRevocationData(List<TimestampedReference> references, final PdfDocTimestampInfo timestampInfo) {
+	private void addReferencesFromRevocationData(List<TimestampedReference> references, final PdfDocTimestampRevision timestampInfo) {
 		SignerInformation signerInformation = timestampInfo.getTimestampToken().getSignerInformation();
 		PAdESCRLSource padesCRLSource = new PAdESCRLSource(timestampInfo.getDssDictionary(), null, signerInformation.getSignedAttributes());
 		for (CRLBinary crlIdentifier : padesCRLSource.getCRLBinaryList()) {

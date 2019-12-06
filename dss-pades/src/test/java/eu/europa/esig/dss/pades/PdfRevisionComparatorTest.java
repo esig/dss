@@ -37,10 +37,11 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pdf.PdfDssDict;
-import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
-import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfoComparator;
+import eu.europa.esig.dss.pdf.PdfRevision;
+import eu.europa.esig.dss.pdf.PdfRevisionComparator;
+import eu.europa.esig.dss.validation.PdfSignatureDictionary;
 
-public class PdfSignatureOrDocTimestampInfoComparatorTest {
+public class PdfRevisionComparatorTest {
 
 	private MockPdfSignature mock0;
 	private MockPdfSignature strange;
@@ -69,13 +70,13 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 
 	@Test
 	public void test1() {
-		List<PdfSignatureOrDocTimestampInfo> listToSort = new ArrayList<PdfSignatureOrDocTimestampInfo>();
+		List<PdfRevision> listToSort = new ArrayList<PdfRevision>();
 
 		listToSort.add(mock0);
 		listToSort.add(mock1);
 		listToSort.add(mock2);
 
-		Collections.sort(listToSort, new PdfSignatureOrDocTimestampInfoComparator());
+		Collections.sort(listToSort, new PdfRevisionComparator());
 
 		assertEquals(mock0, listToSort.get(0));
 		assertEquals(mock1, listToSort.get(1));
@@ -85,13 +86,13 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 
 	@Test
 	public void test2() {
-		List<PdfSignatureOrDocTimestampInfo> listToSort = new ArrayList<PdfSignatureOrDocTimestampInfo>();
+		List<PdfRevision> listToSort = new ArrayList<PdfRevision>();
 
 		listToSort.add(mock2);
 		listToSort.add(mock1);
 		listToSort.add(mock0);
 
-		Collections.sort(listToSort, new PdfSignatureOrDocTimestampInfoComparator());
+		Collections.sort(listToSort, new PdfRevisionComparator());
 
 		assertEquals(mock0, listToSort.get(0));
 		assertEquals(mock1, listToSort.get(1));
@@ -100,13 +101,13 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 
 	@Test
 	public void test3() {
-		List<PdfSignatureOrDocTimestampInfo> listToSort = new ArrayList<PdfSignatureOrDocTimestampInfo>();
+		List<PdfRevision> listToSort = new ArrayList<PdfRevision>();
 
 		listToSort.add(mock1);
 		listToSort.add(mock2);
 		listToSort.add(mock0);
 
-		Collections.sort(listToSort, new PdfSignatureOrDocTimestampInfoComparator());
+		Collections.sort(listToSort, new PdfRevisionComparator());
 
 		assertEquals(mock0, listToSort.get(0));
 		assertEquals(mock1, listToSort.get(1));
@@ -115,12 +116,12 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 
 	@Test
 	public void test4() {
-		List<PdfSignatureOrDocTimestampInfo> listToSort = new ArrayList<PdfSignatureOrDocTimestampInfo>();
+		List<PdfRevision> listToSort = new ArrayList<PdfRevision>();
 
 		listToSort.add(mock0bis);
 		listToSort.add(mock0);
 
-		Collections.sort(listToSort, new PdfSignatureOrDocTimestampInfoComparator());
+		Collections.sort(listToSort, new PdfRevisionComparator());
 
 		assertEquals(mock0, listToSort.get(0));
 		assertEquals(mock0bis, listToSort.get(1));
@@ -129,31 +130,31 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 	@Test
 	public void testStrange() {
 		Exception exception = assertThrows(DSSException.class, () -> {
-			List<PdfSignatureOrDocTimestampInfo> listToSort = new ArrayList<PdfSignatureOrDocTimestampInfo>();
+			List<PdfRevision> listToSort = new ArrayList<PdfRevision>();
 
 			listToSort.add(strange);
 			listToSort.add(mock0);
 
-			Collections.sort(listToSort, new PdfSignatureOrDocTimestampInfoComparator());
+			Collections.sort(listToSort, new PdfRevisionComparator());
 		});
 		assertEquals("Strange byte ranges ([0, 91747, 124517, 723] / [40000, 120000, 140000, 500])", exception.getMessage());
 	}
 
 	@Test
 	public void testDSS1690() {
-		PdfSignatureOrDocTimestampInfo sig = new MockPdfSignature(new int[] { 0, 6418, 17102, 332 });
-		PdfSignatureOrDocTimestampInfo archivalTST1 = new MockPdfSignature(new int[] { 0, 185123, 191125, 343 });
-		PdfSignatureOrDocTimestampInfo archivalTST2 = new MockPdfSignature(new int[] { 0, 200002, 237892, 637 });
+		PdfRevision sig = new MockPdfSignature(new int[] { 0, 6418, 17102, 332 });
+		PdfRevision archivalTST1 = new MockPdfSignature(new int[] { 0, 185123, 191125, 343 });
+		PdfRevision archivalTST2 = new MockPdfSignature(new int[] { 0, 200002, 237892, 637 });
 
-		List<PdfSignatureOrDocTimestampInfo> listToSort = Arrays.asList(archivalTST1, sig, archivalTST2);
-		Collections.sort(listToSort, new PdfSignatureOrDocTimestampInfoComparator());
+		List<PdfRevision> listToSort = Arrays.asList(archivalTST1, sig, archivalTST2);
+		Collections.sort(listToSort, new PdfRevisionComparator());
 
 		assertEquals(sig, listToSort.get(0));
 		assertEquals(archivalTST1, listToSort.get(1));
 		assertEquals(archivalTST2, listToSort.get(2));
 	}
 
-	private class MockPdfSignature implements PdfSignatureOrDocTimestampInfo {
+	private class MockPdfSignature implements PdfRevision {
 
 		private int[] byteRange;
 		private Date signingDate;
@@ -173,32 +174,12 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 		}
 
 		@Override
-		public int[] getSignatureByteRange() {
-			return byteRange;
-		}
-
-		@Override
 		public void checkIntegrity() {
 		}
 
 		@Override
-		public String getLocation() {
-			return null;
-		}
-
-		@Override
-		public String getContactInfo() {
-			return null;
-		}
-
-		@Override
-		public String getReason() {
-			return null;
-		}
-
-		@Override
-		public String getSubFilter() {
-			return null;
+		public int[] getSignatureByteRange() {
+			return byteRange;
 		}
 
 		@Override
@@ -222,16 +203,16 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 		}
 
 		@Override
-		public void addOuterSignature(PdfSignatureOrDocTimestampInfo signatureInfo) {
+		public void addOuterSignature(PdfRevision signatureInfo) {
 		}
 
 		@Override
-		public List<PdfSignatureOrDocTimestampInfo> getOuterSignatures() {
+		public List<PdfRevision> getOuterSignatures() {
 			return null;
 		}
 
 		@Override
-		public boolean isTimestamp() {
+		public boolean isTimestampRevision() {
 			return false;
 		}
 
@@ -241,22 +222,13 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 		}
 
 		@Override
-		public String getFilter() {
-			return null;
-		}
-
-		@Override
-		public boolean isCoverAllOriginalBytes() {
+		public boolean doesSignatureCoverAllOriginalBytes() {
 			return false;
 		}
 
 		@Override
-		public String getSignerName() {
-			return null;
-		}
-		
-		@Override
-		public List<String> getSigFieldNames() {
+		public PdfSignatureDictionary getPdfSigDictInfo() {
+			// TODO Auto-generated method stub
 			return null;
 		}
 

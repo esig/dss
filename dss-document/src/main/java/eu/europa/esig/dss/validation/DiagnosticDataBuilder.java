@@ -93,7 +93,6 @@ import eu.europa.esig.dss.enumerations.OrphanTokenType;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
-import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -651,7 +650,7 @@ public class DiagnosticDataBuilder {
 		xmlSignature.setDigestMatchers(getXmlDigestMatchers(signature));
 
 		xmlSignature.setPolicy(getXmlPolicy(signature));
-		xmlSignature.setPDFSignatureDictionary(getXmlPDFSignatureDictionary(signature));
+		xmlSignature.setPDFSignatureDictionary(getXmlPDFSignatureDictionary(signature.getPdfSignatureDictionary()));
 		xmlSignature.setSignatureDigestReference(getXmlSignatureDigestReference(signature));
 		
 		xmlSignature.setSignerDocumentRepresentations(getXmlSignerDocumentRepresentations(signature));
@@ -665,18 +664,18 @@ public class DiagnosticDataBuilder {
 		return xmlSignature;
 	}
 
-	private XmlPDFSignatureDictionary getXmlPDFSignatureDictionary(AdvancedSignature signature) {
-		SignatureForm signatureForm = signature.getSignatureForm();
-		if (SignatureForm.PAdES == signatureForm || SignatureForm.PKCS7 == signatureForm) {
+	private XmlPDFSignatureDictionary getXmlPDFSignatureDictionary(PdfSignatureDictionary pdfSigDict) {
+		if (pdfSigDict != null) {
 			XmlPDFSignatureDictionary pdfSignatureDictionary = new XmlPDFSignatureDictionary();
-			pdfSignatureDictionary.getSignatureFieldName().addAll(signature.getSignatureFieldNames());
-			pdfSignatureDictionary.setSignerName(emptyToNull(signature.getSignerName()));
-			pdfSignatureDictionary.setFilter(emptyToNull(signature.getFilter()));
-			pdfSignatureDictionary.setSubFilter(emptyToNull(signature.getSubFilter()));
-			pdfSignatureDictionary.setContactInfo(emptyToNull(signature.getContactInfo()));
-			pdfSignatureDictionary.setReason(emptyToNull(signature.getReason()));
+			pdfSignatureDictionary.getSignatureFieldName().addAll(pdfSigDict.getSigFieldNames());
+			pdfSignatureDictionary.setSignerName(emptyToNull(pdfSigDict.getSignerName()));
+			pdfSignatureDictionary.setType(emptyToNull(pdfSigDict.getType()));
+			pdfSignatureDictionary.setFilter(emptyToNull(pdfSigDict.getFilter()));
+			pdfSignatureDictionary.setSubFilter(emptyToNull(pdfSigDict.getSubFilter()));
+			pdfSignatureDictionary.setContactInfo(emptyToNull(pdfSigDict.getContactInfo()));
+			pdfSignatureDictionary.setReason(emptyToNull(pdfSigDict.getReason()));
 			pdfSignatureDictionary.getSignatureByteRange().addAll(
-					intArrayToBigIntegerList(signature.getSignatureByteRange()));
+					intArrayToBigIntegerList(pdfSigDict.getSignatureByteRange()));
 			return pdfSignatureDictionary;
 		}
 		return null;
@@ -1409,9 +1408,11 @@ public class DiagnosticDataBuilder {
 		xmlTimestampToken.setTimestampFilename(timestampToken.getFileName());
 		xmlTimestampToken.getDigestMatchers().addAll(getXmlDigestMatchers(timestampToken));
 		xmlTimestampToken.setBasicSignature(getXmlBasicSignature(timestampToken));
+		xmlTimestampToken.setPDFSignatureDictionary(getXmlPDFSignatureDictionary(timestampToken.getPdfSignatureDictionary())); // used only for PAdES RFC 3161 timestamps
 
 		xmlTimestampToken.setSigningCertificate(getXmlSigningCertificate(timestampToken.getPublicKeyOfTheSigner()));
 		xmlTimestampToken.setCertificateChain(getXmlForCertificateChain(timestampToken.getPublicKeyOfTheSigner()));
+		
 		xmlTimestampToken.setTimestampedObjects(getXmlTimestampedObjects(timestampToken));
 
 		if (includeRawTimestampTokens) {

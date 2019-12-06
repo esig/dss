@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -36,8 +37,8 @@ import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.validation.scope.PAdESSignatureScopeFinder;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
-import eu.europa.esig.dss.pdf.PdfDocTimestampInfo;
-import eu.europa.esig.dss.pdf.PdfSignatureInfo;
+import eu.europa.esig.dss.pdf.PdfDocTimestampRevision;
+import eu.europa.esig.dss.pdf.PdfSignatureRevision;
 import eu.europa.esig.dss.pdf.PdfSignatureValidationCallback;
 import eu.europa.esig.dss.pdf.PdfTimestampValidationCallback;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
@@ -100,10 +101,10 @@ public class PDFDocumentValidator extends SignedDocumentValidator implements Tim
 		pdfSignatureService.validateSignatures(validationCertPool, document, new PdfSignatureValidationCallback() {
 
 			@Override
-			public void validate(final PdfSignatureInfo pdfSignatureInfo) {
+			public void validate(final PdfSignatureRevision pdfSignatureRevision) {
 				try {
-					if (pdfSignatureInfo.getCades() != null) {
-						final PAdESSignature padesSignature = new PAdESSignature(document, pdfSignatureInfo, validationCertPool);
+					if (pdfSignatureRevision.getCades() != null) {
+						final PAdESSignature padesSignature = new PAdESSignature(document, pdfSignatureRevision, validationCertPool);
 						padesSignature.setSignatureFilename(document.getName());
 						padesSignature.setProvidedSigningCertificateToken(providedSigningCertificateToken);
 						signatures.add(padesSignature);
@@ -127,18 +128,19 @@ public class PDFDocumentValidator extends SignedDocumentValidator implements Tim
 		pdfSignatureService.validateSignatures(validationCertPool, document, new PdfTimestampValidationCallback() {
 			
 			@Override
-			public void validate(PdfDocTimestampInfo docTimestampInfo) {
+			public void validate(PdfDocTimestampRevision pdfDocTimestampRevision) {
 				
 				try {
-					if (docTimestampInfo.getCMSSignedData() != null) {
-						TimestampToken timestampToken = new TimestampToken(
-								docTimestampInfo.getCMSSignedData(), TimestampType.CONTENT_TIMESTAMP, validationCertPool);
+					if (pdfDocTimestampRevision.getCMSSignedData() != null) {
+						TimestampToken timestampToken = new TimestampToken(pdfDocTimestampRevision.getCMSSignedData(), 
+								TimestampType.CONTENT_TIMESTAMP, validationCertPool, TimestampLocation.DOC_TIMESTAMP);
 						timestampToken.setFileName(document.getName());
-						timestampToken.matchData(new InMemoryDocument(docTimestampInfo.getSignedDocumentBytes()));
+						timestampToken.setPdfSignatureDictionary(pdfDocTimestampRevision.getPdfSigDictInfo());
+						timestampToken.matchData(new InMemoryDocument(pdfDocTimestampRevision.getSignedDocumentBytes()));
 						
 						PAdESSignatureScopeFinder signatureScopeFinder = new PAdESSignatureScopeFinder();
 						signatureScopeFinder.setDefaultDigestAlgorithm(getDefaultDigestAlgorithm());
-						SignatureScope signatureScope = signatureScopeFinder.findSignatureScope(docTimestampInfo);
+						SignatureScope signatureScope = signatureScopeFinder.findSignatureScope(pdfDocTimestampRevision);
 						
 						timestamps.put(timestampToken, Arrays.asList(signatureScope));
 						

@@ -49,9 +49,10 @@ import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
-import eu.europa.esig.dss.pdf.PdfSignatureInfo;
+import eu.europa.esig.dss.pdf.PdfSignatureRevision;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.validationreport.jaxb.SAContactInfoType;
 import eu.europa.esig.validationreport.jaxb.SADSSType;
@@ -76,20 +77,22 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 
 		PAdESSignature padesSig = (PAdESSignature) signatures.get(0);
 
-		PdfSignatureInfo pdfSignatureInfo = padesSig.getPdfSignatureInfo();
-		assertEquals(getSignatureParameters().getSignerName(), pdfSignatureInfo.getSignerName());
-		assertEquals(getSignatureParameters().getSignatureFilter(), pdfSignatureInfo.getFilter());
-		assertEquals(getSignatureParameters().getSignatureSubFilter(), pdfSignatureInfo.getSubFilter());
-		assertEquals(getSignatureParameters().getReason(), pdfSignatureInfo.getReason());
-		assertEquals(getSignatureParameters().getContactInfo(), pdfSignatureInfo.getContactInfo());
-		assertEquals(getSignatureParameters().getLocation(), pdfSignatureInfo.getLocation());
+		PdfSignatureDictionary pdfSigDict = padesSig.getPdfSignatureDictionary();
+		assertEquals(getSignatureParameters().getSignerName(), pdfSigDict.getSignerName());
+		assertEquals(getSignatureParameters().getSignatureFilter(), pdfSigDict.getFilter());
+		assertEquals(getSignatureParameters().getSignatureSubFilter(), pdfSigDict.getSubFilter());
+		assertEquals(getSignatureParameters().getReason(), pdfSigDict.getReason());
+		assertEquals(getSignatureParameters().getContactInfo(), pdfSigDict.getContactInfo());
+		assertEquals(getSignatureParameters().getLocation(), pdfSigDict.getLocation());
+		
+		PdfSignatureRevision pdfSignatureRevision = padesSig.getPdfSignatureRevision();
 
 		if (padesSig.isDataForSignatureLevelPresent(SignatureLevel.PAdES_BASELINE_LT)) {
-			assertNotNull(pdfSignatureInfo.getDssDictionary());
+			assertNotNull(pdfSignatureRevision.getDssDictionary());
 		}
 
-		assertNotNull(pdfSignatureInfo.getSigningDate());
-		assertNull(pdfSignatureInfo.getCades().getSigningTime());
+		assertNotNull(pdfSignatureRevision.getSigningDate());
+		assertNull(pdfSignatureRevision.getCades().getSigningTime());
 
 		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
 		List<String> originalSignatureFields = service.getAvailableSignatureFields(getDocumentToSign());

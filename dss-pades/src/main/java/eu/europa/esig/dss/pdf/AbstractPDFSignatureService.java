@@ -145,26 +145,26 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	@Override
 	public void validateSignatures(CertificatePool validationCertPool, DSSDocument document,
 			SignatureValidationCallback callback) {
-		List<PdfSignatureOrDocTimestampInfo> signaturesFound = getSignatures(validationCertPool, document);
-		for (PdfSignatureOrDocTimestampInfo pdfSignatureOrDocTimestampInfo : signaturesFound) {
-			callback.validate(pdfSignatureOrDocTimestampInfo);
+		List<PdfRevision> signaturesFound = getSignatures(validationCertPool, document);
+		for (PdfRevision pdfRevision : signaturesFound) {
+			callback.validate(pdfRevision);
 		}
 	}
 
-	protected abstract List<PdfSignatureOrDocTimestampInfo> getSignatures(CertificatePool validationCertPool, DSSDocument document);
+	protected abstract List<PdfRevision> getSignatures(CertificatePool validationCertPool, DSSDocument document);
 
 	/**
 	 * This method links previous signatures to the new one. This is useful to get
 	 * revision number and to know if a TSP is over the DSS dictionary
 	 */
-	protected void linkSignatures(List<PdfSignatureOrDocTimestampInfo> signatures) {
+	protected void linkSignatures(List<PdfRevision> signatures) {
 
-		Collections.sort(signatures, new PdfSignatureOrDocTimestampInfoComparator());
+		Collections.sort(signatures, new PdfRevisionComparator());
 
-		List<PdfSignatureOrDocTimestampInfo> previousList = new ArrayList<PdfSignatureOrDocTimestampInfo>();
-		for (PdfSignatureOrDocTimestampInfo sig : signatures) {
+		List<PdfRevision> previousList = new ArrayList<PdfRevision>();
+		for (PdfRevision sig : signatures) {
 			if (Utils.isCollectionNotEmpty(previousList)) {
-				for (PdfSignatureOrDocTimestampInfo previous : previousList) {
+				for (PdfRevision previous : previousList) {
 					previous.addOuterSignature(sig);
 				}
 			}
@@ -271,6 +271,32 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		if (d <= 0) {
 			throw new DSSException("The second hash part doesn't cover anything");
 		}
+	}
+	
+	/**
+	 * Checks if the given signature dictionary represents a DocTimeStamp
+	 * 
+	 * @param pdfSigDict {@link PdfSigDictWrapper} to check
+	 * @return TRUE if the signature dictionary represents a DocTimeStamp, FALSE otherwise
+	 */
+	protected boolean isDocTimestamp(PdfSigDictWrapper pdfSigDict) {
+		String type = pdfSigDict.getType();
+		String subFilter = pdfSigDict.getSubFilter();
+		/* Support historical TS 102 778-4 and new EN 319 142-1 */
+		return (type == null || PAdESConstants.TIMESTAMP_TYPE.equals(type)) && PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER.equals(subFilter);
+	}
+
+	/**
+	 * Checks if the given signature dictionary represents a Signature
+	 * 
+	 * @param pdfSigDict {@link PdfSigDictWrapper} to check
+	 * @return TRUE if the signature dictionary represents a Signature, FALSE otherwise
+	 */
+	protected boolean isSignature(PdfSigDictWrapper pdfSigDict) {
+		String type = pdfSigDict.getType();
+		String subFilter = pdfSigDict.getSubFilter();
+		/* Support historical TS 102 778-4 and new EN 319 142-1 */
+		return (type == null || PAdESConstants.SIGNATURE_TYPE.equals(type)) && !PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER.equals(subFilter);
 	}
 
 	/**

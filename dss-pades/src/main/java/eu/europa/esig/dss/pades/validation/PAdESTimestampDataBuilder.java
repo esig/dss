@@ -29,20 +29,20 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.cades.validation.CAdESTimestampDataBuilder;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.pdf.PdfDocTimestampInfo;
-import eu.europa.esig.dss.pdf.PdfSignatureInfo;
-import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
+import eu.europa.esig.dss.pdf.PdfDocTimestampRevision;
+import eu.europa.esig.dss.pdf.PdfSignatureRevision;
+import eu.europa.esig.dss.pdf.PdfRevision;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 public class PAdESTimestampDataBuilder extends CAdESTimestampDataBuilder {
 	
-	private final PdfSignatureInfo pdfSignatureInfo;
+	private final PdfSignatureRevision pdfSignatureRevision;
 	
 	private List<TimestampToken> signatureTimestamps = new ArrayList<TimestampToken>();
 
-	public PAdESTimestampDataBuilder(PdfSignatureInfo pdfSignatureInfo, final SignerInformation signerInformation, List<DSSDocument> detacheDocuments) {
+	public PAdESTimestampDataBuilder(PdfSignatureRevision pdfSignatureRevision, final SignerInformation signerInformation, List<DSSDocument> detacheDocuments) {
 		super(signerInformation, detacheDocuments);
-		this.pdfSignatureInfo = pdfSignatureInfo;
+		this.pdfSignatureRevision = pdfSignatureRevision;
 	}
 	
 	public void setSignatureTimestamps(List<TimestampToken> signatureTimestamps) {
@@ -51,9 +51,9 @@ public class PAdESTimestampDataBuilder extends CAdESTimestampDataBuilder {
 
 	@Override
 	public DSSDocument getSignatureTimestampData(final TimestampToken timestampToken) {
-		for (final PdfSignatureOrDocTimestampInfo signatureInfo : pdfSignatureInfo.getOuterSignatures()) {
-			if (signatureInfo instanceof PdfDocTimestampInfo) {
-				PdfDocTimestampInfo pdfTimestampInfo = (PdfDocTimestampInfo) signatureInfo;
+		for (final PdfRevision signatureInfo : pdfSignatureRevision.getOuterSignatures()) {
+			if (signatureInfo instanceof PdfDocTimestampRevision) {
+				PdfDocTimestampRevision pdfTimestampInfo = (PdfDocTimestampRevision) signatureInfo;
 				if (pdfTimestampInfo.getTimestampToken().equals(timestampToken)) {
 					final byte[] signedDocumentBytes = pdfTimestampInfo.getSignedDocumentBytes();
 					return new InMemoryDocument(signedDocumentBytes);
@@ -80,9 +80,9 @@ public class PAdESTimestampDataBuilder extends CAdESTimestampDataBuilder {
 
 	@Override
 	public DSSDocument getArchiveTimestampData(TimestampToken timestampToken) {
-		for (final PdfSignatureOrDocTimestampInfo signatureInfo : pdfSignatureInfo.getOuterSignatures()) {
-			if (signatureInfo instanceof PdfDocTimestampInfo) {
-				PdfDocTimestampInfo pdfTimestampInfo = (PdfDocTimestampInfo) signatureInfo;
+		for (final PdfRevision signatureInfo : pdfSignatureRevision.getOuterSignatures()) {
+			if (signatureInfo instanceof PdfDocTimestampRevision) {
+				PdfDocTimestampRevision pdfTimestampInfo = (PdfDocTimestampRevision) signatureInfo;
 				if (pdfTimestampInfo.getTimestampToken().equals(timestampToken)) {
 					final byte[] signedDocumentBytes = pdfTimestampInfo.getSignedDocumentBytes();
 					return new InMemoryDocument(signedDocumentBytes);

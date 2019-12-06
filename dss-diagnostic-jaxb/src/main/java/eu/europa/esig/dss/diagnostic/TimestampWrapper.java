@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.diagnostic;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,6 +30,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanToken;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
@@ -210,6 +212,90 @@ public class TimestampWrapper extends AbstractTokenProxy {
 
 	public XmlDigestAlgoAndValue getDigestAlgoAndValue() {
 		return timestamp.getDigestAlgoAndValue();
+	}
+	
+	/* -------- PAdES RFC3161 Specific parameters --------- */
+	
+	/**
+	 * Returns the first signature field name
+	 * 
+	 * @return {@link String} field name
+	 */
+	public String getFirstFieldName() {
+		XmlPDFSignatureDictionary pdfSignatureDictionary = timestamp.getPDFSignatureDictionary();
+		if (pdfSignatureDictionary != null) {
+			return pdfSignatureDictionary.getSignatureFieldName().get(0);
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns a list of signature field names, where the signature is referenced from
+	 * 
+	 * @return a list of {@link String} signature field names
+	 */
+	public List<String> getSignatureFieldNames() {
+		XmlPDFSignatureDictionary pdfSignatureDictionary = timestamp.getPDFSignatureDictionary();
+		if (pdfSignatureDictionary != null) {
+			return pdfSignatureDictionary.getSignatureFieldName();
+		}
+		return null;
+	}
+
+	public String getSignerName() {
+		XmlPDFSignatureDictionary pdfSignatureDictionary = timestamp.getPDFSignatureDictionary();
+		if (pdfSignatureDictionary != null) {
+			return pdfSignatureDictionary.getSignerName();
+		}
+		return null;
+	}
+
+	public String getSignatureDictionaryType() {
+		XmlPDFSignatureDictionary pdfSignatureDictionary = timestamp.getPDFSignatureDictionary();
+		if (pdfSignatureDictionary != null) {
+			return pdfSignatureDictionary.getType();
+		}
+		return null;
+	}
+
+	public String getFilter() {
+		XmlPDFSignatureDictionary pdfSignatureDictionary = timestamp.getPDFSignatureDictionary();
+		if (pdfSignatureDictionary != null) {
+			return pdfSignatureDictionary.getFilter();
+		}
+		return null;
+	}
+
+	public String getSubFilter() {
+		XmlPDFSignatureDictionary pdfSignatureDictionary = timestamp.getPDFSignatureDictionary();
+		if (pdfSignatureDictionary != null) {
+			return pdfSignatureDictionary.getSubFilter();
+		}
+		return null;
+	}
+
+	public String getContactInfo() {
+		XmlPDFSignatureDictionary pdfSignatureDictionary = timestamp.getPDFSignatureDictionary();
+		if (pdfSignatureDictionary != null) {
+			return pdfSignatureDictionary.getContactInfo();
+		}
+		return null;
+	}
+
+	public String getReason() {
+		XmlPDFSignatureDictionary pdfSignatureDictionary = timestamp.getPDFSignatureDictionary();
+		if (pdfSignatureDictionary != null) {
+			return pdfSignatureDictionary.getReason();
+		}
+		return null;
+	}
+	
+	public List<BigInteger> getSignatureByteRange() {
+		XmlPDFSignatureDictionary pdfSignatureDictionary = timestamp.getPDFSignatureDictionary();
+		if (pdfSignatureDictionary != null) {
+			return pdfSignatureDictionary.getSignatureByteRange();
+		}
+		return null;
 	}
 
 }

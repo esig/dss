@@ -31,8 +31,8 @@ public interface SignatureValidationCallback {
     /**
      * Validate the signature
      * 
-     * @param pdfSignatureOrDocTimestampInfo
+     * @param pdfRevision
      */
-   void validate(final PdfSignatureOrDocTimestampInfo pdfSignatureOrDocTimestampInfo);
+   void validate(final PdfRevision pdfRevision);
 
 }

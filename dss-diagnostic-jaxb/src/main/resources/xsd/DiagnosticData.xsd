@@ -229,6 +229,7 @@
 		<xs:sequence>
 			<xs:element name="SignatureFieldName" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="SignerName" type="xs:string" minOccurs="0" />
+			<xs:element name="Type" type="xs:string" minOccurs="0" />
 			<xs:element name="Filter" type="xs:string" minOccurs="0" />
 			<xs:element name="SubFilter" type="xs:string" minOccurs="0" />
 			<xs:element name="ContactInfo" type="xs:string" minOccurs="0" />
@@ -654,6 +655,7 @@
 					<xs:element name="BasicSignature" type="BasicSignature" />
 					<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
 					<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
+					<xs:element name="PDFSignatureDictionary" type="PDFSignatureDictionary" minOccurs="0" />
 		
 					<xs:element name="TimestampedObjects" type="TimestampedObjects" minOccurs="0" />
 		

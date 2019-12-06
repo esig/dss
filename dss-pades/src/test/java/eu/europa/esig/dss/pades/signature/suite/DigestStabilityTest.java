@@ -76,10 +76,7 @@ public class DigestStabilityTest extends PKIFactoryAccess {
 	@Test
 	public void differentDocumentGetDifferentDigest() throws Exception {
 		DSSDocument toBeSigned1 = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"), "sample.pdf", MimeType.PDF);
-		DSSDocument toBeSigned2 = new InMemoryDocument(
-				getClass().getResourceAsStream("/validation/pades-5-signatures-and-1-document-timestamp.pdf"),
-				"pades-5-signatures-and-1-document-timestamp.pdf",
-				MimeType.PDF);
+		DSSDocument toBeSigned2 = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"), "doc.pdf", MimeType.PDF);
 
 		Date signingDate = new Date();
 

@@ -34,12 +34,13 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.PdfSignatureDictionary;
 
-public abstract class PdfCMSInfo implements PdfSignatureOrDocTimestampInfo {
+public abstract class PdfCMSRevision implements PdfRevision {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PdfCMSInfo.class);
+	private static final Logger LOG = LoggerFactory.getLogger(PdfCMSRevision.class);
 	
-	private final PdfSigDict signatureDictionary;
+	private final PdfSignatureDictionary signatureDictionary;
 	private final PdfDssDict dssDictionary;
 
 	private final byte[] cms;
@@ -53,7 +54,7 @@ public abstract class PdfCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	private boolean verified;
 	private String uniqueId;
 
-	private List<PdfSignatureOrDocTimestampInfo> outerSignatures = new ArrayList<PdfSignatureOrDocTimestampInfo>();
+	private List<PdfRevision> outerSignatures = new ArrayList<PdfRevision>();
 
 	/**
 	 *
@@ -68,7 +69,7 @@ public abstract class PdfCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	 * @param coverAllOriginalBytes
 	 *                              true if the signature covers all original bytes
 	 */
-	protected PdfCMSInfo(PdfSigDict signatureDictionary, PdfDssDict dssDictionary, byte[] cms, byte[] signedContent, boolean coverAllOriginalBytes) {
+	protected PdfCMSRevision(PdfSignatureDictionary signatureDictionary, PdfDssDict dssDictionary, byte[] cms, byte[] signedContent, boolean coverAllOriginalBytes) {
 		this.cms = cms;
 		this.signatureDictionary = signatureDictionary;
 		this.dssDictionary = dssDictionary;
@@ -117,58 +118,28 @@ public abstract class PdfCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	}
 
 	@Override
-	public void addOuterSignature(PdfSignatureOrDocTimestampInfo signatureInfo) {
+	public void addOuterSignature(PdfRevision signatureInfo) {
 		outerSignatures.add(signatureInfo);
 	}
 
 	@Override
-	public List<PdfSignatureOrDocTimestampInfo> getOuterSignatures() {
+	public List<PdfRevision> getOuterSignatures() {
 		return Collections.unmodifiableList(outerSignatures);
 	}
 	
 	@Override
-	public List<String> getSigFieldNames() {
-		return signatureDictionary.getSigFieldNames();
+	public PdfSignatureDictionary getPdfSigDictInfo() {
+		return signatureDictionary;
 	}
-
+	
 	@Override
-	public String getSignerName() {
-		return signatureDictionary.getSignerName();
-	}
-
-	@Override
-	public String getContactInfo() {
-		return signatureDictionary.getContactInfo();
-	}
-
-	@Override
-	public String getReason() {
-		return signatureDictionary.getReason();
-	}
-
-	@Override
-	public String getLocation() {
-		return signatureDictionary.getLocation();
+	public int[] getSignatureByteRange() {
+		return signatureDictionary.getSignatureByteRange();
 	}
 
 	@Override
 	public Date getSigningDate() {
 		return signatureDictionary.getSigningDate();
-	}
-
-	@Override
-	public String getFilter() {
-		return signatureDictionary.getFilter();
-	}
-
-	@Override
-	public String getSubFilter() {
-		return signatureDictionary.getSubFilter();
-	}
-
-	@Override
-	public int[] getSignatureByteRange() {
-		return signatureDictionary.getByteRange();
 	}
 	
 	public CMSSignedData getCMSSignedData() {
@@ -176,13 +147,13 @@ public abstract class PdfCMSInfo implements PdfSignatureOrDocTimestampInfo {
 		try {
 			cmsSignedData = new CMSSignedData(cms);
 		} catch (CMSException e) {
-			LOG.warn("Cannot create CMSSignedData object from byte array for signature with name [{}]", getSigFieldNames());
+			LOG.warn("Cannot create CMSSignedData object from byte array for signature with name [{}]", signatureDictionary.getSigFieldNames());
 		}
 		return cmsSignedData;
 	}
 
 	@Override
-	public boolean isCoverAllOriginalBytes() {
+	public boolean doesSignatureCoverAllOriginalBytes() {
 		return coverAllOriginalBytes;
 	}
 

@@ -27,13 +27,13 @@ package eu.europa.esig.dss.pdf;
 public abstract class PdfSignatureValidationCallback implements SignatureValidationCallback {
 
     @Override
-    public void validate(PdfSignatureOrDocTimestampInfo pdfSignatureOrDocTimestampInfo) {
-        if (pdfSignatureOrDocTimestampInfo instanceof PdfSignatureInfo) {
-            PdfSignatureInfo signatureInfo = (PdfSignatureInfo) pdfSignatureOrDocTimestampInfo;
-            validate(signatureInfo);
+    public void validate(PdfRevision pdfRevision) {
+        if (pdfRevision instanceof PdfSignatureRevision) {
+            PdfSignatureRevision signatureRevision = (PdfSignatureRevision) pdfRevision;
+            validate(signatureRevision);
         }
 
     }
 
-    public abstract void validate(PdfSignatureInfo pdfSignatureInfo);
+    public abstract void validate(PdfSignatureRevision pdfSignatureRevision);
 }

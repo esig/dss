@@ -100,7 +100,7 @@ public class InfiniteLoopDSS621Test {
     		DiagnosticData diagnosticData = reports.getDiagnosticData();
     		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 
-    		assertEquals(5, signatures.size()); // 1 timestamp is not counted as signature
+    		assertEquals(5, signatures.size()); // 1 timestamp is not counted as a signature
     		for (final SignatureWrapper signature : signatures) {
     			List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
     			for (XmlDigestMatcher digestMatcher : digestMatchers) {
@@ -135,7 +135,7 @@ public class InfiniteLoopDSS621Test {
 
 				logger.debug("Byte range : " + Arrays.toString(pdSignature.getByteRange()));
 
-				Utils.write(contents, new FileOutputStream("target/sig" + (idx++) + ".p7s"));
+				Utils.write(contents, new FileOutputStream("target/sig" + (++idx) + ".p7s"));
 
 				ASN1InputStream asn1sInput = new ASN1InputStream(contents);
 				ASN1Sequence asn1Seq = (ASN1Sequence) asn1sInput.readObject();
