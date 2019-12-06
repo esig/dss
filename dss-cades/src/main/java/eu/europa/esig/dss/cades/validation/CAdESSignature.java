@@ -97,6 +97,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.DigestDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -154,7 +155,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	/**
 	 * @param data
-	 *            byte array representing CMSSignedData
+	 *             byte array representing CMSSignedData
 	 * @throws org.bouncycastle.cms.CMSException
 	 */
 	public CAdESSignature(final byte[] data) throws CMSException {
@@ -803,8 +804,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 			LOG.debug("CHECK SIGNATURE VALIDITY: ");
 			if (signingCertificateValidity != null) {
-				// for (final CertificateValidity certificateValidity :
-				// certificateValidityList) {
 
 				try {
 					candidatesForSigningCertificate.setTheCertificateValidity(signingCertificateValidity);
@@ -1141,13 +1140,17 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public List<AdvancedSignature> getCounterSignatures() {
 		final List<AdvancedSignature> countersignatures = new ArrayList<AdvancedSignature>();
-		for (final Object signer : signerInformation.getCounterSignatures().getSigners()) {
-			final SignerInformation signerInformation = (SignerInformation) signer;
-			final CAdESSignature countersignature = new CAdESSignature(cmsSignedData, signerInformation, certPool);
-			countersignature.setMasterSignature(this);
-			countersignatures.add(countersignature);
-		}
+		recursiveCollect(countersignatures, signerInformation, this);
 		return countersignatures;
+	}
+
+	private void recursiveCollect(List<AdvancedSignature> collector, SignerInformation currentSignerInformation, AdvancedSignature master) {
+		for (final SignerInformation counterSignerInformation : currentSignerInformation.getCounterSignatures()) {
+			final CAdESSignature countersignature = new CAdESSignature(cmsSignedData, counterSignerInformation, certPool);
+			countersignature.setMasterSignature(master);
+			collector.add(countersignature);
+			recursiveCollect(collector, counterSignerInformation, countersignature);
+		}
 	}
 
 	@Override
@@ -1156,6 +1159,11 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	public DSSDocument getOriginalDocument() throws DSSException {
+		// RFC 5652 ch 11.4.
+		if (signerInformation.isCounterSignature()) {
+			return new InMemoryDocument(getMasterSignature().getSignatureValue());
+		}
+
 		return CMSUtils.getOriginalDocument(cmsSignedData, detachedContents);
 	}
 	
