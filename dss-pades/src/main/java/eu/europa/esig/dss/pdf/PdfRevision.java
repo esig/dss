@@ -25,10 +25,14 @@ import java.util.List;
 
 import org.bouncycastle.cms.CMSSignedData;
 
+import eu.europa.esig.dss.validation.PdfSignatureDictionary;
+
 /**
  * The usage of this interface permit the user to choose the underlying PDF library use to created PDF signatures.
  */
-public interface PdfSignatureOrDocTimestampInfo {
+public interface PdfRevision {
+
+	int[] getSignatureByteRange();
 	
 	/**
 	 * Returns byte array of decoding the hexadecimal string present within the /Contents dictionary
@@ -36,32 +40,9 @@ public interface PdfSignatureOrDocTimestampInfo {
 	 */
 	byte[] getContents();
 
-	int[] getSignatureByteRange();
-
 	void checkIntegrity();
 	
-	/**
-	 * Returns a list of signature field names
-	 * 
-	 * @return list of {@link String}s
-	 */
-	List<String> getSigFieldNames();
-
-	String getSignerName();
-
-	String getLocation();
-
-	String getContactInfo();
-
-	String getReason();
-
-	String getFilter();
-
-	String getSubFilter();
-
 	Date getSigningDate();
-
-	CMSSignedData getCMSSignedData();
 
 	/**
 	 * @return a byte array representing the DTBS (without a signature, but with the placeholder)
@@ -70,17 +51,25 @@ public interface PdfSignatureOrDocTimestampInfo {
 
 	PdfDssDict getDssDictionary();
 
-	String uniqueId();
-
-	void addOuterSignature(PdfSignatureOrDocTimestampInfo signatureInfo);
+	void addOuterSignature(PdfRevision signatureInfo);
 
 	/**
 	 * @return signatures that covers a document that contains this signature
 	 */
-	List<PdfSignatureOrDocTimestampInfo> getOuterSignatures();
+	List<PdfRevision> getOuterSignatures();
 
-	boolean isTimestamp();
+	boolean isTimestampRevision();
 
-	boolean isCoverAllOriginalBytes();
+	boolean doesSignatureCoverAllOriginalBytes();
+
+	CMSSignedData getCMSSignedData();
+
+	String uniqueId();
+	
+	/**
+	 * Returns a PDF Signature Dictionary info container
+	 * @return {@link PdfSignatureDictionary}
+	 */
+	PdfSignatureDictionary getPdfSigDictInfo();
 
 }

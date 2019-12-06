@@ -32,14 +32,14 @@ import eu.europa.esig.dss.model.DSSException;
 /**
  * This comparator is used to sort signatures by ByteRange
  */
-public class PdfSignatureOrDocTimestampInfoComparator implements Comparator<PdfSignatureOrDocTimestampInfo>, Serializable {
+public class PdfRevisionComparator implements Comparator<PdfRevision>, Serializable {
 
 	private static final long serialVersionUID = 1451660656464810618L;
 
-	private static final Logger LOG = LoggerFactory.getLogger(PdfSignatureOrDocTimestampInfoComparator.class);
+	private static final Logger LOG = LoggerFactory.getLogger(PdfRevisionComparator.class);
 
 	@Override
-	public int compare(PdfSignatureOrDocTimestampInfo o1, PdfSignatureOrDocTimestampInfo o2) {
+	public int compare(PdfRevision o1, PdfRevision o2) {
 		/*
 		[0, 91747, 124517, 723]
 		[0, 126092, 158862, 626]

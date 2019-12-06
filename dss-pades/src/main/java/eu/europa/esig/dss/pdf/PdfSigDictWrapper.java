@@ -26,14 +26,16 @@ import java.util.Date;
 import java.util.List;
 
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.validation.PdfSignatureDictionary;
 
-public class PdfSigDict {
+public class PdfSigDictWrapper implements PdfSignatureDictionary {
 
 	private final PdfDict dictionary;
 	
 	private List<String> sigFieldNames = new ArrayList<String>();
+	private int[] signatureByteRange;
 
-	public PdfSigDict(PdfDict dictionary) {
+	public PdfSigDictWrapper(PdfDict dictionary) {
 		this.dictionary = dictionary;
 	}
 	
@@ -41,34 +43,47 @@ public class PdfSigDict {
 		sigFieldNames.add(sigFieldName);
 	}
 	
+	@Override
 	public List<String> getSigFieldNames() {
 		return sigFieldNames;
 	}
 
+	@Override
 	public String getSignerName() {
 		return dictionary.getStringValue("Name");
 	}
 
+	@Override
 	public String getContactInfo() {
 		return dictionary.getStringValue("ContactInfo");
 	}
 
+	@Override
 	public String getReason() {
 		return dictionary.getStringValue("Reason");
 	}
 
+	@Override
 	public String getLocation() {
 		return dictionary.getStringValue("Location");
 	}
 
+	@Override
 	public Date getSigningDate() {
 		return dictionary.getDateValue("M");
 	}
 
+	@Override
+	public String getType() {
+		return dictionary.getNameValue("Type");
+	}
+
+	@Override
 	public String getFilter() {
 		return dictionary.getNameValue("Filter");
 	}
 
+	@Override
 	public String getSubFilter() {
 		return dictionary.getNameValue("SubFilter");
 	}
@@ -81,22 +96,26 @@ public class PdfSigDict {
 		}
 	}
 
-	public int[] getByteRange() {
-		PdfArray byteRangeArray = dictionary.getAsArray("ByteRange");
-		if (byteRangeArray == null) {
-			throw new DSSException("Unable to retrieve the ByteRange");
-		}
-		
-		int arraySize = byteRangeArray.size();
-		int[] result = new int[arraySize];
-		for (int i = 0; i < arraySize; i++) {
-			try {
-				result[i] = byteRangeArray.getInt(i);
-			} catch (IOException e) {
-				throw new DSSException("Unable to parse integer from the ByteRange", e);
+	@Override
+	public int[] getSignatureByteRange() {
+		if (signatureByteRange == null) {
+			PdfArray byteRangeArray = dictionary.getAsArray("ByteRange");
+			if (byteRangeArray == null) {
+				throw new DSSException("Unable to retrieve the ByteRange");
 			}
+			
+			int arraySize = byteRangeArray.size();
+			int[] result = new int[arraySize];
+			for (int i = 0; i < arraySize; i++) {
+				try {
+					result[i] = byteRangeArray.getInt(i);
+				} catch (IOException e) {
+					throw new DSSException("Unable to parse integer from the ByteRange", e);
+				}
+			}
+			signatureByteRange = result;
 		}
-		return result;
+		return signatureByteRange;
 	}
 
 }

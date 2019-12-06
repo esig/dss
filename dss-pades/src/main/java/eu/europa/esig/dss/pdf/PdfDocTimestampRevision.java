@@ -30,6 +30,7 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
@@ -37,9 +38,9 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
  * Signature timestamp representation
  * This class is only used in case of Document Timestamp (not signature-timestamp from CAdES/CMS)
  */
-public class PdfDocTimestampInfo extends PdfCMSInfo {
+public class PdfDocTimestampRevision extends PdfCMSRevision {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PdfDocTimestampInfo.class);
+	private static final Logger LOG = LoggerFactory.getLogger(PdfDocTimestampRevision.class);
 
 	private final TimestampToken timestampToken;
 
@@ -59,7 +60,7 @@ public class PdfDocTimestampInfo extends PdfCMSInfo {
 	 * @param coverCompleteRevision
 	 *                                 true if the signature covers all bytes
 	 */
-	public PdfDocTimestampInfo(CertificatePool validationCertPool, PdfSigDict signatureDictionary,
+	public PdfDocTimestampRevision(CertificatePool validationCertPool, PdfSignatureDictionary signatureDictionary,
 			PdfDssDict timestampedDssDictionary, byte[] cms, byte[] signedContent, boolean coverCompleteRevision) {
 		super(signatureDictionary, timestampedDssDictionary, cms, signedContent, coverCompleteRevision);
 		try {
@@ -68,6 +69,7 @@ public class PdfDocTimestampInfo extends PdfCMSInfo {
 				timestampType = TimestampType.ARCHIVE_TIMESTAMP;
 			}
 			timestampToken = new TimestampToken(cms, timestampType, validationCertPool, TimestampLocation.DOC_TIMESTAMP);
+			timestampToken.setPdfSignatureDictionary(signatureDictionary);
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Created PdfDocTimestampInfo {} : {}", timestampType, uniqueId());
 			}
@@ -91,7 +93,7 @@ public class PdfDocTimestampInfo extends PdfCMSInfo {
 	}
 
 	@Override
-	public boolean isTimestamp() {
+	public boolean isTimestampRevision() {
 		return true;
 	}
 

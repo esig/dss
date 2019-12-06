@@ -7,14 +7,14 @@ package eu.europa.esig.dss.pdf;
 public abstract class PdfTimestampValidationCallback implements SignatureValidationCallback {
 
     @Override
-    public void validate(PdfSignatureOrDocTimestampInfo pdfSignatureOrDocTimestampInfo) {
-        if (pdfSignatureOrDocTimestampInfo instanceof PdfDocTimestampInfo) {
-        	PdfDocTimestampInfo docTimestampInfo = (PdfDocTimestampInfo) pdfSignatureOrDocTimestampInfo;
-            validate(docTimestampInfo);
+    public void validate(PdfRevision pdfRevision) {
+        if (pdfRevision instanceof PdfDocTimestampRevision) {
+        	PdfDocTimestampRevision docTimestampRevision = (PdfDocTimestampRevision) pdfRevision;
+            validate(docTimestampRevision);
         }
 
     }
 
-    public abstract void validate(PdfDocTimestampInfo docTimestampInfo);
+    public abstract void validate(PdfDocTimestampRevision pdfDocTimestampRevision);
 
 }

@@ -29,23 +29,30 @@ import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.validation.PdfSignatureDictionary;
 
-public class PdfSignatureInfo extends PdfCMSInfo {
+public class PdfSignatureRevision extends PdfCMSRevision {
 
 	private final CAdESSignature cades;
 
 	/**
 	 * @param validationCertPool
+	 *            Certificate validation pool
+	 * @param signatureDictionary
+	 *            pdf signature dictionary wrapper
 	 * @param dssDictionary
 	 *            the DSS dictionary
 	 * @param cms
 	 *            the CMS (CAdES) bytes
 	 * @param originalBytes
 	 *            the original bytes of the whole signed document
+	 * @param coverCompleteRevision
+	 *            identifies if the signature covers the whole revision
 	 * @throws IOException
+	 *            if an exception occurs
 	 */
-	public PdfSignatureInfo(CertificatePool validationCertPool, PdfSigDict signatureDictionary, PdfDssDict dssDictionary, byte[] cms,
-			byte[] originalBytes, boolean coverCompleteRevision) throws IOException {
+	public PdfSignatureRevision(CertificatePool validationCertPool, PdfSignatureDictionary signatureDictionary, PdfDssDict dssDictionary, 
+			byte[] cms, byte[] originalBytes, boolean coverCompleteRevision) throws IOException {
 		super(signatureDictionary, dssDictionary, cms, originalBytes, coverCompleteRevision);
 		try {
 			cades = new CAdESSignature(cms, validationCertPool);
@@ -62,7 +69,7 @@ public class PdfSignatureInfo extends PdfCMSInfo {
 	}
 
 	@Override
-	public boolean isTimestamp() {
+	public boolean isTimestampRevision() {
 		return false;
 	}
 

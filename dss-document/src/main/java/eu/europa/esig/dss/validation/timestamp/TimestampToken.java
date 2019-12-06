@@ -65,6 +65,7 @@ import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateRef;
 import eu.europa.esig.dss.validation.ManifestFile;
+import eu.europa.esig.dss.validation.PdfSignatureDictionary;
 
 /**
  * SignedToken containing a TimeStamp.
@@ -129,6 +130,9 @@ public class TimestampToken extends Token {
 	 * unambiguously identify a timestamp.
 	 */
 	private int hashCode;
+	
+	/* Used only for PAdES RFC3161 timestamps */
+	private PdfSignatureDictionary pdfSigDict;
 	
 	public TimestampToken(final byte[] binaries, final TimestampType type) 
 			throws TSPException, IOException, CMSException {
@@ -224,13 +228,16 @@ public class TimestampToken extends Token {
 	 */
 	public TimestampToken(TimestampToken timestampToken) {
 		this(timestampToken.timeStamp, timestampToken.timeStampType, timestampToken.certificateSource, 
-				new ArrayList<TimestampedReference>(timestampToken.timestampedReferences), 
-				timestampToken.timeStampLocation);
+				new ArrayList<TimestampedReference>(timestampToken.timestampedReferences), timestampToken.timeStampLocation, timestampToken.pdfSigDict);
 	}
 	
 	TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final TimestampCertificateSource certificateSource, 
-			 final List<TimestampedReference> timestampedReferences,
-			 final TimestampLocation timeStampLocation) {
+			 final List<TimestampedReference> timestampedReferences, final TimestampLocation timeStampLocation) {
+		this(timeStamp, type, certificateSource, timestampedReferences, timeStampLocation, null);
+	}
+	
+	TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final TimestampCertificateSource certificateSource, 
+			 final List<TimestampedReference> timestampedReferences, final TimestampLocation timeStampLocation, final PdfSignatureDictionary pdfInfo) {
 		this.timeStamp = timeStamp;
 		this.timeStampType = type;
 		this.certificateSource = certificateSource;
@@ -238,6 +245,7 @@ public class TimestampToken extends Token {
 		if (timeStampLocation != null) {
 			this.timeStampLocation = timeStampLocation;
 		}
+		this.pdfSigDict = pdfInfo;
 	}
 
 	@Override
@@ -270,6 +278,26 @@ public class TimestampToken extends Token {
 			ocspSource = new TimestampOCSPSource(this);
 		}
 		return ocspSource;
+	}
+	
+	/**
+	 * Returns PDF signature dictionary wrapper
+	 * NOTE: applicable only for PAdES
+	 * 
+	 * @return {@link PdfSignatureDictionary}
+	 */
+	public PdfSignatureDictionary getPdfSignatureDictionary() {
+		return pdfSigDict;
+	}
+	
+	/**
+	 * Sets PDF signature dictionary wrapper
+	 * NOTE: applicable only for PAdES
+	 * 
+	 * @param pdfSigDict {@link PdfSignatureDictionary}
+	 */
+	public void setPdfSignatureDictionary(PdfSignatureDictionary pdfSigDict) {
+		this.pdfSigDict = pdfSigDict;
 	}
 	
 	/**

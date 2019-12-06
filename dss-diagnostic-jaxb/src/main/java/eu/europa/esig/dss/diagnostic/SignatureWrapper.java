@@ -501,6 +501,14 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return null;
 	}
 
+	public String getSignatureDictionaryType() {
+		XmlPDFSignatureDictionary pdfSignatureDictionary = signature.getPDFSignatureDictionary();
+		if (pdfSignatureDictionary != null) {
+			return pdfSignatureDictionary.getType();
+		}
+		return null;
+	}
+
 	public String getFilter() {
 		XmlPDFSignatureDictionary pdfSignatureDictionary = signature.getPDFSignatureDictionary();
 		if (pdfSignatureDictionary != null) {

@@ -38,7 +38,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.RevocationInfoArchival;
-import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
+import eu.europa.esig.dss.pdf.PdfRevision;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -66,13 +66,13 @@ public final class PAdESUtils {
 	}
 
 	/**
-	 * Returns the original signed content for the {@code pdfInfo}
-	 * @param pdfInfo {@link PdfSignatureOrDocTimestampInfo}
+	 * Returns the original signed content for the {@code pdfRevision}
+	 * @param pdfRevision {@link PdfRevision}
 	 * @return {@link InMemoryDocument}
 	 */
-	public static InMemoryDocument getOriginalPDF(final PdfSignatureOrDocTimestampInfo pdfInfo) {
-		byte[] signedDocumentBytes = pdfInfo.getSignedDocumentBytes();
-		int[] signatureByteRange = pdfInfo.getSignatureByteRange();
+	public static InMemoryDocument getOriginalPDF(final PdfRevision pdfRevision) {
+		byte[] signedDocumentBytes = pdfRevision.getSignedDocumentBytes();
+		int[] signatureByteRange = pdfRevision.getSignatureByteRange();
 		DSSDocument firstByteRangePart = DSSUtils.splitDocument(
 				new InMemoryDocument(signedDocumentBytes), signatureByteRange[0], signatureByteRange[1]);
 		InMemoryDocument lastRevision = retrieveLastPDFRevision(firstByteRangePart);
