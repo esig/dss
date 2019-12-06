@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Collection;
 import java.util.List;
 
+import javax.xml.bind.JAXBElement;
+
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
@@ -24,6 +26,10 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.validationreport.jaxb.SACounterSignatureType;
+import eu.europa.esig.validationreport.jaxb.SignatureAttributesType;
+import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
+import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
 public class CounterSignatureValidationTest extends PKIFactoryAccess {
 
@@ -35,26 +41,25 @@ public class CounterSignatureValidationTest extends PKIFactoryAccess {
 		CMSSignedData cms = new CMSSignedData(document.openStream());
 		Collection<SignerInformation> signers = cms.getSignerInfos().getSigners();
 		assertEquals(1, signers.size());
-		
+
 		Store<X509CertificateHolder> certificates = cms.getCertificates();
 
 		SignerInformation signerInformation = signers.iterator().next();
-		
+
 		Collection<X509CertificateHolder> matches = certificates.getMatches(signerInformation.getSID());
 		X509CertificateHolder cert = matches.iterator().next();
 
 		SignerInformationVerifier verifier = new JcaSimpleSignerInfoVerifierBuilder().setProvider(new BouncyCastleProvider()).build(cert);
-		
+
 		assertTrue(signerInformation.verify(verifier));
-		
+
 		SignerInformationStore counterSignatures = signerInformation.getCounterSignatures();
 		for (SignerInformation counterSigner : counterSignatures) {
-			
+
 			Collection<X509CertificateHolder> matchesCounter = certificates.getMatches(counterSigner.getSID());
 			X509CertificateHolder counterCert = matchesCounter.iterator().next();
 
-			SignerInformationVerifier counterVerifier = new JcaSimpleSignerInfoVerifierBuilder().setProvider(new BouncyCastleProvider())
-					.build(counterCert);
+			SignerInformationVerifier counterVerifier = new JcaSimpleSignerInfoVerifierBuilder().setProvider(new BouncyCastleProvider()).build(counterCert);
 
 			assertTrue(counterSigner.verify(counterVerifier));
 		}
@@ -72,6 +77,7 @@ public class CounterSignatureValidationTest extends PKIFactoryAccess {
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Test
 	public void test2() {
 		DSSDocument document = new FileDocument("src/test/resources/validation/signedFile.pdf.p7s");
@@ -108,6 +114,25 @@ public class CounterSignatureValidationTest extends PKIFactoryAccess {
 		assertEquals(3, nbSig);
 		assertEquals(3, nbCounter);
 		assertEquals(1, nbCounterOfCounter);
+
+		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
+		List<SignatureValidationReportType> signatureValidationReports = etsiValidationReportJaxb.getSignatureValidationReport();
+		assertEquals(6, signatureValidationReports.size());
+
+		int nbCounterSig = 0;
+		for (SignatureValidationReportType signatureValidationReportType : signatureValidationReports) {
+			SignatureAttributesType signatureAttributes = signatureValidationReportType.getSignatureAttributes();
+			List<Object> signingTimeOrSigningCertificateOrDataObjectFormat = signatureAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat();
+			for (Object attribute : signingTimeOrSigningCertificateOrDataObjectFormat) {
+				if (attribute instanceof JAXBElement) {
+					JAXBElement e = (JAXBElement) attribute;
+					if (e.getDeclaredType().equals(SACounterSignatureType.class)) {
+						nbCounterSig++;
+					}
+				}
+			}
+		}
+		assertEquals(3, nbCounterSig);
 	}
 
 	@Override
