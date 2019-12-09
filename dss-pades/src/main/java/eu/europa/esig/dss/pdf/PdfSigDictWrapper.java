@@ -21,9 +21,7 @@
 package eu.europa.esig.dss.pdf;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.validation.PdfSignatureDictionary;
@@ -32,20 +30,10 @@ public class PdfSigDictWrapper implements PdfSignatureDictionary {
 
 	private final PdfDict dictionary;
 	
-	private List<String> sigFieldNames = new ArrayList<String>();
 	private int[] signatureByteRange;
 
 	public PdfSigDictWrapper(PdfDict dictionary) {
 		this.dictionary = dictionary;
-	}
-	
-	public void addSigFieldName(String sigFieldName) {
-		sigFieldNames.add(sigFieldName);
-	}
-	
-	@Override
-	public List<String> getSigFieldNames() {
-		return sigFieldNames;
 	}
 
 	@Override
@@ -88,6 +76,7 @@ public class PdfSigDictWrapper implements PdfSignatureDictionary {
 		return dictionary.getNameValue("SubFilter");
 	}
 
+	@Override
 	public byte[] getContents() {
 		try {
 			return dictionary.getBinariesValue("Contents");

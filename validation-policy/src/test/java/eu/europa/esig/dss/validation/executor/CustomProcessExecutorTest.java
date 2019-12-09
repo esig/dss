@@ -36,6 +36,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.xml.bind.JAXB;
 
@@ -63,6 +64,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCryptographicInformation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
@@ -73,6 +75,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlAbstractToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanToken;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
@@ -88,6 +91,7 @@ import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.policy.jaxb.Algo;
+import eu.europa.esig.dss.policy.jaxb.BasicSignatureConstraints;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.policy.jaxb.Level;
@@ -1586,7 +1590,9 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		List<eu.europa.esig.dss.diagnostic.jaxb.XmlSignature> xmlSignatures = xmlDiagnosticData.getSignatures();
 		assertNotNull(xmlSignatures);
 		for (eu.europa.esig.dss.diagnostic.jaxb.XmlSignature signature : xmlSignatures) {
-			XmlPDFSignatureDictionary pdfSignatureDictionary = signature.getPDFSignatureDictionary();
+			XmlPDFRevision pdfRevision = signature.getPDFRevision();
+			assertNotNull(pdfRevision);
+			XmlPDFSignatureDictionary pdfSignatureDictionary = pdfRevision.getPDFSignatureDictionary();
 			assertNotNull(pdfSignatureDictionary);
 			List<BigInteger> byteRange = pdfSignatureDictionary.getSignatureByteRange();
 			assertNotNull(byteRange);
@@ -1608,7 +1614,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		List<BigInteger> byteRange = signatureWrapper.getSignatureByteRange();
 		assertNotNull(byteRange);
 		assertEquals(4, byteRange.size());
-		List<BigInteger> xmlByteRange = xmlSignatures.get(0).getPDFSignatureDictionary().getSignatureByteRange();
+		List<BigInteger> xmlByteRange = xmlSignatures.get(0).getPDFRevision().getPDFSignatureDictionary().getSignatureByteRange();
 		assertEquals(xmlByteRange.get(0), byteRange.get(0));
 		assertEquals(xmlByteRange.get(1), byteRange.get(1));
 		assertEquals(xmlByteRange.get(2), byteRange.get(2));
@@ -1809,6 +1815,66 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertFalse(sav.getCryptographicInfo().isSecure());
 		
 		checkReports(reports);
+	}
+	
+	@Test
+	public void padesMultiSignerInfoPresentTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/pades-multi-signer-info.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_FAILED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.FORMAT_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertNotNull(signatureBBB);
+		
+		XmlFC fc = signatureBBB.getFC();
+		assertEquals(Indication.FAILED, fc.getConclusion().getIndication());
+		assertEquals(SubIndication.FORMAT_FAILURE, fc.getConclusion().getSubIndication());
+		
+		boolean signerInformationCheckFound = false;
+		List<XmlConstraint> constraints = fc.getConstraint();
+		for (XmlConstraint constrant : constraints) {
+			if (MessageTag.BBB_FC_IOSIP.name().equals(constrant.getName().getNameId())) {
+				assertEquals(MessageTag.BBB_FC_IOSIP_ANS.name(), constrant.getError().getNameId());
+				assertEquals(XmlStatus.NOT_OK, constrant.getStatus());
+				signerInformationCheckFound = true;
+			}
+		}
+		assertTrue(signerInformationCheckFound);
+	}
+	
+	@Test
+	public void padesMultiSignerInfoPresentWarnTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/pades-multi-signer-info.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		EtsiValidationPolicy defaultPolicy = (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+		BasicSignatureConstraints basicSignatureConstraints = defaultPolicy.getSignatureConstraints().getBasicSignatureConstraints();
+		LevelConstraint signerInformationStore = basicSignatureConstraints.getSignerInformationStore();
+		signerInformationStore.setLevel(Level.WARN);
+		executor.setValidationPolicy(defaultPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		
+		DetailedReport detailedReport = reports.getDetailedReport();
+		Set<String> warnings = detailedReport.getWarnings(detailedReport.getFirstSignatureId());
+		assertTrue(warnings.contains(i18nProvider.getMessage(MessageTag.BBB_FC_IOSIP_ANS)));
 	}
 
 	@Test

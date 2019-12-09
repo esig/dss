@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.pdf;
 
+import eu.europa.esig.dss.validation.PdfRevision;
+
 /**
  * Use this callback to be called only for Timestamps, not for Signatures
  *

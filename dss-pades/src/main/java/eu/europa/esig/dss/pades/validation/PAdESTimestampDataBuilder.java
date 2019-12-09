@@ -25,22 +25,21 @@ import java.util.List;
 
 import org.bouncycastle.cms.SignerInformation;
 
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.cades.validation.CAdESTimestampDataBuilder;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pdf.PdfDocTimestampRevision;
-import eu.europa.esig.dss.pdf.PdfSignatureRevision;
-import eu.europa.esig.dss.pdf.PdfRevision;
+import eu.europa.esig.dss.validation.PdfRevision;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 public class PAdESTimestampDataBuilder extends CAdESTimestampDataBuilder {
 	
-	private final PdfSignatureRevision pdfSignatureRevision;
+	private final PdfRevision pdfSignatureRevision;
 	
 	private List<TimestampToken> signatureTimestamps = new ArrayList<TimestampToken>();
 
-	public PAdESTimestampDataBuilder(PdfSignatureRevision pdfSignatureRevision, final SignerInformation signerInformation, List<DSSDocument> detacheDocuments) {
+	public PAdESTimestampDataBuilder(PdfRevision pdfSignatureRevision, final SignerInformation signerInformation, List<DSSDocument> detacheDocuments) {
 		super(signerInformation, detacheDocuments);
 		this.pdfSignatureRevision = pdfSignatureRevision;
 	}

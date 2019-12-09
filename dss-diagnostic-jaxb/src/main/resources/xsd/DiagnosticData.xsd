@@ -146,7 +146,7 @@
 					</xs:element>
 					<xs:element name="SignerRole" type="SignerRole" minOccurs="0" maxOccurs="unbounded" />
 					<xs:element name="Policy" type="Policy" minOccurs="0" />
-					<xs:element name="PDFSignatureDictionary" type="PDFSignatureDictionary" minOccurs="0" />
+					<xs:element name="PDFRevision" type="PDFRevision" minOccurs="0" />
 					
 					<xs:element name="SignerDocumentRepresentations" minOccurs="0">
 						<xs:complexType>
@@ -225,9 +225,16 @@
 		</xs:sequence>
 	</xs:complexType>
 	
-	<xs:complexType name="PDFSignatureDictionary">
+	<xs:complexType name="PDFRevision">
 		<xs:sequence>
 			<xs:element name="SignatureFieldName" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="SignerInformationStore" type="SignerInformationStore" minOccurs="0" />
+			<xs:element name="PDFSignatureDictionary" type="PDFSignatureDictionary" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="PDFSignatureDictionary">
+		<xs:sequence>
 			<xs:element name="SignerName" type="xs:string" minOccurs="0" />
 			<xs:element name="Type" type="xs:string" minOccurs="0" />
 			<xs:element name="Filter" type="xs:string" minOccurs="0" />
@@ -509,6 +516,20 @@
 		</xs:sequence>
 	</xs:complexType>
 	
+	<xs:complexType name="SignerInformationStore">
+		<xs:sequence>
+			<xs:element name="SignerInfo" type="SignerInfo" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="SignerInfo">
+		<xs:sequence>
+			<xs:element name="Issuer" type="xs:string" />
+			<xs:element name="SerialNumber" type="xs:integer" />
+		</xs:sequence>
+		<xs:attribute name="Processed" type="xs:boolean" use="required" /> <!-- The framework handles only one (first) SignerInfo !!! -->
+	</xs:complexType>
+	
 	<xs:complexType name="SignerRole">
 		<xs:sequence>
 			<xs:element name="Role" type="xs:string" />
@@ -655,7 +676,7 @@
 					<xs:element name="BasicSignature" type="BasicSignature" />
 					<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
 					<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
-					<xs:element name="PDFSignatureDictionary" type="PDFSignatureDictionary" minOccurs="0" />
+					<xs:element name="PDFRevision" type="PDFRevision" minOccurs="0" />
 		
 					<xs:element name="TimestampedObjects" type="TimestampedObjects" minOccurs="0" />
 		

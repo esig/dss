@@ -346,6 +346,11 @@
 					<xsd:documentation>Checks if the certificate chain is trusted</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="SignerInformationStore" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if CMS Signed Data Signer Information Store has only one signer information</xsd:documentation> <!-- PAdES only (!) -->
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="TrustedServiceTypeIdentifier" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the related trust service type identifier is in the acceptable values list</xsd:documentation>

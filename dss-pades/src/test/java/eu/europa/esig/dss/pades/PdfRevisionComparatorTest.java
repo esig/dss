@@ -36,10 +36,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.pdf.PdfDssDict;
-import eu.europa.esig.dss.pdf.PdfRevision;
 import eu.europa.esig.dss.pdf.PdfRevisionComparator;
+import eu.europa.esig.dss.validation.PdfRevision;
 import eu.europa.esig.dss.validation.PdfSignatureDictionary;
+import eu.europa.esig.dss.validation.SignerInfo;
 
 public class PdfRevisionComparatorTest {
 
@@ -193,11 +193,6 @@ public class PdfRevisionComparatorTest {
 		}
 
 		@Override
-		public PdfDssDict getDssDictionary() {
-			return null;
-		}
-
-		@Override
 		public String uniqueId() {
 			return null;
 		}
@@ -228,7 +223,16 @@ public class PdfRevisionComparatorTest {
 
 		@Override
 		public PdfSignatureDictionary getPdfSigDictInfo() {
-			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<String> getFieldNames() {
+			return null;
+		}
+
+		@Override
+		public List<SignerInfo> getSignatureInformationStore() {
 			return null;
 		}
 

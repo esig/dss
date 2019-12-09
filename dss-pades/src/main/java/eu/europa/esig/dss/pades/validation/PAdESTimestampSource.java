@@ -35,22 +35,21 @@ import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pdf.PdfDocTimestampRevision;
 import eu.europa.esig.dss.pdf.PdfDssDict;
-import eu.europa.esig.dss.pdf.PdfSignatureRevision;
-import eu.europa.esig.dss.pdf.PdfRevision;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.PdfRevision;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 
 @SuppressWarnings("serial")
 public class PAdESTimestampSource extends CAdESTimestampSource {
 	
-	private transient final PdfSignatureRevision pdfSignatureRevision;
+	private transient final PdfRevision pdfSignatureRevision;
 	
 	public PAdESTimestampSource(final PAdESSignature signature, final CertificatePool certificatePool) {
 		super(signature, certificatePool);
-		this.pdfSignatureRevision = signature.getPdfSignatureRevision();
+		this.pdfSignatureRevision = signature.getPdfRevision();
 	}
 	
 	@Override

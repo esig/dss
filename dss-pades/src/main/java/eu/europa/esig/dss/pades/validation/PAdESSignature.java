@@ -50,6 +50,7 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateRef;
+import eu.europa.esig.dss.validation.PdfRevision;
 import eu.europa.esig.dss.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.validation.SignatureCRLSource;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
@@ -293,6 +294,10 @@ public class PAdESSignature extends CAdESSignature {
 	private boolean hasDSSDictionary() {
 		return dssDictionary != null;
 	}
+	
+	public PdfDssDict getDssDictionary() {
+		return dssDictionary;
+	}
 
 	private boolean hasCAdESDetachedSubFilter() {
 		return (pdfSignatureRevision != null) && PAdESConstants.SIGNATURE_DEFAULT_SUBFILTER.equals(pdfSignatureRevision.getPdfSigDictInfo().getSubFilter());
@@ -312,12 +317,12 @@ public class PAdESSignature extends CAdESSignature {
 	public boolean hasOuterSignatures() {
 		return Utils.isCollectionNotEmpty(pdfSignatureRevision.getOuterSignatures());
 	}
-	
-	public PdfSignatureRevision getPdfSignatureRevision() {
-		return pdfSignatureRevision;
-	}
 
 	@Override
+	public PdfRevision getPdfRevision() {
+		return pdfSignatureRevision;
+	}
+	
 	public PdfSignatureDictionary getPdfSignatureDictionary() {
 		return pdfSignatureRevision.getPdfSigDictInfo();
 	}

@@ -39,7 +39,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocation;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedRevocation;
@@ -48,6 +48,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureDigestReference;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerDocumentRepresentations;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerRole;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlStructuralValidation;
@@ -468,14 +469,24 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 	
 	/**
+	 * Returns a PAdES-specific PDF Revision info
+	 * NOTE: applicable only for PAdES
+	 * 
+	 * @return {@link XmlPDFRevision}
+	 */
+	public XmlPDFRevision getPDFRevision() {
+		return signature.getPDFRevision();
+	}
+	
+	/**
 	 * Returns the first signature field name
 	 * 
 	 * @return {@link String} field name
 	 */
 	public String getFirstFieldName() {
-		XmlPDFSignatureDictionary pdfSignatureDictionary = signature.getPDFSignatureDictionary();
-		if (pdfSignatureDictionary != null) {
-			return pdfSignatureDictionary.getSignatureFieldName().get(0);
+		XmlPDFRevision pdfRevision = signature.getPDFRevision();
+		if (pdfRevision != null) {
+			return pdfRevision.getSignatureFieldName().get(0);
 		}
 		return null;
 	}
@@ -486,65 +497,78 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	 * @return a list of {@link String} signature field names
 	 */
 	public List<String> getSignatureFieldNames() {
-		XmlPDFSignatureDictionary pdfSignatureDictionary = signature.getPDFSignatureDictionary();
-		if (pdfSignatureDictionary != null) {
-			return pdfSignatureDictionary.getSignatureFieldName();
+		XmlPDFRevision pdfRevision = signature.getPDFRevision();
+		if (pdfRevision != null) {
+			return pdfRevision.getSignatureFieldName();
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns a list if Signer Infos (Signer Information Store) from CAdES CMS Signed Data
+	 * 
+	 * @return list of {@link XmlSignerInfo}s
+	 */
+	public List<XmlSignerInfo> getSignatureInformationStore() {
+		XmlPDFRevision pdfRevision = signature.getPDFRevision();
+		if (pdfRevision != null) {
+			return pdfRevision.getSignerInformationStore();
 		}
 		return null;
 	}
 
 	public String getSignerName() {
-		XmlPDFSignatureDictionary pdfSignatureDictionary = signature.getPDFSignatureDictionary();
-		if (pdfSignatureDictionary != null) {
-			return pdfSignatureDictionary.getSignerName();
+		XmlPDFRevision pdfRevision = signature.getPDFRevision();
+		if (pdfRevision != null) {
+			return pdfRevision.getPDFSignatureDictionary().getSignerName();
 		}
 		return null;
 	}
 
 	public String getSignatureDictionaryType() {
-		XmlPDFSignatureDictionary pdfSignatureDictionary = signature.getPDFSignatureDictionary();
-		if (pdfSignatureDictionary != null) {
-			return pdfSignatureDictionary.getType();
+		XmlPDFRevision pdfRevision = signature.getPDFRevision();
+		if (pdfRevision != null) {
+			return pdfRevision.getPDFSignatureDictionary().getType();
 		}
 		return null;
 	}
 
 	public String getFilter() {
-		XmlPDFSignatureDictionary pdfSignatureDictionary = signature.getPDFSignatureDictionary();
-		if (pdfSignatureDictionary != null) {
-			return pdfSignatureDictionary.getFilter();
+		XmlPDFRevision pdfRevision = signature.getPDFRevision();
+		if (pdfRevision != null) {
+			return pdfRevision.getPDFSignatureDictionary().getFilter();
 		}
 		return null;
 	}
 
 	public String getSubFilter() {
-		XmlPDFSignatureDictionary pdfSignatureDictionary = signature.getPDFSignatureDictionary();
-		if (pdfSignatureDictionary != null) {
-			return pdfSignatureDictionary.getSubFilter();
+		XmlPDFRevision pdfRevision = signature.getPDFRevision();
+		if (pdfRevision != null) {
+			return pdfRevision.getPDFSignatureDictionary().getSubFilter();
 		}
 		return null;
 	}
 
 	public String getContactInfo() {
-		XmlPDFSignatureDictionary pdfSignatureDictionary = signature.getPDFSignatureDictionary();
-		if (pdfSignatureDictionary != null) {
-			return pdfSignatureDictionary.getContactInfo();
+		XmlPDFRevision pdfRevision = signature.getPDFRevision();
+		if (pdfRevision != null) {
+			return pdfRevision.getPDFSignatureDictionary().getContactInfo();
 		}
 		return null;
 	}
 
 	public String getReason() {
-		XmlPDFSignatureDictionary pdfSignatureDictionary = signature.getPDFSignatureDictionary();
-		if (pdfSignatureDictionary != null) {
-			return pdfSignatureDictionary.getReason();
+		XmlPDFRevision pdfRevision = signature.getPDFRevision();
+		if (pdfRevision != null) {
+			return pdfRevision.getPDFSignatureDictionary().getReason();
 		}
 		return null;
 	}
 	
 	public List<BigInteger> getSignatureByteRange() {
-		XmlPDFSignatureDictionary pdfSignatureDictionary = signature.getPDFSignatureDictionary();
-		if (pdfSignatureDictionary != null) {
-			return pdfSignatureDictionary.getSignatureByteRange();
+		XmlPDFRevision pdfRevision = signature.getPDFRevision();
+		if (pdfRevision != null) {
+			return pdfRevision.getPDFSignatureDictionary().getSignatureByteRange();
 		}
 		return null;
 	}

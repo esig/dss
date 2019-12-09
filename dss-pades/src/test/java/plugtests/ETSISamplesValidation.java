@@ -40,6 +40,7 @@ import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.test.signature.UnmarshallingTester;
@@ -68,7 +69,7 @@ public class ETSISamplesValidation {
 			String filepath;
 			while ((filepath = br.readLine()) != null) {
 				dataToRun.add(
-						Arguments.of(new InMemoryDocument(ETSISamplesValidation.class.getResourceAsStream(filepath))));
+						Arguments.of(new InMemoryDocument(ETSISamplesValidation.class.getResourceAsStream(filepath), filepath)));
 			}
 
 		}
@@ -78,7 +79,7 @@ public class ETSISamplesValidation {
 	@ParameterizedTest(name = "Validation {index}")
 	@MethodSource("data")
 	public void testValidate(DSSDocument doc) {
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		SignedDocumentValidator validator = new PDFDocumentValidator(doc);
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setDataLoader(new IgnoreDataLoader());
@@ -99,6 +100,7 @@ public class ETSISamplesValidation {
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		for (AdvancedSignature advancedSignature : signatures) {
 			assertNotNull(advancedSignature);
+			
 			SignatureCertificateSource certificateSource = advancedSignature.getCertificateSource();
 			assertNotNull(certificateSource);
 

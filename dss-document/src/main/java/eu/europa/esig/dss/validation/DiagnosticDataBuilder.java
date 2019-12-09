@@ -64,6 +64,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanToken;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedCertificate;
@@ -76,6 +77,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureProductionPlace;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerDocumentRepresentations;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerRole;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlStructuralValidation;
@@ -650,7 +652,7 @@ public class DiagnosticDataBuilder {
 		xmlSignature.setDigestMatchers(getXmlDigestMatchers(signature));
 
 		xmlSignature.setPolicy(getXmlPolicy(signature));
-		xmlSignature.setPDFSignatureDictionary(getXmlPDFSignatureDictionary(signature.getPdfSignatureDictionary()));
+		xmlSignature.setPDFRevision(getXmlPDFRevision(signature.getPdfRevision()));
 		xmlSignature.setSignatureDigestReference(getXmlSignatureDigestReference(signature));
 		
 		xmlSignature.setSignerDocumentRepresentations(getXmlSignerDocumentRepresentations(signature));
@@ -663,11 +665,21 @@ public class DiagnosticDataBuilder {
 
 		return xmlSignature;
 	}
+	
+	private XmlPDFRevision getXmlPDFRevision(PdfRevision pdfRevision) {
+		if (pdfRevision != null) {
+			XmlPDFRevision xmlPDFRevision = new XmlPDFRevision();
+			xmlPDFRevision.getSignatureFieldName().addAll(pdfRevision.getFieldNames());
+			xmlPDFRevision.setSignerInformationStore(getXmlSignerInformationStore(pdfRevision));
+			xmlPDFRevision.setPDFSignatureDictionary(getXmlPDFSignatureDictionary(pdfRevision.getPdfSigDictInfo()));
+			return xmlPDFRevision;
+		}
+		return null;
+	}
 
 	private XmlPDFSignatureDictionary getXmlPDFSignatureDictionary(PdfSignatureDictionary pdfSigDict) {
 		if (pdfSigDict != null) {
 			XmlPDFSignatureDictionary pdfSignatureDictionary = new XmlPDFSignatureDictionary();
-			pdfSignatureDictionary.getSignatureFieldName().addAll(pdfSigDict.getSigFieldNames());
 			pdfSignatureDictionary.setSignerName(emptyToNull(pdfSigDict.getSignerName()));
 			pdfSignatureDictionary.setType(emptyToNull(pdfSigDict.getType()));
 			pdfSignatureDictionary.setFilter(emptyToNull(pdfSigDict.getFilter()));
@@ -677,6 +689,22 @@ public class DiagnosticDataBuilder {
 			pdfSignatureDictionary.getSignatureByteRange().addAll(
 					intArrayToBigIntegerList(pdfSigDict.getSignatureByteRange()));
 			return pdfSignatureDictionary;
+		}
+		return null;
+	}
+	
+	private List<XmlSignerInfo> getXmlSignerInformationStore(PdfRevision pdfRevision) {
+		Collection<SignerInfo> signerInformationStore = pdfRevision.getSignatureInformationStore();
+		if (Utils.isCollectionNotEmpty(signerInformationStore)) {
+			List<XmlSignerInfo> signerInfos = new ArrayList<XmlSignerInfo>();
+			for (SignerInfo signerInfo : signerInformationStore) {
+				XmlSignerInfo xmlSignerInfo = new XmlSignerInfo();
+				xmlSignerInfo.setIssuer(signerInfo.getIssuer());
+				xmlSignerInfo.setSerialNumber(signerInfo.getSerialNumber());
+				xmlSignerInfo.setProcessed(signerInfo.isValidated());
+				signerInfos.add(xmlSignerInfo);
+			}
+			return signerInfos;
 		}
 		return null;
 	}
@@ -1408,7 +1436,7 @@ public class DiagnosticDataBuilder {
 		xmlTimestampToken.setTimestampFilename(timestampToken.getFileName());
 		xmlTimestampToken.getDigestMatchers().addAll(getXmlDigestMatchers(timestampToken));
 		xmlTimestampToken.setBasicSignature(getXmlBasicSignature(timestampToken));
-		xmlTimestampToken.setPDFSignatureDictionary(getXmlPDFSignatureDictionary(timestampToken.getPdfSignatureDictionary())); // used only for PAdES RFC 3161 timestamps
+		xmlTimestampToken.setPDFRevision(getXmlPDFRevision(timestampToken.getPdfRevision())); // used only for PAdES RFC 3161 timestamps
 
 		xmlTimestampToken.setSigningCertificate(getXmlSigningCertificate(timestampToken.getPublicKeyOfTheSigner()));
 		xmlTimestampToken.setCertificateChain(getXmlForCertificateChain(timestampToken.getPublicKeyOfTheSigner()));

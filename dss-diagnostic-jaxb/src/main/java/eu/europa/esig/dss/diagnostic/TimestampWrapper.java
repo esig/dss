@@ -30,7 +30,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanToken;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
@@ -215,6 +216,16 @@ public class TimestampWrapper extends AbstractTokenProxy {
 	}
 	
 	/* -------- PAdES RFC3161 Specific parameters --------- */
+
+	/**
+	 * Returns a PAdES-specific PDF Revision info
+	 * NOTE: applicable only for PAdES
+	 * 
+	 * @return {@link XmlPDFRevision}
+	 */
+	public XmlPDFRevision getPDFRevision() {
+		return timestamp.getPDFRevision();
+	}
 	
 	/**
 	 * Returns the first signature field name
@@ -222,9 +233,9 @@ public class TimestampWrapper extends AbstractTokenProxy {
 	 * @return {@link String} field name
 	 */
 	public String getFirstFieldName() {
-		XmlPDFSignatureDictionary pdfSignatureDictionary = timestamp.getPDFSignatureDictionary();
-		if (pdfSignatureDictionary != null) {
-			return pdfSignatureDictionary.getSignatureFieldName().get(0);
+		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
+		if (pdfRevision != null) {
+			return pdfRevision.getSignatureFieldName().get(0);
 		}
 		return null;
 	}
@@ -235,65 +246,78 @@ public class TimestampWrapper extends AbstractTokenProxy {
 	 * @return a list of {@link String} signature field names
 	 */
 	public List<String> getSignatureFieldNames() {
-		XmlPDFSignatureDictionary pdfSignatureDictionary = timestamp.getPDFSignatureDictionary();
-		if (pdfSignatureDictionary != null) {
-			return pdfSignatureDictionary.getSignatureFieldName();
+		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
+		if (pdfRevision != null) {
+			return pdfRevision.getSignatureFieldName();
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns a list if Signer Infos (Signer Information Store) from CAdES CMS Signed Data
+	 * 
+	 * @return list of {@link XmlSignerInfo}s
+	 */
+	public List<XmlSignerInfo> getSignatureInformationStore() {
+		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
+		if (pdfRevision != null) {
+			return pdfRevision.getSignerInformationStore();
 		}
 		return null;
 	}
 
 	public String getSignerName() {
-		XmlPDFSignatureDictionary pdfSignatureDictionary = timestamp.getPDFSignatureDictionary();
-		if (pdfSignatureDictionary != null) {
-			return pdfSignatureDictionary.getSignerName();
+		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
+		if (pdfRevision != null) {
+			return pdfRevision.getPDFSignatureDictionary().getSignerName();
 		}
 		return null;
 	}
 
 	public String getSignatureDictionaryType() {
-		XmlPDFSignatureDictionary pdfSignatureDictionary = timestamp.getPDFSignatureDictionary();
-		if (pdfSignatureDictionary != null) {
-			return pdfSignatureDictionary.getType();
+		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
+		if (pdfRevision != null) {
+			return pdfRevision.getPDFSignatureDictionary().getType();
 		}
 		return null;
 	}
 
 	public String getFilter() {
-		XmlPDFSignatureDictionary pdfSignatureDictionary = timestamp.getPDFSignatureDictionary();
-		if (pdfSignatureDictionary != null) {
-			return pdfSignatureDictionary.getFilter();
+		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
+		if (pdfRevision != null) {
+			return pdfRevision.getPDFSignatureDictionary().getFilter();
 		}
 		return null;
 	}
 
 	public String getSubFilter() {
-		XmlPDFSignatureDictionary pdfSignatureDictionary = timestamp.getPDFSignatureDictionary();
-		if (pdfSignatureDictionary != null) {
-			return pdfSignatureDictionary.getSubFilter();
+		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
+		if (pdfRevision != null) {
+			return pdfRevision.getPDFSignatureDictionary().getSubFilter();
 		}
 		return null;
 	}
 
 	public String getContactInfo() {
-		XmlPDFSignatureDictionary pdfSignatureDictionary = timestamp.getPDFSignatureDictionary();
-		if (pdfSignatureDictionary != null) {
-			return pdfSignatureDictionary.getContactInfo();
+		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
+		if (pdfRevision != null) {
+			return pdfRevision.getPDFSignatureDictionary().getContactInfo();
 		}
 		return null;
 	}
 
 	public String getReason() {
-		XmlPDFSignatureDictionary pdfSignatureDictionary = timestamp.getPDFSignatureDictionary();
-		if (pdfSignatureDictionary != null) {
-			return pdfSignatureDictionary.getReason();
+		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
+		if (pdfRevision != null) {
+			return pdfRevision.getPDFSignatureDictionary().getReason();
 		}
 		return null;
 	}
 	
 	public List<BigInteger> getSignatureByteRange() {
-		XmlPDFSignatureDictionary pdfSignatureDictionary = timestamp.getPDFSignatureDictionary();
-		if (pdfSignatureDictionary != null) {
-			return pdfSignatureDictionary.getSignatureByteRange();
+		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
+		if (pdfRevision != null) {
+			return pdfRevision.getPDFSignatureDictionary().getSignatureByteRange();
 		}
 		return null;
 	}

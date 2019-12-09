@@ -643,11 +643,13 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public String getContentIdentifier() {
+		// not applicable
 		return null;
 	}
 
 	@Override
 	public String getContentHints() {
+		// not applicable
 		return null;
 	}
 
