@@ -57,10 +57,8 @@ public class SSLCommonDataLoaderTest {
 	@BeforeAll
 	public static void initKS() {
 		CertificateToken sslCert = DSSUtils.loadCertificateFromBase64EncodedString(SSL_CERT);
-		
-		correctKeyStore = new FileDocument(CORRECT_KS_PATH);
 
-		try (OutputStream os = new FileOutputStream(correctKeyStore.getAbsolutePath())) {
+		try (OutputStream os = new FileOutputStream(CORRECT_KS_PATH)) {
 			KeyStore ks = KeyStore.getInstance(KS_TYPE);
 			ks.load(null);
 			ks.setCertificateEntry("cef", sslCert.getCertificate());
@@ -68,12 +66,12 @@ public class SSLCommonDataLoaderTest {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+		
+		correctKeyStore = new FileDocument(CORRECT_KS_PATH);
 
 		CertificateToken wrongCert = DSSUtils.loadCertificateFromBase64EncodedString(WRONG_CERT);
-		
-		wrongKeyStore = new FileDocument(WRONG_KS_PATH);
 
-		try (OutputStream os = new FileOutputStream(wrongKeyStore.getAbsolutePath())) {
+		try (OutputStream os = new FileOutputStream(WRONG_KS_PATH)) {
 			KeyStore ks = KeyStore.getInstance(KS_TYPE);
 			ks.load(null);
 			ks.setCertificateEntry("cef", wrongCert.getCertificate());
@@ -81,6 +79,9 @@ public class SSLCommonDataLoaderTest {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+		
+		wrongKeyStore = new FileDocument(WRONG_KS_PATH);
+		
 	}
 
 	@Test
