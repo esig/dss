@@ -235,15 +235,16 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 
 			}
 			/*
-			 * In all other cases, the Basic Signature validation process shall return the
-			 * indication, sub-indication and any associated information returned by the
-			 * signing certificate validation process.
+			 * Updated with TS 119 102-1 - V1.2.1 :
+			 * 
+			 * In all other cases, the Basic Signature validation process shall set 
+			 * X509_validation-status to the indication and sub-indication returned by 
+			 * the X.509 Certificate Validation process and continue with step 5).
 			 */
 			else if (!Indication.PASSED.equals(xcvConclusion.getIndication())) {
-				indication = xcvConclusion.getIndication();
-				subIndication = xcvConclusion.getSubIndication();
+				x509ValidationStatus.setIndication(xcvConclusion.getIndication());
+				x509ValidationStatus.setSubIndication(xcvConclusion.getSubIndication());
 				errors.addAll(xcvConclusion.getErrors());
-				return false;
 			}
 		}
 
