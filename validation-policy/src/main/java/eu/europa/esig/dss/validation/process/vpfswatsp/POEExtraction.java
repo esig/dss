@@ -128,7 +128,7 @@ public class POEExtraction {
 		List<XmlProofOfExistence> poes = poe.get(tokenId);
 		if (poes != null) {
 			for (XmlProofOfExistence poe : poes) {
-				if (poe.getTime().compareTo(controlTime) < 0) {
+				if (poe.getTime().compareTo(controlTime) <= 0) {
 					return true;
 				}
 			}

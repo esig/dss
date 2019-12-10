@@ -955,7 +955,7 @@
 			<xs:element name="AdditionalServiceInfoUris" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="additionalServiceInfoUri" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="AdditionalServiceInfoUri" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -963,12 +963,12 @@
 			<xs:element name="ServiceSupplyPoints" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="serviceSupplyPoint" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="ServiceSupplyPoint" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
 			
-			<xs:element name="expiredCertsRevocationInfo" type="xs:dateTime" minOccurs="0" />
+			<xs:element name="ExpiredCertsRevocationInfo" type="xs:dateTime" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="ServiceDigitalIdentifier" type="xs:IDREF" use="required" />
 	</xs:complexType>

@@ -133,7 +133,6 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		 * 4) The process shall add the best-signature-time returned in step 3 
 		 * as POE for the signature to the set of POEs.
 		 */
-		// TODO: useless ???
 		poe.addSignaturePOE(signature, validationProcessLongTermData.getProofOfExistence());
 
 		/*
@@ -245,6 +244,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		 * 7) The SVA shall determine from the set of POEs the earliest time the existence of the signature can be prove
 		 */
 		Date bestSignatureTime = poe.getLowestPOETime(signature.getId(), currentTime);
+		result.setProofOfExistence(getPOE(bestSignatureTime));
 		
 		/*
 		 * 8) The SVA shall perform the Signature Acceptance Validation process as per clause 5.2.8 with the following
@@ -276,8 +276,12 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	}
 
 	private XmlProofOfExistence getCurrentTime() {
+		return getPOE(currentTime);
+	}
+
+	private XmlProofOfExistence getPOE(Date time) {
 		XmlProofOfExistence xpoe = new XmlProofOfExistence();
-		xpoe.setTime(currentTime);
+		xpoe.setTime(time);
 		return xpoe;
 	}
 	
@@ -306,11 +310,6 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 
 	private ChainItem<XmlValidationProcessArchivalData> longTermValidation() {
 		return new LongTermValidationCheck(i18nProvider, result, validationProcessLongTermData, getFailLevelConstraint());
-	}
-
-	private boolean isValid(XmlConstraintsConclusion xmlConstraintConclusion) {
-		return xmlConstraintConclusion != null && xmlConstraintConclusion.getConclusion() != null
-				&& Indication.PASSED.equals(xmlConstraintConclusion.getConclusion().getIndication());
 	}
 	
 	private boolean shouldPerformPastSignatureValidationProcess(XmlConclusion conclusion) {

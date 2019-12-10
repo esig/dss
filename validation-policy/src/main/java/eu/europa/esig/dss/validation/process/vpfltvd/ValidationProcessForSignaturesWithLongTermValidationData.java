@@ -37,6 +37,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlProofOfExistence;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamps;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -79,6 +80,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	private final DiagnosticData diagnosticData;
 	private final SignatureWrapper currentSignature;
 	private final Map<String, XmlBasicBuildingBlocks> bbbs;
+	private final List<XmlValidationProcessTimestamps> validationProcessTimestamps;
 
 	private final ValidationPolicy policy;
 	private final Date currentDate;
@@ -89,6 +91,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		result.setTitle(ValidationProcessDefinition.VPFLTVD.getTitle());
 
 		this.basicSignatureValidation = signatureAnalysis.getValidationProcessBasicSignatures();
+		this.validationProcessTimestamps = signatureAnalysis.getValidationProcessTimestamps();
 
 		this.diagnosticData = diagnosticData;
 		this.currentSignature = currentSignature;
@@ -159,7 +162,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 			 */
 			for (TimestampWrapper timestampWrapper : allowedTimestamps) {
 				Date productionTime = timestampWrapper.getProductionTime();
-				if (productionTime.before(bestSignatureTime.getTime())) {
+				if (isAcceptableTimestampValidation(timestampWrapper) && productionTime.before(bestSignatureTime.getTime())) {
 					bestSignatureTime = getProofOfExistence(timestampWrapper);
 				}
 			}
@@ -342,6 +345,15 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 			}
 		}
 		return result;
+	}
+	
+	private boolean isAcceptableTimestampValidation(TimestampWrapper timestamp) {
+		for (XmlValidationProcessTimestamps validationProcessTimestamp : validationProcessTimestamps) {
+			if (timestamp.getId().equals(validationProcessTimestamp.getId()) && isValid(validationProcessTimestamp)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> isAcceptableBasicSignatureValidation() {
