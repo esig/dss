@@ -18,14 +18,12 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf;
+package eu.europa.esig.dss.validation;
 
 import java.util.Date;
 import java.util.List;
 
 import org.bouncycastle.cms.CMSSignedData;
-
-import eu.europa.esig.dss.validation.PdfSignatureDictionary;
 
 /**
  * The usage of this interface permit the user to choose the underlying PDF library use to created PDF signatures.
@@ -49,8 +47,6 @@ public interface PdfRevision {
 	 */
 	byte[] getSignedDocumentBytes();
 
-	PdfDssDict getDssDictionary();
-
 	void addOuterSignature(PdfRevision signatureInfo);
 
 	/**
@@ -71,5 +67,19 @@ public interface PdfRevision {
 	 * @return {@link PdfSignatureDictionary}
 	 */
 	PdfSignatureDictionary getPdfSigDictInfo();
+	
+	/**
+	 * Returns a list of signature field names that refer the current object
+	 * 
+	 * @return list of {@link String} field names
+	 */
+	List<String> getFieldNames();
+	
+	/**
+	 * Returns Signature Information Store content
+	 * 
+	 * @return list of {@link SignerInfo}s
+	 */
+	List<SignerInfo> getSignatureInformationStore();
 
 }

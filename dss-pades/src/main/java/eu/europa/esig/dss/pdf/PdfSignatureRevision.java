@@ -22,8 +22,11 @@ package eu.europa.esig.dss.pdf;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.cms.SignerInformation;
 
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -36,14 +39,16 @@ public class PdfSignatureRevision extends PdfCMSRevision {
 	private final CAdESSignature cades;
 
 	/**
-	 * @param validationCertPool
-	 *            Certificate validation pool
+	 * @param cms
+	 *            the CMS (CAdES) bytes
 	 * @param signatureDictionary
 	 *            pdf signature dictionary wrapper
 	 * @param dssDictionary
 	 *            the DSS dictionary
-	 * @param cms
-	 *            the CMS (CAdES) bytes
+	 * @param signatureFieldNames
+	 *            list of signature field names
+	 * @param validationCertPool
+	 *            Certificate validation pool
 	 * @param originalBytes
 	 *            the original bytes of the whole signed document
 	 * @param coverCompleteRevision
@@ -51,9 +56,9 @@ public class PdfSignatureRevision extends PdfCMSRevision {
 	 * @throws IOException
 	 *            if an exception occurs
 	 */
-	public PdfSignatureRevision(CertificatePool validationCertPool, PdfSignatureDictionary signatureDictionary, PdfDssDict dssDictionary, 
-			byte[] cms, byte[] originalBytes, boolean coverCompleteRevision) throws IOException {
-		super(signatureDictionary, dssDictionary, cms, originalBytes, coverCompleteRevision);
+	public PdfSignatureRevision(byte[] cms, PdfSignatureDictionary signatureDictionary, PdfDssDict dssDictionary, List<String> signatureFieldNames,
+			CertificatePool validationCertPool, byte[] originalBytes, boolean coverCompleteRevision) throws IOException {
+		super(cms, signatureDictionary, dssDictionary, signatureFieldNames, originalBytes, coverCompleteRevision);
 		try {
 			cades = new CAdESSignature(cms, validationCertPool);
 			final DSSDocument detachedContent = new InMemoryDocument(getSignedDocumentBytes());
@@ -75,6 +80,16 @@ public class PdfSignatureRevision extends PdfCMSRevision {
 
 	public CAdESSignature getCades() {
 		return cades;
+	}
+	
+	@Override
+	public CMSSignedData getCMSSignedData() {
+		return cades.getCmsSignedData();
+	}
+
+	@Override
+	protected boolean isSignerInformationValidated(SignerInformation signerInformation) {
+		return signerInformation == cades.getSignerInformation();
 	}
 
 }

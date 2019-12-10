@@ -132,10 +132,9 @@ public class PDFDocumentValidator extends SignedDocumentValidator implements Tim
 				
 				try {
 					if (pdfDocTimestampRevision.getCMSSignedData() != null) {
-						TimestampToken timestampToken = new TimestampToken(pdfDocTimestampRevision.getCMSSignedData(), 
+						TimestampToken timestampToken = new TimestampToken(pdfDocTimestampRevision, 
 								TimestampType.CONTENT_TIMESTAMP, validationCertPool, TimestampLocation.DOC_TIMESTAMP);
 						timestampToken.setFileName(document.getName());
-						timestampToken.setPdfSignatureDictionary(pdfDocTimestampRevision.getPdfSigDictInfo());
 						timestampToken.matchData(new InMemoryDocument(pdfDocTimestampRevision.getSignedDocumentBytes()));
 						
 						PAdESSignatureScopeFinder signatureScopeFinder = new PAdESSignatureScopeFinder();

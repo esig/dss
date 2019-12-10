@@ -38,6 +38,7 @@ import eu.europa.esig.dss.validation.process.bbb.fc.checks.FormatCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.FullScopeCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ManifestFilePresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.MimeTypeFilePresentCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignerInformationStoreCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ZipCommentPresentCheck;
 
 /**
@@ -70,6 +71,11 @@ public class FormatChecking extends Chain<XmlFC> {
 		ChainItem<XmlFC> item = firstItem = formatCheck();
 
 		item = item.setNextItem(fullScopeCheck());
+		
+		// PAdES only
+		if (signature.getPDFRevision() != null) {
+			item = item.setNextItem(signerInformationStoreCheck());
+		}
 
 		if (diagnosticData.isContainerInfoPresent()) {
 
@@ -95,6 +101,11 @@ public class FormatChecking extends Chain<XmlFC> {
 	private ChainItem<XmlFC> fullScopeCheck() {
 		LevelConstraint constraint = policy.getFullScopeConstraint();
 		return new FullScopeCheck(i18nProvider, result, signature, constraint);
+	}
+	
+	private ChainItem<XmlFC> signerInformationStoreCheck() {
+		LevelConstraint constraint = policy.getSignerInformationStoreConstraint(context);
+		return new SignerInformationStoreCheck(i18nProvider, result, signature, constraint);
 	}
 
 	private ChainItem<XmlFC> containerTypeCheck() {

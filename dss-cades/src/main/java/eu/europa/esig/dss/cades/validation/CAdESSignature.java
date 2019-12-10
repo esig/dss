@@ -149,7 +149,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	/**
 	 * The reference to the signing certificate. If the signing certificate is
-	 * an input provided by the DA then getSigningCer MUST be called.
+	 * an input provided by the DA then getSigningCert MUST be called.
 	 */
 	private CertificateValidity signingCertificateValidity;
 

@@ -23,10 +23,14 @@ package eu.europa.esig.dss.pdf;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.cms.SignerId;
+import org.bouncycastle.cms.SignerInformation;
+import org.bouncycastle.cms.SignerInformationStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +38,9 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.PdfRevision;
 import eu.europa.esig.dss.validation.PdfSignatureDictionary;
+import eu.europa.esig.dss.validation.SignerInfo;
 
 public abstract class PdfCMSRevision implements PdfRevision {
 
@@ -51,8 +57,13 @@ public abstract class PdfCMSRevision implements PdfRevision {
 	private final byte[] signedContent;
 
 	private final boolean coverAllOriginalBytes;
+	
+	private final List<String> signatureFieldNames;
+	
+	/* Cached attributes */
 	private boolean verified;
 	private String uniqueId;
+	private CMSSignedData cmsSignedData;
 
 	private List<PdfRevision> outerSignatures = new ArrayList<PdfRevision>();
 
@@ -69,10 +80,12 @@ public abstract class PdfCMSRevision implements PdfRevision {
 	 * @param coverAllOriginalBytes
 	 *                              true if the signature covers all original bytes
 	 */
-	protected PdfCMSRevision(PdfSignatureDictionary signatureDictionary, PdfDssDict dssDictionary, byte[] cms, byte[] signedContent, boolean coverAllOriginalBytes) {
+	protected PdfCMSRevision(byte[] cms, PdfSignatureDictionary signatureDictionary, PdfDssDict dssDictionary, List<String> signatureFieldNames,
+			byte[] signedContent, boolean coverAllOriginalBytes) {
 		this.cms = cms;
 		this.signatureDictionary = signatureDictionary;
 		this.dssDictionary = dssDictionary;
+		this.signatureFieldNames = signatureFieldNames;
 		this.signedContent = signedContent;
 		this.coverAllOriginalBytes = coverAllOriginalBytes;
 	}
@@ -98,7 +111,6 @@ public abstract class PdfCMSRevision implements PdfRevision {
 		return signedContent;
 	}
 
-	@Override
 	public PdfDssDict getDssDictionary() {
 		return dssDictionary;
 	}
@@ -142,12 +154,16 @@ public abstract class PdfCMSRevision implements PdfRevision {
 		return signatureDictionary.getSigningDate();
 	}
 	
+	/**
+	 * Returns a built CMSSignedData object
+	 */
 	public CMSSignedData getCMSSignedData() {
-		CMSSignedData cmsSignedData = null;
-		try {
-			cmsSignedData = new CMSSignedData(cms);
-		} catch (CMSException e) {
-			LOG.warn("Cannot create CMSSignedData object from byte array for signature with name [{}]", signatureDictionary.getSigFieldNames());
+		if (cmsSignedData == null) {
+			try {
+				cmsSignedData = new CMSSignedData(cms);
+			} catch (CMSException e) {
+				LOG.warn("Cannot create CMSSignedData object from byte array for signature with name [{}]", signatureFieldNames);
+			}
 		}
 		return cmsSignedData;
 	}
@@ -156,5 +172,29 @@ public abstract class PdfCMSRevision implements PdfRevision {
 	public boolean doesSignatureCoverAllOriginalBytes() {
 		return coverAllOriginalBytes;
 	}
+	
+	@Override
+	public List<String> getFieldNames() {
+		return signatureFieldNames;
+	}
+	
+	@Override
+	public List<SignerInfo> getSignatureInformationStore() {
+		List<SignerInfo> signerInfos = new ArrayList<SignerInfo>();
+		SignerInformationStore signerInformationStore = getCMSSignedData().getSignerInfos();
+		
+		Iterator<SignerInformation> it = signerInformationStore.getSigners().iterator();
+		while (it.hasNext()) {
+			SignerInformation signerInformation = it.next();
+			SignerId sid = signerInformation.getSID();
+			SignerInfo signerInfo = new SignerInfo(sid.getIssuer().toString(), sid.getSerialNumber());
+			signerInfo.setValidated(isSignerInformationValidated(signerInformation));
+			signerInfos.add(signerInfo);
+		}
+		
+		return signerInfos;
+	}
+	
+	protected abstract boolean isSignerInformationValidated(SignerInformation signerInformation);
 
 }

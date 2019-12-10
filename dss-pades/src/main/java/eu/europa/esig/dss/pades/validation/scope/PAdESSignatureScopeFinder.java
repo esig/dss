@@ -27,9 +27,9 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
-import eu.europa.esig.dss.pdf.PdfRevision;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.PdfRevision;
 import eu.europa.esig.dss.validation.scope.AbstractSignatureScopeFinder;
 import eu.europa.esig.dss.validation.scope.FullSignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
@@ -42,7 +42,7 @@ public class PAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<PAdE
 
 	@Override
 	public List<SignatureScope> findSignatureScope(final PAdESSignature pAdESSignature) {
-		return Arrays.asList(findSignatureScope(pAdESSignature.getPdfSignatureRevision()));
+		return Arrays.asList(findSignatureScope(pAdESSignature.getPdfRevision()));
 	}
 	
 	public SignatureScope findSignatureScope(final PdfRevision pdfRevision) {

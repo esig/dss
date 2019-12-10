@@ -21,7 +21,9 @@
 package eu.europa.esig.dss.pdf;
 
 import java.util.Date;
+import java.util.List;
 
+import org.bouncycastle.cms.SignerInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,16 +62,15 @@ public class PdfDocTimestampRevision extends PdfCMSRevision {
 	 * @param coverCompleteRevision
 	 *                                 true if the signature covers all bytes
 	 */
-	public PdfDocTimestampRevision(CertificatePool validationCertPool, PdfSignatureDictionary signatureDictionary,
-			PdfDssDict timestampedDssDictionary, byte[] cms, byte[] signedContent, boolean coverCompleteRevision) {
-		super(signatureDictionary, timestampedDssDictionary, cms, signedContent, coverCompleteRevision);
+	public PdfDocTimestampRevision(byte[] cms, PdfSignatureDictionary signatureDictionary, PdfDssDict timestampedDssDictionary, 
+			List<String> timestampFieldNames, CertificatePool validationCertPool, byte[] signedContent, boolean coverCompleteRevision) {
+		super(cms, signatureDictionary, timestampedDssDictionary, timestampFieldNames, signedContent, coverCompleteRevision);
 		try {
 			TimestampType timestampType = TimestampType.SIGNATURE_TIMESTAMP;
 			if (timestampedDssDictionary != null) {
 				timestampType = TimestampType.ARCHIVE_TIMESTAMP;
 			}
-			timestampToken = new TimestampToken(cms, timestampType, validationCertPool, TimestampLocation.DOC_TIMESTAMP);
-			timestampToken.setPdfSignatureDictionary(signatureDictionary);
+			timestampToken = new TimestampToken(this, timestampType, validationCertPool, TimestampLocation.DOC_TIMESTAMP);
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Created PdfDocTimestampInfo {} : {}", timestampType, uniqueId());
 			}
@@ -104,6 +105,11 @@ public class PdfDocTimestampRevision extends PdfCMSRevision {
 
 	public TimestampToken getTimestampToken() {
 		return timestampToken;
+	}
+
+	@Override
+	protected boolean isSignerInformationValidated(SignerInformation signerInformation) {
+		return signerInformation == timestampToken.getSignerInformation();
 	}
 
 }

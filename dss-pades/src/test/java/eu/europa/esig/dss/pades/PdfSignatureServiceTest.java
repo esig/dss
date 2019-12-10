@@ -33,9 +33,9 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
 import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
 import eu.europa.esig.dss.pdf.PDFServiceMode;
-import eu.europa.esig.dss.pdf.PdfRevision;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.validation.PdfRevision;
 
 public class PdfSignatureServiceTest {
 

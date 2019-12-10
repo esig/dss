@@ -684,6 +684,6 @@ public interface AdvancedSignature extends Serializable {
 
 	// ------------------------ PDF Specifics for TS 119 102-2
 	
-	PdfSignatureDictionary getPdfSignatureDictionary();
+	PdfRevision getPdfRevision();
 
 }

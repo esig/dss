@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.pdf;
 
+import eu.europa.esig.dss.validation.PdfRevision;
+
 /**
  * 
  * Callback used by the PDFSignatureService to validate a specific PDF signature. 

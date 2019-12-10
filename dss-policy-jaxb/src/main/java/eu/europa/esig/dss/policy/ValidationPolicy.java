@@ -338,6 +338,16 @@ public interface ValidationPolicy {
 	 *         element is present in the constraint file, null otherwise.
 	 */
 	LevelConstraint getSignatureIntactConstraint(Context context);
+	
+	/**
+	 * This constraint checks if only one SignerInfo is present into a SignerInformationStore
+	 * NOTE: applicable only for PAdES
+	 * 
+	 * @param context
+	 * @return {@code LevelConstraint} if SignerInformationStore element for a given context element is present in
+	 *         the constraint file, null otherwise.
+	 */
+	LevelConstraint getSignerInformationStoreConstraint(Context context);
 
 	LevelConstraint getBestSignatureTimeBeforeIssuanceDateOfSigningCertificateConstraint();
 

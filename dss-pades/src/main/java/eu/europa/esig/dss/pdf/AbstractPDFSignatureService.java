@@ -47,6 +47,8 @@ import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.PdfRevision;
+import eu.europa.esig.dss.validation.PdfSignatureDictionary;
 
 public abstract class AbstractPDFSignatureService implements PDFSignatureService {
 
@@ -276,10 +278,10 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	/**
 	 * Checks if the given signature dictionary represents a DocTimeStamp
 	 * 
-	 * @param pdfSigDict {@link PdfSigDictWrapper} to check
+	 * @param pdfSigDict {@link PdfSignatureDictionary} to check
 	 * @return TRUE if the signature dictionary represents a DocTimeStamp, FALSE otherwise
 	 */
-	protected boolean isDocTimestamp(PdfSigDictWrapper pdfSigDict) {
+	protected boolean isDocTimestamp(PdfSignatureDictionary pdfSigDict) {
 		String type = pdfSigDict.getType();
 		String subFilter = pdfSigDict.getSubFilter();
 		/* Support historical TS 102 778-4 and new EN 319 142-1 */
@@ -289,10 +291,10 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	/**
 	 * Checks if the given signature dictionary represents a Signature
 	 * 
-	 * @param pdfSigDict {@link PdfSigDictWrapper} to check
+	 * @param pdfSigDict {@link PdfSignatureDictionary} to check
 	 * @return TRUE if the signature dictionary represents a Signature, FALSE otherwise
 	 */
-	protected boolean isSignature(PdfSigDictWrapper pdfSigDict) {
+	protected boolean isSignature(PdfSignatureDictionary pdfSigDict) {
 		String type = pdfSigDict.getType();
 		String subFilter = pdfSigDict.getSubFilter();
 		/* Support historical TS 102 778-4 and new EN 319 142-1 */

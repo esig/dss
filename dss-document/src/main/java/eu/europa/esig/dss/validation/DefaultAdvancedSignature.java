@@ -1097,7 +1097,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 	
 	@Override
-	public PdfSignatureDictionary getPdfSignatureDictionary() {
+	public PdfRevision getPdfRevision() {
 		// Not applicable by default (PDF only)
 		return null;
 	}
