@@ -38,6 +38,7 @@ import eu.europa.esig.dss.validation.process.bbb.fc.checks.FormatCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.FullScopeCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ManifestFilePresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.MimeTypeFilePresentCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignatureNotAmbiguousCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignerInformationStoreCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ZipCommentPresentCheck;
 
@@ -69,6 +70,8 @@ public class FormatChecking extends Chain<XmlFC> {
 	@Override
 	protected void initChain() {
 		ChainItem<XmlFC> item = firstItem = formatCheck();
+		
+		item = item.setNextItem(duplicateCheck());
 
 		item = item.setNextItem(fullScopeCheck());
 		
@@ -96,6 +99,11 @@ public class FormatChecking extends Chain<XmlFC> {
 	private ChainItem<XmlFC> formatCheck() {
 		MultiValuesConstraint constraint = policy.getSignatureFormatConstraint(context);
 		return new FormatCheck(i18nProvider, result, signature, constraint);
+	}
+	
+	private ChainItem<XmlFC> duplicateCheck() {
+		LevelConstraint constraint = policy.getSignatureDuplicatedConstraint(context);
+		return new SignatureNotAmbiguousCheck(i18nProvider, result, signature, constraint);
 	}
 
 	private ChainItem<XmlFC> fullScopeCheck() {

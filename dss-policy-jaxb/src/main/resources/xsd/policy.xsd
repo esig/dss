@@ -341,6 +341,11 @@
 					<xsd:documentation>Checks if the signature is intact and the reference is found and intact</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="SignatureDuplicated" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if a validating file contains signature duplicates</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="ProspectiveCertificateChain" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate chain is trusted</xsd:documentation>

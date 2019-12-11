@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -40,7 +39,6 @@ public class ASiCEXAdESSignLTALevelTest extends PKIFactoryAccess {
 		documentsToSign.add(new FileDocument("src/test/resources/signable/test.txt"));
 
 		ASiCWithXAdESSignatureParameters signatureParameters = new ASiCWithXAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
@@ -61,7 +59,11 @@ public class ASiCEXAdESSignLTALevelTest extends PKIFactoryAccess {
 		assertArchiveTimestampFound(diagnosticData);
 		validateSignatures(diagnosticData.getSignatures());
 
+		signatureParameters = new ASiCWithXAdESSignatureParameters();
+		signatureParameters.setSigningCertificate(getSigningCert());
+		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
+		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 
 		dataToSign = service.getDataToSign(signedDocument, signatureParameters);
 		signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());

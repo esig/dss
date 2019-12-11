@@ -22,6 +22,7 @@ package eu.europa.esig.dss.xades.signature;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -33,12 +34,14 @@ import org.junit.jupiter.api.RepeatedTest;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -84,6 +87,7 @@ public class XAdESDoubleSignatureTest extends PKIFactoryAccess {
 		assertEquals(2, signatureIdList.size());
 		for (String signatureId : signatureIdList) {
 			assertTrue(diagnosticData.isBLevelTechnicallyValid(signatureId));
+			assertFalse(diagnosticData.getSignatureById(signatureId).isSignatureDuplicated());
 		}
 		
 		assertEquals(4, diagnosticData.getTimestampList().size());
@@ -93,6 +97,12 @@ public class XAdESDoubleSignatureTest extends PKIFactoryAccess {
 		SignatureWrapper signatureOne = diagnosticData.getSignatures().get(0);
 		SignatureWrapper signatureTwo = diagnosticData.getSignatures().get(1);
 		assertFalse(Arrays.equals(signatureOne.getSignatureDigestReference().getDigestValue(), signatureTwo.getSignatureDigestReference().getDigestValue()));
+		
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertNotNull(simpleReport);
+		for (String signatureId : simpleReport.getSignatureIdList()) {
+			assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(signatureId));
+		}
 	}
 
 	@Override

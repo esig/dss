@@ -652,12 +652,25 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		// not applicable
 		return null;
 	}
+	
+	/**
+	 * Returns a base64 SignatureValue
+	 * 
+	 * @return base64 {@link String}
+	 */
+	public String getSignatureValueBase64() {
+		Element signatureValueElement = DomUtils.getElement(signatureElement, XMLDSigPaths.SIGNATURE_VALUE_PATH);
+		if (signatureValueElement != null) {
+			return signatureValueElement.getTextContent();
+		}
+		return null;
+	}
 
 	@Override
 	public byte[] getSignatureValue() {
-		Element signatureValueElement = DomUtils.getElement(signatureElement, XMLDSigPaths.SIGNATURE_VALUE_PATH);
-		if (signatureValueElement != null) {
-			return Utils.fromBase64(signatureValueElement.getTextContent());
+		String signatureValueBase64 = getSignatureValueBase64();
+		if (signatureValueBase64 != null) {
+			return Utils.fromBase64(signatureValueBase64);
 		}
 		return null;
 	}
@@ -1161,7 +1174,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	protected SignatureIdentifier buildSignatureIdentifier() {
 		final CertificateToken certificateToken = getSigningCertificateToken();
 		final TokenIdentifier identifier = certificateToken == null ? null : certificateToken.getDSSId();
-		return SignatureIdentifier.buildSignatureIdentifier(getSigningTime(), identifier, getDAIdentifier());
+		return SignatureIdentifier.buildSignatureIdentifier(getSigningTime(), identifier, getDAIdentifier(), getSignatureValueBase64());
 	}
 	
 	@Override
