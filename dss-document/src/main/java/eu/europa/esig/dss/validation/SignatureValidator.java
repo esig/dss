@@ -90,11 +90,9 @@ public interface SignatureValidator extends DocumentValidator {
 	 * 
 	 * @param validationContext prepared and filled {@link ValidationContext}
 	 * @param allSignatureList list of {@link AdvancedSignature}s to be validated
-	 * @param structuralValidation specifies if structure of the signature must be validated
 	 * @return list of validated {@link AdvancedSignature}s
 	 */
 	List<AdvancedSignature> processSignaturesValidation(final ValidationContext validationContext, 
-			final List<AdvancedSignature> allSignatureList, boolean structuralValidation);
-
+			final List<AdvancedSignature> allSignatureList);
 
 }

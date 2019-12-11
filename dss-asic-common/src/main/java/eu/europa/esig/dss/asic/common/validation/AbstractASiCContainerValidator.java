@@ -31,14 +31,13 @@ import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.ContainerInfo;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.SignatureValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
@@ -82,12 +81,12 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	}
 
 	@Override
-	public List<AdvancedSignature> prepareSignatureValidationContext(final ValidationContext validationContext, final ValidationPolicy validationPolicy) {
+	public List<AdvancedSignature> prepareSignatureValidationContext(final ValidationContext validationContext) {
 		
 		List<AdvancedSignature> allSignatures = new ArrayList<AdvancedSignature>();
 		List<SignatureValidator> currentValidators = getValidators();
 		for (SignatureValidator signatureValidator : currentValidators) { // CAdES / XAdES
-			allSignatures.addAll(signatureValidator.prepareSignatureValidationContext(validationContext, validationPolicy));
+			allSignatures.addAll(signatureValidator.prepareSignatureValidationContext(validationContext));
 		}
 
 		// add external timestamps to the validation
@@ -96,8 +95,7 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 			addTimestampTokenForVerification(validationContext, timestamp);
 		}
 
-		boolean structuralValidation = isRequireStructuralValidation(validationPolicy);
-		return processSignaturesValidation(validationContext, allSignatures, structuralValidation);
+		return processSignaturesValidation(validationContext, allSignatures);
 	}
 	
 	private void addTimestampTokenForVerification(final ValidationContext validationContext, final TimestampToken timestamp) {
