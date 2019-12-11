@@ -51,6 +51,11 @@ public class DataToSignASiCSWithCAdESFromFiles extends AbstractGetDataToSignASiC
 	}
 
 	@Override
+	public String getTimestampFilename() {
+		return getTimestampFileName();
+	}
+
+	@Override
 	public DSSDocument getToBeSigned() {
 		return getSignedDocuments().get(0);
 	}
@@ -92,8 +97,8 @@ public class DataToSignASiCSWithCAdESFromFiles extends AbstractGetDataToSignASiC
 
 	@Override
 	public List<DSSDocument> getTimestamps() {
-		// not supported
-		return Collections.emptyList();
+		// new container
+		return new ArrayList<DSSDocument>();
 	}
 
 }

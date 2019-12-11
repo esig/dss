@@ -33,13 +33,15 @@ import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.BLevelParameters;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.signature.SigningOperation;
 
 public class ASiCWithCAdESDataToSignHelperBuilder {
 
 	private ASiCWithCAdESDataToSignHelperBuilder() {
 	}
 
-	public static GetDataToSignASiCWithCAdESHelper getGetDataToSignHelper(List<DSSDocument> documents, ASiCWithCAdESSignatureParameters parameters) {
+	public static GetDataToSignASiCWithCAdESHelper getGetDataToSignHelper(SigningOperation operation, List<DSSDocument> documents,
+			ASiCWithCAdESSignatureParameters parameters) {
 
 		BLevelParameters bLevel = parameters.bLevel();
 		boolean asice = ASiCUtils.isASiCE(parameters.aSiC());
@@ -47,7 +49,7 @@ public class ASiCWithCAdESDataToSignHelperBuilder {
 
 		if (asic) {
 			DSSDocument archiveDoc = documents.get(0);
-			if (!ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(archiveDoc, ".p7s")) {
+			if (!ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(archiveDoc, ".p7s") || !ASiCUtils.isArchiveContainsCorrectTimestamp(archiveDoc)) {
 				throw new UnsupportedOperationException("Container type doesn't match");
 			}
 
@@ -58,7 +60,7 @@ public class ASiCWithCAdESDataToSignHelperBuilder {
 					result.getSignedDocuments());
 
 			if (asice && ASiCContainerType.ASiC_E.equals(currentContainerType)) {
-				return new DataToSignASiCEWithCAdESFromArchive(result, parameters);
+				return new DataToSignASiCEWithCAdESFromArchive(operation, result, parameters);
 			} else if (!asice && ASiCContainerType.ASiC_S.equals(currentContainerType)) {
 				return new DataToSignASiCSWithCAdESFromArchive(result, parameters.aSiC());
 			} else {
@@ -68,7 +70,7 @@ public class ASiCWithCAdESDataToSignHelperBuilder {
 
 		} else {
 			if (asice) {
-				return new DataToSignASiCEWithCAdESFromFiles(documents, parameters);
+				return new DataToSignASiCEWithCAdESFromFiles(operation, documents, parameters);
 			} else {
 				return new DataToSignASiCSWithCAdESFromFiles(documents, bLevel.getSigningDate(), parameters.aSiC());
 			}

@@ -128,6 +128,11 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 	}
 
 	@Override
+	public DSSDocument timestamp(List<DSSDocument> toTimestampDocuments, ASiCWithXAdESSignatureParameters parameters) {
+		throw new UnsupportedOperationException("Timestamp file cannot be added with ASiC-S/E + XAdES");
+	}
+
+	@Override
 	public DSSDocument extendDocument(DSSDocument toExtendDocument, ASiCWithXAdESSignatureParameters parameters) {
 		Objects.requireNonNull(toExtendDocument, "toExtendDocument is not defined!");
 		Objects.requireNonNull(parameters, "Cannot extend the signature. SignatureParameters are not defined!");

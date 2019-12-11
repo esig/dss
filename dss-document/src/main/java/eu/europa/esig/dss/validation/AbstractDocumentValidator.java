@@ -284,7 +284,7 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 	 */
 	protected List<AdvancedSignature> prepareSignatureValidationContext(final ValidationContext validationContext) {
 		// not implemented by default
-		// see {@code DefaultDocumentValidator}
+		// see {@code SignedDocumentValidator}
 		return Collections.emptyList();
 	}
 	

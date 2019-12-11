@@ -33,4 +33,8 @@ public abstract class AbstractGetDataToSignASiCSWithCAdES extends AbstractGetDat
 		return "META-INF/signature.p7s";
 	}
 
+	protected String getTimestampFileName() {
+		return "META-INF/timestamp.tst";
+	}
+
 }

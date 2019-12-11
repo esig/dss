@@ -29,9 +29,8 @@ import eu.europa.esig.dss.utils.Utils;
 
 public abstract class AbstractDataToSignASiCEWithXAdES {
 
-	private static final String META_INF = "META-INF/";
+	protected static final String META_INF = "META-INF/";
     private static final String ZIP_ENTRY_ASICE_METAINF_XADES_SIGNATURE = META_INF + "signatures001.xml";
-    private static final String ZIP_OPEN_DOCUMENT_METAINF_XADES_SIGNATURE = META_INF + "documentsignatures.xml";
 
 	protected DSSDocument getASiCManifest(List<DSSDocument> documents) {
 		ASiCEWithXAdESManifestBuilder manifestBuilder = new ASiCEWithXAdESManifestBuilder(documents);
@@ -50,10 +49,6 @@ public abstract class AbstractDataToSignASiCEWithXAdES {
         }
     }
 	
-	protected String getSignatureFileNameForOpenDocument() {
-		return ZIP_OPEN_DOCUMENT_METAINF_XADES_SIGNATURE;
-	}
-
     private String getSignatureNumber(List<DSSDocument> existingSignatures) {
         int signatureNumbre = existingSignatures.size() + 1;
         String sigNumberStr = String.valueOf(signatureNumbre);

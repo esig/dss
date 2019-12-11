@@ -28,15 +28,18 @@ import java.util.List;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.GetDataToSignASiCWithCAdESHelper;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.signature.SigningOperation;
 
 public class DataToSignASiCEWithCAdESFromFiles extends AbstractDataToSignASiCEWithCAdES implements GetDataToSignASiCWithCAdESHelper {
 
+	private final SigningOperation operation;
 	private final List<DSSDocument> filesToBeSigned;
 	private final ASiCWithCAdESSignatureParameters parameters;
 
 	private DSSDocument toBeSigned;
 
-	public DataToSignASiCEWithCAdESFromFiles(List<DSSDocument> filesToBeSigned, ASiCWithCAdESSignatureParameters parameters) {
+	public DataToSignASiCEWithCAdESFromFiles(SigningOperation operation, List<DSSDocument> filesToBeSigned, ASiCWithCAdESSignatureParameters parameters) {
+		this.operation = operation;
 		this.filesToBeSigned = filesToBeSigned;
 		this.parameters = parameters;
 	}
@@ -44,7 +47,8 @@ public class DataToSignASiCEWithCAdESFromFiles extends AbstractDataToSignASiCEWi
 	@Override
 	public DSSDocument getToBeSigned() {
 		if (toBeSigned == null) {
-			toBeSigned = getASiCManifest(filesToBeSigned, Collections.<DSSDocument> emptyList(), Collections.<DSSDocument> emptyList(), parameters);
+			toBeSigned = getASiCManifest(operation, filesToBeSigned, Collections.<DSSDocument>emptyList(), Collections.<DSSDocument>emptyList(),
+					Collections.<DSSDocument>emptyList(), parameters);
 		}
 		return toBeSigned;
 	}
@@ -57,6 +61,11 @@ public class DataToSignASiCEWithCAdESFromFiles extends AbstractDataToSignASiCEWi
 	@Override
 	public String getSignatureFilename() {
 		return getSignatureFileName(parameters.aSiC(), Collections.<DSSDocument> emptyList());
+	}
+
+	@Override
+	public String getTimestampFilename() {
+		return getTimestampFileName(Collections.<DSSDocument>emptyList());
 	}
 
 	@Override

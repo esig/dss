@@ -191,6 +191,11 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		throw new DSSException("Cannot extend to " + parameters.getSignatureLevel().name());
 	}
 
+	@Override
+	public DSSDocument timestamp(List<DSSDocument> toTimestampDocuments, XAdESSignatureParameters parameters) {
+		throw new DSSException("Format not supported");
+	}
+
 	/**
 	 * The choice of profile according to the passed parameter.
 	 *

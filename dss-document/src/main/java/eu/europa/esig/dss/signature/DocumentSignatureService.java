@@ -24,7 +24,6 @@ import java.io.Serializable;
 
 import eu.europa.esig.dss.model.AbstractSerializableSignatureParameters;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
@@ -64,10 +63,8 @@ public interface DocumentSignatureService<SP extends AbstractSerializableSignatu
 	 * @param parameters
 	 *            set of the driving signing parameters
 	 * @return the data to be signed
-	 * @throws DSSException
-	 *             if an error occurred
 	 */
-	ToBeSigned getDataToSign(final DSSDocument toSignDocument, final SP parameters) throws DSSException;
+	ToBeSigned getDataToSign(final DSSDocument toSignDocument, final SP parameters);
 
 	/**
 	 * Signs the toSignDocument with the provided signatureValue.
@@ -79,10 +76,8 @@ public interface DocumentSignatureService<SP extends AbstractSerializableSignatu
 	 * @param signatureValue
 	 *            the signature value to incorporate
 	 * @return the signed document ({@code toSignDocument} with the incorporated signature or the detached signature)
-	 * @throws DSSException
-	 *             if an error occurred
 	 */
-	DSSDocument signDocument(final DSSDocument toSignDocument, final SP parameters, SignatureValue signatureValue) throws DSSException;
+	DSSDocument signDocument(final DSSDocument toSignDocument, final SP parameters, final SignatureValue signatureValue);
 
 	/**
 	 * Extends the level of the signatures in the {@code toExtendDocument}
@@ -92,10 +87,8 @@ public interface DocumentSignatureService<SP extends AbstractSerializableSignatu
 	 * @param parameters
 	 *            set of the driving signing parameters
 	 * @return the extended signature
-	 * @throws DSSException
-	 *             if an error occurred
 	 */
-	DSSDocument extendDocument(final DSSDocument toExtendDocument, final SP parameters) throws DSSException;
+	DSSDocument extendDocument(final DSSDocument toExtendDocument, final SP parameters);
 
 	/**
 	 * This setter allows to define the TSP (timestamp provider) source.
@@ -123,7 +116,7 @@ public interface DocumentSignatureService<SP extends AbstractSerializableSignatu
 	 * @param toTimestampDocument
 	 *                            the document to be timestamped
 	 * @param parameters
-	 *                            set of the driving signing parameters
+	 *                            set of the driving timestamping parameters
 	 * @return the timestamped document
 	 */
 	DSSDocument timestamp(final DSSDocument toTimestampDocument, final SP parameters);

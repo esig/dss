@@ -33,11 +33,13 @@ import eu.europa.esig.dss.utils.Utils;
 public class DataToSignASiCSWithCAdESFromArchive extends AbstractGetDataToSignASiCSWithCAdES implements GetDataToSignASiCWithCAdESHelper {
 
 	private final List<DSSDocument> embeddedSignatures;
+	private final List<DSSDocument> embeddedTimestamps;
 	private final List<DSSDocument> embeddedSignedFiles;
 	private final ASiCParameters asicParameters;
 
 	public DataToSignASiCSWithCAdESFromArchive(final ASiCExtractResult result, final ASiCParameters asicParameters) {
 		this.embeddedSignatures = result.getSignatureDocuments();
+		this.embeddedTimestamps = result.getTimestampDocuments();
 		this.embeddedSignedFiles = result.getSignedDocuments();
 		this.asicParameters = asicParameters;
 	}
@@ -45,6 +47,11 @@ public class DataToSignASiCSWithCAdESFromArchive extends AbstractGetDataToSignAS
 	@Override
 	public String getSignatureFilename() {
 		return getSignatureFileName(asicParameters);
+	}
+
+	@Override
+	public String getTimestampFilename() {
+		return getTimestampFileName();
 	}
 
 	@Override
@@ -89,8 +96,7 @@ public class DataToSignASiCSWithCAdESFromArchive extends AbstractGetDataToSignAS
 
 	@Override
 	public List<DSSDocument> getTimestamps() {
-		// not supported
-		return Collections.emptyList();
+		return embeddedTimestamps;
 	}
 
 }

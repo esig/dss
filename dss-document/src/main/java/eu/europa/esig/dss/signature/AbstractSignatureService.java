@@ -114,12 +114,18 @@ public abstract class AbstractSignatureService<SP extends AbstractSignatureParam
 		}
 
 		if (SigningOperation.SIGN.equals(operation)) {
-			finalName.append("-signed-");
+			finalName.append("-signed");
+		} else if (SigningOperation.TIMESTAMP.equals(operation)) {
+			finalName.append("-timestamped");
 		} else if (SigningOperation.EXTEND.equals(operation)) {
-			finalName.append("-extended-");
+			finalName.append("-extended");
 		}
 
-		finalName.append(Utils.lowerCase(level.name().replaceAll("_", "-")));
+		if (level != null) {
+			finalName.append('-');
+			finalName.append(Utils.lowerCase(level.name().replaceAll("_", "-")));
+		}
+
 		finalName.append('.');
 		
 		if (containerMimeType != null) {

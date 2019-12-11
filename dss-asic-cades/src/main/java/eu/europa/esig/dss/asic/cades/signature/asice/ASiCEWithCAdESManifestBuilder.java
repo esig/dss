@@ -31,6 +31,7 @@ import eu.europa.esig.dss.asic.common.definition.ASiCNamespace;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.signature.SigningOperation;
 
 /**
  * This class is used to generate the ASiCManifest.xml content (ASiC-E)
@@ -54,14 +55,16 @@ import eu.europa.esig.dss.model.MimeType;
  */
 public class ASiCEWithCAdESManifestBuilder extends AbstractManifestBuilder {
 
+	private final SigningOperation operation;
 	private final List<DSSDocument> documents;
 	private final DigestAlgorithm digestAlgorithm;
-	private final String signatureUri;
+	private final String uri;
 
-	public ASiCEWithCAdESManifestBuilder(List<DSSDocument> documents, DigestAlgorithm digestAlgorithm, String signatureUri) {
+	public ASiCEWithCAdESManifestBuilder(SigningOperation operation, List<DSSDocument> documents, DigestAlgorithm digestAlgorithm, String uri) {
+		this.operation = operation;
 		this.documents = documents;
 		this.digestAlgorithm = digestAlgorithm;
-		this.signatureUri = signatureUri;
+		this.uri = uri;
 	}
 
 	public Document build() {
@@ -69,7 +72,11 @@ public class ASiCEWithCAdESManifestBuilder extends AbstractManifestBuilder {
 		final Element asicManifestDom = DomUtils.createElementNS(documentDom, ASiCNamespace.NS, ASiCElement.ASIC_MANIFEST);
 		documentDom.appendChild(asicManifestDom);
 
-		addSigReference(documentDom, asicManifestDom, signatureUri, MimeType.PKCS7);
+		if (SigningOperation.SIGN == operation) {
+			addSigReference(documentDom, asicManifestDom, uri, MimeType.PKCS7);
+		} else {
+			addSigReference(documentDom, asicManifestDom, uri, MimeType.TST);
+		}
 
 		for (DSSDocument document : documents) {
 			addDataObjectReference(documentDom, asicManifestDom, document, digestAlgorithm);
@@ -77,4 +84,5 @@ public class ASiCEWithCAdESManifestBuilder extends AbstractManifestBuilder {
 
 		return documentDom;
 	}
+
 }

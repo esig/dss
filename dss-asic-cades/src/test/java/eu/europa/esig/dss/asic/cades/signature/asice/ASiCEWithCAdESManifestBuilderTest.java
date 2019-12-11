@@ -38,6 +38,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.signature.SigningOperation;
 
 public class ASiCEWithCAdESManifestBuilderTest {
 
@@ -54,7 +55,7 @@ public class ASiCEWithCAdESManifestBuilderTest {
 		List<DSSDocument> documents = new ArrayList<DSSDocument>();
 		documents.add(new InMemoryDocument(new byte[] { 1, 2, 3 }, "test.bin"));
 		documents.add(new InMemoryDocument(new byte[] { 1, 2, 3 }, "test", MimeType.BINARY));
-		ASiCEWithCAdESManifestBuilder builder = new ASiCEWithCAdESManifestBuilder(documents, DigestAlgorithm.SHA256, "signature.p7s");
+		ASiCEWithCAdESManifestBuilder builder = new ASiCEWithCAdESManifestBuilder(SigningOperation.SIGN, documents, DigestAlgorithm.SHA256, "signature.p7s");
 		Document build = builder.build();
 
 		validator.validate(new DOMSource(build));

@@ -29,6 +29,8 @@ import eu.europa.esig.dss.utils.Utils;
 
 public class DataToSignOpenDocument extends AbstractDataToSignASiCEWithXAdES implements GetDataToSignASiCWithXAdESHelper {
 
+	private static final String ZIP_OPEN_DOCUMENT_METAINF_XADES_SIGNATURE = META_INF + "documentsignatures.xml";
+
 	private final List<DSSDocument> signedDocuments;
 	private final List<DSSDocument> existingSignatures;
 	private final List<DSSDocument> existingManifests;
@@ -46,7 +48,12 @@ public class DataToSignOpenDocument extends AbstractDataToSignASiCEWithXAdES imp
 
 	@Override
 	public String getSignatureFilename() {
-		return getSignatureFileNameForOpenDocument();
+		return ZIP_OPEN_DOCUMENT_METAINF_XADES_SIGNATURE;
+	}
+
+	@Override
+	public String getTimestampFilename() {
+		throw new UnsupportedOperationException("Timestamp file cannot be added with ASiC-E + XAdES");
 	}
 
 	@Override

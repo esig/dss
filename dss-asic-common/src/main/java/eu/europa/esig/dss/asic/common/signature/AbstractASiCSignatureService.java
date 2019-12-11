@@ -77,7 +77,14 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 
 	@Override
 	public DSSDocument signDocument(DSSDocument toSignDocument, SP parameters, SignatureValue signatureValue) {
+		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
 		return signDocument(Arrays.asList(toSignDocument), parameters, signatureValue);
+	}
+
+	@Override
+	public DSSDocument timestamp(DSSDocument toTimestampDocument, SP parameters) {
+		Objects.requireNonNull(toTimestampDocument, "toTimestampDocument cannot be null!");
+		return timestamp(Arrays.asList(toTimestampDocument), parameters);
 	}
 
 	protected void extractCurrentArchive(DSSDocument archive) {
