@@ -451,6 +451,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		checkMessageDigestAlgorithm(diagnosticData);
 		checkSignaturePolicyIdentifier(diagnosticData);
 		checkPdfRevision(diagnosticData);
+		checkStructureValidation(diagnosticData);
 
 		checkNoDuplicateCompleteCertificates(diagnosticData);
 		checkNoDuplicateCompleteRevocationData(diagnosticData);
@@ -759,6 +760,10 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 	}
 	
 	protected void checkPdfRevision(DiagnosticData diagnosticData) {
+		// not implemented by default
+	}
+	
+	protected void checkStructureValidation(DiagnosticData diagnosticData) {
 		// not implemented by default
 	}
 

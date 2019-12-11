@@ -82,7 +82,7 @@ public class XAdESLevelBEnvelopedWithReferencesWithoutTransformationsTest extend
 	private DSSDocument createDocument(String filePath) throws IOException {
 		File file = new File(filePath);
 		byte[] content = Utils.toByteArray(new FileInputStream(file));
-		return new InMemoryDocument(content, filePath);
+		return new InMemoryDocument(content, file.getName());
 	}
 
 	private DSSReference createReference(DSSDocument fileDocument) {
