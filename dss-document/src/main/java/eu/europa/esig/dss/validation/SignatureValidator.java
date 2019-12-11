@@ -4,7 +4,6 @@ import java.util.List;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.executor.SignatureProcessExecutor;
 
 public interface SignatureValidator extends DocumentValidator {
@@ -60,6 +59,7 @@ public interface SignatureValidator extends DocumentValidator {
 	 * 
 	 * @return {@link SignatureProcessExecutor}
 	 */
+	@Override
 	SignatureProcessExecutor getDefaultProcessExecutor();
 
 	/**
@@ -81,10 +81,9 @@ public interface SignatureValidator extends DocumentValidator {
 	/**
 	 * Prepares and fills {@code validationContext} for the signature validation
 	 * @param validationContext {@link ValidationContext} to prepare
-	 * @param validationPolicy {@link ValidationPolicy} to process
 	 * @return list of {@link AdvancedSignature}s to be validated
 	 */
-	List<AdvancedSignature> prepareSignatureValidationContext(final ValidationContext validationContext, final ValidationPolicy validationPolicy);
+	List<AdvancedSignature> prepareSignatureValidationContext(final ValidationContext validationContext);
 
 	/**
 	 * This method process the signature validation on the given {@code allSignatureList}

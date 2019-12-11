@@ -30,12 +30,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
-import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.validation.executor.SignatureProcessExecutor;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
@@ -170,14 +168,13 @@ public abstract class SignedDocumentValidator extends AbstractDocumentValidator 
 	}
 	
 	@Override
-	protected DiagnosticDataBuilder prepareDiagnosticDataBuilder(final ValidationContext validationContext, final ValidationPolicy validationPolicy) {		
-		return super.prepareDiagnosticDataBuilder(validationContext, validationPolicy).containerInfo(getContainerInfo());
+	protected DiagnosticDataBuilder prepareDiagnosticDataBuilder(final ValidationContext validationContext) {
+		return super.prepareDiagnosticDataBuilder(validationContext).containerInfo(getContainerInfo());
 	}
 	
 	@Override
-	public List<AdvancedSignature> prepareSignatureValidationContext(final ValidationContext validationContext, final ValidationPolicy validationPolicy) {
+	public List<AdvancedSignature> prepareSignatureValidationContext(final ValidationContext validationContext) {
 		ensureSignaturePolicyDetectorInitialized();
-		boolean structuralValidation = isRequireStructuralValidation(validationPolicy);
 		
 		final List<AdvancedSignature> allSignatureList = getAllSignatures();
 		// The list of all signing certificates is created to allow a parallel
@@ -193,11 +190,11 @@ public abstract class SignedDocumentValidator extends AbstractDocumentValidator 
 		
 		prepareCertificatesAndTimestamps(allSignatureList, validationContext);
 
-		return processSignaturesValidation(validationContext, allSignatureList, structuralValidation);
+		return processSignaturesValidation(validationContext, allSignatureList);
 	}
 
 	public List<AdvancedSignature> processSignaturesValidation(final ValidationContext validationContext, 
-			final List<AdvancedSignature> allSignatureList, boolean structuralValidation) {
+			final List<AdvancedSignature> allSignatureList) {
 		
 		final ListCRLSource signatureCRLSource = getSignatureCrlSource(allSignatureList);
 		certificateVerifier.setSignatureCRLSource(signatureCRLSource);
@@ -210,9 +207,7 @@ public abstract class SignedDocumentValidator extends AbstractDocumentValidator 
 		for (final AdvancedSignature signature : allSignatureList) {
 			signature.checkSigningCertificate();
 			signature.checkSignatureIntegrity();
-			if (structuralValidation) {
-				signature.validateStructure();
-			}
+			signature.validateStructure();
 			signature.checkSignaturePolicy(signaturePolicyProvider);
 
 			signature.populateCRLTokenLists(signatureCRLSource);
@@ -289,10 +284,6 @@ public abstract class SignedDocumentValidator extends AbstractDocumentValidator 
 			}
 			signature.prepareTimestamps(validationContext);
 		}
-	}
-
-	protected boolean isRequireStructuralValidation(ValidationPolicy validationPolicy) {
-		return ((validationPolicy != null) && (validationPolicy.getStructuralValidationConstraint(Context.SIGNATURE) != null));
 	}
 
 }

@@ -236,7 +236,7 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 
 		final ValidationContext validationContext = new SignatureValidationContext(validationCertPool);
 		
-		final XmlDiagnosticData diagnosticData = prepareDiagnosticDataBuilder(validationContext, validationPolicy).build();
+		final XmlDiagnosticData diagnosticData = prepareDiagnosticDataBuilder(validationContext).build();
 
 		return processValidationPolicy(diagnosticData, validationPolicy);
 	}
@@ -253,15 +253,14 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 	 * Creates a DiagnosticData to pass to the validation process
 	 * 
 	 * @param validationContext {@link ValidationContext}
-	 * @param validationPolicy {@link ValidationPolicy} to use
 	 * @return {@link DiagnosticData}
 	 */
-	protected DiagnosticDataBuilder prepareDiagnosticDataBuilder(final ValidationContext validationContext, final ValidationPolicy validationPolicy) {
-		List<AdvancedSignature> allSignatures = prepareSignatureValidationContext(validationContext, validationPolicy);
+	protected DiagnosticDataBuilder prepareDiagnosticDataBuilder(final ValidationContext validationContext) {
+		List<AdvancedSignature> allSignatures = prepareSignatureValidationContext(validationContext);
 		Map<TimestampToken, List<SignatureScope>> timestamps = Collections.emptyMap();
 		if (Utils.isCollectionEmpty(allSignatures)) {
 			// in case if no signatures found, process the timestamp only validation
-			timestamps = prepareTimestampValidationContext(validationContext, validationPolicy);
+			timestamps = prepareTimestampValidationContext(validationContext);
 		}
 		
 		return new DiagnosticDataBuilder().document(document).foundSignatures(allSignatures)
@@ -281,10 +280,9 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 	 * Prepares the {@code validationContext} for signature validation process and returns a list of signatures to validate
 	 * 
 	 * @param validationContext {@link ValidationContext}
-	 * @param validationPolicy {@link ValidationPolicy}
 	 * @return list of {@link AdvancedSignature}s
 	 */
-	protected List<AdvancedSignature> prepareSignatureValidationContext(final ValidationContext validationContext, final ValidationPolicy validationPolicy) {
+	protected List<AdvancedSignature> prepareSignatureValidationContext(final ValidationContext validationContext) {
 		// not implemented by default
 		// see {@code DefaultDocumentValidator}
 		return Collections.emptyList();
@@ -294,11 +292,9 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 	 * Prepares the {@code validationContext} for a timestamp validation process
 	 * 
 	 * @param validationContext {@link ValidationContext}
-	 * @param validationPolicy {@link ValidationPolicy}
 	 * @return a map of {@link TimestampToken}s to be validated and their {@link SignatureScope}s
 	 */
-	protected Map<TimestampToken, List<SignatureScope>> prepareTimestampValidationContext(
-			final ValidationContext validationContext, final ValidationPolicy validationPolicy) {
+	protected Map<TimestampToken, List<SignatureScope>> prepareTimestampValidationContext(final ValidationContext validationContext) {
 		
 		Map<TimestampToken, List<SignatureScope>> timestamps = getTimestamps();
 		setTimestamedReferences(timestamps);
