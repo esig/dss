@@ -150,6 +150,10 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return signature.isCounterSignature() != null && signature.isCounterSignature();
 	}
 	
+	public boolean isSignatureDuplicated() {
+		return signature.isDuplicated() != null && signature.isDuplicated();
+	}
+	
 	public XmlSignatureDigestReference getSignatureDigestReference() {
 		return signature.getSignatureDigestReference();
 	}

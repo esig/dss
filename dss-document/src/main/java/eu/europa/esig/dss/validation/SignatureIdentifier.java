@@ -34,11 +34,11 @@ public class SignatureIdentifier extends Identifier {
 	private static final long serialVersionUID = -6700888325973167656L;
 
 	public static SignatureIdentifier buildSignatureIdentifier(Date signingTime, TokenIdentifier tokenIdentifier) {
-		return buildSignatureIdentifier(signingTime, tokenIdentifier, null);
+		return buildSignatureIdentifier(signingTime, tokenIdentifier, new String[] {});
 	}
 	
-	public static SignatureIdentifier buildSignatureIdentifier(Date signingTime, TokenIdentifier tokenIdentifier, String customIdentifier) {
-		return buildSignatureIdentifier(signingTime, tokenIdentifier, null, customIdentifier);
+	public static SignatureIdentifier buildSignatureIdentifier(Date signingTime, TokenIdentifier tokenIdentifier, String... customIdentifiers) {
+		return buildSignatureIdentifier(signingTime, tokenIdentifier, null, customIdentifiers);
 	}
 
 	public static SignatureIdentifier buildSignatureIdentifier(Date signingTime, TokenIdentifier tokenIdentifier, 

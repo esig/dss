@@ -376,6 +376,8 @@ public class DiagnosticDataBuilder {
 			Collection<XmlSignature> xmlSignatures = buildXmlSignatures(signatures);
 			diagnosticData.getSignatures().addAll(xmlSignatures);
 			
+			attachCounterSignatures(signatures);
+			
 			Collection<XmlTimestamp> XmlTimestamps = buildXmlTimestamps(signatures);
 			diagnosticData.getUsedTimestamps().addAll(XmlTimestamps);
 		}
@@ -475,11 +477,26 @@ public class DiagnosticDataBuilder {
 	private Collection<XmlSignature> buildXmlSignatures(List<AdvancedSignature> signatures) {
 		List<XmlSignature> builtSignatures = new ArrayList<XmlSignature>();
 		for (AdvancedSignature advancedSignature : signatures) {
-			XmlSignature currentXmlSignature = buildDetachedXmlSignature(advancedSignature);
-			xmlSignatures.put(advancedSignature.getId(), currentXmlSignature);
-			builtSignatures.add(currentXmlSignature);
+			if (!xmlSignatures.keySet().contains(advancedSignature.getId())) {
+				XmlSignature currentXmlSignature = buildDetachedXmlSignature(advancedSignature);
+				xmlSignatures.put(advancedSignature.getId(), currentXmlSignature);
+				builtSignatures.add(currentXmlSignature);
+			}
 		}
 		return builtSignatures;
+	}
+	
+	private void attachCounterSignatures(List<AdvancedSignature> signatures) {
+		for (AdvancedSignature advancedSignature : signatures) {
+			XmlSignature currentSignature = xmlSignatures.get(advancedSignature.getId());
+			// attach master
+			AdvancedSignature masterSignature = advancedSignature.getMasterSignature();
+			if (masterSignature != null) {
+				XmlSignature xmlMasterSignature = xmlSignatures.get(masterSignature.getId());
+				currentSignature.setCounterSignature(true);
+				currentSignature.setParent(xmlMasterSignature);
+			}
+		}
 	}
 	
 	private Collection<XmlTimestamp> buildXmlTimestamps(List<AdvancedSignature> signatures) {
@@ -492,13 +509,6 @@ public class DiagnosticDataBuilder {
 			}
 			// attach timestamps
 			currentSignature.setFoundTimestamps(getXmlFoundTimestamps(advancedSignature));
-			// attach master
-			AdvancedSignature masterSignature = advancedSignature.getMasterSignature();
-			if (masterSignature != null) {
-				XmlSignature xmlMasterSignature = xmlSignatures.get(masterSignature.getId());
-				currentSignature.setCounterSignature(true);
-				currentSignature.setParent(xmlMasterSignature);
-			}
 		}
 		return builtTimestamps;
 	}
@@ -623,6 +633,9 @@ public class DiagnosticDataBuilder {
 
 	private XmlSignature buildDetachedXmlSignature(AdvancedSignature signature) {
 		XmlSignature xmlSignature = new XmlSignature();
+		if (hasDuplicate(signature)) {
+			xmlSignature.setDuplicated(true);
+		}
 		xmlSignature.setSignatureFilename(removeSpecialCharsForXml(signature.getSignatureFilename()));
 
 		xmlSignature.setId(signature.getId());
@@ -664,6 +677,15 @@ public class DiagnosticDataBuilder {
 		xmlSignature.setSignatureValue(signature.getSignatureValue());
 
 		return xmlSignature;
+	}
+	
+	private boolean hasDuplicate(AdvancedSignature currentSignature) {
+		for (AdvancedSignature signature : signatures) {
+			if (currentSignature != signature && currentSignature.getId().equals(signature.getId())) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	private XmlPDFRevision getXmlPDFRevision(PdfRevision pdfRevision) {
