@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import java.io.StringReader;
 import java.math.BigInteger;
 import java.security.PublicKey;
 import java.util.ArrayList;
@@ -31,7 +30,7 @@ import java.util.List;
 
 import javax.security.auth.x500.X500Principal;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
-import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.dom.DOMSource;
 
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.exceptions.XMLSecurityException;
@@ -1241,9 +1240,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public void validateStructure() {
-		final String string = DomUtils.xmlToString(signatureElement);
-		StringReader stringReader = new StringReader(string);
-		structureValidation = DSSXMLUtils.validateAgainstXSD(new StreamSource(stringReader));
+		structureValidation = DSSXMLUtils.validateAgainstXSD(xadesPaths.getXSDUtils(), new DOMSource(signatureElement));
 	}
 
 	/**

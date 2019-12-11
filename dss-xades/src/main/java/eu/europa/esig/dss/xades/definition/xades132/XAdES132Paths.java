@@ -26,6 +26,8 @@ import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
+import eu.europa.esig.xades.XAdES319132Utils;
+import eu.europa.esig.xmldsig.XSDAbstractUtils;
 
 public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 
@@ -438,6 +440,11 @@ public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 	@Override
 	public String getCurrentQualifyingPropertiesPath() {
 		return fromCurrentPosition(XAdES132Element.QUALIFYING_PROPERTIES);
+	}
+
+	@Override
+	public XSDAbstractUtils getXSDUtils() {
+		return XAdES319132Utils.newInstance();
 	}
 
 }
