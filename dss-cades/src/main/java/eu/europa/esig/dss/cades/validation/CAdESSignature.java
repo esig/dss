@@ -790,7 +790,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			}
 			boolean detachedSignature = CMSUtils.isDetachedSignature(cmsSignedData);
 			SignerInformation signerInformationToCheck = null;
-			if (detachedSignature) {
+			if (detachedSignature && !isCounterSignature()) {
 				if (Utils.isCollectionEmpty(detachedContents)) {
 					candidatesForSigningCertificate.setTheCertificateValidity(bestCandidate);
 					signatureCryptographicVerification.setErrorMessage("Detached file not found!");
@@ -1136,6 +1136,15 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	public byte[] getSignatureValue() {
 		return signerInformation.getSignature();
 	}
+	
+	/**
+	 * Checks if the signature is a counter signature
+	 * 
+	 * @return TRUE if the signature is a counter signature, FALSE otherwise
+	 */
+	public boolean isCounterSignature() {
+		return signerInformation.isCounterSignature();
+	}
 
 	@Override
 	public List<AdvancedSignature> getCounterSignatures() {
@@ -1160,7 +1169,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	public DSSDocument getOriginalDocument() throws DSSException {
 		// RFC 5652 ch 11.4.
-		if (signerInformation.isCounterSignature()) {
+		if (isCounterSignature()) {
 			return new InMemoryDocument(getMasterSignature().getSignatureValue());
 		}
 
