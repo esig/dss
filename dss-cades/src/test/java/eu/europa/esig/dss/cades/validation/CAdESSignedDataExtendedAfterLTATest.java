@@ -27,6 +27,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
@@ -44,7 +45,9 @@ public class CAdESSignedDataExtendedAfterLTATest extends PKIFactoryAccess {
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		List<TimestampWrapper> allTimestamps = diagnosticData.getTimestampList();
+
+		SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		List<TimestampWrapper> allTimestamps = signatureById.getTimestampList();
 		
 		assertEquals(0, allTimestamps.get(0).getTimestampedRevocationIds().size());
 		assertEquals(2, allTimestamps.get(1).getTimestampedRevocationIds().size());

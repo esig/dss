@@ -148,7 +148,7 @@ public class DiagnosticDataBuilder {
 	private Set<CertificateToken> usedCertificates;
 	private Map<CertificateToken, Set<CertificateSourceType>> certificateSourceTypes;
 	private Set<RevocationToken> usedRevocations;
-	private List<TimestampToken> externalTimestamps;
+	private Set<TimestampToken> usedTimestamps;
 	private List<SignatureScope> signatureScopes;
 	private List<CertificateSource> trustedCertSources = new ArrayList<CertificateSource>();
 	private Date validationDate;
@@ -163,6 +163,7 @@ public class DiagnosticDataBuilder {
 	private Map<String, XmlRevocation> xmlRevocations = new HashMap<String, XmlRevocation>();
 	private Map<String, XmlSignature> xmlSignatures = new HashMap<String, XmlSignature>();
 	private Map<String, XmlTimestamp> xmlTimestamps = new HashMap<String, XmlTimestamp>();
+	private Map<String, XmlTimestampedObject> xmlTimestampedObjects = new HashMap<String, XmlTimestampedObject>();
 	private Map<String, XmlSignerData> xmlSignedData = new HashMap<String, XmlSignerData>();
 	private Map<String, XmlOrphanToken> xmlOrphanTokens = new HashMap<String, XmlOrphanToken>();
 	private Map<String, XmlTrustedList> xmlTrustedLists = new HashMap<String, XmlTrustedList>();
@@ -245,14 +246,14 @@ public class DiagnosticDataBuilder {
 	}
 	
 	/**
-	 * This method allows to set the external timestamps
-	 * NOTE: used in case of timestamp only validation
+	 * This method allows to set the timestamps
 	 * 
-	 * @param timestampTokens a list of validated {@link TimestampToken}s
+	 * @param usedTimestamps
+	 *                       a set of validated {@link TimestampToken}s
 	 * @return the builder
 	 */
-	public DiagnosticDataBuilder setExternalTimestamps(List<TimestampToken> timestampTokens) {
-		this.externalTimestamps = timestampTokens;
+	public DiagnosticDataBuilder usedTimestamps(Set<TimestampToken> usedTimestamps) {
+		this.usedTimestamps = usedTimestamps;
 		return this;
 	}
 	
@@ -371,25 +372,20 @@ public class DiagnosticDataBuilder {
 		// collect original signer documents
 		Collection<XmlSignerData> xmlSignerData = buildXmlSignerData();
 		diagnosticData.getOriginalDocuments().addAll(xmlSignerData);
-
+		
 		if (Utils.isCollectionNotEmpty(signatures)) {
 			Collection<XmlSignature> xmlSignatures = buildXmlSignatures(signatures);
 			diagnosticData.getSignatures().addAll(xmlSignatures);
-			
 			attachCounterSignatures(signatures);
-			
-			Collection<XmlTimestamp> XmlTimestamps = buildXmlTimestamps(signatures);
-			diagnosticData.getUsedTimestamps().addAll(XmlTimestamps);
 		}
-		
-		if (Utils.isCollectionNotEmpty(externalTimestamps)) {
-			List<XmlTimestamp> builtTimestamps = new ArrayList<XmlTimestamp>(); 
-			for (XmlTimestamp xmlTimestamp : getXmlTimestamps(externalTimestamps)) {
-				addXmlTimestampToList(builtTimestamps, xmlTimestamp);
-			}
+
+		if (Utils.isCollectionNotEmpty(usedTimestamps)) {
+			List<XmlTimestamp> builtTimestamps = getXmlTimestamps(usedTimestamps);
 			diagnosticData.getUsedTimestamps().addAll(builtTimestamps);
+			linkSignaturesAndTimestamps(signatures);
+			linkTimestampsAndTimestampsObjects();
 		}
-		
+
 		if (Utils.isMapNotEmpty(xmlOrphanTokens)) {
 			diagnosticData.getOrphanTokens().addAll(xmlOrphanTokens.values());
 		}
@@ -407,6 +403,13 @@ public class DiagnosticDataBuilder {
 		}
 
 		return diagnosticData;
+	}
+
+	private void linkTimestampsAndTimestampsObjects() {
+		for (TimestampToken timestampToken : usedTimestamps) {
+			XmlTimestamp xmlTimestampToken = xmlTimestamps.get(timestampToken.getDSSIdAsString());
+			xmlTimestampToken.setTimestampedObjects(getXmlTimestampedObjects(timestampToken));
+		}
 	}
 
 	private Collection<XmlCertificate> buildXmlCertificates() {
@@ -499,18 +502,12 @@ public class DiagnosticDataBuilder {
 		}
 	}
 	
-	private Collection<XmlTimestamp> buildXmlTimestamps(List<AdvancedSignature> signatures) {
-		List<XmlTimestamp> builtTimestamps = new ArrayList<XmlTimestamp>();
+	private void linkSignaturesAndTimestamps(List<AdvancedSignature> signatures) {
 		for (AdvancedSignature advancedSignature : signatures) {
 			XmlSignature currentSignature = xmlSignatures.get(advancedSignature.getId());
-			// build timestamps
-			for (XmlTimestamp xmlTimestamp : getXmlTimestamps(advancedSignature)) {
-				addXmlTimestampToList(builtTimestamps, xmlTimestamp);
-			}
 			// attach timestamps
 			currentSignature.setFoundTimestamps(getXmlFoundTimestamps(advancedSignature));
 		}
-		return builtTimestamps;
 	}
 
 	private Collection<XmlTrustedList> buildXmlTrustedLists(TrustedListsCertificateSource tlCS) {
@@ -791,33 +788,18 @@ public class DiagnosticDataBuilder {
 		return Utils.EMPTY_STRING;
 	}
 	
-	private void addXmlTimestampToList(List<XmlTimestamp> timestampList, XmlTimestamp timestampToAdd) {
-		boolean contains = false;
-		for (XmlTimestamp timestamp : timestampList) {
-			if (timestamp.getId().equals(timestampToAdd.getId())) {
-				List<XmlTimestampedObject> timestampedObjects = timestampToAdd.getTimestampedObjects();
-				for (XmlTimestampedObject timestampedObject : timestampedObjects) {
-					if (!isTimestampContainsReference(timestamp, timestampedObject)) {
-						timestamp.getTimestampedObjects().add(timestampedObject);
-					}
-				}
-				contains = true;
+	private List<XmlTimestamp> getXmlTimestamps(Set<TimestampToken> timestamps) {
+		List<XmlTimestamp> xmlTimestampsList = new ArrayList<XmlTimestamp>();
+		if (Utils.isCollectionNotEmpty(timestamps)) {
+			for (TimestampToken timestampToken : timestamps) {
+				XmlTimestamp xmlTimestamp = getXmlTimestamp(timestampToken);
+				xmlTimestampsList.add(xmlTimestamp);
+				xmlTimestamps.put(xmlTimestamp.getId(), xmlTimestamp);
 			}
 		}
-		if (!contains) {
-			timestampList.add(timestampToAdd);
-		}
+		return xmlTimestampsList;
 	}
 	
-	private boolean isTimestampContainsReference(XmlTimestamp timestamp, XmlTimestampedObject timestampedObject) {
-		for (XmlTimestampedObject oldObject : timestamp.getTimestampedObjects()) {
-			if (timestampedObject.getToken().getId().equals(oldObject.getToken().getId())) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	private XmlRevocation buildDetachedXmlRevocation(RevocationToken revocationToken) {
 
 		final XmlRevocation xmlRevocation = new XmlRevocation();
@@ -1158,12 +1140,6 @@ public class DiagnosticDataBuilder {
 		return orphanToken;
 	}
 
-	private List<XmlTimestamp> getXmlTimestamps(AdvancedSignature signature) {
-		List<XmlTimestamp> xmlTimestamps = new ArrayList<XmlTimestamp>();
-		xmlTimestamps.addAll(getXmlTimestamps(signature.getAllTimestamps()));
-		return xmlTimestamps;
-	}
-	
 	private List<XmlFoundTimestamp> getXmlFoundTimestamps(AdvancedSignature signature) {
 		List<XmlFoundTimestamp> foundTimestamps = new ArrayList<XmlFoundTimestamp>();
 		foundTimestamps.addAll(getFoundTimestamps(signature.getAllTimestamps()));
@@ -1435,18 +1411,6 @@ public class DiagnosticDataBuilder {
 		return xmlPolicy;
 	}
 
-	private List<XmlTimestamp> getXmlTimestamps(List<TimestampToken> timestamps) {
-		List<XmlTimestamp> xmlTimestampsList = new ArrayList<XmlTimestamp>();
-		if (Utils.isCollectionNotEmpty(timestamps)) {
-			for (TimestampToken timestampToken : timestamps) {
-				XmlTimestamp xmlTimestamp = getXmlTimestamp(timestampToken);
-				xmlTimestampsList.add(xmlTimestamp);
-				xmlTimestamps.put(xmlTimestamp.getId(), xmlTimestamp);
-			}
-		}
-		return xmlTimestampsList;
-	}
-
 	private XmlTimestamp getXmlTimestamp(final TimestampToken timestampToken) {
 
 		final XmlTimestamp xmlTimestampToken = new XmlTimestamp();
@@ -1462,8 +1426,6 @@ public class DiagnosticDataBuilder {
 
 		xmlTimestampToken.setSigningCertificate(getXmlSigningCertificate(timestampToken.getPublicKeyOfTheSigner()));
 		xmlTimestampToken.setCertificateChain(getXmlForCertificateChain(timestampToken.getPublicKeyOfTheSigner()));
-		
-		xmlTimestampToken.setTimestampedObjects(getXmlTimestampedObjects(timestampToken));
 
 		if (includeRawTimestampTokens) {
 			xmlTimestampToken.setBase64Encoded(timestampToken.getEncoded());
@@ -1525,7 +1487,13 @@ public class DiagnosticDataBuilder {
 		if (Utils.isCollectionNotEmpty(timestampReferences)) {
 			List<XmlTimestampedObject> objects = new ArrayList<XmlTimestampedObject>();
 			for (final TimestampedReference timestampReference : timestampReferences) {
-				objects.add(createXmlTimestampedObject(timestampReference));
+				String id = timestampReference.getObjectId();
+				XmlTimestampedObject timestampedObject = xmlTimestampedObjects.get(id);
+				if (timestampedObject == null) {
+					timestampedObject = createXmlTimestampedObject(timestampReference);
+					xmlTimestampedObjects.put(id, timestampedObject);
+				}
+				objects.add(timestampedObject);
 			}
 			return objects;
 		}

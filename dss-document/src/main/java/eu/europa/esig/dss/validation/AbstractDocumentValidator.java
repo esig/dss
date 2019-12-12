@@ -264,8 +264,9 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 		}
 		
 		return new DiagnosticDataBuilder().document(document).foundSignatures(allSignatures)
-				.setExternalTimestamps(new ArrayList<TimestampToken>(timestamps.keySet()))
-				.usedCertificates(validationContext.getProcessedCertificates()).usedRevocations(validationContext.getProcessedRevocations())
+				.usedTimestamps(validationContext.getProcessedTimestamps())
+				.usedCertificates(validationContext.getProcessedCertificates())
+				.usedRevocations(validationContext.getProcessedRevocations())
 				.signatureScope(getSignatureScope(allSignatures, timestamps))
 				.setDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm())
 				.includeRawCertificateTokens(certificateVerifier.isIncludeCertificateTokenValues())

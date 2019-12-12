@@ -159,10 +159,10 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 							timestamp.getTimestampedReferences().addAll(cadesSig.getTimestampReferencesForArchiveTimestamp(cadesTimestamps));
 							advancedSignature.addExternalTimestamp(timestamp);
 
-							return timestamp;
 						}
 					}
 				}
+				return timestamp;
 			}
 		} else if (tspValidator instanceof SingleTimestampValidator) {
 			return ((SingleTimestampValidator) tspValidator).getTimestamp();

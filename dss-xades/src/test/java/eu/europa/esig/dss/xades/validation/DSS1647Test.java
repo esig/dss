@@ -59,13 +59,14 @@ public class DSS1647Test {
 		List<TimestampWrapper> timestamps = diagnosticData.getTimestampList();
 		assertEquals(2, timestamps.size());
 		
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+
+		timestamps = signature.getTimestampList();
 		TimestampWrapper archiveTimestamp = timestamps.get(1);
 		assertEquals(TimestampType.ARCHIVE_TIMESTAMP, archiveTimestamp.getType());
 		assertEquals(4, archiveTimestamp.getTimestampedCertificateIds().size());
 		assertEquals(3, archiveTimestamp.getTimestampedRevocationIds().size());
 		assertEquals(1, archiveTimestamp.getTimestampedTimestampIds().size());
-		
-		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		
 		List<String> timestampValidationDataCertificateIds = signature.getFoundCertificateIds(CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
 		assertEquals(1, timestampValidationDataCertificateIds.size());
