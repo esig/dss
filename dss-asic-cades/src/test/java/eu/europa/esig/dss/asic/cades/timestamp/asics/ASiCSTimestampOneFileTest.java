@@ -20,7 +20,9 @@
  */
 package eu.europa.esig.dss.asic.cades.timestamp.asics;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 
@@ -28,6 +30,8 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -42,7 +46,7 @@ public class ASiCSTimestampOneFileTest extends PKIFactoryAccess {
 	@Test
 	public void test() throws IOException {
 		DocumentSignatureService<ASiCWithCAdESSignatureParameters> service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
-		service.setTspSource(getAlternateGoodTsa());
+		service.setTspSource(getGoodTsa());
 
 		DSSDocument documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
 
@@ -52,15 +56,50 @@ public class ASiCSTimestampOneFileTest extends PKIFactoryAccess {
 		DSSDocument archiveWithTimestamp = service.timestamp(documentToSign, signatureParameters);
 		assertNotNull(archiveWithTimestamp);
 
-		archiveWithTimestamp.save("target/test.asics");
+//		archiveWithTimestamp.save("target/test.asics");
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(archiveWithTimestamp);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
-
-		reports.print();
-
 		assertNotNull(reports);
+
+//		reports.print();
+
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		assertEquals(0, diagnosticData.getSignatureIdList().size());
+		assertEquals(1, diagnosticData.getTimestampIdList().size());
+
+		for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
+			assertTrue(timestamp.isMessageImprintDataFound());
+			assertTrue(timestamp.isMessageImprintDataIntact());
+			assertTrue(timestamp.isSignatureIntact());
+			assertTrue(timestamp.isSignatureValid());
+		}
+
+		signatureParameters = new ASiCWithCAdESSignatureParameters();
+		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
+
+		archiveWithTimestamp = service.timestamp(archiveWithTimestamp, signatureParameters);
+
+//		archiveWithTimestamp.save("target/test-one-file-2-times.asics");
+
+		validator = SignedDocumentValidator.fromDocument(archiveWithTimestamp);
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
+		reports = validator.validateDocument();
+		assertNotNull(reports);
+
+//		reports.print();
+
+		diagnosticData = reports.getDiagnosticData();
+		assertEquals(0, diagnosticData.getSignatureIdList().size());
+		assertEquals(2, diagnosticData.getTimestampIdList().size());
+
+		for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
+			assertTrue(timestamp.isMessageImprintDataFound());
+			assertTrue(timestamp.isMessageImprintDataIntact());
+			assertTrue(timestamp.isSignatureIntact());
+			assertTrue(timestamp.isSignatureValid());
+		}
 
 	}
 

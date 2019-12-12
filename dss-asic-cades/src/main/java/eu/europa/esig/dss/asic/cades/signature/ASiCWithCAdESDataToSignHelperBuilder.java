@@ -49,7 +49,7 @@ public class ASiCWithCAdESDataToSignHelperBuilder {
 
 		if (asic) {
 			DSSDocument archiveDoc = documents.get(0);
-			if (!ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(archiveDoc, ".p7s") || !ASiCUtils.isArchiveContainsCorrectTimestamp(archiveDoc)) {
+			if (!ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(archiveDoc, ".p7s") && !ASiCUtils.isArchiveContainsCorrectTimestamp(archiveDoc)) {
 				throw new UnsupportedOperationException("Container type doesn't match");
 			}
 

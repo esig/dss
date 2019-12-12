@@ -35,6 +35,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AbstractDocumentValidator;
 import eu.europa.esig.dss.validation.executor.timestamp.SignatureAndTimestampProcessExecutor;
@@ -48,16 +49,15 @@ public class SingleTimestampValidator extends AbstractDocumentValidator implemen
 	protected final DSSDocument timestampedData;
 	protected final TimestampType timestampType;
 	
-	public SingleTimestampValidator(final DSSDocument timestampFile, final DSSDocument timestampedData) {
-		this(timestampFile, timestampedData, null);
-	}
-	
-	public SingleTimestampValidator(final DSSDocument timestampFile, final DSSDocument timestampedData, final TimestampType timestampType) {
+	public SingleTimestampValidator(final DSSDocument timestampFile, final DSSDocument timestampedData, final TimestampType timestampType,
+			CertificatePool validationCertPool) {
 		Objects.requireNonNull(timestampFile, "The timestampFile must be defined!");
 		Objects.requireNonNull(timestampedData, "The timestampedData must be defined!");
+		Objects.requireNonNull(timestampType, "The TimestampType must be defined!");
 		this.document = timestampFile;
 		this.timestampedData = timestampedData;
 		this.timestampType = timestampType;
+		this.validationCertPool = validationCertPool;
 	}
 	
 	@Override
@@ -96,7 +96,7 @@ public class SingleTimestampValidator extends AbstractDocumentValidator implemen
 	 * 
 	 * @return {@link TimestampToken}
 	 */
-	protected TimestampToken getTimestamp() {
+	public TimestampToken getTimestamp() {
 		TimestampToken timestampToken;
 		try {
 			timestampToken = new TimestampToken(DSSUtils.toCMSSignedData(document), timestampType, validationCertPool);

@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
-import eu.europa.esig.dss.asic.cades.signature.asice.ASiCEWithCAdESArchiveManifestBuilder;
+import eu.europa.esig.dss.asic.cades.signature.manifest.ASiCEWithCAdESArchiveManifestBuilder;
 import eu.europa.esig.dss.asic.cades.validation.ASiCEWithCAdESManifestParser;
 import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
@@ -172,39 +172,58 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		GetDataToSignASiCWithCAdESHelper dataToSignHelper = ASiCWithCAdESDataToSignHelperBuilder.getGetDataToSignHelper(SigningOperation.TIMESTAMP,
 				toTimestampDocuments, parameters);
 
-		List<DSSDocument> signatures = dataToSignHelper.getSignatures();
-		List<DSSDocument> manifests = dataToSignHelper.getManifestFiles();
-		List<DSSDocument> archiveManifests = dataToSignHelper.getArchiveManifestFiles();
 		List<DSSDocument> timestamps = dataToSignHelper.getTimestamps();
 
 		List<DSSDocument> extendedDocuments = new ArrayList<DSSDocument>();
 
-		DSSDocument toBeSigned = dataToSignHelper.getToBeSigned();
+		if (ASiCUtils.isASiCS(asicParameters) && Utils.collectionSize(timestamps) > 0) {
 
-		DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
-		TimestampBinary timestampBinary = tspSource.getTimeStampResponse(digestAlgorithm, Utils.fromBase64(toBeSigned.getDigest(digestAlgorithm)));
+			DSSDocument toTimestampDocument = toTimestampDocuments.get(0);
+			extractCurrentArchive(toTimestampDocument);
 
-		DSSDocument timestampToken = new InMemoryDocument(DSSASN1Utils.getDEREncoded(timestampBinary), dataToSignHelper.getTimestampFilename(), MimeType.TST);
+			extendWithArchiveManifest(getEmbeddedArchiveManifests(), getEmbeddedManifests(), getEmbeddedTimestamps(), getEmbeddedSignedDocuments(),
+					extendedDocuments, parameters);
 
-		if (ASiCUtils.isASiCS(asicParameters)) {
-			Iterator<DSSDocument> iterator = signatures.iterator();
-			while (iterator.hasNext()) {
-				if (Utils.areStringsEqual(timestampToken.getName(), iterator.next().getName())) {
-					// remove existing file to be replaced
-					iterator.remove();
+			DSSDocument extensionResult = mergeArchiveAndExtendedSignatures(toTimestampDocument, extendedDocuments);
+			extensionResult.setName(getFinalArchiveName(toTimestampDocument, SigningOperation.TIMESTAMP, null, toTimestampDocument.getMimeType()));
+			return extensionResult;
+
+		} else {
+
+			List<DSSDocument> signatures = dataToSignHelper.getSignatures();
+			List<DSSDocument> manifests = dataToSignHelper.getManifestFiles();
+			List<DSSDocument> archiveManifests = dataToSignHelper.getArchiveManifestFiles();
+
+			DSSDocument toBeSigned = dataToSignHelper.getToBeSigned();
+
+			DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
+			TimestampBinary timestampBinary = tspSource.getTimeStampResponse(digestAlgorithm, Utils.fromBase64(toBeSigned.getDigest(digestAlgorithm)));
+
+			DSSDocument timestampToken = new InMemoryDocument(DSSASN1Utils.getDEREncoded(timestampBinary), dataToSignHelper.getTimestampFilename(),
+					MimeType.TST);
+
+			if (ASiCUtils.isASiCS(asicParameters)) {
+				Iterator<DSSDocument> iterator = signatures.iterator();
+				while (iterator.hasNext()) {
+					if (Utils.areStringsEqual(timestampToken.getName(), iterator.next().getName())) {
+						// remove existing file to be replaced
+						iterator.remove();
+					}
 				}
 			}
-		}
-		extendedDocuments.add(timestampToken);
+			extendedDocuments.add(timestampToken);
 
-		List<DSSDocument> documentsToStore = new ArrayList<DSSDocument>(manifests);
-		documentsToStore.addAll(archiveManifests);
-		documentsToStore.addAll(timestamps);
-		documentsToStore.addAll(signatures);
-		excludeExtendedDocuments(documentsToStore, extendedDocuments);
-		final DSSDocument asicContainer = buildASiCContainer(dataToSignHelper.getSignedDocuments(), extendedDocuments, documentsToStore, asicParameters, null);
-		asicContainer.setName(getFinalArchiveName(asicContainer, SigningOperation.TIMESTAMP, null, asicContainer.getMimeType()));
-		return asicContainer;
+			List<DSSDocument> documentsToStore = new ArrayList<DSSDocument>(manifests);
+			documentsToStore.addAll(archiveManifests);
+			documentsToStore.addAll(timestamps);
+			documentsToStore.addAll(signatures);
+			excludeExtendedDocuments(documentsToStore, extendedDocuments);
+			final DSSDocument asicContainer = buildASiCContainer(dataToSignHelper.getSignedDocuments(), extendedDocuments, documentsToStore, asicParameters,
+					null);
+			asicContainer.setName(getFinalArchiveName(asicContainer, SigningOperation.TIMESTAMP, null, asicContainer.getMimeType()));
+			return asicContainer;
+
+		}
 	}
 
 	private void excludeExtendedDocuments(List<DSSDocument> documentListToCheck, List<DSSDocument> extendedDocuments) {

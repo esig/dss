@@ -89,10 +89,12 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 			allSignatures.addAll(signatureValidator.prepareSignatureValidationContext(validationContext));
 		}
 
-		// add external timestamps to the validation
-		List<TimestampToken> externalTimestamps = attachExternalTimestamps(allSignatures);
-		for (TimestampToken timestamp : externalTimestamps) {
-			addTimestampTokenForVerification(validationContext, timestamp);
+		if (Utils.isCollectionNotEmpty(allSignatures)) {
+			// add external timestamps to the validation
+			List<TimestampToken> externalTimestamps = attachExternalTimestamps(allSignatures);
+			for (TimestampToken timestamp : externalTimestamps) {
+				addTimestampTokenForVerification(validationContext, timestamp);
+			}
 		}
 
 		return processSignaturesValidation(validationContext, allSignatures);

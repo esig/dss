@@ -56,11 +56,10 @@ public class ASiCEWithCAdESTimestampValidator extends SingleTimestampValidator {
 	 */
 	public ASiCEWithCAdESTimestampValidator(DSSDocument timestamp, DSSDocument timestampedData, TimestampType type, 
 			ManifestFile validatedManifestFile, List<DSSDocument> originalDocuments, CertificatePool certificatePool) {
-		super(timestamp, timestampedData, type);
+		super(timestamp, timestampedData, type, certificatePool);
 		Objects.requireNonNull(validatedManifestFile, "The vaidated ManifestFile must be defined!");
 		this.manifestFile = validatedManifestFile;
 		this.originalDocuments = originalDocuments;
-		this.validationCertPool = certificatePool;
 	}
 
 	/**
