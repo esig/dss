@@ -93,7 +93,7 @@ public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, docCanonicalized);
 		TimestampBinary bcTst = getAlternateGoodTsa().getTimeStampResponse(DigestAlgorithm.SHA256, digest);
 
-		TimestampToken tst = new TimestampToken(bcTst, TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
+		TimestampToken tst = new TimestampToken(bcTst.getBytes(), TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
 		tst.setTimestampIncludes(Arrays.asList(new TimestampInclude("r-" + signatureParameters.getDeterministicId() + "-1", true))); // TODO
 		tst.setCanonicalizationMethod(usedCanonicalizationAlgo);
 

@@ -51,10 +51,10 @@ public class CAdESLevelBWithTwoContentTimestampsTest extends AbstractCAdESTestSi
 		TSPSource tspSource = getGoodTsa();
 
 		TimestampBinary timeStampResponse1 = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, DSSUtils.digest(DigestAlgorithm.SHA256, documentToSign));
-		TimestampToken contentTimestamp1 = new TimestampToken(timeStampResponse1, TimestampType.CONTENT_TIMESTAMP);
+		TimestampToken contentTimestamp1 = new TimestampToken(timeStampResponse1.getBytes(), TimestampType.CONTENT_TIMESTAMP);
 
 		TimestampBinary timeStampResponse2 = tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, DSSUtils.digest(DigestAlgorithm.SHA1, documentToSign));
-		TimestampToken contentTimestamp2 = new TimestampToken(timeStampResponse2, TimestampType.CONTENT_TIMESTAMP);
+		TimestampToken contentTimestamp2 = new TimestampToken(timeStampResponse2.getBytes(), TimestampType.CONTENT_TIMESTAMP);
 
 		signatureParameters = new CAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());

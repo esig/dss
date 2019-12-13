@@ -116,7 +116,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		final byte[] messageDigest = pdfSignatureService.digest(toSignDocument, parameters);
 		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, messageDigest);
 		try {
-			return new TimestampToken(timeStampResponse, TimestampType.CONTENT_TIMESTAMP);
+			return new TimestampToken(timeStampResponse.getBytes(), TimestampType.CONTENT_TIMESTAMP);
 		} catch (TSPException | IOException | CMSException e) {
 			throw new DSSException("Cannot obtain the content timestamp", e);
 		}

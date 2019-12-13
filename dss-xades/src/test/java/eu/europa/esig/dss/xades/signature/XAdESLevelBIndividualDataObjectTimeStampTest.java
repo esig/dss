@@ -87,7 +87,7 @@ public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractXAdEST
 
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, DSSXMLUtils.canonicalize(canonicalizationAlgo, DSSUtils.toByteArray(documentToSign)));
 		TimestampBinary timeStampResponse = getAlternateGoodTsa().getTimeStampResponse(DigestAlgorithm.SHA1, digest);
-		TimestampToken timestampToken = new TimestampToken(timeStampResponse, TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
+		TimestampToken timestampToken = new TimestampToken(timeStampResponse.getBytes(), TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
 		timestampToken.setTimestampIncludes(Arrays.asList(new TimestampInclude(referenceId, true)));
 		timestampToken.setCanonicalizationMethod(canonicalizationAlgo);
 		signatureParameters.setContentTimestamps(Arrays.asList(timestampToken));

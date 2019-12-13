@@ -55,7 +55,6 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -133,106 +132,50 @@ public class TimestampToken extends Token {
 	 */
 	private int hashCode;
 	
-	public TimestampToken(final byte[] binaries, final TimestampType type) 
-			throws TSPException, IOException, CMSException {
+	public TimestampToken(final byte[] binaries, final TimestampType type) throws TSPException, IOException, CMSException {
 		this(binaries, type, new CertificatePool());
 	}
-	
-	public TimestampToken(final TimestampBinary binaries, final TimestampType type) 
-			throws TSPException, IOException, CMSException {
-		this(binaries.getBytes(), type);
+
+	public TimestampToken(final byte[] binaries, final TimestampType type, final CertificatePool certPool) throws TSPException, IOException, CMSException {
+		this(binaries, type, certPool, new ArrayList<TimestampedReference>(), null);
 	}
 
-	public TimestampToken(final byte[] binaries, final TimestampType type, final CertificatePool certPool) 
-			throws TSPException, IOException, CMSException {
-		this(binaries, type, certPool, null);
-	}
-	
-	public TimestampToken(final TimestampBinary binaries, final TimestampType type, final CertificatePool certPool) 
-			throws TSPException, IOException, CMSException {
-		this(binaries.getBytes(), type, certPool);
-	}
-	
 	public TimestampToken(final PdfRevision pdfTimestampRevision, final TimestampType type, final CertificatePool certPool,
 			final TimestampLocation timestampLocation) throws TSPException, IOException, CMSException {
 		this(pdfTimestampRevision.getCMSSignedData(), type, certPool, new ArrayList<TimestampedReference>(), timestampLocation);
 		this.pdfRevision = pdfTimestampRevision;
 	}
 
-	public TimestampToken(final byte[] binaries, final TimestampType type, final CertificatePool certPool, 
-			final TimestampLocation timestampLocation) throws TSPException, IOException, CMSException {
-		this(binaries, type, certPool, new ArrayList<TimestampedReference>(), timestampLocation);
-	}
-	
-	public TimestampToken(final TimestampBinary binaries, final TimestampType type, final CertificatePool certPool, 
-			final TimestampLocation timestampLocation) 
-			throws TSPException, IOException, CMSException {
-		this(binaries.getBytes(), type, certPool, timestampLocation);
-	}
-
-	public TimestampToken(final byte[] binaries, final TimestampType type, final CertificatePool certPool, 
+	public TimestampToken(final byte[] binaries, final TimestampType type, final CertificatePool certPool,
 			final List<TimestampedReference> timestampedReferences, final TimestampLocation timestampLocation) throws TSPException, IOException, CMSException {
 		this(new CMSSignedData(binaries), type, certPool, timestampedReferences, timestampLocation);
 	}
 
-	public TimestampToken(final TimestampBinary binaries, final TimestampType type, final CertificatePool certPool, 
-			final List<TimestampedReference> timestampedReferences, final TimestampLocation timestampLocation) 
-			throws TSPException, IOException, CMSException {
-		this(binaries.getBytes(), type, certPool, timestampedReferences, timestampLocation);
-	}
-	
-	public TimestampToken(final CMSSignedData cms, final TimestampType type, final CertificatePool certPool) 
-			throws TSPException, IOException {
-		this(cms, type, certPool, null);
-	}
-
-	public TimestampToken(final CMSSignedData cms, final TimestampType type, final CertificatePool certPool,
-			final TimestampLocation timeStampLocation) throws TSPException, IOException {
-		this(new TimeStampToken(cms), type, certPool, timeStampLocation);
-	}
-
 	public TimestampToken(final CMSSignedData cms, final TimestampType type, final CertificatePool certPool,
 			final List<TimestampedReference> timestampedReferences, final TimestampLocation timestampLocation) throws TSPException, IOException {
-		this(new TimeStampToken(cms), type, certPool, timestampedReferences, timestampLocation);
-	}
-
-	public TimestampToken(final TimeStampToken timeStamp, final TimestampType type) {
-		this(timeStamp, type, new CertificatePool());
-	}
-
-	public TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final CertificatePool certPool) {
-		this(timeStamp, type, certPool, null);
-	}
-
-	public TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final CertificatePool certPool,
-			final TimestampLocation timestampLocation) {
-		this(timeStamp, type, certPool, new ArrayList<TimestampedReference>(), timestampLocation);
+		this(new TimeStampToken(cms), type, timestampedReferences, timestampLocation, certPool);
 	}
 
 	/**
-	 * Constructor with an indication of the timestamp type. The default constructor for {@code TimestampToken}.
+	 * Constructor with an indication of the timestamp type. The default constructor
+	 * for {@code TimestampToken}.
 	 *
 	 * @param timeStamp
-	 *            {@code TimeStampToken}
+	 *                              {@code TimeStampToken}
 	 * @param type
-	 *            {@code TimestampType}
-	 * @param certPool
-	 *            {@code CertificatePool} which is used to identify the signing certificate of the timestamp
+	 *                              {@code TimestampType}
+	 * @param timestampedReferences
+	 *                              timestamped references
 	 * @param timestampLocation
-	 *            {@code TimestampLocation} defines where the timestamp comes from
+	 *                              {@code TimestampLocation} defines where the
+	 *                              timestamp comes from
+	 * @param certPool
+	 *                              {@code CertificatePool} which is used to
+	 *                              identify the signing certificate of the
+	 *                              timestamp
 	 */
-	public TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final CertificatePool certPool, 
-			final List<TimestampedReference> timestampedReferences, final TimestampLocation timestampLocation) {
-		this(timeStamp, type, timestampedReferences, timestampLocation, certPool, null);
-	}
-	
-	public TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final CertificatePool certPool, 
-			final List<TimestampedReference> timestampedReferences, final TimestampLocation timestampLocation, final PdfRevision pdfRevision) {
-		this(timeStamp, type, timestampedReferences, timestampLocation, certPool, pdfRevision);
-	}
-
 	TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final List<TimestampedReference> timestampedReferences,
-			final TimestampLocation timestampLocation, final CertificatePool certPool, final PdfRevision pdfRevision) {
+			final TimestampLocation timestampLocation, final CertificatePool certPool) {
 		this.timeStamp = timeStamp;
 		this.timeStampType = type;
 		this.certificateSource = new TimestampCertificateSource(timeStamp, certPool);
@@ -240,7 +183,6 @@ public class TimestampToken extends Token {
 		if (timestampLocation != null) {
 			this.timestampLocation = timestampLocation;
 		}
-		this.pdfRevision = pdfRevision;
 	}
 
 	@Override
