@@ -75,7 +75,8 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 		// Creates signature timestamp tokens only (from CAdESTimestampSource)
 		super.makeTimestampTokens();
 		
-		final List<TimestampToken> timestampedTimestamps = new ArrayList<TimestampToken>(getSignatureTimestamps());
+		List<TimestampToken> cadesSignatureTimestamps = getSignatureTimestamps();
+		final List<TimestampToken> timestampedTimestamps = new ArrayList<TimestampToken>(cadesSignatureTimestamps);
 		
 		// contains KeyInfo certificates embedded to the timestamp's content
 		final List<CertificateToken> cmsContentCertificates = new ArrayList<CertificateToken>();
@@ -85,21 +86,17 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 			
 			if (outerSignature.isTimestampRevision() && (outerSignature instanceof PdfDocTimestampRevision)) {
 				final PdfDocTimestampRevision timestampInfo = (PdfDocTimestampRevision) outerSignature;
-				// do not return this timestamp if it's an archive timestamp
-				// Timestamp needs to be cloned in order to avoid shared instances among sources
-				final TimestampToken timestampToken = new TimestampToken(timestampInfo.getTimestampToken());
-				// clear timestamped references list in order to avoid data mixing between different signatures
-				timestampToken.getTimestampedReferences().clear();
+				final TimestampToken timestampToken = timestampInfo.getTimestampToken();
 				if (TimestampType.SIGNATURE_TIMESTAMP.equals(timestampToken.getTimeStampType())) {
 					timestampToken.getTimestampedReferences().addAll(getSignatureTimestampReferences());
-					getSignatureTimestamps().add(timestampToken);
+					cadesSignatureTimestamps.add(timestampToken);
 					
 				} else {
 					// Archive TimeStamps
 					timestampToken.setArchiveTimestampType(getArchiveTimestampType());
 					
 					List<TimestampedReference> references = new ArrayList<TimestampedReference>();
-					if (Utils.isCollectionEmpty(getSignatureTimestamps())) {
+					if (Utils.isCollectionEmpty(cadesSignatureTimestamps)) {
 						references = getSignatureTimestampReferences();
 					}
 					addReferencesForPreviousTimestamps(references, timestampedTimestamps);
@@ -115,8 +112,7 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 					
 					// references embedded to timestamp's content are covered by outer timestamps
 					cmsContentCertificates.addAll(getCMSContentReferences(padesCertificateSource));
-					
-					timestampToken.getTimestampedReferences().addAll(references);
+					addReferences(timestampToken.getTimestampedReferences(), references);
 					getArchiveTimestamps().add(timestampToken);
 					
 				}

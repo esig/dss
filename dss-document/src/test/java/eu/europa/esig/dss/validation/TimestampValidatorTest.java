@@ -22,9 +22,10 @@ import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.timestamp.SingleTimestampValidator;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 public class TimestampValidatorTest {
-	
+
 	@Test
 	public void testWithAttached() throws Exception {
 		DSSDocument timestamp = new FileDocument("src/test/resources/d-trust.tsr");
@@ -32,26 +33,28 @@ public class TimestampValidatorTest {
 		SingleTimestampValidator timestampValidator = new SingleTimestampValidator(timestamp, timestampedContent, TimestampType.CONTENT_TIMESTAMP,
 				new CertificatePool());
 		timestampValidator.setCertificateVerifier(new CommonCertificateVerifier());
-		
+
 		validate(timestampValidator);
 	}
-	
+
 	@Test
 	public void testWithDigestDocument() throws Exception {
-		DSSDocument timestamp = new FileDocument("src/test/resources/d-trust.tsr");
-		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA256, 
-				Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, "Test123".getBytes())));
-		SingleTimestampValidator timestampValidator = new SingleTimestampValidator(timestamp, digestDocument, TimestampType.CONTENT_TIMESTAMP,
-				new CertificatePool());
+
+		TimestampToken tst = new TimestampToken(DSSUtils.toByteArray(new FileDocument("src/test/resources/d-trust.tsr")), TimestampType.CONTENT_TIMESTAMP);
+		DigestAlgorithm algorithm = tst.getMessageImprint().getAlgorithm();
+		assertNotNull(algorithm);
+
+		DigestDocument digestDocument = new DigestDocument(algorithm, Utils.toBase64(DSSUtils.digest(algorithm, "Test123".getBytes())));
+		SingleTimestampValidator timestampValidator = new SingleTimestampValidator(tst, digestDocument, new CertificatePool());
 		timestampValidator.setCertificateVerifier(new CommonCertificateVerifier());
-		
+
 		validate(timestampValidator);
 	}
-	
+
 	private void validate(SingleTimestampValidator timestampValidator) throws Exception {
-		
+
 		Reports reports = timestampValidator.validateDocument();
-		
+
 		assertNotNull(reports);
 		assertNotNull(reports.getDiagnosticDataJaxb());
 		assertNotNull(reports.getXmlDiagnosticData());
@@ -63,12 +66,12 @@ public class TimestampValidatorTest {
 		SimpleReportFacade simpleReportFacade = SimpleReportFacade.newFacade();
 		String marshalled = simpleReportFacade.marshall(reports.getSimpleReportJaxb(), true);
 		assertNotNull(marshalled);
-		
+
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
 		assertEquals(1, timestampList.size());
 		TimestampWrapper timestampWrapper = timestampList.get(0);
-		
+
 		assertTrue(timestampWrapper.isMessageImprintDataFound());
 		assertTrue(timestampWrapper.isMessageImprintDataIntact());
 	}

@@ -50,14 +50,9 @@ public class PAdESTimestampDataBuilder extends CAdESTimestampDataBuilder {
 
 	@Override
 	public DSSDocument getSignatureTimestampData(final TimestampToken timestampToken) {
-		for (final PdfRevision signatureInfo : pdfSignatureRevision.getOuterSignatures()) {
-			if (signatureInfo instanceof PdfDocTimestampRevision) {
-				PdfDocTimestampRevision pdfTimestampInfo = (PdfDocTimestampRevision) signatureInfo;
-				if (pdfTimestampInfo.getTimestampToken().equals(timestampToken)) {
-					final byte[] signedDocumentBytes = pdfTimestampInfo.getSignedDocumentBytes();
-					return new InMemoryDocument(signedDocumentBytes);
-				}
-			}
+		DSSDocument signedData = getSignedDataInPDFRevisions(timestampToken);
+		if (signedData != null) {
+			return signedData;
 		}
 		if (signatureTimestamps.contains(timestampToken)) {
 			return super.getSignatureTimestampData(timestampToken);
@@ -79,6 +74,14 @@ public class PAdESTimestampDataBuilder extends CAdESTimestampDataBuilder {
 
 	@Override
 	public DSSDocument getArchiveTimestampData(TimestampToken timestampToken) {
+		DSSDocument signedData = getSignedDataInPDFRevisions(timestampToken);
+		if (signedData != null) {
+			return signedData;
+		}
+		throw new DSSException("Timestamp Data not found");
+	}
+
+	private DSSDocument getSignedDataInPDFRevisions(final TimestampToken timestampToken) {
 		for (final PdfRevision signatureInfo : pdfSignatureRevision.getOuterSignatures()) {
 			if (signatureInfo instanceof PdfDocTimestampRevision) {
 				PdfDocTimestampRevision pdfTimestampInfo = (PdfDocTimestampRevision) signatureInfo;
@@ -88,7 +91,7 @@ public class PAdESTimestampDataBuilder extends CAdESTimestampDataBuilder {
 				}
 			}
 		}
-		throw new DSSException("Timestamp Data not found");
+		return null;
 	}
 
 }

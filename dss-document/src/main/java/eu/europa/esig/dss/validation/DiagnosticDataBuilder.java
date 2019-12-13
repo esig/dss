@@ -791,7 +791,9 @@ public class DiagnosticDataBuilder {
 	private List<XmlTimestamp> getXmlTimestamps(Set<TimestampToken> timestamps) {
 		List<XmlTimestamp> xmlTimestampsList = new ArrayList<XmlTimestamp>();
 		if (Utils.isCollectionNotEmpty(timestamps)) {
-			for (TimestampToken timestampToken : timestamps) {
+			List<TimestampToken> tokens = new ArrayList<TimestampToken>(timestamps);
+			Collections.sort(tokens, new TokenComparator());
+			for (TimestampToken timestampToken : tokens) {
 				XmlTimestamp xmlTimestamp = getXmlTimestamp(timestampToken);
 				xmlTimestampsList.add(xmlTimestamp);
 				xmlTimestamps.put(xmlTimestamp.getId(), xmlTimestamp);

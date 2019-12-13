@@ -27,16 +27,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.tsp.TSPException;
 
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AbstractDocumentValidator;
 import eu.europa.esig.dss.validation.executor.timestamp.SignatureAndTimestampProcessExecutor;
 import eu.europa.esig.dss.validation.executor.timestamp.TimestampProcessExecutor;
@@ -46,18 +45,42 @@ import eu.europa.esig.dss.validation.scope.SignatureScope;
 
 public class SingleTimestampValidator extends AbstractDocumentValidator implements TimestampValidator {
 
+	protected final TimestampToken timestampToken;
 	protected final DSSDocument timestampedData;
-	protected final TimestampType timestampType;
-	
+
 	public SingleTimestampValidator(final DSSDocument timestampFile, final DSSDocument timestampedData, final TimestampType timestampType,
 			CertificatePool validationCertPool) {
-		Objects.requireNonNull(timestampFile, "The timestampFile must be defined!");
-		Objects.requireNonNull(timestampedData, "The timestampedData must be defined!");
-		Objects.requireNonNull(timestampType, "The TimestampType must be defined!");
+		this(buildTimestampToken(timestampFile, timestampType, validationCertPool), timestampedData, validationCertPool);
 		this.document = timestampFile;
+	}
+
+	public SingleTimestampValidator(final TimestampToken timestampToken, final DSSDocument timestampedData, CertificatePool validationCertPool) {
+		Objects.requireNonNull(timestampToken, "The TimestampToken must be defined!");
+		Objects.requireNonNull(timestampedData, "The timestampedData must be defined!");
+		this.timestampToken = timestampToken;
 		this.timestampedData = timestampedData;
-		this.timestampType = timestampType;
 		this.validationCertPool = validationCertPool;
+
+		timestampToken.matchData(timestampedData);
+	}
+
+	@Override
+	protected void assertConfigurationValid() {
+		Objects.requireNonNull(certificateVerifier, "CertificateVerifier is not defined");
+	}
+
+	private static TimestampToken buildTimestampToken(final DSSDocument timestampFile, final TimestampType timestampType, CertificatePool validationCertPool) {
+		Objects.requireNonNull(timestampFile, "The timestampFile must be defined!");
+		Objects.requireNonNull(timestampType, "The TimestampType must be defined!");
+
+		TimestampToken timestampToken;
+		try {
+			timestampToken = new TimestampToken(DSSUtils.toByteArray(timestampFile), timestampType, validationCertPool);
+		} catch (CMSException | TSPException | IOException e) {
+			throw new DSSException("Unable to parse timestamp", e);
+		}
+		timestampToken.setFileName(timestampFile.getName());
+		return timestampToken;
 	}
 	
 	@Override
@@ -82,13 +105,9 @@ public class SingleTimestampValidator extends AbstractDocumentValidator implemen
 		if (timestampedData instanceof DigestDocument) {
 			signatureScope = new DigestSignatureScope("Digest document", ((DigestDocument)timestampedData).getExistingDigest());
 		} else {
-			signatureScope = new FullSignatureScope("Full document", getDigest(timestampedData));
+			signatureScope = new FullSignatureScope("Full document", DSSUtils.getDigest(getDefaultDigestAlgorithm(), timestampedData));
 		}
 		return Arrays.asList(signatureScope);
-	}
-	
-	protected Digest getDigest(DSSDocument dssDocument) {
-		return new Digest(getDefaultDigestAlgorithm(), Utils.fromBase64(dssDocument.getDigest(getDefaultDigestAlgorithm())));
 	}
 	
 	/**
@@ -97,14 +116,6 @@ public class SingleTimestampValidator extends AbstractDocumentValidator implemen
 	 * @return {@link TimestampToken}
 	 */
 	public TimestampToken getTimestamp() {
-		TimestampToken timestampToken;
-		try {
-			timestampToken = new TimestampToken(DSSUtils.toCMSSignedData(document), timestampType, validationCertPool);
-		} catch (TSPException | IOException e) {
-			throw new DSSException("Unable to parse timestamp", e);
-		}
-		timestampToken.setFileName(document.getName());
-		timestampToken.matchData(timestampedData);
 		return timestampToken;
 	}
 

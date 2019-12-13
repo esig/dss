@@ -77,6 +77,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -977,6 +978,10 @@ public final class DSSUtils {
 			return e.getClass().getName();
 			
 		}
+	}
+
+	public static Digest getDigest(DigestAlgorithm digestAlgo, DSSDocument dssDocument) {
+		return new Digest(digestAlgo, digest(digestAlgo, dssDocument));
 	}
 
 }

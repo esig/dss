@@ -28,6 +28,7 @@ import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ManifestEntry;
@@ -82,12 +83,12 @@ public class ASiCEWithCAdESTimestampValidator extends SingleTimestampValidator {
 	@Override
 	protected List<SignatureScope> getTimestampSignatureScope() {
 		List<SignatureScope> result = new ArrayList<SignatureScope>();
-		result.add(new ManifestSignatureScope(manifestFile.getFilename(), getDigest(timestampedData)));
+		result.add(new ManifestSignatureScope(manifestFile.getFilename(), DSSUtils.getDigest(getDefaultDigestAlgorithm(), timestampedData)));
 		if (Utils.isCollectionNotEmpty(originalDocuments)) {
 	    	for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
 	    		for (DSSDocument document : originalDocuments) {
 	    			if (manifestEntry.getFileName().equals(document.getName())) {
-	    				result.add(new FullSignatureScope(manifestEntry.getFileName(), getDigest(document)));
+						result.add(new FullSignatureScope(manifestEntry.getFileName(), DSSUtils.getDigest(getDefaultDigestAlgorithm(), document)));
 	    			}
 	    		}
 	    	}

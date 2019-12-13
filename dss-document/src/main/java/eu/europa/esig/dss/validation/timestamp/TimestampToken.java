@@ -223,29 +223,19 @@ public class TimestampToken extends Token {
 	 */
 	public TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final CertificatePool certPool, 
 			final List<TimestampedReference> timestampedReferences, final TimestampLocation timestampLocation) {
-		this(timeStamp, type, new TimestampCertificateSource(timeStamp, certPool),  timestampedReferences, timestampLocation, null);
+		this(timeStamp, type, timestampedReferences, timestampLocation, certPool, null);
 	}
 	
 	public TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final CertificatePool certPool, 
 			final List<TimestampedReference> timestampedReferences, final TimestampLocation timestampLocation, final PdfRevision pdfRevision) {
-		this(timeStamp, type, new TimestampCertificateSource(timeStamp, certPool),  timestampedReferences, timestampLocation, pdfRevision);
+		this(timeStamp, type, timestampedReferences, timestampLocation, certPool, pdfRevision);
 	}
 
-	/**
-	 * Creates a new instance of {@link TimestampToken}
-	 * @param timestampToken
-	 *            {@code TimestampToken} to be cloned
-	 */
-	public TimestampToken(TimestampToken timestampToken) {
-		this(timestampToken.timeStamp, timestampToken.timeStampType, timestampToken.certificateSource, 
-				new ArrayList<TimestampedReference>(timestampToken.timestampedReferences), timestampToken.timestampLocation, timestampToken.pdfRevision);
-	}
-	
-	TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final TimestampCertificateSource certificateSource, 
-			 final List<TimestampedReference> timestampedReferences, final TimestampLocation timestampLocation, final PdfRevision pdfRevision) {
+	TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final List<TimestampedReference> timestampedReferences,
+			final TimestampLocation timestampLocation, final CertificatePool certPool, final PdfRevision pdfRevision) {
 		this.timeStamp = timeStamp;
 		this.timeStampType = type;
-		this.certificateSource = certificateSource;
+		this.certificateSource = new TimestampCertificateSource(timeStamp, certPool);
 		this.timestampedReferences = timestampedReferences;
 		if (timestampLocation != null) {
 			this.timestampLocation = timestampLocation;
@@ -699,7 +689,7 @@ public class TimestampToken extends Token {
 	 */
 	public SignerInformation getSignerInformation() {
 		Collection<SignerInformation> signers = timeStamp.toCMSSignedData().getSignerInfos().getSigners(timeStamp.getSID());
-		return (SignerInformation) signers.iterator().next();
+		return signers.iterator().next();
 	}
 
 	@Override

@@ -199,8 +199,13 @@ public class DiagnosticDataCompleteTest extends PKIFactoryAccess {
 			}
 		}
 		
-        assertEquals(4, timestamps.get(2).getTimestampedObjects().size());
-        assertEquals(TimestampType.SIGNATURE_TIMESTAMP, timestamps.get(2).getType());
+		SignatureWrapper secondSignature = diagnosticData.getSignatures().get(1);
+
+		List<TimestampWrapper> secondSignatureTimestamps = secondSignature.getTimestampList();
+		assertEquals(2, secondSignatureTimestamps.size());
+		TimestampWrapper signatureTimestamp = secondSignatureTimestamps.get(0);
+		assertEquals(4, signatureTimestamp.getTimestampedObjects().size());
+		assertEquals(TimestampType.SIGNATURE_TIMESTAMP, signatureTimestamp.getType());
         
         TimestampWrapper archiveTimestamp = null;
         int archiveTimestamps = 0;
