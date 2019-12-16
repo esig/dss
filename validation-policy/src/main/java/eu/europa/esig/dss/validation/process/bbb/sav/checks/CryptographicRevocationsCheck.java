@@ -24,20 +24,19 @@ import java.text.MessageFormat;
 import java.util.List;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.validation.process.AdditionalInfo;
-import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.validation.process.AdditionalInfo;
+import eu.europa.esig.dss.validation.process.ChainItem;
 
 public class CryptographicRevocationsCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 	
-	private final List<CryptographicCheck<XmlPSV>> revocationCryptographicChecks;
+	private final List<CryptographicCheck<T>> revocationCryptographicChecks;
 	private final String certificateId;
 
-	public CryptographicRevocationsCheck(I18nProvider i18nProvider, T result, List<CryptographicCheck<XmlPSV>> revocationCryptographicChecks, 
+	public CryptographicRevocationsCheck(I18nProvider i18nProvider, T result, List<CryptographicCheck<T>> revocationCryptographicChecks, 
 			String certificateId) {
 		super(i18nProvider, result, null);
 		this.revocationCryptographicChecks = revocationCryptographicChecks;
@@ -47,7 +46,7 @@ public class CryptographicRevocationsCheck<T extends XmlConstraintsConclusion> e
 	@Override
 	protected boolean process() {
 		// if at least one revocation check successed return true indication
-		for (CryptographicCheck<XmlPSV> cryptographicCheck : revocationCryptographicChecks) {
+		for (CryptographicCheck<T> cryptographicCheck : revocationCryptographicChecks) {
 			if (cryptographicCheck.process())
 				return true;
 		}

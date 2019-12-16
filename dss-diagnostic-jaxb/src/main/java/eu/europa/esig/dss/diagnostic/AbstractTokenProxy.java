@@ -183,6 +183,11 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	}
 
 	public abstract byte[] getBinaries();
+	
+	@Override
+	public String toString() {
+		return "Token Id='" + getId() + "'";
+	}
 
 	@Override
 	public int hashCode() {

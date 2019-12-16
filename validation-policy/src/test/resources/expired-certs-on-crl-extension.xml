@@ -294,7 +294,7 @@
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                            <ExpiredCertsRevocationInfo>2018-12-03T12:15:00</ExpiredCertsRevocationInfo>
+                            <ExpiredCertsRevocationInfo>2018-12-25T12:15:00</ExpiredCertsRevocationInfo>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A">
                             <ServiceNames><ServiceName lang="en">(78) I.CA - issuing qualified certificates</ServiceName></ServiceNames>
@@ -550,10 +550,10 @@
         <Revocation Id="R-569d6b69cef8b70b57b3a36d7702f8d95d50eea3a2b614c7fa0ca9f39cfb7fd1789207048a37c0a57b26a1e48b969db26e174520c4f5cf1aa55420a77fd5aedf">
             <Origin>REVOCATION_VALUES</Origin>
             <Type>CRL</Type>
-            <ProductionDate>2018-12-10T20:51:03</ProductionDate>
-            <ThisUpdate>2018-12-10T20:51:03</ThisUpdate>
-            <NextUpdate>2018-12-11T20:51:03</NextUpdate>
-            <ExpiredCertsOnCRL>2018-12-09T00:00:00</ExpiredCertsOnCRL>
+            <ProductionDate>2018-12-06T20:51:03</ProductionDate>
+            <ThisUpdate>2018-12-06T20:51:03</ThisUpdate>
+            <NextUpdate>2018-12-07T20:51:03</NextUpdate>
+            <ExpiredCertsOnCRL>2018-12-03T00:00:00</ExpiredCertsOnCRL>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>

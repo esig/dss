@@ -96,7 +96,7 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 		assertNotNull(simpleReport.getValidationTime());
 		assertNotNull(simpleReport.getJaxbModel());
 		assertEquals(Indication.INDETERMINATE, simpleReport.getCertificateIndication(certificateId));
-		assertEquals(SubIndication.OUT_OF_BOUNDS_NO_POE, simpleReport.getCertificateSubIndication(certificateId));
+		assertEquals(SubIndication.REVOKED_NO_POE, simpleReport.getCertificateSubIndication(certificateId));
 		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getCertificateCrlUrls(certificateId)));
 		assertNotNull(simpleReport.getCertificateRevocationDate(certificateId));
 		assertEquals(RevocationReason.UNSPECIFIED, simpleReport.getCertificateRevocationReason(certificateId));

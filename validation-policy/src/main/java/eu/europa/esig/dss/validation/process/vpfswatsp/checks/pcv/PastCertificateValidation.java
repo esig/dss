@@ -28,7 +28,6 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlPCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlVTS;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -40,6 +39,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSignatureValidCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
@@ -50,7 +50,6 @@ import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.ValidationTime
 public class PastCertificateValidation extends Chain<XmlPCV> {
 
 	private final TokenProxy token;
-	private final DiagnosticData diagnosticData;
 	private final XmlBasicBuildingBlocks bbb;
 	private final POEExtraction poe;
 
@@ -59,13 +58,12 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 	private final Context context;
 	private Date controlTime;
 
-	public PastCertificateValidation(I18nProvider i18nProvider, TokenProxy token, DiagnosticData diagnosticData, XmlBasicBuildingBlocks bbb, 
+	public PastCertificateValidation(I18nProvider i18nProvider, TokenProxy token, XmlBasicBuildingBlocks bbb, 
 			POEExtraction poe, Date currentTime, ValidationPolicy policy, Context context) {
 		super(i18nProvider, new XmlPCV());
 		result.setTitle(BasicBuildingBlockDefinition.PAST_CERTIFICATE_VALIDATION.getTitle());
 
 		this.token = token;
-		this.diagnosticData = diagnosticData;
 		this.bbb = bbb;
 		this.poe = poe;
 		this.currentTime = currentTime;
@@ -98,16 +96,22 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 		 * in the previous step, the X.509 parameters provided in the inputs and
 		 * a date from the intersection of the validity intervals of all the
 		 * certificates in the prospective chain. The validation shall not
-		 * include revocation checking for the signing certificate: a) If the
-		 * certificate path validation returns PASSED, the building block shall
-		 * go to the next step. b) If the certificate path validation returns a
-		 * failure indication because an intermediate CA has been determined to
-		 * be revoked, the building block shall set the current status to
-		 * INDETERMINATE/REVOKED_CA_NO_POE and shall go to step 1. c) If the
-		 * certificate path validation returns a failure indication with any
-		 * other reason, the building block shall set the current status to
+		 * include revocation checking for the signing certificate: 
+		 * 
+		 * a) If the certificate path validation returns PASSED, the building 
+		 * block shall go to the next step. 
+		 * 
+		 * b) If the certificate path validation returns a failure indication 
+		 * because an intermediate CA has been determined to be revoked, the 
+		 * building block shall set the current status to INDETERMINATE/REVOKED_CA_NO_POE 
+		 * and shall go to step 1. 
+		 * 
+		 * c) If the certificate path validation returns a failure indication with 
+		 * any other reason, the building block shall set the current status to
 		 * INDETERMINATE/CERTIFICATE_CHAIN_GENERAL_FAILURE and shall go to step
-		 * 1. Or d) If the certificate path validation returns any other failure
+		 * 1. Or 
+		 * 
+		 * d) If the certificate path validation returns any other failure
 		 * indication, the building block shall go to step 1.
 		 * 
 		 * ==> Simplified because DSS only uses one certificate chain
@@ -136,7 +140,7 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 			}
 
 			if (SubContext.CA_CERTIFICATE.equals(subContext)) {
-				CertificateRevocationWrapper latestRevocation = diagnosticData.getLatestRevocationDataForCertificate(certificate);
+				CertificateRevocationWrapper latestRevocation = ValidationProcessUtils.getLatestKnownRevocationData(certificate, policy);
 				if (latestRevocation != null && latestRevocation.isRevoked()) {
 					Date caRevocationDate = latestRevocation.getRevocationDate();
 					if (caRevocationDate != null && intervalNotAfter.after(caRevocationDate)) {

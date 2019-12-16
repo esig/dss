@@ -27,7 +27,6 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlRevocationInformation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.SubContext;
@@ -38,6 +37,7 @@ import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChecker;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.AuthorityInfoAccessPresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateCryptographicCheck;
@@ -73,13 +73,12 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	
 	private final CertificateWrapper currentCertificate;
 	private final Date currentTime;
-	private final DiagnosticData diagnosticData;
 
 	private final Context context;
 	private final SubContext subContext;
 	private final ValidationPolicy validationPolicy;
 
-	public SubX509CertificateValidation(I18nProvider i18nProvider, DiagnosticData diagnosticData, CertificateWrapper currentCertificate, Date currentTime, 
+	public SubX509CertificateValidation(I18nProvider i18nProvider, CertificateWrapper currentCertificate, Date currentTime, 
 			Context context, SubContext subContext, ValidationPolicy validationPolicy) {
 		super(i18nProvider, new XmlSubXCV());
 		result.setId(currentCertificate.getId());
@@ -88,7 +87,6 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 		this.currentCertificate = currentCertificate;
 		this.currentTime = currentTime;
-		this.diagnosticData = diagnosticData;
 
 		this.context = context;
 		this.subContext = subContext;
@@ -138,8 +136,6 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 		item = item.setNextItem(certificateSignatureValid(currentCertificate, subContext));
 
-		item = item.setNextItem(certificateCryptographic(currentCertificate, context, subContext));
-
 		item = item.setNextItem(keyUsage(currentCertificate, subContext));
 
 		item = item.setNextItem(extendedKeyUsage(currentCertificate, subContext));
@@ -147,18 +143,12 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		item = item.setNextItem(aiaPresent(currentCertificate, subContext));
 
 		item = item.setNextItem(revocationInfoAccessPresent(currentCertificate, subContext));
-
-		// MUST check expiration before revocation (ocsp-no-check is only usable within the certificate validity)
-		item = item.setNextItem(certificateExpiration(currentCertificate, subContext));
 		
-		CertificateRevocationWrapper latestCertificateRevocation = diagnosticData.getLatestRevocationDataForCertificate(currentCertificate);
+		CertificateRevocationWrapper latestCertificateRevocation = ValidationProcessUtils.getLatestKnownRevocationData(currentCertificate, validationPolicy);
+		
 		if (latestCertificateRevocation != null && latestCertificateRevocation.isRevoked()) {
 			attachRevocationInformation(latestCertificateRevocation);
 		}
-
-		item = item.setNextItem(certificateRevoked(latestCertificateRevocation, subContext));
-
-		item = item.setNextItem(certificateOnHold(latestCertificateRevocation, subContext));
 
 		if (!isRevocationNoNeedCheck(currentCertificate)) {
 			RevocationFreshnessChecker rfc = new RevocationFreshnessChecker(i18nProvider, latestCertificateRevocation, 
@@ -167,11 +157,23 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 			result.setRFC(rfcResult);
 
 			item = item.setNextItem(checkRevocationFreshnessCheckerResult(rfcResult));
+
+			item = item.setNextItem(certificateRevoked(latestCertificateRevocation, subContext));
+
+			item = item.setNextItem(certificateOnHold(latestCertificateRevocation, subContext));
+
+			item = item.setNextItem(revocationCertHashCheck());
+			
 		} else {
 			item = item.setNextItem(idPkixOcspNoCheck());
+			
 		}
 
-		item = item.setNextItem(revocationCertHashCheck());
+		item = item.setNextItem(certificateCryptographic(currentCertificate, context, subContext));
+
+		if (SubContext.SIGNING_CERT == subContext) {
+			item = item.setNextItem(certificateExpiration(currentCertificate, subContext));
+		}
 	}
 
 	private void attachRevocationInformation(CertificateRevocationWrapper certificateRevocation) {

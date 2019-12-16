@@ -175,7 +175,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 					 */
 					else if (shouldPerformPastSignatureValidationProcess(latestConclusion)) {
 						
-						PastSignatureValidation psv = new PastSignatureValidation(i18nProvider, newestTimestamp, diagnosticData, bbbTsp, poe, currentTime, policy,
+						PastSignatureValidation psv = new PastSignatureValidation(i18nProvider, newestTimestamp, bbbs, poe, currentTime, policy,
 								Context.TIMESTAMP);
 						XmlPSV psvResult = psv.execute();
 						bbbTsp.setPSV(psvResult);
@@ -290,8 +290,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	}
 
 	private ChainItem<XmlValidationProcessArchivalData> pastSignatureValidation(Context currentContext) {
-		XmlBasicBuildingBlocks bbbSig = bbbs.get(signature.getId());
-		return new PastSignatureValidationCheck(i18nProvider, result, signature, diagnosticData, bbbSig, poe, currentTime, policy, 
+		return new PastSignatureValidationCheck(i18nProvider, result, signature, bbbs, poe, currentTime, policy, 
 				currentContext, getFailLevelConstraint());
 	}
 

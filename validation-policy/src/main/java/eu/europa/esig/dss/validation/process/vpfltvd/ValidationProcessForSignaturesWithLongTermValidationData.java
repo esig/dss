@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.vpfltvd;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -43,6 +44,7 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -55,6 +57,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.SignatureAcceptanceValidation;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SignatureAcceptanceValidationResultCheck;
@@ -125,9 +128,9 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 * 
 		 * If this validation returns PASSED, INDETERMINATE/CRYPTO_CONSTRAINTS_FAILURE_NO_POE,
 		 * INDETERMINATE/REVOKED_NO_POE, INDETERMINATE/REVOKED_CA_NO_POE,
-		 * INDETERMINATE/TRY_LATER or INDETERMINATE/OUT_OF_BOUNDS_NO_POE, the SVA
-		 * shall go to the next step. Otherwise, the process shall return the status and information returned by the
-		 * validation process for Basic Signatures.
+		 * INDETERMINATE/TRY_LATER or INDETERMINATE/OUT_OF_BOUNDS_NO_POE, the SVA shall go
+		 * to the next step. Otherwise, the process shall return the status and information returned by the validation
+		 * process for Basic Signatures. 
 		 */
 		ChainItem<XmlValidationProcessLongTermData> item = firstItem = isAcceptableBasicSignatureValidation();
 
@@ -198,14 +201,13 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 * Otherwise, the process shall return the indication INDETERMINATE with the sub-indication
 		 * CRYPTO_CONSTRAINTS_FAILURE_NO_POE.
 		 */
-		if (Indication.INDETERMINATE.equals(bsConclusion.getIndication())
-				&& SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(bsConclusion.getSubIndication())) {
+		if (isCryptoConstraintFailureNoPoe(bsConclusion)) {
 			
 			// check validity of Cryptographic Constraints for the Signature
 			item = item.setNextItem(algorithmReliableAtBestSignatureTime(bestSignatureTime.getTime()));
 
 			// check validity of Cryptographic Constraints for the Signing Certificate and CA Certificates
-			item = item.setNextItem(certificatesChainReliableAtBestSignatureTime(item, bestSignatureTime.getTime()));
+			item = certificateChainReliableAtBestSignatureTime(item, bestSignatureTime.getTime());
 			
 		}
 
@@ -362,7 +364,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	
 	private ChainItem<XmlValidationProcessLongTermData> revocationIsFresh(Date bestSignatureTime, Context currentContext) {
 		CertificateWrapper signingCertificate = currentSignature.getSigningCertificate();
-		CertificateRevocationWrapper certificateRevocation = diagnosticData.getLatestRevocationDataForCertificate(signingCertificate);
+		CertificateRevocationWrapper certificateRevocation = ValidationProcessUtils.getLatestKnownRevocationData(signingCertificate, policy);
 		RevocationFreshnessChecker rfc = new RevocationFreshnessChecker(i18nProvider, certificateRevocation, bestSignatureTime, 
 				currentContext, SubContext.SIGNING_CERT, policy);
 		return checkRevocationFreshnessCheckerResult(rfc.execute(), currentContext, SubContext.SIGNING_CERT);
@@ -390,7 +392,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 			// separate cases to check based on the returned subIndication
 			if ((SubContext.SIGNING_CERT.equals(subContext) && SubIndication.REVOKED_NO_POE.equals(subIndication)) ||
 					SubContext.CA_CERTIFICATE.equals(subContext) && SubIndication.REVOKED_CA_NO_POE.equals(subIndication)) {
-				CertificateRevocationWrapper certificateRevocation = diagnosticData.getLatestRevocationDataForCertificate(chainItem);
+				CertificateRevocationWrapper certificateRevocation = ValidationProcessUtils.getLatestKnownRevocationData(chainItem, policy);
 				item = item.setNextItem(new RevocationDateAfterBestSignatureTimeCheck(i18nProvider, result, certificateRevocation, 
 						bestSignatureTime, constraint, subContext));
 			}
@@ -432,20 +434,55 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	 * @param bestSignatureTime - {@link Date} to check cryptographic constraints validity
 	 * @return last established {@link ChainItem}
 	 */
-	private ChainItem<XmlValidationProcessLongTermData> certificatesChainReliableAtBestSignatureTime(ChainItem<XmlValidationProcessLongTermData> item, Date bestSignatureTime) {
-		List<CertificateWrapper> certificateChain = currentSignature.getCertificateChain();
-		for (CertificateWrapper certificate : certificateChain) {
-			ChainItem<XmlValidationProcessLongTermData> cryptoCheck = null;
-			if (certificate.getId().equals(currentSignature.getSigningCertificate().getId())) {
-				cryptoCheck = new CryptographicCheck<XmlValidationProcessLongTermData>(i18nProvider, result, certificate, bestSignatureTime, 
-						policy.getCertificateCryptographicConstraint(Context.SIGNATURE, SubContext.SIGNING_CERT));
-			} else {
-				cryptoCheck = new CryptographicCheck<XmlValidationProcessLongTermData>(i18nProvider, result, certificate, bestSignatureTime, 
-						policy.getCertificateCryptographicConstraint(Context.SIGNATURE, SubContext.CA_CERTIFICATE));
-			} 
-			item = item.setNextItem(cryptoCheck);
+	private ChainItem<XmlValidationProcessLongTermData> certificateChainReliableAtBestSignatureTime(ChainItem<XmlValidationProcessLongTermData> item, Date bestSignatureTime) {
+		return certificateChainReliableAtBestSignatureTime(new ArrayList<String>(), item, currentSignature, bestSignatureTime, Context.SIGNATURE);
+	}
+	
+	private ChainItem<XmlValidationProcessLongTermData> certificateChainReliableAtBestSignatureTime(List<String> checkedTokenIds, 
+			ChainItem<XmlValidationProcessLongTermData> item, TokenProxy token, Date bestSignatureTime, Context context) {
+		if (Utils.isCollectionNotEmpty(token.getCertificateChain())) {
+			for (CertificateWrapper certificate : token.getCertificateChain()) {
+				if (certificate.isTrusted()) {
+					break;
+				}
+				if (checkedTokenIds.contains(certificate.getId())) {
+					continue;
+				}
+				checkedTokenIds.add(certificate.getId());
+
+				SubContext subContext = token.getSigningCertificate().getId().equals(certificate.getId()) ? SubContext.SIGNING_CERT : SubContext.CA_CERTIFICATE;
+				item = item.setNextItem(new CryptographicCheck<XmlValidationProcessLongTermData>(i18nProvider, result, certificate, bestSignatureTime, 
+						policy.getCertificateCryptographicConstraint(context, subContext)));
+				
+				if (certificate.isIdPkixOcspNoCheck()) {
+					continue;
+				}
+				
+				CertificateRevocationWrapper latestRevocationData = ValidationProcessUtils.getLatestKnownRevocationData(certificate, policy);
+				if (latestRevocationData != null && !checkedTokenIds.contains(latestRevocationData.getId())) {
+					checkedTokenIds.add(latestRevocationData.getId());
+					
+					XmlBasicBuildingBlocks revocationBBB = bbbs.get(latestRevocationData.getId());
+					if (revocationBBB != null && isCryptoConstraintFailureNoPoe(revocationBBB.getConclusion())) {
+						item = item.setNextItem(new CryptographicCheck<XmlValidationProcessLongTermData>(i18nProvider, result, latestRevocationData, 
+								bestSignatureTime, policy.getSignatureCryptographicConstraint(Context.REVOCATION)));
+						
+						if (revocationBBB.getXCV() != null && isCryptoConstraintFailureNoPoe(revocationBBB.getXCV().getConclusion())) {
+							item = certificateChainReliableAtBestSignatureTime(checkedTokenIds, item, latestRevocationData,
+									bestSignatureTime, Context.REVOCATION);
+						}
+						
+					}
+				}
+			}
+			
 		}
 		return item;
+	}
+	
+	private boolean isCryptoConstraintFailureNoPoe(XmlConclusion conclusion) {
+		return Indication.INDETERMINATE.equals(conclusion.getIndication()) && 
+				SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(conclusion.getSubIndication());
 	}
 	
 }

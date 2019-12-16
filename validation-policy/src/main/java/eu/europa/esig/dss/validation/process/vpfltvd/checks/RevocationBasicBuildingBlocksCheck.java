@@ -109,7 +109,9 @@ public class RevocationBasicBuildingBlocksCheck extends ChainItem<XmlValidationP
 	private boolean isAllowed(XmlConclusion conclusion) {
 		boolean allowed = Indication.PASSED.equals(conclusion.getIndication()) || (Indication.INDETERMINATE.equals(conclusion.getIndication())
 				&& (SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(conclusion.getSubIndication())
-						|| SubIndication.REVOKED_NO_POE.equals(conclusion.getSubIndication())
+						|| SubIndication.REVOKED_NO_POE.equals(conclusion.getSubIndication()) 
+						|| SubIndication.REVOKED_CA_NO_POE.equals(conclusion.getSubIndication())
+						|| SubIndication.TRY_LATER.equals(conclusion.getSubIndication())
 						|| SubIndication.OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())));
 		return allowed;
 	}
