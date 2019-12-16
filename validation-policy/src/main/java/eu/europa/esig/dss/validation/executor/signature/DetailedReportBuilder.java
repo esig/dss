@@ -25,13 +25,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusionWithProofOfExistence;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicSignatures;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
@@ -45,14 +43,13 @@ import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.executor.AbstractDetailedReportBuilder;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.process.qualification.signature.SignatureQualificationBlock;
+import eu.europa.esig.dss.validation.process.qualification.timestamp.TimestampQualificationBlock;
 import eu.europa.esig.dss.validation.process.vpfbs.ValidationProcessForBasicSignatures;
 import eu.europa.esig.dss.validation.process.vpfltvd.ValidationProcessForSignaturesWithLongTermValidationData;
 import eu.europa.esig.dss.validation.process.vpfswatsp.ValidationProcessForSignaturesWithArchivalData;
 import eu.europa.esig.dss.validation.process.vpftsp.ValidationProcessForTimeStamps;
 
 public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
-
-	private static final Logger LOG = LoggerFactory.getLogger(DetailedReportBuilder.class);
 
 	private final ValidationLevel validationLevel;
 
@@ -91,15 +88,22 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 			}
 
 			if (policy.isEIDASConstraintPresent()) {
-				try {
-					CertificateWrapper signingCertificate = signature.getSigningCertificate();
-					if (signingCertificate != null) {
-						SignatureQualificationBlock qualificationBlock = new SignatureQualificationBlock(i18nProvider, signature.getId(), validation, signingCertificate,
-								detailedReport.getTLAnalysis());
-						signatureAnalysis.setValidationSignatureQualification(qualificationBlock.execute());
-					}
-				} catch (Exception e) {
-					LOG.error("Unable to determine the signature qualification", e);
+
+				List<XmlTLAnalysis> tlAnalysis = detailedReport.getTLAnalysis();
+
+				// Signature qualification
+				CertificateWrapper signingCertificate = signature.getSigningCertificate();
+				if (signingCertificate != null) {
+					SignatureQualificationBlock qualificationBlock = new SignatureQualificationBlock(i18nProvider, signature.getId(), validation,
+							signingCertificate, tlAnalysis);
+					signatureAnalysis.setValidationSignatureQualification(qualificationBlock.execute());
+				}
+
+				// Timestamps qualification
+				for (TimestampWrapper timestamp : signature.getTimestampList()) {
+					TimestampQualificationBlock timestampQualificationBlock = new TimestampQualificationBlock(i18nProvider, timestamp,
+							tlAnalysis);
+					signatureAnalysis.getValidationTimestampQualification().add(timestampQualificationBlock.execute());
 				}
 			}
 

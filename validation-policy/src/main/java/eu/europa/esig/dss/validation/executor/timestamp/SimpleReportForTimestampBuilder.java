@@ -10,13 +10,13 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.TimestampQualification;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificate;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificateChain;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestampLevel;
-import eu.europa.esig.dss.simplereport.jaxb.XmlTimestampQualification;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.AbstractSimpleReportBuilder;
 
@@ -26,6 +26,7 @@ public class SimpleReportForTimestampBuilder extends AbstractSimpleReportBuilder
 		super(currentTime, policy, diagnosticData, detailedReport);
 	}
 
+	@Override
 	public XmlSimpleReport build() {
 		XmlSimpleReport xmlSimpleReport = super.build();
 		addTimestamps(xmlSimpleReport);
@@ -55,12 +56,14 @@ public class SimpleReportForTimestampBuilder extends AbstractSimpleReportBuilder
 		xmlTimestamp.getErrors().addAll(toStrings(timestampBBB.getConclusion().getErrors()));
 		xmlTimestamp.getWarnings().addAll(toStrings(timestampBBB.getConclusion().getWarnings()));
 		xmlTimestamp.getInfos().addAll(toStrings(timestampBBB.getConclusion().getInfos()));
-		
-		// TODO : qualification
-		XmlTimestampLevel xmlTimestampLevel = new XmlTimestampLevel();
-		xmlTimestampLevel.setValue(XmlTimestampQualification.N_A);
-		xmlTimestampLevel.setDescription("Not applicable");
-		xmlTimestamp.setTimestampLevel(xmlTimestampLevel);
+
+		TimestampQualification timestampQualification = detailedReport.getTimestampQualification(timestampWrapper.getId());
+		if (timestampQualification != null) {
+			XmlTimestampLevel xmlTimestampLevel = new XmlTimestampLevel();
+			xmlTimestampLevel.setValue(timestampQualification);
+			xmlTimestampLevel.setDescription(timestampQualification.getLabel());
+			xmlTimestamp.setTimestampLevel(xmlTimestampLevel);
+		}
 		
 		return xmlTimestamp;
 	}

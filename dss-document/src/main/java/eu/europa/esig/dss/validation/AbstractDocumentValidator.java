@@ -198,7 +198,12 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 	public Reports validateDocument(final InputStream policyDataStream) {
 		ValidationPolicy validationPolicy = null;
 		try {
-			validationPolicy = ValidationPolicyFacade.newFacade().getValidationPolicy(policyDataStream);
+			if (policyDataStream == null) {
+				LOG.debug("No provided validation policy : use the default policy");
+				validationPolicy = ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+			} else {
+				validationPolicy = ValidationPolicyFacade.newFacade().getValidationPolicy(policyDataStream);
+			}
 		} catch (Exception e) {
 			throw new DSSException("Unable to load the policy", e);
 		}

@@ -70,6 +70,7 @@
 					<xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='CERTIFICATE']"/>
 					
 					<xsl:apply-templates select="dss:Signatures"/>
+					<xsl:apply-templates select="dss:Timestamps"/>
 				    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='SIGNATURE']"/>
 				    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='COUNTER_SIGNATURE']"/>
 				    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='TIMESTAMP']"/>
@@ -121,6 +122,21 @@
        		<xsl:attribute name="padding">5px</xsl:attribute>
        		<xsl:attribute name="margin-bottom">5px</xsl:attribute>
     		Signature <xsl:value-of select="@Id" />
+    	</fo:block>
+    	<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
+        	<xsl:apply-templates/>
+   		</xsl:if>
+    </xsl:template>
+    
+    <xsl:template match="dss:Timestamps">
+		<fo:block>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+       		<xsl:attribute name="background-color">#0066CC</xsl:attribute>
+       		<xsl:attribute name="color">white</xsl:attribute>
+       		<xsl:attribute name="padding">5px</xsl:attribute>
+       		<xsl:attribute name="margin-bottom">5px</xsl:attribute>
+    		Timestamp <xsl:value-of select="@Id" />
     	</fo:block>
     	<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
         	<xsl:apply-templates/>
@@ -219,6 +235,32 @@
        		<xsl:attribute name="margin-bottom">5px</xsl:attribute>
     		
        		<xsl:value-of select="@Title" /> : <xsl:value-of select="@SignatureQualification"/>
+    	</fo:block>
+    	
+       	<xsl:apply-templates/>
+    </xsl:template>
+     
+    <xsl:template match="dss:ValidationTimestampQualification">
+		<fo:block>
+			<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication/text()"/>
+	        <xsl:variable name="indicationColor">
+	        	<xsl:choose>
+					<xsl:when test="$indicationText='PASSED'">green</xsl:when>
+					<xsl:when test="$indicationText='INDETERMINATE'">orange</xsl:when>
+					<xsl:when test="$indicationText='FAILED'">red</xsl:when>
+					<xsl:otherwise>grey</xsl:otherwise>
+				</xsl:choose>
+	        </xsl:variable>
+		
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+       		<xsl:attribute name="background-color"><xsl:value-of select="$indicationColor" /></xsl:attribute>
+       		<xsl:attribute name="color">white</xsl:attribute>
+       		<xsl:attribute name="padding">5px</xsl:attribute>
+       		<xsl:attribute name="margin-top">15px</xsl:attribute>
+       		<xsl:attribute name="margin-bottom">5px</xsl:attribute>
+    		
+       		<xsl:value-of select="@Title" /> : <xsl:value-of select="@TimestampQualification"/>
     	</fo:block>
     	
        	<xsl:apply-templates/>

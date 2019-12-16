@@ -307,4 +307,8 @@ public enum ServiceTypeIdentifier {
 		return CA_QC.getUri().equals(serviceTypeIdentifier);
 	}
 
+	public static boolean isQTST(String serviceTypeIdentifier) {
+		return TSA_QTST.getUri().equals(serviceTypeIdentifier);
+	}
+
 }

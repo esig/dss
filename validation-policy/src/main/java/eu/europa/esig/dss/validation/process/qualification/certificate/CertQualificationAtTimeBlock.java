@@ -168,7 +168,7 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> hasGrantedStatus(List<TrustedServiceWrapper> caqcServicesAtTime) {
-		return new GrantedStatusCheck(i18nProvider, result, caqcServicesAtTime, getFailLevelConstraint());
+		return new GrantedStatusCheck<XmlValidationCertificateQualification>(i18nProvider, result, caqcServicesAtTime, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> hasCertificateTypeCoverage(

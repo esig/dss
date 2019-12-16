@@ -85,6 +85,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.enumerations.TimestampQualification;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
@@ -546,6 +547,13 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		Reports reports = executor.execute();
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		
+		DetailedReport detailedReport = reports.getDetailedReport();
+		List<XmlTimestamp> usedTimestamps = diagnosticData.getUsedTimestamps();
+		assertEquals(2, usedTimestamps.size());
+		for (XmlTimestamp xmlTimestamp : usedTimestamps) {
+			assertEquals(TimestampQualification.QTSA, detailedReport.getTimestampQualification(xmlTimestamp.getId()));
+		}
 
 		validateBestSigningTimes(reports);
 		checkReports(reports);
@@ -2174,7 +2182,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 	}
 
 	private ValidationPolicy loadPolicyNoRevoc() throws Exception {
-		return ValidationPolicyFacade.newFacade().getValidationPolicy("src/test/resources/constraint-no-revoc.xml");
+		return ValidationPolicyFacade.newFacade().getValidationPolicy(new File("src/test/resources/policy/constraint-no-revoc.xml"));
 	}
 
 	private ValidationPolicy loadPolicyCryptoWarn() throws Exception {

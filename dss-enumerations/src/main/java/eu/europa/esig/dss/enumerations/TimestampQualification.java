@@ -18,36 +18,30 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.process;
+package eu.europa.esig.dss.enumerations;
 
-public enum ValidationProcessDefinition {
+public enum TimestampQualification {
 
-	VPBS("Validation Process for Basic Signatures"),
+	QTSA("Qualified timestamp", "urn:cef:dss:timestampQualification:QTSA"),
 
-	VPFTSP("Validation Process for Timestamps"),
+	TSA("Not qualified timestamp", "urn:cef:dss:timestampQualification:TSA"),
 
-	VPFLTVD("Validation Process for Signatures with Time and Signatures with Long-Term Validation Data"),
+	NA("N/A", "urn:cef:dss:timestampQualification:notApplicable");
 
-	VPFSWATSP("Validation Process for Signatures with Archival Data"),
+	private final String label;
+	private final String uri;
 
-	SUB_XCV("Certificate Id"),
-
-	TL("Trusted List"),
-
-	SIG_QUALIFICATION("Signature Qualification"),
-
-	TST_QUALIFICATION("Timestamp Qualification"),
-
-	CERT_QUALIFICATION("Certificate Qualification");
-
-	private final String title;
-
-	ValidationProcessDefinition(String title) {
-		this.title = title;
+	TimestampQualification(String label, String uri) {
+		this.label = label;
+		this.uri = uri;
 	}
 
-	public String getTitle() {
-		return title;
+	public String getLabel() {
+		return label;
+	}
+
+	public String getUri() {
+		return uri;
 	}
 
 }

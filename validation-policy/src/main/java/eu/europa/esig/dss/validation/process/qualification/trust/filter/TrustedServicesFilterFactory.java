@@ -38,6 +38,10 @@ public final class TrustedServicesFilterFactory {
 		return new CaQcServiceFilter();
 	}
 
+	public static TrustedServiceFilter createFilterByQTST() {
+		return new QTSTServiceFilter();
+	}
+
 	public static TrustedServiceFilter createFilterByDate(Date date) {
 		return new ServiceByDateFilter(date);
 	}

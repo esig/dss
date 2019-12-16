@@ -18,36 +18,29 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.process;
+package eu.europa.esig.dss.jaxb.parsers;
 
-public enum ValidationProcessDefinition {
+import eu.europa.esig.dss.enumerations.TimestampQualification;
 
-	VPBS("Validation Process for Basic Signatures"),
+public final class TimestampQualificationParser {
 
-	VPFTSP("Validation Process for Timestamps"),
-
-	VPFLTVD("Validation Process for Signatures with Time and Signatures with Long-Term Validation Data"),
-
-	VPFSWATSP("Validation Process for Signatures with Archival Data"),
-
-	SUB_XCV("Certificate Id"),
-
-	TL("Trusted List"),
-
-	SIG_QUALIFICATION("Signature Qualification"),
-
-	TST_QUALIFICATION("Timestamp Qualification"),
-
-	CERT_QUALIFICATION("Certificate Qualification");
-
-	private final String title;
-
-	ValidationProcessDefinition(String title) {
-		this.title = title;
+	private TimestampQualificationParser() {
 	}
 
-	public String getTitle() {
-		return title;
+	public static TimestampQualification parse(String v) {
+		for (TimestampQualification timestampQualification : TimestampQualification.values()) {
+			if (timestampQualification.name().equals(v)) {
+				return timestampQualification;
+			}
+		}
+		return null;
+	}
+
+	public static String print(TimestampQualification v) {
+		if (v != null) {
+			return v.name();
+		}
+		return null;
 	}
 
 }

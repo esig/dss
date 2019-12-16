@@ -38,15 +38,18 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlProofOfExistence;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamps;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationSignatureQualification;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationTimestampQualification;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.enumerations.TimestampQualification;
 import eu.europa.esig.dss.enumerations.ValidationTime;
 
 /**
@@ -305,6 +308,36 @@ public class DetailedReport {
 		return null;
 	}
 
+	public TimestampQualification getTimestampQualification(String timestampId) {
+		XmlValidationTimestampQualification timestampQualif = getXmlTimestampQualificationById(timestampId);
+		if (timestampQualif !=null) {
+			return timestampQualif.getTimestampQualification();
+		}
+		return null;
+	}
+
+	private XmlValidationTimestampQualification getXmlTimestampQualificationById(String timestampId) {
+		List<XmlTimestamp> timestamps = jaxbDetailedReport.getTimestamps();
+		for (XmlTimestamp xmlTimestamp : timestamps) {
+			XmlValidationTimestampQualification validationTimestampQualification = xmlTimestamp.getValidationTimestampQualification();
+			if (validationTimestampQualification != null && validationTimestampQualification.getId().equals(timestampId)) {
+				return validationTimestampQualification;
+			}
+		}
+
+		List<XmlSignature> signatures = jaxbDetailedReport.getSignatures();
+		for (XmlSignature xmlSignature : signatures) {
+			List<XmlValidationTimestampQualification> validationTimestampQualifications = xmlSignature.getValidationTimestampQualification();
+			for (XmlValidationTimestampQualification xmlValidationTimestampQualification : validationTimestampQualifications) {
+				if (xmlValidationTimestampQualification.getId().equals(timestampId)) {
+					return xmlValidationTimestampQualification;
+				}
+			}
+		}
+
+		return null;
+	}
+
 	public XmlSignature getXmlSignatureById(String signatureId) {
 		List<XmlSignature> signatures = jaxbDetailedReport.getSignatures();
 		if (signatures != null) {
@@ -319,16 +352,21 @@ public class DetailedReport {
 
 	private XmlValidationProcessTimestamps getTimestampValidationById(String timestampId) {
 		List<XmlSignature> signatures = jaxbDetailedReport.getSignatures();
-		if (signatures != null) {
-			for (XmlSignature xmlSignature : signatures) {
-				List<XmlValidationProcessTimestamps> validationTimestamps = xmlSignature.getValidationProcessTimestamps();
-				if (validationTimestamps != null) {
-					for (XmlValidationProcessTimestamps tspValidation : validationTimestamps) {
-						if (timestampId.equals(tspValidation.getId())) {
-							return tspValidation;
-						}
+		for (XmlSignature xmlSignature : signatures) {
+			List<XmlValidationProcessTimestamps> validationTimestamps = xmlSignature.getValidationProcessTimestamps();
+			if (validationTimestamps != null) {
+				for (XmlValidationProcessTimestamps tspValidation : validationTimestamps) {
+					if (timestampId.equals(tspValidation.getId())) {
+						return tspValidation;
 					}
 				}
+			}
+		}
+		List<XmlTimestamp> timestamps = jaxbDetailedReport.getTimestamps();
+		for (XmlTimestamp xmlTimestamp : timestamps) {
+			XmlValidationProcessTimestamps validationProcessTimestamps = xmlTimestamp.getValidationProcessTimestamps();
+			if (validationProcessTimestamps != null && validationProcessTimestamps.getId().equals(timestampId)) {
+				return validationProcessTimestamps;
 			}
 		}
 		return null;

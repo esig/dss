@@ -29,11 +29,11 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.enumerations.TimestampQualification;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificateChain;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignature;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp;
-import eu.europa.esig.dss.simplereport.jaxb.XmlTimestampQualification;
 import eu.europa.esig.dss.simplereport.jaxb.XmlToken;
 
 /**
@@ -374,10 +374,10 @@ public class SimpleReport {
 	 * This method returns the timestamp's qualification
 	 *
 	 * @param timestampId
-	 *            the timestamp id
-	 * @return {@link XmlTimestampQualification} for a given timestamp
+	 *                    the timestamp id
+	 * @return {@link TimestampQualification} for a given timestamp
 	 */
-	public XmlTimestampQualification getTimestampQualification(final String timestampId) {
+	public TimestampQualification getTimestampQualification(final String timestampId) {
 		XmlTimestamp xmlTimestamp = getTimestampById(timestampId);
 		if (xmlTimestamp != null && xmlTimestamp.getTimestampLevel() != null) {
 			return xmlTimestamp.getTimestampLevel().getValue();
