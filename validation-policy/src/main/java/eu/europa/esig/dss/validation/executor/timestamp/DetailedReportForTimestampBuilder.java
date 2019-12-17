@@ -38,7 +38,7 @@ public class DetailedReportForTimestampBuilder extends AbstractDetailedReportBui
 				XmlTimestamp timestampAnalysis = new XmlTimestamp();
 
 				// TODO : long-term validation
-				ValidationProcessForTimeStamps vpftsp = new ValidationProcessForTimeStamps(i18nProvider, timestamp, bbbs);
+				ValidationProcessForTimeStamps vpftsp = new ValidationProcessForTimeStamps(i18nProvider, timestamp, bbbs.get(timestamp.getId()));
 				timestampAnalysis.setValidationProcessTimestamps(vpftsp.execute());
 
 				if (policy.isEIDASConstraintPresent()) {
