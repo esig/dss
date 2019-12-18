@@ -44,6 +44,7 @@ public class ValidationProcessForTimeStamps extends Chain<XmlValidationProcessTi
 
 	public ValidationProcessForTimeStamps(I18nProvider i18nProvider, TimestampWrapper timestamp, XmlBasicBuildingBlocks timestampBBB) {
 		super(i18nProvider, new XmlValidationProcessTimestamps());
+		result.setId(timestamp.getId());
 		result.setTitle(ValidationProcessDefinition.VPFTSP.getTitle());
 
 		this.timestamp = timestamp;

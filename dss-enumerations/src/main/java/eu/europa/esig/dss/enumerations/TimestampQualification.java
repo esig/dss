@@ -22,18 +22,24 @@ package eu.europa.esig.dss.enumerations;
 
 public enum TimestampQualification {
 
-	QTSA("Qualified timestamp", "urn:cef:dss:timestampQualification:QTSA"),
+	QTSA("QTSA", "Qualified timestamp", "urn:cef:dss:timestampQualification:QTSA"),
 
-	TSA("Not qualified timestamp", "urn:cef:dss:timestampQualification:TSA"),
+	TSA("TSA", "Not qualified timestamp", "urn:cef:dss:timestampQualification:TSA"),
 
-	NA("N/A", "urn:cef:dss:timestampQualification:notApplicable");
+	NA("N/A", "Not applicable", "urn:cef:dss:timestampQualification:notApplicable");
 
+	private final String readable;
 	private final String label;
 	private final String uri;
 
-	TimestampQualification(String label, String uri) {
+	TimestampQualification(String readable, String label, String uri) {
+		this.readable = readable;
 		this.label = label;
 		this.uri = uri;
+	}
+
+	public String getReadable() {
+		return readable;
 	}
 
 	public String getLabel() {

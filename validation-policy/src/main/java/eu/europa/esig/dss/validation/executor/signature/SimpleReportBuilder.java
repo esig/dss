@@ -20,15 +20,22 @@
  */
 package eu.europa.esig.dss.validation.executor.signature;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
+import eu.europa.esig.dss.enumerations.TimestampQualification;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificate;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificateChain;
@@ -36,6 +43,8 @@ import eu.europa.esig.dss.simplereport.jaxb.XmlSignature;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignatureLevel;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
+import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp;
+import eu.europa.esig.dss.simplereport.jaxb.XmlTimestampLevel;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.AbstractSimpleReportBuilder;
 
@@ -56,23 +65,32 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 	 *
 	 * @return the object representing {@code XmlSimpleReport}
 	 */
+	@Override
 	public XmlSimpleReport build() {
+		
+		validSignatureCount = 0;
+		totalSignatureCount = 0;
+
 		XmlSimpleReport simpleReport = super.build();
 
 		boolean containerInfoPresent = diagnosticData.isContainerInfoPresent();
-		addSignatures(simpleReport, containerInfoPresent);
+		
+		Set<String> attachedTimestampIds = new HashSet<String>();
+		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
+			attachedTimestampIds.addAll(signature.getTimestampIdsList());
+			simpleReport.getSignatureOrTimestamp().add(getSignature(signature, containerInfoPresent));
+		}
+		
+		for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
+			if (attachedTimestampIds.contains(timestamp.getId())) {
+				continue;
+			}
+			simpleReport.getSignatureOrTimestamp().add(getXmlTimestamp(timestamp));
+		}
+
 		addStatistics(simpleReport);
 
 		return simpleReport;
-	}
-
-	private void addSignatures(XmlSimpleReport simpleReport, boolean container) {
-		validSignatureCount = 0;
-		totalSignatureCount = 0;
-		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
-		for (SignatureWrapper signature : signatures) {
-			addSignature(simpleReport, signature, container);
-		}
 	}
 
 	private void addStatistics(XmlSimpleReport simpleReport) {
@@ -81,14 +99,14 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 	}
 
 	/**
-	 * @param simpleReport
-	 *            the JAXB SimpleReport
+	 * Builds a XmlSignature object
+	 * 
 	 * @param signature
-	 *            the signature wrapper
+	 *                  the signature wrapper
 	 * @param container
-	 *            true if the current file is a container
+	 *                  true if the current file is a container
 	 */
-	private void addSignature(XmlSimpleReport simpleReport, SignatureWrapper signature, boolean container) {
+	private XmlSignature getSignature(SignatureWrapper signature, boolean container) {
 
 		totalSignatureCount++;
 
@@ -128,7 +146,12 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 
 		addSignatureProfile(xmlSignature);
 
-		List<String> certIds = detailedReport.getBasicBuildingBlocksCertChain(signatureId);
+		xmlSignature.setCertificateChain(getCertChain(signatureId));
+		return xmlSignature;
+	}
+
+	public XmlCertificateChain getCertChain(String tokenId) {
+		List<String> certIds = detailedReport.getBasicBuildingBlocksCertChain(tokenId);
 		XmlCertificateChain xmlCertificateChain = new XmlCertificateChain();
 		if (Utils.isCollectionNotEmpty(certIds)) {
 			for (String certid : certIds) {
@@ -138,9 +161,7 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 				xmlCertificateChain.getCertificate().add(certificate);
 			}
 		}
-		xmlSignature.setCertificateChain(xmlCertificateChain);
-
-		simpleReport.getSignatureOrTimestamp().add(xmlSignature);
+		return xmlCertificateChain;
 	}
 
 	private void addBestSignatureTime(SignatureWrapper signature, XmlSignature xmlSignature) {
@@ -188,6 +209,50 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 			sigLevel.setDescription(qualification.getLabel());
 			xmlSignature.setSignatureLevel(sigLevel);
 		}
+	}
+
+	private XmlTimestamp getXmlTimestamp(TimestampWrapper timestampWrapper) {
+		XmlTimestamp xmlTimestamp = new XmlTimestamp();
+		xmlTimestamp.setId(timestampWrapper.getId());
+		xmlTimestamp.setProductionTime(timestampWrapper.getProductionTime());
+		xmlTimestamp.setProducedBy(getProducedByName(timestampWrapper));
+		xmlTimestamp.setCertificateChain(getCertChain(timestampWrapper.getId()));
+		xmlTimestamp.setFilename(timestampWrapper.getFilename());
+
+		XmlBasicBuildingBlocks timestampBBB = detailedReport.getBasicBuildingBlockById(timestampWrapper.getId());
+		xmlTimestamp.setIndication(timestampBBB.getConclusion().getIndication());
+		xmlTimestamp.setSubIndication(timestampBBB.getConclusion().getSubIndication());
+		xmlTimestamp.getErrors().addAll(toStrings(timestampBBB.getConclusion().getErrors()));
+		xmlTimestamp.getWarnings().addAll(toStrings(timestampBBB.getConclusion().getWarnings()));
+		xmlTimestamp.getInfos().addAll(toStrings(timestampBBB.getConclusion().getInfos()));
+
+		TimestampQualification timestampQualification = detailedReport.getTimestampQualification(timestampWrapper.getId());
+		if (timestampQualification != null) {
+			XmlTimestampLevel xmlTimestampLevel = new XmlTimestampLevel();
+			xmlTimestampLevel.setValue(timestampQualification);
+			xmlTimestampLevel.setDescription(timestampQualification.getLabel());
+			xmlTimestamp.setTimestampLevel(xmlTimestampLevel);
+		}
+
+		return xmlTimestamp;
+	}
+
+	private String getProducedByName(TimestampWrapper timestampWrapper) {
+		CertificateWrapper signingCertificate = timestampWrapper.getSigningCertificate();
+		if (signingCertificate != null) {
+			return signingCertificate.getReadableCertificateName();
+		}
+		return Utils.EMPTY_STRING;
+	}
+
+	private List<String> toStrings(List<XmlName> xmlNames) {
+		List<String> strings = new ArrayList<String>();
+		if (Utils.isCollectionNotEmpty(xmlNames)) {
+			for (XmlName name : xmlNames) {
+				strings.add(name.getValue());
+			}
+		}
+		return strings;
 	}
 
 }

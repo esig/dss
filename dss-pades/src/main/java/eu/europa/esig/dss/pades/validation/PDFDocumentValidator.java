@@ -46,7 +46,6 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.executor.timestamp.SignatureAndTimestampProcessExecutor;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampValidator;
@@ -77,11 +76,6 @@ public class PDFDocumentValidator extends SignedDocumentValidator implements Tim
 		return DSSUtils.compareFirstBytes(dssDocument, pdfPreamble);
 	}
 	
-	@Override
-	public SignatureAndTimestampProcessExecutor getDefaultProcessExecutor() {
-		return new SignatureAndTimestampProcessExecutor();
-	}
-
 	/**
 	 * Set the IPdfObjFactory. Allow to set the used implementation. Cannot be null.
 	 * 

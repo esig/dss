@@ -29,7 +29,7 @@ public final class TimestampQualificationParser {
 
 	public static TimestampQualification parse(String v) {
 		for (TimestampQualification timestampQualification : TimestampQualification.values()) {
-			if (timestampQualification.name().equals(v)) {
+			if (timestampQualification.getReadable().equals(v)) {
 				return timestampQualification;
 			}
 		}
@@ -38,7 +38,7 @@ public final class TimestampQualificationParser {
 
 	public static String print(TimestampQualification v) {
 		if (v != null) {
-			return v.name();
+			return v.getReadable();
 		}
 		return null;
 	}

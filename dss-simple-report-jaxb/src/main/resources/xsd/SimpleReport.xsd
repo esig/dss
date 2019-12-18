@@ -217,7 +217,7 @@
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="QTSA" />
 			<xs:enumeration value="TSA" />
-			<xs:enumeration value="NA" />
+			<xs:enumeration value="N/A" />
 		</xs:restriction>
 	</xs:simpleType>
 	

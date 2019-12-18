@@ -45,7 +45,6 @@ import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCryptographicInformation;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
@@ -221,7 +220,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		
 		DetailedReport detailedReport = reports.getDetailedReport();
 		
-		XmlValidationProcessArchivalData validationProcessArchivalData = detailedReport.getJAXBModel().getSignatures().get(0).getValidationProcessArchivalData();
+		XmlValidationProcessArchivalData validationProcessArchivalData = detailedReport.getSignatures().get(0).getValidationProcessArchivalData();
 		List<XmlConstraint> constraints = validationProcessArchivalData.getConstraint();
 		
 		List<String> timestampIds = detailedReport.getTimestampIds();
@@ -420,7 +419,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		
-		XmlValidationProcessArchivalData validationProcessArchivalData = detailedReport.getJAXBModel().getSignatures().get(0).getValidationProcessArchivalData();
+		XmlValidationProcessArchivalData validationProcessArchivalData = detailedReport.getSignatures().get(0).getValidationProcessArchivalData();
 		
 		List<XmlConstraint> constraints = validationProcessArchivalData.getConstraint();
 		
@@ -1965,8 +1964,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 	}
 
 	private void validateBestSigningTimes(Reports reports) {
-		XmlDetailedReport detailedReportJaxb = reports.getDetailedReportJaxb();
-		List<eu.europa.esig.dss.detailedreport.jaxb.XmlSignature> xmlSignatures = detailedReportJaxb.getSignatures();
+		DetailedReport detailedReport = reports.getDetailedReport();
+		List<eu.europa.esig.dss.detailedreport.jaxb.XmlSignature> xmlSignatures = detailedReport.getSignatures();
 		for (eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature : xmlSignatures) {
 			assertNotNull(xmlSignature.getValidationProcessBasicSignatures().getProofOfExistence());
 			assertNotNull(xmlSignature.getValidationProcessLongTermData().getProofOfExistence());

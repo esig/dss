@@ -116,7 +116,7 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 				}
 			}
 
-			detailedReport.getSignatures().add(signatureAnalysis);
+			detailedReport.getSignatureOrTimestampOrCertificate().add(signatureAnalysis);
 		}
 
 		for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
@@ -134,7 +134,7 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 				timestampAnalysys.setValidationTimestampQualification(timestampQualificationBlock.execute());
 			}
 
-			detailedReport.getTimestamps().add(timestampAnalysys);
+			detailedReport.getSignatureOrTimestampOrCertificate().add(timestampAnalysys);
 		}
 
 		return detailedReport;

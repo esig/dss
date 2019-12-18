@@ -7,11 +7,13 @@
 
 	<xs:complexType name="DetailedReport">
 		<xs:sequence>
-			<xs:choice>
-				<xs:element name="Signatures" type="Signature" minOccurs="0" maxOccurs="unbounded" />
-				<xs:element name="Timestamps" type="Timestamp" minOccurs="0" maxOccurs="unbounded" />
-				<xs:element name="Certificate" type="Certificate" minOccurs="0" maxOccurs="1" />
-			</xs:choice>
+			<xs:sequence minOccurs="0" maxOccurs="unbounded">
+				<xs:choice>
+					<xs:element name="Signature" type="Signature" />
+					<xs:element name="Timestamp" type="Timestamp" />
+					<xs:element name="Certificate" type="Certificate" />
+				</xs:choice>
+			</xs:sequence>
 			<xs:element type="BasicBuildingBlocks" name="BasicBuildingBlocks" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="TLAnalysis" type="TLAnalysis" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
@@ -387,7 +389,7 @@
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="QTSA" />
 			<xs:enumeration value="TSA" />
-			<xs:enumeration value="NA" />
+			<xs:enumeration value="N/A" />
 		</xs:restriction>
 	</xs:simpleType>
 	

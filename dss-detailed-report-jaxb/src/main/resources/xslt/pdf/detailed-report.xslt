@@ -69,8 +69,8 @@
 					<xsl:apply-templates select="dss:Certificate"/>
 					<xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='CERTIFICATE']"/>
 					
-					<xsl:apply-templates select="dss:Signatures"/>
-					<xsl:apply-templates select="dss:Timestamps"/>
+					<xsl:apply-templates select="dss:Signature"/>
+					<xsl:apply-templates select="dss:Timestamp"/>
 				    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='SIGNATURE']"/>
 				    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='COUNTER_SIGNATURE']"/>
 				    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='TIMESTAMP']"/>
@@ -113,7 +113,7 @@
    		</xsl:if>
     </xsl:template>
     
-    <xsl:template match="dss:Signatures">
+    <xsl:template match="dss:Signature">
 		<fo:block>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -128,7 +128,7 @@
    		</xsl:if>
     </xsl:template>
     
-    <xsl:template match="dss:Timestamps">
+    <xsl:template match="dss:Timestamp">
 		<fo:block>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>

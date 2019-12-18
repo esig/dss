@@ -85,11 +85,11 @@ public class PdfDocTimestampRevision extends PdfCMSRevision {
 		signatureCryptographicVerification.setReferenceDataFound(false);
 		signatureCryptographicVerification.setReferenceDataIntact(false);
 		signatureCryptographicVerification.setSignatureIntact(false);
-		if (getSignedDocumentBytes() != null) {
-			signatureCryptographicVerification.setReferenceDataFound(true);
-		}
 		byte[] signedDocumentContent = getSignedDocumentBytes();
-		signatureCryptographicVerification.setReferenceDataIntact(timestampToken.matchData(new InMemoryDocument(signedDocumentContent)));
+		if (signedDocumentContent != null) {
+			signatureCryptographicVerification.setReferenceDataFound(true);
+			signatureCryptographicVerification.setReferenceDataIntact(timestampToken.matchData(new InMemoryDocument(signedDocumentContent)));
+		}
 		signatureCryptographicVerification.setSignatureIntact(timestampToken.isSignatureValid());
 	}
 
