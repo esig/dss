@@ -18,36 +18,29 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.process;
+package eu.europa.esig.dss.jaxb.parsers;
 
-public enum ValidationProcessDefinition {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-	VPBS("Validation Process for Basic Signatures"),
+import org.junit.jupiter.api.Test;
 
-	VPFTSP("Validation Process for Timestamps"),
+import eu.europa.esig.dss.enumerations.TimestampQualification;
 
-	VPFLTVD("Validation Process for Signatures with Time and Signatures with Long-Term Validation Data"),
+public class TimestampQualificationParserTest {
 
-	VPFSWATSP("Validation Process for Signatures with Archival Data"),
-
-	SUB_XCV("Certificate Id"),
-
-	TL("Trusted List"),
-
-	SIG_QUALIFICATION("Signature Qualification"),
-
-	TST_QUALIFICATION("Timestamp Qualification"),
-
-	CERT_QUALIFICATION("Certificate Qualification");
-
-	private final String title;
-
-	ValidationProcessDefinition(String title) {
-		this.title = title;
+	@Test
+	public void test() {
+		for (TimestampQualification timestampQualification : TimestampQualification.values()) {
+			String print = TimestampQualificationParser.print(timestampQualification);
+			assertEquals(timestampQualification, TimestampQualificationParser.parse(print));
+		}
 	}
 
-	public String getTitle() {
-		return title;
+	@Test
+	public void testNull() {
+		assertNull(TimestampQualificationParser.print(null));
+		assertNull(TimestampQualificationParser.parse(null));
 	}
 
 }

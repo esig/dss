@@ -37,8 +37,6 @@ import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.validation.AbstractDocumentValidator;
-import eu.europa.esig.dss.validation.executor.timestamp.SignatureAndTimestampProcessExecutor;
-import eu.europa.esig.dss.validation.executor.timestamp.TimestampProcessExecutor;
 import eu.europa.esig.dss.validation.scope.DigestSignatureScope;
 import eu.europa.esig.dss.validation.scope.FullSignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
@@ -82,12 +80,7 @@ public class SingleTimestampValidator extends AbstractDocumentValidator implemen
 		timestampToken.setFileName(timestampFile.getName());
 		return timestampToken;
 	}
-	
-	@Override
-	public TimestampProcessExecutor getDefaultProcessExecutor() {
-		return new SignatureAndTimestampProcessExecutor();
-	}
-	
+
 	@Override
 	public Map<TimestampToken, List<SignatureScope>> getTimestamps() {
 		Map<TimestampToken, List<SignatureScope>> timestamps = new HashMap<TimestampToken, List<SignatureScope>>();

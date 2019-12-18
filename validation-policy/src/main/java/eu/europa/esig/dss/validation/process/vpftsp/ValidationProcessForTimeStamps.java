@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.vpftsp;
 
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,21 +40,21 @@ public class ValidationProcessForTimeStamps extends Chain<XmlValidationProcessTi
 	private static final Logger LOG = LoggerFactory.getLogger(ValidationProcessForTimeStamps.class);
 
 	private final TimestampWrapper timestamp;
-	private final Map<String, XmlBasicBuildingBlocks> bbbs;
+	private final XmlBasicBuildingBlocks timestampBBB;
 
-	public ValidationProcessForTimeStamps(I18nProvider i18nProvider, TimestampWrapper timestamp, Map<String, XmlBasicBuildingBlocks> bbbs) {
+	public ValidationProcessForTimeStamps(I18nProvider i18nProvider, TimestampWrapper timestamp, XmlBasicBuildingBlocks timestampBBB) {
 		super(i18nProvider, new XmlValidationProcessTimestamps());
+		result.setId(timestamp.getId());
 		result.setTitle(ValidationProcessDefinition.VPFTSP.getTitle());
 
 		this.timestamp = timestamp;
-		this.bbbs = bbbs;
+		this.timestampBBB = timestampBBB;
 	}
 
 	@Override
 	protected void initChain() {
-		XmlBasicBuildingBlocks tspBBB = bbbs.get(timestamp.getId());
-		if (tspBBB != null) {
-			firstItem = timestampBasicBuildingBlocksValid(tspBBB);
+		if (timestampBBB != null) {
+			firstItem = timestampBasicBuildingBlocksValid(timestampBBB);
 		} else {
 			LOG.error("Basic Building Blocks for timestamp '{}' not found!", timestamp.getId());
 		}

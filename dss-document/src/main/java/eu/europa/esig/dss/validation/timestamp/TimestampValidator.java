@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import eu.europa.esig.dss.validation.DocumentValidator;
-import eu.europa.esig.dss.validation.executor.timestamp.TimestampProcessExecutor;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 
 public interface TimestampValidator extends DocumentValidator {
@@ -16,11 +15,4 @@ public interface TimestampValidator extends DocumentValidator {
 	 */
 	Map<TimestampToken, List<SignatureScope>> getTimestamps();
 	
-	/**
-	 * Returns a default implementation of a process executor for timestamp validation
-	 * 
-	 * @return {@link TimestampProcessExecutor}
-	 */
-	TimestampProcessExecutor getDefaultProcessExecutor();
-
 }

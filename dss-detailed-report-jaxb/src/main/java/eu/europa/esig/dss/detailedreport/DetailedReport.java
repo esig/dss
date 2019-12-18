@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.detailedreport;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashSet;
@@ -38,15 +39,18 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlProofOfExistence;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamps;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationSignatureQualification;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationTimestampQualification;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.enumerations.TimestampQualification;
 import eu.europa.esig.dss.enumerations.ValidationTime;
 
 /**
@@ -305,8 +309,38 @@ public class DetailedReport {
 		return null;
 	}
 
+	public TimestampQualification getTimestampQualification(String timestampId) {
+		XmlValidationTimestampQualification timestampQualif = getXmlTimestampQualificationById(timestampId);
+		if (timestampQualif !=null) {
+			return timestampQualif.getTimestampQualification();
+		}
+		return null;
+	}
+
+	private XmlValidationTimestampQualification getXmlTimestampQualificationById(String timestampId) {
+		List<XmlTimestamp> timestamps = getIndependentTimestamps();
+		for (XmlTimestamp xmlTimestamp : timestamps) {
+			XmlValidationTimestampQualification validationTimestampQualification = xmlTimestamp.getValidationTimestampQualification();
+			if (validationTimestampQualification != null && validationTimestampQualification.getId().equals(timestampId)) {
+				return validationTimestampQualification;
+			}
+		}
+
+		List<XmlSignature> signatures = getSignatures();
+		for (XmlSignature xmlSignature : signatures) {
+			List<XmlValidationTimestampQualification> validationTimestampQualifications = xmlSignature.getValidationTimestampQualification();
+			for (XmlValidationTimestampQualification xmlValidationTimestampQualification : validationTimestampQualifications) {
+				if (xmlValidationTimestampQualification.getId().equals(timestampId)) {
+					return xmlValidationTimestampQualification;
+				}
+			}
+		}
+
+		return null;
+	}
+
 	public XmlSignature getXmlSignatureById(String signatureId) {
-		List<XmlSignature> signatures = jaxbDetailedReport.getSignatures();
+		List<XmlSignature> signatures = getSignatures();
 		if (signatures != null) {
 			for (XmlSignature xmlSignature : signatures) {
 				if (signatureId.equals(xmlSignature.getId())) {
@@ -318,20 +352,55 @@ public class DetailedReport {
 	}
 
 	private XmlValidationProcessTimestamps getTimestampValidationById(String timestampId) {
-		List<XmlSignature> signatures = jaxbDetailedReport.getSignatures();
-		if (signatures != null) {
-			for (XmlSignature xmlSignature : signatures) {
-				List<XmlValidationProcessTimestamps> validationTimestamps = xmlSignature.getValidationProcessTimestamps();
-				if (validationTimestamps != null) {
-					for (XmlValidationProcessTimestamps tspValidation : validationTimestamps) {
-						if (timestampId.equals(tspValidation.getId())) {
-							return tspValidation;
-						}
+		List<XmlSignature> signatures = getSignatures();
+		for (XmlSignature xmlSignature : signatures) {
+			List<XmlValidationProcessTimestamps> validationTimestamps = xmlSignature.getValidationProcessTimestamps();
+			if (validationTimestamps != null) {
+				for (XmlValidationProcessTimestamps tspValidation : validationTimestamps) {
+					if (timestampId.equals(tspValidation.getId())) {
+						return tspValidation;
 					}
 				}
 			}
 		}
+		List<XmlTimestamp> timestamps = getIndependentTimestamps();
+		for (XmlTimestamp xmlTimestamp : timestamps) {
+			XmlValidationProcessTimestamps validationProcessTimestamps = xmlTimestamp.getValidationProcessTimestamps();
+			if (validationProcessTimestamps != null && validationProcessTimestamps.getId().equals(timestampId)) {
+				return validationProcessTimestamps;
+			}
+		}
 		return null;
+	}
+
+	public List<XmlSignature> getSignatures() {
+		List<XmlSignature> result = new ArrayList<XmlSignature>();
+		for (Serializable element : jaxbDetailedReport.getSignatureOrTimestampOrCertificate()) {
+			if (element instanceof XmlSignature) {
+				result.add((XmlSignature) element);
+			}
+		}
+		return result;
+	}
+
+	public List<XmlTimestamp> getIndependentTimestamps() {
+		List<XmlTimestamp> result = new ArrayList<XmlTimestamp>();
+		for (Serializable element : jaxbDetailedReport.getSignatureOrTimestampOrCertificate()) {
+			if (element instanceof XmlTimestamp) {
+				result.add((XmlTimestamp) element);
+			}
+		}
+		return result;
+	}
+
+	public List<XmlCertificate> getCertificates() {
+		List<XmlCertificate> result = new ArrayList<XmlCertificate>();
+		for (Serializable element : jaxbDetailedReport.getSignatureOrTimestampOrCertificate()) {
+			if (element instanceof XmlCertificate) {
+				result.add((XmlCertificate) element);
+			}
+		}
+		return result;
 	}
 
 	public XmlDetailedReport getJAXBModel() {
@@ -347,7 +416,7 @@ public class DetailedReport {
 	}
 
 	private CertificateQualification getCertificateQualification(ValidationTime validationTime) {
-		XmlCertificate certificate = jaxbDetailedReport.getCertificate();
+		XmlCertificate certificate = getCertificates().get(0);
 		if (certificate != null) {
 			List<XmlValidationCertificateQualification> validationCertificateQualifications = certificate.getValidationCertificateQualification();
 			if (validationCertificateQualifications != null) {
@@ -362,7 +431,8 @@ public class DetailedReport {
 	}
 
 	public XmlConclusion getCertificateXCVConclusion(String certificateId) {
-		if (jaxbDetailedReport.getCertificate() == null) {
+		XmlCertificate certificate = getCertificates().get(0);
+		if (certificate == null) {
 			throw new UnsupportedOperationException("Only supported in report for certificate");
 		}
 		List<XmlBasicBuildingBlocks> basicBuildingBlocks = jaxbDetailedReport.getBasicBuildingBlocks();

@@ -35,8 +35,6 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSSecurityProvider;
-import eu.europa.esig.dss.validation.executor.SignatureProcessExecutor;
-import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 
 /**
@@ -163,11 +161,6 @@ public abstract class SignedDocumentValidator extends AbstractDocumentValidator 
 	}
 	
 	@Override
-	public SignatureProcessExecutor getDefaultProcessExecutor() {
-		return new DefaultSignatureProcessExecutor();
-	}
-	
-	@Override
 	protected DiagnosticDataBuilder prepareDiagnosticDataBuilder(final ValidationContext validationContext) {
 		return super.prepareDiagnosticDataBuilder(validationContext).containerInfo(getContainerInfo());
 	}
@@ -193,6 +186,7 @@ public abstract class SignedDocumentValidator extends AbstractDocumentValidator 
 		return processSignaturesValidation(validationContext, allSignatureList);
 	}
 
+	@Override
 	public List<AdvancedSignature> processSignaturesValidation(final ValidationContext validationContext, 
 			final List<AdvancedSignature> allSignatureList) {
 		

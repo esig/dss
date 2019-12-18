@@ -24,6 +24,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
@@ -33,6 +34,12 @@ public class PathsTest {
 	@Test
 	public void objectPath() {
 		assertEquals("./ds:Object", XMLDSigPaths.OBJECT_PATH);
+	}
+
+	@Test
+	public void objectWithId() {
+		String objectById = XMLDSigPaths.OBJECT_PATH + DomUtils.getXPathByIdAttribute("bla");
+		assertEquals("./ds:Object[@Id='bla' or @id='bla' or @ID='bla']", objectById);
 	}
 
 	@Test

@@ -74,6 +74,7 @@ import eu.europa.esig.dss.enumerations.SignaturePolicyType;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampLocation;
+import eu.europa.esig.dss.enumerations.TimestampQualification;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
@@ -260,6 +261,14 @@ public class ETSIValidationReportBuilder {
 		signatureValidationReport.setSignerInformation(getSignerInformation(token));
 		signatureValidationReport.setSignatureValidationStatus(getValidationStatus(token));
 		signatureValidationReport.setValidationConstraintsEvaluationReport(getValidationConstraintsEvaluationReport(token));
+
+		TimestampQualification timestampQualification = detailedReport.getTimestampQualification(token.getId());
+		if (timestampQualification != null) {
+			SignatureQualityType signatureQualityType = objectFactory.createSignatureQualityType();
+			signatureQualityType.getSignatureQualityInformation().add(timestampQualification.getUri());
+			signatureValidationReport.setSignatureQuality(signatureQualityType);
+		}
+
 		return signatureValidationReport;
 	}
 

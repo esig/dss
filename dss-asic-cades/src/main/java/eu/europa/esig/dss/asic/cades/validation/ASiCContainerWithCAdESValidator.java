@@ -47,7 +47,6 @@ import eu.europa.esig.dss.validation.ListOCSPSource;
 import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.SignatureValidator;
-import eu.europa.esig.dss.validation.executor.timestamp.SignatureAndTimestampProcessExecutor;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.timestamp.SingleTimestampValidator;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -81,11 +80,6 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 		return new ASiCWithCAdESContainerExtractor(document);
 	}
 	
-	@Override
-	public SignatureAndTimestampProcessExecutor getDefaultProcessExecutor() {
-		return new SignatureAndTimestampProcessExecutor();
-	}
-
 	@Override
 	protected List<SignatureValidator> getValidators() {
 		if (validators == null) {
@@ -144,9 +138,9 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 
 			ManifestFile coveredManifest = manifestBasedTimestampValidator.getCoveredManifest();
 			if (coveredManifest != null && timestamp.isSignatureValid()) {
-				for (AdvancedSignature advancedSignature : allSignatures) {
-					for (ManifestEntry entry : coveredManifest.getEntries()) {
-						if (entry.getFileName() != null && entry.getFileName().equals(advancedSignature.getSignatureFilename())) {
+				for (ManifestEntry entry : coveredManifest.getEntries()) {
+					for (AdvancedSignature advancedSignature : allSignatures) {
+						if (Utils.areStringsEqual(entry.getFileName(), advancedSignature.getSignatureFilename())) {
 							CAdESSignature cadesSig = (CAdESSignature) advancedSignature;
 							List<TimestampToken> cadesTimestamps = new ArrayList<TimestampToken>();
 							cadesTimestamps.addAll(cadesSig.getContentTimestamps());

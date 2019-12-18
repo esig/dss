@@ -29,7 +29,9 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.DocumentProcessExecutor;
+import eu.europa.esig.dss.validation.executor.SignatureProcessExecutor;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
+import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -111,6 +113,11 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 		return processExecutor;
 	}
 	
+	@Override
+	public SignatureProcessExecutor getDefaultProcessExecutor() {
+		return new DefaultSignatureProcessExecutor();
+	}
+
 	/**
 	 * Returns a default digest algorithm defined for a digest calculation
 	 * 
@@ -198,7 +205,12 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 	public Reports validateDocument(final InputStream policyDataStream) {
 		ValidationPolicy validationPolicy = null;
 		try {
-			validationPolicy = ValidationPolicyFacade.newFacade().getValidationPolicy(policyDataStream);
+			if (policyDataStream == null) {
+				LOG.debug("No provided validation policy : use the default policy");
+				validationPolicy = ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+			} else {
+				validationPolicy = ValidationPolicyFacade.newFacade().getValidationPolicy(policyDataStream);
+			}
 		} catch (Exception e) {
 			throw new DSSException("Unable to load the policy", e);
 		}
@@ -257,11 +269,7 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 	 */
 	protected DiagnosticDataBuilder prepareDiagnosticDataBuilder(final ValidationContext validationContext) {
 		List<AdvancedSignature> allSignatures = prepareSignatureValidationContext(validationContext);
-		Map<TimestampToken, List<SignatureScope>> timestamps = Collections.emptyMap();
-		if (Utils.isCollectionEmpty(allSignatures)) {
-			// in case if no signatures found, process the timestamp only validation
-			timestamps = prepareTimestampValidationContext(validationContext);
-		}
+		Map<TimestampToken, List<SignatureScope>> timestamps = prepareTimestampValidationContext(validationContext);
 		
 		return new DiagnosticDataBuilder().document(document).foundSignatures(allSignatures)
 				.usedTimestamps(validationContext.getProcessedTimestamps())
@@ -362,11 +370,14 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 			for (AdvancedSignature signature : signatures) {
 				signatureScopes.addAll(signature.getSignatureScopes());
 			}
-		} else if (Utils.isMapNotEmpty(timestamps)) {
-			for (List<SignatureScope> signatureScope : timestamps.values()) {
-				signatureScopes.addAll(signatureScope);
+		}
+
+		if (Utils.isMapNotEmpty(timestamps)) {
+			for (List<SignatureScope> timestampSignatureScopes : timestamps.values()) {
+				signatureScopes.addAll(timestampSignatureScopes);
 			}
 		}
+
 		return signatureScopes;
 	}
 
@@ -386,4 +397,5 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 		executor.setCurrentTime(getValidationTime());
 		return executor.execute();
 	}
+
 }

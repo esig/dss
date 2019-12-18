@@ -215,7 +215,8 @@
 	
 	<xs:simpleType name="TimestampQualification" final="restriction">
 		<xs:restriction base="xs:string">
-			<!-- TODO : populate the list -->
+			<xs:enumeration value="QTSA" />
+			<xs:enumeration value="TSA" />
 			<xs:enumeration value="N/A" />
 		</xs:restriction>
 	</xs:simpleType>
