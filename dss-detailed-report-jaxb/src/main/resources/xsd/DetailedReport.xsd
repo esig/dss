@@ -41,6 +41,7 @@
 			<!-- eIDAS stuffs -->
 			<xs:element name="ValidationTimestampQualification" type="ValidationTimestampQualification" minOccurs="0" />
 		</xs:sequence>
+		<xs:attribute name="Id" type="xs:string" /> 
 	</xs:complexType>
 	
 	<xs:complexType name="Certificate">

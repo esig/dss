@@ -125,6 +125,8 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 			}
 
 			XmlTimestamp timestampAnalysys = new XmlTimestamp();
+			timestampAnalysys.setId(timestamp.getId());
+
 			timestampAnalysys.setValidationProcessTimestamps(getTimestampValidationResult(timestamp, bbbs));
 
 			if (policy.isEIDASConstraintPresent()) {
