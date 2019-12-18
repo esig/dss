@@ -121,7 +121,7 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 	private ChainItem<XmlXCV> prospectiveCertificateChain() {
 		LevelConstraint constraint = validationPolicy.getProspectiveCertificateChainConstraint(context);
-		return new ProspectiveCertificateChainCheck(i18nProvider, result, currentCertificate, context, constraint);
+		return new ProspectiveCertificateChainCheck<XmlXCV>(i18nProvider, result, currentCertificate, context, constraint);
 	}
 
 	private ChainItem<XmlXCV> trustedServiceWithExpectedTypeIdentifier() {

@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlVTS;
@@ -54,6 +55,8 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 
 	private final TokenProxy token;
 	private final Date currentTime;
+	
+	private final XmlBasicBuildingBlocks bbb;
 
 	private final Context context;
 
@@ -62,13 +65,14 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 
 	private Date controlTime;
 
-	public ValidationTimeSliding(I18nProvider i18nProvider, TokenProxy token, Date currentTime, Context context, POEExtraction poe,
-			ValidationPolicy policy) {
+	public ValidationTimeSliding(I18nProvider i18nProvider, TokenProxy token, Date currentTime, POEExtraction poe, 
+			XmlBasicBuildingBlocks bbb, Context context, ValidationPolicy policy) {
 		super(i18nProvider, new XmlVTS());
 		result.setTitle(BasicBuildingBlockDefinition.VALIDATION_TIME_SLIDING.getTitle());
 
 		this.token = token;
 		this.currentTime = currentTime;
+		this.bbb = bbb;
 
 		this.context = context;
 
@@ -131,7 +135,7 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 				 * NO_POE.
 				 */
 				
-				CertificateRevocationWrapper latestCompliantRevocation = ValidationProcessUtils.getLatestKnownRevocationData(certificate, policy);
+				CertificateRevocationWrapper latestCompliantRevocation = ValidationProcessUtils.getLatestAcceptableRevocationData(certificate, bbb);
 				
 				if (item == null) {
 					item = firstItem = satisfyingRevocationDataExists(latestCompliantRevocation);
@@ -216,6 +220,11 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 		}
 	}
 
+	@Override
+	protected void addAdditionalInfo() {
+		result.setControlTime(controlTime);
+	}
+
 	private List<CertificateWrapper> reduceChainUntilFirstTrustAnchor(List<CertificateWrapper> originalCertificateChain) {
 		List<CertificateWrapper> result = new ArrayList<CertificateWrapper>();
 		for (CertificateWrapper cert : originalCertificateChain) {
@@ -227,11 +236,6 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 		return result;
 	}
 
-	@Override
-	protected void addAdditionalInfo() {
-		result.setControlTime(controlTime);
-	}
-
 	private boolean isFresh(RevocationWrapper revocationData, Date controlTime) {
 		// TODO SubContext ??
 		RevocationFreshnessChecker rfc = new RevocationFreshnessChecker(i18nProvider, revocationData, controlTime, context, SubContext.SIGNING_CERT, policy);
@@ -240,7 +244,7 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 	}
 
 	private ChainItem<XmlVTS> satisfyingRevocationDataExists(RevocationWrapper revocationData) {
-		return new SatisfyingRevocationDataExistsCheck(i18nProvider, result, revocationData, getFailLevelConstraint());
+		return new SatisfyingRevocationDataExistsCheck<XmlVTS>(i18nProvider, result, revocationData, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlVTS> poeExistsAtOrBeforeControlTime(TokenProxy token, TimestampedObjectType referenceCategory, Date controlTime) {

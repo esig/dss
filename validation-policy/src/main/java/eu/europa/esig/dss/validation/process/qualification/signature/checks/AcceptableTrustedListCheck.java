@@ -37,7 +37,7 @@ public class AcceptableTrustedListCheck<T extends XmlConstraintsConclusion> exte
 	private final XmlTLAnalysis tlAnalysis;
 
 	public AcceptableTrustedListCheck(I18nProvider i18nProvider, T result, XmlTLAnalysis tlAnalysis, LevelConstraint constraint) {
-		super(i18nProvider, result, constraint, tlAnalysis.getURL());
+		super(i18nProvider, result, constraint, tlAnalysis.getId());
 
 		this.tlAnalysis = tlAnalysis;
 	}

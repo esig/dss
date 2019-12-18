@@ -51,8 +51,9 @@ public class PastSignatureValidationCheck extends ChainItem<XmlValidationProcess
 	private SubIndication subIndication;
 
 	public PastSignatureValidationCheck(I18nProvider i18nProvider, XmlValidationProcessArchivalData result, SignatureWrapper signature,
-			Map<String, XmlBasicBuildingBlocks> bbbs, POEExtraction poe, Date currentTime, ValidationPolicy policy, Context context, LevelConstraint constraint) {
-		super(i18nProvider, result, constraint);
+			Map<String, XmlBasicBuildingBlocks> bbbs, POEExtraction poe, Date currentTime,
+			ValidationPolicy policy, Context context, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint, signature.getId());
 
 		this.signature = signature;
 		this.bbbs = bbbs;

@@ -20,20 +20,20 @@
  */
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks;
 
-import eu.europa.esig.dss.detailedreport.jaxb.XmlVTS;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.ChainItem;
 
-public class SatisfyingRevocationDataExistsCheck extends ChainItem<XmlVTS> {
+public class SatisfyingRevocationDataExistsCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
 	private final RevocationWrapper revocationData;
 
-	public SatisfyingRevocationDataExistsCheck(I18nProvider i18nProvider, XmlVTS result, RevocationWrapper revocationData, LevelConstraint constraint) {
+	public SatisfyingRevocationDataExistsCheck(I18nProvider i18nProvider, T result, RevocationWrapper revocationData, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 
 		this.revocationData = revocationData;

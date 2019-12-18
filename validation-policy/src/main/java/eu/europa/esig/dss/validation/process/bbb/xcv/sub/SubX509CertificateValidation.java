@@ -21,7 +21,10 @@
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlRAC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRevocationInformation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
@@ -38,7 +41,11 @@ import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
+import eu.europa.esig.dss.validation.process.bbb.xcv.rac.RevocationAcceptanceChecker;
+import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.LatestRevocationAcceptanceCheckerResultCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationAcceptanceCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChecker;
+import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataAvailableCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.AuthorityInfoAccessPresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateCryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateExpirationCheck;
@@ -83,7 +90,7 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		super(i18nProvider, new XmlSubXCV());
 		result.setId(currentCertificate.getId());
 		result.setTrustAnchor(currentCertificate.isTrusted());
-		result.setTitle(ValidationProcessDefinition.SUB_XCV.getTitle() + " = " + currentCertificate.getId());
+		result.setTitle(ValidationProcessDefinition.SUB_XCV.getTitle());
 
 		this.currentCertificate = currentCertificate;
 		this.currentTime = currentTime;
@@ -142,15 +149,38 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 		item = item.setNextItem(aiaPresent(currentCertificate, subContext));
 
-		item = item.setNextItem(revocationInfoAccessPresent(currentCertificate, subContext));
-		
-		CertificateRevocationWrapper latestCertificateRevocation = ValidationProcessUtils.getLatestKnownRevocationData(currentCertificate, validationPolicy);
-		
-		if (latestCertificateRevocation != null && latestCertificateRevocation.isRevoked()) {
-			attachRevocationInformation(latestCertificateRevocation);
-		}
+		if (!ValidationProcessUtils.isRevocationNoNeedCheck(currentCertificate, currentTime)) {
 
-		if (!isRevocationNoNeedCheck(currentCertificate)) {
+			item = item.setNextItem(revocationInfoAccessPresent(currentCertificate, subContext));
+			
+			item = item.setNextItem(revocationDataPresent(currentCertificate, subContext));
+			
+			CertificateRevocationWrapper latestCertificateRevocation = null;
+			
+			Map<CertificateRevocationWrapper, XmlRAC> revocationAcceptanceResultMap = getRevocationAcceptanceResult(currentCertificate);
+			for (Map.Entry<CertificateRevocationWrapper, XmlRAC> revocationAcceptanceResult : revocationAcceptanceResultMap.entrySet()) {
+				CertificateRevocationWrapper currentRevocation = revocationAcceptanceResult.getKey();
+				XmlRAC currentRAC = revocationAcceptanceResult.getValue();
+				
+				result.getRAC().add(currentRAC);
+				
+				item = item.setNextItem(revocationAcceptable(currentRAC));
+				
+				if (isValid(currentRAC) && 
+						(latestCertificateRevocation == null || currentRevocation.getProductionDate().after(latestCertificateRevocation.getProductionDate()))) {
+					latestCertificateRevocation = currentRevocation;
+				}
+				
+			}
+			
+			if (latestCertificateRevocation != null && latestCertificateRevocation.isRevoked()) {
+				attachRevocationInformation(latestCertificateRevocation);
+			}
+			
+			if (latestCertificateRevocation != null) {
+				item = item.setNextItem(latestRevocationAcceptable(revocationAcceptanceResultMap.get(latestCertificateRevocation)));
+			}
+			
 			RevocationFreshnessChecker rfc = new RevocationFreshnessChecker(i18nProvider, latestCertificateRevocation, 
 					currentTime, context, subContext, validationPolicy);
 			XmlRFC rfcResult = rfc.execute();
@@ -185,18 +215,6 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		result.setRevocationInfo(revocationInfo);
 	}
 
-	/*
-	 * A signing certificate includes the id-pkix-ocsp-nocheck extension. This extension informs the OCSP client that
-	 * the OCSP signing certificate should not be checked for revocation during the lifetime of the certificate. The
-	 * OCSP Signing certificate should therefore have a short lifetime.
-	 */
-	private boolean isRevocationNoNeedCheck(CertificateWrapper certificate) {
-		if (certificate.isIdPkixOcspNoCheck()) {
-			return currentTime.compareTo(certificate.getNotBefore()) >= 0 && currentTime.compareTo(certificate.getNotAfter()) <= 0;
-		}
-		return false;
-	}
-
 	private ChainItem<XmlSubXCV> certificateExpiration(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateNotExpiredConstraint(context, subContext);
 		return new CertificateExpirationCheck(i18nProvider, result, certificate, currentTime, constraint);
@@ -220,6 +238,32 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	private ChainItem<XmlSubXCV> revocationInfoAccessPresent(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateRevocationInfoAccessPresentConstraint(context, subContext);
 		return new RevocationInfoAccessPresentCheck(i18nProvider, result, certificate, constraint);
+	}
+	
+	private ChainItem<XmlSubXCV> revocationDataPresent(CertificateWrapper certificate, SubContext subContext) {
+		LevelConstraint constraint = validationPolicy.getRevocationDataAvailableConstraint(context, subContext);
+		return new RevocationDataAvailableCheck<XmlSubXCV>(i18nProvider, result, certificate, constraint);
+	}
+	
+	private Map<CertificateRevocationWrapper, XmlRAC> getRevocationAcceptanceResult(CertificateWrapper certificate) {
+		Map<CertificateRevocationWrapper, XmlRAC> revocationAcceptanceResultMap = 
+				new HashMap<CertificateRevocationWrapper, XmlRAC>();
+		
+		for (CertificateRevocationWrapper revocationWrapper : certificate.getCertificateRevocationData()) {
+			RevocationAcceptanceChecker rac = new RevocationAcceptanceChecker(i18nProvider, certificate, revocationWrapper, currentTime, validationPolicy);
+			XmlRAC racResult = rac.execute();
+			revocationAcceptanceResultMap.put(revocationWrapper, racResult);
+		}
+		
+		return revocationAcceptanceResultMap;
+	}
+	
+	private ChainItem<XmlSubXCV> revocationAcceptable(XmlRAC racResult) {
+		return new RevocationAcceptanceCheckerResultCheck<XmlSubXCV>(i18nProvider, result, racResult, getWarnLevelConstraint());
+	}
+	
+	private ChainItem<XmlSubXCV> latestRevocationAcceptable(XmlRAC racResult) {
+		return new LatestRevocationAcceptanceCheckerResultCheck<XmlSubXCV>(i18nProvider, result, racResult, getFailLevelConstraint());
 	}
 	
 	private ChainItem<XmlSubXCV> checkRevocationFreshnessCheckerResult(XmlRFC rfcResult) {
@@ -333,7 +377,7 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	}
 
 	private ChainItem<XmlSubXCV> idPkixOcspNoCheck() {
-		return new IdPkixOcspNoCheck(i18nProvider, result, getFailLevelConstraint());
+		return new IdPkixOcspNoCheck<XmlSubXCV>(i18nProvider, result, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlSubXCV> revocationCertHashCheck() {
