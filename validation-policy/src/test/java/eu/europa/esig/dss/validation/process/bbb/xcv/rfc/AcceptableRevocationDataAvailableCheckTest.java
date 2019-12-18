@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.process.bbb.cv;
+package eu.europa.esig.dss.validation.process.bbb.xcv.rfc;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -26,34 +26,27 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
-import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
-import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
-import eu.europa.esig.dss.validation.process.bbb.cv.checks.SignatureIntactCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.AcceptableRevocationDataAvailableCheck;
 
-public class SignatureIntactCheckTest extends AbstractTestCheck {
+public class AcceptableRevocationDataAvailableCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void signatureIntactCheck() throws Exception {
-		XmlBasicSignature basicsig = new XmlBasicSignature();
-		basicsig.setSignatureIntact(true);
-
-		XmlSignature sig = new XmlSignature();
-		sig.setBasicSignature(basicsig);
-
+	public void revocationDataAvailableCheck() throws Exception {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
-		XmlCV result = new XmlCV();
-		SignatureIntactCheck<XmlCV> sic = new SignatureIntactCheck<XmlCV>(i18nProvider, result, new SignatureWrapper(sig), Context.SIGNATURE, constraint);
-		sic.execute();
+		XmlRFC result = new XmlRFC();
+		AcceptableRevocationDataAvailableCheck<XmlRFC> rdac = new AcceptableRevocationDataAvailableCheck<XmlRFC>(i18nProvider, result,
+				new RevocationWrapper(new XmlRevocation()), constraint);
+		rdac.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());
@@ -61,19 +54,14 @@ public class SignatureIntactCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void signatureNotIntactCheck() throws Exception {
-		XmlBasicSignature basicsig = new XmlBasicSignature();
-		basicsig.setSignatureIntact(false);
-
-		XmlSignature sig = new XmlSignature();
-		sig.setBasicSignature(basicsig);
-
+	public void failedRevocationDataAvailableCheck() throws Exception {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
-		XmlCV result = new XmlCV();
-		SignatureIntactCheck<XmlCV> sic = new SignatureIntactCheck<XmlCV>(i18nProvider, result, new SignatureWrapper(sig), Context.SIGNATURE, constraint);
-		sic.execute();
+		XmlRFC result = new XmlRFC();
+		AcceptableRevocationDataAvailableCheck<XmlRFC> rdac = new AcceptableRevocationDataAvailableCheck<XmlRFC>(i18nProvider, result, 
+				null, constraint);
+		rdac.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());

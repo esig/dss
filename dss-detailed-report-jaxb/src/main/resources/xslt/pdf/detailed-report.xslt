@@ -294,7 +294,7 @@
     
     <xsl:template match="dss:Conclusion" />
 	
-    <xsl:template match="dss:ISC|dss:VCI|dss:RFC|dss:CV|dss:SAV|dss:XCV|dss:SubXCV|dss:PSV|dss:PCV|dss:VTS">
+    <xsl:template match="dss:ISC|dss:VCI|dss:RAC|dss:RFC|dss:CV|dss:SAV|dss:XCV|dss:SubXCV|dss:PSV|dss:PCV|dss:VTS">
     	<fo:table>
 			<xsl:attribute name="page-break-inside">avoid</xsl:attribute>
 			

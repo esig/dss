@@ -222,10 +222,12 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		
 		// Revocation data tests
 		result = revocationConstraintAcceptableDigestAlgorithmIsNotDefined(ALGORITHM_SHA256, 0);
+
 		detailedReport = createDetailedReport();
 		revocationBasicBuildingBlock = detailedReport.getBasicBuildingBlockById(detailedReport.getRevocationIds().get(0));
 		assertEquals(Indication.INDETERMINATE, revocationBasicBuildingBlock.getSAV().getConclusion().getIndication());
-		assertEquals(Indication.PASSED, detailedReport.getTimestampValidationIndication(detailedReport.getTimestampIds().get(0)));
+		assertEquals(Indication.INDETERMINATE, detailedReport.getTimestampValidationIndication(detailedReport.getTimestampIds().get(0)));
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, detailedReport.getTimestampValidationSubIndication(detailedReport.getTimestampIds().get(0)));
 		checkRevocationErrorPresence(detailedReport, MessageTag.ASCCM_ANS_2, true);
 		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_2, false);
 		
@@ -474,6 +476,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 	
 	private Indication defaultConstraintSetLevelForPreviousValidationPolicy(Level level) throws Exception {
 		ConstraintsParameters constraintsParameters = this.constraintsParameters;
+		
 		CryptographicConstraint defaultCryptographicConstraint = constraintsParameters.getCryptographic();
 		defaultCryptographicConstraint.setLevel(level);
 		constraintsParameters.setCryptographic(defaultCryptographicConstraint);
@@ -486,6 +489,12 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		CryptographicConstraint caCertCryptographicConstraint = getCACertificateConstraints(constraintsParameters).getCryptographic();
 		caCertCryptographicConstraint.setLevel(level);
 		setSigningCertificateConstraints(constraintsParameters, caCertCryptographicConstraint);
+		
+		CryptographicConstraint revocationCryptographicConstraint = constraintsParameters.getRevocation().getBasicSignatureConstraints().getCryptographic();
+		revocationCryptographicConstraint.setLevel(level);
+		
+		CryptographicConstraint timestampCryptographicConstraint = constraintsParameters.getTimestamp().getBasicSignatureConstraints().getCryptographic();
+		timestampCryptographicConstraint.setLevel(level);
 		
 		setValidationPolicy(constraintsParameters);
 		SimpleReport simpleReport = createSimpleReport();

@@ -30,7 +30,9 @@ public enum ValidationProcessDefinition {
 
 	VPFSWATSP("Validation Process for Signatures with Archival Data"),
 
-	SUB_XCV("Certificate Id"),
+	SUB_XCV("Certificate"),
+	
+	RAV("Revocation Acceptance Validation"),
 
 	TL("Trusted List"),
 

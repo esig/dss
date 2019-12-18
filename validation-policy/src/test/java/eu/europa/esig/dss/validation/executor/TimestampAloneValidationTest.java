@@ -82,7 +82,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 		executor.setValidationPolicy(loadDefaultPolicy());
 		Reports reports = executor.execute();
 
-		reports.print();
+		// reports.print();
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(TimestampQualification.NA, simpleReport.getTimestampQualification(simpleReport.getFirstTimestampId()));

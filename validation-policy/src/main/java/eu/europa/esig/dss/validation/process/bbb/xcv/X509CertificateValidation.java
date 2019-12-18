@@ -51,7 +51,6 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.SubX509CertificateValid
  */
 public class X509CertificateValidation extends Chain<XmlXCV> {
 
-	private final DiagnosticData diagnosticData;
 	private final CertificateWrapper currentCertificate;
 	private final Date validationDate;
 	private final Date usageTime;
@@ -69,7 +68,6 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 		super(i18nProvider, new XmlXCV());
 		result.setTitle(BasicBuildingBlockDefinition.X509_CERTIFICATE_VALIDATION.getTitle());
 
-		this.diagnosticData = diagnosticData;
 		this.currentCertificate = currentCertificate;
 		this.validationDate = validationDate;
 		this.usageTime = usageTime;
@@ -89,7 +87,7 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 			item = item.setNextItem(trustedServiceWithExpectedStatus());
 
-			SubX509CertificateValidation certificateValidation = new SubX509CertificateValidation(i18nProvider, diagnosticData, currentCertificate, validationDate, 
+			SubX509CertificateValidation certificateValidation = new SubX509CertificateValidation(i18nProvider, currentCertificate, validationDate, 
 					context, SubContext.SIGNING_CERT, validationPolicy);
 			XmlSubXCV subXCV = certificateValidation.execute();
 			result.getSubXCV().add(subXCV);
@@ -104,7 +102,7 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 			if (Utils.isCollectionNotEmpty(certificateChainList)) {
 				for (CertificateWrapper certificate : certificateChainList) {
 					if (!trustAnchorReached) {
-						certificateValidation = new SubX509CertificateValidation(i18nProvider, diagnosticData, certificate, lastDate, 
+						certificateValidation = new SubX509CertificateValidation(i18nProvider, certificate, lastDate, 
 								context, SubContext.CA_CERTIFICATE, validationPolicy);
 						subXCV = certificateValidation.execute();
 						result.getSubXCV().add(subXCV);
@@ -123,7 +121,7 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 	private ChainItem<XmlXCV> prospectiveCertificateChain() {
 		LevelConstraint constraint = validationPolicy.getProspectiveCertificateChainConstraint(context);
-		return new ProspectiveCertificateChainCheck(i18nProvider, result, currentCertificate, context, constraint);
+		return new ProspectiveCertificateChainCheck<XmlXCV>(i18nProvider, result, currentCertificate, context, constraint);
 	}
 
 	private ChainItem<XmlXCV> trustedServiceWithExpectedTypeIdentifier() {

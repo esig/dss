@@ -163,10 +163,10 @@ public abstract class AbstractCryptographicConstraintsTest extends AbstractTestV
 	}
 	
 	protected void setAlgoExpDate(CryptographicConstraint defaultCryptographicConstraint, String algorithm, Integer keySize, String date) {
-		if(keySize == 0) {
+		if (keySize == 0) {
 			setDigestAlgoExpirationDate(defaultCryptographicConstraint, algorithm, date);
 
-		}else {
+		} else {
 			setAlgoExpirationDate(defaultCryptographicConstraint, algorithm, date, keySize);
 
 		}

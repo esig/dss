@@ -308,6 +308,8 @@
             <SourceAddress>http://qual.ocsp.d-trust.net</SourceAddress>
             <ProductionDate>2018-02-09T07:03:45</ProductionDate>
             <ThisUpdate>2018-02-09T07:03:45</ThisUpdate>
+            <CertHashExtensionPresent>true</CertHashExtensionPresent>
+            <CertHashExtensionMatch>true</CertHashExtensionMatch>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>

@@ -110,10 +110,24 @@
 	   			<xsl:value-of select="$bbbType"/> (Id = <xsl:value-of select="@Id"/>)
 	        </div>
 			<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
+			<xsl:variable name="PSV" select="dss:PSV" />
 	    		<div>
 	    			<xsl:attribute name="class">panel-body collapse</xsl:attribute>
 		        	<xsl:attribute name="id">collapseBasicBuildingBlocks<xsl:value-of select="@Id"/></xsl:attribute>
-		        	<xsl:apply-templates/>
+					<xsl:apply-templates select="dss:FC" />
+					<xsl:apply-templates select="dss:ISC" />
+					<xsl:apply-templates select="dss:VCI" />
+					<xsl:apply-templates select="dss:CV" />
+					<xsl:apply-templates select="dss:SAV" />
+					<xsl:apply-templates select="dss:XCV" />
+    				<xsl:if test="$PSV != ''">
+						<hr />
+					</xsl:if>
+					<xsl:apply-templates select="dss:PSV" />
+					<xsl:apply-templates select="dss:PCV" />
+					<xsl:apply-templates select="dss:VTS" />
+					<hr />
+					<xsl:apply-templates select="dss:XCV/dss:SubXCV" />
 	    		</div>
 	   		</xsl:if>
 	   	</div>
@@ -156,6 +170,10 @@
 				        	<xsl:value-of select="dss:Conclusion/dss:SubIndication"/>
 			        	</span>
 			        </xsl:if>
+			        <span>
+			        	<xsl:attribute name="class">badge badge-<xsl:value-of select="$indicationCssClass" /> pull-right</xsl:attribute>
+			        	<xsl:value-of select="dss:Conclusion/dss:Indication"/>
+			        </span>
 			        
 					<xsl:value-of select="@Title"/>
 				</div>
@@ -240,8 +258,8 @@
     
     <xsl:template match="dss:TLAnalysis">
     	<div>
-       		<xsl:if test="@CountryCode != ''">
-       			<xsl:attribute name="id"><xsl:value-of select="@CountryCode"/></xsl:attribute>
+       		<xsl:if test="@Id != ''">
+       			<xsl:attribute name="id"><xsl:value-of select="@Id"/></xsl:attribute>
        		</xsl:if>
     		<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication/text()"/>
 	        <xsl:variable name="indicationCssClass">
@@ -258,7 +276,8 @@
 	    			<xsl:attribute name="class">panel-heading</xsl:attribute>
 		    		<xsl:attribute name="data-target">#collapseTL<xsl:value-of select="@CountryCode"/></xsl:attribute>
 			       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
-			       	<xsl:if test="string-length(dss:Conclusion/dss:SubIndication) &gt; 0">
+			       	
+					<xsl:if test="string-length(dss:Conclusion/dss:SubIndication) &gt; 0">
 				        <span>
 				        	<xsl:attribute name="class">badge badge-<xsl:value-of select="$indicationCssClass" /> pull-right</xsl:attribute>
 				        	<xsl:if test="string-length(dss:Conclusion/dss:Error) &gt; 0">
@@ -270,6 +289,11 @@
 				        	<xsl:value-of select="dss:Conclusion/dss:SubIndication"/>
 			        	</span>
 			        </xsl:if>
+			       	<span>
+			        	<xsl:attribute name="class">badge badge-<xsl:value-of select="$indicationCssClass" /> pull-right</xsl:attribute>
+			        	<xsl:value-of select="dss:Conclusion/dss:Indication"/>
+			        </span>
+			        
 					<xsl:value-of select="@Title"/>
 		        </div>
 				<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
@@ -454,7 +478,7 @@
         	</span>
         </xsl:if>
     </xsl:template>
-    
+	
     <xsl:template match="dss:FC|dss:ISC|dss:VCI|dss:CV|dss:SAV|dss:XCV|dss:PSV|dss:PCV|dss:VTS">
 		<div>
        		<xsl:attribute name="id"><xsl:value-of select="../@Id"/>-<xsl:value-of select="name()"/></xsl:attribute>
@@ -473,10 +497,10 @@
 				</xsl:call-template>
 			</div>
 		</div>
-		<xsl:apply-templates />
+		<xsl:apply-templates select="dss:Constraint" />
     </xsl:template>
 
-	<xsl:template match="dss:SubXCV">
+	<xsl:template match="dss:SubXCV|dss:RAC|dss:RFC">
     	<div>
     		<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication/text()"/>
 	        <xsl:variable name="indicationCssClass">
@@ -487,13 +511,20 @@
 					<xsl:otherwise>default</xsl:otherwise>
 				</xsl:choose>
 	        </xsl:variable>
-       		<xsl:attribute name="id"><xsl:value-of select="@Id"/></xsl:attribute>
+	        <xsl:variable name="parentId">
+	        	<xsl:choose>
+					<xsl:when test="name()='SubXCV'" ><xsl:value-of select="../../@Id"/></xsl:when>
+					<xsl:otherwise><xsl:value-of select="../@Id"/></xsl:otherwise>
+	        	</xsl:choose>
+	        </xsl:variable>
+    		<xsl:variable name="currentId" select="concat(name(), '-', @Id, '-', $parentId)"/>
+       		<xsl:attribute name="id"><xsl:value-of select="$currentId"/></xsl:attribute>
     		<div>
     			<xsl:attribute name="class">panel panel-<xsl:value-of select="$indicationCssClass" /></xsl:attribute>
     			<xsl:attribute name="style">margin-top : 10px</xsl:attribute>
 	    		<div>
 	    			<xsl:attribute name="class">panel-heading</xsl:attribute>
-		    		<xsl:attribute name="data-target">#collapseSubXCV<xsl:value-of select="@Id"/></xsl:attribute>
+		    		<xsl:attribute name="data-target">#collapseSubXCV<xsl:value-of select="$currentId"/></xsl:attribute>
 			       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
 			       	
 		       		<xsl:if test="@TrustAnchor = 'true'">
@@ -504,47 +535,34 @@
 		       			</span>
 		       		</xsl:if>
 			       	
-	    			<xsl:value-of select="@Title"/>
+					<xsl:if test="string-length(dss:Conclusion/dss:SubIndication) &gt; 0">
+				        <span>
+				        	<xsl:attribute name="class">badge badge-<xsl:value-of select="$indicationCssClass" /> pull-right</xsl:attribute>
+				        	<xsl:if test="string-length(dss:Conclusion/dss:Error) &gt; 0">
+				        		<xsl:attribute name="title"><xsl:value-of select="dss:Conclusion/dss:Error"/></xsl:attribute>
+				        	</xsl:if>
+				        	<xsl:if test="string-length(dss:Conclusion/dss:Warning) &gt; 0">
+				        		<xsl:attribute name="title"><xsl:value-of select="dss:Conclusion/dss:Warning"/></xsl:attribute>
+				        	</xsl:if>
+				        	<xsl:value-of select="dss:Conclusion/dss:SubIndication"/>
+			        	</span>
+			        </xsl:if>
+			       	<span>
+			        	<xsl:attribute name="class">badge badge-<xsl:value-of select="$indicationCssClass" /> pull-right</xsl:attribute>
+			        	<xsl:value-of select="dss:Conclusion/dss:Indication"/>
+			        </span>
+			       	
+		        	<xsl:value-of select="concat(@Title, ' Id = ', @Id)"/>
+	    			
 		        </div>
 		        
-		       	<xsl:if test="@TrustAnchor != 'true'">
+		       	<xsl:if test="name() != 'SubXCV' or @TrustAnchor != 'true'">
 		    		<div>
 		    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
-			        	<xsl:attribute name="id">collapseSubXCV<xsl:value-of select="@Id"/></xsl:attribute>
+			        	<xsl:attribute name="id">collapseSubXCV<xsl:value-of select="$currentId"/></xsl:attribute>
 			        	<xsl:apply-templates/>
 		    		</div>
 	    		</xsl:if>
-    		</div>
-    	</div>
-    </xsl:template>
-    
-	<xsl:template match="dss:RFC">
-    	<div>
-    		<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication/text()"/>
-	        <xsl:variable name="indicationCssClass">
-	        	<xsl:choose>
-					<xsl:when test="$indicationText='PASSED'">success</xsl:when>
-					<xsl:when test="$indicationText='INDETERMINATE'">warning</xsl:when>
-					<xsl:when test="$indicationText='FAILED'">danger</xsl:when>
-					<xsl:otherwise>default</xsl:otherwise>
-				</xsl:choose>
-	        </xsl:variable>
-       		<xsl:attribute name="id"><xsl:value-of select="@Id"/></xsl:attribute>
-    		<div>
-    			<xsl:attribute name="class">panel panel-<xsl:value-of select="$indicationCssClass" /></xsl:attribute>
-    			<xsl:attribute name="style">margin-top : 10px</xsl:attribute>
-	    		<div>
-	    			<xsl:attribute name="class">panel-heading</xsl:attribute>
-		    		<xsl:attribute name="data-target">#collapseRFC<xsl:value-of select="@Id"/></xsl:attribute>
-			       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
-			       	
-					<xsl:value-of select="@Title"/> :
-		        </div>
-	    		<div>
-	    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
-		        	<xsl:attribute name="id">collapseRFC<xsl:value-of select="@Id"/></xsl:attribute>
-		        	<xsl:apply-templates/>
-	    		</div>
     		</div>
     	</div>
     </xsl:template>
@@ -556,8 +574,25 @@
 	    		<xsl:attribute name="class">col-md-8</xsl:attribute>
 				<xsl:value-of select="dss:Name"/>
 	    		<xsl:if test="@Id">
+	    		<xsl:variable name="NameId" select="dss:Name/@NameId"/>
 	    			<a> 
-						<xsl:attribute name="href">#<xsl:value-of select="@Id"/></xsl:attribute>
+	    				<xsl:choose>
+		    				<xsl:when test="$NameId='BBB_XCV_SUB'">
+								<xsl:attribute name="href">#SubXCV-<xsl:value-of select="concat(@Id, '-', ../../@Id)"/></xsl:attribute>
+					        </xsl:when>
+		    				<xsl:when test="$NameId='PSV_IPSVC'">
+								<xsl:attribute name="href">#<xsl:value-of select="@Id"/>-PSV</xsl:attribute>
+					        </xsl:when>
+		    				<xsl:when test="$NameId='PSV_IPCVA'">
+								<xsl:attribute name="href">#<xsl:value-of select="@Id"/>-PCV</xsl:attribute>
+					        </xsl:when>
+		    				<xsl:when test="$NameId='PCV_IVTSC'">
+								<xsl:attribute name="href">#<xsl:value-of select="@Id"/>-VTS</xsl:attribute>
+					        </xsl:when>
+					        <xsl:otherwise>
+								<xsl:attribute name="href">#<xsl:value-of select="@Id"/></xsl:attribute>
+					        </xsl:otherwise>
+	    				</xsl:choose>
 						<xsl:attribute name="title">Details</xsl:attribute>
 						<xsl:attribute name="style">margin-left : 10px</xsl:attribute>
 						<span>

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>Signature-P-HU_POL-4.pdf</DocumentName>
-    <ValidationDate>2019-11-05T14:29:38</ValidationDate>
+    <ValidationDate>2019-11-05T14:09:38</ValidationDate>
     <Signatures>
         <Signature Id="S-EC0EA3F31F31F53BC5D37967CE983BEB955807FBE6350563BF2697E59FCABDD5">
             <SignatureFilename>Signature-P-HU_POL-4.pdf</SignatureFilename>
-            <DateTime>2019-11-01T14:01:21</DateTime>
+            <DateTime>2019-11-05T14:01:21</DateTime>
             <SignatureFormat>PAdES-BASELINE-LTA</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>
@@ -545,8 +545,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2019-11-01T14:10:37</NotAfter>
-            <NotBefore>2019-11-01T14:00:37</NotBefore>
+            <NotAfter>2019-11-05T14:10:37</NotAfter>
+            <NotBefore>2019-11-05T14:00:37</NotBefore>
             <PublicKeySize>256</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <KeyUsageBits>
@@ -676,8 +676,8 @@
                 <Source>OCSP_RESPONSE</Source>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2019-11-02T12:50:16</NotAfter>
-            <NotBefore>2019-11-01T12:50:16</NotBefore>
+            <NotAfter>2019-11-06T12:50:16</NotAfter>
+            <NotBefore>2019-11-05T12:50:16</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <KeyUsageBits>
@@ -915,8 +915,8 @@
                 <Source>OCSP_RESPONSE</Source>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2019-11-01T14:10:34</NotAfter>
-            <NotBefore>2019-11-01T14:00:34</NotBefore>
+            <NotAfter>2019-11-05T14:10:34</NotAfter>
+            <NotBefore>2019-11-05T14:00:34</NotBefore>
             <PublicKeySize>256</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <KeyUsageBits>

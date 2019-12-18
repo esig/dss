@@ -34,6 +34,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 
@@ -107,11 +108,7 @@ public class RevocationBasicBuildingBlocksCheck extends ChainItem<XmlValidationP
 	}
 
 	private boolean isAllowed(XmlConclusion conclusion) {
-		boolean allowed = Indication.PASSED.equals(conclusion.getIndication()) || (Indication.INDETERMINATE.equals(conclusion.getIndication())
-				&& (SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(conclusion.getSubIndication())
-						|| SubIndication.REVOKED_NO_POE.equals(conclusion.getSubIndication())
-						|| SubIndication.OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())));
-		return allowed;
+		return ValidationProcessUtils.isAllowedBasicSignatureValidation(conclusion);
 	}
 
 	@Override

@@ -805,6 +805,8 @@
             <ProductionDate>2018-02-06T09:39:34</ProductionDate>
             <ThisUpdate>2018-02-06T09:05:30</ThisUpdate>
             <NextUpdate>2018-02-13T09:05:30</NextUpdate>
+            <CertHashExtensionPresent>true</CertHashExtensionPresent>
+            <CertHashExtensionMatch>true</CertHashExtensionMatch>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>

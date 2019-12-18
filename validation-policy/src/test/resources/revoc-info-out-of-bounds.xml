@@ -294,7 +294,7 @@
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                            <ExpiredCertsRevocationInfo>2018-12-03T12:15:00</ExpiredCertsRevocationInfo>
+                            <ExpiredCertsRevocationInfo>2018-12-25T12:15:00</ExpiredCertsRevocationInfo>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A">
                             <ServiceNames><ServiceName lang="en">(78) I.CA - issuing qualified certificates</ServiceName></ServiceNames>

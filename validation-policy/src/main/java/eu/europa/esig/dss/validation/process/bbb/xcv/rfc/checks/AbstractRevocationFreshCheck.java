@@ -21,19 +21,17 @@
 package eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks;
 
 import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.i18n.I18nProvider;
-import eu.europa.esig.dss.i18n.MessageTag;
 
 public abstract class AbstractRevocationFreshCheck extends ChainItem<XmlRFC> {
 
@@ -70,12 +68,6 @@ public abstract class AbstractRevocationFreshCheck extends ChainItem<XmlRFC> {
 		}
 		Object[] params = new Object[] { convertDate(validationDate), productionTimeString, nextUpdateString };
 		return MessageFormat.format(AdditionalInfo.REVOCATION_CHECK, params);
-	}
-	
-	private String convertDate(Date date) {
-		SimpleDateFormat sdf = new SimpleDateFormat(AdditionalInfo.DATE_FORMAT);
-		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-		return sdf.format(date);
 	}
 
 	@Override

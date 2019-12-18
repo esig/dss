@@ -99,6 +99,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		 * evidence record validation process for each of them according to clause 5.6.2.5. If the evidence record
 		 * validation process returns PASSED, the SVA shall go to step 6.
 		 */
+		
 		// not supported
 
 		/*
@@ -153,6 +154,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 
 					DigestAlgorithmAcceptanceValidation dav = timestampDigestAlgorithmValidation(newestTimestamp);
 					XmlSAV savResult = dav.execute();
+					
 					/*
 					 * b) If PASSED is returned and the cryptographic hash function used in the time-stamp
 					 * (messageImprint.hashAlgorithm) is considered reliable at the generation time of the time-stamp,
@@ -175,8 +177,8 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 					 */
 					else if (shouldPerformPastSignatureValidationProcess(latestConclusion)) {
 						
-						PastSignatureValidation psv = new PastSignatureValidation(i18nProvider, newestTimestamp, diagnosticData, bbbTsp, poe, currentTime, policy,
-								Context.TIMESTAMP);
+						PastSignatureValidation psv = new PastSignatureValidation(i18nProvider, newestTimestamp, bbbs, poe, currentTime, 
+								policy, Context.TIMESTAMP);
 						XmlPSV psvResult = psv.execute();
 						bbbTsp.setPSV(psvResult);
 						bbbTsp.setConclusion(psvResult.getConclusion());
@@ -290,8 +292,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	}
 
 	private ChainItem<XmlValidationProcessArchivalData> pastSignatureValidation(Context currentContext) {
-		XmlBasicBuildingBlocks bbbSig = bbbs.get(signature.getId());
-		return new PastSignatureValidationCheck(i18nProvider, result, signature, diagnosticData, bbbSig, poe, currentTime, policy, 
+		return new PastSignatureValidationCheck(i18nProvider, result, signature, bbbs, poe, currentTime, policy,
 				currentContext, getFailLevelConstraint());
 	}
 

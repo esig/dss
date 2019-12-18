@@ -104,6 +104,21 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return certRevocationWrappers;
 	}
 	
+	/**
+	 * Returns revocation data by its id
+	 * 
+	 * @param revocationId {@link String} representing id of a revocation data to extract
+	 * @return {@link CertificateRevocationWrapper}
+	 */
+	public CertificateRevocationWrapper getRevocationDataById(String revocationId) {
+		for (CertificateRevocationWrapper revocationData : getCertificateRevocationData()) {
+			if (revocationId.equals(revocationData.getId())) {
+				return revocationData;
+			}
+		}
+		return null;
+	}
+	
 	public boolean isIdPkixOcspNoCheck() {
 		return certificate.isIdPkixOcspNoCheck() != null && certificate.isIdPkixOcspNoCheck();
 	}

@@ -20,9 +20,12 @@
  */
 package eu.europa.esig.dss.validation.process;
 
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.TimeZone;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -228,6 +231,12 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 
 	protected String getAdditionalInfo() {
 		return null;
+	}
+	
+	protected String convertDate(Date date) {
+		SimpleDateFormat sdf = new SimpleDateFormat(AdditionalInfo.DATE_FORMAT);
+		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+		return sdf.format(date);
 	}
 
 	private void addConstraint(XmlConstraint constraint) {

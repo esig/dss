@@ -33,8 +33,8 @@ public class PastCertificateValidationAcceptableCheck extends ChainItem<XmlPSV> 
 
 	private final XmlPCV pcv;
 
-	public PastCertificateValidationAcceptableCheck(I18nProvider i18nProvider, XmlPSV result, XmlPCV pcv, LevelConstraint constraint) {
-		super(i18nProvider, result, constraint);
+	public PastCertificateValidationAcceptableCheck(I18nProvider i18nProvider, XmlPSV result, XmlPCV pcv, String tokenId, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint, tokenId);
 
 		this.pcv = pcv;
 	}

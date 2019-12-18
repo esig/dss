@@ -20,23 +20,23 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
-import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.ChainItem;
 
-public class IdPkixOcspNoCheck extends ChainItem<XmlSubXCV> {
+public class IdPkixOcspNoCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
-	public IdPkixOcspNoCheck(I18nProvider i18nProvider, XmlSubXCV result, LevelConstraint constraint) {
+	public IdPkixOcspNoCheck(I18nProvider i18nProvider, T result, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 	}
 
 	@Override
 	protected boolean process() {
-		// always true (information)
+		// always true (checked before, used for information purpose)
 		return true;
 	}
 

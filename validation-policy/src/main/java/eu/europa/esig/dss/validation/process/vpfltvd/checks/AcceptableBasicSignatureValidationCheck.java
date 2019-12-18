@@ -30,6 +30,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 
@@ -56,12 +57,7 @@ public class AcceptableBasicSignatureValidationCheck extends ChainItem<XmlValida
 			bbbSubIndication = basicSignatureConclusion.getSubIndication();
 			bbbErrors = basicSignatureConclusion.getErrors();
 
-			boolean allowed = Indication.PASSED.equals(bbbIndication)
-					|| (Indication.INDETERMINATE.equals(bbbIndication) && (SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(bbbSubIndication) || 
-							SubIndication.REVOKED_NO_POE.equals(bbbSubIndication) || SubIndication.REVOKED_CA_NO_POE.equals(bbbSubIndication) || 
-							SubIndication.TRY_LATER.equals(bbbSubIndication) ||SubIndication.OUT_OF_BOUNDS_NO_POE.equals(bbbSubIndication)));
-
-			return allowed;
+			return ValidationProcessUtils.isAllowedBasicSignatureValidation(basicSignatureConclusion);
 		}
 		return false;
 	}

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>test_eid-sk2016.asice</DocumentName>
-    <ValidationDate>2019-10-07T07:18:36</ValidationDate>
+    <ValidationDate>2019-10-04T07:18:36</ValidationDate>
     <ContainerInfo>
         <ContainerType>ASiC-E</ContainerType>
         <ZipComment>LIB DigiDoc4j/DEV format: application/vnd.etsi.asic-e+zip signatureProfile: ASiC_E_BASELINE_LT Java: 1.8.0_161/Oracle Corporation OS: Linux/amd64/3.10.0-514.el7.x86_64 JVM: OpenJDK 64-Bit Server VM/Oracle Corporation/25.161-b14</ZipComment>

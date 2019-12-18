@@ -96,7 +96,7 @@ public class CAdESLevelBWithExpiredCertificateAndRevokedContentTimestampTest ext
 		Indication indication = simpleReport.getIndication(simpleReport.getFirstSignatureId());
 		assertEquals(Indication.INDETERMINATE, indication);
 		SubIndication subIndication = simpleReport.getSubIndication(simpleReport.getFirstSignatureId());
-		assertEquals(SubIndication.NO_POE, subIndication);
+		assertEquals(SubIndication.TRY_LATER, subIndication);
 	}
 	
 	@Override

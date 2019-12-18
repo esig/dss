@@ -230,7 +230,7 @@
             	<Source>OCSP_RESPONSE</Source>
             </Sources>
             <NotAfter>2031-10-26T08:36:50</NotAfter>
-            <NotBefore>2018-09-17T14:01:52</NotBefore>
+            <NotBefore>2015-09-17T14:01:52</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <KeyUsageBits>
@@ -301,7 +301,7 @@
             	<Source>OCSP_RESPONSE</Source>
             </Sources>
             <NotAfter>2031-10-26T08:36:50</NotAfter>
-            <NotBefore>2018-09-17T14:01:52</NotBefore>
+            <NotBefore>2015-09-17T14:01:52</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <KeyUsageBits>
@@ -384,7 +384,7 @@
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>

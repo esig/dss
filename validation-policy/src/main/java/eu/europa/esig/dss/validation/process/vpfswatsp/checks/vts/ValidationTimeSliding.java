@@ -25,7 +25,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlVTS;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
@@ -37,12 +39,13 @@ import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
+import eu.europa.esig.dss.validation.process.bbb.sav.CertificateAcceptanceValidation;
+import eu.europa.esig.dss.validation.process.bbb.sav.RevocationAcceptanceValidation;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChecker;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks.POEExistsAtOrBeforeControlTimeCheck;
@@ -52,6 +55,8 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 
 	private final TokenProxy token;
 	private final Date currentTime;
+	
+	private final XmlBasicBuildingBlocks bbb;
 
 	private final Context context;
 
@@ -60,13 +65,14 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 
 	private Date controlTime;
 
-	public ValidationTimeSliding(I18nProvider i18nProvider, TokenProxy token, Date currentTime, Context context, POEExtraction poe,
-			ValidationPolicy policy) {
+	public ValidationTimeSliding(I18nProvider i18nProvider, TokenProxy token, Date currentTime, POEExtraction poe, 
+			XmlBasicBuildingBlocks bbb, Context context, ValidationPolicy policy) {
 		super(i18nProvider, new XmlVTS());
 		result.setTitle(BasicBuildingBlockDefinition.VALIDATION_TIME_SLIDING.getTitle());
 
 		this.token = token;
 		this.currentTime = currentTime;
+		this.bbb = bbb;
 
 		this.context = context;
 
@@ -119,9 +125,7 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 				 * and
 				 * 
 				 * - The issuance date of the revocation status information is
-				 * before control-time. If more than one revocation status is
-				 * found, the building block shall consider the most recent one
-				 * and shall go to the next step.
+				 * before control-time.
 				 * 
 				 * If more than one revocation status is found, the building block shall consider the most recent one
 				 * and shall go to the next step.
@@ -130,19 +134,17 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 				 * return the indication INDETERMINATE with the sub-indication
 				 * NO_POE.
 				 */
-				CertificateRevocationWrapper latestCompliantRevocation = null;
-				List<CertificateRevocationWrapper> revocations = certificate.getCertificateRevocationData();
-				for (CertificateRevocationWrapper revocation : revocations) {
-					if ((latestCompliantRevocation == null || revocation.getProductionDate().after(latestCompliantRevocation.getProductionDate()))
-							&& isConsistant(certificate, revocation) && isIssuanceBeforeControlTime(revocation)) {
-						latestCompliantRevocation = revocation;
-					}
-				}
-
+				
+				CertificateRevocationWrapper latestCompliantRevocation = ValidationProcessUtils.getLatestAcceptableRevocationData(certificate, bbb);
+				
 				if (item == null) {
 					item = firstItem = satisfyingRevocationDataExists(latestCompliantRevocation);
 				} else {
 					item = item.setNextItem(satisfyingRevocationDataExists(latestCompliantRevocation));
+				}
+				
+				if (latestCompliantRevocation == null) {
+					continue;
 				}
 
 				/*
@@ -179,12 +181,10 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 				 * Otherwise, the building block shall not change the
 				 * value of control-time.
 				 */
-				if (latestCompliantRevocation != null) {
-					if (latestCompliantRevocation.isRevoked()) {
-						controlTime = latestCompliantRevocation.getRevocationDate();
-					} else if (!isFresh(latestCompliantRevocation, controlTime)) {
-						controlTime = latestCompliantRevocation.getProductionDate();
-					}
+				if (latestCompliantRevocation.isRevoked()) {
+					controlTime = latestCompliantRevocation.getRevocationDate();
+				} else if (!isFresh(latestCompliantRevocation, controlTime)) {
+					controlTime = latestCompliantRevocation.getProductionDate();
 				}
 
 				/*
@@ -196,12 +196,33 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 				 * shall set control-time to the lowest time up to which
 				 * the listed algorithms were considered reliable.
 				 */
-				item = item.setNextItem(cryptographicCheck(certificate, controlTime));
-
-				item = item.setNextItem(cryptographicCheck(latestCompliantRevocation, controlTime));
+                Date cryptoNotAfterDate = null;
+                
+                XmlSAV certificateSAV = getCertificateCryptographicAcceptanceResult(certificate, controlTime);
+                if (!isValidConclusion(certificateSAV.getConclusion())) {
+                    if (certificateSAV.getCryptographicInfo() != null && certificateSAV.getCryptographicInfo().getNotAfter() != null) {
+                        cryptoNotAfterDate = certificateSAV.getCryptographicInfo().getNotAfter();
+                    }
+                }
+                XmlSAV revocationSAV = getRevocationCryptographicAcceptanceResult(latestCompliantRevocation, controlTime);
+                if (!isValidConclusion(revocationSAV.getConclusion())) {
+                    if (revocationSAV.getCryptographicInfo() != null && revocationSAV.getCryptographicInfo().getNotAfter() != null &&
+                            cryptoNotAfterDate == null || revocationSAV.getCryptographicInfo().getNotAfter().before(cryptoNotAfterDate)) {
+                        cryptoNotAfterDate = revocationSAV.getCryptographicInfo().getNotAfter();
+                    }
+                }
+                
+                if (cryptoNotAfterDate != null && cryptoNotAfterDate.before(controlTime)) {
+                    controlTime = cryptoNotAfterDate;
+                }
 
 			}
 		}
+	}
+
+	@Override
+	protected void addAdditionalInfo() {
+		result.setControlTime(controlTime);
 	}
 
 	private List<CertificateWrapper> reduceChainUntilFirstTrustAnchor(List<CertificateWrapper> originalCertificateChain) {
@@ -215,11 +236,6 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 		return result;
 	}
 
-	@Override
-	protected void addAdditionalInfo() {
-		result.setControlTime(controlTime);
-	}
-
 	private boolean isFresh(RevocationWrapper revocationData, Date controlTime) {
 		// TODO SubContext ??
 		RevocationFreshnessChecker rfc = new RevocationFreshnessChecker(i18nProvider, revocationData, controlTime, context, SubContext.SIGNING_CERT, policy);
@@ -228,67 +244,21 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 	}
 
 	private ChainItem<XmlVTS> satisfyingRevocationDataExists(RevocationWrapper revocationData) {
-		return new SatisfyingRevocationDataExistsCheck(i18nProvider, result, revocationData, getFailLevelConstraint());
+		return new SatisfyingRevocationDataExistsCheck<XmlVTS>(i18nProvider, result, revocationData, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlVTS> poeExistsAtOrBeforeControlTime(TokenProxy token, TimestampedObjectType referenceCategory, Date controlTime) {
 		return new POEExistsAtOrBeforeControlTimeCheck(i18nProvider, result, token, referenceCategory, controlTime, poe, getFailLevelConstraint());
 	}
-
-	private ChainItem<XmlVTS> cryptographicCheck(TokenProxy token, Date validationTime) {
-		CryptographicConstraint constraint = policy.getCertificateCryptographicConstraint(context, SubContext.SIGNING_CERT);
-		return new CryptographicCheck<XmlVTS>(i18nProvider, result, token, validationTime, constraint);
-	}
-
-	private boolean isConsistant(CertificateWrapper certificate, RevocationWrapper revocationData) {
-		Date certNotBefore = certificate.getNotBefore();
-		Date certNotAfter = certificate.getNotAfter();
-		Date thisUpdate = revocationData.getThisUpdate();
-
-		Date notAfterRevoc = thisUpdate;
-
-		/*
-		 * If a CRL contains the extension expiredCertsOnCRL defined in [i.12], it shall prevail over the TL
-		 * extension value but only for that specific CRL.
-		 */
-		Date expiredCertsOnCRL = revocationData.getExpiredCertsOnCRL();
-		if (expiredCertsOnCRL != null) {
-			notAfterRevoc = expiredCertsOnCRL;
-		}
-
-		/*
-		 * If an OCSP response contains the extension ArchiveCutoff defined in section 4.4.4 of
-		 * IETF RFC 6960 [i.11], it shall prevail over the TL extension value but only for that specific OCSP
-		 * response.
-		 */
-		Date archiveCutOff = revocationData.getArchiveCutOff();
-		if (archiveCutOff != null) {
-			notAfterRevoc = archiveCutOff;
-		}
-
-		/* expiredCertsRevocationInfo Extension from TL */
-		if (expiredCertsOnCRL != null || archiveCutOff != null) {
-			CertificateWrapper revocCert = revocationData.getSigningCertificate();
-			if (revocCert != null) {
-				Date expiredCertsRevocationInfo = revocCert.getCertificateTSPServiceExpiredCertsRevocationInfo();
-				if (expiredCertsRevocationInfo != null) {
-					notAfterRevoc = expiredCertsRevocationInfo;
-				}
-			}
-		}
-
-		/*
-		 * certHash extension can be present in an OCSP Response. If present, a digest match indicates the OCSP
-		 * responder knows the certificate as we have it, and so also its revocation state
-		 */
-		boolean certHashOK = revocationData.isCertHashExtensionPresent() && revocationData.isCertHashExtensionMatch();
-
-		return thisUpdate != null && certNotBefore.before(thisUpdate) && ((certNotAfter.compareTo(notAfterRevoc) >= 0) || certHashOK);
-	}
-
-	private boolean isIssuanceBeforeControlTime(RevocationWrapper revocationData) {
-		Date issuanceDate = revocationData.getProductionDate();
-		return issuanceDate.before(controlTime);
-	}
+	
+    private XmlSAV getCertificateCryptographicAcceptanceResult(CertificateWrapper certificateWrapper, Date controlTime) {
+        CertificateAcceptanceValidation cav = new CertificateAcceptanceValidation(i18nProvider, controlTime, certificateWrapper, policy);
+        return cav.execute();
+    }
+    
+    private XmlSAV getRevocationCryptographicAcceptanceResult(RevocationWrapper revocationWrapper, Date controlTime) {
+        RevocationAcceptanceValidation rav = new RevocationAcceptanceValidation(i18nProvider, controlTime, revocationWrapper, policy);
+        return rav.execute();
+    }
 
 }

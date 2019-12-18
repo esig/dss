@@ -33,8 +33,8 @@ public class ValidationTimeSlidingCheck extends ChainItem<XmlPCV> {
 
 	private final XmlVTS vts;
 
-	public ValidationTimeSlidingCheck(I18nProvider i18nProvider, XmlPCV result, XmlVTS vts, LevelConstraint constraint) {
-		super(i18nProvider, result, constraint);
+	public ValidationTimeSlidingCheck(I18nProvider i18nProvider, XmlPCV result, XmlVTS vts, String tokenId, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint, tokenId);
 
 		this.vts = vts;
 	}
