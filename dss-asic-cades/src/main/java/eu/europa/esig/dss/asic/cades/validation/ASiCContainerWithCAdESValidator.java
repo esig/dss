@@ -88,7 +88,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 				CMSDocumentForASiCValidator cadesValidator = new CMSDocumentForASiCValidator(signature);
 				cadesValidator.setCertificateVerifier(certificateVerifier);
 				cadesValidator.setProcessExecutor(processExecutor);
-				cadesValidator.setSignaturePolicyProvider(signaturePolicyProvider);
+				cadesValidator.setSignaturePolicyProvider(getSignaturePolicyProvider());
 				cadesValidator.setValidationCertPool(validationCertPool);
 				cadesValidator.setDetachedContents(getSignedDocuments(signature));
 				cadesValidator.setContainerContents(getArchiveDocuments());

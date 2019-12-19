@@ -73,7 +73,7 @@ public abstract class SignedDocumentValidator extends AbstractDocumentValidator 
 
 	protected final SignatureScopeFinder signatureScopeFinder;
 
-	protected SignaturePolicyProvider signaturePolicyProvider;
+	private SignaturePolicyProvider signaturePolicyProvider;
 
 	protected SignedDocumentValidator(SignatureScopeFinder signatureScopeFinder) {
 		this.signatureScopeFinder = signatureScopeFinder;
@@ -153,11 +153,18 @@ public abstract class SignedDocumentValidator extends AbstractDocumentValidator 
 		this.signaturePolicyProvider = signaturePolicyProvider;
 	}
 
-	private void ensureSignaturePolicyDetectorInitialized() {
+	/**
+	 * Returns a signaturePolicyProvider
+	 * If not defined, returns a default provider
+	 * 
+	 * @return {@link SignaturePolicyProvider}
+	 */
+	protected SignaturePolicyProvider getSignaturePolicyProvider() {
 		if (signaturePolicyProvider == null) {
 			signaturePolicyProvider = new SignaturePolicyProvider();
 			signaturePolicyProvider.setDataLoader(certificateVerifier.getDataLoader());
 		}
+		return signaturePolicyProvider;
 	}
 	
 	@Override
@@ -166,9 +173,7 @@ public abstract class SignedDocumentValidator extends AbstractDocumentValidator 
 	}
 	
 	@Override
-	public List<AdvancedSignature> prepareSignatureValidationContext(final ValidationContext validationContext) {
-		ensureSignaturePolicyDetectorInitialized();
-		
+	public List<AdvancedSignature> prepareSignatureValidationContext(final ValidationContext validationContext) {		
 		final List<AdvancedSignature> allSignatureList = getAllSignatures();
 		// The list of all signing certificates is created to allow a parallel
 		// validation.
@@ -202,7 +207,7 @@ public abstract class SignedDocumentValidator extends AbstractDocumentValidator 
 			signature.checkSigningCertificate();
 			signature.checkSignatureIntegrity();
 			signature.validateStructure();
-			signature.checkSignaturePolicy(signaturePolicyProvider);
+			signature.checkSignaturePolicy(getSignaturePolicyProvider());
 
 			signature.populateCRLTokenLists(signatureCRLSource);
 			signature.populateOCSPTokenLists(signatureOCSPSource);

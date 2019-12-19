@@ -71,7 +71,7 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 				xadesValidator.setValidationCertPool(validationCertPool);
 				xadesValidator.setCertificateVerifier(certificateVerifier);
 				xadesValidator.setProcessExecutor(processExecutor);
-				xadesValidator.setSignaturePolicyProvider(signaturePolicyProvider);
+				xadesValidator.setSignaturePolicyProvider(getSignaturePolicyProvider());
 
 				if (ASiCUtils.isOpenDocument(getMimeTypeDocument())) {
 					xadesValidator.setDetachedContents(OpenDocumentSupportUtils.getOpenDocumentCoverage(extractResult));
