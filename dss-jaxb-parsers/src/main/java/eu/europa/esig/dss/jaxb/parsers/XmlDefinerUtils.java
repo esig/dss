@@ -29,6 +29,7 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 
 import org.xml.sax.SAXException;
 
@@ -79,6 +80,20 @@ public final class XmlDefinerUtils {
 		transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
 		transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
 		return transformerFactory;
+	}
+
+	/**
+	 * The method protects the validator against XXE
+	 * (https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html#validator)
+	 * 
+	 * @param validator
+	 *                  the validator to be configured against XXE
+	 * @throws SAXException
+	 */
+	public static void avoidXXE(Validator validator) throws SAXException {
+		Objects.requireNonNull(validator, "Validator must be provided");
+		validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+		validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
 	}
 
 }

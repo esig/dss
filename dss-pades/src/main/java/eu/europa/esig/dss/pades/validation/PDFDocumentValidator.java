@@ -43,7 +43,6 @@ import eu.europa.esig.dss.pdf.PdfSignatureValidationCallback;
 import eu.europa.esig.dss.pdf.PdfTimestampValidationCallback;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
@@ -149,10 +148,8 @@ public class PDFDocumentValidator extends SignedDocumentValidator implements Tim
 	}
 
 	@Override
-	public List<DSSDocument> getOriginalDocuments(String signatureId) throws DSSException {
-		if (Utils.isStringBlank(signatureId)) {
-			throw new NullPointerException("signatureId");
-		}
+	public List<DSSDocument> getOriginalDocuments(String signatureId) {
+		Objects.requireNonNull(signatureId, "Signature Id cannot be null");
 		List<AdvancedSignature> signatures = getSignatures();
 		for (AdvancedSignature signature : signatures) {
 			if (signature.getId().equals(signatureId)) {
@@ -163,7 +160,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator implements Tim
 	}
 	
 	@Override
-	public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) throws DSSException {
+	public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) {
 		PAdESSignature padesSignature = (PAdESSignature) advancedSignature;
 		List<DSSDocument> result = new ArrayList<DSSDocument>();
 		InMemoryDocument originalPDF = PAdESUtils.getOriginalPDF(padesSignature);

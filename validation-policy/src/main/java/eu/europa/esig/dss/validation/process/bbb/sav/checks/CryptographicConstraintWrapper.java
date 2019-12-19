@@ -78,12 +78,13 @@ public class CryptographicConstraintWrapper {
 	public Date getExpirationDate(String algoToSearch, Integer keyLength) {
 		TreeMap<Integer, Date> dates = new TreeMap<Integer, Date>();
 		AlgoExpirationDate expirations = constraint.getAlgoExpirationDate();
-		if(expirations == null) 
+		if (expirations == null) {
 			return null;
+		}
 		SimpleDateFormat dateFormat = new SimpleDateFormat(Utils.isStringEmpty(expirations.getFormat()) ? DEFAULT_DATE_FORMAT : expirations.getFormat());
-		
+
 		for (Algo algo : expirations.getAlgo()) {
-			if(algo.getValue().equals(algoToSearch)) {
+			if (algo.getValue().equals(algoToSearch)) {
 				String expirationDate = algo.getDate();
 				try {
 					dates.put(algo.getSize(), dateFormat.parse(expirationDate));
@@ -92,16 +93,13 @@ public class CryptographicConstraintWrapper {
 				}
 			}
 		}
-		if(dates == null || dates.isEmpty()) {
-			return null;
-		}
-		
+
 		Entry<Integer, Date> floorEntry = dates.floorEntry(keyLength);
-		
-		if(floorEntry == null)
+		if (floorEntry == null) {
 			return null;
-		
-		return floorEntry.getValue();
+		} else {
+			return floorEntry.getValue();
+		}
 	}
 
 	public Date getDigestAlgorithmExpirationDate(String digestAlgoToSearch) {

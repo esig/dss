@@ -1198,11 +1198,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 			}
 			transformedReferenceBytes = transform.getBytesAfterTranformation(nodeToTransform);
 			if (iterator.hasNext()) {
-				try {
-					nodeToTransform = DomUtils.buildDOM(transformedReferenceBytes);
-				} catch (DSSException e) {
-					new DSSException(String.format("Cannot build all transformations! Reason : [%s]", e.getMessage()), e);
-				}
+				nodeToTransform = DomUtils.buildDOM(transformedReferenceBytes);
 			}
 		}
 		if (LOG.isDebugEnabled()) {

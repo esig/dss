@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
@@ -106,9 +107,7 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 	@Override
 	public OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken,
 			List<String> alternativeUrls) {
-		if (dataLoader == null) {
-			throw new NullPointerException("DataLoader is not provided !");
-		}
+		Objects.requireNonNull(dataLoader, "DataLoader is not provided !");
 
 		final String dssIdAsString = certificateToken.getDSSIdAsString();
 		LOG.trace("--> OnlineOCSPSource queried for {}", dssIdAsString);

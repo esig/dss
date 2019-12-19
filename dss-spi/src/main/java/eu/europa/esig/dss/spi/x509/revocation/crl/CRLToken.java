@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.cert.CRLReason;
 import java.security.cert.X509CRLEntry;
+import java.util.Objects;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -65,9 +66,7 @@ public class CRLToken extends RevocationToken {
 	 *            validity of the CRL
 	 */
 	public CRLToken(final CertificateToken certificateToken, final CRLValidity crlValidity) {
-		if (crlValidity == null) {
-			throw new NullPointerException();
-		}
+		Objects.requireNonNull(crlValidity, "CRL Validity cannot be null");
 		this.crlValidity = crlValidity;
 		initInfo();
 		setRevocationStatus(certificateToken);

@@ -40,12 +40,13 @@ public class RemoteDocument implements Serializable {
 	}
 
 	/**
-	 * This constructor allows to create a new instance of RemoteDocument with the whole document
+	 * This constructor allows to create a new instance of RemoteDocument with the
+	 * whole document
 	 * 
 	 * @param bytes
-	 *            the full document binaries
+	 *              the full document binaries
 	 * @param name
-	 *            the document name
+	 *              the document name
 	 */
 	public RemoteDocument(byte[] bytes, String name) {
 		this.bytes = bytes;
@@ -53,14 +54,15 @@ public class RemoteDocument implements Serializable {
 	}
 
 	/**
-	 * This constructor allows to create an instance of RemoteDocument with a digest document
+	 * This constructor allows to create an instance of RemoteDocument with a digest
+	 * document
 	 * 
 	 * @param bytes
-	 *            the result of the digest
+	 *                        the result of the digest
 	 * @param digestAlgorithm
-	 *            the used digest algorithm
+	 *                        the used digest algorithm
 	 * @param name
-	 *            the document name
+	 *                        the document name
 	 */
 	public RemoteDocument(byte[] bytes, DigestAlgorithm digestAlgorithm, String name) {
 		this.bytes = bytes;
@@ -114,22 +116,29 @@ public class RemoteDocument implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		RemoteDocument other = (RemoteDocument) obj;
-		if (!Arrays.equals(bytes, other.bytes))
+		if (!Arrays.equals(bytes, other.bytes)) {
 			return false;
-		if (digestAlgorithm != other.digestAlgorithm)
+		}
+		if (digestAlgorithm != other.digestAlgorithm) {
 			return false;
+		}
 		if (name == null) {
-			if (other.name != null)
+			if (other.name != null) {
 				return false;
-		} else if (!name.equals(other.name))
+			}
+		} else if (!name.equals(other.name)) {
 			return false;
+		}
 		return true;
 	}
 

@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import javax.security.auth.x500.X500Principal;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
@@ -206,9 +207,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 */
 	public XAdESSignature(final Element signatureElement, final List<XAdESPaths> xadesPathsHolders, final CertificatePool certPool) {
 		super(certPool);
-		if (signatureElement == null) {
-			throw new NullPointerException("signatureElement");
-		}
+		Objects.requireNonNull(signatureElement, "Signature Element cannot be null");
 		this.signatureElement = signatureElement;
 		this.xadesPathsHolders = xadesPathsHolders;
 		initialiseSettings();

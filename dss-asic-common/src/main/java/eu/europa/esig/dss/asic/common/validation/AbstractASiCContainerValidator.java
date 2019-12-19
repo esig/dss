@@ -49,8 +49,6 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 
 	private ASiCContainerType containerType;
 	
-	private List<ManifestFile> manifestFiles;
-
 	/**
 	 * Default constructor used with reflexion (see DefaultDocumentValidator)
 	 */

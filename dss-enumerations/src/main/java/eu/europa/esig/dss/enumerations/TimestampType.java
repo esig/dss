@@ -62,7 +62,7 @@ public enum TimestampType {
 	/* TRUE if the timestamp is an Archival one */
 	private boolean archivalTimestamp;
 	
-	private TimestampType(boolean contentTimestamp, boolean coversSignature, boolean coversValidationData, boolean archivalTimestamp) {
+	TimestampType(boolean contentTimestamp, boolean coversSignature, boolean coversValidationData, boolean archivalTimestamp) {
 		this.contentTimestamp = contentTimestamp;
 		this.coversSignarture = coversSignature;
 		this.coversValidationData = coversValidationData;

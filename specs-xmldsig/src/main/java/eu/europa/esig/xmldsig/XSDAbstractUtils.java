@@ -1,9 +1,9 @@
 package eu.europa.esig.xmldsig;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
@@ -65,7 +65,8 @@ public abstract class XSDAbstractUtils {
 	 */
 	public String validateAgainstXSD(final Source xmlSource) {
 		try {
-			return validate(getSchema(), xmlSource);
+			validate(getSchema(), xmlSource);
+			return EMPTY_STRING;
 		} catch (Exception e) {
 			LOG.warn("Error during the XML schema validation!", e);
 			return e.getMessage();
@@ -83,31 +84,18 @@ public abstract class XSDAbstractUtils {
 	 */
 	public String validateAgainstXSD(final Source xmlSource, Source... sources) {
 		try {
-			return validate(getSchema(sources), xmlSource);
+			validate(getSchema(sources), xmlSource);
+			return EMPTY_STRING;
 		} catch (Exception e) {
 			LOG.warn("Error during the XML schema validation!", e);
 			return e.getMessage();
 		}
 	}
 	
-	private String validate(final Schema schema, final Source xmlSource) throws Exception {
+	private void validate(final Schema schema, final Source xmlSource) throws SAXException, IOException {
 		Validator validator = schema.newValidator();
-		avoidXXE(validator);
+		XmlDefinerUtils.avoidXXE(validator);
 		validator.validate(xmlSource);
-		return EMPTY_STRING;
-	}
-
-	/**
-	 * The method protects the validator against XXE
-	 * (https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html#validator)
-	 * 
-	 * @param validator
-	 *                  the validator to be configured against XXE
-	 * @throws SAXException
-	 */
-	private static void avoidXXE(Validator validator) throws SAXException {
-		validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-		validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
 	}
 
 }

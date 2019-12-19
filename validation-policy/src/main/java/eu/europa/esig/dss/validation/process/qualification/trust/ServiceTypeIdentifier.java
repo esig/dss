@@ -280,7 +280,7 @@ public enum ServiceTypeIdentifier {
 	private final boolean qualified;
 	private final boolean national;
 
-	private ServiceTypeIdentifier(String shortName, String uri, boolean qualified, boolean national) {
+	ServiceTypeIdentifier(String shortName, String uri, boolean qualified, boolean national) {
 		this.shortName = shortName;
 		this.uri = uri;
 		this.qualified = qualified;

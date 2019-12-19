@@ -113,12 +113,8 @@ public abstract class SignedDocumentValidator extends AbstractDocumentValidator 
 
 	@Override
 	public void defineSigningCertificate(final CertificateToken token) {
-		if (token == null) {
-			throw new NullPointerException("Token is not defined");
-		}
-		if (validationCertPool == null) {
-			throw new NullPointerException("Certificate pool is not instantiated");
-		}
+		Objects.requireNonNull(token, "Token is not defined");
+		Objects.requireNonNull(validationCertPool, "Certificate pool is not instantiated");
 		providedSigningCertificateToken = validationCertPool.getInstance(token, CertificateSourceType.OTHER);
 	}
 

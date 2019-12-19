@@ -276,9 +276,7 @@ public final class DSSUtils {
 	 * @return the certificate token
 	 */
 	public static CertificateToken loadCertificate(final byte[] input) {
-		if (input == null) {
-			throw new NullPointerException("X509 certificate");
-		}
+		Objects.requireNonNull(input, "Input binary cannot be null");
 		try (ByteArrayInputStream inputStream = new ByteArrayInputStream(input)) {
 			return loadCertificate(inputStream);
 		} catch (IOException e) {
@@ -450,9 +448,7 @@ public final class DSSUtils {
 	 *         representing the contents of the file @ if an I/O error occurred
 	 */
 	public static InputStream toInputStream(final File file) {
-		if (file == null) {
-			throw new NullPointerException();
-		}
+		Objects.requireNonNull(file, "The file cannot be null");
 		try {
 			return openInputStream(file);
 		} catch (IOException e) {
@@ -531,16 +527,14 @@ public final class DSSUtils {
 	 *
 	 * @param file
 	 *             the file to open for input, must not be {@code null}
-	 * @return a new {@link java.io.FileInputStream} for the specified file
+	 * @return a new {@link java.io.InputStream} for the specified file
 	 * @throws NullPointerException
 	 *                              if the file is null
 	 * @throws IOException
 	 *                              if the file cannot be read
 	 */
-	private static FileInputStream openInputStream(final File file) throws IOException {
-		if (file == null) {
-			throw new NullPointerException();
-		}
+	private static InputStream openInputStream(final File file) throws IOException {
+		Objects.requireNonNull(file, "The file cannot be null");
 		if (file.exists()) {
 			if (file.isDirectory()) {
 				throw new IOException("File '" + file + "' exists but is a directory");

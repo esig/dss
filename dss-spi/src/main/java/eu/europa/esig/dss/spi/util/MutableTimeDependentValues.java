@@ -22,6 +22,7 @@ package eu.europa.esig.dss.spi.util;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Mutable list of time-dependent values.
@@ -45,9 +46,7 @@ public class MutableTimeDependentValues<T extends TimeDependent> extends TimeDep
 	}
 
 	public synchronized void addOldest(final T x) {
-		if (x == null) {
-			throw new NullPointerException("Cannot add null");
-		}
+		Objects.requireNonNull(x, "Cannot add null");
 		if (!list.isEmpty()) {
 			final Date endDate = x.getEndDate();
 			for (final T y : list) {

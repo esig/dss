@@ -24,6 +24,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1OutputStream;
@@ -50,11 +51,9 @@ public class CMSSignedDocument extends CommonDocument {
 	 *            the CMSSignedData
 	 */
 	public CMSSignedDocument(final CMSSignedData data) {
+		Objects.requireNonNull(data, "The CMSSignedData cannot be null");
 		this.signedData = data;
-		if (data == null) {
-			throw new NullPointerException("The CMSSignedData cannot be null");
-		}
-		mimeType = MimeType.PKCS7;
+		this.mimeType = MimeType.PKCS7;
 	}
 
 	@Override

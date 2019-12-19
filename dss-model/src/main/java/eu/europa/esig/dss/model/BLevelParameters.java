@@ -53,9 +53,6 @@ public class BLevelParameters implements Serializable {
 	
 	private SignerLocation signerLocation;
 
-	public BLevelParameters() {
-	}
-
 	/**
 	 * @return indicates the trust anchor policy shall be used when creating -B and -LT levels
 	 */

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
@@ -115,10 +116,9 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 	}
 
 	@Override
-	public List<DSSDocument> getOriginalDocuments(final String signatureId) throws DSSException {
-		if (Utils.isStringBlank(signatureId)) {
-			throw new NullPointerException("signatureId");
-		}
+	public List<DSSDocument> getOriginalDocuments(final String signatureId) {
+		Objects.requireNonNull(signatureId, "Signature Id cannot be null");
+
 		List<DSSDocument> results = new ArrayList<DSSDocument>();
 
 		for (final Object signerInformationObject : cmsSignedData.getSignerInfos().getSigners()) {
@@ -136,7 +136,7 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 	}
 
 	@Override
-	public List<DSSDocument> getOriginalDocuments(final AdvancedSignature advancedSignature) throws DSSException {
+	public List<DSSDocument> getOriginalDocuments(final AdvancedSignature advancedSignature) {
 		final CAdESSignature cadesSignature = (CAdESSignature) advancedSignature;
 		try {
 			return Arrays.asList(cadesSignature.getOriginalDocument());
