@@ -25,6 +25,7 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
@@ -61,6 +62,15 @@ public class StructuralValidationCheck extends ChainItem<XmlSAV> {
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
 		return SubIndication.SIG_CONSTRAINTS_FAILURE;
+	}
+	
+	@Override
+	protected String getAdditionalInfo() {
+		String errorMessage = signature.getStructuralValidationMessage();
+		if (Utils.isStringNotBlank(errorMessage)) {
+			return errorMessage;
+		}
+		return null;
 	}
 
 }

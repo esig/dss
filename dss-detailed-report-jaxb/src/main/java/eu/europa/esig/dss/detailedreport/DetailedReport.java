@@ -22,7 +22,9 @@ package eu.europa.esig.dss.detailedreport;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -536,6 +538,9 @@ public class DetailedReport {
 					collect(type, result, getBasicBuildingBlockById(constraintId));
 				}
 			}
+			if (constraintConclusion.getConclusion() != null) {
+				result.addAll(getMessages(type, constraintConclusion.getConclusion()));
+			}
 		}
 	}
 
@@ -562,19 +567,42 @@ public class DetailedReport {
 	private XmlName getMessage(MessageType type, XmlConstraint constraint) {
 		XmlName message = null;
 		switch (type) {
-		case ERROR:
-			message = constraint.getError();
-			break;
-		case WARN:
-			message = constraint.getWarning();
-			break;
-		case INFO:
-			message = constraint.getInfo();
-			break;
-		default:
-			break;
+			case ERROR:
+				message = constraint.getError();
+				break;
+			case WARN:
+				message = constraint.getWarning();
+				break;
+			case INFO:
+				message = constraint.getInfo();
+				break;
+			default:
+				break;
 		}
 		return message;
+	}
+	
+	private Set<String> getMessages(MessageType type, XmlConclusion conclusion) {
+		switch (type) {
+			case ERROR:
+				return getMessages(conclusion.getErrors());
+			case WARN:
+				return getMessages(conclusion.getWarnings());
+			case INFO:
+				return getMessages(conclusion.getInfos());
+			default:
+				return Collections.emptySet();
+		}
+	}
+	
+	private Set<String> getMessages(List<XmlName> xmlNames) {
+		Set<String> messages = new HashSet<String>();
+		if (xmlNames != null) {
+			for (XmlName xmlName : xmlNames) {
+				messages.add(xmlName.getValue());
+			}
+		}
+		return messages;
 	}
 
 	enum MessageType {

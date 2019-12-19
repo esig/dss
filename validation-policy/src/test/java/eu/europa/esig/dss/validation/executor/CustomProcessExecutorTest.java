@@ -375,6 +375,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
+		// reports.print();
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
@@ -386,7 +387,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(timestampProductionDate, bestSignatureTime);
 		
 		List<String> errors = simpleReport.getErrors(simpleReport.getFirstSignatureId());
-		assertEquals(1, errors.size());
+		assertEquals(3, errors.size());
 
 		validateBestSigningTimes(reports);
 		checkReports(reports);
@@ -1525,6 +1526,72 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(SubIndication.FORMAT_FAILURE, detailedReport.getArchiveDataValidationSubIndication(detailedReport.getFirstSignatureId()));
 
 		checkReports(reports);
+	}
+	
+	@Test
+	public void structureValidationFailureTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/xades-structure-failure.xml"));
+		
+		String messageError = diagnosticData.getSignatures().get(0).getStructuralValidation().getMessage();
+		assertNotNull(messageError);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+		
+		Reports reports = executor.execute();
+		
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId())); // WARN level by default
+		
+		List<String> warnings = simpleReport.getWarnings(simpleReport.getFirstSignatureId());
+		assertTrue(warnings.contains(i18nProvider.getMessage(MessageTag.BBB_SAV_ISSV_ANS)));
+		
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertNotNull(signatureBBB);
+		
+		XmlSAV sav = signatureBBB.getSAV();
+		assertNotNull(sav);
+		
+		boolean structureWarnFound = false;
+		List<XmlConstraint> constraints = sav.getConstraint();
+		for (XmlConstraint constraint : constraints) {
+			if (MessageTag.BBB_SAV_ISSV.name().equals(constraint.getName().getNameId())) {
+				assertEquals(messageError, constraint.getAdditionalInfo());
+				structureWarnFound = true;
+			}
+		}
+		assertTrue(structureWarnFound);
+	}
+	
+	@Test
+	public void structuralValidationFailLevelTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/xades-structure-failure.xml"));
+		
+		String messageError = diagnosticData.getSignatures().get(0).getStructuralValidation().getMessage();
+		assertNotNull(messageError);
+
+		ValidationPolicy policy = ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+		SignatureConstraints signatureConstraints = policy.getSignatureConstraints();
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		signatureConstraints.setStructuralValidation(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(policy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		
+		List<String> errors = simpleReport.getErrors(simpleReport.getFirstSignatureId());
+		assertTrue(errors.contains(i18nProvider.getMessage(MessageTag.BBB_SAV_ISSV_ANS)));
 	}
 	
 	@Test
