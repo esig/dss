@@ -68,7 +68,12 @@ public abstract class XSDAbstractUtils {
 			validate(getSchema(), xmlSource);
 			return EMPTY_STRING;
 		} catch (Exception e) {
-			LOG.warn("Error during the XML schema validation!", e);
+			String errorMessage = String.format("Error during the XML schema validation! Reason : [%s]", e.getMessage());
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(errorMessage, e);
+			} else {
+				LOG.warn(errorMessage);
+			}
 			return e.getMessage();
 		}
 	}
