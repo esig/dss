@@ -394,19 +394,24 @@ public class DiagnosticDataBuilder {
 			diagnosticData.getOrphanTokens().addAll(xmlOrphanTokens.values());
 		}
 
-		for (CertificateSource trustedSource : trustedCertSources) {
-			if (trustedSource instanceof TrustedListsCertificateSource) {
-				TrustedListsCertificateSource tlCS = (TrustedListsCertificateSource) trustedSource;
-
-				diagnosticData.getTrustedLists().addAll(buildXmlTrustedLists(tlCS));
-
-				for (XmlCertificate xmlCert : diagnosticData.getUsedCertificates()) {
-					xmlCert.setTrustedServiceProviders(getXmlTrustedServiceProviders(getCertificateToken(xmlCert.getId())));
-				}
-			}
+		if (isUseTrustedLists()) {
+			Collection<XmlTrustedList> trustedLists = buildXmlTrustedLists(trustedCertSources);
+			diagnosticData.getTrustedLists().addAll(trustedLists);
+			linkCertificatesAndTrustServices(usedCertificates);
 		}
 
 		return diagnosticData;
+	}
+
+	private boolean isUseTrustedLists() {
+		if (Utils.isCollectionNotEmpty(trustedCertSources)) {
+			for (CertificateSource certificateSource : trustedCertSources) {
+				if (certificateSource instanceof TrustedListsCertificateSource) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	private void linkTimestampsAndTimestampsObjects(Set<TimestampToken> timestamps) {
@@ -440,6 +445,15 @@ public class DiagnosticDataBuilder {
 				XmlCertificate xmlCertificate = xmlCerts.get(certificateToken.getDSSIdAsString());
 				xmlCertificate.setSigningCertificate(getXmlSigningCertificate(certificateToken.getPublicKeyOfTheSigner()));
 				xmlCertificate.setCertificateChain(getXmlForCertificateChain(certificateToken.getPublicKeyOfTheSigner()));
+			}
+		}
+	}
+
+	private void linkCertificatesAndTrustServices(Set<CertificateToken> certificates) {
+		if (Utils.isCollectionNotEmpty(certificates)) {
+			for (CertificateToken certificateToken : certificates) {
+				XmlCertificate xmlCertificate = xmlCerts.get(certificateToken.getDSSIdAsString());
+				xmlCertificate.setTrustedServiceProviders(getXmlTrustedServiceProviders(certificateToken));
 			}
 		}
 	}
@@ -537,35 +551,45 @@ public class DiagnosticDataBuilder {
 		}
 	}
 
-	private Collection<XmlTrustedList> buildXmlTrustedLists(TrustedListsCertificateSource tlCS) {
+	private Collection<XmlTrustedList> buildXmlTrustedLists(List<CertificateSource> certificateSources) {
 		List<XmlTrustedList> trustedLists = new ArrayList<XmlTrustedList>();
-		
-		TLValidationJobSummary summary = tlCS.getSummary();
-		if (summary != null) {
-			
-			Set<Identifier> tlIdentifiers = getTLIdentifiers(tlCS);
-			if (Utils.isCollectionNotEmpty(tlIdentifiers)) {
-				for (Identifier id : tlIdentifiers) {
-					TLInfo tlInfo = summary.getTLInfoById(id);
-					if (tlInfo != null) {
-						trustedLists.add(getXmlTrustedList(tlInfo));
-					}
-				}
-			}
 
-			Set<Identifier> lotlIdentifiers = getLOTLIdentifiers(tlCS);
-			if (Utils.isCollectionNotEmpty(lotlIdentifiers)) {
-				for (Identifier id : lotlIdentifiers) {
-					LOTLInfo lotlInfo = summary.getLOTLInfoById(id);
-					if (lotlInfo != null) {
-						trustedLists.add(getXmlTrustedList(lotlInfo));
+		Map<Identifier, XmlTrustedList> mapTrustedLists = new HashMap<Identifier, XmlTrustedList>();
+		Map<Identifier, XmlTrustedList> mapListOfTrustedLists = new HashMap<Identifier, XmlTrustedList>();
+
+		for (CertificateSource certificateSource : certificateSources) {
+			if (certificateSource instanceof TrustedListsCertificateSource) {
+				TrustedListsCertificateSource tlCertSource = (TrustedListsCertificateSource) certificateSource;
+				TLValidationJobSummary summary = tlCertSource.getSummary();
+				if (summary != null) {
+					Set<Identifier> tlIdentifiers = getTLIdentifiers(tlCertSource);
+					for (Identifier tlId : tlIdentifiers) {
+						if (!mapTrustedLists.containsKey(tlId)) {
+							TLInfo tlInfoById = summary.getTLInfoById(tlId);
+							if (tlInfoById != null) {
+								mapTrustedLists.put(tlId, getXmlTrustedList(tlInfoById));
+							}
+						}
 					}
+
+					Set<Identifier> lotlIdentifiers = getLOTLIdentifiers(tlCertSource);
+					for (Identifier lotlId : lotlIdentifiers) {
+						if (!mapListOfTrustedLists.containsKey(lotlId)) {
+							LOTLInfo lotlInfoById = summary.getLOTLInfoById(lotlId);
+							if (lotlInfoById != null) {
+								mapTrustedLists.put(lotlId, getXmlTrustedList(lotlInfoById));
+							}
+						}
+					}
+
+				} else {
+					LOG.warn("The TrustedListsCertificateSource does not contain TLValidationJobSummary. TLValidationJob is not performed!");
 				}
 			}
-			
-		} else {
-			LOG.warn("The TrustedListsCertificateSource does not contain TLValidationJobSummary. TLValidationJob is not performed!");
 		}
+
+		trustedLists.addAll(mapTrustedLists.values());
+		trustedLists.addAll(mapListOfTrustedLists.values());
 		return trustedLists;
 	}
 
@@ -595,29 +619,33 @@ public class DiagnosticDataBuilder {
 	}
 
 	private XmlTrustedList getXmlTrustedList(TLInfo tlInfo) {
-		XmlTrustedList result = new XmlTrustedList();
-		if (tlInfo instanceof LOTLInfo) {
-			result.setLOTL(true);
+		String id = tlInfo.getIdentifier().asXmlId();
+		XmlTrustedList result = xmlTrustedLists.get(id);
+		if (result == null) {
+			result = new XmlTrustedList();
+			if (tlInfo instanceof LOTLInfo) {
+				result.setLOTL(true);
+			}
+			result.setId(id);
+			result.setUrl(tlInfo.getUrl());
+			ParsingInfoRecord parsingCacheInfo = tlInfo.getParsingCacheInfo();
+			if (parsingCacheInfo != null) {
+				result.setCountryCode(parsingCacheInfo.getTerritory());
+				result.setIssueDate(parsingCacheInfo.getIssueDate());
+				result.setNextUpdate(parsingCacheInfo.getNextUpdateDate());
+				result.setSequenceNumber(parsingCacheInfo.getSequenceNumber());
+				result.setVersion(parsingCacheInfo.getVersion());
+			}
+			DownloadInfoRecord downloadCacheInfo = tlInfo.getDownloadCacheInfo();
+			if (downloadCacheInfo != null) {
+				result.setLastLoading(downloadCacheInfo.getLastSuccessDownloadTime());
+			}
+			ValidationInfoRecord validationCacheInfo = tlInfo.getValidationCacheInfo();
+			if (validationCacheInfo != null) {
+				result.setWellSigned(validationCacheInfo.isValid());
+			}
+			xmlTrustedLists.put(id, result);
 		}
-		result.setId(tlInfo.getIdentifier().asXmlId());
-		result.setUrl(tlInfo.getUrl());
-		ParsingInfoRecord parsingCacheInfo = tlInfo.getParsingCacheInfo();
-		if (parsingCacheInfo != null) {
-			result.setCountryCode(parsingCacheInfo.getTerritory());
-			result.setIssueDate(parsingCacheInfo.getIssueDate());
-			result.setNextUpdate(parsingCacheInfo.getNextUpdateDate());
-			result.setSequenceNumber(parsingCacheInfo.getSequenceNumber());
-			result.setVersion(parsingCacheInfo.getVersion());
-		}
-		DownloadInfoRecord downloadCacheInfo = tlInfo.getDownloadCacheInfo();
-		if (downloadCacheInfo != null) {
-			result.setLastLoading(downloadCacheInfo.getLastSuccessDownloadTime());
-		}
-		ValidationInfoRecord validationCacheInfo = tlInfo.getValidationCacheInfo();
-		if (validationCacheInfo != null) {
-			result.setWellSigned(validationCacheInfo.isValid());
-		}
-		xmlTrustedLists.put(tlInfo.getIdentifier().asXmlId(), result);
 		return result;
 	}
 
@@ -1786,15 +1814,6 @@ public class DiagnosticDataBuilder {
 			certificateSources.add(CertificateSourceType.UNKNOWN);
 		}
 		return certificateSources;
-	}
-
-	private CertificateToken getCertificateToken(String certificateId) {
-		for (CertificateToken certificateToken : usedCertificates) {
-			if (Utils.areStringsEqual(certificateId, certificateToken.getDSSIdAsString())) {
-				return certificateToken;
-			}
-		}
-		return null;
 	}
 
 	private Set<RevocationToken> getRevocationsForCert(CertificateToken certToken) {
