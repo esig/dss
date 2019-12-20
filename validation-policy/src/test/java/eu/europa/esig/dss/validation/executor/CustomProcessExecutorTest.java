@@ -274,8 +274,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		Date bestSignatureTime = simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId());
 		assertEquals(timestampProductionDate, bestSignatureTime);
 		
-		List<String> errors = simpleReport.getErrors(simpleReport.getFirstSignatureId());
-		assertEquals(2, errors.size());
+		assertEquals(0, simpleReport.getErrors(simpleReport.getFirstSignatureId()).size());
+		assertEquals(2, simpleReport.getWarnings(simpleReport.getFirstSignatureId()).size());
 
 		validateBestSigningTimes(reports);
 		checkReports(reports);

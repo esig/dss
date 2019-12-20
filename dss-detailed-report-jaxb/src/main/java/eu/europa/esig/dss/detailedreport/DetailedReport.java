@@ -532,11 +532,15 @@ public class DetailedReport {
 				if (message != null) {
 					result.add(message.getValue());
 				}
-
-				String constraintId = constraint.getId();
-				if (constraintId != null && !constraintId.isEmpty()) {
-					collect(type, result, getBasicBuildingBlockById(constraintId));
+				
+				// do not extract subErrors if the highest conclusion is valid
+				if (!MessageType.ERROR.equals(type) || message != null) {
+					String constraintId = constraint.getId();
+					if (constraintId != null && !constraintId.isEmpty()) {
+						collect(type, result, getBasicBuildingBlockById(constraintId));
+					}
 				}
+
 			}
 			if (constraintConclusion.getConclusion() != null) {
 				result.addAll(getMessages(type, constraintConclusion.getConclusion()));
