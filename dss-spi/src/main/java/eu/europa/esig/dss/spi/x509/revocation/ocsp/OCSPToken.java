@@ -64,10 +64,10 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 public class OCSPToken extends RevocationToken {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OCSPToken.class);
-
-	private CertificateID certId;
-
-	private X500Principal issuerX500Principal;
+	
+	private CertificateToken certificateToken;
+	
+	private CertificateToken issuerCertificateToken;
 
 	/**
 	 * Status of the OCSP response
@@ -104,7 +104,7 @@ public class OCSPToken extends RevocationToken {
 
 			this.signatureAlgorithm = SignatureAlgorithm.forOidAndParams(oid, sigAlgParams);
 
-			SingleResp bestSingleResp = getBestSingleResp(basicOCSPResp, certId);
+			SingleResp bestSingleResp = getBestSingleResp();
 			if (bestSingleResp != null) {
 				this.thisUpdate = bestSingleResp.getThisUpdate();
 				this.nextUpdate = bestSingleResp.getNextUpdate();
@@ -115,11 +115,13 @@ public class OCSPToken extends RevocationToken {
 		}
 	}
 
-	private SingleResp getBestSingleResp(final BasicOCSPResp basicOCSPResp, final CertificateID certId) {
+	private SingleResp getBestSingleResp() {
 		Date bestUpdate = null;
 		SingleResp bestSingleResp = null;
 		SingleResp[] responses = getResponses(basicOCSPResp);
 		for (final SingleResp singleResp : responses) {
+			DigestAlgorithm digestAlgorithm = DSSRevocationUtils.getUsedDigestAlgorithm(singleResp);
+			CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(certificateToken, issuerCertificateToken, digestAlgorithm);
 			if (DSSRevocationUtils.matches(certId, singleResp)) {
 				final Date thisUpdate = singleResp.getThisUpdate();
 				if ((bestUpdate == null) || thisUpdate.after(bestUpdate)) {
@@ -240,6 +242,14 @@ public class OCSPToken extends RevocationToken {
 	public void setResponseStatus(OCSPRespStatus responseStatus) {
 		this.responseStatus = responseStatus;
 	}
+	
+	public void setCertificateToken(CertificateToken certificateToken) {
+		this.certificateToken = certificateToken;
+	}
+	
+	public void setIssuerCertificateToken(CertificateToken issuerCertificateToken) {
+		this.issuerCertificateToken = issuerCertificateToken;
+	}
 
 	public boolean isUseNonce() {
 		return useNonce;
@@ -263,14 +273,6 @@ public class OCSPToken extends RevocationToken {
 
 	public void setBasicOCSPResp(BasicOCSPResp basicOCSPResp) {
 		this.basicOCSPResp = basicOCSPResp;
-	}
-
-	public CertificateID getCertId() {
-		return certId;
-	}
-
-	public void setCertId(CertificateID certId) {
-		this.certId = certId;
 	}
 
 	/**
@@ -311,13 +313,9 @@ public class OCSPToken extends RevocationToken {
 		return DSSRevocationUtils.getEncodedFromBasicResp(basicOCSPResp);
 	}
 
-	public void setIssuerX500Principal(X500Principal issuerX500Principal) {
-		this.issuerX500Principal = issuerX500Principal;
-	}
-
 	@Override
 	public X500Principal getIssuerX500Principal() {
-		return issuerX500Principal;
+		return issuerCertificateToken.getSubjectX500Principal();
 	}
 
 }

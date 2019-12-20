@@ -37,6 +37,7 @@ import org.bouncycastle.cert.ocsp.SingleResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -89,9 +90,10 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 	private OCSPResponseBinary findBestOcspResponse(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
 		OCSPResponseBinary bestOCSPResponse = null;
 		Date bestUpdate = null;
-		final CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(certificateToken, issuerCertificateToken);
 		for (final OCSPResponseBinary response : ocspResponseOriginsMap.keySet()) {
 			for (final SingleResp singleResp : response.getBasicOCSPResp().getResponses()) {
+				DigestAlgorithm usedDigestAlgorithm = DSSRevocationUtils.getUsedDigestAlgorithm(singleResp);
+				final CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(certificateToken, issuerCertificateToken, usedDigestAlgorithm);
 				if (DSSRevocationUtils.matches(certId, singleResp)) {
 					final Date thisUpdate = singleResp.getThisUpdate();
 					if ((bestUpdate == null) || thisUpdate.after(bestUpdate)) {

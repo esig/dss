@@ -67,7 +67,7 @@ public class OCSPTokenUtils {
 				CertificateToken certificateToken = DSSASN1Utils.getCertificate(x509CertificateHolder);
 				CertificateToken certToken = validationCertPool.getInstance(certificateToken, CertificateSourceType.OCSP_RESPONSE);
 				if (ocspToken.isSignedBy(certToken)) {
-					ocspToken.setIssuerX500Principal(certToken.getSubjectX500Principal());
+					ocspToken.setIssuerCertificateToken(certToken);
 					return true;
 				}
 			}
@@ -101,7 +101,7 @@ public class OCSPTokenUtils {
 	private static void setIssuerToOcspToken(OCSPToken ocspToken, Collection<CertificateToken> candidates) {
 		for (CertificateToken issuerCertificateToken : candidates) {
 			if (ocspToken.isSignedBy(issuerCertificateToken)) {
-				ocspToken.setIssuerX500Principal(issuerCertificateToken.getSubjectX500Principal());
+				ocspToken.setIssuerCertificateToken(issuerCertificateToken);
 				return;
 			}
 		}

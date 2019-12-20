@@ -38,6 +38,7 @@ import org.bouncycastle.cert.ocsp.SingleResp;
 import org.bouncycastle.operator.DigestCalculator;
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -64,7 +65,7 @@ public class DSSRevocationUtilsTest {
 		CertificateToken issuer = DSSUtils.loadCertificate(new File("src/test/resources/belgiumrs2.crt"));
 		assertTrue(certificate.isSignedBy(issuer));
 
-		CertificateID certificateID = DSSRevocationUtils.getOCSPCertificateID(certificate, issuer);
+		CertificateID certificateID = DSSRevocationUtils.getOCSPCertificateID(certificate, issuer, DigestAlgorithm.SHA256);
 		assertNotNull(certificateID);
 
 		BasicOCSPResp basicOCSPResp = DSSRevocationUtils.loadOCSPBase64Encoded(
@@ -116,7 +117,7 @@ public class DSSRevocationUtilsTest {
 
 	@Test
 	public void getSHA1DigestCalculator() {
-		DigestCalculator digestCalculator = DSSRevocationUtils.getSHA1DigestCalculator();
+		DigestCalculator digestCalculator = DSSRevocationUtils.getDigestCalculator(DigestAlgorithm.SHA1);
 		assertNotNull(digestCalculator);
 	}
 

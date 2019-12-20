@@ -38,6 +38,7 @@ import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -73,6 +74,11 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 	 * The data loader used to retrieve the OCSP response.
 	 */
 	private DataLoader dataLoader;
+	
+	/**
+	 * The DigestAlgorithm to be used in hash calculation for CertID on a request building
+	 */
+	private DigestAlgorithm certIDDigestAlgorithm = DigestAlgorithm.SHA256;
 
 	/**
 	 * Create an OCSP source The default constructor for OnlineOCSPSource. The
@@ -98,6 +104,17 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 	public void setNonceSource(NonceSource nonceSource) {
 		this.nonceSource = nonceSource;
 	}
+	
+	/**
+	 * This method allows setting of DigestAlgorithm to be used in hash calculation
+	 * for CertID element in an OCSP request building
+	 * 
+	 * @param certIDDigestAlgorithm {@link DigestAlgorithm}
+	 */
+	public void setCertIDDigestAlgorithm(DigestAlgorithm certIDDigestAlgorithm) {
+		Objects.requireNonNull(certIDDigestAlgorithm, "The certIDDigestAlgorithm must not be null!");
+		this.certIDDigestAlgorithm = certIDDigestAlgorithm;
+	}
 
 	@Override
 	public OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
@@ -122,7 +139,7 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 		}
 		ocspAccessLocations.addAll(alternativeUrls);
 
-		final CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(certificateToken, issuerCertificateToken);
+		final CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(certificateToken, issuerCertificateToken, certIDDigestAlgorithm);
 
 		BigInteger nonce = null;
 		if (nonceSource != null) {
