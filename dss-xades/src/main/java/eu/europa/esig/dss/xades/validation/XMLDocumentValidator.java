@@ -60,6 +60,8 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 
 	protected Document rootElement;
 
+	private boolean disableXSWProtection = false;
+
 	private List<AdvancedSignature> signatures;
 
 	static {
@@ -94,6 +96,18 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 		return DSSUtils.compareFirstBytes(dssDocument, xmlPreamble) || DSSUtils.compareFirstBytes(dssDocument, xmlWithBomPreample);
 	}
 
+	/**
+	 * NOT RECOMMENDED : This parameter allows to disable protection against XML
+	 * Signature wrapping attacks (XSW). It disables the research by XPath
+	 * expression for defined Type attributes.
+	 * 
+	 * @param disableXSWProtection
+	 *                             true to disable the protection
+	 */
+	public void setDisableXSWProtection(boolean disableXSWProtection) {
+		this.disableXSWProtection = disableXSWProtection;
+	}
+
 	@Override
 	public List<AdvancedSignature> getSignatures() {
 		if (signatures != null) {
@@ -110,6 +124,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 			xadesSignature.setDetachedContents(detachedContents);
 			xadesSignature.setContainerContents(containerContents);
 			xadesSignature.setProvidedSigningCertificateToken(providedSigningCertificateToken);
+			xadesSignature.setDisableXSWProtection(disableXSWProtection);
 			signatures.add(xadesSignature);
 		}
 		return signatures;

@@ -133,6 +133,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	
 	private XAdESPaths xadesPaths;
 
+	private boolean disableXSWProtection = false;
+
 	private final Element signatureElement;
 	
 	private transient XMLSignature santuarioSignature;
@@ -211,6 +213,18 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		this.signatureElement = signatureElement;
 		this.xadesPathsHolders = xadesPathsHolders;
 		initialiseSettings();
+	}
+
+	/**
+	 * NOT RECOMMENDED : This parameter allows to disable protection against XML
+	 * Signature wrapping attacks (XSW). It disables the research by XPath
+	 * expression for defined Type attributes.
+	 * 
+	 * @param disableXSWProtection
+	 *                             true to disable the protection
+	 */
+	public void setDisableXSWProtection(boolean disableXSWProtection) {
+		this.disableXSWProtection = disableXSWProtection;
 	}
 
 	/**
@@ -871,7 +885,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 							
 					if (isElementReference && DSSXMLUtils.isSignedProperties(reference, xadesPaths)) {
 						validation.setType(DigestMatcherType.SIGNED_PROPERTIES);
-						found = found && (noDuplicateIdFound && findSignedPropertiesById(uri));
+						found = found && (noDuplicateIdFound && (disableXSWProtection || findSignedPropertiesById(uri)));
 						
 					} else if (DomUtils.isXPointerQuery(uri)) {
 						validation.setType(DigestMatcherType.XPOINTER);
@@ -883,12 +897,12 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						
 					} else if (isElementReference && reference.typeIsReferenceToObject()) {
 						validation.setType(DigestMatcherType.OBJECT);
-						found = found && (noDuplicateIdFound && findObjectById(uri));
+						found = found && (noDuplicateIdFound && (disableXSWProtection || findObjectById(uri)));
 						
 					} else if (isElementReference && reference.typeIsReferenceToManifest()) {
 						validation.setType(DigestMatcherType.MANIFEST);
 						Node manifestNode = getManifestById(uri);
-						found = found && (noDuplicateIdFound && (manifestNode != null));
+						found = found && (noDuplicateIdFound && (disableXSWProtection || (manifestNode != null)));
 						if (manifestNode != null) {
 							validation.getDependentValidations().addAll(getManifestReferences(manifestNode));
 						}
