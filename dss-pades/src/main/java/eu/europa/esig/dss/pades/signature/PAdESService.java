@@ -248,7 +248,9 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	@Override
 	public DSSDocument timestamp(DSSDocument toTimestampDocument, PAdESSignatureParameters parameters) {
 		PAdESLevelBaselineT levelT = new PAdESLevelBaselineT(tspSource, pdfObjFactory);
-		return levelT.extendSignatures(toTimestampDocument, parameters);
+		DSSDocument timestampedDocument = levelT.extendSignatures(toTimestampDocument, parameters);
+		timestampedDocument.setName(getFinalFileName(toTimestampDocument, SigningOperation.TIMESTAMP, null));
+		return timestampedDocument;
 	}
 
 }

@@ -145,7 +145,7 @@ public abstract class AbstractSignatureService<SP extends AbstractSignatureParam
 				throw new DSSException("Unable to generate a full document name");
 			}
 		} else {
-			throw new DSSException("Unable to generate a full document name");
+			finalName.append("pdf");
 		}
 
 		return finalName.toString();
