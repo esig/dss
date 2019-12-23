@@ -169,33 +169,15 @@ public abstract class SignedDocumentValidator extends AbstractDocumentValidator 
 	}
 	
 	@Override
-	public List<AdvancedSignature> prepareSignatureValidationContext(final ValidationContext validationContext) {		
-		final List<AdvancedSignature> allSignatureList = getAllSignatures();
-		// The list of all signing certificates is created to allow a parallel
-		// validation.
-		
-		// Signature Scope must be processed before in order to properly initialize content timestamps
-		setSignedScopeFinderDefaultDigestAlgorithm(getDefaultDigestAlgorithm());
-		for (final AdvancedSignature signature : allSignatureList) {
-			if (signatureScopeFinder != null) {
-				signature.findSignatureScope(signatureScopeFinder);
-			}
-		}
-		
-		prepareCertificatesAndTimestamps(allSignatureList, validationContext);
-
-		return processSignaturesValidation(validationContext, allSignatureList);
+	public void prepareSignatureValidationContext(final ValidationContext validationContext, 
+			final List<AdvancedSignature> allSignatureList) {		
+		prepareCertificatesAndTimestamps(validationContext, allSignatureList);
+		processSignaturesValidation(validationContext, allSignatureList);
 	}
 
 	@Override
-	public List<AdvancedSignature> processSignaturesValidation(final ValidationContext validationContext, 
-			final List<AdvancedSignature> allSignatureList) {
-		
-		final ListCRLSource signatureCRLSource = getSignatureCrlSource(allSignatureList);
-		certificateVerifier.setSignatureCRLSource(signatureCRLSource);
-
-		final ListOCSPSource signatureOCSPSource = getSignatureOcspSource(allSignatureList);
-		certificateVerifier.setSignatureOCSPSource(signatureOCSPSource);
+	public void processSignaturesValidation(final ValidationContext validationContext, 
+			List<AdvancedSignature> allSignatureList) {
 		
 		validateContext(validationContext);
 
@@ -205,59 +187,39 @@ public abstract class SignedDocumentValidator extends AbstractDocumentValidator 
 			signature.validateStructure();
 			signature.checkSignaturePolicy(getSignaturePolicyProvider());
 
-			signature.populateCRLTokenLists(signatureCRLSource);
-			signature.populateOCSPTokenLists(signatureOCSPSource);
+			signature.populateCRLTokenLists(certificateVerifier.getSignatureCRLSource());
+			signature.populateOCSPTokenLists(certificateVerifier.getSignatureOCSPSource());
 		}
-		
-		return allSignatureList;
 	}
 
-	/**
-	 * This method returns the list of all signatures including the
-	 * countersignatures.
-	 *
-	 * @return {@code List} of {@code AdvancedSignature} to validate
-	 */
-	private List<AdvancedSignature> getAllSignatures() {
+	@Override
+	protected List<AdvancedSignature> getAllSignatures() {
+		
 		final List<AdvancedSignature> allSignatureList = new ArrayList<AdvancedSignature>();
 		List<AdvancedSignature> signatureList = getSignatures();
 		for (final AdvancedSignature signature : signatureList) {
 			allSignatureList.add(signature);
-			allSignatureList.addAll(signature.getCounterSignatures());
+			allSignatureList.addAll(signature.getCounterSignatures());			
 		}
+		
+		// Signature Scope must be processed before in order to properly initialize content timestamps
+		findSignatureScopes(allSignatureList);
+		
 		return allSignatureList;
 	}
-
+	
 	/**
-	 * For all signatures to be validated this method merges the CRL sources.
-	 *
-	 * @param allSignatureList
-	 *            {@code List} of {@code AdvancedSignature}s to validate
-	 *            including the countersignatures
-	 * @return {@code ListCRLSource}
+	 * Finds and assigns SignatureScopes for a list of signatures
+	 * 
+	 * @param allSignatures a list of {@link AdvancedSignature}s to get a SignatureScope list
 	 */
-	private ListCRLSource getSignatureCrlSource(final List<AdvancedSignature> allSignatureList) {
-		final ListCRLSource signatureCrlSource = new ListCRLSource();
-		for (final AdvancedSignature signature : allSignatureList) {
-			signatureCrlSource.addAll(signature.getCompleteCRLSource());
+	public void findSignatureScopes(List<AdvancedSignature> allSignatures) {
+		setSignedScopeFinderDefaultDigestAlgorithm(getDefaultDigestAlgorithm());
+		for (final AdvancedSignature signature : allSignatures) {
+			if (signatureScopeFinder != null) {
+				signature.findSignatureScope(signatureScopeFinder);
+			}
 		}
-		return signatureCrlSource;
-	}
-
-	/**
-	 * For all signatures to be validated this method merges the OCSP sources.
-	 *
-	 * @param allSignatureList
-	 *            {@code List} of {@code AdvancedSignature}s to validate
-	 *            including the countersignatures
-	 * @return {@code ListOCSPSource}
-	 */
-	private ListOCSPSource getSignatureOcspSource(final List<AdvancedSignature> allSignatureList) {
-		final ListOCSPSource signatureOcspSource = new ListOCSPSource();
-		for (final AdvancedSignature signature : allSignatureList) {
-			signatureOcspSource.addAll(signature.getCompleteOCSPSource());
-		}
-		return signatureOcspSource;
 	}
 
 	/**
@@ -268,7 +230,7 @@ public abstract class SignedDocumentValidator extends AbstractDocumentValidator 
 	 *            {@code ValidationContext} is the implementation of the
 	 *            validators for: certificates, timestamps and revocation data.
 	 */
-	private void prepareCertificatesAndTimestamps(final List<AdvancedSignature> allSignatureList, final ValidationContext validationContext) {
+	protected void prepareCertificatesAndTimestamps(final ValidationContext validationContext, final List<AdvancedSignature> allSignatureList) {
 		if (providedSigningCertificateToken != null) {
 			validationContext.addCertificateTokenForVerification(providedSigningCertificateToken);
 		}

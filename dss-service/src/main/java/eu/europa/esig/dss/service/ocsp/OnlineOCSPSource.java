@@ -134,7 +134,7 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 
 		final List<String> ocspAccessLocations = DSSASN1Utils.getOCSPAccessLocations(certificateToken);
 		if (Utils.isCollectionEmpty(ocspAccessLocations) && Utils.isCollectionEmpty(alternativeUrls)) {
-			LOG.debug("No OCSP location found for {}", dssIdAsString);
+			LOG.warn("No OCSP location found for {}", dssIdAsString);
 			return null;
 		}
 		ocspAccessLocations.addAll(alternativeUrls);
@@ -167,6 +167,8 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 					} else {
 						LOG.warn("OCSP Response status with URL '{}' : {}", ocspAccessLocation, status);
 					}
+				} else {
+					LOG.warn("OCSP Data Loader for certificate {} responded with an empty byte array!", certificateToken.getDSSIdAsString());
 				}
 			} catch (Exception e) {
 				if (nbTries == 0) {

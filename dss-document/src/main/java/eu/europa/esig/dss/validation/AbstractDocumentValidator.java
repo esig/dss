@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -268,8 +269,12 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 	 * @return {@link DiagnosticData}
 	 */
 	protected DiagnosticDataBuilder prepareDiagnosticDataBuilder(final ValidationContext validationContext) {
-		List<AdvancedSignature> allSignatures = prepareSignatureValidationContext(validationContext);
-		Map<TimestampToken, List<SignatureScope>> timestamps = prepareTimestampValidationContext(validationContext);
+		List<AdvancedSignature> allSignatures = getAllSignatures();
+		Map<TimestampToken, List<SignatureScope>> timestamps = getTimestamps();
+		
+		prepareCertificateVerifier(allSignatures, timestamps.keySet());
+		prepareSignatureValidationContext(validationContext, allSignatures);
+		prepareTimestampValidationContext(validationContext, timestamps);
 		
 		return new DiagnosticDataBuilder().document(document).foundSignatures(allSignatures)
 				.usedTimestamps(validationContext.getProcessedTimestamps())
@@ -284,49 +289,17 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 				.trustedCertificateSources(certificateVerifier.getTrustedCertSources())
 				.validationDate(getValidationTime());
 	}
-	
+
 	/**
-	 * Prepares the {@code validationContext} for signature validation process and returns a list of signatures to validate
-	 * 
-	 * @param validationContext {@link ValidationContext}
-	 * @return list of {@link AdvancedSignature}s
+	 * This method returns the list of all signatures including the
+	 * countersignatures.
+	 *
+	 * @return {@code List} of {@code AdvancedSignature} to validate
 	 */
-	protected List<AdvancedSignature> prepareSignatureValidationContext(final ValidationContext validationContext) {
+	protected List<AdvancedSignature> getAllSignatures() {
 		// not implemented by default
-		// see {@code SignedDocumentValidator}
+		// requires an implementation of {@code SignatureValidator}
 		return Collections.emptyList();
-	}
-	
-	/**
-	 * Prepares the {@code validationContext} for a timestamp validation process
-	 * 
-	 * @param validationContext {@link ValidationContext}
-	 * @return a map of {@link TimestampToken}s to be validated and their {@link SignatureScope}s
-	 */
-	protected Map<TimestampToken, List<SignatureScope>> prepareTimestampValidationContext(final ValidationContext validationContext) {
-		
-		Map<TimestampToken, List<SignatureScope>> timestamps = getTimestamps();
-		setTimestamedReferences(timestamps);
-		for (TimestampToken timestampToken : timestamps.keySet()) {
-			validationContext.addTimestampTokenForVerification(timestampToken);
-			CertificateToken issuer = validationCertPool.getIssuer(timestampToken);
-			if (issuer != null) {
-				validationContext.addCertificateTokenForVerification(issuer);
-			}
-		}
-		validateContext(validationContext);
-		
-		return timestamps;
-	}
-	
-	/**
-	 * Process the validation
-	 * 
-	 * @param validationContext {@link ValidationContext} to process
-	 */
-	protected void validateContext(final ValidationContext validationContext) {
-		validationContext.initialize(certificateVerifier);
-		validationContext.validate();
 	}
 	
 	/**
@@ -338,6 +311,108 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 		// not implemented by default
 		// requires an implementation of {@code TimestampValidator}
 		return Collections.emptyMap();
+	}
+	
+	private void prepareCertificateVerifier(final Collection<AdvancedSignature> allSignatureList, final Collection<TimestampToken> timestampTokens) {
+		populateSignatureCrlSource(allSignatureList, timestampTokens);
+		populateSignatureOcspSource(allSignatureList, timestampTokens);
+	}
+	
+	/**
+	 * Prepares the {@code validationContext} for signature validation process and returns a list of signatures to validate
+	 * 
+	 * @param validationContext {@link ValidationContext}
+	 * @param allSignatures a list of all {@link AdvancedSignature}s to be validated
+	 */
+	protected void prepareSignatureValidationContext(final ValidationContext validationContext, 
+			final List<AdvancedSignature> allSignatures) {
+		// not implemented by default
+		// see {@code SignedDocumentValidator}
+	}
+	
+	/**
+	 * Prepares the {@code validationContext} for a timestamp validation process
+	 * 
+	 * @param validationContext {@link ValidationContext}
+	 * @param timestamps a map of timestamps and their SignatureScopes to be validated
+	 */
+	protected void prepareTimestampValidationContext(final ValidationContext validationContext, 
+			final Map<TimestampToken, List<SignatureScope>> timestamps) {
+		
+		setTimestamedReferences(timestamps);
+		for (TimestampToken timestampToken : timestamps.keySet()) {
+			validationContext.addTimestampTokenForVerification(timestampToken);
+			CertificateToken issuer = validationCertPool.getIssuer(timestampToken);
+			if (issuer != null) {
+				validationContext.addCertificateTokenForVerification(issuer);
+			}
+		}
+		validateContext(validationContext);
+	}
+	
+	/**
+	 * Process the validation
+	 * 
+	 * @param validationContext {@link ValidationContext} to process
+	 */
+	protected void validateContext(final ValidationContext validationContext) {
+		validationContext.initialize(certificateVerifier);
+		validationContext.validate();
+	}
+
+	/**
+	 * For all signatures to be validated this method merges the CRL sources.
+	 *
+	 * @param allSignatureList
+	 *            {@code Collection} of {@code AdvancedSignature}s to validate
+	 *            including the countersignatures
+	 * @param timestampTokens
+	 *            {@code Collection} of {@code TimestampToken}s to validate
+	 */
+	private void populateSignatureCrlSource(final Collection<AdvancedSignature> allSignatureList, final Collection<TimestampToken> timestampTokens) {
+		ListCRLSource signatureCrlSource = certificateVerifier.getSignatureCRLSource();
+		if (signatureCrlSource == null) {
+			signatureCrlSource = new ListCRLSource();
+			certificateVerifier.setSignatureCRLSource(signatureCrlSource);
+		}
+		if (Utils.isCollectionNotEmpty(allSignatureList)) {
+			for (final AdvancedSignature signature : allSignatureList) {
+				signatureCrlSource.addAll(signature.getCompleteCRLSource());
+			}
+		}
+		if (Utils.isCollectionNotEmpty(timestampTokens)) {
+			for (final TimestampToken timestampToken : timestampTokens) {
+				signatureCrlSource.addAll(timestampToken.getCRLSource());
+			}
+		}
+	}
+
+	/**
+	 * For all signatures to be validated this method merges the OCSP sources.
+	 *
+	 * @param allSignatureList
+	 *            {@code Collection} of {@code AdvancedSignature}s to validate
+	 *            including the countersignatures
+	 * @param timestampTokens
+	 *            {@code Collection} of {@code TimestampToken}s to validate
+	 * @return {@code ListOCSPSource}
+	 */
+	private void populateSignatureOcspSource(final Collection<AdvancedSignature> allSignatureList, final Collection<TimestampToken> timestampTokens) {
+		ListOCSPSource signatureOcspSource = certificateVerifier.getSignatureOCSPSource();
+		if (signatureOcspSource == null) {
+			signatureOcspSource = new ListOCSPSource();
+			certificateVerifier.setSignatureOCSPSource(signatureOcspSource);
+		}
+		if (Utils.isCollectionNotEmpty(allSignatureList)) {
+			for (final AdvancedSignature signature : allSignatureList) {
+				signatureOcspSource.addAll(signature.getCompleteOCSPSource());
+			}
+		}
+		if (Utils.isCollectionNotEmpty(timestampTokens)) {
+			for (final TimestampToken timestampToken : timestampTokens) {
+				signatureOcspSource.addAll(timestampToken.getOCSPSource());
+			}
+		}
 	}
 	
 	/**

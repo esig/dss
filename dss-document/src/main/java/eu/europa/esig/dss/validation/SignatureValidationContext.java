@@ -522,6 +522,7 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 
 		if (isRevocationDataNotRequired(certToken)) {
+			LOG.debug("Revocation data is not required for certificate : {}", certToken.getDSSIdAsString());
 			return Collections.emptyList();
 		}
 
@@ -542,21 +543,26 @@ public class SignatureValidationContext implements ValidationContext {
 			}
 		}
 		
-		if (revocations.isEmpty() || isRevocationDataRefreshNeeded(certToken, revocations)) {
+		if (Utils.isCollectionEmpty(revocations) || isRevocationDataRefreshNeeded(certToken, revocations)) {
+			LOG.debug("The signature does not contain relative revocation data.");
 			if (checkRevocationForUntrustedChains || containsTrustAnchor(certChain)) {
+				LOG.trace("Revocation update is in progress for certificate : {}", certToken.getDSSIdAsString());
 				CertificateToken trustAnchor = (CertificateToken) getFirstTrustAnchor(certChain);
 
 				// Online resources (OCSP and CRL if OCSP doesn't reply)
 				OCSPAndCRLCertificateVerifier onlineVerifier = null;
 				if (Utils.isCollectionNotEmpty(trustedCertSources) && (trustAnchor != null)) {
+					LOG.trace("Initializing a revocation verifier for a trusted chain...");
 					onlineVerifier = instantiateWithTrustServices(trustAnchor);
 				} else {
+					LOG.trace("Initializing a revocation verifier for not trusted chain...");
 					onlineVerifier = new OCSPAndCRLCertificateVerifier(crlSource, ocspSource, validationCertificatePool);
 				}
 
 				final RevocationToken onlineRevocationToken = onlineVerifier.check(certToken);
 				// CRL can already exist in the signature
 				if (onlineRevocationToken != null && !revocations.contains(onlineRevocationToken)) {
+					LOG.debug("Obtained a new revocation data : {}, for certificate : {}", onlineRevocationToken.getDSSIdAsString(), certToken.getDSSIdAsString());
 					revocations.add(onlineRevocationToken);
 				}
 				
@@ -567,7 +573,7 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 		
 		if (revocations.isEmpty()) {
-			LOG.warn("No revocation found for certificate {}", certToken.getDSSIdAsString());
+			LOG.warn("No revocation found for the certificate {}", certToken.getDSSIdAsString());
 		}
 
 		return revocations;

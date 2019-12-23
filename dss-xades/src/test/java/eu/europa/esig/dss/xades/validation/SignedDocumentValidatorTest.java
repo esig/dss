@@ -43,7 +43,7 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.reports.Reports;
 
-public class DefaultDocumentValidatorTest {
+public class SignedDocumentValidatorTest {
 
 	@Test
 	public void testXmlUTF8() {

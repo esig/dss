@@ -62,6 +62,7 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 	public final OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
 		
 		if (isEmpty()) {
+			LOG.trace("Collection of embedded OCSP responses is empty");
 			return null;
 		}
 		
@@ -83,6 +84,8 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 				LOG.error("An error occurred during an attempt to build OCSP Token. Return null", e);
 				return null;
 			}
+		} else if (LOG.isDebugEnabled()) {
+			LOG.debug("Best OCSP Response for the certificate {} is not found", certificateToken.getDSSIdAsString());
 		}
 		return null;
 	}

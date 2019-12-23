@@ -42,8 +42,6 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.ListCRLSource;
-import eu.europa.esig.dss.validation.ListOCSPSource;
 import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.SignatureValidator;
@@ -205,22 +203,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 			}
 		}
 		
-		populateRevocationSources(timestampValidators);
-		
 		return timestampValidators;
-	}
-
-	private void populateRevocationSources(List<TimestampValidator> timestampValidators) {
-		ListCRLSource crlSources = new ListCRLSource();
-		ListOCSPSource ocspSources = new ListOCSPSource();
-		for (TimestampValidator timestampValidator : timestampValidators) {
-			SingleTimestampValidator stv = (SingleTimestampValidator) timestampValidator;
-			TimestampToken currentToken = stv.getTimestamp();
-			crlSources.addAll(currentToken.getCRLSource());
-			ocspSources.addAll(currentToken.getOCSPSource());
-		}
-		certificateVerifier.setCrlSource(crlSources);
-		certificateVerifier.setOcspSource(ocspSources);
 	}
 	
 	private ManifestFile getValidatedManifestFile(DSSDocument manifest) {

@@ -81,18 +81,24 @@ public interface SignatureValidator extends DocumentValidator {
 	/**
 	 * Prepares and fills {@code validationContext} for the signature validation
 	 * @param validationContext {@link ValidationContext} to prepare
-	 * @return list of {@link AdvancedSignature}s to be validated
+	 * @param allSignatures a list of {@link AdvancedSignature}s to validate
 	 */
-	List<AdvancedSignature> prepareSignatureValidationContext(final ValidationContext validationContext);
+	void prepareSignatureValidationContext(final ValidationContext validationContext, final List<AdvancedSignature> allSignatures);
 
 	/**
 	 * This method process the signature validation on the given {@code allSignatureList}
 	 * 
 	 * @param validationContext prepared and filled {@link ValidationContext}
 	 * @param allSignatureList list of {@link AdvancedSignature}s to be validated
-	 * @return list of validated {@link AdvancedSignature}s
 	 */
-	List<AdvancedSignature> processSignaturesValidation(final ValidationContext validationContext, 
+	void processSignaturesValidation(final ValidationContext validationContext, 
 			final List<AdvancedSignature> allSignatureList);
+	
+	/**
+	 * Finds and assigns SignatureScopes for a list of signatures
+	 * 
+	 * @param allSignatures a list of {@link AdvancedSignature}s to get a SignatureScope list
+	 */
+	void findSignatureScopes(List<AdvancedSignature> allSignatures);
 
 }
