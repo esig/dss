@@ -370,11 +370,7 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 	 *            {@code Collection} of {@code TimestampToken}s to validate
 	 */
 	private void populateSignatureCrlSource(final Collection<AdvancedSignature> allSignatureList, final Collection<TimestampToken> timestampTokens) {
-		ListCRLSource signatureCrlSource = certificateVerifier.getSignatureCRLSource();
-		if (signatureCrlSource == null) {
-			signatureCrlSource = new ListCRLSource();
-			certificateVerifier.setSignatureCRLSource(signatureCrlSource);
-		}
+		ListCRLSource signatureCrlSource = new ListCRLSource();
 		if (Utils.isCollectionNotEmpty(allSignatureList)) {
 			for (final AdvancedSignature signature : allSignatureList) {
 				signatureCrlSource.addAll(signature.getCompleteCRLSource());
@@ -385,6 +381,7 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 				signatureCrlSource.addAll(timestampToken.getCRLSource());
 			}
 		}
+		certificateVerifier.setSignatureCRLSource(signatureCrlSource);
 	}
 
 	/**
@@ -398,11 +395,7 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 	 * @return {@code ListOCSPSource}
 	 */
 	private void populateSignatureOcspSource(final Collection<AdvancedSignature> allSignatureList, final Collection<TimestampToken> timestampTokens) {
-		ListOCSPSource signatureOcspSource = certificateVerifier.getSignatureOCSPSource();
-		if (signatureOcspSource == null) {
-			signatureOcspSource = new ListOCSPSource();
-			certificateVerifier.setSignatureOCSPSource(signatureOcspSource);
-		}
+		ListOCSPSource signatureOcspSource = new ListOCSPSource();
 		if (Utils.isCollectionNotEmpty(allSignatureList)) {
 			for (final AdvancedSignature signature : allSignatureList) {
 				signatureOcspSource.addAll(signature.getCompleteOCSPSource());
@@ -413,6 +406,7 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 				signatureOcspSource.addAll(timestampToken.getOCSPSource());
 			}
 		}
+		certificateVerifier.setSignatureOCSPSource(signatureOcspSource);
 	}
 	
 	/**
