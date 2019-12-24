@@ -22,6 +22,7 @@ package eu.europa.esig.dss.validation.timestamp;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -337,20 +338,50 @@ public class TimestampToken extends Token {
 		messageImprintData = timestampedData != null;
 		messageImprintIntact = false;
 
+		if (!messageImprintData) {
+			LOG.warn("Timestamped data not found !");
+			return false;
+		}
+
+		Digest currentMessageImprint = getMessageImprint();
+		String computedBase64Digest = timestampedData.getDigest(currentMessageImprint.getAlgorithm());
+		return matchData(Utils.fromBase64(computedBase64Digest), suppressMatchWarnings);
+	}
+
+	/**
+	 * Checks if the {@code TimeStampToken} matches the signed data.
+	 *
+	 * @param expectedMessageImprintValue
+	 *                                    the expected message-imprint value
+	 * @return true if the data is verified by the TimeStampToken
+	 */
+	public boolean matchData(final byte[] expectedMessageImprintValue) {
+		return matchData(expectedMessageImprintValue, false);
+	}
+
+	/**
+	 * Checks if the {@code TimeStampToken} matches the signed data.
+	 *
+	 * @param expectedMessageImprintValue
+	 *                                    the expected message-imprint value
+	 * @param suppressMatchWarnings
+	 *                                    if true the message imprint match warning
+	 *                                    logs are suppressed.
+	 * @return true if the data is verified by the TimeStampToken
+	 */
+	public boolean matchData(final byte[] expectedMessageImprintValue, final boolean suppressMatchWarnings) {
+		processed = true;
+
+		messageImprintData = expectedMessageImprintValue != null;
+		messageImprintIntact = false;
+
 		if (messageImprintData) {
-			try {
-				Digest currentMessageImprint = getMessageImprint();
-				String expectedBase64Digest = Utils.toBase64(currentMessageImprint.getValue());
-				String computedBase64Digest = timestampedData.getDigest(currentMessageImprint.getAlgorithm());
-				messageImprintIntact = Utils.areStringsEqual(expectedBase64Digest, computedBase64Digest);
-				if (!messageImprintIntact && !suppressMatchWarnings) {
-					LOG.warn("Computed digest ({}) on the extracted data from the document : {}", currentMessageImprint.getAlgorithm(),
-							computedBase64Digest);
-					LOG.warn("Digest present in TimestampToken: {}", expectedBase64Digest);
-					LOG.warn("Digest in TimestampToken matches digest of extracted data from document: {}", messageImprintIntact);
-				}
-			} catch (DSSException e) {
-				LOG.warn("Unable to validate the timestamp", e);
+			Digest currentMessageImprint = getMessageImprint();
+			messageImprintIntact = Arrays.equals(expectedMessageImprintValue, currentMessageImprint.getValue());
+			if (!messageImprintIntact && !suppressMatchWarnings) {
+				LOG.warn("Provided digest value for TimestampToken matchData : {}", Utils.toBase64(expectedMessageImprintValue));
+				LOG.warn("Digest ({}) present in TimestampToken : {}", currentMessageImprint.getAlgorithm(), Utils.toBase64(currentMessageImprint.getValue()));
+				LOG.warn("Digest in TimestampToken matches digest of extracted data from document: {}", messageImprintIntact);
 			}
 		} else {
 			LOG.warn("Timestamped data not found !");

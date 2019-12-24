@@ -71,14 +71,13 @@ public class SingleTimestampValidator extends AbstractDocumentValidator implemen
 		Objects.requireNonNull(timestampFile, "The timestampFile must be defined!");
 		Objects.requireNonNull(timestampType, "The TimestampType must be defined!");
 
-		TimestampToken timestampToken;
 		try {
-			timestampToken = new TimestampToken(DSSUtils.toByteArray(timestampFile), timestampType, validationCertPool);
+			TimestampToken timestampToken = new TimestampToken(DSSUtils.toByteArray(timestampFile), timestampType, validationCertPool);
+			timestampToken.setFileName(timestampFile.getName());
+			return timestampToken;
 		} catch (CMSException | TSPException | IOException e) {
 			throw new DSSException("Unable to parse timestamp", e);
 		}
-		timestampToken.setFileName(timestampFile.getName());
-		return timestampToken;
 	}
 
 	@Override

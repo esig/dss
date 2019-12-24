@@ -46,7 +46,9 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -103,13 +105,21 @@ public class TimestampTokenTest {
 			assertEquals(SignatureAlgorithm.RSA_SHA256, token.getSignatureAlgorithm());
 			assertFalse(token.isSelfSigned());
 
-			assertFalse(token.matchData(null));
+			assertFalse(token.matchData((DSSDocument) null));
 
 			assertFalse(token.matchData(new InMemoryDocument(new byte[] { 1, 2, 3 })));
 			assertTrue(token.isMessageImprintDataFound());
 			assertFalse(token.isMessageImprintDataIntact());
 
-			assertTrue(token.matchData(new InMemoryDocument(Utils.fromBase64(TIMETAMPED_DATA_B64))));
+			DSSDocument timestampedData = new InMemoryDocument(Utils.fromBase64(TIMETAMPED_DATA_B64));
+			assertTrue(token.matchData(timestampedData));
+
+			DigestDocument digestDoc = new DigestDocument(DigestAlgorithm.SHA256, timestampedData.getDigest(DigestAlgorithm.SHA256));
+			assertTrue(token.matchData(digestDoc));
+
+			// DSS-1906
+			assertTrue(token.matchData(Utils.fromBase64(timestampedData.getDigest(DigestAlgorithm.SHA256))));
+
 			assertTrue(token.isMessageImprintDataFound());
 			assertTrue(token.isMessageImprintDataIntact());
 
