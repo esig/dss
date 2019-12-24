@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bouncycastle.asn1.ASN1Encodable;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.x509.CertificateList;
 import org.slf4j.Logger;
@@ -66,8 +65,6 @@ public class PAdESCRLSource extends SignatureCRLSource {
 		appendContainedCRLResponses();
 	}
 	
-	
-	
 	private void appendContainedCRLResponses() {
 		extractDSSCRLs();
 		extractVRICRLs();
@@ -92,24 +89,23 @@ public class PAdESCRLSource extends SignatureCRLSource {
 		 * 
 		 */
 		if (signedAttributes != null) {
-			collectRevocationArchiveValues(signedAttributes, OID.adbe_revocationInfoArchival, RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL);
+			collectCRLArchivalValues(signedAttributes);
 		}
 	}
 	
-	protected void collectRevocationArchiveValues(AttributeTable attributes, ASN1ObjectIdentifier revocationValuesAttribute, RevocationOrigin origin) {
-		final ASN1Encodable attValue = DSSASN1Utils.getAsn1Encodable(attributes, revocationValuesAttribute);
+	private void collectCRLArchivalValues(AttributeTable attributes) {
+		final ASN1Encodable attValue = DSSASN1Utils.getAsn1Encodable(attributes, OID.adbe_revocationInfoArchival);
 		RevocationInfoArchival revValues = PAdESUtils.getRevocationInfoArchivals(attValue);
 		if (revValues != null) {
 			for (final CertificateList revValue : revValues.getCrlVals()) {
 				try {
-					addCRLBinary(new CRLBinary(revValue.getEncoded()), origin);
+					addCRLBinary(new CRLBinary(revValue.getEncoded()), RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL);
 				} catch (IOException e) {
-					LOG.warn("Could not convert CertificateLIst to CRLBynary : {}", e.getMessage());
+					LOG.warn("Could not convert CertificateList to CRLBinary : {}", e.getMessage());
 				}
 			}
 		}
 	}
-	
 	
 	/**
 	 * Returns a map of all CRL entries contained in DSS dictionary or into nested
