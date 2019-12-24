@@ -22,6 +22,7 @@ package eu.europa.esig.dss.diagnostic;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -250,7 +251,7 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		if (pdfRevision != null) {
 			return pdfRevision.getSignatureFieldName();
 		}
-		return null;
+		return Collections.emptyList();
 	}
 	
 	/**
@@ -263,7 +264,7 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		if (pdfRevision != null) {
 			return pdfRevision.getSignerInformationStore();
 		}
-		return null;
+		return Collections.emptyList();
 	}
 
 	public String getSignerName() {
@@ -319,7 +320,7 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		if (pdfRevision != null) {
 			return pdfRevision.getPDFSignatureDictionary().getSignatureByteRange();
 		}
-		return null;
+		return Collections.emptyList();
 	}
 
 }

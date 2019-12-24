@@ -505,7 +505,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		if (pdfRevision != null) {
 			return pdfRevision.getSignatureFieldName();
 		}
-		return null;
+		return Collections.emptyList();
 	}
 	
 	/**
@@ -518,7 +518,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		if (pdfRevision != null) {
 			return pdfRevision.getSignerInformationStore();
 		}
-		return null;
+		return Collections.emptyList();
 	}
 
 	public String getSignerName() {
@@ -574,7 +574,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		if (pdfRevision != null) {
 			return pdfRevision.getPDFSignatureDictionary().getSignatureByteRange();
 		}
-		return null;
+		return Collections.emptyList();
 	}
 	
 	public byte[] getSignatureValue() {
