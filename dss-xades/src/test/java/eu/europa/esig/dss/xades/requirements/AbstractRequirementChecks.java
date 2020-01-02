@@ -94,7 +94,7 @@ public abstract class AbstractRequirementChecks extends PKIFactoryAccess {
 	@BeforeEach
 	public void init() throws Exception {
 		DSSDocument signedDocument = getSignedDocument();
-		signedDocument.save("target/requirement-check.xml");
+//		signedDocument.save("target/requirement-check.xml");
 
 		DocumentBuilder documentBuilder = dbf.newDocumentBuilder();
 		document = documentBuilder.parse(signedDocument.openStream());

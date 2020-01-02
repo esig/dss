@@ -179,7 +179,6 @@ public class DSS1334Test extends PKIFactoryAccess {
 	@Test
 	public void signWithDSS() throws IOException {
 		FileDocument fileDocument = new FileDocument(ORIGINAL_FILE);
-		fileDocument.setName(null);
 
 		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());

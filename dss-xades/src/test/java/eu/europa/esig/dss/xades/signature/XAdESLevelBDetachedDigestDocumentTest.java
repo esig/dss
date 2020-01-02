@@ -22,7 +22,7 @@ package eu.europa.esig.dss.xades.signature;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -39,6 +39,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -64,6 +65,7 @@ public class XAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 		DSSDocument signedDoc = service.signDocument(completeDocument, params, signatureValue);
 
 		validate(signedDoc, completeDocument);
+		validate(signedDoc, getCompleteDocumentNoName());
 		validate(signedDoc, getDigestDocument());
 		validateWrong(signedDoc);
 
@@ -80,33 +82,22 @@ public class XAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testWithCompleteDocumentNoName() throws IOException {
+	public void testWithDigestDocumentNullName() throws IOException {
 		XAdESService service = getService();
 		XAdESSignatureParameters params = getParams();
-		DSSDocument completeDocumentNoName = getCompleteDocumentNoName();
+		DSSDocument digestDocument = getDigestDocument();
+		digestDocument.setName(null);
 
-		ToBeSigned toBeSigned = service.getDataToSign(completeDocumentNoName, params);
-		SignatureValue signatureValue = getToken().sign(toBeSigned, params.getDigestAlgorithm(), getPrivateKeyEntry());
-		DSSDocument signedDoc = service.signDocument(completeDocumentNoName, params, signatureValue);
+		DSSException e = assertThrows(DSSException.class, () -> service.getDataToSign(digestDocument, params));
+		assertEquals("Document name is not defined", e.getMessage());
 
-		validate(signedDoc, completeDocumentNoName);
-		validate(signedDoc, getDigestDocument());
-		validateWrong(signedDoc);
-
-		DSSDocument extendDocument = service.extendDocument(signedDoc, getExtendParams());
-		DiagnosticData diagnosticData = validate(extendDocument, completeDocumentNoName);
-		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
-		assertEquals(1, signatures.size());
-		SignatureWrapper signatureWrapper = signatures.get(0);
-		List<XmlSignatureScope> signatureScopes = signatureWrapper.getSignatureScopes();
-		assertEquals(1, signatureScopes.size());
-		XmlSignatureScope xmlSignatureScope = signatureScopes.get(0);
-		assertEquals(SignatureScopeType.FULL, xmlSignatureScope.getScope());
-		assertNull(xmlSignatureScope.getName());
+		SignatureValue signatureValue = new SignatureValue();
+		e = assertThrows(DSSException.class, () -> service.signDocument(digestDocument, params, signatureValue));
+		assertEquals("Document name is not defined", e.getMessage());
 	}
 
 	@Test
-	public void testWithDigestDocument() {
+	public void testWithDigestDocument() throws IOException {
 		XAdESService service = getService();
 		XAdESSignatureParameters params = getParams();
 		DSSDocument digestDocument = getDigestDocument();
@@ -128,7 +119,7 @@ public class XAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 		assertEquals(1, signatureScopes.size());
 		XmlSignatureScope xmlSignatureScope = signatureScopes.get(0);
 		assertEquals(SignatureScopeType.DIGEST, xmlSignatureScope.getScope());
-		assertNull(xmlSignatureScope.getName());
+		assertEquals(DOCUMENT_NAME, xmlSignatureScope.getName());
 	}
 
 	private DiagnosticData validate(DSSDocument signedDocument, DSSDocument original) {
@@ -185,6 +176,7 @@ public class XAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 
 	private DSSDocument getDigestDocument() {
 		DigestDocument digestDocument = new DigestDocument(USED_DIGEST, getCompleteDocument().getDigest(USED_DIGEST));
+		digestDocument.setName(DOCUMENT_NAME);
 		return digestDocument;
 	}
 
