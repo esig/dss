@@ -95,7 +95,7 @@ public class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 		ToBeSigned toSign1 = service.getDataToSign(new FileDocument("src/test/resources/empty.xml"), signatureParameters);
 		SignatureValue value = getToken().sign(toSign1, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument result = service.signDocument(doc1, signatureParameters, value);
-//		result.save("target/test.xml");
+		result.save("target/test.xml");
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(result);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());

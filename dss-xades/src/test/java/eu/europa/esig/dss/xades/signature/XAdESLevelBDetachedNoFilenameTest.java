@@ -21,9 +21,11 @@
 package eu.europa.esig.dss.xades.signature;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -49,8 +51,11 @@ public class XAdESLevelBDetachedNoFilenameTest extends AbstractXAdESTestSignatur
 	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
+		// DSS-1334
+		documentToSign.setName(null);
 
 		signatureParameters = new XAdESSignatureParameters();
+		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
@@ -87,6 +92,7 @@ public class XAdESLevelBDetachedNoFilenameTest extends AbstractXAdESTestSignatur
 		assertEquals(1, signatureScopes.size());
 		XmlSignatureScope xmlSignatureScope = signatureScopes.get(0);
 		assertEquals(SignatureScopeType.FULL, xmlSignatureScope.getScope());
+		assertNull(xmlSignatureScope.getName());
 	}
 
 	@Override

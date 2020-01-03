@@ -40,7 +40,9 @@ import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
@@ -64,11 +66,7 @@ public class CAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 
 		Reports reports = validate(signedDoc, completeDocument);
 		validateHashOnly(reports, false, false);
-		reports = validate(signedDoc, getCompleteDocumentNoName());
-		validateHashOnly(reports, false, false);
 		reports = validate(signedDoc, getDigestDocument());
-		validateHashOnly(reports, true, false);
-		reports = validate(signedDoc, getDigestDocumentNoName());
 		validateHashOnly(reports, true, false);
 		reports = validateWrong(signedDoc);
 		validateHashOnly(reports, false, false);
@@ -165,16 +163,10 @@ public class CAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 		return new InMemoryDocument("Hello World !".getBytes(), DOCUMENT_NAME);
 	}
 
-	private DSSDocument getCompleteDocumentNoName() {
-		return new InMemoryDocument("Hello World !".getBytes());
-	}
-
 	private DSSDocument getDigestDocument() {
-		return new DigestDocument(USED_DIGEST, getCompleteDocument().getDigest(USED_DIGEST), DOCUMENT_NAME);
-	}
-
-	private DSSDocument getDigestDocumentNoName() {
-		return new DigestDocument(USED_DIGEST, getCompleteDocument().getDigest(USED_DIGEST));
+		DigestDocument digestDocument = new DigestDocument(USED_DIGEST, Utils.toBase64(DSSUtils.digest(USED_DIGEST, getCompleteDocument())));
+		// digestDocument.setName(DOCUMENT_NAME);
+		return digestDocument;
 	}
 
 	private DSSDocument getWrongDocument() {

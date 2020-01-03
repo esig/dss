@@ -26,7 +26,6 @@ import org.w3c.dom.Node;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -76,8 +75,6 @@ class DetachedSignatureBuilder extends XAdESSignatureBuilder {
 		reference.setId(REFERENCE_ID_SUFFIX + deterministicId + "-" + referenceIndex);
 		if (Utils.isStringNotEmpty(document.getName())) {
 			reference.setUri(DSSUtils.encodeURI(document.getName()));
-		} else {
-			throw new DSSException("Document name is not defined");
 		}
 		reference.setContents(document);
 		DigestAlgorithm digestAlgorithm = getReferenceDigestAlgorithmOrDefault(params);

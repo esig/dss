@@ -64,14 +64,34 @@ public class DSS1811Test extends PKIFactoryAccess {
 		SignatureValue signatureValue = getToken().sign(toBeSigned, params.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDoc = service.signDocument(completeDocument, params, signatureValue);
 
+		signedDoc.save("target/bla.xml");
 
 		validate(signedDoc, completeDocument);
-		validate(signedDoc, getCompleteDocumentNoName());
 		validate(signedDoc, getDigestDocument());
 		validateWrong(signedDoc);
 
 		DSSDocument extendDocument = service.extendDocument(signedDoc, getExtendParams());
 		validate(extendDocument, completeDocument);
+	}
+
+	@Test
+	public void testWithCompleteDocumentNoName() throws IOException {
+		XAdESService service = getService();
+		XAdESSignatureParameters params = getParams();
+		DSSDocument completeDocumentNoName = getCompleteDocumentNoName();
+
+		assertNotEquals(params.getReferenceDigestAlgorithm(), params.getDigestAlgorithm());
+
+		ToBeSigned toBeSigned = service.getDataToSign(completeDocumentNoName, params);
+		SignatureValue signatureValue = getToken().sign(toBeSigned, params.getDigestAlgorithm(), getPrivateKeyEntry());
+		DSSDocument signedDoc = service.signDocument(completeDocumentNoName, params, signatureValue);
+
+		validate(signedDoc, completeDocumentNoName);
+		validate(signedDoc, getDigestDocument());
+		validateWrong(signedDoc);
+
+		DSSDocument extendDocument = service.extendDocument(signedDoc, getExtendParams());
+		validate(extendDocument, completeDocumentNoName);
 	}
 
 	@Test
@@ -206,13 +226,11 @@ public class DSS1811Test extends PKIFactoryAccess {
 
 	private DSSDocument getDigestDocument() {
 		DigestDocument digestDocument = new DigestDocument(USED_DIGEST, getCompleteDocument().getDigest(USED_DIGEST));
-		digestDocument.setName(DOCUMENT_NAME);
 		return digestDocument;
 	}
 	
 	private DSSDocument getDigestDocumentWrongDigestAlgo() {
 		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA1, getCompleteDocument().getDigest(DigestAlgorithm.SHA1));
-		digestDocument.setName(DOCUMENT_NAME);
 		return digestDocument;
 	}
 
