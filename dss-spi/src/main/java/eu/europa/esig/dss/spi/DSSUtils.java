@@ -252,13 +252,13 @@ public final class DSSUtils {
 				}
 			}
 			if (certificates.isEmpty()) {
-				throw new DSSException("Could not parse certificate(s)");
+				throw new DSSException("No certificate found in the InputStream");
 			}
 			return certificates;
 		} catch (DSSException e) {
 		  	throw e;
 		} catch (Exception e) {
-			throw new DSSException("Unable to load certificates.", e);
+			throw new DSSException("Unable to load certificate(s) : " + e.getMessage(), e);
 		}
 	}
 
