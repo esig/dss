@@ -5,7 +5,14 @@
 		<artifactId>sd-dss</artifactId>
 		<version>5.6-SNAPSHOT</version>
 	</parent>
+	
 	<artifactId>dss-i18n</artifactId>
+	<name>DSS Internationalization</name>
+	<description>DSS Internationalization contains the I18nProvider and english translations for labels</description>
+	
+	<properties>
+		<module-name>jpms_dss_i18n</module-name>
+	</properties>
 	
 	<dependencies>
 		<dependency>
@@ -29,9 +36,4 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
-	<properties>
-		<module-name>jpms_dss_i18n</module-name>
-	</properties>
-	
 </project>

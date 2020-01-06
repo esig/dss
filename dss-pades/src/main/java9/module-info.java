@@ -1,10 +1,11 @@
 module jpms_dss_pades {
-	
-	requires transitive jpms_dss_document;
+
+	requires jpms_dss_document;
 	
 	exports eu.europa.esig.dss.pades;
 	exports eu.europa.esig.dss.pades.signature;
 	exports eu.europa.esig.dss.pades.validation;
+	exports eu.europa.esig.dss.pades.validation.scope;
 	exports eu.europa.esig.dss.pdf;
 	exports eu.europa.esig.dss.pdf.visible;
 

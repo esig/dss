@@ -89,6 +89,7 @@ public final class XmlDefinerUtils {
 	 * @param validator
 	 *                  the validator to be configured against XXE
 	 * @throws SAXException
+	 *                      in case of exception
 	 */
 	public static void avoidXXE(Validator validator) throws SAXException {
 		Objects.requireNonNull(validator, "Validator must be provided");
