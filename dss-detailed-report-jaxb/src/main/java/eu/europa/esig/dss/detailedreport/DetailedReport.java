@@ -43,7 +43,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamps;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationSignatureQualification;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationTimestampQualification;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
@@ -230,8 +230,8 @@ public class DetailedReport {
 			if (xmlSignature.getValidationProcessLongTermData() != null) {
 				return xmlSignature.getValidationProcessLongTermData().getProofOfExistence();
 			}
-			if (xmlSignature.getValidationProcessBasicSignatures() != null) {
-				return xmlSignature.getValidationProcessBasicSignatures().getProofOfExistence();
+			if (xmlSignature.getValidationProcessBasicSignature() != null) {
+				return xmlSignature.getValidationProcessBasicSignature().getProofOfExistence();
 			}
 		}
 		return null;
@@ -239,24 +239,24 @@ public class DetailedReport {
 
 	public Indication getBasicValidationIndication(String signatureId) {
 		XmlSignature signature = getXmlSignatureById(signatureId);
-		if (signature != null && signature.getValidationProcessBasicSignatures() != null
-				&& signature.getValidationProcessBasicSignatures().getConclusion() != null) {
-			return signature.getValidationProcessBasicSignatures().getConclusion().getIndication();
+		if (signature != null && signature.getValidationProcessBasicSignature() != null
+				&& signature.getValidationProcessBasicSignature().getConclusion() != null) {
+			return signature.getValidationProcessBasicSignature().getConclusion().getIndication();
 		}
 		return null;
 	}
 
 	public SubIndication getBasicValidationSubIndication(String signatureId) {
 		XmlSignature signature = getXmlSignatureById(signatureId);
-		if (signature != null && signature.getValidationProcessBasicSignatures() != null
-				&& signature.getValidationProcessBasicSignatures().getConclusion() != null) {
-			return signature.getValidationProcessBasicSignatures().getConclusion().getSubIndication();
+		if (signature != null && signature.getValidationProcessBasicSignature() != null
+				&& signature.getValidationProcessBasicSignature().getConclusion() != null) {
+			return signature.getValidationProcessBasicSignature().getConclusion().getSubIndication();
 		}
 		return null;
 	}
 
 	public Indication getTimestampValidationIndication(String timestampId) {
-		XmlValidationProcessTimestamps timestampValidationById = getTimestampValidationById(timestampId);
+		XmlValidationProcessTimestamp timestampValidationById = getTimestampValidationById(timestampId);
 		if (timestampValidationById != null && timestampValidationById.getConclusion() != null) {
 			return timestampValidationById.getConclusion().getIndication();
 		}
@@ -264,7 +264,7 @@ public class DetailedReport {
 	}
 
 	public SubIndication getTimestampValidationSubIndication(String timestampId) {
-		XmlValidationProcessTimestamps timestampValidationById = getTimestampValidationById(timestampId);
+		XmlValidationProcessTimestamp timestampValidationById = getTimestampValidationById(timestampId);
 		if (timestampValidationById != null && timestampValidationById.getConclusion() != null) {
 			return timestampValidationById.getConclusion().getSubIndication();
 		}
@@ -320,24 +320,37 @@ public class DetailedReport {
 	}
 
 	private XmlValidationTimestampQualification getXmlTimestampQualificationById(String timestampId) {
-		List<XmlTimestamp> timestamps = getIndependentTimestamps();
-		for (XmlTimestamp xmlTimestamp : timestamps) {
-			XmlValidationTimestampQualification validationTimestampQualification = xmlTimestamp.getValidationTimestampQualification();
-			if (validationTimestampQualification != null && validationTimestampQualification.getId().equals(timestampId)) {
-				return validationTimestampQualification;
+		XmlTimestamp timestamp = getTimestampById(timestampId);
+		if (timestamp != null) {
+			return timestamp.getValidationTimestampQualification();
+		}
+		return null;
+	}
+
+	private XmlValidationProcessTimestamp getTimestampValidationById(String timestampId) {
+		XmlTimestamp timestamp = getTimestampById(timestampId);
+		if (timestamp != null) {
+			return timestamp.getValidationProcessTimestamp();
+		}
+		return null;
+	}
+
+	private XmlTimestamp getTimestampById(String timestampId) {
+		for (XmlTimestamp xmlTimestamp : getIndependentTimestamps()) {
+			if (xmlTimestamp.getId().equals(timestampId)) {
+				return xmlTimestamp;
 			}
 		}
 
 		List<XmlSignature> signatures = getSignatures();
 		for (XmlSignature xmlSignature : signatures) {
-			List<XmlValidationTimestampQualification> validationTimestampQualifications = xmlSignature.getValidationTimestampQualification();
-			for (XmlValidationTimestampQualification xmlValidationTimestampQualification : validationTimestampQualifications) {
-				if (xmlValidationTimestampQualification.getId().equals(timestampId)) {
-					return xmlValidationTimestampQualification;
+			List<XmlTimestamp> timestamps = xmlSignature.getTimestamp();
+			for (XmlTimestamp xmlTimestamp : timestamps) {
+				if (xmlTimestamp.getId().equals(timestampId)) {
+					return xmlTimestamp;
 				}
 			}
 		}
-
 		return null;
 	}
 
@@ -348,28 +361,6 @@ public class DetailedReport {
 				if (signatureId.equals(xmlSignature.getId())) {
 					return xmlSignature;
 				}
-			}
-		}
-		return null;
-	}
-
-	private XmlValidationProcessTimestamps getTimestampValidationById(String timestampId) {
-		List<XmlSignature> signatures = getSignatures();
-		for (XmlSignature xmlSignature : signatures) {
-			List<XmlValidationProcessTimestamps> validationTimestamps = xmlSignature.getValidationProcessTimestamps();
-			if (validationTimestamps != null) {
-				for (XmlValidationProcessTimestamps tspValidation : validationTimestamps) {
-					if (timestampId.equals(tspValidation.getId())) {
-						return tspValidation;
-					}
-				}
-			}
-		}
-		List<XmlTimestamp> timestamps = getIndependentTimestamps();
-		for (XmlTimestamp xmlTimestamp : timestamps) {
-			XmlValidationProcessTimestamps validationProcessTimestamps = xmlTimestamp.getValidationProcessTimestamps();
-			if (validationProcessTimestamps != null && validationProcessTimestamps.getId().equals(timestampId)) {
-				return validationProcessTimestamps;
 			}
 		}
 		return null;
@@ -470,7 +461,7 @@ public class DetailedReport {
 		} else if (xmlSignature.getValidationProcessLongTermData() != null) {
 			return xmlSignature.getValidationProcessLongTermData();
 		} else {
-			return xmlSignature.getValidationProcessBasicSignatures();
+			return xmlSignature.getValidationProcessBasicSignature();
 		}
 	}
 
@@ -506,7 +497,7 @@ public class DetailedReport {
 			collect(type, result, getHighestConclusion(signatureId));
 			collectTimestamps(type, result, signatureById);
 		} else {
-			collect(type, result, signatureById.getValidationProcessBasicSignatures());
+			collect(type, result, signatureById.getValidationProcessBasicSignature());
 			collectTimestamps(type, result, signatureById);
 			collect(type, result, signatureById.getValidationProcessLongTermData());
 			collect(type, result, signatureById.getValidationProcessArchivalData());
@@ -516,11 +507,12 @@ public class DetailedReport {
 	}
 
 	private void collectTimestamps(MessageType type, Set<String> result, XmlSignature signatureById) {
-		List<XmlValidationProcessTimestamps> validationProcessTimestamps = signatureById.getValidationProcessTimestamps();
-		for (XmlValidationProcessTimestamps xmlValidationProcessTimestamp : validationProcessTimestamps) {
+		List<XmlTimestamp> timestamps = signatureById.getTimestamp();
+		for (XmlTimestamp xmlTimestamp : timestamps) {
+			XmlValidationProcessTimestamp validationProcessTimestamps = xmlTimestamp.getValidationProcessTimestamp();
 			if (!MessageType.ERROR.equals(type) || !Indication.PASSED.equals(
-					getBasicBuildingBlockById(xmlValidationProcessTimestamp.getId()).getConclusion().getIndication())) {
-				collect(type, result, xmlValidationProcessTimestamp);
+					getBasicBuildingBlockById(xmlTimestamp.getId()).getConclusion().getIndication())) {
+				collect(type, result, validationProcessTimestamps);
 			}
 		}
 	}

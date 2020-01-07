@@ -21,8 +21,8 @@
 	
 	<xs:complexType name="Signature">
 		<xs:sequence>
-			<xs:element name="ValidationProcessBasicSignatures" type="ValidationProcessBasicSignatures" minOccurs="0" />
-			<xs:element name="ValidationProcessTimestamps" type="ValidationProcessTimestamps" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="ValidationProcessBasicSignature" type="ValidationProcessBasicSignature" minOccurs="0" />
+			<xs:element name="Timestamp" type="Timestamp" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="ValidationProcessLongTermData" type="ValidationProcessLongTermData" minOccurs="0" />
 			<xs:element name="ValidationProcessArchivalData" type="ValidationProcessArchivalData" minOccurs="0" />
 			
@@ -36,7 +36,7 @@
 	
 	<xs:complexType name="Timestamp">
 		<xs:sequence>
-			<xs:element name="ValidationProcessTimestamps" type="ValidationProcessTimestamps"  />
+			<xs:element name="ValidationProcessTimestamp" type="ValidationProcessTimestamp"  />
 			
 			<!-- eIDAS stuffs -->
 			<xs:element name="ValidationTimestampQualification" type="ValidationTimestampQualification" minOccurs="0" />
@@ -140,16 +140,15 @@
 		</xs:sequence>
 	</xs:complexType>
 	
-	<xs:complexType name="ValidationProcessBasicSignatures">	
+	<xs:complexType name="ValidationProcessBasicSignature">	
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusionWithProofOfExistence" />
 		</xs:complexContent>
 	</xs:complexType>
 
-	<xs:complexType name="ValidationProcessTimestamps">	
+	<xs:complexType name="ValidationProcessTimestamp">	
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusion">
-				<xs:attribute name="Id" type="xs:string" use="required" />
 				<xs:attribute name="Type" type="xs:string" use="required" />
 				<xs:attribute name="ProductionTime" type="xs:dateTime" use="required" />
 			</xs:extension>
@@ -159,7 +158,6 @@
 	<xs:complexType name="ValidationTimestampQualification">
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusion">
-				<xs:attribute name="Id" type="xs:string" use="required" />
 				<xs:attribute name="TimestampQualification" type="TimestampQualification" use="required" />
 			</xs:extension>
 		</xs:complexContent>

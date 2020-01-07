@@ -32,9 +32,9 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlProofOfExistence;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamps;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -62,7 +62,7 @@ import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.PastSignatureV
 public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlValidationProcessArchivalData> {
 
 	private final XmlValidationProcessLongTermData validationProcessLongTermData;
-	private final List<XmlValidationProcessTimestamps> validationProcessTimestamps;
+	private final List<XmlTimestamp> xmlTimestamps;
 	private final SignatureWrapper signature;
 	private final DiagnosticData diagnosticData;
 	private final Map<String, XmlBasicBuildingBlocks> bbbs;
@@ -77,7 +77,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		result.setTitle(ValidationProcessDefinition.VPFSWATSP.getTitle());
 
 		this.validationProcessLongTermData = signatureAnalysis.getValidationProcessLongTermData();
-		this.validationProcessTimestamps = signatureAnalysis.getValidationProcessTimestamps();
+		this.xmlTimestamps = signatureAnalysis.getTimestamp();
 		this.signature = signature;
 		this.diagnosticData = diagnosticData;
 		this.bbbs = bbbs;
@@ -297,9 +297,9 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	}
 
 	private XmlConstraintsConclusion getTimestampValidation(TimestampWrapper newestTimestamp) {
-		for (XmlValidationProcessTimestamps tspValidation : validationProcessTimestamps) {
-			if (Utils.areStringsEqual(tspValidation.getId(), newestTimestamp.getId())) {
-				return tspValidation;
+		for (XmlTimestamp xmlTimestamp : xmlTimestamps) {
+			if (Utils.areStringsEqual(xmlTimestamp.getId(), newestTimestamp.getId())) {
+				return xmlTimestamp.getValidationProcessTimestamp();
 			}
 		}
 		return null;

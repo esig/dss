@@ -82,7 +82,30 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 		executor.setValidationPolicy(loadDefaultPolicy());
 		Reports reports = executor.execute();
 
-		// reports.print();
+//		reports.print();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(TimestampQualification.NA, simpleReport.getTimestampQualification(simpleReport.getFirstTimestampId()));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(2, detailedReport.getSignatures().size());
+		assertEquals(2, detailedReport.getIndependentTimestamps().size());
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void sigAndTst2() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/timestamp-validation/sig-and-tst2.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+		executor.setValidationPolicy(loadDefaultPolicy());
+		Reports reports = executor.execute();
+
+//		reports.print();	
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(TimestampQualification.NA, simpleReport.getTimestampQualification(simpleReport.getFirstTimestampId()));

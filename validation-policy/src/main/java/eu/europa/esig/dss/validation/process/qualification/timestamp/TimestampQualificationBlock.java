@@ -34,7 +34,6 @@ public class TimestampQualificationBlock extends Chain<XmlValidationTimestampQua
 	public TimestampQualificationBlock(I18nProvider i18nProvider, TimestampWrapper timestamp, List<XmlTLAnalysis> tlAnalysis) {
 		super(i18nProvider, new XmlValidationTimestampQualification());
 
-		result.setId(timestamp.getId());
 		result.setTitle(ValidationProcessDefinition.TST_QUALIFICATION.getTitle());
 
 		this.timestamp = timestamp;

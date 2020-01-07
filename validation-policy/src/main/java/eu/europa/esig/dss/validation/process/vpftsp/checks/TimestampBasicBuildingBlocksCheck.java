@@ -25,23 +25,24 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamps;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.ChainItem;
 
-public class TimestampBasicBuildingBlocksCheck extends ChainItem<XmlValidationProcessTimestamps> {
+public class TimestampBasicBuildingBlocksCheck extends ChainItem<XmlValidationProcessTimestamp> {
 
 	private final XmlBasicBuildingBlocks timestampBBB;
 
 	private Indication indication;
 	private SubIndication subIndication;
 
-	public TimestampBasicBuildingBlocksCheck(I18nProvider i18nProvider, XmlValidationProcessTimestamps result, XmlBasicBuildingBlocks timestampBBB, LevelConstraint constraint) {
+	public TimestampBasicBuildingBlocksCheck(I18nProvider i18nProvider, XmlValidationProcessTimestamp result, XmlBasicBuildingBlocks timestampBBB,
+			LevelConstraint constraint) {
 		super(i18nProvider, result, constraint, timestampBBB.getId());
 
 		this.timestampBBB = timestampBBB;

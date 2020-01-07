@@ -23,7 +23,7 @@ package eu.europa.esig.dss.validation.process.vpfbs;
 import java.util.Map;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicSignatures;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicSignature;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -33,18 +33,18 @@ import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;
 import eu.europa.esig.dss.validation.process.vpfbs.checks.SignatureBasicBuildingBlocksCheck;
 
 /**
- * 5.3 Validation process for Basic Signatures
+ * 5.3 Validation process for Basic Signature
  */
-public class ValidationProcessForBasicSignatures extends Chain<XmlValidationProcessBasicSignatures> {
+public class ValidationProcessForBasicSignature extends Chain<XmlValidationProcessBasicSignature> {
 
 	private final DiagnosticData diagnosticData;
 	private final SignatureWrapper signature;
 
 	private final Map<String, XmlBasicBuildingBlocks> bbbs;
 
-	public ValidationProcessForBasicSignatures(I18nProvider i18nProvider, DiagnosticData diagnosticData, SignatureWrapper signature, 
+	public ValidationProcessForBasicSignature(I18nProvider i18nProvider, DiagnosticData diagnosticData, SignatureWrapper signature, 
 			Map<String, XmlBasicBuildingBlocks> bbbs) {
-		super(i18nProvider, new XmlValidationProcessBasicSignatures());
+		super(i18nProvider, new XmlValidationProcessBasicSignature());
 		result.setTitle(ValidationProcessDefinition.VPBS.getTitle());
 
 		this.diagnosticData = diagnosticData;
@@ -57,7 +57,7 @@ public class ValidationProcessForBasicSignatures extends Chain<XmlValidationProc
 		firstItem = basicBuildingBlocks();
 	}
 
-	private ChainItem<XmlValidationProcessBasicSignatures> basicBuildingBlocks() {
+	private ChainItem<XmlValidationProcessBasicSignature> basicBuildingBlocks() {
 		return new SignatureBasicBuildingBlocksCheck(i18nProvider, result, diagnosticData, bbbs.get(signature.getId()), bbbs, getFailLevelConstraint());
 	}
 

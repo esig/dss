@@ -39,8 +39,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlProofOfExistence;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamps;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
@@ -88,7 +88,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	private final DiagnosticData diagnosticData;
 	private final SignatureWrapper currentSignature;
 	private final Map<String, XmlBasicBuildingBlocks> bbbs;
-	private final List<XmlValidationProcessTimestamps> validationProcessTimestamps;
+	private final List<XmlTimestamp> xmlTimestamps;
 
 	private final ValidationPolicy policy;
 	private final Date currentDate;
@@ -98,8 +98,8 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		super(i18nProvider, new XmlValidationProcessLongTermData());
 		result.setTitle(ValidationProcessDefinition.VPFLTVD.getTitle());
 
-		this.basicSignatureValidation = signatureAnalysis.getValidationProcessBasicSignatures();
-		this.validationProcessTimestamps = signatureAnalysis.getValidationProcessTimestamps();
+		this.basicSignatureValidation = signatureAnalysis.getValidationProcessBasicSignature();
+		this.xmlTimestamps = signatureAnalysis.getTimestamp();
 
 		this.diagnosticData = diagnosticData;
 		this.currentSignature = currentSignature;
@@ -387,8 +387,8 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	}
 	
 	private boolean isAcceptableTimestampValidation(TimestampWrapper timestamp) {
-		for (XmlValidationProcessTimestamps validationProcessTimestamp : validationProcessTimestamps) {
-			if (timestamp.getId().equals(validationProcessTimestamp.getId()) && isValid(validationProcessTimestamp)) {
+		for (XmlTimestamp xmlTimestamp : xmlTimestamps) {
+			if (timestamp.getId().equals(xmlTimestamp.getId()) && isValid(xmlTimestamp.getValidationProcessTimestamp())) {
 				return true;
 			}
 		}
