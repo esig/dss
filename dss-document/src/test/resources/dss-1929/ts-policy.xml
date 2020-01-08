@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ConstraintsParameters Name="TimeStamp TL based" xmlns="http://dss.esig.europa.eu/validation/policy">
+	<Description>TimeStamp default validation policy. All certificates and their related chains supporting the signatures are validated against the EU Member State Trusted Lists</Description>
+	<ContainerConstraints>
+		<AcceptableContainerTypes Level="FAIL">
+			<Id>ASiC-S</Id>
+			<Id>ASiC-E</Id>
+		</AcceptableContainerTypes>
+		<MimeTypeFilePresent Level="FAIL"/>
+		<AcceptableMimeTypeFileContent Level="WARN">
+			<Id>application/vnd.etsi.asic-s+zip</Id>
+			<Id>application/vnd.etsi.asic-e+zip</Id>
+		</AcceptableMimeTypeFileContent>
+		<ManifestFilePresent Level="FAIL"/>
+		<AllFilesSigned Level="WARN"/>
+	</ContainerConstraints>
+	<SignatureConstraints>
+		<StructuralValidation Level="WARN"/>
+		<AcceptablePolicies Level="FAIL">
+			<Id>ANY_POLICY</Id>
+			<Id>NO_POLICY</Id>
+		</AcceptablePolicies>
+		<PolicyAvailable Level="FAIL"/>
+		<PolicyHashMatch Level="FAIL"/>
+		<AcceptableFormats Level="FAIL">
+			<Id>*</Id>
+		</AcceptableFormats>
+		<BasicSignatureConstraints>
+			<ReferenceDataExistence Level="FAIL"/>
+			<ReferenceDataIntact Level="FAIL"/>
+			<ManifestEntryObjectExistence Level="WARN"/>
+			<SignatureIntact Level="FAIL"/>
+			<SignatureDuplicated Level="FAIL"/>
+			<ProspectiveCertificateChain Level="FAIL"/>
+			<SignerInformationStore Level="FAIL"/>
+			<SigningCertificate>
+				<Recognition Level="FAIL"/>
+				<Signature Level="FAIL"/>
+				<NotExpired Level="FAIL"/>
+				<AuthorityInfoAccessPresent Level="WARN"/>
+				<RevocationInfoAccessPresent Level="WARN"/>
+				<RevocationDataAvailable Level="FAIL"/>
+				<RevocationDataNextUpdatePresent Level="WARN"/>
+				<RevocationDataFreshness Level="FAIL"/>
+				<KeyUsage Level="WARN">
+					<Id>nonRepudiation</Id>
+				</KeyUsage>
+				<SerialNumberPresent Level="WARN"/>
+				<NotRevoked Level="FAIL"/>
+				<NotOnHold Level="FAIL"/>
+				<NotSelfSigned Level="WARN"/>
+				<UsePseudonym Level="INFORM"/>
+				<Cryptographic/>
+			</SigningCertificate>
+			<CACertificate>
+				<Signature Level="FAIL"/>
+				<NotExpired Level="FAIL"/>
+				<RevocationDataAvailable Level="FAIL"/>
+				<RevocationDataNextUpdatePresent Level="WARN"/>
+				<RevocationDataFreshness Level="FAIL"/>
+				<NotRevoked Level="FAIL"/>
+				<NotOnHold Level="FAIL"/>
+				<Cryptographic/>
+			</CACertificate>
+			<Cryptographic/>
+		</BasicSignatureConstraints>
+		<SignedAttributes>
+			<SigningCertificatePresent Level="FAIL"/>
+			<CertDigestPresent Level="FAIL"/>
+			<CertDigestMatch Level="FAIL"/>
+			<IssuerSerialMatch Level="WARN"/>
+			<SigningTime Level="INFORM"/>
+			<MessageDigestOrSignedPropertiesPresent Level="FAIL"/>
+		</SignedAttributes>
+		<UnsignedAttributes/>
+	</SignatureConstraints>
+	<CounterSignatureConstraints>
+		<BasicSignatureConstraints>
+			<ReferenceDataExistence Level="FAIL"/>
+			<ReferenceDataIntact Level="FAIL"/>
+			<SignatureIntact Level="FAIL"/>
+			<SignatureDuplicated Level="FAIL"/>
+			<ProspectiveCertificateChain Level="FAIL"/>
+			<SigningCertificate>
+				<Recognition Level="FAIL"/>
+				<Signature Level="FAIL"/>
+				<NotExpired Level="FAIL"/>
+				<AuthorityInfoAccessPresent Level="WARN"/>
+				<RevocationInfoAccessPresent Level="WARN"/>
+				<RevocationDataAvailable Level="FAIL"/>
+				<RevocationDataNextUpdatePresent Level="WARN"/>
+				<RevocationDataFreshness Level="FAIL"/>
+				<KeyUsage Level="WARN">
+					<Id>nonRepudiation</Id>
+				</KeyUsage>
+				<SerialNumberPresent Level="WARN"/>
+				<NotRevoked Level="FAIL"/>
+				<NotOnHold Level="FAIL"/>
+				<NotSelfSigned Level="WARN"/>
+				<UsePseudonym Level="INFORM"/>
+				<Cryptographic/>
+			</SigningCertificate>
+			<CACertificate>
+				<Signature Level="FAIL"/>
+				<NotExpired Level="FAIL"/>
+				<RevocationDataAvailable Level="FAIL"/>
+				<RevocationDataNextUpdatePresent Level="WARN"/>
+				<RevocationDataFreshness Level="FAIL"/>
+				<NotRevoked Level="FAIL"/>
+				<NotOnHold Level="FAIL"/>
+				<Cryptographic/>
+			</CACertificate>
+			<Cryptographic/>
+		</BasicSignatureConstraints>
+		<SignedAttributes>
+			<SigningCertificatePresent Level="FAIL"/>
+			<CertDigestPresent Level="FAIL"/>
+			<CertDigestMatch Level="FAIL"/>
+			<IssuerSerialMatch Level="WARN"/>
+			<SigningTime Level="INFORM"/>
+			<MessageDigestOrSignedPropertiesPresent Level="FAIL"/>
+		</SignedAttributes>
+	</CounterSignatureConstraints>
+	<Timestamp>
+		<TimestampDelay Unit="DAYS" Value="0" Level="IGNORE"/>
+		<RevocationTimeAgainstBestSignatureTime Level="FAIL"/>
+		<BestSignatureTimeBeforeIssuanceDateOfSigningCertificate Level="FAIL"/>
+		<Coherence Level="WARN"/>
+		<BasicSignatureConstraints>
+			<ReferenceDataExistence Level="FAIL"/>
+			<ReferenceDataIntact Level="FAIL"/>
+			<SignatureIntact Level="FAIL"/>
+			<ProspectiveCertificateChain Level="FAIL"/>
+			<SigningCertificate>
+				<Recognition Level="FAIL"/>
+				<Signature Level="FAIL"/>
+				<NotExpired Level="FAIL"/>
+				<RevocationDataAvailable Level="FAIL"/>
+				<RevocationDataNextUpdatePresent Level="WARN"/>
+				<RevocationDataFreshness Level="FAIL"/>
+				<ExtendedKeyUsage Level="WARN">
+					<Id>timeStamping</Id>
+				</ExtendedKeyUsage>
+				<NotRevoked Level="FAIL"/>
+				<NotOnHold Level="FAIL"/>
+				<NotSelfSigned Level="WARN"/>
+				<Cryptographic/>
+			</SigningCertificate>
+			<CACertificate>
+				<Signature Level="FAIL"/>
+				<NotExpired Level="FAIL"/>
+				<RevocationDataAvailable Level="WARN"/>
+				<RevocationDataNextUpdatePresent Level="WARN"/>
+				<RevocationDataFreshness Level="FAIL"/>
+				<NotRevoked Level="FAIL"/>
+				<NotOnHold Level="FAIL"/>
+				<Cryptographic/>
+			</CACertificate>
+			<Cryptographic>
+				<AcceptableDigestAlgo>
+					<Algo>MD5</Algo>
+					<Algo>SHA1</Algo>
+					<Algo>SHA224</Algo>
+					<Algo>SHA256</Algo>
+					<Algo>SHA384</Algo>
+					<Algo>SHA512</Algo>
+					<Algo>SHA3-224</Algo>
+					<Algo>SHA3-256</Algo>
+					<Algo>SHA3-384</Algo>
+					<Algo>SHA3-512</Algo>
+					<Algo>RIPEMD160</Algo>
+					<Algo>WHIRLPOOL</Algo>
+				</AcceptableDigestAlgo>
+				<AlgoExpirationDate Format="yyyy">
+					<Algo Date="2007">MD5</Algo>
+					<Algo Date="2009">SHA1</Algo>
+					<Algo Date="2023">SHA224</Algo>
+					<Algo Date="2026">SHA256</Algo>
+					<Algo Date="2026">SHA384</Algo>
+					<Algo Date="2026">SHA512</Algo>
+					<Algo Date="2026">SHA3-224</Algo>
+					<Algo Date="2026">SHA3-256</Algo>
+					<Algo Date="2026">SHA3-384</Algo>
+					<Algo Date="2026">SHA3-512</Algo>
+					<Algo Date="2011">RIPEMD160</Algo>
+					<Algo Date="2015">WHIRLPOOL</Algo>
+					<Algo Size="160" Date="2013">DSA</Algo>
+					<Algo Size="192" Date="2013">DSA</Algo>
+					<Algo Size="224" Date="2023">DSA</Algo>
+					<Algo Size="256" Date="2026">DSA</Algo>
+					<Algo Size="1024" Date="2009">RSA</Algo>
+					<Algo Size="1536" Date="2016">RSA</Algo>
+					<Algo Size="2048" Date="2023">RSA</Algo>
+					<Algo Size="3072" Date="2026">RSA</Algo>
+					<Algo Size="4096" Date="2026">RSA</Algo>
+					<Algo Size="160" Date="2013">ECDSA</Algo>
+					<Algo Size="192" Date="2013">ECDSA</Algo>
+					<Algo Size="224" Date="2016">ECDSA</Algo>
+					<Algo Size="256" Date="2026">ECDSA</Algo>
+					<Algo Size="384" Date="2026">ECDSA</Algo>
+					<Algo Size="512" Date="2026">ECDSA</Algo>
+					<Algo Size="160" Date="2013">PLAIN-ECDSA</Algo>
+					<Algo Size="192" Date="2013">PLAIN-ECDSA</Algo>
+					<Algo Size="224" Date="2016">PLAIN-ECDSA</Algo>
+					<Algo Size="256" Date="2026">PLAIN-ECDSA</Algo>
+					<Algo Size="384" Date="2026">PLAIN-ECDSA</Algo>
+					<Algo Size="512" Date="2026">PLAIN-ECDSA</Algo>
+				</AlgoExpirationDate>
+			</Cryptographic>
+		</BasicSignatureConstraints>
+	</Timestamp>
+	<Revocation>
+		<RevocationFreshness Unit="DAYS" Value="0" Level="IGNORE"/>
+		<BasicSignatureConstraints>
+			<ReferenceDataExistence Level="FAIL"/>
+			<ReferenceDataIntact Level="FAIL"/>
+			<SignatureIntact Level="FAIL"/>
+			<ProspectiveCertificateChain Level="WARN"/>
+			<SigningCertificate>
+				<Recognition Level="FAIL"/>
+				<Signature Level="FAIL"/>
+				<NotExpired Level="FAIL"/>
+				<RevocationDataAvailable Level="FAIL"/>
+				<RevocationDataNextUpdatePresent Level="WARN"/>
+				<RevocationDataFreshness Level="FAIL"/>
+				<NotRevoked Level="FAIL"/>
+				<NotOnHold Level="FAIL"/>
+				<Cryptographic/>
+			</SigningCertificate>
+			<CACertificate>
+				<Signature Level="FAIL"/>
+				<NotExpired Level="FAIL"/>
+				<RevocationDataAvailable Level="WARN"/>
+				<RevocationDataNextUpdatePresent Level="WARN"/>
+				<RevocationDataFreshness Level="FAIL"/>
+				<NotRevoked Level="FAIL"/>
+				<NotOnHold Level="FAIL"/>
+				<Cryptographic/>
+			</CACertificate>
+			<Cryptographic/>
+		</BasicSignatureConstraints>
+	</Revocation>
+	<Cryptographic Level="FAIL">
+		<AcceptableEncryptionAlgo>
+			<Algo>RSA</Algo>
+			<Algo>DSA</Algo>
+			<Algo>ECDSA</Algo>
+			<Algo>PLAIN-ECDSA</Algo>
+		</AcceptableEncryptionAlgo>
+		<MiniPublicKeySize>
+			<Algo Size="160">DSA</Algo>
+			<Algo Size="1024">RSA</Algo>
+			<Algo Size="160">ECDSA</Algo>
+			<Algo Size="160">PLAIN-ECDSA</Algo>
+		</MiniPublicKeySize>
+		<AcceptableDigestAlgo>
+			<Algo>MD2</Algo>
+			<Algo>MD5</Algo>
+			<Algo>SHA1</Algo>
+			<Algo>SHA224</Algo>
+			<Algo>SHA256</Algo>
+			<Algo>SHA384</Algo>
+			<Algo>SHA512</Algo>
+			<Algo>SHA3-224</Algo>
+			<Algo>SHA3-256</Algo>
+			<Algo>SHA3-384</Algo>
+			<Algo>SHA3-512</Algo>
+			<Algo>RIPEMD160</Algo>
+			<Algo>WHIRLPOOL</Algo>
+		</AcceptableDigestAlgo>
+		<AlgoExpirationDate Format="yyyy">
+			<Algo Date="2004">MD2</Algo>
+			<Algo Date="2007">MD5</Algo>
+			<Algo Date="2009">SHA1</Algo>
+			<Algo Date="2023">SHA224</Algo>
+			<Algo Date="2026">SHA256</Algo>
+			<Algo Date="2026">SHA384</Algo>
+			<Algo Date="2026">SHA512</Algo>
+			<Algo Date="2026">SHA3-224</Algo>
+			<Algo Date="2026">SHA3-256</Algo>
+			<Algo Date="2026">SHA3-384</Algo>
+			<Algo Date="2026">SHA3-512</Algo>
+			<Algo Date="2011">RIPEMD160</Algo>
+			<Algo Date="2015">WHIRLPOOL</Algo>
+			<Algo Size="160" Date="2013">DSA</Algo>
+			<Algo Size="192" Date="2013">DSA</Algo>
+			<Algo Size="224" Date="2023">DSA</Algo>
+			<Algo Size="256" Date="2026">DSA</Algo>
+			<Algo Size="1024" Date="2009">RSA</Algo>
+			<Algo Size="1536" Date="2016">RSA</Algo>
+			<Algo Size="2048" Date="2023">RSA</Algo>
+			<Algo Size="3072" Date="2026">RSA</Algo>
+			<Algo Size="4096" Date="2026">RSA</Algo>
+			<Algo Size="160" Date="2013">ECDSA</Algo>
+			<Algo Size="192" Date="2013">ECDSA</Algo>
+			<Algo Size="224" Date="2016">ECDSA</Algo>
+			<Algo Size="256" Date="2026">ECDSA</Algo>
+			<Algo Size="384" Date="2026">ECDSA</Algo>
+			<Algo Size="512" Date="2026">ECDSA</Algo>
+			<Algo Size="160" Date="2013">PLAIN-ECDSA</Algo>
+			<Algo Size="192" Date="2013">PLAIN-ECDSA</Algo>
+			<Algo Size="224" Date="2016">PLAIN-ECDSA</Algo>
+			<Algo Size="256" Date="2026">PLAIN-ECDSA</Algo>
+			<Algo Size="384" Date="2026">PLAIN-ECDSA</Algo>
+			<Algo Size="512" Date="2026">PLAIN-ECDSA</Algo>
+		</AlgoExpirationDate>
+	</Cryptographic>
+	<Model Value="CHAIN"/>
+	<eIDAS>
+		<TLFreshness Unit="HOURS" Value="6" Level="WARN"/>
+		<TLNotExpired Level="WARN"/>
+		<TLWellSigned Level="FAIL"/>
+		<TLVersion value="5" Level="FAIL"/>
+		<TLConsistency Level="FAIL"/>
+	</eIDAS>
+</ConstraintsParameters>

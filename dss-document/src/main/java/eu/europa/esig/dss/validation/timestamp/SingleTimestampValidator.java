@@ -37,6 +37,7 @@ import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.validation.AbstractDocumentValidator;
+import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.scope.DigestSignatureScope;
 import eu.europa.esig.dss.validation.scope.FullSignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
@@ -109,6 +110,14 @@ public class SingleTimestampValidator extends AbstractDocumentValidator implemen
 	 */
 	public TimestampToken getTimestamp() {
 		return timestampToken;
+	}
+
+	@Override
+	public void setValidationLevel(ValidationLevel validationLevel) {
+		if (ValidationLevel.BASIC_SIGNATURES == validationLevel) {
+			throw new IllegalArgumentException("Minimal level is " + ValidationLevel.TIMESTAMPS);
+		}
+		super.setValidationLevel(validationLevel);
 	}
 
 }
