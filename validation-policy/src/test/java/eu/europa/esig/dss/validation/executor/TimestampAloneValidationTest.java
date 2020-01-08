@@ -8,6 +8,7 @@ import java.io.File;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.TimestampQualification;
@@ -107,12 +108,11 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 
 //		reports.print();	
 
-		SimpleReport simpleReport = reports.getSimpleReport();
-		assertEquals(TimestampQualification.NA, simpleReport.getTimestampQualification(simpleReport.getFirstTimestampId()));
-
 		DetailedReport detailedReport = reports.getDetailedReport();
-		assertEquals(2, detailedReport.getSignatures().size());
-		assertEquals(2, detailedReport.getIndependentTimestamps().size());
+		assertEquals(1, detailedReport.getSignatures().size());
+		XmlSignature xmlSignature = detailedReport.getSignatures().get(0);
+		assertEquals(0, detailedReport.getIndependentTimestamps().size());
+		assertEquals(2, xmlSignature.getTimestamp().size());
 
 		checkReports(reports);
 	}
