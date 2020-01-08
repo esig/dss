@@ -28,6 +28,7 @@ import java.util.Set;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -220,11 +221,14 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 		xmlTimestamp.setFilename(timestampWrapper.getFilename());
 
 		XmlBasicBuildingBlocks timestampBBB = detailedReport.getBasicBuildingBlockById(timestampWrapper.getId());
-		xmlTimestamp.setIndication(timestampBBB.getConclusion().getIndication());
-		xmlTimestamp.setSubIndication(timestampBBB.getConclusion().getSubIndication());
-		xmlTimestamp.getErrors().addAll(toStrings(timestampBBB.getConclusion().getErrors()));
-		xmlTimestamp.getWarnings().addAll(toStrings(timestampBBB.getConclusion().getWarnings()));
-		xmlTimestamp.getInfos().addAll(toStrings(timestampBBB.getConclusion().getInfos()));
+		if (timestampBBB != null && timestampBBB.getConclusion() != null) {
+			XmlConclusion bbbConclusion = timestampBBB.getConclusion();
+			xmlTimestamp.setIndication(bbbConclusion.getIndication());
+			xmlTimestamp.setSubIndication(bbbConclusion.getSubIndication());
+			xmlTimestamp.getErrors().addAll(toStrings(bbbConclusion.getErrors()));
+			xmlTimestamp.getWarnings().addAll(toStrings(bbbConclusion.getWarnings()));
+			xmlTimestamp.getInfos().addAll(toStrings(bbbConclusion.getInfos()));
+		}
 
 		TimestampQualification timestampQualification = detailedReport.getTimestampQualification(timestampWrapper.getId());
 		if (timestampQualification != null) {
