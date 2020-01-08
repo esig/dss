@@ -34,6 +34,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestMultipleDocumentsSignatureService;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
@@ -47,7 +48,8 @@ public class DetachedXmlMultiDocSignatureTest extends AbstractPkiFactoryTestMult
 	@BeforeEach
 	public void init() throws Exception {
 		documentToSigns = Arrays.<DSSDocument> asList(new FileDocument("src/test/resources/sample.xml"),
-				new FileDocument("src/test/resources/sampleWithPlaceOfSignature.xml"));
+				new FileDocument("src/test/resources/sampleWithPlaceOfSignature.xml"),
+				new InMemoryDocument(DSSUtils.EMPTY_BYTE_ARRAY, "emptyByteArray"));
 
 		signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());

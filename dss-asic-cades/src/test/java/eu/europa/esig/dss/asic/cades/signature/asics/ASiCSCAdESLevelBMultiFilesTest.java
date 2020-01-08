@@ -41,6 +41,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestMultipleDocumentsSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -58,6 +59,7 @@ public class ASiCSCAdESLevelBMultiFilesTest extends AbstractPkiFactoryTestMultip
 
 		documentToSigns.add(new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT));
 		documentToSigns.add(new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeType.TEXT));
+		documentToSigns.add(new InMemoryDocument(DSSUtils.EMPTY_BYTE_ARRAY, "emptyByteArray"));
 
 		signatureParameters = new ASiCWithCAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
@@ -74,7 +76,7 @@ public class ASiCSCAdESLevelBMultiFilesTest extends AbstractPkiFactoryTestMultip
 	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
-		assertEquals(3, Utils.collectionSize(signatureScopes)); // package.zip + two signed files
+		assertEquals(4, Utils.collectionSize(signatureScopes)); // package.zip + three signed files
 		int archive = 0;
 		int archiveContent = 0;
 		for (XmlSignatureScope signatureScope : signatureScopes) {
@@ -86,7 +88,7 @@ public class ASiCSCAdESLevelBMultiFilesTest extends AbstractPkiFactoryTestMultip
 			}
 		}
 		assertEquals(1, archive);
-		assertEquals(2, archiveContent);
+		assertEquals(3, archiveContent);
 	}
 
 	@Override

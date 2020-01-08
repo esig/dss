@@ -67,6 +67,7 @@ public class ASiCSXAdESMultiFilesLevelBTest extends AbstractPkiFactoryTestMultip
 
 		documentToSigns.add(new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT));
 		documentToSigns.add(new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeType.TEXT));
+		documentToSigns.add(new InMemoryDocument(DSSUtils.EMPTY_BYTE_ARRAY, "emptyByteArray"));
 
 		signatureParameters = new ASiCWithXAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
@@ -120,7 +121,7 @@ public class ASiCSXAdESMultiFilesLevelBTest extends AbstractPkiFactoryTestMultip
 	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
-		assertEquals(3, Utils.collectionSize(signatureScopes)); // package.zip + two signed files
+		assertEquals(4, Utils.collectionSize(signatureScopes)); // package.zip + two signed files
 		int archive = 0;
 		int archiveContent = 0;
 		for (XmlSignatureScope signatureScope : signatureScopes) {
@@ -132,7 +133,7 @@ public class ASiCSXAdESMultiFilesLevelBTest extends AbstractPkiFactoryTestMultip
 			}
 		}
 		assertEquals(1, archive);
-		assertEquals(2, archiveContent);
+		assertEquals(3, archiveContent);
 	}
 
 	@Override

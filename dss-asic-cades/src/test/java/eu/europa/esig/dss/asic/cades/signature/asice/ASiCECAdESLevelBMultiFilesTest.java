@@ -69,6 +69,7 @@ public class ASiCECAdESLevelBMultiFilesTest extends AbstractPkiFactoryTestMultip
 
 		documentToSigns.add(new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT));
 		documentToSigns.add(new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeType.TEXT));
+		documentToSigns.add(new InMemoryDocument(DSSUtils.EMPTY_BYTE_ARRAY, "emptyByteArray"));
 
 		signatureParameters = new ASiCWithCAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
@@ -103,7 +104,7 @@ public class ASiCECAdESLevelBMultiFilesTest extends AbstractPkiFactoryTestMultip
 		assertTrue(manifestFilename.endsWith(".xml"));
 
 		List<DSSDocument> signedDocuments = extract.getSignedDocuments();
-		assertEquals(2, signedDocuments.size());
+		assertEquals(3, signedDocuments.size());
 
 		DSSDocument mimeTypeDocument = extract.getMimeTypeDocument();
 
@@ -120,7 +121,7 @@ public class ASiCECAdESLevelBMultiFilesTest extends AbstractPkiFactoryTestMultip
 		super.verifyDiagnosticData(diagnosticData);
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
-		assertEquals(3, digestMatchers.size());
+		assertEquals(4, digestMatchers.size());
 		int manifestEntriesCounter = 0;
 		for (XmlDigestMatcher digestMatcher : digestMatchers) {
 			if (DigestMatcherType.MANIFEST_ENTRY.equals(digestMatcher.getType())) {
@@ -141,7 +142,7 @@ public class ASiCECAdESLevelBMultiFilesTest extends AbstractPkiFactoryTestMultip
 		
 		 SignatureWrapper signature = diagnosticData.getSignatureById(signatureIdList.get(0));
 		 List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
-		 assertEquals(3, signatureScopes.size());
+		 assertEquals(4, signatureScopes.size());
 		 for (XmlSignatureScope signatureScope : signatureScopes) {
 			 assertEquals(SignatureScopeType.FULL, signatureScope.getScope());
 			 assertNotNull(signatureScope.getName());
