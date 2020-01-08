@@ -24,6 +24,7 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.runner.RunWith;
 
+import eu.europa.esig.dss.pades.signature.suite.CertificateConflictTest;
 import eu.europa.esig.dss.pades.signature.suite.DigestStabilityTest;
 import eu.europa.esig.dss.pades.signature.suite.GetOriginalDocumentTest;
 import eu.europa.esig.dss.pades.signature.suite.InvisibleSignatureFieldSignTest;
@@ -67,7 +68,7 @@ import eu.europa.esig.dss.pades.signature.suite.TwoPAdESSigniatureMustHaveDiffer
 		PAdESLevelLTATest.class, PAdESLevelLTWrongAIATest.class, PAdESLevelTTest.class, PAdESLTACheckTimeStampedTimestampIDTest.class, PAdESLTACheckTimeStampIDTest.class,
 		PDFOverrideFiltersTest.class, TwoPAdESSigniatureMustHaveDifferentIdTest.class, PAdESLevelBHugeTest.class, InvisibleSignatureFieldSignTest.class, PAdESSpaceEOFTest.class,
 		PAdESDoubleLTAValidationDataTest.class, PAdESNoDuplicateValidationDataTest.class, PAdESWithPSSTest.class, PAdESWithSHA3Test.class,
-		PAdESLevelTWithSHA1MessageImprintTest.class, PAdESAllSelfSignedCertsTest.class, PAdESServiceTest.class })
+		PAdESLevelTWithSHA1MessageImprintTest.class, PAdESAllSelfSignedCertsTest.class, PAdESServiceTest.class, CertificateConflictTest.class })
 public class ITextPAdESSignatureTest {
 
 }
