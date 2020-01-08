@@ -66,6 +66,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.identifier.EntityIdentifier;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -396,6 +397,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			return candidatesForSigningCertificate;
 		}
 		candidatesForSigningCertificate = new CandidatesForSigningCertificate();
+		
 		/**
 		 * 5.1.4.1 XAdES processing<br>
 		 * <i>Candidates for the signing certificate extracted from ds:KeyInfo
@@ -407,6 +409,22 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		for (final CertificateToken certificateToken : certSource.getKeyInfoCertificates()) {
 			candidatesForSigningCertificate.add(new CertificateValidity(certificateToken));
 		}
+		
+		// if KeyInfo does not contain certificates,
+		// check other certificates embedded into the signature
+		if (candidatesForSigningCertificate.isEmpty()) {
+			PublicKey publicKey = getSigningCertificatePublicKey();
+			if (publicKey != null) {
+				EntityIdentifier entityIdentifier = new EntityIdentifier(publicKey);
+				String publicKeyHash = entityIdentifier.asXmlId();
+				for (CertificateToken certificateToken : certSource.getCertificates()) {
+					if (publicKeyHash.equals(certificateToken.getEntityKey())) {
+						candidatesForSigningCertificate.add(new CertificateValidity(certificateToken));
+					}
+				}
+			}
+					
+		}		
 
 		return candidatesForSigningCertificate;
 	}
@@ -783,8 +801,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						break;
 					} else {
 						// upon returning false, santuarioSignature (class XMLSignature) will log
-						// "Signature
-						// verification failed." with WARN level.
+						// "Signature verification failed." with WARN level.
 						preliminaryErrorMessages.add(errorMessagePrefix + "Signature verification failed");
 					}
 				} catch (XMLSignatureException e) {
@@ -811,6 +828,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			signatureCryptographicVerification.setReferenceDataFound(allReferenceDataFound);
 			signatureCryptographicVerification.setReferenceDataIntact(allReferenceDataIntact);
 			signatureCryptographicVerification.setSignatureIntact(coreValidity);
+			
 		} catch (Exception e) {
 			LOG.error("checkSignatureIntegrity : {}", e.getMessage());
 			LOG.debug("checkSignatureIntegrity : " + e.getMessage(), e);
@@ -827,6 +845,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				}
 			}
 			signatureCryptographicVerification.setErrorMessage(e.getMessage() + "/ XAdESSignature/Line number/" + lineNumber);
+			
 		}
 	}
 	
@@ -1031,6 +1050,19 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			throw new DSSException("Unable to initialize santuario XMLSignature", e);
 		}
 	}
+	
+	private PublicKey getSigningCertificatePublicKey() {
+		final KeyInfo extractedKeyInfo = getSantuarioSignature().getKeyInfo();
+		if (extractedKeyInfo != null) {
+			try {
+				return extractedKeyInfo.getPublicKey();
+			} catch (KeyResolverException e) {
+				LOG.warn("Unable to extract the public key. Reason : ", e.getMessage(), e);
+			}
+		}
+		LOG.warn("Unable to extract the public key. Reason : Unable to extract KeyInfo");
+		return null;
+	}
 
 	private void initDetachedSignatureResolvers(List<DSSDocument> detachedContents) {
 		List<Reference> currentReferences = getReferences();
@@ -1083,29 +1115,27 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * This method extracts the public key and adds new instances of
 	 * CertificateValidity for the found PublicKey.
 	 *
+	 * @param candidates
+	 *                           {@link CandidatesForSigningCertificate}
 	 * @param santuarioSignature
-	 *                           the santuario signature
+	 *                           {@link XMLSignature}
 	 */
 	private void checkWithEmbeddedPublicKey(final CandidatesForSigningCertificate candidates, final XMLSignature santuarioSignature) {
-		final KeyInfo extractedKeyInfo = santuarioSignature.getKeyInfo();
-		if (extractedKeyInfo != null) {
-			try {
-				final PublicKey publicKey = extractedKeyInfo.getPublicKey();
-				if (publicKey != null) {
-
-					// try to find out the signing certificate token by provided public key
-					List<CertificateToken> certsWithExtractedPublicKey = certPool.get(publicKey);
-					if (Utils.isCollectionNotEmpty(certsWithExtractedPublicKey)) {
-						for (CertificateToken certificateToken : certsWithExtractedPublicKey) {
-							candidates.add(new CertificateValidity(certificateToken));
-						}
-					} else {
-						// process public key only if no certificates found
-						candidates.add(new CertificateValidity(publicKey));
-					}
+		PublicKey publicKey = getSigningCertificatePublicKey();
+		if (publicKey != null) {
+			List<CertificateToken> certsWithExtractedPublicKey = new ArrayList<CertificateToken>();
+			
+			// try to find out the signing certificate token by provided public key
+			List<CertificateToken> certPoolCerts = certPool.get(publicKey);
+			certsWithExtractedPublicKey.addAll(certPoolCerts);
+			
+			if (Utils.isCollectionNotEmpty(certsWithExtractedPublicKey)) {
+				for (CertificateToken certificateToken : certsWithExtractedPublicKey) {
+					candidates.add(new CertificateValidity(certificateToken));
 				}
-			} catch (KeyResolverException e) {
-				LOG.warn("Unable to extract the public key", e);
+			} else {
+				// process public key only if no certificates found
+				candidates.add(new CertificateValidity(publicKey));
 			}
 		}
 	}

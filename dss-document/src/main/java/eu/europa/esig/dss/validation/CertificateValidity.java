@@ -38,6 +38,7 @@ public class CertificateValidity implements Serializable {
 	 */
 	private PublicKey publicKey;
 	private CertificateToken certificateToken;
+	private SignerInfo signerInfo;
 	/* CMS Signer id */
 	private boolean signerIdMatch;
 	private boolean digestPresent;
@@ -60,8 +61,7 @@ public class CertificateValidity implements Serializable {
 
 	/**
 	 * This constructor create an object containing all information concerning the validity of a candidate for the
-	 * signing certificate which is based only on the {@code
-	 * PublicKey}. To be used in case of a non AdES signature.
+	 * signing certificate which is based only on the {@code PublicKey}. To be used in case of a non AdES signature.
 	 *
 	 * @param publicKey
 	 *            the {@code PublicKey} associated to the signing certificate.
@@ -70,15 +70,39 @@ public class CertificateValidity implements Serializable {
 		Objects.requireNonNull(publicKey, "PublicKey cannot be null!");
 		this.publicKey = publicKey;
 	}
+	
+	/**
+	 * This constructor create an object containing all information concerning the validity of a candidate for the
+	 * signing certificate which is based only on the {@code SignerInfo}. To be used in case of a non AdES signature.
+	 *
+	 * @param signerInfo
+	 *            the {@code SignerInfo} associated to the signing certificate.
+	 */
+	public CertificateValidity(final SignerInfo signerInfo) {
+		Objects.requireNonNull(signerInfo, "SignerInfo cannot be null!");
+		this.signerInfo = signerInfo;
+	}
 
 	/**
 	 * If the {@code certificateToken} is not null then the associated {@code PublicKey} will be returned otherwise the
 	 * provided {@code publicKey} is returned.
+	 * NOTE: can return null
 	 *
 	 * @return the public key associated with this instance.
 	 */
 	public PublicKey getPublicKey() {
 		return certificateToken == null ? publicKey : certificateToken.getPublicKey();
+	}
+	
+	/**
+	 * Returns the associated {@link SignerInfo}
+	 * NOTE: can return null
+	 * 
+	 * @return {@link SignerInfo}
+	 */
+	public SignerInfo getSignerInfo() {
+		return certificateToken == null ? signerInfo : 
+			new SignerInfo(certificateToken.getIssuerX500Principal().toString(), certificateToken.getSerialNumber());
 	}
 
 	public CertificateToken getCertificateToken() {

@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.xades.validation;
+package eu.europa.esig.dss.cades.validation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -27,65 +27,11 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
-public class DSS1788Test {
+public class CAdESNoKeyInfoCertTest {
 	
 	@Test
-	public void testOriginal() {
-		DSSDocument doc = new FileDocument("src/test/resources/validation/dss1788/dss1788-original.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
-		
-		Reports reports = validator.validateDocument();
-		assertNotNull(reports);
-		// reports.print();
-		
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		
-		CertificateWrapper signingCertificate = signature.getSigningCertificate();
-		assertNotNull(signingCertificate);
-		assertTrue(signature.isAttributePresent());
-		assertTrue(signature.isDigestValuePresent());
-		assertTrue(signature.isDigestValueMatch());
-		assertTrue(signature.isIssuerSerialMatch());
-		
-		List<CertificateWrapper> certificateChain = signature.getCertificateChain();
-		assertTrue(Utils.isCollectionNotEmpty(certificateChain));
-		
-		SimpleReport simpleReport = reports.getSimpleReport();
-		assertEquals(SubIndication.NO_CERTIFICATE_CHAIN_FOUND, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
-	}
-	
-	@Test
-	public void testWithPublicKey() {
-		DSSDocument doc = new FileDocument("src/test/resources/validation/dss1788/XAdESPublicKeyInKeyInfo.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
-		
-		Reports reports = validator.validateDocument();
-		assertNotNull(reports);
-		// reports.print();
-		
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		
-		CertificateWrapper signingCertificate = signature.getSigningCertificate();
-		assertNotNull(signingCertificate);
-		assertTrue(signature.isAttributePresent());
-		assertTrue(signature.isDigestValuePresent());
-		assertTrue(signature.isDigestValueMatch());
-		assertTrue(signature.isIssuerSerialMatch());
-		
-		List<CertificateWrapper> certificateChain = signature.getCertificateChain();
-		assertTrue(Utils.isCollectionNotEmpty(certificateChain));
-		
-		SimpleReport simpleReport = reports.getSimpleReport();
-		assertEquals(SubIndication.NO_CERTIFICATE_CHAIN_FOUND, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
-	}
-	
-	@Test
-	public void testNoCertProvided() {
-		DSSDocument doc = new FileDocument("src/test/resources/validation/dss1788/dss1788-noCertProvided.xml");
+	public void test() {
+		DSSDocument doc = new FileDocument("src/test/resources/validation/no-key-info-cert.pkcs7");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		
@@ -98,15 +44,13 @@ public class DSS1788Test {
 		
 		CertificateWrapper signingCertificate = signature.getSigningCertificate();
 		assertNull(signingCertificate);
-		byte[] signingCertificatePublicKey = signature.getSigningCertificatePublicKey();
-		assertNotNull(signingCertificatePublicKey);
 		assertTrue(signature.isAttributePresent());
 		assertTrue(signature.isDigestValuePresent());
 		assertFalse(signature.isDigestValueMatch());
 		assertFalse(signature.isIssuerSerialMatch());
 		
 		List<CertificateWrapper> certificateChain = signature.getCertificateChain();
-		assertFalse(Utils.isCollectionNotEmpty(certificateChain));
+		assertTrue(Utils.isCollectionEmpty(certificateChain));
 		
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
@@ -114,11 +58,11 @@ public class DSS1788Test {
 	}
 	
 	@Test
-	public void testCertProvidedIntoValidation() {
-		DSSDocument doc = new FileDocument("src/test/resources/validation/dss1788/dss1788-noCertProvided.xml");
+	public void provideSignCertTest() {
+		DSSDocument doc = new FileDocument("src/test/resources/validation/no-key-info-cert.pkcs7");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
-		validator.defineSigningCertificate(DSSUtils.loadCertificate(new File("src/test/resources/validation/dss1788/signCert.cer")));
+		validator.defineSigningCertificate(DSSUtils.loadCertificate(new File("src/test/resources/validation/signCert.cer")));
 		
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);
@@ -144,39 +88,11 @@ public class DSS1788Test {
 	}
 	
 	@Test
-	public void certPresentInCertValuesTest() {
-		DSSDocument doc = new FileDocument("src/test/resources/validation/dss1788/dss1920-cert-in-certValues.xml");
+	public void trustedStoreTest() {
+		DSSDocument doc = new FileDocument("src/test/resources/validation/no-key-info-cert.pkcs7");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
-		
-		Reports reports = validator.validateDocument();
-		assertNotNull(reports);
-		// reports.print();
-		
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		
-		CertificateWrapper signingCertificate = signature.getSigningCertificate();
-		assertNotNull(signingCertificate);
-		assertTrue(signature.isAttributePresent());
-		assertTrue(signature.isDigestValuePresent());
-		assertTrue(signature.isDigestValueMatch());
-		assertTrue(signature.isIssuerSerialMatch());
-		
-		List<CertificateWrapper> certificateChain = signature.getCertificateChain();
-		assertTrue(Utils.isCollectionNotEmpty(certificateChain));
-		
-		SimpleReport simpleReport = reports.getSimpleReport();
-		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
-		assertEquals(SubIndication.NO_CERTIFICATE_CHAIN_FOUND, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
-	}
-	
-	@Test
-	public void certFromTrustedStoreTest() {
-		DSSDocument doc = new FileDocument("src/test/resources/validation/dss1788/dss1788-noCertProvided.xml");
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
-		
-		CertificateToken signingCertificateToken = DSSUtils.loadCertificate(new File("src/test/resources/validation/dss1788/signCert.cer"));
+
+		CertificateToken signingCertificateToken = DSSUtils.loadCertificate(new File("src/test/resources/validation/signCert.cer"));
 		
 		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
 		CommonTrustedCertificateSource trustedCertSource = new CommonTrustedCertificateSource();

@@ -239,6 +239,16 @@ public abstract class SignedDocumentValidator extends AbstractDocumentValidator 
 			for (final CertificateToken certificateToken : candidates) {
 				validationContext.addCertificateTokenForVerification(certificateToken);
 			}
+			CandidatesForSigningCertificate candidatesForSigningCertificate = signature.getCandidatesForSigningCertificate();
+			if (candidatesForSigningCertificate != null) {
+				CertificateValidity certificateValidity = candidatesForSigningCertificate.getTheCertificateValidity();
+				if (certificateValidity != null) {
+					CertificateToken signingCertificateCandidateToken = certificateValidity.getCertificateToken();
+					if (signingCertificateCandidateToken != null) {
+						validationContext.addCertificateTokenForVerification(signingCertificateCandidateToken);
+					}
+				}
+			}
 			signature.prepareTimestamps(validationContext);
 		}
 	}

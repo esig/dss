@@ -33,6 +33,8 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
  */
 public class CandidatesForSigningCertificate implements Serializable {
 
+	private static final long serialVersionUID = 7965288455045066076L;
+
 	/**
 	 * This field contains the reference to the signing certificate with its validity. This reference is set after the
 	 * signature verification.

@@ -985,6 +985,41 @@ public class DiagnosticDataBuilder {
 		}
 		return null;
 	}
+	
+	private XmlSigningCertificate getXmlSigningCertificate(final SignerInfo signerInfo) {
+		final XmlSigningCertificate xmlSignCertType = new XmlSigningCertificate();
+		final CertificateToken certificateBySignerInfo = getCertificateBySignerInfo(signerInfo);
+		if (certificateBySignerInfo != null) {
+			xmlSignCertType.setCertificate(xmlCerts.get(certificateBySignerInfo.getDSSIdAsString()));
+		} else if (signerInfo != null) {
+			// TODO: add info to xsd
+		} else {
+			return null;
+		}
+		return xmlSignCertType;
+	}
+
+	private CertificateToken getCertificateBySignerInfo(final SignerInfo signerInfo) {
+		if (signerInfo == null) {
+			return null;
+		}
+
+		List<CertificateToken> founds = new ArrayList<CertificateToken>();
+		for (CertificateToken cert : usedCertificates) {
+			if (signerInfo.getIssuer().equals(cert.getIssuerX500Principal().toString()) &&
+					signerInfo.getSerialNumber().equals(cert.getSerialNumber())) {
+				founds.add(cert);
+				if (isTrusted(cert)) {
+					return cert;
+				}
+			}
+		}
+
+		if (Utils.isCollectionNotEmpty(founds)) {
+			return founds.iterator().next();
+		}
+		return null;
+	}
 
 	private XmlSigningCertificate getXmlSigningCertificate(CertificateValidity certificateValidity) {
 		XmlSigningCertificate xmlSignCertType = new XmlSigningCertificate();
@@ -995,6 +1030,11 @@ public class DiagnosticDataBuilder {
 			XmlSigningCertificate xmlSignCert = getXmlSigningCertificate(certificateValidity.getPublicKey());
 			if (xmlSignCert != null) {
 				xmlSignCertType = xmlSignCert;
+			}
+		} else if (certificateValidity.getSignerInfo() != null) {
+			XmlSigningCertificate xmlSignCertBySignInfo = getXmlSigningCertificate(certificateValidity.getSignerInfo());
+			if (xmlSignCertBySignInfo != null) {
+				xmlSignCertType = xmlSignCertBySignInfo;
 			}
 		}
 		xmlSignCertType.setAttributePresent(certificateValidity.isAttributePresent());
@@ -1680,13 +1720,15 @@ public class DiagnosticDataBuilder {
 	private List<XmlDigestMatcher> getXmlDigestMatchers(AdvancedSignature signature) {
 		List<XmlDigestMatcher> refs = new ArrayList<XmlDigestMatcher>();
 		List<ReferenceValidation> refValidations = signature.getReferenceValidations();
-		for (ReferenceValidation referenceValidation : refValidations) {
-			refs.add(getXmlDigestMatcher(referenceValidation));
-			List<ReferenceValidation> dependentValidations = referenceValidation.getDependentValidations();
-			if (Utils.isCollectionNotEmpty(dependentValidations) && 
-					(Utils.isCollectionNotEmpty(signature.getDetachedContents()) || isAtLeastOneFound(dependentValidations))) {
-				for (ReferenceValidation dependentValidation : referenceValidation.getDependentValidations()) {
-					refs.add(getXmlDigestMatcher(dependentValidation));
+		if (Utils.isCollectionNotEmpty(refValidations)) {
+			for (ReferenceValidation referenceValidation : refValidations) {
+				refs.add(getXmlDigestMatcher(referenceValidation));
+				List<ReferenceValidation> dependentValidations = referenceValidation.getDependentValidations();
+				if (Utils.isCollectionNotEmpty(dependentValidations) && 
+						(Utils.isCollectionNotEmpty(signature.getDetachedContents()) || isAtLeastOneFound(dependentValidations))) {
+					for (ReferenceValidation dependentValidation : referenceValidation.getDependentValidations()) {
+						refs.add(getXmlDigestMatcher(dependentValidation));
+					}
 				}
 			}
 		}

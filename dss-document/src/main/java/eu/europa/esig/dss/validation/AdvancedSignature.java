@@ -324,7 +324,6 @@ public interface AdvancedSignature extends Serializable {
 	 */
 	List<CertificateToken> getCertificates();
 	
-
 	/**
 	 * Returns a list of all certificates found into signature and timestamps
 	 * 
