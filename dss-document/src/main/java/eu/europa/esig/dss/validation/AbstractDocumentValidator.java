@@ -21,7 +21,6 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
@@ -342,10 +341,6 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 		setTimestamedReferences(timestamps);
 		for (TimestampToken timestampToken : timestamps.keySet()) {
 			validationContext.addTimestampTokenForVerification(timestampToken);
-			CertificateToken issuer = validationCertPool.getIssuer(timestampToken);
-			if (issuer != null) {
-				validationContext.addCertificateTokenForVerification(issuer);
-			}
 		}
 		validateContext(validationContext);
 	}

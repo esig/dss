@@ -30,7 +30,6 @@ import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -86,7 +85,7 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 			// add external timestamps to the validation
 			List<TimestampToken> externalTimestamps = attachExternalTimestamps(allSignatures);
 			for (TimestampToken timestamp : externalTimestamps) {
-				addTimestampTokenForVerification(validationContext, timestamp);
+				validationContext.addTimestampTokenForVerification(timestamp);
 			}
 		}
 
@@ -107,13 +106,6 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 		return allSignatures;
 	}
 	
-	private void addTimestampTokenForVerification(final ValidationContext validationContext, final TimestampToken timestamp) {
-		validationContext.addTimestampTokenForVerification(timestamp);
-		for (CertificateToken certificate : timestamp.getCertificates()) {
-			validationContext.addCertificateTokenForVerification(certificate);
-		}
-	}
-
 	/**
 	 * This method allows to retrieve the container information (ASiC Container)
 	 * 

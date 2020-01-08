@@ -429,6 +429,12 @@ public class SignatureValidationContext implements ValidationContext {
 	public void addTimestampTokenForVerification(final TimestampToken timestampToken) {
 		if (addTokenForVerification(timestampToken)) {
 
+			// Inject all certificate chain (needed in case of missing AIA on the TSA with
+			// intermediate CAs)
+			for (CertificateToken certificateToken : timestampToken.getCertificates()) {
+				addCertificateTokenForVerification(certificateToken);
+			}
+
 			final boolean added = processedTimestamps.add(timestampToken);
 			if (LOG.isTraceEnabled()) {
 				if (added) {

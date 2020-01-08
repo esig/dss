@@ -72,7 +72,18 @@ public class TimestampValidatorTest {
 		ConstraintsParameters constraintsParameters = ValidationPolicyFacade.newFacade().unmarshall(new File("src/test/resources/dss-1929/ts-policy.xml"));
 		assertNotNull(constraintsParameters);
 
-		validate(timestampValidator.validateDocument(constraintsParameters));
+		Reports reports = timestampValidator.validateDocument(constraintsParameters);
+		validate(reports);
+
+		assertEquals(tst.getCertificates().size(), reports.getDiagnosticData().getUsedCertificates().size());
+
+		List<TimestampWrapper> timestampList = reports.getDiagnosticData().getTimestampList();
+		assertEquals(1, timestampList.size());
+		TimestampWrapper uniqueTimestamp = timestampList.get(0);
+		assertTrue(uniqueTimestamp.isMessageImprintDataFound());
+		assertTrue(uniqueTimestamp.isMessageImprintDataIntact());
+		assertTrue(uniqueTimestamp.isSignatureIntact());
+		assertTrue(uniqueTimestamp.isSignatureValid());
 
 		assertThrows(IllegalArgumentException.class, () -> timestampValidator.setValidationLevel(ValidationLevel.BASIC_SIGNATURES));
 	}
