@@ -29,7 +29,8 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.RuleUtils;
 import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class TimestampDelayCheck extends ChainItem<XmlValidationProcessLongTermData> {
 
@@ -37,8 +38,9 @@ public class TimestampDelayCheck extends ChainItem<XmlValidationProcessLongTermD
 	private final Date bestSignatureTime;
 	private final TimeConstraint timeConstraint;
 
-	public TimestampDelayCheck(XmlValidationProcessLongTermData result, SignatureWrapper signature, Date bestSignatureTime, TimeConstraint timeConstraint) {
-		super(result, timeConstraint);
+	public TimestampDelayCheck(I18nProvider i18nProvider, XmlValidationProcessLongTermData result, SignatureWrapper signature, 
+			Date bestSignatureTime, TimeConstraint timeConstraint) {
+		super(i18nProvider, result, timeConstraint);
 
 		this.signature = signature;
 		this.bestSignatureTime = bestSignatureTime;

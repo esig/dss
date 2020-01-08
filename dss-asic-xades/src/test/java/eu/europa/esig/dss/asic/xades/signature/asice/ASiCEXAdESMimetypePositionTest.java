@@ -36,6 +36,7 @@ import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
@@ -64,13 +65,13 @@ public class ASiCEXAdESMimetypePositionTest extends AbstractASiCEXAdESTestSignat
 	protected void onDocumentSigned(byte[] byteArray) {
 		super.onDocumentSigned(byteArray);
 		DSSDocument doc = new InMemoryDocument(byteArray);
-		
+
 		StringBuilder hex = new StringBuilder(byteArray.length * 2);
-		 for (byte b : byteArray) {
-			 hex.append(String.format("%02x", b&0xff));
+		for (byte b : byteArray) {
+			hex.append(String.format("%02x", b & 0xff));
 
 		}
-		assertEquals(hex.substring(0, 8).toLowerCase(), "504b0304");
+		assertEquals("504b0304", hex.substring(0, 8).toLowerCase());
 
 		try (InputStream is = doc.openStream(); ZipInputStream zis = new ZipInputStream(is)) {
 			ZipEntry entry;
@@ -79,16 +80,16 @@ public class ASiCEXAdESMimetypePositionTest extends AbstractASiCEXAdESTestSignat
 				name = entry.getName();
 				break;
 			}
-			assertEquals(name, "mimetype");
-			assertEquals(entry.getMethod(), 0);
-			if(entry.getExtra() != null) {
-				assertEquals(entry.getExtra().length, 0);
+			assertEquals("mimetype", name);
+			assertEquals(0, entry.getMethod());
+			if (entry.getExtra() != null) {
+				assertEquals(0, entry.getExtra().length);
 			}
 		} catch (IOException e1) {
-			e1.printStackTrace();
+			throw new DSSException(e1);
 		}
 	}
-	
+
 	@Override
 	protected DocumentSignatureService<ASiCWithXAdESSignatureParameters> getService() {
 		return service;

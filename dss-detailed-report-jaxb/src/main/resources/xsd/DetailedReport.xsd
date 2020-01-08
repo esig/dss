@@ -7,10 +7,13 @@
 
 	<xs:complexType name="DetailedReport">
 		<xs:sequence>
-			<xs:choice>
-				<xs:element name="Signatures" type="Signature" minOccurs="0" maxOccurs="unbounded" />
-				<xs:element name="Certificate" type="Certificate" minOccurs="0" maxOccurs="1" />
-			</xs:choice>
+			<xs:sequence minOccurs="0" maxOccurs="unbounded">
+				<xs:choice>
+					<xs:element name="Signature" type="Signature" />
+					<xs:element name="Timestamp" type="Timestamp" />
+					<xs:element name="Certificate" type="Certificate" />
+				</xs:choice>
+			</xs:sequence>
 			<xs:element type="BasicBuildingBlocks" name="BasicBuildingBlocks" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="TLAnalysis" type="TLAnalysis" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
@@ -18,14 +21,27 @@
 	
 	<xs:complexType name="Signature">
 		<xs:sequence>
-			<xs:element name="ValidationProcessBasicSignatures" type="ValidationProcessBasicSignatures" minOccurs="0" />
-			<xs:element name="ValidationProcessTimestamps" type="ValidationProcessTimestamps" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="ValidationProcessBasicSignature" type="ValidationProcessBasicSignature" minOccurs="0" />
+			<xs:element name="Timestamp" type="Timestamp" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="ValidationProcessLongTermData" type="ValidationProcessLongTermData" minOccurs="0" />
 			<xs:element name="ValidationProcessArchivalData" type="ValidationProcessArchivalData" minOccurs="0" />
+			
+			<!-- eIDAS stuffs -->
 			<xs:element name="ValidationSignatureQualification" type="ValidationSignatureQualification" minOccurs="0" />
+			<xs:element name="ValidationTimestampQualification" type="ValidationTimestampQualification" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
-		<xs:attribute name="Id" type="xs:string" use="required" />
+		<xs:attribute name="Id" type="xs:string" /> 
 		<xs:attribute name="CounterSignature" type="xs:boolean" use="optional" />
+	</xs:complexType>
+	
+	<xs:complexType name="Timestamp">
+		<xs:sequence>
+			<xs:element name="ValidationProcessTimestamp" type="ValidationProcessTimestamp"  />
+			
+			<!-- eIDAS stuffs -->
+			<xs:element name="ValidationTimestampQualification" type="ValidationTimestampQualification" minOccurs="0" />
+		</xs:sequence>
+		<xs:attribute name="Id" type="xs:string" /> 
 	</xs:complexType>
 	
 	<xs:complexType name="Certificate">
@@ -61,6 +77,7 @@
 			<xs:extension base="ConstraintsConclusion">
 				<xs:attribute name="CountryCode" type="xs:string" use="optional" /> <!-- can be null in case of parsing task failure -->
 				<xs:attribute name="URL" type="xs:string" use="required" />
+				<xs:attribute name="Id" type="xs:string" use="required" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -72,7 +89,7 @@
 					<xs:element name="ValidationCertificateQualification" type="ValidationCertificateQualification" minOccurs="0" maxOccurs="unbounded" />
 				</xs:sequence>
 				<xs:attribute name="Id" type="xs:string" use="required" />
-				<xs:attribute name="SignatureQualification" type="SignatureQualification" use="optional" />
+				<xs:attribute name="SignatureQualification" type="SignatureQualification" use="required" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -123,18 +140,25 @@
 		</xs:sequence>
 	</xs:complexType>
 	
-	<xs:complexType name="ValidationProcessBasicSignatures">	
+	<xs:complexType name="ValidationProcessBasicSignature">	
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusionWithProofOfExistence" />
 		</xs:complexContent>
 	</xs:complexType>
 
-	<xs:complexType name="ValidationProcessTimestamps">	
+	<xs:complexType name="ValidationProcessTimestamp">	
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusion">
-				<xs:attribute name="Id" type="xs:string" use="required" />
 				<xs:attribute name="Type" type="xs:string" use="required" />
 				<xs:attribute name="ProductionTime" type="xs:dateTime" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="ValidationTimestampQualification">
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion">
+				<xs:attribute name="TimestampQualification" type="TimestampQualification" use="required" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -177,6 +201,16 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="RAC"> <!-- RevocationAcceptanceCheck -->
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion">
+				<xs:sequence>
+					<xs:element name="RevocationProductionDate" type="xs:dateTime" />
+				</xs:sequence>
+				<xs:attribute name="Id" type="xs:string" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="CV">
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusion" />
@@ -205,6 +239,7 @@
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusion">
 				<xs:sequence>
+					<xs:element name="RAC" type="RAC" minOccurs="0" maxOccurs="unbounded" />
 					<xs:element name="RFC" type="RFC" minOccurs="0" />
 					<xs:element name="RevocationInfo" type="RevocationInformation" minOccurs="0" />
 				</xs:sequence>
@@ -357,6 +392,14 @@
 			<xs:enumeration value="Not AdES but QC" />
 			<xs:enumeration value="Not AdES" />
 			
+			<xs:enumeration value="N/A" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="TimestampQualification" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="QTSA" />
+			<xs:enumeration value="TSA" />
 			<xs:enumeration value="N/A" />
 		</xs:restriction>
 	</xs:simpleType>

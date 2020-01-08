@@ -104,12 +104,6 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSPToken> impleme
 	 */
 	private static final String SQL_DROP_TABLE = "DROP TABLE CACHED_OCSP";
 
-	/**
-	 * Constructor.
-	 */
-	public JdbcCacheOCSPSource() {
-	}
-	
 	@Override
 	protected String getCreateTableQuery() {
 		return SQL_INIT_CREATE_TABLE;

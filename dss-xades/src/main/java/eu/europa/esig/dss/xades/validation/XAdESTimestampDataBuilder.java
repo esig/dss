@@ -39,7 +39,9 @@ import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampDataBuilder;
 import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
@@ -65,7 +67,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 	}
 
 	@Override
-	public byte[] getContentTimestampData(final TimestampToken timestampToken) {
+	public DSSDocument getContentTimestampData(final TimestampToken timestampToken) {
 		final TimestampType timeStampType = timestampToken.getTimeStampType();
 		if (!timeStampType.isContentTimestamp()) {
 			return null;
@@ -92,9 +94,13 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 			if (LOG.isTraceEnabled()) {
 				LOG.trace("IndividualDataObjectsTimestampData/AllDataObjectsTimestampData bytes: {}", new String(byteArray));
 			}
-			return byteArray;
+			return new InMemoryDocument(byteArray);
 		} catch (IOException | XMLSecurityException e) {
-			LOG.warn("Unable to extract IndividualDataObjectsTimestampData/AllDataObjectsTimestampData", e);
+			if (LOG.isDebugEnabled()) {
+				LOG.warn("Unable to extract IndividualDataObjectsTimestampData/AllDataObjectsTimestampData. Reason : {}", e.getMessage(), e);
+			} else {
+				LOG.warn("Unable to extract IndividualDataObjectsTimestampData/AllDataObjectsTimestampData. Reason : {}", e.getMessage());
+			}
 		}
 		return null;
 
@@ -147,8 +153,9 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 	}
 
 	@Override
-	public byte[] getSignatureTimestampData(final TimestampToken timestampToken) {
-		return getSignatureTimestampData(timestampToken, null);
+	public DSSDocument getSignatureTimestampData(final TimestampToken timestampToken) {
+		byte[] timestampData = getSignatureTimestampData(timestampToken, null);
+		return new InMemoryDocument(timestampData);
 	}
 	
 	/**
@@ -175,8 +182,9 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 	}
 
 	@Override
-	public byte[] getTimestampX1Data(final TimestampToken timestampToken) {
-		return getTimestampX1Data(timestampToken, null);
+	public DSSDocument getTimestampX1Data(final TimestampToken timestampToken) {
+		byte[] timestampX1Data = getTimestampX1Data(timestampToken, null);
+		return new InMemoryDocument(timestampX1Data);
 	}
 	
 	/**
@@ -213,8 +221,9 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 	}
 
 	@Override
-	public byte[] getTimestampX2Data(final TimestampToken timestampToken) {
-		return getTimestampX2Data(timestampToken, null);
+	public DSSDocument getTimestampX2Data(final TimestampToken timestampToken) {
+		byte[] timestampX2Data = getTimestampX2Data(timestampToken, null);
+		return new InMemoryDocument(timestampX2Data);
 	}
 	
 	/**
@@ -244,8 +253,9 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 	}
 	
 	@Override
-	public byte[] getArchiveTimestampData(final TimestampToken timestampToken) {
-		return getArchiveTimestampData(timestampToken, null);
+	public DSSDocument getArchiveTimestampData(final TimestampToken timestampToken) {
+		byte[] archiveTimestampData = getArchiveTimestampData(timestampToken, null);
+		return new InMemoryDocument(archiveTimestampData);
 	}
 	
 	/**

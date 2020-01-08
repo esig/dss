@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -90,14 +91,9 @@ public class CandidatesForSigningCertificate implements Serializable {
 	 *
 	 * @param theCertificateValidity
 	 *            the certain signing certificate validity object
-	 * @throws DSSException
-	 *             if the {@code SigningCertificateValidity} is not present in the list of candidates then the
-	 *             {@code DSSException} is frown.
 	 */
-	public void setTheCertificateValidity(final CertificateValidity theCertificateValidity) throws DSSException {
-		if (theCertificateValidity == null) {
-			throw new NullPointerException();
-		}
+	public void setTheCertificateValidity(final CertificateValidity theCertificateValidity) {
+		Objects.requireNonNull(theCertificateValidity, "The CertificateValidity cannot be null");
 		if (!certificateValidityList.contains(theCertificateValidity)) {
 			throw new DSSException("theSigningCertificateValidity must be the part of the candidates!");
 		}

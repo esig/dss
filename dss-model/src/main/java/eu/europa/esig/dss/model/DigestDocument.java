@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
@@ -79,6 +80,8 @@ public class DigestDocument extends CommonDocument {
 	 *            the corresponding base 64 encoded digest value
 	 */
 	public void addDigest(final DigestAlgorithm digestAlgorithm, final String base64EncodeDigest) {
+		Objects.requireNonNull(digestAlgorithm, "The Digest Algorithm is not defined");
+		Objects.requireNonNull(base64EncodeDigest, "The digest value is not defined");
 		base64EncodeDigestMap.put(digestAlgorithm, base64EncodeDigest);
 	}
 

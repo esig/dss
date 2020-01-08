@@ -62,6 +62,7 @@ public class DetachedSignatureResolver extends ResourceResolverSpi {
 	}
 
 	private XMLSignatureInput createFromCommonDocument(DSSDocument document) {
+		// Full binaries are required
 		final XMLSignatureInput result = new XMLSignatureInput(DSSUtils.toByteArray(document));
 		final MimeType mimeType = document.getMimeType();
 		if (mimeType != null) {

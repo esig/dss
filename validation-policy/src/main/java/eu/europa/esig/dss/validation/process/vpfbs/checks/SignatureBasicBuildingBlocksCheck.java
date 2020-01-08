@@ -34,7 +34,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlProofOfExistence;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlVCI;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicSignatures;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicSignature;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -43,12 +43,13 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
-public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationProcessBasicSignatures> {
+public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationProcessBasicSignature> {
 
 	private final DiagnosticData diagnosticData;
 
@@ -59,9 +60,9 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 	private SubIndication subIndication;
 	private List<XmlName> errors = new ArrayList<XmlName>();
 
-	public SignatureBasicBuildingBlocksCheck(XmlValidationProcessBasicSignatures result, DiagnosticData diagnosticData, XmlBasicBuildingBlocks signatureBBB,
-			Map<String, XmlBasicBuildingBlocks> bbbs, LevelConstraint constraint) {
-		super(result, constraint, signatureBBB.getId());
+	public SignatureBasicBuildingBlocksCheck(I18nProvider i18nProvider, XmlValidationProcessBasicSignature result, DiagnosticData diagnosticData,
+			XmlBasicBuildingBlocks signatureBBB, Map<String, XmlBasicBuildingBlocks> bbbs, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint, signatureBBB.getId());
 
 		this.diagnosticData = diagnosticData;
 		this.signatureBBB = signatureBBB;
@@ -234,15 +235,16 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 
 			}
 			/*
-			 * In all other cases, the Basic Signature validation process shall return the
-			 * indication, sub-indication and any associated information returned by the
-			 * signing certificate validation process.
+			 * Updated with TS 119 102-1 - V1.2.1 :
+			 * 
+			 * In all other cases, the Basic Signature validation process shall set 
+			 * X509_validation-status to the indication and sub-indication returned by 
+			 * the X.509 Certificate Validation process and continue with step 5).
 			 */
 			else if (!Indication.PASSED.equals(xcvConclusion.getIndication())) {
-				indication = xcvConclusion.getIndication();
-				subIndication = xcvConclusion.getSubIndication();
+				x509ValidationStatus.setIndication(xcvConclusion.getIndication());
+				x509ValidationStatus.setSubIndication(xcvConclusion.getSubIndication());
 				errors.addAll(xcvConclusion.getErrors());
-				return false;
 			}
 		}
 

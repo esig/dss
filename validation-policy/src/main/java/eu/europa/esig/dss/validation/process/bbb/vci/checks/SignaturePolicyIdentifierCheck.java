@@ -27,7 +27,8 @@ import eu.europa.esig.dss.enumerations.SignaturePolicyType;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
 public class SignaturePolicyIdentifierCheck extends AbstractMultiValuesCheckItem<XmlVCI> {
@@ -35,8 +36,8 @@ public class SignaturePolicyIdentifierCheck extends AbstractMultiValuesCheckItem
 	private final SignatureWrapper signature;
 	private final MultiValuesConstraint multiValues;
 
-	public SignaturePolicyIdentifierCheck(XmlVCI result, SignatureWrapper signature, MultiValuesConstraint multiValues) {
-		super(result, multiValues);
+	public SignaturePolicyIdentifierCheck(I18nProvider i18nProvider, XmlVCI result, SignatureWrapper signature, MultiValuesConstraint multiValues) {
+		super(i18nProvider, result, multiValues);
 		this.signature = signature;
 		this.multiValues = multiValues;
 	}

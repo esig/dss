@@ -54,6 +54,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TimeZone;
 
@@ -76,6 +77,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -250,13 +252,13 @@ public final class DSSUtils {
 				}
 			}
 			if (certificates.isEmpty()) {
-				throw new DSSException("Could not parse certificate(s)");
+				throw new DSSException("No certificate found in the InputStream");
 			}
 			return certificates;
 		} catch (DSSException e) {
 		  	throw e;
 		} catch (Exception e) {
-			throw new DSSException("Unable to load certificates.", e);
+			throw new DSSException("Unable to load certificate(s) : " + e.getMessage(), e);
 		}
 	}
 
@@ -274,9 +276,7 @@ public final class DSSUtils {
 	 * @return the certificate token
 	 */
 	public static CertificateToken loadCertificate(final byte[] input) {
-		if (input == null) {
-			throw new NullPointerException("X509 certificate");
-		}
+		Objects.requireNonNull(input, "Input binary cannot be null");
 		try (ByteArrayInputStream inputStream = new ByteArrayInputStream(input)) {
 			return loadCertificate(inputStream);
 		} catch (IOException e) {
@@ -364,11 +364,13 @@ public final class DSSUtils {
 	 * @return digested array of bytes
 	 */
 	public static byte[] digest(final DigestAlgorithm digestAlgorithm, final byte[] data) {
+		Objects.requireNonNull(data, "The data cannot be null");
 		final MessageDigest messageDigest = getMessageDigest(digestAlgorithm);
 		return messageDigest.digest(data);
 	}
 
 	public static MessageDigest getMessageDigest(DigestAlgorithm digestAlgorithm) {
+		Objects.requireNonNull(digestAlgorithm, "The DigestAlgorithm cannot be null");
 		try {
 			return digestAlgorithm.getMessageDigest();
 		} catch (NoSuchAlgorithmException e) {
@@ -446,9 +448,7 @@ public final class DSSUtils {
 	 *         representing the contents of the file @ if an I/O error occurred
 	 */
 	public static InputStream toInputStream(final File file) {
-		if (file == null) {
-			throw new NullPointerException();
-		}
+		Objects.requireNonNull(file, "The file cannot be null");
 		try {
 			return openInputStream(file);
 		} catch (IOException e) {
@@ -527,16 +527,14 @@ public final class DSSUtils {
 	 *
 	 * @param file
 	 *             the file to open for input, must not be {@code null}
-	 * @return a new {@link java.io.FileInputStream} for the specified file
+	 * @return a new {@link java.io.InputStream} for the specified file
 	 * @throws NullPointerException
 	 *                              if the file is null
 	 * @throws IOException
 	 *                              if the file cannot be read
 	 */
-	private static FileInputStream openInputStream(final File file) throws IOException {
-		if (file == null) {
-			throw new NullPointerException();
-		}
+	private static InputStream openInputStream(final File file) throws IOException {
+		Objects.requireNonNull(file, "The file cannot be null");
 		if (file.exists()) {
 			if (file.isDirectory()) {
 				throw new IOException("File '" + file + "' exists but is a directory");
@@ -573,9 +571,7 @@ public final class DSSUtils {
 	 * @return the content of the inputstream as byte array
 	 */
 	public static byte[] toByteArray(final InputStream inputStream) {
-		if (inputStream == null) {
-			throw new NullPointerException();
-		}
+		Objects.requireNonNull(inputStream, "The InputStream cannot be null");
 		try {
 			return Utils.toByteArray(inputStream);
 		} catch (IOException e) {
@@ -951,6 +947,35 @@ public final class DSSUtils {
 			LOG.warn("Unable to encode uri '{}' : {}", uriPart, e.getMessage());
 			return uriPart;
 		}
+	}
+	
+	/**
+	 * Returns a message retrieved from an exception,
+	 * its cause message if the first is not defined,
+	 * or exception class name if non of them is specified
+	 * 
+	 * @param e {@link Exception} to get message for
+	 * @return {@link String} exception message
+	 */
+	public static String getExceptionMessage(Exception e) {
+		if (e == null) {
+			throw new DSSException("Cannot retrieve a message. The exception is null!");
+		}
+		
+		if (e.getMessage() != null) {
+			return e.getMessage();
+			
+		} else if (e.getCause() != null && e.getCause().getMessage() != null) {
+			return e.getCause().getMessage();
+			
+		} else {
+			return e.getClass().getName();
+			
+		}
+	}
+
+	public static Digest getDigest(DigestAlgorithm digestAlgo, DSSDocument dssDocument) {
+		return new Digest(digestAlgo, digest(digestAlgo, dssDocument));
 	}
 
 }

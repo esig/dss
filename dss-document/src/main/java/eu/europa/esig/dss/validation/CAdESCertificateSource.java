@@ -154,11 +154,15 @@ public class CAdESCertificateSource extends CMSCertificateSource {
 		final ASN1Set attrValues = attribute.getAttrValues();
 		for (int ii = 0; ii < attrValues.size(); ii++) {
 			final ASN1Encodable asn1Encodable = attrValues.getObjectAt(ii);
-			final SigningCertificate signingCertificate = SigningCertificate.getInstance(asn1Encodable);
-			if (signingCertificate != null) {
-				certificateRefs.addAll(extractESSCertIDs(signingCertificate.getCerts(), CertificateRefOrigin.SIGNING_CERTIFICATE));
-			} else {
-				LOG.warn("SigningCertificate attribute is not well defined!");
+			try {
+				final SigningCertificate signingCertificate = SigningCertificate.getInstance(asn1Encodable);
+				if (signingCertificate != null) {
+					certificateRefs.addAll(extractESSCertIDs(signingCertificate.getCerts(), CertificateRefOrigin.SIGNING_CERTIFICATE));
+				} else {
+					LOG.warn("SigningCertificate attribute is null");
+				}
+			} catch (Exception e) {
+				LOG.warn("SigningCertificate attribute '{}' is not well defined!", Utils.toBase64(DSSASN1Utils.getDEREncoded(asn1Encodable)));
 			}
 		}
 		return certificateRefs;
@@ -191,9 +195,15 @@ public class CAdESCertificateSource extends CMSCertificateSource {
 		final ASN1Set attrValues = attribute.getAttrValues();
 		for (int ii = 0; ii < attrValues.size(); ii++) {
 			final ASN1Encodable asn1Encodable = attrValues.getObjectAt(ii);
-			final SigningCertificateV2 signingCertificate = SigningCertificateV2.getInstance(asn1Encodable);
-			if (signingCertificate != null) {
-				certificateRefs.addAll(extractESSCertIDv2s(signingCertificate.getCerts(), CertificateRefOrigin.SIGNING_CERTIFICATE));
+			try {
+				final SigningCertificateV2 signingCertificate = SigningCertificateV2.getInstance(asn1Encodable);
+				if (signingCertificate != null) {
+					certificateRefs.addAll(extractESSCertIDv2s(signingCertificate.getCerts(), CertificateRefOrigin.SIGNING_CERTIFICATE));
+				} else {
+					LOG.warn("SigningCertificateV2 attribute is null");
+				}
+			} catch (Exception e) {
+				LOG.warn("SigningCertificateV2 attribute '{}' is not well defined!", Utils.toBase64(DSSASN1Utils.getDEREncoded(asn1Encodable)));
 			}
 		}
 		return certificateRefs;

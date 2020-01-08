@@ -33,9 +33,10 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentTypeCheck;
 
-public class ContentTypeCheckTest {
+public class ContentTypeCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void contentTypeCheck() throws Exception {
@@ -47,7 +48,7 @@ public class ContentTypeCheckTest {
 		constraint.setValue("Valid_Value");
 
 		XmlSAV result = new XmlSAV();
-		ContentTypeCheck ctc = new ContentTypeCheck(result, new SignatureWrapper(sig), constraint);
+		ContentTypeCheck ctc = new ContentTypeCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
 		ctc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -65,7 +66,7 @@ public class ContentTypeCheckTest {
 		constraint.setValue("Valid_Value");
 
 		XmlSAV result = new XmlSAV();
-		ContentTypeCheck ctc = new ContentTypeCheck(result, new SignatureWrapper(sig), constraint);
+		ContentTypeCheck ctc = new ContentTypeCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
 		ctc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

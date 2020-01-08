@@ -36,6 +36,8 @@ public final class AdditionalInfo {
 	public static final String CRYPTOGRAPHIC_CHECK_FAILURE_WITH_ID = "Algorithm [{0}] is not reliable at the validation time : {1} for token with ID [{2}]";
 	
 	public static final String REVOCATION_CRYPTOGRAPHIC_CHECK_FAILURE = "Revocation data for certificate with id [{0}] is not reliable";
+	
+	public static final String REVOCATON_ACCEPTANCE_CHECK = "Id = {0}, production date = {1}";
 
 	public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
 
@@ -44,6 +46,16 @@ public final class AdditionalInfo {
 	public static final String EXTENDED_KEY_USAGE = "Extended key usage : {0}";
 	
 	public static final String REVOCATION_CHECK = "Validation time : {0}; Production time : {1}; NextUpdate time : {2}";
+	
+	public static final String REVOCATION_NO_THIS_UPDATE = "The revocation data {0} does not have thisUpdate date";
+	
+	public static final String REVOCATION_THIS_UPDATE_BEFORE = "Revocation {0} thisUpdate date {1} is before the certificate validity range : {2} - {3}";
+	
+	public static final String REVOCATION_NOT_AFTER_AFTER = "Revocation {0} notAfterDate {1} is beyond the certificate validity range : {2} - {3}";
+	
+	public static final String REVOCATION_CERT_HASH_OK = "CertHash value of Revocation {0} matches with the certificate digest";
+	
+	public static final String REVOCATION_CONSISTENT = "Revocation {0} thisUpdate {1} is in the certificate validity range : {2} - {3}";
 
 	public static final String PSEUDO = "Pseudo : {0}";
 

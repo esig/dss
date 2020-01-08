@@ -47,6 +47,11 @@ public class DataToSignASiCEWithXAdESFromArchive extends AbstractDataToSignASiCE
 	}
 
 	@Override
+	public String getTimestampFilename() {
+		throw new UnsupportedOperationException("Timestamp file cannot be added with ASiC-E + XAdES");
+	}
+
+	@Override
 	public List<DSSDocument> getToBeSigned() {
 		return signedDocuments;
 	}

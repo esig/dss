@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.service.http.commons;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -86,6 +85,7 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.service.http.proxy.ProxyConfig;
 import eu.europa.esig.dss.service.http.proxy.ProxyProperties;
@@ -143,9 +143,9 @@ public class CommonsDataLoader implements DataLoader {
 	private String sslProtocol = DEFAULT_SSL_PROTOCOL;
 
 	/**
-	 * Path to the keystore.
+	 * Keystore for SSL.
 	 */
-	private String sslKeystorePath;
+	private DSSDocument sslKeystore;
 
 	/**
 	 * Keystore's type.
@@ -161,9 +161,10 @@ public class CommonsDataLoader implements DataLoader {
 	private boolean loadKeyStoreAsTrustMaterial = false;
 
 	/**
-	 * Path to the truststore.
+	 * TrustStore for SSL.
 	 */
-	private String sslTruststorePath;
+	private DSSDocument sslTruststore;
+
 	/**
 	 * Trust store's type
 	 */
@@ -256,16 +257,16 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	protected KeyStore getSSLKeyStore() throws IOException, GeneralSecurityException {
-		return loadKeyStore(sslKeystorePath, sslKeystoreType, sslKeystorePassword);
+		return loadKeyStore(sslKeystore, sslKeystoreType, sslKeystorePassword);
 	}
 
 	protected KeyStore getSSLTrustStore() throws IOException, GeneralSecurityException {
-		return loadKeyStore(sslTruststorePath, sslTruststoreType, sslTruststorePassword);
+		return loadKeyStore(sslTruststore, sslTruststoreType, sslTruststorePassword);
 	}
 
-	private KeyStore loadKeyStore(String path, String type, String passwordStr) throws IOException, GeneralSecurityException {
-		if (Utils.isStringNotEmpty(path)) {
-			try (InputStream is = new FileInputStream(path)) {
+	private KeyStore loadKeyStore(DSSDocument store, String type, String passwordStr) throws IOException, GeneralSecurityException {
+		if (store != null) {
+			try (InputStream is = store.openStream()) {
 				KeyStore ks = KeyStore.getInstance(type);
 				final char[] password = passwordStr != null ? passwordStr.toCharArray() : null;
 				ks.load(is, password);
@@ -552,7 +553,7 @@ public class CommonsDataLoader implements DataLoader {
 			return readHttpResponse(httpResponse);
 
 		} catch (URISyntaxException | IOException e) {
-			throw new DSSExternalResourceException(String.format("Unable to process GET call for url [%s]. Reason : [%s]", url, e.getMessage()), e);
+			throw new DSSExternalResourceException(String.format("Unable to process GET call for url [%s]. Reason : [%s]", url, DSSUtils.getExceptionMessage(e)), e);
 		} finally {
 			try {
 				if (httpRequest != null) {
@@ -810,8 +811,8 @@ public class CommonsDataLoader implements DataLoader {
 		this.sslProtocol = sslProtocol;
 	}
 
-	public void setSslKeystorePath(String sslKeystorePath) {
-		this.sslKeystorePath = sslKeystorePath;
+	public void setSslKeystore(DSSDocument sslKeyStore) {
+		this.sslKeystore = sslKeyStore;
 	}
 
 	public void setKeyStoreAsTrustMaterial(boolean loadKeyStoreAsTrustMaterial) {
@@ -826,8 +827,8 @@ public class CommonsDataLoader implements DataLoader {
 		this.sslKeystorePassword = sslKeystorePassword;
 	}
 
-	public void setSslTruststorePath(final String sslTruststorePath) {
-		this.sslTruststorePath = sslTruststorePath;
+	public void setSslTruststore(DSSDocument sslTrustStore) {
+		this.sslTruststore = sslTrustStore;
 	}
 
 	public void setSslTruststorePassword(final String sslTruststorePassword) {

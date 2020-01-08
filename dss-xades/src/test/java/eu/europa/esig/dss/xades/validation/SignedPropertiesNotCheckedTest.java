@@ -135,7 +135,8 @@ public class SignedPropertiesNotCheckedTest {
 				detailedReport.getBasicBuildingBlocksSubIndication(diagnosticData.getFirstSignatureId()));
 		
 		SimpleReport simpleReport = reports.getSimpleReport();
-		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(Indication.TOTAL_FAILED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.SIG_CRYPTO_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 		
 	}
 

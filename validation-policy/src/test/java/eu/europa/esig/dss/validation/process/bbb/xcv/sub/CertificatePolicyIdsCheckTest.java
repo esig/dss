@@ -35,9 +35,10 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificatePolicyIdsCheck;
 
-public class CertificatePolicyIdsCheckTest {
+public class CertificatePolicyIdsCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void certificatePolicyIdsCheck() throws Exception {
@@ -54,7 +55,7 @@ public class CertificatePolicyIdsCheckTest {
 		xc.setCertificatePolicies(policyIds);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificatePolicyIdsCheck cpic = new CertificatePolicyIdsCheck(result, new CertificateWrapper(xc), constraint);
+		CertificatePolicyIdsCheck cpic = new CertificatePolicyIdsCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
 		cpic.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -77,7 +78,7 @@ public class CertificatePolicyIdsCheckTest {
 		xc.setCertificatePolicies(policyIds);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificatePolicyIdsCheck cpic = new CertificatePolicyIdsCheck(result, new CertificateWrapper(xc), constraint);
+		CertificatePolicyIdsCheck cpic = new CertificatePolicyIdsCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
 		cpic.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

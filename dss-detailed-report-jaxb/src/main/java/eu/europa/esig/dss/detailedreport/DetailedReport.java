@@ -20,8 +20,11 @@
  */
 package eu.europa.esig.dss.detailedreport;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,15 +41,18 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlProofOfExistence;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamps;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationSignatureQualification;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationTimestampQualification;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.enumerations.TimestampQualification;
 import eu.europa.esig.dss.enumerations.ValidationTime;
 
 /**
@@ -224,8 +230,8 @@ public class DetailedReport {
 			if (xmlSignature.getValidationProcessLongTermData() != null) {
 				return xmlSignature.getValidationProcessLongTermData().getProofOfExistence();
 			}
-			if (xmlSignature.getValidationProcessBasicSignatures() != null) {
-				return xmlSignature.getValidationProcessBasicSignatures().getProofOfExistence();
+			if (xmlSignature.getValidationProcessBasicSignature() != null) {
+				return xmlSignature.getValidationProcessBasicSignature().getProofOfExistence();
 			}
 		}
 		return null;
@@ -233,24 +239,24 @@ public class DetailedReport {
 
 	public Indication getBasicValidationIndication(String signatureId) {
 		XmlSignature signature = getXmlSignatureById(signatureId);
-		if (signature != null && signature.getValidationProcessBasicSignatures() != null
-				&& signature.getValidationProcessBasicSignatures().getConclusion() != null) {
-			return signature.getValidationProcessBasicSignatures().getConclusion().getIndication();
+		if (signature != null && signature.getValidationProcessBasicSignature() != null
+				&& signature.getValidationProcessBasicSignature().getConclusion() != null) {
+			return signature.getValidationProcessBasicSignature().getConclusion().getIndication();
 		}
 		return null;
 	}
 
 	public SubIndication getBasicValidationSubIndication(String signatureId) {
 		XmlSignature signature = getXmlSignatureById(signatureId);
-		if (signature != null && signature.getValidationProcessBasicSignatures() != null
-				&& signature.getValidationProcessBasicSignatures().getConclusion() != null) {
-			return signature.getValidationProcessBasicSignatures().getConclusion().getSubIndication();
+		if (signature != null && signature.getValidationProcessBasicSignature() != null
+				&& signature.getValidationProcessBasicSignature().getConclusion() != null) {
+			return signature.getValidationProcessBasicSignature().getConclusion().getSubIndication();
 		}
 		return null;
 	}
 
 	public Indication getTimestampValidationIndication(String timestampId) {
-		XmlValidationProcessTimestamps timestampValidationById = getTimestampValidationById(timestampId);
+		XmlValidationProcessTimestamp timestampValidationById = getTimestampValidationById(timestampId);
 		if (timestampValidationById != null && timestampValidationById.getConclusion() != null) {
 			return timestampValidationById.getConclusion().getIndication();
 		}
@@ -258,7 +264,7 @@ public class DetailedReport {
 	}
 
 	public SubIndication getTimestampValidationSubIndication(String timestampId) {
-		XmlValidationProcessTimestamps timestampValidationById = getTimestampValidationById(timestampId);
+		XmlValidationProcessTimestamp timestampValidationById = getTimestampValidationById(timestampId);
 		if (timestampValidationById != null && timestampValidationById.getConclusion() != null) {
 			return timestampValidationById.getConclusion().getSubIndication();
 		}
@@ -305,8 +311,51 @@ public class DetailedReport {
 		return null;
 	}
 
+	public TimestampQualification getTimestampQualification(String timestampId) {
+		XmlValidationTimestampQualification timestampQualif = getXmlTimestampQualificationById(timestampId);
+		if (timestampQualif !=null) {
+			return timestampQualif.getTimestampQualification();
+		}
+		return null;
+	}
+
+	private XmlValidationTimestampQualification getXmlTimestampQualificationById(String timestampId) {
+		XmlTimestamp timestamp = getTimestampById(timestampId);
+		if (timestamp != null) {
+			return timestamp.getValidationTimestampQualification();
+		}
+		return null;
+	}
+
+	private XmlValidationProcessTimestamp getTimestampValidationById(String timestampId) {
+		XmlTimestamp timestamp = getTimestampById(timestampId);
+		if (timestamp != null) {
+			return timestamp.getValidationProcessTimestamp();
+		}
+		return null;
+	}
+
+	private XmlTimestamp getTimestampById(String timestampId) {
+		for (XmlTimestamp xmlTimestamp : getIndependentTimestamps()) {
+			if (xmlTimestamp.getId().equals(timestampId)) {
+				return xmlTimestamp;
+			}
+		}
+
+		List<XmlSignature> signatures = getSignatures();
+		for (XmlSignature xmlSignature : signatures) {
+			List<XmlTimestamp> timestamps = xmlSignature.getTimestamp();
+			for (XmlTimestamp xmlTimestamp : timestamps) {
+				if (xmlTimestamp.getId().equals(timestampId)) {
+					return xmlTimestamp;
+				}
+			}
+		}
+		return null;
+	}
+
 	public XmlSignature getXmlSignatureById(String signatureId) {
-		List<XmlSignature> signatures = jaxbDetailedReport.getSignatures();
+		List<XmlSignature> signatures = getSignatures();
 		if (signatures != null) {
 			for (XmlSignature xmlSignature : signatures) {
 				if (signatureId.equals(xmlSignature.getId())) {
@@ -317,21 +366,34 @@ public class DetailedReport {
 		return null;
 	}
 
-	private XmlValidationProcessTimestamps getTimestampValidationById(String timestampId) {
-		List<XmlSignature> signatures = jaxbDetailedReport.getSignatures();
-		if (signatures != null) {
-			for (XmlSignature xmlSignature : signatures) {
-				List<XmlValidationProcessTimestamps> validationTimestamps = xmlSignature.getValidationProcessTimestamps();
-				if (validationTimestamps != null) {
-					for (XmlValidationProcessTimestamps tspValidation : validationTimestamps) {
-						if (timestampId.equals(tspValidation.getId())) {
-							return tspValidation;
-						}
-					}
-				}
+	public List<XmlSignature> getSignatures() {
+		List<XmlSignature> result = new ArrayList<XmlSignature>();
+		for (Serializable element : jaxbDetailedReport.getSignatureOrTimestampOrCertificate()) {
+			if (element instanceof XmlSignature) {
+				result.add((XmlSignature) element);
 			}
 		}
-		return null;
+		return result;
+	}
+
+	public List<XmlTimestamp> getIndependentTimestamps() {
+		List<XmlTimestamp> result = new ArrayList<XmlTimestamp>();
+		for (Serializable element : jaxbDetailedReport.getSignatureOrTimestampOrCertificate()) {
+			if (element instanceof XmlTimestamp) {
+				result.add((XmlTimestamp) element);
+			}
+		}
+		return result;
+	}
+
+	public List<XmlCertificate> getCertificates() {
+		List<XmlCertificate> result = new ArrayList<XmlCertificate>();
+		for (Serializable element : jaxbDetailedReport.getSignatureOrTimestampOrCertificate()) {
+			if (element instanceof XmlCertificate) {
+				result.add((XmlCertificate) element);
+			}
+		}
+		return result;
 	}
 
 	public XmlDetailedReport getJAXBModel() {
@@ -347,7 +409,7 @@ public class DetailedReport {
 	}
 
 	private CertificateQualification getCertificateQualification(ValidationTime validationTime) {
-		XmlCertificate certificate = jaxbDetailedReport.getCertificate();
+		XmlCertificate certificate = getCertificates().get(0);
 		if (certificate != null) {
 			List<XmlValidationCertificateQualification> validationCertificateQualifications = certificate.getValidationCertificateQualification();
 			if (validationCertificateQualifications != null) {
@@ -362,7 +424,8 @@ public class DetailedReport {
 	}
 
 	public XmlConclusion getCertificateXCVConclusion(String certificateId) {
-		if (jaxbDetailedReport.getCertificate() == null) {
+		XmlCertificate certificate = getCertificates().get(0);
+		if (certificate == null) {
 			throw new UnsupportedOperationException("Only supported in report for certificate");
 		}
 		List<XmlBasicBuildingBlocks> basicBuildingBlocks = jaxbDetailedReport.getBasicBuildingBlocks();
@@ -398,7 +461,7 @@ public class DetailedReport {
 		} else if (xmlSignature.getValidationProcessLongTermData() != null) {
 			return xmlSignature.getValidationProcessLongTermData();
 		} else {
-			return xmlSignature.getValidationProcessBasicSignatures();
+			return xmlSignature.getValidationProcessBasicSignature();
 		}
 	}
 
@@ -434,7 +497,7 @@ public class DetailedReport {
 			collect(type, result, getHighestConclusion(signatureId));
 			collectTimestamps(type, result, signatureById);
 		} else {
-			collect(type, result, signatureById.getValidationProcessBasicSignatures());
+			collect(type, result, signatureById.getValidationProcessBasicSignature());
 			collectTimestamps(type, result, signatureById);
 			collect(type, result, signatureById.getValidationProcessLongTermData());
 			collect(type, result, signatureById.getValidationProcessArchivalData());
@@ -444,11 +507,12 @@ public class DetailedReport {
 	}
 
 	private void collectTimestamps(MessageType type, Set<String> result, XmlSignature signatureById) {
-		List<XmlValidationProcessTimestamps> validationProcessTimestamps = signatureById.getValidationProcessTimestamps();
-		for (XmlValidationProcessTimestamps xmlValidationProcessTimestamp : validationProcessTimestamps) {
+		List<XmlTimestamp> timestamps = signatureById.getTimestamp();
+		for (XmlTimestamp xmlTimestamp : timestamps) {
+			XmlValidationProcessTimestamp validationProcessTimestamps = xmlTimestamp.getValidationProcessTimestamp();
 			if (!MessageType.ERROR.equals(type) || !Indication.PASSED.equals(
-					getBasicBuildingBlockById(xmlValidationProcessTimestamp.getId()).getConclusion().getIndication())) {
-				collect(type, result, xmlValidationProcessTimestamp);
+					getBasicBuildingBlockById(xmlTimestamp.getId()).getConclusion().getIndication())) {
+				collect(type, result, validationProcessTimestamps);
 			}
 		}
 	}
@@ -460,11 +524,18 @@ public class DetailedReport {
 				if (message != null) {
 					result.add(message.getValue());
 				}
-
-				String constraintId = constraint.getId();
-				if (constraintId != null && !constraintId.isEmpty()) {
-					collect(type, result, getBasicBuildingBlockById(constraintId));
+				
+				// do not extract subErrors if the highest conclusion is valid
+				if (!MessageType.ERROR.equals(type) || message != null) {
+					String constraintId = constraint.getId();
+					if (constraintId != null && !constraintId.isEmpty()) {
+						collect(type, result, getBasicBuildingBlockById(constraintId));
+					}
 				}
+
+			}
+			if (constraintConclusion.getConclusion() != null) {
+				result.addAll(getMessages(type, constraintConclusion.getConclusion()));
 			}
 		}
 	}
@@ -492,19 +563,42 @@ public class DetailedReport {
 	private XmlName getMessage(MessageType type, XmlConstraint constraint) {
 		XmlName message = null;
 		switch (type) {
-		case ERROR:
-			message = constraint.getError();
-			break;
-		case WARN:
-			message = constraint.getWarning();
-			break;
-		case INFO:
-			message = constraint.getInfo();
-			break;
-		default:
-			break;
+			case ERROR:
+				message = constraint.getError();
+				break;
+			case WARN:
+				message = constraint.getWarning();
+				break;
+			case INFO:
+				message = constraint.getInfo();
+				break;
+			default:
+				break;
 		}
 		return message;
+	}
+	
+	private Set<String> getMessages(MessageType type, XmlConclusion conclusion) {
+		switch (type) {
+			case ERROR:
+				return getMessages(conclusion.getErrors());
+			case WARN:
+				return getMessages(conclusion.getWarnings());
+			case INFO:
+				return getMessages(conclusion.getInfos());
+			default:
+				return Collections.emptySet();
+		}
+	}
+	
+	private Set<String> getMessages(List<XmlName> xmlNames) {
+		Set<String> messages = new HashSet<String>();
+		if (xmlNames != null) {
+			for (XmlName xmlName : xmlNames) {
+				messages.add(xmlName.getValue());
+			}
+		}
+		return messages;
 	}
 
 	enum MessageType {

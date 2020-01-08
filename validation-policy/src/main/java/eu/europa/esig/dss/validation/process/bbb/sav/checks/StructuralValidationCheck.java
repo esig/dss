@@ -25,15 +25,17 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class StructuralValidationCheck extends ChainItem<XmlSAV> {
 
 	private final SignatureWrapper signature;
 
-	public StructuralValidationCheck(XmlSAV result, SignatureWrapper signature, LevelConstraint constraint) {
-		super(result, constraint);
+	public StructuralValidationCheck(I18nProvider i18nProvider, XmlSAV result, SignatureWrapper signature, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint);
 		this.signature = signature;
 	}
 
@@ -60,6 +62,15 @@ public class StructuralValidationCheck extends ChainItem<XmlSAV> {
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
 		return SubIndication.SIG_CONSTRAINTS_FAILURE;
+	}
+	
+	@Override
+	protected String getAdditionalInfo() {
+		String errorMessage = signature.getStructuralValidationMessage();
+		if (Utils.isStringNotBlank(errorMessage)) {
+			return errorMessage;
+		}
+		return null;
 	}
 
 }

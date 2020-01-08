@@ -20,8 +20,12 @@
  */
 package eu.europa.esig.dss.validation.process;
 
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.TimeZone;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +37,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
@@ -55,6 +61,8 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 	private ChainItem<T> nextItem;
 
 	private T result;
+	
+	protected final I18nProvider i18nProvider;
 
 	private final LevelConstraint constraint;
 
@@ -63,20 +71,23 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 	/**
 	 * Common constructor
 	 * 
+	 * @param i18nProvider
+	 *            the {@code I18nProvider} internationalization provider
 	 * @param result
 	 *            the {@code Chain} object parent of this object
 	 * @param constraint
 	 *            the {@code LevelConstraint} to follow to execute this ChainItem
 	 * 
 	 */
-	protected ChainItem(T result, LevelConstraint constraint) {
-		this.result = result;
-		this.constraint = constraint;
+	protected ChainItem(I18nProvider i18nProvider, T result, LevelConstraint constraint) {
+		this(i18nProvider, result, constraint, null);
 	}
 
 	/**
 	 * Specific constructor for Basic Building Blocks validation
 	 * 
+	 * @param i18nProvider
+	 *            the {@code I18nProvider} internationalization provider
 	 * @param result
 	 *            the {@code Chain} object parent of this object
 	 * @param constraint
@@ -85,7 +96,9 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 	 *            the {@code XmlBasicBuildingBlocks}'s id
 	 * 
 	 */
-	protected ChainItem(T result, LevelConstraint constraint, String bbbId) {
+	protected ChainItem(I18nProvider i18nProvider, T result, LevelConstraint constraint, String bbbId) {
+		Objects.requireNonNull(i18nProvider, "i18nProvider must be defined!");
+		this.i18nProvider = i18nProvider;
 		this.result = result;
 		this.constraint = constraint;
 		this.bbbId = bbbId;
@@ -132,9 +145,19 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 
 	protected abstract boolean process();
 
-	protected abstract IMessageTag getMessageTag();
+	/**
+	 * Returns an i18n key String of a message to get
+	 * 
+	 * @return {@link MessageTag} key
+	 */
+	protected abstract MessageTag getMessageTag();
 
-	protected abstract IMessageTag getErrorMessageTag();
+	/**
+	 * Returns an i18n key String of an error message to get
+	 * 
+	 * @return {@link MessageTag} key
+	 */
+	protected abstract MessageTag getErrorMessageTag();
 
 	protected List<XmlName> getPreviousErrors() {
 		return Collections.emptyList();
@@ -209,18 +232,25 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 	protected String getAdditionalInfo() {
 		return null;
 	}
+	
+	protected String convertDate(Date date) {
+		SimpleDateFormat sdf = new SimpleDateFormat(AdditionalInfo.DATE_FORMAT);
+		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+		return sdf.format(date);
+	}
 
 	private void addConstraint(XmlConstraint constraint) {
 		result.getConstraint().add(constraint);
 	}
 
-	private XmlName buildXmlName(IMessageTag messageTag) {
+	private XmlName buildXmlName(MessageTag messageTag) {
 		XmlName xmlName = new XmlName();
-		if (messageTag != null) {
+		String message = i18nProvider.getMessage(messageTag);
+		if (message != null) {
 			xmlName.setNameId(messageTag.getId());
-			xmlName.setValue(messageTag.getMessage());
+			xmlName.setValue(message);
 		} else {
-			LOG.error("MessageTag is null");
+			LOG.error("MessageTag [{}] is not defined an messages.properties!", messageTag);
 		}
 		return xmlName;
 	}

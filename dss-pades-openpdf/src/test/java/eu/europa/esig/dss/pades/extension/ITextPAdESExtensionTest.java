@@ -45,6 +45,8 @@ import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTASelfSignedTS
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTAWithSelfSignedTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTSelfSignedTSATest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTWithSelfSignedTest;
+import eu.europa.esig.dss.pades.extension.suite.PDFArchiveTimestampingTest;
+import eu.europa.esig.dss.pades.extension.suite.PDFTimestampingTest;
 
 @RunWith(JUnitPlatform.class)
 @SelectClasses({ PAdESExtensionBToLTTest.class, PAdESExtensionBToLTATest.class, PAdESExtensionBToTTest.class, PAdESExtensionBToTWithCompositeTSATest.class,
@@ -52,7 +54,7 @@ import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTWithSelfSigne
 		PAdESExtensionLTToLTAWithError500TimestampTest.class, PAdESExtensionLTToLTAWithFailTimestampTest.class, PAdESExtensionTToLTTest.class, PAdESExtensionTToLTATest.class,
 		DSS1523Test.class, PAdESExtensionTToLTWithSelfSignedTest.class, PAdESExtensionTToLTAWithSelfSignedTest.class, PAdESExtensionLTToLTAWithSelfSignedTest.class,
 		PAdESExtensionBToLTASelfSignedTSATest.class, PAdESExtensionTToLTSelfSignedTSATest.class, PAdESExtensionTToLTASelfSignedTSATest.class,
-		PAdESExtensionLTToLTASelfSignedTSATest.class, PAdESExtensionAllSelfSignedCertsTest.class })
+		PAdESExtensionLTToLTASelfSignedTSATest.class, PAdESExtensionAllSelfSignedCertsTest.class, PDFTimestampingTest.class, PDFArchiveTimestampingTest.class })
 public class ITextPAdESExtensionTest {
 
 }

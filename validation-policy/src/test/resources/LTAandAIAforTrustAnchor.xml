@@ -165,9 +165,9 @@
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDStatusAsInCert</Qualifier>
                             </CapturedQualifiers>
                             <AdditionalServiceInfoUris>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForWebSiteAuthentication</additionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForWebSiteAuthentication</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -291,8 +291,8 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2017-08-16T12:15:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A">
@@ -302,7 +302,7 @@
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <EndDate>2017-08-16T12:15:00</EndDate>
                             <AdditionalServiceInfoUris>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A">
@@ -383,9 +383,9 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2017-08-30T22:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForWebSiteAuthentication</additionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForWebSiteAuthentication</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02">
@@ -395,7 +395,7 @@
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <EndDate>2017-08-30T22:00:00</EndDate>
                             <AdditionalServiceInfoUris>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02">
@@ -481,8 +481,8 @@
                             <StartDate>2017-08-16T12:15:00</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>

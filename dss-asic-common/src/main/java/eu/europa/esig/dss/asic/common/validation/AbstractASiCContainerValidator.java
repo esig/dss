@@ -35,24 +35,22 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.ContainerInfo;
-import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.ManifestFile;
+import eu.europa.esig.dss.validation.SignatureValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 public abstract class AbstractASiCContainerValidator extends SignedDocumentValidator {
 
-	protected List<DocumentValidator> validators;
+	protected List<SignatureValidator> validators;
 
 	protected ASiCExtractResult extractResult;
 
 	private ASiCContainerType containerType;
 	
-	private List<ManifestFile> manifestFiles;
-
 	/**
-	 * Default constructor used with reflexion (see SignedDocumentValidator)
+	 * Default constructor used with reflexion (see DefaultDocumentValidator)
 	 */
 	private AbstractASiCContainerValidator() {
 		super(null);
@@ -81,16 +79,31 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	}
 
 	@Override
-	public List<AdvancedSignature> prepareSignatureValidationContext(final ValidationContext validationContext) {
+	public void prepareSignatureValidationContext(final ValidationContext validationContext, 
+			final List<AdvancedSignature> allSignatures) {
+		prepareCertificatesAndTimestamps(validationContext, allSignatures);
+		if (Utils.isCollectionNotEmpty(allSignatures)) {
+			// add external timestamps to the validation
+			List<TimestampToken> externalTimestamps = attachExternalTimestamps(allSignatures);
+			for (TimestampToken timestamp : externalTimestamps) {
+				addTimestampTokenForVerification(validationContext, timestamp);
+			}
+		}
+
+		processSignaturesValidation(validationContext, allSignatures);
+	}
+	
+
+	@Override
+	protected List<AdvancedSignature> getAllSignatures() {
 		List<AdvancedSignature> allSignatures = new ArrayList<AdvancedSignature>();
-		List<DocumentValidator> currentValidators = getValidators();
-		for (DocumentValidator documentValidator : currentValidators) { // CAdES / XAdES
-			allSignatures.addAll(documentValidator.prepareSignatureValidationContext(validationContext));
+		List<SignatureValidator> currentValidators = getValidators();
+		for (SignatureValidator signatureValidator : currentValidators) { // CAdES / XAdES
+			List<AdvancedSignature> signatures = signatureValidator.getSignatures();
+			signatureValidator.findSignatureScopes(signatures); // must be executed against the assigned signatureValidator
+			allSignatures.addAll(signatures);
 		}
-		List<TimestampToken> externalTimestamps = attachExternalTimestamps(allSignatures);
-		for (TimestampToken timestamp : externalTimestamps) {
-			addTimestampTokenForVerification(validationContext, timestamp);
-		}
+		
 		return allSignatures;
 	}
 	
@@ -150,15 +163,15 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	@Override
 	public List<AdvancedSignature> getSignatures() {
 		List<AdvancedSignature> allSignatures = new ArrayList<AdvancedSignature>();
-		List<DocumentValidator> currentValidators = getValidators();
-		for (DocumentValidator documentValidator : currentValidators) {
-			allSignatures.addAll(documentValidator.getSignatures());
+		List<SignatureValidator> currentValidators = getValidators();
+		for (SignatureValidator signatureValidator : currentValidators) {
+			allSignatures.addAll(signatureValidator.getSignatures());
 		}
 
 		return allSignatures;
 	}
 
-	protected abstract List<DocumentValidator> getValidators();
+	protected abstract List<SignatureValidator> getValidators();
 
 	protected List<DSSDocument> getSignatureDocuments() {
 		return extractResult.getSignatureDocuments();

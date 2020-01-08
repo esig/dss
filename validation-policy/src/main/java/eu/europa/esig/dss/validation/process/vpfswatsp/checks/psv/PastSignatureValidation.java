@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
@@ -30,20 +31,19 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlPCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
-import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicRevocationsCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.pcv.PastCertificateValidation;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks.BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpirationCheck;
@@ -55,22 +55,20 @@ import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks.PastCer
 public class PastSignatureValidation extends Chain<XmlPSV> {
 
 	private final TokenProxy token;
-	private final DiagnosticData diagnosticData;
-	private final XmlBasicBuildingBlocks bbb;
+	private final Map<String, XmlBasicBuildingBlocks> bbbs;
 	private final POEExtraction poe;
 	private final Date currentTime;
 
 	private final ValidationPolicy policy;
 	private final Context context;
 
-	public PastSignatureValidation(TokenProxy token, DiagnosticData diagnosticData, XmlBasicBuildingBlocks bbb, POEExtraction poe, Date currentTime,
-			ValidationPolicy policy, Context context) {
-		super(new XmlPSV());
+	public PastSignatureValidation(I18nProvider i18nProvider, TokenProxy token, Map<String, XmlBasicBuildingBlocks> bbbs, 
+			POEExtraction poe, Date currentTime, ValidationPolicy policy, Context context) {
+		super(i18nProvider, new XmlPSV());
 		result.setTitle(BasicBuildingBlockDefinition.PAST_SIGNATURE_VALIDATION.getTitle());
 
 		this.token = token;
-		this.diagnosticData = diagnosticData;
-		this.bbb = bbb;
+		this.bbbs = bbbs;
 		this.poe = poe;
 		this.currentTime = currentTime;
 		this.policy = policy;
@@ -80,13 +78,14 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 	@Override
 	protected void initChain() {
 
-		final Indication currentTimeIndication = bbb.getConclusion().getIndication();
-		final SubIndication currentTimeSubIndication = bbb.getConclusion().getSubIndication();
-		final List<XmlName> currentTimeErrors = bbb.getConclusion().getErrors();
+		XmlBasicBuildingBlocks tokenBBB = bbbs.get(token.getId());
+		final Indication currentTimeIndication = tokenBBB.getConclusion().getIndication();
+		final SubIndication currentTimeSubIndication = tokenBBB.getConclusion().getSubIndication();
+		final List<XmlName> currentTimeErrors = tokenBBB.getConclusion().getErrors();
 
-		PastCertificateValidation pcv = new PastCertificateValidation(token, diagnosticData, bbb, poe, currentTime, policy, context);
+		PastCertificateValidation pcv = new PastCertificateValidation(i18nProvider, token, tokenBBB, poe, currentTime, policy, context);
 		XmlPCV pcvResult = pcv.execute();
-		bbb.setPCV(pcvResult);
+		tokenBBB.setPCV(pcvResult);
 
 		/*
 		 * 1) The building block shall perform the past certificate validation process with the following inputs: the
@@ -148,25 +147,11 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		 */
 		if (Indication.INDETERMINATE.equals(currentTimeIndication) && SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(currentTimeSubIndication)) {
 			// check signature or timestamp itself
-			Date bestSignatureTime = poe.getLowestPOETime(token.getId(), controlTime);
-			item = item.setNextItem(poeUsedAlgorithmInSecureTimeExistsForEachAlgorithmConcernedByFailure(token, bestSignatureTime, context));
+			item = item.setNextItem(tokenUsedAlgorithmsAreSecureAtPoeTime(token, context));
+
+			// check the certificate chain and its revocation data
+			item = certificateChainReliableAtPoeTime(item, context);
 			
-			// check the certificate chain
-			CertificateWrapper signingCertificate = token.getSigningCertificate();
-			for (CertificateWrapper certificate : token.getCertificateChain()) {
-				if (certificate.isTrusted()) {
-					break;
-				}
-				SubContext subContext = SubContext.CA_CERTIFICATE;
-				if (certificate.getId().equals(signingCertificate.getId())) {
-					subContext = SubContext.SIGNING_CERT;
-				}
-				bestSignatureTime = poe.getLowestPOETime(certificate.getId(), controlTime);
-				item = item.setNextItem(poeUsedAlgorithmInSecureTimeExistsForEachAlgorithmConcernedByFailure(certificate, bestSignatureTime, context, subContext));
-				// check related revocation data
-				List<CryptographicCheck<XmlPSV>> revocationCryptographicChecks = getRevocationCryptographicChecks(certificate.getCertificateRevocationData(), controlTime);
-				item = item.setNextItem(certificateRevocationCryptographicCheck(revocationCryptographicChecks, certificate));
-			}
 			return;
 		}
 
@@ -179,51 +164,67 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 
 	private ChainItem<XmlPSV> currentTimeIndicationCheck(Indication currentTimeIndication, SubIndication currentTimeSubIndication,
 			List<XmlName> currentTimeErrors) {
-		return new CurrentTimeIndicationCheck(result, currentTimeIndication, currentTimeSubIndication, currentTimeErrors, getFailLevelConstraint());
+		return new CurrentTimeIndicationCheck(i18nProvider, result, currentTimeIndication, currentTimeSubIndication, currentTimeErrors, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlPSV> pastCertificateValidationAcceptableCheck(XmlPCV pcvResult) {
-		return new PastCertificateValidationAcceptableCheck(result, pcvResult, getFailLevelConstraint());
+		return new PastCertificateValidationAcceptableCheck(i18nProvider, result, pcvResult, token.getId(), getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlPSV> poeExist() {
-		return new POEExistsCheck(result, getFailLevelConstraint());
+		return new POEExistsCheck(i18nProvider, result, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlPSV> bestSignatureTimeNotBeforeCertificateIssuance(Date bestSignatureTime, CertificateWrapper signingCertificate) {
-		return new BestSignatureTimeNotBeforeCertificateIssuanceCheck(result, bestSignatureTime, signingCertificate, getFailLevelConstraint());
+		return new BestSignatureTimeNotBeforeCertificateIssuanceCheck(i18nProvider, result, bestSignatureTime, signingCertificate, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlPSV> bestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpiration(Date bestSignatureTime,
 			CertificateWrapper signingCertificate) {
-		return new BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpirationCheck(result, bestSignatureTime, signingCertificate,
+		return new BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpirationCheck(i18nProvider, result, bestSignatureTime, signingCertificate,
 				getFailLevelConstraint());
 	}
 
-	private CryptographicCheck<XmlPSV> poeUsedAlgorithmInSecureTimeExistsForEachAlgorithmConcernedByFailure(TokenProxy currentToken, 
-			Date bestSignatureTime, Context context) {
+	private CryptographicCheck<XmlPSV> tokenUsedAlgorithmsAreSecureAtPoeTime(TokenProxy currentToken, Context context) {
 		CryptographicConstraint cryptographicConstraint = policy.getSignatureCryptographicConstraint(context);
-		return new CryptographicCheck<XmlPSV>(result, currentToken, bestSignatureTime, cryptographicConstraint);
+		return new CryptographicCheck<XmlPSV>(i18nProvider, result, currentToken, getLowestPoeTime(token), cryptographicConstraint);
 	}
 	
-	private ChainItem<XmlPSV> poeUsedAlgorithmInSecureTimeExistsForEachAlgorithmConcernedByFailure(TokenProxy currentToken, 
-			Date bestSignatureTime, Context context, SubContext subContext) {
-		CryptographicConstraint cryptographicConstraint = policy.getCertificateCryptographicConstraint(context, subContext);
-		return new CryptographicCheck<XmlPSV>(result, currentToken, bestSignatureTime, cryptographicConstraint);
+	private ChainItem<XmlPSV> certificateChainReliableAtPoeTime(ChainItem<XmlPSV> item, Context context) {
+		return certificateChainReliableAtPoeTime(item, token.getCertificateChain(), context, new ArrayList<String>());
 	}
 	
-	private List<CryptographicCheck<XmlPSV>> getRevocationCryptographicChecks(List<CertificateRevocationWrapper> revocations, Date controlTime) {
-		List<CryptographicCheck<XmlPSV>> revocationCryptographicChecks = new ArrayList<CryptographicCheck<XmlPSV>>();
-		for (RevocationWrapper revocation : revocations) {
-			Date bestSignatureTime = poe.getLowestPOETime(revocation.getId(), controlTime);
-			revocationCryptographicChecks.add(
-					poeUsedAlgorithmInSecureTimeExistsForEachAlgorithmConcernedByFailure(revocation, bestSignatureTime, Context.REVOCATION));
+	private ChainItem<XmlPSV> certificateChainReliableAtPoeTime(ChainItem<XmlPSV> item, List<CertificateWrapper> certificateChain, 
+			Context context, List<String> checkedTokens) {
+		for (CertificateWrapper certificate : certificateChain) {
+			if (certificate.isTrusted()) {
+				break;
+			}
+			if (checkedTokens.contains(certificate.getId())) {
+				continue;
+			}
+			checkedTokens.add(certificate.getId());
+			
+			SubContext subContext = token.getSigningCertificate().getId().equals(certificate.getId()) ? SubContext.SIGNING_CERT : SubContext.CA_CERTIFICATE;
+			item = item.setNextItem(new CryptographicCheck<XmlPSV>(i18nProvider, result, certificate, getLowestPoeTime(certificate), 
+					policy.getCertificateCryptographicConstraint(context, subContext)));
+			
+			CertificateRevocationWrapper latestAcceptableRevocation = ValidationProcessUtils.getLatestAcceptableRevocationData(certificate, bbbs.get(token.getId()));
+			if (latestAcceptableRevocation != null && !checkedTokens.contains(latestAcceptableRevocation.getId())) {
+				checkedTokens.add(latestAcceptableRevocation.getId());
+				
+				item = item.setNextItem(new CryptographicCheck<XmlPSV>(i18nProvider, result, latestAcceptableRevocation, 
+						getLowestPoeTime(latestAcceptableRevocation), policy.getSignatureCryptographicConstraint(Context.REVOCATION)));
+				
+				item = certificateChainReliableAtPoeTime(item, latestAcceptableRevocation.getCertificateChain(), Context.REVOCATION, checkedTokens);
+			}
+			
 		}
-		return revocationCryptographicChecks;
+		return item;
 	}
 	
-	private ChainItem<XmlPSV> certificateRevocationCryptographicCheck(List<CryptographicCheck<XmlPSV>> revocationsChecks, CertificateWrapper certificate) {
-		return new CryptographicRevocationsCheck<XmlPSV>(result, revocationsChecks, certificate.getId());
+	private Date getLowestPoeTime(TokenProxy token) {
+		return poe.getLowestPOETime(token.getId(), currentTime);
 	}
 
 }

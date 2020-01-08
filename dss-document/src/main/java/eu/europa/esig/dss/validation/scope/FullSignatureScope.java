@@ -28,7 +28,7 @@ import eu.europa.esig.dss.model.Digest;
  */
 public final class FullSignatureScope extends SignatureScope {
 
-    public FullSignatureScope(final String name, Digest digest) {
+	public FullSignatureScope(final String name, Digest digest) {
         super(name, digest);
     }
 

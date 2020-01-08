@@ -35,6 +35,7 @@ import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class DSS922Test {

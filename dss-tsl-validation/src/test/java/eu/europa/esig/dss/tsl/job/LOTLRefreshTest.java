@@ -142,7 +142,7 @@ public class LOTLRefreshTest {
 		LOTLInfo lotlInfo = lotlInfos.get(0);
 		DownloadInfoRecord downloadCacheInfo = lotlInfo.getDownloadCacheInfo();
 		assertNotNull(downloadCacheInfo);
-		assertNotNull(downloadCacheInfo.getLastSuccessDate());
+		assertNotNull(downloadCacheInfo.getLastStateTransitionTime());
 		assertTrue(downloadCacheInfo.isSynchronized());
 		ParsingInfoRecord parsingCacheInfo = lotlInfo.getParsingCacheInfo();
 		assertNotNull(parsingCacheInfo);

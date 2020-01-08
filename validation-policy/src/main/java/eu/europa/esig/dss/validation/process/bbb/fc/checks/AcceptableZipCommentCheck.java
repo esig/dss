@@ -24,15 +24,16 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
-import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
 public class AcceptableZipCommentCheck extends AbstractMultiValuesCheckItem<XmlFC> {
 
 	private final String zipComment;
 
-	public AcceptableZipCommentCheck(XmlFC result, String zipComment, MultiValuesConstraint constraint) {
-		super(result, constraint);
+	public AcceptableZipCommentCheck(I18nProvider i18nProvider, XmlFC result, String zipComment, MultiValuesConstraint constraint) {
+		super(i18nProvider, result, constraint);
 		this.zipComment = zipComment;
 	}
 

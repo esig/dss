@@ -37,7 +37,8 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.validation.process.vpfltvd.TimestampByGenerationTimeComparator;
 
 public class TimestampCoherenceOrderCheck extends ChainItem<XmlValidationProcessLongTermData> {
@@ -46,8 +47,8 @@ public class TimestampCoherenceOrderCheck extends ChainItem<XmlValidationProcess
 
 	private final List<TimestampWrapper> timestamps;
 
-	public TimestampCoherenceOrderCheck(XmlValidationProcessLongTermData result, List<TimestampWrapper> timestamps, LevelConstraint constraint) {
-		super(result, constraint);
+	public TimestampCoherenceOrderCheck(I18nProvider i18nProvider, XmlValidationProcessLongTermData result, List<TimestampWrapper> timestamps, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint);
 		this.timestamps = timestamps;
 	}
 

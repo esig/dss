@@ -20,11 +20,15 @@
  */
 package eu.europa.esig.dss.test.signature;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +48,12 @@ import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 
 import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlAbstractToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
@@ -68,7 +77,9 @@ public class UnmarshallingTester {
 	public static void unmarshallXmlReports(Reports reports) {
 
 		// XML
-		unmarshallDiagnosticData(reports);
+		XmlDiagnosticData unmarshalled = unmarshallDiagnosticData(reports);
+		compareUnmarshalledDiagnosticData(reports, unmarshalled);
+
 		unmarshallDetailedReport(reports);
 		unmarshallSimpleReport(reports);
 		unmarshallValidationReport(reports);
@@ -81,16 +92,19 @@ public class UnmarshallingTester {
 		// mapValidationReport(reports);
 	}
 
-	public static void unmarshallDiagnosticData(Reports reports) {
+	public static XmlDiagnosticData unmarshallDiagnosticData(Reports reports) {
+		XmlDiagnosticData unmarshall = null;
 		try {
 			String xmlDiagnosticData = reports.getXmlDiagnosticData();
 			assertTrue(Utils.isStringNotBlank(xmlDiagnosticData));
 //			LOG.info(xmlDiagnosticData);
-			assertNotNull(DiagnosticDataFacade.newFacade().unmarshall(xmlDiagnosticData));
+			unmarshall = DiagnosticDataFacade.newFacade().unmarshall(xmlDiagnosticData);
+			assertNotNull(unmarshall);
 		} catch (Exception e) {
 			LOG.error("Unable to unmarshall the Diagnostic data : " + e.getMessage(), e);
 			fail(e.getMessage());
 		}
+		return unmarshall;
 	}
 
 	public static void mapDiagnosticData(Reports reports) {
@@ -233,6 +247,121 @@ public class UnmarshallingTester {
 			return timestampedObject;
 		}
 
+	}
+
+	private static void compareUnmarshalledDiagnosticData(Reports reports, XmlDiagnosticData unmarshalledJaxb) {
+		final DiagnosticData original = reports.getDiagnosticData();
+		final DiagnosticData unmarshalled = new DiagnosticData(unmarshalledJaxb);
+
+		assertEquals(original.getAllSignatures().size(), unmarshalled.getAllSignatures().size());
+		assertEquals(original.getAllCounterSignatures().size(), unmarshalled.getAllCounterSignatures().size());
+		assertEquals(original.getAllOrphanCertificates().size(), unmarshalled.getAllOrphanCertificates().size());
+		assertEquals(original.getAllRevocationData().size(), unmarshalled.getAllRevocationData().size());
+		assertEquals(original.getAllOrphanRevocations().size(), unmarshalled.getAllOrphanRevocations().size());
+		assertEquals(original.getListOfTrustedLists().size(), unmarshalled.getListOfTrustedLists().size());
+		assertEquals(original.getUsedCertificates().size(), unmarshalled.getUsedCertificates().size());
+		assertEquals(original.getTimestampList().size(), unmarshalled.getTimestampList().size());
+		assertEquals(original.getOriginalSignerDocuments().size(), unmarshalled.getOriginalSignerDocuments().size());
+
+		compareUnmarshalledCertificates(original, unmarshalled.getUsedCertificates());
+		compareUnmarshalledTimestamps(original, unmarshalled.getTimestampList());
+		compareUnmarshalledRevocations(original, unmarshalled.getAllRevocationData());
+		compareUnmarshalledSignatures(original, unmarshalled.getAllSignatures());
+		compareUnmarshalledSignatures(original, unmarshalled.getAllCounterSignatures());
+	}
+
+	private static void compareUnmarshalledSignatures(final DiagnosticData original, final Set<SignatureWrapper> unmarshalledSigs) {
+		for (SignatureWrapper unmarshalledSig : unmarshalledSigs) {
+			SignatureWrapper originalSignature = original.getSignatureById(unmarshalledSig.getId());
+
+			if (unmarshalledSig.getSigningCertificate() == null) {
+				assertNull(originalSignature.getSigningCertificate());
+			} else {
+				assertEquals(unmarshalledSig.getSigningCertificate().getId(), originalSignature.getSigningCertificate().getId());
+			}
+			assertEquals(unmarshalledSig.getOrphanCertificates().size(), originalSignature.getOrphanCertificates().size());
+			assertEquals(unmarshalledSig.getAllFoundCertificates().size(), originalSignature.getAllFoundCertificates().size());
+			assertEquals(unmarshalledSig.getAllFoundRevocationRefs().size(), originalSignature.getAllFoundRevocationRefs().size());
+			assertEquals(unmarshalledSig.getAllFoundRevocations().size(), originalSignature.getAllFoundRevocations().size());
+			assertEquals(unmarshalledSig.getAllOrphanRevocationRefs().size(), originalSignature.getAllOrphanRevocationRefs().size());
+			assertEquals(unmarshalledSig.getAllRelatedRevocationRefs().size(), originalSignature.getAllRelatedRevocationRefs().size());
+			assertEquals(unmarshalledSig.getCertificateChain().size(), originalSignature.getCertificateChain().size());
+			assertEquals(unmarshalledSig.getCertifiedRoles().size(), originalSignature.getCertifiedRoles().size());
+			assertEquals(unmarshalledSig.getClaimedRoles().size(), originalSignature.getClaimedRoles().size());
+			assertEquals(unmarshalledSig.getCommitmentTypeIdentifiers().size(), originalSignature.getCommitmentTypeIdentifiers().size());
+			assertEquals(unmarshalledSig.getDigestMatchers().size(), originalSignature.getDigestMatchers().size());
+			assertEquals(unmarshalledSig.getTimestampList().size(), originalSignature.getTimestampList().size());
+			assertEquals(unmarshalledSig.getSignerRoles().size(), originalSignature.getSignerRoles().size());
+			assertEquals(unmarshalledSig.getSignatureScopes().size(), originalSignature.getSignatureScopes().size());
+			assertEquals(unmarshalledSig.getSignatureInformationStore().size(), originalSignature.getSignatureInformationStore().size());
+			assertEquals(unmarshalledSig.getRelatedRevocations().size(), originalSignature.getRelatedRevocations().size());
+			assertEquals(unmarshalledSig.getDigestAlgorithm(), originalSignature.getDigestAlgorithm());
+			assertEquals(unmarshalledSig.getEncryptionAlgorithm(), originalSignature.getEncryptionAlgorithm());
+			assertEquals(unmarshalledSig.getMaskGenerationFunction(), originalSignature.getMaskGenerationFunction());
+
+			compareUnmarshalledCertificates(original, unmarshalledSig.getCertificateChain());
+			compareUnmarshalledTimestamps(original, unmarshalledSig.getTimestampList());
+		}
+	}
+
+	private static void compareUnmarshalledRevocations(DiagnosticData original, Set<RevocationWrapper> unmarshalledRevocations) {
+		for (RevocationWrapper unmarshalledRevocation : unmarshalledRevocations) {
+			RevocationWrapper originalRevocationData = null;
+			for (RevocationWrapper revocationWrapper : original.getAllRevocationData()) {
+				if (revocationWrapper.getId().equals(unmarshalledRevocation.getId())) {
+					originalRevocationData = revocationWrapper;
+					break;
+				}
+			}
+			assertNotNull(originalRevocationData);
+
+			if (unmarshalledRevocation.getSigningCertificate() == null) {
+				assertNull(originalRevocationData.getSigningCertificate());
+			} else {
+				assertEquals(unmarshalledRevocation.getSigningCertificate().getId(), originalRevocationData.getSigningCertificate().getId());
+			}
+			assertEquals(unmarshalledRevocation.getCertificateChain().size(), originalRevocationData.getCertificateChain().size());
+			assertEquals(unmarshalledRevocation.getDigestMatchers().size(), originalRevocationData.getDigestMatchers().size());
+
+			compareUnmarshalledCertificates(original, unmarshalledRevocation.getCertificateChain());
+		}
+	}
+
+	private static void compareUnmarshalledTimestamps(final DiagnosticData original, List<TimestampWrapper> unmarshalledTimestamps) {
+		for (TimestampWrapper unmarshalledTst : unmarshalledTimestamps) {
+			TimestampWrapper originalTst = original.getTimestampById(unmarshalledTst.getId());
+			assertNotNull(originalTst);
+
+			if (unmarshalledTst.getSigningCertificate() == null) {
+				assertNull(originalTst.getSigningCertificate());
+			} else {
+				assertEquals(unmarshalledTst.getSigningCertificate().getId(), originalTst.getSigningCertificate().getId());
+			}
+			assertEquals(unmarshalledTst.getCertificateChain().size(), originalTst.getCertificateChain().size());
+			assertEquals(unmarshalledTst.getAllTimestampedOrphanTokenIds().size(), originalTst.getAllTimestampedOrphanTokenIds().size());
+			assertEquals(unmarshalledTst.getDigestMatchers().size(), originalTst.getDigestMatchers().size());
+			assertEquals(unmarshalledTst.getCertificateChain().size(), originalTst.getCertificateChain().size());
+			assertEquals(unmarshalledTst.getTimestampedObjects().size(), originalTst.getTimestampedObjects().size());
+			assertEquals(unmarshalledTst.getSignatureInformationStore().size(), originalTst.getSignatureInformationStore().size());
+
+			compareUnmarshalledCertificates(original, unmarshalledTst.getCertificateChain());
+		}
+	}
+
+	private static void compareUnmarshalledCertificates(final DiagnosticData original, List<CertificateWrapper> unmarshalledCertificates) {
+		for (CertificateWrapper unmarshalledCert : unmarshalledCertificates) {
+			CertificateWrapper originalCert = original.getUsedCertificateById(unmarshalledCert.getId());
+			assertNotNull(originalCert);
+			assertEquals(unmarshalledCert.getCertificateChain().size(), originalCert.getCertificateChain().size());
+			assertEquals(unmarshalledCert.getAuthorityInformationAccessUrls().size(), originalCert.getAuthorityInformationAccessUrls().size());
+			assertEquals(unmarshalledCert.getCertificateRevocationData().size(), originalCert.getCertificateRevocationData().size());
+			assertEquals(unmarshalledCert.getExtendedKeyUsages().size(), originalCert.getExtendedKeyUsages().size());
+			assertEquals(unmarshalledCert.getQCStatementIds().size(), originalCert.getQCStatementIds().size());
+			assertEquals(unmarshalledCert.getTrustedServices().size(), originalCert.getTrustedServices().size());
+			assertEquals(unmarshalledCert.getTrustServiceProviders().size(), originalCert.getTrustServiceProviders().size());
+
+			compareUnmarshalledCertificates(original, unmarshalledCert.getCertificateChain());
+		}
 	}
 
 }

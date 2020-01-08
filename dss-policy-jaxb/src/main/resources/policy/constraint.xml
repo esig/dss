@@ -22,6 +22,7 @@
 		<AllFilesSigned Level="WARN" />
 	</ContainerConstraints>
 	<SignatureConstraints>
+		<StructuralValidation Level="WARN" />
 		<AcceptablePolicies Level="FAIL">
 			<Id>ANY_POLICY</Id>
 			<Id>NO_POLICY</Id>
@@ -36,7 +37,9 @@
 			<ReferenceDataIntact Level="FAIL" />
 			<ManifestEntryObjectExistence Level="WARN" />
 			<SignatureIntact Level="FAIL" />
+			<SignatureDuplicated Level="FAIL" />
 			<ProspectiveCertificateChain Level="FAIL" />
+			<SignerInformationStore Level="FAIL" />
 <!-- 			<TrustedServiceTypeIdentifier Level="WARN"> -->
 <!-- 				<Id>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</Id> -->
 <!-- 			</TrustedServiceTypeIdentifier> -->
@@ -109,6 +112,7 @@
 			<ReferenceDataExistence Level="FAIL" />
 			<ReferenceDataIntact Level="FAIL" />
 			<SignatureIntact Level="FAIL" />
+			<SignatureDuplicated Level="FAIL" />
 			<ProspectiveCertificateChain Level="FAIL" />
 <!-- 			<TrustedServiceTypeIdentifier Level="WARN"> -->
 <!-- 				<Id>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</Id> -->

@@ -39,6 +39,7 @@ import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -107,7 +108,9 @@ public class ASiCECAdESDoubleLTAExtensionTest extends PKIFactoryAccess {
 		}
 		
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		List<TimestampWrapper> timestampList = signatureWrapper.getTimestampList();
 		assertEquals(3, timestampList.size());
 		
 		assertEquals(0, timestampList.get(0).getTimestampedRevocationIds().size());

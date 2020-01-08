@@ -51,7 +51,7 @@
 	<properties>
 		<project.encoding>UTF-8</project.encoding>
 
-		<slf4j.version>1.7.28</slf4j.version>
+		<slf4j.version>1.7.30</slf4j.version>
 		<logback-classic.version>1.2.3</logback-classic.version>
 
 		<bouncycastle.version>1.64</bouncycastle.version>
@@ -108,6 +108,8 @@
 		<module>dss-utils-apache-commons</module>
 		<module>dss-utils-google-guava</module>
 		
+    	<module>dss-i18n</module>
+		
 		<module>dss-model</module>
 		<module>dss-crl-parser</module>
 		<module>dss-crl-parser-x509crl</module>
@@ -162,7 +164,7 @@
     	<module>dss-timestamp-remote-soap</module>
 		
 		<module>dss-cookbook</module>
-	</modules>
+  </modules>
 
 	<build>
 		<plugins>
@@ -828,6 +830,11 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-simple-certificate-report-jaxb</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-i18n</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

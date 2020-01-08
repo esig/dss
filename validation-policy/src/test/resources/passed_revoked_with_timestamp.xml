@@ -354,6 +354,8 @@
 		    <ProductionDate>2016-05-04T15:16:52</ProductionDate>
 		    <ThisUpdate>2016-05-04T14:30:00</ThisUpdate>
 		    <NextUpdate>2016-05-04T21:16:52</NextUpdate>
+            <CertHashExtensionPresent>true</CertHashExtensionPresent>
+            <CertHashExtensionMatch>true</CertHashExtensionMatch>
 		    <BasicSignature>
 		        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
 		        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>

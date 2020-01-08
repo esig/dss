@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>test-signed-cades-baseline-b.pkcs7</DocumentName>
-    <ValidationDate>2019-08-14T07:00:47</ValidationDate>
+    <ValidationDate>2019-08-14T07:00:48</ValidationDate>
     <Signatures>
         <Signature Id="S-AED1933650CCAE36030F94BD50321D36F77CEFE1319B64C5C93F3511A4B69A82">
             <SignatureFilename>test-signed-cades-baseline-b.pkcs7</SignatureFilename>
@@ -186,8 +186,8 @@
                             <StartDate>2017-06-25T22:00:00</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -261,8 +261,8 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2017-06-25T22:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</additionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>

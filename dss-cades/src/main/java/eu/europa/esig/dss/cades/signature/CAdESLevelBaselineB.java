@@ -377,10 +377,10 @@ public class CAdESLevelBaselineB {
 		final String contentIdentifierPrefix = parameters.getContentIdentifierPrefix();
 		if (Utils.isStringNotBlank(contentIdentifierPrefix)) {
 			if (Utils.isStringBlank(parameters.getContentIdentifierSuffix())) {
-				StringBuffer suffixBuffer = new StringBuffer();
-				suffixBuffer.append(new ASN1GeneralizedTime(new Date()).getTimeString());
-				suffixBuffer.append(new SecureRandom().nextLong());
-				parameters.setContentIdentifierSuffix(suffixBuffer.toString());
+				StringBuilder suffixBuilder = new StringBuilder();
+				suffixBuilder.append(new ASN1GeneralizedTime(new Date()).getTimeString());
+				suffixBuilder.append(new SecureRandom().nextLong());
+				parameters.setContentIdentifierSuffix(suffixBuilder.toString());
 			}
 			final String contentIdentifierString = contentIdentifierPrefix + parameters.getContentIdentifierSuffix();
 			final ContentIdentifier contentIdentifier = new ContentIdentifier(contentIdentifierString.getBytes());

@@ -33,9 +33,10 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.GivenNameCheck;
 
-public class GivenNameCheckTest {
+public class GivenNameCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void givenNameCheck() throws Exception {
@@ -47,7 +48,7 @@ public class GivenNameCheckTest {
 		xc.setGivenName("Valid_Name");
 
 		XmlSubXCV result = new XmlSubXCV();
-		GivenNameCheck gnc = new GivenNameCheck(result, new CertificateWrapper(xc), constraint);
+		GivenNameCheck gnc = new GivenNameCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
 		gnc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -65,7 +66,7 @@ public class GivenNameCheckTest {
 		xc.setGivenName("Valid_Name");
 
 		XmlSubXCV result = new XmlSubXCV();
-		GivenNameCheck gnc = new GivenNameCheck(result, new CertificateWrapper(xc), constraint);
+		GivenNameCheck gnc = new GivenNameCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
 		gnc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

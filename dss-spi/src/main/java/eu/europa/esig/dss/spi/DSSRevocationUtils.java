@@ -30,6 +30,7 @@ import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
@@ -39,6 +40,7 @@ import org.bouncycastle.asn1.ocsp.OCSPResponseStatus;
 import org.bouncycastle.asn1.ocsp.ResponderID;
 import org.bouncycastle.asn1.ocsp.ResponseBytes;
 import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.CertificateID;
@@ -53,6 +55,7 @@ import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
@@ -184,6 +187,16 @@ public final class DSSRevocationUtils {
 		// ocspResp.hashCode());
 		return new OCSPResp(ocspResponse);
 	}
+	
+	/**
+	 * Returns a DigestAlgorithm used in the given {@code singleResp}
+	 * 
+	 * @param singleResp {@link SingleResp} to extract the used SingleResp from
+	 * @return {@link SingleResp}
+	 */
+	public static DigestAlgorithm getUsedDigestAlgorithm(final SingleResp singleResp) {
+		return DigestAlgorithm.forOID(singleResp.getCertID().getHashAlgOID().getId());
+	}
 
 	/**
 	 * fix for certId.equals methods that doesn't work very well.
@@ -222,12 +235,15 @@ public final class DSSRevocationUtils {
 	 *            {@code CertificateToken} for which the id is created
 	 * @param issuerCert
 	 *            {@code CertificateToken} issuer certificate of the {@code cert}
+	 * @param digestAlgorithm
+	 *            {@code DigestAlgorithm} to be used for CertificateID hash calculation
 	 * @return {@code CertificateID}
 	 */
-	public static CertificateID getOCSPCertificateID(final CertificateToken cert, final CertificateToken issuerCert) {
+	public static CertificateID getOCSPCertificateID(final CertificateToken cert, final CertificateToken issuerCert, 
+			final DigestAlgorithm digestAlgorithm) {
 		try {
 			final BigInteger serialNumber = cert.getSerialNumber();
-			final DigestCalculator digestCalculator = getSHA1DigestCalculator();
+			final DigestCalculator digestCalculator = getDigestCalculator(digestAlgorithm);
 			final X509CertificateHolder x509CertificateHolder = DSSASN1Utils.getX509CertificateHolder(issuerCert);
 			return new CertificateID(digestCalculator, x509CertificateHolder, serialNumber);
 		} catch (OCSPException e) {
@@ -235,12 +251,13 @@ public final class DSSRevocationUtils {
 		}
 	}
 
-	public static DigestCalculator getSHA1DigestCalculator() {
+	public static DigestCalculator getDigestCalculator(DigestAlgorithm digestAlgorithm) {
 		try {
 			final DigestCalculatorProvider digestCalculatorProvider = jcaDigestCalculatorProviderBuilder.build();
-			return digestCalculatorProvider.get(CertificateID.HASH_SHA1);
+			return digestCalculatorProvider.get(new AlgorithmIdentifier(new ASN1ObjectIdentifier(digestAlgorithm.getOid()), DERNull.INSTANCE));
 		} catch (OperatorCreationException e) {
-			throw new DSSException("Unable to create a DigestCalculator instance", e);
+			throw new DSSException(
+					String.format("Unable to create a DigestCalculator instance. DigestAlgorithm %s is not supported", digestAlgorithm.name()), e);
 		}
 	}
 

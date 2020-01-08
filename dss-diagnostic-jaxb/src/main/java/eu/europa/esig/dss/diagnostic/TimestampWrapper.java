@@ -20,7 +20,9 @@
  */
 package eu.europa.esig.dss.diagnostic;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -29,6 +31,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanToken;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
@@ -93,6 +97,10 @@ public class TimestampWrapper extends AbstractTokenProxy {
 
 	public boolean isMessageImprintDataIntact() {
 		return getMessageImprint().isDataIntact();
+	}
+	
+	public String getFilename() {
+		return timestamp.getTimestampFilename();
 	}
 
 	@Override
@@ -206,6 +214,113 @@ public class TimestampWrapper extends AbstractTokenProxy {
 
 	public XmlDigestAlgoAndValue getDigestAlgoAndValue() {
 		return timestamp.getDigestAlgoAndValue();
+	}
+	
+	/* -------- PAdES RFC3161 Specific parameters --------- */
+
+	/**
+	 * Returns a PAdES-specific PDF Revision info
+	 * NOTE: applicable only for PAdES
+	 * 
+	 * @return {@link XmlPDFRevision}
+	 */
+	public XmlPDFRevision getPDFRevision() {
+		return timestamp.getPDFRevision();
+	}
+	
+	/**
+	 * Returns the first signature field name
+	 * 
+	 * @return {@link String} field name
+	 */
+	public String getFirstFieldName() {
+		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
+		if (pdfRevision != null) {
+			return pdfRevision.getSignatureFieldName().get(0);
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns a list of signature field names, where the signature is referenced from
+	 * 
+	 * @return a list of {@link String} signature field names
+	 */
+	public List<String> getSignatureFieldNames() {
+		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
+		if (pdfRevision != null) {
+			return pdfRevision.getSignatureFieldName();
+		}
+		return Collections.emptyList();
+	}
+	
+	/**
+	 * Returns a list if Signer Infos (Signer Information Store) from CAdES CMS Signed Data
+	 * 
+	 * @return list of {@link XmlSignerInfo}s
+	 */
+	public List<XmlSignerInfo> getSignatureInformationStore() {
+		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
+		if (pdfRevision != null) {
+			return pdfRevision.getSignerInformationStore();
+		}
+		return Collections.emptyList();
+	}
+
+	public String getSignerName() {
+		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
+		if (pdfRevision != null) {
+			return pdfRevision.getPDFSignatureDictionary().getSignerName();
+		}
+		return null;
+	}
+
+	public String getSignatureDictionaryType() {
+		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
+		if (pdfRevision != null) {
+			return pdfRevision.getPDFSignatureDictionary().getType();
+		}
+		return null;
+	}
+
+	public String getFilter() {
+		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
+		if (pdfRevision != null) {
+			return pdfRevision.getPDFSignatureDictionary().getFilter();
+		}
+		return null;
+	}
+
+	public String getSubFilter() {
+		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
+		if (pdfRevision != null) {
+			return pdfRevision.getPDFSignatureDictionary().getSubFilter();
+		}
+		return null;
+	}
+
+	public String getContactInfo() {
+		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
+		if (pdfRevision != null) {
+			return pdfRevision.getPDFSignatureDictionary().getContactInfo();
+		}
+		return null;
+	}
+
+	public String getReason() {
+		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
+		if (pdfRevision != null) {
+			return pdfRevision.getPDFSignatureDictionary().getReason();
+		}
+		return null;
+	}
+	
+	public List<BigInteger> getSignatureByteRange() {
+		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
+		if (pdfRevision != null) {
+			return pdfRevision.getPDFSignatureDictionary().getSignatureByteRange();
+		}
+		return Collections.emptyList();
 	}
 
 }

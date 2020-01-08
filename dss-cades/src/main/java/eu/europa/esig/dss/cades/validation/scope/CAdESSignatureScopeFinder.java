@@ -29,9 +29,8 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.DigestDocument;
-import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.scope.AbstractSignatureScopeFinder;
 import eu.europa.esig.dss.validation.scope.DigestSignatureScope;
 import eu.europa.esig.dss.validation.scope.FullSignatureScope;
@@ -58,9 +57,7 @@ public class CAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<CAdE
             result.add(new DigestSignatureScope("Digest document", digestDocument.getExistingDigest()));
             
         } else {
-        	String digest64Base = originalDocument.getDigest(getDefaultDigestAlgorithm());
-            result.add(new FullSignatureScope("Full document", new Digest(getDefaultDigestAlgorithm(), Utils.fromBase64(digest64Base))));
-            
+			result.add(new FullSignatureScope("Full document", DSSUtils.getDigest(getDefaultDigestAlgorithm(), originalDocument)));
         }
         
         return result;

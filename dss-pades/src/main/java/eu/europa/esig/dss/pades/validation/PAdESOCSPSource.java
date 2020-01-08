@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bouncycastle.asn1.ASN1Encodable;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.ocsp.OCSPResponse;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
@@ -90,16 +89,13 @@ public class PAdESOCSPSource extends SignatureOCSPSource {
          * 
 		 */
 		if (signedAttributes != null) {
-			collectOCSPValues(signedAttributes, OID.adbe_revocationInfoArchival, RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL);
+			collectOCSPArchivalValues(signedAttributes);
 		}
 		
 	}
 	
-	private void collectOCSPValues(AttributeTable attributes, ASN1ObjectIdentifier revocationValueAttributes,
-			RevocationOrigin origin) {
-		
-		final ASN1Encodable attValue = DSSASN1Utils.getAsn1Encodable(attributes, revocationValueAttributes);
-		
+	private void collectOCSPArchivalValues(AttributeTable attributes) {
+		final ASN1Encodable attValue = DSSASN1Utils.getAsn1Encodable(attributes, OID.adbe_revocationInfoArchival);
 		if (attValue !=null) {	
 			RevocationInfoArchival revocationArchival = PAdESUtils.getRevocationInfoArchivals(attValue);
 			if (revocationArchival != null) {
@@ -107,7 +103,7 @@ public class PAdESOCSPSource extends SignatureOCSPSource {
 					final OCSPResp ocspResp = new OCSPResp(ocspResponse);
 					try {
 						BasicOCSPResp basicOCSPResponse = (BasicOCSPResp) ocspResp.getResponseObject();
-						addOCSPResponse(OCSPResponseBinary.build(basicOCSPResponse), origin);
+						addOCSPResponse(OCSPResponseBinary.build(basicOCSPResponse), RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL);
 					} catch (OCSPException e) {
 						LOG.warn("Error while extracting OCSPResponse from Revocation Info Archivals (ADBE) : {}", e.getMessage());
 					}					

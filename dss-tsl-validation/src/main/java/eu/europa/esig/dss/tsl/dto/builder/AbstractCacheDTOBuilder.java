@@ -23,10 +23,11 @@ public abstract class AbstractCacheDTOBuilder<R extends CachedResult> {
 	public AbstractCacheDTO build() {
 		AbstractCacheDTO abstractCacheDTO = new AbstractCacheDTO();
 		abstractCacheDTO.setCacheState(getCurrentState());
-		abstractCacheDTO.setLastSuccessDate(getLastSuccessDate());
+		abstractCacheDTO.setLastStateTransitionTime(getLastStateTransitionTime());
 		abstractCacheDTO.setExceptionMessage(getCachedExceptionMessage());
 		abstractCacheDTO.setExceptionStackTrace(getCachedExceptionStackTrace());
-		abstractCacheDTO.setExceptionTime(getCachedExceptionTime());
+		abstractCacheDTO.setExceptionFirstOccurrenceTime(getCachedExceptionFirstOccurrenceTime());
+		abstractCacheDTO.setExceptionLastOccurrenceTime(getCachedExceptionLastOccurrenceTime());
 		abstractCacheDTO.setResultExist(isResultExist());
 		return abstractCacheDTO;
 	}
@@ -49,8 +50,8 @@ public abstract class AbstractCacheDTOBuilder<R extends CachedResult> {
 		return cachedEntry.getCurrentState();
 	}
 	
-	private Date getLastSuccessDate() {
-		return cachedEntry.getLastSuccessDate();
+	private Date getLastStateTransitionTime() {
+		return cachedEntry.getLastStateTransitionTime();
 	}
 	
 	private String getCachedExceptionMessage() {
@@ -61,8 +62,12 @@ public abstract class AbstractCacheDTOBuilder<R extends CachedResult> {
 		return cachedEntry.getExceptionStackTrace();
 	}
 	
-	private Date getCachedExceptionTime() {
-		return cachedEntry.getExceptionTime();
+	private Date getCachedExceptionFirstOccurrenceTime() {
+		return cachedEntry.getExceptionFirstOccurrenceTime();
+	}
+	
+	private Date getCachedExceptionLastOccurrenceTime() {
+		return cachedEntry.getExceptionLastOccurrenceTime();
 	}
 
 }

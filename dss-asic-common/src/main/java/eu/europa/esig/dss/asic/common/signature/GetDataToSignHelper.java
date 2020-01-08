@@ -28,6 +28,8 @@ public interface GetDataToSignHelper {
 
 	String getSignatureFilename();
 
+	String getTimestampFilename();
+
 	List<DSSDocument> getSignedDocuments();
 
 	List<DSSDocument> getSignatures();

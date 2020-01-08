@@ -20,25 +20,22 @@
  */
 package eu.europa.esig.dss.pdf;
 
+import eu.europa.esig.dss.validation.PdfRevision;
+
 /**
  * Use this callback to be called only for Signatures, not for Doc Timestamp
- *
- *
- *
- *
- *
  *
  */
 public abstract class PdfSignatureValidationCallback implements SignatureValidationCallback {
 
     @Override
-    public void validate(PdfSignatureOrDocTimestampInfo pdfSignatureOrDocTimestampInfo) {
-        if (pdfSignatureOrDocTimestampInfo instanceof PdfSignatureInfo) {
-            PdfSignatureInfo signatureInfo = (PdfSignatureInfo) pdfSignatureOrDocTimestampInfo;
-            validate(signatureInfo);
+    public void validate(PdfRevision pdfRevision) {
+        if (pdfRevision instanceof PdfSignatureRevision) {
+            PdfSignatureRevision signatureRevision = (PdfSignatureRevision) pdfRevision;
+            validate(signatureRevision);
         }
 
     }
 
-    public abstract void validate(PdfSignatureInfo pdfSignatureInfo);
+    public abstract void validate(PdfSignatureRevision pdfSignatureRevision);
 }

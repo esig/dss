@@ -23,6 +23,7 @@ package eu.europa.esig.dss.diagnostic;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -275,6 +276,22 @@ public class DiagnosticData {
 	public String getPolicyDescription(final String signatureId) {
 		SignatureWrapper signature = getSignatureByIdNullSafe(signatureId);
 		return signature.getPolicyDescription();
+	}
+
+	/**
+	 * This method returns the list of identifier of the all timestamps found during the validation.
+	 *
+	 * @return The list of identifier of the timestamps
+	 */
+	public List<String> getTimestampIdList() {
+		List<TimestampWrapper> timestampList = getTimestampList();
+		List<String> timestampIdList = new ArrayList<String>();
+		if (timestampList != null) {
+			for (TimestampWrapper timestampWrapper : timestampList) {
+				timestampIdList.add(timestampWrapper.getId());
+			}
+		}
+		return timestampIdList;
 	}
 
 	/**
@@ -770,7 +787,7 @@ public class DiagnosticData {
 	 * @return a set of TimestampWrapper
 	 */
 	public Set<TimestampWrapper> getTimestampSet() {
-		return new HashSet<TimestampWrapper>(getTimestampList());
+		return new LinkedHashSet<TimestampWrapper>(getTimestampList());
 	}
 
 	/**

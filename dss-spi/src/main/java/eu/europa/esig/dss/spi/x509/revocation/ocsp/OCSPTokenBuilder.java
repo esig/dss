@@ -127,7 +127,8 @@ public class OCSPTokenBuilder {
 			ocspToken.setSourceURL(ocspAccessLocation);
 			ocspToken.setRevocationTokenKey(DSSRevocationUtils.getOcspRevocationKey(certificateToken, ocspAccessLocation));
 		}
-		ocspToken.setCertId(DSSRevocationUtils.getOCSPCertificateID(certificateToken, issuerCertificateToken));
+		ocspToken.setCertificateToken(certificateToken);
+		ocspToken.setIssuerCertificateToken(issuerCertificateToken);
 		ocspToken.setAvailable(available);
 		ocspToken.setResponseStatus(responseStatus);
 		ocspToken.setRelatedCertificate(certificateToken);

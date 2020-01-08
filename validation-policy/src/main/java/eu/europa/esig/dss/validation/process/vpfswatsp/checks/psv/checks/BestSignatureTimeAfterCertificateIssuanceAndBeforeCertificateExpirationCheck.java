@@ -26,26 +26,27 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
 
 public class BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpirationCheck extends ChainItem<XmlPSV> {
 
-	private final Date bestSignatureTime;
-	private final CertificateWrapper signingCertificate;
+	private final Date controlTime;
+	private final CertificateWrapper certificate;
 
-	public BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpirationCheck(XmlPSV result, Date bestSignatureTime,
-			CertificateWrapper signingCertificate, LevelConstraint constraint) {
-		super(result, constraint);
+	public BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpirationCheck(I18nProvider i18nProvider, 
+			XmlPSV result, Date controlTime, CertificateWrapper certificate, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint);
 
-		this.bestSignatureTime = bestSignatureTime;
-		this.signingCertificate = signingCertificate;
+		this.controlTime = controlTime;
+		this.certificate = certificate;
 	}
 
 	@Override
 	protected boolean process() {
-		return bestSignatureTime.after(signingCertificate.getNotBefore()) && bestSignatureTime.before(signingCertificate.getNotAfter());
+		return controlTime.after(certificate.getNotBefore()) && controlTime.before(certificate.getNotAfter());
 	}
 
 	@Override

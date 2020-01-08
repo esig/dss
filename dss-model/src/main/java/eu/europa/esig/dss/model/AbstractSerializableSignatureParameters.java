@@ -158,9 +158,7 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	 *            the expected signature level
 	 */
 	public void setSignatureLevel(final SignatureLevel signatureLevel) {
-		if (signatureLevel == null) {
-			throw new NullPointerException("signatureLevel");
-		}
+		Objects.requireNonNull(signatureLevel, "Signature Level cannot be null");
 		this.signatureLevel = signatureLevel;
 	}
 
@@ -201,7 +199,7 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	public void setDigestAlgorithm(final DigestAlgorithm digestAlgorithm) {
 		Objects.requireNonNull(digestAlgorithm, "DigestAlgorithm cannot be null!");
 		this.digestAlgorithm = digestAlgorithm;
-		if ((this.digestAlgorithm != null) && (this.encryptionAlgorithm != null)) {
+		if (this.encryptionAlgorithm != null) {
 			signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm, this.maskGenerationFunction);
 		}
 	}
@@ -215,7 +213,7 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	 */
 	public void setEncryptionAlgorithm(final EncryptionAlgorithm encryptionAlgorithm) {
 		this.encryptionAlgorithm = encryptionAlgorithm;
-		if ((this.digestAlgorithm != null) && (this.encryptionAlgorithm != null)) {
+		if (this.digestAlgorithm != null) {
 			signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm, this.maskGenerationFunction);
 		}
 	}

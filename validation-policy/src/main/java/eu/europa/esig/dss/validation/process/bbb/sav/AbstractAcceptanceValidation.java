@@ -34,6 +34,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.utils.Utils;
@@ -54,8 +55,8 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 	protected final Context context;
 	protected final ValidationPolicy validationPolicy;
 
-	public AbstractAcceptanceValidation(T token, Date currentTime, Context context, ValidationPolicy validationPolicy) {
-		super(new XmlSAV());
+	public AbstractAcceptanceValidation(I18nProvider i18nProvider, T token, Date currentTime, Context context, ValidationPolicy validationPolicy) {
+		super(i18nProvider, new XmlSAV());
 
 		this.token = token;
 		this.currentTime = currentTime;
@@ -65,7 +66,7 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 
 	protected ChainItem<XmlSAV> cryptographic() {
 		CryptographicConstraint constraint = validationPolicy.getSignatureCryptographicConstraint(context);
-		return new CryptographicCheck<XmlSAV>(result, token, currentTime, constraint);
+		return new CryptographicCheck<XmlSAV>(i18nProvider, result, token, currentTime, constraint);
 	}
 
 	@Override

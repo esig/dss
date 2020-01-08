@@ -190,6 +190,7 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 	/**
 	 * This method returns the current used XMLDSig namespace. Try to determine from the signature, from the parameters or the default value
 	 */
+	@Override
 	protected DSSNamespace getXmldsigNamespace() {
 		DSSNamespace xmldsigNamespace = xadesSignature.getXmldSigNamespace();
 		if (xmldsigNamespace == null) {
@@ -207,6 +208,7 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 	/**
 	 * This method returns the current used XAdES namespace. Try to determine from the signature, from the parameters or the default value
 	 */
+	@Override
 	protected DSSNamespace getXadesNamespace() {
 		DSSNamespace xadesNamespace = xadesSignature.getXadesNamespace();
 		if (xadesNamespace == null) { 

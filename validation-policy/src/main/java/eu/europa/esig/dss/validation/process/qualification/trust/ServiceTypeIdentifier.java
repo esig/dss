@@ -280,7 +280,7 @@ public enum ServiceTypeIdentifier {
 	private final boolean qualified;
 	private final boolean national;
 
-	private ServiceTypeIdentifier(String shortName, String uri, boolean qualified, boolean national) {
+	ServiceTypeIdentifier(String shortName, String uri, boolean qualified, boolean national) {
 		this.shortName = shortName;
 		this.uri = uri;
 		this.qualified = qualified;
@@ -305,6 +305,10 @@ public enum ServiceTypeIdentifier {
 
 	public static boolean isCaQc(String serviceTypeIdentifier) {
 		return CA_QC.getUri().equals(serviceTypeIdentifier);
+	}
+
+	public static boolean isQTST(String serviceTypeIdentifier) {
+		return TSA_QTST.getUri().equals(serviceTypeIdentifier);
 	}
 
 }

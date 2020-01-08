@@ -163,30 +163,24 @@
 					<TrustedServices>
 						<TrustedService ServiceDigitalIdentifier="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC">
 							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
-							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC
-							</ServiceType>
-							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted
-							</Status>
+							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
 							<StartDate>2016-07-01T00:00:00</StartDate>
 							<CapturedQualifiers>
-								<Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoQSCD
-								</Qualifier>
+								<Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoQSCD</Qualifier>
 							</CapturedQualifiers>
 							<AdditionalServiceInfoUris>
-								<additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+								<AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
 							</AdditionalServiceInfoUris>
 						</TrustedService>
 						<TrustedService ServiceDigitalIdentifier="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC">
 							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
-							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC
-							</ServiceType>
-							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited
-							</Status>
+							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
 							<StartDate>2012-06-14T22:00:00</StartDate>
 							<EndDate>2016-07-01T00:00:00</EndDate>
 							<CapturedQualifiers>
-								<Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoSSCD
-								</Qualifier>
+								<Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoSSCD</Qualifier>
 							</CapturedQualifiers>
 							<AdditionalServiceInfoUris />
 						</TrustedService>
@@ -260,44 +254,34 @@
 					<TrustedServices>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
 							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
-							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC
-							</ServiceType>
-							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel
-							</Status>
+							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
+							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
 							<StartDate>2016-07-01T00:00:00</StartDate>
 						</TrustedService>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
 							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
-							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC
-							</ServiceType>
-							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited
-							</Status>
+							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
+							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
 							<StartDate>2015-04-13T22:00:00</StartDate>
 							<EndDate>2016-07-01T00:00:00</EndDate>
 						</TrustedService>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
 							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
-							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST
-							</ServiceType>
-							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted
-							</Status>
+							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
 							<StartDate>2016-12-01T01:00:00</StartDate>
 						</TrustedService>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
 							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
-							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST
-							</ServiceType>
-							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn
-							</Status>
+							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
 							<StartDate>2016-07-01T00:00:00</StartDate>
 							<EndDate>2016-12-01T01:00:00</EndDate>
 						</TrustedService>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
 							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
-							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST
-							</ServiceType>
-							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited
-							</Status>
+							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
 							<StartDate>2015-04-13T22:00:00</StartDate>
 							<EndDate>2016-07-01T00:00:00</EndDate>
 						</TrustedService>
@@ -367,44 +351,34 @@
 					<TrustedServices>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
 							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
-							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC
-							</ServiceType>
-							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel
-							</Status>
+							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
+							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
 							<StartDate>2016-07-01T00:00:00</StartDate>
 						</TrustedService>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
 							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
-							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC
-							</ServiceType>
-							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited
-							</Status>
+							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
+							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
 							<StartDate>2015-04-13T22:00:00</StartDate>
 							<EndDate>2016-07-01T00:00:00</EndDate>
 						</TrustedService>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
 							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
-							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST
-							</ServiceType>
-							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted
-							</Status>
+							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
 							<StartDate>2016-12-01T01:00:00</StartDate>
 						</TrustedService>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
 							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
-							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST
-							</ServiceType>
-							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn
-							</Status>
+							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
 							<StartDate>2016-07-01T00:00:00</StartDate>
 							<EndDate>2016-12-01T01:00:00</EndDate>
 						</TrustedService>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
 							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
-							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST
-							</ServiceType>
-							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited
-							</Status>
+							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
 							<StartDate>2015-04-13T22:00:00</StartDate>
 							<EndDate>2016-07-01T00:00:00</EndDate>
 						</TrustedService>
@@ -476,44 +450,34 @@
 					<TrustedServices>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
 							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
-							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC
-							</ServiceType>
-							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel
-							</Status>
+							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
+							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
 							<StartDate>2016-07-01T00:00:00</StartDate>
 						</TrustedService>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
 							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
-							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC
-							</ServiceType>
-							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited
-							</Status>
+							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
+							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
 							<StartDate>2015-04-13T22:00:00</StartDate>
 							<EndDate>2016-07-01T00:00:00</EndDate>
 						</TrustedService>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
 							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
-							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST
-							</ServiceType>
-							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted
-							</Status>
+							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
 							<StartDate>2016-12-01T01:00:00</StartDate>
 						</TrustedService>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
 							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
-							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST
-							</ServiceType>
-							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn
-							</Status>
+							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
 							<StartDate>2016-07-01T00:00:00</StartDate>
 							<EndDate>2016-12-01T01:00:00</EndDate>
 						</TrustedService>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
 							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
-							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST
-							</ServiceType>
-							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited
-							</Status>
+							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
 							<StartDate>2015-04-13T22:00:00</StartDate>
 							<EndDate>2016-07-01T00:00:00</EndDate>
 						</TrustedService>
@@ -595,28 +559,22 @@
 							</Status>
 							<StartDate>2016-07-01T00:00:00</StartDate>
 							<CapturedQualifiers>
-								<Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/NotQualified
-								</Qualifier>
-								<Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoQSCD
-								</Qualifier>
+								<Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/NotQualified</Qualifier>
+								<Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoQSCD</Qualifier>
 							</CapturedQualifiers>
 							<AdditionalServiceInfoUris>
-								<additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+								<AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
 							</AdditionalServiceInfoUris>
 						</TrustedService>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
 							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
-							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC
-							</ServiceType>
-							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited
-							</Status>
+							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
 							<StartDate>2012-06-14T22:00:00</StartDate>
 							<EndDate>2016-07-01T00:00:00</EndDate>
 							<CapturedQualifiers>
-								<Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoSSCD
-								</Qualifier>
-								<Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForLegalPerson
-								</Qualifier>
+								<Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoSSCD</Qualifier>
+								<Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForLegalPerson</Qualifier>
 							</CapturedQualifiers>
 							<AdditionalServiceInfoUris />
 						</TrustedService>
@@ -690,13 +648,11 @@
 					<TrustedServices>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
 							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
-							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC
-							</ServiceType>
-							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted
-							</Status>
+							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
 							<StartDate>2016-07-01T00:00:00</StartDate>
 							<AdditionalServiceInfoUris>
-								<additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+								<AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
 							</AdditionalServiceInfoUris>
 						</TrustedService>
 					</TrustedServices>
@@ -757,18 +713,14 @@
 					<TrustedServices>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
 							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
-							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC
-							</ServiceType>
-							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel
-							</Status>
+							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
+							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
 							<StartDate>2016-07-01T00:00:00</StartDate>
 						</TrustedService>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
 							<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
-							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC
-							</ServiceType>
-							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited
-							</Status>
+							<ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
+							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
 							<StartDate>2012-06-14T22:00:00</StartDate>
 							<EndDate>2016-07-01T00:00:00</EndDate>
 						</TrustedService>
@@ -839,7 +791,7 @@
 							<Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
 							<StartDate>2016-07-01T00:00:00</StartDate>
 							<AdditionalServiceInfoUris>
-								<additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+								<AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
 							</AdditionalServiceInfoUris>
 						</TrustedService>
 						<TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
@@ -1047,8 +999,7 @@
 		</TrustedList>
 	    <TrustedList Id="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E" LOTL="true">
 			<CountryCode>EU</CountryCode>
-			<Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml
-			</Url>
+			<Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
 			<SequenceNumber>200</SequenceNumber>
 			<Version>5</Version>
 			<LastLoading>2018-02-20T10:03:56</LastLoading>

@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -65,9 +66,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 
 	@Override
 	public final CRLToken getRevocationToken(final CertificateToken certificateToken, final CertificateToken issuerToken) {
-		if (certificateToken == null) {
-			throw new NullPointerException();
-		}
+		Objects.requireNonNull(certificateToken, "The certificate to be verified cannot be null");
 
 		final CRLToken validCRLToken = validCRLTokenList.get(certificateToken);
 		if (validCRLToken != null) {

@@ -126,8 +126,8 @@
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDStatusAsInCert</Qualifier>
                             </CapturedQualifiers>
                             <AdditionalServiceInfoUris>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</additionalServiceInfoUri>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -199,8 +199,8 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</additionalServiceInfoUri>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -266,8 +266,8 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</additionalServiceInfoUri>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
@@ -277,7 +277,7 @@
                             <StartDate>2013-06-26T12:00:00</StartDate>
                             <EndDate>2016-06-30T22:00:00</EndDate>
                             <AdditionalServiceInfoUris>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</additionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -347,8 +347,8 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</additionalServiceInfoUri>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -417,8 +417,8 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                             <AdditionalServiceInfoUris>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</additionalServiceInfoUri>
-                                <additionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</additionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                     </TrustedServices>
@@ -465,7 +465,7 @@
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
-                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
@@ -539,6 +539,7 @@
 					   	<TimestampedObject Category="CERTIFICATE" Token="C-021EC5069EB8A903BD62B6769EDDFE439DFA90A720C9A362D5FE76B9C31D0302" />
 					   	<TimestampedObject Category="CERTIFICATE" Token="C-80AC352930875BA0AFE7F70DD389130C8E1E7BEFFDC96477356AD2A9E003AD2B" />
 					   	<TimestampedObject Category="CERTIFICATE" Token="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F" />
+					   	<TimestampedObject Category="CERTIFICATE" Token="C-CB217219BADFC13B4FEA3EFA43882E9FECE49E542DCDBA83428DC6854499A35F" />
 					   	
 		   				<TimestampedObject Category="REVOCATION" Token="R-7a38824e892663bfaa50ba2edf0f5bfb5437dbeb73af1c9fec79b6ce77df88d" />
 		   				<TimestampedObject Category="REVOCATION" Token="R-021ec5069eb8a903bd62b6769eddfe439dfa90a720c9a362d5fe76b9c31d0302bfc08d553a774d1f440ab36525a3290e2cc23b46d0ac954ea4d8201faff0d91a" />

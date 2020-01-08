@@ -450,6 +450,8 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		checkClaimedRoles(diagnosticData);
 		checkMessageDigestAlgorithm(diagnosticData);
 		checkSignaturePolicyIdentifier(diagnosticData);
+		checkPdfRevision(diagnosticData);
+		checkStructureValidation(diagnosticData);
 
 		checkNoDuplicateCompleteCertificates(diagnosticData);
 		checkNoDuplicateCompleteRevocationData(diagnosticData);
@@ -755,6 +757,14 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 				assertTrue(Utils.isStringEmpty(signature.getPolicyUrl()));
 			}
 		}
+	}
+	
+	protected void checkPdfRevision(DiagnosticData diagnosticData) {
+		// not implemented by default
+	}
+	
+	protected void checkStructureValidation(DiagnosticData diagnosticData) {
+		// not implemented by default
 	}
 
 	protected void verifyETSIValidationReport(ValidationReportType etsiValidationReportJaxb) {

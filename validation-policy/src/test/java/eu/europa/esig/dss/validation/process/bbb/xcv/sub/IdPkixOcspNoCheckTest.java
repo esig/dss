@@ -31,9 +31,10 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.IdPkixOcspNoCheck;
 
-public class IdPkixOcspNoCheckTest {
+public class IdPkixOcspNoCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void idPkixOcspNoCheck() throws Exception {
@@ -41,7 +42,7 @@ public class IdPkixOcspNoCheckTest {
 		constraint.setLevel(Level.FAIL);
 
 		XmlSubXCV result = new XmlSubXCV();
-		IdPkixOcspNoCheck ic = new IdPkixOcspNoCheck(result, constraint);
+		IdPkixOcspNoCheck ic = new IdPkixOcspNoCheck(i18nProvider, result, constraint);
 		ic.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

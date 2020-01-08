@@ -23,6 +23,7 @@ package eu.europa.esig.dss.xades.validation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -32,7 +33,6 @@ import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureUtils;
@@ -59,6 +59,8 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	protected List<XAdESPaths> xadesPathsHolders;
 
 	protected Document rootElement;
+
+	private boolean disableXSWProtection = false;
 
 	private List<AdvancedSignature> signatures;
 
@@ -94,6 +96,18 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 		return DSSUtils.compareFirstBytes(dssDocument, xmlPreamble) || DSSUtils.compareFirstBytes(dssDocument, xmlWithBomPreample);
 	}
 
+	/**
+	 * NOT RECOMMENDED : This parameter allows to disable protection against XML
+	 * Signature wrapping attacks (XSW). It disables the research by XPath
+	 * expression for defined Type attributes.
+	 * 
+	 * @param disableXSWProtection
+	 *                             true to disable the protection
+	 */
+	public void setDisableXSWProtection(boolean disableXSWProtection) {
+		this.disableXSWProtection = disableXSWProtection;
+	}
+
 	@Override
 	public List<AdvancedSignature> getSignatures() {
 		if (signatures != null) {
@@ -110,6 +124,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 			xadesSignature.setDetachedContents(detachedContents);
 			xadesSignature.setContainerContents(containerContents);
 			xadesSignature.setProvidedSigningCertificateToken(providedSigningCertificateToken);
+			xadesSignature.setDisableXSWProtection(disableXSWProtection);
 			signatures.add(xadesSignature);
 		}
 		return signatures;
@@ -125,10 +140,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	 *             in case no Id is provided, or in case no signature was found for the given Id
 	 */
 	public AdvancedSignature getSignatureById(final String signatureId) throws DSSException {
-
-		if (Utils.isStringBlank(signatureId)) {
-			throw new NullPointerException("signatureId");
-		}
+		Objects.requireNonNull(signatureId, "Signature Id cannot be null");
 		final List<AdvancedSignature> advancedSignatures = getSignatures();
 		for (final AdvancedSignature advancedSignature : advancedSignatures) {
 
@@ -141,10 +153,8 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	}
 
 	@Override
-	public List<DSSDocument> getOriginalDocuments(final String signatureId) throws DSSException {
-		if (Utils.isStringBlank(signatureId)) {
-			throw new NullPointerException("signatureId");
-		}
+	public List<DSSDocument> getOriginalDocuments(final String signatureId) {
+		Objects.requireNonNull(signatureId, "Signature Id cannot be null");
 
 		List<AdvancedSignature> signatureList = getSignatures();
 		for (AdvancedSignature advancedSignature : signatureList) {
@@ -156,7 +166,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	}
 	
 	@Override
-	public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) throws DSSException {
+	public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) {
 		XAdESSignature signature = (XAdESSignature) advancedSignature;
 		return XAdESSignatureUtils.getSignerDocuments(signature);
 	}

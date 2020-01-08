@@ -7,8 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of IPdfObjFactory which looks for in the registered services
- * and uses the first found instance.
+ * Implementation of IPdfObjFactory which looks for in the registered services and uses the first found instance.
  * 
  * This class is not registered as service.
  */
@@ -22,8 +21,18 @@ public class ServiceLoaderPdfObjFactory implements IPdfObjFactory {
 	}
 
 	@Override
-	public PDFTimestampService newTimestampSignatureService() {
-		return getIPdfObjFactory().newTimestampSignatureService();
+	public PDFSignatureService newContentTimestampService() {
+		return getIPdfObjFactory().newContentTimestampService();
+	}
+
+	@Override
+	public PDFSignatureService newSignatureTimestampService() {
+		return getIPdfObjFactory().newSignatureTimestampService();
+	}
+
+	@Override
+	public PDFSignatureService newArchiveTimestampService() {
+		return getIPdfObjFactory().newArchiveTimestampService();
 	}
 
 	private IPdfObjFactory getIPdfObjFactory() {

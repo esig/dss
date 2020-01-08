@@ -41,14 +41,17 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PdfDssDict;
-import eu.europa.esig.dss.pdf.PdfSignatureInfo;
+import eu.europa.esig.dss.pdf.PdfSignatureRevision;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateRef;
+import eu.europa.esig.dss.validation.PdfRevision;
+import eu.europa.esig.dss.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.validation.SignatureCRLSource;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignatureDigestReference;
@@ -69,21 +72,21 @@ public class PAdESSignature extends CAdESSignature {
 	private final DSSDocument document;
 	private final PdfDssDict dssDictionary;
 
-	private final PdfSignatureInfo pdfSignatureInfo;
+	private final PdfSignatureRevision pdfSignatureRevision;
 
 	/**
 	 * The default constructor for PAdESSignature.
 	 *
 	 * @param document
-	 * @param pdfSignatureInfo
+	 * @param pdfSignatureRevision
 	 * @param certPool
 	 * @throws DSSException
 	 */
-	protected PAdESSignature(final DSSDocument document, final PdfSignatureInfo pdfSignatureInfo, final CertificatePool certPool) throws DSSException {
-		super(pdfSignatureInfo.getCades().getCmsSignedData(), certPool, pdfSignatureInfo.getCades().getDetachedContents());
+	protected PAdESSignature(final DSSDocument document, final PdfSignatureRevision pdfSignatureRevision, final CertificatePool certPool) throws DSSException {
+		super(pdfSignatureRevision.getCades().getCmsSignedData(), certPool, pdfSignatureRevision.getCades().getDetachedContents());
 		this.document = document;
-		this.dssDictionary = pdfSignatureInfo.getDssDictionary();
-		this.pdfSignatureInfo = pdfSignatureInfo;
+		this.dssDictionary = pdfSignatureRevision.getDssDictionary();
+		this.pdfSignatureRevision = pdfSignatureRevision;
 	}
 
 	@Override
@@ -128,12 +131,12 @@ public class PAdESSignature extends CAdESSignature {
 
 	@Override
 	public Date getSigningTime() {
-		return pdfSignatureInfo.getSigningDate();
+		return pdfSignatureRevision.getSigningDate();
 	}
 
 	@Override
 	public SignatureProductionPlace getSignatureProductionPlace() {
-		String location = pdfSignatureInfo.getLocation();
+		String location = pdfSignatureRevision.getPdfSigDictInfo().getLocation();
 		if (Utils.isStringBlank(location)) {
 			return super.getSignatureProductionPlace();
 		} else {
@@ -214,7 +217,7 @@ public class PAdESSignature extends CAdESSignature {
 	 * @return the CAdES signature underlying this PAdES signature
 	 */
 	public CAdESSignature getCAdESSignature() {
-		return pdfSignatureInfo.getCades();
+		return pdfSignatureRevision.getCades();
 	}
 	
 	@Override
@@ -225,7 +228,7 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	private String getDigestOfByteRange() {
-		int[] signatureByteRange = pdfSignatureInfo.getSignatureByteRange();
+		int[] signatureByteRange = pdfSignatureRevision.getSignatureByteRange();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		for (int i : signatureByteRange) {
 			baos.write(i);
@@ -233,9 +236,8 @@ public class PAdESSignature extends CAdESSignature {
 		return DSSUtils.getMD5Digest(baos.toByteArray());
 	}
 
-	@Override
 	public int[] getSignatureByteRange() {
-		return pdfSignatureInfo.getSignatureByteRange();
+		return pdfSignatureRevision.getSignatureByteRange();
 	}
 	
 	/**
@@ -247,7 +249,7 @@ public class PAdESSignature extends CAdESSignature {
 	 */
 	@Override
 	public SignatureDigestReference getSignatureDigestReference(DigestAlgorithm digestAlgorithm) {
-		byte[] contents = pdfSignatureInfo.getContents();
+		byte[] contents = pdfSignatureRevision.getContents();
 		byte[] digestValue = DSSUtils.digest(digestAlgorithm, contents);
 		return new SignatureDigestReference(new Digest(digestAlgorithm, digestValue));
 	}
@@ -292,13 +294,17 @@ public class PAdESSignature extends CAdESSignature {
 	private boolean hasDSSDictionary() {
 		return dssDictionary != null;
 	}
+	
+	public PdfDssDict getDssDictionary() {
+		return dssDictionary;
+	}
 
 	private boolean hasCAdESDetachedSubFilter() {
-		return (pdfSignatureInfo != null) && "ETSI.CAdES.detached".equals(pdfSignatureInfo.getSubFilter());
+		return (pdfSignatureRevision != null) && PAdESConstants.SIGNATURE_DEFAULT_SUBFILTER.equals(pdfSignatureRevision.getPdfSigDictInfo().getSubFilter());
 	}
 
 	private boolean hasPKCS7SubFilter() {
-		return (pdfSignatureInfo != null) && "adbe.pkcs7.detached".equals(pdfSignatureInfo.getSubFilter());
+		return (pdfSignatureRevision != null) && PAdESConstants.SIGNATURE_PKCS7_SUBFILTER.equals(pdfSignatureRevision.getPdfSigDictInfo().getSubFilter());
 	}
 
 	@Override
@@ -309,41 +315,16 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	public boolean hasOuterSignatures() {
-		return Utils.isCollectionNotEmpty(pdfSignatureInfo.getOuterSignatures());
+		return Utils.isCollectionNotEmpty(pdfSignatureRevision.getOuterSignatures());
 	}
 
-	public PdfSignatureInfo getPdfSignatureInfo() {
-		return pdfSignatureInfo;
+	@Override
+	public PdfRevision getPdfRevision() {
+		return pdfSignatureRevision;
 	}
 	
-	@Override
-	public String getSignatureFieldName() {
-		return pdfSignatureInfo.getSigFieldName();
-	}
-
-	@Override
-	public String getSignerName() {
-		return pdfSignatureInfo.getSignerName();
-	}
-
-	@Override
-	public String getFilter() {
-		return pdfSignatureInfo.getFilter();
-	}
-
-	@Override
-	public String getSubFilter() {
-		return pdfSignatureInfo.getSubFilter();
-	}
-
-	@Override
-	public String getContactInfo() {
-		return pdfSignatureInfo.getContactInfo();
-	}
-
-	@Override
-	public String getReason() {
-		return pdfSignatureInfo.getReason();
+	public PdfSignatureDictionary getPdfSignatureDictionary() {
+		return pdfSignatureRevision.getPdfSigDictInfo();
 	}
 	
 	/**
@@ -353,7 +334,7 @@ public class PAdESSignature extends CAdESSignature {
 	public String getVRIKey() {
 		// By ETSI EN 319 142-1 V1.1.1, VRI dictionary's name is the base-16-encoded (uppercase)
 		// SHA1 digest of the signature to which it applies
-		return pdfSignatureInfo.uniqueId().toUpperCase();
+		return pdfSignatureRevision.uniqueId().toUpperCase();
 	}
 
 }

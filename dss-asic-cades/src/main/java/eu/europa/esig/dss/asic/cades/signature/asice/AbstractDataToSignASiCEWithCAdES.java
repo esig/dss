@@ -24,22 +24,34 @@ import java.util.List;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
+import eu.europa.esig.dss.asic.cades.signature.manifest.ASiCEWithCAdESManifestBuilder;
 import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.utils.Utils;
 
 public abstract class AbstractDataToSignASiCEWithCAdES {
 
 	private static final String ASIC_MANIFEST_NAME = "ASiCManifest";
+
 	private static final String ZIP_ENTRY_ASICE_METAINF_CADES_SIGNATURE = ASiCUtils.META_INF_FOLDER + "signature001.p7s";
 
-	protected DSSDocument getASiCManifest(List<DSSDocument> documents, List<DSSDocument> signatures, List<DSSDocument> manifests,
-			ASiCWithCAdESSignatureParameters parameters) {
-		ASiCEWithCAdESManifestBuilder manifestBuilder = new ASiCEWithCAdESManifestBuilder(documents, parameters.getDigestAlgorithm(),
-				getSignatureFileName(parameters.aSiC(), signatures)); 
+	private static final String ZIP_ENTRY_ASICE_METAINF_TIMESTAMP = ASiCUtils.META_INF_FOLDER + "timestamp001.tst";
+
+	protected DSSDocument getASiCManifest(SigningOperation operation, List<DSSDocument> documents, List<DSSDocument> signatures, List<DSSDocument> timestamps,
+			List<DSSDocument> manifests, ASiCWithCAdESSignatureParameters parameters) {
+
+		String uri = null;
+		if (SigningOperation.SIGN == operation) {
+			uri = getSignatureFileName(parameters.aSiC(), signatures);
+		} else {
+			uri = getTimestampFileName(timestamps);
+		}
+
+		ASiCEWithCAdESManifestBuilder manifestBuilder = new ASiCEWithCAdESManifestBuilder(operation, documents, parameters.getDigestAlgorithm(), uri);
 		String newManifestName = ASiCUtils.getNextASiCEManifestName(ASIC_MANIFEST_NAME, manifests);
-		
+
 		return DomUtils.createDssDocumentFromDomDocument(manifestBuilder.build(), newManifestName);
 	}
 
@@ -50,6 +62,11 @@ public abstract class AbstractDataToSignASiCEWithCAdES {
 
 		int num = Utils.collectionSize(existingSignatures) + 1;
 		return ZIP_ENTRY_ASICE_METAINF_CADES_SIGNATURE.replace("001", ASiCUtils.getPadNumber(num));
+	}
+
+	protected String getTimestampFileName(List<DSSDocument> existingTimestamps) {
+		int num = Utils.collectionSize(existingTimestamps) + 1;
+		return ZIP_ENTRY_ASICE_METAINF_TIMESTAMP.replace("001", ASiCUtils.getPadNumber(num));
 	}
 
 }

@@ -48,7 +48,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.executor.DefaultSignatureProcessExecutor;
+import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -93,7 +93,7 @@ public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, docCanonicalized);
 		TimestampBinary bcTst = getAlternateGoodTsa().getTimeStampResponse(DigestAlgorithm.SHA256, digest);
 
-		TimestampToken tst = new TimestampToken(bcTst, TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
+		TimestampToken tst = new TimestampToken(bcTst.getBytes(), TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
 		tst.setTimestampIncludes(Arrays.asList(new TimestampInclude("r-" + signatureParameters.getDeterministicId() + "-1", true))); // TODO
 		tst.setCanonicalizationMethod(usedCanonicalizationAlgo);
 
@@ -107,12 +107,10 @@ public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(result);
 		DefaultSignatureProcessExecutor processExecutor = new DefaultSignatureProcessExecutor();
-		processExecutor.setCurrentTime(currentTime);
+		validator.setValidationTime(currentTime);
 		validator.setProcessExecutor(processExecutor);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		Reports reports = validator.validateDocument();
-
-//		reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertEquals(1, Utils.collectionSize(diagnosticData.getSignatureIdList()));

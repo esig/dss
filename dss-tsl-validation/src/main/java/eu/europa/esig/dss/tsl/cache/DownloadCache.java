@@ -30,7 +30,7 @@ public class DownloadCache extends AbstractCache<XmlDownloadResult> {
 			LOG.trace("Comparing digest of the stored file [{}] with the downloaded file [{}]", cachedResult.getDigest(), downloadedResult.getDigest());
 			boolean upToDate = cachedResult.getDigest().equals(downloadedResult.getDigest());
 			LOG.trace("Is file with the key [{}] up to date ? {}", cacheKey, upToDate);
-			cachedResult.setLastSynchronizationDate(new Date());
+			cachedResult.setLastSuccessDownloadTime(new Date());
 			return upToDate;
 		}
 		LOG.trace("The FileCache does not contain a file result for the key [{}]!", cacheKey);

@@ -25,7 +25,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.List;
+import java.util.Locale;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
@@ -35,6 +37,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.Algo;
 import eu.europa.esig.dss.policy.jaxb.AlgoExpirationDate;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
@@ -42,10 +46,16 @@ import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.ListAlgo;
 import eu.europa.esig.dss.simplereport.SimpleReport;
-import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class CustomCryptographicConstraintsTest extends AbstractCryptographicConstraintsTest {
+	
+	private static I18nProvider i18nProvider;
+	
+	@BeforeAll
+	public static void init() {
+		i18nProvider = new I18nProvider(Locale.getDefault());
+	}
 
 	/**
 	 * Test for signature using SHA256 as the Digest algorithm and RSA 2048 as the Encryption Algorithm
@@ -212,10 +222,12 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		
 		// Revocation data tests
 		result = revocationConstraintAcceptableDigestAlgorithmIsNotDefined(ALGORITHM_SHA256, 0);
+
 		detailedReport = createDetailedReport();
 		revocationBasicBuildingBlock = detailedReport.getBasicBuildingBlockById(detailedReport.getRevocationIds().get(0));
 		assertEquals(Indication.INDETERMINATE, revocationBasicBuildingBlock.getSAV().getConclusion().getIndication());
-		assertEquals(Indication.PASSED, detailedReport.getTimestampValidationIndication(detailedReport.getTimestampIds().get(0)));
+		assertEquals(Indication.INDETERMINATE, detailedReport.getTimestampValidationIndication(detailedReport.getTimestampIds().get(0)));
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, detailedReport.getTimestampValidationSubIndication(detailedReport.getTimestampIds().get(0)));
 		checkRevocationErrorPresence(detailedReport, MessageTag.ASCCM_ANS_2, true);
 		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_2, false);
 		
@@ -464,6 +476,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 	
 	private Indication defaultConstraintSetLevelForPreviousValidationPolicy(Level level) throws Exception {
 		ConstraintsParameters constraintsParameters = this.constraintsParameters;
+		
 		CryptographicConstraint defaultCryptographicConstraint = constraintsParameters.getCryptographic();
 		defaultCryptographicConstraint.setLevel(level);
 		constraintsParameters.setCryptographic(defaultCryptographicConstraint);
@@ -476,6 +489,12 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		CryptographicConstraint caCertCryptographicConstraint = getCACertificateConstraints(constraintsParameters).getCryptographic();
 		caCertCryptographicConstraint.setLevel(level);
 		setSigningCertificateConstraints(constraintsParameters, caCertCryptographicConstraint);
+		
+		CryptographicConstraint revocationCryptographicConstraint = constraintsParameters.getRevocation().getBasicSignatureConstraints().getCryptographic();
+		revocationCryptographicConstraint.setLevel(level);
+		
+		CryptographicConstraint timestampCryptographicConstraint = constraintsParameters.getTimestamp().getBasicSignatureConstraints().getCryptographic();
+		timestampCryptographicConstraint.setLevel(level);
 		
 		setValidationPolicy(constraintsParameters);
 		SimpleReport simpleReport = createSimpleReport();
@@ -579,49 +598,50 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		return simpleReport.getIndication(simpleReport.getFirstSignatureId());
 	}
 	
-
-	
-	private void checkErrorMessageAbsence(MessageTag message) {
+	private void checkErrorMessageAbsence(MessageTag messageKey) {
 		Reports reports = createReports();
 		DetailedReport detailedReport = reports.getDetailedReport();
-		checkErrorMessageAbsence(detailedReport, message);
+		checkErrorMessageAbsence(detailedReport, messageKey);
 	}
 	
-	private void checkErrorMessageAbsence(DetailedReport detailedReport, MessageTag message) {
-		assertTrue(!detailedReport.getWarnings(detailedReport.getFirstSignatureId()).contains(message.getMessage()));
-		assertTrue(!detailedReport.getErrors(detailedReport.getFirstSignatureId()).contains(message.getMessage()));
+	private void checkErrorMessageAbsence(DetailedReport detailedReport, MessageTag messageKey) {
+		assertTrue(!detailedReport.getWarnings(detailedReport.getFirstSignatureId()).contains(i18nProvider.getMessage(messageKey)));
+		assertTrue(!detailedReport.getErrors(detailedReport.getFirstSignatureId()).contains(i18nProvider.getMessage(messageKey)));
 	}
 	
-	private void checkErrorMessagePresence(MessageTag message) {
+	private void checkErrorMessagePresence(MessageTag messageKey) {
 		Reports reports = createReports();
 		DetailedReport detailedReport = reports.getDetailedReport();
-		checkErrorMessagePresence(detailedReport, message);
+		checkErrorMessagePresence(detailedReport, messageKey);
 	}
 
-	private void checkErrorMessagePresence(DetailedReport detailedReport, MessageTag message) {
-		assertTrue(detailedReport.getWarnings(detailedReport.getFirstSignatureId()).contains(message.getMessage()));
-		assertTrue(detailedReport.getErrors(detailedReport.getFirstSignatureId()).contains(message.getMessage()));
+	private void checkErrorMessagePresence(DetailedReport detailedReport, MessageTag messageKey) {
+		assertTrue(detailedReport.getWarnings(detailedReport.getFirstSignatureId()).contains(i18nProvider.getMessage(messageKey)));
+		assertTrue(detailedReport.getErrors(detailedReport.getFirstSignatureId()).contains(i18nProvider.getMessage(messageKey)));
 	}
 	
-	private void checkBasicSignatureErrorPresence(DetailedReport detailedReport, MessageTag message, boolean present) {
+	private void checkBasicSignatureErrorPresence(DetailedReport detailedReport, MessageTag messageKey, boolean present) {
 		List<XmlName> errors = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId()).getConclusion().getErrors();
-		assertTrue(!present ^ xmlListContainsMessage(errors, message));
+		assertTrue(!present ^ xmlListContainsMessage(errors, messageKey));
 	}
 	
-	private void checkRevocationErrorPresence(DetailedReport detailedReport, MessageTag message, boolean present) {
+	private void checkRevocationErrorPresence(DetailedReport detailedReport, MessageTag messageKey, boolean present) {
 		List<XmlName> listErrors = detailedReport.getBasicBuildingBlockById(detailedReport.getRevocationIds().get(0)).getSAV().getConclusion().getErrors();
-		assertTrue(!present ^ xmlListContainsMessage(listErrors, message));
+		assertTrue(!present ^ xmlListContainsMessage(listErrors, messageKey));
 	}
 	
-	private void checkTimestampErrorPresence(DetailedReport detailedReport, MessageTag message, boolean present) {
+	private void checkTimestampErrorPresence(DetailedReport detailedReport, MessageTag messageKey, boolean present) {
 		List<XmlName> listErrors = detailedReport.getBasicBuildingBlockById(detailedReport.getTimestampIds().get(0)).getSAV().getConclusion().getErrors();
-		assertTrue(!present ^ xmlListContainsMessage(listErrors, message));
+		assertTrue(!present ^ xmlListContainsMessage(listErrors, messageKey));
 	}
 	
-	private boolean xmlListContainsMessage(List<XmlName> list, MessageTag message) {
-		for (XmlName name : list) {
-			if (message.getMessage().equals(name.getValue())) {
-				return true;
+	private boolean xmlListContainsMessage(List<XmlName> list, MessageTag messageKey) {
+		String message = i18nProvider.getMessage(messageKey);
+		if (message != null) {
+			for (XmlName name : list) {
+				if (message.equals(name.getValue())) {
+					return true;
+				}
 			}
 		}
 		return false;

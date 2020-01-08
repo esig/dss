@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import java.io.StringReader;
 import java.math.BigInteger;
 import java.security.PublicKey;
 import java.util.ArrayList;
@@ -28,10 +27,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import javax.security.auth.x500.X500Principal;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
-import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.dom.DOMSource;
 
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.exceptions.XMLSecurityException;
@@ -133,6 +133,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	
 	private XAdESPaths xadesPaths;
 
+	private boolean disableXSWProtection = false;
+
 	private final Element signatureElement;
 	
 	private transient XMLSignature santuarioSignature;
@@ -207,12 +209,22 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 */
 	public XAdESSignature(final Element signatureElement, final List<XAdESPaths> xadesPathsHolders, final CertificatePool certPool) {
 		super(certPool);
-		if (signatureElement == null) {
-			throw new NullPointerException("signatureElement");
-		}
+		Objects.requireNonNull(signatureElement, "Signature Element cannot be null");
 		this.signatureElement = signatureElement;
 		this.xadesPathsHolders = xadesPathsHolders;
 		initialiseSettings();
+	}
+
+	/**
+	 * NOT RECOMMENDED : This parameter allows to disable protection against XML
+	 * Signature wrapping attacks (XSW). It disables the research by XPath
+	 * expression for defined Type attributes.
+	 * 
+	 * @param disableXSWProtection
+	 *                             true to disable the protection
+	 */
+	public void setDisableXSWProtection(boolean disableXSWProtection) {
+		this.disableXSWProtection = disableXSWProtection;
 	}
 
 	/**
@@ -643,19 +655,34 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public String getContentIdentifier() {
+		// not applicable
 		return null;
 	}
 
 	@Override
 	public String getContentHints() {
+		// not applicable
+		return null;
+	}
+	
+	/**
+	 * Returns a base64 SignatureValue
+	 * 
+	 * @return base64 {@link String}
+	 */
+	public String getSignatureValueBase64() {
+		Element signatureValueElement = DomUtils.getElement(signatureElement, XMLDSigPaths.SIGNATURE_VALUE_PATH);
+		if (signatureValueElement != null) {
+			return signatureValueElement.getTextContent();
+		}
 		return null;
 	}
 
 	@Override
 	public byte[] getSignatureValue() {
-		Element signatureValueElement = DomUtils.getElement(signatureElement, XMLDSigPaths.SIGNATURE_VALUE_PATH);
-		if (signatureValueElement != null) {
-			return Utils.fromBase64(signatureValueElement.getTextContent());
+		String signatureValueBase64 = getSignatureValueBase64();
+		if (signatureValueBase64 != null) {
+			return Utils.fromBase64(signatureValueBase64);
 		}
 		return null;
 	}
@@ -858,7 +885,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 							
 					if (isElementReference && DSSXMLUtils.isSignedProperties(reference, xadesPaths)) {
 						validation.setType(DigestMatcherType.SIGNED_PROPERTIES);
-						found = found && (noDuplicateIdFound && findSignedPropertiesById(uri));
+						found = found && (noDuplicateIdFound && (disableXSWProtection || findSignedPropertiesById(uri)));
 						
 					} else if (DomUtils.isXPointerQuery(uri)) {
 						validation.setType(DigestMatcherType.XPOINTER);
@@ -870,12 +897,12 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						
 					} else if (isElementReference && reference.typeIsReferenceToObject()) {
 						validation.setType(DigestMatcherType.OBJECT);
-						found = found && (noDuplicateIdFound && findObjectById(uri));
+						found = found && (noDuplicateIdFound && (disableXSWProtection || findObjectById(uri)));
 						
 					} else if (isElementReference && reference.typeIsReferenceToManifest()) {
 						validation.setType(DigestMatcherType.MANIFEST);
 						Node manifestNode = getManifestById(uri);
-						found = found && (noDuplicateIdFound && (manifestNode != null));
+						found = found && (noDuplicateIdFound && (disableXSWProtection || (manifestNode != null)));
 						if (manifestNode != null) {
 							validation.getDependentValidations().addAll(getManifestReferences(manifestNode));
 						}
@@ -1159,7 +1186,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	protected SignatureIdentifier buildSignatureIdentifier() {
 		final CertificateToken certificateToken = getSigningCertificateToken();
 		final TokenIdentifier identifier = certificateToken == null ? null : certificateToken.getDSSId();
-		return SignatureIdentifier.buildSignatureIdentifier(getSigningTime(), identifier, getDAIdentifier());
+		return SignatureIdentifier.buildSignatureIdentifier(getSigningTime(), identifier, getDAIdentifier(), getSignatureValueBase64());
 	}
 	
 	@Override
@@ -1239,9 +1266,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public void validateStructure() {
-		final String string = DomUtils.xmlToString(signatureElement);
-		StringReader stringReader = new StringReader(string);
-		structureValidation = DSSXMLUtils.validateAgainstXSD(new StreamSource(stringReader));
+		structureValidation = DSSXMLUtils.validateAgainstXSD(xadesPaths.getXSDUtils(), new DOMSource(signatureElement));
 	}
 
 	/**

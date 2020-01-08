@@ -12,11 +12,11 @@ public interface CacheContext {
 	CacheStateEnum getCurrentState();
 
 	/**
-	 * Returns the date of the last success state change
+	 * Returns the date of the last state transition
 	 * 
-	 * @return the last date when the state has been changed
+	 * @return the last date when the state has had a transition
 	 */
-	Date getLastSuccessDate();
+	Date getLastStateTransitionTime();
 
 	/**
 	 * This method operates a state change
@@ -67,6 +67,13 @@ public interface CacheContext {
 	 */
 	void error(CachedException exception);
 
+	/**
+	 * Store the last occurrence of this exception
+	 * 
+	 * @param updatedException an instance of {@link CachedException}
+	 */
+	void errorUpdateDate(CachedException updatedException);
+	
 	/**
 	 * Returns the met exception
 	 * 

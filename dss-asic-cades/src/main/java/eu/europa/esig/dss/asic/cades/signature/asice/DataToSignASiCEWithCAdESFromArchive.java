@@ -28,9 +28,11 @@ import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.GetDataToSignASiCWithCAdESHelper;
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.signature.SigningOperation;
 
 public class DataToSignASiCEWithCAdESFromArchive extends AbstractDataToSignASiCEWithCAdES implements GetDataToSignASiCWithCAdESHelper {
 
+	private final SigningOperation operation;
 	private final List<DSSDocument> signedDocuments;
 	private final List<DSSDocument> existingSignatures;
 	private final List<DSSDocument> existingManifests;
@@ -40,7 +42,9 @@ public class DataToSignASiCEWithCAdESFromArchive extends AbstractDataToSignASiCE
 
 	private DSSDocument toBeSigned;
 
-	public DataToSignASiCEWithCAdESFromArchive(final ASiCExtractResult extractionResult, final ASiCWithCAdESSignatureParameters parameters) {
+	public DataToSignASiCEWithCAdESFromArchive(SigningOperation operation, final ASiCExtractResult extractionResult,
+			final ASiCWithCAdESSignatureParameters parameters) {
+		this.operation = operation;
 		this.signedDocuments = extractionResult.getSignedDocuments();
 		this.existingSignatures = extractionResult.getSignatureDocuments();
 		this.existingManifests = extractionResult.getManifestDocuments();
@@ -55,9 +59,14 @@ public class DataToSignASiCEWithCAdESFromArchive extends AbstractDataToSignASiCE
 	}
 
 	@Override
+	public String getTimestampFilename() {
+		return getTimestampFileName(existingTimestamps);
+	}
+
+	@Override
 	public DSSDocument getToBeSigned() {
 		if (toBeSigned == null) {
-			toBeSigned = getASiCManifest(signedDocuments, existingSignatures, existingManifests, parameters);
+			toBeSigned = getASiCManifest(operation, signedDocuments, existingSignatures, existingTimestamps, existingManifests, parameters);
 		}
 		return toBeSigned;
 	}

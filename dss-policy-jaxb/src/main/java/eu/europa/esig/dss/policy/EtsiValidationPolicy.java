@@ -133,6 +133,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		}
 		return null;
 	}
+	
+	@Override
+	public LevelConstraint getSignerInformationStoreConstraint(Context context) {
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			return basicSignatureConstraints.getSignerInformationStore();
+		}
+		return null;
+	}
 
 	@Override
 	public LevelConstraint getStructuralValidationConstraint(Context context) {
@@ -696,6 +705,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
 		if (basicSignatureConstraints != null) {
 			return basicSignatureConstraints.getSignatureIntact();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getSignatureDuplicatedConstraint(Context context) {
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			return basicSignatureConstraints.getSignatureDuplicated();
 		}
 		return null;
 	}

@@ -44,4 +44,9 @@ public class ConditionForQualifiers {
 		return condition;
 	}
 
+	@Override
+	public String toString() {
+		return "ConditionForQualifiers [qualifiers=" + qualifiers + ", condition=" + condition + "]";
+	}
+
 }

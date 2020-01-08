@@ -30,11 +30,13 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataExistenceCheck;
 
-public class ReferenceDataExistenceCheckTest {
+public class ReferenceDataExistenceCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void referenceDataExistenceCheck() throws Exception {
@@ -46,7 +48,7 @@ public class ReferenceDataExistenceCheckTest {
 		constraint.setLevel(Level.FAIL);
 
 		XmlCV result = new XmlCV();
-		ReferenceDataExistenceCheck rdec = new ReferenceDataExistenceCheck(result, digestMatcher,
+		ReferenceDataExistenceCheck rdec = new ReferenceDataExistenceCheck(i18nProvider, result, digestMatcher,
 				constraint);
 		rdec.execute();
 
@@ -65,7 +67,7 @@ public class ReferenceDataExistenceCheckTest {
 		constraint.setLevel(Level.FAIL);
 
 		XmlCV result = new XmlCV();
-		ReferenceDataExistenceCheck rdec = new ReferenceDataExistenceCheck(result, digestMatcher,
+		ReferenceDataExistenceCheck rdec = new ReferenceDataExistenceCheck(i18nProvider, result, digestMatcher,
 				constraint);
 		rdec.execute();
 

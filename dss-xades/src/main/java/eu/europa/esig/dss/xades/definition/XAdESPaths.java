@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.xades.definition;
 
 import eu.europa.esig.dss.definition.DSSNamespace;
+import eu.europa.esig.xmldsig.XSDAbstractUtils;
 
 public interface XAdESPaths {
 
@@ -175,5 +176,7 @@ public interface XAdESPaths {
 	String getCurrentInclude();
 
 	String getCurrentQualifyingPropertiesPath();
+
+	XSDAbstractUtils getXSDUtils();
 
 }

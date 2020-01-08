@@ -22,7 +22,6 @@ package eu.europa.esig.dss.xades;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,7 +31,6 @@ import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
@@ -52,7 +50,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.AbstractPaths;
@@ -69,7 +66,7 @@ import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.dss.xades.signature.PrettyPrintTransformer;
-import eu.europa.esig.xades.XAdES319132Utils;
+import eu.europa.esig.xmldsig.XSDAbstractUtils;
 
 /**
  * Utility class that contains some XML related method.
@@ -89,9 +86,6 @@ public final class DSSXMLUtils {
 	private static final String TRANSFORMATION_EXCLUDE_SIGNATURE = "not(ancestor-or-self::ds:Signature)";
 	private static final String TRANSFORMATION_XPATH_NODE_NAME = "XPath";
 	
-	private static final XAdES319132Utils xadesUtils;
-
-
 	static {
 		SantuarioInitializer.init();
 
@@ -100,8 +94,6 @@ public final class DSSXMLUtils {
 
 		canonicalizers = new HashSet<String>();
 		registerDefaultCanonicalizers();
-		
-		xadesUtils = XAdES319132Utils.newInstance();
 	}
 
 	/**
@@ -572,34 +564,16 @@ public final class DSSXMLUtils {
 	}
 
 	/**
-	 * This method allows to validate a DSSDocument XML against the XAdES XSD schema.
-	 *
-	 * @param document
-	 *            {@code DSSDocument} document to validate
-	 * @throws SAXException
-	 *             if the document content is not valid
-	 */
-	public static void validateAgainstXSD(DSSDocument document) throws SAXException {
-		String exceptionMessage = "Unable to read document. Reason : [%s]";
-		try (InputStream is = document.openStream()) {
-			String resultMessage = xadesUtils.validateAgainstXSD(new StreamSource(is));
-			if (Utils.isStringNotEmpty(resultMessage)) {
-				throw new DSSException(String.format(exceptionMessage, resultMessage));
-			}
-		} catch (IOException e) {
-			throw new DSSException(String.format(exceptionMessage, e.getMessage()), e);
-		}
-	}
-
-	/**
 	 * This method allows to validate an XML against the XAdES XSD schema.
 	 *
-	 * @param streamSource
-	 *            {@code InputStream} XML to validate
+	 * @param xsdUtils
+	 *                 the XSD Utils class to be used
+	 * @param source
+	 *                 {@code Source} XML to validate
 	 * @return null if the XSD validates the XML, error message otherwise
 	 */
-	public static String validateAgainstXSD(final StreamSource streamSource) {
-		return xadesUtils.validateAgainstXSD(streamSource);
+	public static String validateAgainstXSD(XSDAbstractUtils xsdUtils, final Source source) {
+		return xsdUtils.validateAgainstXSD(source);
 	}
 
 	public static boolean isOid(String policyId) {
@@ -761,7 +735,16 @@ public final class DSSXMLUtils {
 			digestValueBase64 = DomUtils.getValue(element, XMLDSigPaths.DIGEST_VALUE_PATH);
 		}
 
-		return new Digest(getDigestAlgorithm(digestAlgorithmUri), getDigestValue(digestValueBase64));
+		final DigestAlgorithm digestAlgorithm = getDigestAlgorithm(digestAlgorithmUri);
+		final byte[] digestValue = getDigestValue(digestValueBase64);
+
+		if (digestAlgorithm == null || digestValue == null) {
+			LOG.warn("Unable to read object DigestAlgAndValueType (XMLDSig or XAdES 1.1.1)");
+			return null;
+		} else {
+			return new Digest(digestAlgorithm, digestValue);
+		}
+
 	}
 
 	private static byte[] getDigestValue(String digestValueBase64) {

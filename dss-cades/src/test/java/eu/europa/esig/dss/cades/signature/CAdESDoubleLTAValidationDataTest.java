@@ -169,9 +169,12 @@ public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 			assertTrue(timestamp.getDigestMatchers().get(0).isDataIntact());
 		}
 		
-		assertEquals(0, allTimestamps.get(0).getTimestampedRevocationIds().size());
-		assertEquals(2, allTimestamps.get(1).getTimestampedRevocationIds().size());
-		assertEquals(3, allTimestamps.get(2).getTimestampedRevocationIds().size());
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertNotNull(signature);
+
+		assertEquals(0, signature.getTimestampList().get(0).getTimestampedRevocationIds().size());
+		assertEquals(2, signature.getTimestampList().get(1).getTimestampedRevocationIds().size());
+		assertEquals(3, signature.getTimestampList().get(2).getTimestampedRevocationIds().size());
 		
 		List<String> revocationIdsDoubleLtaLevel = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId()).getRevocationIds();
 		assertEquals(3, revocationIdsDoubleLtaLevel.size());
@@ -179,8 +182,6 @@ public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 			assertTrue(revocationIdsDoubleLtaLevel.contains(id));
 		}
 		
-		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		assertNotNull(signature);
 		assertEquals(1, signature.getRevocationIdsByOrigin(RevocationOrigin.TIMESTAMP_SIGNED_DATA).size());
 		
 		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();

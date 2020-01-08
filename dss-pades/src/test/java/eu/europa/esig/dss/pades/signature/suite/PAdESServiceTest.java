@@ -129,9 +129,11 @@ public class PAdESServiceTest extends PKIFactoryAccess {
         signAndValidate(documentToSign, signatureParameters);
         
         signatureParameters.setSignatureSize(1);
+		signatureParameters.setTimestampSize(1);
         exception = assertThrows(DSSException.class, () -> signAndValidate(documentToSign, signatureParameters));
 
         signatureParameters.setSignatureSize(8192);
+		signatureParameters.setTimestampSize(8192);
         signatureParameters.setSignatureFilter(null);
         signAndValidate(documentToSign, signatureParameters);
         

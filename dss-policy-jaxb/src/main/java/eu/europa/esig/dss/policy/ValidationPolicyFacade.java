@@ -23,6 +23,7 @@ package eu.europa.esig.dss.policy;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -60,7 +61,7 @@ public class ValidationPolicyFacade extends AbstractJaxbFacade<ConstraintsParame
 	}
 
 	public ValidationPolicy getDefaultValidationPolicy() throws JAXBException, XMLStreamException, IOException, SAXException {
-		return getValidationPolicy((InputStream) null);
+		return loadDefault();
 	}
 
 	public ValidationPolicy getTrustedListValidationPolicy() throws JAXBException, XMLStreamException, IOException, SAXException {
@@ -76,16 +77,12 @@ public class ValidationPolicyFacade extends AbstractJaxbFacade<ConstraintsParame
 	}
 
 	public ValidationPolicy getValidationPolicy(InputStream is) throws JAXBException, XMLStreamException, IOException, SAXException {
-		if (is == null) {
-			return loadDefault();
-		}
+		Objects.requireNonNull(is, "The provided validation policy is null");
 		return new EtsiValidationPolicy(unmarshall(is));
 	}
 
 	public ValidationPolicy getValidationPolicy(File file) throws JAXBException, XMLStreamException, IOException, SAXException {
-		if (file == null) {
-			return loadDefault();
-		}
+		Objects.requireNonNull(file, "The provided validation policy is null");
 		return new EtsiValidationPolicy(unmarshall(file));
 	}
 

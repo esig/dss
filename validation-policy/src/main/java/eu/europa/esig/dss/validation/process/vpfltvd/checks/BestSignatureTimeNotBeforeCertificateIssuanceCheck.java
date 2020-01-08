@@ -32,7 +32,8 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 /*
  * If best-signature-time is before the issuance date of the signing certificate, the process shall return the
@@ -44,9 +45,9 @@ public class BestSignatureTimeNotBeforeCertificateIssuanceCheck extends ChainIte
 	private final Date bestSignatureTime;
 	private final CertificateWrapper signingCertificate;
 
-	public BestSignatureTimeNotBeforeCertificateIssuanceCheck(XmlValidationProcessLongTermData result, Date bestSignatureTime,
+	public BestSignatureTimeNotBeforeCertificateIssuanceCheck(I18nProvider i18nProvider, XmlValidationProcessLongTermData result, Date bestSignatureTime,
 			CertificateWrapper signingCertificate, LevelConstraint constraint) {
-		super(result, constraint);
+		super(i18nProvider, result, constraint);
 
 		this.bestSignatureTime = bestSignatureTime;
 		this.signingCertificate = signingCertificate;

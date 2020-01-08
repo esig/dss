@@ -83,7 +83,7 @@ public class PAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 		List<String> revocationIds = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId()).getRevocationIds();
 		assertEquals(2, revocationIds.size());
 		
-		List<TimestampWrapper> timestamps = diagnosticData.getTimestampList();
+		List<TimestampWrapper> timestamps = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId()).getTimestampList();
 		assertEquals(1, timestamps.size());
 		assertEquals(0, timestamps.get(0).getTimestampedRevocationIds().size());
 		
@@ -113,7 +113,7 @@ public class PAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 			assertTrue(revocationIdsLtaLevel.contains(id));
 		}
 		
-		timestamps = diagnosticData.getTimestampList();
+		timestamps = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId()).getTimestampList();
 		assertEquals(2, timestamps.size());
 		assertEquals(0, timestamps.get(0).getTimestampedRevocationIds().size());
 		
@@ -143,7 +143,7 @@ public class PAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 		
 		diagnosticData = reports.getDiagnosticData();
 		
-		timestamps = diagnosticData.getTimestampList();
+		timestamps = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId()).getTimestampList();
 		assertNotNull(timestamps);
 		assertEquals(3, timestamps.size());
 		

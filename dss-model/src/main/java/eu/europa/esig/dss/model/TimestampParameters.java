@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 
@@ -68,9 +69,7 @@ public class TimestampParameters implements Serializable {
 	}
 
 	public void setDigestAlgorithm(final DigestAlgorithm digestAlgorithm) {
-		if (digestAlgorithm == null) {
-			throw new NullPointerException();
-		}
+		Objects.requireNonNull(digestAlgorithm, "DigestAlgorithm cannot be null!");
 		this.digestAlgorithm = digestAlgorithm;
 	}
 

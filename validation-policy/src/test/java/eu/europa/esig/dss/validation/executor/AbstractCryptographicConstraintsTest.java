@@ -41,6 +41,7 @@ import eu.europa.esig.dss.policy.jaxb.RevocationConstraints;
 import eu.europa.esig.dss.policy.jaxb.SignatureConstraints;
 import eu.europa.esig.dss.policy.jaxb.TimestampConstraints;
 import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public abstract class AbstractCryptographicConstraintsTest extends AbstractTestValidationExecutor {
@@ -162,10 +163,10 @@ public abstract class AbstractCryptographicConstraintsTest extends AbstractTestV
 	}
 	
 	protected void setAlgoExpDate(CryptographicConstraint defaultCryptographicConstraint, String algorithm, Integer keySize, String date) {
-		if(keySize == 0) {
+		if (keySize == 0) {
 			setDigestAlgoExpirationDate(defaultCryptographicConstraint, algorithm, date);
 
-		}else {
+		} else {
 			setAlgoExpirationDate(defaultCryptographicConstraint, algorithm, date, keySize);
 
 		}

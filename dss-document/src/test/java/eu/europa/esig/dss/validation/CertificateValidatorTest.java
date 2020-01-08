@@ -20,12 +20,13 @@
  */
 package eu.europa.esig.dss.validation;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.GregorianCalendar;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.TransformerException;
@@ -34,6 +35,7 @@ import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReportFacade;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
@@ -87,14 +89,14 @@ public class CertificateValidatorTest {
 	}
 
 	@Test
-	public void testDateNull() {
-		NullPointerException exception = assertThrows(NullPointerException.class, () -> {
-			CertificateValidator cv = CertificateValidator.fromCertificate(DSSUtils.loadCertificate(new File("src/test/resources/certificates/CZ.cer")));
-			cv.setCertificateVerifier(new CommonCertificateVerifier());
-			cv.setValidationTime(null);
-			cv.validate();
-		});
-		assertEquals(null, exception.getMessage());
+	public void testCustomDate() {
+		CertificateValidator cv = CertificateValidator.fromCertificate(DSSUtils.loadCertificate(new File("src/test/resources/certificates/CZ.cer")));
+		cv.setCertificateVerifier(new CommonCertificateVerifier());
+		GregorianCalendar gregorianCalendar = new GregorianCalendar(2019, 1, 1);
+		cv.setValidationTime(gregorianCalendar.getTime());
+		CertificateReports certificateReports = cv.validate();
+		DiagnosticData diagnosticData = certificateReports.getDiagnosticData();
+		assertEquals(gregorianCalendar.getTime(), diagnosticData.getValidationDate());
 	}
 
 }

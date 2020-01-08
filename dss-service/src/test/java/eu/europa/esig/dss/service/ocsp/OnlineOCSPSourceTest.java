@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.service.ocsp;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -31,6 +32,8 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.SecureRandomNonceSource;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
@@ -100,6 +103,20 @@ public class OnlineOCSPSourceTest {
 				alternativeOCSPUrls);
 		OCSPToken ocspToken = currentOCSPSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(ocspToken);
+	}
+	
+	@Test
+	public void customCertIDDigestAlgorithmTest() {
+		CertificateToken certificateToken = DSSUtils.loadCertificate(new File("src/test/resources/cert.pem"));
+		CertificateToken caToken = DSSUtils.loadCertificate(new File("src/test/resources/cert_CA.pem"));
+		
+		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
+		OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, caToken);
+		assertEquals(SignatureAlgorithm.RSA_SHA256, ocspToken.getSignatureAlgorithm()); // default value
+		
+		ocspSource.setCertIDDigestAlgorithm(DigestAlgorithm.SHA1);
+		ocspToken = ocspSource.getRevocationToken(certificateToken, caToken);
+		assertEquals(SignatureAlgorithm.RSA_SHA1, ocspToken.getSignatureAlgorithm());
 	}
 
 }

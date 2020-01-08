@@ -124,12 +124,6 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRLToken> implement
 	 */
 	private static final String SQL_DROP_TABLE = "DROP TABLE CACHED_CRL";
 	
-	/**
-	 * The default constructor for JdbcCRLSource.
-	 */
-	public JdbcCacheCRLSource() {
-	}
-	
 	@Override
 	protected String getCreateTableQuery() {
 		return SQL_INIT_CREATE_TABLE;

@@ -123,7 +123,7 @@ public class DiagnosticDataCompleteTest extends PKIFactoryAccess {
 		assertEquals(2, signatureOne.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, RevocationOrigin.DSS_DICTIONARY).size());
 		
 		assertEquals(0, signatureOne.getAllFoundRevocationRefs().size());
-		assertEquals("Signature1", signatureOne.getSignatureFieldName());
+		assertEquals("Signature1", signatureOne.getFirstFieldName());
 		
 		SignatureWrapper signatureTwo = signatures.get(1);
 		assertEquals(2, signatureOne.getAllFoundRevocations().size());
@@ -133,53 +133,16 @@ public class DiagnosticDataCompleteTest extends PKIFactoryAccess {
 		assertEquals(0, signatureOne.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, RevocationOrigin.TIMESTAMP_VALIDATION_DATA).size());
 		assertEquals(2, signatureOne.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, RevocationOrigin.DSS_DICTIONARY).size());
 		assertEquals(0, signatureTwo.getAllFoundRevocationRefs().size());
-		assertEquals("Signature3", signatureTwo.getSignatureFieldName());
+		assertEquals("Signature3", signatureTwo.getFirstFieldName());
 		
 		List<TimestampWrapper> timestamps= diagnosticData.getTimestampList();
 		assertNotNull(timestamps);
-		assertEquals(3, timestamps.size());
+		assertEquals(2, timestamps.size()); // one timestamp is skipped because of /Type /Sig (see DSS-1899)
+		
 		assertEquals(5, timestamps.get(0).getTimestampedObjects().size());
 		assertEquals(TimestampType.SIGNATURE_TIMESTAMP, timestamps.get(0).getType());
-		assertEquals(5, timestamps.get(2).getTimestampedObjects().size());
-		assertEquals(TimestampType.SIGNATURE_TIMESTAMP, timestamps.get(2).getType());
-		
-		TimestampWrapper archiveTimestamp = timestamps.get(1);
-		assertEquals(TimestampType.ARCHIVE_TIMESTAMP, archiveTimestamp.getType());
-
-		List<String> checkedIds = new ArrayList<String>();
-		
-		assertEquals(1, archiveTimestamp.getTimestampedSignatureIds().size());
-		checkedIds.add(archiveTimestamp.getTimestampedSignatureIds().get(0));
-		
-		List<String> timestampedSignedDataIds = archiveTimestamp.getTimestampedSignedDataIds();
-		assertEquals(1, timestampedSignedDataIds.size());
-		for (String id : timestampedSignedDataIds) {
-			assertFalse(checkedIds.contains(id));
-			checkedIds.add(id);
-		}
-		
-		List<String> timestampedCertificateIds = archiveTimestamp.getTimestampedCertificateIds();
-		assertEquals(4, timestampedCertificateIds.size());
-		for (String id : timestampedCertificateIds) {
-			assertFalse(checkedIds.contains(id));
-			checkedIds.add(id);
-		}
-		
-		List<String> timestampedRevocationIds = archiveTimestamp.getTimestampedRevocationIds();
-		assertEquals(2, timestampedRevocationIds.size());
-		for (String id : timestampedRevocationIds) {
-			assertFalse(checkedIds.contains(id));
-			checkedIds.add(id);
-		}
-		
-		List<String> timestampedTimestampIds = archiveTimestamp.getTimestampedTimestampIds();
-		assertEquals(1, timestampedTimestampIds.size());
-		for (String id : timestampedTimestampIds) {
-			assertFalse(checkedIds.contains(id));
-			checkedIds.add(id);
-		}
-		
-		assertEquals(9, checkedIds.size());
+		assertEquals(5, timestamps.get(1).getTimestampedObjects().size());
+		assertEquals(TimestampType.SIGNATURE_TIMESTAMP, timestamps.get(1).getType());
 		
 	}
 	
@@ -235,6 +198,60 @@ public class DiagnosticDataCompleteTest extends PKIFactoryAccess {
 				usedTimestampObjectIds.add(timestampedObject.getToken().getId());
 			}
 		}
+		
+		SignatureWrapper secondSignature = diagnosticData.getSignatures().get(1);
+
+		List<TimestampWrapper> secondSignatureTimestamps = secondSignature.getTimestampList();
+		assertEquals(2, secondSignatureTimestamps.size());
+		TimestampWrapper signatureTimestamp = secondSignatureTimestamps.get(0);
+		assertEquals(4, signatureTimestamp.getTimestampedObjects().size());
+		assertEquals(TimestampType.SIGNATURE_TIMESTAMP, signatureTimestamp.getType());
+        
+        TimestampWrapper archiveTimestamp = null;
+        int archiveTimestamps = 0;
+        for (TimestampWrapper timestamp : timestamps) {
+        	if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestamp.getType())) {
+        		archiveTimestamp = timestamp;
+        		++archiveTimestamps;
+        	}
+        }
+        assertNotNull(archiveTimestamp);
+        assertEquals(1, archiveTimestamps);
+
+        List<String> checkedIds = new ArrayList<String>();
+        
+        assertEquals(5, archiveTimestamp.getTimestampedSignatureIds().size());
+        checkedIds.add(archiveTimestamp.getTimestampedSignatureIds().get(0));
+        
+        List<String> timestampedSignedDataIds = archiveTimestamp.getTimestampedSignedDataIds();
+        assertEquals(5, timestampedSignedDataIds.size());
+        for (String id : timestampedSignedDataIds) {
+            assertFalse(checkedIds.contains(id));
+            checkedIds.add(id);
+        }
+        
+        List<String> timestampedCertificateIds = archiveTimestamp.getTimestampedCertificateIds();
+        assertEquals(18, timestampedCertificateIds.size());
+        for (String id : timestampedCertificateIds) {
+            assertFalse(checkedIds.contains(id));
+            checkedIds.add(id);
+        }
+        
+        List<String> timestampedRevocationIds = archiveTimestamp.getTimestampedRevocationIds();
+        assertEquals(4, timestampedRevocationIds.size());
+        for (String id : timestampedRevocationIds) {
+            assertFalse(checkedIds.contains(id));
+            checkedIds.add(id);
+        }
+        
+        List<String> timestampedTimestampIds = archiveTimestamp.getTimestampedTimestampIds();
+        assertEquals(2, timestampedTimestampIds.size());
+        for (String id : timestampedTimestampIds) {
+            assertFalse(checkedIds.contains(id));
+            checkedIds.add(id);
+        }
+        
+        assertEquals(30, checkedIds.size());
 	}
 	
 	@Test
@@ -253,7 +270,7 @@ public class DiagnosticDataCompleteTest extends PKIFactoryAccess {
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		assertEquals(1, signatures.size());
 		PAdESSignature padesSignature = (PAdESSignature) signatures.get(0);
-		byte[] contents = padesSignature.getPdfSignatureInfo().getContents();
+		byte[] contents = padesSignature.getPdfRevision().getContents();
 		byte[] digest = DSSUtils.digest(signatureDigestReference.getDigestMethod(), contents);
 		
 		String signatureReferenceDigestValue = Utils.toBase64(signatureDigestReference.getDigestValue());

@@ -298,6 +298,7 @@ public enum DigestAlgorithm implements UriBasedEnum, OidBasedEnum {
 	 * 
 	 * @return an instance of MessageDigest
 	 * @throws NoSuchAlgorithmException
+	 *                                  if the algorithm is not supported
 	 */
 	public MessageDigest getMessageDigest() throws NoSuchAlgorithmException {
 		return MessageDigest.getInstance(javaName);
@@ -311,6 +312,7 @@ public enum DigestAlgorithm implements UriBasedEnum, OidBasedEnum {
 	 * 
 	 * @return an instance of MessageDigest
 	 * @throws NoSuchAlgorithmException
+	 *                                  if the algorithm is not supported
 	 */
 	public MessageDigest getMessageDigest(Provider provider) throws NoSuchAlgorithmException {
 		return MessageDigest.getInstance(javaName, provider);

@@ -34,9 +34,10 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.isc.checks.IssuerSerialMatchCheck;
 
-public class IssuerSerialMatchCheckTest {
+public class IssuerSerialMatchCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void issuerSerialMatchCheckTest() throws Exception {
@@ -50,7 +51,7 @@ public class IssuerSerialMatchCheckTest {
 		constraint.setLevel(Level.FAIL);
 
 		XmlISC result = new XmlISC();
-		IssuerSerialMatchCheck ismc = new IssuerSerialMatchCheck(result, new SignatureWrapper(sig), constraint);
+		IssuerSerialMatchCheck ismc = new IssuerSerialMatchCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
 		ismc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -70,7 +71,7 @@ public class IssuerSerialMatchCheckTest {
 		constraint.setLevel(Level.FAIL);
 
 		XmlISC result = new XmlISC();
-		IssuerSerialMatchCheck ismc = new IssuerSerialMatchCheck(result, new SignatureWrapper(sig), constraint);
+		IssuerSerialMatchCheck ismc = new IssuerSerialMatchCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
 		ismc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

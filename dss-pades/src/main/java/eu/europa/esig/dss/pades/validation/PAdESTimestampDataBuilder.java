@@ -25,23 +25,23 @@ import java.util.List;
 
 import org.bouncycastle.cms.SignerInformation;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.cades.validation.CAdESTimestampDataBuilder;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.pdf.PdfDocTimestampInfo;
-import eu.europa.esig.dss.pdf.PdfSignatureInfo;
-import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.pdf.PdfDocTimestampRevision;
+import eu.europa.esig.dss.validation.PdfRevision;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 public class PAdESTimestampDataBuilder extends CAdESTimestampDataBuilder {
 	
-	private final PdfSignatureInfo pdfSignatureInfo;
+	private final PdfRevision pdfSignatureRevision;
 	
 	private List<TimestampToken> signatureTimestamps = new ArrayList<TimestampToken>();
 
-	public PAdESTimestampDataBuilder(PdfSignatureInfo pdfSignatureInfo, final SignerInformation signerInformation, List<DSSDocument> detacheDocuments) {
+	public PAdESTimestampDataBuilder(PdfRevision pdfSignatureRevision, final SignerInformation signerInformation, List<DSSDocument> detacheDocuments) {
 		super(signerInformation, detacheDocuments);
-		this.pdfSignatureInfo = pdfSignatureInfo;
+		this.pdfSignatureRevision = pdfSignatureRevision;
 	}
 	
 	public void setSignatureTimestamps(List<TimestampToken> signatureTimestamps) {
@@ -49,15 +49,10 @@ public class PAdESTimestampDataBuilder extends CAdESTimestampDataBuilder {
 	}
 
 	@Override
-	public byte[] getSignatureTimestampData(final TimestampToken timestampToken) {
-		for (final PdfSignatureOrDocTimestampInfo signatureInfo : pdfSignatureInfo.getOuterSignatures()) {
-			if (signatureInfo instanceof PdfDocTimestampInfo) {
-				PdfDocTimestampInfo pdfTimestampInfo = (PdfDocTimestampInfo) signatureInfo;
-				if (pdfTimestampInfo.getTimestampToken().equals(timestampToken)) {
-					final byte[] signedDocumentBytes = pdfTimestampInfo.getSignedDocumentBytes();
-					return signedDocumentBytes;
-				}
-			}
+	public DSSDocument getSignatureTimestampData(final TimestampToken timestampToken) {
+		DSSDocument signedData = getSignedDataInPDFRevisions(timestampToken);
+		if (signedData != null) {
+			return signedData;
 		}
 		if (signatureTimestamps.contains(timestampToken)) {
 			return super.getSignatureTimestampData(timestampToken);
@@ -66,29 +61,37 @@ public class PAdESTimestampDataBuilder extends CAdESTimestampDataBuilder {
 	}
 
 	@Override
-	public byte[] getTimestampX1Data(final TimestampToken timestampToken) {
+	public DSSDocument getTimestampX1Data(final TimestampToken timestampToken) {
 		/* Not applicable for PAdES */
 		return null;
 	}
 
 	@Override
-	public byte[] getTimestampX2Data(final TimestampToken timestampToken) {
+	public DSSDocument getTimestampX2Data(final TimestampToken timestampToken) {
 		/* Not applicable for PAdES */
 		return null;
 	}
 
 	@Override
-	public byte[] getArchiveTimestampData(TimestampToken timestampToken) {
-		for (final PdfSignatureOrDocTimestampInfo signatureInfo : pdfSignatureInfo.getOuterSignatures()) {
-			if (signatureInfo instanceof PdfDocTimestampInfo) {
-				PdfDocTimestampInfo pdfTimestampInfo = (PdfDocTimestampInfo) signatureInfo;
+	public DSSDocument getArchiveTimestampData(TimestampToken timestampToken) {
+		DSSDocument signedData = getSignedDataInPDFRevisions(timestampToken);
+		if (signedData != null) {
+			return signedData;
+		}
+		throw new DSSException("Timestamp Data not found");
+	}
+
+	private DSSDocument getSignedDataInPDFRevisions(final TimestampToken timestampToken) {
+		for (final PdfRevision signatureInfo : pdfSignatureRevision.getOuterSignatures()) {
+			if (signatureInfo instanceof PdfDocTimestampRevision) {
+				PdfDocTimestampRevision pdfTimestampInfo = (PdfDocTimestampRevision) signatureInfo;
 				if (pdfTimestampInfo.getTimestampToken().equals(timestampToken)) {
 					final byte[] signedDocumentBytes = pdfTimestampInfo.getSignedDocumentBytes();
-					return signedDocumentBytes;
+					return new InMemoryDocument(signedDocumentBytes);
 				}
 			}
 		}
-		throw new DSSException("Timestamp Data not found");
+		return null;
 	}
 
 }

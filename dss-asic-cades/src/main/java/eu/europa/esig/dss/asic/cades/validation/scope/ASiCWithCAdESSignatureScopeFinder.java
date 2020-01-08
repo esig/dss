@@ -26,9 +26,7 @@ import java.util.List;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cades.validation.scope.CAdESSignatureScopeFinder;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.scope.ContainerContentSignatureScope;
 import eu.europa.esig.dss.validation.scope.ContainerSignatureScope;
 import eu.europa.esig.dss.validation.scope.FullSignatureScope;
@@ -46,22 +44,21 @@ public class ASiCWithCAdESSignatureScopeFinder extends CAdESSignatureScopeFinder
         }
         
         if (isASiCSArchive(cadesSignature, originalDocument)) {
-        	result.add(new ContainerSignatureScope(originalDocument.getName(), getDigest(DSSUtils.toByteArray(originalDocument))));
+			result.add(new ContainerSignatureScope(originalDocument.getName(), DSSUtils.getDigest(getDefaultDigestAlgorithm(), originalDocument)));
 			for (DSSDocument archivedDocument : cadesSignature.getContainerContents()) {
 				result.add(new ContainerContentSignatureScope(DSSUtils.decodeUrl(archivedDocument.getName()), 
-						new Digest(getDefaultDigestAlgorithm(), Utils.fromBase64(archivedDocument.getDigest(getDefaultDigestAlgorithm())))));
+						DSSUtils.getDigest(getDefaultDigestAlgorithm(), archivedDocument)));
 			}
 			
         } else if (isASiCEArchive(cadesSignature)) {
-        	result.add(new ManifestSignatureScope(originalDocument.getName(), getDigest(DSSUtils.toByteArray(originalDocument))));
+			result.add(new ManifestSignatureScope(originalDocument.getName(), DSSUtils.getDigest(getDefaultDigestAlgorithm(), originalDocument)));
         	for (DSSDocument manifestContent : cadesSignature.getManifestedDocuments()) {
 				result.add(new FullSignatureScope(manifestContent.getName(), 
-						new Digest(getDefaultDigestAlgorithm(), Utils.fromBase64(manifestContent.getDigest(getDefaultDigestAlgorithm())))));
+						DSSUtils.getDigest(getDefaultDigestAlgorithm(), manifestContent)));
         	}
         	
         } else {
         	return getSignatureScopeFromOriginalDocument(originalDocument);
-        	
         }
         return result;
     }

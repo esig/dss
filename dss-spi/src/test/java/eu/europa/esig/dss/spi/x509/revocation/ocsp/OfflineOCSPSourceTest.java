@@ -61,7 +61,6 @@ public class OfflineOCSPSourceTest {
 		assertNotNull(ocspToken.getNextUpdate());
 		assertNotNull(ocspToken.getProductionDate());
 		assertNotNull(ocspToken.getBasicOCSPResp());
-		assertNotNull(ocspToken.getCertId());
 		assertNull(ocspToken.getExpiredCertsOnCRL());
 		assertTrue(ocspToken.getStatus());
 		assertFalse(ocspToken.isCertHashPresent());
@@ -86,7 +85,6 @@ public class OfflineOCSPSourceTest {
 		assertNotNull(ocspToken.getThisUpdate());
 		assertNotNull(ocspToken.getProductionDate());
 		assertNotNull(ocspToken.getBasicOCSPResp());
-		assertNotNull(ocspToken.getCertId());
 		assertNull(ocspToken.getExpiredCertsOnCRL());
 		assertFalse(ocspToken.isCertHashPresent());
 		assertNotNull(ocspToken.getReason());

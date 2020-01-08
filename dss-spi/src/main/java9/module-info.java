@@ -1,13 +1,14 @@
 module jpms_dss_spi {
 
-	requires transitive jpms_dss_utils;
+	requires jpms_dss_utils;
 
-	requires transitive org.slf4j;
-	requires transitive org.bouncycastle.provider;
-	requires transitive org.bouncycastle.pkix;
+	requires org.slf4j;
+	requires org.bouncycastle.provider;
+	requires org.bouncycastle.pkix;
 	
 	exports eu.europa.esig.dss.spi;
 	exports eu.europa.esig.dss.spi.client.http;
+	exports eu.europa.esig.dss.spi.exception;
 	exports eu.europa.esig.dss.spi.tsl;
 	exports eu.europa.esig.dss.spi.util;
 	exports eu.europa.esig.dss.spi.x509;

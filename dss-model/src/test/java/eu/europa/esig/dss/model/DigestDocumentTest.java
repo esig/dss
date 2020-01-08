@@ -44,6 +44,16 @@ public class DigestDocumentTest {
 	}
 
 	@Test
+	public void testNullDigestAlgo() {
+		assertThrows(NullPointerException.class, () -> new DigestDocument(null, "aaaa"));
+	}
+
+	@Test
+	public void testNullDigestAlgoValue() {
+		assertThrows(NullPointerException.class, () -> new DigestDocument(DigestAlgorithm.SHA1, null));
+	}
+
+	@Test
 	public void testUnknownDigest() {
 		Exception exception = assertThrows(DSSException.class, () -> {
 			String base64EncodeDigest = "aaa";

@@ -33,7 +33,9 @@ import java.security.KeyStore;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 
@@ -47,6 +49,10 @@ public class SSLCommonDataLoaderTest {
 	private static final String KS_TYPE = "PKCS12";
 	private static final String CORRECT_KS_PATH = "target/ks.p12";
 	private static final String WRONG_KS_PATH = "target/wrong.p12";
+	private static final char[] KS_PASSWORD = new char[] { 'a', 'z', 'e', 'r', 't' };
+	
+	private static DSSDocument correctKeyStore;
+	private static DSSDocument wrongKeyStore;
 
 	@BeforeAll
 	public static void initKS() {
@@ -56,10 +62,12 @@ public class SSLCommonDataLoaderTest {
 			KeyStore ks = KeyStore.getInstance(KS_TYPE);
 			ks.load(null);
 			ks.setCertificateEntry("cef", sslCert.getCertificate());
-			ks.store(os, new char[] { 'a', 'z', 'e', 'r', 't' });
+			ks.store(os, KS_PASSWORD);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+		
+		correctKeyStore = new FileDocument(CORRECT_KS_PATH);
 
 		CertificateToken wrongCert = DSSUtils.loadCertificateFromBase64EncodedString(WRONG_CERT);
 
@@ -67,10 +75,13 @@ public class SSLCommonDataLoaderTest {
 			KeyStore ks = KeyStore.getInstance(KS_TYPE);
 			ks.load(null);
 			ks.setCertificateEntry("cef", wrongCert.getCertificate());
-			ks.store(os, new char[] { 'a', 'z', 'e', 'r', 't' });
+			ks.store(os, KS_PASSWORD);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+		
+		wrongKeyStore = new FileDocument(WRONG_KS_PATH);
+		
 	}
 
 	@Test
@@ -84,9 +95,9 @@ public class SSLCommonDataLoaderTest {
 	@Test
 	public void testTrustStore() throws GeneralSecurityException, IOException {
 		CommonsDataLoader dataLoader = new CommonsDataLoader();
-		dataLoader.setSslTruststorePath(CORRECT_KS_PATH);
+		dataLoader.setSslTruststore(correctKeyStore);
 		dataLoader.setSslTruststoreType(KS_TYPE);
-		dataLoader.setSslTruststorePassword("azert");
+		dataLoader.setSslTruststorePassword(new String(KS_PASSWORD));
 
 		byte[] binaries = dataLoader.get(URL);
 		assertNotNull(binaries);
@@ -98,13 +109,13 @@ public class SSLCommonDataLoaderTest {
 	public void testWrongTrustStore() throws GeneralSecurityException, IOException {
 		Exception exception = assertThrows(DSSException.class, () -> {
 			CommonsDataLoader dataLoader = new CommonsDataLoader();
-			dataLoader.setSslTruststorePath(WRONG_KS_PATH);
+			dataLoader.setSslTruststore(wrongKeyStore);
 			dataLoader.setSslTruststoreType(KS_TYPE);
-			dataLoader.setSslTruststorePassword("azert");
+			dataLoader.setSslTruststorePassword(new String(KS_PASSWORD));
 
-			dataLoader.setSslKeystorePath(WRONG_KS_PATH);
+			dataLoader.setSslTruststore(wrongKeyStore);
 			dataLoader.setSslKeystoreType(KS_TYPE);
-			dataLoader.setSslKeystorePassword("azert");
+			dataLoader.setSslKeystorePassword(new String(KS_PASSWORD));
 
 			byte[] binaries = dataLoader.get(URL);
 			assertNotNull(binaries);

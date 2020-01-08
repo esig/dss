@@ -21,20 +21,30 @@
 package eu.europa.esig.dss.pdf.pdfbox;
 
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
+import eu.europa.esig.dss.pdf.PDFServiceMode;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
-import eu.europa.esig.dss.pdf.PDFTimestampService;
 import eu.europa.esig.dss.pdf.pdfbox.visible.defaultdrawer.PdfBoxDefaultSignatureDrawerFactory;
 
 public class PdfBoxDefaultObjectFactory implements IPdfObjFactory {
 
 	@Override
 	public PDFSignatureService newPAdESSignatureService() {
-		return new PdfBoxSignatureService(false, new PdfBoxDefaultSignatureDrawerFactory());
+		return new PdfBoxSignatureService(PDFServiceMode.SIGNATURE, new PdfBoxDefaultSignatureDrawerFactory());
 	}
 
 	@Override
-	public PDFTimestampService newTimestampSignatureService() {
-		return new PdfBoxSignatureService(true, new PdfBoxDefaultSignatureDrawerFactory());
+	public PDFSignatureService newContentTimestampService() {
+		return new PdfBoxSignatureService(PDFServiceMode.CONTENT_TIMESTAMP, new PdfBoxDefaultSignatureDrawerFactory());
+	}
+
+	@Override
+	public PDFSignatureService newSignatureTimestampService() {
+		return new PdfBoxSignatureService(PDFServiceMode.SIGNATURE_TIMESTAMP, new PdfBoxDefaultSignatureDrawerFactory());
+	}
+
+	@Override
+	public PDFSignatureService newArchiveTimestampService() {
+		return new PdfBoxSignatureService(PDFServiceMode.ARCHIVE_TIMESTAMP, new PdfBoxDefaultSignatureDrawerFactory());
 	}
 
 }

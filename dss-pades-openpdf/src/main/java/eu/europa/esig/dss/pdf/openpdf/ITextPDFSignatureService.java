@@ -25,8 +25,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,9 +52,8 @@ import com.lowagie.text.pdf.PdfStream;
 import com.lowagie.text.pdf.PdfString;
 import com.lowagie.text.pdf.PdfWriter;
 
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -64,12 +65,12 @@ import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
 import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
 import eu.europa.esig.dss.pdf.PAdESConstants;
+import eu.europa.esig.dss.pdf.PDFServiceMode;
 import eu.europa.esig.dss.pdf.PdfDict;
-import eu.europa.esig.dss.pdf.PdfDocTimestampInfo;
+import eu.europa.esig.dss.pdf.PdfDocTimestampRevision;
 import eu.europa.esig.dss.pdf.PdfDssDict;
-import eu.europa.esig.dss.pdf.PdfSigDict;
-import eu.europa.esig.dss.pdf.PdfSignatureInfo;
-import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
+import eu.europa.esig.dss.pdf.PdfSigDictWrapper;
+import eu.europa.esig.dss.pdf.PdfSignatureRevision;
 import eu.europa.esig.dss.pdf.openpdf.visible.ITextSignatureDrawer;
 import eu.europa.esig.dss.pdf.openpdf.visible.ITextSignatureDrawerFactory;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -77,6 +78,8 @@ import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.PdfRevision;
+import eu.europa.esig.dss.validation.PdfSignatureDictionary;
 
 /**
  * Implementation of PDFSignatureService using iText
@@ -89,11 +92,13 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	/**
 	 * Constructor for the ITextPDFSignatureService
 	 * 
-	 * @param timestamp if true, the instance is used to generate DocumentTypestamp
-	 *                  if false, it is used to generate a signature layer
+	 * @param serviceMode
+	 *                               current instance is used to generate
+	 *                               DocumentTypestamp or Signature signature layer
+	 * 
 	 */
-	public ITextPDFSignatureService(boolean timestamp, ITextSignatureDrawerFactory signatureDrawerFactory) {
-		super(timestamp, signatureDrawerFactory);
+	public ITextPDFSignatureService(PDFServiceMode serviceMode, ITextSignatureDrawerFactory signatureDrawerFactory) {
+		super(serviceMode, signatureDrawerFactory);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -109,7 +114,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		sap.setAcro6Layers(true);
 
 		PdfDictionary dic = null;
-		if (!timestamp && Utils.isStringNotEmpty(parameters.getSignatureFieldId())) {
+		if (!isDocumentTimestampLayer() && Utils.isStringNotEmpty(parameters.getSignatureFieldId())) {
 			dic = findExistingSignature(reader, parameters.getSignatureFieldId());
 		} else {
 			dic = new PdfDictionary();
@@ -185,7 +190,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		List<String> signatureNames = acroFields.getSignedFieldNames();
 		for (String name : signatureNames) {
 			PdfDict dictionary = new ITextPdfDict(acroFields.getSignatureDictionary(name));
-			PdfSigDict signatureDictionary = new PdfSigDict(dictionary);
+			PdfSigDictWrapper signatureDictionary = new PdfSigDictWrapper(dictionary);
 			if (Utils.isArrayNotEmpty(signatureDictionary.getContents())) {
 				return true;
 			}
@@ -213,12 +218,11 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public byte[] digest(DSSDocument toSignDocument, PAdESSignatureParameters parameters,
-			DigestAlgorithm digestAlgorithm) {
+	public byte[] digest(DSSDocument toSignDocument, PAdESSignatureParameters parameters) {
 		try (InputStream is = toSignDocument.openStream(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			PdfStamper stp = prepareStamper(is, baos, parameters);
 			PdfSignatureAppearance sap = stp.getSignatureAppearance();
-			final byte[] digest = DSSUtils.digest(digestAlgorithm, sap.getRangeStream());
+			final byte[] digest = DSSUtils.digest(getCurrentDigestAlgorithm(parameters), sap.getRangeStream());
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Base64 messageDigest : {}", Utils.toBase64(digest));
 			}
@@ -229,15 +233,14 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public DSSDocument sign(DSSDocument toSignDocument, byte[] signatureValue, PAdESSignatureParameters parameters,
-			DigestAlgorithm digestAlgorithm) {
+	public DSSDocument sign(DSSDocument toSignDocument, byte[] signatureValue, PAdESSignatureParameters parameters) {
 
 		try (InputStream is = toSignDocument.openStream(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			PdfStamper stp = prepareStamper(is, baos, parameters);
 			PdfSignatureAppearance sap = stp.getSignatureAppearance();
 
 			byte[] pk = signatureValue;
-			int csize = parameters.getSignatureSize();
+			int csize = getCurrentSignatureSize(parameters);
 			if (csize < pk.length) {
 				throw new DSSException(String.format("The signature size [%s] is too small for the signature value with a length [%s]", csize, pk.length));
 			}
@@ -258,52 +261,66 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	protected List<PdfSignatureOrDocTimestampInfo> getSignatures(CertificatePool validationCertPool, DSSDocument document) {
-		List<PdfSignatureOrDocTimestampInfo> result = new ArrayList<PdfSignatureOrDocTimestampInfo>();
+	protected List<PdfRevision> getSignatures(CertificatePool validationCertPool, DSSDocument document) {
+		List<PdfRevision> result = new ArrayList<PdfRevision>();
 		try (InputStream is = document.openStream(); PdfReader reader = new PdfReader(is)) {
 			AcroFields af = reader.getAcroFields();
-			List<String> names = af.getSignedFieldNames();
 
 			final PdfDssDict dssDictionary = getDSSDictionary(reader);
+			
+			Map<PdfSignatureDictionary, List<String>> sigDictionaries = extractSigDictionaries(af);
 
-			LOG.info("{} signature(s)", names.size());
-			for (String name : names) {
-				LOG.info("Signature name: {}", name);
-				LOG.info("Document revision: {} of {}", af.getRevision(name), af.getTotalRevisions());
-
-				PdfDict dictionary = new ITextPdfDict(af.getSignatureDictionary(name));
-				PdfSigDict signatureDictionary = new PdfSigDict(dictionary, name);
-				final int[] byteRange = signatureDictionary.getByteRange();
-
-				validateByteRange(byteRange);
-
-				final byte[] cms = signatureDictionary.getContents();
-				byte[] signedContent = new byte[] {};
-				if (!isContentValueEqualsByteRangeExtraction(document, byteRange, cms, name)) {
-					LOG.warn("Signature '{}' is skipped. SIWA detected !", name);
-				} else {
-					signedContent = getSignedContent(document, byteRange);
-				}
-
-				boolean signatureCoversWholeDocument = af.signatureCoversWholeDocument(name);
-
-				final String subFilter = signatureDictionary.getSubFilter();
-				if (PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER.equals(subFilter)) {
-
-					PdfDssDict timestampedRevisionDssDict = null;
-
-					// LT or LTA
-					if (dssDictionary != null) {
-						// obtain covered DSS dictionary if already exist
-						timestampedRevisionDssDict = getDSSDictionaryPresentInRevision(getOriginalBytes(byteRange, signedContent));
+			for (Map.Entry<PdfSignatureDictionary, List<String>> sigDictEntry : sigDictionaries.entrySet()) {
+				PdfSignatureDictionary signatureDictionary = sigDictEntry.getKey();
+				List<String> fieldNames = sigDictEntry.getValue();
+				try {
+					LOG.info("Signature field name: {}", fieldNames);
+					
+					final int[] byteRange = signatureDictionary.getSignatureByteRange();
+	
+					validateByteRange(byteRange);
+	
+					final byte[] cms = signatureDictionary.getContents();
+					byte[] signedContent = DSSUtils.EMPTY_BYTE_ARRAY;
+					if (!isContentValueEqualsByteRangeExtraction(document, byteRange, cms, fieldNames)) {
+						LOG.warn("Signature {} is skipped. SIWA detected !", fieldNames);
+					} else {
+						signedContent = getSignedContent(document, byteRange);
 					}
-
-					result.add(new PdfDocTimestampInfo(validationCertPool, signatureDictionary, timestampedRevisionDssDict, cms, signedContent,
-							signatureCoversWholeDocument));
-
-				} else {
-					result.add(new PdfSignatureInfo(validationCertPool, signatureDictionary, dssDictionary, cms, signedContent, signatureCoversWholeDocument));
-
+	
+					boolean signatureCoversWholeDocument = af.signatureCoversWholeDocument(fieldNames.get(0));
+	
+					if (isDocTimestamp(signatureDictionary)) {
+	
+						PdfDssDict timestampedRevisionDssDict = null;
+	
+						// LT or LTA
+						if (dssDictionary != null) {
+							// obtain covered DSS dictionary if already exist
+							timestampedRevisionDssDict = getDSSDictionaryPresentInRevision(getOriginalBytes(byteRange, signedContent));
+						}
+	
+						result.add(new PdfDocTimestampRevision(cms, signatureDictionary, timestampedRevisionDssDict, fieldNames, 
+								validationCertPool, signedContent, signatureCoversWholeDocument));
+	
+					} else if (isSignature(signatureDictionary)) {
+						result.add(new PdfSignatureRevision(cms, signatureDictionary, dssDictionary, fieldNames, 
+								validationCertPool, signedContent, signatureCoversWholeDocument));
+	
+					} else {
+						LOG.warn("The entry {} is skipped. A signature dictionary entry with a type '{}' and subFilter '{}' is not acceptable configuration!",
+								fieldNames, signatureDictionary.getType(), signatureDictionary.getSubFilter());
+						
+					}
+					
+				} catch (Exception e) {
+					String errorMessage = "Unable to parse signature {} . Reason : {}";
+					if (LOG.isDebugEnabled()) {
+						LOG.error(errorMessage, fieldNames, e.getMessage(), e);
+					} else {
+						LOG.error(errorMessage, fieldNames, e.getMessage() );
+					}
+					
 				}
 			}
 
@@ -313,6 +330,37 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			throw new DSSException("Cannot analyze signatures : " + e.getMessage(), e);
 		}
 		return result;
+	}
+	
+	private Map<PdfSignatureDictionary, List<String>> extractSigDictionaries(AcroFields acroFields) {
+		Map<PdfSignatureDictionary, List<String>> pdfDictionaries = new LinkedHashMap<PdfSignatureDictionary, List<String>>();
+		Map<Integer, PdfSigDictWrapper> pdfObjectDictMap = new LinkedHashMap<Integer, PdfSigDictWrapper>();
+		
+		Map<String, Item> allFields = acroFields.getAllFields();
+		List<String> names = acroFields.getSignedFieldNames();
+		LOG.info("{} signature field(s) found", names.size());
+		// TODO : sort the fields ?
+		
+		for (String name : names) {
+			PdfDictionary pdfField = allFields.get(name).getMerged(0);
+			int refNumber = pdfField.getAsIndirectObject(PdfName.V).getNumber();
+			PdfSigDictWrapper signature = pdfObjectDictMap.get(refNumber);
+			if (signature == null) {
+				PdfDict dictionary = new ITextPdfDict(pdfField.getAsDict(PdfName.V));
+				signature = new PdfSigDictWrapper(dictionary);
+
+				pdfDictionaries.put(signature, new ArrayList<String>(Arrays.asList(name)));
+				pdfObjectDictMap.put(refNumber, signature);
+				
+			} else {
+				List<String> fieldNameList = pdfDictionaries.get(signature);
+				fieldNameList.add(name);
+				LOG.warn("More than one field refers to the same signature dictionary: {}!", fieldNameList);
+				
+			}
+		}
+		
+		return pdfDictionaries;
 	}
 
 	private PdfDssDict getDSSDictionary(PdfReader reader) {

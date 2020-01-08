@@ -33,9 +33,10 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.PseudonymCheck;
 
-public class PseudonymCheckTest {
+public class PseudonymCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void pseudonymCheck() throws Exception {
@@ -47,7 +48,7 @@ public class PseudonymCheckTest {
 		xc.setPseudonym("Valid_Pseudonym");
 
 		XmlSubXCV result = new XmlSubXCV();
-		PseudonymCheck pc = new PseudonymCheck(result, new CertificateWrapper(xc), constraint);
+		PseudonymCheck pc = new PseudonymCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
 		pc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -65,7 +66,7 @@ public class PseudonymCheckTest {
 		xc.setPseudonym("Valid_Pseudonym");
 
 		XmlSubXCV result = new XmlSubXCV();
-		PseudonymCheck pc = new PseudonymCheck(result, new CertificateWrapper(xc), constraint);
+		PseudonymCheck pc = new PseudonymCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
 		pc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

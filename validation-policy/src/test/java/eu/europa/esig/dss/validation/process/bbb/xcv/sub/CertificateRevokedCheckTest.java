@@ -39,9 +39,10 @@ import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateRevokedCheck;
 
-public class CertificateRevokedCheckTest {
+public class CertificateRevokedCheckTest extends AbstractTestCheck {
 
 	private static final Calendar CAL1 = DatatypeConverter.parseDate("2017-01-01");
 	private static final Calendar CAL2 = DatatypeConverter.parseDate("2018-01-01");
@@ -58,7 +59,7 @@ public class CertificateRevokedCheckTest {
 		xcr.setRevocation(xr);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateRevokedCheck cec = new CertificateRevokedCheck(result, new CertificateRevocationWrapper(xcr), CAL2.getTime(), 
+		CertificateRevokedCheck cec = new CertificateRevokedCheck(i18nProvider, result, new CertificateRevocationWrapper(xcr), CAL2.getTime(), 
 				constraint, SubContext.CA_CERTIFICATE);
 		cec.execute();
 
@@ -80,7 +81,7 @@ public class CertificateRevokedCheckTest {
 		xcr.setRevocation(xr);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateRevokedCheck cec = new CertificateRevokedCheck(result, new CertificateRevocationWrapper(xcr), CAL2.getTime(), 
+		CertificateRevokedCheck cec = new CertificateRevokedCheck(i18nProvider, result, new CertificateRevocationWrapper(xcr), CAL2.getTime(), 
 				constraint, SubContext.CA_CERTIFICATE);
 		cec.execute();
 

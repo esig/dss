@@ -38,7 +38,7 @@ public class ServiceLoaderPdfObjFactoryTest {
 		});
 
 		assertThrows(ExceptionInInitializerError.class, () -> {
-			factory.newTimestampSignatureService();
+			factory.newSignatureTimestampService();
 		});
 	}
 

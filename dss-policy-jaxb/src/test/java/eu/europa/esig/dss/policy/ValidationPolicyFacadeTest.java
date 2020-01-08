@@ -90,7 +90,16 @@ public class ValidationPolicyFacadeTest {
 
 	@Test
 	public void getTrustedListValidationPolicy() throws JAXBException, XMLStreamException, IOException, SAXException {
-		assertNotNull(ValidationPolicyFacade.newFacade().getTrustedListValidationPolicy());
+		ValidationPolicy trustedListValidationPolicy = ValidationPolicyFacade.newFacade().getTrustedListValidationPolicy();
+		assertNotNull(trustedListValidationPolicy);
+		assertEquals("Policy to validate Trusted Lists", trustedListValidationPolicy.getPolicyDescription());
+	}
+
+	@Test
+	public void incorrectPath() throws JAXBException, XMLStreamException, IOException, SAXException {
+		assertThrows(NullPointerException.class, () -> ValidationPolicyFacade.newFacade().getValidationPolicy("aaaa"));
+		assertThrows(NullPointerException.class, () -> ValidationPolicyFacade.newFacade().getValidationPolicy((InputStream) null));
+		assertThrows(NullPointerException.class, () -> ValidationPolicyFacade.newFacade().getValidationPolicy((File) null));
 	}
 
 	@Test

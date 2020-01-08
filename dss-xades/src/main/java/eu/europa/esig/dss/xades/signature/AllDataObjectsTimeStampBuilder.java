@@ -86,7 +86,7 @@ public class AllDataObjectsTimeStampBuilder {
 		byte[] digestToTimestamp = DSSUtils.digest(timestampParameters.getDigestAlgorithm(), dataToBeDigested);
 		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(timestampParameters.getDigestAlgorithm(), digestToTimestamp);
 		try {
-			TimestampToken token = new TimestampToken(timeStampResponse, TimestampType.ALL_DATA_OBJECTS_TIMESTAMP);
+			TimestampToken token = new TimestampToken(timeStampResponse.getBytes(), TimestampType.ALL_DATA_OBJECTS_TIMESTAMP);
 			if (canonicalizationUsed) {
 				token.setCanonicalizationMethod(timestampParameters.getCanonicalizationMethod());
 			}

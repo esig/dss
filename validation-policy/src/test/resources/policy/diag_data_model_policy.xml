@@ -514,11 +514,24 @@
 			</Cryptographic>
 		</BasicSignatureConstraints>
 	</Revocation>
-	<Cryptographic />
-	<!-- <Cryptographic> <AlgoExpirationDate Format="yyyy-MM-dd"> <Algo Date="2017-02-24">SHA1</Algo> <Algo Date="2035-02-24">SHA224</Algo> <Algo Date="2035-02-24">SHA256</Algo> <Algo 
-		Date="2035-02-24">SHA384</Algo> <Algo Date="2035-02-24">SHA512</Algo> <Algo Date="2017-02-24">RIPEMD160</Algo> <Algo Date="2017-02-24">DSA128</Algo> <Algo Date="2015-02-24">RSA1024</Algo> 
-		<Algo Date="2015-02-24">RSA1536</Algo> <Algo Date="2020-02-24">RSA2048</Algo> <Algo Date="2020-02-24">RSA3072</Algo> <Algo Date="2035-02-24">RSA4096</Algo> <Algo Date="2035-02-24">ECDSA192</Algo> 
-		<Algo Date="2035-02-24">ECDSA256</Algo> </AlgoExpirationDate> </Cryptographic> -->
+	<Cryptographic> 
+		<AlgoExpirationDate Format="yyyy-MM-dd">
+			<Algo Date="2017-02-24">SHA1</Algo>
+			<Algo Date="2035-02-24">SHA224</Algo>
+			<Algo Date="2035-02-24">SHA256</Algo>
+			<Algo Date="2035-02-24">SHA384</Algo>
+			<Algo Date="2035-02-24">SHA512</Algo>
+			<Algo Date="2017-02-24">RIPEMD160</Algo>
+			<Algo Date="2017-02-24" Size="128">DSA</Algo>
+			<Algo Date="2015-02-24" Size="1024">RSA</Algo> 
+			<Algo Date="2015-02-24" Size="1536">RSA</Algo>
+			<Algo Date="2020-02-24" Size="2048">RSA</Algo>
+			<Algo Date="2020-02-24" Size="3072">RSA</Algo>
+			<Algo Date="2035-02-24" Size="4096">RSA</Algo>
+			<Algo Date="2035-02-24" Size="192">ECDSA</Algo> 
+			<Algo Date="2035-02-24" Size="256">ECDSA</Algo>
+		</AlgoExpirationDate>
+	</Cryptographic>
 	
 	<!-- eIDAS REGL 910/EU/2014 --> 
 	<eIDAS>

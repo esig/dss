@@ -33,15 +33,16 @@ import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
-import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class CryptographicCheck<T extends XmlConstraintsConclusion> extends AbstractCryptographicCheck<T> {
 
 	private final TokenProxy token;
 	private final CryptographicConstraint constraint;
 
-	public CryptographicCheck(T result, TokenProxy token, Date currentTime, CryptographicConstraint constraint) {
-		super(result, currentTime, constraint);
+	public CryptographicCheck(I18nProvider i18nProvider, T result, TokenProxy token, Date currentTime, CryptographicConstraint constraint) {
+		super(i18nProvider, result, currentTime, constraint);
 		this.constraint = constraint;
 		this.token = token;
 	}

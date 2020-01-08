@@ -73,8 +73,8 @@ public class BuildKnownObjectsTest extends PKIFactoryAccess {
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		assertEquals(1, signatures.size());
 
-		PAdESSignature advancedSignature = (PAdESSignature) signatures.get(0);
-		PdfDssDict dssDictionary = advancedSignature.getPdfSignatureInfo().getDssDictionary();
+		PAdESSignature padesSignature = (PAdESSignature) signatures.get(0);
+		PdfDssDict dssDictionary = padesSignature.getDssDictionary();
 		assertEquals(3, dssDictionary.getCERTs().size());
 		assertEquals(5, dssDictionary.getCRLs().size());
 
@@ -104,7 +104,7 @@ public class BuildKnownObjectsTest extends PKIFactoryAccess {
 
 		PAdESSignature pades = (PAdESSignature) signatures.get(0);
 
-		dssDictionary = pades.getPdfSignatureInfo().getDssDictionary();
+		dssDictionary = pades.getDssDictionary();
 		Map<Long, byte[]> crlMap = dssDictionary.getCRLs();
 		assertEquals(3, crlMap.size()); // we don't collect newer CRLS
 		// original duplicates must be referenced

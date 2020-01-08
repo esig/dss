@@ -34,9 +34,10 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationFreshnessCheckerResultCheck;
 
-public class RevocationFreshnessCheckerResultTest {
+public class RevocationFreshnessCheckerResultTest extends AbstractTestCheck {
 
 	@Test
 	public void revocationFreshnessCheckerResult() throws Exception {
@@ -50,7 +51,7 @@ public class RevocationFreshnessCheckerResultTest {
 		resultRFC.setConclusion(xc);
 
 		XmlSubXCV result = new XmlSubXCV();
-		RevocationFreshnessCheckerResultCheck rfc = new RevocationFreshnessCheckerResultCheck(result, resultRFC, constraint);
+		RevocationFreshnessCheckerResultCheck<XmlSubXCV> rfc = new RevocationFreshnessCheckerResultCheck<XmlSubXCV>(i18nProvider, result, resultRFC, constraint);
 		rfc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -70,7 +71,7 @@ public class RevocationFreshnessCheckerResultTest {
 		resultRFC.setConclusion(xc);
 
 		XmlSubXCV result = new XmlSubXCV();
-		RevocationFreshnessCheckerResultCheck rfc = new RevocationFreshnessCheckerResultCheck(result, resultRFC, constraint);
+		RevocationFreshnessCheckerResultCheck<XmlSubXCV> rfc = new RevocationFreshnessCheckerResultCheck<XmlSubXCV>(i18nProvider, result, resultRFC, constraint);
 		rfc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

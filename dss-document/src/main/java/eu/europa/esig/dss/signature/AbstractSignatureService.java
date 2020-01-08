@@ -22,6 +22,7 @@ package eu.europa.esig.dss.signature;
 
 import java.security.Security;
 import java.util.Date;
+import java.util.Objects;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.enumerations.SignatureForm;
@@ -54,9 +55,7 @@ public abstract class AbstractSignatureService<SP extends AbstractSignatureParam
 	 *            in the context of a signature.
 	 */
 	protected AbstractSignatureService(final CertificateVerifier certificateVerifier) {
-		if (certificateVerifier == null) {
-			throw new NullPointerException("CertificateVerifier cannot be null !");
-		}
+		Objects.requireNonNull(certificateVerifier, "CertificateVerifier cannot be null !");
 		this.certificateVerifier = certificateVerifier;
 	}
 
@@ -114,17 +113,23 @@ public abstract class AbstractSignatureService<SP extends AbstractSignatureParam
 		}
 
 		if (SigningOperation.SIGN.equals(operation)) {
-			finalName.append("-signed-");
+			finalName.append("-signed");
+		} else if (SigningOperation.TIMESTAMP.equals(operation)) {
+			finalName.append("-timestamped");
 		} else if (SigningOperation.EXTEND.equals(operation)) {
-			finalName.append("-extended-");
+			finalName.append("-extended");
 		}
 
-		finalName.append(Utils.lowerCase(level.name().replaceAll("_", "-")));
+		if (level != null) {
+			finalName.append('-');
+			finalName.append(Utils.lowerCase(level.name().replaceAll("_", "-")));
+		}
+
 		finalName.append('.');
 		
 		if (containerMimeType != null) {
 			finalName.append(MimeType.getExtension(containerMimeType));
-		} else {
+		} else if (level != null) {
 			SignatureForm signatureForm = level.getSignatureForm();
 			switch (signatureForm) {
 			case XAdES:
@@ -137,8 +142,10 @@ public abstract class AbstractSignatureService<SP extends AbstractSignatureParam
 				finalName.append("pdf");
 				break;
 			default:
-				break;
+				throw new DSSException("Unable to generate a full document name");
 			}
+		} else {
+			finalName.append("pdf");
 		}
 
 		return finalName.toString();
@@ -148,4 +155,10 @@ public abstract class AbstractSignatureService<SP extends AbstractSignatureParam
 		return getFinalArchiveName(originalFile, operation, level, null);
 	}
 
+	@Override
+	public DSSDocument timestamp(DSSDocument toTimestampDocument, SP parameters) {
+		throw new DSSException("Unsupported operation for this file format");
+	}
+
 }
+

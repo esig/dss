@@ -97,6 +97,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.DigestDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -148,13 +149,13 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	/**
 	 * The reference to the signing certificate. If the signing certificate is
-	 * an input provided by the DA then getSigningCer MUST be called.
+	 * an input provided by the DA then getSigningCert MUST be called.
 	 */
 	private CertificateValidity signingCertificateValidity;
 
 	/**
 	 * @param data
-	 *            byte array representing CMSSignedData
+	 *             byte array representing CMSSignedData
 	 * @throws org.bouncycastle.cms.CMSException
 	 */
 	public CAdESSignature(final byte[] data) throws CMSException {
@@ -643,7 +644,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			try {
 				return SignerAttribute.getInstance(attrValue);
 			} catch (Exception e) {
-				LOG.warn("Unable to parse signerAttr " + Utils.toBase64(DSSASN1Utils.getDEREncoded(attrValue)) + "", e);
+				String warningMessage = "Unable to parse signerAttr - [{}]. Reason : {}";
+				if (LOG.isDebugEnabled()) {
+					LOG.warn(warningMessage, Utils.toBase64(DSSASN1Utils.getDEREncoded(attrValue)), e.getMessage(), e);
+				} else {
+					LOG.warn(warningMessage, Utils.toBase64(DSSASN1Utils.getDEREncoded(attrValue)), e.getMessage());
+				}
 			}
 		}
 		return null;
@@ -734,7 +740,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				return DigestAlgorithm.forOID(pssHashAlgo.getAlgorithm().getId());
 			}
 		} catch (IOException e) {
-			LOG.warn("Unable to analyze EncryptionAlgParams", e);
+			LOG.error("Unable to analyze EncryptionAlgParams", e);
 		}
 		return null;
 	}
@@ -784,7 +790,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			}
 			boolean detachedSignature = CMSUtils.isDetachedSignature(cmsSignedData);
 			SignerInformation signerInformationToCheck = null;
-			if (detachedSignature) {
+			if (detachedSignature && !isCounterSignature()) {
 				if (Utils.isCollectionEmpty(detachedContents)) {
 					candidatesForSigningCertificate.setTheCertificateValidity(bestCandidate);
 					signatureCryptographicVerification.setErrorMessage("Detached file not found!");
@@ -798,8 +804,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 			LOG.debug("CHECK SIGNATURE VALIDITY: ");
 			if (signingCertificateValidity != null) {
-				// for (final CertificateValidity certificateValidity :
-				// certificateValidityList) {
 
 				try {
 					candidatesForSigningCertificate.setTheCertificateValidity(signingCertificateValidity);
@@ -1109,8 +1113,13 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 					contentHint += " [" + contentHints.getContentDescription().toString() + "]";
 				}
 			}
-		}catch (Exception e) {
-			LOG.warn("Unable to parse ContentHints - {}", Utils.toBase64(DSSASN1Utils.getDEREncoded(asn1Encodable)), e);
+		} catch (Exception e) {
+			String warningMessage = "Unable to parse ContentHints - [{}]. Reason : {}";
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(warningMessage, Utils.toBase64(DSSASN1Utils.getDEREncoded(asn1Encodable)), e.getMessage(), e);
+			} else {
+				LOG.warn(warningMessage, Utils.toBase64(DSSASN1Utils.getDEREncoded(asn1Encodable)), e.getMessage());
+			}
 		}
 
 		return contentHint;
@@ -1127,17 +1136,30 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	public byte[] getSignatureValue() {
 		return signerInformation.getSignature();
 	}
+	
+	/**
+	 * Checks if the signature is a counter signature
+	 * 
+	 * @return TRUE if the signature is a counter signature, FALSE otherwise
+	 */
+	public boolean isCounterSignature() {
+		return signerInformation.isCounterSignature();
+	}
 
 	@Override
 	public List<AdvancedSignature> getCounterSignatures() {
 		final List<AdvancedSignature> countersignatures = new ArrayList<AdvancedSignature>();
-		for (final Object signer : signerInformation.getCounterSignatures().getSigners()) {
-			final SignerInformation signerInformation = (SignerInformation) signer;
-			final CAdESSignature countersignature = new CAdESSignature(cmsSignedData, signerInformation, certPool);
-			countersignature.setMasterSignature(this);
-			countersignatures.add(countersignature);
-		}
+		recursiveCollect(countersignatures, signerInformation, this);
 		return countersignatures;
+	}
+
+	private void recursiveCollect(List<AdvancedSignature> collector, SignerInformation currentSignerInformation, AdvancedSignature master) {
+		for (final SignerInformation counterSignerInformation : currentSignerInformation.getCounterSignatures()) {
+			final CAdESSignature countersignature = new CAdESSignature(cmsSignedData, counterSignerInformation, certPool);
+			countersignature.setMasterSignature(master);
+			collector.add(countersignature);
+			recursiveCollect(collector, counterSignerInformation, countersignature);
+		}
 	}
 
 	@Override
@@ -1146,6 +1168,11 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	public DSSDocument getOriginalDocument() throws DSSException {
+		// RFC 5652 ch 11.4.
+		if (isCounterSignature()) {
+			return new InMemoryDocument(getMasterSignature().getSignatureValue());
+		}
+
 		return CMSUtils.getOriginalDocument(cmsSignedData, detachedContents);
 	}
 	
