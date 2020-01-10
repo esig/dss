@@ -97,7 +97,7 @@ public class OCSPAndCRLCertificateVerifier implements CertificateStatusVerifier 
 				return revocation;
 			}
 			if (LOG.isDebugEnabled()) {
-				LOG.debug("The rertieved OCSP revocation response for token {} is null!", certificateToken.getDSSIdAsString());
+				LOG.debug("The retrieved OCSP revocation response for token {} is null!", certificateToken.getDSSIdAsString());
 			}
 		}
 		return null;
@@ -117,7 +117,7 @@ public class OCSPAndCRLCertificateVerifier implements CertificateStatusVerifier 
 				return revocationToken;
 			}
 			if (LOG.isDebugEnabled()) {
-				LOG.debug("The rertieved CRL revocation response for token {} is null!", certificateToken.getDSSIdAsString());
+				LOG.debug("The retrieved CRL revocation response for token {} is null!", certificateToken.getDSSIdAsString());
 			}
 		}
 		return null;
