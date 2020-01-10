@@ -89,7 +89,7 @@ public class DigestDocument extends CommonDocument {
 	public String getDigest(final DigestAlgorithm digestAlgorithm) {
 		String base64EncodeDigest = base64EncodeDigestMap.get(digestAlgorithm);
 		if (base64EncodeDigest == null) {
-			throw new DSSException("Unknown digest value for algorithm : " + digestAlgorithm);
+			throw new DSSException("The digest document does not contain a digest value for the algorithm : " + digestAlgorithm);
 		}
 		return base64EncodeDigest;
 	}
