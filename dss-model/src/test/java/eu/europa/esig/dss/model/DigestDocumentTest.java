@@ -60,7 +60,7 @@ public class DigestDocumentTest {
 			DigestDocument doc = new DigestDocument(DigestAlgorithm.SHA1, base64EncodeDigest);
 			doc.getDigest(DigestAlgorithm.SHA256);
 		});
-		assertEquals("Unknown digest value for algorithm : SHA256", exception.getMessage());
+		assertEquals("The digest document does not contain a digest value for the algorithm : SHA256", exception.getMessage());
 	}
 
 	@Test
