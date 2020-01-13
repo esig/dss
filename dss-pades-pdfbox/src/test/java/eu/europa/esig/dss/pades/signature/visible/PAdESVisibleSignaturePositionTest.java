@@ -325,7 +325,7 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 
 		signatureParameters.bLevel().setSigningDate(new Date());
 
-		signatureParameters.setSignatureImageParameters(imageParameters);
+		signatureParameters.setImageParameters(imageParameters);
 
 		return imageParameters;
 	}

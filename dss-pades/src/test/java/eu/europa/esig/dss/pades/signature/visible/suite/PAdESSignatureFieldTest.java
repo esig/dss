@@ -73,7 +73,7 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 		textParameters.setText("My signature");
 		textParameters.setTextColor(Color.GREEN);
 		imageParameters.setTextParameters(textParameters);
-		signatureParameters.setSignatureImageParameters(imageParameters);
+		signatureParameters.setImageParameters(imageParameters);
 
 		service = new PAdESService(getCompleteCertificateVerifier());
 	}

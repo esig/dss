@@ -39,12 +39,11 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
 public class CAdESLevelTSHA1MessageImprintTest extends AbstractCAdESTestSignature {
 
-	private DocumentSignatureService<CAdESSignatureParameters> service;
+	private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
 	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
@@ -58,7 +57,7 @@ public class CAdESLevelTSHA1MessageImprintTest extends AbstractCAdESTestSignatur
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_T);
-		TimestampParameters signatureTimestampParameters = new TimestampParameters(DigestAlgorithm.SHA1);
+		CAdESTimestampParameters signatureTimestampParameters = new CAdESTimestampParameters(DigestAlgorithm.SHA1);
 		signatureParameters.setSignatureTimestampParameters(signatureTimestampParameters);
 
 		service = new CAdESService(getCompleteCertificateVerifier());
@@ -66,7 +65,7 @@ public class CAdESLevelTSHA1MessageImprintTest extends AbstractCAdESTestSignatur
 	}
 
 	@Override
-	protected DocumentSignatureService<CAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> getService() {
 		return service;
 	}
 

@@ -12,7 +12,7 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBTest;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
@@ -29,7 +29,7 @@ public abstract class AbstractPAdESTimestampTest extends PKIFactoryAccess {
 		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 
-		DSSDocument timestampedDoc = service.timestamp(documentToTimestamp, new PAdESSignatureParameters());
+		DSSDocument timestampedDoc = service.timestamp(documentToTimestamp, new PAdESTimestampParameters());
 		assertNotNull(timestampedDoc);
 		assertNotNull(timestampedDoc.getMimeType());
 		assertNotNull(timestampedDoc.getName());

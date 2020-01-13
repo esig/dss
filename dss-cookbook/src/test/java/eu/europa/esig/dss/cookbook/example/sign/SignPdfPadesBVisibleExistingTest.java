@@ -92,7 +92,7 @@ public class SignPdfPadesBVisibleExistingTest extends CookbookTools {
 			textParameters.setText("My visual signature");
 			imageParameters.setTextParameters(textParameters);
 			// end::font[]
-			parameters.setSignatureImageParameters(imageParameters);
+			parameters.setImageParameters(imageParameters);
 
 			parameters.setSignatureFieldId("ExistingSignatureField");
 

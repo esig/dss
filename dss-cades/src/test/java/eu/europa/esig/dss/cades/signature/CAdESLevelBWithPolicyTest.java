@@ -42,7 +42,7 @@ public class CAdESLevelBWithPolicyTest extends AbstractCAdESTestSignature {
 	private static final String HELLO_WORLD = "Hello World";
 	private static final String HTTP_SPURI_TEST = "http://spuri.test";
 
-	private DocumentSignatureService<CAdESSignatureParameters> service;
+	private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
 	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
@@ -76,7 +76,7 @@ public class CAdESLevelBWithPolicyTest extends AbstractCAdESTestSignature {
 	}
 
 	@Override
-	protected DocumentSignatureService<CAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> getService() {
 		return service;
 	}
 

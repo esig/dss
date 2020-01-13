@@ -29,6 +29,7 @@ import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
+import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -49,15 +50,15 @@ public class ASiCETimestampOneFileTest extends PKIFactoryAccess {
 
 	@Test
 	public void test() throws IOException {
-		DocumentSignatureService<ASiCWithCAdESSignatureParameters> service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
+		DocumentSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getAlternateGoodTsa());
 
 		DSSDocument documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
 
-		ASiCWithCAdESSignatureParameters signatureParameters = new ASiCWithCAdESSignatureParameters();
-		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
+		ASiCWithCAdESTimestampParameters timestampParameters = new ASiCWithCAdESTimestampParameters();
+		timestampParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 
-		DSSDocument archiveWithTimestamp = service.timestamp(documentToSign, signatureParameters);
+		DSSDocument archiveWithTimestamp = service.timestamp(documentToSign, timestampParameters);
 		assertNotNull(archiveWithTimestamp);
 
 //		archiveWithTimestamp.save("target/test-one-file.asice");
@@ -75,7 +76,7 @@ public class ASiCETimestampOneFileTest extends PKIFactoryAccess {
 
 		signaturesAndTimestampsIntact(diagnosticData);
 
-		signatureParameters = new ASiCWithCAdESSignatureParameters();
+		ASiCWithCAdESSignatureParameters signatureParameters = new ASiCWithCAdESSignatureParameters();
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
@@ -100,10 +101,10 @@ public class ASiCETimestampOneFileTest extends PKIFactoryAccess {
 
 		signaturesAndTimestampsIntact(diagnosticData);
 
-		signatureParameters = new ASiCWithCAdESSignatureParameters();
-		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
+		timestampParameters = new ASiCWithCAdESTimestampParameters();
+		timestampParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 
-		archiveWithTimestamp = service.timestamp(timestampedAndSigned, signatureParameters);
+		archiveWithTimestamp = service.timestamp(timestampedAndSigned, timestampParameters);
 
 //		archiveWithTimestamp.save("target/test-one-file-2-times.asice");
 

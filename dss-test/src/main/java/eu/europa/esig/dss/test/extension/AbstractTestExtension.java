@@ -31,7 +31,6 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
-import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -43,6 +42,8 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.SerializableSignatureParameters;
+import eu.europa.esig.dss.model.SerializableTimestampParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -53,7 +54,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
-public abstract class AbstractTestExtension<SP extends AbstractSignatureParameters> extends PKIFactoryAccess {
+public abstract class AbstractTestExtension<SP extends SerializableSignatureParameters, TP extends SerializableTimestampParameters> extends PKIFactoryAccess {
 
 	protected abstract DSSDocument getOriginalDocument();
 
@@ -63,7 +64,7 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 
 	protected abstract SignatureLevel getFinalSignatureLevel();
 
-	protected abstract DocumentSignatureService<SP> getSignatureServiceToExtend();
+	protected abstract DocumentSignatureService<SP, TP> getSignatureServiceToExtend();
 
 	protected abstract TSPSource getUsedTSPSourceAtSignatureTime();
 
@@ -147,7 +148,7 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 
 	private DSSDocument extendSignature(DSSDocument signedDocument) throws Exception {
 		SP extensionParameters = getExtensionParameters();
-		DocumentSignatureService<SP> service = getSignatureServiceToExtend();
+		DocumentSignatureService<SP, TP> service = getSignatureServiceToExtend();
 
 		DSSDocument extendedDocument = service.extendDocument(signedDocument, extensionParameters);
 		assertNotNull(extendedDocument);

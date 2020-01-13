@@ -50,6 +50,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
 @RunWith(Parameterized.class)
 public class OpenDocumentLevelBWithExternalDataTest extends AbstractOpenDocumentTestSignature {
@@ -59,7 +60,7 @@ public class OpenDocumentLevelBWithExternalDataTest extends AbstractOpenDocument
 	}
 
 	private DSSDocument fileToTest;
-	private DocumentSignatureService<ASiCWithXAdESSignatureParameters> service;
+	private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
 	
 	@Parameters(name = "Validation {index} : {0}")
@@ -141,7 +142,7 @@ public class OpenDocumentLevelBWithExternalDataTest extends AbstractOpenDocument
 	}
 
 	@Override
-	protected DocumentSignatureService<ASiCWithXAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> getService() {
 		return service;
 	}
 

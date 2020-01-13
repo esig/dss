@@ -30,7 +30,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
+import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -53,10 +53,10 @@ public class ASiCSTimestampMultiFilesTest extends PKIFactoryAccess {
 		DSSDocument documentToSign2 = new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeType.TEXT);
 		List<DSSDocument> docs = Arrays.asList(documentToSign, documentToSign2);
 
-		ASiCWithCAdESSignatureParameters signatureParameters = new ASiCWithCAdESSignatureParameters();
-		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
+		ASiCWithCAdESTimestampParameters timestampParameters = new ASiCWithCAdESTimestampParameters();
+		timestampParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
 
-		DSSDocument archiveWithTimestamp = service.timestamp(docs, signatureParameters);
+		DSSDocument archiveWithTimestamp = service.timestamp(docs, timestampParameters);
 		assertNotNull(archiveWithTimestamp);
 
 //		archiveWithTimestamp.save("target/test.asics");
@@ -79,10 +79,10 @@ public class ASiCSTimestampMultiFilesTest extends PKIFactoryAccess {
 			assertTrue(timestamp.isSignatureValid());
 		}
 
-		signatureParameters = new ASiCWithCAdESSignatureParameters();
-		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
+		timestampParameters = new ASiCWithCAdESTimestampParameters();
+		timestampParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
 
-		archiveWithTimestamp = service.timestamp(archiveWithTimestamp, signatureParameters);
+		archiveWithTimestamp = service.timestamp(archiveWithTimestamp, timestampParameters);
 
 //		archiveWithTimestamp.save("target/test-multi-files-2-times.asics");
 

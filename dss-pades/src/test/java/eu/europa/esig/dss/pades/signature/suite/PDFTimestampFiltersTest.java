@@ -20,29 +20,38 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Date;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
-public class PDFOverrideFiltersTest extends PKIFactoryAccess {
+public class PDFTimestampFiltersTest extends PKIFactoryAccess {
 
-	private DocumentSignatureService<PAdESSignatureParameters> service;
+	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
@@ -54,14 +63,20 @@ public class PDFOverrideFiltersTest extends PKIFactoryAccess {
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
-		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
-
-		signatureParameters.setSignatureFilter("SigFilter");
-		signatureParameters.setSignatureSubFilter("SigSubFilter");
-		signatureParameters.setTimestampFilter("tspFilter");
-		signatureParameters.setTimestampSubFilter("tspSubFilter");
+		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
+		
+		PAdESTimestampParameters signatureTimestampParameters = new PAdESTimestampParameters();
+		signatureTimestampParameters.setFilter("signatureTspFilter");
+		signatureTimestampParameters.setSubFilter("signatureTspSubFilter");
+		signatureParameters.setSignatureTimestampParameters(signatureTimestampParameters);
+		
+		PAdESTimestampParameters archivalTimestampParameters = new PAdESTimestampParameters();
+		archivalTimestampParameters.setFilter("Adobe.PPKLite");
+		archivalTimestampParameters.setSubFilter("ETSI.RFC3161");
+		signatureParameters.setArchiveTimestampParameters(archivalTimestampParameters);
 
 		service = new PAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getGoodTsa());
 
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
@@ -73,7 +88,37 @@ public class PDFOverrideFiltersTest extends PKIFactoryAccess {
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
-		assertEquals(SignatureLevel.PDF_NOT_ETSI, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+		assertEquals(SignatureLevel.PAdES_BASELINE_LTA, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+		
+		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+		assertTrue(Utils.isCollectionNotEmpty(timestampList));
+		assertEquals(2, timestampList.size());
+		
+		boolean signatureTimestampFound = false;
+		boolean archivalTimestampFound = false;
+		for (TimestampWrapper timestampWrapper : timestampList) {
+			if (TimestampType.SIGNATURE_TIMESTAMP == timestampWrapper.getType()) {
+				assertNull(timestampWrapper.getPDFRevision()); // signature timestamp is added to CAdES CMS
+				signatureTimestampFound = true;
+				
+			} else if (TimestampType.ARCHIVE_TIMESTAMP == timestampWrapper.getType()) {
+				XmlPDFRevision pdfRevision = timestampWrapper.getPDFRevision();
+				assertNotNull(pdfRevision);
+				
+				XmlPDFSignatureDictionary pdfSignatureDictionary = pdfRevision.getPDFSignatureDictionary();
+				assertNotNull(pdfSignatureDictionary);
+				
+				assertEquals("Adobe.PPKLite", pdfSignatureDictionary.getFilter());
+				assertEquals("ETSI.RFC3161", pdfSignatureDictionary.getSubFilter());
+				
+				archivalTimestampFound = true;
+				
+			}
+		}
+		
+		assertTrue(signatureTimestampFound);
+		assertTrue(archivalTimestampFound);
+		
 	}
 
 	@Override

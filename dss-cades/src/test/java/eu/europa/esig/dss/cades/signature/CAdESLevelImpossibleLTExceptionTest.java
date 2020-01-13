@@ -38,7 +38,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 
 public class CAdESLevelImpossibleLTExceptionTest extends AbstractCAdESTestSignature {
 
-	private DocumentSignatureService<CAdESSignatureParameters> service;
+	private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
 	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
@@ -66,7 +66,7 @@ public class CAdESLevelImpossibleLTExceptionTest extends AbstractCAdESTestSignat
 	}
 
 	@Override
-	protected DocumentSignatureService<CAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> getService() {
 		return service;
 	}
 

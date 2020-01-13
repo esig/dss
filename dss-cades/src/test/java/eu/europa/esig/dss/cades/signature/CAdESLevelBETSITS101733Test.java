@@ -73,13 +73,13 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 
-public class CAdESLevelBETSITS101733Test extends AbstractPkiFactoryTestDocumentSignatureService<CAdESSignatureParameters> {
+public class CAdESLevelBETSITS101733Test extends AbstractPkiFactoryTestDocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> {
 
 	private static final String HELLO_WORLD = "Hello World";
 
 	private static Logger logger = LoggerFactory.getLogger(CAdESLevelBETSITS101733Test.class);
 
-	private DocumentSignatureService<CAdESSignatureParameters> service;
+	private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
 	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
@@ -283,7 +283,7 @@ public class CAdESLevelBETSITS101733Test extends AbstractPkiFactoryTestDocumentS
 	}
 
 	@Override
-	protected DocumentSignatureService<CAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> getService() {
 		return service;
 	}
 

@@ -40,14 +40,14 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignerLocation;
-import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
 public class XAdESLevelLTAInternallyDetachedTest extends AbstractXAdESTestSignature {
 
-	private DocumentSignatureService<XAdESSignatureParameters> service;
+	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
@@ -77,12 +77,12 @@ public class XAdESLevelLTAInternallyDetachedTest extends AbstractXAdESTestSignat
 
 		signatureParameters.setAddX509SubjectName(true);
 
-		TimestampParameters contentTimestampParameters = new TimestampParameters();
+		XAdESTimestampParameters contentTimestampParameters = new XAdESTimestampParameters();
 		contentTimestampParameters.setCanonicalizationMethod(CanonicalizationMethod.EXCLUSIVE);
 		signatureParameters.setContentTimestampParameters(contentTimestampParameters);
 		TimestampToken contentTimestamp = service.getContentTimestamp(documentToSign, signatureParameters);
 
-		contentTimestampParameters = new TimestampParameters();
+		contentTimestampParameters = new XAdESTimestampParameters();
 		contentTimestampParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
 		contentTimestampParameters.setCanonicalizationMethod(CanonicalizationMethod.EXCLUSIVE);
 		signatureParameters.setContentTimestampParameters(contentTimestampParameters);
@@ -105,7 +105,7 @@ public class XAdESLevelLTAInternallyDetachedTest extends AbstractXAdESTestSignat
 	}
 
 	@Override
-	protected DocumentSignatureService<XAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> getService() {
 		return service;
 	}
 

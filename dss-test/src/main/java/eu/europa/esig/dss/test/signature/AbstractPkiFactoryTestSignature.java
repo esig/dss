@@ -72,11 +72,14 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.model.AbstractSerializableSignatureParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.Policy;
+import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SignerLocation;
+import eu.europa.esig.dss.model.SerializableTimestampParameters;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.SimpleReportFacade;
@@ -117,7 +120,8 @@ import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
 import eu.europa.esig.validationreport.jaxb.ValidationTimeInfoType;
 
-public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatureParameters> extends PKIFactoryAccess {
+public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSignatureParameters, 
+				TP extends SerializableTimestampParameters> extends PKIFactoryAccess {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractPkiFactoryTestSignature.class);
 
@@ -565,8 +569,10 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		}
 	}
 
+	@SuppressWarnings({ "unchecked" })
 	private void checkEncryptionAlgorithm(DiagnosticData diagnosticData) {
-		assertEquals(getSignatureParameters().getSignatureAlgorithm().getEncryptionAlgorithm(),
+		AbstractSerializableSignatureParameters<TP> signatureParameters = (AbstractSerializableSignatureParameters<TP>) getSignatureParameters();
+		assertEquals(signatureParameters.getSignatureAlgorithm().getEncryptionAlgorithm(),
 				diagnosticData.getSignatureEncryptionAlgorithm(diagnosticData.getFirstSignatureId()));
 	}
 
@@ -605,8 +611,10 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		assertTrue(entry.getCertificateChain().length >= signatureCertificateChain.size());
 	}
 
+	@SuppressWarnings({ "unchecked" })
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-		assertEquals(getSignatureParameters().getSignatureLevel(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+		AbstractSerializableSignatureParameters<TP> signatureParameters = (AbstractSerializableSignatureParameters<TP>) getSignatureParameters();
+		assertEquals(signatureParameters.getSignatureLevel(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 
 	protected void checkBLevelValid(DiagnosticData diagnosticData) {
@@ -636,6 +644,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		assertEquals(isBaselineLTA(), diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 	}
 
+	@SuppressWarnings("unchecked")
 	protected void checkTimestamps(DiagnosticData diagnosticData) {
 		List<String> timestampIdList = diagnosticData.getTimestampIdList(diagnosticData.getFirstSignatureId());
 
@@ -664,7 +673,8 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 			}
 		}
 
-		assertEquals(nbContentTimestamps, Utils.collectionSize(getSignatureParameters().getContentTimestamps()));
+		AbstractSignatureParameters<TP> signatureParameters = (AbstractSignatureParameters<TP>) getSignatureParameters();
+		assertEquals(nbContentTimestamps, Utils.collectionSize(signatureParameters.getContentTimestamps()));
 
 		if (isBaselineT()) {
 			assertTrue(foundSignatureTimeStamp);
@@ -721,8 +731,10 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		}
 	}
 
+	@SuppressWarnings({ "unchecked" })
 	protected void checkMessageDigestAlgorithm(DiagnosticData diagnosticData) {
-		DigestAlgorithm expectedDigestAlgorithm = getSignatureParameters().getReferenceDigestAlgorithm();
+		AbstractSerializableSignatureParameters<TP> signatureParameters = (AbstractSerializableSignatureParameters<TP>) getSignatureParameters();
+		DigestAlgorithm expectedDigestAlgorithm = signatureParameters.getReferenceDigestAlgorithm();
 		if (expectedDigestAlgorithm == null) {
 			expectedDigestAlgorithm = getSignatureParameters().getDigestAlgorithm();
 		}

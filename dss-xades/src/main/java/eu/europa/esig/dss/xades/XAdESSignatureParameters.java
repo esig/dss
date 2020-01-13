@@ -35,7 +35,7 @@ import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.reference.Base64Transform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 
-public class XAdESSignatureParameters extends AbstractSignatureParameters {
+public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdESTimestampParameters> {
     
 	public enum XPathElementPlacement {
 
@@ -256,8 +256,8 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 	}
 
 	public XPathElementPlacement getXPathElementPlacement() {
-                return xPathElementPlacement;
-        }
+        return xPathElementPlacement;
+    }
 
 	/**
 	 * Defines the area where the signature will be added (XAdES Enveloped) 
@@ -266,9 +266,9 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 	 * @param xPathElementPlacement
 	 *            the xpath location of the signature
 	 */
-        public void setXPathElementPlacement(XPathElementPlacement xPathElementPlacement) {
-                this.xPathElementPlacement = xPathElementPlacement;
-        }
+    public void setXPathElementPlacement(XPathElementPlacement xPathElementPlacement) {
+        this.xPathElementPlacement = xPathElementPlacement;
+    }
 
 	public Document getRootDocument() {
 		return rootDocument;
@@ -373,6 +373,30 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 		} else {
 			throw new DSSException("Not accepted URI");
 		}
+	}
+
+	@Override
+	public XAdESTimestampParameters getContentTimestampParameters() {
+		if (contentTimestampParameters == null) {
+			contentTimestampParameters = new XAdESTimestampParameters();
+		}
+		return contentTimestampParameters;
+	}
+
+	@Override
+	public XAdESTimestampParameters getSignatureTimestampParameters() {
+		if (signatureTimestampParameters == null) {
+			signatureTimestampParameters = new XAdESTimestampParameters();
+		}
+		return signatureTimestampParameters;
+	}
+
+	@Override
+	public XAdESTimestampParameters getArchiveTimestampParameters() {
+		if (archiveTimestampParameters == null) {
+			archiveTimestampParameters = new XAdESTimestampParameters();
+		}
+		return archiveTimestampParameters;
 	}
 	
 }

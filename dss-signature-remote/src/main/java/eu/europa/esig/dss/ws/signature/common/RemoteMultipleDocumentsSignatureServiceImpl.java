@@ -25,14 +25,15 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
+import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.ws.converter.DTOConverter;
@@ -42,6 +43,7 @@ import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
 @SuppressWarnings("serial")
 public class RemoteMultipleDocumentsSignatureServiceImpl extends AbstractRemoteSignatureServiceImpl
@@ -49,21 +51,21 @@ public class RemoteMultipleDocumentsSignatureServiceImpl extends AbstractRemoteS
 
 	private static final Logger LOG = LoggerFactory.getLogger(RemoteMultipleDocumentsSignatureServiceImpl.class);
 
-	private MultipleDocumentsSignatureService<XAdESSignatureParameters> xadesService;
+	private MultipleDocumentsSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> xadesService;
 
-	private MultipleDocumentsSignatureService<ASiCWithCAdESSignatureParameters> asicWithCAdESService;
+	private MultipleDocumentsSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> asicWithCAdESService;
 
-	private MultipleDocumentsSignatureService<ASiCWithXAdESSignatureParameters> asicWithXAdESService;
+	private MultipleDocumentsSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> asicWithXAdESService;
 
-	public void setXadesService(MultipleDocumentsSignatureService<XAdESSignatureParameters> xadesService) {
+	public void setXadesService(MultipleDocumentsSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> xadesService) {
 		this.xadesService = xadesService;
 	}
 
-	public void setAsicWithCAdESService(MultipleDocumentsSignatureService<ASiCWithCAdESSignatureParameters> asicWithCAdESService) {
+	public void setAsicWithCAdESService(MultipleDocumentsSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> asicWithCAdESService) {
 		this.asicWithCAdESService = asicWithCAdESService;
 	}
 
-	public void setAsicWithXAdESService(MultipleDocumentsSignatureService<ASiCWithXAdESSignatureParameters> asicWithXAdESService) {
+	public void setAsicWithXAdESService(MultipleDocumentsSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> asicWithXAdESService) {
 		this.asicWithXAdESService = asicWithXAdESService;
 	}
 
@@ -71,7 +73,7 @@ public class RemoteMultipleDocumentsSignatureServiceImpl extends AbstractRemoteS
 	@Override
 	public ToBeSignedDTO getDataToSign(List<RemoteDocument> toSignDocuments, RemoteSignatureParameters remoteParameters) {
 		LOG.info("GetDataToSign in process...");
-		AbstractSignatureParameters parameters = createParameters(remoteParameters);
+		SerializableSignatureParameters parameters = createParameters(remoteParameters);
 		MultipleDocumentsSignatureService service = getServiceForSignature(remoteParameters);
 		List<DSSDocument> dssDocuments = RemoteDocumentConverter.toDSSDocuments(toSignDocuments);
 		ToBeSigned dataToSign = service.getDataToSign(dssDocuments, parameters);
@@ -83,7 +85,7 @@ public class RemoteMultipleDocumentsSignatureServiceImpl extends AbstractRemoteS
 	@Override
 	public RemoteDocument signDocument(List<RemoteDocument> toSignDocuments, RemoteSignatureParameters remoteParameters, SignatureValueDTO signatureValueDTO) {
 		LOG.info("SignDocument in process...");
-		AbstractSignatureParameters parameters = createParameters(remoteParameters);
+		SerializableSignatureParameters parameters = createParameters(remoteParameters);
 		MultipleDocumentsSignatureService service = getServiceForSignature(remoteParameters);
 		List<DSSDocument> dssDocuments = RemoteDocumentConverter.toDSSDocuments(toSignDocuments);
 		DSSDocument signDocument = (DSSDocument) service.signDocument(dssDocuments, parameters, toSignatureValue(signatureValueDTO));
@@ -95,7 +97,7 @@ public class RemoteMultipleDocumentsSignatureServiceImpl extends AbstractRemoteS
 	@Override
 	public RemoteDocument extendDocument(RemoteDocument toExtendDocument, RemoteSignatureParameters remoteParameters) {
 		LOG.info("ExtendDocument in process...");
-		AbstractSignatureParameters parameters = createParameters(remoteParameters);
+		SerializableSignatureParameters parameters = createParameters(remoteParameters);
 		MultipleDocumentsSignatureService service = getServiceForSignature(remoteParameters);
 		DSSDocument dssDocument = RemoteDocumentConverter.toDSSDocument(toExtendDocument);
 		DSSDocument extendDocument = (DSSDocument) service.extendDocument(dssDocument, parameters);

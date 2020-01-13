@@ -37,6 +37,7 @@ import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
@@ -47,7 +48,7 @@ import eu.europa.esig.dss.validation.reports.Reports;
 
 public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 
-	private DocumentSignatureService<PAdESSignatureParameters> service;
+	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
@@ -71,7 +72,7 @@ public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 		textParameters.setText("My signature");
 		textParameters.setTextColor(Color.GREEN);
 		imageParameters.setTextParameters(textParameters);
-		signatureParameters.setSignatureImageParameters(imageParameters);
+		signatureParameters.setImageParameters(imageParameters);
 
 		signAndValidate();
 	}
@@ -82,7 +83,7 @@ public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 		imageParameters.setImage(getSmallRedJPG());
 		imageParameters.setxAxis(100);
 		imageParameters.setyAxis(100);
-		signatureParameters.setSignatureImageParameters(imageParameters);
+		signatureParameters.setImageParameters(imageParameters);
 
 		signAndValidate();
 	}
@@ -93,7 +94,7 @@ public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 		imageParameters.setImage(getPngPicture());
 		imageParameters.setxAxis(100);
 		imageParameters.setyAxis(100);
-		signatureParameters.setSignatureImageParameters(imageParameters);
+		signatureParameters.setImageParameters(imageParameters);
 
 		signAndValidate();
 	}
@@ -106,7 +107,7 @@ public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 		imageParameters.setyAxis(100);
 		imageParameters.setWidth(50);
 		imageParameters.setHeight(50);
-		signatureParameters.setSignatureImageParameters(imageParameters);
+		signatureParameters.setImageParameters(imageParameters);
 
 		signAndValidate();
 	}
@@ -118,7 +119,7 @@ public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 		imageParameters.setxAxis(100);
 		imageParameters.setyAxis(100);
 		imageParameters.setZoom(50); // reduces 50%
-		signatureParameters.setSignatureImageParameters(imageParameters);
+		signatureParameters.setImageParameters(imageParameters);
 
 		signAndValidate();
 	}
@@ -129,7 +130,7 @@ public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 		imageParameters.setImage(getCMYKPicture());
 		imageParameters.setxAxis(100);
 		imageParameters.setyAxis(100);
-		signatureParameters.setSignatureImageParameters(imageParameters);
+		signatureParameters.setImageParameters(imageParameters);
 
 		signAndValidate();
 	}

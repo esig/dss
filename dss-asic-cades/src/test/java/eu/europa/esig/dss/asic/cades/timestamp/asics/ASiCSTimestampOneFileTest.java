@@ -29,6 +29,7 @@ import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
+import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -45,15 +46,15 @@ public class ASiCSTimestampOneFileTest extends PKIFactoryAccess {
 
 	@Test
 	public void test() throws IOException {
-		DocumentSignatureService<ASiCWithCAdESSignatureParameters> service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
+		DocumentSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 
 		DSSDocument documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
 
-		ASiCWithCAdESSignatureParameters signatureParameters = new ASiCWithCAdESSignatureParameters();
-		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
+		ASiCWithCAdESTimestampParameters timestampParameters = new ASiCWithCAdESTimestampParameters();
+		timestampParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
 
-		DSSDocument archiveWithTimestamp = service.timestamp(documentToSign, signatureParameters);
+		DSSDocument archiveWithTimestamp = service.timestamp(documentToSign, timestampParameters);
 		assertNotNull(archiveWithTimestamp);
 
 //		archiveWithTimestamp.save("target/test.asics");
@@ -76,10 +77,10 @@ public class ASiCSTimestampOneFileTest extends PKIFactoryAccess {
 			assertTrue(timestamp.isSignatureValid());
 		}
 
-		signatureParameters = new ASiCWithCAdESSignatureParameters();
-		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
+		timestampParameters = new ASiCWithCAdESTimestampParameters();
+		timestampParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
 
-		archiveWithTimestamp = service.timestamp(archiveWithTimestamp, signatureParameters);
+		archiveWithTimestamp = service.timestamp(archiveWithTimestamp, timestampParameters);
 
 //		archiveWithTimestamp.save("target/test-one-file-2-times.asics");
 

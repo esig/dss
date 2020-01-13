@@ -33,13 +33,14 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.test.extension.AbstractTestExtension;
 import eu.europa.esig.dss.utils.Utils;
 
-public abstract class AbstractTestPAdESExtension extends AbstractTestExtension<PAdESSignatureParameters> {
+public abstract class AbstractTestPAdESExtension extends AbstractTestExtension<PAdESSignatureParameters, PAdESTimestampParameters> {
 
 	@Override
 	protected TSPSource getUsedTSPSourceAtSignatureTime() {
@@ -85,7 +86,7 @@ public abstract class AbstractTestPAdESExtension extends AbstractTestExtension<P
 	}
 
 	@Override
-	protected DocumentSignatureService<PAdESSignatureParameters> getSignatureServiceToExtend() {
+	protected DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> getSignatureServiceToExtend() {
 		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getUsedTSPSourceAtExtensionTime());
 		return service;

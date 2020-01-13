@@ -44,10 +44,11 @@ import eu.europa.esig.dss.test.signature.ExternalXAdESSignatureResult;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
 public class XAdESLevelBExternalSignatureTest extends AbstractXAdESTestSignature {
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESLevelBExternalSignatureTest.class);
-	private DocumentSignatureService<XAdESSignatureParameters> service;
+	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
@@ -69,7 +70,7 @@ public class XAdESLevelBExternalSignatureTest extends AbstractXAdESTestSignature
 	protected DSSDocument sign() {
 		DSSDocument toBeSigned = getDocumentToSign();
 		XAdESSignatureParameters params = getSignatureParameters();
-		DocumentSignatureService<XAdESSignatureParameters> service = getService();
+		DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service = getService();
 
 		// Generate toBeSigned without signing certificate
 		assert params.getSigningCertificate() == null;
@@ -137,7 +138,7 @@ public class XAdESLevelBExternalSignatureTest extends AbstractXAdESTestSignature
 	}
 
 	@Override
-	protected DocumentSignatureService<XAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> getService() {
 		return service;
 	}
 

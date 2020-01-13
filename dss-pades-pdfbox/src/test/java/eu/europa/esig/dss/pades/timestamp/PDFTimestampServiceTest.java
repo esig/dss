@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.pades.timestamp;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 
@@ -45,13 +45,7 @@ public class PDFTimestampServiceTest extends PKIFactoryAccess {
 		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 
-		PAdESSignatureParameters parameters = new PAdESSignatureParameters();
-
-		// The following parameters MUST be ignored (ETSI EN 319 142-1 V1.1.1, section 5.4.3)
-		parameters.setLocation("LOCATION");
-		parameters.setSignerName("TEST TIMESTAMP");
-		parameters.setReason("REASON");
-		parameters.setContactInfo("CONTACT INFO");
+		PAdESTimestampParameters parameters = new PAdESTimestampParameters();
 
 		DSSDocument document = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 		DSSDocument timestamped = service.timestamp(document, parameters);
@@ -60,11 +54,7 @@ public class PDFTimestampServiceTest extends PKIFactoryAccess {
 			List<PDSignature> signatureDictionaries = doc.getSignatureDictionaries();
 			assertEquals(1, signatureDictionaries.size());
 			PDSignature pdSignature = signatureDictionaries.get(0);
-			assertNull(pdSignature.getName());
-			assertNull(pdSignature.getReason());
-			assertNull(pdSignature.getLocation());
-			assertNull(pdSignature.getContactInfo());
-			assertNull(pdSignature.getSignDate()); // M
+			assertNotNull(pdSignature);
 			assertEquals("Adobe.PPKLite", pdSignature.getFilter());
 			assertEquals("ETSI.RFC3161", pdSignature.getSubFilter());
 		}

@@ -29,6 +29,7 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
+import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -48,7 +49,7 @@ import eu.europa.esig.dss.validation.reports.Reports;
 
 public class ASiCSCAdESWithPSSTest extends AbstractASiCSCAdESTestSignature {
 
-	private DocumentSignatureService<ASiCWithCAdESSignatureParameters> service;
+	private DocumentSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> service;
 	private ASiCWithCAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
@@ -102,7 +103,7 @@ public class ASiCSCAdESWithPSSTest extends AbstractASiCSCAdESTestSignature {
 	}
 
 	@Override
-	protected DocumentSignatureService<ASiCWithCAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> getService() {
 		return service;
 	}
 

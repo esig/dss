@@ -24,6 +24,7 @@ import java.io.Serializable;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
 @SuppressWarnings("serial")
@@ -44,6 +45,11 @@ public class RemoteTimestampParameters implements Serializable {
 	 * independently of the surrounding XML, was created.
 	 */
 	private String canonicalizationMethod = CanonicalizationMethod.EXCLUSIVE;
+
+	/**
+	 * ASiC Container type
+	 */
+	private ASiCContainerType asicContainerType;
 
 	public RemoteTimestampParameters() {
 	}
@@ -75,6 +81,14 @@ public class RemoteTimestampParameters implements Serializable {
 
 	public void setCanonicalizationMethod(final String canonicalizationMethod) {
 		this.canonicalizationMethod = canonicalizationMethod;
+	}
+
+	public ASiCContainerType getAsicContainerType() {
+		return asicContainerType;
+	}
+
+	public void setAsicContainerType(ASiCContainerType asicContainerType) {
+		this.asicContainerType = asicContainerType;
 	}
 
 	@Override

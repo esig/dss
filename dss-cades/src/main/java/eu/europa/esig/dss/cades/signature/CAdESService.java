@@ -63,7 +63,7 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 /**
  * CAdES implementation of DocumentSignatureService
  */
-public class CAdESService extends AbstractSignatureService<CAdESSignatureParameters> {
+public class CAdESService extends AbstractSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESService.class);
 

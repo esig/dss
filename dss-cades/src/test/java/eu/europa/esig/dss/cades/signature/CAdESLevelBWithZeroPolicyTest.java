@@ -54,7 +54,7 @@ public class CAdESLevelBWithZeroPolicyTest extends PKIFactoryAccess {
 	private static final String HELLO_WORLD = "Hello World";
 	private static final String HTTP_SPURI_TEST = "";
 
-	private DocumentSignatureService<CAdESSignatureParameters> service;
+	private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
 	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 	private DSSDocument signedDocument;

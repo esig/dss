@@ -48,10 +48,10 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.test.signature.ExternalSignatureResult;
 
-public class CAdESLevelBExternalSignatureTest extends AbstractPkiFactoryTestDocumentSignatureService<CAdESSignatureParameters> {
+public class CAdESLevelBExternalSignatureTest extends AbstractPkiFactoryTestDocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> {
 	private static final String HELLO_WORLD = "Hello World";
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESLevelBExternalSignatureTest.class);
-	private DocumentSignatureService<CAdESSignatureParameters> service;
+	private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
 	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 	private Date signingDate;
@@ -75,7 +75,7 @@ public class CAdESLevelBExternalSignatureTest extends AbstractPkiFactoryTestDocu
 	protected DSSDocument sign() {
 		DSSDocument toBeSigned = getDocumentToSign();
 		CAdESSignatureParameters params = getSignatureParameters();
-		DocumentSignatureService<CAdESSignatureParameters> service = getService();
+		DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service = getService();
 
 		// Generate toBeSigned without signing certificate
 		assert params.getSigningCertificate() == null;
@@ -142,7 +142,7 @@ public class CAdESLevelBExternalSignatureTest extends AbstractPkiFactoryTestDocu
 	}
 
 	@Override
-	protected DocumentSignatureService<CAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> getService() {
 		return service;
 	}
 

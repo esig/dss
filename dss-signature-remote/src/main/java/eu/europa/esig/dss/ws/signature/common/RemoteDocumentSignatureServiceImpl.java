@@ -23,17 +23,20 @@ package eu.europa.esig.dss.ws.signature.common;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
+import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.ws.converter.DTOConverter;
 import eu.europa.esig.dss.ws.converter.RemoteDocumentConverter;
@@ -42,6 +45,7 @@ import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
 @SuppressWarnings("serial")
 public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureServiceImpl
@@ -49,33 +53,33 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 
 	private static final Logger LOG = LoggerFactory.getLogger(RemoteDocumentSignatureServiceImpl.class);
 
-	private DocumentSignatureService<XAdESSignatureParameters> xadesService;
+	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> xadesService;
 
-	private DocumentSignatureService<CAdESSignatureParameters> cadesService;
+	private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> cadesService;
 
-	private DocumentSignatureService<PAdESSignatureParameters> padesService;
+	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> padesService;
 
-	private DocumentSignatureService<ASiCWithXAdESSignatureParameters> asicWithXAdESService;
+	private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> asicWithXAdESService;
 
-	private DocumentSignatureService<ASiCWithCAdESSignatureParameters> asicWithCAdESService;
+	private DocumentSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> asicWithCAdESService;
 
-	public void setXadesService(DocumentSignatureService<XAdESSignatureParameters> xadesService) {
+	public void setXadesService(DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> xadesService) {
 		this.xadesService = xadesService;
 	}
 
-	public void setCadesService(DocumentSignatureService<CAdESSignatureParameters> cadesService) {
+	public void setCadesService(DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> cadesService) {
 		this.cadesService = cadesService;
 	}
 
-	public void setPadesService(DocumentSignatureService<PAdESSignatureParameters> padesService) {
+	public void setPadesService(DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> padesService) {
 		this.padesService = padesService;
 	}
 
-	public void setAsicWithXAdESService(DocumentSignatureService<ASiCWithXAdESSignatureParameters> asicWithXAdESService) {
+	public void setAsicWithXAdESService(DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> asicWithXAdESService) {
 		this.asicWithXAdESService = asicWithXAdESService;
 	}
 
-	public void setAsicWithCAdESService(DocumentSignatureService<ASiCWithCAdESSignatureParameters> asicWithCAdESService) {
+	public void setAsicWithCAdESService(DocumentSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> asicWithCAdESService) {
 		this.asicWithCAdESService = asicWithCAdESService;
 	}
 
@@ -111,7 +115,7 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 	@Override
 	public ToBeSignedDTO getDataToSign(RemoteDocument remoteDocument, RemoteSignatureParameters remoteParameters) {
 		LOG.info("GetDataToSign in process...");
-		AbstractSignatureParameters parameters = createParameters(remoteParameters);
+		SerializableSignatureParameters parameters = createParameters(remoteParameters);
 		DocumentSignatureService service = getServiceForSignature(remoteParameters);
 		DSSDocument dssDocument = RemoteDocumentConverter.toDSSDocument(remoteDocument);
 		ToBeSigned dataToSign = service.getDataToSign(dssDocument, parameters);
@@ -123,7 +127,7 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 	@Override
 	public RemoteDocument signDocument(RemoteDocument remoteDocument, RemoteSignatureParameters remoteParameters, SignatureValueDTO signatureValueDTO) {
 		LOG.info("SignDocument in process...");
-		AbstractSignatureParameters parameters = createParameters(remoteParameters);
+		SerializableSignatureParameters parameters = createParameters(remoteParameters);
 		DocumentSignatureService service = getServiceForSignature(remoteParameters);
 		DSSDocument dssDocument = RemoteDocumentConverter.toDSSDocument(remoteDocument);
 		DSSDocument signDocument = (DSSDocument) service.signDocument(dssDocument, parameters, toSignatureValue(signatureValueDTO));
@@ -135,7 +139,7 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 	@Override
 	public RemoteDocument extendDocument(RemoteDocument remoteDocument, RemoteSignatureParameters remoteParameters) {
 		LOG.info("ExtendDocument in process...");
-		AbstractSignatureParameters parameters = createParameters(remoteParameters);
+		SerializableSignatureParameters parameters = createParameters(remoteParameters);
 		DocumentSignatureService service = getServiceForSignature(remoteParameters);
 		DSSDocument dssDocument = RemoteDocumentConverter.toDSSDocument(remoteDocument);
 		DSSDocument extendDocument = (DSSDocument) service.extendDocument(dssDocument, parameters);

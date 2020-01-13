@@ -32,6 +32,7 @@ import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
 
 public class OpenDocumentLevelBInclusiveCanonicalizationTest extends AbstractOpenDocumentTestSignature {
@@ -40,7 +41,7 @@ public class OpenDocumentLevelBInclusiveCanonicalizationTest extends AbstractOpe
 		super(fileToTest);
 	}
 
-	private DocumentSignatureService<ASiCWithXAdESSignatureParameters> service;
+	private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
 	
 	@Before
@@ -61,7 +62,7 @@ public class OpenDocumentLevelBInclusiveCanonicalizationTest extends AbstractOpe
 	}
 
 	@Override
-	protected DocumentSignatureService<ASiCWithXAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> getService() {
 		return service;
 	}
 

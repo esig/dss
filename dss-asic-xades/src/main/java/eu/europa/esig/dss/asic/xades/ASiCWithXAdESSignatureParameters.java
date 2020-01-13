@@ -20,22 +20,23 @@
  */
 package eu.europa.esig.dss.asic.xades;
 
+import eu.europa.esig.dss.asic.common.ASiCCommonParameters;
 import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
-public class ASiCWithXAdESSignatureParameters extends XAdESSignatureParameters {
+public class ASiCWithXAdESSignatureParameters extends XAdESSignatureParameters implements ASiCCommonParameters {
 
 	private static final long serialVersionUID = 5004478692506008320L;
 
 	/**
 	 * The object representing the parameters related to ASiC from of the signature.
 	 */
-	private ASiCParameters aSiCParams = new ASiCParameters();
+	private ASiCParameters asicParams = new ASiCParameters();
 
 	public ASiCParameters aSiC() {
-		return aSiCParams;
+		return asicParams;
 	}
 
 	@Override

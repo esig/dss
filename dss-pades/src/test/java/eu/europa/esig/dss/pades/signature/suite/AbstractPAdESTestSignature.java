@@ -49,6 +49,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pdf.PdfSignatureRevision;
@@ -66,7 +67,7 @@ import eu.europa.esig.validationreport.jaxb.SASignatureProductionPlaceType;
 import eu.europa.esig.validationreport.jaxb.SASubFilterType;
 import eu.europa.esig.validationreport.jaxb.SAVRIType;
 
-public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestDocumentSignatureService<PAdESSignatureParameters> {
+public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestDocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> {
 
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
@@ -82,8 +83,8 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 
 		PdfSignatureDictionary pdfSigDict = padesSig.getPdfSignatureDictionary();
 		assertEquals(getSignatureParameters().getSignerName(), pdfSigDict.getSignerName());
-		assertEquals(getSignatureParameters().getSignatureFilter(), pdfSigDict.getFilter());
-		assertEquals(getSignatureParameters().getSignatureSubFilter(), pdfSigDict.getSubFilter());
+		assertEquals(getSignatureParameters().getFilter(), pdfSigDict.getFilter());
+		assertEquals(getSignatureParameters().getSubFilter(), pdfSigDict.getSubFilter());
 		assertEquals(getSignatureParameters().getReason(), pdfSigDict.getReason());
 		assertEquals(getSignatureParameters().getContactInfo(), pdfSigDict.getContactInfo());
 		assertEquals(getSignatureParameters().getLocation(), pdfSigDict.getLocation());
@@ -105,7 +106,7 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 		int availableSignatureFieldsNumber = availableSignatureFields.size();
 
 		if ((originalSignatureFieldsNumber > 0)) {
-			if (originalSignatureFields.contains(getSignatureParameters().getSignatureFieldId())) {
+			if (originalSignatureFields.contains(getSignatureParameters().getFieldId())) {
 				assertEquals(availableSignatureFieldsNumber, originalSignatureFieldsNumber - 1);
 			} else {
 				assertEquals(availableSignatureFieldsNumber, originalSignatureFieldsNumber);
@@ -128,8 +129,8 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		// verify PDFInfo
 		assertEquals(getSignatureParameters().getSignerName(), signature.getSignerName());
-		assertEquals(getSignatureParameters().getSignatureFilter(), signature.getFilter());
-		assertEquals(getSignatureParameters().getSignatureSubFilter(), signature.getSubFilter());
+		assertEquals(getSignatureParameters().getFilter(), signature.getFilter());
+		assertEquals(getSignatureParameters().getSubFilter(), signature.getSubFilter());
 		assertEquals(getSignatureParameters().getReason(), signature.getReason());
 		assertEquals(getSignatureParameters().getContactInfo(), signature.getContactInfo());
 		assertEquals(getSignatureParameters().getLocation(), signature.getCountryName());
@@ -261,13 +262,13 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 
 	@Override
 	protected void validateETSISubFilter(SASubFilterType subFilterType) {
-		String subFilter = getSignatureParameters().getSignatureSubFilter();
+		String subFilter = getSignatureParameters().getSubFilter();
 		assertEquals(subFilter, subFilterType.getSubFilterElement());
 	}
 
 	@Override
 	protected void validateETSIFilter(SAFilterType filterType) {
-		String filter = getSignatureParameters().getSignatureFilter();
+		String filter = getSignatureParameters().getFilter();
 		assertEquals(filter, filterType.getFilter());
 	}
 

@@ -83,7 +83,7 @@ public class SerializationTest {
 
 	@Test
 	public void testSerializationTimestampParameters() throws Exception {
-		TimestampParameters timestampParams = new TimestampParameters();
+		TimestampParameters timestampParams = new MockTimestampParameters();
 		byte[] serialized = serialize(timestampParams);
 		TimestampParameters unserialized = unserialize(serialized, TimestampParameters.class);
 		assertEquals(timestampParams, unserialized);

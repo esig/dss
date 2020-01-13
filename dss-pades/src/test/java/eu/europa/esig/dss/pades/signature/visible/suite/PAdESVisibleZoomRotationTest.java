@@ -36,6 +36,7 @@ import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters.VisualSignatureRotation;
 import eu.europa.esig.dss.pades.signature.PAdESService;
@@ -47,7 +48,7 @@ import eu.europa.esig.dss.validation.reports.Reports;
 
 public class PAdESVisibleZoomRotationTest extends PKIFactoryAccess {
 
-	private DocumentSignatureService<PAdESSignatureParameters> service;
+	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
@@ -72,7 +73,7 @@ public class PAdESVisibleZoomRotationTest extends PKIFactoryAccess {
 		imageParameters.setyAxis(50);
 		imageParameters.setWidth(100);
 		imageParameters.setHeight(300);
-		signatureParameters.setSignatureImageParameters(imageParameters);
+		signatureParameters.setImageParameters(imageParameters);
 		
 		signAndValidate();
 	}
@@ -87,7 +88,7 @@ public class PAdESVisibleZoomRotationTest extends PKIFactoryAccess {
 		imageParameters.setHeight(300);
 		
 		imageParameters.setZoom(200);
-		signatureParameters.setSignatureImageParameters(imageParameters);
+		signatureParameters.setImageParameters(imageParameters);
 		
 		signAndValidate();
 	}
@@ -102,7 +103,7 @@ public class PAdESVisibleZoomRotationTest extends PKIFactoryAccess {
 		imageParameters.setHeight(300);
 		
 		imageParameters.setRotation(VisualSignatureRotation.ROTATE_90);
-		signatureParameters.setSignatureImageParameters(imageParameters);
+		signatureParameters.setImageParameters(imageParameters);
 		
 		signAndValidate();
 	}
@@ -118,7 +119,7 @@ public class PAdESVisibleZoomRotationTest extends PKIFactoryAccess {
 		
 		imageParameters.setZoom(200);
 		imageParameters.setRotation(VisualSignatureRotation.ROTATE_90);
-		signatureParameters.setSignatureImageParameters(imageParameters);
+		signatureParameters.setImageParameters(imageParameters);
 		
 		signAndValidate();
 	}

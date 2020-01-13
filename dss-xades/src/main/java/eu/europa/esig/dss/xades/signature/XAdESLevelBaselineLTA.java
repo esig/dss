@@ -31,7 +31,6 @@ import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
@@ -42,6 +41,7 @@ import eu.europa.esig.dss.validation.DefaultAdvancedSignature.ValidationDataForI
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 
 /**
@@ -145,7 +145,7 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 	 * This method incorporate timestamp type object.
 	 */
 	private void incorporateArchiveTimestamp() {
-		final TimestampParameters archiveTimestampParameters = params.getArchiveTimestampParameters();
+		final XAdESTimestampParameters archiveTimestampParameters = params.getArchiveTimestampParameters();
 		final String canonicalizationMethod = archiveTimestampParameters.getCanonicalizationMethod();
 		final byte[] archiveTimestampData = xadesSignature.getTimestampSource().getArchiveTimestampData(canonicalizationMethod);
 		if (LOG.isTraceEnabled()) {

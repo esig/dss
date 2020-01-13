@@ -18,6 +18,7 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
 public class OpenDocumentSignLTALevelTest extends OpenDocumentLevelLTASignatureTest {
 
@@ -30,7 +31,7 @@ public class OpenDocumentSignLTALevelTest extends OpenDocumentLevelLTASignatureT
 		super.onDocumentSigned(byteArray);
 		DSSDocument signedDocument = new InMemoryDocument(byteArray);
 		
-		DocumentSignatureService<ASiCWithXAdESSignatureParameters> service = getService();
+		DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service = getService();
 		ASiCWithXAdESSignatureParameters signatureParameters = getSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		

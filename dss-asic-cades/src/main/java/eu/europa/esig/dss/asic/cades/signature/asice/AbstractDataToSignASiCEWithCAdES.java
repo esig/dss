@@ -23,8 +23,8 @@ package eu.europa.esig.dss.asic.cades.signature.asice;
 import java.util.List;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.manifest.ASiCEWithCAdESManifestBuilder;
+import eu.europa.esig.dss.asic.common.ASiCCommonParameters;
 import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -40,7 +40,7 @@ public abstract class AbstractDataToSignASiCEWithCAdES {
 	private static final String ZIP_ENTRY_ASICE_METAINF_TIMESTAMP = ASiCUtils.META_INF_FOLDER + "timestamp001.tst";
 
 	protected DSSDocument getASiCManifest(SigningOperation operation, List<DSSDocument> documents, List<DSSDocument> signatures, List<DSSDocument> timestamps,
-			List<DSSDocument> manifests, ASiCWithCAdESSignatureParameters parameters) {
+			List<DSSDocument> manifests, ASiCCommonParameters parameters) {
 
 		String uri = null;
 		if (SigningOperation.SIGN == operation) {

@@ -86,7 +86,7 @@ public class PAdESVisibleCombinationTextAndImageSignatureTest extends PKIFactory
 		imageParameters.setTextParameters(textParameters);
 
 		imageParameters.setZoom(50); // reduces 50%
-		signatureParameters.setSignatureImageParameters(imageParameters);
+		signatureParameters.setImageParameters(imageParameters);
 		signAndValidate();
 	}
 
@@ -103,7 +103,7 @@ public class PAdESVisibleCombinationTextAndImageSignatureTest extends PKIFactory
 		textParameters.setSignerTextPosition(SignerTextPosition.TOP);
 		imageParameters.setTextParameters(textParameters);
 
-		signatureParameters.setSignatureImageParameters(imageParameters);
+		signatureParameters.setImageParameters(imageParameters);
 		signAndValidate();
 	}
 
@@ -120,7 +120,7 @@ public class PAdESVisibleCombinationTextAndImageSignatureTest extends PKIFactory
 		textParameters.setSize(15);
 		textParameters.setSignerTextPosition(SignerTextPosition.TOP);
 		imageParameters.setTextParameters(textParameters);
-		signatureParameters.setSignatureImageParameters(imageParameters);
+		signatureParameters.setImageParameters(imageParameters);
 
 		signAndValidate();
 	}
@@ -128,7 +128,7 @@ public class PAdESVisibleCombinationTextAndImageSignatureTest extends PKIFactory
 	@Test
 	public void testGeneratedImageWithText() throws IOException {
 		SignatureImageParameters imageParameters = createSignatureImageParameters();
-		signatureParameters.setSignatureImageParameters(imageParameters);
+		signatureParameters.setImageParameters(imageParameters);
 		// image and text on left
 		signAndValidate();
 

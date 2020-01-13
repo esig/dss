@@ -21,8 +21,9 @@
 package eu.europa.esig.dss.cades;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
+import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 
-public class CAdESSignatureParameters extends AbstractSignatureParameters {
+public class CAdESSignatureParameters extends AbstractSignatureParameters<CAdESTimestampParameters> {
 
 	private boolean en319122 = true;
 
@@ -114,6 +115,30 @@ public class CAdESSignatureParameters extends AbstractSignatureParameters {
 	 */
 	public void setContentIdentifierPrefix(String contentIdentifierPrefix) {
 		this.contentIdentifierPrefix = contentIdentifierPrefix;
+	}
+
+	@Override
+	public CAdESTimestampParameters getContentTimestampParameters() {
+		if (contentTimestampParameters == null) {
+			contentTimestampParameters = new CAdESTimestampParameters();
+		}
+		return contentTimestampParameters;
+	}
+
+	@Override
+	public CAdESTimestampParameters getSignatureTimestampParameters() {
+		if (signatureTimestampParameters == null) {
+			signatureTimestampParameters = new CAdESTimestampParameters();
+		}
+		return signatureTimestampParameters;
+	}
+
+	@Override
+	public CAdESTimestampParameters getArchiveTimestampParameters() {
+		if (archiveTimestampParameters == null) {
+			archiveTimestampParameters = new CAdESTimestampParameters();
+		}
+		return archiveTimestampParameters;
 	}
 
 }
