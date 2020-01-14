@@ -378,13 +378,13 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 		ListCRLSource allCrlSource = new ListCRLSource();
 		if (Utils.isCollectionNotEmpty(allSignatureList)) {
 			for (final AdvancedSignature signature : allSignatureList) {
-				allCrlSource.addAll(signature.getCRLSource());
-				allCrlSource.addAll(signature.getTimestampSource().getCRLSources());
+				allCrlSource.add(signature.getCRLSource());
+				allCrlSource.addAll(signature.getTimestampSource().getCRLSources().getSources());
 			}
 		}
 		if (Utils.isCollectionNotEmpty(externalTimestamps)) {
 			for (final TimestampToken timestampToken : externalTimestamps) {
-				allCrlSource.addAll(timestampToken.getCRLSource());
+				allCrlSource.add(timestampToken.getCRLSource());
 			}
 		}
 		certificateVerifier.setSignatureCRLSource(allCrlSource);
@@ -405,13 +405,13 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 		ListOCSPSource allOcspSource = new ListOCSPSource();
 		if (Utils.isCollectionNotEmpty(allSignatureList)) {
 			for (final AdvancedSignature signature : allSignatureList) {
-				allOcspSource.addAll(signature.getOCSPSource());
-				allOcspSource.addAll(signature.getTimestampSource().getOCSPSources());
+				allOcspSource.add(signature.getOCSPSource());
+				allOcspSource.addAll(signature.getTimestampSource().getOCSPSources().getSources());
 			}
 		}
 		if (Utils.isCollectionNotEmpty(externalTimestamps)) {
 			for (final TimestampToken timestampToken : externalTimestamps) {
-				allOcspSource.addAll(timestampToken.getOCSPSource());
+				allOcspSource.add(timestampToken.getOCSPSource());
 			}
 		}
 		certificateVerifier.setSignatureOCSPSource(allOcspSource);

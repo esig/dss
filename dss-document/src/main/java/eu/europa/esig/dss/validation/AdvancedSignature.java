@@ -37,9 +37,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
@@ -461,16 +459,6 @@ public interface AdvancedSignature extends Serializable {
 	 * This method allows the structure validation of the signature.
 	 */
 	void validateStructure();
-	
-	/**
-	 * Fills all the missing {@link CRLToken}s from the given {@code signatureCRLSource}
-	 */
-	void populateCRLTokenLists(SignatureCRLSource signatureCRLSource);
-	
-	/**
-	 * Fills all the missing {@link OCSPToken}s from the given {@code signatureOCSPSource}
-	 */
-	void populateOCSPTokenLists(SignatureOCSPSource signatureOCSPSource);
 
 	String getStructureValidationResult();
 

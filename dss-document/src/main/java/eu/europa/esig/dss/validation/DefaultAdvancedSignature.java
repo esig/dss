@@ -239,14 +239,14 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	@Override
 	public ListCRLSource getCompleteCRLSource() {
 		ListCRLSource crlSource = new ListCRLSource(getCRLSource());
-		crlSource.addAll(getTimestampSource().getCRLSources());
+		crlSource.addAll(getTimestampSource().getCRLSources().getSources());
 		return crlSource;
 	}
 
 	@Override
 	public ListOCSPSource getCompleteOCSPSource() {
 		ListOCSPSource ocspSource = new ListOCSPSource(getOCSPSource());
-		ocspSource.addAll(getTimestampSource().getOCSPSources());
+		ocspSource.addAll(getTimestampSource().getOCSPSources().getSources());
 		return ocspSource;
 	}
 
@@ -752,18 +752,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return signaturePolicy;
 	}
 	
-	@Override
-	public void populateCRLTokenLists(SignatureCRLSource crlSource) {
-		getCRLSource().populateCRLRevocationValues(crlSource);
-		getCompleteCRLSource().populateCRLRevocationValues(crlSource);
-	}
-	
-	@Override
-	public void populateOCSPTokenLists(SignatureOCSPSource ocspSource) {
-		getOCSPSource().populateOCSPRevocationTokenLists(ocspSource);
-		getCompleteOCSPSource().populateOCSPRevocationTokenLists(ocspSource);
-	}
-
 	@Override
 	public void findSignatureScope(SignatureScopeFinder signatureScopeFinder) {
 		signatureScopes = signatureScopeFinder.findSignatureScope(this);

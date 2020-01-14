@@ -462,7 +462,7 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 		super.addEncapsulatedValuesFromTimestamp(references, timestampedTimestamp);
 		
 		TimestampCRLSource timeStampCRLSource = timestampedTimestamp.getCRLSource();
-		crlSource.addAll(timeStampCRLSource);
+		crlSource.add(timeStampCRLSource);
 		for (CRLBinary crlBinary : timeStampCRLSource.getCRLBinaryList()) {
 			TimestampedReference crlReference = new TimestampedReference(crlBinary.asXmlId(), TimestampedObjectType.REVOCATION);
 			addReference(references, crlReference);
@@ -476,7 +476,7 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 		}
 		
 		TimestampOCSPSource timeStampOCSPSource = timestampedTimestamp.getOCSPSource();
-		ocspSource.addAll(timeStampOCSPSource);
+		ocspSource.add(timeStampOCSPSource);
 		for (OCSPResponseBinary ocspResponse : timeStampOCSPSource.getOCSPResponsesList()) {
 			TimestampedReference ocspReference = new TimestampedReference(ocspResponse.asXmlId(), TimestampedObjectType.REVOCATION);
 			addReference(references, ocspReference);

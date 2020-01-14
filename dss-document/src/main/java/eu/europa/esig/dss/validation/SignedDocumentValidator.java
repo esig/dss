@@ -170,15 +170,11 @@ public abstract class SignedDocumentValidator extends AbstractDocumentValidator 
 
 	protected void processSignaturesValidation(final ValidationContext validationContext, 
 			List<AdvancedSignature> allSignatureList) {
-
 		for (final AdvancedSignature signature : allSignatureList) {
 			signature.checkSigningCertificate();
 			signature.checkSignatureIntegrity();
 			signature.validateStructure();
 			signature.checkSignaturePolicy(getSignaturePolicyProvider());
-
-			signature.populateCRLTokenLists(certificateVerifier.getSignatureCRLSource());
-			signature.populateOCSPTokenLists(certificateVerifier.getSignatureOCSPSource());
 		}
 	}
 

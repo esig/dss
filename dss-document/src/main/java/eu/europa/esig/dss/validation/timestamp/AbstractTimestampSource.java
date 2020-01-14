@@ -281,8 +281,8 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 				
 			}
 			populateTimestampCertificateSource(timestampToken);
-			crlSource.addAll(timestampToken.getCRLSource());
-			ocspSource.addAll(timestampToken.getOCSPSource());
+			crlSource.add(timestampToken.getCRLSource());
+			ocspSource.add(timestampToken.getOCSPSource());
 			contentTimestamps.add(timestampToken);
 		}
 		
@@ -374,8 +374,8 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 			}
 			
 			populateTimestampCertificateSource(timestampToken);
-			crlSource.addAll(timestampToken.getCRLSource());
-			ocspSource.addAll(timestampToken.getOCSPSource());
+			crlSource.add(timestampToken.getCRLSource());
+			ocspSource.add(timestampToken.getOCSPSource());
 			timestamps.add(timestampToken);
 			
 		}
@@ -623,7 +623,6 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 				OCSPRef ocspRef = ocspSource.getOCSPRefByDigest(refDigest);
 				if (ocspRef != null) {
 					timestampedReferences.add(new TimestampedReference(ocspRef.getDSSIdAsString(), TimestampedObjectType.REVOCATION));
-					
 				}
 			}
 		}
