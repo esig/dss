@@ -24,6 +24,8 @@ import java.io.IOException;
 
 import javax.xml.bind.JAXBException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
@@ -40,6 +42,8 @@ import eu.europa.esig.validationreport.jaxb.ValidationReportType;
  */
 public class Reports extends AbstractReports {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(Reports.class);
+	
 	private final SimpleReport simpleReportWrapper;
 
 	private String xmlSimpleReport;
@@ -134,19 +138,21 @@ public class Reports extends AbstractReports {
 
 	@Override
 	public void print() {
-		System.out.println("----------------Diagnostic data-----------------");
-		System.out.println(getXmlDiagnosticData());
-		System.out.println("----------------Validation report---------------");
-		System.out.println(getXmlDetailedReport());
-		System.out.println("----------------Simple report-------------------");
-		System.out.println(getXmlSimpleReport());
-		System.out.println("----------------ETSI validation report-------------------");
-		if (etsiValidationReport != null) {
-			System.out.println(getXmlValidationReport());
-		} else {
-			System.out.println("---------- ETSI validation report is disabled -----------");
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug("----------------Diagnostic data-----------------");
+			LOGGER.debug(getXmlDiagnosticData());
+			LOGGER.debug("----------------Validation report---------------");
+			LOGGER.debug(getXmlDetailedReport());
+			LOGGER.debug("----------------Simple report-------------------");
+			LOGGER.debug(getXmlSimpleReport());
+			LOGGER.debug("----------------ETSI validation report-------------------");
+			if (etsiValidationReport != null) {
+				LOGGER.debug(getXmlValidationReport());
+			} else {
+				LOGGER.debug("---------- ETSI validation report is disabled -----------");
+			}
+			LOGGER.debug("---------------------------------------------------------");
 		}
-		System.out.println("---------------------------------------------------------");
 	}
 
 }

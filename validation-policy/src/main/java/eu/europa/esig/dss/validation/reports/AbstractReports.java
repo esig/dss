@@ -24,6 +24,8 @@ import java.io.IOException;
 
 import javax.xml.bind.JAXBException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
@@ -39,6 +41,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
  */
 public abstract class AbstractReports {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractReports.class);
+	
 	protected boolean validateXml = false;
 
 	private final DiagnosticData diagnosticDataWrapper;
@@ -146,13 +150,15 @@ public abstract class AbstractReports {
 	 * For debug purpose.
 	 */
 	public void print() {
-		System.out.println("----------------Diagnostic data-----------------");
-		System.out.println(getXmlDiagnosticData());
-		System.out.println("----------------Validation report---------------");
-		System.out.println(getXmlDetailedReport());
-		System.out.println("----------------Simple report-------------------");
-		System.out.println(getXmlSimpleReport());
-		System.out.println("------------------------------------------------");
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug("----------------Diagnostic data-----------------");
+			LOGGER.debug(getXmlDiagnosticData());
+			LOGGER.debug("----------------Validation report---------------");
+			LOGGER.debug(getXmlDetailedReport());
+			LOGGER.debug("----------------Simple report-------------------");
+			LOGGER.debug(getXmlSimpleReport());
+			LOGGER.debug("------------------------------------------------");
+		}
 	}
 
 }
