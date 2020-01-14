@@ -26,6 +26,7 @@ import eu.europa.esig.dss.ws.signature.common.RemoteMultipleDocumentsSignatureSe
 import eu.europa.esig.dss.ws.signature.dto.DataToSignMultipleDocumentsDTO;
 import eu.europa.esig.dss.ws.signature.dto.ExtendDocumentDTO;
 import eu.europa.esig.dss.ws.signature.dto.SignMultipleDocumentDTO;
+import eu.europa.esig.dss.ws.signature.dto.TimestampMultipleDocumentDTO;
 import eu.europa.esig.dss.ws.signature.soap.client.SoapMultipleDocumentsSignatureService;
 
 @SuppressWarnings("serial")
@@ -50,6 +51,11 @@ public class SoapMultipleDocumentsSignatureServiceImpl implements SoapMultipleDo
 	@Override
 	public RemoteDocument extendDocument(ExtendDocumentDTO extendDocumentDto) {
 		return service.extendDocument(extendDocumentDto.getToExtendDocument(), extendDocumentDto.getParameters());
+	}
+
+	@Override
+	public RemoteDocument timestampDocument(TimestampMultipleDocumentDTO timestampDocumentDTO) {
+		return service.timestamp(timestampDocumentDTO.getToTimestampDocuments(), timestampDocumentDTO.getTimestampParameters());
 	}
 
 }

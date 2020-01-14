@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.ws.signature.common;
 
+import java.util.Objects;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,10 +32,10 @@ import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureForm;
-import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
+import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
@@ -44,6 +46,7 @@ import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
+import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteTimestampParameters;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
@@ -84,10 +87,7 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 	}
 
 	@SuppressWarnings("rawtypes")
-	private DocumentSignatureService getServiceForSignature(RemoteSignatureParameters parameters) {
-		ASiCContainerType asicContainerType = parameters.getAsicContainerType();
-		SignatureLevel signatureLevel = parameters.getSignatureLevel();
-		SignatureForm signatureForm = signatureLevel.getSignatureForm();
+	private DocumentSignatureService getServiceForSignature(SignatureForm signatureForm, ASiCContainerType asicContainerType) {
 		if (asicContainerType != null) {
 			switch (signatureForm) {
 			case XAdES:
@@ -106,7 +106,7 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 			case PAdES:
 				return padesService;
 			default:
-				throw new DSSException("Unrecognized format " + signatureLevel);
+				throw new DSSException("Unrecognized format " + signatureForm);
 			}
 		}
 	}
@@ -114,9 +114,12 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public ToBeSignedDTO getDataToSign(RemoteDocument remoteDocument, RemoteSignatureParameters remoteParameters) {
+		Objects.requireNonNull(remoteDocument, "remoteDocument must be defined!");
+		Objects.requireNonNull(remoteParameters, "remoteParameters must be defined!");
+		Objects.requireNonNull(remoteParameters.getSignatureLevel(), "signatureLevel must be defined!");
 		LOG.info("GetDataToSign in process...");
 		SerializableSignatureParameters parameters = createParameters(remoteParameters);
-		DocumentSignatureService service = getServiceForSignature(remoteParameters);
+		DocumentSignatureService service = getServiceForSignature(remoteParameters.getSignatureLevel().getSignatureForm(), remoteParameters.getAsicContainerType());
 		DSSDocument dssDocument = RemoteDocumentConverter.toDSSDocument(remoteDocument);
 		ToBeSigned dataToSign = service.getDataToSign(dssDocument, parameters);
 		LOG.info("GetDataToSign is finished");
@@ -126,9 +129,12 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public RemoteDocument signDocument(RemoteDocument remoteDocument, RemoteSignatureParameters remoteParameters, SignatureValueDTO signatureValueDTO) {
+		Objects.requireNonNull(remoteDocument, "remoteDocument must be defined!");
+		Objects.requireNonNull(remoteParameters, "remoteParameters must be defined!");
+		Objects.requireNonNull(remoteParameters.getSignatureLevel(), "signatureLevel must be defined!");
 		LOG.info("SignDocument in process...");
 		SerializableSignatureParameters parameters = createParameters(remoteParameters);
-		DocumentSignatureService service = getServiceForSignature(remoteParameters);
+		DocumentSignatureService service = getServiceForSignature(remoteParameters.getSignatureLevel().getSignatureForm(), remoteParameters.getAsicContainerType());
 		DSSDocument dssDocument = RemoteDocumentConverter.toDSSDocument(remoteDocument);
 		DSSDocument signDocument = (DSSDocument) service.signDocument(dssDocument, parameters, toSignatureValue(signatureValueDTO));
 		LOG.info("SignDocument is finished");
@@ -138,13 +144,31 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public RemoteDocument extendDocument(RemoteDocument remoteDocument, RemoteSignatureParameters remoteParameters) {
+		Objects.requireNonNull(remoteDocument, "remoteDocument must be defined!");
+		Objects.requireNonNull(remoteParameters, "remoteParameters must be defined!");
+		Objects.requireNonNull(remoteParameters.getSignatureLevel(), "signatureLevel must be defined!");
 		LOG.info("ExtendDocument in process...");
 		SerializableSignatureParameters parameters = createParameters(remoteParameters);
-		DocumentSignatureService service = getServiceForSignature(remoteParameters);
+		DocumentSignatureService service = getServiceForSignature(remoteParameters.getSignatureLevel().getSignatureForm(), remoteParameters.getAsicContainerType());
 		DSSDocument dssDocument = RemoteDocumentConverter.toDSSDocument(remoteDocument);
 		DSSDocument extendDocument = (DSSDocument) service.extendDocument(dssDocument, parameters);
 		LOG.info("ExtendDocument is finished");
 		return RemoteDocumentConverter.toRemoteDocument(extendDocument);
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
+	public RemoteDocument timestamp(RemoteDocument remoteDocument, RemoteTimestampParameters remoteParameters) {
+		Objects.requireNonNull(remoteDocument, "remoteDocument must be defined!");
+		Objects.requireNonNull(remoteParameters, "remoteParameters must be defined!");
+		Objects.requireNonNull(remoteParameters.getSignatureForm(), "signatureForm must be defined!");
+		LOG.info("Timestamp document in process...");
+		TimestampParameters parameters = toTimestampParameters(remoteParameters, remoteParameters.getSignatureForm(), remoteParameters.getAsicContainerType());
+		DocumentSignatureService service = getServiceForSignature(remoteParameters.getSignatureForm(), remoteParameters.getAsicContainerType());
+		DSSDocument dssDocument = RemoteDocumentConverter.toDSSDocument(remoteDocument);
+		DSSDocument timestampedDocument = service.timestamp(dssDocument, parameters);
+		LOG.info("Timestamp document is finished");
+		return RemoteDocumentConverter.toRemoteDocument(timestampedDocument);
 	}
 
 }

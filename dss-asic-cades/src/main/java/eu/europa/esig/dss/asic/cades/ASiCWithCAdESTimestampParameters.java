@@ -16,6 +16,7 @@ public class ASiCWithCAdESTimestampParameters extends CAdESTimestampParameters i
 	 */
 	private ASiCParameters asicParams = new ASiCParameters();
 
+	@Override
 	public ASiCParameters aSiC() {
 		return asicParams;
 	}

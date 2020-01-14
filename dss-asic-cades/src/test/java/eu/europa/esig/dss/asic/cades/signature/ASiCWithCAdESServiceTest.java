@@ -88,8 +88,8 @@ public class ASiCWithCAdESServiceTest extends PKIFactoryAccess {
         signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
         signAndValidate(documentToSign, signatureParameters);
 
-        exception = assertThrows(DSSException.class, () -> signatureParameters.setArchiveTimestampParameters(new CAdESTimestampParameters()));
-        assertEquals("Not applicable! Use ASiCWithCAdESTimestampParameters", exception.getMessage());
+        signatureParameters.setArchiveTimestampParameters(new CAdESTimestampParameters());
+        signAndValidate(documentToSign, signatureParameters);
         
         signatureParameters.setArchiveTimestampParameters(new ASiCWithCAdESTimestampParameters());
         signAndValidate(documentToSign, signatureParameters);
@@ -103,8 +103,8 @@ public class ASiCWithCAdESServiceTest extends PKIFactoryAccess {
         signatureParameters.setCertificateChain((List<CertificateToken>)null);
         signAndValidate(documentToSign, signatureParameters);
 
-        exception = assertThrows(DSSException.class, () -> signatureParameters.setContentTimestampParameters(new CAdESTimestampParameters()));
-        assertEquals("Not applicable! Use ASiCWithCAdESTimestampParameters", exception.getMessage());
+        signatureParameters.setContentTimestampParameters(new CAdESTimestampParameters());
+        signAndValidate(documentToSign, signatureParameters);
         
         signatureParameters.setContentTimestampParameters(new ASiCWithCAdESTimestampParameters());
         signAndValidate(documentToSign, signatureParameters);
@@ -112,8 +112,8 @@ public class ASiCWithCAdESServiceTest extends PKIFactoryAccess {
         signatureParameters.setDetachedContents(Collections.emptyList());
         signAndValidate(documentToSign, signatureParameters);
 
-        exception = assertThrows(DSSException.class, () -> signatureParameters.setSignatureTimestampParameters(new CAdESTimestampParameters()));
-        assertEquals("Not applicable! Use ASiCWithCAdESTimestampParameters", exception.getMessage());
+        signatureParameters.setSignatureTimestampParameters(new CAdESTimestampParameters());
+        signAndValidate(documentToSign, signatureParameters);
         
         signatureParameters.setSignatureTimestampParameters(new ASiCWithCAdESTimestampParameters());
         signAndValidate(documentToSign, signatureParameters);

@@ -51,6 +51,10 @@ public class PAdESTimestampParameters extends CAdESTimestampParameters implement
 	public PAdESTimestampParameters(DigestAlgorithm digestAlgorithm) {
 		super(digestAlgorithm);
 	}
+	
+	public PAdESTimestampParameters(CAdESTimestampParameters cadesTimestampParameters) {
+		this(cadesTimestampParameters.getDigestAlgorithm());
+	}
 
 	@Override
 	public String getFilter() {

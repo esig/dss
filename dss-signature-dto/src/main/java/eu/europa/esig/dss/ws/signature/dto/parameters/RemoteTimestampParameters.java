@@ -21,11 +21,13 @@
 package eu.europa.esig.dss.ws.signature.dto.parameters;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureForm;
 
 @SuppressWarnings("serial")
 public class RemoteTimestampParameters implements Serializable {
@@ -50,6 +52,11 @@ public class RemoteTimestampParameters implements Serializable {
 	 * ASiC Container type
 	 */
 	private ASiCContainerType asicContainerType;
+	
+	/**
+	 * Specifies a timestamp format to be used
+	 */
+	private SignatureForm signatureForm;
 
 	public RemoteTimestampParameters() {
 	}
@@ -69,9 +76,7 @@ public class RemoteTimestampParameters implements Serializable {
 	}
 
 	public void setDigestAlgorithm(final DigestAlgorithm digestAlgorithm) {
-		if (digestAlgorithm == null) {
-			throw new NullPointerException();
-		}
+		Objects.requireNonNull(digestAlgorithm, "digestAlgorithm must be specified!");
 		this.digestAlgorithm = digestAlgorithm;
 	}
 
@@ -91,12 +96,22 @@ public class RemoteTimestampParameters implements Serializable {
 		this.asicContainerType = asicContainerType;
 	}
 
+	public SignatureForm getSignatureForm() {
+		return signatureForm;
+	}
+
+	public void setSignatureForm(SignatureForm signatureForm) {
+		this.signatureForm = signatureForm;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = (prime * result) + ((canonicalizationMethod == null) ? 0 : canonicalizationMethod.hashCode());
 		result = (prime * result) + ((digestAlgorithm == null) ? 0 : digestAlgorithm.hashCode());
+		result = (prime * result) + ((signatureForm == null) ? 0 : signatureForm.hashCode());
+		result = (prime * result) + ((canonicalizationMethod == null) ? 0 : canonicalizationMethod.hashCode());
+		result = (prime * result) + ((asicContainerType == null) ? 0 : asicContainerType.hashCode());
 		return result;
 	}
 
@@ -122,12 +137,27 @@ public class RemoteTimestampParameters implements Serializable {
 		if (digestAlgorithm != other.digestAlgorithm) {
 			return false;
 		}
+		if (signatureForm == null) {
+			if (other.signatureForm != null) {
+				return false;
+			}
+		} else if (signatureForm != other.signatureForm) {
+			return false;
+		}
+		if (asicContainerType == null) {
+			if (other.asicContainerType != null) {
+				return false;
+			}
+		} else if (asicContainerType != other.asicContainerType) {
+			return false;
+		}
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "RemoteTimestampParameters{" + ", digestAlgorithm=" + digestAlgorithm.getName() + ", canonicalizationMethod=" + canonicalizationMethod + "}";
+		return "RemoteTimestampParameters{format=" + signatureForm + ", digestAlgorithm=" + digestAlgorithm.getName() + 
+				", asicContainerType=" + asicContainerType + ", canonicalizationMethod=" + canonicalizationMethod + "}";
 	}
 	
 }

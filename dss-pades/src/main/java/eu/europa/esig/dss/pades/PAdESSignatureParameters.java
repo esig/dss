@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -207,6 +208,15 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 		}
 		return (PAdESTimestampParameters) contentTimestampParameters;
 	}
+	
+	@Override
+	public void setContentTimestampParameters(CAdESTimestampParameters contentTimestampParameters) {
+		if (contentTimestampParameters instanceof PAdESTimestampParameters) {
+			this.contentTimestampParameters = contentTimestampParameters;
+		} else {
+			this.contentTimestampParameters = new PAdESTimestampParameters(contentTimestampParameters);
+		}
+	}
 
 	@Override
 	public PAdESTimestampParameters getSignatureTimestampParameters() {
@@ -215,6 +225,15 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 		}
 		return (PAdESTimestampParameters) signatureTimestampParameters;
 	}
+	
+	@Override
+	public void setSignatureTimestampParameters(CAdESTimestampParameters signatureTimestampParameters) {
+		if (signatureTimestampParameters instanceof PAdESTimestampParameters) {
+			this.signatureTimestampParameters = signatureTimestampParameters;
+		} else {
+			this.signatureTimestampParameters = new PAdESTimestampParameters(signatureTimestampParameters);
+		}
+	}
 
 	@Override
 	public PAdESTimestampParameters getArchiveTimestampParameters() {
@@ -222,6 +241,15 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 			archiveTimestampParameters = new PAdESTimestampParameters();
 		}
 		return (PAdESTimestampParameters) archiveTimestampParameters;
+	}
+	
+	@Override
+	public void setArchiveTimestampParameters(CAdESTimestampParameters archiveTimestampParameters) {
+		if (archiveTimestampParameters instanceof PAdESTimestampParameters) {
+			this.archiveTimestampParameters = archiveTimestampParameters;
+		} else {
+			this.archiveTimestampParameters = new PAdESTimestampParameters(archiveTimestampParameters);
+		}
 	}
 
 }

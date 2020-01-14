@@ -23,6 +23,7 @@ package eu.europa.esig.dss.ws.signature.dto.parameters;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -173,9 +174,7 @@ public class RemoteSignatureParameters implements Serializable {
 	 *            the expected signature level
 	 */
 	public void setSignatureLevel(final SignatureLevel signatureLevel) {
-		if (signatureLevel == null) {
-			throw new NullPointerException("signatureLevel");
-		}
+		Objects.requireNonNull(signatureLevel, "signatureLevel must be defined!");
 		this.signatureLevel = signatureLevel;
 	}
 

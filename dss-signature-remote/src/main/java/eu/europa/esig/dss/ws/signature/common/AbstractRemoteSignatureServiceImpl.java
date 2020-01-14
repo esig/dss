@@ -69,6 +69,7 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	protected SerializableSignatureParameters createParameters(RemoteSignatureParameters remoteParameters) {
 		SerializableSignatureParameters parameters = null;
 		ASiCContainerType asicContainerType = remoteParameters.getAsicContainerType();
@@ -163,7 +164,7 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		return bLevelParameters;
 	}
 	
-	private TimestampParameters toTimestampParameters(RemoteTimestampParameters remoteTimestampParameters, 
+	protected TimestampParameters toTimestampParameters(RemoteTimestampParameters remoteTimestampParameters, 
 			SignatureForm signatureForm, ASiCContainerType asicContainerType) {
 		TimestampParameters timestampParameters;
 		if (asicContainerType != null) {
@@ -181,20 +182,21 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 				default:
 					throw new DSSException(String.format("Unsupported signature form [%s] for asic container type [%s]", signatureForm, asicContainerType));
 			}
-		}
-		switch (signatureForm) {
-			case CAdES:
-				timestampParameters = new CAdESTimestampParameters(remoteTimestampParameters.getDigestAlgorithm());
-				break;
-			case PAdES:
-				timestampParameters = new PAdESTimestampParameters(remoteTimestampParameters.getDigestAlgorithm());
-				break;
-			case XAdES:
-				timestampParameters = new XAdESTimestampParameters(remoteTimestampParameters.getDigestAlgorithm(), 
-						remoteTimestampParameters.getCanonicalizationMethod());
-				break;
-			default:
-				throw new DSSException("Unsupported signature form : " + signatureForm);
+		} else {
+			switch (signatureForm) {
+				case CAdES:
+					timestampParameters = new CAdESTimestampParameters(remoteTimestampParameters.getDigestAlgorithm());
+					break;
+				case PAdES:
+					timestampParameters = new PAdESTimestampParameters(remoteTimestampParameters.getDigestAlgorithm());
+					break;
+				case XAdES:
+					timestampParameters = new XAdESTimestampParameters(remoteTimestampParameters.getDigestAlgorithm(), 
+							remoteTimestampParameters.getCanonicalizationMethod());
+					break;
+				default:
+					throw new DSSException("Unsupported signature form : " + signatureForm);
+			}
 		}
 		return timestampParameters;
 	}

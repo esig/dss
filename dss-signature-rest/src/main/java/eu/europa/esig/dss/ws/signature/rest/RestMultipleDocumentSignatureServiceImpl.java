@@ -26,6 +26,7 @@ import eu.europa.esig.dss.ws.signature.common.RemoteMultipleDocumentsSignatureSe
 import eu.europa.esig.dss.ws.signature.dto.DataToSignMultipleDocumentsDTO;
 import eu.europa.esig.dss.ws.signature.dto.ExtendDocumentDTO;
 import eu.europa.esig.dss.ws.signature.dto.SignMultipleDocumentDTO;
+import eu.europa.esig.dss.ws.signature.dto.TimestampMultipleDocumentDTO;
 import eu.europa.esig.dss.ws.signature.rest.client.RestMultipleDocumentSignatureService;
 
 @SuppressWarnings("serial")
@@ -50,6 +51,11 @@ public class RestMultipleDocumentSignatureServiceImpl implements RestMultipleDoc
 	@Override
 	public RemoteDocument extendDocument(ExtendDocumentDTO extendDocumentDto) {
 		return service.extendDocument(extendDocumentDto.getToExtendDocument(), extendDocumentDto.getParameters());
+	}
+
+	@Override
+	public RemoteDocument timestampDocuments(TimestampMultipleDocumentDTO timestampDocument) {
+		return service.timestamp(timestampDocument.getToTimestampDocuments(), timestampDocument.getTimestampParameters());
 	}
 
 }

@@ -26,6 +26,7 @@ import eu.europa.esig.dss.ws.signature.common.RemoteDocumentSignatureService;
 import eu.europa.esig.dss.ws.signature.dto.DataToSignOneDocumentDTO;
 import eu.europa.esig.dss.ws.signature.dto.ExtendDocumentDTO;
 import eu.europa.esig.dss.ws.signature.dto.SignOneDocumentDTO;
+import eu.europa.esig.dss.ws.signature.dto.TimestampOneDocumentDTO;
 import eu.europa.esig.dss.ws.signature.soap.client.SoapDocumentSignatureService;
 
 @SuppressWarnings("serial")
@@ -50,6 +51,11 @@ public class SoapDocumentSignatureServiceImpl implements SoapDocumentSignatureSe
 	@Override
 	public RemoteDocument extendDocument(ExtendDocumentDTO extendDocumentDto) {
 		return service.extendDocument(extendDocumentDto.getToExtendDocument(), extendDocumentDto.getParameters());
+	}
+
+	@Override
+	public RemoteDocument timestampDocument(TimestampOneDocumentDTO timestampDocument) {
+		return service.timestamp(timestampDocument.getToTimestampDocument(), timestampDocument.getTimestampParameters());
 	}
 
 }

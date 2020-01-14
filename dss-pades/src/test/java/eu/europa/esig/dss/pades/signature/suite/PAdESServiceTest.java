@@ -12,6 +12,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -87,6 +88,12 @@ public class PAdESServiceTest extends PKIFactoryAccess {
         signAndValidate(documentToSign, signatureParameters);
         
         signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
+        signAndValidate(documentToSign, signatureParameters);
+
+        signatureParameters.setSignatureTimestampParameters(new CAdESTimestampParameters());
+        signAndValidate(documentToSign, signatureParameters);
+
+        signatureParameters.setArchiveTimestampParameters(new CAdESTimestampParameters());
         signAndValidate(documentToSign, signatureParameters);
         
         PAdESTimestampParameters padesTimestampParameters = new PAdESTimestampParameters();
