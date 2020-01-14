@@ -1314,7 +1314,7 @@ public final class DSSASN1Utils {
 	 * 
 	 * @param encodable
 	 *                  the encoded data to be parsed
-	 * @return an instance of RevocationValues or null if the parsing failled
+	 * @return an instance of RevocationValues or null if the parsing failed
 	 */
 	public static RevocationValues getRevocationValues(ASN1Encodable encodable) {
 		if (encodable != null) {

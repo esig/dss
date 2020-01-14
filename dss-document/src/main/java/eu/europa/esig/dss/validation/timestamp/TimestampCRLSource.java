@@ -33,8 +33,8 @@ import eu.europa.esig.dss.validation.CMSCRLSource;
 @SuppressWarnings("serial")
 public class TimestampCRLSource extends CMSCRLSource {
 
-	TimestampCRLSource(TimestampToken timeStampToken) {
-		super(timeStampToken.getTimeStamp().toCMSSignedData(), timeStampToken.getUnsignedAttributes());
+	TimestampCRLSource(TimeStampToken timeStampToken) {
+		super(timeStampToken.toCMSSignedData(), timeStampToken.getUnsignedAttributes());
 	}
 
 	@Override

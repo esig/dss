@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -34,7 +33,6 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 
 /**
@@ -48,10 +46,6 @@ import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 public abstract class SignedDocumentValidator extends AbstractDocumentValidator implements SignatureValidator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SignedDocumentValidator.class);
-
-	static {
-		Security.addProvider(DSSSecurityProvider.getSecurityProvider());
-	}
 
 	/**
 	 * In case of a detached signature this {@code List} contains the signed
@@ -71,18 +65,17 @@ public abstract class SignedDocumentValidator extends AbstractDocumentValidator 
 
 	protected CertificateToken providedSigningCertificateToken = null;
 
-	protected final SignatureScopeFinder signatureScopeFinder;
-
 	private SignaturePolicyProvider signaturePolicyProvider;
 
-	protected SignedDocumentValidator(SignatureScopeFinder signatureScopeFinder) {
-		this.signatureScopeFinder = signatureScopeFinder;
+	protected final SignatureScopeFinder<AdvancedSignature> scopeFinder;
+
+	protected SignedDocumentValidator(SignatureScopeFinder scopeFinder) {
+		this.scopeFinder = scopeFinder;
 	}
 	
 	private void setSignedScopeFinderDefaultDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
-		if (signatureScopeFinder != null) {
-			signatureScopeFinder.setDefaultDigestAlgorithm(digestAlgorithm);
-		}
+		Objects.requireNonNull(scopeFinder, "ScopeFinder is null");
+		scopeFinder.setDefaultDigestAlgorithm(digestAlgorithm);
 	}
 
 	/**
@@ -169,17 +162,14 @@ public abstract class SignedDocumentValidator extends AbstractDocumentValidator 
 	}
 	
 	@Override
-	public void prepareSignatureValidationContext(final ValidationContext validationContext, 
+	protected void prepareSignatureValidationContext(final ValidationContext validationContext,
 			final List<AdvancedSignature> allSignatureList) {		
 		prepareCertificatesAndTimestamps(validationContext, allSignatureList);
 		processSignaturesValidation(validationContext, allSignatureList);
 	}
 
-	@Override
-	public void processSignaturesValidation(final ValidationContext validationContext, 
+	protected void processSignaturesValidation(final ValidationContext validationContext, 
 			List<AdvancedSignature> allSignatureList) {
-		
-		validateContext(validationContext);
 
 		for (final AdvancedSignature signature : allSignatureList) {
 			signature.checkSigningCertificate();
@@ -196,8 +186,7 @@ public abstract class SignedDocumentValidator extends AbstractDocumentValidator 
 	protected List<AdvancedSignature> getAllSignatures() {
 		
 		final List<AdvancedSignature> allSignatureList = new ArrayList<AdvancedSignature>();
-		List<AdvancedSignature> signatureList = getSignatures();
-		for (final AdvancedSignature signature : signatureList) {
+		for (final AdvancedSignature signature : getSignatures()) {
 			allSignatureList.add(signature);
 			allSignatureList.addAll(signature.getCounterSignatures());			
 		}
@@ -216,9 +205,7 @@ public abstract class SignedDocumentValidator extends AbstractDocumentValidator 
 	public void findSignatureScopes(List<AdvancedSignature> allSignatures) {
 		setSignedScopeFinderDefaultDigestAlgorithm(getDefaultDigestAlgorithm());
 		for (final AdvancedSignature signature : allSignatures) {
-			if (signatureScopeFinder != null) {
-				signature.findSignatureScope(signatureScopeFinder);
-			}
+			signature.findSignatureScope(scopeFinder);
 		}
 	}
 
@@ -239,6 +226,7 @@ public abstract class SignedDocumentValidator extends AbstractDocumentValidator 
 			for (final CertificateToken certificateToken : candidates) {
 				validationContext.addCertificateTokenForVerification(certificateToken);
 			}
+			// Add certificate from CertPool,... if not embedded in the signature
 			CandidatesForSigningCertificate candidatesForSigningCertificate = signature.getCandidatesForSigningCertificate();
 			if (candidatesForSigningCertificate != null) {
 				CertificateValidity certificateValidity = candidatesForSigningCertificate.getTheCertificateValidity();

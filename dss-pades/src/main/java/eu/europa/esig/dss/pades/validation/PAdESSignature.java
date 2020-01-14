@@ -70,7 +70,6 @@ public class PAdESSignature extends CAdESSignature {
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESSignature.class);
 
 	private final DSSDocument document;
-	private final PdfDssDict dssDictionary;
 
 	private final PdfSignatureRevision pdfSignatureRevision;
 
@@ -85,7 +84,6 @@ public class PAdESSignature extends CAdESSignature {
 	protected PAdESSignature(final DSSDocument document, final PdfSignatureRevision pdfSignatureRevision, final CertificatePool certPool) throws DSSException {
 		super(pdfSignatureRevision.getCades().getCmsSignedData(), certPool, pdfSignatureRevision.getCades().getDetachedContents());
 		this.document = document;
-		this.dssDictionary = pdfSignatureRevision.getDssDictionary();
 		this.pdfSignatureRevision = pdfSignatureRevision;
 	}
 
@@ -100,7 +98,7 @@ public class PAdESSignature extends CAdESSignature {
 	@Override
 	public SignatureCertificateSource getCertificateSource() {
 		if (offlineCertificateSource == null) {
-			offlineCertificateSource = new PAdESCertificateSource(dssDictionary, super.getCmsSignedData(), certPool);
+			offlineCertificateSource = new PAdESCertificateSource(pdfSignatureRevision.getDssDictionary(), super.getCmsSignedData(), certPool);
 		}
 		return offlineCertificateSource;
 	}
@@ -108,7 +106,7 @@ public class PAdESSignature extends CAdESSignature {
 	@Override
 	public SignatureCRLSource getCRLSource() {
 		if (signatureCRLSource == null) {
-			signatureCRLSource = new PAdESCRLSource(dssDictionary, getVRIKey(), getSignerInformation().getSignedAttributes());
+			signatureCRLSource = new PAdESCRLSource(pdfSignatureRevision.getDssDictionary(), getVRIKey(), getSignerInformation().getSignedAttributes());
 		}
 		return signatureCRLSource;
 	}
@@ -116,7 +114,7 @@ public class PAdESSignature extends CAdESSignature {
 	@Override
 	public SignatureOCSPSource getOCSPSource() {
 		if (signatureOCSPSource == null) {
-			signatureOCSPSource = new PAdESOCSPSource(dssDictionary, getVRIKey(), getSignerInformation().getSignedAttributes());
+			signatureOCSPSource = new PAdESOCSPSource(pdfSignatureRevision.getDssDictionary(), getVRIKey(), getSignerInformation().getSignedAttributes());
 		}
 		return signatureOCSPSource;
 	}
@@ -198,6 +196,7 @@ public class PAdESSignature extends CAdESSignature {
 		// other are unsigned and should be added in the DSS Dictionary
 		List<CertificateToken> encapsulatedCertificates = getCAdESSignature().getCertificateSource().getKeyInfoCertificates();
 		addCertRefs(refs, encapsulatedCertificates);
+		PdfDssDict dssDictionary = pdfSignatureRevision.getDssDictionary();
 		if (dssDictionary != null) {
 			Map<Long, CertificateToken> certMap = dssDictionary.getCERTs();
 			addCertRefs(refs, certMap.values());
@@ -292,11 +291,11 @@ public class PAdESSignature extends CAdESSignature {
 	}
 	
 	private boolean hasDSSDictionary() {
-		return dssDictionary != null;
+		return getDssDictionary() != null;
 	}
 	
 	public PdfDssDict getDssDictionary() {
-		return dssDictionary;
+		return pdfSignatureRevision.getDssDictionary();
 	}
 
 	private boolean hasCAdESDetachedSubFilter() {

@@ -22,21 +22,22 @@ package eu.europa.esig.dss.validation.timestamp;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.tsp.TSPException;
 
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.validation.AbstractDocumentValidator;
+import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.scope.DigestSignatureScope;
 import eu.europa.esig.dss.validation.scope.FullSignatureScope;
@@ -44,23 +45,18 @@ import eu.europa.esig.dss.validation.scope.SignatureScope;
 
 public class SingleTimestampValidator extends AbstractDocumentValidator implements TimestampValidator {
 
-	protected final TimestampToken timestampToken;
-	protected final DSSDocument timestampedData;
+	protected final TimestampType timestampType;
 
-	public SingleTimestampValidator(final DSSDocument timestampFile, final DSSDocument timestampedData, final TimestampType timestampType,
-			CertificatePool validationCertPool) {
-		this(buildTimestampToken(timestampFile, timestampType, validationCertPool), timestampedData, validationCertPool);
-		this.document = timestampFile;
+	protected DSSDocument timestampedData;
+	protected TimestampToken timestampToken;
+
+	public SingleTimestampValidator(final DSSDocument timestampFile) {
+		this(timestampFile, TimestampType.CONTENT_TIMESTAMP);
 	}
 
-	public SingleTimestampValidator(final TimestampToken timestampToken, final DSSDocument timestampedData, CertificatePool validationCertPool) {
-		Objects.requireNonNull(timestampToken, "The TimestampToken must be defined!");
-		Objects.requireNonNull(timestampedData, "The timestampedData must be defined!");
-		this.timestampToken = timestampToken;
-		this.timestampedData = timestampedData;
-		this.validationCertPool = validationCertPool;
-
-		timestampToken.matchData(timestampedData);
+	public SingleTimestampValidator(final DSSDocument timestampFile, TimestampType timestampType) {
+		this.document = timestampFile;
+		this.timestampType = timestampType;
 	}
 
 	@Override
@@ -68,39 +64,25 @@ public class SingleTimestampValidator extends AbstractDocumentValidator implemen
 		Objects.requireNonNull(certificateVerifier, "CertificateVerifier is not defined");
 	}
 
-	private static TimestampToken buildTimestampToken(final DSSDocument timestampFile, final TimestampType timestampType, CertificatePool validationCertPool) {
-		Objects.requireNonNull(timestampFile, "The timestampFile must be defined!");
-		Objects.requireNonNull(timestampType, "The TimestampType must be defined!");
-
-		try {
-			TimestampToken timestampToken = new TimestampToken(DSSUtils.toByteArray(timestampFile), timestampType, validationCertPool);
-			timestampToken.setFileName(timestampFile.getName());
-			return timestampToken;
-		} catch (CMSException | TSPException | IOException e) {
-			throw new DSSException("Unable to parse timestamp", e);
-		}
-	}
-
 	@Override
-	public Map<TimestampToken, List<SignatureScope>> getTimestamps() {
-		Map<TimestampToken, List<SignatureScope>> timestamps = new HashMap<TimestampToken, List<SignatureScope>>();
-		timestamps.put(getTimestamp(), getTimestampSignatureScope());
-		return timestamps;
+	protected List<TimestampToken> getExternalTimestamps() {
+		return Collections.singletonList(getTimestamp());
 	}
+
 	
 	/**
 	 * Returns a list of timestamp signature scopes (timestamped data)
 	 * 
 	 * @return a list of {@link SignatureScope}s
 	 */
-	protected List<SignatureScope> getTimestampSignatureScope() {
+	protected List<TimestampedReference> getTimestampedReferences() {
 		SignatureScope signatureScope = null;
 		if (timestampedData instanceof DigestDocument) {
 			signatureScope = new DigestSignatureScope("Digest document", ((DigestDocument)timestampedData).getExistingDigest());
 		} else {
 			signatureScope = new FullSignatureScope("Full document", DSSUtils.getDigest(getDefaultDigestAlgorithm(), timestampedData));
 		}
-		return Arrays.asList(signatureScope);
+		return Arrays.asList(new TimestampedReference(signatureScope.getDSSIdAsString(), TimestampedObjectType.SIGNED_DATA));
 	}
 	
 	/**
@@ -108,7 +90,24 @@ public class SingleTimestampValidator extends AbstractDocumentValidator implemen
 	 * 
 	 * @return {@link TimestampToken}
 	 */
+	@Override
 	public TimestampToken getTimestamp() {
+		if (timestampToken == null) {
+			Objects.requireNonNull(certificateVerifier, "CertificateVerifier is not defined");
+			Objects.requireNonNull(document, "The timestampFile must be defined!");
+			Objects.requireNonNull(timestampedData, "The timestampedData must be defined!");
+			Objects.requireNonNull(timestampType, "The TimestampType must be defined!");
+
+			try {
+				timestampToken = new TimestampToken(DSSUtils.toByteArray(document), timestampType, validationCertPool);
+				timestampToken.setFileName(document.getName());
+
+				timestampToken.matchData(timestampedData);
+			} catch (CMSException | TSPException | IOException e) {
+				throw new DSSException("Unable to parse timestamp", e);
+			}
+		}
+
 		return timestampToken;
 	}
 
@@ -118,6 +117,43 @@ public class SingleTimestampValidator extends AbstractDocumentValidator implemen
 			throw new IllegalArgumentException("Minimal level is " + ValidationLevel.TIMESTAMPS);
 		}
 		super.setValidationLevel(validationLevel);
+	}
+
+	@Override
+	public void setDetachedContent(DSSDocument document) {
+		this.timestampedData = document;
+	}
+
+	@Override
+	public void setValidationCertPool(CertificatePool validationCertPool) {
+		this.validationCertPool = validationCertPool;
+	}
+
+	@Override
+	public void setContainerContents(List<DSSDocument> archiveContents) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void setManifestFiles(List<ManifestFile> manifestFiles) {
+		// TODO Auto-generated method stub
+
+	}
+
+	/**
+	 * Returns a list of timestamp signature scopes (timestamped data)
+	 * 
+	 * @return a list of {@link SignatureScope}s
+	 */
+	protected List<SignatureScope> getTimestampSignatureScope() {
+		SignatureScope signatureScope = null;
+		if (timestampedData instanceof DigestDocument) {
+			signatureScope = new DigestSignatureScope("Digest document", ((DigestDocument) timestampedData).getExistingDigest());
+		} else {
+			signatureScope = new FullSignatureScope("Full document", DSSUtils.getDigest(getDefaultDigestAlgorithm(), timestampedData));
+		}
+		return Arrays.asList(signatureScope);
 	}
 
 }

@@ -271,7 +271,7 @@
             </DigestAlgoAndValue>
         </Revocation>
         <Revocation Id="R-9C1BA09764DA4D96D84DEEF36D58599A6C0C7509A5200A729350E2AA1E8EB0CC">
-            <Origin>SIGNATURE</Origin>
+            <Origin>INPUT_DOCUMENT</Origin>
             <Type>CRL</Type>
             <ProductionDate>2014-01-01T12:00:00</ProductionDate>
             <ThisUpdate>2014-01-01T12:00:00</ThisUpdate>
@@ -293,7 +293,7 @@
             </DigestAlgoAndValue>
         </Revocation>
         <Revocation Id="R-6C13D713EA83632818CB6064EBEECCE5C71E00F6B5EBEFE4154C583322236A84">
-            <Origin>SIGNATURE</Origin>
+            <Origin>INPUT_DOCUMENT</Origin>
             <Type>CRL</Type>
             <ProductionDate>2014-04-29T12:50:05</ProductionDate>
             <ThisUpdate>2014-04-29T12:50:05</ThisUpdate>

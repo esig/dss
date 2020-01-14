@@ -98,9 +98,7 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 	public List<AdvancedSignature> getSignatures() {
 		List<AdvancedSignature> signatures = new ArrayList<AdvancedSignature>();
 		if (cmsSignedData != null) {
-			for (final Object signerInformationObject : cmsSignedData.getSignerInfos().getSigners()) {
-
-				final SignerInformation signerInformation = (SignerInformation) signerInformationObject;
+			for (final SignerInformation signerInformation : cmsSignedData.getSignerInfos().getSigners()) {
 				final CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation, validationCertPool);
 				if (document != null) {
 					cadesSignature.setSignatureFilename(document.getName());

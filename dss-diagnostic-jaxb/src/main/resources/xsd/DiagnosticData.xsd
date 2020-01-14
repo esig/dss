@@ -841,7 +841,7 @@
 			<xs:enumeration value="VRI_DICTIONARY" />
 			<xs:enumeration value="TIMESTAMP_REVOCATION_VALUES" />
 			<xs:enumeration value="ADBE_REVOCATION_INFO_ARCHIVAL" />
-			<xs:enumeration value="SIGNATURE" />
+			<xs:enumeration value="INPUT_DOCUMENT" />
 			<xs:enumeration value="EXTERNAL" />
 			<xs:enumeration value="CACHED" />
 		</xs:restriction>

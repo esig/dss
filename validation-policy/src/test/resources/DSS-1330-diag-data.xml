@@ -851,7 +851,7 @@
     </UsedCertificates>
     <UsedRevocations>
         <Revocation Id="R-67877e78139a499c1a04375c3899f9f99eaf368f75895328dc077929fb1705ff">
-            <Origin>SIGNATURE</Origin>
+            <Origin>INPUT_DOCUMENT</Origin>
             <Type>CRL</Type>
             <ProductionDate>2018-01-10T15:30:30</ProductionDate>
             <ThisUpdate>2018-01-10T15:30:30</ThisUpdate>
@@ -873,7 +873,7 @@
             </DigestAlgoAndValue>
         </Revocation>
         <Revocation Id="R-cff2e3b95d7ebf7d89b1d586102d09632ce5e39bfa31115c3c9577461dd856ad8751833704dd53bf5510c421764fc4226f236cfdeffef807de46c72a5cbe5f17">
-            <Origin>SIGNATURE</Origin>
+            <Origin>INPUT_DOCUMENT</Origin>
             <Type>CRL</Type>
             <ProductionDate>2018-01-09T17:00:30</ProductionDate>
             <ThisUpdate>2018-01-09T17:00:30</ThisUpdate>
@@ -895,7 +895,7 @@
             </DigestAlgoAndValue>
         </Revocation>
         <Revocation Id="R-1a07376222bf46318884ea94953003ecf8e35635c373305c973c1b39169202f013951d706f0812fcc1b09200fef43f07d038a6b1bad18a1fd08f9b8b746d01fe">
-            <Origin>SIGNATURE</Origin>
+            <Origin>INPUT_DOCUMENT</Origin>
             <Type>CRL</Type>
             <ProductionDate>2013-01-03T06:00:00</ProductionDate>
             <ThisUpdate>2013-01-03T06:00:00</ThisUpdate>
@@ -917,7 +917,7 @@
             </DigestAlgoAndValue>
         </Revocation>
         <Revocation Id="R-e07f11472bc72bb04a6e3c012dfc838cd323d130bdb3f0e5b1e9558de1b723d0deaa5ee0c0f35ec13292a79f2ed0fce2f0b14994838c52768adac2b5dd6a700a">
-            <Origin>SIGNATURE</Origin>
+            <Origin>INPUT_DOCUMENT</Origin>
             <Type>CRL</Type>
             <ProductionDate>2013-05-08T17:44:41</ProductionDate>
             <ThisUpdate>2013-05-08T17:44:41</ThisUpdate>

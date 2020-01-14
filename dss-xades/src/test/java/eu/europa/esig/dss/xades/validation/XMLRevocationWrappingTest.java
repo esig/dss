@@ -66,7 +66,7 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 		for (RevocationWrapper revocation : revocationData) {
 			assertNotNull(revocation.getRevocationType());
 			assertNotNull(revocation.getOrigin());
-			if (RevocationOrigin.SIGNATURE.equals(revocation.getOrigin())) {
+			if (RevocationOrigin.INPUT_DOCUMENT.equals(revocation.getOrigin())) {
 				revocationSignatureOriginCounter++;
 			}
 			revocationIds.add(revocation.getId());
@@ -109,7 +109,7 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 		for (RevocationWrapper revocation : revocationData) {
 			assertNotNull(revocation.getRevocationType());
 			assertNotNull(revocation.getOrigin());
-			if (RevocationOrigin.SIGNATURE.equals(revocation.getOrigin())) {
+			if (RevocationOrigin.INPUT_DOCUMENT.equals(revocation.getOrigin())) {
 				revocationSignatureOriginCounter++;
 			}
 			revocationIds.add(revocation.getId());

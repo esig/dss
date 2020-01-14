@@ -67,17 +67,18 @@ public interface SignatureTimestampSource extends Serializable {
 	List<CertificateToken> getCertificates();
 	
 	/**
-	 * Returns a merged {@code ListCRLSource} between signatureCRLSource and all embedded timestamp CRL sources
+	 * Returns a merged {@code ListCRLSource} of all embedded timestamp CRL sources
 	 * 
 	 * @return {@link ListCRLSource}
 	 */
-	ListCRLSource getCommonCRLSource();
+	ListCRLSource getCRLSources();
 	
 	/**
-	 * Returns a merged {@code ListOCSPSource} between signatureOCSPSource and all embedded timestamp OCSP sources
+	 * Returns a merged {@code ListOCSPSource} of all embedded timestamp OCSP
+	 * sources
 	 * 
 	 * @return {@link ListOCSPSource}
 	 */
-	ListOCSPSource getCommonOCSPSource();
+	ListOCSPSource getOCSPSources();
 
 }

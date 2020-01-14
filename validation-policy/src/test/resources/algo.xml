@@ -508,7 +508,7 @@
     </UsedCertificates>
     <UsedRevocations>
         <Revocation Id="R-74C4C865C864D10FB8803FC210EF5F588C61DD6133B5F1C8AC5C22F4BD8B9815">
-            <Origin>SIGNATURE</Origin>
+            <Origin>INPUT_DOCUMENT</Origin>
             <Type>OCSP</Type>
             <ProductionDate>2019-09-23T14:25:28</ProductionDate>
             <ThisUpdate>2019-09-23T14:25:28</ThisUpdate>

@@ -82,9 +82,9 @@ public class TimestampToken extends Token {
 
 	private final TimestampCertificateSource certificateSource;
 
-	private TimestampCRLSource crlSource;
+	private final TimestampCRLSource crlSource;
 
-	private TimestampOCSPSource ocspSource;
+	private final TimestampOCSPSource ocspSource;
 
 	private final List<TimestampedReference> timestampedReferences;
 
@@ -180,6 +180,8 @@ public class TimestampToken extends Token {
 		this.timeStamp = timeStamp;
 		this.timeStampType = type;
 		this.certificateSource = new TimestampCertificateSource(timeStamp, certPool);
+		this.ocspSource = new TimestampOCSPSource(timeStamp);
+		this.crlSource = new TimestampCRLSource(timeStamp);
 		this.timestampedReferences = timestampedReferences;
 		if (timestampLocation != null) {
 			this.timestampLocation = timestampLocation;
@@ -198,23 +200,19 @@ public class TimestampToken extends Token {
 	
 	/**
 	 * Returns {@code TimestampCRLSource} for the timestamp
+	 * 
 	 * @return {@link TimestampCRLSource}
 	 */
 	public TimestampCRLSource getCRLSource() {
-		if (crlSource == null) {
-			crlSource = new TimestampCRLSource(this); 
-		}
 		return crlSource;
 	}
 
 	/**
 	 * Returns {@code TimestampOCSPSource} for the timestamp
+	 * 
 	 * @return {@link TimestampOCSPSource}
 	 */
 	public TimestampOCSPSource getOCSPSource() {
-		if (ocspSource == null) {
-			ocspSource = new TimestampOCSPSource(this);
-		}
 		return ocspSource;
 	}
 	

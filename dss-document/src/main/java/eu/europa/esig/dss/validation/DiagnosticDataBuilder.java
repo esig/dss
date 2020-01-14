@@ -867,7 +867,7 @@ public class DiagnosticDataBuilder {
 		xmlRevocation.setId(revocationToken.getDSSIdAsString());
 		
 		if (isInternalOrigin(revocationToken)) {
-			xmlRevocation.setOrigin(RevocationOrigin.SIGNATURE);
+			xmlRevocation.setOrigin(RevocationOrigin.INPUT_DOCUMENT);
 		} else {
 			xmlRevocation.setOrigin(revocationToken.getFirstOrigin());
 		}

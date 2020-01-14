@@ -63,9 +63,9 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 	}
 
 	@Override
-	protected List<SignatureValidator> getValidators() {
-		if (validators == null) {
-			validators = new ArrayList<SignatureValidator>();
+	protected List<SignatureValidator> getSignatureValidators() {
+		if (signatureValidators == null) {
+			signatureValidators = new ArrayList<SignatureValidator>();
 			for (final DSSDocument signature : getSignatureDocuments()) {
 				XMLDocumentForASiCValidator xadesValidator = new XMLDocumentForASiCValidator(signature);
 				xadesValidator.setValidationCertPool(validationCertPool);
@@ -80,10 +80,10 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 					xadesValidator.setContainerContents(getArchiveDocuments());
 				}
 
-				validators.add(xadesValidator);
+				signatureValidators.add(xadesValidator);
 			}
 		}
-		return validators;
+		return signatureValidators;
 	}
 
 	@Override

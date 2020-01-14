@@ -614,7 +614,7 @@
     </UsedCertificates>
     <UsedRevocations>
         <Revocation Id="R-d74af393cf3b506da33b46bc52b49cd6fac12b2bdaa9ce1fba25c0c1e4ebbe1909748ac3d9315ee0353007888872e011f23888946587ae8ca27bba634f1eb7e1">
-            <Origin>SIGNATURE</Origin>
+            <Origin>INPUT_DOCUMENT</Origin>
             <Type>CRL</Type>
             <ProductionDate>2016-02-15T12:00:00</ProductionDate>
             <ThisUpdate>2016-02-15T12:00:00</ThisUpdate>
@@ -683,7 +683,7 @@
             </DigestAlgoAndValue>
         </Revocation>
         <Revocation Id="R-75f5216c135ca7d30473723247e8ad6104f843a598acebf82764f556e378d62d0b07eb2dbac8ca8fcdcb77ce16df70577cf9133aeed18b94c3f3fb11a5fc2ff9">
-            <Origin>SIGNATURE</Origin>
+            <Origin>INPUT_DOCUMENT</Origin>
             <Type>OCSP</Type>
             <ProductionDate>2016-04-18T10:27:33</ProductionDate>
             <ThisUpdate>2016-04-18T10:27:33</ThisUpdate>
@@ -707,7 +707,7 @@
             </DigestAlgoAndValue>
         </Revocation>
         <Revocation Id="R-a2bcb1e8523fbb23b9a277afa0b67da2e61e9ad8bac1b926a733a1ae07c67cde43affe03ea0cd0bc9d663ca5ecb1db343657acdf1ec742cba90b503a08b0456f">
-            <Origin>SIGNATURE</Origin>
+            <Origin>INPUT_DOCUMENT</Origin>
             <Type>CRL</Type>
             <ProductionDate>2016-02-15T12:00:00</ProductionDate>
             <ThisUpdate>2016-02-15T12:00:00</ThisUpdate>

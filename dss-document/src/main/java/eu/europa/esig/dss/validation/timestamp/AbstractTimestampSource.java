@@ -79,7 +79,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	protected CertificatePool certificatePool;
 	
 	/**
-	 * Revocation sources containing merged data from signature source and timestamps
+	 * Revocation sources containing merged data from timestamps
 	 */
 	protected ListCRLSource crlSource;
 	protected ListOCSPSource ocspSource;
@@ -178,7 +178,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	}
 	
 	@Override
-	public ListCRLSource getCommonCRLSource() {
+	public ListCRLSource getCRLSources() {
 		if (crlSource == null) {
 			createAndValidate();
 		}
@@ -186,7 +186,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	}
 	
 	@Override
-	public ListOCSPSource getCommonOCSPSource() {
+	public ListOCSPSource getOCSPSources() {
 		if (ocspSource == null) {
 			createAndValidate();
 		}
@@ -247,8 +247,8 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 		archiveTimestamps = new ArrayList<TimestampToken>();
 		
 		// initialize combined revocation sources
-		crlSource = new ListCRLSource(signatureCRLSource);
-		ocspSource = new ListOCSPSource(signatureOCSPSource);
+		crlSource = new ListCRLSource();
+		ocspSource = new ListOCSPSource();
 		
 		final SignatureProperties<SignatureAttribute> signedSignatureProperties = getSignedSignatureProperties();
 		
@@ -281,6 +281,8 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 				
 			}
 			populateTimestampCertificateSource(timestampToken);
+			crlSource.addAll(timestampToken.getCRLSource());
+			ocspSource.addAll(timestampToken.getOCSPSource());
 			contentTimestamps.add(timestampToken);
 		}
 		
@@ -372,6 +374,8 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 			}
 			
 			populateTimestampCertificateSource(timestampToken);
+			crlSource.addAll(timestampToken.getCRLSource());
+			ocspSource.addAll(timestampToken.getOCSPSource());
 			timestamps.add(timestampToken);
 			
 		}

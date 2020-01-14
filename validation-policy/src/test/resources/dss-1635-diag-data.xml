@@ -1032,7 +1032,7 @@
     </UsedCertificates>
     <UsedRevocations>
         <Revocation Id="R-4805687433DCD55E012F95A2C6E1CEDA7EE8AF63B0EC7863328FB0D23388BEF8">
-            <Origin>SIGNATURE</Origin>
+            <Origin>INPUT_DOCUMENT</Origin>
             <Type>CRL</Type>
             <ProductionDate>2019-04-01T16:00:30</ProductionDate>
             <ThisUpdate>2019-04-01T16:00:30</ThisUpdate>
@@ -1056,7 +1056,7 @@
             </DigestAlgoAndValue>
         </Revocation>
         <Revocation Id="R-CE06D1168CFC7741D96BCC8E08F8F32E01DFDD90BE5E63E0CB51B7D05A8E422F">
-            <Origin>SIGNATURE</Origin>
+            <Origin>INPUT_DOCUMENT</Origin>
             <Type>CRL</Type>
             <ProductionDate>2013-12-12T07:00:09</ProductionDate>
             <ThisUpdate>2013-12-12T07:00:09</ThisUpdate>
@@ -1106,7 +1106,7 @@
             </DigestAlgoAndValue>
         </Revocation>
         <Revocation Id="R-7D8C7AB2A7A62EC0B259F2C46468D5E9CCD4C14A741E9FECE5C24E292560BC35">
-            <Origin>SIGNATURE</Origin>
+            <Origin>INPUT_DOCUMENT</Origin>
             <Type>OCSP</Type>
             <ProductionDate>2013-12-12T07:41:37</ProductionDate>
             <ThisUpdate>2013-12-12T07:00:09</ThisUpdate>

@@ -392,7 +392,7 @@
     </UsedCertificates>
     <UsedRevocations>
         <Revocation Id="R-F035FA4851330BFB70DCD7BCC13C4228EDC228F44CADCC492EFA1B2A1FF84FF6">
-            <Origin>SIGNATURE</Origin>
+            <Origin>INPUT_DOCUMENT</Origin>
             <Type>OCSP</Type>
             <ProductionDate>2019-12-09T14:42:38</ProductionDate>
             <ThisUpdate>2019-12-09T14:42:38</ThisUpdate>
@@ -416,7 +416,7 @@
             </DigestAlgoAndValue>
         </Revocation>
         <Revocation Id="R-72E466AA39FE2FFEE60E44CFF39103C1DEEBA2396A7BBE2CB83A44328D66FC24">
-            <Origin>SIGNATURE</Origin>
+            <Origin>INPUT_DOCUMENT</Origin>
             <Type>CRL</Type>
             <ProductionDate>2019-12-09T14:42:38</ProductionDate>
             <ThisUpdate>2019-12-09T14:42:38</ThisUpdate>

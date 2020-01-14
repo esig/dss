@@ -4,12 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import org.slf4j.Logger;
@@ -18,18 +18,17 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
+import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.DocumentProcessExecutor;
-import eu.europa.esig.dss.validation.executor.SignatureProcessExecutor;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -41,8 +40,12 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractDocumentValidator.class);
 
+	static {
+		Security.addProvider(DSSSecurityProvider.getSecurityProvider());
+	}
+
 	/**
-	 * The document to be validated (with the signature(s))
+	 * The document to be validated (with the signature(s) or timestamp(s))
 	 */
 	protected DSSDocument document;
 	
@@ -114,7 +117,7 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 	}
 	
 	@Override
-	public SignatureProcessExecutor getDefaultProcessExecutor() {
+	public DocumentProcessExecutor getDefaultProcessExecutor() {
 		return new DefaultSignatureProcessExecutor();
 	}
 
@@ -269,17 +272,19 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 	 */
 	protected DiagnosticDataBuilder prepareDiagnosticDataBuilder(final ValidationContext validationContext) {
 		List<AdvancedSignature> allSignatures = getAllSignatures();
-		Map<TimestampToken, List<SignatureScope>> timestamps = getTimestamps();
+		List<TimestampToken> externalTimestamps = getExternalTimestamps();
 		
-		prepareCertificateVerifier(allSignatures, timestamps.keySet());
+		prepareCertificateVerifier(allSignatures, externalTimestamps);
 		prepareSignatureValidationContext(validationContext, allSignatures);
-		prepareTimestampValidationContext(validationContext, timestamps);
+		prepareTimestampValidationContext(validationContext, externalTimestamps);
 		
+		validateContext(validationContext);
+
 		return new DiagnosticDataBuilder().document(document).foundSignatures(allSignatures)
 				.usedTimestamps(validationContext.getProcessedTimestamps())
 				.usedCertificates(validationContext.getProcessedCertificates())
 				.usedRevocations(validationContext.getProcessedRevocations())
-				.signatureScope(getSignatureScope(allSignatures, timestamps))
+				.signatureScope(getSignatureScope(allSignatures, externalTimestamps))
 				.setDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm())
 				.includeRawCertificateTokens(certificateVerifier.isIncludeCertificateTokenValues())
 				.includeRawRevocationData(certificateVerifier.isIncludeCertificateRevocationValues())
@@ -291,7 +296,7 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 
 	/**
 	 * This method returns the list of all signatures including the
-	 * countersignatures.
+	 * counter-signatures.
 	 *
 	 * @return {@code List} of {@code AdvancedSignature} to validate
 	 */
@@ -301,20 +306,26 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 		return Collections.emptyList();
 	}
 	
-	/**
-	 * Returns a map between {@code TimestampToken}s to be validated and their {@code SignatureScope}s
-	 * 
-	 * @return a map between {@link TimestampToken}s and {@link SignatureScope}s
-	 */
-	protected Map<TimestampToken, List<SignatureScope>> getTimestamps() {
+	protected List<TimestampToken> getExternalTimestamps() {
 		// not implemented by default
-		// requires an implementation of {@code TimestampValidator}
-		return Collections.emptyMap();
+		// requires an implementation of {@code SignatureValidator}
+		return Collections.emptyList();
 	}
+//
+//	/**
+//	 * Returns a map between {@code TimestampToken}s to be validated and their {@code SignatureScope}s
+//	 * 
+//	 * @return a map between {@link TimestampToken}s and {@link SignatureScope}s
+//	 */
+//	protected Map<TimestampToken, List<SignatureScope>> getTimestamps() {
+//		// not implemented by default
+//		// requires an implementation of {@code TimestampValidator}
+//		return Collections.emptyMap();
+//	}
 	
-	private void prepareCertificateVerifier(final Collection<AdvancedSignature> allSignatureList, final Collection<TimestampToken> timestampTokens) {
-		populateSignatureCrlSource(allSignatureList, timestampTokens);
-		populateSignatureOcspSource(allSignatureList, timestampTokens);
+	protected void prepareCertificateVerifier(final Collection<AdvancedSignature> allSignatureList, final Collection<TimestampToken> externalTimestamps) {
+		populateSignatureCrlSource(allSignatureList, externalTimestamps);
+		populateSignatureOcspSource(allSignatureList, externalTimestamps);
 	}
 	
 	/**
@@ -332,17 +343,15 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 	/**
 	 * Prepares the {@code validationContext} for a timestamp validation process
 	 * 
-	 * @param validationContext {@link ValidationContext}
-	 * @param timestamps a map of timestamps and their SignatureScopes to be validated
+	 * @param validationContext
+	 *                          {@link ValidationContext}
+	 * @param timestamps
+	 *                          a list of timestamps
 	 */
-	protected void prepareTimestampValidationContext(final ValidationContext validationContext, 
-			final Map<TimestampToken, List<SignatureScope>> timestamps) {
-		
-		setTimestamedReferences(timestamps);
-		for (TimestampToken timestampToken : timestamps.keySet()) {
+	protected void prepareTimestampValidationContext(final ValidationContext validationContext, List<TimestampToken> timestamps) {
+		for (TimestampToken timestampToken : timestamps) {
 			validationContext.addTimestampTokenForVerification(timestampToken);
 		}
-		validateContext(validationContext);
 	}
 	
 	/**
@@ -359,76 +368,65 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 	 * For all signatures to be validated this method merges the CRL sources.
 	 *
 	 * @param allSignatureList
-	 *            {@code Collection} of {@code AdvancedSignature}s to validate
-	 *            including the countersignatures
-	 * @param timestampTokens
-	 *            {@code Collection} of {@code TimestampToken}s to validate
+	 *                           {@code Collection} of {@code AdvancedSignature}s to
+	 *                           validate including the countersignatures
+	 * @param externalTimestamps
+	 *                           {@code Collection} of {@code TimestampToken}s to
+	 *                           validate
 	 */
-	private void populateSignatureCrlSource(final Collection<AdvancedSignature> allSignatureList, final Collection<TimestampToken> timestampTokens) {
-		ListCRLSource signatureCrlSource = new ListCRLSource();
+	private void populateSignatureCrlSource(final Collection<AdvancedSignature> allSignatureList, final Collection<TimestampToken> externalTimestamps) {
+		ListCRLSource allCrlSource = new ListCRLSource();
 		if (Utils.isCollectionNotEmpty(allSignatureList)) {
 			for (final AdvancedSignature signature : allSignatureList) {
-				signatureCrlSource.addAll(signature.getCompleteCRLSource());
+				allCrlSource.addAll(signature.getCRLSource());
+				allCrlSource.addAll(signature.getTimestampSource().getCRLSources());
 			}
 		}
-		if (Utils.isCollectionNotEmpty(timestampTokens)) {
-			for (final TimestampToken timestampToken : timestampTokens) {
-				signatureCrlSource.addAll(timestampToken.getCRLSource());
+		if (Utils.isCollectionNotEmpty(externalTimestamps)) {
+			for (final TimestampToken timestampToken : externalTimestamps) {
+				allCrlSource.addAll(timestampToken.getCRLSource());
 			}
 		}
-		certificateVerifier.setSignatureCRLSource(signatureCrlSource);
+		certificateVerifier.setSignatureCRLSource(allCrlSource);
 	}
 
 	/**
 	 * For all signatures to be validated this method merges the OCSP sources.
 	 *
 	 * @param allSignatureList
-	 *            {@code Collection} of {@code AdvancedSignature}s to validate
-	 *            including the countersignatures
-	 * @param timestampTokens
-	 *            {@code Collection} of {@code TimestampToken}s to validate
+	 *                           {@code Collection} of {@code AdvancedSignature}s to
+	 *                           validate including the countersignatures
+	 * @param externalTimestamps
+	 *                           {@code Collection} of {@code TimestampToken}s to
+	 *                           validate
 	 * @return {@code ListOCSPSource}
 	 */
-	private void populateSignatureOcspSource(final Collection<AdvancedSignature> allSignatureList, final Collection<TimestampToken> timestampTokens) {
-		ListOCSPSource signatureOcspSource = new ListOCSPSource();
+	private void populateSignatureOcspSource(final Collection<AdvancedSignature> allSignatureList, final Collection<TimestampToken> externalTimestamps) {
+		ListOCSPSource allOcspSource = new ListOCSPSource();
 		if (Utils.isCollectionNotEmpty(allSignatureList)) {
 			for (final AdvancedSignature signature : allSignatureList) {
-				signatureOcspSource.addAll(signature.getCompleteOCSPSource());
+				allOcspSource.addAll(signature.getOCSPSource());
+				allOcspSource.addAll(signature.getTimestampSource().getOCSPSources());
 			}
 		}
-		if (Utils.isCollectionNotEmpty(timestampTokens)) {
-			for (final TimestampToken timestampToken : timestampTokens) {
-				signatureOcspSource.addAll(timestampToken.getOCSPSource());
+		if (Utils.isCollectionNotEmpty(externalTimestamps)) {
+			for (final TimestampToken timestampToken : externalTimestamps) {
+				allOcspSource.addAll(timestampToken.getOCSPSource());
 			}
 		}
-		certificateVerifier.setSignatureOCSPSource(signatureOcspSource);
-	}
-	
-	/**
-	 * Sets the timestamped references based on the given signature scope
-	 * 
-	 * @param timestamps a map of {@link TimestampToken}s and a {@link SignatureScope} list
-	 */
-	protected void setTimestamedReferences(Map<TimestampToken, List<SignatureScope>> timestamps) {
-		if (Utils.isMapNotEmpty(timestamps)) {
-			for (Map.Entry<TimestampToken, List<SignatureScope>> entry : timestamps.entrySet()) {
-				TimestampToken timestampToken = entry.getKey();
-				for (SignatureScope scope : entry.getValue()) {
-					timestampToken.getTimestampedReferences().add(
-							new TimestampedReference(scope.getDSSIdAsString(), TimestampedObjectType.SIGNED_DATA));
-				}
-			}
-		}
+		certificateVerifier.setSignatureOCSPSource(allOcspSource);
 	}
 	
 	/**
 	 * Build a list of {@code SignatureScope} to add to Diagnostic Data
 	 * 
-	 * @param signatures a list of {@link AdvancedSignature}s (in case if present)
-	 * @param timestamps a map of {@link TimestampToken}s with SignatureScopes (in case of timestamp only validation)
+	 * @param signatures
+	 *                   a list of {@link AdvancedSignature}s (in case if present)
+	 * @param timestamps
+	 *                   a list of {@link TimestampToken}s
 	 * @return a list of {@link SignatureScope}s
 	 */
-	protected List<SignatureScope> getSignatureScope(List<AdvancedSignature> signatures, Map<TimestampToken, List<SignatureScope>> timestamps) {
+	protected List<SignatureScope> getSignatureScope(List<AdvancedSignature> signatures, List<TimestampToken> timestamps) {
 		List<SignatureScope> signatureScopes = new ArrayList<SignatureScope>();
 		if (Utils.isCollectionNotEmpty(signatures)) {
 			for (AdvancedSignature signature : signatures) {
@@ -436,9 +434,10 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 			}
 		}
 
-		if (Utils.isMapNotEmpty(timestamps)) {
-			for (List<SignatureScope> timestampSignatureScopes : timestamps.values()) {
-				signatureScopes.addAll(timestampSignatureScopes);
+		if (Utils.isCollectionNotEmpty(timestamps)) {
+			for (TimestampToken timestampToken : timestamps) {
+				List<TimestampedReference> timestampedReferences = timestampToken.getTimestampedReferences();
+				// TODO
 			}
 		}
 

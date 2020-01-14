@@ -757,7 +757,7 @@
     </UsedCertificates>
     <UsedRevocations>
         <Revocation Id="R-7D7676569DEB225F315C8D1486A78EA2A1BA5C19828B97466E84E6BDD761A65E">
-            <Origin>SIGNATURE</Origin>
+            <Origin>INPUT_DOCUMENT</Origin>
             <Type>CRL</Type>
             <ProductionDate>2018-04-28T07:30:02</ProductionDate>
             <ThisUpdate>2018-04-28T07:30:02</ThisUpdate>
@@ -782,7 +782,7 @@
             </DigestAlgoAndValue>
         </Revocation>
         <Revocation Id="R-5BE1D322FC8AEA14B2B21EC20ADA7052F8DED3537320559BF12B72F3F184A6BC">
-            <Origin>SIGNATURE</Origin>
+            <Origin>INPUT_DOCUMENT</Origin>
             <Type>OCSP</Type>
             <ProductionDate>2018-01-15T07:19:35</ProductionDate>
             <ThisUpdate>2018-01-15T07:05:58</ThisUpdate>
@@ -832,7 +832,7 @@
             </DigestAlgoAndValue>
         </Revocation>
         <Revocation Id="R-52755F1B968292DA7D64235FC8BEE11023AE65436DB62822DE853B0F3B94A279">
-            <Origin>SIGNATURE</Origin>
+            <Origin>INPUT_DOCUMENT</Origin>
             <Type>CRL</Type>
             <ProductionDate>2018-04-25T00:30:30</ProductionDate>
             <ThisUpdate>2018-04-25T00:30:30</ThisUpdate>

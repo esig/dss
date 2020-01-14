@@ -1,18 +1,32 @@
 package eu.europa.esig.dss.validation.timestamp;
 
-import java.util.List;
-import java.util.Map;
-
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.spi.x509.CertificatePoolSharer;
 import eu.europa.esig.dss.validation.DocumentValidator;
-import eu.europa.esig.dss.validation.scope.SignatureScope;
 
-public interface TimestampValidator extends DocumentValidator {
+public interface TimestampValidator extends DocumentValidator, CertificatePoolSharer {
 	
 	/**
-	 * Returns a map of detached timestamps and their signatureScopes
+	 * Returns the TimestampToken from the document
 	 * 
-	 * @return a map between {@link TimestampToken}s and lists of {@link SignatureScope}s
+	 * @return the timestamp token
 	 */
-	Map<TimestampToken, List<SignatureScope>> getTimestamps();
+	TimestampToken getTimestamp();
+
+	/**
+	 * The timestamped data
+	 * 
+	 * @param document
+	 *                 the data which was timestamped
+	 */
+	void setDetachedContent(DSSDocument document);
+
+//	/**
+//	 * Returns a map of detached timestamps and their signatureScopes
+//	 * 
+//	 * @return a map between {@link TimestampToken}s and lists of
+//	 *         {@link SignatureScope}s
+//	 */
+//	Map<TimestampToken, List<SignatureScope>> getTimestamps();
 	
 }
