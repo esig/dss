@@ -293,14 +293,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		// firstly check the KeyInfo attribute
 		findSigningCertificateInCollection(signerId, certSource.getKeyInfoCertificates());
 		
-		// if KeyInfo does not contain a Signing Certificate, check other certificates embedded into the signature
-		if (signingCertificateValidity == null) {
-			findSigningCertificateInCollection(signerId, certSource.getCertificates());
-		}
-		
 		// check the certificate pool
 		if (signingCertificateValidity == null) {
-			LOG.warn("Signing certificate not found across certificates embedded into the signature! : {} {}", signerId.getIssuer(), signerId.getSerialNumber());
 			checkCertPoolAgainstSignerId(candidatesForSigningCertificate, signerId);
 		}
 		
@@ -832,7 +826,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 			final CertificateValidity bestCandidate = getTheBestCandidate();
 			if (bestCandidate == null) {
-				signatureCryptographicVerification.setErrorMessage("There is no signing certificate within the signature.");
+				signatureCryptographicVerification.setErrorMessage("There is no signing certificate within the signature or certificate pool.");
 				return;
 			}
 			boolean detachedSignature = CMSUtils.isDetachedSignature(cmsSignedData);

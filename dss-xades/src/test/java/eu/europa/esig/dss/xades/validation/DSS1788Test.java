@@ -172,6 +172,34 @@ public class DSS1788Test {
 	}
 	
 	@Test
+	public void certPresentInCertValuesWithoutPublicKeyTest() {
+		DSSDocument doc = new FileDocument("src/test/resources/validation/dss1788/dss1920-cert-in-certValues-without-publicKey.xml");
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		
+		Reports reports = validator.validateDocument();
+		assertNotNull(reports);
+		// reports.print();
+		
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		
+		CertificateWrapper signingCertificate = signature.getSigningCertificate();
+		assertNotNull(signingCertificate);
+		assertTrue(signature.isAttributePresent());
+		assertTrue(signature.isDigestValuePresent());
+		assertTrue(signature.isDigestValueMatch());
+		assertTrue(signature.isIssuerSerialMatch());
+		
+		List<CertificateWrapper> certificateChain = signature.getCertificateChain();
+		assertTrue(Utils.isCollectionNotEmpty(certificateChain));
+		
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.NO_CERTIFICATE_CHAIN_FOUND, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+	}
+	
+	@Test
 	public void certFromTrustedStoreTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/dss1788/dss1788-noCertProvided.xml");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
