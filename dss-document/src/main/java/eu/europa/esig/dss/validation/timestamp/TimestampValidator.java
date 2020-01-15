@@ -21,12 +21,4 @@ public interface TimestampValidator extends DocumentValidator, CertificatePoolSh
 	 */
 	void setDetachedContent(DSSDocument document);
 
-//	/**
-//	 * Returns a map of detached timestamps and their signatureScopes
-//	 * 
-//	 * @return a map between {@link TimestampToken}s and lists of
-//	 *         {@link SignatureScope}s
-//	 */
-//	Map<TimestampToken, List<SignatureScope>> getTimestamps();
-	
 }

@@ -24,9 +24,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Date;
-import java.util.List;
 
-import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.validation.executor.DocumentProcessExecutor;
@@ -69,23 +67,6 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	 * @param enableEtsiValidationReport - TRUE if the report must be generated, FALSE otherwise
 	 */
 	void setEnableEtsiValidationReport(boolean enableEtsiValidationReport);
-
-	/**
-	 * Sets the {@code List} of {@code DSSDocument} containing the original
-	 * container content for ASiC signatures.
-	 *
-	 * @param archiveContents
-	 *                        the {@code List} of {@code DSSDocument} to set
-	 */
-	void setContainerContents(final List<DSSDocument> archiveContents);
-
-	/**
-	 * Sets the {@code List} of {@code ManifestFile}s found in the signature file.
-	 *
-	 * @param manifestFiles
-	 *                      the {@code List} of {@code ManifestFile} to set
-	 */
-	void setManifestFiles(final List<ManifestFile> manifestFiles);
 
 	/**
 	 * Validates the document and all its signatures. The default constraint file is

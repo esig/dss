@@ -71,7 +71,7 @@ public interface SignatureTimestampSource extends Serializable {
 	 * 
 	 * @return {@link ListCRLSource}
 	 */
-	ListCRLSource getCRLSources();
+	ListCRLSource getTimestampCRLSources();
 	
 	/**
 	 * Returns a merged {@code ListOCSPSource} of all embedded timestamp OCSP
@@ -79,6 +79,6 @@ public interface SignatureTimestampSource extends Serializable {
 	 * 
 	 * @return {@link ListOCSPSource}
 	 */
-	ListOCSPSource getOCSPSources();
+	ListOCSPSource getTimestampOCSPSources();
 
 }

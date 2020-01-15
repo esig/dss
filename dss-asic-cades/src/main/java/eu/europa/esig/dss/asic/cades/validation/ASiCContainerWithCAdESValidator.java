@@ -133,6 +133,15 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	}
 	
 	@Override
+	protected List<TimestampToken> getExternalTimestamps() {
+		List<TimestampToken> independantTimestamps = new ArrayList<TimestampToken>();
+		for (TimestampValidator timestampValidator : getTimestampValidators()) {
+			independantTimestamps.add(timestampValidator.getTimestamp());
+		}
+		return independantTimestamps;
+	}
+
+	@Override
 	protected List<DSSDocument> getArchiveDocuments() {
 		List<DSSDocument> archiveContents = super.getArchiveDocuments();
 		// in case of Manifest file (ASiC-E CAdES signature) add signed documents

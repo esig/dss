@@ -239,14 +239,14 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	@Override
 	public ListCRLSource getCompleteCRLSource() {
 		ListCRLSource crlSource = new ListCRLSource(getCRLSource());
-		crlSource.addAll(getTimestampSource().getCRLSources().getSources());
+		crlSource.addAll(getTimestampSource().getTimestampCRLSources());
 		return crlSource;
 	}
 
 	@Override
 	public ListOCSPSource getCompleteOCSPSource() {
 		ListOCSPSource ocspSource = new ListOCSPSource(getOCSPSource());
-		ocspSource.addAll(getTimestampSource().getOCSPSources().getSources());
+		ocspSource.addAll(getTimestampSource().getTimestampOCSPSources());
 		return ocspSource;
 	}
 

@@ -30,14 +30,12 @@ import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.tsp.TSPException;
 
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificatePool;
 import eu.europa.esig.dss.validation.AbstractDocumentValidator;
-import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.scope.DigestSignatureScope;
 import eu.europa.esig.dss.validation.scope.FullSignatureScope;
@@ -67,22 +65,6 @@ public class SingleTimestampValidator extends AbstractDocumentValidator implemen
 	@Override
 	protected List<TimestampToken> getExternalTimestamps() {
 		return Collections.singletonList(getTimestamp());
-	}
-
-	
-	/**
-	 * Returns a list of timestamp signature scopes (timestamped data)
-	 * 
-	 * @return a list of {@link SignatureScope}s
-	 */
-	protected List<TimestampedReference> getTimestampedReferences() {
-		SignatureScope signatureScope = null;
-		if (timestampedData instanceof DigestDocument) {
-			signatureScope = new DigestSignatureScope("Digest document", ((DigestDocument)timestampedData).getExistingDigest());
-		} else {
-			signatureScope = new FullSignatureScope("Full document", DSSUtils.getDigest(getDefaultDigestAlgorithm(), timestampedData));
-		}
-		return Arrays.asList(new TimestampedReference(signatureScope.getDSSIdAsString(), TimestampedObjectType.SIGNED_DATA));
 	}
 	
 	/**
@@ -127,18 +109,6 @@ public class SingleTimestampValidator extends AbstractDocumentValidator implemen
 	@Override
 	public void setValidationCertPool(CertificatePool validationCertPool) {
 		this.validationCertPool = validationCertPool;
-	}
-
-	@Override
-	public void setContainerContents(List<DSSDocument> archiveContents) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void setManifestFiles(List<ManifestFile> manifestFiles) {
-		// TODO Auto-generated method stub
-
 	}
 
 	/**

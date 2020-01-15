@@ -67,6 +67,8 @@ public class ASiCETimestampMultiFilesTest extends PKIFactoryAccess {
 		assertNotNull(reports);
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		assertNotNull(diagnosticData.getContainerInfo());
+		assertEquals(ASiCContainerType.ASiC_E.getReadable(), diagnosticData.getContainerInfo().getContainerType());
 		assertEquals(0, diagnosticData.getSignatureIdList().size());
 		assertEquals(1, diagnosticData.getTimestampIdList().size());
 

@@ -291,7 +291,18 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 				.includeRawTimestampTokens(certificateVerifier.isIncludeTimestampTokenValues())
 				.certificateSourceTypes(validationContext.getCertificateSourceTypes())
 				.trustedCertificateSources(certificateVerifier.getTrustedCertSources())
+				.containerInfo(getContainerInfo())
 				.validationDate(getValidationTime());
+	}
+
+	/**
+	 * This method allows to retrieve the container information (ASiC Container)
+	 * 
+	 * @return the container information
+	 */
+	protected ContainerInfo getContainerInfo() {
+		// not implemented by default see ASiC Container Validator
+		return null;
 	}
 
 	/**
@@ -311,17 +322,6 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 		// requires an implementation of {@code SignatureValidator}
 		return Collections.emptyList();
 	}
-//
-//	/**
-//	 * Returns a map between {@code TimestampToken}s to be validated and their {@code SignatureScope}s
-//	 * 
-//	 * @return a map between {@link TimestampToken}s and {@link SignatureScope}s
-//	 */
-//	protected Map<TimestampToken, List<SignatureScope>> getTimestamps() {
-//		// not implemented by default
-//		// requires an implementation of {@code TimestampValidator}
-//		return Collections.emptyMap();
-//	}
 	
 	protected void prepareCertificateVerifier(final Collection<AdvancedSignature> allSignatureList, final Collection<TimestampToken> externalTimestamps) {
 		populateSignatureCrlSource(allSignatureList, externalTimestamps);
@@ -379,7 +379,7 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 		if (Utils.isCollectionNotEmpty(allSignatureList)) {
 			for (final AdvancedSignature signature : allSignatureList) {
 				allCrlSource.add(signature.getCRLSource());
-				allCrlSource.addAll(signature.getTimestampSource().getCRLSources().getSources());
+				allCrlSource.addAll(signature.getTimestampSource().getTimestampCRLSources());
 			}
 		}
 		if (Utils.isCollectionNotEmpty(externalTimestamps)) {
@@ -406,7 +406,7 @@ public abstract class AbstractDocumentValidator implements DocumentValidator {
 		if (Utils.isCollectionNotEmpty(allSignatureList)) {
 			for (final AdvancedSignature signature : allSignatureList) {
 				allOcspSource.add(signature.getOCSPSource());
-				allOcspSource.addAll(signature.getTimestampSource().getOCSPSources().getSources());
+				allOcspSource.addAll(signature.getTimestampSource().getTimestampOCSPSources());
 			}
 		}
 		if (Utils.isCollectionNotEmpty(externalTimestamps)) {

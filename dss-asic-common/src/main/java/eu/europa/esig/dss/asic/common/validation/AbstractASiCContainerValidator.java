@@ -126,17 +126,38 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	protected abstract List<ManifestFile> getManifestFilesDecriptions();
 
 	@Override
-	public List<AdvancedSignature> getSignatures() {
-		List<AdvancedSignature> allSignatures = new ArrayList<AdvancedSignature>();
+	protected List<AdvancedSignature> getAllSignatures() {
+
+		setSignedScopeFinderDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm());
+
+		final List<AdvancedSignature> allSignatureList = new ArrayList<AdvancedSignature>();
+
 		List<SignatureValidator> currentValidators = getSignatureValidators();
 		for (SignatureValidator signatureValidator : currentValidators) {
-			List<AdvancedSignature> signatures = signatureValidator.getSignatures();
-			// must be executed against the assigned signatureValidator
-//			signatureValidator.findSignatureScopes(signatures);
-			allSignatures.addAll(signatures);
+			List<AdvancedSignature> currentValidatorSignatures = new ArrayList<AdvancedSignature>();
+			for (AdvancedSignature advancedSignature : signatureValidator.getSignatures()) {
+				currentValidatorSignatures.add(advancedSignature);
+				currentValidatorSignatures.addAll(advancedSignature.getCounterSignatures());
+			}
+
+			// XML/CMS validator
+			signatureValidator.findSignatureScopes(currentValidatorSignatures);
+
+			allSignatureList.addAll(currentValidatorSignatures);
 		}
 
-		return allSignatures;
+		attachExternalTimestamps(allSignatureList);
+
+		return allSignatureList;
+	}
+
+	@Override
+	public List<AdvancedSignature> getSignatures() {
+		final List<AdvancedSignature> signatureList = new ArrayList<AdvancedSignature>();
+		for (SignatureValidator validator : getSignatureValidators()) {
+			signatureList.addAll(validator.getSignatures());
+		}
+		return signatureList;
 	}
 
 	protected abstract List<SignatureValidator> getSignatureValidators();

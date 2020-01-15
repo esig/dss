@@ -106,7 +106,8 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 		return signatures;
 	}
 
-	public List<TimestampToken> getTimestamps() {
+	@Override
+	protected List<TimestampToken> getExternalTimestamps() {
 		final List<TimestampToken> timestamps = new ArrayList<TimestampToken>();
 
 		PDFSignatureService pdfSignatureService = pdfObjectFactory.newPAdESSignatureService();

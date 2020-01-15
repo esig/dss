@@ -157,22 +157,6 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 		return crlRefs;
 	}
 	
-	public Map<CRLBinary, List<CRLToken>> getCRLTokenMap() {
-		return crlTokenMap;
-	}
-	
-	/**
-	 * Allows to fill all CRL missing revocation values from the given {@code signatureCRLSource}
-	 * @param signatureCRLSource {@link SignatureCRLSource} to populate values from
-	 */
-	public void populateCRLRevocationValues(SignatureCRLSource signatureCRLSource) {
-		for (Entry<CRLBinary, List<CRLToken>> entry : signatureCRLSource.getCRLTokenMap().entrySet()) {
-			for (CRLToken crlToken : entry.getValue()) {
-				storeCRLToken(entry.getKey(), crlToken);
-			}
-		}
-	}
-	
 	@Override
 	protected void storeCRLToken(CRLBinary crlBinary, CRLToken crlToken) {
 		if (getCRLBinaryList().contains(crlBinary)) {
@@ -220,12 +204,6 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 		default:
 			throw new DSSException(
 					String.format("The given RevocationOrigin [%s] is not supported for CRLToken object in the SignatureCRLSource", origin));
-		}
-	}
-	
-	protected void addReference(CRLRef crlRef) {
-		for (RevocationRefOrigin origin : crlRef.getOrigins()) {
-			addReference(crlRef, origin);
 		}
 	}
 	

@@ -73,9 +73,11 @@ public abstract class SignedDocumentValidator extends AbstractDocumentValidator 
 		this.scopeFinder = scopeFinder;
 	}
 	
-	private void setSignedScopeFinderDefaultDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
-		Objects.requireNonNull(scopeFinder, "ScopeFinder is null");
-		scopeFinder.setDefaultDigestAlgorithm(digestAlgorithm);
+	protected void setSignedScopeFinderDefaultDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
+		// Null in the ASiC Container validator
+		if (scopeFinder != null) {
+			scopeFinder.setDefaultDigestAlgorithm(digestAlgorithm);
+		}
 	}
 
 	/**
@@ -126,17 +128,6 @@ public abstract class SignedDocumentValidator extends AbstractDocumentValidator 
 		this.manifestFiles = manifestFiles;
 	}
 
-	/**
-	 * This method allows to retrieve the container information (ASiC Container)
-	 * 
-	 * @return the container information
-	 */
-	protected ContainerInfo getContainerInfo() {
-		// not implemented by default
-		// see ASiC Container Validator
-		return null;
-	}
-
 	@Override
 	public void setSignaturePolicyProvider(SignaturePolicyProvider signaturePolicyProvider) {
 		this.signaturePolicyProvider = signaturePolicyProvider;
@@ -157,19 +148,13 @@ public abstract class SignedDocumentValidator extends AbstractDocumentValidator 
 	}
 	
 	@Override
-	protected DiagnosticDataBuilder prepareDiagnosticDataBuilder(final ValidationContext validationContext) {
-		return super.prepareDiagnosticDataBuilder(validationContext).containerInfo(getContainerInfo());
-	}
-	
-	@Override
 	protected void prepareSignatureValidationContext(final ValidationContext validationContext,
 			final List<AdvancedSignature> allSignatureList) {		
 		prepareCertificatesAndTimestamps(validationContext, allSignatureList);
-		processSignaturesValidation(validationContext, allSignatureList);
+		processSignaturesValidation(allSignatureList);
 	}
 
-	protected void processSignaturesValidation(final ValidationContext validationContext, 
-			List<AdvancedSignature> allSignatureList) {
+	protected void processSignaturesValidation(List<AdvancedSignature> allSignatureList) {
 		for (final AdvancedSignature signature : allSignatureList) {
 			signature.checkSigningCertificate();
 			signature.checkSignatureIntegrity();
@@ -180,6 +165,7 @@ public abstract class SignedDocumentValidator extends AbstractDocumentValidator 
 
 	@Override
 	protected List<AdvancedSignature> getAllSignatures() {
+		setSignedScopeFinderDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm());
 		
 		final List<AdvancedSignature> allSignatureList = new ArrayList<AdvancedSignature>();
 		for (final AdvancedSignature signature : getSignatures()) {
@@ -188,6 +174,7 @@ public abstract class SignedDocumentValidator extends AbstractDocumentValidator 
 		}
 		
 		// Signature Scope must be processed before in order to properly initialize content timestamps
+		// TODO change this
 		findSignatureScopes(allSignatureList);
 		
 		return allSignatureList;
@@ -196,10 +183,12 @@ public abstract class SignedDocumentValidator extends AbstractDocumentValidator 
 	/**
 	 * Finds and assigns SignatureScopes for a list of signatures
 	 * 
-	 * @param allSignatures a list of {@link AdvancedSignature}s to get a SignatureScope list
+	 * @param allSignatures
+	 *                      a list of {@link AdvancedSignature}s to get a
+	 *                      SignatureScope list
 	 */
+	@Override
 	public void findSignatureScopes(List<AdvancedSignature> allSignatures) {
-		setSignedScopeFinderDefaultDigestAlgorithm(getDefaultDigestAlgorithm());
 		for (final AdvancedSignature signature : allSignatures) {
 			signature.findSignatureScope(scopeFinder);
 		}
@@ -207,11 +196,12 @@ public abstract class SignedDocumentValidator extends AbstractDocumentValidator 
 
 	/**
 	 * @param allSignatureList
-	 *            {@code List} of {@code AdvancedSignature}s to validate
-	 *            including the countersignatures
+	 *                          {@code List} of {@code AdvancedSignature}s to
+	 *                          validate including the countersignatures
 	 * @param validationContext
-	 *            {@code ValidationContext} is the implementation of the
-	 *            validators for: certificates, timestamps and revocation data.
+	 *                          {@code ValidationContext} is the implementation of
+	 *                          the validators for: certificates, timestamps and
+	 *                          revocation data.
 	 */
 	protected void prepareCertificatesAndTimestamps(final ValidationContext validationContext, final List<AdvancedSignature> allSignatureList) {
 		if (providedSigningCertificateToken != null) {

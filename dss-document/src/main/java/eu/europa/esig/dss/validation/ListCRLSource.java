@@ -27,6 +27,7 @@ import java.util.Set;
 
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
@@ -63,6 +64,10 @@ public class ListCRLSource implements CRLSource {
 
 	public void add(OfflineCRLSource crlSource) {
 		sources.add(crlSource);
+	}
+
+	public void addAll(ListCRLSource listCRLSource) {
+		addAll(listCRLSource.getSources());
 	}
 
 	public void addAll(List<OfflineCRLSource> crlSources) {
@@ -137,10 +142,24 @@ public class ListCRLSource implements CRLSource {
 		List<CRLRef> result = new ArrayList<CRLRef>();
 		for (OfflineCRLSource offlineCRLSource : sources) {
 			if (offlineCRLSource instanceof SignatureCRLSource) {
-				result.addAll(((SignatureCRLSource) offlineCRLSource).getOrphanCrlRefs());
+				mergeRefs(result, ((SignatureCRLSource) offlineCRLSource).getOrphanCrlRefs());
 			}
 		}
 		return result;
+	}
+
+	private void mergeRefs(List<CRLRef> result, List<CRLRef> toBeMerged) {
+		for (CRLRef crlRef : toBeMerged) {
+			int index = result.indexOf(crlRef);
+			if (index == -1) {
+				result.add(crlRef);
+			} else {
+				CRLRef storedCRLRef = result.get(index);
+				for (RevocationRefOrigin origin : crlRef.getOrigins()) {
+					storedCRLRef.addOrigin(origin);
+				}
+			}
+		}
 	}
 
 	public List<CRLBinary> getCRLBinaryList() {

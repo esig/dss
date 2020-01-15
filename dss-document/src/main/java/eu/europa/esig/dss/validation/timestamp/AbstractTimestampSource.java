@@ -36,6 +36,7 @@ import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -178,19 +179,21 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	}
 	
 	@Override
-	public ListCRLSource getCRLSources() {
-		if (crlSource == null) {
-			createAndValidate();
+	public ListCRLSource getTimestampCRLSources() {
+		ListCRLSource result = new ListCRLSource();
+		for (TimestampToken timestampToken : getAllTimestamps()) {
+			result.add(timestampToken.getCRLSource());
 		}
-		return crlSource;
+		return result;
 	}
-	
+
 	@Override
-	public ListOCSPSource getOCSPSources() {
-		if (ocspSource == null) {
-			createAndValidate();
+	public ListOCSPSource getTimestampOCSPSources() {
+		ListOCSPSource result = new ListOCSPSource();
+		for (TimestampToken timestampToken : getAllTimestamps()) {
+			result.add(timestampToken.getOCSPSource());
 		}
-		return ocspSource;
+		return result;
 	}
 	
 	/**
@@ -201,7 +204,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 		makeTimestampTokens();
 		validateTimestamps();
 	}
-	
+
 	@Override
 	public void addExternalTimestamp(TimestampToken timestamp) {
 		// if timestamp tokens not created yet
@@ -209,28 +212,12 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 			createAndValidate();
 		}
 		processExternalTimestamp(timestamp);
-		switch (timestamp.getTimeStampType()) {
-			case CONTENT_TIMESTAMP:
-			case ALL_DATA_OBJECTS_TIMESTAMP:
-			case INDIVIDUAL_DATA_OBJECTS_TIMESTAMP:
-				contentTimestamps.add(timestamp);
-				break;
-			case SIGNATURE_TIMESTAMP:
-				signatureTimestamps.add(timestamp);
-				break;
-			case VALIDATION_DATA_REFSONLY_TIMESTAMP:
-				refsOnlyTimestamps.add(timestamp);
-				break;
-			case VALIDATION_DATA_TIMESTAMP:
-				sigAndRefsTimestamps.add(timestamp);
-				break;
-			case ARCHIVE_TIMESTAMP:
-				archiveTimestamps.add(timestamp);
-				break;
-			default:
-				LOG.warn("The signature timestamp source does not support timestamp tokens with type [{}]. "
-						+ "The TimestampToken was not added.", timestamp.getTimeStampType().name());
-				break;
+		if (TimestampType.ARCHIVE_TIMESTAMP == timestamp.getTimeStampType()) {
+			archiveTimestamps.add(timestamp);
+		} else {
+			throw new DSSException(
+					String.format("The signature timestamp source does not support timestamp tokens with type [%s]. " + "The TimestampToken was not added.",
+							timestamp.getTimeStampType().name()));
 		}
 	}
 	
@@ -247,8 +234,8 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 		archiveTimestamps = new ArrayList<TimestampToken>();
 		
 		// initialize combined revocation sources
-		crlSource = new ListCRLSource();
-		ocspSource = new ListOCSPSource();
+		crlSource = new ListCRLSource(signatureCRLSource);
+		ocspSource = new ListOCSPSource(signatureOCSPSource);
 		
 		final SignatureProperties<SignatureAttribute> signedSignatureProperties = getSignedSignatureProperties();
 		
@@ -280,7 +267,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 				continue;
 				
 			}
-			populateTimestampCertificateSource(timestampToken);
+			populateTimestampCertificateSource(timestampToken.getCertificates());
 			crlSource.add(timestampToken.getCRLSource());
 			ocspSource.add(timestampToken.getOCSPSource());
 			contentTimestamps.add(timestampToken);
@@ -373,7 +360,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 				continue;
 			}
 			
-			populateTimestampCertificateSource(timestampToken);
+			populateTimestampCertificateSource(timestampToken.getCertificates());
 			crlSource.add(timestampToken.getCRLSource());
 			ocspSource.add(timestampToken.getOCSPSource());
 			timestamps.add(timestampToken);
@@ -890,14 +877,6 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 	}
 	
 	/**
-	 * Adds certificates found in the timestamp to the {@code timestampCertificateSource}
-	 * @param timestamp {@link TimestampToken}
-	 */
-	protected void populateTimestampCertificateSource(TimestampToken timestamp) {
-		populateTimestampCertificateSource(timestamp.getCertificates());
-	}
-
-	/**
 	 * Adds {@code certificates} to the {@code timestampCertificateSource}
 	 * @param certificates list of {@link CertificateToken}s
 	 */
@@ -913,7 +892,7 @@ public abstract class AbstractTimestampSource<SignatureAttribute extends ISignat
 		// add references from previously added timestamps
 		addReferencesForPreviousTimestamps(externalTimestamp.getTimestampedReferences(), getAllTimestamps());
 		// populate timestamp certificate source with values present in the timestamp
-		populateTimestampCertificateSource(externalTimestamp);
+		populateTimestampCertificateSource(externalTimestamp.getCertificates());
 	}
 
 }

@@ -159,24 +159,6 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 		return ocspRefs;
 	}
 	
-	public Map<OCSPResponseBinary, OCSPToken> getOCSPTokenMap() {
-		return ocspTokenMap;
-	}
-	
-	/**
-	 * Allows to fill all OCSP missing revocation tokens from the given {@link SignatureOCSPSource}
-	 * @param signatureOCSPSource {@link SignatureOCSPSource} to populate values from
-	 */
-	public void populateOCSPRevocationTokenLists(SignatureOCSPSource signatureOCSPSource) {
-		for (Entry<OCSPResponseBinary, OCSPToken> entry : signatureOCSPSource.getOCSPTokenMap().entrySet()) {
-			storeOCSPToken(entry);
-		}
-	}
-	
-	private void storeOCSPToken(Entry<OCSPResponseBinary, OCSPToken> responseTokenEntry) {
-		storeOCSPToken(responseTokenEntry.getKey(), responseTokenEntry.getValue());
-	}
-
 	@Override
 	protected void storeOCSPToken(OCSPResponseBinary ocspResponse, OCSPToken ocspToken) {
 		if (getOCSPResponsesList().contains(ocspResponse) && !ocspTokenMap.containsKey(ocspResponse)) {
@@ -218,12 +200,6 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 		}
 	}
 	
-	protected void addReference(OCSPRef ocspRef) {
-		for (RevocationRefOrigin origin : ocspRef.getOrigins()) {
-			addReference(ocspRef, origin);
-		}
-	}
-
 	protected void addReference(OCSPRef ocspRef, RevocationRefOrigin origin) {
 		int index = ocspRefs.indexOf(ocspRef);
 		if (index == -1) {

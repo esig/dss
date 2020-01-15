@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
@@ -60,6 +61,10 @@ public class ListOCSPSource implements OCSPSource {
 
 	public void add(OfflineOCSPSource ocspSource) {
 		sources.add(ocspSource);
+	}
+
+	public void addAll(ListOCSPSource listOCSPSources) {
+		addAll(listOCSPSources.getSources());
 	}
 
 	public void addAll(List<OfflineOCSPSource> ocspSources) {
@@ -134,10 +139,24 @@ public class ListOCSPSource implements OCSPSource {
 		List<OCSPRef> result = new ArrayList<OCSPRef>();
 		for (OfflineOCSPSource offlineOCSPSource : sources) {
 			if (offlineOCSPSource instanceof SignatureOCSPSource) {
-				result.addAll(((SignatureOCSPSource) offlineOCSPSource).getOrphanOCSPRefs());
+				mergeRefs(result, ((SignatureOCSPSource) offlineOCSPSource).getOrphanOCSPRefs());
 			}
 		}
 		return result;
+	}
+
+	private void mergeRefs(List<OCSPRef> result, List<OCSPRef> toBeMerged) {
+		for (OCSPRef ocspRef : toBeMerged) {
+			int index = result.indexOf(ocspRef);
+			if (index == -1) {
+				result.add(ocspRef);
+			} else {
+				OCSPRef storedOCSPRef = result.get(index);
+				for (RevocationRefOrigin origin : ocspRef.getOrigins()) {
+					storedOCSPRef.addOrigin(origin);
+				}
+			}
+		}
 	}
 
 	public List<OCSPResponseBinary> getOCSPResponsesList() {
@@ -194,6 +213,5 @@ public class ListOCSPSource implements OCSPSource {
 		}
 		return null;
 	}
-
 
 }
