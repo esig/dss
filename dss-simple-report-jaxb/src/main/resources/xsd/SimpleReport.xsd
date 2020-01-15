@@ -42,7 +42,7 @@
 			<xs:element name="Warnings" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="Infos" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
-		<xs:attribute name="Id" type="xs:ID" use="required" />
+		<xs:attribute name="Id" type="xs:string" use="required" /> <!-- Must be a String type in order to avoid conflict with DetailedReport in REST/SOAP webServices -->
 	</xs:complexType>
 	
 	<xs:complexType name="Signature">
