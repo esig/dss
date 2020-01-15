@@ -79,11 +79,17 @@ public class SignedDocumentValidatorTest {
 	
 	@Test
 	public void internationalizationTest() {
-		DSSDocument document = new FileDocument("src/test/resources/validation/dss-signed.xml");
-		testMessages(document, Locale.getDefault(), null);
-		testMessages(document, Locale.ENGLISH, "The certificate path is not trusted!");
-		testMessages(document, Locale.FRENCH, "Le chemin du certificat n'est pas de confiance !");
-		testMessages(document, Locale.GERMAN, "The certificate path is not trusted!");
+		Locale systemLocale = Locale.getDefault();
+		try {
+			Locale.setDefault(Locale.ENGLISH);
+			DSSDocument document = new FileDocument("src/test/resources/validation/dss-signed.xml");
+			testMessages(document, Locale.getDefault(), null);
+			testMessages(document, Locale.ENGLISH, "The certificate path is not trusted!");
+			testMessages(document, Locale.FRENCH, "Le chemin du certificat n'est pas de confiance !");
+			testMessages(document, Locale.GERMAN, "The certificate path is not trusted!");
+		} finally {
+			Locale.setDefault(systemLocale); // restore default
+		}
 	}
 	
 	private void testMessages(DSSDocument document, Locale locale, String expectedErrorMessage) {
