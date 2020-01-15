@@ -160,7 +160,7 @@ public class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
 			assertNotNull(lastCreatedArchiveManifestFile);
 			assertTrue(lastCreatedArchiveManifestFile.isArchiveManifest());
 			ASiCEWithCAdESManifestValidator archiveManifestValidator = 
-					new ASiCEWithCAdESManifestValidator(lastCreatedArchiveManifestFile, result.getTimestampedDocuments(timestamp));
+					new ASiCEWithCAdESManifestValidator(lastCreatedArchiveManifestFile, result.getAllDocuments());
 			List<ManifestEntry> archiveManifestEntries = archiveManifestValidator.validateEntries();
 			validateEntries(archiveManifestEntries);
 			

@@ -31,6 +31,7 @@ import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureForm;
+import eu.europa.esig.dss.enumerations.TimestampContainerForm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
@@ -71,6 +72,42 @@ public class RemoteMultipleDocumentsSignatureServiceImpl extends AbstractRemoteS
 		this.asicWithXAdESService = asicWithXAdESService;
 	}
 
+	@SuppressWarnings("rawtypes")
+	private MultipleDocumentsSignatureService getServiceForSignature(SignatureForm signatureForm, ASiCContainerType asicContainerType) {
+		if (asicContainerType != null) {
+			switch (signatureForm) {
+				case XAdES:
+					return asicWithXAdESService;
+				case CAdES:
+					return asicWithCAdESService;
+				default:
+					throw new DSSException("Unrecognized format (XAdES or CAdES are allowed with ASiC) : " + signatureForm);
+				}
+		} else {
+			if (SignatureForm.XAdES == signatureForm) {
+				return xadesService;
+			} else {
+				throw new DSSException("Unrecognized format (XAdES or CAdES are allowed with ASiC or XAdES) : " + signatureForm);
+			}
+		}
+	}
+
+	@SuppressWarnings("rawtypes")
+	private MultipleDocumentsSignatureService getServiceForTimestamp(TimestampContainerForm timestampContainerForm) {
+		if (timestampContainerForm != null) {
+			switch(timestampContainerForm) {
+				case ASiC_E:
+				case ASiC_S:
+					return asicWithCAdESService;
+				default:
+					throw new DSSException(String.format("The format is not recognized or not allowed "
+							+ "(only ASiC-E and ASiC-S are allowed for a multiple document timestamping)", timestampContainerForm.getReadable()));
+			}
+		} else {
+			throw new DSSException("The timestampContainerForm must be defined!");
+		}
+	}
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public ToBeSignedDTO getDataToSign(List<RemoteDocument> toSignDocuments, RemoteSignatureParameters remoteParameters) {
@@ -96,7 +133,7 @@ public class RemoteMultipleDocumentsSignatureServiceImpl extends AbstractRemoteS
 		SerializableSignatureParameters parameters = createParameters(remoteParameters);
 		MultipleDocumentsSignatureService service = getServiceForSignature(remoteParameters.getSignatureLevel().getSignatureForm(), remoteParameters.getAsicContainerType());
 		List<DSSDocument> dssDocuments = RemoteDocumentConverter.toDSSDocuments(toSignDocuments);
-		DSSDocument signDocument = (DSSDocument) service.signDocument(dssDocuments, parameters, toSignatureValue(signatureValueDTO));
+		DSSDocument signDocument = service.signDocument(dssDocuments, parameters, toSignatureValue(signatureValueDTO));
 		LOG.info("SignDocument is finished");
 		return RemoteDocumentConverter.toRemoteDocument(signDocument);
 	}
@@ -111,29 +148,9 @@ public class RemoteMultipleDocumentsSignatureServiceImpl extends AbstractRemoteS
 		SerializableSignatureParameters parameters = createParameters(remoteParameters);
 		MultipleDocumentsSignatureService service = getServiceForSignature(remoteParameters.getSignatureLevel().getSignatureForm(), remoteParameters.getAsicContainerType());
 		DSSDocument dssDocument = RemoteDocumentConverter.toDSSDocument(toExtendDocument);
-		DSSDocument extendDocument = (DSSDocument) service.extendDocument(dssDocument, parameters);
+		DSSDocument extendDocument = service.extendDocument(dssDocument, parameters);
 		LOG.info("ExtendDocument is finished");
 		return RemoteDocumentConverter.toRemoteDocument(extendDocument);
-	}
-
-	@SuppressWarnings("rawtypes")
-	private MultipleDocumentsSignatureService getServiceForSignature(SignatureForm signatureForm, ASiCContainerType asicContainerType) {
-		if (asicContainerType != null) {
-			switch (signatureForm) {
-			case XAdES:
-				return asicWithXAdESService;
-			case CAdES:
-				return asicWithCAdESService;
-			default:
-				throw new DSSException("Unrecognized format (XAdES or CAdES are allowed with ASiC) : " + signatureForm);
-			}
-		} else {
-			if (SignatureForm.XAdES == signatureForm) {
-				return xadesService;
-			} else {
-				throw new DSSException("Unrecognized format (XAdES or CAdES are allowed with ASiC or XAdES) : " + signatureForm);
-			}
-		}
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -141,10 +158,10 @@ public class RemoteMultipleDocumentsSignatureServiceImpl extends AbstractRemoteS
 	public RemoteDocument timestamp(List<RemoteDocument> toTimestampDocuments, RemoteTimestampParameters remoteParameters) {
 		Objects.requireNonNull(toTimestampDocuments, "remoteDocument must be defined!");
 		Objects.requireNonNull(remoteParameters, "remoteParameters must be defined!");
-		Objects.requireNonNull(remoteParameters.getSignatureForm(), "signatureForm must be defined!");
+		Objects.requireNonNull(remoteParameters.getTimestampContainerForm(), "timestampContainerForm must be defined!");
 		LOG.info("Timestamp document in process...");
-		TimestampParameters parameters = toTimestampParameters(remoteParameters, remoteParameters.getSignatureForm(), remoteParameters.getAsicContainerType());
-		MultipleDocumentsSignatureService service = getServiceForSignature(remoteParameters.getSignatureForm(), remoteParameters.getAsicContainerType());
+		TimestampParameters parameters = toTimestampParameters(remoteParameters);
+		MultipleDocumentsSignatureService service = getServiceForTimestamp(remoteParameters.getTimestampContainerForm());
 		List<DSSDocument> dssDocuments = RemoteDocumentConverter.toDSSDocuments(toTimestampDocuments);
 		DSSDocument timestampedDocument = service.timestamp(dssDocuments, parameters);
 		LOG.info("Timestamp document is finished");

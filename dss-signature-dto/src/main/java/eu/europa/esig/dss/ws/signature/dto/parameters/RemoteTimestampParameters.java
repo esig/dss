@@ -25,9 +25,8 @@ import java.util.Objects;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 
-import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.SignatureForm;
+import eu.europa.esig.dss.enumerations.TimestampContainerForm;
 
 @SuppressWarnings("serial")
 public class RemoteTimestampParameters implements Serializable {
@@ -49,25 +48,20 @@ public class RemoteTimestampParameters implements Serializable {
 	private String canonicalizationMethod = CanonicalizationMethod.EXCLUSIVE;
 
 	/**
-	 * ASiC Container type
+	 * Specifies format of the output file containing a timestamp
 	 */
-	private ASiCContainerType asicContainerType;
-	
-	/**
-	 * Specifies a timestamp format to be used
-	 */
-	private SignatureForm signatureForm;
+	private TimestampContainerForm timestampContainerForm;
 
 	public RemoteTimestampParameters() {
 	}
 
-	public RemoteTimestampParameters(DigestAlgorithm digestAlgorithm) {
+	public RemoteTimestampParameters(TimestampContainerForm timestampForm, DigestAlgorithm digestAlgorithm) {
 		this.digestAlgorithm = digestAlgorithm;
-		this.canonicalizationMethod = null;
+		this.timestampContainerForm = timestampForm;
 	}
 
-	public RemoteTimestampParameters(DigestAlgorithm digestAlgorithm, String canonicalizationMethod) {
-		this.digestAlgorithm = digestAlgorithm;
+	public RemoteTimestampParameters(TimestampContainerForm timestampForm, DigestAlgorithm digestAlgorithm, String canonicalizationMethod) {
+		this(timestampForm, digestAlgorithm);
 		this.canonicalizationMethod = canonicalizationMethod;
 	}
 
@@ -88,20 +82,12 @@ public class RemoteTimestampParameters implements Serializable {
 		this.canonicalizationMethod = canonicalizationMethod;
 	}
 
-	public ASiCContainerType getAsicContainerType() {
-		return asicContainerType;
+	public TimestampContainerForm getTimestampContainerForm() {
+		return timestampContainerForm;
 	}
 
-	public void setAsicContainerType(ASiCContainerType asicContainerType) {
-		this.asicContainerType = asicContainerType;
-	}
-
-	public SignatureForm getSignatureForm() {
-		return signatureForm;
-	}
-
-	public void setSignatureForm(SignatureForm signatureForm) {
-		this.signatureForm = signatureForm;
+	public void setTimestampContainerForm(TimestampContainerForm timestampForm) {
+		this.timestampContainerForm = timestampForm;
 	}
 
 	@Override
@@ -109,9 +95,8 @@ public class RemoteTimestampParameters implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = (prime * result) + ((digestAlgorithm == null) ? 0 : digestAlgorithm.hashCode());
-		result = (prime * result) + ((signatureForm == null) ? 0 : signatureForm.hashCode());
+		result = (prime * result) + ((timestampContainerForm == null) ? 0 : timestampContainerForm.hashCode());
 		result = (prime * result) + ((canonicalizationMethod == null) ? 0 : canonicalizationMethod.hashCode());
-		result = (prime * result) + ((asicContainerType == null) ? 0 : asicContainerType.hashCode());
 		return result;
 	}
 
@@ -137,18 +122,11 @@ public class RemoteTimestampParameters implements Serializable {
 		if (digestAlgorithm != other.digestAlgorithm) {
 			return false;
 		}
-		if (signatureForm == null) {
-			if (other.signatureForm != null) {
+		if (timestampContainerForm == null) {
+			if (other.timestampContainerForm != null) {
 				return false;
 			}
-		} else if (signatureForm != other.signatureForm) {
-			return false;
-		}
-		if (asicContainerType == null) {
-			if (other.asicContainerType != null) {
-				return false;
-			}
-		} else if (asicContainerType != other.asicContainerType) {
+		} else if (timestampContainerForm != other.timestampContainerForm) {
 			return false;
 		}
 		return true;
@@ -156,8 +134,8 @@ public class RemoteTimestampParameters implements Serializable {
 
 	@Override
 	public String toString() {
-		return "RemoteTimestampParameters{format=" + signatureForm + ", digestAlgorithm=" + digestAlgorithm.getName() + 
-				", asicContainerType=" + asicContainerType + ", canonicalizationMethod=" + canonicalizationMethod + "}";
+		return "RemoteTimestampParameters{format=" + timestampContainerForm + ", digestAlgorithm=" + digestAlgorithm.getName() + 
+				", canonicalizationMethod=" + canonicalizationMethod + "}";
 	}
 	
 }

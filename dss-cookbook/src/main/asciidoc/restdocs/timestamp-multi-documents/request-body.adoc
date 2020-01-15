@@ -1,0 +1,19 @@
+[source,options="nowrap"]
+----
+{
+  "timestampParameters" : {
+    "digestAlgorithm" : "SHA512",
+    "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
+    "timestampContainerForm" : "ASiC_E"
+  },
+  "toTimestampDocuments" : [ {
+    "bytes" : "77u/PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4NCjxoOnRhYmxlIHhtbG5zOmg9Imh0dHA6Ly93d3cudzMub3JnL1RSL2h0bWw0LyI+DQoJPGg6dHI+DQoJCTxoOnRkPkhlbGxvPC9oOnRkPg0KCQk8aDp0ZD5Xb3JsZDwvaDp0ZD4NCgk8L2g6dHI+DQo8L2g6dGFibGU+",
+    "digestAlgorithm" : null,
+    "name" : "sample.xml"
+  }, {
+    "bytes" : "PGNvbmZpZ3VyYXRpb24gZGVidWc9InRydWUiPg0KDQoJPGFwcGVuZGVyIG5hbWU9IlNURE9VVCIgY2xhc3M9ImNoLnFvcy5sb2diYWNrLmNvcmUuQ29uc29sZUFwcGVuZGVyIj4NCgkJPGVuY29kZXI+DQoJCQk8cGF0dGVybj4lZHtISDptbTpzcy5TU1N9IFsldGhyZWFkXSAlLTVsZXZlbCAlbG9nZ2VyezM2fSAtICVtc2clbg0KCQkJPC9wYXR0ZXJuPg0KCQk8L2VuY29kZXI+DQoJPC9hcHBlbmRlcj4NCgkNCgk8bG9nZ2VyIG5hbWU9ImV1LmV1cm9wYS5lc2lnLmRzcyIgbGV2ZWw9IklORk8iIC8+DQoJPGxvZ2dlciBuYW1lPSJvcmcuYXBhY2hlIiBsZXZlbD0iSU5GTyIgLz4NCgk8bG9nZ2VyIG5hbWU9Im9yZy5hcGFjaGUuZm9wIiBsZXZlbD0iRVJST1IiIC8+DQoJPGxvZ2dlciBuYW1lPSJvcmcuYXBhY2hlLnBkZmJveCIgbGV2ZWw9IkVSUk9SIiAvPg0KCTxsb2dnZXIgbmFtZT0ib3JnLnNwcmluZ2ZyYW1ld29yayIgbGV2ZWw9IklORk8iIC8+DQoNCgk8cm9vdCBsZXZlbD0iZGVidWciPg0KCQk8YXBwZW5kZXItcmVmIHJlZj0iU1RET1VUIiAvPg0KCTwvcm9vdD4NCjwvY29uZmlndXJhdGlvbj4=",
+    "digestAlgorithm" : null,
+    "name" : "hello.xml"
+  } ]
+}
+----

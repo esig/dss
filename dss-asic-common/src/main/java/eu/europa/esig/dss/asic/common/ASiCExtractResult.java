@@ -139,24 +139,4 @@ public class ASiCExtractResult {
 		return allManifestsList;
 	}
 
-	/**
-	 * Returns list of documents covered by the {@code timestamp}
-	 * @param timestamp {@link DSSDocument}
-	 * @return list of timestamped {@link DSSDocument} documents
-	 */
-	public List<DSSDocument> getTimestampedDocuments(DSSDocument timestamp) {
-		List<DSSDocument> timestampedDocuments = new ArrayList<DSSDocument>();
-		timestampedDocuments.addAll(getSignedDocuments());
-		timestampedDocuments.addAll(getManifestDocuments());
-		timestampedDocuments.addAll(getSignatureDocuments());
-		timestampedDocuments.addAll(getArchiveManifestDocuments());
-		timestampedDocuments.add(getMimeTypeDocument());
-		for (DSSDocument timestampDocument : getTimestampDocuments()) {
-			if (timestampDocument.getName().compareTo(timestamp.getName()) < 0) {
-				timestampedDocuments.add(timestampDocument);
-			}
-		}
-		return timestampedDocuments;
-	}
-
 }

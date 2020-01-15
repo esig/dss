@@ -32,6 +32,7 @@ import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureForm;
+import eu.europa.esig.dss.enumerations.TimestampContainerForm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
@@ -90,24 +91,41 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 	private DocumentSignatureService getServiceForSignature(SignatureForm signatureForm, ASiCContainerType asicContainerType) {
 		if (asicContainerType != null) {
 			switch (signatureForm) {
-			case XAdES:
-				return asicWithXAdESService;
-			case CAdES:
-				return asicWithCAdESService;
-			default:
-				throw new DSSException("Unrecognized format (XAdES or CAdES are allowed with ASiC) : " + signatureForm);
-			}
+				case XAdES:
+					return asicWithXAdESService;
+				case CAdES:
+					return asicWithCAdESService;
+				default:
+					throw new DSSException("Unrecognized format (XAdES or CAdES are allowed with ASiC) : " + signatureForm);
+				}
 		} else {
 			switch (signatureForm) {
-			case XAdES:
-				return xadesService;
-			case CAdES:
-				return cadesService;
-			case PAdES:
-				return padesService;
-			default:
-				throw new DSSException("Unrecognized format " + signatureForm);
+				case XAdES:
+					return xadesService;
+				case CAdES:
+					return cadesService;
+				case PAdES:
+					return padesService;
+				default:
+					throw new DSSException("Unrecognized format " + signatureForm);
+				}
+		}
+	}
+
+	@SuppressWarnings("rawtypes")
+	private DocumentSignatureService getServiceForTimestamp(TimestampContainerForm timestampContainerForm) {
+		if (timestampContainerForm != null) {
+			switch(timestampContainerForm) {
+				case PDF:
+					return padesService;
+				case ASiC_E:
+				case ASiC_S:
+					return asicWithCAdESService;
+				default:
+					throw new DSSException("Unrecognized format (only PDF, ASiC-E and ASiC-S are allowed) : " + timestampContainerForm);
 			}
+		} else {
+			throw new DSSException("The timestampContainerForm must be defined!");
 		}
 	}
 
@@ -136,7 +154,7 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 		SerializableSignatureParameters parameters = createParameters(remoteParameters);
 		DocumentSignatureService service = getServiceForSignature(remoteParameters.getSignatureLevel().getSignatureForm(), remoteParameters.getAsicContainerType());
 		DSSDocument dssDocument = RemoteDocumentConverter.toDSSDocument(remoteDocument);
-		DSSDocument signDocument = (DSSDocument) service.signDocument(dssDocument, parameters, toSignatureValue(signatureValueDTO));
+		DSSDocument signDocument = service.signDocument(dssDocument, parameters, toSignatureValue(signatureValueDTO));
 		LOG.info("SignDocument is finished");
 		return RemoteDocumentConverter.toRemoteDocument(signDocument);
 	}
@@ -151,7 +169,7 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 		SerializableSignatureParameters parameters = createParameters(remoteParameters);
 		DocumentSignatureService service = getServiceForSignature(remoteParameters.getSignatureLevel().getSignatureForm(), remoteParameters.getAsicContainerType());
 		DSSDocument dssDocument = RemoteDocumentConverter.toDSSDocument(remoteDocument);
-		DSSDocument extendDocument = (DSSDocument) service.extendDocument(dssDocument, parameters);
+		DSSDocument extendDocument = service.extendDocument(dssDocument, parameters);
 		LOG.info("ExtendDocument is finished");
 		return RemoteDocumentConverter.toRemoteDocument(extendDocument);
 	}
@@ -161,10 +179,10 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 	public RemoteDocument timestamp(RemoteDocument remoteDocument, RemoteTimestampParameters remoteParameters) {
 		Objects.requireNonNull(remoteDocument, "remoteDocument must be defined!");
 		Objects.requireNonNull(remoteParameters, "remoteParameters must be defined!");
-		Objects.requireNonNull(remoteParameters.getSignatureForm(), "signatureForm must be defined!");
+		Objects.requireNonNull(remoteParameters.getTimestampContainerForm(), "signatureForm must be defined!");
 		LOG.info("Timestamp document in process...");
-		TimestampParameters parameters = toTimestampParameters(remoteParameters, remoteParameters.getSignatureForm(), remoteParameters.getAsicContainerType());
-		DocumentSignatureService service = getServiceForSignature(remoteParameters.getSignatureForm(), remoteParameters.getAsicContainerType());
+		TimestampParameters parameters = toTimestampParameters(remoteParameters);
+		DocumentSignatureService service = getServiceForTimestamp(remoteParameters.getTimestampContainerForm());
 		DSSDocument dssDocument = RemoteDocumentConverter.toDSSDocument(remoteDocument);
 		DSSDocument timestampedDocument = service.timestamp(dssDocument, parameters);
 		LOG.info("Timestamp document is finished");

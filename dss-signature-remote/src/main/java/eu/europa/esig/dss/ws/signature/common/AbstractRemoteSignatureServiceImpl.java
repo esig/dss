@@ -30,6 +30,7 @@ import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureForm;
+import eu.europa.esig.dss.enumerations.TimestampContainerForm;
 import eu.europa.esig.dss.model.BLevelParameters;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Policy;
@@ -162,6 +163,24 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		bLevelParameters.setSignerLocation(signerLocation);
 		
 		return bLevelParameters;
+	}
+	
+	protected TimestampParameters toTimestampParameters(RemoteTimestampParameters remoteTimestampParameters) {
+		TimestampContainerForm timestampForm = remoteTimestampParameters.getTimestampContainerForm();
+		if (timestampForm != null) {
+			switch (timestampForm) {
+				case PDF:
+					return toTimestampParameters(remoteTimestampParameters, SignatureForm.PAdES, null);
+				case ASiC_E:
+					return toTimestampParameters(remoteTimestampParameters, SignatureForm.CAdES, ASiCContainerType.ASiC_E);
+				case ASiC_S:
+					return toTimestampParameters(remoteTimestampParameters, SignatureForm.CAdES, ASiCContainerType.ASiC_S);
+				default:
+					throw new DSSException(String.format("Unsupported timestamp container form [%s]", timestampForm.getReadable()));
+			}
+		} else {
+			throw new DSSException("Timestamp container form is not defined!");
+		}
 	}
 	
 	protected TimestampParameters toTimestampParameters(RemoteTimestampParameters remoteTimestampParameters, 

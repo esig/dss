@@ -34,8 +34,8 @@ import org.junit.jupiter.api.Test;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.TimestampContainerForm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -103,8 +103,7 @@ public class RemoteMiltipleDocumentSignatureServiceTest extends AbstractRemoteSi
 	public void multipleDocumentTimestampingTest() throws Exception {
 		RemoteTimestampParameters timestampParameters = new RemoteTimestampParameters();
 		timestampParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
-		timestampParameters.setSignatureForm(SignatureForm.CAdES);
-		timestampParameters.setAsicContainerType(ASiCContainerType.ASiC_E);
+		timestampParameters.setTimestampContainerForm(TimestampContainerForm.ASiC_E);
 		
 		List<DSSDocument> filesToTimestamp = Arrays.asList(new DSSDocument[] {
 				new FileDocument(new File("src/test/resources/sample.xml")),

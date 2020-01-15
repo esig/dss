@@ -33,9 +33,9 @@ import org.junit.jupiter.api.Test;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
-import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.TimestampContainerForm;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -162,7 +162,7 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 	public void testTimestamping() throws Exception {
 		RemoteTimestampParameters remoteTimestampParameters = new RemoteTimestampParameters();
 		remoteTimestampParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
-		remoteTimestampParameters.setSignatureForm(SignatureForm.PAdES);
+		remoteTimestampParameters.setTimestampContainerForm(TimestampContainerForm.PDF);
 		
 		FileDocument fileToTimestamp = new FileDocument(new File("src/test/resources/sample.pdf"));
 		RemoteDocument remoteDocument = RemoteDocumentConverter.toRemoteDocument(fileToTimestamp);

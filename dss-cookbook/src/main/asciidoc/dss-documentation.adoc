@@ -1636,11 +1636,12 @@ The data structure in webservices is similar in REST and SOAP.
 
 === REST signature service
 
-This service exposes 3 methods for one or more document(s) : 
+This service exposes 4 methods for one or more document(s) : 
 
  * getDataToSign : computes the digest to be signed
  * signDocument : adds the signature value in the document
  * extendDocument : extends an existing signature
+ * timestampDocument : timestamps a provided document (available for PDF, ASiC-E and ASiC-S container formats)
  
 ==== Get data to sign
 
@@ -1675,6 +1676,17 @@ include::restdocs/extend-one-document/http-request.adoc[]
 
 .Response
 include::restdocs/extend-one-document/http-response.adoc[]
+
+==== Timestamp document
+
+The method allows timestamping of a provided document.
+Available for PDF, ASiC-E and ASiC-S container formats.
+
+.Request
+include::restdocs/timestamp-one-document/http-request.adoc[]
+
+.Response
+include::restdocs/timestamp-one-document/http-response.adoc[]
 
 === REST server signature service
 
