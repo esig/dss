@@ -29,13 +29,13 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.Model;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.CheckSubXCVResult;
@@ -66,7 +66,6 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 	public X509CertificateValidation(I18nProvider i18nProvider, DiagnosticData diagnosticData, CertificateWrapper currentCertificate, 
 			Date validationDate, Date usageTime, Context context, ValidationPolicy validationPolicy) {
 		super(i18nProvider, new XmlXCV());
-		result.setTitle(BasicBuildingBlockDefinition.X509_CERTIFICATE_VALIDATION.getTitle());
 
 		this.currentCertificate = currentCertificate;
 		this.validationDate = validationDate;
@@ -74,6 +73,11 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 		this.context = context;
 		this.validationPolicy = validationPolicy;
+	}
+    
+	@Override
+	protected MessageTag getTitle() {
+		return MessageTag.X509_CERTIFICATE_VALIDATION;
 	}
 
 	@Override

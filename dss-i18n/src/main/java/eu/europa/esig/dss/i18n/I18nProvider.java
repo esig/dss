@@ -54,13 +54,27 @@ public class I18nProvider {
 			
 		} else if (keySet.contains(messageTag.getId())) {
 			String patternString = bundle.getString(messageTag.getId());
-			return MessageFormat.format(patternString, messageTag.getArgs());
+			return MessageFormat.format(patternString, getArgs(messageTag));
 			
 		} else {
-			// in case if a value for the message tage does not exist
+			// in case if a value for the message tag does not exist
 			LOG.warn("A value for the MessageTag [{}] not defined!", messageTag.getId());
 			return messageTag.getId();
 		}
+	}
+	
+	/* Allows nested MessageTags */
+	private Object[] getArgs(MessageTag messageTag) {
+		Object[] args = null;
+		if (messageTag.getArgs() != null) {
+			args = messageTag.getArgs().clone();
+			for (int i = 0; i < args.length; ++i) {
+				if (args[i] instanceof MessageTag) {
+					args[i] = getMessage((MessageTag) args[i]);
+				}
+			}
+		}
+		return args;
 	}
 	
 }

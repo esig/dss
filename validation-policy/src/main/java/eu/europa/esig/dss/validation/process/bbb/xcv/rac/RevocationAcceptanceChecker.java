@@ -17,7 +17,6 @@ import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.SignatureIntactCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.ProspectiveCertificateChainCheck;
@@ -49,8 +48,12 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 			Date controlTime, POEExtraction poe, ValidationPolicy policy) {
 		this(i18nProvider, certificate, revocationData, controlTime, poe, policy, new ArrayList<String>());
 		result.setId(revocationData.getId());
-		result.setTitle(ValidationProcessDefinition.RAV.getTitle());
 		result.setRevocationProductionDate(revocationData.getProductionDate());
+	}
+	
+	@Override
+	protected MessageTag getTitle() {
+		return MessageTag.RAV;
 	}
 	
 	private RevocationAcceptanceChecker(I18nProvider i18nProvider, CertificateWrapper certificate, CertificateRevocationWrapper revocationData,

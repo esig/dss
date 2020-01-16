@@ -221,16 +221,9 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 			}
 		}
 		if (!XmlStatus.IGNORED.equals(status)) {
-			xmlConstraint.setAdditionalInfo(buildStringMessage(getAdditionalInfo()));
+			xmlConstraint.setAdditionalInfo(ValidationProcessUtils.buildStringMessage(i18nProvider, getAdditionalInfo()));
 		}
 		addConstraint(xmlConstraint);
-	}
-	
-	private String buildStringMessage(MessageTag messageTag) {
-		if (messageTag != null) {
-			return i18nProvider.getMessage(messageTag);
-		}
-		return null;
 	}
 
 	protected MessageTag getAdditionalInfo() {

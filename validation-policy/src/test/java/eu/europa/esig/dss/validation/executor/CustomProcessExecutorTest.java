@@ -1559,7 +1559,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		List<XmlConstraint> constraints = sav.getConstraint();
 		for (XmlConstraint constraint : constraints) {
 			if (MessageTag.BBB_SAV_ISSV.name().equals(constraint.getName().getNameId())) {
-				assertEquals(messageError, constraint.getAdditionalInfo());
+				assertTrue(constraint.getAdditionalInfo().contains(messageError));
 				structureWarnFound = true;
 			}
 		}

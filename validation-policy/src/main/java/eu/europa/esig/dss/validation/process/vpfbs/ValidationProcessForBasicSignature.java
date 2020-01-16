@@ -27,9 +27,9 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicSignature
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;
 import eu.europa.esig.dss.validation.process.vpfbs.checks.SignatureBasicBuildingBlocksCheck;
 
 /**
@@ -45,11 +45,14 @@ public class ValidationProcessForBasicSignature extends Chain<XmlValidationProce
 	public ValidationProcessForBasicSignature(I18nProvider i18nProvider, DiagnosticData diagnosticData, SignatureWrapper signature, 
 			Map<String, XmlBasicBuildingBlocks> bbbs) {
 		super(i18nProvider, new XmlValidationProcessBasicSignature());
-		result.setTitle(ValidationProcessDefinition.VPBS.getTitle());
-
 		this.diagnosticData = diagnosticData;
 		this.signature = signature;
 		this.bbbs = bbbs;
+	}
+	
+	@Override
+	protected MessageTag getTitle() {
+		return MessageTag.VPBS;
 	}
 
 	@Override

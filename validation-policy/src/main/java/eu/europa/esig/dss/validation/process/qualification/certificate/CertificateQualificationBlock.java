@@ -34,10 +34,10 @@ import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.ValidationTime;
 import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableTrustedListCheck;
 import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServiceFilter;
 import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServicesFilterFactory;
@@ -52,12 +52,16 @@ public class CertificateQualificationBlock extends Chain<XmlCertificate> {
 	public CertificateQualificationBlock(I18nProvider i18nProvider, XmlConclusion buildingBlocksConclusion, Date validationTime, CertificateWrapper signingCertificate,
 			List<XmlTLAnalysis> tlAnalysis) {
 		super(i18nProvider, new XmlCertificate());
-		result.setTitle(ValidationProcessDefinition.CERT_QUALIFICATION.getTitle());
 
 		this.buildingBlocksConclusion = buildingBlocksConclusion;
 		this.validationTime = validationTime;
 		this.signingCertificate = signingCertificate;
 		this.tlAnalysis = tlAnalysis;
+	}
+	
+	@Override
+	protected MessageTag getTitle() {
+		return MessageTag.CERT_QUALIFICATION;
 	}
 
 	@Override

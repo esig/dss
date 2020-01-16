@@ -30,10 +30,10 @@ import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.ValidationTime;
 import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.CaQcCheck;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.CertificateIssuedByConsistentTrustServiceCheck;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.CertificateTypeCoverageCheck;
@@ -70,7 +70,6 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 	public CertQualificationAtTimeBlock(I18nProvider i18nProvider, ValidationTime validationTime, Date date, CertificateWrapper signingCertificate,
 			List<TrustedServiceWrapper> caqcServices) {
 		super(i18nProvider, new XmlValidationCertificateQualification());
-		result.setTitle(ValidationProcessDefinition.CERT_QUALIFICATION.getTitle() + " @ " + validationTime);
 		result.setId(signingCertificate.getId());
 
 		this.validationTime = validationTime;
@@ -88,6 +87,26 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 		default:
 			throw new IllegalArgumentException("Unknown qualification time : " + validationTime);
 		}
+	}
+	
+	@Override
+	protected MessageTag getTitle() {
+		MessageTag message = MessageTag.CERT_QUALIFICATION;
+		MessageTag param;
+		switch (validationTime) {
+			case BEST_SIGNATURE_TIME:
+				param = MessageTag.VT_BEST_SIGNATURE_TIME;
+				break;
+			case CERTIFICATE_ISSUANCE_TIME:
+				param = MessageTag.VT_CERTIFICATE_ISSUANCE_TIME;
+				break;
+			case VALIDATION_TIME:
+				param = MessageTag.VT_VALIDATION_TIME;
+				break;
+			default:
+				throw new IllegalArgumentException(String.format("The validation time [%s] is not supported", validationTime));
+		}
+		return message.setArgs(param);
 	}
 
 	@Override

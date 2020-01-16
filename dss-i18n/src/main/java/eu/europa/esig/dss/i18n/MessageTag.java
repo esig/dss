@@ -426,12 +426,65 @@ public enum MessageTag {
 	
 	VALIDATION_TIME_OUT_OF_BOUNDS,
 
-	VALIDATION_TIME_WITH_ID;
+	VALIDATION_TIME_WITH_ID,
+	
+	/* BasicBuildingBlocks titles */
+
+	CRYPTOGRAPHIC_VERIFICATION,
+	
+	FORMAT_CHECKING,
+
+	IDENTIFICATION_OF_THE_SIGNING_CERTIFICATE,
+
+	PAST_SIGNATURE_VALIDATION,
+
+	PAST_CERTIFICATE_VALIDATION,
+
+	REVOCATION_FRESHNESS_CHECKER,
+
+	SIGNATURE_ACCEPTANCE_VALIDATION,
+
+	VALIDATION_CONTEXT_INITIALIZATION,
+
+	VALIDATION_TIME_SLIDING,
+
+	X509_CERTIFICATE_VALIDATION,
+	
+	/* Validation Process Definitions */
+
+	CERT_QUALIFICATION,
+	
+	DAAV,
+	
+	RAV,
+
+	SIG_QUALIFICATION,
+
+	SUB_XCV,
+
+	TL,
+
+	TST_QUALIFICATION,
+
+	VPBS,
+
+	VPFLTVD,
+
+	VPFSWATSP,
+
+	VPFTSP,
+	
+	/* Custom variables */
+
+	/* Validation time */
+	VT_BEST_SIGNATURE_TIME,
+	VT_CERTIFICATE_ISSUANCE_TIME,
+	VT_VALIDATION_TIME;
 	
 	private Object[] args;
 
 	/**
-	 * This method return the id code of the referred message.
+	 * This method returns the id code of the referred message.
 	 *
 	 * @return {@code String} message.
 	 */
@@ -450,6 +503,11 @@ public enum MessageTag {
 		return this;
 	}
 	
+	/**
+	 * This method returns an array of arguments to fill a message pattern
+	 * 
+	 * @return array of {@link Object} arguments
+	 */
 	public Object[] getArgs() {
 		return args;
 	}

@@ -25,10 +25,10 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.SignaturePolicyType;
 import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
-import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.vci.checks.SignaturePolicyHashValidCheck;
@@ -51,11 +51,14 @@ public class ValidationContextInitialization extends Chain<XmlVCI> {
 
 	public ValidationContextInitialization(I18nProvider i18nProvider, SignatureWrapper signature, Context context, ValidationPolicy validationPolicy) {
 		super(i18nProvider, new XmlVCI());
-		result.setTitle(BasicBuildingBlockDefinition.VALIDATION_CONTEXT_INITIALIZATION.getTitle());
-
 		this.signature = signature;
 		this.context = context;
 		this.validationPolicy = validationPolicy;
+	}
+    
+	@Override
+	protected MessageTag getTitle() {
+		return MessageTag.VALIDATION_CONTEXT_INITIALIZATION;
 	}
 
 	@Override

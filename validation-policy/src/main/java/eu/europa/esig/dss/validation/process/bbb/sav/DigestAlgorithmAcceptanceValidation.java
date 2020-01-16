@@ -26,6 +26,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.validation.process.Chain;
@@ -46,6 +47,11 @@ public class DigestAlgorithmAcceptanceValidation extends Chain<XmlSAV> {
 		this.currentTime = currentTime;
 		this.validationPolicy = validationPolicy;
 		this.context = context;
+	}
+	
+	@Override
+	protected MessageTag getTitle() {
+		return MessageTag.DAAV;
 	}
 	
 	@Override

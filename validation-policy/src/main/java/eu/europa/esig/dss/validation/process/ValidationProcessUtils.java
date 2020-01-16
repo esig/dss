@@ -11,6 +11,8 @@ import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 
 public class ValidationProcessUtils {
 
@@ -79,6 +81,20 @@ public class ValidationProcessUtils {
 	 */
 	public static String getFormattedDate(Date date) {
 		return sdf.format(date);
+	}
+	
+	/**
+	 * Builds a String message from the provided {@code messageTag}
+	 * 
+	 * @param i18nProvider {@link I18nProvider} to build a message
+	 * @param messageTag {@link MessageTag} defining the message to be build
+	 * @return final message {@link String}
+	 */
+	public static String buildStringMessage(I18nProvider i18nProvider, MessageTag messageTag) {
+		if (messageTag != null) {
+			return i18nProvider.getMessage(messageTag);
+		}
+		return null;
 	}
 
 }

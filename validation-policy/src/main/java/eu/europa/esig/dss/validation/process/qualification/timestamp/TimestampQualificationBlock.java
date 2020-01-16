@@ -12,10 +12,10 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.enumerations.TimestampQualification;
 import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.GrantedStatusCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableTrustedListCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.CertificatePathTrustedCheck;
@@ -33,11 +33,13 @@ public class TimestampQualificationBlock extends Chain<XmlValidationTimestampQua
 
 	public TimestampQualificationBlock(I18nProvider i18nProvider, TimestampWrapper timestamp, List<XmlTLAnalysis> tlAnalysis) {
 		super(i18nProvider, new XmlValidationTimestampQualification());
-
-		result.setTitle(ValidationProcessDefinition.TST_QUALIFICATION.getTitle());
-
 		this.timestamp = timestamp;
 		this.tlAnalysis = tlAnalysis;
+	}
+	
+	@Override
+	protected MessageTag getTitle() {
+		return MessageTag.TST_QUALIFICATION;
 	}
 
 	@Override

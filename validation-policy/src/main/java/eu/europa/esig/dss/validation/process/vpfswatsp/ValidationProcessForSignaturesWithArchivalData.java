@@ -42,11 +42,11 @@ import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;
 import eu.europa.esig.dss.validation.process.bbb.sav.DigestAlgorithmAcceptanceValidation;
 import eu.europa.esig.dss.validation.process.bbb.sav.MessageImprintDigestAlgorithmValidation;
 import eu.europa.esig.dss.validation.process.bbb.sav.SignatureAcceptanceValidation;
@@ -74,8 +74,6 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	public ValidationProcessForSignaturesWithArchivalData(I18nProvider i18nProvider, XmlSignature signatureAnalysis, SignatureWrapper signature, 
 			DiagnosticData diagnosticData, Map<String, XmlBasicBuildingBlocks> bbbs, ValidationPolicy policy, Date currentTime) {
 		super(i18nProvider, new XmlValidationProcessArchivalData());
-		result.setTitle(ValidationProcessDefinition.VPFSWATSP.getTitle());
-
 		this.validationProcessLongTermData = signatureAnalysis.getValidationProcessLongTermData();
 		this.xmlTimestamps = signatureAnalysis.getTimestamp();
 		this.signature = signature;
@@ -83,6 +81,11 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		this.bbbs = bbbs;
 		this.policy = policy;
 		this.currentTime = currentTime;
+	}
+	
+	@Override
+	protected MessageTag getTitle() {
+		return MessageTag.VPFSWATSP;
 	}
 
 	@Override

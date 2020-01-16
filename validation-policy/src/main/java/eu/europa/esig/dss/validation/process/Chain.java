@@ -28,6 +28,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 
@@ -84,6 +85,8 @@ public abstract class Chain<T extends XmlConstraintsConclusion> {
 		if (firstItem != null) {
 			firstItem.execute();
 		}
+		
+		result.setTitle(ValidationProcessUtils.buildStringMessage(i18nProvider, getTitle()));
 
 		if (result.getConclusion() == null) {
 			XmlConclusion conclusion = new XmlConclusion();
@@ -95,6 +98,12 @@ public abstract class Chain<T extends XmlConstraintsConclusion> {
 
 		return result;
 	}
+	
+	/**
+	 * Returns title of a Chain (i.e. BasicBuildingBlock title)
+	 * @return {@link MessageTag}
+	 */
+	protected abstract MessageTag getTitle();
 
 	protected void addAdditionalInfo() {
 		// default is empty

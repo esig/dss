@@ -53,13 +53,13 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.SignatureAcceptanceValidation;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
@@ -96,7 +96,6 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	public ValidationProcessForSignaturesWithLongTermValidationData(I18nProvider i18nProvider, XmlSignature signatureAnalysis, DiagnosticData diagnosticData,
 			SignatureWrapper currentSignature, Map<String, XmlBasicBuildingBlocks> bbbs, ValidationPolicy policy, Date currentDate) {
 		super(i18nProvider, new XmlValidationProcessLongTermData());
-		result.setTitle(ValidationProcessDefinition.VPFLTVD.getTitle());
 
 		this.basicSignatureValidation = signatureAnalysis.getValidationProcessBasicSignature();
 		this.xmlTimestamps = signatureAnalysis.getTimestamp();
@@ -107,6 +106,11 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 
 		this.policy = policy;
 		this.currentDate = currentDate;
+	}
+	
+	@Override
+	protected MessageTag getTitle() {
+		return MessageTag.VPFLTVD;
 	}
 
 	@Override

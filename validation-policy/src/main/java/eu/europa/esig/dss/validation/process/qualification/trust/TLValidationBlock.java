@@ -25,13 +25,13 @@ import java.util.Date;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
 import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
 import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;
 import eu.europa.esig.dss.validation.process.qualification.trust.checks.TLFreshnessCheck;
 import eu.europa.esig.dss.validation.process.qualification.trust.checks.TLNotExpiredCheck;
 import eu.europa.esig.dss.validation.process.qualification.trust.checks.TLVersionCheck;
@@ -46,7 +46,6 @@ public class TLValidationBlock extends Chain<XmlTLAnalysis> {
 	public TLValidationBlock(I18nProvider i18nProvider, XmlTrustedList currentTL, Date currentTime, ValidationPolicy policy) {
 		super(i18nProvider, new XmlTLAnalysis());
 
-		result.setTitle(ValidationProcessDefinition.TL.getTitle() + " " + currentTL.getCountryCode());
 		result.setCountryCode(currentTL.getCountryCode());
 		result.setURL(currentTL.getUrl());
 		result.setId(currentTL.getId());
@@ -54,6 +53,11 @@ public class TLValidationBlock extends Chain<XmlTLAnalysis> {
 		this.currentTL = currentTL;
 		this.currentTime = currentTime;
 		this.policy = policy;
+	}
+	
+	@Override
+	protected MessageTag getTitle() {
+		return MessageTag.TST_QUALIFICATION.setArgs(currentTL.getCountryCode());
 	}
 
 	@Override

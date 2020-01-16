@@ -38,10 +38,10 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.ValidationTime;
 import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;
 import eu.europa.esig.dss.validation.process.qualification.certificate.CertQualificationAtTimeBlock;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableTrustedListCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AdESAcceptableCheck;
@@ -65,13 +65,17 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 	public SignatureQualificationBlock(I18nProvider i18nProvider, String signatureId, XmlConstraintsConclusionWithProofOfExistence etsi319102validation,
 			CertificateWrapper signingCertificate, List<XmlTLAnalysis> tlAnalysis) {
 		super(i18nProvider, new XmlValidationSignatureQualification());
-		result.setTitle(ValidationProcessDefinition.SIG_QUALIFICATION.getTitle());
 		result.setId(signatureId);
 
 		this.etsi319102Conclusion = etsi319102validation.getConclusion();
 		this.bestSignatureTime = etsi319102validation.getProofOfExistence().getTime();
 		this.signingCertificate = signingCertificate;
 		this.tlAnalysis = tlAnalysis;
+	}
+	
+	@Override
+	protected MessageTag getTitle() {
+		return MessageTag.SIG_QUALIFICATION;
 	}
 
 	@Override

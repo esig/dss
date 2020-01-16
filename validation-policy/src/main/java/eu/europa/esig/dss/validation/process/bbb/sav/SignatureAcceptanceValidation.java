@@ -27,11 +27,11 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
-import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CertifiedRolesCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ClaimedRolesCheck;
@@ -58,8 +58,12 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 	public SignatureAcceptanceValidation(I18nProvider i18nProvider, DiagnosticData diagnosticData, Date currentTime, SignatureWrapper signature, 
 			Context context, ValidationPolicy validationPolicy) {
 		super(i18nProvider, signature, currentTime, context, validationPolicy);
-		result.setTitle(BasicBuildingBlockDefinition.SIGNATURE_ACCEPTANCE_VALIDATION.getTitle());
 		this.diagnosticData = diagnosticData;
+	}
+    
+	@Override
+	protected MessageTag getTitle() {
+		return MessageTag.SIGNATURE_ACCEPTANCE_VALIDATION;
 	}
 
 	@Override

@@ -32,9 +32,9 @@ import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.isc.checks.DigestValueMatchCheck;
@@ -57,11 +57,14 @@ public class IdentificationOfTheSigningCertificate extends Chain<XmlISC> {
 
 	public IdentificationOfTheSigningCertificate(I18nProvider i18nProvider, TokenProxy token, Context context, ValidationPolicy validationPolicy) {
 		super(i18nProvider, new XmlISC());
-		result.setTitle(BasicBuildingBlockDefinition.IDENTIFICATION_OF_THE_SIGNING_CERTIFICATE.getTitle());
-
 		this.token = token;
 		this.context = context;
 		this.validationPolicy = validationPolicy;
+	}
+	
+	@Override
+	protected MessageTag getTitle() {
+		return MessageTag.IDENTIFICATION_OF_THE_SIGNING_CERTIFICATE;
 	}
 
 	@Override
