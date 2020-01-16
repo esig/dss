@@ -157,7 +157,7 @@ public abstract class AbstractSignatureService<SP extends AbstractSignatureParam
 
 	@Override
 	public DSSDocument timestamp(DSSDocument toTimestampDocument, SP parameters) {
-		throw new DSSException("Unsupported operation for this file format");
+		throw new UnsupportedOperationException("Unsupported operation for this file format");
 	}
 
 }

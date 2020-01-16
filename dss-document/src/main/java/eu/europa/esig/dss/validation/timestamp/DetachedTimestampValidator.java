@@ -94,8 +94,8 @@ public class DetachedTimestampValidator extends SignedDocumentValidator {
 			try {
 				timestampToken = new TimestampToken(DSSUtils.toByteArray(document), timestampType, validationCertPool);
 				timestampToken.setFileName(document.getName());
-
 				timestampToken.matchData(getTimestampedData());
+				timestampToken.setTimestampScopes(getTimestampSignatureScope());
 			} catch (CMSException | TSPException | IOException e) {
 				throw new DSSException("Unable to parse timestamp", e);
 			}
@@ -133,14 +133,15 @@ public class DetachedTimestampValidator extends SignedDocumentValidator {
 	 * @return a list of {@link SignatureScope}s
 	 */
 	protected List<SignatureScope> getTimestampSignatureScope() {
-		SignatureScope signatureScope = null;
 		DSSDocument timestampedData = getTimestampedData();
-		if (timestampedData instanceof DigestDocument) {
-			signatureScope = new DigestSignatureScope("Digest document", ((DigestDocument) timestampedData).getExistingDigest());
-		} else {
-			signatureScope = new FullSignatureScope("Full document", DSSUtils.getDigest(getDefaultDigestAlgorithm(), timestampedData));
+		if (timestampedData != null) {
+			if (timestampedData instanceof DigestDocument) {
+				return Arrays.asList(new DigestSignatureScope("Digest document", ((DigestDocument) timestampedData).getExistingDigest()));
+			} else {
+				return Arrays.asList(new FullSignatureScope("Full document", DSSUtils.getDigest(getDefaultDigestAlgorithm(), timestampedData)));
+			}
 		}
-		return Arrays.asList(signatureScope);
+		return Collections.emptyList();
 	}
 
 	@Override

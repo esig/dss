@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pades.validation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -42,7 +43,6 @@ import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 /**
@@ -124,7 +124,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 						
 						PAdESSignatureScopeFinder signatureScopeFinder = new PAdESSignatureScopeFinder();
 						signatureScopeFinder.setDefaultDigestAlgorithm(getDefaultDigestAlgorithm());
-						SignatureScope signatureScope = signatureScopeFinder.findSignatureScope(pdfDocTimestampRevision);
+						timestampToken.setTimestampScopes(Arrays.asList(signatureScopeFinder.findSignatureScope(pdfDocTimestampRevision)));
 						
 						timestamps.add(timestampToken);
 						

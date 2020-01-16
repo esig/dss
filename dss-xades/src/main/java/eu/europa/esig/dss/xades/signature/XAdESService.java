@@ -193,7 +193,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 
 	@Override
 	public DSSDocument timestamp(List<DSSDocument> toTimestampDocuments, XAdESSignatureParameters parameters) {
-		throw new DSSException("Format not supported");
+		throw new UnsupportedOperationException("Unsupported operation for this file format");
 	}
 
 	/**

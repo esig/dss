@@ -66,6 +66,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateRef;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.PdfRevision;
+import eu.europa.esig.dss.validation.scope.SignatureScope;
 
 /**
  * SignedToken containing a TimeStamp.
@@ -101,6 +102,11 @@ public class TimestampToken extends Token {
 	 */
 	private String fileName;
 	
+	/**
+	 * Only present for detached timestamps;
+	 */
+	private List<SignatureScope> timestampScopes;
+
 	/* In case of ASiC-E CAdES */
 	private ManifestFile manifestFile;
 	
@@ -566,6 +572,19 @@ public class TimestampToken extends Token {
 
 	public void setTimestampIncludes(List<TimestampInclude> timestampIncludes) {
 		this.timestampIncludes = timestampIncludes;
+	}
+
+	/**
+	 * Returns the scope of the current timestamp (detached timestamps only)
+	 * 
+	 * @return a list of SignatureScope
+	 */
+	public List<SignatureScope> getTimestampScopes() {
+		return timestampScopes;
+	}
+
+	public void setTimestampScopes(List<SignatureScope> timestampScopes) {
+		this.timestampScopes = timestampScopes;
 	}
 
 	/**

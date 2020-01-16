@@ -81,6 +81,7 @@ public class ASiCEWithCAdESTimestampValidator extends DetachedTimestampValidator
 		TimestampToken timestamp = super.getTimestamp();
 		timestamp.setManifestFile(getCoveredManifest());
 		timestamp.setArchiveTimestampType(ArchiveTimestampType.CAdES_DETACHED);
+		timestamp.setTimestampScopes(getTimestampSignatureScope());
 		return timestamp;
 	}
 
