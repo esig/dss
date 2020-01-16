@@ -55,7 +55,6 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 	private IPdfObjFactory pdfObjectFactory = new ServiceLoaderPdfObjFactory();
 
 	PDFDocumentValidator() {
-		super(null);
 	}
 
 	/**
@@ -107,7 +106,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 	}
 
 	@Override
-	protected List<TimestampToken> getExternalTimestamps() {
+	public List<TimestampToken> getDetachedTimestamps() {
 		final List<TimestampToken> timestamps = new ArrayList<TimestampToken>();
 
 		PDFSignatureService pdfSignatureService = pdfObjectFactory.newPAdESSignatureService();

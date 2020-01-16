@@ -10,4 +10,8 @@ module jpms_dss_document {
 
     uses eu.europa.esig.dss.validation.DocumentValidatorFactory;
     uses eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
+    
+
+    provides eu.europa.esig.dss.validation.DocumentValidatorFactory with eu.europa.esig.dss.validation.timestamp.DetachedTimestampValidatorFactory;
+
 }

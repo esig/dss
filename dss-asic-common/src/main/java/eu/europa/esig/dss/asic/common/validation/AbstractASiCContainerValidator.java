@@ -34,17 +34,16 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.ContainerInfo;
+import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.ManifestFile;
-import eu.europa.esig.dss.validation.SignatureValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import eu.europa.esig.dss.validation.timestamp.TimestampValidator;
 
 public abstract class AbstractASiCContainerValidator extends SignedDocumentValidator {
 
-	protected List<SignatureValidator> signatureValidators;
+	protected List<DocumentValidator> signatureValidators;
 
-	protected List<TimestampValidator> timestampValidators;
+	protected List<DocumentValidator> timestampValidators;
 
 	protected ASiCExtractResult extractResult;
 
@@ -54,12 +53,10 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	 * Default constructor used with reflexion (see DefaultDocumentValidator)
 	 */
 	private AbstractASiCContainerValidator() {
-		super(null);
 		this.document = null;
 	}
 
 	protected AbstractASiCContainerValidator(final DSSDocument document) {
-		super(null);
 		this.document = document;
 	}
 
@@ -132,8 +129,8 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 
 		final List<AdvancedSignature> allSignatureList = new ArrayList<AdvancedSignature>();
 
-		List<SignatureValidator> currentValidators = getSignatureValidators();
-		for (SignatureValidator signatureValidator : currentValidators) {
+		List<DocumentValidator> currentValidators = getSignatureValidators();
+		for (DocumentValidator signatureValidator : currentValidators) {
 			List<AdvancedSignature> currentValidatorSignatures = new ArrayList<AdvancedSignature>();
 			for (AdvancedSignature advancedSignature : signatureValidator.getSignatures()) {
 				currentValidatorSignatures.add(advancedSignature);
@@ -154,21 +151,13 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	@Override
 	public List<AdvancedSignature> getSignatures() {
 		final List<AdvancedSignature> signatureList = new ArrayList<AdvancedSignature>();
-		for (SignatureValidator validator : getSignatureValidators()) {
+		for (DocumentValidator validator : getSignatureValidators()) {
 			signatureList.addAll(validator.getSignatures());
 		}
 		return signatureList;
 	}
 
-	protected abstract List<SignatureValidator> getSignatureValidators();
-
-	protected List<TimestampValidator> getTimestampValidators() {
-		if (timestampValidators == null) {
-			// Only applicable with ASiC and CAdES
-			timestampValidators = Collections.emptyList();
-		}
-		return timestampValidators;
-	}
+	protected abstract List<DocumentValidator> getSignatureValidators();
 
 	protected List<DSSDocument> getSignatureDocuments() {
 		return extractResult.getSignatureDocuments();

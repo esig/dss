@@ -24,19 +24,37 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Date;
+import java.util.List;
 
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.validation.executor.DocumentProcessExecutor;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 /**
  * This is the interface to be used when implementing different signature validators.
  *
  */
 public interface DocumentValidator extends ProcessExecutorProvider<DocumentProcessExecutor> {
-	
+
+	/**
+	 * Retrieves the signatures found in the document
+	 *
+	 * @return a list of AdvancedSignatures for validation purposes
+	 */
+	List<AdvancedSignature> getSignatures();
+
+	/**
+	 * Retrieves the detached timestamps found in the document
+	 *
+	 * @return a list of TimestampToken for validation purposes
+	 */
+	List<TimestampToken> getDetachedTimestamps();
+
 	/**
 	 * Provides a {@code CertificateVerifier} to be used during the validation process.
 	 *
@@ -53,6 +71,38 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	void setValidationTime(Date validationTime);
 
 	/**
+	 * Sets the {@code List} of {@code DSSDocument} containing the original contents to sign, for detached signature
+	 * scenarios.
+	 *
+	 * @param detachedContent
+	 *            the {@code List} of {@code DSSDocument} to set
+	 */
+	void setDetachedContents(final List<DSSDocument> detachedContent);
+
+	/**
+	 * Sets the {@code List} of {@code DSSDocument} containing the original container content for ASiC signatures.
+	 *
+	 * @param archiveContents
+	 *            the {@code List} of {@code DSSDocument} to set
+	 */
+	void setContainerContents(final List<DSSDocument> archiveContents);
+
+	/**
+	 * Sets the {@code List} of {@code ManifestFile}s found in the signature file.
+	 *
+	 * @param manifestFiles
+	 *            the {@code List} of {@code ManifestFile} to set
+	 */
+	void setManifestFiles(final List<ManifestFile> manifestFiles);
+
+	/**
+	 * This method allows to define the signing certificate. It is useful in the case of non AdES signatures.
+	 *
+	 * @param x509Certificate
+	 */
+	void defineSigningCertificate(final CertificateToken x509Certificate);
+
+	/**
 	 * This method allows to specify the validation level (Basic / Timestamp /
 	 * Long Term / Archival). By default, the selected validation is ARCHIVAL
 	 *
@@ -67,10 +117,16 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	 * @param enableEtsiValidationReport - TRUE if the report must be generated, FALSE otherwise
 	 */
 	void setEnableEtsiValidationReport(boolean enableEtsiValidationReport);
+	
+	/**
+	 * This method allows to set a provider for Signature policies
+	 * 
+	 * @param signaturePolicyProvider
+	 */
+	void setSignaturePolicyProvider(SignaturePolicyProvider signaturePolicyProvider);
 
 	/**
-	 * Validates the document and all its signatures. The default constraint file is
-	 * used.
+	 * Validates the document and all its signatures. The default constraint file is used.
 	 *
 	 * @return {@code Reports}: diagnostic data, detailed report and simple report
 	 */
@@ -135,5 +191,52 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	 * @return
 	 */
 	Reports validateDocument(final ValidationPolicy validationPolicy);
+
+	/**
+	 * This method returns the signed document(s) without their signature(s)
+	 *
+	 * @param signatureId
+	 *            the DSS ID of the signature to extract original signer data for
+	 */
+	List<DSSDocument> getOriginalDocuments(final String signatureId);
+
+	/**
+	 * This method returns the signed document(s) without their signature(s)
+	 *
+	 * @param advancedSignature
+	 *            {@link AdvancedSignature} to find signer documents for
+	 */
+	List<DSSDocument> getOriginalDocuments(final AdvancedSignature advancedSignature);
+	
+	/**
+	 * Prepares the {@code validationContext} for signature validation process and
+	 * returns a list of signatures to validate
+	 * 
+	 * @param validationContext
+	 *                          {@link ValidationContext}
+	 * @param allSignatures
+	 *                          a list of all {@link AdvancedSignature}s to be
+	 *                          validated
+	 */
+	void prepareSignatureValidationContext(final ValidationContext validationContext, final List<AdvancedSignature> allSignatures);
+
+	/**
+	 * Prepares the {@code validationContext} for a timestamp validation process
+	 * 
+	 * @param validationContext
+	 *                          {@link ValidationContext}
+	 * @param timestamps
+	 *                          a list of detached timestamps
+	 */
+	void prepareDetachedTimestampValidationContext(final ValidationContext validationContext, List<TimestampToken> timestamps);
+
+	/**
+	 * This method process the signature validation on the given {@code allSignatureList}
+	 * 
+	 * @param allSignatureList list of {@link AdvancedSignature}s to be validated
+	 */
+	void processSignaturesValidation(List<AdvancedSignature> allSignatureList);
+
+	void findSignatureScopes(List<AdvancedSignature> currentValidatorSignatures);
 
 }

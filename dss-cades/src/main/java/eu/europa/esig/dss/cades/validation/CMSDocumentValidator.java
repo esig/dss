@@ -91,7 +91,10 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 	@Override
 	public boolean isSupported(DSSDocument dssDocument) {
 		byte firstByte = DSSUtils.readFirstByte(dssDocument);
-		return DSSASN1Utils.isASN1SequenceTag(firstByte);
+		if (DSSASN1Utils.isASN1SequenceTag(firstByte)) {
+			return !DSSUtils.isTimestampToken(dssDocument);
+		}
+		return false;
 	}
 
 	@Override

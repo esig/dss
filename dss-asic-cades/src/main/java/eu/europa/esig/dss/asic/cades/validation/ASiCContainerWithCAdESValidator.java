@@ -40,12 +40,11 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
-import eu.europa.esig.dss.validation.SignatureValidator;
-import eu.europa.esig.dss.validation.timestamp.SingleTimestampValidator;
+import eu.europa.esig.dss.validation.timestamp.DetachedTimestampValidator;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import eu.europa.esig.dss.validation.timestamp.TimestampValidator;
 
 /**
  * This class is an implementation to validate ASiC containers with CAdES signature(s)
@@ -76,9 +75,9 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	}
 	
 	@Override
-	protected List<SignatureValidator> getSignatureValidators() {
+	protected List<DocumentValidator> getSignatureValidators() {
 		if (signatureValidators == null) {
-			signatureValidators = new ArrayList<SignatureValidator>();
+			signatureValidators = new ArrayList<DocumentValidator>();
 			for (final DSSDocument signature : getSignatureDocuments()) {
 				CMSDocumentForASiCValidator cadesValidator = new CMSDocumentForASiCValidator(signature);
 				cadesValidator.setValidationCertPool(validationCertPool);
@@ -94,10 +93,9 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 		return signatureValidators;
 	}
 
-	@Override
-	protected List<TimestampValidator> getTimestampValidators() {
+	protected List<DocumentValidator> getTimestampValidators() {
 		if (timestampValidators == null) {
-			timestampValidators = new ArrayList<TimestampValidator>();
+			timestampValidators = new ArrayList<DocumentValidator>();
 			for (final DSSDocument timestamp : getTimestampDocuments()) {
 				// timestamp's manifest can be a simple ASiCManifest as well as
 				// ASiCArchiveManifest file
@@ -108,7 +106,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 						ASiCEWithCAdESTimestampValidator timestampValidator = new ASiCEWithCAdESTimestampValidator(timestamp,
 								getTimestampType(validatedManifestFile), validatedManifestFile, getAllDocuments());
 
-						timestampValidator.setDetachedContent(archiveManifest);
+						timestampValidator.setTimestampedData(archiveManifest);
 						timestampValidator.setValidationCertPool(validationCertPool);
 						timestampValidator.setCertificateVerifier(certificateVerifier);
 						timestampValidators.add(timestampValidator);
@@ -118,9 +116,8 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 				} else {
 					List<DSSDocument> signedDocuments = getSignedDocuments();
 					if (Utils.collectionSize(signedDocuments) == 1) {
-						SingleTimestampValidator timestampValidator = new SingleTimestampValidator(timestamp);
-						timestampValidator.setDetachedContent(signedDocuments.get(0));
-						timestampValidator.setValidationCertPool(validationCertPool);
+						DetachedTimestampValidator timestampValidator = new DetachedTimestampValidator(timestamp);
+						timestampValidator.setTimestampedData(signedDocuments.get(0));
 						timestampValidator.setCertificateVerifier(certificateVerifier);
 						timestampValidators.add(timestampValidator);
 					} else {
@@ -133,10 +130,10 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	}
 	
 	@Override
-	protected List<TimestampToken> getExternalTimestamps() {
+	public List<TimestampToken> getDetachedTimestamps() {
 		List<TimestampToken> independantTimestamps = new ArrayList<TimestampToken>();
-		for (TimestampValidator timestampValidator : getTimestampValidators()) {
-			independantTimestamps.add(timestampValidator.getTimestamp());
+		for (DocumentValidator timestampValidator : getTimestampValidators()) {
+			independantTimestamps.addAll(timestampValidator.getDetachedTimestamps());
 		}
 		return independantTimestamps;
 	}
@@ -159,8 +156,8 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	protected List<TimestampToken> attachExternalTimestamps(List<AdvancedSignature> allSignatures) {
 		List<TimestampToken> externalTimestamps = new ArrayList<TimestampToken>();
 		
-		List<TimestampValidator> currentTimestampValidators = getTimestampValidators();
-		for (TimestampValidator tspValidator : currentTimestampValidators) {
+		List<DocumentValidator> currentTimestampValidators = getTimestampValidators();
+		for (DocumentValidator tspValidator : currentTimestampValidators) {
 			TimestampToken timestamp = getExternalTimestamp(tspValidator, allSignatures);
 			if (timestamp != null) {
 				externalTimestamps.add(timestamp);
@@ -170,7 +167,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 		return externalTimestamps;
 	}
 	
-	private TimestampToken getExternalTimestamp(TimestampValidator tspValidator, List<AdvancedSignature> allSignatures) {
+	private TimestampToken getExternalTimestamp(DocumentValidator tspValidator, List<AdvancedSignature> allSignatures) {
 
 		if (tspValidator instanceof ASiCEWithCAdESTimestampValidator) {
 
@@ -198,20 +195,11 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 				}
 			}
 			return timestamp;
-		} else if (tspValidator instanceof SingleTimestampValidator) {
-			return ((SingleTimestampValidator) tspValidator).getTimestamp();
+		} else if (tspValidator instanceof DetachedTimestampValidator) {
+			return ((DetachedTimestampValidator) tspValidator).getTimestamp();
 		}
 		
 		return null;
-	}
-	
-	public List<TimestampToken> getTimestamps() {
-		List<TimestampValidator> timestampValidators = getTimestampValidators();
-		List<TimestampToken> timestamps = new ArrayList<TimestampToken>();
-		for (TimestampValidator timestampValidator : timestampValidators) {
-			timestamps.add(timestampValidator.getTimestamp());
-		}
-		return timestamps;
 	}
 	
 	private ManifestFile getValidatedManifestFile(DSSDocument manifest) {

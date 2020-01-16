@@ -69,7 +69,6 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	}
 
 	XMLDocumentValidator() {
-		super(null);
 	}
 
 	/**

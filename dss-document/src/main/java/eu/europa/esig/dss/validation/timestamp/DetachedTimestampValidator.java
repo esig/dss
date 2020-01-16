@@ -33,28 +33,39 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
-import eu.europa.esig.dss.validation.AbstractDocumentValidator;
+import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.scope.DigestSignatureScope;
 import eu.europa.esig.dss.validation.scope.FullSignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 
-public class SingleTimestampValidator extends AbstractDocumentValidator implements TimestampValidator {
+public class DetachedTimestampValidator extends SignedDocumentValidator {
 
-	protected final TimestampType timestampType;
-
-	protected DSSDocument timestampedData;
+	protected TimestampType timestampType;
 	protected TimestampToken timestampToken;
 
-	public SingleTimestampValidator(final DSSDocument timestampFile) {
+	DetachedTimestampValidator() {
+	}
+
+	public DetachedTimestampValidator(final DSSDocument timestampFile) {
 		this(timestampFile, TimestampType.CONTENT_TIMESTAMP);
 	}
 
-	public SingleTimestampValidator(final DSSDocument timestampFile, TimestampType timestampType) {
+	public DetachedTimestampValidator(final DSSDocument timestampFile, TimestampType timestampType) {
 		this.document = timestampFile;
 		this.timestampType = timestampType;
+	}
+
+	@Override
+	public boolean isSupported(DSSDocument dssDocument) {
+		byte firstByte = DSSUtils.readFirstByte(dssDocument);
+		if (DSSASN1Utils.isASN1SequenceTag(firstByte)) {
+			return DSSUtils.isTimestampToken(dssDocument);
+		}
+		return false;
 	}
 
 	@Override
@@ -63,21 +74,21 @@ public class SingleTimestampValidator extends AbstractDocumentValidator implemen
 	}
 
 	@Override
-	protected List<TimestampToken> getExternalTimestamps() {
+	public List<TimestampToken> getDetachedTimestamps() {
 		return Collections.singletonList(getTimestamp());
 	}
-	
+
 	/**
 	 * Returns a single TimestampToken to be validated
 	 * 
 	 * @return {@link TimestampToken}
 	 */
-	@Override
 	public TimestampToken getTimestamp() {
 		if (timestampToken == null) {
+			DSSDocument timestampedData = getTimestampedData();
+
 			Objects.requireNonNull(certificateVerifier, "CertificateVerifier is not defined");
 			Objects.requireNonNull(document, "The timestampFile must be defined!");
-			Objects.requireNonNull(timestampedData, "The timestampedData must be defined!");
 			Objects.requireNonNull(timestampType, "The TimestampType must be defined!");
 
 			try {
@@ -101,14 +112,18 @@ public class SingleTimestampValidator extends AbstractDocumentValidator implemen
 		super.setValidationLevel(validationLevel);
 	}
 
-	@Override
-	public void setDetachedContent(DSSDocument document) {
-		this.timestampedData = document;
+	public void setTimestampedData(DSSDocument document) {
+		setDetachedContents(Arrays.asList(document));
 	}
 
-	@Override
-	public void setValidationCertPool(CertificatePool validationCertPool) {
-		this.validationCertPool = validationCertPool;
+	public DSSDocument getTimestampedData() {
+		int size = detachedContents.size();
+		if (size == 0) {
+			throw new DSSException("Timestamped data is not provided");
+		} else if (size > 1) {
+			throw new DSSException("Too many files");
+		}
+		return detachedContents.get(0);
 	}
 
 	/**
@@ -118,12 +133,25 @@ public class SingleTimestampValidator extends AbstractDocumentValidator implemen
 	 */
 	protected List<SignatureScope> getTimestampSignatureScope() {
 		SignatureScope signatureScope = null;
+		DSSDocument timestampedData = getTimestampedData();
 		if (timestampedData instanceof DigestDocument) {
 			signatureScope = new DigestSignatureScope("Digest document", ((DigestDocument) timestampedData).getExistingDigest());
 		} else {
 			signatureScope = new FullSignatureScope("Full document", DSSUtils.getDigest(getDefaultDigestAlgorithm(), timestampedData));
 		}
 		return Arrays.asList(signatureScope);
+	}
+
+	@Override
+	public List<DSSDocument> getOriginalDocuments(String signatureId) {
+		// TODO
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) {
+		// TODO
+		throw new UnsupportedOperationException();
 	}
 
 }
