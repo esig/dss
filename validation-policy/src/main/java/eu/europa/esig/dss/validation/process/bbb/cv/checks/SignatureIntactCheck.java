@@ -76,8 +76,8 @@ public class SignatureIntactCheck<T extends XmlConstraintsConclusion> extends Ch
 	}
 	
 	@Override
-	protected String getAdditionalInfo() {
-		return String.format("Id = '%s'", token.getId());
+	protected MessageTag getAdditionalInfo() {
+		return MessageTag.TOKEN_ID.setArgs(token.getId());
 	}
 
 }

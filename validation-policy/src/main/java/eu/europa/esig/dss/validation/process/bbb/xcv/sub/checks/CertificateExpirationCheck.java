@@ -20,20 +20,17 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
-import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.validation.process.AdditionalInfo;
-import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
 public class CertificateExpirationCheck extends ChainItem<XmlSubXCV> {
 
@@ -55,13 +52,11 @@ public class CertificateExpirationCheck extends ChainItem<XmlSubXCV> {
 	}
 
 	@Override
-	protected String getAdditionalInfo() {
-		SimpleDateFormat sdf = new SimpleDateFormat(AdditionalInfo.DATE_FORMAT);
-		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-		String notBeforeStr = certificate.getNotBefore() == null ? " ? " : sdf.format(certificate.getNotBefore());
-		String notAfterStr = certificate.getNotAfter() == null ? " ? " : sdf.format(certificate.getNotAfter());
+	protected MessageTag getAdditionalInfo() {
+		String notBeforeStr = certificate.getNotBefore() == null ? " ? " : ValidationProcessUtils.getFormattedDate(certificate.getNotBefore());
+		String notAfterStr = certificate.getNotAfter() == null ? " ? " : ValidationProcessUtils.getFormattedDate(certificate.getNotAfter());
 		Object[] params = new Object[] { notBeforeStr, notAfterStr };
-		return MessageFormat.format(AdditionalInfo.CERTIFICATE_VALIDITY, params);
+		return MessageTag.CERTIFICATE_VALIDITY.setArgs(params);
 	}
 
 	@Override

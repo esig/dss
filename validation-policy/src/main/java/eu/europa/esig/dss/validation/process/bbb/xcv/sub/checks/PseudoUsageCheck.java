@@ -20,18 +20,15 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
-import java.text.MessageFormat;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.process.AdditionalInfo;
-import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.pseudo.JoinedPseudoStrategy;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.pseudo.PseudoStrategy;
 
@@ -55,10 +52,9 @@ public class PseudoUsageCheck extends ChainItem<XmlSubXCV> {
 	}
 
 	@Override
-	protected String getAdditionalInfo() {
+	protected MessageTag getAdditionalInfo() {
 		if (Utils.isStringNotEmpty(pseudo)) {
-			Object[] params = new Object[] { pseudo };
-			return MessageFormat.format(AdditionalInfo.PSEUDO, params);
+			return MessageTag.PSEUDO.setArgs(pseudo);
 		}
 		return null;
 	}

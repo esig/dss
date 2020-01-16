@@ -368,7 +368,67 @@ public enum MessageTag {
 	BBB_ACCEPT,
 	BBB_ACCEPT_ANS,
 	
-	EMPTY;
+	EMPTY,
+	
+	/* Additional Info */
+	
+	BEST_SIGNATURE_TIME,
+	
+	CERTIFICATE_ID,
+
+	CERTIFICATE_VALIDITY,
+
+	CONTROL_TIME,
+	
+	CRYPTOGRAPHIC_CHECK_FAILURE,
+	
+	CRYPTOGRAPHIC_CHECK_FAILURE_WITH_ID,
+
+	EXTENDED_KEY_USAGE,
+
+	KEY_USAGE,
+	
+	REFERENCE,
+
+	REVOCATION,
+	
+	REVOCATION_ACCEPTANCE_CHECK,
+	
+	REVOCATION_CERT_HASH_OK,
+	
+	REVOCATION_CHECK,
+	
+	REVOCATION_CONSISTENT,
+	
+	REVOCATION_CRYPTOGRAPHIC_CHECK_FAILURE,
+	
+	REVOCATION_NO_THIS_UPDATE,
+	
+	REVOCATION_NOT_AFTER_AFTER,
+	
+	REVOCATION_THIS_UPDATE_BEFORE,
+
+	PSEUDO,
+	
+	STRUCTURAL_VALIDATION_FAILURE,
+	
+	TOKEN_ID,
+
+	TRUST_SERVICE_NAME,
+
+	TRUSTED_SERVICE_STATUS,
+
+	TRUSTED_SERVICE_TYPE,
+
+	TRUSTED_LIST,
+
+	VALIDATION_TIME,
+	
+	VALIDATION_TIME_OUT_OF_BOUNDS,
+
+	VALIDATION_TIME_WITH_ID;
+	
+	private Object[] args;
 
 	/**
 	 * This method return the id code of the referred message.
@@ -377,6 +437,21 @@ public enum MessageTag {
 	 */
 	public String getId() {
 		return name();
+	}
+	
+	/**
+	 * Allows setting of optional attributes for supported string patterns
+	 * 
+	 * @param args an array of {@link Object} arguments to set
+	 * @return this {@link MessageTag}
+	 */
+	public MessageTag setArgs(Object... args) {
+		this.args = args;
+		return this;
+	}
+	
+	public Object[] getArgs() {
+		return args;
 	}
 
 }

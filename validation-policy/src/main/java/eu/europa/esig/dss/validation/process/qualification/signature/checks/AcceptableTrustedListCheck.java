@@ -20,17 +20,14 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.signature.checks;
 
-import java.text.MessageFormat;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.validation.process.AdditionalInfo;
-import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.ChainItem;
 
 public class AcceptableTrustedListCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
@@ -58,9 +55,8 @@ public class AcceptableTrustedListCheck<T extends XmlConstraintsConclusion> exte
 	}
 
 	@Override
-	protected String getAdditionalInfo() {
-		Object[] params = new Object[] { tlAnalysis.getURL() };
-		return MessageFormat.format(AdditionalInfo.TRUSTED_LIST, params);
+	protected MessageTag getAdditionalInfo() {
+		return MessageTag.TRUSTED_LIST.setArgs(tlAnalysis.getURL());
 	}
 
 	@Override

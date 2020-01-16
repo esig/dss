@@ -11,6 +11,7 @@ import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
@@ -164,13 +165,12 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 		return new RevocationDataAvailableCheck<XmlRAC>(i18nProvider, result, certificate, constraint) {
 
 			@Override
-			protected String getAdditionalInfo() {
-				String additionalInfo = super.getAdditionalInfo();
+			protected MessageTag getAdditionalInfo() {
 				if (certificate.isIdPkixOcspNoCheck() && !certificate.isRevocationDataAvailable()) {
-					additionalInfo = String.format("The validation time '%s' is out of validity range of the certificate '%s'", 
-							convertDate(getValidationTime(certificate)), certificate.getId());
+					return MessageTag.VALIDATION_TIME_OUT_OF_BOUNDS.setArgs(
+							ValidationProcessUtils.getFormattedDate(getValidationTime(certificate)), certificate.getId());
 				}
-				return additionalInfo;
+				return super.getAdditionalInfo();
 			}
 			
 		};

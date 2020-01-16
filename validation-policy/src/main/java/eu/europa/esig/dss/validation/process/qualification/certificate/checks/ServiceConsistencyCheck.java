@@ -20,17 +20,14 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks;
 
-import java.text.MessageFormat;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.validation.process.AdditionalInfo;
-import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.qualification.trust.consistency.TrustedServiceChecker;
 
 public class ServiceConsistencyCheck extends ChainItem<XmlValidationCertificateQualification> {
@@ -106,10 +103,9 @@ public class ServiceConsistencyCheck extends ChainItem<XmlValidationCertificateQ
 	}
 
 	@Override
-	protected String getAdditionalInfo() {
+	protected MessageTag getAdditionalInfo() {
 		if (trustedService != null) {
-			Object[] params = new Object[] { trustedService.getServiceNames().get(0) };
-			return MessageFormat.format(AdditionalInfo.TRUST_SERVICE_NAME, params);
+			return MessageTag.TRUST_SERVICE_NAME.setArgs(trustedService.getServiceNames().get(0));
 		}
 		return null;
 	}

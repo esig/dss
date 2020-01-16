@@ -1,6 +1,8 @@
 package eu.europa.esig.dss.validation.process;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
@@ -11,6 +13,15 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 
 public class ValidationProcessUtils {
+
+	public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
+	
+	private static final SimpleDateFormat sdf;
+	
+	static {
+		sdf = new SimpleDateFormat(DATE_FORMAT);
+		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+	}
 	
 	/*
 	 * RFC 2560 : 4.2.2.2.1  Revocation Checking of an Authorized Responder
@@ -58,6 +69,16 @@ public class ValidationProcessUtils {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Returns a formatted String representation of a given Date
+	 * 
+	 * @param date {@link Date} to be pretty-printed
+	 * @return {@link String} formatted date
+	 */
+	public static String getFormattedDate(Date date) {
+		return sdf.format(date);
 	}
 
 }

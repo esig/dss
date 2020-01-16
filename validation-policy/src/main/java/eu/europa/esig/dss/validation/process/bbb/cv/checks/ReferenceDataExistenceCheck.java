@@ -24,11 +24,11 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.i18n.I18nProvider;
-import eu.europa.esig.dss.i18n.MessageTag;
 
 public class ReferenceDataExistenceCheck extends ChainItem<XmlCV> {
 
@@ -65,12 +65,9 @@ public class ReferenceDataExistenceCheck extends ChainItem<XmlCV> {
 	}
 
 	@Override
-	protected String getAdditionalInfo() {
-		if (Utils.isStringNotBlank(digestMatcher.getName())) {
-			return "Reference : " + digestMatcher.getName();
-		} else {
-			return digestMatcher.getType().name();
-		}
+	protected MessageTag getAdditionalInfo() {
+		String referenceName = Utils.isStringNotBlank(digestMatcher.getName()) ? digestMatcher.getName() : digestMatcher.getType().name();
+		return MessageTag.REFERENCE.setArgs(referenceName);
 	}
 
 }

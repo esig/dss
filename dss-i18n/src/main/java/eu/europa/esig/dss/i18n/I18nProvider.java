@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.i18n;
 
+import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -52,7 +53,8 @@ public class I18nProvider {
 			throw new IllegalArgumentException("messageTag cannot be null!");
 			
 		} else if (keySet.contains(messageTag.getId())) {
-			return bundle.getString(messageTag.getId());
+			String patternString = bundle.getString(messageTag.getId());
+			return MessageFormat.format(patternString, messageTag.getArgs());
 			
 		} else {
 			// in case if a value for the message tage does not exist
@@ -61,5 +63,4 @@ public class I18nProvider {
 		}
 	}
 	
-
 }

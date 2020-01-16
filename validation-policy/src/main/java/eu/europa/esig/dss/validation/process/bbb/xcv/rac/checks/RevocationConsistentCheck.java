@@ -1,6 +1,5 @@
 package eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks;
 
-import java.text.MessageFormat;
 import java.util.Date;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
@@ -11,8 +10,8 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
 public class RevocationConsistentCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 	
@@ -100,26 +99,21 @@ public class RevocationConsistentCheck<T extends XmlConstraintsConclusion> exten
 	}
 	
 	@Override
-	protected String getAdditionalInfo() {
-		String addInfo = null;
-		Object[] params = null;
+	protected MessageTag getAdditionalInfo() {
 		if (thisUpdate == null) {
-			addInfo = AdditionalInfo.REVOCATION_NO_THIS_UPDATE;
-			params = new Object[] { revocationData.getId() };
+			return MessageTag.REVOCATION_NO_THIS_UPDATE.setArgs(revocationData.getId());
 		} else if (!certNotBefore.before(thisUpdate)) {
-			addInfo = AdditionalInfo.REVOCATION_THIS_UPDATE_BEFORE;
-			params = new Object[] { revocationData.getId(), convertDate(thisUpdate), convertDate(certNotBefore), convertDate(certNotAfter) };
+			return MessageTag.REVOCATION_THIS_UPDATE_BEFORE.setArgs(revocationData.getId(), ValidationProcessUtils.getFormattedDate(thisUpdate), 
+					ValidationProcessUtils.getFormattedDate(certNotBefore), ValidationProcessUtils.getFormattedDate(certNotAfter));
 		} else if (certNotAfter.compareTo(notAfterRevoc) < 0 && !certHashOK) {
-			addInfo = AdditionalInfo.REVOCATION_NOT_AFTER_AFTER;
-			params = new Object[] { revocationData.getId(), convertDate(notAfterRevoc), convertDate(certNotBefore), convertDate(certNotAfter) };
+			return MessageTag.REVOCATION_NOT_AFTER_AFTER.setArgs(revocationData.getId(), ValidationProcessUtils.getFormattedDate(notAfterRevoc), 
+					ValidationProcessUtils.getFormattedDate(certNotBefore), ValidationProcessUtils.getFormattedDate(certNotAfter));
 		} else if (certHashOK) {
-			addInfo = AdditionalInfo.REVOCATION_CERT_HASH_OK;
-			params = new Object[] { revocationData.getId() };
+			return MessageTag.REVOCATION_CERT_HASH_OK.setArgs(revocationData.getId());
 		} else {
-			addInfo = AdditionalInfo.REVOCATION_CONSISTENT;
-			params = new Object[] { revocationData.getId(), convertDate(thisUpdate), convertDate(certNotBefore), convertDate(certNotAfter) };
+			return MessageTag.REVOCATION_CONSISTENT.setArgs(revocationData.getId(), ValidationProcessUtils.getFormattedDate(thisUpdate), 
+					ValidationProcessUtils.getFormattedDate(certNotBefore), ValidationProcessUtils.getFormattedDate(certNotAfter));
 		}
-		return MessageFormat.format(addInfo, params);
 	}
 
 }
