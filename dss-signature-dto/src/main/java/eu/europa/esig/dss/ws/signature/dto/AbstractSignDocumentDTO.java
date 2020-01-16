@@ -20,11 +20,14 @@
  */
 package eu.europa.esig.dss.ws.signature.dto;
 
+import java.io.Serializable;
+
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
 
-public abstract class AbstractSignDocumentDTO {
-
+@SuppressWarnings("serial")
+public abstract class AbstractSignDocumentDTO implements Serializable {
+	
 	private RemoteSignatureParameters parameters;
 	private SignatureValueDTO signatureValue;
 	

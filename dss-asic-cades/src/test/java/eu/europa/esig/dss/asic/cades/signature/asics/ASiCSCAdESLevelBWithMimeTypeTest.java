@@ -30,6 +30,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
+import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
@@ -44,7 +45,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 public class ASiCSCAdESLevelBWithMimeTypeTest extends AbstractASiCSCAdESTestSignature {
 
 	private static final String APPLICATION_VND_OASIS_OPENDOCUMENT_TEXT = "application/vnd.oasis.opendocument.text";
-	private DocumentSignatureService<ASiCWithCAdESSignatureParameters> service;
+	private DocumentSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> service;
 	private ASiCWithCAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
@@ -79,7 +80,7 @@ public class ASiCSCAdESLevelBWithMimeTypeTest extends AbstractASiCSCAdESTestSign
 	}
 
 	@Override
-	protected DocumentSignatureService<ASiCWithCAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> getService() {
 		return service;
 	}
 

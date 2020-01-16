@@ -20,15 +20,12 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.timestamp.PAdESTimestampService;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
-import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 
 /**
@@ -47,13 +44,8 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 	@Override
 	public DSSDocument extendSignatures(final DSSDocument document, final PAdESSignatureParameters params) throws DSSException {
 		// Will add a DocumentTimeStamp. signature-timestamp (CMS) is impossible to add while extending
-		final PDFSignatureService signatureService = pdfObjectFactory.newSignatureTimestampService();
-
-		final DigestAlgorithm timestampDigestAlgorithm = params.getSignatureTimestampParameters().getDigestAlgorithm();
-		final byte[] digest = signatureService.digest(document, params);
-		final TimestampBinary timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, digest);
-		final byte[] encoded = DSSASN1Utils.getDEREncoded(timeStampToken);
-		return signatureService.sign(document, encoded, params);
+		PAdESTimestampService padesTimestampService = new PAdESTimestampService(tspSource, pdfObjectFactory.newSignatureTimestampService());
+		return padesTimestampService.timestampDocument(document, params.getSignatureTimestampParameters());
 	}
 
 }

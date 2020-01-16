@@ -13,6 +13,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
+import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
+import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
@@ -23,7 +25,6 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
-import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.simplereport.SimpleReport;
@@ -86,8 +87,11 @@ public class ASiCWithCAdESServiceTest extends PKIFactoryAccess {
 
         signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
         signAndValidate(documentToSign, signatureParameters);
+
+        signatureParameters.setArchiveTimestampParameters(new CAdESTimestampParameters());
+        signAndValidate(documentToSign, signatureParameters);
         
-        signatureParameters.setArchiveTimestampParameters(new TimestampParameters());
+        signatureParameters.setArchiveTimestampParameters(new ASiCWithCAdESTimestampParameters());
         signAndValidate(documentToSign, signatureParameters);
         
         signatureParameters.setBLevelParams(new BLevelParameters());
@@ -98,14 +102,20 @@ public class ASiCWithCAdESServiceTest extends PKIFactoryAccess {
         
         signatureParameters.setCertificateChain((List<CertificateToken>)null);
         signAndValidate(documentToSign, signatureParameters);
+
+        signatureParameters.setContentTimestampParameters(new CAdESTimestampParameters());
+        signAndValidate(documentToSign, signatureParameters);
         
-        signatureParameters.setContentTimestampParameters(new TimestampParameters());
+        signatureParameters.setContentTimestampParameters(new ASiCWithCAdESTimestampParameters());
         signAndValidate(documentToSign, signatureParameters);
         
         signatureParameters.setDetachedContents(Collections.emptyList());
         signAndValidate(documentToSign, signatureParameters);
+
+        signatureParameters.setSignatureTimestampParameters(new CAdESTimestampParameters());
+        signAndValidate(documentToSign, signatureParameters);
         
-        signatureParameters.setSignatureTimestampParameters(new TimestampParameters());
+        signatureParameters.setSignatureTimestampParameters(new ASiCWithCAdESTimestampParameters());
         signAndValidate(documentToSign, signatureParameters);
         
         signatureParameters.setSignedData(new byte[] {});

@@ -46,9 +46,10 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
 @RunWith(Parameterized.class)
-public abstract class AbstractOpenDocumentTestSignature extends AbstractPkiFactoryTestDocumentSignatureService<ASiCWithXAdESSignatureParameters> {
+public abstract class AbstractOpenDocumentTestSignature extends AbstractPkiFactoryTestDocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> {
 
 	private DSSDocument fileToTest;
 	

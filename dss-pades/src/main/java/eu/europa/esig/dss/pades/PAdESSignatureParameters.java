@@ -20,16 +20,19 @@
  */
 package eu.europa.esig.dss.pades;
 
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 
-public class PAdESSignatureParameters extends CAdESSignatureParameters {
+public class PAdESSignatureParameters extends CAdESSignatureParameters implements PAdESCommonParameters {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESSignatureParameters.class);
 
@@ -41,8 +44,6 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 	private String signatureFieldId;
 
 	private int signatureSize = 9472; // default value in pdfbox
-	
-	private int timestampSize = 9472; 
 
 	/**
 	 * This attribute allows to override the used Filter for a Signature.
@@ -68,22 +69,6 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 	 * This attribute is used to create visible signature in PAdES form
 	 */
 	private SignatureImageParameters signatureImageParameters;
-
-	/**
-	 * This attribute allows to override the used Filter for a Timestamp.
-	 * 
-	 * Default value is Adobe.PPKLite
-	 */
-	private String timestampFilter = PAdESConstants.TIMESTAMP_DEFAULT_FILTER;
-
-	/**
-	 * This attribute allows to override the used subFilter for a Timestamp.
-	 * 
-	 * Default value is ETSI.RFC3161
-	 */
-	private String timestampSubFilter = PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER;
-
-	private SignatureImageParameters timestampImageParameters;
 
 	/**
 	 * This attribute allows to create a "certification signature". That allows to remove permission(s) in case of
@@ -129,19 +114,21 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 		this.contactInfo = contactInfo;
 	}
 
-	public String getSignatureFilter() {
+	@Override
+	public String getFilter() {
 		return signatureFilter;
 	}
 
-	public void setSignatureFilter(String signatureFilter) {
+	public void setFilter(String signatureFilter) {
 		this.signatureFilter = signatureFilter;
 	}
 
-	public String getSignatureSubFilter() {
+	@Override
+	public String getSubFilter() {
 		return signatureSubFilter;
 	}
 
-	public void setSignatureSubFilter(String signatureSubFilter) {
+	public void setSubFilter(String signatureSubFilter) {
 		this.signatureSubFilter = signatureSubFilter;
 	}
 
@@ -153,41 +140,18 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 		this.signerName = signerName;
 	}
 
-	public SignatureImageParameters getSignatureImageParameters() {
+	@Override
+	public SignatureImageParameters getImageParameters() {
 		return this.signatureImageParameters;
 	}
 
-	public void setSignatureImageParameters(SignatureImageParameters signatureImageParameters) {
+	public void setImageParameters(SignatureImageParameters signatureImageParameters) {
 		this.signatureImageParameters = signatureImageParameters;
 	}
 	
 	@Override
 	public void setSignaturePackaging(final SignaturePackaging signaturePackaging) {
 		LOG.warn("Cannot set a SignaturePackaging for PAdES signature. Only ENVELOPED packaging is allowed!");
-	}
-
-	public String getTimestampFilter() {
-		return timestampFilter;
-	}
-
-	public void setTimestampFilter(String timestampFilter) {
-		this.timestampFilter = timestampFilter;
-	}
-
-	public String getTimestampSubFilter() {
-		return timestampSubFilter;
-	}
-
-	public void setTimestampSubFilter(String timestampSubFilter) {
-		this.timestampSubFilter = timestampSubFilter;
-	}
-
-	public SignatureImageParameters getTimestampImageParameters() {
-		return this.timestampImageParameters;
-	}
-
-	public void setTimestampImageParameters(SignatureImageParameters timestampImageParameters) {
-		this.timestampImageParameters = timestampImageParameters;
 	}
 
 	public String getLocation() {
@@ -197,8 +161,9 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 	public void setLocation(String location) {
 		this.location = location;
 	}
-
-	public String getSignatureFieldId() {
+	
+	@Override
+	public String getFieldId() {
 		return this.signatureFieldId;
 	}
 
@@ -211,26 +176,16 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 		this.signatureFieldId = signatureFieldId;
 	}
 
-	public int getSignatureSize() {
+	@Override
+	public int getContentSize() {
 		return this.signatureSize;
 	}
 
 	/**
 	 * This setter allows to reserve more than the default size for a signature (9472bytes)
 	 */
-	public void setSignatureSize(int signatureSize) {
+	public void setContentSize(int signatureSize) {
 		this.signatureSize = signatureSize;
-	}
-
-	public int getTimestampSize() {
-		return timestampSize;
-	}
-
-	/**
-	 * This setter allows to reserve more than the default size for a timestamp (9472bytes)
-	 */
-	public void setTimestampSize(int timestampSize) {
-		this.timestampSize = timestampSize;
 	}
 
 	public CertificationPermission getPermission() {
@@ -239,6 +194,62 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 
 	public void setPermission(CertificationPermission permission) {
 		this.permission = permission;
+	}
+
+	@Override
+	public Date getSigningDate() {
+		return bLevel().getSigningDate();
+	}
+
+	@Override
+	public PAdESTimestampParameters getContentTimestampParameters() {
+		if (contentTimestampParameters == null) {
+			contentTimestampParameters = new PAdESTimestampParameters();
+		}
+		return (PAdESTimestampParameters) contentTimestampParameters;
+	}
+	
+	@Override
+	public void setContentTimestampParameters(CAdESTimestampParameters contentTimestampParameters) {
+		if (contentTimestampParameters instanceof PAdESTimestampParameters) {
+			this.contentTimestampParameters = contentTimestampParameters;
+		} else {
+			this.contentTimestampParameters = new PAdESTimestampParameters(contentTimestampParameters);
+		}
+	}
+
+	@Override
+	public PAdESTimestampParameters getSignatureTimestampParameters() {
+		if (signatureTimestampParameters == null) {
+			signatureTimestampParameters = new PAdESTimestampParameters();
+		}
+		return (PAdESTimestampParameters) signatureTimestampParameters;
+	}
+	
+	@Override
+	public void setSignatureTimestampParameters(CAdESTimestampParameters signatureTimestampParameters) {
+		if (signatureTimestampParameters instanceof PAdESTimestampParameters) {
+			this.signatureTimestampParameters = signatureTimestampParameters;
+		} else {
+			this.signatureTimestampParameters = new PAdESTimestampParameters(signatureTimestampParameters);
+		}
+	}
+
+	@Override
+	public PAdESTimestampParameters getArchiveTimestampParameters() {
+		if (archiveTimestampParameters == null) {
+			archiveTimestampParameters = new PAdESTimestampParameters();
+		}
+		return (PAdESTimestampParameters) archiveTimestampParameters;
+	}
+	
+	@Override
+	public void setArchiveTimestampParameters(CAdESTimestampParameters archiveTimestampParameters) {
+		if (archiveTimestampParameters instanceof PAdESTimestampParameters) {
+			this.archiveTimestampParameters = archiveTimestampParameters;
+		} else {
+			this.archiveTimestampParameters = new PAdESTimestampParameters(archiveTimestampParameters);
+		}
 	}
 
 }

@@ -45,13 +45,15 @@ import eu.europa.esig.dss.xades.ProfileParameters.Operation;
 import eu.europa.esig.dss.xades.SantuarioInitializer;
 import eu.europa.esig.dss.xades.SignatureProfile;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 
 /**
  * XAdES implementation of DocumentSignatureService
  */
-public class XAdESService extends AbstractSignatureService<XAdESSignatureParameters> implements MultipleDocumentsSignatureService<XAdESSignatureParameters> {
+public class XAdESService extends AbstractSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> 
+					implements MultipleDocumentsSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> {
 
 	static {
 		SantuarioInitializer.init();
@@ -192,7 +194,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 	}
 
 	@Override
-	public DSSDocument timestamp(List<DSSDocument> toTimestampDocuments, XAdESSignatureParameters parameters) {
+	public DSSDocument timestamp(List<DSSDocument> toTimestampDocuments, XAdESTimestampParameters parameters) {
 		throw new DSSException("Format not supported");
 	}
 

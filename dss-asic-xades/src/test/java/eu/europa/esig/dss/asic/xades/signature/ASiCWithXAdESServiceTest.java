@@ -23,7 +23,6 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
-import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.simplereport.SimpleReport;
@@ -31,6 +30,7 @@ import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
 public class ASiCWithXAdESServiceTest extends PKIFactoryAccess {
 	
@@ -87,7 +87,7 @@ public class ASiCWithXAdESServiceTest extends PKIFactoryAccess {
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
         signAndValidate(documentToSign, signatureParameters);
         
-        signatureParameters.setArchiveTimestampParameters(new TimestampParameters());
+        signatureParameters.setArchiveTimestampParameters(new XAdESTimestampParameters());
         signAndValidate(documentToSign, signatureParameters);
         
         signatureParameters.setBLevelParams(new BLevelParameters());
@@ -99,13 +99,13 @@ public class ASiCWithXAdESServiceTest extends PKIFactoryAccess {
         signatureParameters.setCertificateChain((List<CertificateToken>)null);
         signAndValidate(documentToSign, signatureParameters);
         
-        signatureParameters.setContentTimestampParameters(new TimestampParameters());
+        signatureParameters.setContentTimestampParameters(new XAdESTimestampParameters());
         signAndValidate(documentToSign, signatureParameters);
         
         signatureParameters.setDetachedContents(Collections.emptyList());
         signAndValidate(documentToSign, signatureParameters);
         
-        signatureParameters.setSignatureTimestampParameters(new TimestampParameters());
+        signatureParameters.setSignatureTimestampParameters(new XAdESTimestampParameters());
         signAndValidate(documentToSign, signatureParameters);
         
         signatureParameters.setSignedData(new byte[] {});

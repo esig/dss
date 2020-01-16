@@ -24,12 +24,13 @@ import java.security.Security;
 import java.util.Date;
 import java.util.Objects;
 
-import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.model.SerializableSignatureParameters;
+import eu.europa.esig.dss.model.SerializableTimestampParameters;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
@@ -37,7 +38,8 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 
 @SuppressWarnings("serial")
-public abstract class AbstractSignatureService<SP extends AbstractSignatureParameters> implements DocumentSignatureService<SP> {
+public abstract class AbstractSignatureService<SP extends SerializableSignatureParameters, TP extends SerializableTimestampParameters> 
+				implements DocumentSignatureService<SP, TP> {
 
 	static {
 		Security.addProvider(DSSSecurityProvider.getSecurityProvider());
@@ -156,7 +158,7 @@ public abstract class AbstractSignatureService<SP extends AbstractSignatureParam
 	}
 
 	@Override
-	public DSSDocument timestamp(DSSDocument toTimestampDocument, SP parameters) {
+	public DSSDocument timestamp(DSSDocument toTimestampDocument, TP parameters) {
 		throw new DSSException("Unsupported operation for this file format");
 	}
 

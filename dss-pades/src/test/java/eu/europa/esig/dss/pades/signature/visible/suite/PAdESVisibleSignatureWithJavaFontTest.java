@@ -80,7 +80,7 @@ public class PAdESVisibleSignatureWithJavaFontTest extends PKIFactoryAccess {
 		textParameters.setTextColor(Color.GREEN);
 		textParameters.setFont(new DSSJavaFont(new Font(Font.SERIF, Font.BOLD, 28)));
 		imageParameters.setTextParameters(textParameters);
-		signatureParameters.setSignatureImageParameters(imageParameters);
+		signatureParameters.setImageParameters(imageParameters);
 
 		signAndValidate("testJavaFont");
 	}
@@ -93,7 +93,7 @@ public class PAdESVisibleSignatureWithJavaFontTest extends PKIFactoryAccess {
 		textParameters.setTextColor(Color.BLUE);
 		textParameters.setFont(new DSSJavaFont(Font.SERIF));
 		imageParameters.setTextParameters(textParameters);
-		signatureParameters.setSignatureImageParameters(imageParameters);
+		signatureParameters.setImageParameters(imageParameters);
 
 		signAndValidate("testFontByFamilyName");
 	}
@@ -105,7 +105,7 @@ public class PAdESVisibleSignatureWithJavaFontTest extends PKIFactoryAccess {
 		textParameters.setText("My signature");
 		textParameters.setFont(new DSSJavaFont(Font.SERIF, 15));
 		imageParameters.setTextParameters(textParameters);
-		signatureParameters.setSignatureImageParameters(imageParameters);
+		signatureParameters.setImageParameters(imageParameters);
 
 		signAndValidate("testFontByFamilyNameAndSize");
 	}
@@ -118,7 +118,7 @@ public class PAdESVisibleSignatureWithJavaFontTest extends PKIFactoryAccess {
 		textParameters.setTextColor(Color.GRAY);
 		textParameters.setFont(new DSSJavaFont(Font.MONOSPACED, Font.ITALIC, 16));
 		imageParameters.setTextParameters(textParameters);
-		signatureParameters.setSignatureImageParameters(imageParameters);
+		signatureParameters.setImageParameters(imageParameters);
 
 		signAndValidate("testFontAllValues");
 	}
@@ -132,7 +132,7 @@ public class PAdESVisibleSignatureWithJavaFontTest extends PKIFactoryAccess {
 		Font font = new Font(Font.SANS_SERIF, Font.BOLD + Font.ITALIC, 14);
 		textParameters.setFont(new DSSJavaFont(font));
 		imageParameters.setTextParameters(textParameters);
-		signatureParameters.setSignatureImageParameters(imageParameters);
+		signatureParameters.setImageParameters(imageParameters);
 
 		signAndValidate("testFontBoldAndItalic");
 	}

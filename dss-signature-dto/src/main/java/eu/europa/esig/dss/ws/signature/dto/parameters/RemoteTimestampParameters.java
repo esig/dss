@@ -21,10 +21,12 @@
 package eu.europa.esig.dss.ws.signature.dto.parameters;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.TimestampContainerForm;
 
 @SuppressWarnings("serial")
 public class RemoteTimestampParameters implements Serializable {
@@ -45,16 +47,21 @@ public class RemoteTimestampParameters implements Serializable {
 	 */
 	private String canonicalizationMethod = CanonicalizationMethod.EXCLUSIVE;
 
+	/**
+	 * Specifies format of the output file containing a timestamp
+	 */
+	private TimestampContainerForm timestampContainerForm;
+
 	public RemoteTimestampParameters() {
 	}
 
-	public RemoteTimestampParameters(DigestAlgorithm digestAlgorithm) {
+	public RemoteTimestampParameters(TimestampContainerForm timestampForm, DigestAlgorithm digestAlgorithm) {
 		this.digestAlgorithm = digestAlgorithm;
-		this.canonicalizationMethod = null;
+		this.timestampContainerForm = timestampForm;
 	}
 
-	public RemoteTimestampParameters(DigestAlgorithm digestAlgorithm, String canonicalizationMethod) {
-		this.digestAlgorithm = digestAlgorithm;
+	public RemoteTimestampParameters(TimestampContainerForm timestampForm, DigestAlgorithm digestAlgorithm, String canonicalizationMethod) {
+		this(timestampForm, digestAlgorithm);
 		this.canonicalizationMethod = canonicalizationMethod;
 	}
 
@@ -63,9 +70,7 @@ public class RemoteTimestampParameters implements Serializable {
 	}
 
 	public void setDigestAlgorithm(final DigestAlgorithm digestAlgorithm) {
-		if (digestAlgorithm == null) {
-			throw new NullPointerException();
-		}
+		Objects.requireNonNull(digestAlgorithm, "digestAlgorithm must be specified!");
 		this.digestAlgorithm = digestAlgorithm;
 	}
 
@@ -77,12 +82,21 @@ public class RemoteTimestampParameters implements Serializable {
 		this.canonicalizationMethod = canonicalizationMethod;
 	}
 
+	public TimestampContainerForm getTimestampContainerForm() {
+		return timestampContainerForm;
+	}
+
+	public void setTimestampContainerForm(TimestampContainerForm timestampForm) {
+		this.timestampContainerForm = timestampForm;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = (prime * result) + ((canonicalizationMethod == null) ? 0 : canonicalizationMethod.hashCode());
 		result = (prime * result) + ((digestAlgorithm == null) ? 0 : digestAlgorithm.hashCode());
+		result = (prime * result) + ((timestampContainerForm == null) ? 0 : timestampContainerForm.hashCode());
+		result = (prime * result) + ((canonicalizationMethod == null) ? 0 : canonicalizationMethod.hashCode());
 		return result;
 	}
 
@@ -108,12 +122,20 @@ public class RemoteTimestampParameters implements Serializable {
 		if (digestAlgorithm != other.digestAlgorithm) {
 			return false;
 		}
+		if (timestampContainerForm == null) {
+			if (other.timestampContainerForm != null) {
+				return false;
+			}
+		} else if (timestampContainerForm != other.timestampContainerForm) {
+			return false;
+		}
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "RemoteTimestampParameters{" + ", digestAlgorithm=" + digestAlgorithm.getName() + ", canonicalizationMethod=" + canonicalizationMethod + "}";
+		return "RemoteTimestampParameters{format=" + timestampContainerForm + ", digestAlgorithm=" + digestAlgorithm.getName() + 
+				", canonicalizationMethod=" + canonicalizationMethod + "}";
 	}
 	
 }

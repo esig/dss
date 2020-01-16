@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
+import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.manifest.ASiCEWithCAdESArchiveManifestBuilder;
 import eu.europa.esig.dss.asic.cades.validation.ASiCEWithCAdESManifestParser;
 import eu.europa.esig.dss.asic.common.ASiCParameters;
@@ -63,7 +64,7 @@ import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 @SuppressWarnings("serial")
-public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithCAdESSignatureParameters> {
+public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCWithCAdESService.class);
 
@@ -145,7 +146,8 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		extendedDocuments.add(signature);
 
 		if (addASiCArchiveManifest) {
-			extendWithArchiveManifest(archiveManifests, manifests, timestamps, dataToSignHelper.getSignedDocuments(), extendedDocuments, parameters);
+			extendWithArchiveManifest(archiveManifests, manifests, timestamps, dataToSignHelper.getSignedDocuments(), 
+					extendedDocuments, parameters.getArchiveTimestampParameters().getDigestAlgorithm());
 			cadesParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 		}
 
@@ -161,7 +163,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	}
 	
 	@Override
-	public DSSDocument timestamp(List<DSSDocument> toTimestampDocuments, ASiCWithCAdESSignatureParameters parameters) {
+	public DSSDocument timestamp(List<DSSDocument> toTimestampDocuments, ASiCWithCAdESTimestampParameters parameters) {
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		if (Utils.isCollectionEmpty(toTimestampDocuments)) {
 			throw new DSSException("List of documents to be timestamped cannot be empty!");
@@ -182,7 +184,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			extractCurrentArchive(toTimestampDocument);
 
 			extendWithArchiveManifest(getEmbeddedArchiveManifests(), getEmbeddedManifests(), getEmbeddedTimestamps(), getEmbeddedSignedDocuments(),
-					extendedDocuments, parameters);
+					extendedDocuments, parameters.getDigestAlgorithm());
 
 			DSSDocument extensionResult = mergeArchiveAndExtendedSignatures(toTimestampDocument, extendedDocuments);
 			extensionResult.setName(getFinalArchiveName(toTimestampDocument, SigningOperation.TIMESTAMP, null, toTimestampDocument.getMimeType()));
@@ -278,7 +280,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 
 		if (addASiCEArchiveManifest) {
 			extendWithArchiveManifest(getEmbeddedArchiveManifests(), getEmbeddedManifests(), getEmbeddedTimestamps(), 
-					getEmbeddedSignedDocuments(), extendedDocuments, parameters);
+					getEmbeddedSignedDocuments(), extendedDocuments, parameters.getDigestAlgorithm());
 			cadesParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 		}
 
@@ -338,14 +340,14 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	}
 	
 	private void extendWithArchiveManifest(List<DSSDocument> archiveManifests, List<DSSDocument> manifests, List<DSSDocument> timestamps, 
-			List<DSSDocument> originalSignedDocuments, List<DSSDocument> extendedDocuments, ASiCWithCAdESSignatureParameters parameters) {
+			List<DSSDocument> originalSignedDocuments, List<DSSDocument> extendedDocuments, DigestAlgorithm digestAlgorithm) {
 		
 		String timestampFilename = getArchiveTimestampFilename(timestamps);
 		
 		DSSDocument lastTimestamp = getLastTimestamp(timestamps);
 		DSSDocument lastArchiveManifest = null;
 		if (lastTimestamp != null) {
-			DSSDocument extendedArchiveTimestamp = extendArchiveTimestamp(lastTimestamp, parameters.getDetachedContents());
+			DSSDocument extendedArchiveTimestamp = extendArchiveTimestamp(lastTimestamp, originalSignedDocuments); // TODO: check for correctness
 			// a newer version of the timestamp must be created
 			timestamps.remove(lastTimestamp);
 			extendedDocuments.add(extendedArchiveTimestamp);
@@ -363,7 +365,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		}
 		
 		ASiCEWithCAdESArchiveManifestBuilder builder = new ASiCEWithCAdESArchiveManifestBuilder(extendedDocuments, timestamps, 
-				originalSignedDocuments, manifests, lastArchiveManifest, parameters.getArchiveTimestampParameters().getDigestAlgorithm(), timestampFilename);
+				originalSignedDocuments, manifests, lastArchiveManifest, digestAlgorithm, timestampFilename);
 
 		DSSDocument archiveManifest = DomUtils.createDssDocumentFromDomDocument(builder.build(), DEFAULT_ARCHIVE_MANIFEST_FILENAME);
 		extendedDocuments.add(archiveManifest);
@@ -371,7 +373,6 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			extendedDocuments.add(lastArchiveManifest);
 		}
 
-		DigestAlgorithm digestAlgorithm = parameters.getArchiveTimestampParameters().getDigestAlgorithm();
 		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, DSSUtils.digest(digestAlgorithm, archiveManifest));
 		DSSDocument timestamp = new InMemoryDocument(DSSASN1Utils.getDEREncoded(timeStampResponse), timestampFilename, MimeType.TST);
 		extendedDocuments.add(timestamp);

@@ -184,10 +184,6 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	protected List<DSSDocument> getTimestampDocuments() {
 		return extractResult.getTimestampDocuments();
 	}
-	
-	protected List<DSSDocument> getTimestampedDocuments(DSSDocument timestamp) {
-		return extractResult.getTimestampedDocuments(timestamp);
-	}
 
 	protected List<DSSDocument> getArchiveManifestDocuments() {
 		return extractResult.getArchiveManifestDocuments();

@@ -33,8 +33,9 @@ import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestMultipleDocumentsSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public class EmbeddedXmlMultiDocSignatureTest extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<XAdESSignatureParameters> {
+public class EmbeddedXmlMultiDocSignatureTest extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> {
 
 	private XAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentToSigns;
@@ -53,7 +54,7 @@ public class EmbeddedXmlMultiDocSignatureTest extends AbstractPkiFactoryTestMult
 	}
 
 	@Override
-	protected MultipleDocumentsSignatureService<XAdESSignatureParameters> getService() {
+	protected MultipleDocumentsSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> getService() {
 		return new XAdESService(getCompleteCertificateVerifier());
 	}
 

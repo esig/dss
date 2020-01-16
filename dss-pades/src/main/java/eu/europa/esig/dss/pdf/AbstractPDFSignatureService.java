@@ -41,7 +41,6 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -84,43 +83,6 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		}
 	}
 
-	protected String getFilter(PAdESSignatureParameters parameters) {
-		if (isDocumentTimestampLayer()) {
-			if (Utils.isStringNotEmpty(parameters.getTimestampFilter())) {
-				return parameters.getTimestampFilter();
-			}
-			return PAdESConstants.TIMESTAMP_DEFAULT_FILTER;
-
-		} else {
-			if (Utils.isStringNotEmpty(parameters.getSignatureFilter())) {
-				return parameters.getSignatureFilter();
-			}
-			return PAdESConstants.SIGNATURE_DEFAULT_FILTER;
-		}
-	}
-
-	protected String getSubFilter(PAdESSignatureParameters parameters) {
-		if (isDocumentTimestampLayer()) {
-			if (Utils.isStringNotEmpty(parameters.getTimestampSubFilter())) {
-				return parameters.getTimestampSubFilter();
-			}
-			return PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER;
-		} else {
-			if (Utils.isStringNotEmpty(parameters.getSignatureSubFilter())) {
-				return parameters.getSignatureSubFilter();
-			}
-			return PAdESConstants.SIGNATURE_DEFAULT_SUBFILTER;
-		}
-	}
-
-	protected SignatureImageParameters getImageParameters(PAdESSignatureParameters parameters) {
-		if (isDocumentTimestampLayer()) {
-			return parameters.getTimestampImageParameters();
-		} else {
-			return parameters.getSignatureImageParameters();
-		}
-	}
-
 	protected DigestAlgorithm getCurrentDigestAlgorithm(PAdESSignatureParameters parameters) {
 		switch (serviceMode) {
 		case CONTENT_TIMESTAMP:
@@ -133,14 +95,6 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 			return parameters.getArchiveTimestampParameters().getDigestAlgorithm();
 		default:
 			throw new DSSException("Unsupported service mode : " + serviceMode);
-		}
-	}
-
-	protected int getCurrentSignatureSize(PAdESSignatureParameters parameters) {
-		if (isDocumentTimestampLayer()) {
-			return parameters.getTimestampSize();
-		} else {
-			return parameters.getSignatureSize();
 		}
 	}
 

@@ -59,6 +59,7 @@ import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.pades.CertificationPermission;
+import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
@@ -102,7 +103,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private PdfStamper prepareStamper(InputStream pdfData, OutputStream output, PAdESSignatureParameters parameters)
+	private PdfStamper prepareStamper(InputStream pdfData, OutputStream output, PAdESCommonParameters parameters)
 			throws IOException {
 
 		PdfReader reader = new PdfReader(pdfData);
@@ -114,37 +115,45 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		sap.setAcro6Layers(true);
 
 		PdfDictionary dic = null;
-		if (!isDocumentTimestampLayer() && Utils.isStringNotEmpty(parameters.getSignatureFieldId())) {
-			dic = findExistingSignature(reader, parameters.getSignatureFieldId());
+		if (!isDocumentTimestampLayer() && Utils.isStringNotEmpty(parameters.getFieldId())) {
+			dic = findExistingSignature(reader, parameters.getFieldId());
 		} else {
 			dic = new PdfDictionary();
 		}
+		
 		PdfName type = new PdfName(getType());
 		dic.put(PdfName.TYPE, type);
-		dic.put(PdfName.FILTER, new PdfName(getFilter(parameters)));
-		dic.put(PdfName.SUBFILTER, new PdfName(getSubFilter(parameters)));
+		
+		if (Utils.isStringNotEmpty(parameters.getFilter())) {
+			dic.put(PdfName.FILTER, new PdfName(parameters.getFilter()));
+		}
+		if (Utils.isStringNotEmpty(parameters.getSubFilter())) {
+			dic.put(PdfName.SUBFILTER, new PdfName(parameters.getSubFilter()));
+		}
 
 		Calendar cal = Calendar.getInstance();
-		cal.setTime(parameters.bLevel().getSigningDate());
+		cal.setTime(parameters.getSigningDate());
 
 		stp.setEnforcedModificationDate(cal);
 
 		if (PdfName.SIG.equals(type)) {
+			
+			PAdESSignatureParameters signatureParameters = (PAdESSignatureParameters) parameters;
  
-			if (Utils.isStringNotEmpty(parameters.getSignerName())) {
-				dic.put(PdfName.NAME, new PdfString(parameters.getSignerName(), PdfObject.TEXT_UNICODE));
+			if (Utils.isStringNotEmpty(signatureParameters.getSignerName())) {
+				dic.put(PdfName.NAME, new PdfString(signatureParameters.getSignerName(), PdfObject.TEXT_UNICODE));
 			}
-			if (Utils.isStringNotEmpty(parameters.getReason())) {
-				dic.put(PdfName.REASON, new PdfString(parameters.getReason(), PdfObject.TEXT_UNICODE));
+			if (Utils.isStringNotEmpty(signatureParameters.getReason())) {
+				dic.put(PdfName.REASON, new PdfString(signatureParameters.getReason(), PdfObject.TEXT_UNICODE));
 			}
-			if (Utils.isStringNotEmpty(parameters.getLocation())) {
-				dic.put(PdfName.LOCATION, new PdfString(parameters.getLocation(), PdfObject.TEXT_UNICODE));
+			if (Utils.isStringNotEmpty(signatureParameters.getLocation())) {
+				dic.put(PdfName.LOCATION, new PdfString(signatureParameters.getLocation(), PdfObject.TEXT_UNICODE));
 			}
-			if (Utils.isStringNotEmpty(parameters.getContactInfo())) {
-				dic.put(PdfName.CONTACTINFO, new PdfString(parameters.getContactInfo(), PdfObject.TEXT_UNICODE));
+			if (Utils.isStringNotEmpty(signatureParameters.getContactInfo())) {
+				dic.put(PdfName.CONTACTINFO, new PdfString(signatureParameters.getContactInfo(), PdfObject.TEXT_UNICODE));
 			}
 
-			CertificationPermission permission = parameters.getPermission();
+			CertificationPermission permission = signatureParameters.getPermission();
 			// A document can contain only one signature field that contains a DocMDP
 			// transform method;
 			// it shall be the first signed field in the document.
@@ -158,15 +167,15 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 		sap.setCryptoDictionary(dic);
 
-		SignatureImageParameters sip = getImageParameters(parameters);
+		SignatureImageParameters sip = parameters.getImageParameters();
 		if (sip != null && signatureDrawerFactory != null) {
 			ITextSignatureDrawer signatureDrawer = (ITextSignatureDrawer) signatureDrawerFactory
 					.getSignatureDrawer(sip);
-			signatureDrawer.init(parameters.getSignatureFieldId(), sip, sap);
+			signatureDrawer.init(parameters.getFieldId(), sip, sap);
 			signatureDrawer.draw();
 		}
 
-		int csize = parameters.getSignatureSize();
+		int csize = parameters.getContentSize();
 		HashMap exc = new HashMap();
 		exc.put(PdfName.CONTENTS, Integer.valueOf((csize * 2) + 2));
 
@@ -198,9 +207,9 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		return false;
 	}
 
-	private PdfObject generateFileId(PAdESSignatureParameters parameters) {
+	private PdfObject generateFileId(PAdESCommonParameters parameters) {
 		try (ByteBuffer buf = new ByteBuffer(90)) {
-			String deterministicId = DSSUtils.getDeterministicId(parameters.bLevel().getSigningDate(), null);
+			String deterministicId = DSSUtils.getDeterministicId(parameters.getSigningDate(), null);
 			byte[] id = deterministicId.getBytes();
 			buf.append('[').append('<');
 			for (int k = 0; k < 16; ++k) {
@@ -218,11 +227,11 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public byte[] digest(DSSDocument toSignDocument, PAdESSignatureParameters parameters) {
+	public byte[] digest(DSSDocument toSignDocument, PAdESCommonParameters parameters) {
 		try (InputStream is = toSignDocument.openStream(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			PdfStamper stp = prepareStamper(is, baos, parameters);
 			PdfSignatureAppearance sap = stp.getSignatureAppearance();
-			final byte[] digest = DSSUtils.digest(getCurrentDigestAlgorithm(parameters), sap.getRangeStream());
+			final byte[] digest = DSSUtils.digest(parameters.getDigestAlgorithm(), sap.getRangeStream());
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Base64 messageDigest : {}", Utils.toBase64(digest));
 			}
@@ -233,14 +242,14 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public DSSDocument sign(DSSDocument toSignDocument, byte[] signatureValue, PAdESSignatureParameters parameters) {
+	public DSSDocument sign(DSSDocument toSignDocument, byte[] signatureValue, PAdESCommonParameters parameters) {
 
 		try (InputStream is = toSignDocument.openStream(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			PdfStamper stp = prepareStamper(is, baos, parameters);
 			PdfSignatureAppearance sap = stp.getSignatureAppearance();
 
 			byte[] pk = signatureValue;
-			int csize = getCurrentSignatureSize(parameters);
+			int csize = parameters.getContentSize();
 			if (csize < pk.length) {
 				throw new DSSException(String.format("The signature size [%s] is too small for the signature value with a length [%s]", csize, pk.length));
 			}

@@ -33,6 +33,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.DSSFileFont;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
@@ -75,7 +76,7 @@ public class PAdESNonLatinCharactersSignatureTest extends AbstractPAdESTestSigna
 		textParameters.setText("Моя подпись 1");
 		textParameters.setFont(new DSSFileFont(getClass().getResourceAsStream("/fonts/OpenSansBold.ttf")));
 		signatureImageParameters.setTextParameters(textParameters);
-		signatureParameters.setSignatureImageParameters(signatureImageParameters);
+		signatureParameters.setImageParameters(signatureImageParameters);
 
 		padesService = new PAdESService(getCompleteCertificateVerifier());
 		padesService.setTspSource(getGoodTsa());
@@ -99,7 +100,7 @@ public class PAdESNonLatinCharactersSignatureTest extends AbstractPAdESTestSigna
 	}
 
 	@Override
-	protected DocumentSignatureService<PAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> getService() {
 		return padesService;
 	}
 

@@ -33,6 +33,7 @@ import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 import eu.europa.esig.dss.ws.signature.dto.DataToSignOneDocumentDTO;
 import eu.europa.esig.dss.ws.signature.dto.ExtendDocumentDTO;
 import eu.europa.esig.dss.ws.signature.dto.SignOneDocumentDTO;
+import eu.europa.esig.dss.ws.signature.dto.TimestampOneDocumentDTO;
 
 /**
  * This REST interface provides operations for the signature creation and for its extension.
@@ -76,5 +77,16 @@ public interface RestDocumentSignatureService extends Serializable {
 	@POST
 	@Path("extendDocument")
 	RemoteDocument extendDocument(ExtendDocumentDTO extendDocument);
+	
+	/**
+	 * Timestamps a toTimestampDocument with the provided parameters.
+	 * 
+	 * @param timestampDocument
+	 *            a DTO with the needed information (document, timestamp parameters) to timestamp a document
+	 * @return a timestamped document
+	 */
+	@POST
+	@Path("timestampDocument")
+	RemoteDocument timestampDocument(TimestampOneDocumentDTO timestampDocument);
 
 }

@@ -22,8 +22,8 @@ package eu.europa.esig.dss.asic.cades.signature;
 
 import java.util.List;
 
+import eu.europa.esig.dss.asic.cades.ASiCWithCAdESCommonParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
-import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.asice.DataToSignASiCEWithCAdESFromArchive;
 import eu.europa.esig.dss.asic.cades.signature.asice.DataToSignASiCEWithCAdESFromFiles;
 import eu.europa.esig.dss.asic.cades.signature.asics.DataToSignASiCSWithCAdESFromArchive;
@@ -31,7 +31,6 @@ import eu.europa.esig.dss.asic.cades.signature.asics.DataToSignASiCSWithCAdESFro
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
-import eu.europa.esig.dss.model.BLevelParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.signature.SigningOperation;
 
@@ -41,9 +40,8 @@ public class ASiCWithCAdESDataToSignHelperBuilder {
 	}
 
 	public static GetDataToSignASiCWithCAdESHelper getGetDataToSignHelper(SigningOperation operation, List<DSSDocument> documents,
-			ASiCWithCAdESSignatureParameters parameters) {
+			ASiCWithCAdESCommonParameters parameters) {
 
-		BLevelParameters bLevel = parameters.bLevel();
 		boolean asice = ASiCUtils.isASiCE(parameters.aSiC());
 		boolean asic = ASiCUtils.isAsic(documents);
 
@@ -72,7 +70,7 @@ public class ASiCWithCAdESDataToSignHelperBuilder {
 			if (asice) {
 				return new DataToSignASiCEWithCAdESFromFiles(operation, documents, parameters);
 			} else {
-				return new DataToSignASiCSWithCAdESFromFiles(documents, bLevel.getSigningDate(), parameters.aSiC());
+				return new DataToSignASiCSWithCAdESFromFiles(documents, parameters.getZipCreationDate(), parameters.aSiC());
 			}
 		}
 	}

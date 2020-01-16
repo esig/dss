@@ -39,8 +39,9 @@ import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestMultipleDocuments
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public class DetachedXmlMultiDocSignatureTest extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<XAdESSignatureParameters> {
+public class DetachedXmlMultiDocSignatureTest extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> {
 
 	private XAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentToSigns;
@@ -75,7 +76,7 @@ public class DetachedXmlMultiDocSignatureTest extends AbstractPkiFactoryTestMult
 	}
 
 	@Override
-	protected MultipleDocumentsSignatureService<XAdESSignatureParameters> getService() {
+	protected MultipleDocumentsSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> getService() {
 		return new XAdESService(getCompleteCertificateVerifier());
 	}
 

@@ -12,6 +12,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -23,11 +24,11 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
-import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pades.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
@@ -88,8 +89,16 @@ public class PAdESServiceTest extends PKIFactoryAccess {
         
         signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
         signAndValidate(documentToSign, signatureParameters);
+
+        signatureParameters.setSignatureTimestampParameters(new CAdESTimestampParameters());
+        signAndValidate(documentToSign, signatureParameters);
+
+        signatureParameters.setArchiveTimestampParameters(new CAdESTimestampParameters());
+        signAndValidate(documentToSign, signatureParameters);
         
-        signatureParameters.setArchiveTimestampParameters(new TimestampParameters());
+        PAdESTimestampParameters padesTimestampParameters = new PAdESTimestampParameters();
+        
+        signatureParameters.setArchiveTimestampParameters(padesTimestampParameters);
         signAndValidate(documentToSign, signatureParameters);
         
         signatureParameters.setBLevelParams(new BLevelParameters());
@@ -101,13 +110,13 @@ public class PAdESServiceTest extends PKIFactoryAccess {
         signatureParameters.setCertificateChain((List<CertificateToken>)null);
         signAndValidate(documentToSign, signatureParameters);
         
-        signatureParameters.setContentTimestampParameters(new TimestampParameters());
+        signatureParameters.setContentTimestampParameters(padesTimestampParameters);
         signAndValidate(documentToSign, signatureParameters);
         
         signatureParameters.setDetachedContents(Collections.emptyList());
         signAndValidate(documentToSign, signatureParameters);
         
-        signatureParameters.setSignatureTimestampParameters(new TimestampParameters());
+        signatureParameters.setSignatureTimestampParameters(padesTimestampParameters);
         signAndValidate(documentToSign, signatureParameters);
         
         signatureParameters.setSignedData(new byte[] {});
@@ -128,49 +137,49 @@ public class PAdESServiceTest extends PKIFactoryAccess {
         signatureParameters.setSignatureFieldId(Utils.EMPTY_STRING);
         signAndValidate(documentToSign, signatureParameters);
         
-        signatureParameters.setSignatureSize(1);
-		signatureParameters.setTimestampSize(1);
+        signatureParameters.setContentSize(1);
+		signatureParameters.getArchiveTimestampParameters().setContentSize(1);
         exception = assertThrows(DSSException.class, () -> signAndValidate(documentToSign, signatureParameters));
 
-        signatureParameters.setSignatureSize(8192);
-		signatureParameters.setTimestampSize(8192);
-        signatureParameters.setSignatureFilter(null);
+        signatureParameters.setContentSize(8192);
+		signatureParameters.getArchiveTimestampParameters().setContentSize(8192);
+        signatureParameters.setFilter(null);
         signAndValidate(documentToSign, signatureParameters);
         
-        signatureParameters.setSignatureFilter(Utils.EMPTY_STRING);
+        signatureParameters.setFilter(Utils.EMPTY_STRING);
         signAndValidate(documentToSign, signatureParameters);
         
-        signatureParameters.setSignatureSubFilter(null);
+        signatureParameters.setSubFilter(null);
         signAndValidate(documentToSign, signatureParameters);
         
-        signatureParameters.setSignatureSubFilter(Utils.EMPTY_STRING);
+        signatureParameters.setSubFilter(Utils.EMPTY_STRING);
         signAndValidate(documentToSign, signatureParameters);
         
         signatureParameters.setSignerName(Utils.EMPTY_STRING);
         signAndValidate(documentToSign, signatureParameters);
         
-        signatureParameters.setSignatureImageParameters(new SignatureImageParameters());
+        signatureParameters.setImageParameters(new SignatureImageParameters());
         exception = assertThrows(DSSException.class, () -> signAndValidate(documentToSign, signatureParameters));
         assertTrue(exception.getMessage().contains("Neither image nor text parameters are defined!"));
 
-        signatureParameters.setSignatureImageParameters(null);
-        signatureParameters.setTimestampFilter(null);
+        signatureParameters.setImageParameters(null);
+        signatureParameters.getArchiveTimestampParameters().setFilter(null);
         signAndValidate(documentToSign, signatureParameters);
         
-        signatureParameters.setTimestampFilter(Utils.EMPTY_STRING);
+        signatureParameters.getArchiveTimestampParameters().setFilter(Utils.EMPTY_STRING);
         signAndValidate(documentToSign, signatureParameters);
         
-        signatureParameters.setTimestampSubFilter(null);
+        signatureParameters.getArchiveTimestampParameters().setSubFilter(null);
         signAndValidate(documentToSign, signatureParameters);
         
-        signatureParameters.setTimestampSubFilter(Utils.EMPTY_STRING);
+        signatureParameters.getArchiveTimestampParameters().setSubFilter(Utils.EMPTY_STRING);
         signAndValidate(documentToSign, signatureParameters);
         
-        signatureParameters.setTimestampImageParameters(new SignatureImageParameters());
+        signatureParameters.getArchiveTimestampParameters().setImageParameters(new SignatureImageParameters());
         exception = assertThrows(DSSException.class, () -> signAndValidate(documentToSign, signatureParameters));
         assertTrue(exception.getMessage().contains("Neither image nor text parameters are defined!"));
 
-        signatureParameters.setTimestampImageParameters(null);
+        signatureParameters.getArchiveTimestampParameters().setImageParameters(null);
         signatureParameters.setPermission(CertificationPermission.NO_CHANGE_PERMITTED);
         signAndValidate(documentToSign, signatureParameters);
 	}

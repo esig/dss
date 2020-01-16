@@ -55,8 +55,9 @@ import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestMultipleDocuments
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public class OpenDocumentMultipleArchivesLevelBTest extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<ASiCWithXAdESSignatureParameters> {
+public class OpenDocumentMultipleArchivesLevelBTest extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> {
 	
 	private ASiCWithXAdESService service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
@@ -154,7 +155,7 @@ public class OpenDocumentMultipleArchivesLevelBTest extends AbstractPkiFactoryTe
 	}
 
 	@Override
-	protected MultipleDocumentsSignatureService<ASiCWithXAdESSignatureParameters> getService() {
+	protected MultipleDocumentsSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> getService() {
 		return service;
 	}
 

@@ -28,6 +28,7 @@ import java.util.Date;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 
+import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 
@@ -71,7 +72,7 @@ public class DeterministicIdGenerationTest {
 	}
 
 	@SuppressWarnings("serial")
-	private class SignatureParameters extends AbstractSignatureParameters {
+	private class SignatureParameters extends AbstractSignatureParameters<TimestampParameters> {
 
 	}
 

@@ -29,6 +29,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters.SignerTextPosition;
@@ -38,7 +39,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 
 public class PAdESWithSignatureInvisibleAndTimestampVisibleTest extends AbstractPAdESTestSignature {
 
-	private DocumentSignatureService<PAdESSignatureParameters> service;
+	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
@@ -58,14 +59,14 @@ public class PAdESWithSignatureInvisibleAndTimestampVisibleTest extends Abstract
 		textParameters.setTextColor(Color.GREEN);
 		textParameters.setSignerTextPosition(SignerTextPosition.BOTTOM);
 		timestampImageParameters.setTextParameters(textParameters);
-		signatureParameters.setTimestampImageParameters(timestampImageParameters);
+		signatureParameters.setImageParameters(timestampImageParameters);
 
 		service = new PAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 	}
 
 	@Override
-	protected DocumentSignatureService<PAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> getService() {
 		return service;
 	}
 

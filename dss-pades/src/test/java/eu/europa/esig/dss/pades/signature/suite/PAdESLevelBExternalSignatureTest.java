@@ -41,6 +41,7 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.signature.ExternalSignatureResult;
@@ -48,7 +49,7 @@ import eu.europa.esig.dss.test.signature.ExternalSignatureResult;
 public class PAdESLevelBExternalSignatureTest extends AbstractPAdESTestSignature {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESLevelBExternalSignatureTest.class);
-	private DocumentSignatureService<PAdESSignatureParameters> service;
+	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 	private Date signingDate;
@@ -73,7 +74,7 @@ public class PAdESLevelBExternalSignatureTest extends AbstractPAdESTestSignature
 	protected DSSDocument sign() {
 		DSSDocument toBeSigned = getDocumentToSign();
 		PAdESSignatureParameters params = getSignatureParameters();
-		DocumentSignatureService<PAdESSignatureParameters> service = getService();
+		DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service = getService();
 
 		// Generate toBeSigned without signing certificate
 		assert params.getSigningCertificate() == null;
@@ -135,7 +136,7 @@ public class PAdESLevelBExternalSignatureTest extends AbstractPAdESTestSignature
 	}
 
 	@Override
-	protected DocumentSignatureService<PAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> getService() {
 		return service;
 	}
 

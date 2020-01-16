@@ -22,10 +22,11 @@ package eu.europa.esig.dss.signature;
 
 import java.io.Serializable;
 
-import eu.europa.esig.dss.model.AbstractSerializableSignatureParameters;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.model.SerializableTimestampParameters;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
@@ -34,7 +35,7 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
  *
  *
  */
-public interface DocumentSignatureService<SP extends AbstractSerializableSignatureParameters> extends Serializable {
+public interface DocumentSignatureService<SP extends SerializableSignatureParameters, TP extends SerializableTimestampParameters> extends Serializable {
 
 	/**
 	 * Retrieves the bytes of the data that need to be signed based on the {@code toSignDocument} and {@code parameters}
@@ -119,6 +120,6 @@ public interface DocumentSignatureService<SP extends AbstractSerializableSignatu
 	 *                            set of the driving timestamping parameters
 	 * @return the timestamped document
 	 */
-	DSSDocument timestamp(final DSSDocument toTimestampDocument, final SP parameters);
+	DSSDocument timestamp(final DSSDocument toTimestampDocument, final TP parameters);
 
 }

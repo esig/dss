@@ -30,6 +30,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters.SignerTextPosition;
@@ -39,7 +40,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 
 public class PAdESWithSignatureAndTimestampVisibleTest extends AbstractPAdESTestSignature {
 
-	private DocumentSignatureService<PAdESSignatureParameters> service;
+	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
@@ -57,7 +58,7 @@ public class PAdESWithSignatureAndTimestampVisibleTest extends AbstractPAdESTest
 		signatureImageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
 		signatureImageParameters.setxAxis(25);
 		signatureImageParameters.setyAxis(25);
-		signatureParameters.setSignatureImageParameters(signatureImageParameters);
+		signatureParameters.setImageParameters(signatureImageParameters);
 
 		SignatureImageParameters timestampImageParameters = new SignatureImageParameters();
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
@@ -65,14 +66,14 @@ public class PAdESWithSignatureAndTimestampVisibleTest extends AbstractPAdESTest
 		textParameters.setTextColor(Color.GREEN);
 		textParameters.setSignerTextPosition(SignerTextPosition.BOTTOM);
 		timestampImageParameters.setTextParameters(textParameters);
-		signatureParameters.setTimestampImageParameters(timestampImageParameters);
+		signatureParameters.setImageParameters(timestampImageParameters);
 
 		service = new PAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 	}
 
 	@Override
-	protected DocumentSignatureService<PAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> getService() {
 		return service;
 	}
 

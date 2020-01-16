@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
+import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.cades.signature.asice.AbstractASiCECAdESTestSignature;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
@@ -19,7 +20,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 
 public class CrossedASiCContainerTypeTest extends AbstractASiCECAdESTestSignature {
 
-	private DocumentSignatureService<ASiCWithCAdESSignatureParameters> service;
+	private DocumentSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> service;
 	private ASiCWithCAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
@@ -44,7 +45,7 @@ public class CrossedASiCContainerTypeTest extends AbstractASiCECAdESTestSignatur
 	}
 
 	@Override
-	protected DocumentSignatureService<ASiCWithCAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> getService() {
 		return service;
 	}
 

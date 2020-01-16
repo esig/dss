@@ -28,6 +28,7 @@ import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
+import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteTimestampParameters;
 
 /**
  * This interface {@code RemoteMultipleDocumentsSignatureService} provides operations for the signature creation.
@@ -87,5 +88,18 @@ public interface RemoteMultipleDocumentsSignatureService extends Serializable {
 	 *             if an error occurred
 	 */
 	RemoteDocument extendDocument(final RemoteDocument toExtendDocument, final RemoteSignatureParameters parameters) throws DSSException;
+	
+	/**
+	 * Adds timestamps to the given list of documents
+	 * 
+	 * @param toTimestampDocuments
+	 *            a list of {@link RemoteDocument} to timestamp
+	 * @param parameters
+	 *            set of the driving timestamp parameters
+	 * @return the timestamped {@link RemoteDocument}
+	 * @throws DSSException
+	 *             if an error occurred
+	 */
+	RemoteDocument timestamp(final List<RemoteDocument> toTimestampDocuments, final RemoteTimestampParameters parameters) throws DSSException;
 
 }

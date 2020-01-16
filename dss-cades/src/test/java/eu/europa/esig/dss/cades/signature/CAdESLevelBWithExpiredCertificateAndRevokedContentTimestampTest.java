@@ -58,7 +58,7 @@ import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
  */
 public class CAdESLevelBWithExpiredCertificateAndRevokedContentTimestampTest extends AbstractCAdESTestSignature {
 
-	private DocumentSignatureService<CAdESSignatureParameters> service;
+	private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
 	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
@@ -133,7 +133,7 @@ public class CAdESLevelBWithExpiredCertificateAndRevokedContentTimestampTest ext
 	}
 
 	@Override
-	protected DocumentSignatureService<CAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> getService() {
 		return service;
 	}
 

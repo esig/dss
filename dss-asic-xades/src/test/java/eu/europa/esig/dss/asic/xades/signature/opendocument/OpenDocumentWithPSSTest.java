@@ -44,6 +44,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
 public class OpenDocumentWithPSSTest extends AbstractOpenDocumentTestSignature {
 
@@ -51,7 +52,7 @@ public class OpenDocumentWithPSSTest extends AbstractOpenDocumentTestSignature {
 		super(fileToTest);
 	}
 
-	private DocumentSignatureService<ASiCWithXAdESSignatureParameters> service;
+	private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
 
 	@Before
@@ -102,7 +103,7 @@ public class OpenDocumentWithPSSTest extends AbstractOpenDocumentTestSignature {
 	}
 
 	@Override
-	protected DocumentSignatureService<ASiCWithXAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> getService() {
 		return service;
 	}
 

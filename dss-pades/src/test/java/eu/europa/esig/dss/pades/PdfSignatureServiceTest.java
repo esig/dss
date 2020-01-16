@@ -65,12 +65,12 @@ public class PdfSignatureServiceTest {
 		}
 
 		@Override
-		public byte[] digest(DSSDocument toSignDocument, PAdESSignatureParameters parameters) {
+		public byte[] digest(DSSDocument toSignDocument, PAdESCommonParameters parameters) {
 			return null;
 		}
 
 		@Override
-		public DSSDocument sign(DSSDocument pdfData, byte[] signatureValue, PAdESSignatureParameters parameters) {
+		public DSSDocument sign(DSSDocument pdfData, byte[] signatureValue, PAdESCommonParameters parameters) {
 			return null;
 		}
 

@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.ws.signature.dto;
 
-import java.io.Serializable;
-
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
@@ -32,7 +30,7 @@ import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
  * It's impossible to transfer big objects by GET (url size limitation)
  */
 @SuppressWarnings("serial")
-public class SignOneDocumentDTO extends AbstractSignDocumentDTO implements Serializable {
+public class SignOneDocumentDTO extends AbstractSignDocumentDTO {
 
 	private RemoteDocument toSignDocument;
 

@@ -64,6 +64,7 @@ import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.pades.CertificationPermission;
+import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
@@ -103,7 +104,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public byte[] digest(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters) {
+	public byte[] digest(final DSSDocument toSignDocument, final PAdESCommonParameters parameters) {
 
 		final byte[] signatureValue = DSSUtils.EMPTY_BYTE_ARRAY;
 		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -120,7 +121,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public DSSDocument sign(final DSSDocument toSignDocument, final byte[] signatureValue, final PAdESSignatureParameters parameters) {
+	public DSSDocument sign(final DSSDocument toSignDocument, final byte[] signatureValue, final PAdESCommonParameters parameters) {
 
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				InputStream is = toSignDocument.openStream();
@@ -136,10 +137,10 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		}
 	}
 
-	private byte[] signDocumentAndReturnDigest(final PAdESSignatureParameters parameters, final byte[] signatureBytes, final OutputStream fileOutputStream,
+	private byte[] signDocumentAndReturnDigest(final PAdESCommonParameters parameters, final byte[] signatureBytes, final OutputStream fileOutputStream,
 			final PDDocument pdDocument) {
 
-		final MessageDigest digest = DSSUtils.getMessageDigest(getCurrentDigestAlgorithm(parameters));
+		final MessageDigest digest = DSSUtils.getMessageDigest(parameters.getDigestAlgorithm());
 		SignatureInterface signatureInterface = new SignatureInterface() {
 
 			@Override
@@ -156,9 +157,9 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 		final PDSignature pdSignature = createSignatureDictionary(parameters, pdDocument);
 		try (SignatureOptions options = new SignatureOptions()) {
-			options.setPreferredSignatureSize(getCurrentSignatureSize(parameters));
+			options.setPreferredSignatureSize(parameters.getContentSize());
 
-			SignatureImageParameters imageParameters = getImageParameters(parameters);
+			SignatureImageParameters imageParameters = parameters.getImageParameters();
 			if (imageParameters != null && signatureDrawerFactory != null) {
 				PdfBoxSignatureDrawer signatureDrawer = (PdfBoxSignatureDrawer) signatureDrawerFactory
 						.getSignatureDrawer(imageParameters);
@@ -179,41 +180,47 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		}
 	}
 
-	private PDSignature createSignatureDictionary(final PAdESSignatureParameters parameters, PDDocument pdDocument) {
+	private PDSignature createSignatureDictionary(final PAdESCommonParameters parameters, PDDocument pdDocument) {
 
 		PDSignature signature;
-		if (!isDocumentTimestampLayer() && Utils.isStringNotEmpty(parameters.getSignatureFieldId())) {
-			signature = findExistingSignature(pdDocument, parameters.getSignatureFieldId());
+		if (!isDocumentTimestampLayer() && Utils.isStringNotEmpty(parameters.getFieldId())) {
+			signature = findExistingSignature(pdDocument, parameters.getFieldId());
 		} else {
 			signature = new PDSignature();
 		}
 
 		COSName currentType = COSName.getPDFName(getType());
 		signature.setType(currentType);
-		signature.setFilter(COSName.getPDFName(getFilter(parameters)));
-		// sub-filter for basic and PAdES Part 2 signatures
-		signature.setSubFilter(COSName.getPDFName(getSubFilter(parameters)));
 		
+		if (Utils.isStringNotEmpty(parameters.getFilter())) {
+			signature.setFilter(COSName.getPDFName(parameters.getFilter()));
+		}
+		// sub-filter for basic and PAdES Part 2 signatures
+		if (Utils.isStringNotEmpty(parameters.getSubFilter())) {
+			signature.setSubFilter(COSName.getPDFName(parameters.getSubFilter()));
+		}
 
 		if (COSName.SIG.equals(currentType)) {
+			
+			PAdESSignatureParameters signatureParameters = (PAdESSignatureParameters) parameters;
 
-			if (Utils.isStringNotEmpty(parameters.getSignerName())) {
-				signature.setName(parameters.getSignerName());
+			if (Utils.isStringNotEmpty(signatureParameters.getSignerName())) {
+				signature.setName(signatureParameters.getSignerName());
 			}
 
-			if (Utils.isStringNotEmpty(parameters.getContactInfo())) {
-				signature.setContactInfo(parameters.getContactInfo());
+			if (Utils.isStringNotEmpty(signatureParameters.getContactInfo())) {
+				signature.setContactInfo(signatureParameters.getContactInfo());
 			}
 
-			if (Utils.isStringNotEmpty(parameters.getLocation())) {
-				signature.setLocation(parameters.getLocation());
+			if (Utils.isStringNotEmpty(signatureParameters.getLocation())) {
+				signature.setLocation(signatureParameters.getLocation());
 			}
 
-			if (Utils.isStringNotEmpty(parameters.getReason())) {
-				signature.setReason(parameters.getReason());
+			if (Utils.isStringNotEmpty(signatureParameters.getReason())) {
+				signature.setReason(signatureParameters.getReason());
 			}
 
-			CertificationPermission permission = parameters.getPermission();
+			CertificationPermission permission = signatureParameters.getPermission();
 			// A document can contain only one signature field that contains a DocMDP
 			// transform method;
 			// it shall be the first signed field in the document.
@@ -223,7 +230,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 			// the signing date, needed for valid signature
 			final Calendar cal = Calendar.getInstance();
-			final Date signingDate = parameters.bLevel().getSigningDate();
+			final Date signingDate = parameters.getSigningDate();
 			cal.setTime(signingDate);
 			signature.setSignDate(cal);
 		}
@@ -306,13 +313,13 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		permsDict.setNeedToBeUpdated(true);
 	}
 
-	public void saveDocumentIncrementally(PAdESSignatureParameters parameters, OutputStream outputStream, PDDocument pdDocument) throws DSSException {
+	public void saveDocumentIncrementally(PAdESCommonParameters parameters, OutputStream outputStream, PDDocument pdDocument) throws DSSException {
 		try {
 			// the document needs to have an ID, if not a ID based on the current system
 			// time is used, and then the
 			// digest of the signed data is different
 			if (pdDocument.getDocumentId() == null) {
-				pdDocument.setDocumentId(parameters.bLevel().getSigningDate().getTime());
+				pdDocument.setDocumentId(parameters.getSigningDate().getTime());
 			}
 			pdDocument.saveIncremental(outputStream);
 		} catch (IOException e) {

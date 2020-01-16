@@ -20,28 +20,35 @@
  */
 package eu.europa.esig.dss.ws.signature.common;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.TimestampContainerForm;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.ws.converter.DTOConverter;
 import eu.europa.esig.dss.ws.converter.RemoteCertificateConverter;
+import eu.europa.esig.dss.ws.converter.RemoteDocumentConverter;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
+import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteTimestampParameters;
 
 public class RemoteMiltipleDocumentSignatureServiceTest extends AbstractRemoteSignatureServiceTest {
 	
@@ -52,6 +59,7 @@ public class RemoteMiltipleDocumentSignatureServiceTest extends AbstractRemoteSi
 		signatureService = new RemoteMultipleDocumentsSignatureServiceImpl();
 		signatureService.setXadesService(getXAdESService());
 		signatureService.setAsicWithXAdESService(getASiCXAdESService());
+		signatureService.setAsicWithCAdESService(getASiCCAdESService());
 	}
 
 	@Test
@@ -89,6 +97,28 @@ public class RemoteMiltipleDocumentSignatureServiceTest extends AbstractRemoteSi
 		// iMD.save("target/test.asice");
 		
 		validate(iMD, null);
+	}
+	
+	@Test
+	public void multipleDocumentTimestampingTest() throws Exception {
+		RemoteTimestampParameters timestampParameters = new RemoteTimestampParameters();
+		timestampParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
+		timestampParameters.setTimestampContainerForm(TimestampContainerForm.ASiC_E);
+		
+		List<DSSDocument> filesToTimestamp = Arrays.asList(new DSSDocument[] {
+				new FileDocument(new File("src/test/resources/sample.xml")),
+				new FileDocument(new File("src/test/resources/sample.pdf"))
+				});
+		
+		List<RemoteDocument> remoteDocuments = RemoteDocumentConverter.toRemoteDocuments(filesToTimestamp);
+		RemoteDocument timestampedDocument = signatureService.timestamp(remoteDocuments, timestampParameters);
+		
+		InMemoryDocument iMD = new InMemoryDocument(timestampedDocument.getBytes());
+		DiagnosticData diagnosticData = validate(iMD, filesToTimestamp);
+		
+		assertEquals(0, diagnosticData.getSignatures().size());
+		assertEquals(1, diagnosticData.getTimestampList().size());
+		assertEquals(3, diagnosticData.getOriginalSignerDocuments().size()); // plus manifest file
 	}
 
 }

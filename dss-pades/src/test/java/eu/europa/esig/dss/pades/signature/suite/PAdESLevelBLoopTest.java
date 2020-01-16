@@ -37,6 +37,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
@@ -60,7 +61,7 @@ public class PAdESLevelBLoopTest extends AbstractPAdESTestSignature {
 		return dataToRun;
 	}
 
-	private DocumentSignatureService<PAdESSignatureParameters> service;
+	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
@@ -86,7 +87,7 @@ public class PAdESLevelBLoopTest extends AbstractPAdESTestSignature {
 	}
 
 	@Override
-	protected DocumentSignatureService<PAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> getService() {
 		return service;
 	}
 

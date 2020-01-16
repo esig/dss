@@ -40,7 +40,7 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 public class CAdESLevelBDetachedInvalidOCSPTest extends AbstractCAdESTestSignature {
 
-	private DocumentSignatureService<CAdESSignatureParameters> service;
+	private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
 	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
@@ -77,7 +77,7 @@ public class CAdESLevelBDetachedInvalidOCSPTest extends AbstractCAdESTestSignatu
 	}
 
 	@Override
-	protected DocumentSignatureService<CAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> getService() {
 		return service;
 	}
 

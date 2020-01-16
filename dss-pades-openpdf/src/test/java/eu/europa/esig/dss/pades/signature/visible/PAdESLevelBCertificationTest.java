@@ -34,6 +34,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
@@ -42,7 +43,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 
 public class PAdESLevelBCertificationTest extends AbstractPAdESTestSignature {
 
-	private DocumentSignatureService<PAdESSignatureParameters> service;
+	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
@@ -63,7 +64,7 @@ public class PAdESLevelBCertificationTest extends AbstractPAdESTestSignature {
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("TEST FIELD");
 		signatureImageParameters.setTextParameters(textParameters);
-		signatureParameters.setSignatureImageParameters(signatureImageParameters);
+		signatureParameters.setImageParameters(signatureImageParameters);
 
 		service = new PAdESService(getCompleteCertificateVerifier());
 	}
@@ -80,7 +81,7 @@ public class PAdESLevelBCertificationTest extends AbstractPAdESTestSignature {
 	}
 
 	@Override
-	protected DocumentSignatureService<PAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> getService() {
 		return service;
 	}
 

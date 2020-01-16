@@ -38,7 +38,7 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 public class CAdESLevelBDetachedWithContentTimestampTest extends AbstractCAdESTestSignature {
 
-	private DocumentSignatureService<CAdESSignatureParameters> service;
+	private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
 	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
@@ -71,7 +71,7 @@ public class CAdESLevelBDetachedWithContentTimestampTest extends AbstractCAdESTe
 	}
 
 	@Override
-	protected DocumentSignatureService<CAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> getService() {
 		return service;
 	}
 

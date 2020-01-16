@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.enumerations.SignatureValidity;
+import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
@@ -76,7 +77,7 @@ public class BaselineBCertificateSelectorTest {
 	public void testNormalNoTrust() {
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 
-		AbstractSignatureParameters parameters = new CommonSignatureParamaters();
+		CommonSignatureParamaters parameters = new CommonSignatureParamaters();
 		parameters.setSigningCertificate(c1);
 		parameters.setCertificateChain(c2);
 
@@ -94,7 +95,7 @@ public class BaselineBCertificateSelectorTest {
 		trustCertSource.addCertificate(c2);
 		certificateVerifier.setTrustedCertSource(trustCertSource);
 
-		AbstractSignatureParameters parameters = new CommonSignatureParamaters();
+		CommonSignatureParamaters parameters = new CommonSignatureParamaters();
 		parameters.setSigningCertificate(c1);
 		parameters.setCertificateChain(c2);
 
@@ -111,7 +112,7 @@ public class BaselineBCertificateSelectorTest {
 		trustCertSource.addCertificate(c2);
 		certificateVerifier.setTrustedCertSource(trustCertSource);
 
-		AbstractSignatureParameters parameters = new CommonSignatureParamaters();
+		CommonSignatureParamaters parameters = new CommonSignatureParamaters();
 		parameters.setSigningCertificate(c1);
 		parameters.setCertificateChain(c2, c3);
 
@@ -132,7 +133,7 @@ public class BaselineBCertificateSelectorTest {
 		trustCertSource.addCertificate(c3);
 		certificateVerifier.setTrustedCertSource(trustCertSource);
 
-		AbstractSignatureParameters parameters = new CommonSignatureParamaters();
+		CommonSignatureParamaters parameters = new CommonSignatureParamaters();
 		parameters.setSigningCertificate(c1);
 		parameters.setCertificateChain(c2, c3);
 
@@ -150,7 +151,7 @@ public class BaselineBCertificateSelectorTest {
 		trustCertSource.addCertificate(c3Bis);
 		certificateVerifier.setTrustedCertSource(trustCertSource);
 
-		AbstractSignatureParameters parameters = new CommonSignatureParamaters();
+		CommonSignatureParamaters parameters = new CommonSignatureParamaters();
 		parameters.setSigningCertificate(c1);
 		parameters.setCertificateChain(c2, c3);
 
@@ -168,7 +169,7 @@ public class BaselineBCertificateSelectorTest {
 		trustCertSource.addCertificate(c3);
 		certificateVerifier.setTrustedCertSource(trustCertSource);
 
-		AbstractSignatureParameters parameters = new CommonSignatureParamaters();
+		CommonSignatureParamaters parameters = new CommonSignatureParamaters();
 		parameters.setSigningCertificate(c1);
 		parameters.setCertificateChain(c2, c3, c4);
 
@@ -186,7 +187,7 @@ public class BaselineBCertificateSelectorTest {
 		trustCertSource.addCertificate(c2);
 		certificateVerifier.setTrustedCertSource(trustCertSource);
 
-		AbstractSignatureParameters parameters = new CommonSignatureParamaters();
+		CommonSignatureParamaters parameters = new CommonSignatureParamaters();
 		parameters.setSigningCertificate(c1);
 		parameters.setCertificateChain(c2);
 		parameters.bLevel().setTrustAnchorBPPolicy(false);
@@ -205,7 +206,7 @@ public class BaselineBCertificateSelectorTest {
 		trustCertSource.addCertificate(c3);
 		certificateVerifier.setTrustedCertSource(trustCertSource);
 
-		AbstractSignatureParameters parameters = new CommonSignatureParamaters();
+		CommonSignatureParamaters parameters = new CommonSignatureParamaters();
 		parameters.setSigningCertificate(c1);
 		parameters.setCertificateChain(c3, c2);
 		parameters.bLevel().setTrustAnchorBPPolicy(false);
@@ -222,7 +223,7 @@ public class BaselineBCertificateSelectorTest {
 	public void testDuplicateSigningCert() {
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 
-		AbstractSignatureParameters parameters = new CommonSignatureParamaters();
+		CommonSignatureParamaters parameters = new CommonSignatureParamaters();
 		parameters.setSigningCertificate(c1);
 		parameters.setCertificateChain(c1, c2);
 
@@ -234,7 +235,7 @@ public class BaselineBCertificateSelectorTest {
 	}
 
 	@SuppressWarnings("serial")
-	private static class CommonSignatureParamaters extends AbstractSignatureParameters {
+	private static class CommonSignatureParamaters extends AbstractSignatureParameters<TimestampParameters> {
 	}
 
 }

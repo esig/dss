@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
+import eu.europa.esig.dss.asic.cades.ASiCWithCAdESCommonParameters;
 import eu.europa.esig.dss.asic.cades.signature.GetDataToSignASiCWithCAdESHelper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.signature.SigningOperation;
@@ -34,11 +34,11 @@ public class DataToSignASiCEWithCAdESFromFiles extends AbstractDataToSignASiCEWi
 
 	private final SigningOperation operation;
 	private final List<DSSDocument> filesToBeSigned;
-	private final ASiCWithCAdESSignatureParameters parameters;
+	private final ASiCWithCAdESCommonParameters parameters;
 
 	private DSSDocument toBeSigned;
 
-	public DataToSignASiCEWithCAdESFromFiles(SigningOperation operation, List<DSSDocument> filesToBeSigned, ASiCWithCAdESSignatureParameters parameters) {
+	public DataToSignASiCEWithCAdESFromFiles(SigningOperation operation, List<DSSDocument> filesToBeSigned, ASiCWithCAdESCommonParameters parameters) {
 		this.operation = operation;
 		this.filesToBeSigned = filesToBeSigned;
 		this.parameters = parameters;

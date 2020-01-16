@@ -37,14 +37,14 @@ import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
 public class PAdESLevelTWithSHA1MessageImprintTest extends AbstractPAdESTestSignature {
 
-	private DocumentSignatureService<PAdESSignatureParameters> service;
+	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
@@ -56,7 +56,7 @@ public class PAdESLevelTWithSHA1MessageImprintTest extends AbstractPAdESTestSign
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_T);
-		TimestampParameters signatureTimestampParameters = new TimestampParameters(DigestAlgorithm.SHA1);
+		PAdESTimestampParameters signatureTimestampParameters = new PAdESTimestampParameters(DigestAlgorithm.SHA1);
 		signatureParameters.setSignatureTimestampParameters(signatureTimestampParameters);
 
 		service = new PAdESService(getCompleteCertificateVerifier());
@@ -64,7 +64,7 @@ public class PAdESLevelTWithSHA1MessageImprintTest extends AbstractPAdESTestSign
 	}
 
 	@Override
-	protected DocumentSignatureService<PAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> getService() {
 		return service;
 	}
 

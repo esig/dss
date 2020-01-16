@@ -46,7 +46,9 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
+import eu.europa.esig.dss.pades.timestamp.PAdESTimestampService;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
@@ -60,7 +62,7 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 /**
  * PAdES implementation of the DocumentSignatureService
  */
-public class PAdESService extends AbstractSignatureService<PAdESSignatureParameters> {
+public class PAdESService extends AbstractSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESService.class);
 
@@ -246,9 +248,9 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	}
 
 	@Override
-	public DSSDocument timestamp(DSSDocument toTimestampDocument, PAdESSignatureParameters parameters) {
-		PAdESLevelBaselineT levelT = new PAdESLevelBaselineT(tspSource, pdfObjFactory);
-		DSSDocument timestampedDocument = levelT.extendSignatures(toTimestampDocument, parameters);
+	public DSSDocument timestamp(DSSDocument toTimestampDocument, PAdESTimestampParameters parameters) {
+		PAdESTimestampService timestampService = new PAdESTimestampService(tspSource, pdfObjFactory.newSignatureTimestampService());
+		DSSDocument timestampedDocument = timestampService.timestampDocument(toTimestampDocument, parameters);
 		timestampedDocument.setName(getFinalFileName(toTimestampDocument, SigningOperation.TIMESTAMP, null));
 		return timestampedDocument;
 	}

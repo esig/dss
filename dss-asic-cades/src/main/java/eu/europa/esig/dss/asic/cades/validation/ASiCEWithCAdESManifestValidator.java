@@ -51,7 +51,7 @@ public class ASiCEWithCAdESManifestValidator {
 	 */
 	public List<ManifestEntry> validateEntries() {
 		List<ManifestEntry> manifestEntries = manifest.getEntries();
-		if (signedDocuments == null) {
+		if (Utils.isCollectionEmpty(signedDocuments)) {
 			// no signed data to validate on
 			return manifestEntries;
 		}

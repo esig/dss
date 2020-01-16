@@ -33,12 +33,12 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.TimestampBinary;
-import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
 /**
  * This class allows to create a XAdES content-timestamp which covers all documents (AllDataObjectsTimeStamp).
@@ -47,9 +47,9 @@ import eu.europa.esig.dss.xades.DSSXMLUtils;
 public class AllDataObjectsTimeStampBuilder {
 
 	private final TSPSource tspSource;
-	private final TimestampParameters timestampParameters;
+	private final XAdESTimestampParameters timestampParameters;
 
-	public AllDataObjectsTimeStampBuilder(TSPSource tspSource, TimestampParameters timestampParameters) {
+	public AllDataObjectsTimeStampBuilder(TSPSource tspSource, XAdESTimestampParameters timestampParameters) {
 		this.tspSource = tspSource;
 		this.timestampParameters = timestampParameters;
 	}

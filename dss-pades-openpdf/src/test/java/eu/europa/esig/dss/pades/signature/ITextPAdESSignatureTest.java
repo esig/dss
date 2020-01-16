@@ -57,7 +57,7 @@ import eu.europa.esig.dss.pades.signature.suite.PAdESServiceTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESSpaceEOFTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESWithPSSTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESWithSHA3Test;
-import eu.europa.esig.dss.pades.signature.suite.PDFOverrideFiltersTest;
+import eu.europa.esig.dss.pades.signature.suite.PDFTimestampFiltersTest;
 import eu.europa.esig.dss.pades.signature.suite.TwoPAdESSigniatureMustHaveDifferentIdTest;
 
 @RunWith(JUnitPlatform.class)
@@ -66,7 +66,7 @@ import eu.europa.esig.dss.pades.signature.suite.TwoPAdESSigniatureMustHaveDiffer
 		PAdESLevelBWithContentTimestampTest.class, PAdESLevelBWithDSATest.class, PAdESLevelBWithECDSATest.class, PAdESLevelBWithMoreThanOneSecondDelayTest.class,
 		PAdESLevelBWithSHA256andMGF1Test.class, PAdESLevelImpossibleLTAExceptionTest.class, PAdESLevelImpossibleLTExceptionTest.class, PAdESLevelLTTest.class,
 		PAdESLevelLTATest.class, PAdESLevelLTWrongAIATest.class, PAdESLevelTTest.class, PAdESLTACheckTimeStampedTimestampIDTest.class, PAdESLTACheckTimeStampIDTest.class,
-		PDFOverrideFiltersTest.class, TwoPAdESSigniatureMustHaveDifferentIdTest.class, PAdESLevelBHugeTest.class, InvisibleSignatureFieldSignTest.class, PAdESSpaceEOFTest.class,
+		PDFTimestampFiltersTest.class, TwoPAdESSigniatureMustHaveDifferentIdTest.class, PAdESLevelBHugeTest.class, InvisibleSignatureFieldSignTest.class, PAdESSpaceEOFTest.class,
 		PAdESDoubleLTAValidationDataTest.class, PAdESNoDuplicateValidationDataTest.class, PAdESWithPSSTest.class, PAdESWithSHA3Test.class,
 		PAdESLevelTWithSHA1MessageImprintTest.class, PAdESAllSelfSignedCertsTest.class, PAdESServiceTest.class, CertificateConflictTest.class })
 public class ITextPAdESSignatureTest {

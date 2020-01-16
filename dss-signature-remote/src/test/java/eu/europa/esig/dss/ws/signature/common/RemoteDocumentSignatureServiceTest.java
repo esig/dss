@@ -20,18 +20,22 @@
  */
 package eu.europa.esig.dss.ws.signature.common;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.TimestampContainerForm;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -44,6 +48,7 @@ import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
+import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteTimestampParameters;
 
 public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureServiceTest {
 	
@@ -53,6 +58,7 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 	public void init() {
 		signatureService = new RemoteDocumentSignatureServiceImpl();
 		signatureService.setXadesService(getXAdESService());
+		signatureService.setPadesService(getPAdESService());
 	}
 
 	@Test
@@ -150,6 +156,24 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 
 		InMemoryDocument iMD = new InMemoryDocument(extendedDocument.getBytes());
 		validate(iMD, RemoteDocumentConverter.toDSSDocuments(Arrays.asList(toSignDocument)));
+	}
+	
+	@Test
+	public void testTimestamping() throws Exception {
+		RemoteTimestampParameters remoteTimestampParameters = new RemoteTimestampParameters();
+		remoteTimestampParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
+		remoteTimestampParameters.setTimestampContainerForm(TimestampContainerForm.PDF);
+		
+		FileDocument fileToTimestamp = new FileDocument(new File("src/test/resources/sample.pdf"));
+		RemoteDocument remoteDocument = RemoteDocumentConverter.toRemoteDocument(fileToTimestamp);
+		
+		RemoteDocument timestampedDocument = signatureService.timestamp(remoteDocument, remoteTimestampParameters);
+		
+		InMemoryDocument iMD = new InMemoryDocument(timestampedDocument.getBytes());
+		DiagnosticData diagnosticData = validate(iMD, Collections.emptyList());
+		
+		assertEquals(0, diagnosticData.getSignatures().size());
+		assertEquals(1, diagnosticData.getTimestampList().size());
 	}
 
 }

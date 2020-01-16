@@ -27,6 +27,7 @@ import java.util.UUID;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
+import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -37,7 +38,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.test.extension.AbstractTestExtension;
 
-public abstract class AbstractTestCAdESExtension extends AbstractTestExtension<CAdESSignatureParameters> {
+public abstract class AbstractTestCAdESExtension extends AbstractTestExtension<CAdESSignatureParameters, CAdESTimestampParameters> {
 
 	@Override
 	protected TSPSource getUsedTSPSourceAtSignatureTime() {
@@ -79,7 +80,7 @@ public abstract class AbstractTestCAdESExtension extends AbstractTestExtension<C
 	}
 
 	@Override
-	protected DocumentSignatureService<CAdESSignatureParameters> getSignatureServiceToExtend() {
+	protected DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> getSignatureServiceToExtend() {
 		CAdESService service = new CAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getUsedTSPSourceAtExtensionTime());
 		return service;

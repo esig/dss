@@ -80,7 +80,7 @@ public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess 
 		textParameters.setText("My signature");
 		textParameters.setTextColor(Color.GREEN);
 		imageParameters.setTextParameters(textParameters);
-		signatureParameters.setSignatureImageParameters(imageParameters);
+		signatureParameters.setImageParameters(imageParameters);
 
 		signAndValidate(true);
 	}
@@ -92,7 +92,7 @@ public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess 
 		textParameters.setText("My signature");
 		textParameters.setTextColor(new Color(0, 255, 0, 100));
 		imageParameters.setTextParameters(textParameters);
-		signatureParameters.setSignatureImageParameters(imageParameters);
+		signatureParameters.setImageParameters(imageParameters);
 
 		signAndValidate(false);
 	}
@@ -103,7 +103,7 @@ public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess 
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
 		imageParameters.setxAxis(100);
 		imageParameters.setyAxis(100);
-		signatureParameters.setSignatureImageParameters(imageParameters);
+		signatureParameters.setImageParameters(imageParameters);
 
 		signAndValidate(true);
 	}
@@ -115,7 +115,7 @@ public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess 
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG));
 		imageParameters.setxAxis(100);
 		imageParameters.setyAxis(100);
-		signatureParameters.setSignatureImageParameters(imageParameters);
+		signatureParameters.setImageParameters(imageParameters);
 
 		signAndValidate(false);
 	}

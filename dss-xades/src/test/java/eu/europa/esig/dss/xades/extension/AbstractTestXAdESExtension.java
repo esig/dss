@@ -37,9 +37,10 @@ import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.test.extension.AbstractTestExtension;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
-public abstract class AbstractTestXAdESExtension extends AbstractTestExtension<XAdESSignatureParameters> {
+public abstract class AbstractTestXAdESExtension extends AbstractTestExtension<XAdESSignatureParameters, XAdESTimestampParameters> {
 
 	@Override
 	protected TSPSource getUsedTSPSourceAtSignatureTime() {
@@ -80,7 +81,7 @@ public abstract class AbstractTestXAdESExtension extends AbstractTestExtension<X
 	}
 
 	@Override
-	protected DocumentSignatureService<XAdESSignatureParameters> getSignatureServiceToExtend() {
+	protected DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> getSignatureServiceToExtend() {
 		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getUsedTSPSourceAtExtensionTime());
 		return service;

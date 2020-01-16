@@ -32,14 +32,14 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
 public class XAdESLevelBEnvelopedHtmlUTF8Test extends AbstractXAdESTestSignature {
 
-	private DocumentSignatureService<XAdESSignatureParameters> service;
+	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
@@ -57,13 +57,13 @@ public class XAdESLevelBEnvelopedHtmlUTF8Test extends AbstractXAdESTestSignature
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 
-		TimestampParameters contentTimestampParameters = new TimestampParameters();
+		XAdESTimestampParameters contentTimestampParameters = new XAdESTimestampParameters();
 		contentTimestampParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
 		contentTimestampParameters.setCanonicalizationMethod(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
 		signatureParameters.setContentTimestampParameters(contentTimestampParameters);
 		TimestampToken contentTimestamp = service.getContentTimestamp(documentToSign, signatureParameters);
 
-		contentTimestampParameters = new TimestampParameters();
+		contentTimestampParameters = new XAdESTimestampParameters();
 		contentTimestampParameters.setDigestAlgorithm(DigestAlgorithm.SHA1);
 		contentTimestampParameters.setCanonicalizationMethod(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
 		signatureParameters.setContentTimestampParameters(contentTimestampParameters);
@@ -78,7 +78,7 @@ public class XAdESLevelBEnvelopedHtmlUTF8Test extends AbstractXAdESTestSignature
 	}
 
 	@Override
-	protected DocumentSignatureService<XAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> getService() {
 		return service;
 	}
 
