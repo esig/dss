@@ -165,8 +165,8 @@ public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 			CertificateWrapper signingCertificate = timestamp.getSigningCertificate();
 			assertNotNull(signingCertificate);
 			assertTrue(signingCertificate.isRevocationDataAvailable());
-			assertTrue(timestamp.getDigestMatchers().get(0).isDataFound());
-			assertTrue(timestamp.getDigestMatchers().get(0).isDataIntact());
+			assertTrue(timestamp.isMessageImprintDataFound());
+			assertTrue(timestamp.isMessageImprintDataIntact());
 		}
 		
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());

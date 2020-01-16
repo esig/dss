@@ -461,7 +461,7 @@ public class TimestampToken extends Token {
 	 * @return true if the message imprint data is intact, false otherwise
 	 */
 	public Boolean isMessageImprintDataIntact() {
-		if (messageImprintIntact == null) {
+		if (!processed) {
 			throw new DSSException("Invoke matchData(byte[] data) method before!");
 		}
 		return messageImprintIntact;

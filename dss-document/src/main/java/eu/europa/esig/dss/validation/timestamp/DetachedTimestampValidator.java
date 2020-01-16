@@ -35,6 +35,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
@@ -85,7 +86,6 @@ public class DetachedTimestampValidator extends SignedDocumentValidator {
 	 */
 	public TimestampToken getTimestamp() {
 		if (timestampToken == null) {
-			DSSDocument timestampedData = getTimestampedData();
 
 			Objects.requireNonNull(certificateVerifier, "CertificateVerifier is not defined");
 			Objects.requireNonNull(document, "The timestampFile must be defined!");
@@ -95,7 +95,7 @@ public class DetachedTimestampValidator extends SignedDocumentValidator {
 				timestampToken = new TimestampToken(DSSUtils.toByteArray(document), timestampType, validationCertPool);
 				timestampToken.setFileName(document.getName());
 
-				timestampToken.matchData(timestampedData);
+				timestampToken.matchData(getTimestampedData());
 			} catch (CMSException | TSPException | IOException e) {
 				throw new DSSException("Unable to parse timestamp", e);
 			}
@@ -113,17 +113,18 @@ public class DetachedTimestampValidator extends SignedDocumentValidator {
 	}
 
 	public void setTimestampedData(DSSDocument document) {
+		Objects.requireNonNull(document, "The document is null");
 		setDetachedContents(Arrays.asList(document));
 	}
 
 	public DSSDocument getTimestampedData() {
-		int size = detachedContents.size();
+		int size = Utils.collectionSize(detachedContents);
 		if (size == 0) {
-			throw new DSSException("Timestamped data is not provided");
+			return null;
 		} else if (size > 1) {
 			throw new DSSException("Too many files");
 		}
-		return detachedContents.get(0);
+		return detachedContents.iterator().next();
 	}
 
 	/**

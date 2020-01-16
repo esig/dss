@@ -103,10 +103,11 @@ public class DSS1421Test extends PKIFactoryAccess {
 				boolean validMessageImprint = true;
 				for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
 					if (DigestMatcherType.MESSAGE_IMPRINT == xmlDigestMatcher.getType()) {
-						validMessageImprint = timestamp.isMessageImprintDataIntact();
+						validMessageImprint = xmlDigestMatcher.isDataIntact();
 					}
 				}
 				assertFalse(validMessageImprint);
+				assertFalse(timestamp.isMessageImprintDataIntact());
 			}
 			assertTrue(timestamp.isSignatureValid());
 		}
