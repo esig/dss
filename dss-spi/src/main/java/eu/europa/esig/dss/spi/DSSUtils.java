@@ -186,23 +186,6 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method loads a certificate from the given resource. The certificate must be DER-encoded and may be supplied
-	 * in binary or printable (PEM / Base64) encoding.
-	 * 
-	 * If the certificate is provided in Base64 encoding, it must be bounded at the beginning by
-	 * {@code -----BEGIN CERTIFICATE-----}, and must be bounded at the end by {@code -----END CERTIFICATE-----}.
-	 * 
-	 *
-	 * @param path
-	 *            resource location.
-	 * @return the certificate token
-	 */
-	public static CertificateToken loadCertificate(final String path) {
-		final InputStream inputStream = DSSUtils.class.getResourceAsStream(path);
-		return loadCertificate(inputStream);
-	}
-
-	/**
 	 * This method loads a certificate from the given location. The certificate must be DER-encoded and may be supplied
 	 * in binary or printable (PEM / Base64) encoding.
 	 * 
