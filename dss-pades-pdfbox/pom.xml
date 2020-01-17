@@ -10,6 +10,8 @@
 
 	<properties>
 		<module-name>jpms_dss_pades_pdfbox</module-name>
+		
+    	<sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 
 	<build>

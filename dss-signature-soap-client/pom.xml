@@ -13,6 +13,8 @@
 
 	<properties>
 		<module-name>jpms_dss_ws_signature_soap_client</module-name>
+		
+    	<sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 
 	<dependencies>

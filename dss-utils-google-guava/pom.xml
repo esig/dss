@@ -12,6 +12,8 @@
 	
 	<properties>
 		<module-name>jpms_dss_utils_google_guava</module-name>
+		
+    	<sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 
 	<dependencies>

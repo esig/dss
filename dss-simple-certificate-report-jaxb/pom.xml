@@ -12,6 +12,8 @@
 
 	<properties>
 		<module-name>jpms_dss_simple_certificate_report</module-name>
+		
+    	<sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 	
 	<build>

@@ -12,6 +12,8 @@
 
 	<properties>
 		<module-name>jpms_dss_ws_timestamp_remote_soap_client</module-name>
+		
+    	<sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 
 	<dependencies>

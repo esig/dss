@@ -12,6 +12,8 @@
 	
 	<properties>
 		<module-name>jpms_dss_utils_apache_commons</module-name>
+		
+    	<sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 
 	<dependencies>

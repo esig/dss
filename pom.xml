@@ -75,9 +75,11 @@
 		<h2database.version>1.4.199</h2database.version>
 		<jackson.version>2.10.0</jackson.version>
 		
+		<sonar.java.source>1.8</sonar.java.source>
 	    <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
-	    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-	    <sonar.jacoco.reportPaths>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPaths>
+	    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>	    
+
+    	<aggregate.report.dir>dss-cookbook/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
 	</properties>
 	
 	<licenses>
@@ -243,38 +245,6 @@
 			        </archive>
 				</configuration>
 			</plugin>
-			
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-			    <configuration>
-					<fileSets>
-						<fileSet>
-							<directory>${project.build.directory}</directory>
-							<includes>
-								<include>*.exec</include>
-							</includes>
-						</fileSet>
-					</fileSets>
-			        <destFile>${sonar.jacoco.reportPaths}</destFile>
-			        <append>true</append>
-			    </configuration>
-				<executions>
-					<execution>
-						<id>prepare-unit-test-agent</id>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>generate-unit-test-report</id>
-						<goals>
-							<goal>merge</goal>
-							<goal>report</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -421,7 +391,7 @@
 				<plugin>
 					<groupId>org.jacoco</groupId>
 					<artifactId>jacoco-maven-plugin</artifactId>
-					<version>0.8.4</version>
+					<version>0.8.5</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -1044,6 +1014,28 @@
 				<maven.test.skip>true</maven.test.skip>
 				<maven.javadoc.skip>true</maven.javadoc.skip>
 			</properties>
+		</profile>
+		<profile>
+			<id>coverage</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>prepare-agent</id>
+								<goals>
+									<goal>prepare-agent</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 		<profile>
 			<id>owasp</id>

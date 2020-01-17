@@ -12,6 +12,8 @@
 	
 	<properties>
 		<module-name>jpms_dss_policy</module-name>
+		
+    	<sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 	
 	<build>

@@ -13,6 +13,8 @@
 
 	<properties>
 		<module-name>jpms_dss_specs_validation_report</module-name>
+		
+    	<sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 	
 	<dependencies>
