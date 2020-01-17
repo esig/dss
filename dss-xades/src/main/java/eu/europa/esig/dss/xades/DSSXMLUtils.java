@@ -54,6 +54,7 @@ import org.w3c.dom.NodeList;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.AbstractPaths;
 import eu.europa.esig.dss.definition.DSSElement;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -75,9 +76,6 @@ import eu.europa.esig.xmldsig.XSDAbstractUtils;
 public final class DSSXMLUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DSSXMLUtils.class);
-
-	public static final String ID_ATTRIBUTE_NAME = "id";
-	public static final String URI_ATTRIBUTE_NAME = "uri";
 
 	private static final Set<String> transforms;
 
@@ -517,7 +515,7 @@ public final class DSSXMLUtils {
 	 * @return the ID attribute value or null
 	 */
 	public static String getIDIdentifier(final Node node) {
-		return getAttribute(node, ID_ATTRIBUTE_NAME);
+		return getAttribute(node, XMLDSigAttribute.ID.getAttributeName());
 	}
 	
 	/**
@@ -555,7 +553,7 @@ public final class DSSXMLUtils {
 			final String localName = item.getLocalName();
 			final String nodeName = item.getNodeName();
 			if (localName != null) {
-				if (Utils.areStringsEqualIgnoreCase(ID_ATTRIBUTE_NAME, localName)) {
+				if (Utils.areStringsEqualIgnoreCase(XMLDSigAttribute.ID.getAttributeName(), localName)) {
 					childElement.setIdAttribute(nodeName, true);
 					break;
 				}
@@ -606,7 +604,7 @@ public final class DSSXMLUtils {
 			NodeList nodeList = (NodeList) xPathExpression.evaluate(root, XPathConstants.NODESET);
 			for (int i = 0; i < nodeList.getLength(); i++) {
 				Attr attr = (Attr) nodeList.item(i);
-				if (Utils.areStringsEqualIgnoreCase(ID_ATTRIBUTE_NAME, attr.getName())) {
+				if (Utils.areStringsEqualIgnoreCase(XMLDSigAttribute.ID.getAttributeName(), attr.getName())) {
 					XPathExpression xpathAllById = DomUtils.createXPathExpression("//*[@" + attr.getName() + "='" + attr.getValue() + "']");
 					NodeList nodeListById = (NodeList) xpathAllById.evaluate(root, XPathConstants.NODESET);
 					if (nodeListById.getLength() != 1) {

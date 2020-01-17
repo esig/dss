@@ -917,9 +917,14 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						// continue, exception will be catched later
 					}
 					
-					final String uri = validation.getUriOrEmpty();
+					final String uri = validation.getUri();
+
+					boolean noDuplicateIdFound = true;
+					// empty URI means enveloped signature
+					if (Utils.isStringNotEmpty(uri)) {
+						noDuplicateIdFound = XMLUtils.protectAgainstWrappingAttack(santuarioSignature.getDocument(), DomUtils.getId(uri));
+					}
 					
-					boolean noDuplicateIdFound = XMLUtils.protectAgainstWrappingAttack(santuarioSignature.getDocument(), DomUtils.getId(uri));
 					boolean isElementReference = DomUtils.isElementReference(uri);
 							
 					if (isElementReference && DSSXMLUtils.isSignedProperties(reference, xadesPaths)) {

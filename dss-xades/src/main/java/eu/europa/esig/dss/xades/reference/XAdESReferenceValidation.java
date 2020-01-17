@@ -36,6 +36,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ReferenceValidation;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
@@ -51,11 +52,11 @@ public class XAdESReferenceValidation extends ReferenceValidation {
 	static {
 		presentableTransformationNames.put(Transforms.TRANSFORM_ENVELOPED_SIGNATURE, "Enveloped Signature Transform");
 		presentableTransformationNames.put(Transforms.TRANSFORM_BASE64_DECODE, "Base64 Decoding");
-		
+
 		presentableTransformationNames.put(Transforms.TRANSFORM_XPATH2FILTER, "XPath filtering");
 		presentableTransformationNames.put(Transforms.TRANSFORM_XPATH, "XPath filtering");
 		presentableTransformationNames.put(Transforms.TRANSFORM_XSLT, "XSLT Transform");
-		
+
 		presentableTransformationNames.put(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS, "Canonical XML 1.0 with Comments");
 		presentableTransformationNames.put(Canonicalizer.ALGO_ID_C14N11_WITH_COMMENTS, "Canonical XML 1.1 with Comments");
 		presentableTransformationNames.put(Canonicalizer.ALGO_ID_C14N_EXCL_WITH_COMMENTS, "Exclusive XML Canonicalization 1.0 with Comments");
@@ -71,40 +72,32 @@ public class XAdESReferenceValidation extends ReferenceValidation {
 	private final String id;
 	/* For XAdES : reference uri */
 	private final String uri;
-	
+
 	public XAdESReferenceValidation(Reference reference) {
 		this.reference = reference;
 		this.id = reference.getId();
 		this.uri = extractUri(reference);
 	}
-	
+
 	public String getId() {
 		return id;
 	}
-	
+
 	public String getUri() {
 		return uri;
 	}
-	
-	/**
-	 * Returns the reference URI or EMPTY_STRING if null
-	 * @return {@link String} uri
-	 */
-	public String getUriOrEmpty() {
-		return uri != null ? uri : Utils.EMPTY_STRING; // defensive code
-	}
-	
+
 	/* Method is used due to Apache Santuario Signature does return empty instead of null result */
 	private String extractUri(Reference reference) {
 		if (reference != null) {
 			Element element = reference.getElement();
 			if (element != null) {
-				return DSSXMLUtils.getAttribute(element, DSSXMLUtils.URI_ATTRIBUTE_NAME);
+				return DSSXMLUtils.getAttribute(element, XMLDSigAttribute.URI.getAttributeName());
 			}
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Returns original bytes of the referenced document
 	 * @return byte array
@@ -112,7 +105,7 @@ public class XAdESReferenceValidation extends ReferenceValidation {
 	public byte[] getOriginalContentBytes() {
 		return DSSXMLUtils.getReferenceOriginalContentBytes(reference);
 	}
-	
+
 	@Override
 	public String getName() {
 		if (Utils.isStringNotBlank(id)) {
@@ -147,7 +140,7 @@ public class XAdESReferenceValidation extends ReferenceValidation {
 		}
 		return transforms;
 	}
-	
+
 	/**
 	 * Returns a complete description string for the given transformation node
 	 * @param transformation {@link Node} containing a signle reference transformation information

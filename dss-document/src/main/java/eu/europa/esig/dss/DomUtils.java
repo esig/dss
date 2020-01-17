@@ -639,7 +639,7 @@ public final class DomUtils {
 	 * @return true if it is an XPointer query
 	 */
 	public static boolean isXPointerQuery(String uriValue) {
-		if (uriValue.isEmpty()) {
+		if (Utils.isStringEmpty(uriValue)) {
 			return false;
 		}
 		String decodedUri = DSSUtils.decodeUrl(uriValue);
