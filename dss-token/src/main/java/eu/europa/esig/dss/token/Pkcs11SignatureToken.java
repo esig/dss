@@ -152,7 +152,7 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 	 * @param extraPkcs11Config
 	 *            extra configuration for pkcs11 library
 	 * @param overrideDefaultConfig
-	 *            extra configuration for pkcs11 library
+	 *            overrides the default config, allowing for custom configuration
 	 */
 	public Pkcs11SignatureToken(String pkcs11Path, PasswordInputCallback callback, String extraPkcs11Config, boolean overrideDefaultConfig) {
 		this(pkcs11Path, callback, 0, extraPkcs11Config, overrideDefaultConfig);
@@ -219,6 +219,8 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
      *            the slotId to use
      * @param extraPkcs11Config
      *            extra configuration for pkcs11 library
+	 * @param overrideDefaultConfig
+	 *            overrides the default config, allowing for custom configuration
      */
     public Pkcs11SignatureToken(String pkcs11Path, PasswordInputCallback callback, int slotId, String extraPkcs11Config, boolean overrideDefaultConfig) {
         this.pkcs11Path = pkcs11Path;
