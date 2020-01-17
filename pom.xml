@@ -78,9 +78,9 @@
 		<sonar.java.source>1.8</sonar.java.source>
 	    <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 	    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>	   
-	    <sonar.coverage.jacoco.xmlReportPaths>${maven.multiModuleProjectDirectory}/dss-cookbook/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths> 
 
     	<aggregate.report.dir>dss-cookbook/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
+	    <sonar.coverage.jacoco.xmlReportPaths>${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths> 
 	</properties>
 	
 	<licenses>
