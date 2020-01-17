@@ -23,6 +23,7 @@ package eu.europa.esig.dss.asic.cades.timestamp.asics;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -34,7 +35,9 @@ import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
@@ -144,6 +147,16 @@ public class ASiCSTimestampOneFileTest extends PKIFactoryAccess {
 		}
 		assertFalse(noTimestamp);
 
+		final DSSDocument docToExtend = archiveWithTimestamp;
+		ASiCWithCAdESSignatureParameters extendParameters = new ASiCWithCAdESSignatureParameters();
+		extendParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
+		extendParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_T);
+		DSSException exception = assertThrows(DSSException.class, () -> service.extendDocument(docToExtend, extendParameters));
+		assertEquals("Unsupported file type", exception.getMessage());
+		extendParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
+		assertThrows(DSSException.class, () -> service.extendDocument(docToExtend, extendParameters));
+		extendParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
+		assertThrows(DSSException.class, () -> service.extendDocument(docToExtend, extendParameters));
 	}
 
 	@Override
