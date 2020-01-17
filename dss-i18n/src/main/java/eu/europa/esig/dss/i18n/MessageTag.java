@@ -464,6 +464,8 @@ public enum MessageTag {
 
 	TL,
 
+	LOTL,
+
 	TST_QUALIFICATION,
 
 	VPBS,

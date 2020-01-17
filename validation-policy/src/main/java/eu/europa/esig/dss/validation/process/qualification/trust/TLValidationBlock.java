@@ -30,6 +30,7 @@ import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
 import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.qualification.trust.checks.TLFreshnessCheck;
@@ -54,10 +55,15 @@ public class TLValidationBlock extends Chain<XmlTLAnalysis> {
 		this.currentTime = currentTime;
 		this.policy = policy;
 	}
-	
+
 	@Override
 	protected MessageTag getTitle() {
-		return MessageTag.TST_QUALIFICATION.setArgs(currentTL.getCountryCode());
+		if (Utils.isTrue(currentTL.isLOTL())) {
+			return MessageTag.LOTL.setArgs(currentTL.getCountryCode());
+		} else {
+			return MessageTag.TL.setArgs(currentTL.getCountryCode());
+		}
+
 	}
 
 	@Override
