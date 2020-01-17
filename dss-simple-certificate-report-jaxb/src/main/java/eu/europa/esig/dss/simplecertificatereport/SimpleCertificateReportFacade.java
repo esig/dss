@@ -61,6 +61,9 @@ public class SimpleCertificateReportFacade extends AbstractJaxbFacade<XmlSimpleC
 		return SimpleCertificateReportXmlDefiner.OBJECT_FACTORY.createSimpleCertificateReport(simpleCertificateReport);
 	}
 
+    /**
+     * Generates a Bootstrap 4 Simple Certificate report
+     */
 	public String generateHtmlReport(XmlSimpleCertificateReport simpleCertificateReport) throws IOException, TransformerException, JAXBException {
 		try (StringWriter stringWriter = new StringWriter()) {
 			generateHtmlReport(simpleCertificateReport, new StreamResult(stringWriter));
@@ -69,7 +72,7 @@ public class SimpleCertificateReportFacade extends AbstractJaxbFacade<XmlSimpleC
 	}
 
 	public void generateHtmlReport(XmlSimpleCertificateReport simpleCertificateReport, Result result) throws IOException, TransformerException, JAXBException {
-		Transformer transformer = SimpleCertificateReportXmlDefiner.getHtmlBootstrap3Templates().newTransformer();
+		Transformer transformer = SimpleCertificateReportXmlDefiner.getHtmlBootstrap4Templates().newTransformer();
 		transformer.transform(new JAXBSource(getJAXBContext(), wrap(simpleCertificateReport)), result);
 	}
 
@@ -81,6 +84,33 @@ public class SimpleCertificateReportFacade extends AbstractJaxbFacade<XmlSimpleC
 	}
 
 	public void generateHtmlReport(String marshalledSimpleCertificateReport, Result result) throws IOException, TransformerException {
+		Transformer transformer = SimpleCertificateReportXmlDefiner.getHtmlBootstrap4Templates().newTransformer();
+		transformer.transform(new StreamSource(new StringReader(marshalledSimpleCertificateReport)), result);
+	}
+
+    /**
+     * Generates a Bootstrap 3 Simple Certificate report
+     */
+	public String generateHtmlBootstrap3Report(XmlSimpleCertificateReport simpleCertificateReport) throws IOException, TransformerException, JAXBException {
+		try (StringWriter stringWriter = new StringWriter()) {
+			generateHtmlBootstrap3Report(simpleCertificateReport, new StreamResult(stringWriter));
+			return stringWriter.toString();
+		}
+	}
+
+	public void generateHtmlBootstrap3Report(XmlSimpleCertificateReport simpleCertificateReport, Result result) throws IOException, TransformerException, JAXBException {
+		Transformer transformer = SimpleCertificateReportXmlDefiner.getHtmlBootstrap3Templates().newTransformer();
+		transformer.transform(new JAXBSource(getJAXBContext(), wrap(simpleCertificateReport)), result);
+	}
+
+	public String generateHtmlBootstrap3Report(String marshalledSimpleCertificateReport) throws IOException, TransformerException {
+		try (StringWriter stringWriter = new StringWriter()) {
+			generateHtmlBootstrap3Report(marshalledSimpleCertificateReport, new StreamResult(stringWriter));
+			return stringWriter.toString();
+		}
+	}
+
+	public void generateHtmlBootstrap3Report(String marshalledSimpleCertificateReport, Result result) throws IOException, TransformerException {
 		Transformer transformer = SimpleCertificateReportXmlDefiner.getHtmlBootstrap3Templates().newTransformer();
 		transformer.transform(new StreamSource(new StringReader(marshalledSimpleCertificateReport)), result);
 	}

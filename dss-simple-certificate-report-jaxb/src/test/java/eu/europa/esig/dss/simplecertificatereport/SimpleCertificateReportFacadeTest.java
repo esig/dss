@@ -40,6 +40,9 @@ public class SimpleCertificateReportFacadeTest {
 
 		String htmlReport = facade.generateHtmlReport(simpleCertificateReport);
 		assertNotNull(htmlReport);
+
+		htmlReport = facade.generateHtmlBootstrap3Report(simpleCertificateReport);
+		assertNotNull(htmlReport);
 	}
 
 	@Test
@@ -51,6 +54,9 @@ public class SimpleCertificateReportFacadeTest {
 		assertNotNull(simpleCertificateReport);
 
 		String htmlReport = facade.generateHtmlReport(simpleCertificateReport);
+		assertNotNull(htmlReport);
+
+		htmlReport = facade.generateHtmlBootstrap3Report(simpleCertificateReport);
 		assertNotNull(htmlReport);
 	}
 
