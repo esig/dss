@@ -61,6 +61,9 @@ public class SimpleReportFacade extends AbstractJaxbFacade<XmlSimpleReport> {
 		return SimpleReportXmlDefiner.OBJECT_FACTORY.createSimpleReport(simpleReport);
 	}
 
+    /**
+     * Generates a Bootstrap 4 Simple report
+     */
 	public String generateHtmlReport(XmlSimpleReport simpleReport) throws IOException, TransformerException, JAXBException {
 		try (StringWriter stringWriter = new StringWriter()) {
 			generateHtmlReport(simpleReport, new StreamResult(stringWriter));
@@ -69,7 +72,7 @@ public class SimpleReportFacade extends AbstractJaxbFacade<XmlSimpleReport> {
 	}
 
 	public void generateHtmlReport(XmlSimpleReport simpleReport, Result result) throws IOException, TransformerException, JAXBException {
-		Transformer transformer = SimpleReportXmlDefiner.getHtmlBootstrap3Templates().newTransformer();
+		Transformer transformer = SimpleReportXmlDefiner.getHtmlBootstrap4Templates().newTransformer();
 		transformer.transform(new JAXBSource(getJAXBContext(), wrap(simpleReport)), result);
 	}
 
@@ -81,10 +84,40 @@ public class SimpleReportFacade extends AbstractJaxbFacade<XmlSimpleReport> {
 	}
 
 	public void generateHtmlReport(String marshalledSimpleReport, Result result) throws IOException, TransformerException {
+		Transformer transformer = SimpleReportXmlDefiner.getHtmlBootstrap4Templates().newTransformer();
+		transformer.transform(new StreamSource(new StringReader(marshalledSimpleReport)), result);
+	}
+
+    /**
+     * Generates a Bootstrap 3 Simple report
+     */
+	public String generateHtmlBootstrap3Report(XmlSimpleReport simpleReport) throws IOException, TransformerException, JAXBException {
+		try (StringWriter stringWriter = new StringWriter()) {
+			generateHtmlBootstrap3Report(simpleReport, new StreamResult(stringWriter));
+			return stringWriter.toString();
+		}
+	}
+
+	public void generateHtmlBootstrap3Report(XmlSimpleReport simpleReport, Result result) throws IOException, TransformerException, JAXBException {
+		Transformer transformer = SimpleReportXmlDefiner.getHtmlBootstrap3Templates().newTransformer();
+		transformer.transform(new JAXBSource(getJAXBContext(), wrap(simpleReport)), result);
+	}
+
+	public String generateHtmlBootstrap3Report(String marshalledSimpleReport) throws IOException, TransformerException {
+		try (StringWriter stringWriter = new StringWriter()) {
+			generateHtmlBootstrap3Report(marshalledSimpleReport, new StreamResult(stringWriter));
+			return stringWriter.toString();
+		}
+	}
+
+	public void generateHtmlBootstrap3Report(String marshalledSimpleReport, Result result) throws IOException, TransformerException {
 		Transformer transformer = SimpleReportXmlDefiner.getHtmlBootstrap3Templates().newTransformer();
 		transformer.transform(new StreamSource(new StringReader(marshalledSimpleReport)), result);
 	}
 
+    /**
+     * Generates a PDF Simple report
+     */
 	public void generatePdfReport(XmlSimpleReport simpleReport, Result result) throws IOException, TransformerException, JAXBException {
 		Transformer transformer = SimpleReportXmlDefiner.getPdfTemplates().newTransformer();
 		transformer.transform(new JAXBSource(getJAXBContext(), wrap(simpleReport)), result);

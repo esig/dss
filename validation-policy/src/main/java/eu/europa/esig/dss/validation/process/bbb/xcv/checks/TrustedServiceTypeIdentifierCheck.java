@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.checks;
 
-import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -30,11 +29,10 @@ import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
 public class TrustedServiceTypeIdentifierCheck extends AbstractMultiValuesCheckItem<XmlXCV> {
@@ -78,10 +76,9 @@ public class TrustedServiceTypeIdentifierCheck extends AbstractMultiValuesCheckI
 	}
 
 	@Override
-	protected String getAdditionalInfo() {
+	protected MessageTag getAdditionalInfo() {
 		if (Utils.isStringNotEmpty(serviceTypeStr)) {
-			Object[] params = new Object[] { serviceTypeStr };
-			return MessageFormat.format(AdditionalInfo.TRUSTED_SERVICE_TYPE, params);
+			return MessageTag.TRUSTED_SERVICE_TYPE.setArgs(serviceTypeStr);
 		}
 		return null;
 	}

@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 
-import java.text.MessageFormat;
 import java.util.List;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
@@ -28,7 +27,6 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 public class CryptographicRevocationsCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
@@ -54,10 +52,8 @@ public class CryptographicRevocationsCheck<T extends XmlConstraintsConclusion> e
 	}
 
 	@Override
-	protected String getAdditionalInfo() {		
-		String addInfo = AdditionalInfo.REVOCATION_CRYPTOGRAPHIC_CHECK_FAILURE;
-		Object[] params = new Object[] { certificateId };
-		return MessageFormat.format(addInfo, params);
+	protected MessageTag getAdditionalInfo() {		
+		return MessageTag.REVOCATION_CRYPTOGRAPHIC_CHECK_FAILURE.setArgs(certificateId);
 	}
 
 	@Override

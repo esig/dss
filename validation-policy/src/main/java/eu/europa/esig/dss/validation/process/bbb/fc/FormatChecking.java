@@ -25,10 +25,10 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
-import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.AcceptableMimetypeFileContentCheck;
@@ -59,12 +59,15 @@ public class FormatChecking extends Chain<XmlFC> {
 
 	public FormatChecking(I18nProvider i18nProvider, DiagnosticData diagnosticData, SignatureWrapper signature, Context context, ValidationPolicy policy) {
 		super(i18nProvider, new XmlFC());
-		result.setTitle(BasicBuildingBlockDefinition.FORMAT_CHECKING.getTitle());
-
 		this.diagnosticData = diagnosticData;
 		this.signature = signature;
 		this.context = context;
 		this.policy = policy;
+	}
+	
+	@Override
+	protected MessageTag getTitle() {
+		return MessageTag.FORMAT_CHECKING;
 	}
 
 	@Override

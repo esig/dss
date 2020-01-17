@@ -53,9 +53,9 @@ public class AcceptableRevocationDataAvailableCheck<T extends XmlConstraintsConc
 	}
 	
 	@Override
-	protected String getAdditionalInfo() {
+	protected MessageTag getAdditionalInfo() {
 		if (certificateWrapper != null) {
-			return String.format("Certificate Id = '%s'", certificateWrapper.getId());
+			return MessageTag.CERTIFICATE_ID.setArgs(certificateWrapper.getId());
 		}
 		return null;
 	}

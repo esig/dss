@@ -11,12 +11,12 @@ import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.SignatureIntactCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.ProspectiveCertificateChainCheck;
@@ -48,8 +48,12 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 			Date controlTime, POEExtraction poe, ValidationPolicy policy) {
 		this(i18nProvider, certificate, revocationData, controlTime, poe, policy, new ArrayList<String>());
 		result.setId(revocationData.getId());
-		result.setTitle(ValidationProcessDefinition.RAV.getTitle());
 		result.setRevocationProductionDate(revocationData.getProductionDate());
+	}
+	
+	@Override
+	protected MessageTag getTitle() {
+		return MessageTag.RAV;
 	}
 	
 	private RevocationAcceptanceChecker(I18nProvider i18nProvider, CertificateWrapper certificate, CertificateRevocationWrapper revocationData,
@@ -164,13 +168,12 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 		return new RevocationDataAvailableCheck<XmlRAC>(i18nProvider, result, certificate, constraint) {
 
 			@Override
-			protected String getAdditionalInfo() {
-				String additionalInfo = super.getAdditionalInfo();
+			protected MessageTag getAdditionalInfo() {
 				if (certificate.isIdPkixOcspNoCheck() && !certificate.isRevocationDataAvailable()) {
-					additionalInfo = String.format("The validation time '%s' is out of validity range of the certificate '%s'", 
-							convertDate(getValidationTime(certificate)), certificate.getId());
+					return MessageTag.VALIDATION_TIME_OUT_OF_BOUNDS.setArgs(
+							ValidationProcessUtils.getFormattedDate(getValidationTime(certificate)), certificate.getId());
 				}
-				return additionalInfo;
+				return super.getAdditionalInfo();
 			}
 			
 		};

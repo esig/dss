@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,10 +29,9 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
-import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
 public class ExtendedKeyUsageCheck extends AbstractMultiValuesCheckItem<XmlSubXCV> {
@@ -59,8 +57,8 @@ public class ExtendedKeyUsageCheck extends AbstractMultiValuesCheckItem<XmlSubXC
 	}
 
 	@Override
-	protected String getAdditionalInfo() {
-		return MessageFormat.format(AdditionalInfo.EXTENDED_KEY_USAGE, Arrays.toString(getExtendedKeyUsageDescriptions().toArray()));
+	protected MessageTag getAdditionalInfo() {
+		return MessageTag.EXTENDED_KEY_USAGE.setArgs(Arrays.toString(getExtendedKeyUsageDescriptions().toArray()));
 	}
 
 	@Override

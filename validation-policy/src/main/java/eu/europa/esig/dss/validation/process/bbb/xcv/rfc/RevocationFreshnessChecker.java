@@ -26,13 +26,13 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
-import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
@@ -61,7 +61,6 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 	public RevocationFreshnessChecker(I18nProvider i18nProvider, RevocationWrapper revocationData, Date validationDate, Context context, 
 			SubContext subContext, ValidationPolicy policy) {
 		super(i18nProvider, new XmlRFC());
-		result.setTitle(BasicBuildingBlockDefinition.REVOCATION_FRESHNESS_CHECKER.getTitle());
 
 		if (revocationData != null) {
 			result.setId(revocationData.getId());
@@ -73,6 +72,11 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 
 		this.context = context;
 		this.subContext = subContext;
+	}
+    
+	@Override
+	protected MessageTag getTitle() {
+		return MessageTag.REVOCATION_FRESHNESS_CHECKER;
 	}
 
 	@Override

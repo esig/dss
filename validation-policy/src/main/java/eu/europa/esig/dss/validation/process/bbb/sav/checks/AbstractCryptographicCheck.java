@@ -20,25 +20,22 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 
-import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.AlgoExpirationDate;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.i18n.I18nProvider;
-import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
 public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
@@ -178,20 +175,13 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 	}
 
 	@Override
-	protected String getAdditionalInfo() {
-		SimpleDateFormat sdf = new SimpleDateFormat(AdditionalInfo.DATE_FORMAT);
-		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-		String addInfo = null;
-		Object[] params = null;
-		String dateTime = sdf.format(validationDate);
+	protected MessageTag getAdditionalInfo() {
+		String dateTime = ValidationProcessUtils.getFormattedDate(validationDate);
 		if (Utils.isStringNotEmpty(failedAlgorithm)) {
-			addInfo = AdditionalInfo.CRYPTOGRAPHIC_CHECK_FAILURE;
-			params = new Object[] { failedAlgorithm, dateTime };
+			return MessageTag.CRYPTOGRAPHIC_CHECK_FAILURE.setArgs(failedAlgorithm, dateTime);
 		} else {
-			addInfo = AdditionalInfo.VALIDATION_TIME;
-			params = new Object[] { dateTime };
+			return MessageTag.VALIDATION_TIME.setArgs(dateTime);
 		}
-		return MessageFormat.format(addInfo, params);
 	}
 
 	protected boolean isExpirationDateAvailable(CryptographicConstraint constraint) {

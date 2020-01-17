@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks;
 
-import java.text.MessageFormat;
 import java.util.Date;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
@@ -30,8 +29,8 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
 public abstract class AbstractRevocationFreshCheck extends ChainItem<XmlRFC> {
 
@@ -57,17 +56,17 @@ public abstract class AbstractRevocationFreshCheck extends ChainItem<XmlRFC> {
 	protected abstract long getMaxFreshness();
 
 	@Override
-	protected String getAdditionalInfo() {
+	protected MessageTag getAdditionalInfo() {
 		String productionTimeString = "not defined";
 		String nextUpdateString = "not defined";
 		if (revocationData != null) {
 			if (revocationData.getProductionDate() != null)
-				productionTimeString = convertDate(revocationData.getProductionDate());
+				productionTimeString = ValidationProcessUtils.getFormattedDate(revocationData.getProductionDate());
 			if (revocationData.getNextUpdate() != null)
-				nextUpdateString = convertDate(revocationData.getNextUpdate());
+				nextUpdateString = ValidationProcessUtils.getFormattedDate(revocationData.getNextUpdate());
 		}
-		Object[] params = new Object[] { convertDate(validationDate), productionTimeString, nextUpdateString };
-		return MessageFormat.format(AdditionalInfo.REVOCATION_CHECK, params);
+		Object[] params = new Object[] { ValidationProcessUtils.getFormattedDate(validationDate), productionTimeString, nextUpdateString };
+		return MessageTag.REVOCATION_CHECK.setArgs(params);
 	}
 
 	@Override

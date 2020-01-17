@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.checks;
 
-import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -30,11 +29,10 @@ import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
 public class TrustedServiceStatusCheck extends AbstractMultiValuesCheckItem<XmlXCV> {
@@ -80,10 +78,9 @@ public class TrustedServiceStatusCheck extends AbstractMultiValuesCheckItem<XmlX
 	}
 
 	@Override
-	protected String getAdditionalInfo() {
+	protected MessageTag getAdditionalInfo() {
 		if (Utils.isStringNotEmpty(serviceStatusStr)) {
-			Object[] params = new Object[] { serviceStatusStr };
-			return MessageFormat.format(AdditionalInfo.TRUSTED_SERVICE_STATUS, params);
+			return MessageTag.TRUSTED_SERVICE_STATUS.setArgs(serviceStatusStr);
 		}
 		return null;
 	}

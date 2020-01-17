@@ -30,10 +30,10 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.AllFilesSignedCheck;
@@ -56,12 +56,15 @@ public class CryptographicVerification extends Chain<XmlCV> {
 
 	public CryptographicVerification(I18nProvider i18nProvider, DiagnosticData diagnosticData, TokenProxy token, Context context, ValidationPolicy validationPolicy) {
 		super(i18nProvider, new XmlCV());
-		result.setTitle(BasicBuildingBlockDefinition.CRYPTOGRAPHIC_VERIFICATION.getTitle());
-
 		this.diagnosticData = diagnosticData;
 		this.token = token;
 		this.context = context;
 		this.validationPolicy = validationPolicy;
+	}
+	
+	@Override
+	protected MessageTag getTitle() {
+		return MessageTag.CRYPTOGRAPHIC_VERIFICATION;
 	}
 
 	@Override

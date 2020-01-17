@@ -5,8 +5,8 @@ import java.util.Date;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 
 /**
  * 5.2.8 Signature acceptance validation (SAV) This building block covers any
@@ -18,8 +18,12 @@ public class CertificateAcceptanceValidation extends AbstractAcceptanceValidatio
     public CertificateAcceptanceValidation(I18nProvider i18nProvider, Date currentTime, CertificateWrapper certificateWrapper,
             ValidationPolicy validationPolicy) {
         super(i18nProvider, certificateWrapper, currentTime, Context.CERTIFICATE, validationPolicy);
-        result.setTitle(BasicBuildingBlockDefinition.SIGNATURE_ACCEPTANCE_VALIDATION.getTitle());
     }
+    
+	@Override
+	protected MessageTag getTitle() {
+		return MessageTag.SIGNATURE_ACCEPTANCE_VALIDATION;
+	}
 
     @Override
     protected void initChain() {

@@ -42,7 +42,62 @@ public class I18nProviderTest {
 		} finally {
 			Locale.setDefault(systemLocale); // restore default
 		}
+	}
+	
+	@Test
+	public void parametrizedTest() {
+		Locale systemLocale = Locale.getDefault();
+		try {
+			Locale.setDefault(Locale.ENGLISH);
+			
+			String status = "granted";
+			MessageTag messageTag = MessageTag.TRUSTED_SERVICE_STATUS.setArgs(status);
 		
+			final I18nProvider i18nProvider = new I18nProvider(Locale.ENGLISH);
+			String message = i18nProvider.getMessage(messageTag);
+			assertNotNull(message);
+			assertEquals("Status : granted", message);
+			
+			final I18nProvider i18nFrenchProvider = new I18nProvider(Locale.FRENCH);
+			message = i18nFrenchProvider.getMessage(messageTag);
+			assertNotNull(message);
+			assertEquals("Statut : granted", message);
+	
+			final I18nProvider i18nGermanProvider = new I18nProvider(Locale.GERMAN);
+			message = i18nGermanProvider.getMessage(messageTag);
+			assertNotNull(message);
+			assertEquals("Status : granted", message);
+		} finally {
+			Locale.setDefault(systemLocale); // restore default
+		}
+	}
+	
+	@Test
+	public void nestedMessageTagTest() {
+		Locale systemLocale = Locale.getDefault();
+		try {
+			Locale.setDefault(Locale.ENGLISH);
+			
+			MessageTag validationTime = MessageTag.VT_VALIDATION_TIME;
+			MessageTag messageTag = MessageTag.CERT_QUALIFICATION.setArgs(validationTime);
+		
+			final I18nProvider i18nProvider = new I18nProvider(Locale.ENGLISH);
+			String message = i18nProvider.getMessage(messageTag);
+			assertNotNull(message);
+			assertEquals("Certificate Qualification at validation time", message);
+			
+			final I18nProvider i18nFrenchProvider = new I18nProvider(Locale.FRENCH);
+			message = i18nFrenchProvider.getMessage(messageTag);
+			assertNotNull(message);
+			assertEquals("Qualification du certificat au moment de la validation", message);
+	
+			final I18nProvider i18nGermanProvider = new I18nProvider(Locale.GERMAN);
+			message = i18nGermanProvider.getMessage(messageTag);
+			assertNotNull(message);
+			assertEquals("Certificate Qualification at validation time", message);
+		} finally {
+			Locale.setDefault(systemLocale); // restore default
+		}
 	}
 
 }

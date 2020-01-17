@@ -368,15 +368,148 @@ public enum MessageTag {
 	BBB_ACCEPT,
 	BBB_ACCEPT_ANS,
 	
-	EMPTY;
+	EMPTY,
+	
+	/* Additional Info */
+	
+	BEST_SIGNATURE_TIME,
+	
+	CERTIFICATE_ID,
+
+	CERTIFICATE_VALIDITY,
+
+	CONTROL_TIME,
+	
+	CRYPTOGRAPHIC_CHECK_FAILURE,
+	
+	CRYPTOGRAPHIC_CHECK_FAILURE_WITH_ID,
+
+	EXTENDED_KEY_USAGE,
+
+	KEY_USAGE,
+	
+	REFERENCE,
+
+	REVOCATION,
+	
+	REVOCATION_ACCEPTANCE_CHECK,
+	
+	REVOCATION_CERT_HASH_OK,
+	
+	REVOCATION_CHECK,
+	
+	REVOCATION_CONSISTENT,
+	
+	REVOCATION_CRYPTOGRAPHIC_CHECK_FAILURE,
+	
+	REVOCATION_NO_THIS_UPDATE,
+	
+	REVOCATION_NOT_AFTER_AFTER,
+	
+	REVOCATION_THIS_UPDATE_BEFORE,
+
+	PSEUDO,
+	
+	STRUCTURAL_VALIDATION_FAILURE,
+	
+	TOKEN_ID,
+
+	TRUST_SERVICE_NAME,
+
+	TRUSTED_SERVICE_STATUS,
+
+	TRUSTED_SERVICE_TYPE,
+
+	TRUSTED_LIST,
+
+	VALIDATION_TIME,
+	
+	VALIDATION_TIME_OUT_OF_BOUNDS,
+
+	VALIDATION_TIME_WITH_ID,
+	
+	/* BasicBuildingBlocks titles */
+
+	CRYPTOGRAPHIC_VERIFICATION,
+	
+	FORMAT_CHECKING,
+
+	IDENTIFICATION_OF_THE_SIGNING_CERTIFICATE,
+
+	PAST_SIGNATURE_VALIDATION,
+
+	PAST_CERTIFICATE_VALIDATION,
+
+	REVOCATION_FRESHNESS_CHECKER,
+
+	SIGNATURE_ACCEPTANCE_VALIDATION,
+
+	VALIDATION_CONTEXT_INITIALIZATION,
+
+	VALIDATION_TIME_SLIDING,
+
+	X509_CERTIFICATE_VALIDATION,
+	
+	/* Validation Process Definitions */
+
+	CERT_QUALIFICATION,
+	
+	DAAV,
+	
+	RAV,
+
+	SIG_QUALIFICATION,
+
+	SUB_XCV,
+
+	TL,
+
+	TST_QUALIFICATION,
+
+	VPBS,
+
+	VPFLTVD,
+
+	VPFSWATSP,
+
+	VPFTSP,
+	
+	/* Custom variables */
+
+	/* Validation time */
+	VT_BEST_SIGNATURE_TIME,
+	VT_CERTIFICATE_ISSUANCE_TIME,
+	VT_VALIDATION_TIME;
+	
+	private Object[] args;
 
 	/**
-	 * This method return the id code of the referred message.
+	 * This method returns the id code of the referred message.
 	 *
 	 * @return {@code String} message.
 	 */
 	public String getId() {
 		return name();
+	}
+	
+	/**
+	 * Allows setting of optional attributes for supported string patterns
+	 * 
+	 * @param args an array of {@link Object} arguments to set
+	 * @return this {@link MessageTag}
+	 */
+	public MessageTag setArgs(Object... args) {
+		this.args = args;
+		return this;
+	}
+	
+	/**
+	 * This method returns an array of arguments to fill a message pattern
+	 * 
+	 * @return array of {@link Object} arguments
+	 */
+	public Object[] getArgs() {
+		return args;
 	}
 
 }

@@ -26,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -119,7 +120,7 @@ public class SignedDocumentValidatorTest {
 	private Set<String> getValues(ResourceBundle bundle) {
 		Set<String> values = new HashSet<String>();
 		for (String key : bundle.keySet()) {
-			values.add(bundle.getString(key));
+			values.add(MessageFormat.format(bundle.getString(key), new Object[] {}));
 		}
 		return values;
 	}

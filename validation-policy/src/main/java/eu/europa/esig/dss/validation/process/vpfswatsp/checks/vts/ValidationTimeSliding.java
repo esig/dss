@@ -37,10 +37,10 @@ import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
@@ -68,7 +68,6 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 	public ValidationTimeSliding(I18nProvider i18nProvider, TokenProxy token, Date currentTime, POEExtraction poe, 
 			XmlBasicBuildingBlocks bbb, Context context, ValidationPolicy policy) {
 		super(i18nProvider, new XmlVTS());
-		result.setTitle(BasicBuildingBlockDefinition.VALIDATION_TIME_SLIDING.getTitle());
 
 		this.token = token;
 		this.currentTime = currentTime;
@@ -78,6 +77,11 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 
 		this.poe = poe;
 		this.policy = policy;
+	}
+    
+	@Override
+	protected MessageTag getTitle() {
+		return MessageTag.VALIDATION_TIME_SLIDING;
 	}
 
 	@Override

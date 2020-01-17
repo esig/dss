@@ -1,7 +1,5 @@
 package eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks;
 
-import java.text.MessageFormat;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRAC;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -9,8 +7,8 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
 public class RevocationAcceptanceCheckerResultCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 	
@@ -47,11 +45,10 @@ public class RevocationAcceptanceCheckerResultCheck<T extends XmlConstraintsConc
 	}
 	
 	@Override
-	protected String getAdditionalInfo() {
+	protected MessageTag getAdditionalInfo() {
 		if (racResult.getRevocationProductionDate() != null) {
-			String addInfo = AdditionalInfo.REVOCATON_ACCEPTANCE_CHECK;
-			Object[] params = new Object[] { racResult.getId(), convertDate(racResult.getRevocationProductionDate()) };
-			return MessageFormat.format(addInfo, params);
+			String date = ValidationProcessUtils.getFormattedDate(racResult.getRevocationProductionDate());
+			return MessageTag.REVOCATION_ACCEPTANCE_CHECK.setArgs(racResult.getId(), date);
 		}
 		return null;
 	}

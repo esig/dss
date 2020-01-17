@@ -64,8 +64,8 @@ public class RevocationDataAvailableCheck<T extends XmlConstraintsConclusion> ex
 	}
 	
 	@Override
-	protected String getAdditionalInfo() {
-		return String.format("Id = '%s'", certificate.getId());
+	protected MessageTag getAdditionalInfo() {
+		return MessageTag.CERTIFICATE_ID.setArgs(certificate.getId());
 	}
 
 }

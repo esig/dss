@@ -32,6 +32,7 @@ import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
@@ -39,7 +40,6 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.ValidationProcessDefinition;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.RevocationAcceptanceChecker;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.LatestRevocationAcceptanceCheckerResultCheck;
@@ -90,7 +90,6 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		super(i18nProvider, new XmlSubXCV());
 		result.setId(currentCertificate.getId());
 		result.setTrustAnchor(currentCertificate.isTrusted());
-		result.setTitle(ValidationProcessDefinition.SUB_XCV.getTitle());
 
 		this.currentCertificate = currentCertificate;
 		this.currentTime = currentTime;
@@ -98,6 +97,11 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		this.context = context;
 		this.subContext = subContext;
 		this.validationPolicy = validationPolicy;
+	}
+	
+	@Override
+	protected MessageTag getTitle() {
+		return MessageTag.SUB_XCV;
 	}
 
 	@Override

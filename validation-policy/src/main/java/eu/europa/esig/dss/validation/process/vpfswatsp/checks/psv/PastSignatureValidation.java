@@ -36,10 +36,10 @@ import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
-import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
@@ -65,8 +65,6 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 	public PastSignatureValidation(I18nProvider i18nProvider, TokenProxy token, Map<String, XmlBasicBuildingBlocks> bbbs, 
 			POEExtraction poe, Date currentTime, ValidationPolicy policy, Context context) {
 		super(i18nProvider, new XmlPSV());
-		result.setTitle(BasicBuildingBlockDefinition.PAST_SIGNATURE_VALIDATION.getTitle());
-
 		this.token = token;
 		this.bbbs = bbbs;
 		this.poe = poe;
@@ -74,7 +72,12 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		this.policy = policy;
 		this.context = context;
 	}
-
+    
+	@Override
+	protected MessageTag getTitle() {
+		return MessageTag.PAST_SIGNATURE_VALIDATION;
+	}
+	
 	@Override
 	protected void initChain() {
 

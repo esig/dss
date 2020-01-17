@@ -30,12 +30,12 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
@@ -58,7 +58,6 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 	public PastCertificateValidation(I18nProvider i18nProvider, TokenProxy token, XmlBasicBuildingBlocks bbb, 
 			POEExtraction poe, Date currentTime, ValidationPolicy policy, Context context) {
 		super(i18nProvider, new XmlPCV());
-		result.setTitle(BasicBuildingBlockDefinition.PAST_CERTIFICATE_VALIDATION.getTitle());
 
 		this.token = token;
 		this.bbb = bbb;
@@ -67,6 +66,11 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 
 		this.policy = policy;
 		this.context = context;
+	}
+    
+	@Override
+	protected MessageTag getTitle() {
+		return MessageTag.PAST_CERTIFICATE_VALIDATION;
 	}
 
 	@Override
