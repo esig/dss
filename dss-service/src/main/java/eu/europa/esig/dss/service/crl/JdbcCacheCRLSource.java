@@ -61,7 +61,7 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRLToken> implement
 	 * Used in the init method to create the table, if not existing: ID (char40
 	 * = SHA1 length) and DATA (blob)
 	 */
-	private static final String SQL_INIT_CREATE_TABLE = "CREATE TABLE CACHED_CRL (ID CHAR(40), DATA BLOB, SIGNATURE_ALGORITHM VARCHAR(20), THIS_UPDATE TIMESTAMP, NEXT_UPDATE TIMESTAMP, EXPIRED_CERTS_ON_CRL TIMESTAMP, ISSUER LONGVARBINARY, ISSUER_PRINCIPAL_MATCH BOOLEAN, SIGNATURE_INTACT BOOLEAN, CRL_SIGN_KEY_USAGE BOOLEAN, UNKNOWN_CRITICAL_EXTENSION BOOLEAN, SIGNATURE_INVALID_REASON VARCHAR(256))";
+	private static final String SQL_INIT_CREATE_TABLE = "CREATE TABLE CACHED_CRL (ID CHAR(40), DATA BLOB, SIGNATURE_ALGORITHM VARCHAR(64), THIS_UPDATE TIMESTAMP, NEXT_UPDATE TIMESTAMP, EXPIRED_CERTS_ON_CRL TIMESTAMP, ISSUER LONGVARBINARY, ISSUER_PRINCIPAL_MATCH BOOLEAN, SIGNATURE_INTACT BOOLEAN, CRL_SIGN_KEY_USAGE BOOLEAN, UNKNOWN_CRITICAL_EXTENSION BOOLEAN, SIGNATURE_INVALID_REASON VARCHAR(256))";
 
 	/**
 	 * Used in the find method to select the crl via the id
@@ -232,7 +232,7 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRLToken> implement
 			c.commit();
 			LOG.debug("CRL token with key '{}' successfully inserted in DB", token.getRevocationTokenKey());
 		} catch (final SQLException e) {
-			LOG.error("Unable to insert CRL in the DB", e);
+			LOG.error("Unable to insert CRL {} into the DB. Cause : '{}'", token, e.getMessage(), e);
 			rollback(c);
 		} finally {
 			closeQuietly(c, s, null);
@@ -287,7 +287,7 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRLToken> implement
 			c.commit();
 			LOG.debug("CRL token with key '{}' successfully updated in DB", token.getRevocationTokenKey());
 		} catch (final SQLException e) {
-			LOG.error("Unable to update CRL in the DB", e);
+			LOG.error("Unable to update CRL {} into the DB. Cause : '{}'", token, e.getMessage(), e);
 			rollback(c);
 		} finally {
 			closeQuietly(c, s, null);
