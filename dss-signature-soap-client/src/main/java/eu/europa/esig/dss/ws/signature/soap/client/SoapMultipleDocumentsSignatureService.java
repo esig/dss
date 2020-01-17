@@ -81,9 +81,9 @@ public interface SoapMultipleDocumentsSignatureService extends Serializable {
 	/**
 	 * This web service operation timestamps a given document corresponding to the provided timestamp parameters.
 	 *
-	 * @param extendDocument
-	 *            a DTO which contains the document to be extented and the parameters
-	 * @return the document with an extended signature
+	 * @param timestampDocumentDTO
+	 *            a DTO which contains the documents to be timestamped and the parameters
+	 * @return the document with a timestamp
 	 */
 	@WebResult(name = "response")
 	RemoteDocument timestampDocument(@WebParam(name = "timestampDocumentDTO") TimestampMultipleDocumentDTO timestampDocumentDTO);
