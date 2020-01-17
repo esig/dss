@@ -23,9 +23,7 @@ package eu.europa.esig.dss.pades.validation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import eu.europa.esig.dss.enumerations.TimestampLocation;
@@ -45,21 +43,18 @@ import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import eu.europa.esig.dss.validation.timestamp.TimestampValidator;
 
 /**
  * Validation of PDF document.
  */
-public class PDFDocumentValidator extends SignedDocumentValidator implements TimestampValidator {
+public class PDFDocumentValidator extends SignedDocumentValidator {
 	
 	private static final byte[] pdfPreamble = new byte[] { '%', 'P', 'D', 'F', '-' };
 
 	private IPdfObjFactory pdfObjectFactory = new ServiceLoaderPdfObjFactory();
 
 	PDFDocumentValidator() {
-		super(null);
 	}
 
 	/**
@@ -101,11 +96,9 @@ public class PDFDocumentValidator extends SignedDocumentValidator implements Tim
 						padesSignature.setSignatureFilename(document.getName());
 						padesSignature.setProvidedSigningCertificateToken(providedSigningCertificateToken);
 						signatures.add(padesSignature);
-						
 					}
 				} catch (Exception e) {
-					throw new DSSException(e);
-					
+					throw new DSSException("Unable to collect signatures", e);
 				}
 			}
 		});
@@ -113,9 +106,8 @@ public class PDFDocumentValidator extends SignedDocumentValidator implements Tim
 	}
 
 	@Override
-	public Map<TimestampToken, List<SignatureScope>> getTimestamps() {
-		// use LinkedHashMap in order to keep the timestamp order
-		final Map<TimestampToken, List<SignatureScope>> timestamps = new LinkedHashMap<TimestampToken, List<SignatureScope>>();
+	public List<TimestampToken> getDetachedTimestamps() {
+		final List<TimestampToken> timestamps = new ArrayList<TimestampToken>();
 
 		PDFSignatureService pdfSignatureService = pdfObjectFactory.newPAdESSignatureService();
 		pdfSignatureService.validateSignatures(validationCertPool, document, new PdfTimestampValidationCallback() {
@@ -132,14 +124,13 @@ public class PDFDocumentValidator extends SignedDocumentValidator implements Tim
 						
 						PAdESSignatureScopeFinder signatureScopeFinder = new PAdESSignatureScopeFinder();
 						signatureScopeFinder.setDefaultDigestAlgorithm(getDefaultDigestAlgorithm());
-						SignatureScope signatureScope = signatureScopeFinder.findSignatureScope(pdfDocTimestampRevision);
+						timestampToken.setTimestampScopes(Arrays.asList(signatureScopeFinder.findSignatureScope(pdfDocTimestampRevision)));
 						
-						timestamps.put(timestampToken, Arrays.asList(signatureScope));
+						timestamps.add(timestampToken);
 						
 					}
 				} catch (Exception e) {
-					throw new DSSException(e);
-					
+					throw new DSSException("Unable to collect timestamps", e);
 				}
 				
 			}

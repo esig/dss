@@ -1073,7 +1073,7 @@
             </DigestAlgoAndValue>
         </Revocation>
         <Revocation Id="R-BFE1DCADF795A5F8D0C4B69054DD551B514C61DC664C7F4AE3254E5FF80F28C5">
-            <Origin>SIGNATURE</Origin>
+            <Origin>INPUT_DOCUMENT</Origin>
             <Type>OCSP</Type>
             <ProductionDate>2013-07-03T06:21:08</ProductionDate>
             <ThisUpdate>2013-07-03T06:00:05</ThisUpdate>
@@ -1099,7 +1099,7 @@
             </DigestAlgoAndValue>
         </Revocation>
         <Revocation Id="R-7ABA94DDE6F4FA3093ED23C3B9A96BEA9A3465EB9CD53537B8389B7574B87363">
-            <Origin>SIGNATURE</Origin>
+            <Origin>INPUT_DOCUMENT</Origin>
             <Type>CRL</Type>
             <ProductionDate>2019-04-02T16:00:30</ProductionDate>
             <ThisUpdate>2019-04-02T16:00:30</ThisUpdate>
@@ -1123,7 +1123,7 @@
             </DigestAlgoAndValue>
         </Revocation>
         <Revocation Id="R-AB75AE3DA23E461E1F8982E38CCFDF0F654515034EFCFC605E7C82B1D03D913A">
-            <Origin>SIGNATURE</Origin>
+            <Origin>INPUT_DOCUMENT</Origin>
             <Type>CRL</Type>
             <ProductionDate>2013-07-03T06:00:05</ProductionDate>
             <ThisUpdate>2013-07-03T06:00:05</ThisUpdate>

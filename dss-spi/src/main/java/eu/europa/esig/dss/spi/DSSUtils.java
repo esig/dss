@@ -68,6 +68,7 @@ import org.bouncycastle.asn1.x509.DigestInfo;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.openssl.jcajce.JcaMiscPEMGenerator;
+import org.bouncycastle.tsp.TimeStampToken;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
 import org.bouncycastle.util.io.pem.PemWriter;
@@ -593,6 +594,24 @@ public final class DSSUtils {
 		}
 	}	
 	
+	/**
+	 * Checks if the document contains a TimeStampToken
+	 * 
+	 * @param document
+	 *                 the {@link DSSDocument} to be checked
+	 * @return true if the document is a timestamp
+	 */
+	public static boolean isTimestampToken(final DSSDocument document) {
+		TimeStampToken timeStampToken = null;
+		try {
+			CMSSignedData cmsSignedData = toCMSSignedData(document);
+			timeStampToken = new TimeStampToken(cmsSignedData);
+		} catch (Exception e) {
+			// ignore
+		}
+		return timeStampToken != null;
+	}
+
 	/**		
 	 * Returns byte size of the given document
 	 * @param dssDocument {@link DSSDocument} to get size for

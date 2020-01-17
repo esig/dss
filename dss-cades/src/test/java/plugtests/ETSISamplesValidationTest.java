@@ -47,7 +47,9 @@ import eu.europa.esig.dss.test.signature.UnmarshallingTester;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.SignatureCRLSource;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
+import eu.europa.esig.dss.validation.SignatureOCSPSource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
@@ -114,8 +116,17 @@ public class ETSISamplesValidationTest {
 			assertTrue(certificateSource.getDSSDictionaryCertValues().isEmpty());
 			assertTrue(certificateSource.getVRIDictionaryCertValues().isEmpty());
 
-			assertNotNull(advancedSignature.getCRLSource());
-			assertNotNull(advancedSignature.getOCSPSource());
+			SignatureCRLSource crlSource = advancedSignature.getCRLSource();
+			assertNotNull(crlSource);
+			assertTrue(Utils.isCollectionEmpty(crlSource.getTimestampSignedDataRevocationTokens()));
+			assertTrue(Utils.isCollectionEmpty(crlSource.getTimestampRevocationValuesTokens()));
+			assertTrue(Utils.isCollectionEmpty(crlSource.getTimestampRevocationRefs()));
+			
+			SignatureOCSPSource ocspSource = advancedSignature.getOCSPSource();
+			assertNotNull(ocspSource);
+			assertTrue(Utils.isCollectionEmpty(ocspSource.getTimestampSignedDataRevocationTokens()));
+			assertTrue(Utils.isCollectionEmpty(ocspSource.getTimestampRevocationValuesTokens()));
+			assertTrue(Utils.isCollectionEmpty(ocspSource.getTimestampRevocationRefs()));
 		}
 
 		UnmarshallingTester.unmarshallXmlReports(reports);

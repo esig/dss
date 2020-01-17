@@ -92,13 +92,21 @@ public class TimestampWrapper extends AbstractTokenProxy {
 	}
 
 	public boolean isMessageImprintDataFound() {
-		return getMessageImprint().isDataFound();
+		XmlDigestMatcher messageImprint = getMessageImprint();
+		if (messageImprint != null) {
+			return messageImprint.isDataFound();
+		}
+		return false;
 	}
 
 	public boolean isMessageImprintDataIntact() {
-		return getMessageImprint().isDataIntact();
+		XmlDigestMatcher messageImprint = getMessageImprint();
+		if (messageImprint != null) {
+			return messageImprint.isDataIntact();
+		}
+		return false;
 	}
-	
+
 	public String getFilename() {
 		return timestamp.getTimestampFilename();
 	}

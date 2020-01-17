@@ -18,18 +18,16 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.asic.common.validation;
+package eu.europa.esig.dss.spi.x509;
 
-import eu.europa.esig.dss.spi.x509.CertificatePool;
-import eu.europa.esig.dss.validation.DocumentValidator;
-
-public interface ASiCSignatureValidator extends DocumentValidator {
+public interface CertificatePoolSharer {
 
 	/**
-	 * This method allows to share the certificate pool between signature validations
+	 * This method allows to share the certificate pool between signature
+	 * validations
 	 * 
 	 * @param validationCertPool
-	 *            the certificate pool
+	 *                           the certificate pool
 	 */
 	void setValidationCertPool(CertificatePool validationCertPool);
 

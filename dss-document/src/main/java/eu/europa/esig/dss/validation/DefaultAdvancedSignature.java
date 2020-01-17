@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -204,26 +205,25 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	@Override
-    public List<DSSDocument> getManifestedDocuments() {
-    	List<DSSDocument> foundManifestedDocuments = new ArrayList<DSSDocument>();
-    	if (Utils.isCollectionEmpty(manifestFiles) || 
-    			Utils.isCollectionEmpty(containerContents)) {
-    		return foundManifestedDocuments;
-    	}
-    	for (ManifestFile manifestFile : manifestFiles) {
-    		if (manifestFile.getSignatureFilename().equals(signatureFilename)) {
-    			for (DSSDocument document : containerContents) {
-    				for (ManifestEntry entry : manifestFile.getEntries()) {
-        				if (entry.getFileName().equals(document.getName())) {
-        					foundManifestedDocuments.add(document);
-        				}
-    				}
-    			}
-    			break;
-    		}
-    	}
-    	return foundManifestedDocuments;
-    }
+	public List<DSSDocument> getManifestedDocuments() {
+		if (Utils.isCollectionEmpty(manifestFiles) || Utils.isCollectionEmpty(containerContents)) {
+			return Collections.emptyList();
+		}
+		List<DSSDocument> foundManifestedDocuments = new ArrayList<DSSDocument>();
+		for (ManifestFile manifestFile : manifestFiles) {
+			if (Utils.areStringsEqual(manifestFile.getSignatureFilename(), signatureFilename)) {
+				for (DSSDocument document : containerContents) {
+					for (ManifestEntry entry : manifestFile.getEntries()) {
+						if (Utils.areStringsEqual(entry.getFileName(), document.getName())) {
+							foundManifestedDocuments.add(document);
+						}
+					}
+				}
+				break;
+			}
+		}
+		return foundManifestedDocuments;
+	}
 	
 	/**
 	 * @return the upper level for which data have been found. Doesn't mean any validity of the data found. Null if
@@ -238,12 +238,16 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	
 	@Override
 	public ListCRLSource getCompleteCRLSource() {
-		return getTimestampSource().getCommonCRLSource();
+		ListCRLSource crlSource = new ListCRLSource(getCRLSource());
+		crlSource.addAll(getTimestampSource().getTimestampCRLSources());
+		return crlSource;
 	}
-	
+
 	@Override
 	public ListOCSPSource getCompleteOCSPSource() {
-		return getTimestampSource().getCommonOCSPSource();
+		ListOCSPSource ocspSource = new ListOCSPSource(getOCSPSource());
+		ocspSource.addAll(getTimestampSource().getTimestampOCSPSources());
+		return ocspSource;
 	}
 
 	/**
@@ -748,18 +752,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return signaturePolicy;
 	}
 	
-	@Override
-	public void populateCRLTokenLists(SignatureCRLSource crlSource) {
-		getCRLSource().populateCRLRevocationValues(crlSource);
-		getCompleteCRLSource().populateCRLRevocationValues(crlSource);
-	}
-	
-	@Override
-	public void populateOCSPTokenLists(SignatureOCSPSource ocspSource) {
-		getOCSPSource().populateOCSPRevocationTokenLists(ocspSource);
-		getCompleteOCSPSource().populateOCSPRevocationTokenLists(ocspSource);
-	}
-
 	@Override
 	public void findSignatureScope(SignatureScopeFinder signatureScopeFinder) {
 		signatureScopes = signatureScopeFinder.findSignatureScope(this);

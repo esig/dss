@@ -239,6 +239,9 @@ public class DoubleSignaturePrettyPrintTest extends PKIFactoryAccess {
 	@Test
 	public void doubleCreatedSignatureTest() {
 		
+		// Strange case with 2 signatures from the same certificate and 2 OCSP responses
+		// for the same intermediate CA. Second OCSP Response is not processed
+
 		DiagnosticData diagnosticData = validate(new FileDocument("src/test/resources/validation/doubleSignedTest.xml"));
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 		assertEquals(2, signatures.size());
@@ -247,8 +250,8 @@ public class DoubleSignaturePrettyPrintTest extends PKIFactoryAccess {
 		assertNotNull(allFoundRevocationRefs);
 		assertEquals(0, allFoundRevocationRefs.size());
 		
-		assertEquals(1, signatureWrapper.getRelatedRevocations().size());
-		assertEquals(1, signatureWrapper.getOrphanRevocations().size());
+		assertEquals(2, signatureWrapper.getRelatedRevocations().size());
+		assertEquals(0, signatureWrapper.getOrphanRevocations().size());
 		
 		List<XmlRelatedCertificate> foundCertificatesByLocation = signatureWrapper.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES);
 		assertNotNull(foundCertificatesByLocation);
@@ -258,8 +261,8 @@ public class DoubleSignaturePrettyPrintTest extends PKIFactoryAccess {
 		allFoundRevocationRefs = signature2Wrapper.getAllFoundRevocationRefs();
 		assertNotNull(allFoundRevocationRefs);
 		assertEquals(2, allFoundRevocationRefs.size());
-		assertEquals(2, signature2Wrapper.getRelatedRevocations().size());
-		assertEquals(0, signature2Wrapper.getOrphanRevocations().size());
+		assertEquals(1, signature2Wrapper.getRelatedRevocations().size());
+		assertEquals(1, signature2Wrapper.getOrphanRevocations().size());
 		
 	}
 	

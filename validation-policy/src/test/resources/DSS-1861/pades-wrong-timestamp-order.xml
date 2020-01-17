@@ -1010,7 +1010,7 @@
     </UsedCertificates>
     <UsedRevocations>
         <Revocation Id="R-231BBF685163B4EFC7BA4BF46EBD0FADDDAF780126503EC4504E866C0247528B">
-            <Origin>SIGNATURE</Origin>
+            <Origin>INPUT_DOCUMENT</Origin>
             <Type>OCSP</Type>
             <ProductionDate>2019-11-01T14:01:23</ProductionDate>
             <ThisUpdate>2019-11-01T14:01:23</ThisUpdate>
@@ -1063,7 +1063,7 @@
             </DigestAlgoAndValue>
         </Revocation>
         <Revocation Id="R-959B0EEBEFE82FAC94B72592DC6A5340937E93F06451E018B2401A6971B46327">
-            <Origin>SIGNATURE</Origin>
+            <Origin>INPUT_DOCUMENT</Origin>
             <Type>OCSP</Type>
             <ProductionDate>2019-11-01T14:28:04</ProductionDate>
             <ThisUpdate>2019-11-01T14:28:04</ThisUpdate>

@@ -21,7 +21,9 @@
 package eu.europa.esig.dss.asic.cades.timestamp.asice;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -37,14 +39,24 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.validationreport.enums.ObjectType;
+import eu.europa.esig.validationreport.jaxb.POEProvisioningType;
+import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
+import eu.europa.esig.validationreport.jaxb.SignerInformationType;
+import eu.europa.esig.validationreport.jaxb.ValidationConstraintsEvaluationReportType;
+import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
+import eu.europa.esig.validationreport.jaxb.ValidationReportType;
+import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
 
 public class ASiCETimestampOneFileTest extends PKIFactoryAccess {
 
@@ -62,6 +74,17 @@ public class ASiCETimestampOneFileTest extends PKIFactoryAccess {
 		assertNotNull(archiveWithTimestamp);
 
 //		archiveWithTimestamp.save("target/test-one-file.asice");
+
+		final DSSDocument docToExtend = archiveWithTimestamp;
+		ASiCWithCAdESSignatureParameters extendParameters = new ASiCWithCAdESSignatureParameters();
+		extendParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
+		extendParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_T);
+		DSSException exception = assertThrows(DSSException.class, () -> service.extendDocument(docToExtend, extendParameters));
+		assertEquals("Unsupported file type", exception.getMessage());
+		extendParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
+		assertThrows(DSSException.class, () -> service.extendDocument(docToExtend, extendParameters));
+		extendParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
+		assertThrows(DSSException.class, () -> service.extendDocument(docToExtend, extendParameters));
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(archiveWithTimestamp);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
@@ -145,6 +168,40 @@ public class ASiCETimestampOneFileTest extends PKIFactoryAccess {
 		assertEquals(2, diagnosticData.getTimestampIdList().size());
 
 		signaturesAndTimestampsIntact(diagnosticData);
+
+		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
+		assertNotNull(etsiValidationReportJaxb);
+		boolean noTimestamp = true;
+		for (ValidationObjectType validationObject : etsiValidationReportJaxb.getSignatureValidationObjects().getValidationObject()) {
+			if (ObjectType.TIMESTAMP == validationObject.getObjectType()) {
+				noTimestamp = false;
+				POEProvisioningType poeProvisioning = validationObject.getPOEProvisioning();
+				assertNotNull(poeProvisioning);
+				assertNotNull(poeProvisioning.getPOETime());
+				assertTrue(Utils.isCollectionNotEmpty(poeProvisioning.getValidationObject()));
+
+				SignatureValidationReportType validationReport = validationObject.getValidationReport();
+				assertNotNull(validationReport);
+				assertNotNull(validationReport.getSignatureQuality());
+				assertTrue(Utils.isCollectionNotEmpty(validationReport.getSignatureQuality().getSignatureQualityInformation()));
+
+				SignerInformationType signerInformation = validationReport.getSignerInformation();
+				assertNotNull(signerInformation);
+				assertNotNull(signerInformation.getSigner());
+				assertNotNull(signerInformation.getSignerCertificate());
+
+				ValidationStatusType timestampValidationStatus = validationReport.getSignatureValidationStatus();
+				assertNotNull(timestampValidationStatus);
+				assertNotNull(timestampValidationStatus.getMainIndication());
+				assertNotNull(timestampValidationStatus.getAssociatedValidationReportData());
+				assertNotNull(timestampValidationStatus.getAssociatedValidationReportData().get(0).getCryptoInformation());
+
+				ValidationConstraintsEvaluationReportType validationConstraintsEvaluationReport = validationReport.getValidationConstraintsEvaluationReport();
+				assertNotNull(validationConstraintsEvaluationReport);
+				assertTrue(Utils.isCollectionNotEmpty(validationConstraintsEvaluationReport.getValidationConstraint()));
+			}
+		}
+		assertFalse(noTimestamp);
 
 	}
 

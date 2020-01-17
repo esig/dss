@@ -91,16 +91,17 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 	@Override
 	public boolean isSupported(DSSDocument dssDocument) {
 		byte firstByte = DSSUtils.readFirstByte(dssDocument);
-		return DSSASN1Utils.isASN1SequenceTag(firstByte);
+		if (DSSASN1Utils.isASN1SequenceTag(firstByte)) {
+			return !DSSUtils.isTimestampToken(dssDocument);
+		}
+		return false;
 	}
 
 	@Override
 	public List<AdvancedSignature> getSignatures() {
 		List<AdvancedSignature> signatures = new ArrayList<AdvancedSignature>();
 		if (cmsSignedData != null) {
-			for (final Object signerInformationObject : cmsSignedData.getSignerInfos().getSigners()) {
-
-				final SignerInformation signerInformation = (SignerInformation) signerInformationObject;
+			for (final SignerInformation signerInformation : cmsSignedData.getSignerInfos().getSigners()) {
 				final CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation, validationCertPool);
 				if (document != null) {
 					cadesSignature.setSignatureFilename(document.getName());

@@ -28,7 +28,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.validation.executor.AbstractProcessExecutor;
-import eu.europa.esig.dss.validation.executor.SignatureProcessExecutor;
+import eu.europa.esig.dss.validation.executor.DocumentProcessExecutor;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
@@ -38,7 +38,7 @@ import eu.europa.esig.validationreport.jaxb.ValidationReportType;
  * SimpleReport, DetailedReport and ETSI Validation report
  *
  */
-public class DefaultSignatureProcessExecutor extends AbstractProcessExecutor implements SignatureProcessExecutor {
+public class DefaultSignatureProcessExecutor extends AbstractProcessExecutor implements DocumentProcessExecutor {
 
 	protected ValidationLevel validationLevel = ValidationLevel.ARCHIVAL_DATA;
 	protected boolean enableEtsiValidationReport = true;

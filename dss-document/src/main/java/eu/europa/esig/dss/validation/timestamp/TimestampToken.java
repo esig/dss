@@ -66,6 +66,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateRef;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.PdfRevision;
+import eu.europa.esig.dss.validation.scope.SignatureScope;
 
 /**
  * SignedToken containing a TimeStamp.
@@ -82,9 +83,9 @@ public class TimestampToken extends Token {
 
 	private final TimestampCertificateSource certificateSource;
 
-	private TimestampCRLSource crlSource;
+	private final TimestampCRLSource crlSource;
 
-	private TimestampOCSPSource ocspSource;
+	private final TimestampOCSPSource ocspSource;
 
 	private final List<TimestampedReference> timestampedReferences;
 
@@ -101,6 +102,11 @@ public class TimestampToken extends Token {
 	 */
 	private String fileName;
 	
+	/**
+	 * Only present for detached timestamps;
+	 */
+	private List<SignatureScope> timestampScopes;
+
 	/* In case of ASiC-E CAdES */
 	private ManifestFile manifestFile;
 	
@@ -180,6 +186,8 @@ public class TimestampToken extends Token {
 		this.timeStamp = timeStamp;
 		this.timeStampType = type;
 		this.certificateSource = new TimestampCertificateSource(timeStamp, certPool);
+		this.ocspSource = new TimestampOCSPSource(timeStamp);
+		this.crlSource = new TimestampCRLSource(timeStamp);
 		this.timestampedReferences = timestampedReferences;
 		if (timestampLocation != null) {
 			this.timestampLocation = timestampLocation;
@@ -198,23 +206,19 @@ public class TimestampToken extends Token {
 	
 	/**
 	 * Returns {@code TimestampCRLSource} for the timestamp
+	 * 
 	 * @return {@link TimestampCRLSource}
 	 */
 	public TimestampCRLSource getCRLSource() {
-		if (crlSource == null) {
-			crlSource = new TimestampCRLSource(this); 
-		}
 		return crlSource;
 	}
 
 	/**
 	 * Returns {@code TimestampOCSPSource} for the timestamp
+	 * 
 	 * @return {@link TimestampOCSPSource}
 	 */
 	public TimestampOCSPSource getOCSPSource() {
-		if (ocspSource == null) {
-			ocspSource = new TimestampOCSPSource(this);
-		}
 		return ocspSource;
 	}
 	
@@ -463,7 +467,7 @@ public class TimestampToken extends Token {
 	 * @return true if the message imprint data is intact, false otherwise
 	 */
 	public Boolean isMessageImprintDataIntact() {
-		if (messageImprintIntact == null) {
+		if (!processed) {
 			throw new DSSException("Invoke matchData(byte[] data) method before!");
 		}
 		return messageImprintIntact;
@@ -568,6 +572,19 @@ public class TimestampToken extends Token {
 
 	public void setTimestampIncludes(List<TimestampInclude> timestampIncludes) {
 		this.timestampIncludes = timestampIncludes;
+	}
+
+	/**
+	 * Returns the scope of the current timestamp (detached timestamps only)
+	 * 
+	 * @return a list of SignatureScope
+	 */
+	public List<SignatureScope> getTimestampScopes() {
+		return timestampScopes;
+	}
+
+	public void setTimestampScopes(List<SignatureScope> timestampScopes) {
+		this.timestampScopes = timestampScopes;
 	}
 
 	/**

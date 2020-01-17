@@ -111,7 +111,7 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 	@Override
 	protected CAdESTimestampDataBuilder getTimestampDataBuilder() {
 		CadesLevelBaselineLTATimestampExtractor timestampExtractor = new CadesLevelBaselineLTATimestampExtractor(
-				cmsSignedData, certificatePool.getCertificateTokens(), getCertificates());
+				cmsSignedData, signatureCertificateSource.getCertificates(), getCertificates());
 		return new CAdESTimestampDataBuilder(cmsSignedData, signerInformation, detachedDocuments, timestampExtractor);
 	}
 
@@ -462,13 +462,12 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 		super.addEncapsulatedValuesFromTimestamp(references, timestampedTimestamp);
 		
 		TimestampCRLSource timeStampCRLSource = timestampedTimestamp.getCRLSource();
-		crlSource.addAll(timeStampCRLSource);
 		for (CRLBinary crlBinary : timeStampCRLSource.getCRLBinaryList()) {
 			TimestampedReference crlReference = new TimestampedReference(crlBinary.asXmlId(), TimestampedObjectType.REVOCATION);
 			addReference(references, crlReference);
 		}
 		for (CRLRef crlRef : timeStampCRLSource.getAllCRLReferences()) {
-			CRLBinary crlBinaryIdentifier = crlSource.getIdentifier(crlRef);
+			CRLBinary crlBinaryIdentifier = timeStampCRLSource.getIdentifier(crlRef);
 			if (crlBinaryIdentifier != null) {
 				TimestampedReference crlReference = new TimestampedReference(crlBinaryIdentifier.asXmlId(), TimestampedObjectType.REVOCATION);
 				addReference(references, crlReference);
@@ -476,8 +475,7 @@ public class CAdESTimestampSource extends AbstractTimestampSource<CAdESAttribute
 		}
 		
 		TimestampOCSPSource timeStampOCSPSource = timestampedTimestamp.getOCSPSource();
-		ocspSource.addAll(timeStampOCSPSource);
-		for (OCSPResponseBinary ocspResponse : timeStampOCSPSource.getOCSPResponsesList()) {
+		for (OCSPResponseBinary ocspResponse : ocspSource.getOCSPResponsesList()) {
 			TimestampedReference ocspReference = new TimestampedReference(ocspResponse.asXmlId(), TimestampedObjectType.REVOCATION);
 			addReference(references, ocspReference);
 		}

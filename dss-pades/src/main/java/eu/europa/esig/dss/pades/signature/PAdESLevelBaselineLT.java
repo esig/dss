@@ -72,6 +72,10 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 		pdfDocumentValidator.setCertificateVerifier(certificateVerifier);
 
 		List<AdvancedSignature> signatures = pdfDocumentValidator.getSignatures();
+		if (Utils.isCollectionEmpty(signatures)) {
+			throw new DSSException("No signature to be extended");
+		}
+
 		for (final AdvancedSignature signature : signatures) {
 			if (isRequireDocumentTimestamp(signature)) {
 				final PAdESLevelBaselineT padesLevelBaselineT = new PAdESLevelBaselineT(tspSource, pdfObjectFactory);

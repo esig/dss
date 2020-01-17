@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.pades.timestamp;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -16,8 +17,17 @@ import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBTest;
 import eu.europa.esig.dss.test.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.validationreport.enums.ObjectType;
+import eu.europa.esig.validationreport.jaxb.POEProvisioningType;
+import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
+import eu.europa.esig.validationreport.jaxb.SignerInformationType;
+import eu.europa.esig.validationreport.jaxb.ValidationConstraintsEvaluationReportType;
+import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
+import eu.europa.esig.validationreport.jaxb.ValidationReportType;
+import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
 
 public abstract class AbstractPAdESTimestampTest extends PKIFactoryAccess {
 
@@ -49,6 +59,41 @@ public abstract class AbstractPAdESTimestampTest extends PKIFactoryAccess {
 		assertTrue(timestampWrapper.isMessageImprintDataIntact());
 		assertTrue(timestampWrapper.isSignatureIntact());
 		assertTrue(timestampWrapper.isSignatureValid());
+
+		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
+		assertNotNull(etsiValidationReportJaxb);
+		boolean noTimestamp = true;
+		for (ValidationObjectType validationObject : etsiValidationReportJaxb.getSignatureValidationObjects().getValidationObject()) {
+			if (ObjectType.TIMESTAMP == validationObject.getObjectType()) {
+				noTimestamp = false;
+				POEProvisioningType poeProvisioning = validationObject.getPOEProvisioning();
+				assertNotNull(poeProvisioning);
+				assertNotNull(poeProvisioning.getPOETime());
+				assertTrue(Utils.isCollectionNotEmpty(poeProvisioning.getValidationObject()));
+
+				SignatureValidationReportType validationReport = validationObject.getValidationReport();
+				assertNotNull(validationReport);
+				assertNotNull(validationReport.getSignatureQuality());
+				assertTrue(Utils.isCollectionNotEmpty(validationReport.getSignatureQuality().getSignatureQualityInformation()));
+
+				SignerInformationType signerInformation = validationReport.getSignerInformation();
+				assertNotNull(signerInformation);
+				assertNotNull(signerInformation.getSigner());
+				assertNotNull(signerInformation.getSignerCertificate());
+
+				ValidationStatusType timestampValidationStatus = validationReport.getSignatureValidationStatus();
+				assertNotNull(timestampValidationStatus);
+				assertNotNull(timestampValidationStatus.getMainIndication());
+				assertNotNull(timestampValidationStatus.getAssociatedValidationReportData());
+				assertNotNull(timestampValidationStatus.getAssociatedValidationReportData().get(0).getCryptoInformation());
+
+				ValidationConstraintsEvaluationReportType validationConstraintsEvaluationReport = validationReport.getValidationConstraintsEvaluationReport();
+				assertNotNull(validationConstraintsEvaluationReport);
+				assertTrue(Utils.isCollectionNotEmpty(validationConstraintsEvaluationReport.getValidationConstraint()));
+			}
+		}
+		assertFalse(noTimestamp);
+
 	}
 
 	@Override

@@ -32,8 +32,8 @@ import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.ManifestFile;
-import eu.europa.esig.dss.validation.SignatureValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureUtils;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 
@@ -63,9 +63,9 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 	}
 
 	@Override
-	protected List<SignatureValidator> getValidators() {
-		if (validators == null) {
-			validators = new ArrayList<SignatureValidator>();
+	protected List<DocumentValidator> getSignatureValidators() {
+		if (signatureValidators == null) {
+			signatureValidators = new ArrayList<DocumentValidator>();
 			for (final DSSDocument signature : getSignatureDocuments()) {
 				XMLDocumentForASiCValidator xadesValidator = new XMLDocumentForASiCValidator(signature);
 				xadesValidator.setValidationCertPool(validationCertPool);
@@ -80,10 +80,10 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 					xadesValidator.setContainerContents(getArchiveDocuments());
 				}
 
-				validators.add(xadesValidator);
+				signatureValidators.add(xadesValidator);
 			}
 		}
-		return validators;
+		return signatureValidators;
 	}
 
 	@Override

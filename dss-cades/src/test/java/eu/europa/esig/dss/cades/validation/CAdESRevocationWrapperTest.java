@@ -63,7 +63,7 @@ public class CAdESRevocationWrapperTest extends PKIFactoryAccess {
 		for (RevocationWrapper revocation : revocationData) {
 			assertNotNull(revocation.getRevocationType());
 			assertNotNull(revocation.getOrigin());
-			if (RevocationOrigin.SIGNATURE.equals(revocation.getOrigin())) {
+			if (RevocationOrigin.INPUT_DOCUMENT.equals(revocation.getOrigin())) {
 				revocationSignatureOriginCounter++;
 			}
 		}

@@ -159,7 +159,7 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 
 	@Override
 	public DSSDocument timestamp(DSSDocument toTimestampDocument, TP parameters) {
-		throw new DSSException("Unsupported operation for this file format");
+		throw new UnsupportedOperationException("Unsupported operation for this file format");
 	}
 
 }

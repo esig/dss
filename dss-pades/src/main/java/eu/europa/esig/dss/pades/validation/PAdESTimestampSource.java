@@ -163,7 +163,7 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 				addReference(references, new TimestampedReference(crlIdentifier.asXmlId(), TimestampedObjectType.REVOCATION));
 			}
 		}
-		crlSource.addAll(padesCRLSource);
+		crlSource.add(padesCRLSource);
 		
 		PAdESOCSPSource padesOCSPSource = new PAdESOCSPSource(timestampInfo.getDssDictionary(), null, signerInformation.getSignedAttributes());
 		for (OCSPResponseBinary ocspIdentifier : padesOCSPSource.getOCSPResponsesList()) {
@@ -172,7 +172,7 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 				addReference(references, new TimestampedReference(ocspIdentifier.asXmlId(), TimestampedObjectType.REVOCATION));
 			}
 		}
-		ocspSource.addAll(padesOCSPSource);
+		ocspSource.add(padesOCSPSource);
 	}
 
 	@Override
