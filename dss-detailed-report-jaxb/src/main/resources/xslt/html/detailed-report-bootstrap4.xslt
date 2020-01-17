@@ -151,7 +151,7 @@
 
 			       	<xsl:if test="@BestSignatureTime">
 						<span>
-							<xsl:attribute name="class">pull-right glyphicon glyphicon-time dss-clock</xsl:attribute>
+							<xsl:attribute name="class">pull-right fa fa-clock-o dss-clock</xsl:attribute>
 							<xsl:attribute name="title">Best signature time : <xsl:value-of select="@BestSignatureTime"/></xsl:attribute>
 		       			</span>
 	       			</xsl:if>
@@ -205,7 +205,7 @@
 			       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
 			       
 					<span>
-						<xsl:attribute name="class">pull-right glyphicon glyphicon-time dss-clock</xsl:attribute>
+						<xsl:attribute name="class">pull-right fa fa-clock-o dss-clock</xsl:attribute>
 						<xsl:attribute name="title">Production time : <xsl:value-of select="@ProductionTime"/></xsl:attribute>
 	       			</span>
 	       			
@@ -411,7 +411,7 @@
 			        </xsl:if>
 			        
 			        <span>
-						<xsl:attribute name="class">pull-right glyphicon glyphicon-time dss-clock</xsl:attribute>
+						<xsl:attribute name="class">pull-right fa fa-clock-o dss-clock</xsl:attribute>
 						<xsl:attribute name="title"><xsl:value-of select="@DateTime"/></xsl:attribute>
 	       			</span>
 			        <span>
@@ -509,7 +509,7 @@
 			       	
 		       		<xsl:if test="@TrustAnchor = 'true'">
 		       			<span>
-							<xsl:attribute name="class">glyphicon glyphicon-thumbs-up pull-right</xsl:attribute>
+							<xsl:attribute name="class">fa fa-thumbs-up pull-right</xsl:attribute>
 							<xsl:attribute name="style">font-size : 20px;</xsl:attribute>
 							<xsl:attribute name="title">Trust Anchor</xsl:attribute>		       			
 		       			</span>
@@ -576,7 +576,7 @@
 						<xsl:attribute name="title">Details</xsl:attribute>
 						<xsl:attribute name="style">margin-left : 10px</xsl:attribute>
 						<span>
-							<xsl:attribute name="class">glyphicon glyphicon-circle-arrow-right</xsl:attribute>
+							<xsl:attribute name="class">fa fa-arrow-circle-right</xsl:attribute>
 						</span>
 					</a>
 	    		</xsl:if>
@@ -587,25 +587,25 @@
 	        	<xsl:choose>
 					<xsl:when test="$statusText='OK'">
 						<span>
-							<xsl:attribute name="class">glyphicon glyphicon-ok-sign text-success</xsl:attribute>
+							<xsl:attribute name="class">fa fa-check-circle text-success</xsl:attribute>
 							<xsl:attribute name="title">OK</xsl:attribute>
 						</span>
 					</xsl:when>
 					<xsl:when test="$statusText='NOT OK'">
 						<span>
-							<xsl:attribute name="class">glyphicon glyphicon-remove-sign text-danger</xsl:attribute>
+							<xsl:attribute name="class">fa fa-times-circle text-danger</xsl:attribute>
 							<xsl:attribute name="title"><xsl:value-of select="dss:Error" /></xsl:attribute>
 						</span>
 					</xsl:when>
 					<xsl:when test="$statusText='WARNING'">
 						<span>
-							<xsl:attribute name="class">glyphicon glyphicon-exclamation-sign text-warning</xsl:attribute>
+							<xsl:attribute name="class">fa fa-exclamation-circle text-warning</xsl:attribute>
 							<xsl:attribute name="title"><xsl:value-of select="dss:Warning" /></xsl:attribute>
 						</span>
 					</xsl:when>
 					<xsl:when test="$statusText='INFORMATION'">
 						<span>
-							<xsl:attribute name="class">glyphicon glyphicon-info-sign text-info</xsl:attribute>
+							<xsl:attribute name="class">fa fa-info-circle text-info</xsl:attribute>
 							<xsl:attribute name="title"><xsl:value-of select="dss:Info" /></xsl:attribute>
 						</span>
 					</xsl:when>
@@ -618,7 +618,7 @@
 	    		
 	    		<xsl:if test="dss:AdditionalInfo">
 		    		<span>
-		    			<xsl:attribute name="class">glyphicon glyphicon-plus-sign text-info</xsl:attribute>
+		    			<xsl:attribute name="class">fa fa-plus-circle text-info</xsl:attribute>
 						<xsl:attribute name="style">margin-left : 10px</xsl:attribute>
 						<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
 						<xsl:attribute name="data-placement">right</xsl:attribute>

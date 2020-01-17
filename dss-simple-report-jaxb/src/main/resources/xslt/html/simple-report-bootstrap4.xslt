@@ -107,7 +107,7 @@
 								<xsl:value-of select="dss:TimestampLevel" />
 							</xsl:if>
 							<span>
-				    			<xsl:attribute name="class">glyphicon glyphicon-info-sign text-info</xsl:attribute>
+				    			<xsl:attribute name="class">fa fa-info-circle text-info</xsl:attribute>
 								<xsl:attribute name="style">margin-left : 10px</xsl:attribute>
 								<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
 								<xsl:attribute name="data-placement">right</xsl:attribute>
@@ -139,27 +139,27 @@
 						<xsl:choose>
 							<xsl:when test="$indicationText='TOTAL_PASSED'">
 								<span>
-									<xsl:attribute name="class">glyphicon glyphicon-ok-sign</xsl:attribute>
+									<xsl:attribute name="class">fa fa-check-circle</xsl:attribute>
 								</span>
 							</xsl:when>
 							<xsl:when test="$indicationText='PASSED'">
 								<span>
-									<xsl:attribute name="class">glyphicon glyphicon-ok-sign</xsl:attribute>
+									<xsl:attribute name="class">fa fa-check-circle</xsl:attribute>
 								</span>
 							</xsl:when>
 							<xsl:when test="$indicationText='INDETERMINATE'">
 								<span>
-									<xsl:attribute name="class">glyphicon glyphicon-question-sign</xsl:attribute>
+									<xsl:attribute name="class">fa fa-question-circle</xsl:attribute>
 								</span>
 							</xsl:when>
 							<xsl:when test="$indicationText='FAILED'">
 								<span>
-									<xsl:attribute name="class">glyphicon glyphicon-remove-sign</xsl:attribute>
+									<xsl:attribute name="class">fa fa-times-circle</xsl:attribute>
 								</span>
 							</xsl:when>
 							<xsl:when test="$indicationText='TOTAL_FAILED'">
 								<span>
-									<xsl:attribute name="class">glyphicon glyphicon-remove-sign</xsl:attribute>
+									<xsl:attribute name="class">fa fa-times-circle</xsl:attribute>
 								</span>
 							</xsl:when>
 						</xsl:choose>
@@ -185,7 +185,7 @@
 				            <xsl:for-each select="dss:CertificateChain/dss:Certificate">
 				            	<xsl:variable name="index" select="position()"/>
 				        		<dd>
-			        				<span><xsl:attribute name="class">glyphicon glyphicon-link</xsl:attribute></span>
+			        				<span><xsl:attribute name="class">fa fa-link</xsl:attribute></span>
 				        			<xsl:choose>
 				        				<xsl:when test="$index = 1">
 				        					<b> <xsl:value-of select="dss:qualifiedName" /></b>
@@ -226,7 +226,7 @@
 			            <dd>
 			            	<xsl:value-of select="dss:BestSignatureTime"/>
 			            	<span>
-				    			<xsl:attribute name="class">glyphicon glyphicon-info-sign text-info</xsl:attribute>
+				    			<xsl:attribute name="class">fa fa-info-circle text-info</xsl:attribute>
 								<xsl:attribute name="style">margin-left : 10px</xsl:attribute>
 								<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
 								<xsl:attribute name="data-placement">right</xsl:attribute>

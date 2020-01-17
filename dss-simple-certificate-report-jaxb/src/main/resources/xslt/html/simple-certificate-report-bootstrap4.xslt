@@ -196,20 +196,20 @@
     	<xsl:choose>
 			<xsl:when test="dss:revocationDate">
 				<span>
-					<xsl:attribute name="class">glyphicon glyphicon glyphicon-remove-sign text-danger</xsl:attribute>
+					<xsl:attribute name="class">fa fa-times-circle text-danger</xsl:attribute>
 					<xsl:attribute name="title">Revoked</xsl:attribute>
 				</span>
      			Revoked (reason:<xsl:value-of select="dss:revocationReason" /> @ <xsl:value-of select="dss:revocationDate" />)
 			</xsl:when>    	
 			<xsl:when test="dss:productionDate">
       			<span>
-					<xsl:attribute name="class">glyphicon glyphicon-ok-sign text-success</xsl:attribute>
+					<xsl:attribute name="class">fa fa-check-circle text-success</xsl:attribute>
 					<xsl:attribute name="title">Not Revoked</xsl:attribute>
 				</span>
 			</xsl:when>
 			<xsl:otherwise>
       			<span>
-					<xsl:attribute name="class">glyphicon glyphicon-question-sign text-muted</xsl:attribute>
+					<xsl:attribute name="class">fa fa-question-circle text-muted</xsl:attribute>
 					<xsl:attribute name="title">No revocation data available</xsl:attribute>
 				</span>
 			</xsl:otherwise>
@@ -280,7 +280,7 @@
     		</a>
     		
     		<span>
-    			<xsl:attribute name="class">glyphicon glyphicon-arrow-right dss-arrow</xsl:attribute>
+    			<xsl:attribute name="class">fa fa-arrow-circle-right dss-arrow</xsl:attribute>
     		</span>
     		
     		<a>
@@ -294,7 +294,7 @@
     		</a>
     		
     		<span>
-    			<xsl:attribute name="class">glyphicon glyphicon-arrow-right dss-arrow</xsl:attribute>
+    			<xsl:attribute name="class">fa fa-arrow-circle-right dss-arrow</xsl:attribute>
     		</span>
     		
     		<xsl:value-of select="dss:trustServiceName" />
