@@ -15,8 +15,6 @@
 		
 	<properties>
 		<module-name>jpms_dss_test</module-name>
-		
-    	<sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 	
 	<dependencies>

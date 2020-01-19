@@ -14,8 +14,6 @@
 
 	<properties>
 		<module-name>jpms_dss_cookbook</module-name>
-		
-    	<sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 	
 	<dependencies>
@@ -66,30 +64,6 @@
 		</dependency>
 	</dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>report</id>
-						<goals>
-							<goal>report-aggregate</goal>
-						</goals>
-						<phase>verify</phase>
-						<configuration>
-							<excludes>
-								<!-- Avoid conflicts between java/java9 classes -->
-		    					<exclude>META-INF/**</exclude>
-							</excludes>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
-	
 	<profiles>
 		<profile>
 			<id>asciidoctor</id>

@@ -122,6 +122,7 @@ public abstract class PKIFactoryAccess {
 	protected static final String ROOT_CA = "root-ca";
 	
 	private static final String DEFAULT_TSA_DATE_FORMAT = "yyyy-MM-dd-HH-mm";
+	private static final int TIMEOUT_MS = 10000;
 
 	protected abstract String getSigningAlias();
 
@@ -188,6 +189,8 @@ public abstract class PKIFactoryAccess {
 	private OnlineOCSPSource onlineOcspSource() {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
 		OCSPDataLoader dataLoader = new OCSPDataLoader();
+		dataLoader.setTimeoutConnection(TIMEOUT_MS);
+		dataLoader.setTimeoutSocket(TIMEOUT_MS);
 		dataLoader.setProxyConfig(getProxyConfig());
 		ocspSource.setDataLoader(dataLoader);
 		return ocspSource;
@@ -238,6 +241,8 @@ public abstract class PKIFactoryAccess {
 		FileCacheDataLoader cacheDataLoader = new FileCacheDataLoader();
 		CommonsDataLoader dataLoader = new CommonsDataLoader();
 		dataLoader.setProxyConfig(getProxyConfig());
+		dataLoader.setTimeoutConnection(TIMEOUT_MS);
+		dataLoader.setTimeoutSocket(TIMEOUT_MS);
 		cacheDataLoader.setDataLoader(dataLoader);
 		cacheDataLoader.setFileCacheDirectory(new File("target"));
 		cacheDataLoader.setCacheExpirationTime(3600000L);
@@ -305,6 +310,8 @@ public abstract class PKIFactoryAccess {
 	private OnlineTSPSource getTSPSourceByUrl(String tsaUrl) {
 		OnlineTSPSource tspSource = new OnlineTSPSource(tsaUrl);
 		TimestampDataLoader dataLoader = new TimestampDataLoader();
+		dataLoader.setTimeoutConnection(TIMEOUT_MS);
+		dataLoader.setTimeoutSocket(TIMEOUT_MS);
 		dataLoader.setProxyConfig(getProxyConfig());
 		tspSource.setDataLoader(dataLoader);
 		return tspSource;

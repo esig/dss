@@ -110,7 +110,13 @@ public class OnlineOCSPSourceTest {
 		CertificateToken certificateToken = DSSUtils.loadCertificate(new File("src/test/resources/cert.pem"));
 		CertificateToken caToken = DSSUtils.loadCertificate(new File("src/test/resources/cert_CA.pem"));
 		
+		OCSPDataLoader dataLoader = new OCSPDataLoader();
+		dataLoader.setTimeoutConnection(10000);
+		dataLoader.setTimeoutSocket(10000);
+
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
+		ocspSource.setDataLoader(dataLoader);
+
 		OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, caToken);
 		assertEquals(SignatureAlgorithm.RSA_SHA256, ocspToken.getSignatureAlgorithm()); // default value
 		

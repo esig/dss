@@ -12,8 +12,6 @@
 
 	<properties>
 		<module-name>jpms_dss_ws_server_signing_dto</module-name>
-		
-    	<sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 
 	<dependencies>

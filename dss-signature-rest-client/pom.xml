@@ -13,8 +13,6 @@
 
 	<properties>
 		<module-name>jpms_dss_ws_signature_rest_client</module-name>
-		
-    	<sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 
 	<dependencies>

@@ -11,8 +11,6 @@
 
 	<properties>
 		<module-name>jpms_dss_pades_openpdf</module-name>
-		
-    	<sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 
 	<build>
