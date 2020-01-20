@@ -472,7 +472,6 @@ public class DiagnosticDataBuilder {
 				XmlRevocation xmlRevocation = xmlRevocationsMap.get(id);
 				if (xmlRevocation == null) {
 					xmlRevocation = buildDetachedXmlRevocation(revocationToken);
-					xmlRevocation.setSigningCertificate(getXmlSigningCertificate(revocationToken.getPublicKeyOfTheSigner()));
 					xmlRevocationsMap.put(id, xmlRevocation);
 					builtRevocations.add(xmlRevocation);
 				}
@@ -891,8 +890,14 @@ public class DiagnosticDataBuilder {
 
 		xmlRevocation.setBasicSignature(getXmlBasicSignature(revocationToken));
 
-		xmlRevocation.setSigningCertificate(getXmlSigningCertificate(revocationToken.getPublicKeyOfTheSigner()));
-		xmlRevocation.setCertificateChain(getXmlForCertificateChain(revocationToken.getPublicKeyOfTheSigner()));
+		CertificateToken issuerCertificateToken = revocationToken.getIssuerCertificateToken();
+		if (issuerCertificateToken != null) {
+			xmlRevocation.setSigningCertificate(getXmlSigningCertificate(issuerCertificateToken));
+			xmlRevocation.setCertificateChain(getXmlForCertificateChain(issuerCertificateToken));
+		} else {
+			xmlRevocation.setSigningCertificate(getXmlSigningCertificate(revocationToken.getPublicKeyOfTheSigner()));
+			xmlRevocation.setCertificateChain(getXmlForCertificateChain(revocationToken.getPublicKeyOfTheSigner()));
+		}
 
 		xmlRevocation.setCertHashExtensionPresent(revocationToken.isCertHashPresent());
 		xmlRevocation.setCertHashExtensionMatch(revocationToken.isCertHashMatch());
@@ -914,6 +919,23 @@ public class DiagnosticDataBuilder {
 			}
 		}
 		return false;
+	}
+	
+	private List<XmlChainItem> getXmlForCertificateChain(CertificateToken certificateToken) {
+		if (certificateToken != null) {
+			final List<XmlChainItem> certChainTokens = new ArrayList<>();
+			Set<CertificateToken> processedTokens = new HashSet<>();
+			while (certificateToken != null) {
+				certChainTokens.add(getXmlChainItem(certificateToken));
+				if (certificateToken.isSelfSigned() || processedTokens.contains(certificateToken)) {
+					break;
+				}
+				processedTokens.add(certificateToken);
+				certificateToken = getCertificateByPubKey(certificateToken.getPublicKeyOfTheSigner());
+			}
+			return certChainTokens;
+		}
+		return null;
 	}
 
 	private List<XmlChainItem> getXmlForCertificateChain(PublicKey certPubKey) {
@@ -948,6 +970,12 @@ public class DiagnosticDataBuilder {
 		final XmlChainItem chainItem = new XmlChainItem();
 		chainItem.setCertificate(xmlCertsMap.get(token.getDSSIdAsString()));
 		return chainItem;
+	}
+	
+	private XmlSigningCertificate getXmlSigningCertificate(final CertificateToken certificateToken) {
+		final XmlSigningCertificate xmlSignCertType = new XmlSigningCertificate();
+		xmlSignCertType.setCertificate(xmlCertsMap.get(certificateToken.getDSSIdAsString()));
+		return xmlSignCertType;
 	}
 
 	/**

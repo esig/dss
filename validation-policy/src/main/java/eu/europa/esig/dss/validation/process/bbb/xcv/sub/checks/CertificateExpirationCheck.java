@@ -22,7 +22,7 @@ package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
 import java.util.Date;
 
-import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -33,7 +33,7 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
-public class CertificateExpirationCheck extends ChainItem<XmlSubXCV> {
+public class CertificateExpirationCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
 	private final Date currentTime;
 	private final CertificateWrapper certificate;
@@ -41,7 +41,7 @@ public class CertificateExpirationCheck extends ChainItem<XmlSubXCV> {
 
 	private SubIndication subIndication;
 
-	public CertificateExpirationCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateWrapper certificate,
+	public CertificateExpirationCheck(I18nProvider i18nProvider, T result, CertificateWrapper certificate,
 			CertificateRevocationWrapper usedCertificateRevocation, Date currentTime, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.currentTime = currentTime;

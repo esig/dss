@@ -90,7 +90,7 @@ public class SignatureValidationContext implements ValidationContext {
 
 	private final Map<CertificateToken, Date> lastTimestampCertChainDates = new HashMap<>();
 
-	private final Map<String, Date> bestSignatureTimes = new HashMap<>();
+	private final Map<String, List<Date>> poeTimes = new HashMap<>();
 	
 	/* The map contains all the certificate chains that has been used into the signature. Links the signing certificate and its chain. */
 	private Map<CertificateToken, List<CertificateToken>> orderedCertificateChains;
@@ -458,10 +458,12 @@ public class SignatureValidationContext implements ValidationContext {
 			}
 		}
 		for (TimestampedReference timestampedReference : timestampToken.getTimestampedReferences()) {
-			Date bestSignatureTime = bestSignatureTimes.get(timestampedReference.getObjectId());
-			if (bestSignatureTime == null || usageDate.before(bestSignatureTime)) {
-				bestSignatureTimes.put(timestampedReference.getObjectId(), usageDate);
+			List<Date> bestSignatureTimeList = poeTimes.get(timestampedReference.getObjectId());
+			if (Utils.isCollectionEmpty(bestSignatureTimeList)) {
+				bestSignatureTimeList = new ArrayList<Date>();
+				poeTimes.put(timestampedReference.getObjectId(), bestSignatureTimeList);
 			}
+			bestSignatureTimeList.add(usageDate);
 		}
 	}
 	
@@ -765,22 +767,94 @@ public class SignatureValidationContext implements ValidationContext {
 	private boolean isRevocationDataRefreshNeeded(CertificateToken certToken, List<RevocationToken> revocations) {
 		Date refreshNeededAfterTime = lastTimestampCertChainDates.get(certToken); // get last usage dates for the same timestamp certificate chain
 		if (refreshNeededAfterTime == null) {
-			refreshNeededAfterTime = bestSignatureTimes.get(certToken.getDSSIdAsString()); // the best signature time for other tokens (i.e. B-level and revocation data)
+			refreshNeededAfterTime = getLowestPOETime(certToken.getDSSIdAsString()); // the best signature time for other tokens (i.e. B-level and revocation data)
 		}
 		if (refreshNeededAfterTime != null) {
-			boolean foundUpdatedRevocationData = false;
+			boolean freshRevocationDataFound = false;
 			for (RevocationToken revocationToken : revocations) {
-				if ((refreshNeededAfterTime.before(revocationToken.getProductionDate())) && (RevocationReason.CERTIFICATE_HOLD != revocationToken.getReason())) {
-					foundUpdatedRevocationData = true;
+				if (refreshNeededAfterTime.before(revocationToken.getProductionDate()) && (RevocationReason.CERTIFICATE_HOLD != revocationToken.getReason() &&
+						isConsistent(revocationToken))) {
+					freshRevocationDataFound = true;
 					break;
 				}
 			}
-			if (!foundUpdatedRevocationData) {
+			if (!freshRevocationDataFound) {
 				LOG.debug("Revocation data refresh is needed");
 				return true;
 			}
 		}
 		return false;
+	}
+	
+	private Date getLowestPOETime(String tokenId) {
+		Date lowestPOE = null;
+		List<Date> bestSignatureTimeList = poeTimes.get(tokenId);
+		if (Utils.isCollectionNotEmpty(bestSignatureTimeList)) {
+			for (Date poeTime : bestSignatureTimeList) {
+				if (lowestPOE == null || poeTime.before(lowestPOE)) {
+					lowestPOE = poeTime;
+				}
+			}
+		}
+		return lowestPOE;
+	}
+	
+	private boolean isConsistent(RevocationToken revocation) {
+		CertificateToken issuerCertificateToken = revocation.getIssuerCertificateToken();
+		if (issuerCertificateToken == null) {
+			// extract by public key which is valid against thisUpdate time
+			issuerCertificateToken = validationCertificatePool.getIssuer(revocation);
+		}
+		if (issuerCertificateToken == null) {
+			LOG.debug("The revocation {} is not consistent! Issuer CertificateToken is not found.", revocation.getDSSIdAsString());
+			return false;
+		}
+		
+		if (revocation.getNextUpdate() != null) {
+			return hasPOEAfterProductionAndBeforeNextUpdate(revocation);
+		} else {
+			// if the next update time is not defined, check the validity of the issuer's certificate
+			// useful for short-life certificates (i.e. ocsp responser)
+			return hasPOEInTheValidityRange(issuerCertificateToken);
+		}
+	}
+	
+	private boolean hasPOEAfterProductionAndBeforeNextUpdate(RevocationToken revocation) {
+		if (isConsistentOnTime(revocation, currentTime)) {
+			return true;
+		}
+		List<Date> poeTimeList = poeTimes.get(revocation.getDSSIdAsString());
+		if (Utils.isCollectionNotEmpty(poeTimeList)) {
+			for (Date poeTime : poeTimeList) {
+				if (isConsistentOnTime(revocation, poeTime)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	private boolean hasPOEInTheValidityRange(CertificateToken certificateToken) {
+		// the certificate is valid in the current time
+		if (certificateToken.isValidOn(currentTime)) {
+			return true;
+		}
+		List<Date> poeTimeList = poeTimes.get(certificateToken.getDSSIdAsString());
+		if (Utils.isCollectionNotEmpty(poeTimeList)) {
+			for (Date poeTime : poeTimeList) {
+				if (certificateToken.isValidOn(poeTime)) {
+					return true;
+				}
+				// continue
+			}
+		}
+		return false;
+	}
+	
+	private boolean isConsistentOnTime(RevocationToken revocationToken, Date date) {
+		Date productionDate = revocationToken.getProductionDate();
+		Date nextUpdate = revocationToken.getNextUpdate();
+		return date.compareTo(productionDate) >= 0 && date.compareTo(nextUpdate) <= 0;
 	}
 
 	@Override

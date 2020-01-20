@@ -154,6 +154,10 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		item = item.setNextItem(aiaPresent(currentCertificate, subContext));
 
 		CertificateRevocationWrapper latestCertificateRevocation = null;
+		
+		if (currentCertificate.isIdPkixOcspNoCheck()) {
+			item = item.setNextItem(idPkixOcspNoCheck(currentCertificate));
+		}
 
 		if (!ValidationProcessUtils.isRevocationNoNeedCheck(currentCertificate, currentTime)) {
 
@@ -198,9 +202,6 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 			item = item.setNextItem(revocationCertHashCheck());
 			
-		} else {
-			item = item.setNextItem(idPkixOcspNoCheck());
-			
 		}
 
 		item = item.setNextItem(certificateCryptographic(currentCertificate, context, subContext));
@@ -222,7 +223,7 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	private ChainItem<XmlSubXCV> certificateExpiration(CertificateWrapper certificate, CertificateRevocationWrapper usedCertificateRevocation,
 			SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateNotExpiredConstraint(context, subContext);
-		return new CertificateExpirationCheck(i18nProvider, result, certificate, usedCertificateRevocation, currentTime, constraint);
+		return new CertificateExpirationCheck<>(i18nProvider, result, certificate, usedCertificateRevocation, currentTime, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> keyUsage(CertificateWrapper certificate, SubContext subContext) {
@@ -381,8 +382,8 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		return new CertificateIssuedToNaturalPersonCheck(i18nProvider, result, certificate, constraint);
 	}
 
-	private ChainItem<XmlSubXCV> idPkixOcspNoCheck() {
-		return new IdPkixOcspNoCheck<>(i18nProvider, result, getFailLevelConstraint());
+	private ChainItem<XmlSubXCV> idPkixOcspNoCheck(CertificateWrapper certificateWrapper) {
+		return new IdPkixOcspNoCheck<>(i18nProvider, result, certificateWrapper, currentTime, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlSubXCV> revocationCertHashCheck() {

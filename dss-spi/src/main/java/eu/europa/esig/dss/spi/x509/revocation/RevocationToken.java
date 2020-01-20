@@ -122,6 +122,13 @@ public abstract class RevocationToken extends Token {
 	public void setRelatedCertificate(CertificateToken relatedCertificate) {
 		this.relatedCertificate = relatedCertificate;
 	}
+	
+	/**
+	 * Returns issuer {@code CertificateToken}
+	 * 
+	 * @return issuer {@link CertificateToken}
+	 */
+	public abstract CertificateToken getIssuerCertificateToken();
 
 	/**
 	 * Returns the URL of the source (if available)

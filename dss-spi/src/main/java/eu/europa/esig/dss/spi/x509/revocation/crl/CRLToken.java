@@ -138,10 +138,15 @@ public class CRLToken extends RevocationToken {
 	@Override
 	public X500Principal getIssuerX500Principal() {
 		if (crlValidity.getIssuerToken() != null) { // if the signature is invalid, the issuer is null
-		return crlValidity.getIssuerToken().getSubjectX500Principal();
+			return crlValidity.getIssuerToken().getSubjectX500Principal();
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	public CertificateToken getIssuerCertificateToken() {
+		return crlValidity.getIssuerToken();
 	}
 
 	/**

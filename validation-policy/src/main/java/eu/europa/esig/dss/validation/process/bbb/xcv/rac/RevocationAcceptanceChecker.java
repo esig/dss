@@ -99,6 +99,10 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 			
 			item = item.setNextItem(certificateIntact(revocationCertificate));
 			
+			if (revocationCertificate.isIdPkixOcspNoCheck()) {
+				item = item.setNextItem(idPkixOcspNoCheck(revocationCertificate));
+			}
+			
 			if (!ValidationProcessUtils.isRevocationNoNeedCheck(revocationCertificate, controlTime)) {
 
 				SubContext subContext = revocationData.getSigningCertificate().getId().equals(revocationCertificate.getId()) ? 
@@ -137,9 +141,6 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 					item = item.setNextItem(latestRevocationAcceptable(latestRacResult));
 				}
 				
-			} else {
-				item = item.setNextItem(idPkixOcspNoCheck());
-				
 			}
 			
 		}
@@ -171,8 +172,8 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 		return new SignatureIntactCheck<>(i18nProvider, result, certificate, Context.CERTIFICATE, constraint);
 	}
 
-	private ChainItem<XmlRAC> idPkixOcspNoCheck() {
-		return new IdPkixOcspNoCheck<>(i18nProvider, result, getFailLevelConstraint());
+	private ChainItem<XmlRAC> idPkixOcspNoCheck(CertificateWrapper certificateWrapper) {
+		return new IdPkixOcspNoCheck<>(i18nProvider, result, certificateWrapper, controlTime, getWarnLevelConstraint());
 	}
 	
 	private ChainItem<XmlRAC> revocationDataPresentForRevocationChain(CertificateWrapper certificate, SubContext subContext) {

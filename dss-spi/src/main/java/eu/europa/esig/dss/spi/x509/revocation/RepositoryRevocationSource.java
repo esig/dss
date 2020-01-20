@@ -211,7 +211,7 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 			String key = keyIterator.next();
 			final T revocationToken = findRevocation(key, certificateToken, issuerCertificateToken);
 			if (revocationToken != null) {
-				if (isNotExpired(revocationToken)) {
+				if (isNotExpired(revocationToken, issuerCertificateToken)) {
 					LOG.info("Revocation token for certificate '{}' is loaded from the cache", certificateToken.getDSSIdAsString());
 					return revocationToken;
 				} else {
@@ -258,13 +258,29 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 	 * Checks if the nextUpdate date is currently valid with respect of
 	 * nextUpdateDelay and maxNexUpdateDelay parameters.
 	 * 
-	 * @param token
+	 * @param revocationToken
 	 *              {@code CRLToken} or {@code OCSPToken}
+	 * @param certificateTokenIssuer
+	 *              issuer of a CertificateToken to check the revocation for
 	 * @return TRUE if the token is still valid, FALSE otherwise
 	 */
-	private boolean isNotExpired(T token) {
-		final Date thisUpdate = token.getThisUpdate();
-		Date nextUpdate = token.getNextUpdate();
+	private boolean isNotExpired(T revocationToken, CertificateToken certificateTokenIssuer) {
+		Date validationDate = new Date();
+		
+		Date nextUpdate = revocationToken.getNextUpdate();
+		if (nextUpdate == null) {
+			// check the validity of the issuer certificate
+			CertificateToken certificateToken = revocationToken.getIssuerCertificateToken();
+			if (certificateToken == null) {
+				certificateToken = certificateTokenIssuer;
+			}
+			if (!certificateToken.isValidOn(validationDate)) {
+				return false;
+			}
+		}
+		
+		// check the validity of the revocation token itself
+		final Date thisUpdate = revocationToken.getThisUpdate();
 		if (nextUpdate == null && defaultNextUpdateDelay != null && thisUpdate != null) {
 			nextUpdate = new Date(thisUpdate.getTime() + defaultNextUpdateDelay);
 		}
@@ -275,8 +291,9 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 					nextUpdate = maxNextUpdate;
 				}
 			}
-			return nextUpdate.after(new Date());
+			return nextUpdate.after(validationDate);
 		}
+		
 		return false;
 	}
 
