@@ -414,8 +414,6 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		return simpleReport.getIndication(simpleReport.getFirstSignatureId());
 	}
 	
-
-	
 	private Indication defaultConstraintAlgorithmExpiredTest(String algorithm, Integer keySize) throws Exception {
 		ConstraintsParameters constraintsParameters = loadConstraintsParameters();
 		CryptographicConstraint defaultCryptographicConstraint = constraintsParameters.getCryptographic();
