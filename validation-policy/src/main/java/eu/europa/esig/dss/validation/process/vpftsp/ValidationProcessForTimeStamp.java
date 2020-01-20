@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.validation.process.vpftsp;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Map;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamp;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
@@ -37,17 +37,20 @@ import eu.europa.esig.dss.validation.process.vpftsp.checks.TimestampBasicBuildin
  */
 public class ValidationProcessForTimeStamp extends Chain<XmlValidationProcessTimestamp> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ValidationProcessForTimeStamp.class);
-
+	private final DiagnosticData diagnosticData;
 	private final TimestampWrapper timestamp;
-	private final XmlBasicBuildingBlocks timestampBBB;
 
-	public ValidationProcessForTimeStamp(I18nProvider i18nProvider, TimestampWrapper timestamp, XmlBasicBuildingBlocks timestampBBB) {
+	private final Map<String, XmlBasicBuildingBlocks> bbbs;
+
+	public ValidationProcessForTimeStamp(I18nProvider i18nProvider, DiagnosticData diagnosticData, TimestampWrapper timestamp,
+			Map<String, XmlBasicBuildingBlocks> bbbs) {
 		super(i18nProvider, new XmlValidationProcessTimestamp());
+
+		this.diagnosticData = diagnosticData;
 		this.timestamp = timestamp;
-		this.timestampBBB = timestampBBB;
+		this.bbbs = bbbs;
 	}
-	
+
 	@Override
 	protected MessageTag getTitle() {
 		return MessageTag.VPFTSP;
@@ -55,11 +58,7 @@ public class ValidationProcessForTimeStamp extends Chain<XmlValidationProcessTim
 
 	@Override
 	protected void initChain() {
-		if (timestampBBB != null) {
-			firstItem = timestampBasicBuildingBlocksValid(timestampBBB);
-		} else {
-			LOG.error("Basic Building Blocks for timestamp '{}' not found!", timestamp.getId());
-		}
+		firstItem = timestampBasicBuildingBlocksValid();
 	}
 
 	@Override
@@ -68,8 +67,12 @@ public class ValidationProcessForTimeStamp extends Chain<XmlValidationProcessTim
 		result.setProductionTime(timestamp.getProductionTime());
 	}
 
-	private ChainItem<XmlValidationProcessTimestamp> timestampBasicBuildingBlocksValid(XmlBasicBuildingBlocks timestampBBB) {
-		return new TimestampBasicBuildingBlocksCheck(i18nProvider, result, timestampBBB, getFailLevelConstraint());
+	private ChainItem<XmlValidationProcessTimestamp> timestampBasicBuildingBlocksValid() {
+		XmlBasicBuildingBlocks timestampBBB = bbbs.get(timestamp.getId());
+		if (timestampBBB == null) {
+			throw new IllegalStateException(String.format("Missing Basic Building Blocks result for token '%s'", timestamp.getId()));
+		}
+		return new TimestampBasicBuildingBlocksCheck(i18nProvider, result, diagnosticData, timestampBBB, bbbs, getFailLevelConstraint());
 	}
 
 }

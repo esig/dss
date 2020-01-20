@@ -143,7 +143,7 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 		XmlTimestamp xmlTimestamp = new XmlTimestamp();
 		xmlTimestamp.setId(timestamp.getId());
 
-		ValidationProcessForTimeStamp vpftsp = new ValidationProcessForTimeStamp(i18nProvider, timestamp, bbbs.get(timestamp.getId()));
+		ValidationProcessForTimeStamp vpftsp = new ValidationProcessForTimeStamp(i18nProvider, diagnosticData, timestamp, bbbs);
 		xmlTimestamp.setValidationProcessTimestamp(vpftsp.execute());
 
 		// Timestamp qualification

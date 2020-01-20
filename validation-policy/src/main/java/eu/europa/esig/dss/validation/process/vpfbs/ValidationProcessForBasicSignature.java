@@ -61,7 +61,11 @@ public class ValidationProcessForBasicSignature extends Chain<XmlValidationProce
 	}
 
 	private ChainItem<XmlValidationProcessBasicSignature> basicBuildingBlocks() {
-		return new SignatureBasicBuildingBlocksCheck(i18nProvider, result, diagnosticData, bbbs.get(signature.getId()), bbbs, getFailLevelConstraint());
+		XmlBasicBuildingBlocks signatureBBB = bbbs.get(signature.getId());
+		if (signatureBBB == null) {
+			throw new IllegalStateException(String.format("Missing Basic Building Blocks result for token '%s'", signature.getId()));
+		}
+		return new SignatureBasicBuildingBlocksCheck(i18nProvider, result, diagnosticData, signatureBBB, bbbs, getFailLevelConstraint());
 	}
 
 }

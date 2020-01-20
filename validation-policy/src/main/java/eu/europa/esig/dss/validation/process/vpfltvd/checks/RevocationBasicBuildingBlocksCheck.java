@@ -20,95 +20,21 @@
  */
 package eu.europa.esig.dss.validation.process.vpfltvd.checks;
 
-import java.util.List;
+import java.util.Map;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
-import eu.europa.esig.dss.enumerations.Indication;
-import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractBasicBuildingBlocksCheck;
 
-public class RevocationBasicBuildingBlocksCheck extends ChainItem<XmlValidationProcessLongTermData> {
+public class RevocationBasicBuildingBlocksCheck extends AbstractBasicBuildingBlocksCheck<XmlValidationProcessLongTermData> {
 
-	private final XmlBasicBuildingBlocks revocationBBB;
-
-	private Indication indication;
-	private SubIndication subIndication;
-	private List<XmlName> errors;
-
-	public RevocationBasicBuildingBlocksCheck(I18nProvider i18nProvider, XmlValidationProcessLongTermData result, XmlBasicBuildingBlocks revocationBBB, 
-			LevelConstraint constraint) {
-		super(i18nProvider, result, constraint, revocationBBB.getId());
-
-		this.revocationBBB = revocationBBB;
-	}
-
-	@Override
-	protected boolean process() {
-
-		// Format check is skipped
-
-		XmlISC isc = revocationBBB.getISC();
-		if (isc != null) {
-			XmlConclusion iscConclusion = isc.getConclusion();
-			if (!isAllowed(iscConclusion)) {
-				indication = iscConclusion.getIndication();
-				subIndication = iscConclusion.getSubIndication();
-				errors = iscConclusion.getErrors();
-				return false;
-			}
-		}
-
-		// VCI is skipped
-
-		XmlCV cv = revocationBBB.getCV();
-		if (cv != null) {
-			XmlConclusion cvConclusion = cv.getConclusion();
-			if (!isAllowed(cvConclusion)) {
-				indication = cvConclusion.getIndication();
-				subIndication = cvConclusion.getSubIndication();
-				errors = cvConclusion.getErrors();
-				return false;
-			}
-		}
-
-		XmlXCV xcv = revocationBBB.getXCV();
-		if (xcv != null) {
-			XmlConclusion xcvConclusion = xcv.getConclusion();
-			if (!isAllowed(xcvConclusion)) {
-				indication = xcvConclusion.getIndication();
-				subIndication = xcvConclusion.getSubIndication();
-				errors = xcvConclusion.getErrors();
-				return false;
-			}
-		}
-
-		XmlSAV sav = revocationBBB.getSAV();
-		if (sav != null) {
-			XmlConclusion savConclusion = sav.getConclusion();
-			if (!isAllowed(savConclusion)) {
-				indication = savConclusion.getIndication();
-				subIndication = savConclusion.getSubIndication();
-				errors = savConclusion.getErrors();
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	private boolean isAllowed(XmlConclusion conclusion) {
-		return ValidationProcessUtils.isAllowedBasicSignatureValidation(conclusion);
+	public RevocationBasicBuildingBlocksCheck(I18nProvider i18nProvider, XmlValidationProcessLongTermData result, DiagnosticData diagnosticData,
+			XmlBasicBuildingBlocks revocationBBB, Map<String, XmlBasicBuildingBlocks> bbbs, LevelConstraint constraint) {
+		super(i18nProvider, result, diagnosticData, revocationBBB, bbbs, constraint);
 	}
 
 	@Override
@@ -119,21 +45,6 @@ public class RevocationBasicBuildingBlocksCheck extends ChainItem<XmlValidationP
 	@Override
 	protected MessageTag getErrorMessageTag() {
 		return MessageTag.ADEST_RORPIIC_ANS;
-	}
-
-	@Override
-	protected Indication getFailedIndicationForConclusion() {
-		return indication;
-	}
-
-	@Override
-	protected SubIndication getFailedSubIndicationForConclusion() {
-		return subIndication;
-	}
-
-	@Override
-	protected List<XmlName> getPreviousErrors() {
-		return errors;
 	}
 
 }

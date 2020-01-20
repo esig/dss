@@ -152,10 +152,10 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 			}
 			CertificateRevocationWrapper latestCertificateRevocation = null;
 			for (CertificateRevocationWrapper revocationData : certificateWrapper.getCertificateRevocationData()) {
+				
+				item = item.setNextItem(revocationBasicBuildingBlocksValid(revocationData));
+				
 				XmlBasicBuildingBlocks revocationBBB = bbbs.get(revocationData.getId());
-				
-				item = item.setNextItem(revocationBasicBuildingBlocksValid(revocationBBB));
-				
 				if (ValidationProcessUtils.isAllowedBasicSignatureValidation(revocationBBB.getConclusion())) {
 					
 					item = item.setNextItem(revocationDataConsistent(certificateWrapper, revocationData));
@@ -322,8 +322,12 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		result.setProofOfExistence(bestSignatureTime);
 	}
 
-	private ChainItem<XmlValidationProcessLongTermData> revocationBasicBuildingBlocksValid(XmlBasicBuildingBlocks revocationBBB) {
-		return new RevocationBasicBuildingBlocksCheck(i18nProvider, result, revocationBBB, getWarnLevelConstraint());
+	private ChainItem<XmlValidationProcessLongTermData> revocationBasicBuildingBlocksValid(CertificateRevocationWrapper revocationData) {
+		XmlBasicBuildingBlocks revocationBBB = bbbs.get(revocationData.getId());
+		if (revocationBBB == null) {
+			throw new IllegalStateException(String.format("Missing Basic Building Blocks result for token '%s'", revocationData.getId()));
+		}
+		return new RevocationBasicBuildingBlocksCheck(i18nProvider, result, diagnosticData, revocationBBB, bbbs, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> revocationDataConsistent(CertificateWrapper certificate, CertificateRevocationWrapper revocationData) {

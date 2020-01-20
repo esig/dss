@@ -276,7 +276,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(timestampProductionDate, bestSignatureTime);
 		
 		assertEquals(0, simpleReport.getErrors(simpleReport.getFirstSignatureId()).size());
-		assertEquals(2, simpleReport.getWarnings(simpleReport.getFirstSignatureId()).size());
+		assertEquals(3, simpleReport.getWarnings(simpleReport.getFirstSignatureId()).size());
 
 		validateBestSigningTimes(reports);
 		checkReports(reports);
@@ -980,7 +980,9 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		executor.setValidationLevel(ValidationLevel.BASIC_SIGNATURES);
-		checkReports(executor.execute());
+		IllegalStateException exception = assertThrows(IllegalStateException.class, () -> executor.execute());
+		assertEquals("Missing Basic Building Blocks result for token 'T-6A9149BB7AEABB204AD2C245E034E224453A5FB9BD377DB3BAE505C9BF4D310E'",
+				exception.getMessage());
 
 		executor.setValidationLevel(ValidationLevel.TIMESTAMPS);
 		checkReports(executor.execute());
