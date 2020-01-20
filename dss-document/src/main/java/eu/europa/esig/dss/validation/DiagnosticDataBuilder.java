@@ -1248,13 +1248,7 @@ public class DiagnosticDataBuilder {
 
 	private List<XmlFoundTimestamp> getXmlFoundTimestamps(AdvancedSignature signature) {
 		List<XmlFoundTimestamp> foundTimestamps = new ArrayList<XmlFoundTimestamp>();
-		foundTimestamps.addAll(getFoundTimestamps(signature.getAllTimestamps()));
-		return foundTimestamps;
-	}
-
-	private List<XmlFoundTimestamp> getFoundTimestamps(List<TimestampToken> tsts) {
-		List<XmlFoundTimestamp> foundTimestamps = new ArrayList<XmlFoundTimestamp>();
-		for (TimestampToken timestampToken : tsts) {
+		for (TimestampToken timestampToken : signature.getAllTimestamps()) {
 			XmlFoundTimestamp foundTimestamp = new XmlFoundTimestamp();
 			foundTimestamp.setTimestamp(xmlTimestamps.get(timestampToken.getDSSIdAsString()));
 			foundTimestamp.setLocation(timestampToken.getTimestampLocation());
@@ -1601,6 +1595,9 @@ public class DiagnosticDataBuilder {
 				XmlTimestampedObject timestampedObject = xmlTimestampedObjects.get(id);
 				if (timestampedObject == null) {
 					timestampedObject = createXmlTimestampedObject(timestampReference);
+					if (timestampedObject.getToken() == null) {
+						throw new DSSException(String.format("Token with Id '%s' not found", id));
+					}
 					xmlTimestampedObjects.put(id, timestampedObject);
 				}
 				objects.add(timestampedObject);

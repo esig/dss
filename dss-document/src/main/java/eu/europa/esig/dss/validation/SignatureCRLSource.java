@@ -225,8 +225,9 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	public List<CRLRef> getReferencesForCRLIdentifier(CRLBinary crlBinary) {
 		List<CRLRef> relatedRefs = new ArrayList<CRLRef>();
 		for (CRLRef crlRef : getAllCRLReferences()) {
-			byte[] digestValue = crlBinary.getDigestValue(crlRef.getDigest().getAlgorithm());
-			if (Arrays.equals(crlRef.getDigest().getValue(), digestValue)) {
+			Digest refDigest = crlRef.getDigest();
+			byte[] digestValue = crlBinary.getDigestValue(refDigest.getAlgorithm());
+			if (Arrays.equals(refDigest.getValue(), digestValue)) {
 				relatedRefs.add(crlRef);
 			}
 		}
@@ -305,7 +306,8 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 		revocationRefsMap = new HashMap<CRLToken, Set<CRLRef>>();
 		for (CRLToken revocationToken : getAllCRLTokens()) {
 			for (CRLRef reference : getAllCRLReferences()) {
-				if (Arrays.equals(reference.getDigest().getValue(), revocationToken.getDigest(reference.getDigest().getAlgorithm()))) {
+				Digest refDigest = reference.getDigest();
+				if (Arrays.equals(refDigest.getValue(), revocationToken.getDigest(refDigest.getAlgorithm()))) {
 					addReferenceToMap(revocationToken, reference);
 				}
 			}

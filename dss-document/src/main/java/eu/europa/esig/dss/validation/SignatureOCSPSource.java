@@ -218,8 +218,9 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	public List<OCSPRef> getReferencesForOCSPIdentifier(OCSPResponseBinary ocspResponse) {
 		List<OCSPRef> relatedRefs = new ArrayList<OCSPRef>();
 		for (OCSPRef ocspRef : getAllOCSPReferences()) {
-			byte[] digestValue = ocspResponse.getDigestValue(ocspRef.getDigest().getAlgorithm());
-			if (Arrays.equals(ocspRef.getDigest().getValue(), digestValue)) {
+			Digest refDigest = ocspRef.getDigest();
+			byte[] digestValue = ocspResponse.getDigestValue(refDigest.getAlgorithm());
+			if (Arrays.equals(refDigest.getValue(), digestValue)) {
 				relatedRefs.add(ocspRef);
 			}
 		}
@@ -298,8 +299,9 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 		revocationRefsMap = new HashMap<OCSPToken, Set<OCSPRef>>();
 		for (OCSPToken revocationToken : getAllOCSPTokens()) {
 			for (OCSPRef ocspRef : getAllOCSPReferences()) {
-				if (ocspRef.getDigest() != null) {
-					if (Arrays.equals(ocspRef.getDigest().getValue(), revocationToken.getDigest(ocspRef.getDigest().getAlgorithm()))) {
+				Digest ocspRefDigest = ocspRef.getDigest();
+				if (ocspRefDigest != null) {
+					if (Arrays.equals(ocspRefDigest.getValue(), revocationToken.getDigest(ocspRefDigest.getAlgorithm()))) {
 						addReferenceToMap(revocationToken, ocspRef);
 					}
 					
