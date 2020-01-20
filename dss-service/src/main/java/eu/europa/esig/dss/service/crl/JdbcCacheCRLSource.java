@@ -70,7 +70,7 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRLToken> implement
 
 	/**
 	 * Used in the find method when selecting the crl via the id to get the ID
-	 * (char20) from the resultset
+	 * (char40) from the resultset
 	 */
 	private static final String SQL_FIND_QUERY_ID = "ID";
 
