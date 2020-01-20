@@ -105,16 +105,6 @@ public class ListOCSPSource implements OCSPSource {
 		return allTokens;
 	}
 
-	public List<OCSPRef> getAllOCSPReferences() {
-		List<OCSPRef> result = new ArrayList<OCSPRef>();
-		for (OfflineOCSPSource offlineOCSPSource : sources) {
-			if (offlineOCSPSource instanceof SignatureOCSPSource) {
-				result.addAll(((SignatureOCSPSource) offlineOCSPSource).getAllOCSPReferences());
-			}
-		}
-		return result;
-	}
-
 	public List<OCSPRef> findRefsForRevocationToken(OCSPToken revocationToken) {
 		List<OCSPRef> result = new ArrayList<OCSPRef>();
 		for (OfflineOCSPSource offlineOCSPSource : sources) {
@@ -139,22 +129,25 @@ public class ListOCSPSource implements OCSPSource {
 		List<OCSPRef> result = new ArrayList<OCSPRef>();
 		for (OfflineOCSPSource offlineOCSPSource : sources) {
 			if (offlineOCSPSource instanceof SignatureOCSPSource) {
-				mergeRefs(result, ((SignatureOCSPSource) offlineOCSPSource).getOrphanOCSPRefs());
+				List<OCSPRef> allOCSPRefs = ((SignatureOCSPSource) offlineOCSPSource).getOrphanOCSPRefs();
+				for (OCSPRef ocspRef : allOCSPRefs) {
+					if (getIdentifier(ocspRef.getDigest()) == null) {
+						addRef(result, ocspRef);
+					}
+				}
 			}
 		}
 		return result;
 	}
 
-	private void mergeRefs(List<OCSPRef> result, List<OCSPRef> toBeMerged) {
-		for (OCSPRef ocspRef : toBeMerged) {
-			int index = result.indexOf(ocspRef);
-			if (index == -1) {
-				result.add(ocspRef);
-			} else {
-				OCSPRef storedOCSPRef = result.get(index);
-				for (RevocationRefOrigin origin : ocspRef.getOrigins()) {
-					storedOCSPRef.addOrigin(origin);
-				}
+	private void addRef(List<OCSPRef> ocspRefs, OCSPRef ocspRef) {
+		int index = ocspRefs.indexOf(ocspRef);
+		if (index == -1) {
+			ocspRefs.add(ocspRef);
+		} else {
+			OCSPRef storedOCSPRef = ocspRefs.get(index);
+			for (RevocationRefOrigin origin : ocspRef.getOrigins()) {
+				storedOCSPRef.addOrigin(origin);
 			}
 		}
 	}

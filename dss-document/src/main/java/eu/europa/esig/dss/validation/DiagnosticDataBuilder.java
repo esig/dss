@@ -463,8 +463,12 @@ public class DiagnosticDataBuilder {
 		if (Utils.isCollectionNotEmpty(revocations)) {
 			List<RevocationToken> tokens = new ArrayList<RevocationToken>(revocations);
 			Collections.sort(tokens, new TokenComparator());
+			List<String> uniqueIds = new ArrayList<String>(); // CRL can contain multiple entries
 			for (RevocationToken revocationToken : tokens) {
 				String id = revocationToken.getDSSIdAsString();
+				if (uniqueIds.contains(id)) {
+					continue;
+				}
 				XmlRevocation xmlRevocation = xmlRevocations.get(id);
 				if (xmlRevocation == null) {
 					xmlRevocation = buildDetachedXmlRevocation(revocationToken);
@@ -472,6 +476,7 @@ public class DiagnosticDataBuilder {
 					xmlRevocations.put(id, xmlRevocation);
 					builtRevocations.add(xmlRevocation);
 				}
+				uniqueIds.add(id);
 			}
 		}
 		return builtRevocations;

@@ -1002,14 +1002,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 	
 	@Override
-	public List<RevocationRef> getAllFoundRevocationRefs() {
-		List<RevocationRef> revocationRefs = new ArrayList<RevocationRef>();
-		revocationRefs.addAll(getCompleteCRLSource().getAllCRLReferences());
-		revocationRefs.addAll(getCompleteOCSPSource().getAllOCSPReferences());
-		return revocationRefs;
-	}
-	
-	@Override
 	public List<RevocationRef> getOrphanRevocationRefs() {
 		List<RevocationRef> orphanRevocationRefs = new ArrayList<RevocationRef>();
 		orphanRevocationRefs.addAll(getCompleteCRLSource().getOrphanCrlRefs());

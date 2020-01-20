@@ -640,12 +640,6 @@ public interface AdvancedSignature extends Serializable {
 	List<EncapsulatedRevocationTokenIdentifier> getAllFoundRevocationIdentifiers();
 	
 	/**
-	 * Retrieves a list of all found {@code RevocationRef}s present in the signature
-	 * @return list of {@link RevocationRef}s
-	 */
-	List<RevocationRef> getAllFoundRevocationRefs();
-	
-	/**
 	 * Returns a list of all orphan {@code RevocationRef}s found into the signature
 	 * @return list of {@link RevocationRef}s
 	 */

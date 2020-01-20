@@ -108,16 +108,6 @@ public class ListCRLSource implements CRLSource {
 		return allTokens;
 	}
 
-	public List<CRLRef> getAllCRLReferences() {
-		List<CRLRef> result = new ArrayList<CRLRef>();
-		for (OfflineCRLSource offlineCRLSource : sources) {
-			if (offlineCRLSource instanceof SignatureCRLSource) {
-				result.addAll(((SignatureCRLSource) offlineCRLSource).getAllCRLReferences());
-			}
-		}
-		return result;
-	}
-
 	public List<CRLRef> findRefsForRevocationToken(CRLToken revocationToken) {
 		List<CRLRef> result = new ArrayList<CRLRef>();
 		for (OfflineCRLSource offlineCRLSource : sources) {
@@ -142,22 +132,25 @@ public class ListCRLSource implements CRLSource {
 		List<CRLRef> result = new ArrayList<CRLRef>();
 		for (OfflineCRLSource offlineCRLSource : sources) {
 			if (offlineCRLSource instanceof SignatureCRLSource) {
-				mergeRefs(result, ((SignatureCRLSource) offlineCRLSource).getOrphanCrlRefs());
+				List<CRLRef> allCrlRefs = ((SignatureCRLSource) offlineCRLSource).getAllCRLReferences();
+				for (CRLRef crlRef : allCrlRefs) {
+					if (getIdentifier(crlRef.getDigest()) == null) {
+						addRef(result, crlRef);
+					}
+				}
 			}
 		}
 		return result;
 	}
 
-	private void mergeRefs(List<CRLRef> result, List<CRLRef> toBeMerged) {
-		for (CRLRef crlRef : toBeMerged) {
-			int index = result.indexOf(crlRef);
-			if (index == -1) {
-				result.add(crlRef);
-			} else {
-				CRLRef storedCRLRef = result.get(index);
-				for (RevocationRefOrigin origin : crlRef.getOrigins()) {
-					storedCRLRef.addOrigin(origin);
-				}
+	private void addRef(List<CRLRef> crlRefs, CRLRef crlRef) {
+		int index = crlRefs.indexOf(crlRef);
+		if (index == -1) {
+			crlRefs.add(crlRef);
+		} else {
+			CRLRef storedCRLRef = crlRefs.get(index);
+			for (RevocationRefOrigin origin : crlRef.getOrigins()) {
+				storedCRLRef.addOrigin(origin);
 			}
 		}
 	}
@@ -186,18 +179,6 @@ public class ListCRLSource implements CRLSource {
 		for (OfflineCRLSource offlineCRLSource : sources) {
 			if (offlineCRLSource instanceof SignatureCRLSource) {
 				CRLBinary binary = ((SignatureCRLSource) offlineCRLSource).getIdentifier(refDigest);
-				if (binary != null) {
-					return binary;
-				}
-			}
-		}
-		return null;
-	}
-
-	public CRLBinary getIdentifier(CRLRef crlRef) {
-		for (OfflineCRLSource offlineCRLSource : sources) {
-			if (offlineCRLSource instanceof SignatureCRLSource) {
-				CRLBinary binary = ((SignatureCRLSource) offlineCRLSource).getIdentifier(crlRef);
 				if (binary != null) {
 					return binary;
 				}
