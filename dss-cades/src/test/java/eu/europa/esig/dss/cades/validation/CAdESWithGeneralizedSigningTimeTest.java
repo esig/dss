@@ -1,8 +1,8 @@
 package eu.europa.esig.dss.cades.validation;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ public class CAdESWithGeneralizedSigningTimeTest extends PKIFactoryAccess {
 	
 	@Test
 	public void test() {
-		DSSDocument doc = new FileDocument("src/test/resources/plugtest/cades/CAdES-Baseline_profile_B/Sample_Set_22/Signature-CBp-B-1.p7m");
+		DSSDocument doc = new FileDocument("src/test/resources/plugtest/cades/CAdES-Baseline_Profile_B/Sample_Set_22/Signature-CBp-B-1.p7m");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		
