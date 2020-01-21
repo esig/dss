@@ -30,7 +30,6 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.test.validation.AbstractTestValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
