@@ -161,7 +161,13 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 		XmlXCV xcv = tokenBBB.getXCV();
 		XmlConclusion x509ValidationStatus = null;
 		if (xcv != null) {
+
 			XmlConclusion xcvConclusion = x509ValidationStatus = xcv.getConclusion();
+
+			x509ValidationStatus.setIndication(xcvConclusion.getIndication());
+			x509ValidationStatus.setSubIndication(xcvConclusion.getSubIndication());
+			errors.addAll(xcvConclusion.getErrors());
+
 			if (Indication.INDETERMINATE.equals(xcvConclusion.getIndication()) && SubIndication.REVOKED_NO_POE.equals(xcvConclusion.getSubIndication())) {
 				SignatureWrapper currentSignature = diagnosticData.getSignatureById(tokenBBB.getId());
 				if (currentSignature != null) {
@@ -182,15 +188,9 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 						if (failed) {
 							x509ValidationStatus.setIndication(Indication.FAILED);
 							x509ValidationStatus.setSubIndication(SubIndication.REVOKED);
-							errors.addAll(xcvConclusion.getErrors());
 						}
 					}
 				}
-
-				x509ValidationStatus.setIndication(Indication.INDETERMINATE);
-				x509ValidationStatus.setSubIndication(SubIndication.REVOKED_NO_POE);
-				errors.addAll(xcvConclusion.getErrors());
-
 			}
 			/*
 			 * If the X.509 Certificate Validation process returns the indication
@@ -208,6 +208,7 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 			 */
 			else if (Indication.INDETERMINATE.equals(xcvConclusion.getIndication())
 					&& SubIndication.OUT_OF_BOUNDS_NO_POE.equals(xcvConclusion.getSubIndication())) {
+
 				SignatureWrapper currentSignature = diagnosticData.getSignatureById(tokenBBB.getId());
 				if (currentSignature != null) {
 					List<TimestampWrapper> contentTimestamps = currentSignature.getTimestampListByType(TimestampType.CONTENT_TIMESTAMP);
@@ -225,17 +226,11 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 						}
 
 						if (failed) {
-							x509ValidationStatus.setIndication(Indication.INDETERMINATE);
+							x509ValidationStatus.setIndication(Indication.FAILED);
 							x509ValidationStatus.setSubIndication(SubIndication.EXPIRED);
-							errors.addAll(xcvConclusion.getErrors());
 						}
 					}
 				}
-
-				x509ValidationStatus.setIndication(Indication.INDETERMINATE);
-				x509ValidationStatus.setSubIndication(SubIndication.OUT_OF_BOUNDS_NO_POE);
-				errors.addAll(xcvConclusion.getErrors());
-
 			}
 			/*
 			 * If the X.509 Certificate Validation process returns the indication
@@ -248,11 +243,8 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 			 * X509_validation-status to the indication and sub-indication returned by the
 			 * X.509 Certificate Validation process and continue with step 5).
 			 */
-			else if (!Indication.PASSED.equals(xcvConclusion.getIndication())) {
-				x509ValidationStatus.setIndication(xcvConclusion.getIndication());
-				x509ValidationStatus.setSubIndication(xcvConclusion.getSubIndication());
-				errors.addAll(xcvConclusion.getErrors());
-			}
+
+			// x509ValidationStatus is filled at the beginning
 		}
 
 		/*
