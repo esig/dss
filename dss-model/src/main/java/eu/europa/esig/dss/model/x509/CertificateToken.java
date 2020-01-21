@@ -160,20 +160,6 @@ public class CertificateToken extends Token {
 	}
 
 	/**
-	 * Checks if the certificate is expired on the given date.
-	 *
-	 * @param date
-	 *            the date to be tested
-	 * @return true if the certificate was expired on the given date
-	 */
-	public boolean isExpiredOn(final Date date) {
-		if ((x509Certificate == null) || (date == null)) {
-			return true;
-		}
-		return x509Certificate.getNotAfter().before(date);
-	}
-
-	/**
 	 * Checks if the given date is in the validity period of the certificate.
 	 *
 	 * @param date
