@@ -1,8 +1,6 @@
 [source,xml]
 ----
 <xades:SignaturePolicyIdentifier>
-	<xades:SignaturePolicyId>
-		<xades:SignaturePolicyImplied/>
-	</xades:SignaturePolicyId>
+	<xades:SignaturePolicyImplied/>
 </xades:SignaturePolicyIdentifier>
 ---- 
