@@ -85,6 +85,34 @@ public class XAdESUtilsTest {
 	}
 
 	@Test
+	public void getJAXBContext() throws JAXBException {
+		assertNotNull(xadesUtils.getJAXBContext());
+		// cached
+		assertNotNull(xadesUtils.getJAXBContext());
+	}
+
+	@Test
+	public void getJAXBContextETSI_EN_319_132() throws JAXBException {
+		assertNotNull(xades319132Utils.getJAXBContext());
+		// cached
+		assertNotNull(xades319132Utils.getJAXBContext());
+	}
+
+	@Test
+	public void getJAXBContextXAdES111() throws JAXBException {
+		assertNotNull(xades111Utils.getJAXBContext());
+		// cached
+		assertNotNull(xades111Utils.getJAXBContext());
+	}
+
+	@Test
+	public void getJAXBContextXAdES122() throws JAXBException {
+		assertNotNull(xades122Utils.getJAXBContext());
+		// cached
+		assertNotNull(xades122Utils.getJAXBContext());
+	}
+
+	@Test
 	public void getSchema() throws SAXException {
 		assertNotNull(xadesUtils.getSchema());
 		// cached
