@@ -275,7 +275,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return isTimestampValid(timestamps);
 	}
 
-	private List<TimestampWrapper> getTimestampLevelX() {
+	public List<TimestampWrapper> getTimestampLevelX() {
 		List<TimestampWrapper> timestamps = getTimestampListByType(TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP);
 		timestamps.addAll(getTimestampListByType(TimestampType.VALIDATION_DATA_TIMESTAMP));
 		return timestamps;
@@ -291,7 +291,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return isTimestampValid(timestampList);
 	}
 
-	private List<TimestampWrapper> getArchiveTimestamps() {
+	public List<TimestampWrapper> getArchiveTimestamps() {
 		return getTimestampListByType(TimestampType.ARCHIVE_TIMESTAMP);
 	}
 
@@ -305,7 +305,14 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return isTimestampValid(timestampList);
 	}
 
-	private List<TimestampWrapper> getSignatureTimestamps() {
+	public List<TimestampWrapper> getContentTimestamps() {
+		List<TimestampWrapper> timestamps = getTimestampListByType(TimestampType.CONTENT_TIMESTAMP);
+		timestamps.addAll(getTimestampListByType(TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP));
+		timestamps.addAll(getTimestampListByType(TimestampType.ALL_DATA_OBJECTS_TIMESTAMP));
+		return timestamps;
+	}
+
+	public List<TimestampWrapper> getSignatureTimestamps() {
 		return getTimestampListByType(TimestampType.SIGNATURE_TIMESTAMP);
 	}
 
