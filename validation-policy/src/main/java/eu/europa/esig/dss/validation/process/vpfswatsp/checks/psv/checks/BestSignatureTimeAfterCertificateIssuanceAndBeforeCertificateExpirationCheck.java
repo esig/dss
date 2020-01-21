@@ -46,7 +46,8 @@ public class BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpira
 
 	@Override
 	protected boolean process() {
-		return controlTime.after(certificate.getNotBefore()) && controlTime.before(certificate.getNotAfter());
+		// inclusive by RFC 5280
+		return controlTime.compareTo(certificate.getNotBefore()) >= 0 && controlTime.compareTo(certificate.getNotAfter()) <= 0;
 	}
 
 	@Override
