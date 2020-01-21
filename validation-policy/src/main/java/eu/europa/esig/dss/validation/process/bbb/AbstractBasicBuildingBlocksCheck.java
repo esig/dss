@@ -170,7 +170,7 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 
 			if (Indication.INDETERMINATE.equals(xcvConclusion.getIndication()) && SubIndication.REVOKED_NO_POE.equals(xcvConclusion.getSubIndication())) {
 				SignatureWrapper currentSignature = diagnosticData.getSignatureById(tokenBBB.getId());
-				if (currentSignature != null && isValidContentTimestampBeforeDate(currentSignature, getRevocationDateForSigningCertificate(currentSignature))) {
+				if (currentSignature != null && isThereValidContentTimestampAfterDate(currentSignature, getRevocationDateForSigningCertificate(currentSignature))) {
 					x509ValidationStatus.setIndication(Indication.FAILED);
 					x509ValidationStatus.setSubIndication(SubIndication.REVOKED);
 				}
@@ -193,7 +193,7 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 					&& SubIndication.OUT_OF_BOUNDS_NO_POE.equals(xcvConclusion.getSubIndication())) {
 
 				SignatureWrapper currentSignature = diagnosticData.getSignatureById(tokenBBB.getId());
-				if (currentSignature != null && isValidContentTimestampBeforeDate(currentSignature, getExpirationDateForSigningCertificate(currentSignature))) {
+				if (currentSignature != null && isThereValidContentTimestampAfterDate(currentSignature, getExpirationDateForSigningCertificate(currentSignature))) {
 					x509ValidationStatus.setIndication(Indication.FAILED);
 					x509ValidationStatus.setSubIndication(SubIndication.EXPIRED);
 				}
@@ -307,7 +307,7 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 			XmlCryptographicInformation cryptographicInfo = sav.getCryptographicInfo();
 
 			SignatureWrapper currentSignature = diagnosticData.getSignatureById(tokenBBB.getId());
-			if (currentSignature != null && isValidContentTimestampBeforeDate(currentSignature, cryptographicInfo.getNotAfter())) {
+			if (currentSignature != null && isThereValidContentTimestampAfterDate(currentSignature, cryptographicInfo.getNotAfter())) {
 				indication = Indication.INDETERMINATE;
 				subIndication = SubIndication.CRYPTO_CONSTRAINTS_FAILURE;
 				return false;
@@ -328,21 +328,19 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 		return true;
 	}
 
-	private boolean isValidContentTimestampBeforeDate(SignatureWrapper currentSignature, Date date) {
-		boolean result = false;
+	private boolean isThereValidContentTimestampAfterDate(SignatureWrapper currentSignature, Date date) {
 		List<TimestampWrapper> contentTimestamps = currentSignature.getContentTimestamps();
 		if (Utils.isCollectionNotEmpty(contentTimestamps)) {
 			for (TimestampWrapper timestamp : contentTimestamps) {
 				if (isValidTimestamp(timestamp)) {
 					Date tspProductionTime = timestamp.getProductionTime();
 					if (tspProductionTime.after(date)) {
-						result = true;
-						break;
+						return true;
 					}
 				}
 			}
 		}
-		return result;
+		return false;
 	}
 
 	private boolean isValidTimestamp(TimestampWrapper timestamp) {
