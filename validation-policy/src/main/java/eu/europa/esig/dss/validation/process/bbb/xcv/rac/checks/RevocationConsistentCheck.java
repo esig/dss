@@ -75,7 +75,7 @@ public class RevocationConsistentCheck<T extends XmlConstraintsConclusion> exten
 		 */
 		certHashOK = revocationData.isCertHashExtensionPresent() && revocationData.isCertHashExtensionMatch();
 
-		return thisUpdate != null && certNotBefore.before(thisUpdate) && ((certNotAfter.compareTo(notAfterRevoc) >= 0) || certHashOK);
+		return thisUpdate != null && certNotBefore.compareTo(thisUpdate) <= 0 && (certNotAfter.compareTo(notAfterRevoc) >= 0 || certHashOK);
 	}
 
 	@Override
