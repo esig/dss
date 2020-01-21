@@ -6,7 +6,7 @@
         <Signature Id="S-3EDB443395726698AD6339DCD4AFF65679F3E66A09EA2B67DBDD93C634027A61">
             <DAIdentifier>id-6a9015014f00f1a3cc53d6b184f03a9c</DAIdentifier>
             <SignatureFilename>sample-signed-xades-baseline-b.xml</SignatureFilename>
-            <DateTime>2020-01-21T06:38:06</DateTime>
+            <ClaimedSigningTime>2020-01-21T06:38:06</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>

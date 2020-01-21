@@ -5,7 +5,7 @@
     <Signatures>
         <Signature Id="S-04689D2C3F4072A37EAE543BEEFCEF5FF69601FDA5E09C2F94C0151C7FD174D6">
             <SignatureFilename>test.txt.p7m</SignatureFilename>
-            <DateTime>2020-01-15T08:30:31</DateTime>
+            <ClaimedSigningTime>2020-01-15T08:30:31</ClaimedSigningTime>
             <SignatureFormat>CAdES-BASELINE-T</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>

@@ -36,8 +36,10 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.TimeZone;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -310,6 +312,20 @@ public class DSSUtilsTest {
 		X500Principal x500Principal2 = DSSUtils.getX500PrincipalOrNull(issuerName2);
 		assertNotNull(x500Principal2);
 		assertTrue(DSSUtils.x500PrincipalAreEquals(x500Principal1, x500Principal2));
+	}
+	
+	@Test
+	public void getUTCDateTest() throws Exception {
+		String pattern = "yyyy-MM-dd HH:mm:ss";
+		SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
+		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+		
+		Date date = DSSUtils.getUtcDate(2001, 0, 1);
+		String formattedDate = dateFormat.format(date);
+		assertEquals("2001-01-01 00:00:00", formattedDate);
+		
+		Date parsedDate = dateFormat.parse(formattedDate);
+		assertEquals(date, parsedDate);
 	}
 
 }

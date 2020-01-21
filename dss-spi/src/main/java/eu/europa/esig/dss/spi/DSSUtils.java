@@ -732,8 +732,8 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method returns an UTC date base on the year, the month and the day. The year must be encoded as 1978... and
-	 * not 78
+	 * This method returns an UTC date base on the year, the month and the day. 
+	 * The year must be encoded as 1978... and not 78
 	 *
 	 * @param year
 	 *            the value used to set the YEAR calendar field.
@@ -746,6 +746,7 @@ public final class DSSUtils {
 	public static Date getUtcDate(final int year, final int month, final int day) {
 		final Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 		calendar.set(year, month, day, 0, 0, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
 		return calendar.getTime();
 	}
 
@@ -776,7 +777,7 @@ public final class DSSUtils {
 		try (InputStream inputStream = dssDocument.openStream()) {
 			inputStream.read(result, 0, 1);
 		} catch (IOException e) {
-			throw new DSSException("Cannot read first byte of the document.", e);
+			throw new DSSException(String.format("Cannot read first byte of the document. Reason : %s", e.getMessage()), e);
 		}
 		return result[0];
 	}

@@ -5,7 +5,7 @@
     <Signatures>
         <Signature Id="id-eb2ce89008eb1ef77a4f96ee8738c07daceee2957537d5bdea0bd2e3af393f28">
             <SignatureFilename></SignatureFilename>
-            <DateTime>2017-04-28T00:58:24</DateTime>
+            <ClaimedSigningTime>2017-04-28T00:58:24</ClaimedSigningTime>
             <SignatureFormat>PDF-NOT-ETSI</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>
@@ -87,7 +87,7 @@
         </Signature>
         <Signature Id="id-db705a41fda3e98f53acef69eae86ed559c9059a3cb67f9898d1488a8b8a1225">
             <SignatureFilename></SignatureFilename>
-            <DateTime>2017-04-28T00:58:36</DateTime>
+            <ClaimedSigningTime>2017-04-28T00:58:36</ClaimedSigningTime>
             <SignatureFormat>PKCS7-B</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>

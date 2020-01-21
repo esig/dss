@@ -6,7 +6,7 @@
         <Signature Id="S-3F92370E90C19FFD471C54F7963A7A2AC10657A097E2DF381F0263F94CA96BEC">
             <DAIdentifier>id-8aa555101680cd4b9ace1ab16b32e4d3</DAIdentifier>
             <SignatureFilename>dss-signed-altered-signedPropsRemoved.xml</SignatureFilename>
-            <DateTime>2019-02-19T12:29:01</DateTime>
+            <ClaimedSigningTime>2019-02-19T12:29:01</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>

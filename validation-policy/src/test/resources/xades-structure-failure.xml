@@ -5,7 +5,7 @@
     <Signatures>
         <Signature Id="id-247fe7e18cb7a65ccd44568c56d39b5b">
             <SignatureFilename>https___ec_europa_eu_information_society_policy_esignature_trusted_list_tl_pivot_191_mp_xml.xml</SignatureFilename>
-            <DateTime>2017-12-12T08:29:06</DateTime>
+            <ClaimedSigningTime>2017-12-12T08:29:06</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation>
                 <Valid>false</Valid>

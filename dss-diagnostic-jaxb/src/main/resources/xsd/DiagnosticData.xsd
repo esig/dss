@@ -115,7 +115,7 @@
 					<xs:element name="DAIdentifier" type="xs:string" minOccurs="0" /> <!-- ID produced by a signer application -->
 					<xs:element name="SignatureFilename" type="xs:string" />
 					<xs:element name="ErrorMessage" type="xs:string" minOccurs="0" />
-					<xs:element name="DateTime" type="xs:dateTime" minOccurs="0" />
+					<xs:element name="ClaimedSigningTime" type="xs:dateTime" minOccurs="0" />
 					<xs:element name="SignatureFormat" type="SignatureFormat" />
 		
 					<xs:element name="StructuralValidation"	type="StructuralValidation" minOccurs="0" />

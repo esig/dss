@@ -6,7 +6,7 @@
         <Signature Id="S-2B41AD14A7EA570FDF78F83E2C114284D91997DAA25E57025F462DC21330F5FA">
             <DAIdentifier>id-92857e58338e14b3710b882be38dc42c</DAIdentifier>
             <SignatureFilename>sample-signed-xades-baseline-lt.xml</SignatureFilename>
-            <DateTime>2019-07-01T13:34:46</DateTime>
+            <ClaimedSigningTime>2019-07-01T13:34:46</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-LT</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>

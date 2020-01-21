@@ -42,7 +42,7 @@ public class SigningTimeCheckTest extends AbstractTestCheck {
 	@Test
 	public void signingTimeCheckTest() throws Exception {
 		XmlSignature sig = new XmlSignature();
-		sig.setDateTime(new Date());
+		sig.setClaimedSigningTime(new Date());
 
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);

@@ -6,7 +6,7 @@
         <Signature Id="S-32E0E10DEDDA4D71E473BFF7B26966E350C5D3985F2B0DB447A5F90560769627">
             <DAIdentifier>Signature_1372744990848</DAIdentifier>
             <SignatureFilename>OJ_L_2013_183_FULL.xml</SignatureFilename>
-            <DateTime>2013-07-02T06:03:10</DateTime>
+            <ClaimedSigningTime>2013-07-02T06:03:10</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-LTA</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>

@@ -24,7 +24,7 @@
     <Signatures>
         <Signature Id="id-b3275fde5372ce8f1502733bd2b37bbb">
             <SignatureFilename>META-INF/signatures001.xml</SignatureFilename>
-            <DateTime>2017-09-26T08:20:34</DateTime>
+            <ClaimedSigningTime>2017-09-26T08:20:34</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>

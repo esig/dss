@@ -5,7 +5,7 @@
     <Signatures>
 	    <Signature Id="id-0a3d7678f962b64e24af1ea3410ee1a25e87cc4f861179aabd393cf288c70419">
 	    	<SignatureFilename>firmaok.zip.p7m</SignatureFilename>
-	        <DateTime>2016-04-25T08:09:51</DateTime>
+	        <ClaimedSigningTime>2016-04-25T08:09:51</ClaimedSigningTime>
 	        <SignatureFormat>PDF-NOT-ETSI</SignatureFormat>
 	        <DigestMatchers>
                 <DigestMatcher type="MESSAGE_DIGEST">

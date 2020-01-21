@@ -5,7 +5,7 @@
     <Signatures>
         <Signature Id="S-8C53CF5EB069156ED529C92CCB4E5F3296502A7BDF7FF39D6A0215EEB098EC39">
             <SignatureFilename>screenshot2.png.cades-server-detached.extended.sig</SignatureFilename>
-            <DateTime>2019-05-03T18:26:31</DateTime>
+            <ClaimedSigningTime>2019-05-03T18:26:31</ClaimedSigningTime>
             <SignatureFormat>CAdES-BASELINE-LTA</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>

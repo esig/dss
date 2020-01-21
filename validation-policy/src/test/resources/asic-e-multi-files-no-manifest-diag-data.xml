@@ -15,7 +15,7 @@
     <Signatures>
         <Signature Id="id-3dec1e67bd5b5992bf719606039df7fb">
             <SignatureFilename>META-INF/signature001.p7s</SignatureFilename>
-            <DateTime>2017-09-26T08:07:27</DateTime>
+            <ClaimedSigningTime>2017-09-26T08:07:27</ClaimedSigningTime>
             <SignatureFormat>CAdES-BASELINE-T</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>

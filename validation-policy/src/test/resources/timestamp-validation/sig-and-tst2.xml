@@ -6,7 +6,7 @@
         <Signature Id="S-827E8C2197D6700353AA0AFA842A5B3CF6193522BB7C5A5EB2F668EE21B10238">
             <DAIdentifier>Signature_1565352344457</DAIdentifier>
             <SignatureFilename>OJ_L_2019_209_FULL.xml</SignatureFilename>
-            <DateTime>2019-08-09T12:05:44</DateTime>
+            <ClaimedSigningTime>2019-08-09T12:05:44</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-LTA</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>

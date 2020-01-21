@@ -126,8 +126,8 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return "";
 	}
 
-	public Date getDateTime() {
-		return signature.getDateTime();
+	public Date getClaimedSigningTime() {
+		return signature.getClaimedSigningTime();
 	}
 
 	public String getContentType() {

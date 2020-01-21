@@ -5,7 +5,7 @@
     <Signatures>
         <Signature Id="Signature-86c36a4a-5882-4984-848a-5febacfed192">
             <SignatureFilename>more_then_one_signature.xml</SignatureFilename>
-            <DateTime>2017-04-27T10:25:52</DateTime>
+            <ClaimedSigningTime>2017-04-27T10:25:52</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>
@@ -73,7 +73,7 @@
         </Signature>
         <Signature Id="Signature-52abf6c0-67ec-40d4-b73d-08ab4f6691d0">
             <SignatureFilename>more_then_one_signature.xml</SignatureFilename>
-            <DateTime>2016-10-10T12:13:46</DateTime>
+            <ClaimedSigningTime>2016-10-10T12:13:46</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>
@@ -141,7 +141,7 @@
         </Signature>
         <Signature Id="ID-8b009720-f82c-11e6-ae9c-0050569a5ac0">
             <SignatureFilename>more_then_one_signature.xml</SignatureFilename>
-            <DateTime>2017-02-21T12:11:37</DateTime>
+            <ClaimedSigningTime>2017-02-21T12:11:37</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>
@@ -207,7 +207,7 @@
         </Signature>
         <Signature Id="ID-e5b77ba0-1b6a-11e7-a15a-0050569a0676">
             <SignatureFilename>more_then_one_signature.xml</SignatureFilename>
-            <DateTime>2017-04-07T08:19:49</DateTime>
+            <ClaimedSigningTime>2017-04-07T08:19:49</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>

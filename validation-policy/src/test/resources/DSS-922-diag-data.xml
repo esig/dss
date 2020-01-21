@@ -5,7 +5,7 @@
     <Signatures>
 	    <Signature Id="S0">
 			<SignatureFilename>MVC.xml</SignatureFilename>
-	        <DateTime>2013-10-11T14:27:54</DateTime>
+	        <ClaimedSigningTime>2013-10-11T14:27:54</ClaimedSigningTime>
 	        <SignatureFormat>XAdES-BASELINE-LT</SignatureFormat>
 	        <DigestMatchers>
                 <DigestMatcher type="REFERENCE" name="Hello world.pdf">

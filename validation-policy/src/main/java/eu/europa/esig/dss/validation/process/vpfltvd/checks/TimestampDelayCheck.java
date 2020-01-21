@@ -26,11 +26,11 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.RuleUtils;
 import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.i18n.I18nProvider;
-import eu.europa.esig.dss.i18n.MessageTag;
 
 public class TimestampDelayCheck extends ChainItem<XmlValidationProcessLongTermData> {
 
@@ -50,7 +50,7 @@ public class TimestampDelayCheck extends ChainItem<XmlValidationProcessLongTermD
 
 	@Override
 	protected boolean process() {
-		Date signingTime = signature.getDateTime();
+		Date signingTime = signature.getClaimedSigningTime();
 		if (signingTime == null) {
 			return false;
 		}

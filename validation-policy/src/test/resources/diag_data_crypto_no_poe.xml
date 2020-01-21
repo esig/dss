@@ -6,7 +6,7 @@
         <Signature Id="S-C6E5DF3BF6160BD2BAD82563A6D66773CC9C181813D3E3CA1C81407B53934692">
             <DAIdentifier>Signature_1377525082391</DAIdentifier>
             <SignatureFilename>EUTrustedListsofCertificationServiceProvidersXML.signed_Certipost_detached.extended-lta.xml</SignatureFilename>
-            <DateTime>2013-08-26T13:51:22</DateTime>
+            <ClaimedSigningTime>2013-08-26T13:51:22</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-T</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>

@@ -5,7 +5,7 @@
     <Signatures>
 	    <Signature Id="xmldsig-0a9a9d45-c8f6-44c5-9e74-462fa3441a26">
 	    	<SignatureFilename>firmaok.zip.p7m</SignatureFilename>
-	        <DateTime>2014-10-14T14:49:49</DateTime>
+	        <ClaimedSigningTime>2014-10-14T14:49:49</ClaimedSigningTime>
 	        <SignatureFormat>XAdES-BASELINE-T</SignatureFormat>
 	        <DigestMatchers>
                 <DigestMatcher type="REFERENCE" name="#test">

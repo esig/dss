@@ -5,7 +5,7 @@
     <Signatures>
         <Signature Id="id-1bc73e8a06e7678358dcff35f830d9438c0b985dfb6103cb6a8d44bc11811a66">
             <SignatureFilename>Signature-P-BE_ECON-1.pdf</SignatureFilename>
-            <DateTime>2016-04-18T10:27:33</DateTime>
+            <ClaimedSigningTime>2016-04-18T10:27:33</ClaimedSigningTime>
             <SignatureFormat>PAdES-BASELINE-LT</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>

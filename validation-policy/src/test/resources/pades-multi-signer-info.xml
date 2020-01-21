@@ -5,7 +5,7 @@
     <Signatures>
         <Signature Id="S-6B6CACCA3251BBAB383718179170CB751085A2DD8BEC17F3812C0EAB3BA5AC23">
             <SignatureFilename>document-signed-pades-baseline-lta.pdf</SignatureFilename>
-            <DateTime>2019-12-09T14:42:34</DateTime>
+            <ClaimedSigningTime>2019-12-09T14:42:34</ClaimedSigningTime>
             <SignatureFormat>PAdES-BASELINE-LTA</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>

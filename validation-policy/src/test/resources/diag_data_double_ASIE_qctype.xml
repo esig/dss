@@ -5,7 +5,7 @@
     <Signatures>
         <Signature Id="id-a2f4d9e240dd42ab5fc976cb8171bd7d">
             <SignatureFilename>5.1.5-TEST FILE.xml</SignatureFilename>
-            <DateTime>2018-07-05T13:19:42</DateTime>
+            <ClaimedSigningTime>2018-07-05T13:19:42</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>

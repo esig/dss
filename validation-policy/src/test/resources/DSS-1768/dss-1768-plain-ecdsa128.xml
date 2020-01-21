@@ -5,7 +5,7 @@
     <Signatures>
         <Signature Id="id-91a71e2c25ac8f6d492d578b67d8a818">
             <SignatureFilename>simple-test.signed-enveloped-transform-ar-LuxTrust3-lta(dss5.3).xml</SignatureFilename>
-            <DateTime>2018-06-12T11:28:54</DateTime>
+            <ClaimedSigningTime>2018-06-12T11:28:54</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-LTA</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>

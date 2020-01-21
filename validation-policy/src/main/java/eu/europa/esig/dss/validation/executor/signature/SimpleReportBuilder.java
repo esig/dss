@@ -190,7 +190,7 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 	}
 
 	private void addSigningTime(final SignatureWrapper signature, final XmlSignature xmlSignature) {
-		xmlSignature.setSigningTime(signature.getDateTime());
+		xmlSignature.setSigningTime(signature.getClaimedSigningTime());
 	}
 
 	private void addSignatureFormat(final SignatureWrapper signature, final XmlSignature xmlSignature) {

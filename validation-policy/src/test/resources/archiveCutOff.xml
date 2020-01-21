@@ -6,7 +6,7 @@
 	<Signatures>
 		<Signature	Id="id-a28e6cf46b56eb7ab0eb91f9c7b08f77819f4f2160a03c5d92a0555745d53b52">
 			<SignatureFilename>MVC.pdf</SignatureFilename>
-			<DateTime>2015-08-28T12:08:07</DateTime>
+			<ClaimedSigningTime>2015-08-28T12:08:07</ClaimedSigningTime>
 			<SignatureFormat>PAdES-BASELINE-T</SignatureFormat>
 			<StructuralValidation>
 				<Valid>true</Valid>
@@ -57,7 +57,7 @@
 		</Signature>
 		<Signature	Id="id-752da48ccad668fcade0d92a1cd8def412feb7562591d1b2a442294d7219c336">
 			<SignatureFilename>MVC.pdf</SignatureFilename>
-			<DateTime>2015-08-31T14:54:57</DateTime>
+			<ClaimedSigningTime>2015-08-31T14:54:57</ClaimedSigningTime>
 			<SignatureFormat>PAdES-BASELINE-T</SignatureFormat>
 			<StructuralValidation>
 				<Valid>true</Valid>

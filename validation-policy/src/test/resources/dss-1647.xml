@@ -6,7 +6,7 @@
         <Signature Id="S-1D3BBA4FFAD5602A653CECC413A51B70DB3BF98C5A05B7BE3425A0E42BC501C6">
             <DAIdentifier>Signature_1524814320911</DAIdentifier>
             <SignatureFilename>OJ_L_2018_109_FULL.xml</SignatureFilename>
-            <DateTime>2018-04-27T07:32:00</DateTime>
+            <ClaimedSigningTime>2018-04-27T07:32:00</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-LTA</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>

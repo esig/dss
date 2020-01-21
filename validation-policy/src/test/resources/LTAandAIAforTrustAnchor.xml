@@ -5,7 +5,7 @@
     <Signatures>
         <Signature Id="id-3319b7ffbd2bb9943f6cda5813bca4ca">
             <SignatureFilename>06022bd482fb8a2a.xml</SignatureFilename>
-            <DateTime>2018-12-06T00:28:33</DateTime>
+            <ClaimedSigningTime>2018-12-06T00:28:33</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-LTA</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>

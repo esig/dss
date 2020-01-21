@@ -43,7 +43,7 @@
     <Signatures>
         <Signature Id="S-132A03478A000A8356CE0470BCB15FF5A51B7A4C00B1EBD83AFC78DB67DFE178">
             <SignatureFilename>META-INF/signature001.p7s</SignatureFilename>
-            <DateTime>2019-12-17T10:12:31</DateTime>
+            <ClaimedSigningTime>2019-12-17T10:12:31</ClaimedSigningTime>
             <SignatureFormat>CAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>
@@ -121,7 +121,7 @@
         </Signature>
         <Signature Id="S-5A5C2391891B3D58E7AC7472ACC38CE3894E965FA5840694D7A94AFC9A4BDB59">
             <SignatureFilename>META-INF/signature002.p7s</SignatureFilename>
-            <DateTime>2019-12-17T10:12:31</DateTime>
+            <ClaimedSigningTime>2019-12-17T10:12:31</ClaimedSigningTime>
             <SignatureFormat>CAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>

@@ -105,7 +105,7 @@ public class TLValidatorTask implements Supplier<ValidationResult> {
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		Date signingTime = signatureWrapper.getDateTime();
+		Date signingTime = signatureWrapper.getClaimedSigningTime();
 		CertificateWrapper signingCertificateWrapper = signatureWrapper.getSigningCertificate();
 		CertificateToken signingCertificate = null;
 		if (signingCertificateWrapper != null) {

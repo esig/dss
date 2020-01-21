@@ -1250,10 +1250,10 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private void addSigningTime(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		Date dateTime = sigWrapper.getDateTime();
-		if (dateTime != null) {
+		Date signingTime = sigWrapper.getClaimedSigningTime();
+		if (signingTime != null) {
 			SASigningTimeType saSigningTimeType = objectFactory.createSASigningTimeType();
-			saSigningTimeType.setTime(dateTime);
+			saSigningTimeType.setTime(signingTime);
 			setSignedIfValid(sigWrapper, saSigningTimeType);
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(objectFactory.createSignatureAttributesTypeSigningTime(saSigningTimeType));
 		}

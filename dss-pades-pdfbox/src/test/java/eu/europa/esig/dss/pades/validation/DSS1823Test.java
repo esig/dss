@@ -109,7 +109,7 @@ public class DSS1823Test extends PKIFactoryAccess {
 				DiagnosticData diagnosticData = reports.getDiagnosticData();
 
 				SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-				assertNull(signatureById.getDateTime());
+				assertNull(signatureById.getClaimedSigningTime());
 
 				List<XmlDigestMatcher> digestMatchers = signatureById.getDigestMatchers();
 				assertEquals(1, digestMatchers.size());
@@ -163,7 +163,7 @@ public class DSS1823Test extends PKIFactoryAccess {
 				DiagnosticData diagnosticData = reports.getDiagnosticData();
 
 				SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-				assertNull(signatureById.getDateTime());
+				assertNull(signatureById.getClaimedSigningTime());
 
 				List<XmlDigestMatcher> digestMatchers = signatureById.getDigestMatchers();
 				assertEquals(1, digestMatchers.size());
@@ -213,7 +213,7 @@ public class DSS1823Test extends PKIFactoryAccess {
 				DiagnosticData diagnosticData = reports.getDiagnosticData();
 
 				SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-				assertNull(signatureById.getDateTime());
+				assertNull(signatureById.getClaimedSigningTime());
 
 				List<XmlDigestMatcher> digestMatchers = signatureById.getDigestMatchers();
 				assertEquals(1, digestMatchers.size());

@@ -5,7 +5,7 @@
     <Signatures>
         <Signature Id="id-a65f411229b832159f1e97942cacf53d4850abe87cc3c6dde1a4708daf3cc87f">
             <SignatureFilename>problematic-signed-pades-baseline-b.pdf</SignatureFilename>
-            <DateTime>2017-02-10T13:18:14</DateTime>
+            <ClaimedSigningTime>2017-02-10T13:18:14</ClaimedSigningTime>
             <SignatureFormat>PAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>

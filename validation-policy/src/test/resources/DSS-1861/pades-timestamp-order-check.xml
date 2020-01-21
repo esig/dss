@@ -5,7 +5,7 @@
     <Signatures>
         <Signature Id="S-EC0EA3F31F31F53BC5D37967CE983BEB955807FBE6350563BF2697E59FCABDD5">
             <SignatureFilename>Signature-P-HU_POL-4.pdf</SignatureFilename>
-            <DateTime>2019-11-05T14:01:21</DateTime>
+            <ClaimedSigningTime>2019-11-05T14:01:21</ClaimedSigningTime>
             <SignatureFormat>PAdES-BASELINE-LTA</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>

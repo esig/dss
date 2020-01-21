@@ -5,7 +5,7 @@
     <Signatures>
         <Signature Id="id-a12aec7b8eda0165ac6dfeda2488e039">
             <SignatureFilename>screenshot.png.signed_qes_detached.extended.p7s</SignatureFilename>
-            <DateTime>2013-08-14T15:45:21</DateTime>
+            <ClaimedSigningTime>2013-08-14T15:45:21</ClaimedSigningTime>
             <SignatureFormat>CAdES-BASELINE-LTA</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>

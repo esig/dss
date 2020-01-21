@@ -23,7 +23,7 @@
         <Signature Id="S-B9E1CEC2D55F6C3D14143FF0CE585FD28D375F3124D2F1BA156499D601B8B55C">
             <DAIdentifier>S0</DAIdentifier>
             <SignatureFilename>META-INF/signatures0.xml</SignatureFilename>
-            <DateTime>2019-09-23T14:25:17</DateTime>
+            <ClaimedSigningTime>2019-09-23T14:25:17</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-LT</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>

@@ -100,7 +100,7 @@ public class DiagnosticData {
 	 */
 	public Date getFirstSignatureDate() {
 		SignatureWrapper firstSignature = getFirstSignatureNullSafe();
-		return firstSignature.getDateTime();
+		return firstSignature.getClaimedSigningTime();
 	}
 
 	/**
@@ -112,7 +112,7 @@ public class DiagnosticData {
 	 */
 	public Date getSignatureDate(final String signatureId) {
 		SignatureWrapper signature = getSignatureByIdNullSafe(signatureId);
-		return signature.getDateTime();
+		return signature.getClaimedSigningTime();
 	}
 
 	/**

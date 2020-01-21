@@ -5,7 +5,7 @@
     <Signatures>
         <Signature Id="id-0a0becbe9213c626a1be4d98a9981596e2f922b90a2bb3c1ee938d9fc493a1bd">
             <SignatureFilename>Signature-P-TU_NG-1.pdf</SignatureFilename>
-            <DateTime>2016-05-20T17:03:09</DateTime>
+            <ClaimedSigningTime>2016-05-20T17:03:09</ClaimedSigningTime>
             <SignatureFormat>PAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation>
                 <Valid>true</Valid>

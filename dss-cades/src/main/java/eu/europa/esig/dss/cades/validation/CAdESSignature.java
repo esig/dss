@@ -140,9 +140,10 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESSignature.class);
 
-	private static final Date JANUARY_1950 = DSSUtils.getUtcDate(1950, 1, 1);
+	// month param is zero-based (i.e. 0 for January)
+	private static final Date JANUARY_1950 = DSSUtils.getUtcDate(1950, 0, 1);
 
-	private static final Date JANUARY_2050 = DSSUtils.getUtcDate(2050, 1, 1);
+	private static final Date JANUARY_2050 = DSSUtils.getUtcDate(2050, 0, 1);
 
 	private final CMSSignedData cmsSignedData;
 
@@ -480,7 +481,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			 * dates with year values before 1950 or after 2049 must be encoded
 			 * as GeneralizedTime".
 			 */
-			if (!(signingDate.before(JANUARY_1950) && signingDate.after(JANUARY_2050))) {
+			if (signingDate.compareTo(JANUARY_1950) >= 0 && signingDate.before(JANUARY_2050)) {
 				// must be ASN1UTCTime
 				if (!(attrValue instanceof ASN1UTCTime)) {
 					LOG.error(

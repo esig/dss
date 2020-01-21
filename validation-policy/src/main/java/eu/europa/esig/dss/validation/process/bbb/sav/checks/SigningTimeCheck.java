@@ -24,10 +24,10 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.ChainItem;
 
 public class SigningTimeCheck extends ChainItem<XmlSAV> {
 
@@ -40,7 +40,7 @@ public class SigningTimeCheck extends ChainItem<XmlSAV> {
 
 	@Override
 	protected boolean process() {
-		return signature.getDateTime() != null;
+		return signature.getClaimedSigningTime() != null;
 	}
 
 	@Override
