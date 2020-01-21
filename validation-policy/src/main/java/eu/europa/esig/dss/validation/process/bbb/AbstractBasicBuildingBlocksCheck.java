@@ -29,6 +29,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCryptographicInformation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
@@ -41,7 +42,6 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
@@ -161,36 +161,19 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 		XmlXCV xcv = tokenBBB.getXCV();
 		XmlConclusion x509ValidationStatus = null;
 		if (xcv != null) {
+
 			XmlConclusion xcvConclusion = x509ValidationStatus = xcv.getConclusion();
+
+			x509ValidationStatus.setIndication(xcvConclusion.getIndication());
+			x509ValidationStatus.setSubIndication(xcvConclusion.getSubIndication());
+			errors.addAll(xcvConclusion.getErrors());
+
 			if (Indication.INDETERMINATE.equals(xcvConclusion.getIndication()) && SubIndication.REVOKED_NO_POE.equals(xcvConclusion.getSubIndication())) {
 				SignatureWrapper currentSignature = diagnosticData.getSignatureById(tokenBBB.getId());
-				if (currentSignature != null) {
-					List<TimestampWrapper> contentTimestamps = currentSignature.getTimestampListByType(TimestampType.CONTENT_TIMESTAMP);
-					if (Utils.isCollectionNotEmpty(contentTimestamps)) {
-						boolean failed = false;
-						Date revocationDate = getRevocationDateForSigningCertificate(currentSignature);
-						for (TimestampWrapper timestamp : contentTimestamps) {
-							if (isValidTimestamp(timestamp)) {
-								Date tspProductionTime = timestamp.getProductionTime();
-								if (tspProductionTime.after(revocationDate)) {
-									failed = true;
-									break;
-								}
-							}
-						}
-
-						if (failed) {
-							x509ValidationStatus.setIndication(Indication.FAILED);
-							x509ValidationStatus.setSubIndication(SubIndication.REVOKED);
-							errors.addAll(xcvConclusion.getErrors());
-						}
-					}
+				if (currentSignature != null && isValidContentTimestampBeforeDate(currentSignature, getRevocationDateForSigningCertificate(currentSignature))) {
+					x509ValidationStatus.setIndication(Indication.FAILED);
+					x509ValidationStatus.setSubIndication(SubIndication.REVOKED);
 				}
-
-				x509ValidationStatus.setIndication(Indication.INDETERMINATE);
-				x509ValidationStatus.setSubIndication(SubIndication.REVOKED_NO_POE);
-				errors.addAll(xcvConclusion.getErrors());
-
 			}
 			/*
 			 * If the X.509 Certificate Validation process returns the indication
@@ -208,34 +191,12 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 			 */
 			else if (Indication.INDETERMINATE.equals(xcvConclusion.getIndication())
 					&& SubIndication.OUT_OF_BOUNDS_NO_POE.equals(xcvConclusion.getSubIndication())) {
+
 				SignatureWrapper currentSignature = diagnosticData.getSignatureById(tokenBBB.getId());
-				if (currentSignature != null) {
-					List<TimestampWrapper> contentTimestamps = currentSignature.getTimestampListByType(TimestampType.CONTENT_TIMESTAMP);
-					if (Utils.isCollectionNotEmpty(contentTimestamps)) {
-						boolean failed = false;
-						Date expirationDate = getExpirationDateForSigningCertificate(currentSignature);
-						for (TimestampWrapper timestamp : contentTimestamps) {
-							if (isValidTimestamp(timestamp)) {
-								Date tspProductionTime = timestamp.getProductionTime();
-								if (tspProductionTime.after(expirationDate)) {
-									failed = true;
-									break;
-								}
-							}
-						}
-
-						if (failed) {
-							x509ValidationStatus.setIndication(Indication.INDETERMINATE);
-							x509ValidationStatus.setSubIndication(SubIndication.EXPIRED);
-							errors.addAll(xcvConclusion.getErrors());
-						}
-					}
+				if (currentSignature != null && isValidContentTimestampBeforeDate(currentSignature, getExpirationDateForSigningCertificate(currentSignature))) {
+					x509ValidationStatus.setIndication(Indication.FAILED);
+					x509ValidationStatus.setSubIndication(SubIndication.EXPIRED);
 				}
-
-				x509ValidationStatus.setIndication(Indication.INDETERMINATE);
-				x509ValidationStatus.setSubIndication(SubIndication.OUT_OF_BOUNDS_NO_POE);
-				errors.addAll(xcvConclusion.getErrors());
-
 			}
 			/*
 			 * If the X.509 Certificate Validation process returns the indication
@@ -248,11 +209,8 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 			 * X509_validation-status to the indication and sub-indication returned by the
 			 * X.509 Certificate Validation process and continue with step 5).
 			 */
-			else if (!Indication.PASSED.equals(xcvConclusion.getIndication())) {
-				x509ValidationStatus.setIndication(xcvConclusion.getIndication());
-				x509ValidationStatus.setSubIndication(xcvConclusion.getSubIndication());
-				errors.addAll(xcvConclusion.getErrors());
-			}
+
+			// x509ValidationStatus is filled at the beginning
 		}
 
 		/*
@@ -346,24 +304,13 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 		if (Indication.INDETERMINATE.equals(savConclusion.getIndication())
 				&& SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(savConclusion.getSubIndication())) {
 
-			SignatureWrapper currentSignature = diagnosticData.getSignatureById(tokenBBB.getId());
-			if (currentSignature != null) {
-				List<TimestampWrapper> contentTimestamps = currentSignature.getTimestampListByType(TimestampType.CONTENT_TIMESTAMP);
-				if (Utils.isCollectionNotEmpty(contentTimestamps)) {
-					boolean failed = false;
-					for (TimestampWrapper timestamp : contentTimestamps) {
-						if (isValidTimestamp(timestamp)) {
-							failed = true;
-							break;
-						}
-					}
+			XmlCryptographicInformation cryptographicInfo = sav.getCryptographicInfo();
 
-					if (failed) {
-						indication = Indication.INDETERMINATE;
-						subIndication = SubIndication.CRYPTO_CONSTRAINTS_FAILURE;
-						return false;
-					}
-				}
+			SignatureWrapper currentSignature = diagnosticData.getSignatureById(tokenBBB.getId());
+			if (currentSignature != null && isValidContentTimestampBeforeDate(currentSignature, cryptographicInfo.getNotAfter())) {
+				indication = Indication.INDETERMINATE;
+				subIndication = SubIndication.CRYPTO_CONSTRAINTS_FAILURE;
+				return false;
 			}
 
 			indication = Indication.INDETERMINATE;
@@ -379,6 +326,23 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 		}
 
 		return true;
+	}
+
+	private boolean isValidContentTimestampBeforeDate(SignatureWrapper currentSignature, Date date) {
+		boolean result = false;
+		List<TimestampWrapper> contentTimestamps = currentSignature.getContentTimestamps();
+		if (Utils.isCollectionNotEmpty(contentTimestamps)) {
+			for (TimestampWrapper timestamp : contentTimestamps) {
+				if (isValidTimestamp(timestamp)) {
+					Date tspProductionTime = timestamp.getProductionTime();
+					if (tspProductionTime.after(date)) {
+						result = true;
+						break;
+					}
+				}
+			}
+		}
+		return result;
 	}
 
 	private boolean isValidTimestamp(TimestampWrapper timestamp) {
