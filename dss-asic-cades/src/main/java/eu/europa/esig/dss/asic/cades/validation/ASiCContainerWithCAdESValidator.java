@@ -118,6 +118,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 					if (Utils.collectionSize(signedDocuments) == 1) {
 						DetachedTimestampValidator timestampValidator = new DetachedTimestampValidator(timestamp);
 						timestampValidator.setTimestampedData(signedDocuments.get(0));
+						timestampValidator.setValidationCertPool(validationCertPool);
 						timestampValidator.setCertificateVerifier(certificateVerifier);
 						timestampValidators.add(timestampValidator);
 					} else {
