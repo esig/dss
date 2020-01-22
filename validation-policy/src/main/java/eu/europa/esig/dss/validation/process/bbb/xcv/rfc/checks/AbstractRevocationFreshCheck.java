@@ -44,7 +44,7 @@ public abstract class AbstractRevocationFreshCheck extends ChainItem<XmlRFC> {
 		this.validationDate = validationDate;
 	}
 	
-	protected boolean isProductionDateNotBeforeValidationTime() {
+	protected boolean isProductionDateAfterValidationTime() {
 		long maxFreshness = getMaxFreshness();
 		long validationDateTime = validationDate.getTime();
 		long limit = validationDateTime - maxFreshness;
