@@ -53,7 +53,7 @@ public class CertificateRevokedCheck extends ChainItem<XmlSubXCV> {
 		boolean isRevoked = (certificateRevocation != null) && !certificateRevocation.isStatus() && 
 				!RevocationReason.CERTIFICATE_HOLD.equals(certificateRevocation.getReason());
 		if (isRevoked) {
-			isRevoked = certificateRevocation.getRevocationDate() != null && currentTime.after(certificateRevocation.getRevocationDate());
+			isRevoked = certificateRevocation.getRevocationDate() != null && currentTime.compareTo(certificateRevocation.getRevocationDate()) >= 0;
 		}
 		return !isRevoked;
 	}

@@ -50,7 +50,7 @@ public class CertificateOnHoldCheck extends ChainItem<XmlSubXCV> {
 		boolean isOnHold = (certificateRevocation != null) && !certificateRevocation.isStatus() && 
 				RevocationReason.CERTIFICATE_HOLD.equals(certificateRevocation.getReason());
 		if (isOnHold) {
-			isOnHold = certificateRevocation.getRevocationDate() != null && currentTime.after(certificateRevocation.getRevocationDate());
+			isOnHold = certificateRevocation.getRevocationDate() != null && currentTime.compareTo(certificateRevocation.getRevocationDate()) >= 0;
 		}
 		return !isOnHold;
 	}

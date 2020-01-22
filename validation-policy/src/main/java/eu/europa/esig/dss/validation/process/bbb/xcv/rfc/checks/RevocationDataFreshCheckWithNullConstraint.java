@@ -37,7 +37,7 @@ public class RevocationDataFreshCheckWithNullConstraint extends AbstractRevocati
 	@Override
 	protected boolean process() {
 		if (revocationData != null && revocationData.getNextUpdate() != null) {
-			return isProductionDateNotBeforeValidationTime();
+			return isProductionDateAfterValidationTime();
 		}
 		return false;
 	}
