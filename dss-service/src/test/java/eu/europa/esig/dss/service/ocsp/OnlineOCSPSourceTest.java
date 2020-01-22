@@ -118,11 +118,11 @@ public class OnlineOCSPSourceTest {
 		ocspSource.setDataLoader(dataLoader);
 
 		OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, caToken);
-		assertEquals(SignatureAlgorithm.RSA_SHA256, ocspToken.getSignatureAlgorithm()); // default value
+		assertEquals(SignatureAlgorithm.RSA_SHA1, ocspToken.getSignatureAlgorithm()); // default value
 		
-		ocspSource.setCertIDDigestAlgorithm(DigestAlgorithm.SHA1);
+		ocspSource.setCertIDDigestAlgorithm(DigestAlgorithm.SHA256);
 		ocspToken = ocspSource.getRevocationToken(certificateToken, caToken);
-		assertEquals(SignatureAlgorithm.RSA_SHA1, ocspToken.getSignatureAlgorithm());
+		assertEquals(SignatureAlgorithm.RSA_SHA256, ocspToken.getSignatureAlgorithm());
 	}
 
 }

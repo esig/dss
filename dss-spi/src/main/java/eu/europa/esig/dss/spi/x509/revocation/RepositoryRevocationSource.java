@@ -28,9 +28,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 
+/**
+ * Allows storing and retrieving of revocation data to/from a repository (e.g. database)
+ *
+ * @param <T> {@code CRLToken} or {@code OCSPToken}
+ */
 public abstract class RepositoryRevocationSource<T extends RevocationToken> implements RevocationSource<T> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RepositoryRevocationSource.class); 
@@ -256,7 +259,7 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 	 * nextUpdateDelay and maxNexUpdateDelay parameters.
 	 * 
 	 * @param token
-	 *              {@link CRLToken} or {@link OCSPToken}
+	 *              {@code CRLToken} or {@code OCSPToken}
 	 * @return TRUE if the token is still valid, FALSE otherwise
 	 */
 	private boolean isNotExpired(T token) {

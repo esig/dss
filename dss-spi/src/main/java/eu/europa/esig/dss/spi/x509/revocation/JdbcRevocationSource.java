@@ -32,12 +32,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 
 /**
  * Abstract class to retrieve token from a JDBC datasource
- * @param <T> - {@link CRLToken} or {@link OCSPToken}
+ * 
+ * @param <T> {@code CRLToken} or {@code OCSPToken}
  */
 public abstract class JdbcRevocationSource<T extends RevocationToken> extends RepositoryRevocationSource<T> {
 

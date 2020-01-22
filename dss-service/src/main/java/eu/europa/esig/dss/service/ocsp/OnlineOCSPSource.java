@@ -78,7 +78,7 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 	/**
 	 * The DigestAlgorithm to be used in hash calculation for CertID on a request building
 	 */
-	private DigestAlgorithm certIDDigestAlgorithm = DigestAlgorithm.SHA256;
+	private DigestAlgorithm certIDDigestAlgorithm = DigestAlgorithm.SHA1;
 
 	/**
 	 * Create an OCSP source The default constructor for OnlineOCSPSource. The
