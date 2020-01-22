@@ -165,9 +165,6 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 						.getSignatureDrawer(imageParameters);
 				signatureDrawer.init(imageParameters, pdDocument, options);
 				signatureDrawer.draw();
-			} else {
-				PdfBoxInvisibleSignatureOptionsPreparator signaturePreparator = new PdfBoxInvisibleSignatureOptionsPreparator();
-				signaturePreparator.prepare(options);
 			}
 			
 			pdDocument.addSignature(pdSignature, signatureInterface, options);
