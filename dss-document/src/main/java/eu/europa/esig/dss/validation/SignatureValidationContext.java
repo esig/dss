@@ -255,24 +255,12 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	private CertificateToken getTSACertificate(TimestampToken timestamp) {
-		List<CertificateToken> candidates = timestamp.getCertificates();
+		List<CertificateToken> candidates = validationCertificatePool.getBySignerId(timestamp.getSignerId());
 		for (CertificateToken candidate : candidates) {
 			if (timestamp.isSignedBy(candidate)) {
 				return candidate;
 			}
 		}
-
-		LOG.info("TSA certificate not found in the token");
-
-		candidates = validationCertificatePool.getBySignerId(timestamp.getSignerId());
-		for (CertificateToken candidate : candidates) {
-			if (timestamp.isSignedBy(candidate)) {
-				return candidate;
-			}
-		}
-
-		LOG.warn("TSA certificate not found in the certificate pool");
-
 		return null;
 	}
 

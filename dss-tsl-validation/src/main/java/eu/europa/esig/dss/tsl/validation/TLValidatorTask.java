@@ -79,12 +79,12 @@ public class TLValidatorTask implements Supplier<ValidationResult> {
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier(true);
 		certificateVerifier.setIncludeCertificateTokenValues(true);
 		certificateVerifier.setTrustedCertSource(buildTrustedCertificateSource(certificateSource));
-//		certificateVerifier.setDataLoader(new IgnoreDataLoader()); // Don't need to collect from AIA,...
 
 		XMLDocumentValidator xmlDocumentValidator = new XMLDocumentValidator(trustedList);
 		xmlDocumentValidator.setCertificateVerifier(certificateVerifier);
 		xmlDocumentValidator.setEnableEtsiValidationReport(false); // Ignore ETSI VR
 		xmlDocumentValidator.setValidationLevel(ValidationLevel.BASIC_SIGNATURES); // Timestamps,... are ignored
+		xmlDocumentValidator.setSkipValidationContextExecution(true); // Only need to validate against the trusted certificate source
 
 		// To increase the security: the default {@code XAdESPaths} is used.
 		List<XAdESPaths> xadesPathsHolders = xmlDocumentValidator.getXAdESPathsHolder();

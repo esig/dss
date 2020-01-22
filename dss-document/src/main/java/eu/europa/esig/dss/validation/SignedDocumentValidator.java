@@ -134,6 +134,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	// Produces the ETSI Validation Report by default
 	private boolean enableEtsiValidationReport = true;
 
+	// Disable certificate chain building, revocation data collection,...
+	private boolean skipValidationContextExecution = false;
+
 	protected SignedDocumentValidator() {
 		this.signatureScopeFinder = null;
 	}
@@ -371,7 +374,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		prepareSignatureValidationContext(validationContext, allSignatures);
 		prepareDetachedTimestampValidationContext(validationContext, detachedTimestamps);
 
-		validateContext(validationContext);
+		if (!skipValidationContextExecution) {
+			validateContext(validationContext);
+		}
 
 		return new DiagnosticDataBuilder().document(document).foundSignatures(allSignatures).usedTimestamps(validationContext.getProcessedTimestamps())
 				.usedCertificates(validationContext.getProcessedCertificates()).usedRevocations(validationContext.getProcessedRevocations())
@@ -657,6 +662,10 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		for (final AdvancedSignature signature : allSignatures) {
 			signature.findSignatureScope(signatureScopeFinder);
 		}
+	}
+
+	public void setSkipValidationContextExecution(boolean skipValidationContextExecution) {
+		this.skipValidationContextExecution = skipValidationContextExecution;
 	}
 
 }

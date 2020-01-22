@@ -18,21 +18,3 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.spi.tsl.identifier;
-
-import eu.europa.esig.dss.spi.tsl.TLInfo;
-
-public class TrustedListIdentifier extends AbstractTLIdentifier {
-
-	private static final long serialVersionUID = -527724241662081489L;
-
-	public TrustedListIdentifier(TLInfo tlInfo) {
-		super(tlInfo);
-	}
-	
-	@Override
-	public String asXmlId() {
-		return "TL-" + super.asXmlId();
-	}
-
-}

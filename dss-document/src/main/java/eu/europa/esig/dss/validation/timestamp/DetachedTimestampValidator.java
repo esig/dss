@@ -35,6 +35,8 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.CertificatePool;
+import eu.europa.esig.dss.spi.x509.CertificatePoolSharer;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -43,7 +45,7 @@ import eu.europa.esig.dss.validation.scope.DigestSignatureScope;
 import eu.europa.esig.dss.validation.scope.FullSignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 
-public class DetachedTimestampValidator extends SignedDocumentValidator {
+public class DetachedTimestampValidator extends SignedDocumentValidator implements CertificatePoolSharer {
 
 	protected TimestampType timestampType;
 	protected TimestampToken timestampToken;
@@ -142,6 +144,14 @@ public class DetachedTimestampValidator extends SignedDocumentValidator {
 			}
 		}
 		return Collections.emptyList();
+	}
+
+	/**
+	 * In case of ASiC container (S/E)
+	 */
+	@Override
+	public void setValidationCertPool(CertificatePool validationCertPool) {
+		this.validationCertPool = validationCertPool;
 	}
 
 	@Override

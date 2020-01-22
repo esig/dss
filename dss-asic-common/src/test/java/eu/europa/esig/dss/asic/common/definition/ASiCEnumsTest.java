@@ -32,8 +32,6 @@ import org.w3c.dom.NodeList;
 
 import eu.europa.esig.asic.manifest.ASiCManifestUtils;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.asic.common.definition.ASiCAttribute;
-import eu.europa.esig.dss.asic.common.definition.ASiCElement;
 import eu.europa.esig.dss.definition.DSSAttribute;
 import eu.europa.esig.dss.definition.DSSElement;
 import eu.europa.esig.dss.definition.DSSNamespace;

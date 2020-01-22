@@ -28,8 +28,6 @@ import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.CertificatePool;
-import eu.europa.esig.dss.spi.x509.CertificatePoolSharer;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
@@ -39,7 +37,7 @@ import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.timestamp.DetachedTimestampValidator;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
-public class ASiCEWithCAdESTimestampValidator extends DetachedTimestampValidator implements CertificatePoolSharer {
+public class ASiCEWithCAdESTimestampValidator extends DetachedTimestampValidator {
 
 	/* ASiCArchiveManifest */
 	private final ManifestFile manifestFile;
@@ -99,11 +97,6 @@ public class ASiCEWithCAdESTimestampValidator extends DetachedTimestampValidator
 			}
 		}
 		return result;
-	}
-
-	@Override
-	public void setValidationCertPool(CertificatePool validationCertPool) {
-		this.validationCertPool = validationCertPool;
 	}
 
 }
